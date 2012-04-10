@@ -26,7 +26,9 @@ if ( db == null ) {
 
 
 // To clear down the gaz: curl -XDELETE 'http://localhost:9200/gaz'
-CSVReader r = new CSVReader( new InputStreamReader(getClass().classLoader.getResourceAsStream("./IEEE_IEEEIEL_2012_2012.csv")))
+// CSVReader r = new CSVReader( new InputStreamReader(getClass().classLoader.getResourceAsStream("./IEEE_IEEEIEL_2012_2012.csv")))
+println("Processing ${args[0]}");
+CSVReader r = new CSVReader( new InputStreamReader(new FileInputStream(args[0])))
 
 String [] nl;
 
@@ -43,6 +45,8 @@ int num_prop_id_cols = Integer.parseInt(so_num_prop_id_cols_line[1] ?: 0);
 String [] so_num_platforms_listed_line = r.readNext()
 int num_platforms_listed = Integer.parseInt(so_num_platforms_listed_line[1] ?: 0);
 String [] so_header_line = r.readNext()
+
+println("Read column headings: ${so_header_line}");
 
 def stats = [:]
 
@@ -92,6 +96,12 @@ while ((nl = r.readNext()) != null) {
       target_identifiers.add([type:'eISSN', value:nl[2]])
     if ( present(nl[9]) ) 
       target_identifiers.add([type:'KBART', value:nl[9]])
+    if ( present(nl[14]) ) 
+      target_identifiers.add([type:'DOI', value:nl[14]])
+
+    for ( int i=0; i<num_prop_id_cols; i++ ) {
+      target_identifiers.add([type:'EXTERNAL', value:nl[15+i]])
+    }
 
     def title = lookupOrCreateTitle(title:nl[0],
                                     identifier:target_identifiers,
@@ -100,27 +110,33 @@ while ((nl = r.readNext()) != null) {
                                     stats:stats)
 
     for ( int i=0; i<num_platforms_listed; i++ ) {
-      int position = 14+num_prop_id_cols+i
-      def platform = lookupOrCreatePlatform(name:nl[position], db:db, stats:stats)
+      int position = 15+num_prop_id_cols+i   // Offset past any proprietary identifiers.. This needs a test case.. it's fraught with danger
+      if ( ( nl[position] ) && ( nl[position].length() > 0 ) ) {
+        def platform = lookupOrCreatePlatform(name:nl[position], db:db, stats:stats)
 
-      // Find tipp
-      if ( title._id && pkg._id && platform._id ) {
-        def tipp = lookupOrCreateTipp(titleid:title._id, pkgid:pkg._id, platformid:platform._id, db:db, stats:stats)
-        tipp.startDate = nl[3]
-        tipp.startVolume = nl[4]
-        tipp.startIssue = nl[5]
-        tipp.endDate = nl[6]
-        tipp.endVolume = nl[7]
-        tipp.endIssue = nl[8]
-        tipp.embargo = nl[10]
-        tipp.coverageDepth = nl[11]
-        tipp.coverageNote = nl[12]
-        db.tipps.save(tipp)
+        // Find tipp
+        if ( title._id && pkg._id && platform._id ) {
+          def tipp = lookupOrCreateTipp(titleid:title._id, pkgid:pkg._id, platformid:platform._id, db:db, stats:stats)
+          tipp.startDate = nl[3]
+          tipp.startVolume = nl[4]
+          tipp.startIssue = nl[5]
+          tipp.endDate = nl[6]
+          tipp.endVolume = nl[7]
+          tipp.endIssue = nl[8]
+          tipp.embargo = nl[10]
+          tipp.coverageDepth = nl[11]
+          tipp.coverageNote = nl[12]
+          db.tipps.save(tipp)
 
+        }
+        else {
+          println("One of title, pkg or platform are missing!!!");
+          inc('missing_critical_data',stats);
+        }
       }
       else {
-        println("One of title, pkg or platform are missing!!!");
-        inc('missing_critical_data',params.stats);
+        inc('bad_platform_name',stats);
+        println("BAD ${i}'th PLATFORM NAME: \"${nl[position]}\" ${nl}");
       }
     }
   }
