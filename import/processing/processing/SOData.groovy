@@ -30,6 +30,8 @@ if ( db == null ) {
 println("Processing ${args[0]}");
 CSVReader r = new CSVReader( new InputStreamReader(new FileInputStream(args[0])))
 
+def bad_rows = []
+
 String [] nl;
 
 String [] so_name_line = r.readNext()
@@ -69,8 +71,12 @@ if ( pkg.contentProvider == null ) {
 def so_count = 0
 def so_bad = 0
 def so_good = 0
+def rownum = 0;
 
 while ((nl = r.readNext()) != null) {
+  rownum++
+  boolean bad = false;
+  String badreason = null;
   // publication_title,print_identifier,online_identifier,date_first_issue_online,
   // num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,
   // num_last_issue_online,title_id,embargo_info,coverage_depth,coverage_notes,
@@ -136,13 +142,21 @@ while ((nl = r.readNext()) != null) {
       }
       else {
         inc('bad_platform_name',stats);
+        bad = true
+        badreason="Bad Platform Name"
         println("BAD ${i}'th PLATFORM NAME: \"${nl[position]}\" ${nl}");
       }
     }
   }
   else {
     println("Row is missing critical data, add to bad file");
+    bad = true
     so_bad++;
+    badreason="Row is missing critical data"
+  }
+
+  if ( bad ) {
+    bad_rows.add([row:nl,reason:badreason, rownum:rownum]);
   }
 
 }
@@ -150,8 +164,19 @@ while ((nl = r.readNext()) != null) {
 println("All done - processed ${so_count} so records. Bad count=${so_bad}, good=${so_good}");
 println("Stats: ${stats}");
 
+if ( bad_rows.size() > 0 ) {
+  println("file contained bad rows, dumping to ${args[0]}_BAD");
+  File badfile = new File("${args[0]}_BAD");
+  bad_rows.each { row ->
+    badfile << row.row
+    badfile << ",\"row ${row.rownum}/${rownum} - ${row.reason}\"\n"
+  }
+}
+
+println("All done processing for ${args[0]}");
+
 def present(v) {
-  if ( ( v != null ) && ( v.length() > 0 ) )
+  if ( ( v != null ) && ( v.trim().length() > 0 ) )
     return true
 
   return false
