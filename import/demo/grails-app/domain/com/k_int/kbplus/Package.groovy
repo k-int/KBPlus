@@ -2,6 +2,10 @@ package com.k_int.kbplus
 
 class Package {
 
-    static constraints = {
-    }
+  String identifier
+  String name
+  static hasMany = [tipps: TitleInstancePackagePlatform]
+
+  static constraints = {
+  }
 }
