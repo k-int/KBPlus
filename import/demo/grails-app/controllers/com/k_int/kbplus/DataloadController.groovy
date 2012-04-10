@@ -50,5 +50,28 @@ class DataloadController {
       }
       p.save()
     }
+
+    // Finally... tipps
+    mdb.tipps.find().sort(lastmod:1).each { tipp ->
+      def title = TitleInstance.findByImpId(tipp.titleid.toString())
+      def pkg = Package.findByImpId(tipp.pkgid.toString())
+      def platform = Platform.findByImpId(tipp.platformid.toString())
+
+      def dbtipp = TitleInstancePackagePlatform.findByPkgAndPlatformAndTitle(pkg,platform,title)
+      if ( dbtipp == null ) {
+        dbtipp = new TitleInstancePackagePlatform(pkg:pkg,
+                                                platform:platform,
+                                                title:title,
+                                                startDate:tipp.startDate,
+                                                startVolume:tipp.startVolume,
+                                                startIssue:tipp.startIssue,
+                                                endDate:tipp.endDate,
+                                                endVolume:tipp.endVolume,
+                                                endIssue:tipp.endIssue,
+                                                embargo:tipp.embargo,
+                                                coverageDepth:tipp.coverageDepth,
+                                                coverageNote:tipp.coverageNote).save()
+      }
+    }
   }
 }

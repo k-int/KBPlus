@@ -44,12 +44,36 @@
 					<thead>
 						<tr>
 						
+							<g:sortableColumn property="startDate" title="${message(code: 'titleInstancePackagePlatform.startDate.label', default: 'Start Date')}" />
+						
+							<g:sortableColumn property="startVolume" title="${message(code: 'titleInstancePackagePlatform.startVolume.label', default: 'Start Volume')}" />
+						
+							<g:sortableColumn property="startIssue" title="${message(code: 'titleInstancePackagePlatform.startIssue.label', default: 'Start Issue')}" />
+						
+							<g:sortableColumn property="endDate" title="${message(code: 'titleInstancePackagePlatform.endDate.label', default: 'End Date')}" />
+						
+							<g:sortableColumn property="endVolume" title="${message(code: 'titleInstancePackagePlatform.endVolume.label', default: 'End Volume')}" />
+						
+							<g:sortableColumn property="endIssue" title="${message(code: 'titleInstancePackagePlatform.endIssue.label', default: 'End Issue')}" />
+						
 							<th></th>
 						</tr>
 					</thead>
 					<tbody>
 					<g:each in="${titleInstancePackagePlatformInstanceList}" var="titleInstancePackagePlatformInstance">
 						<tr>
+						
+							<td>${fieldValue(bean: titleInstancePackagePlatformInstance, field: "startDate")}</td>
+						
+							<td>${fieldValue(bean: titleInstancePackagePlatformInstance, field: "startVolume")}</td>
+						
+							<td>${fieldValue(bean: titleInstancePackagePlatformInstance, field: "startIssue")}</td>
+						
+							<td>${fieldValue(bean: titleInstancePackagePlatformInstance, field: "endDate")}</td>
+						
+							<td>${fieldValue(bean: titleInstancePackagePlatformInstance, field: "endVolume")}</td>
+						
+							<td>${fieldValue(bean: titleInstancePackagePlatformInstance, field: "endIssue")}</td>
 						
 							<td class="link">
 								<g:link action="show" id="${titleInstancePackagePlatformInstance.id}" class="btn btn-small">Show &raquo;</g:link>
