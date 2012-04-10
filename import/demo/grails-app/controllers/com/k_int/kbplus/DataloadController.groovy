@@ -11,42 +11,44 @@ class DataloadController {
     def mdb = mongoService.getMongo().getDB('kbplus_ds_reconciliation')
 
     // Orgs
-    mdb.orgs.find().order(lastmod:1).each { org ->
+    mdb.orgs.find().sort(lastmod:1).each { org ->
       log.debug("update org ${org}");
-      def o = Org.findByImpId(org._id)
+      def o = Org.findByImpId(org._id.toString())
       if ( o == null ) {
-        o=new Org(impId:org._id, name:org.name);
+        o=new Org(impId:org._id.toString(), name:org.name);
+        o.save();
       }
     }
 
     // Platforms
-    mdb.platforms.find().order(lastmod:1).each { plat ->
+    mdb.platforms.find().sort(lastmod:1).each { plat ->
       log.debug("update platform ${plat}");
-      def p = Platform.findByImpId(plat._id) ?: new Platform(name:plat.name, impId:plat._id).save(flush:true)
+      def p = Platform.findByImpId(plat._id.toString()) ?: new Platform(name:plat.name, impId:plat._id.toString()).save()
     }
 
-    mdb.titles.find().order(lastmod:1).each { title ->
+    mdb.titles.find().sort(lastmod:1).each { title ->
       log.debug("update ${title}");
-      def t = TitleInstance.findByImpId(title._id)
+      def t = TitleInstance.findByImpId(title._id.toString())
       if ( t == null ) {
-        t = new TitleInstance(title:title.title, impId:title._id)
+        t = new TitleInstance(title:title.title, impId:title._id.toString(), ids:[])
         title.identifier?.each { id ->
-          t.ids.add(new TitleSID(namespace:id.type,identifier:id.value));
+          log.debug("Adding identifier to title: ${id.type}:${id.value}");
+          t.addToIds(new TitleSID(namespace:id.type,identifier:id.value));
         }
-        title.save(flush:true);
+        t.save();
       }
     }
 
-    mdb.pkgs.find().order(lastmod:1).each { pkg ->
+    mdb.pkgs.find().sort(lastmod:1).each { pkg ->
       log.debug("update package ${pkg}");
-      def p = Package.findByImpId(pkg._id)
+      def p = Package.findByImpId(pkg._id.toString())
       if ( p == null ) {
         p = new Package(identifier:pkg.identifier,
                         name:pkg.name,
-                        impId:pkg._id,
-                        contentProvider: pkg.contentProvider ? Org.findByImpId(pkg.contentProvider) : null );
+                        impId:pkg._id.toString(),
+                        contentProvider: pkg.contentProvider ? Org.findByImpId(pkg.contentProvider.toString()) : null );
       }
-      p.save(flush:true)
+      p.save()
     }
   }
 }

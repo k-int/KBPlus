@@ -4,7 +4,13 @@ class TitleInstance {
 
   String title
   String impId
-  static hasMany = [tipps: TitleInstancePackagePlatform, ids: TitleSID]
+
+  static mappedBy = [tipps: 'title', 
+                     ids: 'owner']
+
+  static hasMany = [tipps: TitleInstancePackagePlatform, 
+                    ids: TitleSID]
+
 
   static constraints = {
   }

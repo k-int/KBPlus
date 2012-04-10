@@ -7,6 +7,8 @@ class Package {
   String impId
   Org contentProvider
 
+  static mappedBy = [tipps: 'pkg']
+
   static hasMany = [tipps: TitleInstancePackagePlatform]
 
   static constraints = {
