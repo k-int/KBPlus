@@ -19,12 +19,29 @@
 
 </div>
 
+<div class="fieldcontain ${hasErrors(bean: titleInstanceInstance, field: 'impId', 'error')} ">
+	<label for="impId">
+		<g:message code="titleInstance.impId.label" default="Imp Id" />
+		
+	</label>
+	<g:textField name="impId" value="${titleInstanceInstance?.impId}"/>
+</div>
+
 <div class="fieldcontain ${hasErrors(bean: titleInstanceInstance, field: 'tipps', 'error')} ">
 	<label for="tipps">
 		<g:message code="titleInstance.tipps.label" default="Tipps" />
 		
 	</label>
-	<g:select name="tipps" from="${com.k_int.kbplus.TitleInstancePackagePlatform.list()}" multiple="multiple" optionKey="id" size="5" value="${titleInstanceInstance?.tipps*.id}" class="many-to-many"/>
+	
+<ul class="one-to-many">
+<g:each in="${titleInstanceInstance?.tipps?}" var="t">
+    <li><g:link controller="titleInstancePackagePlatform" action="show" id="${t.id}">${t?.encodeAsHTML()}</g:link></li>
+</g:each>
+<li class="add">
+<g:link controller="titleInstancePackagePlatform" action="create" params="['titleInstance.id': titleInstanceInstance?.id]">${message(code: 'default.add.label', args: [message(code: 'titleInstancePackagePlatform.label', default: 'TitleInstancePackagePlatform')])}</g:link>
+</li>
+</ul>
+
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: titleInstanceInstance, field: 'title', 'error')} ">

@@ -18,6 +18,10 @@ class TitleInstancePackagePlatform {
     title:TitleInstance
   ]
 
+  static mapping = {
+    coverageNote type: 'text'
+  }
+
   static constraints = {
     startDate(nullable:true, blank:true);
     startVolume(nullable:true, blank:true);

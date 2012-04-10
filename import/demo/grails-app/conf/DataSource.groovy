@@ -13,8 +13,22 @@ hibernate {
 environments {
     development {
         dataSource {
-            dbCreate = "create-drop" // one of 'create', 'create-drop', 'update', 'validate', ''
-            url = "jdbc:h2:mem:devDb;MVCC=TRUE"
+            dbCreate = "update"
+            driverClassName = "com.mysql.jdbc.Driver"
+            username = "k-int"
+            password = "k-int"
+            url = "jdbc:mysql://localhost/KBPlus?autoReconnect=true&amp;characterEncoding=utf8"
+            pooled = true
+            properties {
+                maxActive = -1
+                minEvictableIdleTimeMillis=1800000
+                timeBetweenEvictionRunsMillis=1800000
+                numTestsPerEvictionRun=3
+                testOnBorrow=true
+                testWhileIdle=true
+                testOnReturn=true
+                validationQuery="select 1"
+            }
         }
     }
     test {

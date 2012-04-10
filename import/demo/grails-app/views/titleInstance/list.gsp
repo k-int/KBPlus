@@ -44,6 +44,8 @@
 					<thead>
 						<tr>
 						
+							<g:sortableColumn property="impId" title="${message(code: 'titleInstance.impId.label', default: 'Imp Id')}" />
+						
 							<g:sortableColumn property="title" title="${message(code: 'titleInstance.title.label', default: 'Title')}" />
 						
 							<th></th>
@@ -52,6 +54,8 @@
 					<tbody>
 					<g:each in="${titleInstanceInstanceList}" var="titleInstanceInstance">
 						<tr>
+						
+							<td>${fieldValue(bean: titleInstanceInstance, field: "impId")}</td>
 						
 							<td>${fieldValue(bean: titleInstanceInstance, field: "title")}</td>
 						
