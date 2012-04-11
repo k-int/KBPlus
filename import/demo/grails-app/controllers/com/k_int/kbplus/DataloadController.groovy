@@ -13,9 +13,9 @@ class DataloadController {
     // Orgs
     mdb.orgs.find().sort(lastmod:1).each { org ->
       log.debug("update org ${org}");
-      def o = Org.findByImpId(org._id.toString())
+      def o = Organisation.findByImpId(org._id.toString())
       if ( o == null ) {
-        o=new Org(impId:org._id.toString(), name:org.name);
+        o=new Organisation(impId:org._id.toString(), name:org.name);
         o.save();
       }
     }
@@ -46,7 +46,7 @@ class DataloadController {
         p = new Package(identifier:pkg.identifier,
                         name:pkg.name,
                         impId:pkg._id.toString(),
-                        contentProvider: pkg.contentProvider ? Org.findByImpId(pkg.contentProvider.toString()) : null );
+                        contentProvider: pkg.contentProvider ? Organisation.findByImpId(pkg.contentProvider.toString()) : null );
       }
       p.save()
     }

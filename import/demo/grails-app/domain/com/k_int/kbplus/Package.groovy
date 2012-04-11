@@ -5,7 +5,7 @@ class Package {
   String identifier
   String name
   String impId
-  Org contentProvider
+  Organisation contentProvider
 
   static mappedBy = [tipps: 'pkg']
 
