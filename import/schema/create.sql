@@ -1,3 +1,17 @@
+#
+# Initial attempt at create .sql script for KB+ project.
+# Adopted the tbl_prefix naming convention Paul Needham mentioned, as it makes it easier to build queries
+# without recourse to lots of aliases in join clauses
+#
+# Changes
+# 
+# 04-Apr-2012 II  Created
+# 11-Apr-2012 II  Added <prefix>_imp_id varchar(36) columns to org,pkg,plat and so tables, to optimise import. Allows guid lookup.
+#
+
+
+
+
 create database kbplus default charset UTF8 default collate UTF8_BIN;
 grant all on kbplus.* to 'k-int'@'localhost';
 grant all on kbplus.* to 'k-int'@'localhost.localdomain';
@@ -18,10 +32,6 @@ drop table if exists document_organisation;
 drop table if exists document_package;
 drop table if exists document_subscription_offered;
 
-# Initial attempt at create .sql script for KB+ project.
-# Adopted the tbl_prefix naming convention Paul Needham mentioned, as it makes it easier to build queries
-# without recourse to lots of aliases in join clauses
-#
 
 #
 # Refdata category, currently only document type. Suggest using this style instead of enums in table
@@ -96,6 +106,7 @@ create table organisation (
   org_UKAMFIdP VARCHAR(255) NOT NULL,
   org_AthensID VARCHAR(255) NOT NULL,
   org_IPRange VARCHAR(255) NOT NULL,
+  org_imp_id VARCHAR(36),
   CONSTRAINT PRIMARY KEY (org_id),
   CONSTRAINT FOREIGN KEY (org_role) REFERENCES refdata_value
 );
@@ -104,6 +115,7 @@ create table package (
   pkg_id int NOT NULL auto_increment,
   pkg_org_id int NOT NULL,
   pkg_name VARCHAR(255),
+  pkg_imp_id VARCHAR(36),
   CONSTRAINT PRIMARY KEY (pkg_id),
   CONSTRAINT FOREIGN KEY (pkg_org_id) REFERENCES organisation
 );
@@ -131,6 +143,7 @@ create table platform (
   plat_url varchar(255),
   plat_type int,
   plat_admin int,  
+  plat_imp_id VARCHAR(36),
   CONSTRAINT PRIMARY KEY (plat_id),
   CONSTRAINT FOREIGN KEY (plat_type) REFERENCES refdata_value 
 );
@@ -142,6 +155,7 @@ create table subscription_offered (
   so_start int,
   so_end int,
   so_org_id_consortium int,
+  so_imp_id VARCHAR(36),
   CONSTRAINT PRIMARY KEY (so_id),
   CONSTRAINT FOREIGN KEY (so_org_id_provider) REFERENCES organisation,
   CONSTRAINT FOREIGN KEY (so_plat_id) REFERENCES platform,
