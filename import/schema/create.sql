@@ -114,19 +114,22 @@ create table license (lic_id bigint not null auto_increment,
   lic_type_rv_fk bigint, 
   primary key (lic_id));
 
-create table license_entitlement (le_id bigint not null auto_increment, 
+create table license_entitlement (
+  le_id bigint not null auto_increment, 
   le_version bigint not null, 
   le_owner_subscription_fk bigint, 
   le_status_rv_fk bigint, 
   primary key (le_id));
 
-create table org (org_id bigint not null auto_increment, 
+create table org (
+  org_id bigint not null auto_increment, 
   org_version bigint not null, 
   org_imp_id varchar(255) not null, 
   org_name varchar(255) not null, 
   primary key (org_id));
 
-create table org_role (or_id bigint not null auto_increment, 
+create table org_role (
+  or_id bigint not null auto_increment, 
   or_version bigint not null, 
   or_lic_fk bigint, 
   or_org_fk bigint not null, 
@@ -135,7 +138,8 @@ create table org_role (or_id bigint not null auto_increment,
   or_sub_fk bigint, 
   primary key (or_id));
 
-create table package (pkg_id bigint not null auto_increment, 
+create table package (
+  pkg_id bigint not null auto_increment, 
   pkg_version bigint not null, 
   pkg_identifier varchar(255) not null, 
   pkg_imp_id varchar(255) not null, 
@@ -144,7 +148,8 @@ create table package (pkg_id bigint not null auto_increment,
   pkg_type_rv_fk bigint, 
   primary key (pkg_id));
 
-create table platform (plat_id bigint not null auto_increment, 
+create table platform (
+  plat_id bigint not null auto_increment, 
   plat_version bigint not null, 
   plat_imp_id varchar(255) not null, 
   plat_name varchar(255) not null, 
