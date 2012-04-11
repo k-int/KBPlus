@@ -200,11 +200,14 @@ def lookupOrCreateOrg(Map params = [:]) {
 
 def lookupOrCreatePackage(Map params=[:]) {
   // println("lookupOrCreatePackage(${params})");
-  def pkg = params.db.pkgs.findOne(identifier:params.identifier)
+  def norm_identifier = params.identifier.replaceAll("\\W", "");
+
+  def pkg = params.db.pkgs.findOne(normIdentifier:norm_identifier)
   if ( pkg == null ) {
     pkg = [
       _id:new org.bson.types.ObjectId(),
       identifier:params.identifier,
+      normIdentifier:norm_identifier,
       name:params.name,
       lastmod:System.currentTimeMillis()
     ]
