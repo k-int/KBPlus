@@ -53,6 +53,7 @@ class DataloadController {
 
     // Finally... tipps
     mdb.tipps.find().sort(lastmod:1).each { tipp ->
+      log.debug("update ${tipp}");
       def title = TitleInstance.findByImpId(tipp.titleid.toString())
       def pkg = Package.findByImpId(tipp.pkgid.toString())
       def platform = Platform.findByImpId(tipp.platformid.toString())

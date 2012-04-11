@@ -43,9 +43,9 @@ String [] so_agreement_term_start_yr_line = r.readNext()
 String [] so_agreement_term_end_yr_line = r.readNext()
 String [] so_consortium_line = r.readNext()
 String [] so_num_prop_id_cols_line = r.readNext()
-int num_prop_id_cols = Integer.parseInt(so_num_prop_id_cols_line[1] ?: 0);
+int num_prop_id_cols = Integer.parseInt(so_num_prop_id_cols_line[1] ?: "0");
 String [] so_num_platforms_listed_line = r.readNext()
-int num_platforms_listed = Integer.parseInt(so_num_platforms_listed_line[1] ?: 0);
+int num_platforms_listed = Integer.parseInt(so_num_platforms_listed_line[1] ?: "0");
 String [] so_header_line = r.readNext()
 
 println("Read column headings: ${so_header_line}");
