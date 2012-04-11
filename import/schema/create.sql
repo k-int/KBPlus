@@ -31,6 +31,8 @@ drop table if exists package_content_platform;
 drop table if exists document_organisation;
 drop table if exists document_package;
 drop table if exists document_subscription_offered;
+drop table if exists title_instance;
+drop table if exists title_instance_package_platform;
 
 
 #
@@ -198,5 +200,32 @@ create table document_subscription_offered (
   dso_so_id int not null,
   CONSTRAINT FOREIGN KEY (dso_doc_id) REFERENCES document,
   CONSTRAINT FOREIGN KEY (dso_so_id) REFERENCES subscription_offered
+);
+
+create table title_instance (
+  ti_id int NOT NULL auto_increment,
+  ti_title varchar(255),
+  ti_imp_id VARCHAR(36),
+  CONSTRAINT PRIMARY KEY (ti_id)
+);
+
+create table title_instance_package_platform (
+  tipp_title_id int NOT NULL,
+  tipp_pkg_id int NOT NULL,
+  tipp_plat_id int NOT NULL,
+  tipp_imp_id VARCHAR(36),
+  tipp_start_date VARCHAR(128),
+  tipp_start_volume VARCHAR(128),
+  tipp_start_issue VARCHAR(128),
+  tipp_end_date VARCHAR(128),
+  tipp_end_volume VARCHAR(128),
+  tipp_end_issue VARCHAR(128),
+  tipp_embargo VARCHAR(128),
+  tipp_coverage_depth VARCHAR(128),
+  tipp_coverage_note VARCHAR(128),
+  CONSTRAINT PRIMARY KEY (tipp_title_id,ti_pkg_id,ti_plat_id),
+  CONSTRAINT FOREIGN KEY (tipp_title_id) references title_instance,
+  CONSTRAINT FOREIGN KEY (tipp_plat_id) references platform,
+  CONSTRAINT FOREIGN KEY (tipp_pkg_id) references package
 );
 
