@@ -4,8 +4,8 @@ class Platform {
 
   String impId
   String name
-  ReferenceValue type
-  ReferenceValue status
+  RefdataValue type
+  RefdataValue status
 
 
   static mappedBy = [tipps: 'platform']

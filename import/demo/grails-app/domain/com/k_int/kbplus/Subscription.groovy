@@ -2,8 +2,8 @@ package com.k_int.kbplus
 
 class Subscription {
 
-  ReferenceValue status
-  ReferenceValue type
+  RefdataValue status
+  RefdataValue type
 
   License owner
 

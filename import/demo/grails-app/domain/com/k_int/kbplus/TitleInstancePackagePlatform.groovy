@@ -12,8 +12,8 @@ class TitleInstancePackagePlatform {
   String coverageDepth
   String coverageNote
   String impId
-  ReferenceValue status
-  ReferenceValue option
+  RefdataValue status
+  RefdataValue option
 
 
   static belongsTo = [
@@ -25,9 +25,9 @@ class TitleInstancePackagePlatform {
   static mapping = {
                id column:'tipp_id'
           version column:'tipp_version'
-              pkg column:'tipp_pkg_fk',index:'tipp_pkg_fk_idx'
-         platform column:'tipp_plat_fk',index:'tipp_plat_fk_idx'
-            title column:'tipp_ti_fk',index:'tipp_ti_fk_idx'
+              pkg column:'tipp_pkg_fk'
+         platform column:'tipp_plat_fk'
+            title column:'tipp_ti_fk'
         startDate column:'tipp_start_date'
       startVolume column:'tipp_start_volume'
        startIssue column:'tipp_start_issue'

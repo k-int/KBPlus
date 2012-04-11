@@ -5,8 +5,8 @@ class Package {
   String identifier
   String name
   String impId
-  ReferenceValue packageType
-  ReferenceValue packageStatus
+  RefdataValue packageType
+  RefdataValue packageStatus
 
   static mappedBy = [tipps: 'pkg', orgs: 'pkg']
   static hasMany = [tipps: TitleInstancePackagePlatform, orgs: OrgRole]

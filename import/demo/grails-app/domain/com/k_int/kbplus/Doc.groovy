@@ -2,8 +2,8 @@ package com.k_int.kbplus
 
 class Doc {
 
-  ReferenceValue status
-  ReferenceValue type
+  RefdataValue status
+  RefdataValue type
 
   static mapping = {
                 id column:'doc_id'

@@ -2,8 +2,8 @@ package com.k_int.kbplus
 
 class License {
 
-  ReferenceValue status
-  ReferenceValue type
+  RefdataValue status
+  RefdataValue type
 
   static hasMany = [
     subscriptions:Subscription

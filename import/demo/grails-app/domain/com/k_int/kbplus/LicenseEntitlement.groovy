@@ -2,7 +2,7 @@ package com.k_int.kbplus
 
 class LicenseEntitlement {
 
-  ReferenceValue status
+  RefdataValue status
 
   Subscription owner
 
