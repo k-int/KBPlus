@@ -13,6 +13,7 @@ class TitleInstancePackagePlatform {
   String coverageNote
   String impId
   ReferenceValue status
+  ReferenceValue option
 
 
   static belongsTo = [
@@ -38,6 +39,7 @@ class TitleInstancePackagePlatform {
      coverageNote column:'tipp_coverage_note',type: 'text'
             impId column:'tipp_imp_id'
            status column:'tipp_status_rv_fk'
+           option column:'tipp_option_rv_fk'
   }
 
   static constraints = {
@@ -52,5 +54,6 @@ class TitleInstancePackagePlatform {
     coverageNote(nullable:true, blank:true);
     impId(nullable:true, blank:true);
     status(nullable:true, blank:false);
+    option(nullable:true, blank:false);
   }
 }

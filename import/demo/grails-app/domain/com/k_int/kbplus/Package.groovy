@@ -5,13 +5,11 @@ class Package {
   String identifier
   String name
   String impId
-  OrgRole contentProvider
   ReferenceValue packageType
   ReferenceValue packageStatus
 
-  static mappedBy = [tipps: 'pkg']
-
-  static hasMany = [tipps: TitleInstancePackagePlatform]
+  static mappedBy = [tipps: 'pkg', orgs: 'pkg']
+  static hasMany = [tipps: TitleInstancePackagePlatform, orgs: OrgRole]
 
   static mapping = {
                    id column:'pkg_id'
@@ -25,7 +23,6 @@ class Package {
   }
 
   static constraints = {
-    contentProvider(nullable:true, blank:false)
         packageType(nullable:true, blank:false)
       packageStatus(nullable:true, blank:false)
   }
