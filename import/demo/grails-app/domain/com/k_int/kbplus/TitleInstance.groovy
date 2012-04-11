@@ -4,14 +4,23 @@ class TitleInstance {
 
   String title
   String impId
+  RefdataValue status
+  RefdataValue type
 
-  static mappedBy = [tipps: 'title', 
-                     ids: 'owner']
+  static mappedBy = [tipps: 'title', ids: 'owner']
+  static hasMany = [tipps: TitleInstancePackagePlatform, ids: TitleSID]
 
-  static hasMany = [tipps: TitleInstancePackagePlatform, 
-                    ids: TitleSID]
 
+  static mapping = {
+         id column:'ti_id'
+    version column:'ti_version'
+      impId column:'ti_imp_id'
+     status column:'ti_status_rv_fk'
+       type column:'ti_type_rv_fk'
+  }
 
   static constraints = {
+    status(nullable:true, blank:false);
+    type(nullable:true, blank:false);
   }
 }
