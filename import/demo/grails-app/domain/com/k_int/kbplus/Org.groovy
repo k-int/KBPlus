@@ -1,6 +1,6 @@
 package com.k_int.kbplus
 
-class Organisation {
+class Org {
 
   String name
   String impId
