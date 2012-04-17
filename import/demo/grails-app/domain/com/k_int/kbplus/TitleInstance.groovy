@@ -14,6 +14,7 @@ class TitleInstance {
 
   static mapping = {
          id column:'ti_id'
+      title column:'ti_title'
     version column:'ti_version'
       impId column:'ti_imp_id'
      status column:'ti_status_rv_fk'
