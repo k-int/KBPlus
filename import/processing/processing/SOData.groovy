@@ -88,6 +88,7 @@ while ((nl = r.readNext()) != null) {
     so_count++;
     so_good++;
     def target_identifiers = [];
+    def tipp_private_identifiers = [];
 
     def publisher = null
     if ( present(nl[13]) ) {
@@ -106,7 +107,7 @@ while ((nl = r.readNext()) != null) {
       target_identifiers.add([type:'DOI', value:nl[14]])
 
     for ( int i=0; i<num_prop_id_cols; i++ ) {
-      target_identifiers.add([type:'EXTERNAL', value:nl[15+i]])
+      tipp_private_identifiers.add([type:'EXTERNAL', value:nl[15+i]])
     }
 
     def title = lookupOrCreateTitle(title:nl[0],
@@ -132,6 +133,7 @@ while ((nl = r.readNext()) != null) {
           tipp.embargo = nl[10]
           tipp.coverageDepth = nl[11]
           tipp.coverageNote = nl[12]
+          tipp.identifiers = tipp_private_identifiers
           db.tipps.save(tipp)
 
         }

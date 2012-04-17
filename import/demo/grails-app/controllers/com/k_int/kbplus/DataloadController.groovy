@@ -82,7 +82,8 @@ class DataloadController {
           def canonical_identifier = lookupOrCreateCanonicalIdentifier(tippid.ns, tippid.value);
           tipp.ids.add(new IdentifierOccurrence(identifier:canonical_identifier));
         }
-        dbtipp.save(dbtipp);
+
+        dbtipp.save();
       }
     }
 
@@ -91,6 +92,7 @@ class DataloadController {
 
   def lookupOrCreateCanonicalIdentifier(ns, value) {
     log.debug("lookupOrCreateCanonicalIdentifier(${ns},${value})");
-    Identifier.findByNsAndValue(ns,value) ?: new Identifier(ns:ns, value:value).save();
+    def namespace = IdentifierNamespace.findByNs(ns) ?: new IdentifierNamespace(ns:ns).save();
+    Identifier.findByNsAndValue(namespace,value) ?: new Identifier(ns:namespace, value:value).save();
   }
 }
