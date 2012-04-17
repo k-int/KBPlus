@@ -60,7 +60,7 @@
             <dt><g:message code="package.tipps.label" default="Occurences of this package againsts titles & platforms" /></dt>
             
               <g:each in="${packageInstance.tipps}" var="t">
-              <dd><g:link controller="titleInstancePackagePlatform" action="show" id="${t.id}">${t?.title?.title?.encodeAsHTML()} / ${t?.pkg?.name?.encodeAsHTML()}</g:link></dd>
+              <dd><g:link controller="titleInstancePackagePlatform" action="show" id="${t.id}">${t?.title?.title?.encodeAsHTML()} / ${t?.platform?.name?.encodeAsHTML()}</g:link></dd>
               </g:each>
             
           </g:if>

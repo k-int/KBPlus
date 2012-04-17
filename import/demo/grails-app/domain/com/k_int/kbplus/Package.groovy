@@ -20,6 +20,8 @@ class Package {
       contentProvider column:'pkg_or_fk'
           packageType column:'pkg_type_rv_fk'
         packageStatus column:'pkg_status_rv_fk'
+                tipps sort:'title.title', order: 'asc'
+//                 orgs sort:'org.name', order: 'asc'
   }
 
   static constraints = {

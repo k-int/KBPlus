@@ -3,7 +3,7 @@ package com.k_int.kbplus
 class OrgRole {
 
   static belongsTo = [
-    org:Org,
+    org:Org
   ]
 
   RefdataValue roleType
