@@ -91,6 +91,6 @@ class DataloadController {
 
   def lookupOrCreateCanonicalIdentifier(ns, value) {
     log.debug("lookupOrCreateCanonicalIdentifier(${ns},${value})");
-    Identifier.findByNsAndValue(ns,value) ?: new Identifieir(ns:ns, value:value).save();
+    Identifier.findByNsAndValue(ns,value) ?: new Identifier(ns:ns, value:value).save();
   }
 }
