@@ -9,7 +9,6 @@ class IdentifierOccurrence {
     tipp:TitleInstancePackagePlatform
   ]
 
-  static belongsTo(
   static mapping = {
             id column:'io_id'
     identifier column:'io_canonical_id'
