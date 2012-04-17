@@ -3,9 +3,13 @@ package com.k_int.kbplus
 class IdentifierOccurrence {
 
   Identifier identifier
-  TitleInstance ti
-  TitleInstancePackagePlatform tipp
 
+  static belongsTo = [
+    ti:TitleInstance,
+    tipp:TitleInstancePackagePlatform
+  ]
+
+  static belongsTo(
   static mapping = {
             id column:'io_id'
     identifier column:'io_canonical_id'

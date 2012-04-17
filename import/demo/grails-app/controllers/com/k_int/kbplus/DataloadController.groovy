@@ -33,7 +33,8 @@ class DataloadController {
         t = new TitleInstance(title:title.title, impId:title._id.toString(), ids:[])
         title.identifier?.each { id ->
           log.debug("--- TODO ---- new identifier framework... Adding identifier to title: ${id.type}:${id.value}");
-          addCanonicalIdentifier(id.type,id.value);
+          def canonical_identifier = lookupOrCreateCanonicalIdentifier(id.type,id.value);
+          t.ids.add(new IdentifierOccurrence(identifier:canonical_identifier));
           // t.addToIds(new TitleSID(namespace:id.type,identifier:id.value));
         }
         t.save();
@@ -73,12 +74,23 @@ class DataloadController {
                                                 embargo:tipp.embargo,
                                                 coverageDepth:tipp.coverageDepth,
                                                 coverageNote:tipp.coverageNote).save()
+
+        log.debug("TODO: Add tipp identifiers");
+
+        tipp.identifiers.each { tippid ->
+          log.debug("lookup and add tippid ${tippid}");
+          def canonical_identifier = lookupOrCreateCanonicalIdentifier(tippid.ns, tippid.value);
+          tipp.ids.add(new InstanceOccurrence(identifier:canonical_identifier));
+        }
+        dbtipp.save(dbtipp);
       }
     }
+
+
   }
 
-  def addCanonicalIdentifier(ns, value) {
-    log.debug("addCanonicalIdentifier(${ns},${value})");
-    // namespace:id.type,identifier:id.value) {
+  def lookupOrCreateCanonicalIdentifier(ns, value) {
+    log.debug("lookupOrCreateCanonicalIdentifier(${ns},${value})");
+    Identifier.findByNsAndValue(ns,value) ?: new Identifieir(ns:ns, value:value).save();
   }
 }
