@@ -1,16 +1,16 @@
 package com.k_int.kbplus
 
-class LicenseEntitlement {
+class IssueEntitlement {
 
   RefdataValue status
 
   Subscription owner
 
   static mapping = {
-                id column:'le_id'
-           version column:'le_version'
-            status column:'le_status_rv_fk'
-             owner column:'le_owner_subscription_fk'
+                id column:'ie_id'
+           version column:'ie_version'
+            status column:'ie_status_rv_fk'
+             owner column:'ie_owner_subscription_fk'
   }
 
   static constraints = {
