@@ -15,7 +15,7 @@ class TitleInstancePackagePlatform {
   RefdataValue status
   RefdataValue option
 
-  static mappedBy = [ids: 'ti']
+  static mappedBy = [ids: 'tipp']
   static hasMany = [ids: IdentifierOccurrence]
 
 

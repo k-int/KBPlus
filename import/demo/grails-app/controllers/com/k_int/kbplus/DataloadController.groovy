@@ -32,8 +32,9 @@ class DataloadController {
       if ( t == null ) {
         t = new TitleInstance(title:title.title, impId:title._id.toString(), ids:[])
         title.identifier?.each { id ->
-          log.debug("Adding identifier to title: ${id.type}:${id.value}");
-          t.addToIds(new TitleSID(namespace:id.type,identifier:id.value));
+          log.debug("--- TODO ---- new identifier framework... Adding identifier to title: ${id.type}:${id.value}");
+          addCanonicalIdentifier(id.type,id.value);
+          // t.addToIds(new TitleSID(namespace:id.type,identifier:id.value));
         }
         t.save();
       }
@@ -74,5 +75,10 @@ class DataloadController {
                                                 coverageNote:tipp.coverageNote).save()
       }
     }
+  }
+
+  def addCanonicalIdentifier(ns, value) {
+    log.debug("addCanonicalIdentifier(${ns},${value})");
+    // namespace:id.type,identifier:id.value) {
   }
 }
