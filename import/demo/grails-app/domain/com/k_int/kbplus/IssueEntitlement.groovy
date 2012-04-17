@@ -4,13 +4,14 @@ class IssueEntitlement {
 
   RefdataValue status
 
-  Subscription owner
+  static belongsTo = [subscription: Subscription,tipp: TitleInstancePackagePlatform]
 
   static mapping = {
                 id column:'ie_id'
            version column:'ie_version'
             status column:'ie_status_rv_fk'
-             owner column:'ie_owner_subscription_fk'
+      subscription column:'ie_subscription_fk'
+              tipp column:'ie_tipp_fk'
   }
 
   static constraints = {
