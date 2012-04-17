@@ -80,7 +80,7 @@ class DataloadController {
         tipp.identifiers.each { tippid ->
           log.debug("lookup and add tippid ${tippid}");
           def canonical_identifier = lookupOrCreateCanonicalIdentifier(tippid.ns, tippid.value);
-          tipp.ids.add(new InstanceOccurrence(identifier:canonical_identifier));
+          tipp.ids.add(new IdentifierOccurrence(identifier:canonical_identifier));
         }
         dbtipp.save(dbtipp);
       }
