@@ -16,6 +16,7 @@ class IssueEntitlement {
 
   static constraints = {
     status(nullable:true, blank:false)
-    owner(nullable:true, blank:false)
+    subscription(nullable:true, blank:false)
+    tipp(nullable:true, blank:false)
   }
 }
