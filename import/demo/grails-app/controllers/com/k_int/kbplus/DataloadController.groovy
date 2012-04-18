@@ -33,7 +33,7 @@ class DataloadController {
         t = new TitleInstance(title:title.title, impId:title._id.toString(), ids:[])
         title.identifier?.each { id ->
           def canonical_identifier = lookupOrCreateCanonicalIdentifier(id.type,id.value);
-          t.ids.add(new IdentifierOccurrence(identifier:canonical_identifier));
+          t.ids.add(new IdentifierOccurrence(identifier:canonical_identifier, ti:t));
           // t.addToIds(new TitleSID(namespace:id.type,identifier:id.value));
         }
         t.save();
@@ -79,7 +79,7 @@ class DataloadController {
           tipp.identifiers.each { tippid ->
             log.debug("lookup and add tippid ${tippid}");
             def canonical_identifier = lookupOrCreateCanonicalIdentifier(tippid.type, tippid.value);
-            dbtipp.ids.add(new IdentifierOccurrence(identifier:canonical_identifier));
+            dbtipp.ids.add(new IdentifierOccurrence(identifier:canonical_identifier, tipp:dbtipp));
           }
         }
 
