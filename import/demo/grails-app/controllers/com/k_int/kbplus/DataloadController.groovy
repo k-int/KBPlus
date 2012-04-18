@@ -32,7 +32,6 @@ class DataloadController {
       if ( t == null ) {
         t = new TitleInstance(title:title.title, impId:title._id.toString(), ids:[])
         title.identifier?.each { id ->
-          log.debug("--- TODO ---- new identifier framework... Adding identifier to title: ${id.type}:${id.value}");
           def canonical_identifier = lookupOrCreateCanonicalIdentifier(id.type,id.value);
           t.ids.add(new IdentifierOccurrence(identifier:canonical_identifier));
           // t.addToIds(new TitleSID(namespace:id.type,identifier:id.value));
@@ -74,8 +73,6 @@ class DataloadController {
                                                 embargo:tipp.embargo,
                                                 coverageDepth:tipp.coverageDepth,
                                                 coverageNote:tipp.coverageNote).save()
-
-        log.debug("TODO: Add tipp identifiers");
 
         tipp.identifiers.each { tippid ->
           log.debug("lookup and add tippid ${tippid}");

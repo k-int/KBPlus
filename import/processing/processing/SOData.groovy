@@ -102,7 +102,7 @@ while ((nl = r.readNext()) != null) {
     if ( present(nl[2]) ) 
       target_identifiers.add([type:'eISSN', value:nl[2]])
     if ( present(nl[9]) ) 
-      target_identifiers.add([type:'KBART', value:nl[9]])
+      tipp_private_identifiers.add([type:'KBART', value:nl[9]])
     if ( present(nl[14]) ) 
       target_identifiers.add([type:'DOI', value:nl[14]])
 
@@ -130,6 +130,7 @@ while ((nl = r.readNext()) != null) {
           tipp.endDate = nl[6]
           tipp.endVolume = nl[7]
           tipp.endIssue = nl[8]
+          tipp.title_id = nl[9]
           tipp.embargo = nl[10]
           tipp.coverageDepth = nl[11]
           tipp.coverageNote = nl[12]
