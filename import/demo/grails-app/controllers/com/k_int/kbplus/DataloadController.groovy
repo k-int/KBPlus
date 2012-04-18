@@ -72,11 +72,12 @@ class DataloadController {
                                                 endIssue:tipp.endIssue,
                                                 embargo:tipp.embargo,
                                                 coverageDepth:tipp.coverageDepth,
-                                                coverageNote:tipp.coverageNote).save()
+                                                coverageNote:tipp.coverageNote,
+                                                ids:[]).save()
 
         tipp.identifiers.each { tippid ->
           log.debug("lookup and add tippid ${tippid}");
-          def canonical_identifier = lookupOrCreateCanonicalIdentifier(tippid.ns, tippid.value);
+          def canonical_identifier = lookupOrCreateCanonicalIdentifier(tippid.type, tippid.value);
           tipp.ids.add(new IdentifierOccurrence(identifier:canonical_identifier));
         }
 
