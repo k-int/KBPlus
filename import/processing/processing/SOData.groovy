@@ -8,8 +8,16 @@
 
 import org.apache.log4j.*
 import au.com.bytecode.opencsv.CSVReader
+import java.text.SimpleDateFormat
+
 
 def starttime = System.currentTimeMillis();
+def possible_date_formats = [
+  new SimpleDateFormat('dd/MM/yy'),
+  new SimpleDateFormat('yyyy/MM'),
+  new SimpleDateFormat('yyyy')
+];
+
 
 // Setup mongo
 def options = new com.mongodb.MongoOptions()
@@ -124,10 +132,12 @@ while ((nl = r.readNext()) != null) {
         // Find tipp
         if ( title._id && pkg._id && platform._id ) {
           def tipp = lookupOrCreateTipp(titleid:title._id, pkgid:pkg._id, platformid:platform._id, db:db, stats:stats)
-          tipp.startDate = nl[3]
+          tipp.startDateString = nl[3]
+          tipp.startDate = parseDate(nl[3],possible_date_formats);
           tipp.startVolume = nl[4]
           tipp.startIssue = nl[5]
-          tipp.endDate = nl[6]
+          tipp.endDateString = nl[6]
+          tipp.endDate = parseDate(nl[6],possible_date_formats);
           tipp.endVolume = nl[7]
           tipp.endIssue = nl[8]
           tipp.title_id = nl[9]
@@ -312,4 +322,16 @@ def inc(countername, statsmap) {
   else {
     statsmap[countername]++
   }
+}
+
+def parseDate(datestr, possible_formats) {
+  def parsed_date = null;
+  for(i = possible_formats.iterator(); ( i.hasNext() && ( parsed_date == null ) ); ) {
+    try {
+      parsed_date = date_parser.parse(datestr);
+    }
+    catch ( Exception e ) {
+    }
+  }
+  parsed_date
 }
