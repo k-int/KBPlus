@@ -1,6 +1,8 @@
 #!/bin/bash
 
 
+echo filename,num_packages_created,titles_matched_by_identifier,tipps_created,titles_matched_by_title,num_bad_rows > so_stats.csv
+
 echo Clean up old db
 mongo <<!!!
 use kbplus_ds_reconciliation

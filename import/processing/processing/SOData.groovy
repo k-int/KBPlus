@@ -177,6 +177,10 @@ while ((nl = r.readNext()) != null) {
 println("All done - processed ${so_count} so records. Bad count=${so_bad}, good=${so_good}");
 println("Stats: ${stats}");
 
+def statsfile = new File("so_stats.csv");
+statsfile << "${args[0]},${stats.pkgs_created},${stats.titles_matched_by_identifier},${stats.tipp_created},${stats.titles_matched_by_title},${bad_rows.size()}\n"
+
+
 if ( bad_rows.size() > 0 ) {
   println("file contained bad rows, dumping to ${args[0]}_BAD");
   File badfile = new File("${args[0]}_BAD");
@@ -328,7 +332,7 @@ def parseDate(datestr, possible_formats) {
   def parsed_date = null;
   for(i = possible_formats.iterator(); ( i.hasNext() && ( parsed_date == null ) ); ) {
     try {
-      parsed_date = date_parser.parse(datestr);
+      parsed_date = i.next().parse(datestr);
     }
     catch ( Exception e ) {
     }
