@@ -1,0 +1,585 @@
+institutional_name,ringold_id,ingenta_id,jc_id,ip_range,ukfamf_idp,athens_id,sector_name
+Aberdeen College,11918,NULL,1,194.82.236.* - 194.82.239.*; 195.194.126.* - 195.194.127.*; 195.194.136.* - 195.194.139.*;,Students: https://idp.abcolstudents.ac.uk/shibboleth; Staff: https://idp.abcol.ac.uk/shibboleth,NULL,Further Education
+Abingdon and Witney College,11919,NULL,2,NULL,NULL,7374652,Further Education
+Accrington and Rossendale College,6977,NULL,3,193.60.223.193 - 206;,https://idp.accross.ac.uk/shibboleth; Test A/C: Yes eduPersonTagetedID,NULL,Further Education
+Alton College,11921,NULL,5,212.219.142.160-175; IP authentication and referrer url through Moodle,NULL,NULL,Further Education
+Amersham & Wycombe College,11922,NULL,6,212.219.92.98 (255.255.255.224),NULL,NULL,Further Education
+Angus College,9381,NULL,8,194.83.57.69,https://idp.angus.ac.uk/idp/shibboleth,NULL,Further Education
+Anniesland College,9567,NULL,9,"195.194.214.233, 195.194.215.206",https://idp.anniesland.ac.uk/openathens,3448933,Further Education
+Aquinas College,7692,NULL,33,212.219.123.1-254,https://idp.aquinas.ac.uk/shibboleth,NULL,Further Education
+Ashton-under-Lyne Sixth Form College,11925,NULL,34,212.219.47.2,https://srvshibboleth.asfc.ac.uk/shibboleth,NULL,Further Education
+Askham Bryan College,12185,NULL,35,194.81.50.0 - 255; 194.81.51.0 - 255,https://idp.askham-bryan.ac.uk/shibboleth,2699081,Further Education
+Aylesbury College,11926,NULL,36,212.219.117.16 - 212.219.117.31,NULL,NULL,Further Education
+Ayr College,11927,NULL,37,212.219.180.12,https://idp.ayrcoll.ac.uk/entity,6714808,Further Education
+Banff & Buchan College of FE,12004,NULL,38,212.219.198.*,NULL,NULL,Further Education
+Barking & Dagenham College,11344,NULL,39,ServerIP: 212.219.113.144; IP: 212.219.113.128 - 212.219.113.159 (subnet mask: 255.255.255.224/27); 212.219.190.128 - 212.219.190.135 (subnet mask: 255.255.255.248/29);,https://idp.barkingcollege.ac.uk; Test Account: Yes; eduPersonTargetedID,NULL,Further Education
+Barnet College,4893,NULL,40,194.82.200.1 - 194.82.207.255,https://idp.barnet.ac.uk/idp/shibboleth,NULL,Further Education
+Barnfield College,12084,NULL,41,212.219.188.210-223; 212.219.74.241-254,NULL,NULL,Further Education
+Barnsley College,1521,NULL,42,195.195.132.253,https://idp.barnsley.ac.uk/openathens,1714264,Further Education
+Barony College,11988,NULL,43,212.219.173.0-212.219.173.255,NULL,NULL,Further Education
+Barton Peveril College,11345,NULL,46,212.219.11.0-31,https://idp.barton.ac.uk/openathens,2558069,Further Education
+Basingstoke College of Technology,11931,NULL,47,194.83.68.224 - 254,https://idp.bcot.ac.uk/entity,4356824,Further Education
+Bedford College,1576,NULL,48,195.195.234.192 - 255,https://idp.bedford.ac.uk/shibboleth,3620153,Further Education
+Belfast Metropolitan College,1607,NULL,49,212.219.92.180 - 212.219.92.192; EzProxy: Yes,https://ukamf.belfastmet.ac.uk/shibboleth,NULL,Further Education
+Berkshire College of Agriculture,11346,NULL,50,NULL,NULL,NULL,Further Education
+Bexhill College,11940,NULL,51,212.219.142.1; Proxy 212.219.142.4;,NULL,NULL,Further Education
+Bexley College,11938,NULL,52,195.194.72.*; 195.194.73.*; 195.194.59.*,NULL,1787232,Further Education
+Bicton College,11347,NULL,53,195.194.74.82 - 195.194.74.94,NULL,NULL,Further Education
+Bilborough College,11348,NULL,54,212.219.189.64 - 95,https://idp.bilborough.ac.uk/openathens,2703246,Further Education
+Birkenhead Sixth Form College,12122,NULL,55,212.219.189.48-63,https://sso.bsfc.ac.uk/idp/shibboleth,NULL,Further Education
+Birmingham Metropolitan College,7751,NULL,410,212.219.106.152; 212.219.106.179; 212.219.106.50; 212.219.106.50-150; 212.219.106.61; 212.219.106.83; 212.219.40.2; ,NULL,1852663,Further Education
+Bishop Auckland College,11947,NULL,56,212.219.119.208-223,NULL,NULL,Further Education
+Bishop Burton College,1692,NULL,57,195.195.244.214,https://idp.bishopb-college.ac.uk/shibboleth; OpenAthens: UK000777,569709,Further Education
+Blackburn College,11948,NULL,58,193.61.108.5: 193.61.108.15; 193.61.109.15; 194.82.37.40; 194.82.37.49; 194.82.37.50; 194.82.36.0-39.255; 193.61.108.0-255; 193.61.109.0-255.,https://idp.blackburn.ac.uk,NULL,Further Education
+Blackpool and The Fylde College,1753,blackfylde,59,193.63.162.252,https://shib.blackpool.ac.uk/shibboleth,NULL,Further Education
+Blackpool Sixth Form College,11949,NULL,60,195.194.74.227,https://idp.blackpoolsixth.ac.uk/shibboleth,NULL,Further Education
+Bolton College,11950,NULL,61,ServerIP: 212.219.190.87; TestAcc: Yes; eduPersonTargetedID; IPRanges: Man Road: 10.3.0.0/10 (Admin) 10.2.0.0/20 (Academic); Deane & Derby: 10.3.16.0/20; Horwich: 10.3.32.0/20; New Bury: 10.3.48.0/20; Westhoughton: 10.3.64.0/20; Brownlow Fold: 10.3.80.0/20; Farnworth; 10.3.96.0/20,https://idp.boltoncc.ac.uk/shibboleth,NULL,Further Education
+Bolton Sixth Form College,11951,NULL,62,212.219.142.144/28,https://shibboleth.bolton-sfc.ac.uk/idp,NULL,Further Education
+Borders College,12005,NULL,63,195.195.234.128-191,NULL,NULL,Further Education
+Boston College,1808,NULL,64,195 194 75 217; 195 194 75 218,NULL,NULL,Further Education
+Bournemouth & Poole College,11350,NULL,65,195.195.56.3; 195.195.56.101,https://idp.bpc.ac.uk/idp/shibboleth,1790552,Further Education
+Bournville College,11351,NULL,66,212.219.142.200-201,NULL,NULL,Further Education
+Bracknell and Wokingham College,11612,NULL,67,195.195.244.161,NULL,NULL,Further Education
+Bradford College,1904,NULL,68,195.195.20.x; 195.195.20.199; 195.195.20.193, https://shibboleth.bradfordcollege.ac.uk/idp/shibboleth  STAFF@bradfordcollege.ac.uk; STUDENT@bradfordcollege.ac.uk; MEMBER@bradfordcollege.ac.uk,NULL,Further Education
+Bridgend College,1935,NULL,70,194.82.220.9-24,https://idp.bridgend.ac.uk/shibboleth,3475426,Further Education
+Bridgwater College,1942,NULL,71,212.219.59.241 - 254; 212.219.91.209 - 230,https://idp.bridgwater.ac.uk/shibboleth,1825164,Further Education
+"Brighton, Hove and Sussex Sixth Form College",12034,NULL,72,194.83.68.114,https://idp.bhasvic.ac.uk/entity,5943612,Further Education
+Brockenhurst College,11957,NULL,73,194.83.233.*,https://idp.brock.ac.uk/entity,NULL,Further Education
+Bromley College of Further & Higher Education,1998,NULL,74,195.194.82.4; 195.194.84.2-150,https://idp.bromley.ac.uk/openathens,191088,Further Education
+Brooke House Sixth Form College,11546,NULL,75,194.81.223.49 - 194.81.223.63,https://idp.brookehouse.ac.uk/openathens,4294772,Further Education
+Brooklands College,8553,NULL,76,212.219.11.228; 194.81.47.254,https://idp.brooklands.ac.uk/shibboleth,2622323,Further Education
+Brooksby Melton College,11575,NULL,77,212.219.118.96 – 212.219.118.103; 212.219.242.232 – 212.219.242.239,https://bmcidp.brooksbymelton.ac.uk/idp/shibboleth,NULL,Further Education
+Burnley College,11630,NULL,78,ServerIP: 195.168.100.135; Inst.IP: 195.194.86.150,https://idp.burnley.ac.uk/idp/shibboleth; Test Acc: Yes,NULL,Further Education
+Burton College,2101,NULL,79,194.81.42.253,NULL,NULL,Further Education
+Bury College,11644,NULL,80,193.60.223.208 - 223,https://shibboleth.burycollege.ac.uk/shibboleth,NULL,Further Education
+Cadbury Sixth Form College,12042,NULL,81,212.219.132.130 - 140,https://idp.cadcol.ac.uk/idp/shibboleth,NULL,Further Education
+Calderdale College,12021,NULL,82,195.195.32.*; 195.195.33.*,https://idp.calderdale.ac.uk/shibboleth,NULL,Further Education
+Cambridge Regional College,2151,NULL,83,NULL,https://idp.camre.ac.uk/shibboleth,1846088,Further Education
+Canterbury College,2239,NULL,85,194.82.168.3,NULL,54803369,Further Education
+Capel Manor College,11599,NULL,86,NULL,NULL,NULL,Further Education
+Cardiff and Vale College ,NULL,NULL,906,194.83.66.*; 193.60.216.0-255; 193.60.217.0-255; 94.81.162.0-255; 194.81.163.0-255; 194.83.156.0-255; 94.83.157.0-255; 194.83.158.0-255; 194.83.159.0-255,https://shibboleth.barry.ac.uk/shibboleth (Barry College); https://cgh-idp.glan-hafren.ac.uk/idp/shibboleth (Coleg Glan Hafren),NULL,Further Education
+Cardinal Newman College,12123,NULL,87,194.83.69.116,https://idp.cardinalnewman.ac.uk/idp/shibboleth,NULL,Further Education
+Cardonald College,3515,NULL,88,212.219.5.251; 212.219.5.71; 212.219.5.72; 193.60.199.32 - 47; 195.195.131.160-191,https://cardshibidp.cardonald.ac.uk/shibboleth,NULL,Further Education
+Carlisle College,2265,NULL,89,194.80.144.240,NULL,NULL,Further Education
+Carmel College,11579,NULL,90,194.80.134.156,https://fam.carmel.ac.uk/shibboleth,NULL,Further Education
+Carnegie College,11990,NULL,91,212.219.195.*,https://idp.carnegiecollege.ac.uk/shibboleth,NULL,Further Education
+Carshalton College of FE,9483,NULL,92,195.195.118.50 - 195.195.118.253,https://idp.carshalton.ac.uk/shibboleth,1785452,Further Education
+Castle College Nottingham,6117,NULL,93,172.16.1.001 - 172.16.1.254,NULL,NULL,Further Education
+Central Bedfordshire College,11991,NULL,832,NULL,https://idp.dunstable.ac.uk/openathens,1787197,Further Education
+Central Sussex College,3962,NULL,95,212.219.35.222; 212.219.35.212; 212.219.35.223; 212.219.35.234,https://idp.centralsussex.ac.uk/shibboleth,1784128,Further Education
+Cheadle & Marple Sixth Form College,7693,NULL,96,212.219.18.0 - 212.219.18.255; 212.219.19.0 - 212.219.19.255,https://shibboleth.camsfc.ac.uk/shibboleth,NULL,Further Education
+Chelmsford College,11578,NULL,97,212.219.90.225 to 212.219.90.239,NULL,NULL,Further Education
+Chesterfield College,11966,NULL,98,194.82.143.0 - 255,https://idp.chesterfield.ac.uk/shibboleth,NULL,Further Education
+Chichester College,11608,NULL,99,193.133.28.100; 81.145.49.178,https://idp.chichester.ac.uk/shibboleth,1784156,Further Education
+Christ the King College,11547,NULL,833,195.194.79.0-254,https://idp.ctksfc.ac.uk/shibboleth,2625604,Further Education
+Cirencester College,11583,NULL,101,212.219.57.72 - 79,https://idp.cirencester.ac.uk/idp/shibboleth,NULL,Further Education
+City and Islington College,4686,NULL,102,195.194.71.254; 195.194.71.251; 194.82.134.198; 195.194.68.22,https://idp.candi.ac.uk/shibboleth,2282341,Further Education
+City College Birmingham,1712,NULL,103,195.195.126.0/24; 195.195.127.0/24; 195.195.190.0/24; 195.195.191.0/24; 82.36.5.128/27,https://shib.citycol.ac.uk/idp/shibboleth,NULL,Further Education
+City College Brighton and Hove,25593,NULL,104,195.195.237.*,NULL,NULL,Further Education
+City College Coventry,2703,NULL,105,194.81.180.*; 194.83.0-1.*,NULL,2727362,Further Education
+City College Norwich,6102,NULL,106,194.66.185.10; 194.66.185.193; 194.66.185.53,https://idp.ccn.ac.uk/shibboleth,1423560,Further Education
+City College Plymouth,6631,NULL,107,193.63.43.0/25; 193.63.43.128/27; 80.194.210.34/27,https://krad.cityplym.ac.uk/shibboleth,NULL,Further Education
+City Literary Institute,12071,city lit or city literary institute,108,194.83.68.104; 194.83.68.105,https://federation.citylit.ac.uk/shibboleth,NULL,Further Education
+City of Bath College,11933,NULL,109,212.219.56.208-222,https://idp.citybathcoll.ac.uk/shibboleth,1701128,Further Education
+City of Bristol College,11604,NULL,110,195.195.220.0; 212.219.57.32; Server IP: 212.219.57.58,https://idp.cityofbristol.ac.uk/shibboleth,NULL,Further Education
+City of Glasgow College ,NULL,NULL,898,195.194.208.0; 195.194.195.0; 195.194.212.0; 195.194.196.0;,https://idp.cityofglasgowcollege.ac.uk/openathens,66285269 (all sites),Further Education
+City of Stoke on Trent Sixth Form College,12154,NULL,111,212.219.80.11,idp.stokesfc.ac.uk,NULL,Further Education
+City of Sunderland College,11632,NULL,112,212.219.119.149-150; 194.83.56.200; 194.83.56.206; 194.83.56.211,https://idp.citysun.ac.uk/shibboleth,NULL,Further Education
+City of Westminster College,4687,NULL,113,194.82.145.2,NULL,1839448,Further Education
+City of Wolverhampton College,8694,NULL,114,195.188.205.1 - 195.188.205.12; 212.219.117.97 - 212.219.117.111,https://idp.wolvcoll.ac.uk/openathens,1724322,Further Education
+Cleveland College of Art & Design,5458,NULL,115,80.254.147.100,https://idp.ccad.ac.uk/shibboleth,1764877,Further Education
+Clydebank College,11967,id22642035,116,253; 212.219.184.1 - 254; 212.219.185.1 - 254;,https://idp.clydebank.ac.uk/openathens,2387657,Further Education
+Coatbridge College,11968,NULL,117,212.219.164.0-255,http://idp.coatbridge.ac.uk/entity,NULL,Further Education
+Colchester Institute,2588,NULL,118,212.219.90.162-163; 212.219.90.165; 212.219.90.170,https://idp.colchester.ac.uk.shibboleth,1770432,Further Education
+Colchester Sixth Form College,11562,22584769,119,195.195.85.0 - 255,https://idp.colchsfc.ac.uk/shibboleth,1446311,Further Education
+Coleg Ceredigion,11963,NULL,120,194.83.80.***; 194.83.81.***;194.83.82.***; 194.83.83.***,NULL,NULL,Further Education
+Coleg Gwent,12168,NULL,122,194.83.209.102; 194.83.209.103,NULL,NULL,Further Education
+Coleg Harlech WEA (North),11677,NULL,123,194.82.250.*; 194.82.251.*,NULL,NULL,Further Education
+Coleg Llandrillo,2652,NULL,124,194.83.16.11,https://idp.llandrillo.ac.uk/shibboleth,589313,Further Education
+Coleg Menai,1504,NULL,127,194.83.12.7; 194.83.12.5,https://idp.menai.ac.uk/shibboleth; https://idp.menai.ac.uk/shibboleth/idp2,NULL,Further Education
+Coleg Morgannwg,12120,NULL,128,194.82.253.190,NULL,1949869,Further Education
+Coleg Powys,1921,NULL,129,194.83.77.2,https://idp.coleg-powys.ac.uk/idp/shibboleth,NULL,Further Education
+Coleg Sir Gâr,4604,NULL,130,194.82.224*; 194.82.227.23,https://idp.colegsirgar.ac.uk/idp/profile/Shibboleth/SSO,NULL,Further Education
+"College of Agriculture, Food & Rural Enterprise",15588,NULL,131,10.3.237.15; 10.3.237.11; 10.3.234.15; 212.219.191.158; 212.219.191.154; 194.32.3.2,NULL,NULL,Further Education
+"College of Haringey, Enfield and North East London ",12072,NULL,836,NULL,https://ibook.conel.ac.uk/idp/shibboleth,NULL,Further Education
+College of North West London,4688,NULL,133,195.194.12.19; 195.195.131.164; 195.195.131.168; 195.194.12.3; 195.194.12.28; 195.194.12.29; 81.149.196.44; 195.195.131.166 ;195.195.131.170; 81.149.196.44; 195.194.12.3; 195.194.12.19; 195.195.131.166;195.195.131.168;195.195.131.164;195.195.131.162; 195.195.131.168;195.194.12.28; 195.195.131.164; 195.194.12.29;193.60.199.35;193.60.199.39,NULL,NULL,Further Education
+College of Richard Collyer,12033,NULL,134,212.219.116.194 - 206,NULL,NULL,Further Education
+College of West Anglia,4245,NULL,135,212.219.116.96-127; 212.219.241.1 - 128,https://idp.col-westanglia.ac.uk/openathens,2617346,Further Education
+Cornwall College,6835,NULL,137,195.195.235.1 – 195.195.235.254,https://idp.cornwall.ac.uk/shibboleth-idp,NULL,Further Education
+Coulsdon College,11973,NULL,138,195.194.78.0-255,https://idp.coulsdon.ac.uk/shibboleth,NULL,Further Education
+Craven College,12142,id2227826,139,212.219.3.1-254,https://idp.craven-college.ac.uk/shibboleth,12494876,Further Education
+Croydon College,2731,NULL,140,195.194.60.*; 195.194.61.*,https://idp.croydon.ac.uk/shibboleth,1764264,Further Education
+Cumbernauld College,12007,NULL,141,212.219.166.0-255; 212.219.168.0-169.255; 194.83.69.128-191,NULL,4202041,Further Education
+Darlington College,2788,NULL,142,194.82.100.71,https://darlfam.darlington.ac.uk/shibboleth,54635248,Further Education
+Dearne Valley College,12129,NULL,143,195.195.174-175.*,NULL,NULL,Further Education
+Deeside College,11982,NULL,144,194.83.8.0; 194.83.9.0; 194.83.6.0; 194.83.74.0,NULL,2617892,Further Education
+Derby College,11983,NULL,145,194.83.68.193 - 194.83.68.222; 212.219.142-86,https://idp.derby-college.ac.uk/idp/shibboleth,NULL,Further Education
+Derwentside College,11972,NULL,146,10.10.1.1-10.10.15.254; 212.219.119.227 - 229,NULL,NULL,Further Education
+Doncaster College,2992,NULL,147,194.80.187.240,https://shibboleth-idp.don.ac.uk/shibboleth-idp/SSO; Test Account: Yes; ePTID,NULL,Further Education
+Dudley College,11657,22535925,148,212.219.190.146,https://idp.dudleycol.ac.uk/openathens,234,Further Education
+Dumfries and Galloway College,11989,NULL,843,212.219.90.1 - 212.219.90.64,https://idp.dumgal.ac.uk/openathens,1805318,Further Education
+Dundee College,3037,NULL,150,194.82.176.0-191.254; Proxy: 194.82.177.15; 194.82.177.16,https://idp.dundeecollege.ac.uk/shibboleth,3507896,Further Education
+"Ealing, Hammersmith & West London College",4693,NULL,844,194.82.122.86; 194.82.122.79,https://idp.wlc.ac.uk/shibboleth,1903475,Further Education
+East Berkshire College,8640,NULL,153,195.188.42.35; 195.194.74.162,NULL,6964294,Further Education
+East Durham College,12118,NULL,154,212.219.39.75,NULL,NULL,Further Education
+East Norfolk Sixth Form College,12017,NULL,155,193.62.43.202,https://idp.enorf.ac.uk/shibboleth; UK000785,2698464,Further Education
+East Riding College,11685,NULL,156,195.195.245.0-127,https://idp.eastridingcollege.ac.uk/shibboleth,54638116,Further Education
+East Surrey College,12126,NULL,157,195.194.86.98,NULL,NULL,Further Education
+Eastleigh College,11992,NULL,158,212.219.11.48 - 212.219.11.63; 194.82.141.160 - 194.82.141.167 ,https://idp.eastleigh.ac.uk/shibboleth,1724458,Further Education
+Easton College,11993,NULL,159,NULL,NULL,54507859,Further Education
+Edinburgh's Telford College,3106,NULL,160,194.82.160.0 - 194.82.167.255,https://int.ed-coll.ac.uk/shibboleth,NULL,Further Education
+Elmwood College,11978,NULL,161,212.219.188.96-111,https://shibboleth.elmwood.ac.uk/openathens,2659685,Further Education
+Epping Forest College,5159,NULL,163,193.60.223.240; 193.60.223.255,NULL,3347558,Further Education
+Esher College,12162,22658456,164,194.81.3.96-127,https://comet.esher.ac.uk/shibboleth,1691540,Further Education
+Exeter College,3282,NULL,166,195.194.22.1-254,https://idp.exe-coll.ac.uk/openathens,1817940,Further Education
+Fareham College,12001,NULL,167,212.219.142.209-215; 212.18.252.141-142,https://idp.fareham.ac.uk/shibboleth,1658445,Further Education
+Farnborough College of Technology,3332,NULL,168,194.80.76.0-255,https://idp.farn-ct.ac.uk/athens,80892,Further Education
+Farnborough Sixth Form College,12002,NULL,169,212.219.191.128-142,https://idp.farnboroughsfc.ac.uk/shibboleth,1677682,Further Education
+Fashion Retail Academy,NULL,NULL,171,NULL,NULL,NULL,Further Education
+Forth Valley College,12000,NULL,174,212.219.200.1; 212.219.201.1,https://idp.forthvalley.ac.uk/shibboleth,7912526,Further Education
+Franklin College,12019,NULL,175,195.195.239.158,https://franklin-shib01.franklin.ac.uk,NULL,Further Education
+Furness College,1525,NULL,176,195.194.162; 195.194.163,NULL,NULL,Further Education
+Gateshead College,11585,NULL,177,194.66.199.61,https://idp.gateshead.ac.uk/shibboleth,2613215,Further Education
+Gateway College,NULL,NULL,899,212.219.190.0/27,NULL,NULL,Further Education
+Gloucestershire College ,11964,NULL,903,212.219.74.234;  212.219.57.96 - 103,https://gcidp.gloscol.ac.uk/shibboleth,NULL,Further Education
+Godalming College,12014,NULL,182,212.219.120.5 subnet 255.255.254.0,https://idp.godalming.ac.uk/shibboleth,NULL,Further Education
+Gower College Swansea,NULL,NULL,891,194.83.34.5; 194.81.161.134 ,https://idp.gowercollegeswansea.ac.uk/idp/shibboleth,NULL,Further Education
+Grantham College,3592,NULL,184,194.83.4.8; 194.168.4.0 - 194.168.4.254,https://idp.grantham.ac.uk/shibboleth,2712564,Further Education
+Great Yarmouth College,12018,NULL,185,212.219.118.113 - 126,https://idp.gyc.ac.uk/openathens,2789936,Further Education
+Greenhead College,12035,id22694311,186,195.195.14.1 - 254; EzProxy: No,NULL,NULL,Further Education
+Greenwich Community College,12082,NULL,187,194.66.199.20; 194.66.199.207; 212.219.91.232 - 239,https://idp.gcc.ac.uk/shibboleth,2669593,Further Education
+Grimsby Institute of Further and Higher Education,3640,NULL,188,195.195.43.241-255,https://idp.grimsby.ac.uk/shibboleth,12808469,Further Education
+Guildford College of Further & Higher Education,3658,134888,189,195.194.86.80 - 95,https://idp.guildford.ac.uk/shibboleth,1763320,Further Education
+Hackney Community College,4692,NULL,190,195.195.131.160 -195.195.131.191,https://idp.hackney.ac.uk/shibboleth,2461805,Further Education
+Hadlow College,12164,NULL,191,NULL,https://idp.hadlow.ac.uk/shibboleth,3594955,Further Education
+Halesowen College,12020,NULL,192,Server IP: 194.36.159.213; 194.36.152.0/21; 194.36.152.125; 194.36.152.245; 194.36.152.252; 194.36.154.202; 194.36.155.251; 194.36.157.230,https://idp.halesowen.ac.uk/shibboleth,NULL,Further Education
+Harlow College,12023,NULL,193,212.219.11.94,Moodle VLE: http://qube.harlow-college.ac.uk/course/view.php?id=3,NULL,Further Education
+Harrow College,11671,NULL,194,IP/Proxy: 195.194.19.* /24  ,https://idp.harrow.ac.uk/shibboleth,NULL,Further Education
+Hartlepool College of Further Education,12025,22571386,195,212.219.143.131,https://idp.hartlepoolfe.ac.uk/openathens,2367475,Further Education
+Hartlepool Sixth Form College,12026,NULL,196,195.194.150.129; range: 195.194.150.0-254,NULL,NULL,Further Education
+Hartpury College,12013,NULL,197,NULL,https://shibboleth.hartpury.ac.uk/shibboleth,NULL,Further Education
+Havant College,11615,22661017,199,195.195.129.3-15,https://idp.havant.ac.uk/shibboleth,2445359,Further Education
+Havering College of Further & Higher Education,3958,22530767,200,195.194.236.0-255,https://idp.havering-college.ac.uk/openathens,4214452,Further Education
+Havering Sixth Form College,12032,NULL,201,212.219.116.128/26; 212.219.116.128-191,https://idp.havering-sfc.ac.uk/shibboleth,2387703,Further Education
+Henley College,12029,NULL,202,195.194.74.210 - 218,NULL,NULL,Further Education
+Henley College Coventry,11974,NULL,203,194.82.16.252,https://mccall.henley-cov.ac.uk/idp/shibboleth,NULL,Further Education
+Hereford College of Arts,12030,NULL,205,194.81.223.130-132; 212.100.108.5; 135.196.2.61; 217.37.116.116,https://idp.hca.ac.uk/shibboleth,1957372,Further Education
+Hereford Sixth Form College,3876,NULL,204,212.219.189.112 - 127,https://idp.hereford.ac.uk/shibboleth,2390323,Further Education
+Herefordshire College of Technology,12031,NULL,206,194.83.162.0/24,https://shibboleth.hct.ac.uk/idp/shibboleth,NULL,Further Education
+Hereward College,11975,NULL,207,212.219.11.208 - 212.119.11.224,NULL,NULL,Further Education
+Hertford Regional College,156407,NULL,208,193.60.0.206; 212.121.0-31.*,https://shibboleth.hrc.ac.uk/idp,NULL,Further Education
+Highbury College,6694,NULL,209,195.194.119.220/24,https://idp.highbury.ac.uk/entity,NULL,Further Education
+Hillcroft College,7740,NULL,211,212.219.188.122,NULL,NULL,Further Education
+Hills Road Sixth Form College,11544,NULL,212,212.219.116.64 - 212.219.116.95,https://hr-terminal.hrsfc.ac.uk/idp/shibboleth,NULL,Further Education
+Holy Cross College,2105,NULL,213,212.219.98.16 – 212.219.98.31; 193.60.223.138-142,https://idp.holycross.ac.uk/shibboleth,NULL,Further Education
+Hopwood Hall College,12088,NULL,214,212.248.194.93; 212.219.39.146,https://shib.hopwood.ac.uk/idp/shibboleth,NULL,Further Education
+Huddersfield New College,11618,NULL,215,195.195.24.252,https//shibboleth.huddnewcoll.ac.uk/idp/shibboleth,NULL,Further Education
+Hugh Baird College,11952,NULL,216,195.194.188.0-189.255,https://idp.hughbaird.ac.uk/shibboleth,3775511,Further Education
+Hull College,4018,AUTO80940,217,"195.195.244.67, 178.78.118.242, 83.100.199.178 ",https://shibb.hull-college.ac.uk/idp/shibboleth; https://idp.hull-college.ac.uk/shibboleth,1791306,Further Education
+Huntingdonshire Regional College,12039,NULL,218,195.195.240.1-254; 62.190.174.38,NULL,NULL,Further Education
+Isle of Wight College,6001,NULL,220,212.219.117.129-158,NULL,38238346,Further Education
+Itchen College,12145,NULL,221,193.60.218.253,NULL,NULL,Further Education
+James Watt College,3610,NULL,222,NULL,https://idp.jameswatt.ac.uk/entity,NULL,Further Education
+Jewel & Esk College,11995,NULL,845,94.83.180.0/24; 194.83.181.0/24,https://idp.jec.ac.uk/openathens ,2619772,Further Education
+John Leggott Sixth Form College,7262,NULL,224,194.83.71.224 - 239,NULL,NULL,Further Education
+John Ruskin College,11977,NULL,225,195.194.74.13,https://idp.johnruskin.ac.uk/shibboleth,1759758,Further Education
+John Wheatley College,12009,NULL,226,NULL,NULL,NULL,Further Education
+Joseph Chamberlain Sixth Form College,11943,NULL,227,212.219.191.146,NULL,3361594,Further Education
+Joseph Priestley College,NULL,NULL,228,NULL,NULL,NULL,Further Education
+K College,7926,NULL,889,NULL,NULL,NULL,Further Education
+Kendal College,4219,NULL,229,195.194.158.20,https://hermes.kendal.ac.uk/shibboleth,NULL,Further Education
+Kensington & Chelsea College,12062,id22576830,230,194.82.128.0-194.82.130.255; 195.194.240.0-255,https://vmshib.kcc.ac.uk/shibboleth/ukfam/idp,NULL,Further Education
+Kidderminster College,4237,NULL,231,194.83.68.131-190,https://idp.kidderminster.ac.uk/idp/shibboleth,NULL,Further Education
+Kilmarnock College,12041,NULL,232,NULL,https://www.kilmarnock.ac.uk/shibboleth,2296840,Further Education
+"King Edward VI College, Nuneaton",12109,NULL,233,212.219.66.215,https://idp.kinged6nun.ac.uk/shibboleth,NULL,Further Education
+"King Edward VI College, Stourbridge",12155,NULL,234,212.219.131.0-255,https://www.kedst.ac.uk/shibboleth,NULL,Further Education
+King George V College,12148,NULL,235,212.219.191.162,https://kgv.ac.uk/shibboleth,NULL,Further Education
+Kingston College,4261,NULL,236,212.219.63.66,https://idp.kingston-college.ac.uk/shibboleth,NULL,Further Education
+Kingston Maurward College,11986,NULL,237,195.194.75.134,https://idp.kmc.ac.uk/shibboleth,2699087,Further Education
+Kirklees College,12036,kirkcoll,238,195.195.[16-17].*; 195.195.28.*,https://idp.kirkleescollege.ac.uk/entity,NULL,Further Education
+Knowsley Community College,9079,NULL,239,195.194.74.193-206,https://idp.knowsleycollege.ac.uk/idp/shibboleth,NULL,Further Education
+"Lakes College, West Cumbria",12181,NULL,240,212.219.63.134,https://idp.lcwc.ac.uk/shibboleth,2375135,Further Education
+Lambeth College,4696,NULL,241,195.194.36.0-254,https://idp.lambeth.ac.uk/idp/shibboleth,NULL,Further Education
+Lancaster & Morecambe College,12045,NULL,242,195.195.216.15; EZProxy: Yes,https://idp.lmc.ac.uk/idp/shibboleth,NULL,Further Education
+Langside College,11605,NULL,243,195.194.200.0-203.255,https://idp.langside.ac.uk/shibboleth,NULL,Further Education
+Leeds City College,12052,leedscitycollege,246,195.195.7.61; 195.195.27.254; 195.195.36.*; 195.195.37.*,NULL,NULL,Further Education
+Leeds College of Art & Design,4458,NULL,244,195.195.165.253,https://idp.leeds-art.ac.uk/openathens,898742,Further Education
+Leeds College of Building,12048,NULL,245,195.195.30.1,https://access.lcb.ac.uk/idp/shibboleth,NULL,Further Education
+Leek College of FE and School of Art,12055,NULL,247,195.194.18.1 - 195.194.18.254; Proxy: 10.0.200.253,NULL,NULL,Further Education
+Leicester College,4483,NULL,248,212.219.188.1 - 63,https://idp.lec.ac.uk/openathens,1790537,Further Education
+Lewisham College,12063,NULL,249,195.195.0.77,https://idp.lewisham.ac.uk/shibboleth,6949676,Further Education
+Lews Castle College,7708,NULL,250,NULL,NULL,NULL,Further Education
+Leyton Sixth Form College,12064,NULL,251,212.219.94.2,https://idp.leyton.ac.uk/shibboleth,1797815,Further Education
+Lincoln College,11596,NULL,252,194.83.164.22,https://lc-idp.lincolncollege.ac.uk/shibboleth,NULL,Further Education
+Liverpool Community College,4582,NULL,253,195.195.205.66; 82.42.5.178,https://dialect.liv-coll.ac.uk/idp/shibboleth,NULL,Further Education
+Long Road Sixth Form College,11545,NULL,254,212.219.108.9,https://idp.longroad.ac.uk/idp/shibboleth,NULL,Further Education
+Longley Park Sixth Form College,58665,NULL,255,212.219.247.38,https://idp.longleypark.ac.uk/shibboleth,12490375,Further Education
+Loreto Sixth Form College,12089,NULL,846,212.219.65.0-255,NULL,NULL,Further Education
+Loughborough College,11614,NULL,257,193.61.111.0 - 255; 212.219.246.0 - 255,https://sso.loucoll.ac.uk/idp/profile/Shibboleth/SSO,NULL,Further Education
+Lowestoft College,11656,NULL,258,212.219.142.190,NULL,NULL,Further Education
+Ludlow College,12083,NULL,259,NULL,NULL,NULL,Further Education
+Luton Sixth Form College,12085,NULL,260,194.82.156.0; 194.82.157.0,https://idp.lutonsfc.ac.uk/openathens,1808201,Further Education
+Macclesfield College,12086,NULL,261,195.195.255.0-255; 195.195.253.0-255; 195.195.254.0-255; 195.195.252.0-255,https://idp.macclesfield.ac.uk/shibboleth,NULL,Further Education
+Mary Ward Centre,12075,NULL,264,212.219.142.93,NULL,NULL,Further Education
+Merthyr Tydfil College,12093,NULL,265,NULL,NULL,NULL,Further Education
+Mid-Cheshire College of Further Education,12108,NULL,266,212.219.142.33,https://idp.midchesh.ac.uk/shibboleth,NULL,Further Education
+Middlesbrough College,2360,NULL,267,212.219.144.0/24,https://idp.mbro.ac.uk/metadata,1768248,Further Education
+Mid-Kent College of Further and Higher Education,5461,NULL,268,194.80.112.0-255,https://shibboleth.midkent.ac.uk/shibboleth,NULL,Further Education
+Milton Keynes College,12095,NULL,269,194.83.7.190; 212.219.189.254,https://idp.mkcollege.ac.uk/openathens,54607683,Further Education
+Moray College,3182,NULL,270,NULL,NULL,NULL,Further Education
+Morley College,85238,NULL,271,80.254.147.68,https://idp.morleycollege.ac.uk/shibboleth,15962872,Further Education
+Motherwell College,12097,NULL,272,212.219.190.42,https://idp.motherwell.co.uk/shibboleth,NULL,Further Education
+Moulton College,11665,NULL,273,212.219.63.240 - 253,https://idp.moulton.ac.uk/idp/shibboleth,1820747,Further Education
+Myerscough College,9852,NULL,274,195.194.125.0 - 195.194.125.255,NULL,NULL,Further Education
+Neath Port Talbot College,12099,NULL,275,194.83.60.253,NULL,7198383,Further Education
+Nelson & Colne College,9095,NULL,276,193.60.223.161-175,https://idp.nelson.ac.uk/openathens,54346425,Further Education
+"New College, Durham",3056,NULL,281,194.81.39.241; 194.81.39.249,https://idp.newdur.ac.uk/shibboleth,898970,Further Education
+"New College, Nottingham",6116,NULL,282,195.195.41*; 195.194.88*; 195.194.89*,https://ncnidp.ncn.ac.uk/shibboleth,NULL,Further Education
+"New College, Pontefract",12119,NULL,283,195.195.18.*; 195.195.19.*,NULL,NULL,Further Education
+"New College, Stamford",12150,NULL,284,194.83.69.8,https://idp.stamford.ac.uk/shibboleth; https://shibboleth.stamford.ac.uk/idp/shibboleth,NULL,Further Education
+"New College, Swindon",7764,NULL,285,212.219.8.119,https://idp.newcollege.ac.uk/empire,2287156,Further Education
+"New College, Telford",12161,NULL,286,212.219.190.178,NULL,NULL,Further Education
+Newbattle Abbey College,11979,NULL,277,NULL,NULL,NULL,Further Education
+Newbury College,12102,NULL,278,212.219.143.99 - 110,http://snib.newbury-college.ac.uk/idp/shibboleth,NULL,Further Education
+Newcastle College Group,9808,1724,279,81.86.25.65-70; 81.86.25.73-78; 81.86.25.81-86; 81.86.25.89-94; 81.179.57.57-61; 212.219.49.2-254; 217.114.50.17; *.ncl-coll.ac.uk,https://shibboleth.ncl-coll.ac.uk/idp/shibboleth,1801498; 65516078,Further Education
+Newcastle-under-Lyme College,12103,NULL,280,195.195.117.x,https://idp.nulc.ac.uk/openathens,54609834,Further Education
+Newham College of Further Education,4698,NULL,287,194.81.54.250; 194.81.54.122,https://idp.newham.ac.uk/shibboleth,54268396,Further Education
+Newham Sixth Form College,12065,NULL,288,194.81.44.127,NULL,NULL,Further Education
+North East Surrey College of Technology,3236,NULL,292,194.83.131.0 - 194.83.131.255,https://idp.nescot.ac.uk/shibboleth,1825598,Further Education
+North East Worcestershire College,2002,NULL,293,212.219.188.64 - 212.219.188.95,NULL,2625612,Further Education
+North Glasgow College,12010,NULL,296,212.219.107.1-254,https://idp.northglasgowcollege.ac.uk/shibboleth,3493512,Further Education
+North Hertfordshire College,3915,NULL,297,195.195.222.67-70; 195.195.222.100-102,https://idp.nhc.ac.uk/shibboleth,NULL,Further Education
+North Lindsey College,7261,NULL,299,195.195.239.160 - 175,NULL,2573922,Further Education
+North Nottinghamshire College,12182,NULL,300,212.219.188.192-207,NULL,NULL,Further Education
+North Warwickshire and Hinckley College,12110,NULL,302,194.83.71.161-175,https://idp.nwhc.ac.uk/openathens,1929617,Further Education
+North West Kent College,NULL,NULL,303,NULL,NULL,NULL,Further Education
+North West Regional College,101725,NULL,304,194.83.57.128-143; 212.219.92.224-239; 195.194.48.1-128,https://idp.nwrc.ac.uk/shibboleth,43648194,Further Education
+Northampton College,12107,NULL,289,212.219.39.165; 212.219.39.167; 212.219.39.170,https://ncidp.northamptoncollege.ac.uk/entity,NULL,Further Education
+Northbrook College Sussex,8723,NULL,290,188.39.31.50; 194.83.71.212; 194.83.71.213,https://nbcol.ac.uk/openathens,1713969,Further Education
+Northern College for Residential Adult Education,1522,NULL,294,212.219.51.101,https://idp.northern.ac.uk/shibboleth,1319686,Further Education
+Northern Regional College,11395,NULL,295,212.219.92.49-62; 212.219.92.209-222; 212.219.94.145-158,https://idp.nrc.ac.uk/shibboleth,NULL,Further Education
+Northumberland College,1338,NULL,301,212.219.39.114,https://idp.northland.ac.uk/shibboleth,1759728,Further Education
+Norton Radstock College,12124,NULL,305,212.219.57.1 - 16; 193.63.86.16-23 (16/29),https://idp.nortcoll.ac.uk/shibboleth,55213953,Further Education
+Notre Dame Sixth Form College,12051,NULL,306,195.195.38.1,https://idp.notredamecoll.ac.uk/openathens,3691004,Further Education
+Oaklands College,7484,NULL,307,212.219.63.202; 172.17.5.61,https://idp.oaklands.ac.uk/shibboleth,NULL,Further Education
+Oatridge Agricultural College,11958,NULL,308,NULL,NULL,NULL,Further Education
+Oldham College,12112,NULL,309,195.195.138.1-250; 195.195.139.1-250,https://shibboleth.oldham.ac.uk/shibboleth,NULL,Further Education
+Oldham Sixth Form College,11549,NULL,310,"212.219.94.115, 195.194.21.157",https://idp.osfc.ac.uk/idp/shibboleth,NULL,Further Education
+Otley College of Agriculture & Horticulture,11670,NULL,313,212.219.92.36,https://idp.otleycollege.ac.uk/openathens,54320395,Further Education
+Oxford and Cherwell Valley College,6381,NULL,314,195.194.168.0,https://idp.ocvc.ac.uk/entity,4757304,Further Education
+Palmer's College,12016,NULL,315,193.63.86.34,https://idp.palmers.ac.uk/shibboleth,2711761,Further Education
+Paston College,12106,NULL,317,NULL,NULL,NULL,Further Education
+Pembrokeshire College,12027,NULL,318,212.219.112.195; 194.83.88.0/24; 194.83.89.0/24; 194.83.90.0/24; 194.83.91.0/24; 212.219.110.0/24; 212.219.111.0/24; 212.219.112.0/24,IdP: https://shibb.pembrokeshire.ac.uk; ePPN: pembrokeshire.ac.uk;,NULL,Further Education
+Perth College,11628,NULL,319,194.35.219.96 - 127; 194.35.207.*,NULL,NULL,Further Education
+Peter Symonds College,12178,NULL,320,195.195.244.141; 195.195.244.141,https://idp.psc.ac.uk/shibboleth,1753261,Further Education
+Peterborough Regional College,6517,NULL,321,193.62.24.121; 193.62.24.122,NULL,NULL,Further Education
+Petroc,11928,NULL,291,195.194.142.25; 195.194.142.135; 195.194.74.139; 195.194.74.140; 194.194.74.141,https://idp.ndevon.ac.uk/shibboleth,2349854,Further Education
+Plumpton College,6132,NULL,323,NULL,NULL,NULL,Further Education
+Plymouth College of Art & Design,6630,NULL,324,195.194.75.146,https://idp.plymouthart.ac.uk/shibboleth,4117050,Further Education
+Portsmouth College,12121,NULL,325,212.219.116.209-224,https://idp.portsmouth-college.ac.uk/shibboleth,13219948,Further Education
+Preston College,6720,NULL,326,195.194.152.0 - 255,https://shibbserver.preston.ac.uk/shibboleth,NULL,Further Education
+Priestley College,12172,NULL,327,212.219.95.0 - 127; Subnet Mask: 255.255.255.128,NULL,NULL,Further Education
+Prior Pursglove College,11652,NULL,328,195.194.144.3,NULL,NULL,Further Education
+Queen Elizabeth Sixth Form College,11980,NULL,329,195.194.148.0-149.255,https://idp.qeliz.ac.uk/shibboleth,2805505,Further Education
+Queen Mary's College,11932,NULL,330, 212.219.56.238,https://idp.qmc.ac.uk/shibboleth,2620160,Further Education
+Reaseheath College,12098,NULL,331,212.219.177.34-61,https://rhc-fed.reaseheath.ac.uk/shibboleth,5637748,Further Education
+Redbridge College,12128,NULL,332,212.219.117.8-15,https://el-shib.redbridge-college.ac.uk/idp/shibboleth,NULL,Further Education
+Redcar & Cleveland College,12125,22544942,333,212.219.39.81-87,NULL,1801348,Further Education
+Regent College,12057,NULL,334,193.60.223.158,NULL,NULL,Further Education
+Reid Kerr College,12116,22479625,335,194.83.70.0-63,NULL,1846094,Further Education
+Reigate Sixth Form College,12127,NULL,336,NULL,https://idp.reigate.ac.uk/shibboleth,NULL,Further Education
+Richard Huish College,7847,NULL,337,212.219.90.65 - 93,https://idp.richuish.ac.uk/idp/shibboleth,NULL,Further Education
+Richmond Adult Community College,12167,NULL,881,NULL,NULL,NULL,Further Education
+Richmond upon Thames College,8068,22584222,339,212.219.96.*; 212.219.97.*,https://rutcathens.rutc.ac.uk/oala/metadata,1793156,Further Education
+Riverside College Halton,12174,NULL,340,195.195.210.0 - 195.195.211.255,https://idp.riversidecollege.ac.uk/shibboleth,NULL,Further Education
+Rotherham College of Arts and Technology,12130,NULL,341,194.81.76.1-254; 195.195.173.2-254,https://idp.rotherham.ac.uk/shibboleth,NULL,Further Education
+Runshaw College,4535,NULL,343,195.194.131.131,https://idp.runshaw.ac.uk/openathens,2811596,Further Education
+Ruskin College,6386,NULL,344,195.194.90.9,https://idp.ruskin.ac.uk/shibboleth,NULL,Further Education
+Sabhal Mor Ostaig,12143,NULL,345,NULL,NULL,NULL,Further Education
+Salford City College,12134,NULL,346,212.219.8.254; 212.219.73.10; 195.195.43.3; Salford-col.ac.uk,NULL,NULL,Further Education
+Salford City College - Eccles campus,12134,NULL,849,212.219.8.254,https://shibboleth.ecclescollege.ac.uk/shibboleth,NULL,Further Education
+Sandwell College,12111,NULL,347,80.194.71.80-110; 194.81.178.0/24,https://idp.sandwell.ac.uk/idp/shibboleth,NULL,Further Education
+Scarborough Sixth Form College,12136,NULL,348,195.195.249.0/24,NULL,38191244,Further Education
+SEEVIC College,11939,NULL,349,212.219.58.192 - 212.219.58.254,NULL,NULL,Further Education
+Selby College,11573,NULL,350,195.195.239.192-222,NULL,NULL,Further Education
+Shipley College,12140,NULL,353,195.195.15.255,https://idp.shipley.ac.uk/openathens,7208398,Further Education
+Shooters Hill Post 16 Campus,155411,NULL,354,82.198.250.0/24,NULL,NULL,Further Education
+Shrewsbury College of Arts & Technology,12141,NULL,355,195.194.34.200-254,https://scatfam.shrewsbury.ac.uk/shibboleth,NULL,Further Education
+Shrewsbury Sixth Form College,7328,NULL,356,212.219.105.000,https://idp.ssfc.ac.uk/shibboleth,2693210,Further Education
+Sir George Monoux College,12066,NULL,357,212.219.118.1 - 212.219.118.7,https://idp.george-monoux.ac.uk/shibboleth,5350574,Further Education
+Sir John Deane's College,11666,NULL,358,212.219.118.128-142,NULL,NULL,Further Education
+Solihull College,7378,NULL,359,212.219.7.*; Ref URL: http://learn.solihull.ac.uk/libraryresources/content/elibrary.cfm,NULL,NULL,Further Education
+Solihull Sixth Form College,7379,NULL,360,195.194.86.160-175,https://idp.solihullsfc.ac.uk/shibboleth,568849,Further Education
+Somerset College of Arts and Technology,7850,NULL,361,212.219.94.65 -95,https://sids.somerset.ac.uk/metadata,NULL,Further Education
+South Birmingham College,1714,NULL,363,212.219.174.1 - 212.219.175.255,https://idp.sbc.ac.uk/idp/shibboleth,NULL,Further Education
+South Cheshire College,11976,NULL,364,212.219.149.0-255,https://idp.s-cheshire.ac.uk/shibboleth,NULL,Further Education
+South Devon College,7992,NULL,365,194.194.74.64-78,https://idp.southdevon.ac.uk/shibboleth,NULL,Further Education
+South Downs College,3088,NULL,366,212.219.2.4,https://idp.southdowns.ac.uk/shibboleth,5872441,Further Education
+South Eastern Regional College,101771,NULL,368,212.219.94.35-40; 212.219.94.189-190; 212.219.119.153-156,https://shibboleth.serc.ac.uk/shibboleth,27537137,Further Education
+South Essex College of Further and Higher Education,7428,NULL,798,193.63.194.224; 193.63.194.246; 193.63.194.247; 193.63.194.248; 212.219.8.86; 212.219.90.99; 212.219.90.97,https://idp.southend.ac.uk/shibboleth,1644819,Further Education
+South Gloucestershire and Stroud College,11626,NULL,172,212.219.56.244,https://idp.filton.ac.uk/idp/,NULL,Further Education
+South Lanarkshire College,12011,NULL,373,NULL,https://idp.slc.ac.uk/shibboleth,2663385,Further Education
+South Leicestershire College,12177,NULL,374,172.16.151.1 - 255; 172.16.155.1 - 255; 172.16.154.1 - 255,https://idp.slcollege.ac.uk/openathens,15802715,Further Education
+South Nottingham College,11917,NULL,375,194.83.198 -194,NULL,NULL,Further Education
+South Staffordshire College,11960,NULL,376,194.83.104.1-254; 194.83.132.1-254; 194.83.133.1-254; 194.83.134.1-254; 212.219.148.1-254,https://idp.southstaffs.ac.uk/idp/shibboleth,NULL,Further Education
+South Thames College,4702,NULL,378,194.80.180.129-158; 195.194.74.145-158,https://idp.south-thames.ac.uk/entity,NULL,Further Education
+South Tyneside College,12144,NULL,379,212.219.39.129-142,https://idp.stc.ac.uk/idp/shibboleth,2146751,Further Education
+South West College,129399,NULL,381,212.219.92.205; 212.219.94.30; 212.219.94.214-216,https://idp.swc.ac.uk/shibboleth,NULL,Further Education
+South Worcestershire College,11999,NULL,165,212.219.88.100; 66.24.67.59,https://idp.evesham.ac.uk/shibboleth,NULL,Further Education
+Southampton City College,7418,NULL,362,212.219.11.112-127,https://idp.southampton-city.ac.uk/idp/shibboleth,NULL,Further Education
+Southern Regional College,102450,NULL,370,194.83.144.18 & 16; 212.219.94.173; 212.219.94.224 - 239,https://idp.src.ac.uk/shibboleth,NULL,Further Education
+Southgate College,12067,NULL,371,212.219.63.230,NULL,NULL,Further Education
+Southport College,7434,NULL,377,212.219.14.0/24,https://idp.southport-college.ac.uk/shibboleth,NULL,Further Education
+Southwark College,12068,NULL,380,193.62.151.131,https://idp.southwark.ac.uk/idp/shibboleth,NULL,Further Education
+Sparsholt College,11603,NULL,857,212.219.143.50; 212.219.142.226,https://idp.sparsholt.ac.uk/shibboleth,2506264,Further Education
+St Brendan's Sixth Form College,11541,id22660179,384,212.219.87.192 - 212.219.87.223,https://idp.stbrn.ac.uk/idp/shibboleth ,1076514,Further Education
+St Charles Catholic Sixth Form College,12069,NULL,385,194.83.71.144 - 194.83.71.159,https://idp.stcharles.ac.uk/shibboleth,1764486,Further Education
+St David's Catholic Sixth Form College,11961,NULL,858,NULL,https://idp.st-davids-coll.ac.uk/idp/shibboleth,NULL,Further Education
+St Dominic's Sixth Form College,12024,NULL,387,195.194.9.0-255,NULL,NULL,Further Education
+St Francis Xavier Sixth Form College,12070,NULL,388,212.219.189.100,NULL,2555983,Further Education
+St Helens College,7502,id22536146,389,212.219.24.0/24; 193.195.78.96/28,https://idp.sthelens.ac.uk:8444/shibboleth,NULL,Further Education
+St John Rigby College,12176,NULL,390,193.60.2.23.224 - 193.60.223.239,https://idp.sjr.ac.uk/idp/shibboleth,NULL,Further Education
+"St Mary's College, Blackburn",11542,NULL,392,NULL,NULL,NULL,Further Education
+"St Mary's College, Middlesbrough",12094,NULL,391,212.219.22.4,https://idp.stmarys-sfc.ac.uk/openathens,2323954,Further Education
+St Vincent College,12015,NULL,393,195.194.182.10; 195.194.182.34; 195.194.182.42; 195.195.131.162 - 169,NULL,NULL,Further Education
+Stafford College,7585,NULL,394,195.195.152.1 - 255; 195.195.153.1 - 255,https://idp.staffordcoll.ac.uk/shibboleth,54636389,Further Education
+Stanmore College,12151,NULL,395,Proxy IP: 194.82.83.250; Institutional IP:194.82.83/24,https://idp.stanmore.ac.uk/shibboleth,4302653,Further Education
+Stephenson College,11971,NULL,396,212.219.11.65-75,https://idp.stephensoncoll.ac.uk/shibboleth,2636918,Further Education
+Stevenson College Edinburgh,3107,NULL,397,195.194.47.34,https://idp.stevenson.ac.uk/entity,1694914,Further Education
+Stockport College,7694,NULL,398,194.82.4.*; *.stockport.ac.uk,https://idp.stockport.ac.uk/shibboleth,174526,Further Education
+Stockton Riverside College,12152,NULL,399,212.219.119.162; 212.219.119.164; 195.194.164.203; 195.194.164.254,https://idp.stockton.ac.uk/shibboleth,1826949,Further Education
+Stockton Sixth Form College,12153,NULL,400,195.194.87.0 - 195.194.87.255,NULL,NULL,Further Education
+Stoke-on-Trent College,7704,NULL,401,194.82.139.*,https://idp.stokecoll.ac.uk/idp/shibboleth,NULL,Further Education
+Stourbridge College,12156,NULL,402,194.83.48.0/22; 194.83.48.0 - 194.83.51.255,https://idp.stourbridge.ac.uk/idp/shibboleth,NULL,Further Education
+Stow College,9568,22172742,403,195.194.204.*,https://idp.stow.ac.uk/shibboleth,2917211,Further Education
+Stratford upon Avon College,12157,NULL,404,NULL,https://idp.stratford.ac.uk/idp/shibboleth,NULL,Further Education
+Strode College,12158,NULL,405,212.219.116.0 - 212.219.116.30,NULL,NULL,Further Education
+Strode's College,11996,NULL,406,212.219.90.240-253,https://idp.strodes.ac.uk/shibboleth,NULL,Further Education
+Suffolk New College,4086,NULL,408,Public: 194.80.204.0-127; Internal: 10.134.2.0-255; 172.16.3.0-255; 10.140.0-11.0-255; 10.141.0-11.0-255; 10.142.0-11.0-255; 192.168.20.0-255; 192.168.30.0-255; 192.168.40.0-255; 192.168.50.0-255; 10.254.0-3.0-255,https://idp.suffolk.ac.uk/shibboleth,1259060,Further Education
+Suffolk One,NULL,NULL,901,85.12.76.63,NULL,NULL,Further Education
+Sussex Coast College Hastings,7517,NULL,859,194.83.71.130 - 194.83.71.142,https://idp.hastings.ac.uk/shibboleth,2389704,Further Education
+Sussex Downs College,9643,NULL,409,212.219.117.64 - 79; Proxy 212.219.117.66,NULL,NULL,Further Education
+Swindon College,7765,NULL,412,212.219.0.20,NULL,1789924,Further Education
+Tameside College,11646,NULL,413,212.219.76.1 - 212.219.76.254,https://shibidp.tameside.ac.uk/idp/shibboleth,1793164,Further Education
+Taunton's College,12146,NULL,860,212.219.117.80 - 212.219.117.95,NULL,54568656,Further Education
+Telford College of Arts and Technology,7862,NULL,415,195.194.31.18; 195.194.31.22,https://telvm-shib.tcat.ac.uk/shibboleth,NULL,Further Education
+Thanet College,9457,NULL,416,195.194.248.***,NULL,NULL,Further Education
+"The Adam Smith College, Fife",123345,NULL,4,212.219.188.184,https://idp.adamsmith.ac.uk/shibboleth,NULL,Further Education
+The Manchester College,5276,NULL,262,212.219.8.194; 212.219.8.232; 212.219.8.233; 192.84.79.2; 195.195.248.1-255,https://idp.themanchestercollege.ac.uk/openathens,2891254,Further Education
+The Sheffield College,12139,NULL,351,NULL,NULL,NULL,Further Education
+Thomas Rotherham College,12131,NULL,417,195.195.168.33,https://idp.thomroth.ac.uk/openathens,1681954,Further Education
+Totton College,12147,NULL,419,212.219.143.65,https://idp.totton.ac.uk/shibboleth,NULL,Further Education
+Tower Hamlets College,12078,NULL,420,NULL,https://idp.tower.ac.uk/openathens,2723756,Further Education
+Trafford College,1159,NULL,421,"212.219.68.1-254, 212.219.69.1-254, 212.219.70.1-254, 212.219.71.1-254,194.81.17.1, 81.149.169.169",https://idpcove.trafford.ac.uk/shibboleth,NULL,Further Education
+Tresham College of Further and Higher Education,12040,NULL,422,212.219.116.33; 127 network,NULL,54884983,Further Education
+Truro and Penwith College,155259,NULL,423,195.194.74.24-31; 212.219.101.80-95; 193.63.43.160 - 191,https://shib.truropenwith.ac.uk/shibboleth,NULL,Further Education
+Tyne Metropolitan College,12170,NULL,424,212.219.143.192 to 255; 195.194.164.129; 195.194.164.131,NULL,7966713,Further Education
+Uxbridge College,12169,NULL,425,212.219.118.178; 212.219.118.179; 212.219.243.146; 212.219.243.147,VLE moodle - http://uxcolmoodle.uxbridge.ac.uk,NULL,Further Education
+Varndean College,11955,NULL,426,212.219.118.80 - 96,NULL,NULL,Further Education
+Wakefield College,8227,NULL,427,194.82.192.240,https://wakshib1.wakefield.ac.uk/shibboleth,NULL,Further Education
+Walford & North Shropshire College,12114,NULL,428,194.81.36.11,https://idp.wnsc.ac.uk/idp/shibboleth,NULL,Further Education
+Walsall College,8237,22538479,429,"195.195.47.*; 217.205.45.18,195.195.46.*;",NULL,NULL,Further Education
+Waltham Forest College,12079,NULL,430,195.195.199.2,https://idp.waltham.ac.uk/openathens,2422452,Further Education
+Warrington Collegiate Institute,8254,NULL,431,NULL,https://idp.warrington.ac.uk/openathens,53991426,Further Education
+Warwickshire College,12046,NULL,432,212.44.14.10; 212.219.41.130; 212.219.41.140;212.219.41.170;212.219.189.5; 212.219.189.10; 212.219.45.30; 212.219.45.10; 212.219.44.130; 212.219.44.140,https://idp.warkscol.ac.uk/shibboleth,NULL,Further Education
+WEA (South Wales),155494,NULL,433,81.178.28.1 - 81.178.28.5,NULL,NULL,Further Education
+West Cheshire College,12022,NULL,435,195.194.166.1,https://wccidp.west-cheshire.ac.uk/shibboleth,NULL,Further Education
+West Herts College,12173,NULL,436,195.194.244.0 - 195.194.247.255,https://idp.westherts.ac.uk/idp/shibboleth,2015978,Further Education
+West Lothian College,11935,NULL,438,192.168.10.0/24; 192.168.20.0/24; 192.168.30.0/24; 192.168.40.0/24; 192.168.50.0/24; 192.168.60.0/24; 10.20.1-4.0-24,https://idp.west-lothian.ac.uk/shibboleth,1786977,Further Education
+West Nottinghamshire College,5313,NULL,439,212.219.188.224-254,https://shibidp.wnc.ac.uk/shibboleth,NULL,Further Education
+West Suffolk College,11959,NULL,440,194.74.136.32-48; 212.219.117.224-255; 195.195.131.*; 194.73.248.192-223; 193.60.199.32-60,https://idp.wsc.ac.uk/shibboleth,1644116,Further Education
+West Thames College,4098,NULL,441,212.219.100.3,https://idp.west-thames.ac.uk/metadata,2330918,Further Education
+Westminster Kingsway College,11658,NULL,442,194.82.255.245-8,https://shibboleth.westking.ac.uk/idp/shibboleth,NULL,Further Education
+Weston College,9943,NULL,443,212.219.57.126; 212.219.74.122,NULL,NULL,Further Education
+Weymouth College,11649,NULL,444,194.66.199.235,https://idp.weymouth.ac.uk/idp/profile/Shibboleth/SSO,NULL,Further Education
+Wigan and Leigh College,8592,NULL,445,194.83.191.3,https://idp.wigan-leigh.ac.uk/shibboleth,1806947,Further Education
+Wilberforce College,12037,NULL,446,195.195.239.238,https://idp.wiltshire.ac.uk/idp/shibboleth,NULL,Further Education
+Wiltshire College,8020,NULL,447,195.195.247.128-195.195.247.255; 195.195.247.96 - 195.195.247.127; 212.219.0.129 - 169,https://idp.wiltshire.ac.uk/idp/shibboleth,NULL,Further Education
+Winstanley College,11668,NULL,448,212.219.56.194; 212.219.56.203,https://isa.winstanley.ac.uk/idp/shibboleth,NULL,Further Education
+Wirral Metropolitan College,8679,NULL,449,194.66.11.42 - 194.66.11.43,https://shibby.wmc.ac.uk/shibboleth-idp,NULL,Further Education
+Woking College,12180,NULL,450,212.219.90.209-223,https://idp.woking.ac.uk/shibboleth,NULL,Further Education
+Woodhouse College,12080,NULL,451,212.219.118.148; 212.219.118.144 - 212.219.118.151,NULL,NULL,Further Education
+Worcester College of Technology,8705,auto447775,452,195.195.201.2 - 195.195.201.30,https://idp.wortech.ac.uk/shibboleth,NULL,Further Education
+Worcester Sixth Form College,11550,NULL,453,212.219.59.228; 212.219.59.236; 212.219.59.226; 212.219.59.230; 84.92.95.166,https://idp.wsfc.ac.uk/openathens,1759794,Further Education
+Working Men's College,12077,NULL,454,NULL,NULL,NULL,Further Education
+Wyggeston and Queen Elizabeth I College,12058,NULL,456,212.219.90.118,https://shibidp.wqeic.ac.uk/shibboleth,NULL,Further Education
+Wyke Sixth Form College,12038,NULL,457,NULL,NULL,NULL,Further Education
+Xaverian College,12092,NULL,458,212.219.48.1 - 254,https://idp.xaverian.ac.uk/shibboleth,2337956,Further Education
+"Yale College, Wrexham",12184,id22639896,459,194.83.84.0/24; 194.83.84.16,https://idp.yale-wrexham.ac.uk/shibboleth,220,Further Education
+Yeovil College,8740,NULL,460,212.219.91.241; 212.219.242.150,https://idp.yeovil.ac.uk/idp/shibboleth,NULL,Further Education
+York College,9958,NULL,461,195.195.247.18,https://idp.yorkcollege.ac.uk/entity,NULL,Further Education
+Yorkshire Coast College,12137,NULL,462,195.195.161.240-254,NULL,15739166,Further Education
+Ystrad Mynach College,12028,NULL,463,NULL,https://idp.ystrad-mynach.ac.uk/idp/shibboleth,NULL,Further Education
+Aberystwyth University,1026,CID1286,464,144.124.*.*;,https://shibboleth.aber.ac.uk/shibboleth,NULL,Higher Education
+Anglia Ruskin University,2369,anglia ruskin university,465,193.63.55.0-56.255; 194.66.160.0-163.255; 194.82.44.0-47.255; 194.83.40.0-47.255; 195.194.92.0-95.255; 212.219.52.0-54.255; 195.194.16.0-17.255;195.194.252.0-255.255  ,https://idp.anglia.ac.uk/openathens,133,Higher Education
+Aston University,1722,NULL,467,134.151.*.*,https://shib01.aston.ac.uk/idp/shibboleth,102,Higher Education
+Bangor University,1506,Bangor,468,147.143.*.*,https://idp.bangor.ac.uk/shibboleth,NULL,Higher Education
+Bath Spa University,1554,1164,469,194.81.80.52; 194.81.80.60; 194.83.160.52,https://idp.bathspa.ac.uk/shibboleth,146931,Higher Education
+Birkbeck College,4894,15001024,470,192.60.224.*; 192.84.212.*; 193.61.3-16.*; 193.61.18-46.*; 193.61.48-62.*; DomainName: bbk.ac.uk,https://idp.bbk.ac.uk/openathens,15022,Higher Education
+Birmingham City University,1725,NULL,471,193.60.128.* - 193.60.143.*,https://zed.bcu.ac.uk/entity,187,Higher Education
+Bishop Grosseteste University College Lincoln,4545,NULL,472,194.81.86.249,https://idp.bishopg.ac.uk/shibboleth,580908,Higher Education
+Bournemouth University,6657,Bournemouth,473,194.66.64 - 79.*; 194.80.64 - 71.*,https://idp.bournemouth.ac.uk/shibboleth,261,Higher Education
+Brunel University,3890,CID-55111822,474,134.83.*.*; 2 dedicated Webfeat IP's -216.17.112.187; 216.17.120.187,https://shibsles.brunel.ac.uk/idp/shibboleth,NULL,Higher Education
+Buckinghamshire New University,3889,NULL,475,192.149.238.*; 193.63.224.* - 193.63.231.*; 194.81.64.* - 194.81.71.*,https://idp.bucks.ac.uk/entity,NULL,Higher Education
+Canterbury Christ Church University,2238,80013242,476,194.82.210.210; 194.82.210.211  ,https://idp.canterbury.ac.uk/shibboleth,140,Higher Education
+Cardiff Metropolitan University,6003,NULL,644,193.62.97.101; 193.62.97.111; 193.62.97.20; 193.62.98.101; 193.62.100.22; 193.62.102.23,https://idp.uwic.ac.uk/metadata,NULL,Higher Education
+Cardiff University,2112,5000358,477,131.251.*.*; 193.63.112.*-127.*; 195.194.64.*-67.*,https://idp.cf.ac.uk/shibboleth-idp/sso; EntityId: https://idp.cardiff.ac.uk/shibboleth,NULL,Higher Education
+Central School of Speech and Drama,4685,NULL,478,194.81.235.1-255,https://idp.cssd.ac.uk/shibboleth,1352949,Higher Education
+"City University, London",4895,NULL,479,138.40.3.55 - library proxy server,https://idp.city.ac.uk/shibboleth,141,Higher Education
+Conservatoire for Dance and Drama,129368,NULL,480,212.219.240.238; 195.188.238.252; 193.60.199.36; 192.168.10.10; 192.*; 194.*; 194.83.10.249; 192.168.254.100-192.168.254.200,https://idp.cdd.ac.uk/shibboleth,12660575,Higher Education
+Courtauld Institute of Art,4897,auto 64743,481,193.63.184.0 - 193.63.184.254,https://idp.courtauld.ac.uk/shibboleth,114345,Higher Education
+Coventry University,2706,10000794,482,81.208.128-255.*; 193.61.104-107.*; 194.66.32-63.*; Exclude 194.66.32.021 walk-in WiFi,https://coventry.ac.uk/idp,NULL,Higher Education
+Cranfield University,2717,cranfield (cid - 35009827),483,138.250.0.0-138.250.255.255; 193.63.240.0-193.63.247.255; 195.195.246.5,https://shibboleth.cranfield.ac.uk/openathens,106,Higher Education
+Cubeworks,NULL,NULL,882,NULL,NULL,NULL,Higher Education
+De Montfort University,4487,20000478,484,146.227.*.*,https://login.library.dmu.ac.uk/oala/metadata,107,Higher Education
+Durham University,3057,durham,595,129.234.*.*,urn:mace:ac.uk:sdss.ac.uk:provider:identity:dur.ac.uk,145,Higher Education
+Edge Hill University,6249,10000428,485,193.62.0* - 193.62.15*; 205.227.90.37;192.168.10*,https://shibboleth.edgehill.ac.uk/shibboleth,NULL,Higher Education
+Edinburgh College of Art,11994,NULL,486,194.81.88-95.*,https://ecashib.eca.ac.uk,NULL,Higher Education
+Edinburgh Napier University,3121,"napier, CID 80004995",488,146.176.*.*,https://shib1.napier.ac.uk/entity,166,Higher Education
+Glasgow Caledonian University,3525,gcal,490,193.62.224.* - 255.*,https://idp.gcal.ac.uk/shibboleth,149,Higher Education
+Glasgow School of Art,3517,85008528,492,194.81.28 - 31.*,http://shibbsrv1.gsa.ac.uk,97777,Higher Education
+Glyndŵr University,8725,NULL,863,192.94.235.0; 193.61.192.0; 193.61.193.0; 194.80.205.0;194.82.118.0; 194.82.173.0; 194.82.119.0; 195.195.227.0; 194.82.118.105; subnet mask 255.255.255.0.,https://idpglyndwr.ac.uk/shibboleth,168,Higher Education
+"Goldsmiths College, University of London",4898,NULL,495,158.223.*.*,https://idp.goldsmiths.ac.uk/idp/shibboleth,NULL,Higher Education
+Guildford School of Acting,155410,NULL,496,NULL,NULL,NULL,Higher Education
+Guildhall School of Music and Drama,4691,NULL,497,212.219.118.170,https://idp.gsmd.ac.uk/openathens,12771504,Higher Education
+Harper Adams University College,6000,NULL,498,193.61.96.0 – 193.61.99.255,https://idp.harper-adams.ac.uk/entity,152,Higher Education
+Heriot-Watt University,3120,NULL,499,137.195.*.*; 216.147.208.75; 216147.221.75; 195.195.234.176,https://shib1.hw.ac.uk/shibboleth,111,Higher Education
+Heythrop College,4899,NULL,501,194.81.87.2 - 194.81.87.254,NULL,1259011,Higher Education
+Imperial College London,4615,cid-40000023,502,155.198.*.*; 129.31.*.*; 146.169.*.*; 192.195.105.*.*; 193.61.70.*; 193.60.222.*; 192.156.162.*; 146.179.128-159.*,https://shibboleth.imperial.ac.uk/shibboleth,NULL,Higher Education
+Institute of Cancer Research,5053,NULL,503,193.62.218-219.*; 193.63.216-219.*; 194.80.195.*; 194.81.84-85.*,NULL,NULL,Higher Education
+Institute of Education,4901,NULL,504,144.82.31.1-39.255,https://idp.ioe.ac.uk/openathens; https://idp1.ioe.ac.uk/shibboleth,81180,Higher Education
+Keele University,4212,NULL,505,160.5.*.*,https://openathens.keele.ac.uk/oala/metadata,129,Higher Education
+King's College London,4616,5000251,506,81.137.43.24-32; 217.40.26.152-160; 137.73.*.*; 159.92.*.*; 193.61.200-207.*; 194.83.136-143.*;,https://idp.kcl.ac.uk/shibboleth,112,Higher Education
+Kingston University,4264,80002094,507,141.241.*.*,https://idp.kingston.ac.uk/shibboleth,155,Higher Education
+Lancaster University,4396,1000163 or 35016171,508,194.80.32.*,https://idp.lancs.ac.uk/shibboleth,156,Higher Education
+Leeds College of Music,4459,NULL,509,195.195.13.0-255,https://lcmshibboleth.lcm.ac.uk/shibboleth,NULL,Higher Education
+Leeds Metropolitan University,4467,NULL,510,160.9.0.0 - 160.9.255.255,https://idp.leedsmet.ac.uk/shibboleth,160,Higher Education
+Leeds Trinity & All Saints,12054,trincol,511,192.190.202.10-12,https://idp.leedstrinity.ac.uk/shibboleth,136490,Higher Education
+Liverpool Hope University,4588,NULL,512,194.81.33.2,https://shib.hope.ac.uk/idp/shibboleth,1095871,Higher Education
+Liverpool Institute for Performing Arts,11584,NULL,513,194.81.169.1,https://idp.lipa.ac.uk/shibboleth,136468,Higher Education
+Liverpool John Moores University,4589,LJM,514,150.204.*.*,https://idp.ljmu.ac.uk/shibboleth,203,Higher Education
+London Business School,4589,965,515,163.119.0.* - 255.0.*,https://idp.london.edu/shibboleth,137688,Higher Education
+London Metropolitan University,4902,468065,516,140.97.*.*; 163.167.*.*;,https://idp.londonmet.ac.uk/entity,NULL,Higher Education
+London School of Economics & Political Science,4905,704,864,158.143.*.*,urn:mace:ac.uk:sdss.ac.uk:provider:identity:lse.ac.uk; https://lse.ac.uk/idp,NULL,Higher Education
+London School of Hygiene & Tropical Medicine,4906,NULL,865,193.63.248.0/22; 194.80.228.0/22; 194.80.40.0/24; 194.80.42.0/24,https://idp.lshtm.ac.uk/shibboleth;  https://idp.lshtm.ac.uk/shibboleth-xfr,NULL,Higher Education
+London South Bank University,4914,sout1486520600,519,136.148.*.*; 136.148.76.173; 205.227.90.118,https://shibboleth.lsbu.ac.uk/shibboleth,NULL,Higher Education
+Loughborough University,5156,NULL,520,131.231.*.*; 158.125.*.*;,https://idp.lboro.ac.uk/shibboleth,163,Higher Education
+Manchester Metropolitan University,5289,NULL,521,149.170.*.*,https://idp.mmu.ac.uk/shibboleth,165,Higher Education
+Middlesex University,4907,NULL,522,158.94.*.*; 194.80.135.80-95; 41.202.32.176-191;,https://idp.mdx.ac.uk/shibboleth,164,Higher Education
+Newcastle University,5994,1724,617,128.240.*.*,https://gateway.ncl.ac.uk/idp/shibboleth,NULL,Higher Education
+"Newman University College, Birmingham",1713,id269894,523,193.63.174.0/24,https://idp.newman.ac.uk/metadata,202,Higher Education
+Northern School of Contemporary Dance,12050,NULL,524,194.83.10.0 – 194.83.10.255,NULL,NULL,Higher Education
+Northumbria University,5995,NULL,619,192.173.1.000 - 192.173.4.182; 192.173.4.184; 192.173.4.186 - 192.173.4.255; 193.63.32.000 - 193.63.39.255; 212.219.152.000 - 212.219.159.255; 212.219.25.000 - 212.219.34.255,https://login.northumbria.ac.uk/idp/shibboleth,NULL,Higher Education
+Norwich University College of the Arts,6103,NULL,525,212.219.140*; 212.219.141*; 194.83.56.144 - 159,https://idp.nuca.ac.uk/shibboleth,1689854,Higher Education
+Nottingham Trent University,6122,ntu,526,152.71.*.*; 194.82.121.59,https://shib2idp.ntu.ac.uk/shibboleth; https://shib2idp.ntu.ac.uk/idp/shibboleth,215,Higher Education
+Oxford Brookes University,6395,brookes,528,161.73.*.*;,https://idp.brookes.ac.uk/shibboleth,171,Higher Education
+Queen Margaret University,3122,qmucoll,529,193.62.47.*; 194.83.30.*; 194.83.92.*; 194.83.93.*;,https://idp.qmu.ac.uk/openathens; https://shib2.qmu.ac.uk/idp/shibboleth,NULL,Higher Education
+"Queen Mary, University of London",4617,NULL,531,138.37.*.*,https://shibboleth-idp.stu.qmul.ac.uk/idp,115,Higher Education
+Queen's University Belfast,1596,qub & # 1494,866,143.117.*.* exc. 143.117.14.194 & 14.195,https://qub.ac.uk/openathens; https://qub.ac.uk/shibboleth,176,Higher Education
+Ravensbourne College of Design and Communication,2482,NULL,533,194.35.93.*,https://idp.rave.ac.uk/openathens,127,Higher Education
+Robert Gordon University,1018,rguni; CID10002991,534,194.66.84.*; 193.63.235.*, https://shib2idp.rgu.ac.uk,237,Higher Education
+Roehampton University,4920,roehamp,536,194.80.240.0-194.80.255.255,https://idp.roehampton.ac.uk/shibboleth,240,Higher Education
+Rose Bruford College,11637,NULL,537,194.83.197.1 - 254;,https://idp.bruford.ac.uk/shibboleth,3637138,Higher Education
+Royal Academy of Music,5291,NULL,538,193.61.65.100,https://idp.ram.ac.uk/shibboleth,54442887,Higher Education
+Royal Agricultural College,2522,NULL,539,194.80.134.136 – 194.80.134.143,https://idp.rac.ac.uk/shibboleth,2335850,Higher Education
+Royal College of Art,4910,NULL,540,194.80.196.0-255; 194.80.197.0-255; 194.80.198.0-255; 194.80.199.0-255;,https://idp.rca.ac.uk/shibboleth,177,Higher Education
+Royal College of Music,4911,NULL,541,194.81.216.1 - 254,https://idp.rcm.ac.uk/shibboleth,5783604,Higher Education
+Royal Conservatoire of Scotland,3519,NULL,544,194.81.230.*,https://shib.rsamd.ac.uk/shibboleth,NULL,Higher Education
+"Royal Holloway, University of London",3162,10000862,542,134.219.0.0-134.219.115.255; 134.219.116.29-134.219.223.255; 134.219.224.25-134.219.255.255,https://idp.rhul.ac.uk/shibboleth,121,Higher Education
+Royal Northern College of Music,5290,NULL,543,193.63.96.* - 193.63.99.*;,https://idp.rncm.ac.uk/shibboleth,1320365,Higher Education
+"Royal Veterinary College, University of London",4912,NULL,867,195.195.217.0 – 195.195.217.255,https://idp.rvc.ac.uk/shibboleth,153142,Higher Education
+Royal Welsh College of Music & Drama,57340,NULL,735,194.82.127.0 - 194.82.127.255  and  194.66.205.0 - 194.66.205.255,https://shibboleth.rwcmd.ac.uk/shibboleth,NULL,Higher Education
+School of Oriental and African Studies,4913,NULL,868,195.195.176-183.*; 212.219.136-139.*; 212.219.236-239.*,https://idp.soas.ac.uk/entity; https://shibidp.soas.ac.uk/entity,241,Higher Education
+"School of Pharmacy, University of London",12076,NULL,548,193.60.221.*; 194.66.95.*,https://idp.pharmacy.ac.uk/shibboleth,150894,Higher Education
+Scottish Agricultural College,3123,NULL,549,143.234.192.1-254; 193.63.176.1-254; 193.63.178.1-254; 194.83.148.0 - 194.83.151.255; 195.194.216.1-254,https://idp.sac.ac.uk/openathens,975348,Higher Education
+Sheffield Hallam University,7314,NULL,551,143.52.*.*;,https://idp.shu.ac.uk/shibboleth,NULL,Higher Education
+Southampton Solent University,7422,NULL,869,194.81.145.*-159.*; 193.63.196.*-197.*; 193.63.200.*;,https://idp1.solent.ac.uk/idp/shibboleth,NULL,Higher Education
+St George's University of London,4915,NULL,553,194.82.50.2; 194.82.51.27; 194.82.51.28,urn:mace:ac.uk:sdss.ac.uk:provider:identity:shibboleth-i.sgul.ac.uk; https://shibboleth2.sgul.ac.uk/idp/shibboleth,157627,Higher Education
+St Mary's University College,1598,NULL,554,194.80.47.2 - 194.80.47.31,https://qub.ac.uk/stmarys,6594981,Higher Education
+"St Mary's University College, Twickenham",62693,SMUCOL,555,194.80.236-239.*,https://idp1.smuc.ac.uk/idp/shibboleth,NULL,Higher Education
+Staffordshire University,7703,NULL,556,194.66.175.*; 195.195.104-111.*,https://idp.staffs.ac.uk/shibboleth,183,Higher Education
+Stranmillis University College,64576,NULL,557,194.80.104.1 - 254,https://qub.ac.uk/stranmillis,6589644,Higher Education
+Swansea Metropolitan University,7758,NULL,558,193.62.88-91.*; 212.219.60-61.*,https://idp.smu.ac.uk/openathens,223,Higher Education
+Swansea University,7759,16,559,137.44.*.*,https://idp.swan.ac.uk/openathens,250,Higher Education
+Teesside University,5462,teesside,637,152.105.*.*,https://idp.tees.ac.uk/athens,242,Higher Education
+The Arts University College at Bournemouth,6656,NULL,466,195.194.50.*,https://idp.aib.ac.uk/openathens,1717941,Higher Education
+The Open University,5488,cid-195485 & 10000304,527,137.108.145.*; 137.108.143.99; 137.108.143.133,https://idp.open.ac.uk/openathens; https://shibboleth.open.ac.uk/shibboleth,170,Higher Education
+Trinity Laban Conservatoire of Music and Dance,169323,NULL,737,194.82.96.254; 194.82.98.254; 195.195.131.*,https://oala.trinitylaban.ac.uk/oala/metadata,NULL,Higher Education
+University Campus Suffolk,102099,NULL,568,194.80.204.0-255,https://idp.ucs.ac.uk/shibboleth,15931023,Higher Education
+University College Birmingham,1711,NULL,569,NULL,https://idp.ucb.ac.uk/shibboleth,2263469,Higher Education
+University College Falmouth,3314,auto 288640,571,193.61.64.8; 193.61.64.9,https://shibboleth.falmouth.ac.uk/idp/shibboleth,NULL,Higher Education
+University College London,4919,80002015,572,128.16.*.*; 128.40.*.*; 144.82.0.*-144.82.30.*; 144.82.40.*-144.82.95.*; 144.82.100.*-144.82.249.*; 144.82.252.*-144.82.255.*; 192.160.177.*-192.160.179.*; 193.60.221.* 194.66.95.*; 193.60.226.*-193.60.233.*; 193.60.239.*; 193.60.241.0-193.60.241.63; 193.60.242.*-193.60.249.*; 193.60.255.*; 193.62.64.*-193.62.79.*; 194.66.92.*; 194.82.240.*-194.82.248.*; 194.83.52.*-194.83.55.*; 195.195.96.*-195.195.103.*,https://shib-idp.ucl.ac.uk/shibboleth; https://shib2-idp.ucl.ac.uk/shibboleth,NULL,Higher Education
+University College Plymouth St Mark and St John,6629,NULL,870,194.80.168.101; 146.97.145.1-2,https://idp.marjon.ac.uk/idp/shibboleth,NULL,Higher Education
+University for the Creative Arts,121205,NULL,589,193.62.44.*; 194.80.225.*; 194.82.131.*,https://idp.ucreative.ac.uk/shibboleth,7496615,Higher Education
+University of Aberdeen,1019,80004369,574,139.133.*.*; 143.234.32-47.*,https://shibserv.abdn.ac.uk/shibboleth,NULL,Higher Education
+University of Abertay Dundee,3041,NULL,576,193.60.160.0 - 193.60.175.255,https://idp0.abertay.ac.uk/shibboleth,NULL,Higher Education
+University of Bath,1555,cid-56018429,578,138.38.*.*,https://idp.bath.ac.uk/shibboleth,NULL,Higher Education
+University of Bedfordshire,5195,LUTON,579,193.62.132.1-193.62.135.255; 194.80.208.1-194.80.223.225; 212.219.119.1-212.219.119.127; 212.219.128.1-212.219.130.255,https://idptest.beds.ac.uk/entity; https://idp.beds.ac.uk/entity,NULL,Higher Education
+University of Birmingham,1724,Birmingham,580,147.188.*.*,https://idp.bham.ac.uk/shibboleth; https://idp2.bham.ac.uk/idp/shibboleth,NULL,Higher Education
+University of Bolton,1796,NULL,581,193.63.48-49.*; 194.82.8-11.*,https://idp.bolton.ac.uk/openathens; https://bolton.ac.uk/oala/metadata,136,Higher Education
+University of Bradford,1905,bradford; id22538490,582,143.53.*.*,https://idp.brad.ac.uk/shibboleth,213,Higher Education
+University of Brighton,1947,brighton,583,192.173.128-135.*; 193.62.160-191*; 194.81.192-207.*; 194.83.112-127.*,https://idp.brighton.ac.uk/openathens; https://idp.brighton.ac.uk/shibboleth,NULL,Higher Education
+University of Bristol,1980,1819,584,137.222.*.*,https://idp.bris.ac.uk/shibboleth,NULL,Higher Education
+University of Cambridge,2152,10000098,585,131.111.*.*; 129.169.*.*; 128.232.*.*; 193.60.80.*; 193.60.83.*; 193.60.85.*; 193.60.90.*; 193.60.91.*; 193.60.92.*; 193.60.93.*; 193.60.94.*; 193.60.95.*; 216.17.113.207; 216.17.121.207,https://shib.raven.cam.ac.uk/shibboleth,NULL,Higher Education
+University of Central Lancashire,6723,35001235,586,193.61.240.* - 193.61.255.*,https://idp.uclan.ac.uk/shibboleth; https://shibidp.uclan.ac.uk/idp/shibboleth,130,Higher Education
+University of Chester,11965,Chester,587,"193.62.27.*; 194.80.193.*; 194.82.172.*; 195.195.128.*, 194.82.32-35.*",https://idp.chester.ac.uk/shibboleth,126,Higher Education
+University of Chichester,2476,NULL,588,194.66.216-219.*; 194.81.232.*,https://boleth.chi.ac.uk/idp/shibboleth,NULL,Higher Education
+University of Cumbria,9480,SMARCOL:ADM,590,193.62.158-159.*; 194.81.188-191.*; 194.83.183.1-254; 195.195.184-187.*;,https://idp.cumbria.ac.uk/idp/shibboleth,NULL,Higher Education
+University of Derby,2939,derby,592,195.194.178.252; 195.194.178.200; 195.194.178.251; 193.60.149.104; 193.60.149.105; 193.60.149.88,https://idp.derby.ac.uk/shibboleth,144,Higher Education
+University of Dundee,3042,35000955,593,134.36.0.0 - 134.36.10.255; 134.36.12.0 - 134.36.255.255,https://idp.dundee.ac.uk/shibboleth,NULL,Higher Education
+University of East Anglia,6106,10000094; cid-43024525,596,139.222.*.*,https://idp.uea.ac.uk/shibboleth,188,Higher Education
+University of East London,4917,NULL,597,161.76.*.*;,https://idp.uel.ac.uk/shibboleth,189,Higher Education
+University of Edinburgh,3124,35000380,598,129.215.*.*; 194.81.241.0-194.81.255.255; 193.63.65.*.*; 194.80.111.*.*; 192.82.153.*.*; 192.107.168.*.*; WebFeat IP: 216.147.209.102; 216.147.216.137;,urn:mace:ac.uk:sdss.ac.uk:provider:identity:sdss.ac.uk; https://idp.ed.ac.uk/shibboleth,7886221,Higher Education
+University of Essex,2591,NULL,600,155.245.*.*;,https://idp0.essex.ac.uk/shibboleth; ,185,Higher Education
+University of Exeter,3286,exeter,601,144.173.*.*; 205.227.90.59,https://elibrary.exeter.ac.uk/idp/shibboleth,NULL,Higher Education
+University of Glamorgan,6654,glamorgan,602,81.87.32.0-47.255;193.63.128.0-159.255; 193.60.200.0-207.255; 193.60.219.0-219.255; 194.82.127.0-194.82.127.255; 194.66.205.0-194.66.205.255,https://shidp.glam.ac.uk/shibboleth,NULL,Higher Education
+University of Glasgow,3526,10000147,603,"130.209.*.*, 194.36.1.*, 194.80.44-45.*, 194.80.110.*, 194.81.171-173.*",https://idp.gla.ac.uk/shibboleth,NULL,Higher Education
+University of Gloucestershire,2376,CID:2583,605,193.61.84.*; 194.66.192 - 195.*; 194.81.184-187.*; 195.195.4.*,https://idp.glos.ac.uk/shibboleth; https://idp1.glos.ac.uk/entity,NULL,Higher Education
+University of Greenwich,4918,gree-325611384,606,193.60.48-79.*,https://idp.gre.ac.uk/shibboleth,150,Higher Education
+University of Hertfordshire,3769,herts,607,147.197.*.*,https://idp.herts.ac.uk/shibboleth,225,Higher Education
+University of Huddersfield,4013,huddersfield,608,161.112.*.*,https://idp.hud.ac.uk/shibboleth,153,Higher Education
+University of Hull,4019,691,609,150.237.0.1-150.237.255.254; 194.83.246.0-194.83.247.255,https://idp.hull.ac.uk/shibboleth,260,Higher Education
+University of Kent,2240,200 / kent:adm,610,129.12.11.64 - 129.12.11.95,https://sid.kent.ac.uk/shibboleth,190,Higher Education
+University of Leeds,4468,leeds,611,129.11.*.*,https://passport01.leeds.ac.uk/idp/shibboleth,157,Higher Education
+University of Leicester,4488,leicester; 10000366; CID4877,612,143.210.*.* EZ Proxy Server 143.210.133.22,https://idp.le.ac.uk/shibboleth,124,Higher Education
+University of Lincoln,4547,humberuni,613,NULL,https://idp.lincoln.ac.uk/shibboleth,228,Higher Education
+University of Liverpool,4591,CID 323,614,138.253.*.*; 193.63.93.*; 194.66.240-246.*,urn:mace:eduserv.org.uk:athens:provider:liv.ac.uk; https://shibboleth.liv.ac.uk/idp/shibboleth,NULL,Higher Education
+University of London,3163,NULL,615,193.63.81.* [WAM proxy server on 193.63.81.241],https://idp.london.ac.uk/shibboleth; https://idp.londonexternal.ac.uk/shibboleth,150912,Higher Education
+University of Manchester,5292,35014851,616,130.88.*.*; Webfeat IP: 216.147.212.169; 216.147.218.242,https://shib.manchester.ac.uk/shibboleth,NULL,Higher Education
+University of Northampton,6087,35008263,618,193.61.80.* - 193.61.83.*; 193.63.44.* - 193.63.45.*; 194.81.96.* - 194.81.111.*; 195.195.92.* - 195.195.95.*; 195.195.156.* - 195.195.159.*195.195.228.*,https://idp.northampton.ac.uk/shibboleth,4700697,Higher Education
+University of Nottingham,6123,789lkpr,620,UK: 128.243.*.*; Malaysia (if applicable): 203.188.235.1-15; 203.80.21.*; 203.217.128.0-131.255: China (if applicable): 220.191.168.0-31 -CHINANET; 121.192.0.1-254 -CERNET,https://idp.nottingham.ac.uk/shibboleth,114,Higher Education
+University of Oxford,6396,NULL,621,129.67.*.*; 163.1.*.*; 192.76.26.*; 192.76.27.*,https://oucs-tricky.oucs.ox.ac.uk/idp/shibboleth,NULL,Higher Education
+University of Plymouth,6633,10000050,622,141.163.***.***/000.000 - 255.255,https://idp.plymouth.ac.uk/shibboleth; https://idp.plymouth.ac.uk/shibboleth-idp,174,Higher Education
+University of Portsmouth,6697,NULL,623,148.197.*.*,https://idp.port.ac.uk/entity,123,Higher Education
+University of Reading,6816,NULL,624,134.225.*.*; 192.100.154.*; 192.133.244.*; 193.171.166.0/24; 193.61.124.0/22; 193.61.124.*,https://shib.auth.reading.ac.uk/metadata,116,Higher Education
+University of Salford,7046,2510031,625,146.87.*.*,https://idp.salford.ac.uk/shibboleth,131,Higher Education
+University of Sheffield,7315,Sheffield:adm,626,143.167.*.*,https://idp.shef.ac.uk/shibboleth,NULL,Higher Education
+University of Southampton,7423,19,627,152.78.*.*; 139.166.*.*,https://webauth.soton.ac.uk/shibboleth,NULL,Higher Education
+University of St Andrews,7486,NULL,628,138.251.*.*,https://idp.st-andrews.ac.uk/shibboleth; https://idp.st-andrews.ac.uk/idp/shibboleth,132,Higher Education
+University of Stirling,7622,stirling,630,139.153.*.*,https://idp.shibboleth.stir.ac.uk/shibboleth,NULL,Higher Education
+University of Strathclyde,3527,CID 5251,632,130.159*.*,https://netlogin.strath.ac.uk/shibboleth,NULL,Higher Education
+University of Sunderland,7735,cid-35015688,634,157.228.*.*,https://idp.sunderland.ac.uk/shibboleth,128,Higher Education
+University of Surrey,3660,1694,635,131.227.*.*,https://www.surrey.ac.uk/openathens,184,Higher Education
+University of Sussex,1948,35005003,636,139.184.*.* or 139.184.0.0 - 139.184.255.255,https://idp.sussex.ac.uk/shibboleth,NULL,Higher Education
+University of the Arts London,4903,NULL,638,195.195.64-84.*; 194.80.28-31.*; 195.194.146-147.*; 195.194.24-25.*,https://idp1.arts.ac.uk/entity,NULL,Higher Education
+University of the Highlands and Islands,7709,CID-53019617,565,194.35.194.210; 194.35.219.96 - 194.35.219.127; 194.35.219.102; 194.35.219.103; 194.35.219.118; 194.35.219.100; 194.35.219.101; 194.35.219.117; fcache.uhi.ac.uk; wwwcache.uhi.ac.uk,urn:mace:ac.uk:sdss.ac.uk:provider:identity:uhi.ac.uk; ,149464,Higher Education
+University of the West of England,1981,82002622,639,164.11.*.*,https://idp.uwe.ac.uk/entity,192,Higher Education
+University of the West of Scotland,6413,paisley,640,146.191.*.*; 194.82.40.* - 43.*; 212.219.172.*,https://www.uws.ac.uk/shibboleth,38298747,Higher Education
+University of Ulster,2596,cid-3201,642,193.61.128*-193.61.191*; 194.80.80*-194.80.103*,https://idp.ulster.ac.uk/shibboleth,246,Higher Education
+University of Wales Newport,1027,NULL,873,193.63.82.*; 193.63.212.* - 193.63.215.*; 194.82.56.* - 194.82.63.*,https://idp.newport.ac.uk/shibboleth,151,Higher Education
+University of Wales Trinity St David,4393; 2284,lampeter; trinitycol,645,Carmarthen campus: 193.63.204.*; 193.63.205.*; 193.63.206.*; 193.63.207.*; Where * = 0 - 255. Lampeter campus: 193.62.25.0/24; 194.80.176.0/24; 194.80.177.0/24; 194.80.178.0/24; 194.80.179.0/24,https://idp.lamp.ac.uk/shibboleth; https://idp.trinity-cm.ac.uk/shibboleth,568882,Higher Education
+University of Warwick,2707,5352; 55; 46001432,646,Please contact institution for IP address information,https://idp.warwick.ac.uk/idp/shibboleth,193,Higher Education
+University of West London,7364,NULL,560,193.63.0.0 - 193.63.31.255,urn:mace:eduserv.org.uk:athens:provider:tvu.ac.uk,NULL,Higher Education
+University of Westminster,4921,westminster,647,161.74.*.*,https://idp.wmin.ac.uk/entity,173,Higher Education
+University of Winchester,8629,35012655,648,194.66.200.* - 194.66.203.*; 217.45.128.209 - 217.45.128.213,https://idp.winchester.ac.uk/shibboleth,256,Higher Education
+University of Wolverhampton,8695,wolverhampton,649,134.220.*.*; 194.81.215.15,https://oa-idp.wlv.ac.uk/oala/metadata,120,Higher Education
+University of Worcester,8709,worche / 35000397,650,193.62.51.*,https://idp.worc.ac.uk/shibboleth; https://idp1.worc.ac.uk/entity,427192,Higher Education
+University of York,8748,york,651,144.32.*.*; 194.83.246-247.*,https://shib.york.ac.uk/shibboleth,NULL,Higher Education
+Wellcome Trust,5072,35012675,652,83.244.194.132; 83.244.194.134; 205.227.90.21; 205.227.90.24,https://idp.wellcome.ac.uk/idp/shibboleth,NULL,Higher Education
+Writtle College,2366,NULL,653,194.66.191.20-23,https://idp.writtle.ac.uk/shibboleth,194,Higher Education
+York St John University,41872,NULL,874,193.61.224.xxx - 193.61.239.xxx,https://idp.yorksj.ac.uk/shibboleth,118,Higher Education
+BBSRC,1031,NULL,656,149.155.*.*; 143.234.72-128.*; 194.80.172.*- 194.80.175.*,https://idp.bbsrc.ac.uk/shibboleth,101; 85826; 85837; 85828; 85827; 85836; 85835; 904316; 85832; 904311; 214267; 85838; 85841; 904299,Research councils
+Medical Research Council,4941,NULL,658,NULL,https://idp.mrc.ac.uk/shibboleth,208,Research councils
+Natural Environment Research Council,7767,NULL,659,"192.171.170.* 192.171.171.* 192.171.190.* 192.171.191.* 194.81.74.* (All NERC Swindon) 192.171.137.* 192.171.138.* 194.66.0.* 194.66.6.* (All British Antartic Survey), 192.171.148.*, 192.171.150-151.*, 192.171.179.*, 192.171.188.*, 192.171.197.*, 192.171.142-144.*, 192.171.147.*,192.171.133.129-254, 192.171.189.1-126, 192.171.145.2-123, 192.171.178.*, (all British Geological Survey). 192.171.130.*, 192.171.172.*, 192.171.192.*, 192.171.199.1-62, 192.171.129.*, 193.62.153.*, 192.171.156.1-125, 192.171.155.*, 192.171.136.*, 192.171.153-154.*, 212.219.37.193-254 (all Centre for Ecology and Hydrology).",https://idp.nerc.ac.uk/openathens,216,Research councils
+Science and Technology Facilities Council,15585,NULL,660,130.246.*.*; 148.79.*.*; 193.62.112-117.*; 193.62.220-223.*; 196.63.74.*; 193.62.45.*; 195.194.122.64; 195.194.120-123.*; 194.66.176-177.*,https://idp01.stfc.ac.uk/shibboleth,232,Research councils
+University of Wales,1027,NULL,724,194.80.131.5; 144.124.248.15,NULL,54507834,Research councils
