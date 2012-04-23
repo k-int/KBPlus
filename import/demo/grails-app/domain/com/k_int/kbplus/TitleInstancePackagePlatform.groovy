@@ -2,10 +2,10 @@ package com.k_int.kbplus
 
 class TitleInstancePackagePlatform {
 
-  String startDate
+  Date startDate
   String startVolume
   String startIssue
-  String endDate
+  Date endDate
   String endVolume
   String endIssue
   String embargo
