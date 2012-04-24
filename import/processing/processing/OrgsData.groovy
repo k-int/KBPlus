@@ -123,6 +123,7 @@ while ((nl = r.readNext()) != null) {
   org.ukfam = nl[5];
   org.athensId = nl[6];
   org.sectorName = nl[7];
+  org.lastmod = System.currentTimeMillis();
 
   org.famId = resolveFAM(ukfam,nl[5])
   // Find from ukfam, @entityID==nl[5]

@@ -90,6 +90,9 @@ class DataloadController {
 
   }
 
+  def updateOrgs() {
+  }
+
   def lookupOrCreateCanonicalIdentifier(ns, value) {
     log.debug("lookupOrCreateCanonicalIdentifier(${ns},${value})");
     def namespace = IdentifierNamespace.findByNs(ns) ?: new IdentifierNamespace(ns:ns).save();

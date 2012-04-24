@@ -124,6 +124,17 @@ while ((nl = r.readNext()) != null) {
                                     db:db, 
                                     stats:stats)
 
+    // Work out exactly how many columns there should be
+    // II : It doesn't appear possible to do this, cant see any logic to number of cols that appear.
+    int expected_num_cols = 15+num_prop_id_cols+num_platforms_listed+1;
+    // if ( nl.size() != expected_num_cols ) {
+    //   println("WARNING row ${so_count} contains ${nl.size()} columns, but we expect ${expected_num_cols}");
+    //   inc('bad_col_count',stats);
+    //   bad=true
+    //   badreason="unexpected number of columns (expected ${expected_num_cols}, got ${nl.size()}"
+    //   so_bad++;
+    // }
+
     for ( int i=0; i<num_platforms_listed; i++ ) {
       int position = 15+num_prop_id_cols+i   // Offset past any proprietary identifiers.. This needs a test case.. it's fraught with danger
       if ( ( nl[position] ) && ( nl[position].length() > 0 ) ) {
