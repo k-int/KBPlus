@@ -177,6 +177,12 @@ while ((nl = r.readNext()) != null) {
 println("All done - processed ${so_count} so records. Bad count=${so_bad}, good=${so_good}");
 println("Stats: ${stats}");
 
+def statsfile = new File("stats.txt");
+statsfile << "${new Date().toString()}\n\nSO import\n--------\n\n"
+stats.each { stat ->
+  statsfile << "${stat.key} : ${stat.value}\n"
+}
+
 def statsfile = new File("so_stats.csv");
 statsfile << "${args[0]},${stats.pkgs_created},${stats.titles_matched_by_identifier},${stats.tipp_created},${stats.titles_matched_by_title},${bad_rows.size()}\n"
 

@@ -96,16 +96,24 @@ int rownum = 0;
 def stats = [:]
 stats.added = 0;
 stats.bad = 0;
+stats.new = 0;
+stats.existing = 0;
+stats.total = 0;
 
 while ((nl = r.readNext()) != null) {
   // institutional_name,ringold_id,ingenta_id,jc_id,ip_range,ukfamf_idp,athens_id,sector_name
   def reason = ""
   rownum++
+  stats.total++
   boolean bad = false;
   String badreason = null;
   def org = db.orgs.findOne(name:nl[0])
   if ( org==null ) {
     org = [:]
+    stats.new++
+  }
+  else {
+    stats.existing++
   }
   org.name = nl[0];
   org.ringoldId = nl[1];
@@ -116,12 +124,10 @@ while ((nl = r.readNext()) != null) {
   org.athensId = nl[6];
   org.sectorName = nl[7];
 
+  org.famId = resolveFAM(ukfam,nl[5])
   // Find from ukfam, @entityID==nl[5]
-  def famnode = ukfam.EntityDescriptor.findAll { it.@entityID==nl[5] }
-  if ( famnode.size() > 0 ) {
-    // println("Located ukfam ${famnode[0].@ID}");
-    org.famId=famnode[0].@ID
-    // db.orgs.save(org);
+  if ( org.famId ) {
+    db.orgs.save(org);
     stats.added++
   }
   else {
@@ -133,3 +139,27 @@ while ((nl = r.readNext()) != null) {
 
 
 println("${stats}");
+
+def statsfile = new File("stats.txt");
+statsfile << "${new Date().toString()}\n\nOrgs import\n-----------\n\n"
+stats.each { stat ->
+  statsfile << "${stat.key} : ${stat.value}\n"
+}
+
+def resolveFAM(xmldoc, code) {
+
+  def codes = code.split(';');
+  def result = null;
+
+  for ( ci = codes.iterator(); (ci.hasNext() && result==null); ) {
+    def c = ci.next().trim();
+    def famnode = xmldoc.EntityDescriptor.findAll { it.@entityID == c }
+    if ( famnode.size() > 0 ) {
+      result=famnode[0].@ID
+    }
+    else {
+    }
+  }
+
+  result
+}
