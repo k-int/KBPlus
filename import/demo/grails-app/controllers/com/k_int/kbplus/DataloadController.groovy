@@ -47,6 +47,12 @@ class DataloadController {
         o.ids.add(new IdentifierOccurrence(identifier:amf_id,org:o));
       }
 
+      // Create a combo to link this org with NESLI2
+      def cons_org = Org.findNyName('NESLI2')
+      if ( cons_org ) {
+        def new_combo = new Combo(type:lookupOrCreateRefdataEntry('comboType','Consortium'));
+      }
+
       o.save();
     }
 
@@ -127,5 +133,12 @@ class DataloadController {
     log.debug("lookupOrCreateCanonicalIdentifier(${ns},${value})");
     def namespace = IdentifierNamespace.findByNs(ns) ?: new IdentifierNamespace(ns:ns).save();
     Identifier.findByNsAndValue(namespace,value) ?: new Identifier(ns:namespace, value:value).save();
+  }
+
+
+  def lookupOrCreateRefdataEntry(refDataCategory, refDataCode) {
+    def category = RefdataCategory.findByDesc(refDataCategory) ?: new RefdataCategory(desc:refDataCategory).save(flush:true)
+    def result = RefdataValue.findByOwnerAndValue(category, refDataCode) ?: new RefdataValue(value:refDataCode).save(flush:true)
+    result;
   }
 }
