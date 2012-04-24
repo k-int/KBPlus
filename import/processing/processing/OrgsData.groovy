@@ -155,7 +155,7 @@ def resolveFAM(xmldoc, code) {
     def c = ci.next().trim();
     def famnode = xmldoc.EntityDescriptor.findAll { it.@entityID == c }
     if ( famnode.size() > 0 ) {
-      result=famnode[0].@ID
+      result=famnode[0].@ID.text();
     }
     else {
     }

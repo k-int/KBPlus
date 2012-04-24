@@ -183,8 +183,8 @@ stats.each { stat ->
   statsfile << "${stat.key} : ${stat.value}\n"
 }
 
-def statsfile = new File("so_stats.csv");
-statsfile << "${args[0]},${stats.pkgs_created},${stats.titles_matched_by_identifier},${stats.tipp_created},${stats.titles_matched_by_title},${bad_rows.size()}\n"
+def so_statsfile = new File("so_stats.csv");
+so_statsfile << "${args[0]},${stats.pkgs_created},${stats.titles_matched_by_identifier},${stats.tipp_created},${stats.titles_matched_by_title},${bad_rows.size()}\n"
 
 
 if ( bad_rows.size() > 0 ) {
