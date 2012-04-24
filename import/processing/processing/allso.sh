@@ -12,13 +12,13 @@ db.dropDatabase();
 
 ./PlatformData.groovy
 
-echo Orgs import
-rm ../orgs_data/*BAD
-./OrgsData.groovy ../orgs_data/subscribing\ organisations.csv 
-
 echo SO import
 rm ../kb_plus_datafiles/*BAD
 rm so_imp_log
 find ../kb_plus_datafiles -name "*.csv" -exec ./SOData.groovy {} >> so_imp_log \;
+
+echo Orgs import
+rm ../orgs_data/*BAD
+./OrgsData.groovy ../orgs_data/subscribing\ organisations.csv 
 
 

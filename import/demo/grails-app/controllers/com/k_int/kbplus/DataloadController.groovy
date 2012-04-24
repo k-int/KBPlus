@@ -15,11 +15,14 @@ class DataloadController {
       log.debug("update org ${org}");
       def o = Org.findByImpId(org._id.toString())
       if ( o == null ) {
-        o=new Org(impId:org._id.toString(), 
-                  name:org.name,
-                  ipRange:org.ipRange,
-                  sector:org.sectorName);
-        o.ids=[]
+        o = Org.findByName(org.name)
+        if ( o == null ) {
+          o=new Org(impId:org._id.toString(), 
+                    name:org.name,
+                    ipRange:org.ipRange,
+                    sector:org.sectorName);
+          o.ids=[]
+        }
       }
 
       if ( ( org.ringoldId ) && ( org.ringoldId.trim().length() > 0 ) ) {
@@ -48,11 +51,11 @@ class DataloadController {
       }
 
       // Create a combo to link this org with NESLI2
-      def cons_org = Org.findNyName('NESLI2')
+      def cons_org = Org.findByName('NESLI2') ?: new Org(name:'NESLI2').save();
       if ( cons_org ) {
         def new_combo = new Combo(type:lookupOrCreateRefdataEntry('comboType','MemberOfConsortium'),
-                                  fromOrg:o
-                                  toOrg:cons_org);
+                                  fromOrg:o,
+                                  toOrg:cons_org).save();
       }
 
       o.save();
@@ -140,7 +143,7 @@ class DataloadController {
 
   def lookupOrCreateRefdataEntry(refDataCategory, refDataCode) {
     def category = RefdataCategory.findByDesc(refDataCategory) ?: new RefdataCategory(desc:refDataCategory).save(flush:true)
-    def result = RefdataValue.findByOwnerAndValue(category, refDataCode) ?: new RefdataValue(value:refDataCode).save(flush:true)
+    def result = RefdataValue.findByOwnerAndValue(category, refDataCode) ?: new RefdataValue(owner:category,value:refDataCode).save(flush:true)
     result;
   }
 }
