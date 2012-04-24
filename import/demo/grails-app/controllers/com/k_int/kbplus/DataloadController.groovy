@@ -16,8 +16,34 @@ class DataloadController {
       def o = Org.findByImpId(org._id.toString())
       if ( o == null ) {
         o=new Org(impId:org._id.toString(), name:org.name);
-        o.save();
       }
+
+      if ( ( org.ringoldId ) && ( org.ringoldId.trim().length() > 0 ) ) {
+        def ringold_id = lookupOrCreateCanonicalIdentifier('Ringold',org.ringoldId);
+        o.ids.add(ringold_id);
+      }
+
+      if ( ( org.ingentaId ) && ( org.ingentaId.trim().length() > 0 ) ) {
+        def ingenta_id = lookupOrCreateCanonicalIdentifier('Ingenta',org.ingentaId);
+        o.ids.add(ingenta_id);
+      }
+
+      if ( ( org.jcId ) && ( org.jcId.trim().length() > 0 ) ) {
+        def jc_id = lookupOrCreateCanonicalIdentifier('JC',org.jcId);
+        o.ids.add(jc_id);
+      }
+
+      if ( ( org.athensId ) && ( org.athensId.trim().length() > 0 ) ) {
+        def athens_id = lookupOrCreateCanonicalIdentifier('Athens',org.athensId);
+        o.ids.add(athens_id);
+      }
+
+      if ( ( org.famId ) && ( org.famId.trim().length() > 0 ) ) {
+        def amf_id = lookupOrCreateCanonicalIdentifier('UKAMF',org.famId);
+        o.ids.add(amf_id);
+      }
+
+      o.save();
     }
 
     // Platforms
