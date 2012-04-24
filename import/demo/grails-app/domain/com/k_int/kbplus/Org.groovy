@@ -21,8 +21,8 @@ class Org {
   }
 
   static constraints = {
-    address(nullable:true, blank:true);
-    ipRange(nullable:true, blank:true);
-    sector(nullable:true, blank:true);
+    address(nullable:true, blank:true,maxSize:256);
+    ipRange(nullable:true, blank:true, maxSize:256);
+    sector(nullable:true, blank:true, maxSize:128);
   }
 }

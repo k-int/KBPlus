@@ -18,7 +18,7 @@ class DataloadController {
         o=new Org(impId:org._id.toString(), 
                   name:org.name,
                   ipRange:org.ipRange,
-                  sector:org.sector);
+                  sector:org.sectorName);
         o.ids=[]
       }
 
