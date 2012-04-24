@@ -50,7 +50,9 @@ class DataloadController {
       // Create a combo to link this org with NESLI2
       def cons_org = Org.findNyName('NESLI2')
       if ( cons_org ) {
-        def new_combo = new Combo(type:lookupOrCreateRefdataEntry('comboType','Consortium'));
+        def new_combo = new Combo(type:lookupOrCreateRefdataEntry('comboType','MemberOfConsortium'),
+                                  fromOrg:o
+                                  toOrg:cons_org);
       }
 
       o.save();
