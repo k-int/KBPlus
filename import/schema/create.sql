@@ -1,5 +1,7 @@
 alter table combo drop foreign key FK5A7318E69CBC6D5;
+alter table combo drop foreign key FK5A7318EFCE9A7E1;
 alter table combo drop foreign key FK5A7318EF93C805D;
+alter table combo drop foreign key FK5A7318E63A4BBD2;
 alter table doc drop foreign key FK1853897381E73;
 alter table doc drop foreign key FK185381FC434AE;
 alter table doc drop foreign key FK185387758376B;
@@ -58,7 +60,7 @@ drop table if exists subscription_package;
 drop table if exists title_instance;
 drop table if exists title_instance_package_platform;
 create table alert (id bigint not null auto_increment, version bigint not null, primary key (id));
-create table combo (combo_id bigint not null auto_increment, combo_version bigint not null, combo_status_rv_fk bigint, combo_type_rv_fk bigint, primary key (combo_id));
+create table combo (combo_id bigint not null auto_increment, combo_version bigint not null, from_org_id bigint, combo_status_rv_fk bigint, to_org_id bigint, combo_type_rv_fk bigint, primary key (combo_id));
 create table dataload_file_instance (id bigint not null auto_increment, version bigint not null, name varchar(255) not null, upload_timestamp bigint not null, primary key (id));
 create table dataload_file_type (id bigint not null auto_increment, version bigint not null, fl_ft_name varchar(255) not null, primary key (id));
 create table doc (doc_id bigint not null auto_increment, doc_version bigint not null, doc_alert_fk bigint not null, doc_status_rv_fk bigint, doc_type_rv_fk bigint, primary key (doc_id));
@@ -79,7 +81,9 @@ create table subscription_package (sp_id bigint not null auto_increment, sp_vers
 create table title_instance (ti_id bigint not null auto_increment, ti_version bigint not null, ti_imp_id varchar(255) not null, ti_status_rv_fk bigint, ti_title varchar(255) not null, ti_type_rv_fk bigint, primary key (ti_id));
 create table title_instance_package_platform (tipp_id bigint not null auto_increment, tipp_version bigint not null, tipp_coverage_depth varchar(255), tipp_coverage_note longtext, tipp_embargo varchar(255), tipp_end_date datetime, tipp_end_issue varchar(255), tipp_end_volume varchar(255), tipp_imp_id varchar(255), tipp_option_rv_fk bigint, tipp_pkg_fk bigint not null, tipp_plat_fk bigint not null, tipp_start_date datetime, tipp_start_issue varchar(255), tipp_start_volume varchar(255), tipp_status_rv_fk bigint, tipp_ti_fk bigint not null, primary key (tipp_id));
 alter table combo add index FK5A7318E69CBC6D5 (combo_status_rv_fk), add constraint FK5A7318E69CBC6D5 foreign key (combo_status_rv_fk) references refdata_value (rdv_id);
+alter table combo add index FK5A7318EFCE9A7E1 (to_org_id), add constraint FK5A7318EFCE9A7E1 foreign key (to_org_id) references org (org_id);
 alter table combo add index FK5A7318EF93C805D (combo_type_rv_fk), add constraint FK5A7318EF93C805D foreign key (combo_type_rv_fk) references refdata_value (rdv_id);
+alter table combo add index FK5A7318E63A4BBD2 (from_org_id), add constraint FK5A7318E63A4BBD2 foreign key (from_org_id) references org (org_id);
 alter table doc add index FK1853897381E73 (doc_type_rv_fk), add constraint FK1853897381E73 foreign key (doc_type_rv_fk) references refdata_value (rdv_id);
 alter table doc add index FK185381FC434AE (doc_alert_fk), add constraint FK185381FC434AE foreign key (doc_alert_fk) references alert (id);
 alter table doc add index FK185387758376B (doc_status_rv_fk), add constraint FK185387758376B foreign key (doc_status_rv_fk) references refdata_value (rdv_id);

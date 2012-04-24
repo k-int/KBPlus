@@ -68,6 +68,7 @@ insert into refdata_value(rdv_owner, rdv_value) VALUES ( 17, 'Unknown');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (18,'Combo Type');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 18, 'Unknown');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 18, 'MemberOfConsortium');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (19,'Combo Status');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 19, 'Unknown');
