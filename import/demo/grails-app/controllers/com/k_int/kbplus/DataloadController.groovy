@@ -117,6 +117,7 @@ class DataloadController {
                                                 embargo:tipp.embargo,
                                                 coverageDepth:tipp.coverageDepth,
                                                 coverageNote:tipp.coverageNote,
+                                                hostPlatformURL:tipp.hostPlatformURL,
                                                 ids:[]).save()
 
         if ( tipp.identifiers ) {

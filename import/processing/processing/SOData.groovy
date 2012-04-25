@@ -149,10 +149,11 @@ while ((nl = r.readNext()) != null) {
 
         if ( ( nl[position] ) && ( nl[position].length() > 0 ) ) {
           def platform = lookupOrCreatePlatform(name:nl[position], 
-                                                role:nl[position+1],
-                                                platform_title_url:nl[position+2],
                                                 db:db, 
                                                 stats:stats)
+
+          def platform_role = nl[position+1]
+          def platform_url = nl[position+2]
   
           // Find tipp
           if ( title._id && pkg._id && platform._id ) {
@@ -170,6 +171,9 @@ while ((nl = r.readNext()) != null) {
             tipp.coverageDepth = nl[11]
             tipp.coverageNote = nl[12]
             tipp.identifiers = tipp_private_identifiers
+            if ( ( platform_role ) && ( platform_role == 'host' ) ) {
+              tipp.hostPlatformURL = platform_url
+            }
             db.tipps.save(tipp)
 
           }
@@ -258,8 +262,6 @@ def lookupOrCreatePackage(Map params=[:]) {
       identifier:params.identifier,
       normIdentifier:norm_identifier,
       name:params.name,
-      role:params.role,
-      platformUrl:params.platform_title_url,
       lastmod:System.currentTimeMillis()
     ]
     params.db.pkgs.save(pkg)

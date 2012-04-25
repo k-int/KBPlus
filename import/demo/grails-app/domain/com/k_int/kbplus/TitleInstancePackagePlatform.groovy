@@ -14,6 +14,7 @@ class TitleInstancePackagePlatform {
   String impId
   RefdataValue status
   RefdataValue option
+  String hostPlatformURL
 
   static mappedBy = [ids: 'tipp']
   static hasMany = [ids: IdentifierOccurrence]
