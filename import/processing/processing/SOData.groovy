@@ -56,6 +56,12 @@ String [] so_num_platforms_listed_line = r.readNext()
 int num_platforms_listed = Integer.parseInt(so_num_platforms_listed_line[1] ?: "0");
 String [] so_header_line = r.readNext()
 
+if ( num_platforms_listed == 0 ) {
+  num_platforms_listed = 1
+  println("**WARNING** num_platforms_listed = 0, defaulting to 1!");
+}
+
+
 println("Read column headings: ${so_header_line}");
 
 def stats = [:]
@@ -144,6 +150,10 @@ while ((nl = r.readNext()) != null) {
       badreason="Cannot parse start date: ${nl[3]}"
     }
     else {
+
+      def host_platform = null;
+      def host_platform_url = null;
+
       for ( int i=0; i<num_platforms_listed; i++ ) {
         int position = 15+num_prop_id_cols+(i*3)   // Offset past any proprietary identifiers.. This needs a test case.. it's fraught with danger
 
@@ -155,43 +165,43 @@ while ((nl = r.readNext()) != null) {
 
           def platform_role = nl[position+1]
           def platform_url = nl[position+2]
-  
-          // Find tipp
-          if ( title._id && pkg._id && platform._id ) {
-            def tipp = lookupOrCreateTipp(titleid:title._id, pkgid:pkg._id, platformid:platform._id, db:db, stats:stats)
-            tipp.startDateString = nl[3]
-            tipp.startDate = parsed_start_date
-            tipp.startVolume = nl[4]
-            tipp.startIssue = nl[5]
-            tipp.endDateString = nl[6]
-            tipp.endDate = parsed_end_date
-            tipp.endVolume = nl[7]
-            tipp.endIssue = nl[8]
-            tipp.title_id = nl[9]
-            tipp.embargo = nl[10]
-            tipp.coverageDepth = nl[11]
-            tipp.coverageNote = nl[12]
-            tipp.identifiers = tipp_private_identifiers
-            if ( ( platform_role ) && ( platform_role == 'host' ) ) {
-              tipp.hostPlatformURL = platform_url
-            }
-            else {
-              println("**WARNING** row ${rownum} contains a non-host (${platform_role}) role url : ${platform_url}");
-            }
-            db.tipps.save(tipp)
 
+          println("Process platform ${nl[position]} / ${platform_role} / ${platform_url}");
+
+          if ( platform_role == 'host' ) {
+            host_platform = platform;
+            host_platform_url = platform_url
           }
           else {
-            println("One of title, pkg or platform are missing!!!");
-            inc('missing_critical_data',stats);
+            // TODO: Add to additional TIPP_Platform
+            println("Non host platform: ${platform_role} : ${platform_url}");
           }
         }
-        else {
-          inc('bad_platform_name',stats);
-          bad = true
-          badreason="Bad Platform Name"
-          println("BAD ${i}'th PLATFORM NAME: \"${nl[position]}\" ${nl}");
-        }
+      }
+  
+      // Find tipp
+      if ( title && pkg && host_platform && title._id && pkg._id && host_platform._id ) {
+        def tipp = lookupOrCreateTipp(titleid:title._id, pkgid:pkg._id, platformid:host_platform._id, db:db, stats:stats)
+        tipp.startDateString = nl[3]
+        tipp.startDate = parsed_start_date
+        tipp.startVolume = nl[4]
+        tipp.startIssue = nl[5]
+        tipp.endDateString = nl[6]
+        tipp.endDate = parsed_end_date
+        tipp.endVolume = nl[7]
+        tipp.endIssue = nl[8]
+        tipp.title_id = nl[9]
+        tipp.embargo = nl[10]
+        tipp.coverageDepth = nl[11]
+        tipp.coverageNote = nl[12]
+        tipp.identifiers = tipp_private_identifiers
+        tipp.hostPlatformURL = host_platform_url
+        db.tipps.save(tipp)
+
+      }
+      else {
+        println("One of title-${title}, pkg-${pkg} or platform-${host_platform} are missing!!!");
+        inc('missing_critical_data',stats);
       }
     }
   }

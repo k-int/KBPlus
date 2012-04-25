@@ -44,6 +44,7 @@ class TitleInstancePackagePlatform {
             impId column:'tipp_imp_id'
            status column:'tipp_status_rv_fk'
            option column:'tipp_option_rv_fk'
+  hostPlatformURL column:'tipp_host_platform_url'
   }
 
   static constraints = {
@@ -59,5 +60,6 @@ class TitleInstancePackagePlatform {
     impId(nullable:true, blank:true);
     status(nullable:true, blank:false);
     option(nullable:true, blank:false);
+    hostPlatformURL(nullable:true, blank:false);
   }
 }
