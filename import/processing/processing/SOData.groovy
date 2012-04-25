@@ -145,9 +145,14 @@ while ((nl = r.readNext()) != null) {
     }
     else {
       for ( int i=0; i<num_platforms_listed; i++ ) {
-        int position = 15+num_prop_id_cols+i   // Offset past any proprietary identifiers.. This needs a test case.. it's fraught with danger
+        int position = 15+num_prop_id_cols+(i*3)   // Offset past any proprietary identifiers.. This needs a test case.. it's fraught with danger
+
         if ( ( nl[position] ) && ( nl[position].length() > 0 ) ) {
-          def platform = lookupOrCreatePlatform(name:nl[position], db:db, stats:stats)
+          def platform = lookupOrCreatePlatform(name:nl[position], 
+                                                role:nl[position+1],
+                                                platform_title_url:nl[position+2],
+                                                db:db, 
+                                                stats:stats)
   
           // Find tipp
           if ( title._id && pkg._id && platform._id ) {
@@ -253,6 +258,8 @@ def lookupOrCreatePackage(Map params=[:]) {
       identifier:params.identifier,
       normIdentifier:norm_identifier,
       name:params.name,
+      role:params.role,
+      platformUrl:params.platform_title_url,
       lastmod:System.currentTimeMillis()
     ]
     params.db.pkgs.save(pkg)
