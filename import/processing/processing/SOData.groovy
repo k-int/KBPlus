@@ -176,14 +176,8 @@ while ((nl = r.readNext()) != null) {
           else {
             // TODO: Add to additional TIPP_Platform
             println("Non host platform: ${platform_role} : ${platform_url}");
-            if ( platform_url && ( platform_url.trim().length() > 0 ) ) {
-              def additional_platform = lookupOrCreatePlatform(name:nl[position],type:nl[position+1],db:db,stats:stats)
-              additional_platform_links.add([platformId:additional_platform._id, role:platform_role, platformUrl:platform_url]);
-            }
-            else {
-              println("**ERROR** additional platform link has no url");
-              inc('additional_platform_entries_missing_url',stats);
-            }
+            def additional_platform = lookupOrCreatePlatform(name:nl[position],type:nl[position+1],db:db,stats:stats)
+            additional_platform_links.add([platformId:additional_platform._id, role:platform_role, platformUrl:platform_url]);
           }
         }
       }
@@ -207,7 +201,6 @@ while ((nl = r.readNext()) != null) {
         tipp.hostPlatformURL = host_platform_url
         tipp.additionalPlatformLinks = additional_platform_links
         db.tipps.save(tipp)
-
       }
       else {
         println("One of title-${title}, pkg-${pkg} or platform-${host_platform} are missing!!!");

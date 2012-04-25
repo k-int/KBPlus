@@ -57,11 +57,14 @@
         
           <g:if test="${titleInstancePackagePlatformInstance?.title}">
             <dt><g:message code="titleInstancePackagePlatform.title.label" default="Title" /></dt>
-            
               <dd><g:link controller="titleInstance" action="show" id="${titleInstancePackagePlatformInstance?.title?.id}">${titleInstancePackagePlatformInstance?.title?.title?.encodeAsHTML()}</g:link></dd>
-            
           </g:if>
         
+          <g:if test="${titleInstancePackagePlatformInstance?.title}">
+            <dt><g:message code="titleInstancePackagePlatform.hostPlatformURL.label" default="Host Platform URL" /></dt>
+              <dd><g:fieldValue bean="${titleInstancePackagePlatformInstance}" field="hostPlatformURL"/></dd>
+          </g:if>
+
           <g:if test="${titleInstancePackagePlatformInstance?.startDate}">
             <dt><g:message code="titleInstancePackagePlatform.startDate.label" default="Start Date" /></dt>
             

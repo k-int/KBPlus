@@ -134,6 +134,19 @@ class DataloadController {
         }
 
         dbtipp.save();
+
+        if ( tipp.additionalPlatformLinks ) {
+          tipp.additionalPlatformLinks.each { apl ->
+            log.debug("Additional platform link : ${apl}");
+            def admin_platform = Platform.findByImpId(apl.platformId.toString());
+            if ( admin_platform ) {
+              new PlatformTIPP(tipp:dbtipp,
+                               platform:admin_platform,
+                               titleUrl:apl.platformUrl).save();
+            }
+          }
+        }
+
       }
     }
 
