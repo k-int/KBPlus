@@ -149,6 +149,7 @@ while ((nl = r.readNext()) != null) {
 
         if ( ( nl[position] ) && ( nl[position].length() > 0 ) ) {
           def platform = lookupOrCreatePlatform(name:nl[position], 
+                                                type:nl[position+1],
                                                 db:db, 
                                                 stats:stats)
 
@@ -173,6 +174,9 @@ while ((nl = r.readNext()) != null) {
             tipp.identifiers = tipp_private_identifiers
             if ( ( platform_role ) && ( platform_role == 'host' ) ) {
               tipp.hostPlatformURL = platform_url
+            }
+            else {
+              println("**WARNING** row ${rownum} contains a non-host (${platform_role}) role url : ${platform_url}");
             }
             db.tipps.save(tipp)
 
@@ -325,6 +329,7 @@ def lookupOrCreatePlatform(Map params=[:]) {
     platform = [
       _id:new org.bson.types.ObjectId(),
       name:params.name,
+      type:params.type,
       lastmod:System.currentTimeMillis()
     ]
     params.db.platforms.save(platform)

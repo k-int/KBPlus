@@ -88,8 +88,13 @@ class DataloadController {
       log.debug("update package ${pkg}");
       def p = Package.findByImpId(pkg._id.toString())
       if ( p == null ) {
+        def pkg_type = null;
+        if (pkg.type) {
+          pkg_type = lookupOrCreateRefdataEntry('PackageTypes',pkg.type);
+        }
         p = new Package(identifier:pkg.identifier,
                         name:pkg.name,
+                        type:pkg_type,
                         impId:pkg._id.toString(),
                         contentProvider: pkg.contentProvider ? Org.findByImpId(pkg.contentProvider.toString()) : null );
       }
