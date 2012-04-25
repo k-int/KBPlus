@@ -134,41 +134,51 @@ while ((nl = r.readNext()) != null) {
     //   badreason="unexpected number of columns (expected ${expected_num_cols}, got ${nl.size()}"
     //   so_bad++;
     // }
+    def parsed_start_date = parseDate(nl[3],possible_date_formats)
+    def parsed_end_date = parseDate(nl[6],possible_date_formats)
 
-    for ( int i=0; i<num_platforms_listed; i++ ) {
-      int position = 15+num_prop_id_cols+i   // Offset past any proprietary identifiers.. This needs a test case.. it's fraught with danger
-      if ( ( nl[position] ) && ( nl[position].length() > 0 ) ) {
-        def platform = lookupOrCreatePlatform(name:nl[position], db:db, stats:stats)
+    if ( parsed_start_date == null ) {
+      println("Unable to parse start date ${nl[3]}")
+      inc('bad_start_date',stats);
+      bad=true
+      badreason="Cannot parse start date: ${nl[3]}"
+    }
+    else {
+      for ( int i=0; i<num_platforms_listed; i++ ) {
+        int position = 15+num_prop_id_cols+i   // Offset past any proprietary identifiers.. This needs a test case.. it's fraught with danger
+        if ( ( nl[position] ) && ( nl[position].length() > 0 ) ) {
+          def platform = lookupOrCreatePlatform(name:nl[position], db:db, stats:stats)
+  
+          // Find tipp
+          if ( title._id && pkg._id && platform._id ) {
+            def tipp = lookupOrCreateTipp(titleid:title._id, pkgid:pkg._id, platformid:platform._id, db:db, stats:stats)
+            tipp.startDateString = nl[3]
+            tipp.startDate = parsed_start_date
+            tipp.startVolume = nl[4]
+            tipp.startIssue = nl[5]
+            tipp.endDateString = nl[6]
+            tipp.endDate = parsed_end_date
+            tipp.endVolume = nl[7]
+            tipp.endIssue = nl[8]
+            tipp.title_id = nl[9]
+            tipp.embargo = nl[10]
+            tipp.coverageDepth = nl[11]
+            tipp.coverageNote = nl[12]
+            tipp.identifiers = tipp_private_identifiers
+            db.tipps.save(tipp)
 
-        // Find tipp
-        if ( title._id && pkg._id && platform._id ) {
-          def tipp = lookupOrCreateTipp(titleid:title._id, pkgid:pkg._id, platformid:platform._id, db:db, stats:stats)
-          tipp.startDateString = nl[3]
-          tipp.startDate = parseDate(nl[3],possible_date_formats);
-          tipp.startVolume = nl[4]
-          tipp.startIssue = nl[5]
-          tipp.endDateString = nl[6]
-          tipp.endDate = parseDate(nl[6],possible_date_formats);
-          tipp.endVolume = nl[7]
-          tipp.endIssue = nl[8]
-          tipp.title_id = nl[9]
-          tipp.embargo = nl[10]
-          tipp.coverageDepth = nl[11]
-          tipp.coverageNote = nl[12]
-          tipp.identifiers = tipp_private_identifiers
-          db.tipps.save(tipp)
-
+          }
+          else {
+            println("One of title, pkg or platform are missing!!!");
+            inc('missing_critical_data',stats);
+          }
         }
         else {
-          println("One of title, pkg or platform are missing!!!");
-          inc('missing_critical_data',stats);
+          inc('bad_platform_name',stats);
+          bad = true
+          badreason="Bad Platform Name"
+          println("BAD ${i}'th PLATFORM NAME: \"${nl[position]}\" ${nl}");
         }
-      }
-      else {
-        inc('bad_platform_name',stats);
-        bad = true
-        badreason="Bad Platform Name"
-        println("BAD ${i}'th PLATFORM NAME: \"${nl[position]}\" ${nl}");
       }
     }
   }

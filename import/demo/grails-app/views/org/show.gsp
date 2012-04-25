@@ -41,6 +41,12 @@
 				</g:if>
 
 				<dl>
+					<g:if test="${orgInstance?.name}">
+						<dt><g:message code="org.name.label" default="Name" /></dt>
+						
+							<dd><g:fieldValue bean="${orgInstance}" field="name"/></dd>
+						
+					</g:if>
 				
 					<g:if test="${orgInstance?.address}">
 						<dt><g:message code="org.address.label" default="Address" /></dt>
@@ -65,12 +71,25 @@
 				
 					<g:if test="${orgInstance?.ids}">
 						<dt><g:message code="org.ids.label" default="Ids" /></dt>
-						
 							<g:each in="${orgInstance.ids}" var="i">
 							<dd><g:link controller="identifierOccurrence" action="show" id="${i.id}">${i?.identifier?.ns?.ns?.encodeAsHTML()} : ${i?.identifier?.value?.encodeAsHTML()}</g:link></dd>
 							</g:each>
-						
 					</g:if>
+
+                                        <g:if test="${orgInstance?.outgoingCombos}">
+                                          <dt><g:message code="org.outgoingCombos.label" default="Outgoing Combos" /></dt>
+					  <g:each in="${orgInstance.outgoingCombos}" var="i">
+                                            <dd>${i.type.value} ${i.toOrg?.name}</dd>
+					</g:each>
+					</g:if>
+
+                                        <g:if test="${orgInstance?.incomingCombos}">
+                                          <dt><g:message code="org.incomingCombos.label" default="Incoming Combos" /></dt>
+					  <g:each in="${orgInstance.incomingCombos}" var="i">
+                                            <dd>${i.type.value} ${i.fromOrg?.name}</dd>
+					</g:each>
+					</g:if>
+
 				
 					<g:if test="${orgInstance?.impId}">
 						<dt><g:message code="org.impId.label" default="Imp Id" /></dt>
@@ -79,12 +98,6 @@
 						
 					</g:if>
 				
-					<g:if test="${orgInstance?.name}">
-						<dt><g:message code="org.name.label" default="Name" /></dt>
-						
-							<dd><g:fieldValue bean="${orgInstance}" field="name"/></dd>
-						
-					</g:if>
 				
 				</dl>
 

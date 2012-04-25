@@ -25,27 +25,27 @@ class DataloadController {
         }
       }
 
-      if ( ( org.ringoldId ) && ( org.ringoldId.trim().length() > 0 ) ) {
+      if ( ( org.ringoldId ) && ( org.ringoldId.trim().length() > 0 ) && ( org.ringoldId != 'NULL' ) ) {
         def ringold_id = lookupOrCreateCanonicalIdentifier('Ringold',org.ringoldId);
         o.ids.add(new IdentifierOccurrence(identifier:ringold_id,org:o));
       }
 
-      if ( ( org.ingentaId ) && ( org.ingentaId.trim().length() > 0 ) ) {
+      if ( ( org.ingentaId ) && ( org.ingentaId.trim().length() > 0 ) && ( org.ingentaId != 'NULL' ) ) {
         def ingenta_id = lookupOrCreateCanonicalIdentifier('Ingenta',org.ingentaId);
         o.ids.add(new IdentifierOccurrence(identifier:ingenta_id,org:o));
       }
 
-      if ( ( org.jcId ) && ( org.jcId.trim().length() > 0 ) ) {
+      if ( ( org.jcId ) && ( org.jcId.trim().length() > 0 ) && ( org.jcId != 'NULL' ) ) {
         def jc_id = lookupOrCreateCanonicalIdentifier('JC',org.jcId);
         o.ids.add(new IdentifierOccurrence(identifier:jc_id,org:o));
       }
 
-      if ( ( org.athensId ) && ( org.athensId.trim().length() > 0 ) ) {
+      if ( ( org.athensId ) && ( org.athensId.trim().length() > 0 ) && ( org.athensId != 'NULL' ) ) {
         def athens_id = lookupOrCreateCanonicalIdentifier('Athens',org.athensId);
         o.ids.add(new IdentifierOccurrence(identifier:athens_id,org:o));
       }
 
-      if ( ( org.famId ) && ( org.famId.trim().length() > 0 ) ) {
+      if ( ( org.famId ) && ( org.famId.trim().length() > 0 ) && ( org.famId != 'NULL' ) ) {
         def amf_id = lookupOrCreateCanonicalIdentifier('UKAMF',org.famId);
         o.ids.add(new IdentifierOccurrence(identifier:amf_id,org:o));
       }

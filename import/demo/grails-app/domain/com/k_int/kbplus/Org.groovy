@@ -8,8 +8,8 @@ class Org {
   String ipRange
   String sector
 
-  static mappedBy = [ids: 'org']
-  static hasMany = [ids: IdentifierOccurrence]
+  static mappedBy = [ids: 'org', outgoingCombos: 'fromOrg', incomingCombos:'toOrg' ]
+  static hasMany = [ids: IdentifierOccurrence, outgoingCombos: Combo, incomingCombos:Combo]
 
   static mapping = {
          id column:'org_id'
