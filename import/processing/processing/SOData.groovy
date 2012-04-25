@@ -153,6 +153,7 @@ while ((nl = r.readNext()) != null) {
 
       def host_platform = null;
       def host_platform_url = null;
+      def additional_platform_links = []
 
       for ( int i=0; i<num_platforms_listed; i++ ) {
         int position = 15+num_prop_id_cols+(i*3)   // Offset past any proprietary identifiers.. This needs a test case.. it's fraught with danger
@@ -175,6 +176,14 @@ while ((nl = r.readNext()) != null) {
           else {
             // TODO: Add to additional TIPP_Platform
             println("Non host platform: ${platform_role} : ${platform_url}");
+            if ( platform_url && ( platform_url.trim().length() > 0 ) ) {
+              def additional_platform = lookupOrCreatePlatform(name:nl[position],type:nl[position+1],db:db,stats:stats)
+              additional_platform_links.add([platformId:additional_platform._id, role:platform_role, platformUrl:platform_url]);
+            }
+            else {
+              println("**ERROR** additional platform link has no url");
+              inc('additional_platform_entries_missing_url',stats);
+            }
           }
         }
       }
@@ -196,6 +205,7 @@ while ((nl = r.readNext()) != null) {
         tipp.coverageNote = nl[12]
         tipp.identifiers = tipp_private_identifiers
         tipp.hostPlatformURL = host_platform_url
+        tipp.additionalPlatformLinks = additional_platform_links
         db.tipps.save(tipp)
 
       }
