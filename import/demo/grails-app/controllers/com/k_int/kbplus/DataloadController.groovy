@@ -49,16 +49,19 @@ class DataloadController {
         def amf_id = lookupOrCreateCanonicalIdentifier('UKAMF',org.famId);
         o.ids.add(new IdentifierOccurrence(identifier:amf_id,org:o));
       }
+      o.save(flush:true);
 
-      // Create a combo to link this org with NESLI2
-      def cons_org = Org.findByName('NESLI2') ?: new Org(name:'NESLI2').save();
-      if ( cons_org ) {
-        def new_combo = new Combo(type:lookupOrCreateRefdataEntry('Combo Type','MemberOfConsortium'),
-                                  fromOrg:o,
-                                  toOrg:cons_org).save();
+      // Create a combo to link this org with NESLI2 (So long as this isn't the NESLI2 record itself of course
+      if ( org.name != 'NESLI2' ) {
+        o = Org.findByName(org.name);
+        def cons_org = Org.findByName('NESLI2') ?: new Org(name:'NESLI2').save();
+        if ( cons_org ) {
+          def new_combo = new Combo(type:lookupOrCreateRefdataEntry('Combo Type','Consortium'),
+                                    fromOrg:o,
+                                    toOrg:cons_org).save(flush:true);
+        }
       }
 
-      o.save();
     }
 
     // Platforms

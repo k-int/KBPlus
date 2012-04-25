@@ -107,33 +107,41 @@ while ((nl = r.readNext()) != null) {
   stats.total++
   boolean bad = false;
   String badreason = null;
-  def org = db.orgs.findOne(name:nl[0])
-  if ( org==null ) {
-    org = [:]
-    stats.new++
-  }
-  else {
-    stats.existing++
-  }
-  org.name = nl[0];
-  org.ringoldId = nl[1];
-  org.ingentaId = nl[2];
-  org.jcId = nl[3];
-  org.ipRange = nl[4];
-  org.ukfam = nl[5];
-  org.athensId = nl[6];
-  org.sectorName = nl[7];
-  org.lastmod = System.currentTimeMillis();
 
-  org.famId = resolveFAM(ukfam,nl[5])
-  // Find from ukfam, @entityID==nl[5]
-  if ( org.famId ) {
-    db.orgs.save(org);
-    stats.added++
+  if ( ( nl[0] != null ) && ( nl[0].trim().length() > 0 ) ) {
+    def org = db.orgs.findOne(name:nl[0])
+    if ( org==null ) {
+      org = [:]
+      stats.new++
+    }
+    else {
+      stats.existing++
+    }
+    org.name = nl[0];
+    org.ringoldId = nl[1];
+    org.ingentaId = nl[2];
+    org.jcId = nl[3];
+    org.ipRange = nl[4];
+    org.ukfam = nl[5];
+    org.athensId = nl[6];
+    org.sectorName = nl[7];
+    org.lastmod = System.currentTimeMillis();
+
+    org.famId = resolveFAM(ukfam,nl[5])
+    // Find from ukfam, @entityID==nl[5]
+    if ( org.famId ) {
+      db.orgs.save(org);
+      stats.added++
+    }
+    else {
+      println("Unable to locate node for ${nl[5]}");
+      badfile << "${nl[0]},${nl[1]},${nl[2]},${nl[3]},${nl[4]},${nl[5]},${nl[6]},${nl[7]},\"Unable to find ${nl[5]} in FAM file\"\n"
+      stats.bad++
+    }
   }
   else {
-    println("Unable to locate node for ${nl[5]}");
-    badfile << "${nl[0]},${nl[1]},${nl[2]},${nl[3]},${nl[4]},${nl[5]},${nl[6]},${nl[7]},\"Unable to find ${nl[5]} in FAM file\"\n"
+    println("No name for row ${rownum}");
+    badfile << "${nl[0]},${nl[1]},${nl[2]},${nl[3]},${nl[4]},${nl[5]},${nl[6]},${nl[7]},\"No name for row ${rownum}\"\n"
     stats.bad++
   }
 }
