@@ -41,7 +41,37 @@ class PackageController {
             return
         }
 
-        [packageInstance: packageInstance]
+      // Build up a crosstab array of title-platforms under this package
+      def platforms = [:]
+      def titles = [:]
+      int plat_count = 0;
+      int title_count = 0;
+
+      log.debug("Adding platforms");
+      // Find all platforms
+      packageInstance.tipps.each{ tipp ->
+        if ( !platforms.keySet().contains(tipp.platform.id) ) {
+          platforms[tipp.platform.id] = [position:plat_count++, plat:tipp.platform]
+        }
+      }
+
+      // Find all titles
+      packageInstance.tipps.each{ tipp ->
+        if ( !titles.keySet().contains(tipp.title.id) ) {
+          titles[tipp.title.id] = [position:title_count++, title:tipp.title]
+        }
+      }
+
+      def crosstab = new Object[titles.size()][platforms.size()]
+
+      // Now iterate through all tipps, puttint them in the right cell
+      packageInstance.tipps.each{ tipp ->
+        int plat_col = platforms[tipp.platform.id].position
+        int title_row = titles[tipp.title.id].position
+        crosstab[title_row][plat_col] = tipp;
+      }
+
+        [packageInstance: packageInstance, platforms:platforms, crosstab:crosstab, titles:titles]
     }
 
     def edit() {

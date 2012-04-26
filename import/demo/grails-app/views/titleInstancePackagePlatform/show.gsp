@@ -60,10 +60,21 @@
               <dd><g:link controller="titleInstance" action="show" id="${titleInstancePackagePlatformInstance?.title?.id}">${titleInstancePackagePlatformInstance?.title?.title?.encodeAsHTML()}</g:link></dd>
           </g:if>
         
-          <g:if test="${titleInstancePackagePlatformInstance?.title}">
+          <g:if test="${titleInstancePackagePlatformInstance?.hostPlatformURL}">
             <dt><g:message code="titleInstancePackagePlatform.hostPlatformURL.label" default="Host Platform URL" /></dt>
-              <dd><g:fieldValue bean="${titleInstancePackagePlatformInstance}" field="hostPlatformURL"/></dd>
+              <dd><a href="${titleInstancePackagePlatform?.hostPlatformURL}" target="new"><g:fieldValue bean="${titleInstancePackagePlatformInstance}" field="hostPlatformURL"/></a></dd>
           </g:if>
+
+         <g:if test="${titleInstancePackagePlatformInstance?.additionalPlatforms}">
+            <dt><g:message code="titleInstance.additionalPlatforms.label" default="Additional Platforms" /></dt>
+              <g:each in="${titleInstancePackagePlatformInstance?.additionalPlatforms}" var="i">
+              <dd>${i.rel} : <g:link controller="Platform" action="show" id="${i.platform.id}">${i.platform.name }</g:link>
+                <g:if test="${(i.titleUrl != null ) && ( i.titleUrl.trim().length() > 0)}">( i.titleUrl )</g:if>
+              </dd>
+              </g:each>
+            
+          </g:if>
+        
 
           <g:if test="${titleInstancePackagePlatformInstance?.startDate}">
             <dt><g:message code="titleInstancePackagePlatform.startDate.label" default="Start Date" /></dt>

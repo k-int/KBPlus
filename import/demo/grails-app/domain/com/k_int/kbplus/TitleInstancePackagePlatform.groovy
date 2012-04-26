@@ -16,8 +16,8 @@ class TitleInstancePackagePlatform {
   RefdataValue option
   String hostPlatformURL
 
-  static mappedBy = [ids: 'tipp']
-  static hasMany = [ids: IdentifierOccurrence]
+  static mappedBy = [ids: 'tipp', additionalPlatforms: 'tipp']
+  static hasMany = [ids: IdentifierOccurrence, additionalPlatforms: PlatformTIPP]
 
 
   static belongsTo = [

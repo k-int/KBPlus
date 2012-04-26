@@ -142,6 +142,7 @@ class DataloadController {
             if ( admin_platform ) {
               new PlatformTIPP(tipp:dbtipp,
                                platform:admin_platform,
+                               rel:apl.role,
                                titleUrl:apl.platformUrl).save();
             }
           }

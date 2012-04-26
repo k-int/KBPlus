@@ -34,14 +34,15 @@ class PlatformController {
     }
 
     def show() {
-        def platformInstance = Platform.get(params.id)
-        if (!platformInstance) {
-			flash.message = message(code: 'default.not.found.message', args: [message(code: 'platform.label', default: 'Platform'), params.id])
-            redirect action: 'list'
-            return
-        }
+      def platformInstance = Platform.get(params.id)
+      if (!platformInstance) {
+    	  flash.message = message(code: 'default.not.found.message', 
+                                args: [message(code: 'platform.label', default: 'Platform'), params.id])
+        redirect action: 'list'
+        return
+      }
 
-        [platformInstance: platformInstance]
+      [platformInstance: platformInstance]
     }
 
     def edit() {
