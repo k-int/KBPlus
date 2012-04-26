@@ -16,7 +16,7 @@ class TitleInstance {
          id column:'ti_id'
       title column:'ti_title'
     version column:'ti_version'
-      impId column:'ti_imp_id'
+      impId column:'ti_imp_id', index:'ti_imp_id_idx'
      status column:'ti_status_rv_fk'
        type column:'ti_type_rv_fk'
   }

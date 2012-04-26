@@ -158,7 +158,9 @@ while ((nl = r.readNext()) != null) {
       for ( int i=0; i<num_platforms_listed; i++ ) {
         int position = 15+num_prop_id_cols+(i*3)   // Offset past any proprietary identifiers.. This needs a test case.. it's fraught with danger
 
-        if ( ( nl[position] ) && ( nl[position].length() > 0 ) ) {
+        if ( ( nl.size() >= position+2 ) && 
+             ( nl[position] ) && 
+             ( nl[position].length() > 0 ) ) {
           def platform = lookupOrCreatePlatform(name:nl[position], 
                                                 type:nl[position+1],
                                                 db:db, 

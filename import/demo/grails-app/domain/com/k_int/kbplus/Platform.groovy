@@ -14,7 +14,7 @@ class Platform {
   static mapping = {
                 id column:'plat_id'
            version column:'plat_version'
-             impId column:'plat_imp_id'
+             impId column:'plat_imp_id', index:'plat_imp_id_idx'
               name column:'plat_name'
               type column:'plat_type_rv_fk'
             status column:'plat_status_rv_fk'

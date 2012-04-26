@@ -15,10 +15,10 @@ class DataloadController {
       log.debug("update org ${org}");
       def o = Org.findByImpId(org._id.toString())
       if ( o == null ) {
-        o = Org.findByName(org.name)
+        o = Org.findByName(org.name.trim())
         if ( o == null ) {
           o=new Org(impId:org._id.toString(), 
-                    name:org.name,
+                    name:org.name.trim(),
                     ipRange:org.ipRange,
                     sector:org.sectorName);
           o.ids=[]
@@ -53,7 +53,7 @@ class DataloadController {
 
       // Create a combo to link this org with NESLI2 (So long as this isn't the NESLI2 record itself of course
       if ( org.name != 'NESLI2' ) {
-        o = Org.findByName(org.name);
+        o = Org.findByName(org.name.trim());
         def cons_org = Org.findByName('NESLI2') ?: new Org(name:'NESLI2').save();
         if ( cons_org ) {
           def new_combo = new Combo(type:lookupOrCreateRefdataEntry('Combo Type','Consortium'),

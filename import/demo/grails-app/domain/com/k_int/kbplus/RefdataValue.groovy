@@ -11,8 +11,8 @@ class RefdataValue {
   static mapping = {
          id column:'rdv_id'
     version column:'rdv_version'
-      owner column:'rdv_owner'
-      value column:'rdv_value'
+      owner column:'rdv_owner', index:'rdv_entry_idx'
+      value column:'rdv_value', index:'rdv_entry_idx'
   }
 
   static constraints = {
