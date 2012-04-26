@@ -18,6 +18,7 @@ class Platform {
               name column:'plat_name'
               type column:'plat_type_rv_fk'
             status column:'plat_status_rv_fk'
+             tipps sort: 'title.title', order: 'asc'
   }
 
   static constraints = {

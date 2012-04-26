@@ -48,6 +48,13 @@
               <dd><g:fieldValue bean="${packageInstance}" field="identifier"/></dd>
             
           </g:if>
+
+          <g:if test="${packageInstance?.contentProvider}">
+            <dt><g:message code="package.contentProvider.label" default="Content Provider" /></dt>
+            
+              <dd><g:fieldValue bean="${packageInstance}" field="contentProvider.name"/></dd>
+            
+          </g:if>
         
           <g:if test="${packageInstance?.name}">
             <dt><g:message code="package.name.label" default="Name" /></dt>

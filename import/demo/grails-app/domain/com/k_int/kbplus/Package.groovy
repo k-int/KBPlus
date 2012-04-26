@@ -7,6 +7,7 @@ class Package {
   String impId
   RefdataValue packageType
   RefdataValue packageStatus
+  Org contentProvider
 
   static mappedBy = [tipps: 'pkg', orgs: 'pkg']
   static hasMany = [tipps: TitleInstancePackagePlatform, orgs: OrgRole]
@@ -17,9 +18,9 @@ class Package {
            identifier column:'pkg_identifier'
                  name column:'pkg_name'
                 impId column:'pkg_imp_id'
-      contentProvider column:'pkg_or_fk'
           packageType column:'pkg_type_rv_fk'
         packageStatus column:'pkg_status_rv_fk'
+      contentProvider column:'pkg_content_provider_fk'
                 tipps sort:'title.title', order: 'asc'
 //                 orgs sort:'org.name', order: 'asc'
   }

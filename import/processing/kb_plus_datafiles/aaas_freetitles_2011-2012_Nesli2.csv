@@ -1,0 +1,12 @@
+SO Name,NESLI2 AAAS free titles 2011-2012,,,,,,,,,,,,,,,,,,,
+SO Identifier,aaas_freetitles_2011-2012_Nesli2,,,,,,,,,,,,,,,,,,,
+Provider,AAAS,,,,,,,,,,,,,,,,,,,
+Package Identifier,sciences,,,,,,,,,,,,,,,,,,,
+Package Name,AAAS free titles,,,,,,,,,,,,,,,,,,,
+Agreement Term Start Year,2011,,,,,,,,,,,,,,,,,,,
+Agreement Term End Year,2012,,,,,,,,,,,,,,,,,,,
+Consortium,NESLI2,,,,,,,,,,,,,,,,,,,
+Number of Proprietary_ID columns,0,,,,,,,,,,,,,,,,,,,
+Number of Platforms listed,2,,,,,,,,,,,,,,,,,,,
+publication_title,print_identifier,online_identifier,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,title_id,embargo_info,coverage_depth,coverage_notes,publisher_name,DOI,platform_name,platform_role,platform_title_url,platform_name,platform_role,platform_title_url
+Science of Aging Knowledge Environment,,1539-6150,03/10/2001,2001,1,28/06/2006,2006,10,,,full text,"Access occurs through searching, browsing, and current awareness features combined with user-friendly graphical interfaces. Combine primary and review literature with more dispersed sources.  Specific electronic tools that facilitate entry of information into the underlying databases continue to be developed as part of the concept.",American Association for the Advancement of Science,,science online,host,http://sageke.sciencemag.org/,science online,administrative,
