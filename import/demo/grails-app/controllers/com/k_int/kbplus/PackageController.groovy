@@ -43,14 +43,18 @@ class PackageController {
 
       // Build up a crosstab array of title-platforms under this package
       def platforms = [:]
+      def platform_list = []
       def titles = [:]
+      def title_list = []
       int plat_count = 0;
       int title_count = 0;
 
       log.debug("Adding platforms");
       // Find all platforms
       packageInstance.tipps.each{ tipp ->
+        log.debug("Consider ${tipp.title.title}")
         if ( !platforms.keySet().contains(tipp.platform.id) ) {
+          platform_list.add(tipp.platform)
           platforms[tipp.platform.id] = [position:plat_count++, plat:tipp.platform]
         }
       }
@@ -58,11 +62,17 @@ class PackageController {
       // Find all titles
       packageInstance.tipps.each{ tipp ->
         if ( !titles.keySet().contains(tipp.title.id) ) {
-          titles[tipp.title.id] = [position:title_count++, title:tipp.title]
+          title_list.add([title:tipp.title])
         }
       }
 
-      def crosstab = new Object[titles.size()][platforms.size()]
+      title_list.sort{it.title.title}
+      title_list.each { t ->
+        t.position = title_count
+        titles[t.title.id] = [position:title_count++]
+      }
+
+      def crosstab = new Object[title_list.size()][platform_list.size()]
 
       // Now iterate through all tipps, puttint them in the right cell
       packageInstance.tipps.each{ tipp ->
@@ -71,7 +81,7 @@ class PackageController {
         crosstab[title_row][plat_col] = tipp;
       }
 
-        [packageInstance: packageInstance, platforms:platforms, crosstab:crosstab, titles:titles]
+        [packageInstance: packageInstance, platforms:platform_list, crosstab:crosstab, titles:title_list]
     }
 
     def edit() {

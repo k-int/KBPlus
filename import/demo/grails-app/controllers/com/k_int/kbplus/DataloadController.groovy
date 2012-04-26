@@ -103,51 +103,74 @@ class DataloadController {
 
     // Finally... tipps
     mdb.tipps.find().sort(lastmod:1).each { tipp ->
-      log.debug("update ${tipp}");
-      def title = TitleInstance.findByImpId(tipp.titleid.toString())
-      def pkg = Package.findByImpId(tipp.pkgid.toString())
-      def platform = Platform.findByImpId(tipp.platformid.toString())
+      try {
+        log.debug("update ${tipp}");
+        def title = TitleInstance.findByImpId(tipp.titleid.toString())
+        def pkg = Package.findByImpId(tipp.pkgid.toString())
+        def platform = Platform.findByImpId(tipp.platformid.toString())
 
-      def dbtipp = TitleInstancePackagePlatform.findByPkgAndPlatformAndTitle(pkg,platform,title)
-      if ( dbtipp == null ) {
-        dbtipp = new TitleInstancePackagePlatform(pkg:pkg,
-                                                platform:platform,
-                                                title:title,
-                                                startDate:tipp.startDate,
-                                                startVolume:tipp.startVolume,
-                                                startIssue:tipp.startIssue,
-                                                endDate:tipp.endDate,
-                                                endVolume:tipp.endVolume,
-                                                endIssue:tipp.endIssue,
-                                                embargo:tipp.embargo,
-                                                coverageDepth:tipp.coverageDepth,
-                                                coverageNote:tipp.coverageNote,
-                                                hostPlatformURL:tipp.hostPlatformURL,
-                                                ids:[]).save()
-
-        if ( tipp.identifiers ) {
-          tipp.identifiers.each { tippid ->
-            log.debug("lookup and add tippid ${tippid}");
-            def canonical_identifier = lookupOrCreateCanonicalIdentifier(tippid.type, tippid.value);
-            dbtipp.ids.add(new IdentifierOccurrence(identifier:canonical_identifier, tipp:dbtipp));
-          }
-        }
-
-        dbtipp.save();
-
-        if ( tipp.additionalPlatformLinks ) {
-          tipp.additionalPlatformLinks.each { apl ->
-            log.debug("Additional platform link : ${apl}");
-            def admin_platform = Platform.findByImpId(apl.platformId.toString());
-            if ( admin_platform ) {
-              new PlatformTIPP(tipp:dbtipp,
-                               platform:admin_platform,
-                               rel:apl.role,
-                               titleUrl:apl.platformUrl).save();
+        if ( title && pkg && platform ) {
+    
+          def dbtipp = TitleInstancePackagePlatform.findByPkgAndPlatformAndTitle(pkg,platform,title)
+          if ( dbtipp == null ) {
+            dbtipp = new TitleInstancePackagePlatform(pkg:pkg,
+                                                      platform:platform,
+                                                      title:title,
+                                                      startDate:tipp.startDate,
+                                                      startVolume:tipp.startVolume,
+                                                      startIssue:tipp.startIssue,
+                                                      endDate:tipp.endDate,
+                                                      endVolume:tipp.endVolume,
+                                                      endIssue:tipp.endIssue,
+                                                      embargo:tipp.embargo,
+                                                      coverageDepth:tipp.coverageDepth,
+                                                      coverageNote:tipp.coverageNote,
+                                                      hostPlatformURL:tipp.hostPlatformURL,
+                                                      ids:[])
+    
+            if ( ! dbtipp.save() ) {
+              log.error("ERROR Saving tipp");
+              dbtipp.errors.each { err ->
+                log.error("  -> ${err}");
+              }
+            }
+    
+            if ( tipp.identifiers ) {
+              tipp.identifiers.each { tippid ->
+                log.debug("lookup and add tippid ${tippid}");
+                def canonical_identifier = lookupOrCreateCanonicalIdentifier(tippid.type, tippid.value);
+                dbtipp.ids.add(new IdentifierOccurrence(identifier:canonical_identifier, tipp:dbtipp));
+              }
+            }
+    
+            if ( ! dbtipp.save() ) {
+              log.error("ERROR Saving tipp");
+              dbtipp.errors.each { err ->
+                log.error("  -> ${err}");
+              }
+            }
+            else {
+              if ( tipp.additionalPlatformLinks ) {
+                tipp.additionalPlatformLinks.each { apl ->
+                  log.debug("Additional platform link : ${apl}");
+                  def admin_platform = Platform.findByImpId(apl.platformId.toString());
+                  if ( admin_platform ) {
+                    new PlatformTIPP(tipp:dbtipp,
+                                     platform:admin_platform,
+                                     rel:apl.role,
+                                     titleUrl:apl.platformUrl).save();
+                  }
+                }
+              }
             }
           }
         }
-
+        else {
+          log.error("Null title, package or platform for ${tipp}");
+        }
+      }
+      catch ( Exception e ) {
+        log.error("Problem loading tipp instance",e);
       }
     }
 

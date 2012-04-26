@@ -143,7 +143,7 @@ while ((nl = r.readNext()) != null) {
     def parsed_start_date = parseDate(nl[3],possible_date_formats)
     def parsed_end_date = parseDate(nl[6],possible_date_formats)
 
-    if ( parsed_start_date == null ) {
+    if ( ( parsed_start_date == null ) || ( parsed_start_date.getYear() > 2090 ) ) {
       println("Unable to parse start date ${nl[3]}")
       inc('bad_start_date',stats);
       bad=true
