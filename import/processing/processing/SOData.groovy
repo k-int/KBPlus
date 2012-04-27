@@ -85,7 +85,7 @@ if ( pkg.contentProvider == null ) {
 def so_count = 0
 def so_bad = 0
 def so_good = 0
-def rownum = 0;
+def rownum = 12;
 
 while ((nl = r.readNext()) != null) {
   rownum++
@@ -202,6 +202,7 @@ while ((nl = r.readNext()) != null) {
         tipp.identifiers = tipp_private_identifiers
         tipp.hostPlatformURL = host_platform_url
         tipp.additionalPlatformLinks = additional_platform_links
+        tipp.source = "${args[0]}:${rownum}"
         db.tipps.save(tipp)
       }
       else {
