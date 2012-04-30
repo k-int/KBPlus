@@ -51,7 +51,7 @@
             <dt><g:message code="titleInstance.ids.label" default="Ids" /></dt>
             
               <g:each in="${titleInstanceInstance.ids}" var="i">
-              <dd>${i.namespace}:${i.identifier}</dd>
+              <dd>${i.identifier.ns.ns}:${i.identifier.value}</dd>
               </g:each>
             
           </g:if>
