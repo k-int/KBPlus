@@ -64,12 +64,23 @@ class DataloadController {
 
     }
 
+    // Subscriptions
+    mdb.subscriptions.find().sort(lastmod:1).each { sub ->
+      log.debug("Adding subscription ${sub.name} (${sub.identifier})");
+      def dbsub = Subscription.findByImpId(sub._id.toString()) ?: new Subscription(name:sub.name, 
+                                                                                   identifier:sub.identifier,
+                                                                                   impId:sub._id.toString(),
+                                                                                   startDate:sub.start_date,
+                                                                                   endDate:sub.end_date).save();
+    }
+
     // Platforms
     mdb.platforms.find().sort(lastmod:1).each { plat ->
       log.debug("update platform ${plat}");
       def p = Platform.findByImpId(plat._id.toString()) ?: new Platform(name:plat.name, impId:plat._id.toString()).save()
     }
 
+    // Title instances
     mdb.titles.find().sort(lastmod:1).each { title ->
       log.debug("update ${title}");
       def t = TitleInstance.findByImpId(title._id.toString())
@@ -84,6 +95,7 @@ class DataloadController {
       }
     }
 
+    // Packages
     mdb.pkgs.find().sort(lastmod:1).each { pkg ->
       log.debug("update package ${pkg}");
       def p = Package.findByImpId(pkg._id.toString())

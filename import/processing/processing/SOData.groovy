@@ -68,11 +68,27 @@ def stats = [:]
 
 def org = lookupOrCreateOrg(name:so_provider_line[1], db:db, stats:stats);
 
+def sub = db.subscriptions.findOne(identifier:so_identifier_line[1])
+if ( !sub ) {
+  sub = [:]
+  sub._id = new org.bson.types.ObjectId();
+}
+sub.identifier = so_identifier_line[1]
+sub.name = so_name_line[1];
+sub.start_date_str = so_agreement_term_start_yr_line[1]
+sub.end_date_str=so_agreement_term_end_yr_line[1]
+sub.start_date = parseDate(so_agreement_term_start_yr_line[1],possible_date_formats)
+sub.end_date = parseDate(so_agreement_term_end_yr_line[1],possible_date_formats)
+db.subscriptions.save(sub);
+
 def consortium = null;
 if ( ( so_consortium_line[1] != null ) && ( so_consortium_line[1].length() > 0 ) ) 
   consortium = lookupOrCreateOrg(name:so_consortium_line[1], db:db, stats:stats);
 
 def pkg = lookupOrCreatePackage(identifier:so_package_identifier_line[1], name:so_package_name_line[1], db:db, stats:stats)
+
+pkg.subs.add(sub.impId);
+
 
 // Verify that the pkg has a "contentProvider" of the org! If not, add and update.
 if ( pkg.contentProvider == null ) {
@@ -203,6 +219,7 @@ while ((nl = r.readNext()) != null) {
         tipp.hostPlatformURL = host_platform_url
         tipp.additionalPlatformLinks = additional_platform_links
         tipp.source = "${args[0]}:${rownum}"
+
         db.tipps.save(tipp)
       }
       else {
@@ -282,7 +299,8 @@ def lookupOrCreatePackage(Map params=[:]) {
       identifier:params.identifier,
       normIdentifier:norm_identifier,
       name:params.name,
-      lastmod:System.currentTimeMillis()
+      lastmod:System.currentTimeMillis(),
+      subs:[]
     ]
     params.db.pkgs.save(pkg)
     inc('pkgs_created',params.stats);

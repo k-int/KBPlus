@@ -17,13 +17,15 @@ class TitleInstancePackagePlatform {
   String hostPlatformURL
 
   static mappedBy = [ids: 'tipp', additionalPlatforms: 'tipp']
-  static hasMany = [ids: IdentifierOccurrence, additionalPlatforms: PlatformTIPP]
+  static hasMany = [ids: IdentifierOccurrence, 
+                    additionalPlatforms: PlatformTIPP]
 
 
   static belongsTo = [
     pkg:Package,
     platform:Platform,
-    title:TitleInstance
+    title:TitleInstance,
+    sub:Subscription
   ]
 
   static mapping = {
@@ -45,6 +47,7 @@ class TitleInstancePackagePlatform {
            status column:'tipp_status_rv_fk'
            option column:'tipp_option_rv_fk'
   hostPlatformURL column:'tipp_host_platform_url'
+              sub column:'tipp_sub_fk'
   }
 
   static constraints = {
@@ -60,6 +63,7 @@ class TitleInstancePackagePlatform {
     impId(nullable:true, blank:true);
     status(nullable:true, blank:false);
     option(nullable:true, blank:false);
+    sub(nullable:true, blank:false);
     hostPlatformURL(nullable:true, blank:false);
   }
 }
