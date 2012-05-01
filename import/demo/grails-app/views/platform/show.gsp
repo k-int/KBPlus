@@ -49,15 +49,42 @@
             
           </g:if>
         
-          <g:if test="${platformInstance?.tipps}">
-            <dt><g:message code="platform.tipps.label" default="Occurences of this Platform against Titles/Packages" /></dt>
-            
-              <g:each in="${platformInstance.tipps}" var="t">
-              <dd><g:link controller="titleInstancePackagePlatform" action="show" id="${t.id}">${t?.title?.title?.encodeAsHTML()} / ${t?.pkg?.name?.encodeAsHTML()} (id:"${t?.pkg?.identifier?.encodeAsHTML()}")</g:link></dd>
+        <dl>
+          <dt>Availability of titles in this platform by package</dt>
+          <dd>
+          <table border="1" cellspacing="5" cellpadding="5">
+            <tr>
+              <th rowspan="2">Title</th>
+              <th colspan="${packages.size()}">Provided by package</th>
+            </tr>
+            <tr>
+              <g:each in="${packages}" var="p">
+                <th><g:link controller="package" action="show" id="${p.id}">${p.name}</g:link></th>
               </g:each>
-            
-          </g:if>
-        
+            </tr>
+            <g:each in="${titles}" var="t">
+              <tr>
+                <th style="text-align:right;"><g:link controller="titleInstance" action="show" id="${t.title.id}">${t.title.title}</g:link>&nbsp;</th>
+                <g:each in="${crosstab[t.position]}" var="tipp">
+                  <g:if test="${tipp}">
+                    <td>from: <g:formatDate format="dd MMM yyyy" date="${tipp.startDate}"/> 
+                          <g:if test="${tipp.startVolume}"> / volume: ${tipp.startVolume} </g:if>
+                          <g:if test="${tipp.startIssue}"> / issue: ${tipp.startIssue} </g:if> <br/>
+                        to:  <g:formatDate format="dd MMM yyyy" date="${tipp.endDate}"/> 
+                          <g:if test="${tipp.endVolume}"> / volume: ${tipp.endVolume}</g:if>
+                          <g:if test="${tipp.endIssue}"> / issue: ${tipp.endIssue}</g:if> <br/>
+                        coverage Depth: ${tipp.coverageDepth}</br>
+                      <g:link controller="titleInstancePackagePlatform" action="show" id="${tipp.id}">Full TIPP Details</g:link>
+                    </g:if>
+                    <g:else>
+                      <td></td>
+                    </g:else>
+                  </td>
+                </g:each>
+              </tr>
+            </g:each>
+          </table>
+          </dd>
         </dl>
 
         <g:form>

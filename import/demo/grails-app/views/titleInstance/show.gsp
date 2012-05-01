@@ -65,9 +65,30 @@
         
           <g:if test="${titleInstanceInstance?.tipps}">
             <dt><g:message code="titleInstance.tipps.label" default="Occurences of this title against Packages / Platforms" /></dt>
+            <dd>
+            <table border="1" cellpadding="5" cellspacing="5">
+              <tr>
+                <th>From Date</th><th>From Volume</th><th>From Issue</th>
+                <th>To Date</th><th>To Volume</th><th>To Issue</th><th>Coverage Depth</th>
+                <th>Platform</th><th>Package</th><th>Actions</th>
+              </tr>
               <g:each in="${titleInstanceInstance.tipps}" var="t">
-              <dd><g:link controller="titleInstancePackagePlatform" action="show" id="${t.id}">${t?.pkg?.name?.encodeAsHTML()} (id: ${t?.pkg?.identifier?.encodeAsHTML()}) / ${t?.platform?.name?.encodeAsHTML()}</g:link></dd>
+                <tr>
+                  <td><g:formatDate format="dd MMM yyyy" date="${t.startDate}"/></td>
+                  <td>${t.startVolume}</td>
+                  <td>${t.startIssue}</td>
+                  <td><g:formatDate format="dd MMM yyyy" date="${t.endDate}"/></td>
+                  <td>${t.endVolume}</td>
+                  <td>${t.endIssue}</td>
+                  <td>${t.coverageDepth}</td>
+                  <td><g:link controller="platform" action="show" id="${t.platform.id}">${t.platform.name}</g:link></td>
+                  <td><g:link controller="package" action="show" id="${t.pkg.id}">${t.pkg.name}</g:link></td>
+                  <td><g:link controller="titleInstancePackagePlatform" action="show" id="${t.id}">Full TIPP record</g:link></td>
+                </tr>
               </g:each>
+
+            </table>
+            </dd>
           </g:if>
         
         </dl>

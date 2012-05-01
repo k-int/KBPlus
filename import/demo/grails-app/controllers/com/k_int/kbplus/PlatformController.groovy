@@ -42,7 +42,48 @@ class PlatformController {
         return
       }
 
-      [platformInstance: platformInstance]
+
+     // Build up a crosstab array of title-platforms under this package
+      def packages = [:]
+      def package_list = []
+      def titles = [:]
+      def title_list = []
+      int pkg_count = 0;
+      int title_count = 0;
+
+      log.debug("Adding packages");
+      // Find all platforms
+      platformInstance.tipps.each{ tipp ->
+        log.debug("Consider ${tipp.title.title}")
+        if ( !packages.keySet().contains(tipp.pkg.id) ) {
+          package_list.add(tipp.pkg)
+          packages[tipp.pkg.id] = [position:pkg_count++, pkg:tipp.pkg]
+        }
+      }
+
+      // Find all titles
+      platformInstance.tipps.each{ tipp ->
+        if ( !titles.keySet().contains(tipp.title.id) ) {
+          title_list.add([title:tipp.title])
+        }
+      }
+
+      title_list.sort{it.title.title}
+      title_list.each { t ->
+        t.position = title_count
+        titles[t.title.id] = [position:title_count++]
+      }
+
+      def crosstab = new Object[title_list.size()][package_list.size()]
+
+      // Now iterate through all tipps, puttint them in the right cell
+      platformInstance.tipps.each{ tipp ->
+        int pkg_col = packages[tipp.pkg.id].position
+        int title_row = titles[tipp.title.id].position
+        crosstab[title_row][pkg_col] = tipp;
+      }
+
+        [platformInstance: platformInstance, packages:package_list, crosstab:crosstab, titles:title_list]
     }
 
     def edit() {

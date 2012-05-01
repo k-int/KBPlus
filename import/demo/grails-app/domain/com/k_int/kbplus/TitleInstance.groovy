@@ -19,6 +19,7 @@ class TitleInstance {
       impId column:'ti_imp_id', index:'ti_imp_id_idx'
      status column:'ti_status_rv_fk'
        type column:'ti_type_rv_fk'
+      tipps sort:'startDate', order: 'asc'
   }
 
   static constraints = {

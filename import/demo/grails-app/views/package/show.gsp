@@ -84,14 +84,17 @@
                 <g:each in="${crosstab[t.position]}" var="tipp">
                   <g:if test="${tipp}">
                     <td>from: <g:formatDate format="dd MMM yyyy" date="${tipp.startDate}"/> 
-                          <g:if test="${tipp.startVolume}"> / ${tipp.startVolume} </g:if>
-                          <g:if test="${tipp.startIssue}"> / ${tipp.startIssue} </g:if> <br/>
+                          <g:if test="${tipp.startVolume}"> / volume: ${tipp.startVolume} </g:if>
+                          <g:if test="${tipp.startIssue}"> / issue: ${tipp.startIssue} </g:if> <br/>
                         to:  <g:formatDate format="dd MMM yyyy" date="${tipp.endDate}"/> 
-                          <g:if test="${tipp.endVolume}"> / ${tipp.endVolume}</g:if>
-                          <g:if test="${tipp.endIssue}"> / ${tipp.endIssue}</g:if> <br/>
+                          <g:if test="${tipp.endVolume}"> / volume: ${tipp.endVolume}</g:if>
+                          <g:if test="${tipp.endIssue}"> / issue: ${tipp.endIssue}</g:if> <br/>
                         coverage Depth: ${tipp.coverageDepth}</br>
                       <g:link controller="titleInstancePackagePlatform" action="show" id="${tipp.id}">Full TIPP Details</g:link>
                     </g:if>
+                    <g:else>
+                      <td></td>
+                    </g:else>
                   </td>
                 </g:each>
               </tr>
