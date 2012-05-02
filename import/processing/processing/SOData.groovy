@@ -211,7 +211,7 @@ while ((nl = r.readNext()) != null) {
   
       // Find tipp
       if ( title && pkg && host_platform && title._id && pkg._id && host_platform._id ) {
-        def tipp = lookupOrCreateTipp(titleid:title._id, pkgid:pkg._id, platformid:host_platform._id, db:db, stats:stats)
+        def tipp = createTipp(titleid:title._id, pkgid:pkg._id, platformid:host_platform._id, db:db, stats:stats)
         tipp.startDateString = nl[3]
         tipp.startDate = parsed_start_date
         tipp.startVolume = nl[4]
@@ -228,6 +228,7 @@ while ((nl = r.readNext()) != null) {
         tipp.hostPlatformURL = host_platform_url
         tipp.additionalPlatformLinks = additional_platform_links
         tipp.source = "${args[0]}:${rownum}"
+        tipp.ies.add(sub._id)
 
         db.tipps.save(tipp)
       }
@@ -389,16 +390,24 @@ def lookupOrCreateTipp(Map params=[:]) {
   tipp = params.db.tipps.findOne(titleid:params.titleid, pkgid:params.pkgid, platformid:params.platformid)
 
   if ( !tipp ) {
-    tipp = [
-      _id:new org.bson.types.ObjectId(),
-      titleid:params.titleid,
-      pkgid:params.pkgid,
-      platformid:params.platformid,
-      lastmod:System.currentTimeMillis()
-    ]
-    params.db.tipps.save(tipp)
-    inc('tipp_created',params.stats);
+    tipp = createTipp(params);
   }
+
+  tipp
+}
+
+def createTipp(Map params=[:]) {
+  def tipp = null;
+  tipp = [
+    _id:new org.bson.types.ObjectId(),
+    titleid:params.titleid,
+    pkgid:params.pkgid,
+    platformid:params.platformid,
+    lastmod:System.currentTimeMillis(),
+    ies:[]
+  ]
+  params.db.tipps.save(tipp)
+  inc('tipp_created',params.stats);
 
   tipp
 }

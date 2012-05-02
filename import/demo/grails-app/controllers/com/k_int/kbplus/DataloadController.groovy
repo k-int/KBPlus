@@ -71,7 +71,7 @@ class DataloadController {
                                                                                    identifier:sub.identifier,
                                                                                    impId:sub._id.toString(),
                                                                                    startDate:sub.start_date,
-                                                                                   endDate:sub.end_date).save();
+                                                                                   endDate:sub.end_date).save(flush:true);
     }
 
     // Platforms
@@ -104,19 +104,32 @@ class DataloadController {
         if (pkg.type) {
           pkg_type = lookupOrCreateRefdataEntry('PackageTypes',pkg.type);
         }
+        log.debug("New package: ${pkg.identifier}, ${pkg.name}, ${pkg_type}, ${pkg._id.toString()}, ${pkg.contentProvider.toString()}");
         p = new Package(identifier:pkg.identifier,
                         name:pkg.name,
                         type:pkg_type,
                         impId:pkg._id.toString(),
                         contentProvider: pkg.contentProvider ? Org.findByImpId(pkg.contentProvider.toString()) : null );
-
-        pkg.subs.each { sub ->
-          log.debug("Processing subscription ${sub}");
-          def dbsub = Subscription.findByImpId(sub);
-          def sp = SubscriptionPackage.findBySubscriptionAndPkg(dbsub, p) ?: new SubscriptionPackage(subscription:dbsub, pkg: p).save();
+        if ( p.save(flush:true) ) {
+          log.debug("New package ${pkg.identifier} saved");
+        }
+        else {
+          log.error("Problem saving new package ${pkg.identifier}");
+          p.errors.each { pe ->
+            log.error("Problem saving package: ${pe}");
+          }
         }
       }
-      p.save()
+      else {
+        log.debug("got package ${pkg._id.toString()}");
+      }
+
+      pkg.subs.each { sub ->
+        log.debug("Processing subscription ${sub}");
+        def dbsub = Subscription.findByImpId(sub.toString());
+        def sp = SubscriptionPackage.findBySubscriptionAndPkg(dbsub, p) ?: new SubscriptionPackage(subscription:dbsub, pkg: p).save();
+      }
+
     }
 
     // Finally... tipps
@@ -152,6 +165,9 @@ class DataloadController {
                 log.error("  -> ${err}");
               }
             }
+            else {
+              log.debug("TIPP Save OK ${tipp._id}");
+            }
     
             if ( tipp.identifiers ) {
               tipp.identifiers.each { tippid ->
@@ -159,6 +175,9 @@ class DataloadController {
                 def canonical_identifier = lookupOrCreateCanonicalIdentifier(tippid.type, tippid.value);
                 dbtipp.ids.add(new IdentifierOccurrence(identifier:canonical_identifier, tipp:dbtipp));
               }
+            }
+            else {
+              log.debug("no tipp identifiers");
             }
     
             if ( ! dbtipp.save() ) {
@@ -168,7 +187,9 @@ class DataloadController {
               }
             }
             else {
+              log.debug("dbtipp updated");
               if ( tipp.additionalPlatformLinks ) {
+                log.debug("additional platform links");
                 tipp.additionalPlatformLinks.each { apl ->
                   log.debug("Additional platform link : ${apl}");
                   def admin_platform = Platform.findByImpId(apl.platformId.toString());
@@ -180,6 +201,22 @@ class DataloadController {
                   }
                 }
               }
+              else { 
+                log.debug("No additional platform links");
+              }
+
+              if ( tipp.ies ) {
+                log.debug("Issue Entitlements");
+                tipp.ies.each { ie ->
+                  log.debug("Checking issue entitlement ${ie.toString()}");
+                  def sub = Subscription.findByImpId(ie.toString());
+                  IssueEntitlement dbie = IssueEntitlement.findBySubscriptionAndTipp(sub, dbtipp) ?: new IssueEntitlement(subscription:sub, tipp: dbtipp).save();
+                }
+              }
+              else { 
+                log.debug("No Issue Entitlements");
+              }
+
             }
           }
         }
