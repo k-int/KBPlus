@@ -87,7 +87,7 @@ if ( ( so_consortium_line[1] != null ) && ( so_consortium_line[1].length() > 0 )
 
 def pkg = lookupOrCreatePackage(identifier:so_package_identifier_line[1], name:so_package_name_line[1], db:db, stats:stats)
 
-pkg.subs.add(sub.impId);
+pkg.subs.add(sub._id);
 
 
 // Verify that the pkg has a "contentProvider" of the org! If not, add and update.
@@ -111,6 +111,15 @@ while ((nl = r.readNext()) != null) {
   // num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,
   // num_last_issue_online,title_id,embargo_info,coverage_depth,coverage_notes,
   // publisher_name,DOI,platform_name,platform_role,platform_title_url,platform_name,platform_role,platform_title_url
+
+  boolean has_data = false
+  nl.each {
+    if ( ( it != null ) && ( it.trim() != '' ) ) 
+      has_data = true;
+  }
+
+  if ( !has_data )
+    continue;
 
   // Data Quality
   if ( present(nl[0] ) ) {

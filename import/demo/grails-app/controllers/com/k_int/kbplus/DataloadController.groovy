@@ -109,6 +109,12 @@ class DataloadController {
                         type:pkg_type,
                         impId:pkg._id.toString(),
                         contentProvider: pkg.contentProvider ? Org.findByImpId(pkg.contentProvider.toString()) : null );
+
+        pkg.subs.each { sub ->
+          log.debug("Processing subscription ${sub}");
+          def dbsub = Subscription.findByImpId(sub);
+          def sp = SubscriptionPackage.findBySubscriptionAndPkg(dbsub, p) ?: new SubscriptionPackage(subscription:dbsub, pkg: p).save();
+        }
       }
       p.save()
     }

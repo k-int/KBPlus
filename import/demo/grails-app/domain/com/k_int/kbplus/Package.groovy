@@ -9,8 +9,14 @@ class Package {
   RefdataValue packageStatus
   Org contentProvider
 
-  static mappedBy = [tipps: 'pkg', orgs: 'pkg']
-  static hasMany = [tipps: TitleInstancePackagePlatform, orgs: OrgRole]
+  static hasMany = [tipps: TitleInstancePackagePlatform, 
+                    orgs: OrgRole, 
+                    subscriptions: SubscriptionPackage]
+
+  static mappedBy = [tipps: 'pkg', 
+                     orgs: 'pkg',
+                     subscriptions: 'pkg']
+
 
   static mapping = {
                    id column:'pkg_id'
