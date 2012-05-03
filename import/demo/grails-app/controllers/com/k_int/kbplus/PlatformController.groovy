@@ -65,13 +65,15 @@ class PlatformController {
       platformInstance.tipps.each{ tipp ->
         if ( !titles.keySet().contains(tipp.title.id) ) {
           title_list.add([title:tipp.title])
+          titles[tipp.title.id] = [:]
         }
       }
 
       title_list.sort{it.title.title}
       title_list.each { t ->
+        log.debug("Add title ${t.title.title}")
         t.position = title_count
-        titles[t.title.id] = [position:title_count++]
+        titles[t.title.id].position = title_count++
       }
 
       def crosstab = new Object[title_list.size()][package_list.size()]
