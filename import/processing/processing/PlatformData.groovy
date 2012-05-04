@@ -60,12 +60,22 @@ def lookupOrCreatePlatform(Map params=[:]) {
   // println("lookupOrCreatePlatform(${params})");
   def platform = null;
 
-  platform = params.db.platforms.findOne(name:params.name)
+  def norm_name = params.name.trim().toLowerCase()
+
+  platform = params.db.platforms.findOne(normname:norm_name)
 
   if ( !platform ) {
     platform = [
       _id:new org.bson.types.ObjectId(),
       name:params.name,
+      normname:norm_name,
+      primaryUrl:params.primaryUrl,
+      host:params.host,
+      gateway:params.gateway,
+      administrative:params.administrative,
+      software:params.software,
+      administeredBy:params.administeredBy,
+      provenance:"Direct import",
       lastmod:System.currentTimeMillis()
     ]
     params.db.platforms.save(platform)

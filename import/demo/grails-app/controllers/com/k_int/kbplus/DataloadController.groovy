@@ -77,7 +77,11 @@ class DataloadController {
     // Platforms
     mdb.platforms.find().sort(lastmod:1).each { plat ->
       log.debug("update platform ${plat}");
-      def p = Platform.findByImpId(plat._id.toString()) ?: new Platform(name:plat.name, impId:plat._id.toString()).save()
+      def p = Platform.findByImpId(plat._id.toString()) ?: new Platform(name:plat.name, 
+                                                                        normname:plat.normname,
+                                                                        primaryUrl:plat.primaryUrl,
+                                                                        provenance:plat.provenance,
+                                                                        impId:plat._id.toString()).save()
     }
 
     // Title instances

@@ -187,6 +187,7 @@ while ((nl = r.readNext()) != null) {
              ( nl[position] ) && 
              ( nl[position].length() > 0 ) ) {
           def platform = lookupOrCreatePlatform(name:nl[position], 
+                                                prov:"Platform for SO ${args[0]}:${rownum}",
                                                 type:nl[position+1],
                                                 db:db, 
                                                 stats:stats)
@@ -203,7 +204,7 @@ while ((nl = r.readNext()) != null) {
           else {
             // TODO: Add to additional TIPP_Platform
             println("Non host platform: ${platform_role} : ${platform_url}");
-            def additional_platform = lookupOrCreatePlatform(name:nl[position],type:nl[position+1],db:db,stats:stats)
+            def additional_platform = lookupOrCreatePlatform(name:nl[position],type:nl[position+1],db:db,stats:stats,prov:"Add Platform for SO ${args[0]}:${rownum}")
             additional_platform_links.add([platformId:additional_platform._id, role:platform_role, platformUrl:platform_url]);
           }
         }
@@ -367,12 +368,16 @@ def lookupOrCreatePlatform(Map params=[:]) {
   // println("lookupOrCreatePlatform(${params})");
   def platform = null;
 
-  platform = params.db.platforms.findOne(name:params.name)
+  String normname = params.name.trim().toLowerCase();
+
+  platform = params.db.platforms.findOne(normname:normname)
 
   if ( !platform ) {
     platform = [
       _id:new org.bson.types.ObjectId(),
       name:params.name,
+      normname:normname,
+      provenance:params.prov,
       type:params.type,
       lastmod:System.currentTimeMillis()
     ]
