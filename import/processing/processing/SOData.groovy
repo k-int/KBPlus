@@ -134,6 +134,9 @@ while ((nl = r.readNext()) != null) {
       println("Publisher name: ${nl[13]}")
       publisher = lookupOrCreateOrg(name:nl[13], db:db, stats:stats);
     }
+    else {
+      println("Publisher is null");
+    }
 
     // If there is an identifier, set up the appropriate matching...
     if ( present(nl[1]) ) 
@@ -355,6 +358,7 @@ def lookupOrCreateTitle(Map params=[:]) {
       _id:new org.bson.types.ObjectId(),
       title:params.title,
       identifier:params.identifier,    // identifier is a list, catering for many different values
+      publisher:params.publisher._id,
       lastmod:System.currentTimeMillis()
     ]
     params.db.titles.save(title)

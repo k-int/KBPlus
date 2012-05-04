@@ -12,6 +12,7 @@ class OrgRole {
   Package pkg
   Subscription sub
   License lic
+  TitleInstance title
 
   static mapping = {
           id column:'or_id'
@@ -21,6 +22,7 @@ class OrgRole {
          pkg column:'or_pkg_fk'
          sub column:'or_sub_fk'
          lic column:'or_lic_fk'
+       title column:'or_title_fk'
   }
 
   static constraints = {
@@ -28,5 +30,6 @@ class OrgRole {
     pkg(nullable:true, blank:false)
     sub(nullable:true, blank:false)
     lic(nullable:true, blank:false)
+    title(nullable:true, blank:false)
   }
 }

@@ -20,7 +20,8 @@ class DataloadController {
           o=new Org(impId:org._id.toString(), 
                     name:org.name.trim(),
                     ipRange:org.ipRange,
-                    sector:org.sectorName);
+                    sector:org.sectorName,
+                    links:[]);
           o.ids=[]
         }
       }
@@ -54,7 +55,7 @@ class DataloadController {
       // Create a combo to link this org with NESLI2 (So long as this isn't the NESLI2 record itself of course
       if ( org.name != 'NESLI2' ) {
         o = Org.findByName(org.name.trim());
-        def cons_org = Org.findByName('NESLI2') ?: new Org(name:'NESLI2').save();
+        def cons_org = Org.findByName('NESLI2') ?: new Org(name:'NESLI2', links:[]).save();
         if ( cons_org ) {
           def new_combo = new Combo(type:lookupOrCreateRefdataEntry('Combo Type','Consortium'),
                                     fromOrg:o,
@@ -95,7 +96,21 @@ class DataloadController {
           t.ids.add(new IdentifierOccurrence(identifier:canonical_identifier, ti:t));
           // t.addToIds(new TitleSID(namespace:id.type,identifier:id.value));
         }
+
         t.save();
+
+        // create a new OrgRole for this title that links it with the publisher org.
+        if ( title.publisher ) {
+          def publisher_org = Org.findByImpId(title.publisher.toString());
+          if ( publisher_org ) {
+            log.debug("Assert publisher org link with ${publisher_org.name}");
+            def pub_role = lookupOrCreateRefdataEntry('Organisational Role', 'Publisher');
+            assertOrgTitleLink(publisher_org, t, pub_role);
+          }
+          else {
+            log.error("Title referenced a publisher org that cannot be found!!!! ${title.publisher.toString()}");
+          }
+        }
       }
     }
 
@@ -112,10 +127,15 @@ class DataloadController {
         p = new Package(identifier:pkg.identifier,
                         name:pkg.name,
                         type:pkg_type,
-                        impId:pkg._id.toString(),
-                        contentProvider: pkg.contentProvider ? Org.findByImpId(pkg.contentProvider.toString()) : null );
+                        impId:pkg._id.toString());
+
         if ( p.save(flush:true) ) {
           log.debug("New package ${pkg.identifier} saved");
+          def cp = Org.findByImpId(pkg.contentProvider.toString());
+          if ( cp ) {
+            def cp_role = lookupOrCreateRefdataEntry('Organisational Role', 'Content Provider');
+            assertOrgPackageLink(cp, p, cp_role);
+          }
         }
         else {
           log.error("Problem saving new package ${pkg.identifier}");
@@ -123,6 +143,8 @@ class DataloadController {
             log.error("Problem saving package: ${pe}");
           }
         }
+
+
       }
       else {
         log.debug("got package ${pkg._id.toString()}");
@@ -250,5 +272,33 @@ class DataloadController {
     def category = RefdataCategory.findByDesc(refDataCategory) ?: new RefdataCategory(desc:refDataCategory).save(flush:true)
     def result = RefdataValue.findByOwnerAndValue(category, refDataCode) ?: new RefdataValue(owner:category,value:refDataCode).save(flush:true)
     result;
+  }
+
+  def assertOrgTitleLink(porg, ptitle, prole) {
+    // def link = OrgRole.findByTitleAndOrgAndRoleType(ptitle, porg, prole) ?: new OrgRole(title:ptitle, org:porg, roleType:prole).save();
+    def link = OrgRole.find{ title==ptitle && org==porg && roleType==prole }
+    if ( ! link ) {
+      link = new OrgRole(title:ptitle, org:porg, roleType:prole)
+      if ( !porg.links )
+        porg.links = [link]
+      else
+        porg.links.add(link)
+
+      porg.save();
+    }
+  }
+
+  def assertOrgPackageLink(porg, ppkg, prole) {
+    // def link = OrgRole.findByPkgAndOrgAndRoleType(pkg, org, role) ?: new OrgRole(pkg:pkg, org:org, roleType:role).save();
+    def link = OrgRole.find{ pkg==ppkg && org==porg && roleType==prole }
+    if ( ! link ) {
+      link = new OrgRole(pkg:ppkg, org:porg, roleType:prole);
+      if ( !porg.links )
+        porg.links = [link]
+      else
+        porg.links.add(link)
+      porg.save();
+    }
+
   }
 }

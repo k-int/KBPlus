@@ -8,7 +8,6 @@ class TitleInstance {
   RefdataValue type
 
   static mappedBy = [tipps: 'title', ids: 'ti']
-  // static hasMany = [tipps: TitleInstancePackagePlatform, ids: TitleSID]
   static hasMany = [tipps: TitleInstancePackagePlatform, ids: IdentifierOccurrence]
 
 

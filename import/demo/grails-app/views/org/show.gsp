@@ -90,15 +90,6 @@
 					</g:each>
 					</g:if>
 
-                                        <g:if test="${orgInstance?.packages}">
-                                          <dt><g:message code="org.packages.label" default="Org is a Content Provider for the following packages" /></dt>
-					  <g:each in="${orgInstance.packages}" var="i">
-                                            <dd><g:link controller="package" action="show" id="${i.id}">${i.name}</g:link></dd>
-					</g:each>
-					</g:if>
-
-
-
                                         <g:if test="${orgInstance?.links}">
                                           <dt><g:message code="org.links.label" default="Other org links" /></dt>
                                           <dd><ul>
