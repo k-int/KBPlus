@@ -10,7 +10,7 @@
 	<body>
 		<div class="row-fluid">
 			
-			<div class="span3">
+			<div class="span2">
 				<div class="well">
 					<ul class="nav nav-list">
 						<li class="nav-header">${entityName}</li>
@@ -30,7 +30,7 @@
 				</div>
 			</div>
 			
-			<div class="span9">
+			<div class="span10">
 
 				<div class="page-header">
 					<h1><g:message code="default.show.label" args="[entityName]" /></h1>
@@ -96,6 +96,24 @@
                                             <dd><g:link controller="package" action="show" id="${i.id}">${i.name}</g:link></dd>
 					</g:each>
 					</g:if>
+
+
+
+                                        <g:if test="${orgInstance?.links}">
+                                          <dt><g:message code="org.links.label" default="Other org links" /></dt>
+                                          <dd><ul>
+  					    <g:each in="${orgInstance.links}" var="i">
+                                              <li>
+                                                <g:if test="${i.pkg}">Package: ${i.pkg.name}</g:if>
+                                                <g:if test="${i.sub}">Subscription: ${i.sub.name}</g:if>
+                                                <g:if test="${i.lic}">License: ${i.lic.id}</g:if>
+                                               (${i.roleType.value}) </li>
+					  </g:each>
+
+                                          </ui></dd>
+					</g:if>
+
+
 				
 					<g:if test="${orgInstance?.impId}">
 						<dt><g:message code="org.impId.label" default="Imp Id" /></dt>

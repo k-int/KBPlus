@@ -11,12 +11,14 @@ class Org {
   static mappedBy = [ids: 'org', 
                      outgoingCombos: 'fromOrg', 
                      incomingCombos:'toOrg',
-                     packages:'contentProvider' ]
+                     packages:'contentProvider',
+                     links: 'org' ]
 
   static hasMany = [ids: IdentifierOccurrence, 
                     outgoingCombos: Combo,  
                     incomingCombos:Combo,
-                    packages: Package]
+                    packages: Package,
+                    links: OrgRole]
 
   static mapping = {
          id column:'org_id'
