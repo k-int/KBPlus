@@ -54,7 +54,7 @@ class PlatformController {
       log.debug("Adding packages");
       // Find all platforms
       platformInstance.tipps.each{ tipp ->
-        log.debug("Consider ${tipp.title.title}")
+        // log.debug("Consider ${tipp.title.title}")
         if ( !packages.keySet().contains(tipp.pkg.id) ) {
           package_list.add(tipp.pkg)
           packages[tipp.pkg.id] = [position:pkg_count++, pkg:tipp.pkg]
@@ -71,7 +71,7 @@ class PlatformController {
 
       title_list.sort{it.title.title}
       title_list.each { t ->
-        log.debug("Add title ${t.title.title}")
+        // log.debug("Add title ${t.title.title}")
         t.position = title_count
         titles[t.title.id].position = title_count++
       }
@@ -82,7 +82,12 @@ class PlatformController {
       platformInstance.tipps.each{ tipp ->
         int pkg_col = packages[tipp.pkg.id].position
         int title_row = titles[tipp.title.id].position
-        crosstab[title_row][pkg_col] = tipp;
+        if ( crosstab[title_row][pkg_col] != null ) {
+          log.error("Warning - already a value in this cell.. it needs to be a list!!!!!");
+        }
+        else {
+          crosstab[title_row][pkg_col] = tipp;
+        }
       }
 
         [platformInstance: platformInstance, packages:package_list, crosstab:crosstab, titles:title_list]

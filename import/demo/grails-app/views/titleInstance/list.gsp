@@ -10,7 +10,7 @@
 	<body>
 		<div class="row-fluid">
 			
-			<div class="span3">
+			<div class="span2">
 				<div class="well">
 					<ul class="nav nav-list">
 						<li class="nav-header">${entityName}</li>
@@ -30,7 +30,7 @@
 				</div>
 			</div>
 
-			<div class="span9">
+			<div class="span10">
 				
 				<div class="page-header">
 					<h1><g:message code="default.list.label" args="[entityName]" /></h1>

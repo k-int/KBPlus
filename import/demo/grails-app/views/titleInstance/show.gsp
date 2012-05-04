@@ -10,7 +10,7 @@
   <body>
     <div class="row-fluid">
       
-      <div class="span3">
+      <div class="span2">
         <div class="well">
           <ul class="nav nav-list">
             <li class="nav-header">${entityName}</li>
@@ -30,10 +30,10 @@
         </div>
       </div>
       
-      <div class="span9">
+      <div class="span10">
 
         <div class="page-header">
-          <h1><g:message code="default.show.label" args="[entityName]" /></h1>
+          <h1>Title Instance: ${titleInstanceInstance?.title}</h1>
         </div>
 
         <g:if test="${flash.message}">
@@ -82,7 +82,7 @@
                   <td>${t.endIssue}</td>
                   <td>${t.coverageDepth}</td>
                   <td><g:link controller="platform" action="show" id="${t.platform.id}">${t.platform.name}</g:link></td>
-                  <td><g:link controller="package" action="show" id="${t.pkg.id}">${t.pkg.name}</g:link></td>
+                  <td><g:link controller="package" action="show" id="${t.pkg.id}">${t.pkg.name} (${t.pkg.contentProvider?.name})</g:link></td>
                   <td><g:link controller="titleInstancePackagePlatform" action="show" id="${t.id}">Full TIPP record</g:link></td>
                 </tr>
               </g:each>

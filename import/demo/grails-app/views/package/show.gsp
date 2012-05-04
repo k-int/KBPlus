@@ -10,7 +10,7 @@
   <body>
     <div class="row-fluid">
       
-      <div class="span3">
+      <div class="span2">
         <div class="well">
           <ul class="nav nav-list">
             <li class="nav-header">${entityName}</li>
@@ -30,10 +30,10 @@
         </div>
       </div>
       
-      <div class="span9">
+      <div class="span10">
 
         <div class="page-header">
-          <h1><g:message code="default.show.label" args="[entityName]" /></h1>
+          <h1>Package : ${packageInstance?.name} (${packageInstance?.contentProvider?.name})</h1>
         </div>
 
         <g:if test="${flash.message}">
@@ -70,7 +70,7 @@
           <dd>
           <table border="1" cellspacing="5" cellpadding="5">
             <tr>
-              <th rowspan="2">Title</th>
+              <th rowspan="2" style="width: 30%;">Title</th>
               <th colspan="${platforms.size()}">Provided by platform</th>
             </tr>
             <tr>
@@ -80,7 +80,7 @@
             </tr>
             <g:each in="${titles}" var="t">
               <tr>
-                <th style="text-align:right;"><g:link controller="titleInstance" action="show" id="${t.title.id}">${t.title.title}</g:link>&nbsp;</th>
+                <th style="text-align:left;"><g:link controller="titleInstance" action="show" id="${t.title.id}">${t.title.title}</g:link>&nbsp;</th>
                 <g:each in="${crosstab[t.position]}" var="tipp">
                   <g:if test="${tipp}">
                     <td>from: <g:formatDate format="dd MMM yyyy" date="${tipp.startDate}"/> 
