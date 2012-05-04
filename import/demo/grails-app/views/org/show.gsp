@@ -72,7 +72,7 @@
 					<g:if test="${orgInstance?.ids}">
 						<dt><g:message code="org.ids.label" default="Ids" /></dt>
 							<g:each in="${orgInstance.ids}" var="i">
-							<dd><g:link controller="identifierOccurrence" action="show" id="${i.id}">${i?.identifier?.ns?.ns?.encodeAsHTML()} : ${i?.identifier?.value?.encodeAsHTML()}</g:link></dd>
+							<dd><g:link controller="identifier" action="show" id="${i.identifier.id}">${i?.identifier?.ns?.ns?.encodeAsHTML()} : ${i?.identifier?.value?.encodeAsHTML()}</g:link></dd>
 							</g:each>
 					</g:if>
 

@@ -5,6 +5,9 @@ class Identifier {
   IdentifierNamespace ns
   String value
 
+  static hasMany = [ occurrences:IdentifierOccurrence ]
+  static mappedBy = [ occurrences:'identifier' ]
+
   static constraints = {
   }
 
