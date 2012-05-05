@@ -7,6 +7,7 @@ class Package {
   String impId
   RefdataValue packageType
   RefdataValue packageStatus
+  Org contentProvider
 
   static hasMany = [tipps: TitleInstancePackagePlatform, 
                     orgs: OrgRole, 
@@ -32,5 +33,6 @@ class Package {
   static constraints = {
         packageType(nullable:true, blank:false)
       packageStatus(nullable:true, blank:false)
+    contentProvider(nullable:true, blank:false)
   }
 }

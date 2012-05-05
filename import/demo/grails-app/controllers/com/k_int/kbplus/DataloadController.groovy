@@ -124,14 +124,15 @@ class DataloadController {
           pkg_type = lookupOrCreateRefdataEntry('PackageTypes',pkg.type);
         }
         log.debug("New package: ${pkg.identifier}, ${pkg.name}, ${pkg_type}, ${pkg._id.toString()}, ${pkg.contentProvider.toString()}");
+        def cp = pkg.contentProvider != null ? Org.findByImpId(pkg.contentProvider.toString()) : null;
         p = new Package(identifier:pkg.identifier,
                         name:pkg.name,
                         type:pkg_type,
+                        contentProvider:cp,
                         impId:pkg._id.toString());
 
         if ( p.save(flush:true) ) {
           log.debug("New package ${pkg.identifier} saved");
-          def cp = Org.findByImpId(pkg.contentProvider.toString());
           if ( cp ) {
             def cp_role = lookupOrCreateRefdataEntry('Organisational Role', 'Content Provider');
             assertOrgPackageLink(cp, p, cp_role);

@@ -1,5 +1,5 @@
 
-<%@ page import="com.k_int.kbplus.Org" %>
+<%@ page import="com.k_int.kbplus.*" %>
 <!doctype html>
 <html>
 	<head>
@@ -33,8 +33,16 @@
 			<div class="span10">
 				
 				<div class="page-header">
-					<h1><g:message code="default.list.label" args="[entityName]" /></h1>
+				<h1>Organisations</h1>
 				</div>
+
+        <div class="span12">
+          <g:form action="list" method="get">
+            Org Name Contains: <input type="text" name="orgNameContains" value="${params.orgNameContains}"/> Restrict to orgs who are 
+            <g:select name="orgRole" noSelection="${['':'Select One...']}" from="${RefdataValue.findAllByOwner(RefdataCategory.get(2))}" value="${params.orgRole}" optionKey="id" optionValue="value"/>
+            <input type="submit" value="GO ->"/> (${orgInstanceTotal} Matches)
+          </g:form>
+        <div>
 
 				<g:if test="${flash.message}">
 				<bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>

@@ -12,7 +12,30 @@ class OrgController {
 
     def list() {
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
-        [orgInstanceList: Org.list(params), orgInstanceTotal: Org.count()]
+        def results = null;
+        def count = null;
+        if ( ( params.orgNameContains != null ) && ( params.orgNameContains.length() > 0 ) &&
+             ( params.orgRole != null ) && ( params.orgRole.length() > 0 ) ) {
+          def qry = "from Org o where o.name like ? and exists ( from o.links r where r.roleType.id = ? )"
+          results = Org.findAll(qry, ["%${params.orgNameContains}%", Long.parseLong(params.orgRole)],params);
+          count = Org.executeQuery("select count(o) ${qry}",["%${params.orgNameContains}%", Long.parseLong(params.orgRole)])[0]
+        }
+        else if ( ( params.orgNameContains != null ) && ( params.orgNameContains.length() > 0 ) ) {
+          def qry = "from Org o where o.name like ?"
+          results = Org.findAll(qry, ["%${params.orgNameContains}%"], params);
+          count = Org.executeQuery("select count (o) ${qry}",["%${params.orgNameContains}%"])[0]
+        }
+        else if ( ( params.orgRole != null ) && ( params.orgRole.length() > 0 ) ) {
+          def qry = "from Org o where exists ( select r from o.links r where r.roleType.id = ? )"
+          results = Org.findAll(qry, [Long.parseLong(params.orgRole)],params);
+          count = Org.executeQuery("select count(o) ${qry}", [Long.parseLong(params.orgRole)])[0]
+        }
+        else { 
+          results = Org.list(params)
+          count = Org.count()
+        }
+
+        [orgInstanceList: results, orgInstanceTotal: count]
     }
 
     def create() {

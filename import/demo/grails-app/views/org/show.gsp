@@ -33,7 +33,7 @@
 			<div class="span10">
 
 				<div class="page-header">
-					<h1><g:message code="default.show.label" args="[entityName]" /></h1>
+					<h1>Organisation: ${orgInstance.name}</h1>
 				</div>
 
 				<g:if test="${flash.message}">
@@ -95,9 +95,10 @@
                                           <dd><ul>
   					    <g:each in="${orgInstance.links}" var="i">
                                               <li>
-                                                <g:if test="${i.pkg}">Package: ${i.pkg.name}</g:if>
-                                                <g:if test="${i.sub}">Subscription: ${i.sub.name}</g:if>
-                                                <g:if test="${i.lic}">License: ${i.lic.id}</g:if>
+                                                <g:if test="${i.pkg}"><g:link controller="pkg" action="show" id="${i.pkg.id}">Package: ${i.pkg.name}</g:link></g:if>
+                                                <g:if test="${i.sub}"><g:link controller="sub" action="show" id="${i.sub.id}">Subscription: ${i.sub.name}</g:link></g:if>
+                                                <g:if test="${i.lic}"><g:link controller="lic" action="show" id="${i.lic.id}">License: ${i.lic.id}</g:link></g:if>
+                                                <g:if test="${i.title}"><g:link controller="title" action="show" id="${i.title.id}">Title: ${i.title.title}</g:link></g:if>
                                                (${i.roleType.value}) </li>
 					  </g:each>
 
