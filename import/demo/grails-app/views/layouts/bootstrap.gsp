@@ -60,7 +60,8 @@
       <hr>
 
       <footer>
-        <p>&copy; Knowledge Integration Ltd 2012</p>
+        <div style="float:right; text-align:right;">Version <g:meta name="app.version"/> build <g:meta name="app.buildNumber"/><br/><a href="https://github.com/k-int/KBPlus">Source</a></div>
+        <p>&copy; <a href="http://www.k-int.com">Knowledge Integration Ltd</a> 2012</p>
       </footer>
     </div>
 
