@@ -36,15 +36,20 @@ println("Read column headings: ${nl}");
 
 while ((nl = r.readNext()) != null) {
   //platform_name,primary_url,host,gateway,administrative,software,administered_by
-  def platform = lookupOrCreatePlatform(name:nl[0],
-                                        primaryUrl:nl[1],
-                                        host:nl[2],
-                                        gateway:nl[3],
-                                        administrative:nl[4],
-                                        software:nl[5],
-                                        administeredBy:nl[6],
-                                        db:db,
-                                        stats:stats)
+  try {
+    def platform = lookupOrCreatePlatform(name:nl[0],
+                                          primaryUrl:nl[1],
+                                          host:nl[2],
+                                          gateway:nl[3],
+                                          administrative:nl[4],
+                                          software:nl[5],
+                                          administeredBy:nl[6],
+                                          db:db,
+                                          stats:stats)
+  }
+  catch ( Exception e ) {
+    e.printStackTrace();
+  }
 }
 
 println("Stats: ${stats}");
