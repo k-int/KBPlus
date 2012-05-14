@@ -46,4 +46,3 @@ from title_instance_package_platform tipp
          join org consortia_org on ( consortia_combo.to_org_id = consortia_org.org_id )
        left outer join platform plat on ( tipp.tipp_plat_fk = plat.plat_id )
     
-

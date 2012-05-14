@@ -135,7 +135,10 @@ while ((nl = r.readNext()) != null) {
       publisher = lookupOrCreateOrg(name:nl[13], db:db, stats:stats);
     }
     else {
-      println("Publisher is null");
+      println("*** Publisher is null");
+      inc('bad_null_publisher',stats);
+      bad=true
+      badreason="No Publisher: ${nl[13]}"
     }
 
     // If there is an identifier, set up the appropriate matching...
@@ -345,15 +348,20 @@ def lookupOrCreateTitle(Map params=[:]) {
   }
 
   if ( !title && params.title) { // If no match, and title present, try to match on title
-    println("Matched title...");
+    println("Attempting to match on title string ${params.title}");
     title = params.db.titles.findOne(title:params.title);
     if ( title ) {
+      println("  -> Matched on title");
       inc('titles_matched_by_title',params.stats);
     }
+    else {
+      println("  -> No match on title");
+    }
   }
-  else {
+
+  if (!title)  {
     // Unable to locate title with identifier given... Try other dedup matches on other props if needed
-    println("New title : ${params.title}");
+    println("Create New title : ${params.title}, title=${title}, publisher=${params.publisher}");
 
     try {
       title = [
@@ -369,7 +377,7 @@ def lookupOrCreateTitle(Map params=[:]) {
     }
     catch ( Exception e ) {
       e.printStackTrace()
-      println("Problem creating new title ${title} for ${params.title} (${params.identifier}): ${e.message}");
+      println("Problem creating new title ${title} for t:${params.title} (id:${params.identifier}): ${e.message}");
     }
   }
 
