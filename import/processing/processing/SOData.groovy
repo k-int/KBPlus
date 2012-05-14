@@ -3,7 +3,7 @@
 // @GrabResolver(name='es', root='https://oss.sonatype.org/content/repositories/releases')
 @Grapes([
   @Grab(group='net.sf.opencsv', module='opencsv', version='2.0'),
-  @Grab(group='com.gmongo', module='gmongo', version='0.9.2')
+  @Grab(group='com.gmongo', module='gmongo', version='0.9.5')
 ])
 
 import org.apache.log4j.*
@@ -345,24 +345,32 @@ def lookupOrCreateTitle(Map params=[:]) {
   }
 
   if ( !title && params.title) { // If no match, and title present, try to match on title
+    println("Matched title...");
     title = params.db.titles.findOne(title:params.title);
     if ( title ) {
       inc('titles_matched_by_title',params.stats);
     }
   }
-
-  if ( title == null ) {
+  else {
     // Unable to locate title with identifier given... Try other dedup matches on other props if needed
+    println("New title : ${params.title}");
 
-    title = [
-      _id:new org.bson.types.ObjectId(),
-      title:params.title,
-      identifier:params.identifier,    // identifier is a list, catering for many different values
-      publisher:params.publisher._id,
-      lastmod:System.currentTimeMillis()
-    ]
-    params.db.titles.save(title)
-    inc('titles_created',params.stats);
+    try {
+      title = [
+        _id:new org.bson.types.ObjectId(),
+        title:params.title,
+        identifier:params.identifier,    // identifier is a list, catering for many different values
+        publisher:params.publisher._id,
+        lastmod:System.currentTimeMillis()
+      ]
+
+      params.db.titles.save(title)
+      inc('titles_created',params.stats);
+    }
+    catch ( Exception e ) {
+      e.printStackTrace()
+      println("Problem creating new title ${title} for ${params.title} (${params.identifier}): ${e.message}");
+    }
   }
 
   title
