@@ -76,6 +76,22 @@ while ((nl = r.readNext()) != null) {
   if ( title) {
     println("Matched title ${title}");
     inc('titles_matched',stats);
+
+    def pkg = db.pkgs.findOne(subs:sub._id);
+    if ( pkg ) {
+      println("Located package ${pkg}");
+
+      // Now try and find a tipp where title id = 
+      def tipps = db.tipps.find(titleid: title._id, pkgid: pkg._id)
+      println("Located ${tipps.size()} tipps for that title");
+
+      tipps.each { tipp ->
+        println(tipp)
+      }
+    }
+    else {
+      println("Failed to locate package matching this subscription");
+    }
   }
   else {
     println("Failed to match title with ISSN \"${nl[2]}\"");
