@@ -52,11 +52,42 @@ println("Read column headings: ${so_header_line}");
 
 def stats = [:]
 
+// Before we start.. lookup a subscription with so_identifier st_so_identifier
+def sub = db.subscriptions.findOne(identifier:st_so_identifier[1])
+if ( !sub ) {
+  println("unable to locate subscription with identifier ${st_so_identifier[1]}");
+  exit(1);
+}
+
+int rownum = 0;
+int st_bad = 0;
+
 while ((nl = r.readNext()) != null) {
   rownum++
   boolean bad = false;
   String badreason = null;
   boolean has_data = false
+
+  // included_st, publication_title, print_identifier, online_identifier, date_first_issue_subscribed, num_first_vol, num_first_iss, last_vo, last_iss
+  // embargo, core_title
+
+  // Lookup title based on print_identifier, target_identifiers ['ISSN'] = print_identifier
+  def title = db.titles.findOne(identifier:[type:'ISSN', value: nl[2]])
+  if ( title) {
+    println("Matched title ${title}");
+    inc('titles_matched',stats);
+  }
+  else {
+    println("Failed to match title with ISSN \"${nl[2]}\"");
+    inc('titles_unmatched',stats);
+    bad = true
+    st_bad++;
+    badreason="Unable to locate ISSN for title \"${nl[2]}\"";
+  }
+
+  if ( bad ) {
+    bad_rows.add([row:nl,reason:badreason, rownum:rownum]);
+  }
 }
 
 println("Stats: ${stats}");
@@ -68,7 +99,7 @@ stats.each { stat ->
 }
 
 def so_statsfile = new File("so_stats.csv");
-# so_statsfile << "${args[0]},${stats.pkgs_created},${stats.titles_matched_by_identifier},${stats.tipp_created},${stats.titles_matched_by_title},${bad_rows.size()}\n"
+// so_statsfile << "${args[0]},${stats.pkgs_created},${stats.titles_matched_by_identifier},${stats.tipp_created},${stats.titles_matched_by_title},${bad_rows.size()}\n"
 
 
 if ( bad_rows.size() > 0 ) {
