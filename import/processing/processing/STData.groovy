@@ -1,0 +1,259 @@
+#!/usr/bin/groovy
+
+// @GrabResolver(name='es', root='https://oss.sonatype.org/content/repositories/releases')
+@Grapes([
+  @Grab(group='net.sf.opencsv', module='opencsv', version='2.0'),
+  @Grab(group='com.gmongo', module='gmongo', version='0.9.5')
+])
+
+import org.apache.log4j.*
+import au.com.bytecode.opencsv.CSVReader
+import java.text.SimpleDateFormat
+
+
+def starttime = System.currentTimeMillis();
+def possible_date_formats = [
+  new SimpleDateFormat('dd/MM/yy'),
+  new SimpleDateFormat('yyyy/MM'),
+  new SimpleDateFormat('yyyy')
+];
+
+
+// Setup mongo
+def options = new com.mongodb.MongoOptions()
+options.socketKeepAlive = true
+options.autoConnectRetry = true
+options.slaveOk = true
+def mongo = new com.gmongo.GMongo('127.0.0.1', options);
+def db = mongo.getDB('kbplus_ds_reconciliation')
+
+if ( db == null ) {
+  println("Failed to configure db.. abort");
+  system.exit(1);
+}
+
+
+// To clear down the gaz: curl -XDELETE 'http://localhost:9200/gaz'
+// CSVReader r = new CSVReader( new InputStreamReader(getClass().classLoader.getResourceAsStream("./IEEE_IEEEIEL_2012_2012.csv")))
+println("Processing ${args[0]}");
+CSVReader r = new CSVReader( new InputStreamReader(new FileInputStream(args[0])))
+
+def bad_rows = []
+
+String [] nl;
+
+String [] st_jc_id = r.readNext()
+String [] st_so_identifier = r.readNext()
+String [] st_start_year = r.readNext()
+String [] st_end_year = r.readNext()
+String [] so_header_line = r.readNext()
+
+println("Read column headings: ${so_header_line}");
+
+def stats = [:]
+
+while ((nl = r.readNext()) != null) {
+  rownum++
+  boolean bad = false;
+  String badreason = null;
+  boolean has_data = false
+}
+
+println("Stats: ${stats}");
+
+def statsfile = new File("stats.txt");
+statsfile << "${new Date().toString()}\n\nST import\n--------\n\n"
+stats.each { stat ->
+  statsfile << "${stat.key} : ${stat.value}\n"
+}
+
+def so_statsfile = new File("so_stats.csv");
+# so_statsfile << "${args[0]},${stats.pkgs_created},${stats.titles_matched_by_identifier},${stats.tipp_created},${stats.titles_matched_by_title},${bad_rows.size()}\n"
+
+
+if ( bad_rows.size() > 0 ) {
+  println("file contained bad rows, dumping to ${args[0]}_BAD");
+  File badfile = new File("${args[0]}_BAD");
+  bad_rows.each { row ->
+    badfile << row.row
+    badfile << ",\"row ${row.rownum}/${rownum} - ${row.reason}\"\n"
+  }
+}
+
+println("All done processing for ${args[0]}");
+
+def present(v) {
+  if ( ( v != null ) && ( v.trim().length() > 0 ) )
+    return true
+
+  return false
+}
+
+def lookupOrCreateOrg(Map params = [:]) {
+  // println("lookupOrCreateOrg(${params})");
+  def org = params.db.orgs.findOne(name:params.name)
+  if ( org == null ) {
+    org = [
+      _id:new org.bson.types.ObjectId(),
+      name:params.name,
+      lastmod:System.currentTimeMillis()
+    ]
+    params.db.orgs.save(org)
+    inc('orgs_created',params.stats);
+  }
+  
+  org
+}
+
+def lookupOrCreatePackage(Map params=[:]) {
+  // println("lookupOrCreatePackage(${params})");
+  def norm_identifier = params.identifier.replaceAll("\\W", "");
+
+  def pkg = params.db.pkgs.findOne(normIdentifier:norm_identifier)
+  if ( pkg == null ) {
+    pkg = [
+      _id:new org.bson.types.ObjectId(),
+      identifier:params.identifier,
+      normIdentifier:norm_identifier,
+      name:params.name,
+      lastmod:System.currentTimeMillis(),
+      subs:[]
+    ]
+    params.db.pkgs.save(pkg)
+    inc('pkgs_created',params.stats);
+  }
+
+  pkg
+}
+
+def lookupOrCreateTitle(Map params=[:]) {
+  // println("lookupOrCreateTitle(${params})");
+  // Old style: lookup by Title : def title = params.db.titles.findOne(title:params.title)
+  def title = null
+  if ( ( params.identifier ) && ( params.identifier.size() > 0 ) ) { // Try to match on identifier if present
+    // Loop through all the available identifers and see if any match.. Repeat until a match is found.
+    for ( int i=0; ( ( !title ) && ( i < params.identifier.size() ) ); i++ ) {
+      // println("Attempting match.. ${params.identifier[i].type} ${params.identifier[i].value}");
+      title = params.db.titles.findOne(identifier:[type:params.identifier[i].type, value: params.identifier[i].value])
+    }
+    if ( title ) {
+      inc('titles_matched_by_identifier',params.stats);
+    }
+    else {
+      // println("Unable to match on any of ${params.identifier}");
+    }
+  }
+  else {
+    inc('titles_without_identifiers',params.stats);
+  }
+
+  if ( !title && params.title) { // If no match, and title present, try to match on title
+    println("Attempting to match on title string ${params.title}");
+    title = params.db.titles.findOne(title:params.title);
+    if ( title ) {
+      println("  -> Matched on title");
+      inc('titles_matched_by_title',params.stats);
+    }
+    else {
+      println("  -> No match on title");
+    }
+  }
+
+  if (!title)  {
+    // Unable to locate title with identifier given... Try other dedup matches on other props if needed
+    println("Create New title : ${params.title}, title=${title}, publisher=${params.publisher}");
+
+    try {
+      title = [
+        _id:new org.bson.types.ObjectId(),
+        title:params.title,
+        identifier:params.identifier,    // identifier is a list, catering for many different values
+        publisher:params.publisher._id,
+        lastmod:System.currentTimeMillis()
+      ]
+
+      params.db.titles.save(title)
+      inc('titles_created',params.stats);
+    }
+    catch ( Exception e ) {
+      e.printStackTrace()
+      println("Problem creating new title ${title} for t:${params.title} (id:${params.identifier}): ${e.message}");
+    }
+  }
+
+  title
+}
+
+def lookupOrCreatePlatform(Map params=[:]) {
+  // println("lookupOrCreatePlatform(${params})");
+  def platform = null;
+
+  String normname = params.name.trim().toLowerCase();
+
+  platform = params.db.platforms.findOne(normname:normname)
+
+  if ( !platform ) {
+    platform = [
+      _id:new org.bson.types.ObjectId(),
+      name:params.name,
+      normname:normname,
+      provenance:params.prov,
+      type:params.type,
+      lastmod:System.currentTimeMillis()
+    ]
+    params.db.platforms.save(platform)
+    inc('platforms_created',params.stats);
+
+  }
+
+  platform;
+}
+
+def lookupOrCreateTipp(Map params=[:]) {
+  def tipp = null;
+
+  tipp = params.db.tipps.findOne(titleid:params.titleid, pkgid:params.pkgid, platformid:params.platformid)
+
+  if ( !tipp ) {
+    tipp = createTipp(params);
+  }
+
+  tipp
+}
+
+def createTipp(Map params=[:]) {
+  def tipp = null;
+  tipp = [
+    _id:new org.bson.types.ObjectId(),
+    titleid:params.titleid,
+    pkgid:params.pkgid,
+    platformid:params.platformid,
+    lastmod:System.currentTimeMillis(),
+    ies:[]
+  ]
+  params.db.tipps.save(tipp)
+  inc('tipp_created',params.stats);
+
+  tipp
+}
+
+def inc(countername, statsmap) {
+  if ( statsmap[countername] == null ) {
+    statsmap[countername] = 1
+  }
+  else {
+    statsmap[countername]++
+  }
+}
+
+def parseDate(datestr, possible_formats) {
+  def parsed_date = null;
+  for(i = possible_formats.iterator(); ( i.hasNext() && ( parsed_date == null ) ); ) {
+    try {
+      parsed_date = i.next().parse(datestr);
+    }
+    catch ( Exception e ) {
+    }
+  }
+  parsed_date
+}

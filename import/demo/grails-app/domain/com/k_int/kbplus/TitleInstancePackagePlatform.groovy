@@ -3,6 +3,7 @@ package com.k_int.kbplus
 class TitleInstancePackagePlatform {
 
   Date startDate
+  String rectype="so"
   String startVolume
   String startIssue
   Date endDate
@@ -15,6 +16,8 @@ class TitleInstancePackagePlatform {
   RefdataValue status
   RefdataValue option
   String hostPlatformURL
+
+  TitleInstancePackagePlatform derivedFrom
 
   static mappedBy = [ids: 'tipp', additionalPlatforms: 'tipp']
   static hasMany = [ids: IdentifierOccurrence, 
@@ -30,6 +33,7 @@ class TitleInstancePackagePlatform {
 
   static mapping = {
                id column:'tipp_id'
+          rectype column:'tipp_rectype'
           version column:'tipp_version'
               pkg column:'tipp_pkg_fk', index: 'tipp_idx'
          platform column:'tipp_plat_fk', index: 'tipp_idx'
@@ -48,6 +52,7 @@ class TitleInstancePackagePlatform {
            option column:'tipp_option_rv_fk'
   hostPlatformURL column:'tipp_host_platform_url'
               sub column:'tipp_sub_fk'
+      derivedFrom column:'tipp_derived_from'
   }
 
   static constraints = {
@@ -65,5 +70,6 @@ class TitleInstancePackagePlatform {
     option(nullable:true, blank:false);
     sub(nullable:true, blank:false);
     hostPlatformURL(nullable:true, blank:false);
+    derivedFrom(nullable:true, blank:false);
   }
 }
