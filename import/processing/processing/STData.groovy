@@ -70,6 +70,7 @@ if ( !sub ) {
 
 int rownum = 0;
 int st_bad = 0;
+int processed = 0;
 
 while ((nl = r.readNext()) != null) {
   rownum++
@@ -104,13 +105,25 @@ while ((nl = r.readNext()) != null) {
             _id: new org.bson.types.ObjectId(),
             tipp_id : tipp._id,
             org_id : sub_org._id,
-            sub_id : sub._id
+            sub_id : sub._id,
+            stsy: st_start_year,
+            stey: st_end_year,
+            included: nl[0],
+            date_first_issue_subscribed: nl[4],
+            num_first_vol_subscribed: nl[5],
+            num_first_issue_subscribed: nl[6],
+            date_last_issue_subscribed: nl[7],
+            num_last_vol_subscribed: nl[8],
+            num_last_issue_subscribed: nl[9],
+            embargo: nl[10],
+            core_title: nl[11]
           ]
           db.st.save(new_st_record);
         }
         else {
           println("Located existing st record...");
         }
+        processed++;
       }
       else {
         println("Unable to locate a single tipp instance");
@@ -134,6 +147,10 @@ while ((nl = r.readNext()) != null) {
   if ( bad ) {
     bad_rows.add([row:nl,reason:badreason, rownum:rownum]);
   }
+}
+
+if ( processed == 0 ) {
+  println("NO tipp rows, copy subscription forward");
 }
 
 println("Stats: ${stats}");
