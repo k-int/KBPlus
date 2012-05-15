@@ -29,7 +29,7 @@ def db = mongo.getDB('kbplus_ds_reconciliation')
 
 if ( db == null ) {
   println("Failed to configure db.. abort");
-  system.exit(1);
+  System.exit(1);
 }
 
 
@@ -55,7 +55,7 @@ def stats = [:]
 def sub_org = db.orgs.findOne(jcId:st_jc_id[1]);
 if ( !sub_org ) {
   println("Unable to locate org with identifier ${st_jc_id[1]}");
-  exit(1);
+  System.exit(1);
 }
 else {
   println("Located org : ${sub_org}");
@@ -65,7 +65,7 @@ else {
 def sub = db.subscriptions.findOne(identifier:st_so_identifier[1])
 if ( !sub ) {
   println("unable to locate subscription with identifier ${st_so_identifier[1]}");
-  exit(1);
+  System.exit(1);
 }
 
 int rownum = 0;
@@ -91,14 +91,13 @@ while ((nl = r.readNext()) != null) {
     if ( pkg ) {
       println("Located package ${pkg}");
 
-      // Now try and find a tipp where title id = 
-      def tipps = db.tipps.find(titleid: title._id, pkgid: pkg._id)
-      println("Located ${tipps.size()} tipps for that title");
 
-      if ( tipps.size() == 1 ) {
-        println("Locate tipp ${tipps[0]}");
+      def tipp  = locateTitle(db,title,pkg)
 
-        def new_st_record = db.st.findOne(tipp_id:tipp._id, org_id:sub_org._id, sub_id:sub._id)
+      if ( tipp ) {
+        def new_st_record = db.st.findOne(tipp_id:tipp._id, 
+                                            org_id:sub_org._id, 
+                                            sub_id:sub._id)
 
         if ( ! new_st_record ) {
           new_st_record = [
@@ -123,11 +122,10 @@ while ((nl = r.readNext()) != null) {
         else {
           println("Located existing st record...");
         }
-        processed++;
       }
       else {
-        println("Unable to locate a single tipp instance");
       }
+      processed++;
       // tipps.each { tipp ->
       //   println(tipp)
       // }
@@ -175,6 +173,21 @@ if ( bad_rows.size() > 0 ) {
 }
 
 println("All done processing for ${args[0]}");
+
+
+def locateTitle(db, title, pkg) {
+  def result = null
+  def tipps = db.tipps.find(titleid: title._id, pkgid: pkg._id)
+  println("Located ${tipps.size()} tipps for that title");
+  if ( tipps.size() == 1 ) {
+    result=tipps[0]
+  }
+  else {
+    println("Unable to locate unique tipp");
+  }
+  result
+}
+
 
 def present(v) {
   if ( ( v != null ) && ( v.trim().length() > 0 ) )

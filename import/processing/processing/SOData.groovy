@@ -133,116 +133,116 @@ while ((nl = r.readNext()) != null) {
     if ( present(nl[13]) ) {
       println("Publisher name: ${nl[13]}")
       publisher = lookupOrCreateOrg(name:nl[13], db:db, stats:stats);
+
+      // If there is an identifier, set up the appropriate matching...
+      if ( present(nl[1]) ) 
+        target_identifiers.add([type:'ISSN', value:nl[1]])
+      if ( present(nl[2]) ) 
+        target_identifiers.add([type:'eISSN', value:nl[2]])
+      if ( present(nl[9]) ) 
+        tipp_private_identifiers.add([type:'KBART', value:nl[9]])
+      if ( present(nl[14]) ) 
+        target_identifiers.add([type:'DOI', value:nl[14]])
+  
+      for ( int i=0; i<num_prop_id_cols; i++ ) {
+        tipp_private_identifiers.add([type:'EXTERNAL', value:nl[15+i]])
+      }
+  
+      def title = lookupOrCreateTitle(title:nl[0],
+                                      identifier:target_identifiers,
+                                      publisher:publisher,
+                                      db:db, 
+                                      stats:stats)
+  
+      // Work out exactly how many columns there should be
+      // II : It doesn't appear possible to do this, cant see any logic to number of cols that appear.
+      int expected_num_cols = 15+num_prop_id_cols+num_platforms_listed+1;
+      // if ( nl.size() != expected_num_cols ) {
+      //   println("WARNING row ${so_count} contains ${nl.size()} columns, but we expect ${expected_num_cols}");
+      //   inc('bad_col_count',stats);
+      //   bad=true
+      //   badreason="unexpected number of columns (expected ${expected_num_cols}, got ${nl.size()}"
+      //   so_bad++;
+      // }
+      def parsed_start_date = parseDate(nl[3],possible_date_formats)
+      def parsed_end_date = parseDate(nl[6],possible_date_formats)
+  
+      if ( ( parsed_start_date == null ) || ( parsed_start_date.getYear() > 2090 ) ) {
+        println("Unable to parse start date ${nl[3]}")
+        inc('bad_start_date',stats);
+        bad=true
+        badreason="Cannot parse start date: ${nl[3]}"
+      }
+      else {
+  
+        def host_platform = null;
+        def host_platform_url = null;
+        def additional_platform_links = []
+  
+        for ( int i=0; i<num_platforms_listed; i++ ) {
+          int position = 15+num_prop_id_cols+(i*3)   // Offset past any proprietary identifiers.. This needs a test case.. it's fraught with danger
+  
+          if ( ( nl.size() >= position+2 ) && 
+               ( nl[position] ) && 
+               ( nl[position].length() > 0 ) ) {
+            def platform = lookupOrCreatePlatform(name:nl[position], 
+                                                  prov:"Platform for SO ${args[0]}:${rownum}",
+                                                  type:nl[position+1],
+                                                  db:db, 
+                                                  stats:stats)
+  
+            def platform_role = nl[position+1]
+            def platform_url = nl[position+2]
+  
+            println("Process platform ${nl[position]} / ${platform_role} / ${platform_url}");
+  
+            if ( platform_role == 'host' ) {
+              host_platform = platform;
+              host_platform_url = platform_url
+            }
+            else {
+              // TODO: Add to additional TIPP_Platform
+              println("Non host platform: ${platform_role} : ${platform_url}");
+              def additional_platform = lookupOrCreatePlatform(name:nl[position],type:nl[position+1],db:db,stats:stats,prov:"Add Platform for SO ${args[0]}:${rownum}")
+              additional_platform_links.add([platformId:additional_platform._id, role:platform_role, platformUrl:platform_url]);
+            }
+          }
+        }
+    
+        // Find tipp
+        if ( title && pkg && host_platform && title._id && pkg._id && host_platform._id ) {
+          def tipp = createTipp(titleid:title._id, pkgid:pkg._id, platformid:host_platform._id, db:db, stats:stats)
+          tipp.startDateString = nl[3]
+          tipp.startDate = parsed_start_date
+          tipp.startVolume = nl[4]
+          tipp.startIssue = nl[5]
+          tipp.endDateString = nl[6]
+          tipp.endDate = parsed_end_date
+          tipp.endVolume = nl[7]
+          tipp.endIssue = nl[8]
+          tipp.title_id = nl[9]
+          tipp.embargo = nl[10]
+          tipp.coverageDepth = nl[11]
+          tipp.coverageNote = nl[12]
+          tipp.identifiers = tipp_private_identifiers
+          tipp.hostPlatformURL = host_platform_url
+          tipp.additionalPlatformLinks = additional_platform_links
+          tipp.source = "${args[0]}:${rownum}"
+          tipp.ies.add(sub._id)
+  
+          db.tipps.save(tipp)
+        }
+        else {
+          println("One of title-${title}, pkg-${pkg} or platform-${host_platform} are missing!!!");
+          inc('missing_critical_data',stats);
+        }
+      }
     }
     else {
       println("*** Publisher is null");
       inc('bad_null_publisher',stats);
       bad=true
       badreason="No Publisher: ${nl[13]}"
-    }
-
-    // If there is an identifier, set up the appropriate matching...
-    if ( present(nl[1]) ) 
-      target_identifiers.add([type:'ISSN', value:nl[1]])
-    if ( present(nl[2]) ) 
-      target_identifiers.add([type:'eISSN', value:nl[2]])
-    if ( present(nl[9]) ) 
-      tipp_private_identifiers.add([type:'KBART', value:nl[9]])
-    if ( present(nl[14]) ) 
-      target_identifiers.add([type:'DOI', value:nl[14]])
-
-    for ( int i=0; i<num_prop_id_cols; i++ ) {
-      tipp_private_identifiers.add([type:'EXTERNAL', value:nl[15+i]])
-    }
-
-    def title = lookupOrCreateTitle(title:nl[0],
-                                    identifier:target_identifiers,
-                                    publisher:publisher,
-                                    db:db, 
-                                    stats:stats)
-
-    // Work out exactly how many columns there should be
-    // II : It doesn't appear possible to do this, cant see any logic to number of cols that appear.
-    int expected_num_cols = 15+num_prop_id_cols+num_platforms_listed+1;
-    // if ( nl.size() != expected_num_cols ) {
-    //   println("WARNING row ${so_count} contains ${nl.size()} columns, but we expect ${expected_num_cols}");
-    //   inc('bad_col_count',stats);
-    //   bad=true
-    //   badreason="unexpected number of columns (expected ${expected_num_cols}, got ${nl.size()}"
-    //   so_bad++;
-    // }
-    def parsed_start_date = parseDate(nl[3],possible_date_formats)
-    def parsed_end_date = parseDate(nl[6],possible_date_formats)
-
-    if ( ( parsed_start_date == null ) || ( parsed_start_date.getYear() > 2090 ) ) {
-      println("Unable to parse start date ${nl[3]}")
-      inc('bad_start_date',stats);
-      bad=true
-      badreason="Cannot parse start date: ${nl[3]}"
-    }
-    else {
-
-      def host_platform = null;
-      def host_platform_url = null;
-      def additional_platform_links = []
-
-      for ( int i=0; i<num_platforms_listed; i++ ) {
-        int position = 15+num_prop_id_cols+(i*3)   // Offset past any proprietary identifiers.. This needs a test case.. it's fraught with danger
-
-        if ( ( nl.size() >= position+2 ) && 
-             ( nl[position] ) && 
-             ( nl[position].length() > 0 ) ) {
-          def platform = lookupOrCreatePlatform(name:nl[position], 
-                                                prov:"Platform for SO ${args[0]}:${rownum}",
-                                                type:nl[position+1],
-                                                db:db, 
-                                                stats:stats)
-
-          def platform_role = nl[position+1]
-          def platform_url = nl[position+2]
-
-          println("Process platform ${nl[position]} / ${platform_role} / ${platform_url}");
-
-          if ( platform_role == 'host' ) {
-            host_platform = platform;
-            host_platform_url = platform_url
-          }
-          else {
-            // TODO: Add to additional TIPP_Platform
-            println("Non host platform: ${platform_role} : ${platform_url}");
-            def additional_platform = lookupOrCreatePlatform(name:nl[position],type:nl[position+1],db:db,stats:stats,prov:"Add Platform for SO ${args[0]}:${rownum}")
-            additional_platform_links.add([platformId:additional_platform._id, role:platform_role, platformUrl:platform_url]);
-          }
-        }
-      }
-  
-      // Find tipp
-      if ( title && pkg && host_platform && title._id && pkg._id && host_platform._id ) {
-        def tipp = createTipp(titleid:title._id, pkgid:pkg._id, platformid:host_platform._id, db:db, stats:stats)
-        tipp.startDateString = nl[3]
-        tipp.startDate = parsed_start_date
-        tipp.startVolume = nl[4]
-        tipp.startIssue = nl[5]
-        tipp.endDateString = nl[6]
-        tipp.endDate = parsed_end_date
-        tipp.endVolume = nl[7]
-        tipp.endIssue = nl[8]
-        tipp.title_id = nl[9]
-        tipp.embargo = nl[10]
-        tipp.coverageDepth = nl[11]
-        tipp.coverageNote = nl[12]
-        tipp.identifiers = tipp_private_identifiers
-        tipp.hostPlatformURL = host_platform_url
-        tipp.additionalPlatformLinks = additional_platform_links
-        tipp.source = "${args[0]}:${rownum}"
-        tipp.ies.add(sub._id)
-
-        db.tipps.save(tipp)
-      }
-      else {
-        println("One of title-${title}, pkg-${pkg} or platform-${host_platform} are missing!!!");
-        inc('missing_critical_data',stats);
-      }
     }
   }
   else {
