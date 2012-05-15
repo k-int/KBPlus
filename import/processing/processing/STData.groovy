@@ -94,9 +94,30 @@ while ((nl = r.readNext()) != null) {
       def tipps = db.tipps.find(titleid: title._id, pkgid: pkg._id)
       println("Located ${tipps.size()} tipps for that title");
 
-      tipps.each { tipp ->
-        println(tipp)
+      if ( tipps.size() == 1 ) {
+        println("Locate tipp ${tipps[0]}");
+
+        def new_st_record = db.st.findOne(tipp_id:tipp._id, org_id:sub_org._id, sub_id:sub._id)
+
+        if ( ! new_st_record ) {
+          new_st_record = [
+            _id: new org.bson.types.ObjectId(),
+            tipp_id : tipp._id,
+            org_id : sub_org._id,
+            sub_id : sub._id
+          ]
+          db.st.save(new_st_record);
+        }
+        else {
+          println("Located existing st record...");
+        }
       }
+      else {
+        println("Unable to locate a single tipp instance");
+      }
+      // tipps.each { tipp ->
+      //   println(tipp)
+      // }
     }
     else {
       println("Failed to locate package matching this subscription");
