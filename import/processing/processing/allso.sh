@@ -18,6 +18,6 @@ find ../kb_plus_datafiles -name "*.csv" -exec ./SOData.groovy {} >> so_imp_log \
 
 echo Orgs import
 rm ../orgs_data/*BAD
-./OrgsData.groovy ../orgs_data/subscribing\ organisations.csv 
+./OrgsData.groovy ../orgs_data/subscribing\ organisations.csv  >> so_imp_log
 
 

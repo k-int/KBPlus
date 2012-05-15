@@ -52,6 +52,15 @@ println("Read column headings: ${so_header_line}");
 
 def stats = [:]
 
+def sub_org = db.orgs.findOne(jcId:st_jc_id[1]);
+if ( !sub_org ) {
+  println("Unable to locate org with identifier ${st_jc_id[1]}");
+  exit(1);
+}
+else {
+  println("Located org : ${sub_org}");
+}
+
 // Before we start.. lookup a subscription with so_identifier st_so_identifier
 def sub = db.subscriptions.findOne(identifier:st_so_identifier[1])
 if ( !sub ) {
