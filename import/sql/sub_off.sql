@@ -48,7 +48,7 @@ from title_instance_package_platform tipp
     
 
 # Add publisher
-select pkg_name, cp_role.rdv_value, vendor_org.org_name, consortia_org.org_name, tipp_start_date, tipp_end_date, plat.plat_name, publisher.org_name
+select pkg_name, vendor_org.org_name vendor, consortia_org.org_name consortia, tipp_start_date, tipp_end_date, plat.plat_name, publisher.org_name publisher
 from title_instance_package_platform tipp
        join title_instance ti on ( ti.ti_id = tipp.tipp_ti_fk )
        left outer join package pkg on (  tipp.tipp_pkg_fk = pkg.pkg_id )
