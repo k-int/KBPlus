@@ -46,3 +46,21 @@ from title_instance_package_platform tipp
          join org consortia_org on ( consortia_combo.to_org_id = consortia_org.org_id )
        left outer join platform plat on ( tipp.tipp_plat_fk = plat.plat_id )
     
+
+# Add publisher
+select pkg_name, cp_role.rdv_value, vendor_org.org_name, consortia_org.org_name, tipp_start_date, tipp_end_date, plat.plat_name, publisher.org_name
+from title_instance_package_platform tipp
+       join title_instance ti on ( ti.ti_id = tipp.tipp_ti_fk )
+       left outer join package pkg on (  tipp.tipp_pkg_fk = pkg.pkg_id )
+       left outer join org_role vendor_role on ( vendor_role.or_pkg_fk = pkg.pkg_id )
+         join refdata_value cp_role on ( or_roletype_fk = cp_role.rdv_id AND cp_role.rdv_value = 'Content Provider' )
+       left outer join org vendor_org on (  vendor_role.or_org_fk = vendor_org.org_id )
+       left outer join combo consortia_combo on ( vendor_org.org_id = consortia_combo.from_org_id )
+         join refdata_value cons_combo_type on ( consortia_combo.combo_type_rv_fk = cons_combo_type.rdv_id AND  cons_combo_type.rdv_value = 'Consortium')
+         join org consortia_org on ( consortia_combo.to_org_id = consortia_org.org_id )
+       left outer join platform plat on ( tipp.tipp_plat_fk = plat.plat_id )
+       left outer join org_role publisher_role_link on ( publisher_role_link.or_title_fk = ti.ti_id )
+         join refdata_value publisher_role on ( publisher_role_link.or_roletype_fk = publisher_role.rdv_id AND publisher_role.rdv_value = 'Publisher' )
+         join org publisher on ( publisher_role_link.or_org_fk = publisher.org_id )
+where vendor_org.org_name = 'Berg'
+
