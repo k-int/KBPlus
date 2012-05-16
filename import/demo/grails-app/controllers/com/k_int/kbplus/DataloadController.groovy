@@ -256,7 +256,36 @@ class DataloadController {
       }
     }
 
+    redirect(controller:home)
+  }
 
+  def reloadSTData() {
+    log.debug("reloadSTData()");
+    def mdb = mongoService.getMongo().getDB('kbplus_ds_reconciliation')
+
+    // Orgs
+    mdb.subs.find().sort(lastmod:1).each { sub ->
+      log.debug("load sub ${sub}");
+
+      // Join together the subscription and the organisation
+      def db_sub = Subscription.findByImpId(sub.sub.toString());
+      def db_org = Org.findByImpId(sub.org.toString())
+
+      log.debug("Create a link between ${db_org.name()} and ${db_sub}");
+
+      // Now iterate through all st_title records, and figure out which ones to create entitlements for
+      def sub_titles = mdb.stTitle.find(owner:sub._id.toString())
+      if ( sub_titles.size() == 0 ) {
+        log.debug("No sub-titles, therefore, default all in from database");
+      }
+      else {
+        sub_titles.each { st ->
+          println("Processing title ${st}");
+        }
+      }
+    }
+
+    redirect(controller:home)
   }
 
   def updateOrgs() {

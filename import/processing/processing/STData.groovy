@@ -68,6 +68,15 @@ if ( !sub ) {
   System.exit(1);
 }
 
+def new_sub_record = [
+   _id:new org.bson.types.ObjectId(),
+   sub: sub._id,
+   org: sub_org._id,
+   lastmod:System.currentTimeMillis()
+]
+
+db.subs.save(new_sub_record);
+
 int rownum = 0;
 int st_bad = 0;
 int processed = 0;
@@ -102,6 +111,7 @@ while ((nl = r.readNext()) != null) {
         if ( ! new_st_record ) {
           new_st_record = [
             _id: new org.bson.types.ObjectId(),
+            owner: new_sub_record._id,
             tipp_id : tipp._id,
             org_id : sub_org._id,
             sub_id : sub._id,
@@ -115,9 +125,10 @@ while ((nl = r.readNext()) != null) {
             num_last_vol_subscribed: nl[8],
             num_last_issue_subscribed: nl[9],
             embargo: nl[10],
-            core_title: nl[11]
+            core_title: nl[11],
+            lastmod:System.currentTimeMillis()
           ]
-          db.st.save(new_st_record);
+          db.stTitle.save(new_st_record);
         }
         else {
           println("Located existing st record...");
