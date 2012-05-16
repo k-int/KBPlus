@@ -1,0 +1,13 @@
+<request>
+  <user>kbplus</user>
+  <operation>update</operation>
+  <requestDocuments>
+    <ingestDocument id="1" category="kbplus" type="kbplus" format="xlsx">
+      <uuid>89072602-0979-49ca-b478-9e9e77f77868</uuid>
+      <documentName>TC2 - DocStore Requirements.xlsx</documentName>
+      <documentLinkId>kbdoc-abc456def789002N</documentLinkId>
+      <documentTitle>KBPlus Doc Store API RequirementsN</documentTitle>
+      <documentType>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</documentType>
+    </ingestDocument>
+  </requestDocuments>
+</request>

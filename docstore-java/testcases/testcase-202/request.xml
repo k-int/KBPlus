@@ -1,0 +1,30 @@
+<request>
+  <user>kbplus</user>
+  <operation>retrieve</operation>
+  <requestDocuments>
+    <ingestDocument id="1" category="" type="" format="">
+      <uuid>7fdea042-0993-4126-8521-06379260360a</uuid>
+	</ingestDocument>
+    <ingestDocument id="2" category="" type="" format="">
+      <uuid>7a2f7602-e5d1-4082-b612-ecb7dd3c45b3</uuid>
+	</ingestDocument>
+    <ingestDocument id="3" category="" type="" format="">
+      <uuid>8abd850b-b35f-4016-83b4-bca608baa699</uuid>
+	</ingestDocument>
+    <ingestDocument id="4" category="" type="" format="">
+      <uuid>89072602-0979-49ca-b478-9e9e77f77868</uuid>
+	</ingestDocument>
+    <ingestDocument id="5" category="" type="" format="">
+      <uuid>96174f3d-7c0e-4f8f-b053-6ca02812150f</uuid>
+	</ingestDocument>
+    <ingestDocument id="6" category="" type="" format="">
+      <uuid>ab65c84e-24d6-4a2a-937b-2d7948130116</uuid>
+	</ingestDocument>
+    <ingestDocument id="7" category="" type="" format="">
+      <uuid>d797648a-3c54-40a6-8edb-a4393cca93e4</uuid>
+	</ingestDocument>
+    <ingestDocument id="8" category="" type="" format="">
+      <uuid>1d070f37-e0b3-4f83-a243-818919be9353</uuid>
+	</ingestDocument>
+  </requestDocuments>
+</request>

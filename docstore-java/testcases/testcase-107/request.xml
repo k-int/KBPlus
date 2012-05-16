@@ -1,0 +1,18 @@
+<request>
+  <user>kbplus</user>
+  <operation>store</operation>
+  <requestDocuments>
+    <ingestDocument id="1" category="kbplus" type="kbplus" format="doc">
+      <uuid></uuid>
+      <documentLinkId>kbdoc-abc123def456007</documentLinkId>
+      <documentTitle>Sample Test Document - Marchold</documentTitle>
+      <documentType>application/msword</documentType>
+    </ingestDocument>
+    <ingestDocument id="2" category="kbplus" type="kbplus" format="pdf">
+      <uuid></uuid>
+      <documentLinkId>kbdoc-abc234def567007</documentLinkId>
+      <documentTitle>List of Countries</documentTitle>
+      <documentType>application/pdf</documentType>
+    </ingestDocument>
+  </requestDocuments>
+</request>

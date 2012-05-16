@@ -1,0 +1,13 @@
+<request>
+  <user>kbplus</user>
+  <operation>store</operation>
+  <requestDocuments>
+    <ingestDocument id="1" category="kbplus" type="kbplus" format="doc">
+      <uuid></uuid>
+      <documentName>TC1 - MARChold.doc</documentName>
+	  <documentLinkId>kbdoc-abc123def456001</documentLinkId>
+      <documentTitle>Sample Test Document - Marchold</documentTitle>
+      <documentType>application/msword</documentType>
+    </ingestDocument>
+  </requestDocuments>
+</request>	  

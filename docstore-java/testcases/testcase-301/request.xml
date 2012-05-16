@@ -1,0 +1,13 @@
+<request>
+  <user>kbplus</user>
+  <operation>update</operation>
+  <requestDocuments>
+    <ingestDocument id="1" category="kbplus" type="kbplus" format="doc">
+      <uuid>7fdea042-0993-4126-8521-06379260360a</uuid>
+      <documentName>TC1 - MARChold - NewCopy.doc</documentName>
+      <documentLinkId>kbdoc-abc123def456001N</documentLinkId>
+      <documentTitle>Sample Test Document - MarcholdN</documentTitle>
+      <documentType>application/msword</documentType>
+    </ingestDocument>
+  </requestDocuments>
+</request>

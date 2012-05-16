@@ -1,0 +1,15 @@
+<request>
+  <user>kbplus</user>
+  <operation>delete</operation>
+  <requestDocuments>
+    <ingestDocument id="1" category="" type="" format="">
+      <uuid>d797648a-3c54-40a6-8edb-a4393cca93e4</uuid>
+	</ingestDocument>
+    <ingestDocument id="1" category="" type="" format="">
+      <uuid>d797648a-3c54-40a6-8edb-a4393cca93e4</uuid>
+	</ingestDocument>
+    <ingestDocument id="1" category="" type="" format="">
+      <uuid>d797648a-3c54-40a6-8edb-a4393cca93e4</uuid>
+	</ingestDocument>
+  </requestDocuments>
+</request>

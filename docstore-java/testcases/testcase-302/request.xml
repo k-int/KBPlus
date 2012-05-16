@@ -1,0 +1,20 @@
+<request>
+  <user>kbplus</user>
+  <operation>update</operation>
+  <requestDocuments>
+    <ingestDocument id="1" category="kbplus" type="kbplus" format="doc">
+      <uuid>7a2f7602-e5d1-4082-b612-ecb7dd3c45b3</uuid>
+      <documentName>TC2 - MARChold - NewCopy.doc</documentName>
+      <documentLinkId>kbdoc-abc123def456001N</documentLinkId>
+      <documentTitle>Sample Test Document - MarcholdN</documentTitle>
+      <documentType>application/msword</documentType>
+    </ingestDocument>
+    <ingestDocument id="2" category="kbplus" type="kbplus" format="pdf">
+      <uuid>1d070f37-e0b3-4f83-a243-818919be9353</uuid>
+      <documentName>TC2 - Countries - NewCopy.pdf</documentName>
+      <documentLinkId>kbdoc-abc234def567001N</documentLinkId>
+      <documentTitle>List of CountriesN</documentTitle>
+      <documentType>application/pdf</documentType>
+    </ingestDocument>
+  </requestDocuments>
+</request>

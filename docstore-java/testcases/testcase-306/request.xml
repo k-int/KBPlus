@@ -1,0 +1,20 @@
+<request>
+  <user>kbplus</user>
+  <operation>update</operation>
+  <requestDocuments>
+    <ingestDocument id="1" category="kbplus" type="kbplus" format="rtf">
+      <uuid>1234</uuid>
+      <documentName>TC6 - MARChold Rich Text - NewCopy.rtf</documentName>
+      <documentLinkId>kbdoc-abc123def457002N</documentLinkId>
+      <documentTitle>Sample Rich Text DocumentN</documentTitle>
+      <documentType>application/rtf</documentType>
+    </ingestDocument>
+    <ingestDocument id="2" category="kbplus" type="kbplus" format="xlsx">
+      <uuid>456789</uuid>
+      <documentName>TC6 - DocStore Requirements - NewCopy.xlsx</documentName>
+      <documentLinkId>kbdoc-abc456def789002N</documentLinkId>
+      <documentTitle>KBPlus Doc Store API RequirementsN</documentTitle>
+      <documentType>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</documentType>
+    </ingestDocument>
+  </requestDocuments>
+</request>

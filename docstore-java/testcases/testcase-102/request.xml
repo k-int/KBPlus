@@ -1,0 +1,62 @@
+<request>
+  <user>kbplus</user>
+  <operation>store</operation>
+  <requestDocuments>
+    <ingestDocument id="1" category="kbplus" type="kbplus" format="doc">
+      <uuid></uuid>
+      <documentName>TC2 - MARChold.doc</documentName>
+	  <documentLinkId>kbdoc-abc123def456002</documentLinkId>
+      <documentTitle>Sample Test Document - Marchold</documentTitle>
+      <documentType>application/msword</documentType>
+    </ingestDocument>
+    <ingestDocument id="2" category="kbplus" type="kbplus" format="pdf">
+      <uuid></uuid>
+      <documentName>TC2 - Countries.pdf</documentName>
+	  <documentLinkId>kbdoc-abc234def567002</documentLinkId>
+      <documentTitle>List of Countries</documentTitle>
+      <documentType>application/pdf</documentType>
+    </ingestDocument>
+    <ingestDocument id="3" category="kbplus" type="kbplus" format="msg">
+      <uuid></uuid>
+      <documentName>TC2 - Sample Mail.msg</documentName>
+	  <documentLinkId>kbdoc-abc345def678002</documentLinkId>
+      <documentTitle>Sample Mail Message</documentTitle>
+      <documentType>application/vnd.ms-outlook</documentType>
+    </ingestDocument>
+    <ingestDocument id="4" category="kbplus" type="kbplus" format="xlsx">
+      <uuid></uuid>
+      <documentName>TC2 - DocStore Requirements.xlsx</documentName>
+	  <documentLinkId>kbdoc-abc456def789002</documentLinkId>
+      <documentTitle>KBPlus Doc Store API Requirements</documentTitle>
+      <documentType>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</documentType>
+    </ingestDocument>
+    <ingestDocument id="5" category="kbplus" type="kbplus" format="txt">
+      <uuid></uuid>
+      <documentName>TC2 - Text Document.txt</documentName>
+	  <documentLinkId>kbdoc-abc567def891002</documentLinkId>
+      <documentTitle>Sample Text Document</documentTitle>
+      <documentType>application/txt</documentType>
+    </ingestDocument>
+    <ingestDocument id="6" category="kbplus" type="kbplus" format="rtf">
+      <uuid></uuid>
+      <documentName>TC2 - MARChold Rich Text.rtf</documentName>
+	  <documentLinkId>kbdoc-abc123def457002</documentLinkId>
+      <documentTitle>Sample Rich Text Document</documentTitle>
+      <documentType>application/rtf</documentType>
+    </ingestDocument>
+    <ingestDocument id="7" category="kbplus" type="kbplus" format="xml">
+      <uuid></uuid>
+      <documentName>TC2 - Sample XML.xml</documentName>
+	  <documentLinkId>kbdoc-abc123def458002</documentLinkId>
+      <documentTitle>Sample XML Document</documentTitle>
+      <documentType>application/xml</documentType>
+    </ingestDocument>
+    <ingestDocument id="8" category="kbplus" type="kbplus" format="odf">
+      <uuid></uuid>
+      <documentName>TC2 - Sample ODF document.odf</documentName>
+	  <documentLinkId>kbdoc-abc123def459002</documentLinkId>
+      <documentTitle>Sample ODF Document</documentTitle>
+      <documentType>application/vnd.oasis.opendocument.formula</documentType>
+    </ingestDocument>
+  </requestDocuments>
+</request>	  

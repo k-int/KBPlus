@@ -1,0 +1,15 @@
+<request>
+  <user>kbplus</user>
+  <operation>retrieve</operation>
+  <requestDocuments>
+    <ingestDocument id="1" category="" type="" format="">
+      <uuid>8abd850b-b35f-4016-83b4-bca608baa699</uuid>
+	</ingestDocument>
+    <ingestDocument id="2" category="" type="" format="">
+      <uuid>ab65c84e-24d6-4a2a-937b-2d7948130116</uuid>
+	</ingestDocument>
+    <ingestDocument id="3" category="" type="" format="">
+      <uuid>8abd850b-b35f-4016-83b4-bca608baa699</uuid>
+	</ingestDocument>
+  </requestDocuments>
+</request>
