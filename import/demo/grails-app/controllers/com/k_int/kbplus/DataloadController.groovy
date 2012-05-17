@@ -274,22 +274,33 @@ class DataloadController {
 
       log.debug("Create a link between ${db_org} and ${db_sub}");
 
-      // Now iterate through all st_title records, and figure out which ones to create entitlements for
+      // List all actual st_title records, and diff that against the default from the ST file
       def sub_titles = mdb.stTitle.find(owner:sub._id)
 
-      // sub_titles.each { st ->
-      //   log.debug("*** ${st}");
-      // }
-
       if ( sub_titles.size() == 0 ) {
-        log.debug("No sub-titles, therefore, default all in from database");
-      }
-      else {
-        log.debug("title data present for subsription.. processing");
-        sub_titles.each { st ->
-          println("Processing title ${st}");
+        log.debug("No ST title data present, defaulting in from SO");
+        IssueEntitlement.findAllBySubscription(db_sub).each { ie ->
+          log.debug("Create a new ST issue entitlement for this title ${ie}");
         }
       }
+      else {
+        log.debug("ST title data present, processing");
+        sub_titles.each { st ->
+          if ( st.included_st in [ 'Y', 'y', '', ' ', null ] ) {
+            log.debug("${st} is to be included");
+          }
+          else {
+            log.debug("omit ${st}");
+          }
+        }
+      }
+
+      // Iterate all issue entitlements that appear as a part of this SO
+      //IssueEntitlement.findAllBySubscription(db_sub).each { ie ->
+      //  log.debug("Determine if ${ie} should be copied forward into the actual ST data");
+      //}
+
+      log.debug("Done listing issue entitlements for ${db_sub.impId}");
     }
 
     log.debug("Processed ${subcount} subscriptions");
