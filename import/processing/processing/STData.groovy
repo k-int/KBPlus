@@ -105,8 +105,8 @@ while ((nl = r.readNext()) != null) {
 
       if ( tipp ) {
         def new_st_record = db.st.findOne(tipp_id:tipp._id, 
-                                            org_id:sub_org._id, 
-                                            sub_id:sub._id)
+                                           org_id:sub_org._id, 
+                                           sub_id:sub._id)
 
         if ( ! new_st_record ) {
           new_st_record = [

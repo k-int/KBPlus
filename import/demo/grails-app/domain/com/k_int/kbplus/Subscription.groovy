@@ -10,6 +10,7 @@ class Subscription {
   String impId
   Date startDate
   Date endDate
+  Subscription instanceOf
 
   License owner
 
@@ -25,8 +26,10 @@ class Subscription {
               name column:'sub_name'
         identifier column:'sub_identifier'
              impId column:'sub_imp_id'
-        start_date column:'sub_start_date'
-          end_date column:'sub_end_date'
+         startDate column:'sub_start_date'
+           endDate column:'sub_end_date'
+        instanceOf column:'sub_parent_sub_fk'
+          
   }
 
   static constraints = {
@@ -36,6 +39,6 @@ class Subscription {
     impId(nullable:true, blank:false)
     startDate(nullable:true, blank:false)
     endDate(nullable:true, blank:false)
-
+    instanceOf(nullable:true, blank:false)
   }
 }

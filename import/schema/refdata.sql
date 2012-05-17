@@ -55,7 +55,7 @@ insert into refdata_category(rdc_id, rdc_description) VALUES (13,'Subscription S
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 13, 'Unknown');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (14,'Entitlement Issue Status');
-insert into refdata_value(rdv_owner, rdv_value) VALUES ( 14, 'Unknown');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 14, 'UnknownEntitlement');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (15,'Doc Type');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 15, 'Unknown');

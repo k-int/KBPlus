@@ -184,6 +184,7 @@ class DataloadController {
                                                       coverageDepth:tipp.coverageDepth,
                                                       coverageNote:tipp.coverageNote,
                                                       hostPlatformURL:tipp.hostPlatformURL,
+                                                      impId:tipp._id.toString(),
                                                       ids:[])
     
             if ( ! dbtipp.save() ) {
@@ -274,13 +275,36 @@ class DataloadController {
 
       log.debug("Create a link between ${db_org} and ${db_sub}");
 
+      // create a new subscription - an instance of an actual org taking up a specific subscription
+      def new_subscription = new Subscription(
+                                    name: db_sub.name,
+                                    startDate: db_sub.startDate,
+                                    endDate: db_sub.endDate,
+                                    instanceOf: db_sub ).save();
+
+      // assert an org-role
+      def org_link = new OrgRole(org:db_org, 
+                                 sub: new_subscription, 
+                                 roleType: RefdataValue.findByValue('Subscriber')).save();
+
       // List all actual st_title records, and diff that against the default from the ST file
       def sub_titles = mdb.stTitle.find(owner:sub._id)
 
       if ( sub_titles.size() == 0 ) {
         log.debug("No ST title data present, defaulting in from SO");
         IssueEntitlement.findAllBySubscription(db_sub).each { ie ->
-          log.debug("Create a new ST issue entitlement for this title ${ie}");
+          def new_ie = new IssueEntitlement(status: ie.status,
+                                            subscription: new_subscription,
+                                            tipp: ie.tipp,
+                                            startDate:ie.tipp.startDate,
+                                            startVolume:ie.tipp.startVolume,
+                                            startIssue:ie.tipp.startIssue,
+                                            endDate:ie.tipp.endDate,
+                                            endVolume:ie.tipp.endVolume,
+                                            endIssue:ie.tipp.endIssue,
+                                            embargo:ie.tipp.embargo,
+                                            coverageDepth:ie.tipp.coverageDepth,
+                                            coverageNote:ie.tipp.coverageNote).save();
         }
       }
       else {
@@ -288,6 +312,24 @@ class DataloadController {
         sub_titles.each { st ->
           if ( st.included_st in [ 'Y', 'y', '', ' ', null ] ) {
             log.debug("${st} is to be included");
+            TitleInstancePackagePlatform tipp = TitleInstancePackagePlatform.findByImpId(st.tipp_id.toString())
+            if ( tipp ) {
+              def new_ie = new IssueEntitlement(status: RefdataValue.findByValue('UnknownEntitlement'),
+                                                subscription: new_subscription,
+                                                tipp: tipp,
+                                                startDate:tipp.startDate,
+                                                startVolume:tipp.startVolume,
+                                                startIssue:tipp.startIssue,
+                                                endDate:tipp.endDate,
+                                                endVolume:tipp.endVolume,
+                                                endIssue:tipp.endIssue,
+                                                embargo:tipp.embargo,
+                                                coverageDepth:tipp.coverageDepth,
+                                                coverageNote:tipp.coverageNote).save();
+            }
+            else {
+              log.error("Unable to locate TIPP instance for ${st.tipp_id.toString()}");
+            }
           }
           else {
             log.debug("omit ${st}");
