@@ -14,8 +14,8 @@ class Subscription {
 
   License owner
 
-  static hasMany = [ packages : SubscriptionPackage ]
-  static mappedBy = [ packages : 'subscription' ]
+  static hasMany = [ packages : SubscriptionPackage, issueEntitlements: IssueEntitlement ]
+  static mappedBy = [ packages : 'subscription', issueEntitlements: 'subscription' ]
 
   static mapping = {
                 id column:'sub_id'

@@ -113,6 +113,35 @@
 							</g:each>
 						
 					</g:if>
+
+					<g:if test="${subscriptionInstance?.issueEntitlements}">
+                                        <dt>Entitlements</td>
+                                        <dd>
+                                          <table border="1" cellpadding="5" cellspacing="5">
+                                            <tr>
+                                              <th>Title</th>
+                                              <th>Start Date</th>
+                                              <th>Start Volume</th>
+                                              <th>Start Issue</th>
+                                              <th>End Date</th>
+                                              <th>End Volume</th>
+                                              <th>End Issue</th>
+                                            </tr>
+  				            <g:each in="${subscriptionInstance.issueEntitlements}" var="ie">
+                                              <tr>
+					        <td>${ie.tipp.title.title}</td>
+                                                <td>${ie.startDate}</td>
+                                                <td>${ie.startVolume}</td>
+                                                <td>${ie.startIssue}</td>
+                                                <td>${ie.endDate}</td>
+                                                <td>${ie.endVolume}</td>
+                                                <td>${ie.endIssue}</td>
+                                                <td><g:link controller="issueEntitlement" action="show" id="${ie.id}">Show</g:link></td>
+                                              </tr>
+ 					    </g:each>
+                                          </table>
+                                        </dd>
+					</g:if>
 				
 				</dl>
 
