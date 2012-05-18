@@ -72,7 +72,8 @@ class DataloadController {
                                                                                    identifier:sub.identifier,
                                                                                    impId:sub._id.toString(),
                                                                                    startDate:sub.start_date,
-                                                                                   endDate:sub.end_date).save(flush:true);
+                                                                                   endDate:sub.end_date,
+                                                                                   type: RefdataValue.findByValue('Subscription Offered')).save(flush:true);
     }
 
     // Platforms
@@ -281,7 +282,8 @@ class DataloadController {
                                     name: db_sub.name,
                                     startDate: db_sub.startDate,
                                     endDate: db_sub.endDate,
-                                    instanceOf: db_sub )
+                                    instanceOf: db_sub,
+                                    type: RefdataValue.findByValue('Subscription Taken') )
 
       if ( new_subscription.save() ) {
         log.debug("New subscription saved...");
