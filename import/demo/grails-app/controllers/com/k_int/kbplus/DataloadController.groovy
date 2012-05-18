@@ -277,15 +277,30 @@ class DataloadController {
 
       // create a new subscription - an instance of an actual org taking up a specific subscription
       def new_subscription = new Subscription(
+                                    identifier: "${db_sub.identifier}:${sub.org.toString()}",
                                     name: db_sub.name,
                                     startDate: db_sub.startDate,
                                     endDate: db_sub.endDate,
-                                    instanceOf: db_sub ).save();
+                                    instanceOf: db_sub )
+
+      if ( new_subscription.save() ) {
+        log.debug("New subscription saved...");
+      }
+      else {
+        log.error("Problem saving new subscription, ${new_subscription.errors}");
+      }
 
       // assert an org-role
       def org_link = new OrgRole(org:db_org, 
                                  sub: new_subscription, 
-                                 roleType: RefdataValue.findByValue('Subscriber')).save();
+                                 roleType: RefdataValue.findByValue('Subscriber'))
+
+      if ( org_link.save() ) {
+        log.debug("New org link saved...");
+      }
+      else {
+        log.error("Problem saving new org link, ${org_link.errors}");
+      }
 
       // List all actual st_title records, and diff that against the default from the ST file
       def sub_titles = mdb.stTitle.find(owner:sub._id)
@@ -293,6 +308,7 @@ class DataloadController {
       if ( sub_titles.size() == 0 ) {
         log.debug("No ST title data present, defaulting in from SO");
         IssueEntitlement.findAllBySubscription(db_sub).each { ie ->
+          log.debug("Adding default entitlement based on entitlement ${ie.id}");
           def new_ie = new IssueEntitlement(status: ie.status,
                                             subscription: new_subscription,
                                             tipp: ie.tipp,
@@ -314,18 +330,23 @@ class DataloadController {
             log.debug("${st} is to be included");
             TitleInstancePackagePlatform tipp = TitleInstancePackagePlatform.findByImpId(st.tipp_id.toString())
             if ( tipp ) {
+              boolean is_core = false;
+              if ( st.core_title == 'y' || st.core_title == 'Y' )
+                is_core=true;
+
               def new_ie = new IssueEntitlement(status: RefdataValue.findByValue('UnknownEntitlement'),
                                                 subscription: new_subscription,
                                                 tipp: tipp,
-                                                startDate:tipp.startDate,
-                                                startVolume:tipp.startVolume,
-                                                startIssue:tipp.startIssue,
-                                                endDate:tipp.endDate,
-                                                endVolume:tipp.endVolume,
-                                                endIssue:tipp.endIssue,
-                                                embargo:tipp.embargo,
+                                                startDate: nvl(st.date_first_issue_subscribed, tipp.startDate),
+                                                startVolume:nvl(st.num_first_vol_subscribed,tipp.startVolume),
+                                                startIssue:nvl(st.num_first_issue_subscribed,tipp.startIssue),
+                                                endDate:nvl(st.date_first_issue_subscribed,tipp.endDate),
+                                                endVolume:nvl(st.num_last_vol_subscibed,tipp.endVolume),
+                                                endIssue:nvl(st.num_last_issue_subscribed,tipp.endIssue),
+                                                embargo:nvl(st.embargo,tipp.embargo),
                                                 coverageDepth:tipp.coverageDepth,
-                                                coverageNote:tipp.coverageNote).save();
+                                                coverageNote:tipp.coverageNote,
+                                                coreTitle: is_core).save();
             }
             else {
               log.error("Unable to locate TIPP instance for ${st.tipp_id.toString()}");
@@ -349,7 +370,12 @@ class DataloadController {
     redirect(controller:'home')
   }
 
-  def updateOrgs() {
+  def nvl(val,defval) {
+    def result = defval
+    if ( val && val.toString().trim().length() > 0 )
+      result = val
+
+    result
   }
 
   def lookupOrCreateCanonicalIdentifier(ns, value) {

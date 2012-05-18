@@ -12,6 +12,7 @@ class IssueEntitlement {
   String embargo
   String coverageDepth
   String coverageNote
+  boolean coreTitle = false
 
   static belongsTo = [subscription: Subscription,tipp: TitleInstancePackagePlatform]
 
@@ -30,7 +31,7 @@ class IssueEntitlement {
            embargo column:'ie_embargo'
      coverageDepth column:'ie_coverage_depth'
       coverageNote column:'ie_coverage_note',type: 'text'
-
+         coreTitle column:'ie_core_title'
   }
 
   static constraints = {
@@ -46,5 +47,6 @@ class IssueEntitlement {
     embargo(nullable:true, blank:true);
     coverageDepth(nullable:true, blank:true);
     coverageNote(nullable:true, blank:true);
+    coreTitle(nullable:true, blank:true);
   }
 }

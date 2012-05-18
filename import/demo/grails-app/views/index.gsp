@@ -19,6 +19,7 @@
           <li><g:link controller="platform">Platforms</g:link></li>
           <li><g:link controller="titleInstance">Title Instances</g:link></li>
           <li><g:link controller="titleInstancePackagePlatform">Title Instance Package Platform Links</g:link></li>
+          <li><g:link controller="subscription">Subscriptions</g:link></li>
         </ul>
       </p>
     </div>
