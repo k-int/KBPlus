@@ -11,6 +11,7 @@ class Subscription {
   Date startDate
   Date endDate
   Subscription instanceOf
+  String noticePeriod
 
   License owner
 
@@ -29,7 +30,7 @@ class Subscription {
          startDate column:'sub_start_date'
            endDate column:'sub_end_date'
         instanceOf column:'sub_parent_sub_fk'
-          
+      noticePeriod column:'sub_notice_period'
   }
 
   static constraints = {
@@ -40,5 +41,6 @@ class Subscription {
     startDate(nullable:true, blank:false)
     endDate(nullable:true, blank:false)
     instanceOf(nullable:true, blank:false)
+    noticePeriod(nullable:true, blank:false)
   }
 }

@@ -372,6 +372,56 @@ class DataloadController {
     redirect(controller:'home')
   }
 
+  def reloadLicenses() {
+    log.debug("reloadLicenses()");
+    def mdb = mongoService.getMongo().getDB('kbplus_ds_reconciliation')
+    int subcount = 0
+
+    // Licenses
+    mdb.license.find().sort(lastmod:1).each { lic ->
+      log.debug("load ${lic}");
+      def licensor_org = Org.findByImpId(lic.licensor.toString())
+      def licensee_org = Org.findByImpId(lic.licensee.toString())
+      License l = new License (
+                               reference:lic.license_reference,
+                               concurrentUsers:lic.concurrent_users,
+                               remoteAccess:lic.remote_access,
+                               walkinAccess:lic.walkin_access,
+                               multisiteAccess:lic.multisite_access,
+                               partnersAccess:lic.partners_access,
+                               alumniAccess:lic.alumni_access,
+                               ill:lic.ill,
+                               coursepack:lic.coursepack,
+                               vle:lic.vle,
+                               enterprise:lic.enterprise,
+                               pca:lic.pca,
+                               noticePeriod:lic.notice_period,
+                               licenseUrl:lic.license_url,
+                               licensorRef:lic.licensor_ref,
+                               licenseeRef:lic.licensee_ref,
+                               licenseType:lic.license_type,
+                               licenseStatus:lic.license_status,
+                               lastmod:lic.lastmod).save();
+      assertOrgLicenseLink(licensor_org, l, lookupOrCreateRefdataEntry('Organisational Role', 'Licensor'));
+      assertOrgLicenseLink(licensee_org, l, lookupOrCreateRefdataEntry('Organisational Role', 'Licensee'));
+
+      lic.subscriptions?.each() { ls ->
+        log.debug("Process license subscription ${ls}");
+        def sub = Subscription.findByImpId(ls.toString());
+        if ( sub ) {
+          sub.owner = l
+          sub.noticePeriod = lic.notice_period
+          sub.save();
+          log.debug("Updated license information");
+        }
+        else {
+          log.error("Unable to locate subscription with impid ${ls} in db");
+        }
+      }
+    }
+    redirect(controller:'home')
+  }
+
   def nvl(val,defval) {
     def result = defval
     if ( val && val.toString().trim().length() > 0 )
@@ -418,6 +468,19 @@ class DataloadController {
         porg.links.add(link)
       porg.save();
     }
+  }
+
+  def assertOrgLicenseLink(porg, plic, prole) {
+    def link = OrgRole.find{ lic==plic && org==porg && roleType==prole }
+    if ( ! link ) {
+      link = new OrgRole(lic:plic, org:porg, roleType:prole);
+      if ( !porg.links )
+        porg.links = [link]
+      else
+        porg.links.add(link)
+      porg.save();
+    }
 
   }
+
 }

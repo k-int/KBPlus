@@ -78,6 +78,7 @@ if ( csventry ) {
       println("got licensee ${licensee_org}");
 
       def license = [
+        _id:new org.bson.types.ObjectId(),
         license_reference : nl[0],
         concurrent_users : nl[1],
         concurrent_users_note : nl[2],
@@ -105,11 +106,12 @@ if ( csventry ) {
         license_url : nl[24],
         licensor : licensor_org._id,
         licensor_ref : nl[26],
-        licensee : nl[27],
+        licensee : licensee_org._id,
         licensee_ref : nl[28],
         license_type : nl[29],
         license_status : nl[30],
-        subscriptions : []
+        subscriptions : [],
+        lastmod: System.currentTimeMillis()
       ]
 
       for ( int i=31; i<nl.length; i++ ) {
@@ -120,6 +122,8 @@ if ( csventry ) {
           license.subscriptions.add(sub_lookup._id);
         }
       }
+
+      db.license.save(license);
 
       println(license)
     }
