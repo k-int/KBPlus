@@ -57,7 +57,7 @@
 					</g:if>
 				
 					<g:if test="${subscriptionInstance?.owner}">
-						<dt><g:message code="subscription.owner.label" default="Owner" /></dt>
+						<dt><g:message code="subscription.owner.label" default="License" /></dt>
 						
 							<dd><g:link controller="license" action="show" id="${subscriptionInstance?.owner?.id}">${subscriptionInstance?.owner?.encodeAsHTML()}</g:link></dd>
 						
@@ -104,6 +104,14 @@
 							<dd><g:fieldValue bean="${subscriptionInstance}" field="name"/></dd>
 						
 					</g:if>
+
+                                        <g:if test="${subscriptionInstance?.noticePeriod}">
+                                                <dt><g:message code="subscription.noticePeriod.label" default="Notice Period" /></dt>
+
+                                                        <dd><g:fieldValue bean="${subscriptionInstance}" field="noticePeriod"/></dd>
+
+                                        </g:if>
+
 				
 					<g:if test="${subscriptionInstance?.packages}">
 						<dt><g:message code="subscription.packages.label" default="Packages" /></dt>
