@@ -68,6 +68,48 @@ if ( csventry ) {
     boolean bad = false;
     String badreason = null;
     boolean has_data = false
+
+    def license = [
+      license_reference : nl[0],
+      concurrent_users : nl[1],
+      concurrent_users_note : nl[2],
+      remote_access : nl[3],
+      remote_access_note : nl[4],
+      walkin_access : nl[5],
+      walkin_access_note : nl[6],
+      multisite_access : nl[7],
+      multisite_access_note : nl[8],
+      partners_access : nl[9],
+      partners_access_note : nl[10],
+      alumni_access : nl[11],
+      alumni_access_note : nl[12],
+      ill : nl[13],
+      ill_note : nl[14],
+      coursepack : nl[15],
+      coursepack_note : nl[16],
+      vle : nl[17],
+      vle_note : nl[18],
+      enterprise : nl[19],
+      enterprise_note : nl[20],
+      pca : nl[21],
+      pca_note : nl[22],
+      notice_period : nl[23],
+      license_url : nl[24],
+      licensor : nl[25],
+      licensor_ref : nl[26],
+      licensee : nl[27],
+      licensee_ref : nl[28],
+      license_type : nl[29],
+      license_status : nl[30],
+      subscriptions : []
+    ]
+
+    for ( int i=31; i<nl.length; i++ ) {
+      println("Process subscription identifier ${nl[i]}");
+      license.subscriptions.add(nl[i]);
+    }
+
+    println(license)
   }
 
   println("Stats: ${stats}");
