@@ -6,16 +6,6 @@
 ])
 
 
-import groovy.util.slurpersupport.GPathResult
-import static groovyx.net.http.ContentType.*
-import static groovyx.net.http.Method.*
-import groovyx.net.http.*
-import org.apache.http.entity.mime.*
-import org.apache.http.entity.mime.content.*
-import java.nio.charset.Charset
-import org.apache.http.*
-import org.apache.http.protocol.*
-import org.apache.log4j.*
 import au.com.bytecode.opencsv.CSVReader
 import java.text.SimpleDateFormat
 
@@ -64,11 +54,38 @@ while ((nl = r.readNext()) != null) {
   String badreason = null;
 
   if ( ( nl[0] != null ) && ( nl[0].trim().length() > 0 ) ) {
-    // def org = db.orgs.findOne(name:nl[0])
+    def cons_org = db.orgs.findOne(normName:nl[0].trim().toLowerCase())
+    def org = db.orgs.findOne(jcId:nl[1]);
+
+    if ( ! cons_org ) {
+      cons_org = [
+        _id:new org.bson.types.ObjectId(),
+        name:nl[1],
+        normName:nl[1].trim().toLowerCase(),
+        lastmod:System.currentTimeMillis()
+      ]
+      db.orgs.save(cons_org);
+    }
+
+    if ( cons_org && org ) {
+      println("Located org(${nl[1]}) to be a member of ${nl[0]}");
+      if ( org.consortia == null ) {
+        org.consortia = []
+      }
+      if ( ! org.consortia.contains(cons_org._id) ) {
+        org.consortia.add(cons_org._id)
+        db.orgs.save(org);
+      }
+    }
+    else {
+      println("Failed to locate org(${nl[1]}) to be a member of(${nl[0]})");
+      badfile << "${nl[0]},${nl[1]},${nl[2]},\"Failure to lookup org\"\n"
+      bad=true
+    }
   }
   else {
     println("No name for row ${rownum}");
-    badfile << "${nl[0]},${nl[1]},${nl[2]},${nl[3]},${nl[4]},${nl[5]},${nl[6]},${nl[7]},\"No name for row ${rownum}\"\n"
+    badfile << "${nl[0]},${nl[1]},${nl[2]},\"No name for row ${rownum}\"\n"
     stats.bad++
   }
 }

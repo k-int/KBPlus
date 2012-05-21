@@ -214,6 +214,7 @@ def lookupOrCreateOrg(Map params = [:]) {
     org = [
       _id:new org.bson.types.ObjectId(),
       name:params.name,
+      normName:params.name?.trim().toLowerCase(),
       lastmod:System.currentTimeMillis()
     ]
     params.db.orgs.save(org)

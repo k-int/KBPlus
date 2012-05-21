@@ -118,6 +118,7 @@ while ((nl = r.readNext()) != null) {
       stats.existing++
     }
     org.name = nl[0];
+    org.normName = nl[0].trim().toLowerCase()
     org.ringoldId = nl[1];
     org.ingentaId = nl[2];
     org.jcId = nl[3];
@@ -130,11 +131,9 @@ while ((nl = r.readNext()) != null) {
     if ( org.sectorName == 'Higher Education' ) {
       org.famId = resolveFAM(ukfam,nl[5])
       // Find from ukfam, @entityID==nl[5]
-      if ( org.famId ) {
-        db.orgs.save(org);
-        stats.added++
-      }
-      else {
+      db.orgs.save(org);
+      stats.added++
+      if ( ! org.famId ) {
         println("Unable to locate node for ${nl[5]}");
         badfile << "${nl[0]},${nl[1]},${nl[2]},${nl[3]},${nl[4]},${nl[5]},${nl[6]},${nl[7]},\"Unable to find ${nl[5]} in FAM file\"\n"
         stats.bad++
