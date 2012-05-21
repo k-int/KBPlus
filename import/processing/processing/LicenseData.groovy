@@ -33,33 +33,50 @@ if ( db == null ) {
 }
 
 
-// To clear down the gaz: curl -XDELETE 'http://localhost:9200/gaz'
-// CSVReader r = new CSVReader( new InputStreamReader(getClass().classLoader.getResourceAsStream("./IEEE_IEEEIEL_2012_2012.csv")))
-println("Processing ${args[0]}");
-CSVReader r = new CSVReader( new InputStreamReader(new FileInputStream(args[0])))
+println("Processing zip ${args[0]}");
 
-def bad_rows = []
+def zipFile = new java.util.zip.ZipFile(new File(args[0]))
 
-String [] nl;
+def csventry = null;
+def docstore_components = []
 
-String [] lic_header_line = r.readNext()
-
-println("Read column headings: ${so_header_line}");
-
-def stats = [:]
-
-int rownum = 0;
-int lic_bad = 0;
-int processed = 0;
-
-while ((nl = r.readNext()) != null) {
-  rownum++
-  boolean bad = false;
-  String badreason = null;
-  boolean has_data = false
+zipFile.entries().each {
+   println("zip entry: ${it.name}");
+   if ( it.name?.endsWith(".csv") ) {
+     csventry = it;
+   }
+   else {
+     docstore_components.add(it);
+   }
 }
 
-println("Stats: ${stats}");
+def stats = [:]
+def bad_rows = []
+
+if ( csventry ) {
+  println("Processing csv: ${csventry.name}");
+  CSVReader r = new CSVReader( new InputStreamReader(zipFile.getInputStream(csventry)))
+  String [] nl;
+  String [] lic_header_line = r.readNext()
+  println("Read column headings: ${lic_header_line}");
+  int rownum = 0;
+  int lic_bad = 0;
+  int processed = 0;
+
+  while ((nl = r.readNext()) != null) {
+    rownum++
+    boolean bad = false;
+    String badreason = null;
+    boolean has_data = false
+  }
+
+  println("Stats: ${stats}");
+
+}
+else {
+  println("NO CSV In zipfile");
+}
+
 
 def statsfile = new File("stats.txt");
 statsfile << "${new Date().toString()}\n\nLicense import\n--------\n\n"
