@@ -69,5 +69,21 @@
 
     <r:layoutResources/>
 
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.4/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.4/zenbox.css);
+    </style>
+    <script type="text/javascript">
+      if (typeof(Zenbox) !== "undefined") {
+        Zenbox.init({
+          dropboxID:   "20059881",
+          url:         "https://kbplus.zendesk.com",
+          tabID:       "feedback",
+          tabColor:    "black",
+          tabPosition: "Left"
+        });
+      }
+    </script>
+
   </body>
 </html>
