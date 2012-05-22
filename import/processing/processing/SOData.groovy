@@ -79,13 +79,14 @@ sub.start_date_str = so_agreement_term_start_yr_line[1]
 sub.end_date_str=so_agreement_term_end_yr_line[1]
 sub.start_date = parseDate(so_agreement_term_start_yr_line[1],possible_date_formats)
 sub.end_date = parseDate(so_agreement_term_end_yr_line[1],possible_date_formats)
-db.subscriptions.save(sub);
 
 def consortium = null;
 if ( ( so_consortium_line[1] != null ) && ( so_consortium_line[1].length() > 0 ) )  {
   consortium = lookupOrCreateOrg(name:so_consortium_line[1], db:db, stats:stats);
   sub.consortium = consortium._id;
 }
+
+db.subscriptions.save(sub);
 
 def pkg = lookupOrCreatePackage(identifier:so_package_identifier_line[1], 
                                 provider:so_provider_line[1],
