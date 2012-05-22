@@ -84,7 +84,7 @@ db.subscriptions.save(sub);
 def consortium = null;
 if ( ( so_consortium_line[1] != null ) && ( so_consortium_line[1].length() > 0 ) )  {
   consortium = lookupOrCreateOrg(name:so_consortium_line[1], db:db, stats:stats);
-  sub.consortium = consortium;
+  sub.consortium = consortium._id;
 }
 
 def pkg = lookupOrCreatePackage(identifier:so_package_identifier_line[1], 

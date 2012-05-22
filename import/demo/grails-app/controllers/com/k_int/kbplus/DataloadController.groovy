@@ -74,6 +74,14 @@ class DataloadController {
                                                                                    startDate:sub.start_date,
                                                                                    endDate:sub.end_date,
                                                                                    type: RefdataValue.findByValue('Subscription Offered')).save(flush:true);
+
+      if ( sub.consortia ) {
+        def cons = Org.findByImpId(sub.consortia.toString());
+        if ( cons ) {
+          def sc_role = lookupOrCreateRefdataEntry('Organisational Role', 'Subscription Consortia');
+          def or = new OrgRole(org: cons, sub:dbsub, roleType:sc_role).save();
+        }
+      }
     }
 
     // Platforms
