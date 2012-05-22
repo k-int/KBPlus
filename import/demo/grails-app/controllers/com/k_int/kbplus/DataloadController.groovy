@@ -424,7 +424,7 @@ class DataloadController {
 
   def nvl(val,defval) {
     def result = defval
-    if ( val && val.toString().trim().length() > 0 )
+    if ( ( val ) && ( val.toString().trim().length() > 0 ) )
       result = val
 
     result
