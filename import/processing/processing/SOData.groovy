@@ -86,7 +86,7 @@ if ( ( so_consortium_line[1] != null ) && ( so_consortium_line[1].length() > 0 )
   consortium = lookupOrCreateOrg(name:so_consortium_line[1], db:db, stats:stats);
 
 def pkg = lookupOrCreatePackage(identifier:so_package_identifier_line[1], 
-                                provider:so_identifier_line[1],
+                                provider:so_provider_line[1],
                                 name:so_package_name_line[1], 
                                 db:db, 
                                 stats:stats)
