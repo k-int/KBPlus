@@ -81,7 +81,7 @@
 					</tbody>
 				</table>
 				<div class="pagination">
-					<bootstrap:paginate total="${orgInstanceTotal}" />
+					<bootstrap:paginate total="${orgInstanceTotal}" params="${params}" />
 				</div>
 			</div>
 
