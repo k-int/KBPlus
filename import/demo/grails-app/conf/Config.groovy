@@ -96,7 +96,7 @@ log4j = {
            'net.sf.ehcache.hibernate'
 
     debug  'grails.app.controllers',
-           'grails.app.services',
+           'grails.app.service',
            'grails.app.domain',
            'grails.app.conf',
            'grails.app.jobs'
