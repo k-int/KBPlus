@@ -364,17 +364,17 @@ def lookupOrCreateTitle(Map params=[:]) {
     inc('titles_without_identifiers',params.stats);
   }
 
-  if ( !title && params.title) { // If no match, and title present, try to match on title
-    println("Attempting to match on title string ${params.title}");
-    title = params.db.titles.findOne(title:params.title);
-    if ( title ) {
-      println("  -> Matched on title");
-      inc('titles_matched_by_title',params.stats);
-    }
-    else {
-      println("  -> No match on title");
-    }
-  }
+  // if ( !title && params.title) { // If no match, and title present, try to match on title
+  //   println("Attempting to match on title string ${params.title}");
+  //   title = params.db.titles.findOne(title:params.title);
+  //   if ( title ) {
+  //     println("  -> Matched on title");
+  //     inc('titles_matched_by_title',params.stats);
+  //   }
+  //   else {
+  //     println("  -> No match on title");
+  //   }
+  // }
 
   if (!title)  {
     // Unable to locate title with identifier given... Try other dedup matches on other props if needed
