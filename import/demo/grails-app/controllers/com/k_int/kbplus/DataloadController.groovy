@@ -291,6 +291,7 @@ class DataloadController {
         // create a new subscription - an instance of an actual org taking up a specific subscription
         def new_subscription = new Subscription(
                                       identifier: "${db_sub.identifier}:${sub.org.toString()}",
+                                      impId:sub._id.toString(),
                                       name: db_sub.name,
                                       startDate: db_sub.startDate,
                                       endDate: db_sub.endDate,
@@ -309,6 +310,9 @@ class DataloadController {
                                    sub: new_subscription, 
                                    roleType: RefdataValue.findByValue('Subscriber'))
   
+
+        new_subscription.save(flush:true);
+
         if ( org_link.save() ) {
           log.debug("New org link saved...");
         }
@@ -319,10 +323,16 @@ class DataloadController {
         // List all actual st_title records, and diff that against the default from the ST file
         def sub_titles = mdb.stTitle.find(owner:sub._id)
   
+        if ( !new_subscription.issueEntitlements ) {
+          new_subscription.issueEntitlements = []
+        }
+
         if ( sub_titles.size() == 0 ) {
-          log.debug("No ST title data present, defaulting in from SO");
+          log.debug("No ST title data present, defaulting in from SO ${db_sub.id}");
+          int count = 0;
           IssueEntitlement.findAllBySubscription(db_sub).each { ie ->
-            log.debug("Adding default entitlement based on entitlement ${ie.id}");
+            log.debug("Adding default entitlement based on entitlement ${ie.id}. Target tipp is ${ie.tipp.id} new sub-imp-id is ${}");
+            count++;
             def new_ie = new IssueEntitlement(status: ie.status,
                                               subscription: new_subscription,
                                               tipp: ie.tipp,
@@ -334,10 +344,10 @@ class DataloadController {
                                               endIssue:ie.tipp.endIssue,
                                               embargo:ie.tipp.embargo,
                                               coverageDepth:ie.tipp.coverageDepth,
-                                              coverageNote:ie.tipp.coverageNote).save();
-            new_subscription.issueEntitlements.add(new_ie)
+                                              coverageNote:ie.tipp.coverageNote).save(flush:true)
+            // new_subscription.issueEntitlements.add(new_ie)
           }
-          new_subscription.save(flush:true);
+          log.debug("Added ${count} issue entitlements from subscription ${db_sub.id}")
         }
         else {
           log.debug("ST title data present, processing");
@@ -362,8 +372,8 @@ class DataloadController {
                                                   embargo:nvl(st.embargo,tipp.embargo),
                                                   coverageDepth:tipp.coverageDepth,
                                                   coverageNote:tipp.coverageNote,
-                                                  coreTitle: is_core).save();
-                new_subscription.issueEntitlements.add(new_ie)
+                                                  coreTitle: is_core).save(flush:true)
+                // new_subscription.issueEntitlements.add(new_ie)
               }
               else {
                 log.error("Unable to locate TIPP instance for ${st.tipp_id.toString()}");
@@ -372,9 +382,11 @@ class DataloadController {
             else {
               log.debug("omit ${st}");
             }
-            new_subscription.save(flush:true);
           }
         }
+
+        // new_subscription.save(flush:true)
+
   
         // Iterate all issue entitlements that appear as a part of this SO
         //IssueEntitlement.findAllBySubscription(db_sub).each { ie ->
@@ -384,7 +396,11 @@ class DataloadController {
         log.debug("Done listing issue entitlements for ST:${db_sub.impId}");
       }
       catch ( Exception e ) {
+        log.error("Problem",e)
         e.printStackTrace();
+      }
+      finally {
+        log.debug("Completed sub processing for ${sub}")
       }
     }
 
