@@ -188,6 +188,17 @@
 							<dd><g:fieldValue bean="${licenseInstance}" field="lastmod"/></dd>
 						
 					</g:if>
+
+                                        <g:if test="${licenseInstance?.documents}">
+                                                <dt><g:message code="license.documents.label" default="Documents" /></dt>
+                                                <dd><table border="1" cellpadding="5" cellspacing="5"><tr><th>Doctype</th><th>Content</th></tr>
+                                                        <g:each in="${licenseInstance.documents}" var="d">
+                                                        <tr><td>${d.doctype.value}</td><td>${d.owner.content}</td></tr>
+                                                        </g:each>
+                                                </table></dd>
+
+                                        </g:if>
+
 				
 					<g:if test="${licenseInstance?.subscriptions}">
 						<dt><g:message code="license.subscriptions.label" default="Subscriptions" /></dt>
@@ -197,6 +208,8 @@
 							</g:each>
 						
 					</g:if>
+
+
 				
 				</dl>
 

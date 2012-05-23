@@ -458,8 +458,8 @@ class DataloadController {
 
   def possibleNote(content, type, license) {
     if ( content && content.toString().length() > 0 ) {
-      doc_content = new Doc(content:content.toString()).save();
-      doc_context = new DocContext(license:license,owner:doc_content,doctype:lookupOrCreateRefdataEntry('Document Type',type)).save();
+      def doc_content = new Doc(content:content.toString()).save();
+      def doc_context = new DocContext(license:license,owner:doc_content,doctype:lookupOrCreateRefdataEntry('Document Type',type)).save();
     }
   }
 

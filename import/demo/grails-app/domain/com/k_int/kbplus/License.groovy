@@ -26,10 +26,12 @@ class License {
   long lastmod
 
   static hasMany = [
-    subscriptions:Subscription
+    subscriptions:Subscription, 
+    documents:DocContext
   ]
 
-  static mappedBy = [ subscriptions: 'owner']
+  static mappedBy = [ subscriptions: 'owner',
+                      documents: 'license']
 
   static mapping = {
                 id column:'lic_id'
