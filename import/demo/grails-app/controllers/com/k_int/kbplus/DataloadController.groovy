@@ -390,8 +390,15 @@ class DataloadController {
     // Licenses
     mdb.license.find().sort(lastmod:1).each { lic ->
       log.debug("load ${lic}");
-      def licensor_org = Org.findByImpId(lic.licensor.toString())
-      def licensee_org = Org.findByImpId(lic.licensee.toString())
+      def licensor_org = null;
+      def licensee_org = null;
+
+      if ( lic.licensor )
+        licensor_org = Org.findByImpId(lic.licensor.toString())
+
+      if ( lic.licensee )
+        licensee_org = Org.findByImpId(lic.licensee.toString())
+
       License l = new License (
                                reference:lic.license_reference,
                                concurrentUsers:lic.concurrent_users,
@@ -412,8 +419,12 @@ class DataloadController {
                                licenseType:lic.license_type,
                                licenseStatus:lic.license_status,
                                lastmod:lic.lastmod).save();
-      assertOrgLicenseLink(licensor_org, l, lookupOrCreateRefdataEntry('Organisational Role', 'Licensor'));
-      assertOrgLicenseLink(licensee_org, l, lookupOrCreateRefdataEntry('Organisational Role', 'Licensee'));
+
+      if ( licensor_org )
+        assertOrgLicenseLink(licensor_org, l, lookupOrCreateRefdataEntry('Organisational Role', 'Licensor'));
+
+      if ( licensee_org )
+        assertOrgLicenseLink(licensee_org, l, lookupOrCreateRefdataEntry('Organisational Role', 'Licensee'));
 
       lic.subscriptions?.each() { ls ->
         log.debug("Process license subscription ${ls}");
