@@ -92,6 +92,10 @@ while ((nl = r.readNext()) != null) {
 
   // Lookup title based on print_identifier, target_identifiers ['ISSN'] = print_identifier
   def title = db.titles.findOne(identifier:[type:'ISSN', value: nl[2]])
+  if ( ! title ) {
+    db.titles.findOne(identifier:[type:'eISSN', value: nl[3]])
+  }
+
   if ( title) {
     println("Matched title ${title}");
     inc('titles_matched',stats);
@@ -146,11 +150,11 @@ while ((nl = r.readNext()) != null) {
     }
   }
   else {
-    println("Failed to match title with ISSN \"${nl[2]}\"");
+    println("Failed to match title with ISSN \"${nl[2]}\" or eISSN \"${nl[3]}\"");
     inc('titles_unmatched',stats);
     bad = true
     st_bad++;
-    badreason="Unable to locate ISSN for title \"${nl[2]}\"";
+    badreason="Unable to locate ISSN for title \"${nl[2]}\"  or eISSN \"${nl[3]}\"";
   }
 
   if ( bad ) {
