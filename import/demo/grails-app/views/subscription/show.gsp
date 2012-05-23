@@ -169,7 +169,6 @@
                                                 <td>${ie.endDate}</td>
                                                 <td>${ie.endVolume}</td>
                                                 <td>${ie.endIssue}</td>
-                                                <td><g:link controller="issueEntitlement" action="show" id="${ie.id}">Show</g:link></td>
                                               </tr>
  					    </g:each>
                                           </table>

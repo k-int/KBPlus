@@ -86,14 +86,18 @@ while ((nl = r.readNext()) != null) {
   boolean bad = false;
   String badreason = null;
   boolean has_data = false
-
+ 
   // included_st, publication_title, print_identifier, online_identifier, date_first_issue_subscribed, num_first_vol, num_first_iss, last_vo, last_iss
   // embargo, core_title
 
   // Lookup title based on print_identifier, target_identifiers ['ISSN'] = print_identifier
-  def title = db.titles.findOne(identifier:[type:'ISSN', value: nl[2]])
-  if ( ! title ) {
-    db.titles.findOne(identifier:[type:'eISSN', value: nl[3]])
+  def title = null;
+  if ( nl[2]?.length() > 0 ) {
+    title = db.titles.findOne(identifier:[type:'ISSN', value: nl[2]?.trim()])
+  }
+
+  if ( ! title && ( nl[3]?.length() > 0 ) ) {
+    title = db.titles.findOne(identifier:[type:'eISSN', value: nl[3]?.trim()])
   }
 
   if ( title) {
@@ -154,7 +158,7 @@ while ((nl = r.readNext()) != null) {
     inc('titles_unmatched',stats);
     bad = true
     st_bad++;
-    badreason="Unable to locate ISSN for title \"${nl[2]}\"  or eISSN \"${nl[3]}\"";
+    badreason="Unable to locate title for ISSN \"${nl[2]}\"  or eISSN \"${nl[3]}\"";
   }
 
   if ( bad ) {
