@@ -73,7 +73,8 @@ if ( csventry ) {
     def licensor_org = db.orgs.findOne(name:nl[25]);
     println("Lookung up licensee ${nl[27]}");
     def licensee_org = db.orgs.findOne(name:nl[27]);
-    if ( licensor_org && licensee_org ) {
+
+    if ( licensor_org  ) {
       println("got licensor ${licensor_org}");
       println("got licensee ${licensee_org}");
 
@@ -104,9 +105,9 @@ if ( csventry ) {
         pca_note : nl[22],
         notice_period : nl[23],
         license_url : nl[24],
-        licensor : licensor_org._id,
+        licensor : licensor_org?._id,
         licensor_ref : nl[26],
-        licensee : licensee_org._id,
+        licensee : licensee_org?._id,
         licensee_ref : nl[28],
         license_type : nl[29],
         license_status : nl[30],
