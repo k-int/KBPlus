@@ -19,6 +19,7 @@ class Doc {
   static constraints = {
     status(nullable:true, blank:false)
     type(nullable:true, blank:false)
+    alert(nullable:true, blank:false)
     content(nullable:true, blank:false)
   }
 }

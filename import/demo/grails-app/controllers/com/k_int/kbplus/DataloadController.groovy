@@ -439,8 +439,28 @@ class DataloadController {
           log.error("Unable to locate subscription with impid ${ls} in db");
         }
       }
+
+      possibleNote(lic.concurrent_users_note,'ConcurrentUsageNote',l);
+      possibleNote(lic.remote_access_note,'RemoteAccessNote',l);
+      possibleNote(lic.walkin_access_note,'WalkinAccessNote',l);
+      possibleNote(lic.multisite_access_note,'MultisiteAccessNote',l);
+      possibleNote(lic.partners_access_note,'PartnersAccessNote',l);
+      possibleNote(lic.alumni_access_note,'AlumniAccessNote',l);
+      possibleNote(lic.ill_note,'ILLNote',l);
+      possibleNote(lic.coursepack_note,'CoursepackNote',l);
+      possibleNote(lic.vle_note,'VLENote',l);
+      possibleNote(lic.enterprise_note,'EnterpriseNote',l);
+      possibleNote(lic.pca_note,'PCANote',l);
+
     }
     redirect(controller:'home')
+  }
+
+  def possibleNote(content, type, license) {
+    if ( content && content.toString().length() > 0 ) {
+      doc_content = new Doc(content:content.toString()).save();
+      doc_context = new DocContext(license:license,owner:doc_content,doctype:lookupOrCreateRefdataEntry('Document Type',type)).save();
+    }
   }
 
   def nvl(val,defval) {
