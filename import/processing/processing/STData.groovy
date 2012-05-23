@@ -93,10 +93,12 @@ while ((nl = r.readNext()) != null) {
   // Lookup title based on print_identifier, target_identifiers ['ISSN'] = print_identifier
   def title = null;
   if ( nl[2]?.length() > 0 ) {
+    println("Attempting lookup by ISSN: \"${nl[2]?.trim()}\"");
     title = db.titles.findOne(identifier:[type:'ISSN', value: nl[2]?.trim()])
   }
 
-  if ( ! title && ( nl[3]?.length() > 0 ) ) {
+  if ( ( !title ) && ( nl[3]?.length() > 0 ) ) {
+    println("Attempting lookup by eISSN: \"${nl[3]?.trim()}\"");
     title = db.titles.findOne(identifier:[type:'eISSN', value: nl[3]?.trim()])
   }
 

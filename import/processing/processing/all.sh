@@ -22,7 +22,7 @@ rm ../orgs_data/*BAD
 
 ./Consortium.groovy ../orgs_data/consortium.csv  >> cons_import_log
 
-
+rm ../st_datafiles/*BAD
 find ../st_datafiles -name "*.csv" -exec ./STData.groovy '{}' >> st_imp_log \;
 
 find ../license_data -name "*.zip" -exec ./LicenseData.groovy '{}' >> license_imp_log \;
