@@ -79,8 +79,8 @@
           dropboxID:   "20059881",
           url:         "https://kbplus.zendesk.com",
           tabID:       "feedback",
-          tabColor:    "black",
-          tabPosition: "Left"
+          tabColor:    "green",
+          tabPosition: "Right"
         });
       }
     </script>

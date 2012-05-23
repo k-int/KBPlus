@@ -8,6 +8,8 @@ class DataloadController {
 
   def update() {
 
+    log.debug("DataloadController::update");
+
     def mdb = mongoService.getMongo().getDB('kbplus_ds_reconciliation')
 
     // Orgs
@@ -96,7 +98,7 @@ class DataloadController {
 
     // Title instances
     mdb.titles.find().sort(lastmod:1).each { title ->
-      log.debug("update ${title}");
+      log.debug("update title ${title}");
       def t = TitleInstance.findByImpId(title._id.toString())
       if ( t == null ) {
         t = new TitleInstance(title:title.title, impId:title._id.toString(), ids:[])
@@ -171,7 +173,7 @@ class DataloadController {
     // Finally... tipps
     mdb.tipps.find().sort(lastmod:1).each { tipp ->
       try {
-        log.debug("update ${tipp}");
+        log.debug("update tipp ${tipp}");
         def title = TitleInstance.findByImpId(tipp.titleid.toString())
         def pkg = Package.findByImpId(tipp.pkgid.toString())
         def platform = Platform.findByImpId(tipp.platformid.toString())
@@ -276,7 +278,7 @@ class DataloadController {
 
     // Orgs
     mdb.subs.find().sort(lastmod:1).each { sub ->
-      log.debug("load sub[${subcount++}] ${sub}");
+      log.debug("load ST sub[${subcount++}] ${sub}");
 
       // Join together the subscription and the organisation
       def db_sub = Subscription.findByImpId(sub.sub.toString());
@@ -294,7 +296,7 @@ class DataloadController {
                                     type: RefdataValue.findByValue('Subscription Taken') )
 
       if ( new_subscription.save() ) {
-        log.debug("New subscription saved...");
+        log.debug("New subscriptionT saved...");
       }
       else {
         log.error("Problem saving new subscription, ${new_subscription.errors}");
@@ -373,7 +375,7 @@ class DataloadController {
       //  log.debug("Determine if ${ie} should be copied forward into the actual ST data");
       //}
 
-      log.debug("Done listing issue entitlements for ${db_sub.impId}");
+      log.debug("Done listing issue entitlements for ST:${db_sub.impId}");
     }
 
     log.debug("Processed ${subcount} subscriptions");
