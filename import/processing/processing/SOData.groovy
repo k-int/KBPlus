@@ -145,8 +145,6 @@ while ((nl = r.readNext()) != null) {
       else {
         println("*** Publisher is null - Linking to UNKNOWN PUBLISHER");
         inc('bad_null_publisher',stats);
-        bad=true
-        badreason="No Publisher: ${nl[13]}"
         publisher = lookupOrCreateOrg(name:'Unknown Publisher', db:db, stats:stats);
       }
   

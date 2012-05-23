@@ -135,8 +135,6 @@ while ((nl = r.readNext()) != null) {
       stats.added++
       if ( ! org.famId ) {
         println("Unable to locate node for ${nl[5]}");
-        badfile << "${nl[0]},${nl[1]},${nl[2]},${nl[3]},${nl[4]},${nl[5]},${nl[6]},${nl[7]},\"Unable to find ${nl[5]} in FAM file\"\n"
-        stats.bad++
       }
     }
     else {
