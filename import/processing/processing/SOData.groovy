@@ -187,7 +187,8 @@ while ((nl = r.readNext()) != null) {
         bad=true
         badreason="Cannot parse start date: ${nl[3]}"
       }
-      else {
+
+      // else {
   
         def host_platform = null;
         def host_platform_url = null;
@@ -250,7 +251,7 @@ while ((nl = r.readNext()) != null) {
           println("One of title-${title}, pkg-${pkg} or platform-${host_platform} are missing!!!");
           inc('missing_critical_data',stats);
         }
-      }
+      //}
     }
     else {
       println("Row is missing critical data, add to bad file");
