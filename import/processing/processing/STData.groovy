@@ -75,6 +75,8 @@ def new_sub_record = [
    lastmod:System.currentTimeMillis()
 ]
 
+println("Created new subscription record with ID ${new_sub_record._id}");
+
 db.subs.save(new_sub_record);
 
 int rownum = 0;
@@ -125,8 +127,8 @@ while ((nl = r.readNext()) != null) {
             tipp_id : tipp._id,
             org_id : sub_org._id,
             sub_id : sub._id,
-            stsy: st_start_year,
-            stey: st_end_year,
+            stsy: st_start_year[1],
+            stey: st_end_year[1],
             included: nl[0],
             date_first_issue_subscribed: nl[4],
             num_first_vol_subscribed: nl[5],
@@ -136,9 +138,11 @@ while ((nl = r.readNext()) != null) {
             num_last_issue_subscribed: nl[9],
             embargo: nl[10],
             core_title: nl[11],
-            lastmod:System.currentTimeMillis()
+            lastmod:System.currentTimeMillis(),
+            sourcefile:args[0]
           ]
           db.stTitle.save(new_st_record);
+          println("Saved new st record with id ${new_st_record._id}");
         }
         else {
           println("Located existing st record...");

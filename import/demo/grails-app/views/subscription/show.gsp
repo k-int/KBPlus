@@ -124,7 +124,7 @@
 						<dt><g:message code="subscription.packages.label" default="Packages" /></dt>
 						
 							<g:each in="${subscriptionInstance.packages}" var="p">
-							<dd><g:link controller="package" action="show" id="${p.id}">${p?.name()}</g:link></dd>
+							<dd><g:link controller="package" action="show" id="${p.pkg.id}">${p?.pkg?.name}</g:link></dd>
 							</g:each>
 						
 					</g:if>

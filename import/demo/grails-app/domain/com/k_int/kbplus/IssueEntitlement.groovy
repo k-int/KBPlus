@@ -14,7 +14,8 @@ class IssueEntitlement {
   String coverageNote
   boolean coreTitle = false
 
-  static belongsTo = [subscription: Subscription,tipp: TitleInstancePackagePlatform]
+  static belongsTo = [subscription: Subscription,
+                      tipp: TitleInstancePackagePlatform]
 
   static mapping = {
                 id column:'ie_id'
