@@ -121,6 +121,10 @@ while ((nl = r.readNext()) != null) {
                                            sub_id:sub._id)
 
         if ( ! new_st_record ) {
+
+          def parsed_start_date = parseDate(nl[4],possible_date_formats)
+          def parsed_end_date = parseDate(nl[7],possible_date_formats)
+
           new_st_record = [
             _id: new org.bson.types.ObjectId(),
             owner: new_sub_record._id,
@@ -130,10 +134,10 @@ while ((nl = r.readNext()) != null) {
             stsy: st_start_year[1],
             stey: st_end_year[1],
             included: nl[0],
-            date_first_issue_subscribed: nl[4],
+            date_first_issue_subscribed: parsed_start_date,
             num_first_vol_subscribed: nl[5],
             num_first_issue_subscribed: nl[6],
-            date_last_issue_subscribed: nl[7],
+            date_last_issue_subscribed: parsed_end_date,
             num_last_vol_subscribed: nl[8],
             num_last_issue_subscribed: nl[9],
             embargo: nl[10],
