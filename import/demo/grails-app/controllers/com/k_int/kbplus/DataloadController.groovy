@@ -249,7 +249,19 @@ class DataloadController {
                 tipp.ies.each { ie ->
                   log.debug("Checking issue entitlement ${ie.toString()}");
                   def sub = Subscription.findByImpId(ie.toString());
-                  IssueEntitlement dbie = IssueEntitlement.findBySubscriptionAndTipp(sub, dbtipp) ?: new IssueEntitlement(subscription:sub, tipp: dbtipp).save();
+                  IssueEntitlement dbie = IssueEntitlement.findBySubscriptionAndTipp(sub, dbtipp) ?: new IssueEntitlement(subscription:sub, 
+                                              status: RefdataValue.findByValue('UnknownEntitlement'),
+                                              tipp: dbtipp,
+                                              startDate:tipp.startDate,
+                                              startVolume:tipp.startVolume,
+                                              startIssue:tipp.startIssue,
+                                              endDate:tipp.endDate,
+                                              endVolume:tipp.endVolume,
+                                              endIssue:tipp.endIssue,
+                                              embargo:tipp.embargo,
+                                              coverageDepth:tipp.coverageDepth,
+                                              coverageNote:tipp.coverageNote
+                                              ).save();
                 }
               }
               else { 
