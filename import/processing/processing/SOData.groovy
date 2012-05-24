@@ -79,13 +79,20 @@ sub.start_date_str = so_agreement_term_start_yr_line[1]
 sub.end_date_str=so_agreement_term_end_yr_line[1]
 sub.start_date = parseDate(so_agreement_term_start_yr_line[1],possible_date_formats)
 sub.end_date = parseDate(so_agreement_term_end_yr_line[1],possible_date_formats)
-db.subscriptions.save(sub);
 
 def consortium = null;
-if ( ( so_consortium_line[1] != null ) && ( so_consortium_line[1].length() > 0 ) ) 
+if ( ( so_consortium_line[1] != null ) && ( so_consortium_line[1].length() > 0 ) )  {
   consortium = lookupOrCreateOrg(name:so_consortium_line[1], db:db, stats:stats);
+  sub.consortium = consortium._id;
+}
 
-def pkg = lookupOrCreatePackage(identifier:so_package_identifier_line[1], name:so_package_name_line[1], db:db, stats:stats)
+db.subscriptions.save(sub);
+
+def pkg = lookupOrCreatePackage(identifier:so_package_identifier_line[1], 
+                                provider:so_provider_line[1],
+                                name:so_package_name_line[1], 
+                                db:db, 
+                                stats:stats)
 
 pkg.subs.add(sub._id);
 
@@ -138,8 +145,6 @@ while ((nl = r.readNext()) != null) {
       else {
         println("*** Publisher is null - Linking to UNKNOWN PUBLISHER");
         inc('bad_null_publisher',stats);
-        bad=true
-        badreason="No Publisher: ${nl[13]}"
         publisher = lookupOrCreateOrg(name:'Unknown Publisher', db:db, stats:stats);
       }
   
@@ -182,7 +187,8 @@ while ((nl = r.readNext()) != null) {
         bad=true
         badreason="Cannot parse start date: ${nl[3]}"
       }
-      else {
+
+      // else {
   
         def host_platform = null;
         def host_platform_url = null;
@@ -245,7 +251,7 @@ while ((nl = r.readNext()) != null) {
           println("One of title-${title}, pkg-${pkg} or platform-${host_platform} are missing!!!");
           inc('missing_critical_data',stats);
         }
-      }
+      //}
     }
     else {
       println("Row is missing critical data, add to bad file");
@@ -306,6 +312,7 @@ def lookupOrCreateOrg(Map params = [:]) {
     org = [
       _id:new org.bson.types.ObjectId(),
       name:params.name,
+      normName:params.name?.trim().toLowerCase(),
       lastmod:System.currentTimeMillis()
     ]
     params.db.orgs.save(org)
@@ -317,13 +324,14 @@ def lookupOrCreateOrg(Map params = [:]) {
 
 def lookupOrCreatePackage(Map params=[:]) {
   // println("lookupOrCreatePackage(${params})");
-  def norm_identifier = params.identifier.replaceAll("\\W", "");
+  def compound_identifier = "${params.provider}:${params.identifier}"
+  def norm_identifier = compound_identifier.replaceAll("\\W", "");
 
   def pkg = params.db.pkgs.findOne(normIdentifier:norm_identifier)
   if ( pkg == null ) {
     pkg = [
       _id:new org.bson.types.ObjectId(),
-      identifier:params.identifier,
+      identifier:compound_identifier,
       normIdentifier:norm_identifier,
       name:params.name,
       lastmod:System.currentTimeMillis(),
@@ -357,17 +365,17 @@ def lookupOrCreateTitle(Map params=[:]) {
     inc('titles_without_identifiers',params.stats);
   }
 
-  if ( !title && params.title) { // If no match, and title present, try to match on title
-    println("Attempting to match on title string ${params.title}");
-    title = params.db.titles.findOne(title:params.title);
-    if ( title ) {
-      println("  -> Matched on title");
-      inc('titles_matched_by_title',params.stats);
-    }
-    else {
-      println("  -> No match on title");
-    }
-  }
+  // if ( !title && params.title) { // If no match, and title present, try to match on title
+  //   println("Attempting to match on title string ${params.title}");
+  //   title = params.db.titles.findOne(title:params.title);
+  //   if ( title ) {
+  //     println("  -> Matched on title");
+  //     inc('titles_matched_by_title',params.stats);
+  //   }
+  //   else {
+  //     println("  -> No match on title");
+  //   }
+  // }
 
   if (!title)  {
     // Unable to locate title with identifier given... Try other dedup matches on other props if needed

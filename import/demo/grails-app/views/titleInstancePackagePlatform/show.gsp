@@ -69,7 +69,7 @@
             <dt><g:message code="titleInstance.additionalPlatforms.label" default="Additional Platforms" /></dt>
               <g:each in="${titleInstancePackagePlatformInstance?.additionalPlatforms}" var="i">
               <dd>${i.rel} : <g:link controller="Platform" action="show" id="${i.platform.id}">${i.platform.name }</g:link>
-                <g:if test="${(i.titleUrl != null ) && ( i.titleUrl.trim().length() > 0)}">( i.titleUrl )</g:if>
+                <g:if test="${(i.titleUrl != null ) && ( i.titleUrl.trim().length() > 0)}">( <a href="${i.titleUrl}">${i.titleUrl}</a> )</g:if>
               </dd>
               </g:each>
             

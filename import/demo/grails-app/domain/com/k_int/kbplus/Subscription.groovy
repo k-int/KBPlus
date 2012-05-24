@@ -11,11 +11,17 @@ class Subscription {
   Date startDate
   Date endDate
   Subscription instanceOf
+  String noticePeriod
 
   License owner
 
-  static hasMany = [ packages : SubscriptionPackage, issueEntitlements: IssueEntitlement ]
-  static mappedBy = [ packages : 'subscription', issueEntitlements: 'subscription' ]
+  static transients = [ 'subscriber' ]
+  static hasMany = [ packages : SubscriptionPackage, 
+                     issueEntitlements: IssueEntitlement,
+                     orgRelations: OrgRole ]
+  static mappedBy = [ packages : 'subscription', 
+                      issueEntitlements: 'subscription',
+                      orgRelations: 'sub' ]
 
   static mapping = {
                 id column:'sub_id'
@@ -29,7 +35,7 @@ class Subscription {
          startDate column:'sub_start_date'
            endDate column:'sub_end_date'
         instanceOf column:'sub_parent_sub_fk'
-          
+      noticePeriod column:'sub_notice_period'
   }
 
   static constraints = {
@@ -40,5 +46,15 @@ class Subscription {
     startDate(nullable:true, blank:false)
     endDate(nullable:true, blank:false)
     instanceOf(nullable:true, blank:false)
+    noticePeriod(nullable:true, blank:false)
+  }
+
+  def getSubscriber() {
+    def result = null;
+    orgRelations.each { or ->
+      if ( or?.roleType?.value=='Subscriber' )
+        result = or.org;
+    }
+    result
   }
 }

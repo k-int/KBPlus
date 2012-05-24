@@ -8,6 +8,8 @@ class DataloadController {
 
   def update() {
 
+    log.debug("DataloadController::update");
+
     def mdb = mongoService.getMongo().getDB('kbplus_ds_reconciliation')
 
     // Orgs
@@ -74,6 +76,14 @@ class DataloadController {
                                                                                    startDate:sub.start_date,
                                                                                    endDate:sub.end_date,
                                                                                    type: RefdataValue.findByValue('Subscription Offered')).save(flush:true);
+
+      if ( sub.consortia ) {
+        def cons = Org.findByImpId(sub.consortia.toString());
+        if ( cons ) {
+          def sc_role = lookupOrCreateRefdataEntry('Organisational Role', 'Subscription Consortia');
+          def or = new OrgRole(org: cons, sub:dbsub, roleType:sc_role).save();
+        }
+      }
     }
 
     // Platforms
@@ -88,7 +98,7 @@ class DataloadController {
 
     // Title instances
     mdb.titles.find().sort(lastmod:1).each { title ->
-      log.debug("update ${title}");
+      log.debug("update title ${title}");
       def t = TitleInstance.findByImpId(title._id.toString())
       if ( t == null ) {
         t = new TitleInstance(title:title.title, impId:title._id.toString(), ids:[])
@@ -163,7 +173,7 @@ class DataloadController {
     // Finally... tipps
     mdb.tipps.find().sort(lastmod:1).each { tipp ->
       try {
-        log.debug("update ${tipp}");
+        log.debug("update tipp ${tipp}");
         def title = TitleInstance.findByImpId(tipp.titleid.toString())
         def pkg = Package.findByImpId(tipp.pkgid.toString())
         def platform = Platform.findByImpId(tipp.platformid.toString())
@@ -268,113 +278,228 @@ class DataloadController {
 
     // Orgs
     mdb.subs.find().sort(lastmod:1).each { sub ->
-      log.debug("load sub[${subcount++}] ${sub}");
+      log.debug("load ST sub[${subcount++}] ${sub}");
 
-      // Join together the subscription and the organisation
-      def db_sub = Subscription.findByImpId(sub.sub.toString());
-      def db_org = Org.findByImpId(sub.org.toString())
-
-      log.debug("Create a link between ${db_org} and ${db_sub}");
-
-      // create a new subscription - an instance of an actual org taking up a specific subscription
-      def new_subscription = new Subscription(
-                                    identifier: "${db_sub.identifier}:${sub.org.toString()}",
-                                    name: db_sub.name,
-                                    startDate: db_sub.startDate,
-                                    endDate: db_sub.endDate,
-                                    instanceOf: db_sub,
-                                    type: RefdataValue.findByValue('Subscription Taken') )
-
-      if ( new_subscription.save() ) {
-        log.debug("New subscription saved...");
-      }
-      else {
-        log.error("Problem saving new subscription, ${new_subscription.errors}");
-      }
-
-      // assert an org-role
-      def org_link = new OrgRole(org:db_org, 
-                                 sub: new_subscription, 
-                                 roleType: RefdataValue.findByValue('Subscriber'))
-
-      if ( org_link.save() ) {
-        log.debug("New org link saved...");
-      }
-      else {
-        log.error("Problem saving new org link, ${org_link.errors}");
-      }
-
-      // List all actual st_title records, and diff that against the default from the ST file
-      def sub_titles = mdb.stTitle.find(owner:sub._id)
-
-      if ( sub_titles.size() == 0 ) {
-        log.debug("No ST title data present, defaulting in from SO");
-        IssueEntitlement.findAllBySubscription(db_sub).each { ie ->
-          log.debug("Adding default entitlement based on entitlement ${ie.id}");
-          def new_ie = new IssueEntitlement(status: ie.status,
-                                            subscription: new_subscription,
-                                            tipp: ie.tipp,
-                                            startDate:ie.tipp.startDate,
-                                            startVolume:ie.tipp.startVolume,
-                                            startIssue:ie.tipp.startIssue,
-                                            endDate:ie.tipp.endDate,
-                                            endVolume:ie.tipp.endVolume,
-                                            endIssue:ie.tipp.endIssue,
-                                            embargo:ie.tipp.embargo,
-                                            coverageDepth:ie.tipp.coverageDepth,
-                                            coverageNote:ie.tipp.coverageNote).save();
+      try {
+  
+        // Join together the subscription and the organisation
+        def db_sub = Subscription.findByImpId(sub.sub.toString());
+        def db_org = Org.findByImpId(sub.org.toString())
+  
+        log.debug("Create a link between ${db_org} and ${db_sub}");
+  
+        // create a new subscription - an instance of an actual org taking up a specific subscription
+        def new_subscription = new Subscription(
+                                      identifier: "${db_sub.identifier}:${sub.org.toString()}",
+                                      impId:sub._id.toString(),
+                                      name: db_sub.name,
+                                      startDate: db_sub.startDate,
+                                      endDate: db_sub.endDate,
+                                      instanceOf: db_sub,
+                                      type: RefdataValue.findByValue('Subscription Taken') )
+  
+        if ( new_subscription.save() ) {
+          log.debug("New subscriptionT saved...");
         }
-      }
-      else {
-        log.debug("ST title data present, processing");
-        sub_titles.each { st ->
-          if ( st.included_st in [ 'Y', 'y', '', ' ', null ] ) {
-            log.debug("${st} is to be included");
-            TitleInstancePackagePlatform tipp = TitleInstancePackagePlatform.findByImpId(st.tipp_id.toString())
-            if ( tipp ) {
-              boolean is_core = false;
-              if ( st.core_title == 'y' || st.core_title == 'Y' )
-                is_core=true;
+        else {
+          log.error("Problem saving new subscription, ${new_subscription.errors}");
+        }
+  
+        // assert an org-role
+        def org_link = new OrgRole(org:db_org, 
+                                   sub: new_subscription, 
+                                   roleType: RefdataValue.findByValue('Subscriber'))
+  
 
-              def new_ie = new IssueEntitlement(status: RefdataValue.findByValue('UnknownEntitlement'),
-                                                subscription: new_subscription,
-                                                tipp: tipp,
-                                                startDate: nvl(st.date_first_issue_subscribed, tipp.startDate),
-                                                startVolume:nvl(st.num_first_vol_subscribed,tipp.startVolume),
-                                                startIssue:nvl(st.num_first_issue_subscribed,tipp.startIssue),
-                                                endDate:nvl(st.date_first_issue_subscribed,tipp.endDate),
-                                                endVolume:nvl(st.num_last_vol_subscibed,tipp.endVolume),
-                                                endIssue:nvl(st.num_last_issue_subscribed,tipp.endIssue),
-                                                embargo:nvl(st.embargo,tipp.embargo),
-                                                coverageDepth:tipp.coverageDepth,
-                                                coverageNote:tipp.coverageNote,
-                                                coreTitle: is_core).save();
+        new_subscription.save(flush:true);
+
+        if ( org_link.save() ) {
+          log.debug("New org link saved...");
+        }
+        else {
+          log.error("Problem saving new org link, ${org_link.errors}");
+        }
+  
+        // List all actual st_title records, and diff that against the default from the ST file
+        def sub_titles = mdb.stTitle.find(owner:sub._id)
+  
+        if ( !new_subscription.issueEntitlements ) {
+          new_subscription.issueEntitlements = []
+        }
+
+        if ( sub_titles.size() == 0 ) {
+          log.debug("No ST title data present, defaulting in from SO ${db_sub.id}");
+          int count = 0;
+          IssueEntitlement.findAllBySubscription(db_sub).each { ie ->
+            log.debug("Adding default entitlement based on entitlement ${ie.id}. Target tipp is ${ie.tipp.id} new sub-imp-id is ${}");
+            count++;
+            def new_ie = new IssueEntitlement(status: ie.status,
+                                              subscription: new_subscription,
+                                              tipp: ie.tipp,
+                                              startDate:ie.tipp.startDate,
+                                              startVolume:ie.tipp.startVolume,
+                                              startIssue:ie.tipp.startIssue,
+                                              endDate:ie.tipp.endDate,
+                                              endVolume:ie.tipp.endVolume,
+                                              endIssue:ie.tipp.endIssue,
+                                              embargo:ie.tipp.embargo,
+                                              coverageDepth:ie.tipp.coverageDepth,
+                                              coverageNote:ie.tipp.coverageNote).save(flush:true)
+            // new_subscription.issueEntitlements.add(new_ie)
+          }
+          log.debug("Added ${count} issue entitlements from subscription ${db_sub.id}")
+        }
+        else {
+          log.debug("ST title data present, processing");
+          sub_titles.each { st ->
+            if ( st.included_st in [ 'Y', 'y', '', ' ', null ] ) {
+              log.debug("${st} is to be included");
+              TitleInstancePackagePlatform tipp = TitleInstancePackagePlatform.findByImpId(st.tipp_id.toString())
+              if ( tipp ) {
+                boolean is_core = false;
+                if ( st.core_title == 'y' || st.core_title == 'Y' )
+                  is_core=true;
+  
+                log.debug("Adding new entitlement for looked up tipp ${tipp.id}, is_core=${is_core}")
+
+                def new_ie = new IssueEntitlement(status: RefdataValue.findByValue('UnknownEntitlement'),
+                                                  subscription: new_subscription,
+                                                  tipp: tipp,
+                                                  startDate: nvl(st.date_first_issue_subscribed, tipp.startDate),
+                                                  startVolume:nvl(st.num_first_vol_subscribed,tipp.startVolume),
+                                                  startIssue:nvl(st.num_first_issue_subscribed,tipp.startIssue),
+                                                  endDate:nvl(st.date_first_issue_subscribed,tipp.endDate),
+                                                  endVolume:nvl(st.num_last_vol_subscibed,tipp.endVolume),
+                                                  endIssue:nvl(st.num_last_issue_subscribed,tipp.endIssue),
+                                                  embargo:nvl(st.embargo,tipp.embargo),
+                                                  coverageDepth:tipp.coverageDepth,
+                                                  coverageNote:tipp.coverageNote,
+                                                  coreTitle: is_core)
+                if ( !new_ie.save() ) {
+                  new_ie.errors.each { e ->
+                    log.error("Problem saving ie ${e}")
+                  }
+                }
+                // new_subscription.issueEntitlements.add(new_ie)
+              }
+              else {
+                log.error("Unable to locate TIPP instance for ${st.tipp_id.toString()}");
+              }
+              log.debug("Done st...")
             }
             else {
-              log.error("Unable to locate TIPP instance for ${st.tipp_id.toString()}");
+              log.debug("omit ${st}");
             }
           }
-          else {
-            log.debug("omit ${st}");
-          }
         }
+
+        // new_subscription.save(flush:true)
+
+  
+        // Iterate all issue entitlements that appear as a part of this SO
+        //IssueEntitlement.findAllBySubscription(db_sub).each { ie ->
+        //  log.debug("Determine if ${ie} should be copied forward into the actual ST data");
+        //}
+  
+        log.debug("Done listing issue entitlements for ST:${db_sub.impId}");
       }
-
-      // Iterate all issue entitlements that appear as a part of this SO
-      //IssueEntitlement.findAllBySubscription(db_sub).each { ie ->
-      //  log.debug("Determine if ${ie} should be copied forward into the actual ST data");
-      //}
-
-      log.debug("Done listing issue entitlements for ${db_sub.impId}");
+      catch ( Exception e ) {
+        log.error("Problem",e)
+        e.printStackTrace();
+      }
+      finally {
+        log.debug("Completed sub processing for ${sub}")
+      }
     }
 
     log.debug("Processed ${subcount} subscriptions");
     redirect(controller:'home')
   }
 
+  def reloadLicenses() {
+    log.debug("reloadLicenses()");
+    def mdb = mongoService.getMongo().getDB('kbplus_ds_reconciliation')
+    int subcount = 0
+
+    // Licenses
+    mdb.license.find().sort(lastmod:1).each { lic ->
+      log.debug("load ${lic}");
+      def licensor_org = null;
+      def licensee_org = null;
+
+      if ( lic.licensor )
+        licensor_org = Org.findByImpId(lic.licensor.toString())
+
+      if ( lic.licensee )
+        licensee_org = Org.findByImpId(lic.licensee.toString())
+
+      License l = new License (
+                               reference:lic.license_reference,
+                               concurrentUsers:lic.concurrent_users,
+                               remoteAccess:lic.remote_access,
+                               walkinAccess:lic.walkin_access,
+                               multisiteAccess:lic.multisite_access,
+                               partnersAccess:lic.partners_access,
+                               alumniAccess:lic.alumni_access,
+                               ill:lic.ill,
+                               coursepack:lic.coursepack,
+                               vle:lic.vle,
+                               enterprise:lic.enterprise,
+                               pca:lic.pca,
+                               noticePeriod:lic.notice_period,
+                               licenseUrl:lic.license_url,
+                               licensorRef:lic.licensor_ref,
+                               licenseeRef:lic.licensee_ref,
+                               licenseType:lic.license_type,
+                               licenseStatus:lic.license_status,
+                               lastmod:lic.lastmod).save();
+
+      if ( licensor_org )
+        assertOrgLicenseLink(licensor_org, l, lookupOrCreateRefdataEntry('Organisational Role', 'Licensor'));
+
+      if ( licensee_org )
+        assertOrgLicenseLink(licensee_org, l, lookupOrCreateRefdataEntry('Organisational Role', 'Licensee'));
+
+      lic.subscriptions?.each() { ls ->
+        log.debug("Process license subscription ${ls}");
+        def sub = Subscription.findByImpId(ls.toString());
+        if ( sub ) {
+          sub.owner = l
+          sub.noticePeriod = lic.notice_period
+          sub.save();
+          log.debug("Updated license information");
+        }
+        else {
+          log.error("Unable to locate subscription with impid ${ls} in db");
+        }
+      }
+
+      possibleNote(lic.concurrent_users_note,'ConcurrentUsageNote',l);
+      possibleNote(lic.remote_access_note,'RemoteAccessNote',l);
+      possibleNote(lic.walkin_access_note,'WalkinAccessNote',l);
+      possibleNote(lic.multisite_access_note,'MultisiteAccessNote',l);
+      possibleNote(lic.partners_access_note,'PartnersAccessNote',l);
+      possibleNote(lic.alumni_access_note,'AlumniAccessNote',l);
+      possibleNote(lic.ill_note,'ILLNote',l);
+      possibleNote(lic.coursepack_note,'CoursepackNote',l);
+      possibleNote(lic.vle_note,'VLENote',l);
+      possibleNote(lic.enterprise_note,'EnterpriseNote',l);
+      possibleNote(lic.pca_note,'PCANote',l);
+
+    }
+    redirect(controller:'home')
+  }
+
+  def possibleNote(content, type, license) {
+    if ( content && content.toString().length() > 0 ) {
+      def doc_content = new Doc(content:content.toString()).save();
+      def doc_context = new DocContext(license:license,owner:doc_content,doctype:lookupOrCreateRefdataEntry('Document Type',type)).save();
+    }
+  }
+
   def nvl(val,defval) {
     def result = defval
-    if ( val && val.toString().trim().length() > 0 )
+    if ( ( val ) && ( val.toString().trim().length() > 0 ) )
       result = val
 
     result
@@ -418,6 +543,19 @@ class DataloadController {
         porg.links.add(link)
       porg.save();
     }
+  }
+
+  def assertOrgLicenseLink(porg, plic, prole) {
+    def link = OrgRole.find{ lic==plic && org==porg && roleType==prole }
+    if ( ! link ) {
+      link = new OrgRole(lic:plic, org:porg, roleType:prole);
+      if ( !porg.links )
+        porg.links = [link]
+      else
+        porg.links.add(link)
+      porg.save();
+    }
 
   }
+
 }

@@ -75,6 +75,8 @@ def new_sub_record = [
    lastmod:System.currentTimeMillis()
 ]
 
+println("Created new subscription record with ID ${new_sub_record._id}");
+
 db.subs.save(new_sub_record);
 
 int rownum = 0;
@@ -86,12 +88,22 @@ while ((nl = r.readNext()) != null) {
   boolean bad = false;
   String badreason = null;
   boolean has_data = false
-
+ 
   // included_st, publication_title, print_identifier, online_identifier, date_first_issue_subscribed, num_first_vol, num_first_iss, last_vo, last_iss
   // embargo, core_title
 
   // Lookup title based on print_identifier, target_identifiers ['ISSN'] = print_identifier
-  def title = db.titles.findOne(identifier:[type:'ISSN', value: nl[2]])
+  def title = null;
+  if ( nl[2]?.length() > 0 ) {
+    println("Attempting lookup by ISSN: \"${nl[2]?.trim()}\"");
+    title = db.titles.findOne(identifier:[type:'ISSN', value: nl[2]?.trim()])
+  }
+
+  if ( ( !title ) && ( nl[3]?.length() > 0 ) ) {
+    println("Attempting lookup by eISSN: \"${nl[3]?.trim()}\"");
+    title = db.titles.findOne(identifier:[type:'eISSN', value: nl[3]?.trim()])
+  }
+
   if ( title) {
     println("Matched title ${title}");
     inc('titles_matched',stats);
@@ -109,26 +121,32 @@ while ((nl = r.readNext()) != null) {
                                            sub_id:sub._id)
 
         if ( ! new_st_record ) {
+
+          def parsed_start_date = parseDate(nl[4],possible_date_formats)
+          def parsed_end_date = parseDate(nl[7],possible_date_formats)
+
           new_st_record = [
             _id: new org.bson.types.ObjectId(),
             owner: new_sub_record._id,
             tipp_id : tipp._id,
             org_id : sub_org._id,
             sub_id : sub._id,
-            stsy: st_start_year,
-            stey: st_end_year,
+            stsy: st_start_year[1],
+            stey: st_end_year[1],
             included: nl[0],
-            date_first_issue_subscribed: nl[4],
+            date_first_issue_subscribed: parsed_start_date,
             num_first_vol_subscribed: nl[5],
             num_first_issue_subscribed: nl[6],
-            date_last_issue_subscribed: nl[7],
+            date_last_issue_subscribed: parsed_end_date,
             num_last_vol_subscribed: nl[8],
             num_last_issue_subscribed: nl[9],
             embargo: nl[10],
             core_title: nl[11],
-            lastmod:System.currentTimeMillis()
+            lastmod:System.currentTimeMillis(),
+            sourcefile:args[0]
           ]
           db.stTitle.save(new_st_record);
+          println("Saved new st record with id ${new_st_record._id}");
         }
         else {
           println("Located existing st record...");
@@ -146,11 +164,11 @@ while ((nl = r.readNext()) != null) {
     }
   }
   else {
-    println("Failed to match title with ISSN \"${nl[2]}\"");
+    println("Failed to match title with ISSN \"${nl[2]}\" or eISSN \"${nl[3]}\"");
     inc('titles_unmatched',stats);
     bad = true
     st_bad++;
-    badreason="Unable to locate ISSN for title \"${nl[2]}\"";
+    badreason="Unable to locate title for ISSN \"${nl[2]}\"  or eISSN \"${nl[3]}\"";
   }
 
   if ( bad ) {
@@ -205,154 +223,6 @@ def present(v) {
     return true
 
   return false
-}
-
-def lookupOrCreateOrg(Map params = [:]) {
-  // println("lookupOrCreateOrg(${params})");
-  def org = params.db.orgs.findOne(name:params.name)
-  if ( org == null ) {
-    org = [
-      _id:new org.bson.types.ObjectId(),
-      name:params.name,
-      lastmod:System.currentTimeMillis()
-    ]
-    params.db.orgs.save(org)
-    inc('orgs_created',params.stats);
-  }
-  
-  org
-}
-
-def lookupOrCreatePackage(Map params=[:]) {
-  // println("lookupOrCreatePackage(${params})");
-  def norm_identifier = params.identifier.replaceAll("\\W", "");
-
-  def pkg = params.db.pkgs.findOne(normIdentifier:norm_identifier)
-  if ( pkg == null ) {
-    pkg = [
-      _id:new org.bson.types.ObjectId(),
-      identifier:params.identifier,
-      normIdentifier:norm_identifier,
-      name:params.name,
-      lastmod:System.currentTimeMillis(),
-      subs:[]
-    ]
-    params.db.pkgs.save(pkg)
-    inc('pkgs_created',params.stats);
-  }
-
-  pkg
-}
-
-def lookupOrCreateTitle(Map params=[:]) {
-  // println("lookupOrCreateTitle(${params})");
-  // Old style: lookup by Title : def title = params.db.titles.findOne(title:params.title)
-  def title = null
-  if ( ( params.identifier ) && ( params.identifier.size() > 0 ) ) { // Try to match on identifier if present
-    // Loop through all the available identifers and see if any match.. Repeat until a match is found.
-    for ( int i=0; ( ( !title ) && ( i < params.identifier.size() ) ); i++ ) {
-      // println("Attempting match.. ${params.identifier[i].type} ${params.identifier[i].value}");
-      title = params.db.titles.findOne(identifier:[type:params.identifier[i].type, value: params.identifier[i].value])
-    }
-    if ( title ) {
-      inc('titles_matched_by_identifier',params.stats);
-    }
-    else {
-      // println("Unable to match on any of ${params.identifier}");
-    }
-  }
-  else {
-    inc('titles_without_identifiers',params.stats);
-  }
-
-  if ( !title && params.title) { // If no match, and title present, try to match on title
-    println("Attempting to match on title string ${params.title}");
-    title = params.db.titles.findOne(title:params.title);
-    if ( title ) {
-      println("  -> Matched on title");
-      inc('titles_matched_by_title',params.stats);
-    }
-    else {
-      println("  -> No match on title");
-    }
-  }
-
-  if (!title)  {
-    // Unable to locate title with identifier given... Try other dedup matches on other props if needed
-    println("Create New title : ${params.title}, title=${title}, publisher=${params.publisher}");
-
-    try {
-      title = [
-        _id:new org.bson.types.ObjectId(),
-        title:params.title,
-        identifier:params.identifier,    // identifier is a list, catering for many different values
-        publisher:params.publisher._id,
-        lastmod:System.currentTimeMillis()
-      ]
-
-      params.db.titles.save(title)
-      inc('titles_created',params.stats);
-    }
-    catch ( Exception e ) {
-      e.printStackTrace()
-      println("Problem creating new title ${title} for t:${params.title} (id:${params.identifier}): ${e.message}");
-    }
-  }
-
-  title
-}
-
-def lookupOrCreatePlatform(Map params=[:]) {
-  // println("lookupOrCreatePlatform(${params})");
-  def platform = null;
-
-  String normname = params.name.trim().toLowerCase();
-
-  platform = params.db.platforms.findOne(normname:normname)
-
-  if ( !platform ) {
-    platform = [
-      _id:new org.bson.types.ObjectId(),
-      name:params.name,
-      normname:normname,
-      provenance:params.prov,
-      type:params.type,
-      lastmod:System.currentTimeMillis()
-    ]
-    params.db.platforms.save(platform)
-    inc('platforms_created',params.stats);
-
-  }
-
-  platform;
-}
-
-def lookupOrCreateTipp(Map params=[:]) {
-  def tipp = null;
-
-  tipp = params.db.tipps.findOne(titleid:params.titleid, pkgid:params.pkgid, platformid:params.platformid)
-
-  if ( !tipp ) {
-    tipp = createTipp(params);
-  }
-
-  tipp
-}
-
-def createTipp(Map params=[:]) {
-  def tipp = null;
-  tipp = [
-    _id:new org.bson.types.ObjectId(),
-    titleid:params.titleid,
-    pkgid:params.pkgid,
-    platformid:params.platformid,
-    lastmod:System.currentTimeMillis(),
-    ies:[]
-  ]
-  params.db.tipps.save(tipp)
-  inc('tipp_created',params.stats);
-
-  tipp
 }
 
 def inc(countername, statsmap) {

@@ -42,6 +42,16 @@
 
 				<dl>
 				
+					<g:if test="${subscriptionInstance?.name}">
+						<dt><g:message code="subscription.name.label" default="Subscription Name" /></dt>
+						
+							<dd>${subscriptionInstance?.name}</dd>
+						
+					</g:if>
+
+                                        <dt>Subscription Type</dt>                      
+                                        <dd><g:if test="${subscriptionInstance.instanceOf}">Subscription Taken</g:if><g:else>Subscription Offered</g:else></dd>
+
 					<g:if test="${subscriptionInstance?.status}">
 						<dt><g:message code="subscription.status.label" default="Status" /></dt>
 						
@@ -57,11 +67,13 @@
 					</g:if>
 				
 					<g:if test="${subscriptionInstance?.owner}">
-						<dt><g:message code="subscription.owner.label" default="Owner" /></dt>
+						<dt><g:message code="subscription.owner.label" default="License" /></dt>
 						
 							<dd><g:link controller="license" action="show" id="${subscriptionInstance?.owner?.id}">${subscriptionInstance?.owner?.encodeAsHTML()}</g:link></dd>
 						
 					</g:if>
+
+
 				
 					<g:if test="${subscriptionInstance?.impId}">
 						<dt><g:message code="subscription.impId.label" default="Imp Id" /></dt>
@@ -70,19 +82,14 @@
 						
 					</g:if>
 				
-					<g:if test="${subscriptionInstance?.startDate}">
-						<dt><g:message code="subscription.startDate.label" default="Start Date" /></dt>
-						
-							<dd><g:formatDate date="${subscriptionInstance?.startDate}" /></dd>
-						
-					</g:if>
-				
+				<!--
 					<g:if test="${subscriptionInstance?.endDate}">
 						<dt><g:message code="subscription.endDate.label" default="End Date" /></dt>
 						
 							<dd><g:formatDate date="${subscriptionInstance?.endDate}" /></dd>
 						
 					</g:if>
+                                -->
 				
 					<g:if test="${subscriptionInstance?.instanceOf}">
 						<dt><g:message code="subscription.instanceOf.label" default="Instance Of" /></dt>
@@ -104,14 +111,40 @@
 							<dd><g:fieldValue bean="${subscriptionInstance}" field="name"/></dd>
 						
 					</g:if>
+
+                                        <g:if test="${subscriptionInstance?.noticePeriod}">
+                                                <dt><g:message code="subscription.noticePeriod.label" default="Notice Period" /></dt>
+
+                                                        <dd><g:fieldValue bean="${subscriptionInstance}" field="noticePeriod"/></dd>
+
+                                        </g:if>
+
 				
 					<g:if test="${subscriptionInstance?.packages}">
 						<dt><g:message code="subscription.packages.label" default="Packages" /></dt>
 						
 							<g:each in="${subscriptionInstance.packages}" var="p">
-							<dd><g:link controller="subscriptionPackage" action="show" id="${p.id}">${p?.encodeAsHTML()}</g:link></dd>
+							<dd><g:link controller="package" action="show" id="${p.pkg.id}">${p?.pkg?.name}</g:link></dd>
 							</g:each>
 						
+					</g:if>
+
+					<g:if test="${subscriptionInstance?.orgRelations}">
+                                        <dt>Relations</td>
+                                        <dd>
+                                          <table border="1" cellpadding="5" cellspacing="5">
+                                            <tr>
+                                              <th>Relation</th>
+                                              <th>To Org</th>
+                                            </tr>
+  				            <g:each in="${subscriptionInstance.orgRelations}" var="or">
+                                              <tr>
+					        <td>${or.roleType.value}</td>
+                                                <td><g:link controller="org" action="show" id="${or.org.id}">${or.org.name}</g:link></td>
+                                              </tr>
+ 					    </g:each>
+                                          </table>
+                                        </dd>
 					</g:if>
 
 					<g:if test="${subscriptionInstance?.issueEntitlements}">
@@ -136,7 +169,6 @@
                                                 <td>${ie.endDate}</td>
                                                 <td>${ie.endVolume}</td>
                                                 <td>${ie.endIssue}</td>
-                                                <td><g:link controller="issueEntitlement" action="show" id="${ie.id}">Show</g:link></td>
                                               </tr>
  					    </g:each>
                                           </table>

@@ -6,6 +6,15 @@
 # We join to package for package details
 # We join to org_role for org name where the role is content provider
 
+
+select sub.*, pkg_name
+from subscription sub
+      join refdata_value on ( rdv_value = 'Subscription Offered' and rdv_id = sub.sub_type_rv_fk )
+      join subscription_package sp on ( sub.sub_id = sp.sp_sub_fk )
+        join package p on ( sp.sp_pkg_fk = p.pkg_id )
+
+## Sub offered v2
+
 # Building query up.. 1. Join to package and vendor
 select pkg_name
 from title_instance_package_platform tipp
