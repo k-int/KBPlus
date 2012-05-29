@@ -6,6 +6,7 @@ class TitleInstance {
   String impId
   RefdataValue status
   RefdataValue type
+  Long lastModified = System.currentTimeMillis();
 
   static mappedBy = [tipps: 'title', ids: 'ti']
   static hasMany = [tipps: TitleInstancePackagePlatform, ids: IdentifierOccurrence]

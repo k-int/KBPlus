@@ -7,6 +7,7 @@ class Org {
   String address
   String ipRange
   String sector
+  Long lastModified = System.currentTimeMillis();
 
   static mappedBy = [ids: 'org', 
                      outgoingCombos: 'fromOrg', 

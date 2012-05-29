@@ -15,8 +15,8 @@ class IndexUpdateJob {
     def start_time = System.currentTimeMillis();
     def mdb = mongoService.getMongo().getDB('kbplus_ds_reconciliation')
 
-    updateOrgs(mdb, 'com.k_int.kbplus.Org');
-    updateOrgs(mdb, 'com.k_int.kbplus.TitleInstance');
+    updateOrgs(mdb, com.k_int.kbplus.Org.class);
+    updateOrgs(mdb, com.k_int.kbplus.TitleInstance.class);
 
     // execute task
     log.debug("Execute IndexUpdateJob starting at ${new Date()}");
@@ -26,23 +26,27 @@ class IndexUpdateJob {
   }
 
   def updateOrgs(mdb, domain) {
-    def timestamp_record = mdb.timestamps.findOne(domain:domain)
+
+    def timestamp_record = mdb.timestamps.findOne(domain:domain.name)
     def max_ts_so_far = 0;
 
     if ( !timestamp_record ) {
       timestamp_record = [
         _id:new org.bson.types.ObjectId(),
-        domain:domain,
+        domain:domain.name,
         latest:0
       ]
       mdb.timestamps.save(timestamp_record);
     }
 
-
-    // Find all records with timestamp > timestamp_record.latest
+    // Class clazz = grailsApplication.getDomainClass(domain)
+    def qry = domain.findAllByLastModifiedGreaterThan(timestamp_record.latest)
+    qry.each { i ->
+      log.debug(i);
+      max_ts_so_far = i.lastModified
+    }
 
     timestamp_record.latest = max_ts_so_far
     mdb.timestamps.save(timestamp_record);
   }
-
 }
