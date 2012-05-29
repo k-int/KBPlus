@@ -37,7 +37,7 @@ grails.project.dependency.resolution = {
         runtime 'mysql:mysql-connector-java:5.1.19'
         runtime 'com.gmongo:gmongo:0.9.2'
         runtime 'org.elasticsearch:elasticsearch-lang-groovy:1.1.0'
-        runtime 'org.elasticsearch:elasticsearch:0.19.0.RC3'
+        runtime 'org.elasticsearch:elasticsearch:0.19.4'
     }
 
     plugins {
