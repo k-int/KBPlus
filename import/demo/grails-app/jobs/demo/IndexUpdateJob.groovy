@@ -32,6 +32,7 @@ class IndexUpdateJob {
       def result = [:]
       result._id = ti.impId
       result.title = ti.title
+      result
     }
 
     def elapsed = System.currentTimeMillis() - start_time;
