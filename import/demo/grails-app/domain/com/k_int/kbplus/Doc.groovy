@@ -6,6 +6,9 @@ class Doc {
   RefdataValue type
   Alert alert
   String content 
+  Date dateCreated
+  Date lastUpdated
+
 
   static mapping = {
                 id column:'doc_id'

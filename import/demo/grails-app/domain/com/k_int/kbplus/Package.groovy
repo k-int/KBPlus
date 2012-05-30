@@ -9,6 +9,9 @@ class Package {
   RefdataValue packageStatus
   Org contentProvider
   Platform nominalPlatform
+  Date dateCreated
+  Date lastUpdated
+
 
   static hasMany = [tipps: TitleInstancePackagePlatform, 
                     orgs: OrgRole, 

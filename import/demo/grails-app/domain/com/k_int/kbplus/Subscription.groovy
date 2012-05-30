@@ -12,6 +12,9 @@ class Subscription {
   Date endDate
   Subscription instanceOf
   String noticePeriod
+  Date dateCreated
+  Date lastUpdated
+
 
   License owner
 
