@@ -7,7 +7,7 @@ class IndexUpdateJob {
   def mongoService 
 
   static triggers = {
-    cron name:'cronTrigger', startDelay:10000, cronExpression: "0 0/2 * * * ?"
+    cron name:'cronTrigger', startDelay:20000, cronExpression: "0 0/5 * * * ?"
   }
 
   def execute() {
@@ -40,13 +40,14 @@ class IndexUpdateJob {
     }
 
     // Class clazz = grailsApplication.getDomainClass(domain)
-    def qry = domain.findAllByLastModifiedGreaterThan(timestamp_record.latest)
+    Date from = new Date(timestamp_record.latest);
+    def qry = domain.findAllByLastUpdatedGreaterThan(from);
     qry.each { i ->
       log.debug(i);
-      max_ts_so_far = i.lastModified
+      max_ts_so_far = i.lastUpdated.getTime() ?: 0
     }
 
     timestamp_record.latest = max_ts_so_far
-    mdb.timestamps.save(timestamp_record);
+    // mdb.timestamps.save(timestamp_record);
   }
 }
