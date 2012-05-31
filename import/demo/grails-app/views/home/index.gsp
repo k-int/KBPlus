@@ -82,7 +82,9 @@
           </g:if>
 
           <div class="paginateButtons" style="text-align:center">
-            <span><g:paginate controller="home" action="index" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${hits.totalHits}" /></span>
+            <g:if test="${hits}" >
+              <span><g:paginate controller="home" action="index" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${hits.totalHits}" /></span>
+            </g:if>
           </div>
         </div>
       </div>

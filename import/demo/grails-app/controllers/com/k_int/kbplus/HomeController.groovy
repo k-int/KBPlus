@@ -48,9 +48,10 @@ class HomeController {
           }
         }
 
-        result.hits = search.response.hits
-        result.resultsTotal = search.response.hits.totalHits
-
+        if ( search?.response ) {
+          result.hits = search.response.hits
+          result.resultsTotal = search.response.hits.totalHits
+        }
       }
       else {
         log.debug("No query.. Show search page")
