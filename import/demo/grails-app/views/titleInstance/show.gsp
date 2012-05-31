@@ -20,12 +20,14 @@
                 <g:message code="default.list.label" args="[entityName]" />
               </g:link>
             </li>
+            <sec:ifLoggedIn>
             <li>
               <g:link class="create" action="create">
                 <i class="icon-plus"></i>
                 <g:message code="default.create.label" args="[entityName]" />
               </g:link>
             </li>
+            </sec:ifLoggedIn>
           </ul>
         </div>
       </div>
