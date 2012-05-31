@@ -43,6 +43,7 @@ class IndexUpdateJob {
 
     def timestamp_record = mdb.timestamps.findOne(domain:domain.name)
     def max_ts_so_far = 0;
+    def count = 0;
 
     if ( !timestamp_record ) {
       timestamp_record = [
@@ -65,15 +66,17 @@ class IndexUpdateJob {
       // log.debug("Generated record ${idx_record}");
       def future = esclient.index {
         index "kbplus"
-        type "domain.name"
+        type domain.name
         id idx_record['_id']
         source idx_record
       }
+
+      count++
     }
 
     timestamp_record.latest = max_ts_so_far
     mdb.timestamps.save(timestamp_record);
 
-    log.debug("Completed processing on ${domain.name}");
+    log.debug("Completed processing on ${domain.name} - saved ${count} records");
   }
 }
