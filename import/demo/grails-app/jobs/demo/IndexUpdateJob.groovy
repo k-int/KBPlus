@@ -8,7 +8,8 @@ class IndexUpdateJob {
   def ESWrapperService
 
   static triggers = {
-    cron name:'cronTrigger', startDelay:20000, cronExpression: "0 0/5 * * * ?"
+    // Delay 20 seconds, run every 10 mins.
+    cron name:'cronTrigger', startDelay:20000, cronExpression: "0 0/10 * * * ?"
   }
 
   def execute() {
@@ -25,6 +26,7 @@ class IndexUpdateJob {
       result._id = org.impId
       result.name = org.name
       result.sector = org.sector
+      result.dbId = org.id
       result
     }
 
@@ -32,6 +34,7 @@ class IndexUpdateJob {
       def result = [:]
       result._id = ti.impId
       result.title = ti.title
+      result.dbId = ti.id
       result
     }
 
