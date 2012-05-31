@@ -7,6 +7,8 @@ class Org {
   String address
   String ipRange
   String sector
+  Date dateCreated
+  Date lastUpdated
 
   static mappedBy = [ids: 'org', 
                      outgoingCombos: 'fromOrg', 

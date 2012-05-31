@@ -38,7 +38,9 @@
             <span class="icon-bar"></span>
           </a>
           
-          <a class="brand" href="${createLink(uri: '/')}">KB+ Data Import Explorer</a>
+          <sec:ifLoggedIn>
+            <a class="brand" href="${createLink(uri: '/')}">KB+ Data Import Explorer</a>
+          </sec:ifLoggedIn>
 
           <div class="nav-collapse">
             <ul class="nav">              

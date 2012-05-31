@@ -10,6 +10,10 @@ use kbplus_ds_reconciliation
 db.dropDatabase();
 !!!
 
+# Clear down ES indexes
+curl -XDELETE 'http://localhost:9200/kbplus'
+
+
 ./PlatformData.groovy
 
 echo SO import

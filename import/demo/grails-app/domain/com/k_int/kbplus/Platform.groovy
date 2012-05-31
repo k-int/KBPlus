@@ -9,6 +9,9 @@ class Platform {
   String provenance
   RefdataValue type
   RefdataValue status
+  Date dateCreated
+  Date lastUpdated
+
 
   static mappedBy = [tipps: 'platform']
   static hasMany = [tipps: TitleInstancePackagePlatform]

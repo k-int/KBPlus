@@ -6,6 +6,8 @@ class TitleInstance {
   String impId
   RefdataValue status
   RefdataValue type
+  Date dateCreated
+  Date lastUpdated
 
   static mappedBy = [tipps: 'title', ids: 'ti']
   static hasMany = [tipps: TitleInstancePackagePlatform, ids: IdentifierOccurrence]
