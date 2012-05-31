@@ -11,46 +11,41 @@
         JISC KB+ data explorer. Use the links above to navigate the data items imported by the KB+ import process and validate the data.
       </p>
       <p>
-        Currently, you can review:
-
-        <ul class="nav">              
-          <li><g:link controller="package">Packages</g:link></li>
-          <li><g:link controller="org">Organisations</g:link></li>
-          <li><g:link controller="platform">Platforms</g:link></li>
-          <li><g:link controller="titleInstance">Title Instances</g:link></li>
-          <li><g:link controller="titleInstancePackagePlatform">Title Instance Package Platform Links</g:link></li>
-          <li><g:link controller="subscription">Subscriptions</g:link></li>
-          <li><g:link controller="license">Licenses</g:link></li>
-        </ul>
+        Browse using the categories above, or search over organisations and titles below.
       </p>
       <p>
 
-        <g:form action="index" method="get">
-          Query:<input type="text" name="q" value=""/><br/>
-          <input type="submit"/>
-        </g:form>
+        <div class="container">
+          <g:form action="index" method="get">
+            Search Text: <input type="text" class="search-query" placeholder="Search" name="q">
+          </g:form>
+        </div>
 
-        <g:if test="${hits}">
-          <div id="resultsarea">
-            <table>
-              <tr><th>#</th><th>Type</th><th>Title/Name</th></tr>
-              <g:each in="${hits}" var="hit">
-                <tr>
-                  <td></td>
-                  <td>
-                    <g:if test="1==2">
-                      Organisation
-                    </g:if> 
-                    <g:else>
-                    </g:else>
-                  </td>
-                  <td>${hit}</td>
-                </tr>
-              </g:each>
-            </table>
-          </div>
-        </g:if>
-
+        <div >
+          <g:if test="${hits}">
+            <div id="resultsarea">
+              <table cellpadding="5" cellspacing="5">
+                <tr><th>Type</th><th>Title/Name</th></tr>
+                <g:each in="${hits}" var="hit">
+                  <tr>
+                    <td>
+                      <g:if test="${hit.type=='com.k_int.kbplus.Org'}"><span class="label label-info">Organisation</span></g:if> 
+                      <g:else><span class="label label-info">Title Instance</span></g:else>
+                    </td>
+                    <td>
+                      <g:if test="${hit.type=='com.k_int.kbplus.Org'}">
+                        <g:link controller="org" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link>
+                      </g:if> 
+                      <g:else>
+                        <g:link controller="titleInstance" action="show" id="${hit.source.dbId}">${hit.source.title}</g:link>
+                      </g:else>
+                    </td>
+                  </tr>
+                </g:each>
+              </table>
+            </div>
+          </g:if>
+        </div>
       </p>
     </div>
   </body>

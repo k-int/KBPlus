@@ -26,6 +26,7 @@ class IndexUpdateJob {
       result._id = org.impId
       result.name = org.name
       result.sector = org.sector
+      result.dbId = org.id
       result
     }
 
@@ -33,6 +34,7 @@ class IndexUpdateJob {
       def result = [:]
       result._id = ti.impId
       result.title = ti.title
+      result.dbId = ti.id
       result
     }
 
@@ -66,7 +68,7 @@ class IndexUpdateJob {
       // log.debug("Generated record ${idx_record}");
       def future = esclient.index {
         index "kbplus"
-        type "domain.name"
+        type domain.name
         id idx_record['_id']
         source idx_record
       }
