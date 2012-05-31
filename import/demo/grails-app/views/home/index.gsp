@@ -65,7 +65,9 @@
                   <tr>
                     <td>
                       <g:if test="${hit.type=='com.k_int.kbplus.Org'}"><span class="label label-info">Organisation</span></g:if> 
-                      <g:else><span class="label label-info">Title Instance</span></g:else>
+                      <g:if test="${hit.type=='com.k_int.kbplus.TitleInstance'}"><span class="label label-info">Title Instance</span></g:if> 
+                      <g:if test="${hit.type=='com.k_int.kbplus.Package'}"><span class="label label-info">Package</span></g:if> 
+                      <g:if test="${hit.type=='com.k_int.kbplus.Platform'}"><span class="label label-info">Platform</span></g:if> 
                     </td>
                     <td>
                       <g:if test="${hit.type=='com.k_int.kbplus.Org'}">
