@@ -21,7 +21,7 @@ class IndexUpdateJob {
     org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
     org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
 
-    updateOrgs(mdb, esclient, com.k_int.kbplus.Org.class) { org ->
+    updateES(mdb, esclient, com.k_int.kbplus.Org.class) { org ->
       def result = [:]
       result._id = org.impId
       result.name = org.name
@@ -30,7 +30,7 @@ class IndexUpdateJob {
       result
     }
 
-    updateOrgs(mdb, esclient, com.k_int.kbplus.TitleInstance.class) { ti ->
+    updateES(mdb, esclient, com.k_int.kbplus.TitleInstance.class) { ti ->
       def result = [:]
       result._id = ti.impId
       result.title = ti.title
@@ -38,11 +38,27 @@ class IndexUpdateJob {
       result
     }
 
+    updateES(mdb, esclient, com.k_int.kbplus.Package.class) { pkg ->
+      def result = [:]
+      result._id = pkg.impId
+      result.name = pkg.name
+      result.dbId = pkg.id
+      result
+    }
+
+    updateES(mdb, esclient, com.k_int.kbplus.Platform.class) { pkg ->
+      def result = [:]
+      result._id = pkg.impId
+      result.name = pkg.name
+      result.dbId = pkg.id
+      result
+    }
+
     def elapsed = System.currentTimeMillis() - start_time;
     log.debug("IndexUpdateJob completed in ${elapsed}ms at ${new Date()}");
   }
 
-  def updateOrgs(mdb, esclient, domain, recgen_closure) {
+  def updateES(mdb, esclient, domain, recgen_closure) {
 
     def timestamp_record = mdb.timestamps.findOne(domain:domain.name)
     def max_ts_so_far = 0;

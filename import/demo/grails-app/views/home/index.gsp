@@ -71,9 +71,15 @@
                       <g:if test="${hit.type=='com.k_int.kbplus.Org'}">
                         <g:link controller="org" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link>
                       </g:if> 
-                      <g:else>
+                      <g:if test="${hit.type=='com.k_int.kbplus.TitleInstance'}">
                         <g:link controller="titleInstance" action="show" id="${hit.source.dbId}">${hit.source.title}</g:link>
-                      </g:else>
+                      </g:if>
+                      <g:if test="${hit.type=='com.k_int.kbplus.Package'}">
+                        <g:link controller="package" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link>
+                      </g:if>
+                      <g:if test="${hit.type=='com.k_int.kbplus.Platform'}">
+                        <g:link controller="platform" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link>
+                      </g:if>
                     </td>
                   </tr>
                 </g:each>
