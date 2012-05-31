@@ -8,7 +8,8 @@ class IndexUpdateJob {
   def ESWrapperService
 
   static triggers = {
-    cron name:'cronTrigger', startDelay:20000, cronExpression: "0 0/5 * * * ?"
+    // Delay 20 seconds, run every 10 mins.
+    cron name:'cronTrigger', startDelay:20000, cronExpression: "0 0/10 * * * ?"
   }
 
   def execute() {

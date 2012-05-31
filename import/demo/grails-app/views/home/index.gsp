@@ -23,6 +23,35 @@
           <li><g:link controller="license">Licenses</g:link></li>
         </ul>
       </p>
+      <p>
+
+        <g:form action="index" method="get">
+          Query:<input type="text" name="q" value=""/><br/>
+          <input type="submit"/>
+        </g:form>
+
+        <g:if test="${hits}">
+          <div id="resultsarea">
+            <table>
+              <tr><th>#</th><th>Type</th><th>Title/Name</th></tr>
+              <g:each in="${hits}" var="hit">
+                <tr>
+                  <td></td>
+                  <td>
+                    <g:if test="1==2">
+                      Organisation
+                    </g:if> 
+                    <g:else>
+                    </g:else>
+                  </td>
+                  <td>${hit}</td>
+                </tr>
+              </g:each>
+            </table>
+          </div>
+        </g:if>
+
+      </p>
     </div>
   </body>
 </html>
