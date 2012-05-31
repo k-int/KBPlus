@@ -45,7 +45,16 @@ class HomeController {
             query {
               query_string (query: query_str)
             }
+            facets {
+              type {
+                terms {
+                  field = 'rectype'
+                }
+              }
+            }
+
           }
+
         }
 
         if ( search?.response ) {

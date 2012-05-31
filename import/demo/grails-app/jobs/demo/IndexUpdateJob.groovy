@@ -27,6 +27,7 @@ class IndexUpdateJob {
       result.name = org.name
       result.sector = org.sector
       result.dbId = org.id
+      result.rectype = 'Organisation'
       result
     }
 
@@ -35,6 +36,7 @@ class IndexUpdateJob {
       result._id = ti.impId
       result.title = ti.title
       result.dbId = ti.id
+      result.rectype = 'Title'
       result
     }
 
@@ -43,6 +45,7 @@ class IndexUpdateJob {
       result._id = pkg.impId
       result.name = pkg.name
       result.dbId = pkg.id
+      result.rectype = 'Package'
       result
     }
 
@@ -51,6 +54,7 @@ class IndexUpdateJob {
       result._id = pkg.impId
       result.name = pkg.name
       result.dbId = pkg.id
+      result.rectype = 'Platform'
       result
     }
 
