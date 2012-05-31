@@ -95,6 +95,8 @@
 
         <g:form>
           <g:hiddenField name="id" value="${titleInstanceInstance?.id}" />
+          <sec:ifLoggedIn>
+
           <div class="form-actions">
             <g:link class="btn" action="edit" id="${titleInstanceInstance?.id}">
               <i class="icon-pencil"></i>
@@ -105,6 +107,7 @@
               <g:message code="default.button.delete.label" default="Delete" />
             </button>
           </div>
+          </sec:ifLoggedIn>
         </g:form>
 
       </div>
