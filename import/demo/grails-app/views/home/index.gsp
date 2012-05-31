@@ -3,6 +3,29 @@
   <head>
     <meta name="layout" content="bootstrap"/>
     <title>KB+ Data import explorer</title>
+
+    <style>
+.paginateButtons {
+    margin: 3px 0px 3px 0px;
+}
+
+.paginateButtons a {
+    padding: 2px 4px 2px 4px;
+    background-color: #A4A4A4;
+    border: 1px solid #EEEEEE;
+    text-decoration: none;
+    font-size: 10pt;
+    font-variant: small-caps;
+    color: #EEEEEE;
+}
+
+.paginateButtons a:hover {
+    text-decoration: underline;
+    background-color: #888888;
+    border: 1px solid #AA4444;
+    color: #FFFFFF;
+}
+    </style>
   </head>
 
   <body>
@@ -13,16 +36,28 @@
       <p>
         Browse using the categories above, or search over organisations and titles below.
       </p>
-      <p>
+      <div>
 
-        <div class="container">
+        <div class="container" style="text-align:center">
           <g:form action="index" method="get">
             Search Text: <input type="text" class="search-query" placeholder="Search" name="q">
           </g:form>
         </div>
 
-        <div >
-          <g:if test="${hits}">
+        <div>
+          <g:if test="${hits}" >
+            <div class="paginateButtons" style="text-align:center">
+              <g:if test="${params.int('offset')}">
+               Showing Results ${params.int('offset') + 1} - ${hits.totalHits < (params.int('max') + params.int('offset')) ? hits.totalHits : (params.int('max') + params.int('offset'))} of ${hits.totalHits}
+              </g:if>
+              <g:elseif test="${hits.totalHits && hits.totalHits > 0}">
+                Showing Results 1 - ${hits.totalHits < params.int('max') ? hits.totalHits : params.int('max')} of ${hits.totalHits}
+              </g:elseif>
+              <g:else>
+                Showing ${hits.totalHits} Results
+              </g:else>
+            </div>
+
             <div id="resultsarea">
               <table cellpadding="5" cellspacing="5">
                 <tr><th>Type</th><th>Title/Name</th></tr>
@@ -45,8 +80,12 @@
               </table>
             </div>
           </g:if>
+
+          <div class="paginateButtons" style="text-align:center">
+            <span><g:paginate controller="home" action="index" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${hits.totalHits}" /></span>
+          </div>
         </div>
-      </p>
+      </div>
     </div>
   </body>
 </html>
