@@ -60,6 +60,18 @@ class HomeController {
         if ( search?.response ) {
           result.hits = search.response.hits
           result.resultsTotal = search.response.hits.totalHits
+
+          // We pre-process the facet response to work around some translation issues in ES
+          if ( search.response.facets != null ) {
+            result.facets = [:]
+            search.response.facets.facets.each { facet ->
+              def facet_values = []
+              facet.value.entries.each { fe ->
+                facet_values.add([term: fe.term,display:fe.term,count:"${fe.count}"])
+              }
+              result.facets[facet.key] = facet_values
+            }
+          }
         }
       }
       else {
