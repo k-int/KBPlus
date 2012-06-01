@@ -20,12 +20,14 @@
                 <g:message code="default.list.label" args="[entityName]" />
               </g:link>
             </li>
+            <sec:ifLoggedIn>
             <li>
               <g:link class="create" action="create">
                 <i class="icon-plus"></i>
                 <g:message code="default.create.label" args="[entityName]" />
               </g:link>
             </li>
+            </sec:ifLoggedIn>
           </ul>
         </div>
       </div>
@@ -95,6 +97,8 @@
 
         <g:form>
           <g:hiddenField name="id" value="${titleInstanceInstance?.id}" />
+          <sec:ifLoggedIn>
+
           <div class="form-actions">
             <g:link class="btn" action="edit" id="${titleInstanceInstance?.id}">
               <i class="icon-pencil"></i>
@@ -105,6 +109,7 @@
               <g:message code="default.button.delete.label" default="Delete" />
             </button>
           </div>
+          </sec:ifLoggedIn>
         </g:form>
 
       </div>

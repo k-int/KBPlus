@@ -141,7 +141,9 @@
         </dl>
 
         <g:form>
+           <sec:ifLoggedIn>
           <g:hiddenField name="id" value="${titleInstancePackagePlatformInstance?.id}" />
+          
           <div class="form-actions">
             <g:link class="btn" action="edit" id="${titleInstancePackagePlatformInstance?.id}">
               <i class="icon-pencil"></i>
@@ -152,6 +154,7 @@
               <g:message code="default.button.delete.label" default="Delete" />
             </button>
           </div>
+           </sec:ifLoggedIn>
         </g:form>
 
       </div>

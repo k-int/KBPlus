@@ -44,49 +44,68 @@
           </g:form>
         </div>
 
-        <div>
-          <g:if test="${hits}" >
-            <div class="paginateButtons" style="text-align:center">
-              <g:if test="${params.int('offset')}">
-               Showing Results ${params.int('offset') + 1} - ${hits.totalHits < (params.int('max') + params.int('offset')) ? hits.totalHits : (params.int('max') + params.int('offset'))} of ${hits.totalHits}
-              </g:if>
-              <g:elseif test="${hits.totalHits && hits.totalHits > 0}">
-                Showing Results 1 - ${hits.totalHits < params.int('max') ? hits.totalHits : params.int('max')} of ${hits.totalHits}
-              </g:elseif>
-              <g:else>
-                Showing ${hits.totalHits} Results
-              </g:else>
-            </div>
+        <div class="row">
 
-            <div id="resultsarea">
-              <table cellpadding="5" cellspacing="5">
-                <tr><th>Type</th><th>Title/Name</th></tr>
-                <g:each in="${hits}" var="hit">
-                  <tr>
-                    <td>
-                      <g:if test="${hit.type=='com.k_int.kbplus.Org'}"><span class="label label-info">Organisation</span></g:if> 
-                      <g:else><span class="label label-info">Title Instance</span></g:else>
-                    </td>
-                    <td>
-                      <g:if test="${hit.type=='com.k_int.kbplus.Org'}">
-                        <g:link controller="org" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link>
-                      </g:if> 
-                      <g:else>
-                        <g:link controller="titleInstance" action="show" id="${hit.source.dbId}">${hit.source.title}</g:link>
-                      </g:else>
-                    </td>
-                  </tr>
-                </g:each>
-              </table>
-            </div>
-          </g:if>
-
-          <div class="paginateButtons" style="text-align:center">
-            <g:if test="${hits}" >
-              <span><g:paginate controller="home" action="index" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${hits.totalHits}" /></span>
-            </g:if>
+          <div class="span2">
+            Facets
           </div>
-        </div>
+
+          <div class="span8">
+            <g:if test="${hits}" >
+              <div class="paginateButtons" style="text-align:center">
+                <g:if test="${params.int('offset')}">
+                 Showing Results ${params.int('offset') + 1} - ${hits.totalHits < (params.int('max') + params.int('offset')) ? hits.totalHits : (params.int('max') + params.int('offset'))} of ${hits.totalHits}
+                </g:if>
+                <g:elseif test="${hits.totalHits && hits.totalHits > 0}">
+                  Showing Results 1 - ${hits.totalHits < params.int('max') ? hits.totalHits : params.int('max')} of ${hits.totalHits}
+                </g:elseif>
+                <g:else>
+                  Showing ${hits.totalHits} Results
+                </g:else>
+              </div>
+  
+              <div id="resultsarea">
+                <table cellpadding="5" cellspacing="5">
+                  <tr><th>Type</th><th>Title/Name</th></tr>
+                  <g:each in="${hits}" var="hit">
+                    <tr>
+                      <td>
+                        <g:if test="${hit.type=='com.k_int.kbplus.Org'}"><span class="label label-info">Organisation</span></g:if> 
+                        <g:if test="${hit.type=='com.k_int.kbplus.TitleInstance'}"><span class="label label-info">Title Instance</span></g:if> 
+                        <g:if test="${hit.type=='com.k_int.kbplus.Package'}"><span class="label label-info">Package</span></g:if> 
+                        <g:if test="${hit.type=='com.k_int.kbplus.Platform'}"><span class="label label-info">Platform</span></g:if> 
+                      </td>
+                      <td>
+                        <g:if test="${hit.type=='com.k_int.kbplus.Org'}">
+                          <g:link controller="org" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link>
+                        </g:if> 
+                        <g:if test="${hit.type=='com.k_int.kbplus.TitleInstance'}">
+                          <g:link controller="titleInstance" action="show" id="${hit.source.dbId}">${hit.source.title}</g:link>
+                        </g:if>
+                        <g:if test="${hit.type=='com.k_int.kbplus.Package'}">
+                          <g:link controller="package" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link>
+                        </g:if>
+                        <g:if test="${hit.type=='com.k_int.kbplus.Platform'}">
+                          <g:link controller="platform" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link>
+                        </g:if>
+                      </td>
+                    </tr>
+                  </g:each>
+                </table>
+              </div>
+            </g:if>
+  
+            <div class="paginateButtons" style="text-align:center">
+              <g:if test="${hits}" >
+                <span><g:paginate controller="home" action="index" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${hits.totalHits}" /></span>
+              </g:if>
+            </div>
+          </div>
+
+          <div class="span2">
+          </div>
+
+        </div><!-- end row-->
       </div>
     </div>
   </body>
