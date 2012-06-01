@@ -94,7 +94,7 @@ class HomeController {
             sw.write(params.q)
         }
         else{
-            sw.write("\"${params.q}\"")
+            sw.write(params.q)
         }
     else
       sw.write("*:*")
