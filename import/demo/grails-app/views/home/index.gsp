@@ -40,7 +40,7 @@
 
         <div class="container" style="text-align:center">
           <g:form action="index" method="get">
-            Search Text: <input type="text" class="search-query" placeholder="Search" name="q">
+            Search Text: <input type="text" class="search-query" placeholder="Search" name="q" value="${params.q}">
           </g:form>
         </div>
 
