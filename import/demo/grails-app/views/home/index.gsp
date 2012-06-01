@@ -47,7 +47,17 @@
         <div class="row">
 
           <div class="span2">
-            Facets
+            <ul>
+            <g:each in="${facets}" var="facet">
+              <li> ${facet.key}
+                <ul>
+                  <g:each in="${facet.value}" var="fe">
+                    <li>${fe.display} (${fe.count})</li>
+                  </g:each>
+                </ul>
+              </li>
+            </g:each>
+            </ul>
           </div>
 
           <div class="span8">

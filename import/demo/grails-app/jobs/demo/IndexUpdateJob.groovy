@@ -43,7 +43,7 @@ class IndexUpdateJob {
     updateES(mdb, esclient, com.k_int.kbplus.Package.class) { pkg ->
       def result = [:]
       result._id = pkg.impId
-      result.name = pkg.name
+      result.name = "${pkg.name} (${pkg.contentProvider?.name})"
       result.dbId = pkg.id
       result.rectype = 'Package'
       result
