@@ -11,6 +11,8 @@ import org.springframework.security.authentication.LockedException
 import org.springframework.security.core.context.SecurityContextHolder as SCH
 import org.springframework.security.web.WebAttributes
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
+
 
 class LoginController {
 
@@ -41,6 +43,7 @@ class LoginController {
    * Show the login page.
    */
   def auth = {
+    log.debug("LoginController::auth");
 
     def config = SpringSecurityUtils.securityConfig
 
@@ -49,8 +52,10 @@ class LoginController {
       return
     }
 
-                // redirect(url: "http://edina.ac.uk/Login/kbplus?context=${request.contextPath}")
-                redirect(controller:'ediauth', params:params)
+    log.debug("request url is ${request.requestURL} querystring: ${request.queryString}");
+
+    // redirect(url: "http://edina.ac.uk/Login/kbplus?context=${request.contextPath}")
+    redirect(controller:'ediauth', params:params)
 
     // String view = 'auth'
     String postUrl = "${request.contextPath}${config.apf.filterProcessesUrl}"
@@ -141,5 +146,12 @@ class LoginController {
 
   def ediauthResponse() {
     log.debug("ediauthResponse ${params}");
+
+    // Check that request comes from 127.0.0.1
+
+    def securityContext = SCH.context
+    // def principal = <whatever you use as principal>
+    // def credentials = <...>
+    securityContext.authentication = new PreAuthenticatedAuthenticationToken(principal, credentials) 
   }
 }
