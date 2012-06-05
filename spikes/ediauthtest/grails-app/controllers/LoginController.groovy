@@ -48,10 +48,12 @@ class LoginController {
 			return
 		}
 
-		String view = 'auth'
-		String postUrl = "${request.contextPath}${config.apf.filterProcessesUrl}"
-		render view: view, model: [postUrl: postUrl,
-		                           rememberMeParameter: config.rememberMe.parameter]
+                redirect(url: "http://edina.ac.uk/Login/kbplus?context=${request.contextPath}")
+
+		// String view = 'auth'
+		// String postUrl = "${request.contextPath}${config.apf.filterProcessesUrl}"
+		// render view: view, model: [postUrl: postUrl,
+		//                            rememberMeParameter: config.rememberMe.parameter]
 	}
 
 	/**
