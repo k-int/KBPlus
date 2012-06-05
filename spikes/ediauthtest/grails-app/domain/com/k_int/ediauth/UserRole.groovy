@@ -23,7 +23,7 @@ class UserRole implements Serializable {
 		builder.toHashCode()
 	}
 
-	static userrole get(long userId, long roleId) {
+	static UserRole get(long userId, long roleId) {
 		find 'from UserRole where user.id=:userId and role.id=:roleId',
 			[userId: userId, roleId: roleId]
 	}
