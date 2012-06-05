@@ -1,6 +1,15 @@
 package ediauthtest
 
+import grails.plugins.springsecurity.Secured
+
+
+
 class SecuredController {
 
-    def index() { }
+  def springSecurityService
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def index() { 
+    log.debug("secured::index()");
+  }
 }
