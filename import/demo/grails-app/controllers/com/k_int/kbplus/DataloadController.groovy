@@ -1,10 +1,19 @@
 package com.k_int.kbplus
 
 import com.k_int.kbplus.*
+import grails.plugins.springsecurity.Secured
+
+
 
 class DataloadController {
 
   def mongoService
+  def springSecurityService
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def index() {
+    log.debug("Secured index action on dataload controller accessed");
+  }
 
   def update() {
 
