@@ -14,7 +14,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.AbstractProcessingFilter;
 import org.springframework.security.web.savedrequest.*;
 
-
 class LoginController {
 
   /**
@@ -51,15 +50,17 @@ class LoginController {
       return
     }
 
-    // String view = 'auth'
-    // String postUrl = "${request.contextPath}${config.apf.filterProcessesUrl}"
-    // render view: view, model: [postUrl: postUrl,
-    //                            rememberMeParameter: config.rememberMe.parameter]
-
     SavedRequest savedRequest = (SavedRequest)session.getAttribute(AbstractProcessingFilter.SPRING_SECURITY_SAVED_REQUEST_KEY);
     String requestUrl = savedRequest?.getFullRequestUrl();
 
-    redirect(uri:"http://edina.ac.uk/cgi-bin/Login/kbplus_explorer-dev?context=${requestUrl}");
+    if ( grailsApplication.config.grails.localauth) {
+      String view = 'auth'
+      String postUrl = "${request.contextPath}${config.apf.filterProcessesUrl}"
+      render view: view, model: [postUrl: postUrl, rememberMeParameter: config.rememberMe.parameter]
+    }
+    else {
+      redirect(uri:"http://edina.ac.uk/cgi-bin/Login/kbplus_explorer-dev?context=${requestUrl}");
+    }
   }
 
   /**
