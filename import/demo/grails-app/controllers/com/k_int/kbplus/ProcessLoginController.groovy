@@ -48,6 +48,7 @@ class ProcessLoginController {
                                               accountLocked:false, 
                                               passwordExpired:false,
                                               instname:map.authInstitutionName,
+                                              shibbScope:map.shibbScope,
                                               email:map.mail).save(flush:true);
       }
     

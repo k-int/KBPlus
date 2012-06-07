@@ -9,6 +9,7 @@ class User {
         String instname
         String instcode
         String email
+        String shibbScope
 	boolean enabled
 	boolean accountExpired
 	boolean accountLocked
@@ -20,6 +21,7 @@ class User {
                 instname blank: true, nullable: true
                 instcode blank: true, nullable: true
                 email blank: true, nullable: true
+                shibbScope blank: true, nullable: true
 	}
 
 	static mapping = {

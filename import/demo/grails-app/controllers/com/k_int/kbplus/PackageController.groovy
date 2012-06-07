@@ -58,7 +58,7 @@ class PackageController {
       log.debug("Adding platforms");
       // Find all platforms
       packageInstance.tipps.each{ tipp ->
-        log.debug("Consider ${tipp.title.title}")
+        // log.debug("Consider ${tipp.title.title}")
         if ( !platforms.keySet().contains(tipp.platform.id) ) {
           platform_list.add(tipp.platform)
           platforms[tipp.platform.id] = [position:plat_count++, plat:tipp.platform]
