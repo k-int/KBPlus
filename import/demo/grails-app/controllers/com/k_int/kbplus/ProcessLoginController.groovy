@@ -13,6 +13,8 @@ import org.springframework.security.core.context.SecurityContextHolder as SCH
 import org.springframework.security.web.WebAttributes
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
+import org.springframework.security.web.authentication.AbstractProcessingFilter;
+import org.springframework.security.web.savedrequest.*;
 
 
 class ProcessLoginController {
@@ -51,7 +53,15 @@ class ProcessLoginController {
     // def credentials = <...>
     securityContext.authentication = new PreAuthenticatedAuthenticationToken(user, map)
 
+    def response
+    if ( ( map.ea_context ) && ( map.ea_context.trim().length() > 0 ) {
+      response=map.ea_context
+    }
+    else {
+      response='http://knowplusdev.edina.ac.uk:8080/kbplus/'
+    }
+
     // redirect(controller:'home');
-    render 'http://knowplusdev.edina.ac.uk:8080/kbplus/'
+    render response
   }
 }
