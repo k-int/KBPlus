@@ -7,7 +7,7 @@ class User {
 	String username
 	String password
         String instname
-        String inscode
+        String instcode
         String email
 	boolean enabled
 	boolean accountExpired

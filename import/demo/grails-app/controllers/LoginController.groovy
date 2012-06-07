@@ -16,6 +16,8 @@ import org.springframework.security.web.savedrequest.*;
 
 class LoginController {
 
+  def grailsAppliation
+
   /**
    * Dependency injection for the authenticationTrustResolver.
    */
@@ -50,10 +52,10 @@ class LoginController {
       return
     }
 
-    SavedRequest savedRequest = (SavedRequest)session.getAttribute(AbstractProcessingFilter.SPRING_SECURITY_SAVED_REQUEST_KEY);
-    String requestUrl = savedRequest?.getFullRequestUrl();
+    SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
+    String requestUrl = savedRequest?.getRequestURL();
 
-    if ( grailsApplication.config.grails.localauth) {
+    if ( grailsApplication.config.localauth ) {
       String view = 'auth'
       String postUrl = "${request.contextPath}${config.apf.filterProcessesUrl}"
       render view: view, model: [postUrl: postUrl, rememberMeParameter: config.rememberMe.parameter]

@@ -27,38 +27,41 @@ class ProcessLoginController {
     log.debug("remote user appears to be : ${params.ea_edinaUserId}");
     log.debug("ea_extra is : ${params.ea_extra}");
 
-    def map = params.ea_extra.split('&').inject([:]) { map, kv -> def (key, value) = 
-      kv.split('=').toList(); map[key] = value != null ? URLDecoder.decode(value) : null; map 
-    }
+    def response = 'NO EA_EXTRA FOUND';
 
-    log.debug("Auth inst = ${map.authInstitutionName}");
-    log.debug("UserId = ${map.eduPersonTargetedID}");
-    log.debug("email = ${map.mail}");
-    log.debug("Inst Addr = ${map.authInstitutionAddress}");
+    if ( params.ea_extra ) {
+      def map = params.ea_extra.split('&').inject([:]) { map, kv -> def (key, value) = 
+        kv.split('=').toList(); map[key] = value != null ? URLDecoder.decode(value) : null; map 
+      }
 
-    def user = com.k_int.kbplus.auth.User.findByUsername('map.eduPersonTargetedId')
-    if ( !user ) {
-      user = new com.k_int.kbplus.auth.User(username:map.eduPersonTargetedID,
-                                            password:'**',
-                                            enabled:true,
-                                            accountExpired:false,
-                                            accountLocked:false, 
-                                            passwordExpired:false,
-                                            instname:map.authInstitutionName,
-                                            email:map.mail).save(flush:true);
-    }
+      log.debug("Auth inst = ${map.authInstitutionName}");
+      log.debug("UserId = ${map.eduPersonTargetedID}");
+      log.debug("email = ${map.mail}");
+      log.debug("Inst Addr = ${map.authInstitutionAddress}");
+
+      def user = com.k_int.kbplus.auth.User.findByUsername('map.eduPersonTargetedId')
+      if ( !user ) {
+        user = new com.k_int.kbplus.auth.User(username:map.eduPersonTargetedID,
+                                              password:'**',
+                                              enabled:true,
+                                              accountExpired:false,
+                                              accountLocked:false, 
+                                              passwordExpired:false,
+                                              instname:map.authInstitutionName,
+                                              email:map.mail).save(flush:true);
+      }
     
-    def securityContext = SCH.context
-    // def principal = <whatever you use as principal>
-    // def credentials = <...>
-    securityContext.authentication = new PreAuthenticatedAuthenticationToken(user, map)
+      def securityContext = SCH.context
+      // def principal = <whatever you use as principal>
+      // def credentials = <...>
+      securityContext.authentication = new PreAuthenticatedAuthenticationToken(user, map)
 
-    def response
-    if ( ( map.ea_context ) && ( map.ea_context.trim().length() > 0 ) {
-      response=map.ea_context
-    }
-    else {
-      response='http://knowplusdev.edina.ac.uk:8080/kbplus/'
+      if ( ( map.ea_context ) && ( map.ea_context.trim().length() > 0 ) ) {
+        response=map.ea_context
+      }
+      else {
+        response='http://knowplusdev.edina.ac.uk:8080/kbplus/'
+      }
     }
 
     // redirect(controller:'home');
