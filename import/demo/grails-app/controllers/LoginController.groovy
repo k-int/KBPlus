@@ -44,6 +44,7 @@ class LoginController {
    * Show the login page.
    */
   def auth = {
+    log.debug("auth");
 
     def config = SpringSecurityUtils.securityConfig
 
@@ -61,6 +62,7 @@ class LoginController {
       render view: view, model: [postUrl: postUrl, rememberMeParameter: config.rememberMe.parameter]
     }
     else {
+      log.debug("Redirecting, context will be ${requestUrl}");
       redirect(uri:"http://edina.ac.uk/cgi-bin/Login/kbplus_explorer-dev?context=${requestUrl}");
     }
   }

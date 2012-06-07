@@ -57,6 +57,9 @@ class ProcessLoginController {
       // def credentials = <...>
       securityContext.authentication = new PreAuthenticatedAuthenticationToken(user, map)
 
+      SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
+      log.debug("Saved request is ${savedRequest}");
+
       if ( ( map.ea_context ) && ( map.ea_context.trim().length() > 0 ) ) {
         response=map.ea_context
       }
@@ -64,6 +67,8 @@ class ProcessLoginController {
         response='http://knowplusdev.edina.ac.uk:8080/kbplus/'
       }
     }
+
+    log.debug("Rendering processLoginController response, URL will be ${response}");
 
     // redirect(controller:'home');
     render response
