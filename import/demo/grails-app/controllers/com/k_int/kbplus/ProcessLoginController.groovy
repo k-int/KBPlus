@@ -24,11 +24,25 @@ class ProcessLoginController {
     log.debug("remote user appears to be : ${params.ea_edinaUserId}");
     log.debug("ea_extra is : ${params.ea_extra}");
 
+    def map = url.query.split('&').inject([:]) { map, kv -> def (key, value) = 
+      kv.split('=').toList(); map[key] = value != null ? URLDecoder.decode(value) : null; map 
+    }
+
+    log.debug("Auth inst = ${map.authInstitutionName}");
+    log.debug("UserId = ${map.eduPersonTargetedId}");
+    log.debug("Inst Addr = ${map.authInstitutionAddress}");
+
+    def user = com.k_int.kbplus.auth.User.findByUsername('map.eduPersonTargetedId')
+    if ( !user ) {
+      user = new com.k_int.kbplus.auth.User(username:map.eduPersonTargetedId,password:'**',enabled:true,accountExpired:false,accountLocked:false, passwordExpired:false).save(flush:true);
+    }
+    
     def securityContext = SCH.context
     // def principal = <whatever you use as principal>
     // def credentials = <...>
-    securityContext.authentication = new PreAuthenticatedAuthenticationToken(principal, credentials)
+    securityContext.authentication = new PreAuthenticatedAuthenticationToken(user, map)
 
-    redirect(controller:'home');
+    // redirect(controller:'home');
+    render 'http://knowplusdev.edina.ac.uk:8080/kbplus/'
   }
 }
