@@ -54,8 +54,8 @@ class LoginController {
 
     log.debug("request url is ${request.requestURL} querystring: ${request.queryString}");
 
-    // redirect(url: "http://edina.ac.uk/Login/kbplus?context=${request.contextPath}")
-    redirect(controller:'ediauth', params:params)
+    redirect(url: "http://edina.ac.uk/Login/kbplus?context=${request.contextPath}")
+    // redirect(controller:'ediauth', params:params)
 
     // String view = 'auth'
     String postUrl = "${request.contextPath}${config.apf.filterProcessesUrl}"

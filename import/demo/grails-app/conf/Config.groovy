@@ -104,3 +104,9 @@ log4j = {
            'grails.app.conf',
            'grails.app.jobs'
 }
+
+// Added by the Spring Security Core plugin:
+grails.plugins.springsecurity.userLookup.userDomainClassName = 'com.k_int.kbplus.auth.User'
+grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'com.k_int.kbplus.auth.UserRole'
+grails.plugins.springsecurity.authority.className = 'com.k_int.kbplus.auth.Role'
+grails.plugins.springsecurity.securityConfigType = "Annotation"
