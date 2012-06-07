@@ -15,6 +15,7 @@ class DataloadController {
     log.debug("Secured index action on dataload controller accessed");
   }
 
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def update() {
 
     log.debug("DataloadController::update");
@@ -292,6 +293,7 @@ class DataloadController {
     redirect(controller:'home')
   }
 
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def reloadSTData() {
     log.debug("reloadSTData()");
     def mdb = mongoService.getMongo().getDB('kbplus_ds_reconciliation')
@@ -437,6 +439,7 @@ class DataloadController {
     redirect(controller:'home')
   }
 
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def reloadLicenses() {
     log.debug("reloadLicenses()");
     def mdb = mongoService.getMongo().getDB('kbplus_ds_reconciliation')

@@ -4,6 +4,8 @@ import grails.converters.*
 import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.MarkupBuilder
 import com.gmongo.GMongo
+import grails.plugins.springsecurity.Secured
+
 
 class HomeController {
 

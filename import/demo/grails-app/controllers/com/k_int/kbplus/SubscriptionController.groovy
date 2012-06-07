@@ -1,20 +1,25 @@
 package com.k_int.kbplus
 
 import org.springframework.dao.DataIntegrityViolationException
+import grails.plugins.springsecurity.Secured
+
 
 class SubscriptionController {
 
     static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def index() {
         redirect action: 'list', params: params
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def list() {
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
         [subscriptionInstanceList: Subscription.list(params), subscriptionInstanceTotal: Subscription.count()]
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def create() {
 		switch (request.method) {
 		case 'GET':
@@ -33,6 +38,7 @@ class SubscriptionController {
 		}
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def show() {
         def subscriptionInstance = Subscription.get(params.id)
         if (!subscriptionInstance) {
@@ -44,6 +50,7 @@ class SubscriptionController {
         [subscriptionInstance: subscriptionInstance]
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def edit() {
 		switch (request.method) {
 		case 'GET':
@@ -88,6 +95,7 @@ class SubscriptionController {
 		}
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def delete() {
         def subscriptionInstance = Subscription.get(params.id)
         if (!subscriptionInstance) {

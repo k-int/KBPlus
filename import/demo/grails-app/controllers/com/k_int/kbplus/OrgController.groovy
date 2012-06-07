@@ -1,15 +1,19 @@
 package com.k_int.kbplus
 
 import org.springframework.dao.DataIntegrityViolationException
+import grails.plugins.springsecurity.Secured
+
 
 class OrgController {
 
     static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def index() {
         redirect action: 'list', params: params
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def list() {
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
         def results = null;
@@ -38,6 +42,7 @@ class OrgController {
         [orgInstanceList: results, orgInstanceTotal: count]
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def create() {
 		switch (request.method) {
 		case 'GET':
@@ -56,6 +61,7 @@ class OrgController {
 		}
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def show() {
         def orgInstance = Org.get(params.id)
         if (!orgInstance) {
@@ -67,6 +73,7 @@ class OrgController {
         [orgInstance: orgInstance]
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def edit() {
 		switch (request.method) {
 		case 'GET':
@@ -111,6 +118,7 @@ class OrgController {
 		}
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def delete() {
         def orgInstance = Org.get(params.id)
         if (!orgInstance) {

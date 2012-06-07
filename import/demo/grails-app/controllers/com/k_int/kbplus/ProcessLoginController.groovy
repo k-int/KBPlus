@@ -2,6 +2,7 @@ package com.k_int.kbplus
 
 import javax.servlet.http.HttpServletResponse
 
+
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 import org.springframework.security.authentication.AccountExpiredException
@@ -24,17 +25,25 @@ class ProcessLoginController {
     log.debug("remote user appears to be : ${params.ea_edinaUserId}");
     log.debug("ea_extra is : ${params.ea_extra}");
 
-    def map = url.query.split('&').inject([:]) { map, kv -> def (key, value) = 
+    def map = params.ea_extra.split('&').inject([:]) { map, kv -> def (key, value) = 
       kv.split('=').toList(); map[key] = value != null ? URLDecoder.decode(value) : null; map 
     }
 
     log.debug("Auth inst = ${map.authInstitutionName}");
-    log.debug("UserId = ${map.eduPersonTargetedId}");
+    log.debug("UserId = ${map.eduPersonTargetedID}");
+    log.debug("email = ${map.mail}");
     log.debug("Inst Addr = ${map.authInstitutionAddress}");
 
     def user = com.k_int.kbplus.auth.User.findByUsername('map.eduPersonTargetedId')
     if ( !user ) {
-      user = new com.k_int.kbplus.auth.User(username:map.eduPersonTargetedId,password:'**',enabled:true,accountExpired:false,accountLocked:false, passwordExpired:false).save(flush:true);
+      user = new com.k_int.kbplus.auth.User(username:map.eduPersonTargetedID,
+                                            password:'**',
+                                            enabled:true,
+                                            accountExpired:false,
+                                            accountLocked:false, 
+                                            passwordExpired:false,
+                                            instname:map.authInstitutionName,
+                                            email:map.mail).save(flush:true);
     }
     
     def securityContext = SCH.context
