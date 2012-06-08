@@ -27,7 +27,7 @@ class ProcessLoginController {
     log.debug("remote user appears to be : ${params.ea_edinaUserId}");
     log.debug("ea_extra is : ${params.ea_extra}");
 
-    def response = 'NO EA_EXTRA FOUND';
+    def response_str = 'NO EA_EXTRA FOUND';
 
     if ( params.ea_extra ) {
       def map = params.ea_extra.split('&').inject([:]) { map, kv -> def (key, value) = 
@@ -52,25 +52,27 @@ class ProcessLoginController {
                                               email:map.mail).save(flush:true);
       }
     
+      def roles = [] // List of org.springframework.security.core.GrantedAuthority
       def securityContext = SCH.context
       // def principal = <whatever you use as principal>
       // def credentials = <...>
-      securityContext.authentication = new PreAuthenticatedAuthenticationToken(user, map)
+      log.debug("Setting pre authentication context...");
+      securityContext.authentication = new PreAuthenticatedAuthenticationToken(user, map, roles)
 
-      SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
+      SavedRequest savedRequest = new HttpSessionRequestCache().getRequest((javax.servlet.http.HttpServletRequest)request, (javax.servlet.http.HttpServletResponse)response);
       log.debug("Saved request is ${savedRequest}");
 
       if ( ( map.ea_context ) && ( map.ea_context.trim().length() > 0 ) ) {
-        response=map.ea_context
+        response_str=map.ea_context
       }
       else {
-        response='http://knowplusdev.edina.ac.uk:8080/kbplus/'
+        response_str='http://knowplusdev.edina.ac.uk:8080/kbplus/'
       }
     }
 
-    log.debug("Rendering processLoginController response, URL will be ${response}");
+    log.debug("Rendering processLoginController response, URL will be ${response_str}");
 
     // redirect(controller:'home');
-    render response
+    render response_str
   }
 }

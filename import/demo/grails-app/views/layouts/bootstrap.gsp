@@ -71,7 +71,12 @@
 
       <footer>
         <div style="float:right; text-align:right;"><g:meta name="app.buildProfile"/> / <g:meta name="app.version"/> / build <g:meta name="app.buildNumber"/> on <g:meta name="app.buildDate"/><br/><a href="https://github.com/k-int/KBPlus">Source</a></div>
-        <p>&copy; <a href="http://www.k-int.com">Knowledge Integration Ltd</a> 2012</p>
+        <div<
+        &copy; <a href="http://www.k-int.com">Knowledge Integration Ltd</a> 2012<br/>
+        <sec:ifLoggedIn>Logged In</sec:ifLoggedIn>
+        <sec:ifNotLoggedIn>Not Logged In</sec:ifNotLoggedIn>
+        ${request.session.id}
+        </div>
       </footer>
     </div>
 

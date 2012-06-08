@@ -44,13 +44,17 @@ class LoginController {
    * Show the login page.
    */
   def auth = {
-    log.debug("auth");
+    log.debug("auth {request.session.id}");
 
     def config = SpringSecurityUtils.securityConfig
 
     if (springSecurityService.isLoggedIn()) {
+      log.debug("already logged in");
       redirect uri: config.successHandler.defaultTargetUrl
       return
+    }
+    else {
+      log.debug("Attempting login");
     }
 
     SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
