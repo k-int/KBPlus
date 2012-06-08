@@ -62,10 +62,10 @@ class ProcessLoginController {
 
       log.debug("Auth set, isAuthenticated = ${securityContext.authentication.isAuthenticated()}, name=${securityContext.authentication.getName()}");
 
-      SavedRequest savedRequest = new HttpSessionRequestCache().getRequest((javax.servlet.http.HttpServletRequest)request, (javax.servlet.http.HttpServletResponse)response);
-      log.debug("Saved request is ${savedRequest}");
+      log.debug("ea_context=${map.ea_context}");
 
-      if ( ( map.ea_context ) && ( map.ea_context.trim().length() > 0 ) ) {
+      if ( ( map.ea_context ) && 
+           ( map.ea_context.trim().length() > 0 ) ) {
         response_str=map.ea_context
       }
       else {
