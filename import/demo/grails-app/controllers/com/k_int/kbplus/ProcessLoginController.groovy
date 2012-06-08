@@ -20,8 +20,10 @@ import org.springframework.security.web.savedrequest.*;
 class ProcessLoginController {
 
   def index() { 
-    log.debug("ProcessLoginController::index()");
+    log.debug("ProcessLoginController::index() - session = ${request.session.id}");
+
     // Check that request comes from 127.0.0.1
+
 
     log.debug("remote institution appears to be : ${params.ea_edinaOrgId}");
     log.debug("remote user appears to be : ${params.ea_edinaUserId}");
