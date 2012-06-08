@@ -110,3 +110,5 @@ grails.plugins.springsecurity.userLookup.userDomainClassName = 'com.k_int.kbplus
 grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'com.k_int.kbplus.auth.UserRole'
 grails.plugins.springsecurity.authority.className = 'com.k_int.kbplus.auth.Role'
 grails.plugins.springsecurity.securityConfigType = "Annotation"
+
+grails.plugins.springsecurity.providerNames = ['preAuthenticatedAuthenticationProvider']

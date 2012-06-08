@@ -58,6 +58,7 @@ class ProcessLoginController {
       // def credentials = <...>
       log.debug("Setting pre authentication context...");
       securityContext.authentication = new PreAuthenticatedAuthenticationToken(user, map, roles)
+      log.debug("Auth set, isAuthenticated = ${securityContext.authentication.isAuthenticated()}");
 
       SavedRequest savedRequest = new HttpSessionRequestCache().getRequest((javax.servlet.http.HttpServletRequest)request, (javax.servlet.http.HttpServletResponse)response);
       log.debug("Saved request is ${savedRequest}");
