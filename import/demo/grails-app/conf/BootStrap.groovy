@@ -1,6 +1,8 @@
 import com.k_int.kbplus.*
 
 import com.k_int.kbplus.auth.*
+import org.codehaus.groovy.grails.plugins.springsecurity.SecurityFilterPosition
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 class BootStrap {
 
@@ -40,6 +42,9 @@ class BootStrap {
 
     }
 
+
+     // SpringSecurityUtils.clientRegisterFilter( 'oracleSSOFilter', SecurityFilterPosition.PRE_AUTH_FILTER.order)
+     SpringSecurityUtils.clientRegisterFilter('securityContextPersistenceFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
   }
 
   def destroy = {

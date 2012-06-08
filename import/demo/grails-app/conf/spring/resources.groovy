@@ -12,4 +12,12 @@ beans = {
   preAuthenticatedAuthenticationProvider(org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider) {
     preAuthenticatedUserDetailsService = ref('userDetailsByNameServiceWrapper')
   }
+
+  securityContextPersistenceFilter(org.springframework.security.web.context.SecurityContextPersistenceFilter){
+  }
+
+  // preAuthFilter(org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter) {
+  //   principalRequestHeader = 'remoteUser'
+  //   authenticationManager = ref('authenticationManager')
+  // }
 }

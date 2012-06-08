@@ -64,9 +64,9 @@ class ProcessLoginController {
 
       log.debug("ea_context=${map.ea_context}");
 
-      if ( ( map.ea_context ) && 
-           ( map.ea_context.trim().length() > 0 ) ) {
-        response_str=map.ea_context
+      if ( ( params.ea_context ) && 
+           ( params.ea_context.trim().length() > 0 ) ) {
+        response_str=params.ea_context
       }
       else {
         response_str='http://knowplusdev.edina.ac.uk:8080/kbplus/'
