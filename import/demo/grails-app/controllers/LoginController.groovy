@@ -67,7 +67,8 @@ class LoginController {
     }
     else {
       log.debug("Redirecting, context will be ${requestUrl}");
-      redirect(uri:"http://edina.ac.uk/cgi-bin/Login/kbplus_explorer-dev;jsessionid=${request.session.id}?context=${requestUrl}");
+      redirect(uri:"http://edina.ac.uk/cgi-bin/Login/kbplus_explorer-dev?context=${requestUrl}&jsessionid=${request.session.id}");
+      // redirect(uri:"http://edina.ac.uk/cgi-bin/Login/kbplus_explorer-dev;jsessionid=${request.session.id}?context=${requestUrl}");
     }
   }
 

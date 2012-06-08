@@ -78,6 +78,6 @@ class ProcessLoginController {
     log.debug("Rendering processLoginController response, URL will be ${response_str}");
 
     // redirect(controller:'home');
-    render response_str
+    render "${response_str};jsessionid=${request.session.id}"
   }
 }
