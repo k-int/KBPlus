@@ -16,11 +16,12 @@ beans = {
   securityContextPersistenceFilter(org.springframework.security.web.context.SecurityContextPersistenceFilter){
   }
 
-  ediauthFilter(com.k_int.kbplus.filter.EdiauthFilter){
-    authenticationManager = ref('authenticationManager')
+  ediAuthTokenMap(java.util.HashMap) {
   }
 
-  ediAuthTokenMap(java.util.HashMap) {
+  ediauthFilter(com.k_int.kbplus.filter.EdiauthFilter){
+    authenticationManager = ref('authenticationManager')
+    ediAuthTokenMap = ref('ediAuthTokenMap')
   }
 
   // preAuthFilter(org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter) {
