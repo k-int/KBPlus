@@ -3,7 +3,7 @@ package com.k_int.kbplus.filter
 
 public class EdiauthFilter extends org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter {
 
-  def applicationContext
+  def grailsApplication
 
   def getPreAuthenticatedPrincipal(javax.servlet.http.HttpServletRequest request) {
     def result
