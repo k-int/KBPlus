@@ -19,15 +19,20 @@ import org.springframework.security.web.savedrequest.*;
 
 class ProcessLoginController {
 
+  def grailsApplication
+  def ediAuthTokenMap
+
   def index() { 
+
     log.debug("ProcessLoginController::index() - session = ${request.session.id}");
+
+    def ctx = grailsApplication.mainContext
 
     // Check that request comes from 127.0.0.1
 
 
     log.debug("remote institution appears to be : ${params.ea_edinaOrgId}");
     log.debug("remote user appears to be : ${params.ea_edinaUserId}");
-    log.debug("ea_extra is : ${params.ea_extra}");
 
     def response_str = 'NO EA_EXTRA FOUND';
 
@@ -59,25 +64,28 @@ class ProcessLoginController {
       // def principal = <whatever you use as principal>
       // def credentials = <...>
       log.debug("Setting pre authentication context...");
-      securityContext.authentication = new PreAuthenticatedAuthenticationToken(map.eduPersonTargetedID, map, roles)
-      securityContext.authentication.setDetails(user)
+      // securityContext.authentication = new PreAuthenticatedAuthenticationToken(map.eduPersonTargetedID, map, roles)
+      // securityContext.authentication.setDetails(user)
+      // log.debug("Auth set, isAuthenticated = ${securityContext.authentication.isAuthenticated()}, name=${securityContext.authentication.getName()}");
+      // log.debug("ea_context=${map.ea_context}");
 
-      log.debug("Auth set, isAuthenticated = ${securityContext.authentication.isAuthenticated()}, name=${securityContext.authentication.getName()}");
+      def tok = java.util.UUID.randomUUID().toString()
+      ediAuthTokenMap[tok] = map.eduPersonTargetedID
 
-      log.debug("ea_context=${map.ea_context}");
+      log.debug("Setting entry in ediAuthTokenMap to ${tok} = ${map.eduPersonTargetedID}");
+      log.debug(ediAuthTokenMap)
 
-      if ( ( params.ea_context ) && 
-           ( params.ea_context.trim().length() > 0 ) ) {
-        response_str=params.ea_context
+      if ( ( params.ea_context ) && ( params.ea_context.trim().length() > 0 ) ) {
+        response_str="${params.ea_context}?ediauthToken=${tok}"
       }
       else {
-        response_str='http://knowplusdev.edina.ac.uk:8080/kbplus/'
+        response_str="http://knowplusdev.edina.ac.uk:8080/kbplus/?ediauthToken=${tok}"
       }
     }
 
     log.debug("Rendering processLoginController response, URL will be ${response_str}");
 
     // redirect(controller:'home');
-    render "${response_str};jsessionid=${request.session.id}"
+    render "${response_str}"
   }
 }

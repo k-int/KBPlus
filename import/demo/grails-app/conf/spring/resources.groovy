@@ -16,6 +16,13 @@ beans = {
   securityContextPersistenceFilter(org.springframework.security.web.context.SecurityContextPersistenceFilter){
   }
 
+  ediauthFilter(com.k_int.kbplus.filter.EdiauthFilter){
+    authenticationManager = ref('authenticationManager')
+  }
+
+  ediAuthTokenMap(java.util.HashMap) {
+  }
+
   // preAuthFilter(org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter) {
   //   principalRequestHeader = 'remoteUser'
   //   authenticationManager = ref('authenticationManager')
