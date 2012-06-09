@@ -57,13 +57,11 @@ class ProcessLoginController {
                                               instname:map.authInstitutionName,
                                               shibbScope:map.shibbScope,
                                               email:map.mail).save(flush:true);
+        def userRole = com.k_int.kbplus.auth.Role.findByAuthority('ROLE_USER')
+        def new_role_allocation = new com.k_int.kbplus.auth.UserRole(user:user,role:userRole);
+        new_role_allocation.save(flush:true);
       }
     
-      def roles = [] // List of org.springframework.security.core.GrantedAuthority
-      def securityContext = SCH.context
-      // def principal = <whatever you use as principal>
-      // def credentials = <...>
-      log.debug("Setting pre authentication context...");
       // securityContext.authentication = new PreAuthenticatedAuthenticationToken(map.eduPersonTargetedID, map, roles)
       // securityContext.authentication.setDetails(user)
       // log.debug("Auth set, isAuthenticated = ${securityContext.authentication.isAuthenticated()}, name=${securityContext.authentication.getName()}");
