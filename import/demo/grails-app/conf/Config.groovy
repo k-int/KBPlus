@@ -102,8 +102,8 @@ log4j = {
            'grails.app.services',
            'grails.app.domain',
            'grails.app.conf',
-           'grails.app.jobs',
-           'org.springframework.security'
+           'grails.app.jobs' // ,
+           // 'org.springframework.security'
 }
 
 // Added by the Spring Security Core plugin:
