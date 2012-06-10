@@ -48,6 +48,7 @@ class ProcessLoginController {
 
       def user = com.k_int.kbplus.auth.User.findByUsername('map.eduPersonTargetedId')
       if ( !user ) {
+        log.debug("Creating user");
         user = new com.k_int.kbplus.auth.User(username:map.eduPersonTargetedID,
                                               password:'**',
                                               enabled:true,
@@ -57,9 +58,21 @@ class ProcessLoginController {
                                               instname:map.authInstitutionName,
                                               shibbScope:map.shibbScope,
                                               email:map.mail).save(flush:true);
+
+        log.debug("Created user, allocating user role");
         def userRole = com.k_int.kbplus.auth.Role.findByAuthority('ROLE_USER')
+        log.debug("looked up user role: ${userRole}");
+
         def new_role_allocation = new com.k_int.kbplus.auth.UserRole(user:user,role:userRole);
-        new_role_allocation.save(flush:true);
+        if ( new_role_allocation.save(flush:true) ) {
+          log.debug("New role created...");
+        }
+        else {
+          new_role_allocation.errors.each { e ->
+            log.error(e);
+          }
+        }
+        log.debug("Done creating user");
       }
     
       // securityContext.authentication = new PreAuthenticatedAuthenticationToken(map.eduPersonTargetedID, map, roles)

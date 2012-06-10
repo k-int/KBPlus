@@ -25,6 +25,6 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
   }
 
   def getPreAuthenticatedCredentials(javax.servlet.http.HttpServletRequest request) {
-    return null;
+    return "";
   }
 }
