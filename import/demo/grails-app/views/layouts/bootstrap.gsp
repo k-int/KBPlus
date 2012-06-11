@@ -75,7 +75,6 @@
         &copy; <a href="http://www.k-int.com">Knowledge Integration Ltd</a> 2012<br/>
         <sec:ifLoggedIn>Logged In</sec:ifLoggedIn>
         <sec:ifNotLoggedIn>Not Logged In</sec:ifNotLoggedIn>
-        ${request.session.id}
         </div>
       </footer>
     </div>
