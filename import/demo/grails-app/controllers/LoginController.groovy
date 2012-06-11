@@ -68,7 +68,8 @@ class LoginController {
     else {
       log.debug("Redirecting, context will be ${requestUrl}");
       // redirect(uri:"http://edina.ac.uk/cgi-bin/Login/kbplus_explorer-dev?context=%3Bjsessionid%3D${request.session.id}");
-      redirect(uri:"http://edina.ac.uk/cgi-bin/Login/kbplus_explorer-dev?context=${requestUrl}");
+      // redirect(uri:"http://edina.ac.uk/cgi-bin/Login/kbplus_explorer-dev?context=${requestUrl}");
+      redirect(uri:"${grailsApplication.config.authuri}?context=${requestUrl}");
     }
   }
 
