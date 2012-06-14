@@ -216,7 +216,7 @@
         </dl>
 
         <g:form>
-                                        <sec:ifLoggedIn>
+           <sec:ifAnyGranted roles="ROLE_EDITOR,ROLE_ADMIN">
 
           <g:hiddenField name="id" value="${licenseInstance?.id}" />
           <div class="form-actions">
@@ -229,7 +229,7 @@
               <g:message code="default.button.delete.label" default="Delete" />
             </button>
           </div>
-                                        </sec:ifLoggedIn>
+                                        </sec:ifAnyGranted>
         </g:form>
 
       </div>
