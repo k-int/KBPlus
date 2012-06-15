@@ -11,10 +11,12 @@ import org.springframework.security.authentication.LockedException
 import org.springframework.security.core.context.SecurityContextHolder as SCH
 import org.springframework.security.web.WebAttributes
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
-
+import org.springframework.security.web.authentication.AbstractProcessingFilter;
+import org.springframework.security.web.savedrequest.*;
 
 class LoginController {
+
+  def grailsAppliation
 
   /**
    * Dependency injection for the authenticationTrustResolver.
@@ -30,7 +32,6 @@ class LoginController {
    * Default action; redirects to 'defaultTargetUrl' if logged in, /login/auth otherwise.
    */
   def index = {
-          log.debug("LoginController::index");
     if (springSecurityService.isLoggedIn()) {
       redirect uri: SpringSecurityUtils.securityConfig.successHandler.defaultTargetUrl
     }
@@ -43,27 +44,33 @@ class LoginController {
    * Show the login page.
    */
   def auth = {
-    log.debug("LoginController::auth");
+    log.debug("auth ${request.session.id}");
 
     def config = SpringSecurityUtils.securityConfig
 
     if (springSecurityService.isLoggedIn()) {
+      log.debug("already logged in");
       redirect uri: config.successHandler.defaultTargetUrl
       return
     }
+    else {
+      log.debug("Attempting login");
+    }
 
-    log.debug("request url is ${request.requestURL} querystring: ${request.queryString}");
+    SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
+    String requestUrl = savedRequest?.getRequestURL();
 
-    redirect(url: "http://edina.ac.uk/Login/kbplus?context=${request.contextPath}")
-    // redirect(controller:'ediauth', params:params)
-
-    // String view = 'auth'
-    String postUrl = "${request.contextPath}${config.apf.filterProcessesUrl}"
-
-    log.debug("postUrl:${postUrl}");
-
-    // render view: view, model: [postUrl: postUrl,
-    //                            rememberMeParameter: config.rememberMe.parameter]
+    if ( grailsApplication.config.localauth ) {
+      String view = 'auth'
+      String postUrl = "${request.contextPath}${config.apf.filterProcessesUrl}"
+      render view: view, model: [postUrl: postUrl, rememberMeParameter: config.rememberMe.parameter]
+    }
+    else {
+      log.debug("Redirecting, context will be ${requestUrl}");
+      // redirect(uri:"http://edina.ac.uk/cgi-bin/Login/kbplus_explorer-dev?context=%3Bjsessionid%3D${request.session.id}");
+      // redirect(uri:"http://edina.ac.uk/cgi-bin/Login/kbplus_explorer-dev?context=${requestUrl}");
+      redirect(uri:"${grailsApplication.config.authuri}?context=${requestUrl}");
+    }
   }
 
   /**
@@ -142,16 +149,5 @@ class LoginController {
    */
   def ajaxDenied = {
     render([error: 'access denied'] as JSON)
-  }
-
-  def ediauthResponse() {
-    log.debug("ediauthResponse ${params}");
-
-    // Check that request comes from 127.0.0.1
-
-    def securityContext = SCH.context
-    // def principal = <whatever you use as principal>
-    // def credentials = <...>
-    securityContext.authentication = new PreAuthenticatedAuthenticationToken(principal, credentials) 
   }
 }

@@ -20,14 +20,14 @@
                 <g:message code="default.list.label" args="[entityName]" />
               </g:link>
             </li>
-            <sec:ifLoggedIn>
+<sec:ifAnyGranted roles="ROLE_EDITOR,ROLE_ADMIN">
             <li>
               <g:link class="create" action="create">
                 <i class="icon-plus"></i>
                 <g:message code="default.create.label" args="[entityName]" />
               </g:link>
             </li>
-            </sec:ifLoggedIn>
+            </sec:ifAnyGranted>
           </ul>
         </div>
       </div>
@@ -90,8 +90,7 @@
         </dl>
 
         <g:form>
-          <sec:ifLoggedIn>
-
+          <sec:ifAnyGranted roles="ROLE_EDITOR,ROLE_ADMIN">
           <g:hiddenField name="id" value="${platformInstance?.id}" />
           <div class="form-actions">
             <g:link class="btn" action="edit" id="${platformInstance?.id}">
@@ -103,7 +102,7 @@
               <g:message code="default.button.delete.label" default="Delete" />
             </button>
           </div>
-          </sec:ifLoggedIn>
+          </sec:ifAnyGranted>
         </g:form>
 
       </div>

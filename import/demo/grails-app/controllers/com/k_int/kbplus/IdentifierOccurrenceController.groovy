@@ -1,6 +1,8 @@
 package com.k_int.kbplus
 
 import org.springframework.dao.DataIntegrityViolationException
+import grails.plugins.springsecurity.Secured
+
 
 class IdentifierOccurrenceController {
 

@@ -4,6 +4,8 @@ import grails.converters.*
 import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.MarkupBuilder
 import com.gmongo.GMongo
+import grails.plugins.springsecurity.Secured
+
 
 class HomeController {
 
@@ -14,6 +16,7 @@ class HomeController {
   // Map the parameter names we use in the webapp with the ES fields
   def reversemap = ['subject':'subject', 'provider':'provid', 'studyMode':'presentations.studyMode','qualification':'qual.type','level':'qual.level' ]
   
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() { 
     // log.debug("Search Index, params.coursetitle=${params.coursetitle}, params.coursedescription=${params.coursedescription}, params.freetext=${params.freetext}")
     log.debug("Search Index, params.q=${params.q}, format=${params.format}")
