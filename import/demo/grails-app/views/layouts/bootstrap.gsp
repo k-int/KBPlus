@@ -18,9 +18,11 @@
 
     <!-- Le fav and touch icons -->
     <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
+    <!--
     <link rel="apple-touch-icon" href="${resource(dir: 'images', file: 'apple-touch-icon.png')}">
     <link rel="apple-touch-icon" sizes="72x72" href="${resource(dir: 'images', file: 'apple-touch-icon-72x72.png')}">
     <link rel="apple-touch-icon" sizes="114x114" href="${resource(dir: 'images', file: 'apple-touch-icon-114x114.png')}">
+    -->
 
    <style>
 
@@ -69,7 +71,11 @@
 
       <footer>
         <div style="float:right; text-align:right;"><g:meta name="app.buildProfile"/> / <g:meta name="app.version"/> / build <g:meta name="app.buildNumber"/> on <g:meta name="app.buildDate"/><br/><a href="https://github.com/k-int/KBPlus">Source</a></div>
-        <p>&copy; <a href="http://www.k-int.com">Knowledge Integration Ltd</a> 2012</p>
+        <div<
+        &copy; <a href="http://www.k-int.com">Knowledge Integration Ltd</a> 2012<br/>
+        <sec:ifLoggedIn>Logged In</sec:ifLoggedIn>
+        <sec:ifNotLoggedIn>Not Logged In</sec:ifNotLoggedIn>
+        </div>
       </footer>
     </div>
 

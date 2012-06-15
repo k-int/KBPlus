@@ -71,6 +71,15 @@ class DataloadService {
     def qry = domain.findAllByLastUpdatedGreaterThan(from);
     qry.each { i ->
       def idx_record = recgen_closure(i)
+
+      // log.debug("Generated record ${idx_record}");
+      def future = esclient.index {
+        index "kbplus"
+        type domain.name
+        id idx_record['_id']
+        source idx_record
+      }
+
       count++
     }
 

@@ -8,7 +8,7 @@ class UserRole implements Serializable {
 	Role role
 
 	boolean equals(other) {
-		if (!(other instanceof userrole)) {
+		if (!(other instanceof UserRole)) {
 			return false
 		}
 
@@ -23,17 +23,17 @@ class UserRole implements Serializable {
 		builder.toHashCode()
 	}
 
-	static userrole get(long userId, long roleId) {
+	static UserRole get(long userId, long roleId) {
 		find 'from UserRole where user.id=:userId and role.id=:roleId',
 			[userId: userId, roleId: roleId]
 	}
 
-	static UserRole create(user user, role role, boolean flush = false) {
+	static UserRole create(User user, Role role, boolean flush = false) {
 		new UserRole(user: user, role: role).save(flush: flush, insert: true)
 	}
 
 	static boolean remove(User user, Role role, boolean flush = false) {
-		UserRole instance = userrole.findByuserAndrole(user, role)
+		UserRole instance = UserRole.findByuserAndrole(user, role)
 		if (!instance) {
 			return false
 		}

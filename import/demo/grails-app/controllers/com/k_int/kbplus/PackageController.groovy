@@ -1,20 +1,25 @@
 package com.k_int.kbplus
 
 import org.springframework.dao.DataIntegrityViolationException
+import grails.plugins.springsecurity.Secured
+
 
 class PackageController {
 
     static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def index() {
         redirect action: 'list', params: params
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def list() {
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
         [packageInstanceList: Package.list(params), packageInstanceTotal: Package.count()]
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def create() {
 		switch (request.method) {
 		case 'GET':
@@ -33,6 +38,7 @@ class PackageController {
 		}
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def show() {
         def packageInstance = Package.get(params.id)
         if (!packageInstance) {
@@ -52,7 +58,7 @@ class PackageController {
       log.debug("Adding platforms");
       // Find all platforms
       packageInstance.tipps.each{ tipp ->
-        log.debug("Consider ${tipp.title.title}")
+        // log.debug("Consider ${tipp.title.title}")
         if ( !platforms.keySet().contains(tipp.platform.id) ) {
           platform_list.add(tipp.platform)
           platforms[tipp.platform.id] = [position:plat_count++, plat:tipp.platform]
@@ -85,6 +91,7 @@ class PackageController {
         [packageInstance: packageInstance, platforms:platform_list, crosstab:crosstab, titles:title_list]
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def edit() {
 		switch (request.method) {
 		case 'GET':
@@ -129,6 +136,7 @@ class PackageController {
 		}
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def delete() {
         def packageInstance = Package.get(params.id)
         if (!packageInstance) {

@@ -10,6 +10,8 @@ grails.config.locations = [ // "classpath:${appName}-config.properties",
 //    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
 // }
 
+System.out.println("conf: ${grails.config.locations}");
+
 
 grails.project.groupId = appName // change this to alter the default package name and Maven publishing destination
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
@@ -100,5 +102,18 @@ log4j = {
            'grails.app.services',
            'grails.app.domain',
            'grails.app.conf',
-           'grails.app.jobs'
+           'grails.app.jobs' // ,
+           // 'org.springframework.security'
 }
+
+// Added by the Spring Security Core plugin:
+grails.plugins.springsecurity.userLookup.userDomainClassName = 'com.k_int.kbplus.auth.User'
+grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'com.k_int.kbplus.auth.UserRole'
+grails.plugins.springsecurity.userLookup.usernamePropertyName='username'
+grails.plugins.springsecurity.authority.className = 'com.k_int.kbplus.auth.Role'
+grails.plugins.springsecurity.securityConfigType = "Annotation"
+
+grails.plugins.springsecurity.providerNames = ['preAuthenticatedAuthenticationProvider', 
+                                               'daoAuthenticationProvider', 
+                                               'anonymousAuthenticationProvider', 
+                                               'rememberMeAuthenticationProvider' ]

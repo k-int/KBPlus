@@ -12,7 +12,6 @@ eventCompileStart = { kind ->
   metadata.'app.buildProfile' = grailsEnv
 
   metadata.'app.buildNumber' = buildNumber.toString()
-  metadata.'app.version' = 'M3'
 
   metadata.persist()
 

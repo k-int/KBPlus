@@ -25,7 +25,7 @@ class ESWrapperService {
 
     def clus_nm = ApplicationHolder.application.config.aggr.es.cluster ?: "aggr"
 
-    log.info("Using ${clus_nm} as cluster name...");
+    log.debug("Using ${clus_nm} as ES cluster name...");
 
 
     def nodeBuilder = new org.elasticsearch.groovy.node.GNodeBuilder()
