@@ -10,6 +10,9 @@ class Org {
   Date dateCreated
   Date lastUpdated
 
+  // Used to generate friendly semantic URLs
+  String shortcode
+
   static mappedBy = [ids: 'org', 
                      outgoingCombos: 'fromOrg', 
                      incomingCombos:'toOrg',
@@ -33,5 +36,36 @@ class Org {
     address(nullable:true, blank:true,maxSize:256);
     ipRange(nullable:true, blank:true, maxSize:256);
     sector(nullable:true, blank:true, maxSize:128);
+  }
+
+  def beforeInsert() {
+    if ( !shortcode ) {
+      shortcode = generateShortcode(name);
+    }
+  }
+
+  def beforeUpdate() {
+    if ( !shortcode ) {
+      shortcode = generateShortcode(name);
+    }
+  }
+
+  def generateShortcode(name) {
+    def candiate = name.trim().replaceAll(" ","_")
+    return incUntilUnique(candidate);
+  }
+
+  def incUntilUnique(name) {
+    def result = name;
+    if ( Org.findByShortcode(result) ) {
+      // There is already a shortcode for that identfier
+      int i = 2;
+      while ( Org.findByShortcode("${name}_${i}") ) {
+        i++
+      }
+      result = "${name}_${i}"
+    }
+
+    result;
   }
 }

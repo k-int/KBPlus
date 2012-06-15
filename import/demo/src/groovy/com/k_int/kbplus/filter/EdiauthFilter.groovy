@@ -13,14 +13,13 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
     def result
     def ediauthToken = request.getParameter("ediauthToken")
 
-    System.out.println("in getPreAuthenticatedPrincipal");
+    // System.out.println("in getPreAuthenticatedPrincipal");
 
-    if ( ( ediauthToken ) && 
-         ( map[ediauthToken] != null ) ) {
-      System.out.println("Located ediauth token : ${ediauthToken}, ${map[ediauthToken]}");
+    if ( ( ediauthToken ) && ( map[ediauthToken] != null ) ) {
+      // System.out.println("Located ediauth token : ${ediauthToken}, ${map[ediauthToken]}");
       result = map.remove(ediauthToken)
     }
-    log.debug("Returning ${result}");
+    // log.debug("Returning ${result}");
     result
   }
 

@@ -63,3 +63,7 @@ drop table if exists subscription;
 drop table if exists subscription_package;
 drop table if exists title_instance;
 drop table if exists title_instance_package_platform;
+drop table if exists registration_code;
+drop table if exists role
+drop table if exists user;
+drop table if exists user_role;
