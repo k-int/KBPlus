@@ -44,6 +44,7 @@ while ((nl = r.readNext()) != null) {
                                           administrative:nl[4],
                                           software:nl[5],
                                           administeredBy:nl[6],
+                                          sourceContext:'KBPlus',
                                           db:db,
                                           stats:stats)
   }
@@ -80,6 +81,7 @@ def lookupOrCreatePlatform(Map params=[:]) {
       administrative:params.administrative,
       software:params.software,
       administeredBy:params.administeredBy,
+      sourceContext:params.sourceContext,
       provenance:"Direct import",
       lastmod:System.currentTimeMillis()
     ]
@@ -93,6 +95,8 @@ def lookupOrCreatePlatform(Map params=[:]) {
     platform.administrative = params.administrative
     platform.software = params.software
     platform.administeredBy = params.administeredBy
+    platform.sourceContext = params.sourceContext
+    platform.lastmod:System.currentTimeMillis()
     params.db.platforms.save(platform)
     inc('platforms_updated',params.stats);
   }
