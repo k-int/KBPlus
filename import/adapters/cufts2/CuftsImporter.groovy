@@ -50,14 +50,23 @@ try {
     println(" doc level ${row}");
   }
 
+  def files_examined = 0 
+
   cufts_data_index_page?.BODY?.TABLE?.TR?.each { row ->
     println("processing row ${row}");
     row.depthFirst().collect { it }.findAll { it.name() == "A" }.each {
-      processCUFTSUpdate(cufts_knowledgebase_website, it.@href.text())
+      def url = it.@href.text();
+      if ( url.endsWith("tgz") ) {
+        files_examined++
+        processCUFTSUpdate(cufts_knowledgebase_website, url);
+      }
+      else {
+        println("skipping file ${url} does not end with tgz");
+      }
     }
   }
 
-  println ("All done...");
+  println ("All done... ${files_examined} files checked");
 }
 catch ( Exception e ) {
   e.printStackTrace();
@@ -67,4 +76,16 @@ catch ( Exception e ) {
 
 def processCUFTSUpdate(cufts_knowledgebase_website, name) {
   println("Test update file ${name}");
+  def head_result = cufts_knowledgebase_website.request(HEAD) {
+    uri.path="/knowledgebase/${name}"
+    response.success = { resp ->
+      println("resp parans: ${resp.params}");
+      def content_length = resp.getLastHeader("Content-Length")?.value
+      println("Content length for ${name} is ${content_length}");
+    }
+    // handler for any failure status code:
+    response.failure = { resp ->
+      println "Unexpected error: ${resp.statusLine.statusCode} : ${resp.statusLine.reasonPhrase}"
+    }
+  }
 }
