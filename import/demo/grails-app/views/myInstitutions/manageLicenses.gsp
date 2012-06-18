@@ -13,9 +13,7 @@
       </p>
       <ul>
         <g:each in="${orgs}" var="o">
-          <li>${o.name} | 
-            <g:link controller="myInstitutions" action="manageLicenses" params="${[shortcode:o.shortcode]}" class="btn btn-primary btn-small"><i class="icon-edit icon-white"></i>Manage Licenses</g:link>
-          </li>
+          <li>${o.name} | <g:link action="manageLicenses">Manage Licenses</g:link></li>
         </g:each>
       </ul>
     </div>

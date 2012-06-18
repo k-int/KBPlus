@@ -30,12 +30,14 @@ class Org {
        name column:'org_name', index:'org_name_idx'
     address column:'org_address'
     ipRange column:'org_ip_range'
+  shortcode column:'org_shortcode'
   }
 
   static constraints = {
     address(nullable:true, blank:true,maxSize:256);
     ipRange(nullable:true, blank:true, maxSize:256);
     sector(nullable:true, blank:true, maxSize:128);
+    shortcode(nullable:true, blank:true, maxSize:128);
   }
 
   def beforeInsert() {
@@ -51,7 +53,7 @@ class Org {
   }
 
   def generateShortcode(name) {
-    def candiate = name.trim().replaceAll(" ","_")
+    def candidate = name.trim().replaceAll(" ","_")
     return incUntilUnique(candidate);
   }
 

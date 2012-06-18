@@ -26,7 +26,11 @@ if ( db == null ) {
 
 
 // To clear down the gaz: curl -XDELETE 'http://localhost:9200/gaz'
-CSVReader r = new CSVReader( new InputStreamReader(getClass().classLoader.getResourceAsStream(args[0])))
+CSVReader r = new CSVReader( new InputStreamReader(new FileInputStream(args[0])))
+
+if ( !r ) {
+  println("Failed to load platforms file: ${args[0]}");
+}
 
 def stats=[:]
 
@@ -96,7 +100,7 @@ def lookupOrCreatePlatform(Map params=[:]) {
     platform.software = params.software
     platform.administeredBy = params.administeredBy
     platform.sourceContext = params.sourceContext
-    platform.lastmod:System.currentTimeMillis()
+    platform.lastmod = System.currentTimeMillis()
     params.db.platforms.save(platform)
     inc('platforms_updated',params.stats);
   }

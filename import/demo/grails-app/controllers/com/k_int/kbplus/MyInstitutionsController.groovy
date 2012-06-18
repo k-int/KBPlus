@@ -27,4 +27,7 @@ class MyInstitutionsController {
 
     result
   }
+
+  def manageLicenses() {
+  }
 }
