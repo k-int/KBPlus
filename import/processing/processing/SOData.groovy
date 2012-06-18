@@ -204,6 +204,7 @@ while ((nl = r.readNext()) != null) {
                                                   prov:"Platform for SO ${args[0]}:${rownum}",
                                                   type:nl[position+1],
                                                   db:db, 
+                                                  sourceContext:'KBPlus',
                                                   stats:stats)
   
             def platform_role = nl[position+1]
@@ -243,6 +244,7 @@ while ((nl = r.readNext()) != null) {
           tipp.hostPlatformURL = host_platform_url
           tipp.additionalPlatformLinks = additional_platform_links
           tipp.source = "${args[0]}:${rownum}"
+          tipp.sourceContext = 'KBPlus'
           tipp.ies.add(sub._id)
   
           db.tipps.save(tipp)
@@ -335,6 +337,7 @@ def lookupOrCreatePackage(Map params=[:]) {
       normIdentifier:norm_identifier,
       name:params.name,
       lastmod:System.currentTimeMillis(),
+      sourceContext:'KBPlus',
       subs:[]
     ]
     params.db.pkgs.save(pkg)
@@ -387,6 +390,7 @@ def lookupOrCreateTitle(Map params=[:]) {
         title:params.title,
         identifier:params.identifier,    // identifier is a list, catering for many different values
         publisher:params.publisher._id,
+        sourceContext:'KBPlus',
         lastmod:System.currentTimeMillis()
       ]
 
@@ -417,6 +421,7 @@ def lookupOrCreatePlatform(Map params=[:]) {
       normname:normname,
       provenance:params.prov,
       type:params.type,
+      sourceContext:'KBPlus',
       lastmod:System.currentTimeMillis()
     ]
     params.db.platforms.save(platform)
@@ -446,6 +451,7 @@ def createTipp(Map params=[:]) {
     titleid:params.titleid,
     pkgid:params.pkgid,
     platformid:params.platformid,
+    sourceContext:'KBPlus',
     lastmod:System.currentTimeMillis(),
     ies:[]
   ]
