@@ -64,7 +64,7 @@ curl -X PUT "localhost:9200/kbplus/com.k_int.kbplus.Platform/_mapping" -d '{
 
 
 
-./PlatformData.groovy
+./PlatformData.groovy ./platforms.csv
 
 echo SO import
 rm ../kb_plus_datafiles/*BAD

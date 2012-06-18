@@ -26,7 +26,7 @@ if ( db == null ) {
 
 
 // To clear down the gaz: curl -XDELETE 'http://localhost:9200/gaz'
-CSVReader r = new CSVReader( new InputStreamReader(getClass().classLoader.getResourceAsStream("./platforms.csv")))
+CSVReader r = new CSVReader( new InputStreamReader(getClass().classLoader.getResourceAsStream(args[0])))
 
 def stats=[:]
 

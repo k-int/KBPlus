@@ -41,37 +41,62 @@ if ( db == null ) {
 }
 
 
-def cufts_knowledgebase_website = new HTTPBuilder('http://cufts2.lib.sfu.ca')
-try {
-  def cufts_data_index_page = cufts_knowledgebase_website.get(path:'/knowledgebase/')
+// def cufts_knowledgebase_website = new HTTPBuilder('http://cufts2.lib.sfu.ca')
 
-  println ("Got doc...");
-  println (cufts_data_index_page.BODY.size());
+loadCuftsFile('CUFTS_complete_20120601.tgz');
 
-  cufts_data_index_page?.each { row ->
-    println(" doc level ${row}");
+def loadCuftsFile(filename) {
+  println("loading data from ${filename}");
+  def fsManager = VFS.getManager();
+  // def tgz_file = fsManager.resolveURI("tar:gz:http://cufts2.lib.sfu.ca/knowledgebase/${filename}");
+  // def tgz_file = fsManager.resolveFile("tar:gz:http://cufts2.lib.sfu.ca/knowledgebase/${filename}");
+  def tgz_file = fsManager.resolveFile("tgz:/home/ibbo/CUFTS_complete_20120601.tgz");
+  def update_file = tgz_file.getChild("update.xml");
+  if ( update_file ) {
+    println("Located update xml file in ${filename}");
   }
-
-  def files_examined = 0 
-
-  cufts_data_index_page?.BODY?.TABLE?.TR?.each { row ->
-    println("processing row ${row}");
-    row.depthFirst().collect { it }.findAll { it.name() == "A" }.each {
-      def url = it.@href.text();
-      if ( url.endsWith("tgz") ) {
-        files_examined++
-        examineCUFTSUpdateFile(db, cufts_knowledgebase_website, url);
-      }
-      else {
-        println("skipping file ${url} does not end with tgz");
-      }
+  else {
+    println("Unable to locate update xml...");
+    FileObject[] children = tgz_file.getChildren();
+    System.out.println( "Children of " + tgz_file.getName().getURI() );
+    for ( int i = 0; i < children.length; i++ ) {
+        System.out.println( children[ i ].getName().getBaseName() );
     }
   }
-
-  println ("All done... ${files_examined} files checked");
 }
-catch ( Exception e ) {
-  e.printStackTrace();
+
+def processCUFTSIndexPage(cufts_knowledgebase_website) {
+  try {
+    def cufts_data_index_page = cufts_knowledgebase_website.get(path:'/knowledgebase/')
+
+    println ("Got doc...");
+    println (cufts_data_index_page.BODY.size());
+
+    cufts_data_index_page?.each { row ->
+      println(" doc level ${row}");
+    }
+
+    def files_examined = 0 
+
+    cufts_data_index_page?.BODY?.TABLE?.TR?.each { row ->
+      println("processing row ${row}");
+      row.depthFirst().collect { it }.findAll { it.name() == "A" }.each {
+        def url = it.@href.text();
+        if ( url.endsWith("tgz") ) {
+          files_examined++
+          examineCUFTSUpdateFile(db, cufts_knowledgebase_website, url);
+        }
+        else {
+          println("skipping file ${url} does not end with tgz");
+        }
+      }
+    }
+
+    println ("All done... ${files_examined} files checked");
+  }
+  catch ( Exception e ) {
+    e.printStackTrace();
+  }
 }
 
 
