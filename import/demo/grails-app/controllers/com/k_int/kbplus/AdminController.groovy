@@ -1,6 +1,7 @@
 package com.k_int.kbplus
 
 import com.k_int.kbplus.auth.*;
+import grails.plugins.springsecurity.Secured
 
 class AdminController {
 
