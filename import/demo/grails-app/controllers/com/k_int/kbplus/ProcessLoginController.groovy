@@ -63,6 +63,8 @@ class ProcessLoginController {
         def userRole = com.k_int.kbplus.auth.Role.findByAuthority('ROLE_USER')
         log.debug("looked up user role: ${userRole}");
 
+        
+
         def new_role_allocation = new com.k_int.kbplus.auth.UserRole(user:user,role:userRole);
         if ( new_role_allocation.save(flush:true) ) {
           log.debug("New role created...");
@@ -72,6 +74,10 @@ class ProcessLoginController {
             log.error(e);
           }
         }
+
+        // See if we can find the org this user is attached to
+        createUserOrgLink(user, map.authInstitutionName, map.shibbScope);
+
         log.debug("Done creating user");
       }
     
@@ -98,5 +104,24 @@ class ProcessLoginController {
 
     // redirect(controller:'home');
     render "${response_str}"
+  }
+
+  def createUserOrgLink(user, authInstitutionName, shibbScope) {
+    if ( authInstitutionName && authInstitutionName.length() > 0 ) {
+      def candidate = authInstitutionName.trim().replaceAll(" ","_")
+      def org = com.k_int.kbplus.Org.findByShortcode(candidate)
+      if ( org ) {
+        def user_org_link = new com.k_int.kbplus.auth.UserOrg(user:user, org:org, role:'staff', status:3, dateRequested=System.currentTimeMillis(), dateActioned=System.currentTimeMillis())
+        if ( !user_org_link.save(flush:true) ) {
+          log.error("Problem saving user org link");
+          user_org_link.errors.each { e ->
+            log.error(e);
+          }
+        }
+        else {
+          log.debug("Linked user with org ${org.id} based on name ${authInstitutionName}");
+        }
+      }
+    }
   }
 }
