@@ -5,6 +5,9 @@ import grails.plugins.springsecurity.Secured
 
 class AdminController {
 
+  def springSecurityService
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def index() { }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
