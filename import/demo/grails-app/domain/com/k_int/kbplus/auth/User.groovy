@@ -2,47 +2,50 @@ package com.k_int.kbplus.auth
 
 class User {
 
-	transient springSecurityService
+  transient springSecurityService
 
-	String username
-	String password
-        String instname
-        String instcode
-        String email
-        String shibbScope
-	boolean enabled
-	boolean accountExpired
-	boolean accountLocked
-	boolean passwordExpired
+  String username
+  String password
+  String instname
+  String instcode
+  String email
+  String shibbScope
+  boolean enabled
+  boolean accountExpired
+  boolean accountLocked
+  boolean passwordExpired
 
-	static constraints = {
-		username blank: false, unique: true
-		password blank: false
-                instname blank: true, nullable: true
-                instcode blank: true, nullable: true
-                email blank: true, nullable: true
-                shibbScope blank: true, nullable: true
-	}
+  static hasMany = [ affiliations: com.k_int.kbplus.auth.UserOrg ]
+  static mappedBy = [ affiliations: 'user' ]
 
-	static mapping = {
-		password column: '`password`'
-	}
+  static constraints = {
+    username blank: false, unique: true
+    password blank: false
+    instname blank: true, nullable: true
+    instcode blank: true, nullable: true
+    email blank: true, nullable: true
+    shibbScope blank: true, nullable: true
+  }
 
-	Set<Role> getAuthorities() {
-		UserRole.findAllByUser(this).collect { it.role } as Set
-	}
+  static mapping = {
+    password column: '`password`'
+  }
 
-	def beforeInsert() {
-		encodePassword()
-	}
+  Set<Role> getAuthorities() {
+    UserRole.findAllByUser(this).collect { it.role } as Set
+  }
 
-	def beforeUpdate() {
-		if (isDirty('password')) {
-			encodePassword()
-		}
-	}
+  def beforeInsert() {
+    encodePassword()
+  }
 
-	protected void encodePassword() {
-		password = springSecurityService.encodePassword(password)
-	}
+  def beforeUpdate() {
+    if (isDirty('password')) {
+      encodePassword()
+    }
+  }
+
+  protected void encodePassword() {
+    password = springSecurityService.encodePassword(password)
+  }
 }

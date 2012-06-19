@@ -96,7 +96,7 @@ class ProcessLoginController {
         response_str="${params.ea_context}?ediauthToken=${tok}"
       }
       else {
-        response_str="http://knowplusdev.edina.ac.uk:8080/kbplus/?ediauthToken=${tok}"
+        response_str="http://knowplus.edina.ac.uk/kbplus/?ediauthToken=${tok}"
       }
     }
 
@@ -107,11 +107,16 @@ class ProcessLoginController {
   }
 
   def createUserOrgLink(user, authInstitutionName, shibbScope) {
-    if ( authInstitutionName && authInstitutionName.length() > 0 ) {
+    if ( ( authInstitutionName ) && ( authInstitutionName.length() > 0 ) ) {
       def candidate = authInstitutionName.trim().replaceAll(" ","_")
       def org = com.k_int.kbplus.Org.findByShortcode(candidate)
       if ( org ) {
-        def user_org_link = new com.k_int.kbplus.auth.UserOrg(user:user, org:org, role:'staff', status:3, dateRequested=System.currentTimeMillis(), dateActioned=System.currentTimeMillis())
+        def user_org_link = new com.k_int.kbplus.auth.UserOrg(user:user, 
+                                                              org:org, 
+                                                              role:'Staff', 
+                                                              status:3, 
+                                                              dateRequested:System.currentTimeMillis(), 
+                                                              dateActioned:System.currentTimeMillis())
         if ( !user_org_link.save(flush:true) ) {
           log.error("Problem saving user org link");
           user_org_link.errors.each { e ->
@@ -124,4 +129,5 @@ class ProcessLoginController {
       }
     }
   }
+
 }

@@ -18,11 +18,6 @@
 
     <!-- Le fav and touch icons -->
     <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
-    <!--
-    <link rel="apple-touch-icon" href="${resource(dir: 'images', file: 'apple-touch-icon.png')}">
-    <link rel="apple-touch-icon" sizes="72x72" href="${resource(dir: 'images', file: 'apple-touch-icon-72x72.png')}">
-    <link rel="apple-touch-icon" sizes="114x114" href="${resource(dir: 'images', file: 'apple-touch-icon-114x114.png')}">
-    -->
 
    <style>
 
@@ -63,14 +58,31 @@
                   <li <%='license'== controllerName ? ' class="active"' : '' %>><g:link controller="license">Licenses</g:link></li>
                 </ul>
               </li>
+
               <g:if test="contextInstitution">
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Forms and Actions <b class="caret"></b> </a>
                   <ul class="dropdown-menu">
-                    <li<%= request.forwardURI == "${createLink(uri: '/')}" ? ' class="active"' : '' %>><a href="${createLink(uri: '/')}">Licenses</a></li>
+                    <li <%= ( ( 'myInstitutions'== controllerName ) && ( 'manageLicenses'==actionName ) ) ? ' class="active"' : '' %>>
+                       <g:link controller="myInstitutions" action="manageLicenses">Manage Licenses</g:link></li>
+
+                    <li <%= ( ( 'myInstitutions'== controllerName ) && ( 'manageAffiliations'==actionName ) ) ? ' class="active"' : '' %>>
+                       <g:link controller="myInstitutions" action="manageAffiliations">Manage Affiliations</g:link></li>
+
                   </ul>
                 </li>
               </g:if>
+
+              <sec:ifAnyGranted roles="ROLE_ADMIN">
+                 <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Admin Actions <b class="caret"></b> </a>
+                  <ul class="dropdown-menu">
+                    <li <%= ( ( 'admin'== controllerName ) && ( 'manageAffiliationRequests'==actionName ) ) ? ' class="active"' : '' %>>
+                       <g:link controller="admin" action="manageAffiliationRequests">Manage Affiliation Requests</g:link></li>
+                  </ul>
+                </li>
+
+              </sec:ifAnyGranted>
             </ul>
           </div>
         </div>

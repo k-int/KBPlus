@@ -9,7 +9,8 @@ class UserOrg {
     int status  // 0=Pending, 1=Approved, 2=Rejected, 3=AutoApproved
     String role
 
-    static belongsTo = [org: com.k_int.kbplus.Org, user:com.k_int.kbplus.auth.User]
+    com.k_int.kbplus.Org org
+    com.k_int.kbplus.auth.User user
 
     static constraints = {
       dateActioned(nullable:true)
