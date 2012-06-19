@@ -7,6 +7,7 @@ class Org {
   String address
   String ipRange
   String sector
+  String scope
   Date dateCreated
   Date lastUpdated
 
@@ -31,6 +32,7 @@ class Org {
     address column:'org_address'
     ipRange column:'org_ip_range'
   shortcode column:'org_shortcode'
+      scope column:'org_scope'
   }
 
   static constraints = {
@@ -38,6 +40,7 @@ class Org {
     ipRange(nullable:true, blank:true, maxSize:256);
     sector(nullable:true, blank:true, maxSize:128);
     shortcode(nullable:true, blank:true, maxSize:128);
+    scope(nullable:true, blank:true, maxSize:128);
   }
 
   def beforeInsert() {

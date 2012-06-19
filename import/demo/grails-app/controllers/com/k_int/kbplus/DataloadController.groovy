@@ -33,6 +33,7 @@ class DataloadController {
                     name:org.name.trim(),
                     ipRange:org.ipRange,
                     sector:org.sectorName,
+                    scope:org.scope,
                     links:[]);
           o.ids=[]
         }

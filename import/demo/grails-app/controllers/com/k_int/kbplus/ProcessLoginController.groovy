@@ -109,7 +109,12 @@ class ProcessLoginController {
   def createUserOrgLink(user, authInstitutionName, shibbScope) {
     if ( ( authInstitutionName ) && ( authInstitutionName.length() > 0 ) ) {
       def candidate = authInstitutionName.trim().replaceAll(" ","_")
-      def org = com.k_int.kbplus.Org.findByShortcode(candidate)
+      def org = com.k_int.kbplus.Org.findByScope(shibbScope)
+
+      // If we didn't match by scope, try matching by normalised name
+      if ( ! org )
+        org = com.k_int.kbplus.Org.findByShortcode(candidate)
+
       if ( org ) {
         def user_org_link = new com.k_int.kbplus.auth.UserOrg(user:user, 
                                                               org:org, 
