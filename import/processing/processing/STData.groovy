@@ -111,7 +111,7 @@ while ((nl = r.readNext()) != null) {
   // If we don't have a title here, it's likely that the ST file references a journal not defined
   // in an SO file. Maybe the institution negotiated an addition, or there is an error in the SO?
   // Either way, if there is a title and at least 1 identifier, we can add the item here
-  if ( nl[1] && ( nl[1].length() > 0 ) && (!title) && ( title_identifiers.length() > 0 ) ) {
+  if ( nl[1] && ( nl[1].length() > 0 ) && (!title) && ( title_identifiers.size() > 0 ) ) {
     title = lookupOrCreateTitle(title:nl[1],
                                 identifier:title_identifiers,
                                 publisher:null,
