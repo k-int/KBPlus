@@ -313,7 +313,11 @@ def present(v) {
 
 def lookupOrCreateOrg(Map params = [:]) {
   // println("lookupOrCreateOrg(${params})");
-  def org = params.db.orgs.findOne(name:params.name)
+
+  def target_norm_name = params.name?.trim().toLowerCase();
+
+  def org = params.db.orgs.findOne(normName:target_norm_name)
+
   if ( org == null ) {
     org = [
       _id:new org.bson.types.ObjectId(),
