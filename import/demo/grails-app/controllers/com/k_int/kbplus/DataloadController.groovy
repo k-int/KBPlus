@@ -95,6 +95,7 @@ class DataloadController {
       }
 
     }
+    orgs_cursor.close();
   
     log.debug("stats after org import: ${stats}");
 
@@ -319,7 +320,7 @@ class DataloadController {
         log.error("Problem loading tipp instance",e);
       }
     }
-    cursor.limit(-1);
+    cursor.close();
 
     redirect(controller:'home')
   }
