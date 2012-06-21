@@ -94,14 +94,30 @@ while ((nl = r.readNext()) != null) {
 
   // Lookup title based on print_identifier, target_identifiers ['ISSN'] = print_identifier
   def title = null;
+  def title_identifiers = []
+
   if ( nl[2]?.length() > 0 ) {
     println("Attempting lookup by ISSN: \"${nl[2]?.trim()}\"");
     title = db.titles.findOne(identifier:[type:'ISSN', value: nl[2]?.trim()])
+    title_identifiers.add([type:'ISSN', value:nl[2]])
   }
 
   if ( ( !title ) && ( nl[3]?.length() > 0 ) ) {
     println("Attempting lookup by eISSN: \"${nl[3]?.trim()}\"");
     title = db.titles.findOne(identifier:[type:'eISSN', value: nl[3]?.trim()])
+    title_identifiers.add([type:'eISSN', value:nl[2]])
+  }
+
+  // If we don't have a title here, it's likely that the ST file references a journal not defined
+  // in an SO file. Maybe the institution negotiated an addition, or there is an error in the SO?
+  // Either way, if there is a title and at least 1 identifier, we can add the item here
+  if ( nl[1] && ( nl[1].length() > 0 ) && (!title) && ( title_identifiers.length() > 0 ) ) {
+    title = lookupOrCreateTitle(title:nl[1],
+                                identifier:title_identifiers,
+                                publisher:null,
+                                db:db,
+                                stats:stats)
+
   }
 
   if ( title) {
@@ -113,7 +129,7 @@ while ((nl = r.readNext()) != null) {
       println("Located package ${pkg}");
 
 
-      def tipp  = locateTitle(db,title,pkg)
+      def tipp  = locateTIPP(db,title,pkg)
 
       if ( tipp ) {
         def new_st_record = db.st.findOne(tipp_id:tipp._id, 
@@ -204,7 +220,7 @@ if ( bad_rows.size() > 0 ) {
 println("All done processing for ${args[0]}");
 
 
-def locateTitle(db, title, pkg) {
+def locateTIPP(db, title, pkg) {
   def result = null
   def tipps = db.tipps.find(titleid: title._id, pkgid: pkg._id)
   println("Located ${tipps.size()} tipps for that title");
@@ -245,3 +261,51 @@ def parseDate(datestr, possible_formats) {
   }
   parsed_date
 }
+
+def lookupOrCreateTitle(Map params=[:]) {
+  // println("lookupOrCreateTitle(${params})");
+  // Old style: lookup by Title : def title = params.db.titles.findOne(title:params.title)
+  def title = null
+  if ( ( params.identifier ) && ( params.identifier.size() > 0 ) ) { // Try to match on identifier if present
+    // Loop through all the available identifers and see if any match.. Repeat until a match is found.
+    for ( int i=0; ( ( !title ) && ( i < params.identifier.size() ) ); i++ ) {
+      // println("Attempting match.. ${params.identifier[i].type} ${params.identifier[i].value}");
+      title = params.db.titles.findOne(identifier:[type:params.identifier[i].type, value: params.identifier[i].value])
+    }
+    if ( title ) {
+      inc('titles_matched_by_identifier',params.stats);
+    }
+    else {
+      // println("Unable to match on any of ${params.identifier}");
+    }
+  }
+  else {
+    inc('titles_without_identifiers',params.stats);
+  }
+
+  if (!title)  {
+    // Unable to locate title with identifier given... Try other dedup matches on other props if needed
+    println("Create New title : ${params.title}, title=${title}, publisher=${params.publisher}");
+
+    try {
+      title = [
+        _id:new org.bson.types.ObjectId(),
+        title:params.title,
+        identifier:params.identifier,    // identifier is a list, catering for many different values
+        publisher:params.publisher._id,
+        sourceContext:'KBPlus',
+        lastmod:System.currentTimeMillis()
+      ]
+
+      params.db.titles.save(title)
+      inc('titles_created',params.stats);
+    }
+    catch ( Exception e ) {
+      e.printStackTrace()
+      println("Problem creating new title ${title} for t:${params.title} (id:${params.identifier}): ${e.message}");
+    }
+  }
+
+  title
+}
+
