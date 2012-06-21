@@ -44,7 +44,7 @@ class LoginController {
    * Show the login page.
    */
   def auth = {
-    log.debug("auth ${request.session.id}");
+    log.debug("auth ${request.session.id} localauth:${grailsApplication.config.localauth}");
 
     def config = SpringSecurityUtils.securityConfig
 
