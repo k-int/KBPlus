@@ -18,7 +18,6 @@ def possible_date_formats = [
   new SimpleDateFormat('yyyy')
 ];
 
-
 // Setup mongo
 def options = new com.mongodb.MongoOptions()
 options.socketKeepAlive = true
@@ -61,6 +60,10 @@ if ( num_platforms_listed == 0 ) {
   println("**WARNING** num_platforms_listed = 0, defaulting to 1!");
 }
 
+def default_tags = []
+if ( args.length > 1 ) {
+  default_tags.add(args[1]);
+}
 
 println("Read column headings: ${so_header_line}");
 
@@ -246,6 +249,7 @@ while ((nl = r.readNext()) != null) {
           tipp.source = "${args[0]}:${rownum}"
           tipp.sourceContext = 'KBPlus'
           tipp.ies.add(sub._id)
+          tipp.tags = default_tags;
   
           db.tipps.save(tipp)
         }
@@ -367,18 +371,6 @@ def lookupOrCreateTitle(Map params=[:]) {
   else {
     inc('titles_without_identifiers',params.stats);
   }
-
-  // if ( !title && params.title) { // If no match, and title present, try to match on title
-  //   println("Attempting to match on title string ${params.title}");
-  //   title = params.db.titles.findOne(title:params.title);
-  //   if ( title ) {
-  //     println("  -> Matched on title");
-  //     inc('titles_matched_by_title',params.stats);
-  //   }
-  //   else {
-  //     println("  -> No match on title");
-  //   }
-  // }
 
   if (!title)  {
     // Unable to locate title with identifier given... Try other dedup matches on other props if needed
