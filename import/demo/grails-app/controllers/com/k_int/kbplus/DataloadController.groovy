@@ -22,6 +22,8 @@ class DataloadController {
 
     def mdb = mongoService.getMongo().getDB('kbplus_ds_reconciliation')
 
+    mdb.tipps.ensureIndex('lastmod');
+
     // Orgs
     mdb.orgs.find().sort(lastmod:1).each { org ->
       log.debug("update org ${org}");

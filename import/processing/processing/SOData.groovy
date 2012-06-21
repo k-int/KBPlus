@@ -359,6 +359,12 @@ def lookupOrCreateTitle(Map params=[:]) {
     }
     if ( title ) {
       inc('titles_matched_by_identifier',params.stats);
+      // If the located title doesn't have a publisher, but the current record does, add the default
+      if ( !title.publisher && params.publisher ) {
+        title.publisher = params.publisher._id;
+        title.lastmod = System.currentTimeMillis()
+        params.db.titles.save(title);
+      }
     }
     else {
       // println("Unable to match on any of ${params.identifier}");
