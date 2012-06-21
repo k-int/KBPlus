@@ -370,7 +370,8 @@ class DataloadController {
                                               endIssue:ie.tipp.endIssue,
                                               embargo:ie.tipp.embargo,
                                               coverageDepth:ie.tipp.coverageDepth,
-                                              coverageNote:ie.tipp.coverageNote).save(flush:true)
+                                              coverageNote:ie.tipp.coverageNote,
+                                              ieReason:'No ST specific data, defaulting from SO').save(flush:true)
             // new_subscription.issueEntitlements.add(new_ie)
           }
           log.debug("Added ${count} issue entitlements from subscription ${db_sub.id}")
@@ -400,7 +401,8 @@ class DataloadController {
                                                   embargo:nvl(st.embargo,tipp.embargo),
                                                   coverageDepth:tipp.coverageDepth,
                                                   coverageNote:tipp.coverageNote,
-                                                  coreTitle: is_core)
+                                                  coreTitle: is_core,
+                                                  ieReason:"Subscription Taken data lists this titles incluson as \"${st.included_st}\"")
                 if ( !new_ie.save() ) {
                   new_ie.errors.each { e ->
                     log.error("Problem saving ie ${e}")
