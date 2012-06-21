@@ -150,16 +150,16 @@ while ((nl = r.readNext()) != null) {
   
       // If there is an identifier, set up the appropriate matching...
       if ( present(nl[1]) ) 
-        target_identifiers.add([type:'ISSN', value:nl[1]])
+        target_identifiers.add([type:'ISSN', value:nl[1].trim()])
       if ( present(nl[2]) ) 
-        target_identifiers.add([type:'eISSN', value:nl[2]])
+        target_identifiers.add([type:'eISSN', value:nl[2].trim()])
       if ( present(nl[9]) ) 
-        tipp_private_identifiers.add([type:'KBART', value:nl[9]])
+        tipp_private_identifiers.add([type:'KBART', value:nl[9].trim()])
       if ( present(nl[14]) ) 
-        target_identifiers.add([type:'DOI', value:nl[14]])
+        target_identifiers.add([type:'DOI', value:nl[14].trim()])
   
       for ( int i=0; i<num_prop_id_cols; i++ ) {
-        tipp_private_identifiers.add([type:'EXTERNAL', value:nl[15+i]])
+        tipp_private_identifiers.add([type:'EXTERNAL', value:nl[15+i].trim()])
       }
   
       def title = lookupOrCreateTitle(title:nl[0],

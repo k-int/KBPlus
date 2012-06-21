@@ -37,7 +37,7 @@ class Org {
 
   static constraints = {
     address(nullable:true, blank:true,maxSize:256);
-    ipRange(nullable:true, blank:true, maxSize:256);
+    ipRange(nullable:true, blank:true, maxSize:1024);
     sector(nullable:true, blank:true, maxSize:128);
     shortcode(nullable:true, blank:true, maxSize:128);
     scope(nullable:true, blank:true, maxSize:128);

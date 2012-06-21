@@ -35,7 +35,8 @@
 			<div class="span10">
 
 				<div class="page-header">
-					<h1>Organisation: ${orgInstance.name}</h1>
+					<h1>${orgInstance.name}</h1>
+                                        <hr/>
 				</div>
 
 				<g:if test="${flash.message}">

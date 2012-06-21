@@ -22,11 +22,19 @@ class DataloadController {
 
     def mdb = mongoService.getMongo().getDB('kbplus_ds_reconciliation')
 
+    def stats = [:]
+
     mdb.tipps.ensureIndex('lastmod');
 
-    // Orgs
-    mdb.orgs.find().sort(lastmod:1).each { org ->
+    // Orgs - Fail fast by trying cursor options here
+    def orgs_cursor = mdb.orgs.find().sort(lastmod:1)
+    orgs_cursor.addOption(com.mongodb.Bytes.QUERYOPTION_NOTIMEOUT);
+    stats.org_seen_count = 0;
+    stats.org_insert_count = 0;
+    orgs_cursor.each { org ->
+      stats.org_seen_count++;
       log.debug("update org ${org}");
+      
       def o = Org.findByImpId(org._id.toString())
       if ( o == null ) {
         o = Org.findByName(org.name.trim())
@@ -65,7 +73,15 @@ class DataloadController {
         def amf_id = lookupOrCreateCanonicalIdentifier('UKAMF',org.famId);
         o.ids.add(new IdentifierOccurrence(identifier:amf_id,org:o));
       }
-      o.save(flush:true);
+      if ( o.save(flush:true) ) {
+      }
+      else {
+        log.error("Problem saving org...");
+        o.errors.each { oe -> 
+          log.error(oe);
+        }
+      }
+      stats.org_insert_count++;
 
       // Create a combo to link this org with NESLI2 (So long as this isn't the NESLI2 record itself of course
       if ( org.name != 'NESLI2' ) {
@@ -79,6 +95,8 @@ class DataloadController {
       }
 
     }
+  
+    log.debug("stats after org import: ${stats}");
 
     // Subscriptions
     mdb.subscriptions.find().sort(lastmod:1).each { sub ->
@@ -121,7 +139,14 @@ class DataloadController {
           // t.addToIds(new TitleSID(namespace:id.type,identifier:id.value));
         }
 
-        t.save();
+        if ( t.save() ) {
+        }
+        else {
+          log.error("Problem saving title instance");
+          t.errors.each { te ->
+            log.error(te);
+          }
+        }
 
         // create a new OrgRole for this title that links it with the publisher org.
         if ( title.publisher ) {
@@ -184,7 +209,9 @@ class DataloadController {
     }
 
     // Finally... tipps
-    mdb.tipps.find().sort(lastmod:1).each { tipp ->
+    def cursor = mdb.tipps.find().sort(lastmod:1)
+    cursor.addOption(com.mongodb.Bytes.QUERYOPTION_NOTIMEOUT);
+    cursor.each { tipp ->
       try {
         log.debug("update tipp ${tipp}");
         def title = TitleInstance.findByImpId(tipp.titleid.toString())
@@ -292,6 +319,7 @@ class DataloadController {
         log.error("Problem loading tipp instance",e);
       }
     }
+    cursor.limit(-1);
 
     redirect(controller:'home')
   }
