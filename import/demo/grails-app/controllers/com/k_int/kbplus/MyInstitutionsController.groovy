@@ -58,4 +58,24 @@ class MyInstitutionsController {
     redirect(action: "manageAffiliations")
   }
 
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def newLicense() {
+    switch (request.method) {
+      case 'GET':
+        [licenseInstance: new License(params)]
+        break
+      case 'POST':
+        def licenseInstance = new License(params)
+        if (!licenseInstance.save(flush: true)) {
+          render view: 'create', model: [licenseInstance: licenseInstance]
+          return
+        }
+
+        flash.message = message(code: 'default.created.message', args: [message(code: 'license.label', default: 'License'), licenseInstance.id])
+        redirect action: 'show', id: licenseInstance.id
+        break
+    }
+  }
+
+
 }

@@ -69,6 +69,9 @@
                     <li <%= ( ( 'myInstitutions'== controllerName ) && ( 'manageAffiliations'==actionName ) ) ? ' class="active"' : '' %>>
                        <g:link controller="myInstitutions" action="manageAffiliations">Manage Affiliations</g:link></li>
 
+                    <li <%= ( ( 'myInstitutions'== controllerName ) && ( 'newLicense'==actionName ) ) ? ' class="active"' : '' %>>
+                       <g:link controller="myInstitutions" action="newLicense">New License</g:link></li>
+
                   </ul>
                 </li>
               </g:if>
