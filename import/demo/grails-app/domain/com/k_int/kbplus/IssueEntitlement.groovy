@@ -13,6 +13,7 @@ class IssueEntitlement {
   String coverageDepth
   String coverageNote
   boolean coreTitle = false
+  String ieReason
 
   static belongsTo = [subscription: Subscription,
                       tipp: TitleInstancePackagePlatform]
@@ -33,6 +34,7 @@ class IssueEntitlement {
      coverageDepth column:'ie_coverage_depth'
       coverageNote column:'ie_coverage_note',type: 'text'
          coreTitle column:'ie_core_title'
+          ieReason column:'ie_reason'
   }
 
   static constraints = {
@@ -49,5 +51,6 @@ class IssueEntitlement {
     coverageDepth(nullable:true, blank:true);
     coverageNote(nullable:true, blank:true);
     coreTitle(nullable:true, blank:true);
+    ieReason(nullable:true, blank:true);
   }
 }

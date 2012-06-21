@@ -22,9 +22,19 @@ class DataloadController {
 
     def mdb = mongoService.getMongo().getDB('kbplus_ds_reconciliation')
 
-    // Orgs
-    mdb.orgs.find().sort(lastmod:1).each { org ->
+    def stats = [:]
+
+    mdb.tipps.ensureIndex('lastmod');
+
+    // Orgs - Fail fast by trying cursor options here
+    def orgs_cursor = mdb.orgs.find().sort(lastmod:1)
+    orgs_cursor.addOption(com.mongodb.Bytes.QUERYOPTION_NOTIMEOUT);
+    stats.org_seen_count = 0;
+    stats.org_insert_count = 0;
+    orgs_cursor.each { org ->
+      stats.org_seen_count++;
       log.debug("update org ${org}");
+      
       def o = Org.findByImpId(org._id.toString())
       if ( o == null ) {
         o = Org.findByName(org.name.trim())
@@ -63,7 +73,15 @@ class DataloadController {
         def amf_id = lookupOrCreateCanonicalIdentifier('UKAMF',org.famId);
         o.ids.add(new IdentifierOccurrence(identifier:amf_id,org:o));
       }
-      o.save(flush:true);
+      if ( o.save(flush:true) ) {
+      }
+      else {
+        log.error("Problem saving org...");
+        o.errors.each { oe -> 
+          log.error(oe);
+        }
+      }
+      stats.org_insert_count++;
 
       // Create a combo to link this org with NESLI2 (So long as this isn't the NESLI2 record itself of course
       if ( org.name != 'NESLI2' ) {
@@ -77,6 +95,9 @@ class DataloadController {
       }
 
     }
+    orgs_cursor.close();
+  
+    log.debug("stats after org import: ${stats}");
 
     // Subscriptions
     mdb.subscriptions.find().sort(lastmod:1).each { sub ->
@@ -119,7 +140,14 @@ class DataloadController {
           // t.addToIds(new TitleSID(namespace:id.type,identifier:id.value));
         }
 
-        t.save();
+        if ( t.save() ) {
+        }
+        else {
+          log.error("Problem saving title instance");
+          t.errors.each { te ->
+            log.error(te);
+          }
+        }
 
         // create a new OrgRole for this title that links it with the publisher org.
         if ( title.publisher ) {
@@ -182,7 +210,9 @@ class DataloadController {
     }
 
     // Finally... tipps
-    mdb.tipps.find().sort(lastmod:1).each { tipp ->
+    def cursor = mdb.tipps.find().sort(lastmod:1)
+    cursor.addOption(com.mongodb.Bytes.QUERYOPTION_NOTIMEOUT);
+    cursor.each { tipp ->
       try {
         log.debug("update tipp ${tipp}");
         def title = TitleInstance.findByImpId(tipp.titleid.toString())
@@ -290,6 +320,7 @@ class DataloadController {
         log.error("Problem loading tipp instance",e);
       }
     }
+    cursor.close();
 
     redirect(controller:'home')
   }
@@ -368,7 +399,8 @@ class DataloadController {
                                               endIssue:ie.tipp.endIssue,
                                               embargo:ie.tipp.embargo,
                                               coverageDepth:ie.tipp.coverageDepth,
-                                              coverageNote:ie.tipp.coverageNote).save(flush:true)
+                                              coverageNote:ie.tipp.coverageNote,
+                                              ieReason:'No ST specific data, defaulting from SO').save(flush:true)
             // new_subscription.issueEntitlements.add(new_ie)
           }
           log.debug("Added ${count} issue entitlements from subscription ${db_sub.id}")
@@ -398,7 +430,8 @@ class DataloadController {
                                                   embargo:nvl(st.embargo,tipp.embargo),
                                                   coverageDepth:tipp.coverageDepth,
                                                   coverageNote:tipp.coverageNote,
-                                                  coreTitle: is_core)
+                                                  coreTitle: is_core,
+                                                  ieReason:"Subscription Taken data lists this titles incluson as \"${st.included_st}\"")
                 if ( !new_ie.save() ) {
                   new_ie.errors.each { e ->
                     log.error("Problem saving ie ${e}")

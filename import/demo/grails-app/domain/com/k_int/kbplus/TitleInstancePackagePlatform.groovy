@@ -69,7 +69,7 @@ class TitleInstancePackagePlatform {
     status(nullable:true, blank:false);
     option(nullable:true, blank:false);
     sub(nullable:true, blank:false);
-    hostPlatformURL(nullable:true, blank:false);
-    derivedFrom(nullable:true, blank:false);
+    hostPlatformURL(nullable:true, blank:true);
+    derivedFrom(nullable:true, blank:true);
   }
 }

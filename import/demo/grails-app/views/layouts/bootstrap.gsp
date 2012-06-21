@@ -59,16 +59,30 @@
                 </ul>
               </li>
 
-              <g:if test="contextInstitution">
+              <g:if test="${user}">
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Forms and Actions <b class="caret"></b> </a>
                   <ul class="dropdown-menu">
-                    <li <%= ( ( 'myInstitutions'== controllerName ) && ( 'manageLicenses'==actionName ) ) ? ' class="active"' : '' %>>
-                       <g:link controller="myInstitutions" action="manageLicenses">Manage Licenses</g:link></li>
 
                     <li <%= ( ( 'myInstitutions'== controllerName ) && ( 'manageAffiliations'==actionName ) ) ? ' class="active"' : '' %>>
                        <g:link controller="myInstitutions" action="manageAffiliations">Manage Affiliations</g:link></li>
 
+                     <li><hr/></li>
+                     <g:if test="${user.affiliations && user.affiliations.size() > 0}">
+                       <li>Manage Licenses For...</li>
+                       <g:each in="${user.affiliations}" var="ua">
+                         <li>
+                           <g:link controller="myInstitutions" 
+                                   action="manageLicenses" 
+                                   params="${[shortcode:ua.org.shortcode]}" 
+                                   class="btn btn-primary btn-small"></i>${ua.org.name}</g:link>
+                         </li>
+                       </g:each>
+                     </g:if>
+                     <g:else>
+                       <li>Please use the manage affiliations option to request access
+                                to your home institution</li>
+                     </g:else>
                   </ul>
                 </li>
               </g:if>

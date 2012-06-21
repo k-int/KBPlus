@@ -18,7 +18,6 @@ def possible_date_formats = [
   new SimpleDateFormat('yyyy')
 ];
 
-
 // Setup mongo
 def options = new com.mongodb.MongoOptions()
 options.socketKeepAlive = true
@@ -61,6 +60,10 @@ if ( num_platforms_listed == 0 ) {
   println("**WARNING** num_platforms_listed = 0, defaulting to 1!");
 }
 
+def default_tags = []
+if ( args.length > 1 ) {
+  default_tags.add(args[1]);
+}
 
 println("Read column headings: ${so_header_line}");
 
@@ -150,16 +153,16 @@ while ((nl = r.readNext()) != null) {
   
       // If there is an identifier, set up the appropriate matching...
       if ( present(nl[1]) ) 
-        target_identifiers.add([type:'ISSN', value:nl[1]])
+        target_identifiers.add([type:'ISSN', value:nl[1].trim()])
       if ( present(nl[2]) ) 
-        target_identifiers.add([type:'eISSN', value:nl[2]])
+        target_identifiers.add([type:'eISSN', value:nl[2].trim()])
       if ( present(nl[9]) ) 
-        tipp_private_identifiers.add([type:'KBART', value:nl[9]])
+        tipp_private_identifiers.add([type:'KBART', value:nl[9].trim()])
       if ( present(nl[14]) ) 
-        target_identifiers.add([type:'DOI', value:nl[14]])
+        target_identifiers.add([type:'DOI', value:nl[14].trim()])
   
       for ( int i=0; i<num_prop_id_cols; i++ ) {
-        tipp_private_identifiers.add([type:'EXTERNAL', value:nl[15+i]])
+        tipp_private_identifiers.add([type:'EXTERNAL', value:nl[15+i].trim()])
       }
   
       def title = lookupOrCreateTitle(title:nl[0],
@@ -246,6 +249,7 @@ while ((nl = r.readNext()) != null) {
           tipp.source = "${args[0]}:${rownum}"
           tipp.sourceContext = 'KBPlus'
           tipp.ies.add(sub._id)
+          tipp.tags = default_tags;
   
           db.tipps.save(tipp)
         }
@@ -309,7 +313,11 @@ def present(v) {
 
 def lookupOrCreateOrg(Map params = [:]) {
   // println("lookupOrCreateOrg(${params})");
-  def org = params.db.orgs.findOne(name:params.name)
+
+  def target_norm_name = params.name?.trim().toLowerCase();
+
+  def org = params.db.orgs.findOne(normName:target_norm_name)
+
   if ( org == null ) {
     org = [
       _id:new org.bson.types.ObjectId(),
@@ -359,6 +367,12 @@ def lookupOrCreateTitle(Map params=[:]) {
     }
     if ( title ) {
       inc('titles_matched_by_identifier',params.stats);
+      // If the located title doesn't have a publisher, but the current record does, add the default
+      if ( !title.publisher && params.publisher ) {
+        title.publisher = params.publisher._id;
+        title.lastmod = System.currentTimeMillis()
+        params.db.titles.save(title);
+      }
     }
     else {
       // println("Unable to match on any of ${params.identifier}");
@@ -367,18 +381,6 @@ def lookupOrCreateTitle(Map params=[:]) {
   else {
     inc('titles_without_identifiers',params.stats);
   }
-
-  // if ( !title && params.title) { // If no match, and title present, try to match on title
-  //   println("Attempting to match on title string ${params.title}");
-  //   title = params.db.titles.findOne(title:params.title);
-  //   if ( title ) {
-  //     println("  -> Matched on title");
-  //     inc('titles_matched_by_title',params.stats);
-  //   }
-  //   else {
-  //     println("  -> No match on title");
-  //   }
-  // }
 
   if (!title)  {
     // Unable to locate title with identifier given... Try other dedup matches on other props if needed

@@ -35,7 +35,8 @@
 			<div class="span10">
 
 				<div class="page-header">
-					<h1>Organisation: ${orgInstance.name}</h1>
+					<h1>${orgInstance.name}</h1>
+                                        <hr/>
 				</div>
 
 				<g:if test="${flash.message}">
@@ -101,7 +102,7 @@
                                                 <g:if test="${i.sub}"><g:link controller="subscription" action="show" id="${i.sub.id}">Subscription: ${i.sub.name}</g:link></g:if>
                                                 <g:if test="${i.lic}">License: ${i.lic.id}</g:if>
                                                 <g:if test="${i.title}"><g:link controller="titleInstance" action="show" id="${i.title.id}">Title: ${i.title.title}</g:link></g:if>
-                                               (${i.roleType.value}) </li>
+                                               (${i.roleType?.value}) </li>
 					  </g:each>
 
                                           </ui></dd>

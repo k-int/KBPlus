@@ -70,9 +70,11 @@ if ( csventry ) {
     boolean has_data = false
 
     println("Lookung up licensor ${nl[25]}");
-    def licensor_org = db.orgs.findOne(name:nl[25]);
+    def norm_licensor_name = nl[25].trim().toLowerCase()
+    def licensor_org = db.orgs.findOne(normname:norm_licensor_name);
     println("Lookung up licensee ${nl[27]}");
-    def licensee_org = db.orgs.findOne(name:nl[27]);
+    def norm_licensee_name = nl[27].trim().toLowerCase()
+    def licensee_org = db.orgs.findOne(normname:norm_licensee_name);
 
     if ( licensor_org  ) {
       println("got licensor ${licensor_org}");
