@@ -72,13 +72,14 @@ while ((nl = r.readNext()) != null) {
       if ( org.consortia == null ) {
         org.consortia = []
       }
+
       if ( ! org.consortia.contains(cons_org._id) ) {
         org.consortia.add(cons_org._id)
         db.orgs.save(org);
       }
     }
     else {
-      println("Failed to locate org(${nl[1]}) to be a member of(${nl[0]})");
+      println("Failed to locate org(${nl[1]}=${org}) to be a member of(${nl[0]}=${cons_org})");
       badfile << "${nl[0]},${nl[1]},${nl[2]},\"Failure to lookup org\"\n"
       bad=true
     }

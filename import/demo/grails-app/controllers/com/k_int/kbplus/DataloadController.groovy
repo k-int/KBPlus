@@ -510,7 +510,15 @@ class DataloadController {
                                licenseeRef:lic.licensee_ref,
                                licenseType:lic.license_type,
                                licenseStatus:lic.license_status,
-                               lastmod:lic.lastmod).save();
+                               lastmod:lic.lastmod);
+
+      if ( l.save() ) {
+      }
+      else {
+        l.errors.each { le ->
+          log.error(le);
+        }
+      }
 
       if ( licensor_org )
         assertOrgLicenseLink(licensor_org, l, lookupOrCreateRefdataEntry('Organisational Role', 'Licensor'));
@@ -524,7 +532,13 @@ class DataloadController {
         if ( sub ) {
           sub.owner = l
           sub.noticePeriod = lic.notice_period
-          sub.save();
+          if ( sub.save() ) {
+          }
+          else {
+            sub.errors.each { se ->
+              log.error(se);
+            }
+          }
           log.debug("Updated license information");
         }
         else {
@@ -545,6 +559,9 @@ class DataloadController {
       possibleNote(lic.pca_note,'PCANote',l);
 
     }
+
+    log.debug("License processing complete");
+
     redirect(controller:'home')
   }
 
