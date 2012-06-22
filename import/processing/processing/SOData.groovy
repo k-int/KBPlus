@@ -215,7 +215,7 @@ while ((nl = r.readNext()) != null) {
   
             println("Process platform ${nl[position]} / ${platform_role} / ${platform_url}");
   
-            if ( platform_role == 'host' ) {
+            if ( platform_role.trim() == 'host' ) {
               host_platform = platform;
               host_platform_url = platform_url
             }
