@@ -75,7 +75,7 @@ if ( csventry ) {
 
     if ( !licensor_org ) {
       licensor_org = [:]
-      licensor_org._id = new org.bson.types.ObjectId(),
+      licensor_org._id = new org.bson.types.ObjectId()
       licensor_org.name = nl[25].trim()
       licensor_org.normName = norm_licensor_name
       db.orgs.save(licensor_org);
