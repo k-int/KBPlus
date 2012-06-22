@@ -103,8 +103,6 @@ log4j = {
            'grails.app.domain',
            'grails.app.conf',
            'grails.app.jobs' // ,
-:sa
-:wq
            // 'org.springframework.security'
 }
 
