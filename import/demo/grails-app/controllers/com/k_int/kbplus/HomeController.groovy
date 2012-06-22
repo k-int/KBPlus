@@ -5,13 +5,14 @@ import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.MarkupBuilder
 import com.gmongo.GMongo
 import grails.plugins.springsecurity.Secured
-
+import com.k_int.kbplus.auth.*;
 
 class HomeController {
 
   def ESWrapperService
   def gazetteerService
   def mongoService
+  def springSecurityService
 
   // Map the parameter names we use in the webapp with the ES fields
   def reversemap = ['subject':'subject', 'provider':'provid', 'studyMode':'presentations.studyMode','qualification':'qual.type','level':'qual.level' ]
@@ -28,6 +29,8 @@ class HomeController {
     def db = mongoService.getMongo().getDB("xcri")
     org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
     org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
+
+    result.user = User.get(springSecurityService.principal.id)
 
     try {
       if ( params.q && params.q.length() > 0) {

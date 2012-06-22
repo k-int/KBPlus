@@ -36,7 +36,7 @@ class MyInstitutionsController {
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def manageLicenses() {
+  def licenses() {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result
@@ -66,13 +66,14 @@ class MyInstitutionsController {
         break
       case 'POST':
         def licenseInstance = new License(params)
-        if (!licenseInstance.save(flush: true)) {
-          render view: 'create', model: [licenseInstance: licenseInstance]
+        // the url will set the shortcode of the organisation that this license should be linked with.
+        //if (!licenseInstance.save(flush: true)) {
+          render view: 'newLicense', model: [licenseInstance: licenseInstance]
           return
-        }
+        //}
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'license.label', default: 'License'), licenseInstance.id])
-        redirect action: 'show', id: licenseInstance.id
+        //flash.message = message(code: 'default.created.message', args: [message(code: 'license.label', default: 'License'), licenseInstance.id])
+        //redirect action: 'show', id: licenseInstance.id
         break
     }
   }

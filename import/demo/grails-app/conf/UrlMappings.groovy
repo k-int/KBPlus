@@ -7,7 +7,7 @@ class UrlMappings {
 			}
 		}
 
-                "/myInstitutions/$shortcode/licenses/"(controller:'myInstitutions',action:'manageLicenses')
+                "/myInstitutions/$shortcode/$action"(controller:'myInstitutions')
 
 		"/"(controller:"home")
 		"500"(view:'/error')

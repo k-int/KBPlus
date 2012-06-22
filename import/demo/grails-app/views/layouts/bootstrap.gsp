@@ -85,8 +85,7 @@
                          <li>
                            <g:link controller="myInstitutions" 
                                    action="manageLicenses" 
-                                   params="${[shortcode:ua.org.shortcode]}" 
-                                   class="btn btn-primary btn-small"></i>${ua.org.name}</g:link>
+                                   params="${[shortcode:ua.org.shortcode]}">${ua.org.name}</g:link>
                          </li>
                        </g:each>
                      </g:if>
