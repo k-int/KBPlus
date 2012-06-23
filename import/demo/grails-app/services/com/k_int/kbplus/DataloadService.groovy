@@ -5,6 +5,9 @@ class DataloadService {
   def executorService
   def ESWrapperService
 
+  def dataload_running=false
+  def dataload_stage=-1
+
   def updateFTIndexes() {
     System.out.println("updateFTIndexes");
     log.debug("updateFTIndexes");
@@ -84,5 +87,15 @@ class DataloadService {
     }
 
     log.debug("Completed processing on ${domain.name} - saved ${count} records");
+  }
+
+  def getReconStatus() {
+    
+    def result = [
+      active:dataload_running,
+      stage:dataload_stage
+    ]
+
+    result
   }
 }

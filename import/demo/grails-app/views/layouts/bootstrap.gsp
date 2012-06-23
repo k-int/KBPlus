@@ -25,6 +25,17 @@
 
     <g:layoutHead/>
     <r:layoutResources/>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', '${grailsApplication.config.kbplus.analytics.code}']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
   </head>
 
   <body>
@@ -73,9 +84,8 @@
                        <g:each in="${user.affiliations}" var="ua">
                          <li>
                            <g:link controller="myInstitutions" 
-                                   action="manageLicenses" 
-                                   params="${[shortcode:ua.org.shortcode]}" 
-                                   class="btn btn-primary btn-small"></i>${ua.org.name}</g:link>
+                                   action="licenses" 
+                                   params="${[shortcode:ua.org.shortcode]}">${ua.org.name}</g:link>
                          </li>
                        </g:each>
                      </g:if>
@@ -93,6 +103,10 @@
                   <ul class="dropdown-menu">
                     <li <%= ( ( 'admin'== controllerName ) && ( 'manageAffiliationRequests'==actionName ) ) ? ' class="active"' : '' %>>
                        <g:link controller="admin" action="manageAffiliationRequests">Manage Affiliation Requests</g:link></li>
+                    <li><hr/></li>
+                    <li <%= ( ( 'admin'== controllerName ) && ( 'reconcile'==actionName ) ) ? ' class="active"' : '' %>>
+                       <g:link controller="admin" action="reconcile">Manage Data Reconciliation</g:link>
+                    </li>
                   </ul>
                 </li>
 

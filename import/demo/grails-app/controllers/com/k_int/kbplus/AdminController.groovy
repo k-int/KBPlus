@@ -6,6 +6,7 @@ import grails.plugins.springsecurity.Secured
 class AdminController {
 
   def springSecurityService
+  def dataloadService
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def index() { }
@@ -48,4 +49,16 @@ class AdminController {
     redirect(action: "manageAffiliationRequests")
   }
 
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def reconcile() {
+    result.recon_status = dataloadService.getReconStatus();
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def startReconciliation() {
+    log.debug("Starting reconciliation process");
+    dataloadService.startReconciliation();
+    redirect(action:'reconcile');
+  }
 }

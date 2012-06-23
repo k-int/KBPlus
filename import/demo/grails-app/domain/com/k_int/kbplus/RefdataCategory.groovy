@@ -12,4 +12,19 @@ class RefdataCategory {
 
   static constraints = {
   }
+
+  static def lookupOrCreate(category_name, value) {
+    def cat = RefdataCategory.findByDesc(category_name);
+    if ( !cat ) {
+      cat = new RefdataCategory(desc:category_name).save();
+    }
+
+    def result = RefdataValue.findByOwnerAndValue(cat, value)
+
+    if ( !result ) {
+      result = new RefdataValue(owner:cat, value:value);
+    }
+
+    result
+  }
 }

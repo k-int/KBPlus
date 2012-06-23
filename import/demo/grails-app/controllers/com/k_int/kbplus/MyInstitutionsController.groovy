@@ -36,9 +36,15 @@ class MyInstitutionsController {
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def manageLicenses() {
+  def licenses() {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+    def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
+    // We want to find all org role objects for this instutution where role type is licensee
+    result.licenses = OrgRole.findAllByOrgAndRoleType(result.institution, licensee_role)
+
+    // Find all licenses for this institution...
     result
   }
 
@@ -65,17 +71,21 @@ class MyInstitutionsController {
         [licenseInstance: new License(params)]
         break
       case 'POST':
-        def licenseInstance = new License(params)
+        def licenseInstance = new License(reference:params.new_license_ref_name)
+        // the url will set the shortcode of the organisation that this license should be linked with.
         if (!licenseInstance.save(flush: true)) {
-          render view: 'create', model: [licenseInstance: licenseInstance]
+          render view: 'editLicense', model: [licenseInstance: licenseInstance]
           return
         }
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'license.label', default: 'License'), licenseInstance.id])
-        redirect action: 'show', id: licenseInstance.id
+        //flash.message = message(code: 'default.created.message', args: [message(code: 'license.label', default: 'License'), licenseInstance.id])
+        //redirect action: 'show', id: licenseInstance.id
         break
     }
   }
 
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def editLicense() {
+  }
 
 }

@@ -82,14 +82,14 @@
                                         <g:if test="${orgInstance?.outgoingCombos}">
                                           <dt><g:message code="org.outgoingCombos.label" default="Outgoing Combos" /></dt>
 					  <g:each in="${orgInstance.outgoingCombos}" var="i">
-                                            <dd>${i.type.value} ${i.toOrg?.name}</dd>
+                                            <dd>${i.type?.value} ${i.toOrg?.name}</dd>
 					</g:each>
 					</g:if>
 
                                         <g:if test="${orgInstance?.incomingCombos}">
                                           <dt><g:message code="org.incomingCombos.label" default="Incoming Combos" /></dt>
 					  <g:each in="${orgInstance.incomingCombos}" var="i">
-                                            <dd>${i.type.value} ${i.fromOrg?.name}</dd>
+                                            <dd>${i.type?.value} ${i.fromOrg?.name}</dd>
 					</g:each>
 					</g:if>
 

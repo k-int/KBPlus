@@ -28,7 +28,7 @@ def mongo = new com.gmongo.GMongo('127.0.0.1', options);
 def db = mongo.getDB('kbplus_ds_reconciliation')
 
 if ( db == null ) {
-  println("Failed to configure db.. abort");
+  println("ERROR: Failed to configure db.. abort");
   System.exit(1);
 }
 
@@ -41,7 +41,7 @@ def csventry = null;
 def docstore_components = []
 
 zipFile.entries().each {
-   println("zip entry: ${it.name}");
+   // println("zip entry: ${it.name}");
    if ( it.name?.endsWith(".csv") ) {
      csventry = it;
    }
@@ -54,11 +54,11 @@ def stats = [:]
 def bad_rows = []
 
 if ( csventry ) {
-  println("Processing csv: ${csventry.name}");
+  // println("Processing csv: ${csventry.name}");
   CSVReader r = new CSVReader( new InputStreamReader(zipFile.getInputStream(csventry)))
   String [] nl;
   String [] lic_header_line = r.readNext()
-  println("Read column headings: ${lic_header_line}");
+  // println("Read column headings: ${lic_header_line}");
   int rownum = 0;
   int lic_bad = 0;
   int processed = 0;
@@ -69,16 +69,25 @@ if ( csventry ) {
     String badreason = null;
     boolean has_data = false
 
-    println("Lookung up licensor ${nl[25]}");
+    // println("Lookung up licensor \"${nl[25]}\"");
     def norm_licensor_name = nl[25].trim().toLowerCase()
-    def licensor_org = db.orgs.findOne(normname:norm_licensor_name);
-    println("Lookung up licensee ${nl[27]}");
+    def licensor_org = db.orgs.findOne(normName:norm_licensor_name);
+
+    if ( !licensor_org ) {
+      licensor_org = [:]
+      licensor_org._id = new org.bson.types.ObjectId()
+      licensor_org.name = nl[25].trim()
+      licensor_org.normName = norm_licensor_name
+      db.orgs.save(licensor_org);
+    }
+
     def norm_licensee_name = nl[27].trim().toLowerCase()
-    def licensee_org = db.orgs.findOne(normname:norm_licensee_name);
+    // println("Lookung up licensee \"${nl[27]}\" - find db.org.({normNam:\"${norm_licensee_name}\"})");
+    def licensee_org = db.orgs.findOne(normName:norm_licensee_name);
 
     if ( licensor_org  ) {
-      println("got licensor ${licensor_org}");
-      println("got licensee ${licensee_org}");
+      // println("got licensor ${licensor_org}");
+      // println("got licensee ${licensee_org}");
 
       def license = [
         _id:new org.bson.types.ObjectId(),
@@ -118,11 +127,14 @@ if ( csventry ) {
       ]
 
       for ( int i=31; i<nl.length; i++ ) {
-        println("Process subscription identifier ${nl[i]}");
+        // println("Process subscription identifier ${nl[i]}");
         def sub_lookup = db.subscriptions.findOne(identifier:nl[i])
         if ( sub_lookup ) {
-          println("located subscription : ${sub_lookup}");
+          // println("located subscription : ${sub_lookup}");
           license.subscriptions.add(sub_lookup._id);
+        }
+        else {
+          println("ERROR: Unable to locate subscription ${nl[i]} whilst processing license");
         }
       }
 
@@ -131,7 +143,7 @@ if ( csventry ) {
       println(license)
     }
     else {
-      println("ERROR: Unable to lookup licensor or licensee");
+      println("-> ERROR: Unable to lookup licensor \"${norm_licensor_name}\"");
     }
   }
 
@@ -139,7 +151,7 @@ if ( csventry ) {
 
 }
 else {
-  println("NO CSV In zipfile");
+  println("ERROR: NO CSV In zipfile");
 }
 
 
