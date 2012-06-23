@@ -78,14 +78,13 @@
                     <li <%= ( ( 'myInstitutions'== controllerName ) && ( 'manageAffiliations'==actionName ) ) ? ' class="active"' : '' %>>
                        <g:link controller="myInstitutions" action="manageAffiliations">Manage Affiliations</g:link></li>
 
-                     <li><hr/></li>
+                     <li class="divider"></li>
                      <g:if test="${user.affiliations && user.affiliations.size() > 0}">
-                       <li>Manage Licenses For...</li>
                        <g:each in="${user.affiliations}" var="ua">
                          <li>
                            <g:link controller="myInstitutions" 
                                    action="licenses" 
-                                   params="${[shortcode:ua.org.shortcode]}">${ua.org.name}</g:link>
+                                   params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - licenses</g:link>
                          </li>
                        </g:each>
                      </g:if>
@@ -103,7 +102,7 @@
                   <ul class="dropdown-menu">
                     <li <%= ( ( 'admin'== controllerName ) && ( 'manageAffiliationRequests'==actionName ) ) ? ' class="active"' : '' %>>
                        <g:link controller="admin" action="manageAffiliationRequests">Manage Affiliation Requests</g:link></li>
-                    <li><hr/></li>
+                    <li class="divider"></li>
                     <li <%= ( ( 'admin'== controllerName ) && ( 'reconcile'==actionName ) ) ? ' class="active"' : '' %>>
                        <g:link controller="admin" action="reconcile">Manage Data Reconciliation</g:link>
                     </li>
