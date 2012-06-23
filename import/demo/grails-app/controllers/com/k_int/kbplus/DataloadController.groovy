@@ -3,8 +3,6 @@ package com.k_int.kbplus
 import com.k_int.kbplus.*
 import grails.plugins.springsecurity.Secured
 
-
-
 class DataloadController {
 
   def mongoService
