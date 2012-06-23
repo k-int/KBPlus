@@ -24,7 +24,7 @@ class DataloadService {
     System.out.println("updateFTIndexes");
     log.debug("updateFTIndexes");
     def future = executorService.submit({
-          doFTUpdate()
+      doFTUpdate()
     } as java.util.concurrent.Callable)
     log.debug("updateFTIndexes returning");
   }

@@ -51,7 +51,7 @@
           </a>
           
           <sec:ifLoggedIn>
-            <a class="brand" href="${createLink(uri: '/')}">KB+ Data Import Explorer</a>
+            <a class="brand" href="${createLink(uri: '/')}">KB+</a>
           </sec:ifLoggedIn>
 
           <div class="nav-collapse">
