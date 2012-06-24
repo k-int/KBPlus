@@ -22,6 +22,7 @@
                   <th>Reference Description</th>
                   <th>Licensor</th>
                   <th>Licensee</th>
+                  <th>Status</th>
                   <th>Type</th>
                 </tr>
               <g:each in="${licenses}" var="l">
@@ -33,6 +34,7 @@
                               params="${[shortcode:params.shortcode]}">${l.reference}</g:link></td>
                   <td>${l.licensor?.name}</td>
                   <td>${l.licensee?.name}</td>
+                  <td>${l.status?.value}</td>
                   <td>${l.type?.value}</td>
                 </tr>
               </g:each>

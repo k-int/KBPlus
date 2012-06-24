@@ -132,6 +132,7 @@ class MyInstitutionsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
+    result.license = License.get(params.id)
     result
   }
 
