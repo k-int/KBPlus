@@ -22,7 +22,8 @@ class RefdataCategory {
     def result = RefdataValue.findByOwnerAndValue(cat, value)
 
     if ( !result ) {
-      result = new RefdataValue(owner:cat, value:value);
+      new RefdataValue(owner:cat, value:value).save(fliush:true);
+      result = RefdataValue.findByOwnerAndValue(cat, value);
     }
 
     result

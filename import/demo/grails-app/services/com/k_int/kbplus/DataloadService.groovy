@@ -275,7 +275,7 @@ class DataloadService {
           if ( title.publisher ) {
             def publisher_org = Org.findByImpId(title.publisher.toString());
             if ( publisher_org ) {
-              log.debug("Assert publisher org link with ${publisher_org.name}");
+              // log.debug("Assert publisher org link with ${publisher_org.name}");
               def pub_role = lookupOrCreateRefdataEntry('Organisational Role', 'Publisher');
               assertOrgTitleLink(publisher_org, t, pub_role);
             }
@@ -304,7 +304,7 @@ class DataloadService {
                           impId:pkg._id.toString());
   
           if ( p.save(flush:true) ) {
-            log.debug("New package ${pkg.identifier} saved");
+            //log.debug("New package ${pkg.identifier} saved");
             if ( cp ) {
               def cp_role = lookupOrCreateRefdataEntry('Organisational Role', 'Content Provider');
               assertOrgPackageLink(cp, p, cp_role);
@@ -320,7 +320,7 @@ class DataloadService {
   
         }
         else {
-          log.debug("got package ${pkg._id.toString()}");
+          // log.debug("got package ${pkg._id.toString()}");
         }
   
         pkg.subs.each { sub ->
@@ -336,7 +336,7 @@ class DataloadService {
       cursor.addOption(com.mongodb.Bytes.QUERYOPTION_NOTIMEOUT);
       cursor.each { tipp ->
         try {
-          log.debug("update tipp ${tipp}");
+          // log.debug("update tipp ${tipp}");
           def title = TitleInstance.findByImpId(tipp.titleid.toString())
           def pkg = Package.findByImpId(tipp.pkgid.toString())
           def platform = Platform.findByImpId(tipp.platformid.toString())
@@ -373,13 +373,13 @@ class DataloadService {
       
               if ( tipp.identifiers ) {
                 tipp.identifiers.each { tippid ->
-                  log.debug("lookup and add tippid ${tippid}");
+                  // log.debug("lookup and add tippid ${tippid}");
                   def canonical_identifier = lookupOrCreateCanonicalIdentifier(tippid.type, tippid.value);
                   dbtipp.ids.add(new IdentifierOccurrence(identifier:canonical_identifier, tipp:dbtipp));
                 }
               }
               else {
-                log.debug("no tipp identifiers");
+                // log.debug("no tipp identifiers");
               }
       
               if ( ! dbtipp.save() ) {
@@ -389,11 +389,11 @@ class DataloadService {
                 }
               }
               else {
-                log.debug("dbtipp updated");
+                // log.debug("dbtipp updated");
                 if ( tipp.additionalPlatformLinks ) {
-                  log.debug("additional platform links");
+                  // log.debug("additional platform links");
                   tipp.additionalPlatformLinks.each { apl ->
-                    log.debug("Additional platform link : ${apl}");
+                    // log.debug("Additional platform link : ${apl}");
                     def admin_platform = Platform.findByImpId(apl.platformId.toString());
                     if ( admin_platform ) {
                       new PlatformTIPP(tipp:dbtipp,
@@ -408,9 +408,9 @@ class DataloadService {
                 }
   
                 if ( tipp.ies ) {
-                  log.debug("Issue Entitlements");
+                  // log.debug("Issue Entitlements");
                   tipp.ies.each { ie ->
-                    log.debug("Checking issue entitlement ${ie.toString()}");
+                    // log.debug("Checking issue entitlement ${ie.toString()}");
                     def sub = Subscription.findByImpId(ie.toString());
                     IssueEntitlement dbie = IssueEntitlement.findBySubscriptionAndTipp(sub, dbtipp) ?: new IssueEntitlement(subscription:sub, 
                                                 status: RefdataValue.findByValue('UnknownEntitlement'),
@@ -428,7 +428,7 @@ class DataloadService {
                   }
                 }
                 else { 
-                  log.debug("No Issue Entitlements");
+                  // log.debug("No Issue Entitlements");
                 }
   
               }
@@ -444,8 +444,6 @@ class DataloadService {
       }
       cursor.close();
     }
-
-    redirect(controller:'home')
   }
 
   def reloadSTData() {
@@ -464,7 +462,7 @@ class DataloadService {
           def db_sub = Subscription.findByImpId(sub.sub.toString());
           def db_org = Org.findByImpId(sub.org.toString())
     
-          log.debug("Create a link between ${db_org} and ${db_sub}");
+          // log.debug("Create a link between ${db_org} and ${db_sub}");
     
           // create a new subscription - an instance of an actual org taking up a specific subscription
           def new_subscription = new Subscription(
@@ -477,7 +475,7 @@ class DataloadService {
                                         type: RefdataValue.findByValue('Subscription Taken') )
     
           if ( new_subscription.save() ) {
-            log.debug("New subscriptionT saved...");
+            // log.debug("New subscriptionT saved...");
           }
           else {
             log.error("Problem saving new subscription, ${new_subscription.errors}");
@@ -492,7 +490,7 @@ class DataloadService {
           new_subscription.save(flush:true);
   
           if ( org_link.save() ) {
-            log.debug("New org link saved...");
+            // log.debug("New org link saved...");
           }
           else {
             log.error("Problem saving new org link, ${org_link.errors}");
@@ -539,7 +537,7 @@ class DataloadService {
                   if ( st.core_title == 'y' || st.core_title == 'Y' )
                     is_core=true;
     
-                  log.debug("Adding new entitlement for looked up tipp ${tipp.id}, is_core=${is_core}")
+                  // log.debug("Adding new entitlement for looked up tipp ${tipp.id}, is_core=${is_core}")
   
                   def new_ie = new IssueEntitlement(status: RefdataValue.findByValue('UnknownEntitlement'),
                                                     subscription: new_subscription,
@@ -565,7 +563,7 @@ class DataloadService {
                 else {
                   log.error("Unable to locate TIPP instance for ${st.tipp_id.toString()}");
                 }
-                log.debug("Done st...")
+                // log.debug("Done st...")
               }
               else {
                 log.debug("omit ${st}");
@@ -593,9 +591,7 @@ class DataloadService {
       }
   
     } 
-
     log.debug("Processed ${subcount} subscriptions");
-    redirect(controller:'home')
   }
 
   def reloadLicenses() {
@@ -707,8 +703,6 @@ class DataloadService {
       }
     }
     log.debug("License processing complete");
-
-    redirect(controller:'home')
   }
 
   def possibleNote(content, type, license) {

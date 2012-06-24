@@ -75,16 +75,54 @@ class MyInstitutionsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def newLicense() {
+    def user = User.get(springSecurityService.principal.id)
+    def org = Org.findByShortcode(params.shortcode)
+    
     switch (request.method) {
       case 'GET':
         [licenseInstance: new License(params)]
         break
       case 'POST':
-        def licenseInstance = new License(reference:params.new_license_ref_name)
+        def baseLicense = params.baselicense ? License.get(params.baselicense) : null;
+        def license_type = RefdataCategory.lookupOrCreate('License Type','Concrete')
+        def licenseInstance = new License(reference:params.new_license_ref_name, 
+                                          type:license_type,
+                                          concurrentUsers:baseLicense?.concurrentUsers,
+                                          remoteAccess:baseLicense?.remoteAccess,
+                                          walkinAccess:baseLicense?.walkinAccess,
+                                          multisiteAccess:baseLicense?.multisiteAccess,
+                                          partnersAccess:baseLicense?.partnersAccess,
+                                          alumniAccess:baseLicense?.alumniAccess,
+                                          ill:baseLicense?.ill,
+                                          coursepack:baseLicense?.coursepack,
+                                          vle:baseLicense?.vle,
+                                          enterprise:baseLicense?.enterprise,
+                                          pca:baseLicense?.pca,
+                                          noticePeriod:baseLicense?.noticePeriod,
+                                          licenseUrl:baseLicense?.licenseUrl)
+
         // the url will set the shortcode of the organisation that this license should be linked with.
         if (!licenseInstance.save(flush: true)) {
+          log.error("Problem saving license ${licenseInstance.errors}");
           render view: 'editLicense', model: [licenseInstance: licenseInstance]
           return
+        }
+        else {
+          log.debug("Save ok");
+          def prole = RefdataCategory.lookupOrCreate('Organisational Role','Licensee')
+          if ( org.links ) {
+            log.debug("adding org link to new license");
+            org.links.add(new OrgRole(lic:licenseInstance, org:org, roleType:prole));
+          }
+          else {
+            log.debug("create org link list");
+            org.links = [new OrgRole(lic:licenseInstance, org:org, roleType:prole)]
+          }
+          if ( org.save(flush:true) ) {
+          }
+          else {
+            log.error("Problem saving org links to license ${org.errors}");
+          }
         }
 
         //flash.message = message(code: 'default.created.message', args: [message(code: 'license.label', default: 'License'), licenseInstance.id])
@@ -94,7 +132,7 @@ class MyInstitutionsController {
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def editLicense() {
+  def licenseDetails() {
   }
 
 }

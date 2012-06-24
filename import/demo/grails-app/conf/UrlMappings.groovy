@@ -8,6 +8,7 @@ class UrlMappings {
 		}
 
                 "/myInstitutions/$shortcode/$action"(controller:'myInstitutions')
+                "/myInstitutions/$shortcode/$action/$id"(controller:'myInstitutions')
 
 		"/"(controller:"home")
 		"500"(view:'/error')
