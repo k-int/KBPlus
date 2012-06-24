@@ -15,9 +15,8 @@
             <table>
             <g:each in="${licenses}" var="or">
               <tr>
-                <td>${or.lic.reference}</td>
-                <td>${or.lic.reference}</td>
-                <td>${or.lic.reference}</td>
+                <td>${or.reference}</td>
+                <td>${or.type?.value}</td>
               </tr>
             </g:each>
             </table>

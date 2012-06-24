@@ -52,13 +52,15 @@ class AdminController {
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def reconcile() {
+    def result = [:]
     result.recon_status = dataloadService.getReconStatus();
+    result
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def startReconciliation() {
     log.debug("Starting reconciliation process");
-    dataloadService.startReconciliation();
+    dataloadService.requestReconciliation();
     redirect(action:'reconcile');
   }
 }

@@ -34,7 +34,7 @@ class Subscription {
              owner column:'sub_owner_license_fk'
               name column:'sub_name'
         identifier column:'sub_identifier'
-             impId column:'sub_imp_id'
+             impId column:'sub_imp_id', index:'sub_imp_id_idx'
          startDate column:'sub_start_date'
            endDate column:'sub_end_date'
         instanceOf column:'sub_parent_sub_fk'

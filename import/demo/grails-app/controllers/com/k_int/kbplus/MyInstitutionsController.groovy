@@ -41,10 +41,19 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
+    def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
+
+    log.debug("looking up template licenses for ${template_license_type}");
+    def model_licenses = License.findAllByType(template_license_type);
+    log.debug("Found ${model_licenses}");
+
     // We want to find all org role objects for this instutution where role type is licensee
-    result.licenses = OrgRole.findAllByOrgAndRoleType(result.institution, licensee_role)
+    result.licenses = []
+    result.licenses.addAll(model_licenses)
 
     // Find all licenses for this institution...
+    result.licenses.addAll(OrgRole.findAllByOrgAndRoleType(result.institution, licensee_role).collect { it.lic } )
+
     result
   }
 
