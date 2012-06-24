@@ -42,10 +42,7 @@ class MyInstitutionsController {
     result.institution = Org.findByShortcode(params.shortcode)
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
     def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
-
-    log.debug("looking up template licenses for ${template_license_type}");
     def model_licenses = License.findAllByType(template_license_type);
-    log.debug("Found ${model_licenses}");
 
     // We want to find all org role objects for this instutution where role type is licensee
     result.licenses = []
@@ -84,7 +81,7 @@ class MyInstitutionsController {
         break
       case 'POST':
         def baseLicense = params.baselicense ? License.get(params.baselicense) : null;
-        def license_type = RefdataCategory.lookupOrCreate('License Type','Concrete')
+        def license_type = RefdataCategory.lookupOrCreate('License Type','Actual')
         def licenseInstance = new License(reference:params.new_license_ref_name, 
                                           type:license_type,
                                           concurrentUsers:baseLicense?.concurrentUsers,
@@ -109,15 +106,14 @@ class MyInstitutionsController {
         }
         else {
           log.debug("Save ok");
-          def prole = RefdataCategory.lookupOrCreate('Organisational Role','Licensee')
-          if ( org.links ) {
-            log.debug("adding org link to new license");
-            org.links.add(new OrgRole(lic:licenseInstance, org:org, roleType:prole));
+          def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee')
+          log.debug("adding org link to new license");
+          org.links.add(new OrgRole(lic:licenseInstance, org:org, roleType:licensee_role));
+          if ( baseLicense?.licensor ) {
+            def licensor_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensor')
+            org.links.add(new OrgRole(lic:licenseInstance, org:baseLicense.licensor, roleType:licensor_role));
           }
-          else {
-            log.debug("create org link list");
-            org.links = [new OrgRole(lic:licenseInstance, org:org, roleType:prole)]
-          }
+
           if ( org.save(flush:true) ) {
           }
           else {
@@ -133,6 +129,10 @@ class MyInstitutionsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def licenseDetails() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+    result
   }
 
 }

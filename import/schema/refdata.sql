@@ -44,6 +44,7 @@ insert into refdata_value(rdv_owner, rdv_value) VALUES ( 9, 'Unknown');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (10,'License Type');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 10, 'Template');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 10, 'Actual');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 10, 'Unknown');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (11,'License Status');

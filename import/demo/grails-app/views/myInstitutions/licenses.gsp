@@ -19,7 +19,9 @@
               <table class="table table-striped table-bordered table-condensed">
                 <tr>
                   <th>Select</th>
-                  <th>Reference</th>
+                  <th>Reference Description</th>
+                  <th>Licensor</th>
+                  <th>Licensee</th>
                   <th>Type</th>
                 </tr>
               <g:each in="${licenses}" var="l">
@@ -29,6 +31,8 @@
                               controller="myInstitutions" 
                               id="${l.id}"
                               params="${[shortcode:params.shortcode]}">${l.reference}</g:link></td>
+                  <td>${l.licensor?.name}</td>
+                  <td>${l.licensee?.name}</td>
                   <td>${l.type?.value}</td>
                 </tr>
               </g:each>

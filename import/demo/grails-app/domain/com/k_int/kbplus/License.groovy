@@ -27,11 +27,13 @@ class License {
 
   static hasMany = [
     subscriptions:Subscription, 
-    documents:DocContext
+    documents:DocContext,
+    orgLinks:OrgRole
   ]
 
   static mappedBy = [ subscriptions: 'owner',
-                      documents: 'license']
+                      documents: 'license',
+                      orgLinks:'lic']
 
   static mapping = {
                 id column:'lic_id'
@@ -82,4 +84,24 @@ class License {
     licenseStatus(nullable:true, blank:true)
     lastmod(nullable:true, blank:true)
  }
+
+  def getLicensor() {
+    def result = null;
+    orgLinks.each { or ->
+      if ( or?.roleType?.value=='Licensor' )
+        result = or.org;
+    }
+    result
+  }
+
+  def getLicensee() {
+    def result = null;
+    orgLinks.each { or ->
+      if ( or?.roleType?.value=='Licensee' )
+        result = or.org;
+    }
+    result
+  }
+
+
 }
