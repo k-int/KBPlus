@@ -65,9 +65,9 @@
 					<g:each in="${licenseInstanceList}" var="licenseInstance">
 						<tr>
 						
-							<td>${fieldValue(bean: licenseInstance, field: "status")}</td>
+							<td>${licenseInstance?.status?.value}</td>
 						
-							<td>${fieldValue(bean: licenseInstance, field: "type")}</td>
+							<td>${licenseInstance?.type?.value}</td>
 						
 							<td>${fieldValue(bean: licenseInstance, field: "reference")}</td>
 						

@@ -82,6 +82,7 @@ class MyInstitutionsController {
       case 'POST':
         def baseLicense = params.baselicense ? License.get(params.baselicense) : null;
         def license_type = RefdataCategory.lookupOrCreate('License Type','Actual')
+        def license_status = RefdataCategory.lookupOrCreate('License Status','Current')
         def licenseInstance = new License(reference:params.new_license_ref_name, 
                                           type:license_type,
                                           concurrentUsers:baseLicense?.concurrentUsers,
