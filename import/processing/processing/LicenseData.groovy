@@ -31,6 +31,8 @@ import org.apache.http.entity.mime.content.*
 import java.nio.charset.Charset
 
 
+println("Starting");
+
 def starttime = System.currentTimeMillis();
 def possible_date_formats = [
   new SimpleDateFormat('dd/MM/yy'),
@@ -210,22 +212,25 @@ def docstoreUpload(bf, zipfile, filelist) {
   File tempdir = new File(System.getProperty("java.io.tmpdir")+System.getProperty("file.separator")+workdir);
   println("tmpdir :${tempdir}");
 
-  tempdir.mkdirs();
+  File bag_dir = new File(tempdir, 'bag_dir');
+
+  // tempdir.mkdirs();
+  bag_dir.mkdirs();
 
   filelist.each { f ->
     println("Copying ${f.file.getName()} - ${f.id}");
-    def target_file = new File("${tempdir}${System.getProperty('file.separator')}${f.file.getName()}")
+    def target_file = new File("${tempdir}${System.getProperty('file.separator')}bag_dir${System.getProperty('file.separator')}${f.file.getName()}")
     f.fn=f.file.getName()
     FileUtils.copyInputStreamToFile(zipfile.getInputStream(f.file), target_file);
   }
 
   // Create request.xml file with a request per document in the zip
-  createRequest(filelist, "${tempdir}${System.getProperty('file.separator')}request.xml".toString())
+  createRequest(filelist, "${tempdir}${System.getProperty('file.separator')}bag_dir${System.getProperty('file.separator')}request.xml".toString())
   
   // Create bagit structures
   PreBag preBag;
   synchronized (bf) {
-    preBag = bf.createPreBag(tempdir);
+    preBag = bf.createPreBag(bag_dir);
   }
   preBag.makeBagInPlace(BagFactory.Version.V0_96, false);
 
@@ -255,7 +260,9 @@ def uploadBag(bagfile) {
     request.entity = multipart_entity;
 
     response.success = { resp, data ->
-      println("Got response ${resp}, ${data.text}");
+      println("Got response ${resp}");
+      File f = new File('/tmp/resp')
+      f << data
       // log.debug("response status: ${resp.statusLine}")
       // log.debug("Response data code: ${data?.code}");
       // log.debug("Assigning json response to database object");
@@ -278,13 +285,16 @@ def createRequest(list, target_file) {
   println("Create ${target_file}");
   def xml = new MarkupBuilder(writer)
   int seq = 1
-  xml.request() {
+  // uuid(dl.id)
+  xml.request('xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance',
+              'xmlns':'http://jisc.kbplus.docstore.com/Request',
+              'xsi:schemaLocation':'http://jisc.kbplus.docstore.com/Request http://jisc.kbplus.docstore.com/Request/request.xsd') {
     user('kbplus')
     operation('store')
     requestDocuments {
       list.each { dl ->
         ingestDocument(id:seq++,category:'kbplus',type:'kbplus',format:'doc') {
-          uuid(dl.id)
+          uuid()
           documentName(dl.file.getName())
           documentTitle("Unknown - with UUID ${dl.id}")
           documentType('kbplusdoc')
@@ -292,6 +302,7 @@ def createRequest(list, target_file) {
       }
     }
   }
+  // uuid(dl.id)
   writer.flush();
   writer.close();
 
