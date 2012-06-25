@@ -44,7 +44,17 @@ class BootStrap {
 
     // Register extension types
     def la = com.k_int.custprops.ObjectDefinition.ensureType('LicenseAttributes');
-    la.ensureProperty(propname:'Property1', proptype:0);
+    la.ensureProperty(propName:'Concurrent Users', propType:0);
+    la.ensureProperty(propName:'Remote Access', propType:0);
+    la.ensureProperty(propName:'Walk In Access', propType:0);
+    la.ensureProperty(propName:'Multisite Access', propType:0);
+    la.ensureProperty(propName:'Partners Access', propType:0);
+    la.ensureProperty(propName:'Alumni Access', propType:0);
+    la.ensureProperty(propName:'ILL', propType:0);
+    la.ensureProperty(propName:'Coursepack', propType:0);
+    la.ensureProperty(propName:'VLE', propType:0);
+    la.ensureProperty(propName:'Enterprise', propType:0);
+    la.ensureProperty(propName:'PCA', propType:0);
 
     // SpringSecurityUtils.clientRegisterFilter( 'oracleSSOFilter', SecurityFilterPosition.PRE_AUTH_FILTER.order)
     // SpringSecurityUtils.clientRegisterFilter('securityContextPersistenceFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
