@@ -255,7 +255,7 @@ def uploadBag(bagfile) {
     request.entity = multipart_entity;
 
     response.success = { resp, data ->
-      println("Got response ${resp}, ${data.toString()}");
+      println("Got response ${resp}, ${data.text}");
       // log.debug("response status: ${resp.statusLine}")
       // log.debug("Response data code: ${data?.code}");
       // log.debug("Assigning json response to database object");
@@ -271,6 +271,7 @@ def uploadBag(bagfile) {
 
 }
 
+
 def createRequest(list, target_file) {
   // def writer = new StringWriter()
   def writer = new FileWriter(target_file)
@@ -284,7 +285,9 @@ def createRequest(list, target_file) {
       list.each { dl ->
         ingestDocument(id:seq++,category:'kbplus',type:'kbplus',format:'doc') {
           uuid(dl.id)
-          documentLinkId(dl.fn)
+          documentName(dl.file.getName())
+          documentTitle("Unknown - with UUID ${dl.id}")
+          documentType('kbplusdoc')
         }
       }
     }
