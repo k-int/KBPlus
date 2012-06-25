@@ -122,10 +122,12 @@ class MyInstitutionsController {
           }
         }
 
-        //flash.message = message(code: 'default.created.message', args: [message(code: 'license.label', default: 'License'), licenseInstance.id])
+        flash.message = message(code: 'default.created.message', args: [message(code: 'license.label', default: 'License'), licenseInstance.id])
+        redirect action: 'licenseDetails', params:params, id:licenseInstance.id
         //redirect action: 'show', id: licenseInstance.id
         break
     }
+
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
