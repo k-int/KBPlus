@@ -14,6 +14,11 @@ import org.apache.log4j.*
 import au.com.bytecode.opencsv.CSVReader
 import java.text.SimpleDateFormat
 import org.apache.commons.io.FileUtils
+import org.apache.commons.io.IOUtils
+import gov.loc.repository.bagit.BagFactory;
+import gov.loc.repository.bagit.PreBag;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 def starttime = System.currentTimeMillis();
 def possible_date_formats = [
@@ -22,6 +27,7 @@ def possible_date_formats = [
   new SimpleDateFormat('yyyy')
 ];
 
+final BagFactory bf = new BagFactory();
 
 // Setup mongo
 def options = new com.mongodb.MongoOptions()
@@ -60,7 +66,7 @@ zipFile.entries().each {
 }
 
 if ( testds )
-    docstoreUpload(zipFile, docstore_components);
+    docstoreUpload(bf, zipFile, docstore_components);
 
 def stats = [:]
 def bad_rows = []
@@ -81,7 +87,7 @@ if ( csventry ) {
     String badreason = null;
     boolean has_data = false
 
-    docstoreUpload(zipFile, docstore_components);
+    docstoreUpload(bf, zipFile, docstore_components);
 
     // println("Lookung up licensor \"${nl[25]}\"");
     def norm_licensor_name = nl[25].trim().toLowerCase()
@@ -186,7 +192,7 @@ if ( bad_rows.size() > 0 ) {
 
 println("All done processing for ${args[0]}");
 
-def docstoreUpload(zipfile, filelist) {
+def docstoreUpload(bf, zipfile, filelist) {
   // Create a new identifier
   def workdir = java.util.UUID.randomUUID().toString();
    
@@ -200,6 +206,61 @@ def docstoreUpload(zipfile, filelist) {
     def target_file = new File("${tempdir}${System.getProperty('file.separator')}${f.file.getName()}")
     FileUtils.copyInputStreamToFile(zipfile.getInputStream(f.file), target_file);
   }
+
+  // Create request.xml file with a request per document in the zip
   
-  // FileUtils.deleteQuietly(tempdir);
+  // Create bagit structures
+  PreBag preBag;
+  synchronized (bf) {
+    preBag = bf.createPreBag(tempdir);
+  }
+  preBag.makeBagInPlace(BagFactory.Version.V0_96, false);
+
+  def result = zipDirectory(tempdir)
+
+  FileUtils.deleteQuietly(tempdir);
+
+  uploadBag(result);
+
+  // Upload
+  FileUtils.deleteQuietly(result);
 }
+
+def uploadBag(bagfile) {
+  println("uploading bagfile ${bagfile}");
+}
+
+File zipDirectory(File directory) throws IOException {
+  File testZip = File.createTempFile("bag.", ".zip");
+  String path = directory.getAbsolutePath();
+  ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(testZip));
+
+  ArrayList<File> fileList = getFileList(directory);
+  for (File file : fileList) {
+    ZipEntry ze = new ZipEntry(file.getAbsolutePath().substring(path.length() + 1));
+    zos.putNextEntry(ze);
+
+    FileInputStream fis = new FileInputStream(file);
+    IOUtils.copy(fis, zos);
+    fis.close();
+
+    zos.closeEntry();
+  }
+
+  zos.close();
+  return testZip;
+}
+
+static ArrayList<File> getFileList(File file) {
+  ArrayList<File> fileList = new ArrayList<File>();
+  if (file.isFile()) {
+    fileList.add(file);
+  }
+  else if (file.isDirectory()) {
+    for (File innerFile : file.listFiles()) {
+      fileList.addAll(getFileList(innerFile));
+    }
+  }
+  return fileList;
+}
+
