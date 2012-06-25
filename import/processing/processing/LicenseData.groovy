@@ -19,6 +19,7 @@ import gov.loc.repository.bagit.BagFactory;
 import gov.loc.repository.bagit.PreBag;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import groovy.xml.MarkupBuilder
 
 def starttime = System.currentTimeMillis();
 def possible_date_formats = [
@@ -204,10 +205,12 @@ def docstoreUpload(bf, zipfile, filelist) {
   filelist.each { f ->
     println("Copying ${f.file.getName()}");
     def target_file = new File("${tempdir}${System.getProperty('file.separator')}${f.file.getName()}")
+    f.fn=f.file.getName()
     FileUtils.copyInputStreamToFile(zipfile.getInputStream(f.file), target_file);
   }
 
   // Create request.xml file with a request per document in the zip
+  createRequest(filelist)
   
   // Create bagit structures
   PreBag preBag;
@@ -228,6 +231,26 @@ def docstoreUpload(bf, zipfile, filelist) {
 
 def uploadBag(bagfile) {
   println("uploading bagfile ${bagfile}");
+}
+
+def createRequest(list) {
+  def writer = new StringWriter()
+  def xml = new MarkupBuilder(writer)
+  int seq = 1
+  xml.request() {
+    user('kbplus')
+    operation('store')
+    requestDocuments {
+      list.each { dl ->
+        ingestDocument(id:seq++,category:'kbplus',type:'kbplus',format:'doc') {
+          uuid(dl.id)
+          documentLinkId(dl.fn)
+        }
+      }
+    }
+  }
+
+  println("upload.xml: ${writer.toString()}");
 }
 
 File zipDirectory(File directory) throws IOException {
