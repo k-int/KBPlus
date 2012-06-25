@@ -74,7 +74,7 @@ class ProcessLoginController {
           }
         }
 
-        new com.k_int.kbplus.auth.UserRole(user:user,role:com.k_int.kbplus.auth.Role.findByAuthority('ROLE_EDITOR').save(flush:true)
+        new com.k_int.kbplus.auth.UserRole(user:user,role:com.k_int.kbplus.auth.Role.findByAuthority('ROLE_EDITOR')).save(flush:true)
 
         // See if we can find the org this user is attached to
         createUserOrgLink(user, map.authInstitutionName, map.shibbScope);
