@@ -1,15 +1,19 @@
 #!/usr/bin/groovy
 
+@GrabResolver(name='home', root='http://repo1.maven.org/maven2')
 // @GrabResolver(name='es', root='https://oss.sonatype.org/content/repositories/releases')
 @Grapes([
   @Grab(group='net.sf.opencsv', module='opencsv', version='2.0'),
-  @Grab(group='com.gmongo', module='gmongo', version='0.9.5')
+  @Grab(group='com.gmongo', module='gmongo', version='0.9.5'),
+  @Grab(group='gov.loc', module='bagit', version='4.0'),
+  @Grab(group='commons-fileupload', module='commons-fileupload', version='1.2.2'),
+  @Grab(group='classworlds', module='classworlds', version='1.1')
 ])
 
 import org.apache.log4j.*
 import au.com.bytecode.opencsv.CSVReader
 import java.text.SimpleDateFormat
-
+import org.apache.commons.io.FileUtils
 
 def starttime = System.currentTimeMillis();
 def possible_date_formats = [
@@ -33,6 +37,8 @@ if ( db == null ) {
 }
 
 
+def target_web_service = 'http://knowplusdev.edina.ac.uk:8080/oledocstore/KBPlusServlet'
+
 println("Processing zip ${args[0]}");
 
 def zipFile = new java.util.zip.ZipFile(new File(args[0]))
@@ -40,15 +46,21 @@ def zipFile = new java.util.zip.ZipFile(new File(args[0]))
 def csventry = null;
 def docstore_components = []
 
+def testds=true
+
 zipFile.entries().each {
    // println("zip entry: ${it.name}");
    if ( it.name?.endsWith(".csv") ) {
-     csventry = it;
+     if ( !testds)
+       csventry = it;
    }
    else {
-     docstore_components.add(it);
+     docstore_components.add([file:it, id:java.util.UUID.randomUUID().toString()]);
    }
 }
+
+if ( testds )
+    docstoreUpload(zipFile, docstore_components);
 
 def stats = [:]
 def bad_rows = []
@@ -68,6 +80,8 @@ if ( csventry ) {
     boolean bad = false;
     String badreason = null;
     boolean has_data = false
+
+    docstoreUpload(zipFile, docstore_components);
 
     // println("Lookung up licensor \"${nl[25]}\"");
     def norm_licensor_name = nl[25].trim().toLowerCase()
@@ -171,3 +185,21 @@ if ( bad_rows.size() > 0 ) {
 }
 
 println("All done processing for ${args[0]}");
+
+def docstoreUpload(zipfile, filelist) {
+  // Create a new identifier
+  def workdir = java.util.UUID.randomUUID().toString();
+   
+  File tempdir = new File(System.getProperty("java.io.tmpdir")+System.getProperty("file.separator")+workdir);
+  println("tmpdir :${tempdir}");
+
+  tempdir.mkdirs();
+
+  filelist.each { f ->
+    println("Copying ${f.file.getName()}");
+    def target_file = new File("${tempdir}${System.getProperty('file.separator')}${f.file.getName()}")
+    FileUtils.copyInputStreamToFile(zipfile.getInputStream(f.file), target_file);
+  }
+  
+  // FileUtils.deleteQuietly(tempdir);
+}
