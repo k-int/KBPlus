@@ -40,14 +40,15 @@ class BootStrap {
       if (!adminUser.authorities.contains(userRole)) {
         UserRole.create adminUser, userRole
       }
-
-
     }
 
+    // Register extension types
+    def la = com.k_int.custprops.ObjectDefinition.ensureType('LicenseAttributes');
+    la.ensureProperty(propname:'Property1', proptype:0);
 
-     // SpringSecurityUtils.clientRegisterFilter( 'oracleSSOFilter', SecurityFilterPosition.PRE_AUTH_FILTER.order)
-     // SpringSecurityUtils.clientRegisterFilter('securityContextPersistenceFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
-     SpringSecurityUtils.clientRegisterFilter('ediauthFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
+    // SpringSecurityUtils.clientRegisterFilter( 'oracleSSOFilter', SecurityFilterPosition.PRE_AUTH_FILTER.order)
+    // SpringSecurityUtils.clientRegisterFilter('securityContextPersistenceFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
+    SpringSecurityUtils.clientRegisterFilter('ediauthFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
   }
 
   def destroy = {

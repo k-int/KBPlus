@@ -1,13 +1,17 @@
 package com.k_int.custprops
 
-class ObjectDefinition extends PropertyDefinition {
+class ObjectDefinition extends TypeDefinition {
 
-  static hasMany = [properties:PropertyDefinition]
+  static hasMany = [properties:ObjectProperty]
 
   static constraints = {
   }
 
-  static mapping = {
-    properties joinTable: [name:'obj_prop_members', key:'obj_prop', column:'member_prop']
+  static def ensureType(string typeName) {
+    ObjectDefinition.findByTypeName(typeName) ?: new ObjectDefinition(typeName:typeName).save(flush:true);
+  }
+
+  def ensureProperty(propName, propType) {
+    // Make sure this type has a property of the identified type
   }
 }
