@@ -1,6 +1,6 @@
 package com.k_int.custprops
 
-class PropertyValue {
+class ObjectDefinition extends PropertyDefinition {
 
     static constraints = {
     }

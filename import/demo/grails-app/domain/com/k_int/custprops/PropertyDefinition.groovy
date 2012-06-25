@@ -1,4 +1,4 @@
-package com.k_int.kbplus
+package com.k_int.custprops
 
 class PropertyDefinition {
 
