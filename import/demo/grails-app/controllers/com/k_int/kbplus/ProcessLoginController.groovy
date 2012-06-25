@@ -62,10 +62,9 @@ class ProcessLoginController {
         log.debug("Created user, allocating user role");
         def userRole = com.k_int.kbplus.auth.Role.findByAuthority('ROLE_USER')
         log.debug("looked up user role: ${userRole}");
-
-        
-
         def new_role_allocation = new com.k_int.kbplus.auth.UserRole(user:user,role:userRole);
+
+
         if ( new_role_allocation.save(flush:true) ) {
           log.debug("New role created...");
         }
@@ -74,6 +73,8 @@ class ProcessLoginController {
             log.error(e);
           }
         }
+
+        new com.k_int.kbplus.auth.UserRole(user:user,role:com.k_int.kbplus.auth.Role.findByAuthority('ROLE_EDITOR').save(flush:true)
 
         // See if we can find the org this user is attached to
         createUserOrgLink(user, map.authInstitutionName, map.shibbScope);

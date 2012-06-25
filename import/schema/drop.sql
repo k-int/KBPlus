@@ -67,3 +67,7 @@ drop table if exists registration_code;
 drop table if exists role;
 drop table if exists user;
 drop table if exists user_role;
+drop table if exists property_definition;
+drop table if exists property_value;
+drop table if exists user_org;
+
