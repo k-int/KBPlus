@@ -7,7 +7,9 @@
   @Grab(group='com.gmongo', module='gmongo', version='0.9.5'),
   @Grab(group='gov.loc', module='bagit', version='4.0'),
   @Grab(group='commons-fileupload', module='commons-fileupload', version='1.2.2'),
-  @Grab(group='classworlds', module='classworlds', version='1.1')
+  @Grab(group='classworlds', module='classworlds', version='1.1'),
+  @Grab(group='org.codehaus.groovy.modules.http-builder', module='http-builder', version='0.5.2' ),
+  @Grab(group='org.apache.httpcomponents', module='httpmime', version='4.1.2' )
 ])
 
 import org.apache.log4j.*
@@ -20,6 +22,14 @@ import gov.loc.repository.bagit.PreBag;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import groovy.xml.MarkupBuilder
+
+import groovyx.net.http.ContentType.*
+import groovyx.net.http.Method.*
+import groovyx.net.http.*
+import org.apache.http.entity.mime.*
+import org.apache.http.entity.mime.content.*
+import java.nio.charset.Charset
+
 
 def starttime = System.currentTimeMillis();
 def possible_date_formats = [
@@ -203,14 +213,14 @@ def docstoreUpload(bf, zipfile, filelist) {
   tempdir.mkdirs();
 
   filelist.each { f ->
-    println("Copying ${f.file.getName()}");
+    println("Copying ${f.file.getName()} - ${f.id}");
     def target_file = new File("${tempdir}${System.getProperty('file.separator')}${f.file.getName()}")
     f.fn=f.file.getName()
     FileUtils.copyInputStreamToFile(zipfile.getInputStream(f.file), target_file);
   }
 
   // Create request.xml file with a request per document in the zip
-  createRequest(filelist)
+  createRequest(filelist, "${tempdir}${System.getProperty('file.separator')}request.xml".toString())
   
   // Create bagit structures
   PreBag preBag;
@@ -223,18 +233,48 @@ def docstoreUpload(bf, zipfile, filelist) {
 
   FileUtils.deleteQuietly(tempdir);
 
+  // Upload
   uploadBag(result);
 
-  // Upload
   FileUtils.deleteQuietly(result);
 }
 
 def uploadBag(bagfile) {
   println("uploading bagfile ${bagfile}");
+  def http = new groovyx.net.http.HTTPBuilder('http://knowplusdev.edina.ac.uk:8080/oledocstore/KBPlusServlet')
+
+  http.request(groovyx.net.http.Method.POST) {request ->
+    requestContentType = 'multipart/form-data'
+
+    def multipart_entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+    // multipart_entity.addPart( "owner", new StringBody( feed_definition.dataProvider, "text/plain", Charset.forName( "UTF-8" )))  // Owner
+    // def uploaded_file_body_part = new org.apache.http.entity.mime.content.ByteArrayBody(resource_to_deposit, 'text/xml', 'filename')
+    def uploaded_file_body_part = new org.apache.http.entity.mime.content.FileBody(bagfile);
+    multipart_entity.addPart( "upload-file", uploaded_file_body_part)
+
+    request.entity = multipart_entity;
+
+    response.success = { resp, data ->
+      println("Got response ${resp}, ${data.toString()}");
+      // log.debug("response status: ${resp.statusLine}")
+      // log.debug("Response data code: ${data?.code}");
+      // log.debug("Assigning json response to database object");
+      // assert resp.statusLine.statusCode == 200
+    }
+
+    response.failure = { resp ->
+      println("Error response ${resp}");
+      // log.error("Failure - ${resp}");
+      // assert resp.status >= 400
+    }
+  }
+
 }
 
-def createRequest(list) {
-  def writer = new StringWriter()
+def createRequest(list, target_file) {
+  // def writer = new StringWriter()
+  def writer = new FileWriter(target_file)
+  println("Create ${target_file}");
   def xml = new MarkupBuilder(writer)
   int seq = 1
   xml.request() {
@@ -249,8 +289,10 @@ def createRequest(list) {
       }
     }
   }
+  writer.flush();
+  writer.close();
 
-  println("upload.xml: ${writer.toString()}");
+  // println("upload.xml: ${writer.toString()}");
 }
 
 File zipDirectory(File directory) throws IOException {

@@ -17,14 +17,14 @@
 						<li class="active">
 							<g:link class="list" action="list">
 								<i class="icon-list icon-white"></i>
-								<g:message code="default.list.label" args="[entityName]" />
+								Title Instance List
 							</g:link>
 						</li>
-<sec:ifAnyGranted roles="ROLE_EDITOR,ROLE_ADMIN">
+                                                <sec:ifAnyGranted roles="ROLE_EDITOR,ROLE_ADMIN">
 						<li>
 							<g:link class="create" action="create">
 								<i class="icon-plus"></i>
-								<g:message code="default.create.label" args="[entityName]" />
+								Create Title Instance
 							</g:link>
 						</li>
                                                 </sec:ifAnyGranted>
