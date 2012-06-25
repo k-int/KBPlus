@@ -54,13 +54,6 @@
 					<thead>
 						<tr>
 							<g:sortableColumn property="name" title="${message(code: 'org.name.label', default: 'Name')}" />
-						
-							<g:sortableColumn property="address" title="${message(code: 'org.address.label', default: 'Address')}" />
-						
-							<g:sortableColumn property="ipRange" title="${message(code: 'org.ipRange.label', default: 'Ip Range')}" />
-						
-							<g:sortableColumn property="sector" title="${message(code: 'org.sector.label', default: 'Sector')}" />
-						
 							<th></th>
 						</tr>
 					</thead>
@@ -68,12 +61,6 @@
 					<g:each in="${orgInstanceList}" var="orgInstance">
 						<tr>
 							<td>${fieldValue(bean: orgInstance, field: "name")}</td>
-						
-							<td>${fieldValue(bean: orgInstance, field: "address")}</td>
-						
-							<td>${fieldValue(bean: orgInstance, field: "ipRange")}</td>
-						
-							<td>${fieldValue(bean: orgInstance, field: "sector")}</td>
 						
 							<td class="link">
 								<g:link action="show" id="${orgInstance.id}" class="btn btn-small">Show &raquo;</g:link>
