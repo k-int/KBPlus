@@ -5,7 +5,9 @@ class Doc {
   RefdataValue status
   RefdataValue type
   Alert alert
+  Integer contentType=0 // 0=String, 1=docstore
   String content 
+  String uuid 
   Date dateCreated
   Date lastUpdated
 
@@ -16,6 +18,8 @@ class Doc {
             status column:'doc_status_rv_fk'
               type column:'doc_type_rv_fk'
              alert column:'doc_alert_fk'
+       contentType column:'doc_content_type'
+              uuid column:'doc_docstore_uuid'
            content column:'doc_content', type:'text'
   }
 
@@ -24,5 +28,7 @@ class Doc {
     type(nullable:true, blank:false)
     alert(nullable:true, blank:false)
     content(nullable:true, blank:false)
+    uuid(nullable:true, blank:false)
+    content_type(nullable:true, blank:false)
   }
 }

@@ -631,29 +631,36 @@ class DataloadService {
           license_status=lookupOrCreateRefdataEntry('License Status','Unknown');
         }
   
-        License l = new License (
-                                 reference:lic.license_reference,
-                                 concurrentUsers:lic.concurrent_users,
-                                 remoteAccess:lic.remote_access,
-                                 walkinAccess:lic.walkin_access,
-                                 multisiteAccess:lic.multisite_access,
-                                 partnersAccess:lic.partners_access,
-                                 alumniAccess:lic.alumni_access,
-                                 ill:lic.ill,
-                                 coursepack:lic.coursepack,
-                                 vle:lic.vle,
-                                 enterprise:lic.enterprise,
-                                 pca:lic.pca,
-                                 noticePeriod:lic.notice_period,
-                                 licenseUrl:lic.license_url,
-                                 licensorRef:lic.licensor_ref,
-                                 licenseeRef:lic.licensee_ref,
-                                 licenseType:lic.license_type,
-                                 licenseStatus:lic.license_status,
-                                 lastmod:lic.lastmod,
-                                 type:license_type,
-                                 status:license_status);
-  
+        // Try to look up a license by the license reference
+        License l = License.findByReference(lic.license_reference)
+
+        if ( !l ) {
+          License l = new License (reference:lic.license_reference,
+                                   concurrentUsers:lic.concurrent_users,
+                                   remoteAccess:lic.remote_access,
+                                   walkinAccess:lic.walkin_access,
+                                   multisiteAccess:lic.multisite_access,
+                                   partnersAccess:lic.partners_access,
+                                   alumniAccess:lic.alumni_access,
+                                   ill:lic.ill,
+                                   coursepack:lic.coursepack,
+                                   vle:lic.vle,
+                                   enterprise:lic.enterprise,
+                                   pca:lic.pca,
+                                   noticePeriod:lic.notice_period,
+                                   licenseUrl:lic.license_url,
+                                   licensorRef:lic.licensor_ref,
+                                   licenseeRef:lic.licensee_ref,
+                                   licenseType:lic.license_type,
+                                   licenseStatus:lic.license_status,
+                                   lastmod:lic.lastmod,
+                                   type:license_type,
+                                   status:license_status);
+        }
+        else {
+          log.debug("Updating existing license");
+        }
+
         if ( l.save() ) {
         }
         else {
@@ -699,6 +706,14 @@ class DataloadService {
         possibleNote(lic.vle_note,'VLENote',l);
         possibleNote(lic.enterprise_note,'EnterpriseNote',l);
         possibleNote(lic.pca_note,'PCANote',l);
+  
+        lic.datafiles.each { attached_doc ->
+          // Link to attached_doc[0] - Should contain remote uuid
+          def doc_content = new Doc(contentType:1, uuid: attached_doc[0]).save()
+          def doc_context = new DocContext(license:license,
+                                           owner:doc_content,
+                                           doctype:lookupOrCreateRefdataEntry('Document Type','License')).save();
+        }
   
       }
     }
