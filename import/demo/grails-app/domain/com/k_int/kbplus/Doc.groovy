@@ -29,6 +29,6 @@ class Doc {
     alert(nullable:true, blank:false)
     content(nullable:true, blank:false)
     uuid(nullable:true, blank:false)
-    content_type(nullable:true, blank:false)
+    contentType(nullable:true, blank:false)
   }
 }
