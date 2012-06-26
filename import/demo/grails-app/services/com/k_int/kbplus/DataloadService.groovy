@@ -635,7 +635,7 @@ class DataloadService {
         License l = License.findByReference(lic.license_reference)
 
         if ( !l ) {
-          License l = new License (reference:lic.license_reference,
+          l = new License (reference:lic.license_reference,
                                    concurrentUsers:lic.concurrent_users,
                                    remoteAccess:lic.remote_access,
                                    walkinAccess:lic.walkin_access,
