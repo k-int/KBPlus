@@ -65,7 +65,7 @@ def zipFile = new java.util.zip.ZipFile(new File(args[0]))
 def csventry = null;
 def docstore_components = []
 
-def testds=true
+def testds=false
 
 zipFile.entries().each {
    // println("zip entry: ${it.name}");
@@ -74,12 +74,14 @@ zipFile.entries().each {
        csventry = it;
    }
    else {
-     docstore_components.add([file:it, id:java.util.UUID.randomUUID().toString()]);
+     docstore_components.add([file:it, id:java.util.UUID.randomUUID().toString(), name:it.getName()]);
    }
 }
 
 if ( testds )
     docstoreUpload(bf, zipFile, docstore_components);
+
+println(docstore_components.collect{[ it.remote_uuid, it.name ]})
 
 def stats = [:]
 def bad_rows = []
@@ -156,7 +158,8 @@ if ( csventry ) {
         license_type : nl[29],
         license_status : nl[30],
         subscriptions : [],
-        lastmod: System.currentTimeMillis()
+        lastmod: System.currentTimeMillis(),
+        datafiles:docstore_components.collect{ [ it.remote_uuid, it.name ] }
       ]
 
       for ( int i=31; i<nl.length; i++ ) {
@@ -208,7 +211,6 @@ println("All done processing for ${args[0]}");
 def docstoreUpload(bf, zipfile, filelist) {
   // Create a new identifier
   def workdir = java.util.UUID.randomUUID().toString();
-   
   File tempdir = new File(System.getProperty("java.io.tmpdir")+System.getProperty("file.separator")+workdir);
   println("tmpdir :${tempdir}");
 
@@ -239,12 +241,12 @@ def docstoreUpload(bf, zipfile, filelist) {
   FileUtils.deleteQuietly(tempdir);
 
   // Upload
-  uploadBag(result);
+  uploadBag(result, filelist);
 
   FileUtils.deleteQuietly(result);
 }
 
-def uploadBag(bagfile) {
+def uploadBag(bagfile,filelist) {
   println("uploading bagfile ${bagfile}");
   def http = new groovyx.net.http.HTTPBuilder('http://knowplusdev.edina.ac.uk:8080/oledocstore/KBPlusServlet')
 
@@ -261,12 +263,21 @@ def uploadBag(bagfile) {
 
     response.success = { resp, data ->
       println("Got response ${resp}");
-      File f = new File('/tmp/resp')
-      f << data
-      // log.debug("response status: ${resp.statusLine}")
-      // log.debug("Response data code: ${data?.code}");
-      // log.debug("Assigning json response to database object");
-      // assert resp.statusLine.statusCode == 200
+      def tempfile_name = java.util.UUID.randomUUID().toString();
+      File tempfile = new File(System.getProperty("java.io.tmpdir")+System.getProperty("file.separator")+tempfile_name);
+      tempfile << data
+
+      java.util.zip.ZipFile zf = new java.util.zip.ZipFile(tempfile);
+      java.util.zip.ZipEntry bad_dir_entry = zf.getEntry('bag_dir');
+
+      InputStream is = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
+
+      def result_doc = new groovy.util.XmlSlurper().parse(is);
+      int i=0;
+      result_doc.documents.document.each { rd ->
+        println("** Doc added to docstore ($filelist[i].name):  ${rd.uuid.text()}");
+        filelist[i++].remote_uuid = rd.uuid.text()
+      }
     }
 
     response.failure = { resp ->
