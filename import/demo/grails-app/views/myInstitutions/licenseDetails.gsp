@@ -55,7 +55,7 @@
                 </div>
               </div>
 
-              <legend>Licens Properties</legend>  
+              <legend>License Attributes</legend>  
               <div class="control-group">
                 <label class="control-label" for="reference">Concurrent Access</label>
                 <div class="controls">
