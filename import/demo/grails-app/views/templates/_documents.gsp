@@ -1,3 +1,9 @@
 <div class="well">
-This is the documents template
+Attached Documents
+<hr/>
+<ul>
+<g:each in="${doclist}" var="docctx">
+  <li>Doc ${docctx.id}</li>
+</g:each>
+</ul>
 </div>
