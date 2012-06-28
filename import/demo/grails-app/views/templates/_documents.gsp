@@ -4,11 +4,20 @@
   <ul>
     <g:each in="${doclist}" var="docctx">
       <li>
-        <g:link controller="doc" id="${docctx.owner.id}">
-          ${docctx.owner.id} 
-          <g:if test="${docctx.owner.title}"> : <em>${docctx.owner.title}</em><br/></g:if>
-          <g:if test="${doccts.owner.filename}">${docctx.owner.filename}</g:if>
-        </g:link>
+        <g:if test="${docctx.doc.contentType==1}">
+          <a href="http://knowplus.edina.ac.uk/oledocstore/document?uuid=${docctx.doc.uuid}"
+            ${docctx.owner.id} 
+            <g:if test="${docctx.owner.title}"> : <em>${docctx.owner.title}</em><br/></g:if>
+            <g:if test="${doccts.owner.filename}">${docctx.owner.filename}</g:if>
+          </a>
+        </g:if>
+        <g:else>
+          <g:link controller="doc" id="${docctx.owner.id}">
+            ${docctx.owner.id} 
+            <g:if test="${docctx.owner.title}"> : <em>${docctx.owner.title}</em><br/></g:if>
+            <g:if test="${doccts.owner.filename}">${docctx.owner.filename}</g:if>
+          </g:link>
+        </g:else>
       </li>
     </g:each>
   </ul>
