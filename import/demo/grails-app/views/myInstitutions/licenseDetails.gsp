@@ -7,11 +7,10 @@
   <body>
     <h2>${institution?.name} - A License</h2>
     <hr/>
-    <div class="row">
-      <div class="span12">
+    <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span10">
         <div class="well">
-
-
           <g:form class="form-horizontal">  
             <fieldset>  
               <legend>Licence Information</legend>  
@@ -145,15 +144,7 @@
                 </div>
               </div>
 
-
-
-
-
-
-
             </fieldset>
-
-
 
             <div class="form-actions">  
               <g:actionSubmit value="Update" class="btn btn-primary"/>
@@ -166,6 +157,7 @@
         <g:render template="notes" contextPath="../templates"/>
         <g:render template="links" contextPath="../templates"/>
       </div>
+    </div>
     </div>
   </body>
 </html>
