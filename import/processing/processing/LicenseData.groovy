@@ -248,7 +248,8 @@ def docstoreUpload(bf, zipfile, filelist) {
 
 def uploadBag(bagfile,filelist) {
   println("uploading bagfile ${bagfile}");
-  def http = new groovyx.net.http.HTTPBuilder('http://knowplusdev.edina.ac.uk:8080/oledocstore/KBPlusServlet')
+  // def http = new groovyx.net.http.HTTPBuilder('http://knowplusdev.edina.ac.uk:8080/oledocstore/KBPlusServlet')
+  def http = new groovyx.net.http.HTTPBuilder('http://knowplus.edina.ac.uk/oledocstore/KBPlusServlet')
 
   http.request(groovyx.net.http.Method.POST) {request ->
     requestContentType = 'multipart/form-data'

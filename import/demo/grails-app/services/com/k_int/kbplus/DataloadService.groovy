@@ -710,7 +710,7 @@ class DataloadService {
         lic.datafiles.each { attached_doc ->
           // Link to attached_doc[0] - Should contain remote uuid
           def doc_content = new Doc(contentType:1, uuid: attached_doc[0]).save()
-          def doc_context = new DocContext(license:license,
+          def doc_context = new DocContext(license:l,
                                            owner:doc_content,
                                            doctype:lookupOrCreateRefdataEntry('Document Type','License')).save();
         }
