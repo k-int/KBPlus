@@ -74,7 +74,7 @@ zipFile.entries().each {
        csventry = it;
    }
    else {
-     docstore_components.add([file:it, id:java.util.UUID.randomUUID().toString(), name:it.getName()]);
+     docstore_components.add([file:it, id:java.util.UUID.randomUUID().toString(), name:it.getName(), filename:it.getName()]);
    }
 }
 
@@ -159,7 +159,7 @@ if ( csventry ) {
         license_status : nl[30],
         subscriptions : [],
         lastmod: System.currentTimeMillis(),
-        datafiles:docstore_components.collect{ [ it.remote_uuid, it.name ] }
+        datafiles:docstore_components.collect{ [ it.remote_uuid, it.name, it.filename ] }
       ]
 
       for ( int i=31; i<nl.length; i++ ) {
