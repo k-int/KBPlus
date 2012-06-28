@@ -30,7 +30,7 @@ class DataloadService {
   }
 
   def doFTUpdate() {
-    System.out.println("doFTUpdate");
+    log.debug("doFTUpdate");
     
     log.debug("Execute IndexUpdateJob starting at ${new Date()}");
     def start_time = System.currentTimeMillis();
@@ -81,13 +81,13 @@ class DataloadService {
 
   def updateES(esclient, domain, recgen_closure) {
 
+    log.debug("updateES ${domain.name}");
     def count = 0;
     Date from = new Date(0);
     def qry = domain.findAllByLastUpdatedGreaterThan(from);
     qry.each { i ->
       def idx_record = recgen_closure(i)
 
-      // log.debug("Generated record ${idx_record}");
       def future = esclient.index {
         index "kbplus"
         type domain.name

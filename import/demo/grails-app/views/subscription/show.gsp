@@ -155,6 +155,8 @@
                                           <table border="1" cellpadding="5" cellspacing="5">
                                             <tr>
                                               <th>Title</th>
+                                              <th>ISSN</th>
+                                              <th>eISSN</th>
                                               <th>Start Date</th>
                                               <th>Start Volume</th>
                                               <th>Start Issue</th>
@@ -165,6 +167,16 @@
                       <g:each in="${subscriptionInstance.issueEntitlements}" var="ie">
                                               <tr>
                   <td>${ie.tipp.title.title}</td>
+                                                <td>
+                                                  <g:each in="${ie?.tipp?.title?.ids}" var="id">
+                                                    ${ie?.tipp?.title?.getIdentifierValue('ISSN')}
+                                                  </g:each>
+                                                </td>
+                                                <td>
+                                                  <g:each in="${ie?.tipp?.title?.ids}" var="id">
+                                                    ${ie?.tipp?.title?.getIdentifierValue('eISSN')}
+                                                  </g:each>
+                                                </td>
                                                 <td>${ie.startDate}</td>
                                                 <td>${ie.startVolume}</td>
                                                 <td>${ie.startIssue}</td>
