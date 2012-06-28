@@ -5,6 +5,7 @@ class Doc {
   RefdataValue status
   RefdataValue type
   Alert alert
+  String title
   Integer contentType=0 // 0=String, 1=docstore
   String content 
   String uuid 
@@ -20,6 +21,7 @@ class Doc {
              alert column:'doc_alert_fk'
        contentType column:'doc_content_type'
               uuid column:'doc_docstore_uuid'
+             title column:'doc_title'
            content column:'doc_content', type:'text'
   }
 
@@ -30,5 +32,6 @@ class Doc {
     content(nullable:true, blank:false)
     uuid(nullable:true, blank:false)
     contentType(nullable:true, blank:false)
+    title(nullable:true, blank:false)
   }
 }

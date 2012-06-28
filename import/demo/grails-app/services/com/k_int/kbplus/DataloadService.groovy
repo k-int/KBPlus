@@ -709,7 +709,7 @@ class DataloadService {
   
         lic.datafiles.each { attached_doc ->
           // Link to attached_doc[0] - Should contain remote uuid
-          def doc_content = new Doc(contentType:1, uuid: attached_doc[0]).save()
+          def doc_content = new Doc(contentType:1, uuid: attached_doc[0], name: attached_doc[1]).save()
           def doc_context = new DocContext(license:l,
                                            owner:doc_content,
                                            doctype:lookupOrCreateRefdataEntry('Document Type','License')).save();
@@ -723,7 +723,9 @@ class DataloadService {
   def possibleNote(content, type, license) {
     if ( content && content.toString().length() > 0 ) {
       def doc_content = new Doc(content:content.toString()).save();
-      def doc_context = new DocContext(license:license,owner:doc_content,doctype:lookupOrCreateRefdataEntry('Document Type',type)).save();
+      def doc_context = new DocContext(license:license,
+                                       owner:doc_content,
+                                       doctype:lookupOrCreateRefdataEntry('Document Type',type)).save();
     }
   }
 

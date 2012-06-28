@@ -55,7 +55,7 @@
                 </div>
               </div>
 
-              <legend>Licens Properties</legend>  
+              <legend>License Attributes</legend>  
               <div class="control-group">
                 <label class="control-label" for="reference">Concurrent Access</label>
                 <div class="controls">
@@ -162,7 +162,7 @@
         </div>
       </div>
       <div class="span2">
-        <g:render template="documents" contextPath="../templates"/>
+        <g:render template="documents" contextPath="../templates" model="${[doclist:license.documents, owner:license,property:'documents']}" />
         <g:render template="notes" contextPath="../templates"/>
         <g:render template="links" contextPath="../templates"/>
       </div>
