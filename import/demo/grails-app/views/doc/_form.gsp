@@ -50,3 +50,19 @@
 	<g:field type="number" name="contentType" value="${docInstance.contentType}"/>
 </div>
 
+<div class="fieldcontain ${hasErrors(bean: docInstance, field: 'title', 'error')} ">
+	<label for="title">
+		<g:message code="doc.title.label" default="Title" />
+		
+	</label>
+	<g:textField name="title" value="${docInstance?.title}"/>
+</div>
+
+<div class="fieldcontain ${hasErrors(bean: docInstance, field: 'filename', 'error')} ">
+	<label for="filename">
+		<g:message code="doc.filename.label" default="Filename" />
+		
+	</label>
+	<g:textField name="filename" value="${docInstance?.filename}"/>
+</div>
+
