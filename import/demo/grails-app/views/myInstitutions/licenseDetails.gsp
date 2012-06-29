@@ -23,42 +23,116 @@
               <fieldset>  
 
                 <div class="control-group">
-                    <label class="control-label" for="licref">Reference</label>
+                    <label class="control-label" for="reference">Reference</label>
                     <div class="controls">
-                      <p id="licref" class="ipe" style="padding-top: 5px;">${license.reference}</p>
+                      <p id="reference" class="ipe" style="padding-top: 5px;">${license.reference}</p>
                     </div>
                 </div>
     
                 <div class="control-group">
-                    <label class="control-label" for="reference">Notice Period</label>
+                    <label class="control-label" for="noticePeriod">Notice Period</label>
                     <div class="controls">
-                      <g:textField name="noticeperiod" value="${license.noticePeriod}" class="input-xlarge" id="input01"/>
-                      <p class="help-block">Notice Period</p>
+                      <p id="noticePeriod" class="ipe" style="padding-top: 5px;">${license.noticePeriod}</p>
                     </div>
                 </div>
     
                 <div class="control-group">
-                    <label class="control-label" for="reference">License Url</label>
+                    <label class="control-label" for="licenseUrl">License Url</label>
                     <div class="controls">
-                      <g:textField name="reference" value="${license.licenseUrl}" class="input-xlarge" id="input01"/>
-                      <p class="help-block">Descriptive reference for this license</p>
+                      <p id="licenseUrl" class="ipe" style="padding-top: 5px;">${license.licenseUrl}</p>
                     </div>
                 </div>
     
                 <div class="control-group">
-                    <label class="control-label" for="reference">Licenseor Ref</label>
+                    <label class="control-label" for="licensorRef">Licenseor Ref</label>
                     <div class="controls">
-                      <g:textField name="reference" value="${license.licensorRef}" class="input-xlarge" id="input01"/>
-                      <p class="help-block">Descriptive reference for this license</p>
+                      <p id="licensorRef" class="ipe" style="padding-top: 5px;">${license.licensorRef}</p>
                     </div>
                 </div>
     
                 <div class="control-group">
-                    <label class="control-label" for="reference">Licensee Ref</label>
+                    <label class="control-label" for="licenseeRef">Licensee Ref</label>
                     <div class="controls">
-                      <g:textField name="reference" value="${license.licenseeRef}" class="input-xlarge" id="input01"/>
-                      <p class="help-block">Descriptive reference for this license</p>
+                      <p id="licenseeRef" class="ipe" style="padding-top: 5px;">${license.licenseeRef}</p>
                     </div>
+                </div>
+
+                <div class="control-group">
+                  <label class="control-label" for="concurrentUsers">Concurrent Access</label>
+                  <div class="controls">
+                    <p id="concurrentUsers" class="ipe" style="padding-top: 5px;">${license.concurrentUsers}</p>
+                  </div>
+                </div>
+    
+    
+                <div class="control-group">
+                  <label class="control-label" for="remoteAccess">Remote Access</label>
+                  <div class="controls">
+                    <p id="remoteAccess" class="ipe" style="padding-top: 5px;">${license.remoteAccess}</p>
+                  </div>
+                </div>
+    
+                <div class="control-group">
+                  <label class="control-label" for="walkinAccess">Walk In Access</label>
+                  <div class="controls">
+                    <p id="walkinAccess" class="ipe" style="padding-top: 5px;">${license.walkinAccess}</p>
+                  </div>
+                </div>
+    
+                <div class="control-group">
+                  <label class="control-label" for="multisiteAccess">Multi Site Access</label>
+                  <div class="controls">
+                    <p id="multisiteAccess" class="ipe" style="padding-top: 5px;">${license.multisiteAccess}</p>
+                  </div>
+                </div>
+    
+                <div class="control-group">
+                  <label class="control-label" for="partnersAccess">Partners Access</label>
+                  <div class="controls">
+                    <p id="partnersAccess" class="ipe" style="padding-top: 5px;">${license.partnersAccess}</p>
+                  </div>
+                </div>
+    
+                <div class="control-group">
+                  <label class="control-label" for="alumniAccess">Alumni Access</label>
+                  <div class="controls">
+                    <p id="alumniAccess" class="ipe" style="padding-top: 5px;">${license.alumniAccess}</p>
+                  </div>
+                </div>
+    
+                <div class="control-group">
+                  <label class="control-label" for="ill">ILL Access</label>
+                  <div class="controls">
+                    <p id="ill" class="ipe" style="padding-top: 5px;">${license.ill}</p>
+                  </div>
+                </div>
+    
+                <div class="control-group">
+                  <label class="control-label" for="coursepack}">Coursepack Access</label>
+                  <div class="controls">
+                    <p id="coursepack" class="ipe" style="padding-top: 5px;">${license.coursepack}</p>
+                  </div>
+                </div>
+    
+                <div class="control-group">
+                  <label class="control-label" for="vle">VLE Access</label>
+                  <div class="controls">
+                    <p id="coursepack" class="vle" style="padding-top: 5px;">${license.vle}</p>
+                  </div>
+                </div>
+    
+                <div class="control-group">
+                  <label class="control-label" for="enterprise">Enterprise Access</label>
+                  <div class="controls">
+                    <p id="enterprise" class="vle" style="padding-top: 5px;">${license.enterprise}</p>
+                  </div>
+                </div>
+    
+                <div class="control-group">
+                  <label class="control-label" for="pca">PCA</label>
+                  <div class="controls">
+                    <p id="enterprise" class="pca" style="padding-top: 5px;">${license.pca}</p>
+                  </div>
                 </div>
               </fieldset>
             </div>
@@ -72,94 +146,7 @@
         <div class="tab-pane" id="docstab">
           <div class="row-fluid">
             <div class="span12">
-            <div class="control-group">
-              <label class="control-label" for="reference">Concurrent Access</label>
-              <div class="controls">
-                <g:textField name="reference" value="${license.concurrentUsers}" class="input-xlarge" id="input01"/>
-                <p class="help-block">Descriptive reference for this license</p>
-              </div>
-            </div>
-    
-    
-            <div class="control-group">
-              <label class="control-label" for="reference">Remote Access</label>
-              <div class="controls">
-                <g:textField name="reference" value="${license.remoteAccess}" class="input-xlarge" id="input01"/>
-                <p class="help-block">Descriptive reference for this license</p>
-              </div>
-            </div>
-    
-            <div class="control-group">
-              <label class="control-label" for="reference">Walk In Access</label>
-              <div class="controls">
-                <g:textField name="reference" value="${license.walkinAccess}" class="input-xlarge" id="input01"/>
-                <p class="help-block">Descriptive reference for this license</p>
-              </div>
-            </div>
-    
-            <div class="control-group">
-              <label class="control-label" for="reference">Multi Site Access</label>
-              <div class="controls">
-                <g:textField name="reference" value="${license.multisiteAccess}" class="input-xlarge" id="input01"/>
-                <p class="help-block">Descriptive reference for this license</p>
-              </div>
-            </div>
-    
-            <div class="control-group">
-              <label class="control-label" for="reference">Partners Access</label>
-              <div class="controls">
-                <g:textField name="reference" value="${license.partnersAccess}" class="input-xlarge" id="input01"/>
-                <p class="help-block">Descriptive reference for this license</p>
-              </div>
-            </div>
-    
-            <div class="control-group">
-              <label class="control-label" for="reference">Alumni Access</label>
-              <div class="controls">
-                <g:textField name="reference" value="${license.alumniAccess}" class="input-xlarge" id="input01"/>
-                <p class="help-block">Descriptive reference for this license</p>
-              </div>
-            </div>
-    
-            <div class="control-group">
-              <label class="control-label" for="reference">ILL Access</label>
-              <div class="controls">
-                <g:textField name="reference" value="${license.ill}" class="input-xlarge" id="input01"/>
-                <p class="help-block">Descriptive reference for this license</p>
-              </div>
-            </div>
-    
-            <div class="control-group">
-              <label class="control-label" for="reference">Coursepack Access</label>
-              <div class="controls">
-                <g:textField name="reference" value="${license.coursepack}" class="input-xlarge" id="input01"/>
-                <p class="help-block">Descriptive reference for this license</p>
-              </div>
-            </div>
-    
-            <div class="control-group">
-              <label class="control-label" for="reference">VLE Access</label>
-              <div class="controls">
-                <g:textField name="reference" value="${license.vle}" class="input-xlarge" id="input01"/>
-                <p class="help-block">Descriptive reference for this license</p>
-              </div>
-            </div>
-    
-            <div class="control-group">
-              <label class="control-label" for="reference">Enterprise Access</label>
-              <div class="controls">
-                <g:textField name="reference" value="${license.enterprise}" class="input-xlarge" id="input01"/>
-                <p class="help-block">Descriptive reference for this license</p>
-              </div>
-            </div>
-    
-            <div class="control-group">
-              <label class="control-label" for="reference">PCA</label>
-              <div class="controls">
-                <g:textField name="reference" value="${license.pca}" class="input-xlarge" id="input01"/>
-                <p class="help-block">Descriptive reference for this license</p>
-              </div>
-            </div>
+
             </div>
           </div>
         </div>
@@ -186,6 +173,7 @@
            type      : 'textarea',
            cancel    : 'Cancel',
            submit    : 'OK',
+           id        : 'elementid',
            tooltip   : 'Click to edit...'
          });
        });
