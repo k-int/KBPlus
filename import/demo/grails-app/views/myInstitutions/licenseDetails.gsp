@@ -53,87 +53,39 @@
                 <div class="control-group">
                     <label class="control-label" for="licenseeRef">Licensee Ref</label>
                     <div class="controls">
-                      <p id="licenseeRef" class="ipe" style="padding-top: 5px;">${license.licenseeRef}</p>
+                      <div id="licenseeRef" class="ipe" style="padding-top: 5px;">${license.licenseeRef}</div>
                     </div>
                 </div>
 
                 <div class="control-group">
-                  <label class="control-label" for="concurrentUsers">Concurrent Access</label>
-                  <div class="controls">
-                    <p id="concurrentUsers" class="ipe" style="padding-top: 5px;">${license.concurrentUsers}</p>
-                  </div>
+                    <label class="control-label" for="concurrentUsers">Concurrent Access</label>
+                    <div class="controls">
+                      <div id="concurrentUsers" class="ipe" style="padding-top: 5px;">${license.concurrentUsers}</div>
+                    </div>
                 </div>
-    
-    
-                <div class="control-group">
-                  <label class="control-label" for="remoteAccess">Remote Access</label>
-                  <div class="controls">
-                    <p id="remoteAccess" class="ipe" style="padding-top: 5px;">${license.remoteAccess}</p>
-                  </div>
-                </div>
-    
-                <div class="control-group">
-                  <label class="control-label" for="walkinAccess">Walk In Access</label>
-                  <div class="controls">
-                    <p id="walkinAccess" class="ipe" style="padding-top: 5px;">${license.walkinAccess}</p>
-                  </div>
-                </div>
-    
-                <div class="control-group">
-                  <label class="control-label" for="multisiteAccess">Multi Site Access</label>
-                  <div class="controls">
-                    <p id="multisiteAccess" class="ipe" style="padding-top: 5px;">${license.multisiteAccess}</p>
-                  </div>
-                </div>
-    
-                <div class="control-group">
-                  <label class="control-label" for="partnersAccess">Partners Access</label>
-                  <div class="controls">
-                    <p id="partnersAccess" class="ipe" style="padding-top: 5px;">${license.partnersAccess}</p>
-                  </div>
-                </div>
-    
-                <div class="control-group">
-                  <label class="control-label" for="alumniAccess">Alumni Access</label>
-                  <div class="controls">
-                    <p id="alumniAccess" class="ipe" style="padding-top: 5px;">${license.alumniAccess}</p>
-                  </div>
-                </div>
-    
-                <div class="control-group">
-                  <label class="control-label" for="ill">ILL Access</label>
-                  <div class="controls">
-                    <p id="ill" class="ipe" style="padding-top: 5px;">${license.ill}</p>
-                  </div>
-                </div>
-    
-                <div class="control-group">
-                  <label class="control-label" for="coursepack}">Coursepack Access</label>
-                  <div class="controls">
-                    <p id="coursepack" class="ipe" style="padding-top: 5px;">${license.coursepack}</p>
-                  </div>
-                </div>
-    
-                <div class="control-group">
-                  <label class="control-label" for="vle">VLE Access</label>
-                  <div class="controls">
-                    <p id="coursepack" class="vle" style="padding-top: 5px;">${license.vle}</p>
-                  </div>
-                </div>
-    
-                <div class="control-group">
-                  <label class="control-label" for="enterprise">Enterprise Access</label>
-                  <div class="controls">
-                    <p id="enterprise" class="vle" style="padding-top: 5px;">${license.enterprise}</p>
-                  </div>
-                </div>
-    
-                <div class="control-group">
-                  <label class="control-label" for="pca">PCA</label>
-                  <div class="controls">
-                    <p id="enterprise" class="pca" style="padding-top: 5px;">${license.pca}</p>
-                  </div>
-                </div>
+
+          <table class="table table-striped table-bordered table-condensed">
+            <thead>
+              <tr>
+                <th>Property</th>
+                <th>Status</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Remote Access</td><td><p id="remoteAccess" class="ipe"><img src="<g:message code="refdata.yno.${license.remoteAccess}.icon"/>"/>${license.remoteAccess}</p></td><td></td></tr>
+              <tr><td>Walk In Access</td><td><p id="walkinAccess" class="ipe"><img src="<g:message code="refdata.yno.${license.walkinAccess}.icon"/>"/>${license.walkinAccess}</p></td><td></td></tr>
+              <tr><td>Multi Site Access</td><td><p id="multisiteAccess" class="ipe"><img src="<g:message code="refdata.yno.${license.multisiteAccess}.icon"/>"/>${license.multisiteAccess}</p></td><td></td></tr>
+              <tr><td>Partners Access</td><td><p id="partnersAccess" class="ipe"><img src="<g:message code="refdata.yno.${license.partnersAccess}.icon"/>"/>${license.partnersAccess}</p></td><td></td></tr>
+              <tr><td>Alumni Access</td><td><p id="alumniAccess" class="ipe"><img src="<g:message code="refdata.yno.${license.alumniAccess}.icon"/>"/>${license.alumniAccess}</p></td><td></td></tr>
+              <tr><td>ILL Access</td><td><p id="ill" class="ipe"><img src="<g:message code="refdata.yno.${license.ill}.icon"/>"/>${license.ill}</p></td><td></td></tr>
+              <tr><td>Coursepack Access</td><td><p id="coursepack" class="ipe"><img src="<g:message code="refdata.yno.${license.coursepack}.icon"/>"/>${license.coursepack}</p></td><td></td></tr>
+              <tr><td>VLE Access</td><td><p id="vle" class="ipe"><img src="<g:message code="refdata.yno.${license.vle}.icon"/>"/>${license.vle}</p></td><td></td></tr>
+              <tr><td>Enterprise Access</td><td><p id="enterprise" class="ipe"><img src="<g:message code="refdata.yno.${license.enterprise}.icon"/>"/>${license.enterprise}</p></td><td></td></tr>
+              <tr><td>PCA Access</td><td><p id="pca" class="ipe"><img src="<g:message code="refdata.yno.${license.pca}.icon"/>"/>${license.pca}</p></td><td></td></tr>
+            </tbody>
+          </table>
+
               </fieldset>
             </div>
             <div class="span4">

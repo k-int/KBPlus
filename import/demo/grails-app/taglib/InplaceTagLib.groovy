@@ -26,4 +26,12 @@ class InplaceTagLib {
     out << "});"
     out << "</script>"
   }
+
+  def refdataValue = { attrs, body ->
+    if ( attrs.val && attrs.refdataCat ) {
+      def refdataCat = RefdataCategory.findByDesc(attrs.refdataCat)
+      def value = RefdataValue.findByOwnerAndValue(refdataCat, attrs.val)
+      out << "refdataValue\"${attrs.val}\""
+    }
+  }
 }

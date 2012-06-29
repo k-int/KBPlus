@@ -134,3 +134,8 @@ pre.snippet .error {
     border: 1px solid #AA4444; 
     color: #FFFFFF; 
 } 
+
+.control-label {
+        font-weight: bold;
+}
+

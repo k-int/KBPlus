@@ -589,3 +589,7 @@ a.skip {
 	position: absolute;
 	left: -9999px;
 }
+
+.control-label {
+	font-weight: bold;
+}
