@@ -183,7 +183,12 @@
     
     <script language="JavaScript">
       $(document).ready(function() {
-           $('.ipe').editable('http://www.example.com/save.php');
+         $('.ipe').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="inPlaceSave" absolute="true"/>', { 
+           type      : 'textarea',
+           cancel    : 'Cancel',
+           submit    : 'OK',
+           tooltip   : 'Click to edit...'
+         });
        });
     </script>
   </body>
