@@ -30,7 +30,7 @@ class DataloadService {
   }
 
   def doFTUpdate() {
-    System.out.println("doFTUpdate");
+    log.debug("doFTUpdate");
     
     log.debug("Execute IndexUpdateJob starting at ${new Date()}");
     def start_time = System.currentTimeMillis();
@@ -81,13 +81,13 @@ class DataloadService {
 
   def updateES(esclient, domain, recgen_closure) {
 
+    log.debug("updateES ${domain.name}");
     def count = 0;
     Date from = new Date(0);
     def qry = domain.findAllByLastUpdatedGreaterThan(from);
     qry.each { i ->
       def idx_record = recgen_closure(i)
 
-      // log.debug("Generated record ${idx_record}");
       def future = esclient.index {
         index "kbplus"
         type domain.name
@@ -695,22 +695,25 @@ class DataloadService {
           }
         }
   
-        possibleNote(lic.concurrent_users_note,'ConcurrentUsageNote',l);
-        possibleNote(lic.remote_access_note,'RemoteAccessNote',l);
-        possibleNote(lic.walkin_access_note,'WalkinAccessNote',l);
-        possibleNote(lic.multisite_access_note,'MultisiteAccessNote',l);
-        possibleNote(lic.partners_access_note,'PartnersAccessNote',l);
-        possibleNote(lic.alumni_access_note,'AlumniAccessNote',l);
-        possibleNote(lic.ill_note,'ILLNote',l);
-        possibleNote(lic.coursepack_note,'CoursepackNote',l);
-        possibleNote(lic.vle_note,'VLENote',l);
-        possibleNote(lic.enterprise_note,'EnterpriseNote',l);
-        possibleNote(lic.pca_note,'PCANote',l);
+        possibleNote(lic.concurrent_users_note,'ConcurrentUsageNote',l,'License Concurrent Usage Note');
+        possibleNote(lic.remote_access_note,'RemoteAccessNote',l,'License Remote Access Note');
+        possibleNote(lic.walkin_access_note,'WalkinAccessNote',l,'License Walkin Access Note');
+        possibleNote(lic.multisite_access_note,'MultisiteAccessNote',l,'License Multisite Access Note');
+        possibleNote(lic.partners_access_note,'PartnersAccessNote',l,'License Partner Access Note');
+        possibleNote(lic.alumni_access_note,'AlumniAccessNote',l,'License Alumni Access Note');
+        possibleNote(lic.ill_note,'ILLNote',l,'License ILL Note');
+        possibleNote(lic.coursepack_note,'CoursepackNote',l,'License Course Pack Note');
+        possibleNote(lic.vle_note,'VLENote',l,'License VLE Note');
+        possibleNote(lic.enterprise_note,'EnterpriseNote',l,'License Enterprise Note');
+        possibleNote(lic.pca_note,'PCANote',l,'License PCA Note');
   
         lic.datafiles.each { attached_doc ->
           // Link to attached_doc[0] - Should contain remote uuid
-          def doc_content = new Doc(contentType:1, uuid: attached_doc[0], name: attached_doc[1]).save()
-          def doc_context = new DocContext(license:license,
+          def doc_content = new Doc(contentType:1, 
+                                    uuid: attached_doc[0], 
+                                    filename: attached_doc[1],
+                                    title: attached_doc[2]).save()
+          def doc_context = new DocContext(license:l,
                                            owner:doc_content,
                                            doctype:lookupOrCreateRefdataEntry('Document Type','License')).save();
         }
@@ -720,9 +723,10 @@ class DataloadService {
     log.debug("License processing complete");
   }
 
-  def possibleNote(content, type, license) {
+  def possibleNote(content, type, license, note_title) {
     if ( content && content.toString().length() > 0 ) {
-      def doc_content = new Doc(content:content.toString()).save();
+      def doc_content = new Doc(content:content.toString(),
+                                title:note_title).save();
       def doc_context = new DocContext(license:license,
                                        owner:doc_content,
                                        doctype:lookupOrCreateRefdataEntry('Document Type',type)).save();

@@ -1,6 +1,6 @@
 package com.k_int.kbplus
 
-class IssueEntitlement {
+class IssueEntitlement implements Comparable {
 
   RefdataValue status
   Date startDate
@@ -17,6 +17,11 @@ class IssueEntitlement {
 
   static belongsTo = [subscription: Subscription,
                       tipp: TitleInstancePackagePlatform]
+
+
+  int compareTo(obj) {
+    tipp?.title?.title.compareTo(obj.tipp?.title?.title)
+  }
 
   static mapping = {
                 id column:'ie_id'

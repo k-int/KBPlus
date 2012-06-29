@@ -8,7 +8,6 @@
   <body>
     <h2>${institution?.name} - A License</h2>
     <hr/>
-
     <div class="tabbable"> <!-- Only required for left/right tabs -->
       <ul class="nav nav-tabs">
         <li class="active"><a href="#detailtab" data-toggle="tab">License Detail</a></li>
@@ -191,5 +190,6 @@
          });
        });
     </script>
+
   </body>
 </html>

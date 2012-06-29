@@ -27,4 +27,14 @@ class TitleInstance {
     status(nullable:true, blank:false);
     type(nullable:true, blank:false);
   }
+
+  String getIdentifierValue(idtype) {
+    def result=null
+    ids?.each { id ->
+      if ( id.identifier?.ns?.ns == idtype )
+        result = id.identifier?.value
+    }
+    result
+  }
+
 }

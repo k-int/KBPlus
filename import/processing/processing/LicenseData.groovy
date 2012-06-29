@@ -74,7 +74,7 @@ zipFile.entries().each {
        csventry = it;
    }
    else {
-     docstore_components.add([file:it, id:java.util.UUID.randomUUID().toString(), name:it.getName()]);
+     docstore_components.add([file:it, id:java.util.UUID.randomUUID().toString(), name:it.getName(), filename:it.getName()]);
    }
 }
 
@@ -159,7 +159,7 @@ if ( csventry ) {
         license_status : nl[30],
         subscriptions : [],
         lastmod: System.currentTimeMillis(),
-        datafiles:docstore_components.collect{ [ it.remote_uuid, it.name ] }
+        datafiles:docstore_components.collect{ [ it.remote_uuid, it.name, it.filename ] }
       ]
 
       for ( int i=31; i<nl.length; i++ ) {
@@ -248,7 +248,8 @@ def docstoreUpload(bf, zipfile, filelist) {
 
 def uploadBag(bagfile,filelist) {
   println("uploading bagfile ${bagfile}");
-  def http = new groovyx.net.http.HTTPBuilder('http://knowplusdev.edina.ac.uk:8080/oledocstore/KBPlusServlet')
+  // def http = new groovyx.net.http.HTTPBuilder('http://knowplusdev.edina.ac.uk:8080/oledocstore/KBPlusServlet')
+  def http = new groovyx.net.http.HTTPBuilder('http://knowplus.edina.ac.uk/oledocstore/KBPlusServlet')
 
   http.request(groovyx.net.http.Method.POST) {request ->
     requestContentType = 'multipart/form-data'

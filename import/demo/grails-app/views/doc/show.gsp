@@ -84,6 +84,20 @@
 						
 					</g:if>
 				
+					<g:if test="${docInstance?.title}">
+						<dt><g:message code="doc.title.label" default="Title" /></dt>
+						
+							<dd><g:fieldValue bean="${docInstance}" field="title"/></dd>
+						
+					</g:if>
+				
+					<g:if test="${docInstance?.filename}">
+						<dt><g:message code="doc.filename.label" default="Filename" /></dt>
+						
+							<dd><g:fieldValue bean="${docInstance}" field="filename"/></dd>
+						
+					</g:if>
+				
 					<g:if test="${docInstance?.dateCreated}">
 						<dt><g:message code="doc.dateCreated.label" default="Date Created" /></dt>
 						

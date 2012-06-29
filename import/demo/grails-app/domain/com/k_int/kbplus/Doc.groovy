@@ -6,6 +6,7 @@ class Doc {
   RefdataValue type
   Alert alert
   String title
+  String filename
   Integer contentType=0 // 0=String, 1=docstore
   String content 
   String uuid 
@@ -22,6 +23,7 @@ class Doc {
        contentType column:'doc_content_type'
               uuid column:'doc_docstore_uuid'
              title column:'doc_title'
+          filename column:'doc_filename'
            content column:'doc_content', type:'text'
   }
 
@@ -33,5 +35,6 @@ class Doc {
     uuid(nullable:true, blank:false)
     contentType(nullable:true, blank:false)
     title(nullable:true, blank:false)
+    filename(nullable:true, blank:false)
   }
 }
