@@ -60,50 +60,46 @@
           <table class="table table-striped table-bordered table-condensed">
             <thead>
               <tr>
-                <th>Property</th>
-                <th>Status</th>
-                <th>Notes</th>
+                <th width="20%">Property</th>
+                <th width="25%">Status</th>
+                <th width="55%">Notes</th>
               </tr>
             </thead>
             <tbody>
               <tr><td>Concurrent Access</td>
-                  <td><g:refdataValue val="${license.concurrentUsers}" propname="concurrentUsers" refdataCat='Concurrent Access'/></td>
-                  <td></td></tr>
-
-              <tr><td>Concurrent Access(2)</td>
-                  <td><p id="concurrentUsers" class="refdataedit">${license.concurrentUsers}</p></td>
+                  <td><g:refdataValue val="${license.concurrentUsers}" propname="concurrentUsers" refdataCat='Concurrent Access' class="cuedit"/></td>
                   <td></td></tr>
 
               <tr><td>Remote Access</td>
-                  <td><p id="remoteAccess" class="refdataedit">${license.remoteAccess}</p></td>
+                  <td><g:refdataValue val="${license.remoteAccess}" propname="remoteAccess" refdataCat='YNO' class="refdataedit"/></td>
                   <td></td></tr>
 
               <tr><td>Walk In Access</td>
-                  <td><p id="walkinAccess" class="refdataedit">${license.walkinAccess}</p></td>
+                  <td><g:refdataValue val="${license.walkinAccess}" propname="walkinAccess" refdataCat='YNO' class="refdataedit"/></td>
                   <td></td></tr>
               <tr><td>Multi Site Access</td>
-                  <td><p id="multisiteAccess" class="refdataedit">${license.multisiteAccess}</p></td>
+                  <td><g:refdataValue val="${license.multisiteAccess}" propname="multisiteAccess" refdataCat='YNO' class="refdataedit"/></td>
                   <td></td></tr>
               <tr><td>Partners Access</td>
-                  <td><p id="partnersAccess" class="refdataedit">${license.partnersAccess}</p></td>
+                  <td><g:refdataValue val="${license.partnersAccess}" propname="partnersAccess" refdataCat='YNO' class="refdataedit"/></td>
                   <td></td></tr>
               <tr><td>Alumni Access</td>
-                  <td><p id="alumniAccess" class="refdataedit">${license.alumniAccess}</p></td>
+                  <td><g:refdataValue val="${license.alumniAccess}" propname="alumniAccess" refdataCat='YNO' class="refdataedit"/></td>
                   <td></td></tr>
               <tr><td>ILL Access</td>
-                  <td><p id="ill" class="refdataedit">${license.ill}</p></td>
+                  <td><g:refdataValue val="${license.ill}" propname="ill" refdataCat='YNO' class="refdataedit"/></td>
                   <td></td></tr>
               <tr><td>Coursepack Access</td>
-                  <td><p id="coursepack" class="refdataedit">${license.coursepack}</p></td>
+                  <td><g:refdataValue val="${license.coursepack}" propname="coursepack" refdataCat='YNO' class="refdataedit"/></td>
                   <td></td></tr>
               <tr><td>VLE Access</td>
-                  <td><p id="vle" class="refdataedit">${license.vle}</p></td>
+                  <td><g:refdataValue val="${license.vle}" propname="vle" refdataCat='YNO' class="refdataedit"/></td>
                   <td></td></tr>
               <tr><td>Enterprise Access</td>
-                  <td><p id="enterprise" class="refdataedit">${license.enterprise}</p></td>
+                  <td><g:refdataValue val="${license.enterprise}" propname="enterprise" refdataCat='YNO' class="refdataedit"/></td>
                   <td></td></tr>
               <tr><td>PCA Access</td>
-                  <td><p id="pca" class="refdataedit">${license.pca}</p></td>
+                  <td><g:refdataValue val="${license.pca}" propname="pca" refdataCat='YNO' class="refdataedit"/></td>
                   <td></td></tr>
             </tbody>
           </table>
@@ -150,10 +146,8 @@
            id        : 'elementid',
            tooltip   : 'Click to edit...'
          });
-       });
 
-      $(document).ready(function() {
-         $('.refdataedit').editable('<g:createLink controller="ajax" params="${[type:'License',cat:'YNO']}" id="${params.id}" action="setRefdataProp" absolute="true"/>', {
+         $('.refdataedit').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="inPlaceSave" absolute="true"/>', {
            data   : {'Yes':'Yes', 'No':'No','Other':'Other'},
            type   : 'select',
            cancel : 'Cancel',
@@ -161,6 +155,16 @@
            id     : 'elementid',
            tooltip: 'Click to edit...'
          });
+
+         $('.cuedit').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="inPlaceSave" absolute="true"/>', {
+           data   : {'No limit':'No limit', 'Limited':'Limited','Other':'Other'},
+           type   : 'select',
+           cancel : 'Cancel',
+           submit : 'OK',
+           id     : 'elementid',
+           tooltip: 'Click to edit...'
+         });
+
        });
 
     </script>

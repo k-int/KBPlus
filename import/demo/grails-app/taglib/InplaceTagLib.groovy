@@ -33,7 +33,7 @@ class InplaceTagLib {
     if ( attrs.val && attrs.refdataCat ) {
       def refdataCat = RefdataCategory.findByDesc(attrs.refdataCat)
       def value = RefdataValue.findByOwnerAndValue(refdataCat, attrs.val)
-      out << "<p id=\"${attrs.propname}\" class=\"refdataedit\">"
+      out << "<p id=\"${attrs.propname}\" class=\"${attrs.class}\">"
       if ( value ) {
         if ( value.icon ) {
           out << "<i class=\"${value.icon}\"></i> "
