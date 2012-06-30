@@ -2,33 +2,6 @@ import com.k_int.kbplus.*
 
 class InplaceTagLib {
 
-  def editInPlace = { attrs, body ->
-    def rows = attrs.rows ? attrs.rows : 0;
-    def cols = attrs.cols ? attrs.cols : 0;
-    def id = attrs.remove('id')
-    out << "<span id='${id}'>"
-    out << body()
-    out << "</span>"
-    out << "<script type='text/javascript'>"
-    out << "new Ajax.InPlaceEditor('${id}', '"
-    out << createLink(attrs)
-    out << "',{"
-
-    if(rows)
-      out << "rows:${rows},"
-
-    if(cols)
-      out << "cols:${cols},"
-
-    if(attrs.paramName) {
-      out <<  """callback: function(form, value) {
-                  return '${attrs.paramName}=' + escape(value) }"""
-    }
-
-    out << "});"
-    out << "</script>"
-  }
-
   def refdataValue = { attrs, body ->
     if ( attrs.val && attrs.refdataCat ) {
       def refdataCat = RefdataCategory.findByDesc(attrs.refdataCat)
@@ -45,5 +18,13 @@ class InplaceTagLib {
       out << attrs.val
       out << "</p>"
     }
+  }
+
+  def singleValueFieldNote= { attrs, body ->
+    out << "<p class=\"${attrs.class}\" id=\"__fieldNote_${attrs.domain}\">"
+    if ( attrs.value ) {
+      out << attrs.value?.owner?.content
+    }
+    out << "</p>"
   }
 }

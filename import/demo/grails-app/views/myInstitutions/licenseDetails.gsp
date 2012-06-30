@@ -68,39 +68,39 @@
             <tbody>
               <tr><td>Concurrent Access</td>
                   <td><g:refdataValue val="${license.concurrentUsers?.value}" propname="concurrentUsers" refdataCat='Concurrent Access' class="cuedit"/></td>
-                  <td></td></tr>
+                  <td><g:singleValueFieldNote domain="concurrentUsers" value="${license.getNote('concurrentUsers')}" class="fieldNote"/></td></tr>
 
               <tr><td>Remote Access</td>
                   <td><g:refdataValue val="${license.remoteAccess?.value}" propname="remoteAccess" refdataCat='YNO' class="refdataedit"/></td>
-                  <td></td></tr>
+                  <td><g:singleValueFieldNote domain="remoteAccess" value="${license.getNote('remoteAccess')}" class="fieldNote"/></td></tr>
 
               <tr><td>Walk In Access</td>
                   <td><g:refdataValue val="${license.walkinAccess?.value}" propname="walkinAccess" refdataCat='YNO' class="refdataedit"/></td>
-                  <td></td></tr>
+                  <td><g:singleValueFieldNote domain="walkinAccess" value="${license.getNote('walkinAccess')}" class="fieldNote"/></td></tr>
               <tr><td>Multi Site Access</td>
                   <td><g:refdataValue val="${license.multisiteAccess?.value}" propname="multisiteAccess" refdataCat='YNO' class="refdataedit"/></td>
-                  <td></td></tr>
+                  <td><g:singleValueFieldNote domain="multisiteAccess" value="${license.getNote('multisiteAccess')}" class="fieldNote"/></td></tr>
               <tr><td>Partners Access</td>
                   <td><g:refdataValue val="${license.partnersAccess?.value}" propname="partnersAccess" refdataCat='YNO' class="refdataedit"/></td>
-                  <td></td></tr>
+                  <td><g:singleValueFieldNote domain="partnersAccess" value="${license.getNote('partnersAccess')}" class="fieldNote"/></td></tr>
               <tr><td>Alumni Access</td>
                   <td><g:refdataValue val="${license.alumniAccess?.value}" propname="alumniAccess" refdataCat='YNO' class="refdataedit"/></td>
-                  <td></td></tr>
+                  <td><g:singleValueFieldNote domain="alumniAccess" value="${license.getNote('alumniAccess')}" class="fieldNote"/></td></tr>
               <tr><td>ILL Access</td>
                   <td><g:refdataValue val="${license.ill?.value}" propname="ill" refdataCat='YNO' class="refdataedit"/></td>
-                  <td></td></tr>
+                  <td><g:singleValueFieldNote domain="ill" value="${license.getNote('ill')}" class="fieldNote"/></td></tr>
               <tr><td>Coursepack Access</td>
                   <td><g:refdataValue val="${license.coursepack?.value}" propname="coursepack" refdataCat='YNO' class="refdataedit"/></td>
-                  <td></td></tr>
+                  <td><g:singleValueFieldNote domain="coursepack" value="${license.getNote('coursepack')}" class="fieldNote"/></td></tr>
               <tr><td>VLE Access</td>
                   <td><g:refdataValue val="${license.vle?.value}" propname="vle" refdataCat='YNO' class="refdataedit"/></td>
-                  <td></td></tr>
+                  <td><g:singleValueFieldNote domain="vle" value="${license.getNote('vle')}" class="fieldNote"/></td></tr>
               <tr><td>Enterprise Access</td>
                   <td><g:refdataValue val="${license.enterprise?.value}" propname="enterprise" refdataCat='YNO' class="refdataedit"/></td>
-                  <td></td></tr>
+                  <td><g:singleValueFieldNote domain="enterprise" value="${license.getNote('enterprise')}" class="fieldNote"/></td></tr>
               <tr><td>PCA Access</td>
                   <td><g:refdataValue val="${license.pca?.value}" propname="pca" refdataCat='YNO' class="refdataedit"/></td>
-                  <td></td></tr>
+                  <td><g:singleValueFieldNote domain="pca" value="${license.getNote('pca')}" class="fieldNote"/></td></tr>
             </tbody>
           </table>
 
@@ -163,6 +163,14 @@
            submit : 'OK',
            id     : 'elementid',
            tooltip: 'Click to edit...'
+         });
+
+         $('.fieldNote').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="setFieldNote" absolute="true"/>', {
+           type      : 'textarea',
+           cancel    : 'Cancel',
+           submit    : 'OK',
+           id        : 'elementid',
+           tooltip   : 'Click to edit...'
          });
 
        });

@@ -695,17 +695,17 @@ class DataloadService {
           }
         }
   
-        possibleNote(lic.concurrent_users_note,'ConcurrentUsageNote',l,'License Concurrent Usage Note');
-        possibleNote(lic.remote_access_note,'RemoteAccessNote',l,'License Remote Access Note');
-        possibleNote(lic.walkin_access_note,'WalkinAccessNote',l,'License Walkin Access Note');
-        possibleNote(lic.multisite_access_note,'MultisiteAccessNote',l,'License Multisite Access Note');
-        possibleNote(lic.partners_access_note,'PartnersAccessNote',l,'License Partner Access Note');
-        possibleNote(lic.alumni_access_note,'AlumniAccessNote',l,'License Alumni Access Note');
-        possibleNote(lic.ill_note,'ILLNote',l,'License ILL Note');
-        possibleNote(lic.coursepack_note,'CoursepackNote',l,'License Course Pack Note');
-        possibleNote(lic.vle_note,'VLENote',l,'License VLE Note');
-        possibleNote(lic.enterprise_note,'EnterpriseNote',l,'License Enterprise Note');
-        possibleNote(lic.pca_note,'PCANote',l,'License PCA Note');
+        possibleNote(lic.concurrent_users_note,'concurrentUsers',l,'License Concurrent Usage Note');
+        possibleNote(lic.remote_access_note,'remoteAccess',l,'License Remote Access Note');
+        possibleNote(lic.walkin_access_note,'walkinAccess',l,'License Walkin Access Note');
+        possibleNote(lic.multisite_access_note,'multisiteAccess',l,'License Multisite Access Note');
+        possibleNote(lic.partners_access_note,'partnersAccess',l,'License Partner Access Note');
+        possibleNote(lic.alumni_access_note,'alumniAccess',l,'License Alumni Access Note');
+        possibleNote(lic.ill_note,'ill',l,'License ILL Note');
+        possibleNote(lic.coursepack_note,'coursepack',l,'License Course Pack Note');
+        possibleNote(lic.vle_note,'vle',l,'License VLE Note');
+        possibleNote(lic.enterprise_note,'enterprise',l,'License Enterprise Note');
+        possibleNote(lic.pca_note,'pca',l,'License PCA Note');
   
         lic.datafiles.each { attached_doc ->
           // Link to attached_doc[0] - Should contain remote uuid
@@ -725,9 +725,9 @@ class DataloadService {
 
   def possibleNote(content, type, license, note_title) {
     if ( content && content.toString().length() > 0 ) {
-      def doc_content = new Doc(content:content.toString(),
-                                title:note_title).save();
+      def doc_content = new Doc(content:content.toString(), title: "${type} note").save()
       def doc_context = new DocContext(license:license,
+                                       domain:type,
                                        owner:doc_content,
                                        doctype:lookupOrCreateRefdataEntry('Document Type',type)).save();
     }

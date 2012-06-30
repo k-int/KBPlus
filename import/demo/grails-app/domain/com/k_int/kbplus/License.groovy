@@ -106,4 +106,25 @@ class License {
   }
 
 
+  def getNote(domain) {
+    def note = DocContext.findByLicenseAndDomain(this, domain)
+    note
+  }
+
+  def setNote(domain, note_content) {
+    def note = DocContext.findByLicenseAndDomain(this, domain)
+    if ( note ) {
+      log.debug("update existing note...");
+      note.owner.content = note_content
+      note.owner.save(flush:true);
+    }
+    else {
+      log.debug("Create new note...");
+      def doc = new Doc(content:note_content, lastUpdated:new Date(), dateCreated: new Date())
+      def newctx = new DocContext(license: this, owner: doc, domain:domain)
+      doc.save();
+      newctx.save(flush:true);
+    }
+  }
+
 }
