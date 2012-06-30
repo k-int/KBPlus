@@ -3,6 +3,7 @@ package com.k_int.kbplus
 class RefdataValue {
 
   String value
+  String icon
 
   static belongsTo = [
     owner:RefdataCategory
@@ -13,8 +14,10 @@ class RefdataValue {
     version column:'rdv_version'
       owner column:'rdv_owner', index:'rdv_entry_idx'
       value column:'rdv_value', index:'rdv_entry_idx'
+       icon column:'rdv_icon', index:'rdv_icon_idx'
   }
 
   static constraints = {
+    icon(nullable:true)
   }
 }

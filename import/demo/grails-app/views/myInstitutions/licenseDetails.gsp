@@ -57,13 +57,6 @@
                     </div>
                 </div>
 
-                <div class="control-group">
-                    <label class="control-label" for="concurrentUsers">Concurrent Access</label>
-                    <div class="controls">
-                      <div id="concurrentUsers" class="ipe" style="padding-top: 5px;">${license.concurrentUsers}</div>
-                    </div>
-                </div>
-
           <table class="table table-striped table-bordered table-condensed">
             <thead>
               <tr>
@@ -73,16 +66,45 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td>Remote Access</td><td><p id="remoteAccess" class="ipe"><img src="<g:message code="refdata.yno.${license.remoteAccess}.icon"/>"/>${license.remoteAccess}</p></td><td></td></tr>
-              <tr><td>Walk In Access</td><td><p id="walkinAccess" class="ipe"><img src="<g:message code="refdata.yno.${license.walkinAccess}.icon"/>"/>${license.walkinAccess}</p></td><td></td></tr>
-              <tr><td>Multi Site Access</td><td><p id="multisiteAccess" class="ipe"><img src="<g:message code="refdata.yno.${license.multisiteAccess}.icon"/>"/>${license.multisiteAccess}</p></td><td></td></tr>
-              <tr><td>Partners Access</td><td><p id="partnersAccess" class="ipe"><img src="<g:message code="refdata.yno.${license.partnersAccess}.icon"/>"/>${license.partnersAccess}</p></td><td></td></tr>
-              <tr><td>Alumni Access</td><td><p id="alumniAccess" class="ipe"><img src="<g:message code="refdata.yno.${license.alumniAccess}.icon"/>"/>${license.alumniAccess}</p></td><td></td></tr>
-              <tr><td>ILL Access</td><td><p id="ill" class="ipe"><img src="<g:message code="refdata.yno.${license.ill}.icon"/>"/>${license.ill}</p></td><td></td></tr>
-              <tr><td>Coursepack Access</td><td><p id="coursepack" class="ipe"><img src="<g:message code="refdata.yno.${license.coursepack}.icon"/>"/>${license.coursepack}</p></td><td></td></tr>
-              <tr><td>VLE Access</td><td><p id="vle" class="ipe"><img src="<g:message code="refdata.yno.${license.vle}.icon"/>"/>${license.vle}</p></td><td></td></tr>
-              <tr><td>Enterprise Access</td><td><p id="enterprise" class="ipe"><img src="<g:message code="refdata.yno.${license.enterprise}.icon"/>"/>${license.enterprise}</p></td><td></td></tr>
-              <tr><td>PCA Access</td><td><p id="pca" class="ipe"><img src="<g:message code="refdata.yno.${license.pca}.icon"/>"/>${license.pca}</p></td><td></td></tr>
+              <tr><td>Concurrent Access</td>
+                  <td><g:refdataValue val="${license.concurrentUsers}" propname="concurrentUsers" refdataCat='Concurrent Access'/></td>
+                  <td></td></tr>
+
+              <tr><td>Concurrent Access(2)</td>
+                  <td><p id="concurrentUsers" class="refdataedit">${license.concurrentUsers}</p></td>
+                  <td></td></tr>
+
+              <tr><td>Remote Access</td>
+                  <td><p id="remoteAccess" class="refdataedit">${license.remoteAccess}</p></td>
+                  <td></td></tr>
+
+              <tr><td>Walk In Access</td>
+                  <td><p id="walkinAccess" class="refdataedit">${license.walkinAccess}</p></td>
+                  <td></td></tr>
+              <tr><td>Multi Site Access</td>
+                  <td><p id="multisiteAccess" class="refdataedit">${license.multisiteAccess}</p></td>
+                  <td></td></tr>
+              <tr><td>Partners Access</td>
+                  <td><p id="partnersAccess" class="refdataedit">${license.partnersAccess}</p></td>
+                  <td></td></tr>
+              <tr><td>Alumni Access</td>
+                  <td><p id="alumniAccess" class="refdataedit">${license.alumniAccess}</p></td>
+                  <td></td></tr>
+              <tr><td>ILL Access</td>
+                  <td><p id="ill" class="refdataedit">${license.ill}</p></td>
+                  <td></td></tr>
+              <tr><td>Coursepack Access</td>
+                  <td><p id="coursepack" class="refdataedit">${license.coursepack}</p></td>
+                  <td></td></tr>
+              <tr><td>VLE Access</td>
+                  <td><p id="vle" class="refdataedit">${license.vle}</p></td>
+                  <td></td></tr>
+              <tr><td>Enterprise Access</td>
+                  <td><p id="enterprise" class="refdataedit">${license.enterprise}</p></td>
+                  <td></td></tr>
+              <tr><td>PCA Access</td>
+                  <td><p id="pca" class="refdataedit">${license.pca}</p></td>
+                  <td></td></tr>
             </tbody>
           </table>
 
@@ -129,6 +151,18 @@
            tooltip   : 'Click to edit...'
          });
        });
+
+      $(document).ready(function() {
+         $('.refdataedit').editable('<g:createLink controller="ajax" params="${[type:'License',cat:'YNO']}" id="${params.id}" action="setRefdataProp" absolute="true"/>', {
+           data   : {'Yes':'Yes', 'No':'No','Other':'Other'},
+           type   : 'select',
+           cancel : 'Cancel',
+           submit : 'OK',
+           id     : 'elementid',
+           tooltip: 'Click to edit...'
+         });
+       });
+
     </script>
 
   </body>

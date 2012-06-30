@@ -1,3 +1,5 @@
+import com.k_int.kbplus.*
+
 class InplaceTagLib {
 
   def editInPlace = { attrs, body ->
@@ -31,7 +33,17 @@ class InplaceTagLib {
     if ( attrs.val && attrs.refdataCat ) {
       def refdataCat = RefdataCategory.findByDesc(attrs.refdataCat)
       def value = RefdataValue.findByOwnerAndValue(refdataCat, attrs.val)
-      out << "refdataValue\"${attrs.val}\""
+      out << "<p id=\"${attrs.propname}\" class=\"refdataedit\">"
+      if ( value ) {
+        if ( value.icon ) {
+          out << "<i class=\"${value.icon}\"></i> "
+        }
+        else {
+          out << "<i class=\"icon-search icon-white\"></i>&nbsp;"
+        }
+      }
+      out << attrs.val
+      out << "</p>"
     }
   }
 }

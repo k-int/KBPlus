@@ -53,28 +53,37 @@ insert into refdata_value(rdv_owner, rdv_value) VALUES ( 11, 'Unknown');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (12,'Subscription Type');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 12, 'Subscription Taken');
-insert into refdata_value(rdv_owner, rdv_value) VALUES ( 13, 'Subscription Offered');
-insert into refdata_value(rdv_owner, rdv_value) VALUES ( 14, 'Unknown Subscription Type');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 12, 'Subscription Offered');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 12, 'Unknown Subscription Type');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (13,'Subscription Status');
-insert into refdata_value(rdv_owner, rdv_value) VALUES ( 15, 'Unknown Subscription Type');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 13, 'Unknown Subscription Type');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (14,'Entitlement Issue Status');
-insert into refdata_value(rdv_owner, rdv_value) VALUES ( 16, 'Unknown Entitlement');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 14, 'Unknown Entitlement');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (15,'Doc Type');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 17, 'Unknown Doc Type');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (16,'Doc Status');
-insert into refdata_value(rdv_owner, rdv_value) VALUES ( 18, 'Unknown Doc Status');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 16, 'Unknown Doc Status');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (17,'TIPP Option');
-insert into refdata_value(rdv_owner, rdv_value) VALUES ( 19, 'Unknown TIPP Option');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 17, 'Unknown TIPP Option');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (18,'Combo Type');
-insert into refdata_value(rdv_owner, rdv_value) VALUES ( 20, 'Unknown Combo Type');
-insert into refdata_value(rdv_owner, rdv_value) VALUES ( 21, 'MemberOfConsortium');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 28, 'Unknown Combo Type');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 18, 'MemberOfConsortium');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (19,'Combo Status');
-insert into refdata_value(rdv_owner, rdv_value) VALUES ( 22, 'Unknown Combo Status');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 19, 'Unknown Combo Status');
+
+insert into refdata_category(rdc_id, rdc_description) VALUES (20,'YNO');
+insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 20, 'Yes', 'icon-ok-sign');
+insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 20, 'No', 'icon-remove-sign');
+insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 20, 'Other', 'icon-exclamation-sign');
+
+
+insert into refdata_category(rdc_id, rdc_description) VALUES (21,'Concurrent Access');
+insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 21, 'Unlimited', 'icon-ok-sign');
 
