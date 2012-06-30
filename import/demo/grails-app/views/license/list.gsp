@@ -20,14 +20,15 @@
 								<g:message code="default.list.label" args="[entityName]" />
 							</g:link>
 						</li>
-                                                <sec:ifAnyGranted roles="ROLE_EDITOR,ROLE_ADMIN">
+<sec:ifAnyGranted roles="ROLE_EDITOR,ROLE_ADMIN">
+
 						<li>
 							<g:link class="create" action="create">
 								<i class="icon-plus"></i>
 								<g:message code="default.create.label" args="[entityName]" />
 							</g:link>
 						</li>
-                                                </sec:ifAnyGranted>
+</sec:ifAnyGranted>
 					</ul>
 				</div>
 			</div>
@@ -52,11 +53,11 @@
 						
 							<g:sortableColumn property="reference" title="${message(code: 'license.reference.label', default: 'Reference')}" />
 						
-							<g:sortableColumn property="concurrentUsers" title="${message(code: 'license.concurrentUsers.label', default: 'Concurrent Users')}" />
+							<th class="header"><g:message code="license.concurrentUsers.label" default="Concurrent Users" /></th>
 						
-							<g:sortableColumn property="remoteAccess" title="${message(code: 'license.remoteAccess.label', default: 'Remote Access')}" />
+							<th class="header"><g:message code="license.remoteAccess.label" default="Remote Access" /></th>
 						
-							<g:sortableColumn property="walkinAccess" title="${message(code: 'license.walkinAccess.label', default: 'Walkin Access')}" />
+							<th class="header"><g:message code="license.walkinAccess.label" default="Walkin Access" /></th>
 						
 							<th></th>
 						</tr>
@@ -65,17 +66,17 @@
 					<g:each in="${licenseInstanceList}" var="licenseInstance">
 						<tr>
 						
-							<td>${licenseInstance?.status?.value}</td>
+							<td>${licenseInstance.status?.value}</td>
 						
-							<td>${licenseInstance?.type?.value}</td>
+							<td>${licenseInstance.type?.value}</td>
 						
 							<td>${fieldValue(bean: licenseInstance, field: "reference")}</td>
 						
-							<td>${fieldValue(bean: licenseInstance, field: "concurrentUsers")}</td>
+							<td>${licenseInstance.concurrentUsers?.value}</td>
 						
-							<td>${fieldValue(bean: licenseInstance, field: "remoteAccess")}</td>
+							<td>${licenseInstance.remoteAccess?.value}</td>
 						
-							<td>${fieldValue(bean: licenseInstance, field: "walkinAccess")}</td>
+							<td>${licenseInstance.walkinAccess?.value}</td>
 						
 							<td class="link">
 								<g:link action="show" id="${licenseInstance.id}" class="btn btn-small">Show &raquo;</g:link>

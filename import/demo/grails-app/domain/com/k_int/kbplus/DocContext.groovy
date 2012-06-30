@@ -8,6 +8,8 @@ class DocContext {
 
   RefdataValue doctype
   License license
+  // We may attach a note to a particular colum, in which case, we set domain here as a discriminator
+  String domain
 
   static mapping = {
           id column:'dc_id'
@@ -20,5 +22,6 @@ class DocContext {
   static constraints = {
     doctype(nullable:true, blank:false);
     license(nullable:true, blank:false);
+    domain(nullable:true, blank:false);
   }
 }

@@ -6,17 +6,19 @@ class License {
   RefdataValue type
 
   String reference
-  String concurrentUsers
-  String remoteAccess
-  String walkinAccess
-  String multisiteAccess
-  String partnersAccess
-  String alumniAccess
-  String ill
-  String coursepack
-  String vle
-  String enterprise
-  String pca
+
+  RefdataValue concurrentUsers
+  RefdataValue remoteAccess
+  RefdataValue walkinAccess
+  RefdataValue multisiteAccess
+  RefdataValue partnersAccess
+  RefdataValue alumniAccess
+  RefdataValue ill
+  RefdataValue coursepack
+  RefdataValue vle
+  RefdataValue enterprise
+  RefdataValue pca
+
   String noticePeriod
   String licenseUrl
   String licensorRef
@@ -41,17 +43,17 @@ class License {
             status column:'lic_status_rv_fk'
               type column:'lic_type_rv_fk'
          reference column:'lic_ref'
-   concurrentUsers column:'lic_concurrent_users'
-      remoteAccess column:'lic_remote_access'
-      walkinAccess column:'lic_walkin_access'
-   multisiteAccess column:'lic_multisite_access'
-    partnersAccess column:'lic_partners_access'
-      alumniAccess column:'lic_alumni_access'
-               ill column:'lic_ill'
-        coursepack column:'lic_coursepack'
-               vle column:'lic_vle'
-        enterprise column:'lic_enterprise'
-               pca column:'lic_pca'
+   concurrentUsers column:'lic_concurrent_users_rdv_fk'
+      remoteAccess column:'lic_remote_access_rdv_fk'
+      walkinAccess column:'lic_walkin_access_rdv_fk'
+   multisiteAccess column:'lic_multisite_access_rdv_fk'
+    partnersAccess column:'lic_partners_access_rdv_fk'
+      alumniAccess column:'lic_alumni_access_rdv_fk'
+               ill column:'lic_ill_rdv_fk'
+        coursepack column:'lic_coursepack_rdv_fk'
+               vle column:'lic_vle_rdv_fk'
+        enterprise column:'lic_enterprise_rdv_fk'
+               pca column:'lic_pca_rdv_fk'
       noticePeriod column:'lic_notice_period'
         licenseUrl column:'lic_license_url'
        licensorRef column:'lic_licensor_ref'
