@@ -729,7 +729,7 @@ class DataloadService {
       def doc_context = new DocContext(license:license,
                                        domain:type,
                                        owner:doc_content,
-                                       doctype:lookupOrCreateRefdataEntry('Document Type',type)).save();
+                                       doctype:lookupOrCreateRefdataEntry('Document Type','Note')).save();
     }
   }
 
