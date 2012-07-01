@@ -67,7 +67,12 @@
             </thead>
             <tbody>
               <tr><td>Concurrent Access</td>
-                  <td><g:refdataValue val="${license.concurrentUsers?.value}" propname="concurrentUsers" refdataCat='Concurrent Access' class="cuedit"/></td>
+                  <td>
+                       <g:refdataValue val="${license.concurrentUsers?.value}" propname="concurrentUsers" refdataCat='Concurrent Access' class="cuedit"/>
+                       <span id="cucwrap">
+                       (<span id="concurrentUserCount" class="intedit" style="padding-top: 5px;">${license.concurrentUserCount}</span>)
+                       </span>
+                  </td>
                   <td><g:singleValueFieldNote domain="concurrentUsers" value="${license.getNote('concurrentUsers')}" class="fieldNote"/></td></tr>
 
               <tr><td>Remote Access</td>
@@ -139,6 +144,14 @@
     
     <script language="JavaScript">
       $(document).ready(function() {
+
+         if ( '${license.concurrentUsers?.value}'==='Specified' ) {
+           $('#cucwrap').show();
+         }
+         else {
+           $('#cucwrap').hide();
+         }
+
          $('.ipe').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="setValue" absolute="true"/>', { 
            type      : 'textarea',
            cancel    : 'Cancel',
@@ -147,6 +160,17 @@
            rows      : 3,
            tooltip   : 'Click to edit...'
          });
+
+         $('.intedit').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="setValue" absolute="true"/>', {
+           type      : 'text',
+           cols      : '5',
+           width     : '30',
+           cancel    : 'Cancel',
+           submit    : 'OK',
+           id        : 'elementid',
+           tooltip   : 'Click to edit...'
+         });
+
 
          $('.refdataedit').editable('<g:createLink controller="ajax" params="${[type:'License',cat:'YNO']}" id="${params.id}" action="setRef" absolute="true"/>', {
            data   : {'Yes':'Yes', 'No':'No','Other':'Other'},
@@ -158,12 +182,20 @@
          });
 
          $('.cuedit').editable('<g:createLink controller="ajax" params="${[type:'License',cat:'Concurrent Access']}" id="${params.id}" action="setRef" absolute="true"/>', {
-           data   : {'No limit':'No limit', 'Limited':'Limited','Other':'Other'},
+           data   : {'No limit':'No limit', 'Specified':'Specified','Not Specified':'Not Specified', 'Other':'Other'},
            type   : 'select',
            cancel : 'Cancel',
            submit : 'OK',
            id     : 'elementid',
-           tooltip: 'Click to edit...'
+           tooltip: 'Click to edit...',
+           callback : function(value, settings) {
+             if ( value==='Specified' ) {
+               $('#cucwrap').show();
+             }
+             else {
+               $('#cucwrap').hide();
+             }
+           }
          });
 
          $('.fieldNote').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="setFieldNote" absolute="true"/>', {

@@ -19,6 +19,7 @@ class License {
   RefdataValue enterprise
   RefdataValue pca
 
+  Long concurrentUserCount=0
   String noticePeriod
   String licenseUrl
   String licensorRef
@@ -38,29 +39,30 @@ class License {
                       orgLinks:'lic']
 
   static mapping = {
-                id column:'lic_id'
-           version column:'lic_version'
-            status column:'lic_status_rv_fk'
-              type column:'lic_type_rv_fk'
-         reference column:'lic_ref'
-   concurrentUsers column:'lic_concurrent_users_rdv_fk'
-      remoteAccess column:'lic_remote_access_rdv_fk'
-      walkinAccess column:'lic_walkin_access_rdv_fk'
-   multisiteAccess column:'lic_multisite_access_rdv_fk'
-    partnersAccess column:'lic_partners_access_rdv_fk'
-      alumniAccess column:'lic_alumni_access_rdv_fk'
-               ill column:'lic_ill_rdv_fk'
-        coursepack column:'lic_coursepack_rdv_fk'
-               vle column:'lic_vle_rdv_fk'
-        enterprise column:'lic_enterprise_rdv_fk'
-               pca column:'lic_pca_rdv_fk'
-      noticePeriod column:'lic_notice_period'
-        licenseUrl column:'lic_license_url'
-       licensorRef column:'lic_licensor_ref'
-       licenseeRef column:'lic_licensee_ref'
-       licenseType column:'lic_license_type_str'
-     licenseStatus column:'lic_license_status_str'
-           lastmod column:'lic_lastmod'
+                     id column:'lic_id'
+                version column:'lic_version'
+                 status column:'lic_status_rv_fk'
+                   type column:'lic_type_rv_fk'
+              reference column:'lic_ref'
+        concurrentUsers column:'lic_concurrent_users_rdv_fk'
+           remoteAccess column:'lic_remote_access_rdv_fk'
+           walkinAccess column:'lic_walkin_access_rdv_fk'
+        multisiteAccess column:'lic_multisite_access_rdv_fk'
+         partnersAccess column:'lic_partners_access_rdv_fk'
+           alumniAccess column:'lic_alumni_access_rdv_fk'
+                    ill column:'lic_ill_rdv_fk'
+             coursepack column:'lic_coursepack_rdv_fk'
+                    vle column:'lic_vle_rdv_fk'
+             enterprise column:'lic_enterprise_rdv_fk'
+                    pca column:'lic_pca_rdv_fk'
+    concurrentUserCount column:'lic_concurrent_user_count'
+           noticePeriod column:'lic_notice_period'
+             licenseUrl column:'lic_license_url'
+            licensorRef column:'lic_licensor_ref'
+            licenseeRef column:'lic_licensee_ref'
+            licenseType column:'lic_license_type_str'
+          licenseStatus column:'lic_license_status_str'
+                lastmod column:'lic_lastmod'
   }
 
   static constraints = {
@@ -78,6 +80,7 @@ class License {
     vle(nullable:true, blank:true)
     enterprise(nullable:true, blank:true)
     pca(nullable:true, blank:true)
+    concurrentUserCount(nullable:true)
     noticePeriod(nullable:true, blank:true)
     licenseUrl(nullable:true, blank:true)
     licensorRef(nullable:true, blank:true)
