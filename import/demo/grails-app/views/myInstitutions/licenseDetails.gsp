@@ -4,6 +4,7 @@
     <meta name="layout" content="bootstrap"/>
     <title>KB+</title>
     <r:require modules="jeditable"/>
+    <r:require module="jquery-ui"/>
   </head>
   <body>
     <h2>${institution?.name} License : <span id="reference" class="ipe" style="padding-top: 5px;">${license.reference}</span></h2>
@@ -121,6 +122,8 @@
         <div class="tab-pane" id="docstab">
           <div class="row-fluid">
             <div class="span12">
+
+              <button id="attach-doc">Attach New Document</button>
 
               <table class="table table-striped table-bordered table-condensed">
                 <thead>
@@ -248,9 +251,44 @@
            tooltip   : 'Click to edit...'
          });
 
+         $( "#dialog-form" ).dialog({
+           autoOpen: false,
+           height: 300,
+           width: 350,
+           modal: true,
+           buttons: {
+             Save: function() {
+               $( this ).dialog( "close" );
+             },
+             Cancel: function() {
+               $( this ).dialog( "close" );
+             }
+           },
+           close: function() {
+             allFields.val( "" ).removeClass( "ui-state-error" );
+           }
+         });
+
+         $( "#attach-doc" )
+             .button()
+             .click(function() {
+               $( "#dialog-form" ).dialog( "open" );
+             });
+
        });
 
     </script>
+
+    <div id="dialog-form" title="Attach New Document">
+      <g:form controller="myInstitutions" action="uploadDocument" method="post" enctype="multipart/form-data">
+        <fieldset>
+          <label for="upload_title">Title</label>
+          <input type="text" name="upload_title" id="upload_title" value="" class="text ui-widget-content ui-corner-all" />
+          <label for="upload_file">File:</label>
+          <input type="file" name="upload_file" id="upload_file" class="text ui-widget-content ui-corner-all" />
+        </fieldset>
+      </g:form>
+    </div>
 
   </body>
 </html>
