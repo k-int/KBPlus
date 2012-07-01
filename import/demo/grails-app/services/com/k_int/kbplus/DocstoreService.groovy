@@ -44,18 +44,19 @@ class DocstoreService {
     }
     preBag.makeBagInPlace(BagFactory.Version.V0_96, false);
 
-    def result = zipDirectory(tempdir)
-
-    FileUtils.deleteQuietly(tempdir);
+    def zippedbag = zipDirectory(tempdir)
 
     // Upload
-    // uploadBag(result, filelist);
+    def result = uploadBag(zippedbag)
 
-    FileUtils.deleteQuietly(result);
+    // FileUtils.deleteQuietly(zippedbag);
+    // FileUtils.deleteQuietly(tempdir);
+
+    result
   }
 
 
-  def uploadBag(bagfile,filelist) {
+  def uploadBag(bagfile) {
     println("uploading bagfile ${bagfile}");
     def http = new groovyx.net.http.HTTPBuilder('http://knowplus.edina.ac.uk/oledocstore/KBPlusServlet')
     def result_uuid = null
@@ -80,7 +81,10 @@ class DocstoreService {
         InputStream is = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
   
         def result_doc = new groovy.util.XmlSlurper().parse(is);
+        log.debug("result_doc: ${result_doc.text()}");
         result_uuid = result_doc.documents.document.uuid.text()
+
+        FileUtils.deleteQuietly(tempfile);
       }
   
       response.failure = { resp ->
