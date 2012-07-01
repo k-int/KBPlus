@@ -126,7 +126,9 @@
                 <thead>
                   <tr>
                     <th>Select</th>
-                    <th>Document Name / File Name</th>
+                    <th>Title</th>
+                    <th>File Name</th>
+                    <th>Download Link</th>
                     <th>Creator</th>
                     <th>Type</th>
                     <th>Doc Store ID</th>
@@ -137,17 +139,14 @@
                   <g:each in="${license.documents}" var="docctx">
                     <tr>
                       <td><input type="checkbox" value="${docctx.id}"/></td>
+                      <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="title" id="doctitle" class="newipe">${docctx.owner.title}</g:inPlaceEdit></td>
+                      <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="filename" id="docfilename" class="newipe">${docctx.owner.filename}</g:inPlaceEdit></td>
                       <td>
-                        <a href="http://knowplus.edina.ac.uk/oledocstore/document?uuid=${docctx.owner?.uuid}">
-                            ${docctx.owner.id}
-                            <g:if test="${docctx.owner?.title}"> : <em>${docctx.owner.title}</em><br/></g:if>
-                            <g:else>
-                              <g:if test="${docctx.owner?.filename}">${docctx.owner.filename}</g:if>
-                              <g:else>Missing title and filename</g:else>
-                            </g:else>
-                          </a>
+                        <g:if test="docctx.owner?.uuid">
+                          <a href="http://knowplus.edina.ac.uk/oledocstore/document?uuid=${docctx.owner?.uuid}">Download Doc</a>
+                        </g:if>
                       </td>
-                      <td>Creator</td>
+                      <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="creator" id="docCreator" class="newipe">${docctx.owner.creator}</g:inPlaceEdit></td>
                       <td>${docctx.owner?.type?.value}</td>
                       <td><g:if test="${docctx.owner?.uuid}">${docctx.owner?.uuid}</g:if></td>
                       <td>Links</td>
@@ -232,6 +231,15 @@
          });
 
          $('.fieldNote').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="setFieldNote" absolute="true"/>', {
+           type      : 'textarea',
+           cancel    : 'Cancel',
+           submit    : 'OK',
+           id        : 'elementid',
+           rows      : 3,
+           tooltip   : 'Click to edit...'
+         });
+
+         $('.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
            type      : 'textarea',
            cancel    : 'Cancel',
            submit    : 'OK',

@@ -7,6 +7,7 @@ class Doc {
   Alert alert
   String title
   String filename
+  String creator
   Integer contentType=0 // 0=String, 1=docstore
   String content 
   String uuid 
@@ -23,6 +24,7 @@ class Doc {
        contentType column:'doc_content_type'
               uuid column:'doc_docstore_uuid'
              title column:'doc_title'
+           creator column:'doc_creator'
           filename column:'doc_filename'
            content column:'doc_content', type:'text'
   }
@@ -35,6 +37,7 @@ class Doc {
     uuid(nullable:true, blank:false)
     contentType(nullable:true, blank:false)
     title(nullable:true, blank:false)
+    creator(nullable:true, blank:true)
     filename(nullable:true, blank:false)
   }
 }

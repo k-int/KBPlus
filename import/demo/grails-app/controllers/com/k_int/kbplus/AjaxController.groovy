@@ -99,17 +99,18 @@ class AjaxController {
   def genericSetValue() {
     // [id:1, value:JISC_Collections_NESLi2_Lic_IOP_Institute_of_Physics_NESLi2_2011-2012_01012011-31122012.., type:License, action:inPlaceSave, controller:ajax
     // def clazz=grailsApplication.domainClasses.findByFullName(params.type)
+    log.debug("genericSetValue ${params}");
 
-    // params.elementid (The id from the html element)  must be formed as UniqueIdentifier:domain:pk:property
-    String oid_components[] = params.elementid.split(":");
+    // params.elementid (The id from the html element)  must be formed as domain:pk:property:otherstuff
+    String[] oid_components = params.elementid.split(":");
 
-    def domain_class=grailsApplication.getArtefact('Domain',"com.k_int.kbplus.${oid_components[1]}")
+    def domain_class=grailsApplication.getArtefact('Domain',"com.k_int.kbplus.${oid_components[0]}")
 
     if ( domain_class ) {
-      def instance = domain_class.getClazz().get(oid_components[2])
+      def instance = domain_class.getClazz().get(oid_components[1])
       if ( instance ) {
         log.debug("Got instance ${instance}");
-        def binding_properties = [ "${oid_components[3]}":params.value ]
+        def binding_properties = [ "${oid_components[2]}":params.value ]
         log.debug("Merge: ${binding_properties}");
         // see http://grails.org/doc/latest/ref/Controllers/bindData.html
         bindData(instance, binding_properties)
