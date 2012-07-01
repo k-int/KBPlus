@@ -120,10 +120,12 @@ class License {
     }
     else {
       log.debug("Create new note...");
-      def doc = new Doc(content:note_content, lastUpdated:new Date(), dateCreated: new Date())
-      def newctx = new DocContext(license: this, owner: doc, domain:domain)
-      doc.save();
-      newctx.save(flush:true);
+      if ( ( note_content ) && ( note_content.trim().length() > 0 ) ) {
+        def doc = new Doc(content:note_content, lastUpdated:new Date(), dateCreated: new Date())
+        def newctx = new DocContext(license: this, owner: doc, domain:domain)
+        doc.save();
+        newctx.save(flush:true);
+      }
     }
   }
 

@@ -144,6 +144,7 @@
            cancel    : 'Cancel',
            submit    : 'OK',
            id        : 'elementid',
+           rows      : 3,
            tooltip   : 'Click to edit...'
          });
 
@@ -170,6 +171,7 @@
            cancel    : 'Cancel',
            submit    : 'OK',
            id        : 'elementid',
+           rows      : 3,
            tooltip   : 'Click to edit...'
          });
 
