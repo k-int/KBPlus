@@ -38,6 +38,10 @@ grails.project.dependency.resolution = {
         runtime 'com.gmongo:gmongo:0.9.2'
         runtime 'org.elasticsearch:elasticsearch-lang-groovy:1.1.0'
         runtime 'org.elasticsearch:elasticsearch:0.19.4'
+        runtime 'gov.loc:bagit:4.0'
+        runtime ( 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2' ) { 
+          excludes "org.codehaus.groovy", "groovy"
+        }
     }
 
     plugins {
