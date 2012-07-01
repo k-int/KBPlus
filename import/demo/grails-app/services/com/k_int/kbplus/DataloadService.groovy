@@ -712,7 +712,8 @@ class DataloadService {
           def doc_content = new Doc(contentType:1, 
                                     uuid: attached_doc[0], 
                                     filename: attached_doc[1],
-                                    title: attached_doc[2]).save()
+                                    title: attached_doc[2],
+                                    type:lookupOrCreateRefdataEntry('Document Type','License')).save()
           def doc_context = new DocContext(license:l,
                                            owner:doc_content,
                                            doctype:lookupOrCreateRefdataEntry('Document Type','License')).save();
@@ -725,7 +726,9 @@ class DataloadService {
 
   def possibleNote(content, type, license, note_title) {
     if ( content && content.toString().length() > 0 ) {
-      def doc_content = new Doc(content:content.toString(), title: "${type} note").save()
+      def doc_content = new Doc(content:content.toString(), 
+                                title: "${type} note",
+                                type: lookupOrCreateRefdataEntry('Doc Type','Note') ).save()
       def doc_context = new DocContext(license:license,
                                        domain:type,
                                        owner:doc_content,

@@ -64,6 +64,8 @@ insert into refdata_value(rdv_owner, rdv_value) VALUES ( 14, 'Unknown Entitlemen
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (15,'Doc Type');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 17, 'Unknown Doc Type');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 17, 'Note');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 17, 'License Attachment');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (16,'Doc Status');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 16, 'Unknown Doc Status');

@@ -6,7 +6,7 @@
     <r:require modules="jeditable"/>
   </head>
   <body>
-    <h2>${institution?.name} - A License</h2>
+    <h2>${institution?.name} License : <span id="reference" class="ipe" style="padding-top: 5px;">${license.reference}</span></h2>
     <hr/>
     <div class="tabbable"> <!-- Only required for left/right tabs -->
       <ul class="nav nav-tabs">
@@ -122,6 +122,39 @@
           <div class="row-fluid">
             <div class="span12">
 
+              <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                  <tr>
+                    <th>Select</th>
+                    <th>Document Name / File Name</th>
+                    <th>Creator</th>
+                    <th>Type</th>
+                    <th>Doc Store ID</th>
+                    <th>Linked Here</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <g:each in="${license.documents}" var="docctx">
+                    <tr>
+                      <td><input type="checkbox" value="${docctx.id}"/></td>
+                      <td>
+                        <a href="http://knowplus.edina.ac.uk/oledocstore/document?uuid=${docctx.owner?.uuid}">
+                            ${docctx.owner.id}
+                            <g:if test="${docctx.owner?.title}"> : <em>${docctx.owner.title}</em><br/></g:if>
+                            <g:else>
+                              <g:if test="${docctx.owner?.filename}">${docctx.owner.filename}</g:if>
+                              <g:else>Missing title and filename</g:else>
+                            </g:else>
+                          </a>
+                      </td>
+                      <td>Creator</td>
+                      <td>${docctx.owner?.type?.value}</td>
+                      <td><g:if test="${docctx.owner?.uuid}">${docctx.owner?.uuid}</g:if></td>
+                      <td>Links</td>
+                    </tr>
+                  </g:each>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

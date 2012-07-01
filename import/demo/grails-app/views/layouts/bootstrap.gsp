@@ -58,7 +58,7 @@
             <ul class="nav">              
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Data Explorer <b class="caret"></b> </a>
-                <ul class="dropdown-menu">
+                <ul class="dropdown-menu" style="max-width:none;">
                   <li<%= request.forwardURI == "${createLink(uri: '/')}" ? ' class="active"' : '' %>><a href="${createLink(uri: '/')}">Home</a></li>
                   <li <%='package'== controllerName ? ' class="active"' : '' %>><g:link controller="package">Package</g:link></li>
                   <li <%='org'== controllerName ? ' class="active"' : '' %>><g:link controller="org">Organisations</g:link></li>
@@ -73,7 +73,7 @@
               <g:if test="${user}">
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Forms and Actions <b class="caret"></b> </a>
-                  <ul class="dropdown-menu">
+                  <ul class="dropdown-menu" style="max-width:none;">
 
                     <li <%= ( ( 'myInstitutions'== controllerName ) && ( 'manageAffiliations'==actionName ) ) ? ' class="active"' : '' %>>
                        <g:link controller="myInstitutions" action="manageAffiliations">Manage Affiliations</g:link></li>
