@@ -179,7 +179,7 @@ class MyInstitutionsController {
     }
 
     log.debug("Redirecting...");
-    redirect action: 'licenseDetails', params:[shortcode:params.shortcode], id:params.licid
+    redirect action: 'licenseDetails', params:[shortcode:params.shortcode], id:params.licid, fragment:'docstab'
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -212,6 +212,6 @@ class MyInstitutionsController {
 
     log.debug("done");
 
-    redirect action: 'licenseDetails', params:[shortcode:params.shortcode], id:params.licid
+    redirect action: 'licenseDetails', params:[shortcode:params.shortcode], id:params.licid, fragment:'docstab'
   }
 }

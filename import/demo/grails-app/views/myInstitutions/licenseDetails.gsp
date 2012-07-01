@@ -288,6 +288,11 @@
                $( "#delete_doc_form" ).submit();
              });
 
+         url = document.location.href.split('#');
+         if(url[1] != undefined) {
+           $('[href=#'+url[1]+']').tab('show');
+         }
+
        });
 
     </script>
