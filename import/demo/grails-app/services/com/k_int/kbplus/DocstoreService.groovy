@@ -16,12 +16,7 @@ import java.nio.charset.Charset
 
 class DocstoreService {
 
-    def serviceMethod() {
-
-    }
-
-
-  def docstoreUpload(zipfile, source_stream) {
+  def uploadStream(source_stream, original_filename, title) {
 
     final BagFactory bf = new BagFactory();
 
@@ -35,14 +30,12 @@ class DocstoreService {
     // tempdir.mkdirs();
     bag_dir.mkdirs();
 
-    def target_file_name = "boo"
-
     // Copy the input source stream to the target file
-    def target_file = new File("${tempdir}${System.getProperty('file.separator')}bag_dir${System.getProperty('file.separator')}${target_file_name}")
+    def target_file = new File("${tempdir}${System.getProperty('file.separator')}bag_dir${System.getProperty('file.separator')}${original_filename}")
     FileUtils.copyInputStreamToFile(source_stream, target_file);
 
     // Create request.xml file with a single entry, which is the new uploaded file
-    createRequest(target_file_name, "${tempdir}${System.getProperty('file.separator')}bag_dir${System.getProperty('file.separator')}request.xml".toString())
+    createRequest(original_filename, "${tempdir}${System.getProperty('file.separator')}bag_dir${System.getProperty('file.separator')}request.xml".toString(), title)
 
     // Create bagit structures
     PreBag preBag;
@@ -56,7 +49,7 @@ class DocstoreService {
     FileUtils.deleteQuietly(tempdir);
 
     // Upload
-    uploadBag(result, filelist);
+    // uploadBag(result, filelist);
 
     FileUtils.deleteQuietly(result);
   }
@@ -65,6 +58,7 @@ class DocstoreService {
   def uploadBag(bagfile,filelist) {
     println("uploading bagfile ${bagfile}");
     def http = new groovyx.net.http.HTTPBuilder('http://knowplus.edina.ac.uk/oledocstore/KBPlusServlet')
+    def result_uuid = null
 
     http.request(groovyx.net.http.Method.POST) {request ->
       requestContentType = 'multipart/form-data'
@@ -86,27 +80,24 @@ class DocstoreService {
         InputStream is = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
   
         def result_doc = new groovy.util.XmlSlurper().parse(is);
-        int i=0;
-        result_doc.documents.document.each { rd ->
-          println("** Doc added to docstore ($filelist[i].name):  ${rd.uuid.text()}");
-          filelist[i++].remote_uuid = rd.uuid.text()
-        }
+        result_uuid = result_doc.documents.document.uuid.text()
       }
   
       response.failure = { resp ->
         println("Error response ${resp}");
       }
     }
+
+    result_uuid
   }
 
 
-  def createRequest(source_file_name, target_file) {
+  def createRequest(source_file_name, target_file, title) {
     // def writer = new StringWriter()
     def writer = new FileWriter(target_file)
     println("Create ${target_file}");
     def xml = new MarkupBuilder(writer)
     int seq = 1
-    // uuid(dl.id)
     xml.request('xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance',
                 'xmlns':'http://jisc.kbplus.docstore.com/Request',
                 'xsi:schemaLocation':'http://jisc.kbplus.docstore.com/Request http://jisc.kbplus.docstore.com/Request/request.xsd') {
@@ -116,7 +107,7 @@ class DocstoreService {
         ingestDocument(id:seq++,category:'kbplus',type:'kbplus',format:'doc') {
           uuid()
           documentName(source_file_name)
-          documentTitle("Unknown - with UUID ${dl.id}")
+          documentTitle(title)
           documentType('kbplusdoc')
         }
       }
@@ -126,6 +117,40 @@ class DocstoreService {
     writer.close();
   
     // println("upload.xml: ${writer.toString()}");
+  }
+
+  File zipDirectory(File directory) throws IOException {
+    File testZip = File.createTempFile("bag.", ".zip");
+    String path = directory.getAbsolutePath();
+    ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(testZip));
+
+    ArrayList<File> fileList = getFileList(directory);
+    for (File file : fileList) {
+      ZipEntry ze = new ZipEntry(file.getAbsolutePath().substring(path.length() + 1));
+      zos.putNextEntry(ze);
+  
+      FileInputStream fis = new FileInputStream(file);
+      IOUtils.copy(fis, zos);
+      fis.close();
+  
+      zos.closeEntry();
+    }
+  
+    zos.close();
+    return testZip;
+  }
+
+  static ArrayList<File> getFileList(File file) {
+    ArrayList<File> fileList = new ArrayList<File>();
+    if (file.isFile()) {
+      fileList.add(file);
+    }
+    else if (file.isDirectory()) {
+      for (File innerFile : file.listFiles()) {
+        fileList.addAll(getFileList(innerFile));
+      }
+    }
+    return fileList;
   }
 
 }

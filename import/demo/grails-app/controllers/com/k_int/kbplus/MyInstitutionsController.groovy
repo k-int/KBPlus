@@ -6,6 +6,7 @@ import grails.plugins.springsecurity.Secured
 class MyInstitutionsController {
 
   def springSecurityService
+  def docstoreService
 
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -152,8 +153,15 @@ class MyInstitutionsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def uploadDocument() {
-    log.debug("uploadDocument ${params}");
-    // request.getFile("upload_file").inputStream.text()
+
+    def input_stream = request.getFile("upload_file")?.inputStream
+    def original_filename = request.getFile("upload_file")?.originalFilename
+
+    log.debug("uploadDocument ${params} upload file = ${original_filename}");
+
+    if ( input_stream ) {
+      docstoreService.uploadStream(input_stream, original_filename, params.upload_title)
+    }
 
     log.debug("Redirecting...");
     redirect action: 'licenseDetails', params:[shortcode:params.shortcode], id:params.licid
