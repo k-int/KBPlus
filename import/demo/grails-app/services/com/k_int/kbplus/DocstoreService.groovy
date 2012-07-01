@@ -157,4 +157,8 @@ class DocstoreService {
     return fileList;
   }
 
+
+  def deleteDocs(uuid_list) {
+    log.debug("delete uuids: ${uuid_list}");
+  }
 }

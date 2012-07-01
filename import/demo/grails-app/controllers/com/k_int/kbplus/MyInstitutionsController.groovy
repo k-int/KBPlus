@@ -181,4 +181,27 @@ class MyInstitutionsController {
     log.debug("Redirecting...");
     redirect action: 'licenseDetails', params:[shortcode:params.shortcode], id:params.licid
   }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def deleteDocuments() {
+    def doclist = []
+    log.debug("deleteDocuments ${params}");
+
+    params.each { p ->
+      if (p.key.startsWith('_deleteflag.') ) {
+        def docctx_to_delete = p.key.substring(12);
+        log.debug("Looking up docctx ${docctx_to_delete}");
+        def docctx = DocContext.get(docctx_to_delete)
+        log.debug("Got docctx ${docctx.id} ${docctx.owner.uuid} ${docctx.owner.title}");
+        doclist.add(docctx?.owner?.uuid);
+      }
+    }
+
+    docstoreService.deleteDocs(doclist);
+
+
+    log.debug("done");
+
+    redirect action: 'licenseDetails', params:[shortcode:params.shortcode], id:params.licid
+  }
 }

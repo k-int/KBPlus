@@ -123,7 +123,12 @@
           <div class="row-fluid">
             <div class="span12">
 
-              <button id="attach-doc">Attach New Document</button>
+              <button id="delete-doc">Delete Selected Documents</button>&nbsp;
+              <button id="attach-doc">Attach New Document</button><br/>
+
+              <g:form id="delete_doc_form" url="[controller:'myInstitutions',action:'deleteDocuments']" method="post">
+                <input type="hidden" name="licid" value="${params.id}"/>
+                <input type="hidden" name="shortcode" value="${params.shortcode}"/>
 
               <table class="table table-striped table-bordered table-condensed">
                 <thead>
@@ -141,7 +146,7 @@
                 <tbody>
                   <g:each in="${license.documents}" var="docctx">
                     <tr>
-                      <td><input type="checkbox" value="${docctx.id}"/></td>
+                      <td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td>
                       <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="title" id="doctitle" class="newipe">${docctx.owner.title}</g:inPlaceEdit></td>
                       <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="filename" id="docfilename" class="newipe">${docctx.owner.filename}</g:inPlaceEdit></td>
                       <td>
@@ -157,6 +162,7 @@
                   </g:each>
                 </tbody>
               </table>
+              </g:form>
             </div>
           </div>
         </div>
@@ -274,6 +280,12 @@
              .button()
              .click(function() {
                $( "#dialog-form" ).dialog( "open" );
+             });
+
+         $( "#delete-doc" )
+             .button()
+             .click(function() {
+               $( "#delete_doc_form" ).submit();
              });
 
        });
