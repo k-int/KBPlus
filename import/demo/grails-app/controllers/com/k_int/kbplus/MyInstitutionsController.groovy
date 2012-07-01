@@ -149,4 +149,13 @@ class MyInstitutionsController {
     result
   }
 
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def uploadDocument() {
+    log.debug("uploadDocument ${params}");
+    // request.getFile("upload_file").inputStream.text()
+
+    log.debug("Redirecting...");
+    redirect action: 'licenseDetails', params:[shortcode:params.shortcode], id:params.licid
+  }
 }

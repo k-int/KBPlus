@@ -258,6 +258,7 @@
            modal: true,
            buttons: {
              Save: function() {
+               $( "#upload_new_doc_form" ).submit();
                $( this ).dialog( "close" );
              },
              Cancel: function() {
@@ -280,7 +281,9 @@
     </script>
 
     <div id="dialog-form" title="Attach New Document">
-      <g:form controller="myInstitutions" action="uploadDocument" method="post" enctype="multipart/form-data">
+      <g:form id="upload_new_doc_form" url="[controller:'myInstitutions',action:'uploadDocument']" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="licid" value="${params.id}"/>
+        <input type="hidden" name="shortcode" value="${params.shortcode}"/>
         <fieldset>
           <label for="upload_title">Title</label>
           <input type="text" name="upload_title" id="upload_title" value="" class="text ui-widget-content ui-corner-all" />
