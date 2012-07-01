@@ -49,8 +49,8 @@ class DocstoreService {
     // Upload
     def result = uploadBag(zippedbag)
 
-    // FileUtils.deleteQuietly(zippedbag);
-    // FileUtils.deleteQuietly(tempdir);
+    FileUtils.deleteQuietly(zippedbag);
+    FileUtils.deleteQuietly(tempdir);
 
     result
   }
@@ -84,7 +84,8 @@ class DocstoreService {
         log.debug("result_doc: ${result_doc.text()}");
         result_uuid = result_doc.documents.document.uuid.text()
 
-        FileUtils.deleteQuietly(tempfile);
+        log.debug("Not deleting temporary response document for now.. re-enable this!");
+        // FileUtils.deleteQuietly(tempfile);
       }
   
       response.failure = { resp ->
@@ -160,5 +161,66 @@ class DocstoreService {
 
   def deleteDocs(uuid_list) {
     log.debug("delete uuids: ${uuid_list}");
+
+    final BagFactory bf = new BagFactory();
+
+    // Create a new identifier
+    def workdir = java.util.UUID.randomUUID().toString();
+    File tempdir = new File(System.getProperty("java.io.tmpdir")+System.getProperty("file.separator")+workdir);
+    println("tmpdir :${tempdir}");
+
+    File bag_dir = new File(tempdir, 'bag_dir');
+
+    // tempdir.mkdirs();
+    bag_dir.mkdirs();
+
+    // Create request.xml file with a single entry, which is the new uploaded file
+    createDeleteRequest("${tempdir}${System.getProperty('file.separator')}bag_dir${System.getProperty('file.separator')}request.xml".toString(), uuid_list)
+
+    // Create bagit structures
+    PreBag preBag;
+    synchronized (bf) {
+      preBag = bf.createPreBag(bag_dir);
+    }
+    preBag.makeBagInPlace(BagFactory.Version.V0_96, false);
+
+    def zippedbag = zipDirectory(tempdir)
+
+    // Upload
+    def result = uploadBag(zippedbag)
+
+    FileUtils.deleteQuietly(zippedbag);
+    // FileUtils.deleteQuietly(tempdir);
+
+    result
+
   }
+
+  def createDeleteRequest(target_file, doclist) {
+    // def writer = new StringWriter()
+    def writer = new FileWriter(target_file)
+    println("Create ${target_file}");
+    def xml = new MarkupBuilder(writer)
+    int seq = 1
+    xml.request('xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance',
+                'xmlns':'http://jisc.kbplus.docstore.com/Request',
+                'xsi:schemaLocation':'http://jisc.kbplus.docstore.com/Request http://jisc.kbplus.docstore.com/Request/request.xsd') {
+      user('kbplus')
+      operation('delete')
+      requestDocuments {
+        doclist.each { doc_uuid ->
+          ingestDocument(id:seq++,category:'',type:'',format:'') {
+            uuid(doc_uuid)
+            documentName('')
+            documentTitle('')
+            documentType('')
+          }
+        }
+      }
+    }
+
+    writer.flush();
+    writer.close();
+  }
+
 }

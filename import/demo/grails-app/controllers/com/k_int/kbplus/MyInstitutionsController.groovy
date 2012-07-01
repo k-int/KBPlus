@@ -185,6 +185,8 @@ class MyInstitutionsController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def deleteDocuments() {
     def doclist = []
+    def ctxlist = []
+    
     log.debug("deleteDocuments ${params}");
 
     params.each { p ->
@@ -194,11 +196,19 @@ class MyInstitutionsController {
         def docctx = DocContext.get(docctx_to_delete)
         log.debug("Got docctx ${docctx.id} ${docctx.owner.uuid} ${docctx.owner.title}");
         doclist.add(docctx?.owner?.uuid);
+
+        // Find all doc ctx entries that point to this document
+        DocContext.findByOwner(docctx.owner).each { ctx ->
+          ctx.delete(flush:true);
+        }
+
+        docctx.owner.delete(flush:true);
       }
     }
 
     docstoreService.deleteDocs(doclist);
 
+   
 
     log.debug("done");
 
