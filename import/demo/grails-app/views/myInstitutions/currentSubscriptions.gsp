@@ -42,7 +42,7 @@
                     <td>
                        ${s.instanceOf?.provider?.name}
                     </td>
-                    <td>${s.instanceOf?.subscriber?.name}</td>
+                    <td>${s.instanceOf?.getConsortia()?.name}</td>
                     <td>${s.startDate}</td>
                     <td>${s.endDate}</td>
                     <td>

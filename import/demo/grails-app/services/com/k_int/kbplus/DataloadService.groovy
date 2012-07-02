@@ -223,7 +223,7 @@ class DataloadService {
   
       // Subscriptions
       mdb.subscriptions.find().sort(lastmod:1).each { sub ->
-        log.debug("Adding subscription ${sub.name} (${sub.identifier})");
+        log.debug("Adding subscription ${sub.name} (${sub.identifier}) (cons:${sub.consortium})");
         def dbsub = Subscription.findByImpId(sub._id.toString()) ?: new Subscription(name:sub.name, 
                                                                                      identifier:sub.identifier,
                                                                                      impId:sub._id.toString(),
@@ -231,11 +231,14 @@ class DataloadService {
                                                                                      endDate:sub.end_date,
                                                                                      type: RefdataValue.findByValue('Subscription Offered')).save(flush:true);
   
-        if ( sub.consortia ) {
-          def cons = Org.findByImpId(sub.consortia.toString());
+        if ( sub.consortium ) {
+          def cons = Org.findByImpId(sub.consortium.toString());
           if ( cons ) {
             def sc_role = lookupOrCreateRefdataEntry('Organisational Role', 'Subscription Consortia');
             def or = new OrgRole(org: cons, sub:dbsub, roleType:sc_role).save();
+          }
+          else {
+            log.error("Trying to make consortia link to non-existent org: ${sub.consortium?.toString()}");
           }
         }
       }
@@ -500,7 +503,7 @@ class DataloadService {
           def sub_titles = mdb.stTitle.find(owner:sub._id)
     
           if ( !new_subscription.issueEntitlements ) {
-            new_subscription.issueEntitlements = []
+            new_subscription.issueEntitlements = new java.util.TreeSet()
           }
   
           if ( sub_titles.size() == 0 ) {

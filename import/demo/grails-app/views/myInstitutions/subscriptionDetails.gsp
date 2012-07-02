@@ -1,45 +1,82 @@
+<%@ page import="com.k_int.kbplus.Subscription" %>
 <!doctype html>
 <html>
   <head>
     <meta name="layout" content="bootstrap"/>
     <title>KB+</title>
+
     <r:require modules="jeditable"/>
     <r:require module="jquery-ui"/>
   </head>
   <body>
-    <h2>${institution?.name} Subscription Taken : ....</span></h2>
+    <h2>${institution?.name} Subscription Taken : ${subscriptionInstance?.name}</span></h2>
     <hr/>
     <div class="tabbable"> <!-- Only required for left/right tabs -->
-      <ul class="nav nav-tabs">
-        <li class="active"><a href="#detailtab" data-toggle="tab">License Detail</a></li>
-        <li><a href="#docstab" data-toggle="tab">Documents</a></li>
-        <li><a href="#linkstab" data-toggle="tab">Links</a></li>
-        <li><a href="#notestab" data-toggle="tab">Notes</a></li>
-      </ul>
-      <div class="tab-content">
-        <div class="tab-pane active" id="detailtab">
-          <div class="row-fluid">
-          </div>
-        </div>
-        <div class="tab-pane" id="docstab">
-          <div class="row-fluid">
-          </div>
-        </div>
-        <div class="tab-pane" id="linkstab">
-          <div class="row-fluid">
-            <div class="span12">
-              Tab3
-            </div>
-          </div>
-        </div>
-        <div class="tab-pane" id="notestab">
-          <div class="row-fluid">
-            <div class="span12">
-              Tab4
-            </div>
-          </div>
-        </div>
-      </div>
+      <dl>
+        <g:if test="${subscriptionInstance?.issueEntitlements}">
+          <dt>Entitlements</td>
+          <dd>
+            <table  class="table table-striped table-bordered table-condensed">
+              <tr>
+                <th></th>
+                <th>Title</th>
+                <th>ISSN</th>
+                <th>eISSN</th>
+                <th>Core</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Embargo</th>
+                <th>Content URL</th>
+                <th>Coverage</th>
+                <th>Docs</th>
+                <th>JUSP</th>
+              </tr>
+              <tr>
+                <th colspan="4"><button>Apply Batch Changes:</button></th>
+                <th>edit</th>
+                <th>edit</th>
+                <th>edit</th>
+                <th>edit</th>
+                <th colspan="4"></th>
+              </tr>
+              <g:each in="${subscriptionInstance.issueEntitlements}" var="ie">
+                <tr>
+                  <td><input type="checkbox" name="batchedit"/>
+                  <td>${ie.tipp.title.title}</td>
+                  <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
+                  <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
+                  <td>${ie.coreTitle}</td>
+                  <td>
+                      <g:formatDate format="dd MMMM yyyy" date="${ie.startDate}"/>
+                      <input type="hidden" class="dp" />
+                  </td>
+                  <td><g:formatDate format="dd MMMM yyyy" date="${ie.endDate}"/>
+                      <input type="hidden" class="dp" />
+                  </td>
+                  <td>${ie.embargo}</td>
+                  <td>${ie.tipp?.platform?.primaryUrl}</td>
+                  <td>${ie.coverageDepth}<br/>${ie.coverageNote}</td>
+                  <td>docs</td>
+                  <td>JUSP</td>
+                </tr>
+              </g:each>
+            </table>
+          </dd>
+        </g:if>
+      </dl>
     </div>
+
+    <script language="JavaScript">
+      $(document).ready(function() {
+        $(".dp").datepicker({
+          buttonImage: '../../../images/calendar.gif',
+          buttonImageOnly: true,
+          changeMonth: true,
+          changeYear: true,
+          showOn: 'both',
+        });
+
+      });
+    </script>
   </body>
 </html>

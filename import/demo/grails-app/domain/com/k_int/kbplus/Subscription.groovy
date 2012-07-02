@@ -70,4 +70,14 @@ class Subscription {
     result
   }
 
+  def getConsortia() {
+    def result = null;
+    orgRelations.each { or ->
+      if ( or?.roleType?.value=='Subscription Consortia' )
+        result = or.org;
+    }
+    result
+  }
+
+
 }
