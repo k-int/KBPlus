@@ -56,13 +56,20 @@ class MyInstitutionsController {
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def subscriptions() {
+  def currentSubscriptions() {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
     result
   }
 
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def addSubscription() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+    result
+  }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def processJoinRequest() {
@@ -184,7 +191,6 @@ class MyInstitutionsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def deleteDocuments() {
-    def doclist = []
     def ctxlist = []
     
     log.debug("deleteDocuments ${params}");
@@ -194,23 +200,22 @@ class MyInstitutionsController {
         def docctx_to_delete = p.key.substring(12);
         log.debug("Looking up docctx ${docctx_to_delete}");
         def docctx = DocContext.get(docctx_to_delete)
-        log.debug("Got docctx ${docctx.id} ${docctx.owner.uuid} ${docctx.owner.title}");
-        doclist.add(docctx?.owner?.uuid);
 
-        // Find all doc ctx entries that point to this document
-        DocContext.findByOwner(docctx.owner).each { ctx ->
+        def contexts_for_this_doc =  DocContext.findAllByOwner(docctx.owner)
+
+        if ( contexts_for_this_doc?.size() > 1 ) {
+          // Document is linked elsewhere, so just remove the context link
           ctx.delete(flush:true);
         }
-
-        docctx.owner.delete(flush:true);
+        else {
+          // This is the last link, so delete the document.
+          def doclist = [docctx?.owner?.uuid]
+          ctx.delete(flush:true);
+          docctx.owner.delete(flush:true);
+          docstoreService.deleteDocs(doclist);
+        }
       }
     }
-
-    docstoreService.deleteDocs(doclist);
-
-   
-
-    log.debug("done");
 
     redirect action: 'licenseDetails', params:[shortcode:params.shortcode], id:params.licid, fragment:'docstab'
   }

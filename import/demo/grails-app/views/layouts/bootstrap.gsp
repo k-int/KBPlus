@@ -65,7 +65,7 @@
                   <li <%='platform'== controllerName ? ' class="active"' : '' %>><g:link controller="platform">Platform</g:link></li>
                   <li <%='titleInstance'== controllerName ? ' class="active"' : '' %>><g:link controller="titleInstance">Title Instance</g:link></li>
                   <li <%='titleInstancePackagePlatform'== controllerName ? ' class="active"' : '' %>><g:link controller="titleInstancePackagePlatform">Title Instance Package Platform</g:link></li>
-                  <li <%='subscription'== controllerName ? ' class="active"' : '' %>><g:link controller="subscription">Subscriptions</g:link></li>
+                  <li <%='currentSubscriptions'== controllerName ? ' class="active"' : '' %>><g:link controller="currentSubscriptions">Subscriptions</g:link></li>
                   <li <%='license'== controllerName ? ' class="active"' : '' %>><g:link controller="license">Licenses</g:link></li>
                 </ul>
               </li>
@@ -88,7 +88,7 @@
                          </li>
                         <li>
                            <g:link controller="myInstitutions" 
-                                   action="subscriptions" 
+                                   action="currentSubscriptions" 
                                    params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Subscriptions</g:link>
                          </li>
                        </g:each>
