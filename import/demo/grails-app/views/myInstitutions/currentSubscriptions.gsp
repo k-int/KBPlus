@@ -39,11 +39,17 @@
                         ${sp.pkg.name}<br/>
                       </g:each>
                     </td>
-                    <td></td>
+                    <td>
+                       ${s.instanceOf?.provider?.name}
+                    </td>
                     <td></td>
                     <td>${s.startDate}</td>
                     <td>${s.endDate}</td>
-                    <td></td>
+                    <td>
+                      <g:each in="${s.instanceOf?.packages}" var="sp">
+                        ${sp.pkg?.nominalPlatform?.name}<br/>
+                      </g:each>
+                    </td>
                     <td>${owner.reference}</td>
                     <td></td>
                   </tr>

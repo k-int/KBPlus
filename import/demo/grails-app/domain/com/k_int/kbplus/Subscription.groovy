@@ -60,4 +60,14 @@ class Subscription {
     }
     result
   }
+
+  def getProvider() {
+    def result = null;
+    orgRelations.each { or ->
+      if ( or?.roleType?.value=='Content Provider' )
+        result = or.org;
+    }
+    result
+  }
+
 }
