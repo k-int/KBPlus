@@ -60,6 +60,18 @@ class MyInstitutionsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
+    def sc = Subscription.createCriteria()
+    result.subscriptions = sc.list {
+      orgRelations {
+        and {
+          roleType {
+            eq('value','Subscriber')
+          }
+          eq('org', result.institution)
+        }
+      }
+    }
+
     result
   }
 
@@ -200,20 +212,7 @@ class MyInstitutionsController {
         def docctx_to_delete = p.key.substring(12);
         log.debug("Looking up docctx ${docctx_to_delete}");
         def docctx = DocContext.get(docctx_to_delete)
-
-        def contexts_for_this_doc =  DocContext.findAllByOwner(docctx.owner)
-
-        if ( contexts_for_this_doc?.size() > 1 ) {
-          // Document is linked elsewhere, so just remove the context link
-          ctx.delete(flush:true);
-        }
-        else {
-          // This is the last link, so delete the document.
-          def doclist = [docctx?.owner?.uuid]
-          ctx.delete(flush:true);
-          docctx.owner.delete(flush:true);
-          docstoreService.deleteDocs(doclist);
-        }
+        docctx.status = RefdataCategory.lookupOrCreate('Document Context Status','Deleted');
       }
     }
 

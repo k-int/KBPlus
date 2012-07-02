@@ -15,7 +15,6 @@ class Subscription {
   Date dateCreated
   Date lastUpdated
 
-
   License owner
   SortedSet issueEntitlements
 
