@@ -33,7 +33,7 @@
                 </tr>
                 <g:each in="${subscriptions}" var="s">
                   <tr>
-                    <td>${s.id}</td>
+                    <td><g:link controller="myInstitutions" action="subscriptionDetails" params="${[shortcode:params.shortcode]}" id="${s.id}">${s.id}</g:link></td>
                     <td>
                       <g:each in="${s.instanceOf?.packages}" var="sp">
                         ${sp.pkg.name}<br/>
@@ -42,7 +42,7 @@
                     <td>
                        ${s.instanceOf?.provider?.name}
                     </td>
-                    <td></td>
+                    <td>${s.instanceOf?.subscriber?.name}</td>
                     <td>${s.startDate}</td>
                     <td>${s.endDate}</td>
                     <td>
