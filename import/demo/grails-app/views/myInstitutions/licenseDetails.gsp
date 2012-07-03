@@ -20,6 +20,21 @@
         <div class="tab-pane active" id="detailtab">
           <div class="row-fluid">
             <div class="span8 form-horizontal">
+
+              <g:if test="${flash.message}">
+                <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
+              </g:if>
+
+              <g:hasErrors bean="${titleInstanceInstance}">
+                <bootstrap:alert class="alert-error">
+                <ul>
+                  <g:eachError bean="${titleInstanceInstance}" var="error">
+                    <li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>><g:message error="${error}"/></li>
+                  </g:eachError>
+                </ul>
+                </bootstrap:alert>
+              </g:hasErrors>
+
               <h3>Information</h3>
               <fieldset>  
 
