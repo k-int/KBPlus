@@ -69,7 +69,7 @@
             <tbody>
               <tr><td>Concurrent Access</td>
                   <td>
-                       <g:refdataValue val="${license.concurrentUsers?.value}" propname="concurrentUsers" refdataCat='Concurrent Access' class="cuedit"/>
+                       <g:refdataValue val="${license.concurrentUsers?.value}" domain="License" pk="${license.id}" field="concurrentUsers" cat='Concurrent Access' class="cuedit"/>
                        <span id="cucwrap">
                        (<span id="concurrentUserCount" class="intedit" style="padding-top: 5px;">${license.concurrentUserCount}</span>)
                        </span>
@@ -77,35 +77,35 @@
                   <td><g:singleValueFieldNote domain="concurrentUsers" value="${license.getNote('concurrentUsers')}" class="fieldNote"/></td></tr>
 
               <tr><td>Remote Access</td>
-                  <td><g:refdataValue val="${license.remoteAccess?.value}" propname="remoteAccess" refdataCat='YNO' class="refdataedit"/></td>
+                  <td><g:refdataValue val="${license.remoteAccess?.value}" domain="License" pk="${license.id}" field="remoteAccess" cat='YNO' class="refdataedit"/></td>
                   <td><g:singleValueFieldNote domain="remoteAccess" value="${license.getNote('remoteAccess')}" class="fieldNote"/></td></tr>
 
               <tr><td>Walk In Access</td>
-                  <td><g:refdataValue val="${license.walkinAccess?.value}" propname="walkinAccess" refdataCat='YNO' class="refdataedit"/></td>
+                  <td><g:refdataValue val="${license.walkinAccess?.value}" domain="License" pk="${license.id}" field="walkinAccess" cat='YNO' class="refdataedit"/></td>
                   <td><g:singleValueFieldNote domain="walkinAccess" value="${license.getNote('walkinAccess')}" class="fieldNote"/></td></tr>
               <tr><td>Multi Site Access</td>
-                  <td><g:refdataValue val="${license.multisiteAccess?.value}" propname="multisiteAccess" refdataCat='YNO' class="refdataedit"/></td>
+                  <td><g:refdataValue val="${license.multisiteAccess?.value}" domain="License" pk="${license.id}" field="multisiteAccess" cat='YNO' class="refdataedit"/></td>
                   <td><g:singleValueFieldNote domain="multisiteAccess" value="${license.getNote('multisiteAccess')}" class="fieldNote"/></td></tr>
               <tr><td>Partners Access</td>
-                  <td><g:refdataValue val="${license.partnersAccess?.value}" propname="partnersAccess" refdataCat='YNO' class="refdataedit"/></td>
+                  <td><g:refdataValue val="${license.partnersAccess?.value}" domain="License" pk="${license.id}" field="partnersAccess" cat='YNO' class="refdataedit"/></td>
                   <td><g:singleValueFieldNote domain="partnersAccess" value="${license.getNote('partnersAccess')}" class="fieldNote"/></td></tr>
               <tr><td>Alumni Access</td>
-                  <td><g:refdataValue val="${license.alumniAccess?.value}" propname="alumniAccess" refdataCat='YNO' class="refdataedit"/></td>
+                  <td><g:refdataValue val="${license.alumniAccess?.value}" domain="License" pk="${license.id}" field="alumniAccess" cat='YNO' class="refdataedit"/></td>
                   <td><g:singleValueFieldNote domain="alumniAccess" value="${license.getNote('alumniAccess')}" class="fieldNote"/></td></tr>
               <tr><td>ILL Access</td>
-                  <td><g:refdataValue val="${license.ill?.value}" propname="ill" refdataCat='YNO' class="refdataedit"/></td>
+                  <td><g:refdataValue val="${license.ill?.value}" domain="License" pk="${license.id}" field="ill" cat='YNO' class="refdataedit"/></td>
                   <td><g:singleValueFieldNote domain="ill" value="${license.getNote('ill')}" class="fieldNote"/></td></tr>
               <tr><td>Coursepack Access</td>
-                  <td><g:refdataValue val="${license.coursepack?.value}" propname="coursepack" refdataCat='YNO' class="refdataedit"/></td>
+                  <td><g:refdataValue val="${license.coursepack?.value}" domain="License" pk="${license.id}" field="coursepack" cat='YNO' class="refdataedit"/></td>
                   <td><g:singleValueFieldNote domain="coursepack" value="${license.getNote('coursepack')}" class="fieldNote"/></td></tr>
               <tr><td>VLE Access</td>
-                  <td><g:refdataValue val="${license.vle?.value}" propname="vle" refdataCat='YNO' class="refdataedit"/></td>
+                  <td><g:refdataValue val="${license.vle?.value}" domain="License" pk="${license.id}" field="vle" cat='YNO' class="refdataedit"/></td>
                   <td><g:singleValueFieldNote domain="vle" value="${license.getNote('vle')}" class="fieldNote"/></td></tr>
               <tr><td>Enterprise Access</td>
-                  <td><g:refdataValue val="${license.enterprise?.value}" propname="enterprise" refdataCat='YNO' class="refdataedit"/></td>
+                  <td><g:refdataValue val="${license.enterprise?.value}" domain="License" pk="${license.id}" field="enterprise" cat='YNO' class="refdataedit"/></td>
                   <td><g:singleValueFieldNote domain="enterprise" value="${license.getNote('enterprise')}" class="fieldNote"/></td></tr>
               <tr><td>PCA Access</td>
-                  <td><g:refdataValue val="${license.pca?.value}" propname="pca" refdataCat='YNO' class="refdataedit"/></td>
+                  <td><g:refdataValue val="${license.pca?.value}" domain="License" pk="${license.id}" field="pca" cat='YNO' class="refdataedit"/></td>
                   <td><g:singleValueFieldNote domain="pca" value="${license.getNote('pca')}" class="fieldNote"/></td></tr>
             </tbody>
           </table>
@@ -213,7 +213,7 @@
          });
 
 
-         $('.refdataedit').editable('<g:createLink controller="ajax" params="${[type:'License',cat:'YNO']}" id="${params.id}" action="setRef" absolute="true"/>', {
+         $('.refdataedit').editable('<g:createLink controller="ajax" action="genericSetRef" absolute="true"/>', {
            data   : {'Yes':'Yes', 'No':'No','Other':'Other'},
            type   : 'select',
            cancel : 'Cancel',
@@ -222,7 +222,7 @@
            tooltip: 'Click to edit...'
          });
 
-         $('.cuedit').editable('<g:createLink controller="ajax" params="${[type:'License',cat:'Concurrent Access']}" id="${params.id}" action="setRef" absolute="true"/>', {
+         $('.cuedit').editable('<g:createLink controller="ajax" action="genericSetRef" absolute="true"/>', {
            data   : {'No limit':'No limit', 'Specified':'Specified','Not Specified':'Not Specified', 'Other':'Other'},
            type   : 'select',
            cancel : 'Cancel',

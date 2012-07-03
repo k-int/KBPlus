@@ -3,20 +3,28 @@ import com.k_int.kbplus.*
 class InplaceTagLib {
 
   def refdataValue = { attrs, body ->
-    if ( attrs.val && attrs.refdataCat ) {
-      def refdataCat = RefdataCategory.findByDesc(attrs.refdataCat)
-      def value = RefdataValue.findByOwnerAndValue(refdataCat, attrs.val)
-      out << "<span id=\"${attrs.propname}\" class=\"${attrs.class}\">"
-      if ( value ) {
-        if ( value.icon ) {
-          out << "<i class=\"${value.icon}\"></i> "
+    log.debug("refdataValue ${attrs}");
+    if ( attrs.val && attrs.cat ) {
+      def category = RefdataCategory.findByDesc(attrs.cat)
+      if ( category ) {
+        def value = RefdataValue.findByOwnerAndValue(category, attrs.val)
+        def id = "${attrs.domain}:${attrs.pk}:${attrs.field}:${attrs.cat}:${attrs.id}"
+
+        out << "<span id=\"${id}\" class=\"${attrs.class}\">"
+        if ( value ) {
+          if ( value.icon ) {
+            out << "<i class=\"${value.icon}\"></i> "
+          }
+          else {
+            out << "<i class=\"icon-search icon-white\"></i>&nbsp;"
+          }
         }
-        else {
-          out << "<i class=\"icon-search icon-white\"></i>&nbsp;"
-        }
+        out << attrs.val
+        out << "</span>"
       }
-      out << attrs.val
-      out << "</span>"
+      else {
+        out << "Unknown refdata category ${attrs.cat}"
+      }
     }
   }
 
