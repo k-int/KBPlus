@@ -3,7 +3,6 @@ package com.k_int.kbplus
 import grails.converters.*
 import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.MarkupBuilder
-import com.gmongo.GMongo
 import grails.plugins.springsecurity.Secured
 import com.k_int.kbplus.auth.*;
 
@@ -11,7 +10,6 @@ class HomeController {
 
   def ESWrapperService
   def gazetteerService
-  def mongoService
   def springSecurityService
 
   // Map the parameter names we use in the webapp with the ES fields
@@ -26,7 +24,6 @@ class HomeController {
     def result = [:]
 
     // Get hold of some services we might use ;)
-    def db = mongoService.getMongo().getDB("xcri")
     org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
     org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
 

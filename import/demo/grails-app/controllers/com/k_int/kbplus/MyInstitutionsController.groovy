@@ -2,11 +2,18 @@ package com.k_int.kbplus
 
 import com.k_int.kbplus.auth.*
 import grails.plugins.springsecurity.Secured
+import grails.converters.*
+import org.elasticsearch.groovy.common.xcontent.*
+import groovy.xml.MarkupBuilder
 
 class MyInstitutionsController {
 
   def springSecurityService
   def docstoreService
+  def ESWrapperService
+  def gazetteerService
+
+  def reversemap = ['subject':'subject', 'provider':'provid', 'studyMode':'presentations.studyMode','qualification':'qual.type','level':'qual.level' ]
 
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -77,11 +84,112 @@ class MyInstitutionsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def addSubscription() {
+
+    log.debug("Search Index, params.q=${params.q}, format=${params.format}")
+
     def result = [:]
+
+    if ( (!params.q) || ( params.q.length()==0 ) )
+      params.q = '*';
+
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
+    // Get hold of some services we might use ;)
+
+    org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
+    org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
+
+    result.user = User.get(springSecurityService.principal.id)
+
+    try {
+      if ( params.q && params.q.length() > 0) {
+  
+        params.max = Math.min(params.max ? params.int('max') : 10, 100)
+        params.offset = params.offset ? params.int('offset') : 0
+  
+        def query_str = buildQuery(params)
+        log.debug("query: ${query_str}");
+  
+        def search = esclient.search{
+          indices "kbplus"
+          source {
+            from = params.offset
+            size = params.max
+            query {
+              query_string (query: query_str)
+            }
+          }
+        }
+
+        if ( search?.response ) {
+          result.hits = search.response.hits
+          result.resultsTotal = search.response.hits.totalHits
+          log.debug("Search result: total:${result.resultsTotal}");
+        }
+
+      }
+      else {
+        log.debug("No query.. Show search page")
+      }
+    }
+    finally {
+      try {
+      }
+      catch ( Exception e ) {
+        log.error("problem",e);
+      }
+    }
+
     result
   }
+
+  def buildQuery(params) {
+    log.debug("BuildQuery...");
+
+    StringWriter sw = new StringWriter()
+
+    if ( ( params != null ) && ( params.q != null ) )
+        if(params.q.equals("*")){
+            sw.write(params.q)
+        }
+        else{
+            sw.write(params.q)
+        }
+    else
+      sw.write("*:*")
+      
+    reversemap.each { mapping ->
+
+      // log.debug("testing ${mapping.key}");
+
+      if ( params[mapping.key] != null ) {
+        if ( params[mapping.key].class == java.util.ArrayList) {
+          params[mapping.key].each { p ->  
+                sw.write(" AND ")
+                sw.write(mapping.value)
+                sw.write(":")
+                sw.write("\"${p}\"")
+          }
+        }
+        else {
+          // Only add the param if it's length is > 0 or we end up with really ugly URLs
+          // II : Changed to only do this if the value is NOT an *
+          if ( params[mapping.key].length() > 0 && ! ( params[mapping.key].equalsIgnoreCase('*') ) ) {
+            sw.write(" AND ")
+            sw.write(mapping.value)
+            sw.write(":")
+            sw.write("\"${params[mapping.key]}\"")
+          }
+        }
+      }
+    }
+
+    sw.write(" AND type:\"Subscription Offered\"");
+    def result = sw.toString();
+    result;
+  }
+
+
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def processJoinRequest() {
