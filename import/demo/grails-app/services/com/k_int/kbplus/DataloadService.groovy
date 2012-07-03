@@ -124,6 +124,8 @@ class DataloadService {
         source idx_record
       }
 
+      latest_ft_record.lastTimestamp = i.lastUpdated?.getTime()
+
       count++
     }
 
