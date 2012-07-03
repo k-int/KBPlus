@@ -106,7 +106,7 @@ class DataloadService {
 
     log.debug("result of findByDomain: ${latest_ft_record}");
     if ( !latest_ft_record) {
-      latest_ft_record=new FTControl(domainClassName:domain.name,lastTimestamp:0).save(flush:true);
+      latest_ft_record=new FTControl(domainClassName:domain.name,lastTimestamp:0)
     }
 
     log.debug("updateES ${domain.name} since ${latest_ft_record.lastTimestamp}");
@@ -128,7 +128,8 @@ class DataloadService {
     }
 
     // update timestamp
-    latest_ft_record.save();
+    latest_ft_record.save(flush:true);
+
 
     log.debug("Completed processing on ${domain.name} - saved ${count} records");
   }
