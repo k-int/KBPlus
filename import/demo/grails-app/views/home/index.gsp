@@ -84,6 +84,8 @@
                         <g:if test="${hit.type=='com.k_int.kbplus.TitleInstance'}"><span class="label label-info">Title Instance</span></g:if> 
                         <g:if test="${hit.type=='com.k_int.kbplus.Package'}"><span class="label label-info">Package</span></g:if> 
                         <g:if test="${hit.type=='com.k_int.kbplus.Platform'}"><span class="label label-info">Platform</span></g:if> 
+                        <g:if test="${hit.type=='com.k_int.kbplus.Subscription'}"><span class="label label-info">Subscription</span></g:if> 
+                        <g:if test="${hit.type=='com.k_int.kbplus.License'}"><span class="label label-info">License</span></g:if> 
                       </td>
                       <td>
                         <g:if test="${hit.type=='com.k_int.kbplus.Org'}">
@@ -97,6 +99,12 @@
                         </g:if>
                         <g:if test="${hit.type=='com.k_int.kbplus.Platform'}">
                           <g:link controller="platform" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link>
+                        </g:if>
+                        <g:if test="${hit.type=='com.k_int.kbplus.Subscription'}">
+                          <g:link controller="subscription" action="show" id="${hit.source.dbId}">${hit.source.name} (${hit.source.type})</g:link>
+                        </g:if>
+                        <g:if test="${hit.type=='com.k_int.kbplus.License'}">
+                          <g:link controller="license" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link>
                         </g:if>
                       </td>
                     </tr>

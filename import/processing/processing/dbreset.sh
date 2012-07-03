@@ -61,6 +61,28 @@ curl -X PUT "localhost:9200/kbplus/com.k_int.kbplus.Platform/_mapping" -d '{
   }
 }'
 
+curl -X PUT "localhost:9200/kbplus/com.k_int.kbplus.Subscription/_mapping" -d '{
+  "com.k_int.kbplus.Subscription" : {
+    "properties" : {
+      "name" : {
+        type : "string",
+        analyzer : "snowball"
+      }
+    }
+  }
+}'
+
+
+curl -X PUT "localhost:9200/kbplus/com.k_int.kbplus.License/_mapping" -d '{
+  "com.k_int.kbplus.License" : {
+    "properties" : {
+      "name" : {
+        type : "string",
+        analyzer : "snowball"
+      }
+    }
+  }
+}'
 # Load MYSQL
 
 # Trigger ES reindex
