@@ -257,6 +257,15 @@ class MyInstitutionsController {
           else {
             log.error("Problem saving org links to license ${org.errors}");
           }
+
+          // Clone documents
+          baseLicense.documents?.each { dctx ->
+            DocContext ndc = new DocContext(owner:dctx.owner,
+                                            license: licenseInstance,
+                                            domain: dctx.domain,
+                                            status: dctx.status,
+                                            doctype: dctx.doctype).save()
+          }
         }
 
         flash.message = message(code: 'license.created.message', args: [message(code: 'license.label', default: 'License'), licenseInstance.id])
