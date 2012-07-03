@@ -53,7 +53,7 @@
                   <td><g:formatDate format="dd MMMM yyyy" date="${ie.endDate}"/>
                       <input type="hidden" class="dp" />
                   </td>
-                  <td>${ie.embargo}</td>
+                  <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="newipe">${ie.embargo}</g:inPlaceEdit></td>
                   <td>${ie.tipp?.platform?.primaryUrl}</td>
                   <td>${ie.coverageDepth}<br/>${ie.coverageNote}</td>
                   <td>docs</td>
@@ -74,6 +74,15 @@
           changeMonth: true,
           changeYear: true,
           showOn: 'both',
+        });
+
+        $('.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
+          type      : 'textarea',
+          cancel    : 'Cancel',
+          submit    : 'OK',
+          id        : 'elementid',
+          rows      : 3,
+          tooltip   : 'Click to edit...'
         });
 
       });
