@@ -4,6 +4,8 @@ import com.k_int.kbplus.*
 
 class DataloadService {
 
+  def stats = [:]
+
   def update_stages = [
     'Organisations Data',
     'Subscriptions Offered Data',
@@ -18,7 +20,6 @@ class DataloadService {
   def dataload_running=false
   def dataload_stage=-1
   def dataload_message=''
-  def stats = [:]
 
   def updateFTIndexes() {
     log.debug("updateFTIndexes");
@@ -140,7 +141,8 @@ class DataloadService {
     
     def result = [
       active:dataload_running,
-      stage:dataload_stage
+      stage:dataload_stage,
+      stats:stats
     ]
 
     result
@@ -157,21 +159,27 @@ class DataloadService {
 
   def doReconciliation() {
     try {
+      stats.overallStatus="Runnin"
+      stats.startTime=System.currentTimeMillis();
       // Do it!
-      stats = [:]
       update();
       reloadSTData();
       reloadLicenses();
     }
     catch ( Exception e ) {
       log.error(e);
+      stats.lastException=e.message()
     }
     finally {
       dataload_running = false;
+      stats.overallStatis="Complete"
+      stats.elapsed=System.currentTimeMillis() -  stats.startTime;
     }
   }
 
   def update() {
+
+
     Org.withTransaction { transaction_status ->
       log.debug("DataloadController::update");
   
@@ -522,7 +530,7 @@ class DataloadService {
           // assert an org-role
           def org_link = new OrgRole(org:db_org, 
                                      sub: new_subscription, 
-                                     roleType: RefdataValue.findByValue('Subscriber'))
+                                     roleType: lookupOrCreateRefdataEntry('Organisational Role','Subscriber'));
     
   
           new_subscription.save(flush:true);

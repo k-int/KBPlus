@@ -36,7 +36,7 @@
                     <td><g:link controller="myInstitutions" action="subscriptionDetails" params="${[shortcode:params.shortcode]}" id="${s.id}">${s.id}</g:link></td>
                     <td>
                       <g:each in="${s.instanceOf?.packages}" var="sp">
-                        ${sp.pkg.name} (${sp.pkg.provider?.name}) <br/>
+                        ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
                       </g:each>
                     </td>
                     <td>

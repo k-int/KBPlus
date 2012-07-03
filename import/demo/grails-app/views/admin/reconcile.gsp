@@ -35,7 +35,17 @@
         <g:else>
           Data reconciliation not currently active. <g:link action="startReconciliation">Start</g:link>
         </g:else>
+
+        <g:if test="${stats}">
+          <table>
+            <g:each in="${stats}" var="s">
+              <tr><td>${s.key}</td><td>${s.value}</td></tr>
+            </g:each>
+          </table>
+        </g:if>
       </div>
+
+
     </div>
 
 
