@@ -286,6 +286,7 @@ class MyInstitutionsController {
     result
   }
 
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def subscriptionDetails() {
     log.debug("subscriptionDetails id:${params.id}");
     def result = [:]

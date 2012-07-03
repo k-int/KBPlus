@@ -45,7 +45,12 @@
                   <td>${ie.tipp.title.title}</td>
                   <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
                   <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
-                  <td>${ie.coreTitle}</td>
+                  <td><g:refdataValue val="${ie.coreTitle}" 
+                                      domain="IssueEntitlement" 
+                                      pk="${ie.id}" 
+                                      field="coreTitle" 
+                                      cat="isCoreTitle"
+                                      class="coreedit"/></td>
                   <td>
                       <g:formatDate format="dd MMMM yyyy" date="${ie.startDate}"/>
                       <input type="hidden" class="dp" />
@@ -84,7 +89,14 @@
           rows      : 3,
           tooltip   : 'Click to edit...'
         });
-
+        $('.coreedit').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
+           data   : {'true':'true', 'false':'false'},
+           type   : 'select',
+           cancel : 'Cancel',
+           submit : 'OK',
+           id     : 'elementid',
+           tooltip: 'Click to edit...'
+         });
       });
     </script>
   </body>

@@ -4,7 +4,7 @@ class InplaceTagLib {
 
   def refdataValue = { attrs, body ->
     log.debug("refdataValue ${attrs}");
-    if ( attrs.val && attrs.cat ) {
+    if ( attrs.cat ) {
       def category = RefdataCategory.findByDesc(attrs.cat)
       if ( category ) {
         def value = RefdataValue.findByOwnerAndValue(category, attrs.val)
@@ -19,6 +19,9 @@ class InplaceTagLib {
             out << "<i class=\"icon-search icon-white\"></i>&nbsp;"
           }
         }
+        else {
+          out << "Invalid Value"
+        }
         out << attrs.val
         out << "</span>"
       }
@@ -26,6 +29,10 @@ class InplaceTagLib {
         out << "Unknown refdata category ${attrs.cat}"
       }
     }
+    else {
+      out << "No category for refdata"
+    }
+    
   }
 
   def singleValueFieldNote= { attrs, body ->

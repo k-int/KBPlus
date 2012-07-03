@@ -91,3 +91,6 @@ insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 21, 'Specifie
 insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 21, 'Not Specified', 'icon-ok-sign');
 insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 21, 'No limit', 'icon-ok-sign');
 
+insert into refdata_category(rdc_id, rdc_description) VALUES (22,'isCoreTitle');
+insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 22, 'true', 'icon-ok-sign');
+insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 22, 'false', 'icon-ok-sign');
