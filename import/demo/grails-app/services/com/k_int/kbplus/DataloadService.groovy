@@ -21,7 +21,7 @@ class DataloadService {
   def stats = [:]
 
   def updateFTIndexes() {
-    System.out.println("updateFTIndexes");
+    log.debug("updateFTIndexes");
     log.debug("updateFTIndexes");
     def future = executorService.submit({
       doFTUpdate()
@@ -100,12 +100,16 @@ class DataloadService {
 
   def updateES(esclient, domain, recgen_closure) {
 
-    def latest_ft_record = FTControl.findByDomain(domain)
+    log.debug("updateES - ${domain.name}");
+
+    def latest_ft_record = FTControl.findByDomainClassName(domain.name)
+
+    log.debug("result of findByDomain: ${latest_ft_record}");
     if ( !latest_ft_record) {
-      latest_ft_record=new FTControl(domain:domain,lastTimestamp:0).save();
+      latest_ft_record=new FTControl(domainClassName:domain.name,lastTimestamp:0).save(flush:true);
     }
 
-    log.debug("updateES ${domain.name}");
+    log.debug("updateES ${domain.name} since ${latest_ft_record.lastTimestamp}");
     def count = 0;
     Date from = new Date(latest_ft_record.lastTimestamp);
     def qry = domain.findAllByLastUpdatedGreaterThan(from);

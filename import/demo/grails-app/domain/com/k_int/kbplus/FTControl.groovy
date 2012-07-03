@@ -2,9 +2,9 @@ package com.k_int.kbplus
 
 class FTControl {
 
-  String domain
+  String domainClassName
   Long lastTimestamp
 
-    static constraints = {
-    }
+  static constraints = {
+  }
 }
