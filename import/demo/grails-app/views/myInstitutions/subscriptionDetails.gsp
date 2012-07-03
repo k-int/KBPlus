@@ -34,8 +34,8 @@
               <tr>
                 <th colspan="4"><button>Apply Batch Changes:</button></th>
                 <th>edit</th>
-                <th>edit</th>
-                <th>edit</th>
+                <th>edit <input type="hidden" class="dp" /></th>
+                <th>edit <input type="hidden" class="dp" /></th>
                 <th>edit</th>
                 <th colspan="4"></th>
               </tr>

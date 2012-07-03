@@ -44,6 +44,7 @@ class DataloadService {
       result.name = org.name
       result.sector = org.sector
       result.dbId = org.id
+      result.visible = ['Public']
       result.rectype = 'Organisation'
       result
     }
@@ -53,6 +54,7 @@ class DataloadService {
       result._id = ti.impId
       result.title = ti.title
       result.dbId = ti.id
+      result.visible = ['Public']
       result.rectype = 'Title'
       result
     }
@@ -62,18 +64,35 @@ class DataloadService {
       result._id = pkg.impId
       result.name = "${pkg.name} (${pkg.contentProvider?.name})"
       result.dbId = pkg.id
+      result.visible = ['Public']
       result.rectype = 'Package'
       result
     }
 
-    updateES(esclient, com.k_int.kbplus.Platform.class) { pkg ->
+    updateES(esclient, com.k_int.kbplus.Platform.class) { plat ->
       def result = [:]
-      result._id = pkg.impId
-      result.name = pkg.name
-      result.dbId = pkg.id
+      result._id = plat.impId
+      result.name = plat.name
+      result.dbId = plat.id
+      result.visible = ['Public']
       result.rectype = 'Platform'
       result
     }
+
+    updateES(esclient, com.k_int.kbplus.Subscription.class) { sub ->
+      def result = [:]
+      result._id = sub.impId
+      result.name = sub.name
+      result.dbId = sub.id
+      result.visible = ['Public']
+      if ( sub.subscriber ) {
+        result.visible.add(sub.subscriber.shortcode)
+      }
+      result.type = sub.type?.value
+      result.rectype = 'Subscription'
+      result
+    }
+
 
     def elapsed = System.currentTimeMillis() - start_time;
     log.debug("IndexUpdateJob completed in ${elapsed}ms at ${new Date()}");
@@ -81,10 +100,16 @@ class DataloadService {
 
   def updateES(esclient, domain, recgen_closure) {
 
+    def latest_ft_record = FTControl.findByDomain(domain)
+    if ( !latest_ft_record) {
+      latest_ft_record=new FTControl(domain:domain,lastTimestamp:0).save();
+    }
+
     log.debug("updateES ${domain.name}");
     def count = 0;
-    Date from = new Date(0);
+    Date from = new Date(latest_ft_record.lastTimestamp);
     def qry = domain.findAllByLastUpdatedGreaterThan(from);
+    
     qry.each { i ->
       def idx_record = recgen_closure(i)
 
@@ -97,6 +122,9 @@ class DataloadService {
 
       count++
     }
+
+    // update timestamp
+    latest_ft_record.save();
 
     log.debug("Completed processing on ${domain.name} - saved ${count} records");
   }
