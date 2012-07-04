@@ -345,4 +345,76 @@ class MyInstitutionsController {
 
     redirect action: 'licenseDetails', params:[shortcode:params.shortcode], id:params.licid, fragment:'docstab'
   }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def processAddSubscription() {
+
+    def user = User.get(springSecurityService.principal.id)
+    def institution = Org.findByShortcode(params.shortcode)
+
+    log.debug("processAddSubscription ${params}");
+
+    def baseSubscription = Subscription.get(params.subOfferedId);
+
+    if ( baseSubscription ) {
+      log.debug("Copying base subscription ${baseSubscription.id} for org ${institution.id}");
+
+      def subscriptionInstance = new Subscription(
+                                     status:baseSubscription.status,
+                                     type:RefdataCategory.lookupOrCreate('Subscription Type','Subscription Taken'),
+                                     name:baseSubscription.name,
+                                     identifier:baseSubscription.identifier,
+                                     impId:null,
+                                     startDate:baseSubscription.startDate,
+                                     endDate:baseSubscription.endDate,
+                                     instanceOf:baseSubscription,
+                                     noticePeriod:baseSubscription.noticePeriod,
+                                     dateCreated:new Date(),
+                                     lastUpdated:new Date(),
+                                     issueEntitlements: new java.util.TreeSet()
+                                 );
+
+      // Now copy reference data and issue entitlements
+      if (!subscriptionInstance.save(flush: true)) {
+        log.error("Problem saving license ${licenseInstance.errors}");
+      }
+      else {
+        log.debug("Copy issue entitlements");
+        // These IE's are save on cascade
+        int ic = 0;
+        baseSubscription.issueEntitlements.each { bie ->
+          log.debug("Adding issue entitlement... ${bie.id} [${ic++}]");
+
+          new IssueEntitlement(status:bie.status,
+                               startDate:bie.startDate,
+                               startVolume:bie.startVolume,
+                               startIssue:bie.startIssue,
+                               endDate:bie.endDate,
+                               endVolume:bie.endVolume,
+                               endIssue:bie.endIssue,
+                               embargo:bie.embargo,
+                               coverageDepth:bie.coverageDepth,
+                               coverageNote:bie.coverageNote,
+                               coreTitle:bie.coreTitle,
+                               subscription:subscriptionInstance,
+                               tipp: bie.tipp).save();
+        }
+
+        log.debug("Setting sub/org link");
+        def subscriber_org_link = new OrgRole(org:institution, sub:subscriptionInstance, roleType: RefdataCategory.lookupOrCreate('Organisational Role','Subscriber')).save();
+        log.debug("Adding packages");
+        baseSubscription.packages.each { bp ->
+          new SubscriptionPackage(subscription:subscriptionInstance, pkg:bp.pkg).save();
+        }
+        log.debug("Save ok");
+      }
+
+      flash.message = message(code: 'subscription.created.message', args: [message(code: 'subscription.label', default: 'License'), subscriptionInstance.id])
+      redirect action: 'subscriptionDetails', params:params, id:subscriptionInstance.id
+    }
+    else {
+      flash.message = message(code: 'subscription.unknown.message')
+      redirect action: 'addSubscription', params:params
+    }
+  }
 }

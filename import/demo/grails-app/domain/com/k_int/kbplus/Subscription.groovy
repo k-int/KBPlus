@@ -18,10 +18,12 @@ class Subscription {
   License owner
   SortedSet issueEntitlements
 
-  static transients = [ 'subscriber' ]
+  static transients = [ 'subscriber', 'provider', 'consortia' ]
+
   static hasMany = [ packages : SubscriptionPackage, 
                      issueEntitlements: IssueEntitlement,
                      orgRelations: OrgRole ]
+
   static mappedBy = [ packages : 'subscription', 
                       issueEntitlements: 'subscription',
                       orgRelations: 'sub' ]
@@ -78,6 +80,4 @@ class Subscription {
     }
     result
   }
-
-
 }

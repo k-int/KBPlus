@@ -34,8 +34,8 @@
               <tr>
                 <th colspan="4"><button>Apply Batch Changes:</button></th>
                 <th>edit</th>
-                <th>edit <input type="hidden" class="dp" /></th>
-                <th>edit <input type="hidden" class="dp" /></th>
+                <th>edit <input type="hidden" class="hdp" /></th>
+                <th>edit <input type="hidden" class="hdp" /></th>
                 <th>edit</th>
                 <th colspan="4"></th>
               </tr>
@@ -52,11 +52,11 @@
                                       cat="isCoreTitle"
                                       class="coreedit"/></td>
                   <td>
-                      <g:formatDate format="dd MMMM yyyy" date="${ie.startDate}"/>
-                      <input type="hidden" class="dp" />
+                      <span><g:formatDate format="dd MMMM yyyy" date="${ie.startDate}"/></span>
+                      <input id="IssueEntitlement:${ie.id}:startDate" type="hidden" class="dp" />
                   </td>
-                  <td><g:formatDate format="dd MMMM yyyy" date="${ie.endDate}"/>
-                      <input type="hidden" class="dp" />
+                  <td><span><g:formatDate format="dd MMMM yyyy" date="${ie.endDate}"/></span>
+                      <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="dp" />
                   </td>
                   <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="newipe">${ie.embargo}</g:inPlaceEdit></td>
                   <td>${ie.tipp?.platform?.primaryUrl}</td>
@@ -68,6 +68,14 @@
             </table>
           </dd>
         </g:if>
+        <dt>Org Links</td>
+        <dd>
+          <ul>
+            <g:each in="${subscriptionInstance.orgRelations}" var="or">
+              <li>${or.org.name}:${or.roleType?.value}</li>
+            </g:each>
+          <ul>
+        </dd>
       </dl>
     </div>
 
@@ -79,8 +87,26 @@
           changeMonth: true,
           changeYear: true,
           showOn: 'both',
+          onSelect: function(dateText, inst) { 
+            var elem_id = inst.input[0].id;
+            console.log("%o",inst);
+            console.log("%o",inst.input.parent().find('span'));
+            $.ajax({url: '<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>?elementid='+elem_id+'&value='+dateText+'&dt=date&idf=MM/dd/yyyy&odf=dd MMMM yyyy',
+                   success: function(result){inst.input.parent().find('span').html(result)}
+                   });
+          }
         });
 
+        $(".hdp").datepicker({
+          buttonImage: '../../../images/calendar.gif',
+          buttonImageOnly: true,
+          changeMonth: true,
+          changeYear: true,
+          showOn: 'both',
+          onSelect: function(dateText, inst) {
+            alert(dateText)
+          }
+        });
         $('.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
           type      : 'textarea',
           cancel    : 'Cancel',

@@ -99,18 +99,33 @@ class AjaxController {
   def genericSetValue() {
     // [id:1, value:JISC_Collections_NESLi2_Lic_IOP_Institute_of_Physics_NESLi2_2011-2012_01012011-31122012.., type:License, action:inPlaceSave, controller:ajax
     // def clazz=grailsApplication.domainClasses.findByFullName(params.type)
-    log.debug("genericSetValue ${params}");
+    log.debug("genericSetValue:${params}");
 
     // params.elementid (The id from the html element)  must be formed as domain:pk:property:otherstuff
     String[] oid_components = params.elementid.split(":");
 
     def domain_class=grailsApplication.getArtefact('Domain',"com.k_int.kbplus.${oid_components[0]}")
+    def result = params.value
 
     if ( domain_class ) {
       def instance = domain_class.getClazz().get(oid_components[1])
       if ( instance ) {
+
+        def value = params.value;
+        if ( params.dt == 'date' ) {
+          log.debug("Special date processing, idf=${params.idf}");
+          def formatter = new java.text.SimpleDateFormat(params.idf)
+          value = formatter.parse(params.value)
+          if ( params.odf ) {
+            def of = new java.text.SimpleDateFormat(params.odf)
+            result=of.format(value);
+          }
+          else {
+            result=value.toString();
+          }
+        }
         log.debug("Got instance ${instance}");
-        def binding_properties = [ "${oid_components[2]}":params.value ]
+        def binding_properties = [ "${oid_components[2]}":value ]
         log.debug("Merge: ${binding_properties}");
         // see http://grails.org/doc/latest/ref/Controllers/bindData.html
         bindData(instance, binding_properties)
@@ -126,7 +141,7 @@ class AjaxController {
 
     response.setContentType('text/plain')
     def outs = response.outputStream
-    outs << params.value
+    outs << result
     outs.flush()
     outs.close()
   }
@@ -142,6 +157,7 @@ class AjaxController {
     String[] oid_components = params.elementid.split(":");
 
     def domain_class=grailsApplication.getArtefact('Domain',"com.k_int.kbplus.${oid_components[0]}")
+    def result = params.value
 
 
     if ( domain_class ) {
@@ -165,7 +181,7 @@ class AjaxController {
 
     response.setContentType('text/plain')
     def outs = response.outputStream
-    outs << params.value
+    outs << result
     outs.flush()
     outs.close()
   }
