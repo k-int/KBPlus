@@ -104,7 +104,7 @@ table thead {
 
 .navbar-inner {
 	background-color: rgb(153,1,0);
-	background-image: url('../images/header_graphic.jpg');
+	background-image: url('../img/header_graphic.jpg');
 	background-position: top right;
 	background-repeat: no-repeat;
 	max-height: 40px;

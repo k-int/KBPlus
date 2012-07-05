@@ -5,26 +5,66 @@
     <title>KB+ Data import explorer</title>
   </head>
   <body>
-    <div class="row-fluid">
 
-      <h2>${institution?.name} - Licenses</h2>
-      <hr/>
-      <div class="well">
-        <g:form action="newLicense"
+    <div class="container">
+        <ul class="breadcrumb">
+            <li>
+                <a href="#">Home</a>
+                <span class="divider">/</span>
+            </li>
+            <li>
+                <a href="#">Manage</a>
+                <span class="divider">/</span>
+            </li>
+            <li>Licences</li>
+        </ul>
+    </div>
+
+    <div class="container">
+      <h1>${institution?.name} - Licenses</h1>
+    </div>
+
+    <div class="container licence-searches">
+        <div class="row">
+            <div class="span6">
+                <input type="text" name="keyword-search" placeholder="enter keyword..."
+                />
+                <input type="submit" class="btn btn-primary" value="Search" />
+            </div>
+            <div class="span6">
+                <div class="pull-right">
+                    <a class="btn btn-primary" href="licenceCreate.html">Create New Licence</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <g:form action="newLicense"
                 controller="myInstitutions" 
                 params="${[shortcode:params.shortcode]}">
 
-          <g:if test="${licenses?.size() > 0}">
-            <p>
-              <table class="table table-striped table-bordered table-condensed">
-                <tr>
-                  <th>Select</th>
-                  <th>Reference Description</th>
-                  <th>Licensor</th>
-                  <th>Licensee</th>
-                  <th>Status</th>
-                  <th>Type</th>
-                </tr>
+      <div class="container">
+          <div class="well licence-options">
+              <input type="submit" name="copy-licence" value="Copy Selected" class="btn btn-warning" />
+              <!-- <input type="submit" name="delete-licence" value="Delete Selected" class="btn btn-danger delete-licence" /> -->
+          </div>
+      </div>
+
+
+      <g:if test="${licenses?.size() > 0}">
+        <div class="container licence-results">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Select</th>
+                <th>Reference Description</th>
+                <th>Licensor</th>
+                <th>Licensee</th>
+                <th>Status</th>
+                <th>Type</th>
+              </tr>
+            </thead>
+            <tbody>
               <g:each in="${licenses}" var="l">
                 <tr>
                   <td><input type="radio" name="baselicense" value="${l.id}"/></td>
@@ -38,25 +78,14 @@
                   <td>${l.type?.value}</td>
                 </tr>
               </g:each>
-              </table>
-      
-            </p>
-          </g:if>
-          <p>
-            <g:if test="${licenses?.size() > 0}">
-              If you wish to add a new license for this organisation, please enter a new reference below and cick the create button. Select a license from the list above to copy values from the selected
-              license into your new license<br/>
-            </g:if>
-            <g:else>
-              There are no licenses currently attached to ${institution.name}. To create a new one, please enter a reference name for the new
-              license and press the create new license button below.<br/>
-            </g:else>
-  
-            New license reference name: <input type="text" name="new_license_ref_name"/><input type="submit" value="Create new license"/>
-          </p>
-        </g:form>
-      </div>
+            </tbody>
+          </table>
+        </div>
+      </g:if>
+      <!--
+        <p>New license reference name: <input type="text" name="new_license_ref_name"/><input type="submit" value="Create new license"/></p>
+      -->
+    </g:form>
 
-    </div>
   </body>
 </html>

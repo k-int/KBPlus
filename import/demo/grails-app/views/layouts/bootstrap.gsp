@@ -40,22 +40,14 @@
 
   <body>
 
-    <nav class="navbar navbar-fixed-top">
+    <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
-        <div class="container-fluid">
-          
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          
+        <div class="container">
           <sec:ifLoggedIn>
             <a class="brand" href="${createLink(uri: '/')}">KB+</a>
           </sec:ifLoggedIn>
-
           <div class="nav-collapse">
-            <ul class="nav">              
+            <ul class="nav">
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Data Explorer <b class="caret"></b> </a>
                 <ul class="dropdown-menu" style="max-width:none;">
@@ -127,7 +119,9 @@
           </div>
         </div>
       </div>
-    </nav>
+    </div>
+
+    <div class="navbar-push"></div>
 
     <div class="container-fluid">
       <g:layoutBody/>
