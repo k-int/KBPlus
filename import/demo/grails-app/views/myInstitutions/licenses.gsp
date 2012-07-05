@@ -1,22 +1,15 @@
 <!doctype html>
 <html>
   <head>
-    <meta name="layout" content="bootstrap"/>
+    <meta name="layout" content="mmbootstrap"/>
     <title>KB+ Data import explorer</title>
   </head>
   <body>
 
     <div class="container">
         <ul class="breadcrumb">
-            <li>
-                <a href="#">Home</a>
-                <span class="divider">/</span>
-            </li>
-            <li>
-                <a href="#">Manage</a>
-                <span class="divider">/</span>
-            </li>
-            <li>Licences</li>
+           <li> <g:link controller="home">KBPlus</g:link> <span class="divider">/</span> </li>
+           <li>Licences</li>
         </ul>
     </div>
 

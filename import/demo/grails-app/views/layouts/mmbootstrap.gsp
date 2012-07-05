@@ -117,11 +117,7 @@
       </div>
     </div>
 
-    <div class="navbar-push"></div>
-
-    <div class="container-fluid">
-      <g:layoutBody/>
-    </div>
+    <g:layoutBody/>
 
     <div id="Footer">
         <div class="container">
