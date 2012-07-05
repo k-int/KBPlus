@@ -1,4 +1,4 @@
-<div class="well">
+<div class="well documents">
   Attached Documents
   <hr/>
   <ul>
