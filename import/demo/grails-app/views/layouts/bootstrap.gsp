@@ -131,18 +131,22 @@
 
     <div class="container-fluid">
       <g:layoutBody/>
-
-      <hr>
-
-      <footer>
-        <div style="float:right; text-align:right;"><g:meta name="app.buildProfile"/> / <g:meta name="app.version"/> / build <g:meta name="app.buildNumber"/> on <g:meta name="app.buildDate"/><br/><a href="https://github.com/k-int/KBPlus">Source</a></div>
-        <div<
-        &copy; <a href="http://www.k-int.com">Knowledge Integration Ltd</a> 2012<br/>
-        <sec:ifLoggedIn>Logged In</sec:ifLoggedIn>
-        <sec:ifNotLoggedIn>Not Logged In</sec:ifNotLoggedIn>
-        </div>
-      </footer>
     </div>
+
+    <div id="Footer">
+        <div class="container">
+            <div class="row">
+                <div class="pull-left">
+                    <a href="http://www.jisc-collections.ac.uk/"><div class="sprite sprite-jisc_collections_logo">JISC Collections</div></a>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="pull-right">
+                    <a href="http://knowplus.edina.ac.uk"><div class="sprite sprite-kbplus_logo">Knowledge Base Plus</div></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <r:layoutResources/>
 
