@@ -57,42 +57,41 @@
                   </bootstrap:alert>
                 </g:hasErrors>
   
-                <fieldset>  
   
-                  <div class="control-group">
-                      <label class="control-label" for="reference">Reference</label>
-                      <div class="controls">
-                        <p id="reference" class="ipe" style="padding-top: 5px;">${license.reference}</p>
-                      </div>
-                  </div>
+                  <dl>
+                      <dt><label class="control-label" for="reference">Reference</label></td>
+                      <dd>
+                        <p id="reference" class="ipe" >${license.reference}</p>
+                      </dd>
+                  </dl>
       
-                  <div class="control-group">
-                      <label class="control-label" for="noticePeriod">Notice Period</label>
-                      <div class="controls">
-                        <p id="noticePeriod" class="ipe" style="padding-top: 5px;">${license.noticePeriod}</p>
-                      </div>
-                  </div>
+                  <dl>
+                      <dt><label class="control-label" for="noticePeriod">Notice Period</label></td>
+                      <dd>
+                        <p id="noticePeriod" class="ipe" >${license.noticePeriod}</p>
+                      </dd>
+                  </dl>
       
-                  <div class="control-group">
-                      <label class="control-label" for="licenseUrl">License Url</label>
-                      <div class="controls">
-                        <p id="licenseUrl" class="ipe" style="padding-top: 5px;">${license.licenseUrl}</p>
-                      </div>
-                  </div>
+                  <dl>
+                      <dt><label class="control-label" for="licenseUrl">License Url</label></dt></td>
+                      <dd>
+                        <p id="licenseUrl" class="ipe">${license.licenseUrl}</p>
+                      </dd>
+                  </dl>
       
-                  <div class="control-group">
-                      <label class="control-label" for="licensorRef">Licenseor Ref</label>
-                      <div class="controls">
-                        <p id="licensorRef" class="ipe" style="padding-top: 5px;">${license.licensorRef}</p>
-                      </div>
-                  </div>
+                  <dl>
+                      <dt><label class="control-label" for="licensorRef">Licenseor Ref</label></td>
+                      <dd>
+                        <p id="licensorRef" class="ipe">${license.licensorRef}</p>
+                      </dd>
+                  </dl>
       
-                  <div class="control-group">
-                      <label class="control-label" for="licenseeRef">Licensee Ref</label>
-                      <div class="controls">
-                        <div id="licenseeRef" class="ipe" style="padding-top: 5px;">${license.licenseeRef}</div>
-                      </div>
-                  </div>
+                  <dl>
+                      <dt><label class="control-label" for="licenseeRef">Licensee Ref</label></td>
+                      <dd>
+                        <div id="licenseeRef" class="ipe" >${license.licenseeRef}</div>
+                      </dd>
+                  </dl>
                   <div class="clearfix"></div>
                   </div>
   
@@ -101,9 +100,9 @@
             <table class="table table-bordered licence-properties">
               <thead>
                 <tr>
-                  <th width="20%">Property</th>
-                  <th width="25%">Status</th>
-                  <th width="55%">Notes</th>
+                  <td>Property</td>
+                  <td>Status</td>
+                  <td>Notes</td>
                 </tr>
               </thead>
               <tbody>
@@ -150,7 +149,6 @@
               </tbody>
             </table>
   
-                </fieldset>
               </div>
               <div class="span4">
                 <g:render template="documents" contextPath="../templates" model="${[doclist:license.documents, owner:license,property:'documents']}" />
@@ -226,6 +224,18 @@
     
     <script language="JavaScript">
       $(document).ready(function() {
+
+         var checkEmptyEditable = function() {
+           $('.ipe, .refdataedit, .fieldNote').each(function() {
+             if($(this).text().length == 0) {
+               $(this).addClass('editableEmpty');
+             } else {
+               $(this).removeClass('editableEmpty');
+             }
+           });
+         }
+
+         checkEmptyEditable();
 
          if ( '${license.concurrentUsers?.value}'==='Specified' ) {
            $('#cucwrap').show();

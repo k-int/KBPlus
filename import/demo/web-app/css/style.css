@@ -10,7 +10,7 @@
 /* Sprites */
 
 .sprite {
-  background-image: url('../img/sprites.png');
+  background-image: url('../images/sprites.png');
   background-repeat: no-repeat;
   font-size: 0;
 }
@@ -195,7 +195,7 @@
 /* Icons */
 
 .redCross {
-  background-image: url('../img/red_cross_icon.png');
+  background-image: url('../images/red_cross_icon.png');
   background-position: 50% left;
   background-repeat: no-repeat;
   height: 25px;
@@ -204,7 +204,7 @@
 }
 
 .greenTick {
-  background-image: url('../img/green_tick_icon.png');
+  background-image: url('../images/green_tick_icon.png');
   background-position: 50% left;
   background-repeat: no-repeat;
   height: 25px;
@@ -213,7 +213,7 @@
 }
 
 .purpleQuestion {
-  background-image: url('../img/purple_question_icon.png');
+  background-image: url('../images/purple_question_icon.png');
   background-position: 50% left;
   background-repeat: no-repeat;
   height: 25px;
@@ -222,7 +222,7 @@
 }
 
 .downloadIcon {
-  background-image: url('../img/download_icon.gif');
+  background-image: url('../images/download_icon.gif');
   background-position: right 50%;
   background-repeat: no-repeat;
   height: 15px;
@@ -232,7 +232,7 @@
 }
 
 .externalLinkIcon {
-  background-image: url('../img/external_link_icon.gif');
+  background-image: url('../images/external_link_icon.gif');
   background-position: right 50%;
   background-repeat: no-repeat;
   padding-right: 20px;
@@ -255,7 +255,7 @@
 
 .ipe, .fieldNote, .refdataedit, .cuedit {
   display: block;
-  background-image: url('../img/edit_icon.gif');
+  background-image: url('../images/edit_icon.gif');
   background-repeat: no-repeat;
   background-position: top right;
   margin: 0px;  
