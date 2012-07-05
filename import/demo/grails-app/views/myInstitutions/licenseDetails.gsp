@@ -73,7 +73,7 @@
                     </div>
                 </div>
 
-          <table class="table table-striped table-bordered table-condensed">
+          <table class="table table-bordered licence-properties">
             <thead>
               <tr>
                 <th width="20%">Property</th>

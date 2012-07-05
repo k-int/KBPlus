@@ -39,7 +39,7 @@
       <div class="container">
           <div class="well licence-options">
               <input type="submit" name="copy-licence" value="Copy Selected" class="btn btn-warning" />
-              <!-- <input type="submit" name="delete-licence" value="Delete Selected" class="btn btn-danger delete-licence" /> -->
+              <input type="submit" name="delete-licence" value="Delete Selected" class="btn btn-danger delete-licence" />
           </div>
       </div>
 
@@ -79,6 +79,19 @@
         <p>New license reference name: <input type="text" name="new_license_ref_name"/><input type="submit" value="Create new license"/></p>
       -->
     </g:form>
+
+    <script type="text/javascript">
+        $('.licence-results input[type="radio"]').click(function () {
+            $('.licence-options').slideDown('fast');
+        });
+
+        $('.licence-options .delete-licence').click(function () {
+            $('.licence-results input:checked').each(function () {
+                $(this).parent().parent().fadeOut('slow');
+                $('.licence-options').slideUp('fast');
+            })
+        })
+    </script>
 
   </body>
 </html>
