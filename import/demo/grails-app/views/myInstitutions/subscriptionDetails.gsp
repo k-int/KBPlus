@@ -13,6 +13,9 @@
     <hr/>
     <div class="tabbable"> <!-- Only required for left/right tabs -->
       <dl>
+        <dt>License</td>
+        <dd>${subscriptionInstance?.owner?.reference}</dd>
+
         <g:if test="${subscriptionInstance?.issueEntitlements}">
           <dt>Entitlements</td>
           <dd>
