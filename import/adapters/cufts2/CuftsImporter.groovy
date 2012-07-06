@@ -35,6 +35,42 @@ options.slaveOk = true
 def mongo = new com.gmongo.GMongo('127.0.0.1', options);
 def db = mongo.getDB('kbplus_ds_reconciliation')
 
+
+// Good example: aaa_pinnacle_allenpress
+//
+// title	issn	e_issn	ft_start_date	ft_end_date	embargo_months	embargo_days	current_months	current_years	coverage	vol_ft_start	vol_ft_end	iss_ft_start	iss_ft_end	cit_start_date	cit_end_date	vol_cit_start	vol_cit_end	iss_cit_start	iss_cit_end	db_identifier	toc_url	journal_url	urlbase	publisher	abbreviation
+
+// Copy without parameters will copy forward to same name in NoSQL DB
+
+def CUFTSProcessingRules = [
+   [input:'title', action:'copy', targetProperty:'title',
+   [input:'issn', action:'identifier', IdType:'issn', targetProperty:'identifier'],
+   [input:'e_issn', action:'identifier', IdType:'e_issn', targetProperty:'identifier'],
+   [input:'ft_start_date', action:'copy'],
+   [input:'ft_end_date', action:'copy'],
+   [input:'embargo_months', action:'copy'],
+   [input:'embargo_days', action:'copy'],
+   [input:'current_months', action:'copy'],
+   [input:'current_years', action:'copy'],
+   [input:'coverage', action:'copy'],
+   [input:'vol_ft_start', action:'copy'],
+   [input:'vol_ft_end', action:'copy'],
+   [input:'iss_ft_start', action:'copy'],
+   [input:'iss_ft_end', action:'copy'],
+   [input:'cit_start_date', action:'copy'],
+   [input:'cit_end_date', action:'copy'],
+   [input:'vol_cit_start', action:'copy'],
+   [input:'vol_cit_end', action:'copy'],
+   [input:'iss_cit_start', action:'copy'],
+   [input:'iss_cit_end', action:'copy'],
+   [input:'db_identifier', action:'copy'],
+   [input:'toc_url', action:'copy'],
+   [input:'journal_url', action:'copy'],
+   [input:'urlbase', action:'copy'],
+   [input:'publisher', action:'copy'],
+   [input:'abbreviation', action:'copy']
+]
+
 if ( db == null ) {
   println("Failed to configure db.. abort");
   system.exit(1);
@@ -43,7 +79,7 @@ if ( db == null ) {
 
 // def cufts_knowledgebase_website = new HTTPBuilder('http://cufts2.lib.sfu.ca')
 
-loadCuftsFile('CUFTS_complete_20120601.tgz');
+loadCuftsFile('CUFTS_complete_20120701.tgz');
 
 def loadCuftsFile(filename) {
   println("loading data from ${filename}");
@@ -61,8 +97,22 @@ def loadCuftsFile(filename) {
     System.out.println( "Children of " + tgz_file.getName().getURI() );
     for ( int i = 0; i < children.length; i++ ) {
         System.out.println( children[ i ].getName().getBaseName() );
+        loadCuftsTitleData(children[i]);
     }
   }
+}
+
+loadCuftsTitleData(file) {
+  println("Loading ${file.name}")
+  // Line one is the header and tells us what info we will get in *this* file
+  def fr = new FileReader(file.inputStream)
+  def header = fr.readNext()
+  def header_cols = header.split('\t');
+  println("Header cols: ${header_cols}");
+  //def line
+  // while ( line = fr.readNext() ) {
+  //   String[] 
+  // }
 }
 
 def processCUFTSIndexPage(cufts_knowledgebase_website) {
@@ -152,5 +202,58 @@ def processCUFTSUpdateFile(db, cufts_knowledgebase_website, name, file_info) {
   // }
 
   // db.sourceDataInfo.save(file_info);
+}
+
+def lookupOrCreateTitle(Map params=[:]) {
+  // println("lookupOrCreateTitle(${params})");
+  // Old style: lookup by Title : def title = params.db.titles.findOne(title:params.title)
+  def title = null
+  if ( ( params.identifier ) && ( params.identifier.size() > 0 ) ) { // Try to match on identifier if present
+    // Loop through all the available identifers and see if any match.. Repeat until a match is found.
+    for ( int i=0; ( ( !title ) && ( i < params.identifier.size() ) ); i++ ) {
+      // println("Attempting match.. ${params.identifier[i].type} ${params.identifier[i].value}");
+      title = params.db.titles.findOne(identifier:[type:params.identifier[i].type, value: params.identifier[i].value])
+    }
+    if ( title ) {
+      inc('titles_matched_by_identifier',params.stats);
+      // If the located title doesn't have a publisher, but the current record does, add the default
+      if ( !title.publisher && params.publisher ) {
+        title.publisher = params.publisher?._id;
+        title.lastmod = System.currentTimeMillis()
+        params.db.titles.save(title);
+      }
+    }
+    else {
+      // println("Unable to match on any of ${params.identifier}");
+    }
+  }
+  else {
+    inc('titles_without_identifiers',params.stats);
+  }
+
+  if (!title)  {
+    // Unable to locate title with identifier given... Try other dedup matches on other props if needed
+    println("Create New title : ${params.title}, title=${title}, publisher=${params.publisher}");
+
+    try {
+      title = [
+        _id:new org.bson.types.ObjectId(),
+        title:params.title,
+        identifier:params.identifier,    // identifier is a list, catering for many different values
+        publisher:params.publisher?._id,
+        sourceContext:'KBPlus',
+        lastmod:System.currentTimeMillis()
+      ]
+
+      params.db.titles.save(title)
+      inc('titles_created',params.stats);
+    }
+    catch ( Exception e ) {
+      e.printStackTrace()
+      println("Problem creating new title ${title} for t:${params.title} (id:${params.identifier}): ${e.message}");
+    }
+  }
+
+  title
 }
 

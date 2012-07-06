@@ -101,7 +101,6 @@
               </g:if>
 
               <sec:ifAnyGranted roles="ROLE_ADMIN">
-                 <li class="divider-vertical"></li>
                  <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Admin Actions <b class="caret"></b> </a>
                   <ul class="dropdown-menu">

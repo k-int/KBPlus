@@ -47,19 +47,19 @@
 					<thead>
 						<tr>
 						
-							<th class="header"><g:message code="license.status.label" default="Status" /></th>
+							<td class="header"><g:message code="license.status.label" default="Status" /></td>
 						
-							<th class="header"><g:message code="license.type.label" default="Type" /></th>
+							<td class="header"><g:message code="license.type.label" default="Type" /></td>
 						
 							<g:sortableColumn property="reference" title="${message(code: 'license.reference.label', default: 'Reference')}" />
 						
-							<th class="header"><g:message code="license.concurrentUsers.label" default="Concurrent Users" /></th>
+							<td class="header"><g:message code="license.concurrentUsers.label" default="Concurrent Users" /></td>
 						
-							<th class="header"><g:message code="license.remoteAccess.label" default="Remote Access" /></th>
+							<td class="header"><g:message code="license.remoteAccess.label" default="Remote Access" /></td>
 						
-							<th class="header"><g:message code="license.walkinAccess.label" default="Walkin Access" /></th>
+							<td class="header"><g:message code="license.walkinAccess.label" default="Walkin Access" /></td>
 						
-							<th></th>
+							<td></td>
 						</tr>
 					</thead>
 					<tbody>

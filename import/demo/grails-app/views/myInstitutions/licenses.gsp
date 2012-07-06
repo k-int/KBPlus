@@ -49,12 +49,12 @@
           <table class="table table-bordered">
             <thead>
               <tr>
-                <th>Select</th>
-                <th>Reference Description</th>
-                <th>Licensor</th>
-                <th>Licensee</th>
-                <th>Status</th>
-                <th>Type</th>
+                <td>Select</td>
+                <td>Reference Description</td>
+                <td>Licensor</td>
+                <td>Licensee</td>
+                <td>Status</td>
+                <td>Type</td>
               </tr>
             </thead>
             <tbody>

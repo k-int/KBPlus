@@ -171,14 +171,14 @@
                 <table class="table table-striped table-bordered table-condensed">
                   <thead>
                     <tr>
-                      <th>Select</th>
-                      <th>Title</th>
-                      <th>File Name</th>
-                      <th>Download Link</th>
-                      <th>Creator</th>
-                      <th>Type</th>
-                      <th>Doc Store ID</th>
-                      <th>Linked Here</th>
+                      <td>Select</td>
+                      <td>Title</td>
+                      <td>File Name</td>
+                      <td>Download Link</td>
+                      <td>Creator</td>
+                      <td>Type</td>
+                      <td>Doc Store ID</td>
+                      <td>Linked Here</td>
                     </tr>
                   </thead>
                   <tbody>
