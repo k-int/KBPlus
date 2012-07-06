@@ -1,0 +1,31 @@
+# KB+ Site Licenses
+
+## Files / Folders
+
+- build : Folder containing very small build script to combine the files of the plugins folder and push them through JSMin.
+- libs : Git submodule from Twitter Bootstrap
+- site : The actually HTML markup with imagery and stylesheets.
+
+## Information
+
+We've expanded on the Twitter bootstrap originally used and restyled it for the given design. There are four seperate
+stylesheets in use in the site folder. The first two are just the standard bootstrap and bootstrap responsive sheets. These have not be 
+edited directly. The additional two sheets can be found in the css folder. The first is bootstrap.css which contains styles that
+overwrite the bootstrap classes for the purposes of the updated design. The second, style.css, are custom classes.
+
+All the plugins in use can be found in js/plugins and are then combined into plugins.js and minified into plugins.min.js.
+
+jQuery 1.7.1 has been used during development and is pulled in from the Google Code library and then falls back onto a local copy
+of the library if that request isn't fulfilled. 
+
+If the folder structure is changed then the stylesheet image paths will require updating as they current reference the images folder
+as such: url('../img/image.png');
+
+Each of the template files have a comment that starts with COMBINE and further down the page is a comment with COMINE END. The content
+between these two tags can be copied and pasted if it is decided the details, documents, links and notes are to be contained in a single
+file for the purpose of the bootstraps tabs JS plugin.
+
+There are a number of lightbox 'modals' for simple popup forms. Modals can be found just after the footer in the markup files.
+
+There is a number of small pieces of JS that are used on each page that involve such actions as toggling options when checkboxes and
+radio boxes are selected.

@@ -1,0 +1,304 @@
+<!doctype html>
+  
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+  
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Licence Search</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap-responsive.css">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/libs/modernizr-2.5.3.min.js"></script>
+</head>
+      
+<body>
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="/kbplus/">Knowledge Base+</a>
+                <div class="nav-collapse">
+                    <ul class="nav">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Data Explorer <b class="caret"></b> </a>
+                            <ul class="dropdown-menu" style="max-width:none;">
+                                <li>
+                                    <a href="/kbplus/">Home</a>
+                                </li>
+                                <li>
+                                    <a href="/kbplus/package/index">Package</a>
+                                </li>
+                                <li>
+                                    <a href="/kbplus/org/index">Organisations</a>
+                                </li>
+                                <li>
+                                    <a href="/kbplus/platform/index">Platform</a>
+                                </li>
+                                <li>
+                                    <a href="/kbplus/titleInstance/index">Title Instance</a>
+                                </li>
+                                <li>
+                                    <a href="/kbplus/titleInstancePackagePlatform/index">Title Instance Package Platform</a>
+                                </li>
+                                <li>
+                                    <a href="/kbplus/subscription/index">Subscriptions</a>
+                                </li>
+                                <li>
+                                    <a href="/kbplus/licence/index">Licences</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Forms and Actions <b class="caret"></b> </a>
+                            <ul class="dropdown-menu" style="max-width:none;">
+                                <li>
+                                    <a href="/kbplus/myInstitutions/manageAffiliations">Manage Affiliations</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="/kbplus/myInstitutions/Aberystwyth_University/licences">Aberystwyth University - Licences</a>
+                                </li>
+                                <li>
+                                    <a href="/kbplus/myInstitutions/Aberystwyth_University/subscriptions">Aberystwyth University - Subscriptions</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Admin Actions <b class="caret"></b> </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="/kbplus/admin/manageAffiliationRequests">Manage Affiliation Requests</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="/kbplus/admin/reconcile">Manage Data Reconciliation</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navbar-push"></div>
+
+    <div class="container">
+        <ul class="breadcrumb">
+            <li>
+                <a href="#">Home</a>
+                <span class="divider">/</span>
+            </li>
+            <li>
+                <a href="#">Manage</a>
+                <span class="divider">/</span>
+            </li>
+            <li>Licences</li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <h1>Licences</h1>
+    </div>
+
+    <div class="container licence-searches">
+        <div class="row">
+            <div class="span6">
+                <input type="text" name="keyword-search" placeholder="enter keyword..."
+                />
+                <input type="submit" class="btn btn-primary" value="Search" />
+            </div>
+            <div class="span6">
+                <div class="pull-right">
+                    <a class="btn btn-primary" href="licenceCreate.html">Create New Licence</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="well licence-options">
+            <input type="submit" name="copy-licence" value="Copy Selected" class="btn btn-warning"
+            />
+            <input type="submit" name="delete-licence" value="Delete Selected" class="btn btn-danger delete-licence"
+            />
+        </div>
+    </div>
+
+    <div class="container licence-results">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>Reference Description</th>
+                    <th>Licensor</th>
+                    <th>Licensee</th>
+                    <th>Status</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="radio" name="licence-result" value="0" />
+                    </td>
+                    <td>
+                        <a href="licenceDetails.html">Reference Description</a>
+                    </td>
+                    <td>Licensor</td>
+                    <td></td>
+                    <td>Current</td>
+                    <td>Template</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="radio" name="licence-result" value="0" />
+                    </td>
+                    <td>
+                        <a href="licenceDetails.html">Reference Description</a>
+                    </td>
+                    <td>Licensor</td>
+                    <td></td>
+                    <td>Current</td>
+                    <td>Template</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="radio" name="licence-result" value="0" />
+                    </td>
+                    <td>
+                        <a href="licenceDetails.html">Reference Description</a>
+                    </td>
+                    <td>Licensor</td>
+                    <td></td>
+                    <td>Current</td>
+                    <td>Template</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="radio" name="licence-result" value="0" />
+                    </td>
+                    <td>
+                        <a href="licenceDetails.html">Reference Description</a>
+                    </td>
+                    <td>Licensor</td>
+                    <td></td>
+                    <td>Current</td>
+                    <td>Template</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="radio" name="licence-result" value="0" />
+                    </td>
+                    <td>
+                        <a href="licenceDetails.html">Reference Description</a>
+                    </td>
+                    <td>Licensor</td>
+                    <td></td>
+                    <td>Current</td>
+                    <td>Template</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="radio" name="licence-result" value="0" />
+                    </td>
+                    <td>
+                        <a href="licenceDetails.html">Reference Description</a>
+                    </td>
+                    <td>Licensor</td>
+                    <td></td>
+                    <td>Current</td>
+                    <td>Template</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="radio" name="licence-result" value="0" />
+                    </td>
+                    <td>
+                        <a href="licenceDetails.html">Reference Description</a>
+                    </td>
+                    <td>Licensor</td>
+                    <td></td>
+                    <td>Current</td>
+                    <td>Template</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="radio" name="licence-result" value="0" />
+                    </td>
+                    <td>
+                        <a href="licenceDetails.html">Reference Description</a>
+                    </td>
+                    <td>Licensor</td>
+                    <td></td>
+                    <td>Current</td>
+                    <td>Template</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination">
+            <ul>
+                <li>
+                    <a href="#">&laquo;</a>
+                </li>
+                <li class="active">
+                    <a href="#">1</a>
+                </li>
+                <li>
+                    <a href="#">2</a>
+                </li>
+                <li>
+                    <a href="#">3</a>
+                </li>
+                <li>
+                    <a href="#">4</a>
+                </li>
+                <li>
+                    <a href="#">&raquo;</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="Footer">
+        <div class="container">
+            <div class="row">
+                <div class="pull-left">
+                    <a href="http://www.jisc-collections.ac.uk/"><div class="sprite sprite-jisc_collections_logo">JISC Collections</div></a>
+                </div>
+                <div class="pull-right">
+                    <a href="http://knowplus.edina.ac.uk"><div class="sprite sprite-kbplus_logo">Knowledge Base Plus</div></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+    <script>
+        window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')
+    </script>
+
+    <script src="js/plugins.js"></script>
+    
+    <script type="text/javascript">
+        $('.licence-results input[type="radio"]').click(function () {
+            $('.licence-options').slideDown('fast');
+        });
+
+        $('.licence-options .delete-licence').click(function () {
+            $('.licence-results input:checked').each(function () {
+                $(this).parent().parent().fadeOut('slow');
+                $('.licence-options').slideUp('fast');
+            })
+        })
+    </script>
+</body>
+
+</html>
