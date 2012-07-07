@@ -52,6 +52,11 @@ println("Read column headings: ${so_header_line}");
 
 def stats = [:]
 
+if ( st_jc_id.length < 2 ) {
+  println("**ERROR** No JC ID in file ${args[0]}. Exiting");
+  System.exit(1);
+}
+
 def sub_org = db.orgs.findOne(jcId:st_jc_id[1]);
 if ( !sub_org ) {
   println("Unable to locate org with identifier ${st_jc_id[1]}");

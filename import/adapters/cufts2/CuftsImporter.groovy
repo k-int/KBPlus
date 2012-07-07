@@ -27,6 +27,11 @@ import au.com.bytecode.opencsv.CSVReader
 import java.text.SimpleDateFormat
 import org.apache.commons.vfs2.*
 
+// Custom entity resolution
+import java.io.StringReader;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+
 // Setup mongo
 def options = new com.mongodb.MongoOptions()
 options.socketKeepAlive = true
@@ -43,32 +48,32 @@ def db = mongo.getDB('kbplus_ds_reconciliation')
 // Copy without parameters will copy forward to same name in NoSQL DB
 
 def CUFTSProcessingRules = [
-   [input:'title', action:'copy', targetProperty:'title',
-   [input:'issn', action:'identifier', IdType:'issn', targetProperty:'identifier'],
-   [input:'e_issn', action:'identifier', IdType:'e_issn', targetProperty:'identifier'],
-   [input:'ft_start_date', action:'copy'],
-   [input:'ft_end_date', action:'copy'],
-   [input:'embargo_months', action:'copy'],
-   [input:'embargo_days', action:'copy'],
-   [input:'current_months', action:'copy'],
-   [input:'current_years', action:'copy'],
-   [input:'coverage', action:'copy'],
-   [input:'vol_ft_start', action:'copy'],
-   [input:'vol_ft_end', action:'copy'],
-   [input:'iss_ft_start', action:'copy'],
-   [input:'iss_ft_end', action:'copy'],
-   [input:'cit_start_date', action:'copy'],
-   [input:'cit_end_date', action:'copy'],
-   [input:'vol_cit_start', action:'copy'],
-   [input:'vol_cit_end', action:'copy'],
-   [input:'iss_cit_start', action:'copy'],
-   [input:'iss_cit_end', action:'copy'],
-   [input:'db_identifier', action:'copy'],
-   [input:'toc_url', action:'copy'],
-   [input:'journal_url', action:'copy'],
-   [input:'urlbase', action:'copy'],
-   [input:'publisher', action:'copy'],
-   [input:'abbreviation', action:'copy']
+   'title': [action:'copy', targetProperty:'title'],
+   'issn': [ action:'identifier', IdType:'issn', targetProperty:'identifier'],
+   'e_issn': [ action:'identifier', IdType:'e_issn', targetProperty:'identifier'],
+   'ft_start_date': [ action:'copy'],
+   'ft_end_date': [ action:'copy'],
+   'embargo_months': [ action:'copy'],
+   'embargo_days': [ action:'copy'],
+   'current_months': [ action:'copy'],
+   'current_years': [ action:'copy'],
+   'coverage': [ action:'copy'],
+   'vol_ft_start': [ action:'copy'],
+   'vol_ft_end': [ action:'copy'],
+   'iss_ft_start': [ action:'copy'],
+   'iss_ft_end': [ action:'copy'],
+   'cit_start_date': [ action:'copy'],
+   'cit_end_date': [ action:'copy'],
+   'vol_cit_start': [ action:'copy'],
+   'vol_cit_end': [ action:'copy'],
+   'iss_cit_start': [ action:'copy'],
+   'iss_cit_end': [ action:'copy'],
+   'db_identifier': [ action:'copy'],
+   'toc_url': [ action:'copy'],
+   'journal_url': [ action:'copy'],
+   'urlbase': [ action:'copy'],
+   'publisher': [ action:'copy'],
+   'abbreviation': [ action:'copy']
 ]
 
 if ( db == null ) {
@@ -79,17 +84,19 @@ if ( db == null ) {
 
 // def cufts_knowledgebase_website = new HTTPBuilder('http://cufts2.lib.sfu.ca')
 
-loadCuftsFile('CUFTS_complete_20120701.tgz');
+loadCuftsFile('/home/ibbo/dev/KBPlus/import/adapters/cufts2/CUFTS_complete_20120701.tgz');
 
 def loadCuftsFile(filename) {
   println("loading data from ${filename}");
   def fsManager = VFS.getManager();
   // def tgz_file = fsManager.resolveURI("tar:gz:http://cufts2.lib.sfu.ca/knowledgebase/${filename}");
   // def tgz_file = fsManager.resolveFile("tar:gz:http://cufts2.lib.sfu.ca/knowledgebase/${filename}");
-  def tgz_file = fsManager.resolveFile("tgz:/home/ibbo/CUFTS_complete_20120601.tgz");
+  //def tgz_file = fsManager.resolveFile("tar:gz:http://cufts2.lib.sfu.ca/knowledgebase/${filename}");
+  def tgz_file = fsManager.resolveFile("tgz:file://${filename}");
   def update_file = tgz_file.getChild("update.xml");
   if ( update_file ) {
     println("Located update xml file in ${filename}");
+    processUpdateFile(update_file);
   }
   else {
     println("Unable to locate update xml...");
@@ -97,12 +104,43 @@ def loadCuftsFile(filename) {
     System.out.println( "Children of " + tgz_file.getName().getURI() );
     for ( int i = 0; i < children.length; i++ ) {
         System.out.println( children[ i ].getName().getBaseName() );
-        loadCuftsTitleData(children[i]);
+        // loadCuftsTitleData(children[i]);
     }
   }
 }
 
-loadCuftsTitleData(file) {
+def processUpdateFile(update_file) {
+  // def parser = new org.cyberneko.html.parsers.SAXParser()
+  // def xml = new XmlParser(parser).parse(update_file.inputStream)
+
+  println("Parsed update.xml...");
+  def xr = new org.xml.sax.helpers.XMLFilterImpl()
+  xr.setEntityResolver(new EntityResolver() {
+    public InputSource resolveEntity (String publicId, String systemId) {
+      println("Resolve ${publicId}, ${systemId}");
+      if (systemId.equals("http://www.myhost.com/today")) {
+        // return a special input source
+        // MyReader reader = new MyReader();
+        // return new InputSource(reader);
+        return null;
+      } else {
+              // use the default behaviour
+        return null;
+      }
+    }
+  }); 
+  def s = new XmlSlurper(xr)
+  // s.setFeature("http://xml.org/sax/features/external-general-entities", false) 
+  // s.setFeature("http://xml.org/sax/features/external-parameter-entities", false) 
+  // s.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false); 
+  // s.setFeature("http://xml.org/sax/features/namespaces", false) 
+  def xml = s.parse(update_file.inputStream )
+  xml.each { r ->
+    println("Processing resource...${r}");
+  }
+}
+
+def loadCuftsTitleData(file) {
   println("Loading ${file.name}")
   // Line one is the header and tells us what info we will get in *this* file
   def fr = new FileReader(file.inputStream)
