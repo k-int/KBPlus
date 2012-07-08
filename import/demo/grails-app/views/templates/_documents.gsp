@@ -1,10 +1,9 @@
 <div class="well documents">
-  Attached Documents
-  <hr/>
+  <h7>Documents</h7>
   <ul>
     <g:each in="${doclist}" var="docctx">
       <g:if test="${docctx.owner?.contentType==1}">
-        <li>
+        <li class="externalLinkIcon">
           <a href="http://knowplus.edina.ac.uk/oledocstore/document?uuid=${docctx.owner?.uuid}">
             Legacy Docstore Link
           </a><br/>
@@ -20,4 +19,38 @@
       </g:if>
     </g:each>
   </ul>
+  <input type="submit" class="btn btn-primary" value="Add new document" data-toggle="modal" href="#modalCreateDocument" />
 </div>
+
+<!-- Lightbox modal for creating a document taken from licenceDocuments.html -->
+<div class="modal hide" id="modalCreateDocument">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h3>Create New Document</h3>
+  </div>
+  <form action="" method="POST">
+    <div class="modal-body">
+      <dl>
+        <dt>
+          <label>Document Name:</label>
+        </dt>
+        <dd>
+          <input type="text" name="licenceDocumentName">
+        </dd>
+      </dl>
+      <dl>
+        <dt>
+          <label>File:</label>
+        </dt>
+        <dd>
+          <input type="file" name="licenceDocumentFile" />
+        </dd>
+      </dl>
+    </div>
+    <div class="modal-footer">
+      <a href="#" class="btn" data-dismiss="modal">Close</a>
+      <a href="#" class="btn btn-primary">Save changes</a>
+    </div>
+  </form>
+</div>
+<!-- End lightbox modal -->
