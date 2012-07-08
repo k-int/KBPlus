@@ -28,14 +28,16 @@
     <button type="button" class="close" data-dismiss="modal">×</button>
     <h3>Create New Document</h3>
   </div>
-  <form action="" method="POST">
+  <g:form id="upload_new_doc_form" url="[controller:'myInstitutions',action:'uploadDocument']" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="licid" value="${license.id}"/>
+    <input type="hidden" name="shortcode" value="${shortcode}"/>
     <div class="modal-body">
       <dl>
         <dt>
           <label>Document Name:</label>
         </dt>
         <dd>
-          <input type="text" name="licenceDocumentName">
+          <input type="text" name="upload_title">
         </dd>
       </dl>
       <dl>
@@ -43,14 +45,14 @@
           <label>File:</label>
         </dt>
         <dd>
-          <input type="file" name="licenceDocumentFile" />
+          <input type="file" name="upload_file" />
         </dd>
       </dl>
     </div>
     <div class="modal-footer">
       <a href="#" class="btn" data-dismiss="modal">Close</a>
-      <a href="#" class="btn btn-primary">Save changes</a>
+      <input type="submit" class="btn btn-primary" value="Save Changes">
     </div>
-  </form>
+  </g:form>
 </div>
 <!-- End lightbox modal -->

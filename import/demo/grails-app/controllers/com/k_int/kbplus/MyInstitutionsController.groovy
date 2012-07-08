@@ -300,6 +300,7 @@ class MyInstitutionsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def uploadDocument() {
+    log.debug("upload document....");
 
     def input_stream = request.getFile("upload_file")?.inputStream
     def original_filename = request.getFile("upload_file")?.originalFilename

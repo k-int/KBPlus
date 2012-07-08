@@ -151,7 +151,10 @@
   
               </div>
               <div class="span4">
-                <g:render template="documents" contextPath="../templates" model="${[doclist:license.documents, owner:license,property:'documents']}" />
+                <g:render template="documents" contextPath="../templates" model="${[doclist:license.documents, 
+                                                                                    license:license,
+                                                                                    property:'documents',
+                                                                                    shortcode:params.shortcode]}" />
                 <g:render template="notes" contextPath="../templates"/>
                 <g:render template="links" contextPath="../templates"/>
               </div>
