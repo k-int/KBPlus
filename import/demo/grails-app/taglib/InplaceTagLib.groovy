@@ -49,6 +49,13 @@ class InplaceTagLib {
       out << body()
     }
     out << "</span>"
+  }
 
+  def relation = { attrs, body ->
+    out << "<span class=\"${attrs.class}\" id=\"${attrs.domain}:${attrs.pk}:${attrs.field}:${attrs.id}\">"
+    if ( body ) {
+      out << body()
+    }
+    out << "</span>"
   }
 }

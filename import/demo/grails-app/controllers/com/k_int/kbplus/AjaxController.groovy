@@ -151,7 +151,7 @@ class AjaxController {
   def genericSetRef() {
     // [id:1, value:JISC_Collections_NESLi2_Lic_IOP_Institute_of_Physics_NESLi2_2011-2012_01012011-31122012.., type:License, action:inPlaceSave, controller:ajax
     // def clazz=grailsApplication.domainClasses.findByFullName(params.type)
-    log.debug("genericSetValue ${params}");
+    log.debug("genericSetRef ${params}");
 
     // params.elementid (The id from the html element)  must be formed as domain:pk:property:refdatacat:otherstuff
     String[] oid_components = params.elementid.split(":");
@@ -185,6 +185,54 @@ class AjaxController {
     outs.flush()
     outs.close()
   }
+
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def genericSetRel() {
+    // [id:1, value:JISC_Collections_NESLi2_Lic_IOP_Institute_of_Physics_NESLi2_2011-2012_01012011-31122012.., type:License, action:inPlaceSave, controller:ajax
+    // def clazz=grailsApplication.domainClasses.findByFullName(params.type)
+    // log.debug("genericSetRel ${params}");
+
+    // params.elementid (The id from the html element)  must be formed as domain:pk:property:refdatacat:otherstuff
+    String[] target_components = params.elementid.split(":");
+    String[] value_components = params.value.split(":");
+
+    def target=resolveOID(target_components);
+    def value=resolveOID(value_components);
+
+    def result = null
+
+    if ( target && value ) {
+      def binding_properties = [ "${target_components[2]}":value ]
+      bindData(target, binding_properties)
+      target.save(flush:true);
+      if ( params.resultProp ) {
+        result = value[params.resultProp]
+      }
+      else {
+        result = value.toString()
+      }
+    }
+    else {
+      log.debug("no type");
+    }
+
+    response.setContentType('text/plain')
+    def outs = response.outputStream
+    outs << result
+    outs.flush()
+    outs.close()
+  }
+
+  def resolveOID(oid_components) {
+    def result = null;
+    def domain_class=grailsApplication.getArtefact('Domain',"com.k_int.kbplus.${oid_components[0]}")
+    if ( domain_class ) {
+      result = domain_class.getClazz().get(oid_components[1])
+    }
+    result
+  }
+
 
 
 }

@@ -1,10 +1,11 @@
 package com.k_int.kbplus
 
-import com.k_int.kbplus.auth.*
+import grails.converters.*
 import grails.plugins.springsecurity.Secured
 import grails.converters.*
 import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.MarkupBuilder
+import com.k_int.kbplus.auth.*;
 
 class MyInstitutionsController {
 
@@ -417,4 +418,33 @@ class MyInstitutionsController {
       redirect action: 'addSubscription', params:params
     }
   }
+
+  def availableLicenses() {
+    // def sub = resolveOID(params.elementid);
+    // OrgRole.findAllByOrgAndRoleType(result.institution, licensee_role).collect { it.lic }
+
+
+    def user = User.get(springSecurityService.principal.id)
+    def institution = Org.findByShortcode(params.shortcode)
+    def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
+
+    // Find all licenses for this institution...
+    def result = [:]
+    OrgRole.findAllByOrgAndRoleType(institution, licensee_role).each { it ->
+      result["License:${it.lic?.id}"] = it.lic?.reference
+    }
+
+    //log.debug("returning ${result} as available licenses");
+    render result as JSON
+  }
+
+  def resolveOID(oid_components) {
+    def result = null;
+    def domain_class=grailsApplication.getArtefact('Domain',"com.k_int.kbplus.${oid_components[0]}")
+    if ( domain_class ) {
+      result = domain_class.getClazz().get(oid_components[1])
+    }
+    result
+  }
+
 }
