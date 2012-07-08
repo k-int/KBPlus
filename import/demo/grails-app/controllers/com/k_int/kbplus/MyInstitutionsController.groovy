@@ -327,7 +327,7 @@ class MyInstitutionsController {
     }
 
     log.debug("Redirecting...");
-    redirect action: 'licenseDetails', params:[shortcode:params.shortcode], id:params.licid, fragment:'docstab'
+    redirect action: 'licenseDetails', params:[shortcode:params.shortcode], id:params.licid, fragment:params.fragment
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -448,4 +448,9 @@ class MyInstitutionsController {
     result
   }
 
+  def uploadNewNote() {
+    def result=[:]
+    log.debug("uploadNewNote ${params}");
+    result
+  }
 }
