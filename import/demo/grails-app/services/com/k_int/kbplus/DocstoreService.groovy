@@ -21,7 +21,7 @@ class DocstoreService {
     final BagFactory bf = new BagFactory();
 
     // Create a new identifier
-    def workdir = java.util.UUID.randomUUID().toString();
+    def workdir = "up-req-${java.util.UUID.randomUUID().toString()}"
     File tempdir = new File(System.getProperty("java.io.tmpdir")+System.getProperty("file.separator")+workdir);
     println("tmpdir :${tempdir}");
 
@@ -48,18 +48,20 @@ class DocstoreService {
 
     // Upload
     def result = uploadBag(zippedbag)
+    FileUtils.deleteQuietly(result.tempfile)
 
     FileUtils.deleteQuietly(zippedbag);
     FileUtils.deleteQuietly(tempdir);
 
-    result
+    result.uuid
   }
 
-  def retrieve(uuid, response) {
+  def retrieve(uuid, response, mimetype, filename) {
+    log.debug("Retrieve");
     final BagFactory bf = new BagFactory();
 
     // Create a new identifier
-    def workdir = java.util.UUID.randomUUID().toString();
+    def workdir = "ret-req-${java.util.UUID.randomUUID().toString()}"
     File tempdir = new File(System.getProperty("java.io.tmpdir")+System.getProperty("file.separator")+workdir);
     println("tmpdir :${tempdir}");
 
@@ -69,7 +71,7 @@ class DocstoreService {
     bag_dir.mkdirs();
 
     // Create request.xml file with a single entry, which is the new uploaded file
-    createRetrieveRequest("${tempdir}${System.getProperty('file.separator')}bag_dir${System.getProperty('file.separator')}request.xml".toString(), title)
+    createRetrieveRequest("${tempdir}${System.getProperty('file.separator')}bag_dir${System.getProperty('file.separator')}request.xml".toString(), uuid)
 
     // Create bagit structures
     PreBag preBag;
@@ -83,17 +85,19 @@ class DocstoreService {
     // Upload
     def result = uploadBag(zippedbag)
 
-    FileUtils.deleteQuietly(zippedbag);
-    FileUtils.deleteQuietly(tempdir);
+    // FileUtils.deleteQuietly(result.tempfile)
+    // FileUtils.deleteQuietly(zippedbag);
+    // FileUtils.deleteQuietly(tempdir);
 
-    result
+    result.uuid
   }
 
 
   def uploadBag(bagfile) {
     println("uploading bagfile ${bagfile}");
     def http = new groovyx.net.http.HTTPBuilder('http://knowplus.edina.ac.uk/oledocstore/KBPlusServlet')
-    def result_uuid = null
+    def result = [:]
+    //edef result_uuid = null
 
     http.request(groovyx.net.http.Method.POST) {request ->
       requestContentType = 'multipart/form-data'
@@ -104,30 +108,29 @@ class DocstoreService {
       request.entity = multipart_entity;
   
       response.success = { resp, data ->
-        println("Got response ${resp}");
+        log.debug("Got response ${resp}");
         def tempfile_name = java.util.UUID.randomUUID().toString();
-        File tempfile = new File(System.getProperty("java.io.tmpdir")+System.getProperty("file.separator")+tempfile_name);
-        tempfile << data
+        result.tempfile = new File(System.getProperty("java.io.tmpdir")+System.getProperty("file.separator")+tempfile_name);
+        result.tempfile << data
   
-        java.util.zip.ZipFile zf = new java.util.zip.ZipFile(tempfile);
-        java.util.zip.ZipEntry bad_dir_entry = zf.getEntry('bag_dir');
+        java.util.zip.ZipFile zf = new java.util.zip.ZipFile(result.tempfile);
+        java.util.zip.ZipEntry bag_dir_entry = zf.getEntry('bag_dir');
   
         InputStream is = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
   
         def result_doc = new groovy.util.XmlSlurper().parse(is);
         log.debug("result_doc: ${result_doc.text()}");
-        result_uuid = result_doc.documents.document.uuid.text()
+        result.uuid = result_doc.documents.document.uuid.text()
 
-        log.debug("Not deleting temporary response document for now.. re-enable this!");
         // FileUtils.deleteQuietly(tempfile);
       }
   
       response.failure = { resp ->
-        println("Error response ${resp}");
+        log.error("Error response ${resp}");
       }
     }
 
-    result_uuid
+    result
   }
 
 
@@ -199,7 +202,7 @@ class DocstoreService {
     final BagFactory bf = new BagFactory();
 
     // Create a new identifier
-    def workdir = java.util.UUID.randomUUID().toString();
+    def workdir = "del-req-${java.util.UUID.randomUUID().toString()}"
     File tempdir = new File(System.getProperty("java.io.tmpdir")+System.getProperty("file.separator")+workdir);
     println("tmpdir :${tempdir}");
 
@@ -224,16 +227,17 @@ class DocstoreService {
     def result = uploadBag(zippedbag)
 
     FileUtils.deleteQuietly(zippedbag);
-    // FileUtils.deleteQuietly(tempdir);
+    FileUtils.deleteQuietly(results.tempfile);
+    FileUtils.deleteQuietly(tempdir);
 
-    result
+    result.uuid
 
   }
 
   def createDeleteRequest(target_file, doclist) {
     // def writer = new StringWriter()
     def writer = new FileWriter(target_file)
-    println("Create ${target_file}");
+    log.debug("Create ${target_file}");
     def xml = new MarkupBuilder(writer)
     int seq = 1
     xml.request('xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance',
@@ -246,8 +250,8 @@ class DocstoreService {
           ingestDocument(id:seq++,category:'',type:'',format:'') {
             uuid(doc_uuid)
             documentName('')
-            documentTitle('')
-            documentType('')
+            // documentTitle('')
+            // documentType('')
           }
         }
       }
@@ -259,7 +263,7 @@ class DocstoreService {
 
   def createRetrieveRequest(target_file, doc_uuid) {
     def writer = new FileWriter(target_file)
-    println("Create ${target_file}");
+    log.debug("Create ${target_file}");
     def xml = new MarkupBuilder(writer)
     int seq = 1
     xml.request('xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance',
@@ -268,10 +272,11 @@ class DocstoreService {
       user('kbplus')
       operation('retrieve')
       requestDocuments {
-        doclist.each { doc_uuid ->
-          ingestDocument(id:seq++,category:'',type:'',format:'') {
-            uuid(doc_uuid)
-          }
+        ingestDocument(id:seq++,category:'',type:'',format:'') {
+          uuid(doc_uuid)
+          documentName('')
+          // documentTitle('')
+          // documentType('')
         }
       }
     }

@@ -8,6 +8,7 @@ class Doc {
   String title
   String filename
   String creator
+  String mimeType
   Integer contentType=0 // 0=String, 1=docstore
   String content 
   String uuid 
@@ -27,6 +28,7 @@ class Doc {
            creator column:'doc_creator'
           filename column:'doc_filename'
            content column:'doc_content', type:'text'
+          mimeType column:'doc_mimeType'
   }
 
   static constraints = {
@@ -39,5 +41,6 @@ class Doc {
     title(nullable:true, blank:false)
     creator(nullable:true, blank:true)
     filename(nullable:true, blank:false)
+    mimeType(nullable:true, blank:false)
   }
 }
