@@ -317,6 +317,7 @@ class MyInstitutionsController {
         def doc_content = new Doc(contentType:1,
                                   uuid: docstore_uuid,
                                   filename: original_filename,
+                                  mimeType: request.getFile("upload_file")?.contentType,
                                   title: params.upload_title,
                                   type:RefdataCategory.lookupOrCreate('Document Type','License')).save()
   

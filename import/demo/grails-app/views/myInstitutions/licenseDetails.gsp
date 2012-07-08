@@ -159,7 +159,6 @@
                                                                                     license:license,
                                                                                     property:'documents',
                                                                                     shortcode:params.shortcode]}" />
-                <g:render template="links" contextPath="../templates"/>
               </div>
             </div>
           </div>
@@ -189,20 +188,22 @@
                   </thead>
                   <tbody>
                     <g:each in="${license.documents}" var="docctx">
-                      <tr>
-                        <td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td>
-                        <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="title" id="doctitle" class="newipe">${docctx.owner.title}</g:inPlaceEdit></td>
-                        <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="filename" id="docfilename" class="newipe">${docctx.owner.filename}</g:inPlaceEdit></td>
-                        <td>
-                          <g:if test="docctx.owner?.uuid">
-                            <a href="http://knowplus.edina.ac.uk/oledocstore/document?uuid=${docctx.owner?.uuid}">Download Doc</a>
-                          </g:if>
-                        </td>
-                        <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="creator" id="docCreator" class="newipe">${docctx.owner.creator}</g:inPlaceEdit></td>
-                        <td>${docctx.owner?.type?.value}</td>
-                        <td><g:if test="${docctx.owner?.uuid}">${docctx.owner?.uuid}</g:if></td>
-                        <td>Links</td>
-                      </tr>
+                      <g:if test="${!docctx.domain}">
+                        <tr>
+                          <td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td>
+                          <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="title" id="doctitle" class="newipe">${docctx.owner.title}</g:inPlaceEdit></td>
+                          <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="filename" id="docfilename" class="newipe">${docctx.owner.filename}</g:inPlaceEdit></td>
+                          <td>
+                            <g:if test="${docctx.owner?.contentType==1}">
+                              <a href="http://knowplus.edina.ac.uk/oledocstore/document?uuid=${docctx.owner?.uuid}">Download Doc</a>
+                            </g:if>
+                          </td>
+                          <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="creator" id="docCreator" class="newipe">${docctx.owner.creator}</g:inPlaceEdit></td>
+                          <td>${docctx.owner?.type?.value}</td>
+                          <td><g:if test="${docctx.owner?.uuid}">${docctx.owner?.uuid}</g:if></td>
+                          <td>Links</td>
+                        </tr>
+                      </g:if>
                     </g:each>
                   </tbody>
                 </table>
