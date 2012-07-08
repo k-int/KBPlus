@@ -362,7 +362,7 @@
   </div>
   <g:form id="upload_new_doc_form" url="[controller:'myInstitutions',action:'uploadDocument']" method="post" enctype="multipart/form-data">
     <input type="hidden" name="licid" value="${license.id}"/>
-    <input type="hidden" name="shortcode" value="${shortcode}"/>
+    <input type="hidden" name="shortcode" value="${params.shortcode}"/>
     <div class="modal-body">
       <dl>
         <dt>
@@ -396,6 +396,8 @@
     <h3>Create New Note</h3>
   </div>
   <g:form id="create_license_note" url="[controller:'myInstitutions',action:'uploadNewNote']" method="post">
+    <input type="hidden" name="licid" value="${license.id}"/>
+    <input type="hidden" name="shortcode" value="${params.shortcode}"/>
     <div class="modal-body">
       <dl>
         <dt>
@@ -420,7 +422,7 @@
     </div>
     <div class="modal-footer">
       <a href="#" class="btn" data-dismiss="modal">Close</a>
-      <a href="#" class="btn btn-primary">Save changes</a>
+      <input type="submit" class="btn btn-primary" value="Save Changes">
     </div>
   </g:form>
 </div>

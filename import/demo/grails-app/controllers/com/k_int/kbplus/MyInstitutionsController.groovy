@@ -451,6 +451,21 @@ class MyInstitutionsController {
   def uploadNewNote() {
     def result=[:]
     log.debug("uploadNewNote ${params}");
-    result
+
+
+    def l = License.get(params.licid);
+
+    if ( l ) {
+      def doc_content = new Doc(contentType:0,
+                                content: params.licenceNote,
+                                type:RefdataCategory.lookupOrCreate('Document Type','Note')).save()
+
+      def doc_context = new DocContext(license:l,
+                                       owner:doc_content,
+                                       doctype:RefdataCategory.lookupOrCreate('Document Type','Note')).save(flush:true);
+    }
+
+    log.debug("Redirect...");
+    redirect action: 'licenseDetails', params:[shortcode:params.shortcode], id:params.licid, fragment:params.fragment
   }
 }
