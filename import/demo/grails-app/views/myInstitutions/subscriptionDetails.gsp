@@ -14,7 +14,11 @@
     <div class="tabbable"> <!-- Only required for left/right tabs -->
       <dl>
         <dt>License</td>
-        <dd>${subscriptionInstance?.owner?.reference}</dd>
+        <dd><g:relation domain='Subscription' 
+                        pk='${subscriptionInstance.id}' 
+                        field='owner' 
+                        class='reldataEdit'
+                        id='ownerLicense'>${subscriptionInstance?.owner?.reference}</g:relation></dd>
 
         <g:if test="${subscriptionInstance?.issueEntitlements}">
           <dt>Entitlements</td>
@@ -126,6 +130,28 @@
            id     : 'elementid',
            tooltip: 'Click to edit...'
          });
+         $('.reldataEdit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}"action="genericSetRel" absolute="true"/>', {
+           loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:params.shortcode]}" action="availableLicenses" absolute="true"/>',
+           type   : 'select',
+           cancel : 'Cancel',
+           submit : 'OK',
+           id     : 'elementid',
+           tooltip: 'Click to edit...',
+           callback : function(value, settings) {
+           }
+         });
+
+         var checkEmptyEditable = function() {
+           $('.ipe, .refdataedit, .fieldNote, .reldataEdit').each(function() {
+             if($(this).text().length == 0) {
+               $(this).addClass('editableEmpty');
+             } else {
+               $(this).removeClass('editableEmpty');
+             }
+           });
+         }
+
+
       });
     </script>
   </body>

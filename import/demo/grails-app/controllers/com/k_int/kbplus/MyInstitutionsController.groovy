@@ -1,10 +1,11 @@
 package com.k_int.kbplus
 
-import com.k_int.kbplus.auth.*
+import grails.converters.*
 import grails.plugins.springsecurity.Secured
 import grails.converters.*
 import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.MarkupBuilder
+import com.k_int.kbplus.auth.*;
 
 class MyInstitutionsController {
 
@@ -324,6 +325,7 @@ class MyInstitutionsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def uploadDocument() {
+    log.debug("upload document....");
 
     def input_stream = request.getFile("upload_file")?.inputStream
     def original_filename = request.getFile("upload_file")?.originalFilename
@@ -340,6 +342,7 @@ class MyInstitutionsController {
         def doc_content = new Doc(contentType:1,
                                   uuid: docstore_uuid,
                                   filename: original_filename,
+                                  mimeType: request.getFile("upload_file")?.contentType,
                                   title: params.upload_title,
                                   type:RefdataCategory.lookupOrCreate('Document Type','License')).save()
   
@@ -350,7 +353,7 @@ class MyInstitutionsController {
     }
 
     log.debug("Redirecting...");
-    redirect action: 'licenseDetails', params:[shortcode:params.shortcode], id:params.licid, fragment:'docstab'
+    redirect action: 'licenseDetails', params:[shortcode:params.shortcode], id:params.licid, fragment:params.fragment
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -441,5 +444,54 @@ class MyInstitutionsController {
       flash.message = message(code: 'subscription.unknown.message')
       redirect action: 'addSubscription', params:params
     }
+  }
+
+  def availableLicenses() {
+    // def sub = resolveOID(params.elementid);
+    // OrgRole.findAllByOrgAndRoleType(result.institution, licensee_role).collect { it.lic }
+
+
+    def user = User.get(springSecurityService.principal.id)
+    def institution = Org.findByShortcode(params.shortcode)
+    def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
+
+    // Find all licenses for this institution...
+    def result = [:]
+    OrgRole.findAllByOrgAndRoleType(institution, licensee_role).each { it ->
+      result["License:${it.lic?.id}"] = it.lic?.reference
+    }
+
+    //log.debug("returning ${result} as available licenses");
+    render result as JSON
+  }
+
+  def resolveOID(oid_components) {
+    def result = null;
+    def domain_class=grailsApplication.getArtefact('Domain',"com.k_int.kbplus.${oid_components[0]}")
+    if ( domain_class ) {
+      result = domain_class.getClazz().get(oid_components[1])
+    }
+    result
+  }
+
+  def uploadNewNote() {
+    def result=[:]
+    log.debug("uploadNewNote ${params}");
+
+
+    def l = License.get(params.licid);
+
+    if ( l ) {
+      def doc_content = new Doc(contentType:0,
+                                content: params.licenceNote,
+                                type:RefdataCategory.lookupOrCreate('Document Type','Note')).save()
+
+      def doc_context = new DocContext(license:l,
+                                       owner:doc_content,
+                                       doctype:RefdataCategory.lookupOrCreate('Document Type','Note')).save(flush:true);
+    }
+
+    log.debug("Redirect...");
+    redirect action: 'licenseDetails', params:[shortcode:params.shortcode], id:params.licid, fragment:params.fragment
   }
 }

@@ -151,9 +151,14 @@
   
               </div>
               <div class="span4">
-                <g:render template="documents" contextPath="../templates" model="${[doclist:license.documents, owner:license,property:'documents']}" />
-                <g:render template="notes" contextPath="../templates"/>
-                <g:render template="links" contextPath="../templates"/>
+                <g:render template="documents" contextPath="../templates" model="${[doclist:license.documents, 
+                                                                                    license:license,
+                                                                                    property:'documents',
+                                                                                    shortcode:params.shortcode]}" />
+                <g:render template="notes" contextPath="../templates" model="${[doclist:license.documents, 
+                                                                                    license:license,
+                                                                                    property:'documents',
+                                                                                    shortcode:params.shortcode]}" />
               </div>
             </div>
           </div>
@@ -162,7 +167,7 @@
               <div class="span12">
   
                 <button id="delete-doc">Delete Selected Documents</button>&nbsp;
-                <button id="attach-doc">Attach New Document</button><br/>
+                <input type="submit" class="btn btn-primary" value="Add new document" data-toggle="modal" href="#modalCreateDocument" />
   
                 <g:form id="delete_doc_form" url="[controller:'myInstitutions',action:'deleteDocuments']" method="post">
                   <input type="hidden" name="licid" value="${params.id}"/>
@@ -183,20 +188,22 @@
                   </thead>
                   <tbody>
                     <g:each in="${license.documents}" var="docctx">
-                      <tr>
-                        <td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td>
-                        <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="title" id="doctitle" class="newipe">${docctx.owner.title}</g:inPlaceEdit></td>
-                        <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="filename" id="docfilename" class="newipe">${docctx.owner.filename}</g:inPlaceEdit></td>
-                        <td>
-                          <g:if test="docctx.owner?.uuid">
-                            <a href="http://knowplus.edina.ac.uk/oledocstore/document?uuid=${docctx.owner?.uuid}">Download Doc</a>
-                          </g:if>
-                        </td>
-                        <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="creator" id="docCreator" class="newipe">${docctx.owner.creator}</g:inPlaceEdit></td>
-                        <td>${docctx.owner?.type?.value}</td>
-                        <td><g:if test="${docctx.owner?.uuid}">${docctx.owner?.uuid}</g:if></td>
-                        <td>Links</td>
-                      </tr>
+                      <g:if test="${!docctx.domain}">
+                        <tr>
+                          <td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td>
+                          <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="title" id="doctitle" class="newipe">${docctx.owner.title}</g:inPlaceEdit></td>
+                          <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="filename" id="docfilename" class="newipe">${docctx.owner.filename}</g:inPlaceEdit></td>
+                          <td>
+                            <g:if test="${docctx.owner?.contentType==1}">
+                              <a href="http://knowplus.edina.ac.uk/oledocstore/document?uuid=${docctx.owner?.uuid}">Download Doc</a>
+                            </g:if>
+                          </td>
+                          <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="creator" id="docCreator" class="newipe">${docctx.owner.creator}</g:inPlaceEdit></td>
+                          <td>${docctx.owner?.type?.value}</td>
+                          <td><g:if test="${docctx.owner?.uuid}">${docctx.owner?.uuid}</g:if></td>
+                          <td>Links</td>
+                        </tr>
+                      </g:if>
                     </g:each>
                   </tbody>
                 </table>
@@ -348,18 +355,78 @@
 
     </script>
 
-    <div id="dialog-form" title="Attach New Document">
-      <g:form id="upload_new_doc_form" url="[controller:'myInstitutions',action:'uploadDocument']" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="licid" value="${params.id}"/>
-        <input type="hidden" name="shortcode" value="${params.shortcode}"/>
-        <fieldset>
-          <label for="upload_title">Title</label>
-          <input type="text" name="upload_title" id="upload_title" value="" class="text ui-widget-content ui-corner-all" />
-          <label for="upload_file">File:</label>
-          <input type="file" name="upload_file" id="upload_file" class="text ui-widget-content ui-corner-all" />
-        </fieldset>
-      </g:form>
+<!-- Lightbox modal for creating a document taken from licenceDocuments.html -->
+<div class="modal hide" id="modalCreateDocument">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h3>Create New Document</h3>
+  </div>
+  <g:form id="upload_new_doc_form" url="[controller:'myInstitutions',action:'uploadDocument']" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="licid" value="${license.id}"/>
+    <input type="hidden" name="shortcode" value="${params.shortcode}"/>
+    <div class="modal-body">
+      <dl>
+        <dt>
+          <label>Document Name:</label>
+        </dt>
+        <dd>
+          <input type="text" name="upload_title">
+        </dd>
+      </dl>
+      <dl>
+        <dt>
+          <label>File:</label>
+        </dt>
+        <dd>
+          <input type="file" name="upload_file" />
+        </dd>
+      </dl>
     </div>
+    <div class="modal-footer">
+      <a href="#" class="btn" data-dismiss="modal">Close</a>
+      <input type="submit" class="btn btn-primary" value="Save Changes">
+    </div>
+  </g:form>
+</div>
+<!-- End lightbox modal -->
+
+<!-- Lightbox modal for creating a note taken from licenceNotes.html -->
+<div class="modal hide" id="modalCreateNote">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h3>Create New Note</h3>
+  </div>
+  <g:form id="create_license_note" url="[controller:'myInstitutions',action:'uploadNewNote']" method="post">
+    <input type="hidden" name="licid" value="${license.id}"/>
+    <input type="hidden" name="shortcode" value="${params.shortcode}"/>
+    <div class="modal-body">
+      <dl>
+        <dt>
+          <label>Note:</label>
+        </dt>
+        <dd>
+          <textarea name="licenceNote"></textarea>
+        </dd>
+      </dl>
+      <dl>
+        <dt>
+          <label>Shared:</label>
+        </dt>
+        <dd>
+          <select name="licenceNoteShared">
+            <option value="0">Not Shared</option>
+            <option value="1">JISC Collections</option>
+            <option value="2">Community</option>
+          </select>
+        </dd>
+      </dl>
+    </div>
+    <div class="modal-footer">
+      <a href="#" class="btn" data-dismiss="modal">Close</a>
+      <input type="submit" class="btn btn-primary" value="Save Changes">
+    </div>
+  </g:form>
+</div>
 
   </body>
 </html>
