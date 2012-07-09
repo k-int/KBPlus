@@ -81,16 +81,16 @@ insert into refdata_category(rdc_id, rdc_description) VALUES (19,'Combo Status')
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 19, 'Unknown Combo Status');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (20,'YNO');
-insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 20, 'Yes', 'icon-ok-sign');
-insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 20, 'No', 'icon-remove-sign');
-insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 20, 'Other', 'icon-exclamation-sign');
+insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 20, 'Yes', 'greenTick');
+insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 20, 'No', 'redCross');
+insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 20, 'Other', 'purpleQuestion');
 
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (21,'Concurrent Access');
-insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 21, 'Specified', 'icon-ok-sign');
-insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 21, 'Not Specified', 'icon-ok-sign');
-insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 21, 'No limit', 'icon-ok-sign');
+insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 21, 'Specified', 'greenTick');
+insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 21, 'Not Specified', 'purpleQuestion');
+insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 21, 'No limit', 'redCross');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (22,'isCoreTitle');
-insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 22, 'true', 'icon-ok-sign');
-insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 22, 'false', 'icon-ok-sign');
+insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 22, 'true', 'greenTick');
+insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 22, 'false', 'redCross');

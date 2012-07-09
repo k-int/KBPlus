@@ -26,7 +26,7 @@
             </div>
             <div class="span6">
                 <div class="pull-right">
-                    <a class="btn btn-primary" href="licenceCreate.html">Create New Licence</a>
+                    <g:link controller="myInstitutions" action="cleanLicense" params="${[shortcode:params.shortcode]}" class="btn btn-primary">Create New Licence</g:link>
                 </div>
             </div>
         </div>

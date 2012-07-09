@@ -208,6 +208,31 @@ class MyInstitutionsController {
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def cleanLicense() {
+    def user = User.get(springSecurityService.principal.id)
+    def org = Org.findByShortcode(params.shortcode)
+    def license_type = RefdataCategory.lookupOrCreate('License Type','Actual')
+    def license_status = RefdataCategory.lookupOrCreate('License Status','Current')
+    def licenseInstance = new License( type:license_type )
+    if (!licenseInstance.save(flush: true)) {
+    }
+    else {
+      log.debug("Save ok");
+      def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee')
+      log.debug("adding org link to new license");
+      org.links.add(new OrgRole(lic:licenseInstance, org:org, roleType:licensee_role));
+      if ( org.save(flush:true) ) {
+      }
+      else {
+        log.error("Problem saving org links to license ${org.errors}");
+      }
+    }
+    flash.message = message(code: 'license.created.message', args: [message(code: 'license.label', default: 'License'), licenseInstance.id])
+    redirect action: 'licenseDetails', params:params, id:licenseInstance.id
+    break
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def newLicense() {
     def user = User.get(springSecurityService.principal.id)
     def org = Org.findByShortcode(params.shortcode)
