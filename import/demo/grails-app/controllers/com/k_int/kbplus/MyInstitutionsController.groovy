@@ -389,7 +389,7 @@ class MyInstitutionsController {
       def subscriptionInstance = new Subscription(
                                      status:baseSubscription.status,
                                      type:RefdataCategory.lookupOrCreate('Subscription Type','Subscription Taken'),
-                                     name:baseSubscription.name,
+                                     name:"Copy of ${baseSubscription.name},
                                      identifier:baseSubscription.identifier,
                                      impId:null,
                                      startDate:baseSubscription.startDate,

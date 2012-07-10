@@ -51,9 +51,6 @@
             
           </g:if>
 
-                                        <dt>Subscription Type</dt>                      
-                                        <dd><g:if test="${subscriptionInstance.instanceOf}">Subscription Taken</g:if><g:else>Subscription Offered</g:else></dd>
-
           <g:if test="${subscriptionInstance?.status}">
             <dt><g:message code="subscription.status.label" default="Status" /></dt>
             
@@ -64,7 +61,7 @@
           <g:if test="${subscriptionInstance?.type}">
             <dt><g:message code="subscription.type.label" default="Type" /></dt>
             
-              <dd><g:link controller="refdataValue" action="show" id="${subscriptionInstance?.type?.id}">${subscriptionInstance?.type?.encodeAsHTML()}</g:link></dd>
+              <dd>${subscriptionInstance?.type?.value?.encodeAsHTML()}</dd>
             
           </g:if>
         
@@ -84,19 +81,17 @@
             
           </g:if>
         
-        <!--
           <g:if test="${subscriptionInstance?.endDate}">
             <dt><g:message code="subscription.endDate.label" default="End Date" /></dt>
             
               <dd><g:formatDate date="${subscriptionInstance?.endDate}" /></dd>
             
           </g:if>
-                                -->
         
           <g:if test="${subscriptionInstance?.instanceOf}">
             <dt><g:message code="subscription.instanceOf.label" default="Instance Of" /></dt>
             
-              <dd><g:link controller="subscription" action="show" id="${subscriptionInstance?.instanceOf?.id}">${subscriptionInstance?.instanceOf?.encodeAsHTML()}</g:link></dd>
+              <dd><g:link controller="subscription" action="show" id="${subscriptionInstance?.instanceOf?.id}">${subscriptionInstance?.instanceOf?.name?.encodeAsHTML()}</g:link></dd>
             
           </g:if>
         
