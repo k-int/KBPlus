@@ -1,6 +1,11 @@
 package com.k_int.kbplus
 
 import org.springframework.dao.DataIntegrityViolationException
+import grails.converters.*
+import org.elasticsearch.groovy.common.xcontent.*
+import groovy.xml.MarkupBuilder
+import grails.plugins.springsecurity.Secured
+import com.k_int.kbplus.auth.*;
 
 class DocController {
 
@@ -11,8 +16,12 @@ class DocController {
     }
 
     def list() {
-        params.max = Math.min(params.max ? params.int('max') : 10, 100)
-        [docInstanceList: Doc.list(params), docInstanceTotal: Doc.count()]
+      def result = [:]
+      result.user = User.get(springSecurityService.principal.id)
+      params.max = Math.min(params.max ? params.int('max') : 10, 100)
+      result.docInstanceList = Doc.list(params)
+      result.docInstanceTotal: Doc.count()
+      result
     }
 
     def create() {
