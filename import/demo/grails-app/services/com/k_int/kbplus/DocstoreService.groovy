@@ -274,7 +274,7 @@ class DocstoreService {
       requestDocuments {
         ingestDocument(id:seq++,category:'',type:'',format:'') {
           uuid(doc_uuid)
-          documentName('')
+          documentName('sdsdsd')
           // documentTitle('')
           // documentType('')
         }
