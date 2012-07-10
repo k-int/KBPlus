@@ -4,7 +4,7 @@
 <html>
 	<head>
 		<meta name="layout" content="bootstrap">
-		<g:set var="entityName" value="${message(code: 'license.label', default: 'License')}" />
+		<g:set var="entityName" value="${message(code: 'license.label', default: 'Licence')}" />
 		<title><g:message code="default.show.label" args="[entityName]" /></title>
 	</head>
 	<body>
@@ -148,7 +148,7 @@
 					</g:if>
 				
 					<g:if test="${licenseInstance?.licenseUrl}">
-						<dt><g:message code="license.licenseUrl.label" default="License Url" /></dt>
+						<dt><g:message code="license.licenseUrl.label" default="Licence Url" /></dt>
 						
 							<dd><g:fieldValue bean="${licenseInstance}" field="licenseUrl"/></dd>
 						
@@ -162,21 +162,21 @@
 					</g:if>
 				
 					<g:if test="${licenseInstance?.licenseeRef}">
-						<dt><g:message code="license.licenseeRef.label" default="Licensee Ref" /></dt>
+						<dt><g:message code="license.licenseeRef.label" default="Licencee Ref" /></dt>
 						
-							<dd><g:fieldValue bean="${licenseInstance}" field="licenseeRef"/></dd>
+							<dd><g:fieldValue bean="${licenseInstance}" field="licenceeRef"/></dd>
 						
 					</g:if>
 				
 					<g:if test="${licenseInstance?.licenseType}">
-						<dt><g:message code="license.licenseType.label" default="License Type" /></dt>
+						<dt><g:message code="license.licenseType.label" default="Licence Type" /></dt>
 						
 							<dd><g:fieldValue bean="${licenseInstance}" field="licenseType"/></dd>
 						
 					</g:if>
 				
 					<g:if test="${licenseInstance?.licenseStatus}">
-						<dt><g:message code="license.licenseStatus.label" default="License Status" /></dt>
+						<dt><g:message code="license.licenseStatus.label" default="Licence Status" /></dt>
 						
 							<dd><g:fieldValue bean="${licenseInstance}" field="licenseStatus"/></dd>
 						

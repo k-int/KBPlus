@@ -14,7 +14,7 @@
     </div>
 
     <div class="container">
-      <h1>${institution?.name} - Licenses</h1>
+      <h1>${institution?.name} - Licences</h1>
     </div>
 
     <div class="container licence-searches">
@@ -51,8 +51,8 @@
               <tr>
                 <td>Select</td>
                 <td>Reference Description</td>
-                <td>Licensor</td>
-                <td>Licensee</td>
+                <td>Licencor</td>
+                <td>Licencee</td>
                 <td>Status</td>
                 <td>Type</td>
               </tr>
