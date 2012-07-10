@@ -117,9 +117,11 @@ class DocstoreService {
         java.util.zip.ZipEntry bag_dir_entry = zf.getEntry('bag_dir');
   
         InputStream is = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
-  
+
         def result_doc = new groovy.util.XmlSlurper().parse(is);
-        log.debug("result_doc: ${result_doc.text()}");
+
+        InputStream is2 = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
+        log.debug("result_doc: ${is2.text} ${result_doc.text()}");
         result.uuid = result_doc.documents.document.uuid.text()
 
         // FileUtils.deleteQuietly(tempfile);
@@ -274,7 +276,7 @@ class DocstoreService {
       requestDocuments {
         ingestDocument(id:seq++,category:'',type:'',format:'') {
           uuid(doc_uuid)
-          documentName('')
+          documentName()
           // documentTitle('')
           // documentType('')
         }
