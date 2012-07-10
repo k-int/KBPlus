@@ -56,9 +56,9 @@
           <dd>
           <table border="1" cellspacing="5" cellpadding="5">
             <tr>
+              <th rowspan="2" style="width: 10%;">Title</th>
               <th rowspan="2" style="width: 20%;">ISSN</th>
               <th rowspan="2" style="width: 10%;">eISSN</th>
-              <th rowspan="2" style="width: 10%;">Title</th>
               <th colspan="${packages.size()}">Provided by package</th>
             </tr>
             <tr>
