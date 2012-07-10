@@ -297,7 +297,7 @@ def lookupOrCreateTitle(Map params=[:]) {
         _id:new org.bson.types.ObjectId(),
         title:params.title,
         identifier:params.identifier,    // identifier is a list, catering for many different values
-        publisher:params.publisher._id,
+        publisher:params.publisher?._id,
         sourceContext:'KBPlus',
         lastmod:System.currentTimeMillis()
       ]
