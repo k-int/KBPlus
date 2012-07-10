@@ -214,7 +214,7 @@ class MyInstitutionsController {
     def org = Org.findByShortcode(params.shortcode)
     def license_type = RefdataCategory.lookupOrCreate('License Type','Actual')
     def license_status = RefdataCategory.lookupOrCreate('License Status','Current')
-    def licenseInstance = new License( type:license_type )
+    def licenseInstance = new License( type:license_type, status:license_status )
     if (!licenseInstance.save(flush: true)) {
     }
     else {
@@ -246,6 +246,7 @@ class MyInstitutionsController {
         def license_type = RefdataCategory.lookupOrCreate('License Type','Actual')
         def license_status = RefdataCategory.lookupOrCreate('License Status','Current')
         def licenseInstance = new License(reference:"Copy of ${baseLicense?.reference}",
+                                          status:license_status,
                                           type:license_type,
                                           concurrentUsers:baseLicense?.concurrentUsers,
                                           remoteAccess:baseLicense?.remoteAccess,
