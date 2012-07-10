@@ -311,7 +311,9 @@ if ( bad_rows.size() > 0 ) {
 println("All done processing for ${args[0]}");
 
 def present(v) {
-  if ( ( v != null ) && ( v.trim().length() > 0 ) )
+  if ( ( v != null ) && 
+       ( v.trim().length() > 0 ) && 
+       ( ! ( v.trim().equalsIgnoreCase('n/a') ) ) )
     return true
 
   return false
@@ -381,7 +383,7 @@ def lookupOrCreateTitle(Map params=[:]) {
       }
     }
     else {
-      // println("Unable to match on any of ${params.identifier}");
+      println("POSSIBLE ERROR : Unable to match on any of ${params.identifier}");
     }
   }
   else {
