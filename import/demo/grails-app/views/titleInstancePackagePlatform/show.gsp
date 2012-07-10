@@ -64,7 +64,7 @@
         
           <g:if test="${titleInstancePackagePlatformInstance?.hostPlatformURL}">
             <dt><g:message code="titleInstancePackagePlatform.hostPlatformURL.label" default="Host Platform URL" /></dt>
-              <dd><a href="${titleInstancePackagePlatform?.hostPlatformURL}" target="new"><g:fieldValue bean="${titleInstancePackagePlatformInstance}" field="hostPlatformURL"/></a></dd>
+              <dd><a href="${titleInstancePackagePlatformInstance?.hostPlatformURL}" target="new"><g:fieldValue bean="${titleInstancePackagePlatformInstance}" field="hostPlatformURL"/></a></dd>
           </g:if>
 
          <g:if test="${titleInstancePackagePlatformInstance?.additionalPlatforms}">
