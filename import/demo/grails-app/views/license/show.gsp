@@ -45,14 +45,15 @@
 					<g:if test="${licenseInstance?.status}">
 						<dt><g:message code="license.status.label" default="Status" /></dt>
 						
-							<dd><g:link controller="refdataValue" action="show" id="${licenseInstance?.status?.id}">${licenseInstance?.status?.encodeAsHTML()}</g:link></dd>
+							<dd>${licenseInstance?.status?.value?.encodeAsHTML()}</dd>
+      
 						
 					</g:if>
 				
 					<g:if test="${licenseInstance?.type}">
 						<dt><g:message code="license.type.label" default="Type" /></dt>
 						
-							<dd><g:link controller="refdataValue" action="show" id="${licenseInstance?.type?.id}">${licenseInstance?.type?.encodeAsHTML()}</g:link></dd>
+							<dd>${licenseInstance?.type?.value?.encodeAsHTML()}</dd>
 						
 					</g:if>
 				
@@ -66,77 +67,77 @@
 					<g:if test="${licenseInstance?.concurrentUsers}">
 						<dt><g:message code="license.concurrentUsers.label" default="Concurrent Users" /></dt>
 						
-							<dd><g:link controller="refdataValue" action="show" id="${licenseInstance?.concurrentUsers?.id}">${licenseInstance?.concurrentUsers?.encodeAsHTML()}</g:link></dd>
+							<dd>${licenseInstance?.concurrentUsers?.value?.encodeAsHTML()}</dd>
 						
 					</g:if>
 				
 					<g:if test="${licenseInstance?.remoteAccess}">
 						<dt><g:message code="license.remoteAccess.label" default="Remote Access" /></dt>
 						
-							<dd><g:link controller="refdataValue" action="show" id="${licenseInstance?.remoteAccess?.id}">${licenseInstance?.remoteAccess?.encodeAsHTML()}</g:link></dd>
+							<dd>${licenseInstance?.remoteAccess?.value?.encodeAsHTML()}</dd>
 						
 					</g:if>
 				
 					<g:if test="${licenseInstance?.walkinAccess}">
 						<dt><g:message code="license.walkinAccess.label" default="Walkin Access" /></dt>
 						
-							<dd><g:link controller="refdataValue" action="show" id="${licenseInstance?.walkinAccess?.id}">${licenseInstance?.walkinAccess?.encodeAsHTML()}</g:link></dd>
+							<dd>${licenseInstance?.walkinAccess?.value?.encodeAsHTML()}</dd>
 						
 					</g:if>
 				
 					<g:if test="${licenseInstance?.multisiteAccess}">
 						<dt><g:message code="license.multisiteAccess.label" default="Multisite Access" /></dt>
 						
-							<dd><g:link controller="refdataValue" action="show" id="${licenseInstance?.multisiteAccess?.id}">${licenseInstance?.multisiteAccess?.encodeAsHTML()}</g:link></dd>
+							<dd>${licenseInstance?.multisiteAccess?.value?.encodeAsHTML()}</dd>
 						
 					</g:if>
 				
 					<g:if test="${licenseInstance?.partnersAccess}">
 						<dt><g:message code="license.partnersAccess.label" default="Partners Access" /></dt>
 						
-							<dd><g:link controller="refdataValue" action="show" id="${licenseInstance?.partnersAccess?.id}">${licenseInstance?.partnersAccess?.encodeAsHTML()}</g:link></dd>
+							<dd>${licenseInstance?.partnersAccess?.value?.encodeAsHTML()}</dd>
 						
 					</g:if>
 				
 					<g:if test="${licenseInstance?.alumniAccess}">
 						<dt><g:message code="license.alumniAccess.label" default="Alumni Access" /></dt>
 						
-							<dd><g:link controller="refdataValue" action="show" id="${licenseInstance?.alumniAccess?.id}">${licenseInstance?.alumniAccess?.encodeAsHTML()}</g:link></dd>
+							<dd>${licenseInstance?.alumniAccess?.value?.encodeAsHTML()}</dd>
 						
 					</g:if>
 				
 					<g:if test="${licenseInstance?.ill}">
 						<dt><g:message code="license.ill.label" default="Ill" /></dt>
 						
-							<dd><g:link controller="refdataValue" action="show" id="${licenseInstance?.ill?.id}">${licenseInstance?.ill?.encodeAsHTML()}</g:link></dd>
+							<dd>${licenseInstance?.ill?.value?.encodeAsHTML()}</dd>
 						
 					</g:if>
 				
 					<g:if test="${licenseInstance?.coursepack}">
 						<dt><g:message code="license.coursepack.label" default="Coursepack" /></dt>
 						
-							<dd><g:link controller="refdataValue" action="show" id="${licenseInstance?.coursepack?.id}">${licenseInstance?.coursepack?.encodeAsHTML()}</g:link></dd>
+							<dd>${licenseInstance?.coursepack?.value?.encodeAsHTML()}</dd>
 						
 					</g:if>
 				
 					<g:if test="${licenseInstance?.vle}">
 						<dt><g:message code="license.vle.label" default="Vle" /></dt>
 						
-							<dd><g:link controller="refdataValue" action="show" id="${licenseInstance?.vle?.id}">${licenseInstance?.vle?.encodeAsHTML()}</g:link></dd>
+							<dd>${licenseInstance?.vle?.value?.encodeAsHTML()}</dd>
 						
 					</g:if>
 				
 					<g:if test="${licenseInstance?.enterprise}">
 						<dt><g:message code="license.enterprise.label" default="Enterprise" /></dt>
 						
-							<dd><g:link controller="refdataValue" action="show" id="${licenseInstance?.enterprise?.id}">${licenseInstance?.enterprise?.encodeAsHTML()}</g:link></dd>
+							<dd>${licenseInstance?.enterprise?.value?.encodeAsHTML()}</dd>
 						
 					</g:if>
 				
 					<g:if test="${licenseInstance?.pca}">
 						<dt><g:message code="license.pca.label" default="Pca" /></dt>
 						
-							<dd><g:link controller="refdataValue" action="show" id="${licenseInstance?.pca?.id}">${licenseInstance?.pca?.encodeAsHTML()}</g:link></dd>
+							<dd>${licenseInstance?.pca?.value?.encodeAsHTML()}</dd>
 						
 					</g:if>
 				
