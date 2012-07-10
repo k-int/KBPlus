@@ -34,14 +34,21 @@
                 </tr>
                 <g:each in="${subscriptions}" var="s">
                   <tr>
-                    <td><g:link controller="myInstitutions" action="subscriptionDetails" params="${[shortcode:params.shortcode]}" id="${s.id}">${s.id} (${s.name})</g:link></td>
-                    <td><g:if test="${s.instanceOf}"><g:link controller="Subscription" action="show" id="i${s.instanceOf.id}">${s.instanceOf.name}<g:link></g:if></td>
                     <td>
-                      <g:each in="${s.instanceOf?.packages}" var="sp">
+                      <g:link controller="myInstitutions" action="subscriptionDetails" params="${[shortcode:params.shortcode]}" id="${s.id}">${s.id} (${s.name})</g:link>
+                    </td>
+                    <td>
+                      <g:if test="${s.instanceOf}"><g:link controller="Subscription" action="show" id="i${s.instanceOf.id}">${s.instanceOf.name}</g:link></g:if>
+                    </td>
+                    <td>
+                      <g:each in="${s.packages}" var="sp">
                         ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
                       </g:each>
+                      <g:each in="${s.instanceOf?.packages}" var="sp">
+                        (parent pkg) ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
+                      </g:each>
                     </td>
-                    <td><g:${s.instanceOf?.provider?.name}</td>
+                    <td>${s.instanceOf?.provider?.name}</td>
                     <td>${s.instanceOf?.getConsortia()?.name}</td>
                     <td>${s.startDate}</td>
                     <td>${s.endDate}</td>

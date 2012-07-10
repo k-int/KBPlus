@@ -20,7 +20,7 @@ class DocController {
       result.user = User.get(springSecurityService.principal.id)
       params.max = Math.min(params.max ? params.int('max') : 10, 100)
       result.docInstanceList = Doc.list(params)
-      result.docInstanceTotal: Doc.count()
+      result.docInstanceTotal = Doc.count()
       result
     }
 

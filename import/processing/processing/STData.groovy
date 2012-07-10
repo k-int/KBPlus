@@ -48,8 +48,8 @@ String [] st_start_year = r.readNext()
 String [] st_end_year = r.readNext()
 String [] so_header_line = r.readNext()
 
-if ( st_so_identifier?.endsWith(".csv") ) {
-  st_so_identifier = st_so_identifier.replace('.csv','')
+if ( st_so_identifier[1]?.endsWith('.csv') ) {
+  st_so_identifier[1] = st_so_identifier[1].replace('.csv','')
 }
 
 println("Read column headings: ${so_header_line}");
