@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <meta name="layout" content="bootstrap"/>
+    <meta name="layout" content="bootstrapmm"/>
     <title>KB+ Data import explorer</title>
 
     <style>
