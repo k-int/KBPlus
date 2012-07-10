@@ -57,6 +57,11 @@ class DataloadService {
       result.dbId = ti.id
       result.visible = ['Public']
       result.rectype = 'Title'
+      result.identifiers = []
+      ti.ids?.each { id ->
+        result.identifiers.add([type:id.identifier.ns.ns, value:id.identifier.value])
+      }
+
       result
     }
 
