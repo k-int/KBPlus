@@ -48,8 +48,21 @@ String [] st_start_year = r.readNext()
 String [] st_end_year = r.readNext()
 String [] so_header_line = r.readNext()
 
-if ( st_so_identifier[1]?.endsWith('.csv') ) {
-  st_so_identifier[1] = st_so_identifier[1].replace('.csv','')
+if ( st_so_identifier.length < 2 ) {
+  println("ERROR: No SO Identifier found in ${args[0]}");
+  System.out.println("ERROR: No SO Identifier found in ${args[0]}");
+  System.exit(1);
+}
+
+try {
+  if ( st_so_identifier[1]?.endsWith('.csv') ) {
+    st_so_identifier[1] = st_so_identifier[1].replace('.csv','')
+  }
+}
+catch ( Exception e ) {
+  e.printStackTrace();
+  println("**ERROR processing ${args[0]} : {e.message}");
+  System.err.println("**ERROR processing ${args[0]} : {e.message}");
 }
 
 println("Read column headings: ${so_header_line}");

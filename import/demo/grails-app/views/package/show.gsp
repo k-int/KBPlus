@@ -69,8 +69,10 @@
 
           <dt>Availability of titles in this package by platform</dt>
           <dd>
+          <g:set var="counter" value="${1}" />
           <table border="1" cellspacing="5" cellpadding="5">
             <tr>
+              <th rowspan="2" style="width: 2%;">#</th>
               <th rowspan="2" style="width: 20%;">Title</th>
               <th rowspan="2" style="width: 10%;">ISSN</th>
               <th rowspan="2" style="width: 10%;">eISSN</th>
@@ -83,7 +85,8 @@
             </tr>
             <g:each in="${titles}" var="t">
               <tr>
-                <th style="text-align:left;"><g:link controller="titleInstance" action="show" id="${t.title.id}">${t.title.title}</g:link>&nbsp;</th>
+                <td>${counter++}</td>
+                <td style="text-align:left;"><g:link controller="titleInstance" action="show" id="${t.title.id}">${t.title.title}</g:link>&nbsp;</td>
                 <td>${t?.title?.getIdentifierValue('ISSN')}</td>
                 <td>${t?.title?.getIdentifierValue('eISSN')}</td>
                 <g:each in="${crosstab[t.position]}" var="tipp">

@@ -152,13 +152,16 @@ while ((nl = r.readNext()) != null) {
       }
   
       // If there is an identifier, set up the appropriate matching...
-      if ( present(nl[1]) ) 
+      if ( present(nl[1]) && ( nl[1].trim().length() > 8 ) ) 
         target_identifiers.add([type:'ISSN', value:nl[1].trim()])
-      if ( present(nl[2]) ) 
+
+      if ( present(nl[2]) && ( nl[2].trim().length() > 8 ) ) 
         target_identifiers.add([type:'eISSN', value:nl[2].trim()])
+
       if ( present(nl[9]) ) 
         // tipp_private_identifiers.add([type:'KBART', value:nl[9].trim()])
         tipp_private_identifiers.add([type:pkg.identifier, value:nl[9].trim()])
+
       if ( present(nl[14]) ) 
         target_identifiers.add([type:'DOI', value:nl[14].trim()])
   
@@ -313,7 +316,8 @@ println("All done processing for ${args[0]}");
 def present(v) {
   if ( ( v != null ) && 
        ( v.trim().length() > 0 ) && 
-       ( ! ( v.trim().equalsIgnoreCase('n/a') ) ) )
+       ( ! ( v.trim().equalsIgnoreCase('n/a') ) ) &&
+       ( ! ( v.trim().equalsIgnoreCase('-') ) ) )
     return true
 
   return false

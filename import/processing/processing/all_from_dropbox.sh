@@ -1,5 +1,7 @@
 #!/bin/bash
 
+rm *_log
+
 ./PlatformData.groovy  ~/Dropbox2/Dropbox/KB+/System\ -\ Data/Current/Platforms/platforms.csv
 
 echo SO import
