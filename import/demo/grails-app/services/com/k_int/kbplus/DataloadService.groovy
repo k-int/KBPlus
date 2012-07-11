@@ -510,6 +510,7 @@ class DataloadService {
         try {
     
           // Join together the subscription and the organisation
+          // Look up the SO that this ST is based on
           def db_sub = Subscription.findByImpId(sub.sub.toString());
           def db_org = Org.findByImpId(sub.org.toString())
     
@@ -527,26 +528,22 @@ class DataloadService {
     
           if ( new_subscription.save() ) {
             // log.debug("New subscriptionT saved...");
+            // Copy package links from SO to ST
+            db_sub.packages.each { sopkg ->
+              def new_package_link = new SubscriptionPackage(subscription:new_subscription, pkg:sopkg.pkg).save();
+            }
+
+            // assert an org-role
+            def org_link = new OrgRole(org:db_org, 
+                                       sub: new_subscription, 
+                                       roleType: lookupOrCreateRefdataEntry('Organisational Role','Subscriber')).save();
           }
           else {
             log.error("Problem saving new subscription, ${new_subscription.errors}");
           }
     
-          // assert an org-role
-          def org_link = new OrgRole(org:db_org, 
-                                     sub: new_subscription, 
-                                     roleType: lookupOrCreateRefdataEntry('Organisational Role','Subscriber'));
-    
-  
           new_subscription.save(flush:true);
   
-          if ( org_link.save() ) {
-            // log.debug("New org link saved...");
-          }
-          else {
-            log.error("Problem saving new org link, ${org_link.errors}");
-          }
-    
           // List all actual st_title records, and diff that against the default from the ST file
           def sub_titles = mdb.stTitle.find(owner:sub._id)
     
