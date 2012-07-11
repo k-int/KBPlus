@@ -308,6 +308,7 @@ def createRequest(list, target_file) {
         ingestDocument(id:seq++,category:'kbplus',type:'kbplus',format:'doc') {
           uuid()
           documentName(dl.file.getName())
+          documentLinkId("${dl.id}")
           documentTitle("Unknown - with UUID ${dl.id}")
           documentType('kbplusdoc')
         }
