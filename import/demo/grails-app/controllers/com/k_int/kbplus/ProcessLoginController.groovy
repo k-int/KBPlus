@@ -46,7 +46,7 @@ class ProcessLoginController {
       log.debug("email = ${map.mail}");
       log.debug("Inst Addr = ${map.authInstitutionAddress}");
 
-      def user = com.k_int.kbplus.auth.User.findByUsername('map.eduPersonTargetedId')
+      def user = com.k_int.kbplus.auth.User.findByUsername(map.eduPersonTargetedId)
       if ( !user ) {
         log.debug("Creating user");
         user = new com.k_int.kbplus.auth.User(username:map.eduPersonTargetedID,
@@ -57,29 +57,43 @@ class ProcessLoginController {
                                               passwordExpired:false,
                                               instname:map.authInstitutionName,
                                               shibbScope:map.shibbScope,
-                                              email:map.mail).save(flush:true);
+                                              email:map.mail)
 
-        log.debug("Created user, allocating user role");
-        def userRole = com.k_int.kbplus.auth.Role.findByAuthority('ROLE_USER')
-        log.debug("looked up user role: ${userRole}");
-        def new_role_allocation = new com.k_int.kbplus.auth.UserRole(user:user,role:userRole);
+        if ( user.save(flush:true) ) {
+          log.debug("Created user, allocating user role");
+          def userRole = com.k_int.kbplus.auth.Role.findByAuthority('ROLE_USER')
 
-
-        if ( new_role_allocation.save(flush:true) ) {
-          log.debug("New role created...");
-        }
-        else {
-          new_role_allocation.errors.each { e ->
-            log.error(e);
+          if ( userRole ) {
+            log.debug("looked up user role: ${userRole}");
+            def new_role_allocation = new com.k_int.kbplus.auth.UserRole(user:user,role:userRole);
+  
+            if ( new_role_allocation.save(flush:true) ) {
+              log.debug("New role created...");
+            }
+            else {
+              new_role_allocation.errors.each { e ->
+                log.error(e);
+              }
+            }
           }
+          else {
+            log.error("Unable to look up ROLE_USER");
+          }
+  
+          log.debug("Granting user ROLE_EDITOR");
+          new com.k_int.kbplus.auth.UserRole(user:user,role:com.k_int.kbplus.auth.Role.findByAuthority('ROLE_EDITOR')).save(flush:true)
+
+          // See if we can find the org this user is attached to
+          createUserOrgLink(user, map.authInstitutionName, map.shibbScope);
+  
+          log.debug("Done creating user");
         }
-
-        new com.k_int.kbplus.auth.UserRole(user:user,role:com.k_int.kbplus.auth.Role.findByAuthority('ROLE_EDITOR')).save(flush:true)
-
-        // See if we can find the org this user is attached to
-        createUserOrgLink(user, map.authInstitutionName, map.shibbScope);
-
-        log.debug("Done creating user");
+      }
+      else {
+        log.error("Problem creating user......");
+        user.errors.each { err ->
+          log.error(err);
+        }
       }
     
       // securityContext.authentication = new PreAuthenticatedAuthenticationToken(map.eduPersonTargetedID, map, roles)
