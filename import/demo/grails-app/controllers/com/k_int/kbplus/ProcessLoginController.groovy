@@ -46,7 +46,7 @@ class ProcessLoginController {
       log.debug("email = ${map.mail}");
       log.debug("Inst Addr = ${map.authInstitutionAddress}");
 
-      def user = com.k_int.kbplus.auth.User.findByUsername(map.eduPersonTargetedId)
+      def user = com.k_int.kbplus.auth.User.findByUsername(map.eduPersonTargetedID)
       if ( !user ) {
         log.debug("Creating user");
         user = new com.k_int.kbplus.auth.User(username:map.eduPersonTargetedID,
