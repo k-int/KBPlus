@@ -152,6 +152,7 @@ class DocstoreService {
           uuid()
           documentName(source_file_name)
           documentTitle(title)
+          documentLinkId(java.util.UUID.randomUUID().toString())
           documentType('kbplusdoc')
         }
       }
