@@ -48,12 +48,15 @@ class DocstoreService {
 
     // Upload
     def result = uploadBag(zippedbag)
+
+    def uuid = extractDocId(result.tempfile);
+
     FileUtils.deleteQuietly(result.tempfile)
 
     FileUtils.deleteQuietly(zippedbag);
     FileUtils.deleteQuietly(tempdir);
 
-    result.uuid
+    uuid
   }
 
   def retrieve(uuid, response, mimetype, filename) {
@@ -89,7 +92,15 @@ class DocstoreService {
     // FileUtils.deleteQuietly(zippedbag);
     // FileUtils.deleteQuietly(tempdir);
 
-    result.uuid
+    response.setContentType(mimetype)
+    def outs = response.outputStream
+    streamResponseDoc(result.tempfile, outs)
+    // outs << 
+    outs.flush()
+    outs.close()
+
+
+    uuid
   }
 
 
@@ -112,18 +123,19 @@ class DocstoreService {
         def tempfile_name = java.util.UUID.randomUUID().toString();
         result.tempfile = new File(System.getProperty("java.io.tmpdir")+System.getProperty("file.separator")+tempfile_name);
         result.tempfile << data
+
+        // java.util.zip.ZipFile zf = new java.util.zip.ZipFile(result.tempfile);
+        // java.util.zip.ZipEntry bag_dir_entry = zf.getEntry('bag_dir');
   
-        java.util.zip.ZipFile zf = new java.util.zip.ZipFile(result.tempfile);
-        java.util.zip.ZipEntry bag_dir_entry = zf.getEntry('bag_dir');
-  
-        InputStream is = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
+        // InputStream is = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
 
-        def result_doc = new groovy.util.XmlSlurper().parse(is);
+        // def result_doc = new groovy.util.XmlSlurper().parse(is);
 
-        InputStream is2 = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
-        log.debug("result_doc: ${is2.text} ${result_doc.text()}");
-        result.uuid = result_doc.documents.document.uuid.text()
+        // InputStream is2 = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
+        // log.debug("result_doc: ${is2.text} ${result_doc.text()}");
+        // result.uuid = result_doc.documents.document.uuid.text()
 
+        // zf.close();
         // FileUtils.deleteQuietly(tempfile);
       }
   
@@ -134,6 +146,44 @@ class DocstoreService {
 
     result
   }
+
+  def extractDocId(bagresponsezip) {
+    def uuid = null
+    java.util.zip.ZipFile zf = new java.util.zip.ZipFile(bagresponsezip);
+    java.util.zip.ZipEntry bag_dir_entry = zf.getEntry('bag_dir');
+
+    InputStream is = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
+
+    def result_doc = new groovy.util.XmlSlurper().parse(is);
+
+    InputStream is2 = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
+    log.debug("result_doc: ${is2.text} ${result_doc.text()}");
+    uuid = result_doc.documents.document.uuid.text()
+
+    zf.close();
+    uuid
+  }
+
+  def streamResponseDoc(bagresponsezip, outs) {
+    def uuid = null
+    java.util.zip.ZipFile zf = new java.util.zip.ZipFile(bagresponsezip);
+    java.util.zip.ZipEntry bag_dir_entry = zf.getEntry('bag_dir');
+
+    InputStream is = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
+
+    def result_doc = new groovy.util.XmlSlurper().parse(is);
+
+    InputStream is2 = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
+    log.debug("result_doc: ${is2.text} ${result_doc.text()}");
+    def targetfile = result_doc.documents.document.documentName.text()
+    def targetfile_is = zf.getInputStream(zf.getEntry("bag_dir/data/${targetfile}"))
+
+    org.apache.commons.io.IOUtils.copy(targetfile_is, outs);
+
+    zf.close();
+    uuid
+  }
+
 
 
   def createRequest(source_file_name, target_file, title) {
@@ -229,12 +279,13 @@ class DocstoreService {
     // Upload
     def result = uploadBag(zippedbag)
 
+    def uuid = extractDocId(result.tempfile);
+
     FileUtils.deleteQuietly(zippedbag);
     FileUtils.deleteQuietly(results.tempfile);
     FileUtils.deleteQuietly(tempdir);
 
-    result.uuid
-
+    uuid
   }
 
   def createDeleteRequest(target_file, doclist) {
