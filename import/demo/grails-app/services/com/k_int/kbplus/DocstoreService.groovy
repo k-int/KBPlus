@@ -202,8 +202,8 @@ class DocstoreService {
         ingestDocument(id:seq++,category:'kbplus',type:'kbplus',format:'doc') {
           uuid()
           documentName(source_file_name)
-          documentTitle(title)
           documentLinkId(java.util.UUID.randomUUID().toString())
+          documentTitle(title)
           documentType('kbplusdoc')
         }
       }
