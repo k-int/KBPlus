@@ -71,12 +71,14 @@ def stats = [:]
 
 def org = lookupOrCreateOrg(name:so_provider_line[1], db:db, stats:stats);
 
-def sub = db.subscriptions.findOne(identifier:so_identifier_line[1])
+def normalised_identifier = so_identifier_line[1].trim().toLowerCase()
+
+def sub = db.subscriptions.findOne(identifier:normalised_identifier);
 if ( !sub ) {
   sub = [:]
   sub._id = new org.bson.types.ObjectId();
 }
-sub.identifier = so_identifier_line[1]
+sub.identifier = normalised_identifier;
 sub.name = so_name_line[1];
 sub.start_date_str = so_agreement_term_start_yr_line[1]
 sub.end_date_str=so_agreement_term_end_yr_line[1]

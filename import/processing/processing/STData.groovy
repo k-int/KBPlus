@@ -67,6 +67,8 @@ catch ( Exception e ) {
 
 println("Read column headings: ${so_header_line}");
 
+def normalised_identifier = st_so_identifier.trim().toLowerCase()
+
 def stats = [:]
 
 if ( st_jc_id.length < 2 ) {
@@ -84,9 +86,9 @@ else {
 }
 
 // Before we start.. lookup a subscription with so_identifier st_so_identifier
-def sub = db.subscriptions.findOne(identifier:st_so_identifier[1])
+def sub = db.subscriptions.findOne(identifier:normalised_identifier)
 if ( !sub ) {
-  println("unable to locate subscription with identifier ${st_so_identifier[1]}");
+  println("**ERROR** unable to locate subscription with identifier ${normalised_identifier}");
   System.exit(1);
 }
 
