@@ -50,8 +50,8 @@
                     </td>
                     <td>${s.instanceOf?.provider?.name}</td>
                     <td>${s.instanceOf?.getConsortia()?.name}</td>
-                    <td>${s.startDate}</td>
-                    <td>${s.endDate}</td>
+                    <td><g:formatDate format="dd MMMM yyyy" date="${s.startDate}"/></td>
+                    <td><g:formatDate format="dd MMMM yyyy" date="${s.endDate}"/></td>
                     <td>
                       <g:each in="${s.instanceOf?.packages}" var="sp">
                         ${sp.pkg?.nominalPlatform?.name}<br/>
