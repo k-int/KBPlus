@@ -93,6 +93,7 @@ class DocstoreService {
     // FileUtils.deleteQuietly(tempdir);
 
     response.setContentType(mimetype)
+    response.addHeader("content-disposition", "attachment; filename=${filename}")
     def outs = response.outputStream
     streamResponseDoc(result.tempfile, outs)
     // outs << 
@@ -201,8 +202,8 @@ class DocstoreService {
         ingestDocument(id:seq++,category:'kbplus',type:'kbplus',format:'doc') {
           uuid()
           documentName(source_file_name)
-          documentTitle(title)
           documentLinkId(java.util.UUID.randomUUID().toString())
+          documentTitle(title)
           documentType('kbplusdoc')
         }
       }
