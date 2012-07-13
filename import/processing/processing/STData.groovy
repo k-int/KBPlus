@@ -36,7 +36,7 @@ if ( db == null ) {
 // To clear down the gaz: curl -XDELETE 'http://localhost:9200/gaz'
 // CSVReader r = new CSVReader( new InputStreamReader(getClass().classLoader.getResourceAsStream("./IEEE_IEEEIEL_2012_2012.csv")))
 println("Processing ${args[0]}");
-CSVReader r = new CSVReader( new InputStreamReader(new FileInputStream(args[0])),',',java.nio.charset.Charset.ISO-8859-1)
+CSVReader r = new CSVReader( new InputStreamReader(new FileInputStream(args[0]),java.nio.charset.Charset.forName('ISO-8859-1')) )
 
 def bad_rows = []
 
@@ -67,7 +67,7 @@ catch ( Exception e ) {
 
 println("Read column headings: ${so_header_line}");
 
-def normalised_identifier = st_so_identifier.trim().toLowerCase()
+def normalised_identifier = st_so_identifier[1].trim().toLowerCase()
 
 def stats = [:]
 

@@ -27,7 +27,7 @@ if ( db == null ) {
 def badfile = new File("${args[0]}-BAD");
 
 println("Processing ${args[0]}");
-CSVReader r = new CSVReader( new InputStreamReader(new FileInputStream(args[0])),',',java.nio.charset.Charset.ISO-8859-1)
+CSVReader r = new CSVReader( new InputStreamReader(new FileInputStream(args[0]),java.nio.charset.Charset.forName('ISO-8859-1')) )
 
 def bad_rows = []
 

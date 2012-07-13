@@ -34,8 +34,14 @@ if ( db == null ) {
 
 // To clear down the gaz: curl -XDELETE 'http://localhost:9200/gaz'
 // CSVReader r = new CSVReader( new InputStreamReader(getClass().classLoader.getResourceAsStream("./IEEE_IEEEIEL_2012_2012.csv")))
-println("Processing ${args[0]}");
-CSVReader r = new CSVReader( new InputStreamReader(new FileInputStream(args[0])),',',java.nio.charset.Charset.ISO-8859-1)
+println("Processing ${args}");
+
+def charset = java.nio.charset.Charset.forName('ISO-8859-1');
+if ( args.length > 2 ) {
+  charset = java.nio.charset.Charset.forName(args[1]);
+}
+
+CSVReader r = new CSVReader( new InputStreamReader(new FileInputStream(args[0]),charset) )
 
 def bad_rows = []
 
