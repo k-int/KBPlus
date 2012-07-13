@@ -44,9 +44,6 @@
                       <g:each in="${s.packages}" var="sp">
                         ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
                       </g:each>
-                      <g:each in="${s.instanceOf?.packages}" var="sp">
-                        (parent pkg) ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
-                      </g:each>
                     </td>
                     <td>${s.instanceOf?.provider?.name}</td>
                     <td>${s.instanceOf?.getConsortia()?.name}</td>
