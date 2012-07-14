@@ -7,6 +7,7 @@ rm *_log
 echo SO import
 rm ~/Dropbox2/Dropbox/KB+/System\ -\ Data/Current/Subscriptions\ Offered/*BAD
 find ~/Dropbox2/Dropbox/KB+/System\ -\ Data/Current/Subscriptions\ Offered -name "*.csv" -exec ./SOData.groovy '{}' >> so_imp_log \;
+find ~/Dropbox2/Dropbox/KB+/System\ -\ Data/Current/Subscriptions\ Offered -name "*.csv_utf8" -exec ./SOData.groovy '{}' 'UTF-8' >> so_imp_log \;
 
 rm ~/Dropbox2/Dropbox/KB+/System\ -\ Data/Current/Masters/*BAD
 find ~/Dropbox2/Dropbox/KB+/System\ -\ Data/Current/Masters -name "*.csv" -exec ./SOData.groovy '{}' >> so_imp_log \;
