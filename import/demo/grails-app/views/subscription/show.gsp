@@ -83,9 +83,7 @@
         
           <g:if test="${subscriptionInstance?.endDate}">
             <dt><g:message code="subscription.endDate.label" default="End Date" /></dt>
-            
-              <dd><g:formatDate date="${subscriptionInstance?.endDate}" /></dd>
-            
+              <dd><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance?.endDate}" /></dd>
           </g:if>
         
           <g:if test="${subscriptionInstance?.instanceOf}">
@@ -172,10 +170,10 @@
                                                     ${ie?.tipp?.title?.getIdentifierValue('eISSN')}
                                                   </g:each>
                                                 </td>
-                                                <td>${ie.startDate}</td>
+                                                <td><g:formatDate format="dd MMMM yyyy" date="${ie?.startDate}" /></td>
                                                 <td>${ie.startVolume}</td>
                                                 <td>${ie.startIssue}</td>
-                                                <td>${ie.endDate}</td>
+                                                <td><g:formatDate format="dd MMMM yyyy" date="${ie?.endDate}" /></td>
                                                 <td>${ie.endVolume}</td>
                                                 <td>${ie.endIssue}</td>
                                               </tr>

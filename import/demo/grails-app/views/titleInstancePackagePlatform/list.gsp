@@ -62,10 +62,10 @@
               <td><g:link controller="titleInstance" action="show" id="${tipp.title.id}">${fieldValue(bean: tipp, field: "title.title")}</g:link></td>
               <td><g:link controller="platform" action="show" id="${tipp.platform.id}">${fieldValue(bean: tipp, field: "platform.name")}</g:link></td>
               <td><g:link controller="package" action="show" id="${tipp.pkg.id}">${fieldValue(bean: tipp, field: "pkg.name")}</g:link></td>
-              <td>${fieldValue(bean: tipp, field: "startDate")}</td>
+              <td><g:formatDate format="dd MMMM yyyy" date="${tipp.startDate}" /></td>
               <td>${fieldValue(bean: tipp, field: "startVolume")}</td>
               <td>${fieldValue(bean: tipp, field: "startIssue")}</td>
-              <td>${fieldValue(bean: tipp, field: "endDate")}</td>
+              <td><g:formatDate format="dd MMMM yyyy" date="${tipp.endDate}" /></td>
               <td>${fieldValue(bean: tipp, field: "endVolume")}</td>
               <td>${fieldValue(bean: tipp, field: "endIssue")}</td>
               <td class="link">

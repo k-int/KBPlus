@@ -81,7 +81,7 @@
           <g:if test="${titleInstancePackagePlatformInstance?.startDate}">
             <dt><g:message code="titleInstancePackagePlatform.startDate.label" default="Start Date" /></dt>
             
-              <dd><g:fieldValue bean="${titleInstancePackagePlatformInstance}" field="startDate"/></dd>
+              <dd><g:formatDate format="dd MMMM yyyy" date="${titleInstancePackagePlatformInstance.startDate}" /></dd>
             
           </g:if>
         
@@ -102,7 +102,7 @@
           <g:if test="${titleInstancePackagePlatformInstance?.endDate}">
             <dt><g:message code="titleInstancePackagePlatform.endDate.label" default="End Date" /></dt>
             
-              <dd><g:fieldValue bean="${titleInstancePackagePlatformInstance}" field="endDate"/></dd>
+              <dd><g:formatDate format="dd MMMM yyyy" date="${titleInstancePackagePlatformInstance.endDate}" /></dd>
             
           </g:if>
         
