@@ -62,9 +62,9 @@
 
 							<td>${subscriptionInstance?.subscriber?.name}</td>
 
-							<td><g:formatDate date="${subscriptionInstance.startDate}" /></td>
+							<td><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.startDate}" /></td>
 						
-							<td><g:formatDate date="${subscriptionInstance.endDate}" /></td>
+							<td><g:formatDate format="dd MMMM yyyy"  date="${subscriptionInstance.endDate}" /></td>
 						
 							<td class="link">
 								<g:link action="show" id="${subscriptionInstance.id}" class="btn btn-small">Show &raquo;</g:link>
