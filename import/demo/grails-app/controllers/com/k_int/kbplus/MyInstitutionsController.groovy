@@ -55,10 +55,20 @@ class MyInstitutionsController {
 
     // We want to find all org role objects for this instutution where role type is licensee
     result.licenses = []
-    result.licenses.addAll(model_licenses)
+    // result.licenses.addAll(model_licenses)
+
+    model_licenses.each { ml ->
+      if ( ml.status?.value != 'Deleted' )
+        result.licenses.add(ml);
+    }
 
     // Find all licenses for this institution...
-    result.licenses.addAll(OrgRole.findAllByOrgAndRoleType(result.institution, licensee_role).collect { it.lic } )
+    // result.licenses.addAll(OrgRole.findAllByOrgAndRoleType(result.institution, licensee_role).collect { it.lic } )
+    OrgRole.findAllByOrgAndRoleType(result.institution, licensee_role).each { lic ->
+      if ( lic.status?.value!='Deleted' ) {
+        result.licenses.add(lic);
+      }
+    }
 
     result
   }
