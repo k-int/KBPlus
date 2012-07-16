@@ -32,9 +32,9 @@
         </div>
     </div>
 
-    <g:form action="newLicense"
-                controller="myInstitutions" 
-                params="${[shortcode:params.shortcode]}">
+    <g:form action="actionLicenses"
+            controller="myInstitutions" 
+            params="${[shortcode:params.shortcode]}">
 
       <div class="container">
           <div class="well licence-options">
