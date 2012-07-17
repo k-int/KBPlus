@@ -77,7 +77,7 @@ def stats = [:]
 
 def org = lookupOrCreateOrg(name:so_provider_line[1], db:db, stats:stats);
 
-def normalised_identifier = so_identifier_line[1].trim().toLowerCase()
+def normalised_identifier = so_identifier_line[1].trim().toLowerCase().replaceAll('-','_')
 
 def sub = db.subscriptions.findOne(identifier:normalised_identifier);
 if ( !sub ) {

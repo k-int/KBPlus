@@ -21,6 +21,7 @@ class TitleInstancePackagePlatformController {
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def list() {
+      def result=[:]
       result.user = User.get(springSecurityService.principal.id)
       params.max = Math.min(params.max ? params.int('max') : 10, 100)
       result.titleInstancePackagePlatformInstanceList=TitleInstancePackagePlatform.list(params)

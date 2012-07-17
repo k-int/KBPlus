@@ -67,7 +67,7 @@ catch ( Exception e ) {
 
 println("Read column headings: ${so_header_line}");
 
-def normalised_identifier = st_so_identifier[1].trim().toLowerCase()
+def normalised_identifier = st_so_identifier[1].trim().toLowerCase().replaceAll('-','_')
 
 def stats = [:]
 

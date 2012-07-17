@@ -45,20 +45,41 @@ class MyInstitutionsController {
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def actionLicenses() {
+    if ( params['copy-licence'] ) {
+      newLicense(params)
+    }
+    else if ( params[ 'delete-licence' ] ) {
+      deleteLicense(params)
+    }
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def licenses() {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
+
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
     def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
     def model_licenses = License.findAllByType(template_license_type);
 
     // We want to find all org role objects for this instutution where role type is licensee
     result.licenses = []
-    result.licenses.addAll(model_licenses)
+    // result.licenses.addAll(model_licenses)
+
+    model_licenses.each { ml ->
+      if ( ml.status?.value != 'Deleted' )
+        result.licenses.add(ml);
+    }
 
     // Find all licenses for this institution...
-    result.licenses.addAll(OrgRole.findAllByOrgAndRoleType(result.institution, licensee_role).collect { it.lic } )
+    // result.licenses.addAll(OrgRole.findAllByOrgAndRoleType(result.institution, licensee_role).collect { it.lic } )
+    OrgRole.findAllByOrgAndRoleType(result.institution, licensee_role).each { or ->
+      if ( or.lic?.status?.value!='Deleted' ) {
+        result.licenses.add(or.lic);
+      }
+    }
 
     result
   }
@@ -232,8 +253,7 @@ class MyInstitutionsController {
     redirect action: 'licenseDetails', params:params, id:licenseInstance.id
   }
 
-  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def newLicense() {
+  def newLicense(params) {
     def user = User.get(springSecurityService.principal.id)
     def org = Org.findByShortcode(params.shortcode)
     
@@ -310,6 +330,25 @@ class MyInstitutionsController {
     result.institution = Org.findByShortcode(params.shortcode)
     result.license = License.get(params.id)
     result
+  }
+
+  def deleteLicense(params) {
+    log.debug("deleteLicense id:${params.baselicense}");
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+    def license = License.get(params.baselicense)
+
+    if ( hasAdminRights(result.user,license) ) {
+      def deletedStatus = RefdataCategory.lookupOrCreate('License Status','Deleted');
+      license.status = deletedStatus
+    }
+    else {
+      log.warn("Attempt by ${result.user} to delete license ${result.license}without perms")
+      flash.message = message(code: 'license.delete.norights')
+    }
+    
+    redirect action: 'licenses', params: [shortcode:params.shortcode]
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -493,5 +532,29 @@ class MyInstitutionsController {
 
     log.debug("Redirect...");
     redirect action: 'licenseDetails', params:[shortcode:params.shortcode], id:params.licid, fragment:params.fragment
+  }
+
+
+  // Placeholder to determine if the supplied user has admin rights over the speciifed object
+  def hasAdminRights(user, object) {
+    def result = false;
+
+    if ( object && user ) {
+      def user_orgs = user.affiliations.collect { it.org }
+
+      if ( object instanceof License ) {
+        // Work out which org "owns" this license
+        def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
+        def or = OrgRole.findByLicAndRoleType(object, licensee_role)
+        if ( or ) {
+          // The license owner must be the users institution
+          if ( user_orgs.contains(or.org) ) {
+            result = true
+          }
+        }
+      }
+    }
+
+    result;
   }
 }

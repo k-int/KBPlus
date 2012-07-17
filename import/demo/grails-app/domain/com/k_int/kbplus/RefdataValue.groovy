@@ -14,7 +14,7 @@ class RefdataValue {
     version column:'rdv_version'
       owner column:'rdv_owner', index:'rdv_entry_idx'
       value column:'rdv_value', index:'rdv_entry_idx'
-       icon column:'rdv_icon', index:'rdv_icon_idx'
+       icon column:'rdv_icon'
   }
 
   static constraints = {
