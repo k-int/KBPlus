@@ -2,6 +2,14 @@ package com.k_int.kbplus
 
 class Alert {
 
-    static constraints = {
-    }
+  int sharingLevel
+
+  static mapping = {
+    sharingLevel column:'dc_alert_fk'
+  }
+
+  static constraints = {
+    sharingLevel(nullable:false, blank:false);
+  }
+
 }

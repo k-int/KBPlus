@@ -72,6 +72,9 @@
                     <li <%= ( ( 'myInstitutions'== controllerName ) && ( 'manageAffiliations'==actionName ) ) ? ' class="active"' : '' %>>
                        <g:link controller="myInstitutions" action="manageAffiliations">Manage Affiliations</g:link></li>
 
+                    <li <%= ( ( 'myInstitutions'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
+                       <g:link controller="myInstitutions" action="index">Dashboard</g:link></li>
+
                      <li class="divider"></li>
                      <g:if test="${user.affiliations && user.affiliations.size() > 0}">
                        <g:each in="${user.affiliations}" var="ua">

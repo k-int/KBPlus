@@ -569,7 +569,7 @@ class DataloadService {
                                                 embargo:ie.tipp.embargo,
                                                 coverageDepth:ie.tipp.coverageDepth,
                                                 coverageNote:ie.tipp.coverageNote,
-                                                ieReason:'No ST specific data, defaulting from SO').save(flush:true)
+                                                ieReason:'No ST specific data, defaulting from SO').save()
               // new_subscription.issueEntitlements.add(new_ie)
             }
             log.debug("Added ${count} issue entitlements from subscription ${db_sub.id}")
@@ -619,7 +619,7 @@ class DataloadService {
             }
           }
   
-          // new_subscription.save(flush:true)
+          new_subscription.save(flush:true)
   
     
           // Iterate all issue entitlements that appear as a part of this SO

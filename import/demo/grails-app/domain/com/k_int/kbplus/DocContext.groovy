@@ -9,6 +9,7 @@ class DocContext {
   RefdataValue status
   RefdataValue doctype
   License license
+  Alert alert
 
   // We may attach a note to a particular colum, in which case, we set domain here as a discriminator
   String domain
@@ -20,6 +21,7 @@ class DocContext {
      doctype column:'dc_rv_doctype_fk'
      license column:'dc_lic_fk'
       status column:'dc_status_fk'
+       alert column:'dc_alert_fk'
   }
 
   static constraints = {
@@ -27,5 +29,6 @@ class DocContext {
     license(nullable:true, blank:false);
     domain(nullable:true, blank:false);
     status(nullable:true, blank:false);
+    alert(nullable:true, blank:false);
   }
 }
