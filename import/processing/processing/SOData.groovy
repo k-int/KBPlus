@@ -383,7 +383,8 @@ def lookupOrCreateTitle(Map params=[:]) {
     // Loop through all the available identifers and see if any match.. Repeat until a match is found.
     for ( int i=0; ( ( !title ) && ( i < params.identifier.size() ) ); i++ ) {
       // println("Attempting match.. ${params.identifier[i].type} ${params.identifier[i].value}");
-      title = params.db.titles.findOne(identifier:[type:params.identifier[i].type, value: params.identifier[i].value])
+      // title = params.db.titles.findOne(identifier:[type:params.identifier[i].type, value: params.identifier[i].value])
+      title = params.db.titles.findOne(identifier:[value: params.identifier[i].value, type:params.identifier[i].type])
     }
     if ( title ) {
       inc('titles_matched_by_identifier',params.stats);
@@ -395,7 +396,7 @@ def lookupOrCreateTitle(Map params=[:]) {
       }
     }
     else {
-      println("POSSIBLE ERROR : Unable to match on any of ${params.identifier}");
+      println("POSSIBLE ERROR : Unable to match on any of ${params.identifier}.. Title will be created in subsequent step if possible");
     }
   }
   else {
