@@ -8,7 +8,7 @@ class AlertsService {
    *  for each alert visible to this user.
    */
   def getActiveAlerts(user) {
-    def result[] 
+    def result = [] 
 
     // Firstly.. Find all license notes that this user can see
     
