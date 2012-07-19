@@ -339,15 +339,18 @@ class DataloadService {
   
       // Packages
       mdb.pkgs.find().sort(lastmod:1).each { pkg ->
-        log.debug("update package ${pkg}");
+
+        log.debug("process package ${pkg}");
+
         def p = Package.findByImpId(pkg._id.toString())
         if ( p == null ) {
           def pkg_type = null;
           if (pkg.type) {
             pkg_type = lookupOrCreateRefdataEntry('PackageTypes',pkg.type);
           }
-          log.debug("New package: ${pkg.identifier}, ${pkg.name}, ${pkg_type}, ${pkg._id.toString()}, ${pkg.contentProvider.toString()}");
+          log.debug("New package: ${pkg.identifier}, ${pkg.name}, ${pkg_type}, ${pkg._id.toString()}, ${pkg.contentProvider.toString()}. Looking up org");
           def cp = pkg.contentProvider != null ? Org.findByImpId(pkg.contentProvider.toString()) : null;
+          log.debug("Create new package..");
           p = new Package(identifier:pkg.identifier,
                           name:pkg.name,
                           type:pkg_type,
@@ -367,19 +370,19 @@ class DataloadService {
               log.error("Problem saving package: ${pe}");
             }
           }
-  
-  
         }
         else {
           // log.debug("got package ${pkg._id.toString()}");
         }
   
+        log.debug("Processing subscriptions for this package");
         pkg.subs.each { sub ->
           log.debug("Processing subscription ${sub}");
           def dbsub = Subscription.findByImpId(sub.toString());
           def sp = SubscriptionPackage.findBySubscriptionAndPkg(dbsub, p) ?: new SubscriptionPackage(subscription:dbsub, pkg: p).save();
         }
   
+       log.debug("Package processing completed");
       }
   
       // Finally... tipps
@@ -821,6 +824,7 @@ class DataloadService {
 
   def assertOrgPackageLink(porg, ppkg, prole) {
     // def link = OrgRole.findByPkgAndOrgAndRoleType(pkg, org, role) ?: new OrgRole(pkg:pkg, org:org, roleType:role).save();
+    log.debug("assertOrgPackageLink()");
     def link = OrgRole.find{ pkg==ppkg && org==porg && roleType==prole }
     if ( ! link ) {
       link = new OrgRole(pkg:ppkg, org:porg, roleType:prole);
@@ -830,6 +834,7 @@ class DataloadService {
         porg.links.add(link)
       porg.save();
     }
+    log.debug("assertOrgPackageLink() complete");
   }
 
   def assertOrgLicenseLink(porg, plic, prole) {
