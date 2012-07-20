@@ -60,6 +60,12 @@ def handleChangesSince(db,
     def local_copy = db."${collname}_localcopy".findOne([_id:item._id])
     if ( local_copy ) {
       println("Got local copy");
+      if ( item.equals(local_copy.original) ) {
+        println("No change detected in source item since last processing");
+      }
+      else {
+        println("Record has changed... process");
+      }
     }
     else {
       println("No local copy found");
