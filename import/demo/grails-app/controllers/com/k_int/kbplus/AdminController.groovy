@@ -2,6 +2,7 @@ package com.k_int.kbplus
 
 import com.k_int.kbplus.auth.*;
 import grails.plugins.springsecurity.Secured
+import grails.converters.*
 
 class AdminController {
 
@@ -69,7 +70,34 @@ class AdminController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.users = User.list()
-    result
+
+    withFormat {
+      html {
+        render(view:'showAffiliations',model:result)
+      }
+      json {
+        def r2 = []
+        result.users.each { u ->
+          def row = [:]
+          row.username = u.username
+          row.display = u.display
+          row.instname = u.instname
+          row.instcode = u.instcode
+          row.email = u.email
+          row.shibbScope = u.shibbScope
+          row.enabled = u.enabled
+          row.accountExpired = u.accountExpired
+          row.accountLocked = u.accountLocked
+          row.passwordExpired = u.passwordExpired
+          row.affiliations = []
+          u.affiliations.each { ua ->
+            row.affiliations.add( [org: ua.org.shortcode, status: ua.status, role:ua.role] )
+          }
+          r2.add(row)
+        }
+        render r2 as JSON
+      }
+    }
   }
   
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
