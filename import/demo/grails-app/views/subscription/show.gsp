@@ -160,14 +160,10 @@
                                               <tr>
                   <td>${ie.tipp.title.title}</td>
                                                 <td>
-                                                  <g:each in="${ie?.tipp?.title?.ids}" var="id">
-                                                    ${ie?.tipp?.title?.getIdentifierValue('ISSN')}
-                                                  </g:each>
+                                                  ${ie?.tipp?.title?.getIdentifierValue('ISSN')}
                                                 </td>
                                                 <td>
-                                                  <g:each in="${ie?.tipp?.title?.ids}" var="id">
-                                                    ${ie?.tipp?.title?.getIdentifierValue('eISSN')}
-                                                  </g:each>
+                                                  ${ie?.tipp?.title?.getIdentifierValue('eISSN')}
                                                 </td>
                                                 <td><g:formatDate format="dd MMMM yyyy" date="${ie?.startDate}" /></td>
                                                 <td>${ie.startVolume}</td>

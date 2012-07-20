@@ -49,7 +49,7 @@
               <g:each in="${subscriptionInstance.issueEntitlements}" var="ie">
                 <tr>
                   <td><input type="checkbox" name="batchedit"/>
-                  <td>${ie.tipp.title.title}</td>
+                  <td><g:link controller="titleInstance" action="show" id="${ie.tipp.title.id}">${ie.tipp.title.title}</g:link></td>
                   <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
                   <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
                   <td><g:refdataValue val="${ie.coreTitle}" 
