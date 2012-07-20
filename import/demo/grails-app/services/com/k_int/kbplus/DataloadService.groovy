@@ -188,6 +188,9 @@ class DataloadService {
     Org.withTransaction { transaction_status ->
       log.debug("DataloadController::update");
   
+      def cp_role = lookupOrCreateRefdataEntry('Organisational Role', 'Content Provider');
+      def pub_role = lookupOrCreateRefdataEntry('Organisational Role', 'Publisher');
+      def sc_role = lookupOrCreateRefdataEntry('Organisational Role', 'Subscription Consortia');
       def mdb = mongoService.getMongo().getDB('kbplus_ds_reconciliation')
   
       mdb.tipps.ensureIndex('lastmod');
@@ -282,7 +285,6 @@ class DataloadService {
         if ( sub.consortium ) {
           def cons = Org.findByImpId(sub.consortium.toString());
           if ( cons ) {
-            def sc_role = lookupOrCreateRefdataEntry('Organisational Role', 'Subscription Consortia');
             def or = new OrgRole(org: cons, sub:dbsub, roleType:sc_role).save();
           }
           else {
@@ -327,7 +329,6 @@ class DataloadService {
             def publisher_org = Org.findByImpId(title.publisher.toString());
             if ( publisher_org ) {
               // log.debug("Assert publisher org link with ${publisher_org.name}");
-              def pub_role = lookupOrCreateRefdataEntry('Organisational Role', 'Publisher');
               assertOrgTitleLink(publisher_org, t, pub_role);
             }
             else {
@@ -337,6 +338,7 @@ class DataloadService {
         }
       }
   
+
       // Packages
       mdb.pkgs.find().sort(lastmod:1).each { pkg ->
 
@@ -344,10 +346,7 @@ class DataloadService {
 
         def p = Package.findByImpId(pkg._id.toString())
         if ( p == null ) {
-          def pkg_type = null;
-          if (pkg.type) {
-            pkg_type = lookupOrCreateRefdataEntry('PackageTypes',pkg.type);
-          }
+          def pkg_type = lookupOrCreateRefdataEntry('PackageTypes',pkg.type);
           log.debug("New package: ${pkg.identifier}, ${pkg.name}, ${pkg_type}, ${pkg._id.toString()}, ${pkg.contentProvider.toString()}. Looking up org");
           def cp = pkg.contentProvider != null ? Org.findByImpId(pkg.contentProvider.toString()) : null;
           log.debug("Create new package..");
@@ -356,11 +355,11 @@ class DataloadService {
                           type:pkg_type,
                           contentProvider:cp,
                           impId:pkg._id.toString());
-  
+          log.debug("Package created, save...");
           if ( p.save(flush:true) ) {
+            log.debug("Package save completed fm=${Runtime.getRuntime().freeMemory()}")
             //log.debug("New package ${pkg.identifier} saved");
             if ( cp ) {
-              def cp_role = lookupOrCreateRefdataEntry('Organisational Role', 'Content Provider');
               assertOrgPackageLink(cp, p, cp_role);
             }
           }

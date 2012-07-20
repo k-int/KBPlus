@@ -115,6 +115,10 @@
                     </li>
                     <li <%= ( ( 'startFTIndex'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                        <g:link controller="startFTIndex" action="index">Start FT Index Update</g:link>
+                    </li>
+                    <li <%= ( ( 'admin'== controllerName ) && ( 'showAffiliations'==actionName ) ) ? ' class="active"' : '' %>>
+                       <g:link controller="admin" action="showAffiliations">Show Affiliations</g:link>
+                    </li>
                   </ul>
                 </li>
 

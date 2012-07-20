@@ -13,6 +13,7 @@ class MyInstitutionsController {
   def docstoreService
   def ESWrapperService
   def gazetteerService
+  def alertsService
 
   def reversemap = ['subject':'subject', 'provider':'provid', 'studyMode':'presentations.studyMode','qualification':'qual.type','level':'qual.level' ]
 
@@ -22,17 +23,19 @@ class MyInstitutionsController {
     // Work out what orgs this user has admin level access to
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
-
-    def adminRole = Role.findByAuthority('ROLE_ADMIN')
-
+    result.userAlerts = alertsService.getActiveAlerts(result.user);
     
-    if ( result.user.authorities.contains(adminRole) ) {
-      log.debug("User is in admin role");
-      result.orgs = Org.findAllBySector("Higher Education");
-    }
-    else {
-      result.orgs = Org.findAllBySector("Higher Education");
-    }
+    log.debug("result.userAlerts: ${result.userAlerts}");
+    log.debug("result.userAlerts.size(): ${result.userAlerts.size()}");
+    log.debug("result.userAlerts.class.name: ${result.userAlerts.class.name}");
+    // def adminRole = Role.findByAuthority('ROLE_ADMIN')
+    // if ( result.user.authorities.contains(adminRole) ) {
+    //   log.debug("User is in admin role");
+    //   result.orgs = Org.findAllBySector("Higher Education");
+    // }
+    // else {
+    //   result.orgs = Org.findAllBySector("Higher Education");
+    // }
 
     result
   }
@@ -517,6 +520,8 @@ class MyInstitutionsController {
     def result=[:]
     log.debug("uploadNewNote ${params}");
 
+    def user = User.get(springSecurityService.principal.id)
+    def institution = Org.findByShortcode(params.shortcode)
 
     def l = License.get(params.licid);
 
@@ -531,10 +536,10 @@ class MyInstitutionsController {
           case "0":
             break;
           case "1":
-            alert = new Alert(sharingLevel:1).save();
+            alert = new Alert(sharingLevel:1, createdBy:user, org:institution).save();
             break;
           case "2":
-            alert = new Alert(sharingLevel:2).save();
+            alert = new Alert(sharingLevel:2, createdBy:user, org:institution).save();
             break;
         }
       }

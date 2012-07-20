@@ -63,4 +63,13 @@ class AdminController {
     dataloadService.requestReconciliation();
     redirect(action:'reconcile');
   }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def showAffiliations() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.users = User.list()
+    result
+  }
+  
 }

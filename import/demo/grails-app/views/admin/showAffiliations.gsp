@@ -28,21 +28,23 @@
 
     <div class="row-fluid">
       <div class="well">
-        <h2>Data Reconciliation</h2>
-        <g:if test="${recon_status.active}">
-          Data reconciliation currently in stage : ${recon_status.stage} (nn%)
-        </g:if>
-        <g:else>
-          Data reconciliation not currently active. <g:link action="startReconciliation">Start</g:link>
-        </g:else>
-
-        <g:if test="${stats}">
-          <table>
-            <g:each in="${stats}" var="s">
-              <tr><td>${s.key}</td><td>${s.value}</td></tr>
-            </g:each>
-          </table>
-        </g:if>
+        <h2>Affiliations</h2>
+        <table class="table table-striped">
+          <tr>
+            <th>Username</th><th>Affiliations</th>
+          </tr>
+          <g:each in="${users}" var="u">
+            <tr>
+              <td>${u.username}</td>
+              <td>
+                <ul>
+                  <g:each in="${u.affiliations}" var="ua">
+                    <li>${ua.org.shortcode}:${ua.status}:${ua.role}</li>
+                  </g:each>
+                </ul>
+              </td>
+          </g:each>
+        </table>
       </div>
 
 
