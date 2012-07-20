@@ -72,4 +72,17 @@ class AdminController {
     result
   }
   
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def allNotes() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    def sc = DocContext.createCriteria()
+    result.alerts = sc.list {
+      alert {
+        gt('sharingLevel', -1)
+      }
+    }
+
+    result
+  }
 }

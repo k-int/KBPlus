@@ -119,6 +119,9 @@
                     <li <%= ( ( 'admin'== controllerName ) && ( 'showAffiliations'==actionName ) ) ? ' class="active"' : '' %>>
                        <g:link controller="admin" action="showAffiliations">Show Affiliations</g:link>
                     </li>
+                    <li <%= ( ( 'admin'== controllerName ) && ( 'allNotes'==actionName ) ) ? ' class="active"' : '' %>>
+                       <g:link controller="admin" action="allNotes">All Notes</g:link>
+                    </li>
                   </ul>
                 </li>
 
