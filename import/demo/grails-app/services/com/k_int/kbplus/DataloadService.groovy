@@ -849,4 +849,22 @@ class DataloadService {
 
   }
 
+  // handleChangesSince(collname, 
+  //                    timestamp, 
+  //                    processingClosure) {
+
+  //   def mdb = mongoService.getMongo().getDB('kbplus_ds_reconciliation')
+
+  //   def stats
+  //   def orgs_cursor = mdb."${collname}".find().sort(lastmod:1)
+  //   orgs_cursor.addOption(com.mongodb.Bytes.QUERYOPTION_NOTIMEOUT);
+  //   stats.rec_seen_count = 0;
+  //   stats.rec_insert_count = 0;
+  //   stats.rec_update_count = 0;
+  //   cursor.each { org ->
+  //     def local_copy = mdb.
+  //   }
+
+  // }
+
 }
