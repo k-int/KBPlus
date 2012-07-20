@@ -849,22 +849,36 @@ class DataloadService {
 
   }
 
-  // handleChangesSince(collname, 
-  //                    timestamp, 
-  //                    processingClosure) {
+  def handleChangesSince(db,
+                         collname,
+                         timestamp,
+                         processingClosure) {
 
-  //   def mdb = mongoService.getMongo().getDB('kbplus_ds_reconciliation')
+    def cursor = db."${collname}".find().sort(lastmod:1)
+    cursor.addOption(com.mongodb.Bytes.QUERYOPTION_NOTIMEOUT);
+    cursor.each { item ->
+      def local_copy = db."${collname}_localcopy".findOne([_id:item._id])
+      if ( local_copy ) {
+        log.debug("Got local copy");
+        if ( item.equals(local_copy.original) ) {
+          log.debug("No change detected in source item since last processing");
+        }
+        else {
+          log.debug("Record has changed... process");
+        }
+      }
+      else {
+        log.debug("No local copy found");
+        def copy_item = [
+          _id:item._id,
+          original:item
+        ]
+        db."${collname}_localcopy".save(copy_item);
+      }
 
-  //   def stats
-  //   def orgs_cursor = mdb."${collname}".find().sort(lastmod:1)
-  //   orgs_cursor.addOption(com.mongodb.Bytes.QUERYOPTION_NOTIMEOUT);
-  //   stats.rec_seen_count = 0;
-  //   stats.rec_insert_count = 0;
-  //   stats.rec_update_count = 0;
-  //   cursor.each { org ->
-  //     def local_copy = mdb.
-  //   }
+      processingClosure(item)
+    }
+  }
 
-  // }
 
 }
