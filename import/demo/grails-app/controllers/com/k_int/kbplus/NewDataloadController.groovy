@@ -12,7 +12,7 @@ class NewDataloadController {
   def ESWrapperService
   def mongoService
   def springSecurityService
-  def genericReconciler
+  def genericReconcilerService
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def index() { 
@@ -36,7 +36,7 @@ class NewDataloadController {
         }
         else {
           log.debug("Record has changed... process");
-          genericReconciler.reconcile(item, local_copy, ruleset);
+          genericReconcilerService.reconcile(item, local_copy, ruleset);
         }
       }
       else {
@@ -46,7 +46,7 @@ class NewDataloadController {
           original:item
         ]
         db."${collname}_localcopy".save(copy_item);
-        genericReconciler.reconcile(item, null, ruleset);
+        genericReconcilerService.reconcile(item, null, ruleset);
       }
     }
   }

@@ -9,11 +9,11 @@ public class OrgsProcessing {
     recordMatching:[
       [
         [ 
-          matchingType:simpleCorrespondence,
+          matchingType:'simpleCorrespondence',
           pairs:[[sourceProperty:'_id',targetProperty:'impId']]
         ],
         [ 
-          matchingType:simpleCorrespondence,
+          matchingType:'simpleCorrespondence',
           pairs:[[sourceProperty:'name',targetProperty:'name',transformation:'trim']]
         ]
       ]
