@@ -3,7 +3,7 @@ package com.k_int.kbplus.processing
 public class OrgsProcessing {
 
 
-  def orgs_reconciliation_ruleset = [
+  public static def orgs_reconciliation_ruleset = [
     // Root identifies root object type
     domainClass:com.k_int.kbplus.Org.class,
     recordMatching:[

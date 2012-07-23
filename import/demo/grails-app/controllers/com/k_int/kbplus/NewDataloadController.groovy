@@ -12,17 +12,18 @@ class NewDataloadController {
   def ESWrapperService
   def mongoService
   def springSecurityService
+  def genericReconciler
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def index() { 
     def mdb = mongoService.getMongo().getDB('kbplus_ds_reconciliation')
-    handleChangesSince(mdb,'orgs',0,null)
+    handleChangesSince(mdb,'orgs',0,com.k_int.kbplus.processing.OrgsProcessing.orgs_reconciliation_ruleset)
   }
 
   def handleChangesSince(db,
                          collname,
                          timestamp,
-                         processingClosure) {
+                         ruleset) {
 
     def cursor = db."${collname}".find().sort(lastmod:1)
     cursor.addOption(com.mongodb.Bytes.QUERYOPTION_NOTIMEOUT);
@@ -35,6 +36,7 @@ class NewDataloadController {
         }
         else {
           log.debug("Record has changed... process");
+          genericReconciler.reconcile(item, local_copy, ruleset);
         }
       }
       else {
@@ -44,9 +46,8 @@ class NewDataloadController {
           original:item
         ]
         db."${collname}_localcopy".save(copy_item);
+        genericReconciler.reconcile(item, null, ruleset);
       }
-
-      processingClosure(item)
     }
   }
 }
