@@ -33,21 +33,23 @@ class NewDataloadController {
         log.debug("Got local copy");
         if ( item.equals(local_copy.original) ) {
           log.debug("No change detected in source item since last processing");
-          genericReconcilerService.reconcile(item, local_copy, ruleset);
+          genericReconcilerService.reconcile(db, item, local_copy, ruleset);
         }
         else {
           log.debug("Record has changed... process");
-          genericReconcilerService.reconcile(item, local_copy, ruleset);
+          genericReconcilerService.reconcile(db, item, local_copy, ruleset);
         }
       }
       else {
         log.debug("No local copy found");
-        def copy_item = [
+        def historic_item_info = [
           _id:item._id,
-          original:item
+          current_copy:item,
+          conflict:false,
+          pending_queue:[]
         ]
-        db."${collname}_localcopy".save(copy_item);
-        genericReconcilerService.reconcile(item, null, ruleset);
+        db."${collname}_localcopy".save(historic_item_info);
+        genericReconcilerService.reconcile(db, item, historic_item_info, ruleset);
       }
     }
   }

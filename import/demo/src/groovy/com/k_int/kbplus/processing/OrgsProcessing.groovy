@@ -20,7 +20,7 @@ public class OrgsProcessing {
       [ sourceProperty:'_id', targetProperty:'impId' ],
       [ sourceProperty:'name', targetProperty:'name', transformation:'trim' ],
       [ sourceProperty:'ipRange', targetProperty:'ipRange' ],
-      [ sourceProperty:'sector', targetProperty:'sectorName' ]
+      [ sourceProperty:'sector', targetProperty:'sector' ]
     ]
   ]
     
