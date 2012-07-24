@@ -33,6 +33,7 @@ class NewDataloadController {
         log.debug("Got local copy");
         if ( item.equals(local_copy.original) ) {
           log.debug("No change detected in source item since last processing");
+          genericReconcilerService.reconcile(item, local_copy, ruleset);
         }
         else {
           log.debug("Record has changed... process");
