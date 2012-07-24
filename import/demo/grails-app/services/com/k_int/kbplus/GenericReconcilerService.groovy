@@ -1,10 +1,13 @@
 package com.k_int.kbplus
 
+import org.springframework.context.*
+
 class GenericReconcilerService {
 
   static transactional = false
 
   def grailsApplication
+  ApplicationContext applicationContext
 
   @javax.annotation.PostConstruct
   def init() {
@@ -42,19 +45,22 @@ class GenericReconcilerService {
     // There can only be conflicts if we have an original object and a database object
     if ( originalObject && domainObject ) {
       ruleset.standardProcessing.each { p ->
-        // For each standard processing rule
-        if ( originalObject[p.sourceProperty] == newObject[p.sourceProperty] ) {
-          // Property has not changed from remote side, leave it alone
-        }
-        else { // The database value must be == to the original object value, or something has changed and we have a conflict
-          if ( originalObject[p.sourceProperty] == domainObject[p.targetProperty] ) {
-            // All systems are go, the value has changed, but the old value is the same as the value we
-            // have in the database. Therefore, we can update the db to the new value from the datasource
+        // Currently, only check if the rule is for a simple property copy
+        if ( p.targetProperty ) {
+          // For each standard processing rule
+          if ( originalObject[p.sourceProperty] == newObject[p.sourceProperty] ) {
+            // Property has not changed from remote side, leave it alone
           }
-          else {
-            // Oh dear, the data source is trying to update a value, but what we have in the db currently
-            // is not the same as the previous state of the record. Probably a conflict. Ask the user
-            result = true
+          else { // The database value must be == to the original object value, or something has changed and we have a conflict
+            if ( originalObject[p.sourceProperty] == domainObject[p.targetProperty] ) {
+              // All systems are go, the value has changed, but the old value is the same as the value we
+              // have in the database. Therefore, we can update the db to the new value from the datasource
+            }
+            else {
+              // Oh dear, the data source is trying to update a value, but what we have in the db currently
+              // is not the same as the previous state of the record. Probably a conflict. Ask the user
+              result = true
+            }
           }
         }
       }
@@ -86,34 +92,44 @@ class GenericReconcilerService {
       domain_object = domainClass.newInstance();
     }
 
-    // Iterate through the merge rules in the ruleset applying them
-    ruleset.standardProcessing.each { p ->
-      if ( original_object )
-        log.debug("test (${p.sourceProperty}) orig-${original_object[p.sourceProperty]} == latest-${latest_record[p.sourceProperty]}");
-      else 
-        log.debug("No original copy.. set values");
+    if ( domain_object ) {
 
-      if ( ( original_object ) && 
-           ( original_object[p.sourceProperty] == latest_record[p.sourceProperty] ) ) {
-        // Property has not changed from remote side, leave it alone
-      } 
-      else {
-        // Update the domain object
-        log.debug("Setting ${p.targetProperty} to \"${latest_record[p.sourceProperty]}\"");
-        domain_object[p.targetProperty] = latest_record[p.sourceProperty]
+      // Iterate through the merge rules in the ruleset applying them
+      ruleset.standardProcessing.each { p ->
+        if ( original_object )
+          log.debug("test (${p.sourceProperty}) orig-${original_object[p.sourceProperty]} == latest-${latest_record[p.sourceProperty]}");
+        else 
+          log.debug("No original copy.. set values");
+
+        if ( ( original_object ) && ( original_object[p.sourceProperty] == latest_record[p.sourceProperty] ) ) {
+          // Property has not changed from remote side, leave it alone
+        } 
+        else {
+          if ( p.targetProperty ) {
+            // Update the domain object
+            log.debug("Setting ${p.targetProperty} to \"${latest_record[p.sourceProperty]}\"");
+            domain_object[p.targetProperty] = latest_record[p.sourceProperty]
+          }
+          else if ( p.processingClosure ) {
+            p.processingClosure(latest_record[p.sourceProperty], applicationContext, domain_object)
+          }
+        }
       }
-    }
 
-    if ( domain_object.save() ) {
-      log.debug("Domain object saved OK.. Updating latest_record in reconciliation database");
-      saved_historic_info.current_copy = latest_record;
-      mongo_collection.save(saved_historic_info)
+      if ( domain_object.save() ) {
+        log.debug("Domain object saved OK.. Updating latest_record in reconciliation database");
+        saved_historic_info.current_copy = latest_record;
+        mongo_collection.save(saved_historic_info)
+      }
+      else {
+        log.error("Problem saving domain object ${domain_object}");
+        domain_object.errors.each { doe ->
+          log.error(doe);
+        }
+      }
     }
     else {
-      log.error("Problem saving domain object ${domain_object}");
-      domain_object.errors.each { doe ->
-        log.error(doe);
-      }
+      throw new RuntimeException("Problem trying to import record - No domain object located or created. ${latest_record}");
     }
   }
 

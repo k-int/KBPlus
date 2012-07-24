@@ -14,6 +14,8 @@ class Org {
   // Used to generate friendly semantic URLs
   String shortcode
 
+  Set ids = []
+
   static mappedBy = [ids: 'org', 
                      outgoingCombos: 'fromOrg', 
                      incomingCombos:'toOrg',

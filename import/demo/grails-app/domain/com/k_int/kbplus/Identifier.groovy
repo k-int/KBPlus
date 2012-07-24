@@ -17,5 +17,10 @@ class Identifier {
     value column:'id_value', index:'id_value_idx'
   }
 
+  static def lookupOrCreateCanonicalIdentifier(ns, value) {
+    // log.debug("lookupOrCreateCanonicalIdentifier(${ns},${value})");
+    def namespace = IdentifierNamespace.findByNs(ns) ?: new IdentifierNamespace(ns:ns).save();
+    Identifier.findByNsAndValue(namespace,value) ?: new Identifier(ns:namespace, value:value).save();
+  }
 
 }

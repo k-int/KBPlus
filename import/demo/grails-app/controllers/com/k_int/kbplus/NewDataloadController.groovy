@@ -54,5 +54,6 @@ class NewDataloadController {
         genericReconcilerService.reconcile(mongo_collection, item, historic_item_info, ruleset);
       }
     }
+    log.debug("handleChangesSince for ${collname} completed normally");
   }
 }
