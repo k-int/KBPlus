@@ -28,28 +28,30 @@ class NewDataloadController {
     def cursor = db."${collname}".find().sort(lastmod:1)
     cursor.addOption(com.mongodb.Bytes.QUERYOPTION_NOTIMEOUT);
     cursor.each { item ->
-      def local_copy = db."${collname}_localcopy".findOne([_id:item._id])
+      def mongo_collection = db."${collname}_localcopy"
+
+      def local_copy = mongo_collection.findOne([_id:item._id])
       if ( local_copy ) {
         log.debug("Got local copy");
-        if ( item.equals(local_copy.original) ) {
+        if ( item.equals(local_copy.current_copy) ) {
           log.debug("No change detected in source item since last processing");
-          genericReconcilerService.reconcile(db, item, local_copy, ruleset);
+          // genericReconcilerService.reconcile(db, item, local_copy, ruleset);
         }
         else {
           log.debug("Record has changed... process");
-          genericReconcilerService.reconcile(db, item, local_copy, ruleset);
+          genericReconcilerService.reconcile(mongo_collection, item, local_copy, ruleset);
         }
       }
       else {
         log.debug("No local copy found");
         def historic_item_info = [
           _id:item._id,
-          current_copy:item,
+          current_copy:null,
           conflict:false,
           pending_queue:[]
         ]
-        db."${collname}_localcopy".save(historic_item_info);
-        genericReconcilerService.reconcile(db, item, historic_item_info, ruleset);
+        mongo_collection.save(historic_item_info);
+        genericReconcilerService.reconcile(mongo_collection, item, historic_item_info, ruleset);
       }
     }
   }

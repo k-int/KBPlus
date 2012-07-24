@@ -11,12 +11,12 @@ class GenericReconcilerService {
     log.debug("Reconciler Init");
   }
 
-  def reconcile(db, latest_record,saved_historic_info,ruleset) {
+  def reconcile(mongo_collection, latest_record,saved_historic_info,ruleset) {
     log.debug("GenericReconcilerService::reconcile");
-    processNode(db, latest_record,saved_historic_info, ruleset);
+    processNode(mongo_collection, latest_record,saved_historic_info, ruleset);
   }
 
-  def processNode(db, latest_record, historic_info, ruleset) {
+  def processNode(mongo_collection, latest_record, historic_info, ruleset) {
     log.debug("processNode");
     def domain_object = resolve(latest_record, ruleset)
     log.debug("Result of resolve: ${domain_object}");
@@ -28,10 +28,10 @@ class GenericReconcilerService {
       log.debug("Conflicts detected. Queue up record");
       historic_info['pending_queue'].add([record:latest_record])
       historic_info.conflict = true;
-      db.save(historic_info);
+      mongo_collection.save(historic_info);
     }
     else {
-      applyChanges(latest_record, historic_info, ruleset, domain_object);
+      applyChanges(mongo_collection, latest_record, historic_info, ruleset, domain_object);
     }
   }
 
@@ -72,7 +72,7 @@ class GenericReconcilerService {
    *  Apply all changes from latest record to the domain object. Completed result should be
    *  updated database, and updated historic record. All should complete as a transaction if possible.
    */
-  def applyChanges(latest_record, saved_historic_info, ruleset, domain_object) {
+  def applyChanges(mongo_collection, latest_record, saved_historic_info, ruleset, domain_object) {
     def original_object = saved_historic_info.current_copy
     log.debug("applyChanges");
     if ( domain_object ) {
@@ -89,7 +89,7 @@ class GenericReconcilerService {
     // Iterate through the merge rules in the ruleset applying them
     ruleset.standardProcessing.each { p ->
       if ( original_object )
-        log.debug("test ${original_object[p.sourceProperty]} == ${latest_record[p.sourceProperty]}");
+        log.debug("test (${p.sourceProperty}) orig-${original_object[p.sourceProperty]} == latest-${latest_record[p.sourceProperty]}");
       else 
         log.debug("No original copy.. set values");
 
@@ -107,9 +107,10 @@ class GenericReconcilerService {
     if ( domain_object.save() ) {
       log.debug("Domain object saved OK.. Updating latest_record in reconciliation database");
       saved_historic_info.current_copy = latest_record;
+      mongo_collection.save(saved_historic_info)
     }
     else {
-      log.error("Problem saving domain object");
+      log.error("Problem saving domain object ${domain_object}");
       domain_object.errors.each { doe ->
         log.error(doe);
       }
