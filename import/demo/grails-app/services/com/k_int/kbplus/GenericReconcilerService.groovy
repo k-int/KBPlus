@@ -90,6 +90,8 @@ class GenericReconcilerService {
     ruleset.standardProcessing.each { p ->
       if ( original_object )
         log.debug("test ${original_object[p.sourceProperty]} == ${latest_record[p.sourceProperty]}");
+      else 
+        log.debug("No original copy.. set values");
 
       if ( ( original_object ) && 
            ( original_object[p.sourceProperty] == latest_record[p.sourceProperty] ) ) {
@@ -103,7 +105,8 @@ class GenericReconcilerService {
     }
 
     if ( domain_object.save() ) {
-      log.debug("Domain object saved OK");
+      log.debug("Domain object saved OK.. Updating latest_record in reconciliation database");
+      saved_historic_info.current_copy = latest_record;
     }
     else {
       log.error("Problem saving domain object");
