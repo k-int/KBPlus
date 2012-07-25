@@ -54,16 +54,16 @@
                 </tr>  
                 <tr>  
                   <th colspan="5"><input type="Submit" value="Apply Batch Changes"/></th>
-                  <th><span id="entitlementBatchEdit" class="entitlementBatchEdit"></span></th>
+                  <th><span id="entitlementBatchEdit" class="entitlementBatchEdit"></span><input type="hidden" name="bulk_core" id="bulk_core"/></th>
                   <th><span>edit</span> <input name="bulk_start_date" type="hidden" class="hdp" /></th>
                   <th><span>edit</span> <input name="bulk_end_date" type="hidden" class="hdp" /></th>
-                  <th><span id="embargoBatchEdit" class="embargoBatchEdit"></span></th>
+                  <th><span id="embargoBatchEdit" class="embargoBatchEdit"></span><input type="hidden" name="bulk_embargo" id="bulk_embargo"></th>
                   <th colspan="4"></th>
                 </tr>
                 <g:each in="${subscriptionInstance.issueEntitlements}" var="ie">
                   <tr>
                     <td><input type="checkbox" name="_bulkflag.${ie.id}"/></td>
-                    <td>${counter++}</td>
+                    <td>${counter++} / ${ie.id}</td>
                     <td><g:link controller="titleInstance" action="show" id="${ie.tipp.title.id}">${ie.tipp.title.title}</g:link></td>
                     <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
                     <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
@@ -144,10 +144,12 @@
         });
 
         $('span.entitlementBatchEdit').editable(function(value, settings) { 
-          return(value);
+          $("#bulk_core").val(value);
+          return(value);          
         },{ data:{'true':'true','false':'false'}, type:'select',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px'});
 
         $('span.embargoBatchEdit').editable(function(value, settings) { 
+          $("#bulk_embargo").val(value);
           return(value);
         },{type:'textarea',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px'});
 

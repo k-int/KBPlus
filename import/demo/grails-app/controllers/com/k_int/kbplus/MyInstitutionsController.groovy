@@ -582,14 +582,39 @@ class MyInstitutionsController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def subscriptionBatchUpdate() {
     def subscriptionInstance = Subscription.get(params.id)
+    def formatter = new java.text.SimpleDateFormat("MM/dd/yyyy")
 
     params.each { p ->
       if (p.key.startsWith('_bulkflag.') ) {
-        def ie_to_edit = p.key.substring(12);
-        log.debug("BulkEdit: ${ie_to_edit}");
+        def ie_to_edit = p.key.substring(10);
+
+        def ie = IssueEntitlement.get(ie_to_edit)
+
+        if ( params.bulk_start_date && ( params.bulk_start_date.trim().length() > 0 ) ) {
+          ie.startDate = formatter.parse(params.bulk_start_date)
+        }
+
+        if ( params.bulk_end_date && ( params.bulk_end_date.trim().length() > 0 ) ) {
+          ie.endDate = formatter.parse(params.bulk_end_date)
+        }
+
+        if ( params.bulk_embargo && ( params.bulk_embargo.trim().length() > 0 ) ) {
+          ie.embargo = params.bulk_embargo
+        }
+
+        if ( params.bulk_core && (params.bulk_core.trim().length() > 0 ) ) {
+          ie.coreTitle = params.bulk_core
+        }
+
+        if ( ie.save(flush:true) ) {
+        }
+        else {
+          log.error("Problem saving ${ie.errors}")
+        }
       }
     }
 
+ 
     redirect action: 'subscriptionDetails', params:[shortcode:params.shortcode, id:subscriptionInstance?.id], id:subscriptionInstance.id
   }
 
