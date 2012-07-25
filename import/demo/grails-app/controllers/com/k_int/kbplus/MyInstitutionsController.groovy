@@ -582,6 +582,14 @@ class MyInstitutionsController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def subscriptionBatchUpdate() {
     def subscriptionInstance = Subscription.get(params.id)
+
+    params.each { p ->
+      if (p.key.startsWith('_bulkflag.') ) {
+        def ie_to_edit = p.key.substring(12);
+        log.debug("BulkEdit: ${ie_to_edit}");
+      }
+    }
+
     redirect action: 'subscriptionDetails', params:[shortcode:params.shortcode, id:subscriptionInstance?.id], id:subscriptionInstance.id
   }
 
