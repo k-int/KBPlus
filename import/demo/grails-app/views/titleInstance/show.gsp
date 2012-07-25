@@ -3,7 +3,7 @@
 <!doctype html>
 <html>
   <head>
-    <meta name="layout" content="bootstrap">
+    <meta name="layout" content="mmbootstrap">
     <g:set var="entityName" value="${message(code: 'titleInstance.label', default: 'TitleInstance')}" />
     <title><g:message code="default.show.label" args="[entityName]" /></title>
   </head>

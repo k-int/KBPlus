@@ -2,7 +2,7 @@
 <!doctype html>
 <html>
   <head>
-    <meta name="layout" content="bootstrap"/>
+    <meta name="layout" content="mmbootstrap"/>
     <title>KB+</title>
 
     <r:require modules="jeditable"/>
@@ -60,10 +60,10 @@
                                       class="coreedit"/></td>
                   <td>
                       <span><g:formatDate format="dd MMMM yyyy" date="${ie.startDate}"/></span>
-                      <input id="IssueEntitlement:${ie.id}:startDate" type="hidden" class="dp" />
+                      <input id="IssueEntitlement:${ie.id}:startDate" type="hidden" class="dp1" />
                   </td>
                   <td><span><g:formatDate format="dd MMMM yyyy" date="${ie.endDate}"/></span>
-                      <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="dp" />
+                      <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="dp2" />
                   </td>
                   <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="newipe">${ie.embargo}</g:inPlaceEdit></td>
                   <td>${ie.tipp?.platform?.primaryUrl}</td>
@@ -88,7 +88,8 @@
 
     <script language="JavaScript">
       $(document).ready(function() {
-        $(".dp").datepicker({
+
+        var datepicker_config = {
           buttonImage: '../../../images/calendar.gif',
           buttonImageOnly: true,
           changeMonth: true,
@@ -96,13 +97,15 @@
           showOn: 'both',
           onSelect: function(dateText, inst) { 
             var elem_id = inst.input[0].id;
-            console.log("%o",inst);
-            console.log("%o",inst.input.parent().find('span'));
-            $.ajax({url: '<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>?elementid='+elem_id+'&value='+dateText+'&dt=date&idf=MM/dd/yyyy&odf=dd MMMM yyyy',
+            $.ajax({url: '<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>?elementid='+
+                             elem_id+'&value='+dateText+'&dt=date&idf=MM/dd/yyyy&odf=dd MMMM yyyy',
                    success: function(result){inst.input.parent().find('span').html(result)}
                    });
           }
-        });
+        };
+
+        $(".dp1").datepicker(datepicker_config);
+        $(".dp2").datepicker(datepicker_config);
 
         $(".hdp").datepicker({
           buttonImage: '../../../images/calendar.gif',
@@ -114,6 +117,7 @@
             alert(dateText)
           }
         });
+
         $('.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
           type      : 'textarea',
           cancel    : 'Cancel',
@@ -122,6 +126,7 @@
           rows      : 3,
           tooltip   : 'Click to edit...'
         });
+
         $('.coreedit').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
            data   : {'true':'true', 'false':'false'},
            type   : 'select',
@@ -130,6 +135,7 @@
            id     : 'elementid',
            tooltip: 'Click to edit...'
          });
+
          $('.reldataEdit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}"action="genericSetRel" absolute="true"/>', {
            loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:params.shortcode]}" action="availableLicenses" absolute="true"/>',
            type   : 'select',

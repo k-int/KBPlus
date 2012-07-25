@@ -2,7 +2,7 @@
 <!doctype html>
 <html>
 	<head>
-		<meta name="layout" content="bootstrap">
+		<meta name="layout" content="mmbootstrap">
 		<g:set var="entityName" value="${message(code: 'platform.label', default: 'Platform')}" />
 		<title><g:message code="default.create.label" args="[entityName]" /></title>
 	</head>
