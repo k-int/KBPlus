@@ -29,7 +29,15 @@
   </head>
 
   <body>
-    <div class="row-fluid">
+
+    <div class="container">
+        <ul class="breadcrumb">
+        <li> <g:link controller="home">KBPlus</g:link> <span class="divider">/</span> </li>
+        <li class="active">Search</li>
+      </ul>
+    </div>
+
+    <div class="container">
       <p>
         JISC KB+ data explorer. Use the links above to navigate the data items imported by the KB+ import process and validate the data.
       </p>

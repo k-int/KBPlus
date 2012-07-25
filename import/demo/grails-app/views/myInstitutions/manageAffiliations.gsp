@@ -7,7 +7,7 @@
 
   <body>
 
-    <div class="row-fluid">
+    <div class="container">
         <ul class="breadcrumb">
         <li> <g:link controller="home">KBPlus</g:link> <span class="divider">/</span> </li>
         <li> <g:link controller='myInstitutions' action='index'>My Institutions</g:link> <span class="divider">/</span> </li>
@@ -23,13 +23,13 @@
        <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
     </g:if>
 
-    <div class="row-fluid">
+    <div class="container">
       <div class="span12">
         <h1>Administrative memberships</h1>
       </div>
     </div>
 
-    <div class="row-fluid">
+    <div class="container"><div class="row-fluid">
       <div class="span6">
         <div class="well">
           <h2>Existing Memberships</h2>
@@ -80,7 +80,7 @@
           <form>
         </div>
       </div>
-    </div>
+    </div></div>
 
   </body>
 </html>

@@ -6,7 +6,15 @@
   </head>
 
   <body>
-    <div class="row-fluid">
+
+   <div class="container">
+        <ul class="breadcrumb">
+           <li> <g:link controller="home">KBPlus</g:link> <span class="divider">/</span> </li>
+           <li>Licences</li>
+        </ul>
+    </div>
+
+    <div class="container">
       <table class="table table-bordered">
         <tr>
           <th colspan="4">Note attached to</th>

@@ -26,8 +26,14 @@
     </g:if>
 
 
-    <div class="row-fluid">
-      <div>
+   <div class="container">
+        <ul class="breadcrumb">
+           <li> <g:link controller="home">KBPlus</g:link> <span class="divider">/</span> </li>
+           <li>Licences</li>
+        </ul>
+    </div>
+
+    <div class="container">
         <div class="well">
           <h2>Manage Pending Membership Requests</h2>
 
@@ -59,7 +65,6 @@
             </tbody>
           </table>
         </div>
-      </div>
     </div>
 
 

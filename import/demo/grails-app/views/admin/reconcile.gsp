@@ -7,8 +7,7 @@
 
   <body>
 
-
-    <div class="row-fluid">
+    <div class="container">
         <ul class="breadcrumb">
         <li> <g:link controller="home">KBPlus</g:link> <span class="divider">/</span> </li>
         <li> <g:link controller='admin' action='index'>Admin</g:link> <span class="divider">/</span> </li>
@@ -26,7 +25,8 @@
     </g:if>
 
 
-    <div class="row-fluid">
+
+    <div class="container">
       <div class="well">
         <h2>Data Reconciliation</h2>
         <g:if test="${recon_status.active}">
