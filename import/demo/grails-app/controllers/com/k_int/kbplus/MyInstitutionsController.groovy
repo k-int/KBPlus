@@ -361,6 +361,7 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
     result.subscriptionInstance = Subscription.get(params.id)
+    log.debug("subscriptionInstance returning...");
     result
   }
 
@@ -577,4 +578,13 @@ class MyInstitutionsController {
 
     result;
   }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def subscriptionBatchUpdate() {
+    def subscriptionInstance = Subscription.get(params.id)
+    redirect action: 'subscriptionDetails', params:[shortcode:params.shortcode, id:subscriptionInstance?.id], id:subscriptionInstance.id
+  }
+
+
+
 }

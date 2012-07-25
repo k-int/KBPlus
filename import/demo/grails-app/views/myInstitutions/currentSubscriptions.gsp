@@ -5,10 +5,17 @@
     <title>KB+ Data import explorer</title>
   </head>
   <body>
-    <div class="row-fluid">
 
-      <h2>${institution?.name} - Subscriptions</h2>
-      <hr/>
+    <div class="container">
+      <ul class="breadcrumb">
+        <li> <g:link controller="home">KBPlus</g:link> <span class="divider">/</span> </li>
+        <li>Current Subscriptions</li>
+      </ul>
+    </div>
+
+    <div class="container">
+
+      <h1>${institution?.name} - Current Subscriptions</h1>
 
       <ul class="nav nav-pills">
        <li class="active"><g:link controller="myInstitutions" 

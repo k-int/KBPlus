@@ -27,10 +27,17 @@
     </style>
   </head>
   <body>
-    <div class="row-fluid">
 
-      <h2>${institution?.name} - Subscriptions</h2>
-      <hr/>
+    <div class="container">
+      <ul class="breadcrumb">
+        <li> <g:link controller="home">KBPlus</g:link> <span class="divider">/</span> </li>
+        <li>Add Subscription</li>
+      </ul>
+    </div>
+
+
+    <div class="container">
+      <h1>${institution?.name} - Add Subscription</h1>
 
       <ul class="nav nav-pills">
         <li><g:link controller="myInstitutions" 
@@ -49,7 +56,7 @@
       </g:form>
     </div>
 
-    <div class="row-fluid">
+    <div class="container">
       <div class="span2">
         &nbsp;
       </div>

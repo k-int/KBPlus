@@ -9,8 +9,19 @@
     <r:require module="jquery-ui"/>
   </head>
   <body>
-    <h2>${institution?.name} Subscription Taken : ${subscriptionInstance?.name}</span></h2>
-    <hr/>
+
+    <div class="container">
+      <ul class="breadcrumb">
+        <li> <g:link controller="home">KBPlus</g:link> <span class="divider">/</span> </li>
+        <li>Subscription Details</li>
+      </ul>
+    </div>
+
+    <div class="container">
+
+    <h1>${institution?.name} Subscription Taken :
+       <g:inPlaceEdit domain="Subscription" pk="${subscriptionInstance.id}" field="name" id="name" class="newipe">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
+
     <div class="tabbable"> <!-- Only required for left/right tabs -->
       <dl>
         <dt>License</td>
@@ -21,59 +32,64 @@
                         id='ownerLicense'>${subscriptionInstance?.owner?.reference}</g:relation></dd>
 
         <g:if test="${subscriptionInstance?.issueEntitlements}">
-          <dt>Entitlements</td>
-          <dd>
-            <table  class="table table-striped table-bordered table-condensed">
-              <tr>
-                <th></th>
-                <th>Title</th>
-                <th>ISSN</th>
-                <th>eISSN</th>
-                <th>Core</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Embargo</th>
-                <th>Content URL</th>
-                <th>Coverage</th>
-                <th>Docs</th>
-                <th>JUSP</th>
-              </tr>
-              <tr>
-                <th colspan="4"><button>Apply Batch Changes:</button></th>
-                <th>edit</th>
-                <th>edit <input type="hidden" class="hdp" /></th>
-                <th>edit <input type="hidden" class="hdp" /></th>
-                <th>edit</th>
-                <th colspan="4"></th>
-              </tr>
-              <g:each in="${subscriptionInstance.issueEntitlements}" var="ie">
+          <g:form action="subscriptionBatchUpdate" params="${[shortcode:params.shortcode, id:subscriptionInstance?.id]}">
+            <dt>Entitlements</td>
+            <dd>
+              <g:set var="counter" value="${1}" />
+              <table  class="table table-striped table-bordered table-condensed">
                 <tr>
-                  <td><input type="checkbox" name="batchedit"/>
-                  <td><g:link controller="titleInstance" action="show" id="${ie.tipp.title.id}">${ie.tipp.title.title}</g:link></td>
-                  <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
-                  <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
-                  <td><g:refdataValue val="${ie.coreTitle}" 
-                                      domain="IssueEntitlement" 
-                                      pk="${ie.id}" 
-                                      field="coreTitle" 
-                                      cat="isCoreTitle"
-                                      class="coreedit"/></td>
-                  <td>
-                      <span><g:formatDate format="dd MMMM yyyy" date="${ie.startDate}"/></span>
-                      <input id="IssueEntitlement:${ie.id}:startDate" type="hidden" class="dp1" />
-                  </td>
-                  <td><span><g:formatDate format="dd MMMM yyyy" date="${ie.endDate}"/></span>
-                      <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="dp2" />
-                  </td>
-                  <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="newipe">${ie.embargo}</g:inPlaceEdit></td>
-                  <td>${ie.tipp?.platform?.primaryUrl}</td>
-                  <td>${ie.coverageDepth}<br/>${ie.coverageNote}</td>
-                  <td>docs</td>
-                  <td>JUSP</td>
+                  <th></th>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>ISSN</th>
+                  <th>eISSN</th>
+                  <th>Core</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Embargo</th>
+                  <th>Content URL</th>
+                  <th>Coverage</th>
+                  <th>Docs</th>
+                  <th>JUSP</th>
+                </tr>  
+                <tr>  
+                  <th colspan="5"><input type="Submit" value="Apply Batch Changes"/></th>
+                  <th><span id="entitlementBatchEdit" class="entitlementBatchEdit"></span></th>
+                  <th><span>edit</span> <input name="bulk_start_date" type="hidden" class="hdp" /></th>
+                  <th><span>edit</span> <input name="bulk_end_date" type="hidden" class="hdp" /></th>
+                  <th><span id="embargoBatchEdit" class="embargoBatchEdit"></span></th>
+                  <th colspan="4"></th>
                 </tr>
-              </g:each>
-            </table>
-          </dd>
+                <g:each in="${subscriptionInstance.issueEntitlements}" var="ie">
+                  <tr>
+                    <td><input type="checkbox" name="batchedit"/></td>
+                    <td>${counter++}</td>
+                    <td><g:link controller="titleInstance" action="show" id="${ie.tipp.title.id}">${ie.tipp.title.title}</g:link></td>
+                    <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
+                    <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
+                    <td><g:refdataValue val="${ie.coreTitle}" 
+                                        domain="IssueEntitlement" 
+                                        pk="${ie.id}" 
+                                        field="coreTitle" 
+                                        cat="isCoreTitle"
+                                        class="coreedit"/></td>
+                    <td>
+                        <span><g:formatDate format="dd MMMM yyyy" date="${ie.startDate}"/></span>
+                        <input id="IssueEntitlement:${ie.id}:startDate" type="hidden" class="dp1" />
+                    </td>
+                    <td><span><g:formatDate format="dd MMMM yyyy" date="${ie.endDate}"/></span>
+                        <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="dp2" />
+                    </td>
+                    <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="newipe">${ie.embargo}</g:inPlaceEdit></td>
+                    <td>${ie.tipp?.platform?.primaryUrl}</td>
+                    <td>${ie.coverageDepth}<br/>${ie.coverageNote}</td>  
+                    <td>docs</td>  
+                    <td>JUSP</td>
+                  </tr>
+                </g:each>
+              </table>
+            </dd>
+          </g:form>
         </g:if>
         <dt>Org Links</td>
         <dd>
@@ -85,7 +101,7 @@
         </dd>
       </dl>
     </div>
-
+    </div>
     <script language="JavaScript">
       $(document).ready(function() {
 
@@ -104,21 +120,21 @@
           }
         };
 
-        $(".dp1").datepicker(datepicker_config);
-        $(".dp2").datepicker(datepicker_config);
+        $("div dl dd table tr td input.dp1").datepicker(datepicker_config);
+        $("div dl dd table tr td input.dp2").datepicker(datepicker_config);
 
-        $(".hdp").datepicker({
+        $("input.hdp").datepicker({
           buttonImage: '../../../images/calendar.gif',
           buttonImageOnly: true,
           changeMonth: true,
           changeYear: true,
           showOn: 'both',
           onSelect: function(dateText, inst) {
-            alert(dateText)
+            inst.input.parent().find('span').html(dateText)
           }
         });
 
-        $('.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
+        $('span.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
           type      : 'textarea',
           cancel    : 'Cancel',
           submit    : 'OK',
@@ -127,7 +143,15 @@
           tooltip   : 'Click to edit...'
         });
 
-        $('.coreedit').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
+        $('span.entitlementBatchEdit').editable(function(value, settings) { 
+          return(value);
+        },{ data:{'true':'true','false':'false'}, type:'select',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px'});
+
+        $('span.embargoBatchEdit').editable(function(value, settings) { 
+          return(value);
+        },{type:'textarea',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px'});
+
+        $('td span.coreedit').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
            data   : {'true':'true', 'false':'false'},
            type   : 'select',
            cancel : 'Cancel',
@@ -136,7 +160,7 @@
            tooltip: 'Click to edit...'
          });
 
-         $('.reldataEdit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}"action="genericSetRel" absolute="true"/>', {
+         $('dd span.reldataEdit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}"action="genericSetRel" absolute="true"/>', {
            loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:params.shortcode]}" action="availableLicenses" absolute="true"/>',
            type   : 'select',
            cancel : 'Cancel',
