@@ -28,7 +28,7 @@
 
     <div class="container">
       <div class="well">
-        <h2>Data Reconciliation</h2>
+        <h1>Data Reconciliation</h1>
         <g:if test="${recon_status.active}">
           Data reconciliation currently in stage : ${recon_status.stage} (nn%)
         </g:if>

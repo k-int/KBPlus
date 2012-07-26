@@ -110,106 +110,118 @@ int processed = 0;
 try {
   while ((nl = r.readNext()) != null) {
     rownum++
+
     boolean bad = false;
     String badreason = null;
     boolean has_data = false
    
+
+    
     // included_st, publication_title, print_identifier, online_identifier, date_first_issue_subscribed, num_first_vol, num_first_iss, last_vo, last_iss
     // embargo, core_title
   
     // Lookup title based on print_identifier, target_identifiers ['ISSN'] = print_identifier
     def title = null;
     def title_identifiers = []
-  
-    if ( nl[2]?.length() > 0 ) {
-      println("Attempting lookup by ISSN: \"${nl[2]?.trim()}\"");
-      title = db.titles.findOne(identifier:[type:'ISSN', value: nl[2]?.trim()])
-      title_identifiers.add([value:nl[2], type:'ISSN'])
-    }
-  
-    if ( ( !title ) && ( nl[3]?.length() > 0 ) ) {
-      println("Attempting lookup by eISSN: \"${nl[3]?.trim()}\"");
-      title = db.titles.findOne(identifier:[type:'eISSN', value: nl[3]?.trim()])
-      title_identifiers.add([value:nl[2], type:'eISSN'])
-    }
-  
-    // If we don't have a title here, it's likely that the ST file references a journal not defined
-    // in an SO file. Maybe the institution negotiated an addition, or there is an error in the SO?
-    // Either way, if there is a title and at least 1 identifier, we can add the item here
-    if ( nl[1] && ( nl[1].length() > 0 ) && (!title) && ( title_identifiers.size() > 0 ) ) {
-      title = lookupOrCreateTitle(title:nl[1],
-                                  identifier:title_identifiers,
-                                  publisher:null,
-                                  db:db,
-                                  stats:stats)
-  
-    }
-  
-    if ( title) {
-      println("Matched title ${title}");
-      inc('titles_matched',stats);
-  
-      def pkg = db.pkgs.findOne(subs:sub._id);
-      if ( pkg ) {
-        println("Located package ${pkg}");
-  
-  
-        def tipp  = locateTIPP(db,title,pkg)
-  
-        if ( tipp ) {
-          def new_st_record = db.st.findOne(tipp_id:tipp._id, 
-                                             org_id:sub_org._id, 
-                                             sub_id:sub._id)
-  
-          if ( ! new_st_record ) {
-  
-            def parsed_start_date = parseDate(nl[4],possible_date_formats)
-            def parsed_end_date = parseDate(nl[7],possible_date_formats)
-  
-            new_st_record = [
-              _id: new org.bson.types.ObjectId(),
-              owner: new_sub_record._id,
-              tipp_id : tipp._id,
-              org_id : sub_org._id,
-              sub_id : sub._id,
-              stsy: st_start_year[1],
-              stey: st_end_year[1],
-              included: nl[0],
-              date_first_issue_subscribed: parsed_start_date,
-              num_first_vol_subscribed: nl[5],
-              num_first_issue_subscribed: nl[6],
-              date_last_issue_subscribed: parsed_end_date,
-              num_last_vol_subscribed: nl[8],
-              num_last_issue_subscribed: nl[9],
-              embargo: nl[10],
-              core_title: nl[11],
-              lastmod:System.currentTimeMillis(),
-              sourcefile:args[0]
-            ]
-            db.stTitle.save(new_st_record);
-            println("Saved new st record with id ${new_st_record._id}");
+
+    if ( nl.length > 11 ) {
+    
+      if ( nl[2]?.length() > 0 ) {
+        println("Attempting lookup by ISSN: \"${nl[2]?.trim()}\"");
+        title = db.titles.findOne(identifier:[type:'ISSN', value: nl[2]?.trim()])
+        title_identifiers.add([value:nl[2], type:'ISSN'])
+      }
+    
+      if ( ( !title ) && ( nl[3]?.length() > 0 ) ) {
+        println("Attempting lookup by eISSN: \"${nl[3]?.trim()}\"");
+        title = db.titles.findOne(identifier:[type:'eISSN', value: nl[3]?.trim()])
+        title_identifiers.add([value:nl[2], type:'eISSN'])
+      }
+    
+      // If we don't have a title here, it's likely that the ST file references a journal not defined
+      // in an SO file. Maybe the institution negotiated an addition, or there is an error in the SO?
+      // Either way, if there is a title and at least 1 identifier, we can add the item here
+      if ( nl[1] && ( nl[1].length() > 0 ) && (!title) && ( title_identifiers.size() > 0 ) ) {
+        title = lookupOrCreateTitle(title:nl[1],
+                                    identifier:title_identifiers,
+                                    publisher:null,
+                                    db:db,
+                                    stats:stats)
+    
+      }
+    
+      if ( title) {
+        println("Matched title ${title}");
+        inc('titles_matched',stats);
+    
+        def pkg = db.pkgs.findOne(subs:sub._id);
+        if ( pkg ) {
+          println("Located package ${pkg}");
+    
+    
+          def tipp  = locateTIPP(db,title,pkg)
+    
+          if ( tipp ) {
+            def new_st_record = db.st.findOne(tipp_id:tipp._id, 
+                                               org_id:sub_org._id, 
+                                               sub_id:sub._id)
+    
+            if ( ! new_st_record ) {
+    
+              def parsed_start_date = parseDate(nl[4],possible_date_formats)
+              def parsed_end_date = parseDate(nl[7],possible_date_formats)
+    
+              new_st_record = [
+                _id: new org.bson.types.ObjectId(),
+                owner: new_sub_record._id,
+                tipp_id : tipp._id,
+                org_id : sub_org._id,
+                sub_id : sub._id,
+                stsy: st_start_year[1],
+                stey: st_end_year[1],
+                included: nl[0],
+                date_first_issue_subscribed: parsed_start_date,
+                num_first_vol_subscribed: nl[5],
+                num_first_issue_subscribed: nl[6],
+                date_last_issue_subscribed: parsed_end_date,
+                num_last_vol_subscribed: nl[8],
+                num_last_issue_subscribed: nl[9],
+                embargo: nl[10],
+                core_title: nl[11],
+                lastmod:System.currentTimeMillis(),
+                sourcefile:args[0]
+              ]
+              db.stTitle.save(new_st_record);
+              println("Saved new st record with id ${new_st_record._id}");
+            }
+            else {
+              println("Located existing st record...");
+            }
           }
           else {
-            println("Located existing st record...");
           }
+          processed++;
+          // tipps.each { tipp ->
+          //   println(tipp)
+          // }
         }
         else {
+          println("Failed to locate package matching this subscription");
         }
-        processed++;
-        // tipps.each { tipp ->
-        //   println(tipp)
-        // }
       }
       else {
-        println("Failed to locate package matching this subscription");
+        println("Failed to match title with ISSN \"${nl[2]}\" or eISSN \"${nl[3]}\"");
+        inc('titles_unmatched',stats);
+        bad = true
+        st_bad++;
+        badreason="Unable to locate title for ISSN \"${nl[2]}\"  or eISSN \"${nl[3]}\"";
       }
     }
     else {
-      println("Failed to match title with ISSN \"${nl[2]}\" or eISSN \"${nl[3]}\"");
-      inc('titles_unmatched',stats);
+      println("Row ${rownum} does not have enough columns");
       bad = true
       st_bad++;
-      badreason="Unable to locate title for ISSN \"${nl[2]}\"  or eISSN \"${nl[3]}\"";
+      badreason="Row ${rownum} appears to have insufficient columns"
     }
   
     if ( bad ) {
