@@ -124,13 +124,13 @@ try {
     if ( nl[2]?.length() > 0 ) {
       println("Attempting lookup by ISSN: \"${nl[2]?.trim()}\"");
       title = db.titles.findOne(identifier:[type:'ISSN', value: nl[2]?.trim()])
-      title_identifiers.add([type:'ISSN', value:nl[2]])
+      title_identifiers.add([value:nl[2], type:'ISSN'])
     }
   
     if ( ( !title ) && ( nl[3]?.length() > 0 ) ) {
       println("Attempting lookup by eISSN: \"${nl[3]?.trim()}\"");
       title = db.titles.findOne(identifier:[type:'eISSN', value: nl[3]?.trim()])
-      title_identifiers.add([type:'eISSN', value:nl[2]])
+      title_identifiers.add([value:nl[2], type:'eISSN'])
     }
   
     // If we don't have a title here, it's likely that the ST file references a journal not defined

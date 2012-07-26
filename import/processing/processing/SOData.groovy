@@ -161,20 +161,20 @@ while ((nl = r.readNext()) != null) {
   
       // If there is an identifier, set up the appropriate matching...
       if ( present(nl[1]) && ( nl[1].trim().length() > 8 ) ) 
-        target_identifiers.add([type:'ISSN', value:nl[1].trim()])
+        target_identifiers.add([value:nl[1].trim(), type:'ISSN'])
 
       if ( present(nl[2]) && ( nl[2].trim().length() > 8 ) ) 
-        target_identifiers.add([type:'eISSN', value:nl[2].trim()])
+        target_identifiers.add([value:nl[2].trim(), type:'eISSN'])
 
       if ( present(nl[9]) ) 
         // tipp_private_identifiers.add([type:'KBART', value:nl[9].trim()])
-        tipp_private_identifiers.add([type:pkg.identifier, value:nl[9].trim()])
+        tipp_private_identifiers.add([value:nl[9].trim(), type:pkg.identifier])
 
       if ( present(nl[14]) ) 
-        target_identifiers.add([type:'DOI', value:nl[14].trim()])
+        target_identifiers.add([value:nl[14].trim(), type:'DOI'])
   
       for ( int i=0; i<num_prop_id_cols; i++ ) {
-        tipp_private_identifiers.add([type:'EXTERNAL', value:nl[15+i].trim()])
+        tipp_private_identifiers.add([value:nl[15+i].trim(), type:'EXTERNAL'])
       }
   
       def title = lookupOrCreateTitle(title:nl[0],
@@ -204,9 +204,10 @@ while ((nl = r.readNext()) != null) {
         parsed_start_date = sub.start_date
       }
 
-      if ( parsed_end_date == null ) {
-        parsed_end_date = sub.end_date
-      }
+      // Incorrect - null end date == today, as per OS, 26-07-2012.
+      //if ( parsed_end_date == null ) {
+      // parsed_end_date = sub.end_date
+      //}
 
       // else {
   
@@ -385,6 +386,8 @@ def lookupOrCreateTitle(Map params=[:]) {
       // println("Attempting match.. ${params.identifier[i].type} ${params.identifier[i].value}");
       // title = params.db.titles.findOne(identifier:[type:params.identifier[i].type, value: params.identifier[i].value])
       title = params.db.titles.findOne(identifier:[value: params.identifier[i].value, type:params.identifier[i].type])
+      if ( title )
+        println("Title matched on identifier value:${params.identifier[i].value} type:${type:params.identifier[i].type}");
     }
     if ( title ) {
       inc('titles_matched_by_identifier',params.stats);
@@ -405,7 +408,7 @@ def lookupOrCreateTitle(Map params=[:]) {
 
   if (!title)  {
     // Unable to locate title with identifier given... Try other dedup matches on other props if needed
-    println("Create New title : ${params.title}, title=${title}, publisher=${params.publisher}");
+    println("Create New title : ${params.title}, title=${title}, publisher=${params.publisher}, identifiers=${params.identifier}");
 
     try {
       title = [
