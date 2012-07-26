@@ -84,7 +84,7 @@
   
               <div id="resultsarea">
                 <table cellpadding="5" cellspacing="5">
-                  <tr><th>Type</th><th>Title/Name</th></tr>
+                  <tr><th>Type</th><th>Title/Name</th><th>Additional Info</th></tr>
                   <g:each in="${hits}" var="hit">
                     <tr>
                       <td>
@@ -95,26 +95,29 @@
                         <g:if test="${hit.type=='com.k_int.kbplus.Subscription'}"><span class="label label-info">Subscription</span></g:if> 
                         <g:if test="${hit.type=='com.k_int.kbplus.License'}"><span class="label label-info">License</span></g:if> 
                       </td>
-                      <td>
-                        <g:if test="${hit.type=='com.k_int.kbplus.Org'}">
-                          <g:link controller="org" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link>
-                        </g:if> 
-                        <g:if test="${hit.type=='com.k_int.kbplus.TitleInstance'}">
-                          <g:link controller="titleInstance" action="show" id="${hit.source.dbId}">${hit.source.title}</g:link>
-                        </g:if>
-                        <g:if test="${hit.type=='com.k_int.kbplus.Package'}">
-                          <g:link controller="package" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link>
-                        </g:if>
-                        <g:if test="${hit.type=='com.k_int.kbplus.Platform'}">
-                          <g:link controller="platform" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link>
-                        </g:if>
-                        <g:if test="${hit.type=='com.k_int.kbplus.Subscription'}">
-                          <g:link controller="subscription" action="show" id="${hit.source.dbId}">${hit.source.name} (${hit.source.type})</g:link>
-                        </g:if>
-                        <g:if test="${hit.type=='com.k_int.kbplus.License'}">
-                          <g:link controller="license" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link>
-                        </g:if>
-                      </td>
+                      <g:if test="${hit.type=='com.k_int.kbplus.Org'}">
+                          <td><g:link controller="org" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
+                      </g:if> 
+                      <g:if test="${hit.type=='com.k_int.kbplus.TitleInstance'}">
+                        <td><g:link controller="titleInstance" action="show" id="${hit.source.dbId}">${hit.source.title}</g:link></td>
+                        <td>
+                          <g:each in="${hit.source.identifiers}" var="id">
+                            ${id.type}:${id.value} &nbsp;
+                          </g:each>
+                        </td>
+                      </g:if>
+                      <g:if test="${hit.type=='com.k_int.kbplus.Package'}">
+                        <td><g:link controller="package" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
+                      </g:if>
+                      <g:if test="${hit.type=='com.k_int.kbplus.Platform'}">
+                        <td><g:link controller="platform" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
+                      </g:if>
+                      <g:if test="${hit.type=='com.k_int.kbplus.Subscription'}">
+                        <td><g:link controller="subscription" action="show" id="${hit.source.dbId}">${hit.source.name} (${hit.source.type})</g:link></td>
+                      </g:if>
+                      <g:if test="${hit.type=='com.k_int.kbplus.License'}">
+                        <td><g:link controller="license" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
+                      </g:if>
                     </tr>
                   </g:each>
                 </table>

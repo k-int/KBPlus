@@ -63,7 +63,7 @@
                 <g:each in="${subscriptionInstance.issueEntitlements}" var="ie">
                   <tr>
                     <td><input type="checkbox" name="_bulkflag.${ie.id}"/></td>
-                    <td>${counter++} / ${ie.id}</td>
+                    <td>${counter++}</td>
                     <td><g:link controller="titleInstance" action="show" id="${ie.tipp.title.id}">${ie.tipp.title.title}</g:link></td>
                     <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
                     <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
