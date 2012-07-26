@@ -595,7 +595,7 @@ class DataloadService {
                                                     startDate: nvl(st.date_first_issue_subscribed, tipp.startDate),
                                                     startVolume:nvl(st.num_first_vol_subscribed,tipp.startVolume),
                                                     startIssue:nvl(st.num_first_issue_subscribed,tipp.startIssue),
-                                                    endDate:nvl(st.date_first_issue_subscribed,tipp.endDate),
+                                                    endDate:nvl(st.date_last_issue_subscribed,tipp.endDate),
                                                     endVolume:nvl(st.num_last_vol_subscibed,tipp.endVolume),
                                                     endIssue:nvl(st.num_last_issue_subscribed,tipp.endIssue),
                                                     embargo:nvl(st.embargo,tipp.embargo),

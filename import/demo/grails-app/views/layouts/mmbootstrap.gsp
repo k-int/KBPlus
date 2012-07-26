@@ -76,8 +76,9 @@
                        <g:link controller="myInstitutions" action="index">Dashboard</g:link></li>
 
                      <li class="divider"></li>
-                     <g:if test="${user.affiliations && user.affiliations.size() > 0}">
-                       <g:each in="${user.affiliations}" var="ua">
+                     <g:set var="usaf" value="${user.authorizedAffiliations}" />
+                     <g:if test="${usaf && usaf.size() > 0}">
+                       <g:each in="${usaf}" var="ua">
                          <li>
                            <g:link controller="myInstitutions" 
                                    action="licenses" 

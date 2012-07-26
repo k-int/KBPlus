@@ -1,6 +1,7 @@
 package com.k_int.kbplus.auth
 
 import com.k_int.kbplus.Org
+import javax.persistence.Transient
 
 class UserOrg {
 
@@ -16,5 +17,11 @@ class UserOrg {
       dateActioned(nullable:true)
       dateRequested(nullable:true)
     }
+
+  @Transient
+  int compareTo(obj) {
+    org?.name?.compareTo(obj?.org.name)
+  }
+
 }
 

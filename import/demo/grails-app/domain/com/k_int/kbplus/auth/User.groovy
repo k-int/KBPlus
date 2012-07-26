@@ -18,6 +18,8 @@ class User {
   boolean accountLocked
   boolean passwordExpired
 
+  SortedSet affiliations
+
   static hasMany = [ affiliations: com.k_int.kbplus.auth.UserOrg ]
   static mappedBy = [ affiliations: 'user' ]
 
@@ -63,5 +65,10 @@ class User {
 
   protected void encodePassword() {
     password = springSecurityService.encodePassword(password)
+  }
+
+  @Transient
+  def getAuthorizedAffiliations() {
+    affiliations.findAll { (it.status == 1) || (it.status==3) }
   }
 }
