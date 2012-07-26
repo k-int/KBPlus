@@ -128,13 +128,13 @@ try {
     
       if ( nl[2]?.length() > 0 ) {
         println("Attempting lookup by ISSN: \"${nl[2]?.trim()}\"");
-        title = db.titles.findOne(identifier:[type:'ISSN', value: nl[2]?.trim()])
+        title = db.titles.findOne(identifier:[value: nl[2]?.trim(), type:'ISSN'])
         title_identifiers.add([value:nl[2], type:'ISSN'])
       }
     
       if ( ( !title ) && ( nl[3]?.length() > 0 ) ) {
         println("Attempting lookup by eISSN: \"${nl[3]?.trim()}\"");
-        title = db.titles.findOne(identifier:[type:'eISSN', value: nl[3]?.trim()])
+        title = db.titles.findOne(identifier:[value: nl[3]?.trim(), type:'eISSN'])
         title_identifiers.add([value:nl[2], type:'eISSN'])
       }
     

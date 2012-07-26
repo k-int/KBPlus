@@ -16,17 +16,18 @@
     </div>
 
 
-    <g:if test="${flash.error}">
-       <bootstrap:alert class="alert-info">${flash.error}</bootstrap:alert>
-    </g:if>
-
-    <g:if test="${flash.message}">
-       <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
-    </g:if>
-
 
 
     <div class="container">
+
+      <g:if test="${flash.error}">
+         <bootstrap:alert class="alert-info">${flash.error}</bootstrap:alert>
+      </g:if>
+
+      <g:if test="${flash.message}">
+         <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
+      </g:if>
+
       <div class="well">
         <h1>Data Reconciliation</h1>
         <g:if test="${recon_status.active}">
