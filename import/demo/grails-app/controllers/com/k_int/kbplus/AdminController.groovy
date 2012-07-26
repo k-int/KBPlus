@@ -60,8 +60,15 @@ class AdminController {
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def startReconciliation() {
-    log.debug("Starting reconciliation process");
-    dataloadService.requestReconciliation();
+    def test = RefdataCategory.findByDesc('isCoreTitle');
+    if ( test != null ) {
+      log.debug("Starting reconciliation process");
+      flash.message="Reconciliation started";
+      dataloadService.requestReconciliation();
+    }
+    else {
+      flash.message="Reconciliation not started - Is the reference data set up?";
+    }
     redirect(action:'reconcile');
   }
 
