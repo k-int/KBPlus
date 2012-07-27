@@ -35,7 +35,7 @@
           <g:form action="subscriptionBatchUpdate" params="${[shortcode:params.shortcode, id:subscriptionInstance?.id]}">
             <dt>Entitlements</td>
             <dd>
-              <g:set var="counter" value="${1}" />
+              <g:set var="counter" value="${offset+1}" />
               <table  class="table table-striped table-bordered table-condensed">
                 <tr>
                   <th></th>
@@ -60,7 +60,7 @@
                   <th><span id="embargoBatchEdit" class="embargoBatchEdit"></span><input type="hidden" name="bulk_embargo" id="bulk_embargo"></th>
                   <th colspan="4"></th>
                 </tr>
-                <g:each in="${subscriptionInstance.issueEntitlements}" var="ie">
+                <g:each in="${entitlements}" var="ie">
                   <tr>
                     <td><input type="checkbox" name="_bulkflag.${ie.id}"/></td>
                     <td>${counter++}</td>
@@ -101,6 +101,17 @@
         </dd>
       </dl>
     </div>
+
+    <div class="paginateButtons" style="text-align:center">
+      <g:if test="${entitlements}" >
+        <span><g:paginate controller="myInstitutions" 
+                          action="subscriptionDetails" 
+                          params="${params}" next="Next" prev="Prev" 
+                          max="15" 
+                          total="${num_sub_rows}" /></span>
+      </g:if>
+    </div>
+
     </div>
     <script language="JavaScript">
       $(document).ready(function() {

@@ -358,9 +358,39 @@ class MyInstitutionsController {
   def subscriptionDetails() {
     log.debug("subscriptionDetails id:${params.id}");
     def result = [:]
+
+    def paginate_after = params.paginate_after ?: 29;
+    result.max = params.max ? Integer.parseInt(params.max) : 15;
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
     result.subscriptionInstance = Subscription.get(params.id)
+   
+    result.entitlements = []
+    result.num_sub_rows = result.subscriptionInstance.issueEntitlements?.size()
+
+    log.debug("Is ${result.num_sub_rows} > ${paginate_after}");
+
+    if ( result.num_sub_rows > paginate_after ) {
+      log.debug("Doing pagination");
+      def e_arr = result.subscriptionInstance.issueEntitlements?.toArray()
+      result.last = result.offset + result.max >= result.num_sub_rows ? (result.num_sub_rows) : ( result.offset + result.max)
+      
+
+      log.debug("Paginate rows, array size is ${e_arr.length}, source set size was ${result.subscriptionInstance.issueEntitlements.size()}");
+
+      for ( int i=result.offset; ((i<result.last)&&(i<e_arr.size())); i++ ) {
+        log.debug("Added element ${i}");
+        result.entitlements.add(e_arr[i]);
+      }
+    }
+    else {
+      log.debug("No pagination");
+      result.last = result.entitlements.size();
+      result.entitlements = result.subscriptionInstance.issueEntitlements
+    }
+
     log.debug("subscriptionInstance returning...");
     result
   }

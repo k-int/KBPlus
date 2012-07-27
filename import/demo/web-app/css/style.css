@@ -339,3 +339,24 @@
   -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.05);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),0 1px 2px rgba(0, 0, 0, 0.05);
 }
+
+.paginateButtons {
+    margin: 3px 0px 3px 0px;
+}
+
+.paginateButtons a {
+    padding: 2px 4px 2px 4px;
+    background-color: #A4A4A4;
+    border: 1px solid #EEEEEE;
+    text-decoration: none;
+    font-size: 10pt;
+    font-variant: small-caps;
+    color: #EEEEEE;
+}
+
+.paginateButtons a:hover {
+    text-decoration: underline;
+    background-color: #888888;
+    border: 1px solid #AA4444;
+    color: #FFFFFF;
+}
