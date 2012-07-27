@@ -19,8 +19,8 @@
 
     <div class="container">
 
-    <h1>${institution?.name} Subscription Taken :
-       <g:inPlaceEdit domain="Subscription" pk="${subscriptionInstance.id}" field="name" id="name" class="newipe">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
+    ${institution?.name} Subscription Taken
+       <h1><g:inPlaceEdit domain="Subscription" pk="${subscriptionInstance.id}" field="name" id="name" class="newipe">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
 
     <div class="tabbable"> <!-- Only required for left/right tabs -->
       <dl>
@@ -31,7 +31,7 @@
                         class='reldataEdit'
                         id='ownerLicense'>${subscriptionInstance?.owner?.reference}</g:relation></dd>
 
-        <g:if test="${subscriptionInstance?.issueEntitlements}">
+        <g:if test="${entitlements}">
           <g:form action="subscriptionBatchUpdate" params="${[shortcode:params.shortcode, id:subscriptionInstance?.id]}">
             <dt>Entitlements</td>
             <dd>
