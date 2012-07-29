@@ -122,8 +122,20 @@ def processUpdateFile(update_file) {
   // dumpChildren(xml);
   xml.BODY.XML.RESOURCE.each { r ->
     println("Processing resource...${r}\n\n");
+    processResourceEntry(r);
   }
   println("Completed processing of update file");
+}
+
+def processResourceEntry(r) {
+  println("Provider ${r.PROVIDER.text()}");
+  println("Key ${r.KEY.text()}");
+  println("Module ${r.MODULE.text()}");
+  println("Name ${r.NAME.text()}");
+  println("Type ${r.RESOURCE.text()}");
+  r.SERVICES.SERVICE.each { e ->
+    println("Service: ${e.text()}");
+  }
 }
 
 def dumpChildren(n) {
