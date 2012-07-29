@@ -32,6 +32,10 @@ import java.io.StringReader;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
+import org.apache.xml.resolver.Catalog;
+import org.apache.xml.resolver.CatalogManager;
+import org.apache.xml.resolver.tools.CatalogResolver;
+
 // Setup mongo
 def options = new com.mongodb.MongoOptions()
 options.socketKeepAlive = true
@@ -109,7 +113,59 @@ def loadCuftsFile(filename) {
   }
 }
 
+
 def processUpdateFile(update_file) {
+  def s = new XmlSlurper()
+  def t = update_file.inputStream.text
+  t.replaceAll('&ntilde;','ñ')
+  def xml = s.parseText(t)
+  xml.each { r ->
+    println("Processing resource...${r}\n\n");
+  }
+}
+
+def processUpdateFile3(update_file) {
+  // groovyx.net.http.ParserRegistry.addCatalog(new URL(''));
+  // def parser = new org.cyberneko.html.parsers.SAXParser();
+  // CatalogResolver catalogResolver = new CatalogResolver()
+
+  // try {
+  //   CatalogManager catalogManager = new CatalogManager();
+  //   catalogManager.setIgnoreMissingProperties( true );
+  //   catalogManager.setUseStaticCatalog( false );
+  //   catalogManager.setRelativeCatalogs( true );
+
+  //   catalogResolver = new CatalogResolver( catalogManager );
+  //   catalogResolver.getCatalog().parseCatalog( this.class.getResource( "catalog.xml" ) );
+  // } catch ( IOException ex ) {
+  //   println(ex)
+  // }
+
+  def s = new XmlSlurper()
+  // s.setEntityResolver(new org.xml.sax.helpers.DefaultHandler());
+  // s.setEntityBaseUrl(new URL('file:./'));
+
+  s.setEntityResolver(new EntityResolver() {
+    public InputSource resolveEntity(final String publicId, final String systemId) throws IOException {
+      println("resolve entity ${publicId}, ${systemId}");
+      def url = new URL('file:./', systemId)
+      println("url is ${url}");
+      return new InputSource(url.openStream());
+    }
+  });
+
+  println("entity resolver is ${s.getEntityResolver()}");
+  
+  // s.setEntityResolver( catalogResolver );
+  // s.setFeature('http://xml.org/sax/features/external-general-entities',true)
+  def xml = s.parse(update_file.inputStream )
+
+  xml.each { r ->
+    println("Processing resource...${r}\n\n");
+  }
+}
+
+def processUpdateFile2(update_file) {
   // def parser = new org.cyberneko.html.parsers.SAXParser()
   // def xml = new XmlParser(parser).parse(update_file.inputStream)
 
