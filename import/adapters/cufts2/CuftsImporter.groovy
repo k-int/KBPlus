@@ -106,6 +106,7 @@ def loadCuftsFile(filename) {
     println("Unable to locate update xml...");
     FileObject[] children = tgz_file.getChildren();
     System.out.println( "Children of " + tgz_file.getName().getURI() );
+  
     for ( int i = 0; i < children.length; i++ ) {
         System.out.println( children[ i ].getName().getBaseName() );
         // loadCuftsTitleData(children[i]);
@@ -115,84 +116,33 @@ def loadCuftsFile(filename) {
 
 
 def processUpdateFile(update_file) {
-  def s = new XmlSlurper()
-  def t = update_file.inputStream.text
-  t.replaceAll('&ntilde;','ñ')
-  def xml = s.parseText(t)
-  xml.each { r ->
+  def s = new XmlSlurper(new org.cyberneko.html.parsers.SAXParser())
+  def xml = s.parse(update_file.inputStream)
+  println("root name ${xml.name()}")
+  // dumpChildren(xml);
+  xml.BODY.XML.RESOURCE.each { r ->
     println("Processing resource...${r}\n\n");
   }
+  println("Completed processing of update file");
 }
 
-def processUpdateFile3(update_file) {
-  // groovyx.net.http.ParserRegistry.addCatalog(new URL(''));
-  // def parser = new org.cyberneko.html.parsers.SAXParser();
-  // CatalogResolver catalogResolver = new CatalogResolver()
-
-  // try {
-  //   CatalogManager catalogManager = new CatalogManager();
-  //   catalogManager.setIgnoreMissingProperties( true );
-  //   catalogManager.setUseStaticCatalog( false );
-  //   catalogManager.setRelativeCatalogs( true );
-
-  //   catalogResolver = new CatalogResolver( catalogManager );
-  //   catalogResolver.getCatalog().parseCatalog( this.class.getResource( "catalog.xml" ) );
-  // } catch ( IOException ex ) {
-  //   println(ex)
-  // }
-
-  def s = new XmlSlurper()
-  // s.setEntityResolver(new org.xml.sax.helpers.DefaultHandler());
-  // s.setEntityBaseUrl(new URL('file:./'));
-
-  s.setEntityResolver(new EntityResolver() {
-    public InputSource resolveEntity(final String publicId, final String systemId) throws IOException {
-      println("resolve entity ${publicId}, ${systemId}");
-      def url = new URL('file:./', systemId)
-      println("url is ${url}");
-      return new InputSource(url.openStream());
-    }
-  });
-
-  println("entity resolver is ${s.getEntityResolver()}");
-  
-  // s.setEntityResolver( catalogResolver );
-  // s.setFeature('http://xml.org/sax/features/external-general-entities',true)
-  def xml = s.parse(update_file.inputStream )
-
-  xml.each { r ->
-    println("Processing resource...${r}\n\n");
+def dumpChildren(n) {
+  n.children().each { c ->
+    println("Chid name ${c.name()}");
+    dumpChildren(c);
   }
 }
 
 def processUpdateFile2(update_file) {
-  // def parser = new org.cyberneko.html.parsers.SAXParser()
-  // def xml = new XmlParser(parser).parse(update_file.inputStream)
-
-  println("Parsed update.xml...");
-  def xr = new org.xml.sax.helpers.XMLFilterImpl()
-  xr.setEntityResolver(new EntityResolver() {
-    public InputSource resolveEntity (String publicId, String systemId) {
-      println("Resolve ${publicId}, ${systemId}");
-      if (systemId.equals("http://www.myhost.com/today")) {
-        // return a special input source
-        // MyReader reader = new MyReader();
-        // return new InputSource(reader);
-        return null;
-      } else {
-              // use the default behaviour
-        return null;
-      }
-    }
-  }); 
-  def s = new XmlSlurper(xr)
-  // s.setFeature("http://xml.org/sax/features/external-general-entities", false) 
-  // s.setFeature("http://xml.org/sax/features/external-parameter-entities", false) 
-  // s.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false); 
-  // s.setFeature("http://xml.org/sax/features/namespaces", false) 
-  def xml = s.parse(update_file.inputStream )
-  xml.each { r ->
-    println("Processing resource...${r}");
+  
+  def s = new XmlSlurper()
+  def t = update_file.inputStream.text
+  def cleaned_file = t.replaceAll('&ntilde;','ñ')
+                      .replaceAll('&eacute;','é')
+                      .replaceAll('&ecirc;','ê')
+  def xml = s.parseText(cleaned_file)
+  xml.resource.each { r ->
+    println("Processing resource...${r}\n\n");
   }
 }
 
