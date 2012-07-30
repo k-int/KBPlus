@@ -96,6 +96,8 @@ def new_sub_record = [
    _id:new org.bson.types.ObjectId(),
    sub: sub._id,
    org: sub_org._id,
+   stsy: st_start_year[1],
+   stey: st_end_year[1],
    lastmod:System.currentTimeMillis()
 ]
 
