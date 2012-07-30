@@ -507,9 +507,13 @@ class DataloadService {
     Org.withTransaction { transaction_status ->
       // Orgs
       mdb.subs.find().sort(lastmod:1).each { sub ->
+
         log.debug("load ST sub[${subcount++}] ${sub}");
   
         try {
+
+          def sub_start_date = sub.stsy ?: db_sub.startDate
+          def sub_end_date = sub.stey ?: db_sub.endDate
     
           // Join together the subscription and the organisation
           // Look up the SO that this ST is based on
@@ -523,8 +527,8 @@ class DataloadService {
                                         identifier: "${db_sub.identifier}:${sub.org.toString()}",
                                         impId:sub._id.toString(),
                                         name: db_sub.name,
-                                        startDate: db_sub.startDate,
-                                        endDate: db_sub.endDate,
+                                        startDate: sub_start_date,
+                                        endDate: sub_end_date,
                                         instanceOf: db_sub,
                                         type: RefdataValue.findByValue('Subscription Taken') )
     
