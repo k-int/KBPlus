@@ -92,12 +92,15 @@ if ( !sub ) {
   System.exit(1);
 }
 
+def parsed_stsy = parseDate(st_start_year[1],possible_date_formats)
+def parsed_stey = parseDate(st_end_year[1],possible_date_formats)
+
 def new_sub_record = [
    _id:new org.bson.types.ObjectId(),
    sub: sub._id,
    org: sub_org._id,
-   stsy: st_start_year[1],
-   stey: st_end_year[1],
+   stsy: parsed_stsy,
+   stey: parsed_stey,
    lastmod:System.currentTimeMillis()
 ]
 
