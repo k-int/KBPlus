@@ -95,7 +95,7 @@
                   <div class="clearfix"></div>
                   </div>
   
-            <h6>licence Properties</h6>
+            <h6>Licence Properties</h6>
 
             <table class="table table-bordered licence-properties">
               <thead>
