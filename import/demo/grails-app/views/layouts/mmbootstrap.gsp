@@ -128,6 +128,24 @@
                 </sec:ifAnyGranted>
               </sec:ifLoggedIn>
             </ul>
+            <ul class="nav pull-right">
+              <sec:ifLoggedIn>
+                <li><g:link controller="logout">Logout</g:link></li>
+                <g:if test="${user}">
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">${user.displayName} <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                      <li><a href="#">Item 1</a></li>
+                      <li><a href="#">Item 2</a></li>
+                      <li><a href="#">Item 3</a></li>
+                    </ul>
+                  </li>
+                </g:if>
+              </sec:ifLoggedIn>
+              <sec:ifNotLoggedIn>
+                <li><g:link controller="login">Login</g:link></li>
+              </sec:ifNotLoggedIn>
+            </ul>
           </div>
         </div>
       </div>

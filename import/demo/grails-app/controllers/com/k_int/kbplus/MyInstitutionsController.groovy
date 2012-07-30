@@ -367,15 +367,9 @@ class MyInstitutionsController {
     result.institution = Org.findByShortcode(params.shortcode)
     result.subscriptionInstance = Subscription.get(params.id)
 
-    log.debug("count..");   
     result.num_sub_rows = IssueEntitlement.countBySubscription(result.subscriptionInstance);
-    log.debug("find..");
     result.entitlements = IssueEntitlement.findAllBySubscription(result.subscriptionInstance,
                                                       [max:result.max, offset:result.offset, sort:'tipp.title.title', order:'asc']);
-
-    result.entitlements.each { i ->
-      log.debug("*");
-    }
 
     log.debug("subscriptionInstance returning...");
     result

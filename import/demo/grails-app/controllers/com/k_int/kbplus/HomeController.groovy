@@ -15,7 +15,6 @@ class HomeController {
   // Map the parameter names we use in the webapp with the ES fields
   def reversemap = ['subject':'subject', 'provider':'provid', 'studyMode':'presentations.studyMode','qualification':'qual.type','level':'qual.level' ]
   
-  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() { 
     // log.debug("Search Index, params.coursetitle=${params.coursetitle}, params.coursedescription=${params.coursedescription}, params.freetext=${params.freetext}")
     log.debug("Search Index, params.q=${params.q}, format=${params.format}")
@@ -26,68 +25,72 @@ class HomeController {
     // Get hold of some services we might use ;)
     org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
     org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
+    // result.user = User.get(springSecurityService.principal.id)
+    result.user = springSecurityService.getCurrentUser()
 
-    result.user = User.get(springSecurityService.principal.id)
-
-    try {
-      if ( params.q && params.q.length() > 0) {
+    if (springSecurityService.isLoggedIn()) {
   
-        params.max = Math.min(params.max ? params.int('max') : 10, 100)
-        params.offset = params.offset ? params.int('offset') : 0
-  
-        //def params_set=params.entrySet()
-        
-        def query_str = buildQuery(params)
-        log.debug("query: ${query_str}");
-  
-        def search = esclient.search{
-          indices "kbplus"
-          source {
-            from = params.offset
-            size = params.max
-            query {
-              query_string (query: query_str)
-            }
-            facets {
-              type {
-                terms {
-                  field = 'rectype'
+      try {
+        if ( params.q && params.q.length() > 0) {
+    
+          params.max = Math.min(params.max ? params.int('max') : 10, 100)
+          params.offset = params.offset ? params.int('offset') : 0
+    
+          //def params_set=params.entrySet()
+          
+          def query_str = buildQuery(params)
+          log.debug("query: ${query_str}");
+    
+          def search = esclient.search{
+            indices "kbplus"
+            source {
+              from = params.offset
+              size = params.max
+              query {
+                query_string (query: query_str)
+              }
+              facets {
+                type {
+                  terms {
+                    field = 'rectype'
+                  }
                 }
               }
+  
             }
-
+  
           }
-
-        }
-
-        if ( search?.response ) {
-          result.hits = search.response.hits
-          result.resultsTotal = search.response.hits.totalHits
-
-          // We pre-process the facet response to work around some translation issues in ES
-          if ( search.response.facets != null ) {
-            result.facets = [:]
-            search.response.facets.facets.each { facet ->
-              def facet_values = []
-              facet.value.entries.each { fe ->
-                facet_values.add([term: fe.term,display:fe.term,count:"${fe.count}"])
+  
+          if ( search?.response ) {
+            result.hits = search.response.hits
+            result.resultsTotal = search.response.hits.totalHits
+  
+            // We pre-process the facet response to work around some translation issues in ES
+            if ( search.response.facets != null ) {
+              result.facets = [:]
+              search.response.facets.facets.each { facet ->
+                def facet_values = []
+                facet.value.entries.each { fe ->
+                  facet_values.add([term: fe.term,display:fe.term,count:"${fe.count}"])
+                }
+                result.facets[facet.key] = facet_values
               }
-              result.facets[facet.key] = facet_values
             }
           }
         }
+        else {
+          log.debug("No query.. Show search page")
+        }
       }
-      else {
-        log.debug("No query.. Show search page")
+      finally {
+        try {
+        }
+        catch ( Exception e ) {
+          log.error("problem",e);
+        }
       }
-    }
-    finally {
-      try {
-      }
-      catch ( Exception e ) {
-        log.error("problem",e);
-      }
-    }
+  
+    }  // If logged in
 
     withFormat {
       html {

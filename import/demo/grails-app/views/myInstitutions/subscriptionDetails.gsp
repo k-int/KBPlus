@@ -33,7 +33,7 @@
 
         <g:if test="${entitlements}">
           <g:form action="subscriptionBatchUpdate" params="${[shortcode:params.shortcode, id:subscriptionInstance?.id]}">
-            <dt>Entitlements</td>
+            <dt>Entitlements ( ${offset+1} to ${offset+(entitlements?.size())} of ${num_sub_rows} )</td>
             <dd>
               <g:set var="counter" value="${offset+1}" />
               <table  class="table table-striped table-bordered table-condensed">
