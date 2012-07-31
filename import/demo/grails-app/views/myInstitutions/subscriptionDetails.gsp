@@ -40,9 +40,9 @@
                 <tr>
                   <th></th>
                   <th>#</th>
-                  <g:sortableColumn params="${params}" property="title" title="Title" />
-                  <g:sortableColumn params="${params}" property="issn" title="ISSN" />
-                  <g:sortableColumn params="${params}" property="eissn" title="eISSN" />
+                  <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
+                  <th>ISSN</th>
+                  <th>iISSN</th>
                   <th>Core</th>
                   <th>Start Date</th>
                   <th>End Date</th>

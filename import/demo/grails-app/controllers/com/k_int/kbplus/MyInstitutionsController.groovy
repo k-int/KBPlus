@@ -368,8 +368,9 @@ class MyInstitutionsController {
     result.subscriptionInstance = Subscription.get(params.id)
 
     result.num_sub_rows = IssueEntitlement.countBySubscription(result.subscriptionInstance);
-    result.entitlements = IssueEntitlement.findAllBySubscription(result.subscriptionInstance,
-                                                      [max:result.max, offset:result.offset, sort:'tipp.title.title', order:'asc']);
+
+    // result.entitlements = IssueEntitlement.findAllBySubscription(result.subscriptionInstance, [max:result.max, offset:result.offset, sort:'tipp.title.title', order:'asc']);
+    result.entitlements = IssueEntitlement.findAllBySubscription(result.subscriptionInstance, [max:result.max, offset:result.offset, sort:params.sort, order:params.order]);
 
     log.debug("subscriptionInstance returning...");
     result
