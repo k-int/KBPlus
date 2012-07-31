@@ -461,7 +461,7 @@ class DataloadService {
                 }
   
                 if ( tipp.ies ) {
-                  // log.debug("Issue Entitlements");
+                  log.debug("Issue Entitlements");
                   tipp.ies.each { ie ->
                     log.debug("Create new issue entitlement for tipp ${dbtipp.impId} sub imp id:${ie.toString()}");
                     def sub = Subscription.findByImpId(ie.toString());
@@ -485,13 +485,16 @@ class DataloadService {
                 }
               }
             }
+            else {
+              log.error("WARN: Unable to locate a tipp db record title=${title} && pkg=${pkg} && platform=${platform} ");
+            }
           }
           else {
-            log.error("Null title, package or platform for ${tipp}");
+            log.error("WARN: Null title, package or platform for ${tipp}");
           }
         }
         catch ( Exception e ) {
-          log.error("Problem loading tipp instance",e);
+          log.error("WARN: Problem loading tipp instance",e);
         }
       }
       cursor.close();
@@ -583,7 +586,7 @@ class DataloadService {
             log.debug("ST title data present, processing");
             sub_titles.each { st ->
               if ( st.included_st in [ 'Y', 'y', '', ' ', null ] ) {
-                log.debug("${st} is to be included");
+                log.debug("ST row for tipp ${st.tipp_id.toString()} is to be included");
                 TitleInstancePackagePlatform tipp = TitleInstancePackagePlatform.findByImpId(st.tipp_id.toString())
                 if ( tipp ) {
                   boolean is_core = false;
