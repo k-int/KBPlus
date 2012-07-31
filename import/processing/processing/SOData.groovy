@@ -79,6 +79,8 @@ def org = lookupOrCreateOrg(name:so_provider_line[1], db:db, stats:stats);
 
 def normalised_identifier = so_identifier_line[1].trim().toLowerCase().replaceAll('-','_')
 
+println("Processing subscription ${so_identifier_line[1]} normalised to ${normalised_identifier}");
+
 def sub = db.subscriptions.findOne(identifier:normalised_identifier);
 if ( !sub ) {
   sub = [:]
@@ -97,7 +99,10 @@ if ( ( so_consortium_line[1] != null ) && ( so_consortium_line[1].length() > 0 )
   sub.consortium = consortium._id;
 }
 
+
 db.subscriptions.save(sub);
+
+println("Saved subscription offerend : ${sub._id} / ${sub.name} / ${sub.identifier}");
 
 def pkg = lookupOrCreatePackage(identifier:so_package_identifier_line[1], 
                                 provider:so_provider_line[1],
@@ -266,13 +271,16 @@ while ((nl = r.readNext()) != null) {
           tipp.additionalPlatformLinks = additional_platform_links
           tipp.source = "${args[0]}:${rownum}"
           tipp.sourceContext = 'KBPlus'
-          tipp.ies.add(sub._id)
+          if ( sub._id )
+            tipp.ies.add(sub._id)
+          else
+            println("WARN: Creating a new tipp but there is no default issue entitement / SO");
           tipp.tags = default_tags;
   
           db.tipps.save(tipp)
         }
         else {
-          println("One of title-${title}, pkg-${pkg} or platform-${host_platform} are missing!!!");
+          println("WARN: One of title-${title}, pkg-${pkg} or platform-${host_platform} are missing!!!");
           inc('missing_critical_data',stats);
         }
       //}

@@ -463,7 +463,7 @@ class DataloadService {
                 if ( tipp.ies ) {
                   // log.debug("Issue Entitlements");
                   tipp.ies.each { ie ->
-                    // log.debug("Checking issue entitlement ${ie.toString()}");
+                    log.debug("Create new issue entitlement for tipp ${dbtipp.impId} sub imp id:${ie.toString()}");
                     def sub = Subscription.findByImpId(ie.toString());
                     IssueEntitlement dbie = IssueEntitlement.findBySubscriptionAndTipp(sub, dbtipp) ?: new IssueEntitlement(subscription:sub, 
                                                 status: RefdataValue.findByValue('UnknownEntitlement'),
@@ -481,9 +481,8 @@ class DataloadService {
                   }
                 }
                 else { 
-                  // log.debug("No Issue Entitlements");
+                  log.debug("No Issue Entitlements");
                 }
-  
               }
             }
           }

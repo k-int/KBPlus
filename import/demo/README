@@ -3,3 +3,6 @@ Current option set
 export JAVA_OPTS="-Xmx2G -server -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC"
 export GRAILS_OPTS="-XX:MaxPermSize=2048m -Xmx2048M -server -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -Dcom.sun.management.jmxremote -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote.port=9004 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
 
+
+db.tipps.find({ies:ObjectId('5017ea3cb7607edeed83497f')});
+
