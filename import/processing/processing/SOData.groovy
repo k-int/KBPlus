@@ -253,29 +253,38 @@ while ((nl = r.readNext()) != null) {
     
         // Find tipp
         if ( title && pkg && host_platform && title._id && pkg._id && host_platform._id ) {
-          def tipp = createTipp(titleid:title._id, pkgid:pkg._id, platformid:host_platform._id, db:db, stats:stats)
-          tipp.startDateString = nl[3]
-          tipp.startDate = parsed_start_date
-          tipp.startVolume = nl[4]
-          tipp.startIssue = nl[5]
-          tipp.endDateString = nl[6]
-          tipp.endDate = parsed_end_date
-          tipp.endVolume = nl[7]
-          tipp.endIssue = nl[8]
-          tipp.title_id = nl[9]
-          tipp.embargo = nl[10]
-          tipp.coverageDepth = nl[11]
-          tipp.coverageNote = nl[12]
-          tipp.identifiers = tipp_private_identifiers
-          tipp.hostPlatformURL = host_platform_url
-          tipp.additionalPlatformLinks = additional_platform_links
-          tipp.source = "${args[0]}:${rownum}"
-          tipp.sourceContext = 'KBPlus'
-          if ( sub._id )
-            tipp.ies.add(sub._id)
-          else
-            println("WARN: Creating a new tipp but there is no default issue entitement / SO");
-          tipp.tags = default_tags;
+
+       
+          def tipp = db.tipps.findOne(titleid:title._id, pkgid:pkg._id, platformid:host_platform._id)
+          if ( !tipp ) {
+            tipp = createTipp(titleid:title._id, pkgid:pkg._id, platformid:host_platform._id, db:db, stats:stats)
+            tipp.startDateString = nl[3]
+            tipp.startDate = parsed_start_date
+            tipp.startVolume = nl[4]
+            tipp.startIssue = nl[5]
+            tipp.endDateString = nl[6]
+            tipp.endDate = parsed_end_date
+            tipp.endVolume = nl[7]
+            tipp.endIssue = nl[8]
+            tipp.title_id = nl[9]
+            tipp.embargo = nl[10]
+            tipp.coverageDepth = nl[11]
+            tipp.coverageNote = nl[12]
+            tipp.identifiers = tipp_private_identifiers
+            tipp.hostPlatformURL = host_platform_url
+            tipp.additionalPlatformLinks = additional_platform_links
+            tipp.source = "${args[0]}:${rownum}"
+            tipp.sourceContext = 'KBPlus'
+            if ( sub._id )
+              tipp.ies.add(sub._id)
+            else
+              println("WARN: Creating a new tipp but there is no default issue entitement / SO");
+            tipp.tags = default_tags;
+          }
+          else {
+            if ( sub._id )
+              tipp.ies.add(sub._id)
+          }
   
           db.tipps.save(tipp)
         }

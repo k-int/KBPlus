@@ -168,8 +168,8 @@ class DataloadService {
       stats.startTime=System.currentTimeMillis();
       // Do it!
       update();
-      reloadSTData();
-      reloadLicenses();
+      // reloadSTData();
+      // reloadLicenses();
     }
     catch ( Exception e ) {
       log.error(e);
@@ -486,7 +486,7 @@ class DataloadService {
               }
             }
             else {
-              log.error("WARN: Unable to locate a tipp db record title=${title} && pkg=${pkg} && platform=${platform} ");
+              log.error("WARN: Located existing tipp.. proably shoudn't happen");
             }
           }
           else {
