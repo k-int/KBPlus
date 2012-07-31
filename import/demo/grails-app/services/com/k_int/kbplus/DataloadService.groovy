@@ -168,8 +168,8 @@ class DataloadService {
       stats.startTime=System.currentTimeMillis();
       // Do it!
       update();
-      // reloadSTData();
-      // reloadLicenses();
+      reloadSTData();
+      reloadLicenses();
     }
     catch ( Exception e ) {
       log.error(e);
