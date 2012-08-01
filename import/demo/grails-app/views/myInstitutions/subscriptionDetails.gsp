@@ -32,9 +32,15 @@
                         id='ownerLicense'>${subscriptionInstance?.owner?.reference}</g:relation></dd>
 
         <g:if test="${entitlements}">
-          <g:form action="subscriptionBatchUpdate" params="${[shortcode:params.shortcode, id:subscriptionInstance?.id]}">
-            <dt>Entitlements ( ${offset+1} to ${offset+(entitlements?.size())} of ${num_sub_rows} )</td>
+            <dt>Entitlements ( ${offset+1} to ${offset+(entitlements?.size())} of ${num_sub_rows} )
+              <g:form action="subscriptionDetails" params="${params}" method="get">
+                 <input type="hidden" name="sort" value="${params.sort}">
+                 <input type="hidden" name="order" value="${params.order}">
+                 Filter: <input name="filter" value="${params.filter}"/><input type="submit">
+              </g:form>
+            </td>
             <dd>
+              <g:form action="subscriptionBatchUpdate" params="${[shortcode:params.shortcode, id:subscriptionInstance?.id]}">
               <g:set var="counter" value="${offset+1}" />
               <table  class="table table-striped table-bordered table-condensed">
                 <tr>
@@ -89,8 +95,8 @@
                   </tr>
                 </g:each>
               </table>
+              </g:form>
             </dd>
-          </g:form>
         </g:if>
         <dt>Org Links</td>
         <dd>
@@ -174,7 +180,7 @@
            tooltip: 'Click to edit...'
          });
 
-         $('dd span.reldataEdit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}"action="genericSetRel" absolute="true"/>', {
+         $('dd span.reldataEdit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}" action="genericSetRel" absolute="true"/>', {
            loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:params.shortcode]}" action="availableLicenses" absolute="true"/>',
            type   : 'select',
            cancel : 'Cancel',

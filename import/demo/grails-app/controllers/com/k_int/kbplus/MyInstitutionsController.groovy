@@ -367,16 +367,28 @@ class MyInstitutionsController {
     result.institution = Org.findByShortcode(params.shortcode)
     result.subscriptionInstance = Subscription.get(params.id)
 
-    def base_qry = " from IssueEntitlement as ie where ie.subscription = ? "
-    if ( params.sort != null ) {
+    def base_qry = null;
+
+    def qry_params = [result.subscriptionInstance]
+
+    if ( params.filter ) {
+      base_qry = " from IssueEntitlement as ie left outer join ie.tipp.title.ids ids where ie.subscription = ? and ( ( ie.tipp.title.title like ? ) or ( ids.identifier.value like ? ) )"
+      qry_params.add("%${params.filter}%")
+      qry_params.add("%${params.filter}%")
+    }
+    else {
+      base_qry = " from IssueEntitlement as ie where ie.subscription = ? "
+    }
+
+    if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
       base_qry += "order by ${params.sort} ${params.order} "
     }
     // result.num_sub_rows = IssueEntitlement.countBySubscription(result.subscriptionInstance);
-    result.num_sub_rows = IssueEntitlement.executeQuery("select count(ie) "+base_qry, [result.subscriptionInstance] )[0]
+    result.num_sub_rows = IssueEntitlement.executeQuery("select count(ie) "+base_qry, qry_params )[0]
 
     // result.entitlements = IssueEntitlement.findAllBySubscription(result.subscriptionInstance, [max:result.max, offset:result.offset, sort:'tipp.title.title', order:'asc']);
     // result.entitlements = IssueEntitlement.findAllBySubscription(result.subscriptionInstance, [max:result.max, offset:result.offset, sort:params.sort, order:params.order]);
-    result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, [result.subscriptionInstance], [max:result.max, offset:result.offset]);
+    result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, qry_params, [max:result.max, offset:result.offset]);
 
     log.debug("subscriptionInstance returning...");
     result
