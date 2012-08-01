@@ -65,6 +65,21 @@ class MyInstitutionsController {
 
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
     def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
+
+    result.licenses = License.executeQuery("select l from License as l left outer join l.orgLinks ol where ( ( l.type = ? ) OR ( ol.org = ? and ol.roleType = ? ) ) AND l.status.value != 'Deleted'",
+                                              [template_license_type, result.institution, licensee_role] )
+
+    result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def licensesOld() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+
+    def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
+    def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
     def model_licenses = License.findAllByType(template_license_type);
 
     // We want to find all org role objects for this instutution where role type is licensee

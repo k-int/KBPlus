@@ -50,11 +50,11 @@
             <thead>
               <tr>
                 <td>Select</td>
-                <td>Reference Description</td>
+                <g:sortableColumn params="${params}" property="reference" title="Reference Description" />
                 <td>Licencor</td>
                 <td>Licencee</td>
-                <td>Status</td>
-                <td>Type</td>
+                <g:sortableColumn params="${params}" property="status.value" title="Status" />
+                <g:sortableColumn params="${params}" property="type.value" title="Type" />
               </tr>
             </thead>
             <tbody>

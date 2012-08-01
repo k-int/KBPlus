@@ -424,6 +424,7 @@ td, th {
 	vertical-align: top;
 }
 
+/*
 th {
 	background-color: #efefef;
 	background-image: -moz-linear-gradient(top, #ffffff, #eaeaea);
@@ -435,6 +436,7 @@ th {
 	line-height: 1.7em;
 	padding: 0.2em 0.6em;
 }
+*/
 
 thead th {
 	white-space: nowrap;
