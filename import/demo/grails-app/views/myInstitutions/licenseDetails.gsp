@@ -59,35 +59,48 @@
   
   
                   <dl>
-                      <dt><label class="control-label" for="reference">Reference</label></td>
+                      <dt><label class="control-label" for="subscriptions">Linked Subscriptions</label></dt>
+                      <dd>
+                        <g:if test="${license.subscriptions && ( license.subscriptions.size() > 0 )}">
+                          <g:each in="${license.subscriptions}" var="sub">
+                            <g:link controller="myInstitutions" action="subscriptionDetails" params="${[shortcode:params.shortcode]}" id="${sub.id}">${sub.id} (${sub.name})</g:link><br/>
+                          </g:each>
+                        </g:if>
+                        <g:else>No currently linked subscriptions.</g:else>
+                      </dd>
+                  </dl>
+                
+      
+                  <dl>
+                      <dt><label class="control-label" for="reference">Reference</label></dt>
                       <dd>
                         <p id="reference" class="ipe" >${license.reference}</p>
                       </dd>
                   </dl>
       
                   <dl>
-                      <dt><label class="control-label" for="noticePeriod">Notice Period</label></td>
+                      <dt><label class="control-label" for="noticePeriod">Notice Period</label></dt>
                       <dd>
                         <p id="noticePeriod" class="ipe" >${license.noticePeriod}</p>
                       </dd>
                   </dl>
       
                   <dl>
-                      <dt><label class="control-label" for="licenseUrl">License Url</label></dt></td>
+                      <dt><label class="control-label" for="licenseUrl">License Url</label></dt>
                       <dd>
                         <p id="licenseUrl" class="ipe">${license.licenseUrl}</p>
                       </dd>
                   </dl>
       
                   <dl>
-                      <dt><label class="control-label" for="licensorRef">Licenseor Ref</label></td>
+                      <dt><label class="control-label" for="licensorRef">Licenseor Ref</label></dt>
                       <dd>
                         <p id="licensorRef" class="ipe">${license.licensorRef}</p>
                       </dd>
                   </dl>
       
                   <dl>
-                      <dt><label class="control-label" for="licenseeRef">Licensee Ref</label></td>
+                      <dt><label class="control-label" for="licenseeRef">Licensee Ref</label></dt>
                       <dd>
                         <div id="licenseeRef" class="ipe" >${license.licenseeRef}</div>
                       </dd>
