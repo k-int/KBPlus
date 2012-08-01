@@ -59,7 +59,7 @@
                   <th>JUSP</th>
                 </tr>  
                 <tr>  
-                  <th><input type="checkbox" name="chkall"/></th>
+                  <th><input type="checkbox" name="chkall" onClick="javascript:selectAll();"/></th>
                   <th colspan="4"><input type="Submit" value="Apply Batch Changes"/></th>
                   <th><span id="entitlementBatchEdit" class="entitlementBatchEdit"></span><input type="hidden" name="bulk_core" id="bulk_core"/></th>
                   <th><span>edit</span> <input name="bulk_start_date" type="hidden" class="hdp" /></th>
@@ -69,7 +69,7 @@
                 </tr>
                 <g:each in="${entitlements}" var="ie">
                   <tr>
-                    <td><input type="checkbox" name="_bulkflag.${ie.id}"/></td>
+                    <td><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></td>
                     <td>${counter++}</td>
                     <td><g:link controller="titleInstance" action="show" id="${ie.tipp.title.id}">${ie.tipp.title.title}</g:link></td>
                     <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
@@ -200,9 +200,12 @@
              }
            });
          }
-
-
       });
+
+      function selectAll() {
+        $('.bulkcheck').attr('checked', true);
+      }
+
     </script>
   </body>
 </html>
