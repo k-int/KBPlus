@@ -66,38 +66,13 @@ class MyInstitutionsController {
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
     def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
 
-    result.licenses = License.executeQuery("select l from License as l left outer join l.orgLinks ol where ( ( l.type = ? ) OR ( ol.org = ? and ol.roleType = ? ) ) AND l.status.value != 'Deleted'",
-                                              [template_license_type, result.institution, licensee_role] )
+    def qry = "select l from License as l left outer join l.orgLinks ol where ( ( l.type = ? ) OR ( ol.org = ? and ol.roleType = ? ) ) AND l.status.value != 'Deleted'"
 
-    result
-  }
-
-  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def licensesOld() {
-    def result = [:]
-    result.user = User.get(springSecurityService.principal.id)
-    result.institution = Org.findByShortcode(params.shortcode)
-
-    def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
-    def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
-    def model_licenses = License.findAllByType(template_license_type);
-
-    // We want to find all org role objects for this instutution where role type is licensee
-    result.licenses = []
-    // result.licenses.addAll(model_licenses)
-
-    model_licenses.each { ml ->
-      if ( ml.status?.value != 'Deleted' )
-        result.licenses.add(ml);
+    if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
+      qry += " order by l.${params.sort} ${params.order}"
     }
 
-    // Find all licenses for this institution...
-    // result.licenses.addAll(OrgRole.findAllByOrgAndRoleType(result.institution, licensee_role).collect { it.lic } )
-    OrgRole.findAllByOrgAndRoleType(result.institution, licensee_role).each { or ->
-      if ( or.lic?.status?.value!='Deleted' ) {
-        result.licenses.add(or.lic);
-      }
-    }
+    result.licenses = License.executeQuery(qry, [template_license_type, result.institution, licensee_role] )
 
     result
   }
