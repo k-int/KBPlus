@@ -367,10 +367,16 @@ class MyInstitutionsController {
     result.institution = Org.findByShortcode(params.shortcode)
     result.subscriptionInstance = Subscription.get(params.id)
 
-    result.num_sub_rows = IssueEntitlement.countBySubscription(result.subscriptionInstance);
+    def base_qry = " from IssueEntitlement as ie where ie.subscription = ? "
+    if ( params.sort != null ) {
+      base_qry += "order by ${params.sort} ${params.order} "
+    }
+    // result.num_sub_rows = IssueEntitlement.countBySubscription(result.subscriptionInstance);
+    result.num_sub_rows = IssueEntitlement.executeQuery("select count(ie) "+base_qry, [result.subscriptionInstance] )[0]
 
     // result.entitlements = IssueEntitlement.findAllBySubscription(result.subscriptionInstance, [max:result.max, offset:result.offset, sort:'tipp.title.title', order:'asc']);
-    result.entitlements = IssueEntitlement.findAllBySubscription(result.subscriptionInstance, [max:result.max, offset:result.offset, sort:params.sort, order:params.order]);
+    // result.entitlements = IssueEntitlement.findAllBySubscription(result.subscriptionInstance, [max:result.max, offset:result.offset, sort:params.sort, order:params.order]);
+    result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, [result.subscriptionInstance], [max:result.max, offset:result.offset]);
 
     log.debug("subscriptionInstance returning...");
     result
