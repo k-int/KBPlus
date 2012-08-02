@@ -143,7 +143,7 @@
                 </g:if>
               </sec:ifLoggedIn>
               <sec:ifNotLoggedIn>
-                <li><g:link controller="login">Login</g:link></li>
+                <li><g:link controller="myInstitutions" action="index">Login</g:link></li>
               </sec:ifNotLoggedIn>
             </ul>
           </div>
