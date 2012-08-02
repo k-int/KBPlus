@@ -54,7 +54,8 @@
                   <g:sortableColumn params="${params}" property="endDate" title="End Date" />
                   <th>Embargo</th>
                   <th>Content URL</th>
-                  <th>Coverage</th>
+                  <th>Coverage Depth</th>
+                  <th>Coverage Note</th>
                   <th>Docs</th>
                   <th>JUSP</th>
                 </tr>  
@@ -90,8 +91,9 @@
                         <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="dp2" />
                     </td>
                     <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="newipe">${ie.embargo}</g:inPlaceEdit></td>
-                    <td>${ie.tipp?.platform?.primaryUrl}</td>
-                    <td>${ie.coverageDepth}<br/>${ie.coverageNote}</td>  
+                    <td><a href="${ie.tipp?.platform?.primaryUrl}">${ie.tipp?.platform?.primaryUrl}</a></td>
+                    <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="coverageDepth" id="coverageDepth">${ie.coverageDepth}</g:inPlaceEdit></td>
+                    <td>${ie.coverageNote}</td>  
                     <td>docs</td>  
                     <td>JUSP</td>
                   </tr>
