@@ -371,7 +371,7 @@ class MyInstitutionsController {
     }
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
-      base_qry += "order by ${params.sort} ${params.order} "
+      base_qry += "order by ie.${params.sort} ${params.order} "
     }
     // result.num_sub_rows = IssueEntitlement.countBySubscription(result.subscriptionInstance);
     result.num_sub_rows = IssueEntitlement.executeQuery("select count(ie) "+base_qry, qry_params )[0]
