@@ -65,7 +65,9 @@
                   <th><span>edit</span> <input name="bulk_start_date" type="hidden" class="hdp" /></th>
                   <th><span>edit</span> <input name="bulk_end_date" type="hidden" class="hdp" /></th>
                   <th><span id="embargoBatchEdit" class="embargoBatchEdit"></span><input type="hidden" name="bulk_embargo" id="bulk_embargo"></th>
-                  <th colspan="4"></th>
+                  <th></th>
+                  <th><span id="coverageBatchEdit" class="coverageBatchEdit"></span><input type="hidden" name="bulk_coverage" id="bulk_coverage"></th>
+                  <th colspan="2"></th>
                 </tr>
                 <g:each in="${entitlements}" var="ie">
                   <tr>
@@ -168,6 +170,11 @@
 
         $('span.embargoBatchEdit').editable(function(value, settings) { 
           $("#bulk_embargo").val(value);
+          return(value);
+        },{type:'textarea',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px'});
+
+        $('span.coverageBatchEdit').editable(function(value, settings) { 
+          $("#bulk_coverage").val(value);
           return(value);
         },{type:'textarea',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px'});
 

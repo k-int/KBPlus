@@ -625,6 +625,10 @@ class MyInstitutionsController {
           ie.coreTitle = params.bulk_core
         }
 
+        if ( params.bulk_coverage && (params.bulk_coverage.trim().length() > 0 ) ) {
+          ie.coverageDepth = params.bulk_coverage
+        }
+
         if ( ie.save(flush:true) ) {
         }
         else {
