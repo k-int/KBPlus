@@ -72,4 +72,15 @@ class TitleInstancePackagePlatform {
     hostPlatformURL(nullable:true, blank:true);
     derivedFrom(nullable:true, blank:true);
   }
+
+  
+  def getHostPlatform() {
+    def result = null;
+    additionalPlatforms.each { p ->
+      if ( p.rel == 'host' ) {
+        result = p.titleUrl
+      }
+    }
+    result
+  }
 }

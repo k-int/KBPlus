@@ -58,4 +58,5 @@ class IssueEntitlement implements Comparable {
     coreTitle(nullable:true, blank:true);
     ieReason(nullable:true, blank:true);
   }
+
 }
