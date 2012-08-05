@@ -103,7 +103,7 @@
                     </td>
                     <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="newipe">${ie.embargo}</g:inPlaceEdit></td>
                     <td><g:if test="${ie.tipp?.getHostPlatform()}"><a href="${ie.tipp?.getHostPlatform()}">${ie.tipp?.getHostPlatform()}</a></g:if></td>
-                    <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="coverageDepth" id="coverageDepth">${ie.coverageDepth}</g:inPlaceEdit></td>
+                    <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="coverageDepth" id="coverageDepth" class="newipe">${ie.coverageDepth}</g:inPlaceEdit></td>
                     <td>${ie.coverageNote}</td>  
                     <td>docs</td>  
                     <td>JUSP</td>

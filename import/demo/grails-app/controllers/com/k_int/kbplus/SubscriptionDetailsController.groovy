@@ -99,6 +99,6 @@ class SubscriptionDetailsController {
     }
 
  
-    redirect action: 'subscriptionDetails', params:[shortcode:params.shortcode, id:subscriptionInstance?.id], id:subscriptionInstance.id
+    redirect action: 'index', params:[id:subscriptionInstance?.id], id:subscriptionInstance.id
   }
 }
