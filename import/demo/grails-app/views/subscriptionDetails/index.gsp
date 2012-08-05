@@ -104,7 +104,7 @@
                         <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="dp2" />
                     </td>
                     <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="newipe">${ie.embargo}</g:inPlaceEdit></td>
-                    <td><g:if test="${ie.tipp?.getHostPlatform()}"><a href="${ie.tipp?.getHostPlatform()}">${ie.tipp?.getHostPlatform()}</a></g:if></td>
+                    <td><g:if test="${ie.tipp?.hostPlatformURL}"><a href="${ie.tipp?.hostPlatformURL}">${ie.tipp?.hostPlatformURL}</a></g:if></td>
                     <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="coverageDepth" id="coverageDepth" class="newipe">${ie.coverageDepth}</g:inPlaceEdit></td>
                     <td>${ie.coverageNote}</td>  
                     <td>docs</td>  
