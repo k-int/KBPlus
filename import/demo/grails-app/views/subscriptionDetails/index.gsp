@@ -24,12 +24,14 @@
 
       <ul class="nav nav-pills">
         <li class="active"><g:link controller="subscriptionDetails" 
-                                   action="subscriptionDetails" 
+                                   action="index" 
                                    params="${[id:params.id]}">Current Entitlements</g:link></li>
 
+        <!--
         <li><g:link controller="subscriptionDetails" 
                     action="addEntitlements" 
                     params="${[id:params.id]}">Add Entitlements</g:link></li>
+         -->
       </ul>
 
 
@@ -127,9 +129,9 @@
     <div class="paginateButtons" style="text-align:center">
       <g:if test="${entitlements}" >
         <span><g:paginate controller="subscriptionDetails" 
-                          action="subscriptionDetails" 
+                          action="index" 
                           params="${params}" next="Next" prev="Prev" 
-                          max="15" 
+                          max="${max}" 
                           total="${num_sub_rows}" /></span>
       </g:if>
     </div>

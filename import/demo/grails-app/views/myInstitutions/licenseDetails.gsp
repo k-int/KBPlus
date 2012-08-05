@@ -26,8 +26,6 @@
         <ul class="nav nav-tabs">
           <li class="active"><a href="#detailtab" data-toggle="tab">License Detail</a></li>
           <li><a href="#docstab" data-toggle="tab">Documents</a></li>
-          <li><a href="#linkstab" data-toggle="tab">Links</a></li>
-          <li><a href="#notestab" data-toggle="tab">Notes</a></li>
         </ul>
       </div>
     </div>
