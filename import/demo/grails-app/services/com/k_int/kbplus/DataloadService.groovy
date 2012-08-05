@@ -108,11 +108,11 @@ class DataloadService {
 
     log.debug("updateES - ${domain.name}");
 
-    def latest_ft_record = FTControl.findByDomainClassName(domain.name)
+    def latest_ft_record = FTControl.findByDomainClassNameAndActivity(domain.name,'ESIndex')
 
     log.debug("result of findByDomain: ${latest_ft_record}");
     if ( !latest_ft_record) {
-      latest_ft_record=new FTControl(domainClassName:domain.name,lastTimestamp:0)
+      latest_ft_record=new FTControl(domainClassName:domain.name,activity:'ESIndex',lastTimestamp:0)
     }
 
     log.debug("updateES ${domain.name} since ${latest_ft_record.lastTimestamp}");
