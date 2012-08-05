@@ -43,7 +43,7 @@
                 <g:each in="${subscriptions}" var="s">
                   <tr>
                     <td>
-                      <g:link controller="myInstitutions" action="subscriptionDetails" params="${[shortcode:params.shortcode]}" id="${s.id}">${s.id} (${s.name})</g:link>
+                      <g:link controller="subscriptionDetails" action="index" id="${s.id}">${s.id} (${s.name})</g:link>
                     </td>
                     <td>
                       <g:if test="${s.instanceOf}"><g:link controller="Subscription" action="show" id="${s.instanceOf.id}">${s.instanceOf.name}</g:link></g:if>

@@ -23,13 +23,13 @@
        <h1><g:inPlaceEdit domain="Subscription" pk="${subscriptionInstance.id}" field="name" id="name" class="newipe">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
 
       <ul class="nav nav-pills">
-        <li class="active"><g:link controller="myInstitutions" 
+        <li class="active"><g:link controller="subscriptionDetails" 
                                    action="subscriptionDetails" 
-                                   params="${[shortcode:params.shortcode, id:params.id]}">Current Entitlements</g:link></li>
+                                   params="${[id:params.id]}">Current Entitlements</g:link></li>
 
-        <li><g:link controller="myInstitutions" 
+        <li><g:link controller="subscriptionDetails" 
                     action="subscriptionAdd" 
-                    params="${[shortcode:params.shortcode, id:params.id]}">Add Entitlements</g:link></li>
+                    params="${[id:params.id]}">Add Entitlements</g:link></li>
       </ul>
 
 
@@ -51,7 +51,7 @@
               </g:form>
             </td>
             <dd>
-              <g:form action="subscriptionBatchUpdate" params="${[shortcode:params.shortcode, id:subscriptionInstance?.id]}">
+              <g:form action="subscriptionBatchUpdate" params="${[id:subscriptionInstance?.id]}">
               <g:set var="counter" value="${offset+1}" />
               <table  class="table table-striped table-bordered table-condensed">
                 <tr>
@@ -126,7 +126,7 @@
 
     <div class="paginateButtons" style="text-align:center">
       <g:if test="${entitlements}" >
-        <span><g:paginate controller="myInstitutions" 
+        <span><g:paginate controller="subscriptionDetails" 
                           action="subscriptionDetails" 
                           params="${params}" next="Next" prev="Prev" 
                           max="15" 
@@ -139,7 +139,7 @@
       $(document).ready(function() {
 
         var datepicker_config = {
-          buttonImage: '../../../images/calendar.gif',
+          buttonImage: '../../images/calendar.gif',
           buttonImageOnly: true,
           changeMonth: true,
           changeYear: true,
@@ -157,7 +157,7 @@
         $("div dl dd table tr td input.dp2").datepicker(datepicker_config);
 
         $("input.hdp").datepicker({
-          buttonImage: '../../../images/calendar.gif',
+          buttonImage: '../../images/calendar.gif',
           buttonImageOnly: true,
           changeMonth: true,
           changeYear: true,
@@ -201,7 +201,7 @@
          });
 
          $('dd span.reldataEdit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}" action="genericSetRel" absolute="true"/>', {
-           loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:params.shortcode]}" action="availableLicenses" absolute="true"/>',
+           loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:subscriber_shortcode]}" action="availableLicenses" absolute="true"/>',
            type   : 'select',
            cancel : 'Cancel',
            submit : 'OK',
