@@ -101,4 +101,18 @@ class SubscriptionDetailsController {
  
     redirect action: 'index', params:[id:subscriptionInstance?.id], id:subscriptionInstance.id
   }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def addEntitlements() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.subscriptionInstance = Subscription.get(params.id)
+    result.institution = result.subscriptionInstance.subscriber
+    if ( result.institution ) {
+      result.subscriber_shortcode = result.institution.shortcode
+    }
+
+    result
+  }
+  
 }

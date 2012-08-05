@@ -28,7 +28,7 @@
                                    params="${[id:params.id]}">Current Entitlements</g:link></li>
 
         <li><g:link controller="subscriptionDetails" 
-                    action="subscriptionAdd" 
+                    action="addEntitlements" 
                     params="${[id:params.id]}">Add Entitlements</g:link></li>
       </ul>
 

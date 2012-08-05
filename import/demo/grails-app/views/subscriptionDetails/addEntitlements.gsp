@@ -23,13 +23,13 @@
     <h1><g:inPlaceEdit domain="Subscription" pk="${subscriptionInstance.id}" field="name" id="name" class="newipe">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
 
       <ul class="nav nav-pills">
-        <li><g:link controller="myInstitutions" 
-                                   action="subscriptionDetails" 
-                                   params="${[shortcode:params.shortcode, id:params.id]}">Current Entitlements</g:link></li>
+        <li><g:link controller="subscriptionDetails" 
+                                   action="index" 
+                                   params="${[id:params.id]}">Current Entitlements</g:link></li>
 
-        <li class="active"><g:link controller="myInstitutions" 
-                               action="subscriptionAdd" 
-                               params="${[shortcode:params.shortcode, id:params.id]}">Add Entitlements</g:link></li>
+        <li class="active"><g:link controller="subscriptionDetails" 
+                               action="addEntitlements" 
+                               params="${[id:params.id]}">Add Entitlements</g:link></li>
       </ul>
 
     </div>
