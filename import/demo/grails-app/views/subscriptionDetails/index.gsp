@@ -44,9 +44,8 @@
                         class='reldataEdit'
                         id='ownerLicense'>${subscriptionInstance?.owner?.reference}</g:relation></dd>
 
-        <g:if test="${entitlements}">
             <dt>Entitlements ( ${offset+1} to ${offset+(entitlements?.size())} of ${num_sub_rows} )
-              <g:form action="subscriptionDetails" params="${params}" method="get">
+              <g:form action="index" params="${params}" method="get">
                  <input type="hidden" name="sort" value="${params.sort}">
                  <input type="hidden" name="order" value="${params.order}">
                  Filter: <input name="filter" value="${params.filter}"/><input type="submit">
@@ -83,6 +82,7 @@
                   <th><span id="coverageBatchEdit" class="coverageBatchEdit"></span><input type="hidden" name="bulk_coverage" id="bulk_coverage"></th>
                   <th colspan="3"></th>
                 </tr>
+              <g:if test="${entitlements}">
                 <g:each in="${entitlements}" var="ie">
                   <tr>
                     <td><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></td>
@@ -111,10 +111,10 @@
                     <td>JUSP</td>
                   </tr>
                 </g:each>
+              </g:if>
               </table>
               </g:form>
             </dd>
-        </g:if>
         <dt>Org Links</td>
         <dd>
           <ul>

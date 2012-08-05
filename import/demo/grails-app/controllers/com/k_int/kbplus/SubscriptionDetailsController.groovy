@@ -37,7 +37,9 @@ class SubscriptionDetailsController {
     def qry_params = [result.subscriptionInstance]
 
     if ( params.filter ) {
-      base_qry = " from IssueEntitlement as ie left outer join ie.tipp.title.ids ids where ie.subscription = ? and ( ( ie.tipp.title.title like ? ) or ( ids.identifier.value like ? ) )"
+      // base_qry = " from IssueEntitlement as ie left outer join ie.tipp.title.ids ids where ie.subscription = ? and ( ( ie.tipp.title.title like ? ) or ( ids.identifier.value like ? ) )"
+      // base_qry = " from IssueEntitlement as ie ie.subscription = ? and ( ( ie.tipp.title.title like ? ) or ( exists ( from ie.tipp.title.ids as io where io.tipp = ie.tipp and io.identifier.value like ? ) ) )"
+      base_qry = " from IssueEntitlement as ie where ie.subscription = ? and ( ( ie.tipp.title.title like ? ) or ( exists ( from IdentifierOccurrence io where io.tipp = ie.tipp and io.identifier.value like ? ) ) )"
       qry_params.add("%${params.filter}%")
       qry_params.add("%${params.filter}%")
     }
