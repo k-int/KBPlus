@@ -17,14 +17,14 @@
     </div>
 
     <div class="container">
-      <h1>${institution?.name} License : <span id="reference" class="ipe" style="padding-top: 5px;">${license.reference}</span></h1>
+      <h1>${institution?.name} Licence : <span id="reference" class="ipe" style="padding-top: 5px;">${license.reference}</span></h1>
     </div>
 
 
     <div class="container">
       <div class="tabbable"> <!-- Only required for left/right tabs -->
         <ul class="nav nav-tabs">
-          <li class="active"><a href="#detailtab" data-toggle="tab">License Detail</a></li>
+          <li class="active"><a href="#detailtab" data-toggle="tab">Licence Detail</a></li>
           <li><a href="#docstab" data-toggle="tab">Documents</a></li>
         </ul>
       </div>
@@ -91,7 +91,7 @@
                   </dl>
       
                   <dl>
-                      <dt><label class="control-label" for="licensorRef">Licenseor Ref</label></dt>
+                      <dt><label class="control-label" for="licensorRef">Licensor Ref</label></dt>
                       <dd>
                         <p id="licensorRef" class="ipe">${license.licensorRef}</p>
                       </dd>
