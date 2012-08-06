@@ -51,8 +51,8 @@
               <tr>
                 <td>Select</td>
                 <g:sortableColumn params="${params}" property="reference" title="Reference Description" />
-                <td>Licencor</td>
-                <td>Licencee</td>
+                <td>Licensor</td>
+                <td>Licensee</td>
                 <g:sortableColumn params="${params}" property="status.value" title="Status" />
                 <g:sortableColumn params="${params}" property="type.value" title="Type" />
               </tr>
