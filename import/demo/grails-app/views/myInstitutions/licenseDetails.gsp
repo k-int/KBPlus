@@ -84,7 +84,7 @@
                   </dl>
       
                   <dl>
-                      <dt><label class="control-label" for="licenseUrl">License Url</label></dt>
+                      <dt><label class="control-label" for="licenseUrl">Licence Url</label></dt>
                       <dd>
                         <p id="licenseUrl" class="ipe">${license.licenseUrl}</p>
                       </dd>
