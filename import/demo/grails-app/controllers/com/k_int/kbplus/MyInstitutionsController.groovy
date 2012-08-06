@@ -459,7 +459,7 @@ class MyInstitutionsController {
       }
 
       flash.message = message(code: 'subscription.created.message', args: [message(code: 'subscription.label', default: 'License'), subscriptionInstance.id])
-      redirect action: 'subscriptionDetails', params:params, id:subscriptionInstance.id
+      redirect controller: 'subscriptionDetails', action:'index', params:params, id:subscriptionInstance.id
     }
     else {
       flash.message = message(code: 'subscription.unknown.message')
