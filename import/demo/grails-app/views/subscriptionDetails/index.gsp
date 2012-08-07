@@ -65,7 +65,6 @@
                   <g:sortableColumn params="${params}" property="startDate" title="Start Date" />
                   <g:sortableColumn params="${params}" property="endDate" title="End Date" />
                   <th>Embargo</th>
-                  <th>Content URL</th>
                   <th>Coverage Depth</th>
                   <th>Coverage Note</th>
                   <th>Docs</th>
@@ -87,7 +86,10 @@
                   <tr>
                     <td><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></td>
                     <td>${counter++}</td>
-                    <td><g:link controller="titleInstance" action="show" id="${ie.tipp.title.id}">${ie.tipp.title.title}</g:link></td>
+                    <td>
+                      <g:if test="${ie.tipp?.hostPlatformURL}"><a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">${ie.tipp.title.title}</a></g:if>
+                      <g:else>${ie.tipp.title.title}</g:else>
+                    </td>
                     <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
                     <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
                     <td><g:refdataValue val="${ie.coreTitle}" 
@@ -104,7 +106,6 @@
                         <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="dp2" />
                     </td>
                     <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="newipe">${ie.embargo}</g:inPlaceEdit></td>
-                    <td><g:if test="${ie.tipp?.hostPlatformURL}"><a href="${ie.tipp?.hostPlatformURL}">${ie.tipp?.hostPlatformURL}</a></g:if></td>
                     <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="coverageDepth" id="coverageDepth" class="newipe">${ie.coverageDepth}</g:inPlaceEdit></td>
                     <td>${ie.coverageNote}</td>  
                     <td>docs</td>  
