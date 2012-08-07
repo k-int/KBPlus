@@ -155,6 +155,20 @@ class SubscriptionDetailsController {
         if (p.key.startsWith('_bulkflag.') ) {
           def ie_to_edit = p.key.substring(10);
           log.debug("Add IE ${ie_to_edit} to sub ${params.siid}");
+          def ie = IssueEntitlement.get(ie_to_edit)
+          def new_ie = new IssueEntitlement(status: ie.status,
+                                            subscription: result.subscriptionInstance,
+                                            tipp: ie.tipp,
+                                            startDate:ie.tipp.startDate,
+                                            startVolume:ie.tipp.startVolume,
+                                            startIssue:ie.tipp.startIssue,
+                                            endDate:ie.tipp.endDate,
+                                            endVolume:ie.tipp.endVolume,
+                                            endIssue:ie.tipp.endIssue,
+                                            embargo:ie.tipp.embargo,
+                                            coverageDepth:ie.tipp.coverageDepth,
+                                            coverageNote:ie.tipp.coverageNote,
+                                            ieReason:'Manually Added by User').save(flush:true)
         }
       }
     }
