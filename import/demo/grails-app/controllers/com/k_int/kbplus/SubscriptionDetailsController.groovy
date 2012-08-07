@@ -39,7 +39,7 @@ class SubscriptionDetailsController {
     if ( params.filter ) {
       // base_qry = " from IssueEntitlement as ie left outer join ie.tipp.title.ids ids where ie.subscription = ? and ( ( ie.tipp.title.title like ? ) or ( ids.identifier.value like ? ) )"
       // base_qry = " from IssueEntitlement as ie ie.subscription = ? and ( ( ie.tipp.title.title like ? ) or ( exists ( from ie.tipp.title.ids as io where io.tipp = ie.tipp and io.identifier.value like ? ) ) )"
-      base_qry = " from IssueEntitlement as ie where ie.subscription = ? and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.tipp = ie.tipp and io.identifier.value like ? ) ) )"
+      base_qry = " from IssueEntitlement as ie where ie.subscription = ? and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) )"
       qry_params.add("%${params.filter.trim().toLowerCase()}%")
       qry_params.add("%${params.filter}%")
     }
@@ -106,6 +106,7 @@ class SubscriptionDetailsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def addEntitlements() {
+    log.debug("addEntitlements....");
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.subscriptionInstance = Subscription.get(params.id)
@@ -115,11 +116,23 @@ class SubscriptionDetailsController {
     result.max = params.max ? Integer.parseInt(params.max) : 10;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
+    log.debug("filter: \"${params.filter}\"");
 
     if ( result.subscriptionInstance?.instanceOf ) {
       // We need all issue entitlements from the parent subscription where no row exists in the current subscription for that item.
-      def basequery = "from IssueEntitlement ie where ie.subscription = ? and not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp )"
+      def basequery = null;
       def qry_params = [result.subscriptionInstance.instanceOf, result.subscriptionInstance]
+
+      if ( params.filter ) {
+        log.debug("Filtering....");
+        basequery = " from IssueEntitlement as ie where ie.subscription = ? and ( not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp ) ) and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( select io from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) )"
+        qry_params.add("%${params.filter.trim().toLowerCase()}%")
+        qry_params.add("%${params.filter}%")
+      }
+      else {
+        basequery = "from IssueEntitlement ie where ie.subscription = ? and not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp )"
+      }
+
 
       result.num_sub_rows = IssueEntitlement.executeQuery("select count(ie) "+basequery, qry_params )[0]
       result.available_issues = IssueEntitlement.executeQuery("select ie ${basequery}", qry_params, [max:result.max, offset:result.offset]);

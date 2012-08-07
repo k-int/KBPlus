@@ -58,7 +58,7 @@
                   <th>#</th>
                   <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
                   <th>ISSN</th>
-                  <th>iISSN</th>
+                  <th>eISSN</th>
                   <g:sortableColumn params="${params}" property="coreTitle" title="Core" />
                   <g:sortableColumn params="${params}" property="startDate" title="Start Date" />
                   <g:sortableColumn params="${params}" property="endDate" title="End Date" />
