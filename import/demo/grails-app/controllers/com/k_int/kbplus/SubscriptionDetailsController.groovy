@@ -110,10 +110,21 @@ class SubscriptionDetailsController {
     result.user = User.get(springSecurityService.principal.id)
     result.subscriptionInstance = Subscription.get(params.id)
     result.institution = result.subscriptionInstance.subscriber
-    if ( result.institution ) {
-      result.subscriber_shortcode = result.institution.shortcode
-    }
 
+    def paginate_after = params.paginate_after ?: 19;
+    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
+
+    if ( result.subscriptionInstance?.instanceOf ) {
+      // We need all issue entitlements from the parent subscription where no row exists in the current subscription for that item.
+      def basequery = "from IssueEntitlement ie where ie.subscription = ? and not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp )"
+      def qry_params = [result.subscriptionInstance.instanceOf, result.subscriptionInstance]
+
+      result.num_sub_rows = IssueEntitlement.executeQuery("select count(ie) "+basequery, qry_params )[0]
+      result.available_issues = IssueEntitlement.executeQuery("select ie ${basequery}", qry_params, [max:result.max, offset:result.offset]);
+    }
+    
     result
   }
   

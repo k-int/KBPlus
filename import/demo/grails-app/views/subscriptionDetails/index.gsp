@@ -27,11 +27,9 @@
                                    action="index" 
                                    params="${[id:params.id]}">Current Entitlements</g:link></li>
 
-        <!--
         <li><g:link controller="subscriptionDetails" 
                     action="addEntitlements" 
                     params="${[id:params.id]}">Add Entitlements</g:link></li>
-         -->
       </ul>
 
 
@@ -50,7 +48,7 @@
                  <input type="hidden" name="order" value="${params.order}">
                  Filter: <input name="filter" value="${params.filter}"/><input type="submit">
               </g:form>
-            </td>
+            </dt>
             <dd>
               <g:form action="subscriptionBatchUpdate" params="${[id:subscriptionInstance?.id]}">
               <g:set var="counter" value="${offset+1}" />
