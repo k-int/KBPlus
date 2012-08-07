@@ -333,8 +333,13 @@ class MyInstitutionsController {
     def license = License.get(params.baselicense)
 
     if ( hasAdminRights(result.user,license) ) {
-      def deletedStatus = RefdataCategory.lookupOrCreate('License Status','Deleted');
-      license.status = deletedStatus
+      if ( ( license.subscriptions == null ) || ( license.subscriptions.size() == 0 ) ) {
+        def deletedStatus = RefdataCategory.lookupOrCreate('License Status','Deleted');
+        license.status = deletedStatus
+      }
+      else {
+        flash.error = "Unable to delete - The selected license has attached subscriptions"
+      }
     }
     else {
       log.warn("Attempt by ${result.user} to delete license ${result.license}without perms")
