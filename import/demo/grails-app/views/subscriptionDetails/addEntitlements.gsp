@@ -47,53 +47,61 @@
           </g:form>
         </dt>
         <dd>
-          <table  class="table table-striped table-bordered table-condensed">
-            <thead>
-              <tr>
-                <th></th>
-                <th>#</th>
-                <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
-                <th>ISSN</th>
-                <th>eISSN</th>
-                <g:sortableColumn params="${params}" property="coreTitle" title="Core" />
-                <g:sortableColumn params="${params}" property="startDate" title="Start Date" />
-                <g:sortableColumn params="${params}" property="endDate" title="End Date" />
-                <th>Embargo</th>
-                <th>Coverage Depth</th>
-                <th>Coverage Note</th>
-              </tr>
-            </thead>
-            <tbody>
-              <g:each in="${available_issues}" var="ie">
+          <g:form action="processAddEntitlements">
+            <input type="hidden" name="siid" value="${subscriptionInstance.id}"/>
+            <table  class="table table-striped table-bordered table-condensed">
+              <thead>
                 <tr>
-                  <td><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></td>
-                  <td>${counter++}</td>
-                  <td>
-                    <g:if test="${ie.tipp?.hostPlatformURL}"><a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">${ie.tipp.title.title}</a></g:if>
-                    <g:else>${ie.tipp.title.title}</g:else>
-                  </td>
-                  <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
-                  <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
-                  <td>${ie.coreTitle}</td>
-                  <td><g:formatDate format="dd MMMM yyyy" date="${ie.startDate}"/></td>
-                  <td><g:formatDate format="dd MMMM yyyy" date="${ie.endDate}"/></td>
-                  <td>${ie.embargo}</td>
-                  <td>${ie.coverageDepth}</td>
-                  <td>${ie.coverageNote}</td>
+                  <th></th>
+                  <th>#</th>
+                  <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
+                  <th>ISSN</th>
+                  <th>eISSN</th>
+                  <g:sortableColumn params="${params}" property="coreTitle" title="Core" />
+                  <g:sortableColumn params="${params}" property="startDate" title="Start Date" />
+                  <g:sortableColumn params="${params}" property="endDate" title="End Date" />
+                  <th>Embargo</th>
+                  <th>Coverage Depth</th>
+                  <th>Coverage Note</th>
                 </tr>
-              </g:each>
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                <g:each in="${available_issues}" var="ie">
+                  <tr>
+                    <td><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></td>
+                    <td>${counter++}</td>
+                    <td>
+                      <g:if test="${ie.tipp?.hostPlatformURL}"><a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">${ie.tipp.title.title}</a></g:if>
+                      <g:else>${ie.tipp.title.title}</g:else>
+                    </td>
+                    <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
+                    <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
+                    <td>${ie.coreTitle}</td>
+                    <td><g:formatDate format="dd MMMM yyyy" date="${ie.startDate}"/></td>
+                    <td><g:formatDate format="dd MMMM yyyy" date="${ie.endDate}"/></td>
+                    <td>${ie.embargo}</td>
+                    <td>${ie.coverageDepth}</td>
+                    <td>${ie.coverageNote}</td>
+                  </tr>
+                </g:each>
+              </tbody>
+            </table>
 
-          <div class="paginateButtons" style="text-align:center">
-            <g:if test="${available_issues}" >
-              <span><g:paginate controller="subscriptionDetails" 
-                                action="addEntitlements" 
-                                params="${params}" next="Next" prev="Prev" 
-                                max="${max}" 
-                                total="${num_sub_rows}" /></span>
-            </g:if>
-          </div>
+            <div class="paginateButtons" style="text-align:center">
+              <input type="submit" value="Add Selected Entitlements"/>
+            </div>
+
+
+            <div class="paginateButtons" style="text-align:center">
+              <g:if test="${available_issues}" >
+                <span><g:paginate controller="subscriptionDetails" 
+                                  action="addEntitlements" 
+                                  params="${params}" next="Next" prev="Prev" 
+                                  max="${max}" 
+                                  total="${num_sub_rows}" /></span>
+              </g:if>
+            </div>
+          </g:form>
         </dd>
       </dl>
     </div>

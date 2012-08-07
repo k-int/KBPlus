@@ -141,4 +141,27 @@ class SubscriptionDetailsController {
     result
   }
   
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def processAddEntitlements() {
+    log.debug("addEntitlements....");
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.subscriptionInstance = Subscription.get(params.siid)
+    result.institution = result.subscriptionInstance?.subscriber
+
+    if ( result.subscriptionInstance ) {
+      params.each { p ->
+        if (p.key.startsWith('_bulkflag.') ) {
+          def ie_to_edit = p.key.substring(10);
+          log.debug("Add IE ${ie_to_edit} to sub ${params.siid}");
+        }
+      }
+    }
+    else {
+      log.error("Unable to locate subscription instance");
+    }
+
+    redirect action: 'index', id:result.subscriptionInstance?.id
+  }
 }
