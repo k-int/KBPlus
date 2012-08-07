@@ -23,7 +23,6 @@ class DataloadService {
 
   def updateFTIndexes() {
     log.debug("updateFTIndexes");
-    log.debug("updateFTIndexes");
     def future = executorService.submit({
       doFTUpdate()
     } as java.util.concurrent.Callable)
@@ -887,4 +886,40 @@ class DataloadService {
   }
 
 
+  def dataCleanse() {
+    log.debug("dataCleanse");
+    def future = executorService.submit({
+      doDataCleanse()
+    } as java.util.concurrent.Callable)
+    log.debug("dataCleanse returning");
+  }
+
+  def doDataCleanse() {
+    log.debug("dataCleansing");
+    // 1. Find all packages that do not have a nominal platform
+    Package.findAllByNominalPlatformIsNull().each { p ->
+      def platforms = [:]
+      p.tipps.each{ tipp ->
+        if ( !platforms.keySet().contains(tipp.platform.id) ) {
+          platforms[tipp.platform.id] = [count:1, platform:tipp.platform]
+        }
+        else {
+          platforms[tipp.platform.id].count++
+        }
+      }
+
+      def selected_platform = null;
+      def largest = 0;
+      platforms.values().each { pl ->
+        log.debug("Processing ${pl}");
+        if ( pl['count'] > largest ) {
+          selected_platform = pl['platform']
+        }
+      }
+
+      log.debug("Nominal platform is ${selected_platform} for ${p.id}");
+      p.nominalPlatform = selected_platform
+      p.save(flush:true)
+    }
+  }
 }

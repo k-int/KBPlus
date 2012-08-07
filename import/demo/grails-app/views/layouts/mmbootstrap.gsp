@@ -122,6 +122,9 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'allNotes'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="allNotes">All Notes</g:link>
                       </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'dataCleanse'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="dataCleanse">Run Data Cleaning</g:link>
+                      </li>
                     </ul>
                   </li>
   
