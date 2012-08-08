@@ -62,6 +62,8 @@ insert into refdata_value(rdv_owner, rdv_value) VALUES ( 13, 'Unknown Subscripti
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (14,'Entitlement Issue Status');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 14, 'Unknown Entitlement');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 14, 'Live');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 14, 'Deleted');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (15,'Doc Type');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 17, 'Unknown Doc Type');

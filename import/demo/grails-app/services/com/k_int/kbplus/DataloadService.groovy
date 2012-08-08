@@ -190,6 +190,7 @@ class DataloadService {
       def cp_role = lookupOrCreateRefdataEntry('Organisational Role', 'Content Provider');
       def pub_role = lookupOrCreateRefdataEntry('Organisational Role', 'Publisher');
       def sc_role = lookupOrCreateRefdataEntry('Organisational Role', 'Subscription Consortia');
+      def live_issue_entitlement = lookupOrCreateRefdataEntry('Entitlement Issue Status', 'Live');
       def mdb = mongoService.getMongo().getDB('kbplus_ds_reconciliation')
   
       mdb.tipps.ensureIndex('lastmod');
@@ -465,7 +466,7 @@ class DataloadService {
                     log.debug("Create new issue entitlement for tipp ${dbtipp.impId} sub imp id:${ie.toString()}");
                     def sub = Subscription.findByImpId(ie.toString());
                     IssueEntitlement dbie = IssueEntitlement.findBySubscriptionAndTipp(sub, dbtipp) ?: new IssueEntitlement(subscription:sub, 
-                                                status: RefdataValue.findByValue('UnknownEntitlement'),
+                                                status: live_issue_entitlement,
                                                 tipp: dbtipp,
                                                 startDate:tipp.startDate,
                                                 startVolume:tipp.startVolume,
@@ -594,7 +595,7 @@ class DataloadService {
     
                   // log.debug("Adding new entitlement for looked up tipp ${tipp.id}, is_core=${is_core}")
   
-                  def new_ie = new IssueEntitlement(status: RefdataValue.findByValue('UnknownEntitlement'),
+                  def new_ie = new IssueEntitlement(status: live_issue_entitlement,
                                                     subscription: new_subscription,
                                                     tipp: tipp,
                                                     startDate: nvl(st.date_first_issue_subscribed, tipp.startDate),

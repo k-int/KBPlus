@@ -39,12 +39,12 @@ class SubscriptionDetailsController {
     if ( params.filter ) {
       // base_qry = " from IssueEntitlement as ie left outer join ie.tipp.title.ids ids where ie.subscription = ? and ( ( ie.tipp.title.title like ? ) or ( ids.identifier.value like ? ) )"
       // base_qry = " from IssueEntitlement as ie ie.subscription = ? and ( ( ie.tipp.title.title like ? ) or ( exists ( from ie.tipp.title.ids as io where io.tipp = ie.tipp and io.identifier.value like ? ) ) )"
-      base_qry = " from IssueEntitlement as ie where ie.subscription = ? and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) )"
+      base_qry = " from IssueEntitlement as ie where ie.subscription = ? and ( ie.status.value != 'Deleted' ) and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) )"
       qry_params.add("%${params.filter.trim().toLowerCase()}%")
       qry_params.add("%${params.filter}%")
     }
     else {
-      base_qry = " from IssueEntitlement as ie where ie.subscription = ? "
+      base_qry = " from IssueEntitlement as ie where ie.subscription = ? and ( ie.status.value != 'Deleted' ) "
     }
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
@@ -66,40 +66,54 @@ class SubscriptionDetailsController {
     def subscriptionInstance = Subscription.get(params.id)
     def formatter = new java.text.SimpleDateFormat("MM/dd/yyyy")
 
+    log.debug("subscriptionBatchUpdate ${params}");
+
     params.each { p ->
       if (p.key.startsWith('_bulkflag.') ) {
         def ie_to_edit = p.key.substring(10);
 
         def ie = IssueEntitlement.get(ie_to_edit)
 
-        if ( params.bulk_start_date && ( params.bulk_start_date.trim().length() > 0 ) ) {
-          ie.startDate = formatter.parse(params.bulk_start_date)
-        }
+        if ( params.bulkOperation == "edit" ) {
 
-        if ( params.bulk_end_date && ( params.bulk_end_date.trim().length() > 0 ) ) {
-          ie.endDate = formatter.parse(params.bulk_end_date)
-        }
+          if ( params.bulk_start_date && ( params.bulk_start_date.trim().length() > 0 ) ) {
+            ie.startDate = formatter.parse(params.bulk_start_date)
+          }
 
-        if ( params.bulk_embargo && ( params.bulk_embargo.trim().length() > 0 ) ) {
-          ie.embargo = params.bulk_embargo
-        }
+          if ( params.bulk_end_date && ( params.bulk_end_date.trim().length() > 0 ) ) {
+            ie.endDate = formatter.parse(params.bulk_end_date)
+          }
 
-        if ( params.bulk_core && (params.bulk_core.trim().length() > 0 ) ) {
-          ie.coreTitle = params.bulk_core
-        }
+          if ( params.bulk_embargo && ( params.bulk_embargo.trim().length() > 0 ) ) {
+            ie.embargo = params.bulk_embargo
+          }
 
-        if ( params.bulk_coverage && (params.bulk_coverage.trim().length() > 0 ) ) {
-          ie.coverageDepth = params.bulk_coverage
-        }
+          if ( params.bulk_core && (params.bulk_core.trim().length() > 0 ) ) {
+            ie.coreTitle = params.bulk_core
+          }
+  
+          if ( params.bulk_coverage && (params.bulk_coverage.trim().length() > 0 ) ) {
+            ie.coverageDepth = params.bulk_coverage
+          }
 
-        if ( ie.save(flush:true) ) {
+          if ( ie.save(flush:true) ) {
+          }
+          else {
+            log.error("Problem saving ${ie.errors}")
+          }
         }
-        else {
-          log.error("Problem saving ${ie.errors}")
+        else if ( params.bulkOperation == "remove" ) {
+          log.debug("Updating ie ${ie.id} status to deleted");
+          def deleted_ie = RefdataCategory.lookupOrCreate('Entitlement Issue Status','Deleted');
+          ie.status = deleted_ie;
+          if ( ie.save(flush:true) ) {
+          }
+          else {
+            log.error("Problem saving ${ie.errors}")
+          }
         }
       }
     }
-
  
     redirect action: 'index', params:[id:subscriptionInstance?.id], id:subscriptionInstance.id
   }
@@ -125,12 +139,12 @@ class SubscriptionDetailsController {
 
       if ( params.filter ) {
         log.debug("Filtering....");
-        basequery = " from IssueEntitlement as ie where ie.subscription = ? and ( not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp ) ) and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( select io from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) )"
+        basequery = " from IssueEntitlement as ie where ie.subscription = ? and ( not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp and ie2.status.value != 'Deleted' ) ) and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( select io from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) )"
         qry_params.add("%${params.filter.trim().toLowerCase()}%")
         qry_params.add("%${params.filter}%")
       }
       else {
-        basequery = "from IssueEntitlement ie where ie.subscription = ? and not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp )"
+        basequery = "from IssueEntitlement ie where ie.subscription = ? and not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp  and ie2.status.value != 'Deleted' )"
       }
 
       if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
