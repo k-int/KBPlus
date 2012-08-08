@@ -20,8 +20,7 @@
     <div class="container licence-searches">
         <div class="row">
             <div class="span6">
-                <input type="text" name="keyword-search" placeholder="enter keyword..."
-                />
+                <input type="text" name="keyword-search" placeholder="enter search term..." />
                 <input type="submit" class="btn btn-primary" value="Search" />
             </div>
             <div class="span6">
