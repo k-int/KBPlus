@@ -52,7 +52,8 @@
 
     <div class="container" style="text-align:center">
       <g:form action="addSubscription" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="get">
-        Search Text: <input type="text" class="search-query" placeholder="Search" name="q" value="${params.q?.encodeAsHTML()}">
+        Search text: <input type="text" name="q" placeholder="enter search term..."  value="${params.q?.encodeAsHTML()}"  />
+        <input type="submit" class="btn btn-primary" value="Search" />
       </g:form>
     </div>
 

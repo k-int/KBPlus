@@ -104,8 +104,8 @@ class MyInstitutionsController {
 
     def result = [:]
 
-    if ( (!params.q) || ( params.q.length()==0 ) )
-      params.q = '*';
+    // if ( (!params.q) || ( params.q.length()==0 ) )
+    //   params.q = '*';
 
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
@@ -117,8 +117,6 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
 
     try {
-      if ( params.q && params.q.length() > 0) {
-  
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
         params.offset = params.offset ? params.int('offset') : 0
   
@@ -141,11 +139,6 @@ class MyInstitutionsController {
           result.resultsTotal = search.response.hits.totalHits
           log.debug("Search result: total:${result.resultsTotal}");
         }
-
-      }
-      else {
-        log.debug("No query.. Show search page")
-      }
     }
     finally {
       try {
@@ -163,13 +156,8 @@ class MyInstitutionsController {
 
     StringWriter sw = new StringWriter()
 
-    if ( ( params != null ) && ( params.q != null ) )
-        if(params.q.equals("*")){
-            sw.write(params.q)
-        }
-        else{
-            sw.write(params.q)
-        }
+    if ( params?.q?.length() > 0 )
+      sw.write(params.q)
     else
       sw.write("*:*")
       
