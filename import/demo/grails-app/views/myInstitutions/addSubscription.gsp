@@ -54,41 +54,51 @@
       <g:form action="addSubscription" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="get">
         Search text: <input type="text" name="q" placeholder="enter search term..."  value="${params.q?.encodeAsHTML()}"  />
         <input type="submit" class="btn btn-primary" value="Search" />
-      </g:form>
+      </g:form><br/>
     </div>
 
     <div class="container">
-      <div class="span2">
-        &nbsp;
-      </div>
-
-
-      <div class="span8">
-        <g:if test="${hits}" >
+        <g:if test="${subscriptions}" >
           <g:form action="processAddSubscription" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="post">
-            <div class="paginateButtons" style="text-align:center">
-              <g:if test="${params.int('offset')}">
-               Showing Results ${params.int('offset') + 1} - ${hits.totalHits < (params.int('max') + params.int('offset')) ? hits.totalHits : (params.int('max') + params.int('offset'))} of ${hits.totalHits}
-              </g:if>
-              <g:elseif test="${hits.totalHits && hits.totalHits > 0}">
-                Showing Results 1 - ${hits.totalHits < params.int('max') ? hits.totalHits : params.int('max')} of ${hits.totalHits}
-              </g:elseif>
-              <g:else>
-                Showing ${hits.totalHits} Results
-              </g:else>
-            </div>
   
-            <table class="table table-striped table-bordered table-condensed" >
-              <tr><th></th><th>Subscription Offered</th></tr>
-              <g:each in="${hits}" var="hit">
+            <table class="table table-striped table-bordered">
                 <tr>
-                  <td><input type="radio" name="subOfferedId" value="${hit.source.dbId}"/></td>
-                  <td>
-                    ${hit.source.name} (${hit.source.type})
-                  </td>
+                  <th>Select</th>
+                  <th>Name</th>
+                  <th>Package Name(s)</th>
+                  <th>Vendor</th>
+                  <th>Consortia</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Platform(s)</th>
+                  <th>License</th>
+                  <th>Docs</th>
                 </tr>
-              </g:each>
-            </table>
+                <g:each in="${subscriptions}" var="s">
+                  <tr>
+                    <td><input type="radio" name="subOfferedId" value="${s.id}"/></td>
+                    <td>
+                      <g:link controller="subscriptionDetails" action="index" id="${s.id}">${s.name}</g:link>
+                    </td>
+                    <td>
+                      <g:each in="${s.packages}" var="sp">
+                        ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
+                      </g:each>
+                    </td>
+                    <td>${s.provider?.name}</td>
+                    <td>${s.getConsortia()?.name}</td>
+                    <td><g:formatDate format="dd MMMM yyyy" date="${s.startDate}"/></td>
+                    <td><g:formatDate format="dd MMMM yyyy" date="${s.endDate}"/></td>
+                    <td>
+                      <g:each in="${s.packages}" var="sp">
+                        ${sp.pkg?.nominalPlatform?.name}<br/>
+                      </g:each>
+                    </td>
+                    <td>${owner.reference}</td>
+                    <td></td>
+                  </tr>
+                </g:each>
+             </table>
 
             <div class="paginateButtons" style="text-align:center">
               <input type="submit" value="Create Subscription"/>
@@ -97,15 +107,10 @@
         </g:if>
   
         <div class="paginateButtons" style="text-align:center">
-          <g:if test="${hits}" >
-            <span><g:paginate  action="addSubscription" controller="myInstitutions" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${hits.totalHits}" /></span>
+          <g:if test="${subscriptions}" >
+            <span><g:paginate  action="addSubscription" controller="myInstitutions" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${num_sub_rows}" /></span>
           </g:if>
         </div>
-      </div>
-
-      <div class="span2">
-      </div>
-
     </div>
   </body>
 </html>

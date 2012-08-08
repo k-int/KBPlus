@@ -123,6 +123,33 @@ class MyInstitutionsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def addSubscription() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+
+    def paginate_after = params.paginate_after ?: 19;
+    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
+
+    def base_qry = " from Subscription as s where s.type.value = 'Subscription Offered'"
+    def qry_params = []
+
+    if ( params.q?.length() > 0 ) {
+      base_qry += " and lower(s.name) like ?"
+      qry_params.add("%${params.q.trim().toLowerCase()}%");
+    }
+
+
+    result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
+    result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
+
+    result
+  }
+
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def oldAddSubscription() {
 
     log.debug("Search Index, params.q=${params.q}, format=${params.format}")
 
@@ -137,8 +164,6 @@ class MyInstitutionsController {
 
     org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
     org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
-
-    result.user = User.get(springSecurityService.principal.id)
 
     try {
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
