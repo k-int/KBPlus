@@ -133,6 +133,11 @@ class SubscriptionDetailsController {
         basequery = "from IssueEntitlement ie where ie.subscription = ? and not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp )"
       }
 
+      if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
+        basequery += " order by ie.${params.sort} ${params.order} "
+      }
+
+
 
       result.num_sub_rows = IssueEntitlement.executeQuery("select count(ie) "+basequery, qry_params )[0]
       result.available_issues = IssueEntitlement.executeQuery("select ie ${basequery}", qry_params, [max:result.max, offset:result.offset]);
