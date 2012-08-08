@@ -71,11 +71,11 @@
                 <tr>  
                   <th><input type="checkbox" name="chkall" onClick="javascript:selectAll();"/></th>
                   <th colspan="4">
-                    <select name="bulkOperation">
+                    <select id="bulkOperationSelect" name="bulkOperation">
                       <option value="edit">Edit Selected</option>
                       <option value="remove">Remove Selected</option>
                     </select>
-                    <input type="Submit" value="Apply Batch Changes"/></th>
+                    <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()"/></th>
                   <th><span id="entitlementBatchEdit" class="entitlementBatchEdit"></span><input type="hidden" name="bulk_core" id="bulk_core"/></th>
                   <th><span>edit</span> <input name="bulk_start_date" type="hidden" class="hdp" /></th>
                   <th><span>edit</span> <input name="bulk_end_date" type="hidden" class="hdp" /></th>
@@ -230,6 +230,16 @@
 
       function selectAll() {
         $('.bulkcheck').attr('checked', true);
+      }
+
+      function confirmSubmit() {
+        if ( $('#bulkOperationSelect').val() === 'remove' ) {
+          var agree=confirm("Are you sure you wish to continue?");
+          if (agree)
+            return true ;
+          else
+            return false ;
+        }
       }
 
     </script>
