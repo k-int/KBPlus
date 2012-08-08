@@ -298,7 +298,7 @@ class MyInstitutionsController {
           }
 
           // Clone documents
-          baseLicense.documents?.each { dctx ->
+          baseLicense?.documents?.each { dctx ->
             DocContext ndc = new DocContext(owner:dctx.owner,
                                             license: licenseInstance,
                                             domain: dctx.domain,
@@ -307,7 +307,9 @@ class MyInstitutionsController {
           }
         }
 
-        flash.message = message(code: 'license.created.message', args: [message(code: 'license.label', default: 'License'), licenseInstance.id])
+        if ( baseLicense ) 
+          flash.message = message(code: 'license.created.message', args: [message(code: 'license.label', default: 'License'), licenseInstance.id])
+  
         redirect action: 'licenseDetails', params:params, id:licenseInstance.id
         //redirect action: 'show', id: licenseInstance.id
         break
