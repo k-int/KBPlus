@@ -197,4 +197,14 @@ class SubscriptionDetailsController {
 
     redirect action: 'index', id:result.subscriptionInstance?.id
   }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def removeEntitlement() {
+    log.debug("removeEntitlement....");
+    def ie = IssueEntitlement.get(params.ieid)
+    def deleted_ie = RefdataCategory.lookupOrCreate('Entitlement Issue Status','Deleted');
+    ie.status = deleted_ie;
+    
+    redirect action: 'index', id:params.sub
+  }
 }

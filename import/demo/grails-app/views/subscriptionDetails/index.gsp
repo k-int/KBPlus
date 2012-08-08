@@ -66,7 +66,7 @@
                   <th>Coverage Depth</th>
                   <th>Coverage Note</th>
                   <th>Docs</th>
-                  <th>JUSP</th>
+                  <th>Actions</th>
                 </tr>  
                 <tr>  
                   <th><input type="checkbox" name="chkall" onClick="javascript:selectAll();"/></th>
@@ -80,9 +80,8 @@
                   <th><span>edit</span> <input name="bulk_start_date" type="hidden" class="hdp" /></th>
                   <th><span>edit</span> <input name="bulk_end_date" type="hidden" class="hdp" /></th>
                   <th><span id="embargoBatchEdit" class="embargoBatchEdit"></span><input type="hidden" name="bulk_embargo" id="bulk_embargo"></th>
-                  <th></th>
                   <th><span id="coverageBatchEdit" class="coverageBatchEdit"></span><input type="hidden" name="bulk_coverage" id="bulk_coverage"></th>
-                  <th colspan="3"></th>
+                  <th colspan="4"></th>
                 </tr>
               <g:if test="${entitlements}">
                 <g:each in="${entitlements}" var="ie">
@@ -112,7 +111,7 @@
                     <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="coverageDepth" id="coverageDepth" class="newipe">${ie.coverageDepth}</g:inPlaceEdit></td>
                     <td>${ie.coverageNote}</td>  
                     <td>docs</td>  
-                    <td>JUSP</td>
+                    <td><g:link action="removeEntitlement" params="${[ieid:ie.id, sub:subscriptionInstance.id]}" onClick="return confirm('Are you sure you wish to delete this entitlement');">Delete</g:link></td>
                   </tr>
                 </g:each>
               </g:if>
