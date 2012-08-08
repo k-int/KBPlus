@@ -15,6 +15,16 @@
 
     <div class="container">
       <h1>${institution?.name} - Licences</h1>
+      <ul class="nav nav-pills">
+       <li><g:link controller="myInstitutions" 
+                                  action="currentLicenses" 
+                                  params="${[shortcode:params.shortcode]}">Current Licences</g:link></li>
+
+        <li class="active"><g:link controller="myInstitutions" 
+                                action="addLicense" 
+                                params="${[shortcode:params.shortcode]}">Add Licence</g:link></li>
+      </ul>
+
     </div>
 
     <div class="container licence-searches">
@@ -38,7 +48,6 @@
       <div class="container">
           <div class="well licence-options">
               <input type="submit" name="copy-licence" value="Copy Selected" class="btn btn-warning" />
-              <input type="submit" name="delete-licence" value="Delete Selected" class="btn btn-danger delete-licence" />
           </div>
       </div>
 

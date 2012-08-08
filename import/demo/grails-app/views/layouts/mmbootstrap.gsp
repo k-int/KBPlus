@@ -80,15 +80,20 @@
                          <g:each in="${usaf}" var="ua">
                            <li>
                              <g:link controller="myInstitutions" 
-                                     action="licenses" 
-                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Licences</g:link>
+                                     action="currentLicenses" 
+                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Current Licences</g:link>
                            </li>
-                          <li>
+                           <li>
+                             <g:link controller="myInstitutions" 
+                                     action="addLicense" 
+                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Add Licences</g:link>
+                           </li>
+                           <li>
                              <g:link controller="myInstitutions" 
                                      action="currentSubscriptions" 
                                      params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Current Subscriptions</g:link>
                            </li>
-                          <li>
+                           <li>
                              <g:link controller="myInstitutions" 
                                      action="addSubscription" 
                                      params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Add Subscriptions</g:link>

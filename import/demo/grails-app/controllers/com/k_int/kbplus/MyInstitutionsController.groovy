@@ -58,7 +58,7 @@ class MyInstitutionsController {
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def licenses() {
+  def currentLicenses() {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
@@ -66,13 +66,37 @@ class MyInstitutionsController {
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
     def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
 
-    def qry = "select l from License as l left outer join l.orgLinks ol where ( ( l.type = ? ) OR ( ol.org = ? and ol.roleType = ? ) ) AND l.status.value != 'Deleted'"
+    // def qry = "select l from License as l left outer join l.orgLinks ol where ( ( l.type = ? ) OR ( ol.org = ? and ol.roleType = ? ) ) AND l.status.value != 'Deleted'"
+    def qry = "select l from License as l left outer join l.orgLinks ol where ( ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
       qry += " order by l.${params.sort} ${params.order}"
     }
 
-    result.licenses = License.executeQuery(qry, [template_license_type, result.institution, licensee_role] )
+    // result.licenses = License.executeQuery(qry, [template_license_type, result.institution, licensee_role] )
+    result.licenses = License.executeQuery(qry, [result.institution, licensee_role] )
+
+    result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def addLicense() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+
+    def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
+    def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
+
+    // def qry = "select l from License as l left outer join l.orgLinks ol where ( ( l.type = ? ) OR ( ol.org = ? and ol.roleType = ? ) ) AND l.status.value != 'Deleted'"
+    def qry = "select l from License as l left outer join l.orgLinks ol where l.type = ? AND l.status.value != 'Deleted'"
+
+    if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
+      qry += " order by l.${params.sort} ${params.order}"
+    }
+
+    // result.licenses = License.executeQuery(qry, [template_license_type, result.institution, licensee_role] )
+    result.licenses = License.executeQuery(qry, [template_license_type])
 
     result
   }
@@ -336,7 +360,7 @@ class MyInstitutionsController {
       flash.message = message(code: 'license.delete.norights')
     }
     
-    redirect action: 'licenses', params: [shortcode:params.shortcode]
+    redirect action: 'currentLicenses', params: [shortcode:params.shortcode]
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
