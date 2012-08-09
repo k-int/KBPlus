@@ -176,11 +176,19 @@
             </div>
           </div>
           <div class="tab-pane" id="docstab">
-            <div class="row-fluid">
+            <div class="row documents-options">
+            	<div class="span6">
+            		<button id="delete-doc" class="btn btn-danger">Delete Selected Documents</button>&nbsp;
+               	</div>
+            	<div class="span6">
+            		<div class="pull-right">
+            			<input type="submit" class="btn btn-primary" value="Add new document" data-toggle="modal" href="#modalCreateDocument" />
+            		</div>
+            	</div>
+            	<div class="clear-fix"></div>
+            </div>
+            <div class="row">
               <div class="span12">
-  
-                <button id="delete-doc">Delete Selected Documents</button>&nbsp;
-                <input type="submit" class="btn btn-primary" value="Add new document" data-toggle="modal" href="#modalCreateDocument" />
   
                 <g:form id="delete_doc_form" url="[controller:'myInstitutions',action:'deleteDocuments']" method="post">
                   <input type="hidden" name="licid" value="${params.id}"/>
