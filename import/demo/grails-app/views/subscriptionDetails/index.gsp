@@ -205,7 +205,7 @@
          });
 
          $('dd span.reldataEdit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}" action="genericSetRel" absolute="true"/>', {
-           loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:institution.shortcode]}" action="availableLicenses" absolute="true"/>',
+           loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:institution?.shortcode]}" action="availableLicenses" absolute="true"/>',
            type   : 'select',
            cancel : 'Cancel',
            submit : 'OK',
