@@ -88,15 +88,15 @@ class MyInstitutionsController {
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
     def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
 
-    // def qry = "select l from License as l left outer join l.orgLinks ol where ( ( l.type = ? ) OR ( ol.org = ? and ol.roleType = ? ) ) AND l.status.value != 'Deleted'"
-    def qry = "select l from License as l left outer join l.orgLinks ol where l.type = ? AND l.status.value != 'Deleted'"
+    def qry = "select l from License as l left outer join l.orgLinks ol where ( ( l.type = ? ) OR ( ol.org = ? and ol.roleType = ? ) ) AND l.status.value != 'Deleted'"
+    // def qry = "select l from License as l left outer join l.orgLinks ol where l.type = ? AND l.status.value != 'Deleted'"
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
       qry += " order by l.${params.sort} ${params.order}"
     }
 
-    // result.licenses = License.executeQuery(qry, [template_license_type, result.institution, licensee_role] )
-    result.licenses = License.executeQuery(qry, [template_license_type])
+    result.licenses = License.executeQuery(qry, [template_license_type, result.institution, licensee_role] )
+    // result.licenses = License.executeQuery(qry, [template_license_type])
 
     result
   }
