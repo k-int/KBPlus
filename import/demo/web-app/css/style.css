@@ -189,6 +189,11 @@
 
 /* Modals */
 
+#modalCreateNote {
+    width: 400px;
+    margin-left: -200px;
+}
+
 #modalCreateNote textarea {
     height: 150px;
     width: 100%;
@@ -196,6 +201,11 @@
 
 #modalCreateLink select {
     display: none;
+}
+
+#modalCreateDocument {
+    width: 300px;
+    margin-left: -150px;
 }
 
 /* Icons */
