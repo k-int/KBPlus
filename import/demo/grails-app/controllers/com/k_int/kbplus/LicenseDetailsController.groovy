@@ -26,6 +26,38 @@ class LicenseDetailsController {
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def links() {
+    log.debug("licenseDetails id:${params.id}");
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    // result.institution = Org.findByShortcode(params.shortcode)
+    result.license = License.get(params.id)
+    result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def notes() {
+    log.debug("licenseDetails id:${params.id}");
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    // result.institution = Org.findByShortcode(params.shortcode)
+    result.license = License.get(params.id)
+    result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def documents() {
+    log.debug("licenseDetails id:${params.id}");
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    // result.institution = Org.findByShortcode(params.shortcode)
+    result.license = License.get(params.id)
+    result
+  }
+
+
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def uploadDocument() {
     log.debug("upload document....");
 
