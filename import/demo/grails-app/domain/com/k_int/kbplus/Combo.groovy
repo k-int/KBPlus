@@ -18,8 +18,8 @@ class Combo {
            version column:'combo_version'
             status column:'combo_status_rv_fk'
               type column:'combo_type_rv_fk'
-             p1Org column:'combo_from_org_fk'
-             p2Org column:'combo_to_org_fk'
+           fromOrg column:'combo_from_org_fk'
+             toOrg column:'combo_to_org_fk'
   }
 
   static constraints = {

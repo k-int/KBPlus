@@ -97,3 +97,7 @@ insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 21, 'No limit
 insert into refdata_category(rdc_id, rdc_description) VALUES (22,'isCoreTitle');
 insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 22, 'true', 'greenTick');
 insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 22, 'false', 'redCross');
+
+insert into refdata_category(rdc_id, rdc_description) VALUES (23,'Link Types');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 23, 'Parent');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 23, 'Child');

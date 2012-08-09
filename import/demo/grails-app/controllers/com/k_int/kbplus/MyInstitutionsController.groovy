@@ -344,6 +344,9 @@ class MyInstitutionsController {
                                             status: dctx.status,
                                             doctype: dctx.doctype).save()
           }
+
+          // Finally, create a link
+          def new_link = new Link(fromLic:baseLicense, toLic:licenseInstance).save()
         }
 
         if ( baseLicense ) 

@@ -31,12 +31,16 @@ class License {
   static hasMany = [
     subscriptions:Subscription, 
     documents:DocContext,
-    orgLinks:OrgRole
+    orgLinks:OrgRole,
+    outgoinglinks:Link,
+    incomingLinks:Link
   ]
 
   static mappedBy = [ subscriptions: 'owner',
                       documents: 'license',
-                      orgLinks:'lic']
+                      orgLinks:'lic',
+                      outgoinglinks:'fromLic',
+                      incomingLinks:'toLic']
 
   static mapping = {
                      id column:'lic_id'
@@ -133,4 +137,7 @@ class License {
     }
   }
 
+  def getGenericLabel() {
+    return reference
+  }
 }

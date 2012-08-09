@@ -40,47 +40,29 @@
     </div>
 
     <div class="container">
-                <button id="delete-doc">Delete Selected Documents</button>&nbsp;
-                <input type="submit" class="btn btn-primary" value="Add new document" data-toggle="modal" href="#modalCreateDocument" />
-  
-                <g:form id="delete_doc_form" url="[controller:'licenseDetails',action:'deleteDocuments']" method="post">
-                  <input type="hidden" name="licid" value="${params.id}"/>
-  
-                <table class="table table-striped table-bordered table-condensed">
-                  <thead>
-                    <tr>
-                      <td>Select</td>
-                      <td>Title</td>
-                      <td>File Name</td>
-                      <td>Download Link</td>
-                      <td>Creator</td>
-                      <td>Type</td>
-                      <td>Doc Store ID</td>
-                      <td>Linked Here</td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <g:each in="${license.documents}" var="docctx">
-                      <g:if test="${docctx.owner.contentType==1}">
-                        <tr>
-                          <td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td>
-                          <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="title" id="doctitle" class="newipe">${docctx.owner.title}</g:inPlaceEdit></td>
-                          <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="filename" id="docfilename" class="newipe">${docctx.owner.filename}</g:inPlaceEdit></td>
-                          <td>
-                            <g:if test="${docctx.owner?.contentType==1}">
-                              <a href="http://knowplus.edina.ac.uk/oledocstore/document?uuid=${docctx.owner?.uuid}">Download Doc</a>
-                            </g:if>
-                          </td>
-                          <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="creator" id="docCreator" class="newipe">${docctx.owner.creator}</g:inPlaceEdit></td>
-                          <td>${docctx.owner?.type?.value}</td>
-                          <td><g:if test="${docctx.owner?.uuid}">${docctx.owner?.uuid}</g:if></td>
-                          <td>Links</td>
-                        </tr>
-                      </g:if>
-                    </g:each>
-                  </tbody>
-                </table>
-                </g:form>
+
+      <table class="table table-striped table-bordered table-condensed">
+        <thead>
+          <tr>
+            <td>Link Type</td>
+            <td>Linked Object</td>
+          </tr>
+        </thead>
+        <tbody>
+          <g:each in="${license.outgoinglinks}" var="links">
+            <tr>
+              <td>Outgoing</td>
+              <td>${links.linkSource.genericLabel}</td>
+            </tr>
+          </g:each>
+          <g:each in="${license.incomingLinks}" var="links">
+            <tr>
+              <td>Incoming</td>
+              <td>${links.linkTarget.genericLabel}</td>
+            </tr>
+          </g:each>
+        </tbody>
+      </table>
     </div>
     
     <script language="JavaScript">
