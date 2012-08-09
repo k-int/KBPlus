@@ -10,7 +10,12 @@ class InplaceTagLib {
         def value = RefdataValue.findByOwnerAndValue(category, attrs.val)
         def id = "${attrs.domain}:${attrs.pk}:${attrs.field}:${attrs.cat}:${attrs.id}"
 
-        out << "<span id=\"${id}\" class=\"${attrs.class} ${value?.icon}\">"
+        //  out << "<span class=\"select-icon ${value?.icon}\">&nbsp;</span><span id=\"${id}\" class=\"${attrs.class}\">"
+        out << "<span <span id=\"${id}\" class=\"${attrs.class}\">"
+        if ( value?.icon ) {
+          out << "<span class=\"select-icon ${value?.icon}\">&nbsp;</span>"
+        }
+        out << "<span>"
         out << attrs.val
         out << "</span>"
       }

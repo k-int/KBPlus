@@ -62,10 +62,10 @@ class AjaxController {
     response.setContentType('text/plain')
     def outs = response.outputStream
     if ( rdv.icon ) {
-      outs << "<div class=\"${rdv.icon}\">${params.value}</span>"
+      outs << "<span class=\"select-icon ${rdv.icon}\">&nbsp;</span><span>${rdv.value}</span>"
     }
     else {
-      outs << "<div>${params.value}</div>"
+      outs << "<span>${params.value}</span>"
     }
     outs.flush()
     outs.close()

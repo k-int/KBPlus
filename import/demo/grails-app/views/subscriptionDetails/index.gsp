@@ -182,7 +182,8 @@
         $('span.entitlementBatchEdit').editable(function(value, settings) { 
           $("#bulk_core").val(value);
           return(value);          
-        },{ data:{'true':'true','false':'false'}, type:'select',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px'});
+        },{ data:{'true':'true',
+                  'false':'false'}, type:'select',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px'});
 
         $('span.embargoBatchEdit').editable(function(value, settings) { 
           $("#bulk_embargo").val(value);
@@ -204,7 +205,7 @@
          });
 
          $('dd span.reldataEdit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}" action="genericSetRel" absolute="true"/>', {
-           loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:subscriber_shortcode]}" action="availableLicenses" absolute="true"/>',
+           loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:institution.shortcode]}" action="availableLicenses" absolute="true"/>',
            type   : 'select',
            cancel : 'Cancel',
            submit : 'OK',
