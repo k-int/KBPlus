@@ -156,6 +156,10 @@ class SubscriptionDetailsController {
       result.num_sub_rows = IssueEntitlement.executeQuery("select count(ie) "+basequery, qry_params )[0]
       result.available_issues = IssueEntitlement.executeQuery("select ie ${basequery}", qry_params, [max:result.max, offset:result.offset]);
     }
+    else {
+      result.num_sub_rows = 0;
+      result.available_issues = []
+    }
     
     result
   }
