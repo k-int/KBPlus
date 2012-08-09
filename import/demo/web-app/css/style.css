@@ -10,112 +10,112 @@
 /* Sprites */
 
 .sprite {
-  background-image: url('../images/sprites.png');
-  background-repeat: no-repeat;
-  font-size: 0;
+    background-image: url('../images/sprites.png');
+    background-repeat: no-repeat;
+    font-size: 0;
 }
 
 .sprite-header_graphic {
-  background-position: 0 0;
-  width: 440px; 
-  height: 40px;
+    background-position: 0 0;
+    width: 440px; 
+    height: 40px;
 }
 
 .sprite-jisc_collections_logo {
-  background-position: -441px 0;
-  width: 195px;
-  height: 70px;
+    background-position: -441px 0;
+    width: 195px;
+    height: 70px;
 } 
 
 .sprite-jisc_logo {
-  background-position: -637px 0;
-  width: 50px;
-  height: 70px;
+    background-position: -637px 0;
+    width: 50px;
+    height: 70px;
 } 
 
 .sprite-kbplus_logo { 
-  background-position: -688px 0;
-  width: 95px; 
-  height: 70px;
+    background-position: -688px 0;
+    width: 95px; 
+    height: 70px;
 }
 
 /* Page Footer */
 
 #Footer {
-  border-top: 1px solid rgb(218,218,218);
-  padding-top: 25px;
-  margin-top: 30px;
-  margin-bottom: 40px;
+    border-top: 1px solid rgb(218,218,218);
+    padding-top: 25px;
+    margin-top: 30px;
+    margin-bottom: 40px;
 }
 
 #Footer .row {
-  margin-left: 0px;
+    margin-left: 0px;
 }
 
 #Footer a {
-  padding: 0;
-  margin: 0;
+    padding: 0;
+    margin: 0;
 }
 
 /* Additional Nav */
 
 .navbar-push {
-  margin-top: 55px;
+    margin-top: 55px;
 }
 
 /* licence Search */
 
 .licence-searches {
-  margin-bottom: 15px;
+    margin-bottom: 15px;
 }
 
 .licence-options, 
 .licence-documents-options, 
 .licence-links-options, 
 .licence-notes-options { 
-  margin-bottom: 15px;
-  display: none;
-  background-color: #F0F0F0;
+    margin-bottom: 15px;
+    display: none;
+    background-color: #F0F0F0;
 }
 
 .licence-results {
 }
 
 .licence-results table th, .licence-results table td {
-  padding: 4px;
+    padding: 4px;
 }
 
 /* licence Page */
 
 .licence-info {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .licence-info dt {
-  float: left;
-  width: 20%;
-  font-weight: bold;
+    float: left;
+    width: 20%;
+    font-weight: bold;
 }
 
 .licence-info dt label {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 .licence-info dd {
-  float: left;
-  width: 78%;
+    float: left;
+    width: 78%;
 }
 
 .licence-properties td {
-  width: 25%;
+    width: 25%;
 }
 
 .licence-properties tr > td:first-child {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 .licence-properties tr > td:last-child {
-  width: 50%;
+    width: 50%;
 }
 
 .licence-properties input {
@@ -123,221 +123,249 @@
 }
 
 .well.documents {
-  margin-top: 20px;
+    margin-top: 20px;
 }
 
 .well.documents ul {
-  margin-top: 5px;
-  margin-left: 0px;
+    margin-top: 5px;
+    margin-left: 0px;
 }
 
 .well.documents li {
-  list-style: none;
-  list-style-image: none;
-  word-wrap: break-word;
-  border-bottom: 1px solid #CCCCCC;
-  padding-top: 2px;
-  padding-bottom: 2px;
+    list-style: none;
+    list-style-image: none;
+    word-wrap: break-word;
+    border-bottom: 1px solid #CCCCCC;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
 .well.notes {
-  font-size: 0.9em;
-  color: #535353;
+    font-size: 0.9em;
+    color: #535353;
 }
 
 .well.notes ul {
-  margin-left: 0px;
+    margin-left: 0px;
 }
 
 .well.notes li {
-  list-style: none;
-  list-style-image: none;
-  border-bottom: 1px solid #CCCCCC;
-  margin-top: 8px;
-  margin-bottom: 8px;
-  color: black;
+    list-style: none;
+    list-style-image: none;
+    border-bottom: 1px solid #CCCCCC;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    color: black;
 }
 
 .well.notes .pagination {
-  margin: 0;
-  margin-top: 5px;
-  margin-bottom: 5px;
+    margin: 0;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .well.documents input, .well.notes input {
-  margin-top: 5px;
+    margin-top: 5px;
 }
 
 .well.notes .pagination a {
-  padding: 5px;
-  line-height: inherit;
+    padding: 5px;
+    line-height: inherit;
 }
 
 #licenceInformation dt,dd {
-  width: auto;
+    width: auto;
 }
 
 .licenceInfo input[type="text"] {
-  width: 100%;
+    width: 100%;
+}
+
+/* License Documents Styles */
+
+.documents-options {
+    padding-bottom: 5px;
 }
 
 /* Modals */
 
+#modalCreateNote {
+    width: 400px;
+    margin-left: -200px;
+}
+
 #modalCreateNote textarea {
-  height: 150px;
-  width: 100%;
+    height: 150px;
+    width: 100%;
 }
 
 #modalCreateLink select {
-  display: none;
+    display: none;
+}
+
+#modalCreateDocument {
+    width: 300px;
+    margin-left: -150px;
 }
 
 /* Icons */
 
+.select-icon {
+    display: block;
+    height: 20px;
+    width: 20px;
+    margin-right: 10px;
+    background-position: 50% left;
+    background-repeat: no-repeat;
+    float: left;
+}
+
 .redCross {
-  background-image: url('../images/red_cross_icon.png');
-  background-position: 50% left;
-  background-repeat: no-repeat;
-  height: 25px;
-  line-height: 25px;
-  padding-left: 35px;
+    background-image: url('../images/red_cross_icon.png');
 }
 
 .greenTick {
-  background-image: url('../images/green_tick_icon.png');
-  background-position: 50% left;
-  background-repeat: no-repeat;
-  height: 25px;
-  line-height: 25px;
-  padding-left: 35px;
+    background-image: url('../images/green_tick_icon.png');
 }
 
 .purpleQuestion {
-  background-image: url('../images/purple_question_icon.png');
-  background-position: 50% left;
-  background-repeat: no-repeat;
-  height: 25px;
-  line-height: 25px;
-  padding-left: 35px;
+    background-image: url('../images/purple_question_icon.png');
 }
 
 .downloadIcon {
-  background-image: url('../images/download_icon.gif');
-  background-position: right 50%;
-  background-repeat: no-repeat;
-  height: 15px;
-  line-height: 15px;
-  padding-right: 20px;
-  cursor: pointer;
+    background-image: url('../images/download_icon.gif');
+    background-position: right 50%;
+    background-repeat: no-repeat;
+    height: 15px;
+    line-height: 15px;
+    padding-right: 20px;
+    cursor: pointer;
 }
 
-.externalLinkIcon {
-  background-image: url('../images/external_link_icon.gif');
-  background-position: right 50%;
-  background-repeat: no-repeat;
-  padding-right: 20px;
+.externalLinkIcon a {
+    display: inline;
+    background-image: url('../images/external_link_icon.gif');
+    background-position: right center;
+    background-repeat: no-repeat;
+    padding-right: 25px;
 }
 
 /* jeditable styles */
 
 .editableEmpty {
-  font-style: italic;
-  color: #AAA;
-}
-
-.editableHover {
-  
+    font-style: italic;
+    color: #AAA;
 }
 
 .editableHover:hover {
-  background-color: #D9E5F2;
+    background-color: #D9E5F2;
 }
 
-.ipe, .fieldNote, .refdataedit, .cuedit {
-  display: block;
-  background-image: url('../images/edit_icon.gif');
-  background-repeat: no-repeat;
-  background-position: top right;
-  margin: 0px;  
-  min-height: 25px;
+.ipe, .fieldNote, .refdataedit, .cuedit, .newipe {
+    display: inline;
+    background-position: right center;
+    padding-right: 25px;
+    background-image: url('../images/edit_icon.gif');
+    background-repeat: no-repeat;
+    word-wrap: break-word;
+}
+
+.fieldNote:hover, .refdataedit:hover, .cuedit:hover, .newipe:hover {
+    background-color: #D9E5F2;
+    cursor: pointer;
+}
+
+.cuedit, .refdataedit {
+    min-height: 20px;
+    line-height: 20px;
+    display: block;
+    float: left;
 }
 
 .ipe:hover, .fieldNote:hover, .refdataedit:hover, .cuedit:hover {
-  background-color: #D9E5F2;
-  cursor: pointer;
-  background-image: none;
+    background-color: #D9E5F2;
+    cursor: pointer;
 }
 
-.ipe form, .fieldNote form , .refdataedit form, .cuedit form {
-  background-color: #D9E5F2;
-  padding: 15px;
-  top: 0;
-  margin: -8px;
-  padding: 15px;
+.ipe form {
+    background-color: #D9E5F2;
+    padding: 10px;
+    overflow: hidden;
 }
 
-.fieldNote:hover, .refdataedit:hover, .cuedit:hover {
-  margin: -8px;
-  padding: 8px;
+.fieldNote form, .cuedit form, .refdataedit form {
+    background-color: #D9E5F2;
+    margin: -8px;
+    padding: 8px;
+}  
+
+.newipe form {
+    background-color: #D9E5F2;
+    padding: 10px;
 }
 
-.ipe textarea, .fieldNote textarea, .refdataedit select, .cuedit select {
-  height: auto;
-  overflow: auto;
-  width: 100%!important;
+.clicked {
+    background-image: none;
+    padding-right: 0px;
 }
 
-.ipe button[type="submit"], .fieldNote button[type="submit"], .refdataedit button[type="submit"], .cuedit button[type="submit"] {
-  background-color: #0074CC;
-  background-image: linear-gradient(bottom, #29547E 34%, #386593 67%);
-  background-image: -o-linear-gradient(bottom, #29547E 34%, #386593 67%);
-  background-image: -moz-linear-gradient(bottom, #29547E 34%, #386593 67%);
-  background-image: -webkit-linear-gradient(bottom, #29547E 34%, #386593 67%);
-  background-image: -ms-linear-gradient(bottom, #29547E 34%, #386593 67%);
-  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0.34, #29547E), color-stop(0.67, #386593) );
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#29547E', endColorstr='#386693',GradientType=0 );
-  background-repeat: repeat-x;
-  border-color: #05C #05C #003580;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  border-top: #29547E;
-  filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-  color: white;
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+.ipe textarea, .fieldNote textarea, .refdataedit select, .cuedit select, .newipe textarea {
+    height: auto;
+    overflow: auto;
+    width: 100%!important;
 }
 
-.ipe button, .fieldNote button, .refdataedit button, .cuedit button {
-  margin-top: 10px;
-  margin-right: 10px;
-  display: inline-block;
-  padding: 4px 10px 4px;
-  margin-bottom: 0;
-  font-size: 13px;
-  line-height: 18px;
-  color: #333;
-  text-align: center;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
-  vertical-align: middle;
-  cursor: pointer;
-  background-color: whiteSmoke;
-  background-image: -ms-linear-gradient(top,white,#E6E6E6);
-  background-image: -webkit-gradient(linear,0 0,0 100%,from(white),to(#E6E6E6));
-  background-image: -webkit-linear-gradient(top,white,#E6E6E6);
-  background-image: -o-linear-gradient(top,white,#E6E6E6);
-  background-image: linear-gradient(top,white,#E6E6E6);
-  background-image: -moz-linear-gradient(top,white,#E6E6E6);
-  background-repeat: repeat-x;
-  border: 1px solid #CCC;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  border-color: #E6E6E6 #E6E6E6 #BFBFBF;
-  border-bottom-color: #B3B3B3;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-  filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ffffff',endColorstr='#e6e6e6',GradientType=0);
-  filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),0 1px 2px rgba(0, 0, 0, 0.05);
-  -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.05);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),0 1px 2px rgba(0, 0, 0, 0.05);
+.ipe button[type="submit"], .fieldNote button[type="submit"], .refdataedit button[type="submit"], .cuedit button[type="submit"], .newipe[type="submit"] {
+    background-color: #0074CC;
+    background-image: linear-gradient(bottom, #29547E 34%, #386593 67%);
+    background-image: -o-linear-gradient(bottom, #29547E 34%, #386593 67%);
+    background-image: -moz-linear-gradient(bottom, #29547E 34%, #386593 67%);
+    background-image: -webkit-linear-gradient(bottom, #29547E 34%, #386593 67%);
+    background-image: -ms-linear-gradient(bottom, #29547E 34%, #386593 67%);
+    background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0.34, #29547E), color-stop(0.67, #386593) );
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#29547E', endColorstr='#386693',GradientType=0 );
+    background-repeat: repeat-x;
+    border-color: #05C #05C #003580;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    border-top: #29547E;
+    filter: progid:dximagetransform.microsoft.gradient(enabled=false);
+    color: white;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+.ipe button, .fieldNote button, .refdataedit button, .cuedit button, .newipe button {
+    margin-top: 10px;
+    margin-right: 10px;
+    display: inline-block;
+    padding: 4px 10px 4px;
+    margin-bottom: 0;
+    font-size: 13px;
+    line-height: 18px;
+    color: #333;
+    text-align: center;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: whiteSmoke;
+    background-image: -ms-linear-gradient(top,white,#E6E6E6);
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(white),to(#E6E6E6));
+    background-image: -webkit-linear-gradient(top,white,#E6E6E6);
+    background-image: -o-linear-gradient(top,white,#E6E6E6);
+    background-image: linear-gradient(top,white,#E6E6E6);
+    background-image: -moz-linear-gradient(top,white,#E6E6E6);
+    background-repeat: repeat-x;
+    border: 1px solid #CCC;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    border-color: #E6E6E6 #E6E6E6 #BFBFBF;
+    border-bottom-color: #B3B3B3;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ffffff',endColorstr='#e6e6e6',GradientType=0);
+    filter: progid:dximagetransform.microsoft.gradient(enabled=false);
+    -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),0 1px 2px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .paginateButtons {
