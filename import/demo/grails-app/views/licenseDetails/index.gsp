@@ -61,7 +61,7 @@
                       <dd>
                         <g:if test="${license.subscriptions && ( license.subscriptions.size() > 0 )}">
                           <g:each in="${license.subscriptions}" var="sub">
-                            <g:link controller="myInstitutions" action="subscriptionDetails" params="${[shortcode:params.shortcode]}" id="${sub.id}">${sub.id} (${sub.name})</g:link><br/>
+                            <g:link controller="subscriptionDetails" action="index" id="${sub.id}">${sub.id} (${sub.name})</g:link><br/>
                           </g:each>
                         </g:if>
                         <g:else>No currently linked subscriptions.</g:else>
@@ -164,12 +164,10 @@
               <div class="span4">
                 <g:render template="documents" contextPath="../templates" model="${[doclist:license.documents, 
                                                                                     license:license,
-                                                                                    property:'documents',
-                                                                                    shortcode:params.shortcode]}" />
+                                                                                    property:'documents']}" />
                 <g:render template="notes" contextPath="../templates" model="${[doclist:license.documents, 
                                                                                     license:license,
-                                                                                    property:'documents',
-                                                                                    shortcode:params.shortcode]}" />
+                                                                                    property:'documents']}" />
               </div>
             </div>
           </div>
@@ -180,9 +178,8 @@
                 <button id="delete-doc">Delete Selected Documents</button>&nbsp;
                 <input type="submit" class="btn btn-primary" value="Add new document" data-toggle="modal" href="#modalCreateDocument" />
   
-                <g:form id="delete_doc_form" url="[controller:'myInstitutions',action:'deleteDocuments']" method="post">
+                <g:form id="delete_doc_form" url="[controller:'licenseDetails',action:'deleteDocuments']" method="post">
                   <input type="hidden" name="licid" value="${params.id}"/>
-                  <input type="hidden" name="shortcode" value="${params.shortcode}"/>
   
                 <table class="table table-striped table-bordered table-condensed">
                   <thead>
@@ -372,9 +369,8 @@
     <button type="button" class="close" data-dismiss="modal">×</button>
     <h3>Create New Document</h3>
   </div>
-  <g:form id="upload_new_doc_form" url="[controller:'myInstitutions',action:'uploadDocument']" method="post" enctype="multipart/form-data">
+  <g:form id="upload_new_doc_form" url="[controller:'licenseDetails',action:'uploadDocument']" method="post" enctype="multipart/form-data">
     <input type="hidden" name="licid" value="${license.id}"/>
-    <input type="hidden" name="shortcode" value="${params.shortcode}"/>
     <div class="modal-body">
       <dl>
         <dt>
@@ -407,9 +403,8 @@
     <button type="button" class="close" data-dismiss="modal">×</button>
     <h3>Create New Note</h3>
   </div>
-  <g:form id="create_license_note" url="[controller:'myInstitutions',action:'uploadNewNote']" method="post">
+  <g:form id="create_license_note" url="[controller:'licenseDetails',action:'uploadNewNote']" method="post">
     <input type="hidden" name="licid" value="${license.id}"/>
-    <input type="hidden" name="shortcode" value="${params.shortcode}"/>
     <div class="modal-body">
       <dl>
         <dt>

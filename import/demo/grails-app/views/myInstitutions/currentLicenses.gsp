@@ -69,10 +69,9 @@
               <g:each in="${licenses}" var="l">
                 <tr>
                   <td><input type="radio" name="baselicense" value="${l.id}"/></td>
-                  <td><g:link action="licenseDetails"
-                              controller="myInstitutions" 
-                              id="${l.id}"
-                              params="${[shortcode:params.shortcode]}">${l.reference}</g:link></td>
+                  <td><g:link action="index"
+                              controller="licenseDetails" 
+                              id="${l.id}">${l.reference}</g:link></td>
                   <td>${l.licensor?.name}</td>
                   <td>${l.licensee?.name}</td>
                   <td>${l.status?.value}</td>
