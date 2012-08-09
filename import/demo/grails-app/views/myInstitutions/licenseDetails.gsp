@@ -244,7 +244,6 @@
     
     <script language="JavaScript">
       $(document).ready(function() {
-
          var checkEmptyEditable = function() {
            $('.ipe, .refdataedit, .fieldNote').each(function() {
              if($(this).text().length == 0) {
@@ -263,14 +262,52 @@
          else {
            $('#cucwrap').hide();
          }
-
+         
+         // On jEditable click remove the hide the icon and show it 
+         // when one of the buttons are clicked or ESC is hit.
+         $('.ipe, .intedit, .refdataedit, .cuedit, .fieldNote, .newipe').click(function() {
+         	// Hide edit icon with overwriting style.
+         	$(this).addClass('clicked');
+         	
+         	// If the editable has an icon as part of its styling.
+         	var iconStyle = $(this).is('.refdataedit, .cuedit');
+         	
+         	if(iconStyle) {
+         		$(this).parent().find('.select-icon').hide();
+         	}      	
+         	
+         	var e = $(this);
+         	
+         	var removeClicked = function() {
+         		setTimeout(function() {
+         			e.removeClass('clicked');
+         			
+         			if(iconStyle) {
+         				e.parent().find('.select-icon').show();
+         			}
+         		}, 1);
+         	}
+         	
+         	setTimeout(function() {
+         		e.find('form button').click(function() {
+         			removeClicked();
+         		});
+         		e.keydown(function(event) {
+         			if(event.keyCode == 27) {
+         				removeClicked();
+         			}
+         		});
+         	}, 1);
+         });
+         
          $('.ipe').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="setValue" absolute="true"/>', { 
            type      : 'textarea',
            cancel    : 'Cancel',
            submit    : 'OK',
            id        : 'elementid',
            rows      : 3,
-           tooltip   : 'Click to edit...'
+           tooltip   : 'Click to edit...',
+           onblur	 : 'ignore'
          });
 
          $('.intedit').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="setValue" absolute="true"/>', {
@@ -280,7 +317,8 @@
            cancel    : 'Cancel',
            submit    : 'OK',
            id        : 'elementid',
-           tooltip   : 'Click to edit...'
+           tooltip   : 'Click to edit...',
+           onblur	 : 'ignore'
          });
 
 
@@ -290,7 +328,8 @@
            cancel : 'Cancel',
            submit : 'OK',
            id     : 'elementid',
-           tooltip: 'Click to edit...'
+           tooltip: 'Click to edit...',
+           onblur	 : 'ignore'
          });
 
          $('.cuedit').editable('<g:createLink controller="ajax" action="genericSetRef" absolute="true"/>', {
@@ -300,6 +339,7 @@
            submit : 'OK',
            id     : 'elementid',
            tooltip: 'Click to edit...',
+           onblur	 : 'ignore',
            callback : function(value, settings) {
              if ( value==='Specified' ) {
                $('#cucwrap').show();
@@ -316,7 +356,8 @@
            submit    : 'OK',
            id        : 'elementid',
            rows      : 3,
-           tooltip   : 'Click to edit...'
+           tooltip   : 'Click to edit...',
+           onblur	 : 'ignore'
          });
 
          $('.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
@@ -325,7 +366,8 @@
            submit    : 'OK',
            id        : 'elementid',
            rows      : 3,
-           tooltip   : 'Click to edit...'
+           tooltip   : 'Click to edit...',
+           onblur	 : 'ignore'
          });
 
          $( "#dialog-form" ).dialog({
