@@ -58,13 +58,17 @@ input[type="text"] {
     margin-bottom: 0;
 }
 
-table thead {
-    background-color: rgb(153,1,0);
+table tbody td {
+    word-break: break-word;
+}
+
+table thead, table tr:first-child th {
+    background-color: rgb(153,1,0)!important;
     color: white;
     font-weight: bold;
 }
 
-thead {
+thead, table tr:first-child {
     -webkit-border-top-left-radius: 6px;
     -moz-border-radius-topleft: 6px;
     border-top-left-radius: 6px;
@@ -73,13 +77,13 @@ thead {
     border-top-right-radius: 6px;
 }
 
-thead td:first-child {
+thead td:first-child, table tr:first-child th:first-child {
     -webkit-border-top-left-radius: 6px;
     -moz-border-radius-topleft: 6px;
     border-top-left-radius: 6px;
 }
 
-thead td:last-child {
+thead td:last-child, table tr:first-child th:last-child  {
     -webkit-border-top-right-radius: 6px;
     -moz-border-radius-topright: 6px;
     border-top-right-radius: 6px;
@@ -119,6 +123,8 @@ dt, dd {
 
 .modal-header .close {
     border: none;
+    background-color: white;
+    font-size: 26px;
 }
 
 .btn-primary {
