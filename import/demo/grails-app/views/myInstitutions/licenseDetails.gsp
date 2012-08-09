@@ -199,7 +199,7 @@
                   </thead>
                   <tbody>
                     <g:each in="${license.documents}" var="docctx">
-                      <g:if test="${!docctx.owner.contentType==1}">
+                      <g:if test="${docctx.owner.contentType==1}">
                         <tr>
                           <td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td>
                           <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="title" id="doctitle" class="newipe">${docctx.owner.title}</g:inPlaceEdit></td>
