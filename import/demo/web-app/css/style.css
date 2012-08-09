@@ -222,20 +222,21 @@
 }
 
 .downloadIcon {
-  background-image: url('../images/download_icon.gif');
-  background-position: right 50%;
-  background-repeat: no-repeat;
-  height: 15px;
-  line-height: 15px;
-  padding-right: 20px;
-  cursor: pointer;
+    background-image: url('../images/download_icon.gif');
+    background-position: right 50%;
+    background-repeat: no-repeat;
+    height: 15px;
+    line-height: 15px;
+    padding-right: 20px;
+    cursor: pointer;
 }
 
-.externalLinkIcon {
-  background-image: url('../images/external_link_icon.gif');
-  background-position: right 50%;
-  background-repeat: no-repeat;
-  padding-right: 20px;
+.externalLinkIcon a {
+    display: inline;
+    background-image: url('../images/external_link_icon.gif');
+    background-position: right center;
+    background-repeat: no-repeat;
+    padding-right: 25px;
 }
 
 /* jeditable styles */
@@ -250,44 +251,57 @@
 }
 
 .editableHover:hover {
-  background-color: #D9E5F2;
+    background-color: #D9E5F2;
 }
 
-.ipe, .fieldNote, .refdataedit, .cuedit {
-  display: block;
-  background-image: url('../images/edit_icon.gif');
-  background-repeat: no-repeat;
-  background-position: top right;
-  margin: 0px;  
-  min-height: 25px;
+.ipe, .fieldNote, .refdataedit, .cuedit, .newipe {
+    display: inline;
+    background-position: right center;
+    padding-right: 25px;
+    background-image: url('../images/edit_icon.gif');
+    background-repeat: no-repeat;
+    word-wrap: break-word;
+}
+
+.fieldNote:hover, .refdataedit:hover, .cuedit:hover, .newipe:hover {
+  background-color: #D9E5F2;
+  cursor: pointer;
 }
 
 .ipe:hover, .fieldNote:hover, .refdataedit:hover, .cuedit:hover {
-  background-color: #D9E5F2;
-  cursor: pointer;
-  background-image: none;
+    background-color: #D9E5F2;
+    cursor: pointer;
 }
 
-.ipe form, .fieldNote form , .refdataedit form, .cuedit form {
-  background-color: #D9E5F2;
-  padding: 15px;
-  top: 0;
-  margin: -8px;
-  padding: 15px;
+.ipe form {
+   background-color: #D9E5F2;
+   padding: 10px;
+   overflow: hidden;
 }
 
-.fieldNote:hover, .refdataedit:hover, .cuedit:hover {
-  margin: -8px;
-  padding: 8px;
+.fieldNote form, .cuedit form, .refdataedit form {
+    background-color: #D9E5F2;
+    margin: -8px;
+    padding: 8px;
+}  
+
+.newipe form {
+    background-color: #D9E5F2;
+    padding: 10px;
 }
 
-.ipe textarea, .fieldNote textarea, .refdataedit select, .cuedit select {
+.clicked {
+    background-image: none;
+    padding-right: 0px;
+}
+
+.ipe textarea, .fieldNote textarea, .refdataedit select, .cuedit select, .newipe textarea {
   height: auto;
   overflow: auto;
   width: 100%!important;
 }
 
-.ipe button[type="submit"], .fieldNote button[type="submit"], .refdataedit button[type="submit"], .cuedit button[type="submit"] {
+.ipe button[type="submit"], .fieldNote button[type="submit"], .refdataedit button[type="submit"], .cuedit button[type="submit"], .newipe[type="submit"] {
   background-color: #0074CC;
   background-image: linear-gradient(bottom, #29547E 34%, #386593 67%);
   background-image: -o-linear-gradient(bottom, #29547E 34%, #386593 67%);
@@ -305,7 +319,7 @@
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 
-.ipe button, .fieldNote button, .refdataedit button, .cuedit button {
+.ipe button, .fieldNote button, .refdataedit button, .cuedit button, .newipe button {
   margin-top: 10px;
   margin-right: 10px;
   display: inline-block;
