@@ -67,7 +67,6 @@
                   <th>Content URL</th>
                   <th>Coverage Depth</th>
                   <th>Coverage Note</th>
-                  <th>Docs</th>
                   <th>JUSP</th>
                 </tr>  
                 <tr>  
@@ -79,7 +78,7 @@
                   <th><span id="embargoBatchEdit" class="embargoBatchEdit"></span><input type="hidden" name="bulk_embargo" id="bulk_embargo"></th>
                   <th></th>
                   <th><span id="coverageBatchEdit" class="coverageBatchEdit"></span><input type="hidden" name="bulk_coverage" id="bulk_coverage"></th>
-                  <th colspan="3"></th>
+                  <th colspan="2"></th>
                 </tr>
                 <g:each in="${entitlements}" var="ie">
                   <tr>
@@ -105,7 +104,6 @@
                     <td><g:if test="${ie.tipp?.getHostPlatform()}"><a href="${ie.tipp?.getHostPlatform()}">${ie.tipp?.getHostPlatform()}</a></g:if></td>
                     <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="coverageDepth" id="coverageDepth">${ie.coverageDepth}</g:inPlaceEdit></td>
                     <td>${ie.coverageNote}</td>  
-                    <td>docs</td>  
                     <td>JUSP</td>
                   </tr>
                 </g:each>
