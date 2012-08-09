@@ -210,31 +210,26 @@
 
 /* Icons */
 
-.redCross {
-    background-image: url('../images/red_cross_icon.png');
+.select-icon {
+    display: block;
+    height: 20px;
+    width: 20px;
+    margin-right: 10px;
     background-position: 50% left;
     background-repeat: no-repeat;
-    height: 25px;
-    line-height: 25px;
-    padding-left: 35px;
+    float: left;
+}
+
+.redCross {
+    background-image: url('../images/red_cross_icon.png');
 }
 
 .greenTick {
     background-image: url('../images/green_tick_icon.png');
-    background-position: 50% left;
-    background-repeat: no-repeat;
-    height: 25px;
-    line-height: 25px;
-    padding-left: 35px;
 }
 
 .purpleQuestion {
     background-image: url('../images/purple_question_icon.png');
-    background-position: 50% left;
-    background-repeat: no-repeat;
-    height: 25px;
-    line-height: 25px;
-    padding-left: 35px;
 }
 
 .downloadIcon {
@@ -278,6 +273,13 @@
 .fieldNote:hover, .refdataedit:hover, .cuedit:hover, .newipe:hover {
     background-color: #D9E5F2;
     cursor: pointer;
+}
+
+.cuedit, .refdataedit {
+    min-height: 20px;
+    line-height: 20px;
+    display: block;
+    float: left;
 }
 
 .ipe:hover, .fieldNote:hover, .refdataedit:hover, .cuedit:hover {
