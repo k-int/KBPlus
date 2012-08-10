@@ -460,21 +460,21 @@ class MyInstitutionsController {
                                  subscription:subscriptionInstance,
                                  tipp: bie.tipp).save();
           }
-  
-          log.debug("Setting sub/org link");
-          def subscriber_org_link = new OrgRole(org:institution, sub:subscriptionInstance, roleType: RefdataCategory.lookupOrCreate('Organisational Role','Subscriber')).save();
-          log.debug("Adding packages");
-          baseSubscription.packages.each { bp ->
-            new SubscriptionPackage(subscription:subscriptionInstance, pkg:bp.pkg).save();
-          }
-
-          // Copy any org links
-          baseSubscription.orgRelations.each { or ->
-            new OrgRole(org:or.org, roleType:or.roleType, sub:subscriptionInstance).save();
-          }
-
-          log.debug("Save ok");
         }
+  
+        log.debug("Setting sub/org link");
+        def subscriber_org_link = new OrgRole(org:institution, sub:subscriptionInstance, roleType: RefdataCategory.lookupOrCreate('Organisational Role','Subscriber')).save();
+        log.debug("Adding packages");
+        baseSubscription.packages.each { bp ->
+          new SubscriptionPackage(subscription:subscriptionInstance, pkg:bp.pkg).save();
+        }
+
+        // Copy any org links
+        baseSubscription.orgRelations.each { or ->
+          new OrgRole(org:or.org, roleType:or.roleType, sub:subscriptionInstance).save();
+        }
+
+        log.debug("Save ok");
       }
 
       flash.message = message(code: 'subscription.created.message', args: [message(code: 'subscription.label', default: 'License'), subscriptionInstance.id])
