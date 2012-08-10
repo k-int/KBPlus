@@ -81,8 +81,8 @@
         </div>
 
         <div class="span4">
-          <g:render template="documents" contextPath="../templates" model="${[doclist:subscriptionInstance.documents]}" />
-          <g:render template="notes" contextPath="../templates" model="${[doclist:subscriptionInstance.documents]}" />
+          <g:render template="documents" contextPath="../templates" model="${[doclist:subscriptionInstance.documents, ownobj:subscriptionInstance, owntp:'subscription']}" />
+          <g:render template="notes" contextPath="../templates" model="${[doclist:subscriptionInstance.documents, ownobj:subscriptionInstance, owntp:'subscription']}" />
         </div>
 
       </div>

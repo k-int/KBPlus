@@ -90,44 +90,6 @@ class LicenseDetailsController {
     redirect controller: 'licenseDetails', action:'index', id:params.licid, fragment:params.fragment
   }
 
-  def uploadNewNote() {
-    def result=[:]
-    log.debug("uploadNewNote ${params}");
-
-    def user = User.get(springSecurityService.principal.id)
-    // def institution = Org.findByShortcode(params.shortcode)
-
-    def l = License.get(params.licid);
-
-    if ( l ) {
-      def doc_content = new Doc(contentType:0,
-                                content: params.licenceNote,
-                                type:RefdataCategory.lookupOrCreate('Document Type','Note')).save()
-
-      def alert = null;
-      if ( params.licenceNoteShared ) {
-        switch ( params.licenceNoteShared ) {
-          case "0":
-            break;
-          case "1":
-            alert = new Alert(sharingLevel:1, createdBy:user).save();
-            break;
-          case "2":
-            alert = new Alert(sharingLevel:2, createdBy:user).save();
-            break;
-        }
-      }
-
-      def doc_context = new DocContext(license:l,
-                                       owner:doc_content,
-                                       doctype:RefdataCategory.lookupOrCreate('Document Type','Note'),
-                                       alert:alert).save(flush:true);
-    }
-
-    log.debug("Redirect...");
-    redirect controller: 'licenseDetails', action:'index', id:params.licid, fragment:params.fragment
-  }
-
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def deleteDocuments() {
     def ctxlist = []

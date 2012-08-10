@@ -171,12 +171,8 @@
   
               </div>
               <div class="span4">
-                <g:render template="documents" contextPath="../templates" model="${[doclist:license.documents, 
-                                                                                    license:license,
-                                                                                    property:'documents']}" />
-                <g:render template="notes" contextPath="../templates" model="${[doclist:license.documents, 
-                                                                                    license:license,
-                                                                                    property:'documents']}" />
+                <g:render template="documents" contextPath="../templates" model="${[doclist:license.documents, ownobj:license, owntp:'license']}" />
+                <g:render template="notes" contextPath="../templates" model="${[doclist:license.documents, ownobj:license, owntp:'license']}" />
               </div>
             </div>
     </div>
@@ -384,6 +380,7 @@
 <!-- End lightbox modal -->
 
 <!-- Lightbox modal for creating a note taken from licenceNotes.html -->
+<!--
 <div class="modal hide" id="modalCreateNote">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">×</button>
@@ -419,6 +416,7 @@
     </div>
   </g:form>
 </div>
+-->
 
   </body>
 </html>
