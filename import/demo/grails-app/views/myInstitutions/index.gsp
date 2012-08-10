@@ -6,7 +6,7 @@
   </head>
 
   <body>
-    <div class="row-fluid">
+    <div class="container">
       <table class="table table-bordered">
         <tr>
           <th colspan="3">Note attached to</th>

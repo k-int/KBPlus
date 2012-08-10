@@ -14,6 +14,7 @@ class Subscription {
   String noticePeriod
   Date dateCreated
   Date lastUpdated
+  // Org vendor
 
   License owner
   SortedSet issueEntitlements
@@ -54,6 +55,7 @@ class Subscription {
     endDate(nullable:true, blank:false)
     instanceOf(nullable:true, blank:false)
     noticePeriod(nullable:true, blank:false)
+    // vendor(nullable:true, blank:false)
   }
 
   def getSubscriber() {

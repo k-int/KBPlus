@@ -60,7 +60,7 @@
             </dd>
 
             <dt>Vendor</dt>
-            <dd>${subscriptionInstance.provider?.name}</dd>
+            <dd><g:relationAutocomplete field="vendor" relatedClass="Org" typedownField="name" displayField="name"/></dd>
     
             <dt>Consortia</dt>
             <dd>${subscriptionInstance.getConsortia()?.name}</dd>

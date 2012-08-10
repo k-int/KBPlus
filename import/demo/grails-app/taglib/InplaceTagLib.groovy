@@ -52,4 +52,8 @@ class InplaceTagLib {
     }
     out << "</span>"
   }
+
+  def relationAutocomplete = { attrs, body ->
+  
+  }
 }

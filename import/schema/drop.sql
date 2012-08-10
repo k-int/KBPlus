@@ -73,3 +73,4 @@ drop table if exists user_org;
 drop table if exists object_property;
 drop table if exists type_definition;
 drop table if exists ftcontrol;
+drop table if exists link;

@@ -16,6 +16,8 @@ class DataloadService {
   def executorService
   def ESWrapperService
   def mongoService
+  def sessionFactory
+  def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP 
 
   def dataload_running=false
   def dataload_stage=-1
@@ -271,6 +273,7 @@ class DataloadService {
       log.debug("stats after org import: ${stats}");
   
       dataload_stage=1
+      cleanUpGorm()
   
       // Subscriptions
       mdb.subscriptions.find().sort(lastmod:1).each { sub ->
@@ -293,6 +296,8 @@ class DataloadService {
         }
       }
   
+      cleanUpGorm()
+
       // Platforms
       mdb.platforms.find().sort(lastmod:1).each { plat ->
         log.debug("update platform ${plat}");
@@ -303,6 +308,10 @@ class DataloadService {
                                                                           impId:plat._id.toString()).save()
       }
   
+      cleanUpGorm()
+
+      int tcount = 0;
+
       // Title instances
       mdb.titles.find().sort(lastmod:1).each { title ->
         log.debug("update title ${title}");
@@ -336,8 +345,15 @@ class DataloadService {
             }
           }
         }
+
+        if ( tcount++ == 100 ) {
+          tcount=0
+          cleanUpGorm();
+        }
       }
   
+
+      int pcount = 0;
 
       // Packages
       mdb.pkgs.find().sort(lastmod:1).each { pkg ->
@@ -381,9 +397,15 @@ class DataloadService {
           def sp = SubscriptionPackage.findBySubscriptionAndPkg(dbsub, p) ?: new SubscriptionPackage(subscription:dbsub, pkg: p).save();
         }
   
-       log.debug("Package processing completed");
+        log.debug("Package processing completed");  
+        if ( pcount++ == 100 ) {
+          pcount=0
+          cleanUpGorm();
+        }
       }
-  
+ 
+      int tippcount = 0;
+ 
       // Finally... tipps
       def cursor = mdb.tipps.find().sort(lastmod:1)
       cursor.addOption(com.mongodb.Bytes.QUERYOPTION_NOTIMEOUT);
@@ -496,6 +518,11 @@ class DataloadService {
         catch ( Exception e ) {
           log.error("WARN: Problem loading tipp instance",e);
         }
+
+        if ( tippcount++ == 100 ) {
+          tippcount=0
+          cleanUpGorm();
+        }
       }
       cursor.close();
     }
@@ -506,9 +533,13 @@ class DataloadService {
     def mdb = mongoService.getMongo().getDB('kbplus_ds_reconciliation')
     int subcount = 0
   
+
     Org.withTransaction { transaction_status ->
       // Orgs
+
       mdb.subs.find().sort(lastmod:1).each { sub ->
+
+        def live_issue_entitlement = lookupOrCreateRefdataEntry('Entitlement Issue Status', 'Live');
 
         log.debug("load ST sub[${subcount++}] ${sub}");
   
@@ -644,6 +675,8 @@ class DataloadService {
         finally {
           log.debug("Completed sub processing for ${sub}")
         }
+
+        cleanUpGorm();
       }
   
     } 
@@ -922,5 +955,12 @@ class DataloadService {
       p.nominalPlatform = selected_platform
       p.save(flush:true)
     }
+  }
+
+  def cleanUpGorm() {
+    def session = sessionFactory.currentSession
+    session.flush()
+    session.clear()
+    propertyInstanceMap.get().clear()
   }
 }
