@@ -138,7 +138,9 @@ class MyInstitutionsController {
     def qry_params = []
 
     if ( params.q?.length() > 0 ) {
-      base_qry += " and lower(s.name) like ?"
+      base_qry += " and ( lower(s.name) like ? or exists ( select sp from SubscriptionPackage as sp where sp.subscription = s and ( lower(sp.pkg.name) like ? or lower(sp.pkg.contentProvider.name) like ? ) ) ) "
+      qry_params.add("%${params.q.trim().toLowerCase()}%");
+      qry_params.add("%${params.q.trim().toLowerCase()}%");
       qry_params.add("%${params.q.trim().toLowerCase()}%");
     }
 
