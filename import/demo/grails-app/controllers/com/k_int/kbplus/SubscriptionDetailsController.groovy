@@ -150,6 +150,9 @@ class SubscriptionDetailsController {
       if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
         basequery += " order by ie.${params.sort} ${params.order} "
       }
+      else {
+        basequery += " order by ie.tipp.title.title asc "
+      }
 
 
 
