@@ -36,89 +36,134 @@
       </ul>
 
 
-    <div class="tabbable"> <!-- Only required for left/right tabs -->
-      <dl>
-        <dt>License</td>
-        <dd><g:relation domain='Subscription' 
-                        pk='${subscriptionInstance.id}' 
-                        field='owner' 
-                        class='reldataEdit'
-                        id='ownerLicense'>${subscriptionInstance?.owner?.reference}</g:relation></dd>
+      <button class="btn" data-toggle="collapse" data-target="#collapseableSubDetails">
+        Subscription Details
+      </button>
+    </div>
 
-            <dt>Entitlements ( ${offset+1} to ${offset+(entitlements?.size())} of ${num_sub_rows} )
-              <g:form action="index" params="${params}" method="get">
-                 <input type="hidden" name="sort" value="${params.sort}">
-                 <input type="hidden" name="order" value="${params.order}">
-                 Filter: <input name="filter" value="${params.filter}"/><input type="submit">
-              </g:form>
-            </dt>
+    <div id="collapseableSubDetails" class="container collapse">
+      <div class="row">
+        <div class="span8">
+          <dl>
+            <dt>License</dt>
+            <dd><g:relation domain='Subscription' 
+                            pk='${subscriptionInstance.id}' 
+                            field='owner' 
+                            class='reldataEdit'
+                            id='ownerLicense'>${subscriptionInstance?.owner?.reference}</g:relation></dd>
+    
+            <dt>Package Name</dt>
             <dd>
-              <g:form action="subscriptionBatchUpdate" params="${[id:subscriptionInstance?.id]}">
-              <g:set var="counter" value="${offset+1}" />
-              <table  class="table table-striped table-bordered table-condensed">
-                <tr>
-                  <th></th>
-                  <th>#</th>
-                  <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
-                  <th>ISSN</th>
-                  <th>eISSN</th>
-                  <g:sortableColumn params="${params}" property="coreTitle" title="Core" />
-                  <g:sortableColumn params="${params}" property="startDate" title="Start Date" />
-                  <g:sortableColumn params="${params}" property="endDate" title="End Date" />
-                  <th>Embargo</th>
-                  <th>Coverage Depth</th>
-                  <th>Coverage Note</th>
-                  <th>Actions</th>
-                </tr>  
-                <tr>  
-                  <th><input type="checkbox" name="chkall" onClick="javascript:selectAll();"/></th>
-                  <th colspan="4">
-                    <select id="bulkOperationSelect" name="bulkOperation">
-                      <option value="edit">Edit Selected</option>
-                      <option value="remove">Remove Selected</option>
-                    </select>
-                    <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()"/></th>
-                  <th><span id="entitlementBatchEdit" class="entitlementBatchEdit"></span><input type="hidden" name="bulk_core" id="bulk_core"/></th>
-                  <th><span>edit</span> <input name="bulk_start_date" type="hidden" class="hdp" /></th>
-                  <th><span>edit</span> <input name="bulk_end_date" type="hidden" class="hdp" /></th>
-                  <th><span id="embargoBatchEdit" class="embargoBatchEdit"></span><input type="hidden" name="bulk_embargo" id="bulk_embargo"></th>
-                  <th><span id="coverageBatchEdit" class="coverageBatchEdit"></span><input type="hidden" name="bulk_coverage" id="bulk_coverage"></th>
-                  <th colspan="3"></th>
-                </tr>
-              <g:if test="${entitlements}">
-                <g:each in="${entitlements}" var="ie">
-                  <tr>
-                    <td><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></td>
-                    <td>${counter++}</td>
-                    <td>
-                      <g:if test="${ie.tipp?.hostPlatformURL}"><a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">${ie.tipp.title.title}</a></g:if>
-                      <g:else>${ie.tipp.title.title}</g:else>
-                    </td>
-                    <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
-                    <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
-                    <td><g:refdataValue val="${ie.coreTitle}" 
-                                        domain="IssueEntitlement" 
-                                        pk="${ie.id}" 
-                                        field="coreTitle" 
-                                        cat="isCoreTitle"
-                                        class="coreedit"/></td>
-                    <td>
-                        <span><g:formatDate format="dd MMMM yyyy" date="${ie.startDate}"/></span>
-                        <input id="IssueEntitlement:${ie.id}:startDate" type="hidden" class="dp1" />
-                    </td>
-                    <td><span><g:formatDate format="dd MMMM yyyy" date="${ie.endDate}"/></span>
-                        <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="dp2" />
-                    </td>
-                    <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="newipe">${ie.embargo}</g:inPlaceEdit></td>
-                    <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="coverageDepth" id="coverageDepth" class="newipe">${ie.coverageDepth}</g:inPlaceEdit></td>
-                    <td>${ie.coverageNote}</td>  
-                    <td><g:link action="removeEntitlement" params="${[ieid:ie.id, sub:subscriptionInstance.id]}" onClick="return confirm('Are you sure you wish to delete this entitlement');">Delete</g:link></td>
-                  </tr>
-                </g:each>
-              </g:if>
-              </table>
-              </g:form>
+              <g:each in="${subscriptionInstance.packages}" var="sp">
+                ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
+              </g:each>
             </dd>
+
+            <dt>Vendor</dt>
+            <dd>${subscriptionInstance.provider?.name}</dd>
+    
+            <dt>Consortia</dt>
+            <dd>${subscriptionInstance.getConsortia()?.name}</dd>
+    
+            <dt>Start Date</dt>
+            <dd><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.startDate}"/></dd>
+    
+            <dt>End Date</dt>
+            <dd><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.endDate}"/></dd>
+    
+            <dt>Nominal Platform</dt>
+            <dd> 
+              <g:each in="${subscriptionInstance.packages}" var="sp">
+                ${sp.pkg?.nominalPlatform?.name}<br/>
+              </g:each>
+            </dd>
+          </dl>
+        </div>
+
+        <div class="span4">
+          <g:render template="documents" contextPath="../templates" model="${[doclist:subscriptionInstance.documents]}" />
+          <g:render template="notes" contextPath="../templates" model="${[doclist:subscriptionInstance.documents]}" />
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container">
+      <dl>
+        <dt>Entitlements ( ${offset+1} to ${offset+(entitlements?.size())} of ${num_sub_rows} )
+          <g:form action="index" params="${params}" method="get">
+             <input type="hidden" name="sort" value="${params.sort}">
+             <input type="hidden" name="order" value="${params.order}">
+             Filter: <input name="filter" value="${params.filter}"/><input type="submit">
+          </g:form>
+        </dt>
+        <dd>
+          <g:form action="subscriptionBatchUpdate" params="${[id:subscriptionInstance?.id]}">
+          <g:set var="counter" value="${offset+1}" />
+          <table  class="table table-striped table-bordered table-condensed">
+            <tr>
+              <th></th>
+              <th>#</th>
+              <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
+              <th>ISSN</th>
+              <th>eISSN</th>
+              <g:sortableColumn params="${params}" property="coreTitle" title="Core" />
+              <g:sortableColumn params="${params}" property="startDate" title="Start Date" />
+              <g:sortableColumn params="${params}" property="endDate" title="End Date" />
+              <th>Embargo</th>
+              <th>Coverage Depth</th>
+              <th>Coverage Note</th>
+              <th>Actions</th>
+            </tr>  
+            <tr>  
+              <th><input type="checkbox" name="chkall" onClick="javascript:selectAll();"/></th>
+              <th colspan="4">
+                <select id="bulkOperationSelect" name="bulkOperation">
+                  <option value="edit">Edit Selected</option>
+                  <option value="remove">Remove Selected</option>
+                </select>
+                <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()"/></th>
+              <th><span id="entitlementBatchEdit" class="entitlementBatchEdit"></span><input type="hidden" name="bulk_core" id="bulk_core"/></th>
+              <th><span>edit</span> <input name="bulk_start_date" type="hidden" class="hdp" /></th>
+              <th><span>edit</span> <input name="bulk_end_date" type="hidden" class="hdp" /></th>
+              <th><span id="embargoBatchEdit" class="embargoBatchEdit"></span><input type="hidden" name="bulk_embargo" id="bulk_embargo"></th>
+              <th><span id="coverageBatchEdit" class="coverageBatchEdit"></span><input type="hidden" name="bulk_coverage" id="bulk_coverage"></th>
+              <th colspan="3"></th>
+            </tr>
+          <g:if test="${entitlements}">
+            <g:each in="${entitlements}" var="ie">
+              <tr>
+                <td><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></td>
+                <td>${counter++}</td>
+                <td>
+                  <g:if test="${ie.tipp?.hostPlatformURL}"><a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">${ie.tipp.title.title}</a></g:if>
+                  <g:else>${ie.tipp.title.title}</g:else>
+                </td>
+                <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
+                <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
+                <td><g:refdataValue val="${ie.coreTitle}" 
+                                    domain="IssueEntitlement" 
+                                    pk="${ie.id}" 
+                                    field="coreTitle" 
+                                    cat="isCoreTitle"
+                                    class="coreedit"/></td>
+                <td>
+                    <span><g:formatDate format="dd MMMM yyyy" date="${ie.startDate}"/></span>
+                    <input id="IssueEntitlement:${ie.id}:startDate" type="hidden" class="dp1" />
+                </td>
+                <td><span><g:formatDate format="dd MMMM yyyy" date="${ie.endDate}"/></span>
+                    <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="dp2" />
+                </td>
+                <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="newipe">${ie.embargo}</g:inPlaceEdit></td>
+                <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="coverageDepth" id="coverageDepth" class="newipe">${ie.coverageDepth}</g:inPlaceEdit></td>
+                <td>${ie.coverageNote}</td>  
+                <td><g:link action="removeEntitlement" params="${[ieid:ie.id, sub:subscriptionInstance.id]}" onClick="return confirm('Are you sure you wish to delete this entitlement');">Delete</g:link></td>
+              </tr>
+            </g:each>
+          </g:if>
+          </table>
+          </g:form>
+        </dd>
         <dt>Org Links</td>
         <dd>
           <ul>

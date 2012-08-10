@@ -465,6 +465,12 @@ class MyInstitutionsController {
           baseSubscription.packages.each { bp ->
             new SubscriptionPackage(subscription:subscriptionInstance, pkg:bp.pkg).save();
           }
+
+          // Copy any org links
+          baseSubscription.orgRelations.each { or ->
+            new OrgRole(org:or.org, roleType:or.roleType, sub:subscriptionInstance).save();
+          }
+
           log.debug("Save ok");
         }
       }

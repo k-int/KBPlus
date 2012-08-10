@@ -22,10 +22,12 @@ class Subscription {
 
   static hasMany = [ packages : SubscriptionPackage, 
                      issueEntitlements: IssueEntitlement,
+                     documents:DocContext,
                      orgRelations: OrgRole ]
 
   static mappedBy = [ packages : 'subscription', 
                       issueEntitlements: 'subscription',
+                      documents: 'subscription',
                       orgRelations: 'sub' ]
 
   static mapping = {
