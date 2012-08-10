@@ -37,9 +37,7 @@
       </ul>
 
 
-      <button class="btn" data-toggle="collapse" data-target="#collapseableSubDetails">
-        Subscription Details
-      </button>
+      <button class="btn" data-toggle="collapse" data-target="#collapseableSubDetails">Show/Hide Details</button>
     </div>
 
     <div id="collapseableSubDetails" class="container collapse">
