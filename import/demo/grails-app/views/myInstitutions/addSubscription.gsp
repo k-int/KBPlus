@@ -64,12 +64,12 @@
             <table class="table table-striped table-bordered">
                 <tr>
                   <th>Select</th>
-                  <th>Name</th>
+                  <g:sortableColumn params="${params}" property="s.name" title="Name" />
                   <th>Package Name(s)</th>
                   <th>Vendor</th>
                   <th>Consortia</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
+                  <g:sortableColumn params="${params}" property="s.startDate" title="Start Date" />
+                  <g:sortableColumn params="${params}" property="s.endDate" title="End Date" />
                   <th>Platform(s)</th>
                   <th>License</th>
                   <th>Docs</th>
