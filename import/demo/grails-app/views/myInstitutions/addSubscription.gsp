@@ -101,7 +101,10 @@
              </table>
 
             <div class="paginateButtons" style="text-align:center">
-              <input type="submit" value="Create Subscription"/>
+              <select name="createSubAction"> 
+                <option value="copy">Copy With Entitlements</option>
+                <option value="nocopy">Copy Without Entitlements</option>
+              <input type="submit" value="Create Subscription"/> 
             </div>
           </g:form>
         </g:if>

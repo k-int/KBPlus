@@ -437,34 +437,36 @@ class MyInstitutionsController {
         log.error("Problem saving license ${licenseInstance.errors}");
       }
       else {
-        log.debug("Copy issue entitlements");
-        // These IE's are save on cascade
-        int ic = 0;
-        baseSubscription.issueEntitlements.each { bie ->
-          log.debug("Adding issue entitlement... ${bie.id} [${ic++}]");
-
-          new IssueEntitlement(status:bie.status,
-                               startDate:bie.startDate,
-                               startVolume:bie.startVolume,
-                               startIssue:bie.startIssue,
-                               endDate:bie.endDate,
-                               endVolume:bie.endVolume,
-                               endIssue:bie.endIssue,
-                               embargo:bie.embargo,
-                               coverageDepth:bie.coverageDepth,
-                               coverageNote:bie.coverageNote,
-                               coreTitle:bie.coreTitle,
-                               subscription:subscriptionInstance,
-                               tipp: bie.tipp).save();
+        if ( params.createSubAction == 'copy' ) {
+          log.debug("Copy issue entitlements");
+          // These IE's are save on cascade
+          int ic = 0;
+          baseSubscription.issueEntitlements.each { bie ->
+            log.debug("Adding issue entitlement... ${bie.id} [${ic++}]");
+  
+            new IssueEntitlement(status:bie.status,
+                                 startDate:bie.startDate,
+                                 startVolume:bie.startVolume,
+                                 startIssue:bie.startIssue,
+                                 endDate:bie.endDate,
+                                 endVolume:bie.endVolume,
+                                 endIssue:bie.endIssue,
+                                 embargo:bie.embargo,
+                                 coverageDepth:bie.coverageDepth,
+                                 coverageNote:bie.coverageNote,
+                                 coreTitle:bie.coreTitle,
+                                 subscription:subscriptionInstance,
+                                 tipp: bie.tipp).save();
+          }
+  
+          log.debug("Setting sub/org link");
+          def subscriber_org_link = new OrgRole(org:institution, sub:subscriptionInstance, roleType: RefdataCategory.lookupOrCreate('Organisational Role','Subscriber')).save();
+          log.debug("Adding packages");
+          baseSubscription.packages.each { bp ->
+            new SubscriptionPackage(subscription:subscriptionInstance, pkg:bp.pkg).save();
+          }
+          log.debug("Save ok");
         }
-
-        log.debug("Setting sub/org link");
-        def subscriber_org_link = new OrgRole(org:institution, sub:subscriptionInstance, roleType: RefdataCategory.lookupOrCreate('Organisational Role','Subscriber')).save();
-        log.debug("Adding packages");
-        baseSubscription.packages.each { bp ->
-          new SubscriptionPackage(subscription:subscriptionInstance, pkg:bp.pkg).save();
-        }
-        log.debug("Save ok");
       }
 
       flash.message = message(code: 'subscription.created.message', args: [message(code: 'subscription.label', default: 'License'), subscriptionInstance.id])
