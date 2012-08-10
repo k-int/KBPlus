@@ -12,8 +12,11 @@
 
     <div class="container">
       <ul class="breadcrumb">
-        <li> <g:link controller="home">KBPlus</g:link> <span class="divider">/</span> </li>
-        <li>Subscription Details</li>
+        <li> <g:link controller="home">Home</g:link> <span class="divider">/</span> </li>
+        <g:if test="${subscriptionInstance.subscriber}">
+          <li> <g:link controller="myInstitutions" action="currentSubscriptions" params="${[shortcode:subscriptionInstance.subscriber.shortcode]}"> ${subscriptionInstance.subscriber.name} Current Subscriptions</g:link> <span class="divider">/</span> </li>
+        </g:if>
+        <li> <g:link controller="subscriptionDetails" action="addEntitlements" id="${subscriptionInstance.id}">Subscription ${subscriptionInstance.id} Add Entitlements</g:link> </li>
       </ul>
     </div>
 

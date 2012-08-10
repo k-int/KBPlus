@@ -8,8 +8,8 @@
 
     <div class="container">
       <ul class="breadcrumb">
-        <li> <g:link controller="home">KBPlus</g:link> <span class="divider">/</span> </li>
-        <li>Current Subscriptions</li>
+        <li> <g:link controller="home">Home</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="myInstitutions" action="currentSubscriptions" params="${[shortcode:params.shortcode]}">${institution.name} Current Subscriptions</g:link> </li>
       </ul>
     </div>
 

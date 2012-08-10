@@ -9,9 +9,7 @@
     <div class="container">
         <ul class="breadcrumb">
            <li> <g:link controller="home">Home</g:link> <span class="divider">/</span> </li>
-           <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:params.shortcode]}">Licenses</g:link> <span class="divider">/</span> </li>
-           <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:params.shortcode]}">Current Licenses</g:link> </li>
-           <li>Licences</li>
+           <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:params.shortcode]}">${institution.name} Current Licenses</g:link> </li>
         </ul>
     </div>
 
