@@ -68,7 +68,7 @@
                           <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="filename" id="docfilename" class="newipe">${docctx.owner.filename}</g:inPlaceEdit></td>
                           <td>
                             <g:if test="${docctx.owner?.contentType==1}">
-                              <a href="http://knowplus.edina.ac.uk/oledocstore/document?uuid=${docctx.owner?.uuid}">Download Doc</a>
+                              <g:link controller="docstore" id="${docctx.owner.uuid}">Download Doc</g:link>
                             </g:if>
                           </td>
                           <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="creator" id="docCreator" class="newipe">${docctx.owner.creator}</g:inPlaceEdit></td>
