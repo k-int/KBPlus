@@ -37,7 +37,7 @@ if ( db == null ) {
 println("Processing ${args}");
 
 def charset = java.nio.charset.Charset.forName('ISO-8859-1');
-if ( args.length > 2 ) {
+if ( args.length > 1 ) {
   charset = java.nio.charset.Charset.forName(args[1]);
 }
 
