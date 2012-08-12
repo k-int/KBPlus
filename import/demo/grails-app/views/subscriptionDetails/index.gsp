@@ -19,7 +19,7 @@
         <li> <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}">Subscription ${subscriptionInstance.id} Details</g:link> </li>
         <li class="pull-right"><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter]}">CSV Export</g:link></li>
         <g:if test="${editable}">
-          <li class="pull-right">Editable &nbsp;</li>
+          <li class="pull-right">Editable by you&nbsp;</li>
         </g:if>
       </ul>
     </div>
@@ -52,6 +52,10 @@
         <li><g:link controller="subscriptionDetails" 
                     action="notes" 
                     params="${[id:params.id]}">Notes</g:link></li>
+
+        <li><g:link controller="subscriptionDetails" 
+                    action="documents" 
+                    params="${[id:params.id]}">Documents</g:link></li>
       </ul>
 
 

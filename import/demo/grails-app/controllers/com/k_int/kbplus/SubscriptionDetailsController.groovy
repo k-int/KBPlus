@@ -137,6 +137,14 @@ class SubscriptionDetailsController {
     result.max = params.max ? Integer.parseInt(params.max) : 10;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
+    if ( result.subscriptionInstance.isEditableBy(result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
+    }
+
+
     log.debug("filter: \"${params.filter}\"");
 
     if ( result.subscriptionInstance?.instanceOf ) {
@@ -257,4 +265,26 @@ class SubscriptionDetailsController {
 
     result
   }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def documents() {
+
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.subscriptionInstance = Subscription.get(params.id)
+    result.institution = result.subscriptionInstance.subscriber
+    if ( result.institution ) {
+      result.subscriber_shortcode = result.institution.shortcode
+    }
+
+    if ( result.subscriptionInstance.isEditableBy(result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
+    }
+
+    result
+  }
+
 }

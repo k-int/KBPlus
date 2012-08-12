@@ -17,6 +17,9 @@
           <li> <g:link controller="myInstitutions" action="currentSubscriptions" params="${[shortcode:subscriptionInstance.subscriber.shortcode]}"> ${subscriptionInstance.subscriber.name} Current Subscriptions</g:link> <span class="divider">/</span> </li>
         </g:if>
         <li> <g:link controller="subscriptionDetails" action="addEntitlements" id="${subscriptionInstance.id}">Subscription ${subscriptionInstance.id} Add Entitlements</g:link> </li>
+        <g:if test="${editable}">
+          <li class="pull-right">Editable by you&nbsp;</li>
+        </g:if>
       </ul>
     </div>
 
@@ -39,6 +42,10 @@
         <li><g:link controller="subscriptionDetails" 
                     action="notes" 
                     params="${[id:params.id]}">Notes</g:link></li>
+
+        <li><g:link controller="subscriptionDetails" 
+                    action="documents" 
+                    params="${[id:params.id]}">Documents</g:link></li>
 
       </ul>
 
