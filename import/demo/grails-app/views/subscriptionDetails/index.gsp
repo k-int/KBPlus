@@ -21,6 +21,14 @@
       </ul>
     </div>
 
+    <g:if test="${flash.message}">
+      <div class="container"><bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert></div>
+    </g:if>
+
+    <g:if test="${flash.error}">
+      <div class="container"><bootstrap:alert class="alert-error">${flash.error}</bootstrap:alert></div>
+    </g:if>
+
     <div class="container">
 
     ${institution?.name} Subscription Taken

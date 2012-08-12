@@ -181,27 +181,34 @@ class SubscriptionDetailsController {
         if (p.key.startsWith('_bulkflag.') ) {
           def ie_to_edit = p.key.substring(10);
           def ie = IssueEntitlement.get(ie_to_edit)
-          def new_ie = new IssueEntitlement(status: ie.status,
-                                            subscription: result.subscriptionInstance,
-                                            tipp: ie.tipp,
-                                            startDate:ie.tipp.startDate,
-                                            startVolume:ie.tipp.startVolume,
-                                            startIssue:ie.tipp.startIssue,
-                                            endDate:ie.tipp.endDate,
-                                            endVolume:ie.tipp.endVolume,
-                                            endIssue:ie.tipp.endIssue,
-                                            embargo:ie.tipp.embargo,
-                                            coverageDepth:ie.tipp.coverageDepth,
-                                            coverageNote:ie.tipp.coverageNote,
-                                            ieReason:'Manually Added by User')
-          if ( new_ie.save(flush:true) ) {
-            log.debug("Added IE ${ie_to_edit} to sub ${params.siid}");
+
+          if ( ie == null ) {
+            log.error("Unable to locate entitlement ${ie_to_edit}");
+            flash.error("Unable to locate entitlement ${ie_to_edit}");
           }
           else {
-            new_ie.errors.each { e ->
-              log.error(e);
+            def new_ie = new IssueEntitlement(status: ie.status,
+                                              subscription: result.subscriptionInstance,
+                                              tipp: ie.tipp,
+                                              startDate:ie.tipp.startDate,
+                                              startVolume:ie.tipp.startVolume,
+                                              startIssue:ie.tipp.startIssue,
+                                              endDate:ie.tipp.endDate,
+                                              endVolume:ie.tipp.endVolume,
+                                              endIssue:ie.tipp.endIssue,
+                                              embargo:ie.tipp.embargo,
+                                              coverageDepth:ie.tipp.coverageDepth,
+                                              coverageNote:ie.tipp.coverageNote,
+                                              ieReason:'Manually Added by User')
+            if ( new_ie.save(flush:true) ) {
+              log.debug("Added IE ${ie_to_edit} to sub ${params.siid}");
             }
-            flash.error = new_ie.errors
+            else {
+              new_ie.errors.each { e ->
+                log.error(e);
+              }
+              flash.error = new_ie.errors
+            }
           }
         }
       }
