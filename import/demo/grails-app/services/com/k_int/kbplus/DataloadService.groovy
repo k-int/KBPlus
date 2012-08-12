@@ -576,6 +576,13 @@ class DataloadService {
             def org_link = new OrgRole(org:db_org, 
                                        sub: new_subscription, 
                                        roleType: lookupOrCreateRefdataEntry('Organisational Role','Subscriber')).save();
+
+            // Copy any links from SO
+            db_sub.orgRelations.each { or ->
+              if ( or.roleType?.value != 'Subscriber' ) {
+                def new_or = new OrgRole(org: or.org, sub: new_subscription, roleType: or.roleType).save();
+              }
+            }
           }
           else {
             log.error("Problem saving new subscription, ${new_subscription.errors}");
@@ -583,6 +590,7 @@ class DataloadService {
     
           new_subscription.save(flush:true);
   
+
           // List all actual st_title records, and diff that against the default from the ST file
           def sub_titles = mdb.stTitle.find(owner:sub._id)
     
