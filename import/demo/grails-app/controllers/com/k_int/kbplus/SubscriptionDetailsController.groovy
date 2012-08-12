@@ -180,7 +180,6 @@ class SubscriptionDetailsController {
       params.each { p ->
         if (p.key.startsWith('_bulkflag.') ) {
           def ie_to_edit = p.key.substring(10);
-          log.debug("Add IE ${ie_to_edit} to sub ${params.siid}");
           def ie = IssueEntitlement.get(ie_to_edit)
           def new_ie = new IssueEntitlement(status: ie.status,
                                             subscription: result.subscriptionInstance,
@@ -194,7 +193,16 @@ class SubscriptionDetailsController {
                                             embargo:ie.tipp.embargo,
                                             coverageDepth:ie.tipp.coverageDepth,
                                             coverageNote:ie.tipp.coverageNote,
-                                            ieReason:'Manually Added by User').save(flush:true)
+                                            ieReason:'Manually Added by User')
+          if ( new_ie.save(flush:true) ) {
+            log.debug("Added IE ${ie_to_edit} to sub ${params.siid}");
+          }
+          else {
+            new_ie.errors.each { e ->
+              log.error(e);
+            }
+            flash.error = new_ie.errors
+          }
         }
       }
     }
