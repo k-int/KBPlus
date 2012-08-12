@@ -43,7 +43,7 @@
                 <g:each in="${subscriptions}" var="s">
                   <tr>
                     <td>
-                      <g:link controller="subscriptionDetails" action="index" id="${s.id}">${s.id} (${s.name})</g:link>
+                      <g:link controller="subscriptionDetails" action="index" id="${s.id}">${s.id} ${s.name} <g:if test="${s.consortia}">( ${s.consortia?.name} )</g:if></g:link>
                     </td>
                     <td>
                       <g:if test="${s.instanceOf}"><g:link controller="SubscriptionDetails" action="index" id="${s.instanceOf.id}">${s.instanceOf.name}</g:link></g:if>

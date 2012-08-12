@@ -78,7 +78,7 @@
                   <tr>
                     <td><input type="radio" name="subOfferedId" value="${s.id}"/></td>
                     <td>
-                      <g:link controller="subscriptionDetails" action="index" id="${s.id}">${s.name}</g:link>
+                      <g:link controller="subscriptionDetails" action="index" id="${s.id}">${s.name} <g:if test="${s.consortia}">( ${s.consortia?.name} )</g:if></g:link>
                     </td>
                     <td>
                       <g:each in="${s.packages}" var="sp">
