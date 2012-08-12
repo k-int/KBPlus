@@ -54,7 +54,6 @@
     <div class="container">
       <g:form id="delete_doc_form" url="[controller:'subscriptionDetails',action:'deleteDocuments']" method="post">
         <input type="hidden" name="subid" value="${params.id}"/>
-        <input type="submit" value="Delete Selected Notes"/>
         <table class="table table-striped table-bordered table-condensed">
           <thead>
             <tr>
@@ -82,18 +81,5 @@
       </g:form>
     </div>
     
-    <script language="JavaScript">
-      $(document).ready(function() {
-         $('.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
-           type      : 'textarea',
-           cancel    : 'Cancel',
-           submit    : 'OK',
-           id        : 'elementid',
-           rows      : 3,
-           tooltip   : 'Click to edit...'
-         });
-       });
-    </script>
-
   </body>
 </html>
