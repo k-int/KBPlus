@@ -32,6 +32,13 @@ class SubscriptionDetailsController {
       result.subscriber_shortcode = result.institution.shortcode
     }
 
+    if ( result.subscriptionInstance.isEditableBy(result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
+    }
+
     def base_qry = null;
 
     def qry_params = [result.subscriptionInstance]
@@ -232,13 +239,20 @@ class SubscriptionDetailsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def notes() {
-    def result = [:]
 
+    def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.subscriptionInstance = Subscription.get(params.id)
     result.institution = result.subscriptionInstance.subscriber
     if ( result.institution ) {
       result.subscriber_shortcode = result.institution.shortcode
+    }
+
+    if ( result.subscriptionInstance.isEditableBy(result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
     }
 
     result

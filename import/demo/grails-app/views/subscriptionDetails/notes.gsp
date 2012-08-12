@@ -30,9 +30,11 @@
                                    action="index" 
                                    params="${[id:params.id]}">Current Entitlements</g:link></li>
 
-        <li><g:link controller="subscriptionDetails" 
-                    action="addEntitlements" 
-                    params="${[id:params.id]}">Add Entitlements</g:link></li>
+        <g:if test="${editable}">
+        <li class="active"><g:link controller="subscriptionDetails" 
+                               action="addEntitlements" 
+                               params="${[id:params.id]}">Add Entitlements</g:link></li>
+        </g:if>
 
         <li class="active"><g:link controller="subscriptionDetails" 
                     action="notes" 

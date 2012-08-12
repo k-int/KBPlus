@@ -18,6 +18,9 @@
         </g:if>
         <li> <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}">Subscription ${subscriptionInstance.id} Details</g:link> </li>
         <li class="pull-right"><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter]}">CSV Export</g:link></li>
+        <g:if test="${editable}">
+          <li class="pull-right">Editable &nbsp;</li>
+        </g:if>
       </ul>
     </div>
 
@@ -33,16 +36,18 @@
 
       ${institution?.name} ${subscriptionInstance?.type?.value} Subscription Taken
 
-       <h1><g:inPlaceEdit domain="Subscription" pk="${subscriptionInstance.id}" field="name" id="name" class="newipe">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
+       <h1><g:inPlaceEdit domain="Subscription" pk="${subscriptionInstance.id}" field="name" id="name" class="${editable?'newipe':''}">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
 
       <ul class="nav nav-pills">
         <li class="active"><g:link controller="subscriptionDetails" 
                                    action="index" 
                                    params="${[id:params.id]}">Current Entitlements</g:link></li>
 
-        <li><g:link controller="subscriptionDetails" 
-                    action="addEntitlements" 
-                    params="${[id:params.id]}">Add Entitlements</g:link></li>
+        <g:if test="${editable}">
+          <li><g:link controller="subscriptionDetails" 
+                      action="addEntitlements" 
+                      params="${[id:params.id]}">Add Entitlements</g:link></li>
+        </g:if>
 
         <li><g:link controller="subscriptionDetails" 
                     action="notes" 
@@ -128,24 +133,27 @@
               <th>Actions</th>
             </tr>  
             <tr>  
-              <th><input type="checkbox" name="chkall" onClick="javascript:selectAll();"/></th>
+              <th>
+                <g:if test="${editable}"><input type="checkbox" name="chkall" onClick="javascript:selectAll();"/></g:if>
+              </th>
               <th colspan="4">
-                <select id="bulkOperationSelect" name="bulkOperation">
-                  <option value="edit">Edit Selected</option>
-                  <option value="remove">Remove Selected</option>
-                </select>
-                <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()"/></th>
-              <th><span id="entitlementBatchEdit" class="entitlementBatchEdit"></span><input type="hidden" name="bulk_core" id="bulk_core"/></th>
-              <th><span>edit</span> <input name="bulk_start_date" type="hidden" class="hdp" /></th>
-              <th><span>edit</span> <input name="bulk_end_date" type="hidden" class="hdp" /></th>
-              <th><span id="embargoBatchEdit" class="embargoBatchEdit"></span><input type="hidden" name="bulk_embargo" id="bulk_embargo"></th>
-              <th><span id="coverageBatchEdit" class="coverageBatchEdit"></span><input type="hidden" name="bulk_coverage" id="bulk_coverage"></th>
+                <g:if test="${editable}">
+                  <select id="bulkOperationSelect" name="bulkOperation">
+                    <option value="edit">Edit Selected</option>
+                    <option value="remove">Remove Selected</option>
+                  </select>
+                  <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()"/></g:if></th>
+              <th><span id="entitlementBatchEdit" class="${editable?'entitlementBatchEdit':''}"></span><input type="hidden" name="bulk_core" id="bulk_core"/></th>
+              <th><g:if test="${editable}"><span>edit</span> <input name="bulk_start_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
+              <th><g:if test="${editable}"><span>edit</span> <input name="bulk_end_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
+              <th><span id="embargoBatchEdit" class="${editable?'embargoBatchEdit':''}"></span><input type="hidden" name="bulk_embargo" id="bulk_embargo"></th>
+              <th><span id="coverageBatchEdit" class="${editable?'coverageBatchEdit':''}"></span><input type="hidden" name="bulk_coverage" id="bulk_coverage"></th>
               <th colspan="3"></th>
             </tr>
           <g:if test="${entitlements}">
             <g:each in="${entitlements}" var="ie">
               <tr>
-                <td><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></td>
+                <td><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></g:if></td>
                 <td>${counter++}</td>
                 <td>
                   <g:if test="${ie.tipp?.hostPlatformURL}"><a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">${ie.tipp.title.title}</a></g:if>
@@ -158,18 +166,18 @@
                                     pk="${ie.id}" 
                                     field="coreTitle" 
                                     cat="isCoreTitle"
-                                    class="coreedit"/></td>
+                                    class="${editable?'coreedit':''}"/></td>
                 <td>
                     <span><g:formatDate format="dd MMMM yyyy" date="${ie.startDate}"/></span>
-                    <input id="IssueEntitlement:${ie.id}:startDate" type="hidden" class="dp1" />
+                    <input id="IssueEntitlement:${ie.id}:startDate" type="hidden" class="${editable?'dp1':''}" />
                 </td>
                 <td><span><g:formatDate format="dd MMMM yyyy" date="${ie.endDate}"/></span>
-                    <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="dp2" />
+                    <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="${editable?'dp2':''}" />
                 </td>
-                <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="newipe">${ie.embargo}</g:inPlaceEdit></td>
-                <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="coverageDepth" id="coverageDepth" class="newipe">${ie.coverageDepth}</g:inPlaceEdit></td>
+                <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="${editable?'newipe':''}">${ie.embargo}</g:inPlaceEdit></td>
+                <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="coverageDepth" id="coverageDepth" class="${editable?'newipe':''}">${ie.coverageDepth}</g:inPlaceEdit></td>
                 <td>${ie.coverageNote}</td>  
-                <td><g:link action="removeEntitlement" params="${[ieid:ie.id, sub:subscriptionInstance.id]}" onClick="return confirm('Are you sure you wish to delete this entitlement');">Delete</g:link></td>
+                <td><g:if test="${editable}"><g:link action="removeEntitlement" params="${[ieid:ie.id, sub:subscriptionInstance.id]}" onClick="return confirm('Are you sure you wish to delete this entitlement');">Delete</g:link></g:if></td>
               </tr>
             </g:each>
           </g:if>
