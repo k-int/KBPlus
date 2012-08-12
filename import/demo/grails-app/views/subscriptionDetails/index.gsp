@@ -43,6 +43,10 @@
         <li><g:link controller="subscriptionDetails" 
                     action="addEntitlements" 
                     params="${[id:params.id]}">Add Entitlements</g:link></li>
+
+        <li><g:link controller="subscriptionDetails" 
+                    action="notes" 
+                    params="${[id:params.id]}">Notes</g:link></li>
       </ul>
 
 
