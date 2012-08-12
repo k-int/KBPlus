@@ -464,6 +464,7 @@ class MyInstitutionsController {
   
         log.debug("Setting sub/org link");
         def subscriber_org_link = new OrgRole(org:institution, sub:subscriptionInstance, roleType: RefdataCategory.lookupOrCreate('Organisational Role','Subscriber')).save();
+
         log.debug("Adding packages");
         baseSubscription.packages.each { bp ->
           new SubscriptionPackage(subscription:subscriptionInstance, pkg:bp.pkg).save();

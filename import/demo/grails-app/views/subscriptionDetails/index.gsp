@@ -31,7 +31,8 @@
 
     <div class="container">
 
-    ${institution?.name} Subscription Taken
+      ${institution?.name} ${subscriptionInstance?.type?.value} Subscription Taken
+
        <h1><g:inPlaceEdit domain="Subscription" pk="${subscriptionInstance.id}" field="name" id="name" class="newipe">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
 
       <ul class="nav nav-pills">
