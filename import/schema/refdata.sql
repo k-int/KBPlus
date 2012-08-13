@@ -43,6 +43,9 @@ insert into refdata_value(rdv_owner, rdv_value) VALUES ( 6, 'Current');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (7,'TIPP Status');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 7, 'Unknown');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 7, 'Current');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 7, 'Transferred');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 7, 'Expected');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (8,'Title Type');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 8, 'Unknown');
