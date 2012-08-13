@@ -7,6 +7,7 @@ class Package {
   String impId
   RefdataValue packageType
   RefdataValue packageStatus
+  RefdataValue packageListStatus
   Org contentProvider
   Platform nominalPlatform
   Date dateCreated
@@ -30,6 +31,7 @@ class Package {
                 impId column:'pkg_imp_id', index:'pkg_imp_id_idx'
           packageType column:'pkg_type_rv_fk'
         packageStatus column:'pkg_status_rv_fk'
+    packageListStatus column:'pkg_list_status_rv_fk'
       nominalPlatform column:'pkg_nominal_platform_fk'
                 tipps sort:'title.title', order: 'asc'
 //                 orgs sort:'org.name', order: 'asc'

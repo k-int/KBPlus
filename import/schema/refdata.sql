@@ -127,3 +127,7 @@ insert into refdata_category(rdc_id, rdc_description) VALUES (24,'TIPP Type');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 24, 'Electronic');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 24, 'Print');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 24, 'Digitized');
+
+insert into refdata_category(rdc_id, rdc_description) VALUES (25,'Package List Status');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 25, 'Checked');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 25, 'In progress');
