@@ -90,10 +90,14 @@
             <dd>${subscriptionInstance.getConsortia()?.name}</dd>
     
             <dt>Start Date</dt>
-            <dd><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.startDate}"/></dd>
+            <dd><span><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.startDate}"/></span>
+                    <input id="Subscription:${subscriptionInstance.id}:startDate" type="hidden" class="${editable?'dp3':''}" />
+            </dd>
     
             <dt>End Date</dt>
-            <dd><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.endDate}"/></dd>
+            <dd><span><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.endDate}"/></span>
+                    <input id="Subscription:${subscriptionInstance.id}:endDate" type="hidden" class="${editable?'dp3':''}" />
+            </dd>
     
             <dt>Nominal Platform</dt>
             <dd> 
@@ -233,6 +237,7 @@
 
         $("div dl dd table tr td input.dp1").datepicker(datepicker_config);
         $("div dl dd table tr td input.dp2").datepicker(datepicker_config);
+        $(".dp3").datepicker(datepicker_config);
 
         $("input.hdp").datepicker({
           buttonImage: '../../images/calendar.gif',
