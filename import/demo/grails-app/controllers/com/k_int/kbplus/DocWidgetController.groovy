@@ -49,7 +49,7 @@ class DocWidgetController {
 
         def doc_context = new DocContext("${params.ownertp}":instance,
                                          owner:doc_content,
-                                         doctype:RefdataCategory.lookupOrCreate('Document Type','Note'),
+                                         doctype:RefdataCategory.lookupOrCreate('Document Type',params.doctype),
                                          alert:alert).save(flush:true);
       }
       else {

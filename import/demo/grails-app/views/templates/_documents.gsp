@@ -52,6 +52,7 @@
           <select name="doctype">
             <option value="License">License</option>
             <option value="General">General</option>
+            <option value="General">Addendum</option>
           </select>
         </dd>
       </dl>
