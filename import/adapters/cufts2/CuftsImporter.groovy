@@ -87,8 +87,8 @@ if ( db == null ) {
 
 
 // def cufts_knowledgebase_website = new HTTPBuilder('http://cufts2.lib.sfu.ca')
-
-loadCuftsFile('/home/ibbo/dev/KBPlus/import/adapters/cufts2/CUFTS_complete_20120701.tgz');
+// loadCuftsFile('/home/ibbo/dev/KBPlus/import/adapters/cufts2/CUFTS_complete_20120701.tgz');
+loadCuftsFile(args[0])
 
 def loadCuftsFile(filename) {
   println("loading data from ${filename}");

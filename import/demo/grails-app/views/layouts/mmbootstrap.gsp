@@ -81,22 +81,12 @@
                            <li>
                              <g:link controller="myInstitutions" 
                                      action="currentLicenses" 
-                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Current Licences</g:link>
-                           </li>
-                           <li>
-                             <g:link controller="myInstitutions" 
-                                     action="addLicense" 
-                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Add Licences</g:link>
+                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Licences</g:link>
                            </li>
                            <li>
                              <g:link controller="myInstitutions" 
                                      action="currentSubscriptions" 
-                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Current Subscriptions</g:link>
-                           </li>
-                           <li>
-                             <g:link controller="myInstitutions" 
-                                     action="addSubscription" 
-                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Add Subscriptions</g:link>
+                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Subscriptions</g:link>
                            </li>
                          </g:each>
                        </g:if>
