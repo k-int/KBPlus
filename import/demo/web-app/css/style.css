@@ -43,7 +43,6 @@
 
 #Footer {
     border-top: 1px solid rgb(218,218,218);
-    padding-top: 25px;
     margin-top: 30px;
     margin-bottom: 40px;
 }
@@ -52,15 +51,89 @@
     margin-left: 0px;
 }
 
-#Footer a {
-    padding: 0;
-    margin: 0;
+#Footer .footer-links {
+    margin-top: 18px;
 }
 
 /* Additional Nav */
 
 .navbar-push {
     margin-top: 55px;
+}
+
+.navbar-push-public {
+    margin-top: 165px;
+}
+
+.navbar-public {
+    min-height: 160px;
+    line-height: 160px;
+    background-image: url('../images/kb_large_header_bg.png');
+    background-position: right 50%;
+}
+
+.navbar-footer {
+    background-color: #EEE;
+    color: #535353;
+    margin-bottom: 0px;
+}
+
+.navbar-footer .caret {
+    border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+	border-top: none;
+	border-bottom: 4px solid rgb(189, 4, 57)!important;
+}
+
+.navbar-footer .navbar-inner {
+    background-color: transparent;
+    background-image: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+.navbar-footer .dropdown-menu {
+    top: -60px;
+    margin-right: -6px;
+}
+
+.navbar-footer.navbar .dropdown-menu::after {
+    top: 100%;
+    border-top: 6px solid white;
+    border-bottom: none;
+}
+
+.navbar-footer.navbar .dropdown-menu::before {
+    top: 100%;
+    border-top: 6px solid #CCC;
+    border-bottom: none;
+}
+
+.navbar-footer.navbar .nav > li {
+    border: none;
+}
+
+.navbar-footer.navbar .nav > li > a {
+    color: rgb(189, 4, 57);
+}
+
+.navbar-footer.navbar .nav > li:hover {
+    background-color: #DDD;
+}
+
+/* Home Page */
+
+.home-page .well {
+    padding-bottom: 0px;
+}
+
+.home-page .well dl {
+    min-height: 72px;
+}
+
+.home-page .well dl dd {
+    line-height: 18px;
 }
 
 /* licence Search */
@@ -72,7 +145,8 @@
 .licence-options, 
 .licence-documents-options, 
 .licence-links-options, 
-.licence-notes-options { 
+.licence-notes-options,
+.alerts-options { 
     margin-bottom: 15px;
     display: none;
     background-color: #F0F0F0;
@@ -120,6 +194,10 @@
 
 .licence-properties input {
     width: 100%;
+}
+
+.well {
+    
 }
 
 .well.documents {
