@@ -21,7 +21,7 @@ insert into refdata_value(rdv_owner, rdv_value) VALUES ( 2, 'Subscription Agent'
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (3,'Platform Type');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 3, 'Host');
-insert into refdata_value(rdv_owner, rdv_value) VALUES ( 3, 'Admin');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 3, 'Admininstrative');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 3, 'Software');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (4,'Platform Status');
