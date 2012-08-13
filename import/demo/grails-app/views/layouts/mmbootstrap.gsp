@@ -65,7 +65,7 @@
   
                 <g:if test="${user}">
                   <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Forms and Actions <b class="caret"></b> </a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Manage <b class="caret"></b> </a>
                     <ul class="dropdown-menu" style="max-width:none;">
   
                       <li <%= ( ( 'myInstitutions'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
