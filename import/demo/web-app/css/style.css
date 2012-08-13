@@ -7,6 +7,11 @@
  *
 */
 
+body{ 
+    font-family: Arial, Helvetica,sans-serif; 
+    color: #262626;
+}
+
 /* Sprites */
 
 .sprite {
@@ -231,8 +236,10 @@
     list-style: none;
     list-style-image: none;
     border-bottom: 1px solid #CCCCCC;
-    margin-top: 8px;
-    margin-bottom: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 5px;
+    padding-right: 5px;
     color: black;
 }
 
@@ -253,6 +260,30 @@
 
 #licenceInformation dt,dd {
     width: auto;
+}
+
+.notes .shared {
+    background-color: rgba(255,255,189, 0.8);
+}
+
+.notes .shared:hover {
+    background-color: rgb(217,229,242);
+}
+
+.notes .shared .label-warning {
+    margin-right: 10px;
+}
+
+.notes .shared .label-warning:hover {
+    background-color: rgb(248,148,4);
+}
+
+.notes .shared .newipe form {
+    margin-top: -26px;
+    margin-left: -5px;
+    margin-right: -5px;
+    margin-bottom: -8px;
+    padding-top: 35px;
 }
 
 .licenceInfo input[type="text"] {
