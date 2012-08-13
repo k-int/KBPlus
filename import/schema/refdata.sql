@@ -122,3 +122,8 @@ insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 22, 'false', 
 insert into refdata_category(rdc_id, rdc_description) VALUES (23,'Link Types');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 23, 'Parent');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 23, 'Child');
+
+insert into refdata_category(rdc_id, rdc_description) VALUES (24,'TIPP Type');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 24, 'Electronic');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 24, 'Print');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 24, 'Digitized');
