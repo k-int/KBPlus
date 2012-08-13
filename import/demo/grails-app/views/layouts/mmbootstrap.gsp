@@ -68,9 +68,6 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Forms and Actions <b class="caret"></b> </a>
                     <ul class="dropdown-menu" style="max-width:none;">
   
-                      <li <%= ( ( 'myInstitutions'== controllerName ) && ( 'manageAffiliations'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="myInstitutions" action="manageAffiliations">Manage Affiliations</g:link></li>
-  
                       <li <%= ( ( 'myInstitutions'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="myInstitutions" action="index">Dashboard</g:link></li>
   
@@ -81,22 +78,12 @@
                            <li>
                              <g:link controller="myInstitutions" 
                                      action="currentLicenses" 
-                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Current Licences</g:link>
-                           </li>
-                           <li>
-                             <g:link controller="myInstitutions" 
-                                     action="addLicense" 
-                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Add Licences</g:link>
+                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Licences</g:link>
                            </li>
                            <li>
                              <g:link controller="myInstitutions" 
                                      action="currentSubscriptions" 
-                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Current Subscriptions</g:link>
-                           </li>
-                           <li>
-                             <g:link controller="myInstitutions" 
-                                     action="addSubscription" 
-                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Add Subscriptions</g:link>
+                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Subscriptions</g:link>
                            </li>
                          </g:each>
                        </g:if>
@@ -143,9 +130,9 @@
                   <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">${user.displayName} <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                      <li><a href="#">Item 1</a></li>
-                      <li><a href="#">Item 2</a></li>
-                      <li><a href="#">Item 3</a></li>
+                      <li <%= ( ( 'profile'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="profile" action="index">Profile and Affiliations</g:link></li>
+  
                     </ul>
                   </li>
                 </g:if>

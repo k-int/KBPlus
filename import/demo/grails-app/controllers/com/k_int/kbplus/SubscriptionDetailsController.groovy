@@ -17,13 +17,14 @@ class SubscriptionDetailsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
-    log.debug("subscriptionDetails id:${params.id}");
+    log.debug("subscriptionDetails id:${params.id} format=${response.format}");
     def result = [:]
 
     def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.max = params.max ? Integer.parseInt(params.max) : ( response.format == "csv" ? 10000 : 10 );
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
+    log.debug("max = ${result.max}");
     result.user = User.get(springSecurityService.principal.id)
     result.subscriptionInstance = Subscription.get(params.id)
     // result.institution = Org.findByShortcode(params.shortcode)
@@ -44,8 +45,6 @@ class SubscriptionDetailsController {
     def qry_params = [result.subscriptionInstance]
 
     if ( params.filter ) {
-      // base_qry = " from IssueEntitlement as ie left outer join ie.tipp.title.ids ids where ie.subscription = ? and ( ( ie.tipp.title.title like ? ) or ( ids.identifier.value like ? ) )"
-      // base_qry = " from IssueEntitlement as ie ie.subscription = ? and ( ( ie.tipp.title.title like ? ) or ( exists ( from ie.tipp.title.ids as io where io.tipp = ie.tipp and io.identifier.value like ? ) ) )"
       base_qry = " from IssueEntitlement as ie where ie.subscription = ? and ( ie.status.value != 'Deleted' ) and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) )"
       qry_params.add("%${params.filter.trim().toLowerCase()}%")
       qry_params.add("%${params.filter}%")
@@ -57,15 +56,45 @@ class SubscriptionDetailsController {
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
       base_qry += "order by ie.${params.sort} ${params.order} "
     }
-    // result.num_sub_rows = IssueEntitlement.countBySubscription(result.subscriptionInstance);
     result.num_sub_rows = IssueEntitlement.executeQuery("select count(ie) "+base_qry, qry_params )[0]
 
-    // result.entitlements = IssueEntitlement.findAllBySubscription(result.subscriptionInstance, [max:result.max, offset:result.offset, sort:'tipp.title.title', order:'asc']);
-    // result.entitlements = IssueEntitlement.findAllBySubscription(result.subscriptionInstance, [max:result.max, offset:result.offset, sort:params.sort, order:params.order]);
     result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, qry_params, [max:result.max, offset:result.offset]);
 
-    log.debug("subscriptionInstance returning...");
-    result
+    log.debug("subscriptionInstance returning... ${result.num_sub_rows} rows ");
+    withFormat {
+      // json {
+      //         render people as JSON
+      //      }
+      // }
+      // xml {
+      //      render people as XML
+      // }
+      html result
+      csv {
+         def jc_id = result.subscriptionInstance.getSubscriber()?.getIdentifierByType('JC')?.value
+
+         response.setHeader("Content-disposition", "attachment; filename=${result.subscriptionInstance.id}.csv")
+         response.contentType = "text/csv"
+         def out = response.outputStream
+         out.withWriter { writer ->
+           // Output the header information
+           if ( ( params.omitHeader == null ) || ( params.omitHeader != 'Y' ) ) {
+             writer.write("FileType,SpecVersion,JD_ID,TermStartDate,TermEndDate,SubURI\n")
+             writer.write("${result.subscriptionInstance.type.value},\"2.0\",${jc_id},start,end,\"uri://kbplus/sub/${result.subscriptionInstance.id}\"\n")
+           }
+
+           // Output the body text
+           writer.write("included_st,publication_title,print_identifier,online_identifier,date_first_issue_subscribed,num_first_vol_subscribed,num_first_issue_subscribed,date_last_issue_subscribed,num_last_vol_subscribed,num_last_issue_subscribed,embargo_info,core_title\n");
+
+           result.entitlements.each { e ->
+             writer.write("Y,\"${e.tipp.title.title}\",\"${e.tipp?.title?.getIdentifierValue('ISSN')}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')}\",${e.startDate?:''},${e.startVolume?:''},${e.startIssue?:''},${e.endDate?:''},${e.endVolume?:''},${e.endIssue?:''},${e.embargo?:''},${e.coreTitle}\n");
+           }
+           writer.flush()
+           writer.close()
+         }
+         out.close()
+      }
+    }
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
