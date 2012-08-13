@@ -126,13 +126,13 @@
             </ul>
             <ul class="nav pull-right">
               <sec:ifLoggedIn>
-                <li><g:link controller="logout">Logout</g:link></li>
                 <g:if test="${user}">
                   <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">${user.displayName} <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                       <li <%= ( ( 'profile'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="profile" action="index">Profile and Affiliations</g:link></li>
+                         <g:link controller="profile" action="index">Profile</g:link></li>
+                      <li><g:link controller="logout">Logout</g:link></li>
   
                     </ul>
                   </li>
