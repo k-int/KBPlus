@@ -68,9 +68,6 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Forms and Actions <b class="caret"></b> </a>
                     <ul class="dropdown-menu" style="max-width:none;">
   
-                      <li <%= ( ( 'myInstitutions'== controllerName ) && ( 'manageAffiliations'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="myInstitutions" action="manageAffiliations">Manage Affiliations</g:link></li>
-  
                       <li <%= ( ( 'myInstitutions'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="myInstitutions" action="index">Dashboard</g:link></li>
   
@@ -133,9 +130,9 @@
                   <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">${user.displayName} <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                      <li><a href="#">Item 1</a></li>
-                      <li><a href="#">Item 2</a></li>
-                      <li><a href="#">Item 3</a></li>
+                      <li <%= ( ( 'profile'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="profile" action="index">Profile and Affiliations</g:link></li>
+  
                     </ul>
                   </li>
                 </g:if>
