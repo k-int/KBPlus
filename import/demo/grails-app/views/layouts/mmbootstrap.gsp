@@ -68,10 +68,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Manage <b class="caret"></b> </a>
                     <ul class="dropdown-menu" style="max-width:none;">
   
-                      <li <%= ( ( 'myInstitutions'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="myInstitutions" action="index">Dashboard</g:link></li>
   
-                       <li class="divider"></li>
                        <g:set var="usaf" value="${user.authorizedAffiliations}" />
                        <g:if test="${usaf && usaf.size() > 0}">
                          <g:each in="${usaf}" var="ua">
@@ -91,6 +88,10 @@
                          <li>Please use the manage affiliations option to request access
                                   to your home institution</li>
                        </g:else>
+                       <li class="divider"></li>
+                       <li><g:link controller="myInstitutions" action="index">Alerts</g:link></li>
+                       <li><a href="http://service.kbplus.ac.uk/reports">Reports</a></li>
+                       <li><a href="http://service.kbplus.ac.uk/help">Help</a></li>
                     </ul>
                   </li>
                 </g:if>
