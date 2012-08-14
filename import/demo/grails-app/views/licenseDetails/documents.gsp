@@ -122,5 +122,18 @@
 </div>
 <!-- End lightbox modal -->
 
+    <script language="JavaScript">
+      $(document).ready(function() {
+         $('.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
+           type      : 'textarea',
+           cancel    : 'Cancel',
+           submit    : 'OK',
+           id        : 'elementid',
+           rows      : 3,
+           tooltip   : 'Click to edit...'
+         });
+       });
+    </script>
+
   </body>
 </html>
