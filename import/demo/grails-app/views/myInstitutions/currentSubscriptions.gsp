@@ -38,7 +38,6 @@
                   <th>End Date</th>
                   <th>Platform</th>
                   <th>License</th>
-                  <th>Docs</th>
                 </tr>
                 <g:each in="${subscriptions}" var="s">
                   <tr>
@@ -63,7 +62,6 @@
                       </g:each>
                     </td>
                     <td><g:if test="${s.owner}"><g:link controller="licenseDetails" action="index" id="${s.owner.id}">${s.owner?.reference}</g:link></g:if></td>
-                    <td></td>
                   </tr>
                 </g:each>
       </table>

@@ -72,7 +72,6 @@
                   <g:sortableColumn params="${params}" property="s.endDate" title="End Date" />
                   <th>Platform(s)</th>
                   <th>License</th>
-                  <th>Docs</th>
                 </tr>
                 <g:each in="${subscriptions}" var="s">
                   <tr>
@@ -94,8 +93,7 @@
                         ${sp.pkg?.nominalPlatform?.name}<br/>
                       </g:each>
                     </td>
-                    <td>${owner.reference}</td>
-                    <td></td>
+                    <td>${s.owner.reference}</td>
                   </tr>
                 </g:each>
              </table>
