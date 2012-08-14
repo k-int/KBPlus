@@ -140,4 +140,16 @@ class License {
   def getGenericLabel() {
     return reference
   }
+
+  // determin if a user can edit this subscription
+  def isEditableBy(user) {
+    def result = false
+    // users are allowed to edit a subscription if they belong to an institution who has a role as subscriber
+    def user_orgs = user.affiliations.collect { it.org }
+    if ( user_orgs.contains( getLicensee() ) ) {
+      result = true;
+    }
+    result
+  }
+
 }

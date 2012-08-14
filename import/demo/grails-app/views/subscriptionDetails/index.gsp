@@ -218,6 +218,7 @@
 
     </div>
     <script language="JavaScript">
+      <g:if test="${editable}">
       $(document).ready(function() {
 
         var datepicker_config = {
@@ -319,7 +320,7 @@
             return false ;
         }
       }
-
+      </g:if>
     </script>
   </body>
 </html>
