@@ -166,8 +166,9 @@
                                         <b class="caret"></b>
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="">KB+ Sandpit</a></li>
-                                        <li><a href="">KB+ Explorer</a></li>
+                                        <li><a href="http://service.kbplus.ac.uk/kbplus/myInstitutions/index">KB+</a></li>
+                                        <li><a href="http://test.kbplus.edina.ac.uk/kbplus/myInstitutions/index">KB+ Sandpit</a></li>
+                                        <li><a href="http://knowplus.edina.ac.uk/kbplus/">KB+ Explorer</a></li>
                                     </ul>
                                 </li>
                             </ul>
