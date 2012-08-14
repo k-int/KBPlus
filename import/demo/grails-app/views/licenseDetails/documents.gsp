@@ -56,7 +56,6 @@
                       <td>Creator</td>
                       <td>Type</td>
                       <td>Doc Store ID</td>
-                      <td>Linked Here</td>
                     </tr>
                   </thead>
                   <tbody>
@@ -74,7 +73,6 @@
                           <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="creator" id="docCreator" class="newipe">${docctx.owner.creator}</g:inPlaceEdit></td>
                           <td>${docctx.owner?.type?.value}</td>
                           <td><g:if test="${docctx.owner?.uuid}">${docctx.owner?.uuid}</g:if></td>
-                          <td>Links</td>
                         </tr>
                       </g:if>
                     </g:each>

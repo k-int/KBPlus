@@ -95,7 +95,7 @@ class DocWidgetController {
                                       filename: original_filename,
                                       mimeType: request.getFile("upload_file")?.contentType,
                                       title: params.upload_title,
-                                      type:RefdataCategory.lookupOrCreate('Document Type','License')).save()
+                                      type:RefdataCategory.lookupOrCreate('Document Type',params.doctype)).save()
 
             def doc_context = new DocContext("${params.ownertp}":instance,
                                              owner:doc_content,
