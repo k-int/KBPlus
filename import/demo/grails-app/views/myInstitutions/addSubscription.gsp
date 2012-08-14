@@ -66,7 +66,6 @@
                   <th>Select</th>
                   <g:sortableColumn params="${params}" property="s.name" title="Name" />
                   <th>Package Name(s)</th>
-                  <th>Vendor</th>
                   <th>Consortia</th>
                   <g:sortableColumn params="${params}" property="s.startDate" title="Start Date" />
                   <g:sortableColumn params="${params}" property="s.endDate" title="End Date" />
@@ -84,7 +83,6 @@
                         ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
                       </g:each>
                     </td>
-                    <td>${s.provider?.name}</td>
                     <td>${s.getConsortia()?.name}</td>
                     <td><g:formatDate format="dd MMMM yyyy" date="${s.startDate}"/></td>
                     <td><g:formatDate format="dd MMMM yyyy" date="${s.endDate}"/></td>
@@ -93,7 +91,7 @@
                         ${sp.pkg?.nominalPlatform?.name}<br/>
                       </g:each>
                     </td>
-                    <td>${s.owner.reference}</td>
+                    <td><g:if test="${s.owner}"><g:link controller="licenseDetails" action="index" id="${s.owner.id}">${s.owner?.reference}</g:link></g:if></td>
                   </tr>
                 </g:each>
              </table>

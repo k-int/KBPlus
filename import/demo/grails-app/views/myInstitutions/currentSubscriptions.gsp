@@ -32,7 +32,6 @@
                   <th># (Name)</th>
                   <th>Parent</th>
                   <th>Package Name</th>
-                  <th>Vendor</th>
                   <th>Consortia</th>
                   <th>Start Date</th>
                   <th>End Date</th>
@@ -52,8 +51,7 @@
                         ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
                       </g:each>
                     </td>
-                    <td>${s.instanceOf?.provider?.name}</td>
-                    <td>${s.instanceOf?.getConsortia()?.name}</td>
+                    <td>${s.getConsortia()?.name}</td>
                     <td><g:formatDate format="dd MMMM yyyy" date="${s.startDate}"/></td>
                     <td><g:formatDate format="dd MMMM yyyy" date="${s.endDate}"/></td>
                     <td>
