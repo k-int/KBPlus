@@ -480,7 +480,9 @@ class MyInstitutionsController {
     // Find all licenses for this institution...
     def result = [:]
     OrgRole.findAllByOrgAndRoleType(institution, licensee_role).each { it ->
-      result["License:${it.lic?.id}"] = it.lic?.reference
+      if ( it.lic?.status?.value != 'Deleted' ) {
+        result["License:${it.lic?.id}"] = it.lic?.reference
+      }
     }
 
     //log.debug("returning ${result} as available licenses");
