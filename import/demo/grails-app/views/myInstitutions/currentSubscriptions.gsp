@@ -62,7 +62,7 @@
                         ${sp.pkg?.nominalPlatform?.name}<br/>
                       </g:each>
                     </td>
-                    <td>${owner.reference}</td>
+                    <td><g:if test="${s.owner}"><g:link controller="licenseDetails" action="index" id="${s.owner.id}">${s.owner?.reference}</g:link></g:if></td>
                     <td></td>
                   </tr>
                 </g:each>
