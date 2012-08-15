@@ -62,6 +62,15 @@ body{
 
 /* Additional Nav */
 
+.explorer-link {
+    color: #FFC7C8!important;
+}
+
+.explorer-link .caret {
+    border-top-color: #FFC7C8!important;
+}
+    
+
 .navbar-push {
     margin-top: 55px;
 }
