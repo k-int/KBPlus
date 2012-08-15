@@ -366,6 +366,10 @@ dt, dd {
 
     /* Navbar footer overwrites for responsive design */
 
+    .navbar-footer {
+        height: 40px;
+    }
+    
     .navbar-footer .nav-collapse, .navbar-footer .nav-collapse.collapse {
         background-color: transparent;
         overflow: visible;

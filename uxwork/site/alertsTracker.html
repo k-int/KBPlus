@@ -131,8 +131,7 @@
                        />
                 <input type="submit" name="delete-licence" value="Create Comment" class="btn btn-primary delete-licence"
                        />
-                <input type="submit" name="delete-licence" value="View Comments" class="btn delete-licence"
-                       />
+                <a class="btn" data-toggle="modal" href="#modalViewComments">View Comments</a>
             </div>
         </div>
 
@@ -224,7 +223,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="footer-links container">
                 <div class="row">
                     <div class="pull-left">
@@ -237,6 +236,138 @@
             </div>
         </div>
 
+        <!-- View Comments Modal Markup -->
+        <div class="modal hide" id="modalViewComments">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h3>Comments</h3>
+                <h4>Comments on note by Bob Pinfold</h4>
+            </div>
+            <form action="" method="post">
+                <div class="modal-body">
+                    <!-- Original Alert -->
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Note</th>
+                                <th>Entity</th>
+                                <th>Author</th>
+                                <th>Date/Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Community</td>
+                                <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean varius magna ac libero aliquet ultrices.</td>
+                                <td>Licence</td>
+                                <td>Bob Pinfold</td>
+                                <td>DD/MM/YYYY</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- End Original Alert -->
+                        
+                    <div class="well comments-options">
+                        <input type="submit" name="create-comment" value="Create Comment" class="btn btn-primary"
+                               />
+                        <input type="submit" name="delete-comment" value="Delete Comment" class="btn btn-warning delete-comment hide"
+                               />
+                    </div>
+                
+                    <!-- Alert Comments -->
+                    <form action="">
+                        <table class="table table-bordered comments-results">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Comments</th>
+                                    <th>Author</th>
+                                    <th>Date/Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="radio" name="selected_comment" value="" /></td>
+                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean varius magna ac libero aliquet ultrices.</td>
+                                    <td>Bob Pinfold</td>
+                                    <td>DD/MM/YYYY</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" name="selected_comment" value="" /></td>
+                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean varius magna ac libero aliquet ultrices.</td>
+                                    <td>Bob Pinfold</td>
+                                    <td>DD/MM/YYYY</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" name="selected_comment" value="" /></td>
+                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean varius magna ac libero aliquet ultrices.</td>
+                                    <td>Bob Pinfold</td>
+                                    <td>DD/MM/YYYY</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" name="selected_comment" value="" /></td>
+                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean varius magna ac libero aliquet ultrices.</td>
+                                    <td>Bob Pinfold</td>
+                                    <td>DD/MM/YYYY</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" name="selected_comment" value="" /></td>
+                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean varius magna ac libero aliquet ultrices.</td>
+                                    <td>Bob Pinfold</td>
+                                    <td>DD/MM/YYYY</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" name="selected_comment" value="" /></td>
+                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean varius magna ac libero aliquet ultrices.</td>
+                                    <td>Bob Pinfold</td>
+                                    <td>DD/MM/YYYY</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" name="selected_comment" value="" /></td>
+                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean varius magna ac libero aliquet ultrices.</td>
+                                    <td>Bob Pinfold</td>
+                                    <td>DD/MM/YYYY</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" name="selected_comment" value="" /></td>
+                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean varius magna ac libero aliquet ultrices.</td>
+                                    <td>Bob Pinfold</td>
+                                    <td>DD/MM/YYYY</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" name="selected_comment" value="" /></td>
+                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean varius magna ac libero aliquet ultrices.</td>
+                                    <td>Bob Pinfold</td>
+                                    <td>DD/MM/YYYY</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" name="selected_comment" value="" /></td>
+                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean varius magna ac libero aliquet ultrices.</td>
+                                    <td>Bob Pinfold</td>
+                                    <td>DD/MM/YYYY</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" name="selected_comment" value="" /></td>
+                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean varius magna ac libero aliquet ultrices.</td>
+                                    <td>Bob Pinfold</td>
+                                    <td>DD/MM/YYYY</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" name="selected_comment" value="" /></td>
+                                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean varius magna ac libero aliquet ultrices.</td>
+                                    <td>Bob Pinfold</td>
+                                    <td>DD/MM/YYYY</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                    <!-- End alert comments -->
+                </div>
+            </form>
+        </div>
+        <!-- END View comments modal -->
+
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 
         <script>
@@ -246,8 +377,14 @@
         <script src="js/plugins.js"></script>
 
         <script type="text/javascript">
+            // Show alerts options on radio cliuck
             $('.alerts-results input[type="radio"]').click(function () {
                 $('.alerts-options').slideDown('fast');
+            });
+            
+            // Show comment delete button on radio click
+            $('.comments-results input[type="radio"]').click(function () {
+                $('.comments-options .delete-comment').slideDown('fast');
             });
         </script>
     </body>
