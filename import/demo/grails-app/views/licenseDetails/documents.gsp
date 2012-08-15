@@ -40,7 +40,7 @@
     </div>
 
     <div class="container">
-                <button id="delete-doc">Delete Selected Documents</button>&nbsp;
+                <button class="btn btn-danger" id="delete-doc">Delete Selected Documents</button>&nbsp;
                 <input type="submit" class="btn btn-primary" value="Add new document" data-toggle="modal" href="#modalCreateDocument" />
   
                 <g:form id="delete_doc_form" url="[controller:'licenseDetails',action:'deleteDocuments']" method="post">

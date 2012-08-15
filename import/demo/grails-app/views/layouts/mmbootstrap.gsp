@@ -176,7 +176,7 @@
                     </div>
                 </div>
             </div>
-                
+            
             <div class="footer-links container">
                 <div class="row">
                     <div class="pull-left">
@@ -187,7 +187,7 @@
                     </div>
                 </div>
             </div>
-    </div>
+        </div>
 
 
 

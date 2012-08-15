@@ -185,8 +185,8 @@
                 <td><span><g:formatDate format="dd MMMM yyyy" date="${ie.endDate}"/></span>
                     <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="${editable?'dp2':''}" />
                 </td>
-                <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="${editable?'newipe':''}">${ie.embargo}</g:inPlaceEdit></td>
-                <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="coverageDepth" id="coverageDepth" class="${editable?'newipe':''}">${ie.coverageDepth}</g:inPlaceEdit></td>
+                <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="${editable?'fieldNote':''}">${ie.embargo}</g:inPlaceEdit></td>
+                <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="coverageDepth" id="coverageDepth" class="${editable?'fieldNote':''}">${ie.coverageDepth}</g:inPlaceEdit></td>
                 <td>${ie.coverageNote}</td>  
                 <td><g:if test="${editable}"><g:link action="removeEntitlement" params="${[ieid:ie.id, sub:subscriptionInstance.id]}" onClick="return confirm('Are you sure you wish to delete this entitlement');">Delete</g:link></g:if></td>
               </tr>
@@ -251,13 +251,14 @@
           }
         });
 
-        $('span.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
+        $('span.fieldNote').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
           type      : 'textarea',
           cancel    : 'Cancel',
           submit    : 'OK',
           id        : 'elementid',
           rows      : 3,
-          tooltip   : 'Click to edit...'
+          tooltip   : 'Click to edit...',
+          onblur    : 'ignore'
         });
 
         $('span.entitlementBatchEdit').editable(function(value, settings) { 
@@ -305,6 +306,43 @@
              }
            });
          }
+
+         // On jEditable click remove the hide the icon and show it 
+         // when one of the buttons are clicked or ESC is hit.
+         $('.ipe, .intedit, .refdataedit, .cuedit, .fieldNote, .newipe').click(function() {
+         	// Hide edit icon with overwriting style.
+         	$(this).addClass('clicked');
+         	
+         	// If the editable has an icon as part of its styling.
+         	var iconStyle = $(this).is('.refdataedit, .cuedit');
+         	
+         	if(iconStyle) {
+         		$(this).parent().find('.select-icon').hide();
+         	}      	
+         	
+         	var e = $(this);
+         	
+         	var removeClicked = function() {
+         		setTimeout(function() {
+         			e.removeClass('clicked');
+         			
+         			if(iconStyle) {
+         				e.parent().find('.select-icon').show();
+         			}
+         		}, 1);
+         	}
+         	
+         	setTimeout(function() {
+         		e.find('form button').click(function() {
+         			removeClicked();
+         		});
+         		e.keydown(function(event) {
+         			if(event.keyCode == 27) {
+         				removeClicked();
+         			}
+         		});
+         	}, 1);
+         });
       });
 
       function selectAll() {
