@@ -210,6 +210,20 @@ body{
     width: 100%;
 }
 
+/* Sortable image styles */
+
+.sortable a {
+    text-decoration: underline;
+}
+
+.sortable.asc a {
+    background-image: url('../images/skin/sorted_asc.png');
+}
+
+.sortable.desc a {
+    background-image: url('../images/skin/sorted_desc.png');
+}
+
 .well {
     
 }
