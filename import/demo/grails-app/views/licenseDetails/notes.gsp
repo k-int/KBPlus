@@ -42,7 +42,7 @@
     <div class="container">
       <g:form id="delete_doc_form" url="[controller:'licenseDetails',action:'deleteDocuments']" method="post">
         <input type="hidden" name="licid" value="${params.id}"/>
-        <input type="submit" value="Delete Selected Notes"/>
+        <input type="submit" class="btn btn-danger" value="Delete Selected Notes"/>
         <table class="table table-striped table-bordered table-condensed">
           <thead>
             <tr>
