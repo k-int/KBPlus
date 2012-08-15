@@ -67,52 +67,62 @@
 
     <div id="collapseableSubDetails" class="container collapse">
       <div class="row">
-        <div class="span8">
-          <dl>
-            <dt>License</dt>
-            <dd><g:relation domain='Subscription' 
+        <div class="span8"> 
+            <br/>
+            <h6>License Information</h6>
+            <div class="licence-info"> 
+                <dl>
+                    <dt>License</dt>
+                    <dd><g:relation domain='Subscription' 
                             pk='${subscriptionInstance.id}' 
                             field='owner' 
                             class='reldataEdit'
                             id='ownerLicense'>${subscriptionInstance?.owner?.reference}</g:relation></dd>
-    
-            <dt>Package Name</dt>
-            <dd>
-              <g:each in="${subscriptionInstance.packages}" var="sp">
-                ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
-              </g:each>
-            </dd>
-
-            <dt>Vendor</dt>
-            <dd><g:relationAutocomplete field="vendor" relatedClass="Org" typedownField="name" displayField="name"/></dd>
-    
-            <dt>Consortia</dt>
-            <dd>${subscriptionInstance.getConsortia()?.name}</dd>
-    
-            <dt>Start Date</dt>
-            <dd><span><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.startDate}"/></span>
-                    <input id="Subscription:${subscriptionInstance.id}:startDate" type="hidden" class="${editable?'dp3':''}" />
-            </dd>
-    
-            <dt>End Date</dt>
-            <dd><span><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.endDate}"/></span>
-                    <input id="Subscription:${subscriptionInstance.id}:endDate" type="hidden" class="${editable?'dp3':''}" />
-            </dd>
-    
-            <dt>Nominal Platform</dt>
-            <dd> 
-              <g:each in="${subscriptionInstance.packages}" var="sp">
-                ${sp.pkg?.nominalPlatform?.name}<br/>
-              </g:each>
-            </dd>
-          </dl>
+                </dl>
+                <dl>
+                    <dt>Package Name</dt>
+                    <dd>
+                        <g:each in="${subscriptionInstance.packages}" var="sp">
+                            ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
+                        </g:each>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>Vendor</dt>
+                    <dd><g:relationAutocomplete field="vendor" relatedClass="Org" typedownField="name" displayField="name"/></dd>
+                </dl>
+                <dl>
+                    <dt>Consortia</dt>
+                    <dd>${subscriptionInstance.getConsortia()?.name}</dd>
+                </dl>
+               <dl>
+                    <dt>Start Date</dt>
+                    <dd><span><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.startDate}"/></span>
+                        <input id="Subscription:${subscriptionInstance.id}:startDate" type="hidden" class="${editable?'dp3':''}" />
+                    </dd>
+               </dl>
+               <dl>
+                    <dt>End Date</dt>
+                    <dd><span><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.endDate}"/></span>
+                        <input id="Subscription:${subscriptionInstance.id}:endDate" type="hidden" class="${editable?'dp3':''}" />
+                    </dd>
+               </dl>
+               <dl>
+                    <dt>Nominal Platform</dt>
+                    <dd> 
+                    <g:each in="${subscriptionInstance.packages}" var="sp">
+                        ${sp.pkg?.nominalPlatform?.name}<br/>
+                    </g:each>
+                    </dd>
+                </dl>
+                <div class="clear-fix"></div>
+            </div>
         </div>
 
         <div class="span4">
           <g:render template="documents" contextPath="../templates" model="${[doclist:subscriptionInstance.documents, ownobj:subscriptionInstance, owntp:'subscription']}" />
           <g:render template="notes" contextPath="../templates" model="${[doclist:subscriptionInstance.documents, ownobj:subscriptionInstance, owntp:'subscription']}" />
         </div>
-
       </div>
     </div>
 
