@@ -50,7 +50,7 @@
             <ul class="nav">
               <sec:ifLoggedIn>
                 <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Data Explorer <b class="caret"></b> </a>
+                  <a href="#" class="dropdown-toggle explorer-link" data-toggle="dropdown"> Data Explorer <b class="caret"></b> </a>
                   <ul class="dropdown-menu" style="max-width:none;">
                     <li<%= request.forwardURI == "${createLink(uri: '/')}" ? ' class="active"' : '' %>><a href="${createLink(uri: '/')}">Home</a></li>
                     <li <%='package'== controllerName ? ' class="active"' : '' %>><g:link controller="package">Package</g:link></li>
@@ -65,38 +65,22 @@
   
                 <g:if test="${user}">
                   <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Forms and Actions <b class="caret"></b> </a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Manage <b class="caret"></b> </a>
                     <ul class="dropdown-menu" style="max-width:none;">
   
-                      <li <%= ( ( 'myInstitutions'== controllerName ) && ( 'manageAffiliations'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="myInstitutions" action="manageAffiliations">Manage Affiliations</g:link></li>
   
-                      <li <%= ( ( 'myInstitutions'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="myInstitutions" action="index">Dashboard</g:link></li>
-  
-                       <li class="divider"></li>
                        <g:set var="usaf" value="${user.authorizedAffiliations}" />
                        <g:if test="${usaf && usaf.size() > 0}">
                          <g:each in="${usaf}" var="ua">
                            <li>
                              <g:link controller="myInstitutions" 
                                      action="currentLicenses" 
-                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Current Licences</g:link>
-                           </li>
-                           <li>
-                             <g:link controller="myInstitutions" 
-                                     action="addLicense" 
-                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Add Licences</g:link>
+                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Licences</g:link>
                            </li>
                            <li>
                              <g:link controller="myInstitutions" 
                                      action="currentSubscriptions" 
-                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Current Subscriptions</g:link>
-                           </li>
-                           <li>
-                             <g:link controller="myInstitutions" 
-                                     action="addSubscription" 
-                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Add Subscriptions</g:link>
+                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Subscriptions</g:link>
                            </li>
                          </g:each>
                        </g:if>
@@ -104,6 +88,10 @@
                          <li>Please use the manage affiliations option to request access
                                   to your home institution</li>
                        </g:else>
+                       <li class="divider"></li>
+                       <li><g:link controller="myInstitutions" action="index">Alerts</g:link></li>
+                       <li><a href="http://service.kbplus.ac.uk/reports">Reports</a></li>
+                       <li><a href="http://service.kbplus.ac.uk/help">Help</a></li>
                     </ul>
                   </li>
                 </g:if>
@@ -138,14 +126,14 @@
             </ul>
             <ul class="nav pull-right">
               <sec:ifLoggedIn>
-                <li><g:link controller="logout">Logout</g:link></li>
                 <g:if test="${user}">
                   <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">${user.displayName} <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                      <li><a href="#">Item 1</a></li>
-                      <li><a href="#">Item 2</a></li>
-                      <li><a href="#">Item 3</a></li>
+                      <li <%= ( ( 'profile'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="profile" action="index">Profile</g:link></li>
+                      <li><g:link controller="logout">Logout</g:link></li>
+  
                     </ul>
                   </li>
                 </g:if>
@@ -165,18 +153,42 @@
     <g:layoutBody/>
 
     <div id="Footer">
-        <div class="container">
-            <div class="row">
-                <div class="pull-left">
-                    <a href="http://www.jisc-collections.ac.uk/"><div class="sprite sprite-jisc_collections_logo">JISC Collections</div></a>
-                    <div class="clearfix"></div>
+            <div class="navbar navbar-footer">
+                <div class="navbar-inner">
+                    <div class="container pull-right">
+                        <div class="nav-collapse">
+                            <ul class="nav">
+                                <li class="dropdown">
+                                    <a href="#"
+                                       class="dropdown-toggle"
+                                       data-toggle="dropdown">
+                                        Tools
+                                        <b class="caret"></b>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="http://service.kbplus.ac.uk/kbplus/myInstitutions/index">KB+</a></li>
+                                        <li><a href="http://test.kbplus.edina.ac.uk/kbplus/myInstitutions/index">KB+ Sandpit</a></li>
+                                        <li><a href="http://knowplus.edina.ac.uk/kbplus/">KB+ Explorer</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                <div class="pull-right">
-                    <a href="http://knowplus.edina.ac.uk"><div class="sprite sprite-kbplus_logo">Knowledge Base Plus</div></a>
+            </div>
+            
+            <div class="footer-links container">
+                <div class="row">
+                    <div class="pull-left">
+                        <a href="http://www.jisc-collections.ac.uk/"><div class="sprite sprite-jisc_collections_logo">JISC Collections</div></a>
+                    </div>
+                    <div class="pull-right">
+                        <a href="http://knowplus.edina.ac.uk"><div class="sprite sprite-kbplus_logo">Knowledge Base Plus</div></a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+
 
 
     <r:layoutResources/>

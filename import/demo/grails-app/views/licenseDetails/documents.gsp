@@ -40,7 +40,7 @@
     </div>
 
     <div class="container">
-                <button id="delete-doc">Delete Selected Documents</button>&nbsp;
+                <button class="btn btn-danger" id="delete-doc">Delete Selected Documents</button>&nbsp;
                 <input type="submit" class="btn btn-primary" value="Add new document" data-toggle="modal" href="#modalCreateDocument" />
   
                 <g:form id="delete_doc_form" url="[controller:'licenseDetails',action:'deleteDocuments']" method="post">
@@ -56,7 +56,6 @@
                       <td>Creator</td>
                       <td>Type</td>
                       <td>Doc Store ID</td>
-                      <td>Linked Here</td>
                     </tr>
                   </thead>
                   <tbody>
@@ -74,7 +73,6 @@
                           <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="creator" id="docCreator" class="newipe">${docctx.owner.creator}</g:inPlaceEdit></td>
                           <td>${docctx.owner?.type?.value}</td>
                           <td><g:if test="${docctx.owner?.uuid}">${docctx.owner?.uuid}</g:if></td>
-                          <td>Links</td>
                         </tr>
                       </g:if>
                     </g:each>
@@ -123,6 +121,19 @@
   </g:form>
 </div>
 <!-- End lightbox modal -->
+
+    <script language="JavaScript">
+      $(document).ready(function() {
+         $('.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
+           type      : 'textarea',
+           cancel    : 'Cancel',
+           submit    : 'OK',
+           id        : 'elementid',
+           rows      : 3,
+           tooltip   : 'Click to edit...'
+         });
+       });
+    </script>
 
   </body>
 </html>

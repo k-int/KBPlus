@@ -22,6 +22,14 @@ class LicenseDetailsController {
     result.user = User.get(springSecurityService.principal.id)
     // result.institution = Org.findByShortcode(params.shortcode)
     result.license = License.get(params.id)
+
+    if ( result.license.isEditableBy(result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
+    }
+
     result
   }
 

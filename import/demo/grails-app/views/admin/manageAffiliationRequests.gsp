@@ -8,7 +8,7 @@
   <body>
 
 
-    <div class="row-fluid">
+    <div class="container">
         <ul class="breadcrumb">
         <li> <g:link controller="home">KBPlus</g:link> <span class="divider">/</span> </li>
         <li> <g:link controller='admin' action='index'>Admin</g:link> <span class="divider">/</span> </li>
@@ -16,6 +16,7 @@
       </ul>
     </div>
 
+    <div class="container">
 
     <g:if test="${flash.error}">
        <bootstrap:alert class="alert-info">${flash.error}</bootstrap:alert>
@@ -25,15 +26,6 @@
        <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
     </g:if>
 
-
-   <div class="container">
-        <ul class="breadcrumb">
-           <li> <g:link controller="home">KBPlus</g:link> <span class="divider">/</span> </li>
-           <li>Licences</li>
-        </ul>
-    </div>
-
-    <div class="container">
         <div class="well">
           <h2>Manage Pending Membership Requests</h2>
 

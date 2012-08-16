@@ -25,6 +25,25 @@
 
     <div class="container">
       <div class="span12">
+        <h1>User Profile</h1>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="span12">
+        <g:form action="updateProfile">
+          <dl>
+            <dd>Your Display Name (Appears top right)</dd>
+            <dt><input type="text" name="userDispName" value="${user.displayName}"/></dt>
+          </dl>
+          <input type="submit" value="Update Profile"/>
+        </g:form>
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="span12">
         <h1>Administrative memberships</h1>
       </div>
     </div>
@@ -51,7 +70,7 @@
                   <td>${assoc.role}</td>
                   <td><g:message code="cv.membership.status.${assoc.status}"/></td>
                   <td><g:formatDate format="dd MMMM yyyy" date="${assoc.dateRequested}"/> / <g:formatDate format="dd MMMM yyyy" date="${assoc.dateActioned}"/></td>
-                  <td><button class="btn">Remove</button></td>
+                  <td><!--<button class="btn">Remove</button>--></td>
                 </tr>
               </g:each>
             </tbody>
@@ -66,7 +85,7 @@
              organisations will be referred to the administrative users of that organisation. If you feel you should be the administrator of an organisation
              please contact the KBPlus team for suppot.</p>
   
-          <g:form controller="myInstitutions" action="processJoinRequest" form class="form-search">
+          <g:form controller="profile" action="processJoinRequest" form class="form-search">
             <g:select name="org"
                       from="${com.k_int.kbplus.Org.findAllBySector('Higher Education')}"
                       optionKey="id"

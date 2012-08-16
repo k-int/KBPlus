@@ -17,23 +17,48 @@
           <li> <g:link controller="myInstitutions" action="currentSubscriptions" params="${[shortcode:subscriptionInstance.subscriber.shortcode]}"> ${subscriptionInstance.subscriber.name} Current Subscriptions</g:link> <span class="divider">/</span> </li>
         </g:if>
         <li> <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}">Subscription ${subscriptionInstance.id} Details</g:link> </li>
-        <li class="pull-right"><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter]}">CSV Export</g:link></li>
+        <li class="pull-right">
+          <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter]}">CSV Export</g:link> 
+          <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter,omitHeader:'Y']}">(No header)</g:link></li>
+        <g:if test="${editable}">
+          <li class="pull-right">Editable by you&nbsp;</li>
+        </g:if>
       </ul>
     </div>
 
+    <g:if test="${flash.message}">
+      <div class="container"><bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert></div>
+    </g:if>
+
+    <g:if test="${flash.error}">
+      <div class="container"><bootstrap:alert class="alert-error">${flash.error}</bootstrap:alert></div>
+    </g:if>
+
     <div class="container">
 
-    ${institution?.name} Subscription Taken
-       <h1><g:inPlaceEdit domain="Subscription" pk="${subscriptionInstance.id}" field="name" id="name" class="newipe">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
+      ${institution?.name} ${subscriptionInstance?.type?.value} Subscription Taken
+
+       <h1><g:inPlaceEdit domain="Subscription" pk="${subscriptionInstance.id}" field="name" id="name" class="${editable?'newipe':''}">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
 
       <ul class="nav nav-pills">
         <li class="active"><g:link controller="subscriptionDetails" 
                                    action="index" 
                                    params="${[id:params.id]}">Current Entitlements</g:link></li>
 
+        <g:if test="${editable}">
+          <li><g:link controller="subscriptionDetails" 
+                      action="addEntitlements" 
+                      params="${[id:params.id]}">Add Entitlements</g:link></li>
+        </g:if>
+
         <li><g:link controller="subscriptionDetails" 
-                    action="addEntitlements" 
-                    params="${[id:params.id]}">Add Entitlements</g:link></li>
+                    action="documents" 
+                    params="${[id:params.id]}">Documents</g:link></li>
+
+        <li><g:link controller="subscriptionDetails" 
+                    action="notes" 
+                    params="${[id:params.id]}">Notes</g:link></li>
+
       </ul>
 
 
@@ -42,48 +67,62 @@
 
     <div id="collapseableSubDetails" class="container collapse">
       <div class="row">
-        <div class="span8">
-          <dl>
-            <dt>License</dt>
-            <dd><g:relation domain='Subscription' 
+        <div class="span8"> 
+            <br/>
+            <h6>License Information</h6>
+            <div class="licence-info"> 
+                <dl>
+                    <dt>License</dt>
+                    <dd><g:relation domain='Subscription' 
                             pk='${subscriptionInstance.id}' 
                             field='owner' 
                             class='reldataEdit'
                             id='ownerLicense'>${subscriptionInstance?.owner?.reference}</g:relation></dd>
-    
-            <dt>Package Name</dt>
-            <dd>
-              <g:each in="${subscriptionInstance.packages}" var="sp">
-                ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
-              </g:each>
-            </dd>
-
-            <dt>Vendor</dt>
-            <dd><g:relationAutocomplete field="vendor" relatedClass="Org" typedownField="name" displayField="name"/></dd>
-    
-            <dt>Consortia</dt>
-            <dd>${subscriptionInstance.getConsortia()?.name}</dd>
-    
-            <dt>Start Date</dt>
-            <dd><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.startDate}"/></dd>
-    
-            <dt>End Date</dt>
-            <dd><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.endDate}"/></dd>
-    
-            <dt>Nominal Platform</dt>
-            <dd> 
-              <g:each in="${subscriptionInstance.packages}" var="sp">
-                ${sp.pkg?.nominalPlatform?.name}<br/>
-              </g:each>
-            </dd>
-          </dl>
+                </dl>
+                <dl>
+                    <dt>Package Name</dt>
+                    <dd>
+                        <g:each in="${subscriptionInstance.packages}" var="sp">
+                            ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
+                        </g:each>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>Vendor</dt>
+                    <dd><g:relationAutocomplete field="vendor" relatedClass="Org" typedownField="name" displayField="name"/></dd>
+                </dl>
+                <dl>
+                    <dt>Consortia</dt>
+                    <dd>${subscriptionInstance.getConsortia()?.name}</dd>
+                </dl>
+               <dl>
+                    <dt>Start Date</dt>
+                    <dd><span><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.startDate}"/></span>
+                        <input id="Subscription:${subscriptionInstance.id}:startDate" type="hidden" class="${editable?'dp3':''}" />
+                    </dd>
+               </dl>
+               <dl>
+                    <dt>End Date</dt>
+                    <dd><span><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.endDate}"/></span>
+                        <input id="Subscription:${subscriptionInstance.id}:endDate" type="hidden" class="${editable?'dp3':''}" />
+                    </dd>
+               </dl>
+               <dl>
+                    <dt>Nominal Platform</dt>
+                    <dd> 
+                    <g:each in="${subscriptionInstance.packages}" var="sp">
+                        ${sp.pkg?.nominalPlatform?.name}<br/>
+                    </g:each>
+                    </dd>
+                </dl>
+                <div class="clear-fix"></div>
+            </div>
         </div>
 
         <div class="span4">
           <g:render template="documents" contextPath="../templates" model="${[doclist:subscriptionInstance.documents, ownobj:subscriptionInstance, owntp:'subscription']}" />
           <g:render template="notes" contextPath="../templates" model="${[doclist:subscriptionInstance.documents, ownobj:subscriptionInstance, owntp:'subscription']}" />
         </div>
-
       </div>
     </div>
 
@@ -115,24 +154,27 @@
               <th>Actions</th>
             </tr>  
             <tr>  
-              <th><input type="checkbox" name="chkall" onClick="javascript:selectAll();"/></th>
+              <th>
+                <g:if test="${editable}"><input type="checkbox" name="chkall" onClick="javascript:selectAll();"/></g:if>
+              </th>
               <th colspan="4">
-                <select id="bulkOperationSelect" name="bulkOperation">
-                  <option value="edit">Edit Selected</option>
-                  <option value="remove">Remove Selected</option>
-                </select>
-                <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()"/></th>
-              <th><span id="entitlementBatchEdit" class="entitlementBatchEdit"></span><input type="hidden" name="bulk_core" id="bulk_core"/></th>
-              <th><span>edit</span> <input name="bulk_start_date" type="hidden" class="hdp" /></th>
-              <th><span>edit</span> <input name="bulk_end_date" type="hidden" class="hdp" /></th>
-              <th><span id="embargoBatchEdit" class="embargoBatchEdit"></span><input type="hidden" name="bulk_embargo" id="bulk_embargo"></th>
-              <th><span id="coverageBatchEdit" class="coverageBatchEdit"></span><input type="hidden" name="bulk_coverage" id="bulk_coverage"></th>
+                <g:if test="${editable}">
+                  <select id="bulkOperationSelect" name="bulkOperation">
+                    <option value="edit">Edit Selected</option>
+                    <option value="remove">Remove Selected</option>
+                  </select>
+                  <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()"/></g:if></th>
+              <th><span id="entitlementBatchEdit" class="${editable?'entitlementBatchEdit':''}"></span><input type="hidden" name="bulk_core" id="bulk_core"/></th>
+              <th><g:if test="${editable}"><span>edit</span> <input name="bulk_start_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
+              <th><g:if test="${editable}"><span>edit</span> <input name="bulk_end_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
+              <th><span id="embargoBatchEdit" class="${editable?'embargoBatchEdit':''}"></span><input type="hidden" name="bulk_embargo" id="bulk_embargo"></th>
+              <th><span id="coverageBatchEdit" class="${editable?'coverageBatchEdit':''}"></span><input type="hidden" name="bulk_coverage" id="bulk_coverage"></th>
               <th colspan="3"></th>
             </tr>
           <g:if test="${entitlements}">
             <g:each in="${entitlements}" var="ie">
               <tr>
-                <td><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></td>
+                <td><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></g:if></td>
                 <td>${counter++}</td>
                 <td>
                   <g:if test="${ie.tipp?.hostPlatformURL}"><a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">${ie.tipp.title.title}</a></g:if>
@@ -145,18 +187,18 @@
                                     pk="${ie.id}" 
                                     field="coreTitle" 
                                     cat="isCoreTitle"
-                                    class="coreedit"/></td>
+                                    class="${editable?'coreedit':''}"/></td>
                 <td>
                     <span><g:formatDate format="dd MMMM yyyy" date="${ie.startDate}"/></span>
-                    <input id="IssueEntitlement:${ie.id}:startDate" type="hidden" class="dp1" />
+                    <input id="IssueEntitlement:${ie.id}:startDate" type="hidden" class="${editable?'dp1':''}" />
                 </td>
                 <td><span><g:formatDate format="dd MMMM yyyy" date="${ie.endDate}"/></span>
-                    <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="dp2" />
+                    <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="${editable?'dp2':''}" />
                 </td>
-                <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="newipe">${ie.embargo}</g:inPlaceEdit></td>
-                <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="coverageDepth" id="coverageDepth" class="newipe">${ie.coverageDepth}</g:inPlaceEdit></td>
+                <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="${editable?'fieldNote':''}">${ie.embargo}</g:inPlaceEdit></td>
+                <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="coverageDepth" id="coverageDepth" class="${editable?'fieldNote':''}">${ie.coverageDepth}</g:inPlaceEdit></td>
                 <td>${ie.coverageNote}</td>  
-                <td><g:link action="removeEntitlement" params="${[ieid:ie.id, sub:subscriptionInstance.id]}" onClick="return confirm('Are you sure you wish to delete this entitlement');">Delete</g:link></td>
+                <td><g:if test="${editable}"><g:link action="removeEntitlement" params="${[ieid:ie.id, sub:subscriptionInstance.id]}" onClick="return confirm('Are you sure you wish to delete this entitlement');">Delete</g:link></g:if></td>
               </tr>
             </g:each>
           </g:if>
@@ -186,6 +228,7 @@
 
     </div>
     <script language="JavaScript">
+      <g:if test="${editable}">
       $(document).ready(function() {
 
         var datepicker_config = {
@@ -205,6 +248,7 @@
 
         $("div dl dd table tr td input.dp1").datepicker(datepicker_config);
         $("div dl dd table tr td input.dp2").datepicker(datepicker_config);
+        $(".dp3").datepicker(datepicker_config);
 
         $("input.hdp").datepicker({
           buttonImage: '../../images/calendar.gif',
@@ -217,13 +261,14 @@
           }
         });
 
-        $('span.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
+        $('span.fieldNote').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
           type      : 'textarea',
           cancel    : 'Cancel',
           submit    : 'OK',
           id        : 'elementid',
           rows      : 3,
-          tooltip   : 'Click to edit...'
+          tooltip   : 'Click to edit...',
+          onblur    : 'ignore'
         });
 
         $('span.entitlementBatchEdit').editable(function(value, settings) { 
@@ -271,6 +316,43 @@
              }
            });
          }
+
+         // On jEditable click remove the hide the icon and show it 
+         // when one of the buttons are clicked or ESC is hit.
+         $('.ipe, .intedit, .refdataedit, .cuedit, .fieldNote, .newipe').click(function() {
+         	// Hide edit icon with overwriting style.
+         	$(this).addClass('clicked');
+         	
+         	// If the editable has an icon as part of its styling.
+         	var iconStyle = $(this).is('.refdataedit, .cuedit');
+         	
+         	if(iconStyle) {
+         		$(this).parent().find('.select-icon').hide();
+         	}      	
+         	
+         	var e = $(this);
+         	
+         	var removeClicked = function() {
+         		setTimeout(function() {
+         			e.removeClass('clicked');
+         			
+         			if(iconStyle) {
+         				e.parent().find('.select-icon').show();
+         			}
+         		}, 1);
+         	}
+         	
+         	setTimeout(function() {
+         		e.find('form button').click(function() {
+         			removeClicked();
+         		});
+         		e.keydown(function(event) {
+         			if(event.keyCode == 27) {
+         				removeClicked();
+         			}
+         		});
+         	}, 1);
+         });
       });
 
       function selectAll() {
@@ -286,7 +368,7 @@
             return false ;
         }
       }
-
+      </g:if>
     </script>
   </body>
 </html>

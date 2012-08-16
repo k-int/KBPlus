@@ -14,12 +14,29 @@ h1 {
     word-wrap: break-word;
 }
 
+h2 {
+    color: rgb(153,1,0);
+    font-size: 1.8em;
+    margin-bottom: 10px;
+    word-wrap: break-word; 
+}
+
+h5 {
+    color: rgb(153,1,0);
+    font-size: 1.4em;
+    text-transform: none;
+    padding-left: 0px;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    font-weight: normal;
+}
+
 h6 {
     color: rgb(153,1,0);
     font-size: 1.4em;
     text-transform: none;
     border-bottom: 1px solid rgb(153,1,0);
-    padding-left: 10px;
+    padding-left: 0px;
     padding-bottom: 5px;
     margin-bottom: 10px;
     font-weight: normal;
@@ -33,6 +50,7 @@ h7 {
 
 a {
     color: #29547E;
+    cursor: pointer;
 }
 
 select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
@@ -60,6 +78,7 @@ input[type="text"] {
 
 table tbody td {
     word-break: break-word;
+    background-color: white;
 }
 
 table thead, table tr:first-child th {
@@ -170,6 +189,38 @@ dt, dd {
     filter: none;
 }
 
+/* Sandpit Styles */
+
+.navbar-inner.sandpit {
+    background-color: rgb(101,153,203);
+    background-image: url('../images/header_graphic_blue.jpg');
+}
+
+.navbar-inner.sandpit .nav > li {
+    border-right: white;
+}
+
+.navbar-inner.sandpit .brand {
+    color: white;
+}
+
+/* Explorer Styles */
+
+.navbar-inner.explorer {
+    background-color: rgb(0,122,94);
+    background-image: url('../images/header_graphic_green.jpg');
+}
+
+.navbar-inner.explorer .nav > li {
+    border-right: white;
+}
+
+.navbar-inner.explorer .brand {
+    color: white;
+}
+
+/* Normal Styles */
+
 .navbar .brand {
     font-weight: bold;
     color: rgb(249,141,55);
@@ -253,9 +304,13 @@ dt, dd {
     .nav-collapse .nav > li > a, .nav-collapse .dropdown-menu a {
         color: white;
     }
-    
+
     .nav-collapse .dropdown-menu a {
         display: inline-block;
+    }
+
+    .navbar-inner.sandpit .nav-collapse .dropdown-menu a {
+        display: block;
     }
 
     .nav-collapse .nav > li > a:hover, .nav-collapse .dropdown-menu a:hover {
@@ -264,6 +319,10 @@ dt, dd {
     .nav-collapse, .nav-collapse.collapse {
         height: auto;
         background-color: rgb(153,1,0);;
+    }
+
+    .navbar-inner.sandpit .nav-collapse, .navbar-inner.sandpit .nav-collapse.collapse {
+        background-color: rgb(101,153,203);
     }
 
     .nav-collapse .dropdown-menu { 
@@ -303,6 +362,91 @@ dt, dd {
 
     .nav-tabs > li > a {
         border-radius: 0;
+    }
+
+    /* Navbar footer overwrites for responsive design */
+
+    .navbar-footer {
+        height: 40px;
+    }
+    
+    .navbar-footer .nav-collapse, .navbar-footer .nav-collapse.collapse {
+        background-color: transparent;
+        overflow: visible;
+    }
+
+    .navbar-footer .nav-collapse .nav > li {
+        width: auto;
+        float: none;
+    }
+
+    .navbar-footer.navbar .nav > li > a {
+        text-shadow: none;
+        padding: 9px 10px 11px;
+        font-weight: normal;
+    }
+
+    .navbar-footer .nav-collapse .nav > li > a:hover, .navbar-footer .nav-collapse .dropdown-menu a:hover {
+        background-color: #DDD;
+    }
+
+    .navbar-footer .nav-collapse .dropdown-menu {
+        right: 0;
+        left: auto;
+        margin-right: -6px;
+        top: -62px;
+        position: absolute;
+        background-color: red;
+        z-index: 1000;
+        float: left;
+        min-width: 160px;
+        padding: 4px 0;
+        border: 1px solid #CCC;
+        margin: 1px 0 0;
+        list-style: none;
+        background-color: white;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        -moz-box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        -webkit-background-clip: padding-box;
+        -moz-background-clip: padding;
+        background-clip: padding-box;
+        color: black;
+    }
+
+    .navbar-footer .nav-collapse .dropdown-menu a {
+        display: block;
+        color: #535353;
+        font-weight: normal;
+    }
+
+    .navbar-footer .nav-collapse .dropdown-menu a:hover {
+        background-color: #08C;
+        color: white;
+        border-radius: 0;
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+    }
+
+    .navbar-footer .nav-collapse .dropdown-menu::after {
+        top: 100%;
+        border-top: 6px solid white;
+        border-bottom: none;
+        display: inline-block;
+
+    }
+
+    .navbar-footer .nav-collapse .dropdown-menu::before {
+        top: 100%;
+        border-top: 6px solid #CCC;
+        border-bottom: none;
+    }
+
+    .navbar .dropdown-menu a {
+        padding: 3px 5px;
     }
 }
 

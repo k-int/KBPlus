@@ -3,28 +3,6 @@
   <head>
     <meta name="layout" content="mmbootstrap"/>
     <title>KB+ Data import explorer</title>
-    <style>
-.paginateButtons {
-    margin: 3px 0px 3px 0px;
-}
-
-.paginateButtons a {
-    padding: 2px 4px 2px 4px;
-    background-color: #A4A4A4;
-    border: 1px solid #EEEEEE;
-    text-decoration: none;
-    font-size: 10pt;
-    font-variant: small-caps;
-    color: #EEEEEE;
-}
-
-.paginateButtons a:hover {
-    text-decoration: underline;
-    background-color: #888888;
-    border: 1px solid #AA4444;
-    color: #FFFFFF;
-}
-    </style>
   </head>
   <body>
 
@@ -66,26 +44,23 @@
                   <th>Select</th>
                   <g:sortableColumn params="${params}" property="s.name" title="Name" />
                   <th>Package Name(s)</th>
-                  <th>Vendor</th>
                   <th>Consortia</th>
                   <g:sortableColumn params="${params}" property="s.startDate" title="Start Date" />
                   <g:sortableColumn params="${params}" property="s.endDate" title="End Date" />
                   <th>Platform(s)</th>
                   <th>License</th>
-                  <th>Docs</th>
                 </tr>
                 <g:each in="${subscriptions}" var="s">
                   <tr>
                     <td><input type="radio" name="subOfferedId" value="${s.id}"/></td>
                     <td>
-                      <g:link controller="subscriptionDetails" action="index" id="${s.id}">${s.name}</g:link>
+                      <g:link controller="subscriptionDetails" action="index" id="${s.id}">${s.name} <g:if test="${s.consortia}">( ${s.consortia?.name} )</g:if></g:link>
                     </td>
                     <td>
                       <g:each in="${s.packages}" var="sp">
                         ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
                       </g:each>
                     </td>
-                    <td>${s.provider?.name}</td>
                     <td>${s.getConsortia()?.name}</td>
                     <td><g:formatDate format="dd MMMM yyyy" date="${s.startDate}"/></td>
                     <td><g:formatDate format="dd MMMM yyyy" date="${s.endDate}"/></td>
@@ -94,8 +69,7 @@
                         ${sp.pkg?.nominalPlatform?.name}<br/>
                       </g:each>
                     </td>
-                    <td>${owner.reference}</td>
-                    <td></td>
+                    <td><g:if test="${s.owner}"><g:link controller="licenseDetails" action="index" id="${s.owner.id}">${s.owner?.reference}</g:link></g:if></td>
                   </tr>
                 </g:each>
              </table>
@@ -104,7 +78,7 @@
               <select name="createSubAction"> 
                 <option value="copy">Copy With Entitlements</option>
                 <option value="nocopy">Copy Without Entitlements</option>
-              <input type="submit" value="Create Subscription"/> 
+              &nbsp;<input type="submit" class="btn btn-primary" value="Create Subscription"/> 
             </div>
           </g:form>
         </g:if>

@@ -37,15 +37,43 @@ class MyInstitutionsController {
     //   result.orgs = Org.findAllBySector("Higher Education");
     // }
 
+    if ( ( result.user.affiliations == null ) || ( result.user.affiliations.size() == 0 ) ) {
+      redirect controller:'profile', action: 'index'
+    }
+    else {
+    }
+
     result
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def manageAffiliations() { 
+  def dashboard() {
+    // Work out what orgs this user has admin level access to
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
+    result.userAlerts = alertsService.getActiveAlerts(result.user);
+
+    log.debug("result.userAlerts: ${result.userAlerts}");
+    log.debug("result.userAlerts.size(): ${result.userAlerts.size()}");
+    log.debug("result.userAlerts.class.name: ${result.userAlerts.class.name}");
+    // def adminRole = Role.findByAuthority('ROLE_ADMIN')
+    // if ( result.user.authorities.contains(adminRole) ) {
+    //   log.debug("User is in admin role");
+    //   result.orgs = Org.findAllBySector("Higher Education");
+    // }
+    // else {
+    //   result.orgs = Org.findAllBySector("Higher Education");
+    // }
+
+    if ( ( result.user.affiliations == null ) || ( result.user.affiliations.size() == 0 ) ) {
+      redirect controller:'profile', action: 'index'
+    }
+    else {
+    }
+
     result
   }
+
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def actionLicenses() {
@@ -248,24 +276,6 @@ class MyInstitutionsController {
     result;
   }
 
-
-
-  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def processJoinRequest() {
-    log.debug("processJoinRequest org with id ${params.org}");
-    def user = User.get(springSecurityService.principal.id)
-    def org = com.k_int.kbplus.Org.get(params.org)
-    if ( ( org != null ) && ( params.role != null ) ) {
-      def p = new UserOrg(dateRequested:System.currentTimeMillis(), 
-                          status:0, 
-                          org:org, 
-                          user:user, 
-                          role:params.role)
-      p.save(flush:true)
-    }
-    redirect(action: "manageAffiliations")
-  }
-
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def cleanLicense() {
     def user = User.get(springSecurityService.principal.id)
@@ -464,6 +474,7 @@ class MyInstitutionsController {
   
         log.debug("Setting sub/org link");
         def subscriber_org_link = new OrgRole(org:institution, sub:subscriptionInstance, roleType: RefdataCategory.lookupOrCreate('Organisational Role','Subscriber')).save();
+
         log.debug("Adding packages");
         baseSubscription.packages.each { bp ->
           new SubscriptionPackage(subscription:subscriptionInstance, pkg:bp.pkg).save();
@@ -498,7 +509,9 @@ class MyInstitutionsController {
     // Find all licenses for this institution...
     def result = [:]
     OrgRole.findAllByOrgAndRoleType(institution, licensee_role).each { it ->
-      result["License:${it.lic?.id}"] = it.lic?.reference
+      if ( it.lic?.status?.value != 'Deleted' ) {
+        result["License:${it.lic?.id}"] = it.lic?.reference
+      }
     }
 
     //log.debug("returning ${result} as available licenses");

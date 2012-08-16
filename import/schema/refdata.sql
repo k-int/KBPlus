@@ -21,20 +21,31 @@ insert into refdata_value(rdv_owner, rdv_value) VALUES ( 2, 'Subscription Agent'
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (3,'Platform Type');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 3, 'Host');
-insert into refdata_value(rdv_owner, rdv_value) VALUES ( 3, 'Admin');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 3, 'Admininstrative');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 3, 'Software');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (4,'Platform Status');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 4, 'Unknown');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 4, 'Expected');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 4, 'Current');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 4, 'Expired');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (5,'Package Type');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 5, 'Unknown');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 5, 'Selective');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 5, 'Inclusive');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (6,'Package Status');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 6, 'Unknown');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 6, 'Expired');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 6, 'Expected');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 6, 'Current');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (7,'TIPP Status');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 7, 'Unknown');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 7, 'Current');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 7, 'Transferred');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 7, 'Expected');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (8,'Title Type');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 8, 'Unknown');
@@ -51,6 +62,10 @@ insert into refdata_category(rdc_id, rdc_description) VALUES (11,'License Status
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 11, 'Current');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 11, 'Unknown');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 11, 'Deleted');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 11, 'Expired');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 11, 'Under Negotiation');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 11, 'Under Consideration');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 11, 'Awaiting Signature');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (12,'Subscription Type');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 12, 'Subscription Taken');
@@ -58,7 +73,12 @@ insert into refdata_value(rdv_owner, rdv_value) VALUES ( 12, 'Subscription Offer
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 12, 'Unknown Subscription Type');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (13,'Subscription Status');
-insert into refdata_value(rdv_owner, rdv_value) VALUES ( 13, 'Unknown Subscription Type');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 13, 'Current');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 13, 'Expired');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 13, 'Terminated');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 13, 'Under Negotiation');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 13, 'Under Consideration');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 13, 'Pending');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (14,'Entitlement Issue Status');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 14, 'Unknown Entitlement');
@@ -69,6 +89,7 @@ insert into refdata_category(rdc_id, rdc_description) VALUES (15,'Doc Type');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 17, 'Unknown Doc Type');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 17, 'Note');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 17, 'License Attachment');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 17, 'Addendum');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (16,'Doc Status');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 16, 'Unknown Doc Status');
@@ -101,3 +122,12 @@ insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 22, 'false', 
 insert into refdata_category(rdc_id, rdc_description) VALUES (23,'Link Types');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 23, 'Parent');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 23, 'Child');
+
+insert into refdata_category(rdc_id, rdc_description) VALUES (24,'TIPP Type');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 24, 'Electronic');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 24, 'Print');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 24, 'Digitized');
+
+insert into refdata_category(rdc_id, rdc_description) VALUES (25,'Package List Status');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 25, 'Checked');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 25, 'In progress');

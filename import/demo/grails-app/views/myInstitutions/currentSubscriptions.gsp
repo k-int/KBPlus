@@ -32,18 +32,16 @@
                   <th># (Name)</th>
                   <th>Parent</th>
                   <th>Package Name</th>
-                  <th>Vendor</th>
                   <th>Consortia</th>
                   <th>Start Date</th>
                   <th>End Date</th>
                   <th>Platform</th>
                   <th>License</th>
-                  <th>Docs</th>
                 </tr>
                 <g:each in="${subscriptions}" var="s">
                   <tr>
                     <td>
-                      <g:link controller="subscriptionDetails" action="index" id="${s.id}">${s.id} (${s.name})</g:link>
+                      <g:link controller="subscriptionDetails" action="index" id="${s.id}">${s.id} ${s.name} <g:if test="${s.consortia}">( ${s.consortia?.name} )</g:if></g:link>
                     </td>
                     <td>
                       <g:if test="${s.instanceOf}"><g:link controller="SubscriptionDetails" action="index" id="${s.instanceOf.id}">${s.instanceOf.name}</g:link></g:if>
@@ -53,8 +51,7 @@
                         ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
                       </g:each>
                     </td>
-                    <td>${s.instanceOf?.provider?.name}</td>
-                    <td>${s.instanceOf?.getConsortia()?.name}</td>
+                    <td>${s.getConsortia()?.name}</td>
                     <td><g:formatDate format="dd MMMM yyyy" date="${s.startDate}"/></td>
                     <td><g:formatDate format="dd MMMM yyyy" date="${s.endDate}"/></td>
                     <td>
@@ -62,8 +59,7 @@
                         ${sp.pkg?.nominalPlatform?.name}<br/>
                       </g:each>
                     </td>
-                    <td>${owner.reference}</td>
-                    <td></td>
+                    <td><g:if test="${s.owner}"><g:link controller="licenseDetails" action="index" id="${s.owner.id}">${s.owner?.reference}</g:link></g:if></td>
                   </tr>
                 </g:each>
       </table>

@@ -111,6 +111,7 @@ def pkg = lookupOrCreatePackage(identifier:so_package_identifier_line[1],
                                 stats:stats)
 
 pkg.subs.add(sub._id);
+println("Adding subscription ${sub._id} to package ${pkg._id} result is ${pkg.subs}");
 
 
 // Verify that the pkg has a "contentProvider" of the org! If not, add and update.
@@ -118,8 +119,9 @@ if ( pkg.contentProvider == null ) {
   println("Set ${pkg.name}(${pkg._id}) content provider to ${org.name}(${org._id})");
   pkg.contentProvider = org._id;
   pkg.lastmod = System.currentTimeMillis()
-  db.pkgs.save(pkg)
 }
+
+db.pkgs.save(pkg)
 
 def so_count = 0
 def so_bad = 0
@@ -372,8 +374,8 @@ def lookupOrCreateOrg(Map params = [:]) {
 
 def lookupOrCreatePackage(Map params=[:]) {
   // println("lookupOrCreatePackage(${params})");
-  def compound_identifier = "${params.provider}:${params.identifier}"
-  def norm_identifier = compound_identifier.replaceAll("\\W", "");
+  def compound_identifier = "${params.provider.trim()}:${params.identifier.trim()}"
+  def norm_identifier = compound_identifier.toLowerCase().replaceAll('-','_')
 
   def pkg = params.db.pkgs.findOne(normIdentifier:norm_identifier)
   if ( pkg == null ) {
@@ -388,6 +390,10 @@ def lookupOrCreatePackage(Map params=[:]) {
     ]
     params.db.pkgs.save(pkg)
     inc('pkgs_created',params.stats);
+    println("lookupOrCreatePackage for norm identifier ${norm_identifier} resulted in a new package being created with internal ID ${pkg._id}");
+  }
+  else {
+    println("lookupOrCreatePackage for norm identifier ${norm_identifier} returned existing package with internal ID ${pkg._id}");
   }
 
   pkg
