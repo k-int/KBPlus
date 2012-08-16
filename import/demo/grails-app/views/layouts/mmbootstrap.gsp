@@ -89,6 +89,7 @@
                                   to your home institution</li>
                        </g:else>
                        <li class="divider"></li>
+                       <li><g:link controller="myInstitutions" action="dashboard">Dashboard</g:link></li>
                        <li><g:link controller="myInstitutions" action="index">Alerts</g:link></li>
                        <li><a href="http://service.kbplus.ac.uk/reports">Reports</a></li>
                        <li><a href="http://service.kbplus.ac.uk/help">Help</a></li>
