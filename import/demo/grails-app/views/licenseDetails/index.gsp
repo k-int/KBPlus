@@ -133,7 +133,9 @@
               <tbody>
                 <tr><td>Concurrent Access</td>
                     <td>
+                         <span>
                          <g:refdataValue val="${license.concurrentUsers?.value}" domain="License" pk="${license.id}" field="concurrentUsers" cat='Concurrent Access' class="${editable?'cuedit':''}"/>
+                         </span>
                          <span id="cucwrap">
                          (<span id="concurrentUserCount" class="intedit" style="padding-top: 5px;">${license.concurrentUserCount}</span>)
                          </span>
