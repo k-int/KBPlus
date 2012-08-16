@@ -54,6 +54,9 @@
     <div class="container">
       <g:form id="delete_doc_form" url="[controller:'subscriptionDetails',action:'deleteDocuments']" method="post">
         <input type="hidden" name="subid" value="${params.id}"/>
+        <input type="hidden" name="ctx" value="notes"/>
+        <input type="submit" class="btn btn-danger" value="Delete Selected Notes"/>
+
         <table class="table table-striped table-bordered table-condensed">
           <thead>
             <tr>
