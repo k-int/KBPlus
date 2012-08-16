@@ -90,6 +90,7 @@ class DataloadService {
       def result = [:]
       result._id = sub.impId
       result.name = sub.name
+      result.identifier = sub.identifier
       result.dbId = sub.id
       result.visible = ['Public']
       if ( sub.subscriber ) {
@@ -765,8 +766,8 @@ class DataloadService {
           assertOrgLicenseLink(licensee_org, l, lookupOrCreateRefdataEntry('Organisational Role', 'Licensee'));
   
         lic.subscriptions?.each() { ls ->
-          log.debug("Process license subscription ${ls}");
           def sub = Subscription.findByImpId(ls.toString());
+          log.debug("Process license subscription ${ls} - sub id=${sub?.id}");
           if ( sub ) {
             sub.owner = l
             sub.noticePeriod = lic.notice_period
@@ -780,7 +781,7 @@ class DataloadService {
             log.debug("Updated license information");
           }
           else {
-            log.error("Unable to locate subscription with impid ${ls} in db");
+            log.error("**Possible Error** Unable to locate subscription with impid ${ls} in db");
           }
         }
   

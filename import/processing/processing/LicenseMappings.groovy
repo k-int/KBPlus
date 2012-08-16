@@ -67,8 +67,9 @@ while ((nl = r.readNext()) != null) {
   def lic = db.license.findOne(license_reference:nl[1]);
   if ( sub && lic ) {
     println("Located sub: ${sub._id} for identifier ${nl[0]} and lic: ${lic._id} for identifier ${nl[1]}");
-    sub.linkedLicense = lic._id
-    db.subscriptions.save(sub);
+    lic.subscriptions.add(sub._id);
+    // sub.linkedLicense = lic._id
+    // db.subscriptions.save(sub);
   }
   else {
     println("Unable to locate one of sub or lic.... for identifier ${nl[0]}");

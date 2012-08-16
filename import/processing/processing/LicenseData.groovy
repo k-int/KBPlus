@@ -163,8 +163,10 @@ if ( csventry ) {
       ]
 
       for ( int i=31; i<nl.length; i++ ) {
+        def norm_identifier = nl[i].trim().toLowerCase().replaceAll('-','_')
+
         // println("Process subscription identifier ${nl[i]}");
-        def sub_lookup = db.subscriptions.findOne(identifier:nl[i])
+        def sub_lookup = db.subscriptions.findOne(identifier:norm_identifier)
         if ( sub_lookup ) {
           // println("located subscription : ${sub_lookup}");
           license.subscriptions.add(sub_lookup._id);
