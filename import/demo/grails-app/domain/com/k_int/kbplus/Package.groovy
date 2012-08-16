@@ -38,9 +38,10 @@ class Package {
   }
 
   static constraints = {
-        packageType(nullable:true, blank:false)
-      packageStatus(nullable:true, blank:false)
-    contentProvider(nullable:true, blank:false)
-    nominalPlatform(nullable:true, blank:false)
+          packageType(nullable:true, blank:false)
+        packageStatus(nullable:true, blank:false)
+      contentProvider(nullable:true, blank:false)
+      nominalPlatform(nullable:true, blank:false)
+    packageListStatus(nullable:true, blank:false)
   }
 }

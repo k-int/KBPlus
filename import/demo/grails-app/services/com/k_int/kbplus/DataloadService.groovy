@@ -257,15 +257,27 @@ class DataloadService {
         }
         stats.org_insert_count++;
   
+        // Guessing this is no longer needed.
         // Create a combo to link this org with NESLI2 (So long as this isn't the NESLI2 record itself of course
-        if ( org.name != 'NESLI2' ) {
+        // if ( org.name != 'NESLI2' ) {
+        //   o = Org.findByName(org.name.trim());
+        //   def cons_org = Org.findByName('NESLI2') ?: new Org(name:'NESLI2', links:[]).save();
+        //   if ( cons_org ) {
+        //     def new_combo = new Combo(type:lookupOrCreateRefdataEntry('Combo Type','Consortium'),
+        //                               fromOrg:o,
+        //                               toOrg:cons_org).save(flush:true);
+        //   }
+        // }
+
+        org.consortia?.each {  cm ->
           o = Org.findByName(org.name.trim());
-          def cons_org = Org.findByName('NESLI2') ?: new Org(name:'NESLI2', links:[]).save();
-          if ( cons_org ) {
+          def cons_org = Org.findByImpId(cm.toString())
+          if ( o && cons_org ) {
             def new_combo = new Combo(type:lookupOrCreateRefdataEntry('Combo Type','Consortium'),
                                       fromOrg:o,
                                       toOrg:cons_org).save(flush:true);
           }
+
         }
   
       }
