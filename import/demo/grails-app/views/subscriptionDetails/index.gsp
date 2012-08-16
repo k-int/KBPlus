@@ -76,7 +76,7 @@
                     <dd><g:relation domain='Subscription' 
                             pk='${subscriptionInstance.id}' 
                             field='owner' 
-                            class='reldataEdit'
+                            class='refdataedit'
                             id='ownerLicense'>${subscriptionInstance?.owner?.reference}</g:relation></dd>
                 </dl>
                 <dl>
@@ -296,7 +296,7 @@
            tooltip: 'Click to edit...'
          });
 
-         $('dd span.reldataEdit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}" action="genericSetRel" absolute="true"/>', {
+         $('dd span.refdataedit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}" action="genericSetRel" absolute="true"/>', {
            loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:institution?.shortcode]}" action="availableLicenses" absolute="true"/>',
            type   : 'select',
            cancel : 'Cancel',
@@ -308,7 +308,7 @@
          });
 
          var checkEmptyEditable = function() {
-           $('.ipe, .refdataedit, .fieldNote, .reldataEdit').each(function() {
+           $('.ipe, .refdataedit, .fieldNote, .refdataedit').each(function() {
              if($(this).text().length == 0) {
                $(this).addClass('editableEmpty');
              } else {
