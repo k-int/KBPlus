@@ -237,12 +237,28 @@
           changeMonth: true,
           changeYear: true,
           showOn: 'both',
+          showButtonPanel: true,
+          showClearButton: true,
+          clearText: "Clear",
           onSelect: function(dateText, inst) { 
             var elem_id = inst.input[0].id;
             $.ajax({url: '<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>?elementid='+
                              elem_id+'&value='+dateText+'&dt=date&idf=MM/dd/yyyy&odf=dd MMMM yyyy',
                    success: function(result){inst.input.parent().find('span').html(result)}
                    });
+          },
+          beforeShow: function( input ) {
+            setTimeout(function() {
+                var buttonPane = $( input )
+                    .datepicker( "widget" )
+                    .find( ".ui-datepicker-buttonpane" );
+    
+                $( "<button/>", {
+                    text: "Clear",
+                    click: function() {
+                    }
+                }).appendTo( buttonPane ).addClass("ui-datepicker-clear ui-state-default ui-priority-primary ui-corner-all");
+            }, 1 );
           }
         };
 
@@ -256,8 +272,23 @@
           changeMonth: true,
           changeYear: true,
           showOn: 'both',
+          showButtonPanel: true,
+          showClearButton: true,
           onSelect: function(dateText, inst) {
             inst.input.parent().find('span').html(dateText)
+          },
+          beforeShow: function( input ) {
+            setTimeout(function() {
+                var buttonPane = $( input )
+                    .datepicker( "widget" )
+                    .find( ".ui-datepicker-buttonpane" );
+
+                $( "<button/>", {
+                    text: "Clear",
+                    click: function() {
+                    }
+                }).appendTo( buttonPane ).addClass("ui-datepicker-clear ui-state-default ui-priority-primary ui-corner-all");
+            }, 1 );
           }
         });
 
