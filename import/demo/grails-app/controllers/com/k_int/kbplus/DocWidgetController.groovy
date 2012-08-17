@@ -81,7 +81,7 @@ class DocWidgetController {
       if ( instance ) {
         log.debug("Got owner instance ${instance}");
 
-        if ( instance && input_stream ) {
+        if ( input_stream ) {
           def docstore_uuid = docstoreService.uploadStream(input_stream, original_filename, params.upload_title)
           log.debug("Docstore uuid is ${docstore_uuid}");
     
@@ -100,7 +100,14 @@ class DocWidgetController {
                                              doctype:RefdataCategory.lookupOrCreate('Document Type',params.doctype)).save(flush:true);
           }
         }
+        
       }
+      else {
+        log.error("Unable to locate document owner instance for class ${params.ownerclass}:${params.ownerid}");
+      }
+    }
+    else {
+      log.warn("Unable to locate domain class when processing generic doc upload. ownerclass was ${params.ownerclass}");
     }
 
     redirect(url: request.getHeader('referer'))

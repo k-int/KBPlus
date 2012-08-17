@@ -331,7 +331,7 @@ class SubscriptionDetailsController {
       }
     }
 
-    redirect controller: 'subscriptionDetails', action:'notes', id:params.subid
+    redirect controller: 'subscriptionDetails', action:'documents', id:params.subId
   }
 
 }
