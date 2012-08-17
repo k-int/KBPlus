@@ -62,7 +62,7 @@
               <g:if test="${ua.rootObj.class.name=='com.k_int.kbplus.License'}">
                 <span class="label label-info">License</span>
                 <em><g:link action="licenseDetails"
-                        controller="myInstitutions" 
+                        controller="index" 
                         id="${ua.rootObj.id}"
                         params="${[shortcode:ua.rootObj.licensee.shortcode]}">${ua.rootObj.reference}</g:link></em>
               </g:if>
