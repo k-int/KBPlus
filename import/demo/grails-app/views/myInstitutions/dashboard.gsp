@@ -47,7 +47,7 @@
     <div class="container">
       <table class="table table-bordered">
         <tr>
-          <th colspan="5">Note attached to</th>
+          <th colspan="5">Alerted item</th>
         </tr>
         <tr>
           <th>Type</th>
@@ -69,13 +69,16 @@
               <g:else>
                 Unhandled object type attached to alert: ${ua.rootObj.class.name}:${ua.rootObj.id}
               </g:else>
+              <span class="pull-right">
+                ${ua.comments != null ? ua.comments.size() : 0} Comments
+              </span>
             </td>
           </tr>
           <g:each in="${ua.notes}" var="n">
             <tr>
-              <td>Type</td>
+              <td>${n.owner.type?.value}</td>
               <td><g:formatDate format="dd MMMM yyyy" date="${n.alert.createTime}" /></td>
-              <td>Author</td>
+              <td>${n.owner.user?.displayName}</td>
               <td>
                 <g:if test="${n.alert.sharingLevel==2}">- Shared with KB+ Community -</g:if>
                 <g:elseif test="${n.alert.sharingLevel==1}">- JC Only -</g:elseif>

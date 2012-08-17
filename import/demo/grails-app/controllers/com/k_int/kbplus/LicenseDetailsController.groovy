@@ -69,6 +69,8 @@ class LicenseDetailsController {
   def uploadDocument() {
     log.debug("upload document....");
 
+    def user = User.get(springSecurityService.principal.id)
+
     def input_stream = request.getFile("upload_file")?.inputStream
     def original_filename = request.getFile("upload_file")?.originalFilename
     def l = License.get(params.licid);
@@ -90,6 +92,7 @@ class LicenseDetailsController {
 
         def doc_context = new DocContext(license:l,
                                          owner:doc_content,
+                                         user: user,
                                          doctype:RefdataCategory.lookupOrCreate('Document Type',params.doctype)).save(flush:true);
       }
     }

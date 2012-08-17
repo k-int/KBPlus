@@ -9,6 +9,9 @@ class Alert {
   User createdBy
   Org org
 
+  static hasMany = [ comments : Comment ]
+
+
   static mapping = {
     sharingLevel column:'al_sharing_level'
     createTime column:'al_create_time'
