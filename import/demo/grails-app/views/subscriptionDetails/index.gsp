@@ -98,13 +98,13 @@
                <dl>
                     <dt>Start Date</dt>
                     <dd><span><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.startDate}"/></span>
-                        <input id="Subscription:${subscriptionInstance.id}:startDate" type="hidden" class="${editable?'dp3':''}" />
+                        <input id="Subscription:${subscriptionInstance.id}:startDate" type="hidden" class="${editable?'dp1':''}" />
                     </dd>
                </dl>
                <dl>
                     <dt>End Date</dt>
                     <dd><span><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.endDate}"/></span>
-                        <input id="Subscription:${subscriptionInstance.id}:endDate" type="hidden" class="${editable?'dp3':''}" />
+                        <input id="Subscription:${subscriptionInstance.id}:endDate" type="hidden" class="${editable?'dp1':''}" />
                     </dd>
                </dl>
                <dl>
@@ -165,8 +165,8 @@
                   </select>
                   <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()"/></g:if></th>
               <th><span id="entitlementBatchEdit" class="${editable?'entitlementBatchEdit':''}"></span><input type="hidden" name="bulk_core" id="bulk_core"/></th>
-              <th><g:if test="${editable}"><span>edit</span> <input name="bulk_start_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
-              <th><g:if test="${editable}"><span>edit</span> <input name="bulk_end_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
+              <th><g:if test="${editable}"><span class="datevalue">edit</span> <input name="bulk_start_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
+              <th><g:if test="${editable}"><span class="datevalue">edit</span> <input name="bulk_end_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
               <th><span id="embargoBatchEdit" class="${editable?'embargoBatchEdit':''}"></span><input type="hidden" name="bulk_embargo" id="bulk_embargo"></th>
               <th><span id="coverageBatchEdit" class="${editable?'coverageBatchEdit':''}"></span><input type="hidden" name="bulk_coverage" id="bulk_coverage"></th>
               <th colspan="3"></th>
@@ -189,11 +189,11 @@
                                     cat="isCoreTitle"
                                     class="${editable?'coreedit':''}"/></td>
                 <td>
-                    <span><g:formatDate format="dd MMMM yyyy" date="${ie.startDate}"/></span>
+                    <span class="datevalue"><g:formatDate format="dd MMMM yyyy" date="${ie.startDate}"/></span>
                     <input id="IssueEntitlement:${ie.id}:startDate" type="hidden" class="${editable?'dp1':''}" />
                 </td>
-                <td><span><g:formatDate format="dd MMMM yyyy" date="${ie.endDate}"/></span>
-                    <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="${editable?'dp2':''}" />
+                <td><span class="datevalue"><g:formatDate format="dd MMMM yyyy" date="${ie.endDate}"/></span>
+                    <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="${editable?'dp1':''}" />
                 </td>
                 <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="${editable?'fieldNote':''}">${ie.embargo}</g:inPlaceEdit></td>
                 <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="coverageDepth" id="coverageDepth" class="${editable?'fieldNote':''}">${ie.coverageDepth}</g:inPlaceEdit></td>
@@ -256,15 +256,18 @@
                 $( "<button/>", {
                     text: "Clear",
                     click: function() {
+                      // var parent=$(this).parent('.dp1')
+                      console.log("%o",input)
+                      $(input).parent().find('span.datevalue').html("")
+                      $.ajax({url: '<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>?elementid='+input.id+'&value=__NULL__',});
+                      $(input).value="__NULL__"
                     }
                 }).appendTo( buttonPane ).addClass("ui-datepicker-clear ui-state-default ui-priority-primary ui-corner-all");
             }, 1 );
           }
         };
 
-        $("div dl dd table tr td input.dp1").datepicker(datepicker_config);
-        $("div dl dd table tr td input.dp2").datepicker(datepicker_config);
-        $(".dp3").datepicker(datepicker_config);
+        $("input.dp1").datepicker(datepicker_config);
 
         $("input.hdp").datepicker({
           buttonImage: '../../images/calendar.gif',
@@ -276,19 +279,6 @@
           showClearButton: true,
           onSelect: function(dateText, inst) {
             inst.input.parent().find('span').html(dateText)
-          },
-          beforeShow: function( input ) {
-            setTimeout(function() {
-                var buttonPane = $( input )
-                    .datepicker( "widget" )
-                    .find( ".ui-datepicker-buttonpane" );
-
-                $( "<button/>", {
-                    text: "Clear",
-                    click: function() {
-                    }
-                }).appendTo( buttonPane ).addClass("ui-datepicker-clear ui-state-default ui-priority-primary ui-corner-all");
-            }, 1 );
           }
         });
 

@@ -11,6 +11,7 @@ class AjaxController {
   def setValue() {
     // [id:1, value:JISC_Collections_NESLi2_Lic_IOP_Institute_of_Physics_NESLi2_2011-2012_01012011-31122012.., type:License, action:inPlaceSave, controller:ajax
     // def clazz=grailsApplication.domainClasses.findByFullName(params.type)
+    log.debug("setValue ${params}");
     def domain_class=grailsApplication.getArtefact('Domain',"com.k_int.kbplus.${params.type}")
     if ( domain_class ) {
       def instance = domain_class.getClazz().get(params.id) 
@@ -19,6 +20,9 @@ class AjaxController {
         def binding_properties = [ "${params.elementid}":params.value ]
         log.debug("Merge: ${binding_properties}");
         // see http://grails.org/doc/latest/ref/Controllers/bindData.html
+        if ( binding_properties[params.elementid] == '__NULL__' ) {
+          binding_properties[params.elementid] = null;
+        }
         bindData(instance, binding_properties)
         instance.save(flush:true);
       }
@@ -114,16 +118,22 @@ class AjaxController {
       if ( instance ) {
 
         def value = params.value;
-        if ( params.dt == 'date' ) {
-          log.debug("Special date processing, idf=${params.idf}");
-          def formatter = new java.text.SimpleDateFormat(params.idf)
-          value = formatter.parse(params.value)
-          if ( params.odf ) {
-            def of = new java.text.SimpleDateFormat(params.odf)
-            result=of.format(value);
-          }
-          else {
-            result=value.toString();
+        if ( value == '__NULL__' ) {
+           value=null;
+           result='';
+        }
+        else {
+          if ( params.dt == 'date' ) {
+            log.debug("Special date processing, idf=${params.idf}");
+            def formatter = new java.text.SimpleDateFormat(params.idf)
+            value = formatter.parse(params.value)
+            if ( params.odf ) {
+              def of = new java.text.SimpleDateFormat(params.odf)
+              result=of.format(value);
+            }
+            else {
+              result=value.toString();
+            }
           }
         }
         log.debug("Got instance ${instance}");
