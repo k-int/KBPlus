@@ -326,7 +326,9 @@ class DataloadService {
       int tcount = 0;
 
       // Title instances
-      mdb.titles.find().sort(lastmod:1).each { title ->
+      def titles_cursor = mdb.titles.find().sort(lastmod:1)
+      titles_cursor.addOption(com.mongodb.Bytes.QUERYOPTION_NOTIMEOUT);
+      titles_cursor.each { title ->
         log.debug("update title ${title}");
         def t = TitleInstance.findByImpId(title._id.toString())
         if ( t == null ) {

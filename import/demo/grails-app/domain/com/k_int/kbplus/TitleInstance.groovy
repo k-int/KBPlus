@@ -26,6 +26,7 @@ class TitleInstance {
   static constraints = {
     status(nullable:true, blank:false);
     type(nullable:true, blank:false);
+    title(nullable:true, blank:false,maxSize:1024);
   }
 
   String getIdentifierValue(idtype) {
