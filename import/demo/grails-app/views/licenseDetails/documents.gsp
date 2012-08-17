@@ -113,6 +113,18 @@
           <input type="file" name="upload_file" />
         </dd>
       </dl>
+     <dl>
+        <dt>
+          <label>Document Type:</label>
+        </dt>
+        <dd>
+          <select name="doctype">
+            <option value="License">License</option>
+            <option value="General">General</option>
+            <option value="General">Addendum</option>
+          </select>
+        </dd>
+      </dl>
     </div>
     <div class="modal-footer">
       <a href="#" class="btn" data-dismiss="modal">Close</a>
