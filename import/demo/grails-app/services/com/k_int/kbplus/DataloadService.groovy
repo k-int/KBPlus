@@ -1,6 +1,7 @@
 package com.k_int.kbplus
 
 import com.k_int.kbplus.*
+import org.hibernate.ScrollMode
 
 class DataloadService {
 
@@ -108,40 +109,71 @@ class DataloadService {
 
   def updateES(esclient, domain, recgen_closure) {
 
-    log.debug("updateES - ${domain.name}");
+    try {
+      log.debug("updateES - ${domain.name}");
 
-    def latest_ft_record = FTControl.findByDomainClassNameAndActivity(domain.name,'ESIndex')
+      def latest_ft_record = FTControl.findByDomainClassNameAndActivity(domain.name,'ESIndex')
 
-    log.debug("result of findByDomain: ${latest_ft_record}");
-    if ( !latest_ft_record) {
-      latest_ft_record=new FTControl(domainClassName:domain.name,activity:'ESIndex',lastTimestamp:0)
-    }
-
-    log.debug("updateES ${domain.name} since ${latest_ft_record.lastTimestamp}");
-    def count = 0;
-    Date from = new Date(latest_ft_record.lastTimestamp);
-    def qry = domain.findAllByLastUpdatedGreaterThan(from);
-    
-    qry.each { i ->
-      def idx_record = recgen_closure(i)
-
-      def future = esclient.index {
-        index "kbplus"
-        type domain.name
-        id idx_record['_id']
-        source idx_record
+      log.debug("result of findByDomain: ${latest_ft_record}");
+      if ( !latest_ft_record) {
+        latest_ft_record=new FTControl(domainClassName:domain.name,activity:'ESIndex',lastTimestamp:0)
       }
 
-      latest_ft_record.lastTimestamp = i.lastUpdated?.getTime()
+      log.debug("updateES ${domain.name} since ${latest_ft_record.lastTimestamp}");
+      def count = 0;
+      def total = 0;
+      Date from = new Date(latest_ft_record.lastTimestamp);
+      // def qry = domain.findAllByLastUpdatedGreaterThan(from,[sort:'lastUpdated']);
 
-      count++
+      def c = domain.createCriteria()
+      c.setReadOnly(true)
+      c.setCacheable(false)
+      c.setFetchSize(Integer.MIN_VALUE);
+
+      c.buildCriteria{
+          gt('lastUpdated', from)
+          order("lastUpdated", "asc")
+      }
+
+      def results = c.scroll(ScrollMode.FORWARD_ONLY)
+    
+      log.debug("Query completed.. processing rows...");
+
+      while (results.next()) {
+        Object r = results.get(0);
+        def idx_record = recgen_closure(r)
+
+        def future = esclient.index {
+          index "kbplus"
+          type domain.name
+          id idx_record['_id']
+          source idx_record
+        }
+
+        latest_ft_record.lastTimestamp = r.lastUpdated?.getTime()
+
+        count++
+        total++
+        if ( count > 100 ) {
+          count = 0;
+          log.debug("processed ${++total} records");
+          latest_ft_record.save(flush:true);
+          cleanUpGorm();
+        }
+      }
+      results.close();
+
+      println("Processed ${total} records for ${domain.name}");
+
+      // update timestamp
+      latest_ft_record.save(flush:true);
     }
-
-    // update timestamp
-    latest_ft_record.save(flush:true);
-
-
-    log.debug("Completed processing on ${domain.name} - saved ${count} records");
+    catch ( Exception e ) {
+      log.error("Problem with FT index",e);
+    }
+    finally {
+      log.debug("Completed processing on ${domain.name} - saved ${count} records");
+    }
   }
 
   def getReconStatus() {
