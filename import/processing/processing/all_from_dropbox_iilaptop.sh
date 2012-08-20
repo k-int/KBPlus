@@ -23,4 +23,4 @@ find ~/Dropbox/KB+/System\ -\ Data/Current/Subscriptions\ Taken -name "*.csv" -e
 
 find ~/Dropbox/KB+/System\ -\ Data/Current/licences -name "*.zip" -exec ./LicenseData.groovy '{}' >> license_imp_log \;
 
-./LicenseMappings.groovy ~/Dropbox/KB+/System\ -\ Data/Current/licences/so-licence-map.csv UTF-8 >> license_imp_log
+./LicenseMappings.groovy ~/Dropbox/KB+/System\ -\ Data/Current/licences/so-licence-map.csv_utf8.csv UTF-8 >> license_imp_log
