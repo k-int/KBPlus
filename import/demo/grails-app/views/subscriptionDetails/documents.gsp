@@ -64,8 +64,8 @@
     <div class="container">
   
       
-      <g:if test="${editable}">
       <g:form id="delete_doc_form" url="[controller:'subscriptionDetails',action:'deleteDocuments']" method="post">
+      <g:if test="${editable}">
         <input type="hidden" name="subId" value="${params.id}"/>
         <input type="hidden" name="ctx" value="documents"/>
         <input type="submit" class="btn btn-danger" value="Delete Selected Notes"/>
@@ -106,9 +106,7 @@
             </g:each>
           </tbody>
         </table>
-      <g:if test="${editable}">
       </g:form>
-      </g:if>
     </div>
     
     <script language="JavaScript">

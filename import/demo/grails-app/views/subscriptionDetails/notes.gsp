@@ -26,7 +26,7 @@
 
       ${institution?.name} ${subscriptionInstance?.type?.value} Subscription Taken
 
-       <h1><g:inPlaceEdit domain="Subscription" pk="${subscriptionInstance.id}" field="name" id="name" class="newipe">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
+       <h1><g:inPlaceEdit domain="Subscription" pk="${subscriptionInstance.id}" field="name" id="name" class="${editable?'newipe':''}">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
 
       <ul class="nav nav-pills">
         <li><g:link controller="subscriptionDetails" 
@@ -52,8 +52,8 @@
     </div>
 
     <div class="container">
-      <g:if test="${editable}">
       <g:form id="delete_doc_form" url="[controller:'subscriptionDetails',action:'deleteDocuments']" method="post">
+      <g:if test="${editable}">
         <input type="hidden" name="subid" value="${params.id}"/>
         <input type="hidden" name="ctx" value="notes"/>
         <input type="submit" class="btn btn-danger" value="Delete Selected Notes"/>
@@ -74,9 +74,9 @@
               <g:if test="${docctx.owner.contentType==0 && ( docctx.status == null || docctx.status?.value != 'Deleted')}">
                 <tr>
                   <g:if test="${editable}"><td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td></g:if>
-                  <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="title" id="doctitle" class="newipe">${docctx.owner.title}</g:inPlaceEdit></td>
-                  <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="content" id="doctitle" class="newipe">${docctx.owner.content}</g:inPlaceEdit></td>
-                  <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="creator" id="docCreator" class="newipe">${docctx.owner.creator}</g:inPlaceEdit></td>
+                  <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="title" id="doctitle" class="${editable?'newipe':''}">${docctx.owner.title}</g:inPlaceEdit></td>
+                  <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="content" id="doctitle" class="${editable?'newipe':''}">${docctx.owner.content}</g:inPlaceEdit></td>
+                  <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="creator" id="docCreator" class="${editable?'newipe':''}">${docctx.owner.creator}</g:inPlaceEdit></td>
                   <td>${docctx.owner?.type?.value}</td>
                 </tr>
               </g:if>
