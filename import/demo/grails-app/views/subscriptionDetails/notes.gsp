@@ -52,15 +52,17 @@
     </div>
 
     <div class="container">
+      <g:if test="${editable}">
       <g:form id="delete_doc_form" url="[controller:'subscriptionDetails',action:'deleteDocuments']" method="post">
         <input type="hidden" name="subid" value="${params.id}"/>
         <input type="hidden" name="ctx" value="notes"/>
         <input type="submit" class="btn btn-danger" value="Delete Selected Notes"/>
+      </g:if>
 
         <table class="table table-striped table-bordered table-condensed">
           <thead>
             <tr>
-              <td>Select</td>
+              <g:if test="${editable}"><td>Select</td></g:if>
               <td>Title</td>
               <td>Note</td>
               <td>Creator</td>
@@ -71,7 +73,7 @@
             <g:each in="${subscriptionInstance.documents}" var="docctx">
               <g:if test="${docctx.owner.contentType==0 && ( docctx.status == null || docctx.status?.value != 'Deleted')}">
                 <tr>
-                  <td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td>
+                  <g:if test="${editable}"><td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td></g:if>
                   <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="title" id="doctitle" class="newipe">${docctx.owner.title}</g:inPlaceEdit></td>
                   <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="content" id="doctitle" class="newipe">${docctx.owner.content}</g:inPlaceEdit></td>
                   <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="creator" id="docCreator" class="newipe">${docctx.owner.creator}</g:inPlaceEdit></td>
