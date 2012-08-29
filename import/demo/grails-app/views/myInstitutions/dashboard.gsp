@@ -49,7 +49,7 @@
     <div class="container">
       <table class="table table-bordered">
         <tr>
-          <th colspan="5">Alerted item</th>
+          <th colspan="6">Alerted item</th>
         </tr>
         <tr>
           <th>Type</th>
@@ -57,10 +57,11 @@
           <th>Author</th>
           <th>Sharing</th>
           <th>Note</th>
+          <th>Comments</th>
         </tr>
         <g:each in="${userAlerts}" var="ua">
           <tr>
-            <td colspan="5">
+            <td colspan="6">
               <g:if test="${ua.rootObj.class.name=='com.k_int.kbplus.License'}">
                 <span class="label label-info">License</span>
                 <em><g:link action="licenseDetails"
@@ -71,13 +72,6 @@
               <g:else>
                 Unhandled object type attached to alert: ${ua.rootObj.class.name}:${ua.rootObj.id}
               </g:else>
-              <span class="pull-right">
-                <input type="submit" 
-                       class="btn btn-primary announce" 
-                       value="${ua.comments != null ? ua.comments.size() : 0} Comments" 
-                       data-id="${ua.id}" 
-                       href="#modalComments" />
-              </span>
             </td>
           </tr>
           <g:each in="${ua.notes}" var="n">
@@ -92,6 +86,13 @@
               </td>
               <td>
                   ${n.owner.content}
+              </td>
+              <td>
+                <input type="submit" 
+                       class="btn btn-primary announce" 
+                       value="${ua.comments != null ? ua.comments.size() : 0} Comments" 
+                       data-id="${n.id}" 
+                       href="#modalComments" />
               </td>
             </tr>
           </g:each>
@@ -117,11 +118,12 @@
     </div>
 
     <script language="JavaScript">
-      $(document).ready(function(){
+      // http://stackoverflow.com/questions/10626885/passing-data-to-a-bootstrap-modal
+      $(document).ready(function() {
          $(".announce").click(function(){ 
+           var id = $(this).data('id');
+           $('#thecomments').load('http://localhost:8080/demo/alert/commentsFragment/'+id);
            $('#modalComments').modal('show');
-           /* $("#alertid").val($(this).data('id')); */
-           $('#thecomments').load('http://localhost:8080/demo/alert/commentsFragment');
          });
       });
     </script>
