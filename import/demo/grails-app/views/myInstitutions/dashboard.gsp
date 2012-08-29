@@ -70,7 +70,7 @@
                 Unhandled object type attached to alert: ${ua.rootObj.class.name}:${ua.rootObj.id}
               </g:else>
               <span class="pull-right">
-                ${ua.comments != null ? ua.comments.size() : 0} Comments
+                <input type="submit" class="btn btn-primary" value="${ua.comments != null ? ua.comments.size() : 0} Comments" data-toggle="modal" href="#modalComments" />
               </span>
             </td>
           </tr>
@@ -92,5 +92,23 @@
         </g:each>
       </table>
     </div>
+
+<!-- Lightbox modal for creating a note taken from licenceNotes.html -->
+<div class="modal hide" id="modalComments">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h3>Note Comments</h3>
+  </div>
+    <div class="modal-body">
+      Allow user to add another comment here
+      <br/>
+      Blah blah blah, load last 5 comments or so here...
+    </div>
+    <div class="modal-footer">
+      <a href="#" class="btn" data-dismiss="modal">Close</a>
+      <input type="submit" class="btn btn-primary" value="Save Changes">
+    </div>
+</div>
+
   </body>
 </html>
