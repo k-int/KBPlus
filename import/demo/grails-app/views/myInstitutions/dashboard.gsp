@@ -7,6 +7,8 @@
 
   <body>
 
+
+
     <div class="container home-page">
       <div class="row">
         <div class="span4">
@@ -70,7 +72,11 @@
                 Unhandled object type attached to alert: ${ua.rootObj.class.name}:${ua.rootObj.id}
               </g:else>
               <span class="pull-right">
-                <input type="submit" class="btn btn-primary" value="${ua.comments != null ? ua.comments.size() : 0} Comments" data-toggle="modal" href="#modalComments" />
+                <input type="submit" 
+                       class="btn btn-primary announce" 
+                       value="${ua.comments != null ? ua.comments.size() : 0} Comments" 
+                       data-id="${ua.id}" 
+                       href="#modalComments" />
               </span>
             </td>
           </tr>
@@ -93,22 +99,31 @@
       </table>
     </div>
 
-<!-- Lightbox modal for creating a note taken from licenceNotes.html -->
-<div class="modal hide" id="modalComments">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">×</button>
-    <h3>Note Comments</h3>
-  </div>
-    <div class="modal-body">
-      Allow user to add another comment here
-      <br/>
-      Blah blah blah, load last 5 comments or so here...
+    <!-- Lightbox modal for creating a note taken from licenceNotes.html -->
+    <div class="modal hide fade" id="modalComments">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h3>Note Comments</h3>
+      </div>
+      <div class="modal-body">
+          Allow user to add another comment here
+          <br/>
+          <div id="thecomments"></div>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">Close</a>
+        <input type="submit" class="btn btn-primary" value="Save Changes">
+      </div>
     </div>
-    <div class="modal-footer">
-      <a href="#" class="btn" data-dismiss="modal">Close</a>
-      <input type="submit" class="btn btn-primary" value="Save Changes">
-    </div>
-</div>
 
+    <script language="JavaScript">
+      $(document).ready(function(){
+         $(".announce").click(function(){ 
+           $('#modalComments').modal('show');
+           /* $("#alertid").val($(this).data('id')); */
+           $('#thecomments').load('http://localhost:8080/demo/alert/commentsFragment');
+         });
+      });
+    </script>
   </body>
 </html>
