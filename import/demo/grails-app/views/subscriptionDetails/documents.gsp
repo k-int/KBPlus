@@ -63,18 +63,21 @@
 
     <div class="container">
   
+      
+      <g:if test="${editable}">
       <g:form id="delete_doc_form" url="[controller:'subscriptionDetails',action:'deleteDocuments']" method="post">
         <input type="hidden" name="subId" value="${params.id}"/>
         <input type="hidden" name="ctx" value="documents"/>
         <input type="submit" class="btn btn-danger" value="Delete Selected Notes"/>
         <input type="submit" class="btn btn-primary" value="Add new document" data-toggle="modal" href="#modalCreateDocument" />
+      </g:if>
 
 
   
         <table class="table table-striped table-bordered table-condensed">
           <thead>
             <tr>
-              <td>Select</td>
+              <g:if test="${editable}"><td>Select</td></g:if>
               <td>Title</td>
               <td>File Name</td>
               <td>Download Link</td>
@@ -87,15 +90,15 @@
             <g:each in="${subscriptionInstance.documents}" var="docctx">
               <g:if test="${(docctx.owner.contentType==1) && (docctx.status?.value != 'Deleted')}">
                 <tr>
-                  <td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td>
-                  <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="title" id="doctitle" class="newipe">${docctx.owner.title}</g:inPlaceEdit></td>
-                  <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="filename" id="docfilename" class="newipe">${docctx.owner.filename}</g:inPlaceEdit></td>
+                  <g:if test="${editable}"><td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td></g:if>
+                  <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="title" id="doctitle" class="${editable?'newipe':''}">${docctx.owner.title}</g:inPlaceEdit></td>
+                  <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="filename" id="docfilename" class="${editable?'newipe':''}">${docctx.owner.filename}</g:inPlaceEdit></td>
                   <td>
                     <g:if test="${docctx.owner?.contentType==1}">
                       <g:link controller="docstore" id="${docctx.owner.uuid}">Download Doc</g:link>
                     </g:if>
                   </td>
-                  <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="creator" id="docCreator" class="newipe">${docctx.owner.creator}</g:inPlaceEdit></td>
+                  <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="creator" id="docCreator" class="${editable?'newipe':''}">${docctx.owner.creator}</g:inPlaceEdit></td>
                   <td>${docctx.owner?.type?.value}</td>
                   <td><g:if test="${docctx.owner?.uuid}">${docctx.owner?.uuid}</g:if></td>
                 </tr>
@@ -103,7 +106,9 @@
             </g:each>
           </tbody>
         </table>
+      <g:if test="${editable}">
       </g:form>
+      </g:if>
     </div>
     
     <script language="JavaScript">
