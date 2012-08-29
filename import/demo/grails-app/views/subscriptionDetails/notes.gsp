@@ -11,7 +11,7 @@
 
     <div class="container">
       <ul class="breadcrumb">
-        <li> <g:link controller="home">Home</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
         <g:if test="${subscriptionInstance.subscriber}">
           <li> <g:link controller="myInstitutions" action="currentSubscriptions" params="${[shortcode:subscriptionInstance.subscriber.shortcode]}"> ${subscriptionInstance.subscriber.name} Current Subscriptions</g:link> <span class="divider">/</span> </li>
         </g:if>

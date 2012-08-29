@@ -11,7 +11,7 @@
 
     <div class="container">
       <ul class="breadcrumb">
-        <li> <g:link controller="home">KBPlus</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
         <li>Licences</li>
       </ul>
     </div>
