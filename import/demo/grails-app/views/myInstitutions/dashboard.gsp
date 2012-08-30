@@ -90,8 +90,8 @@
               <td>
                 <input type="submit" 
                        class="btn btn-primary announce" 
-                       value="${ua.comments != null ? ua.comments.size() : 0} Comments" 
-                       data-id="${n.id}" 
+                       value="${n.alert?.comments != null ? n.alert?.comments?.size() : 0} Comment(s)" 
+                       data-id="${n.alert.id}" 
                        href="#modalComments" />
               </td>
             </tr>
@@ -102,19 +102,6 @@
 
     <!-- Lightbox modal for creating a note taken from licenceNotes.html -->
     <div class="modal hide fade" id="modalComments">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">×</button>
-        <h3>Note Comments</h3>
-      </div>
-      <div class="modal-body">
-          Allow user to add another comment here
-          <br/>
-          <div id="thecomments"></div>
-      </div>
-      <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">Close</a>
-        <input type="submit" class="btn btn-primary" value="Save Changes">
-      </div>
     </div>
 
     <script language="JavaScript">
@@ -122,7 +109,7 @@
       $(document).ready(function() {
          $(".announce").click(function(){ 
            var id = $(this).data('id');
-           $('#thecomments').load('http://localhost:8080/demo/alert/commentsFragment/'+id);
+           $('#modalComments').load('http://localhost:8080/demo/alert/commentsFragment/'+id);
            $('#modalComments').modal('show');
          });
       });
