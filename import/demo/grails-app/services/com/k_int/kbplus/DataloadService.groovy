@@ -18,6 +18,7 @@ class DataloadService {
   def ESWrapperService
   def mongoService
   def sessionFactory
+  def edinaPublicationsAPIService
   def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP 
 
   def dataload_running=false
@@ -1010,6 +1011,10 @@ class DataloadService {
       p.nominalPlatform = selected_platform
       p.save(flush:true)
     }
+  }
+
+  def titleAugment() {
+    edinaPublicationsAPIService.lookup('Acta Crystallographica. Section F, Structural Biology and Crystallization Communications');
   }
 
   def cleanUpGorm() {

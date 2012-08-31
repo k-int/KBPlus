@@ -117,7 +117,10 @@
                          <g:link controller="admin" action="allNotes">All Notes</g:link>
                       </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'dataCleanse'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="dataCleanse">Run Data Cleaning</g:link>
+                         <g:link controller="admin" action="dataCleanse">Run Data Cleaning (Nominal Platforms)</g:link>
+                      </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'titleAugment'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="titleAugment">Run Data Cleaning (Title Augment)</g:link>
                       </li>
                     </ul>
                   </li>
