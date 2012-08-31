@@ -107,17 +107,28 @@ class MyInstitutionsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
-    def sc = Subscription.createCriteria()
-    result.subscriptions = sc.list {
-      orgRelations {
-        and {
-          roleType {
-            eq('value','Subscriber')
-          }
-          eq('org', result.institution)
-        }
-      }
+
+    def paginate_after = params.paginate_after ?: 19;
+    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
+
+    def base_qry = " from Subscription as s where exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? )"
+    def qry_params = [result.institution]
+
+    if ( params.q?.length() > 0 ) {
+      base_qry += " and ( lower(s.name) like ? or exists ( select sp from SubscriptionPackage as sp where sp.subscription = s and ( lower(sp.pkg.name) like ? or lower(sp.pkg.contentProvider.name) like ? ) ) ) "
+      qry_params.add("%${params.q.trim().toLowerCase()}%");
+      qry_params.add("%${params.q.trim().toLowerCase()}%");
+      qry_params.add("%${params.q.trim().toLowerCase()}%");
     }
+
+    if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
+      base_qry += " order by ${params.sort} ${params.order}"
+    }
+
+    result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
+    result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
 
     result
   }
@@ -149,59 +160,6 @@ class MyInstitutionsController {
 
     result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
     result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
-
-    result
-  }
-
-
-  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def oldAddSubscription() {
-
-    log.debug("Search Index, params.q=${params.q}, format=${params.format}")
-
-    def result = [:]
-
-    // if ( (!params.q) || ( params.q.length()==0 ) )
-    //   params.q = '*';
-
-    result.user = User.get(springSecurityService.principal.id)
-    result.institution = Org.findByShortcode(params.shortcode)
-    // Get hold of some services we might use ;)
-
-    org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
-    org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
-
-    try {
-        params.max = Math.min(params.max ? params.int('max') : 10, 100)
-        params.offset = params.offset ? params.int('offset') : 0
-  
-        def query_str = buildQuery(params)
-        log.debug("query: ${query_str}");
-  
-        def search = esclient.search{
-          indices "kbplus"
-          source {
-            from = params.offset
-            size = params.max
-            query {
-              query_string (query: query_str)
-            }
-          }
-        }
-
-        if ( search?.response ) {
-          result.hits = search.response.hits
-          result.resultsTotal = search.response.hits.totalHits
-          log.debug("Search result: total:${result.resultsTotal}");
-        }
-    }
-    finally {
-      try {
-      }
-      catch ( Exception e ) {
-        log.error("problem",e);
-      }
-    }
 
     result
   }
