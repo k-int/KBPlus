@@ -26,7 +26,16 @@
                                 action="addSubscription" 
                                 params="${[shortcode:params.shortcode]}">Subscriptions Offered / Add New</g:link></li>
       </ul>
+    </div>
 
+   <div class="container" style="text-align:center">
+      <g:form action="currentSubscriptions" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="get">
+        Search text: <input type="text" name="q" placeholder="enter search term..."  value="${params.q?.encodeAsHTML()}"  />
+        <input type="submit" class="btn btn-primary" value="Search" />
+      </g:form><br/>
+    </div>
+
+    <div class="container">
       <table class="table table-striped table-bordered table-condensed">
                 <tr>
                   <th># (Name)</th>

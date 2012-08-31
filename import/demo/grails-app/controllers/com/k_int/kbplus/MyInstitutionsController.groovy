@@ -142,7 +142,7 @@ class MyInstitutionsController {
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
 
-    def base_qry = " from Subscription as s where exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? )"
+    def base_qry = " from Subscription as s where exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) "
     def qry_params = [result.institution]
 
     if ( params.q?.length() > 0 ) {
@@ -158,6 +158,8 @@ class MyInstitutionsController {
 
     result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
     result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
+
+    log.debug("Got ${result.num_sub_rows} sub rows");
 
     result
   }
