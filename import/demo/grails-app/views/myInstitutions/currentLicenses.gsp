@@ -8,10 +8,22 @@
 
     <div class="container">
         <ul class="breadcrumb">
-           <li> <g:link controller="home">Home</g:link> <span class="divider">/</span> </li>
+            <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
            <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:params.shortcode]}">${institution.name} Current Licenses</g:link> </li>
         </ul>
     </div>
+
+    <g:if test="${flash.message}">
+      <div class="container">
+        <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
+      </div>
+    </g:if>
+
+    <g:if test="${flash.error}">
+      <div class="container">
+        <bootstrap:alert class="error-info">${flash.error}</bootstrap:alert>
+      </div>
+    </g:if>
 
     <div class="container">
       <h1>${institution?.name} - Licences</h1>

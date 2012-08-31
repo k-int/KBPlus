@@ -12,7 +12,7 @@
 
     <div class="container">
       <ul class="breadcrumb">
-        <li> <g:link controller="home">Home</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
         <g:if test="${subscriptionInstance.subscriber}">
           <li> <g:link controller="myInstitutions" action="currentSubscriptions" params="${[shortcode:subscriptionInstance.subscriber.shortcode]}"> ${subscriptionInstance.subscriber.name} Current Subscriptions</g:link> <span class="divider">/</span> </li>
         </g:if>
@@ -36,9 +36,9 @@
 
     <div class="container">
 
-      ${institution?.name} ${subscriptionInstance?.type?.value} Subscription Taken
+      ${institution?.name} ${subscriptionInstance?.type?.value}
 
-       <h1><g:inPlaceEdit domain="Subscription" pk="${subscriptionInstance.id}" field="name" id="name" class="${editable?'newipe':''}">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
+       <h1><g:inPlaceEdit domain="Subscription" pk="${subscriptionInstance.id}" field="name" id="name" class="${editable?'fieldNote':''}">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
 
       <ul class="nav nav-pills">
         <li class="active"><g:link controller="subscriptionDetails" 
@@ -67,52 +67,62 @@
 
     <div id="collapseableSubDetails" class="container collapse">
       <div class="row">
-        <div class="span8">
-          <dl>
-            <dt>License</dt>
-            <dd><g:relation domain='Subscription' 
+        <div class="span8"> 
+            <br/>
+            <h6>License Information</h6>
+            <div class="licence-info"> 
+                <dl>
+                    <dt>License</dt>
+                    <dd><g:relation domain='Subscription' 
                             pk='${subscriptionInstance.id}' 
                             field='owner' 
-                            class='reldataEdit'
+                            class='refdataedit'
                             id='ownerLicense'>${subscriptionInstance?.owner?.reference}</g:relation></dd>
-    
-            <dt>Package Name</dt>
-            <dd>
-              <g:each in="${subscriptionInstance.packages}" var="sp">
-                ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
-              </g:each>
-            </dd>
-
-            <dt>Vendor</dt>
-            <dd><g:relationAutocomplete field="vendor" relatedClass="Org" typedownField="name" displayField="name"/></dd>
-    
-            <dt>Consortia</dt>
-            <dd>${subscriptionInstance.getConsortia()?.name}</dd>
-    
-            <dt>Start Date</dt>
-            <dd><span><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.startDate}"/></span>
-                    <input id="Subscription:${subscriptionInstance.id}:startDate" type="hidden" class="${editable?'dp3':''}" />
-            </dd>
-    
-            <dt>End Date</dt>
-            <dd><span><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.endDate}"/></span>
-                    <input id="Subscription:${subscriptionInstance.id}:endDate" type="hidden" class="${editable?'dp3':''}" />
-            </dd>
-    
-            <dt>Nominal Platform</dt>
-            <dd> 
-              <g:each in="${subscriptionInstance.packages}" var="sp">
-                ${sp.pkg?.nominalPlatform?.name}<br/>
-              </g:each>
-            </dd>
-          </dl>
+                </dl>
+                <dl>
+                    <dt>Package Name</dt>
+                    <dd>
+                        <g:each in="${subscriptionInstance.packages}" var="sp">
+                            ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
+                        </g:each>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>Vendor</dt>
+                    <dd><g:relationAutocomplete field="vendor" relatedClass="Org" typedownField="name" displayField="name"/></dd>
+                </dl>
+                <dl>
+                    <dt>Consortia</dt>
+                    <dd>${subscriptionInstance.getConsortia()?.name}</dd>
+                </dl>
+               <dl>
+                    <dt>Start Date</dt>
+                    <dd><span><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.startDate}"/></span>
+                        <input id="Subscription:${subscriptionInstance.id}:startDate" type="hidden" class="${editable?'dp1':''}" />
+                    </dd>
+               </dl>
+               <dl>
+                    <dt>End Date</dt>
+                    <dd><span><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.endDate}"/></span>
+                        <input id="Subscription:${subscriptionInstance.id}:endDate" type="hidden" class="${editable?'dp1':''}" />
+                    </dd>
+               </dl>
+               <dl>
+                    <dt>Nominal Platform</dt>
+                    <dd> 
+                    <g:each in="${subscriptionInstance.packages}" var="sp">
+                        ${sp.pkg?.nominalPlatform?.name}<br/>
+                    </g:each>
+                    </dd>
+                </dl>
+                <div class="clear-fix"></div>
+            </div>
         </div>
 
         <div class="span4">
           <g:render template="documents" contextPath="../templates" model="${[doclist:subscriptionInstance.documents, ownobj:subscriptionInstance, owntp:'subscription']}" />
           <g:render template="notes" contextPath="../templates" model="${[doclist:subscriptionInstance.documents, ownobj:subscriptionInstance, owntp:'subscription']}" />
         </div>
-
       </div>
     </div>
 
@@ -155,8 +165,8 @@
                   </select>
                   <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()"/></g:if></th>
               <th><span id="entitlementBatchEdit" class="${editable?'entitlementBatchEdit':''}"></span><input type="hidden" name="bulk_core" id="bulk_core"/></th>
-              <th><g:if test="${editable}"><span>edit</span> <input name="bulk_start_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
-              <th><g:if test="${editable}"><span>edit</span> <input name="bulk_end_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
+              <th><g:if test="${editable}"><span class="datevalue">edit</span> <input name="bulk_start_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
+              <th><g:if test="${editable}"><span class="datevalue">edit</span> <input name="bulk_end_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
               <th><span id="embargoBatchEdit" class="${editable?'embargoBatchEdit':''}"></span><input type="hidden" name="bulk_embargo" id="bulk_embargo"></th>
               <th><span id="coverageBatchEdit" class="${editable?'coverageBatchEdit':''}"></span><input type="hidden" name="bulk_coverage" id="bulk_coverage"></th>
               <th colspan="3"></th>
@@ -179,16 +189,19 @@
                                     cat="isCoreTitle"
                                     class="${editable?'coreedit':''}"/></td>
                 <td>
-                    <span><g:formatDate format="dd MMMM yyyy" date="${ie.startDate}"/></span>
+                    <span class="datevalue"><g:formatDate format="dd MMMM yyyy" date="${ie.startDate}"/></span>
                     <input id="IssueEntitlement:${ie.id}:startDate" type="hidden" class="${editable?'dp1':''}" />
                 </td>
-                <td><span><g:formatDate format="dd MMMM yyyy" date="${ie.endDate}"/></span>
-                    <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="${editable?'dp2':''}" />
+                <td><span class="datevalue"><g:formatDate format="dd MMMM yyyy" date="${ie.endDate}"/></span>
+                    <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="${editable?'dp1':''}" />
                 </td>
-                <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="${editable?'newipe':''}">${ie.embargo}</g:inPlaceEdit></td>
-                <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="coverageDepth" id="coverageDepth" class="${editable?'newipe':''}">${ie.coverageDepth}</g:inPlaceEdit></td>
+                <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="${editable?'fieldNote':''}">${ie.embargo}</g:inPlaceEdit></td>
+                <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="coverageDepth" id="coverageDepth" class="${editable?'fieldNote':''}">${ie.coverageDepth}</g:inPlaceEdit></td>
                 <td>${ie.coverageNote}</td>  
-                <td><g:if test="${editable}"><g:link action="removeEntitlement" params="${[ieid:ie.id, sub:subscriptionInstance.id]}" onClick="return confirm('Are you sure you wish to delete this entitlement');">Delete</g:link></g:if></td>
+                <td>
+                  <g:if test="${editable}"><g:link action="removeEntitlement" params="${[ieid:ie.id, sub:subscriptionInstance.id]}" onClick="return confirm('Are you sure you wish to delete this entitlement');">Delete</g:link></g:if>
+                  <g:if test="${institutional_usage_identifier}"><a href="https://www.jusp.mimas.ac.uk/secure/v2/ijsu/?id=${institutional_usage_identifier}&issn=${ie?.tipp?.title?.getIdentifierValue('ISSN')}">Usage Info</a></g:if>
+                </td>
               </tr>
             </g:each>
           </g:if>
@@ -227,18 +240,37 @@
           changeMonth: true,
           changeYear: true,
           showOn: 'both',
+          showButtonPanel: true,
+          showClearButton: true,
+          clearText: "Clear",
           onSelect: function(dateText, inst) { 
             var elem_id = inst.input[0].id;
             $.ajax({url: '<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>?elementid='+
                              elem_id+'&value='+dateText+'&dt=date&idf=MM/dd/yyyy&odf=dd MMMM yyyy',
                    success: function(result){inst.input.parent().find('span').html(result)}
                    });
+          },
+          beforeShow: function( input ) {
+            setTimeout(function() {
+                var buttonPane = $( input )
+                    .datepicker( "widget" )
+                    .find( ".ui-datepicker-buttonpane" );
+    
+                $( "<button/>", {
+                    text: "Clear",
+                    click: function() {
+                      // var parent=$(this).parent('.dp1')
+                      console.log("%o",input)
+                      $(input).parent().find('span.datevalue').html("")
+                      $.ajax({url: '<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>?elementid='+input.id+'&value=__NULL__',});
+                      $(input).value="__NULL__"
+                    }
+                }).appendTo( buttonPane ).addClass("ui-datepicker-clear ui-state-default ui-priority-primary ui-corner-all");
+            }, 1 );
           }
         };
 
-        $("div dl dd table tr td input.dp1").datepicker(datepicker_config);
-        $("div dl dd table tr td input.dp2").datepicker(datepicker_config);
-        $(".dp3").datepicker(datepicker_config);
+        $("input.dp1").datepicker(datepicker_config);
 
         $("input.hdp").datepicker({
           buttonImage: '../../images/calendar.gif',
@@ -246,18 +278,21 @@
           changeMonth: true,
           changeYear: true,
           showOn: 'both',
+          showButtonPanel: true,
+          showClearButton: true,
           onSelect: function(dateText, inst) {
             inst.input.parent().find('span').html(dateText)
           }
         });
 
-        $('span.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
+        $('span.fieldNote').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
           type      : 'textarea',
           cancel    : 'Cancel',
           submit    : 'OK',
           id        : 'elementid',
           rows      : 3,
-          tooltip   : 'Click to edit...'
+          tooltip   : 'Click to edit...',
+          onblur    : 'ignore'
         });
 
         $('span.entitlementBatchEdit').editable(function(value, settings) { 
@@ -285,7 +320,7 @@
            tooltip: 'Click to edit...'
          });
 
-         $('dd span.reldataEdit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}" action="genericSetRel" absolute="true"/>', {
+         $('dd span.refdataedit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}" action="genericSetRel" absolute="true"/>', {
            loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:institution?.shortcode]}" action="availableLicenses" absolute="true"/>',
            type   : 'select',
            cancel : 'Cancel',
@@ -297,7 +332,7 @@
          });
 
          var checkEmptyEditable = function() {
-           $('.ipe, .refdataedit, .fieldNote, .reldataEdit').each(function() {
+           $('.ipe, .refdataedit, .fieldNote, .refdataedit').each(function() {
              if($(this).text().length == 0) {
                $(this).addClass('editableEmpty');
              } else {
@@ -305,6 +340,43 @@
              }
            });
          }
+
+         // On jEditable click remove the hide the icon and show it 
+         // when one of the buttons are clicked or ESC is hit.
+         $('.ipe, .intedit, .refdataedit, .cuedit, .fieldNote, .newipe').click(function() {
+         	// Hide edit icon with overwriting style.
+         	$(this).addClass('clicked');
+         	
+         	// If the editable has an icon as part of its styling.
+         	var iconStyle = $(this).is('.refdataedit, .cuedit');
+         	
+         	if(iconStyle) {
+         		$(this).parent().find('.select-icon').hide();
+         	}      	
+         	
+         	var e = $(this);
+         	
+         	var removeClicked = function() {
+         		setTimeout(function() {
+         			e.removeClass('clicked');
+         			
+         			if(iconStyle) {
+         				e.parent().find('.select-icon').show();
+         			}
+         		}, 1);
+         	}
+         	
+         	setTimeout(function() {
+         		e.find('form button').click(function() {
+         			removeClicked();
+         		});
+         		e.keydown(function(event) {
+         			if(event.keyCode == 27) {
+         				removeClicked();
+         			}
+         		});
+         	}, 1);
+         });
       });
 
       function selectAll() {

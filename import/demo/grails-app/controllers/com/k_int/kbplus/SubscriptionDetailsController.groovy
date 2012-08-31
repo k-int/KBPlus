@@ -31,6 +31,7 @@ class SubscriptionDetailsController {
     result.institution = result.subscriptionInstance.subscriber
     if ( result.institution ) {
       result.subscriber_shortcode = result.institution.shortcode
+      result.institutional_usage_identifier = result.institution.getIdentifierByType('JUSP');
     }
 
     if ( result.subscriptionInstance.isEditableBy(result.user) ) {
@@ -314,6 +315,24 @@ class SubscriptionDetailsController {
     }
 
     result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def deleteDocuments() {
+    def ctxlist = []
+
+    log.debug("deleteDocuments ${params}");
+
+    params.each { p ->
+      if (p.key.startsWith('_deleteflag.') ) {
+        def docctx_to_delete = p.key.substring(12);
+        log.debug("Looking up docctx ${docctx_to_delete} for delete");
+        def docctx = DocContext.get(docctx_to_delete)
+        docctx.status = RefdataCategory.lookupOrCreate('Document Context Status','Deleted');
+      }
+    }
+
+    redirect controller: 'subscriptionDetails', action:'documents', id:params.subId
   }
 
 }

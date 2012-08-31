@@ -47,6 +47,35 @@ class MyInstitutionsController {
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def dashboard() {
+    // Work out what orgs this user has admin level access to
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.userAlerts = alertsService.getActiveAlerts(result.user);
+
+    log.debug("result.userAlerts: ${result.userAlerts}");
+    log.debug("result.userAlerts.size(): ${result.userAlerts.size()}");
+    log.debug("result.userAlerts.class.name: ${result.userAlerts.class.name}");
+    // def adminRole = Role.findByAuthority('ROLE_ADMIN')
+    // if ( result.user.authorities.contains(adminRole) ) {
+    //   log.debug("User is in admin role");
+    //   result.orgs = Org.findAllBySector("Higher Education");
+    // }
+    // else {
+    //   result.orgs = Org.findAllBySector("Higher Education");
+    // }
+
+    if ( ( result.user.affiliations == null ) || ( result.user.affiliations.size() == 0 ) ) {
+      redirect controller:'profile', action: 'index'
+    }
+    else {
+    }
+
+    result
+  }
+
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def actionLicenses() {
     if ( params['copy-licence'] ) {
       newLicense(params)

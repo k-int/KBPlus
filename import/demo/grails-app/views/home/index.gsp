@@ -9,7 +9,7 @@
 
     <div class="container">
         <ul class="breadcrumb">
-        <li> <g:link controller="home">KBPlus</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
         <li class="active">Search</li>
       </ul>
     </div>
@@ -92,6 +92,7 @@
                         </g:if>
                         <g:if test="${hit.type=='com.k_int.kbplus.Subscription'}">
                           <td><g:link controller="subscription" action="show" id="${hit.source.dbId}">${hit.source.name} (${hit.source.type})</g:link></td>
+                          <td>${hit.source.identifier}</td>
                         </g:if>
                         <g:if test="${hit.type=='com.k_int.kbplus.License'}">
                           <td><g:link controller="license" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>

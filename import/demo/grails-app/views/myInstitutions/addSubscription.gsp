@@ -3,34 +3,12 @@
   <head>
     <meta name="layout" content="mmbootstrap"/>
     <title>KB+ Data import explorer</title>
-    <style>
-.paginateButtons {
-    margin: 3px 0px 3px 0px;
-}
-
-.paginateButtons a {
-    padding: 2px 4px 2px 4px;
-    background-color: #A4A4A4;
-    border: 1px solid #EEEEEE;
-    text-decoration: none;
-    font-size: 10pt;
-    font-variant: small-caps;
-    color: #EEEEEE;
-}
-
-.paginateButtons a:hover {
-    text-decoration: underline;
-    background-color: #888888;
-    border: 1px solid #AA4444;
-    color: #FFFFFF;
-}
-    </style>
   </head>
   <body>
 
     <div class="container">
       <ul class="breadcrumb">
-        <li> <g:link controller="home">Home</g:link> <span class="divider">/</span> </li>
+         <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
         <li> <g:link controller="myInstitutions"  action="addSubscription" params="${[shortcode:params.shortcode]}">${institution.name} Add Subscripton</g:link> </li>
       </ul>
     </div>
@@ -100,7 +78,7 @@
               <select name="createSubAction"> 
                 <option value="copy">Copy With Entitlements</option>
                 <option value="nocopy">Copy Without Entitlements</option>
-              <input type="submit" value="Create Subscription"/> 
+              &nbsp;<input type="submit" class="btn btn-primary" value="Create Subscription"/> 
             </div>
           </g:form>
         </g:if>

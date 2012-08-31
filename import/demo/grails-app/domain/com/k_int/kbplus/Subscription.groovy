@@ -54,7 +54,7 @@ class Subscription {
     startDate(nullable:true, blank:false)
     endDate(nullable:true, blank:false)
     instanceOf(nullable:true, blank:false)
-    noticePeriod(nullable:true, blank:false)
+    noticePeriod(nullable:true, blank:true)
     // vendor(nullable:true, blank:false)
   }
 

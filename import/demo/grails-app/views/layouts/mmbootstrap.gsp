@@ -50,7 +50,7 @@
             <ul class="nav">
               <sec:ifLoggedIn>
                 <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Data Explorer <b class="caret"></b> </a>
+                  <a href="#" class="dropdown-toggle explorer-link" data-toggle="dropdown"> Data Explorer <b class="caret"></b> </a>
                   <ul class="dropdown-menu" style="max-width:none;">
                     <li<%= request.forwardURI == "${createLink(uri: '/')}" ? ' class="active"' : '' %>><a href="${createLink(uri: '/')}">Home</a></li>
                     <li <%='package'== controllerName ? ' class="active"' : '' %>><g:link controller="package">Package</g:link></li>
@@ -89,6 +89,7 @@
                                   to your home institution</li>
                        </g:else>
                        <li class="divider"></li>
+                       <li><g:link controller="myInstitutions" action="dashboard">Dashboard</g:link></li>
                        <li><g:link controller="myInstitutions" action="index">Alerts</g:link></li>
                        <li><a href="http://service.kbplus.ac.uk/reports">Reports</a></li>
                        <li><a href="http://service.kbplus.ac.uk/help">Help</a></li>
@@ -116,7 +117,10 @@
                          <g:link controller="admin" action="allNotes">All Notes</g:link>
                       </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'dataCleanse'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="dataCleanse">Run Data Cleaning</g:link>
+                         <g:link controller="admin" action="dataCleanse">Run Data Cleaning (Nominal Platforms)</g:link>
+                      </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'titleAugment'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="titleAugment">Run Data Cleaning (Title Augment)</g:link>
                       </li>
                     </ul>
                   </li>
@@ -139,7 +143,7 @@
                 </g:if>
               </sec:ifLoggedIn>
               <sec:ifNotLoggedIn>
-                <li><g:link controller="myInstitutions" action="index">Login</g:link></li>
+                <li><g:link controller="myInstitutions" action="dashboard">Login</g:link></li>
               </sec:ifNotLoggedIn>
             </ul>
           </div>
@@ -176,7 +180,7 @@
                     </div>
                 </div>
             </div>
-                
+            
             <div class="footer-links container">
                 <div class="row">
                     <div class="pull-left">
@@ -187,7 +191,7 @@
                     </div>
                 </div>
             </div>
-    </div>
+        </div>
 
 
 

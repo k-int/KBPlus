@@ -43,7 +43,15 @@ options.autoConnectRetry = true
 options.slaveOk = true
 def mongo = new com.gmongo.GMongo('127.0.0.1', options);
 def db = mongo.getDB('kbplus_ds_reconciliation')
+def stats = [:]
 
+def starttime = System.currentTimeMillis();
+def possible_date_formats = [
+  new SimpleDateFormat('yyyy/MM/dd'),
+  new SimpleDateFormat('dd/MM/yy'),
+  new SimpleDateFormat('yyyy/MM'),
+  new SimpleDateFormat('yyyy')
+];
 
 // Good example: aaa_pinnacle_allenpress
 //
@@ -88,9 +96,9 @@ if ( db == null ) {
 
 // def cufts_knowledgebase_website = new HTTPBuilder('http://cufts2.lib.sfu.ca')
 // loadCuftsFile('/home/ibbo/dev/KBPlus/import/adapters/cufts2/CUFTS_complete_20120701.tgz');
-loadCuftsFile(args[0])
+loadCuftsFile(args[0], db, stats)
 
-def loadCuftsFile(filename) {
+def loadCuftsFile(filename, db, stats) {
   println("loading data from ${filename}");
   def fsManager = VFS.getManager();
   // def tgz_file = fsManager.resolveURI("tar:gz:http://cufts2.lib.sfu.ca/knowledgebase/${filename}");
@@ -100,7 +108,7 @@ def loadCuftsFile(filename) {
   def update_file = tgz_file.getChild("update.xml");
   if ( update_file ) {
     println("Located update xml file in ${filename}");
-    processUpdateFile(update_file);
+    processUpdateFile(update_file, tgz_file, db, stats);
   }
   else {
     println("Unable to locate update xml...");
@@ -115,26 +123,46 @@ def loadCuftsFile(filename) {
 }
 
 
-def processUpdateFile(update_file) {
+def processUpdateFile(update_file, archive, db, stats) {
   def s = new XmlSlurper(new org.cyberneko.html.parsers.SAXParser())
   def xml = s.parse(update_file.inputStream)
   println("root name ${xml.name()}")
   // dumpChildren(xml);
   xml.BODY.XML.RESOURCE.each { r ->
     println("Processing resource...${r}\n\n");
-    processResourceEntry(r);
+    processResourceEntry(r, archive, db, stats);
   }
   println("Completed processing of update file");
 }
 
-def processResourceEntry(r) {
+def processResourceEntry(r, archive, db, stats) {
   println("Provider ${r.PROVIDER.text()}");
   println("Key ${r.KEY.text()}");
   println("Module ${r.MODULE.text()}");
   println("Name ${r.NAME.text()}");
   println("Type ${r.RESOURCE.text()}");
+
+  def resource_meta_info = [
+    provider:r.PROVIDER.text(),
+    key:r.KEY.text(),
+    module:r.MODULE.text(),
+    name:r.NAME.text(),
+    resource:r.RESOURCE.text,
+    services:[]
+  ]
+
   r.SERVICES.SERVICE.each { e ->
     println("Service: ${e.text()}");
+    resource_meta_info.services.add(e.text())
+  }
+
+  def prov_file = archive.getChild(r.KEY.text())
+  if ( prov_file ) {
+    println("Got provider file ${prov_file}");
+    loadCuftsTitleData(prov_file, resource_meta_info, db, stats)
+  }
+  else {
+    println("Unable to locate ${r.KEY.text()}")
   }
 }
 
@@ -158,18 +186,157 @@ def processUpdateFile2(update_file) {
   }
 }
 
-def loadCuftsTitleData(file) {
+def loadCuftsTitleData(file, resource_meta_info, db, stats) {
   println("Loading ${file.name}")
-  // Line one is the header and tells us what info we will get in *this* file
-  def fr = new FileReader(file.inputStream)
-  def header = fr.readNext()
-  def header_cols = header.split('\t');
-  println("Header cols: ${header_cols}");
-  //def line
-  // while ( line = fr.readNext() ) {
-  //   String[] 
+  char separator = '\t'
+  def possible_date_formats = [
+    new SimpleDateFormat('yyyy/MM/dd')
+  ]
+
+  //  IN KBPlus we create a package for the file, and a subscription offered based upon that file
+  def normalised_identifier = "key:${resource_meta_info.key}"
+
+  def org = lookupOrCreateOrg(name:resource_meta_info.provider, db:db, stats:stats);
+
+  println("Processing subscription ${resource_meta_info.key} normalised to ${normalised_identifier}");
+
+  def sub = db.subscriptions.findOne(identifier:normalised_identifier);
+  if ( !sub ) {
+    sub = [:]
+    sub._id = new org.bson.types.ObjectId();
+  }
+  sub.identifier = normalised_identifier;
+  sub.name = resource_meta_info.name;
+
+  // Can't find these for cufts currently
+  // sub.start_date_str = so_agreement_term_start_yr_line[1]
+  // sub.end_date_str=so_agreement_term_end_yr_line[1]
+  // sub.start_date = parseDate(so_agreement_term_start_yr_line[1],possible_date_formats)
+  // sub.end_date = parseDate(so_agreement_term_end_yr_line[1],possible_date_formats)
+
+  // This is how we model consortial membership
+  // def consortium = null;
+  // if ( ( so_consortium_line[1] != null ) && ( so_consortium_line[1].length() > 0 ) )  {
+  //   consortium = lookupOrCreateOrg(name:so_consortium_line[1], db:db, stats:stats);
+  //   sub.consortium = consortium._id;
   // }
+
+  db.subscriptions.save(sub);
+
+  // Create a package for the 
+  def pkg = lookupOrCreatePackage(identifier:normalised_identifier,
+                                  provider:resource_meta_info.provider,
+                                  name:resource_meta_info.name,
+                                  db:db,
+                                  stats:stats)
+
+  pkg.subs.add(sub._id);
+
+  println("Adding subscription ${sub._id} to package ${pkg._id} result is ${pkg.subs}");
+
+
+  // Verify that the pkg has a "contentProvider" of the org! If not, add and update.
+  if ( pkg.contentProvider == null ) {
+    println("Set ${pkg.name}(${pkg._id}) content provider to ${org.name}(${org._id})");
+    pkg.contentProvider = org._id;
+    pkg.lastmod = System.currentTimeMillis()
+  }
+
+  db.pkgs.save(pkg)
+
+
+  CSVReader fr = new CSVReader( new InputStreamReader(file.inputStream), separator)
+
+  // Line one is the header and tells us what info we will get in *this* file
+  String[] header = fr.readNext()
+
+  println("Got file header (length = ${header.length}) ${header}");
+
+  String[] nl = null;
+
+  while ((nl = fr.readNext()) != null) {
+    if (nl.length == header.length) {
+      def cufts_row = [:]
+      int num_cols = header.length
+      println("Cool, row has right number of cols...${nl.length}, header length=${num_cols}");
+      for ( int i=0; i < num_cols; i++ ) {
+        cufts_row[header[i]] = nl[i];
+      }
+
+      println("process row ${cufts_row}");
+
+      // Title level processing begins here
+      def target_identifiers = [];
+
+      def publisher = null
+      // publisher = lookupOrCreateOrg(name:____, db:db, stats:stats);
+
+      // If there is an identifier, set up the appropriate matching...
+      if ( cufts_row.issn && cufts_row.issn.trim().length() > 0 )
+        target_identifiers.add([value:cufts_row.issn.trim(), type:'ISSN'])
+      
+      if ( cufts_row.e_issn && cufts_row.e_issn.trim()?.length() > 0 )
+        target_identifiers.add([value:cufts_row.e_issn.trim(), type:'eISSN'])
+
+      if ( target_identifiers.size() > 0 ) {
+
+        def title = lookupOrCreateTitle(title:cufts_row.title,
+                                        identifier:target_identifiers,
+                                        publisher:publisher,
+                                        db:db,
+                                        stats:stats)
+
+        def parsed_start_date = parseDate(cufts_row.ft_start_date,possible_date_formats)
+        def parsed_end_date = parseDate(cufts_row.ft_end_date,possible_date_formats)
+
+        def host_platform = lookupOrCreatePlatform(name:resource_meta_info.module,
+                                                   prov:"Platform for SO",
+                                                   type:"host",
+                                                   db:db,
+                                                   sourceContext:'CUFTS',
+                                                   stats:stats)
+
+        // Find tipp
+        if ( title && pkg && host_platform && title._id && pkg._id && host_platform._id ) {
+
+          def tipp = db.tipps.findOne(titleid:title._id, pkgid:pkg._id, platformid:host_platform._id)
+          if ( !tipp ) {
+            tipp = createTipp(titleid:title._id, pkgid:pkg._id, platformid:host_platform._id, db:db, stats:stats)
+            tipp.startDateString = cufts_row.ft_start_date
+            tipp.startDate = parsed_start_date
+            tipp.startVolume = cufts_row.vol_ft_start
+            tipp.startIssue = cufts_row.iss_ft_start
+            tipp.endDateString = cufts_row.ft_end_date
+            tipp.endDate = parsed_end_date
+            tipp.endVolume = cufts_row.vol_ft_end
+            tipp.endIssue = cufts_row.iss_ft_end
+            tipp.title_id = null; // nl[9]
+            tipp.embargo = null;
+            tipp.coverageDepth = null;
+            tipp.coverageNote = null;
+            tipp.identifiers = []
+            tipp.hostPlatformURL = cufts_row.journal_url
+            tipp.additionalPlatformLinks = null
+            tipp.source = "${args[0]}"
+            tipp.sourceContext = 'CUFTS'
+            if ( sub._id )
+              tipp.ies.add(sub._id)
+            else
+              println("WARN: Creating a new tipp but there is no default issue entitement / SO");
+            // tipp.tags = default_tags;
+          }
+          else {
+            if ( sub._id )
+              tipp.ies.add(sub._id)
+          }
+  
+          db.tipps.save(tipp)
+        }
+      }
+    }
+  }
 }
+
 
 def processCUFTSIndexPage(cufts_knowledgebase_website) {
   try {
@@ -311,5 +478,119 @@ def lookupOrCreateTitle(Map params=[:]) {
   }
 
   title
+}
+
+def lookupOrCreatePackage(Map params=[:]) {
+  // println("lookupOrCreatePackage(${params})");
+  def compound_identifier = "${params.provider.trim()}:${params.identifier.trim()}"
+  def norm_identifier = compound_identifier.toLowerCase().replaceAll('-','_')
+
+  def pkg = params.db.pkgs.findOne(normIdentifier:norm_identifier)
+  if ( pkg == null ) {
+    pkg = [
+      _id:new org.bson.types.ObjectId(),
+      identifier:compound_identifier,
+      normIdentifier:norm_identifier,
+      name:params.name,
+      lastmod:System.currentTimeMillis(),
+      sourceContext:'KBPlus',
+      subs:[]
+    ]
+    params.db.pkgs.save(pkg)
+    inc('pkgs_created',params.stats);
+    println("lookupOrCreatePackage for norm identifier ${norm_identifier} resulted in a new package being created with internal ID ${pkg._id}");
+  }
+  else {
+    println("lookupOrCreatePackage for norm identifier ${norm_identifier} returned existing package with internal ID ${pkg._id}");
+  }
+
+  pkg
+}
+
+def lookupOrCreateOrg(Map params = [:]) {
+  // println("lookupOrCreateOrg(${params})");
+
+  def target_norm_name = params.name?.trim().toLowerCase();
+
+  def org = params.db.orgs.findOne(normName:target_norm_name)
+
+  if ( org == null ) {
+    org = [
+      _id:new org.bson.types.ObjectId(),
+      name:params.name,
+      normName:params.name?.trim().toLowerCase(),
+      lastmod:System.currentTimeMillis()
+    ]
+    params.db.orgs.save(org)
+    inc('orgs_created',params.stats);
+  }
+
+  org
+}
+
+def parseDate(datestr, possible_formats) {
+  def parsed_date = null;
+  for(i = possible_formats.iterator(); ( i.hasNext() && ( parsed_date == null ) ); ) {
+    try {
+      parsed_date = i.next().parse(datestr);
+    }
+    catch ( Exception e ) {
+    }
+  }
+  parsed_date
+}
+
+def createTipp(Map params=[:]) {
+  def tipp = null;
+  tipp = [
+    _id:new org.bson.types.ObjectId(),
+    titleid:params.titleid,
+    pkgid:params.pkgid,
+    platformid:params.platformid,
+    sourceContext:'KBPlus',
+    lastmod:System.currentTimeMillis(),
+    ies:[]
+  ]
+  params.db.tipps.save(tipp)
+  inc('tipp_created',params.stats);
+
+  tipp
+}
+
+
+def inc(countername, statsmap) {
+  if ( statsmap[countername] == null ) {
+    statsmap[countername] = 1
+  }
+  else {
+    statsmap[countername]++
+  }
+}
+
+
+def lookupOrCreatePlatform(Map params=[:]) {
+  // println("lookupOrCreatePlatform(${params})");
+  def platform = null;
+
+  String normname = params.name.trim().toLowerCase();
+
+  platform = params.db.platforms.findOne(normname:normname)
+
+  if ( !platform ) {
+    platform = [
+      _id:new org.bson.types.ObjectId(),
+      name:params.name,
+      normname:normname,
+      provenance:params.prov,
+      type:params.type,
+      sourceContext:'KBPlus',
+      lastmod:System.currentTimeMillis()
+    ]
+    params.db.platforms.save(platform)
+    inc('platforms_created',params.stats);
+
+  }
+
+  platform;
 }
 

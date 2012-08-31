@@ -19,7 +19,7 @@ class DocWidgetController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def createNote() { 
     log.debug("Create note referer was ${request.getHeader('referer')} or ${request.request.RequestURL}");
-
+    def user = User.get(springSecurityService.principal.id)
     def domain_class=grailsApplication.getArtefact('Domain',params.ownerclass)
 
     if ( domain_class ) {
@@ -27,11 +27,10 @@ class DocWidgetController {
       if ( instance ) {
         log.debug("Got owner instance ${instance}");
 
-        def user = User.get(springSecurityService.principal.id)
-
         def doc_content = new Doc(contentType:0,
-                                content: params.licenceNote,
-                                type:RefdataCategory.lookupOrCreate('Document Type','Note')).save()
+                                  content: params.licenceNote,
+                                  type:RefdataCategory.lookupOrCreate('Document Type','Note'),
+                                  user:user).save()
 
         def alert = null;
         if ( params.licenceNoteShared ) {
@@ -73,7 +72,7 @@ class DocWidgetController {
     def input_stream = request.getFile("upload_file")?.inputStream
     def original_filename = request.getFile("upload_file")?.originalFilename
 
-
+    def user = User.get(springSecurityService.principal.id)
 
     def domain_class=grailsApplication.getArtefact('Domain',params.ownerclass)
 
@@ -82,9 +81,7 @@ class DocWidgetController {
       if ( instance ) {
         log.debug("Got owner instance ${instance}");
 
-        def user = User.get(springSecurityService.principal.id)
-
-        if ( instance && input_stream ) {
+        if ( input_stream ) {
           def docstore_uuid = docstoreService.uploadStream(input_stream, original_filename, params.upload_title)
           log.debug("Docstore uuid is ${docstore_uuid}");
     
@@ -99,10 +96,18 @@ class DocWidgetController {
 
             def doc_context = new DocContext("${params.ownertp}":instance,
                                              owner:doc_content,
+                                             user:user,
                                              doctype:RefdataCategory.lookupOrCreate('Document Type',params.doctype)).save(flush:true);
           }
         }
+        
       }
+      else {
+        log.error("Unable to locate document owner instance for class ${params.ownerclass}:${params.ownerid}");
+      }
+    }
+    else {
+      log.warn("Unable to locate domain class when processing generic doc upload. ownerclass was ${params.ownerclass}");
     }
 
     redirect(url: request.getHeader('referer'))

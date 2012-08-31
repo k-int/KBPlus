@@ -1,10 +1,13 @@
 package com.k_int.kbplus
 
+import com.k_int.kbplus.auth.User;
+
 class Doc {
 
   RefdataValue status
   RefdataValue type
   Alert alert
+
   String title
   String filename
   String creator
@@ -14,6 +17,7 @@ class Doc {
   String uuid 
   Date dateCreated
   Date lastUpdated
+  User user
 
 
   static mapping = {
@@ -29,6 +33,7 @@ class Doc {
           filename column:'doc_filename'
            content column:'doc_content', type:'text'
           mimeType column:'doc_mimeType'
+              user column:'doc_user_fk'
   }
 
   static constraints = {
@@ -42,5 +47,6 @@ class Doc {
     creator(nullable:true, blank:true)
     filename(nullable:true, blank:false)
     mimeType(nullable:true, blank:false)
+    user(nullable:true, blank:false)
   }
 }

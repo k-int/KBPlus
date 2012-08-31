@@ -11,7 +11,7 @@
 
     <div class="container">
       <ul class="breadcrumb">
-        <li> <g:link controller="home">KBPlus</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
         <li>Licences</li>
       </ul>
     </div>
@@ -40,7 +40,7 @@
     </div>
 
     <div class="container">
-                <button id="delete-doc">Delete Selected Documents</button>&nbsp;
+                <button class="btn btn-danger" id="delete-doc">Delete Selected Documents</button>&nbsp;
                 <input type="submit" class="btn btn-primary" value="Add new document" data-toggle="modal" href="#modalCreateDocument" />
   
                 <g:form id="delete_doc_form" url="[controller:'licenseDetails',action:'deleteDocuments']" method="post">
@@ -111,6 +111,18 @@
         </dt>
         <dd>
           <input type="file" name="upload_file" />
+        </dd>
+      </dl>
+     <dl>
+        <dt>
+          <label>Document Type:</label>
+        </dt>
+        <dd>
+          <select name="doctype">
+            <option value="License">License</option>
+            <option value="General">General</option>
+            <option value="General">Addendum</option>
+          </select>
         </dd>
       </dl>
     </div>

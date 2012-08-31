@@ -123,6 +123,20 @@ class AdminController {
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def dataCleanse() {
+    // Sets nominal platform
     dataloadService.dataCleanse()
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def titleAugment() {
+    // Sets nominal platform
+    dataloadService.titleAugment()
+  }
+
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def licenseLink() {
+    if ( ( params.sub_identifier ) && ( params.lic_reference.length() > 0 ) ) {
+    }
   }
 }

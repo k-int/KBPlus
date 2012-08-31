@@ -62,6 +62,15 @@ body{
 
 /* Additional Nav */
 
+.explorer-link {
+    color: #FFC7C8!important;
+}
+
+.explorer-link .caret {
+    border-top-color: #FFC7C8!important;
+}
+    
+
 .navbar-push {
     margin-top: 55px;
 }
@@ -201,6 +210,20 @@ body{
     width: 100%;
 }
 
+/* Sortable image styles */
+
+.sortable a {
+    text-decoration: underline;
+}
+
+.sortable.asc a {
+    background-image: url('../images/skin/sorted_asc.png');
+}
+
+.sortable.desc a {
+    background-image: url('../images/skin/sorted_desc.png');
+}
+
 .well {
     
 }
@@ -256,6 +279,13 @@ body{
 .well.notes .pagination a {
     padding: 5px;
     line-height: inherit;
+}
+
+div.comments {
+    background-image: url('../images/comments_icon.png');
+    background-repeat: no-repeat;
+    background-position: left 50%;
+    padding-left: 20px;
 }
 
 #licenceInformation dt,dd {

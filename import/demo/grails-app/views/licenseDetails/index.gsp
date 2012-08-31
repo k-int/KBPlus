@@ -11,7 +11,7 @@
 
     <div class="container">
       <ul class="breadcrumb">
-        <li> <g:link controller="home">Home</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
         <g:if test="${license.licensee}">
           <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:license.licensee.shortcode]}"> ${license.licensee.name} Current Licenses</g:link> <span class="divider">/</span> </li>
         </g:if>
@@ -133,7 +133,9 @@
               <tbody>
                 <tr><td>Concurrent Access</td>
                     <td>
+                         <span>
                          <g:refdataValue val="${license.concurrentUsers?.value}" domain="License" pk="${license.id}" field="concurrentUsers" cat='Concurrent Access' class="${editable?'cuedit':''}"/>
+                         </span>
                          <span id="cucwrap">
                          (<span id="concurrentUserCount" class="intedit" style="padding-top: 5px;">${license.concurrentUserCount}</span>)
                          </span>

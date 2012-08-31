@@ -33,6 +33,7 @@
             <thead>
               <tr>
                 <th>User</th>
+                <th>Display Name</th>
                 <th>Email</th>
                 <th>Organisation</th>
                 <th>Role</th>
@@ -45,6 +46,7 @@
               <g:each in="${pendingRequests}" var="req">
                 <tr>
                   <td>${req.user.username}</td>
+                  <td>${req.user.displayName}</td>
                   <td>${req.user.email}</td>
                   <td>${req.org.name}</td>
                   <td>${req.role}</td>
