@@ -72,10 +72,10 @@ class PublicExportController {
            }
 
            // Output the body text
-           writer.write("included_st,publication_title,print_identifier,online_identifier,date_first_issue_subscribed,num_first_vol_subscribed,num_first_issue_subscribed,date_last_issue_subscribed,num_last_vol_subscribed,num_last_issue_subscribed,embargo_info,core_title\n");
+           writer.write("publication_title,print_identifier,online_identifier,date_first_issue_subscribed,num_first_vol_subscribed,num_first_issue_subscribed,date_last_issue_subscribed,num_last_vol_subscribed,num_last_issue_subscribed,embargo_info\n");
 
            result.entitlements.each { e ->
-             writer.write("Y,\"${e.tipp.title.title}\",\"${e.tipp?.title?.getIdentifierValue('ISSN')}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')}\",${e.startDate?:''},${e.startVolume?:''},${e.startIssue?:''},${e.endDate?:''},${e.endVolume?:''},${e.endIssue?:''},${e.embargo?:''},${e.coreTitle}\n");
+             writer.write("\"${e.tipp.title.title}\",\"${e.tipp?.title?.getIdentifierValue('ISSN')}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')}\",${e.startDate?:''},${e.startVolume?:''},${e.startIssue?:''},${e.endDate?:''},${e.endVolume?:''},${e.endIssue?:''},${e.embargo?:''}\n");
            }
            writer.flush()
            writer.close()
