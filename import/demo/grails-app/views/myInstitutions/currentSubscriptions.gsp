@@ -38,19 +38,19 @@
     <div class="container">
       <table class="table table-striped table-bordered table-condensed">
                 <tr>
-                  <th># (Name)</th>
+                  <g:sortableColumn params="${params}" property="s.name" title="Name" />
                   <th>Parent</th>
                   <th>Package Name</th>
                   <th>Consortia</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
+                  <g:sortableColumn params="${params}" property="s.startDate" title="Start Date" />
+                  <g:sortableColumn params="${params}" property="s.endDate" title="End Date" />
                   <th>Platform</th>
                   <th>License</th>
                 </tr>
                 <g:each in="${subscriptions}" var="s">
                   <tr>
                     <td>
-                      <g:link controller="subscriptionDetails" action="index" id="${s.id}">${s.id} ${s.name} <g:if test="${s.consortia}">( ${s.consortia?.name} )</g:if></g:link>
+                      <g:link controller="subscriptionDetails" action="index" id="${s.id}">${s.name} <g:if test="${s.consortia}">( ${s.consortia?.name} )</g:if></g:link>
                     </td>
                     <td>
                       <g:if test="${s.instanceOf}"><g:link controller="SubscriptionDetails" action="index" id="${s.instanceOf.id}">${s.instanceOf.name}</g:link></g:if>
