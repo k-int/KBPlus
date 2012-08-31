@@ -31,6 +31,7 @@ class SubscriptionDetailsController {
     result.institution = result.subscriptionInstance.subscriber
     if ( result.institution ) {
       result.subscriber_shortcode = result.institution.shortcode
+      result.institutional_usage_identifier = result.institution.getIdentifierByType('JUSP');
     }
 
     if ( result.subscriptionInstance.isEditableBy(result.user) ) {

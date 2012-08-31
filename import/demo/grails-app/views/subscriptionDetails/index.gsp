@@ -198,7 +198,10 @@
                 <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="${editable?'fieldNote':''}">${ie.embargo}</g:inPlaceEdit></td>
                 <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="coverageDepth" id="coverageDepth" class="${editable?'fieldNote':''}">${ie.coverageDepth}</g:inPlaceEdit></td>
                 <td>${ie.coverageNote}</td>  
-                <td><g:if test="${editable}"><g:link action="removeEntitlement" params="${[ieid:ie.id, sub:subscriptionInstance.id]}" onClick="return confirm('Are you sure you wish to delete this entitlement');">Delete</g:link></g:if></td>
+                <td>
+                  <g:if test="${editable}"><g:link action="removeEntitlement" params="${[ieid:ie.id, sub:subscriptionInstance.id]}" onClick="return confirm('Are you sure you wish to delete this entitlement');">Delete</g:link></g:if>
+                  <g:if test="${institutional_usage_identifier}"><a href="https://www.jusp.mimas.ac.uk/secure/v2/ijsu/?id=${institutional_usage_identifier}&issn=${ie?.tipp?.title?.getIdentifierValue('ISSN')}">Usage Info</a></g:if>
+                </td>
               </tr>
             </g:each>
           </g:if>

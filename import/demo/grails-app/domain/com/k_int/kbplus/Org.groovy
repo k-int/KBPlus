@@ -79,7 +79,7 @@ class Org {
   def getIdentifierByType(idtype) {
     def result = null
     ids.each { id ->
-      if ( id.identifier.ns.ns == 'JC' ) {
+      if ( id.identifier.ns.ns == idtype ) {
         result = id.identifier;
       }
     }
