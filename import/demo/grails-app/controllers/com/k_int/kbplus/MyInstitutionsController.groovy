@@ -142,7 +142,7 @@ class MyInstitutionsController {
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
 
-    def base_qry = " from Subscription as s where exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) "
+    def base_qry = " from Subscription as s where exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) AND ( s.status is NULL ) "
     def qry_params = [result.institution]
 
     if ( params.q?.length() > 0 ) {
@@ -158,8 +158,6 @@ class MyInstitutionsController {
 
     result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
     result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
-
-    log.debug("Got ${result.num_sub_rows} sub rows");
 
     result
   }
@@ -345,6 +343,7 @@ class MyInstitutionsController {
       if ( ( license.subscriptions == null ) || ( license.subscriptions.size() == 0 ) ) {
         def deletedStatus = RefdataCategory.lookupOrCreate('License Status','Deleted');
         license.status = deletedStatus
+        license.save(flush:true);
       }
       else {
         flash.error = "Unable to delete - The selected license has attached subscriptions"
@@ -514,6 +513,11 @@ class MyInstitutionsController {
             result = true
           }
         }
+        else {
+        }
+      }
+      else {
+        log.warn("Unknown has admin rights object : ${object?.class?.name}");
       }
     }
 
@@ -521,15 +525,15 @@ class MyInstitutionsController {
   }
 
   def actionCurrentSubscriptions() {
-    log.debug("deleteSubscription id:${params.basesubscription}");
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
-    def subscription = Subscription.get(params.baselicense)
+    def subscription = Subscription.get(params.basesubscription)
 
     if ( hasAdminRights(result.user,subscription) ) {
       if ( 1==1 ) {
         def deletedStatus = RefdataCategory.lookupOrCreate('Subscription Status','Deleted');
         subscription.status = deletedStatus
+        subscription.save(flush:true);
       }
       else {
         flash.error = "Unable to delete - The selected license has attached subscriptions"
