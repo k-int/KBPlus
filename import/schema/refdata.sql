@@ -73,6 +73,7 @@ insert into refdata_value(rdv_owner, rdv_value) VALUES ( 12, 'Subscription Offer
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 12, 'Unknown Subscription Type');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (13,'Subscription Status');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 13, 'Deleted');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 13, 'Current');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 13, 'Expired');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 13, 'Terminated');

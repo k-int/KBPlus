@@ -505,8 +505,41 @@ class MyInstitutionsController {
           }
         }
       }
+      else if ( object instanceof Subscription ) {
+        def subscriber_role = RefdataCategory.lookupOrCreate('Organisational Role','Subscriber');
+        def or = OrgRole.findBySubAndRoleType(object, subscriber_role)
+        if ( or ) {
+          // The license owner must be the users institution
+          if ( user_orgs.contains(or.org) ) {
+            result = true
+          }
+        }
+      }
     }
 
     result;
+  }
+
+  def actionCurrentSubscriptions() {
+    log.debug("deleteSubscription id:${params.basesubscription}");
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    def subscription = Subscription.get(params.baselicense)
+
+    if ( hasAdminRights(result.user,subscription) ) {
+      if ( 1==1 ) {
+        def deletedStatus = RefdataCategory.lookupOrCreate('Subscription Status','Deleted');
+        subscription.status = deletedStatus
+      }
+      else {
+        flash.error = "Unable to delete - The selected license has attached subscriptions"
+      }
+    }
+    else {
+      log.warn("Attempt by ${result.user} to delete subscription ${result.subscription} without perms")
+      flash.message = message(code: 'subscription.delete.norights')
+    }
+
+    redirect action: 'currentSubscriptions', params: [shortcode:params.shortcode]
   }
 }

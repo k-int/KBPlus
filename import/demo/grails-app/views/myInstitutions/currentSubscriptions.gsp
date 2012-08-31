@@ -47,7 +47,7 @@
       </g:form><br/>
     </div>
 
-    <g:form action="actionCurrentSubscriptions" controller="myInstitutions">
+    <g:form action="actionCurrentSubscriptions" controller="myInstitutions" params="${[shortcode:params.shortcode]}">
 
       <div class="container">
         <div class="well subscription-options">
@@ -70,7 +70,7 @@
           </tr>
           <g:each in="${subscriptions}" var="s">
             <tr>
-              <td><input type="radio" name="baselicense" value="${s.id}"/></td>
+              <td><input type="radio" name="basesubscription" value="${s.id}"/></td>
               <td>
                 <g:link controller="subscriptionDetails" action="index" id="${s.id}">${s.name} <g:if test="${s.consortia}">( ${s.consortia?.name} )</g:if></g:link>
               </td>
