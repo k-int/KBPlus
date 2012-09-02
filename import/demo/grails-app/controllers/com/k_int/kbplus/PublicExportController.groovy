@@ -6,6 +6,7 @@ import grails.converters.*
 import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.MarkupBuilder
 import com.k_int.kbplus.auth.*;
+import groovy.xml.MarkupBuilder
 
 class PublicExportController {
 
@@ -62,13 +63,13 @@ class PublicExportController {
       csv {
          def jc_id = result.subscriptionInstance.getSubscriber()?.getIdentifierByType('JC')?.value
 
-         response.setHeader("Content-disposition", "attachment; filename=${result.subscriptionInstance.id}.csv")
+         response.setHeader("Content-disposition", "attachment; filename=${result.subscriptionInstance.identifier}.csv")
          response.contentType = "text/csv"
          def out = response.outputStream
          out.withWriter { writer ->
            if ( ( params.omitHeader == null ) || ( params.omitHeader != 'Y' ) ) {
              writer.write("FileType,SpecVersion,JD_ID,TermStartDate,TermEndDate,SubURI\n")
-             writer.write("${result.subscriptionInstance.type.value},\"2.0\",${jc_id},start,end,\"uri://kbplus/sub/${result.subscriptionInstance.id}\"\n")
+             writer.write("${result.subscriptionInstance.type.value},\"2.0\",${jc_id},start,end,\"uri://kbplus/sub/${result.subscriptionInstance.identifier}\"\n")
            }
 
            // Output the body text
@@ -82,6 +83,79 @@ class PublicExportController {
          }
          out.close()
       }
+      json {
+         def jc_id = result.subscriptionInstance.getSubscriber()?.getIdentifierByType('JC')?.value
+         def response = [:]
+         response.header = [:]
+         response.entitlements = []
+
+         response.header.type = result.subscriptionInstance.type.value
+         response.header.version = "2.0"
+         response.header.jcid = jc_id
+         response.header.url = "uri://kbplus/sub/${result.subscriptionInstance.identifier}"
+
+         result.entitlements.each { e ->
+             def entitlement = [:]
+             entitlement.title=e.tipp.title.title
+             entitlement.issn=e.tipp?.title?.getIdentifierValue('ISSN')
+             entitlement.eissn=e.tipp?.title?.getIdentifierValue('eISSN')
+             entitlement.startDate=e.startDate?:''
+             entitlement.endDate=e.endDate?:''
+             entitlement.startVolume=e.startVolume?:''
+             entitlement.endVolume=e.endVolume?:''
+             entitlement.startIssue=e.startIssue?:''
+             entitlement.endIssue=e.endIssue?:''
+             entitlement.embargo=e.embargo?:''
+             response.entitlements.add(entitlement);
+         }
+         render response as JSON
+      }
     }
+  }
+
+  def idx() {
+    def base_qry = " from Subscription as s where s.type.value = 'Subscription Offered' order by s.name asc"
+    def qry_params = []
+
+    def num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
+    def subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params);
+
+    withFormat {
+      csv {
+        response.setHeader("Content-disposition", "attachment; filename=KBPlusExportIndex.csv")
+        response.contentType = "text/csv"
+        def out = response.outputStream
+        out.withWriter { writer ->
+           writer.write("name,uri,identifier\n")
+           subscriptions.each { s ->
+             writer.write("\"${s.name}\",\"publicExport/so/${s.identifier}?format=csv\",\"${s.identifier}\"\n");
+           }
+        }
+        writer.flush()
+        writer.close()
+      }
+      xml {
+        def writer = new StringWriter()
+        def xml = new MarkupBuilder(writer)
+        xml.KbPlusSubscriptionsOffered {
+          subscriptions.each { s->
+            subscriptionOffered {
+              name(s.name)
+              identifier(s.identifier)
+            }
+          }
+        }
+        render(contentType:'application/xml', text: writer.toString())
+      }
+      json {
+        def response = [:]
+        response.subscriptionsOffered = []
+        subscriptions.each { s->
+          response.subscriptionsOffered.add([name:s.name,identifier:s.identifier])
+        }
+        render response as JSON
+      }
+    }
+
   }
 }
