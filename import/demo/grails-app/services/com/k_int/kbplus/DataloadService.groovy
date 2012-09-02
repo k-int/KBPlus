@@ -325,6 +325,7 @@ class DataloadService {
       mdb.subscriptions.find().sort(lastmod:1).each { sub ->
         log.debug("Adding subscription ${sub.name} (${sub.identifier}) (cons:${sub.consortium})");
         def dbsub = Subscription.findByImpId(sub._id.toString()) ?: new Subscription(name:sub.name, 
+                                                                                     status:lookupOrCreateRefdataEntry('Subscription Status','Current'),
                                                                                      identifier:sub.identifier,
                                                                                      impId:sub._id.toString(),
                                                                                      startDate:sub.start_date,
@@ -606,6 +607,7 @@ class DataloadService {
           // create a new subscription - an instance of an actual org taking up a specific subscription
           def new_subscription = new Subscription(
                                         identifier: "${db_sub.identifier}:${sub.org.toString()}",
+                                        status:lookupOrCreateRefdataEntry('Subscription Status','Current'),
                                         impId:sub._id.toString(),
                                         name: db_sub.name,
                                         startDate: sub_start_date,
