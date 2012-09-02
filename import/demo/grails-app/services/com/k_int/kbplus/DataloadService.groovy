@@ -1016,7 +1016,53 @@ class DataloadService {
   }
 
   def titleAugment() {
-    edinaPublicationsAPIService.lookup('Acta Crystallographica. Section F, Structural Biology and Crystallization Communications');
+    // edinaPublicationsAPIService.lookup('Acta Crystallographica. Section F, Structural Biology and Crystallization Communications');
+    def future = executorService.submit({
+      doTitleAugment()
+    } as java.util.concurrent.Callable)
+    log.debug("titleAugment returning");
+  }
+
+  def doTitleAugment() {
+    int ctr = 0;
+    TitleInstance.findAll().each { ti ->
+      if ( ti.getIdentifierValue('SUNCAT' ) == null ) {
+        def lookupResult = edinaPublicationsAPIService.lookup(ti.title)
+        if ( lookupResult ) {
+          def record = lookupResult.records.record
+          if ( record ) {
+            boolean matched = false;
+            def suncat_identifier = null;
+            record.modsCollection.mods.identifier.each { id ->
+              if ( id.text().equalsIgnoreCase(ti.getIdentifierValue('ISSN')) || id.text().equalsIgnoreCase(ti.getIdentifierValue('eISSN'))  ) {
+                matched = true
+              }
+
+              if ( id.@type == 'suncat' ) {
+                suncat_identifier = id.text();
+              }
+            }
+            if ( matched && suncat_identifier ) {
+              log.debug("set suncat identifier to ${suncat_identifier}");
+              def canonical_identifier = Identifier.lookupOrCreateCanonicalIdentifier('SUNCAT',suncat_identifier);
+              ti.ids.add(new IdentifierOccurrence(identifier:canonical_identifier, ti:ti));
+              ti.save(flush:true);
+              if ( ctr++ == 100 ) {
+                ctr = 0;
+                cleanUpGorm();
+              }
+            }
+          }
+          else {
+          }
+        }
+        else {
+        }
+        synchronized(this) {
+          Thread.sleep(250);
+        }
+      }
+    }
   }
 
   def cleanUpGorm() {

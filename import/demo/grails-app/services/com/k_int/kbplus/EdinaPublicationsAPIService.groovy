@@ -19,12 +19,15 @@ class EdinaPublicationsAPIService {
 
   @javax.annotation.PostConstruct
   def init() {
+    log.debug("Initialising rest endpoint for edina publications service...");
     endpoint = ApplicationHolder.application.config.publicationService.baseurl ?: "http://knowplus.edina.ac.uk:2012/kbplus/api"
     target_service = new RESTClient(endpoint)
   }
 
   def lookup(title) {
     // http://knowplus.edina.ac.uk:2012/kbplus/api?title=ACS%20Applied%20Materials%20and%20Interfaces
+
+    def result = null
 
     try {
       target_service.request(GET, ContentType.XML) { request ->
@@ -36,7 +39,7 @@ class EdinaPublicationsAPIService {
         response.success = { resp, data ->
           // data is the xml document
           // ukfam = data;
-          log.debug("Got result ${data}");
+          result = data;
         }
         response.failure = { resp ->
           log.error("Error - ${resp}");
@@ -45,6 +48,11 @@ class EdinaPublicationsAPIService {
     }
     catch ( Exception e ) {
       e.printStackTrace();
+    } 
+    finally {
     }
+
+
+    result
   }
 }
