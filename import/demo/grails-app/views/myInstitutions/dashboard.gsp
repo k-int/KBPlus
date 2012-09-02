@@ -64,8 +64,8 @@
             <td colspan="6">
               <g:if test="${ua.rootObj.class.name=='com.k_int.kbplus.License'}">
                 <span class="label label-info">License</span>
-                <em><g:link action="licenseDetails"
-                        controller="index" 
+                <em><g:link action="index"
+                        controller="licenseDetails" 
                         id="${ua.rootObj.id}"
                         params="${[shortcode:ua.rootObj.licensee.shortcode]}">${ua.rootObj.reference}</g:link></em>
               </g:if>
@@ -109,7 +109,7 @@
       $(document).ready(function() {
          $(".announce").click(function(){ 
            var id = $(this).data('id');
-           $('#modalComments').load('http://localhost:8080/demo/alert/commentsFragment/'+id);
+           $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" absolute="true"/>/'+id);
            $('#modalComments').modal('show');
          });
       });

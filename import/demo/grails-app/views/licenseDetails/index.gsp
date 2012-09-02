@@ -349,6 +349,12 @@
            $('[href=#'+url[1]+']').tab('show');
          }
 
+         $(".announce").click(function(){
+           var id = $(this).data('id');
+           $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" absolute="true"/>/'+id);
+           $('#modalComments').modal('show');
+         });
+
        });
       </g:if>
     </script>

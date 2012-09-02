@@ -8,6 +8,8 @@ class Alert {
   long createTime = System.currentTimeMillis()
   User createdBy
   Org org
+  SortedSet comments
+
 
   static hasMany = [ comments : Comment ]
 

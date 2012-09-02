@@ -2,11 +2,16 @@ package com.k_int.kbplus
 
 import com.k_int.kbplus.auth.User
 
-class Comment {
+class Comment implements Comparable {
 
   static belongsTo = [
     alert:Alert
   ]
+
+  int compareTo(obj) {
+    commentDate.compareTo(obj.commentDate)
+  }
+
 
   Date commentDate
   String comment
