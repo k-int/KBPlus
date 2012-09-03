@@ -13,6 +13,7 @@ import groovyx.net.http.*
 import org.apache.http.entity.mime.*
 import org.apache.http.entity.mime.content.*
 import java.nio.charset.Charset
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 class DocstoreService {
 
@@ -107,7 +108,9 @@ class DocstoreService {
 
   def uploadBag(bagfile) {
     println("uploading bagfile ${bagfile}");
-    def http = new groovyx.net.http.HTTPBuilder('http://knowplus.edina.ac.uk/oledocstore/KBPlusServlet')
+    // def http = new groovyx.net.http.HTTPBuilder('http://knowplus.edina.ac.uk/oledocstore/KBPlusServlet')
+    def docstore_uri = ApplicationHolder.application.config.docstore ?: 'http://knowplus.edina.ac.uk/oledocstore/KBPlusServlet'
+    def http = new groovyx.net.http.HTTPBuilder(docstore_uri)
     def result = [:]
     //edef result_uuid = null
 
