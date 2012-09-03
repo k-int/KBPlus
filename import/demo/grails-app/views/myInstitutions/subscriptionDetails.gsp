@@ -144,7 +144,7 @@
           showOn: 'both',
           onSelect: function(dateText, inst) { 
             var elem_id = inst.input[0].id;
-            $.ajax({url: '<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>?elementid='+
+            $.ajax({url: '<g:createLink controller="ajax" action="genericSetValue" />?elementid='+
                              elem_id+'&value='+dateText+'&dt=date&idf=MM/dd/yyyy&odf=dd MMMM yyyy',
                    success: function(result){inst.input.parent().find('span').html(result)}
                    });
@@ -165,7 +165,7 @@
           }
         });
 
-        $('span.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
+        $('span.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" />', {
           type      : 'textarea',
           cancel    : 'Cancel',
           submit    : 'OK',
@@ -189,7 +189,7 @@
           return(value);
         },{type:'textarea',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px'});
 
-        $('td span.coreedit').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
+        $('td span.coreedit').editable('<g:createLink controller="ajax" action="genericSetValue" />', {
            data   : {'true':'true', 'false':'false'},
            type   : 'select',
            cancel : 'Cancel',
@@ -198,8 +198,8 @@
            tooltip: 'Click to edit...'
          });
 
-         $('dd span.reldataEdit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}" action="genericSetRel" absolute="true"/>', {
-           loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:params.shortcode]}" action="availableLicenses" absolute="true"/>',
+         $('dd span.reldataEdit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}" action="genericSetRel" />', {
+           loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:params.shortcode]}" action="availableLicenses" />',
            type   : 'select',
            cancel : 'Cancel',
            submit : 'OK',

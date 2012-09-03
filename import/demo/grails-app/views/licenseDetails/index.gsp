@@ -243,7 +243,7 @@
          	}, 1);
          });
          
-         $('.ipe').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="setValue" absolute="true"/>', { 
+         $('.ipe').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="setValue" />', { 
            type      : 'textarea',
            cancel    : 'Cancel',
            submit    : 'OK',
@@ -253,7 +253,7 @@
            onblur	 : 'ignore'
          });
 
-         $('.intedit').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="setValue" absolute="true"/>', {
+         $('.intedit').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="setValue" />', {
            type      : 'text',
            cols      : '5',
            width     : '30',
@@ -265,7 +265,7 @@
          });
 
 
-         $('.refdataedit').editable('<g:createLink controller="ajax" action="genericSetRef" absolute="true"/>', {
+         $('.refdataedit').editable('<g:createLink controller="ajax" action="genericSetRef" />', {
            data   : {'Yes':'Yes', 'No':'No','Other':'Other'},
            type   : 'select',
            cancel : 'Cancel',
@@ -275,7 +275,7 @@
            onblur	 : 'ignore'
          });
 
-         $('.cuedit').editable('<g:createLink controller="ajax" action="genericSetRef" absolute="true"/>', {
+         $('.cuedit').editable('<g:createLink controller="ajax" action="genericSetRef" />', {
            data   : {'No limit':'No limit', 'Specified':'Specified','Not Specified':'Not Specified', 'Other':'Other'},
            type   : 'select',
            cancel : 'Cancel',
@@ -293,7 +293,7 @@
            }
          });
 
-         $('.fieldNote').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="setFieldNote" absolute="true"/>', {
+         $('.fieldNote').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="setFieldNote" />', {
            type      : 'textarea',
            cancel    : 'Cancel',
            submit    : 'OK',
@@ -303,7 +303,7 @@
            onblur	 : 'ignore'
          });
 
-         $('.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
+         $('.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" />', {
            type      : 'textarea',
            cancel    : 'Cancel',
            submit    : 'OK',
@@ -351,7 +351,7 @@
 
          $(".announce").click(function(){
            var id = $(this).data('id');
-           $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" absolute="true"/>/'+id);
+           $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" />/'+id);
            $('#modalComments').modal('show');
          });
 
