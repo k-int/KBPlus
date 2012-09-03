@@ -172,7 +172,7 @@ if ( csventry ) {
           license.subscriptions.add(sub_lookup._id);
         }
         else {
-          println("ERROR: Unable to locate subscription ${nl[i]} whilst processing license");
+          println("ERROR: Unable to locate subscription ${nl[i]} (norm id=${norm_identifier}) whilst processing license");
         }
       }
 
