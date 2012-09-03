@@ -59,7 +59,7 @@ class LoginController {
 
     SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
     // String requestUrl = savedRequest?.getRequestURL();
-    String requestUrl = savedRequest?.getFullRequestUrl();
+    String requestUrl = savedRequest?.getRedirectUrl();
 
     if ( grailsApplication.config.localauth ) {
       String view = 'auth'
