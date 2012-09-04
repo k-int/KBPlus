@@ -142,7 +142,7 @@ class MyInstitutionsController {
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
 
-    def base_qry = " from Subscription as s where exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) AND ( s.status is NULL ) "
+    def base_qry = " from Subscription as s where exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) AND ( s.status.value != 'Deleted' ) "
     def qry_params = [result.institution]
 
     if ( params.q?.length() > 0 ) {
