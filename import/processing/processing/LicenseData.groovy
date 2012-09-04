@@ -56,7 +56,7 @@ if ( db == null ) {
 }
 
 
-def target_web_service = 'http://knowplusdev.edina.ac.uk:8080/oledocstore/KBPlusServlet'
+def target_web_service = 'http://knowplus.edina.ac.uk:8080/oledocstore/KBPlusServlet'
 
 println("Processing zip ${args[0]}");
 
@@ -172,7 +172,7 @@ if ( csventry ) {
           license.subscriptions.add(sub_lookup._id);
         }
         else {
-          println("ERROR: Unable to locate subscription ${nl[i]} whilst processing license");
+          println("ERROR: Unable to locate subscription ${nl[i]} (norm id=${norm_identifier}) whilst processing license");
         }
       }
 
@@ -251,7 +251,7 @@ def docstoreUpload(bf, zipfile, filelist) {
 def uploadBag(bagfile,filelist) {
   println("uploading bagfile ${bagfile}");
   // def http = new groovyx.net.http.HTTPBuilder('http://knowplusdev.edina.ac.uk:8080/oledocstore/KBPlusServlet')
-  def http = new groovyx.net.http.HTTPBuilder('http://knowplus.edina.ac.uk/oledocstore/KBPlusServlet')
+  def http = new groovyx.net.http.HTTPBuilder('http://knowplus.edina.ac.uk:8080/oledocstore/KBPlusServlet')
 
   http.request(groovyx.net.http.Method.POST) {request ->
     requestContentType = 'multipart/form-data'

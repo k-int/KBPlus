@@ -109,7 +109,7 @@
       $(document).ready(function() {
          $(".announce").click(function(){ 
            var id = $(this).data('id');
-           $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" absolute="true"/>/'+id);
+           $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" />/'+id);
            $('#modalComments').modal('show');
          });
       });

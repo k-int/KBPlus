@@ -245,7 +245,7 @@
           clearText: "Clear",
           onSelect: function(dateText, inst) { 
             var elem_id = inst.input[0].id;
-            $.ajax({url: '<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>?elementid='+
+            $.ajax({url: '<g:createLink controller="ajax" action="genericSetValue"/>?elementid='+
                              elem_id+'&value='+dateText+'&dt=date&idf=MM/dd/yyyy&odf=dd MMMM yyyy',
                    success: function(result){inst.input.parent().find('span').html(result)}
                    });
@@ -262,7 +262,7 @@
                       // var parent=$(this).parent('.dp1')
                       console.log("%o",input)
                       $(input).parent().find('span.datevalue').html("")
-                      $.ajax({url: '<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>?elementid='+input.id+'&value=__NULL__',});
+                      $.ajax({url: '<g:createLink controller="ajax" action="genericSetValue"/>?elementid='+input.id+'&value=__NULL__',});
                       $(input).value="__NULL__"
                     }
                 }).appendTo( buttonPane ).addClass("ui-datepicker-clear ui-state-default ui-priority-primary ui-corner-all");
@@ -285,7 +285,7 @@
           }
         });
 
-        $('span.fieldNote').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
+        $('span.fieldNote').editable('<g:createLink controller="ajax" action="genericSetValue"/>', {
           type      : 'textarea',
           cancel    : 'Cancel',
           submit    : 'OK',
@@ -311,7 +311,7 @@
           return(value);
         },{type:'textarea',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px'});
 
-        $('td span.coreedit').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
+        $('td span.coreedit').editable('<g:createLink controller="ajax" action="genericSetValue" />', {
            data   : {'true':'true', 'false':'false'},
            type   : 'select',
            cancel : 'Cancel',
@@ -320,8 +320,8 @@
            tooltip: 'Click to edit...'
          });
 
-         $('dd span.refdataedit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}" action="genericSetRel" absolute="true"/>', {
-           loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:institution?.shortcode]}" action="availableLicenses" absolute="true"/>',
+         $('dd span.refdataedit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}" action="genericSetRel" />', {
+           loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:institution?.shortcode]}" action="availableLicenses" />',
            type   : 'select',
            cancel : 'Cancel',
            submit : 'OK',
