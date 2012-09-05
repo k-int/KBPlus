@@ -52,7 +52,7 @@
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle explorer-link" data-toggle="dropdown"> Data Explorer <b class="caret"></b> </a>
                   <ul class="dropdown-menu" style="max-width:none;">
-                    <li<%= request.forwardURI == "${createLink(uri: '/')}" ? ' class="active"' : '' %>><a href="${createLink(uri: '/')}">Home</a></li>
+                    <li<%= request.forwardURI == "${createLink(uri: '/home')}" ? ' class="active"' : '' %>><a href="${createLink(uri: '/home')}">Search</a></li>
                     <li <%='package'== controllerName ? ' class="active"' : '' %>><g:link controller="package">Package</g:link></li>
                     <li <%='org'== controllerName ? ' class="active"' : '' %>><g:link controller="org">Organisations</g:link></li>
                     <li <%='platform'== controllerName ? ' class="active"' : '' %>><g:link controller="platform">Platform</g:link></li>
