@@ -172,7 +172,7 @@
                                     <ul class="dropdown-menu">
                                         <li><a href="http://service.kbplus.ac.uk/kbplus/myInstitutions/index">KB+</a></li>
                                         <li><a href="http://test.kbplus.edina.ac.uk/kbplus/myInstitutions/index">KB+ Sandpit</a></li>
-                                        <li><a href="http://knowplus.edina.ac.uk/kbplus/">KB+ Explorer</a></li>
+                                        <li><a href="http://service.kbplus.ac.uk/kbplus/">KB+ Explorer</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -187,7 +187,7 @@
                         <a href="http://www.jisc-collections.ac.uk/"><div class="sprite sprite-jisc_collections_logo">JISC Collections</div></a>
                     </div>
                     <div class="pull-right">
-                        <a href="http://knowplus.edina.ac.uk"><div class="sprite sprite-kbplus_logo">Knowledge Base Plus</div></a>
+                        <a href="http://service.kbplus.ac.uk"><div class="sprite sprite-kbplus_logo">Knowledge Base Plus</div></a>
                     </div>
                 </div>
             </div>
