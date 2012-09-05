@@ -12,5 +12,9 @@ class UrlMappings {
 
 		"/"(controller:"home")
 		"500"(view:'/error')
+ 
+		"/about"(view:"/about")
+		"/publichome"(view:"/publichome")
+		"/signup"(view:"/signup")
 	}
 }
