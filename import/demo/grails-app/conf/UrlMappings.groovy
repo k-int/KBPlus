@@ -10,7 +10,8 @@ class UrlMappings {
                 "/myInstitutions/$shortcode/$action"(controller:'myInstitutions')
                 "/myInstitutions/$shortcode/$action/$id"(controller:'myInstitutions')
 
-		"/"(controller:"home")
+		// "/"(controller:"home")
+		"/"(view:"/publichome")
 		"500"(view:'/error')
  
 		"/about"(view:"/about")
