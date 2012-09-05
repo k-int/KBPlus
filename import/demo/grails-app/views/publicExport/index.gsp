@@ -30,7 +30,23 @@
       <div class="row">
         <div class="span12">
 
-          <p><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Dataset" property="dct:title" rel="dct:type">KBPlus Public Exports</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="http://www.kbplus.ac.uk" property="cc:attributionName" rel="cc:attributionURL">JISC COllections</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.<br />Based on a work at <a xmlns:dct="http://purl.org/dc/terms/" href="http://www.kbplus.ac.uk" rel="dct:source">http://www.kbplus.ac.uk</a>.<br />Permissions beyond the scope of this license may be available at <a xmlns:cc="http://creativecommons.org/ns#" href="http://www.kbplus.ac.uk" rel="cc:morePermissions">http://www.kbplus.ac.uk</a>.</p>
+<p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+ <a rel="license"
+    href="http://creativecommons.org/publicdomain/zero/1.0/">
+   <img src="http://i.creativecommons.org/p/zero/1.0/88x31.png" style="border-style: none;" alt="CC0" />
+ </a>
+ <br />
+ To the extent possible under law,
+ <a rel="dct:publisher"
+    href="www.kbplus.ac.uk/exports">
+   <span property="dct:title">JISC Collections</span></a>
+ has waived all copyright and related or neighboring rights to
+ <span property="dct:title">KBPlus Public Exports</span>.
+This work is published from:
+<span property="vcard:Country" datatype="dct:ISO3166"
+     content="GB" about="www.kbplus.ac.uk/exports">
+ United Kingdom</span>.
+</p>
 
         </div>
       </div>
@@ -39,7 +55,6 @@
     <div class="container">
       <div class="row">
         <div class="span12">
-          <p>To the extent possible under law, <strong>KB+</strong> has waived all copyright and related or neighboring rights to Knowledge Base Plus. This work is published from: United Kingdom.</p>
           <div class="well">
             <h4>Cufts style index of subscriptions offered</h4>
             <p>

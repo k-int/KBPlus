@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <meta name="layout" content="mmbootstrap"/>
+    <meta name="layout" content="pubbootstrap"/>
     <title>About | Knowledge Base+</title>
   </head>
 
