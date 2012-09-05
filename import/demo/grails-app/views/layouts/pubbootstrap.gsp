@@ -41,6 +41,7 @@
   </head>
 
   <body class="public">
+    <g:layoutBody/>
   </body>
 
 </html>
