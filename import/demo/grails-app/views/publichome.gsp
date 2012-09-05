@@ -10,19 +10,19 @@
             <div class="navbar-inner navbar-public">
                 <div class="container">
                     <img class="brand" alt="Knowledge Base + logo" src="images/kb_large_icon.png" />
-                    <div class="nav-collapse">               
+                    <div class="nav-collapse">
                     <ul class="nav">
                         <li class="active">
-                            <a href="publichome"> Home </a>
+                            <a href="${createLink(uri: '/')}"> Home </a>
                         </li>
                         <li>
-                            <a href="about"> About KB+ </a>
+                            <a href="${createLink(uri: '/about')}"> About KB+ </a>
                         </li>
                         <li>
-                            <a href="signup"> Sign Up </a>
+                            <a href="${createLink(uri: '/signup')}"> Sign Up </a>
                         </li>
                         <li class="last">
-                            <a href="http://knowplus.edina.ac.uk/kbplus/publicExport"> Exports </a>
+                            <a href="${createLink(uri: '/publicExport')}"> Exports </a>
                         </li>                  
                     </ul>           
                     </div>
@@ -49,12 +49,12 @@
                     </ul>
                     <p>Further information on the content of KB+ can be found in the <a href="about.html">About</a> section.</p>
                     <h2>How can my institution sign up to KB+?</h2>
-					<p>A lot of the data that has been created is available under a CC0 licence and available from the <a href="http://knowplus.edina.ac.uk/kbplus/publicExport">Exports</a> page. However, in order to take advantage of institution specific features, institutions will need to sign up for the service. For further information please visit the <a href="signup.html">Sign Up</a> page.</p>
+					<p>A lot of the data that has been created is available under a CC0 licence and available from the <a href="${createLink(uri: '/publicExport')}">Exports</a> page. However, in order to take advantage of institution specific features, institutions will need to sign up for the service. For further information please visit the <a href="${createLink(uri: '/signup')}">Sign Up</a> page.</p>
                 </div>
                 <div class="span4">
 					<div class="well">
 						<h2>Login</h2>
-						<p><span class="externalLinkIcon"><a href="http://knowplus.edina.ac.uk/kbplus/myInstitutions/dashboard">Knowledge Base+ Member Login</a></span></p>
+						<p><span class="externalLinkIcon"><g:link controller="myInstitutions" action="dashboard">Knowledge Base+ Member Login</g:link></span></p>
 					</div>                                   
 <div class="twitter">
 <script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
