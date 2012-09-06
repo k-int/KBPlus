@@ -59,6 +59,8 @@ class LoginController {
 
     SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
     // String requestUrl = savedRequest?.getRequestURL();
+    log.debug("auth action - the original ua request was for...");
+
     String requestUrl = savedRequest?.getRedirectUrl();
 
     if ( grailsApplication.config.localauth ) {
