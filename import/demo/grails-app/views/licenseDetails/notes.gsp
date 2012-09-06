@@ -72,7 +72,7 @@
     
     <script language="JavaScript">
       $(document).ready(function() {
-         $('.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" absolute="true"/>', {
+         $('.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" />', {
            type      : 'textarea',
            cancel    : 'Cancel',
            submit    : 'OK',

@@ -2,7 +2,7 @@
   <h7>Notes</h7>
   <ul>
     <g:each in="${doclist}" var="docctx">
-      <g:if test="${((docctx.owner?.contentType==0) && !(docctx.domain))}">
+      <g:if test="${((docctx.owner?.contentType==0) && !(docctx.domain) && (docctx.status?.value!='Deleted') )}">
         <li>
           <g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="content" id="doccontent" class="newipe">${docctx.owner.content}</g:inPlaceEdit><br/>
           <i>Note created <g:formatDate format="dd/MM/yyyy" date="${docctx.owner.dateCreated}"/>

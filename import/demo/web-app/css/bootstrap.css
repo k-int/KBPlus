@@ -285,6 +285,40 @@ dt, dd {
     border-bottom: none;
 }
 
+
+/* Styles for public / peripheral pages */
+
+.navbar-public .brand {
+	float:left;	
+	margin-top:18px;
+}
+.navbar-public ul.nav {
+	margin-top:104px;
+	margin-left:10px;
+}
+
+.public h1 {
+	margin-top:0.75em;
+	font-size:2em;
+}
+
+.public h2 {
+	font-size:1.6em;
+}
+
+.public p a {
+	text-decoration:underline;
+}
+
+.public .nav li a {
+	font-size:1em;
+}
+
+.public .nav > li > a:hover, .public .nav > li.active > a {
+	background-color: #990100!important;
+	text-decoration:underline!important;
+}
+
 /* Bootstrap Responsive Overwrites */
 
 @media (max-width: 979px) {
@@ -295,7 +329,17 @@ dt, dd {
     .navbar-push {
         clear: both;
         padding-top: 30px;
-    } 
+    }
+    
+    .navbar-push-public {
+        clear: both;
+        padding-top: 30px;
+    }
+    
+    .navbar-public .brand {
+		margin-left:10px;	
+		margin-top:18px;
+	}  
 
     .dropdown-menu {
         min-width: 0;
@@ -366,10 +410,6 @@ dt, dd {
 
     /* Navbar footer overwrites for responsive design */
 
-    .navbar-footer {
-        height: 40px;
-    }
-    
     .navbar-footer .nav-collapse, .navbar-footer .nav-collapse.collapse {
         background-color: transparent;
         overflow: visible;
@@ -448,6 +488,11 @@ dt, dd {
     .navbar .dropdown-menu a {
         padding: 3px 5px;
     }
+    
+    .navbar-public ul.nav {
+		margin-top:0px;
+		margin-left:10px;
+	}	
 }
 
 @media (max-width: 480px) {
@@ -490,3 +535,4 @@ dt, dd {
 .breadcrumb li {
     word-wrap: break-word;
 }
+

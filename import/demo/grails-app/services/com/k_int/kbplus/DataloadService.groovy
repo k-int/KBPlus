@@ -1024,7 +1024,6 @@ class DataloadService {
   }
 
   def doTitleAugment() {
-    int ctr = 0;
     TitleInstance.findAll().each { ti ->
       if ( ti.getIdentifierValue('SUNCAT' ) == null ) {
         def lookupResult = edinaPublicationsAPIService.lookup(ti.title)
@@ -1047,10 +1046,9 @@ class DataloadService {
               def canonical_identifier = Identifier.lookupOrCreateCanonicalIdentifier('SUNCAT',suncat_identifier);
               ti.ids.add(new IdentifierOccurrence(identifier:canonical_identifier, ti:ti));
               ti.save(flush:true);
-              if ( ctr++ == 100 ) {
-                ctr = 0;
-                cleanUpGorm();
-              }
+            }
+            else {
+              log.debug("No match for title ${ti.title}, ${ti.id}");
             }
           }
           else {
@@ -1066,6 +1064,7 @@ class DataloadService {
   }
 
   def cleanUpGorm() {
+    log.debug("Clean up GORM");
     def session = sessionFactory.currentSession
     session.flush()
     session.clear()
