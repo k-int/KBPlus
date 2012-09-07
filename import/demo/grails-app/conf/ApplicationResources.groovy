@@ -20,8 +20,9 @@ modules = {
     resource url:'js/jquery.jeditable.mini.js'
   }
   kbplus {
-    resource url:"css/${ApplicationHolder.application.config.defaultCssSkin?:'live.css'}"
     resource url:'css/bootstrap.css'
     resource url:'css/style.css'
+    // println("Including css: css/${ApplicationHolder.application.config.defaultCssSkin?:'live.css'}");
+    // resource url:"css/${ApplicationHolder.application.config.defaultCssSkin?:'live.css'}"
   }
 }
