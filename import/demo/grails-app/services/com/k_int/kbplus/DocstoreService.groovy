@@ -109,7 +109,10 @@ class DocstoreService {
   def uploadBag(bagfile) {
     println("uploading bagfile ${bagfile}");
     // def http = new groovyx.net.http.HTTPBuilder('http://knowplus.edina.ac.uk/oledocstore/KBPlusServlet')
-    def docstore_uri = ApplicationHolder.application.config.docstore ?: 'http://knowplus.edina.ac.uk/oledocstore/KBPlusServlet'
+    def docstore_uri = ApplicationHolder.application.config.docstore ?: 'http://knowplus.edina.ac.uk:8080/oledocstore/KBPlusServlet'
+
+    log.debug("Using docstore ${docstore_uri}");
+
     def http = new groovyx.net.http.HTTPBuilder(docstore_uri)
     def result = [:]
     //edef result_uuid = null
@@ -153,18 +156,23 @@ class DocstoreService {
 
   def extractDocId(bagresponsezip) {
     def uuid = null
-    java.util.zip.ZipFile zf = new java.util.zip.ZipFile(bagresponsezip);
-    java.util.zip.ZipEntry bag_dir_entry = zf.getEntry('bag_dir');
+    try {
+      java.util.zip.ZipFile zf = new java.util.zip.ZipFile(bagresponsezip);
+      java.util.zip.ZipEntry bag_dir_entry = zf.getEntry('bag_dir');
 
-    InputStream is = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
+      InputStream is = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
 
-    def result_doc = new groovy.util.XmlSlurper().parse(is);
+      def result_doc = new groovy.util.XmlSlurper().parse(is);
 
-    InputStream is2 = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
-    log.debug("result_doc: ${is2.text} ${result_doc.text()}");
-    uuid = result_doc.documents.document.uuid.text()
+      InputStream is2 = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
+      log.debug("result_doc: ${is2.text} ${result_doc.text()}");
+      uuid = result_doc.documents.document.uuid.text()
 
-    zf.close();
+      zf.close();
+    }
+    catch ( Exception e ) {
+      log.error("problem extracting documnet id from bag response ${e}",e);
+    }
     uuid
   }
 

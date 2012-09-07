@@ -81,7 +81,7 @@ class SubscriptionDetailsController {
            // Output the header information
            if ( ( params.omitHeader == null ) || ( params.omitHeader != 'Y' ) ) {
              writer.write("FileType,SpecVersion,JD_ID,TermStartDate,TermEndDate,SubURI\n")
-             writer.write("${result.subscriptionInstance.type.value},\"2.0\",${jc_id},start,end,\"uri://kbplus/sub/${result.subscriptionInstance.id}\"\n")
+             writer.write("\"${result.subscriptionInstance.type.value}\",\"2.0\",${jc_id},\"${result.subscriptionInstance.startDate}\",\"${result.subscriptionInstance.endDate}\",\"uri://kbplus/sub/${result.subscriptionInstance.id}\"\n")
            }
 
            // Output the body text

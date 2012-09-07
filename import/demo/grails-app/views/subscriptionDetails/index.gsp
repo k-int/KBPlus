@@ -200,7 +200,14 @@
                 <td>${ie.coverageNote}</td>  
                 <td>
                   <g:if test="${editable}"><g:link action="removeEntitlement" params="${[ieid:ie.id, sub:subscriptionInstance.id]}" onClick="return confirm('Are you sure you wish to delete this entitlement');">Delete</g:link></g:if>
-                  <g:if test="${institutional_usage_identifier}"><a href="https://www.jusp.mimas.ac.uk/secure/v2/ijsu/?id=${institutional_usage_identifier}&issn=${ie?.tipp?.title?.getIdentifierValue('ISSN')}">Usage Info</a></g:if>
+                  <g:if test="${institutional_usage_identifier}">
+                    <g:if test="${ie?.tipp?.title?.getIdentifierValue('ISSN')}">
+                      | <a href="https://www.jusp.mimas.ac.uk/secure/v2/ijsu/?id=${institutional_usage_identifier.value}&issn=${ie?.tipp?.title?.getIdentifierValue('ISSN')}">ISSN Usage</a>
+                    </g:if>
+                    <g:if test="${ie?.tipp?.title?.getIdentifierValue('eISSN')}">
+                      | <a href="https://www.jusp.mimas.ac.uk/secure/v2/ijsu/?id=${institutional_usage_identifier.value}&issn=${ie?.tipp?.title?.getIdentifierValue('eISSN')}">eISSN Usage</a>
+                    </g:if>
+                  </g:if>
                 </td>
               </tr>
             </g:each>
