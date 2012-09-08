@@ -158,19 +158,19 @@
                 <tr><td>Alumni Access</td>
                     <td><g:refdataValue val="${license.alumniAccess?.value}" domain="License" pk="${license.id}" field="alumniAccess" cat='YNO' class="${editable?'refdataedit':''}"/></td>
                     <td><g:singleValueFieldNote domain="alumniAccess" value="${license.getNote('alumniAccess')}" class="${editable?'fieldNote':''}"/></td></tr>
-                <tr><td>ILL Access</td>
+                <tr><td>ILL - Inter Library Loans</td>
                     <td><g:refdataValue val="${license.ill?.value}" domain="License" pk="${license.id}" field="ill" cat='YNO' class="${editable?'refdataedit':''}"/></td>
                     <td><g:singleValueFieldNote domain="ill" value="${license.getNote('ill')}" class="${editable?'fieldNote':''}"/></td></tr>
-                <tr><td>Coursepack Access</td>
+                <tr><td>Include In Coursepacks</td>
                     <td><g:refdataValue val="${license.coursepack?.value}" domain="License" pk="${license.id}" field="coursepack" cat='YNO' class="${editable?'refdataedit':''}"/></td>
                     <td><g:singleValueFieldNote domain="coursepack" value="${license.getNote('coursepack')}" class="${editable?'fieldNote':''}"/></td></tr>
-                <tr><td>VLE Access</td>
+                <tr><td>Include in VLE</td>
                     <td><g:refdataValue val="${license.vle?.value}" domain="License" pk="${license.id}" field="vle" cat='YNO' class="${editable?'refdataedit':''}"/></td>
                     <td><g:singleValueFieldNote domain="vle" value="${license.getNote('vle')}" class="${editable?'fieldNote':''}"/></td></tr>
                 <tr><td>Enterprise Access</td>
                     <td><g:refdataValue val="${license.enterprise?.value}" domain="License" pk="${license.id}" field="enterprise" cat='YNO' class="${editable?'refdataedit':''}"/></td>
                     <td><g:singleValueFieldNote domain="enterprise" value="${license.getNote('enterprise')}" class="${editable?'fieldNote':''}"/></td></tr>
-                <tr><td>PCA Access</td>
+                <tr><td>Post Cancellation Access Entitlement</td>
                     <td><g:refdataValue val="${license.pca?.value}" domain="License" pk="${license.id}" field="pca" cat='YNO' class="${editable?'refdataedit':''}"/></td>
                     <td><g:singleValueFieldNote domain="pca" value="${license.getNote('pca')}" class="${editable?'fieldNote':''}"/></td></tr>
               </tbody>
