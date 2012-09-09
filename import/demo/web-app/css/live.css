@@ -1,10 +1,8 @@
-/* Live Skin */
-
 /**
- *  Sandbox css
+ *  Live css
  */
 .navbar-inner {
-        background-color: #007A5E;
-        background-image: url('../images/header_graphic.jpg');
+  background-color: #007A5E;
+  background-image: url('../images/header_graphic.jpg');
 }
 
