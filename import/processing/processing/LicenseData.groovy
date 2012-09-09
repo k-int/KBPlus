@@ -56,7 +56,9 @@ if ( db == null ) {
 }
 
 
-def target_web_service = 'http://knowplus.edina.ac.uk:8080/oledocstore/KBPlusServlet'
+// def target_web_service = 'http://knowplus.edina.ac.uk:8080/oledocstore/KBPlusServlet'
+// def target_web_service = 'http://test.kbplus.ac.uk/oledocstore/KBPlusServlet'
+def target_web_service = 'http://knowplustest.edina.ac.uk:8080/oledocstore/KBPlusServlet'
 
 println("Processing zip ${args[0]}");
 
