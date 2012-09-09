@@ -109,7 +109,7 @@ class DocstoreService {
   def uploadBag(bagfile) {
     println("uploading bagfile ${bagfile}");
     // def http = new groovyx.net.http.HTTPBuilder('http://knowplus.edina.ac.uk/oledocstore/KBPlusServlet')
-    def docstore_uri = ApplicationHolder.application.config.docstore ?: 'http://knowplus.edina.ac.uk:8080/oledocstore/KBPlusServlet'
+    def docstore_uri = ApplicationHolder.application.config.docstore
 
     log.debug("Using docstore ${docstore_uri}");
 
@@ -147,7 +147,7 @@ class DocstoreService {
       }
   
       response.failure = { resp ->
-        log.error("Error response ${resp}");
+        log.error("Error response from docstore(${docstore_uri}) ${resp}");
       }
     }
 

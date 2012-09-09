@@ -56,10 +56,6 @@ if ( db == null ) {
 }
 
 
-// def target_web_service = 'http://knowplus.edina.ac.uk:8080/oledocstore/KBPlusServlet'
-// def target_web_service = 'http://test.kbplus.ac.uk/oledocstore/KBPlusServlet'
-def target_web_service = 'http://knowplustest.edina.ac.uk:8080/oledocstore/KBPlusServlet'
-
 println("Processing zip ${args[0]}");
 
 def zipFile = new java.util.zip.ZipFile(new File(args[0]))
@@ -252,8 +248,11 @@ def docstoreUpload(bf, zipfile, filelist) {
 
 def uploadBag(bagfile,filelist) {
   println("uploading bagfile ${bagfile}");
+  def docstore_url = 'http://knowplustest.edina.ac.uk:8080/oledocstore/KBPlusServlet'
   // def http = new groovyx.net.http.HTTPBuilder('http://knowplusdev.edina.ac.uk:8080/oledocstore/KBPlusServlet')
-  def http = new groovyx.net.http.HTTPBuilder('http://knowplus.edina.ac.uk:8080/oledocstore/KBPlusServlet')
+  // def http = new groovyx.net.http.HTTPBuilder('http://knowplus.edina.ac.uk:8080/oledocstore/KBPlusServlet')
+  // def http = new groovyx.net.http.HTTPBuilder('http://knowplustest.edina.ac.uk:8080/oledocstore/KBPlusServlet')
+  def http = new groovyx.net.http.HTTPBuilder(docstore_url);
 
   http.request(groovyx.net.http.Method.POST) {request ->
     requestContentType = 'multipart/form-data'
@@ -267,7 +266,7 @@ def uploadBag(bagfile,filelist) {
     request.entity = multipart_entity;
 
     response.success = { resp, data ->
-      println("Got response ${resp}");
+      println("DOCSTORE SUCCESS : Got response ${resp}");
       def tempfile_name = java.util.UUID.randomUUID().toString();
       File tempfile = new File(System.getProperty("java.io.tmpdir")+System.getProperty("file.separator")+tempfile_name);
       tempfile << data
@@ -280,13 +279,13 @@ def uploadBag(bagfile,filelist) {
       def result_doc = new groovy.util.XmlSlurper().parse(is);
       int i=0;
       result_doc.documents.document.each { rd ->
-        println("** Doc added to docstore ($filelist[i].name):  ${rd.uuid.text()}");
+        println("** Doc added to docstore(${docstore_url}) ($filelist[i].name):  ${rd.uuid.text()}");
         filelist[i++].remote_uuid = rd.uuid.text()
       }
     }
 
     response.failure = { resp ->
-      println("Error response ${resp}");
+      println("**ERROR** response from docstore(${docstore_url}) : ${resp}");
       // log.error("Failure - ${resp}");
       // assert resp.status >= 400
     }
