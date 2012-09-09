@@ -1,7 +1,7 @@
 /**
  *  Sandbox css
  */
-.navbar-inner.explorer {
-        background-color: #007A5E;
-        background-image: url('../images/header_graphic_green.jpg');
+.navbar-inner {
+  background-color: #007A5E;
+  background-image: url('../images/header_graphic_green.jpg');
 }
