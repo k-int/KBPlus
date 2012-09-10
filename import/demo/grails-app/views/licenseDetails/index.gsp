@@ -211,22 +211,22 @@
          $('.ipe, .intedit, .refdataedit, .cuedit, .fieldNote, .newipe').click(function() {
          	// Hide edit icon with overwriting style.
          	$(this).addClass('clicked');
-         	
-         	// If the editable has an icon as part of its styling.
-         	var iconStyle = $(this).is('.refdataedit, .cuedit');
-         	
-         	if(iconStyle) {
-         		$(this).parent().find('.select-icon').hide();
-         	}      	
-         	
-         	var e = $(this);
+            
+            var e = $(this);
+            
+            var outsideElements;
+            
+            setTimeout(function() {
+                outsideElements = e.parent().find("span:not(.clicked)");
+                outsideElements.hide();
+            }, 1);
          	
          	var removeClicked = function() {
          		setTimeout(function() {
          			e.removeClass('clicked');
          			
-         			if(iconStyle) {
-         				e.parent().find('.select-icon').show();
+         			if(outsideElements) {
+         				outsideElements.show();
          			}
          		}, 1);
          	}

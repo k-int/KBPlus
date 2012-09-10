@@ -181,6 +181,10 @@
     width: 78%;
 }
 
+.licence-info p {
+    word-wrap: break-word;
+}
+
 .licence-properties td {
     width: 25%;
 }
