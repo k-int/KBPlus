@@ -50,7 +50,7 @@
         <dd>
           <select name="licenceNoteShared">
             <option value="0">Not Shared</option>
-            <option value="1">JISC Collections</option>
+            <!-- <option value="1">JISC Collections</option> -->
             <option value="2">Community</option>
           </select>
         </dd>

@@ -7,20 +7,37 @@
 
 <html>
   <head>
-    <meta name="layout" content="mmbootstrap"/>
+    <meta name="layout" content="pubbootstrap"/>
     <title>KB+ Data import explorer</title>
   </head>
 
-  <body>
+
+  <body class="public">
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner navbar-public">
         <div class="container">
-          <img src="images/kb_large_icon.png">
+          <img class="brand" alt="Knowledge Base + logo" src="images/kb_large_icon.png" />
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li>
+                <a href="${createLink(uri: '/')}"> Home </a>
+              </li>
+              <li>
+                <a href="${createLink(uri: '/about')}"> About KB+ </a>
+              </li>
+              <li>
+                <a href="${createLink(uri: '/signup')}"> Sign Up </a>
+              </li>
+              <li class="active last">
+                <a href="${createLink(uri: '/publicExport')}"> Exports </a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="navbar-push-public"></div>
+   <div class="navbar-push-public"></div>
 
     <div class="container">
       <h1>Exports</h1>

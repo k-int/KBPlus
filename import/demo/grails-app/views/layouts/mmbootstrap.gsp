@@ -49,19 +49,22 @@
           <div class="nav-collapse">
             <ul class="nav">
               <sec:ifLoggedIn>
-                <li class="dropdown">
-                  <a href="#" class="dropdown-toggle explorer-link" data-toggle="dropdown"> Data Explorer <b class="caret"></b> </a>
-                  <ul class="dropdown-menu" style="max-width:none;">
-                    <li<%= request.forwardURI == "${createLink(uri: '/home')}" ? ' class="active"' : '' %>><a href="${createLink(uri: '/home')}">Search</a></li>
-                    <li <%='package'== controllerName ? ' class="active"' : '' %>><g:link controller="package">Package</g:link></li>
-                    <li <%='org'== controllerName ? ' class="active"' : '' %>><g:link controller="org">Organisations</g:link></li>
-                    <li <%='platform'== controllerName ? ' class="active"' : '' %>><g:link controller="platform">Platform</g:link></li>
-                    <li <%='titleInstance'== controllerName ? ' class="active"' : '' %>><g:link controller="titleInstance">Title Instance</g:link></li>
-                    <li <%='titleInstancePackagePlatform'== controllerName ? ' class="active"' : '' %>><g:link controller="titleInstancePackagePlatform">Title Instance Package Platform</g:link></li>
-                    <li <%='subscription'== controllerName ? ' class="active"' : '' %>><g:link controller="subscription">Subscriptions</g:link></li>
-                    <li <%='license'== controllerName ? ' class="active"' : '' %>><g:link controller="license">Licences</g:link></li>
-                  </ul>
-                </li>
+
+                <sec:ifAnyGranted roles="ROLE_ADMIN">
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle explorer-link" data-toggle="dropdown"> Data Explorer <b class="caret"></b> </a>
+                    <ul class="dropdown-menu" style="max-width:none;">
+                      <li<%= request.forwardURI == "${createLink(uri: '/home')}" ? ' class="active"' : '' %>><a href="${createLink(uri: '/home')}">Search</a></li>
+                      <li <%='package'== controllerName ? ' class="active"' : '' %>><g:link controller="package">Package</g:link></li>
+                      <li <%='org'== controllerName ? ' class="active"' : '' %>><g:link controller="org">Organisations</g:link></li>
+                      <li <%='platform'== controllerName ? ' class="active"' : '' %>><g:link controller="platform">Platform</g:link></li>
+                      <li <%='titleInstance'== controllerName ? ' class="active"' : '' %>><g:link controller="titleInstance">Title Instance</g:link></li>
+                      <li <%='titleInstancePackagePlatform'== controllerName ? ' class="active"' : '' %>><g:link controller="titleInstancePackagePlatform">Title Instance Package Platform</g:link></li>
+                      <li <%='subscription'== controllerName ? ' class="active"' : '' %>><g:link controller="subscription">Subscriptions</g:link></li>
+                      <li <%='license'== controllerName ? ' class="active"' : '' %>><g:link controller="license">Licences</g:link></li>
+                    </ul>
+                  </li>
+                </sec:ifAnyGranted>
   
                 <g:if test="${user}">
                   <li class="dropdown">
@@ -91,8 +94,8 @@
                        <li class="divider"></li>
                        <li><g:link controller="myInstitutions" action="dashboard">Dashboard</g:link></li>
                        <li><g:link controller="myInstitutions" action="index">Alerts</g:link></li>
-                       <li><a href="http://service.kbplus.ac.uk/reports">Reports</a></li>
-                       <li><a href="http://service.kbplus.ac.uk/help">Help</a></li>
+                       <li><a href="/reports">Reports</a></li>
+                       <li><a href="/help">Help</a></li>
                     </ul>
                   </li>
                 </g:if>
