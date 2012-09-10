@@ -87,6 +87,10 @@ table thead, table tr:first-child th {
     font-weight: bold;
 }
 
+table th.sortable {
+    text-decoration: underline;
+}
+
 thead, table tr:first-child {
     -webkit-border-top-left-radius: 6px;
     -moz-border-radius-topleft: 6px;
@@ -120,6 +124,7 @@ th a {
 th a:hover {
     color: white;
 }
+
 
 dl {
     clear: both;
