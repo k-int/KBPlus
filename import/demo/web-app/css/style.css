@@ -7,6 +7,28 @@
  *
 */
 
+/* Table Columns Adjustment */
+
+.columns4 th {
+    max-width: 50%;
+}
+
+.columns5 th {
+    max-width: 40%;
+}
+
+.columns6 th {
+    max-width: 30%; 
+}
+
+.columns7 th {
+    max-width: 25%
+}
+
+.columns8 th, .columns9 th, .columns10 th, .columns10 td {
+    max-width: 10%;
+}
+
 /* Sprites */
 
 .sprite {

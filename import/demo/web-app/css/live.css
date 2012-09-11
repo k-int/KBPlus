@@ -14,3 +14,7 @@
 .navbar .nav > li {
     border-right: none;
 }
+
+.nav-collapse, .nav-collapse.collapse {
+    background-color: #007A5E;
+}

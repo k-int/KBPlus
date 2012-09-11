@@ -66,7 +66,7 @@
         <dd>
           <g:form action="processAddEntitlements">
             <input type="hidden" name="siid" value="${subscriptionInstance.id}"/>
-            <table  class="table table-striped table-bordered table-condensed">
+            <table  class="table table-striped table-bordered columns10">
               <thead>
                 <tr>
                   <th></th>
