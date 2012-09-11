@@ -270,6 +270,14 @@
     line-height: inherit;
 }
 
+div.comments {
+    background-image: url('../images/comments_icon.png');
+    background-repeat: no-repeat;
+    background-position: right 50%;
+    padding-right: 20px;
+    text-align: right;
+}
+
 #licenceInformation dt,dd {
     width: auto;
 }
