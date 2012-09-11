@@ -27,19 +27,28 @@
       </ul>
     </div>
 
-
-    <div class="container" style="text-align:center">
-      <g:form action="addSubscription" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="get">
-        Search text: <input type="text" name="q" placeholder="enter search term..."  value="${params.q?.encodeAsHTML()}"  />
-        <input type="submit" class="btn btn-primary" value="Search" />
-      </g:form><br/>
-    </div>
+        
+      <div class="container">
+          <div class="pull-right">
+              <g:form action="addSubscription" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="get">
+                  Search text: <input type="text" name="q" placeholder="enter search term..."  value="${params.q?.encodeAsHTML()}"  />
+                  <input type="submit" class="btn btn-primary" value="Search" />
+              </g:form>
+          </div>
+      </div>
 
     <div class="container">
         <g:if test="${subscriptions}" >
           <g:form action="processAddSubscription" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="post">
   
-            <table class="table table-striped table-bordered">
+            <div class="span4 pull-left subscription-create">
+              <select name="createSubAction"> 
+                <option value="copy">Copy With Entitlements</option>
+                <option value="nocopy">Copy Without Entitlements</option>
+                <input type="submit" class="btn disabled" value="Create Subscription" /> 
+            </div>
+              
+            <table class="table table-striped table-bordered subscriptions-list">
                 <tr>
                   <th>Select</th>
                   <g:sortableColumn params="${params}" property="s.name" title="Name" />
@@ -73,13 +82,6 @@
                   </tr>
                 </g:each>
              </table>
-
-            <div class="paginateButtons" style="text-align:center">
-              <select name="createSubAction"> 
-                <option value="copy">Copy With Entitlements</option>
-                <option value="nocopy">Copy Without Entitlements</option>
-              &nbsp;<input type="submit" class="btn btn-primary" value="Create Subscription"/> 
-            </div>
           </g:form>
         </g:if>
   
@@ -89,5 +91,19 @@
           </g:if>
         </div>
     </div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var activateButton = function() {
+                $('.subscription-create input').removeClass('disabled');
+                $('.subscription-create input').addClass('btn-primary');
+            }
+            
+            // Disables radio selection when using back button.
+            $('.subscriptions-list input[type=radio]:checked').prop('checked', false);
+            
+            // Activates the create subscription button when a radio button is selected.
+            $('.subscriptions-list input[type=radio]').click(activateButton);
+        });
+    </script>
   </body>
 </html>

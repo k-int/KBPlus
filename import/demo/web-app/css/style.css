@@ -153,6 +153,16 @@
     background-color: #F0F0F0;
 }
 
+.subscription-create {
+    margin-left: 0px;
+    margin-top: -30px;
+    margin-bottom: 5px;
+}
+
+.subscription-create input {
+    margin-left: 5px;
+}
+
 .licence-results {
 }
 
@@ -199,6 +209,10 @@
 
 .licence-properties input {
     width: 100%;
+}
+
+.licence-properties .editText {
+    float: right;
 }
 
 .well {
