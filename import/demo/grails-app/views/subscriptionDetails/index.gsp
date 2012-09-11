@@ -62,7 +62,7 @@
       </ul>
 
 
-      <button class="btn" data-toggle="collapse" data-target="#collapseableSubDetails">Show/Hide License Information</button>
+      <button class="hidden-license-details btn" data-toggle="collapse" data-target="#collapseableSubDetails">Show/Hide License Information <i class="icon-plus"></i></button>
     </div>
 
     <div id="collapseableSubDetails" class="container collapse">
@@ -383,6 +383,14 @@
          		});
          	}, 1);
          });
+         
+         $('#collapseableSubDetails').on('show', function() {
+            $('.hidden-license-details i').removeClass('icon-plus').addClass('icon-minus');
+        });
+        // Reverse it for hide:
+        $('#collapseableSubDetails').on('hide', function() {
+            $('.hidden-license-details i').removeClass('icon-minus').addClass('icon-plus');
+        });
       });
 
       function selectAll() {
