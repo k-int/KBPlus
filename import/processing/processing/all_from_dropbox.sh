@@ -14,7 +14,7 @@ find ~/Dropbox2/Dropbox/KB+/System\ -\ Data/Current/Masters -name "*.csv" -exec 
 
 echo Orgs import
 rm ~/Dropbox2/Dropbox/KB+/System\ -\ Data/Current/Subscribing\ Orgs/*BAD
-./OrgsData.groovy  ~/Dropbox2/Dropbox/KB+/System\ -\ Data/Current/Subscribing\ Orgs/subscribing\ organisations.csv  >> orgs_imp_log
+./OrgsData.groovy  ~/Dropbox2/Dropbox/KB+/System\ -\ Data/Current/Subscribing\ Orgs/subscribing\ organisations.csv_utf8  >> orgs_imp_log
 
 ./Consortium.groovy  ~/Dropbox2/Dropbox/KB+/System\ -\ Data/Current/Subscribing\ Orgs/consortium.csv  >> cons_import_log
 
