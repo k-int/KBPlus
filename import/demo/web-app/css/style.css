@@ -7,6 +7,28 @@
  *
 */
 
+/* Table Columns Adjustment */
+
+.columns4 th {
+    max-width: 50%;
+}
+
+.columns5 th {
+    max-width: 40%;
+}
+
+.columns6 th {
+    max-width: 30%; 
+}
+
+.columns7 th {
+    max-width: 25%
+}
+
+.columns8 th, .columns9 th, .columns10 th, .columns10 td {
+    max-width: 10%;
+}
+
 /* Sprites */
 
 .sprite {
@@ -153,6 +175,16 @@
     background-color: #F0F0F0;
 }
 
+.subscription-create {
+    margin-left: 0px;
+    margin-top: -30px;
+    margin-bottom: 5px;
+}
+
+.subscription-create input {
+    margin-left: 5px;
+}
+
 .licence-results {
 }
 
@@ -181,6 +213,10 @@
     width: 78%;
 }
 
+.licence-info p {
+    word-wrap: break-word;
+}
+
 .licence-properties td {
     width: 25%;
 }
@@ -195,6 +231,10 @@
 
 .licence-properties input {
     width: 100%;
+}
+
+.licence-properties .editText {
+    float: right;
 }
 
 .well {
@@ -250,6 +290,14 @@
 .well.notes .pagination a {
     padding: 5px;
     line-height: inherit;
+}
+
+div.comments {
+    background-image: url('../images/comments_icon.png');
+    background-repeat: no-repeat;
+    background-position: right 50%;
+    padding-right: 20px;
+    text-align: right;
 }
 
 #licenceInformation dt,dd {
@@ -340,7 +388,7 @@
     background-color: #D9E5F2;
 }
 
-.ipe, .fieldNote, .refdataedit, .cuedit, .newipe {
+.ipe, .fieldNote, .refdataedit, .cuedit, .isedit {
     display: inline;
     background-position: right center;
     padding-right: 25px;
@@ -349,7 +397,7 @@
     word-wrap: break-word;
 }
 
-.fieldNote:hover, .refdataedit:hover, .cuedit:hover, .newipe:hover {
+.fieldNote:hover, .refdataedit:hover, .cuedit:hover, .newipe:hover, .isedit:hover {
     background-color: #D9E5F2;
     cursor: pointer;
 }
@@ -372,7 +420,7 @@
     overflow: hidden;
 }
 
-.fieldNote form, .cuedit form, .refdataedit form {
+.fieldNote form, .cuedit form, .refdataedit form, .isedit form {
     background-color: #D9E5F2;
     margin: -8px;
     padding: 8px;
@@ -388,13 +436,13 @@
     padding-right: 0px;
 }
 
-.ipe textarea, .fieldNote textarea, .refdataedit select, .cuedit select, .newipe textarea {
+.ipe textarea, .fieldNote textarea, .refdataedit select, .cuedit select, .newipe textarea, .isedit textarea {
     height: auto;
     overflow: auto;
     width: 100%!important;
 }
 
-.ipe button[type="submit"], .fieldNote button[type="submit"], .refdataedit button[type="submit"], .cuedit button[type="submit"], .newipe[type="submit"] {
+.ipe button[type="submit"], .fieldNote button[type="submit"], .refdataedit button[type="submit"], .cuedit button[type="submit"], .newipe[type="submit"], .isedit[type="submit"] {
     background-color: #0074CC;
     background-image: linear-gradient(bottom, #29547E 34%, #386593 67%);
     background-image: -o-linear-gradient(bottom, #29547E 34%, #386593 67%);
@@ -412,7 +460,7 @@
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 
-.ipe button, .fieldNote button, .refdataedit button, .cuedit button, .newipe button {
+.ipe button, .fieldNote button, .refdataedit button, .cuedit button, .newipe button, .isedit button {
     margin-top: 10px;
     margin-right: 10px;
     display: inline-block;

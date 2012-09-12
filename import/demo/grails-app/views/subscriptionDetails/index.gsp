@@ -62,7 +62,7 @@
       </ul>
 
 
-      <button class="btn" data-toggle="collapse" data-target="#collapseableSubDetails">Show/Hide Details</button>
+      <button class="hidden-license-details btn" data-toggle="collapse" data-target="#collapseableSubDetails">Show/Hide License Information <i class="icon-plus"></i></button>
     </div>
 
     <div id="collapseableSubDetails" class="container collapse">
@@ -138,7 +138,7 @@
         <dd>
           <g:form action="subscriptionBatchUpdate" params="${[id:subscriptionInstance?.id]}">
           <g:set var="counter" value="${offset+1}" />
-          <table  class="table table-striped table-bordered table-condensed">
+          <table  class="table table-striped table-bordered">
             <tr>
               <th></th>
               <th>#</th>
@@ -164,11 +164,11 @@
                     <option value="remove">Remove Selected</option>
                   </select>
                   <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()"/></g:if></th>
-              <th><span id="entitlementBatchEdit" class="${editable?'entitlementBatchEdit':''}"></span><input type="hidden" name="bulk_core" id="bulk_core"/></th>
+              <th><span id="entitlementBatchEdit" class="${editable?'entitlementBatchEdit isedit':''}"></span><input type="hidden" name="bulk_core" id="bulk_core"/></th>
               <th><g:if test="${editable}"><span class="datevalue">edit</span> <input name="bulk_start_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
               <th><g:if test="${editable}"><span class="datevalue">edit</span> <input name="bulk_end_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
-              <th><span id="embargoBatchEdit" class="${editable?'embargoBatchEdit':''}"></span><input type="hidden" name="bulk_embargo" id="bulk_embargo"></th>
-              <th><span id="coverageBatchEdit" class="${editable?'coverageBatchEdit':''}"></span><input type="hidden" name="bulk_coverage" id="bulk_coverage"></th>
+              <th><span id="embargoBatchEdit" class="${editable?'embargoBatchEdit isedit':''}"></span><input type="hidden" name="bulk_embargo" id="bulk_embargo"></th>
+              <th><span id="coverageBatchEdit" class="${editable?'coverageBatchEdit isedit':''}"></span><input type="hidden" name="bulk_coverage" id="bulk_coverage"></th>
               <th colspan="3"></th>
             </tr>
           <g:if test="${entitlements}">
@@ -187,7 +187,7 @@
                                     pk="${ie.id}" 
                                     field="coreTitle" 
                                     cat="isCoreTitle"
-                                    class="${editable?'coreedit':''}"/></td>
+                                    class="${editable?'cuedit':''}"/></td>
                 <td>
                     <span class="datevalue"><g:formatDate format="dd MMMM yyyy" date="${ie.startDate}"/></span>
                     <input id="IssueEntitlement:${ie.id}:startDate" type="hidden" class="${editable?'dp1':''}" />
@@ -306,19 +306,19 @@
           $("#bulk_core").val(value);
           return(value);          
         },{ data:{'true':'true',
-                  'false':'false'}, type:'select',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px'});
+                  'false':'false'}, type:'select',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px', onblur:'ignore'});
 
         $('span.embargoBatchEdit').editable(function(value, settings) { 
           $("#bulk_embargo").val(value);
           return(value);
-        },{type:'textarea',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px'});
+        },{type:'textarea',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px', onblur:'ignore'});
 
         $('span.coverageBatchEdit').editable(function(value, settings) { 
           $("#bulk_coverage").val(value);
           return(value);
-        },{type:'textarea',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px'});
+        },{type:'textarea',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px', onblur:'ignore'});
 
-        $('td span.coreedit').editable('<g:createLink controller="ajax" action="genericSetValue" />', {
+        $('td span.cuedit').editable('<g:createLink controller="ajax" action="genericSetValue" />', {
            data   : {'true':'true', 'false':'false'},
            type   : 'select',
            cancel : 'Cancel',
@@ -339,7 +339,7 @@
          });
 
          var checkEmptyEditable = function() {
-           $('.ipe, .refdataedit, .fieldNote, .refdataedit').each(function() {
+           $('.ipe, .refdataedit, .fieldNote, .refdataedit, .isedit').each(function() {
              if($(this).text().length == 0) {
                $(this).addClass('editableEmpty');
              } else {
@@ -350,25 +350,24 @@
 
          // On jEditable click remove the hide the icon and show it 
          // when one of the buttons are clicked or ESC is hit.
-         $('.ipe, .intedit, .refdataedit, .cuedit, .fieldNote, .newipe').click(function() {
+         $('.ipe, .intedit, .refdataedit, .cuedit, .fieldNote, .newipe, .isedit').click(function() {
          	// Hide edit icon with overwriting style.
          	$(this).addClass('clicked');
          	
-         	// If the editable has an icon as part of its styling.
-         	var iconStyle = $(this).is('.refdataedit, .cuedit');
-         	
-         	if(iconStyle) {
-         		$(this).parent().find('.select-icon').hide();
-         	}      	
+         	setTimeout(function() {
+                outsideElements = e.parent().find("span:not(.clicked)");
+                outsideElements.hide();
+            }, 1);   	
          	
          	var e = $(this);
-         	
+         	var outsideElements;
+            
          	var removeClicked = function() {
          		setTimeout(function() {
          			e.removeClass('clicked');
          			
-         			if(iconStyle) {
-         				e.parent().find('.select-icon').show();
+         			if(outsideElements) {
+         				outsideElements.show();
          			}
          		}, 1);
          	}
@@ -384,6 +383,14 @@
          		});
          	}, 1);
          });
+         
+         $('#collapseableSubDetails').on('show', function() {
+            $('.hidden-license-details i').removeClass('icon-plus').addClass('icon-minus');
+        });
+        // Reverse it for hide:
+        $('#collapseableSubDetails').on('hide', function() {
+            $('.hidden-license-details i').removeClass('icon-minus').addClass('icon-plus');
+        });
       });
 
       function selectAll() {
