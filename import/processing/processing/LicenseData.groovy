@@ -34,6 +34,7 @@ import java.nio.charset.Charset
 println("Starting");
 
 def starttime = System.currentTimeMillis();
+def charset = java.nio.charset.Charset.forName('ISO-8859-1');
 def possible_date_formats = [
   new SimpleDateFormat('dd/MM/yy'),
   new SimpleDateFormat('yyyy/MM'),
@@ -63,21 +64,19 @@ def zipFile = new java.util.zip.ZipFile(new File(args[0]))
 def csventry = null;
 def docstore_components = []
 
-def testds=false
-
 zipFile.entries().each {
    // println("zip entry: ${it.name}");
    if ( it.name?.endsWith(".csv") ) {
-     if ( !testds)
-       csventry = it;
+     csventry = it;
+   }
+   else if ( it.name?.endsWith(".csv_utf8") ) {
+     csventry = it;
+     charset = java.nio.charset.Charset.forName('UTF-8');
    }
    else {
      docstore_components.add([file:it, id:java.util.UUID.randomUUID().toString(), name:it.getName(), filename:it.getName()]);
    }
 }
-
-if ( testds )
-    docstoreUpload(bf, zipFile, docstore_components);
 
 println(docstore_components.collect{[ it.remote_uuid, it.name ]})
 
@@ -86,7 +85,7 @@ def bad_rows = []
 
 if ( csventry ) {
   // println("Processing csv: ${csventry.name}");
-  CSVReader r = new CSVReader( new InputStreamReader(zipFile.getInputStream(csventry)))
+  CSVReader r = new CSVReader( new InputStreamReader(zipFile.getInputStream(csventry),charset))
   String [] nl;
   String [] lic_header_line = r.readNext()
   // println("Read column headings: ${lic_header_line}");
@@ -170,7 +169,7 @@ if ( csventry ) {
           license.subscriptions.add(sub_lookup._id);
         }
         else {
-          println("ERROR: Unable to locate subscription ${nl[i]} (norm id=${norm_identifier}) whilst processing license");
+          println("ERROR: Unable to locate subscription ${nl[i]} (norm id=${norm_identifier}) whilst processing license (${args[0]})");
         }
       }
 
@@ -179,7 +178,7 @@ if ( csventry ) {
       println(license)
     }
     else {
-      println("-> ERROR: Unable to lookup licensor \"${norm_licensor_name}\"");
+      println("-> ERROR: Unable to lookup licensor \"${norm_licensor_name}\" (${args[0]})");
     }
   }
 
@@ -187,7 +186,7 @@ if ( csventry ) {
 
 }
 else {
-  println("ERROR: NO CSV In zipfile");
+  println("ERROR: NO CSV In zipfile (${args[0]})");
 }
 
 
