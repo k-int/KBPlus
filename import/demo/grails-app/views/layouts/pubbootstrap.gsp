@@ -22,9 +22,6 @@
 
     <r:require modules="scaffolding"/>
 
-    <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
-
     <g:layoutHead/>
     <r:layoutResources/>
 

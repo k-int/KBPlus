@@ -247,7 +247,8 @@ def docstoreUpload(bf, zipfile, filelist) {
 
 def uploadBag(bagfile,filelist) {
   println("uploading bagfile ${bagfile}");
-  def docstore_url = 'http://knowplustest.edina.ac.uk:8080/oledocstore/KBPlusServlet'
+  def docstore_url = 'http://knowplus.edina.ac.uk:8080/oledocstore/KBPlusServlet'
+  // def docstore_url = 'http://knowplustest.edina.ac.uk:8080/oledocstore/KBPlusServlet'
   // def http = new groovyx.net.http.HTTPBuilder('http://knowplusdev.edina.ac.uk:8080/oledocstore/KBPlusServlet')
   // def http = new groovyx.net.http.HTTPBuilder('http://knowplus.edina.ac.uk:8080/oledocstore/KBPlusServlet')
   // def http = new groovyx.net.http.HTTPBuilder('http://knowplustest.edina.ac.uk:8080/oledocstore/KBPlusServlet')
