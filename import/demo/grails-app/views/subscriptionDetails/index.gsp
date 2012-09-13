@@ -226,7 +226,7 @@
       </dl>
     </div>
 
-    <div class="paginateButtons" style="text-align:center">
+    <div class="pagination" style="text-align:center">
       <g:if test="${entitlements}" >
         <span><g:paginate controller="subscriptionDetails" 
                           action="index" 
