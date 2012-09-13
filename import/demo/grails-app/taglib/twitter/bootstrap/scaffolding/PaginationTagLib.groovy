@@ -87,8 +87,6 @@ class PaginationTagLib {
                 endstep = laststep
             }
 
-            int laststepshown
-
             // display paginate steps
 			for (int i in beginstep..endstep) {
                 linkParams.offset = (i - 1) * max
@@ -97,7 +95,6 @@ class PaginationTagLib {
 				writer << '>'
                    writer << link(linkTagAttrs.clone()) {i.toString()}
 				writer << '</li>'
-                laststepshown = i
             }
         }
         
