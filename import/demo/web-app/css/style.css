@@ -102,9 +102,9 @@
 
 .navbar-footer .caret {
     border-left: 4px solid transparent;
-	border-right: 4px solid transparent;
-	border-top: none;
-	border-bottom: 4px solid rgb(189, 4, 57)!important;
+    border-right: 4px solid transparent;
+    border-top: none;
+    border-bottom: 4px solid rgb(189, 4, 57)!important;
 }
 
 .navbar-footer .navbar-inner {
@@ -238,7 +238,7 @@
 }
 
 .well {
-    
+
 }
 
 .well.documents {
@@ -517,5 +517,138 @@ div.comments {
 }
 
 .twitter {
-		min-height:330px;
+    min-height:330px;
 }
+
+/* KBPlus Reports Specific Styles */
+
+
+/* Paramters page */
+
+.report-parameters div {
+    width: 50%;
+}
+
+.report-parameters dl {
+    margin: 0;
+    padding: 0;
+    width: 97%;
+    border: 1px solid red;
+    border: 1px solid #DDD;
+    border-radius: 5px;
+}
+
+.report-parameters .pull-right dl {
+    float: right;
+}
+
+.report-parameters dt {
+    background-color: #990100;
+    padding: 8px;
+    padding-right: 10px;
+    color: white;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    margin: 0;
+}
+
+.report-parameters dt input {
+    height: 17px;
+}
+
+.report-parameters dd {
+    clear: right;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 3px;
+    paddin-bottom: 3px;
+    height: 33px;
+    line-height: 33px;
+    margin: 0;
+}
+
+.report-parameters dd:nth-child(even) {
+    background-color: #E9E9E9;
+}
+
+.report-parameters label {
+    width: auto;
+}
+
+.report-parameters input, .report-parameters select {
+    float: right;
+    width: auto;
+    height: 30px;
+}
+
+.filter-button {
+    margin-top: 15px;
+}
+
+/* Report page */
+
+.text-only, .text-only:hover, .text-only:active {
+    background-color: transparent;
+    background-image: none;
+    border: none;
+    box-shadow: none!important;
+    -webkit-box-shadow: none!important;
+    text-decoration: underline;
+}
+.breadcrumb .btn-group {
+    display: inline-block;
+}
+.breadcrumb .dropdown-menu li {
+    display: block;
+}
+.breadcrumb .dropdown-menu a:hover {
+    text-shadow: none;
+}
+.breadcrumb .caret {
+    border-top-color: #000;
+    margin-top: 6px;
+    margin-left: 3px;
+}
+.key {
+    margin-bottom: 10px;
+}
+.key ul {
+    list-style: none;
+    margin: 0;
+}
+.key li {
+    background-color: none;
+    margin-bottom: 3px;
+    padding-left: 10px;
+    display: inline-block;
+    margin-right: 10px;
+}
+#reportContent table {
+    margin: 0 auto; 
+    word-wrap: normal;
+}
+.key-container {
+    display: inline-block;
+    margin-top: -28px!important;
+    margin-bottom: 10px;
+}
+.key-container table {
+    display: inline;
+    word-wrap: normal;
+}
+.key-container table tbody td {
+    word-wrap: normal!important; 
+}
+.key-container > tbody tr {
+    display: inline-block;
+}
+.key-container tr {
+}
+.key-container table > tbody tr > td:first-child {
+    width: 10px;
+    border: 1px solid #535353;
+} 
+.key-container table > tbody tr > td {
+    padding-left: 10px;
+}
+
