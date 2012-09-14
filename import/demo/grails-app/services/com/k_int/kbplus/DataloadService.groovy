@@ -2,6 +2,7 @@ package com.k_int.kbplus
 
 import com.k_int.kbplus.*
 import org.hibernate.ScrollMode
+import java.nio.charset.Charset
 
 class DataloadService {
 
@@ -219,6 +220,8 @@ class DataloadService {
 
   def update() {
 
+    System.out.println("file.encoding=" + System.getProperty("file.encoding"));
+    System.out.println("Default Charset=" + Charset.defaultCharset());
 
     Org.withTransaction { transaction_status ->
       log.debug("DataloadController::update");
@@ -252,6 +255,9 @@ class DataloadService {
                       sector:org.sectorName,
                       scope:org.scope,
                       links:[]);
+
+            log.debug("New org ${org.name} trimmed to ${org.name.trim()} bytes are ${org.name.getBytes()}");
+
             o.ids=[]
           }
         }
@@ -280,6 +286,7 @@ class DataloadService {
           def amf_id = lookupOrCreateCanonicalIdentifier('UKAMF',org.famId);
           o.ids.add(new IdentifierOccurrence(identifier:amf_id,org:o));
         }
+
         if ( o.save(flush:true) ) {
         }
         else {

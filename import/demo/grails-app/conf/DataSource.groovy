@@ -17,7 +17,7 @@ environments {
             driverClassName = "com.mysql.jdbc.Driver"
             username = "k-int"
             password = "k-int"
-            url = "jdbc:mysql://localhost/KBPlus?autoReconnect=true&amp;characterEncoding=utf8"
+            url = "jdbc:mysql://localhost/KBPlus?autoReconnect=true&useEncoding=true&characterEncoding=UTF-8&useUnicode=true"
             pooled = true
             // logSql = true
             // formatSql = true
@@ -45,7 +45,7 @@ environments {
             driverClassName = "com.mysql.jdbc.Driver"
             username = "k-int"
             password = "k-int"
-            url = "jdbc:mysql://localhost/KBPlus?autoReconnect=true&amp;characterEncoding=utf8"
+            url = "jdbc:mysql://localhost/KBPlus?autoReconnect=true&useencoding=true&characterEncoding=UTF-8&useUnicode=true"
             pooled = true
             properties {
                 maxActive = -1
