@@ -63,7 +63,7 @@
           <tr>
             <td colspan="6">
               <g:if test="${ua.rootObj.class.name=='com.k_int.kbplus.License'}">
-                <span class="label label-info">License</span>
+                <span class="label label-info">Licence</span>
                 <em><g:link action="index"
                         controller="licenseDetails" 
                         id="${ua.rootObj.id}"
