@@ -115,6 +115,8 @@ thead td:last-child, table tr:first-child th:last-child  {
 th {
     background-color: transparent;
     background-image: none;
+    -ms-filter: none;
+    filter: none;
 }
 
 th a {
