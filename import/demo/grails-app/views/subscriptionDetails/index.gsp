@@ -62,14 +62,14 @@
       </ul>
 
 
-      <button class="hidden-license-details btn" data-toggle="collapse" data-target="#collapseableSubDetails">Show/Hide License Information <i class="icon-plus"></i></button>
+      <button class="hidden-license-details btn" data-toggle="collapse" data-target="#collapseableSubDetails">Show/Hide Subscription Details <i class="icon-plus"></i></button>
     </div>
 
     <div id="collapseableSubDetails" class="container collapse">
       <div class="row">
         <div class="span8"> 
             <br/>
-            <h6>License Information</h6>
+            <h6>Subscription Information</h6>
             <div class="licence-info"> 
                 <dl>
                     <dt>License</dt>

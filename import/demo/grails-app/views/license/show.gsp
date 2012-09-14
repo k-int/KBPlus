@@ -165,7 +165,7 @@
 					<g:if test="${licenseInstance?.licenseeRef}">
 						<dt><g:message code="license.licenseeRef.label" default="Licencee Ref" /></dt>
 						
-							<dd><g:fieldValue bean="${licenseInstance}" field="licenceeRef"/></dd>
+							<dd><g:fieldValue bean="${licenseInstance}" field="licenseeRef"/></dd>
 						
 					</g:if>
 				
