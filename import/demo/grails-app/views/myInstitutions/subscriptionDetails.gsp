@@ -122,13 +122,13 @@
       </dl>
     </div>
 
-    <div class="paginateButtons" style="text-align:center">
+    <div class="pagination" style="text-align:center">
       <g:if test="${entitlements}" >
-        <span><g:paginate controller="myInstitutions" 
+        <ul><g:paginate controller="myInstitutions" 
                           action="subscriptionDetails" 
                           params="${params}" next="Next" prev="Prev" 
                           max="15" 
-                          total="${num_sub_rows}" /></span>
+                          total="${num_sub_rows}" /></ul>
       </g:if>
     </div>
 

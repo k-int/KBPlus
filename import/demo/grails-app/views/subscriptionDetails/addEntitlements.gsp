@@ -109,13 +109,13 @@
             </div>
 
 
-            <div class="paginateButtons" style="text-align:center">
+            <div class="pagination" style="text-align:center">
               <g:if test="${available_issues}" >
-                <span><g:paginate controller="subscriptionDetails" 
+                <bootstrap:paginate controller="subscriptionDetails" 
                                   action="addEntitlements" 
                                   params="${params}" next="Next" prev="Prev" 
                                   max="${max}" 
-                                  total="${num_sub_rows}" /></span>
+                                  total="${num_sub_rows}" />
               </g:if>
             </div>
           </g:form>

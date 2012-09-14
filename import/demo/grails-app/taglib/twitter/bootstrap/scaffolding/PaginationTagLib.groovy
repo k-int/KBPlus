@@ -10,6 +10,7 @@ class PaginationTagLib {
 	
 	def paginate = { attrs ->
         def writer = out
+
         if (attrs.total == null) {
             throwTagError("Tag [paginate] is missing required attribute [total]")
         }
@@ -96,6 +97,26 @@ class PaginationTagLib {
 				writer << '</li>'
             }
         }
+        
+        // Adds .. step gap if applicable.
+        int endstep = currentstep + Math.round(maxsteps / 2) - 1
+
+        if(endstep + 1 < laststep) { 
+            linkTagAttrs.class = 'step gap'
+            linkParams.offset = laststep - maxsteps + 1
+            writer << '<li>'     
+            writer << link(linkTagAttrs, '..')
+            writer << '</li>'
+
+            linkTagAttrs.class = 'step'
+			linkParams.offset = max
+			writer << '<li>'
+			def nextLinkAttrs = linkTagAttrs.clone()
+
+			nextLinkAttrs += [title: (attrs.next ? attrs.next : messageSource.getMessage('paginate.next', null, messageSource.getMessage('default.paginate.next', null, 'Next', locale), locale))]
+			writer << link(nextLinkAttrs) {laststep.toString()}
+			writer << '</li>'
+        }
 
         // display next link when not on laststep
 		if (currentstep < laststep) {
@@ -105,6 +126,7 @@ class PaginationTagLib {
 			if (currentstep == laststep) writer << ' class="disabled"'
 			writer << '>'
 			def nextLinkAttrs = linkTagAttrs.clone()
+
 			nextLinkAttrs += [title: (attrs.next ? attrs.next : messageSource.getMessage('paginate.next', null, messageSource.getMessage('default.paginate.next', null, 'Next', locale), locale))]
 			writer << link(nextLinkAttrs, '<i class="icon-chevron-right"></i>')
 			writer << '</li>'

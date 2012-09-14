@@ -96,9 +96,9 @@
         </table>
       </div>
 
-      <div class="paginateButtons" style="text-align:center">
+      <div class="pagination" style="text-align:center">
         <g:if test="${subscriptions}" >
-          <span><g:paginate  action="currentSubscriptions" controller="myInstitutions" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${num_sub_rows}" /></span>
+          <bootstrap:paginate  action="currentSubscriptions" controller="myInstitutions" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${num_sub_rows}" />
         </g:if>
       </div>
 
