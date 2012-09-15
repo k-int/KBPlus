@@ -15,9 +15,10 @@ environments {
         dataSource {
             dbCreate = "update"
             driverClassName = "com.mysql.jdbc.Driver"
+            dialect=org.hibernate.dialect.MySQL5Dialect
             username = "k-int"
             password = "k-int"
-            url = "jdbc:mysql://localhost/KBPlus?autoReconnect=true&useUnicode=yes&characterEncoding=UTF-8"
+            url = "jdbc:mysql://localhost/KBPlus?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8"
             pooled = true
             // logSql = true
             // formatSql = true
@@ -45,8 +46,9 @@ environments {
             driverClassName = "com.mysql.jdbc.Driver"
             username = "k-int"
             password = "k-int"
-            url = "jdbc:mysql://localhost/KBPlus?autoReconnect=true&useUnicode=yes&characterEncoding=UTF-8"
+            url = "jdbc:mysql://localhost/KBPlus?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8"
             pooled = true
+            dialect=org.hibernate.dialect.MySQL5Dialect
             properties {
                 maxActive = -1
                 minEvictableIdleTimeMillis=1800000
