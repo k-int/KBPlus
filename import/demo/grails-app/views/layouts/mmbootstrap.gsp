@@ -88,8 +88,7 @@
                          </g:each>
                        </g:if>
                        <g:else>
-                         <li>Please use the manage affiliations option to request access
-                                  to your home institution</li>
+                         <li>Please request institutional affiliations via your <g:link controller="profile" action="index">Profile Page</g:link></li>
                        </g:else>
                        <li class="divider"></li>
                        <li><g:link controller="myInstitutions" action="dashboard">Dashboard</g:link></li>
