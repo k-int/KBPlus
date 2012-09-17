@@ -16,3 +16,10 @@ grant all on KBPlus.* to 'k-int'@'%';
 
 
 show variables like '%character%';  
+
+N.B. On linux, you may need to edit your /etc/mysql/my.cnf file and add the following to [mysqld] (Particularly if the above show, returns an character_set_server which is not utf8)
+
+collation_server=utf8_unicode_ci
+character_set_server=utf8
+
+

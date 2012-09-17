@@ -36,6 +36,7 @@ println("Starting");
 def starttime = System.currentTimeMillis();
 def charset = java.nio.charset.Charset.forName('ISO-8859-1');
 def possible_date_formats = [
+  new SimpleDateFormat('dd/MM/yyyy'),
   new SimpleDateFormat('yyyy/MM/dd'),
   new SimpleDateFormat('dd/MM/yy'),
   new SimpleDateFormat('yyyy/MM'),
