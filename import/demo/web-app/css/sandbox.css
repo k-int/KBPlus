@@ -1,6 +1,7 @@
 /**
  *  Sandbox css
 */
+
 .navbar-inner {
     background-color: #007A5E;
     background-image: url('../images/header_graphic_green_sandpit.jpg');
@@ -10,14 +11,14 @@
     background-image: url('../images/header_graphic_green_colour_sandpit.jpg');
 }
 
-.navbar .brand { 
+.navbar-inner .brand {
+    color: white;
+}
+
+.navbar .brand {
     color: #fff; 
-} 
+}
 
 .navbar .nav > li {
     border-right: none;
-}
-
-.navbar-inner .brand {
-    color: white;
 }

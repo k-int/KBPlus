@@ -41,12 +41,14 @@
         <g:if test="${subscriptions}" >
           <g:form action="processAddSubscription" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="post">
   
-            <div class="span12 pull-left subscription-create">
+            <div class="pull-left subscription-create">
               <select name="createSubAction"> 
                 <option value="copy">Copy With Entitlements</option>
                 <option value="nocopy">Copy Without Entitlements</option>
                 <input type="submit" class="btn disabled" value="Create Subscription" /> 
             </div>
+              
+              <div class="clearfix"></div>
               
             <table class="table table-striped table-bordered subscriptions-list">
                 <tr>
