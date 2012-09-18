@@ -198,7 +198,12 @@
 
 
     <r:layoutResources/>
+    
+    <div id="SupportTab">
+            <a href="mailto:kbplus@jisc-collections.ac.uk?subject=KBPlus%20Support%20Query"><i class="icon-question-sign icon-white"></i>Request Support</a>
+        </div>
 
+    <!--
     <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.4/zenbox.js"></script>
     <style type="text/css" media="screen, projection">
       @import url(//assets.zendesk.com/external/zenbox/v2.4/zenbox.css);
@@ -214,6 +219,7 @@
         });
       }
     </script>
+    -->
 
   </body>
 </html>

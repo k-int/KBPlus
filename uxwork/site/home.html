@@ -190,12 +190,12 @@
                         </tr>
                     </tbody>
                 </table>
-                    
+
                 <p><a href="#">View All Alerts</a></p>
 
             </div>
         </div>
-            
+
         <div id="Footer">
             <div class="navbar navbar-footer">
                 <div class="navbar-inner">
@@ -219,7 +219,7 @@
                     </div>
                 </div>
             </div>
-                
+
             <div class="footer-links container">
                 <div class="row">
                     <div class="pull-left">
@@ -232,10 +232,91 @@
             </div>
         </div>
 
+        <div id="SupportTab">
+            <a href="mailto:kbplus@jisc-collections.ac.uk?subject=KBPlus%20Support%20Query"><i class="icon-question-sign icon-white"></i>Support Queries</a>
+        </div>
+
+        <style type="text/css">
+            #SupportTab {
+                text-align: center;
+                font-size: 15px;
+                line-height: 30px;
+                height: 30px;
+                padding-left: 10px;
+                padding-right: 10px;
+                position: fixed;
+                bottom: 0;
+                right: 50px;
+                background-color: #606c88;
+                z-index: 9999;
+                border: 1px solid #BBB;
+                border-bottom: none;
+                cursor: pointer;
+                
+                /* CSS 3 Stylings */
+                -webkit-border-top-left-radius: 5px;
+                -webkit-border-top-right-radius: 5px;
+                -moz-border-radius-topleft: 5px;
+                -moz-border-radius-topright: 5px;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+                font-family: sans-serif;
+
+                background: #606c88; /* Old browsers */
+                background: -moz-linear-gradient(top,  #606c88 0%, #3f4c6b 100%); /* FF3.6+ */
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#606c88), color-stop(100%,#3f4c6b)); /* Chrome,Safari4+ */
+                background: -webkit-linear-gradient(top,  #606c88 0%,#3f4c6b 100%); /* Chrome10+,Safari5.1+ */
+                background: -o-linear-gradient(top,  #606c88 0%,#3f4c6b 100%); /* Opera 11.10+ */
+                background: -ms-linear-gradient(top,  #606c88 0%,#3f4c6b 100%); /* IE10+ */
+                background: linear-gradient(to bottom,  #606c88 0%,#3f4c6b 100%); /* W3C */
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#606c88', endColorstr='#3f4c6b',GradientType=0 ); /* IE6-9 */
+
+                -webkit-box-shadow: 0px -0px 29px rgba(50, 50, 50, 0.4);
+                -moz-box-shadow:    0px -0px 29px rgba(50, 50, 50, 0.4);
+                box-shadow:         0px -0px 29px rgba(50, 50, 50, 0.4);
+
+            }
+            
+            #SupportTab a {
+                color: white;
+            }
+            
+            #SupportTab a:hover {
+                text-decoration: none;
+            }
+            
+            #SupportTab:hover {
+                background: #606c88;
+            }
+            
+            #SupportTab i {
+                margin-top: 3px;
+                margin-right: 8px;
+                border-right: 1px solid white;
+                padding-right: 8px;
+            }
+        </style>
+
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 
         <script>
             window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')
+        </script>
+        
+        <script type="text/javascript">
+            $('#SupportTab a').click(function() {
+                var title = $('title').text();
+                var url = document.URL;
+                var href = $(this).attr('href');
+                
+                // Add title to subject
+                $(this).attr('href', href + ' - Re: ' + title);
+                href = $(this).attr('href');
+                
+                // Add full url to body
+                $(this).attr('href', href + '&body=Full%20URL:%20' + url);
+                return true;
+            });
         </script>
 
         <script src="js/plugins.js"></script>

@@ -249,7 +249,7 @@
   $(function () {
     $('html').on('click.dropdown.data-api', clearMenus)
     $('body')
-      .on('click.dropdown', '.dropdown form', function (e) { e.stopPropagation() })
+      .on('click.dropdown', '.dropdown form', function (e) {e.stopPropagation()})
       .on('click.dropdown.data-api', toggle, Dropdown.prototype.toggle)
   })
 
@@ -325,7 +325,7 @@
           that.$element.addClass('in')
 
           transition ?
-            that.$element.one($.support.transition.end, function () { that.$element.trigger('shown') }) :
+            that.$element.one($.support.transition.end, function () {that.$element.trigger('shown')}) :
             that.$element.trigger('shown')
 
         })
@@ -1062,8 +1062,8 @@
             text: {
                 element : function(settings, original) {
                     var input = $('<input />');
-                    if (settings.width  != 'none') { input.width(settings.width);  }
-                    if (settings.height != 'none') { input.height(settings.height); }
+                    if (settings.width  != 'none') {input.width(settings.width);}
+                    if (settings.height != 'none') {input.height(settings.height);}
                     /* https://bugzilla.mozilla.org/show_bug.cgi?id=236791 */
                     //input[0].setAttribute('autocomplete','off');
                     input.attr('autocomplete','off');
@@ -1147,3 +1147,19 @@
     };
 
 })(jQuery);
+
+/* Support Tab Click Function */
+
+$('#SupportTab a').click(function() {
+    var title = $('title').text();
+    var url = document.URL;
+    var href = $(this).attr('href');
+                
+    // Add title to subject
+    $(this).attr('href', href + ' - Re: ' + title);
+    href = $(this).attr('href');
+                
+    // Add full url to body
+    $(this).attr('href', href + '&body=Full%20URL:%20' + url);
+    return true;
+});
