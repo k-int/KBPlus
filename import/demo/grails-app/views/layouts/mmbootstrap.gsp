@@ -45,7 +45,7 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="${createLink(uri: '/')}">KB+</a>
+          <g:link controller="myInstitutions" action="dashboard" class="brand">KB+</g:link>
           <div class="nav-collapse">
             <ul class="nav">
               <sec:ifLoggedIn>
@@ -94,7 +94,7 @@
                        <li><g:link controller="myInstitutions" action="dashboard">Dashboard</g:link></li>
                        <li><g:link controller="myInstitutions" action="index">Alerts</g:link></li>
                        <li><a href="/reports">Reports</a></li>
-                       <li><a href="/help">Help</a></li>
+                       <li><a href="https://knowledgebaseplus.wordpress.com/kb-support/">Help</a></li>
                     </ul>
                   </li>
                 </g:if>
