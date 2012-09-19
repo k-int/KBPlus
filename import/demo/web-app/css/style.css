@@ -95,7 +95,7 @@
 }
 
 .navbar-footer {
-    background-color: #EEE;
+    background-color: #F5F5F5;
     color: #535353;
     margin-bottom: 0px;
 }
@@ -120,9 +120,9 @@
 }
 
 .navbar-footer.navbar .footer-sublinks.nav > li > a {
-    color: #BBB;
+    color: #535353;
+    font-size: 11px;
     text-shadow: none;
-    font-family: verdana;
 }
 
 .navbar-footer.navbar .footer-sublinks.nav > li > a:hover {
@@ -731,4 +731,3 @@ div.comments {
     border-right: 1px solid white;
     padding-right: 8px;
 }
-
