@@ -328,6 +328,13 @@ dt, dd {
 
 /* Bootstrap Responsive Overwrites */
 
+@media (min-width: 1200px) {
+    .navbar-footer.navbar .container {
+        width: 1170px!important;
+    }
+}
+
+
 @media (max-width: 979px) {
     .navbar .nav {
         margin: 0;
@@ -421,16 +428,28 @@ dt, dd {
         background-color: transparent;
         overflow: visible;
     }
+    
+    .navbar-footer.navbar .container {
+        width: auto!important;
+    }
 
     .navbar-footer .nav-collapse .nav > li {
         width: auto;
-        float: none;
+    }
+    
+    .navbar-footer.navbar .nav > li {
+        float: left;
     }
 
     .navbar-footer.navbar .nav > li > a {
         text-shadow: none;
         padding: 9px 10px 11px;
         font-weight: normal;
+    }
+    
+    .navbar-footer.navbar .nav > li > a:hover {
+        background-color: #DDD;
+        color: #535353;
     }
 
     .navbar-footer .nav-collapse .nav > li > a:hover, .navbar-footer .nav-collapse .dropdown-menu a:hover {
@@ -505,6 +524,10 @@ dt, dd {
 @media (max-width: 480px) {
     .navbar-push {
         margin-top: 100px!important;
+    }
+    
+    .navbar-footer.navbar .container {
+        width: auto!important;
     }
 }
 
