@@ -39,6 +39,35 @@
 
   <body class="public">
     <g:layoutBody/>
+    
+    <div id="Footer">
+      <div class="navbar navbar-footer">
+          <div class="navbar-inner">
+              <div class="container">
+                  <div>
+                      <ul class="footer-sublinks nav">
+                          <li><a href="${createLink(uri: '/terms-and-conditions')}">Terms & Conditions</a></li>
+                          <li><a href="${createLink(uri: '/privacy-policy')}">Privacy Policy</a></li>
+                          <li><a href="${createLink(uri: '/freedom-of-information-policy"')}">Freedom of Information Policy</a></li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+      </div>
+          
+      <div class="clearfix"></div>
+          
+      <div class="footer-links container">
+          <div class="row">
+              <div class="pull-left">
+                  <a href="http://www.jisc-collections.ac.uk/"><div class="sprite sprite-jisc_collections_logo">JISC Collections</div></a>
+              </div>
+              <div class="pull-right">
+                  <a href="http://service.kbplus.ac.uk"><div class="sprite sprite-kbplus_logo">Knowledge Base Plus</div></a>
+              </div>
+          </div>
+      </div>
+  </div>
   </body>
 
 </html>

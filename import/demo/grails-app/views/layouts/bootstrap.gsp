@@ -136,8 +136,11 @@
         </div>
     </div>
 
-
-    <r:layoutResources/>
+    <div id="SupportTab">
+        <a href="mailto:kbplus@jisc-collections.ac.uk?subject=KBPlus%20Support%20Query"><i class="icon-question-sign icon-white"></i>Support Queries</a>
+    </div>
+            
+  <r:layoutResources/>
 
     <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.4/zenbox.js"></script>
     <style type="text/css" media="screen, projection">
