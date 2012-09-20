@@ -127,6 +127,13 @@ th a:hover {
     color: white;
 }
 
+th.asc a {
+    background-image: url('../images/sorted_asc.gif');
+}
+
+th.desc a {
+    background-image: url('../images/sorted_desc.gif');
+}
 
 dl {
     clear: both;
@@ -565,4 +572,3 @@ dt, dd {
 .breadcrumb li {
     word-wrap: break-word;
 }
-
