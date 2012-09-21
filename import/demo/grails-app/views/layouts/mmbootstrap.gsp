@@ -182,7 +182,7 @@
                                       <b class="caret"></b>
                                   </a>
                                   <ul class="dropdown-menu">
-                                      <li><a href="http://service.kbplus.ac.uk/kbplus/myInstitutions/index">KB+</a></li>
+                                      <li><a href="http://www.kbplus.ac.uk/kbplus/myInstitutions/index">KB+</a></li>
                                       <li><a href="http://test.kbplus.ac.uk/kbplus/myInstitutions/index">KB+ Sandpit</a></li>
                                   </ul>
                               </li>
