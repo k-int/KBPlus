@@ -10,7 +10,7 @@
             shared by ${docctx.alert.createdBy.displayName}
             <g:if test="${docctx.alert.sharingLevel==1}">With JC</g:if>
             <g:if test="${docctx.alert.sharingLevel==2}">With Community</g:if>
-            <div data-id="${docctx.alert.id}" class="comments"><a href="#modalComments" data-toggle="modal" ${docctx.alert?.comments != null ? docctx.alert?.comments?.size() : 0} Comment(s)</a></div>
+            <div data-id="${docctx.alert.id}" class="comments"><a href="#modalComments" data-toggle="modal">${docctx.alert?.comments != null ? docctx.alert?.comments?.size() : 0} Comment(s)</a></div>
           </g:if>
           <g:else>(Not shared)</g:else></i>
         </li>
@@ -29,7 +29,6 @@
   
   <div class="modal-footer">
       <a href="#" class="btn" data-dismiss="modal">Close</a>
-      <input type="submit" class="btn btn-primary" value="Save Changes">
     </div>
 </div>
 
