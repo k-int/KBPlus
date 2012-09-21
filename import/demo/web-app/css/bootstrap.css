@@ -154,6 +154,11 @@ dt, dd {
     margin: -250px 0 0 -375px;
 }
 
+.brand {
+    width: 139px;
+    height: 102px;
+}
+
 .modal-header .close {
     border: none;
     background-color: white;
