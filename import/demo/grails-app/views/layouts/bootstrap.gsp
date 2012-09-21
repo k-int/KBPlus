@@ -130,7 +130,7 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="pull-right">
-                    <a href="http://knowplus.edina.ac.uk"><div class="sprite sprite-kbplus_logo">Knowledge Base Plus</div></a>
+                    <a href="http://www.kbplus.ac.uk"><div class="sprite sprite-kbplus_logo">Knowledge Base Plus</div></a>
                 </div>
             </div>
         </div>
