@@ -38,7 +38,11 @@
 
       ${institution?.name} ${subscriptionInstance?.type?.value}
 
-       <h1><g:inPlaceEdit domain="Subscription" pk="${subscriptionInstance.id}" field="name" id="name" class="${editable?'fieldNote':''}">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
+       <h1><g:inPlaceEdit domain="Subscription" 
+                          pk="${subscriptionInstance.id}" 
+                          field="name" 
+                          id="name" 
+                          class="${editable?'fieldNote':''}">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
 
       <ul class="nav nav-pills">
         <li class="active"><g:link controller="subscriptionDetails" 
@@ -354,13 +358,13 @@
          	// Hide edit icon with overwriting style.
          	$(this).addClass('clicked');
          	
-         	setTimeout(function() {
-                outsideElements = e.parent().find("span:not(.clicked)");
-                outsideElements.hide();
-            }, 1);   	
-         	
          	var e = $(this);
          	var outsideElements;
+
+          setTimeout(function() {
+            outsideElements = e.parent().find("span:not(.clicked)");
+            outsideElements.hide();
+          }, 1);
             
          	var removeClicked = function() {
          		setTimeout(function() {

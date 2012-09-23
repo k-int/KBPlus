@@ -25,7 +25,9 @@
     </div>
 
     <div class="container">
-      <h1>${license.licensee?.name} ${license.type?.value} Licence : <span id="reference" class="${editable?'ipe':''}" style="padding-top: 5px;">${license.reference}</span></h1>
+      <h1>${license.licensee?.name} ${license.type?.value} Licence : 
+
+<g:inPlaceEdit domain="License" pk="${license.id}" style="padding-top: 5px;" field="reference" id="reference" class="${editable?'ipe':''}">${license.reference}</g:inPlaceEdit></h1>
 
       <ul class="nav nav-pills">
         <li class="active"><g:link controller="licenseDetails" 
