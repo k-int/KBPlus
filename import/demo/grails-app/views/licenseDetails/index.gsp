@@ -27,7 +27,7 @@
     <div class="container">
       <h1>${license.licensee?.name} ${license.type?.value} Licence : 
 
-<g:inPlaceEdit domain="License" pk="${license.id}" style="padding-top: 5px;" field="reference" id="reference" class="${editable?'ipe':''}">${license.reference}</g:inPlaceEdit></h1>
+<g:inPlaceEdit domain="License" pk="${license.id}" style="padding-top: 5px;" field="reference" id="reference" class="${editable?'newipe':''}">${license.reference}</g:inPlaceEdit></h1>
 
       <ul class="nav nav-pills">
         <li class="active"><g:link controller="licenseDetails" 
@@ -210,7 +210,7 @@
          
          // On jEditable click remove the hide the icon and show it 
          // when one of the buttons are clicked or ESC is hit.
-         $('.ipe, .intedit, .refdataedit, .cuedit, .fieldNote, .newipe').click(function() {
+         $('.ipe, .intedit, .refdataedit, .cuedit, .fieldNote').click(function() {
          	// Hide edit icon with overwriting style.
          	$(this).addClass('clicked');
             

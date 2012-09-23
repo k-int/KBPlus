@@ -42,7 +42,7 @@
                           pk="${subscriptionInstance.id}" 
                           field="name" 
                           id="name" 
-                          class="${editable?'fieldNote':''}">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
+                          class="${editable?'newipe':''}">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
 
       <ul class="nav nav-pills">
         <li class="active"><g:link controller="subscriptionDetails" 
@@ -228,19 +228,14 @@
           <ul>
         </dd>
       </dl>
+
+      <div class="pagination" style="text-align:center">
+        <g:if test="${entitlements}" >
+          <bootstrap:paginate  action="index" controller="subscriptionDetails" params="${params}" next="Next" prev="Prev" maxsteps="${max}" total="${num_sub_rows}" />
+        </g:if>
+      </div>
     </div>
 
-    <div class="pagination" style="text-align:center">
-      <g:if test="${entitlements}" >
-        <span><g:paginate controller="subscriptionDetails" 
-                          action="index" 
-                          params="${params}" next="Next" prev="Prev" 
-                          max="${max}" 
-                          total="${num_sub_rows}" /></span>
-      </g:if>
-    </div>
-
-    </div>
     <script language="JavaScript">
       <g:if test="${editable}">
       $(document).ready(function() {
@@ -306,6 +301,16 @@
           onblur    : 'ignore'
         });
 
+        $('.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" />', {
+           type      : 'textarea',
+           cancel    : 'Cancel',
+           submit    : 'OK',
+           id        : 'elementid',
+           rows      : 3,
+           tooltip   : 'Click to edit...',
+           onblur        : 'ignore'
+         });
+
         $('span.entitlementBatchEdit').editable(function(value, settings) { 
           $("#bulk_core").val(value);
           return(value);          
@@ -354,38 +359,40 @@
 
          // On jEditable click remove the hide the icon and show it 
          // when one of the buttons are clicked or ESC is hit.
-         $('.ipe, .intedit, .refdataedit, .cuedit, .fieldNote, .newipe, .isedit').click(function() {
-         	// Hide edit icon with overwriting style.
-         	$(this).addClass('clicked');
-         	
-         	var e = $(this);
-         	var outsideElements;
+         $('.ipe, .intedit, .refdataedit, .cuedit, .fieldNote, .isedit').click(function() {
+           // Hide edit icon with overwriting style.
+           $(this).addClass('clicked');
+           
+           var e = $(this);
 
           setTimeout(function() {
-            outsideElements = e.parent().find("span:not(.clicked)");
+            alert("Hide");
+            var outsideElements = e.parent().find("span:not(.clicked)");
             outsideElements.hide();
           }, 1);
             
-         	var removeClicked = function() {
-         		setTimeout(function() {
-         			e.removeClass('clicked');
-         			
-         			if(outsideElements) {
-         				outsideElements.show();
-         			}
-         		}, 1);
-         	}
-         	
-         	setTimeout(function() {
-         		e.find('form button').click(function() {
-         			removeClicked();
-         		});
-         		e.keydown(function(event) {
-         			if(event.keyCode == 27) {
-         				removeClicked();
-         			}
-         		});
-         	}, 1);
+           var removeClicked = function() {
+             alert("Show");
+             setTimeout(function() {
+               e.removeClass('clicked');
+               var outsideElements = e.parent().find("span:not(.clicked)");
+               
+               if(outsideElements) {
+                 outsideElements.show();
+               }
+             }, 1);
+           }
+           
+           setTimeout(function() {
+             e.find('form button').click(function() {
+               removeClicked();
+             });
+             e.keydown(function(event) {
+               if(event.keyCode == 27) {
+                 removeClicked();
+               }
+             });
+           }, 1);
          });
          
          $('#collapseableSubDetails').on('show', function() {
