@@ -10,7 +10,7 @@
             shared by ${docctx.alert.createdBy.displayName}
             <g:if test="${docctx.alert.sharingLevel==1}">With JC</g:if>
             <g:if test="${docctx.alert.sharingLevel==2}">With Community</g:if>
-            <div data-id="${docctx.alert.id}" class="comments"><a href="#modalComments">${docctx.alert?.comments != null ? docctx.alert?.comments?.size() : 0} Comment(s)</a></div>
+            <div data-id="${docctx.alert.id}" class="comments"><a href="#modalComments" data-toggle="modal">${docctx.alert?.comments != null ? docctx.alert?.comments?.size() : 0} Comment(s)</a></div>
           </g:if>
           <g:else>(Not shared)</g:else></i>
         </li>
@@ -22,6 +22,14 @@
 
 <!-- Lightbox modal for creating a note taken from licenceNotes.html -->
 <div class="modal hide fade" id="modalComments">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">x</button>
+    <h3>Comments</h3>
+  </div>
+  
+  <div class="modal-footer">
+      <a href="#" class="btn" data-dismiss="modal">Close</a>
+    </div>
 </div>
 
 <!-- Lightbox modal for creating a note taken from licenceNotes.html -->

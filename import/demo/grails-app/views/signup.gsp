@@ -41,7 +41,7 @@
                 <div class="span8">
 
 <p>The service will launch with the nine universities which have been testing KB+ to date as the core users.</p> 
-<p>We will then be opening up the service to other libraries across the UK. We want to manage the joining process for KB+ quite carefully. Whilst there is a lot of data that will be instantly useable and valuable to libraries available from the <a href="exports.html">exports page</a>, such as all of the publication and licence information, it will take us longer to add in local institutional information and we want to make sure that we are able to offer support and training to library staff as they start to use and engage with KB+. This means that new members will be added incrementally over the course of the first year.</p>
+<p>We will then be opening up the service to other libraries across the UK. We want to manage the joining process for KB+ quite carefully. Whilst there is a lot of data that will be instantly useable and valuable to libraries available from the <a href="${createLink(uri: '/publicExport')}">exports page</a>, such as all of the publication and licence information, it will take us longer to add in local institutional information and we want to make sure that we are able to offer support and training to library staff as they start to use and engage with KB+. This means that new members will be added incrementally over the course of the first year.</p>
 <p>If you are interested in signing up to KB+, please contact <a href="mailto:help@jisc-collections.ac.uk">help@jisc-collections.ac.uk</a> and we'll discuss it with you directly.</p>
 <p>As with JUSP, KB+ will have a participation agreement covering the use of the service, which will be made available shortly.</p>
 

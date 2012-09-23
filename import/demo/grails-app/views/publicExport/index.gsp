@@ -55,7 +55,7 @@
  <br />
  To the extent possible under law,
  <a rel="dct:publisher"
-    href="www.kbplus.ac.uk/exports">
+    href="http://www.kbplus.ac.uk/exports">
    <span property="dct:title">JISC Collections</span></a>
  has waived all copyright and related or neighboring rights to
  <span property="dct:title">KBPlus Public Exports</span>.

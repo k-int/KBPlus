@@ -127,6 +127,13 @@ th a:hover {
     color: white;
 }
 
+th.asc a {
+    background-image: url('../images/sorted_asc.gif');
+}
+
+th.desc a {
+    background-image: url('../images/sorted_desc.gif');
+}
 
 dl {
     clear: both;
@@ -145,6 +152,11 @@ dt, dd {
 .modal {
     width: 750px;
     margin: -250px 0 0 -375px;
+}
+
+.brand {
+    width: 139px;
+    height: 102px;
 }
 
 .modal-header .close {
@@ -565,4 +577,3 @@ dt, dd {
 .breadcrumb li {
     word-wrap: break-word;
 }
-
