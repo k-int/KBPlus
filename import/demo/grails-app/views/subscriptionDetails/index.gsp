@@ -366,13 +366,11 @@
            var e = $(this);
 
           setTimeout(function() {
-            alert("Hide");
             var outsideElements = e.parent().find("span:not(.clicked)");
             outsideElements.hide();
           }, 1);
             
            var removeClicked = function() {
-             alert("Show");
              setTimeout(function() {
                e.removeClass('clicked');
                var outsideElements = e.parent().find("span:not(.clicked)");
