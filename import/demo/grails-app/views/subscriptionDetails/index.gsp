@@ -351,21 +351,27 @@
          // On jEditable click remove the hide the icon and show it 
          // when one of the buttons are clicked or ESC is hit.
          $('.ipe, .intedit, .refdataedit, .cuedit, .fieldNote, .newipe, .isedit').click(function() {
+            // Ensure we're not clicking in an editing element.
+            if($(this).hasClass('clicked')) {
+                return;
+            }
+            
          	// Hide edit icon with overwriting style.
          	$(this).addClass('clicked');
-         	
-         	setTimeout(function() {
-                outsideElements = e.parent().find("span:not(.clicked)");
-                outsideElements.hide();
-            }, 1);   	
-         	
-         	var e = $(this);
-         	var outsideElements;
             
+            var e = $(this);
+            
+            var outsideElements;
+                        
+            setTimeout(function() {
+                outsideElements = e.parent().find("span:not(.clicked)");
+                console.log(outsideElements);
+                outsideElements.hide();
+            }, 1);
+         	
          	var removeClicked = function() {
          		setTimeout(function() {
          			e.removeClass('clicked');
-         			
          			if(outsideElements) {
          				outsideElements.show();
          			}

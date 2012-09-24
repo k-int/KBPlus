@@ -137,7 +137,9 @@
                          <g:refdataValue val="${license.concurrentUsers?.value}" domain="License" pk="${license.id}" field="concurrentUsers" cat='Concurrent Access' class="${editable?'cuedit':''}"/>
                          </span>
                          <span id="cucwrap">
-                         (<span id="concurrentUserCount" class="intedit" style="padding-top: 5px;">${license.concurrentUserCount}</span>)
+                             <span>(</span>
+                             <span id="concurrentUserCount" class="intedit" style="padding-top: 5px;">${license.concurrentUserCount}</span>
+                             <span>)</span>
                          </span>
                     </td>
                     <td><g:singleValueFieldNote domain="concurrentUsers" value="${license.getNote('concurrentUsers')}" class="${editable?'fieldNote':''}"/></td></tr>
@@ -209,22 +211,27 @@
          // On jEditable click remove the hide the icon and show it 
          // when one of the buttons are clicked or ESC is hit.
          $('.ipe, .intedit, .refdataedit, .cuedit, .fieldNote, .newipe').click(function() {
+            // Ensure we're not clicking in an editing element.
+            if($(this).hasClass('clicked')) {
+                return;
+            }
+            
          	// Hide edit icon with overwriting style.
          	$(this).addClass('clicked');
             
             var e = $(this);
             
             var outsideElements;
-            
+                        
             setTimeout(function() {
                 outsideElements = e.parent().find("span:not(.clicked)");
+                console.log(outsideElements);
                 outsideElements.hide();
             }, 1);
          	
          	var removeClicked = function() {
          		setTimeout(function() {
          			e.removeClass('clicked');
-         			
          			if(outsideElements) {
          				outsideElements.show();
          			}
@@ -272,7 +279,17 @@
            submit : 'OK',
            id     : 'elementid',
            tooltip: 'Click to edit...',
-           onblur	 : 'ignore'
+           onblur	 : 'ignore',
+           callback : function(value) {
+               var iconList = {
+                   'Yes' : 'greenTick',
+                   'No' : 'redCross',
+                   'Other' : 'purpleQuestion'
+               };
+               
+               var icon = $(document.createElement('span'));
+               $(this).prepend(icon.addClass('select-icon').addClass(iconList[value]));
+           }
          });
 
          $('.cuedit').editable('<g:createLink controller="ajax" action="genericSetRef" />', {
@@ -290,6 +307,16 @@
              else {
                $('#cucwrap').hide();
              }
+             
+             var iconList = {
+                 'No limit' : 'redCross',
+                 'Specified' : 'greenTick',
+                 'Not Specified' : 'purpleQuestion',
+                 'Other' : 'purpleQuestion'
+             };
+               
+             var icon = $(document.createElement('span'));
+             $(this).prepend(icon.addClass('select-icon').addClass(iconList[value]));
            }
          });
 

@@ -407,7 +407,7 @@ div.comments {
     background-color: #D9E5F2;
 }
 
-.ipe, .fieldNote, .refdataedit, .cuedit, .isedit {
+.ipe, .fieldNote, .refdataedit, .cuedit, .isedit, .intedit {
     display: inline;
     background-position: right center;
     padding-right: 25px;
@@ -416,7 +416,15 @@ div.comments {
     word-wrap: break-word;
 }
 
-.fieldNote:hover, .refdataedit:hover, .cuedit:hover, .newipe:hover, .isedit:hover {
+.intedit {
+    padding-top: 0!important;
+}
+
+#cucwrap {
+    margin-left: 30px;
+}
+
+.fieldNote:hover, .refdataedit:hover, .cuedit:hover, .newipe:hover, .isedit:hover, .intedit:hover {
     background-color: #D9E5F2;
     cursor: pointer;
 }
@@ -425,6 +433,9 @@ div.comments {
     min-height: 20px;
     line-height: 20px;
     display: block;
+}
+
+.cuedit .intedit {
     float: left;
 }
 
@@ -439,11 +450,15 @@ div.comments {
     overflow: hidden;
 }
 
-.fieldNote form, .cuedit form, .refdataedit form, .isedit form {
+.fieldNote form, .cuedit form, .refdataedit form, .isedit form, .intedit form {
     background-color: #D9E5F2;
     margin: -8px;
     padding: 8px;
 }  
+
+.intedit form {
+    margin-top: 3px;
+}
 
 .newipe form {
     background-color: #D9E5F2;
@@ -461,7 +476,11 @@ div.comments {
     width: 100%!important;
 }
 
-.ipe button[type="submit"], .fieldNote button[type="submit"], .refdataedit button[type="submit"], .cuedit button[type="submit"], .newipe[type="submit"], .isedit[type="submit"] {
+.intedit input {
+    width: 90%!important;
+}
+
+.ipe button[type="submit"], .fieldNote button[type="submit"], .refdataedit button[type="submit"], .cuedit button[type="submit"], .newipe[type="submit"], .isedit[type="submit"], .intedit button[type="submit"] {
     background-color: #0074CC;
     background-image: linear-gradient(bottom, #29547E 34%, #386593 67%);
     background-image: -o-linear-gradient(bottom, #29547E 34%, #386593 67%);
@@ -479,7 +498,7 @@ div.comments {
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 
-.ipe button, .fieldNote button, .refdataedit button, .cuedit button, .newipe button, .isedit button {
+.ipe button, .fieldNote button, .refdataedit button, .cuedit button, .newipe button, .isedit button, .intedit button {
     margin-top: 10px;
     margin-right: 10px;
     display: inline-block;
