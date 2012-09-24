@@ -52,7 +52,7 @@
                     </div>
                     <div class="well">
                         <h4>Further Discussion</h4>
-                        <p>For any further questions please feel free to contact the project director, Liam Earny.</p>
+                        <p>For any further questions please feel free to contact the project director, Liam Earney.</p>
                         <p>Telephone: <a href="tel: 020 3006 6002">020 3006 6002</a></p>
                         <p>Email: <a href="mailto:l.earney@jisc-collections.ac.uk">l.earney@jisc-collections.ac.uk</a></p>                      
                     </div>
