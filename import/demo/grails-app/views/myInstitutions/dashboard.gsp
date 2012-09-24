@@ -18,7 +18,7 @@
               <g:each in="${user.authorizedAffiliations}" var="ua">
                 <dd><g:link controller="myInstitutions" 
                                      action="currentLicenses" 
-                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name}</g:link></dd>
+                                     params="${[shortcode:ua.org?.shortcode]}">${ua.org.name}</g:link></dd>
               </g:each>
             </dl>
           </div>
@@ -30,7 +30,7 @@
               <g:each in="${user.authorizedAffiliations}" var="ua">
                 <dd><g:link controller="myInstitutions" 
                                      action="currentSubscriptions" 
-                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name}</g:link></dd>
+                                     params="${[shortcode:ua.org?.shortcode]}">${ua.org.name}</g:link></dd>
               </g:each>
             </dl>
           </div>
@@ -66,8 +66,7 @@
                 <span class="label label-info">Licence</span>
                 <em><g:link action="index"
                         controller="licenseDetails" 
-                        id="${ua.rootObj.id}"
-                        params="${[shortcode:ua.rootObj.licensee.shortcode]}">${ua.rootObj.reference}</g:link></em>
+                        id="${ua.rootObj.id}">${ua.rootObj.reference}</g:link></em>
               </g:if>
               <g:elseif test="${ua.rootObj.class.name=='com.k_int.kbplus.Subscription'}">
                 <span class="label label-info">Subscription</span>
