@@ -69,6 +69,12 @@
                         id="${ua.rootObj.id}"
                         params="${[shortcode:ua.rootObj.licensee.shortcode]}">${ua.rootObj.reference}</g:link></em>
               </g:if>
+              <g:elseif test="${ua.rootObj.class.name=='com.k_int.kbplus.Subscription'}">
+                <span class="label label-info">Subscription</span>
+                <em><g:link action="index"
+                        controller="subscriptionDetails" 
+                        id="${ua.rootObj.id}">${ua.rootObj.name}</g:link></em>
+              </g:elseif>
               <g:else>
                 Unhandled object type attached to alert: ${ua.rootObj.class.name}:${ua.rootObj.id}
               </g:else>
