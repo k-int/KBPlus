@@ -94,7 +94,7 @@
                        <li><g:link controller="myInstitutions" action="dashboard">Dashboard</g:link></li>
                        <li><g:link controller="myInstitutions" action="index">Alerts</g:link></li>
                        <li><a href="/reports">Reports</a></li>
-                       <li><a href="${message(code:'help.location')}">Help</a></li>
+                       <li><a href="https://knowledgebaseplus.wordpress.com/kb-support/">Help</a></li>
                     </ul>
                   </li>
                 </g:if>
