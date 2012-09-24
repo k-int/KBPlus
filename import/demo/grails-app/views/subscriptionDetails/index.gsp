@@ -38,7 +38,11 @@
 
       ${institution?.name} ${subscriptionInstance?.type?.value}
 
-       <h1><g:inPlaceEdit domain="Subscription" pk="${subscriptionInstance.id}" field="name" id="name" class="${editable?'fieldNote':''}">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
+       <h1><g:inPlaceEdit domain="Subscription" 
+                          pk="${subscriptionInstance.id}" 
+                          field="name" 
+                          id="name" 
+                          class="${editable?'newipe':''}">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
 
       <ul class="nav nav-pills">
         <li class="active"><g:link controller="subscriptionDetails" 
@@ -62,14 +66,14 @@
       </ul>
 
 
-      <button class="hidden-license-details btn" data-toggle="collapse" data-target="#collapseableSubDetails">Show/Hide License Information <i class="icon-plus"></i></button>
+      <button class="hidden-license-details btn" data-toggle="collapse" data-target="#collapseableSubDetails">Show/Hide Subscription Details <i class="icon-plus"></i></button>
     </div>
 
     <div id="collapseableSubDetails" class="container collapse">
       <div class="row">
         <div class="span8"> 
             <br/>
-            <h6>License Information</h6>
+            <h6>Subscription Information</h6>
             <div class="licence-info"> 
                 <dl>
                     <dt>License</dt>
@@ -224,19 +228,14 @@
           <ul>
         </dd>
       </dl>
+
+      <div class="pagination" style="text-align:center">
+        <g:if test="${entitlements}" >
+          <bootstrap:paginate  action="index" controller="subscriptionDetails" params="${params}" next="Next" prev="Prev" maxsteps="${max}" total="${num_sub_rows}" />
+        </g:if>
+      </div>
     </div>
 
-    <div class="pagination" style="text-align:center">
-      <g:if test="${entitlements}" >
-        <span><g:paginate controller="subscriptionDetails" 
-                          action="index" 
-                          params="${params}" next="Next" prev="Prev" 
-                          max="${max}" 
-                          total="${num_sub_rows}" /></span>
-      </g:if>
-    </div>
-
-    </div>
     <script language="JavaScript">
       <g:if test="${editable}">
       $(document).ready(function() {
@@ -301,6 +300,16 @@
           tooltip   : 'Click to edit...',
           onblur    : 'ignore'
         });
+
+        $('.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" />', {
+           type      : 'textarea',
+           cancel    : 'Cancel',
+           submit    : 'OK',
+           id        : 'elementid',
+           rows      : 3,
+           tooltip   : 'Click to edit...',
+           onblur        : 'ignore'
+         });
 
         $('span.entitlementBatchEdit').editable(function(value, settings) { 
           $("#bulk_core").val(value);

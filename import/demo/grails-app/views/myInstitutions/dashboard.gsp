@@ -39,7 +39,7 @@
           <div class="well">
             <h6>Reports</h6>
             <dl>
-              <dd><a href="#">View reports</a><dd>
+              <dd><a href="/reports">View reports</a><dd>
             </dl>
           </div>
         </div>
@@ -63,12 +63,18 @@
           <tr>
             <td colspan="6">
               <g:if test="${ua.rootObj.class.name=='com.k_int.kbplus.License'}">
-                <span class="label label-info">License</span>
+                <span class="label label-info">Licence</span>
                 <em><g:link action="index"
                         controller="licenseDetails" 
                         id="${ua.rootObj.id}"
                         params="${[shortcode:ua.rootObj.licensee.shortcode]}">${ua.rootObj.reference}</g:link></em>
               </g:if>
+              <g:elseif test="${ua.rootObj.class.name=='com.k_int.kbplus.Subscription'}">
+                <span class="label label-info">Subscription</span>
+                <em><g:link action="index"
+                        controller="subscriptionDetails" 
+                        id="${ua.rootObj.id}">${ua.rootObj.name}</g:link></em>
+              </g:elseif>
               <g:else>
                 Unhandled object type attached to alert: ${ua.rootObj.class.name}:${ua.rootObj.id}
               </g:else>

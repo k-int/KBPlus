@@ -27,7 +27,9 @@ import java.text.SimpleDateFormat
 
 def starttime = System.currentTimeMillis();
 def possible_date_formats = [
+  new SimpleDateFormat('yyyy/MM/dd'),
   new SimpleDateFormat('dd/MM/yy'),
+  new SimpleDateFormat('dd/MM/yyyy'),
   new SimpleDateFormat('yyyy/MM'),
   new SimpleDateFormat('yyyy')
 ];

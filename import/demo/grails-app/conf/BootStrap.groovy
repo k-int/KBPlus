@@ -29,6 +29,7 @@ class BootStrap {
         adminUser = new User(
                         username: 'admin',
                         password: 'admin',
+                        display: 'Admin',
                         email: 'admin@localhost',
                         enabled: true).save(failOnError: true)
       }

@@ -23,7 +23,7 @@ class MyInstitutionsController {
     // Work out what orgs this user has admin level access to
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
-    result.userAlerts = alertsService.getActiveAlerts(result.user);
+    result.userAlerts = alertsService.getAllVisibleAlerts(result.user);
     
     log.debug("result.userAlerts: ${result.userAlerts}");
     log.debug("result.userAlerts.size(): ${result.userAlerts.size()}");
@@ -51,7 +51,7 @@ class MyInstitutionsController {
     // Work out what orgs this user has admin level access to
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
-    result.userAlerts = alertsService.getActiveAlerts(result.user);
+    result.userAlerts = alertsService.getAllVisibleAlerts(result.user);
 
     log.debug("result.userAlerts: ${result.userAlerts}");
     log.debug("result.userAlerts.size(): ${result.userAlerts.size()}");

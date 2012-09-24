@@ -45,7 +45,7 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="${createLink(uri: '/')}">KB+</a>
+          <g:link controller="myInstitutions" action="dashboard" class="brand">KB+</g:link>
           <div class="nav-collapse">
             <ul class="nav">
               <sec:ifLoggedIn>
@@ -88,14 +88,13 @@
                          </g:each>
                        </g:if>
                        <g:else>
-                         <li>Please use the manage affiliations option to request access
-                                  to your home institution</li>
+                         <li>Please request institutional affiliations via your <g:link controller="profile" action="index">Profile Page</g:link></li>
                        </g:else>
                        <li class="divider"></li>
                        <li><g:link controller="myInstitutions" action="dashboard">Dashboard</g:link></li>
                        <li><g:link controller="myInstitutions" action="index">Alerts</g:link></li>
                        <li><a href="/reports">Reports</a></li>
-                       <li><a href="/help">Help</a></li>
+                       <li><a href="${message(code:'help.location')}">Help</a></li>
                     </ul>
                   </li>
                 </g:if>
