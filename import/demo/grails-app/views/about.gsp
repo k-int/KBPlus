@@ -12,19 +12,22 @@
                     <img class="brand" alt="Knowledge Base + logo" src="images/kb_large_icon.png" />
                     <div class="nav-collapse">               
                     <ul class="nav">
-                       <li>
-                            <a href="${createLink(uri: '/')}"> Home </a>
-                        </li>
-                        <li class="active">
-                            <a href="${createLink(uri: '/about')}"> About KB+ </a>
-                        </li>
-                        <li>
-                            <a href="${createLink(uri: '/signup')}"> Sign Up </a>
-                        </li>
-                        <li class="last">
-                            <a href="${createLink(uri: '/publicExport')}"> Exports </a>
-                        </li>
-                    </ul>           
+                            <li>
+                                <a href="${createLink(uri: '/')}"> Home </a>
+                            </li>
+                            <li class="active">
+                                <a href="${createLink(uri: '/about')}"> About KB+ </a>
+                            </li>
+                            <li>
+                                <a href="${createLink(uri: '/signup')}"> Sign Up </a>
+                            </li>
+                            <li>
+                                <a href="${createLink(uri: '/publicExport')}"> Exports </a>
+                            </li>
+                            <li class="last">
+                                <a href="${createLink(uri: '/contact-us')}"> Contact Us </a>
+                            </li>
+                        </ul>            
                     </div>                     
                 </div>           
             </div>

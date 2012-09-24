@@ -112,7 +112,7 @@ thead td:last-child, table tr:first-child th:last-child  {
     border-top-right-radius: 6px;
 }
 
-th {
+th { ter
     background-color: transparent;
     background-image: none;
     -ms-filter: none;

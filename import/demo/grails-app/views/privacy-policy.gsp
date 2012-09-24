@@ -21,8 +21,11 @@
                             <li>
                                 <a href="${createLink(uri: '/signup')}"> Sign Up </a>
                             </li>
-                            <li class="last">
+                            <li>
                                 <a href="${createLink(uri: '/publicExport')}"> Exports </a>
+                            </li>
+                            <li class="last">
+                                <a href="${createLink(uri: '/contact-us')}"> Contact Us </a>
                             </li>
                         </ul>           
                     </div>                     

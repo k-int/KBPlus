@@ -18,6 +18,7 @@ class UrlMappings {
         "/terms-and-conditions"(view:"/terms-and-conditions")
         "/privacy-policy"(view:"/privacy-policy")
         "/freedom-of-information-policy"(view:"/freedom-of-information-policy")
+        "/contact-us"(view:"/contact-us")
 		"/publichome"(view:"/publichome")
 		"/signup"(view:"/signup")
 	}
