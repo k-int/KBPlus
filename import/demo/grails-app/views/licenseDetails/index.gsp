@@ -363,7 +363,6 @@
          });
 
          $(".announce").click(function(){
-           alert("ooh");
            var id = $(this).data('id');
            $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" />/'+id);
            $('#modalComments').modal('show');

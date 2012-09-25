@@ -10,13 +10,7 @@
             shared by ${docctx.alert.createdBy.displayName}
             <g:if test="${docctx.alert.sharingLevel==1}">With JC</g:if>
             <g:if test="${docctx.alert.sharingLevel==2}">With Community</g:if>
-            <input type="submit" 
-                   class="btn btn-primary announce" 
-                   value="${docctx.alert?.comments != null ? docctx.alert?.comments?.size() : 0} Comment(s)" 
-                   data-id="${docctx.alert.id}" 
-                   href="#modalComments" />
-
-            <div class="comments"><a href="#modalComments" class="announce" data-id="${docctx.alert.id}" data-toggle="modal">${docctx.alert?.comments != null ? docctx.alert?.comments?.size() : 0} Comment(s)</a></div>
+            <div class="comments"><a href="#modalComments" class="announce" data-id="${docctx.alert.id}">${docctx.alert?.comments != null ? docctx.alert?.comments?.size() : 0} Comment(s)</a></div>
           </g:if>
           <g:else>(Not shared)</g:else></i>
         </li>
