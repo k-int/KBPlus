@@ -398,14 +398,23 @@
          		});
          	}, 1);
          });
+
+        $(".announce").click(function(){
+           var id = $(this).data('id');
+           $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" />/'+id);
+           $('#modalComments').modal('show');
+         });
+
          
          $('#collapseableSubDetails').on('show', function() {
             $('.hidden-license-details i').removeClass('icon-plus').addClass('icon-minus');
         });
+
         // Reverse it for hide:
         $('#collapseableSubDetails').on('hide', function() {
             $('.hidden-license-details i').removeClass('icon-minus').addClass('icon-plus');
         });
+
       });
 
       function selectAll() {
