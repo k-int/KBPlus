@@ -33,7 +33,7 @@
           </tr>
           <g:each in="${users}" var="u">
             <tr>
-              <td>${u.username}</td>
+              <td>${u.displayName} / ${u.username}</td>
               <td>
                 <ul>
                   <g:each in="${u.affiliations}" var="ua">
