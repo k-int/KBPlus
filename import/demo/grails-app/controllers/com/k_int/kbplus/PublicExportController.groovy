@@ -10,6 +10,8 @@ import groovy.xml.MarkupBuilder
 
 class PublicExportController {
 
+  def formatter = new java.text.SimpleDateFormat("MM/dd/yyyy")
+
   def index() { 
     def result = [:]
 
@@ -76,7 +78,11 @@ class PublicExportController {
            writer.write("publication_title,print_identifier,online_identifier,date_first_issue_subscribed,num_first_vol_subscribed,num_first_issue_subscribed,date_last_issue_subscribed,num_last_vol_subscribed,num_last_issue_subscribed,embargo_info,title_url,first_author\n");
 
            result.entitlements.each { e ->
-             writer.write("\"${e.tipp.title.title}\",\"${e.tipp?.title?.getIdentifierValue('ISSN')}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')}\",${e.startDate?:''},${e.startVolume?:''},${e.startIssue?:''},${e.endDate?:''},${e.endVolume?:''},${e.endIssue?:''},${e.embargo?:''},${e.tipp?.hostPlatformURL?:''},\n");
+
+             def start_date = e.startDate ? formatter.format(e.startDate) : '';
+             def end_date = e.endDate ? formatter.format(e.endDate) : '';
+
+             writer.write("\"${e.tipp.title.title}\",\"${e.tipp?.title?.getIdentifierValue('ISSN')}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')}\",${start_date},${e.startVolume?:''},${e.startIssue?:''},${end_date},${e.endVolume?:''},${e.endIssue?:''},${e.embargo?:''},${e.tipp?.hostPlatformURL?:''},\n");
            }
            writer.flush()
            writer.close()
@@ -95,12 +101,16 @@ class PublicExportController {
          response.header.url = "uri://kbplus/sub/${result.subscriptionInstance.identifier}"
 
          result.entitlements.each { e ->
+
+             def start_date = e.startDate ? formatter.format(e.startDate) : '';
+             def end_date = e.endDate ? formatter.format(e.endDate) : '';
+
              def entitlement = [:]
              entitlement.title=e.tipp.title.title
              entitlement.issn=e.tipp?.title?.getIdentifierValue('ISSN')
              entitlement.eissn=e.tipp?.title?.getIdentifierValue('eISSN')
-             entitlement.startDate=e.startDate?:''
-             entitlement.endDate=e.endDate?:''
+             entitlement.startDate=start_date;
+             entitlement.endDate=end_date;
              entitlement.startVolume=e.startVolume?:''
              entitlement.endVolume=e.endVolume?:''
              entitlement.startIssue=e.startIssue?:''
