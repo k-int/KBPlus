@@ -9,8 +9,8 @@ class TitleInstance {
   Date dateCreated
   Date lastUpdated
 
-  static mappedBy = [tipps: 'title', ids: 'ti']
-  static hasMany = [tipps: TitleInstancePackagePlatform, ids: IdentifierOccurrence]
+  static mappedBy = [tipps: 'title', ids: 'ti', orgs: 'title']
+  static hasMany = [tipps: TitleInstancePackagePlatform, ids: IdentifierOccurrence, orgs: OrgRole]
 
 
   static mapping = {
@@ -34,6 +34,16 @@ class TitleInstance {
     ids?.each { id ->
       if ( id.identifier?.ns?.ns == idtype )
         result = id.identifier?.value
+    }
+    result
+  }
+
+  Org getPublisher() {
+    def result = null;
+    orgs.each { o ->
+      if ( o.roleType.value == 'Publisher' ) {
+        result = o.org
+      }
     }
     result
   }
