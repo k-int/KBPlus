@@ -10,7 +10,7 @@ import groovy.xml.MarkupBuilder
 
 class PublicExportController {
 
-  def formatter = new java.text.SimpleDateFormat("MM/dd/yyyy")
+  def formatter = new java.text.SimpleDateFormat("yyyy-MM-dd")
 
   def index() { 
     def result = [:]
@@ -75,14 +75,15 @@ class PublicExportController {
            }
 
            // Output the body text
-           writer.write("publication_title,print_identifier,online_identifier,date_first_issue_subscribed,num_first_vol_subscribed,num_first_issue_subscribed,date_last_issue_subscribed,num_last_vol_subscribed,num_last_issue_subscribed,embargo_info,title_url,first_author\n");
+           writer.write("publication_title,print_identifier,online_identifier,date_first_issue_subscribed,num_first_vol_subscribed,num_first_issue_subscribed,date_last_issue_subscribed,num_last_vol_subscribed,num_last_issue_subscribed,embargo_info,title_url,first_author,title_id,coverage_note,coverage_depth\n");
 
            result.entitlements.each { e ->
 
              def start_date = e.startDate ? formatter.format(e.startDate) : '';
              def end_date = e.endDate ? formatter.format(e.endDate) : '';
+             def title_doi = (e.tipp?.title?.getIdentifierValue('DOI'))?:''
 
-             writer.write("\"${e.tipp.title.title}\",\"${e.tipp?.title?.getIdentifierValue('ISSN')}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')}\",${start_date},${e.startVolume?:''},${e.startIssue?:''},${end_date},${e.endVolume?:''},${e.endIssue?:''},${e.embargo?:''},${e.tipp?.hostPlatformURL?:''},\n");
+             writer.write("\"${e.tipp.title.title}\",\"${e.tipp?.title?.getIdentifierValue('ISSN')}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')}\",${start_date},${e.startVolume?:''},${e.startIssue?:''},${end_date},${e.endVolume?:''},${e.endIssue?:''},${e.embargo?:''},${e.tipp?.hostPlatformURL?:''},,${title_doi},${e.tipp?.coverageNote?:''},${e.tipp?.coverageDepth?:''}\n");
            }
            writer.flush()
            writer.close()
@@ -104,6 +105,7 @@ class PublicExportController {
 
              def start_date = e.startDate ? formatter.format(e.startDate) : '';
              def end_date = e.endDate ? formatter.format(e.endDate) : '';
+             def title_doi = (e.tipp?.title?.getIdentifierValue('DOI'))?:''
 
              def entitlement = [:]
              entitlement.title=e.tipp.title.title
@@ -117,6 +119,9 @@ class PublicExportController {
              entitlement.endIssue=e.endIssue?:''
              entitlement.embargo=e.embargo?:''
              entitlement.titleUrl=e.tipp.hostPlatformURL?:''
+             entitlement.doi=title_doi
+             entitlement.coverageDepth = e.tipp.coverageDepth
+             entitlement.coverageNote = e.tipp.coverageNote
              response.entitlements.add(entitlement);
          }
          render response as JSON
