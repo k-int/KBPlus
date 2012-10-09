@@ -73,10 +73,10 @@ class PublicExportController {
            }
 
            // Output the body text
-           writer.write("publication_title,print_identifier,online_identifier,date_first_issue_subscribed,num_first_vol_subscribed,num_first_issue_subscribed,date_last_issue_subscribed,num_last_vol_subscribed,num_last_issue_subscribed,embargo_info\n");
+           writer.write("publication_title,print_identifier,online_identifier,date_first_issue_subscribed,num_first_vol_subscribed,num_first_issue_subscribed,date_last_issue_subscribed,num_last_vol_subscribed,num_last_issue_subscribed,embargo_info,title_url,first_author\n");
 
            result.entitlements.each { e ->
-             writer.write("\"${e.tipp.title.title}\",\"${e.tipp?.title?.getIdentifierValue('ISSN')}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')}\",${e.startDate?:''},${e.startVolume?:''},${e.startIssue?:''},${e.endDate?:''},${e.endVolume?:''},${e.endIssue?:''},${e.embargo?:''}\n");
+             writer.write("\"${e.tipp.title.title}\",\"${e.tipp?.title?.getIdentifierValue('ISSN')}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')}\",${e.startDate?:''},${e.startVolume?:''},${e.startIssue?:''},${e.endDate?:''},${e.endVolume?:''},${e.endIssue?:''},${e.embargo?:''},${e.tipp?.hostPlatformURL?:''},\n");
            }
            writer.flush()
            writer.close()
@@ -106,6 +106,7 @@ class PublicExportController {
              entitlement.startIssue=e.startIssue?:''
              entitlement.endIssue=e.endIssue?:''
              entitlement.embargo=e.embargo?:''
+             entitlement.titleUrl=e.tipp.hostPlatformURL?:''
              response.entitlements.add(entitlement);
          }
          render response as JSON
