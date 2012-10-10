@@ -75,7 +75,8 @@ class PublicExportController {
            }
 
            // Output the body text
-           writer.write("publication_title,print_identifier,online_identifier,date_first_issue_subscribed,num_first_vol_subscribed,num_first_issue_subscribed,date_last_issue_subscribed,num_last_vol_subscribed,num_last_issue_subscribed,embargo_info,title_url,first_author,title_id,coverage_note,coverage_depth,publisher_name\n");
+           // writer.write("publication_title,print_identifier,online_identifier,date_first_issue_subscribed,num_first_vol_subscribed,num_first_issue_subscribed,date_last_issue_subscribed,num_last_vol_subscribed,num_last_issue_subscribed,embargo_info,title_url,first_author,title_id,coverage_note,coverage_depth,publisher_name\n");
+           writer.write("publication_title,print_identifier,online_identifier,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,title_url,embargo_info,first_author,title_id,coverage_depth,coverage_notes,publisher_name\n");
 
            result.entitlements.each { e ->
 
@@ -84,7 +85,7 @@ class PublicExportController {
              def title_doi = (e.tipp?.title?.getIdentifierValue('DOI'))?:''
              def publisher = e.tipp?.title?.publisher
 
-             writer.write("\"${e.tipp.title.title}\",\"${e.tipp?.title?.getIdentifierValue('ISSN')?:''}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')?:''}\",${start_date},${e.startVolume?:''},${e.startIssue?:''},${end_date},${e.endVolume?:''},${e.endIssue?:''},\"${e.embargo?:''}\",\"${e.tipp?.hostPlatformURL?:''}\",,\"${title_doi}\",\"${e.tipp?.coverageNote?:''}\",\"${e.tipp?.coverageDepth?:''}\",\"${publisher?.name?:''}\"\n");
+             writer.write("\"${e.tipp.title.title}\",\"${e.tipp?.title?.getIdentifierValue('ISSN')?:''}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')?:''}\",${start_date},${e.startVolume?:''},${e.startIssue?:''},${end_date},${e.endVolume?:''},${e.endIssue?:''},\"${e.tipp?.hostPlatformURL?:''}\",\"${e.embargo?:''}\",,\"${title_doi}\",\"${e.tipp?.coverageDepth?:''}\",\"${e.tipp?.coverageNote?:''}\",\"${publisher?.name?:''}\"\n");
            }
            writer.flush()
            writer.close()
