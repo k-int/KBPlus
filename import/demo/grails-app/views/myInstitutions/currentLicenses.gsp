@@ -83,7 +83,7 @@
                   <td><input type="radio" name="baselicense" value="${l.id}"/></td>
                   <td><g:link action="index"
                               controller="licenseDetails" 
-                              id="${l.id}">${l.reference}</g:link></td>
+                              id="${l.id}">${l.reference?:'** No License Reference Set **'}</g:link></td>
                   <td>${l.licensor?.name}</td>
                   <td>${l.licensee?.name}</td>
                   <td>${l.status?.value}</td>
