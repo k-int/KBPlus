@@ -70,7 +70,7 @@ class PublicExportController {
          def out = response.outputStream
          out.withWriter { writer ->
            if ( ( params.omitHeader == null ) || ( params.omitHeader != 'Y' ) ) {
-             writer.write("FileType,SpecVersion,JC_ID,TermStartDate,TermEndDate,SubURI,SOGUID\n")
+             writer.write("FileType,SpecVersion,JC_ID,TermStartDate,TermEndDate,SubURI,SystemIdentifier\n")
              writer.write("${result.subscriptionInstance.type.value},\"2.0\",${jc_id?:''},${result.subscriptionInstance.startDate},${result.subscriptionInstance.endDate},\"uri://kbplus/sub/${result.subscriptionInstance.identifier}\",${result.subscriptionInstance.impId}\n")
            }
 
