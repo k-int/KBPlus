@@ -70,8 +70,8 @@ class PublicExportController {
          def out = response.outputStream
          out.withWriter { writer ->
            if ( ( params.omitHeader == null ) || ( params.omitHeader != 'Y' ) ) {
-             writer.write("FileType,SpecVersion,JD_ID,TermStartDate,TermEndDate,SubURI\n")
-             writer.write("${result.subscriptionInstance.type.value},\"2.0\",${jc_id},start,end,\"uri://kbplus/sub/${result.subscriptionInstance.identifier}\"\n")
+             writer.write("FileType,SpecVersion,JC_ID,TermStartDate,TermEndDate,SubURI,SOGUID\n")
+             writer.write("${result.subscriptionInstance.type.value},\"2.0\",${jc_id?:''},${result.subscriptionInstance.startDate},${result.subscriptionInstance.endDate},\"uri://kbplus/sub/${result.subscriptionInstance.identifier}\",${result.subscriptionInstance.impId}\n")
            }
 
            // Output the body text
@@ -84,7 +84,7 @@ class PublicExportController {
              def title_doi = (e.tipp?.title?.getIdentifierValue('DOI'))?:''
              def publisher = e.tipp?.title?.publisher
 
-             writer.write("\"${e.tipp.title.title}\",\"${e.tipp?.title?.getIdentifierValue('ISSN')}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')}\",${start_date},${e.startVolume?:''},${e.startIssue?:''},${end_date},${e.endVolume?:''},${e.endIssue?:''},${e.embargo?:''},${e.tipp?.hostPlatformURL?:''},,${title_doi},${e.tipp?.coverageNote?:''},${e.tipp?.coverageDepth?:''},${publisher?.name?:''}\n");
+             writer.write("\"${e.tipp.title.title}\",\"${e.tipp?.title?.getIdentifierValue('ISSN')?:''}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')?:''}\",${start_date},${e.startVolume?:''},${e.startIssue?:''},${end_date},${e.endVolume?:''},${e.endIssue?:''},\"${e.embargo?:''}\",\"${e.tipp?.hostPlatformURL?:''}\",,\"${title_doi}\",\"${e.tipp?.coverageNote?:''}\",\"${e.tipp?.coverageDepth?:''}\",\"${publisher?.name?:''}\"\n");
            }
            writer.flush()
            writer.close()
