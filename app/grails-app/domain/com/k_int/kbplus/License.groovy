@@ -2,6 +2,8 @@ package com.k_int.kbplus
 
 class License {
 
+  static auditable = true
+
   RefdataValue status
   RefdataValue type
 
@@ -152,4 +154,24 @@ class License {
     result
   }
 
+
+  def onChange = { oldMap,newMap ->
+    log.debug("onChange....");
+    if ( oldMap['licenseUrl'] != newMap['licenseUrl'] ) {
+
+      def changeDescription = [
+        propname:'licenseUrl',
+        from:oldMap['licenseUrl'],
+        to:newMap['licenseUrl']
+      ]
+
+      log.debug("licenseUrl has changed - Notify any licenses derived from this one. Change description is ${changeDescription}");
+    }
+
+    oldMap.each( { key, oldVal ->
+      if(oldVal != newMap[key]) {
+        println " * $key changed from $oldVal to " + newMap[key]
+      }
+    } )
+  }
 }

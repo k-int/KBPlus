@@ -1,6 +1,8 @@
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
 
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+
 grails.config.locations = [ // "classpath:${appName}-config.properties",
 //                             "classpath:${appName}-config.groovy",
 //                             "file:${userHome}/.grails/${appName}-config.properties",
@@ -119,3 +121,20 @@ grails.plugins.springsecurity.providerNames = ['preAuthenticatedAuthenticationPr
                                                'daoAuthenticationProvider', 
                                                'anonymousAuthenticationProvider', 
                                                'rememberMeAuthenticationProvider' ]
+
+auditLog {
+  actorClosure = { request, session ->
+
+    if (request.applicationContext.springSecurityService.principal instanceof java.lang.String){
+      return request.applicationContext.springSecurityService.principal
+    }
+
+    def username = request.applicationContext.springSecurityService.principal?.username
+
+    if (SpringSecurityUtils.isSwitched()){
+      username = SpringSecurityUtils.switchedUserOriginalUsername+" AS "+username
+    }
+
+    return username
+  }
+}
