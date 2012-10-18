@@ -1,5 +1,7 @@
 package com.k_int.kbplus
 
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+
 class License {
 
   static auditable = true
@@ -163,36 +165,16 @@ class License {
 
   def onChange = { oldMap,newMap ->
 
+    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
     def controlledProperties = ['licenseUrl']
-
 
     log.debug("onChange....");
     controlledProperties.each { cp ->
       if ( oldMap[cp] != newMap[cp] ) {
-
-        // def changeDescription = [
-        //   oid:"${this.class.name}:${this.id}",
-        //   propname:cp,
-        //   from:oldMap[cp],
-        //   to:newMap[cp]
-        // ]
-
-        Doc change_doc = new Doc(title:'Template Change notification',contentType:1,content:'The template license for this actual license has changed. You can accept the changes').save();
-
-        outgoinglinks.each { ol ->
-          log.debug("Notify license ${ol.toLic.id} of change");
-          DocContext ctx = new DocContext(owner:change_doc, license:ol.toLic, new Alert(sharingLevel:2)).save();
-          PendingChange pc = new PendingChange(license:ol.toLic, updateProperty:cp, updateValue:newMap[cp],updateReason:'Template Edited').save();
-        }
-
-        // log.debug("licenseUrl has changed - Notify any licenses derived from this one. Change description is ${changeDescription}");
+        changeNotificationService.notifyLicenseChange(this.id, cp, oldMap[cp], newMap[cp], '');
       }
     }
 
-    // oldMap.each( { key, oldVal ->
-    //   if(oldVal != newMap[key]) {
-    //     println " * $key changed from $oldVal to " + newMap[key]
-    //   }
-    // } )
+    log.debug("On change complete");
   }
 }

@@ -75,3 +75,7 @@ drop table if exists type_definition;
 drop table if exists ftcontrol;
 drop table if exists link;
 drop table if exists kb_comment;
+drop table if exists audit_log;
+drop table if exists kbcomponent;
+drop table if exists pending_change;
+
