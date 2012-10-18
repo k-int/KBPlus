@@ -30,6 +30,8 @@ class License {
   String licenseStatus
   long lastmod
 
+  License derivedFrom
+
   static hasMany = [
     subscriptions:Subscription, 
     documents:DocContext,
@@ -69,6 +71,7 @@ class License {
             licenseType column:'lic_license_type_str'
           licenseStatus column:'lic_license_status_str'
                 lastmod column:'lic_lastmod'
+            derivedFrom column:'lic_derived_from_fk'
               documents sort:'id', order:'asc'
   }
 
@@ -156,22 +159,29 @@ class License {
 
 
   def onChange = { oldMap,newMap ->
+
+    def controlledProperties = ['licenseUrl']
+
+
     log.debug("onChange....");
-    if ( oldMap['licenseUrl'] != newMap['licenseUrl'] ) {
+    controlledProperties.each { cp ->
+      if ( oldMap[cp] != newMap[cp] ) {
 
-      def changeDescription = [
-        propname:'licenseUrl',
-        from:oldMap['licenseUrl'],
-        to:newMap['licenseUrl']
-      ]
+        def changeDescription = [
+          oid:"${this.class.name}:${newMap['id']}",
+          propname:cp,
+          from:oldMap[cp],
+          to:newMap[cp]
+        ]
 
-      log.debug("licenseUrl has changed - Notify any licenses derived from this one. Change description is ${changeDescription}");
+        log.debug("licenseUrl has changed - Notify any licenses derived from this one. Change description is ${changeDescription}");
+      }
     }
 
-    oldMap.each( { key, oldVal ->
-      if(oldVal != newMap[key]) {
-        println " * $key changed from $oldVal to " + newMap[key]
-      }
-    } )
+    // oldMap.each( { key, oldVal ->
+    //   if(oldVal != newMap[key]) {
+    //     println " * $key changed from $oldVal to " + newMap[key]
+    //   }
+    // } )
   }
 }
