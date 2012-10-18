@@ -30,21 +30,21 @@ class License {
   String licenseStatus
   long lastmod
 
-  License derivedFrom
-
   static hasMany = [
     subscriptions:Subscription, 
     documents:DocContext,
     orgLinks:OrgRole,
     outgoinglinks:Link,
-    incomingLinks:Link
+    incomingLinks:Link,
+    pendingChanges:PendingChange
   ]
 
   static mappedBy = [ subscriptions: 'owner',
                       documents: 'license',
                       orgLinks:'lic',
                       outgoinglinks:'fromLic',
-                      incomingLinks:'toLic']
+                      incomingLinks:'toLic',
+                      pendingChanges:'license']
 
   static mapping = {
                      id column:'lic_id'
@@ -71,7 +71,6 @@ class License {
             licenseType column:'lic_license_type_str'
           licenseStatus column:'lic_license_status_str'
                 lastmod column:'lic_lastmod'
-            derivedFrom column:'lic_derived_from_fk'
               documents sort:'id', order:'asc'
   }
 
@@ -147,13 +146,17 @@ class License {
   }
 
   // determin if a user can edit this subscription
-  def isEditableBy(user) {
+  def isEditableBy(user, request) {
+
     def result = false
     // users are allowed to edit a subscription if they belong to an institution who has a role as subscriber
+
     def user_orgs = user.affiliations.collect { it.org }
-    if ( user_orgs.contains( getLicensee() ) ) {
+    if ( ( user_orgs.contains( getLicensee() ) ) || 
+         ( request.isUserInRole('ROLE_ADMIN') ) ) {
       result = true;
     }
+
     result
   }
 
@@ -167,14 +170,22 @@ class License {
     controlledProperties.each { cp ->
       if ( oldMap[cp] != newMap[cp] ) {
 
-        def changeDescription = [
-          oid:"${this.class.name}:${newMap['id']}",
-          propname:cp,
-          from:oldMap[cp],
-          to:newMap[cp]
-        ]
+        // def changeDescription = [
+        //   oid:"${this.class.name}:${this.id}",
+        //   propname:cp,
+        //   from:oldMap[cp],
+        //   to:newMap[cp]
+        // ]
 
-        log.debug("licenseUrl has changed - Notify any licenses derived from this one. Change description is ${changeDescription}");
+        Doc change_doc = new Doc(title:'Template Change notification',contentType:1,content:'The template license for this actual license has changed. You can accept the changes').save();
+
+        outgoinglinks.each { ol ->
+          log.debug("Notify license ${ol.toLic.id} of change");
+          DocContext ctx = new DocContext(owner:change_doc, license:ol.toLic, new Alert(sharingLevel:2)).save();
+          PendingChange pc = new PendingChange(license:ol.toLic, updateProperty:cp, updateValue:newMap[cp],updateReason:'Template Edited').save();
+        }
+
+        // log.debug("licenseUrl has changed - Notify any licenses derived from this one. Change description is ${changeDescription}");
       }
     }
 

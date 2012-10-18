@@ -19,10 +19,6 @@ class Doc {
   Date lastUpdated
   User user
 
-  String updateProperty
-  String updateValue
-  String updateReason
-
   static mapping = {
                 id column:'doc_id'
            version column:'doc_version'
@@ -37,9 +33,6 @@ class Doc {
            content column:'doc_content', type:'text'
           mimeType column:'doc_mimeType'
               user column:'doc_user_fk'
-    updateProperty column:'doc_update_prop'
-       updateValue column:'doc_update_value'
-      updateReason column:'doc_update_reason'
   }
 
   static constraints = {

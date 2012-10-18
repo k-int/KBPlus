@@ -23,7 +23,7 @@ class LicenseDetailsController {
     // result.institution = Org.findByShortcode(params.shortcode)
     result.license = License.get(params.id)
 
-    if ( result.license.isEditableBy(result.user) ) {
+    if ( result.license.isEditableBy(result.user, request) ) {
       result.editable = true
     }
     else {
