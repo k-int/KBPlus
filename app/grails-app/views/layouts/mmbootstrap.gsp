@@ -105,6 +105,8 @@
                     <ul class="dropdown-menu">
                       <li <%= ( ( 'admin'== controllerName ) && ( 'manageAffiliationRequests'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="manageAffiliationRequests">Manage Affiliation Requests</g:link></li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'settings'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="settings">System Settings</g:link></li>
                       <li class="divider"></li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'reconcile'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="reconcile">Manage Data Reconciliation</g:link>

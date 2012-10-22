@@ -139,4 +139,27 @@ class AdminController {
     if ( ( params.sub_identifier ) && ( params.lic_reference.length() > 0 ) ) {
     }
   }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def settings() {
+    def result = [:]
+    result.settings = Setting.list();
+    result
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def toggleBoolSetting() {
+    def result = [:]
+    def s = Setting.findByName(params.setting);
+    if ( s ) {
+      if ( s.tp == 1 ) {
+        if ( s.value == 'true' )
+          s.value = 'false'
+        else
+          s.value = 'true'
+      }
+      s.save(flush:true)
+    }
+    redirect controller: 'admin', action:'settings'
+  }
 }
