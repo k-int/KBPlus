@@ -45,6 +45,10 @@
         <li><g:link controller="licenseDetails" 
                     action="notes" 
                     params="${[id:params.id]}">Notes</g:link></li>
+
+        <li><g:link controller="licenseDetails" 
+                    action="history" 
+                    params="${[id:params.id]}">History</g:link></li>
       </ul>
 
     </div>
@@ -52,11 +56,11 @@
     <g:if test="${license.pendingChanges?.size() > 0}">
       <div class="container alert-warn">
         <h6>This License has pending change notifications</h6>
-        <table class="table table-bordered licence-properties">
+        <table class="table table-bordered">
           <thead>
             <tr>
               <td>Field</td>
-              <td>Value</td>
+              <td>Has changed to</td>
               <td>Reason</td>
               <td>Actions</td>
             </tr>
@@ -64,12 +68,12 @@
           <tbody>
             <g:each in="${license.pendingChanges}" var="pc">
               <tr>
-                <td>${pc.updateProperty}</td>
+                <td style="white-space:nowrap;">${pc.updateProperty}</td>
                 <td>${pc.updateValue}</td>
                 <td>${pc.updateReason}</td>
                 <td>
-                  <button class="btn btn-primary" value="Accept">Accept</button>
-                  <button class="btn btn-primary" value="Reject">Reject</button>
+                  <g:link controller="licenseDetails" action="acceptChange" id="${params.id}" params="${[changeid:pc.id]}" class="btn btn-primary">Accept</g:link>
+                  <g:link controller="licenseDetails" action="rejectChange" id="${params.id}" params="${[changeid:pc.id]}" class="btn btn-primary">Reject</g:link>
                 </td>
               </tr>
             </g:each>

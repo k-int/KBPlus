@@ -35,6 +35,11 @@
             <li><g:link controller="licenseDetails" 
                         action="notes" 
                         params="${[id:params.id]}">Notes</g:link></li>
+
+       <li><g:link controller="licenseDetails" 
+                    action="history" 
+                    params="${[id:params.id]}">History</g:link></li>
+
         </ul>
 
     </div>
