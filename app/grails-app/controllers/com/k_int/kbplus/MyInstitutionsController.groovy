@@ -24,6 +24,7 @@ class MyInstitutionsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.userAlerts = alertsService.getAllVisibleAlerts(result.user);
+    result.staticAlerts = alertsService.getStaticAlerts(request);
     
     log.debug("result.userAlerts: ${result.userAlerts}");
     log.debug("result.userAlerts.size(): ${result.userAlerts.size()}");
@@ -52,6 +53,7 @@ class MyInstitutionsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.userAlerts = alertsService.getAllVisibleAlerts(result.user);
+    result.staticAlerts = alertsService.getStaticAlerts(request);
 
     log.debug("result.userAlerts: ${result.userAlerts}");
     log.debug("result.userAlerts.size(): ${result.userAlerts.size()}");

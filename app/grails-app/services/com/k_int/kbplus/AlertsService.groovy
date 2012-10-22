@@ -127,4 +127,18 @@ class AlertsService {
     }
     result
   }
+
+  // All the programatic alerts, such as "Pending affiliation requests"
+  def getStaticAlerts(req) {
+    def result = []
+    // Do we need to add admin flags?
+    if ( req.isUserInRole('ROLE_ADMIN') ) {
+      def pending_membership_reqs = UserOrg.findAllByStatus(0)
+      if ( pending_membership_reqs.size() > 0 ) {
+        result.add([message:'PendingAffiliationRequest',controller:'admin',action:'manageAffiliationRequests'])
+      }
+    }
+
+    result
+  }
 }

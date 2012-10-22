@@ -7,6 +7,26 @@
 
   <body>
     <div class="container">
+
+      <g:if test="${staticAlerts.size() > 0}">
+        <table class="table table-bordered">
+          <tr><th>System Alert</th></tr>
+
+          <g:each in="${staticAlerts}" var="sa">
+            <tr>
+              <td>
+                <g:if test="${sa.controller}">
+                  <g:link controller="${sa.controller}" action="${sa.action}">${message(code:sa.message)}</g:link>
+                </g:if>
+                <g:else>
+                  ${message(sa.message)}
+                </g:else>
+              </td>
+            </tr>
+          </g:each>
+        </table>
+      </g:if>
+
       <table class="table table-bordered">
         <tr>
           <th colspan="3">Note attached to</th>

@@ -46,6 +46,26 @@
       </div>
     </div>
 
+    <g:if test="${staticAlerts.size() > 0}">
+      <div class="container">
+        <table class="table table-bordered">
+          <tr><th>System Alert</th></tr>
+          <g:each in="${staticAlerts}" var="sa">
+            <tr>
+              <td>
+                <g:if test="${sa.controller}">
+                  <g:link controller="${sa.controller}" action="${sa.action}">${message(code:sa.message)}</g:link>
+                </g:if>
+                <g:else>
+                  ${message(sa.message)}
+                </g:else>
+              </td>
+            </tr>
+          </g:each>
+        </table>
+      </div>
+    </g:if>
+
     <div class="container">
       <table class="table table-bordered">
         <tr>
