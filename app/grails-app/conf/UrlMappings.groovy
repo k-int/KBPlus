@@ -7,6 +7,8 @@ class UrlMappings {
       }
     }
 
+    "/lic/$action?/$id?"(controller:'license')
+
     "/myInstitutions/$shortcode/$action"(controller:'myInstitutions')
     "/myInstitutions/$shortcode/$action/$id"(controller:'myInstitutions')
 

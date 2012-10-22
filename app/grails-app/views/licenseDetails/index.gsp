@@ -55,7 +55,7 @@
 
     <g:if test="${license.pendingChanges?.size() > 0}">
       <div class="container alert-warn">
-        <h6>This License has pending change notifications</h6>
+        <h6>This Licence has pending change notifications</h6>
         <table class="table table-bordered">
           <thead>
             <tr>

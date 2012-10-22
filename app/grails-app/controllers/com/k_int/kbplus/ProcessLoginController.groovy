@@ -131,10 +131,16 @@ class ProcessLoginController {
         org = com.k_int.kbplus.Org.findByShortcode(candidate)
 
       if ( org ) {
+        boolean auto_approve = false;
+
+        def auto_approve_setting = Setting.findByName('AutoApproveMemberships');
+        if ( auto_approve_setting?.value == 'true' )
+          auto_approve = true;
+
         def user_org_link = new com.k_int.kbplus.auth.UserOrg(user:user, 
                                                               org:org, 
                                                               role:'Staff', 
-                                                              status:3, 
+                                                              status: auto_approve?3:0, 
                                                               dateRequested:System.currentTimeMillis(), 
                                                               dateActioned:System.currentTimeMillis())
         if ( !user_org_link.save(flush:true) ) {
