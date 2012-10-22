@@ -49,6 +49,35 @@
 
     </div>
 
+    <g:if test="${license.pendingChanges?.size() > 0}">
+      <div class="container alert-warn">
+        <h6>This License has pending change notifications</h6>
+        <table class="table table-bordered licence-properties">
+          <thead>
+            <tr>
+              <td>Field</td>
+              <td>Value</td>
+              <td>Reason</td>
+              <td>Actions</td>
+            </tr>
+          </thead>
+          <tbody>
+            <g:each in="${license.pendingChanges}" var="pc">
+              <tr>
+                <td>${pc.updateProperty}</td>
+                <td>${pc.updateValue}</td>
+                <td>${pc.updateReason}</td>
+                <td>
+                  <button class="btn btn-primary" value="Accept">Accept</button>
+                  <button class="btn btn-primary" value="Reject">Reject</button>
+                </td>
+              </tr>
+            </g:each>
+          </tbody>
+        </table>
+      </div>
+    </g:if>
+
     <div class="container">
             <div class="row">
               <div class="span8">
