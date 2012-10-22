@@ -28,17 +28,22 @@ class ChangeNotificationService {
     try {
 
       if ( hasDerivedLicenses(lic_being_changed) ) {
-        Doc change_doc = new Doc(title:'Template Change notification',contentType:1,content:'The template license for this actual license has changed. You can accept the changes').save();
+        Doc change_doc = new Doc(title:'Template Change notification',
+                                 contentType:1,
+                                 content:'The template license for this actual license has changed. You can accept the changes').save();
 
         lic_being_changed.outgoinglinks.each { ol ->
           def derived_licence = ol.toLic;
           log.debug("Notify license ${ol.toLic.id} of change");
+
           Alert a = new Alert(sharingLevel:2).save(flush:true)
+
           DocContext ctx = new DocContext(owner:change_doc, 
                                           license:derived_licence,
                                           alert:a).save(flush:true);
   
           PendingChange pc = new PendingChange(license:derived_licence,
+                                               doc:change_doc,
                                                updateProperty:propname, 
                                                updateValue:newvalue,
                                                updateReason:"The template used to derive this licence has changed").save(flush:true);

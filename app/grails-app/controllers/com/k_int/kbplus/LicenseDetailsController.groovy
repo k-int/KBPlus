@@ -128,4 +128,54 @@ class LicenseDetailsController {
     redirect controller: 'licenseDetails', action:'index', params:[shortcode:params.shortcode], id:params.licid, fragment:'docstab'
   }
 
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def acceptChange() {
+    def user = User.get(springSecurityService.principal.id)
+    def license = License.get(params.id)
+    def pc = PendingChange.get(params.changeid)
+
+    license[pc.updateProperty] = pc.updateValue
+    license.save(flush:true)
+
+    expungePendingChange(license, pc);
+
+    redirect controller: 'licenseDetails', action:'index',id:params.id
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def rejectChange() {
+    def user = User.get(springSecurityService.principal.id)
+    def license = License.get(params.id)
+    def pc = PendingChange.get(params.changeid)
+    expungePendingChange(license, pc);
+    redirect controller: 'licenseDetails', action:'index',id:params.id
+  }
+
+  def expungePendingChange(license, pc) {
+    log.debug("Expunging pending change, looking up change context doc=${pc.doc?.id}, lic=${license.id}");
+
+    def this_change_ctx = DocContext.findByOwnerAndLicense(pc.doc, license)
+
+    pc.delete(flush:true);
+
+    if ( this_change_ctx ) {
+      log.debug("Delete change context between license and change description document");
+      this_change_ctx.alert.delete();
+      this_change_ctx.delete(flush:true);
+
+      def remaining_contexts = DocContext.findAllByOwner(pc.doc) 
+      if ( remaining_contexts.size() == 0 ) {
+        log.debug("Change doc has no remaining contexts, delete it");
+        pc.doc.delete();
+      }
+      else {
+        log.debug("Change document still referenced by ${remaining_contexts.size()} contexts");
+      }
+    }
+    else {
+      log.debug("No change context found");
+    }
+
+
+  }
 }
