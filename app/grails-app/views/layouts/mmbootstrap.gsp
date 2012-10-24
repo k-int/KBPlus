@@ -108,6 +108,9 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'settings'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="settings">System Settings</g:link></li>
                       <li class="divider"></li>
+                      <li <%= ( ( 'organisations'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="organisations" action="index">Manage Organisations</g:link>
+                      </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'reconcile'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="reconcile">Manage Data Reconciliation</g:link>
                       </li>

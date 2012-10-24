@@ -66,7 +66,7 @@
             <tbody>
               <g:each in="${user.affiliations}" var="assoc">
                 <tr>
-                  <td>${assoc.org.name}</td>
+                  <td><g:link controller="organisations" action="info" id="${assoc.org.id}">${assoc.org.name}</g:link></td>
                   <td>${assoc.role}</td>
                   <td><g:message code="cv.membership.status.${assoc.status}"/></td>
                   <td><g:formatDate format="dd MMMM yyyy" date="${assoc.dateRequested}"/> / <g:formatDate format="dd MMMM yyyy" date="${assoc.dateActioned}"/></td>
