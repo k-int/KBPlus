@@ -24,6 +24,9 @@ class BootStrap {
     def institutionalAdmin = Role.findByAuthority('INST_ADM') ?: new Role(authority: 'INST_ADM', roleType:'user').save(failOnError: true)
     def institutionalUser = Role.findByAuthority('INST_USER') ?: new Role(authority: 'INST_USER', roleType:'user').save(failOnError: true)
 
+    // Permissions
+    def edit_permission = Perm.findByCode('edit') ?: new Perm(code:'edit').save(failOnError: true)
+    def view_permission = Perm.findByCode('view') ?: new Perm(code:'view').save(failOnError: true)
 
     if ( grailsApplication.config.localauth ) {
       log.debug("localauth is set.. ensure user accounts present");
