@@ -14,6 +14,9 @@ class BootStrap {
     def so_filetype = DataloadFileType.findByName('Subscription Offered File') ?: new DataloadFileType(name:'Subscription Offered File');
     def plat_filetype = DataloadFileType.findByName('Platforms File') ?: new DataloadFileType(name:'Platforms File');
 
+    // Permissions
+    def edit_permission = Perm.findByCode('edit') ?: new Perm(code:'edit').save(failOnError: true)
+    def view_permission = Perm.findByCode('view') ?: new Perm(code:'view').save(failOnError: true)
 
     // Global System Roles
     def userRole = Role.findByAuthority('ROLE_USER') ?: new Role(authority: 'ROLE_USER', roleType:'global').save(failOnError: true)
@@ -21,12 +24,17 @@ class BootStrap {
     def adminRole = Role.findByAuthority('ROLE_ADMIN') ?: new Role(authority: 'ROLE_ADMIN', roleType:'global').save(failOnError: true)
 
     // Institutional Roles
-    def institutionalAdmin = Role.findByAuthority('INST_ADM') ?: new Role(authority: 'INST_ADM', roleType:'user').save(failOnError: true)
-    def institutionalUser = Role.findByAuthority('INST_USER') ?: new Role(authority: 'INST_USER', roleType:'user').save(failOnError: true)
+    def institutionalAdmin = Role.findByAuthority('INST_ADM')
+    if ( !institutionalAdmin ) {
+      institutionalAdmin = new Role(authority: 'INST_ADM', roleType:'user').save(failOnError: true)
+      def new_grant = new PermGrant(role:institutionalAdmin, perm:edit_permission).save();
+    }
 
-    // Permissions
-    def edit_permission = Perm.findByCode('edit') ?: new Perm(code:'edit').save(failOnError: true)
-    def view_permission = Perm.findByCode('view') ?: new Perm(code:'view').save(failOnError: true)
+    def institutionalUser = Role.findByAuthority('INST_USER') 
+    if ( !institutionalUser ) {
+      institutionalUser = new Role(authority: 'INST_USER', roleType:'user').save(failOnError: true)
+      def new_grant = new PermGrant(role:institutionalUser, perm:view_permission).save();
+    }
 
     if ( grailsApplication.config.localauth ) {
       log.debug("localauth is set.. ensure user accounts present");
