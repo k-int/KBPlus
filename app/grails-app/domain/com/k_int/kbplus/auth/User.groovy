@@ -81,6 +81,21 @@ class User {
    */
   @Transient def listPrincipalsGrantingPermission(perm) {
     def result=[]
-    // Find all UserOrg objects where the "Role" grants the identified "Perm"
+    if ( perm ) {
+      def c = UserOrg.createCriteria()
+      def results = c {
+	eq("user",this)
+        formalRole {
+          grantedPermissions {
+            perm {
+              eq("code",perm)
+            }
+          }
+        }
+	maxResults(10)
+      }
+      // Find all UserOrg objects where the "Role" grants the identified "Perm"
+      // def orgs = UserOrg.find({user == this && formalRole.grantedPermissions.contains() })
+    }
   }
 }
