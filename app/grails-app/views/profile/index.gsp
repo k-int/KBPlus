@@ -67,7 +67,7 @@
               <g:each in="${user.affiliations}" var="assoc">
                 <tr>
                   <td><g:link controller="organisations" action="info" id="${assoc.org.id}">${assoc.org.name}</g:link></td>
-                  <td>${assoc.role}</td>
+                  <td><g:message code="cv.roles.${assoc.formalRole?.authority}"/></td>
                   <td><g:message code="cv.membership.status.${assoc.status}"/></td>
                   <td><g:formatDate format="dd MMMM yyyy" date="${assoc.dateRequested}"/> / <g:formatDate format="dd MMMM yyyy" date="${assoc.dateActioned}"/></td>
                   <td><!--<button class="btn">Remove</button>--></td>
@@ -83,17 +83,22 @@
           <h2>Request new membership</h2>
           <p>Select an organisation and a role below. Requests to join existing
              organisations will be referred to the administrative users of that organisation. If you feel you should be the administrator of an organisation
-             please contact the KBPlus team for suppot.</p>
+             please contact the KBPlus team for support.</p>
   
           <g:form controller="profile" action="processJoinRequest" form class="form-search">
+
             <g:select name="org"
                       from="${com.k_int.kbplus.Org.findAllBySector('Higher Education')}"
                       optionKey="id"
                       optionValue="name"
-                      class="input-medium"
-                      value="${params.req}">
-            </g:select>
-            <g:select name="role" from="${['Staff', 'Administrator']}"/>
+                      class="input-medium"/>
+
+            <g:select name="formalRole"
+                      from="${com.k_int.kbplus.auth.Role.findAllByRoleType('user')}"
+                      optionKey="id"
+                      optionValue="${ {role->g.message(code:'cv.roles.'+role.authority) } }"
+                      class="input-medium"/>
+
             <button class="btn" data-complete-text="Request Membership" type="submit">Request Membership</button>
           </g:form>
           <form>

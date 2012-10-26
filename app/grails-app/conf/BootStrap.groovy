@@ -14,9 +14,16 @@ class BootStrap {
     def so_filetype = DataloadFileType.findByName('Subscription Offered File') ?: new DataloadFileType(name:'Subscription Offered File');
     def plat_filetype = DataloadFileType.findByName('Platforms File') ?: new DataloadFileType(name:'Platforms File');
 
-    def userRole = Role.findByAuthority('ROLE_USER') ?: new Role(authority: 'ROLE_USER').save(failOnError: true)
-    def editorRole = Role.findByAuthority('ROLE_EDITOR') ?: new Role(authority: 'ROLE_EDITOR').save(failOnError: true)
-    def adminRole = Role.findByAuthority('ROLE_ADMIN') ?: new Role(authority: 'ROLE_ADMIN').save(failOnError: true)
+
+    // Global System Roles
+    def userRole = Role.findByAuthority('ROLE_USER') ?: new Role(authority: 'ROLE_USER', roleType:'global').save(failOnError: true)
+    def editorRole = Role.findByAuthority('ROLE_EDITOR') ?: new Role(authority: 'ROLE_EDITOR', roleType:'global').save(failOnError: true)
+    def adminRole = Role.findByAuthority('ROLE_ADMIN') ?: new Role(authority: 'ROLE_ADMIN', roleType:'global').save(failOnError: true)
+
+    // Institutional Roles
+    def institutionalAdmin = Role.findByAuthority('INST_ADM') ?: new Role(authority: 'INST_ADM', roleType:'user').save(failOnError: true)
+    def institutionalUser = Role.findByAuthority('INST_USER') ?: new Role(authority: 'INST_USER', roleType:'user').save(failOnError: true)
+
 
     if ( grailsApplication.config.localauth ) {
       log.debug("localauth is set.. ensure user accounts present");
@@ -62,6 +69,11 @@ class BootStrap {
     // SpringSecurityUtils.clientRegisterFilter( 'oracleSSOFilter', SecurityFilterPosition.PRE_AUTH_FILTER.order)
     // SpringSecurityUtils.clientRegisterFilter('securityContextPersistenceFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
     SpringSecurityUtils.clientRegisterFilter('ediauthFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
+
+    def uo_with_null_role = UserOrg.findAllByFormalRoleIsNull()
+    if ( uo_with_null_role.size() > 0 ) {
+      log.warn("There are user org rows with no role set. Please update the table to add role FKs");
+    }
   }
 
   def destroy = {

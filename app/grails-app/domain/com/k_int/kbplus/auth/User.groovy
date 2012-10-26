@@ -67,8 +67,20 @@ class User {
     password = springSecurityService.encodePassword(password)
   }
 
-  @Transient
-  def getAuthorizedAffiliations() {
+  @Transient def getAuthorizedAffiliations() {
     affiliations.findAll { (it.status == 1) || (it.status==3) }
+  }
+
+  /**
+   * This method lists all the principals that convey a particular permission on a user. For example
+   * Institution UHI grants "EDIT" permission to anyone with the role "Member". This is the trivial case.
+   * if "UHI" joins the "SHEDL" consortia, and the "Member" link between the two also carries the "EDIT" permission,
+   * then the implication is that this user will be able to edit SHEDL resources. This method traverses the directed graph
+   * of objects that grant the identified permission to a user. This simplifies searching the permissions space,
+   * as we're then only looking for one of a finite set.
+   */
+  @Transient def listPrincipalsGrantingPermission(perm) {
+    def result=[]
+    // Find all UserOrg objects where the "Role" grants the identified "Perm"
   }
 }

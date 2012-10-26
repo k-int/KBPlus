@@ -24,12 +24,14 @@ class ProfileController {
     log.debug("processJoinRequest org with id ${params.org}");
     def user = User.get(springSecurityService.principal.id)
     def org = com.k_int.kbplus.Org.get(params.org)
+    def formal_role = com.k_int.kbplus.Role.get(params.formal_role)
+
     if ( ( org != null ) && ( params.role != null ) ) {
       def p = new UserOrg(dateRequested:System.currentTimeMillis(),
                           status:0,
                           org:org,
                           user:user,
-                          role:params.role)
+                          formalRole:formal_role)
       p.save(flush:true)
     }
     redirect(action: "index")
