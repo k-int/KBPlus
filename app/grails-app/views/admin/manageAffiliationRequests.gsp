@@ -49,7 +49,7 @@
                   <td>${req.user.displayName}</td>
                   <td>${req.user.email}</td>
                   <td>${req.org.name}</td>
-                  <td>${req.role}</td>
+                  <td><g:message code="cv.roles.${req.formalRole?.authority}"/></td>
                   <td><g:message code="cv.membership.status.${req.status}"/></td>
                   <td><g:formatDate format="dd MMMM yyyy" date="${req.dateRequested}"/></td>
                   <td><g:link controller="admin" action="actionAffiliationRequest" params="${[req:req.id, act:'approve']}" class="btn" >Approve</g:link>

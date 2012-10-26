@@ -21,19 +21,32 @@ class ProfileController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def processJoinRequest() {
-    log.debug("processJoinRequest org with id ${params.org}");
+    log.debug("processJoinRequest org with id ${params.org} role ${params.formalRole}");
     def user = User.get(springSecurityService.principal.id)
     def org = com.k_int.kbplus.Org.get(params.org)
-    def formal_role = com.k_int.kbplus.Role.get(params.formal_role)
+    def formal_role = com.k_int.kbplus.auth.Role.get(params.formalRole)
 
-    if ( ( org != null ) && ( params.role != null ) ) {
-      def p = new UserOrg(dateRequested:System.currentTimeMillis(),
-                          status:0,
-                          org:org,
-                          user:user,
-                          formalRole:formal_role)
-      p.save(flush:true)
+
+    if ( ( org != null ) && ( formal_role != null ) ) {
+      def existingRel = UserOrg.find( { org==org && user==user && formalRole==formal_role } )
+      if ( existingRel ) {
+        log.debug("existing rel");
+        flash.error="You already have a relation with the requested organisation."
+      }
+      else {
+        log.debug("Create new user_org entry....");
+        def p = new UserOrg(dateRequested:System.currentTimeMillis(),
+                            status:0,
+                            org:org,
+                            user:user,
+                            formalRole:formal_role)
+        p.save(flush:true)
+      }
     }
+    else {
+      log.error("Unable to locate org or role");
+    }
+
     redirect(action: "index")
   }
 
