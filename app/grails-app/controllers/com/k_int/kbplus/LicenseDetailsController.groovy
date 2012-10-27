@@ -50,9 +50,11 @@ class LicenseDetailsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.license = License.get(params.id)
+    result.max = params.max ?: 20;
+    result.offset = params.offset ?: 0;
 
-    def qry_params = [result.license.class.name, result.license.id]
-    result.historyLines = AuditLogEvent.executeQuery("select e from AuditLogEvent as e where className=? and persistedObjectId=?",qry_params, [max:result.max, offset:result.offset]);
+    def qry_params = [result.license.class.name, "${result.license.id}"]
+    result.historyLines = AuditLogEvent.executeQuery("select e from AuditLogEvent as e where className=? and persistedObjectId=? order by id desc", qry_params, [max:result.max, offset:result.offset]);
     result.historyLinesTotal = AuditLogEvent.executeQuery("select count(e.id) from AuditLogEvent as e where className=? and persistedObjectId=?",qry_params)[0];
 
     result
