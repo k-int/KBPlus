@@ -6,6 +6,7 @@ import grails.converters.*
 import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.MarkupBuilder
 import com.k_int.kbplus.auth.*;
+import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
 class LicenseDetailsController {
 
@@ -49,6 +50,11 @@ class LicenseDetailsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.license = License.get(params.id)
+
+    def qry_params = [result.license.class.name, result.license.id]
+    result.historyLines = AuditLogEvent.executeQuery("select e from AuditLogEvent as e where className=? and persistedObjectId=?",qry_params, [max:result.max, offset:result.offset]);
+    result.historyLinesTotal = AuditLogEvent.executeQuery("select count(e.id) from AuditLogEvent as e where className=? and persistedObjectId=?",qry_params)[0];
+
     result
   }
 

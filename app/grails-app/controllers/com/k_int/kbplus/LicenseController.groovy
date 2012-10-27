@@ -62,46 +62,46 @@ class LicenseController {
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def edit() {
     switch (request.method) {
-    case 'GET':
-          def licenseInstance = License.get(params.id)
-          if (!licenseInstance) {
-              flash.message = message(code: 'default.not.found.message', args: [message(code: 'license.label', default: 'License'), params.id])
-              redirect action: 'list'
-              return
-          }
+      case 'GET':
+            def licenseInstance = License.get(params.id)
+            if (!licenseInstance) {
+                flash.message = message(code: 'default.not.found.message', args: [message(code: 'license.label', default: 'License'), params.id])
+                redirect action: 'list'
+                return
+            }
+  
+            [licenseInstance: licenseInstance]
+        break
+      case 'POST':
+            def licenseInstance = License.get(params.id)
+            if (!licenseInstance) {
+                flash.message = message(code: 'default.not.found.message', args: [message(code: 'license.label', default: 'License'), params.id])
+                redirect action: 'list'
+                return
+            }
+  
+            if (params.version) {
+                def version = params.version.toLong()
+                if (licenseInstance.version > version) {
+                    licenseInstance.errors.rejectValue('version', 'default.optimistic.locking.failure',
+                              [message(code: 'license.label', default: 'License')] as Object[],
+                              "Another user has updated this License while you were editing")
+                    render view: 'edit', model: [licenseInstance: licenseInstance]
+                    return
+                }
+            }
 
-          [licenseInstance: licenseInstance]
-      break
-    case 'POST':
-          def licenseInstance = License.get(params.id)
-          if (!licenseInstance) {
-              flash.message = message(code: 'default.not.found.message', args: [message(code: 'license.label', default: 'License'), params.id])
-              redirect action: 'list'
-              return
-          }
-
-          if (params.version) {
-              def version = params.version.toLong()
-              if (licenseInstance.version > version) {
-                  licenseInstance.errors.rejectValue('version', 'default.optimistic.locking.failure',
-                            [message(code: 'license.label', default: 'License')] as Object[],
-                            "Another user has updated this License while you were editing")
-                  render view: 'edit', model: [licenseInstance: licenseInstance]
-                  return
-              }
-          }
-
-          licenseInstance.properties = params
-
-          if (!licenseInstance.save(flush: true)) {
-              render view: 'edit', model: [licenseInstance: licenseInstance]
-              return
-          }
-
-      flash.message = message(code: 'default.updated.message', args: [message(code: 'license.label', default: 'License'), licenseInstance.id])
-          redirect action: 'show', id: licenseInstance.id
-      break
-    }
+            licenseInstance.properties = params
+  
+            if (!licenseInstance.save(flush: true)) {
+                render view: 'edit', model: [licenseInstance: licenseInstance]
+                return
+            }
+  
+        flash.message = message(code: 'default.updated.message', args: [message(code: 'license.label', default: 'License'), licenseInstance.id])
+            redirect action: 'show', id: licenseInstance.id
+        break
+      }
     }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])

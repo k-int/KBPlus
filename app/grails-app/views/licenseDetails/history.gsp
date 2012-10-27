@@ -46,6 +46,32 @@
 
     <div class="container">
 License history
+      <table  class="table table-striped table-bordered">
+        <tr>
+          <th>Event ID</th>
+          <th>Person</th>
+          <th>Version<th>
+          <th>Date<th>
+          <th>Event</th>
+          <th>Field</th>
+          <th>Old Value</th>
+          <th>New Value</th>
+        </tr>
+        <g:if test="${historyLines}">
+          <g:each in="${historyLines}" var="hl">
+            <tr>
+              <td>${hl.id}</td>
+              <td>${hl.actor}</td>
+              <td>${hl.persistedObjectVersion}</td>
+              <td>${hl.dateCreated}</td>
+              <td>${hl.eventName}</td>
+              <td>${hl.propertyName}</td>
+              <td>${hl.oldValue}</td>
+              <td>${hl.newValue}</td>
+            </tr>
+          </g:each>
+        </g:if>
+      </div>
     </div>
 
 </body>
