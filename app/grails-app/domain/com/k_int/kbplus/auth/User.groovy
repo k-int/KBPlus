@@ -98,4 +98,8 @@ class User {
       // def orgs = UserOrg.find({user == this && formalRole.grantedPermissions.contains() })
     }
   }
+
+  def hasPerm(perm,user) {
+    false
+  }
 }

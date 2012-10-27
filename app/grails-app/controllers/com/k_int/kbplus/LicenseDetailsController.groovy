@@ -24,6 +24,12 @@ class LicenseDetailsController {
     // result.institution = Org.findByShortcode(params.shortcode)
     result.license = License.get(params.id)
 
+    if ( ! result.license.hasPerm("view",result.user) ) {
+      log.debug("return 401....");
+      render(status: '401', text:"You do not have permission to view license ${params.id}");
+      return
+    }
+
     if ( result.license.isEditableBy(result.user, request) ) {
       result.editable = true
     }
@@ -41,6 +47,12 @@ class LicenseDetailsController {
     result.user = User.get(springSecurityService.principal.id)
     // result.institution = Org.findByShortcode(params.shortcode)
     result.license = License.get(params.id)
+
+    if ( ! result.license.hasPerm("view",result.user) ) {
+      render status: 401
+      return
+    }
+
     result
   }
 
@@ -50,6 +62,12 @@ class LicenseDetailsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.license = License.get(params.id)
+
+    if ( ! result.license.hasPerm("view",result.user) ) {
+      render status: 401
+      return
+    }
+
     result.max = params.max ?: 20;
     result.offset = params.offset ?: 0;
 
@@ -67,6 +85,12 @@ class LicenseDetailsController {
     result.user = User.get(springSecurityService.principal.id)
     // result.institution = Org.findByShortcode(params.shortcode)
     result.license = License.get(params.id)
+
+    if ( ! result.license.hasPerm("view",result.user) ) {
+      render status: 401
+      return
+    }
+
     result
   }
 
@@ -77,6 +101,12 @@ class LicenseDetailsController {
     result.user = User.get(springSecurityService.principal.id)
     // result.institution = Org.findByShortcode(params.shortcode)
     result.license = License.get(params.id)
+
+    if ( ! result.license.hasPerm("view",result.user) ) {
+      render status: 401
+      return
+    }
+
     result
   }
 
@@ -88,9 +118,15 @@ class LicenseDetailsController {
 
     def user = User.get(springSecurityService.principal.id)
 
+    def l = License.get(params.licid);
+
+    if ( ! l.hasPerm("edit",result.user) ) {
+      render status: 401
+      return
+    }
+
     def input_stream = request.getFile("upload_file")?.inputStream
     def original_filename = request.getFile("upload_file")?.originalFilename
-    def l = License.get(params.licid);
 
     log.debug("uploadDocument ${params} upload file = ${original_filename}");
 
@@ -124,6 +160,14 @@ class LicenseDetailsController {
 
     log.debug("deleteDocuments ${params}");
 
+    def user = User.get(springSecurityService.principal.id)
+    def l = License.get(params.licid);
+
+    if ( ! l.hasPerm("edit",result.user) ) {
+      render status: 401
+      return
+    }
+
     params.each { p ->
       if (p.key.startsWith('_deleteflag.') ) {
         def docctx_to_delete = p.key.substring(12);
@@ -140,6 +184,12 @@ class LicenseDetailsController {
   def acceptChange() {
     def user = User.get(springSecurityService.principal.id)
     def license = License.get(params.id)
+
+    if ( ! l.hasPerm("edit",result.user) ) {
+      render status: 401
+      return
+    }
+
     def pc = PendingChange.get(params.changeid)
 
     license[pc.updateProperty] = pc.updateValue
@@ -154,6 +204,12 @@ class LicenseDetailsController {
   def rejectChange() {
     def user = User.get(springSecurityService.principal.id)
     def license = License.get(params.id)
+
+    if ( ! l.hasPerm("edit",result.user) ) {
+      render status: 401
+      return
+    }
+
     def pc = PendingChange.get(params.changeid)
     expungePendingChange(license, pc);
     redirect controller: 'licenseDetails', action:'index',id:params.id

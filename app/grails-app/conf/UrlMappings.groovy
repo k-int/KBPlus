@@ -14,8 +14,7 @@ class UrlMappings {
 
     // "/"(controller:"home")
     "/"(view:"/publichome")
-    "500"(view:'/error')
- 
+
     "/about"(view:"/about")
     "/terms-and-conditions"(view:"/terms-and-conditions")
     "/privacy-policy"(view:"/privacy-policy")
@@ -23,5 +22,10 @@ class UrlMappings {
     "/contact-us"(view:"/contact-us")
     "/publichome"(view:"/publichome")
     "/signup"(view:"/signup")
+
+    "500"(view:'/error')
+    "401"(view:'/forbidden')
+    "403"(view:'/error')
+ 
   }
 }

@@ -46,6 +46,18 @@
       </div>
     </div>
 
+    <g:if test="${flash.message}">
+      <div class="container">
+        <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
+      </div>
+    </g:if>
+
+    <g:if test="${flash.error}">
+      <div class="container">
+        <bootstrap:alert class="error-info">${flash.error}</bootstrap:alert>
+      </div>
+    </g:if>
+
     <g:if test="${staticAlerts.size() > 0}">
       <div class="container">
         <table class="table table-bordered">

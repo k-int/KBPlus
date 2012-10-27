@@ -162,6 +162,9 @@ class License {
     result
   }
 
+  def hasPerm(perm, user) {
+    false
+  }
 
   def onChange = { oldMap,newMap ->
 
