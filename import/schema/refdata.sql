@@ -87,10 +87,10 @@ insert into refdata_value(rdv_owner, rdv_value) VALUES ( 14, 'Live');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 14, 'Deleted');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (15,'Doc Type');
-insert into refdata_value(rdv_owner, rdv_value) VALUES ( 17, 'Unknown Doc Type');
-insert into refdata_value(rdv_owner, rdv_value) VALUES ( 17, 'Note');
-insert into refdata_value(rdv_owner, rdv_value) VALUES ( 17, 'License Attachment');
-insert into refdata_value(rdv_owner, rdv_value) VALUES ( 17, 'Addendum');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 15, 'Unknown Doc Type');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 15, 'Note');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 15, 'License Attachment');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 15, 'Addendum');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (16,'Doc Status');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 16, 'Unknown Doc Status');
@@ -99,7 +99,7 @@ insert into refdata_category(rdc_id, rdc_description) VALUES (17,'TIPP Option');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 17, 'Unknown TIPP Option');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (18,'Combo Type');
-insert into refdata_value(rdv_owner, rdv_value) VALUES ( 28, 'Unknown Combo Type');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 18, 'Unknown Combo Type');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 18, 'MemberOfConsortium');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (19,'Combo Status');

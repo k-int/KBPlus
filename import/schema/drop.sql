@@ -1,3 +1,4 @@
+SET foreign_key_checks = 0;
 alter table combo drop foreign key FK5A7318E69CBC6D5;
 alter table combo drop foreign key FK5A7318EFCE9A7E1;
 alter table combo drop foreign key FK5A7318EF93C805D;
@@ -78,4 +79,7 @@ drop table if exists kb_comment;
 drop table if exists audit_log;
 drop table if exists kbcomponent;
 drop table if exists pending_change;
-
+drop table if exists perm;
+drop table if exists perm_grant;
+drop table if exists setting;
+SET foreign_key_checks = 1;
