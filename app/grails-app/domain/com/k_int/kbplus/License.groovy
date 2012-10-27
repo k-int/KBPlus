@@ -163,7 +163,19 @@ class License {
   }
 
   def hasPerm(perm, user) {
-    false
+    def result = false
+    def principles = user.listPrincipalsGrantingPermission(perm);   // This will list all the orgs and people granted the given perm
+    log.debug("The target list if principles : ${principles}");
+
+    // Now we need to see if we can find a path from this object to any of those resources... Any of these orgs can edit
+    
+    // If this is a concrete license, the owner is the 
+    // If it's a template, the owner is the consortia that negoited
+    // def owning org list
+    // We're looking for all org links that grant a role with the corresponding edit property.
+    
+
+    result
   }
 
   def onChange = { oldMap,newMap ->
