@@ -174,8 +174,19 @@ class License {
     // def owning org list
     // We're looking for all org links that grant a role with the corresponding edit property.
     def object_orgs = []
+    orgLinks.each { ol ->
+      def perm_exists=false
+      ol.roleType.sharedPermissions.each { sp ->
+        if ( sp.perm.code==perm )
+          perm_exists=true;
+      }
+      if ( perm_exists ) {
+        log.debug("Looks like org ${ol.org} has perm ${perm} shared with it.. so add to list")
+        object_orgs.add("${ol.org.id}:${perm}")
+      }
+    }
     
-    
+    log.debug("After analysis, the following relevant org_permissions were located ${object_orgs}")
 
     result
   }
