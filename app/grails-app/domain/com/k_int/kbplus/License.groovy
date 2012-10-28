@@ -173,6 +173,8 @@ class License {
     // If it's a template, the owner is the consortia that negoited
     // def owning org list
     // We're looking for all org links that grant a role with the corresponding edit property.
+    def object_orgs = []
+    
     
 
     result
