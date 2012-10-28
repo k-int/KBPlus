@@ -135,13 +135,17 @@ insert into refdata_value(rdv_owner, rdv_value) VALUES ( 25, 'In progress');
 set @edit_perm='';
 set @view_perm='';
 set @licencee_rdv='';
+set @cons_member_rdv='';
+
+select (@cons_member_rdv:=rdv_id) from refdata_value, refdata_category where rdv_owner = rdc_id and rdv_value='Consortium' and rdc_description = 'Combo Type';
 select (@licencee_rdv:=rdv_id) from refdata_value where rdv_value='Licensee';
 select (@view_perm:=id) from perm where code='view';
 select (@edit_perm:=id) from perm where code='edit';
 
-select @edit_perm,@view_perm,@licencee_rdv;
+select @edit_perm, @view_perm, @licencee_rdv;
 
 insert into org_perm_share(perm_id,rdv_id) values ( @edit_perm, @licencee_rdv );
 insert into org_perm_share(perm_id,rdv_id) values ( @view_perm, @licencee_rdv );
+insert into org_perm_share(perm_id,rdv_id) values ( @view_perm, @cons_member_rdv );
 
 

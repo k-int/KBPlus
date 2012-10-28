@@ -93,10 +93,23 @@ class User {
         }
       }
       results.each { uo ->
+        //log.debug("User has direct membership with ${uo.org.id}/${uo.org.name}")
         result.add("${uo.org.id}:${perm}")
+        // We do a 1-hop addition - any outgoing combos carrying our identified permission - We should add those orgs too
+        uo.org.outgoingCombos.each { oc ->
+          //log.debug("Testing outgoing combo ${oc.toOrg.id}/${oc.toOrg.name} for perms of the given type")
+          def has_perm = false;
+          oc.type.sharedPermissions.each { sp ->
+            if ( sp.perm.code==perm )
+              has_perm=true;
+          }
+          if ( has_perm ) {
+            result.add("${oc.toOrg.id}:${perm}")
+          }
+        }
       }
     }
-    //log.debug("user granted ${perm} for ${result}")
+    log.debug("user granted ${perm} for ${result}")
     result
   }
 
