@@ -80,7 +80,7 @@ class User {
    * as we're then only looking for one of a finite set.
    */
   @Transient def listPrincipalsGrantingPermission(perm) {
-    def result=[]
+    Set result= new HashSet();
     def perm_obj = Perm.findByCode(perm)
     if ( perm ) {
       def c = UserOrg.createCriteria()
@@ -92,9 +92,12 @@ class User {
           }
         }
       }
-      // Find all UserOrg objects where the "Role" grants the identified "Perm"
-      // def orgs = UserOrg.find({user == this && formalRole.grantedPermissions.contains() })
+      results.each { uo ->
+        result.add("${uo.org.id}:${perm}")
+      }
     }
+    //log.debug("user granted ${perm} for ${result}")
+    result
   }
 
   def hasPerm(perm,user) {

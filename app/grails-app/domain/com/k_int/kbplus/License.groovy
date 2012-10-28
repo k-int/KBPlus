@@ -173,7 +173,7 @@ class License {
     // If it's a template, the owner is the consortia that negoited
     // def owning org list
     // We're looking for all org links that grant a role with the corresponding edit property.
-    def object_orgs = []
+    Set object_orgs = new HashSet();
     orgLinks.each { ol ->
       def perm_exists=false
       ol.roleType.sharedPermissions.each { sp ->
@@ -186,7 +186,15 @@ class License {
       }
     }
     
-    log.debug("After analysis, the following relevant org_permissions were located ${object_orgs}")
+    log.debug("After analysis, the following relevant org_permissions were located ${object_orgs}, user has the following orgs for that perm ${principles}")
+
+    // Now find the intersection
+    def intersection = principles.retainAll(object_orgs)
+
+    log.debug("intersection is ${principles}")
+
+    if ( principles.size() > 0 )
+      result = true
 
     result
   }
