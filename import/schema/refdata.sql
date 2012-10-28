@@ -110,7 +110,6 @@ insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 20, 'Yes', 'g
 insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 20, 'No', 'redCross');
 insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 20, 'Other', 'purpleQuestion');
 
-
 insert into refdata_category(rdc_id, rdc_description) VALUES (21,'Concurrent Access');
 insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 21, 'Specified', 'greenTick');
 insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 21, 'Not Specified', 'purpleQuestion');
@@ -132,3 +131,17 @@ insert into refdata_value(rdv_owner, rdv_value) VALUES ( 24, 'Digitized');
 insert into refdata_category(rdc_id, rdc_description) VALUES (25,'Package List Status');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 25, 'Checked');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 25, 'In progress');
+
+set @edit_perm='';
+set @view_perm='';
+set @licencee_rdv='';
+select (@licencee_rdv:=rdv_id) from refdata_value where rdv_value='Licensee';
+select (@view_perm:=id) from perm where code='view';
+select (@edit_perm:=id) from perm where code='edit';
+
+select @edit_perm,@view_perm,@licencee_rdv;
+
+insert into org_perm_share(perm_id,rdv_id) values ( @edit_perm, @licencee_rdv );
+insert into org_perm_share(perm_id,rdv_id) values ( @view_perm, @licencee_rdv );
+
+

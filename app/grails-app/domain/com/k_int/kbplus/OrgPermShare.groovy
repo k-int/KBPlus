@@ -5,14 +5,14 @@ import com.k_int.kbplus.auth.*;
 class OrgPermShare {
 
   Perm perm
-  RefdataValue role
+  RefdataValue rdv
 
   static mapping = {
     cache true
   }
 
   static constraints = {
-    perm blank: false, unique: true, nullable:false
-    role blank: false, unique: true, nullable:false
+    perm blank: false, nullable:false
+    rdv blank: false, nullable:false
   }
 }
