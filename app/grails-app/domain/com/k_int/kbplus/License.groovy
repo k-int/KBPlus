@@ -1,6 +1,7 @@
 package com.k_int.kbplus
 
 import org.codehaus.groovy.grails.commons.ApplicationHolder
+import com.k_int.kbplus.auth.Role
 
 class License {
 
