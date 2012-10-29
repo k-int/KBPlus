@@ -22,6 +22,7 @@ class License {
   RefdataValue vle
   RefdataValue enterprise
   RefdataValue pca
+  RefdataValue isPublic
 
   Long concurrentUserCount=0
   String noticePeriod
@@ -65,6 +66,7 @@ class License {
                     vle column:'lic_vle_rdv_fk'
              enterprise column:'lic_enterprise_rdv_fk'
                     pca column:'lic_pca_rdv_fk'
+               isPublic column:'lic_is_public_rdv_fk'
     concurrentUserCount column:'lic_concurrent_user_count'
            noticePeriod column:'lic_notice_period'
              licenseUrl column:'lic_license_url'
@@ -73,6 +75,7 @@ class License {
             licenseType column:'lic_license_type_str'
           licenseStatus column:'lic_license_status_str'
                 lastmod column:'lic_lastmod'
+         publicResource column:'lic_public_resource'
               documents sort:'id', order:'asc'
   }
 
