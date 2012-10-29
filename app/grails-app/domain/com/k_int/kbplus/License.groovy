@@ -167,6 +167,30 @@ class License {
 
   def hasPerm(perm, user) {
     def result = false
+
+    if ( perm=='view' and this.isPublic?.value=='Yes' ) {
+      result = true;
+    }
+
+    if (!result) {
+      // If user is a member of admin role, they can do anything.
+      def admin_role = Role.findByAuthority('ROLE_ADMIN');
+      if ( admin_role ) {
+        if ( user.getAuthorities().contains(admin_role) {
+          result = true;
+        }
+      }
+    }
+
+    if ( !result ) {
+      result = checkPermissions(perm,user);
+    }
+
+    result;
+  }
+
+  def checkPermissions(perm, user) {
+    def result = false
     def principles = user.listPrincipalsGrantingPermission(perm);   // This will list all the orgs and people granted the given perm
     log.debug("The target list if principles : ${principles}");
 

@@ -152,9 +152,18 @@
                         <div id="licenseeRef" class="${editable?'ipe':''}" >${license.licenseeRef}</div>
                       </dd>
                   </dl>
+
+                  <dl>
+                      <dt><label class="control-label" for="licenseeRef">Public?</label></dt>
+                      <dd>
+                        <g:refdataValue val="${license.isPublic?.value}" domain="License" pk="${license.id}" field="isPublic" cat='YNO' class="${editable?'refdataedit':''}"/>
+                      </dd>
+                  </dl>
+
+
                   <div class="clearfix"></div>
                   </div>
-  
+
             <h6>Licence Properties</h6>
 
             <table class="table table-bordered licence-properties">
