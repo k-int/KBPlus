@@ -75,7 +75,6 @@ class License {
             licenseType column:'lic_license_type_str'
           licenseStatus column:'lic_license_status_str'
                 lastmod column:'lic_lastmod'
-         publicResource column:'lic_public_resource'
               documents sort:'id', order:'asc'
   }
 
@@ -94,6 +93,7 @@ class License {
     vle(nullable:true, blank:true)
     enterprise(nullable:true, blank:true)
     pca(nullable:true, blank:true)
+    isPublic(nullable:true, blank:true)
     concurrentUserCount(nullable:true)
     noticePeriod(nullable:true, blank:true)
     licenseUrl(nullable:true, blank:true)
@@ -168,7 +168,7 @@ class License {
   def hasPerm(perm, user) {
     def result = false
 
-    if ( perm=='view' and this.isPublic?.value=='Yes' ) {
+    if ( perm=='view' && this.isPublic?.value=='Yes' ) {
       result = true;
     }
 
@@ -176,7 +176,7 @@ class License {
       // If user is a member of admin role, they can do anything.
       def admin_role = Role.findByAuthority('ROLE_ADMIN');
       if ( admin_role ) {
-        if ( user.getAuthorities().contains(admin_role) {
+        if ( user.getAuthorities().contains(admin_role) ) {
           result = true;
         }
       }
