@@ -185,7 +185,7 @@ class LicenseDetailsController {
     def user = User.get(springSecurityService.principal.id)
     def license = License.get(params.id)
 
-    if ( ! l.hasPerm("edit",result.user) ) {
+    if ( ! license.hasPerm("edit",result.user) ) {
       render status: 401
       return
     }
@@ -205,7 +205,7 @@ class LicenseDetailsController {
     def user = User.get(springSecurityService.principal.id)
     def license = License.get(params.id)
 
-    if ( ! l.hasPerm("edit",result.user) ) {
+    if ( ! license.hasPerm("edit",result.user) ) {
       render status: 401
       return
     }
