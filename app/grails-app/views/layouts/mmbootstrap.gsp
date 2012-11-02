@@ -107,7 +107,7 @@
                          <g:link controller="packageDetails" action="create">New Package</g:link></li>
                      </ul>
                    </li>
-                </g:if>
+                </sec:ifAnyGranted>
 
   
                 <sec:ifAnyGranted roles="ROLE_ADMIN">
