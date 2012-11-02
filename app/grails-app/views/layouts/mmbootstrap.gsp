@@ -98,6 +98,17 @@
                     </ul>
                   </li>
                 </g:if>
+
+                <sec:ifAnyGranted roles="ROLE_ADMIN,ROLE_EDITOR">
+                   <li class="dropdown">
+                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Editors <b class="caret"></b> </a>
+                     <ul class="dropdown-menu">
+                       <li <%= ( ( 'packageDetails'== controllerName ) && ( 'create'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="packageDetails" action="create">New Package</g:link></li>
+                     </ul>
+                   </li>
+                </g:if>
+
   
                 <sec:ifAnyGranted roles="ROLE_ADMIN">
                    <li class="dropdown">
