@@ -18,19 +18,19 @@
         <dl>
           <dt>Content Provider*</dt>
           <dd>
-             <input type="text" name="contentProviderName" id="provider-typeahead"/>
+             <input type="text" name="contentProviderName" id="provider-typeahead" onChange="update()"/>
           </dd>
         </dl>
         <dl>   
           <dt>Package Name*</dt>
           <dd>      
-             <input type="text" name="packageName"/>
+             <input type="text" name="packageName" id="packageName" onChange="update()"/>
           </dd>     
         </dl>   
         <dl>   
           <dt>Identifier*</dt>
           <dd>      
-             <input type="text" name="identifier"/>
+             <input type="text" name="identifier" id="packageIdentifier" />
           </dd>     
         </dl>   
         <button class="btn btn-primary disabled">Create Package</button>
@@ -45,7 +45,7 @@
                       $.ajax({
                         url: '<g:createLink controller="ajax" action="orgs" />?query='+query,
                         success: function(data) {
-                          console.log("%o",data);
+                          // console.log("%o",data);
                           process(data.options);
                         },
                         select: function(event, ui) {
@@ -55,8 +55,12 @@
         };
 
         $('#provider-typeahead').typeahead(options);
-
       });
+
+      function update() {
+        console.log("update");
+        $('#packageIdentifier').val($('#provider-typeahead').val()+':'+$('#packageName').val());
+      }
     </script>
   </body>
 </html>
