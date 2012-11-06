@@ -40,9 +40,15 @@
       $(document).ready(function() {
         var options = {
           // see http://stackoverflow.com/questions/9232748/twitter-bootstrap-typeahead-ajax-example
-          'source': function (typeahead, query) {
-                      return $.post('<g:createLink controller="ajax" action="orgs" />', { query: query }, function (data) {
-                          return typeahead.process(data.options);
+          // 'source':['one','two','three','four']
+          'source': function (query, process) {
+                      $.ajax({
+                        url: '<g:createLink controller="ajax" action="orgs" />?query='+query,
+                        success: function(data) {
+                          process(data.options);
+                        },
+                        select: function(event, ui) {
+                        }
                       });
                     }
         };
