@@ -5,6 +5,7 @@
     <meta name="layout" content="mmbootstrap">
     <g:set var="entityName" value="${message(code: 'package.label', default: 'Package')}" />
     <title><g:message code="default.create.label" args="[entityName]" /></title>
+    <r:require modules="bootstrap-typeahead"/>
   </head>
   <body>
     <div class="container">
@@ -17,7 +18,7 @@
         <dl>
           <dt>Content Provider*</dt>
           <dd>
-             --typedown--
+             <input type="text" id="provider-typeahead"/>
           </dd>
         </dl>
         <dl>   
@@ -35,5 +36,13 @@
         <button class="btn btn-primary disabled">Create Package</button>
       </g:form>
     </div>
+    <script language="JavaScript">
+      $(document).ready(function() {
+        var options = {
+          'source':['one','two','three']
+        };
+        $('#provider-typeahead').typeahead(options);
+      });
+    </script>
   </body>
 </html>
