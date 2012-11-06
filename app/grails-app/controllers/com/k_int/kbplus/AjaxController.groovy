@@ -245,6 +245,17 @@ class AjaxController {
     result
   }
 
+  def orgs() {
+    log.debug("Orgs: ${params}");
+    def result = [
+      options : [
+        "alpha",
+        "beta",
+        "gamma"
+      ]
+    ]
 
+    result
+  }
 
 }

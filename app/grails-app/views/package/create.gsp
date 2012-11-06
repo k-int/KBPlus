@@ -39,9 +39,16 @@
     <script language="JavaScript">
       $(document).ready(function() {
         var options = {
-          'source':['one','two','three']
+          // see http://stackoverflow.com/questions/9232748/twitter-bootstrap-typeahead-ajax-example
+          'source': function (typeahead, query) {
+                      return $.post('<g:createLink controller="ajax" action="orgs" />', { query: query }, function (data) {
+                          return typeahead.process(data.options);
+                      });
+                    }
         };
+
         $('#provider-typeahead').typeahead(options);
+
       });
     </script>
   </body>
