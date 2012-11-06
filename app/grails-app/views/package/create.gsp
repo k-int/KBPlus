@@ -18,19 +18,19 @@
         <dl>
           <dt>Content Provider*</dt>
           <dd>
-             <input type="text" id="provider-typeahead"/>
+             <input type="text" name="contentProviderName" id="provider-typeahead"/>
           </dd>
         </dl>
         <dl>   
           <dt>Package Name*</dt>
           <dd>      
-             --typedown--
+             <input type="text" name="packageName"/>
           </dd>     
         </dl>   
         <dl>   
           <dt>Identifier*</dt>
           <dd>      
-             --typedown--
+             <input type="text" name="identifier"/>
           </dd>     
         </dl>   
         <button class="btn btn-primary disabled">Create Package</button>
@@ -45,6 +45,7 @@
                       $.ajax({
                         url: '<g:createLink controller="ajax" action="orgs" />?query='+query,
                         success: function(data) {
+                          console.log("%o",data);
                           process(data.options);
                         },
                         select: function(event, ui) {
