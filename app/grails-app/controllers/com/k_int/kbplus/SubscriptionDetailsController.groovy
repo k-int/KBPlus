@@ -72,6 +72,7 @@ class SubscriptionDetailsController {
       // }
       html result
       csv {
+         def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
          def jc_id = result.subscriptionInstance.getSubscriber()?.getIdentifierByType('JC')?.value
 
          response.setHeader("Content-disposition", "attachment; filename=${result.subscriptionInstance.id}.csv")
@@ -88,7 +89,11 @@ class SubscriptionDetailsController {
            writer.write("included_st,publication_title,print_identifier,online_identifier,date_first_issue_subscribed,num_first_vol_subscribed,num_first_issue_subscribed,date_last_issue_subscribed,num_last_vol_subscribed,num_last_issue_subscribed,embargo_info,core_title\n");
 
            result.entitlements.each { e ->
-             writer.write("Y,\"${e.tipp.title.title}\",\"${e.tipp?.title?.getIdentifierValue('ISSN')}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')}\",${e.startDate?:''},${e.startVolume?:''},${e.startIssue?:''},${e.endDate?:''},${e.endVolume?:''},${e.endIssue?:''},${e.embargo?:''},${e.coreTitle}\n");
+
+             def start_date = e.startDate ? formatter.format(e.startDate) : '';
+             def end_date = e.endDate ? formatter.format(e.endDate) : '';
+
+             writer.write("Y,\"${e.tipp.title.title}\",\"${e.tipp?.title?.getIdentifierValue('ISSN')}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')}\",${start_date},${e.startVolume?:''},${e.startIssue?:''},${end_date},${e.endVolume?:''},${e.endIssue?:''},${e.embargo?:''},${e.coreTitle}\n");
            }
            writer.flush()
            writer.close()
