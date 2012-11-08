@@ -18,22 +18,22 @@
         <dl>
           <dt>Content Provider*</dt>
           <dd>
-             <input type="text" name="contentProviderName" id="provider-typeahead" onChange="update()"/>
+             <input class="input-xxlarge" type="text" name="contentProviderName" id="provider-typeahead" onChange="update()"/>
           </dd>
         </dl>
         <dl>   
           <dt>Package Name*</dt>
           <dd>      
-             <input type="text" name="packageName" id="packageName" onChange="update()"/>
+             <input class="input-xxlarge" type="text" name="packageName" id="packageName" onKeyUp="update()"/>
           </dd>     
         </dl>   
-        <dl>   
+        <dl id="idcontrolgroup" class="control-group error">   
           <dt>Identifier*</dt>
           <dd>      
-             <input type="text" name="identifier" id="packageIdentifier" />
+             <input class="input-xxlarge" type="text" name="identifier" id="packageIdentifier" onKeyUp="validateIdentifier()"/>
           </dd>     
         </dl>   
-        <button class="btn btn-primary disabled">Create Package</button>
+        <button id="addbtn" class="btn btn-primary disabled">Create Package</button>
       </g:form>
     </div>
     <script language="JavaScript">
@@ -58,8 +58,47 @@
       });
 
       function update() {
-        console.log("update");
         $('#packageIdentifier').val($('#provider-typeahead').val()+':'+$('#packageName').val());
+        validateIdentifier();
+      }
+
+      function validateIdentifier() {
+        var prov = $('#provider-typeahead').val()
+        var name = $('#packageName').val()
+        var id = $('#packageIdentifier').val()
+
+        var valid = false;
+        if ( ( prov != '' ) && ( name != '' ) && ( id != '' ) ) {
+          ajaxValidate(id)
+        }
+        else {
+          $('#idcontrolgroup').removeClass('success');
+          $('#idcontrolgroup').addClass('error');
+          $('#addbtn').addClass('disabled');
+          $('#addbtn').attr('disabled','disabled');
+        }
+      }
+
+      function ajaxValidate(value) {
+        var result=false;
+        $.ajax({
+          url: '<g:createLink controller="ajax" action="validatePackageId" />?id='+value,
+          success: function(data) {
+            console.log("%o",data);
+            if ( data.response ) {
+              $('#idcontrolgroup').removeClass('error');
+              $('#idcontrolgroup').addClass('success');
+              $('#addbtn').removeClass('disabled');
+              $('#addbtn').removeAttr('disabled');
+            }
+            else {
+              $('#idcontrolgroup').removeClass('success');
+              $('#idcontrolgroup').addClass('error');
+              $('#addbtn').addClass('disabled');
+              $('#addbtn').attr('disabled','disabled');
+            }
+          },
+        });
       }
     </script>
   </body>

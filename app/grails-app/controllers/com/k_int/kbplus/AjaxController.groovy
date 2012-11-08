@@ -266,11 +266,14 @@ class AjaxController {
     render result as JSON
   }
 
-  def validatePackageName() {
-    def result = false;
-    def p = Package.findByIdentifier(params.pkgname)
-    if ( !p ) {
-      result = true
+  def validatePackageId() {
+    def result = [:]
+    result.response = false;
+    if( params.id ) {
+      def p = Package.findByIdentifier(params.id)
+      if ( !p ) {
+        result.response = true
+      }
     }
 
     render result as JSON
