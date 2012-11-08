@@ -1,0 +1,146 @@
+IID,Name,Type,LoginID,Active
+1,University of Birmingham,HE,bhm,Yes
+2,Cranfield University,HE,cra,Yes
+3,University of Glasgow,HE,gla,Yes
+4,University of Liverpool,HE,liv,Yes
+5,University of Westminster,HE,uow,Yes
+6,King's College London,HE,kcl,Yes
+100003,University of Kent,HE,ken,Yes
+100004,University of Portsmouth,HE,por,Yes
+100006,Northumbria University,HE,nth,Yes
+100007,Imperial College London,HE,icl,Yes
+100012,Newcastle University,HE,ncl,Yes
+100011,UCL,HE,ucl,Yes
+100013,University of Bath,HE,bat,Yes
+100014,University of Bristol,HE,bri,Yes
+100015,Glasgow Caledonian University,HE,gcu,Yes
+100016,Loughborough University,HE,lbo,Yes
+100017,University of Leicester,HE,lei,Yes
+100018,University of Warwick,HE,war,Yes
+100019,University of Edinburgh,HE,edi,Yes
+100020,University of Manchester,HE,man,Yes
+100021,Cardiff University,HE,car,Yes
+100022,University of Ulster,HE,uls,Yes
+100023,"Queen Mary, University of London",HE,qmw,Yes
+100024,Aberystwyth University,HE,abe,Yes
+100025,University of Southampton,HE,sot,Yes
+100026,University of Strathclyde,HE,str,Yes
+100027,Robert Gordon University,HE,rgu,Yes
+100028,"Royal Holloway, University of London",HE,rhu,Yes
+100029,University of Huddersfield,HE,hud,Yes
+100030,University of East Anglia (UEA),HE,uea,Yes
+100031,School of Oriental and African Studies,HE,soa,Yes
+100032,University of Nottingham,HE,not,Yes
+100034,University of Worcester,HE,wor,Yes
+100035,Open University,HE,ope,Yes
+100036,University of Salford,HE,sal,Yes
+100037,University of Glamorgan,HE,mor,Yes
+100038,University of Surrey,HE,sur,Yes
+100039,Swansea Metropolitan University,HE,smu,Yes
+100040,Glyndwr University,HE,gly,Yes
+100041,University of the West of England,HE,uwe,Yes
+100042,Birkbeck College,HE,bbk,Yes
+100043,University of Leeds,HE,lee,Yes
+100044,Brunel University,HE,bru,Yes
+100045,London South Bank University,HE,lsb,Yes
+100046,University of Aberdeen,HE,abd,Yes
+100047,Edge Hill University,HE,edg,Yes
+100048,London School of Economics and Political Science,HE,lse,Yes
+100049,University of Greenwich,HE,gre,Yes
+100050,Aston University,HE,ast,Yes
+100051,Institute of Education,HE,ioe,Yes
+100052,University of Cumbria,HE,cum,Yes
+100053,University of Sussex,HE,sus,Yes
+100054,Coventry University,HE,cov,Yes
+100055,University of York,HE,yor,Yes
+100056,University of Sheffield,HE,she,Yes
+100057,University of Dundee,HE,dun,Yes
+100058,University of the West of Scotland,HE,uws,Yes
+100059,University of Derby,HE,der,Yes
+100060,Glasgow School of Art,HE,gsa,Yes
+100061,Lancaster University,HE,lan,Yes
+100062,Cardiff Metropolitan University,HE,uwi,Yes
+100063,Bangor University,HE,ban,Yes
+100064,University of Exeter,HE,exe,Yes
+100065,Queen Margaret University,HE,qmu,Yes
+100066,London Metropolitan University,HE,met,Yes
+100067,Scottish Agricultural College,HE,sac,Yes
+100068,University of Wolverhampton,HE,wlv,Yes
+100069,Durham University,HE,dur,Yes
+100070,Edinburgh Napier University,HE,nap,Yes
+100071,Heriot-Watt University,HE,hwa,Yes
+100072,Royal Conservatoire of Scotland,HE,rsa,Yes
+100073,University of Wales Online Library,HE,wal,Yes
+100074,University of Stirling,HE,sti,Yes
+100075,Swansea University,HE,swa,Yes
+100076,Oxford Brookes University,HE,bro,Yes
+100077,London School of Hygiene & Tropical Medicine,HE,lsh,Yes
+100078,De Montfort University,HE,dmu,Yes
+100079,Canterbury Christ Church University,HE,can,Yes
+100080,Manchester Metropolitan University,HE,mmu,Yes
+100081,University of Cambridge,HE,cam,Yes
+100082,University of Chester,HE,che,Yes
+100083,Kingston University,HE,kin,Yes
+100084,Middlesex University,HE,mdx,Yes
+100085,Sheffield Hallam University,HE,shu,Yes
+100086,Bath Spa University,HE,bsp,Yes
+100087,University of Winchester,HE,win,Yes
+100088,Conservatoire for Dance and Drama,HE,cdd,Yes
+100089,Bournemouth University,HE,bou,Yes
+100090,"Goldsmiths College, University of London",HE,gol,Yes
+100091,University of Hull,HE,hul,Yes
+100092,University of Reading,HE,rea,Yes
+100093,"Senate House libraries, University of London",HE,lon,Yes
+100094,University of Hertfordshire,HE,her,Yes
+100095,Buckinghamshire New University,HE,buc,Yes
+100096,St Georges University of London,HE,sgu,Yes
+100097,University of the Highlands and Islands,HE,uhi,Yes
+100098,Harper Adams University College,HE,har,Yes
+100099,University of Northampton,HE,nor,Yes
+100100,Royal Veterinary College,HE,rvc,Yes
+100101,University of St Andrews,HE,ews,Yes
+100102,University of Plymouth,HE,ply,Yes
+100103,University of Wales Newport,HE,ewp,Yes
+100104,University of West London,HE,uwl,Yes
+100105,City University London,HE,cit,Yes
+100106,Anglia Ruskin University,HE,ang,Yes
+100107,University of the Arts London,HE,art,Yes
+100108,Roehampton University,HE,roe,Yes
+100109,University of Bolton,HE,bol,Yes
+100110,Birmingham City University,HE,bcu,Yes
+100111,Teesside University,HE,tee,Yes
+100112,St Marys University College Belfast,HE,muc,Yes
+100113,London Business School,HE,lbs,Yes
+100114,Liverpool John Moores University,HE,ljm,Yes
+100115,University of East London,HE,uel,Yes
+100116,University of Lincoln,HE,lin,Yes
+100117,Leeds Metropolitan University,HE,lmu,Yes
+100118,Courtauld Institute of Art,HE,cia,Yes
+100119,Queens University Belfast,HE,qub,Yes
+100120,University of Bedfordshire,HE,bed,Yes
+100162,Leeds Trinity University College,HE,lta,Yes
+100165,Liverpool Hope University,HE,hop,No
+100168,"Newman University College, Birmingham",HE,nuc,Yes
+100179,Rose Bruford College,HE,rbc,No
+100186,Southampton Solent University,HE,ssu,Yes
+100192,Arts University College at Bournemouth,HE,acb,Yes
+100194,University Campus Suffolk,HE,ucs,Yes
+100195,University College Falmouth,HE,ucf,No
+100196,University of Essex,HE,esx,No
+100197,Wellcome Trust,HE,wlc,Yes
+100203,University of Central Lancashire,HE,lcs,Yes
+100206,Staffordshire University,HE,sff,Yes
+100207,University of Abertay Dundee,HE,aty,Yes
+100208,University for the Creative Arts,HE,uca,Yes
+100209,Trinity Laban Conservatoire of Music and Dance,HE,tlc,Yes
+100210,Keele University,HE,kee,Yes
+100211,Royal Northern College of Music,HE,rnc,Yes
+100212,University of Bradford,HE,bra,Yes
+100224,University of Oxford,HE,oxf,Yes
+100225,University of Sunderland,HE,sun,Yes
+100228,York St John University,HE,ysj,Yes
+100230,Bishop Grosseteste University College Lincoln,HE,big,Yes
+100231,Royal Agricultural College,HE,rac,Yes
+100232,Royal Welsh College of Music and Drama,HE,rwc,Yes
+100233,University of Gloucestershire,HE,glo,Yes
+100234,Norwich University College of the Arts,HE,nca,Yes

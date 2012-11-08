@@ -1,0 +1,12 @@
+
+
+This version has changed the structure of user_org table. SQL update needed to convert the old text based role names into
+role table FK links.
+
+mysql> update user_org set formal_role_id = 4 where formal_role_id is NULL and role = 'Admin';
+mysql> update user_org set formal_role_id = 5 where formal_role_id is NULL and role = 'Staff';
+
+
+This changes all members of NESLI2 to JC
+ update combo set combo_to_org_fk = 35 where  combo_to_org_fk = 7 and combo_type_rv_fk = 83;
+

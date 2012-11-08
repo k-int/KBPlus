@@ -8,6 +8,7 @@ echo Clean up old db
 mongo <<!!!
 use kbplus_ds_reconciliation
 db.dropDatabase();
+db.tipps.ensureIndex({"lastmod": 1})
 !!!
 
 # Clear down ES indexes
@@ -64,7 +65,7 @@ curl -X PUT "localhost:9200/kbplus/com.k_int.kbplus.Platform/_mapping" -d '{
 
 
 
-./PlatformData.groovy
+./PlatformData.groovy ./platforms.csv
 
 echo SO import
 rm ../kb_plus_datafiles/*BAD

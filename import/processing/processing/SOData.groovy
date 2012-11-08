@@ -13,11 +13,12 @@ import java.text.SimpleDateFormat
 
 def starttime = System.currentTimeMillis();
 def possible_date_formats = [
+  new SimpleDateFormat('dd/MM/yyyy'),
+  new SimpleDateFormat('yyyy/MM/dd'),
   new SimpleDateFormat('dd/MM/yy'),
   new SimpleDateFormat('yyyy/MM'),
   new SimpleDateFormat('yyyy')
 ];
-
 
 // Setup mongo
 def options = new com.mongodb.MongoOptions()
@@ -35,8 +36,14 @@ if ( db == null ) {
 
 // To clear down the gaz: curl -XDELETE 'http://localhost:9200/gaz'
 // CSVReader r = new CSVReader( new InputStreamReader(getClass().classLoader.getResourceAsStream("./IEEE_IEEEIEL_2012_2012.csv")))
-println("Processing ${args[0]}");
-CSVReader r = new CSVReader( new InputStreamReader(new FileInputStream(args[0])))
+println("Processing ${args}");
+
+def charset = java.nio.charset.Charset.forName('ISO-8859-1');
+if ( args.length > 1 ) {
+  charset = java.nio.charset.Charset.forName(args[1]);
+}
+
+CSVReader r = new CSVReader( new InputStreamReader(new FileInputStream(args[0]),charset) )
 
 def bad_rows = []
 
@@ -61,6 +68,10 @@ if ( num_platforms_listed == 0 ) {
   println("**WARNING** num_platforms_listed = 0, defaulting to 1!");
 }
 
+def default_tags = []
+if ( args.length > 1 ) {
+  default_tags.add(args[1]);
+}
 
 println("Read column headings: ${so_header_line}");
 
@@ -68,12 +79,16 @@ def stats = [:]
 
 def org = lookupOrCreateOrg(name:so_provider_line[1], db:db, stats:stats);
 
-def sub = db.subscriptions.findOne(identifier:so_identifier_line[1])
+def normalised_identifier = so_identifier_line[1].trim().toLowerCase().replaceAll('-','_')
+
+println("Processing subscription ${so_identifier_line[1]} normalised to ${normalised_identifier}");
+
+def sub = db.subscriptions.findOne(identifier:normalised_identifier);
 if ( !sub ) {
   sub = [:]
   sub._id = new org.bson.types.ObjectId();
 }
-sub.identifier = so_identifier_line[1]
+sub.identifier = normalised_identifier;
 sub.name = so_name_line[1];
 sub.start_date_str = so_agreement_term_start_yr_line[1]
 sub.end_date_str=so_agreement_term_end_yr_line[1]
@@ -86,7 +101,10 @@ if ( ( so_consortium_line[1] != null ) && ( so_consortium_line[1].length() > 0 )
   sub.consortium = consortium._id;
 }
 
+
 db.subscriptions.save(sub);
+
+println("Saved subscription offerend : ${sub._id} / ${sub.name} / ${sub.identifier}");
 
 def pkg = lookupOrCreatePackage(identifier:so_package_identifier_line[1], 
                                 provider:so_provider_line[1],
@@ -95,6 +113,7 @@ def pkg = lookupOrCreatePackage(identifier:so_package_identifier_line[1],
                                 stats:stats)
 
 pkg.subs.add(sub._id);
+println("Adding subscription ${sub._id} to package ${pkg._id} result is ${pkg.subs}");
 
 
 // Verify that the pkg has a "contentProvider" of the org! If not, add and update.
@@ -102,8 +121,9 @@ if ( pkg.contentProvider == null ) {
   println("Set ${pkg.name}(${pkg._id}) content provider to ${org.name}(${org._id})");
   pkg.contentProvider = org._id;
   pkg.lastmod = System.currentTimeMillis()
-  db.pkgs.save(pkg)
 }
+
+db.pkgs.save(pkg)
 
 def so_count = 0
 def so_bad = 0
@@ -143,23 +163,27 @@ while ((nl = r.readNext()) != null) {
         publisher = lookupOrCreateOrg(name:nl[13], db:db, stats:stats);
       }
       else {
-        println("*** Publisher is null - Linking to UNKNOWN PUBLISHER");
+        // println("*** Publisher is null - Linking to UNKNOWN PUBLISHER");
         inc('bad_null_publisher',stats);
-        publisher = lookupOrCreateOrg(name:'Unknown Publisher', db:db, stats:stats);
+        // publisher = lookupOrCreateOrg(name:'Unknown Publisher', db:db, stats:stats);
       }
   
       // If there is an identifier, set up the appropriate matching...
-      if ( present(nl[1]) ) 
-        target_identifiers.add([type:'ISSN', value:nl[1]])
-      if ( present(nl[2]) ) 
-        target_identifiers.add([type:'eISSN', value:nl[2]])
+      if ( present(nl[1]) && ( nl[1].trim().length() > 8 ) ) 
+        target_identifiers.add([value:nl[1].trim(), type:'ISSN'])
+
+      if ( present(nl[2]) && ( nl[2].trim().length() > 8 ) ) 
+        target_identifiers.add([value:nl[2].trim(), type:'eISSN'])
+
       if ( present(nl[9]) ) 
-        tipp_private_identifiers.add([type:'KBART', value:nl[9]])
+        // tipp_private_identifiers.add([type:'KBART', value:nl[9].trim()])
+        tipp_private_identifiers.add([value:nl[9].trim(), type:pkg.identifier])
+
       if ( present(nl[14]) ) 
-        target_identifiers.add([type:'DOI', value:nl[14]])
+        target_identifiers.add([value:nl[14].trim(), type:'DOI'])
   
       for ( int i=0; i<num_prop_id_cols; i++ ) {
-        tipp_private_identifiers.add([type:'EXTERNAL', value:nl[15+i]])
+        tipp_private_identifiers.add([value:nl[15+i].trim(), type:'EXTERNAL'])
       }
   
       def title = lookupOrCreateTitle(title:nl[0],
@@ -180,13 +204,19 @@ while ((nl = r.readNext()) != null) {
       // }
       def parsed_start_date = parseDate(nl[3],possible_date_formats)
       def parsed_end_date = parseDate(nl[6],possible_date_formats)
-  
+
       if ( ( parsed_start_date == null ) || ( parsed_start_date.getYear() > 2090 ) ) {
         println("Unable to parse start date ${nl[3]}")
         inc('bad_start_date',stats);
         bad=true
         badreason="Cannot parse start date: ${nl[3]}"
+        parsed_start_date = sub.start_date
       }
+
+      // Incorrect - null end date == today, as per OS, 26-07-2012.
+      //if ( parsed_end_date == null ) {
+      // parsed_end_date = sub.end_date
+      //}
 
       // else {
   
@@ -204,6 +234,7 @@ while ((nl = r.readNext()) != null) {
                                                   prov:"Platform for SO ${args[0]}:${rownum}",
                                                   type:nl[position+1],
                                                   db:db, 
+                                                  sourceContext:'KBPlus',
                                                   stats:stats)
   
             def platform_role = nl[position+1]
@@ -211,7 +242,7 @@ while ((nl = r.readNext()) != null) {
   
             println("Process platform ${nl[position]} / ${platform_role} / ${platform_url}");
   
-            if ( platform_role == 'host' ) {
+            if ( platform_role.trim() == 'host' ) {
               host_platform = platform;
               host_platform_url = platform_url
             }
@@ -226,29 +257,43 @@ while ((nl = r.readNext()) != null) {
     
         // Find tipp
         if ( title && pkg && host_platform && title._id && pkg._id && host_platform._id ) {
-          def tipp = createTipp(titleid:title._id, pkgid:pkg._id, platformid:host_platform._id, db:db, stats:stats)
-          tipp.startDateString = nl[3]
-          tipp.startDate = parsed_start_date
-          tipp.startVolume = nl[4]
-          tipp.startIssue = nl[5]
-          tipp.endDateString = nl[6]
-          tipp.endDate = parsed_end_date
-          tipp.endVolume = nl[7]
-          tipp.endIssue = nl[8]
-          tipp.title_id = nl[9]
-          tipp.embargo = nl[10]
-          tipp.coverageDepth = nl[11]
-          tipp.coverageNote = nl[12]
-          tipp.identifiers = tipp_private_identifiers
-          tipp.hostPlatformURL = host_platform_url
-          tipp.additionalPlatformLinks = additional_platform_links
-          tipp.source = "${args[0]}:${rownum}"
-          tipp.ies.add(sub._id)
+
+       
+          def tipp = db.tipps.findOne(titleid:title._id, pkgid:pkg._id, platformid:host_platform._id)
+          if ( !tipp ) {
+            tipp = createTipp(titleid:title._id, pkgid:pkg._id, platformid:host_platform._id, db:db, stats:stats)
+            tipp.startDateString = nl[3]
+            tipp.startDate = parsed_start_date
+            tipp.startVolume = nl[4]
+            tipp.startIssue = nl[5]
+            tipp.endDateString = nl[6]
+            tipp.endDate = parsed_end_date
+            tipp.endVolume = nl[7]
+            tipp.endIssue = nl[8]
+            tipp.title_id = nl[9]
+            tipp.embargo = nl[10]
+            tipp.coverageDepth = nl[11]
+            tipp.coverageNote = nl[12]
+            tipp.identifiers = tipp_private_identifiers
+            tipp.hostPlatformURL = host_platform_url
+            tipp.additionalPlatformLinks = additional_platform_links
+            tipp.source = "${args[0]}:${rownum}"
+            tipp.sourceContext = 'KBPlus'
+            if ( sub._id )
+              tipp.ies.add(sub._id)
+            else
+              println("WARN: Creating a new tipp but there is no default issue entitement / SO");
+            tipp.tags = default_tags;
+          }
+          else {
+            if ( sub._id )
+              tipp.ies.add(sub._id)
+          }
   
           db.tipps.save(tipp)
         }
         else {
-          println("One of title-${title}, pkg-${pkg} or platform-${host_platform} are missing!!!");
+          println("WARN: One of title-${title}, pkg-${pkg} or platform-${host_platform} are missing!!!");
           inc('missing_critical_data',stats);
         }
       //}
@@ -299,7 +344,10 @@ if ( bad_rows.size() > 0 ) {
 println("All done processing for ${args[0]}");
 
 def present(v) {
-  if ( ( v != null ) && ( v.trim().length() > 0 ) )
+  if ( ( v != null ) && 
+       ( v.trim().length() > 0 ) && 
+       ( ! ( v.trim().equalsIgnoreCase('n/a') ) ) &&
+       ( ! ( v.trim().equalsIgnoreCase('-') ) ) )
     return true
 
   return false
@@ -307,7 +355,11 @@ def present(v) {
 
 def lookupOrCreateOrg(Map params = [:]) {
   // println("lookupOrCreateOrg(${params})");
-  def org = params.db.orgs.findOne(name:params.name)
+
+  def target_norm_name = params.name?.trim().toLowerCase();
+
+  def org = params.db.orgs.findOne(normName:target_norm_name)
+
   if ( org == null ) {
     org = [
       _id:new org.bson.types.ObjectId(),
@@ -324,8 +376,8 @@ def lookupOrCreateOrg(Map params = [:]) {
 
 def lookupOrCreatePackage(Map params=[:]) {
   // println("lookupOrCreatePackage(${params})");
-  def compound_identifier = "${params.provider}:${params.identifier}"
-  def norm_identifier = compound_identifier.replaceAll("\\W", "");
+  def compound_identifier = "${params.provider.trim()}:${params.identifier.trim()}"
+  def norm_identifier = compound_identifier.toLowerCase().replaceAll('-','_')
 
   def pkg = params.db.pkgs.findOne(normIdentifier:norm_identifier)
   if ( pkg == null ) {
@@ -335,10 +387,15 @@ def lookupOrCreatePackage(Map params=[:]) {
       normIdentifier:norm_identifier,
       name:params.name,
       lastmod:System.currentTimeMillis(),
+      sourceContext:'KBPlus',
       subs:[]
     ]
     params.db.pkgs.save(pkg)
     inc('pkgs_created',params.stats);
+    println("lookupOrCreatePackage for norm identifier ${norm_identifier} resulted in a new package being created with internal ID ${pkg._id}");
+  }
+  else {
+    println("lookupOrCreatePackage for norm identifier ${norm_identifier} returned existing package with internal ID ${pkg._id}");
   }
 
   pkg
@@ -352,41 +409,39 @@ def lookupOrCreateTitle(Map params=[:]) {
     // Loop through all the available identifers and see if any match.. Repeat until a match is found.
     for ( int i=0; ( ( !title ) && ( i < params.identifier.size() ) ); i++ ) {
       // println("Attempting match.. ${params.identifier[i].type} ${params.identifier[i].value}");
-      title = params.db.titles.findOne(identifier:[type:params.identifier[i].type, value: params.identifier[i].value])
+      // title = params.db.titles.findOne(identifier:[type:params.identifier[i].type, value: params.identifier[i].value])
+      title = params.db.titles.findOne(identifier:[value: params.identifier[i].value, type:params.identifier[i].type])
+      if ( title )
+        println("Title matched on identifier value:${params.identifier[i].value} type:${type:params.identifier[i].type}");
     }
     if ( title ) {
       inc('titles_matched_by_identifier',params.stats);
+      // If the located title doesn't have a publisher, but the current record does, add the default
+      if ( !title.publisher && params.publisher ) {
+        title.publisher = params.publisher?._id;
+        title.lastmod = System.currentTimeMillis()
+        params.db.titles.save(title);
+      }
     }
     else {
-      // println("Unable to match on any of ${params.identifier}");
+      println("POSSIBLE ERROR : Unable to match on any of ${params.identifier}.. Title will be created in subsequent step if possible");
     }
   }
   else {
     inc('titles_without_identifiers',params.stats);
   }
 
-  // if ( !title && params.title) { // If no match, and title present, try to match on title
-  //   println("Attempting to match on title string ${params.title}");
-  //   title = params.db.titles.findOne(title:params.title);
-  //   if ( title ) {
-  //     println("  -> Matched on title");
-  //     inc('titles_matched_by_title',params.stats);
-  //   }
-  //   else {
-  //     println("  -> No match on title");
-  //   }
-  // }
-
   if (!title)  {
     // Unable to locate title with identifier given... Try other dedup matches on other props if needed
-    println("Create New title : ${params.title}, title=${title}, publisher=${params.publisher}");
+    println("Create New title : ${params.title}, title=${title}, publisher=${params.publisher}, identifiers=${params.identifier}");
 
     try {
       title = [
         _id:new org.bson.types.ObjectId(),
         title:params.title,
         identifier:params.identifier,    // identifier is a list, catering for many different values
-        publisher:params.publisher._id,
+        publisher:params.publisher?._id,
+        sourceContext:'KBPlus',
         lastmod:System.currentTimeMillis()
       ]
 
@@ -417,6 +472,7 @@ def lookupOrCreatePlatform(Map params=[:]) {
       normname:normname,
       provenance:params.prov,
       type:params.type,
+      sourceContext:'KBPlus',
       lastmod:System.currentTimeMillis()
     ]
     params.db.platforms.save(platform)
@@ -446,6 +502,7 @@ def createTipp(Map params=[:]) {
     titleid:params.titleid,
     pkgid:params.pkgid,
     platformid:params.platformid,
+    sourceContext:'KBPlus',
     lastmod:System.currentTimeMillis(),
     ies:[]
   ]

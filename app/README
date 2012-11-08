@@ -1,0 +1,25 @@
+Current option set
+
+export JAVA_OPTS="-Xmx2G -server -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC"
+export GRAILS_OPTS="-XX:MaxPermSize=2048m -Xmx2048M -server -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -Dcom.sun.management.jmxremote -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote.port=9004 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
+
+
+db.tipps.find({ies:ObjectId('5017ea3cb7607edeed83497f')});
+
+
+DB Setup
+
+create database KBPlus default character set utf8 default collate utf8_bin;
+grant all on KBPlus.* to 'k-int'@'localhost';
+grant all on KBPlus.* to 'k-int'@'localhost.localdomain';
+grant all on KBPlus.* to 'k-int'@'%';
+
+
+show variables like '%character%';  
+
+N.B. On linux, you may need to edit your /etc/mysql/my.cnf file and add the following to [mysqld] (Particularly if the above show, returns an character_set_server which is not utf8)
+
+collation_server=utf8_unicode_ci
+character_set_server=utf8
+
+

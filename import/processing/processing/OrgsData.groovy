@@ -27,7 +27,9 @@ import java.text.SimpleDateFormat
 
 def starttime = System.currentTimeMillis();
 def possible_date_formats = [
+  new SimpleDateFormat('yyyy/MM/dd'),
   new SimpleDateFormat('dd/MM/yy'),
+  new SimpleDateFormat('dd/MM/yyyy'),
   new SimpleDateFormat('yyyy/MM'),
   new SimpleDateFormat('yyyy')
 ];
@@ -82,7 +84,7 @@ if ( !ukfam.name().equals('EntitiesDescriptor')) {
 // To clear down the gaz: curl -XDELETE 'http://localhost:9200/gaz'
 // CSVReader r = new CSVReader( new InputStreamReader(getClass().classLoader.getResourceAsStream("./IEEE_IEEEIEL_2012_2012.csv")))
 println("Processing ${args[0]}");
-CSVReader r = new CSVReader( new InputStreamReader(new FileInputStream(args[0])))
+CSVReader r = new CSVReader( new InputStreamReader(new FileInputStream(args[0]),java.nio.charset.Charset.forName('UTF-8')) )
 
 def bad_rows = []
 
@@ -94,6 +96,7 @@ println("Read column headings: ${so_header_line}");
 
 int rownum = 0;
 def stats = [:]
+stats.skipped = 0;
 stats.added = 0;
 stats.bad = 0;
 stats.new = 0;
@@ -109,27 +112,28 @@ while ((nl = r.readNext()) != null) {
   String badreason = null;
 
   if ( ( nl[0] != null ) && ( nl[0].trim().length() > 0 ) ) {
-    def org = db.orgs.findOne(name:nl[0])
-    if ( org==null ) {
-      org = [:]
-      stats.new++
-    }
-    else {
-      stats.existing++
-    }
-    org.name = nl[0];
-    org.normName = nl[0].trim().toLowerCase()
-    org.ringoldId = nl[1];
-    org.ingentaId = nl[2];
-    org.jcId = nl[3];
-    org.ipRange = nl[4];
-    org.ukfam = nl[5];
-    org.athensId = nl[6];
-    org.sectorName = nl[7];
-    org.lastmod = System.currentTimeMillis();
+    if ( nl[7] == 'Higher Education' ) {
+      def org = db.orgs.findOne(ukfam:nl[5])
+      if ( org==null ) {
+        org = [:]
+        stats.new++
+      }
+      else {
+        stats.existing++
+      }
+      org.name = nl[0];
+      org.normName = nl[0].trim().toLowerCase()
+      org.ringoldId = nl[1];
+      org.ingentaId = nl[2];
+      org.jcId = nl[3];
+      org.ipRange = nl[4];
+      org.ukfam = nl[5];
+      org.athensId = nl[6];
+      org.sectorName = nl[7];
+      org.lastmod = System.currentTimeMillis();
 
-    if ( org.sectorName == 'Higher Education' ) {
-      org.famId = resolveFAM(ukfam,nl[5])
+      // org.famId = resolveFAM(ukfam,nl[5])
+      resolveFAM(ukfam,nl[5], org)
       // Find from ukfam, @entityID==nl[5]
       db.orgs.save(org);
       stats.added++
@@ -139,6 +143,7 @@ while ((nl = r.readNext()) != null) {
     }
     else {
       println("Skipping non-HE org");
+      stats.skipped++;
     }
   }
   else {
@@ -157,7 +162,7 @@ stats.each { stat ->
   statsfile << "${stat.key} : ${stat.value}\n"
 }
 
-def resolveFAM(xmldoc, code) {
+def resolveFAM(xmldoc, code, org) {
 
   def codes = code.split(';');
   def result = null;
@@ -166,7 +171,10 @@ def resolveFAM(xmldoc, code) {
     def c = ci.next().trim();
     def famnode = xmldoc.EntityDescriptor.findAll { it.@entityID == c }
     if ( famnode.size() > 0 ) {
-      result=famnode[0].@ID.text();
+      // result=famnode[0].@ID.text();
+      org.famId = famnode[0].@ID.text();
+      org.scope = famnode[0].Extensions?.Scope?.text()
+      println("scope: ${org.scope}");
     }
     else {
     }

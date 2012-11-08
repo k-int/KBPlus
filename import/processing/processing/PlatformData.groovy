@@ -26,7 +26,11 @@ if ( db == null ) {
 
 
 // To clear down the gaz: curl -XDELETE 'http://localhost:9200/gaz'
-CSVReader r = new CSVReader( new InputStreamReader(getClass().classLoader.getResourceAsStream("./platforms.csv")))
+CSVReader r = new CSVReader( new InputStreamReader(new FileInputStream(args[0]),java.nio.charset.Charset.forName('ISO-8859-1')))
+
+if ( !r ) {
+  println("Failed to load platforms file: ${args[0]}");
+}
 
 def stats=[:]
 
@@ -44,6 +48,7 @@ while ((nl = r.readNext()) != null) {
                                           administrative:nl[4],
                                           software:nl[5],
                                           administeredBy:nl[6],
+                                          sourceContext:'KBPlus',
                                           db:db,
                                           stats:stats)
   }
@@ -80,6 +85,7 @@ def lookupOrCreatePlatform(Map params=[:]) {
       administrative:params.administrative,
       software:params.software,
       administeredBy:params.administeredBy,
+      sourceContext:params.sourceContext,
       provenance:"Direct import",
       lastmod:System.currentTimeMillis()
     ]
@@ -93,6 +99,8 @@ def lookupOrCreatePlatform(Map params=[:]) {
     platform.administrative = params.administrative
     platform.software = params.software
     platform.administeredBy = params.administeredBy
+    platform.sourceContext = params.sourceContext
+    platform.lastmod = System.currentTimeMillis()
     params.db.platforms.save(platform)
     inc('platforms_updated',params.stats);
   }
