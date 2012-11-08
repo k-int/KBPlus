@@ -40,14 +40,23 @@ class PackageController {
           [packageInstance: new Package(params), user:user]
           break
         case 'POST':
-          def packageInstance = new Package(params)
-          if (!packageInstance.save(flush: true)) {
-              render view: 'create', model: [packageInstance: packageInstance, user:user]
-              return
+          def providerName = params.contentProviderName
+          def packageName = params.packageName
+          def identifier = params.identifier
+
+          def contentProvider = Org.findByName(providerName);
+          def existing_pkg = Package.findByIdentifier(identifier);
+
+          if ( contentProvider && existing_pkg==null ) {
+            log.debug("Create new package, content provider = ${contentProvider}, identifier is ${identifier}");
+          }
+          else {
+            render view: 'create', model: [packageInstance: packageInstance, user:user]
+            return
           }
 
-          flash.message = message(code: 'default.created.message', args: [message(code: 'package.label', default: 'Package'), packageInstance.id])
-          redirect action: 'show', id: packageInstance.id
+          // flash.message = message(code: 'default.created.message', args: [message(code: 'package.label', default: 'Package'), packageInstance.id])
+          // redirect action: 'show', id: packageInstance.id
           break
       }
     }
