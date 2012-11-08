@@ -266,4 +266,13 @@ class AjaxController {
     render result as JSON
   }
 
+  def validatePackageName() {
+    def result = false;
+    def p = Package.findByIdentifier(params.pkgname)
+    if ( !p ) {
+      result = true
+    }
+
+    render result as JSON
+  }
 }
