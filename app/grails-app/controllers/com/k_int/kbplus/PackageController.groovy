@@ -49,6 +49,19 @@ class PackageController {
 
           if ( contentProvider && existing_pkg==null ) {
             log.debug("Create new package, content provider = ${contentProvider}, identifier is ${identifier}");
+            Package new_pkg = new Package(identifier:identifier, 
+                                          contentProvider:contentProvider,
+                                          name:packageName,
+                                          impId:java.util.UUID.randomUUID().toString());
+            if ( new_pkg.save(flush:true) ) {
+              redirect action: 'edit', id:new_pkg.id
+            }
+            else {
+              new_pkg.errors.each { e ->
+                log.error("Problem: ${e}");
+              }
+              render view: 'create', model: [packageInstance: new_pkg, user:user]
+            }
           }
           else {
             render view: 'create', model: [packageInstance: packageInstance, user:user]
