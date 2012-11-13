@@ -5,6 +5,7 @@
     <meta name="layout" content="mmbootstrap">
     <g:set var="entityName" value="${message(code: 'package.label', default: 'Package')}" />
     <title><g:message code="default.edit.label" args="[entityName]" /></title>
+    <r:require modules="bootstrap-typeahead"/>
   </head>
   <body>
     <div class="row-fluid">
@@ -53,7 +54,21 @@
           <g:form class="form-horizontal" action="edit" id="${packageInstance?.id}" >
             <g:hiddenField name="version" value="${packageInstance?.version}" />
 
+            <!--
+              packageType
+              packageStatus
+              contentProvider
+              nominalPlatform
+              packageListStatus
+              identifier
+              impId
+              name
+              orgs
+              subscriptions
+              tipps
+            -->
             <fieldset>
+
               <div class="control-group ">
        	        <label class="control-label">Org Links</label>
                 <div class="controls">
@@ -61,7 +76,26 @@
                 </div>
               </div>
 
-              <f:all bean="packageInstance"/>
+              <div class="control-group ">
+       	        <label class="control-label">Package Type</label>
+                <div class="controls">
+                  <g:select id="packageTypeSelect" name="packageType.id" from="${com.k_int.kbplus.RefdataValue.executeQuery('select rv from RefdataValue as rv where rv.owner.desc=?',['Package Type'])}" optionKey="id" value="${packageInstance?.packageType?.id}" class="many-to-one" noSelection="['null': '']"/>
+                </div>
+              </div>
+
+              <div class="control-group ">
+       	        <label class="control-label">Content Provider</label>
+                <div class="controls">
+                  <g:enhancedSelect id="contentProvider"
+                                    title="select content provider"
+                                    owner="${packageInstance}"
+                                    ownerProperty="contentProvider"
+                                    refdataProfile="ContentProvider"
+                                    filterFields="name"/>
+                </div>
+              </div>
+
+
               <div class="form-actions">
                 <button type="submit" class="btn btn-primary">
                   <i class="icon-ok icon-white"></i>
@@ -80,5 +114,44 @@
         </fieldset>
       </div>
     </div>
+
+    <div id="enhanced_select_content_wrapper" class="modal hide fade">
+      <div>
+         <input class="input" type="text" name="contentProviderName" id="provider-typeahead"/>
+      </div>
+    </div>
+
+    <script language="JavaScript">
+
+      $(document).ready(function(){
+
+        var options = {
+          // see http://stackoverflow.com/questions/9232748/twitter-bootstrap-typeahead-ajax-example
+          // 'source':['one','two','three','four']
+          'source': function (query, process) {
+                      console.log("query");
+                      $.ajax({
+                        url: '<g:createLink controller="ajax" action="orgs" />?query='+query,
+                        success: function(data) {
+                          console.log("%o",data);
+                          process(data.options);
+                        },
+                        select: function(event, ui) {
+                        }
+                      });
+                    }
+        };
+
+        $('#provider-typeahead').typeahead(options);
+
+        // $('#provider-typeahead').on('click', function(e) {
+        //   alert("argh");
+        //   var popover = $(this).popover('show');
+        //   console.log("boo");
+        // });
+
+      });
+    </script>
+
   </body>
 </html>
