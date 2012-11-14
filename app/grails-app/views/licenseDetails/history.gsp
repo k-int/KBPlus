@@ -69,7 +69,7 @@ License history
             </tr>
           </g:each>
         </g:if>
-      </div>
+      </table>
     </div>
 
 </body>

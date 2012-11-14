@@ -245,6 +245,37 @@ class AjaxController {
     result
   }
 
+  def orgs() {
+    log.debug("Orgs: ${params}");
 
+    def result = [
+      options:[]
+    ]
 
+    def query_params = ["%${params.query.trim().toLowerCase()}%"];
+
+    log.debug("q params: ${query_params}");
+
+    // result.options = Org.executeQuery("select o.name from Org as o where lower(o.name) like ? order by o.name desc",["%${params.query.trim().toLowerCase()}%"],[max:10]);
+    def ol = Org.executeQuery("select o from Org as o where lower(o.name) like ? order by o.name asc",query_params,[max:10,offset:0]);
+
+    ol.each {
+      result.options.add(it.name);
+    }
+
+    render result as JSON
+  }
+
+  def validatePackageId() {
+    def result = [:]
+    result.response = false;
+    if( params.id ) {
+      def p = Package.findByIdentifier(params.id)
+      if ( !p ) {
+        result.response = true
+      }
+    }
+
+    render result as JSON
+  }
 }

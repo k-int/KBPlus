@@ -11,4 +11,9 @@ This changes all members of NESLI2 to JC
  update combo set combo_to_org_fk = 35 where  combo_to_org_fk = 7 and combo_type_rv_fk = 83;
 
 
+<<<<<<< HEAD
 ToDo: We need to change other NESLI2 links to JC - eg consortial links on licenses, subscriptions...
+=======
+Make JC appear in list of orgs users can request membership of
+update org set sector = 'Higher Education' where org_shortcode = 'JISC_Collections'
+>>>>>>> 5d55be80b862061874484b0129b21279928656f2
