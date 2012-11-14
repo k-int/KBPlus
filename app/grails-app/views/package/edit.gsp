@@ -115,7 +115,7 @@
       </div>
     </div>
 
-    <div id="enhanced_select_content_wrapper" class="modal hide fade">
+    <div id="enhanced_select_content_wrapper" class="modal hide">
       <div>
          <input class="input" type="text" name="contentProviderName" id="provider-typeahead"/>
       </div>
@@ -143,12 +143,6 @@
         };
 
         $('#provider-typeahead').typeahead(options);
-
-        // $('#provider-typeahead').on('click', function(e) {
-        //   alert("argh");
-        //   var popover = $(this).popover('show');
-        //   console.log("boo");
-        // });
 
       });
     </script>
