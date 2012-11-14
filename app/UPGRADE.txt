@@ -1,15 +1,34 @@
 
 
-This version has changed the structure of user_org table. SQL update needed to convert the old text based role names into
-role table FK links.
+# This version has changed the structure of user_org table. SQL update needed to convert the old text based role names into
+# role table FK links.
 
-mysql> update user_org set formal_role_id = 4 where formal_role_id is NULL and role = 'Admin';
-mysql> update user_org set formal_role_id = 5 where formal_role_id is NULL and role = 'Staff';
+set @new_admin_role_id='';
+set @new_staff_role_id='';
+set @jc_org_id='';
+set @nesli2_org_id='';
+set @sub_cons_refdata_value_id='';
+set @cons_refdata_value_id='';
+
+select (@new_admin_role_id:=id) from role where authority='INST_ADM';
+select (@new_staff_role_id:=id) from role where authority='INST_USER';
+select (@jc_org_id:=org_id) from org where org_shortcode = 'JISC_Collections';
+select (@nesli2_org_id:=org_id) from org where org_shortcode = 'NESLI2';
+select (@sub_cons_refdata_value_id:=rdv_id) from refdata_value where rdv_value = 'Subscription Consortia';
+select (@cons_refdata_value_id:=rdv_id) from refdata_value where rdv_value = 'Consortium';
+
+select @new_admin_role_id,@new_staff_role_id,@jc_org_id,@nesli2_org_id,@sub_cons_refdata_value_id,@cons_refdata_value_id;
 
 
-This changes all members of NESLI2 to JC
- update combo set combo_to_org_fk = 35 where  combo_to_org_fk = 7 and combo_type_rv_fk = 83;
+update user_org set formal_role_id = @new_admin_role_id where formal_role_id is NULL and role = 'Administrator';
+update user_org set formal_role_id = @new_staff_role_id where formal_role_id is NULL and role = 'Staff';
 
 
-Make JC appear in list of orgs users can request membership of
+# This changes all members of NESLI2 to JC
+
+update combo set combo_to_org_fk = @jc_org_id where  combo_to_org_fk = @nesli2_org_id and combo_type_rv_fk = @cons_refdata_value_id;
+update combo set combo_to_org_fk = @jc_org_id where  combo_to_org_fk = @nesli2_org_id and combo_type_rv_fk = @sub_cons_refdata_value_id;
+
+
+# Make JC appear in list of orgs users can request membership of
 update org set sector = 'Higher Education' where org_shortcode = 'JISC_Collections'
