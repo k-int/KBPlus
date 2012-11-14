@@ -59,15 +59,15 @@ class PackageControllerTests {
 
 
         populateValidParams(params)
-        def package = new Package(params)
+        def pkg = new Package(params)
 
-        assert package.save() != null
+        assert pkg.save() != null
 
-        params.id = package.id
+        params.id = pkg.id
 
         def model = controller.show()
 
-        assert model.packageInstance == package
+        assert model.packageInstance == pkg
     }
 
     void testEdit() {
@@ -78,15 +78,15 @@ class PackageControllerTests {
 
 
         populateValidParams(params)
-        def package = new Package(params)
+        def pkg = new Package(params)
 
-        assert package.save() != null
+        assert pkg.save() != null
 
-        params.id = package.id
+        params.id = pkg.id
 
         def model = controller.edit()
 
-        assert model.packageInstance == package
+        assert model.packageInstance == pkg
     }
 
     void testUpdate() {
@@ -99,12 +99,12 @@ class PackageControllerTests {
 
 
         populateValidParams(params)
-        def package = new Package(params)
+        def pkg = new Package(params)
 
-        assert package.save() != null
+        assert pkg.save() != null
 
         // test invalid parameters in update
-        params.id = package.id
+        params.id = pkg.id
         //TODO: add invalid values to params object
 
         controller.update()
@@ -112,20 +112,20 @@ class PackageControllerTests {
         assert view == "/package/edit"
         assert model.packageInstance != null
 
-        package.clearErrors()
+        pkg.clearErrors()
 
         populateValidParams(params)
         controller.update()
 
-        assert response.redirectedUrl == "/package/show/$package.id"
+        assert response.redirectedUrl == "/package/show/$pkg.id"
         assert flash.message != null
 
         //test outdated version number
         response.reset()
-        package.clearErrors()
+        pkg.clearErrors()
 
         populateValidParams(params)
-        params.id = package.id
+        params.id = pkg.id
         params.version = -1
         controller.update()
 
@@ -143,17 +143,17 @@ class PackageControllerTests {
         response.reset()
 
         populateValidParams(params)
-        def package = new Package(params)
+        def pkg = new Package(params)
 
-        assert package.save() != null
-        assert Package.count() == 1
+        assert pkg.save() != null
+        assert Pkg.count() == 1
 
-        params.id = package.id
+        params.id = pkg.id
 
         controller.delete()
 
         assert Package.count() == 0
-        assert Package.get(package.id) == null
+        assert Package.get(pkg.id) == null
         assert response.redirectedUrl == '/package/list'
     }
 }
