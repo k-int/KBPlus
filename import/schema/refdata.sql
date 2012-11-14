@@ -18,6 +18,8 @@ insert into refdata_value(rdv_owner, rdv_value) VALUES ( 2, 'Provider');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 2, 'Publisher');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 2, 'Subscriber');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 2, 'Subscription Agent');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 2, 'Negotiator');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( 2, 'Licensing Consortium');
 
 insert into refdata_category(rdc_id, rdc_description) VALUES (3,'Platform Type');
 insert into refdata_value(rdv_owner, rdv_value) VALUES ( 3, 'Host');
