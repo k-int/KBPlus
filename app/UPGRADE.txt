@@ -9,6 +9,7 @@ set @jc_org_id='';
 set @nesli2_org_id='';
 set @sub_cons_refdata_value_id='';
 set @cons_refdata_value_id='';
+set @org_role_refdata_catgegory='';
 
 select (@new_admin_role_id:=id) from role where authority='INST_ADM';
 select (@new_staff_role_id:=id) from role where authority='INST_USER';
@@ -16,6 +17,7 @@ select (@jc_org_id:=org_id) from org where org_shortcode = 'JISC_Collections';
 select (@nesli2_org_id:=org_id) from org where org_shortcode = 'NESLI2';
 select (@sub_cons_refdata_value_id:=rdv_id) from refdata_value where rdv_value = 'Subscription Consortia';
 select (@cons_refdata_value_id:=rdv_id) from refdata_value where rdv_value = 'Consortium';
+select (@org_role_refdata_catgegory:=rdc_id) from refdata_category where rdc_description = 'Organisational Role';
 
 select @new_admin_role_id,@new_staff_role_id,@jc_org_id,@nesli2_org_id,@sub_cons_refdata_value_id,@cons_refdata_value_id;
 
@@ -32,3 +34,9 @@ update combo set combo_to_org_fk = @jc_org_id where  combo_to_org_fk = @nesli2_o
 
 # Make JC appear in list of orgs users can request membership of
 update org set sector = 'Higher Education' where org_shortcode = 'JISC_Collections'
+
+
+# Add new org_role types
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( @org_role_refdata_catgegory, 'Negotiator');
+insert into refdata_value(rdv_owner, rdv_value) VALUES ( @org_role_refdata_catgegory, 'Licensing Consortium');
+
