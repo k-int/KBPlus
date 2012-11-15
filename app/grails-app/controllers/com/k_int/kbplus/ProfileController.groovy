@@ -56,6 +56,9 @@ class ProfileController {
     def user = User.get(springSecurityService.principal.id)
     user.display = params.userDispName
     user.save();
+
+    flash.message="Profile Updated"
+
     redirect(action: "index")
   }
 }
