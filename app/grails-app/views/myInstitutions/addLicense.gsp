@@ -85,7 +85,7 @@
                   <td><input type="radio" name="baselicense" value="${l.id}"/></td>
                   <td><g:link action="index"
                               controller="licenseDetails" 
-                              id="${l.id}">${l.reference}</g:link></td>
+                              id="${l.id}">${l.reference?:"License ${l.id} - no reference set"}</g:link></td>
                   <td>${l.licensor?.name}</td>
                   <td>${l.licensee?.name}</td>
                   <td>${l.status?.value}</td>
@@ -96,9 +96,6 @@
           </table>
         </div>
       </g:if>
-      <!--
-        <p>New license reference name: <input type="text" name="new_license_ref_name"/><input type="submit" value="Create new license"/></p>
-      -->
     </g:form>
 
     <script type="text/javascript">
