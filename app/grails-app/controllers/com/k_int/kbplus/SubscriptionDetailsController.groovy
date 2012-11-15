@@ -373,5 +373,15 @@ class SubscriptionDetailsController {
 
     redirect controller: 'subscriptionDetails', action:'documents', id:params.subId
   }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def additionalInfo() {
+    def result = []
+    result.user = User.get(springSecurityService.principal.id)
+    result.subscriptionInstance = Subscription.get(params.id)
+    result.institution = result.subscriptionInstance.subscriber
+    result
+  }
+
 }
 

@@ -239,7 +239,14 @@ class LicenseDetailsController {
     else {
       log.debug("No change context found");
     }
-
-
   }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def additionalInfo() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.license = License.get(params.id)
+    result
+  }
+
 }
