@@ -12,6 +12,5 @@ import org.junit.*
 class DocstoreServiceTests {
 
     void testSomething() {
-        fail "Implement me"
     }
 }

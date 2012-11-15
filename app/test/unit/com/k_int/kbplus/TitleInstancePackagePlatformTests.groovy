@@ -12,6 +12,5 @@ import org.junit.*
 class TitleInstancePackagePlatformTests {
 
     void testSomething() {
-       fail "Implement me"
     }
 }

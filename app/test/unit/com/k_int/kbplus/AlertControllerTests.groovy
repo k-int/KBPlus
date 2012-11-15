@@ -12,6 +12,5 @@ import org.junit.*
 class AlertControllerTests {
 
     void testSomething() {
-       fail "Implement me"
     }
 }

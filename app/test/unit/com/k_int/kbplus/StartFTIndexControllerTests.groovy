@@ -12,6 +12,5 @@ import org.junit.*
 class StartFTIndexControllerTests {
 
     void testSomething() {
-       fail "Implement me"
     }
 }

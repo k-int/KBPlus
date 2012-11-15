@@ -12,6 +12,5 @@ import org.junit.*
 class SubscriptionDetailsControllerTests {
 
     void testSomething() {
-       fail "Implement me"
     }
 }

@@ -10,8 +10,8 @@ import org.junit.*
  */
 @TestFor(AjaxController)
 class AjaxControllerTests {
-
     void testSomething() {
-       fail "Implement me"
+       // fail "Implement me"
     }
+
 }

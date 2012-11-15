@@ -12,6 +12,5 @@ import org.junit.*
 class DocWidgetControllerTests {
 
     void testSomething() {
-       fail "Implement me"
     }
 }

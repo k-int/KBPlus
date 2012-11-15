@@ -12,6 +12,5 @@ import org.junit.*
 class DataloadFileInstanceTests {
 
     void testSomething() {
-       fail "Implement me"
     }
 }

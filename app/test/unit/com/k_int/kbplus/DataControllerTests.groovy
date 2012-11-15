@@ -12,6 +12,5 @@ import org.junit.*
 class DataControllerTests {
 
     void testSomething() {
-       fail "Implement me"
     }
 }

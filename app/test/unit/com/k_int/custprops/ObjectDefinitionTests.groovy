@@ -12,6 +12,5 @@ import org.junit.*
 class ObjectDefinitionTests {
 
     void testSomething() {
-       fail "Implement me"
     }
 }
