@@ -1,5 +1,7 @@
 package com.k_int.kbplus
 
+import com.k_int.kbplus.auth.*;
+
 class Subscription {
 
   RefdataValue status
@@ -45,6 +47,7 @@ class Subscription {
              endDate column:'sub_end_date'
           instanceOf column:'sub_parent_sub_fk'
         noticePeriod column:'sub_notice_period'
+            isPublic column:'sub_is_public'
   }
 
   static constraints = {
@@ -56,6 +59,7 @@ class Subscription {
     endDate(nullable:true, blank:false)
     instanceOf(nullable:true, blank:false)
     noticePeriod(nullable:true, blank:true)
+    isPublic(nullable:true, blank:true)
     // vendor(nullable:true, blank:false)
   }
 
