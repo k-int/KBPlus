@@ -27,6 +27,12 @@ class SubscriptionDetailsController {
     log.debug("max = ${result.max}");
     result.user = User.get(springSecurityService.principal.id)
     result.subscriptionInstance = Subscription.get(params.id)
+
+    if ( ! result.subscriptionInstance.hasPerm("view",result.user) ) {
+      render status: 401
+      return
+    }
+
     // result.institution = Org.findByShortcode(params.shortcode)
     result.institution = result.subscriptionInstance.subscriber
     if ( result.institution ) {
@@ -142,6 +148,11 @@ class SubscriptionDetailsController {
     def subscriptionInstance = Subscription.get(params.id)
     def formatter = new java.text.SimpleDateFormat("MM/dd/yyyy")
 
+    if ( ! result.subscriptionInstance.hasPerm("edit",result.user) ) {
+      render status: 401
+      return
+    }
+
     log.debug("subscriptionBatchUpdate ${params}");
 
     params.each { p ->
@@ -202,6 +213,11 @@ class SubscriptionDetailsController {
     result.subscriptionInstance = Subscription.get(params.id)
     result.institution = result.subscriptionInstance.subscriber
 
+    if ( ! result.subscriptionInstance.hasPerm("edit",result.user) ) {
+      render status: 401
+      return
+    }
+
     def paginate_after = params.paginate_after ?: 19;
     result.max = params.max ? Integer.parseInt(params.max) : 10;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
@@ -259,6 +275,11 @@ class SubscriptionDetailsController {
     result.user = User.get(springSecurityService.principal.id)
     result.subscriptionInstance = Subscription.get(params.siid)
     result.institution = result.subscriptionInstance?.subscriber
+
+    if ( ! result.subscriptionInstance.hasPerm("edit",result.user) ) {
+      render status: 401
+      return
+    }
 
     if ( result.subscriptionInstance ) {
       params.each { p ->
@@ -321,8 +342,14 @@ class SubscriptionDetailsController {
     result.user = User.get(springSecurityService.principal.id)
     result.subscriptionInstance = Subscription.get(params.id)
     result.institution = result.subscriptionInstance.subscriber
+
     if ( result.institution ) {
       result.subscriber_shortcode = result.institution.shortcode
+    }
+
+    if ( ! result.subscriptionInstance.hasPerm("view",result.user) ) {
+      render status: 401
+      return
     }
 
     if ( result.subscriptionInstance.isEditableBy(result.user) ) {
@@ -342,6 +369,12 @@ class SubscriptionDetailsController {
     result.user = User.get(springSecurityService.principal.id)
     result.subscriptionInstance = Subscription.get(params.id)
     result.institution = result.subscriptionInstance.subscriber
+
+    if ( ! result.subscriptionInstance.hasPerm("view",result.user) ) {
+      render status: 401
+      return
+    }
+
     if ( result.institution ) {
       result.subscriber_shortcode = result.institution.shortcode
     }
@@ -380,6 +413,12 @@ class SubscriptionDetailsController {
     result.user = User.get(springSecurityService.principal.id)
     result.subscriptionInstance = Subscription.get(params.id)
     result.institution = result.subscriptionInstance.subscriber
+
+    if ( ! result.subscriptionInstance.hasPerm("view",result.user) ) {
+      render status: 401
+      return
+    }
+
     result
   }
 

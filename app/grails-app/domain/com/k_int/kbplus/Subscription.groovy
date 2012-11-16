@@ -18,6 +18,7 @@ class Subscription {
 
   License owner
   SortedSet issueEntitlements
+  RefdataValue isPublic
 
   static transients = [ 'subscriber', 'provider', 'consortia' ]
 
@@ -87,12 +88,68 @@ class Subscription {
 
   // determin if a user can edit this subscription
   def isEditableBy(user) {
+    hasPerm("edit",user);
+  }
+
+  def hasPerm(perm, user) {
     def result = false
-    // users are allowed to edit a subscription if they belong to an institution who has a role as subscriber
-    def user_orgs = user.affiliations.collect { it.org }
-    if ( user_orgs.contains( getSubscriber() ) ) {
+
+    if ( perm=='view' && this.isPublic?.value=='Yes' ) {
       result = true;
     }
+
+    if (!result) {
+      // If user is a member of admin role, they can do anything.
+      def admin_role = Role.findByAuthority('ROLE_ADMIN');
+      if ( admin_role ) {
+        if ( user.getAuthorities().contains(admin_role) ) {
+          result = true;
+        }
+      }
+    }
+
+    if ( !result ) {
+      result = checkPermissions(perm,user);
+    }
+
+    result;
+  }
+
+  def checkPermissions(perm, user) {
+    def result = false
+    def principles = user.listPrincipalsGrantingPermission(perm);   // This will list all the orgs and people granted the given perm
+    log.debug("The target list if principles : ${principles}");
+
+    // Now we need to see if we can find a path from this object to any of those resources... Any of these orgs can edit
+
+    // If this is a concrete license, the owner is the 
+    // If it's a template, the owner is the consortia that negoited
+    // def owning org list
+    // We're looking for all org links that grant a role with the corresponding edit property.
+    Set object_orgs = new HashSet();
+    orgRelations.each { ol ->
+      def perm_exists=false
+      ol.roleType.sharedPermissions.each { sp ->
+        if ( sp.perm.code==perm )
+          perm_exists=true;
+      }
+      if ( perm_exists ) {
+        log.debug("Looks like org ${ol.org} has perm ${perm} shared with it.. so add to list")
+        object_orgs.add("${ol.org.id}:${perm}")
+      }
+    }
+
+    log.debug("After analysis, the following relevant org_permissions were located ${object_orgs}, user has the following orgs for that perm ${principles}")
+
+    // Now find the intersection
+    def intersection = principles.retainAll(object_orgs)
+
+    log.debug("intersection is ${principles}")
+
+    if ( principles.size() > 0 )
+      result = true
+
     result
   }
+
 }

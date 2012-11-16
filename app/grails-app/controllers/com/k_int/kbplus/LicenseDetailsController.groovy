@@ -30,7 +30,7 @@ class LicenseDetailsController {
       return
     }
 
-    if ( result.license.isEditableBy(result.user, request) ) {
+    if ( result.license.hasPerm("edit",result.user) )
       result.editable = true
     }
     else {

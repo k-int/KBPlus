@@ -153,17 +153,7 @@ class License {
 
   // determin if a user can edit this subscription
   def isEditableBy(user, request) {
-
-    def result = false
-    // users are allowed to edit a subscription if they belong to an institution who has a role as subscriber
-
-    def user_orgs = user.affiliations.collect { it.org }
-    if ( ( user_orgs.contains( getLicensee() ) ) || 
-         ( request.isUserInRole('ROLE_ADMIN') ) ) {
-      result = true;
-    }
-
-    result
+    hasPerm("edit", user);
   }
 
   def hasPerm(perm, user) {
