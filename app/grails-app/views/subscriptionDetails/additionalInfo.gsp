@@ -22,12 +22,38 @@
       </ul>
     </div>
 
-   <div class="container">
-
-      ${institution?.name} ${subscriptionInstance?.type?.value} Subscription Taken
+    <div class="container">
 
       <h1>${subscriptionInstance?.name} Permissions against Current User</h1>
 
+      <ul class="nav nav-pills">
+        <li><g:link controller="subscriptionDetails" 
+                    action="index" 
+                    params="${[id:params.id]}">Current Entitlements</g:link></li>
+
+        <g:if test="${editable}">
+          <li><g:link controller="subscriptionDetails" 
+                      action="addEntitlements" 
+                      params="${[id:params.id]}">Add Entitlements</g:link></li>
+        </g:if>
+
+        <li><g:link controller="subscriptionDetails" 
+                    action="documents" 
+                    params="${[id:params.id]}">Documents</g:link></li>
+
+        <li><g:link controller="subscriptionDetails" 
+                    action="notes" 
+                    params="${[id:params.id]}">Notes</g:link></li>
+
+        <li class="active"><g:link controller="subscriptionDetails" 
+                    action="additionalInfo" 
+                    params="${[id:params.id]}">Additional Info</g:link></li>
+
+      </ul>
+    </div>
+
+
+   <div class="container">
 
       <h2>The following organisations are granted the listed permissions from this licence</h2>
       <table  class="table table-striped table-bordered">
