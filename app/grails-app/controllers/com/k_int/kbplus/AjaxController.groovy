@@ -6,6 +6,12 @@ import grails.converters.*
 
 class AjaxController {
 
+  def refdata_config = [
+    'ContentProvider' : [
+      domain:'Org'
+    ]
+  ]
+
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def setValue() {
@@ -277,5 +283,26 @@ class AjaxController {
     }
 
     render result as JSON
+  }
+  
+  def refdataSearch() {
+    // http://datatables.net/blog/Introducing_Scroller_-_Virtual_Scrolling_for_DataTables
+    def result = [:]
+    
+    def config = refdata_config[params.id]
+    if ( config ) {
+      result.config = config
+      result.aaData = []
+      result.aaData.add(["name":"some org","address":"some address"]);
+    }
+    
+    withFormat {
+      html {
+        result
+      }
+      json {
+        render result as JSON
+      }
+    }
   }
 }

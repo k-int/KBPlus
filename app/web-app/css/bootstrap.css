@@ -7,6 +7,10 @@
  *
 */
 
+.typeahead.dropdown-menu {
+z-index: 1051;
+}
+
 h1 {
     color: rgb(153,1,0);
     font-size: 1.8em;

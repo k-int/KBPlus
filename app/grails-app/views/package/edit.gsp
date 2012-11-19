@@ -51,7 +51,7 @@
         </g:hasErrors>
 
         <fieldset>
-          <g:form class="form-horizontal" action="edit" id="${packageInstance?.id}" >
+          <g:form class="form-horizontal" action="edit" id="${packageInstance?.id}" autocomplete="off" >
             <g:hiddenField name="version" value="${packageInstance?.version}" />
 
             <!--
@@ -86,12 +86,13 @@
               <div class="control-group ">
        	        <label class="control-label">Content Provider</label>
                 <div class="controls">
+                  ${packageInstance.contentProvider?.name}
                   <g:enhancedSelect id="contentProvider"
                                     title="select content provider"
                                     owner="${packageInstance}"
                                     ownerProperty="contentProvider"
                                     refdataProfile="ContentProvider"
-                                    filterFields="name"/>
+                                    filterFields="name">Change</g:enhancedSelect>
                 </div>
               </div>
 
@@ -115,11 +116,7 @@
       </div>
     </div>
 
-    <div id="enhanced_select_content_wrapper" class="modal hide">
-      <div>
-         <input class="input" type="text" name="contentProviderName" id="provider-typeahead"/>
-      </div>
-    </div>
+    <g:render template="enhanced_select" contextPath="../templates" model="${[doclist:'dsfgsgf']}" />
 
     <script language="JavaScript">
 
@@ -143,6 +140,10 @@
         };
 
         $('#provider-typeahead').typeahead(options);
+        
+        $('#enhanced_select_content_wrapper').on('show', function (e) {
+          console.log("%o",e);
+        });
 
       });
     </script>
