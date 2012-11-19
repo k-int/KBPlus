@@ -291,14 +291,25 @@ class AjaxController {
     
     // http://datatables.net/blog/Introducing_Scroller_-_Virtual_Scrolling_for_DataTables
     def result = [:]
+
+    def cq = Org.executeQuery("select count(o) from Org as o where lower(o.name) like ?",["%${params.sSearch}%"]);    
+    def rq = Org.executeQuery("select o.id, o.name from Org as o where lower(o.name) like ? order by o.name asc",["%${params.sSearch}%"],[max:params.iDisplayLength,offset:params.iDisplayStart]);
+
+
     
     def config = refdata_config[params.id]
     if ( config ) {
       result.config = config
       result.aaData = []
-      result.aaData.add(["one","two","three","four"]);
+      result.sEcho = params.sEcho
+      result.iTotalRecords = cq[0]
+		  result.iTotalDisplayRecords = cq[0]
     }
     
+    rq.each { it ->
+      result.aaData.add([it[1],"2","3","4"])
+    }
+       
     withFormat {
       html {
         result
