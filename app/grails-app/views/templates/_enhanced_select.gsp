@@ -6,7 +6,12 @@
   </div>
   
   <div>
-    <form autocomplete="off"><input class="input" type="text" name="contentProviderName" id="provider-typeahead"/></form>
+    <table id="escr_tab">
+      <thead>
+	      <tr id="escr_head_row">
+        </tr>
+      </thead>
+    </table>
   </div>
   
   <div class="modal-footer">

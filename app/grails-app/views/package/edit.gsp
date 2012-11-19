@@ -142,9 +142,27 @@
         $('#provider-typeahead').typeahead(options);
         
         $('#enhanced_select_content_wrapper').on('show', function (e) {
-          console.log("%o",$(this).data('modal').options.profile);
+        
+          var refdata_profile = $(this).data('modal').options.profile;
+        
+          // console.log("%o",$(this).data('modal').options.profile);
+          $('#escr_head_row').empty();
+          $('#escr_head_row').append("<td>Col 1</td>");
+          $('#escr_head_row').append("<td>Col 2</td>");
+          $('#escr_head_row').append("<td>Col 3</td>");
+          $('#escr_head_row').append("<td>Col 4</td>");
+          $('#escr_tab').dataTable( {
+                             "sScrollY": "200px",
+                             "sAjaxSource": "<g:createLink controller="ajax" action="refdataSearch"/>/"+refdata_profile+".json",
+                             "bServerSide": true,
+                             "bProcessing": true,
+                             "bDestroy":true,
+                             "sDom": "frtiS",
+                             "oScroller": {
+                               "loadingIndicator": true
+                             }
+                           } );
         });
-
       });
     </script>
 
