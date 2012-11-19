@@ -142,7 +142,7 @@
         $('#provider-typeahead').typeahead(options);
         
         $('#enhanced_select_content_wrapper').on('show', function (e) {
-          console.log("%o",e);
+          console.log("%o",$(this).data('modal').options.profile);
         });
 
       });
