@@ -293,7 +293,7 @@ class AjaxController {
     def result = [:]
 
     def cq = Org.executeQuery("select count(o) from Org as o where lower(o.name) like ?",["%${params.sSearch}%"]);    
-    def rq = Org.executeQuery("select o.id, o.name from Org as o where lower(o.name) like ? order by o.name asc",["%${params.sSearch}%"],[max:params.iDisplayLength,offset:params.iDisplayStart]);
+    def rq = Org.executeQuery("select o from Org as o where lower(o.name) like ? order by o.name asc",["%${params.sSearch}%"],[max:params.iDisplayLength,offset:params.iDisplayStart]);
 
 
     
@@ -307,7 +307,7 @@ class AjaxController {
     }
     
     rq.each { it ->
-      result.aaData.add([it[1],"2","3","4"])
+      result.aaData.add([it.name,"${it.class.name}:${it.id}","3","4"])
     }
        
     withFormat {
