@@ -287,7 +287,7 @@ class AjaxController {
   
   def refdataSearch() {
 
-    log.debug("params: ${params}");
+    // log.debug("params: ${params}");
     
     // http://datatables.net/blog/Introducing_Scroller_-_Virtual_Scrolling_for_DataTables
     def result = [:]
@@ -307,7 +307,7 @@ class AjaxController {
     }
     
     rq.each { it ->
-      result.aaData.add([it.name,"${it.class.name}:${it.id}","3","4"])
+      result.aaData.add(["0":it.name,"DT_RowId":"${it.class.name}:${it.id}"])
     }
        
     withFormat {
@@ -319,4 +319,6 @@ class AjaxController {
       }
     }
   }
+
+
 }
