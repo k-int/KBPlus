@@ -41,6 +41,7 @@
                              "bServerSide": true,
                              "bProcessing": true,
                              "bDestroy":true,
+                             "bSort":false,
                              "sDom": "frtiS",
                              "oScroller": {
                                "loadingIndicator": false

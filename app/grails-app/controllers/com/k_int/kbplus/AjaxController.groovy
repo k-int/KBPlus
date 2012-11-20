@@ -307,7 +307,8 @@ class AjaxController {
     }
     
     rq.each { it ->
-      result.aaData.add(["0":it.name,"DT_RowId":"${it.class.name}:${it.id}"])
+      result.aaData.add(["0":it.name,
+                         "DT_RowId":"${it.class.name}:${it.id}"])
     }
        
     withFormat {
