@@ -204,7 +204,6 @@ class AjaxController {
     outs.close()
   }
 
-
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def genericSetRel() {
     // [id:1, value:JISC_Collections_NESLi2_Lic_IOP_Institute_of_Physics_NESLi2_2011-2012_01012011-31122012.., type:License, action:inPlaceSave, controller:ajax
@@ -244,7 +243,15 @@ class AjaxController {
 
   def resolveOID(oid_components) {
     def result = null;
-    def domain_class=grailsApplication.getArtefact('Domain',"com.k_int.kbplus.${oid_components[0]}")
+
+    def domain_class=null;
+
+    if ( oid_components[0].startsWith("com.k_int.kbplus") ) 
+      domain_class = grailsApplication.getArtefact('Domain',oid_components[0])
+    else 
+      domain_class = grailsApplication.getArtefact('Domain',"com.k_int.kbplus.${oid_components[0]}")
+
+
     if ( domain_class ) {
       result = domain_class.getClazz().get(oid_components[1])
     }
