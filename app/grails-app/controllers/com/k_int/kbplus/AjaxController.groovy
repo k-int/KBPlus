@@ -209,7 +209,7 @@ class AjaxController {
   def genericSetRel() {
     // [id:1, value:JISC_Collections_NESLi2_Lic_IOP_Institute_of_Physics_NESLi2_2011-2012_01012011-31122012.., type:License, action:inPlaceSave, controller:ajax
     // def clazz=grailsApplication.domainClasses.findByFullName(params.type)
-    // log.debug("genericSetRel ${params}");
+    log.debug("genericSetRel ${params}");
 
     // params.elementid (The id from the html element)  must be formed as domain:pk:property:refdatacat:otherstuff
     String[] target_components = params.elementid.split(":");
@@ -232,7 +232,7 @@ class AjaxController {
       }
     }
     else {
-      log.debug("no type");
+      log.debug("no type (target=${target_components}, value=${value_components}");
     }
 
     response.setContentType('text/plain')
@@ -247,6 +247,9 @@ class AjaxController {
     def domain_class=grailsApplication.getArtefact('Domain',"com.k_int.kbplus.${oid_components[0]}")
     if ( domain_class ) {
       result = domain_class.getClazz().get(oid_components[1])
+    }
+    else {
+      log.error("resolve OID failed to identify a domain class. Input was ${oid_components}");
     }
     result
   }
