@@ -35,6 +35,8 @@
     $('#escr_head_row').empty();
     $('#escr_head_row').append("<td>Col 1</td>");
     $('#escr_head_row').append("<td>Col 2</td>");
+    var baseurl = '<g:createLink controller="ajax" action="genericSetValue"/>';
+
     oTable = $('#escr_tab').dataTable( {
                              "sScrollY": "200px",
                              "sAjaxSource": "<g:createLink controller="ajax" action="refdataSearch"/>/"+refdata_profile+".json",
@@ -50,7 +52,7 @@
                                    "aTargets": [ 1 ],
                                    "mData": "DT_RowId",
                                    "mRender": function ( data, type, full ) {
-                                     return '<a href="'+data+'">Select</a>';
+                                     return '<a href="'+baseurl+'?oid='+data+'">Select</a>';
                                    }
                                  } ]
                            } );
