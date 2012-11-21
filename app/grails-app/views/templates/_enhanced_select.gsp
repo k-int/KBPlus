@@ -29,18 +29,18 @@
 
     $('#enhanced_select_content_wrapper').on('show', function (e) {
         
-    var refdata_profile = $(this).data('modal').options.profile;
-    var owner = $(this).data('modal').options.owner;
+    var escr_refdata_profile = $(this).data('modal').options.profile;
+    var escr_owner = $(this).data('modal').options.owner;
         
     // console.log("%o",$(this).data('modal').options.profile);
     $('#escr_head_row').empty();
     $('#escr_head_row').append("<td>Col 1</td>");
     $('#escr_head_row').append("<td>Col 2</td>");
-    var baseurl = '<g:createLink controller="ajax" action="genericSetRel"/>?elementid='+owner;
+    // var baseurl = '<g:createLink controller="ajax" action="genericSetRel"/>?elementid='+owner;
 
     oTable = $('#escr_tab').dataTable( {
                              "sScrollY": "200px",
-                             "sAjaxSource": "<g:createLink controller="ajax" action="refdataSearch"/>/"+refdata_profile+".json",
+                             "sAjaxSource": "<g:createLink controller="ajax" action="refdataSearch"/>/"+escr_refdata_profile+".json",
                              "bServerSide": true,
                              "bProcessing": true,
                              "bDestroy":true,
@@ -53,17 +53,28 @@
                                    "aTargets": [ 1 ],
                                    "mData": "DT_RowId",
                                    "mRender": function ( data, type, full ) {
-                                     return '<a href="'+baseurl+'&value='+data+'">Select</a>';
+                                     var cl = "javascript:enhancedSelectRefOption('"+escr_owner+"','"+data+"');"
+                                     return '<a href="'+cl+'">Select</a>';
                                    }
                                  } ]
                            } );
     });
-
-    /* Click event handler */
-    $('#escr_tab tbody tr').live('click', function () {
-      $(this).toggleClass('row_selected');
-    } );
-
   });
+
+  function enhancedSelectRefOption(owner,data) {
+    var baseurl = '<g:createLink controller="ajax" action="genericSetRel"/>?elementid='+owner;
+    $.ajax({
+      url: baseurl+'&value='+data,
+      dataType: 'text',
+      success: function(data) {
+        console.log("%o",data);
+        window.location.reload()
+      },
+      error: function(hdr,status,errorThrown) {  
+        console.log("Problem processing %o, %s, %s",hdr,status,errorThrown);
+      }
+    });
+  }
+
 </script>
 

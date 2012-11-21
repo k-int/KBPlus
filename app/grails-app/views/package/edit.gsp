@@ -86,13 +86,15 @@
               <div class="control-group ">
        	        <label class="control-label">Content Provider</label>
                 <div class="controls">
-                  ${packageInstance.contentProvider?.name}
                   <g:enhancedSelect id="contentProvider"
                                     title="select content provider"
                                     owner="${packageInstance}"
                                     ownerProperty="contentProvider"
                                     refdataProfile="ContentProvider"
-                                    filterFields="name">Change</g:enhancedSelect>
+                                    filterFields="name">
+                    <g:if test="${packageInstance.contentProvider}">${packageInstance.contentProvider?.name}</g:if>
+                    <g:else>Not Set</g:else>
+                  </g:enhancedSelect>
                 </div>
               </div>
 
