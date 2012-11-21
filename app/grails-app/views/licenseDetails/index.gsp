@@ -176,7 +176,7 @@
                               <tr> 
                                 <td>${ol.org.name}</td>
                                 <td>${ol.roleType.value}</td>
-                                <td></td>
+                                <td><a href="#">Delete</a></td>
                               </tr>
                             </g:each>
                           </tbody>

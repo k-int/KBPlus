@@ -119,6 +119,32 @@
                     </g:each>
                     </dd>
                 </dl>
+
+                <dl>
+                      <dt><label class="control-label" for="licenseeRef">Org Links</label></dt>
+                      <dd>
+                        <table class="table table-bordered licence-properties">
+                          <thead>
+                            <tr>
+                              <td>Organisation Name</td>
+                              <td>Role</td>
+                              <td>actions</td>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <g:each in="${subscriptionInstance.orgRelations}" var="ol">
+                              <tr>
+                                <td>${ol.org.name}</td>
+                                <td>${ol.roleType.value}</td>
+                                <td><a href="#">Delete</a></td>
+                              </tr>
+                            </g:each>
+                          </tbody>
+                        </table>
+
+                      </dd>
+                </dl>
+
                 <div class="clear-fix"></div>
             </div>
         </div>
