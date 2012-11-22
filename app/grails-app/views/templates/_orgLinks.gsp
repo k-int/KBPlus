@@ -28,6 +28,8 @@
     <table id="org_role_tab" class="table table-bordered">
       <thead>
         <tr id="add_org_head_row">
+          <td>Org Name</td>
+          <td>Sector</td>
         </tr>
       </thead>
     </table>
@@ -38,3 +40,31 @@
   </div>
 
 </div>
+
+<script language="JavaScript">
+  var oOrTable;
+
+  $(document).ready(function(){
+
+    oOrTable = $('#org_role_tab').dataTable( {
+                             "sScrollY": "200px",
+                             "sAjaxSource": "<g:createLink controller="ajax" action="refdataSearch"/>/ContentProvider.json",
+                             "bServerSide": true,
+                             "bProcessing": true,
+                             "bDestroy":true,
+                             "bSort":false,
+                             "sDom": "frtiS",
+                             "oScroller": {
+                               "loadingIndicator": false
+                             },
+                             "aoColumnDefs": [ {
+                                   "aTargets": [ 1 ],
+                                   "mData": "DT_RowId",
+                                   "mRender": function ( data, type, full ) {
+                                     var cl = "javascript:alert('hello');"
+                                     return '<a href="'+cl+'">Select</a>';
+                                   }
+                                 } ]
+                           } );
+  });
+</script>
