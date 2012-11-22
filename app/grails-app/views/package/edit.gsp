@@ -123,25 +123,6 @@
     <script language="JavaScript">
 
       $(document).ready(function(){
-
-        var options = {
-          // see http://stackoverflow.com/questions/9232748/twitter-bootstrap-typeahead-ajax-example
-          // 'source':['one','two','three','four']
-          'source': function (query, process) {
-                      console.log("query");
-                      $.ajax({
-                        url: '<g:createLink controller="ajax" action="orgs" />?query='+query,
-                        success: function(data) {
-                          console.log("%o",data);
-                          process(data.options);
-                        },
-                        select: function(event, ui) {
-                        }
-                      });
-                    }
-        };
-
-        $('#provider-typeahead').typeahead(options);
       });
 
     </script>

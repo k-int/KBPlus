@@ -25,7 +25,7 @@
   </div>
 
   <div>
-    <table id="escr_tab" class="table table-bordered">
+    <table id="org_role_tab" class="table table-bordered">
       <thead>
         <tr id="add_org_head_row">
         </tr>
