@@ -9,6 +9,10 @@
 
 /* Table Columns Adjustment */
 
+.row_selected {
+  background-color: #B0BED9 !important;
+}
+
 .columns4 th {
     max-width: 50%;
 }

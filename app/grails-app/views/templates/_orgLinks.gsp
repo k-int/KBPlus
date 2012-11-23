@@ -29,7 +29,7 @@
       <thead>
         <tr id="add_org_head_row">
           <td>Org Name</td>
-          <td>Sector</td>
+          <td>Select</td>
         </tr>
       </thead>
     </table>
@@ -61,10 +61,15 @@
                                    "aTargets": [ 1 ],
                                    "mData": "DT_RowId",
                                    "mRender": function ( data, type, full ) {
-                                     var cl = "javascript:alert('hello');"
-                                     return '<a href="'+cl+'">Select</a>';
+                                     return '<input type="checkbox" name="orgoid" value="'+data+'"/>';
                                    }
                                  } ]
                            } );
+
+    $('#org_role_tab tbody tr').live('click', function () {
+      $(this).addClass('row_selected');
+      $(this).toggleClass('row_selected');
+    });
+
   });
 </script>
