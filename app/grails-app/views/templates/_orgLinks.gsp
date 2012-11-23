@@ -28,8 +28,6 @@
     <table id="org_role_tab" class="table table-bordered">
       <thead>
         <tr id="add_org_head_row">
-          <td>Org Name</td>
-          <td>Select</td>
         </tr>
       </thead>
     </table>
@@ -46,7 +44,12 @@
 
   $(document).ready(function(){
 
+    $('#add_org_head_row').empty();
+    $('#add_org_head_row').append("<td>Org Name</td>");
+    $('#add_org_head_row').append("<td>Select</td>");
+
     oOrTable = $('#org_role_tab').dataTable( {
+                             'bAutoWidth': true,
                              "sScrollY": "200px",
                              "sAjaxSource": "<g:createLink controller="ajax" action="refdataSearch"/>/ContentProvider.json",
                              "bServerSide": true,
@@ -66,10 +69,7 @@
                                  } ]
                            } );
 
-    $('#org_role_tab tbody tr').live('click', function () {
-      $(this).addClass('row_selected');
-      $(this).toggleClass('row_selected');
-    });
+    oOrTable.fnAdjustColumnSizing();
 
   });
 </script>
