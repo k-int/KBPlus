@@ -5,7 +5,9 @@
     <meta name="layout" content="mmbootstrap">
     <g:set var="entityName" value="${message(code: 'package.label', default: 'Package')}" />
     <title><g:message code="default.edit.label" args="[entityName]" /></title>
-    <r:require modules="bootstrap-typeahead"/>
+    <!-- r:require modules="bootstrap-typeahead"-->
+    <r:require modules="jeditable"/>
+    <r:require module="jquery-ui"/>
   </head>
   <body>
     <div class="row-fluid">
@@ -72,7 +74,9 @@
               <div class="control-group ">
        	        <label class="control-label">Org Links</label>
                 <div class="controls">
-                  <g:render template="orgLinks" contextPath="../templates" model="${[roleLinks:packageInstance?.orgs]}" />
+                  <g:render template="orgLinks" 
+                            contextPath="../templates" 
+                            model="${[roleLinks:packageInstance?.orgs,parent:packageInstance.class.name+':'+packageInstance.id,property:'orgs']}" />
                 </div>
               </div>
 
@@ -119,6 +123,9 @@
     </div>
 
     <g:render template="enhanced_select" contextPath="../templates" />
+    <g:render template="orgLinksModal" 
+              contextPath="../templates" 
+              model="${[roleLinks:packageInstance?.orgs,parent:packageInstance.class.name+':'+packageInstance.id,property:'orgs']}" />
 
     <script language="JavaScript">
 

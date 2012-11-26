@@ -91,7 +91,6 @@ class PackageController {
       int plat_count = 0;
       int title_count = 0;
 
-      log.debug("Adding platforms");
       // Find all platforms
       packageInstance.tipps.each{ tipp ->
         // log.debug("Consider ${tipp.title.title}")

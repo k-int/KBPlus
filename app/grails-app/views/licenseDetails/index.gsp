@@ -238,6 +238,10 @@
             </div>
     </div>
     
+    <g:render template="orgLinksModal" 
+              contextPath="../templates" 
+              model="${[roleLinks:packageInstance?.orgs,parent:packageInstance.class.name+':'+packageInstance.id,property:'orgs']}" />
+
     <script language="JavaScript">
       <g:if test="${editable}">
       $(document).ready(function() {

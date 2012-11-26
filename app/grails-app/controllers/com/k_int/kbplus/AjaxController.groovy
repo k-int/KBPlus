@@ -297,7 +297,7 @@ class AjaxController {
   
   def refdataSearch() {
 
-    log.debug("refdataSearch params: ${params}");
+    // log.debug("refdataSearch params: ${params}");
     
     // http://datatables.net/blog/Introducing_Scroller_-_Virtual_Scrolling_for_DataTables
     def result = [:]
