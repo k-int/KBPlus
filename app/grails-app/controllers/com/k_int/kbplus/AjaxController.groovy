@@ -333,6 +333,23 @@ class AjaxController {
 
   def addOrgRole() {
     log.debug("addOrgRole ${params}");
+    def org_to_link = resolveOID(params.orm_orgoid?.split(":"))
+    def owner = resolveOID(params.parent?.split(":"))
+    def rel = RefdataValue.get(params.orm_orgRole);
+
+    log.debug("Add link to ${org_to_link} from ${owner} rel is ${rel} recip_prop is ${params.recip_prop}");
+    def new_link = new OrgRole(org:org_to_link,roleType:rel)
+    new_link[params.recip_prop] = owner
+    if ( new_link.save(flush:true) ) {
+      log.debug("Org link added");
+    }
+    else {
+      log.error("Problem saving new org link...");
+      new_link.errors.each { e ->
+        log.error(e);
+      }
+    }
+
     redirect(url: request.getHeader('referer'))
   }
 

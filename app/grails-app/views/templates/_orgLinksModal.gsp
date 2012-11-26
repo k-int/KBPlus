@@ -8,6 +8,7 @@
 
     <input type="hidden" name="parent" value="${parent}"/>
     <input type="hidden" name="property" value="${property}"/>
+    <input type="hidden" name="recip_prop" value="${recip_prop}"/>
     <div class="modal-body">
       <dl>
         <dt><label class="control-label">Orgs</label></dt>
