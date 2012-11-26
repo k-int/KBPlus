@@ -331,5 +331,9 @@ class AjaxController {
     }
   }
 
+  def addOrgRole() {
+    log.debug("addOrgRole ${params}");
+    redirect(url: request.getHeader('referer'))
+  }
 
 }
