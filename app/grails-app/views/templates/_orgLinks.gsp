@@ -10,7 +10,7 @@
       <tr>
         <td><g:link controller="Organisations" action="info" id="${role.org.id}">${role.org.name}</g:link></td>
         <td>${role.roleType.value}</td>
-        <td><a href="#">Delete</a></td>
+        <td><g:link controller="ajax" action="delOrgRole" id="${role.id}" onclick="return confirm('Really delete this org link?')">Delete</g:link></td>
       </tr>
     </g:each>
   </table>

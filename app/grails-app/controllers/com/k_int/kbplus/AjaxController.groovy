@@ -353,4 +353,12 @@ class AjaxController {
     redirect(url: request.getHeader('referer'))
   }
 
+  def delOrgRole() {
+    log.debug("delOrgRole ${params}");
+    def or = OrgRole.get(params.id)
+    or.delete(flush:true);
+    log.debug("Delete link: ${or}");
+    redirect(url: request.getHeader('referer'))
+  }
+
 }
