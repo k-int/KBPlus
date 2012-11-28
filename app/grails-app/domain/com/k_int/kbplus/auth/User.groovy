@@ -109,11 +109,14 @@ class User {
               has_perm=true;
           }
           if ( has_perm ) {
-            result.add("${oc.toOrg.id}:${perm}")
+            if ( ! result.contains("${oc.toOrg.id}:${perm}") ) {
+              result.add("${oc.toOrg.id}:${perm}")
+            }
           }
         }
       }
     }
+
     log.debug("user granted ${perm} for ${result}")
     result
   }
