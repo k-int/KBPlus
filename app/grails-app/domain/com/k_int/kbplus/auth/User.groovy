@@ -86,11 +86,16 @@ class User {
       def c = UserOrg.createCriteria()
       def results = c.list {
 	      eq("user",this)
-        formalRole {
-          grantedPermissions {
-            eq("perm",perm_obj)
-          }
-        }
+              formalRole {
+                grantedPermissions {
+                  eq("perm",perm_obj)
+                }
+              }
+              or {
+                eq("status",1)
+                eq("status",3)
+              }
+             
       }
       results.each { uo ->
         //log.debug("User has direct membership with ${uo.org.id}/${uo.org.name}")
