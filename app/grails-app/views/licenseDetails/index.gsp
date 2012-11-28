@@ -240,7 +240,7 @@
     
     <g:render template="orgLinksModal" 
               contextPath="../templates" 
-              model="${[roleLinks:packageInstance?.orgs,parent:packageInstance.class.name+':'+packageInstance.id,property:'orgs',recip_prop:'lic']}" />
+              model="${[roleLinks:license?.orgLinks,parent:license.class.name+':'+license.id,property:'orgLinks',recip_prop:'lic']}" />
 
     <script language="JavaScript">
       <g:if test="${editable}">
