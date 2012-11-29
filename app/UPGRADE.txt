@@ -69,8 +69,9 @@ select (@edit_perm:=id) from perm where code='edit';
 
 select @edit_perm, @view_perm, @licencee_rdv;
 
+delete from org_perm_share;
+
 insert into org_perm_share(perm_id,rdv_id) values ( @edit_perm, @licencee_rdv );
-insert into org_perm_share(perm_id,rdv_id) values ( @view_perm, @licencee_rdv );
 insert into org_perm_share(perm_id,rdv_id) values ( @view_perm, @licencee_rdv );
 insert into org_perm_share(perm_id,rdv_id) values ( @edit_perm, @licensing_consortium_rdv );
 insert into org_perm_share(perm_id,rdv_id) values ( @view_perm, @negotiator_rdv );

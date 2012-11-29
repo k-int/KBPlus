@@ -96,6 +96,10 @@ class DataloadService {
       result.identifier = sub.identifier
       result.dbId = sub.id
       result.visible = ['Public']
+      result.contentProviderId = sub.getProvider()?.id
+      result.contentProviderName = sub.getProvider()?.name
+      result.consirtiaId = sub.getConsortia()?.id
+      result.consortiaName = sub.Consortia()?.name
       if ( sub.subscriber ) {
         result.visible.add(sub.subscriber.shortcode)
       }

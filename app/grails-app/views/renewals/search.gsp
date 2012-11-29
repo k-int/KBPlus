@@ -50,14 +50,11 @@
 
                 <div id="resultsarea">
                   <table cellpadding="5" cellspacing="5">
-                    <tr><th>Type</th><th>Title/Name</th><th>Additional Info</th></tr>
+                    <tr><th>SO Name</th><th>Additional Info</th></tr>
                     <g:each in="${hits}" var="hit">
                       <tr>
-                        <td>
-                          ${hit.source.subtype}
-                        </td>
-                        <td><g:link controller="subscription" action="show" id="${hit.source.dbId}">${hit.source.name} (${hit.source.type})</g:link></td>
-                        <td>${hit.source.identifier}</td>
+                        <td><g:link controller="subscriptionDetails" action="index" id="${hit.source.dbId}">${hit.source.name} (${hit.source.type})</g:link></td>
+                        <td><a href="#" class="btn">Add to basket</a></td>
                       </tr>
                     </g:each>
                   </table>

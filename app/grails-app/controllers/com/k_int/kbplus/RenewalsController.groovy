@@ -40,7 +40,6 @@ class RenewalsController {
     if (springSecurityService.isLoggedIn()) {
 
       try {
-        if ( params.q && params.q.length() > 0) {
 
           params.max = Math.min(params.max ? params.int('max') : 10, 100)
           params.offset = params.offset ? params.int('offset') : 0
@@ -86,10 +85,6 @@ class RenewalsController {
               }
             }
           }
-        }
-        else {
-          log.debug("No query.. Show search page")
-        }
       }
       finally {
         try {
