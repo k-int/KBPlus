@@ -27,15 +27,15 @@ class BootStrap {
     def institutionalAdmin = Role.findByAuthority('INST_ADM')
     if ( !institutionalAdmin ) {
       institutionalAdmin = new Role(authority: 'INST_ADM', roleType:'user').save(failOnError: true)
-      def new_grant = new PermGrant(role:institutionalAdmin, perm:edit_permission).save();
-      def new_view_grant = new PermGrant(role:institutionalAdmin, perm:view_permission).save();
     }
+    ensurePermGrant(institutionalAdmin,edit_permission);
+    ensurePermGrant(institutionalAdmin,view_permission);
 
     def institutionalUser = Role.findByAuthority('INST_USER') 
     if ( !institutionalUser ) {
       institutionalUser = new Role(authority: 'INST_USER', roleType:'user').save(failOnError: true)
-      def new_grant = new PermGrant(role:institutionalUser, perm:view_permission).save();
     }
+    ensurePermGrant(institutionalUser,view_permission);
 
     if ( grailsApplication.config.localauth ) {
       log.debug("localauth is set.. ensure user accounts present");
@@ -89,5 +89,16 @@ class BootStrap {
   }
 
   def destroy = {
+  }
+
+  def ensurePermGrant(role,perm) {
+    def existingPermGrant = PermGrant.findRoleAndPerm(role,perm)
+    if ( !existingPermGrant ) {
+      log.debug("Create new perm grant for ${role}, ${perm}");
+      def new_grant = new PermGrant(role:role, perm:perm).save();
+    }
+    else {
+      log.debug("grant already exists ${role}, ${perm}");
+    }
   }
 }
