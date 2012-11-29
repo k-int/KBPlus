@@ -23,3 +23,6 @@ collation_server=utf8_unicode_ci
 character_set_server=utf8
 
 
+To manually search ES:
+
+http://localhost:9200/kbplus/_search?q=Subscription

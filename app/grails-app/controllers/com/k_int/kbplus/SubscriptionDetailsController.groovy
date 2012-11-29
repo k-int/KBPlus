@@ -414,10 +414,10 @@ class SubscriptionDetailsController {
     result.subscriptionInstance = Subscription.get(params.id)
     result.institution = result.subscriptionInstance.subscriber
 
-    if ( ! result.subscriptionInstance.hasPerm("view",result.user) ) {
-      render status: 401
-      return
-    }
+    // if ( ! result.subscriptionInstance.hasPerm("view",result.user) ) {
+    //   render status: 401
+    //   return
+    // }
 
     result
   }

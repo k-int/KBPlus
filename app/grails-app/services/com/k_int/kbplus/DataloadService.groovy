@@ -99,7 +99,7 @@ class DataloadService {
       if ( sub.subscriber ) {
         result.visible.add(sub.subscriber.shortcode)
       }
-      result.type = sub.type?.value
+      result.subtype = sub.type?.value
       result.rectype = 'Subscription'
       result
     }

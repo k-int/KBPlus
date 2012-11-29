@@ -95,7 +95,7 @@
               <td>Affiliated to ${ol.org?.name} with role <g:message code="cv.roles.${ol.formalRole?.authority}"/> (${ol.status})</td>
               <td>
                 <ul>
-                  <g:each in="${ol.formalRole.grantedPermissions}" var="gp">
+                  <g:each in="${ol.formalRole?.grantedPermissions}" var="gp">
                     <li>${gp.perm.code}</li>
                   </g:each>
                 </ul>

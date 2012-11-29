@@ -10,6 +10,13 @@ import com.k_int.kbplus.auth.*;
 
 class RenewalsController {
 
+  // Map the parameter names we use in the webapp with the ES fields
+  def reversemap = ['subject':'subject', 
+                    'provider':'provid', 
+                    'pkgname':''
+                   ]
+
+
   def springSecurityService
   def ESWrapperService
 
@@ -17,6 +24,83 @@ class RenewalsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.subscriptionInstance = Subscription.get(params.id)
+    result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def search() {
+
+    def result=[:]
+
+    // Get hold of some services we might use ;)
+    org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
+    org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
+    result.user = springSecurityService.getCurrentUser()
+
+    if (springSecurityService.isLoggedIn()) {
+
+      try {
+        if ( params.q && params.q.length() > 0) {
+
+          params.max = Math.min(params.max ? params.int('max') : 10, 100)
+          params.offset = params.offset ? params.int('offset') : 0
+
+          //def params_set=params.entrySet()
+
+          def query_str = buildQuery(params)
+          log.debug("query: ${query_str}");
+
+          def search = esclient.search{
+            indices "kbplus"
+            source {
+              from = params.offset
+              size = params.max
+              query {
+                query_string (query: query_str)
+              }
+              facets {
+                type {
+                  terms {
+                    field = 'rectype'
+                  }
+                }
+              }
+
+            }
+
+          }
+
+          if ( search?.response ) {
+            result.hits = search.response.hits
+            result.resultsTotal = search.response.hits.totalHits
+
+            // We pre-process the facet response to work around some translation issues in ES
+            if ( search.response.facets != null ) {
+              result.facets = [:]
+              search.response.facets.facets.each { facet ->
+                def facet_values = []
+                facet.value.entries.each { fe ->
+                  facet_values.add([term: fe.term,display:fe.term,count:"${fe.count}"])
+                }
+                result.facets[facet.key] = facet_values
+              }
+            }
+          }
+        }
+        else {
+          log.debug("No query.. Show search page")
+        }
+      }
+      finally {
+        try {
+        }
+        catch ( Exception e ) {
+          log.error("problem",e);
+        }
+      }
+
+    }  // If logged in
+
     result
   }
 
@@ -78,4 +162,43 @@ class RenewalsController {
     log.debug("package list size ${package_list.size()}");
     result
   }
+
+  def buildQuery(params) {
+    log.debug("BuildQuery...");
+
+    StringWriter sw = new StringWriter()
+
+    sw.write("subtype:'Subscription Offered'")
+
+    reversemap.each { mapping ->
+
+      // log.debug("testing ${mapping.key}");
+
+      if ( params[mapping.key] != null ) {
+        if ( params[mapping.key].class == java.util.ArrayList) {
+          params[mapping.key].each { p ->
+                sw.write(" and ")
+                sw.write(mapping.value)
+                sw.write(":")
+                sw.write("\"${p}\"")
+          }
+        }
+        else {
+          // Only add the param if it's length is > 0 or we end up with really ugly URLs
+          // II : Changed to only do this if the value is NOT an *
+          if ( params[mapping.key].length() > 0 && ! ( params[mapping.key].equalsIgnoreCase('*') ) ) {
+            sw.write(" and ")
+            sw.write(mapping.value)
+            sw.write(":")
+            sw.write("\"${params[mapping.key]}\"")
+          }
+        }
+      }
+    }
+
+
+    def result = sw.toString();
+    result;
+  }
+
 }
