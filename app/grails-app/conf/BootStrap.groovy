@@ -28,7 +28,7 @@ class BootStrap {
     if ( !institutionalAdmin ) {
       institutionalAdmin = new Role(authority: 'INST_ADM', roleType:'user').save(failOnError: true)
       def new_grant = new PermGrant(role:institutionalAdmin, perm:edit_permission).save();
-      def new_grant = new PermGrant(role:institutionalAdmin, perm:view_permission).save();
+      def new_view_grant = new PermGrant(role:institutionalAdmin, perm:view_permission).save();
     }
 
     def institutionalUser = Role.findByAuthority('INST_USER') 
