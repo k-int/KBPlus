@@ -92,7 +92,7 @@ class BootStrap {
   }
 
   def ensurePermGrant(role,perm) {
-    def existingPermGrant = PermGrant.findRoleAndPerm(role,perm)
+    def existingPermGrant = PermGrant.findByRoleAndPerm(role,perm)
     if ( !existingPermGrant ) {
       log.debug("Create new perm grant for ${role}, ${perm}");
       def new_grant = new PermGrant(role:role, perm:perm).save();
