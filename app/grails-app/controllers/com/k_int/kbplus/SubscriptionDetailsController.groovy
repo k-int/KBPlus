@@ -147,8 +147,9 @@ class SubscriptionDetailsController {
   def subscriptionBatchUpdate() {
     def subscriptionInstance = Subscription.get(params.id)
     def formatter = new java.text.SimpleDateFormat("MM/dd/yyyy")
+    def user = User.get(springSecurityService.principal.id)
 
-    if ( ! subscriptionInstance.hasPerm("edit",result.user) ) {
+    if ( ! subscriptionInstance.hasPerm("edit",user) ) {
       render status: 401
       return
     }
