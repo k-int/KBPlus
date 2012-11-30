@@ -148,7 +148,7 @@ class SubscriptionDetailsController {
     def subscriptionInstance = Subscription.get(params.id)
     def formatter = new java.text.SimpleDateFormat("MM/dd/yyyy")
 
-    if ( ! result.subscriptionInstance.hasPerm("edit",result.user) ) {
+    if ( ! subscriptionInstance.hasPerm("edit",result.user) ) {
       render status: 401
       return
     }
@@ -272,6 +272,7 @@ class SubscriptionDetailsController {
   def processAddEntitlements() {
     log.debug("addEntitlements....");
     def result = [:]
+
     result.user = User.get(springSecurityService.principal.id)
     result.subscriptionInstance = Subscription.get(params.siid)
     result.institution = result.subscriptionInstance?.subscriber
