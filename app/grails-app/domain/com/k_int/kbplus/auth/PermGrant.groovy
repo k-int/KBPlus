@@ -10,7 +10,7 @@ class PermGrant {
   }
 
   static constraints = {
-    perm blank: false, unique: true, nullable:false
-    role blank: false, unique: true, nullable:false
+    perm blank: false, unique: false, nullable:false
+    role blank: false, unique: false, nullable:false
   }
 }
