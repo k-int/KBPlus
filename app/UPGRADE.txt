@@ -28,10 +28,14 @@ update user_org set formal_role_id = @new_admin_role_id where formal_role_id is 
 update user_org set formal_role_id = @new_staff_role_id where formal_role_id is NULL and role = 'Staff';
 
 
-# This changes all members of NESLI2 to JC
-
+# This changes all members of NESLI2 to members of JC (Combo Type Consortium)
 update combo set combo_to_org_fk = @jc_org_id where  combo_to_org_fk = @nesli2_org_id and combo_type_rv_fk = @cons_refdata_value_id;
+
+# This changes all members of NESLI2 to members of JC (Combo Type Subscription Consortia)
 update combo set combo_to_org_fk = @jc_org_id where  combo_to_org_fk = @nesli2_org_id and combo_type_rv_fk = @sub_cons_refdata_value_id;
+
+# Make all subscription consortia org_roles currently pointing to nesli2 point at JC instead
+update org_role set or_org_fk = @jc_org_id where or_org_fk=nesli2_org_id and or_roletype_fk=@sub_cons_refdata_value_id;
 
 
 # Make JC appear in list of orgs users can request membership of
@@ -81,4 +85,6 @@ insert into org_perm_share(perm_id,rdv_id) values ( @edit_perm, @subscriber_rdv 
 insert into org_perm_share(perm_id,rdv_id) values ( @view_perm, @subscriber_rdv );
 insert into org_perm_share(perm_id,rdv_id) values ( @edit_perm, @subscription_consortium_rdv );
 insert into org_perm_share(perm_id,rdv_id) values ( @view_perm, @subscription_consortium_rdv );
+
+select r.rdv_value, p.code, p.id perm, r.rdv_id role from org_perm_share ops, perm p , refdata_value r where ops.perm_id = p.id and ops.rdv_id = r.rdv_id order by rdv_value;
 
