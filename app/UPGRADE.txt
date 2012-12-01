@@ -85,6 +85,7 @@ insert into org_perm_share(perm_id,rdv_id) values ( @edit_perm, @subscriber_rdv 
 insert into org_perm_share(perm_id,rdv_id) values ( @view_perm, @subscriber_rdv );
 insert into org_perm_share(perm_id,rdv_id) values ( @edit_perm, @subscription_consortium_rdv );
 insert into org_perm_share(perm_id,rdv_id) values ( @view_perm, @subscription_consortium_rdv );
+insert into org_perm_share(perm_id,rdv_id) values ( @view_perm, @cons_member_rdv );
 
 select r.rdv_value, p.code, p.id perm, r.rdv_id role from org_perm_share ops, perm p , refdata_value r where ops.perm_id = p.id and ops.rdv_id = r.rdv_id order by rdv_value;
 
