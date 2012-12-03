@@ -185,6 +185,12 @@ class MyInstitutionsController {
       qry_params.add("%${params.q.trim().toLowerCase()}%");
     }
 
+    // Only list subscriptions where the user has view perms against the org
+    // base_qry += "and ( ( exists select or from OrgRole where or.org =? and or.user = ? and or.perms.contains'view' ) "
+
+    // Or the user is a member of an org who has a consortial membership that has view perms
+    // base_qry += " or ( 2==2 ) )"
+
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
       base_qry += " order by ${params.sort} ${params.order}"
     }
