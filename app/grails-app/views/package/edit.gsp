@@ -54,7 +54,7 @@
                 <div class="controls">
                   <g:render template="orgLinks" 
                             contextPath="../templates" 
-                            model="${[roleLinks:packageInstance?.orgs,parent:packageInstance.class.name+':'+packageInstance.id,property:'orgs',editmode:editable]}" />
+                            model="${[roleLinks:packageInstance?.orgs,parent:packageInstance.class.name+':'+packageInstance.id,property:'orgs',editmode:true]}" />
                 </div>
               </div>
 
