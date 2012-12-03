@@ -123,7 +123,7 @@
                 <dl>
                       <dt><label class="control-label" for="licenseeRef">Org Links</label></dt>
                       <dd>
-                        <g:render template="orgLinks" contextPath="../templates" model="${[roleLinks:subscriptionInstance?.orgRelations]}" />
+                        <g:render template="orgLinks" contextPath="../templates" model="${[roleLinks:subscriptionInstance?.orgRelations,editmode:editable]}" />
                       </dd>
                 </dl>
 
