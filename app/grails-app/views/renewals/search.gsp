@@ -12,11 +12,13 @@
       <div class="row">
         <div class="span12">
           <div class="well">
+            Package Name: <input name="pkgname" value="${params.pkgname}"/>
+            <button type="submit" name="search" value="yes">Search</button>
             <div class="pull-right">
             <button type="submit" name="clearBasket" value="yes">Clear Basket</button>
             <button type="submit" name="generate" value="yes">Generate Comparison Sheet</button>
             </div>
-            Package Name: <input name="pkgname" value="${params.pkgname}"/><br/>
+           
           </div>
         </div>
       </div>
