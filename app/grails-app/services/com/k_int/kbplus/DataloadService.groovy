@@ -96,10 +96,19 @@ class DataloadService {
       result.identifier = sub.identifier
       result.dbId = sub.id
       result.visible = ['Public']
-      result.contentProviderId = sub.getProvider()?.id
-      result.contentProviderName = sub.getProvider()?.name
-      result.consirtiaId = sub.getConsortia()?.id
+      result.consortiaId = sub.getConsortia()?.id
       result.consortiaName = sub.getConsortia()?.name
+      result.packages = []
+      sub.packages.each { sp ->
+        def pgkinfo = [:]
+        pgkinfo.pkgname = sp.pkg.name
+        pgkinfo.pkgidstr= sp.pkg.identifier
+        pgkinfo.pkgid= sp.pkg.id
+        pgkinfo.cpname = sp.pkg.contentProvider.name
+        pgkinfo.cpid = sp.pkg.contentProvider.id
+        result.packages.add(pgkinfo);
+      }
+
       if ( sub.subscriber ) {
         result.visible.add(sub.subscriber.shortcode)
       }
