@@ -8,6 +8,7 @@
   <body>
     <div class="container">
       <g:form action="search" method="get">
+      <input type="hidden" name="offset" value="${params.offset}"/>
       <div class="row">
         <div class="span12">
           <div class="well">
@@ -51,7 +52,7 @@
                       <tr>
                         <td><g:link controller="subscriptionDetails" action="index" id="${hit.source.dbId}">${hit.source.name} (${hit.source.type})</g:link></td>
                         <td>${hit.source.consortiaName}</td>
-                        <td><a href="#" class="btn">Add to basket</a></td>
+                        <td><button type="submit" class="btn" name="addBtn" value="${hit.source.dbId}">Add to basket</button></td>
                       </tr>
                     </g:each>
                   </table>

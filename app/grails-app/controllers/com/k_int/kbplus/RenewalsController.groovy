@@ -41,6 +41,8 @@ class RenewalsController {
     org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
     result.user = springSecurityService.getCurrentUser()
 
+    def shopping_basket = UserFolder.findByUserAndShortcode(result.user,'SOBasket') ?: new UserFolder(user:result.user, shortcode:'SOBasket').save();
+
     if (springSecurityService.isLoggedIn()) {
 
       try {
