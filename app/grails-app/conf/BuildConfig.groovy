@@ -39,6 +39,7 @@ grails.project.dependency.resolution = {
         runtime 'org.elasticsearch:elasticsearch-lang-groovy:1.1.0'
         runtime 'org.elasticsearch:elasticsearch:0.19.4'
         runtime 'gov.loc:bagit:4.0'
+        runtime 'org.apache.poi:poi:3.8'
         runtime ( 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2' ) { 
           excludes "org.codehaus.groovy", "groovy"
         }

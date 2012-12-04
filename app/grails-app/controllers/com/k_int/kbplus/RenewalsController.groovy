@@ -8,6 +8,8 @@ import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.MarkupBuilder
 import com.k_int.kbplus.auth.*;
 
+import org.apache.poi.hssf.usermodel.*;
+
 class RenewalsController {
 
   def genericOIDService
@@ -55,6 +57,11 @@ class RenewalsController {
       log.debug("Clear basket....");
       shopping_basket.items?.clear();
       shopping_basket.save(flush:true)
+    }
+    else if ( params.generate=='yes' ) {
+      log.debug("Generate");
+      generate()
+      return
     }
 
     result.basket = materialiseFolder(shopping_basket.items)
@@ -229,5 +236,40 @@ class RenewalsController {
       result.add(genericOIDService.resolveOID(it.referencedOid))
     }
     result
+  }
+
+  def generate() {
+
+    // read http://stackoverflow.com/questions/2824486/groovy-grails-how-do-you-stream-or-buffer-a-large-file-in-a-controllers-respon
+
+    HSSFWorkbook workbook = new HSSFWorkbook();
+ 
+    //
+    // Create two sheets in the excel document and name it First Sheet and
+    // Second Sheet.
+    //
+    HSSFSheet firstSheet = workbook.createSheet("FIRST SHEET");
+    HSSFSheet secondSheet = workbook.createSheet("SECOND SHEET");
+ 
+    //
+    // Manipulate the firs sheet by creating an HSSFRow wich represent a
+    // single row in excel sheet, the first row started from 0 index. After
+    // the row is created we create a HSSFCell in this first cell of the row
+    // and set the cell value with an instance of HSSFRichTextString
+    // containing the words FIRST SHEET.
+    //
+    HSSFRow rowA = firstSheet.createRow(0);
+    HSSFCell cellA = rowA.createCell(0);
+    cellA.setCellValue(new HSSFRichTextString("FIRST SHEET"));
+ 
+    HSSFRow rowB = secondSheet.createRow(0);
+    HSSFCell cellB = rowB.createCell(0);
+    cellB.setCellValue(new HSSFRichTextString("SECOND SHEET"));
+
+    response.setHeader "Content-disposition", "attachment; filename='comparison.xls'"
+    response.contentType = 'application/xls'
+    workbook.write(response.outputStream)
+    response.outputStream.flush()
+ 
   }
 }
