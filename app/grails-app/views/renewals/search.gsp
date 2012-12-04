@@ -12,8 +12,11 @@
       <div class="row">
         <div class="span12">
           <div class="well">
-              Package Name: <input name="pkgname" value="${params.pkgname}"/><br/>
-              ${params.pkgname}
+            <div class="pull-right">
+            <button type="submit" name="clearBasket" value="yes">Clear Basket</button>
+            <button type="submit" name="generate" value="yes">Generate Renewals Sheet</button>
+            </div>
+            Package Name: <input name="pkgname" value="${params.pkgname}"/><br/>
           </div>
         </div>
       </div>
@@ -67,9 +70,10 @@
         </div>
         <div class="span2">
           <div class="well">
+            <h5>Basket</h5>
             <g:each in="${basket}" var="itm">
               <div>
-                ${itm}
+                ${itm.name}
               </div>
             </g:each>
           </div>

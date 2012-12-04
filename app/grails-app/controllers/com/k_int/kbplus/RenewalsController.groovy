@@ -10,6 +10,8 @@ import com.k_int.kbplus.auth.*;
 
 class RenewalsController {
 
+  def genericOIDService
+
   // Map the parameter names we use in the webapp with the ES fields
   def reversemap = ['subject':'subject', 
                     'provider':'provid', 
@@ -49,8 +51,13 @@ class RenewalsController {
       shopping_basket.addIfNotPresent(oid)
       shopping_basket.save(flush:true);
     }
+    else if ( params.clearBasket=='yes' ) {
+      log.debug("Clear basket....");
+      shopping_basket.items?.clear();
+      shopping_basket.save(flush:true)
+    }
 
-    result.basket = shopping_basket.materialise()
+    result.basket = materialiseFolder(shopping_basket.items)
 
     if (springSecurityService.isLoggedIn()) {
 
@@ -216,4 +223,11 @@ class RenewalsController {
     result;
   }
 
+  def materialiseFolder(f) {
+    def result = []
+    f.each {
+      result.add(genericOIDService.resolveOID(it.referencedOid))
+    }
+    result
+  }
 }

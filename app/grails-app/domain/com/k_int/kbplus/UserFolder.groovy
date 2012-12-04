@@ -23,6 +23,7 @@ class UserFolder {
         user column:'uf_owner_id'
    shortcode column:'uf_shortcode'
         name column:'uf_name'
+       items cascade: 'all-delete-orphan'
   }
 
   static constraints = {
@@ -43,15 +44,6 @@ class UserFolder {
     if ( !present ) {
       items.add(new FolderItem(folder:this,referencedOid:oid))
     }
-  }
-
-  @Transient
-  def materialise() {
-    def result = []
-    items.each {
-      result.add(it.referencedOid);
-    }
-    result
   }
 
 
