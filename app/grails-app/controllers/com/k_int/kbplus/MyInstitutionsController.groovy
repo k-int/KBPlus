@@ -276,6 +276,14 @@ class MyInstitutionsController {
         break
       case 'POST':
         def baseLicense = params.baselicense ? License.get(params.baselicense) : null;
+        
+        if ( ! baseLicense?.hasPerm("edit",user) ) {
+          log.debug("return 401....");
+          flash.message = message(code:'noperm',default:'You do not have edit permission for the selected license.')
+          redirect(url: request.getHeader('referer'))
+          return
+        }
+    
         def license_type = RefdataCategory.lookupOrCreate('License Type','Actual')
         def license_status = RefdataCategory.lookupOrCreate('License Status','Current')
         def licenseInstance = new License(reference:"Copy of ${baseLicense?.reference}",
@@ -346,6 +354,12 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
     def license = License.get(params.baselicense)
+    
+    if ( ! license?.hasPerm("edit",result.user) ) {
+      flash.message = message(code:'noperm',default:'You do not have edit permission for the selected license.')
+      redirect(url: request.getHeader('referer'))
+      return
+    }
 
     if ( hasAdminRights(result.user,license) ) {
       if ( ( license.subscriptions == null ) || ( license.subscriptions.size() == 0 ) ) {
@@ -396,6 +410,12 @@ class MyInstitutionsController {
     if ( baseSubscription ) {
       log.debug("Copying base subscription ${baseSubscription.id} for org ${institution.id}");
 
+      if ( ! baseSubscription.hasPerm("edit",user) ) {
+        flash.message = message(code:'noperm',default:'You do not have edit permission for the selected subscription.')
+        redirect(url: request.getHeader('referer'))
+        return
+      }
+      
       def subscriptionInstance = new Subscription(
                                      status:baseSubscription.status,
                                      type:RefdataCategory.lookupOrCreate('Subscription Type','Subscription Taken'),
@@ -538,7 +558,9 @@ class MyInstitutionsController {
     def subscription = Subscription.get(params.basesubscription)
 
     if ( hasAdminRights(result.user,subscription) ) {
-      if ( 1==1 ) {
+      def derived_subs = Subscription.countByInstanceOf(subscription)
+      
+      if ( derived_subs == 0 ) {
         def deletedStatus = RefdataCategory.lookupOrCreate('Subscription Status','Deleted');
         subscription.status = deletedStatus
         subscription.save(flush:true);
@@ -548,7 +570,7 @@ class MyInstitutionsController {
       }
     }
     else {
-      log.warn("Attempt by ${result.user} to delete subscription ${result.subscription} without perms")
+      log.warn("${result.user} attempted to delete subscription ${result.subscription} without perms")
       flash.message = message(code: 'subscription.delete.norights')
     }
 
