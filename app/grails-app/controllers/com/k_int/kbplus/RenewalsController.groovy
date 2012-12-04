@@ -9,6 +9,7 @@ import groovy.xml.MarkupBuilder
 import com.k_int.kbplus.auth.*;
 
 import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;  
 
 class RenewalsController {
 
@@ -60,7 +61,7 @@ class RenewalsController {
     }
     else if ( params.generate=='yes' ) {
       log.debug("Generate");
-      generate()
+      generate(materialiseFolder(shopping_basket.items))
       return
     }
 
@@ -238,7 +239,74 @@ class RenewalsController {
     result
   }
 
-  def generate() {
+  def generate(slist) {
+    def m = generateMatrix(slist)
+    exportWorkbook(m)
+  }
+
+  def generateMatrix(slist) {
+    def titleMap = [:]
+    def subscriptionMap = [:]
+
+    log.debug("pre-pre-process");
+
+    // Step one - Assemble a list of all titles and packages
+    slist.each { sub ->
+
+      def sub_info = [
+        sub_idx : subscriptionMap.size(),
+        sub_name : sub.name,
+        sub_id : sub.id
+      ]
+
+      subscriptionMap[sub.id] = sub_info
+
+      // For each subscription in the shopping basket
+      sub.issueEntitlements.each { ie ->
+        def title_info = titleMap[ie.tipp.title.id]
+        if ( !title_info ) {
+          title_info = [:]
+          title_info.title_idx = titleMap.size()
+          title_info.id = ie.tipp.title.id;
+          title_info.issn = ie.tipp.title.getIdentifierValue('ISSN');
+          title_info.eissn = ie.tipp.title.getIdentifierValue('eISSN');
+          title_info.title = ie.tipp.title.title
+          titleMap[ie.tipp.title.id] = title_info;
+        }
+      }
+    }
+
+    log.debug("Result will be a matrix of size ${titleMap.size()} by ${subscriptionMap.size()}");
+
+    // Object[][] result = new Object[subscriptionMap.size()+1][titleMap.size()+1]
+    Object[][] ti_info_arr = new Object[titleMap.size()][subscriptionMap.size()]
+    Object[] sub_info_arr = new Object[subscriptionMap.size()]
+    Object[] title_info_arr = new Object[titleMap.size()]
+
+    subscriptionMap.values().each { v ->
+      sub_info_arr[v.sub_idx] = v
+    }
+
+    titleMap.values().each { v ->
+      title_info_arr[v.title_idx] = v
+    }
+
+    slist.each { sub ->
+      def sub_info = subscriptionMap[sub.id]
+      sub.issueEntitlements.each { ie ->
+        def title_info = titleMap[ie.tipp.title.id]
+        def ie_info = [:]
+        ie_info.tipp_id = ie.tipp.id;
+        ie_info.core = ie.coreTitle
+        ti_info_arr[title_info.title_idx][sub_info.sub_idx] = ie_info
+      }
+    }
+
+
+    [ti_info:ti_info_arr,title_info:title_info_arr,sub_info:sub_info_arr]
+  }
+
+  def exportWorkbook(m) {
 
     // read http://stackoverflow.com/questions/2824486/groovy-grails-how-do-you-stream-or-buffer-a-large-file-in-a-controllers-respon
 
@@ -249,22 +317,101 @@ class RenewalsController {
     // Second Sheet.
     //
     HSSFSheet firstSheet = workbook.createSheet("FIRST SHEET");
-    HSSFSheet secondSheet = workbook.createSheet("SECOND SHEET");
  
-    //
-    // Manipulate the firs sheet by creating an HSSFRow wich represent a
-    // single row in excel sheet, the first row started from 0 index. After
-    // the row is created we create a HSSFCell in this first cell of the row
-    // and set the cell value with an instance of HSSFRichTextString
-    // containing the words FIRST SHEET.
-    //
-    HSSFRow rowA = firstSheet.createRow(0);
-    HSSFCell cellA = rowA.createCell(0);
-    cellA.setCellValue(new HSSFRichTextString("FIRST SHEET"));
- 
-    HSSFRow rowB = secondSheet.createRow(0);
-    HSSFCell cellB = rowB.createCell(0);
-    cellB.setCellValue(new HSSFRichTextString("SECOND SHEET"));
+    // Cell style for a present TI
+    HSSFCellStyle present_cell_style = workbook.createCellStyle();  
+    present_cell_style.setFillForegroundColor(HSSFColor.GREEN.index);  
+    present_cell_style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);  
+
+    // Cell style for a core TI
+    HSSFCellStyle core_cell_style = workbook.createCellStyle();  
+    core_cell_style.setFillForegroundColor(HSSFColor.YELLOW.index);  
+    core_cell_style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);  
+
+    int rc=0;
+    // header
+    int cc=0;
+    HSSFRow row = null;
+    HSSFCell cell = null;
+
+    // Blank rows
+    row = firstSheet.createRow(rc++);
+    row = firstSheet.createRow(rc++);
+
+    // Key
+    row = firstSheet.createRow(rc++);
+    cc=0;
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("Key"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("Title In Subscription"));
+    cell.setCellStyle(present_cell_style);  
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("Core Title"));
+    cell.setCellStyle(core_cell_style);  
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("Not In Subscription"));
+    
+
+    row = firstSheet.createRow(rc++);
+    cc=4
+    m.sub_info.each { sub ->
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("${sub.sub_id}"));
+    }
+    
+    // headings
+    row = firstSheet.createRow(rc++);
+    cc=0;
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("internal ID"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("Title"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("ISSN"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("eISSN"));
+    
+    m.sub_info.each { sub ->
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("${sub.sub_name}"));
+    }
+
+    m.title_info.each { title ->
+
+      row = firstSheet.createRow(rc++);
+      cc = 0;
+
+      // Internal title ID
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("${title.id}"));
+      // Title
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("${title.title?:''}"));
+
+      // ISSN
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("${title.issn?:''}"));
+      // eISSN
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("${title.eissn?:''}"));
+
+      m.sub_info.each { sub ->
+        cell = row.createCell(cc++);
+        def ie_info = m.ti_info[title.title_idx][sub.sub_idx]
+        if ( ie_info ) {
+          if ( ie_info.core ) {
+            cell.setCellValue(new HSSFRichTextString(""));
+            cell.setCellStyle(core_cell_style);  
+          }
+          else {
+            cell.setCellValue(new HSSFRichTextString(""));
+            cell.setCellStyle(present_cell_style);  
+          }
+        }
+
+      }
+    }
 
     response.setHeader "Content-disposition", "attachment; filename='comparison.xls'"
     response.contentType = 'application/xls'
