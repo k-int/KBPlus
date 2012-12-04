@@ -35,7 +35,8 @@
     <div class="container">
       Click <g:link controller="subscriptionDetails" 
                     action="launchRenewalsProcess" 
-                    params="${[id:params.id]}">Here</g:link> to start the renewals process for this subscription.
+                    params="${[id:params.id]}">Here</g:link> to start the renewals process for this subscription - Allowing you to search for packages and subscriptions offered to compare against
+       this current subscription taken.
     </div>
     
   </body>

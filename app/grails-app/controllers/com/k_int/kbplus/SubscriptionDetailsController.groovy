@@ -455,6 +455,16 @@ class SubscriptionDetailsController {
     result.user = User.get(springSecurityService.principal.id)
     result.subscriptionInstance = Subscription.get(params.id)
     result.institution = result.subscriptionInstance.subscriber
+
+    def shopping_basket = UserFolder.findByUserAndShortcode(result.user,'SOBasket') ?: new UserFolder(user:result.user, shortcode:'SOBasket').save();
+
+    log.debug("Clear basket....");
+    shopping_basket.items?.clear();
+    shopping_basket.save(flush:true)
+
+    def oid = "com.k_int.kbplus.Subscription:${params.id}"
+    shopping_basket.addIfNotPresent(oid)
+  
     redirect controller:'renewals',action:'search'
   }
 }
