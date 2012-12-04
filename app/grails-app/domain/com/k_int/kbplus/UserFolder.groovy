@@ -1,6 +1,7 @@
 package com.k_int.kbplus
 
 import com.k_int.kbplus.auth.User
+import javax.persistence.Transient
 
 class UserFolder {
 
@@ -28,4 +29,30 @@ class UserFolder {
     shortcode(nullable:true, blank:true)
     name(nullable:true, blank:true)
   }
+
+
+  @Transient
+  def addIfNotPresent(oid) {
+    def present = false;
+    items.each { 
+      if ( it.referencedOid && ( it.referencedOid == oid ) ) {
+        present = true
+      }
+    }
+
+    if ( !present ) {
+      items.add(new FolderItem(folder:this,referencedOid:oid))
+    }
+  }
+
+  @Transient
+  def materialise() {
+    def result = []
+    items.each {
+      result.add(it.referencedOid);
+    }
+    result
+  }
+
+
 }

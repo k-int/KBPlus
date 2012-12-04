@@ -43,6 +43,15 @@ class RenewalsController {
 
     def shopping_basket = UserFolder.findByUserAndShortcode(result.user,'SOBasket') ?: new UserFolder(user:result.user, shortcode:'SOBasket').save();
 
+    if ( params.addBtn ) {
+      log.debug("Add item ${params.addBtn} to basket");
+      def oid = "com.k_int.kbplus.Subscription:${params.addBtn}"
+      shopping_basket.addIfNotPresent(oid)
+      shopping_basket.save(flush:true);
+    }
+
+    result.basket = shopping_basket.materialise()
+
     if (springSecurityService.isLoggedIn()) {
 
       try {

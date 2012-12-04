@@ -67,7 +67,11 @@
         </div>
         <div class="span2">
           <div class="well">
-          Basket
+            <g:each in="${basket}" var="itm">
+              <div>
+                ${itm}
+              </div>
+            </g:each>
           </div>
         </div>
 
