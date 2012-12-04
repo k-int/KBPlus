@@ -355,13 +355,8 @@ class MyInstitutionsController {
     result.institution = Org.findByShortcode(params.shortcode)
     def license = License.get(params.baselicense)
     
-    if ( ! license?.hasPerm("edit",result.user) ) {
-      flash.message = message(code:'noperm',default:'You do not have edit permission for the selected license.')
-      redirect(url: request.getHeader('referer'))
-      return
-    }
 
-    if ( hasAdminRights(result.user,license) ) {
+    if ( license?.hasPerm("edit",result.user) ) {
       if ( ( license.subscriptions == null ) || ( license.subscriptions.size() == 0 ) ) {
         def deletedStatus = RefdataCategory.lookupOrCreate('License Status','Deleted');
         license.status = deletedStatus
@@ -373,7 +368,9 @@ class MyInstitutionsController {
     }
     else {
       log.warn("Attempt by ${result.user} to delete license ${result.license}without perms")
-      flash.message = message(code: 'license.delete.norights')
+      flash.message = message(code:'license.delete.norights',default:'You do not have edit permission for the selected license.')
+      redirect(url: request.getHeader('referer'))
+      return
     }
     
     redirect action: 'currentLicenses', params: [shortcode:params.shortcode]
@@ -514,50 +511,12 @@ class MyInstitutionsController {
     result
   }
 
-  // Placeholder to determine if the supplied user has admin rights over the speciifed object
-  def hasAdminRights(user, object) {
-    def result = false;
-
-    if ( object && user ) {
-      def user_orgs = user.affiliations.collect { it.org }
-
-      if ( object instanceof License ) {
-        // Work out which org "owns" this license
-        def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
-        def or = OrgRole.findByLicAndRoleType(object, licensee_role)
-        if ( or ) {
-          // The license owner must be the users institution
-          if ( user_orgs.contains(or.org) ) {
-            result = true
-          }
-        }
-      }
-      else if ( object instanceof Subscription ) {
-        def subscriber_role = RefdataCategory.lookupOrCreate('Organisational Role','Subscriber');
-        def or = OrgRole.findBySubAndRoleType(object, subscriber_role)
-        if ( or ) {
-          // The license owner must be the users institution
-          if ( user_orgs.contains(or.org) ) {
-            result = true
-          }
-        }
-        else {
-        }
-      }
-      else {
-        log.warn("Unknown has admin rights object : ${object?.class?.name}");
-      }
-    }
-
-    result;
-  }
-
   def actionCurrentSubscriptions() {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     def subscription = Subscription.get(params.basesubscription)
 
-    if ( hasAdminRights(result.user,subscription) ) {
+    if ( subscription.hasPerm("edit",result.user) ) {
       def derived_subs = Subscription.countByInstanceOf(subscription)
       
       if ( derived_subs == 0 ) {
