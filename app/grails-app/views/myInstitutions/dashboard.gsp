@@ -15,10 +15,10 @@
           <div class="well">
             <h6>Licences</h6>
             <dl>
-              <g:each in="${user.authorizedAffiliations}" var="ua">
+              <g:each in="${user.authorizedOrgs}" var="org">
                 <dd><g:link controller="myInstitutions" 
                                      action="currentLicenses" 
-                                     params="${[shortcode:ua.org?.shortcode]}">${ua.org.name}</g:link></dd>
+                                     params="${[shortcode:org?.shortcode]}">${org.name}</g:link></dd>
               </g:each>
             </dl>
           </div>
@@ -27,10 +27,10 @@
           <div class="well">
             <h6>Subscriptions</h6>
             <dl>
-              <g:each in="${user.authorizedAffiliations}" var="ua">
+              <g:each in="${user.authorizedOrgs}" var="org">
                 <dd><g:link controller="myInstitutions" 
                                      action="currentSubscriptions" 
-                                     params="${[shortcode:ua.org?.shortcode]}">${ua.org.name}</g:link></dd>
+                                     params="${[shortcode:org?.shortcode]}">${org.name}</g:link></dd>
               </g:each>
             </dl>
           </div>

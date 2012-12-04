@@ -79,18 +79,18 @@
                     <ul class="dropdown-menu" style="max-width:none;">
   
   
-                       <g:set var="usaf" value="${user.authorizedAffiliations}" />
+                       <g:set var="usaf" value="${user.authorizedOrgs}" />
                        <g:if test="${usaf && usaf.size() > 0}">
-                         <g:each in="${usaf}" var="ua">
+                         <g:each in="${usaf}" var="org">
                            <li>
                              <g:link controller="myInstitutions" 
                                      action="currentLicenses" 
-                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Licences</g:link>
+                                     params="${[shortcode:org.shortcode]}">${org.name} - Licences</g:link>
                            </li>
                            <li>
                              <g:link controller="myInstitutions" 
                                      action="currentSubscriptions" 
-                                     params="${[shortcode:ua.org.shortcode]}">${ua.org.name} - Subscriptions</g:link>
+                                     params="${[shortcode:org.shortcode]}">${org.name} - Subscriptions</g:link>
                            </li>
                          </g:each>
                        </g:if>
