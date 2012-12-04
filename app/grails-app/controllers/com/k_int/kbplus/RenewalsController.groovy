@@ -30,6 +30,9 @@ class RenewalsController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def search() {
 
+    // Be mindful that the behavior of this controller is strongly influenced by the schema setup in ES.
+    // Specifically, see KBPlus/import/processing/processing/dbreset.sh for the mappings that control field type and analysers
+    // Internal testing with http://localhost:9200/kbplus/_search?q=subtype:'Subscription%20Offered'
     def result=[:]
 
     // Get hold of some services we might use ;)
@@ -61,6 +64,11 @@ class RenewalsController {
                 type {
                   terms {
                     field = 'rectype'
+                  }
+                }
+                contentProvider {
+                  terms {
+                    field = 'packages.cpname'
                   }
                 }
               }

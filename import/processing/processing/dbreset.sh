@@ -79,6 +79,14 @@ curl -X PUT "localhost:9200/kbplus/com.k_int.kbplus.Subscription/_mapping" -d '{
       "subtype" : {
         type : "string",
         index : "not_analyzed"
+      },
+      "packages" : {
+        "properties" : {
+          "cpname" : {
+            type : "string",
+            index : "not_analyzed"
+          }
+        }
       }
     }
   }

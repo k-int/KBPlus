@@ -99,7 +99,7 @@ class DataloadService {
       result.contentProviderId = sub.getProvider()?.id
       result.contentProviderName = sub.getProvider()?.name
       result.consirtiaId = sub.getConsortia()?.id
-      result.consortiaName = sub.Consortia()?.name
+      result.consortiaName = sub.getConsortia()?.name
       if ( sub.subscriber ) {
         result.visible.add(sub.subscriber.shortcode)
       }
