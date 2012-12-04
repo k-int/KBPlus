@@ -7,13 +7,12 @@
 
   <body>
     <div class="container">
+      <g:form action="search" method="get">
       <div class="row">
         <div class="span12">
           <div class="well">
-            <g:form action="search">
               Package Name: <input name="pkgname" value="${params.pkgname}"/><br/>
               ${params.pkgname}
-            </g:form>
           </div>
         </div>
       </div>
@@ -23,7 +22,8 @@
               <g:each in="${facets}" var="facet">
                 <h5>${facet.key}</h5>
                     <g:each in="${facet.value}" var="fe">
-                      ${fe.display} (${fe.count})<br/>
+                      <g:set var="facetname" value="${facet.key}:${fe.display}" />
+                      <div><g:checkBox class="pull-right" name="${facetname}" value="${params[facetname]}" onClick=""/>${fe.display} (${fe.count})</div>
                     </g:each>
                 </li>
               </g:each>
@@ -71,6 +71,7 @@
         </div>
 
       </div>
+      </g:form>
     </div>
   </body>
 </html>
