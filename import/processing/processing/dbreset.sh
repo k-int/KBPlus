@@ -87,6 +87,10 @@ curl -X PUT "localhost:9200/kbplus/com.k_int.kbplus.Subscription/_mapping" -d '{
             index : "not_analyzed"
           }
         }
+      },
+      "consortiaName" : {
+        type : "string",
+        index : "not_analyzed"
       }
     }
   }

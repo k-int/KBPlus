@@ -61,9 +61,9 @@ class RenewalsController {
                 query_string (query: query_str)
               }
               facets {
-                type {
+                consortia {
                   terms {
-                    field = 'rectype'
+                    field = 'consortiaName'
                   }
                 }
                 contentProvider {

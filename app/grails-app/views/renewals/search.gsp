@@ -20,17 +20,13 @@
       <div class="row">
         <div class="span2">
           <div class="well">
-              <ul>
               <g:each in="${facets}" var="facet">
-                <li> ${facet.key}
-                  <ul>
+                <h5>${facet.key}</h5>
                     <g:each in="${facet.value}" var="fe">
-                      <li>${fe.display} (${fe.count})</li>
+                      ${fe.display} (${fe.count})<br/>
                     </g:each>
-                  </ul>
                 </li>
               </g:each>
-              </ul>
           </div>
         </div>
         <div class="span8">
@@ -50,10 +46,11 @@
 
                 <div id="resultsarea">
                   <table cellpadding="5" cellspacing="5">
-                    <tr><th>SO Name</th><th>Additional Info</th></tr>
+                    <tr><th>SO Name</th><th>Subscribing Consortium</th><th>Additional Info</th></tr>
                     <g:each in="${hits}" var="hit">
                       <tr>
                         <td><g:link controller="subscriptionDetails" action="index" id="${hit.source.dbId}">${hit.source.name} (${hit.source.type})</g:link></td>
+                        <td>${hit.source.consortiaName}</td>
                         <td><a href="#" class="btn">Add to basket</a></td>
                       </tr>
                     </g:each>
