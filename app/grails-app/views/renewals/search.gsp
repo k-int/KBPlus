@@ -14,7 +14,7 @@
           <div class="well">
             <div class="pull-right">
             <button type="submit" name="clearBasket" value="yes">Clear Basket</button>
-            <button type="submit" name="generate" value="yes">Generate Renewals Sheet</button>
+            <button type="submit" name="generate" value="yes">Generate Comparison Sheet</button>
             </div>
             Package Name: <input name="pkgname" value="${params.pkgname}"/><br/>
           </div>

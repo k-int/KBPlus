@@ -28,26 +28,7 @@
 
        <h1><g:inPlaceEdit domain="Subscription" pk="${subscriptionInstance.id}" field="name" id="name" class="${editable?'newipe':''}">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
 
-      <ul class="nav nav-pills">
-        <li><g:link controller="subscriptionDetails" 
-                                   action="index" 
-                                   params="${[id:params.id]}">Current Entitlements</g:link></li>
-
-        <g:if test="${editable}">
-        <li><g:link controller="subscriptionDetails" 
-                               action="addEntitlements" 
-                               params="${[id:params.id]}">Add Entitlements</g:link></li>
-        </g:if>
-
-        <li><g:link controller="subscriptionDetails" 
-                    action="documents" 
-                    params="${[id:params.id]}">Documents</g:link></li>
-
-        <li class="active"><g:link controller="subscriptionDetails" 
-                    action="notes" 
-                    params="${[id:params.id]}">Notes</g:link></li>
-
-      </ul>
+       <g:render template="nav" contextPath="." />
 
     </div>
 

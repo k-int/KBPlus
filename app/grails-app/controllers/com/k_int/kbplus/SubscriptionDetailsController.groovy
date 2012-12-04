@@ -392,6 +392,31 @@ class SubscriptionDetailsController {
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def renewals() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.subscriptionInstance = Subscription.get(params.id)
+    result.institution = result.subscriptionInstance.subscriber
+    if ( ! result.subscriptionInstance.hasPerm("view",result.user) ) {
+      render status: 401
+      return
+    }
+
+    if ( result.institution ) {
+      result.subscriber_shortcode = result.institution.shortcode
+    }
+
+    if ( result.subscriptionInstance.isEditableBy(result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
+    }
+
+    result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def deleteDocuments() {
     def ctxlist = []
 
@@ -424,5 +449,13 @@ class SubscriptionDetailsController {
     result
   }
 
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def launchRenewalsProcess() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.subscriptionInstance = Subscription.get(params.id)
+    result.institution = result.subscriptionInstance.subscriber
+    redirect controller:'renewals',action:'search'
+  }
 }
 
