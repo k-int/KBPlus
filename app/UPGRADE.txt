@@ -35,7 +35,7 @@ update combo set combo_to_org_fk = @jc_org_id where  combo_to_org_fk = @nesli2_o
 update combo set combo_to_org_fk = @jc_org_id where  combo_to_org_fk = @nesli2_org_id and combo_type_rv_fk = @sub_cons_refdata_value_id;
 
 # Make all subscription consortia org_roles currently pointing to nesli2 point at JC instead
-update org_role set or_org_fk = @jc_org_id where or_org_fk=nesli2_org_id and or_roletype_fk=@sub_cons_refdata_value_id;
+update org_role set or_org_fk = @jc_org_id where or_org_fk=@nesli2_org_id and or_roletype_fk=@sub_cons_refdata_value_id;
 
 
 # Make JC appear in list of orgs users can request membership of
