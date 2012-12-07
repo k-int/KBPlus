@@ -61,7 +61,7 @@
               <div class="control-group ">
        	        <label class="control-label">Package Type</label>
                 <div class="controls">
-                  <g:select id="packageTypeSelect" name="packageType.id" from="${com.k_int.kbplus.RefdataValue.executeQuery('select rv from RefdataValue as rv where rv.owner.desc=?',['Package Type'])}" optionKey="id" value="${packageInstance?.packageType?.id}" class="many-to-one" noSelection="['null': '']"/>
+                  <g:refdataValue val="${packageInstance?.packageType?.value?:'Not set'}" domain="Package" pk="${packageInstance?.id}" field="packageType" cat="Package Type" />
                 </div>
               </div>
 

@@ -312,6 +312,8 @@ class RenewalsController {
 
     HSSFWorkbook workbook = new HSSFWorkbook();
  
+    // CreationHelper createHelper = workbook.getCreationHelper();
+
     //
     // Create two sheets in the excel document and name it First Sheet and
     // Second Sheet.
@@ -336,6 +338,20 @@ class RenewalsController {
 
     // Blank rows
     row = firstSheet.createRow(rc++);
+    row = firstSheet.createRow(rc++);
+    cc=0;
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("Subscriber ID"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("Subscriber Name"));
+
+    row = firstSheet.createRow(rc++);
+    cc=0;
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("Pending..."));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("Pending"));
+
     row = firstSheet.createRow(rc++);
 
     // Key
@@ -364,7 +380,7 @@ class RenewalsController {
     row = firstSheet.createRow(rc++);
     cc=0;
     cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("internal ID"));
+    cell.setCellValue(new HSSFRichTextString("Title ID"));
     cell = row.createCell(cc++);
     cell.setCellValue(new HSSFRichTextString("Title"));
     cell = row.createCell(cc++);
@@ -375,6 +391,10 @@ class RenewalsController {
     m.sub_info.each { sub ->
       cell = row.createCell(cc++);
       cell.setCellValue(new HSSFRichTextString("${sub.sub_name}"));
+
+      // Hyperlink link = createHelper.createHyperlink(Hyperlink.LINK_URL);
+      // link.setAddress("http://poi.apache.org/");
+      // cell.setHyperlink(link);
     }
 
     m.title_info.each { title ->
@@ -412,6 +432,16 @@ class RenewalsController {
 
       }
     }
+
+    firstSheet.autoSizeColumn(0); //adjust width of the first column
+    firstSheet.autoSizeColumn(1); //adjust width of the first column
+    firstSheet.autoSizeColumn(2); //adjust width of the first column
+    firstSheet.autoSizeColumn(3); //adjust width of the first column
+    for ( int i=0; i<m.sub_info.size(); i++ ) {
+      firstSheet.autoSizeColumn(4+i); //adjust width of the second column
+    }
+
+
 
     response.setHeader "Content-disposition", "attachment; filename='comparison.xls'"
     response.contentType = 'application/xls'
