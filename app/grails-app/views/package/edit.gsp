@@ -61,7 +61,11 @@
               <div class="control-group ">
        	        <label class="control-label">Package Type</label>
                 <div class="controls">
-                  <g:refdataValue val="${packageInstance?.packageType?.value?:'Not set'}" domain="Package" pk="${packageInstance?.id}" field="packageType" cat="Package Type" />
+                  <g:relation domain='Package'
+                            pk='${packageInstance?.id}'
+                            field='packageType'
+                            class='refdataedit'
+                            id='PackageType'>${packageInstance?.packageType?.value?:'Not set'}</g:relation>
                 </div>
               </div>
 
@@ -107,6 +111,16 @@
     <script language="JavaScript">
 
       $(document).ready(function(){
+         $('div span.refdataedit').editable('<g:createLink controller="ajax" params="${[resultProp:'packageType']}" action="genericSetRel" />', {
+           loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:institution?.shortcode]}" action="availableLicenses" />',
+           type   : 'select',
+           cancel : 'Cancel',
+           submit : 'OK',
+           id     : 'elementid',
+           tooltip: 'Click to edit...',
+           callback : function(value, settings) {
+           }
+         });
       });
 
     </script>
