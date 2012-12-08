@@ -84,9 +84,46 @@ class PackageDetailsController {
       [packageInstance: packageInstance]
     }
 
-    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
-    def uploadTitles() {
-      redirect action:'show', id:params.id
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def uploadTitles() {
+    def pkg = Package.get(params.id)
+    def upload_mime_type = request.getFile("titleFile")?.contentType
+    log.debug("Uploaded content type: ${upload_mime_type}");
+    def input_stream = request.getFile("titleFile")?.inputStream
+
+    if ( upload_mime_type=='' ) {
+      attemptXLSLoad(pkg,input_stream);
+    }
+    else {
+      attemptCSVLoad(pkg,input_stream);
     }
 
+    redirect action:'show', id:params.id
+  }
+
+  def attemptXLSLoad(pkg,stream) {
+    log.debuf("attemptXLSLoad");
+    attemptv1XLSLoad(pkg,stream);
+  }
+
+  def attemptCSVLoad(pkg,stream) {
+    log.debuf("attemptCSVLoad");
+    attemptv1CSVLoad(pkg,stream);
+  }
+
+  def attemptv1XLSLoad(pkg,stream) {
+    log.debug("attemptv1XLSLoad");
+    def extracted = [:]
+    processExractedData(pkg,extracted);
+  }
+
+  def attemptv1CSVLoad(pkg,stream) {
+    log.debug("attemptv1CSVLoad");
+    def extracted = [:]
+    processExractedData(pkg,extracted);
+  }
+
+  def processExractedData(pkg, extracted_data) {
+    log.debug("processExractedData...");
+  }
 }

@@ -84,14 +84,14 @@
             </fieldset>
         </fieldset>
 
-             <div class="form-actions">
-                <g:form action="uploadTitles">
-                  <input type="hidden" name="id" value="${params.id}"/>
-                  <input type="file" id="titleFile" name="titleFile"/>
-                  Check to Replace, Unchecked to append:<input type="checkbox" id="replace" name="replace"/>
-                  <button type="submit" class="btn btn-primary">Upload Titles</button>
-                </g:form>
-             </div>
+        <div class="form-actions">
+          <g:form action="uploadTitles">
+            <input type="hidden" name="id" value="${params.id}"/>
+            <input type="file" id="titleFile" name="titleFile"/>
+            Check to Replace, Unchecked to append:<input type="checkbox" id="replace" name="replace"/>
+            <button type="submit" class="btn btn-primary">Upload Titles</button>
+          </g:form>
+        </div>
 
       </div>
 
