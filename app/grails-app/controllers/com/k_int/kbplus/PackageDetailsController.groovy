@@ -14,12 +14,12 @@ class PackageDetailsController {
 
     static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
 
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
     def index() {
         redirect action: 'list', params: params
     }
 
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
     def list() {
       def result = [:]
       result.user = User.get(springSecurityService.principal.id)
@@ -29,7 +29,7 @@ class PackageDetailsController {
       result
     }
 
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
     def create() {
       def user = User.get(springSecurityService.principal.id)
 
@@ -72,7 +72,7 @@ class PackageDetailsController {
       }
     }
 
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
     def show() {
       def packageInstance = Package.get(params.id)
       if (!packageInstance) {
@@ -84,23 +84,9 @@ class PackageDetailsController {
       [packageInstance: packageInstance]
     }
 
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-    def delete() {
-        def packageInstance = Package.get(params.id)
-        if (!packageInstance) {
-      flash.message = message(code: 'default.not.found.message', args: [message(code: 'package.label', default: 'Package'), params.id])
-            redirect action: 'list'
-            return
-        }
-
-        try {
-            packageInstance.delete(flush: true)
-      flash.message = message(code: 'default.deleted.message', args: [message(code: 'package.label', default: 'Package'), params.id])
-            redirect action: 'list'
-        }
-        catch (DataIntegrityViolationException e) {
-      flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'package.label', default: 'Package'), params.id])
-            redirect action: 'show', id: params.id
-        }
+    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+    def uploadTitles() {
+      redirect action:'show', id:params.id
     }
+
 }
