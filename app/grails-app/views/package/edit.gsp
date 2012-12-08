@@ -111,7 +111,7 @@
     <script language="JavaScript">
 
       $(document).ready(function(){
-         $('div span.refdataedit').editable('<g:createLink controller="ajax" params="${[resultProp:'packageType']}" action="genericSetRel" />', {
+         $('div span.refdataedit').editable('<g:createLink controller="ajax" params="${[resultProp:'value']}" action="genericSetRel" />', {
            loadurl: '<g:createLink controller="ajax" params="${[id:'PackageType',format:'json']}" action="refdataSearch" />',
            type   : 'select',
            cancel : 'Cancel',
