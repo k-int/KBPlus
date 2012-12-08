@@ -85,7 +85,7 @@
         </fieldset>
 
         <div class="form-actions">
-          <g:form action="uploadTitles">
+          <g:form action="uploadTitles" method="post" enctype="multipart/form-data">
             <input type="hidden" name="id" value="${params.id}"/>
             <input type="file" id="titleFile" name="titleFile"/>
             Check to Replace, Unchecked to append:<input type="checkbox" id="replace" name="replace"/>

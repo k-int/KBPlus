@@ -91,7 +91,7 @@ class PackageDetailsController {
     log.debug("Uploaded content type: ${upload_mime_type}");
     def input_stream = request.getFile("titleFile")?.inputStream
 
-    if ( upload_mime_type=='' ) {
+    if ( upload_mime_type=='application/vnd.ms-excel' ) {
       attemptXLSLoad(pkg,input_stream);
     }
     else {
@@ -102,12 +102,12 @@ class PackageDetailsController {
   }
 
   def attemptXLSLoad(pkg,stream) {
-    log.debuf("attemptXLSLoad");
+    log.debug("attemptXLSLoad");
     attemptv1XLSLoad(pkg,stream);
   }
 
   def attemptCSVLoad(pkg,stream) {
-    log.debuf("attemptCSVLoad");
+    log.debug("attemptCSVLoad");
     attemptv1CSVLoad(pkg,stream);
   }
 
