@@ -22,8 +22,18 @@ class AjaxController {
                     }
                   ]
                 ],
-      cols:['name']
+      cols:['name'],
+      format:'map'
+    ],
+    'PackageType' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package Type'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package Type'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
     ]
+
   ]
 
 
@@ -335,9 +345,9 @@ class AjaxController {
         }
       }
 
-      // log.debug("Params: ${query_params}");
-      // log.debug("Count qry: ${config.countQry}");
-      // log.debug("Row qry: ${config.rowQry}");
+      log.debug("Params: ${query_params}");
+      log.debug("Count qry: ${config.countQry}");
+      log.debug("Row qry: ${config.rowQry}");
 
       def cq = Org.executeQuery(config.countQry,query_params);    
 
@@ -345,20 +355,27 @@ class AjaxController {
                                 query_params,
                                 [max:params.iDisplayLength?:10,offset:params.iDisplayStart?:0]);
 
-      result.aaData = []
-      result.sEcho = params.sEcho
-      result.iTotalRecords = cq[0]
-      result.iTotalDisplayRecords = cq[0]
+      if ( config.format=='map' ) {
+        result.aaData = []
+        result.sEcho = params.sEcho
+        result.iTotalRecords = cq[0]
+        result.iTotalDisplayRecords = cq[0]
     
-      rq.each { it ->
-        int ctr = 0;
-        def row = [:]
-        config.cols.each { cd ->
-          // log.debug("Processing result col ${cd} pos ${ctr}");
-          row["${ctr++}"] = it[cd]
+        rq.each { it ->
+          int ctr = 0;
+          def row = [:]
+          config.cols.each { cd ->
+            // log.debug("Processing result col ${cd} pos ${ctr}");
+            row["${ctr++}"] = it[cd]
+          }
+          row["DT_RowId"] = "${it.class.name}:${it.id}"
+          result.aaData.add(row)
         }
-        row["DT_RowId"] = "${it.class.name}:${it.id}"
-        result.aaData.add(row)
+      }
+      else {
+        rq.each { it ->
+          result["${it.class.name}:${it.id}"] = it[config.cols[0]];
+        }
       }
     }
 
