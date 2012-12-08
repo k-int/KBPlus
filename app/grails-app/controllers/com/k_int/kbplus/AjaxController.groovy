@@ -8,7 +8,21 @@ class AjaxController {
 
   def refdata_config = [
     'ContentProvider' : [
-      domain:'Org'
+      domain:'Org',
+      countQry:'select count(o) from Org as o where lower(o.name) like ?',
+      rowQry:'select o from Org as o where lower(o.name) like ? order by o.name asc',
+      qryParams:[
+                  [
+                    param:'sSearch',
+                    clos:{ value ->
+                      def result = '%'
+                      if ( value && ( value.length() > 0 ) )
+                        result = "%${value.trim().toLowerCase()}%"
+                      result
+                    }
+                  ]
+                ],
+      cols:['name']
     ]
   ]
 
@@ -302,25 +316,50 @@ class AjaxController {
     // http://datatables.net/blog/Introducing_Scroller_-_Virtual_Scrolling_for_DataTables
     def result = [:]
 
-    def qry_param = params.sSearch?.trim().toLowerCase();
-
-    def cq = Org.executeQuery("select count(o) from Org as o where lower(o.name) like ?",["%${qry_param}%"]);    
-    def rq = Org.executeQuery("select o from Org as o where lower(o.name) like ? order by o.name asc",["%${qry_param}%"],[max:params.iDisplayLength,offset:params.iDisplayStart]);
 
 
     
     def config = refdata_config[params.id]
     if ( config ) {
-      result.config = config
+
+      // result.config = config
+
+      def query_params = []
+      config.qryParams.each { qp ->
+        // log.debug("Processing query param ${qp} value will be ${params[qp.param]}");
+        if ( qp.clos ) {
+          query_params.add(qp.clos(params[qp.param]?:''));
+        }
+        else {
+          query_params.add(params[qp.param]);
+        }
+      }
+
+      // log.debug("Params: ${query_params}");
+      // log.debug("Count qry: ${config.countQry}");
+      // log.debug("Row qry: ${config.rowQry}");
+
+      def cq = Org.executeQuery(config.countQry,query_params);    
+
+      def rq = Org.executeQuery(config.rowQry,
+                                query_params,
+                                [max:params.iDisplayLength?:10,offset:params.iDisplayStart?:0]);
+
       result.aaData = []
       result.sEcho = params.sEcho
       result.iTotalRecords = cq[0]
-		  result.iTotalDisplayRecords = cq[0]
-    }
+      result.iTotalDisplayRecords = cq[0]
     
-    rq.each { it ->
-      result.aaData.add(["0":it.name,
-                         "DT_RowId":"${it.class.name}:${it.id}"])
+      rq.each { it ->
+        int ctr = 0;
+        def row = [:]
+        config.cols.each { cd ->
+          // log.debug("Processing result col ${cd} pos ${ctr}");
+          row["${ctr++}"] = it[cd]
+        }
+        row["DT_RowId"] = "${it.class.name}:${it.id}"
+        result.aaData.add(row)
+      }
     }
 
     withFormat {
