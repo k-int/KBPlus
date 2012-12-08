@@ -113,8 +113,10 @@
                    <li class="dropdown">
                      <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Editors <b class="caret"></b> </a>
                      <ul class="dropdown-menu">
-                       <li <%= ( ( 'package'== controllerName ) && ( 'create'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="package" action="create">New Package</g:link></li>
+                       <li <%= ( ( 'packageDetails'== controllerName ) && ( 'list'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="packageDetails" action="list">Search Packages</g:link></li>
+                       <li <%= ( ( 'packageDetails'== controllerName ) && ( 'create'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="packageDetails" action="create">New Package</g:link></li>
                      </ul>
                    </li>
                 </sec:ifAnyGranted>
