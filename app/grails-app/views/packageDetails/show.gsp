@@ -31,7 +31,6 @@
         </g:hasErrors>
 
         <fieldset>
-          <g:form class="form-horizontal" action="edit" id="${packageInstance?.id}" autocomplete="off" >
             <g:hiddenField name="version" value="${packageInstance?.version}" />
 
             <!--
@@ -49,29 +48,27 @@
             -->
             <fieldset>
 
-              <div class="control-group ">
-       	        <label class="control-label">Org Links</label>
-                <div class="controls">
-                  <g:render template="orgLinks" 
+              <dl>
+                <dt>Org Links</dt>
+                <dd><g:render template="orgLinks" 
                             contextPath="../templates" 
-                            model="${[roleLinks:packageInstance?.orgs,parent:packageInstance.class.name+':'+packageInstance.id,property:'orgs',editmode:true]}" />
-                </div>
-              </div>
+                            model="${[roleLinks:packageInstance?.orgs,parent:packageInstance.class.name+':'+packageInstance.id,property:'orgs',editmode:true]}" /></dd>
+              </dl>
 
-              <div class="control-group ">
-       	        <label class="control-label">Package Type</label>
-                <div class="controls">
+              <dl>
+                <dt>Package Type</dt>
+                <dd>
                   <g:relation domain='Package'
                             pk='${packageInstance?.id}'
                             field='packageType'
                             class='refdataedit'
                             id='PackageType'>${packageInstance?.packageType?.value?:'Not set'}</g:relation>
-                </div>
-              </div>
+                </dd>
+              </dl>
 
-              <div class="control-group ">
-       	        <label class="control-label">Content Provider</label>
-                <div class="controls">
+              <dl>
+                <dt>Content Provider</dt>
+                <dd>
                   <g:enhancedSelect id="contentProvider"
                                     title="select content provider"
                                     owner="${packageInstance}"
@@ -81,27 +78,18 @@
                     <g:if test="${packageInstance.contentProvider}">${packageInstance.contentProvider?.name}</g:if>
                     <g:else>Not Set</g:else>
                   </g:enhancedSelect>
-                </div>
-              </div>
+                </dd>
+              </dl>
 
-
-              <div class="form-actions">
-                <button type="submit" class="btn btn-primary">
-                  <i class="icon-ok icon-white"></i>
-                  <g:message code="default.button.update.label" default="Update" />
-                </button>
-                <button type="submit" class="btn btn-danger" name="_action_delete" formnovalidate>
-                  <i class="icon-trash icon-white"></i>
-                  <g:message code="default.button.delete.label" default="Delete" />
-                </button>
-              </div>
-
-
-              
             </fieldset>
-          </g:form>
         </fieldset>
+
+             <div class="form-actions">
+                <g:link action="uploadTitles" class="btn btn-primary">Upload Titles</g:link>
+             </div>
+
       </div>
+
 
     <g:render template="enhanced_select" contextPath="../templates" />
     <g:render template="orgLinksModal" 
@@ -111,7 +99,7 @@
     <script language="JavaScript">
 
       $(document).ready(function(){
-         $('div span.refdataedit').editable('<g:createLink controller="ajax" params="${[resultProp:'value']}" action="genericSetRel" />', {
+         $('dd span.refdataedit').editable('<g:createLink controller="ajax" params="${[resultProp:'value']}" action="genericSetRel" />', {
            loadurl: '<g:createLink controller="ajax" params="${[id:'PackageType',format:'json']}" action="refdataSearch" />',
            type   : 'select',
            cancel : 'Cancel',
