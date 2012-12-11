@@ -277,7 +277,7 @@ class MyInstitutionsController {
       case 'POST':
         def baseLicense = params.baselicense ? License.get(params.baselicense) : null;
         
-        if ( ! baseLicense?.hasPerm("edit",user) ) {
+        if ( ! baseLicense?.hasPerm("view",user) ) {
           log.debug("return 401....");
           flash.message = message(code:'noperm',default:'You do not have edit permission for the selected license.')
           redirect(url: request.getHeader('referer'))
@@ -407,7 +407,7 @@ class MyInstitutionsController {
     if ( baseSubscription ) {
       log.debug("Copying base subscription ${baseSubscription.id} for org ${institution.id}");
 
-      if ( ! baseSubscription.hasPerm("edit",user) ) {
+      if ( ! baseSubscription.hasPerm("view",user) ) {
         flash.message = message(code:'noperm',default:'You do not have edit permission for the selected subscription.')
         redirect(url: request.getHeader('referer'))
         return
