@@ -22,7 +22,7 @@ class Comment implements Comparable {
     id column: 'comm_id'
     alert column:'comm_alert_fk'
     commentDate column:'comm_date'
-    comment column:'comm_text'
+    comment column:'comm_text', type: 'text'
     by column:'comm_by_user_fk'
   }
 

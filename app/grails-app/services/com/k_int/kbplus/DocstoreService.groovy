@@ -61,7 +61,7 @@ class DocstoreService {
   }
 
   def retrieve(uuid, response, mimetype, filename) {
-    log.debug("Retrieve");
+    log.debug("Retrieve using docstore ${docstore_uri}");
     final BagFactory bf = new BagFactory();
 
     // Create a new identifier
@@ -130,20 +130,6 @@ class DocstoreService {
         def tempfile_name = java.util.UUID.randomUUID().toString();
         result.tempfile = new File(System.getProperty("java.io.tmpdir")+System.getProperty("file.separator")+tempfile_name);
         result.tempfile << data
-
-        // java.util.zip.ZipFile zf = new java.util.zip.ZipFile(result.tempfile);
-        // java.util.zip.ZipEntry bag_dir_entry = zf.getEntry('bag_dir');
-  
-        // InputStream is = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
-
-        // def result_doc = new groovy.util.XmlSlurper().parse(is);
-
-        // InputStream is2 = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
-        // log.debug("result_doc: ${is2.text} ${result_doc.text()}");
-        // result.uuid = result_doc.documents.document.uuid.text()
-
-        // zf.close();
-        // FileUtils.deleteQuietly(tempfile);
       }
   
       response.failure = { resp ->
@@ -177,22 +163,43 @@ class DocstoreService {
   }
 
   def streamResponseDoc(bagresponsezip, outs) {
-    def uuid = null
-    java.util.zip.ZipFile zf = new java.util.zip.ZipFile(bagresponsezip);
-    java.util.zip.ZipEntry bag_dir_entry = zf.getEntry('bag_dir');
 
-    InputStream is = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
+    java.util.zip.ZipFile zf = null;
 
-    def result_doc = new groovy.util.XmlSlurper().parse(is);
+    try {
+      def uuid = null
+      zf = new java.util.zip.ZipFile(bagresponsezip);
+      java.util.zip.ZipEntry bag_dir_entry = zf.getEntry('bag_dir');
 
-    InputStream is2 = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
-    log.debug("result_doc: ${is2.text} ${result_doc.text()}");
-    def targetfile = result_doc.documents.document.documentName.text()
-    def targetfile_is = zf.getInputStream(zf.getEntry("bag_dir/data/${targetfile}"))
+      InputStream is = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
 
-    org.apache.commons.io.IOUtils.copy(targetfile_is, outs);
+      def result_doc = new groovy.util.XmlSlurper().parse(is);
 
-    zf.close();
+      InputStream is2 = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
+      log.debug("result_doc: ${is2.text} ${result_doc.text()}");
+      def targetfile = result_doc.documents.document.documentName.text()
+
+      if ( result_doc.documents.status.text() == 'failure' ) {
+        throw new RuntimeException("Unable to locate document in docstore : ${is2.text()}");
+      }
+      else {
+        def entry = zf.getEntry("bag_dir/data/${targetfile}")
+        if ( entry ) {
+          def targetfile_is = zf.getInputStream(zf.getEntry("bag_dir/data/${targetfile}"))
+        }
+        else {
+          throw new RuntimeException("Unable to locate document in docstore ${is2.text()}");
+        }
+
+        org.apache.commons.io.IOUtils.copy(targetfile_is, outs);
+      }
+    }
+    finally {
+      if ( zf ) {
+        zf.close();
+      }
+    }
+
     uuid
   }
 
