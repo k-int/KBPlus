@@ -176,8 +176,13 @@ class SubscriptionDetailsController {
             ie.embargo = params.bulk_embargo
           }
 
-          if ( params.bulk_core && (params.bulk_core.trim().length() > 0 ) ) {
-            ie.coreTitle = params.bulk_core
+          if ( params.bulk_core.trim().length() > 0 ) {
+            if ( params.bulk_core == 'true' ) {
+              ie.coreTitle = true
+            }
+            else {
+              ie.coreTitle = false
+            }
           }
   
           if ( params.bulk_coverage && (params.bulk_coverage.trim().length() > 0 ) ) {

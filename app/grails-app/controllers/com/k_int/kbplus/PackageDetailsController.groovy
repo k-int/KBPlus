@@ -124,21 +124,21 @@ class PackageDetailsController {
     int row_counter = 0;
     Iterator rowIterator = hssfSheet.rowIterator();
     while (rowIterator.hasNext()) {
+      HSSFRow hssfRow = (HSSFRow) rowIterator.next();
       switch(row_counter++){
         case 0:
           break;
         case 1:
           break;
         case 2:
-          break;
-        case 3:
           // Record header row
           log.debug("Header");
+          hssfRow.cellIterator().each { c ->
+            log.debug("Col: ${c.toString()}");
+          }
           break;
         default:
           // A real data row
-          HSSFRow hssfRow = (HSSFRow) rowIterator.next();
-         
           def row_info = [
             issn:hssfRow.getCell(0)?.toString(),
             eissn:hssfRow.getCell(1)?.toString(),
