@@ -20,7 +20,7 @@
                 <g:message code="default.list.label" args="[entityName]" />
               </g:link>
             </li>
-<sec:ifAnyGranted roles="ROLE_EDITOR,ROLE_ADMIN">
+<sec:ifAnyGranted roles="ROLE_ADMIN">
             <li>
               <g:link class="create" action="create">
                 <i class="icon-plus"></i>
@@ -143,7 +143,7 @@
         </dl>
 
         <g:form>
-          <sec:ifAnyGranted roles="ROLE_EDITOR,ROLE_ADMIN">
+          <sec:ifAnyGranted roles="ROLE_ADMIN">
           <g:hiddenField name="id" value="${titleInstancePackagePlatformInstance?.id}" />
           
           <div class="form-actions">

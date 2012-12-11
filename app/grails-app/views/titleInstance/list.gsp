@@ -20,7 +20,7 @@
 								Title Instance List
 							</g:link>
 						</li>
-                                                <sec:ifAnyGranted roles="ROLE_EDITOR,ROLE_ADMIN">
+                                                <sec:ifAnyGranted roles="ROLE_ADMIN">
 						<li>
 							<g:link class="create" action="create">
 								<i class="icon-plus"></i>

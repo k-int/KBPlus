@@ -109,7 +109,7 @@
                   </li>
                 </g:if>
 
-                <sec:ifAnyGranted roles="ROLE_ADMIN,ROLE_EDITOR">
+                <sec:ifAnyGranted roles="ROLE_ADMIN,KBPLUS_EDITOR">
                    <li class="dropdown">
                      <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Editors <b class="caret"></b> </a>
                      <ul class="dropdown-menu">

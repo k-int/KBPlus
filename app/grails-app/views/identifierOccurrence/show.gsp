@@ -73,7 +73,7 @@
 				</dl>
 
 				<g:form>
-                                    <sec:ifAnyGranted roles="ROLE_EDITOR,ROLE_ADMIN">
+                                    <sec:ifAnyGranted roles="ROLE_ADMIN">
 					<g:hiddenField name="id" value="${identifierOccurrenceInstance?.id}" />
 					<div class="form-actions">
 						<g:link class="btn" action="edit" id="${identifierOccurrenceInstance?.id}">
