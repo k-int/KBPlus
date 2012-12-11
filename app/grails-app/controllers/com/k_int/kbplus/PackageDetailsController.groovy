@@ -104,7 +104,10 @@ class PackageDetailsController {
 
   def attemptXLSLoad(pkg,stream) {
     log.debug("attemptXLSLoad");
-    attemptv1XLSLoad(pkg,stream);
+    HSSFWorkbook wb = new HSSFWorkbook(stream);
+    HSSFSheet hssfSheet = wb.getSheetAt(0);
+
+    attemptv1XLSLoad(pkg,hssfSheet);
   }
 
   def attemptCSVLoad(pkg,stream) {
@@ -112,11 +115,51 @@ class PackageDetailsController {
     attemptv1CSVLoad(pkg,stream);
   }
 
-  def attemptv1XLSLoad(pkg,stream) {
+  def attemptv1XLSLoad(pkg,hssfSheet) {
+
     log.debug("attemptv1XLSLoad");
     def extracted = [:]
+    extracted.rows = []
 
-    HSSFWorkbook wb = new HSSFWorkbook(stream);
+    int row_counter = 0;
+    Iterator rowIterator = hssfSheet.rowIterator();
+    while (rowIterator.hasNext()) {
+      switch(row_counter++){
+        case 0:
+          break;
+        case 1:
+          break;
+        case 2:
+          break;
+        case 3:
+          // Record header row
+          log.debug("Header");
+          break;
+        default:
+          // A real data row
+          HSSFRow hssfRow = (HSSFRow) rowIterator.next();
+         
+          def row_info = [
+            issn:hssfRow.getCell(0)?.toString(),
+            eissn:hssfRow.getCell(1)?.toString(),
+            date_first_issue_online:hssfRow.getCell(2)?.toString(),
+            num_first_volume_online:hssfRow.getCell(3)?.toString(),
+            num_first_issue_online:hssfRow.getCell(4)?.toString(),
+            date_last_issue_online:hssfRow.getCell(5)?.toString(),
+            date_first_volume_online:hssfRow.getCell(6)?.toString(),
+            date_first_issue_online:hssfRow.getCell(7)?.toString(),
+            embargo:hssfRow.getCell(8)?.toString(),
+            coverageDepth:hssfRow.getCell(9)?.toString(),
+            coverageNote:hssfRow.getCell(10)?.toString(),
+            platformUrl:hssfRow.getCell(11)?.toString()
+          ]
+
+          extracted.rows.add(row_info);
+          log.debug("datarow: ${row_info}");
+          break;
+      }
+    }
+    
     processExractedData(pkg,extracted);
   }
 
