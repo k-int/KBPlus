@@ -6,7 +6,8 @@ import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.MarkupBuilder
 import grails.plugins.springsecurity.Secured
 import com.k_int.kbplus.auth.*;
-
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
 
 class PackageDetailsController {
 
@@ -114,6 +115,8 @@ class PackageDetailsController {
   def attemptv1XLSLoad(pkg,stream) {
     log.debug("attemptv1XLSLoad");
     def extracted = [:]
+
+    HSSFWorkbook wb = new HSSFWorkbook(stream);
     processExractedData(pkg,extracted);
   }
 
