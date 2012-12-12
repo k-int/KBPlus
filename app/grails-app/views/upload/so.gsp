@@ -13,7 +13,7 @@
       <div class="container">
 
         <div class="page-header">
-          <h1><g:message code="default.edit.label" args="[entityName]" /></h1>
+          <h1>Subscription Offered - Manual Upload</h1>
         </div>
 
         <g:if test="${flash.message}">
