@@ -444,7 +444,8 @@ class RenewalsController {
 
 
     response.setHeader "Content-disposition", "attachment; filename='comparison.xls'"
-    response.contentType = 'application/xls'
+    // response.contentType = 'application/xls'
+    response.contentType = 'application/vnd.ms-excel'
     workbook.write(response.outputStream)
     response.outputStream.flush()
  
