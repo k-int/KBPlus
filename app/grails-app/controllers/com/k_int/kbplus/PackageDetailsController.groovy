@@ -11,7 +11,17 @@ import org.apache.poi.hssf.util.HSSFColor;
 
 class PackageDetailsController {
 
-    def springSecurityService
+  def springSecurityService
+
+  Comparator title_list_comparator = new Comparator() {
+    int compare(Object o1, Object o2) {
+      return o1.title.id.compareTo(o2.title.id);
+    }
+    boolean equals(Object o1, Object o2) {
+      return o1.title.id.equals(o2.title.id);
+    }
+  }
+
 
     static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
 
@@ -171,5 +181,58 @@ class PackageDetailsController {
 
   def processExractedData(pkg, extracted_data) {
     log.debug("processExractedData...");
+    List old_title_list = [ [title: [id:667]], [title:[id:553]], [title:[id:19]] ]
+    List new_title_list = [ [title: [id:19]], [title:[id:554]], [title:[id:667]] ]
+
+    reconcile(old_title_list, new_title_list);
   }
+
+  def reconcile(old_title_list, new_title_list) {
+    Collections.sort(old_title_list, title_list_comparator)
+    Collections.sort(new_title_list, title_list_comparator)
+
+    Iterator i1 = old_title_list.iterator()
+    Iterator i2 = new_title_list.iterator()
+
+    def current_old_title = i1.hasNext() ? i1.next() : null;
+    def current_new_title = i2.hasNext() ? i2.next() : null;
+    
+    while ( current_old_title || current_new_title ) {
+      if ( current_old_title == null ) {
+        // We have exhausted all old titles. Everything in the new title list must be newly added
+        log.debug("Title added: ${current_new_title.title.id}");
+        current_new_title = i2.hasNext() ? i2.next() : null;
+      }
+      else if ( current_new_title == null ) {
+        // We have exhausted new old titles. Everything remaining in the old titles list must have been removed
+        log.debug("Title removed: ${current_old_title.title.id}");
+        current_old_title = i1.hasNext() ? i1.next() : null;
+      }
+      else {
+        // Work out whats changed
+        if ( current_old_title.title.id == current_new_title.title.id ) {
+          // This title appears in both old and new lists, it may be an updated
+          log.debug("title ${current_old_title.title.id} appears in both lists - possible update / unchanged");
+          current_old_title = i1.hasNext() ? i1.next() : null;
+          current_new_title = i2.hasNext() ? i2.next() : null;
+        }
+        else {
+          if ( current_old_title.title.id > current_new_title.title.id ) {
+            // The current old title id is greater than the current new title. This means that a new title must
+            // have been introduced into the new list with a lower title id than the one on the current list.
+            // hence, current_new_title.title.id is a new record. Consume it and move forwards.
+            log.debug("Title added: ${current_new_title.title.id}");
+            current_new_title = i2.hasNext() ? i2.next() : null;
+          }
+          else {
+            // The current old title is less than the current new title. This indicates that the current_old_title
+            // must have been removed in the new list. Process it as a removal and continue.
+            log.debug("Title removed: ${current_old_title.title.id}");
+            current_old_title = i1.hasNext() ? i1.next() : null;
+          }
+        }
+      }
+    }
+  }
+
 }
