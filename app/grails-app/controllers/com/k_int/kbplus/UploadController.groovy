@@ -72,6 +72,7 @@ class UploadController {
     def org = Org.findByName(so_provider_line[1]) ?: new Org(name:so_provider_line[1]).save();
     
     def normalised_identifier = so_identifier_line[1].trim().toLowerCase().replaceAll('-','_')
+    def norm_pkg_identifier = so_package_identifier_line[1].trim().toLowerCase().replaceAll('-','_');
     
     log.debug("Processing subscription ${so_identifier_line[1]} normalised to ${normalised_identifier}");
     
@@ -80,7 +81,7 @@ class UploadController {
       return
     }
     
-    if ( ( so_package_identifier_line[1] == null ) || ( so_package_identifier_line[1].trim().length() == 0 ) ) {
+    if ( ( norm_pkg_identifier == null ) || ( norm_pkg_identifier.length() == 0 ) ) {
       flash.error="No usable package identifier";      
       return
     }
@@ -91,7 +92,7 @@ class UploadController {
       return
     }
 
-    def pkg = Package.findByIdentifier(so_package_identifier_line[1]);
+    def pkg = Package.findByIdentifier(norm_pkg_identifier);
     if ( pkg != null ) {
       flash.error="Unable to process file - Subscription with ID ${normalised_identifier} already exists in database";
       return
@@ -105,15 +106,30 @@ class UploadController {
     prepared_so.sub.end_date_str=so_agreement_term_end_yr_line[1]
     prepared_so.sub.start_date = parseDate(so_agreement_term_start_yr_line[1],possible_date_formats)
     prepared_so.sub.end_date = parseDate(so_agreement_term_end_yr_line[1],possible_date_formats)
+    prepared_so.pkg_id = norm_pkg_identifier
+
 
     def consortium = null;
     if ( ( so_consortium_line[1] != null ) && ( so_consortium_line[1].length() > 0 ) )  {
-        // consortium = lookupOrCreateOrg(name:so_consortium_line[1], db:db, stats:stats);
-        // sub.consortium = consortium._id;
+        prepared_so.cons = Org.findByName(so_consortium_line[1]) ?: new Org(name:so_consortium_line[1]).save();
     }
 
     while ((nl = r.readNext()) != null) {
-      log.debug("Process ${nl}");
+      boolean has_data = false
+      nl.each {
+        if ( ( it != null ) && ( it.trim() != '' ) )
+          has_data = true;
+      }
+
+      if ( !has_data )
+        continue;
+      else
+        log.debug("has data");
+
+      if ( present(nl[0] ) ) {
+        println "**Processing pub title:${nl[0]}, print identifier ${nl[1]} (${num_prop_id_cols} prop cols, ${num_platforms_listed} plat cols)"
+        
+      }
     }
     
   }
@@ -128,6 +144,16 @@ class UploadController {
       }
     }
     parsed_date
+  }
+  
+  def present(v) {
+    if ( ( v != null ) &&
+         ( v.trim().length() > 0 ) &&
+         ( ! ( v.trim().equalsIgnoreCase('n/a') ) ) &&
+         ( ! ( v.trim().equalsIgnoreCase('-') ) ) )
+      return true
+
+    return false
   }
 
 }
