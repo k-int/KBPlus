@@ -30,7 +30,7 @@
         </bootstrap:alert>
         </g:hasErrors>
 
-        <g:form action="SO" method="post" enctype="multipart/form-data">
+        <g:form action="so" method="post" enctype="multipart/form-data">
             <input type="file" id="soFile" name="soFile"/>
             <button type="submit" class="btn btn-primary">Upload SO</button>
         </g:form>
