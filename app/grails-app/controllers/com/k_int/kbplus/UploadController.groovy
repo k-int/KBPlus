@@ -107,6 +107,7 @@ class UploadController {
     prepared_so.sub.start_date = parseDate(so_agreement_term_start_yr_line[1],possible_date_formats)
     prepared_so.sub.end_date = parseDate(so_agreement_term_end_yr_line[1],possible_date_formats)
     prepared_so.pkg_id = norm_pkg_identifier
+    prepared_so.titles = []
 
 
     def consortium = null;
@@ -127,11 +128,38 @@ class UploadController {
         log.debug("has data");
 
       if ( present(nl[0] ) ) {
+        def title=[:]
         println "**Processing pub title:${nl[0]}, print identifier ${nl[1]} (${num_prop_id_cols} prop cols, ${num_platforms_listed} plat cols)"
+        def title_identifiers = [];
         
+        def publisher = null
+        if ( present(nl[13]) ) {
+          println("Publisher name: ${nl[13]}")
+          publisher = Org.findByName(nl[13]) ?: new Org(name:nl[13]).save();
+        }
+
+        if ( present(nl[1]) && ( nl[1].trim().length() > 8 ) )
+          title_identifiers.add([value:nl[1].trim(), type:'ISSN'])
+
+        if ( present(nl[2]) && ( nl[2].trim().length() > 8 ) )
+          title_identifiers.add([value:nl[2].trim(), type:'eISSN'])
+
+        if ( present(nl[14]) )
+          title_identifiers.add([value:nl[14].trim(), type:'DOI'])
+
+        title.title_identifiers = title_identifiers;
+        title.title = lookupOrCreateTitleInstance(title_identifiers,nl[0],publisher);
+        
+        // Lookup or create title instance
+        
+        prepared_so.titles.add(title)
       }
     }
     
+  }
+  
+  def lookupOrCreateTitleInstance(identifiers,title,publisher) {
+    log.debug("lookupOrCreateTitleInstance ${identifiers}, ${title}, ${publisher}");
   }
   
   def parseDate(datestr, possible_formats) {
