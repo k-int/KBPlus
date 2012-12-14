@@ -32,4 +32,20 @@ class OrgRole {
     lic(nullable:true, blank:false)
     title(nullable:true, blank:false)
   }
+  
+  
+  static def assertOrgTitleLink(porg, ptitle, prole) {
+    // def link = OrgRole.findByTitleAndOrgAndRoleType(ptitle, porg, prole) ?: new OrgRole(title:ptitle, org:porg, roleType:prole).save();
+    def link = OrgRole.find{ title==ptitle && org==porg && roleType==prole }
+    if ( ! link ) {
+      link = new OrgRole(title:ptitle, org:porg, roleType:prole)
+      if ( !porg.links )
+        porg.links = [link]
+      else
+        porg.links.add(link)
+
+      porg.save();
+    }
+  }
+  
 }

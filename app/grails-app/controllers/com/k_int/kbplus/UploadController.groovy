@@ -139,13 +139,13 @@ class UploadController {
         }
 
         if ( present(nl[1]) && ( nl[1].trim().length() > 8 ) )
-          title_identifiers.add([value:nl[1].trim(), type:'ISSN'])
+          title_identifiers.add([value:nl[1].trim(), namespace:'ISSN'])
 
         if ( present(nl[2]) && ( nl[2].trim().length() > 8 ) )
-          title_identifiers.add([value:nl[2].trim(), type:'eISSN'])
+          title_identifiers.add([value:nl[2].trim(), namespace:'eISSN'])
 
         if ( present(nl[14]) )
-          title_identifiers.add([value:nl[14].trim(), type:'DOI'])
+          title_identifiers.add([value:nl[14].trim(), namespace:'DOI'])
 
         title.title_identifiers = title_identifiers;
         title.title = lookupOrCreateTitleInstance(title_identifiers,nl[0],publisher);
@@ -160,6 +160,13 @@ class UploadController {
   
   def lookupOrCreateTitleInstance(identifiers,title,publisher) {
     log.debug("lookupOrCreateTitleInstance ${identifiers}, ${title}, ${publisher}");
+    def result = TitleInstance.lookupOrCreate(identifiers, title);
+    if ( !result.getPublisher() ) {
+      def pub_role = lookupOrCreateRefdataEntry('Organisational Role', 'Publisher');
+      OrgRole.assertOrgTitleLink(publisher, result, pub_role);
+      result.save();
+    }
+    log.debug("Done: ${result}");
   }
   
   def parseDate(datestr, possible_formats) {

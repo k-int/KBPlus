@@ -48,4 +48,47 @@ class TitleInstance {
     result
   }
 
+  /**
+   * Attempt to look up a title instance which has any of the listed identifiers
+   * @param candidate_identifiers A list of maps containing identifiers and namespaces [ { namespace:'ISSN', value:'Xnnnn-nnnn' }, {namespace:'ISSN', value:'Xnnnn-nnnn'} ]
+   */
+  static def findByIdentifier(candidate_identifiers) {
+    candidate_identifiers.each { i ->
+      def id = Identifier.lookupOrCreateCanonicalIdentifier(i.namespace, i.value)
+      def io = IdentifierOccurrence.findByIdentifier(id)
+      if ( io && io.ti )
+        return io.ti;
+    }
+    return null;     
+  }
+  
+  static def lookupOrCreate(candidate_identifiers, title) {
+    def result = null;
+    def ids = []
+    
+    candidate_identifiers.each { i ->
+      if ( !result ) {
+        def id = Identifier.lookupOrCreateCanonicalIdentifier(i.namespace, i.value)
+        ids.add(id);
+        
+        def io = IdentifierOccurrence.findByIdentifier(id)
+        if ( io && io.ti ) {
+          result = io.ti;
+        }
+      }
+    }
+    
+    if (!result) {
+      result = new TitleInstance(title:title);
+      ids.each { 
+        result.ids.add(new IdentifierOccurrence(identifier:it, ti:result));
+      }
+      if ( ! result.save() ) {
+        throw new RuntimeException("Problem creating title instance : ${result.errors?.toString()}");
+      }
+    }
+    
+    return result;     
+
+  }
 }
