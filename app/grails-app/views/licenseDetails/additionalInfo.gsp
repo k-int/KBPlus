@@ -90,28 +90,30 @@
           <th>Affiliated via Role</th><th>Permissions</th>
         </tr>
         <g:each in="${user.affiliations}" var="ol">
-          <tr>
-            <td>Affiliated to ${ol.org?.name} with role <g:message code="cv.roles.${ol.formalRole?.authority}"/></td>
-            <td>
-              <ul>
-                <g:each in="${ol.formalRole.grantedPermissions}" var="gp">
-                  <li>${gp.perm.code}</li>
-                </g:each>
-              </ul>
-            </td>
-          </tr>
-          <g:each in="${ol.org.outgoingCombos}" var="oc">
+          <g:if test="${((ol.status==1) || (ol.status==3))}">
             <tr>
-              <td> --&gt; This org is related to ${oc.toOrg.name} ( ${oc.type.value} )</td>
+              <td>Affiliated to ${ol.org?.name} with role <g:message code="cv.roles.${ol.formalRole?.authority}"/></td>
               <td>
                 <ul>
-                  <g:each in="${oc.type.sharedPermissions}" var="gp">
+                  <g:each in="${ol.formalRole.grantedPermissions}" var="gp">
                     <li>${gp.perm.code}</li>
                   </g:each>
                 </ul>
               </td>
             </tr>
-          </g:each>
+            <g:each in="${ol.org.outgoingCombos}" var="oc">
+              <tr>
+                <td> --&gt; This org is related to ${oc.toOrg.name} ( ${oc.type.value} )</td>
+                <td>
+                  <ul>
+                    <g:each in="${oc.type.sharedPermissions}" var="gp">
+                      <li>${gp.perm.code}</li>
+                    </g:each>
+                  </ul>
+                </td>
+              </tr>     
+            </g:each>
+          </g:if>
         </g:each>
       </table>
    
