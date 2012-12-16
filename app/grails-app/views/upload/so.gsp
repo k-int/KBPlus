@@ -20,6 +20,10 @@
         <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
         </g:if>
 
+        <g:if test="${flash.error}">
+        <bootstrap:alert class="alert-info">${flash.error}</bootstrap:alert>
+        </g:if>
+
         <g:hasErrors bean="${packageInstance}">
         <bootstrap:alert class="alert-error">
         <ul>

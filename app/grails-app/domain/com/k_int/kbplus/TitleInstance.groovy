@@ -80,6 +80,7 @@ class TitleInstance {
     
     if (!result) {
       result = new TitleInstance(title:title);
+      result.ids=[]
       ids.each { 
         result.ids.add(new IdentifierOccurrence(identifier:it, ti:result));
       }

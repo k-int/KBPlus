@@ -36,4 +36,27 @@ class Platform {
     type(nullable:true, blank:false)
     status(nullable:true, blank:false)
   }
+
+  def static lookupOrCreatePlatform(Map params=[:]) {
+
+    def platform = null;
+
+    if ( params.name && (params.name.trim().length() > 0)  ) {
+
+      String norm_name = params.name.trim().toLowerCase();
+
+      platform = Platform.findByNormname(norm_name)
+
+      if ( !platform ) {
+        platform = new Platform(impId:params.impId,
+                                name:params.name,
+                                normname:norm_name,
+                                provenance:params.provenance,
+                                primaryUrl:params.primaryUrl,
+                                lastmod:System.currentTimeMillis()).save(flush:true)
+      }
+    }
+    platform;
+  }
+
 }
