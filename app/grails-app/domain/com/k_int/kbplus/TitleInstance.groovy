@@ -79,7 +79,8 @@ class TitleInstance {
     }
     
     if (!result) {
-      result = new TitleInstance(title:title);
+      result = new TitleInstance(title:title, impId:java.util.UUID.randomUUID().toString());
+      
       result.ids=[]
       ids.each { 
         result.ids.add(new IdentifierOccurrence(identifier:it, ti:result));

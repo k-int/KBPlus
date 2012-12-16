@@ -36,29 +36,33 @@ class OrgRole {
   
   static def assertOrgTitleLink(porg, ptitle, prole) {
     // def link = OrgRole.findByTitleAndOrgAndRoleType(ptitle, porg, prole) ?: new OrgRole(title:ptitle, org:porg, roleType:prole).save();
-    def link = OrgRole.find{ title==ptitle && org==porg && roleType==prole }
-    if ( ! link ) {
-      link = new OrgRole(title:ptitle, org:porg, roleType:prole)
-      if ( !porg.links )
-        porg.links = [link]
-      else
-        porg.links.add(link)
-
-      porg.save();
+    if ( porg && ptitle && prole ) {
+      def link = OrgRole.find{ title==ptitle && org==porg && roleType==prole }
+      if ( ! link ) {
+        link = new OrgRole(title:ptitle, org:porg, roleType:prole)
+        if ( !porg.links )
+          porg.links = [link]
+        else
+          porg.links.add(link)
+  
+        porg.save();
+      }
     }
   }
 
   static def assertOrgPackageLink(porg, ppkg, prole) {
 
-    def link = OrgRole.find{ org==porg && pkg==ppkg && roleType==prole }
-    if ( ! link ) {
-      link = new OrgRole(pkg:ppkg, org:porg, roleType:prole)
-      if ( !porg.links )
-        porg.links = [link]
-      else
-        porg.links.add(link)
+    if ( porg && ppkg && prole ) {
+      def link = OrgRole.find{ org==porg && pkg==ppkg && roleType==prole }
+      if ( ! link ) {
+        link = new OrgRole(pkg:ppkg, org:porg, roleType:prole)
+        if ( !porg.links )
+          porg.links = [link]
+        else
+          porg.links.add(link)
 
-      porg.save();
+        porg.save();
+      }
     }
   }
   

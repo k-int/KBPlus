@@ -180,6 +180,9 @@ class UploadController {
           println("Publisher name: ${nl[13]}")
           publisher = Org.findByName(nl[13]) ?: new Org(name:nl[13]).save();
         }
+        else {
+          log.debug("No publisher...");
+        }
 
         if ( present(nl[1]) && ( nl[1].trim().length() > 8 ) )
           title_identifiers.add([value:nl[1].trim(), namespace:'ISSN'])
@@ -223,7 +226,6 @@ class UploadController {
         // Lookup or create title instance        
         title.title = lookupOrCreateTitleInstance(title_identifiers,nl[0],publisher);
         title.pkg = new_pkg
-        title.platform = null
         prepared_so.titles.add(title)
       }
     }
@@ -258,25 +260,32 @@ class UploadController {
             }
           }
           else {
-            log.debug("TIPP Save OK ${tipp._id}");
+            log.debug("TIPP Save OK ${dbtipp.id}");
           }
         }
+        else {
+          log.error("TIPP already exists!!");
+        }
+      }
+      else { 
+        log.error("One of title(${t.title}), package(${t.pkg}) or platform(${t.platform}) are missing");
       }
     }
 
     // Create an SO    
-    log.debug("Completed");
+    log.debug("Completed New package is ${new_pkg.id}");
   }
   
   def lookupOrCreateTitleInstance(identifiers,title,publisher) {
     log.debug("lookupOrCreateTitleInstance ${identifiers}, ${title}, ${publisher}");
     def result = TitleInstance.lookupOrCreate(identifiers, title);
     if ( !result.getPublisher() ) {
-      def pub_role = lookupOrCreateRefdataEntry('Organisational Role', 'Publisher');
+      def pub_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Publisher');
       OrgRole.assertOrgTitleLink(publisher, result, pub_role);
       result.save();
     }
     log.debug("Done: ${result}");
+    result;
   }
   
   def parseDate(datestr, possible_formats) {
