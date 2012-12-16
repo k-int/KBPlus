@@ -33,13 +33,14 @@ class UploadController {
     
     if ( request.method == 'POST' ) {
       def upload_mime_type = request.getFile("soFile")?.contentType
+      def upload_filename = request.getFile("soFile")?.getOriginalFilename()
       log.debug("Uploaded so type: ${upload_mime_type}");
       def input_stream = request.getFile("soFile")?.inputStream
-      processUploadSO(input_stream)
+      processUploadSO(input_stream, upload_filename)
     }
   }
   
-  def processUploadSO(input_stream) {
+  def processUploadSO(input_stream, upload_filename) {
 
     def prepared_so = [:]
 
@@ -81,27 +82,27 @@ class UploadController {
     
     if ( ( normalised_identifier == null ) || ( normalised_identifier.trim().length() == 0 ) ) {
       log.error("No subscription offered identifier");
-      flash.error="No usable subscription offered identifier";      
+      flash.error="Problem processing ${upload_filename} : No usable subscription offered identifier";      
       return
     }
     
     if ( ( norm_pkg_identifier == null ) || ( norm_pkg_identifier.length() == 0 ) ) {
       log.error("No usable package identifier");
-      flash.error="No usable package identifier";      
+      flash.error="Problem processing ${upload_filename} : No usable package identifier";      
       return
     }
     
     def sub = Subscription.findByIdentifier(normalised_identifier)
     if ( sub != null ) {
       log.error("Sub ${normalised_identifier} already exists");
-      flash.error="Unable to process file - Subscription with ID ${normalised_identifier} already exists in database";
+      flash.error="Problem processing ${upload_filename} : Unable to process file - Subscription with ID ${normalised_identifier} already exists in database";
       return
     }
 
     def pkg = Package.findByIdentifier(norm_pkg_identifier);
     if ( pkg != null ) {
       log.error("Package ${norm_pkg_identifier} already exists");
-      flash.error="Unable to process file - Subscription with ID ${normalised_identifier} already exists in database";
+      flash.error="Problem processing ${upload_filename} : Unable to process file - Subscription with ID ${normalised_identifier} already exists in database";
       return
     }
     
@@ -206,12 +207,32 @@ class UploadController {
             def platform_role = nl[position+1]
             def platform_url = nl[position+2]
 
+            def parsed_start_date = parseDate(nl[3],possible_date_formats)
+            def parsed_end_date = parseDate(nl[6],possible_date_formats)
+
             def platform = Platform.lookupOrCreatePlatform(name:nl[position],
                                                            type:nl[position+1],
                                                            primaryUrl:platform_url)
 
+            if ( !platform ) {
+              flash.error = "Problem processing ${upload_filename} : unable to identify a platform for entry with title ${nl[0]}"
+              return
+            }
 
-            println("Process platform ${nl[position]} / ${platform_role} / ${platform_url}");
+            title.startDateString = nl[3]
+            title.startDate = parsed_start_date
+            title.startVolume = nl[4]
+            title.startIssue = nl[5]
+            title.endDateString = nl[6]
+            title.endDate = parsed_end_date
+            title.endVolume = nl[7]
+            title.endIssue = nl[8]
+            title.title_id = nl[9]
+            title.embargo = nl[10]
+            title.coverageDepth = nl[11]
+            title.coverageNote = nl[12]
+
+            println("Process platform name:${nl[position]} / type:${platform_role} / url:${platform_url}");
 
             if ( platform_role.trim() == 'host' ) {
               title.platform = platform;
@@ -221,6 +242,12 @@ class UploadController {
               title.additional_platforms.add([plat:platform, role:platform_role, url:platform_url])
             }
           }
+        }
+
+        if ( title_identifiers.size() == 0 ) {
+          log.error("Upload contains a title with no identifier");
+          flash.error="Problem processing ${upload_filename} : Title ${nl[0]} has no usable identifiers. File not imported. Please fix and re-upload";
+          return;
         }
 
         // Lookup or create title instance        
