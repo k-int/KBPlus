@@ -156,7 +156,7 @@
                   <dl>
                       <dt><label class="control-label" for="licenseeRef">Public?</label></dt>
                       <dd>
-                        <g:refdataValue val="${license.isPublic?.value}" domain="License" pk="${license.id}" field="isPublic" cat='YNO' class="${editable?'refdataedit':''}"/>
+                        <g:refdataValue val="${license.isPublic?.value}" domain="License" pk="${license.id}" field="isPublic" cat='YN' class="${editable?'refdataedit':''}"/>
                       </dd>
                   </dl>
 
