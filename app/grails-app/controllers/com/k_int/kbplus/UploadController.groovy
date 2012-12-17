@@ -300,7 +300,14 @@ class UploadController {
     }
 
     // Create an SO    
+    createSO(new_pkg);
+    
     log.debug("Completed New package is ${new_pkg.id}");
+  }
+  
+  def createSO(package) {
+    log.debug("Create SO based on ${package.id}");
+    
   }
   
   def lookupOrCreateTitleInstance(identifiers,title,publisher) {
