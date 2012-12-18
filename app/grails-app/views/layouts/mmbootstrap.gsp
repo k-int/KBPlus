@@ -97,9 +97,11 @@
                        <g:else>
                          <li>Please request institutional affiliations via your <g:link controller="profile" action="index">Profile Page</g:link></li>
                        </g:else>
+                       <!--
                        <li class="divider"></li>
                        <li><g:link controller="renewals" action="search">Planning &amp; Renewals - Generate Worksheet (search)</g:link></li>
                        <li><g:link controller="renewals" action="index">Planning &amp; Renewals - Import Worksheet</g:link></li>
+                       -->
                        <li class="divider"></li>
                        <li><g:link controller="myInstitutions" action="dashboard">Dashboard</g:link></li>
                        <li><g:link controller="myInstitutions" action="index">Alerts</g:link></li>
