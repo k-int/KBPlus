@@ -8,18 +8,25 @@ import com.k_int.kbplus.auth.*;
 
 class TippController {
 
+ def springSecurityService
+
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def show() { 
-    def tipp = TitleInstancePackagePlatform.get(params.id)
-    def titleInstanceInstance = tipp.title
+    def result = [:]
 
-    if (!titleInstanceInstance) {
+    result.user = User.get(springSecurityService.principal.id)
+    result.subscriptionInstance = Subscription.get(params.id)
+
+    result.tipp = TitleInstancePackagePlatform.get(params.id)
+    result.titleInstanceInstance = result.tipp.title
+
+    if (!result.titleInstanceInstance) {
       flash.message = message(code: 'default.not.found.message', args: [message(code: 'titleInstance.label', default: 'TitleInstance'), params.id])
       redirect action: 'list'
       return
     }
 
-    [tipp:tipp, titleInstanceInstance: titleInstanceInstance]
+    result
 
   }
 }

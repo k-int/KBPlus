@@ -305,9 +305,8 @@ class UploadController {
     log.debug("Completed New package is ${new_pkg.id}");
   }
   
-  def createSO(package) {
-    log.debug("Create SO based on ${package.id}");
-    
+  def createSO(pkg) {
+    log.debug("Create SO based on ${pkg.id}");
   }
   
   def lookupOrCreateTitleInstance(identifiers,title,publisher) {
