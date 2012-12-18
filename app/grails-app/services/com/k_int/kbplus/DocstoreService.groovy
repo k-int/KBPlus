@@ -186,12 +186,11 @@ class DocstoreService {
         def entry = zf.getEntry("bag_dir/data/${targetfile}")
         if ( entry ) {
           def targetfile_is = zf.getInputStream(zf.getEntry("bag_dir/data/${targetfile}"))
+          org.apache.commons.io.IOUtils.copy(targetfile_is, outs);
         }
         else {
           throw new RuntimeException("Unable to locate document in docstore ${is2.text()}");
         }
-
-        org.apache.commons.io.IOUtils.copy(targetfile_is, outs);
       }
     }
     finally {
