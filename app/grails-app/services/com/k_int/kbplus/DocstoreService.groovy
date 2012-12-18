@@ -61,7 +61,7 @@ class DocstoreService {
   }
 
   def retrieve(uuid, response, mimetype, filename) {
-    log.debug("Retrieve using docstore ${docstore_uri}");
+    log.debug("Retrieve");
     final BagFactory bf = new BagFactory();
 
     // Create a new identifier
