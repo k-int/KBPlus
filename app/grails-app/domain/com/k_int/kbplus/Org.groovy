@@ -1,5 +1,7 @@
 package com.k_int.kbplus
 
+import com.k_int.kbplus.auth.*;
+
 class Org {
 
   String name
@@ -19,12 +21,14 @@ class Org {
   static mappedBy = [ids: 'org', 
                      outgoingCombos: 'fromOrg', 
                      incomingCombos:'toOrg',
-                     links: 'org' ]
+                     links: 'org',
+                     affiliations: 'org' ]
 
   static hasMany = [ids: IdentifierOccurrence, 
                     outgoingCombos: Combo,  
                     incomingCombos:Combo,
-                    links: OrgRole]
+                    links: OrgRole,
+                    affiliations: UserOrg]
 
   static mapping = {
          id column:'org_id'

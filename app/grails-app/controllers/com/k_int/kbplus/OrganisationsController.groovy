@@ -89,6 +89,22 @@ class OrganisationsController {
       result
     }
 
+    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+    def users() {
+      def result = [:]
+      result.user = User.get(springSecurityService.principal.id)
+      def orgInstance = Org.get(params.id)
+      if (!orgInstance) {
+        flash.message = message(code: 'default.not.found.message', args: [message(code: 'org.label', default: 'Org'), params.id])
+        redirect action: 'list'
+        return
+      }
+
+      result.orgInstance=orgInstance
+      result
+    }
+
+
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def info() {
       def result = [:]

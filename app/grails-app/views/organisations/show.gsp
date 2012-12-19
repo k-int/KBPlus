@@ -8,36 +8,14 @@
     <title><g:message code="default.show.label" args="[entityName]" /></title>
   </head>
   <body>
-    <div class="row-fluid">
-      
-      <div class="span2">
-        <div class="well">
-          <ul class="nav nav-list">
-            <li class="nav-header">${entityName}</li>
-            <li>
-              <g:link class="list" action="list">
-                <i class="icon-list"></i>
-                <g:message code="default.list.label" args="[entityName]" />
-              </g:link>
-            </li>
-            <sec:ifAnyGranted roles="ROLE_ADMIN">
-              <li>
-                <g:link class="create" action="create">
-                  <i class="icon-plus"></i>
-                  <g:message code="default.create.label" args="[entityName]" />
-                </g:link>
-              </li>
-            </sec:ifAnyGranted>
-          </ul>
-        </div>
-      </div>
-      
-      <div class="span10">
 
-        <div class="page-header">
-          <h1>${orgInstance.name}</h1>
-                                        <hr/>
-        </div>
+    <div class="container">
+      <h1>${orgInstance.name}</h1>
+      <g:render template="nav" contextPath="." />
+    </div>
+
+    <div class="container">
+      
 
         <g:if test="${flash.message}">
         <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
@@ -125,24 +103,6 @@
         
         
         </dl>
-
-        <g:form>
-                                    <sec:ifAnyGranted roles="ROLE_ADMIN">
-          <g:hiddenField name="id" value="${orgInstance?.id}" />
-          <div class="form-actions">
-            <g:link class="btn" action="edit" id="${orgInstance?.id}">
-              <i class="icon-pencil"></i>
-              <g:message code="default.button.edit.label" default="Edit" />
-            </g:link>
-            <button class="btn btn-danger" type="submit" name="_action_delete">
-              <i class="icon-trash icon-white"></i>
-              <g:message code="default.button.delete.label" default="Delete" />
-            </button>
-          </div>
-                                    </sec:ifAnyGranted>
-        </g:form>
-
-      </div>
 
     </div>
   </body>
