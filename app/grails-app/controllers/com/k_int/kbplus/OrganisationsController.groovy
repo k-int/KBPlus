@@ -187,4 +187,21 @@ class OrganisationsController {
             redirect action: 'show', id: params.id
         }
     }
+
+    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+    def revokeRole() {
+      redirect action: 'users', id: params.id
+    }
+
+    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+    def enableRole() {
+      redirect action: 'users', id: params.id
+    }
+
+
+    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+    def deleteRole() {
+      redirect action: 'users', id: params.id
+    }
+
 }

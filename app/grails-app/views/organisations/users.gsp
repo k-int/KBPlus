@@ -32,7 +32,15 @@
           <tr>
             <td>${a.user.display}</td>
             <td>${a.formalRole.authority}</td>
-            <td></td>
+            <td>
+              <g:if test="${((a.status==1 ) || (a.status==3)) }">
+                <g:link controller="organisations" action="revokeRole" params="${[grant:a.id, id:params.id]}" class="btn">Revoke</g:link>
+              </g:if>
+              <g:else>
+                <g:link controller="organisations" action="enableRole" params="${[grant:a.id, id:params.id]}" class="btn">Allow</g:link>
+              </g:else>
+              <g:link controller="organisations" action="deleteRole" params="${[grant:a.id, id:params.id]}" class="btn">Delete Link</g:link>
+            </td>
           </tr>
         </g:each>
       </table>
