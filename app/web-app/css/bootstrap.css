@@ -245,6 +245,7 @@ dt, dd {
 .navbar .brand {
     font-weight: bold;
     color: rgb(249,141,55);
+    text-shadow: none;
 }
 
 .navbar .nav > li {
@@ -258,6 +259,26 @@ dt, dd {
 .navbar .nav > li > a {
     color: white;
     font-size: 0.9em;
+    text-shadow: none;
+}
+
+.navbar .nav > li > a:hover {
+    color: white;
+}
+
+.navbar .nav li.dropdown.open > .dropdown-toggle {
+    background-color: transparent;
+    color: white;
+}
+
+.navbar .nav li.dropdown.open > .dropdown-toggle .caret {
+    border-top-color: white;
+    border-bottom-color: white;
+}
+
+.navbar .nav li.dropdown > .dropdown-toggle .caret {
+    border-top-color : white;
+    border-bottom-color: white;
 }
 
 .nav-tabs {
@@ -338,6 +359,30 @@ dt, dd {
 .public .nav > li > a:hover, .public .nav > li.active > a {
 	background-color: #990100!important;
 	text-decoration:underline!important;
+}
+
+.navbar-footer.navbar .nav > li > .dropdown-menu::after {
+    top: 100%;
+    border-top: 6px solid white;
+    border-bottom: none;
+    display: inline-block;
+}
+
+.navbar-footer.navbar .nav > li > .dropdown-menu::before{
+    top: 100%;
+    border-top: 6px solid #CCC;
+    border-bottom: none;
+}
+
+.navbar-footer.navbar .nav > li > a {
+    text-shadow: none;
+    padding: 9px 10px 11px;
+    font-weight: normal;
+}
+
+.navbar-footer.navbar .nav > li > a:hover {
+    background-color: #DDD;
+    color: #535353;
 }
 
 /* Bootstrap Responsive Overwrites */
@@ -516,7 +561,6 @@ dt, dd {
         border-top: 6px solid white;
         border-bottom: none;
         display: inline-block;
-
     }
 
     .navbar-footer .nav-collapse .dropdown-menu::before {
