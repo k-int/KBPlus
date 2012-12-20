@@ -190,17 +190,25 @@ class OrganisationsController {
 
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
     def revokeRole() {
+      UserOrg uo = UserOrg.get(params.grant)
+      uo.status = 2;
+      uo.save();
       redirect action: 'users', id: params.id
     }
 
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
     def enableRole() {
+      UserOrg uo = UserOrg.get(params.grant)
+      uo.status = 1;
+      uo.save();
       redirect action: 'users', id: params.id
     }
 
 
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
     def deleteRole() {
+      UserOrg uo = UserOrg.get(params.grant)
+      uo.delete();
       redirect action: 'users', id: params.id
     }
 

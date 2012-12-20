@@ -25,6 +25,7 @@
         <tr>
           <th>User</th>
           <th>Role</th>
+          <th>Status</th>
           <th>Actions</th>
         </tr>
  
@@ -32,6 +33,12 @@
           <tr>
             <td>${a.user.display}</td>
             <td>${a.formalRole.authority}</td>
+            <td>
+              <g:if test="${a.status==0}">Pending</g:if>
+              <g:if test="${a.status==1}">Approved</g:if>
+              <g:if test="${a.status==2}">Rejected</g:if>
+              <g:if test="${a.status==3}">Auto Approved</g:if>
+            </td>
             <td>
               <g:if test="${((a.status==1 ) || (a.status==3)) }">
                 <g:link controller="organisations" action="revokeRole" params="${[grant:a.id, id:params.id]}" class="btn">Revoke</g:link>
