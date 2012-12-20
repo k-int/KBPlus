@@ -27,12 +27,14 @@ class Subscription {
   static hasMany = [ packages : SubscriptionPackage, 
                      issueEntitlements: IssueEntitlement,
                      documents:DocContext,
-                     orgRelations: OrgRole ]
+                     orgRelations: OrgRole,
+                     derivedSubscriptions: Subscription ]
 
   static mappedBy = [ packages : 'subscription', 
                       issueEntitlements: 'subscription',
                       documents: 'subscription',
-                      orgRelations: 'sub' ]
+                      orgRelations: 'sub',
+                      derivedSubscriptions: 'instanceOf' ]
 
   static mapping = {
                   id column:'sub_id'

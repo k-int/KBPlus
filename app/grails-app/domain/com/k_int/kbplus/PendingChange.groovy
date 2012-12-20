@@ -2,6 +2,7 @@ package com.k_int.kbplus
 
 class PendingChange {
 
+  Subscription subscription
   License license
   Doc doc
   String updateProperty
@@ -9,6 +10,7 @@ class PendingChange {
   String updateReason
 
   static mapping = {
+      subscription column:'pc_sub_fk'
            license column:'pc_lic_fk'
                doc column:'pc_doc_fk'
     updateProperty column:'pc_update_prop'
@@ -18,6 +20,7 @@ class PendingChange {
   }
 
   static constraints = {
+    license(subscription:true, blank:false);
     license(nullable:true, blank:false);
     doc(nullable:true, blank:false);
     updateProperty(nullable:false, blank:false);
