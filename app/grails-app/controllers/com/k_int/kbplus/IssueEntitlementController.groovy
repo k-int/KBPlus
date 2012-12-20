@@ -1,10 +1,17 @@
 package com.k_int.kbplus
 
 import org.springframework.dao.DataIntegrityViolationException
+import grails.converters.*
+import grails.plugins.springsecurity.Secured
+import grails.converters.*
+import groovy.xml.MarkupBuilder
+import com.k_int.kbplus.auth.*;
+
 
 class IssueEntitlementController {
 
     static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
+   def springSecurityService
 
     def index() {
         redirect action: 'list', params: params
@@ -15,6 +22,7 @@ class IssueEntitlementController {
         [issueEntitlementInstanceList: IssueEntitlement.list(params), issueEntitlementInstanceTotal: IssueEntitlement.count()]
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def create() {
 		switch (request.method) {
 		case 'GET':
@@ -33,17 +41,28 @@ class IssueEntitlementController {
 		}
     }
 
-    def show() {
-        def issueEntitlementInstance = IssueEntitlement.get(params.id)
-        if (!issueEntitlementInstance) {
-			flash.message = message(code: 'default.not.found.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), params.id])
-            redirect action: 'list'
-            return
-        }
 
-        [issueEntitlementInstance: issueEntitlementInstance]
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def show() {
+      def result = [:]
+
+      result.user = User.get(springSecurityService.principal.id)
+      result.issueEntitlementInstance = IssueEntitlement.get(params.id)
+
+      // result.tipp = TitleInstancePackagePlatform.get(params.id)
+      // result.titleInstanceInstance = result.tipp.title
+
+      if (!result.issueEntitlementInstance) {
+        flash.message = message(code: 'default.not.found.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), params.id])
+        redirect action: 'list'
+        return
+      }
+
+      result
+
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def edit() {
 		switch (request.method) {
 		case 'GET':
@@ -88,6 +107,7 @@ class IssueEntitlementController {
 		}
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def delete() {
         def issueEntitlementInstance = IssueEntitlement.get(params.id)
         if (!issueEntitlementInstance) {

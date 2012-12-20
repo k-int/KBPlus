@@ -169,7 +169,7 @@
                 <td><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></g:if></td>
                 <td>${counter++}</td>
                 <td>
-                  <g:link controller="tipp" id="${ie.tipp.id}" action="show">${ie.tipp.title.title}</g:link>
+                  <g:link controller="issueEntitlement" id="${ie.id}" action="show">${ie.tipp.title.title}</g:link>
                   <g:if test="${ie.tipp?.hostPlatformURL}">( <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">Host Link</a> )</g:if>
                 </td>
                 <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
