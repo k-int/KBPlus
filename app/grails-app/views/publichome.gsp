@@ -15,7 +15,7 @@
                             <li>
                                 <a href="${createLink(uri: '/')}"> Home </a>
                             </li>
-                            <li class="active">
+                            <li>
                                 <a href="${createLink(uri: '/about')}"> About KB+ </a>
                             </li>
                             <li>
