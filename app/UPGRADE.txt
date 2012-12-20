@@ -1,1 +1,1 @@
-./UPGRADE-1.0-to-1.1.txt
+./UPGRADE-1.1-to-1.1.1.txt
