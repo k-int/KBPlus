@@ -31,7 +31,7 @@ class ChangeNotificationService {
   }
 
   def processLicenseChange(l, propname, oldvalue, newvalue, note) {
-    log.debug("processChange...");
+    log.debug("processLicenseChange...");
 
     License lic_being_changed = License.get(l);
 
@@ -56,7 +56,12 @@ class ChangeNotificationService {
                                                doc:change_doc,
                                                updateProperty:propname, 
                                                updateValue:newvalue,
-                                               updateReason:"The template used to derive this licence has changed").save(flush:true);
+                                               updateReason:"The template used to derive this licence has changed")
+          if ( pc.save(flush:true) ) {
+          }
+          else {
+            log.error("Problem saving pending change: ${pc.errors}");
+          }
 
         }
       }
@@ -76,29 +81,26 @@ class ChangeNotificationService {
 
     try {
 
-      // if ( hasDerivedLicenses(lic_being_changed) ) {
-      //   Doc change_doc = new Doc(title:'Template Change notification',
-      //                            contentType:1,
-      //                            content:'The template license for this actual license has changed. You can accept the changes').save();
+      if ( hasDerivedSubscriptions(sub_being_changed) ) {
+        Doc change_doc = new Doc(title:'Template Change notification',
+                                 contentType:1,
+                                 content:'The template subscription for this sub has changed. You can accept the changes').save();
 
-      //   lic_being_changed.outgoinglinks.each { ol ->
-      //     def derived_licence = ol.toLic;
-      //     log.debug("Notify license ${ol.toLic.id} of change");
+        sub_being_changed.derivedSubscriptions().each { st ->
+          Alert a = new Alert(sharingLevel:2).save(flush:true)
 
-      //     Alert a = new Alert(sharingLevel:2).save(flush:true)
+          DocContext ctx = new DocContext(owner:change_doc,
+                                          subscription:st,
+                                          alert:a).save(flush:true);
 
-      //     DocContext ctx = new DocContext(owner:change_doc,
-      //                                     license:derived_licence,
-      //                                     alert:a).save(flush:true);
+          PendingChange pc = new PendingChange(subscription:sub,
+                                               doc:change_doc,
+                                               updateProperty:propname,
+                                               updateValue:newvalue,
+                                               updateReason:"The template used to derive this subscription has changed").save(flush:true);
 
-      //     PendingChange pc = new PendingChange(license:derived_licence,
-      //                                          doc:change_doc,
-      //                                          updateProperty:propname,
-      //                                          updateValue:newvalue,
-      //                                          updateReason:"The template used to derive this licence has changed").save(flush:true);
-
-      //   }
-      // }
+        }
+      }
     }
     catch ( Exception e ) {
       log.error("Problem processng change notification",e);
@@ -120,4 +122,10 @@ class ChangeNotificationService {
     result;
   }
 
+  def hasDerivedSubscriptions(sub) {
+    def result = false;
+    if ( sub.derivedSubscriptions()?.size() > 0 )
+      result = true;
+    result;
+  }
 }

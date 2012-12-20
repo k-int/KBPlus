@@ -20,7 +20,7 @@ class PendingChange {
   }
 
   static constraints = {
-    license(subscription:true, blank:false);
+    subscription(nullable:true, blank:false);
     license(nullable:true, blank:false);
     doc(nullable:true, blank:false);
     updateProperty(nullable:false, blank:false);
