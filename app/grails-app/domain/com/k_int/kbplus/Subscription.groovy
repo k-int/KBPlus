@@ -156,4 +156,16 @@ class Subscription {
     result
   }
 
+  def onChange = { oldMap,newMap ->
+
+    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+    def controlledProperties = ['name','startDate','endDate']
+
+    controlledProperties.each { cp ->
+      if ( oldMap[cp] != newMap[cp] ) {
+        changeNotificationService.notifySubscriptionChange(this.id, cp, oldMap[cp], newMap[cp], '');
+      }
+    }
+  }
+
 }

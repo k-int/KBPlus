@@ -20,6 +20,16 @@ class ChangeNotificationService {
 
   }
 
+  def notifySubscriptionChange(l, propname, oldvalue, newvalue, note) {
+    log.debug("notifySubscriptionChange...${l} create future");
+
+    def future = executorService.submit({
+      log.debug("inside submitted job");
+      processSubscriptionChange(l,propname,oldvalue,newvalue,note)
+    } as java.util.concurrent.Callable)
+
+  }
+
   def processLicenseChange(l, propname, oldvalue, newvalue, note) {
     log.debug("processChange...");
 
@@ -58,6 +68,46 @@ class ChangeNotificationService {
       log.debug("processChange completed");
     }
   }
+
+  def processSubscriptionChange(l, propname, oldvalue, newvalue, note) {
+    log.debug("processChange...");
+
+    Subscription sub_being_changed = Subscription.get(l);
+
+    try {
+
+      // if ( hasDerivedLicenses(lic_being_changed) ) {
+      //   Doc change_doc = new Doc(title:'Template Change notification',
+      //                            contentType:1,
+      //                            content:'The template license for this actual license has changed. You can accept the changes').save();
+
+      //   lic_being_changed.outgoinglinks.each { ol ->
+      //     def derived_licence = ol.toLic;
+      //     log.debug("Notify license ${ol.toLic.id} of change");
+
+      //     Alert a = new Alert(sharingLevel:2).save(flush:true)
+
+      //     DocContext ctx = new DocContext(owner:change_doc,
+      //                                     license:derived_licence,
+      //                                     alert:a).save(flush:true);
+
+      //     PendingChange pc = new PendingChange(license:derived_licence,
+      //                                          doc:change_doc,
+      //                                          updateProperty:propname,
+      //                                          updateValue:newvalue,
+      //                                          updateReason:"The template used to derive this licence has changed").save(flush:true);
+
+      //   }
+      // }
+    }
+    catch ( Exception e ) {
+      log.error("Problem processng change notification",e);
+    }
+    finally {
+      log.debug("processChange completed");
+    }
+  }
+
 
   /**
    *  Taken this simple test out to a function of it's own in preparation for license link types when
