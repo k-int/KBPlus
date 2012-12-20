@@ -16,6 +16,8 @@ class TitleInstancePackagePlatform {
   RefdataValue status
   RefdataValue option
   String hostPlatformURL
+  Date coreStatusStart
+  Date coreStatusEnd
 
   TitleInstancePackagePlatform derivedFrom
 
@@ -32,27 +34,29 @@ class TitleInstancePackagePlatform {
   ]
 
   static mapping = {
-               id column:'tipp_id'
-          rectype column:'tipp_rectype'
-          version column:'tipp_version'
-              pkg column:'tipp_pkg_fk', index: 'tipp_idx'
-         platform column:'tipp_plat_fk', index: 'tipp_idx'
-            title column:'tipp_ti_fk', index: 'tipp_idx'
-        startDate column:'tipp_start_date'
-      startVolume column:'tipp_start_volume'
-       startIssue column:'tipp_start_issue'
-          endDate column:'tipp_end_date'
-        endVolume column:'tipp_end_volume'
-         endIssue column:'tipp_end_issue'
-          embargo column:'tipp_embargo'
-    coverageDepth column:'tipp_coverage_depth'
-     coverageNote column:'tipp_coverage_note',type: 'text'
-            impId column:'tipp_imp_id', index: 'tipp_imp_id_idx'
-           status column:'tipp_status_rv_fk'
-           option column:'tipp_option_rv_fk'
-  hostPlatformURL column:'tipp_host_platform_url'
-              sub column:'tipp_sub_fk'
-      derivedFrom column:'tipp_derived_from'
+                id column:'tipp_id'
+           rectype column:'tipp_rectype'
+           version column:'tipp_version'
+               pkg column:'tipp_pkg_fk', index: 'tipp_idx'
+          platform column:'tipp_plat_fk', index: 'tipp_idx'
+             title column:'tipp_ti_fk', index: 'tipp_idx'
+         startDate column:'tipp_start_date'
+       startVolume column:'tipp_start_volume'
+        startIssue column:'tipp_start_issue'
+           endDate column:'tipp_end_date'
+         endVolume column:'tipp_end_volume'
+          endIssue column:'tipp_end_issue'
+           embargo column:'tipp_embargo'
+     coverageDepth column:'tipp_coverage_depth'
+      coverageNote column:'tipp_coverage_note',type: 'text'
+             impId column:'tipp_imp_id', index: 'tipp_imp_id_idx'
+            status column:'tipp_status_rv_fk'
+            option column:'tipp_option_rv_fk'
+   hostPlatformURL column:'tipp_host_platform_url'
+               sub column:'tipp_sub_fk'
+       derivedFrom column:'tipp_derived_from'
+   coreStatusStart column:'tipp_core_status_start_date'
+     coreStatusEnd column:'tipp_core_status_end_date'
   }
 
   static constraints = {
@@ -71,6 +75,8 @@ class TitleInstancePackagePlatform {
     sub(nullable:true, blank:false);
     hostPlatformURL(nullable:true, blank:true);
     derivedFrom(nullable:true, blank:true);
+    coreStatusStart(nullable:true, blank:true);
+    coreStatusEnd(nullable:true, blank:true);
   }
 
   
