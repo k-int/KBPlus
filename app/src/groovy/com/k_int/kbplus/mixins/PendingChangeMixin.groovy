@@ -21,9 +21,21 @@ public class PendingChangeMixin {
     targetObject.save(flush:true)
 
     expungePendingChange(targetObject, pc);
+  }
 
+  def processRejectChange(params, targetObject) {
+    def user = User.get(springSecurityService.principal.id)
+
+    if ( ! targetObject.hasPerm("edit",user) ) {
+      render status: 401
+      return
+    }
+
+    def pc = PendingChange.get(params.changeid)
+    expungePendingChange(targetObject, pc);
     redirect controller: 'licenseDetails', action:'index',id:params.id
   }
+
 
   def expungePendingChange(targetObject, pc) {
     log.debug("Expunging pending change, looking up change context doc=${pc.doc?.id}, targetObject=${targetObject.id}");
@@ -57,4 +69,6 @@ public class PendingChangeMixin {
       log.debug("No change context found");
     }
   }
+
+
 }

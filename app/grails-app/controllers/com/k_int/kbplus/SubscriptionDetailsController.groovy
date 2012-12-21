@@ -7,6 +7,7 @@ import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.MarkupBuilder
 import com.k_int.kbplus.auth.*;
 
+@Mixin(com.k_int.kbplus.mixins.PendingChangeMixin)
 class SubscriptionDetailsController {
 
   def springSecurityService
@@ -472,5 +473,19 @@ class SubscriptionDetailsController {
   
     redirect controller:'renewals',action:'search'
   }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def acceptChange() {
+    processAcceptChange(params, License.get(params.id))
+    redirect controller: 'subscriptionDetails', action:'index',id:params.id
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def rejectChange() {
+    processRejectChange(params, License.get(params.id)) {
+    redirect controller: 'subscriptionDetails', action:'index',id:params.id
+  }
+
+
 }
 

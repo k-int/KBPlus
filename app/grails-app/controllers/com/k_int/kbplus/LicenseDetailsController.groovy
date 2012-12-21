@@ -184,20 +184,12 @@ class LicenseDetailsController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def acceptChange() {
     processAcceptChange(params, License.get(params.id))
+    redirect controller: 'licenseDetails', action:'index',id:params.id
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def rejectChange() {
-    def user = User.get(springSecurityService.principal.id)
-    def license = License.get(params.id)
-
-    if ( ! license.hasPerm("edit",user) ) {
-      render status: 401
-      return
-    }
-
-    def pc = PendingChange.get(params.changeid)
-    expungePendingChange(license, pc);
+    processRejectChange(params, License.get(params.id)) {
     redirect controller: 'licenseDetails', action:'index',id:params.id
   }
 

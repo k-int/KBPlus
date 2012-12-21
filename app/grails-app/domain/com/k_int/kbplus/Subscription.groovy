@@ -28,13 +28,15 @@ class Subscription {
                      issueEntitlements: IssueEntitlement,
                      documents:DocContext,
                      orgRelations: OrgRole,
-                     derivedSubscriptions: Subscription ]
+                     derivedSubscriptions: Subscription,
+                     pendingChanges:PendingChange ]
 
   static mappedBy = [ packages : 'subscription', 
                       issueEntitlements: 'subscription',
                       documents: 'subscription',
                       orgRelations: 'sub',
-                      derivedSubscriptions: 'instanceOf' ]
+                      derivedSubscriptions: 'instanceOf',
+                      pendingChanges:'subscription' ]
 
   static mapping = {
                   id column:'sub_id'
