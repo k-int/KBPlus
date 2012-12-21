@@ -476,13 +476,13 @@ class SubscriptionDetailsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def acceptChange() {
-    processAcceptChange(params, License.get(params.id))
+    processAcceptChange(params, Subscription.get(params.id))
     redirect controller: 'subscriptionDetails', action:'index',id:params.id
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def rejectChange() {
-    processRejectChange(params, License.get(params.id)) {
+    processRejectChange(params, Subscription.get(params.id))
     redirect controller: 'subscriptionDetails', action:'index',id:params.id
   }
 

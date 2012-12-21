@@ -1,8 +1,12 @@
 package com.k_int.kbplus
 
 import com.k_int.kbplus.auth.*;
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+
 
 class Subscription {
+
+  static auditable = true
 
   RefdataValue status
   RefdataValue type
@@ -161,6 +165,8 @@ class Subscription {
   }
 
   def onChange = { oldMap,newMap ->
+
+    log.debug("onChange")
 
     def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
     def controlledProperties = ['name','startDate','endDate']

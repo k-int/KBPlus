@@ -86,14 +86,14 @@ class ChangeNotificationService {
                                  contentType:1,
                                  content:'The template subscription for this sub has changed. You can accept the changes').save();
 
-        sub_being_changed.derivedSubscriptions().each { st ->
+        sub_being_changed.derivedSubscriptions?.each { st ->
           Alert a = new Alert(sharingLevel:2).save(flush:true)
 
           DocContext ctx = new DocContext(owner:change_doc,
                                           subscription:st,
                                           alert:a).save(flush:true);
 
-          PendingChange pc = new PendingChange(subscription:sub,
+          PendingChange pc = new PendingChange(subscription:st,
                                                doc:change_doc,
                                                updateProperty:propname,
                                                updateValue:newvalue,
@@ -124,7 +124,7 @@ class ChangeNotificationService {
 
   def hasDerivedSubscriptions(sub) {
     def result = false;
-    if ( sub.derivedSubscriptions()?.size() > 0 )
+    if ( sub.derivedSubscriptions?.size() > 0 )
       result = true;
     result;
   }

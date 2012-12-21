@@ -45,9 +45,8 @@
                           class="${editable?'newipe':''}">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
 
       <g:render template="nav" contextPath="." />
-
-      <button class="hidden-license-details btn" data-toggle="collapse" data-target="#collapseableSubDetails">Show/Hide Subscription Details <i class="icon-plus"></i></button>
     </div>
+
 
     <g:if test="${subscriptionInstance.pendingChanges?.size() > 0}">
       <div class="container alert-warn">
@@ -62,7 +61,7 @@
             </tr>
           </thead>
           <tbody>
-            <g:each in="${license.pendingChanges}" var="pc">
+            <g:each in="${subscriptionInstance.pendingChanges}" var="pc">
               <tr>
                 <td style="white-space:nowrap;">${pc.updateProperty}</td>
                 <td>${pc.updateValue}</td>
@@ -77,6 +76,11 @@
         </table>
       </div>
     </g:if>
+
+
+    <div class="container">
+      <button class="hidden-license-details btn" data-toggle="collapse" data-target="#collapseableSubDetails">Show/Hide Subscription Details <i class="icon-plus"></i></button>
+    </div>
 
 
     <div id="collapseableSubDetails" class="container collapse">

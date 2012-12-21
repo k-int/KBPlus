@@ -33,7 +33,6 @@ public class PendingChangeMixin {
 
     def pc = PendingChange.get(params.changeid)
     expungePendingChange(targetObject, pc);
-    redirect controller: 'licenseDetails', action:'index',id:params.id
   }
 
 

@@ -189,7 +189,7 @@ class LicenseDetailsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def rejectChange() {
-    processRejectChange(params, License.get(params.id)) {
+    processRejectChange(params, License.get(params.id))
     redirect controller: 'licenseDetails', action:'index',id:params.id
   }
 
