@@ -299,14 +299,18 @@ class UploadController {
       }
     }
 
-    // Create an SO    
-    createSO(new_pkg);
+    // Create an SO by creating a header and copying the tipps from this package into IE's
+    log.debug("Copying Package TIPPs into issue entitlements");
+    def new_pkg_id = pkg.id;
+    pkg.createSubscription('Subscription Offered', 
+                           prepared_so.sub.name, 
+                           prepared_so.sub.identifier, 
+                           prepared_so.sub.start_date, 
+                           prepared_so.sub.end_date, 
+                           prepared_so.cons) {
+    
     
     log.debug("Completed New package is ${new_pkg.id}");
-  }
-  
-  def createSO(pkg) {
-    log.debug("Create SO based on ${pkg.id}");
   }
   
   def lookupOrCreateTitleInstance(identifiers,title,publisher) {
