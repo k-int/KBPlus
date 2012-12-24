@@ -18,6 +18,8 @@ import java.text.SimpleDateFormat
 class UploadController {
 
   def springSecurityService
+  def sessionFactory
+  def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
   
   def possible_date_formats = [
     new SimpleDateFormat('dd/MM/yyyy'),
@@ -29,21 +31,130 @@ class UploadController {
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def so() { 
+    def result = [:]
     log.debug("so");    
     
     if ( request.method == 'POST' ) {
       def upload_mime_type = request.getFile("soFile")?.contentType
       def upload_filename = request.getFile("soFile")?.getOriginalFilename()
-      log.debug("Uploaded so type: ${upload_mime_type}");
-      def input_stream = request.getFile("soFile")?.inputStream
-      processUploadSO(input_stream, upload_filename)
+      log.debug("Uploaded so type: ${upload_mime_type} filename was ${upload_filename}");
+      if ( validateStream(request.getFile("soFile")?.inputStream, upload_filename ) ) {
+        def input_stream = request.getFile("soFile")?.inputStream
+        processUploadSO(input_stream, upload_filename, result)
+      }
     }
+
+    result
   }
   
-  def processUploadSO(input_stream, upload_filename) {
+  def validateStream(input_stream, upload_filename) {
+
+    log.debug("Validating Stream");
+
+    CSVReader r = new CSVReader( new InputStreamReader(input_stream) )
+
+    String [] nl;
+
+    String [] so_name_line = r.readNext()
+    String [] so_identifier_line = r.readNext()
+    String [] so_provider_line = r.readNext()
+    String [] so_package_identifier_line = r.readNext()
+    String [] so_package_name_line = r.readNext()
+    String [] so_agreement_term_start_yr_line = r.readNext()
+    String [] so_agreement_term_end_yr_line = r.readNext()
+    String [] so_consortium_line = r.readNext()
+    String [] so_num_prop_id_cols_line = r.readNext()
+    int num_prop_id_cols = Integer.parseInt(so_num_prop_id_cols_line[1] ?: "0");
+    String [] so_num_platforms_listed_line = r.readNext()
+    int num_platforms_listed = Integer.parseInt(so_num_platforms_listed_line[1] ?: "0");
+    String [] so_header_line = r.readNext()
+
+    if ( num_platforms_listed == 0 ) {
+      num_platforms_listed = 1
+    }
+
+    def normalised_identifier = so_identifier_line[1].trim().toLowerCase().replaceAll('-','_')
+    def norm_pkg_identifier = "${so_provider_line[1].trim()}:${so_package_identifier_line[1].trim()}"
+    norm_pkg_identifier = norm_pkg_identifier.toLowerCase().replaceAll('-','_');
+    
+    if ( ( normalised_identifier == null ) || ( normalised_identifier.trim().length() == 0 ) ) {
+      log.error("No subscription offered identifier");
+      flash.error="Problem processing ${upload_filename} : No usable subscription offered identifier";      
+      return false
+    }
+    
+    if ( ( norm_pkg_identifier == null ) || ( norm_pkg_identifier.length() == 0 ) ) {
+      log.error("No usable package identifier");
+      flash.error="Problem processing ${upload_filename} : No usable package identifier";      
+      return false
+    }
+    
+    def sub = Subscription.findByIdentifier(normalised_identifier)
+    if ( sub != null ) {
+      log.error("Sub ${normalised_identifier} already exists");
+      flash.error="Problem processing ${upload_filename} : Unable to process file - Subscription with ID ${normalised_identifier} already exists in database";
+      return false
+    }
+
+    def pkg = Package.findByIdentifier(norm_pkg_identifier);
+    if ( pkg != null ) {
+      log.error("Package ${norm_pkg_identifier} already exists");
+      flash.error="Problem processing ${upload_filename} : Unable to process file - Subscription with ID ${normalised_identifier} already exists in database";
+      return false
+    }
+    
+
+    while ((nl = r.readNext()) != null) {
+      boolean has_data = false
+      nl.each {
+        if ( ( it != null ) && ( it.trim() != '' ) )
+          has_data = true;
+      }
+
+      if ( !has_data )
+        continue;
+      else
+        log.debug("has data");
+
+      if ( present(nl[0] ) ) {
+
+        def parsed_start_date = parseDate(nl[3],possible_date_formats)
+        def parsed_end_date = parseDate(nl[6],possible_date_formats)
+
+        def host_platform_url = null;
+        for ( int i=0; i<num_platforms_listed; i++ ) {
+
+          int position = 15+num_prop_id_cols+(i*3)   // Offset past any proprietary identifiers.. This needs a test case.. it's fraught with danger
+
+          log.debug("Processing ${i}th platform entry. Arr len = ${nl.length} position=${position}");
+
+          if ( ( nl.size() >= position+3 ) && ( nl[position] ) && ( nl[position].length() > 0 ) ) {
+            def platform_role = nl[position+1]
+            def platform_url = nl[position+2]
+            println("Process platform name:${nl[position]} / type:${platform_role} / url:${platform_url}");
+
+            if ( platform_role.trim() == 'host' ) {
+              host_platform_url = platform_url
+            }
+            else {
+            }
+          }
+        }
+        if ( host_platform_url==null || host_platform_url.trim().length() == 0 ) {
+          log.error("At least one tipp row has no host platform specified. Please correct and re-upload")
+          flash.error="Problem processing ${upload_filename} : At least one tipp row has no host platform specified. Please correct and re-upload"
+          return false
+        }
+      }
+    }
+
+    true
+  }
+
+
+  def processUploadSO(input_stream, upload_filename, result) {
 
     def prepared_so = [:]
-
 
     CSVReader r = new CSVReader( new InputStreamReader(input_stream) )
     
@@ -80,31 +191,7 @@ class UploadController {
     
     log.debug("Processing subscription ${so_identifier_line[1]} normalised to ${normalised_identifier}");
     
-    if ( ( normalised_identifier == null ) || ( normalised_identifier.trim().length() == 0 ) ) {
-      log.error("No subscription offered identifier");
-      flash.error="Problem processing ${upload_filename} : No usable subscription offered identifier";      
-      return
-    }
-    
-    if ( ( norm_pkg_identifier == null ) || ( norm_pkg_identifier.length() == 0 ) ) {
-      log.error("No usable package identifier");
-      flash.error="Problem processing ${upload_filename} : No usable package identifier";      
-      return
-    }
-    
-    def sub = Subscription.findByIdentifier(normalised_identifier)
-    if ( sub != null ) {
-      log.error("Sub ${normalised_identifier} already exists");
-      flash.error="Problem processing ${upload_filename} : Unable to process file - Subscription with ID ${normalised_identifier} already exists in database";
-      return
-    }
-
     def pkg = Package.findByIdentifier(norm_pkg_identifier);
-    if ( pkg != null ) {
-      log.error("Package ${norm_pkg_identifier} already exists");
-      flash.error="Problem processing ${upload_filename} : Unable to process file - Subscription with ID ${normalised_identifier} already exists in database";
-      return
-    }
     
     prepared_so.provider = content_provider_org
     prepared_so.sub = [:]
@@ -200,7 +287,7 @@ class UploadController {
         for ( int i=0; i<num_platforms_listed; i++ ) {
           int position = 15+num_prop_id_cols+(i*3)   // Offset past any proprietary identifiers.. This needs a test case.. it's fraught with danger
 
-          if ( ( nl.size() >= position+2 ) &&
+          if ( ( nl.size() >= position+3 ) &&
                ( nl[position] ) &&
                ( nl[position].length() > 0 ) ) {
 
@@ -301,15 +388,28 @@ class UploadController {
 
     // Create an SO by creating a header and copying the tipps from this package into IE's
     log.debug("Copying Package TIPPs into issue entitlements");
-    def new_pkg_id = pkg.id;
-    pkg.createSubscription('Subscription Offered', 
-                           prepared_so.sub.name, 
-                           prepared_so.sub.identifier, 
-                           prepared_so.sub.start_date, 
-                           prepared_so.sub.end_date, 
-                           prepared_so.cons) 
+    def new_pkg_id = new_pkg.id;
+    new_pkg.discard();
+    def session = sessionFactory.currentSession
+    session.flush()
+    session.clear()
+    propertyInstanceMap.get().clear()
+
+    result.user = User.get(springSecurityService.principal.id)
+
+    def reloaded_pkg = Package.get(new_pkg_id);
+
+    def new_sub = reloaded_pkg.createSubscription('Subscription Offered', 
+                                             prepared_so.sub.name, 
+                                             prepared_so.sub.identifier, 
+                                             prepared_so.sub.start_date, 
+                                             prepared_so.sub.end_date, 
+                                             prepared_so.cons) 
     
     log.debug("Completed New package is ${new_pkg.id}");
+
+    result.new_pkg_id = new_pkg_id
+    result.new_sub_id = new_sub?.id
   }
   
   def lookupOrCreateTitleInstance(identifiers,title,publisher) {
