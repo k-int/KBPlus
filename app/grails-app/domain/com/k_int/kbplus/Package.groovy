@@ -56,7 +56,7 @@ class Package {
 
     def result = new Subscription( name:subname,
                                    status:lookupOrCreateRefdataEntry('Subscription Status','Current'),
-                                   identifier:subidentifier
+                                   identifier:subidentifier,
                                    impId:null,
                                    startDate:startdate,
                                    endDate:enddate,

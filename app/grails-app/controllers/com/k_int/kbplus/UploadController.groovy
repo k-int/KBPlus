@@ -307,8 +307,7 @@ class UploadController {
                            prepared_so.sub.identifier, 
                            prepared_so.sub.start_date, 
                            prepared_so.sub.end_date, 
-                           prepared_so.cons) {
-    
+                           prepared_so.cons) 
     
     log.debug("Completed New package is ${new_pkg.id}");
   }
