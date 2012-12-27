@@ -450,4 +450,27 @@ class RenewalsController {
     response.outputStream.flush()
  
   }
+
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def upload() {
+    def result = [:]
+    log.debug("upload");
+
+    if ( request.method == 'POST' ) {
+      def upload_mime_type = request.getFile("renewalFile")?.contentType
+      def upload_filename = request.getFile("renewalFile")?.getOriginalFilename()
+      log.debug("Uploaded so type: ${upload_mime_type} filename was ${upload_filename}");
+      processRenewalUpload(input_stream, upload_filename, result)
+    }
+
+    result
+  }
+
+  def processRenewalUpload(input_stream, upload_filename, result) {
+    log.debug("processRenewalUpload - opening upload input stream as HSSFWorkbook");
+    HSSFWorkbook wb = new HSSFWorkbook(input_stream);
+    log.debug("Done");
+  }
+
 }
