@@ -1097,11 +1097,61 @@ class MyInstitutionsController {
   }
 
   def processRenewal() {
+    def result = [:]
+
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+
     log.debug("-> renewalsUpload params: ${params}");
 
     log.debug("entitlements...[${params.ecount}]");
 
     int ent_count = Integer.parseInt(params.ecount);
+
+    def db_sub = Subscription.get(params.baseSubscription);
+
+    def new_subscription = new Subscription(
+                                 identifier: "${db_sub.identifier}:${result.institution.name}",
+                                 status:lookupOrCreateRefdataEntry('Subscription Status','Current'),
+                                 impId:null,
+                                 name: db_sub.name,
+                                 startDate: db_sub.startDate,
+                                 endDate: db_sub.endDate,
+                                 instanceOf: db_sub,
+                                 type: RefdataValue.findByValue('Subscription Taken') )
+
+    if ( new_subscription.save() ) {
+      // log.debug("New subscriptionT saved...");
+      // Copy package links from SO to ST
+      db_sub.packages.each { sopkg ->
+        def new_package_link = new SubscriptionPackage(subscription:new_subscription, pkg:sopkg.pkg).save();
+      }
+
+      // assert an org-role
+      def org_link = new OrgRole(org:result.institution,
+                                 sub: new_subscription,
+                                 roleType: lookupOrCreateRefdataEntry('Organisational Role','Subscriber')).save();
+
+      // Copy any links from SO
+      db_sub.orgRelations.each { or ->
+        if ( or.roleType?.value != 'Subscriber' ) {
+          def new_or = new OrgRole(org: or.org, sub: new_subscription, roleType: or.roleType).save();
+        }
+      }
+    }
+    else {
+      log.error("Problem saving new subscription, ${new_subscription.errors}");
+    }
+
+    new_subscription.save(flush:true);
+
+
+    // List all actual st_title records, and diff that against the default from the ST file
+    def sub_titles = mdb.stTitle.find(owner:sub._id)
+
+    if ( !new_subscription.issueEntitlements ) {
+      new_subscription.issueEntitlements = new java.util.TreeSet()
+    }
 
     for ( int i=0; i<=ent_count; i++ ) {
       def entitlement = params.entitlements."${i}";
