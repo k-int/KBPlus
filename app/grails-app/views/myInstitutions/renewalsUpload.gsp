@@ -23,6 +23,8 @@
       </div>
     </g:if>
 
+    <g:set var="counter" value="${-1}" />
+
     <g:if test="${base_subscription}">
       <div class="container">
       <hr/>
@@ -34,7 +36,14 @@
           <thead>
             <tr>
               <td>Title</td>
-              <td>Subscribe?</td>
+              <td>ISSN</td>
+              <td>eISSN</td>
+              <td>Start Date</td>
+              <td>Start Volume</td>
+              <td>Start Issue</td>
+              <td>End Date</td>
+              <td>End Volume</td>
+              <td>End Issue</td>
               <td>Core?</td>
               <td>Core Start Date</td>
               <td>Core End Date</td>
@@ -43,11 +52,20 @@
           <tbody>
             <g:each in="${entitlements}" var="e">
               <tr>
-                <td>${e.title_id}</td>
-                <td>${e.subscribe}</td>
-                <td>${e.core}</td>
-                <td>${e.core_start_date}</td>
-                <td>${e.core_end_date}</td>
+                <td><input type="hidden" name="entitlement[${counter++}].tipp_id" value="${e.base_entitlement.tipp.id}"/>
+                    <input type="hidden" name="entitlement[${counter++}].entitlement_id" value="${e.base_entitlement.id}"/>
+                    ${e.base_entitlement.tipp.title.title}</td>
+                <td>${e.base_entitlement.tipp.title.getIdentifierValue('ISSN')}</td>
+                <td>${e.base_entitlement.tipp.title.getIdentifierValue('eISSN')}</td>
+                <td><g:formatDate format="dd MMMM yyyy" date="${e.base_entitlement.startDate}"/></td>
+                <td>${e.base_entitlement.startVolume}</td>
+                <td>${e.base_entitlement.startIssue}</td>
+                <td><g:formatDate format="dd MMMM yyyy" date="${e.base_entitlement.endDate}"/></td>
+                <td>${e.base_entitlement.endVolume}</td>
+                <td>${e.base_entitlement.endIssue}</td>
+                <td>${e.core}<input type="hidden" name="entitlement[${counter++}].iscore" value="${e.core}"/></td>
+                <td>${e.core_start_date}<input type="hidden" name="entitlement[${counter++}].core_start" value="${e.core_start_date}"/></td>
+                <td>${e.core_end_date}<input type="hidden" name="entitlement[${counter++}].core_end" value="${e.core_end_date}"/></td>
               </tr>
             </g:each>
           </tbody>

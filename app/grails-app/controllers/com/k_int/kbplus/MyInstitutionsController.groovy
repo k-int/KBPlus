@@ -1076,6 +1076,7 @@ class MyInstitutionsController {
                 entitlement_info.core = core_status
                 entitlement_info.core_start_date = core_start_date
                 entitlement_info.core_end_date = core_end_date
+                entitlement_info.base_entitlement = extractEntitlement(result.base_subscription, title_id_long)
                 result.entitlements.add(entitlement_info)
               }
             }
@@ -1089,6 +1090,10 @@ class MyInstitutionsController {
     log.debug("Done");
 
     result
+  }
+
+  def extractEntitlement(sub, title_id) {
+    sub.issueEntitlements.find { e -> e.tipp?.title?.id == title_id }
   }
 
 }
