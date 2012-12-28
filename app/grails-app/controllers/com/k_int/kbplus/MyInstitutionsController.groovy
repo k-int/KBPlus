@@ -973,6 +973,12 @@ class MyInstitutionsController {
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def renewalsUpload() {
     def result = [:]
+
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+
+    result.errors = []
+
     log.debug("upload");
 
     if ( request.method == 'POST' ) {
@@ -1015,6 +1021,7 @@ class MyInstitutionsController {
         }
       }
 
+      result.entitlements = []
 
       boolean processing = true
       // Step three, process each title row, starting at row 7(6)
@@ -1034,15 +1041,43 @@ class MyInstitutionsController {
             if ( resp_cell ) {
               log.debug("  -> Testing col[${j}] val=${resp_cell.toString()}");
               String[] components = resp_cell.toString().split(';');
-              def subscribe
-              def core_status
+
+              def subscribe='N'
+              def core_status='N'
+              def core_start_date
+              def core_end_date
+
               if ( components.length > 0 )
                 subscribe = components[0]
               if ( components.length > 1 )
                 core_status = components[1]
+              if ( components.length > 2 )
+                core_start_date = components[2]
+              if ( components.length > 3 )
+                core_end_date = components[3]
 
               log.debug("Entry : sub:${subscribe}. core_status:${core_status}")
                 
+              if ( subscribe == 'Y' || subscribe == 'y' ) {
+                log.debug("Add an issue entitlement from subscription[${j}] for title ${title_id_long}");
+                if ( result.base_subscription ) {
+                  if ( result.base_subscription != sub_info[j] ) {
+                    log.error("Critical error - Worksheet merges entitlements from 2 different subscriptions offered");
+                    result.errors.add("Critical error - Worksheet merges entitlements from 2 different subscriptions offered");
+                  }
+                }
+                else {
+                  result.base_subscription = sub_info[j]
+                }
+
+                def entitlement_info = [:]
+                entitlement_info.title_id = title_id_long
+                entitlement_info.subscribe = subscribe
+                entitlement_info.core = core_status
+                entitlement_info.core_start_date = core_start_date
+                entitlement_info.core_end_date = core_end_date
+                result.entitlements.add(entitlement_info)
+              }
             }
           }
         }
@@ -1052,6 +1087,8 @@ class MyInstitutionsController {
       log.error("Input stream is null");
     }
     log.debug("Done");
+
+    result
   }
 
 }
