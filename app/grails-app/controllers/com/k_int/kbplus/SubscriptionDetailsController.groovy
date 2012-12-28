@@ -471,7 +471,7 @@ class SubscriptionDetailsController {
     def oid = "com.k_int.kbplus.Subscription:${params.id}"
     shopping_basket.addIfNotPresent(oid)
   
-    redirect controller:'renewals',action:'search'
+    redirect controller:'myInstitutions',action:'renewalsSearch',params:[shortcode:result.subscriptionInstance.subscriber.shortcode]
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
