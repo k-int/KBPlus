@@ -947,6 +947,9 @@ class MyInstitutionsController {
 
       }
     }
+    row = firstSheet.createRow(rc++);
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("END"));
 
     firstSheet.autoSizeColumn(0); //adjust width of the first column
     firstSheet.autoSizeColumn(1); //adjust width of the first column
@@ -987,6 +990,45 @@ class MyInstitutionsController {
     log.debug("processRenewalUpload - opening upload input stream as HSSFWorkbook");
     if ( input_stream ) {
       HSSFWorkbook wb = new HSSFWorkbook(input_stream);
+      HSSFSheet firstSheet = wb.getSheetAt(0);
+
+      // Step 1 - Extract institution id, name and shortcode
+      HSSFRow org_details_row = firstSheet.getRow(2)
+      String org_name = org_details_row?.getCell(0)?.toString()
+      String org_id = org_details_row?.getCell(1)?.toString()
+      String org_shortcode = org_details_row?.getCell(2)?.toString()
+      log.debug("Worksheet upload on behalf of ${org_name}, ${org_id}, ${org_shortcode}");
+
+      def sub_info = []
+      // Step 2 - Row 5 (6, but 0 based) contains package identifiers starting in column 4(5)
+      HSSFRow package_ids_row = firstSheet.getRow(5)
+      for (int i=4;((i<package_ids_row.getLastCellNum())&&(package_ids_row.getCell(i)));i++) {
+        log.debug("Got package identifier: ${package_ids_row.getCell(i).toString()}");
+        def sub_id = Long.parseLong(package_ids_row.getCell(i).toString())
+        def sub_rec = Subscription.get(sub_id);
+        if ( sub_rec ) {
+          sub_info.add(sub_rec);
+        }
+        else  {
+          log.error("Unable to resolve the package identifier in row 6 column ${i+5}, please check");
+          return
+        }
+      }
+
+
+      boolean processing = true
+      // Step three, process each title row, starting at row 7(6)
+      for (int i=6;((i<firstSheet.getLastRowNum())&&(processing)); i++) {
+        HSSFRow title_row = firstSheet.getRow(i)
+        // Title ID
+        def title_id = title_row.getCell(0).toString()
+        if ( title_id == 'END' ) {
+          processing = false;
+        }
+        else {
+          println("Process title: ${title_id}");
+        }
+      }
     }
     else {
       log.error("Input stream is null");
