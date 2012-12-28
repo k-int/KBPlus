@@ -1018,7 +1018,7 @@ class MyInstitutionsController {
 
       boolean processing = true
       // Step three, process each title row, starting at row 7(6)
-      for (int i=6;((i<firstSheet.getLastRowNum())&&(processing)); i++) {
+      for (int i=7;((i<firstSheet.getLastRowNum())&&(processing)); i++) {
         HSSFRow title_row = firstSheet.getRow(i)
         // Title ID
         def title_id = title_row.getCell(0).toString()
@@ -1027,6 +1027,24 @@ class MyInstitutionsController {
         }
         else {
           println("Process title: ${title_id}");
+          def title_id_long = Long.parseLong(title_id)
+          def title_rec = TitleInstance.get(title_id_long);
+          for ( int j=0; ( ((j+4)<title_row.getLastCellNum()) && (j<=sub_info.size() ) ); j++ ) {
+            def resp_cell = title_row.getCell(j+4)
+            if ( resp_cell ) {
+              log.debug("  -> Testing col[${j}] val=${resp_cell.toString()}");
+              String[] components = resp_cell.toString().split(';');
+              def subscribe
+              def core_status
+              if ( components.length > 0 )
+                subscribe = components[0]
+              if ( components.length > 1 )
+                core_status = components[1]
+
+              log.debug("Entry : sub:${subscribe}. core_status:${core_status}")
+                
+            }
+          }
         }
       }
     }
