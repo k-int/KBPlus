@@ -1096,4 +1096,19 @@ class MyInstitutionsController {
     sub.issueEntitlements.find { e -> e.tipp?.title?.id == title_id }
   }
 
+  def processRenewal() {
+    log.debug("-> renewalsUpload params: ${params}");
+
+    log.debug("entitlements...[${params.ecount}]");
+
+    int ent_count = Integer.parseInt(params.ecount);
+
+    for ( int i=0; i<=ent_count; i++ ) {
+      def entitlement = params.entitlements."${i}";
+      log.debug("process entitlement[${i}]: ${entitlement}");
+    }
+    log.debug("done entitlements...");
+
+    redirect action:'renewalsUpload', params: params
+  }
 }
