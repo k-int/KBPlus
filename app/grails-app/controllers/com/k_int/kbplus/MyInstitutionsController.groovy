@@ -550,6 +550,8 @@ class MyInstitutionsController {
     // Internal testing with http://localhost:9200/kbplus/_search?q=subtype:'Subscription%20Offered'
     def result=[:]
 
+    result.institution = Org.findByShortcode(params.shortcode)
+
     // Get hold of some services we might use ;)
     org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
     org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
@@ -570,7 +572,7 @@ class MyInstitutionsController {
     }
     else if ( params.generate=='yes' ) {
       log.debug("Generate");
-      generate(materialiseFolder(shopping_basket.items))
+      generate(materialiseFolder(shopping_basket.items), result.institution)
       return
     }
 
@@ -748,9 +750,9 @@ class MyInstitutionsController {
     result
   }
 
-  def generate(slist) {
+  def generate(slist, inst) {
     def m = generateMatrix(slist)
-    exportWorkbook(m)
+    exportWorkbook(m, inst)
   }
 
   def generateMatrix(slist) {
@@ -815,7 +817,7 @@ class MyInstitutionsController {
     [ti_info:ti_info_arr,title_info:title_info_arr,sub_info:sub_info_arr]
   }
 
-  def exportWorkbook(m) {
+  def exportWorkbook(m, inst) {
 
     // read http://stackoverflow.com/questions/2824486/groovy-grails-how-do-you-stream-or-buffer-a-large-file-in-a-controllers-respon
 
@@ -827,7 +829,7 @@ class MyInstitutionsController {
     // Create two sheets in the excel document and name it First Sheet and
     // Second Sheet.
     //
-    HSSFSheet firstSheet = workbook.createSheet("FIRST SHEET");
+    HSSFSheet firstSheet = workbook.createSheet("Renewals Worksheet");
  
     // Cell style for a present TI
     HSSFCellStyle present_cell_style = workbook.createCellStyle();  
@@ -853,13 +855,17 @@ class MyInstitutionsController {
     cell.setCellValue(new HSSFRichTextString("Subscriber ID"));
     cell = row.createCell(cc++);
     cell.setCellValue(new HSSFRichTextString("Subscriber Name"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("Subscriber Shortcode"));
 
     row = firstSheet.createRow(rc++);
     cc=0;
     cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("Pending..."));
+    cell.setCellValue(new HSSFRichTextString("${inst.id}"));
     cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("Pending"));
+    cell.setCellValue(new HSSFRichTextString(inst.name));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString(inst.shortcode));
 
     row = firstSheet.createRow(rc++);
 
@@ -962,14 +968,15 @@ class MyInstitutionsController {
 
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
-  def uploadRenewalsWorksheet() {
+  def renewalsUpload() {
     def result = [:]
     log.debug("upload");
 
     if ( request.method == 'POST' ) {
-      def upload_mime_type = request.getFile("renewalFile")?.contentType
-      def upload_filename = request.getFile("renewalFile")?.getOriginalFilename()
-      log.debug("Uploaded so type: ${upload_mime_type} filename was ${upload_filename}");
+      def upload_mime_type = request.getFile("renewalsWorksheet")?.contentType
+      def upload_filename = request.getFile("renewalsWorksheet")?.getOriginalFilename()
+      log.debug("Uploaded worksheet type: ${upload_mime_type} filename was ${upload_filename}");
+      def input_stream = request.getFile("renewalsWorksheet")?.inputStream
       processRenewalUpload(input_stream, upload_filename, result)
     }
 
@@ -978,7 +985,12 @@ class MyInstitutionsController {
 
   def processRenewalUpload(input_stream, upload_filename, result) {
     log.debug("processRenewalUpload - opening upload input stream as HSSFWorkbook");
-    HSSFWorkbook wb = new HSSFWorkbook(input_stream);
+    if ( input_stream ) {
+      HSSFWorkbook wb = new HSSFWorkbook(input_stream);
+    }
+    else {
+      log.error("Input stream is null");
+    }
     log.debug("Done");
   }
 

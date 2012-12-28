@@ -90,10 +90,10 @@
                                        params="${[shortcode:org.shortcode]}">${org.name} - Subscriptions</g:link></li>
                            <li><g:link controller="myInstitutions" 
                                        action="renewalsSearch" 
-                                       params="${[shortcode:org.shortcode]}">Planning &amp; Renewals - Generate Worksheet (search)</g:link></li>
+                                       params="${[shortcode:org.shortcode]}">${org.name} - Generate Renewals Worksheet</g:link></li>
                            <li><g:link controller="myInstitutions" 
-                                       action="uploadRenewalsWorksheet" 
-                                       params="${[shortcode:org.shortcode]}">Planning &amp; Renewals - Import Worksheet</g:link></li>
+                                       action="renewalsUpload" 
+                                       params="${[shortcode:org.shortcode]}">${org.name} - Import Renewals</g:link></li>
                          </g:each>
                        </g:if>
                        <g:else>
