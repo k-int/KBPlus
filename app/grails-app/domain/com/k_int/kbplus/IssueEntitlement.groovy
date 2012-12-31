@@ -14,6 +14,8 @@ class IssueEntitlement implements Comparable {
   String coverageNote
   boolean coreTitle = false
   String ieReason
+  Date coreStatusStart
+  Date coreStatusEnd
 
   static belongsTo = [subscription: Subscription,
                       tipp: TitleInstancePackagePlatform]

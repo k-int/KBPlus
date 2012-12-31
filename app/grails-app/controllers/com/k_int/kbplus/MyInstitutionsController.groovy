@@ -1156,6 +1156,29 @@ class MyInstitutionsController {
     for ( int i=0; i<=ent_count; i++ ) {
       def entitlement = params.entitlements."${i}";
       log.debug("process entitlement[${i}]: ${entitlement}");
+
+      def dbtipp = TitleInstancePackagePlatform.get(entitlement.tipp_id)
+      def original_entitlement = IssueEntitlement.get(entitlement.entitlement_id)
+      def live_issue_entitlement = lookupOrCreateRefdataEntry('Entitlement Issue Status', 'Live');
+      def is_core = entitlement.is_core=='Y' ? true : false
+
+      // entitlement.is_core
+      def new_ie =  new IssueEntitlement(subscription:new_subscription,
+                                         status: live_issue_entitlement,
+                                         tipp: dbtipp,
+                                         startDate:dbtipp.startDate,
+                                         startVolume:dbtipp.startVolume,
+                                         startIssue:dbtipp.startIssue,
+                                         endDate:dbtipp.endDate,
+                                         endVolume:dbtipp.endVolume,
+                                         endIssue:dbtipp.endIssue,
+                                         embargo:dbtipp.embargo,
+                                         coverageDepth:dbtipp.coverageDepth,
+                                         coverageNote:dbtipp.coverageNote,
+                                         coreTitle:is_core,
+                                         coreStatusStart:null,
+                                         coreStatusEnd:null
+                                         ).save();
     }
     log.debug("done entitlements...");
 
