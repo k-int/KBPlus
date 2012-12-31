@@ -94,9 +94,15 @@
                     <dd><g:relation domain='Subscription' 
                             pk='${subscriptionInstance.id}' 
                             field='owner' 
-                            class='refdataedit'
+                            class='reldataedit'
                             id='ownerLicense'>${subscriptionInstance?.owner?.reference}</g:relation></dd>
                 </dl>
+                 <dl>
+                      <dt><label class="control-label" for="isPublic">Public?</label></dt>
+                      <dd>
+                        <g:refdataValue val="${subscriptionInstance.isPublic?.value}" domain="Subscription" pk="${subscriptionInstance.id}" field="isPublic" cat='YN' class="${editable?'refdataedit':''}"/>
+                      </dd>
+                  </dl>
                 <dl>
                     <dt>Package Name</dt>
                     <dd>
@@ -358,7 +364,26 @@
            tooltip: 'Click to edit...'
          });
 
-         $('dd span.refdataedit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}" action="genericSetRel" />', {
+         $('.refdataedit').editable('<g:createLink controller="ajax" action="genericSetRef" />', {
+           data   : {'Yes':'Yes', 'No':'No'},
+           type   : 'select',
+           cancel : 'Cancel',
+           submit : 'OK',
+           id     : 'elementid',
+           tooltip: 'Click to edit...',
+           onblur        : 'ignore',
+           callback : function(value) {
+               var iconList = {
+                   'Yes' : 'greenTick',
+                   'No' : 'redCross'
+               };
+
+               var icon = $(document.createElement('span'));
+               $(this).prepend(icon.addClass('select-icon').addClass(iconList[value]));
+           }
+         });
+
+         $('dd span.reldataedit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}" action="genericSetRel" />', {
            loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:institution?.shortcode]}" action="availableLicenses" />',
            type   : 'select',
            cancel : 'Cancel',
