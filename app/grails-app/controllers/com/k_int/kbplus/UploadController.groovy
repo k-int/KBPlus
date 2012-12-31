@@ -102,6 +102,9 @@ class UploadController {
       flash.error="Problem processing ${upload_filename} : Unable to process file - Subscription with ID ${normalised_identifier} already exists in database";
       return false
     }
+
+    def issns_so_far = []
+    def eissns_so_far = []
     
 
     while ((nl = r.readNext()) != null) {
@@ -115,6 +118,29 @@ class UploadController {
         continue;
       else
         log.debug("has data");
+
+      if ( present(nl[1]) && ( nl[1].trim().length() > 8 ) ) {
+        def issn_to_add = nl[1].trim();
+        if ( issns_so_far.contains(issn_to_add) ) {
+          flash.error="Problem processing ${upload_filename} : The ISSN ${issn_to_add} appears to be repeated in the TIPP rows";
+          return false
+        }
+        else {
+          issns_so_far.add(issn_to_add)
+        }
+      }
+
+      if ( present(nl[2]) && ( nl[2].trim().length() > 8 ) ) {
+        def eissn_to_add = nl[2].trim();
+        if ( eissns_so_far.contains(eissn_to_add) ) {
+          flash.error="Problem processing ${upload_filename} : The rISSN ${eissn_to_add} appears to be repeated in the TIPP rows";
+          return false
+        }
+        else {
+          eissns_so_far.add(eissn_to_add)
+        }
+      }
+
 
       if ( present(nl[0] ) ) {
 
@@ -225,10 +251,10 @@ class UploadController {
                               contentProvider:prepared_so.provider,
                               impId:java.util.UUID.randomUUID().toString());
 
-    log.debug("Package created, save...");
     if ( new_pkg.save(flush:true) ) {
       //log.debug("New package ${pkg.identifier} saved");
       // Content Provider?
+      log.debug("Package [${new_pkg.id}] with identifier ${new_pkg.identifier} created......");
       if ( prepared_so.provider ) {
         OrgRole.assertOrgPackageLink(prepared_so.provider, new_pkg, cp_role);
       }
@@ -348,6 +374,8 @@ class UploadController {
     // Add titles to the new package
     prepared_so.titles.each { t ->
       if ( t.title && t.pkg && t.platform ) {
+
+        log.debug("Processing new so, looking for tipp. title:${t.title.id}, pkg:${t.pkg.id}, plat:${t.platform.id}");
       
         def dbtipp = TitleInstancePackagePlatform.findByPkgAndPlatformAndTitle(t.pkg,t.platform,t.title)
         if ( dbtipp == null ) {
@@ -374,11 +402,11 @@ class UploadController {
             }
           }
           else {
-            log.debug("TIPP Save OK ${dbtipp.id}");
+            log.debug("new TIPP Save OK ${dbtipp.id}");
           }
         }
         else {
-          log.error("TIPP already exists!!");
+          log.error("TIPP already exists!! This should never be the case as we are creating a new package!!!");
         }
       }
       else { 
