@@ -79,11 +79,11 @@
 
 
     <div class="container">
-      <button class="hidden-license-details btn" data-toggle="collapse" data-target="#collapseableSubDetails">Show/Hide Subscription Details <i class="icon-plus"></i></button>
+      <button class="hidden-license-details btn" data-toggle="collapse" data-target="#collapseableSubDetails">Show/Hide Subscription Details <i class="icon-minus"></i></button>
     </div>
 
 
-    <div id="collapseableSubDetails" class="container collapse">
+    <div id="collapseableSubDetails" class="container collapse in">
       <div class="row">
         <div class="span8"> 
             <br/>
