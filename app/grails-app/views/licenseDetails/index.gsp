@@ -29,28 +29,7 @@
 
 <g:inPlaceEdit domain="License" pk="${license.id}" style="padding-top: 5px;" field="reference" id="reference" class="${editable?'newipe':''}">${license.reference}</g:inPlaceEdit></h1>
 
-      <ul class="nav nav-pills">
-        <li class="active"><g:link controller="licenseDetails" 
-                                   action="index" 
-                                   params="${[id:params.id]}">License Details</g:link></li>
-
-        <li><g:link controller="licenseDetails" 
-                    action="documents" 
-                    params="${[id:params.id]}">Documents</g:link></li>
-
-        <li><g:link controller="licenseDetails" 
-                    action="links" 
-                    params="${[id:params.id]}">Links</g:link></li>
-
-        <li><g:link controller="licenseDetails" 
-                    action="notes" 
-                    params="${[id:params.id]}">Notes</g:link></li>
-
-        <li><g:link controller="licenseDetails" 
-                    action="history" 
-                    params="${[id:params.id]}">History</g:link></li>
-      </ul>
-
+      <g:render template="nav" contextPath="." />
     </div>
 
     <g:if test="${license.pendingChanges?.size() > 0}">

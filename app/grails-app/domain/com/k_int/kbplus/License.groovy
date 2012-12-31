@@ -194,7 +194,10 @@ class License {
     Set object_orgs = new HashSet();
     orgLinks.each { ol ->
       def perm_exists=false
-      ol.roleType.sharedPermissions.each { sp ->
+      if ( !ol.roleType )
+        log.warn("Org link with no role type! Org Link ID is ${ol.id}");
+
+      ol.roleType?.sharedPermissions.each { sp ->
         if ( sp.perm.code==perm )
           perm_exists=true;
       }

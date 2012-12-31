@@ -19,33 +19,7 @@
     <div class="container">
         <h1>${license.licensee?.name} ${license.type?.value} Licence : <span id="reference" class="ipe" style="padding-top: 5px;">${license.reference}</span></h1>
 
-        <ul class="nav nav-pills">
-            <li><g:link controller="licenseDetails"
-                        action="index"
-                        params="${[id:params.id]}">License Details</g:link></li>
-
-            <li><g:link controller="licenseDetails"
-                        action="documents"
-                        params="${[id:params.id]}">Documents</g:link></li>
-
-            <li><g:link controller="licenseDetails"
-                        action="links"
-                        params="${[id:params.id]}">Links</g:link></li>
-
-            <li><g:link controller="licenseDetails"
-                        action="notes"
-                        params="${[id:params.id]}">Notes</g:link></li>
-
-            <li><g:link controller="licenseDetails" 
-                        action="history" 
-                        params="${[id:params.id]}">History</g:link></li>
-
-            <li class="active"><g:link controller="additionalInfo" 
-                        action="additionalInfo" 
-                        params="${[id:params.id]}">Additional Information</g:link></li>
-
-        </ul>
-
+        <g:render template="nav" contextPath="." />
     </div>
 
 
@@ -64,7 +38,7 @@
           <tr>
             <td>${ol.org.name}</td>
             <td>
-              Connected to this license through role ${ol.roleType.value}.<br/>
+              Connected to this license through link ${ol.id} link role : ${ol.roleType?.value}.<br/>
               This role grants the following permissions to members of that org whose membership role also includes the permission<br/>
               <ul>
                 <g:each in="${ol.roleType?.sharedPermissions}" var="sp">
