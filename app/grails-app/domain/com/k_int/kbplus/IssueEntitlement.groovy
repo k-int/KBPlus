@@ -14,8 +14,8 @@ class IssueEntitlement implements Comparable {
   String coverageNote
   boolean coreTitle = false
   String ieReason
-  // Date coreStatusStart
-  // Date coreStatusEnd
+  Date coreStatusStart
+  Date coreStatusEnd
 
   static belongsTo = [subscription: Subscription,
                       tipp: TitleInstancePackagePlatform]
@@ -42,8 +42,8 @@ class IssueEntitlement implements Comparable {
       coverageNote column:'ie_coverage_note',type: 'text'
          coreTitle column:'ie_core_title'
           ieReason column:'ie_reason'
-   // coreStatusStart comumn:'ie_core_status_start'
-   //   coreStatusEnd comumn:'ie_core_status_end'
+   coreStatusStart comumn:'ie_core_status_start'
+     coreStatusEnd comumn:'ie_core_status_end'
   }
 
   static constraints = {
@@ -61,8 +61,8 @@ class IssueEntitlement implements Comparable {
     coverageNote(nullable:true, blank:true);
     coreTitle(nullable:true, blank:true);
     ieReason(nullable:true, blank:true);
-    // coreStatusStart(nullable:true, blank:true);
-    // coreStatusEnd(nullable:true, blank:true);
+    coreStatusStart(nullable:true, blank:true);
+    coreStatusEnd(nullable:true, blank:true);
 
   }
 

@@ -54,7 +54,7 @@
             <tbody>
               <g:each in="${entitlements}" var="e">
                 <tr>
-                  <td><input type="hidden" name="entitlements.${counter++}.tipp_id" value="${e.base_entitlement.tipp.id}"/>
+                  <td><input type="hidden" name="entitlements.${++counter}.tipp_id" value="${e.base_entitlement.tipp.id}"/>
 		      <input type="hidden" name="entitlements.${counter}.entitlement_id" value="${e.base_entitlement.id}"/>
                       <input type="hidden" name="entitlements.${counter}.is_core" value="${e.core}"/>
                       ${e.base_entitlement.tipp.title.title}</td>

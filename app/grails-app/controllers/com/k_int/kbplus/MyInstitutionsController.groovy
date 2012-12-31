@@ -1146,42 +1146,50 @@ class MyInstitutionsController {
     new_subscription.save(flush:true);
 
 
-    // List all actual st_title records, and diff that against the default from the ST file
-    def sub_titles = mdb.stTitle.find(owner:sub._id)
-
     if ( !new_subscription.issueEntitlements ) {
       new_subscription.issueEntitlements = new java.util.TreeSet()
     }
 
     for ( int i=0; i<=ent_count; i++ ) {
       def entitlement = params.entitlements."${i}";
-      log.debug("process entitlement[${i}]: ${entitlement}");
+      log.debug("process entitlement[${i}]: ${entitlement} - TIPP id is ${entitlement.tipp_id}");
 
       def dbtipp = TitleInstancePackagePlatform.get(entitlement.tipp_id)
-      def original_entitlement = IssueEntitlement.get(entitlement.entitlement_id)
-      def live_issue_entitlement = RefdataCategory.lookupOrCreate('Entitlement Issue Status', 'Live');
-      def is_core = entitlement.is_core=='Y' ? true : false
 
-      // entitlement.is_core
-      def new_ie =  new IssueEntitlement(subscription:new_subscription,
-                                         status: live_issue_entitlement,
-                                         tipp: dbtipp,
-                                         startDate:dbtipp.startDate,
-                                         startVolume:dbtipp.startVolume,
-                                         startIssue:dbtipp.startIssue,
-                                         endDate:dbtipp.endDate,
-                                         endVolume:dbtipp.endVolume,
-                                         endIssue:dbtipp.endIssue,
-                                         embargo:dbtipp.embargo,
-                                         coverageDepth:dbtipp.coverageDepth,
-                                         coverageNote:dbtipp.coverageNote,
-                                         coreTitle:is_core,
-                                         coreStatusStart:null,
-                                         coreStatusEnd:null
-                                         ).save();
+      if ( dbtipp ) {
+        def original_entitlement = IssueEntitlement.get(entitlement.entitlement_id)
+        def live_issue_entitlement = RefdataCategory.lookupOrCreate('Entitlement Issue Status', 'Live');
+        def is_core = entitlement.is_core=='Y' ? true : false
+
+
+
+        // entitlement.is_core
+        def new_ie =  new IssueEntitlement(subscription:new_subscription,
+                                           status: live_issue_entitlement,
+                                           tipp: dbtipp,
+                                           startDate:dbtipp.startDate,
+                                           startVolume:dbtipp.startVolume,
+                                           startIssue:dbtipp.startIssue,
+                                           endDate:dbtipp.endDate,
+                                           endVolume:dbtipp.endVolume,
+                                           endIssue:dbtipp.endIssue,
+                                           embargo:dbtipp.embargo,
+                                           coverageDepth:dbtipp.coverageDepth,
+                                           coverageNote:dbtipp.coverageNote,
+                                           coreTitle:is_core,
+                                           coreStatusStart:null,
+                                           coreStatusEnd:null
+                                           ).save();
+      }
+      else {
+        log.debug("Unable to locate tipp with id ${entitlement.tipp_id}");
+      }
     }
     log.debug("done entitlements...");
 
-    redirect action:'renewalsUpload', params: params
+    if ( new_subscription )
+      redirect controller:'subscriptionDetails', action:'index', id:new_subscription.id
+    else
+      redirect action:'renewalsUpload', params:params
   }
 }
