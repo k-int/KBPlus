@@ -64,7 +64,6 @@
               <td>Download Link</td>
               <td>Creator</td>
               <td>Type</td>
-              <td>Doc Store ID</td>
             </tr>
           </thead>
           <tbody>
@@ -81,7 +80,7 @@
                   </td>
                   <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="creator" id="docCreator" class="${editable?'newipe':''}">${docctx.owner.creator}</g:inPlaceEdit></td>
                   <td>${docctx.owner?.type?.value}</td>
-                  <td><g:if test="${docctx.owner?.uuid}">${docctx.owner?.uuid}</g:if></td>
+                  <!--${docctx.owner?.uuid}-->
                 </tr>
               </g:if>
             </g:each>
