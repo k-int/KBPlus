@@ -106,10 +106,6 @@
                     </dd>
                 </dl>
                 <dl>
-                    <dt>Vendor</dt>
-                    <dd><g:relationAutocomplete field="vendor" relatedClass="Org" typedownField="name" displayField="name"/></dd>
-                </dl>
-                <dl>
                     <dt>Consortia</dt>
                     <dd>${subscriptionInstance.getConsortia()?.name}</dd>
                 </dl>
