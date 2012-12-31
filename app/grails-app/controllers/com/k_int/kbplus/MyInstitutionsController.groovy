@@ -1112,7 +1112,7 @@ class MyInstitutionsController {
 
     def new_subscription = new Subscription(
                                  identifier: "${db_sub.identifier}:${result.institution.name}",
-                                 status:lookupOrCreateRefdataEntry('Subscription Status','Current'),
+                                 status:RefdataCategory.lookupOrCreate('Subscription Status','Current'),
                                  impId:null,
                                  name: db_sub.name,
                                  startDate: db_sub.startDate,
@@ -1130,7 +1130,7 @@ class MyInstitutionsController {
       // assert an org-role
       def org_link = new OrgRole(org:result.institution,
                                  sub: new_subscription,
-                                 roleType: lookupOrCreateRefdataEntry('Organisational Role','Subscriber')).save();
+                                 roleType: RefdataCategory.lookupOrCreate('Organisational Role','Subscriber')).save();
 
       // Copy any links from SO
       db_sub.orgRelations.each { or ->
@@ -1159,7 +1159,7 @@ class MyInstitutionsController {
 
       def dbtipp = TitleInstancePackagePlatform.get(entitlement.tipp_id)
       def original_entitlement = IssueEntitlement.get(entitlement.entitlement_id)
-      def live_issue_entitlement = lookupOrCreateRefdataEntry('Entitlement Issue Status', 'Live');
+      def live_issue_entitlement = RefdataCategory.lookupOrCreate('Entitlement Issue Status', 'Live');
       def is_core = entitlement.is_core=='Y' ? true : false
 
       // entitlement.is_core
