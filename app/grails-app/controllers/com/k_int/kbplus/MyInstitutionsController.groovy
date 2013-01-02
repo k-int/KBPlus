@@ -948,7 +948,7 @@ class MyInstitutionsController {
       }
     }
     row = firstSheet.createRow(rc++);
-    cell = row.createCell(cc++);
+    cell = row.createCell(0);
     cell.setCellValue(new HSSFRichTextString("END"));
 
     firstSheet.autoSizeColumn(0); //adjust width of the first column
