@@ -10,7 +10,6 @@ class Package {
   RefdataValue packageType
   RefdataValue packageStatus
   RefdataValue packageListStatus
-  Org contentProvider
   Platform nominalPlatform
   Date dateCreated
   Date lastUpdated
@@ -42,7 +41,6 @@ class Package {
   static constraints = {
           packageType(nullable:true, blank:false)
         packageStatus(nullable:true, blank:false)
-      contentProvider(nullable:true, blank:false)
       nominalPlatform(nullable:true, blank:false)
     packageListStatus(nullable:true, blank:false)
   }
@@ -101,4 +99,15 @@ class Package {
 
     result
   }
+
+  @Transient
+  def getContentProvider() {
+    def result = null;
+    orgs.each { or ->
+      if ( or?.roleType?.value=='Content Provider' )
+        result = or.org;
+    }
+    result
+  }
+
 }

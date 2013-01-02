@@ -609,6 +609,11 @@ class MyInstitutionsController {
                     field = 'packages.cpname'
                   }
                 }
+                startYear {
+                  terms {
+                    field = 'startYear'
+                  }
+                }
               }
 
             }

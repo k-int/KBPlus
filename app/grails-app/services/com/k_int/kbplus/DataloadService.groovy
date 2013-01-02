@@ -3,6 +3,7 @@ package com.k_int.kbplus
 import com.k_int.kbplus.*
 import org.hibernate.ScrollMode
 import java.nio.charset.Charset
+import java.util.GregorianCalendar
 
 class DataloadService {
 
@@ -90,6 +91,7 @@ class DataloadService {
     }
 
     updateES(esclient, com.k_int.kbplus.Subscription.class) { sub ->
+      
       def result = [:]
       result._id = sub.impId
       result.name = sub.name
@@ -99,13 +101,21 @@ class DataloadService {
       result.consortiaId = sub.getConsortia()?.id
       result.consortiaName = sub.getConsortia()?.name
       result.packages = []
+
+      if ( sub.startDate ) {
+        GregorianCalendar c = new GregorianCalendar()
+        c.setTime(sub.startDate) 
+        result.startYear = "${c.get(Calendar.YEAR)}"
+        result.startYearAndMonth = "${c.get(Calendar.YEAR)}-${(c.get(Calendar.MONTH))+1}"
+      }
+
       sub.packages.each { sp ->
         def pgkinfo = [:]
         pgkinfo.pkgname = sp.pkg.name
         pgkinfo.pkgidstr= sp.pkg.identifier
         pgkinfo.pkgid= sp.pkg.id
-        pgkinfo.cpname = sp.pkg.contentProvider.name
-        pgkinfo.cpid = sp.pkg.contentProvider.id
+        pgkinfo.cpname = sp.pkg.contentProvider?.name
+        pgkinfo.cpid = sp.pkg.contentProvider?.id
         result.packages.add(pgkinfo);
       }
 
