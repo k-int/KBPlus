@@ -3,6 +3,7 @@ package com.k_int.kbplus
 import com.k_int.kbplus.*
 import org.hibernate.ScrollMode
 import java.nio.charset.Charset
+import java.util.GregorianCalendar
 
 class DataloadService {
 
@@ -90,6 +91,7 @@ class DataloadService {
     }
 
     updateES(esclient, com.k_int.kbplus.Subscription.class) { sub ->
+      
       def result = [:]
       result._id = sub.impId
       result.name = sub.name
@@ -99,6 +101,14 @@ class DataloadService {
       result.consortiaId = sub.getConsortia()?.id
       result.consortiaName = sub.getConsortia()?.name
       result.packages = []
+
+      if ( sub.startDate ) {
+        GregorianCalendar c = new GregorianCalendar()
+        c.setTime(sub.startDate) 
+        result.startYear = "${c.get(Calendar.YEAR)}"
+        result.startYearAndMonth = "${c.get(Calendar.YEAR)}-${(c.get(Calendar.MONTH))+1}"
+      }
+
       sub.packages.each { sp ->
         def pgkinfo = [:]
         pgkinfo.pkgname = sp.pkg.name
@@ -432,7 +442,7 @@ class DataloadService {
         def p = Package.findByImpId(pkg._id.toString())
         if ( p == null ) {
           def pkg_type = lookupOrCreateRefdataEntry('PackageTypes',pkg.type);
-          log.debug("New package: ${pkg.identifier}, ${pkg.name}, ${pkg_type}, ${pkg._id.toString()}, ${pkg.contentProvider.toString()}. Looking up org");
+          log.debug("New package: ${pkg.identifier}, ${pkg.name}, ${pkg_type}, ${pkg._id.toString()}, ${pkg.contentProvider?.toString()}. Looking up org");
           def cp = pkg.contentProvider != null ? Org.findByImpId(pkg.contentProvider.toString()) : null;
           log.debug("Create new package..");
           p = new Package(identifier:pkg.identifier,

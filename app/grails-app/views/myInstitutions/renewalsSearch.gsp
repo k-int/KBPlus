@@ -26,7 +26,7 @@
         <div class="span2">
           <div class="well">
               <g:each in="${facets}" var="facet">
-                <h5>${facet.key}</h5>
+                <h5><g:message code="facet.so.${facet.key}" default="${facet.key}" /></h5>
                     <g:each in="${facet.value}" var="fe">
                       <g:set var="facetname" value="${facet.key}:${fe.display}" />
                       <div><g:checkBox class="pull-right" name="${facetname}" value="${params[facetname]}" onClick=""/>${fe.display} (${fe.count})</div>

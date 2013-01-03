@@ -91,6 +91,14 @@ curl -X PUT "localhost:9200/kbplus/com.k_int.kbplus.Subscription/_mapping" -d '{
       "consortiaName" : {
         type : "string",
         index : "not_analyzed"
+      } ,
+      "startYear" : {
+        type : "string",
+        index : "not_analyzed"
+      },
+      "startYearAndMonth" : {
+        type : "string",
+        index : "not_analyzed"
       }
     }
   }
@@ -107,6 +115,7 @@ curl -X PUT "localhost:9200/kbplus/com.k_int.kbplus.License/_mapping" -d '{
     }
   }
 }'
+
 # Load MYSQL
 
 # Trigger ES reindex
