@@ -104,8 +104,8 @@ class DataloadService {
         pgkinfo.pkgname = sp.pkg.name
         pgkinfo.pkgidstr= sp.pkg.identifier
         pgkinfo.pkgid= sp.pkg.id
-        pgkinfo.cpname = sp.pkg.contentProvider.name
-        pgkinfo.cpid = sp.pkg.contentProvider.id
+        pgkinfo.cpname = sp.pkg.contentProvider?.name
+        pgkinfo.cpid = sp.pkg.contentProvider?.id
         result.packages.add(pgkinfo);
       }
 
