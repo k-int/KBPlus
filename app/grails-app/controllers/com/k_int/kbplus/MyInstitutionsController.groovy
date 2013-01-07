@@ -596,7 +596,7 @@ class MyInstitutionsController {
     log.debug("Search : ${params}");
     log.debug("Start year filters: ${params.startYear}");
     params.each { p ->
-      if ( p.key.startsWith('startYear') ) {
+      if ( p.key.startsWith('fct:') ) {
         log.debug("start year ${p.key} : -${p.value}-");
       }
     }
