@@ -30,6 +30,7 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.userAlerts = alertsService.getAllVisibleAlerts(result.user);
     result.staticAlerts = alertsService.getStaticAlerts(request);
+
     
     log.debug("result.userAlerts: ${result.userAlerts}");
     log.debug("result.userAlerts.size(): ${result.userAlerts.size()}");
@@ -98,6 +99,11 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
+    if ( !checkUserIsMember(result.user, result.institution) ) {
+      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+      return;
+    }
+
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
     def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
 
@@ -121,6 +127,11 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
+    if ( !checkUserIsMember(result.user, result.institution) ) {
+      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+      return;
+    }
+
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
     def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
 
@@ -143,6 +154,11 @@ class MyInstitutionsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
+
+    if ( !checkUserIsMember(result.user, result.institution) ) {
+      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+      return;
+    }
 
     def paginate_after = params.paginate_after ?: 19;
     result.max = params.max ? Integer.parseInt(params.max) : 10;
@@ -174,6 +190,11 @@ class MyInstitutionsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
+
+    if ( !checkUserIsMember(result.user, result.institution) ) {
+      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+      return;
+    }
 
     def paginate_after = params.paginate_after ?: 19;
     result.max = params.max ? Integer.parseInt(params.max) : 10;
@@ -251,6 +272,12 @@ class MyInstitutionsController {
   def cleanLicense() {
     def user = User.get(springSecurityService.principal.id)
     def org = Org.findByShortcode(params.shortcode)
+
+    if ( !checkUserIsMember(user, org) ) {
+      render(status: '401', text:"You do not have permission to access ${org.name}. Please request access on the profile page");
+      return;
+    }
+
     def license_type = RefdataCategory.lookupOrCreate('License Type','Actual')
     def license_status = RefdataCategory.lookupOrCreate('License Status','Current')
     def licenseInstance = new License( type:license_type, status:license_status )
@@ -275,6 +302,11 @@ class MyInstitutionsController {
     def user = User.get(springSecurityService.principal.id)
     def org = Org.findByShortcode(params.shortcode)
     
+    if ( !checkUserIsMember(user, org) ) {
+      render(status: '401', text:"You do not have permission to access ${org.name}. Please request access on the profile page");
+      return;
+    }
+
     switch (request.method) {
       case 'GET':
         [licenseInstance: new License(params)]
@@ -358,6 +390,12 @@ class MyInstitutionsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
+
+    if ( !checkUserIsMember(result.user, result.institution) ) {
+      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+      return;
+    }
+
     def license = License.get(params.baselicense)
     
 
@@ -404,6 +442,11 @@ class MyInstitutionsController {
 
     def user = User.get(springSecurityService.principal.id)
     def institution = Org.findByShortcode(params.shortcode)
+
+    if ( !checkUserIsMember(user, institution) ) {
+      render(status: '401', text:"You do not have permission to access ${institution.name}. Please request access on the profile page");
+      return;
+    }
 
     log.debug("processAddSubscription ${params}");
 
@@ -493,6 +536,12 @@ class MyInstitutionsController {
 
     def user = User.get(springSecurityService.principal.id)
     def institution = Org.findByShortcode(params.shortcode)
+
+    if ( !checkUserIsMember(user, institution) ) {
+      render(status: '401', text:"You do not have permission to access ${institution.name}. Please request access on the profile page");
+      return;
+    }
+
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
 
     // Find all licenses for this institution...
@@ -556,6 +605,11 @@ class MyInstitutionsController {
     org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
     org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
     result.user = springSecurityService.getCurrentUser()
+
+    if ( !checkUserIsMember(result.user, result.institution) ) {
+      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+      return;
+    }
 
     def shopping_basket = UserFolder.findByUserAndShortcode(result.user,'SOBasket') ?: new UserFolder(user:result.user, shortcode:'SOBasket').save();
 
@@ -982,6 +1036,11 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
+    if ( !checkUserIsMember(result.user, result.institution) ) {
+      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+      return;
+    }
+
     result.errors = []
 
     log.debug("upload");
@@ -1107,6 +1166,11 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
+    if ( !checkUserIsMember(result.user, result.institution) ) {
+      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+      return;
+    }
+
     log.debug("-> renewalsUpload params: ${params}");
 
     log.debug("entitlements...[${params.ecount}]");
@@ -1196,5 +1260,13 @@ class MyInstitutionsController {
       redirect controller:'subscriptionDetails', action:'index', id:new_subscription.id
     else
       redirect action:'renewalsUpload', params:params
+  }
+
+  def checkUserIsMember(user, org) {
+    def result = false;
+    def uo = UserOrg.findByUserAndOrg(user,org)
+    if ( uo && ( (uo.status==1) || (uo.status==3) ) ) {
+      result = true;
+    }
   }
 }
