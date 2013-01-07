@@ -594,6 +594,12 @@ class MyInstitutionsController {
   def renewalsSearch() {
 
     log.debug("Search : ${params}");
+    log.debug("Start year filters: ${params.startYear}");
+    params.each { p ->
+      if ( p.key.startsWith('startYear') ) {
+        log.debug("start year ${p.key} : -${p.value}-");
+      }
+    }
     // Be mindful that the behavior of this controller is strongly influenced by the schema setup in ES.
     // Specifically, see KBPlus/import/processing/processing/dbreset.sh for the mappings that control field type and analysers
     // Internal testing with http://localhost:9200/kbplus/_search?q=subtype:'Subscription%20Offered'
