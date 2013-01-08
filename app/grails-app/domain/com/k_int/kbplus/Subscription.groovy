@@ -173,7 +173,7 @@ class Subscription {
 
     controlledProperties.each { cp ->
       if ( oldMap[cp] != newMap[cp] ) {
-        changeNotificationService.notifySubscriptionChange(this.id, cp, oldMap[cp], newMap[cp], '');
+        changeNotificationService.notifySubscriptionChange(this.id, cp, oldMap[cp], newMap[cp], 'S');
       }
     }
   }

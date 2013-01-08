@@ -7,6 +7,8 @@ import com.k_int.kbplus.auth.*;
 
 public class PendingChangeMixin {
 
+  def genericOIDService
+
   def processAcceptChange(params, targetObject) {
     def user = User.get(springSecurityService.principal.id)
 
@@ -17,10 +19,20 @@ public class PendingChangeMixin {
 
     def pc = PendingChange.get(params.changeid)
 
-    targetObject[pc.updateProperty] = pc.updateValue
-    targetObject.save(flush:true)
+    if ( pc ) {
 
-    expungePendingChange(targetObject, pc);
+      if ( pc.changeType=='R' ) {
+        log.debug("accept reference change");
+        def newobj = genericOIDService.resolveOID(pc.updateValue)
+        targetObject[pc.updateProperty] = newobj
+      }
+      else {
+        targetObject[pc.updateProperty] = pc.updateValue
+      }
+      targetObject.save(flush:true)
+
+      expungePendingChange(targetObject, pc);
+    }
   }
 
   def processRejectChange(params, targetObject) {
@@ -32,7 +44,9 @@ public class PendingChangeMixin {
     }
 
     def pc = PendingChange.get(params.changeid)
-    expungePendingChange(targetObject, pc);
+    if ( pc ) {
+      expungePendingChange(targetObject, pc);
+    }
   }
 
 

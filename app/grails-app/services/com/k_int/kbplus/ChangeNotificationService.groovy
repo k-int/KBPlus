@@ -10,27 +10,30 @@ class ChangeNotificationService {
   // N,B, This is critical for this service as it's called from domain object OnChange handlers
   static transactional = false;
 
-  def notifyLicenseChange(l, propname, oldvalue, newvalue, note) {
+  def notifyLicenseChange(l, propname, oldvalue, newvalue, note, type='S') {
     log.debug("notifyLicenseChange...${l} create future");
 
     def future = executorService.submit({
       log.debug("inside submitted job");
-      processLicenseChange(l,propname,oldvalue,newvalue,note)
+      processLicenseChange(l,propname,oldvalue,newvalue,note,type)
     } as java.util.concurrent.Callable)
 
   }
 
-  def notifySubscriptionChange(l, propname, oldvalue, newvalue, note) {
+  def notifySubscriptionChange(l, propname, oldvalue, newvalue, note,type='S') {
     log.debug("notifySubscriptionChange...${l} create future");
 
     def future = executorService.submit({
       log.debug("inside submitted job");
-      processSubscriptionChange(l,propname,oldvalue,newvalue,note)
+      processSubscriptionChange(l,propname,oldvalue,newvalue,note,type)
     } as java.util.concurrent.Callable)
 
   }
 
-  def processLicenseChange(l, propname, oldvalue, newvalue, note) {
+  /**
+   *  type "S"imple or "R"eference
+   */ 
+  def processLicenseChange(l, propname, oldvalue, newvalue, note, type='S') {
     log.debug("processLicenseChange...");
 
     License lic_being_changed = License.get(l);
@@ -54,8 +57,9 @@ class ChangeNotificationService {
   
           PendingChange pc = new PendingChange(license:derived_licence,
                                                doc:change_doc,
+                                               changeType:type,
                                                updateProperty:propname, 
-                                               updateValue:newvalue,
+                                               updateValue: type=='R' ? "${newvalue.class.name}:${newvalue.id}" : newvalue,
                                                updateReason:"The template used to derive this licence has changed")
           if ( pc.save(flush:true) ) {
           }
@@ -74,7 +78,7 @@ class ChangeNotificationService {
     }
   }
 
-  def processSubscriptionChange(l, propname, oldvalue, newvalue, note) {
+  def processSubscriptionChange(l, propname, oldvalue, newvalue, note, type='S') {
     log.debug("processChange...");
 
     Subscription sub_being_changed = Subscription.get(l);
@@ -95,8 +99,9 @@ class ChangeNotificationService {
 
           PendingChange pc = new PendingChange(subscription:st,
                                                doc:change_doc,
+                                               changeType:type,
                                                updateProperty:propname,
-                                               updateValue:newvalue,
+                                               updateValue: type=='R' ? "${newvalue.class.name}:${newvalue.id}" : newvalue,
                                                updateReason:"The template used to derive this subscription has changed").save(flush:true);
 
         }

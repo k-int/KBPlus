@@ -224,10 +224,18 @@ class License {
     log.debug("license onChange....");
     def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
     def controlledProperties = ['licenseUrl','licenseeRef','licensorRef','noticePeriod','reference','concurrentUserCount']
+    def controlledRefProperties = [ 'concurrentUsers', 'remoteAccess', 'walkinAccess', 'multisiteAccess', 'partnersAccess', 'alumniAccess', 'ill', 'coursepack', 'vle', 'enterprise', 'pca', 'isPublic' ]
+
 
     controlledProperties.each { cp ->
       if ( oldMap[cp] != newMap[cp] ) {
-        changeNotificationService.notifyLicenseChange(this.id, cp, oldMap[cp], newMap[cp], '');
+        changeNotificationService.notifyLicenseChange(this.id, cp, oldMap[cp], newMap[cp], 'S');
+      }
+    }
+
+    controlledRefProperties.each { crp ->
+      if ( oldMap[crp] != newMap[crp] ) {
+        changeNotificationService.notifyLicenseChange(this.id, cp, oldMap[cp], newMap[cp], 'R');
       }
     }
 
