@@ -595,11 +595,49 @@ class MyInstitutionsController {
 
     log.debug("Search : ${params}");
     log.debug("Start year filters: ${params.startYear}");
+
+    StringWriter sw = new StringWriter()
+    def fq = null;
+    boolean has_filter = false
+  
     params.each { p ->
-      if ( p.key.startsWith('fct:') ) {
+      if ( p.key.startsWith('fct:') && p.value.equals("on") ) {
         log.debug("start year ${p.key} : -${p.value}-");
+
+        if ( !has_filter )
+          has_filter = true
+        else
+          sw.append(" OR ")
+
+        String[] filter_components = p.key.split(':');
+            switch ( filter_components[1] ) {
+              case 'consortiaName':
+                sw.append('consortiaName')
+                break;
+              case 'startYear':
+                sw.append('startYear')
+                break;
+              case 'contentProvider':
+                sw.append('packages.cpname')
+                break;
+            }
+            if ( filter_components[2].indexOf(' ') > 0 ) {
+              sw.append(":'");
+              sw.append(filter_components[2])
+              sw.append("'");
+            }
+            else {
+              sw.append(":");
+              sw.append(filter_components[2])
+            }
       }
     }
+
+    if ( has_filter ) {
+      fq = sw.toString();
+      log.debug("Filter Query: ${fq}");
+    }
+
     // Be mindful that the behavior of this controller is strongly influenced by the schema setup in ES.
     // Specifically, see KBPlus/import/processing/processing/dbreset.sh for the mappings that control field type and analysers
     // Internal testing with http://localhost:9200/kbplus/_search?q=subtype:'Subscription%20Offered'
@@ -648,6 +686,9 @@ class MyInstitutionsController {
           //def params_set=params.entrySet()
 
           def query_str = buildRenewalsQuery(params)
+          if ( fq ) 
+            query_str = query_str + " AND ( " + fq + " ) "
+          
           log.debug("query: ${query_str}");
 
           def search = esclient.search{
@@ -659,7 +700,7 @@ class MyInstitutionsController {
                 query_string (query: query_str)
               }
               facets {
-                consortia {
+                consortiaName {
                   terms {
                     field = 'consortiaName'
                   }
