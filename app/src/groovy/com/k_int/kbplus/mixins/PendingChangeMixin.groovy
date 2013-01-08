@@ -7,9 +7,8 @@ import com.k_int.kbplus.auth.*;
 
 public class PendingChangeMixin {
 
-  def genericOIDService
 
-  def processAcceptChange(params, targetObject) {
+  def processAcceptChange(params, targetObject, genericOIDService) {
     def user = User.get(springSecurityService.principal.id)
 
     if ( ! targetObject.hasPerm("edit",user) ) {

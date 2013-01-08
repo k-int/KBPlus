@@ -229,13 +229,16 @@ class License {
 
     controlledProperties.each { cp ->
       if ( oldMap[cp] != newMap[cp] ) {
-        changeNotificationService.notifyLicenseChange(this.id, cp, oldMap[cp], newMap[cp], 'S');
+        changeNotificationService.notifyLicenseChange(this.id, cp, oldMap[cp], newMap[cp], null, 'S');
       }
     }
 
     controlledRefProperties.each { crp ->
       if ( oldMap[crp] != newMap[crp] ) {
-        changeNotificationService.notifyLicenseChange(this.id, cp, oldMap[cp], newMap[cp], 'R');
+        log.debug("Sending reference change...");
+        def old_oid = oldMap[crp] ? "${oldMap[crp].class.name}:${oldMap[crp].id}" : null;
+        def new_oid = oldMap[crp] ? "${newMap[crp].class.name}:${newMap[crp].id}" : null;
+        changeNotificationService.notifyLicenseChange(this.id, crp, old_oid, new_oid, null, 'R');
       }
     }
 

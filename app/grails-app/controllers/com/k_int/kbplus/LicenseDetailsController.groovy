@@ -16,6 +16,7 @@ class LicenseDetailsController {
   def ESWrapperService
   def gazetteerService
   def alertsService
+  def genericOIDService
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
@@ -183,7 +184,7 @@ class LicenseDetailsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def acceptChange() {
-    processAcceptChange(params, License.get(params.id))
+    processAcceptChange(params, License.get(params.id), genericOIDService)
     redirect controller: 'licenseDetails', action:'index',id:params.id
   }
 

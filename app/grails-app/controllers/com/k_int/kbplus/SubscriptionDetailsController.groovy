@@ -15,6 +15,7 @@ class SubscriptionDetailsController {
   def ESWrapperService
   def gazetteerService
   def alertsService
+  def genericOIDService
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
@@ -476,7 +477,7 @@ class SubscriptionDetailsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def acceptChange() {
-    processAcceptChange(params, Subscription.get(params.id))
+    processAcceptChange(params, Subscription.get(params.id), genericOIDService)
     redirect controller: 'subscriptionDetails', action:'index',id:params.id
   }
 
