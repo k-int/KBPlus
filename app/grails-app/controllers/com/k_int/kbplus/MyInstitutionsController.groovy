@@ -127,8 +127,8 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
-    if ( !checkUserIsMember(result.user, result.institution) ) {
-      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+    if ( !checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
+      render(status: '401', text:"You do not have permission to add licences to ${result.institution.name}");
       return;
     }
 
@@ -191,8 +191,8 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
-    if ( !checkUserIsMember(result.user, result.institution) ) {
-      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+    if ( !checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
+      render(status: '401', text:"You do not have permission to add subscriptions to ${result.institution.name}. Please request editor access on the profile page");
       return;
     }
 
@@ -302,7 +302,7 @@ class MyInstitutionsController {
     def user = User.get(springSecurityService.principal.id)
     def org = Org.findByShortcode(params.shortcode)
     
-    if ( !checkUserIsMember(user, org) ) {
+    if ( !checkUserHasRole(user, org, 'INST_ADM') ) {
       render(status: '401', text:"You do not have permission to access ${org.name}. Please request access on the profile page");
       return;
     }
@@ -320,7 +320,7 @@ class MyInstitutionsController {
           redirect(url: request.getHeader('referer'))
           return
         }
-    
+
         def license_type = RefdataCategory.lookupOrCreate('License Type','Actual')
         def license_status = RefdataCategory.lookupOrCreate('License Status','Current')
         def licenseInstance = new License(reference:"Copy of ${baseLicense?.reference}",
@@ -1315,5 +1315,27 @@ class MyInstitutionsController {
     if ( uo && ( (uo.status==1) || (uo.status==3) ) ) {
       result = true;
     }
+    result
+  }
+
+  def checkUserHasRole(user, org, role) {
+    def uoq = UserOrg.createCriteria()
+    def grants = sc.list {
+      eq('user',user)
+      eq('org',org)
+      formalRole {
+        eq('authority',role)
+      }
+      or {
+        eq('status',1);
+        eq('status',3);
+      }
+    }
+
+    if ( grants && grants.size() > 0 )
+      return true
+
+    return false
+
   }
 }
