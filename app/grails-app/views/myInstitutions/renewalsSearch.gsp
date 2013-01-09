@@ -28,8 +28,8 @@
               <g:each in="${facets}" var="facet">
                 <h5><g:message code="facet.so.${facet.key}" default="${facet.key}" /></h5>
                     <g:each in="${facet.value}" var="fe">
-                      <g:set var="facetname" value="${facet.key}:${fe.display}" />
-                      <div><g:checkBox class="pull-right" name="${facetname}" value="${params[facetname]}" onClick=""/>${fe.display} (${fe.count})</div>
+                      <g:set var="facetname" value="fct:${facet.key}:${fe.display}" />
+                      <div><g:checkBox class="pull-right" name="${facetname}" value="${params[facetname]}" />${fe.display} (${fe.count})</div>
                     </g:each>
                 </li>
               </g:each>

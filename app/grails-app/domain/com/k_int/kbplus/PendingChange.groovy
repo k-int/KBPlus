@@ -8,6 +8,7 @@ class PendingChange {
   String updateProperty
   String updateValue
   String updateReason
+  String changeType
 
   static mapping = {
       subscription column:'pc_sub_fk'
@@ -16,6 +17,7 @@ class PendingChange {
     updateProperty column:'pc_update_prop'
        updateValue column:'pc_update_value'
       updateReason column:'pc_update_reason'
+        changeType column:'pc_change_type'
 
   }
 
@@ -26,5 +28,6 @@ class PendingChange {
     updateProperty(nullable:false, blank:false);
     updateValue(nullable:false, blank:false);
     updateReason(nullable:true, blank:false);
+    changeType(nullable:true, blank:false);
   }
 }

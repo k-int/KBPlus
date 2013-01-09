@@ -30,6 +30,7 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.userAlerts = alertsService.getAllVisibleAlerts(result.user);
     result.staticAlerts = alertsService.getStaticAlerts(request);
+
     
     log.debug("result.userAlerts: ${result.userAlerts}");
     log.debug("result.userAlerts.size(): ${result.userAlerts.size()}");
@@ -98,6 +99,11 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
+    if ( !checkUserIsMember(result.user, result.institution) ) {
+      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+      return;
+    }
+
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
     def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
 
@@ -121,6 +127,11 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
+    if ( !checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
+      render(status: '401', text:"You do not have permission to add licences to ${result.institution.name}");
+      return;
+    }
+
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
     def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
 
@@ -143,6 +154,11 @@ class MyInstitutionsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
+
+    if ( !checkUserIsMember(result.user, result.institution) ) {
+      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+      return;
+    }
 
     def paginate_after = params.paginate_after ?: 19;
     result.max = params.max ? Integer.parseInt(params.max) : 10;
@@ -174,6 +190,11 @@ class MyInstitutionsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
+
+    if ( !checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
+      render(status: '401', text:"You do not have permission to add subscriptions to ${result.institution.name}. Please request editor access on the profile page");
+      return;
+    }
 
     def paginate_after = params.paginate_after ?: 19;
     result.max = params.max ? Integer.parseInt(params.max) : 10;
@@ -251,6 +272,12 @@ class MyInstitutionsController {
   def cleanLicense() {
     def user = User.get(springSecurityService.principal.id)
     def org = Org.findByShortcode(params.shortcode)
+
+    if ( !checkUserIsMember(user, org) ) {
+      render(status: '401', text:"You do not have permission to access ${org.name}. Please request access on the profile page");
+      return;
+    }
+
     def license_type = RefdataCategory.lookupOrCreate('License Type','Actual')
     def license_status = RefdataCategory.lookupOrCreate('License Status','Current')
     def licenseInstance = new License( type:license_type, status:license_status )
@@ -275,6 +302,11 @@ class MyInstitutionsController {
     def user = User.get(springSecurityService.principal.id)
     def org = Org.findByShortcode(params.shortcode)
     
+    if ( !checkUserHasRole(user, org, 'INST_ADM') ) {
+      render(status: '401', text:"You do not have permission to access ${org.name}. Please request access on the profile page");
+      return;
+    }
+
     switch (request.method) {
       case 'GET':
         [licenseInstance: new License(params)]
@@ -288,7 +320,7 @@ class MyInstitutionsController {
           redirect(url: request.getHeader('referer'))
           return
         }
-    
+
         def license_type = RefdataCategory.lookupOrCreate('License Type','Actual')
         def license_status = RefdataCategory.lookupOrCreate('License Status','Current')
         def licenseInstance = new License(reference:"Copy of ${baseLicense?.reference}",
@@ -358,6 +390,12 @@ class MyInstitutionsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
+
+    if ( !checkUserIsMember(result.user, result.institution) ) {
+      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+      return;
+    }
+
     def license = License.get(params.baselicense)
     
 
@@ -404,6 +442,11 @@ class MyInstitutionsController {
 
     def user = User.get(springSecurityService.principal.id)
     def institution = Org.findByShortcode(params.shortcode)
+
+    if ( !checkUserIsMember(user, institution) ) {
+      render(status: '401', text:"You do not have permission to access ${institution.name}. Please request access on the profile page");
+      return;
+    }
 
     log.debug("processAddSubscription ${params}");
 
@@ -493,6 +536,12 @@ class MyInstitutionsController {
 
     def user = User.get(springSecurityService.principal.id)
     def institution = Org.findByShortcode(params.shortcode)
+
+    if ( !checkUserIsMember(user, institution) ) {
+      render(status: '401', text:"You do not have permission to access ${institution.name}. Please request access on the profile page");
+      return;
+    }
+
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
 
     // Find all licenses for this institution...
@@ -545,6 +594,50 @@ class MyInstitutionsController {
   def renewalsSearch() {
 
     log.debug("Search : ${params}");
+    log.debug("Start year filters: ${params.startYear}");
+
+    StringWriter sw = new StringWriter()
+    def fq = null;
+    boolean has_filter = false
+  
+    params.each { p ->
+      if ( p.key.startsWith('fct:') && p.value.equals("on") ) {
+        log.debug("start year ${p.key} : -${p.value}-");
+
+        if ( !has_filter )
+          has_filter = true
+        else
+          sw.append(" OR ")
+
+        String[] filter_components = p.key.split(':');
+            switch ( filter_components[1] ) {
+              case 'consortiaName':
+                sw.append('consortiaName')
+                break;
+              case 'startYear':
+                sw.append('startYear')
+                break;
+              case 'contentProvider':
+                sw.append('packages.cpname')
+                break;
+            }
+            if ( filter_components[2].indexOf(' ') > 0 ) {
+              sw.append(":'");
+              sw.append(filter_components[2])
+              sw.append("'");
+            }
+            else {
+              sw.append(":");
+              sw.append(filter_components[2])
+            }
+      }
+    }
+
+    if ( has_filter ) {
+      fq = sw.toString();
+      log.debug("Filter Query: ${fq}");
+    }
+
     // Be mindful that the behavior of this controller is strongly influenced by the schema setup in ES.
     // Specifically, see KBPlus/import/processing/processing/dbreset.sh for the mappings that control field type and analysers
     // Internal testing with http://localhost:9200/kbplus/_search?q=subtype:'Subscription%20Offered'
@@ -556,6 +649,11 @@ class MyInstitutionsController {
     org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
     org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
     result.user = springSecurityService.getCurrentUser()
+
+    if ( !checkUserIsMember(result.user, result.institution) ) {
+      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+      return;
+    }
 
     def shopping_basket = UserFolder.findByUserAndShortcode(result.user,'SOBasket') ?: new UserFolder(user:result.user, shortcode:'SOBasket').save();
 
@@ -588,6 +686,9 @@ class MyInstitutionsController {
           //def params_set=params.entrySet()
 
           def query_str = buildRenewalsQuery(params)
+          if ( fq ) 
+            query_str = query_str + " AND ( " + fq + " ) "
+          
           log.debug("query: ${query_str}");
 
           def search = esclient.search{
@@ -599,7 +700,7 @@ class MyInstitutionsController {
                 query_string (query: query_str)
               }
               facets {
-                consortia {
+                consortiaName {
                   terms {
                     field = 'consortiaName'
                   }
@@ -982,6 +1083,11 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
+    if ( !checkUserIsMember(result.user, result.institution) ) {
+      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+      return;
+    }
+
     result.errors = []
 
     log.debug("upload");
@@ -1107,6 +1213,11 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
+    if ( !checkUserIsMember(result.user, result.institution) ) {
+      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+      return;
+    }
+
     log.debug("-> renewalsUpload params: ${params}");
 
     log.debug("entitlements...[${params.ecount}]");
@@ -1196,5 +1307,35 @@ class MyInstitutionsController {
       redirect controller:'subscriptionDetails', action:'index', id:new_subscription.id
     else
       redirect action:'renewalsUpload', params:params
+  }
+
+  def checkUserIsMember(user, org) {
+    def result = false;
+    def uo = UserOrg.findByUserAndOrg(user,org)
+    if ( uo && ( (uo.status==1) || (uo.status==3) ) ) {
+      result = true;
+    }
+    result
+  }
+
+  def checkUserHasRole(user, org, role) {
+    def uoq = UserOrg.createCriteria()
+    def grants = sc.list {
+      eq('user',user)
+      eq('org',org)
+      formalRole {
+        eq('authority',role)
+      }
+      or {
+        eq('status',1);
+        eq('status',3);
+      }
+    }
+
+    if ( grants && grants.size() > 0 )
+      return true
+
+    return false
+
   }
 }
