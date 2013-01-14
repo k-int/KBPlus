@@ -97,12 +97,12 @@
                             class='reldataedit'
                             id='ownerLicense'>${subscriptionInstance?.owner?.reference}</g:relation></dd>
                 </dl>
-                 <dl>
-                      <dt><label class="control-label" for="isPublic">Public?</label></dt>
-                      <dd>
-                        <g:refdataValue val="${subscriptionInstance.isPublic?.value}" domain="Subscription" pk="${subscriptionInstance.id}" field="isPublic" cat='YN' class="${editable?'refdataedit':''}"/>
-                      </dd>
-                  </dl>
+                <dl>
+                  <dt><label class="control-label" for="isPublic">Public?</label></dt>
+                  <dd>
+                    <g:refdataValue val="${subscriptionInstance.isPublic?.value}" domain="Subscription" pk="${subscriptionInstance.id}" field="isPublic" cat='YN' class="${editable?'refdataedit':''}"/>
+                  </dd>
+                </dl>
                 <dl>
                     <dt>Package Name</dt>
                     <dd>

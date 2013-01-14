@@ -135,7 +135,7 @@
                   <dl>
                       <dt><label class="control-label" for="licenseeRef">Public?</label></dt>
                       <dd>
-                        <g:refdataValue val="${license.isPublic?.value}" domain="License" pk="${license.id}" field="isPublic" cat='YN' class="${editable?'refdataedit':''}"/>
+                        <g:refdataValue val="${license.isPublic?.value}" domain="License" pk="${license.id}" field="isPublic" cat='YN' class="${editable?'ynrefdataedit':''}"/>
                       </dd>
                   </dl>
 
@@ -327,6 +327,26 @@
                $(this).prepend(icon.addClass('select-icon').addClass(iconList[value]));
            }
          });
+
+         $('.ynrefdataedit').editable('<g:createLink controller="ajax" action="genericSetRef" />', {
+           data   : {'Yes':'Yes', 'No':'No'},
+           type   : 'select',
+           cancel : 'Cancel',
+           submit : 'OK',
+           id     : 'elementid',
+           tooltip: 'Click to edit...',
+           onblur        : 'ignore',
+           callback : function(value) {
+               var iconList = {
+                   'Yes' : 'greenTick',
+                   'No' : 'redCross'
+               };
+
+               var icon = $(document.createElement('span'));
+               $(this).prepend(icon.addClass('select-icon').addClass(iconList[value]));
+           }
+         });
+
 
          $('.cuedit').editable('<g:createLink controller="ajax" action="genericSetRef" />', {
            data   : {'No limit':'No limit', 'Specified':'Specified','Not Specified':'Not Specified', 'Other':'Other'},
