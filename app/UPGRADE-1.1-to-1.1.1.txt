@@ -1,1 +1,13 @@
-select 'nothing to do';
+insert into refdata_category(rdc_id, rdc_description) VALUES (27,'YN');
+insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 27, 'Yes', 'greenTick');
+insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 27, 'No', 'redCross');
+
+select (@yno_yes:=rdv_id) from refdata_value, refdata_category where rdv_owner = rdc_id and rdv_value='Yes' and rdc_description = 'YNO';
+select (@yno_no:=rdv_id) from refdata_value, refdata_category where rdv_owner = rdc_id and rdv_value='No' and rdc_description = 'YNO';
+
+select (@yn_yes:=rdv_id) from refdata_value, refdata_category where rdv_owner = rdc_id and rdv_value='Yes' and rdc_description = 'YN';
+select (@yn_no:=rdv_id) from refdata_value, refdata_category where rdv_owner = rdc_id and rdv_value='No' and rdc_description = 'YN';
+
+update license set lic_is_public_rdv_fk = @yn_yes where lic_is_public_rdv_fk = @yno_yes;
+update license set lic_is_public_rdv_fk = @yn_no where lic_is_public_rdv_fk = @yno_no;
+
