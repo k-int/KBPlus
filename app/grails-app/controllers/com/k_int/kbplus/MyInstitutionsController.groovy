@@ -867,6 +867,10 @@ class MyInstitutionsController {
 
     log.debug("pre-pre-process");
 
+    boolean first = true;
+
+    def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+
     // Step one - Assemble a list of all titles and packages
     slist.each { sub ->
 
@@ -882,15 +886,26 @@ class MyInstitutionsController {
       sub.issueEntitlements.each { ie ->
         def title_info = titleMap[ie.tipp.title.id]
         if ( !title_info ) {
+          // log.debug("Adding ie: ${ie}");
           title_info = [:]
           title_info.title_idx = titleMap.size()
           title_info.id = ie.tipp.title.id;
           title_info.issn = ie.tipp.title.getIdentifierValue('ISSN');
           title_info.eissn = ie.tipp.title.getIdentifierValue('eISSN');
           title_info.title = ie.tipp.title.title
+          if ( first ) {
+            if ( ie.startDate )
+              title_info.current_start_date = formatter.format(ie.startDate)
+            if ( ie.endDate )
+              title_info.current_end_date = formatter.format(ie.endDate)
+            title_info.current_embargo = ie.embargo
+            title_info.current_depth = ie.coverageDepth
+            // log.debug("added title info: ${title_info}");
+          }
           titleMap[ie.tipp.title.id] = title_info;
         }
       }
+      first=false
     }
 
     log.debug("Result will be a matrix of size ${titleMap.size()} by ${subscriptionMap.size()}");
@@ -991,7 +1006,7 @@ class MyInstitutionsController {
     
 
     row = firstSheet.createRow(rc++);
-    cc=4
+    cc=8
     m.sub_info.each { sub ->
       cell = row.createCell(cc++);
       cell.setCellValue(new HSSFRichTextString("${sub.sub_id}"));
@@ -1008,7 +1023,15 @@ class MyInstitutionsController {
     cell.setCellValue(new HSSFRichTextString("ISSN"));
     cell = row.createCell(cc++);
     cell.setCellValue(new HSSFRichTextString("eISSN"));
-    
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("current Start Date"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("Current End Date"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("Current Coverage Depth"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("Current Embargo"));
+
     m.sub_info.each { sub ->
       cell = row.createCell(cc++);
       cell.setCellValue(new HSSFRichTextString("${sub.sub_name}"));
@@ -1033,9 +1056,26 @@ class MyInstitutionsController {
       // ISSN
       cell = row.createCell(cc++);
       cell.setCellValue(new HSSFRichTextString("${title.issn?:''}"));
+
       // eISSN
       cell = row.createCell(cc++);
       cell.setCellValue(new HSSFRichTextString("${title.eissn?:''}"));
+
+      // startDate
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("${title.current_start_date?:''}"));
+
+      // endDate
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("${title.current_end_date?:''}"));
+
+      // coverageDepth
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("${title.current_embargo?:''}"));
+
+      // embargo
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("${title.current_depth?:''}"));
 
       m.sub_info.each { sub ->
         cell = row.createCell(cc++);
@@ -1135,8 +1175,8 @@ class MyInstitutionsController {
       result.entitlements = []
 
       boolean processing = true
-      // Step three, process each title row, starting at row 7(6)
-      for (int i=7;((i<firstSheet.getLastRowNum())&&(processing)); i++) {
+      // Step three, process each title row, starting at row 11(10)
+      for (int i=11;((i<firstSheet.getLastRowNum())&&(processing)); i++) {
         HSSFRow title_row = firstSheet.getRow(i)
         // Title ID
         def title_id = title_row.getCell(0).toString()
