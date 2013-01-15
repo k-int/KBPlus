@@ -6,8 +6,11 @@ import grails.converters.*
 import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.MarkupBuilder
 import com.k_int.kbplus.auth.*;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;  
+import org.apache.poi.hslf.model.*;
+
 
 class MyInstitutionsController {
 
@@ -944,13 +947,15 @@ class MyInstitutionsController {
 
     HSSFWorkbook workbook = new HSSFWorkbook();
  
-    // CreationHelper createHelper = workbook.getCreationHelper();
+    CreationHelper factory = workbook.getCreationHelper();
 
     //
     // Create two sheets in the excel document and name it First Sheet and
     // Second Sheet.
     //
     HSSFSheet firstSheet = workbook.createSheet("Renewals Worksheet");
+    Drawing drawing = firstSheet.createDrawingPatriarch();
+
  
     // Cell style for a present TI
     HSSFCellStyle present_cell_style = workbook.createCellStyle();  
@@ -1089,6 +1094,7 @@ class MyInstitutionsController {
             cell.setCellValue(new HSSFRichTextString(""));
             cell.setCellStyle(present_cell_style);  
           }
+          addCellComment(row, cell,"Hello\nWorld\nHere\nIs some text\nWith some new lines", drawing, factory);
         }
 
       }
@@ -1347,6 +1353,25 @@ class MyInstitutionsController {
       redirect controller:'subscriptionDetails', action:'index', id:new_subscription.id
     else
       redirect action:'renewalsUpload', params:params
+  }
+
+  def addCellComment(row, cell, comment_text, drawing, factory) {
+
+    // When the comment box is visible, have it show in a 1x3 space
+    ClientAnchor anchor = factory.createClientAnchor();
+    anchor.setCol1(cell.getColumnIndex());
+    anchor.setCol2(cell.getColumnIndex()+1);
+    anchor.setRow1(row.getRowNum());
+    anchor.setRow2(row.getRowNum()+3);
+
+    // Create the comment and set the text+author
+    def comment = drawing.createCellComment(anchor);
+    RichTextString str = factory.createRichTextString(comment_text);
+    comment.setString(str);
+    comment.setAuthor("KBPlus System");
+
+    // Assign the comment to the cell
+    cell.setCellComment(comment);
   }
 
   def checkUserIsMember(user, org) {
