@@ -931,8 +931,17 @@ class MyInstitutionsController {
       sub.issueEntitlements.each { ie ->
         def title_info = titleMap[ie.tipp.title.id]
         def ie_info = [:]
+        log.debug("Adding tipp info ${ie.tipp.startDate} ${ie.tipp.derivedFrom}");
         ie_info.tipp_id = ie.tipp.id;
         ie_info.core = ie.coreTitle
+        ie_info.startDate_d = ie.tipp.startDate ?: ie.tipp.derivedFrom?.startDate
+        ie_info.startDate = ie_info.startDate_d ? formatter.format(ie_info.startDate_d) : null
+        ie_info.startVolume = ie.tipp.startVolume ?: ie.tipp.derivedFrom?.startVolume
+        ie_info.startIssue = ie.tipp.startIssue ?: ie.tipp.derivedFrom?.startIssue
+        ie_info.endDate_d = ie.endDate ?: ie.tipp.derivedFrom?.endDate
+        ie_info.endDate = ie_info.endDate_d ? formatter.format(ie_info.endDate_d) : null
+        ie_info.endVolume = ie.endVolume ?: ie.tipp.derivedFrom?.endVolume
+        ie_info.endIssue = ie.endIssue ?: ie.tipp.derivedFrom?.endIssue
         ti_info_arr[title_info.title_idx][sub_info.sub_idx] = ie_info
       }
     }
@@ -1094,7 +1103,7 @@ class MyInstitutionsController {
             cell.setCellValue(new HSSFRichTextString(""));
             cell.setCellStyle(present_cell_style);  
           }
-          addCellComment(row, cell,"Hello\nWorld\nHere\nIs some text\nWith some new lines", drawing, factory);
+          addCellComment(row, cell,"Default package offers the following for this title\nStart Date:${ie_info.startDate?:'Not set'}\nStart Volume:${ie_info.startVolume?:'Not set'}\nStart Issue:${ie_info.startIssue?:'Not set'}\nEnd Date:${ie_info.endDate?:'Not set'}\nEnd Volume:${ie_info.endVolume?:'Not set'}\nEnd Issue:${ie_info.endIssue?:'Not set'}\nSelect Title by setting this cell to Y", drawing, factory);
         }
 
       }
@@ -1360,9 +1369,9 @@ class MyInstitutionsController {
     // When the comment box is visible, have it show in a 1x3 space
     ClientAnchor anchor = factory.createClientAnchor();
     anchor.setCol1(cell.getColumnIndex());
-    anchor.setCol2(cell.getColumnIndex()+1);
+    anchor.setCol2(cell.getColumnIndex()+7);
     anchor.setRow1(row.getRowNum());
-    anchor.setRow2(row.getRowNum()+3);
+    anchor.setRow2(row.getRowNum()+9);
 
     // Create the comment and set the text+author
     def comment = drawing.createCellComment(anchor);
