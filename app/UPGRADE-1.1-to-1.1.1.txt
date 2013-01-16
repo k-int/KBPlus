@@ -11,3 +11,10 @@ select (@yn_no:=rdv_id) from refdata_value, refdata_category where rdv_owner = r
 update license set lic_is_public_rdv_fk = @yn_yes where lic_is_public_rdv_fk = @yno_yes;
 update license set lic_is_public_rdv_fk = @yn_no where lic_is_public_rdv_fk = @yno_no;
 
+
+insert into refdata_category(rdc_id, rdc_description) VALUES (28,'CoreStatus');
+insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 28, 'Yes', null);
+insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 28, 'No', null);
+insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 28, 'Print', null);
+insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 28, 'Electronic', null);
+insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 28, 'Print+Electronic', null);
