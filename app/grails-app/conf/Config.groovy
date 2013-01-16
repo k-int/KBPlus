@@ -147,3 +147,8 @@ auditLog {
 //     }
 //   }
 // }
+
+appDefaultPrefs {
+  globalDateFormat='yyyy/MM/dd'
+}
+

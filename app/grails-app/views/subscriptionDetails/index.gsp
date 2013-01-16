@@ -109,14 +109,14 @@
 
                 <dl><dt>Consortia</dt><dd>${subscriptionInstance.getConsortia()?.name}<br/></dd></dl>
 
-                <dl><dt>Start Date</dt><dd><span><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.startDate}"/></span>
+                <dl><dt>Start Date</dt><dd><span><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${subscriptionInstance.startDate}"/></span>
                 <input id="Subscription:${subscriptionInstance.id}:startDate" type="hidden" class="${editable?'dp1':''}" />
                 </dd>
                 </dl>
 
                <dl>
                     <dt>End Date</dt>
-                    <dd><span><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.endDate}"/></span>
+                    <dd><span><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${subscriptionInstance.endDate}"/></span>
                         <input id="Subscription:${subscriptionInstance.id}:endDate" type="hidden" class="${editable?'dp1':''}" />
                     </dd>
                </dl>
@@ -211,10 +211,10 @@
                                     cat="isCoreTitle"
                                     class="${editable?'cuedit':''}"/></td>
                 <td>
-                    <span class="datevalue"><g:formatDate format="dd MMMM yyyy" date="${ie.startDate}"/></span>
+                    <span class="datevalue"><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.startDate}"/></span>
                     <input id="IssueEntitlement:${ie.id}:startDate" type="hidden" class="${editable?'dp1':''}" />
                 </td>
-                <td><span class="datevalue"><g:formatDate format="dd MMMM yyyy" date="${ie.endDate}"/></span>
+                <td><span class="datevalue"><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.endDate}"/></span>
                     <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="${editable?'dp1':''}" />
                 </td>
                 <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="${editable?'fieldNote':''}">${ie.embargo}</g:inPlaceEdit></td>
