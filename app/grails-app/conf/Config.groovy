@@ -106,7 +106,8 @@ log4j = {
            'grails.app.domain',
            'grails.app.tagLib',
            // 'grails.app.conf',
-           'grails.app.jobs' // ,
+           'grails.app.jobs',
+           'grails.app.conf.BootStrap' // ,
         // 'org.springframework.security'
 }
 

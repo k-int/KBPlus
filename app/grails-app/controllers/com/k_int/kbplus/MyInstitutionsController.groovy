@@ -103,7 +103,9 @@ class MyInstitutionsController {
     result.institution = Org.findByShortcode(params.shortcode)
 
     if ( !checkUserIsMember(result.user, result.institution) ) {
-      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+      flash.error="You do not have permission to view ${result.institution.name}. Please request access on the profile page";
+      response.sendError(401)
+      // render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
       return;
     }
 
@@ -131,7 +133,9 @@ class MyInstitutionsController {
     result.institution = Org.findByShortcode(params.shortcode)
 
     if ( !checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
-      render(status: '401', text:"You do not have permission to add licences to ${result.institution.name}");
+      flash.error="You do not have permission to view ${result.institution.name}. Please request access on the profile page";
+      response.sendError(401)
+      // render(status: '401', text:"You do not have permission to add licences to ${result.institution.name}");
       return;
     }
 
@@ -159,7 +163,8 @@ class MyInstitutionsController {
     result.institution = Org.findByShortcode(params.shortcode)
 
     if ( !checkUserIsMember(result.user, result.institution) ) {
-      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+      flash.error="You do not have permission to access ${result.institution.name} pages. Please request access on the profile page";
+      response.sendError(401)
       return;
     }
 
@@ -195,7 +200,9 @@ class MyInstitutionsController {
     result.institution = Org.findByShortcode(params.shortcode)
 
     if ( !checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
-      render(status: '401', text:"You do not have permission to add subscriptions to ${result.institution.name}. Please request editor access on the profile page");
+      flash.error="You do not have permission to access ${result.institution.name} pages. Please request access on the profile page";
+      response.sendError(401)
+      // render(status: '401', text:"You do not have permission to add subscriptions to ${result.institution.name}. Please request editor access on the profile page");
       return;
     }
 
@@ -277,7 +284,9 @@ class MyInstitutionsController {
     def org = Org.findByShortcode(params.shortcode)
 
     if ( !checkUserIsMember(user, org) ) {
-      render(status: '401', text:"You do not have permission to access ${org.name}. Please request access on the profile page");
+      flash.error="You do not have permission to access ${org.name} pages. Please request access on the profile page";
+      response.sendError(401)
+      // render(status: '401', text:"You do not have permission to access ${org.name}. Please request access on the profile page");
       return;
     }
 
@@ -306,7 +315,9 @@ class MyInstitutionsController {
     def org = Org.findByShortcode(params.shortcode)
     
     if ( !checkUserHasRole(user, org, 'INST_ADM') ) {
-      render(status: '401', text:"You do not have permission to access ${org.name}. Please request access on the profile page");
+      flash.error="You do not have permission to access ${org.name} pages. Please request access on the profile page";
+      response.sendError(401)
+      // render(status: '401', text:"You do not have permission to access ${org.name}. Please request access on the profile page");
       return;
     }
 
@@ -319,8 +330,10 @@ class MyInstitutionsController {
         
         if ( ! baseLicense?.hasPerm("view",user) ) {
           log.debug("return 401....");
-          flash.message = message(code:'noperm',default:'You do not have edit permission for the selected license.')
-          redirect(url: request.getHeader('referer'))
+          flash.error="You do not have permission to view the selected license. Please request access on the profile page";
+          response.sendError(401)
+          // flash.message = message(code:'noperm',default:'You do not have edit permission for the selected license.')
+          // redirect(url: request.getHeader('referer'))
           return
         }
 
@@ -395,7 +408,9 @@ class MyInstitutionsController {
     result.institution = Org.findByShortcode(params.shortcode)
 
     if ( !checkUserIsMember(result.user, result.institution) ) {
-      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+      flash.error="You do not have permission to view ${result.institution.name}. Please request access on the profile page";
+      response.sendError(401)
+      // render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
       return;
     }
 
@@ -447,7 +462,9 @@ class MyInstitutionsController {
     def institution = Org.findByShortcode(params.shortcode)
 
     if ( !checkUserIsMember(user, institution) ) {
-      render(status: '401', text:"You do not have permission to access ${institution.name}. Please request access on the profile page");
+      flash.error="You do not have permission to view ${institution.name}. Please request access on the profile page";
+      response.sendError(401)
+      // render(status: '401', text:"You do not have permission to access ${institution.name}. Please request access on the profile page");
       return;
     }
 
@@ -541,7 +558,9 @@ class MyInstitutionsController {
     def institution = Org.findByShortcode(params.shortcode)
 
     if ( !checkUserIsMember(user, institution) ) {
-      render(status: '401', text:"You do not have permission to access ${institution.name}. Please request access on the profile page");
+      flash.error="You do not have permission to view ${institution.name}. Please request access on the profile page";
+      response.sendError(401)
+      // render(status: '401', text:"You do not have permission to access ${institution.name}. Please request access on the profile page");
       return;
     }
 
@@ -654,7 +673,9 @@ class MyInstitutionsController {
     result.user = springSecurityService.getCurrentUser()
 
     if ( !checkUserIsMember(result.user, result.institution) ) {
-      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+      flash.error="You do not have permission to view ${institution.name}. Please request access on the profile page";
+      response.sendError(401)
+      // render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
       return;
     }
 
@@ -1165,7 +1186,9 @@ class MyInstitutionsController {
     result.institution = Org.findByShortcode(params.shortcode)
 
     if ( !checkUserIsMember(result.user, result.institution) ) {
-      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+      flash.error="You do not have permission to view ${result.institution.name}. Please request access on the profile page";
+      response.sendError(401)
+      // render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
       return;
     }
 
@@ -1304,7 +1327,9 @@ class MyInstitutionsController {
     result.institution = Org.findByShortcode(params.shortcode)
 
     if ( !checkUserIsMember(result.user, result.institution) ) {
-      render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
+      flash.error="You do not have permission to view ${result.institution.name}. Please request access on the profile page";
+      response.sendError(401)
+      // render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
       return;
     }
 

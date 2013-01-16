@@ -39,43 +39,44 @@ class BootStrap {
     ensurePermGrant(institutionalUser,view_permission);
 
     if ( grailsApplication.config.localauth ) {
-      log.debug("localauth is set.. ensure user accounts present");
+      log.debug("localauth is set.. ensure user accounts present (From local config file) ${grailsApplication.config.sysusers}");
 
-      log.debug("Create admin user...");
-      def adminUser = User.findByUsername('admin')
-      if ( ! adminUser ) {
-        def newpass = java.util.UUID.randomUUID().toString()
-        log.error("No admin user found, create with temporary password ${newpass}")
-        adminUser = new User(
-                        username: 'admin',
-                        password: 'admin',
-                        display: 'Admin',
-                        email: 'admin@localhost',
+      grailsApplication.config.sysusers.each { su ->
+        log.debug("test ${su.name} ${su.pass} ${su.display} ${su.roles}");
+        def user = User.findByUsername(su.name)
+        if ( user ) {
+          if ( user.password != su.pass ) {
+            log.debug("Hard change of user password from config ${user.password} -> ${su.pass}");
+            user.password = su.pass;
+            user.save(failOnError: true)
+          }
+          else {
+            log.debug("${su.name} present and correct");
+          }
+        }
+        else {
+          log.debug("Create user...");
+          user = new User(
+                        username: su.name,
+                        password: su.pass,
+                        display: su.display,
+                        email: su.email,
                         enabled: true).save(failOnError: true)
-      }
+        }
 
-      if (!adminUser.authorities.contains(adminRole)) {
-        UserRole.create adminUser, adminRole
-      }
-
-      if (!adminUser.authorities.contains(userRole)) {
-        UserRole.create adminUser, userRole
+        log.debug("Add roles for ${su.name}");
+        su.roles.each { r ->
+          def role = Role.findByAuthority(r)
+          if ( ! ( user.authorities.contains(role) ) ) {
+            log.debug("  -> adding role ${role}");
+            UserRole.create user, role
+          }
+          else {
+            log.debug("  -> ${role} already present");
+          }
+        }
       }
     }
-
-    // Register extension types
-    def la = com.k_int.custprops.ObjectDefinition.ensureType('LicenseAttributes');
-    la.ensureProperty(propName:'Concurrent Users', propType:0);
-    la.ensureProperty(propName:'Remote Access', propType:0);
-    la.ensureProperty(propName:'Walk In Access', propType:0);
-    la.ensureProperty(propName:'Multisite Access', propType:0);
-    la.ensureProperty(propName:'Partners Access', propType:0);
-    la.ensureProperty(propName:'Alumni Access', propType:0);
-    la.ensureProperty(propName:'ILL', propType:0);
-    la.ensureProperty(propName:'Coursepack', propType:0);
-    la.ensureProperty(propName:'VLE', propType:0);
-    la.ensureProperty(propName:'Enterprise', propType:0);
-    la.ensureProperty(propName:'PCA', propType:0);
 
     def auto_approve_memberships = Setting.findByName('AutoApproveMemberships') ?: new Setting(name:'AutoApproveMemberships', tp:1, defvalue:'true', value:'true').save();
 
