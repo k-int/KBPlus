@@ -114,7 +114,7 @@
           <g:each in="${ua.notes}" var="n">
             <tr>
               <td>${n.owner.type?.value}</td>
-              <td><g:formatDate format="dd MMMM yyyy" date="${n.alert.createTime}" /></td>
+              <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${n.alert.createTime}" /></td>
               <td>${n.owner.user?.displayName}</td>
               <td>
                 <g:if test="${n.alert.sharingLevel==2}">- Shared with KB+ Community -</g:if>
