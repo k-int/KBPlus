@@ -16,6 +16,7 @@ class IssueEntitlement implements Comparable {
   String ieReason
   Date coreStatusStart
   Date coreStatusEnd
+  RefdataValue coreStatus
 
   static belongsTo = [subscription: Subscription,
                       tipp: TitleInstancePackagePlatform]
@@ -44,6 +45,7 @@ class IssueEntitlement implements Comparable {
           ieReason column:'ie_reason'
    coreStatusStart comumn:'ie_core_status_start'
      coreStatusEnd comumn:'ie_core_status_end'
+        coreStatus comumn:'ie_core_status_rv_fk'
   }
 
   static constraints = {
@@ -63,7 +65,7 @@ class IssueEntitlement implements Comparable {
     ieReason(nullable:true, blank:true);
     coreStatusStart(nullable:true, blank:true);
     coreStatusEnd(nullable:true, blank:true);
-
+    coreStatus(nullable:true, blank:true);
   }
 
 }

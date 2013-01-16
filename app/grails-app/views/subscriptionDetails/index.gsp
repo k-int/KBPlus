@@ -170,9 +170,6 @@
               <g:sortableColumn params="${params}" property="coreTitle" title="Core" />
               <g:sortableColumn params="${params}" property="startDate" title="Start Date" />
               <g:sortableColumn params="${params}" property="endDate" title="End Date" />
-              <th>Embargo</th>
-              <th>Coverage Depth</th>
-              <th>Coverage Note</th>
               <th>Actions</th>
             </tr>  
             <tr>  
@@ -189,9 +186,8 @@
               <th><span id="entitlementBatchEdit" class="${editable?'entitlementBatchEdit isedit':''}"></span><input type="hidden" name="bulk_core" id="bulk_core"/></th>
               <th><g:if test="${editable}"><span class="datevalue">edit</span> <input name="bulk_start_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
               <th><g:if test="${editable}"><span class="datevalue">edit</span> <input name="bulk_end_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
-              <th><span id="embargoBatchEdit" class="${editable?'embargoBatchEdit isedit':''}"></span><input type="hidden" name="bulk_embargo" id="bulk_embargo"></th>
-              <th><span id="coverageBatchEdit" class="${editable?'coverageBatchEdit isedit':''}"></span><input type="hidden" name="bulk_coverage" id="bulk_coverage"></th>
-              <th colspan="3"></th>
+
+              <th colspan="2"></th>
             </tr>
           <g:if test="${entitlements}">
             <g:each in="${entitlements}" var="ie">
@@ -217,9 +213,6 @@
                 <td><span class="datevalue"><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.endDate}"/></span>
                     <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="${editable?'dp1':''}" />
                 </td>
-                <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="embargo" id="embargo" class="${editable?'fieldNote':''}">${ie.embargo}</g:inPlaceEdit></td>
-                <td><g:inPlaceEdit domain="IssueEntitlement" pk="${ie.id}" field="coverageDepth" id="coverageDepth" class="${editable?'fieldNote':''}">${ie.coverageDepth}</g:inPlaceEdit></td>
-                <td>${ie.coverageNote}</td>  
                 <td>
                   <g:if test="${editable}"><g:link action="removeEntitlement" params="${[ieid:ie.id, sub:subscriptionInstance.id]}" onClick="return confirm('Are you sure you wish to delete this entitlement');">Delete</g:link></g:if>
                   <g:if test="${institutional_usage_identifier}">
@@ -236,14 +229,6 @@
           </g:if>
           </table>
           </g:form>
-        </dd>
-        <dt>Org Links</td>
-        <dd>
-          <ul>
-            <g:each in="${subscriptionInstance.orgRelations}" var="or">
-              <li>${or.org.name}:${or.roleType?.value}</li>
-            </g:each>
-          <ul>
         </dd>
       </dl>
 
