@@ -6,8 +6,11 @@ import grails.converters.*
 import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.MarkupBuilder
 import com.k_int.kbplus.auth.*;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;  
+import org.apache.poi.hslf.model.*;
+
 
 class MyInstitutionsController {
 
@@ -867,6 +870,10 @@ class MyInstitutionsController {
 
     log.debug("pre-pre-process");
 
+    boolean first = true;
+
+    def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+
     // Step one - Assemble a list of all titles and packages
     slist.each { sub ->
 
@@ -882,15 +889,26 @@ class MyInstitutionsController {
       sub.issueEntitlements.each { ie ->
         def title_info = titleMap[ie.tipp.title.id]
         if ( !title_info ) {
+          // log.debug("Adding ie: ${ie}");
           title_info = [:]
           title_info.title_idx = titleMap.size()
           title_info.id = ie.tipp.title.id;
           title_info.issn = ie.tipp.title.getIdentifierValue('ISSN');
           title_info.eissn = ie.tipp.title.getIdentifierValue('eISSN');
           title_info.title = ie.tipp.title.title
+          if ( first ) {
+            if ( ie.startDate )
+              title_info.current_start_date = formatter.format(ie.startDate)
+            if ( ie.endDate )
+              title_info.current_end_date = formatter.format(ie.endDate)
+            title_info.current_embargo = ie.embargo
+            title_info.current_depth = ie.coverageDepth
+            // log.debug("added title info: ${title_info}");
+          }
           titleMap[ie.tipp.title.id] = title_info;
         }
       }
+      first=false
     }
 
     log.debug("Result will be a matrix of size ${titleMap.size()} by ${subscriptionMap.size()}");
@@ -913,8 +931,17 @@ class MyInstitutionsController {
       sub.issueEntitlements.each { ie ->
         def title_info = titleMap[ie.tipp.title.id]
         def ie_info = [:]
+        log.debug("Adding tipp info ${ie.tipp.startDate} ${ie.tipp.derivedFrom}");
         ie_info.tipp_id = ie.tipp.id;
         ie_info.core = ie.coreTitle
+        ie_info.startDate_d = ie.tipp.startDate ?: ie.tipp.derivedFrom?.startDate
+        ie_info.startDate = ie_info.startDate_d ? formatter.format(ie_info.startDate_d) : null
+        ie_info.startVolume = ie.tipp.startVolume ?: ie.tipp.derivedFrom?.startVolume
+        ie_info.startIssue = ie.tipp.startIssue ?: ie.tipp.derivedFrom?.startIssue
+        ie_info.endDate_d = ie.endDate ?: ie.tipp.derivedFrom?.endDate
+        ie_info.endDate = ie_info.endDate_d ? formatter.format(ie_info.endDate_d) : null
+        ie_info.endVolume = ie.endVolume ?: ie.tipp.derivedFrom?.endVolume
+        ie_info.endIssue = ie.endIssue ?: ie.tipp.derivedFrom?.endIssue
         ti_info_arr[title_info.title_idx][sub_info.sub_idx] = ie_info
       }
     }
@@ -929,13 +956,15 @@ class MyInstitutionsController {
 
     HSSFWorkbook workbook = new HSSFWorkbook();
  
-    // CreationHelper createHelper = workbook.getCreationHelper();
+    CreationHelper factory = workbook.getCreationHelper();
 
     //
     // Create two sheets in the excel document and name it First Sheet and
     // Second Sheet.
     //
     HSSFSheet firstSheet = workbook.createSheet("Renewals Worksheet");
+    Drawing drawing = firstSheet.createDrawingPatriarch();
+
  
     // Cell style for a present TI
     HSSFCellStyle present_cell_style = workbook.createCellStyle();  
@@ -991,7 +1020,7 @@ class MyInstitutionsController {
     
 
     row = firstSheet.createRow(rc++);
-    cc=4
+    cc=8
     m.sub_info.each { sub ->
       cell = row.createCell(cc++);
       cell.setCellValue(new HSSFRichTextString("${sub.sub_id}"));
@@ -1008,7 +1037,15 @@ class MyInstitutionsController {
     cell.setCellValue(new HSSFRichTextString("ISSN"));
     cell = row.createCell(cc++);
     cell.setCellValue(new HSSFRichTextString("eISSN"));
-    
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("current Start Date"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("Current End Date"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("Current Coverage Depth"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("Current Embargo"));
+
     m.sub_info.each { sub ->
       cell = row.createCell(cc++);
       cell.setCellValue(new HSSFRichTextString("${sub.sub_name}"));
@@ -1033,9 +1070,26 @@ class MyInstitutionsController {
       // ISSN
       cell = row.createCell(cc++);
       cell.setCellValue(new HSSFRichTextString("${title.issn?:''}"));
+
       // eISSN
       cell = row.createCell(cc++);
       cell.setCellValue(new HSSFRichTextString("${title.eissn?:''}"));
+
+      // startDate
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("${title.current_start_date?:''}"));
+
+      // endDate
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("${title.current_end_date?:''}"));
+
+      // coverageDepth
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("${title.current_embargo?:''}"));
+
+      // embargo
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("${title.current_depth?:''}"));
 
       m.sub_info.each { sub ->
         cell = row.createCell(cc++);
@@ -1049,6 +1103,7 @@ class MyInstitutionsController {
             cell.setCellValue(new HSSFRichTextString(""));
             cell.setCellStyle(present_cell_style);  
           }
+          addCellComment(row, cell,"Default package offers the following for this title\nStart Date:${ie_info.startDate?:'Not set'}\nStart Volume:${ie_info.startVolume?:'Not set'}\nStart Issue:${ie_info.startIssue?:'Not set'}\nEnd Date:${ie_info.endDate?:'Not set'}\nEnd Volume:${ie_info.endVolume?:'Not set'}\nEnd Issue:${ie_info.endIssue?:'Not set'}\nSelect Title by setting this cell to Y", drawing, factory);
         }
 
       }
@@ -1135,8 +1190,8 @@ class MyInstitutionsController {
       result.entitlements = []
 
       boolean processing = true
-      // Step three, process each title row, starting at row 7(6)
-      for (int i=7;((i<firstSheet.getLastRowNum())&&(processing)); i++) {
+      // Step three, process each title row, starting at row 11(10)
+      for (int i=11;((i<firstSheet.getLastRowNum())&&(processing)); i++) {
         HSSFRow title_row = firstSheet.getRow(i)
         // Title ID
         def title_id = title_row.getCell(0).toString()
@@ -1307,6 +1362,25 @@ class MyInstitutionsController {
       redirect controller:'subscriptionDetails', action:'index', id:new_subscription.id
     else
       redirect action:'renewalsUpload', params:params
+  }
+
+  def addCellComment(row, cell, comment_text, drawing, factory) {
+
+    // When the comment box is visible, have it show in a 1x3 space
+    ClientAnchor anchor = factory.createClientAnchor();
+    anchor.setCol1(cell.getColumnIndex());
+    anchor.setCol2(cell.getColumnIndex()+7);
+    anchor.setRow1(row.getRowNum());
+    anchor.setRow2(row.getRowNum()+9);
+
+    // Create the comment and set the text+author
+    def comment = drawing.createCellComment(anchor);
+    RichTextString str = factory.createRichTextString(comment_text);
+    comment.setString(str);
+    comment.setAuthor("KBPlus System");
+
+    // Assign the comment to the cell
+    cell.setCellComment(comment);
   }
 
   def checkUserIsMember(user, org) {
