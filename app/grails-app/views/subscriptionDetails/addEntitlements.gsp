@@ -75,8 +75,8 @@
                     <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
                     <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
                     <td>${ie.coreTitle}</td>
-                    <td><g:formatDate format="dd MMMM yyyy" date="${ie.startDate}"/></td>
-                    <td><g:formatDate format="dd MMMM yyyy" date="${ie.endDate}"/></td>
+                    <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.startDate}"/></td>
+                    <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.endDate}"/></td>
                     <td>${ie.embargo}</td>
                     <td>${ie.coverageDepth}</td>
                     <td>${ie.coverageNote}</td>
