@@ -38,6 +38,7 @@
             <thead>
               <tr>
                 <td>Title</td>
+                <td>From Pkg</td>
                 <td>ISSN</td>
                 <td>eISSN</td>
                 <td>Start Date</td>
@@ -58,6 +59,7 @@
 		      <input type="hidden" name="entitlements.${counter}.entitlement_id" value="${e.base_entitlement.id}"/>
                       <input type="hidden" name="entitlements.${counter}.is_core" value="${e.core}"/>
                       ${e.base_entitlement.tipp.title.title}</td>
+                  <td>${e.base_entitlement.tipp.pkg.id}</td>
                   <td>${e.base_entitlement.tipp.title.getIdentifierValue('ISSN')}</td>
                   <td>${e.base_entitlement.tipp.title.getIdentifierValue('eISSN')}</td>
                   <td><g:formatDate format="dd MMMM yyyy" date="${e.base_entitlement.startDate}"/></td>

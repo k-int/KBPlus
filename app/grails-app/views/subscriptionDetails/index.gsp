@@ -88,7 +88,7 @@
         <div class="span8"> 
             <br/>
             <h6>Subscription Information</h6>
-            <div class="licence-info"> 
+            <div class="subscription-info"> 
                 <dl>
                     <dt>License</dt>
                     <dd><g:relation domain='Subscription' 
@@ -97,38 +97,32 @@
                             class='reldataedit'
                             id='ownerLicense'>${subscriptionInstance?.owner?.reference}</g:relation></dd>
                 </dl>
-                <dl>
-                  <dt><label class="control-label" for="isPublic">Public?</label></dt>
-                  <dd>
-                    <g:refdataValue val="${subscriptionInstance.isPublic?.value}" domain="Subscription" pk="${subscriptionInstance.id}" field="isPublic" cat='YN' class="${editable?'refdataedit':''}"/>
-                  </dd>
-                </dl>
+
                 <dl>
                     <dt>Package Name</dt>
                     <dd>
-                        <g:each in="${subscriptionInstance.packages}" var="sp">
-                            ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
-                        </g:each>
+                        <g:each in="${subscriptionInstance.packages}" var="sp">${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/></g:each>
                     </dd>
                 </dl>
-                <dl>
-                    <dt>Consortia</dt>
-                    <dd>${subscriptionInstance.getConsortia()?.name}</dd>
+
+                <dl><dt><label class="control-label" for="isPublic">Public?</label></dt><dd><g:refdataValue val="${subscriptionInstance.isPublic?.value}" domain="Subscription" pk="${subscriptionInstance.id}" field="isPublic" cat='YN' class="${editable?'ynrefdataedit':''}"/></dd></dl> 
+
+                <dl><dt>Consortia</dt><dd>${subscriptionInstance.getConsortia()?.name}<br/></dd></dl>
+
+                <dl><dt>Start Date</dt><dd><span><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.startDate}"/></span>
+                <input id="Subscription:${subscriptionInstance.id}:startDate" type="hidden" class="${editable?'dp1':''}" />
+                </dd>
                 </dl>
-               <dl>
-                    <dt>Start Date</dt>
-                    <dd><span><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.startDate}"/></span>
-                        <input id="Subscription:${subscriptionInstance.id}:startDate" type="hidden" class="${editable?'dp1':''}" />
-                    </dd>
-               </dl>
+
                <dl>
                     <dt>End Date</dt>
                     <dd><span><g:formatDate format="dd MMMM yyyy" date="${subscriptionInstance.endDate}"/></span>
                         <input id="Subscription:${subscriptionInstance.id}:endDate" type="hidden" class="${editable?'dp1':''}" />
                     </dd>
                </dl>
+
                <dl>
-                    <dt>Nominal Platform</dt>
+                    <dt>Nominal Platform(s)</dt>
                     <dd> 
                     <g:each in="${subscriptionInstance.packages}" var="sp">
                         ${sp.pkg?.nominalPlatform?.name}<br/>
@@ -364,7 +358,7 @@
            tooltip: 'Click to edit...'
          });
 
-         $('.refdataedit').editable('<g:createLink controller="ajax" action="genericSetRef" />', {
+         $('.ynrefdataedit').editable('<g:createLink controller="ajax" action="genericSetRef" />', {
            data   : {'Yes':'Yes', 'No':'No'},
            type   : 'select',
            cancel : 'Cancel',
@@ -395,7 +389,7 @@
          });
 
          var checkEmptyEditable = function() {
-           $('.ipe, .refdataedit, .fieldNote, .refdataedit, .isedit').each(function() {
+           $('.ipe, .ynrefdataedit, .fieldNote, .isedit').each(function() {
              if($(this).text().length == 0) {
                $(this).addClass('editableEmpty');
              } else {
@@ -406,7 +400,7 @@
 
          // On jEditable click remove the hide the icon and show it 
          // when one of the buttons are clicked or ESC is hit.
-         $('.ipe, .intedit, .refdataedit, .cuedit, .fieldNote, .newipe, .isedit').click(function() {
+         $('.ipe, .intedit, .ynrefdataedit, .cuedit, .fieldNote, .newipe, .isedit').click(function() {
             // Ensure we're not clicking in an editing element.
             if($(this).hasClass('clicked')) {
                 return;

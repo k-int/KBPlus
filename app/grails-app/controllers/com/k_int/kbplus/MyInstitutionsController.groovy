@@ -1185,6 +1185,8 @@ class MyInstitutionsController {
   }
 
   def processRenewalUpload(input_stream, upload_filename, result) {
+    int SO_START_COL=12
+    int SO_START_ROW=7
     log.debug("processRenewalUpload - opening upload input stream as HSSFWorkbook");
     if ( input_stream ) {
       HSSFWorkbook wb = new HSSFWorkbook(input_stream);
@@ -1200,7 +1202,7 @@ class MyInstitutionsController {
       def sub_info = []
       // Step 2 - Row 5 (6, but 0 based) contains package identifiers starting in column 4(5)
       HSSFRow package_ids_row = firstSheet.getRow(5)
-      for (int i=4;((i<package_ids_row.getLastCellNum())&&(package_ids_row.getCell(i)));i++) {
+      for (int i=SO_START_COL;((i<package_ids_row.getLastCellNum())&&(package_ids_row.getCell(i)));i++) {
         log.debug("Got package identifier: ${package_ids_row.getCell(i).toString()}");
         def sub_id = Long.parseLong(package_ids_row.getCell(i).toString())
         def sub_rec = Subscription.get(sub_id);
@@ -1217,21 +1219,24 @@ class MyInstitutionsController {
 
       boolean processing = true
       // Step three, process each title row, starting at row 11(10)
-      for (int i=11;((i<firstSheet.getLastRowNum())&&(processing)); i++) {
+      for (int i=SO_START_ROW;((i<firstSheet.getLastRowNum())&&(processing)); i++) {
+        log.debug("processing row ${i}");
+
         HSSFRow title_row = firstSheet.getRow(i)
         // Title ID
         def title_id = title_row.getCell(0).toString()
         if ( title_id == 'END' ) {
+          log.debug("Encountered END title");
           processing = false;
         }
         else {
-          println("Process title: ${title_id}");
+          log.debug("Upload Process title: ${title_id}, num subs=${sub_info.size()}, last cell=${title_row.getLastCellNum()}");
           def title_id_long = Long.parseLong(title_id)
           def title_rec = TitleInstance.get(title_id_long);
-          for ( int j=0; ( ((j+4)<title_row.getLastCellNum()) && (j<=sub_info.size() ) ); j++ ) {
-            def resp_cell = title_row.getCell(j+4)
+          for ( int j=0; ( ((j+SO_START_COL)<title_row.getLastCellNum()) && (j<=sub_info.size() ) ); j++ ) {
+            def resp_cell = title_row.getCell(j+SO_START_COL)
             if ( resp_cell ) {
-              log.debug("  -> Testing col[${j}] val=${resp_cell.toString()}");
+              log.debug("  -> Testing col[${j+SO_START_COL}] val=${resp_cell.toString()}");
               String[] components = resp_cell.toString().split(';');
 
               def subscribe='N'
@@ -1253,10 +1258,10 @@ class MyInstitutionsController {
               if ( subscribe == 'Y' || subscribe == 'y' ) {
                 log.debug("Add an issue entitlement from subscription[${j}] for title ${title_id_long}");
                 if ( result.base_subscription ) {
-                  if ( result.base_subscription != sub_info[j] ) {
-                    log.error("Critical error - Worksheet merges entitlements from 2 different subscriptions offered");
-                    result.errors.add("Critical error - Worksheet merges entitlements from 2 different subscriptions offered");
-                  }
+                  // if ( result.base_subscription != sub_info[j] ) {
+                  //   log.error("Critical error - Worksheet merges entitlements from 2 different subscriptions offered");
+                  //   result.errors.add("Critical error - Worksheet merges entitlements from 2 different subscriptions offered");
+                  // }
                 }
                 else {
                   result.base_subscription = sub_info[j]
@@ -1268,7 +1273,7 @@ class MyInstitutionsController {
                 entitlement_info.core = core_status
                 entitlement_info.core_start_date = core_start_date
                 entitlement_info.core_end_date = core_end_date
-                entitlement_info.base_entitlement = extractEntitlement(result.base_subscription, title_id_long)
+                entitlement_info.base_entitlement = extractEntitlement(sub_info[j], title_id_long)
                 result.entitlements.add(entitlement_info)
               }
             }
@@ -1285,7 +1290,11 @@ class MyInstitutionsController {
   }
 
   def extractEntitlement(sub, title_id) {
-    sub.issueEntitlements.find { e -> e.tipp?.title?.id == title_id }
+    def result = sub.issueEntitlements.find { e -> e.tipp?.title?.id == title_id }
+    if ( result == null ) {
+      log.error("Failed to look up title ${title_id} in subscription ${sub.sub_name}");
+    }
+    result
   }
 
   def processRenewal() {
