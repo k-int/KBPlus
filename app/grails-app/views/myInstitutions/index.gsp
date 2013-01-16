@@ -58,7 +58,7 @@
           </tr>
           <g:each in="${ua.notes}" var="n">
             <tr>
-              <td><g:formatDate format="dd MMMM yyyy" date="${n.alert.createTime}" /></td>
+              <td><g:formatDate format="{session.sessionPreferences?.globalDateFormat" date="${n.alert.createTime}" /></td>
               <td>
                 <g:if test="${n.alert.sharingLevel==2}">- Shared with KB+ Community -</g:if>
                 <g:elseif test="${n.alert.sharingLevel==1}">- JC Only -</g:elseif>
