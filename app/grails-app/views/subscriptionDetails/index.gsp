@@ -161,17 +161,19 @@
           <g:form action="subscriptionBatchUpdate" params="${[id:subscriptionInstance?.id]}">
           <g:set var="counter" value="${offset+1}" />
           <table  class="table table-striped table-bordered">
+
             <tr>
               <th></th>
               <th>#</th>
               <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
               <th>ISSN</th>
               <th>eISSN</th>
-              <g:sortableColumn params="${params}" property="coreTitle" title="Core" />
+              <g:sortableColumn params="${params}" property="coreStatus" title="Core Status" />
               <g:sortableColumn params="${params}" property="startDate" title="Start Date" />
               <g:sortableColumn params="${params}" property="endDate" title="End Date" />
               <th>Actions</th>
             </tr>  
+
             <tr>  
               <th>
                 <g:if test="${editable}"><input type="checkbox" name="chkall" onClick="javascript:selectAll();"/></g:if>
@@ -189,6 +191,7 @@
 
               <th colspan="2"></th>
             </tr>
+
           <g:if test="${entitlements}">
             <g:each in="${entitlements}" var="ie">
               <tr>
@@ -203,9 +206,9 @@
                 <td><g:refdataValue val="${ie.coreTitle}" 
                                     domain="IssueEntitlement" 
                                     pk="${ie.id}" 
-                                    field="coreTitle" 
-                                    cat="isCoreTitle"
-                                    class="${editable?'cuedit':''}"/></td>
+                                    field="coreStatus" 
+                                    cat="CoreStatus"
+                                    class="${editable?'corestatusedit':''}"/></td>
                 <td>
                     <span class="datevalue"><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.startDate}"/></span>
                     <input id="IssueEntitlement:${ie.id}:startDate" type="hidden" class="${editable?'dp1':''}" />
@@ -364,6 +367,17 @@
 
          $('dd span.reldataedit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}" action="genericSetRel" />', {
            loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:institution?.shortcode]}" action="availableLicenses" />',
+           type   : 'select',
+           cancel : 'Cancel',
+           submit : 'OK',
+           id     : 'elementid',
+           tooltip: 'Click to edit...',
+           callback : function(value, settings) {
+           }
+         });
+
+         $('.corestatusedit').editable('<g:createLink controller="ajax" params="${[resultProp:'value']}" action="genericSetRel" />', {
+           loadurl: '<g:createLink controller="ajax" params="${[id:'CoreStatus',format:'json']}" action="refdataSearch" />',
            type   : 'select',
            cancel : 'Cancel',
            submit : 'OK',
