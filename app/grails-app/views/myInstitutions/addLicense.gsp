@@ -74,7 +74,6 @@
                 <td>Select</td>
                 <g:sortableColumn params="${params}" property="reference" title="Reference Description" />
                 <td>Licensor</td>
-                <td>Licensee</td>
                 <g:sortableColumn params="${params}" property="status.value" title="Status" />
                 <g:sortableColumn params="${params}" property="type.value" title="Type" />
               </tr>
@@ -87,7 +86,6 @@
                               controller="licenseDetails" 
                               id="${l.id}">${l.reference?:"License ${l.id} - no reference set"}</g:link></td>
                   <td>${l.licensor?.name}</td>
-                  <td>${l.licensee?.name}</td>
                   <td>${l.status?.value}</td>
                   <td>${l.type?.value}</td>
                 </tr>
