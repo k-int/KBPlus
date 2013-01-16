@@ -903,6 +903,10 @@ class MyInstitutionsController {
               title_info.current_end_date = formatter.format(ie.endDate)
             title_info.current_embargo = ie.embargo
             title_info.current_depth = ie.coverageDepth
+            title_info.current_coverage_note = ie.coverageNote
+            title_info.is_core = ie.coreTitle ? 'Y' : 'N'
+            title_info.core_start_date = ie.coreStatusStart ? formatter.format(ie.coreStatusStart) : ''
+            title_info.core_end_date = ie.coreStatusEnd ? formatter.format(ie.coreStatusEnd) : ''
             // log.debug("added title info: ${title_info}");
           }
           titleMap[ie.tipp.title.id] = title_info;
@@ -968,12 +972,12 @@ class MyInstitutionsController {
  
     // Cell style for a present TI
     HSSFCellStyle present_cell_style = workbook.createCellStyle();  
-    present_cell_style.setFillForegroundColor(HSSFColor.GREEN.index);  
+    present_cell_style.setFillForegroundColor(HSSFColor.LIGHT_GREEN.index);  
     present_cell_style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);  
 
     // Cell style for a core TI
     HSSFCellStyle core_cell_style = workbook.createCellStyle();  
-    core_cell_style.setFillForegroundColor(HSSFColor.YELLOW.index);  
+    core_cell_style.setFillForegroundColor(HSSFColor.LIGHT_YELLOW.index);  
     core_cell_style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);  
 
     int rc=0;
@@ -1017,10 +1021,14 @@ class MyInstitutionsController {
     cell.setCellStyle(core_cell_style);  
     cell = row.createCell(cc++);
     cell.setCellValue(new HSSFRichTextString("Not In Subscription"));
+    cell = row.createCell(11);
+    cell.setCellValue(new HSSFRichTextString("Current Sub"));
+    cell = row.createCell(12);
+    cell.setCellValue(new HSSFRichTextString("Candidates ->"));
     
 
     row = firstSheet.createRow(rc++);
-    cc=8
+    cc=11
     m.sub_info.each { sub ->
       cell = row.createCell(cc++);
       cell.setCellValue(new HSSFRichTextString("${sub.sub_id}"));
@@ -1044,7 +1052,13 @@ class MyInstitutionsController {
     cell = row.createCell(cc++);
     cell.setCellValue(new HSSFRichTextString("Current Coverage Depth"));
     cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("Current Embargo"));
+    cell.setCellValue(new HSSFRichTextString("Current Coverage Note"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("IsCore?"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("Core Start Date"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("Core End Date"));
 
     m.sub_info.each { sub ->
       cell = row.createCell(cc++);
@@ -1085,11 +1099,23 @@ class MyInstitutionsController {
 
       // coverageDepth
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("${title.current_embargo?:''}"));
+      cell.setCellValue(new HSSFRichTextString("${title.current_depth?:''}"));
 
       // embargo
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("${title.current_depth?:''}"));
+      cell.setCellValue(new HSSFRichTextString("${title.current_coverage_note?:''}"));
+
+      // IsCore
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("${title.is_core?:''}"));
+
+      // Core Start Date
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("${title.core_start_date?:''}"));
+
+      // Core End Date
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("${title.core_end_date?:''}"));
 
       m.sub_info.each { sub ->
         cell = row.createCell(cc++);
@@ -1103,7 +1129,7 @@ class MyInstitutionsController {
             cell.setCellValue(new HSSFRichTextString(""));
             cell.setCellStyle(present_cell_style);  
           }
-          addCellComment(row, cell,"Default package offers the following for this title\nStart Date:${ie_info.startDate?:'Not set'}\nStart Volume:${ie_info.startVolume?:'Not set'}\nStart Issue:${ie_info.startIssue?:'Not set'}\nEnd Date:${ie_info.endDate?:'Not set'}\nEnd Volume:${ie_info.endVolume?:'Not set'}\nEnd Issue:${ie_info.endIssue?:'Not set'}\nSelect Title by setting this cell to Y", drawing, factory);
+          addCellComment(row, cell,"${title.title} provided by ${sub.sub_name}\nStart Date:${ie_info.startDate?:'Not set'}\nStart Volume:${ie_info.startVolume?:'Not set'}\nStart Issue:${ie_info.startIssue?:'Not set'}\nEnd Date:${ie_info.endDate?:'Not set'}\nEnd Volume:${ie_info.endVolume?:'Not set'}\nEnd Issue:${ie_info.endIssue?:'Not set'}\nSelect Title by setting this cell to Y", drawing, factory);
         }
 
       }
@@ -1117,7 +1143,7 @@ class MyInstitutionsController {
     firstSheet.autoSizeColumn(2); //adjust width of the first column
     firstSheet.autoSizeColumn(3); //adjust width of the first column
     for ( int i=0; i<m.sub_info.size(); i++ ) {
-      firstSheet.autoSizeColumn(4+i); //adjust width of the second column
+      firstSheet.autoSizeColumn(7+i); //adjust width of the second column
     }
 
 
