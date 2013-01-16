@@ -83,8 +83,8 @@
                 </g:each>
               </td>
               <td>${s.getConsortia()?.name}</td>
-              <td><g:formatDate format="dd MMMM yyyy" date="${s.startDate}"/></td>
-              <td><g:formatDate format="dd MMMM yyyy" date="${s.endDate}"/></td>
+              <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${s.startDate}"/></td>
+              <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${s.endDate}"/></td>
               <td>
                 <g:each in="${s.instanceOf?.packages}" var="sp">
                   ${sp.pkg?.nominalPlatform?.name}<br/>
