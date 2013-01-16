@@ -180,7 +180,6 @@ class MyInstitutionsController {
       base_qry += " and ( lower(s.name) like ? or exists ( select sp from SubscriptionPackage as sp where sp.subscription = s and ( lower(sp.pkg.name) like ? ) ) ) "
       qry_params.add("%${params.q.trim().toLowerCase()}%");
       qry_params.add("%${params.q.trim().toLowerCase()}%");
-      qry_params.add("%${params.q.trim().toLowerCase()}%");
     }
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
@@ -200,7 +199,7 @@ class MyInstitutionsController {
     result.institution = Org.findByShortcode(params.shortcode)
 
     if ( !checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
-      flash.error="You do not have permission to access ${result.institution.name} pages. Please request access on the profile page";
+      flash.error="You do not have admin permissions to access ${result.institution.name} pages. Please request access on the profile page";
       response.sendError(401)
       // render(status: '401', text:"You do not have permission to add subscriptions to ${result.institution.name}. Please request editor access on the profile page");
       return;
@@ -216,7 +215,6 @@ class MyInstitutionsController {
 
     if ( params.q?.length() > 0 ) {
       base_qry += " and ( lower(s.name) like ? or exists ( select sp from SubscriptionPackage as sp where sp.subscription = s and ( lower(sp.pkg.name) like ? ) ) ) "
-      qry_params.add("%${params.q.trim().toLowerCase()}%");
       qry_params.add("%${params.q.trim().toLowerCase()}%");
       qry_params.add("%${params.q.trim().toLowerCase()}%");
     }
@@ -1454,7 +1452,7 @@ class MyInstitutionsController {
 
   def checkUserHasRole(user, org, role) {
     def uoq = UserOrg.createCriteria()
-    def grants = sc.list {
+    def grants = uoq.list {
       eq('user',user)
       eq('org',org)
       formalRole {
