@@ -114,8 +114,10 @@
                      <ul class="dropdown-menu">
                        <li <%= ( ( 'packageDetails'== controllerName ) && ( 'list'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="packageDetails" action="list">Search Packages</g:link></li>
+                       <!--
                        <li <%= ( ( 'packageDetails'== controllerName ) && ( 'create'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="packageDetails" action="create">New Package</g:link></li>
+                       -->
                        <li class="divider"></li>
                        <li <%= ( ( 'upload'== controllerName ) && ( 'so'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="upload" action="so">Upload new SO file</g:link></li>
