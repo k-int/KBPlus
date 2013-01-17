@@ -171,6 +171,8 @@
               <g:sortableColumn params="${params}" property="coreStatus" title="Core Status" />
               <g:sortableColumn params="${params}" property="startDate" title="Start Date" />
               <g:sortableColumn params="${params}" property="endDate" title="End Date" />
+              <g:sortableColumn params="${params}" property="coreStatusStart" title="Core Start Date" />
+              <g:sortableColumn params="${params}" property="coreStatusEnd" title="Core End Date" />
               <th>Actions</th>
             </tr>  
 
@@ -188,8 +190,7 @@
               <th><span id="entitlementBatchEdit" class="${editable?'entitlementBatchEdit isedit':''}"></span><input type="hidden" name="bulk_core" id="bulk_core"/></th>
               <th><g:if test="${editable}"><span class="datevalue">edit</span> <input name="bulk_start_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
               <th><g:if test="${editable}"><span class="datevalue">edit</span> <input name="bulk_end_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
-
-              <th colspan="2"></th>
+              <th colspan="4"></th>
             </tr>
 
           <g:if test="${entitlements}">
@@ -215,6 +216,12 @@
                 </td>
                 <td><span class="datevalue"><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.endDate}"/></span>
                     <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="${editable?'dp1':''}" />
+                </td>
+                <td><span class="datevalue"><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.coreStatusStart}"/></span>
+                    <input id="IssueEntitlement:${ie.id}:coreStatusStart" type="hidden" class="${editable?'dp1':''}" />
+                </td>
+                <td><span class="datevalue"><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.coreStatusEnd}"/></span>
+                    <input id="IssueEntitlement:${ie.id}:coreStatusEnd" type="hidden" class="${editable?'dp1':''}" />
                 </td>
                 <td>
                   <g:if test="${editable}"><g:link action="removeEntitlement" params="${[ieid:ie.id, sub:subscriptionInstance.id]}" onClick="return confirm('Are you sure you wish to delete this entitlement');">Delete</g:link></g:if>
