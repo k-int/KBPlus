@@ -7,7 +7,7 @@ class UserFolder {
 
   String shortcode
   String name
-  List items
+  List items=[]
 
   static belongsTo = [
     user:User
