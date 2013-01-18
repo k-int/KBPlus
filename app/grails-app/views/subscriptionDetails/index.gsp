@@ -88,7 +88,7 @@
         <div class="span8"> 
             <br/>
             <h6>Subscription Information</h6>
-            <div class="subscription-info"> 
+            <div class="licence-info"> 
                 <dl>
                     <dt>License</dt>
                     <dd><g:relation domain='Subscription' 
