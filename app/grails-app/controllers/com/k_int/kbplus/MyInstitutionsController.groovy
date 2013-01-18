@@ -1434,10 +1434,10 @@ class MyInstitutionsController {
             break;
         }
 
-        def new_start_date = entitlement.start_date ?: parseDate(entitlement.start_date)
-        def new_end_date = entitlement.end_date ?:  parseDate(entitlement.end_date)
-        def new_core_start_date = entitlement.core_start_date ?: parseDate(entitlement.core_start_date)
-        def new_core_end_date = entitlement.core_end_date ?: parseDate(entitlement.core_end_date)
+        def new_start_date = entitlement.start_date ? parseDate(entitlement.start_date, possible_date_formats)  : null
+        def new_end_date = entitlement.end_date ?  parseDate(entitlement.end_date, possible_date_formats) : null
+        def new_core_start_date = entitlement.core_start_date ? parseDate(entitlement.core_start_date, possible_date_formats) : null
+        def new_core_end_date = entitlement.core_end_date ? parseDate(entitlement.core_end_date, possible_date_formats) : null
 
 
         // entitlement.is_core
@@ -1457,7 +1457,16 @@ class MyInstitutionsController {
                                            coreStatus:new_core_status,
                                            coreStatusStart:new_core_start_date,
                                            coreStatusEnd:new_core_end_date
-                                           ).save();
+                                           )
+
+        if ( new_ie.save() ) {
+          log.debug("new ie saved");
+        }
+        else {
+          new_ie.errors.each{ e ->
+            log.error("Problem saving new ie : ${e}");
+          }
+        }
       }
       else {
         log.debug("Unable to locate tipp with id ${entitlement.tipp_id}");
@@ -1519,7 +1528,6 @@ class MyInstitutionsController {
     return false
 
   }
-
 
   def parseDate(datestr, possible_formats) {
     def parsed_date = null;
