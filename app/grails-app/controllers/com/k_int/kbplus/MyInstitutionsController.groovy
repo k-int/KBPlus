@@ -1270,23 +1270,10 @@ class MyInstitutionsController {
             def resp_cell = title_row.getCell(j+SO_START_COL)
             if ( resp_cell ) {
               log.debug("  -> Testing col[${j+SO_START_COL}] val=${resp_cell.toString()}");
-              String[] components = resp_cell.toString().split(';');
 
-              def subscribe='N'
-              def core_status='N'
-              def core_start_date
-              def core_end_date
+              def subscribe=resp_cell.toString()
 
-              if ( components.length > 0 )
-                subscribe = components[0]
-              if ( components.length > 1 )
-                core_status = components[1]
-              if ( components.length > 2 )
-                core_start_date = components[2]
-              if ( components.length > 3 )
-                core_end_date = components[3]
-
-              log.debug("Entry : sub:${subscribe}. core_status:${core_status}")
+              log.debug("Entry : sub:${subscribe}");
                 
               if ( subscribe == 'Y' || subscribe == 'y' ) {
                 log.debug("Add an issue entitlement from subscription[${j}] for title ${title_id_long}");
@@ -1303,10 +1290,17 @@ class MyInstitutionsController {
                 def entitlement_info = [:]
                 entitlement_info.title_id = title_id_long
                 entitlement_info.subscribe = subscribe
-                entitlement_info.core = core_status
-                entitlement_info.core_start_date = core_start_date
-                entitlement_info.core_end_date = core_end_date
                 entitlement_info.base_entitlement = extractEntitlement(sub_info[j], title_id_long)
+
+                entitlement_info.start_date = title_row.getCell(4)
+                entitlement_info.end_date = title_row.getCell(5)
+                entitlement_info.coverage = title_row.getCell(6)
+                entitlement_info.coverage_note = title_row.getCell(7)
+                entitlement_info.core_status = title_row.getCell(8)
+                entitlement_info.core_start_date = title_row.getCell(9)
+                entitlement_info.core_end_date = title_row.getCell(10)
+
+                log.debug("Added entitlement_info ${entitlement_info}");
                 result.entitlements.add(entitlement_info)
               }
             }
