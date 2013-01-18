@@ -269,7 +269,7 @@
           onSelect: function(dateText, inst) { 
             var elem_id = inst.input[0].id;
             $.ajax({url: '<g:createLink controller="ajax" action="genericSetValue"/>?elementid='+
-                             elem_id+'&value='+dateText+'&dt=date&idf=MM/dd/yyyy&odf=dd MMMM yyyy',
+                             elem_id+'&value='+dateText+'&dt=date&idf=MM/dd/yyyy&odf=${session.sessionPreferences?.globalDateFormat}',
                    success: function(result){inst.input.parent().find('span').html(result)}
                    });
           },

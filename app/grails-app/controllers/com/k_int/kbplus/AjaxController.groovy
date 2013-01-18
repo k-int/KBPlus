@@ -169,7 +169,8 @@ class AjaxController {
               result=of.format(value);
             }
             else {
-              result=value.toString();
+              def of = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
+              result=of.format(value)
             }
           }
         }
