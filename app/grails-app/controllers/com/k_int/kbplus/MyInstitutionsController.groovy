@@ -25,6 +25,14 @@ class MyInstitutionsController {
   def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'name' ]
   def reversemap = ['subject':'subject', 'provider':'provid', 'studyMode':'presentations.studyMode','qualification':'qual.type','level':'qual.level' ]
 
+  def possible_date_formats = [
+    new SimpleDateFormat('yyyy/MM/dd'),
+    new SimpleDateFormat('dd/MM/yyyy'),
+    new SimpleDateFormat('dd/MM/yy'),
+    new SimpleDateFormat('yyyy/MM'),
+    new SimpleDateFormat('yyyy')
+  ];
+
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() { 
@@ -1394,26 +1402,59 @@ class MyInstitutionsController {
       if ( dbtipp ) {
         def original_entitlement = IssueEntitlement.get(entitlement.entitlement_id)
         def live_issue_entitlement = RefdataCategory.lookupOrCreate('Entitlement Issue Status', 'Live');
-        def is_core = entitlement.is_core=='Y' ? true : false
+        def is_core = false
 
+        def new_core_status = null;
+
+        switch ( entitlement.core_status?.toUpperCase() ) {
+          case 'Y':
+          case 'YES':
+            new_core_status = RefdataCategory.lookupOrCreate('CoreStatus','Yes');
+            is_core = true;
+            break;
+          case 'P':
+          case 'PRINT':
+            new_core_status = RefdataCategory.lookupOrCreate('CoreStatus','Print');
+            is_core = true;
+            break;
+          case 'E':
+          case 'ELECTRONIC':
+            new_core_status = RefdataCategory.lookupOrCreate('CoreStatus','Electronic');
+            is_core = true;
+            break;
+          case 'P+E':
+          case 'E+P':
+            new_core_status = RefdataCategory.lookupOrCreate('CoreStatus','Print+Electronic');
+            is_core = true;
+            break;
+          default:
+            new_core_status = RefdataCategory.lookupOrCreate('CoreStatus','No');
+            break;
+        }
+
+        def new_start_date = entitlement.start_date ? parseDate(entitlement.start_date)
+        def new_end_date = entitlement.end_date ?  parseDate(entitlement.end_date)
+        def new_core_start_date = entitlement.core_start_date ? parseDate(entitlement.core_start_date)
+        def new_core_end_date = entitlement.core_end_date ? parseDate(entitlement.core_end_date)
 
 
         // entitlement.is_core
         def new_ie =  new IssueEntitlement(subscription:new_subscription,
                                            status: live_issue_entitlement,
                                            tipp: dbtipp,
-                                           startDate:dbtipp.startDate,
+                                           startDate:new_start_date,
                                            startVolume:dbtipp.startVolume,
                                            startIssue:dbtipp.startIssue,
-                                           endDate:dbtipp.endDate,
+                                           endDate:new_end_date,
                                            endVolume:dbtipp.endVolume,
                                            endIssue:dbtipp.endIssue,
                                            embargo:dbtipp.embargo,
                                            coverageDepth:dbtipp.coverageDepth,
                                            coverageNote:dbtipp.coverageNote,
                                            coreTitle:is_core,
-                                           coreStatusStart:null,
-                                           coreStatusEnd:null
+                                           coreStatus:new_core_status,
+                                           coreStatusStart:new_core_start_date,
+                                           coreStatusEnd:new_core_end_date
                                            ).save();
       }
       else {
@@ -1476,4 +1517,20 @@ class MyInstitutionsController {
     return false
 
   }
+
+
+  def parseDate(datestr, possible_formats) {
+    def parsed_date = null;
+    if ( datestr && ( datestr.toString().trim().length() > 0 ) ) {
+      for(Iterator i = possible_formats.iterator(); ( i.hasNext() && ( parsed_date == null ) ); ) {
+        try {
+          parsed_date = i.next().parse(datestr.toString());
+        }
+        catch ( Exception e ) {
+        }
+      }
+    }
+    parsed_date
+  }
+
 }
