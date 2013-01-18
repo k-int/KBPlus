@@ -54,89 +54,93 @@
             <dd>${issueEntitlementInstance?.coreStatus.value}</dd>
           </g:if>
 
+         <g:if test="${issueEntitlementInstance?.tipp.hostPlatformURL}">
+            <dt>Host Platform URL</dt>
+            <dd> <a href="${issueEntitlementInstance.tipp?.hostPlatformURL}" TITLE="${issueEntitlementInstance.tipp?.hostPlatformURL}">${issueEntitlementInstance.tipp.platform.name}</a></dd>
+          </g:if>
 
-          <g:if test="${issueEntitlementInstance?.tipp}">
-            <dt><g:message code="issueEntitlement.tipp.label" default="Tipp" /></dt>
-              <dd><g:link controller="titleInstancePackagePlatform" action="show" id="${issueEntitlementInstance?.tipp?.id}">${issueEntitlementInstance?.tipp?.encodeAsHTML()}</g:link></dd>
+          <dt>This Subscription : ${issueEntitlementInstance.subscription.name}</dt>
+          <dd>
+            <table border="1" cellpadding="5" cellspacing="5">
+              <tr>
+                <th>From Date</th><th>From Volume</th><th>From Issue</th>
+                <th>To Date</th><th>To Volume</th><th>To Issue</th>
+              </tr>
+              <tr>
+               <td>${issueEntitlementInstance.startDate}</td>
+               <td>${issueEntitlementInstance.startVolume}</td>
+               <td>${issueEntitlementInstance.startIssue}</td>
+               <td>${issueEntitlementInstance.endDate}</td>
+               <td>${issueEntitlementInstance.endVolume}</td>
+               <td>${issueEntitlementInstance.endIssue}</td>
+              </tr>
+            </table>
+          </dd>
+
+          <dt>Embargo</dt>
+          <dd>${issueEntitlementInstance.embargo}</dd>
+
+          <dt>Coverage</dt>
+          <dd>${issueEntitlementInstance.coverageDepth}</dd>
+
+          <dt>Coverage Note</dt>
+          <dd>${issueEntitlementInstance.coverageNote}</dd>
+
+          <dt>Package : ${issueEntitlementInstance.tipp.pkg.name}</dt>
+          <dd>
+            <table border="1" cellpadding="5" cellspacing="5">
+              <tr>
+                <th>From Date</th><th>From Volume</th><th>From Issue</th>
+                <th>To Date</th><th>To Volume</th><th>To Issue</th>
+              </tr>
+              <tr>
+               <td>${issueEntitlementInstance.tipp.startDate}</td>
+               <td>${issueEntitlementInstance.tipp.startVolume}</td>
+               <td>${issueEntitlementInstance.tipp.startIssue}</td>
+               <td>${issueEntitlementInstance.tipp.endDate}</td>
+               <td>${issueEntitlementInstance.tipp.endVolume}</td>
+               <td>${issueEntitlementInstance.tipp.endIssue}</td>
+              </tr>
+            </table>
+          </dd>
+
+          <dt>Embargo</dt>
+          <dd>${issueEntitlementInstance.tipp.embargo}</dd>
+
+          <dt>Coverage</dt>
+          <dd>${issueEntitlementInstance.tipp.coverageDepth}</dd>
+
+          <dt>Coverage Note</dt>
+          <dd>${issueEntitlementInstance.tipp.coverageNote}</dd>
+
+          <g:if test="${issueEntitlementInstance.tipp.title?.tipps}">
+            <dt><g:message code="titleInstance.tipps.label" default="Occurences of this title against Packages / Platforms" /></dt>
+            <dd>
+            <table border="1" cellpadding="5" cellspacing="5">
+              <tr>
+                <th>From Date</th><th>From Volume</th><th>From Issue</th>
+                <th>To Date</th><th>To Volume</th><th>To Issue</th><th>Coverage Depth</th>
+                <th>Platform</th><th>Package</th><th>Actions</th>
+              </tr>
+              <g:each in="${issueEntitlementInstance.tipp.title.tipps}" var="t">
+                <tr>
+                  <td><g:formatDate format="dd MMM yyyy" date="${t.startDate}"/></td>
+                  <td>${t.startVolume}</td>
+                  <td>${t.startIssue}</td>
+                  <td><g:formatDate format="dd MMM yyyy" date="${t.endDate}"/></td>
+                  <td>${t.endVolume}</td>
+                  <td>${t.endIssue}</td>
+                  <td>${t.coverageDepth}</td>
+                  <td><g:link controller="platform" action="show" id="${t.platform.id}">${t.platform.name}</g:link></td>
+                  <td><g:link controller="package" action="show" id="${t.pkg.id}">${t.pkg.name} (${t.pkg.contentProvider?.name})</g:link></td>
+                  <td><g:link controller="titleInstancePackagePlatform" action="show" id="${t.id}">Full TIPP record</g:link></td>
+                </tr>
+              </g:each>
+
+            </table>
+            </dd>
           </g:if>
-        
-          <g:if test="${issueEntitlementInstance?.startDate}">
-            <dt><g:message code="issueEntitlement.startDate.label" default="Start Date" /></dt>
-            
-              <dd><g:formatDate date="${issueEntitlementInstance?.startDate}" /></dd>
-            
-          </g:if>
-        
-          <g:if test="${issueEntitlementInstance?.startVolume}">
-            <dt><g:message code="issueEntitlement.startVolume.label" default="Start Volume" /></dt>
-            
-              <dd><g:fieldValue bean="${issueEntitlementInstance}" field="startVolume"/></dd>
-            
-          </g:if>
-        
-          <g:if test="${issueEntitlementInstance?.startIssue}">
-            <dt><g:message code="issueEntitlement.startIssue.label" default="Start Issue" /></dt>
-            
-              <dd><g:fieldValue bean="${issueEntitlementInstance}" field="startIssue"/></dd>
-            
-          </g:if>
-        
-          <g:if test="${issueEntitlementInstance?.endDate}">
-            <dt><g:message code="issueEntitlement.endDate.label" default="End Date" /></dt>
-            
-              <dd><g:formatDate date="${issueEntitlementInstance?.endDate}" /></dd>
-            
-          </g:if>
-        
-          <g:if test="${issueEntitlementInstance?.endVolume}">
-            <dt><g:message code="issueEntitlement.endVolume.label" default="End Volume" /></dt>
-            
-              <dd><g:fieldValue bean="${issueEntitlementInstance}" field="endVolume"/></dd>
-            
-          </g:if>
-        
-          <g:if test="${issueEntitlementInstance?.endIssue}">
-            <dt><g:message code="issueEntitlement.endIssue.label" default="End Issue" /></dt>
-            
-              <dd><g:fieldValue bean="${issueEntitlementInstance}" field="endIssue"/></dd>
-            
-          </g:if>
-        
-          <g:if test="${issueEntitlementInstance?.embargo}">
-            <dt><g:message code="issueEntitlement.embargo.label" default="Embargo" /></dt>
-            
-              <dd><g:fieldValue bean="${issueEntitlementInstance}" field="embargo"/></dd>
-            
-          </g:if>
-        
-          <g:if test="${issueEntitlementInstance?.coverageDepth}">
-            <dt><g:message code="issueEntitlement.coverageDepth.label" default="Coverage Depth" /></dt>
-            
-              <dd><g:fieldValue bean="${issueEntitlementInstance}" field="coverageDepth"/></dd>
-            
-          </g:if>
-        
-          <g:if test="${issueEntitlementInstance?.coverageNote}">
-            <dt><g:message code="issueEntitlement.coverageNote.label" default="Coverage Note" /></dt>
-            
-              <dd><g:fieldValue bean="${issueEntitlementInstance}" field="coverageNote"/></dd>
-            
-          </g:if>
-        
-          <g:if test="${issueEntitlementInstance?.coreTitle}">
-            <dt><g:message code="issueEntitlement.coreTitle.label" default="Core Title" /></dt>
-            
-              <dd><g:formatBoolean boolean="${issueEntitlementInstance?.coreTitle}" /></dd>
-            
-          </g:if>
-        
-          <g:if test="${issueEntitlementInstance?.ieReason}">
-            <dt><g:message code="issueEntitlement.ieReason.label" default="Ie Reason" /></dt>
-            
-              <dd><g:fieldValue bean="${issueEntitlementInstance}" field="ieReason"/></dd>
-            
-          </g:if>
-        
+
         </dl>
 
       </div>
