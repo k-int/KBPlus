@@ -65,6 +65,10 @@ class SubscriptionDetailsController {
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
       base_qry += "order by ie.${params.sort} ${params.order} "
     }
+    else {
+      base_qry += "order by ie.tipp.title.title asc"
+    }
+
     result.num_sub_rows = IssueEntitlement.executeQuery("select count(ie) "+base_qry, qry_params )[0]
 
     result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, qry_params, [max:result.max, offset:result.offset]);

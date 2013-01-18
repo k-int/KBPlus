@@ -76,7 +76,7 @@ class License {
             licenseType column:'lic_license_type_str'
           licenseStatus column:'lic_license_status_str'
                 lastmod column:'lic_lastmod'
-              documents sort:'id', order:'asc'
+              documents sort:'owner.id', order:'desc'
   }
 
   static constraints = {

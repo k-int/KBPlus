@@ -12,7 +12,7 @@ class DocContext {
   Subscription subscription
   Alert alert
 
-  // We may attach a note to a particular colum, in which case, we set domain here as a discriminator
+  // We may attach a note to a particular column, in which case, we set domain here as a discriminator
   String domain
 
   static mapping = {

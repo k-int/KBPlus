@@ -9,7 +9,7 @@ class AlertsService {
     def result = new java.util.ArrayList()
     def roots = [:]
 
-    def all_public_notes = DocContext.findAll("from DocContext as ctx where ctx.alert.sharingLevel=2")
+    def all_public_notes = DocContext.findAll("from DocContext as ctx where ctx.alert.sharingLevel=2 order by ctx.owner.lastUpdated")
 
     log.debug("all public notes: ${all_public_notes}");
 

@@ -119,6 +119,9 @@ class MyInstitutionsController {
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
       qry += " order by l.${params.sort} ${params.order}"
     }
+    else {
+      qry += " order by l.reference asc"
+    }
 
     // result.licenses = License.executeQuery(qry, [template_license_type, result.institution, licensee_role] )
     result.licenses = License.executeQuery(qry, [result.institution, licensee_role] )
@@ -148,6 +151,9 @@ class MyInstitutionsController {
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
       qry += " order by l.${params.sort} ${params.order}"
+    }
+    else {
+      qry += " order by reference asc"
     }
 
     result.licenses = License.executeQuery(qry, [template_license_type, result.institution, licensee_role] )
@@ -184,6 +190,9 @@ class MyInstitutionsController {
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
       base_qry += " order by ${params.sort} ${params.order}"
+    }
+    else {
+      base_qry += " order by s.name asc"
     }
 
     result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
@@ -227,6 +236,9 @@ class MyInstitutionsController {
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
       base_qry += " order by ${params.sort} ${params.order}"
+    }
+    else {
+      base_qry += " order by s.name asc"
     }
 
     result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
