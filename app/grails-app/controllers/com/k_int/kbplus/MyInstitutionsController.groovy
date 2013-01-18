@@ -1432,10 +1432,10 @@ class MyInstitutionsController {
             break;
         }
 
-        def new_start_date = entitlement.start_date ? parseDate(entitlement.start_date)
-        def new_end_date = entitlement.end_date ?  parseDate(entitlement.end_date)
-        def new_core_start_date = entitlement.core_start_date ? parseDate(entitlement.core_start_date)
-        def new_core_end_date = entitlement.core_end_date ? parseDate(entitlement.core_end_date)
+        def new_start_date = entitlement.start_date ?: parseDate(entitlement.start_date)
+        def new_end_date = entitlement.end_date ?:  parseDate(entitlement.end_date)
+        def new_core_start_date = entitlement.core_start_date ?: parseDate(entitlement.core_start_date)
+        def new_core_end_date = entitlement.core_end_date ?: parseDate(entitlement.core_end_date)
 
 
         // entitlement.is_core
