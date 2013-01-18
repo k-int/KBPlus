@@ -726,7 +726,7 @@ class DataloadService {
                                                     embargo:nvl(st.embargo,tipp.embargo),
                                                     coverageDepth:tipp.coverageDepth,
                                                     coverageNote:tipp.coverageNote,
-                                                    coreTitle: is_core,
+                                                    coreStatus: null,
                                                     ieReason:"Subscription Taken data lists this titles incluson as \"${st.included_st}\"")
                   if ( !new_ie.save() ) {
                     new_ie.errors.each { e ->

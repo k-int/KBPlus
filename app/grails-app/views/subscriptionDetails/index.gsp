@@ -204,7 +204,7 @@
                 </td>
                 <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
                 <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
-                <td><g:refdataValue val="${ie.coreTitle}" 
+                <td><g:refdataValue val="${ie.coreStatus?.value}" 
                                     domain="IssueEntitlement" 
                                     pk="${ie.id}" 
                                     field="coreStatus" 

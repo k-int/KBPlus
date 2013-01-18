@@ -184,10 +184,10 @@ class SubscriptionDetailsController {
 
           if ( params.bulk_core.trim().length() > 0 ) {
             if ( params.bulk_core == 'true' ) {
-              ie.coreTitle = true
+              // ie.coreTitle = true
             }
             else {
-              ie.coreTitle = false
+              // ie.coreTitle = false
             }
           }
   
