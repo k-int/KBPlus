@@ -23,22 +23,41 @@
           <g:if test="${issueEntitlementInstance?.status}">
             <dt><g:message code="issueEntitlement.status.label" default="Status" /></dt>
             
-              <dd><g:link controller="refdataValue" action="show" id="${issueEntitlementInstance?.status?.id}">${issueEntitlementInstance?.status?.encodeAsHTML()}</g:link></dd>
+              <dd><g:link controller="refdataValue" action="show" id="${issueEntitlementInstance?.status?.id}">${issueEntitlementInstance?.status?.value.encodeAsHTML()}</g:link></dd>
             
           </g:if>
         
           <g:if test="${issueEntitlementInstance?.subscription}">
             <dt><g:message code="issueEntitlement.subscription.label" default="Subscription" /></dt>
             
-              <dd><g:link controller="subscription" action="show" id="${issueEntitlementInstance?.subscription?.id}">${issueEntitlementInstance?.subscription?.encodeAsHTML()}</g:link></dd>
+              <dd><g:link controller="subscription" action="show" id="${issueEntitlementInstance?.subscription?.id}">${issueEntitlementInstance?.subscription?.name.encodeAsHTML()}</g:link></dd>
             
           </g:if>
         
           <g:if test="${issueEntitlementInstance?.tipp}">
+            <dt><g:message code="issueEntitlement.tipp.title.label" default="Title" /></dt>
+              <dd>${issueEntitlementInstance?.tipp?.title.title.encodeAsHTML()}</dd>
+          </g:if>
+
+
+          <g:if test="${issueEntitlementInstance?.tipp.title?.ids}">
+            <dt>Title Identfiers</dt>
+
+              <g:each in="${issueEntitlementInstance?.tipp.title?.ids}" var="i">
+              <dd>${i.identifier.ns.ns}:${i.identifier.value}</dd>
+              </g:each>
+
+          </g:if>
+
+         <g:if test="${issueEntitlementInstance?.coreStatus}">
+            <dt>Core Status</dt>
+            <dd>${issueEntitlementInstance?.coreStatus.value}</dd>
+          </g:if>
+
+
+          <g:if test="${issueEntitlementInstance?.tipp}">
             <dt><g:message code="issueEntitlement.tipp.label" default="Tipp" /></dt>
-            
               <dd><g:link controller="titleInstancePackagePlatform" action="show" id="${issueEntitlementInstance?.tipp?.id}">${issueEntitlementInstance?.tipp?.encodeAsHTML()}</g:link></dd>
-            
           </g:if>
         
           <g:if test="${issueEntitlementInstance?.startDate}">
