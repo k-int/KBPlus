@@ -33,9 +33,11 @@
                                   action="currentLicenses" 
                                   params="${[shortcode:params.shortcode]}">Current Licences</g:link></li>
 
-        <li><g:link controller="myInstitutions" 
-                                action="addLicense" 
-                                params="${[shortcode:params.shortcode]}">Add Licence</g:link></li>
+        <g:if test="${is_admin}">
+          <li><g:link controller="myInstitutions" 
+                                  action="addLicense" 
+                                  params="${[shortcode:params.shortcode]}">Add Licence</g:link></li>
+        </g:if>
       </ul>
 
     </div>

@@ -34,9 +34,11 @@
                                   action="currentSubscriptions" 
                                   params="${[shortcode:params.shortcode]}">Current Subscriptions</g:link></li>
 
-        <li><g:link controller="myInstitutions" 
-                                action="addSubscription" 
-                                params="${[shortcode:params.shortcode]}">Subscriptions Offered / Add New</g:link></li>
+        <g:if test="${is_admin}">
+          <li><g:link controller="myInstitutions" 
+                                  action="addSubscription" 
+                                  params="${[shortcode:params.shortcode]}">Subscriptions Offered / Add New</g:link></li>
+        </g:if>
       </ul>
     </div>
 

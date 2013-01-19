@@ -119,6 +119,14 @@ class MyInstitutionsController {
       return;
     }
 
+    if ( checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
+      result.is_admin = true
+    }
+    else {
+      result.is_admin=false;
+    }
+
+
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
     def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
 
@@ -183,6 +191,13 @@ class MyInstitutionsController {
       flash.error="You do not have permission to access ${result.institution.name} pages. Please request access on the profile page";
       response.sendError(401)
       return;
+    }
+
+    if ( checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
+      result.is_admin = true
+    }
+    else {
+      result.is_admin=false;
     }
 
     def public_flag = RefdataCategory.lookupOrCreate('YN','Yes');
@@ -306,8 +321,8 @@ class MyInstitutionsController {
     def user = User.get(springSecurityService.principal.id)
     def org = Org.findByShortcode(params.shortcode)
 
-    if ( !checkUserIsMember(user, org) ) {
-      flash.error="You do not have permission to access ${org.name} pages. Please request access on the profile page";
+    if ( !checkUserHasRole(user, org, 'INST_ADM') ) {
+      flash.error="You do not have edit permission to access ${org.name} pages. Please request access on the profile page";
       response.sendError(401)
       // render(status: '401', text:"You do not have permission to access ${org.name}. Please request access on the profile page");
       return;
