@@ -154,10 +154,11 @@ class MyInstitutionsController {
 
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
     def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
+    def public_flag = RefdataCategory.lookupOrCreate('YN','Yes');
 
     // def qry = "select l from License as l left outer join l.orgLinks ol where ( ( l.type = ? ) OR ( ol.org = ? and ol.roleType = ? ) ) AND l.status.value != 'Deleted'"
     // def qry = "select l from License as l left outer join l.orgLinks ol where l.type = ? AND l.status.value != 'Deleted'"
-    def qry = "select l from License as l where ( ( l.type = ? ) OR ( exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) ) ) AND l.status.value != 'Deleted'"
+    def qry = "select l from License as l where ( ( l.type = ? ) OR ( exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) ) OR ( l.isPublic=? ) ) AND l.status.value != 'Deleted'"
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
       qry += " order by l.${params.sort} ${params.order}"
@@ -166,7 +167,7 @@ class MyInstitutionsController {
       qry += " order by reference asc"
     }
 
-    result.licenses = License.executeQuery(qry, [template_license_type, result.institution, licensee_role] )
+    result.licenses = License.executeQuery(qry, [template_license_type, result.institution, licensee_role, public_flag] )
     // result.licenses = License.executeQuery(qry, [template_license_type])
 
     result
@@ -184,13 +185,15 @@ class MyInstitutionsController {
       return;
     }
 
+    def public_flag = RefdataCategory.lookupOrCreate('YN','Yes');
+
     def paginate_after = params.paginate_after ?: 19;
     result.max = params.max ? Integer.parseInt(params.max) : 10;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
 
-    def base_qry = " from Subscription as s where exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) AND ( s.status.value != 'Deleted' ) "
-    def qry_params = [result.institution]
+    def base_qry = " from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) OR ( s.isPublic=? ) ) AND ( s.status.value != 'Deleted' ) "
+    def qry_params = [result.institution, public_flag]
 
     if ( params.q?.length() > 0 ) {
       base_qry += " and ( lower(s.name) like ? or exists ( select sp from SubscriptionPackage as sp where sp.subscription = s and ( lower(sp.pkg.name) like ? ) ) ) "
