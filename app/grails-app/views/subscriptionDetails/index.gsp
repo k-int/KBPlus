@@ -105,7 +105,10 @@
                     </dd>
                 </dl>
 
-                <dl><dt><label class="control-label" for="isPublic">Public?</label></dt><dd><g:refdataValue val="${subscriptionInstance.isPublic?.value}" domain="Subscription" pk="${subscriptionInstance.id}" field="isPublic" cat='YN' class="${editable?'ynrefdataedit':''}"/></dd></dl> 
+                <dl>
+                  <dt>Public?</dt>
+                  <dd><g:refdataValue val="${subscriptionInstance.isPublic?.value}" domain="Subscription" pk="${subscriptionInstance.id}" field="isPublic" cat='YN' class="${editable?'ynrefdataedit':''}"/></dd>
+                </dl> 
 
                 <dl><dt>Consortia</dt><dd>${subscriptionInstance.getConsortia()?.name}<br/></dd></dl>
 

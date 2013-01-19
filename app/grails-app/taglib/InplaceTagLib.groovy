@@ -8,16 +8,21 @@ class InplaceTagLib {
       def category = RefdataCategory.findByDesc(attrs.cat)
       if ( category ) {
         def value = RefdataValue.findByOwnerAndValue(category, attrs.val)
-        def id = "${attrs.domain}:${attrs.pk}:${attrs.field}:${attrs.cat}:${attrs.id}"
 
-        //  out << "<span class=\"select-icon ${value?.icon}\">&nbsp;</span><span id=\"${id}\" class=\"${attrs.class}\">"
-        out << "<span id=\"${id}\" class=\"${attrs.class}\">"
-        if ( value?.icon ) {
-          out << "<span class=\"select-icon ${value?.icon}\">&nbsp;</span>"
+        def id = "${attrs.domain}:${attrs.pk}:${attrs.field}:${attrs.cat}:${attrs.id}"
+        if ( value ) {
+          //  out << "<span class=\"select-icon ${value?.icon}\">&nbsp;</span><span id=\"${id}\" class=\"${attrs.class}\">"
+          out << "<span id=\"${id}\" class=\"${attrs.class}\">"
+          if ( value?.icon ) {
+            out << "<span class=\"select-icon ${value?.icon}\">&nbsp;</span>"
+          }
+          out << "<span>"
+          out << attrs.val
+          out << "</span>"
         }
-        out << "<span>"
-        out << attrs.val
-        out << "</span>"
+        else {
+          out << "<span id=\"${id}\" class=\"${attrs.class}\">Not set</span>"
+        }
       }
       else {
         out << "Unknown refdata category ${attrs.cat}"
