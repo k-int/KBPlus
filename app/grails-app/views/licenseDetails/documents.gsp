@@ -17,7 +17,7 @@
     </div>
 
     <div class="container">
-        <h1>${license.licensee?.name} ${license.type?.value} Licence : <span id="reference" class="ipe" style="padding-top: 5px;">${license.reference}</span></h1>
+        <h1>${license.licensee?.name} ${license.type?.value} Licence : <span id="reference" style="padding-top: 5px;">${license.reference}</span></h1>
 
 <g:render template="nav" contextPath="." />
 
