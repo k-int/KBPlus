@@ -24,11 +24,11 @@
     </div>
 
     <div class="container">
+      <g:form id="delete_doc_form" url="[controller:'licenseDetails',action:'deleteDocuments']" method="post">
         <div class="well hide licence-documents-options">
             <button class="btn btn-danger" id="delete-doc">Delete Selected Documents</button>&nbsp;
             <input type="submit" class="btn btn-primary" value="Add new document" data-toggle="modal" href="#modalCreateDocument" />
 
-            <g:form id="delete_doc_form" url="[controller:'licenseDetails',action:'deleteDocuments']" method="post">
                 <input type="hidden" name="licid" value="${params.id}"/>
         </div>
 
@@ -45,7 +45,7 @@
             </thead>
             <tbody>
             <g:each in="${license.documents}" var="docctx">
-                <g:if test="${docctx.owner.contentType==1}">
+                <g:if test="${((docctx.owner?.contentType==1) && ( docctx.status?.value!='Deleted'))}">
                     <tr>
                         <td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td>
                         <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="title" id="doctitle" class="fieldNote">${docctx.owner.title}</g:inPlaceEdit></td>
@@ -63,8 +63,8 @@
             </g:each>
             </tbody>
         </table>
-    </g:form>
-</div>
+      </g:form>
+    </div>
 
 <script language="JavaScript">
   $(document).ready(function() {
