@@ -67,10 +67,10 @@
                 <th>To Date</th><th>To Volume</th><th>To Issue</th>
               </tr>
               <tr>
-               <td>${issueEntitlementInstance.startDate}</td>
+               <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${issueEntitlementInstance.startDate}"/></td>
                <td>${issueEntitlementInstance.startVolume}</td>
                <td>${issueEntitlementInstance.startIssue}</td>
-               <td>${issueEntitlementInstance.endDate}</td>
+               <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${issueEntitlementInstance.endDate}"/></td>
                <td>${issueEntitlementInstance.endVolume}</td>
                <td>${issueEntitlementInstance.endIssue}</td>
               </tr>
@@ -94,10 +94,10 @@
                 <th>To Date</th><th>To Volume</th><th>To Issue</th>
               </tr>
               <tr>
-               <td>${issueEntitlementInstance.tipp.startDate}</td>
+               <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${issueEntitlementInstance.tipp.startDate}"/></td>
                <td>${issueEntitlementInstance.tipp.startVolume}</td>
                <td>${issueEntitlementInstance.tipp.startIssue}</td>
-               <td>${issueEntitlementInstance.tipp.endDate}</td>
+               <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${issueEntitlementInstance.tipp.endDate}"/></td>
                <td>${issueEntitlementInstance.tipp.endVolume}</td>
                <td>${issueEntitlementInstance.tipp.endIssue}</td>
               </tr>
@@ -124,10 +124,10 @@
               </tr>
               <g:each in="${issueEntitlementInstance.tipp.title.tipps}" var="t">
                 <tr>
-                  <td><g:formatDate format="dd MMM yyyy" date="${t.startDate}"/></td>
+                  <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.startDate}"/></td>
                   <td>${t.startVolume}</td>
                   <td>${t.startIssue}</td>
-                  <td><g:formatDate format="dd MMM yyyy" date="${t.endDate}"/></td>
+                  <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.endDate}"/></td>
                   <td>${t.endVolume}</td>
                   <td>${t.endIssue}</td>
                   <td>${t.coverageDepth}</td>
