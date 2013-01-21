@@ -60,7 +60,7 @@
                   <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
                   <th>ISSN</th>
                   <th>iISSN</th>
-                  <g:sortableColumn params="${params}" property="coreTitle" title="Core" />
+                  <g:sortableColumn params="${params}" property="coreStatus" title="Core" />
                   <g:sortableColumn params="${params}" property="startDate" title="Start Date" />
                   <g:sortableColumn params="${params}" property="endDate" title="End Date" />
                   <th>Embargo</th>
@@ -87,12 +87,7 @@
                     <td><g:link controller="titleInstance" action="show" id="${ie.tipp.title.id}">${ie.tipp.title.title}</g:link></td>
                     <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
                     <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
-                    <td><g:refdataValue val="${ie.coreTitle}" 
-                                        domain="IssueEntitlement" 
-                                        pk="${ie.id}" 
-                                        field="coreTitle" 
-                                        cat="isCoreTitle"
-                                        class="coreedit"/></td>
+                    <td>${ie.coreStatus?.value}</td>
                     <td>
                         <span><g:formatDate format="dd MMMM yyyy" date="${ie.startDate}"/></span>
                         <input id="IssueEntitlement:${ie.id}:startDate" type="hidden" class="dp1" />

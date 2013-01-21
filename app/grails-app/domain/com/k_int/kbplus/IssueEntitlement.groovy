@@ -12,7 +12,7 @@ class IssueEntitlement implements Comparable {
   String embargo
   String coverageDepth
   String coverageNote
-  boolean coreTitle = false
+  // boolean coreTitle = false
   String ieReason
   Date coreStatusStart
   Date coreStatusEnd
@@ -41,7 +41,7 @@ class IssueEntitlement implements Comparable {
            embargo column:'ie_embargo'
      coverageDepth column:'ie_coverage_depth'
       coverageNote column:'ie_coverage_note',type: 'text'
-         coreTitle column:'ie_core_title'
+         // coreTitle column:'ie_core_title'
           ieReason column:'ie_reason'
    coreStatusStart comumn:'ie_core_status_start'
      coreStatusEnd comumn:'ie_core_status_end'
@@ -61,7 +61,7 @@ class IssueEntitlement implements Comparable {
     embargo(nullable:true, blank:true);
     coverageDepth(nullable:true, blank:true);
     coverageNote(nullable:true, blank:true);
-    coreTitle(nullable:true, blank:true);
+    // coreTitle(nullable:true, blank:true);
     ieReason(nullable:true, blank:true);
     coreStatusStart(nullable:true, blank:true);
     coreStatusEnd(nullable:true, blank:true);

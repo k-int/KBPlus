@@ -556,7 +556,7 @@ class MyInstitutionsController {
                                  embargo:bie.embargo,
                                  coverageDepth:bie.coverageDepth,
                                  coverageNote:bie.coverageNote,
-                                 coreTitle:bie.coreTitle,
+                                 coreStatus:bie.coreStatus,
                                  subscription:subscriptionInstance,
                                  tipp: bie.tipp).save();
           }
@@ -963,7 +963,7 @@ class MyInstitutionsController {
             title_info.current_embargo = ie.embargo
             title_info.current_depth = ie.coverageDepth
             title_info.current_coverage_note = ie.coverageNote
-            title_info.is_core = ie.coreTitle ? 'Y' : 'N'
+            title_info.is_core = ie.coreStatus?.value
             title_info.core_start_date = ie.coreStatusStart ? formatter.format(ie.coreStatusStart) : ''
             title_info.core_end_date = ie.coreStatusEnd ? formatter.format(ie.coreStatusEnd) : ''
             // log.debug("added title info: ${title_info}");
@@ -996,7 +996,7 @@ class MyInstitutionsController {
         def ie_info = [:]
         log.debug("Adding tipp info ${ie.tipp.startDate} ${ie.tipp.derivedFrom}");
         ie_info.tipp_id = ie.tipp.id;
-        ie_info.core = ie.coreTitle
+        ie_info.core = ie.coreStatus?.value
         ie_info.startDate_d = ie.tipp.startDate ?: ie.tipp.derivedFrom?.startDate
         ie_info.startDate = ie_info.startDate_d ? formatter.format(ie_info.startDate_d) : null
         ie_info.startVolume = ie.tipp.startVolume ?: ie.tipp.derivedFrom?.startVolume
@@ -1471,7 +1471,6 @@ class MyInstitutionsController {
                                            embargo:dbtipp.embargo,
                                            coverageDepth:dbtipp.coverageDepth,
                                            coverageNote:dbtipp.coverageNote,
-                                           coreTitle:is_core,
                                            coreStatus:new_core_status,
                                            coreStatusStart:new_core_start_date,
                                            coreStatusEnd:new_core_end_date

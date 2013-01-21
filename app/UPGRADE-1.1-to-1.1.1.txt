@@ -18,3 +18,10 @@ insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 28, 'No', nul
 insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 28, 'Print', null);
 insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 28, 'Electronic', null);
 insert into refdata_value(rdv_owner, rdv_value, rdv_icon) VALUES ( 28, 'Print+Electronic', null);
+
+
+select (@core_yes:=rdv_id) from refdata_value, refdata_category where rdv_owner = rdc_id and rdv_value='Yes' and rdc_description = 'CoreStatus';
+select (@core_no:=rdv_id) from refdata_value, refdata_category where rdv_owner = rdc_id and rdv_value='No' and rdc_description = 'CoreStatus';
+
+update issue_entitlement set core_status_id = @core_yes where ie_core_title = 1;
+update issue_entitlement set core_status_id = @core_no where ie_core_title = 0;
