@@ -74,7 +74,7 @@
                   <td>${e.end_date} (Default:<g:formatDate format="dd MMMM yyyy" date="${e.base_entitlement.endDate}"/>)</td>
                   <td>${e.base_entitlement.endVolume}</td>
                   <td>${e.base_entitlement.endIssue}</td>
-                  <td>${e.core_status}</td>
+                  <td>${e.core_status?:'N'}</td>
                   <td>${e.core_start_date}</td>
                   <td>${e.core_end_date}</td>
                 </tr>

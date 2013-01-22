@@ -55,7 +55,7 @@
                   <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
                   <th>ISSN</th>
                   <th>eISSN</th>
-                  <g:sortableColumn params="${params}" property="coreTitle" title="Core" />
+                  <g:sortableColumn params="${params}" property="coreStatus" title="Core" />
                   <g:sortableColumn params="${params}" property="startDate" title="Start Date" />
                   <g:sortableColumn params="${params}" property="endDate" title="End Date" />
                   <th>Embargo</th>
@@ -74,7 +74,7 @@
                     </td>
                     <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
                     <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
-                    <td>${ie.coreTitle}</td>
+                    <td>${ie.coreStatus?.value}</td>
                     <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.startDate}"/></td>
                     <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.endDate}"/></td>
                     <td>${ie.embargo}</td>

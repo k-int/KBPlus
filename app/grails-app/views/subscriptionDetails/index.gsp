@@ -88,7 +88,7 @@
         <div class="span8"> 
             <br/>
             <h6>Subscription Information</h6>
-            <div class="subscription-info"> 
+            <div class="licence-info"> 
                 <dl>
                     <dt>License</dt>
                     <dd><g:relation domain='Subscription' 
@@ -207,7 +207,7 @@
                 </td>
                 <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
                 <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
-                <td><g:refdataValue val="${ie.coreTitle}" 
+                <td><g:refdataValue val="${ie.coreStatus?.value}" 
                                     domain="IssueEntitlement" 
                                     pk="${ie.id}" 
                                     field="coreStatus" 
@@ -334,8 +334,11 @@
         $('span.entitlementBatchEdit').editable(function(value, settings) { 
           $("#bulk_core").val(value);
           return(value);          
-        },{ data:{'true':'true',
-                  'false':'false'}, type:'select',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px', onblur:'ignore'});
+        },{ data:{'Yes':'Yes',
+                  'No':'No',
+                  'Print':'Print',
+                  'Electronic':'Electroinc',
+                  'Print+Electronic':'Print+Electroinic'}, type:'select',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px', onblur:'ignore'});
 
         $('span.embargoBatchEdit').editable(function(value, settings) { 
           $("#bulk_embargo").val(value);

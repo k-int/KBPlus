@@ -175,6 +175,7 @@ class LicenseDetailsController {
         log.debug("Looking up docctx ${docctx_to_delete} for delete");
         def docctx = DocContext.get(docctx_to_delete)
         docctx.status = RefdataCategory.lookupOrCreate('Document Context Status','Deleted');
+        docctx.save(flush:true);
       }
     }
 

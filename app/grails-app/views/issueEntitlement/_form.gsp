@@ -98,14 +98,6 @@
 	<g:textField name="coverageNote" value="${issueEntitlementInstance?.coverageNote}"/>
 </div>
 
-<div class="fieldcontain ${hasErrors(bean: issueEntitlementInstance, field: 'coreTitle', 'error')} ">
-	<label for="coreTitle">
-		<g:message code="issueEntitlement.coreTitle.label" default="Core Title" />
-		
-	</label>
-	<g:checkBox name="coreTitle" value="${issueEntitlementInstance?.coreTitle}" />
-</div>
-
 <div class="fieldcontain ${hasErrors(bean: issueEntitlementInstance, field: 'ieReason', 'error')} ">
 	<label for="ieReason">
 		<g:message code="issueEntitlement.ieReason.label" default="Ie Reason" />

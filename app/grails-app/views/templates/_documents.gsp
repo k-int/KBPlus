@@ -2,7 +2,7 @@
   <h7>Documents</h7>
   <ul>
     <g:each in="${doclist}" var="docctx">
-      <g:if test="${docctx.owner?.contentType==1}">
+      <g:if test="${((docctx.owner?.contentType==1) && ( docctx.status?.value!='Deleted'))}">
         <li class="externalLinkIcon">
           <g:link controller="docstore" id="${docctx.owner.uuid}">
             ${docctx.owner.id}:<g:if test="${docctx.owner?.title}"><em>${docctx.owner.title}</em></g:if>
