@@ -1518,10 +1518,14 @@ class MyInstitutionsController {
 
   def checkUserIsMember(user, org) {
     def result = false;
-    def uo = UserOrg.findByUserAndOrg(user,org)
-    if ( uo && ( (uo.status==1) || (uo.status==3) ) ) {
-      result = true;
+    // def uo = UserOrg.findByUserAndOrg(user,org)
+    def uoq = UserOrg.where {
+      (user == user && org == org && ( status == 1 || status == 3 ))
     }
+
+    if ( uoq.count() > 0 )
+      result = true;
+
     result
   }
 
