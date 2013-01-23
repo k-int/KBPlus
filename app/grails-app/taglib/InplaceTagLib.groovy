@@ -21,7 +21,7 @@ class InplaceTagLib {
           out << "</span>"
         }
         else {
-          out << "<span id=\"${id}\" class=\"${attrs.class}\">Not set</span>"
+          out << "<span id=\"${id}\" class=\"${attrs.class}\"></span>"
         }
       }
       else {
