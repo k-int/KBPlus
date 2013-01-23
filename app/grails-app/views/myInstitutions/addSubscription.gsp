@@ -41,14 +41,15 @@
         <g:if test="${subscriptions}" >
           <g:form action="processAddSubscription" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="post">
  
-            <g:if test="${is_admin}"> 
             <div class="pull-left subscription-create">
+            <g:if test="${is_admin}"> 
               <select name="createSubAction"> 
                 <option value="copy">Copy With Entitlements</option>
                 <option value="nocopy">Copy Without Entitlements</option>
                 <input type="submit" class="btn disabled" value="Create Subscription" /> 
-            </div>
             </g:if>
+            <g:else>You must have editor role to be able to add licences</g:else>
+            </div>
               
               <div class="clearfix"></div>
               

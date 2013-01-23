@@ -51,7 +51,10 @@
 
       <div class="container">
           <div class="well licence-options">
+            <g:if test="${is_admin}">
               <input type="submit" name="copy-licence" value="Copy Selected" class="btn btn-warning" />
+            </g:if>
+            <g:else>Sorry, you must have editor role to be able to add licences</g:else>
           </div>
       </div>
 
