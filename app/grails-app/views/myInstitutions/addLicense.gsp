@@ -37,7 +37,9 @@
             </div>
             <div class="span6">
                 <div class="pull-right">
+                  <g:if test="${is_admin}">
                     <g:link controller="myInstitutions" action="cleanLicense" params="${[shortcode:params.shortcode]}" class="btn btn-primary">Create New Licence</g:link>
+                  </g:if>
                 </div>
             </div>
         </div>
