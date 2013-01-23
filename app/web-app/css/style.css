@@ -410,7 +410,7 @@ div.comments {
     background-color: #D9E5F2;
 }
 
-.ipe, .fieldNote, .refdataedit, .cuedit, .isedit, .intedit {
+.ipe, .fieldNote, .refdataedit, .cuedit, .isedit, .intedit, .ynrefdataedit {
     display: inline;
     background-position: right center;
     padding-right: 25px;

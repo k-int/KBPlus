@@ -91,11 +91,13 @@
             <div class="licence-info"> 
                 <dl>
                     <dt>License</dt>
-                    <dd><g:relation domain='Subscription' 
+                    <dd><g:if test="${subscriptionInstance.subscriber}">
+                           <g:relation domain='Subscription' 
                             pk='${subscriptionInstance.id}' 
                             field='owner' 
                             class='reldataedit'
-                            id='ownerLicense'>${subscriptionInstance?.owner?.reference}</g:relation></dd>
+                            id='ownerLicense'>${subscriptionInstance?.owner?.reference}</g:relation></g:if><g:else>N/A (Subscription offered)</g:else>
+                    </dd>
                 </dl>
 
                 <dl>
@@ -107,7 +109,7 @@
 
                 <dl>
                   <dt>Public?</dt>
-                  <dd><g:refdataValue val="${subscriptionInstance.isPublic?.value}" domain="Subscription" pk="${subscriptionInstance.id}" field="isPublic" cat='YN' class="${editable?'ynrefdataedit newipe':''}"/></dd>
+                  <dd><g:refdataValue val="${subscriptionInstance.isPublic?.value}" domain="Subscription" pk="${subscriptionInstance.id}" field="isPublic" cat='YN' class="${editable?'ynrefdataedit':''}"/></dd>
                 </dl> 
 
                 <dl><dt>Consortia</dt><dd>${subscriptionInstance.getConsortia()?.name}<br/></dd></dl>
@@ -379,7 +381,7 @@
          });
 
          $('dd span.reldataedit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}" action="genericSetRel" />', {
-           loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:institution?.shortcode]}" action="availableLicenses" />',
+           loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:subscriptionInstance.subscriber?.shortcode]}" action="availableLicenses" />',
            type   : 'select',
            cancel : 'Cancel',
            submit : 'OK',

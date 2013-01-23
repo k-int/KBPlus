@@ -225,7 +225,7 @@
       <g:if test="${editable}">
       $(document).ready(function() {
          var checkEmptyEditable = function() {
-           $('.ipe, .refdataedit, .fieldNote').each(function() {
+           $('.ipe, .refdataedit, .fieldNote, .ynrefdataedit').each(function() {
              if($(this).text().length == 0) {
                $(this).addClass('editableEmpty');
              } else {
@@ -246,7 +246,7 @@
          // On jEditable click remove the hide the icon and show it 
          // when one of the buttons are clicked or ESC is hit.
 
-         $('.ipe, .intedit, .refdataedit, .cuedit, .fieldNote, .newipe').click(function() {
+         $('.ipe, .intedit, .refdataedit, .cuedit, .fieldNote, .ynrefdataedit, .newipe').click(function() {
             // Ensure we're not clicking in an editing element.
             if($(this).hasClass('clicked')) {
                 return;
