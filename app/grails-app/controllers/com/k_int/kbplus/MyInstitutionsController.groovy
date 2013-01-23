@@ -153,7 +153,8 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
-    if ( !checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
+    // if ( !checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
+    if ( !checkUserHasRole(result.user, result.institution, 'INST_USER') ) {
       flash.error="You do not have permission to view ${result.institution.name}. Please request access on the profile page";
       response.sendError(401)
       // render(status: '401', text:"You do not have permission to add licences to ${result.institution.name}");
@@ -235,7 +236,8 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
-    if ( !checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
+    // if ( !checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
+    if ( !checkUserHasRole(result.user, result.institution, 'INST_USER') ) {
       flash.error="You do not have admin permissions to access ${result.institution.name} pages. Please request access on the profile page";
       response.sendError(401)
       // render(status: '401', text:"You do not have permission to add subscriptions to ${result.institution.name}. Please request editor access on the profile page");
