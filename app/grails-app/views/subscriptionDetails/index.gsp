@@ -337,8 +337,8 @@
         },{ data:{'Yes':'Yes',
                   'No':'No',
                   'Print':'Print',
-                  'Electronic':'Electroinc',
-                  'Print+Electronic':'Print+Electroinic'}, type:'select',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px', onblur:'ignore'});
+                  'Electronic':'Electronic',
+                  'Print+Electronic':'Print+Electronic'}, type:'select',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px', onblur:'ignore'});
 
         $('span.embargoBatchEdit').editable(function(value, settings) { 
           $("#bulk_embargo").val(value);
