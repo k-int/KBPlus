@@ -32,7 +32,7 @@ class UploadController {
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def so() { 
     def result = [:]
-    log.debug("so");    
+    result.user = User.get(springSecurityService.principal.id)
     
     if ( request.method == 'POST' ) {
       def upload_mime_type = request.getFile("soFile")?.contentType
