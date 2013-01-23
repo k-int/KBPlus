@@ -222,7 +222,6 @@
 }
 
 .licence-info dt {
-    float: left;
     width: 20%;
     font-weight: bold;
 }
@@ -482,6 +481,10 @@ div.comments {
 
 .intedit input {
     width: 90%!important;
+}
+
+.ipe select {
+    display: block;
 }
 
 .ipe button[type="submit"], .fieldNote button[type="submit"], .refdataedit button[type="submit"], .cuedit button[type="submit"], .newipe[type="submit"], .isedit[type="submit"], .intedit button[type="submit"] {
