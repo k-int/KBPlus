@@ -25,3 +25,6 @@ select (@core_no:=rdv_id) from refdata_value, refdata_category where rdv_owner =
 
 update issue_entitlement set core_status_id = @core_yes where ie_core_title = 1;
 update issue_entitlement set core_status_id = @core_no where ie_core_title = 0;
+
+alter table issue_entitlement modify ie_core_title bit(1) null;
+
