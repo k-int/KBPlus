@@ -483,6 +483,10 @@ div.comments {
     width: 90%!important;
 }
 
+.ipe select {
+    display: block;
+}
+
 .ipe button[type="submit"], .fieldNote button[type="submit"], .refdataedit button[type="submit"], .cuedit button[type="submit"], .newipe[type="submit"], .isedit[type="submit"], .intedit button[type="submit"] {
     background-color: #0074CC;
     background-image: linear-gradient(bottom, #29547E 34%, #386593 67%);
