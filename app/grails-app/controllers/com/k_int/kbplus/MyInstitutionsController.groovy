@@ -253,8 +253,10 @@ class MyInstitutionsController {
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
 
-    def base_qry = " from Subscription as s where s.type.value = 'Subscription Offered' and s.isPublic=?"
-    def qry_params = [public_flag]
+    // def base_qry = " from Subscription as s where s.type.value = 'Subscription Offered' and s.isPublic=?"
+    def base_qry = " from Subscription as s where s.type.value = 'Subscription Offered'"
+    // def qry_params = [public_flag]
+    def qry_params = []
 
     if ( params.q?.length() > 0 ) {
       base_qry += " and ( lower(s.name) like ? or exists ( select sp from SubscriptionPackage as sp where sp.subscription = s and ( lower(sp.pkg.name) like ? ) ) ) "
