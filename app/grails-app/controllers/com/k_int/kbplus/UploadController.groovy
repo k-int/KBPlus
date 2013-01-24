@@ -426,6 +426,8 @@ class UploadController {
     result.user = User.get(springSecurityService.principal.id)
 
     def reloaded_pkg = Package.get(new_pkg_id);
+    reloaded_pkg.updateNominalPlatform();
+    reloaded_pkg.save(flush:true);
 
     def new_sub = reloaded_pkg.createSubscription('Subscription Offered', 
                                              prepared_so.sub.name, 

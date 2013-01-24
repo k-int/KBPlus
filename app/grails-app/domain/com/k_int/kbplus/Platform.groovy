@@ -1,5 +1,7 @@
 package com.k_int.kbplus
 
+import javax.persistence.Transient
+
 class Platform {
 
   String impId
@@ -58,5 +60,4 @@ class Platform {
     }
     platform;
   }
-
 }

@@ -110,4 +110,28 @@ class Package {
     result
   }
 
+  @Transient
+  def updateNominalPlatform() {
+    def platforms = [:]
+    tipps.each{ tipp ->
+      if ( !platforms.keySet().contains(tipp.platform.id) ) {
+        platforms[tipp.platform.id] = [count:1, platform:tipp.platform]
+      }
+      else {
+        platforms[tipp.platform.id].count++
+      }
+    }
+
+    def selected_platform = null;
+    def largest = 0;
+    platforms.values().each { pl ->
+      log.debug("Processing ${pl}");
+      if ( pl['count'] > largest ) {
+        selected_platform = pl['platform']
+      }
+    }
+
+    nominalPlatform = selected_platform
+  }
+
 }
