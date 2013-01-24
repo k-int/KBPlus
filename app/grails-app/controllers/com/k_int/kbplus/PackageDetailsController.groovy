@@ -85,14 +85,16 @@ class PackageDetailsController {
 
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
     def show() {
+      def result = [:]
+      result.user = User.get(springSecurityService.principal.id)
       def packageInstance = Package.get(params.id)
       if (!packageInstance) {
         flash.message = message(code: 'default.not.found.message', args: [message(code: 'package.label', default: 'Package'), params.id])
         redirect action: 'list'
         return
       }
-
-      [packageInstance: packageInstance]
+      result.packageInstance = packageInstance
+      result
     }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])

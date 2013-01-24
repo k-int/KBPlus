@@ -5,7 +5,6 @@
     <meta name="layout" content="mmbootstrap">
     <g:set var="entityName" value="${message(code: 'package.label', default: 'Package')}" />
     <title><g:message code="default.edit.label" args="[entityName]" /></title>
-    <!-- r:require modules="bootstrap-typeahead"-->
     <r:require modules="jeditable"/>
     <r:require module="jquery-ui"/>
   </head>
@@ -66,32 +65,50 @@
                 </dd>
               </dl>
 
-              <dl>
-                <dt>Content Provider</dt>
-                <dd>
-                  <g:enhancedSelect id="contentProvider"
-                                    title="select content provider"
-                                    owner="${packageInstance}"
-                                    ownerProperty="contentProvider"
-                                    refdataProfile="ContentProvider"
-                                    filterFields="name">
-                    <g:if test="${packageInstance.contentProvider}">${packageInstance.contentProvider?.name}</g:if>
-                    <g:else>Not Set</g:else>
-                  </g:enhancedSelect>
-                </dd>
-              </dl>
+        <dl>
+          <dt>Titles</dt>
+          <dd>
+          <table border="1" cellspacing="5" cellpadding="5">
+            <thead>
+            <tr>
+              <th rowspan="2" style="width: 20%;">Title</th>
+              <th rowspan="2" style="width: 10%;">ISSN</th>
+              <th rowspan="2" style="width: 10%;">eISSN</th>
+              <th rowspan="2" style="width: 10%;">Start Date</th>
+              <th rowspan="2" style="width: 10%;">Start Volume</th>
+              <th rowspan="2" style="width: 10%;">Start Issue</th>
+              <th rowspan="2" style="width: 10%;">End Date</th>
+              <th rowspan="2" style="width: 10%;">End Volume</th>
+              <th rowspan="2" style="width: 10%;">End Issue</th>
+              <th rowspan="2" style="width: 10%;">Coverage Depth</th>
+            </tr>
+            </thead>
+            <tbody>
+            <g:each in="${packageInstance?.tipps}" var="t">
+              <tr>
+                <td><g:inPlaceEdit domain="TitleInstance" pk="${t.title.id}" style="padding-top: 5px;" field="title" id="title" class="newipe">${t.title.title}</g:inPlaceEdit></td>
+                <td>${t.title?.getIdentifierValue('ISSN')}</td>
+                <td>${t?.title?.getIdentifierValue('eISSN')}</td>
+                <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.startDate}"/>
+                    <input id="TitleInstancePackagePlatform:${t.id}:startDate" type="hidden" class="dp1" /></td>
+                <td><g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="startVolume" id="startVolume" class="newipe">${t.startVolume}</g:inPlaceEdit></td>
+                <td><g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="endIssue" id="endIssue" class="newipe">${t.startIssue}</g:inPlaceEdit> </td>
+                <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.endDate}"/>
+                    <input id="TitleInstancePackagePlatform:${t.id}:endDate" type="hidden" class="dp1" /></td>
+                <td><g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="endVolume" id="endVolume" class="newipe">${t.endVolume}</g:inPlaceEdit></td>
+                <td><g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="endIssue" id="endIssue" class="newipe">${t.endIssue}</g:inPlaceEdit></td>
+                <td><g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="coverageDepth" id="coverageDepth" class="newipe">${t.coverageDepth}</g:inPlaceEdit></td>
+              </tr>
+            </g:each>
+            </tbody>
+          </table>
+          </dd>
+        </dl>
+
 
             </fieldset>
         </fieldset>
 
-        <div class="form-actions">
-          <g:form action="uploadTitles" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="id" value="${params.id}"/>
-            <input type="file" id="titleFile" name="titleFile"/>
-            Check to Replace, Unchecked to append:<input type="checkbox" id="replace" name="replace"/>
-            <button type="submit" class="btn btn-primary">Upload Titles</button>
-          </g:form>
-        </div>
 
       </div>
 
@@ -114,6 +131,100 @@
            callback : function(value, settings) {
            }
          });
+
+         $('.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" />', {
+           type      : 'textarea',
+           cancel    : 'Cancel',
+           submit    : 'OK',
+           id        : 'elementid',
+           rows      : 3,
+           tooltip   : 'Click to edit...',
+           onblur        : 'ignore'
+         });
+
+
+         // On jEditable click remove the hide the icon and show it
+         // when one of the buttons are clicked or ESC is hit.
+
+         $('.newipe').click(function() {
+            // Ensure we're not clicking in an editing element.
+            if($(this).hasClass('clicked')) {
+                return;
+            }
+
+                // Hide edit icon with overwriting style.
+                $(this).addClass('clicked');
+
+            var e = $(this);
+
+            var outsideElements;
+
+            setTimeout(function() {
+                outsideElements = e.parent().find("span:not(.clicked)");
+                console.log(outsideElements);
+                outsideElements.hide();
+            }, 1);
+
+                var removeClicked = function() {
+                        setTimeout(function() {
+                                e.removeClass('clicked');
+                                if(outsideElements) {
+                                        outsideElements.show();
+                                }
+                        }, 1);
+                }
+
+                setTimeout(function() {
+                        e.find('form button').click(function() {
+                                removeClicked();
+                        });
+                        e.keydown(function(event) {
+                                if(event.keyCode == 27) {
+                                        removeClicked();
+                                }
+                        });
+                }, 1);
+         });
+
+
+        var datepicker_config = {
+          buttonImage: '../../images/calendar.gif',
+          buttonImageOnly: true,
+          changeMonth: true,
+          changeYear: true,
+          showOn: 'both',
+          showButtonPanel: true,
+          showClearButton: true,
+          clearText: "Clear",
+          onSelect: function(dateText, inst) {
+            var elem_id = inst.input[0].id;
+            $.ajax({url: '<g:createLink controller="ajax" action="genericSetValue"/>?elementid='+
+                             elem_id+'&value='+dateText+'&dt=date&idf=MM/dd/yyyy&odf=${session.sessionPreferences?.globalDateFormat}',
+                   success: function(result){inst.input.parent().find('span').html(result)}
+                   });
+          },
+          beforeShow: function( input ) {
+            setTimeout(function() {
+                var buttonPane = $( input )
+                    .datepicker( "widget" )
+                    .find( ".ui-datepicker-buttonpane" );
+
+                $( "<button/>", {
+                    text: "Clear",
+                    click: function() {
+                      // var parent=$(this).parent('.dp1')
+                      console.log("%o",input)
+                      $(input).parent().find('span.datevalue').html("")
+                      $.ajax({url: '<g:createLink controller="ajax" action="genericSetValue"/>?elementid='+input.id+'&value=__NULL__',});
+                      $(input).value="__NULL__"
+                    }
+                }).appendTo( buttonPane ).addClass("ui-datepicker-clear ui-state-default ui-priority-primary ui-corner-all");
+            }, 1 );
+          }
+        };
+
+        $("input.dp1").datepicker(datepicker_config);
+
       });
 
     </script>
