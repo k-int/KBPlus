@@ -1224,7 +1224,7 @@ class MyInstitutionsController {
   }
 
 
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def renewalsUpload() {
     def result = [:]
 
