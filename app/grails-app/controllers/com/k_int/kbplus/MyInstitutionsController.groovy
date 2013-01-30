@@ -154,11 +154,18 @@ class MyInstitutionsController {
     result.institution = Org.findByShortcode(params.shortcode)
 
     // if ( !checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
-    if ( !checkUserIsMember(user,result.institution) ) {
+    if ( !checkUserIsMember(result.user,result.institution) ) {
       flash.error="You do not have permission to view ${result.institution.name}. Please request access on the profile page";
       response.sendError(401)
       // render(status: '401', text:"You do not have permission to add licences to ${result.institution.name}");
       return;
+    }
+
+    if ( checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
+      result.is_admin = true
+    }
+    else {
+      result.is_admin=false;
     }
 
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
@@ -239,11 +246,19 @@ class MyInstitutionsController {
     result.institution = Org.findByShortcode(params.shortcode)
 
     // if ( !checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
-    if ( !checkUserIsMember(user,result.institution) ) {
+    if ( !checkUserIsMember(result.user,result.institution) ) {
       flash.error="You do not have admin permissions to access ${result.institution.name} pages. Please request access on the profile page";
       response.sendError(401)
+      result.is_admin=false;
       // render(status: '401', text:"You do not have permission to add subscriptions to ${result.institution.name}. Please request editor access on the profile page");
       return;
+    }
+
+    if ( checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
+      result.is_admin = true
+    }
+    else {
+      result.is_admin=false;
     }
 
     def public_flag = RefdataCategory.lookupOrCreate('YN','Yes');
