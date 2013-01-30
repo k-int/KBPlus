@@ -61,7 +61,7 @@ class ProcessLoginController {
 
         if ( user.save(flush:true) ) {
           log.debug("Created user, allocating user role");
-          def userRole = com.k_int.kbplus.auth.Role.findByAuthority('INST_USER')
+          def userRole = com.k_int.kbplus.auth.Role.findByAuthority('ROLE_USER')
 
           if ( userRole ) {
             log.debug("looked up user role: ${userRole}");
@@ -84,7 +84,9 @@ class ProcessLoginController {
           // new com.k_int.kbplus.auth.UserRole(user:user,role:com.k_int.kbplus.auth.Role.findByAuthority('ROLE_EDITOR')).save(flush:true)
 
           // See if we can find the org this user is attached to
-          createUserOrgLink(user, map.authInstitutionName, map.shibbScope);
+          if ( grailsApplication.config.autoAffiliate ) {
+            createUserOrgLink(user, map.authInstitutionName, map.shibbScope);
+          }
   
           log.debug("Done creating user");
         }
@@ -134,12 +136,14 @@ class ProcessLoginController {
         boolean auto_approve = false;
 
         def auto_approve_setting = Setting.findByName('AutoApproveMemberships');
+
         if ( auto_approve_setting?.value == 'true' )
           auto_approve = true;
 
+        def userRole = com.k_int.kbplus.auth.Role.findByAuthority('INST_USER')
         def user_org_link = new com.k_int.kbplus.auth.UserOrg(user:user, 
                                                               org:org, 
-                                                              role:'Staff', 
+                                                              formalRole:userRole,
                                                               status: auto_approve?3:0, 
                                                               dateRequested:System.currentTimeMillis(), 
                                                               dateActioned:System.currentTimeMillis())
