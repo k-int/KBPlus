@@ -61,7 +61,7 @@ class ProcessLoginController {
 
         if ( user.save(flush:true) ) {
           log.debug("Created user, allocating user role");
-          def userRole = com.k_int.kbplus.auth.Role.findByAuthority('ROLE_USER')
+          def userRole = com.k_int.kbplus.auth.Role.findByAuthority('INST_USER')
 
           if ( userRole ) {
             log.debug("looked up user role: ${userRole}");
