@@ -1485,7 +1485,7 @@ class MyInstitutionsController {
         def new_ie =  new IssueEntitlement(subscription:new_subscription,
                                            status: live_issue_entitlement,
                                            tipp: dbtipp,
-                                           startDate:new_start_date : dbtipp.startDate,
+                                           startDate:new_start_date ?: dbtipp.startDate,
                                            startVolume:dbtipp.startVolume,
                                            startIssue:dbtipp.startIssue,
                                            endDate:new_end_date ?: dbtipp.endDate,
