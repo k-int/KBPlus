@@ -1203,7 +1203,7 @@ class MyInstitutionsController {
         cell = row.createCell(cc++);
         def ie_info = m.ti_info[title.title_idx][sub.sub_idx]
         if ( ie_info ) {
-          if ( ( ie_info.core ) && ( ie_info.core.value != 'No' ) ) {
+          if ( ( ie_info.core ) && ( ie_info.core != 'No' ) ) {
             cell.setCellValue(new HSSFRichTextString(""));
             cell.setCellStyle(core_cell_style);  
           }
