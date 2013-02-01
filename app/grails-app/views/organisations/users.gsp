@@ -32,7 +32,7 @@
         <g:each in="${orgInstance.affiliations}" var="a">
           <tr>
             <td>${a.user.display}</td>
-            <td>${a.formalRole.authority}</td>
+            <td>${a.formalRole?.authority}</td>
             <td>
               <g:if test="${a.status==0}">Pending</g:if>
               <g:if test="${a.status==1}">Approved</g:if>
