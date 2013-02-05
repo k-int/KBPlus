@@ -141,7 +141,7 @@ class Subscription {
     Set object_orgs = new HashSet();
     orgRelations.each { ol ->
       def perm_exists=false
-      ol.roleType.sharedPermissions.each { sp ->
+      ol.roleType.?sharedPermissions.each { sp ->
         if ( sp.perm.code==perm )
           perm_exists=true;
       }
