@@ -11,6 +11,9 @@ class BootStrap {
 
 
   def init = { servletContext ->
+
+    def evt_startup = new EventLog(event:'kbplus.startup',message:'Normal startup',tstp:new Date(System.currentTimeMillis())).save(flush:true)
+
     def so_filetype = DataloadFileType.findByName('Subscription Offered File') ?: new DataloadFileType(name:'Subscription Offered File');
     def plat_filetype = DataloadFileType.findByName('Platforms File') ?: new DataloadFileType(name:'Platforms File');
 
@@ -91,6 +94,7 @@ class BootStrap {
   }
 
   def destroy = {
+    def evt_startup = new EventLog(event:'kbplus.shutdown',message:'Normal shutdown',tstp:new Date(System.currentTimeMillis())).save(flush:true)
   }
 
   def ensurePermGrant(role,perm) {

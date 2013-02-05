@@ -98,7 +98,7 @@ class AdminController {
           row.passwordExpired = u.passwordExpired
           row.affiliations = []
           u.affiliations.each { ua ->
-            row.affiliations.add( [org: ua.org.shortcode, status: ua.status, role:ua.role] )
+            row.affiliations.add( [org: ua.org.shortcode, status: ua.status, formalRole:formalRole?.authority] )
           }
           r2.add(row)
         }

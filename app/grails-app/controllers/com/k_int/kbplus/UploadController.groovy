@@ -29,7 +29,7 @@ class UploadController {
     new SimpleDateFormat('yyyy')
   ];
 
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
   def so() { 
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)

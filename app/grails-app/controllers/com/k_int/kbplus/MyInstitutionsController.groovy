@@ -734,7 +734,7 @@ class MyInstitutionsController {
     result.user = springSecurityService.getCurrentUser()
 
     if ( !checkUserIsMember(result.user, result.institution) ) {
-      flash.error="You do not have permission to view ${institution.name}. Please request access on the profile page";
+      flash.error="You do not have permission to view ${result.institution.name}. Please request access on the profile page";
       response.sendError(401)
       // render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
       return;
@@ -1203,7 +1203,7 @@ class MyInstitutionsController {
         cell = row.createCell(cc++);
         def ie_info = m.ti_info[title.title_idx][sub.sub_idx]
         if ( ie_info ) {
-          if ( ie_info.core ) {
+          if ( ( ie_info.core ) && ( ie_info.core != 'No' ) ) {
             cell.setCellValue(new HSSFRichTextString(""));
             cell.setCellStyle(core_cell_style);  
           }
@@ -1485,10 +1485,10 @@ class MyInstitutionsController {
         def new_ie =  new IssueEntitlement(subscription:new_subscription,
                                            status: live_issue_entitlement,
                                            tipp: dbtipp,
-                                           startDate:new_start_date,
+                                           startDate:new_start_date ?: dbtipp.startDate,
                                            startVolume:dbtipp.startVolume,
                                            startIssue:dbtipp.startIssue,
-                                           endDate:new_end_date,
+                                           endDate:new_end_date ?: dbtipp.endDate,
                                            endVolume:dbtipp.endVolume,
                                            endIssue:dbtipp.endIssue,
                                            embargo:dbtipp.embargo,
