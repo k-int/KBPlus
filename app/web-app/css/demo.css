@@ -1,0 +1,20 @@
+/**
+ *  Sandbox css
+*/
+
+.navbar-inner {
+    background-color: #7A005E;
+    background-image: url('../images/header_graphic_demo.jpg');
+}
+
+.navbar-inner .brand {
+    color: white;
+}
+
+.navbar .brand {
+    color: #fff; 
+}
+
+.navbar .nav > li {
+    border-right: none;
+}

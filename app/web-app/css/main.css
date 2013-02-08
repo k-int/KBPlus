@@ -448,11 +448,11 @@ th.sortable a {
 }
 
 th.asc a {
-	background-image: url(../images/skin/sorted_asc.gif);
+	background-image: url(../images/skin/sorted_asc.gif) no-repeat;
 }
 
 th.desc a {
-	background-image: url(../images/skin/sorted_desc.gif);
+	background-image: url(../images/skin/sorted_desc.gif) no-repeat;
 }
 
 .odd {

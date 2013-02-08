@@ -207,7 +207,7 @@ class UploadController {
       println("**WARNING** num_platforms_listed = 0, defaulting to 1!");
     }
     
-    def content_provider_org = Org.findByName(so_provider_line[1]) ?: new Org(name:so_provider_line[1]).save();
+    def content_provider_org = Org.findByName(so_provider_line[1]) ?: new Org(name:so_provider_line[1],impId:java.util.UUID.randomUUID().toString()).save();
     
     def normalised_identifier = so_identifier_line[1].trim().toLowerCase().replaceAll('-','_')
     def norm_pkg_identifier = "${so_provider_line[1].trim()}:${so_package_identifier_line[1].trim()}"
