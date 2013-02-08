@@ -391,7 +391,7 @@ class UploadController {
                                                     embargo:t.embargo,
                                                     coverageDepth:t.coverageDepth,
                                                     coverageNote:t.coverageNote,
-                                                    hostPlatformURL:t.hostPlatformURL,
+                                                    hostPlatformURL:t.host_platform_url,
                                                     impId:java.util.UUID.randomUUID().toString(),
                                                     ids:[])
   
