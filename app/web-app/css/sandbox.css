@@ -2,6 +2,14 @@
  *  Sandbox css
 */
 
+h1, h2, h6 {
+    color: #007A5E;
+}
+
+h6 {
+    border-bottom: 1px solid #007A5E;
+}
+
 .navbar-inner {
     background-color: #007A5E;
     background-image: url('../images/header_graphic_green_colour_sandpit.jpg');
@@ -17,4 +25,29 @@
 
 .navbar .nav > li {
     border-right: none;
+}
+
+.public .nav > li > a:hover, .public .nav > li.active > a {
+    background-color: #004F3E!important;
+    color: white!important;
+}
+
+.public .navbar-inner {
+    background-image: none;
+}
+
+table tr:first-child th {
+    background-color: #007A5E;
+}
+
+thead, table tr:first-child th {
+    background-color: #007A5E!important;
+}
+
+.navbar-footer .caret {
+    border-bottom-color: #007A5E!important;
+}
+
+.navbar-footer.navbar .nav > li > a {
+    color: #007A5E;
 }
