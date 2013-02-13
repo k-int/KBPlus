@@ -93,9 +93,6 @@ table thead, table tr:first-child th {
 
 table th.sortable {
     text-decoration: underline;
-    background-position: right;
-    background-repeat: no-repeat;
-    padding-right: 1.1em;
 }
 
 thead, table tr:first-child {
