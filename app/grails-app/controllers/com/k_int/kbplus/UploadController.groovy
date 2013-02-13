@@ -99,7 +99,7 @@ class UploadController {
     def pkg = Package.findByIdentifier(norm_pkg_identifier);
     if ( pkg != null ) {
       log.error("Package ${norm_pkg_identifier} already exists");
-      flash.error="Problem processing ${upload_filename} : Unable to process file - Subscription with ID ${normalised_identifier} already exists in database";
+      flash.error="Problem processing ${upload_filename} : Unable to process file - Package with ID ${norm_pkg_identifier} already exists in database";
       return false
     }
 
