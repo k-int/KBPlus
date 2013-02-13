@@ -133,7 +133,7 @@ class UploadController {
       if ( present(nl[2]) && ( nl[2].trim().length() > 8 ) ) {
         def eissn_to_add = nl[2].trim();
         if ( eissns_so_far.contains(eissn_to_add) ) {
-          flash.error="Problem processing ${upload_filename} : The rISSN ${eissn_to_add} appears to be repeated in the TIPP rows";
+          flash.error="Problem processing ${upload_filename} : The eISSN ${eissn_to_add} appears to be repeated in the TIPP rows";
           return false
         }
         else {
