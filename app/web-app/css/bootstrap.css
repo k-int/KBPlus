@@ -133,10 +133,16 @@ th a:hover {
 
 th.asc a {
     background-image: url('../images/sorted_asc.gif');
+    background-position: right;
+    background-repeat: no-repeat;
+    padding-right: 1.1em;
 }
 
 th.desc a {
     background-image: url('../images/sorted_desc.gif');
+    background-position: right;
+    background-repeat: no-repeat;
+    padding-right: 1.1em;
 }
 
 dl {
