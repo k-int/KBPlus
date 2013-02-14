@@ -365,8 +365,8 @@
              }
              
              var iconList = {
-                 'No limit' : 'redCross',
-                 'Specified' : 'greenTick',
+                 'No limit' : 'greenTick',
+                 'Specified' : 'redCross',
                  'Not Specified' : 'purpleQuestion',
                  'Other' : 'purpleQuestion'
              };
