@@ -86,7 +86,7 @@ table tbody td {
 }
 
 table thead, table tr:first-child th {
-    background-color: rgb(153,1,0);
+    background-color: rgb(153,1,0)!important;
     color: white;
     font-weight: bold;
 }
