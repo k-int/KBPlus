@@ -99,7 +99,7 @@ class UploadController {
     def pkg = Package.findByIdentifier(norm_pkg_identifier);
     if ( pkg != null ) {
       log.error("Package ${norm_pkg_identifier} already exists");
-      flash.error="Problem processing ${upload_filename} : Unable to process file - Subscription with ID ${normalised_identifier} already exists in database";
+      flash.error="Problem processing ${upload_filename} : Unable to process file - Package with ID ${norm_pkg_identifier} already exists in database";
       return false
     }
 
@@ -133,7 +133,7 @@ class UploadController {
       if ( present(nl[2]) && ( nl[2].trim().length() > 8 ) ) {
         def eissn_to_add = nl[2].trim();
         if ( eissns_so_far.contains(eissn_to_add) ) {
-          flash.error="Problem processing ${upload_filename} : The rISSN ${eissn_to_add} appears to be repeated in the TIPP rows";
+          flash.error="Problem processing ${upload_filename} : The eISSN ${eissn_to_add} appears to be repeated in the TIPP rows";
           return false
         }
         else {
