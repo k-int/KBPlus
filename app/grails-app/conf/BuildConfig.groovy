@@ -36,8 +36,7 @@ grails.project.dependency.resolution = {
 
         runtime 'mysql:mysql-connector-java:5.1.21'
         runtime 'com.gmongo:gmongo:0.9.5'
-        runtime 'org.elasticsearch:elasticsearch-lang-groovy:1.1.0'
-        runtime 'org.elasticsearch:elasticsearch:0.19.4'
+        runtime 'org.elasticsearch:elasticsearch-lang-groovy:1.3.0'
         runtime 'gov.loc:bagit:4.0'
         runtime 'org.apache.poi:poi:3.8'
         runtime 'net.sf.opencsv:opencsv:2.0'
