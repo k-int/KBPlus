@@ -121,6 +121,9 @@
                        <li class="divider"></li>
                        <li <%= ( ( 'upload'== controllerName ) && ( 'so'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="upload" action="so">Upload new SO file</g:link></li>
+                       <li class="divider"></li>
+                       <li <%= ( ( 'titleDetails'== controllerName ) && ( 'findTitleMatches'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="titleDetails" action="findTitleMatches">New Title</g:link></li>
                      </ul>
                    </li>
                 </sec:ifAnyGranted>
@@ -155,6 +158,9 @@
                       </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'titleAugment'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="titleAugment">Run Data Cleaning (Title Augment)</g:link>
+                      </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'fullReset'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="fullReset">Full Reset</g:link>
                       </li>
                     </ul>
                   </li>

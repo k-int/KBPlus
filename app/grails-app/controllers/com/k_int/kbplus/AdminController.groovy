@@ -162,4 +162,16 @@ class AdminController {
     }
     redirect controller: 'admin', action:'settings'
   }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def fullReset() {
+    new EventLog(event:'kbplus.fullReset',message:'Full Reset',tstp:new Date(System.currentTimeMillis())).save(flush:true)
+    log.debug("Delete all existing FT Control entries");
+    FTControl.executeUpdate("delete FTControl c");
+
+    log.debug("manual start full text index");
+    dataloadService.updateFTIndexes();
+    log.debug("redirecting to home...");
+    redirect(controller:'home')
+  }
 }

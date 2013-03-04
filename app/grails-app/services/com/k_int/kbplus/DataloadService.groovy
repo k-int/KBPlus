@@ -29,6 +29,7 @@ class DataloadService {
 
   def updateFTIndexes() {
     log.debug("updateFTIndexes");
+    new EventLog(event:'kbplus.updateFTIndexes',message:'Update FT indexes',tstp:new Date(System.currentTimeMillis())).save(flush:true)
     def future = executorService.submit({
       doFTUpdate()
     } as java.util.concurrent.Callable)
@@ -57,8 +58,18 @@ class DataloadService {
 
     updateES(esclient, com.k_int.kbplus.TitleInstance.class) { ti ->
       def result = [:]
+      if ( ti.keyTitle != com.k_int.kbplus.TitleInstance.generateKeyTitle(ti.title) ) {
+        ti.normTitle = com.k_int.kbplus.TitleInstance.generateNormTitle(ti.title)
+        ti.keyTitle = com.k_int.kbplus.TitleInstance.generateKeyTitle(ti.title)
+        //
+        // This alone should trigger before update to do the necessary...
+        //
+        ti.save()
+      }
       result._id = ti.impId
       result.title = ti.title
+      result.normTitle = ti.normTitle
+      result.keyTitle = ti.keyTitle
       result.dbId = ti.id
       result.visible = ['Public']
       result.rectype = 'Title'
@@ -1071,6 +1082,7 @@ class DataloadService {
                 suncat_identifier = id.text();
               }
             }
+
             if ( matched && suncat_identifier ) {
               log.debug("set suncat identifier to ${suncat_identifier}");
               def canonical_identifier = Identifier.lookupOrCreateCanonicalIdentifier('SUNCAT',suncat_identifier);
