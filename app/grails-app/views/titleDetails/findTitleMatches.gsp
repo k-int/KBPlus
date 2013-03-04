@@ -59,14 +59,14 @@
                   The title <em>"${params.proposedTitle}"</em> matched one or more records in the database. You can still create another title with this name using the button below,
                   but please do confirm this really is a new title for the system before proceeding.
                 </bootstrap:alert>
-                <g:link controller="titleDetails" action="createTitle" class="btn btn-warning">Create New Title for <em>"${params.proposedTitle}"</em></g:link>
+                <g:link controller="titleDetails" action="createTitle" class="btn btn-warning" params="${[title:params.proposedTitle]}">Create New Title for <em>"${params.proposedTitle}"</em></g:link>
               </g:if>
               <g:else>
                 <bootstrap:alert class="alert-info">There were no matches for the title string <em>\"${params.proposedTitle}\"<em>. This is a good sign that the title
                       you wish to create does not exist in the database. However,
                       cases such as mis-spellings, alternate word spacing and abbreviations may not be caught. To ensure the highest quality database,
                       please double check the title for the previous variants. Click the button below when you are sure the current title does not already exist.</bootstrap:alert>
-                <g:link controller="titleDetails" action="createTitle" class="btn btn-success">Create New Title for <em>"${params.proposedTitle}"</em></g:link>
+                <g:link controller="titleDetails" action="createTitle" class="btn btn-success" params="${[title:params.proposedTitle]}">Create New Title for <em>"${params.proposedTitle}"</em></g:link>
               </g:else>
 
 
