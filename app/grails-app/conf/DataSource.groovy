@@ -36,8 +36,12 @@ environments {
     }
     test {
         dataSource {
+            driverClassName = "org.h2.Driver"
+            username = "sa"
+            password = ""
+            dialect = org.hibernate.dialect.H2Dialect
             dbCreate = "update"
-            url = "jdbc:h2:mem:testDb;MVCC=TRUE"
+            url = "jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
         }
     }
     production {
