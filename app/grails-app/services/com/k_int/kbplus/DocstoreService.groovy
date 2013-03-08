@@ -94,7 +94,7 @@ class DocstoreService {
     // FileUtils.deleteQuietly(tempdir);
 
     response.setContentType(mimetype)
-    response.addHeader("content-disposition", "attachment; filename=${filename}")
+    response.addHeader("content-disposition", "attachment; filename=\"${filename}\"")
     def outs = response.outputStream
     streamResponseDoc(result.tempfile, outs)
     // outs << 
