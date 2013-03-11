@@ -23,18 +23,30 @@ class Identifier {
     Identifier.findByNsAndValue(namespace,value) ?: new Identifier(ns:namespace, value:value).save();
   }
 
-  static def refdataFind(query) {
-    def result = []
-    if ( query.contains(':') ) {
-      params=query.split(':')
-      def namespace = IdentifierNamespace.findByNs(ns)
+  static def refdataFind(params) {
+    def result = [];
+    def ql = null;
+    if ( params.q.contains(':') ) {
+      def qp=params.q.split(':');
+      println("Search by namspace identifier: ${qp}");
+      def namespace = IdentifierNamespace.findByNs(qp[0]);
       if ( namespace ) {
-        result = Identifier.findByNsAndValueLike(namespace,"${value}%")
+        ql = Identifier.findAllByNsAndValueLike(namespace,"${qp[1]}%")
+      }
+      else {
+        println("No identifier... ${qp[0]}");
       }
     }
     else {
-      result = Identifier.findByValueLike("${value}%")
+      ql = Identifier.findAllByValueLike("${params.q}%",params)
     }
+
+    if ( ql ) {
+      ql.each { id ->
+        result.add([id:"${id.class.name}:${id.id}",text:"${id.ns.ns}:${id.value}"])
+      }
+    }
+
     result
   }
 

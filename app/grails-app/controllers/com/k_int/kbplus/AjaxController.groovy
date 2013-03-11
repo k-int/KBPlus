@@ -427,4 +427,77 @@ class AjaxController {
     redirect(url: request.getHeader('referer'))
   }
 
+  def lookup() {
+    log.debug("AjaxController::lookup ${params}");
+    def result = [:]
+    params.max = params.max ?: 10;
+    def domain_class = grailsApplication.getArtefact('Domain',params.baseClass)
+    if ( domain_class ) {
+      result.values = domain_class.getClazz().refdataFind(params);
+    }
+    else {
+      result.values=[]
+    }
+    //result.values = [[id:'Person:45',text:'Fred'],
+    //                 [id:'Person:23',text:'Jim'],
+    //                 [id:'Person:22',text:'Jimmy'],
+    //                 [id:'Person:3',text:'JimBob']]
+    render result as JSON
+  }
+
+  def addToCollection() {
+    log.debug("AjaxController::lookup ${params}");
+
+    def contextObj = resolveOID2(params.__context)
+    def domain_class = grailsApplication.getArtefact('Domain',params.__newObjectClass)
+
+    if ( domain_class ) {
+
+      if ( contextObj ) {
+        log.debug("Create a new instance of ${params.__newObjectClass}");
+
+        if ( params.__recip ) {
+          log.debug("Set reciprocal property ${params.__recip} to ${contextObj}");
+        }
+
+        domain_class.getPersistentProperties().each { p -> // list of GrailsDomainClassProperty
+          log.debug("${p.name} (assoc=${p.isAssociation()}) (oneToMany=${p.isOneToMany()}) (ManyToOne=${p.isManyToOne()}) (OneToOne=${p.isOneToOne()})");
+          if ( params[p.name] ) {
+            if ( p.isAssociation() ) {
+              if ( p.isManyToOne() || p.isOneToOne() ) {
+                // Set ref property
+                log.debug("set assoc ${p.name} to lookup of OID ${params[p.name]}");
+              }
+              else {
+                // Add to collection
+                log.debug("add to collection ${p.name} for OID ${params[p.name]}");
+              }
+            }
+            else {
+              log.debug("Set simple prop ${p.name} = ${params[p.name]}");
+            }
+          }
+        }
+      }
+
+    }
+
+    redirect(url: request.getHeader('referer'))
+  }
+
+  def resolveOID2(oid) {
+    def oid_components = oid.split(':');
+    def result = null;
+    def domain_class=null;
+    domain_class = grailsApplication.getArtefact('Domain',oid_components[0])
+    if ( domain_class ) {
+      result = domain_class.getClazz().get(oid_components[1])
+    }
+    else {
+      log.error("resolve OID failed to identify a domain class. Input was ${oid_components}");
+    }
+    result
+  }
+
+
 }

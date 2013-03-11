@@ -32,9 +32,11 @@
     <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
     <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
     <script type="text/javascript" charset="utf8" src="http://datatables.net/release-datatables/extras/Scroller/media/js/dataTables.scroller.js"></script>
-    
-    http://datatables.net/release-datatables/extras/Scroller/media/js/dataTables.scroller.js
 
+    <!-- For select2 -->
+    <link href="${resource(dir: 'css', file: 'select2.css')}" rel="stylesheet"/>
+    <script src="${resource(dir: 'js', file: 'select2.js')}"></script>
+    
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', '${grailsApplication.config.kbplus.analytics.code}']);
