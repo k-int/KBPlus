@@ -70,7 +70,7 @@
                     <td>${org.id}</td>
                     <td>${org.org.name}</td>
                     <td>${org.roleType.value}</td>
-                    <td><g:link controller="ajax" action="deleteThrough" params='${[contextOid:"${org.class.name}:${org.id}",contextProperty:"orgs",targetOid:"${org.class.name}:${org.id}"]}'>Delete Org Link</g:link></td>
+                    <td><g:link controller="ajax" action="deleteThrough" params='${[contextOid:"${ti.class.name}:${ti.id}",contextProperty:"orgs",targetOid:"${org.class.name}:${org.id}"]}'>Delete Org Link</g:link></td>
                   </tr>
                 </g:each>
               </tbody>
