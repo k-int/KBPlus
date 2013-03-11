@@ -47,8 +47,8 @@
                   <tbody>
                     <g:each in="${titleMatches}" var="titleInstance">
                       <tr>
-                        <td>${titleInstance.title}</td>
-                        <td></td>
+                        <td><g:link controller="titleDetails" action="edit" id="${titleInstance.id}">${titleInstance.title}</g:link></td>
+                        <td><ul><g:each in="${titleInstance.ids}" var="id"><li>${id.identifier.ns.ns}:${id.identifier.value}</li></g:each></ul></td>
                         <td></td>
                         <td>${titleInstance.keyTitle}</td>
                       </tr>

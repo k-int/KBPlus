@@ -523,5 +523,9 @@ class AjaxController {
     result
   }
 
+  def deleteThrough() {
+    log.debug("deleteThrough(${params})");
+    redirect(url: request.getHeader('referer'))
 
+  }
 }

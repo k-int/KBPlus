@@ -30,6 +30,7 @@
                   <th>ID</td>
                   <th>Identifier Namespace</th>
                   <th>Identifier</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -38,6 +39,7 @@
                     <td>${io.id}</td>
                     <td>${io.identifier.ns.ns}</td>
                     <td>${io.identifier.value}</td>
+                    <td><g:link controller="ajax" action="deleteThrough" params='${[contextOid:"${ti.class.name}:${ti.id}",contextProperty:"ids",targetOid:"${io.class.name}:${io.id}"]}'>Delete Identifier</g:link></td>
                   </tr>
                 </g:each>
               </tbody>
