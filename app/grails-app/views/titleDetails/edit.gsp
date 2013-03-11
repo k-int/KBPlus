@@ -24,6 +24,7 @@
             <bootstrap:alert class="alert-info">${flash.error}</bootstrap:alert>
             </g:if>
 
+            <h3>Identifiers</h3>
             <table class="table table-bordered">
               <thead>
                 <tr>
@@ -53,6 +54,27 @@
               <input type="submit" value="Add Identifier..."/>
             </g:form>
 
+            <h3>Org Links</h3>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>ID</td>
+                  <th>Org</th>
+                  <th>Role</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <g:each in="${ti.orgs}" var="org">
+                  <tr>
+                    <td>${org.id}</td>
+                    <td>${org.org.name}</td>
+                    <td>${org.roleType.value}</td>
+                    <td><g:link controller="ajax" action="deleteThrough" params='${[contextOid:"${org.class.name}:${org.id}",contextProperty:"orgs",targetOid:"${org.class.name}:${org.id}"]}'>Delete Org Link</g:link></td>
+                  </tr>
+                </g:each>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

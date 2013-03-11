@@ -40,16 +40,22 @@
                     <tr>
                       <th>Title</th>
                       <th>Identifiers</th>
-                      <th>Publisher</th>
+                      <th>Orgs</th>
                       <th>key</th>
                     </tr>
                   </thead>
                   <tbody>
                     <g:each in="${titleMatches}" var="titleInstance">
                       <tr>
-                        <td><g:link controller="titleDetails" action="edit" id="${titleInstance.id}">${titleInstance.title}</g:link></td>
+                        <td>${titleInstance.title} <g:link controller="titleDetails" action="edit" id="${titleInstance.id}">(edit)</g:link></td>
                         <td><ul><g:each in="${titleInstance.ids}" var="id"><li>${id.identifier.ns.ns}:${id.identifier.value}</li></g:each></ul></td>
-                        <td></td>
+                        <td>
+                          <ul>
+                            <g:each in="${titleInstance.orgs}" var="org">
+                              <li>${org.org.name} (${org.roleType.value})</li>
+                            </g:each>
+                          </ul>
+                        </td>
                         <td>${titleInstance.keyTitle}</td>
                       </tr>
                     </g:each>
