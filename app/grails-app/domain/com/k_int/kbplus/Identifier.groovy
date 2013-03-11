@@ -23,4 +23,25 @@ class Identifier {
     Identifier.findByNsAndValue(namespace,value) ?: new Identifier(ns:namespace, value:value).save();
   }
 
+  static def refdataFind(query) {
+    def result = []
+    if ( query.contains(':') ) {
+      params=query.split(':')
+      def namespace = IdentifierNamespace.findByNs(ns)
+      if ( namespace ) {
+        result = Identifier.findByNsAndValueLike(namespace,"${value}%")
+      }
+    }
+    else {
+      result = Identifier.findByValueLike("${value}%")
+    }
+    result
+  }
+
+  static def refdataCreate(value) {
+    def params = value.split(':');
+    if ( ( params.length == 2 ) && ( params[0] != '' ) && ( params[1] != '' ) )
+      return lookupOrCreateCanonicalIdentifier(params[0],params[1]);
+  }
+
 }
