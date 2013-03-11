@@ -29,16 +29,16 @@ class Identifier {
     if ( params.q.contains(':') ) {
       def qp=params.q.split(':');
       println("Search by namspace identifier: ${qp}");
-      def namespace = IdentifierNamespace.findByNs(qp[0]);
+      def namespace = IdentifierNamespace.findByNsIlike(qp[0]);
       if ( namespace ) {
-        ql = Identifier.findAllByNsAndValueLike(namespace,"${qp[1]}%")
+        ql = Identifier.findAllByNsAndValueIlike(namespace,"${qp[1]}%")
       }
       else {
         println("No identifier... ${qp[0]}");
       }
     }
     else {
-      ql = Identifier.findAllByValueLike("${params.q}%",params)
+      ql = Identifier.findAllByValueIlike("${params.q}%",params)
     }
 
     if ( ql ) {
@@ -51,9 +51,11 @@ class Identifier {
   }
 
   static def refdataCreate(value) {
-    def params = value.split(':');
-    if ( ( params.length == 2 ) && ( params[0] != '' ) && ( params[1] != '' ) )
-      return lookupOrCreateCanonicalIdentifier(params[0],params[1]);
+    // value is String[] arising from  value.split(':');
+    if ( ( value.length == 4 ) && ( value[2] != '' ) && ( value[3] != '' ) )
+      return lookupOrCreateCanonicalIdentifier(value[2],value[3]);
+
+    return null;
   }
 
 }
