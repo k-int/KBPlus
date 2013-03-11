@@ -510,7 +510,8 @@ class AjaxController {
     domain_class = grailsApplication.getArtefact('Domain',oid_components[0])
     if ( domain_class ) {
       if ( oid_components[1]=='__new__' ) {
-        result = domain_class.refdataCreate(oid_components)
+        result = domain_class.getClazz().refdataCreate(oid_components)
+        log.debug("Result of create ${oid} is ${result}");
       }
       else {
         result = domain_class.getClazz().get(oid_components[1])
