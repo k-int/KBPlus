@@ -168,6 +168,9 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'fullReset'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="fullReset">Full Reset</g:link>
                       </li>
+                      <li <%= ( ( 'userDetails'== controllerName ) && ( 'list'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="userDetails" action="list">User Details</g:link>
+                      </li>
                     </ul>
                   </li>
   
