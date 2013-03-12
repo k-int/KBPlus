@@ -525,6 +525,13 @@ class AjaxController {
 
   def deleteThrough() {
     log.debug("deleteThrough(${params})");
+    def context_object = resolveOID2(params.contextOid)
+    def target_object = resolveOID2(params.targetOid)
+    if ( context_object."${params.contextProperty}".contains(target_object) ) {
+      def otr = context_object."${params.contextProperty}".remove(target_object)
+      target_object.delete()
+      context_object.save(flush:true);
+    }
     redirect(url: request.getHeader('referer'))
 
   }
