@@ -72,6 +72,7 @@
             <thead>
             <tr>
               <th rowspan="2" style="width: 20%;">Title</th>
+              <th rowspan="2" style="width: 20%;">Platform</th>
               <th rowspan="2" style="width: 10%;">ISSN</th>
               <th rowspan="2" style="width: 10%;">eISSN</th>
               <th rowspan="2" style="width: 10%;">Start Date</th>
@@ -87,7 +88,11 @@
             <g:each in="${packageInstance?.tipps}" var="t">
               <tr>
                 <td>
-                   <g:link controller="titleDetails" action="edit" id="${t.title.id}">${t.title.title}</g:link></td>
+                   ${t.title.title}
+                   <g:link controller="titleDetails" action="edit" id="${t.title.id}">(Title)</g:link>
+                   <g:link controller="titleDetails" action="edit" id="${t.title.id}">(TIPP)</g:link>
+                </td>
+                <td>${t.platform?.name}</td>
                 <td>${t.title?.getIdentifierValue('ISSN')}</td>
                 <td>${t?.title?.getIdentifierValue('eISSN')}</td>
                 <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.startDate}"/>
