@@ -33,6 +33,10 @@
     <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
     <script type="text/javascript" charset="utf8" src="http://datatables.net/release-datatables/extras/Scroller/media/js/dataTables.scroller.js"></script>
 
+    <!-- For x-editable -->
+    <link rel="stylesheet" href="${resource(dir: 'css', file: 'bootstrap-editable.css')}" type="text/css">
+    <script src="${resource(dir: 'js', file: 'bootstrap-editable.js')}"></script>
+
     <!-- For select2 -->
     <link href="${resource(dir: 'css', file: 'select2.css')}" rel="stylesheet"/>
     <script src="${resource(dir: 'js', file: 'select2.js')}"></script>

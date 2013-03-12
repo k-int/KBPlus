@@ -13,7 +13,13 @@
           <div class="span12">
 
             <div class="page-header">
-              <h1>${ti.title}</h1>
+              <h1><span id="titleEdit" 
+                        class="xEditableValue"
+                        data-type="textarea" 
+                        data-pk="${ti.class.name}:${ti.id}"
+                        data-name="title" 
+                        data-url='<g:createLink controller="ajax" action="editableSetValue"/>'
+                        data-original-title="${ti.title}">${ti.title}</span></h1>
             </div>
 
             <g:if test="${flash.message}">
@@ -83,6 +89,9 @@
   <script language="JavaScript">
 
     $(function(){
+      $.fn.editable.defaults.mode = 'inline';
+      $('.xEditableValue').editable();
+
       $("#addIdentifierSelect").select2({
         placeholder: "Search for an identifier...",
         minimumInputLength: 1,

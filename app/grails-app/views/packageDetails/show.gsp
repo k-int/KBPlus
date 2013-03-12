@@ -86,7 +86,8 @@
             <tbody>
             <g:each in="${packageInstance?.tipps}" var="t">
               <tr>
-                <td><g:inPlaceEdit domain="TitleInstance" pk="${t.title.id}" style="padding-top: 5px;" field="title" id="title" class="newipe">${t.title.title}</g:inPlaceEdit></td>
+                <td>
+                   <g:link controller="titleDetails" action="edit" id="${t.title.id}">${t.title.title}</g:link></td>
                 <td>${t.title?.getIdentifierValue('ISSN')}</td>
                 <td>${t?.title?.getIdentifierValue('eISSN')}</td>
                 <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.startDate}"/>

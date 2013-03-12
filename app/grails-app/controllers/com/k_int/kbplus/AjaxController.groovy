@@ -528,4 +528,19 @@ class AjaxController {
     redirect(url: request.getHeader('referer'))
 
   }
+
+  def editableSetValue() {
+    log.debug("editableSetValue ${params}");
+    def target_object = resolveOID2(params.pk)
+    if ( target_object ) {
+      target_object."${params.name}" = params.value
+      target_object.save(flush:true);
+    }
+
+    response.setContentType('text/plain')
+    def outs = response.outputStream
+    outs << params.value
+    outs.flush()
+    outs.close()
+  }
 }
