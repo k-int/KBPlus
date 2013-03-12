@@ -81,6 +81,16 @@
                 </g:each>
               </tbody>
             </table>
+
+            <g:form controller="ajax" action="addToCollection">
+              <input type="hidden" name="__context" value="${ti.class.name}:${ti.id}"/>
+              <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.OrgRole"/>
+              <input type="hidden" name="__recip" value="title"/>
+              <input type="hidden" name="org" id="addOrgSelect"/>
+              <input type="hidden" name="roleType" id="orgRoleSelect"/>
+              <input type="submit" value="Add Identifier..."/>
+            </g:form>
+
           </div>
         </div>
       </div>
@@ -111,6 +121,47 @@
         },
         createSearchChoice:function(term, data) {
           return {id:'com.k_int.kbplus.Identifier:__new__:'+term,text:term};
+        }
+      });
+
+      $("#addOrgSelect").select2({
+        placeholder: "Search for an org...",
+        minimumInputLength: 1,
+        ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+          url: "<g:createLink controller='ajax' action='lookup'/>",
+          dataType: 'json',
+          data: function (term, page) {
+              return {
+                  q: term, // search term
+                  page_limit: 10,
+                  baseClass:'com.k_int.kbplus.Org'
+              };
+          },
+          results: function (data, page) {
+            return {results: data.values};
+          }
+        },
+        createSearchChoice:function(term, data) {
+          return {id:'com.k_int.kbplus.Org:__new__:'+term,text:term};
+        }
+      });
+
+      $("#orgRoleSelect").select2({
+        placeholder: "Search for an role...",
+        minimumInputLength: 1,
+        ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+          url: "<g:createLink controller='ajax' action='lookup'/>",
+          dataType: 'json',
+          data: function (term, page) {
+              return {
+                  q: term, // search term
+                  page_limit: 10,
+                  baseClass:'com.k_int.kbplus.RefdataValue'
+              };
+          },
+          results: function (data, page) {
+            return {results: data.values};
+          }
         }
       });
 
