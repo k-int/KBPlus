@@ -89,4 +89,22 @@ class Org {
     }
     result
   }
+
+  static def refdataFind(params) {
+    def result = [];
+    def ql = null;
+    ql = Org.findAllByNameIlike("%${params.q}%",params)
+
+    if ( ql ) {
+      ql.each { id ->
+        result.add([id:"${id.class.name}:${id.id}",text:"${id.name}"])
+      }
+    }
+
+    result
+  }
+
+  static def refdataCreate(value) {
+    return new Org(name:value);
+  }
 }

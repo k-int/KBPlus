@@ -68,35 +68,45 @@
         <dl>
           <dt>Titles</dt>
           <dd>
-          <table border="1" cellspacing="5" cellpadding="5">
+          <table class="table table-bordered">
             <thead>
             <tr>
-              <th rowspan="2" style="width: 20%;">Title</th>
-              <th rowspan="2" style="width: 10%;">ISSN</th>
-              <th rowspan="2" style="width: 10%;">eISSN</th>
-              <th rowspan="2" style="width: 10%;">Start Date</th>
-              <th rowspan="2" style="width: 10%;">Start Volume</th>
-              <th rowspan="2" style="width: 10%;">Start Issue</th>
-              <th rowspan="2" style="width: 10%;">End Date</th>
-              <th rowspan="2" style="width: 10%;">End Volume</th>
-              <th rowspan="2" style="width: 10%;">End Issue</th>
-              <th rowspan="2" style="width: 10%;">Coverage Depth</th>
+              <th rowspan="2" style="">Title</th>
+              <th rowspan="2" style="">Platform</th>
+              <th rowspan="2" style="">Identifiers</th>
+              <th rowspan="2" style="">Start</th>
+              <th rowspan="2" style="">End</th>
+              <th rowspan="2" style="">Coverage Depth</th>
             </tr>
             </thead>
             <tbody>
             <g:each in="${packageInstance?.tipps}" var="t">
               <tr>
-                <td><g:inPlaceEdit domain="TitleInstance" pk="${t.title.id}" style="padding-top: 5px;" field="title" id="title" class="newipe">${t.title.title}</g:inPlaceEdit></td>
-                <td>${t.title?.getIdentifierValue('ISSN')}</td>
-                <td>${t?.title?.getIdentifierValue('eISSN')}</td>
-                <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.startDate}"/>
-                    <input id="TitleInstancePackagePlatform:${t.id}:startDate" type="hidden" class="dp1" /></td>
-                <td><g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="startVolume" id="startVolume" class="newipe">${t.startVolume}</g:inPlaceEdit></td>
-                <td><g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="endIssue" id="endIssue" class="newipe">${t.startIssue}</g:inPlaceEdit> </td>
-                <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.endDate}"/>
-                    <input id="TitleInstancePackagePlatform:${t.id}:endDate" type="hidden" class="dp1" /></td>
-                <td><g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="endVolume" id="endVolume" class="newipe">${t.endVolume}</g:inPlaceEdit></td>
-                <td><g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="endIssue" id="endIssue" class="newipe">${t.endIssue}</g:inPlaceEdit></td>
+                <td style="vertical-align:top;">
+                   ${t.title.title}
+                   <g:link controller="titleDetails" action="edit" id="${t.title.id}">(Title)</g:link>
+                   <g:link controller="titleDetails" action="edit" id="${t.title.id}">(TIPP)</g:link>
+                </td>
+                <td style="white-space: nowrap;vertical-align:top;">${t.platform?.name}</td>
+                <td style="white-space: nowrap;vertical-align:top;">
+                  <g:each in="${t.title.ids}" var="id">
+                    ${id.identifier.ns.ns}:${id.identifier.value}<br/>
+                  </g:each>
+                </td>
+
+                <td style="white-space: nowrap">
+                  Date: <g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.startDate}"/>
+                        <input id="TitleInstancePackagePlatform:${t.id}:startDate" type="hidden" class="dp1" /><br/>
+                  Volume: <g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="startVolume" id="startVolume" class="newipe">${t.startVolume}</g:inPlaceEdit><br/>
+                  Issue: <g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="endIssue" id="endIssue" class="newipe">${t.startIssue}</g:inPlaceEdit>                
+                </td>
+
+                <td style="white-space: nowrap"> 
+                   Date:<g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.endDate}"/>
+                    <input id="TitleInstancePackagePlatform:${t.id}:endDate" type="hidden" class="dp1" /><br/>
+                   Volume: <g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="endVolume" id="endVolume" class="newipe">${t.endVolume}</g:inPlaceEdit><br/>
+                   Issue: <g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="endIssue" id="endIssue" class="newipe">${t.endIssue}</g:inPlaceEdit>
+                </td>
                 <td><g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="coverageDepth" id="coverageDepth" class="newipe">${t.coverageDepth}</g:inPlaceEdit></td>
               </tr>
             </g:each>

@@ -32,9 +32,15 @@
     <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
     <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
     <script type="text/javascript" charset="utf8" src="http://datatables.net/release-datatables/extras/Scroller/media/js/dataTables.scroller.js"></script>
-    
-    http://datatables.net/release-datatables/extras/Scroller/media/js/dataTables.scroller.js
 
+    <!-- For x-editable -->
+    <link rel="stylesheet" href="${resource(dir: 'css', file: 'bootstrap-editable.css')}" type="text/css">
+    <script src="${resource(dir: 'js', file: 'bootstrap-editable.js')}"></script>
+
+    <!-- For select2 -->
+    <link href="${resource(dir: 'css', file: 'select2.css')}" rel="stylesheet"/>
+    <script src="${resource(dir: 'js', file: 'select2.js')}"></script>
+    
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', '${grailsApplication.config.kbplus.analytics.code}']);
@@ -161,6 +167,9 @@
                       </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'fullReset'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="fullReset">Full Reset</g:link>
+                      </li>
+                      <li <%= ( ( 'userDetails'== controllerName ) && ( 'list'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="userDetails" action="list">User Details</g:link>
                       </li>
                     </ul>
                   </li>

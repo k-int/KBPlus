@@ -33,4 +33,24 @@ class RefdataValue {
   static constraints = {
     icon(nullable:true)
   }
+
+  static def refdataFind(params) {
+    def result = [];
+    def ql = null;
+    ql = RefdataValue.findAllByValueIlike("%${params.q}%",params)
+
+    if ( ql ) {
+      ql.each { id ->
+        result.add([id:"${id.class.name}:${id.id}",text:"${id.value}"])
+      }
+    }
+
+    result
+  }
+
+  static def refdataCreate(value) {
+    // return new RefdataValue(value:value);
+    return null;
+  }
+
 }
