@@ -30,7 +30,7 @@ class UploadController {
   ];
 
   @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
-  def so() { 
+  def reviewSO() { 
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     
@@ -38,16 +38,14 @@ class UploadController {
       def upload_mime_type = request.getFile("soFile")?.contentType
       def upload_filename = request.getFile("soFile")?.getOriginalFilename()
       log.debug("Uploaded so type: ${upload_mime_type} filename was ${upload_filename}");
-      if ( validateStream(request.getFile("soFile")?.inputStream, upload_filename ) ) {
-        def input_stream = request.getFile("soFile")?.inputStream
-        processUploadSO(input_stream, upload_filename, result)
-      }
+      result.validationResult = validateStream(request.getFile("soFile")?.inputStream, upload_filename )
     }
-
     result
   }
   
   def validateStream(input_stream, upload_filename) {
+
+    def result = [:]
 
     log.debug("Validating Stream");
 
@@ -174,7 +172,7 @@ class UploadController {
       }
     }
 
-    true
+    return result;
   }
 
 

@@ -125,8 +125,8 @@
                          <g:link controller="packageDetails" action="create">New Package</g:link></li>
                        -->
                        <li class="divider"></li>
-                       <li <%= ( ( 'upload'== controllerName ) && ( 'so'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="upload" action="so">Upload new SO file</g:link></li>
+                       <li <%= ( ( 'upload'== controllerName ) && ( 'reviewSO'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="upload" action="reviewSO">Upload new SO file</g:link></li>
                        <li class="divider"></li>
                        <li <%= ( ( 'titleDetails'== controllerName ) && ( 'findTitleMatches'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="titleDetails" action="findTitleMatches">New Title</g:link></li>
