@@ -446,7 +446,7 @@ class AjaxController {
   }
 
   def addToCollection() {
-    log.debug("AjaxController::lookup ${params}");
+    log.debug("AjaxController::addToCollection ${params}");
 
     def contextObj = resolveOID2(params.__context)
     def domain_class = grailsApplication.getArtefact('Domain',params.__newObjectClass)
@@ -486,7 +486,9 @@ class AjaxController {
           new_obj[params.__recip] = contextObj
         }
 
+        log.debug("Saving ${new_obj}");
         if ( new_obj.save() ) {
+          log.debug("Saved OK");
         }
         else {
           new_obj.errors.each { e ->
@@ -494,10 +496,13 @@ class AjaxController {
           }
         }
 
-
-
       }
-
+      else {
+        log.debug("Unable to locate instance of context class with oid ${params.__context}");
+      }
+    }
+    else {
+      log.error("Unable to ookup domain class ${params.__newObjectClass}");
     }
 
     redirect(url: request.getHeader('referer'))

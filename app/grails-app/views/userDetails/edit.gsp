@@ -73,6 +73,13 @@
             </tbody>
           </table>
 
+           <g:form controller="ajax" action="addToCollection">
+              <input type="hidden" name="__context" value="${ui.class.name}:${ui.id}"/>
+              <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.auth.UserRole"/>
+              <input type="hidden" name="__recip" value="user"/>
+              <input type="hidden" name="role" id="userRoleSelect"/>
+              <input type="submit" value="Add Role..."/>
+            </g:form>
         </div>
       </div>
     </div>
@@ -83,6 +90,25 @@
     $(function(){
       $.fn.editable.defaults.mode = 'inline';
       $('.xEditableValue').editable();
+
+      $("#userRoleSelect").select2({
+        placeholder: "Search for an role...",
+        minimumInputLength: 0,
+        ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+          url: "<g:createLink controller='ajax' action='lookup'/>",
+          dataType: 'json',
+          data: function (term, page) {
+              return {
+                  q: term, // search term
+                  page_limit: 10,
+                  baseClass:'com.k_int.kbplus.auth.Role'
+              };
+          },
+          results: function (data, page) {
+            return {results: data.values};
+          }
+        }
+      });
     });
 
   </script>
