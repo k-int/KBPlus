@@ -1,75 +1,90 @@
 <%@ page import="com.k_int.kbplus.Org" %>
 <!doctype html>
 <html>
-	<head>
-		<meta name="layout" content="mmbootstrap">
-		<g:set var="entityName" value="${message(code: 'org.label', default: 'Org')}" />
-		<title><g:message code="default.edit.label" args="[entityName]" /></title>
-	</head>
-	<body>
-		<div class="row-fluid">
+  <head>
+    <meta name="layout" content="mmbootstrap">
+    <title>${ui.display}</title>
+    <r:require modules="jeditable"/>
+    <r:require module="jquery-ui"/>
 
-			<div class="span3">
-				<div class="well">
-					<ul class="nav nav-list">
-						<li class="nav-header">${entityName}</li>
-						<li>
-							<g:link class="list" action="list">
-								<i class="icon-list"></i>
-								<g:message code="default.list.label" args="[entityName]" />
-							</g:link>
-						</li>
-						<li>
-							<g:link class="create" action="create">
-								<i class="icon-plus"></i>
-								<g:message code="default.create.label" args="[entityName]" />
-							</g:link>
-						</li>
-					</ul>
-				</div>
-			</div>
-			
-			<div class="span9">
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="span12">
 
-				<div class="page-header">
-					<h1><g:message code="default.edit.label" args="[entityName]" /></h1>
-				</div>
+          <div class="page-header">
+             <h1><span id="displayEdit" 
+                       class="xEditableValue"
+                       data-type="textarea" 
+                       data-pk="${ui.class.name}:${ui.id}"
+                       data-name="display" 
+                       data-url='<g:createLink controller="ajax" action="editableSetValue"/>'
+                       data-original-title="${ui.display}">${ui.display}</span></h1>
+          </div>
 
-				<g:if test="${flash.message}">
-				<bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
-				</g:if>
+          <g:if test="${flash.message}">
+            <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
+          </g:if>
 
-				<g:hasErrors bean="${userInstance}">
-				<bootstrap:alert class="alert-error">
-				<ul>
-					<g:eachError bean="${userInstance}" var="error">
-					<li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>><g:message error="${error}"/></li>
-					</g:eachError>
-				</ul>
-				</bootstrap:alert>
-				</g:hasErrors>
+          <g:if test="${flash.error}">
+            <bootstrap:alert class="alert-info">${flash.error}</bootstrap:alert>
+          </g:if>
 
-				<fieldset>
-					<g:form class="form-horizontal" action="edit" id="${userInstance?.id}" >
-						<g:hiddenField name="version" value="${userInstance?.version}" />
-						<fieldset>
-							<f:all bean="userInstance"/>
-							<div class="form-actions">
-								<button type="submit" class="btn btn-primary">
-									<i class="icon-ok icon-white"></i>
-									<g:message code="default.button.update.label" default="Update" />
-								</button>
-								<button type="submit" class="btn btn-danger" name="_action_delete" formnovalidate>
-									<i class="icon-trash icon-white"></i>
-									<g:message code="default.button.delete.label" default="Delete" />
-								</button>
-							</div>
-						</fieldset>
-					</g:form>
-				</fieldset>
+          <h3>Affiliations</h3>
 
-			</div>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Id</td>
+                <th>Org</td>
+                <th>Role</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <g:each in="${ui.affiliations}" var="af">
+                <tr>
+                  <td>${af.id}</td>
+                  <td>${af.org.name}</td>
+                  <td>${af.formalRole.authority}</td>
+                  <td><g:link controller="ajax" action="deleteThrough" params='${[contextOid:"${ui.class.name}:${ui.id}",contextProperty:"affiliations",targetOid:"${af.class.name}:${af.id}"]}'>Delete Affiliation</g:link></td>
+                </tr>
+              </g:each>
+            </tbody>
+          </table>
 
-		</div>
-	</body>
+          <h3>Roles</h3>
+
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Role</td>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <g:each in="${ui.roles}" var="rl">
+                <tr>
+                  <td>${rl.role.authority}</td>
+                  <td><g:link controller="ajax" action="removeUserRole" params='${[user:"${ui.class.name}:${ui.id}",role:"${rl.role.class.name}:${rl.role.id}"]}'>Delete Role</g:link></td>
+                </tr>
+              </g:each>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+
+
+  <script language="JavaScript">
+
+    $(function(){
+      $.fn.editable.defaults.mode = 'inline';
+      $('.xEditableValue').editable();
+    });
+
+  </script>
+  </body>
 </html>

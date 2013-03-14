@@ -20,9 +20,10 @@ class User {
   boolean passwordExpired
 
   SortedSet affiliations
+  SortedSet roles
 
-  static hasMany = [ affiliations: com.k_int.kbplus.auth.UserOrg ]
-  static mappedBy = [ affiliations: 'user' ]
+  static hasMany = [ affiliations: com.k_int.kbplus.auth.UserOrg, roles: com.k_int.kbplus.auth.UserRole ]
+  static mappedBy = [ affiliations: 'user', roles: 'user' ]
 
   static constraints = {
     username blank: false, unique: true

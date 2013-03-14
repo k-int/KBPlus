@@ -536,6 +536,17 @@ class AjaxController {
 
   }
 
+  def deleteManyToMany() {
+    log.debug("deleteManyToMany(${params})");
+    def context_object = resolveOID2(params.contextOid)
+    def target_object = resolveOID2(params.targetOid)
+    if ( context_object."${params.contextProperty}".contains(target_object) ) {
+      context_object."${params.contextProperty}".remove(target_object)
+      context_object.save(flush:true);
+    }
+    redirect(url: request.getHeader('referer'))    
+  }
+
   def editableSetValue() {
     log.debug("editableSetValue ${params}");
     def target_object = resolveOID2(params.pk)
@@ -549,5 +560,14 @@ class AjaxController {
     outs << params.value
     outs.flush()
     outs.close()
+  }
+
+  def removeUserRole() {
+    def user = resolveOID2(params.user);
+    def role = resolveOID2(params.role);
+    if ( user && role ) {
+      com.k_int.kbplus.auth.UserRole.remove(user,role,true);
+    }
+    redirect(url: request.getHeader('referer'))    
   }
 }
