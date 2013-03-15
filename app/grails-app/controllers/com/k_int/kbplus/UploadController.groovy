@@ -38,9 +38,12 @@ class UploadController {
       def upload_mime_type = request.getFile("soFile")?.contentType
       def upload_filename = request.getFile("soFile")?.getOriginalFilename()
       log.debug("Uploaded so type: ${upload_mime_type} filename was ${upload_filename}");
-      result.validationResult = validateStream(request.getFile("soFile")?.inputStream, upload_filename )
+      result.validationResult = readSubscriptionOfferedCSV(request.getFile("soFile")?.inputStream, upload_filename )
+      render result as JSON
     }
-    result
+    else {
+      return result
+    }
   }
   
   def validateStream(input_stream, upload_filename) {
@@ -473,5 +476,121 @@ class UploadController {
 
     return false
   }
+
+  def readSubscriptionOfferedCSV(input_stream, upload_filename) {
+
+    def result = [:]
+
+    log.debug("Reading Stream");
+
+    CSVReader r = new CSVReader( new InputStreamReader(input_stream) )
+
+    String [] nl;
+
+    processCsvLine(r.readNext(),'soName',1,result,'str',null)
+    processCsvLine(r.readNext(),'soIdentifier',1,result,'str',null)
+    processCsvLine(r.readNext(),'soProvider',1,result,'str',null)
+    processCsvLine(r.readNext(),'soPackageIdentifier',1,result,'str',null)
+    processCsvLine(r.readNext(),'soPackageName',1,result,'str',null)
+    processCsvLine(r.readNext(),'aggreementTermStartYear',1,result,'str',null)
+    processCsvLine(r.readNext(),'aggreementTermEnd',1,result,'str',null)
+    processCsvLine(r.readNext(),'consortium',1,result,'str',null)
+    processCsvLine(r.readNext(),'numPropIdCols',1,result,'int','0')
+    processCsvLine(r.readNext(),'numPlatformsListed',1,result,'int','0')
+    
+    result.soHeaderLine = r.readNext()
+
+    if ( result.numPlatformsListed == 0 ) {
+      result.numPlatformsListed = 1
+    }
+
+    // Down to here
+    def issns_so_far = []
+    def eissns_so_far = []
+    
+    result.tipps = []    
+
+    while ((nl = r.readNext()) != null) {
+    
+      boolean has_data = false
+      nl.each {
+        if ( ( it != null ) && ( it.trim() != '' ) )
+          has_data = true;
+      }
+
+      if ( !has_data )
+        continue;
+      else
+        log.debug("has data");
+
+      def tipp_row = [:]
+      
+      int i=0;
+      nl.each { colval ->
+        def tipp_value = [:]
+        def colname = result.soHeaderLine[i++].toLowerCase().trim()
+        log.debug("processing ${colname}")
+        tipp_value.origValue = colval;
+        tipp_row[colname] = tipp_value;       
+      }
+      
+      if ( present(nl[0] ) ) {
+
+        tipp_row.parsed_start_date = parseDate(nl[3],possible_date_formats)
+        tipp_row.parsed_end_date = parseDate(nl[6],possible_date_formats)
+
+        tipp_row.platforms = []
+        
+        def host_platform_url = null;
+        for ( int ic=0; ic<result.numPlatformsListed.value; ic++ ) {
+
+          int position = 15+result.numPropIdCols.value+(ic*3)   // Offset past any proprietary identifiers.. This needs a test case.. it's fraught with danger
+
+          log.debug("Processing ${i}th platform entry. Arr len = ${nl.length} position=${position}");
+
+          if ( ( nl.size() >= position+3 ) && ( nl[position] ) && ( nl[position].length() > 0 ) ) {
+            def platform_role = nl[position+1]
+            def platform_url = nl[position+2]
+            println("Process platform name:${nl[position]} / type:${platform_role} / url:${platform_url}");
+
+            if ( platform_role.trim() == 'host' ) {
+              tipp_row.host_platform_url = platform_url
+            }
+            else {
+              tipp_row.platforms.add([role:platform_role, url:platform_url])
+            }
+          }
+        }
+      }
+      
+      result.tipps.add(tipp_row)
+    }
+
+    return result;
+  }
+  
+  def processCsvLine(csv_line,field_name,col_num,result_map,parseAs,defval) {  
+    log.debug("  processCsvLine ${csv_line} ${field_name} ${col_num}...");
+    if ( ( col_num <= csv_line.length ) && ( csv_line[col_num] != null ) ) {
+      def result = [:]
+      result.origValue = csv_line[col_num]
+      
+      switch(parseAs) {
+        case 'int':
+          result.value = Integer.parseInt(result.origValue?:defval)
+          break;
+        case 'str':
+        default:
+          result.value = result.origValue
+          break;
+      }
+      result_map[field_name] = result
+    }
+    else {
+      result_map[field_name] = [messages:['Missing']]
+    }
+  }
+
+  // result.soName = [origvalue:so_name_line[1]]
 
 }
