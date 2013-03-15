@@ -39,11 +39,10 @@ class UploadController {
       def upload_filename = request.getFile("soFile")?.getOriginalFilename()
       log.debug("Uploaded so type: ${upload_mime_type} filename was ${upload_filename}");
       result.validationResult = readSubscriptionOfferedCSV(request.getFile("soFile")?.inputStream, upload_filename )
-      render result as JSON
     }
     else {
-      return result
     }
+    return result
   }
   
   def validateStream(input_stream, upload_filename) {
@@ -530,7 +529,7 @@ class UploadController {
         def tipp_value = [:]
         def colname = result.soHeaderLine[i++].toLowerCase().trim()
         log.debug("processing ${colname}")
-        tipp_value.origValue = colval;
+        tipp_value.origValue = colval.trim();
         tipp_row[colname] = tipp_value;       
       }
       

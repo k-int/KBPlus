@@ -39,10 +39,27 @@
             <button type="submit" class="btn btn-primary">Upload SO</button>
         </g:form>
 
-        <g:if test="${new_pkg_id && new_sub_id}">
-          <g:link controller="subscriptionDetails" action="index" id="${new_sub_id}">Created subscription ${new_sub_id}</g:link><br/>
-          <g:link controller="package" action="show" id="${new_pkg_id}">Created package ${new_pkg_id}</g:link>
+
+        <g:if test="${validationResult}">
+          <pre>
+            ${validationResult}
+          </pre>
         </g:if>
+        
+        <table class="table">
+          <tbody>
+            <tr><td>SO Name</td><td>${validationResult.soName?.value}</td></tr>
+          </tbody>
+        </table>
+
+        <table class="table">
+          <tbody>
+            <g:each in="${validationResult.tipps}" var="tipp">
+              <tr><td><pre>tipp:${tipp}</pre></td></tr>
+            </g:each>
+          </tbody>
+        </table>
+        
       </div>
 
   </body>
