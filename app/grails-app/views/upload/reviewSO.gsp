@@ -47,7 +47,7 @@
         
           <table class="table">
             <tbody>
-              <g:each in="${['soName', 'soIdentifier', 'soProvider', 'soPackageIdentifier', 'soPackageName']}" var="fld">
+              <g:each in="${['soName', 'soIdentifier', 'soProvider', 'soPackageIdentifier', 'soPackageName', 'aggreementTermStartYear', 'aggreementTermEnd', 'consortium', 'soHeaderLine']}" var="fld">
                 <tr>
                   <td>${fld}</td>
                   <td>${validationResult[fld]?.value} 
