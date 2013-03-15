@@ -497,6 +497,8 @@ class UploadController {
     processCsvLine(r.readNext(),'numPropIdCols',1,result,'int','0')
     processCsvLine(r.readNext(),'numPlatformsListed',1,result,'int','0')
     
+    result['soName'].messages=['This is an soName message','And so is this'];
+    
     result.soHeaderLine = r.readNext()
 
     if ( result.numPlatformsListed == 0 ) {

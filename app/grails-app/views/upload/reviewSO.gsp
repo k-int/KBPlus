@@ -44,21 +44,33 @@
           <pre>
             ${validationResult}
           </pre>
-        </g:if>
         
-        <table class="table">
-          <tbody>
-            <tr><td>SO Name</td><td>${validationResult.soName?.value}</td></tr>
-          </tbody>
-        </table>
+          <table class="table">
+            <tbody>
+              <g:each in="${['soName', 'soIdentifier', 'soProvider', 'soPackageIdentifier', 'soPackageName']}" var="fld">
+                <tr>
+                  <td>${fld}</td>
+                  <td>${validationResult[fld]?.value} 
+                    <g:if test="${validationResult[fld]?.messages != null}">
+                      <hr/>
+                      <g:each in="${validationResult[fld]?.messages}" var="msg">
+                        ${msg}<br/>
+                      </g:each>
+                    </g:if>
+                  </td>
+                </tr>
+              </g:each>
+            </tbody>
+          </table>
 
-        <table class="table">
-          <tbody>
-            <g:each in="${validationResult.tipps}" var="tipp">
-              <tr><td><pre>tipp:${tipp}</pre></td></tr>
-            </g:each>
-          </tbody>
-        </table>
+          <table class="table">
+            <tbody>
+              <g:each in="${validationResult.tipps}" var="tipp">
+                <tr><td><pre>tipp:${tipp}</pre></td></tr>
+              </g:each>
+            </tbody>
+          </table>
+        </g:if>
         
       </div>
 
