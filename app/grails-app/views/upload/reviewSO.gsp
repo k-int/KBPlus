@@ -38,19 +38,23 @@
             <input type="file" id="soFile" name="soFile"/>
             <button type="submit" class="btn btn-primary">Upload SO</button>
         </g:form>
+        
+        <g:each in="${validationResult.messages}" var="msg">
+          <div class="alert alert-error">${msg}</div>
+        </g:each>
 
 
         <g:if test="${validationResult}">
           <table class="table">
             <tbody>
-              <g:each in="${['soName', 'soIdentifier', 'soProvider', 'soPackageIdentifier', 'soPackageName', 'aggreementTermStartYear', 'aggreementTermEnd', 'consortium']}" var="fld">
+              <g:each in="${['soName', 'soIdentifier', 'soProvider', 'soPackageIdentifier', 'soPackageName', 'aggreementTermStartYear', 'aggreementTermEndYear', 'consortium', 'numPlatformsListed']}" var="fld">
                 <tr>
                   <td>${fld}</td>
                   <td>${validationResult[fld]?.value} 
                     <g:if test="${validationResult[fld]?.messages != null}">
                       <hr/>
                       <g:each in="${validationResult[fld]?.messages}" var="msg">
-                        ${msg}<br/>
+                        <div class="alert alert-error">${msg}</div>
                       </g:each>
                     </g:if>
                   </td>

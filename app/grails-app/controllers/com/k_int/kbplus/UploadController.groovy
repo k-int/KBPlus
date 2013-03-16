@@ -481,6 +481,9 @@ class UploadController {
   def readSubscriptionOfferedCSV(input_stream, upload_filename) {
 
     def result = [:]
+	
+	// File level messages
+	result.messages=[]
 
     log.debug("Reading Stream");
 
@@ -494,7 +497,7 @@ class UploadController {
     processCsvLine(r.readNext(),'soPackageIdentifier',1,result,'str',null,true)
     processCsvLine(r.readNext(),'soPackageName',1,result,'str',null,true)
     processCsvLine(r.readNext(),'aggreementTermStartYear',1,result,'date',null,true)
-    processCsvLine(r.readNext(),'aggreementTermEnd',1,result,'date',null,true)
+    processCsvLine(r.readNext(),'aggreementTermEndYear',1,result,'date',null,true)
     processCsvLine(r.readNext(),'consortium',1,result,'str',null,false)
     processCsvLine(r.readNext(),'numPropIdCols',1,result,'int','0',false)
     processCsvLine(r.readNext(),'numPlatformsListed',1,result,'int','0',false)
@@ -575,6 +578,7 @@ class UploadController {
   def processCsvLine(csv_line,field_name,col_num,result_map,parseAs,defval,isMandatory) {  
     log.debug("  processCsvLine ${csv_line} ${field_name} ${col_num}...");
 	def result = [:]
+	result.messages=[]
 	result.origValue = csv_line[col_num]
 
     if ( ( col_num <= csv_line.length ) && ( csv_line[col_num] != null ) ) {      
@@ -606,21 +610,10 @@ class UploadController {
   def validate(upload) {
 	  
 	  def result = generateAndValidateSubOfferedIdentifier(upload) &&
-	               generateAndValidatePackageIdentifier(upload)
-				   
-	  // Check norm so ID not already present
-	  
-	  // Check nor package ID not already present
-	  
-	  // Check aggreement start term can be parsed
-	  
-	  // Check aggreement end can be parsed
-	  
-	  // Check number of platforms > 0
-	  
-	  // Check subscribing cons valid org if present
-	  
-	  
+	               generateAndValidatePackageIdentifier(upload) &&
+				   validateNumPlatforms(upload) &&
+				   validateConsortia(upload) &&
+				   validateColumnHeadings(upload)
   }
 
   def generateAndValidateSubOfferedIdentifier(upload) {
@@ -660,6 +653,63 @@ class UploadController {
 	  return true
   }
 
+  def validateNumPlatforms(upload) {
+	  if ( ( upload.numPlatformsListed.value == null ) ||
+		   ( upload.numPlatformsListed.value <= 0 ) ) {
+	    upload.numPlatformsListed.messages.add("Must be >= 0")
+		upload.processFile=false
+	  }
+	return true
+  }
+    
+  def validateConsortia(upload) {
+	if ( ( upload.consortium ) && ( upload.consortium.value ) ) {
+	  if ( Org.findByName(upload.consortium.value) == null ) {
+		upload.consortium.messages.add("Unable to locate org with name ${upload.consortium.value}")
+		upload.processFile=false
+	  }
+	}
+	return true
+  }
+
+  def validateColumnHeadings(upload) {
+	return checkColumnHeader(upload, 0,'publication_title') &&
+	       checkColumnHeader(upload, 1,'print_identifier') &&
+		   checkColumnHeader(upload, 2,'online_identifier') &&
+		   checkColumnHeader(upload, 3,'date_first_issue_online') &&
+		   checkColumnHeader(upload, 4,'num_first_vol_online') &&
+		   checkColumnHeader(upload, 5,'num_first_issue_online') &&
+		   checkColumnHeader(upload, 6,'date_last_issue_online') &&
+		   checkColumnHeader(upload, 7,'num_last_vol_online') &&
+		   checkColumnHeader(upload, 8,'num_last_issue_online') &&
+		   checkColumnHeader(upload, 9,'title_id') &&
+		   checkColumnHeader(upload,10,'embargo_info') &&
+		   checkColumnHeader(upload,11,'coverage_depth') &&
+		   checkColumnHeader(upload,12,'coverage_notes') &&
+		   checkColumnHeader(upload,13,'publisher_name') &&
+		   checkColumnHeader(upload,14,'DOI') &&
+		   checkProprietaryIds(upload) &&
+		   checkPlatforms(upload)
+		   
+  }
+  
+  def checkColumnHeader(upload,col_position,col_name) {
+    if ( upload.soHeaderLine[col_position] == col_name )
+	  return true
+	else {
+	  upload.messages.add("Expected column ${col_name} at position ${col_position}. Found ${upload.soHeaderLine[col_position]}")
+	  upload.processFile=false
+	  return false
+	}
+  }
+  
+  def checkProprietaryIds(upload) {
+	return true
+  }
+  
+  def checkPlatforms(upload) {
+	return true
+  }
   // result.soName = [origvalue:so_name_line[1]]
 
 }
