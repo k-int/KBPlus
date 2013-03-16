@@ -41,13 +41,9 @@
 
 
         <g:if test="${validationResult}">
-          <pre>
-            ${validationResult}
-          </pre>
-        
           <table class="table">
             <tbody>
-              <g:each in="${['soName', 'soIdentifier', 'soProvider', 'soPackageIdentifier', 'soPackageName', 'aggreementTermStartYear', 'aggreementTermEnd', 'consortium', 'soHeaderLine']}" var="fld">
+              <g:each in="${['soName', 'soIdentifier', 'soProvider', 'soPackageIdentifier', 'soPackageName', 'aggreementTermStartYear', 'aggreementTermEnd', 'consortium']}" var="fld">
                 <tr>
                   <td>${fld}</td>
                   <td>${validationResult[fld]?.value} 

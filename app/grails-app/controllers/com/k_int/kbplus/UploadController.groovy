@@ -39,6 +39,8 @@ class UploadController {
       def upload_filename = request.getFile("soFile")?.getOriginalFilename()
       log.debug("Uploaded so type: ${upload_mime_type} filename was ${upload_filename}");
       result.validationResult = readSubscriptionOfferedCSV(request.getFile("soFile")?.inputStream, upload_filename )
+	  result.validationResult.processFile=true
+	  validate(result.validationResult)
     }
     else {
     }
@@ -486,16 +488,16 @@ class UploadController {
 
     String [] nl;
 
-    processCsvLine(r.readNext(),'soName',1,result,'str',null)
-    processCsvLine(r.readNext(),'soIdentifier',1,result,'str',null)
-    processCsvLine(r.readNext(),'soProvider',1,result,'str',null)
-    processCsvLine(r.readNext(),'soPackageIdentifier',1,result,'str',null)
-    processCsvLine(r.readNext(),'soPackageName',1,result,'str',null)
-    processCsvLine(r.readNext(),'aggreementTermStartYear',1,result,'str',null)
-    processCsvLine(r.readNext(),'aggreementTermEnd',1,result,'str',null)
-    processCsvLine(r.readNext(),'consortium',1,result,'str',null)
-    processCsvLine(r.readNext(),'numPropIdCols',1,result,'int','0')
-    processCsvLine(r.readNext(),'numPlatformsListed',1,result,'int','0')
+    processCsvLine(r.readNext(),'soName',1,result,'str',null,true)
+    processCsvLine(r.readNext(),'soIdentifier',1,result,'str',null,false)
+    processCsvLine(r.readNext(),'soProvider',1,result,'str',null,false)
+    processCsvLine(r.readNext(),'soPackageIdentifier',1,result,'str',null,true)
+    processCsvLine(r.readNext(),'soPackageName',1,result,'str',null,true)
+    processCsvLine(r.readNext(),'aggreementTermStartYear',1,result,'date',null,true)
+    processCsvLine(r.readNext(),'aggreementTermEnd',1,result,'date',null,true)
+    processCsvLine(r.readNext(),'consortium',1,result,'str',null,false)
+    processCsvLine(r.readNext(),'numPropIdCols',1,result,'int','0',false)
+    processCsvLine(r.readNext(),'numPlatformsListed',1,result,'int','0',false)
     
     result['soName'].messages=['This is an soName message','And so is this'];
     
@@ -570,16 +572,19 @@ class UploadController {
     return result;
   }
   
-  def processCsvLine(csv_line,field_name,col_num,result_map,parseAs,defval) {  
+  def processCsvLine(csv_line,field_name,col_num,result_map,parseAs,defval,isMandatory) {  
     log.debug("  processCsvLine ${csv_line} ${field_name} ${col_num}...");
-    if ( ( col_num <= csv_line.length ) && ( csv_line[col_num] != null ) ) {
-      def result = [:]
-      result.origValue = csv_line[col_num]
-      
+	def result = [:]
+	result.origValue = csv_line[col_num]
+
+    if ( ( col_num <= csv_line.length ) && ( csv_line[col_num] != null ) ) {      
       switch(parseAs) {
         case 'int':
           result.value = Integer.parseInt(result.origValue?:defval)
           break;
+		case 'date':
+		  result.value = parseDate(result.origValue,possible_date_formats)
+		  break;
         case 'str':
         default:
           result.value = result.origValue
@@ -587,9 +592,72 @@ class UploadController {
       }
       result_map[field_name] = result
     }
-    else {
-      result_map[field_name] = [messages:['Missing']]
+	
+    if (result.value == null ) {
+	  if ( isMandatory ) {
+	    result.processFile=false
+		result_map[field_name] = [messages:["Missing mandatory property: ${field_name}"]]
+	  }
+      else
+	    result_map[field_name] = [messages:["Missing property: ${field_name}"]]	  
     }
+  }
+  
+  def validate(upload) {
+	  
+	  def result = generateAndValidateSubOfferedIdentifier(upload) &&
+	               generateAndValidatePackageIdentifier(upload)
+				   
+	  // Check norm so ID not already present
+	  
+	  // Check nor package ID not already present
+	  
+	  // Check aggreement start term can be parsed
+	  
+	  // Check aggreement end can be parsed
+	  
+	  // Check number of platforms > 0
+	  
+	  // Check subscribing cons valid org if present
+	  
+	  
+  }
+
+  def generateAndValidateSubOfferedIdentifier(upload) {
+	  // Create normalised SO ID
+	  upload.normalisedSoIdentifier = upload['soIdentifier'].value.trim().toLowerCase().replaceAll('-','_')
+	  if ( ( upload.normalisedSoIdentifier == null ) || ( upload.normalisedSoIdentifier.trim().length() == 0 ) ) {
+		  log.error("No subscription offered identifier");
+		  upload['soIdentifier'].messages.add("Unable to use this identifier")
+		  upload.processFile=false
+	  }
+	  else {
+		  // Generated identifier is valid, check one does not exist already
+		  if ( Subscription.findByIdentifier(upload.normalisedSoIdentifier) ) {
+			  upload['soIdentifier'].messages.add("Subscription identifier already present")
+			  upload.processFile=false
+		  }
+	  }
+ 	  return true
+  }
+  
+  def generateAndValidatePackageIdentifier(upload) {
+      upload.normPkgIdentifier = "${upload.soProvider.value.trim()}:${upload.soPackageIdentifier.value.trim()}".toLowerCase().replaceAll('-','_');
+	  if ( ( upload.normPkgIdentifier == null ) || ( upload.normPkgIdentifier.trim().length() == 0 ) ) {
+		  log.error("No package identifier");
+		  upload['soPackageIdentifier'].messages.add("Unable to use this identifier")
+		  upload.processFile=false
+	  }
+	  else {
+		  // Generated identifier is valid, check one does not exist already
+		  if ( Package.findByIdentifier(upload.normPkgIdentifier) ) {
+			  upload['soPackageIdentifier'].messages.add("Package identifier already present")
+			  upload.processFile=false
+		  }
+	  }
+
+
+	  return true
   }
 
   // result.soName = [origvalue:so_name_line[1]]
