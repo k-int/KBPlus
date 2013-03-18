@@ -47,139 +47,6 @@ class UploadController {
     return result
   }
   
-  def validateStream(input_stream, upload_filename) {
-
-    def result = [:]
-
-    log.debug("Validating Stream");
-
-    CSVReader r = new CSVReader( new InputStreamReader(input_stream) )
-
-    String [] nl;
-
-    String [] so_name_line = r.readNext()
-    String [] so_identifier_line = r.readNext()
-    String [] so_provider_line = r.readNext()
-    String [] so_package_identifier_line = r.readNext()
-    String [] so_package_name_line = r.readNext()
-    String [] so_agreement_term_start_yr_line = r.readNext()
-    String [] so_agreement_term_end_yr_line = r.readNext()
-    String [] so_consortium_line = r.readNext()
-    String [] so_num_prop_id_cols_line = r.readNext()
-    int num_prop_id_cols = Integer.parseInt(so_num_prop_id_cols_line[1] ?: "0");
-    String [] so_num_platforms_listed_line = r.readNext()
-    int num_platforms_listed = Integer.parseInt(so_num_platforms_listed_line[1] ?: "0");
-    String [] so_header_line = r.readNext()
-
-    if ( num_platforms_listed == 0 ) {
-      num_platforms_listed = 1
-    }
-
-    def normalised_identifier = so_identifier_line[1].trim().toLowerCase().replaceAll('-','_')
-    def norm_pkg_identifier = "${so_provider_line[1].trim()}:${so_package_identifier_line[1].trim()}"
-    norm_pkg_identifier = norm_pkg_identifier.toLowerCase().replaceAll('-','_');
-    
-    if ( ( normalised_identifier == null ) || ( normalised_identifier.trim().length() == 0 ) ) {
-      log.error("No subscription offered identifier");
-      flash.error="Problem processing ${upload_filename} : No usable subscription offered identifier";      
-      return false
-    }
-    
-    if ( ( norm_pkg_identifier == null ) || ( norm_pkg_identifier.length() == 0 ) ) {
-      log.error("No usable package identifier");
-      flash.error="Problem processing ${upload_filename} : No usable package identifier";      
-      return false
-    }
-    
-    def sub = Subscription.findByIdentifier(normalised_identifier)
-    if ( sub != null ) {
-      log.error("Sub ${normalised_identifier} already exists");
-      flash.error="Problem processing ${upload_filename} : Unable to process file - Subscription with ID ${normalised_identifier} already exists in database";
-      return false
-    }
-
-    def pkg = Package.findByIdentifier(norm_pkg_identifier);
-    if ( pkg != null ) {
-      log.error("Package ${norm_pkg_identifier} already exists");
-      flash.error="Problem processing ${upload_filename} : Unable to process file - Package with ID ${norm_pkg_identifier} already exists in database";
-      return false
-    }
-
-    def issns_so_far = []
-    def eissns_so_far = []
-    
-
-    while ((nl = r.readNext()) != null) {
-      boolean has_data = false
-      nl.each {
-        if ( ( it != null ) && ( it.trim() != '' ) )
-          has_data = true;
-      }
-
-      if ( !has_data )
-        continue;
-      //else
-      //  log.debug("has data");
-
-      if ( present(nl[1]) && ( nl[1].trim().length() > 8 ) ) {
-        def issn_to_add = nl[1].trim();
-        if ( issns_so_far.contains(issn_to_add) ) {
-          flash.error="Problem processing ${upload_filename} : The ISSN ${issn_to_add} appears to be repeated in the TIPP rows";
-          return false
-        }
-        else {
-          issns_so_far.add(issn_to_add)
-        }
-      }
-
-      if ( present(nl[2]) && ( nl[2].trim().length() > 8 ) ) {
-        def eissn_to_add = nl[2].trim();
-        if ( eissns_so_far.contains(eissn_to_add) ) {
-          flash.error="Problem processing ${upload_filename} : The eISSN ${eissn_to_add} appears to be repeated in the TIPP rows";
-          return false
-        }
-        else {
-          eissns_so_far.add(eissn_to_add)
-        }
-      }
-
-
-      if ( present(nl[0] ) ) {
-
-        def parsed_start_date = parseDate(nl[3],possible_date_formats)
-        def parsed_end_date = parseDate(nl[6],possible_date_formats)
-
-        def host_platform_url = null;
-        for ( int i=0; i<num_platforms_listed; i++ ) {
-
-          int position = 15+num_prop_id_cols+(i*3)   // Offset past any proprietary identifiers.. This needs a test case.. it's fraught with danger
-
-          // log.debug("Processing ${i}th platform entry. Arr len = ${nl.length} position=${position}");
-
-          if ( ( nl.size() >= position+3 ) && ( nl[position] ) && ( nl[position].length() > 0 ) ) {
-            def platform_role = nl[position+1]
-            def platform_url = nl[position+2]
-            println("Process platform name:${nl[position]} / type:${platform_role} / url:${platform_url}");
-
-            if ( platform_role.trim() == 'host' ) {
-              host_platform_url = platform_url
-            }
-            else {
-            }
-          }
-        }
-        if ( host_platform_url==null || host_platform_url.trim().length() == 0 ) {
-          log.error("At least one tipp row has no host platform specified. Please correct and re-upload")
-          flash.error="Problem processing ${upload_filename} : At least one tipp row has no host platform specified. Please correct and re-upload"
-          return false
-        }
-      }
-    }
-
-    return result;
-  }
-
-
   def processUploadSO(input_stream, upload_filename, result) {
 
     def prepared_so = [:]
@@ -444,6 +311,13 @@ class UploadController {
     result.new_sub_id = new_sub?.id
   }
   
+  
+  
+  
+  
+  
+  
+  
   def lookupOrCreateTitleInstance(identifiers,title,publisher) {
     log.debug("lookupOrCreateTitleInstance ${identifiers}, ${title}, ${publisher}");
     def result = TitleInstance.lookupOrCreate(identifiers, title);
@@ -636,49 +510,49 @@ class UploadController {
     
     int counter = 0;
     upload.tipps.each { tipp ->
-      if ( ( tipp.publication_title == null ) || ( tipp.publication_title.trim() == '' ) ) {
+      if ( ( tipp.publication_title.origValue == null ) || ( tipp.publication_title.origValue.trim() == '' ) ) {
         tipp.messages.add("Title (row ${counter}) must not be empty");
         upload.processFile=false;
       }
       
-      if ( ! atLeastOneOf(tipp,['print_identifier', 'online_identifier', 'DOI', 'Proprietary_ID.isbn']) ) {
-        tipp.messages.add("Title (row ${counter}) must reference at least one identifier");
-        upload.processFile=false;
-      }
+      //if ( ! atLeastOneOf(tipp,['print_identifier', 'online_identifier', 'DOI', 'Proprietary_ID.isbn']) ) {
+      //  tipp.messages.add("Title (row ${counter}) must reference at least one identifier");
+      //  upload.processFile=false;
+      //}
       
-      if ( ! validISSN(tipp.print_identifier) ) {
+      if ( ! validISSN(tipp.print_identifier?.origValue) ) {
         tipp.messages.add("Title (row ${counter}) does not contain a valid ISSN");
         upload.processFile=false;
       }
       
-      if ( ! validISSN(tipp.online_identifier) ) {
+      if ( ! validISSN(tipp.online_identifier?.origValue) ) {
         tipp.messages.add("Title (row ${counter}) does not contain a valid eISSN");
         upload.processFile=false;
       }
 
-      if ( ! validISSN(tipp.online_identifier) ) {
+      if ( ! validISSN(tipp.online_identifier?.origValue) ) {
         tipp.messages.add("Title (row ${counter}) does not contain a valid eISSN");
         upload.processFile=false;
       }
 
-      if ( ! validISBN(tipp.Proprietary_ID.isbn) ) {
+      if ( ! validISBN(tipp."Proprietary_ID.isbn"?.origValue) ) {
         tipp.messages.add("Title (row ${counter}) does not contain a valid ISBN");
         upload.processFile=false;
       }
       
       ["print_identifier", "online_identifier", "DOI", "Proprietary_ID.isbn"].each { idtype ->
-        if ( ( tipp[idtype] ) && ( tipp[idtype].trim() != '' ) ) {
-          if ( id_list.contains(tipp[idtype]) ) {
-            tipp.messages.add("Title (row ${counter}) contains a repeated ${idtype} - ${tipp[idtype]}");
+        if ( ( tipp[idtype] ) && ( tipp[idtype].origValue.trim() != '' ) ) {
+          if ( id_list.contains(tipp[idtype].origValue) ) {
+            tipp.messages.add("Title (row ${counter}) contains a repeated ${idtype} - ${tipp[idtype].origValue}");
             upload.processFile=false;
           }
           else {
-            id_list.add(tipp[idtype])
+            id_list.add(tipp[idtype].origValue)
           }
         }
       }
 
-      if ( ( tipp_row.host_platform_url == null ) || ( tipp_row.host_platform_url.trim() == '' ) ) {
+      if ( ( tipp_row.host_platform_url == null ) || ( tipp_row.host_platform_url.origValue.trim() == '' ) ) {
         tipp.messages.add("Title (row ${counter}) does not contain a valid host platform");
         upload.processFile=false;
       }
@@ -702,8 +576,8 @@ class UploadController {
       }
       
       if ( ( tipp.coverage_depth != null ) &&
-           ( tipp.coverage_depth != '' ) &&
-           ( ! ['fulltext','selected articles','abstracts'].contains(tipp.coverage_depth.toLowerCase()) ) ) {
+           ( tipp.coverage_depth.origValue != '' ) &&
+           ( ! ['fulltext','selected articles','abstracts'].contains(tipp.coverage_depth.origValue.toLowerCase()) ) ) {
         tipp.messages.add("coverage depth must be one of fulltext, selected articles or abstracts");
         upload.processFile=false;                             
       }
