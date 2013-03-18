@@ -41,7 +41,7 @@
           <g:form action="addEntitlements" params="${params}" method="get">
             <input type="hidden" name="sort" value="${params.sort}">
             <input type="hidden" name="order" value="${params.order}">
-            Filter: <input name="filter" value="${params.filter}"/><input type="submit">
+            Filter: <input name="filter" value="${params.filter}"/><input type="submit" class="btn btn-primary">
           </g:form>
         </dt>
         <dd>
@@ -86,7 +86,7 @@
             </table>
 
             <div class="paginateButtons" style="text-align:center">
-              <input type="submit" value="Add Selected Entitlements"/>
+              <input type="submit" value="Add Selected Entitlements" class="btn btn-primary"/>
             </div>
 
 

@@ -27,8 +27,10 @@
             <p>Please enter the new title below. Close matches will then be reported to ensure the title is not already present. After confirming
                you wish the new title to be added you can create the new title and move to the edit screen</p>
 
-            <g:form controller="titleDetails" action="findTitleMatches" method="GET">
-              Proposed Title: <input type="text" name="proposedTitle" value="${params.proposedTitle}" /><input type="Submit">
+            <g:form controller="titleDetails" action="findTitleMatches" method="GET" class="form-inline">
+                <label>Proposed Title:</label> 
+                <input type="text" name="proposedTitle" value="${params.proposedTitle}" />
+                <input type="submit" value="Search" class="btn btn-primary">
             </g:form>
 
             <br/>

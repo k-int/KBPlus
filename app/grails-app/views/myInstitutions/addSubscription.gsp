@@ -30,8 +30,9 @@
         
       <div class="container">
           <div class="pull-right">
-              <g:form action="addSubscription" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="get">
-                  Search text: <input type="text" name="q" placeholder="enter search term..."  value="${params.q?.encodeAsHTML()}"  />
+              <g:form action="addSubscription" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="get" class="form-inline">
+                  <label>Search text:</label> 
+                  <input type="text" name="q" placeholder="enter search term..."  value="${params.q?.encodeAsHTML()}"  />
                   <input type="submit" class="btn btn-primary" value="Search" />
               </g:form>
           </div>

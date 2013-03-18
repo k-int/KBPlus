@@ -76,11 +76,11 @@
           <table class="table table-bordered">
             <thead>
               <tr>
-                <td>Select</td>
-                <g:sortableColumn params="${params}" property="reference" title="Reference Description" />
-                <td>Licensor</td>
-                <g:sortableColumn params="${params}" property="status.value" title="Status" />
-                <g:sortableColumn params="${params}" property="type.value" title="Type" />
+                    <th>Select</th>
+                    <g:sortableColumn params="${params}" property="reference" title="Reference Description" />
+                    <th>Licensor</th>
+                    <g:sortableColumn params="${params}" property="status.value" title="Status" />
+                    <g:sortableColumn params="${params}" property="type.value" title="Type" />
               </tr>
             </thead>
             <tbody>

@@ -88,7 +88,7 @@
         <div class="span8"> 
             <br/>
             <h6>Subscription Information</h6>
-            <div class="licence-info"> 
+            <div class="inline-lists"> 
                 <dl>
                     <dt>License</dt>
                     <dd><g:if test="${subscriptionInstance.subscriber}">
@@ -156,14 +156,15 @@
     <div class="container">
       <dl>
         <dt>Entitlements ( ${offset+1} to ${offset+(entitlements?.size())} of ${num_sub_rows} )
-          <g:form action="index" params="${params}" method="get">
+          <g:form action="index" params="${params}" method="get" class="form-inline">
              <input type="hidden" name="sort" value="${params.sort}">
              <input type="hidden" name="order" value="${params.order}">
-             Filter: <input name="filter" value="${params.filter}"/><input type="submit">
+             <label>Filter:</label> <input name="filter" value="${params.filter}"/>
+             <input type="submit" class="btn btn-primary" />
           </g:form>
         </dt>
         <dd>
-          <g:form action="subscriptionBatchUpdate" params="${[id:subscriptionInstance?.id]}">
+          <g:form action="subscriptionBatchUpdate" params="${[id:subscriptionInstance?.id]}" class="form-inline">
           <g:set var="counter" value="${offset+1}" />
           <table  class="table table-striped table-bordered">
 
@@ -181,7 +182,7 @@
               <th>Actions</th>
             </tr>  
 
-            <tr>  
+            <tr class="no-background">  
               <th>
                 <g:if test="${editable}"><input type="checkbox" name="chkall" onClick="javascript:selectAll();"/></g:if>
               </th>
@@ -191,7 +192,7 @@
                     <option value="edit">Edit Selected</option>
                     <option value="remove">Remove Selected</option>
                   </select>
-                  <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()"/></g:if></th>
+                  <input type="Submit" value="Apply Batch Changes" class="btn btn-primary" onClick="return confirmSubmit()"/></g:if></th>
               <th><span id="entitlementBatchEdit" class="${editable?'entitlementBatchEdit isedit':''}"></span><input type="hidden" name="bulk_core" id="bulk_core"/></th>
               <th><g:if test="${editable}"><span class="datevalue">edit</span> <input name="bulk_start_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
               <th><g:if test="${editable}"><span class="datevalue">edit</span> <input name="bulk_end_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>

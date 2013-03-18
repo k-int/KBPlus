@@ -83,7 +83,7 @@
         <tr>
           <th colspan="6">Alerted item</th>
         </tr>
-        <tr>
+        <tr class="no-background">
           <th>Type</th>
           <th>Date</th>
           <th>Author</th>

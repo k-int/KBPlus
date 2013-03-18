@@ -24,5 +24,5 @@
     </g:each>
   </table>
   <g:if test="${editmode}">
-    <a class="btn" data-toggle="modal" href="#osel_add_modal" >Add Org Link</a>
+    <a class="btn btn-primary" data-toggle="modal" href="#osel_add_modal" >Add Org Link</a>
   </g:if>

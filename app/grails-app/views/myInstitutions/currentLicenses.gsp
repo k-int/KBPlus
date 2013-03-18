@@ -43,8 +43,10 @@
     <div class="container licence-searches">
         <div class="row">
             <div class="span6">
-                <input type="text" name="keyword-search" placeholder="enter search term..." />
-                <input type="submit" class="btn btn-primary" value="Search" />
+                <form class="form-inline">
+                    <input type="text" name="keyword-search" placeholder="enter search term..." />
+                    <input type="submit" class="btn btn-primary" value="Search" />
+                </form>
             </div>
             <div class="span6">
                 <div class="pull-right">
@@ -69,9 +71,9 @@
           <table class="table table-bordered">
             <thead>
               <tr>
-                <td>Select</td>
+                <th>Select</th>
                 <g:sortableColumn params="${params}" property="reference" title="Reference Description" />
-                <td>Licensor</td>
+                <th>Licensor</th>
                 <g:sortableColumn params="${params}" property="status.value" title="Status" />
                 <g:sortableColumn params="${params}" property="type.value" title="Type" />
               </tr>

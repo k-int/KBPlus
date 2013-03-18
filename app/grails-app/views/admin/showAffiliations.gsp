@@ -25,9 +25,8 @@
     </div>
 
     <div class="container">
-      <div class="well">
         <h2>Affiliations</h2>
-        <table class="table table-striped">
+        <table class="table table-bordered table-striped">
           <tr>
             <th>Username</th><th>Affiliations</th>
           </tr>
@@ -43,9 +42,6 @@
               </td>
           </g:each>
         </table>
-      </div>
-
-
     </div>
 
 

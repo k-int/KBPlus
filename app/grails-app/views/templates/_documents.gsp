@@ -1,9 +1,9 @@
 <div class="well documents">
-  <h7>Documents</h7>
+  <h5>Documents</h5>
   <ul>
     <g:each in="${doclist}" var="docctx">
       <g:if test="${((docctx.owner?.contentType==1) && ( docctx.status?.value!='Deleted'))}">
-        <li class="externalLinkIcon">
+        <li class="external-link">
           <g:link controller="docstore" id="${docctx.owner.uuid}">
             ${docctx.owner.id}:<g:if test="${docctx.owner?.title}"><em>${docctx.owner.title}</em></g:if>
             <g:else>

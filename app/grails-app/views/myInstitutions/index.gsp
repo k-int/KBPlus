@@ -31,7 +31,7 @@
         <tr>
           <th colspan="3">Note attached to</th>
         </tr>
-        <tr>
+        <tr class="no-background">
           <th>Date</th>
           <th>Sharing</th>
           <th>Note</th>

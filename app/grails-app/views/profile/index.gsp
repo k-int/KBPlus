@@ -35,12 +35,10 @@
 
     <div class="container">
       <div class="span12">
-        <g:form action="updateProfile">
-          <dl>
-            <dd>Your Display Name (Appears top right)</dd>
-            <dt><input type="text" name="userDispName" value="${user.displayName}"/></dt>
-          </dl>
-          <input type="submit" value="Update Profile"/>
+        <g:form action="updateProfile" class="form-inline">
+            <label>Your Display Name (Appears top right)</label>
+            <input type="text" name="userDispName" value="${user.displayName}"/>
+            <input type="submit" value="Update Profile" class="btn btn-primary">
         </g:form>
       </div>
     </div>
@@ -103,7 +101,7 @@
                       optionValue="${ {role->g.message(code:'cv.roles.'+role.authority) } }"
                       class="input-medium"/>
 
-            <button class="btn" data-complete-text="Request Membership" type="submit">Request Membership</button>
+            <button data-complete-text="Request Membership" type="submit" class="btn btn-primary btn-small">Request Membership</button>
           </g:form>
           <form>
         </div>

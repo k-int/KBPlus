@@ -41,8 +41,8 @@
     </div>
 
     <div class="container" style="text-align:center">
-      <g:form action="currentSubscriptions" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="get">
-        Search text: <input type="text" name="q" placeholder="enter search term..."  value="${params.q?.encodeAsHTML()}"  />
+      <g:form action="currentSubscriptions" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="get" class="form-inline">
+          <abel>Search text:</label> <input type="text" name="q" placeholder="enter search term..."  value="${params.q?.encodeAsHTML()}"  />
         <input type="submit" class="btn btn-primary" value="Search" />
       </g:form><br/>
     </div>

@@ -41,36 +41,35 @@
         <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
         </g:if>
 
-        <dl>
+          <div class="inline-lists">
         
           <g:if test="${packageInstance?.identifier}">
-            <dt><g:message code="package.identifier.label" default="Identifier" /></dt>
-            
-              <dd><g:fieldValue bean="${packageInstance}" field="identifier"/></dd>
-            
+              <dl>
+                <dt><g:message code="package.identifier.label" default="Identifier" /></dt>
+                <dd><g:fieldValue bean="${packageInstance}" field="identifier"/></dd>
+              </dl>
           </g:if>
 
           <g:if test="${packageInstance?.contentProvider}">
-            <dt><g:message code="package.contentProvider.label" default="Content Provider" /></dt>
-            
-              <dd><g:link controller="org" action="show" id="${packageInstance.contentProvider.id}"><g:fieldValue bean="${packageInstance}" field="contentProvider.name"/></g:link></dd>
-            
+              <dl>
+                 <dt><g:message code="package.contentProvider.label" default="Content Provider" /></dt>
+                <dd><g:link controller="org" action="show" id="${packageInstance.contentProvider.id}"><g:fieldValue bean="${packageInstance}" field="contentProvider.name"/></g:link></dd>
+              </dl>
           </g:if>
         
           <g:if test="${packageInstance?.name}">
-            <dt><g:message code="package.name.label" default="Name" /></dt>
-            
-              <dd><g:fieldValue bean="${packageInstance}" field="name"/></dd>
-            
+              <dl>
+                  <dt><g:message code="package.name.label" default="Name" /></dt>
+                  <dd><g:fieldValue bean="${packageInstance}" field="name"/></dd>
+              </dl>           
           </g:if>
+              
+          </div>
         
-            
-        
-
-          <dt>Availability of titles in this package by platform</dt>
-          <dd>
+            <h6>Availability of titles in this package by platform</h6>
+      
           <g:set var="counter" value="${1}" />
-          <table border="1" cellspacing="5" cellpadding="5">
+          <table class="table table-bordered table-striped">
             <tr>
               <th rowspan="2" style="width: 2%;">#</th>
               <th rowspan="2" style="width: 20%;">Title</th>
@@ -108,8 +107,6 @@
               </tr>
             </g:each>
           </table>
-          </dd>
-        </dl>
 
 
         <g:form>
