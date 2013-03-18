@@ -17,12 +17,12 @@ class UploadControllerTests extends ControllerUnitTestCase {
 
     def controller
     def test_list = [
-      [filename:'resources/upload_so_test_001.csv', 
-       shouldProcess: false, 
-       message:'Testing missing SO Name'],
-      [filename:'resources/upload_so_test_002.csv', 
-       shouldProcess: false, 
-       message:'Testing SO Name composed only of spaces']
+      [ filename:'resources/upload_so_test_001.csv', 
+        shouldProcess: false, 
+        message:'Testing missing SO Name'],
+      [ filename:'resources/upload_so_test_002.csv', 
+        shouldProcess: false, 
+        message:'Testing SO Name composed only of spaces']
     ];
 
     UploadControllerTests() {

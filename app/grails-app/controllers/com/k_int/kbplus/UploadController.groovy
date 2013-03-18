@@ -588,9 +588,9 @@ class UploadController {
         case 'int':
           result.value = Integer.parseInt(result.origValue?:defval)
           break;
-		case 'date':
-		  result.value = parseDate(result.origValue,possible_date_formats)
-		  break;
+        case 'date':
+		      result.value = parseDate(result.origValue,possible_date_formats)
+  		    break;
         case 'str':
         default:
           result.value = result.origValue
@@ -599,13 +599,14 @@ class UploadController {
       result_map[field_name] = result
     }
 	
-    if (result.value == null ) {
-	  if ( isMandatory ) {
-	    result.processFile=false
-		result_map[field_name] = [messages:["Missing mandatory property: ${field_name}"]]
-	  }
-      else
-	    result_map[field_name] = [messages:["Missing property: ${field_name}"]]	  
+    if ( ( result.value == null ) || ( result.value.trim() == '' ) ) {
+	    if ( isMandatory ) {
+	      result.processFile=false
+		    result_map[field_name] = [messages:["Missing mandatory property: ${field_name}"]]
+	    }
+      else {
+	      result_map[field_name] = [messages:["Missing property: ${field_name}"]]	  
+	    }
     }
   }
   
