@@ -530,6 +530,7 @@ class UploadController {
         log.debug("has data");
 
       def tipp_row = [:]
+      tipp_row.messages=[]
       
       int i=0;
       nl.each { colval ->
@@ -611,9 +612,99 @@ class UploadController {
 	  
 	  def result = generateAndValidateSubOfferedIdentifier(upload) &&
 	               generateAndValidatePackageIdentifier(upload) &&
-				   validateNumPlatforms(upload) &&
-				   validateConsortia(upload) &&
-				   validateColumnHeadings(upload)
+				         validateNumPlatforms(upload) &&
+      				   validateConsortia(upload) &&
+			      	   validateColumnHeadings(upload)
+			      	   
+		if ( result.processFile ) {
+		  validateTipps(upload)
+		}
+		else {
+		}
+  }
+  
+  def validateTipps(upload) {
+  
+    def id_list = []
+    
+    int counter = 0;
+    upload.tipps.each { tipp ->
+      if ( ( tipp.publication_title == null ) || ( tipp.publication_title.trim() == '' ) ) {
+        tipp.messages.add("Title (row ${counter}) must not be empty");
+        upload.processFile=false;
+      }
+      
+      if ( ! atLeastOneOf(tipp,['print_identifier', 'online_identifier', 'DOI', 'Proprietary_ID.isbn']) {
+        tipp.messages.add("Title (row ${counter}) must reference at least one identifier");
+        upload.processFile=false;
+      }
+      
+      if ( ! validISSN(tipp.print_identifier) ) {
+        tipp.messages.add("Title (row ${counter}) does not contain a valid ISSN");
+        upload.processFile=false;
+      }
+      
+      if ( ! validISSN(tipp.online_identifier) ) {
+        tipp.messages.add("Title (row ${counter}) does not contain a valid eISSN");
+        upload.processFile=false;
+      }
+
+      if ( ! validISSN(tipp.online_identifier) ) {
+        tipp.messages.add("Title (row ${counter}) does not contain a valid eISSN");
+        upload.processFile=false;
+      }
+
+      if ( ! validISBN(tipp.Proprietary_ID.isbn) ) {
+        tipp.messages.add("Title (row ${counter}) does not contain a valid ISBN");
+        upload.processFile=false;
+      }
+      
+      ["print_identifier", "online_identifier", "DOI", "Proprietary_ID.isbn"].each { idtype ->
+        if ( ( tipp[idtype] ) && ( tipp[idtype].trim() != '' ) {
+          if ( id_list.contains(tipp[idtype]) ) {
+            tipp.messages.add("Title (row ${counter}) contains a repeated ${idtype} - ${tipp[idtype]}");
+            upload.processFile=false;
+          }
+          else {
+            id_list.add(tipp[idtype])
+          }
+        }
+      }
+
+      
+
+      counter++
+    }
+    
+    return true;
+  }
+  
+  def validISSN(issn_string) {
+    ref result = true;
+    if ( ( issn_string ) && ( issn_string.trim() != '' ) ) {
+      // Check issn_string matches regexp "[0-9]{4}-[0-9]{3}[0-9X]"
+      if ( issn_string ==~ '[0-9]{4}-[0-9]{3}[0-9X]' ) {
+        // Matches, all is good.
+      }
+      else {
+        result = false
+      }
+    }
+    return result;
+  }
+
+  def validISBN(isbn_string) {
+    ref result = true;
+    if ( ( isbn_string ) && ( isbn_string.trim() != '' ) ) {
+      // Check issn_string matches regexp "[0-9]{4}-[0-9]{3}[0-9X]"
+      if ( isbn_string ==~ '97(8|9))?[0-9]{9}[0-9X])' ) {
+        // Matches, all is good.
+      }
+      else {
+        result = false
+      }
+    }
+    return result;
   }
 
   def generateAndValidateSubOfferedIdentifier(upload) {
