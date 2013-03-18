@@ -634,7 +634,7 @@ class UploadController {
         upload.processFile=false;
       }
       
-      if ( ! atLeastOneOf(tipp,['print_identifier', 'online_identifier', 'DOI', 'Proprietary_ID.isbn']) {
+      if ( ! atLeastOneOf(tipp,['print_identifier', 'online_identifier', 'DOI', 'Proprietary_ID.isbn']) ) {
         tipp.messages.add("Title (row ${counter}) must reference at least one identifier");
         upload.processFile=false;
       }
@@ -660,7 +660,7 @@ class UploadController {
       }
       
       ["print_identifier", "online_identifier", "DOI", "Proprietary_ID.isbn"].each { idtype ->
-        if ( ( tipp[idtype] ) && ( tipp[idtype].trim() != '' ) {
+        if ( ( tipp[idtype] ) && ( tipp[idtype].trim() != '' ) ) {
           if ( id_list.contains(tipp[idtype]) ) {
             tipp.messages.add("Title (row ${counter}) contains a repeated ${idtype} - ${tipp[idtype]}");
             upload.processFile=false;
@@ -671,6 +671,12 @@ class UploadController {
         }
       }
 
+      if ( ( tipp_row.host_platform_url == null ) || ( tipp_row.host_platform_url.trim() == '' ) ) {
+        tipp.messages.add("Title (row ${counter}) does not contain a valid host platform");
+        upload.processFile=false;
+      }
+      
+      
       
 
       counter++
