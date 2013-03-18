@@ -623,7 +623,7 @@ class UploadController {
       				   validateConsortia(upload) &&
 			      	   validateColumnHeadings(upload)
 			      	   
-		if ( result.processFile ) {
+		if ( upload.processFile ) {
 		  validateTipps(upload)
 		}
 		else {
@@ -779,21 +779,21 @@ class UploadController {
   def validateColumnHeadings(upload) {
 	return checkColumnHeader(upload, 0,'publication_title') &&
 	       checkColumnHeader(upload, 1,'print_identifier') &&
-		   checkColumnHeader(upload, 2,'online_identifier') &&
-		   checkColumnHeader(upload, 3,'date_first_issue_online') &&
-		   checkColumnHeader(upload, 4,'num_first_vol_online') &&
-		   checkColumnHeader(upload, 5,'num_first_issue_online') &&
-		   checkColumnHeader(upload, 6,'date_last_issue_online') &&
-		   checkColumnHeader(upload, 7,'num_last_vol_online') &&
-		   checkColumnHeader(upload, 8,'num_last_issue_online') &&
-		   checkColumnHeader(upload, 9,'title_id') &&
-		   checkColumnHeader(upload,10,'embargo_info') &&
-		   checkColumnHeader(upload,11,'coverage_depth') &&
-		   checkColumnHeader(upload,12,'coverage_notes') &&
-		   checkColumnHeader(upload,13,'publisher_name') &&
-		   checkColumnHeader(upload,14,'DOI') &&
-		   checkProprietaryIds(upload) &&
-		   checkPlatforms(upload)
+		     checkColumnHeader(upload, 2,'online_identifier') &&
+ 		     checkColumnHeader(upload, 3,'date_first_issue_online') &&
+		     checkColumnHeader(upload, 4,'num_first_vol_online') &&
+		     checkColumnHeader(upload, 5,'num_first_issue_online') &&
+		     checkColumnHeader(upload, 6,'date_last_issue_online') &&
+		     checkColumnHeader(upload, 7,'num_last_vol_online') &&
+		     checkColumnHeader(upload, 8,'num_last_issue_online') &&
+		     checkColumnHeader(upload, 9,'title_id') &&
+		     checkColumnHeader(upload,10,'embargo_info') &&
+		     checkColumnHeader(upload,11,'coverage_depth') &&
+		     checkColumnHeader(upload,12,'coverage_notes') &&
+		     checkColumnHeader(upload,13,'publisher_name') &&
+		     checkColumnHeader(upload,14,'DOI') &&
+		     checkProprietaryIds(upload) &&
+		     checkPlatforms(upload)
 		   
   }
   
