@@ -118,8 +118,8 @@ class UploadController {
 
       if ( !has_data )
         continue;
-      else
-        log.debug("has data");
+      //else
+      //  log.debug("has data");
 
       if ( present(nl[1]) && ( nl[1].trim().length() > 8 ) ) {
         def issn_to_add = nl[1].trim();
@@ -154,7 +154,7 @@ class UploadController {
 
           int position = 15+num_prop_id_cols+(i*3)   // Offset past any proprietary identifiers.. This needs a test case.. it's fraught with danger
 
-          log.debug("Processing ${i}th platform entry. Arr len = ${nl.length} position=${position}");
+          // log.debug("Processing ${i}th platform entry. Arr len = ${nl.length} position=${position}");
 
           if ( ( nl.size() >= position+3 ) && ( nl[position] ) && ( nl[position].length() > 0 ) ) {
             def platform_role = nl[position+1]
@@ -481,9 +481,10 @@ class UploadController {
   def readSubscriptionOfferedCSV(input_stream, upload_filename) {
 
     def result = [:]
-	
-	// File level messages
-	result.messages=[]
+  	result.processFile=true
+  	
+    // File level messages
+	  result.messages=[]
 
     log.debug("Reading Stream");
 
@@ -536,7 +537,7 @@ class UploadController {
       nl.each { colval ->
         def tipp_value = [:]
         def colname = result.soHeaderLine[i++].toLowerCase().trim()
-        log.debug("processing ${colname}")
+        // log.debug("processing ${colname}")
         tipp_value.origValue = colval.trim();
         tipp_row[colname] = tipp_value;       
       }
@@ -553,7 +554,7 @@ class UploadController {
 
           int position = 15+result.numPropIdCols.value+(ic*3)   // Offset past any proprietary identifiers.. This needs a test case.. it's fraught with danger
 
-          log.debug("Processing ${i}th platform entry. Arr len = ${nl.length} position=${position}");
+          // log.debug("Processing ${i}th platform entry. Arr len = ${nl.length} position=${position}");
 
           if ( ( nl.size() >= position+3 ) && ( nl[position] ) && ( nl[position].length() > 0 ) ) {
             def platform_role = nl[position+1]
@@ -578,9 +579,9 @@ class UploadController {
   
   def processCsvLine(csv_line,field_name,col_num,result_map,parseAs,defval,isMandatory) {  
     log.debug("  processCsvLine ${csv_line} ${field_name} ${col_num}...");
-	def result = [:]
-	result.messages=[]
-	result.origValue = csv_line[col_num]
+	  def result = [:]
+  	result.messages=[]
+	  result.origValue = csv_line[col_num]
 
     if ( ( col_num <= csv_line.length ) && ( csv_line[col_num] != null ) ) {      
       switch(parseAs) {

@@ -16,6 +16,14 @@ import grails.test.ControllerUnitTestCase
 class UploadControllerTests extends ControllerUnitTestCase {
 
     def controller
+    def test_list = [
+      [filename:'resources/upload_so_test_001.csv', 
+       shouldProcess: false, 
+       message:'Testing missing SO Name'],
+      [filename:'resources/upload_so_test_002.csv', 
+       shouldProcess: false, 
+       message:'Testing SO Name composed only of spaces']
+    ];
 
     UploadControllerTests() {
       super(UploadController)
@@ -27,13 +35,16 @@ class UploadControllerTests extends ControllerUnitTestCase {
     }
     
     // Info on mocking up file upload http://roshandawrani.wordpress.com/2011/02/03/grails-mock-testing-a-file-upload/
-    void testSomething() {
+    void testMissingSubOfferedName() {
       // fail "Implement me"
-      Resource resource = new ClassPathResource("resources/upload_so_test_001.csv")
-      def file = resource.getFile()
-      assert file.exists()
-      
-      // def input_stream = new InputStream()
-      // def result = controller.readSubscriptionOfferedCSV(input_stream, 'filename.csv')
+      test_list.each { so_test_case ->
+        log.debug("${so_test_case.message} Expecting shouldProcess to return ${so_test_case.shouldProcess}")
+        Resource resource = new ClassPathResource(so_test_case.filename)
+        def file = resource.getFile()
+        assert file.exists()
+        def input_stream = new FileInputStream(file)
+        def result = controller.readSubscriptionOfferedCSV(input_stream, 'filename.csv')
+        assert result.processFile == so_test_case.shouldProcess
+      }
     }
 }
