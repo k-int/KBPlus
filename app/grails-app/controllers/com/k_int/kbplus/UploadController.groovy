@@ -683,8 +683,30 @@ class UploadController {
         upload.processFile=false;
       }
       
+      tipp.platforms?.each { plat ->
+        if ( ( plat.role.toLowerCase().trim() != 'host' ) &&
+             ( plat.role.toLowerCase().trim() != 'administrative' ) ) {
+          tipp.messages.add("Title (row ${counter}) Containts a non-host or admin platform");
+          upload.processFile=false;          
+        }
+      }
       
+      if ( tipp.parsed_start_date == null ) {
+        tipp.messages.add("Title (row ${counter}) Invalid start date");
+        upload.processFile=false;                  
+      }
       
+      if ( tipp.parsed_end_date == null ) {
+        tipp.messages.add("Title (row ${counter}) Invalid end date");
+        upload.processFile=false;                  
+      }
+      
+      if ( ( tipp.coverage_depth != null ) &&
+           ( tipp.coverage_depth != '' ) &&
+           ( ! ['fulltext','selected articles','abstracts'].contains(tipp.coverage_depth.toLowerCase()) ) ) {
+        tipp.messages.add("coverage depth must be one of fulltext, selected articles or abstracts");
+        upload.processFile=false;                             
+      }
 
       counter++
     }
