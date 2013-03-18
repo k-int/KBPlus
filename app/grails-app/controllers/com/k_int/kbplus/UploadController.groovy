@@ -578,7 +578,7 @@ class UploadController {
   }
   
   def processCsvLine(csv_line,field_name,col_num,result_map,parseAs,defval,isMandatory) {  
-    log.debug("  processCsvLine ${csv_line} ${field_name} ${col_num}...");
+    log.debug("  processCsvLine ${csv_line} ${field_name} ${col_num}... mandatory=${isMandatory}");
 	  def result = [:]
   	result.messages=[]
 	  result.origValue = csv_line[col_num]
@@ -599,15 +599,20 @@ class UploadController {
       result_map[field_name] = result
     }
 	
-    if ( ( result.value == null ) || ( result.value.trim() == '' ) ) {
+	  
+    if ( ( result.value == null ) || ( result.value.toString().trim() == '' ) ) {
 	    if ( isMandatory ) {
-	      result.processFile=false
+	      result_map.processFile=false
 		    result_map[field_name] = [messages:["Missing mandatory property: ${field_name}"]]
 	    }
       else {
 	      result_map[field_name] = [messages:["Missing property: ${field_name}"]]	  
 	    }
     }
+    else {
+    }
+    
+ 	  log.debug("result = ${result}");
   }
   
   def validate(upload) {
