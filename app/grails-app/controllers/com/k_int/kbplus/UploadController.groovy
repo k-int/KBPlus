@@ -552,7 +552,7 @@ class UploadController {
         }
       }
 
-      if ( ( tipp_row.host_platform_url == null ) || ( tipp_row.host_platform_url.origValue.trim() == '' ) ) {
+      if ( ( tipp_row.host_platform_url.origValue == null ) || ( tipp_row.host_platform_url.origValue.trim() == '' ) ) {
         tipp.messages.add("Title (row ${counter}) does not contain a valid host platform");
         upload.processFile=false;
       }
@@ -575,7 +575,7 @@ class UploadController {
         upload.processFile=false;                  
       }
       
-      if ( ( tipp.coverage_depth != null ) &&
+      if ( ( tipp.coverage_depth?.origValue != null ) &&
            ( tipp.coverage_depth.origValue != '' ) &&
            ( ! ['fulltext','selected articles','abstracts'].contains(tipp.coverage_depth.origValue.toLowerCase()) ) ) {
         tipp.messages.add("coverage depth must be one of fulltext, selected articles or abstracts");
