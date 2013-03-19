@@ -57,8 +57,7 @@ class UploadController {
       log.debug("Uploaded so type: ${upload_mime_type} filename was ${upload_filename}");
       result.validationResult = readSubscriptionOfferedCSV(request.getFile("soFile")?.inputStream, upload_filename )
 	    result.validationResult.processFile=true
-	    // validate(result.validationResult)
-	    
+	    validate(result.validationResult)
     }
     else {
     }
@@ -511,63 +510,58 @@ class UploadController {
       //  upload.processFile=false;
       //}
       
-      if ( ! validISSN(tipp.print_identifier?.origValue) ) {
+      if ( ! validISSN(tipp.ID.issn) ) {
         tipp.messages.add("Title (row ${counter}) does not contain a valid ISSN");
         upload.processFile=false;
       }
       
-      if ( ! validISSN(tipp.online_identifier?.origValue) ) {
+      if ( ! validISSN(tipp.ID.eissn) ) {
         tipp.messages.add("Title (row ${counter}) does not contain a valid eISSN");
         upload.processFile=false;
       }
 
-      if ( ! validISSN(tipp.online_identifier?.origValue) ) {
-        tipp.messages.add("Title (row ${counter}) does not contain a valid eISSN");
-        upload.processFile=false;
-      }
-
-      if ( ! validISBN(tipp."Proprietary_ID.isbn"?.origValue) ) {
+      if ( ! validISBN(tipp.ID.isbn) ) {
         tipp.messages.add("Title (row ${counter}) does not contain a valid ISBN");
         upload.processFile=false;
       }
       
-      ["print_identifier", "online_identifier", "DOI", "Proprietary_ID.isbn"].each { idtype ->
-        if ( ( tipp[idtype] ) && ( tipp[idtype].origValue.trim() != '' ) ) {
-          if ( id_list.contains(tipp[idtype].origValue) ) {
+      ["issn", "eissn", "isbn", "doi"].each { idtype ->
+        if ( ( tipp.ID[idtype] ) && ( tipp.ID[idtype] != '' ) ) {
+          if ( id_list.contains(tipp.ID[idtype]) ) {
             tipp.messages.add("Title (row ${counter}) contains a repeated ${idtype} - ${tipp[idtype].origValue}");
             upload.processFile=false;
           }
           else {
-            id_list.add(tipp[idtype].origValue)
+            id_list.add(tipp.ID[idtype])
           }
         }
       }
 
-      if ( ( tipp_row.host_platform_url.origValue == null ) || ( tipp_row.host_platform_url.origValue.trim() == '' ) ) {
-        tipp.messages.add("Title (row ${counter}) does not contain a valid host platform");
-        upload.processFile=false;
-      }
+      //if ( ( tipp_row.host_platform_url.origValue == null ) || ( tipp_row.host_platform_url.origValue.trim() == '' ) ) {
+      //  tipp.messages.add("Title (row ${counter}) does not contain a valid host platform");
+      //  upload.processFile=false;
+      // }
       
-      tipp.platforms?.each { plat ->
-        if ( ( plat.role.toLowerCase().trim() != 'host' ) &&
-             ( plat.role.toLowerCase().trim() != 'administrative' ) ) {
-          tipp.messages.add("Title (row ${counter}) Containts a non-host or admin platform");
-          upload.processFile=false;          
-        }
-      }
+      //tipp.platforms?.each { plat ->
+      //  if ( ( plat.role.toLowerCase().trim() != 'host' ) &&
+      //       ( plat.role.toLowerCase().trim() != 'administrative' ) ) {
+      //    tipp.messages.add("Title (row ${counter}) Containts a non-host or admin platform");
+      //    upload.processFile=false;          
+      //  }
+      // }
       
-      if ( tipp.parsed_start_date == null ) {
-        tipp.messages.add("Title (row ${counter}) Invalid start date");
-        upload.processFile=false;                  
-      }
+      //if ( tipp.parsed_start_date == null ) {
+      //  tipp.messages.add("Title (row ${counter}) Invalid start date");
+      //  upload.processFile=false;                  
+      //}
       
-      if ( tipp.parsed_end_date == null ) {
-        tipp.messages.add("Title (row ${counter}) Invalid end date");
-        upload.processFile=false;                  
-      }
+      //if ( tipp.parsed_end_date == null ) {
+      //  tipp.messages.add("Title (row ${counter}) Invalid end date");
+      //  upload.processFile=false;                  
+      //}
       
-      if ( ( tipp.coverage_depth?.origValue != null ) &&
-           ( tipp.coverage_depth.origValue != '' ) &&
+      if ( ( tipp.coverage_depth != null ) &&
+           ( tipp.coverage_depth != '' ) &&
            ( ! ['fulltext','selected articles','abstracts'].contains(tipp.coverage_depth.origValue.toLowerCase()) ) ) {
         tipp.messages.add("coverage depth must be one of fulltext, selected articles or abstracts");
         upload.processFile=false;                             
