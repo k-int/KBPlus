@@ -58,11 +58,12 @@ class UploadController {
       result.validationResult = readSubscriptionOfferedCSV(request.getFile("soFile")?.inputStream, upload_filename )
 	    result.validationResult.processFile=true
 	    // validate(result.validationResult)
-	    render result as JSON
+	    
     }
     else {
-      return result
     }
+    
+    return result
   }
   
   def processUploadSO(input_stream, upload_filename, result) {
@@ -402,44 +403,40 @@ class UploadController {
   def readTippRow(cols, nl) {
     def result = [:]
     for ( int i=0; i<nl.length; i++ ) {
-      log.debug("Process column ${cols[i]} value is ${nl[i]}");
-      def column_components = cols[i].split('\\.')
-      log.debug("result of split is ${column_components}");
-      def column_name = column_components[0]
-      def column_defn = csv_column_config[column_name]
-      if ( column_defn ) {
-        log.debug("Got col def: ${column_defn}");
-        switch ( column_defn.coltype ) {
-          case 'simple': 
-            result[column_name] = nl[i]
-            break;
-          case 'map':
-            log.debug("Processing map, col components are ${column_components}");
-            if ( result[column_name] == null )
-              result[column_name] = [:]
+      if ( ( nl[i] != null ) && ( nl[i].trim() != '' ) ) {
+        def column_components = cols[i].split('\\.')
+        def column_name = column_components[0]
+        def column_defn = csv_column_config[column_name]
+        if ( column_defn ) {
+          switch ( column_defn.coltype ) {
+            case 'simple': 
+              result[column_name] = nl[i]
+              break;
+            case 'map':
+              if ( result[column_name] == null )
+                result[column_name] = [:]
             
-            // If this is a simple map, like id.issn or id.eissn just set the value
-            if ( column_components.length == 2 ) {
-              log.debug("Assigning simple map value ${column_components[1]} = ${nl[i]}");
-              result[column_name][column_components[1]] = nl[i];    
-            }
-            else {
-              log.debug("Processing structured map entry");
-              // We have an object like platform.host:1.name, platform.host:2.name
-              if ( result[column_name][column_components[1]] == null ) {
-                // We're setting up the object. Add new object to platform map, keyed as second part of col name
-                result[column_name][column_components[1]]=[:]
-                def column_types = column_components[1].split(':');
-                // Add a coltype to the values, so platform.host.name gets a coltype of "host"
-                result[column_name][column_components[1]].coltype=column_types[0]
+              // If this is a simple map, like id.issn or id.eissn just set the value
+              if ( column_components.length == 2 ) {
+                result[column_name][column_components[1]] = nl[i];    
               }
-              result[column_name][column_components[1]][column_components[2]] = nl[i]
-            }
-            break;
-        } 
-      }
-      else {
-        // Unknown column
+              else {
+                // We have an object like platform.host:1.name, platform.host:2.name
+                if ( result[column_name][column_components[1]] == null ) {
+                  // We're setting up the object. Add new object to platform map, keyed as second part of col name
+                  result[column_name][column_components[1]]=[:]
+                  def column_types = column_components[1].split(':');
+                  // Add a coltype to the values, so platform.host.name gets a coltype of "host"
+                  result[column_name][column_components[1]].coltype=column_types[0]
+                }
+                result[column_name][column_components[1]][column_components[2]] = nl[i]
+              }
+              break;
+          } 
+        }
+        else {
+          // Unknown column
+        }
       }
     }
     return result;
