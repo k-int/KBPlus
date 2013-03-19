@@ -18,12 +18,39 @@ class UploadControllerTests {
 
     def controller
     def test_list = [
+        
+         [ filename:'resources/upload_so_test_007.csv', 
+            shouldProcess: false, 
+            message:'no provider'],
+        
+        [ filename:'resources/upload_so_test_008.csv', 
+            shouldProcess: false, 
+            message:'only blank spaces for provider'],
+        
+        [ filename:'resources/upload_so_test_005.csv', 
+            shouldProcess: false, 
+            message:'invalid start date'],
+        
+        [ filename:'resources/upload_so_test_006.csv', 
+            shouldProcess: false, 
+            message:'invalid end date'],
+        
+        [ filename:'resources/upload_so_test_003.csv', 
+            shouldProcess: false, 
+            message:'Package Name missing'],
+        
+        [ filename:'resources/upload_so_test_004.csv', 
+            shouldProcess: false, 
+            message:'Testing Package name composed only of spaces'],
+        
         [ filename:'resources/upload_so_test_001.csv', 
             shouldProcess: false, 
             message:'Testing missing SO Name'],
+        
         [ filename:'resources/upload_so_test_002.csv', 
             shouldProcess: false, 
             message:'Testing SO Name composed only of spaces'],
+        
         [ filename:'resources/upload_so_test_000.csv', 
             shouldProcess: true, 
             message:'This should pass']
