@@ -39,7 +39,7 @@
             <button type="submit" class="btn btn-primary">Upload SO</button>
         </g:form>
         
-        <g:each in="${validationResult.messages}" var="msg">
+        <g:each in="${validationResult?.messages}" var="msg">
           <div class="alert alert-error">${msg}</div>
         </g:each>
 

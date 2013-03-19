@@ -21,6 +21,23 @@ class UploadController {
   def sessionFactory
   def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
   
+  def csv_column_config = [
+    'ID':[coltype:'map'],
+    'publication_title':[coltype:'simple'],
+    'date_first_issue_online':[coltype:'simple'],
+    'num_first_vol_online':[coltype:'simple'],
+    'num_first_issue_online':[coltype:'simple'],
+    'date_last_issue_online':[coltype:'simple'],
+    'num_last_vol_online':[coltype:'simple'],
+    'num_last_issue_online':[coltype:'simple'],
+    'title_id':[coltype:'simple'],
+    'embargo_info':[coltype:'simple'],
+    'coverage_depth':[coltype:'simple'],
+    'coverage_notes':[coltype:'simple'],
+    'publisher_name':[coltype:'simple'],
+    'platform':[coltype:'map']
+  ];
+
   def possible_date_formats = [
     new SimpleDateFormat('dd/MM/yyyy'),
     new SimpleDateFormat('yyyy/MM/dd'),
@@ -39,12 +56,13 @@ class UploadController {
       def upload_filename = request.getFile("soFile")?.getOriginalFilename()
       log.debug("Uploaded so type: ${upload_mime_type} filename was ${upload_filename}");
       result.validationResult = readSubscriptionOfferedCSV(request.getFile("soFile")?.inputStream, upload_filename )
-	  result.validationResult.processFile=true
-	  validate(result.validationResult)
+	    result.validationResult.processFile=true
+	    // validate(result.validationResult)
+	    render result as JSON
     }
     else {
+      return result
     }
-    return result
   }
   
   def processUploadSO(input_stream, upload_filename, result) {
@@ -310,14 +328,7 @@ class UploadController {
     result.new_pkg_id = new_pkg_id
     result.new_sub_id = new_sub?.id
   }
-  
-  
-  
-  
-  
-  
-  
-  
+    
   def lookupOrCreateTitleInstance(identifiers,title,publisher) {
     log.debug("lookupOrCreateTitleInstance ${identifiers}, ${title}, ${publisher}");
     def result = TitleInstance.lookupOrCreate(identifiers, title);
@@ -374,80 +385,63 @@ class UploadController {
     processCsvLine(r.readNext(),'aggreementTermStartYear',1,result,'date',null,true)
     processCsvLine(r.readNext(),'aggreementTermEndYear',1,result,'date',null,true)
     processCsvLine(r.readNext(),'consortium',1,result,'str',null,false)
-    processCsvLine(r.readNext(),'numPropIdCols',1,result,'int','0',false)
-    processCsvLine(r.readNext(),'numPlatformsListed',1,result,'int','0',false)
     
     result['soName'].messages=['This is an soName message','And so is this'];
     
     result.soHeaderLine = r.readNext()
 
-    if ( result.numPlatformsListed == 0 ) {
-      result.numPlatformsListed = 1
+    result.tipps = []
+    while ((nl = r.readNext()) != null) {
+      // result.tipps.add(tipp_row)
+      result.tipps.add(readTippRow(result.soHeaderLine, nl))
     }
 
-    // Down to here
-    def issns_so_far = []
-    def eissns_so_far = []
-    
-    result.tipps = []    
-
-    while ((nl = r.readNext()) != null) {
-    
-      boolean has_data = false
-      nl.each {
-        if ( ( it != null ) && ( it.trim() != '' ) )
-          has_data = true;
-      }
-
-      if ( !has_data )
-        continue;
-      else
-        log.debug("has data");
-
-      def tipp_row = [:]
-      tipp_row.messages=[]
-      
-      int i=0;
-      nl.each { colval ->
-        def tipp_value = [:]
-        def colname = result.soHeaderLine[i++].toLowerCase().trim()
-        // log.debug("processing ${colname}")
-        tipp_value.origValue = colval.trim();
-        tipp_row[colname] = tipp_value;       
-      }
-      
-      if ( present(nl[0] ) ) {
-
-        tipp_row.parsed_start_date = parseDate(nl[3],possible_date_formats)
-        tipp_row.parsed_end_date = parseDate(nl[6],possible_date_formats)
-
-        tipp_row.platforms = []
-        
-        def host_platform_url = null;
-        for ( int ic=0; ic<result.numPlatformsListed.value; ic++ ) {
-
-          int position = 15+result.numPropIdCols.value+(ic*3)   // Offset past any proprietary identifiers.. This needs a test case.. it's fraught with danger
-
-          // log.debug("Processing ${i}th platform entry. Arr len = ${nl.length} position=${position}");
-
-          if ( ( nl.size() >= position+3 ) && ( nl[position] ) && ( nl[position].length() > 0 ) ) {
-            def platform_role = nl[position+1]
-            def platform_url = nl[position+2]
-            println("Process platform name:${nl[position]} / type:${platform_role} / url:${platform_url}");
-
-            if ( platform_role.trim() == 'host' ) {
-              tipp_row.host_platform_url = platform_url
+    return result;
+  }
+  
+  def readTippRow(cols, nl) {
+    def result = [:]
+    for ( int i=0; i<nl.length; i++ ) {
+      log.debug("Process column ${cols[i]} value is ${nl[i]}");
+      def column_components = cols[i].split('\\.')
+      log.debug("result of split is ${column_components}");
+      def column_name = column_components[0]
+      def column_defn = csv_column_config[column_name]
+      if ( column_defn ) {
+        log.debug("Got col def: ${column_defn}");
+        switch ( column_defn.coltype ) {
+          case 'simple': 
+            result[column_name] = nl[i]
+            break;
+          case 'map':
+            log.debug("Processing map, col components are ${column_components}");
+            if ( result[column_name] == null )
+              result[column_name] = [:]
+            
+            // If this is a simple map, like id.issn or id.eissn just set the value
+            if ( column_components.length == 2 ) {
+              log.debug("Assigning simple map value ${column_components[1]} = ${nl[i]}");
+              result[column_name][column_components[1]] = nl[i];    
             }
             else {
-              tipp_row.platforms.add([role:platform_role, url:platform_url])
+              log.debug("Processing structured map entry");
+              // We have an object like platform.host:1.name, platform.host:2.name
+              if ( result[column_name][column_components[1]] == null ) {
+                // We're setting up the object. Add new object to platform map, keyed as second part of col name
+                result[column_name][column_components[1]]=[:]
+                def column_types = column_components[1].split(':');
+                // Add a coltype to the values, so platform.host.name gets a coltype of "host"
+                result[column_name][column_components[1]].coltype=column_types[0]
+              }
+              result[column_name][column_components[1]][column_components[2]] = nl[i]
             }
-          }
-        }
+            break;
+        } 
       }
-      
-      result.tipps.add(tipp_row)
+      else {
+        // Unknown column
+      }
     }
-
     return result;
   }
   
@@ -589,7 +583,7 @@ class UploadController {
   }
   
   def validISSN(issn_string) {
-    ref result = true;
+    def result = true;
     if ( ( issn_string ) && ( issn_string.trim() != '' ) ) {
       // Check issn_string matches regexp "[0-9]{4}-[0-9]{3}[0-9X]"
       if ( issn_string ==~ '[0-9]{4}-[0-9]{3}[0-9X]' ) {
@@ -603,7 +597,7 @@ class UploadController {
   }
 
   def validISBN(isbn_string) {
-    ref result = true;
+    def result = true;
     if ( ( isbn_string ) && ( isbn_string.trim() != '' ) ) {
       // Check issn_string matches regexp "[0-9]{4}-[0-9]{3}[0-9X]"
       if ( isbn_string ==~ '97(8|9))?[0-9]{9}[0-9X])' ) {
