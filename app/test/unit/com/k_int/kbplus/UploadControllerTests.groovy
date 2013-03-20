@@ -19,6 +19,14 @@ class UploadControllerTests {
     def controller
     def test_list = [
         
+        [ filename:'resources/upload_so_test_011.csv', 
+            shouldProcess: false, 
+            message:'no SO ID'],
+        
+        [ filename:'resources/upload_so_test_012.csv', 
+            shouldProcess: false, 
+            message:'only blank spaces for SO ID'],
+        
         [ filename:'resources/upload_so_test_009.csv', 
             shouldProcess: false, 
             message:'no package id'],
@@ -27,7 +35,7 @@ class UploadControllerTests {
             shouldProcess: false, 
             message:'only blank spaces for package id'],
         
-         [ filename:'resources/upload_so_test_007.csv', 
+        [ filename:'resources/upload_so_test_007.csv', 
             shouldProcess: false, 
             message:'no provider'],
         
