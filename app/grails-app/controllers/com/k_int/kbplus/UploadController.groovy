@@ -549,10 +549,16 @@ class UploadController {
       }
       
       if ( ( tipp.coverage_depth != null ) &&
-           ( tipp.coverage_depth != '' ) &&
-           ( ! ['fulltext','selected articles','abstracts'].contains(tipp.coverage_depth.toLowerCase()) ) ) {
+           ( tipp.coverage_depth.trim() != '' ) &&
+           ( ! ( ['fulltext','selected articles','abstracts'].contains(tipp.coverage_depth.toLowerCase())) ) ) {
         tipp.messages.add("coverage depth must be one of fulltext, selected articles or abstracts");
         upload.processFile=false;                             
+      }
+      else {
+        log.debug("${tipp.coverage_depth} is valid");
+        //  tipp.messages.add("Missing tipp coverage depth");
+        //  upload.processFile=false;                                     
+
       }
       
       if ( tipp.platform ) {
@@ -569,7 +575,7 @@ class UploadController {
         tipp.messages.add("No platform information for tipp");
         upload.processFile=false;                             
       }
-
+      
       counter++
     }
     

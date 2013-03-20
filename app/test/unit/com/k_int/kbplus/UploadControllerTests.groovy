@@ -107,13 +107,15 @@ class UploadControllerTests {
             shouldProcess: false, 
             message:'invalid end TIPP date'],
         
-        [ filename:'resources/upload_so_test_023.csv', 
-            shouldProcess: false, 
-            message:'no TIPP coverage depth'],
+        // It's valid to not have a coverage depth
+        //
+        //[ filename:'resources/upload_so_test_023.csv', 
+        //    shouldProcess: false, 
+        //    message:'no TIPP coverage depth'],
         
-        [ filename:'resources/upload_so_test_024.csv', 
-            shouldProcess: false, 
-            message:'TIPP coverage depth only blank spaces'],
+        // [ filename:'resources/upload_so_test_024.csv', 
+        //    shouldProcess: false, 
+        //    message:'TIPP coverage depth only blank spaces'],
         
         [ filename:'resources/upload_so_test_025.csv', 
             shouldProcess: true, 
