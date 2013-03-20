@@ -345,7 +345,18 @@ class UploadController {
     def parsed_date = null;
     for(Iterator i = possible_formats.iterator(); ( i.hasNext() && ( parsed_date == null ) ); ) {
       try {
-        parsed_date = i.next().parse(datestr);
+        def formatter = i.next();
+        parsed_date = formatter.parse(datestr);
+        java.util.Calendar c = new java.util.GregorianCalendar();
+        c.setTime(parsed_date)
+        if ( ( 0 < c.get(java.util.Calendar.MONTH) ) && ( c.get(java.util.Calendar.MONTH) < 13 ) ) {
+          // Month is valid
+        }
+        else {
+          // Invalid date
+          parsed_date = null
+        }
+        log.debug("Parsed ${datestr} using ${formatter.toPattern()} : ${parsed_date}");
       }
       catch ( Exception e ) {
       }
@@ -454,6 +465,7 @@ class UploadController {
           break;
         case 'date':
 		      result.value = parseDate(result.origValue,possible_date_formats)
+          log.debug("Parse date, ${result.origValue}, result = ${result.value}");
   		    break;
         case 'str':
         default:
@@ -465,7 +477,9 @@ class UploadController {
 	
 	  
     if ( ( result.value == null ) || ( result.value.toString().trim() == '' ) ) {
+      log.debug("Mandatory flag set, checking value");
 	    if ( isMandatory ) {
+	      log.debug("Mandatory property is null.. error");
 	      result_map.processFile=false
 		    result_map[field_name] = [messages:["Missing mandatory property: ${field_name}"]]
 	    }
