@@ -101,6 +101,14 @@ class UploadControllerTests {
             shouldProcess: false, 
             message:'host platform url only blank spaces'],
         
+        [ filename:'resources/upload_so_test_021.csv', 
+            shouldProcess: false, 
+            message:'invalid start TIPP date'],
+        
+        [ filename:'resources/upload_so_test_022.csv', 
+            shouldProcess: false, 
+            message:'invalid end TIPP date'],
+        
         [ filename:'resources/upload_so_test_000.csv', 
             shouldProcess: true, 
             message:'This should pass']
