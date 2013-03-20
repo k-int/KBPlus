@@ -18,9 +18,7 @@ class UploadControllerTests {
 
     def controller
     def test_list = [
-        
-        
-        
+
         [ filename:'resources/upload_so_test_001.csv', 
             shouldProcess: false, 
             message:'Testing missing SO Name'],
