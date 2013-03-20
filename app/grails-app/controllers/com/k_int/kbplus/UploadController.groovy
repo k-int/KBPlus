@@ -540,6 +540,21 @@ class UploadController {
         tipp.messages.add("coverage depth must be one of fulltext, selected articles or abstracts");
         upload.processFile=false;                             
       }
+      
+      if ( tipp.platform ) {
+        def plat = tipp.platform.values().find { it.coltype=='host' }
+        if ( plat && plat.url && ( plat.url.trim() != '' ) ) {
+          // Cool - found platform
+        }
+        else {
+          tipp.messages.add("Unable to locate host platform");
+          upload.processFile=false;
+        }
+      }
+      else {
+        tipp.messages.add("No platform information for tipp");
+        upload.processFile=false;                             
+      }
 
       counter++
     }
