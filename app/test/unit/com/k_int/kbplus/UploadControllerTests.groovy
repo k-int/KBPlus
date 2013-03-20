@@ -93,6 +93,14 @@ class UploadControllerTests {
             shouldProcess: true, 
             message:'only DOI'],
         
+        [ filename:'resources/upload_so_test_019.csv', 
+            shouldProcess: false, 
+            message:'host platform url missing'],
+        
+        [ filename:'resources/upload_so_test_020.csv', 
+            shouldProcess: false, 
+            message:'host platform url only blank spaces'],
+        
         [ filename:'resources/upload_so_test_000.csv', 
             shouldProcess: true, 
             message:'This should pass']
