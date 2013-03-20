@@ -360,6 +360,7 @@ class UploadController {
   
   def readTippRow(cols, nl) {
     def result = [:]
+    result.messages = []
     for ( int i=0; i<nl.length; i++ ) {
       if ( ( nl[i] != null ) && ( nl[i].trim() != '' ) ) {
         def column_components = cols[i].split('\\.')
@@ -403,7 +404,7 @@ class UploadController {
   def processCsvLine(csv_line,field_name,col_num,result_map,parseAs,defval,isMandatory) {  
     log.debug("  processCsvLine ${csv_line} ${field_name} ${col_num}... mandatory=${isMandatory}");
 	  def result = [:]
-  	result.messages=[]
+  	result.messages = []
 	  result.origValue = csv_line[col_num]
 
     if ( ( col_num <= csv_line.length ) && ( csv_line[col_num] != null ) ) {      
@@ -461,6 +462,7 @@ class UploadController {
     
     int counter = 0;
     upload.tipps.each { tipp ->
+
       if ( ( tipp.publication_title == null ) || ( tipp.publication_title.trim() == '' ) ) {
         tipp.messages.add("Title (row ${counter}) must not be empty");
         upload.processFile=false;
@@ -471,7 +473,14 @@ class UploadController {
       //  upload.processFile=false;
       //}
       
-      if ( ! validISSN(tipp.ID.issn) ) {
+            log.debug("tipp ID = ${tipp.ID}");
+            
+      if ( (!tipp.ID) || (tipp.ID = null) ) {
+        tipp.messages.add("Title (row ${counter}) does not contain a valid ID");
+        upload.processFile=false;
+      }
+            
+      if ( !validISSN(tipp.ID.issn) ) {
         tipp.messages.add("Title (row ${counter}) does not contain a valid ISSN");
         upload.processFile=false;
       }

@@ -18,38 +18,14 @@ class UploadControllerTests {
 
     def controller
     def test_list = [
-        
-        [ filename:'resources/upload_so_test_011.csv', 
+
+        [ filename:'resources/upload_so_test_001.csv', 
             shouldProcess: false, 
-            message:'no SO ID'],
+            message:'Testing missing SO Name'],
         
-        [ filename:'resources/upload_so_test_012.csv', 
+        [ filename:'resources/upload_so_test_002.csv', 
             shouldProcess: false, 
-            message:'only blank spaces for SO ID'],
-        
-        [ filename:'resources/upload_so_test_009.csv', 
-            shouldProcess: false, 
-            message:'no package id'],
-        
-        [ filename:'resources/upload_so_test_010.csv', 
-            shouldProcess: false, 
-            message:'only blank spaces for package id'],
-        
-        [ filename:'resources/upload_so_test_007.csv', 
-            shouldProcess: false, 
-            message:'no provider'],
-        
-        [ filename:'resources/upload_so_test_008.csv', 
-            shouldProcess: false, 
-            message:'only blank spaces for provider'],
-        
-        [ filename:'resources/upload_so_test_005.csv', 
-            shouldProcess: false, 
-            message:'invalid start date'],
-        
-        [ filename:'resources/upload_so_test_006.csv', 
-            shouldProcess: false, 
-            message:'invalid end date'],
+            message:'Testing SO Name composed only of spaces'],
         
         [ filename:'resources/upload_so_test_003.csv', 
             shouldProcess: false, 
@@ -59,17 +35,94 @@ class UploadControllerTests {
             shouldProcess: false, 
             message:'Testing Package name composed only of spaces'],
         
-        [ filename:'resources/upload_so_test_001.csv', 
+        [ filename:'resources/upload_so_test_005.csv', 
             shouldProcess: false, 
-            message:'Testing missing SO Name'],
+            message:'invalid start date'],
         
-        [ filename:'resources/upload_so_test_002.csv', 
+        [ filename:'resources/upload_so_test_006.csv', 
             shouldProcess: false, 
-            message:'Testing SO Name composed only of spaces'],
+            message:'invalid end date'],
+        
+        [ filename:'resources/upload_so_test_007.csv', 
+            shouldProcess: false, 
+            message:'no provider'],
+        
+        [ filename:'resources/upload_so_test_008.csv', 
+            shouldProcess: false, 
+            message:'only blank spaces for provider'],
+        
+        [ filename:'resources/upload_so_test_009.csv', 
+            shouldProcess: false, 
+            message:'no package id'],
+        
+        [ filename:'resources/upload_so_test_010.csv', 
+            shouldProcess: false, 
+            message:'only blank spaces for package id'],
+        
+        [ filename:'resources/upload_so_test_011.csv', 
+            shouldProcess: false, 
+            message:'no SO ID'],
+        
+        [ filename:'resources/upload_so_test_012.csv', 
+            shouldProcess: false, 
+            message:'only blank spaces for SO ID'],
+        
+        [ filename:'resources/upload_so_test_013.csv', 
+            shouldProcess: false, 
+            message:'no TIPP name'],
+        
+        [ filename:'resources/upload_so_test_014.csv', 
+            shouldProcess: false, 
+            message:'no ISSN,eISSN,Kbart,DOI'],
+        
+        [ filename:'resources/upload_so_test_015.csv', 
+            shouldProcess: true, 
+            message:'only ISSN'],
+        
+        [ filename:'resources/upload_so_test_016.csv', 
+            shouldProcess: true, 
+            message:'only eISSN'],
+        
+        [ filename:'resources/upload_so_test_017.csv', 
+            shouldProcess: true, 
+            message:'only kbart'],
+        
+        [ filename:'resources/upload_so_test_018.csv', 
+            shouldProcess: true, 
+            message:'only DOI'],
+        
+        [ filename:'resources/upload_so_test_019.csv', 
+            shouldProcess: false, 
+            message:'host platform url missing'],
+        
+        [ filename:'resources/upload_so_test_020.csv', 
+            shouldProcess: false, 
+            message:'host platform url only blank spaces'],
+        
+        [ filename:'resources/upload_so_test_021.csv', 
+            shouldProcess: false, 
+            message:'invalid start TIPP date'],
+        
+        [ filename:'resources/upload_so_test_022.csv', 
+            shouldProcess: false, 
+            message:'invalid end TIPP date'],
+        
+        [ filename:'resources/upload_so_test_023.csv', 
+            shouldProcess: false, 
+            message:'no TIPP coverage depth'],
+        
+        [ filename:'resources/upload_so_test_024.csv', 
+            shouldProcess: false, 
+            message:'TIPP coverage depth only blank spaces'],
+        
+        [ filename:'resources/upload_so_test_025.csv', 
+            shouldProcess: true, 
+            message:'TIPP coverage depth using (selected articles),(abstracts)'],
         
         [ filename:'resources/upload_so_test_000.csv', 
             shouldProcess: true, 
             message:'This should pass']
+        
     ];
 
     void setUp() {
