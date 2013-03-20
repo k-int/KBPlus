@@ -362,10 +362,12 @@ class UploadController {
     def result = [:]
     result.messages = []
     for ( int i=0; i<nl.length; i++ ) {
+    
       if ( ( nl[i] != null ) && ( nl[i].trim() != '' ) ) {
         def column_components = cols[i].split('\\.')
         def column_name = column_components[0]
         def column_defn = csv_column_config[column_name]
+        //log.debug("Process ${cols[i]} ${column_name} : ${column_defn}")
         if ( column_defn ) {
           switch ( column_defn.coltype ) {
             case 'simple': 
@@ -480,29 +482,31 @@ class UploadController {
         upload.processFile=false;
       }
             
-      if ( !validISSN(tipp.ID.issn) ) {
+      if ( !validISSN(tipp.ID?.issn) ) {
         tipp.messages.add("Title (row ${counter}) does not contain a valid ISSN");
         upload.processFile=false;
       }
       
-      if ( ! validISSN(tipp.ID.eissn) ) {
+      if ( ! validISSN(tipp.ID?.eissn) ) {
         tipp.messages.add("Title (row ${counter}) does not contain a valid eISSN");
         upload.processFile=false;
       }
 
-      if ( ! validISBN(tipp.ID.isbn) ) {
+      if ( ! validISBN(tipp.ID?.isbn) ) {
         tipp.messages.add("Title (row ${counter}) does not contain a valid ISBN");
         upload.processFile=false;
       }
       
-      ["issn", "eissn", "isbn", "doi"].each { idtype ->
-        if ( ( tipp.ID[idtype] ) && ( tipp.ID[idtype] != '' ) ) {
-          if ( id_list.contains(tipp.ID[idtype]) ) {
-            tipp.messages.add("Title (row ${counter}) contains a repeated ${idtype} - ${tipp[idtype].origValue}");
-            upload.processFile=false;
-          }
-          else {
-            id_list.add(tipp.ID[idtype])
+      if ( tipp.ID ) {
+        ["issn", "eissn", "isbn", "doi"].each { idtype ->
+          if ( ( tipp.ID[idtype] ) && ( tipp.ID[idtype] != '' ) ) {
+            if ( id_list.contains(tipp.ID[idtype]) ) {
+              tipp.messages.add("Title (row ${counter}) contains a repeated ${idtype} - ${tipp[idtype].origValue}");
+              upload.processFile=false;
+            }
+            else {
+              id_list.add(tipp.ID[idtype])
+            }
           }
         }
       }
