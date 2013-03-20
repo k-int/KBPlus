@@ -499,7 +499,7 @@ class UploadController {
     
     int counter = 0;
     upload.tipps.each { tipp ->
-      if ( ( tipp.publication_title.origValue == null ) || ( tipp.publication_title.origValue.trim() == '' ) ) {
+      if ( ( tipp.publication_title == null ) || ( tipp.publication_title.trim() == '' ) ) {
         tipp.messages.add("Title (row ${counter}) must not be empty");
         upload.processFile=false;
       }
@@ -561,7 +561,7 @@ class UploadController {
       
       if ( ( tipp.coverage_depth != null ) &&
            ( tipp.coverage_depth != '' ) &&
-           ( ! ['fulltext','selected articles','abstracts'].contains(tipp.coverage_depth.origValue.toLowerCase()) ) ) {
+           ( ! ['fulltext','selected articles','abstracts'].contains(tipp.coverage_depth.toLowerCase()) ) ) {
         tipp.messages.add("coverage depth must be one of fulltext, selected articles or abstracts");
         upload.processFile=false;                             
       }
@@ -602,37 +602,50 @@ class UploadController {
 
   def generateAndValidateSubOfferedIdentifier(upload) {
 	  // Create normalised SO ID
-	  upload.normalisedSoIdentifier = upload['soIdentifier'].value.trim().toLowerCase().replaceAll('-','_')
-	  if ( ( upload.normalisedSoIdentifier == null ) || ( upload.normalisedSoIdentifier.trim().length() == 0 ) ) {
-		  log.error("No subscription offered identifier");
-		  upload['soIdentifier'].messages.add("Unable to use this identifier")
-		  upload.processFile=false
+	  if ( upload['soIdentifier'].value ) {
+  	  upload.normalisedSoIdentifier = upload['soIdentifier'].value?.trim().toLowerCase().replaceAll('-','_')
+	    if ( ( upload.normalisedSoIdentifier == null ) || ( upload.normalisedSoIdentifier.trim().length() == 0 ) ) {
+		    log.error("No subscription offered identifier");
+		    upload['soIdentifier'].messages.add("Unable to use this identifier")
+		    upload.processFile=false
+	    }
+	    else {
+		    // Generated identifier is valid, check one does not exist already
+		    if ( Subscription.findByIdentifier(upload.normalisedSoIdentifier) ) {
+			    upload['soIdentifier'].messages.add("Subscription identifier already present")
+			    upload.processFile=false
+		    }
+	    }
 	  }
 	  else {
-		  // Generated identifier is valid, check one does not exist already
-		  if ( Subscription.findByIdentifier(upload.normalisedSoIdentifier) ) {
-			  upload['soIdentifier'].messages.add("Subscription identifier already present")
-			  upload.processFile=false
-		  }
+      upload['soIdentifier'].messages.add("No SO Identifier present")
+		  upload.processFile=false
 	  }
  	  return true
   }
   
   def generateAndValidatePackageIdentifier(upload) {
-      upload.normPkgIdentifier = "${upload.soProvider.value.trim()}:${upload.soPackageIdentifier.value.trim()}".toLowerCase().replaceAll('-','_');
-	  if ( ( upload.normPkgIdentifier == null ) || ( upload.normPkgIdentifier.trim().length() == 0 ) ) {
-		  log.error("No package identifier");
-		  upload['soPackageIdentifier'].messages.add("Unable to use this identifier")
-		  upload.processFile=false
-	  }
-	  else {
-		  // Generated identifier is valid, check one does not exist already
-		  if ( Package.findByIdentifier(upload.normPkgIdentifier) ) {
-			  upload['soPackageIdentifier'].messages.add("Package identifier already present")
-			  upload.processFile=false
+
+    if ( upload.soProvider?.value && upload.soPackageIdentifier?.value ) {
+      upload.normPkgIdentifier = "${upload.soProvider.value?.trim()}:${upload.soPackageIdentifier.value?.trim()}".toLowerCase().replaceAll('-','_');
+	    if ( ( upload.normPkgIdentifier == null ) || ( upload.normPkgIdentifier.trim().length() == 0 ) ) {
+		    log.error("No package identifier");
+		    upload['soPackageIdentifier'].messages.add("Unable to use this identifier")
+  		  upload.processFile=false
+	    }
+  	  else {
+	  	  // Generated identifier is valid, check one does not exist already
+		    if ( Package.findByIdentifier(upload.normPkgIdentifier) ) {
+			    upload['soPackageIdentifier'].messages.add("Package identifier already present")
+			    upload.processFile=false
+		    }
 		  }
 	  }
-
+	  else {
+      log.error("No package identifier");
+		  upload['soPackageIdentifier'].messages.add("Unable to use this identifier")
+  		upload.processFile=false
+	  }
 
 	  return true
   }
