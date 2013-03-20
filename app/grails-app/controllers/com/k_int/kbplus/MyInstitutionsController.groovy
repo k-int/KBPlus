@@ -479,13 +479,17 @@ class MyInstitutionsController {
     
 
     if ( license?.hasPerm("edit",result.user) ) {
-      if ( ( license.subscriptions == null ) || ( license.subscriptions.size() == 0 ) ) {
+      def current_subscription_status = RefdataCategory.lookupOrCreate('Subscription Status','Current');
+
+      def subs_using_this_license = Subscription.findAllByOwnerAndStatus(license,current_subscription_status)
+      
+      if ( subs_using_this_license.size() == 0 ) {
         def deletedStatus = RefdataCategory.lookupOrCreate('License Status','Deleted');
         license.status = deletedStatus
         license.save(flush:true);
       }
       else {
-        flash.error = "Unable to delete - The selected license has attached subscriptions"
+        flash.error = "Unable to delete - The selected license has attached subscriptions marked as Current"
       }
     }
     else {
