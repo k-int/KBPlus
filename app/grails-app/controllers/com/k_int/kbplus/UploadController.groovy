@@ -65,85 +65,31 @@ class UploadController {
     return result
   }
   
-  def processUploadSO(input_stream, upload_filename, result) {
+  def processUploadSO(upload) {
 
-    def prepared_so = [:]
-
-    CSVReader r = new CSVReader( new InputStreamReader(input_stream) )
-    
-    String [] nl;
-
-    String [] so_name_line = r.readNext()
-    String [] so_identifier_line = r.readNext()
-    String [] so_provider_line = r.readNext()
-    String [] so_package_identifier_line = r.readNext()
-    String [] so_package_name_line = r.readNext()
-    String [] so_agreement_term_start_yr_line = r.readNext()
-    String [] so_agreement_term_end_yr_line = r.readNext()
-    String [] so_consortium_line = r.readNext()
-    String [] so_num_prop_id_cols_line = r.readNext()
-    int num_prop_id_cols = Integer.parseInt(so_num_prop_id_cols_line[1] ?: "0");
-    String [] so_num_platforms_listed_line = r.readNext()
-    int num_platforms_listed = Integer.parseInt(so_num_platforms_listed_line[1] ?: "0");
-    String [] so_header_line = r.readNext()
-
-    log.debug("Read column headings: ${so_header_line}");
-
-    if ( num_platforms_listed == 0 ) {
-      num_platforms_listed = 1
-      println("**WARNING** num_platforms_listed = 0, defaulting to 1!");
-    }
-    
-    def content_provider_org = Org.findByName(so_provider_line[1]) ?: new Org(name:so_provider_line[1],impId:java.util.UUID.randomUUID().toString()).save();
-    
-    def normalised_identifier = so_identifier_line[1].trim().toLowerCase().replaceAll('-','_')
-    def norm_pkg_identifier = "${so_provider_line[1].trim()}:${so_package_identifier_line[1].trim()}"
-    norm_pkg_identifier = norm_pkg_identifier.toLowerCase().replaceAll('-','_');
-
-    log.debug("Normalised package identifier is ${norm_pkg_identifier}");
-    
-    log.debug("Processing subscription ${so_identifier_line[1]} normalised to ${normalised_identifier}");
-    
-    def pkg = Package.findByIdentifier(norm_pkg_identifier);
-    
-    prepared_so.provider = content_provider_org
-    prepared_so.sub = [:]
-    prepared_so.sub.identifier = normalised_identifier;
-    prepared_so.sub.name = so_name_line[1];
-    prepared_so.sub.start_date_str = so_agreement_term_start_yr_line[1]
-    prepared_so.sub.end_date_str=so_agreement_term_end_yr_line[1]
-    prepared_so.sub.start_date = parseDate(so_agreement_term_start_yr_line[1],possible_date_formats)
-    prepared_so.sub.end_date = parseDate(so_agreement_term_end_yr_line[1],possible_date_formats)
-    prepared_so.pkg_id = norm_pkg_identifier
-    prepared_so.titles = []
-
-
+    def content_provider_org = Org.findByName(upload.soProvider.value) ?: new Org(name:soProvider.value,impId:java.util.UUID.randomUUID().toString()).save();    
+    def pkg = Package.findByIdentifier(upload.soPackageIdentifier.value);    
     def pkg_type = RefdataCategory.lookupOrCreate('PackageTypes','Unknown');
     def cp_role = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider');
-
-    log.debug("Process consortium");
-
+    def content_provider = null
     def consortium = null;
-    if ( ( so_consortium_line[1] != null ) && ( so_consortium_line[1].length() > 0 ) )  {
-        prepared_so.cons = Org.findByName(so_consortium_line[1]) ?: new Org(name:so_consortium_line[1]).save();
+    if ( upload.consortium != null )  {
+      consortium = Org.findByName(upload.consortium.value) ?: new Org(name:upload.consortium.value).save();
     }
 
 
-    log.debug("Create package");
-    // We have validated the package and so information, and made sure all titles exist..
-    // Add a package
-    def new_pkg = new Package(identifier:prepared_so.pkg_id,
-                              name:so_package_name_line[1],
+    def new_pkg = new Package(identifier:upload.soPackageIdentifier.value,
+                              name:upload.soPackageName.value,
                               type:null,
-                              contentProvider:prepared_so.provider,
+                              contentProvider:content_provider_org,
                               impId:java.util.UUID.randomUUID().toString());
 
     if ( new_pkg.save(flush:true) ) {
       //log.debug("New package ${pkg.identifier} saved");
       // Content Provider?
       log.debug("Package [${new_pkg.id}] with identifier ${new_pkg.identifier} created......");
-      if ( prepared_so.provider ) {
-        OrgRole.assertOrgPackageLink(prepared_so.provider, new_pkg, cp_role);
+      if ( content_provider_org ) {
+        OrgRole.assertOrgPackageLink(content_provider_org, new_pkg, cp_role);
       }
     }
     else {
@@ -155,6 +101,8 @@ class UploadController {
       return
     }
 
+
+    // Down to here....
 
     log.debug("processing titles");
     // Title info
