@@ -109,6 +109,14 @@ class UploadControllerTests {
             shouldProcess: false, 
             message:'invalid end TIPP date'],
         
+        [ filename:'resources/upload_so_test_023.csv', 
+            shouldProcess: false, 
+            message:'no TIPP coverage depth'],
+        
+        [ filename:'resources/upload_so_test_024.csv', 
+            shouldProcess: false, 
+            message:'TIPP coverage depth only blank spaces'],
+        
         [ filename:'resources/upload_so_test_000.csv', 
             shouldProcess: true, 
             message:'This should pass']
