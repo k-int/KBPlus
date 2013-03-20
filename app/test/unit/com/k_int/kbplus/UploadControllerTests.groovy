@@ -117,6 +117,10 @@ class UploadControllerTests {
             shouldProcess: false, 
             message:'TIPP coverage depth only blank spaces'],
         
+        [ filename:'resources/upload_so_test_025.csv', 
+            shouldProcess: true, 
+            message:'TIPP coverage depth using (selected articles),(abstracts)'],
+        
         [ filename:'resources/upload_so_test_000.csv', 
             shouldProcess: true, 
             message:'This should pass']
