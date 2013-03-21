@@ -163,6 +163,9 @@ class UploadController {
           else {
             log.debug("new TIPP Save OK ${dbtipp.id}");
             tipp.messages.add([type:'alert-success',message:"New tipp created: ${dbtipp.id}"]);
+            tipp.additional_platforms.each { ap ->
+              PlatformTIPP pt = new PlatformTIPP(tipp:dbtipp,platform:ap.plat,titleUrl:ap.url,rel:ap.role)
+            }
           }
         }
         else {
@@ -189,16 +192,16 @@ class UploadController {
     reloaded_pkg.save(flush:true);
 
     def new_sub = reloaded_pkg.createSubscription('Subscription Offered', 
-                                             upload.soName, 
-                                             upload.soIdentifier.value, 
-                                             upload.agreementTermStartYear, 
-                                             upload.agreementTermEndYear, 
+                                             upload.soName.value, 
+                                             upload.normalisedSoIdentifier, 
+                                             upload.agreementTermStartYear?.value, 
+                                             upload.agreementTermEndYear?.value, 
                                              upload.consortiumOrg) 
     
-    log.debug("Completed New package is ${new_pkg.id}");
+    log.debug("Completed New package is ${new_pkg.id}, new sub is ${new_sub.id}");
 
     upload.new_pkg_id = new_pkg_id
-    upload.new_sub_id = new_sub?.id
+    upload.new_sub_id = new_sub.id
   }
     
   def lookupOrCreateTitleInstance(identifiers,title,publisher) {
@@ -547,6 +550,8 @@ class UploadController {
         upload.processFile=false
       }
       else {
+        log.debug("Generated sub offered Id: ${upload.normalisedSoIdentifier}");
+
         // Generated identifier is valid, check one does not exist already
         if ( Subscription.findByIdentifier(upload.normalisedSoIdentifier) ) {
           upload['soIdentifier'].messages.add("Subscription identifier already present")
