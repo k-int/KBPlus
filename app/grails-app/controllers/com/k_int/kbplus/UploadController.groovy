@@ -148,7 +148,7 @@ class UploadController {
           dbtipp = new TitleInstancePackagePlatform(pkg:pkg,
                                                     platform:tipp.host_platform,
                                                     title:tipp.title_obj,
-                                                    startDate:tipp.parsedStartDate:?null,
+                                                    startDate:tipp.parsedStartDate,
                                                     startVolume:tipp.num_first_vol_online,
                                                     startIssue:tipp.num_first_issue_online,
                                                     endDate:tipp.parsedEndDate,
