@@ -58,12 +58,12 @@
         <table class="table table-striped table-bordered table-condensed">
           <thead>
             <tr>
-              <g:if test="${editable}"><td>Select</td></g:if>
-              <td>Title</td>
-              <td>File Name</td>
-              <td>Download Link</td>
-              <td>Creator</td>
-              <td>Type</td>
+              <g:if test="${editable}"><th>Select</th></g:if>
+              <th>Title</th>
+              <th>File Name</th>
+              <th>Download Link</th>
+              <th>Creator</th>
+              <th>Type</th>
             </tr>
           </thead>
           <tbody>

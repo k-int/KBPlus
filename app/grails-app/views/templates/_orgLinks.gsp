@@ -1,9 +1,9 @@
-  <table class="table table-bordered licence-properties">
+  <table class="table table-bordered table-condensed table-striped">
     <thead>
       <tr>
-        <td>Organisation Name</td>
-        <td>Role</td>
-        <td>actions</td>
+        <th>Organisation Name</th>
+        <th>Role</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <g:each in="${roleLinks}" var="role">

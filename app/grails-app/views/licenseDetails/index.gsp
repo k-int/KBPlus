@@ -180,9 +180,9 @@
             <table class="table table-bordered licence-properties">
               <thead>
                 <tr>
-                  <td>Property</td>
-                  <td>Status</td>
-                  <td>Notes</td>
+                  <th>Property</th>
+                  <th>Status</th>
+                  <th>Notes</th>
                 </tr>
               </thead>
               <tbody>
