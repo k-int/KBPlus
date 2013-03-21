@@ -72,8 +72,6 @@ class UploadController {
 
     def content_provider_org = Org.findByName(upload.soProvider.value) ?: new Org(name:soProvider.value,impId:java.util.UUID.randomUUID().toString()).save();    
     
-    def pkg = Package.findByIdentifier(upload.soPackageIdentifier.value);
-    
     def pkg_type = RefdataCategory.lookupOrCreate('PackageTypes','Unknown');
     def cp_role = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider');
     
@@ -122,7 +120,10 @@ class UploadController {
       tipp.additional_platforms = []
 
       // Process identifiers in the row.
-      tipp.platform.values.each { pl ->
+      log.debug("Check platforms: ${tipp.platform}");
+      tipp.platform.values().each { pl ->
+
+        log.debug("Checking platform ${pl}");
 
         def platform = Platform.lookupOrCreatePlatform(pl.name, pl.coltype, pl.url)
 
@@ -134,13 +135,17 @@ class UploadController {
         }
       }
           
+      log.debug("Lookup or create title for tipp: ${tipp.publication_title} ${tipp.ID}");
       tipp.title_obj = lookupOrCreateTitleInstance(tipp.ID,tipp.publication_title,publisher);
       
-      if ( tipp.title_obj && tipp.host_platform && pkg ) {
+      log.debug("Checking for existing tipp ${tipp.title_obj} ${tipp.host_platform} ${new_pkg}");
+      if ( tipp.title_obj && tipp.host_platform && new_pkg ) {
         // Got all the components we need to create a tipp
-        def dbtipp = TitleInstancePackagePlatform.findByPkgAndPlatformAndTitle(pkg,tipp.host_platform,tipp.title_obj)
+        def dbtipp = TitleInstancePackagePlatform.findByPkgAndPlatformAndTitle(new_pkg,tipp.host_platform,tipp.title_obj)
         if ( dbtipp == null ) {
-          dbtipp = new TitleInstancePackagePlatform(pkg:pkg,
+          log.debug("Creating tipp for title : ${tipp.title_obj.title}");
+
+          dbtipp = new TitleInstancePackagePlatform(new_pkg:new_pkg,
                                                     platform:tipp.host_platform,
                                                     title:tipp.title_obj,
                                                     startDate:tipp.parsedStartDate,
@@ -160,15 +165,22 @@ class UploadController {
             log.error("ERROR Saving tipp");
             dbtipp.errors.each { err ->
               log.error("  -> ${err}");
+              tipp.messages.add("Problem saving tipp: ${err}");
+              tipp.messages.add([type:'alert-error',message:"Problem creating new tipp: ${dbtipp.id}"]);
             }
           }
           else {
             log.debug("new TIPP Save OK ${dbtipp.id}");
+            tipp.messages.add([type:'alert-success',message:"New tipp created: ${dbtipp.id}"]);
           }
         }
         else {
           log.error("TIPP already exists!! This should never be the case as we are creating a new package!!!");
+          tipp.messages.add([type:'alert-error',message:"WARNING: An existing tipp record was located. This should never happen. Contact support!"]);
         }        
+      }
+      else {
+        tipp.messages.add([type:'alert-error',message:"WARNING: Dataload failed, at least one of title, package or platform was null"]);
       }
     }
 
@@ -372,8 +384,8 @@ class UploadController {
 	  
 	  def result = generateAndValidateSubOfferedIdentifier(upload) &&
 	               generateAndValidatePackageIdentifier(upload) &&
-      				   validateConsortia(upload) &&
-			      	   validateColumnHeadings(upload)
+                       validateConsortia(upload) &&
+		       validateColumnHeadings(upload)
 			      	   
 		if ( upload.processFile ) {
 		  validateTipps(upload)
@@ -535,53 +547,53 @@ class UploadController {
   }
 
   def generateAndValidateSubOfferedIdentifier(upload) {
-	  // Create normalised SO ID
-	  if ( upload['soIdentifier'].value ) {
-  	  upload.normalisedSoIdentifier = upload['soIdentifier'].value?.trim().toLowerCase().replaceAll('-','_')
-	    if ( ( upload.normalisedSoIdentifier == null ) || ( upload.normalisedSoIdentifier.trim().length() == 0 ) ) {
-		    log.error("No subscription offered identifier");
-		    upload['soIdentifier'].messages.add("Unable to use this identifier")
-		    upload.processFile=false
-	    }
-	    else {
-		    // Generated identifier is valid, check one does not exist already
-		    if ( Subscription.findByIdentifier(upload.normalisedSoIdentifier) ) {
-			    upload['soIdentifier'].messages.add("Subscription identifier already present")
-			    upload.processFile=false
-		    }
-	    }
-	  }
-	  else {
+    // Create normalised SO ID
+    if ( upload['soIdentifier'].value ) {
+      upload.normalisedSoIdentifier = upload['soIdentifier'].value?.trim().toLowerCase().replaceAll('-','_')
+      if ( ( upload.normalisedSoIdentifier == null ) || ( upload.normalisedSoIdentifier.trim().length() == 0 ) ) {
+        log.error("No subscription offered identifier");
+        upload['soIdentifier'].messages.add("Unable to use this identifier")
+        upload.processFile=false
+      }
+      else {
+        // Generated identifier is valid, check one does not exist already
+        if ( Subscription.findByIdentifier(upload.normalisedSoIdentifier) ) {
+          upload['soIdentifier'].messages.add("Subscription identifier already present")
+          upload.processFile=false
+        }
+      }
+    }
+    else {
       upload['soIdentifier'].messages.add("No SO Identifier present")
-		  upload.processFile=false
-	  }
- 	  return true
+      upload.processFile=false
+    }
+    return true
   }
   
   def generateAndValidatePackageIdentifier(upload) {
 
     if ( upload.soProvider?.value && upload.soPackageIdentifier?.value ) {
       upload.normPkgIdentifier = "${upload.soProvider.value?.trim()}:${upload.soPackageIdentifier.value?.trim()}".toLowerCase().replaceAll('-','_');
-	    if ( ( upload.normPkgIdentifier == null ) || ( upload.normPkgIdentifier.trim().length() == 0 ) ) {
-		    log.error("No package identifier");
-		    upload['soPackageIdentifier'].messages.add("Unable to use this identifier")
-  		  upload.processFile=false
-	    }
-  	  else {
-	  	  // Generated identifier is valid, check one does not exist already
-		    if ( Package.findByIdentifier(upload.normPkgIdentifier) ) {
-			    upload['soPackageIdentifier'].messages.add("Package identifier already present")
-			    upload.processFile=false
-		    }
-		  }
-	  }
-	  else {
+      if ( ( upload.normPkgIdentifier == null ) || ( upload.normPkgIdentifier.trim().length() == 0 ) ) {
+        log.error("No package identifier");
+        upload['soPackageIdentifier'].messages.add("Unable to use this identifier")
+        upload.processFile=false
+      }
+      else {
+        // Generated identifier is valid, check one does not exist already
+        if ( Package.findByIdentifier(upload.normPkgIdentifier) ) {
+          upload['soPackageIdentifier'].messages.add("Package identifier already present")
+          upload.processFile=false
+        }
+      }
+    }
+    else {
       log.error("No package identifier");
-		  upload['soPackageIdentifier'].messages.add("Unable to use this identifier")
-  		upload.processFile=false
-	  }
+      upload['soPackageIdentifier'].messages.add("Unable to use this identifier")
+      upload.processFile=false
+    }
 
-	  return true
+    return true
   }
 
   def validateConsortia(upload) {

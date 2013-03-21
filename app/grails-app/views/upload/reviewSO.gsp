@@ -50,7 +50,10 @@
            ${validationResult.processFile}
            
           <g:if test="${validationResult.processFile==true}">
-            <bootstrap:alert class="alert-success">File passed validation checks, new SO details follow</bootstrap:alert>
+            <bootstrap:alert class="alert-success">File passed validation checks, new SO details follow:<br/>
+              <g:link controller="packageDetails" action="show" id="${validationResult.new_pkg_id}">New Package Details</g:link><br/>
+              <g:link controller="subscriptionDetails" action="show" id="${validationResult.new_sub_id}">New Subscription Details</g:link>
+            </bootstrap:alert>
           </g:if>
           <g:else>
             <bootstrap:alert class="alert-error">File failed validation checks, details follow</bootstrap:alert>
@@ -95,7 +98,12 @@
                     <td colspan="${validationResult.soHeaderLine.size()}">
                       <ul>
                         <g:each in="${tipp.messages}" var="msg">
-                          <div class="alert alert-error">${msg}</div>
+                          <g:if test="${msg instanceof String}">
+                            <div class="alert alert-error">${msg}</div>
+                          </g:if>
+                          <g:else>
+                            <div class="alert ${msg.type}">${msg.message}</div>
+                          </g:else>
                         </g:each>
                       </ul>
                     </td>
