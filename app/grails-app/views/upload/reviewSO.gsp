@@ -45,6 +45,16 @@
 
 
         <g:if test="${validationResult}">
+           <hr/>
+
+           ${validationResult.processFile}
+           
+          <g:if test="${validationResult.processFile==true}">
+            <bootstrap:alert class="alert-info">File passed validation checks, TIPP data follows</bootstrap:alert>
+          </g:if>
+          <g:else>
+            <bootstrap:alert class="alert-error">File failed validation checks, details follow</bootstrap:alert>
+          </g:else>
           <table class="table">
             <tbody>
               <g:each in="${['soName', 'soIdentifier', 'soProvider', 'soPackageIdentifier', 'soPackageName', 'aggreementTermStartYear', 'aggreementTermEndYear', 'consortium', 'numPlatformsListed']}" var="fld">
@@ -70,6 +80,9 @@
               </g:each>
             </tbody>
           </table>
+          
+          <pre>${validationResult}
+          </pre>
         </g:if>
         
       </div>

@@ -56,8 +56,10 @@ class UploadController {
       def upload_filename = request.getFile("soFile")?.getOriginalFilename()
       log.debug("Uploaded so type: ${upload_mime_type} filename was ${upload_filename}");
       result.validationResult = readSubscriptionOfferedCSV(request.getFile("soFile")?.inputStream, upload_filename )
-	    result.validationResult.processFile=true
-	    validate(result.validationResult)
+      validate(result.validationResult)
+	    if ( result.validationResult.processFile == true ) {
+	      log.debug("Passed first phase validation, continue...");
+	    }
     }
     else {
     }
@@ -273,7 +275,7 @@ class UploadController {
     processCsvLine(r.readNext(),'aggreementTermEndYear',1,result,'date',null,true)
     processCsvLine(r.readNext(),'consortium',1,result,'str',null,false)
     
-    result['soName'].messages=['This is an soName message','And so is this'];
+    // result['soName'].messages=['This is an soName message','And so is this'];
     
     result.soHeaderLine = r.readNext()
 
