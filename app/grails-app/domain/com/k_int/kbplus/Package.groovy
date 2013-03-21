@@ -50,7 +50,12 @@ class Package {
    * @param subtype One of 'Subscription Offered' or 'Subscription Taken'
    */
   @Transient
-  def createSubscription(subtype, subname, subidentifier, startdate, enddate, consortium_org) {
+  def createSubscription(subtype, 
+                         subname, 
+                         subidentifier, 
+                         startdate, 
+                         enddate, 
+                         consortium_org) {
 
     // Create the header
 
