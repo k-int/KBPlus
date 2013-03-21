@@ -68,10 +68,12 @@ class UploadController {
   def processUploadSO(upload) {
 
     def content_provider_org = Org.findByName(upload.soProvider.value) ?: new Org(name:soProvider.value,impId:java.util.UUID.randomUUID().toString()).save();    
-    def pkg = Package.findByIdentifier(upload.soPackageIdentifier.value);    
+    
+    def pkg = Package.findByIdentifier(upload.soPackageIdentifier.value);
+    
     def pkg_type = RefdataCategory.lookupOrCreate('PackageTypes','Unknown');
     def cp_role = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider');
-    def content_provider = null
+    
     def consortium = null;
     if ( upload.consortium != null )  {
       consortium = Org.findByName(upload.consortium.value) ?: new Org(name:upload.consortium.value).save();
@@ -80,7 +82,7 @@ class UploadController {
 
     def new_pkg = new Package(identifier:upload.soPackageIdentifier.value,
                               name:upload.soPackageName.value,
-                              type:null,
+                              type:pkg_type,
                               contentProvider:content_provider_org,
                               impId:java.util.UUID.randomUUID().toString());
 
@@ -94,139 +96,68 @@ class UploadController {
     }
     else {
       log.error("Problem saving new package");
+      upload.nessages.add("Problem saving new package");
       new_pkg.errors.each { pe ->
         log.error("Problem saving package: ${pe}");
+        upload.nessages.add("Problem saving package: ${pe}");
       }
       flash.error="Problem saving new package ${new_pkg.errors}";
       return
     }
 
 
-    // Down to here....
-
     log.debug("processing titles");
     // Title info
-    while ((nl = r.readNext()) != null) {
-      boolean has_data = false
-      nl.each {
-        if ( ( it != null ) && ( it.trim() != '' ) )
-          has_data = true;
+    upload.tipps.each { tipp ->
+    
+      def publisher = null;
+      if ( tipp.publisher_name && ( tipp.publisher_name.trim() != '' ) )  {
+        publisher = Org.findByName(nl[13]) ?: new Org(name:nl[13]).save();
       }
 
-      if ( !has_data )
-        continue;
-      else
-        log.debug("has data");
+      tipp.host_platform = null;
+      tipp.additional_platforms = []
 
-      if ( present(nl[0] ) ) {
-        def title=[:]
-        title.additional_platforms = []
-        println "**Processing pub title:${nl[0]}, print identifier ${nl[1]} (${num_prop_id_cols} prop cols, ${num_platforms_listed} plat cols)"
-        def title_identifiers = [];
-        
-        def publisher = null
-        if ( present(nl[13]) ) {
-          println("Publisher name: ${nl[13]}")
-          publisher = Org.findByName(nl[13]) ?: new Org(name:nl[13]).save();
+      // Process identifiers in the row.
+      tipp.platform.each { pl ->
+
+        def platform = Platform.lookupOrCreatePlatform(pl.name, pl.coltype, pl.url)
+
+        if ( pl.coltype == 'host' ) {
+          tipp.host_platform = platform
         }
         else {
-          log.debug("No publisher...");
+          tipp.additional_platforms.add([plat:platform, role:pl.coltype, url:pl.url])
         }
-
-        if ( present(nl[1]) && ( nl[1].trim().length() > 8 ) )
-          title_identifiers.add([value:nl[1].trim(), namespace:'ISSN'])
-
-        if ( present(nl[2]) && ( nl[2].trim().length() > 8 ) )
-          title_identifiers.add([value:nl[2].trim(), namespace:'eISSN'])
-
-        if ( present(nl[14]) )
-          title_identifiers.add([value:nl[14].trim(), namespace:'DOI'])
-
-        title.title_identifiers = title_identifiers;
-
-        // Process identifiers in the row.
-        for ( int i=0; i<num_platforms_listed; i++ ) {
-          int position = 15+num_prop_id_cols+(i*3)   // Offset past any proprietary identifiers.. This needs a test case.. it's fraught with danger
-
-          if ( ( nl.size() >= position+3 ) &&
-               ( nl[position] ) &&
-               ( nl[position].length() > 0 ) ) {
-
-            def platform_role = nl[position+1]
-            def platform_url = nl[position+2]
-
-            def parsed_start_date = parseDate(nl[3],possible_date_formats)
-            def parsed_end_date = parseDate(nl[6],possible_date_formats)
-
-            def platform = Platform.lookupOrCreatePlatform(name:nl[position],
-                                                           type:nl[position+1],
-                                                           primaryUrl:platform_url)
-
-            if ( !platform ) {
-              flash.error = "Problem processing ${upload_filename} : unable to identify a platform for entry with title ${nl[0]}"
-              return
-            }
-
-            title.startDateString = nl[3]
-            title.startDate = parsed_start_date
-            title.startVolume = nl[4]
-            title.startIssue = nl[5]
-            title.endDateString = nl[6]
-            title.endDate = parsed_end_date
-            title.endVolume = nl[7]
-            title.endIssue = nl[8]
-            title.title_id = nl[9]
-            title.embargo = nl[10]
-            title.coverageDepth = nl[11]
-            title.coverageNote = nl[12]
-
-            println("Process platform name:${nl[position]} / type:${platform_role} / url:${platform_url}");
-
-            if ( platform_role.trim() == 'host' ) {
-              title.platform = platform;
-              title.host_platform_url = platform_url
-            }
-            else {
-              title.additional_platforms.add([plat:platform, role:platform_role, url:platform_url])
-            }
-          }
-        }
-
-        if ( title_identifiers.size() == 0 ) {
-          log.error("Upload contains a title with no identifier");
-          flash.error="Problem processing ${upload_filename} : Title ${nl[0]} has no usable identifiers. File not imported. Please fix and re-upload";
-          return;
-        }
-
-        // Lookup or create title instance        
-        title.title = lookupOrCreateTitleInstance(title_identifiers,nl[0],publisher);
-        title.pkg = new_pkg
-        prepared_so.titles.add(title)
       }
-    }
 
-    log.debug("Adding titles");
-    // Add titles to the new package
-    prepared_so.titles.each { t ->
-      if ( t.title && t.pkg && t.platform ) {
+      if ( title_identifiers.size() == 0 ) {
+        log.error("Upload contains a title with no identifier");
+        flash.error="Problem processing ${upload_filename} : Title ${nl[0]} has no usable identifiers. File not imported. Please fix and re-upload";
+        return;
+      }
 
-        log.debug("Processing new so, looking for tipp. title:${t.title.id}, pkg:${t.pkg.id}, plat:${t.platform.id}");
+      // Lookup or create title instance    
+          
+      tipp.title_obj = lookupOrCreateTitleInstance(tipp.ID,nl[0],publisher);
       
-        def dbtipp = TitleInstancePackagePlatform.findByPkgAndPlatformAndTitle(t.pkg,t.platform,t.title)
+      if ( tipp.title_obj && tipp.host_platform && pkg ) {
+        // Got all the components we need to create a tipp
+        def dbtipp = TitleInstancePackagePlatform.findByPkgAndPlatformAndTitle(pkg,tipp.host_platform,tipp.title_obj)
         if ( dbtipp == null ) {
-          dbtipp = new TitleInstancePackagePlatform(pkg:t.pkg,
-                                                    platform:t.platform,
-                                                    title:t.title,
-                                                    startDate:t.startDate,
-                                                    startVolume:t.startVolume,
-                                                    startIssue:t.startIssue,
-                                                    endDate:t.endDate,
-                                                    endVolume:t.endVolume,
-                                                    endIssue:t.endIssue,
-                                                    embargo:t.embargo,
-                                                    coverageDepth:t.coverageDepth,
-                                                    coverageNote:t.coverageNote,
-                                                    hostPlatformURL:t.host_platform_url,
+          dbtipp = new TitleInstancePackagePlatform(pkg:pkg,
+                                                    platform:tipp.host_platform,
+                                                    title:tipp.title_obj,
+                                                    startDate:tipp.parsedStartDate:?null,
+                                                    startVolume:tipp.num_first_vol_online,
+                                                    startIssue:tipp.num_first_issue_online,
+                                                    endDate:tipp.parsedEndDate,
+                                                    endVolume:tipp.num_last_vol_online,
+                                                    endIssue:tipp.num_last_issue_online,
+                                                    embargo:tipp.embargo_info,
+                                                    coverageDepth:tipp.coverage_depth,
+                                                    coverageNote:tipp.coverage_note,
+                                                    hostPlatformURL:null, // t.host_platform_url,
                                                     impId:java.util.UUID.randomUUID().toString(),
                                                     ids:[])
   
@@ -242,10 +173,7 @@ class UploadController {
         }
         else {
           log.error("TIPP already exists!! This should never be the case as we are creating a new package!!!");
-        }
-      }
-      else { 
-        log.error("One of title(${t.title}), package(${t.pkg}) or platform(${t.platform}) are missing");
+        }        
       }
     }
 
@@ -279,7 +207,7 @@ class UploadController {
     
   def lookupOrCreateTitleInstance(identifiers,title,publisher) {
     log.debug("lookupOrCreateTitleInstance ${identifiers}, ${title}, ${publisher}");
-    def result = TitleInstance.lookupOrCreate(identifiers, title);
+    def result = TitleInstance.lookupOrCreateViaIdMap(identifiers, title);
     if ( !result.getPublisher() ) {
       def pub_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Publisher');
       OrgRole.assertOrgTitleLink(publisher, result, pub_role);
