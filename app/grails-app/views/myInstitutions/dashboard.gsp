@@ -84,16 +84,12 @@
           <th colspan="6">Alerted item</th>
         </tr>
         <tr>
-          <th>Type</th>
-          <th>Date</th>
-          <th>Author</th>
-          <th>Sharing</th>
           <th>Note</th>
           <th>Comments</th>
         </tr>
         <g:each in="${userAlerts}" var="ua">
           <tr>
-            <td colspan="6">
+            <td colspan="2">
               <g:if test="${ua.rootObj.class.name=='com.k_int.kbplus.License'}">
                 <span class="label label-info">Licence</span>
                 <em><g:link action="index"
@@ -113,16 +109,13 @@
           </tr>
           <g:each in="${ua.notes}" var="n">
             <tr>
-              <td>${n.owner.type?.value}</td>
-              <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${n.alert.createTime}" /></td>
-              <td>${n.owner.user?.displayName}</td>
               <td>
-                <g:if test="${n.alert.sharingLevel==2}">- Shared with KB+ Community -</g:if>
-                <g:elseif test="${n.alert.sharingLevel==1}">- JC Only -</g:elseif>
-                <g:else>- Private -</g:else>
-              </td>
-              <td>
-                  ${n.owner.content}
+                  ${n.owner.content}<br/>
+                  <div class="pull-right"><i>${n.owner.type?.value} (
+                    <g:if test="${n.alert.sharingLevel==2}">Shared with KB+ Community</g:if>
+                    <g:elseif test="${n.alert.sharingLevel==1}">JC Only</g:elseif>
+                    <g:else>Private</g:else>
+) By ${n.owner.user?.displayName} on <g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${n.alert.createTime}" /></i></div>
               </td>
               <td>
                 <input type="submit" 
