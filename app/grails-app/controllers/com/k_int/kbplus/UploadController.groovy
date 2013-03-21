@@ -290,9 +290,12 @@ class UploadController {
   
   def readTippRow(cols, nl) {
     def result = [:]
+
     result.messages = []
-    for ( int i=0; i<nl.length; i++ ) {
+    result.row = []
     
+    for ( int i=0; i<nl.length; i++ ) {
+      result.row.add(nl[i]);
       if ( ( nl[i] != null ) && ( nl[i].trim() != '' ) ) {
         def column_components = cols[i].split('\\.')
         def column_name = column_components[0]

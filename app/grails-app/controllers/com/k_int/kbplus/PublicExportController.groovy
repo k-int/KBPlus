@@ -125,7 +125,7 @@ class PublicExportController {
              entitlement.doi=title_doi
              entitlement.coverageDepth = e.tipp.coverageDepth
              entitlement.coverageNote = e.tipp.coverageNote
-             entitlement.publisher = publisher.name
+             entitlement.publisher = publisher?.name
              response.entitlements.add(entitlement);
          }
          render response as JSON

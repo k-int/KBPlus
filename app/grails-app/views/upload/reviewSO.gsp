@@ -50,7 +50,7 @@
            ${validationResult.processFile}
            
           <g:if test="${validationResult.processFile==true}">
-            <bootstrap:alert class="alert-info">File passed validation checks, TIPP data follows</bootstrap:alert>
+            <bootstrap:alert class="alert-success">File passed validation checks, new SO details follow</bootstrap:alert>
           </g:if>
           <g:else>
             <bootstrap:alert class="alert-error">File failed validation checks, details follow</bootstrap:alert>
@@ -74,9 +74,33 @@
           </table>
 
           <table class="table">
+            <thead>
+              <tr>
+                <g:each in="${validationResult.soHeaderLine}" var="c">
+                  <th>${c}</th>
+                </g:each>
+              </tr>
+            </thead>
             <tbody>
               <g:each in="${validationResult.tipps}" var="tipp">
-                <tr><td><pre>tipp:${tipp}</pre></td></tr>
+              
+                <tr>
+                  <g:each in="${tipp.row}" var="c">
+                    <td>${c}</td>
+                  </g:each>
+                </tr>
+                
+                <g:if test="${tipp.messages?.size() > 0}">
+                  <tr>
+                    <td colspan="${validationResult.soHeaderLine.size()}">
+                      <ul>
+                        <g:each in="${tipp.messages}" var="msg">
+                          <div class="alert alert-error">${msg}</div>
+                        </g:each>
+                      </ul>
+                    </td>
+                  </tr>
+                </g:if>
               </g:each>
             </tbody>
           </table>
