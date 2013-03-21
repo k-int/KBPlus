@@ -42,7 +42,7 @@ class ChangeNotificationService {
 
       if ( hasDerivedLicenses(lic_being_changed) ) {
         Doc change_doc = new Doc(title:'Template Change notification',
-                                 contentType:1,
+                                 contentType:2,
                                  content:'The template license for this actual license has changed. You can accept the changes').save();
 
         lic_being_changed.outgoinglinks.each { ol ->
