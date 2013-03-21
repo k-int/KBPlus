@@ -85,7 +85,7 @@
                 <td style="vertical-align:top;">
                    ${t.title.title}
                    <g:link controller="titleDetails" action="edit" id="${t.title.id}">(Title)</g:link>
-                   <g:link controller="titleDetails" action="edit" id="${t.title.id}">(TIPP)</g:link>
+                   <g:link controller="tipp" action="show" id="${t.id}">(TIPP)</g:link>
                 </td>
                 <td style="white-space: nowrap;vertical-align:top;">${t.platform?.name}</td>
                 <td style="white-space: nowrap;vertical-align:top;">
