@@ -59,6 +59,7 @@ class UploadController {
       validate(result.validationResult)
 	    if ( result.validationResult.processFile == true ) {
 	      log.debug("Passed first phase validation, continue...");
+        processUploadSO(result.validationResult)
 	    }
     }
     else {
@@ -114,14 +115,14 @@ class UploadController {
     
       def publisher = null;
       if ( tipp.publisher_name && ( tipp.publisher_name.trim() != '' ) )  {
-        publisher = Org.findByName(nl[13]) ?: new Org(name:nl[13]).save();
+        publisher = Org.findByName(tipp.publisher_name) ?: new Org(name:tipp.publisher_name).save();
       }
 
       tipp.host_platform = null;
       tipp.additional_platforms = []
 
       // Process identifiers in the row.
-      tipp.platform.each { pl ->
+      tipp.platform.values.each { pl ->
 
         def platform = Platform.lookupOrCreatePlatform(pl.name, pl.coltype, pl.url)
 
@@ -132,16 +133,8 @@ class UploadController {
           tipp.additional_platforms.add([plat:platform, role:pl.coltype, url:pl.url])
         }
       }
-
-      if ( title_identifiers.size() == 0 ) {
-        log.error("Upload contains a title with no identifier");
-        flash.error="Problem processing ${upload_filename} : Title ${nl[0]} has no usable identifiers. File not imported. Please fix and re-upload";
-        return;
-      }
-
-      // Lookup or create title instance    
           
-      tipp.title_obj = lookupOrCreateTitleInstance(tipp.ID,nl[0],publisher);
+      tipp.title_obj = lookupOrCreateTitleInstance(tipp.ID,tipp.publication_title,publisher);
       
       if ( tipp.title_obj && tipp.host_platform && pkg ) {
         // Got all the components we need to create a tipp
@@ -188,23 +181,21 @@ class UploadController {
     session.clear()
     propertyInstanceMap.get().clear()
 
-    result.user = User.get(springSecurityService.principal.id)
-
     def reloaded_pkg = Package.get(new_pkg_id);
     reloaded_pkg.updateNominalPlatform();
     reloaded_pkg.save(flush:true);
 
     def new_sub = reloaded_pkg.createSubscription('Subscription Offered', 
-                                             prepared_so.sub.name, 
-                                             prepared_so.sub.identifier, 
-                                             prepared_so.sub.start_date, 
-                                             prepared_so.sub.end_date, 
-                                             prepared_so.cons) 
+                                             upload.soName, 
+                                             upload.soIdentifier.value, 
+                                             upload.agreementTermStartYear, 
+                                             upload.agreementTermEndYear, 
+                                             upload.consortiumOrg) 
     
     log.debug("Completed New package is ${new_pkg.id}");
 
-    result.new_pkg_id = new_pkg_id
-    result.new_sub_id = new_sub?.id
+    upload.new_pkg_id = new_pkg_id
+    upload.new_sub_id = new_sub?.id
   }
     
   def lookupOrCreateTitleInstance(identifiers,title,publisher) {
@@ -595,9 +586,10 @@ class UploadController {
 
   def validateConsortia(upload) {
 	if ( ( upload.consortium ) && ( upload.consortium.value ) ) {
-	  if ( Org.findByName(upload.consortium.value) == null ) {
-		upload.consortium.messages.add("Unable to locate org with name ${upload.consortium.value}")
-		upload.processFile=false
+	  upload.consortiumOrg = Org.findByName(upload.consortium.value)
+	  if ( upload.consortiumOrg == null ) {
+		  upload.consortium.messages.add("Unable to locate org with name ${upload.consortium.value}")
+		  upload.processFile=false
 	  }
 	}
 	return true
