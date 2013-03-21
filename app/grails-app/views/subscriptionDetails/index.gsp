@@ -261,6 +261,9 @@
     <script language="JavaScript">
       <g:if test="${editable}">
       $(document).ready(function() {
+      
+         $.fn.editable.defaults.mode = 'inline';
+         $('.xEditableValue').editable();
 
         var datepicker_config = {
           buttonImage: '../../images/calendar.gif',

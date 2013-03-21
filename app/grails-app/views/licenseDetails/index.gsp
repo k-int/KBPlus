@@ -27,7 +27,10 @@
     <div class="container">
       <h1>${license.licensee?.name} ${license.type?.value} Licence : 
 
-<g:inPlaceEdit domain="License" pk="${license.id}" style="padding-top: 5px;" field="reference" id="reference" class="${editable?'newipe':''}">${license.reference}</g:inPlaceEdit></h1>
+      <g:inPlaceEdit domain="${license.class.name}" 
+                     pk="${license.id}" 
+                     field="reference" 
+                     id="reference">${license.reference}</g:inPlaceEdit></h1>
 
       <g:render template="nav" contextPath="." />
     </div>
@@ -100,42 +103,63 @@
                   <dl>
                       <dt><label class="control-label" for="reference">Reference</label></dt>
                       <dd>
-                        <p id="reference" class="${editable?'ipe':''}" >${license.reference}</p>
+                        <g:inPlaceEdit domain="${license.class.name}" 
+                                       pk="${license.id}" 
+                                       field="reference" 
+                                       id="reference">${license.reference}</g:inPlaceEdit>
                       </dd>
                   </dl>
       
                   <dl>
                       <dt><label class="control-label" for="noticePeriod">Notice Period</label></dt>
                       <dd>
-                        <p id="noticePeriod" class="${editable?'ipe':''}" >${license.noticePeriod}</p>
-                      </dd>
+                        <g:inPlaceEdit domain="${license.class.name}" 
+                                       pk="${license.id}" 
+                                       field="noticePeriod" 
+                                       id="noticePeriod">${license.noticePeriod}</g:inPlaceEdit>
+                     </dd>
                   </dl>
       
                   <dl>
                       <dt><label class="control-label" for="licenseUrl">Licence Url</label></dt>
                       <dd>
-                        <p id="licenseUrl" class="${editable?'ipe':''}">${license.licenseUrl}</p>
+                        <g:inPlaceEdit domain="${license.class.name}" 
+                                       pk="${license.id}" 
+                                       field="licenseUrl" 
+                                       id="licenseUrl">${license.licenseUrl}</g:inPlaceEdit>
+
                       </dd>
                   </dl>
       
                   <dl>
                       <dt><label class="control-label" for="licensorRef">Licensor Ref</label></dt>
                       <dd>
-                        <p id="licensorRef" class="${editable?'ipe':''}">${license.licensorRef}</p>
+                        <g:inPlaceEdit domain="${license.class.name}" 
+                                       pk="${license.id}" 
+                                       field="licensorRef" 
+                                       id="licensorRef">${license.licensorRef}</g:inPlaceEdit>
                       </dd>
                   </dl>
       
                   <dl>
                       <dt><label class="control-label" for="licenseeRef">Licensee Ref</label></dt>
                       <dd>
-                        <div id="licenseeRef" class="${editable?'ipe':''}" >${license.licenseeRef}</div>
+                        <g:inPlaceEdit domain="${license.class.name}" 
+                                       pk="${license.id}" 
+                                       field="licenseeRef" 
+                                       id="licenseeRef">${license.licenseeRef}</g:inPlaceEdit>
                       </dd>
                   </dl>
 
                   <dl>
                       <dt><label class="control-label" for="licenseeRef">Public?</label></dt>
                       <dd>
-                        <g:refdataValue val="${license.isPublic?.value}" domain="License" pk="${license.id}" field="isPublic" cat='YN' class="${editable?'ynrefdataedit':''}"/>
+                        <g:refdataValue val="${license.isPublic?.value}" 
+                                        domain="License" 
+                                        pk="${license.id}" 
+                                        field="isPublic" 
+                                        cat='YN' 
+                                        class="${editable?'ynrefdataedit':''}"/>
                       </dd>
                   </dl>
 
@@ -222,8 +246,13 @@
               model="${[roleLinks:license?.orgLinks,parent:license.class.name+':'+license.id,property:'orgLinks',recip_prop:'lic']}" />
 
     <script language="JavaScript">
+    
       <g:if test="${editable}">
       $(document).ready(function() {
+      
+         $.fn.editable.defaults.mode = 'inline';
+         $('.xEditableValue').editable();
+      
          var checkEmptyEditable = function() {
            $('.ipe, .refdataedit, .fieldNote, .ynrefdataedit').each(function() {
              if($(this).text().length == 0) {
@@ -243,71 +272,6 @@
            $('#cucwrap').hide();
          }
          
-         // On jEditable click remove the hide the icon and show it 
-         // when one of the buttons are clicked or ESC is hit.
-
-         $('.ipe, .intedit, .refdataedit, .cuedit, .fieldNote, .ynrefdataedit, .newipe').click(function() {
-            // Ensure we're not clicking in an editing element.
-            if($(this).hasClass('clicked')) {
-                return;
-            }
-            
-         	// Hide edit icon with overwriting style.
-         	$(this).addClass('clicked');
-            
-            var e = $(this);
-            
-            var outsideElements;
-                        
-            setTimeout(function() {
-                outsideElements = e.parent().find("span:not(.clicked)");
-                console.log(outsideElements);
-                outsideElements.hide();
-            }, 1);
-         	
-         	var removeClicked = function() {
-         		setTimeout(function() {
-         			e.removeClass('clicked');
-         			if(outsideElements) {
-         				outsideElements.show();
-         			}
-         		}, 1);
-         	}
-         	
-         	setTimeout(function() {
-         		e.find('form button').click(function() {
-         			removeClicked();
-         		});
-         		e.keydown(function(event) {
-         			if(event.keyCode == 27) {
-         				removeClicked();
-         			}
-         		});
-         	}, 1);
-         });
-         
-         $('.ipe').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="setValue" />', { 
-           type      : 'textarea',
-           cancel    : 'Cancel',
-           submit    : 'OK',
-           id        : 'elementid',
-           rows      : 3,
-           tooltip   : 'Click to edit...',
-           onblur	 : 'ignore'
-         });
-
-         $('.intedit').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="setValue" />', {
-           type      : 'text',
-           cols      : '5',
-           width     : '30',
-           cancel    : 'Cancel',
-           submit    : 'OK',
-           id        : 'elementid',
-           tooltip   : 'Click to edit...',
-           onblur	 : 'ignore'
-         });
-
-
          $('.refdataedit').editable('<g:createLink controller="ajax" action="genericSetRef" />', {
            data   : {'Yes':'Yes', 'No':'No','Other':'Other'},
            type   : 'select',
@@ -377,16 +341,6 @@
          });
 
          $('.fieldNote').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="setFieldNote" />', {
-           type      : 'textarea',
-           cancel    : 'Cancel',
-           submit    : 'OK',
-           id        : 'elementid',
-           rows      : 3,
-           tooltip   : 'Click to edit...',
-           onblur	 : 'ignore'
-         });
-
-         $('.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" />', {
            type      : 'textarea',
            cancel    : 'Cancel',
            submit    : 'OK',
