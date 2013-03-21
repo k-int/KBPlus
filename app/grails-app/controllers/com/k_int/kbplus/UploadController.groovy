@@ -57,10 +57,10 @@ class UploadController {
       log.debug("Uploaded so type: ${upload_mime_type} filename was ${upload_filename}");
       result.validationResult = readSubscriptionOfferedCSV(request.getFile("soFile")?.inputStream, upload_filename )
       validate(result.validationResult)
-	    if ( result.validationResult.processFile == true ) {
-	      log.debug("Passed first phase validation, continue...");
+      if ( result.validationResult.processFile == true ) {
+        log.debug("Passed first phase validation, continue...");
         processUploadSO(result.validationResult)
-	    }
+      }
     }
     else {
     }
@@ -120,13 +120,8 @@ class UploadController {
       tipp.additional_platforms = []
 
       // Process identifiers in the row.
-      log.debug("Check platforms: ${tipp.platform}");
       tipp.platform.values().each { pl ->
-
-        log.debug("Checking platform ${pl}");
-
-        def platform = Platform.lookupOrCreatePlatform(pl.name, pl.coltype, pl.url)
-
+        def platform = Platform.lookupOrCreatePlatform(name:pl.name, primaryUrl:pl.url)
         if ( pl.coltype == 'host' ) {
           tipp.host_platform = platform
         }
@@ -135,17 +130,13 @@ class UploadController {
         }
       }
           
-      log.debug("Lookup or create title for tipp: ${tipp.publication_title} ${tipp.ID}");
       tipp.title_obj = lookupOrCreateTitleInstance(tipp.ID,tipp.publication_title,publisher);
       
-      log.debug("Checking for existing tipp ${tipp.title_obj} ${tipp.host_platform} ${new_pkg}");
       if ( tipp.title_obj && tipp.host_platform && new_pkg ) {
         // Got all the components we need to create a tipp
         def dbtipp = TitleInstancePackagePlatform.findByPkgAndPlatformAndTitle(new_pkg,tipp.host_platform,tipp.title_obj)
         if ( dbtipp == null ) {
-          log.debug("Creating tipp for title : ${tipp.title_obj.title}");
-
-          dbtipp = new TitleInstancePackagePlatform(new_pkg:new_pkg,
+          dbtipp = new TitleInstancePackagePlatform(pkg:new_pkg,
                                                     platform:tipp.host_platform,
                                                     title:tipp.title_obj,
                                                     startDate:tipp.parsedStartDate,
@@ -411,9 +402,9 @@ class UploadController {
       //  upload.processFile=false;
       //}
       
-            log.debug("tipp ID = ${tipp.ID}");
+      log.debug("tipp ID = ${tipp.ID}");
             
-      if ( (!tipp.ID) || (tipp.ID = null) ) {
+      if (!tipp.ID) {
         tipp.messages.add("Title (row ${counter}) does not contain a valid ID");
         upload.processFile=false;
       }

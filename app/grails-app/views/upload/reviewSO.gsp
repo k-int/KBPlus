@@ -98,7 +98,7 @@
                     <td colspan="${validationResult.soHeaderLine.size()}">
                       <ul>
                         <g:each in="${tipp.messages}" var="msg">
-                          <g:if test="${msg instanceof String}">
+                          <g:if test="${msg instanceof java.lang.String || msg instanceof org.codehaus.groovy.runtime.GStringImpl}">
                             <div class="alert alert-error">${msg}</div>
                           </g:if>
                           <g:else>
