@@ -198,7 +198,11 @@ class MyInstitutionsController {
     def date_restriction = null;
     def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
     
-    if ( ( params.validOn == null ) || ( params.validOn == '' ) ) {
+    if ( params.validOn == null ) {
+      result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+      date_restriction = sdf.parse(result.validOn)
+    }
+    else if ( params.validOn == '' ) {     
       result.validOn = sdf.format(new Date(System.currentTimeMillis()))
     }
     else {
@@ -262,6 +266,21 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
+    def date_restriction = null;
+    def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
+    
+    if ( params.validOn == null ) {
+      result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+      date_restriction = sdf.parse(result.validOn)
+    }
+    else if ( params.validOn == '' ) {     
+      result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+    }
+    else {
+      result.validOn=params.validOn
+      date_restriction = sdf.parse(params.validOn)
+    }
+    
     // if ( !checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
     if ( !checkUserIsMember(result.user,result.institution) ) {
       flash.error="You do not have admin permissions to access ${result.institution.name} pages. Please request access on the profile page";
@@ -294,6 +313,12 @@ class MyInstitutionsController {
       base_qry += " and ( lower(s.name) like ? or exists ( select sp from SubscriptionPackage as sp where sp.subscription = s and ( lower(sp.pkg.name) like ? ) ) ) "
       qry_params.add("%${params.q.trim().toLowerCase()}%");
       qry_params.add("%${params.q.trim().toLowerCase()}%");
+    }
+
+    if ( date_restriction ) {
+      base_qry += " and s.startDate <= ? and s.endDate >= ? "
+      qry_params.add(date_restriction)
+      qry_params.add(date_restriction)
     }
 
     // Only list subscriptions where the user has view perms against the org
