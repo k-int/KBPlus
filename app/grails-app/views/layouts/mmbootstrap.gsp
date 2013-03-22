@@ -130,6 +130,9 @@
                        <li class="divider"></li>
                        <li <%= ( ( 'titleDetails'== controllerName ) && ( 'findTitleMatches'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="titleDetails" action="findTitleMatches">New Title</g:link></li>
+                       <li <%= ( ( 'licenseDetails'== controllerName ) && ( 'create'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="licenseDetails" action="create">New License</g:link></li>
+
                      </ul>
                    </li>
                 </sec:ifAnyGranted>
