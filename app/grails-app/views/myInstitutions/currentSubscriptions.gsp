@@ -3,6 +3,9 @@
   <head>
     <meta name="layout" content="mmbootstrap"/>
     <title>KB+ Data import explorer</title>
+        <r:require modules="jeditable"/>
+    <r:require module="jquery-ui"/>
+
   </head>
   <body>
 
@@ -43,6 +46,7 @@
     <div class="container" style="text-align:center">
       <g:form action="currentSubscriptions" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="get">
         Search text: <input type="text" name="q" placeholder="enter search term..."  value="${params.q?.encodeAsHTML()}"  />
+        Valid On: <input name="validOn" type="text" value="${validOn}"/>
         <input type="submit" class="btn btn-primary" value="Search" />
       </g:form><br/>
     </div>
@@ -114,7 +118,7 @@
                 $(this).parent().parent().fadeOut('slow');
                 $('.subscription-options').slideUp('fast');
             })
-        })
+        })                
     </script>
 
   </body>

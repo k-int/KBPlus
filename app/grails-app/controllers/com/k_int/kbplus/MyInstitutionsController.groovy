@@ -194,6 +194,17 @@ class MyInstitutionsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
+    
+    def date_restriction = null;
+    def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
+    
+    if ( ( params.validOn == null ) || ( params.validOn == '' ) ) {
+      result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+    }
+    else {
+      result.validOn=params.validOn
+      date_restriction = sdf.parse(params.validOn)
+    }
 
     if ( !checkUserIsMember(result.user, result.institution) ) {
       flash.error="You do not have permission to access ${result.institution.name} pages. Please request access on the profile page";
@@ -224,6 +235,12 @@ class MyInstitutionsController {
       base_qry += " and ( lower(s.name) like ? or exists ( select sp from SubscriptionPackage as sp where sp.subscription = s and ( lower(sp.pkg.name) like ? ) ) ) "
       qry_params.add("%${params.q.trim().toLowerCase()}%");
       qry_params.add("%${params.q.trim().toLowerCase()}%");
+    }
+    
+    if ( date_restriction ) {
+      base_qry += " and s.startDate <= ? and s.endDate >= ? "
+      qry_params.add(date_restriction)
+      qry_params.add(date_restriction)
     }
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
