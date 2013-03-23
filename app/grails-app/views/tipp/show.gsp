@@ -4,14 +4,13 @@
 <html>
   <head>
     <meta name="layout" content="mmbootstrap">
-    <g:set var="entityName" value="${message(code: 'titleInstance.label', default: 'TitleInstance')}" />
-    <title><g:message code="default.show.label" args="[entityName]" /></title>
+    <title>${titleInstanceInstance?.title} in ${tipp.pkg.name} on ${tipp.platform.name}</title>
   </head>
   <body>
     <div class="container">
       
         <div class="page-header">
-          <h1>Title Instance: ${titleInstanceInstance?.title}</h1>
+          <h1>"${titleInstanceInstance?.title}" in "${tipp.pkg.name}" on ${tipp.platform.name}</h1>
         </div>
 
         <g:if test="${flash.message}">
@@ -20,11 +19,6 @@
 
         <dl>
         
-          <g:if test="${titleInstanceInstance?.title}">
-            <dt><g:message code="titleInstance.title.label" default="Title" /></dt>
-              <dd><g:fieldValue bean="${titleInstanceInstance}" field="title"/></dd>
-          </g:if>
-
           <g:if test="${titleInstanceInstance?.ids}">
             <dt><g:message code="titleInstance.ids.label" default="Ids" /></dt>
             
@@ -34,13 +28,41 @@
             
           </g:if>
         
-          <g:if test="${titleInstanceInstance?.impId}">
-            <dt><g:message code="titleInstance.impId.label" default="Imp Id" /></dt>
-            
-              <dd><g:fieldValue bean="${titleInstanceInstance}" field="impId"/></dd>
-            
-          </g:if>
-        
+          <dt>TIPP Start Date</dt>
+          <dd><g:xEditable owner="${tipp}" field="startDate"/></dd>
+
+          <dt>TIPP Start Volume</dt>
+          <dd><g:xEditable owner="${tipp}" field="startVolume"/></dd>
+
+          <dt>TIPP Start Issue</dt>
+          <dd><g:xEditable owner="${tipp}" field="startIssue"/></dd>
+
+          <dt>TIPP End Date</dt>
+          <dd><g:xEditable owner="${tipp}" field="endDate"/></dd>
+
+          <dt>TIPP End Volume</dt>
+          <dd><g:xEditable owner="${tipp}" field="endVolume"/></dd>
+
+          <dt>TIPP End Issue</dt>
+          <dd><g:xEditable owner="${tipp}" field="endIssue"/></dd>
+
+          <dt>Coverage Depth</dt>
+          <dd><g:xEditable owner="${tipp}" field="coverageDepth"/></dd>
+
+          <dt>Coverage Note</dt>
+          <dd><g:xEditable owner="${tipp}" field="coverageNote"/></dd>
+
+          <dt>Embargo</dt>
+          <dd><g:xEditable owner="${tipp}" field="embargo"/></dd>
+
+          <dt>Host URL</dt>
+          <dd><g:xEditable owner="${tipp}" field="hostPlatformURL"/></dd>
+
+          <dt>Host Platform</dt>
+          <dd>${tipp.platform.name}</dd>
+
+
+
           <g:if test="${titleInstanceInstance?.tipps}">
             <dt><g:message code="titleInstance.tipps.label" default="Occurences of this title against Packages / Platforms" /></dt>
             <dd>

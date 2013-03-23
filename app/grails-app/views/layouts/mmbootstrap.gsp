@@ -281,5 +281,11 @@
     </script>
     -->
 
+    <script language="JavaScript">
+      $(function(){
+        $.fn.editable.defaults.mode = 'inline';
+        $('.xEditableValue').editable();
+      });
+    </script>
   </body>
 </html>

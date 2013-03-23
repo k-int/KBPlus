@@ -99,8 +99,9 @@
   <script language="JavaScript">
 
     $(function(){
-      $.fn.editable.defaults.mode = 'inline';
-      $('.xEditableValue').editable();
+      // moved to mm_bootstrap
+      // $.fn.editable.defaults.mode = 'inline';
+      // $('.xEditableValue').editable();
 
       $("#addIdentifierSelect").select2({
         placeholder: "Search for an identifier...",
