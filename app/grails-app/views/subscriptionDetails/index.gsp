@@ -38,7 +38,7 @@
 
       ${institution?.name} ${subscriptionInstance?.type?.value}
 
-       <h1><g:inPlaceEdit domain="Subscription" 
+       <h1><g:inPlaceEdit domain="${subscriptionInstance.class.name}" 
                           pk="${subscriptionInstance.id}" 
                           field="name" 
                           id="name" 
