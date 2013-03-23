@@ -1515,6 +1515,8 @@ class MyInstitutionsController {
             break;
           case 'P+E':
           case 'E+P':
+          case 'PRINT+ELECTRONIC':
+          case 'ELECTRONIC+PRINT':
             new_core_status = RefdataCategory.lookupOrCreate('CoreStatus','Print+Electronic');
             is_core = true;
             break;
