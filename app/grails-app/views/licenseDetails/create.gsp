@@ -4,8 +4,6 @@
   <head>
     <meta name="layout" content="mmbootstrap">
     <title><g:message code="default.edit.label" args="[entityName]" /></title>
-    <r:require modules="jeditable"/>
-    <r:require module="jquery-ui"/>
   </head>
   <body>
       <div class="container">
@@ -13,7 +11,7 @@
           <div class="span12">
 
             <div class="page-header">
-              <h1>New Licence</h1>
+              <h1>New Template Licence</h1>
             </div>
 
             <g:if test="${flash.message}">
@@ -24,6 +22,11 @@
             <bootstrap:alert class="alert-info">${flash.error}</bootstrap:alert>
             </g:if>
 
+            <p>Use this form to create a new template licence. Enter the new license reference below, click "continue" and you will be redirected to the new licence</p>
+
+            <p>
+              <g:form action="processNewTemplateLicense"> New License Reference: <input type="text" name="reference"/><input type="submit"/></g:form>
+            </p>
 
           </div>
         </div>
