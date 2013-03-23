@@ -11,5 +11,6 @@ import au.com.bytecode.opencsv.CSVReader
 CSVReader r = new CSVReader( new InputStreamReader(new FileInputStream(args[0]),'utf8') )
 
 while ((nl = r.readNext()) != null) {
-  println("update title_instance set title = '${nl[2]}' where title='${nl[1]}';");
+  old_title = 
+  println("update title_instance set ti_title = '${nl[2].replaceAll("'","''")}' where ti_title='${nl[1].replaceAll("'","''")}';");
 }

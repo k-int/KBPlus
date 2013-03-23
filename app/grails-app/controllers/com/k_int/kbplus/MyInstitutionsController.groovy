@@ -1015,29 +1015,31 @@ class MyInstitutionsController {
 
       // For each subscription in the shopping basket
       sub.issueEntitlements.each { ie ->
-        def title_info = titleMap[ie.tipp.title.id]
-        if ( !title_info ) {
-          // log.debug("Adding ie: ${ie}");
-          title_info = [:]
-          title_info.title_idx = titleMap.size()
-          title_info.id = ie.tipp.title.id;
-          title_info.issn = ie.tipp.title.getIdentifierValue('ISSN');
-          title_info.eissn = ie.tipp.title.getIdentifierValue('eISSN');
-          title_info.title = ie.tipp.title.title
-          if ( first ) {
-            if ( ie.startDate )
-              title_info.current_start_date = formatter.format(ie.startDate)
-            if ( ie.endDate )
-              title_info.current_end_date = formatter.format(ie.endDate)
-            title_info.current_embargo = ie.embargo
-            title_info.current_depth = ie.coverageDepth
-            title_info.current_coverage_note = ie.coverageNote
-            title_info.is_core = ie.coreStatus?.value
-            title_info.core_start_date = ie.coreStatusStart ? formatter.format(ie.coreStatusStart) : ''
-            title_info.core_end_date = ie.coreStatusEnd ? formatter.format(ie.coreStatusEnd) : ''
-            // log.debug("added title info: ${title_info}");
+        if ( ! (ie.status?.value=='Deleted')  ) {
+          def title_info = titleMap[ie.tipp.title.id]
+          if ( !title_info ) {
+            // log.debug("Adding ie: ${ie}");
+            title_info = [:]
+            title_info.title_idx = titleMap.size()
+            title_info.id = ie.tipp.title.id;
+            title_info.issn = ie.tipp.title.getIdentifierValue('ISSN');
+            title_info.eissn = ie.tipp.title.getIdentifierValue('eISSN');
+            title_info.title = ie.tipp.title.title
+            if ( first ) {
+              if ( ie.startDate )
+                title_info.current_start_date = formatter.format(ie.startDate)
+              if ( ie.endDate )
+                title_info.current_end_date = formatter.format(ie.endDate)
+              title_info.current_embargo = ie.embargo
+              title_info.current_depth = ie.coverageDepth
+              title_info.current_coverage_note = ie.coverageNote
+              title_info.is_core = ie.coreStatus?.value
+              title_info.core_start_date = ie.coreStatusStart ? formatter.format(ie.coreStatusStart) : ''
+              title_info.core_end_date = ie.coreStatusEnd ? formatter.format(ie.coreStatusEnd) : ''
+              // log.debug("added title info: ${title_info}");
+            }
+            titleMap[ie.tipp.title.id] = title_info;
           }
-          titleMap[ie.tipp.title.id] = title_info;
         }
       }
       first=false
