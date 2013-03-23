@@ -736,7 +736,7 @@ class MyInstitutionsController {
         if ( !has_filter )
           has_filter = true
         else
-          sw.append(" OR ")
+          sw.append(" AND ")
 
         String[] filter_components = p.key.split(':');
             switch ( filter_components[1] ) {
