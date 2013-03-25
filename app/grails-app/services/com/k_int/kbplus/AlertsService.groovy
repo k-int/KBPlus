@@ -15,7 +15,7 @@ class AlertsService {
     log.debug("all public notes: ${all_public_notes}");
 
     all_public_notes.each { pn ->
-      log.debug("Processing: ${pn}");
+      // log.debug("Processing: ${pn}");
 
       def info = null;
       if ( pn.license ) {
@@ -55,7 +55,7 @@ class AlertsService {
 
     // Now turn the roots map into the array list structure that getActiveAlerts produces so the view doesn't have to change
     roots.values().each { r->
-      log.debug("Processing ${r}");
+      // log.debug("Processing ${r}");
       def notes_to_add = []
       r.notes.values().each { n ->
         notes_to_add.add(n);

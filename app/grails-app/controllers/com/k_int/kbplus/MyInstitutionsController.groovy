@@ -45,18 +45,6 @@ class MyInstitutionsController {
     result.staticAlerts = alertsService.getStaticAlerts(request);
 
     
-    log.debug("result.userAlerts: ${result.userAlerts}");
-    log.debug("result.userAlerts.size(): ${result.userAlerts.size()}");
-    log.debug("result.userAlerts.class.name: ${result.userAlerts.class.name}");
-    // def adminRole = Role.findByAuthority('ROLE_ADMIN')
-    // if ( result.user.authorities.contains(adminRole) ) {
-    //   log.debug("User is in admin role");
-    //   result.orgs = Org.findAllBySector("Higher Education");
-    // }
-    // else {
-    //   result.orgs = Org.findAllBySector("Higher Education");
-    // }
-
     if ( ( result.user.affiliations == null ) || ( result.user.affiliations.size() == 0 ) ) {
       redirect controller:'profile', action: 'index'
     }
