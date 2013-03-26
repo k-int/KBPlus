@@ -25,13 +25,7 @@
     </div>
 
     <div class="container">
-      <h1>${license.licensee?.name} ${license.type?.value} Licence : 
-
-      <g:inPlaceEdit domain="${license.class.name}" 
-                     pk="${license.id}" 
-                     field="reference" 
-                     id="reference">${license.reference}</g:inPlaceEdit></h1>
-
+      <h1>${license.licensee?.name} ${license.type?.value} Licence : <g:xEditable owner="${license}" field="reference" id="reference"/></h1>
       <g:render template="nav" contextPath="." />
     </div>
 
@@ -103,10 +97,7 @@
                   <dl>
                       <dt><label class="control-label" for="reference">Reference</label></dt>
                       <dd>
-                        <g:inPlaceEdit domain="${license.class.name}" 
-                                       pk="${license.id}" 
-                                       field="reference" 
-                                       id="reference">${license.reference}</g:inPlaceEdit>
+                        <g:xEditable owner="${license}" field="reference" id="reference"/>
                       </dd>
                   </dl>
       
@@ -154,6 +145,11 @@
                   <dl>
                       <dt><label class="control-label" for="licenseeRef">Public?</label></dt>
                       <dd>
+                        <g:xEditableManyToOne owner="${license}" field="isPublic" config='YN'>
+                          <g:if test="${license.isPublic}"><span class="select-icon ${license.isPublic.icon}"/><span>${license.isPublic.value}</span></g:if>
+                        </g:xEditableManyToOne>
+                        <br/>
+                        
                         <g:refdataValue val="${license.isPublic?.value}" 
                                         domain="License" 
                                         pk="${license.id}" 
@@ -247,108 +243,15 @@
 
     <script language="JavaScript">
     
+       console.log("ed1");
+       
       <g:if test="${editable}">
+       console.log("ed2");
+
       $(document).ready(function() {
       
-         $.fn.editable.defaults.mode = 'inline';
-         $('.xEditableValue').editable();
-      
-         var checkEmptyEditable = function() {
-           $('.ipe, .refdataedit, .fieldNote, .ynrefdataedit').each(function() {
-             if($(this).text().length == 0) {
-               $(this).addClass('editableEmpty');
-             } else {
-               $(this).removeClass('editableEmpty');
-             }
-           });
-         }
+         console.log("ed3f");
 
-         checkEmptyEditable();
-
-         if ( '${license.concurrentUsers?.value}'==='Specified' ) {
-           $('#cucwrap').show();
-         }
-         else {
-           $('#cucwrap').hide();
-         }
-         
-         $('.refdataedit').editable('<g:createLink controller="ajax" action="genericSetRef" />', {
-           data   : {'Yes':'Yes', 'No':'No','Other':'Other'},
-           type   : 'select',
-           cancel : 'Cancel',
-           submit : 'OK',
-           id     : 'elementid',
-           tooltip: 'Click to edit...',
-           onblur	 : 'ignore',
-           callback : function(value) {
-               var iconList = {
-                   'Yes' : 'greenTick',
-                   'No' : 'redCross',
-                   'Other' : 'purpleQuestion'
-               };
-               
-               var icon = $(document.createElement('span'));
-               $(this).prepend(icon.addClass('select-icon').addClass(iconList[value]));
-           }
-         });
-
-         $('.ynrefdataedit').editable('<g:createLink controller="ajax" action="genericSetRef" />', {
-           data   : {'Yes':'Yes', 'No':'No'},
-           type   : 'select',
-           cancel : 'Cancel',
-           submit : 'OK',
-           id     : 'elementid',
-           tooltip: 'Click to edit...',
-           onblur        : 'ignore',
-           callback : function(value) {
-               var iconList = {
-                   'Yes' : 'greenTick',
-                   'No' : 'redCross'
-               };
-
-               var icon = $(document.createElement('span'));
-               $(this).prepend(icon.addClass('select-icon').addClass(iconList[value]));
-           }
-         });
-
-
-         $('.cuedit').editable('<g:createLink controller="ajax" action="genericSetRef" />', {
-           data   : {'No limit':'No limit', 'Specified':'Specified','Not Specified':'Not Specified', 'Other':'Other'},
-           type   : 'select',
-           cancel : 'Cancel',
-           submit : 'OK',
-           id     : 'elementid',
-           tooltip: 'Click to edit...',
-           onblur	 : 'ignore',
-           callback : function(value, settings) {
-             if ( value==='Specified' ) {
-               $('#cucwrap').show();
-             }
-             else {
-               $('#cucwrap').hide();
-             }
-             
-             var iconList = {
-                 'No limit' : 'greenTick',
-                 'Specified' : 'redCross',
-                 'Not Specified' : 'purpleQuestion',
-                 'Other' : 'purpleQuestion'
-             };
-               
-             var icon = $(document.createElement('span'));
-             $(this).prepend(icon.addClass('select-icon').addClass(iconList[value]));
-           }
-         });
-
-         $('.fieldNote').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="setFieldNote" />', {
-           type      : 'textarea',
-           cancel    : 'Cancel',
-           submit    : 'OK',
-           id        : 'elementid',
-           rows      : 3,
-           tooltip   : 'Click to edit...',
-           onblur	 : 'ignore'
-         });
 
          $( "#dialog-form" ).dialog({
            autoOpen: false,
@@ -368,6 +271,8 @@
              allFields.val( "" ).removeClass( "ui-state-error" );
            }
          });
+
+         console.log("ed3fr");
 
          $(".announce").click(function(){
            var id = $(this).data('id');
@@ -394,8 +299,12 @@
 
 
        });
+                console.log("ed3fr outer");
+
       </g:if>
       <g:else>
+                console.log("ed3fr else");
+
         $(document).ready(function() {
           $(".announce").click(function(){
             var id = $(this).data('id');
@@ -404,6 +313,7 @@
           });
         }
       </g:else>
+                console.log("done");
 
     </script>
 

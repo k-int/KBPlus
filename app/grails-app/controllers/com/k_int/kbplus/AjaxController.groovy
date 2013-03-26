@@ -40,7 +40,16 @@ class AjaxController {
       qryParams:[],
       cols:['value'],
       format:'simple'
+    ],
+    'YN' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='YN'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='YN'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
     ]
+
   ]
 
 
@@ -329,13 +338,10 @@ class AjaxController {
   
   def refdataSearch() {
 
-    // log.debug("refdataSearch params: ${params}");
+    log.debug("refdataSearch params: ${params}");
     
     // http://datatables.net/blog/Introducing_Scroller_-_Virtual_Scrolling_for_DataTables
     def result = [:]
-
-
-
     
     def config = refdata_config[params.id]
     if ( config ) {
@@ -387,6 +393,51 @@ class AjaxController {
       }
     }
 
+    //log.debug("refdataSearch returning ${result as JSON}");
+    withFormat {
+      html {
+        result
+      }
+      json {
+        render result as JSON
+      }
+    }
+  }
+
+  def sel2RefdataSearch() {
+
+    log.debug("sel2RefdataSearch params: ${params}");
+    
+    def result = []
+    
+    def config = refdata_config[params.id]
+    if ( config ) {
+
+      def query_params = []
+      config.qryParams.each { qp ->
+        if ( qp.clos ) {
+          query_params.add(qp.clos(params[qp.param]?:''));
+        }
+        else {
+          query_params.add(params[qp.param]);
+        }
+      }
+
+      log.debug("Params: ${query_params}");
+      log.debug("Count qry: ${config.countQry}");
+      log.debug("Row qry: ${config.rowQry}");
+
+      def cq = Org.executeQuery(config.countQry,query_params);    
+      def rq = Org.executeQuery(config.rowQry,
+                                query_params,
+                                [max:params.iDisplayLength?:10,offset:params.iDisplayStart?:0]);
+
+      rq.each { it ->
+        result.add([value:"${it.class.name}:${it.id}",text:"${it[config.cols[0]]}"]);
+      }
+    }
+
+    //log.debug("refdataSearch returning ${result as JSON}");
     withFormat {
       html {
         result
