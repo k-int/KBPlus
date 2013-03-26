@@ -205,46 +205,6 @@ class AjaxController {
     outs.close()
   }
 
-
-  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def genericSetRef() {
-    // [id:1, value:JISC_Collections_NESLi2_Lic_IOP_Institute_of_Physics_NESLi2_2011-2012_01012011-31122012.., type:License, action:inPlaceSave, controller:ajax
-    // def clazz=grailsApplication.domainClasses.findByFullName(params.type)
-    log.debug("genericSetRef ${params}");
-
-    // params.elementid (The id from the html element)  must be formed as domain:pk:property:refdatacat:otherstuff
-    String[] oid_components = params.elementid.split(":");
-
-    def domain_class=grailsApplication.getArtefact('Domain',"com.k_int.kbplus.${oid_components[0]}")
-    def result = params.value
-
-
-    if ( domain_class ) {
-      def instance = domain_class.getClazz().get(oid_components[1])
-      if ( instance ) {
-        log.debug("Got instance ${instance}");
-        def rdv = RefdataCategory.lookupOrCreate(oid_components[3], params.value)
-        def binding_properties = [ "${oid_components[2]}":rdv ]
-        log.debug("Merge: ${binding_properties}");
-        // see http://grails.org/doc/latest/ref/Controllers/bindData.html
-        bindData(instance, binding_properties)
-        instance.save(flush:true);
-      }
-      else {
-        log.debug("no instance");
-      }
-    }
-    else {
-      log.debug("no type");
-    }
-
-    response.setContentType('text/plain')
-    def outs = response.outputStream
-    outs << result
-    outs.flush()
-    outs.close()
-  }
-
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def genericSetRel() {
     // [id:1, value:JISC_Collections_NESLi2_Lic_IOP_Institute_of_Physics_NESLi2_2011-2012_01012011-31122012.., type:License, action:inPlaceSave, controller:ajax
@@ -252,7 +212,7 @@ class AjaxController {
     log.debug("genericSetRel ${params}");
 
     // params.elementid (The id from the html element)  must be formed as domain:pk:property:refdatacat:otherstuff
-    String[] target_components = params.elementid.split(":");
+    String[] target_components = params.pk.split(":");
     String[] value_components = params.value.split(":");
 
     def target=resolveOID(target_components);
@@ -261,7 +221,7 @@ class AjaxController {
     def result = null
 
     if ( target && value ) {
-      def binding_properties = [ "${target_components[2]}":value ]
+      def binding_properties = [ "${params.name}":value ]
       bindData(target, binding_properties)
       target.save(flush:true);
       if ( params.resultProp ) {

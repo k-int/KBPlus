@@ -145,17 +145,7 @@
                   <dl>
                       <dt><label class="control-label" for="licenseeRef">Public?</label></dt>
                       <dd>
-                        <g:xEditableManyToOne owner="${license}" field="isPublic" config='YN'>
-                          <g:if test="${license.isPublic}"><span class="select-icon ${license.isPublic.icon}"/><span>${license.isPublic.value}</span></g:if>
-                        </g:xEditableManyToOne>
-                        <br/>
-                        
-                        <g:refdataValue val="${license.isPublic?.value}" 
-                                        domain="License" 
-                                        pk="${license.id}" 
-                                        field="isPublic" 
-                                        cat='YN' 
-                                        class="${editable?'ynrefdataedit':''}"/>
+                        <g:xEditableRefData owner="${license}" field="isPublic" config='YN'/>...
                       </dd>
                   </dl>
 
