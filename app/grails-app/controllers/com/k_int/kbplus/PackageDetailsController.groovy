@@ -13,16 +13,6 @@ class PackageDetailsController {
 
   def springSecurityService
 
-  Comparator title_list_comparator = new Comparator() {
-    int compare(Object o1, Object o2) {
-      return o1.title.id.compareTo(o2.title.id);
-    }
-    boolean equals(Object o1, Object o2) {
-      return o1.title.id.equals(o2.title.id);
-    }
-  }
-
-
     static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
 
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
@@ -190,6 +180,7 @@ class PackageDetailsController {
   }
 
   def reconcile(old_title_list, new_title_list) {
+    def title_list_comparator = new com.k_int.kbplus.utils.TitleComparator()
     Collections.sort(old_title_list, title_list_comparator)
     Collections.sort(new_title_list, title_list_comparator)
 

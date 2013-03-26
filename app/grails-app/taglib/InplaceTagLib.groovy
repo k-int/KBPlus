@@ -51,11 +51,19 @@ class InplaceTagLib {
     out << "</span>"
   }
 
+
+  /**
+   * Attributes:
+   *   owner - Object
+   *   field - property
+   *   id [optional] - 
+   *   class [optional] - additional classes
+   */
   def xEditable = { attrs, body ->
     def data_link = createLink(controller:'ajax', action: 'editableSetValue')
     def oid = "${attrs.owner.class.name}:${attrs.owner.id}"
     def id = attrs.id ?: "${oid}:${attrs.field}"
-    out << "<span id=\"${id}\" class=\"xEditableValue ${attrs.class?:''}\" data-type=\"textarea\" data-pk=\"${oid}\" data-name=\"${attrs.field}\" data-url=\"${data_link}\">"
+    out << "<span id=\"${id}\" class=\"xEditableValue ${attrs.class?:''}\" data-type=\"textarea\" data-pk=\"${oid}\" data-name=\"${attrs.field}\" data-source=\"${data_link}\">"
     if ( body ) {
       out << body()
     }
@@ -63,6 +71,16 @@ class InplaceTagLib {
       out << attrs.owner[attrs.field]
     }
     out << "</span>"
+  }
+  
+  def xEditableManyToOne = { attrs, body ->
+    // out << "editable many to one: <div id=\"${attrs.id}\" class=\"xEditableManyToOne\" data-type=\"select2\" data-config=\"${attrs.config}\" />"
+    def data_link = createLink(controller:'ajax', action: 'sel2RefdataSearch', params:[id:attrs.config,format:'json'])
+    def oid = "${attrs.owner.class.name}:${attrs.owner.id}"
+    def id = attrs.id ?: "${oid}:${attrs.field}"
+    out << "<a href=\"#\" id=\"${id}\" class=\"xEditableManyToOne\" data-pk=\"${oid}\" data-type=\"select\" data-name=\"${attrs.field}\" data-source=\"${data_link}\">"
+    out << body()
+    out << "</a>";
   }
 
   def relation = { attrs, body ->

@@ -263,28 +263,37 @@
             <a href="mailto:kbplus@jisc-collections.ac.uk?subject=KBPlus%20Support%20Query"><i class="icon-question-sign icon-white"></i>Request Support</a>
         </div>
 
-    <!--
-    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.4/zenbox.js"></script>
-    <style type="text/css" media="screen, projection">
-      @import url(//assets.zendesk.com/external/zenbox/v2.4/zenbox.css);
-    </style>
-    <script type="text/javascript">
-      if (typeof(Zenbox) !== "undefined") {
-        Zenbox.init({
-          dropboxID:   "20059881",
-          url:         "https://kbplus.zendesk.com",
-          tabID:       "feedback",
-          tabColor:    "green",
-          tabPosition: "Right"
-        });
-      }
-    </script>
-    -->
-
     <script language="JavaScript">
-      $(function(){
+
+      console.log("whaaaa");
+
+      // $(function(){
+      $(document).ready(function() {
+
         $.fn.editable.defaults.mode = 'inline';
+
         $('.xEditableValue').editable();
+
+        $(".xEditableManyToOne").editable();
+
+        $(".xEditableManyToTwo").select2({
+          placeholder: "Search for...",
+          // minimumInputLength: 1,
+          ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+            url: "<g:createLink controller='ajax' action='sel2RefdataSearch'/>",
+            dataType: 'json',
+            data: function (term, page) {
+                return {
+                    format:'json',
+                    q: term,
+                    id:$(this).data('config')
+                };
+            },
+            results: function (data, page) {
+              return {results: data.values};
+            }
+          },
+        });      
       });
     </script>
   </body>
