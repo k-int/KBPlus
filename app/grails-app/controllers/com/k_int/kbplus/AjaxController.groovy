@@ -353,7 +353,7 @@ class AjaxController {
       }
     }
 
-    //log.debug("refdataSearch returning ${result as JSON}");
+    // log.debug("refdataSearch returning ${result as JSON}");
     withFormat {
       html {
         result
@@ -364,49 +364,49 @@ class AjaxController {
     }
   }
 
-  def sel2RefdataSearch() {
+  //def sel2RefdataSearch() {
 
-    log.debug("sel2RefdataSearch params: ${params}");
+  //  log.debug("sel2RefdataSearch params: ${params}");
     
-    def result = []
+  //  def result = []
     
-    def config = refdata_config[params.id]
-    if ( config ) {
+  //  def config = refdata_config[params.id]
+  //  if ( config ) {
 
-      def query_params = []
-      config.qryParams.each { qp ->
-        if ( qp.clos ) {
-          query_params.add(qp.clos(params[qp.param]?:''));
-        }
-        else {
-          query_params.add(params[qp.param]);
-        }
-      }
+  //    def query_params = []
+  //    config.qryParams.each { qp ->
+  //      if ( qp.clos ) {
+  //        query_params.add(qp.clos(params[qp.param]?:''));
+  //      }
+  //      else {
+  //        query_params.add(params[qp.param]);
+  //      }
+  //    }
 
-      log.debug("Params: ${query_params}");
-      log.debug("Count qry: ${config.countQry}");
-      log.debug("Row qry: ${config.rowQry}");
+  //    log.debug("Params: ${query_params}");
+  //    log.debug("Count qry: ${config.countQry}");
+  //    log.debug("Row qry: ${config.rowQry}");
 
-      def cq = Org.executeQuery(config.countQry,query_params);    
-      def rq = Org.executeQuery(config.rowQry,
-                                query_params,
-                                [max:params.iDisplayLength?:10,offset:params.iDisplayStart?:0]);
+  //    def cq = Org.executeQuery(config.countQry,query_params);    
+  //    def rq = Org.executeQuery(config.rowQry,
+  //                              query_params,
+  //                              [max:params.iDisplayLength?:10,offset:params.iDisplayStart?:0]);
 
-      rq.each { it ->
-        result.add([value:"${it.class.name}:${it.id}",text:"${it[config.cols[0]]}"]);
-      }
-    }
+  //    rq.each { it ->
+  //      result.add([value:"${it.class.name}:${it.id}",text:"${it[config.cols[0]]}"]);
+  //    }
+  //  }
 
     //log.debug("refdataSearch returning ${result as JSON}");
-    withFormat {
-      html {
-        result
-      }
-      json {
-        render result as JSON
-      }
-    }
-  }
+  //  withFormat {
+  //    html {
+  //      result
+  //    }
+  //    json {
+  //      render result as JSON
+  //    }
+  //  }
+  // }
 
   def addOrgRole() {
     log.debug("addOrgRole ${params}");
@@ -447,6 +447,7 @@ class AjaxController {
       result.values = domain_class.getClazz().refdataFind(params);
     }
     else {
+      log.error("Unable to locate domain class ${params.baseClass}");
       result.values=[]
     }
     //result.values = [[id:'Person:45',text:'Fred'],

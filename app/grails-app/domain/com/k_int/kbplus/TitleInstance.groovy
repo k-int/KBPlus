@@ -401,4 +401,28 @@ class TitleInstance {
         }
         return c;
     }
+    
+    
+    
+  static def refdataFind(params) {
+    def result = [];
+    def ql = null;
+    ql = TitleInstance.findAllByTitleIlike("${params.q}%",params)
+
+    if ( ql ) {
+      ql.each { t ->
+        result.add([id:"${t.class.name}:${t.id}",text:"${t.title} (${t.identifiersAsString()})"])
+      }
+    }
+
+    result
+  }
+  
+  def identifiersAsString() {
+    def result = new StringWriter()
+    ids.each { id ->
+      result.write("${id.identifier.ns.ns}:${id.identifier.value} ");
+    }
+    return result.toString()
+  }
 }

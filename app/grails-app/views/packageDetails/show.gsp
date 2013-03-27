@@ -139,9 +139,10 @@
           <input type="hidden" name="__context" value="${packageInstance.class.name}:${packageInstance.id}"/>
           <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.TitleInstancePackagePlatform"/>
           <input type="hidden" name="__recip" value="pkg"/>
+          <g:simpleReferenceTypedown name="title" baseClass="com.k_int.kbplus.TitleInstance"/>
           <input type="hidden" name="title" id="addTitleSelect"/>
           <input type="hidden" name="platform" id="addTitleSelect"/>
-          <input type="submit" value="Add Identifier..."/>
+          <input type="submit" value="Add Title..."/>
          </g:form>
 
 

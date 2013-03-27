@@ -273,27 +273,30 @@
         $.fn.editable.defaults.mode = 'inline';
 
         $('.xEditableValue').editable();
-
         $(".xEditableManyToOne").editable();
 
-        $(".xEditableManyToTwo").select2({
+        console.log("whaaaa2");
+        
+        $(".simpleReferenceTypedown").select2({
           placeholder: "Search for...",
-          // minimumInputLength: 1,
+          minimumInputLength: 1,
           ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-            url: "<g:createLink controller='ajax' action='sel2RefdataSearch'/>",
+            url: "<g:createLink controller='ajax' action='lookup'/>",
             dataType: 'json',
             data: function (term, page) {
                 return {
                     format:'json',
                     q: term,
-                    id:$(this).data('config')
+                    baseClass:$(this).data('domain')
                 };
             },
             results: function (data, page) {
               return {results: data.values};
             }
-          },
-        });      
+          }
+        });
+        console.log("whaaaa3");
+
       });
     </script>
   </body>
