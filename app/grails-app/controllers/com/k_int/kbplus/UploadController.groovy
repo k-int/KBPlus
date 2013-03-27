@@ -378,8 +378,8 @@ class UploadController {
 	  
 	  def result = generateAndValidateSubOfferedIdentifier(upload) &&
 	               generateAndValidatePackageIdentifier(upload) &&
-                       validateConsortia(upload) &&
-		       validateColumnHeadings(upload)
+                 validateConsortia(upload) &&
+		             validateColumnHeadings(upload)
 			      	   
 		if ( upload.processFile ) {
 		  validateTipps(upload)
@@ -408,22 +408,22 @@ class UploadController {
       log.debug("tipp ID = ${tipp.ID}");
             
       if (!tipp.ID) {
-        tipp.messages.add("Title (row ${counter}) does not contain a valid ID");
+        tipp.messages.add("Title (row ${counter}) does not contain a valid ID (at least one of \"id.issn\", \"id.isbn\", \"id.eissn\" required)");
         upload.processFile=false;
       }
             
       if ( !validISSN(tipp.ID?.issn) ) {
-        tipp.messages.add("Title (row ${counter}) does not contain a valid ISSN");
+        tipp.messages.add("Title (row ${counter}) does not contain a valid ISSN (Column should be id.issn)");
         upload.processFile=false;
       }
       
       if ( ! validISSN(tipp.ID?.eissn) ) {
-        tipp.messages.add("Title (row ${counter}) does not contain a valid eISSN");
+        tipp.messages.add("Title (row ${counter}) does not contain a valid eISSN  (Column name should be id.eissn)");
         upload.processFile=false;
       }
 
       if ( ! validISBN(tipp.ID?.isbn) ) {
-        tipp.messages.add("Title (row ${counter}) does not contain a valid ISBN");
+        tipp.messages.add("Title (row ${counter}) does not contain a valid ISBN (Column name should be id.isbn)");
         upload.processFile=false;
       }
       
@@ -604,44 +604,23 @@ class UploadController {
   }
 
   def validateColumnHeadings(upload) {
-	return true;
-	       // checkColumnHeader(upload, 0,'publication_title') &&
-	       // checkColumnHeader(upload, 1,'print_identifier') &&
-		     // checkColumnHeader(upload, 2,'online_identifier') &&
- 		     // checkColumnHeader(upload, 3,'date_first_issue_online') &&
-		     // checkColumnHeader(upload, 4,'num_first_vol_online') &&
-		     // checkColumnHeader(upload, 5,'num_first_issue_online') &&
-		     // checkColumnHeader(upload, 6,'date_last_issue_online') &&
-		     // checkColumnHeader(upload, 7,'num_last_vol_online') &&
-		     // checkColumnHeader(upload, 8,'num_last_issue_online') &&
-		     // checkColumnHeader(upload, 9,'title_id') &&
-		     // checkColumnHeader(upload,10,'embargo_info') &&
-		     // checkColumnHeader(upload,11,'coverage_depth') &&
-		     // checkColumnHeader(upload,12,'coverage_notes') &&
-		     // checkColumnHeader(upload,13,'publisher_name') &&
-		     // checkColumnHeader(upload,14,'DOI') &&
-		     // checkProprietaryIds(upload) &&
-		     // checkPlatforms(upload)
-		   
+    dev cols_so_far = []
+    upload.soHeaderLine.each { p ->
+      if ( cols_so_far.contains(p) ) {
+        upload.messages.add("Field ${p} seems to be repeated in the header. This should never happen. If you are, for example, adding multiple admin platforms, please use the format platform.first.name, platform.second.name instead of simply repeating platform.name. This allows us to join together urls with corresponding values");
+        upload.process_file=false;
+      }
+    }		   
   }
   
   def checkColumnHeader(upload,col_position,col_name) {
     if ( upload.soHeaderLine[col_position] == col_name )
-	  return true
-	else {
-	  upload.messages.add("Expected column ${col_name} at position ${col_position}. Found ${upload.soHeaderLine[col_position]}")
-	  upload.processFile=false
-	  return false
-	}
+	    return true
+  	else {
+	    upload.messages.add("Expected column ${col_name} at position ${col_position}. Found ${upload.soHeaderLine[col_position]}")
+	    upload.processFile=false
+	    return false
+	  }
   }
   
-  def checkProprietaryIds(upload) {
-	return true
-  }
-  
-  def checkPlatforms(upload) {
-	return true
-  }
-  // result.soName = [origvalue:so_name_line[1]]
-
 }
