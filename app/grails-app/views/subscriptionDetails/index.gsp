@@ -103,13 +103,17 @@
                 <dl>
                     <dt>Package Name</dt>
                     <dd>
-                        <g:each in="${subscriptionInstance.packages}" var="sp">${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/></g:each>
+                        <g:each in="${subscriptionInstance.packages}" var="sp">
+<!--                          pkgName pName-->
+                            <g:xEditablePackageName owner="${sp.pkg}" id="name"/> (${sp.pkg?.contentProvider?.name}) <br/>
+                        </g:each>
                     </dd>
                 </dl>
 
                 <dl>
                   <dt>Public?</dt>
-                  <dd><g:refdataValue val="${subscriptionInstance.isPublic?.value}" domain="Subscription" pk="${subscriptionInstance.id}" field="isPublic" cat='YN' class="${editable?'ynrefdataedit':''}"/></dd>
+                  <dd><g:xEditableRefData owner="${subscriptionInstance}" field="isPublic" config='YN'/>...</dd>
+<!--                  <g:refdataValue val="${subscriptionInstance.isPublic?.value}" domain="Subscription" pk="${subscriptionInstance.id}" field="isPublic" cat='YN' class="${editable?'ynrefdataedit':''}"/></dd>-->
                 </dl> 
 
                 <dl><dt>Consortia</dt><dd>${subscriptionInstance.getConsortia()?.name}<br/></dd></dl>
