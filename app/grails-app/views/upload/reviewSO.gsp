@@ -39,6 +39,8 @@
             <button type="submit" class="btn btn-primary">Upload SO</button>
         </g:form>
         
+        <br/>
+
         <g:each in="${validationResult?.messages}" var="msg">
           <div class="alert alert-error">${msg}</div>
         </g:each>
@@ -47,8 +49,6 @@
         <g:if test="${validationResult}">
            <hr/>
 
-           ${validationResult.processFile}
-           
           <g:if test="${validationResult.processFile==true}">
             <bootstrap:alert class="alert-success">File passed validation checks, new SO details follow:<br/>
               <g:link controller="packageDetails" action="show" id="${validationResult.new_pkg_id}">New Package Details</g:link><br/>
@@ -56,7 +56,7 @@
             </bootstrap:alert>
           </g:if>
           <g:else>
-            <bootstrap:alert class="alert-error">File failed validation checks, details follow</bootstrap:alert>
+            <div class="alert alert-error">File failed validation checks, details follow</div>
           </g:else>
           <table class="table">
             <tbody>
