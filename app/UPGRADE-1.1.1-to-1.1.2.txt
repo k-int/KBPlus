@@ -7,7 +7,7 @@ delete from refdata_value where rdv_id in ( 92, 93, 94, 95, 96, 97, 98, 99, 100,
 
 update doc set doc_content_type = 2 where doc_title = 'Template Change notification';
 
-update refdata_value set rdv_icon = 'greenTick' where erdv_id = 70;
+update refdata_value set rdv_icon = 'greenTick' where rdv_id = 70;
 update refdata_value set rdv_icon = 'purpleQuestion' where rdv_id in (70, 71,89);
 
 
