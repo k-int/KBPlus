@@ -133,6 +133,16 @@
 
             </fieldset>
         </fieldset>
+        
+        <h3>Add title to package</h3>
+        <g:form controller="ajax" action="addToCollection">
+          <input type="hidden" name="__context" value="${packageInstance.class.name}:${packageInstance.id}"/>
+          <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.TitleInstancePackagePlatform"/>
+          <input type="hidden" name="__recip" value="pkg"/>
+          title: <g:simpleReferenceTypedown class="input-xxlarge" name="title" baseClass="com.k_int.kbplus.TitleInstance"/>
+          platform: <g:simpleReferenceTypedown class="input-large" name="platform" baseClass="com.k_int.kbplus.Platform"/>
+          <input type="submit" value="Add Title..."/>
+         </g:form>
 
 
       </div>

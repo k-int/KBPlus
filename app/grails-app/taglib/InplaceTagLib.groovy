@@ -145,7 +145,7 @@ class InplaceTagLib {
     out << "</span>"
   }
 
-   def xEditablePackageName = { attrs, body ->
+  def xEditablePackageName = { attrs, body ->
        
     def data_link = createLink(controller:'ajax', action:'editableSetValue')   
     def oid = "${attrs.owner.class.name}:${attrs.owner.id}"
@@ -162,4 +162,11 @@ class InplaceTagLib {
     out << "</span>"
    }
 
+  /**
+   * simpleReferenceTypedown - create a hidden input control that has the value fully.qualified.class:primary_key and which is editable with the
+   * user typing into the box. Takes advantage of refdataFind and refdataCreate methods on the domain class.
+   */ 
+  def simpleReferenceTypedown = { attrs, body ->
+    out << "<input type=\"hidden\" name=\"${attrs.name}\" data-domain=\"${attrs.baseClass}\" id=\"${attrs.org}\" class=\"simpleReferenceTypedown ${attrs.class}\" />"
+  }
 }

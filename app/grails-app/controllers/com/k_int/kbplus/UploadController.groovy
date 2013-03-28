@@ -22,7 +22,7 @@ class UploadController {
   def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
   
   def csv_column_config = [
-    'ID':[coltype:'map'],
+    'id':[coltype:'map'],
     'publication_title':[coltype:'simple'],
     'date_first_issue_online':[coltype:'simple'],
     'num_first_vol_online':[coltype:'simple'],
@@ -80,7 +80,6 @@ class UploadController {
       consortium = Org.findByName(upload.consortium.value) ?: new Org(name:upload.consortium.value).save();
     }
 
-
     def new_pkg = new Package(identifier:upload.soPackageIdentifier.value,
                               name:upload.soPackageName.value,
                               type:pkg_type,
@@ -130,7 +129,7 @@ class UploadController {
         }
       }
           
-      tipp.title_obj = lookupOrCreateTitleInstance(tipp.ID,tipp.publication_title,publisher);
+      tipp.title_obj = lookupOrCreateTitleInstance(tipp.id,tipp.publication_title,publisher);
       
       if ( tipp.title_obj && tipp.host_platform && new_pkg ) {
         // Got all the components we need to create a tipp
@@ -230,8 +229,8 @@ class UploadController {
         else {
           // Invalid date
           parsed_date = null
+        // log.debug("Parsed ${datestr} using ${formatter.toPattern()} : ${parsed_date}");
         }
-        log.debug("Parsed ${datestr} using ${formatter.toPattern()} : ${parsed_date}");
       }
       catch ( Exception e ) {
       }
@@ -273,8 +272,12 @@ class UploadController {
     processCsvLine(r.readNext(),'consortium',1,result,'str',null,false)
     
     // result['soName'].messages=['This is an soName message','And so is this'];
+    nl = r.readNext()
+    result.soHeaderLine = []
+    nl.each { h ->
+      result.soHeaderLine.add(h.toLowerCase());
+    }
     
-    result.soHeaderLine = r.readNext()
 
     result.tipps = []
     while ((nl = r.readNext()) != null) {
@@ -309,7 +312,7 @@ class UploadController {
             
               // If this is a simple map, like id.issn or id.eissn just set the value
               if ( column_components.length == 2 ) {
-                result[column_name][column_components[1]] = nl[i];    
+                result[column_name][column_components[1]] = nl[i].trim();    
               }
               else {
                 // We have an object like platform.host:1.name, platform.host:2.name
@@ -320,7 +323,7 @@ class UploadController {
                   // Add a coltype to the values, so platform.host.name gets a coltype of "host"
                   result[column_name][column_components[1]].coltype=column_types[0]
                 }
-                result[column_name][column_components[1]][column_components[2]] = nl[i]
+                result[column_name][column_components[1]][column_components[2]] = nl[i].trim();
               }
               break;
           } 
@@ -378,8 +381,8 @@ class UploadController {
 	  
 	  def result = generateAndValidateSubOfferedIdentifier(upload) &&
 	               generateAndValidatePackageIdentifier(upload) &&
-                       validateConsortia(upload) &&
-		       validateColumnHeadings(upload)
+                 validateConsortia(upload) &&
+		             validateColumnHeadings(upload)
 			      	   
 		if ( upload.processFile ) {
 		  validateTipps(upload)
@@ -394,6 +397,8 @@ class UploadController {
     
     int counter = 0;
     upload.tipps.each { tipp ->
+    
+      log.debug("Validate tipp: ${tipp}");
 
       if ( ( tipp.publication_title == null ) || ( tipp.publication_title.trim() == '' ) ) {
         tipp.messages.add("Title (row ${counter}) must not be empty");
@@ -405,37 +410,37 @@ class UploadController {
       //  upload.processFile=false;
       //}
       
-      log.debug("tipp ID = ${tipp.ID}");
+      log.debug("tipp id = ${tipp.id}");
             
-      if (!tipp.ID) {
-        tipp.messages.add("Title (row ${counter}) does not contain a valid ID");
+      if (!tipp.id) {
+        tipp.messages.add("Title (row ${counter}) does not contain a valid ID (at least one of \"id.issn\", \"id.isbn\", \"id.eissn\" required, found: ${tipp.id})");
         upload.processFile=false;
       }
             
-      if ( !validISSN(tipp.ID?.issn) ) {
-        tipp.messages.add("Title (row ${counter}) does not contain a valid ISSN");
+      if ( !validISSN(tipp.id?.issn) ) {
+        tipp.messages.add("Title (row ${counter}) does not contain a valid ISSN (Column should be id.issn, value in file was ${tipp.id?.issn})");
         upload.processFile=false;
       }
       
-      if ( ! validISSN(tipp.ID?.eissn) ) {
-        tipp.messages.add("Title (row ${counter}) does not contain a valid eISSN");
+      if ( ! validISSN(tipp.id?.eissn) ) {
+        tipp.messages.add("Title (row ${counter}) does not contain a valid eISSN  (Column name should be id.eissn, value in file was ${tipp.id?.issn})");
         upload.processFile=false;
       }
 
-      if ( ! validISBN(tipp.ID?.isbn) ) {
-        tipp.messages.add("Title (row ${counter}) does not contain a valid ISBN");
+      if ( ! validISBN(tipp.id?.isbn) ) {
+        tipp.messages.add("Title (row ${counter}) does not contain a valid ISBN (Column name should be id.isbn,value in file was ${tipp.id?.issn})");
         upload.processFile=false;
       }
       
-      if ( tipp.ID ) {
+      if ( tipp.id ) {
         ["issn", "eissn", "isbn", "doi"].each { idtype ->
-          if ( ( tipp.ID[idtype] ) && ( tipp.ID[idtype] != '' ) ) {
-            if ( id_list.contains(tipp.ID[idtype]) ) {
+          if ( ( tipp.id[idtype] ) && ( tipp.id[idtype] != '' ) ) {
+            if ( id_list.contains(tipp.id[idtype]) ) {
               tipp.messages.add("Title (row ${counter}) contains a repeated ${idtype} - ${tipp[idtype].origValue}");
               upload.processFile=false;
             }
             else {
-              id_list.add(tipp.ID[idtype])
+              id_list.add(tipp.id[idtype])
             }
           }
         }
@@ -485,7 +490,7 @@ class UploadController {
         upload.processFile=false;                             
       }
       else {
-        log.debug("${tipp.coverage_depth} is valid");
+        // log.debug("${tipp.coverage_depth} is valid");
         //  tipp.messages.add("Missing tipp coverage depth");
         //  upload.processFile=false;                                     
 
@@ -604,44 +609,20 @@ class UploadController {
   }
 
   def validateColumnHeadings(upload) {
-	return true;
-	       // checkColumnHeader(upload, 0,'publication_title') &&
-	       // checkColumnHeader(upload, 1,'print_identifier') &&
-		     // checkColumnHeader(upload, 2,'online_identifier') &&
- 		     // checkColumnHeader(upload, 3,'date_first_issue_online') &&
-		     // checkColumnHeader(upload, 4,'num_first_vol_online') &&
-		     // checkColumnHeader(upload, 5,'num_first_issue_online') &&
-		     // checkColumnHeader(upload, 6,'date_last_issue_online') &&
-		     // checkColumnHeader(upload, 7,'num_last_vol_online') &&
-		     // checkColumnHeader(upload, 8,'num_last_issue_online') &&
-		     // checkColumnHeader(upload, 9,'title_id') &&
-		     // checkColumnHeader(upload,10,'embargo_info') &&
-		     // checkColumnHeader(upload,11,'coverage_depth') &&
-		     // checkColumnHeader(upload,12,'coverage_notes') &&
-		     // checkColumnHeader(upload,13,'publisher_name') &&
-		     // checkColumnHeader(upload,14,'DOI') &&
-		     // checkProprietaryIds(upload) &&
-		     // checkPlatforms(upload)
-		   
+    def cols_so_far = []
+    int col = 0;
+    upload.soHeaderLine.each { p ->
+      if ( p.trim() != '' ) {
+        if ( cols_so_far.contains(p) ) {
+          upload.messages.add("Field ${p} (col ${col}) seems to be repeated in the header. This should never happen. If you are, for example, adding multiple admin platforms, please use the format platform.first.name, platform.second.name instead of simply repeating platform.name. This allows us to join together urls with corresponding values");
+          upload.process_file=false;
+        }
+        else {
+          cols_so_far.add(p);
+        }
+      }
+      col++
+    }		   
   }
   
-  def checkColumnHeader(upload,col_position,col_name) {
-    if ( upload.soHeaderLine[col_position] == col_name )
-	  return true
-	else {
-	  upload.messages.add("Expected column ${col_name} at position ${col_position}. Found ${upload.soHeaderLine[col_position]}")
-	  upload.processFile=false
-	  return false
-	}
-  }
-  
-  def checkProprietaryIds(upload) {
-	return true
-  }
-  
-  def checkPlatforms(upload) {
-	return true
-  }
-  // result.soName = [origvalue:so_name_line[1]]
-
 }
