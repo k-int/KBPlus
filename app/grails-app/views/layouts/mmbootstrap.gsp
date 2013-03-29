@@ -40,7 +40,7 @@
     <!-- For select2 -->
     <link href="${resource(dir: 'css', file: 'select2.css')}" rel="stylesheet"/>
     <script src="${resource(dir: 'js', file: 'select2.js')}"></script>
-    <script src="${resource(dir: 'js', file: 'momemnt-min.js')}"></script>
+    <script src="${resource(dir: 'js', file: 'moment.min.js')}"></script>
     
     <script type="text/javascript">
       var _gaq = _gaq || [];
