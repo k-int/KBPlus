@@ -186,36 +186,35 @@
                     <td><g:singleValueFieldNote domain="concurrentUsers" value="${license.getNote('concurrentUsers')}" class="${editable?'fieldNote':''}"/></td></tr>
   
                 <tr><td>Remote Access</td>
-                    <td><g:refdataValue val="${license.remoteAccess?.value}" domain="License" pk="${license.id}" field="remoteAccess" cat='YNO' class="${editable?'refdataedit':''}"/></td>
-                    <td><g:singleValueFieldNote domain="remoteAccess" value="${license.getNote('remoteAccess')}" class="${editable?'fieldNote':''}"/></td></tr>
-  
+                    <td><g:xEditableRefData owner="${license}" field="remoteAccess" config='YN' /></td>
+                    <td><g:xEditableFieldNote owner="${license}" field="remoteAccess" id="remoteAccess" class="${editable?'refdataedit':''}"/></td></tr>  
                 <tr><td>Walk In Access</td>
-                    <td><g:refdataValue val="${license.walkinAccess?.value}" domain="License" pk="${license.id}" field="walkinAccess" cat='YNO' class="${editable?'refdataedit':''}"/></td>
-                    <td><g:singleValueFieldNote domain="walkinAccess" value="${license.getNote('walkinAccess')}" class="${editable?'fieldNote':''}"/></td></tr>
+                     <td><g:xEditableRefData owner="${license}" field="walkinAccess" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableFieldNote owner="${license}" field="walkinAccess" id="walkinAccess"/></td></tr>
                 <tr><td>Multi Site Access</td>
-                    <td><g:refdataValue val="${license.multisiteAccess?.value}" domain="License" pk="${license.id}" field="multisiteAccess" cat='YNO' class="${editable?'refdataedit':''}"/></td>
-                    <td><g:singleValueFieldNote domain="multisiteAccess" value="${license.getNote('multisiteAccess')}" class="${editable?'fieldNote':''}"/></td></tr>
+                    <td><g:xEditableRefData owner="${license}" field="multisiteAccess" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableFieldNote owner="${license}" field="multisiteAccess" id="multisiteAccess"/></td></tr>
                 <tr><td>Partners Access</td>
-                    <td><g:refdataValue val="${license.partnersAccess?.value}" domain="License" pk="${license.id}" field="partnersAccess" cat='YNO' class="${editable?'refdataedit':''}"/></td>
-                    <td><g:singleValueFieldNote domain="partnersAccess" value="${license.getNote('partnersAccess')}" class="${editable?'fieldNote':''}"/></td></tr>
+                    <td><g:xEditableRefData owner="${license}" field="partnersAccess" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableFieldNote owner="${license}" field="partnersAccess" id="partnersAccess"/></td></tr>
                 <tr><td>Alumni Access</td>
-                    <td><g:refdataValue val="${license.alumniAccess?.value}" domain="License" pk="${license.id}" field="alumniAccess" cat='YNO' class="${editable?'refdataedit':''}"/></td>
-                    <td><g:singleValueFieldNote domain="alumniAccess" value="${license.getNote('alumniAccess')}" class="${editable?'fieldNote':''}"/></td></tr>
+                    <td><g:xEditableRefData owner="${license}" field="alumniAccess" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableFieldNote owner="${license}" field="alumniAccess" id="alumniAccess"/></td></tr>
                 <tr><td>ILL - Inter Library Loans</td>
-                    <td><g:refdataValue val="${license.ill?.value}" domain="License" pk="${license.id}" field="ill" cat='YNO' class="${editable?'refdataedit':''}"/></td>
-                    <td><g:singleValueFieldNote domain="ill" value="${license.getNote('ill')}" class="${editable?'fieldNote':''}"/></td></tr>
+                    <td><g:xEditableRefData owner="${license}" field="ill" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableFieldNote owner="${license}" field="ill" id="ill"/></td></tr>
                 <tr><td>Include In Coursepacks</td>
-                    <td><g:refdataValue val="${license.coursepack?.value}" domain="License" pk="${license.id}" field="coursepack" cat='YNO' class="${editable?'refdataedit':''}"/></td>
-                    <td><g:singleValueFieldNote domain="coursepack" value="${license.getNote('coursepack')}" class="${editable?'fieldNote':''}"/></td></tr>
+                    <td><g:xEditableRefData owner="${license}" field="coursepack" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableFieldNote owner="${license}" field="coursepack" id="coursepack"/></td></tr>
                 <tr><td>Include in VLE</td>
-                    <td><g:refdataValue val="${license.vle?.value}" domain="License" pk="${license.id}" field="vle" cat='YNO' class="${editable?'refdataedit':''}"/></td>
-                    <td><g:singleValueFieldNote domain="vle" value="${license.getNote('vle')}" class="${editable?'fieldNote':''}"/></td></tr>
+                    <td><g:xEditableRefData owner="${license}" field="vle" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableFieldNote owner="${license}" field="vle" id="vle"/></td></tr>
                 <tr><td>Enterprise Access</td>
-                    <td><g:refdataValue val="${license.enterprise?.value}" domain="License" pk="${license.id}" field="enterprise" cat='YNO' class="${editable?'refdataedit':''}"/></td>
-                    <td><g:singleValueFieldNote domain="enterprise" value="${license.getNote('enterprise')}" class="${editable?'fieldNote':''}"/></td></tr>
+                    <td><g:xEditableRefData owner="${license}" field='enterprise' config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableFieldNote owner="${license}" field="enterprise" id="enterprise"/></td></tr>
                 <tr><td>Post Cancellation Access Entitlement</td>
-                    <td><g:refdataValue val="${license.pca?.value}" domain="License" pk="${license.id}" field="pca" cat='YNO' class="${editable?'refdataedit':''}"/></td>
-                    <td><g:singleValueFieldNote domain="pca" value="${license.getNote('pca')}" class="${editable?'fieldNote':''}"/></td></tr>
+                    <td><g:xEditableRefData owner="${license}" field="pca" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableFieldNote owner="${license}" field="pca" id="pca"/></td></tr>
               </tbody>
             </table>
   

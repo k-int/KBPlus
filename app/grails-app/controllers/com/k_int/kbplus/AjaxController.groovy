@@ -146,6 +146,34 @@ class AjaxController {
     outs.close()
   }
 
+   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def setFieldTableNote() {
+      println "Params:"+params
+    def domain_class=grailsApplication.getArtefact('Domain',"com.k_int.kbplus.${params.type}")
+    if ( domain_class ) {
+        println params.id
+      def instance = domain_class.getClazz().get(params.id)
+       
+      if ( instance ) {
+           String temp = '__fieldNote_'+params.name
+        if ( temp?.startsWith('__fieldNote_') ) {
+          def note_domain = temp.substring(12)
+          println "note_domain: " + note_domain +" : "+ params.value
+          instance.setNote(note_domain, params.value);
+          instance.save(flush:true)
+        }
+      }
+    }
+    else {
+      log.error("no type");
+    }
+
+    response.setContentType('text/plain')
+    def outs = response.outputStream
+    outs << params.value
+    outs.flush()
+    outs.close()
+  }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def genericSetValue() {
@@ -565,6 +593,7 @@ class AjaxController {
   }
 
   def editableSetValue() {
+    println "params: "+params
     log.debug("editableSetValue ${params}");
     def target_object = resolveOID2(params.pk)
     if ( target_object ) {
