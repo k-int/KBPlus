@@ -265,7 +265,10 @@ class AjaxController {
         result = value[params.resultProp]
       }
       else {
-        result = value.toString()
+        if ( value ) {
+          result = renderObjectValue(value);
+          // result = value.toString()
+        }
       }
     }
     else {
@@ -633,4 +636,27 @@ class AjaxController {
     }
     redirect(url: request.getHeader('referer'))    
   }
+
+  /**
+   * ToDo: This function is a duplicate of the one found in InplaceTagLib, both should be moved to a shared static utility
+   */
+  def renderObjectValue(value) {
+    def result=''
+    if ( value ) {
+      switch ( value.class ) {
+        case com.k_int.kbplus.RefdataValue.class:
+          if ( value.icon != null ) {
+            result="<span class=\"select-icon ${attrs.owner[attrs.field].icon}\"></span>"
+          }
+          else {
+            result=value.value
+          }
+          break;
+        default:
+          result=value.toString();
+      }
+    }
+    result;
+  }
+
 }

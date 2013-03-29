@@ -105,20 +105,36 @@ class InplaceTagLib {
    
     out << "<span>"
    
-    // If there is an icon class, output it
-    if ( attrs.owner[attrs.field]?.icon ) {
-      out << "<span class=\"select-icon ${attrs.owner[attrs.field].icon}\"></span>"
-    }
-    
     // Output an editable link
     out << "<span id=\"${id}\" class=\"xEditableManyToOne\" data-pk=\"${oid}\" data-type=\"select\" data-name=\"${attrs.field}\" data-source=\"${data_link}\" data-url=\"${update_link}\">"
 
-    // If there is a value, output it
-    if ( attrs.owner[attrs.field] ) {
-      out << attrs.owner[attrs.field].value
-    }
+    // Here we can register different ways of presenting object references. The most pressing need to be
+    // outputting a span containing an icon for refdata fields.
+    out << renderObjectValue(attrs.owner[attrs.field])
 
     out << "</span></span>"
+  }
+
+  /**
+   * ToDo: This function is a duplicate of the one found in AjaxController, both should be moved to a shared static utility
+   */
+  def renderObjectValue(value) {
+    def result=''
+    if ( value ) {
+      switch ( value.class ) {
+        case com.k_int.kbplus.RefdataValue.class:
+          if ( value.icon != null ) {
+            result="<span class=\"select-icon ${attrs.owner[attrs.field].icon}\"></span>"
+          }
+          else {
+            result=value.value
+          }
+          break;
+        default:
+          result=value.toString();
+      }
+    }
+    result;
   }
   
   def xEditableManyToOne = { attrs, body ->
