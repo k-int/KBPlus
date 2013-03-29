@@ -59,22 +59,42 @@ class InplaceTagLib {
    *   class [optional] - additional classes
    */
   def xEditable = { attrs, body ->
-    def data_link = createLink(controller:'ajax', action: 'editableSetValue')
     def oid = "${attrs.owner.class.name}:${attrs.owner.id}"
     def id = attrs.id ?: "${oid}:${attrs.field}"
+
     out << "<span id=\"${id}\" class=\"xEditableValue ${attrs.class?:''}\""
     out << " data-type=\"${attrs.type?:'textarea'}\" data-pk=\"${oid}\""
     out << " data-name=\"${attrs.field}\""
+
+    def data_link = null
+    switch ( attrs.type ) {
+      case 'date':
+        data_link = createLink(controller:'ajax', action: 'editableSetValue', params:[type:'date',format:'yyyy/MM/dd'])
+        break;
+      case 'string':
+      default:
+        data_link = createLink(controller:'ajax', action: 'editableSetValue')
+        break;
+    }
+
     out << " data-url=\"${data_link}\""
     out << ">"
+
     if ( body ) {
       out << body()
     }
     else {
-      out << attrs.owner[attrs.field]
+      if ( attrs.owner[attrs.field] && attrs.type=='date' && attrs.format ) {
+        def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd')
+        out << sdf.format(attrs.owner[attrs.field])
+      }
+      else {
+        out << attrs.owner[attrs.field]
+      }
     }
     out << "</span>"
   }
+
 
   def xEditableRefData = { attrs, body ->
     // out << "editable many to one: <div id=\"${attrs.id}\" class=\"xEditableManyToOne\" data-type=\"select2\" data-config=\"${attrs.config}\" />"

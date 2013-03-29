@@ -595,12 +595,17 @@ class AjaxController {
     redirect(url: request.getHeader('referer'))    
   }
 
+
   def editableSetValue() {
-    println "params: "+params
     log.debug("editableSetValue ${params}");
     def target_object = resolveOID2(params.pk)
     if ( target_object ) {
-      target_object."${params.name}" = params.value
+      if ( params.type=='date' ) {
+        target_object."${params.name}" = params.date('value','yyyy-MM-dd')
+      }
+      else {
+        target_object."${params.name}" = params.value
+      }
       target_object.save(flush:true);
     }
 
