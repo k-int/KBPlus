@@ -124,7 +124,7 @@ class InplaceTagLib {
       switch ( value.class ) {
         case com.k_int.kbplus.RefdataValue.class:
           if ( value.icon != null ) {
-            result="<span class=\"select-icon ${attrs.owner[attrs.field].icon}\"></span>"
+            result="<span class=\"select-icon ${value.icon}\"></span>${value.value}"
           }
           else {
             result=value.value

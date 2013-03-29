@@ -275,11 +275,14 @@ class AjaxController {
       log.debug("no type (target=${target_components}, value=${value_components}");
     }
 
-    response.setContentType('text/plain')
-    def outs = response.outputStream
-    outs << result
-    outs.flush()
-    outs.close()
+    // response.setContentType('text/plain')
+    def resp = [ newValue: result ]
+    log.debug("return ${resp as JSON}");
+    render resp as JSON
+    //def outs = response.outputStream
+    //outs << result
+    //outs.flush()
+    //outs.close()
   }
 
   def resolveOID(oid_components) {
@@ -646,7 +649,7 @@ class AjaxController {
       switch ( value.class ) {
         case com.k_int.kbplus.RefdataValue.class:
           if ( value.icon != null ) {
-            result="<span class=\"select-icon ${attrs.owner[attrs.field].icon}\"></span>"
+            result="<span class=\"select-icon ${value.icon}\"></span>${value.value}"
           }
           else {
             result=value.value
@@ -654,8 +657,10 @@ class AjaxController {
           break;
         default:
           result=value.toString();
+          break;
       }
     }
+    // log.debug("Result of render: ${value} : ${result}");
     result;
   }
 
