@@ -62,7 +62,11 @@ class InplaceTagLib {
     def data_link = createLink(controller:'ajax', action: 'editableSetValue')
     def oid = "${attrs.owner.class.name}:${attrs.owner.id}"
     def id = attrs.id ?: "${oid}:${attrs.field}"
-    out << "<span id=\"${id}\" class=\"xEditableValue ${attrs.class?:''}\" data-type=\"textarea\" data-pk=\"${oid}\" data-name=\"${attrs.field}\" data-url=\"${data_link}\" >"
+    out << "<span id=\"${id}\" class=\"xEditableValue ${attrs.class?:''}\""
+    out << " data-type=\"${attrs.type?:'textarea'}\" data-pk=\"${oid}\""
+    out << " data-name=\"${attrs.field}\""
+    out << " data-url=\"${data_link}\""
+    out << ">"
     if ( body ) {
       out << body()
     }

@@ -29,7 +29,7 @@
           </g:if>
         
           <dt>TIPP Start Date</dt>
-          <dd><g:xEditable owner="${tipp}" field="startDate"/></dd>
+          <dd><g:xEditable owner="${tipp}" type="date" field="startDate"/></dd>
 
           <dt>TIPP Start Volume</dt>
           <dd><g:xEditable owner="${tipp}" field="startVolume"/></dd>
@@ -38,7 +38,7 @@
           <dd><g:xEditable owner="${tipp}" field="startIssue"/></dd>
 
           <dt>TIPP End Date</dt>
-          <dd><g:xEditable owner="${tipp}" field="endDate"/></dd>
+          <dd><g:xEditable owner="${tipp}"  type="date" field="endDate"/></dd>
 
           <dt>TIPP End Volume</dt>
           <dd><g:xEditable owner="${tipp}" field="endVolume"/></dd>
