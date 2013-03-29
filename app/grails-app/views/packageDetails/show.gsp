@@ -92,6 +92,7 @@
                    ${t.title.title}
                    <g:link controller="titleDetails" action="edit" id="${t.title.id}">(Title)</g:link>
                    <g:link controller="tipp" action="show" id="${t.id}">(TIPP)</g:link>
+                   (<g:xEditableRefData owner="${t}" field="status" config='TIPPStatus'/>)
                 </td>
                 <td style="white-space: nowrap;vertical-align:top;">${t.platform?.name}</td>
                 <td style="white-space: nowrap;vertical-align:top;">
@@ -101,15 +102,13 @@
                 </td>
 
                 <td style="white-space: nowrap">
-                  Date: <g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.startDate}"/>
-                        <input id="TitleInstancePackagePlatform:${t.id}:startDate" type="hidden" class="dp1" /><br/>
+                  Date: <g:xEditable owner="${t}" type="date" field="startDate" /><br/>
                   Volume: <g:xEditable owner="${t}" field="startVolume" /><br/>
                   Issue: <g:xEditable owner="${t}" field="startIssue" />     
                 </td>
 
                 <td style="white-space: nowrap"> 
-                   Date:<g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.endDate}"/>
-                    <input id="TitleInstancePackagePlatform:${t.id}:endDate" type="hidden" class="dp1" /><br/>
+                   Date: <g:xEditable owner="${t}" type="date" field="endDate" /><br/>
                    Volume: <g:xEditable owner="${t}" field="endVolume" /><br/>
                    Issue: <g:xEditable owner="${t}" field="endIssue" />
                 </td>

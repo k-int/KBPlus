@@ -48,7 +48,16 @@ class AjaxController {
       qryParams:[],
       cols:['value'],
       format:'simple'
+    ],
+    'TIPPStatus' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TIPP Status'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='TIPP Status'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
     ]
+
 
   ]
 
