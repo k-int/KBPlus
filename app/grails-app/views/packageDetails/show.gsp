@@ -67,11 +67,7 @@
               <dl>
                 <dt>Package Type</dt>
                 <dd>
-                  <g:relation domain='Package'
-                            pk='${packageInstance?.id}'
-                            field='packageType'
-                            class='refdataedit'
-                            id='PackageType'>${packageInstance?.packageType?.value?:'Not set'}</g:relation>
+                  <g:xEditableRefData owner="${packageInstance}" field="packageType" config='PackageType'/>
                 </dd>
               </dl>
 

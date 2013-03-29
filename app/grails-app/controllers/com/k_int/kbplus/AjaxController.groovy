@@ -424,6 +424,9 @@ class AjaxController {
         result.add([value:"${it.class.name}:${it.id}",text:"${it[config.cols[0]]}"]);
       }
     }
+    else {
+      log.error("No config for refdata search ${params.id}");
+    }
 
     //log.debug("refdataSearch returning ${result as JSON}");
     withFormat {

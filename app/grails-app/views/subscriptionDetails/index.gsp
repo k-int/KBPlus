@@ -104,7 +104,6 @@
                     <dt>Package Name</dt>
                     <dd>
                         <g:each in="${subscriptionInstance.packages}" var="sp">
-<!--                          pkgName pName-->
                             <g:xEditable owner="${sp.pkg}" field="name" /> (${sp.pkg?.contentProvider?.name}) <br/>
                         </g:each>
                     </dd>
