@@ -105,15 +105,16 @@
                     <dd>
                         <g:each in="${subscriptionInstance.packages}" var="sp">
 <!--                          pkgName pName-->
-                            <g:xEditablePackageName owner="${sp.pkg}" id="name"/> (${sp.pkg?.contentProvider?.name}) <br/>
+                            <g:xEditable owner="${sp.pkg}" field="name" /> (${sp.pkg?.contentProvider?.name}) <br/>
                         </g:each>
                     </dd>
                 </dl>
 
                 <dl>
                   <dt>Public?</dt>
-                  <dd><g:xEditableRefData owner="${subscriptionInstance}" field="isPublic" config='YN'/>...</dd>
-<!--                  <g:refdataValue val="${subscriptionInstance.isPublic?.value}" domain="Subscription" pk="${subscriptionInstance.id}" field="isPublic" cat='YN' class="${editable?'ynrefdataedit':''}"/></dd>-->
+                  <dd>
+                    <g:xEditableRefData owner="${subscriptionInstance}" field="isPublic" config='YN'/>
+                  </dd>
                 </dl> 
 
                 <dl><dt>Consortia</dt><dd>${subscriptionInstance.getConsortia()?.name}<br/></dd></dl>
@@ -266,79 +267,7 @@
       <g:if test="${editable}">
       $(document).ready(function() {
       
-         $.fn.editable.defaults.mode = 'inline';
-         $('.xEditableValue').editable();
-
-        var datepicker_config = {
-          buttonImage: '../../images/calendar.gif',
-          buttonImageOnly: true,
-          changeMonth: true,
-          changeYear: true,
-          showOn: 'both',
-          showButtonPanel: true,
-          showClearButton: true,
-          clearText: "Clear",
-          onSelect: function(dateText, inst) { 
-            var elem_id = inst.input[0].id;
-            $.ajax({url: '<g:createLink controller="ajax" action="genericSetValue"/>?elementid='+
-                             elem_id+'&value='+dateText+'&dt=date&idf=MM/dd/yyyy&odf=${session.sessionPreferences?.globalDateFormat}',
-                   success: function(result){inst.input.parent().find('span').html(result)}
-                   });
-          },
-          beforeShow: function( input ) {
-            setTimeout(function() {
-                var buttonPane = $( input )
-                    .datepicker( "widget" )
-                    .find( ".ui-datepicker-buttonpane" );
-    
-                $( "<button/>", {
-                    text: "Clear",
-                    click: function() {
-                      // var parent=$(this).parent('.dp1')
-                      console.log("%o",input)
-                      $(input).parent().find('span.datevalue').html("")
-                      $.ajax({url: '<g:createLink controller="ajax" action="genericSetValue"/>?elementid='+input.id+'&value=__NULL__',});
-                      $(input).value="__NULL__"
-                    }
-                }).appendTo( buttonPane ).addClass("ui-datepicker-clear ui-state-default ui-priority-primary ui-corner-all");
-            }, 1 );
-          }
-        };
-
-        $("input.dp1").datepicker(datepicker_config);
-
-        $("input.hdp").datepicker({
-          buttonImage: '../../images/calendar.gif',
-          buttonImageOnly: true,
-          changeMonth: true,
-          changeYear: true,
-          showOn: 'both',
-          showButtonPanel: true,
-          showClearButton: true,
-          onSelect: function(dateText, inst) {
-            inst.input.parent().find('span').html(dateText)
-          }
-        });
-
-        $('span.fieldNote').editable('<g:createLink controller="ajax" action="genericSetValue"/>', {
-          type      : 'textarea',
-          cancel    : 'Cancel',
-          submit    : 'OK',
-          id        : 'elementid',
-          rows      : 3,
-          tooltip   : 'Click to edit...',
-          onblur    : 'ignore'
-        });
-
-        $('.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" />', {
-           type      : 'textarea',
-           cancel    : 'Cancel',
-           submit    : 'OK',
-           id        : 'elementid',
-           rows      : 3,
-           tooltip   : 'Click to edit...',
-           onblur        : 'ignore'
-         });
+        $.fn.editable.defaults.mode = 'inline';
 
         $('span.entitlementBatchEdit').editable(function(value, settings) { 
           $("#bulk_core").val(value);
@@ -358,108 +287,6 @@
           $("#bulk_coverage").val(value);
           return(value);
         },{type:'textarea',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px', onblur:'ignore'});
-
-        $('td span.cuedit').editable('<g:createLink controller="ajax" action="genericSetValue" />', {
-           data   : {'true':'true', 'false':'false'},
-           type   : 'select',
-           cancel : 'Cancel',
-           submit : 'OK',
-           id     : 'elementid',
-           tooltip: 'Click to edit...'
-         });
-
-         $('.ynrefdataedit').editable('<g:createLink controller="ajax" action="genericSetRef" />', {
-           data   : {'Yes':'Yes', 'No':'No'},
-           type   : 'select',
-           cancel : 'Cancel',
-           submit : 'OK',
-           id     : 'elementid',
-           tooltip: 'Click to edit...',
-           onblur        : 'ignore',
-           callback : function(value) {
-               var iconList = {
-                   'Yes' : 'greenTick',
-                   'No' : 'redCross'
-               };
-
-               var icon = $(document.createElement('span'));
-               $(this).prepend(icon.addClass('select-icon').addClass(iconList[value]));
-           }
-         });
-
-         $('dd span.reldataedit').editable('<g:createLink controller="ajax" params="${[resultProp:'reference']}" action="genericSetRel" />', {
-           loadurl: '<g:createLink controller="MyInstitutions" params="${[shortcode:subscriptionInstance.subscriber?.shortcode]}" action="availableLicenses" />',
-           type   : 'select',
-           cancel : 'Cancel',
-           submit : 'OK',
-           id     : 'elementid',
-           tooltip: 'Click to edit...',
-           callback : function(value, settings) {
-           }
-         });
-
-         $('.corestatusedit').editable('<g:createLink controller="ajax" params="${[resultProp:'value']}" action="genericSetRel" />', {
-           loadurl: '<g:createLink controller="ajax" params="${[id:'CoreStatus',format:'json']}" action="refdataSearch" />',
-           type   : 'select',
-           cancel : 'Cancel',
-           submit : 'OK',
-           id     : 'elementid',
-           tooltip: 'Click to edit...',
-           callback : function(value, settings) {
-           }
-         });
-
-         var checkEmptyEditable = function() {
-           $('.ipe, .ynrefdataedit, .fieldNote, .isedit').each(function() {
-             if($(this).text().length == 0) {
-               $(this).addClass('editableEmpty');
-             } else {
-               $(this).removeClass('editableEmpty');
-             }
-           });
-         }
-
-         // On jEditable click remove the hide the icon and show it 
-         // when one of the buttons are clicked or ESC is hit.
-         $('.ipe, .intedit, .ynrefdataedit, .cuedit, .fieldNote, .newipe, .isedit').click(function() {
-            // Ensure we're not clicking in an editing element.
-            if($(this).hasClass('clicked')) {
-                return;
-            }
-            
-         	// Hide edit icon with overwriting style.
-         	$(this).addClass('clicked');
-            
-            var e = $(this);
-            
-            var outsideElements;
-                        
-            setTimeout(function() {
-                outsideElements = e.parent().find("span:not(.clicked)");
-                console.log(outsideElements);
-                outsideElements.hide();
-            }, 1);
-         	
-         	var removeClicked = function() {
-         		setTimeout(function() {
-         			e.removeClass('clicked');
-         			if(outsideElements) {
-         				outsideElements.show();
-         			}
-         		}, 1);
-         	}
-         	
-         	setTimeout(function() {
-         		e.find('form button').click(function() {
-         			removeClicked();
-         		});
-         		e.keydown(function(event) {
-         			if(event.keyCode == 27) {
-         				removeClicked();
-         			}
-         		});
-         	}, 1);
-         });
 
         $(".announce").click(function(){
            var id = $(this).data('id');

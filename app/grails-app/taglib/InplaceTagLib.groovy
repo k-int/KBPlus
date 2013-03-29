@@ -51,8 +51,6 @@ class InplaceTagLib {
     out << "</span>"
   }
   
- 
-
   /**
    * Attributes:
    *   owner - Object
@@ -64,7 +62,6 @@ class InplaceTagLib {
     def data_link = createLink(controller:'ajax', action: 'editableSetValue')
     def oid = "${attrs.owner.class.name}:${attrs.owner.id}"
     def id = attrs.id ?: "${oid}:${attrs.field}"
-    println "id: "+ id + ", oid: "+oid
     out << "<span id=\"${id}\" class=\"xEditableValue ${attrs.class?:''}\" data-type=\"textarea\" data-pk=\"${oid}\" data-name=\"${attrs.field}\" data-url=\"${data_link}\" >"
     if ( body ) {
       out << body()
@@ -145,22 +142,7 @@ class InplaceTagLib {
     out << "</span>"
   }
 
-  def xEditablePackageName = { attrs, body ->
-       
-    def data_link = createLink(controller:'ajax', action:'editableSetValue')   
-    def oid = "${attrs.owner.class.name}:${attrs.owner.id}"
-    def id = attrs.id ?: "${oid}:${attrs.field}"
-    println "id: "+ id + ", oid: "+oid
-    def org = "${attrs.owner.name}"
-    out << "<span id=\"${id}\" class=\"xEditableValue\" data-type=\"textarea\" data-pk=\"${oid}\" data-name=\"${attrs.field}\" data-url=\"${data_link}\"  data-original-title=\"${org}\">"
-    if ( body ) {
-      out << body()
-    }
-    else {
-      out << org
-    }
-    out << "</span>"
-   }
+
 
   /**
    * simpleReferenceTypedown - create a hidden input control that has the value fully.qualified.class:primary_key and which is editable with the
