@@ -54,12 +54,7 @@
 
               <dl>
                 <dt>Package Name</dt>
-                <dd> <span id="packageNameEdit2"
-                        class="xEditableValue"
-                        data-type="textarea"
-                        data-pk="${packageInstance.class.name}:${packageInstance.id}"
-                        data-name="name"
-                        data-url='<g:createLink controller="ajax" action="editableSetValue"/>'>${packageInstance.name}</span></dd>
+                <dd> <g:xEditable owner="${packageInstance}" field="name" /></dd>
               </dl>
 
               <dl>
@@ -112,17 +107,19 @@
                 <td style="white-space: nowrap">
                   Date: <g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.startDate}"/>
                         <input id="TitleInstancePackagePlatform:${t.id}:startDate" type="hidden" class="dp1" /><br/>
-                  Volume: <g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="startVolume" id="startVolume" class="newipe">${t.startVolume}</g:inPlaceEdit><br/>
-                  Issue: <g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="endIssue" id="endIssue" class="newipe">${t.startIssue}</g:inPlaceEdit>                
+                  Volume: <g:xEditable owner="${t}" field="startVolume" /><br/>
+                  Issue: <g:xEditable owner="${t}" field="startIssue" />     
                 </td>
 
                 <td style="white-space: nowrap"> 
                    Date:<g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.endDate}"/>
                     <input id="TitleInstancePackagePlatform:${t.id}:endDate" type="hidden" class="dp1" /><br/>
-                   Volume: <g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="endVolume" id="endVolume" class="newipe">${t.endVolume}</g:inPlaceEdit><br/>
-                   Issue: <g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="endIssue" id="endIssue" class="newipe">${t.endIssue}</g:inPlaceEdit>
+                   Volume: <g:xEditable owner="${t}" field="endVolume" /><br/>
+                   Issue: <g:xEditable owner="${t}" field="endIssue" />
                 </td>
-                <td><g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="coverageDepth" id="coverageDepth" class="newipe">${t.coverageDepth}</g:inPlaceEdit></td>
+                <td>
+                  <g:xEditable owner="${t}" field="coverageDepth" />
+                </td>
               </tr>
             </g:each>
             </tbody>
