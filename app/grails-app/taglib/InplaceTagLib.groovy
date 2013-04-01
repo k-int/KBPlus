@@ -191,4 +191,13 @@ class InplaceTagLib {
   def simpleReferenceTypedown = { attrs, body ->
     out << "<input type=\"hidden\" name=\"${attrs.name}\" data-domain=\"${attrs.baseClass}\" id=\"${attrs.org}\" class=\"simpleReferenceTypedown ${attrs.class}\" />"
   }
+
+
+  def simpleHiddenRefdata = { attrs, body ->
+    def data_link = createLink(controller:'ajax', action: 'sel2RefdataSearch', params:[id:attrs.refdataCategory,format:'json'])
+    out << "<input type=\"hidden\" name=\"${attrs.name}\"/>"
+    out << "<a href=\"#\" class=\"simpleHiddenRefdata\" data-type=\"select\" data-source=\"${data_link}\" data-hidden-id=\"${attrs.name}\">"
+    out << body()
+    out << "</a>";
+  }
 }

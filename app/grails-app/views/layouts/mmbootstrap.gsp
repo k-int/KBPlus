@@ -275,7 +275,11 @@
 
         $('.xEditableValue').editable();
         $(".xEditableManyToOne").editable();
-
+        $(".simpleHiddenRefdata").editable({
+          url: function(params) {
+            alert("editable hidden");
+          }
+        });
         console.log("whaaaa2");
         
         $(".simpleReferenceTypedown").select2({

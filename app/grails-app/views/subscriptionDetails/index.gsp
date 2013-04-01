@@ -35,16 +35,9 @@
     </g:if>
 
     <div class="container">
-
       ${institution?.name} ${subscriptionInstance?.type?.value}
-
-       <h1><g:inPlaceEdit domain="${subscriptionInstance.class.name}" 
-                          pk="${subscriptionInstance.id}" 
-                          field="name" 
-                          id="name" 
-                          class="${editable?'newipe':''}">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
-
-      <g:render template="nav" contextPath="." />
+       <h1><g:xEditable owner="${subscriptionInstance}" field="name" /></h1>
+       <g:render template="nav" contextPath="." />
     </div>
 
 
@@ -186,17 +179,24 @@
             </tr>  
 
             <tr>  
+
               <th>
                 <g:if test="${editable}"><input type="checkbox" name="chkall" onClick="javascript:selectAll();"/></g:if>
               </th>
+
               <th colspan="4">
                 <g:if test="${editable}">
                   <select id="bulkOperationSelect" name="bulkOperation">
                     <option value="edit">Edit Selected</option>
                     <option value="remove">Remove Selected</option>
                   </select>
+
                   <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()"/></g:if></th>
-              <th><span id="entitlementBatchEdit" class="${editable?'entitlementBatchEdit isedit':''}"></span><input type="hidden" name="bulk_core" id="bulk_core"/></th>
+
+              <th>
+                <g:simpleHiddenRefdata name="bulk_core" refdataCategory="CoreStatus"/>
+              </th>
+
               <th><g:if test="${editable}"><span class="datevalue">edit</span> <input name="bulk_start_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
               <th><g:if test="${editable}"><span class="datevalue">edit</span> <input name="bulk_end_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
               <th colspan="4"></th>
