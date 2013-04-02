@@ -194,9 +194,9 @@
               <div class="container">
                   <div>
                       <ul class="footer-sublinks nav">
-                          <li><a href="${createLink(uri: '/terms-and-conditions')}">Terms & Conditions</a></li>
-                          <li><a href="${createLink(uri: '/privacy-policy')}">Privacy Policy</a></li>
-                          <li><a href="${createLink(uri: '/freedom-of-information-policy"')}">Freedom of Information Policy</a></li>
+                          <li><a href=${createLink(uri: '/terms-and-conditions')}>Terms & Conditions</a></li>
+                          <li><a href=${createLink(uri: '/privacy-policy')}>Privacy Policy</a></li>
+                          <li><a href=${createLink(uri: '/freedom-of-information-policy"')}>Freedom of Information Policy</a></li>
                       </ul>
                   </div>
                       
@@ -242,8 +242,8 @@
   </div>
       
   <!-- For datatable -->
-  <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
-  <script type="text/javascript" charset="utf8" src="http://datatables.net/release-datatables/extras/Scroller/media/js/dataTables.scroller.js"></script>
+  <script type="text/javascript" charset="utf-8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" charset="utf-8" src="http://datatables.net/release-datatables/extras/Scroller/media/js/dataTables.scroller.js"></script>
       
   <!-- For x-editable -->
   <script src="${resource(dir: 'js', file: 'bootstrap-editable.js')}"></script>
@@ -281,12 +281,8 @@
   </script>
   
     <r:layoutResources/>
-    
-    <div id="SupportTab">
-            <a href="mailto:kbplus@jisc-collections.ac.uk?subject=KBPlus%20Support%20Query"><i class="icon-question-sign icon-white"></i>Request Support</a>
-        </div>
 
-    <script language="JavaScript">
+    <script type="text/javascript">
 
       console.log("whaaaa");
 

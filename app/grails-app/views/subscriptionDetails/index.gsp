@@ -192,7 +192,7 @@
                     <option value="remove">Remove Selected</option>
                   </select>
 
-                  <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()"/></g:if></th>
+                  <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()" class="btn btn-primary"/></g:if></th>
 
               	<th>
                 	<g:simpleHiddenRefdata name="bulk_core" refdataCategory="CoreStatus"/>

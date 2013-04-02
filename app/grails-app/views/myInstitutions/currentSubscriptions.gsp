@@ -44,9 +44,9 @@
     </div>
 
     <div class="container" style="text-align:center">
-      <g:form action="currentSubscriptions" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="get">
-        <label>Search text</label>: <input type="text" name="q" placeholder="enter search term..."  value="${params.q?.encodeAsHTML()}"  />
-        <label>Valid On</label>: <input name="validOn" type="text" value="${validOn}"/>
+      <g:form action="currentSubscriptions" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="get" class="form-inline">
+        <label>Search text</label> <input type="text" name="q" placeholder="enter search term..." value="${params.q?.encodeAsHTML()}"  />
+        <label>Valid On</label> <input name="validOn" type="text" value="${validOn}"/>
         <input type="submit" class="btn btn-primary" value="Search" />
       </g:form><br/>
     </div>

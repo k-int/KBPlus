@@ -82,34 +82,36 @@
     <g:form id="upload_new_doc_form" url="[controller:'licenseDetails',action:'uploadDocument']" method="post" enctype="multipart/form-data">
         <input type="hidden" name="licid" value="${license.id}"/>
         <div class="modal-body">
-            <dl>
-                <dt>
-                <label>Document Name:</label>
-                </dt>
-                <dd>
-                    <input type="text" name="upload_title">
-                </dd>
-            </dl>
-            <dl>
-                <dt>
-                <label>File:</label>
-                </dt>
-                <dd>
-                    <input type="file" name="upload_file" />
-                </dd>
-            </dl>
-            <dl>
-                <dt>
-                <label>Document Type:</label>
-                </dt>
-                <dd>
-                    <select name="doctype">
-                        <option value="License">License</option>
-                        <option value="General">General</option>
-                        <option value="General">Addendum</option>
-                    </select>
-                </dd>
-            </dl>
+            <div class="inline-lists">
+                <dl>
+                    <dt>
+                    <label>Document Name:</label>
+                    </dt>
+                    <dd>
+                        <input type="text" name="upload_title">
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>
+                    <label>File:</label>
+                    </dt>
+                    <dd>
+                        <input type="file" name="upload_file" />
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>
+                    <label>Document Type:</label>
+                    </dt>
+                    <dd>
+                        <select name="doctype">
+                            <option value="License">License</option>
+                            <option value="General">General</option>
+                            <option value="General">Addendum</option>
+                        </select>
+                    </dd>
+                </dl>
+            </div>
         </div>
         <div class="modal-footer">
             <a href="#" class="btn" data-dismiss="modal">Close</a>

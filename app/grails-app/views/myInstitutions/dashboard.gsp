@@ -80,10 +80,12 @@
 
     <div class="container">
       <table class="table table-bordered">
-        <tr>
-          <th colspan="6">Alerted item</th>
-        </tr>
-        <tr>
+          <thead>
+              <tr>
+                  <th colspan="6">Alerted item</th>
+              </tr>
+          </thead>
+        <tr class="no-background">
           <th>Note</th>
           <th>Comments</th>
         </tr>
@@ -122,7 +124,7 @@
                        class="btn btn-primary announce" 
                        value="${n.alert?.comments != null ? n.alert?.comments?.size() : 0} Comment(s)" 
                        data-id="${n.alert.id}" 
-                       href="#modalComments" />
+                       />
               </td>
             </tr>
           </g:each>
@@ -134,7 +136,7 @@
     <div class="modal hide fade" id="modalComments">
     </div>
 
-    <script language="JavaScript">
+    <script type="text/javascript">
       // http://stackoverflow.com/questions/10626885/passing-data-to-a-bootstrap-modal
       $(document).ready(function() {
          $(".announce").click(function(){ 
