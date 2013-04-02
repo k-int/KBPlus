@@ -12,6 +12,9 @@ def possible_date_formats = [
 
 
 parseDate('01/01/1994',possible_date_formats)
+parseDate('13/01/1995',possible_date_formats)
+parseDate('13/13/1996',possible_date_formats)
+parseDate('1998',possible_date_formats)
 
 
 def parseDate(datestr, possible_formats) {
