@@ -39,11 +39,11 @@ class UploadController {
   ];
 
   def possible_date_formats = [
-    new SimpleDateFormat('dd/MM/yyyy'),
-    new SimpleDateFormat('yyyy/MM/dd'),
-    new SimpleDateFormat('dd/MM/yy'),
-    new SimpleDateFormat('yyyy/MM'),
-    new SimpleDateFormat('yyyy')
+    [regexp:'[0-9]{2}/[0-9]{2}/[0-9]{4}', format: new SimpleDateFormat('dd/MM/yyyy')],
+    [regexp:'[0-9]{4}/[0-9]{2}/[0-9]{2}', format: new SimpleDateFormat('yyyy/MM/dd')],
+    [regexp:'[0-9]{2}/[0-9]{2}/[0-9]{2}', format: new SimpleDateFormat('dd/MM/yy')],
+    [regexp:'[0-9]{4}/[0-9]{2}', format: new SimpleDateFormat('yyyy/MM')],
+    [regexp:'[0-9]{4}', format: new SimpleDateFormat('yyyy')]
   ];
 
   @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
@@ -219,17 +219,21 @@ class UploadController {
     def parsed_date = null;
     for(Iterator i = possible_formats.iterator(); ( i.hasNext() && ( parsed_date == null ) ); ) {
       try {
-        def formatter = i.next();
-        parsed_date = formatter.parse(datestr);
-        java.util.Calendar c = new java.util.GregorianCalendar();
-        c.setTime(parsed_date)
-        if ( ( 0 < c.get(java.util.Calendar.MONTH) ) && ( c.get(java.util.Calendar.MONTH) < 13 ) ) {
-          // Month is valid
-        }
-        else {
-          // Invalid date
-          parsed_date = null
-        // log.debug("Parsed ${datestr} using ${formatter.toPattern()} : ${parsed_date}");
+        def date_format_info = i.next();
+
+        if ( datestr ==~ date_format_info.regexp ) {
+          def formatter = date_format_info.format
+          parsed_date = formatter.parse(datestr);
+          java.util.Calendar c = new java.util.GregorianCalendar();
+          c.setTime(parsed_date)
+          if ( ( 0 <= c.get(java.util.Calendar.MONTH) ) && ( c.get(java.util.Calendar.MONTH) <= 11 ) ) {
+            // Month is valid
+          }
+          else {
+            // Invalid date
+            parsed_date = null
+          // log.debug("Parsed ${datestr} using ${formatter.toPattern()} : ${parsed_date}");
+          }
         }
       }
       catch ( Exception e ) {
@@ -348,7 +352,7 @@ class UploadController {
           result.value = Integer.parseInt(result.origValue?:defval)
           break;
         case 'date':
-		      result.value = parseDate(result.origValue,possible_date_formats)
+          result.value = parseDate(result.origValue,possible_date_formats)
           log.debug("Parse date, ${result.origValue}, result = ${result.value}");
   		    break;
         case 'str':
