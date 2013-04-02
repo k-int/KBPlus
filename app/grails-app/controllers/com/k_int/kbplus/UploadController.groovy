@@ -70,7 +70,7 @@ class UploadController {
   
   def processUploadSO(upload) {
 
-    def content_provider_org = Org.findByName(upload.soProvider.value) ?: new Org(name:soProvider.value,impId:java.util.UUID.randomUUID().toString()).save();    
+    def content_provider_org = Org.findByName(upload.soProvider.value) ?: new Org(name:upload.soProvider.value,impId:java.util.UUID.randomUUID().toString()).save();    
     
     def pkg_type = RefdataCategory.lookupOrCreate('PackageTypes','Unknown');
     def cp_role = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider');
