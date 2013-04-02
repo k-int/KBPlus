@@ -107,6 +107,42 @@ class TitleInstance {
 
   }
 
+  /**
+   *  Caller passes in a map like {issn:'nnnn-nnnn',doi:'quyeihdj'} and expects to get back a new title
+   *  or one matching any of the identifiers
+   */
+  static def lookupOrCreateViaIdMap(candidate_identifiers, title) {
+    def result = null;
+    def ids = []
+    
+    candidate_identifiers.each { i ->
+      if ( !result ) {
+        def id = Identifier.lookupOrCreateCanonicalIdentifier(i.key, i.value)
+        ids.add(id);
+        
+        def io = IdentifierOccurrence.findByIdentifier(id)
+        if ( io && io.ti ) {
+          result = io.ti;
+        }
+      }
+    }
+    
+    if (!result) {
+      result = new TitleInstance(title:title, impId:java.util.UUID.randomUUID().toString());
+      
+      result.ids=[]
+      ids.each { 
+        result.ids.add(new IdentifierOccurrence(identifier:it, ti:result));
+      }
+      if ( ! result.save() ) {
+        throw new RuntimeException("Problem creating title instance : ${result.errors?.toString()}");
+      }
+    }
+    
+    return result;     
+
+  }
+
   def beforeInsert() {
     if ( title != null ) {
       normTitle = generateNormTitle(title)
@@ -365,4 +401,28 @@ class TitleInstance {
         }
         return c;
     }
+    
+    
+    
+  static def refdataFind(params) {
+    def result = [];
+    def ql = null;
+    ql = TitleInstance.findAllByTitleIlike("${params.q}%",params)
+
+    if ( ql ) {
+      ql.each { t ->
+        result.add([id:"${t.class.name}:${t.id}",text:"${t.title} (${t.identifiersAsString()})"])
+      }
+    }
+
+    result
+  }
+  
+  def identifiersAsString() {
+    def result = new StringWriter()
+    ids.each { id ->
+      result.write("${id.identifier.ns.ns}:${id.identifier.value} ");
+    }
+    return result.toString()
+  }
 }

@@ -202,4 +202,23 @@ class LicenseDetailsController {
     result
   }
 
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def create() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def processNewTemplateLicense() {
+    if ( params.reference && ( ! params.reference.trim().equals('') ) ) {
+      def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
+      def new_template_license = new License(reference:params.reference,
+                                             type:template_license_type).save(flush:true);
+      redirect(action:'index', id:new_template_license.id);
+    }
+    else {
+      redirect(action:'create');
+    }
+  }
 }

@@ -31,8 +31,8 @@
       <div class="container">
           <div class="pull-right">
               <g:form action="addSubscription" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="get" class="form-inline">
-                  <label>Search text:</label> 
-                  <input type="text" name="q" placeholder="enter search term..."  value="${params.q?.encodeAsHTML()}"  />
+                  <label>Search text</label>: <input type="text" name="q" placeholder="enter search term..."  value="${params.q?.encodeAsHTML()}"  />
+                  <label>Valid On</label>: <input name="validOn" type="text" value="${validOn}"/>
                   <input type="submit" class="btn btn-primary" value="Search" />
               </g:form>
           </div>

@@ -50,7 +50,12 @@ class Package {
    * @param subtype One of 'Subscription Offered' or 'Subscription Taken'
    */
   @Transient
-  def createSubscription(subtype, subname, subidentifier, startdate, enddate, consortium_org) {
+  def createSubscription(subtype, 
+                         subname, 
+                         subidentifier, 
+                         startdate, 
+                         enddate, 
+                         consortium_org) {
 
     // Create the header
 
@@ -60,42 +65,44 @@ class Package {
                                    impId:null,
                                    startDate:startdate,
                                    endDate:enddate,
+                                   isPublic: RefdataCategory.lookupOrCreate('YN','Yes'),
                                    type: RefdataValue.findByValue(subtype))
+
     if ( result.save(flush:true) ) {
+      if ( consortium_org ) {
+        def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscription Consortia');
+        def or = new OrgRole(org: consortium_org, sub:result, roleType:sc_role).save();
+      }
+
+      def new_package_link = new SubscriptionPackage(subscription:result, pkg:this).save();
+      def live_issue_entitlement = RefdataCategory.lookupOrCreate('Entitlement Issue Status', 'Live');
+
+      // Copy the tipps into the IEs
+      log.debug("Copy tipp entries into new subscription");
+
+      tipps.each { tipp ->
+        log.debug("adding ${tipp}");
+
+        def new_ie = new IssueEntitlement(status: live_issue_entitlement,
+                                          subscription: result,
+                                          tipp: tipp,
+                                          startDate:tipp.startDate,
+                                          startVolume:tipp.startVolume,
+                                          startIssue:tipp.startIssue,
+                                          endDate:tipp.endDate,
+                                          endVolume:tipp.endVolume,
+                                          endIssue:tipp.endIssue,
+                                          embargo:tipp.embargo,
+                                          coverageDepth:tipp.coverageDepth,
+                                          coverageNote:tipp.coverageNote).save()
+
+      }
     }
-
-    if ( consortium_org ) {
-      def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscription Consortia');
-      def or = new OrgRole(org: consortium_org, sub:result, roleType:sc_role).save();
+    else {
+      result.errors.each { err ->
+        log.error("Problem creating new sub: ${err}");
+      }
     }
-
-    def new_package_link = new SubscriptionPackage(subscription:result, pkg:this).save();
-
-
-    def live_issue_entitlement = RefdataCategory.lookupOrCreate('Entitlement Issue Status', 'Live');
-
-    // Copy the tipps into the IEs
-    log.debug("Copy tipp entries into new subscription");
-
-    tipps.each { tipp ->
-      log.debug("adding ${tipp}");
-
-      def new_ie = new IssueEntitlement(status: live_issue_entitlement,
-                                        subscription: result,
-                                        tipp: tipp,
-                                        startDate:tipp.startDate,
-                                        startVolume:tipp.startVolume,
-                                        startIssue:tipp.startIssue,
-                                        endDate:tipp.endDate,
-                                        endVolume:tipp.endVolume,
-                                        endIssue:tipp.endIssue,
-                                        embargo:tipp.embargo,
-                                        coverageDepth:tipp.coverageDepth,
-                                        coverageNote:tipp.coverageNote).save()
-
-    }
-
-    log.debug("Completed...");
 
     result
   }

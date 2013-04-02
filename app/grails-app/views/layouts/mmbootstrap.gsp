@@ -27,6 +27,8 @@
     <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'bootstrap-editable.css')}" type="text/css">
     <link href="${resource(dir: 'css', file: 'select2.css')}" rel="stylesheet"/>
+    <script src="${resource(dir: 'js', file: 'select2.js')}"></script>
+    <script src="${resource(dir: 'js', file: 'moment.min.js')}"></script>
     
     <r:layoutResources/>
   </head>
@@ -103,11 +105,14 @@
                          <g:link controller="packageDetails" action="create">New Package</g:link></li>
                        -->
                        <li class="divider"></li>
-                       <li <%= ( ( 'upload'== controllerName ) && ( 'so'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="upload" action="so">Upload new SO file</g:link></li>
+                       <li <%= ( ( 'upload'== controllerName ) && ( 'reviewSO'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="upload" action="reviewSO">Upload new SO file</g:link></li>
                        <li class="divider"></li>
                        <li <%= ( ( 'titleDetails'== controllerName ) && ( 'findTitleMatches'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="titleDetails" action="findTitleMatches">New Title</g:link></li>
+                       <li <%= ( ( 'licenseDetails'== controllerName ) && ( 'create'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="licenseDetails" action="create">New License</g:link></li>
+
                      </ul>
                    </li>
                 </sec:ifAnyGranted>
@@ -275,5 +280,51 @@
       })();
   </script>
   
+    <r:layoutResources/>
+    
+    <div id="SupportTab">
+            <a href="mailto:kbplus@jisc-collections.ac.uk?subject=KBPlus%20Support%20Query"><i class="icon-question-sign icon-white"></i>Request Support</a>
+        </div>
+
+    <script language="JavaScript">
+
+      console.log("whaaaa");
+
+      // $(function(){
+      $(document).ready(function() {
+
+        $.fn.editable.defaults.mode = 'inline';
+
+        $('.xEditableValue').editable();
+        $(".xEditableManyToOne").editable();
+        $(".simpleHiddenRefdata").editable({
+          url: function(params) {
+            alert("editable hidden");
+          }
+        });
+        console.log("whaaaa2");
+        
+        $(".simpleReferenceTypedown").select2({
+          placeholder: "Search for...",
+          minimumInputLength: 1,
+          ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+            url: "<g:createLink controller='ajax' action='lookup'/>",
+            dataType: 'json',
+            data: function (term, page) {
+                return {
+                    format:'json',
+                    q: term,
+                    baseClass:$(this).data('domain')
+                };
+            },
+            results: function (data, page) {
+              return {results: data.values};
+            }
+          }
+        });
+        console.log("whaaaa3");
+
+      });
+    </script>
   </body>
 </html>

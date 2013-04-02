@@ -19,7 +19,7 @@ class Identifier {
 
   static def lookupOrCreateCanonicalIdentifier(ns, value) {
     // log.debug("lookupOrCreateCanonicalIdentifier(${ns},${value})");
-    def namespace = IdentifierNamespace.findByNs(ns) ?: new IdentifierNamespace(ns:ns).save();
+    def namespace = IdentifierNamespace.findByNsIlike(ns) ?: new IdentifierNamespace(ns:ns.toLowerCase()).save();
     Identifier.findByNsAndValue(namespace,value) ?: new Identifier(ns:namespace, value:value).save();
   }
 
@@ -28,7 +28,7 @@ class Identifier {
     def ql = null;
     if ( params.q.contains(':') ) {
       def qp=params.q.split(':');
-      println("Search by namspace identifier: ${qp}");
+      // println("Search by namspace identifier: ${qp}");
       def namespace = IdentifierNamespace.findByNsIlike(qp[0]);
       if ( namespace ) {
         ql = Identifier.findAllByNsAndValueIlike(namespace,"${qp[1]}%")

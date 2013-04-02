@@ -21,6 +21,23 @@ class UploadController {
   def sessionFactory
   def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
   
+  def csv_column_config = [
+    'id':[coltype:'map'],
+    'publication_title':[coltype:'simple'],
+    'date_first_issue_online':[coltype:'simple'],
+    'num_first_vol_online':[coltype:'simple'],
+    'num_first_issue_online':[coltype:'simple'],
+    'date_last_issue_online':[coltype:'simple'],
+    'num_last_vol_online':[coltype:'simple'],
+    'num_last_issue_online':[coltype:'simple'],
+    'title_id':[coltype:'simple'],
+    'embargo_info':[coltype:'simple'],
+    'coverage_depth':[coltype:'simple'],
+    'coverage_notes':[coltype:'simple'],
+    'publisher_name':[coltype:'simple'],
+    'platform':[coltype:'map']
+  ];
+
   def possible_date_formats = [
     new SimpleDateFormat('dd/MM/yyyy'),
     new SimpleDateFormat('yyyy/MM/dd'),
@@ -30,7 +47,7 @@ class UploadController {
   ];
 
   @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
-  def so() { 
+  def reviewSO() { 
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     
@@ -38,231 +55,51 @@ class UploadController {
       def upload_mime_type = request.getFile("soFile")?.contentType
       def upload_filename = request.getFile("soFile")?.getOriginalFilename()
       log.debug("Uploaded so type: ${upload_mime_type} filename was ${upload_filename}");
-      if ( validateStream(request.getFile("soFile")?.inputStream, upload_filename ) ) {
-        def input_stream = request.getFile("soFile")?.inputStream
-        processUploadSO(input_stream, upload_filename, result)
+      result.validationResult = readSubscriptionOfferedCSV(request.getFile("soFile")?.inputStream, upload_filename )
+      validate(result.validationResult)
+      if ( result.validationResult.processFile == true ) {
+        log.debug("Passed first phase validation, continue...");
+        processUploadSO(result.validationResult)
       }
     }
-
-    result
+    else {
+    }
+    
+    return result
   }
   
-  def validateStream(input_stream, upload_filename) {
+  def processUploadSO(upload) {
 
-    log.debug("Validating Stream");
-
-    CSVReader r = new CSVReader( new InputStreamReader(input_stream) )
-
-    String [] nl;
-
-    String [] so_name_line = r.readNext()
-    String [] so_identifier_line = r.readNext()
-    String [] so_provider_line = r.readNext()
-    String [] so_package_identifier_line = r.readNext()
-    String [] so_package_name_line = r.readNext()
-    String [] so_agreement_term_start_yr_line = r.readNext()
-    String [] so_agreement_term_end_yr_line = r.readNext()
-    String [] so_consortium_line = r.readNext()
-    String [] so_num_prop_id_cols_line = r.readNext()
-    int num_prop_id_cols = Integer.parseInt(so_num_prop_id_cols_line[1] ?: "0");
-    String [] so_num_platforms_listed_line = r.readNext()
-    int num_platforms_listed = Integer.parseInt(so_num_platforms_listed_line[1] ?: "0");
-    String [] so_header_line = r.readNext()
-
-    if ( num_platforms_listed == 0 ) {
-      num_platforms_listed = 1
-    }
-
-    def normalised_identifier = so_identifier_line[1].trim().toLowerCase().replaceAll('-','_')
-    def norm_pkg_identifier = "${so_provider_line[1].trim()}:${so_package_identifier_line[1].trim()}"
-    norm_pkg_identifier = norm_pkg_identifier.toLowerCase().replaceAll('-','_');
+    def content_provider_org = Org.findByName(upload.soProvider.value) ?: new Org(name:soProvider.value,impId:java.util.UUID.randomUUID().toString()).save();    
     
-    if ( ( normalised_identifier == null ) || ( normalised_identifier.trim().length() == 0 ) ) {
-      log.error("No subscription offered identifier");
-      flash.error="Problem processing ${upload_filename} : No usable subscription offered identifier";      
-      return false
-    }
-    
-    if ( ( norm_pkg_identifier == null ) || ( norm_pkg_identifier.length() == 0 ) ) {
-      log.error("No usable package identifier");
-      flash.error="Problem processing ${upload_filename} : No usable package identifier";      
-      return false
-    }
-    
-    def sub = Subscription.findByIdentifier(normalised_identifier)
-    if ( sub != null ) {
-      log.error("Sub ${normalised_identifier} already exists");
-      flash.error="Problem processing ${upload_filename} : Unable to process file - Subscription with ID ${normalised_identifier} already exists in database";
-      return false
-    }
-
-    def pkg = Package.findByIdentifier(norm_pkg_identifier);
-    if ( pkg != null ) {
-      log.error("Package ${norm_pkg_identifier} already exists");
-      flash.error="Problem processing ${upload_filename} : Unable to process file - Package with ID ${norm_pkg_identifier} already exists in database";
-      return false
-    }
-
-    def issns_so_far = []
-    def eissns_so_far = []
-    
-
-    while ((nl = r.readNext()) != null) {
-      boolean has_data = false
-      nl.each {
-        if ( ( it != null ) && ( it.trim() != '' ) )
-          has_data = true;
-      }
-
-      if ( !has_data )
-        continue;
-      else
-        log.debug("has data");
-
-      if ( present(nl[1]) && ( nl[1].trim().length() > 8 ) ) {
-        def issn_to_add = nl[1].trim();
-        if ( issns_so_far.contains(issn_to_add) ) {
-          flash.error="Problem processing ${upload_filename} : The ISSN ${issn_to_add} appears to be repeated in the TIPP rows";
-          return false
-        }
-        else {
-          issns_so_far.add(issn_to_add)
-        }
-      }
-
-      if ( present(nl[2]) && ( nl[2].trim().length() > 8 ) ) {
-        def eissn_to_add = nl[2].trim();
-        if ( eissns_so_far.contains(eissn_to_add) ) {
-          flash.error="Problem processing ${upload_filename} : The eISSN ${eissn_to_add} appears to be repeated in the TIPP rows";
-          return false
-        }
-        else {
-          eissns_so_far.add(eissn_to_add)
-        }
-      }
-
-
-      if ( present(nl[0] ) ) {
-
-        def parsed_start_date = parseDate(nl[3],possible_date_formats)
-        def parsed_end_date = parseDate(nl[6],possible_date_formats)
-
-        def host_platform_url = null;
-        for ( int i=0; i<num_platforms_listed; i++ ) {
-
-          int position = 15+num_prop_id_cols+(i*3)   // Offset past any proprietary identifiers.. This needs a test case.. it's fraught with danger
-
-          log.debug("Processing ${i}th platform entry. Arr len = ${nl.length} position=${position}");
-
-          if ( ( nl.size() >= position+3 ) && ( nl[position] ) && ( nl[position].length() > 0 ) ) {
-            def platform_role = nl[position+1]
-            def platform_url = nl[position+2]
-            println("Process platform name:${nl[position]} / type:${platform_role} / url:${platform_url}");
-
-            if ( platform_role.trim() == 'host' ) {
-              host_platform_url = platform_url
-            }
-            else {
-            }
-          }
-        }
-        if ( host_platform_url==null || host_platform_url.trim().length() == 0 ) {
-          log.error("At least one tipp row has no host platform specified. Please correct and re-upload")
-          flash.error="Problem processing ${upload_filename} : At least one tipp row has no host platform specified. Please correct and re-upload"
-          return false
-        }
-      }
-    }
-
-    true
-  }
-
-
-  def processUploadSO(input_stream, upload_filename, result) {
-
-    def prepared_so = [:]
-
-    CSVReader r = new CSVReader( new InputStreamReader(input_stream) )
-    
-    String [] nl;
-
-    String [] so_name_line = r.readNext()
-    String [] so_identifier_line = r.readNext()
-    String [] so_provider_line = r.readNext()
-    String [] so_package_identifier_line = r.readNext()
-    String [] so_package_name_line = r.readNext()
-    String [] so_agreement_term_start_yr_line = r.readNext()
-    String [] so_agreement_term_end_yr_line = r.readNext()
-    String [] so_consortium_line = r.readNext()
-    String [] so_num_prop_id_cols_line = r.readNext()
-    int num_prop_id_cols = Integer.parseInt(so_num_prop_id_cols_line[1] ?: "0");
-    String [] so_num_platforms_listed_line = r.readNext()
-    int num_platforms_listed = Integer.parseInt(so_num_platforms_listed_line[1] ?: "0");
-    String [] so_header_line = r.readNext()
-
-    log.debug("Read column headings: ${so_header_line}");
-
-    if ( num_platforms_listed == 0 ) {
-      num_platforms_listed = 1
-      println("**WARNING** num_platforms_listed = 0, defaulting to 1!");
-    }
-    
-    def content_provider_org = Org.findByName(so_provider_line[1]) ?: new Org(name:so_provider_line[1],impId:java.util.UUID.randomUUID().toString()).save();
-    
-    def normalised_identifier = so_identifier_line[1].trim().toLowerCase().replaceAll('-','_')
-    def norm_pkg_identifier = "${so_provider_line[1].trim()}:${so_package_identifier_line[1].trim()}"
-    norm_pkg_identifier = norm_pkg_identifier.toLowerCase().replaceAll('-','_');
-
-    log.debug("Normalised package identifier is ${norm_pkg_identifier}");
-    
-    log.debug("Processing subscription ${so_identifier_line[1]} normalised to ${normalised_identifier}");
-    
-    def pkg = Package.findByIdentifier(norm_pkg_identifier);
-    
-    prepared_so.provider = content_provider_org
-    prepared_so.sub = [:]
-    prepared_so.sub.identifier = normalised_identifier;
-    prepared_so.sub.name = so_name_line[1];
-    prepared_so.sub.start_date_str = so_agreement_term_start_yr_line[1]
-    prepared_so.sub.end_date_str=so_agreement_term_end_yr_line[1]
-    prepared_so.sub.start_date = parseDate(so_agreement_term_start_yr_line[1],possible_date_formats)
-    prepared_so.sub.end_date = parseDate(so_agreement_term_end_yr_line[1],possible_date_formats)
-    prepared_so.pkg_id = norm_pkg_identifier
-    prepared_so.titles = []
-
-
     def pkg_type = RefdataCategory.lookupOrCreate('PackageTypes','Unknown');
     def cp_role = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider');
-
-    log.debug("Process consortium");
-
+    
     def consortium = null;
-    if ( ( so_consortium_line[1] != null ) && ( so_consortium_line[1].length() > 0 ) )  {
-        prepared_so.cons = Org.findByName(so_consortium_line[1]) ?: new Org(name:so_consortium_line[1]).save();
+    if ( upload.consortium != null )  {
+      consortium = Org.findByName(upload.consortium.value) ?: new Org(name:upload.consortium.value).save();
     }
 
-
-    log.debug("Create package");
-    // We have validated the package and so information, and made sure all titles exist..
-    // Add a package
-    def new_pkg = new Package(identifier:prepared_so.pkg_id,
-                              name:so_package_name_line[1],
-                              type:null,
-                              contentProvider:prepared_so.provider,
+    def new_pkg = new Package(identifier:upload.soPackageIdentifier.value,
+                              name:upload.soPackageName.value,
+                              type:pkg_type,
+                              contentProvider:content_provider_org,
                               impId:java.util.UUID.randomUUID().toString());
 
     if ( new_pkg.save(flush:true) ) {
       //log.debug("New package ${pkg.identifier} saved");
       // Content Provider?
       log.debug("Package [${new_pkg.id}] with identifier ${new_pkg.identifier} created......");
-      if ( prepared_so.provider ) {
-        OrgRole.assertOrgPackageLink(prepared_so.provider, new_pkg, cp_role);
+      if ( content_provider_org ) {
+        OrgRole.assertOrgPackageLink(content_provider_org, new_pkg, cp_role);
       }
     }
     else {
       log.error("Problem saving new package");
+      upload.nessages.add("Problem saving new package");
       new_pkg.errors.each { pe ->
         log.error("Problem saving package: ${pe}");
+        upload.nessages.add("Problem saving package: ${pe}");
       }
       flash.error="Problem saving new package ${new_pkg.errors}";
       return
@@ -271,127 +108,46 @@ class UploadController {
 
     log.debug("processing titles");
     // Title info
-    while ((nl = r.readNext()) != null) {
-      boolean has_data = false
-      nl.each {
-        if ( ( it != null ) && ( it.trim() != '' ) )
-          has_data = true;
+    upload.tipps.each { tipp ->
+    
+      def publisher = null;
+      if ( tipp.publisher_name && ( tipp.publisher_name.trim() != '' ) )  {
+        publisher = Org.findByName(tipp.publisher_name) ?: new Org(name:tipp.publisher_name).save();
       }
 
-      if ( !has_data )
-        continue;
-      else
-        log.debug("has data");
+      tipp.host_platform = null;
+      tipp.additional_platforms = []
 
-      if ( present(nl[0] ) ) {
-        def title=[:]
-        title.additional_platforms = []
-        println "**Processing pub title:${nl[0]}, print identifier ${nl[1]} (${num_prop_id_cols} prop cols, ${num_platforms_listed} plat cols)"
-        def title_identifiers = [];
-        
-        def publisher = null
-        if ( present(nl[13]) ) {
-          println("Publisher name: ${nl[13]}")
-          publisher = Org.findByName(nl[13]) ?: new Org(name:nl[13]).save();
+      // Process identifiers in the row.
+      tipp.platform.values().each { pl ->
+        def platform = Platform.lookupOrCreatePlatform(name:pl.name, primaryUrl:pl.url)
+        if ( pl.coltype == 'host' ) {
+          tipp.host_platform = platform
         }
         else {
-          log.debug("No publisher...");
+          tipp.additional_platforms.add([plat:platform, role:pl.coltype, url:pl.url])
         }
-
-        if ( present(nl[1]) && ( nl[1].trim().length() > 8 ) )
-          title_identifiers.add([value:nl[1].trim(), namespace:'ISSN'])
-
-        if ( present(nl[2]) && ( nl[2].trim().length() > 8 ) )
-          title_identifiers.add([value:nl[2].trim(), namespace:'eISSN'])
-
-        if ( present(nl[14]) )
-          title_identifiers.add([value:nl[14].trim(), namespace:'DOI'])
-
-        title.title_identifiers = title_identifiers;
-
-        // Process identifiers in the row.
-        for ( int i=0; i<num_platforms_listed; i++ ) {
-          int position = 15+num_prop_id_cols+(i*3)   // Offset past any proprietary identifiers.. This needs a test case.. it's fraught with danger
-
-          if ( ( nl.size() >= position+3 ) &&
-               ( nl[position] ) &&
-               ( nl[position].length() > 0 ) ) {
-
-            def platform_role = nl[position+1]
-            def platform_url = nl[position+2]
-
-            def parsed_start_date = parseDate(nl[3],possible_date_formats)
-            def parsed_end_date = parseDate(nl[6],possible_date_formats)
-
-            def platform = Platform.lookupOrCreatePlatform(name:nl[position],
-                                                           type:nl[position+1],
-                                                           primaryUrl:platform_url)
-
-            if ( !platform ) {
-              flash.error = "Problem processing ${upload_filename} : unable to identify a platform for entry with title ${nl[0]}"
-              return
-            }
-
-            title.startDateString = nl[3]
-            title.startDate = parsed_start_date
-            title.startVolume = nl[4]
-            title.startIssue = nl[5]
-            title.endDateString = nl[6]
-            title.endDate = parsed_end_date
-            title.endVolume = nl[7]
-            title.endIssue = nl[8]
-            title.title_id = nl[9]
-            title.embargo = nl[10]
-            title.coverageDepth = nl[11]
-            title.coverageNote = nl[12]
-
-            println("Process platform name:${nl[position]} / type:${platform_role} / url:${platform_url}");
-
-            if ( platform_role.trim() == 'host' ) {
-              title.platform = platform;
-              title.host_platform_url = platform_url
-            }
-            else {
-              title.additional_platforms.add([plat:platform, role:platform_role, url:platform_url])
-            }
-          }
-        }
-
-        if ( title_identifiers.size() == 0 ) {
-          log.error("Upload contains a title with no identifier");
-          flash.error="Problem processing ${upload_filename} : Title ${nl[0]} has no usable identifiers. File not imported. Please fix and re-upload";
-          return;
-        }
-
-        // Lookup or create title instance        
-        title.title = lookupOrCreateTitleInstance(title_identifiers,nl[0],publisher);
-        title.pkg = new_pkg
-        prepared_so.titles.add(title)
       }
-    }
-
-    log.debug("Adding titles");
-    // Add titles to the new package
-    prepared_so.titles.each { t ->
-      if ( t.title && t.pkg && t.platform ) {
-
-        log.debug("Processing new so, looking for tipp. title:${t.title.id}, pkg:${t.pkg.id}, plat:${t.platform.id}");
+          
+      tipp.title_obj = lookupOrCreateTitleInstance(tipp.id,tipp.publication_title,publisher);
       
-        def dbtipp = TitleInstancePackagePlatform.findByPkgAndPlatformAndTitle(t.pkg,t.platform,t.title)
+      if ( tipp.title_obj && tipp.host_platform && new_pkg ) {
+        // Got all the components we need to create a tipp
+        def dbtipp = TitleInstancePackagePlatform.findByPkgAndPlatformAndTitle(new_pkg,tipp.host_platform,tipp.title_obj)
         if ( dbtipp == null ) {
-          dbtipp = new TitleInstancePackagePlatform(pkg:t.pkg,
-                                                    platform:t.platform,
-                                                    title:t.title,
-                                                    startDate:t.startDate,
-                                                    startVolume:t.startVolume,
-                                                    startIssue:t.startIssue,
-                                                    endDate:t.endDate,
-                                                    endVolume:t.endVolume,
-                                                    endIssue:t.endIssue,
-                                                    embargo:t.embargo,
-                                                    coverageDepth:t.coverageDepth,
-                                                    coverageNote:t.coverageNote,
-                                                    hostPlatformURL:t.host_platform_url,
+          dbtipp = new TitleInstancePackagePlatform(pkg:new_pkg,
+                                                    platform:tipp.host_platform,
+                                                    title:tipp.title_obj,
+                                                    startDate:tipp.parsedStartDate,
+                                                    startVolume:tipp.num_first_vol_online,
+                                                    startIssue:tipp.num_first_issue_online,
+                                                    endDate:tipp.parsedEndDate,
+                                                    endVolume:tipp.num_last_vol_online,
+                                                    endIssue:tipp.num_last_issue_online,
+                                                    embargo:tipp.embargo_info,
+                                                    coverageDepth:tipp.coverage_depth,
+                                                    coverageNote:tipp.coverage_note,
+                                                    hostPlatformURL:null, // t.host_platform_url,
                                                     impId:java.util.UUID.randomUUID().toString(),
                                                     ids:[])
   
@@ -399,18 +155,25 @@ class UploadController {
             log.error("ERROR Saving tipp");
             dbtipp.errors.each { err ->
               log.error("  -> ${err}");
+              tipp.messages.add("Problem saving tipp: ${err}");
+              tipp.messages.add([type:'alert-error',message:"Problem creating new tipp: ${dbtipp.id}"]);
             }
           }
           else {
             log.debug("new TIPP Save OK ${dbtipp.id}");
+            tipp.messages.add([type:'alert-success',message:"New tipp created: ${dbtipp.id}"]);
+            tipp.additional_platforms.each { ap ->
+              PlatformTIPP pt = new PlatformTIPP(tipp:dbtipp,platform:ap.plat,titleUrl:ap.url,rel:ap.role)
+            }
           }
         }
         else {
           log.error("TIPP already exists!! This should never be the case as we are creating a new package!!!");
-        }
+          tipp.messages.add([type:'alert-error',message:"WARNING: An existing tipp record was located. This should never happen. Contact support!"]);
+        }        
       }
-      else { 
-        log.error("One of title(${t.title}), package(${t.pkg}) or platform(${t.platform}) are missing");
+      else {
+        tipp.messages.add([type:'alert-error',message:"WARNING: Dataload failed, at least one of title, package or platform was null"]);
       }
     }
 
@@ -423,28 +186,26 @@ class UploadController {
     session.clear()
     propertyInstanceMap.get().clear()
 
-    result.user = User.get(springSecurityService.principal.id)
-
     def reloaded_pkg = Package.get(new_pkg_id);
     reloaded_pkg.updateNominalPlatform();
     reloaded_pkg.save(flush:true);
 
     def new_sub = reloaded_pkg.createSubscription('Subscription Offered', 
-                                             prepared_so.sub.name, 
-                                             prepared_so.sub.identifier, 
-                                             prepared_so.sub.start_date, 
-                                             prepared_so.sub.end_date, 
-                                             prepared_so.cons) 
+                                             upload.soName.value, 
+                                             upload.normalisedSoIdentifier, 
+                                             upload.agreementTermStartYear?.value, 
+                                             upload.agreementTermEndYear?.value, 
+                                             upload.consortiumOrg) 
     
-    log.debug("Completed New package is ${new_pkg.id}");
+    log.debug("Completed New package is ${new_pkg.id}, new sub is ${new_sub.id}");
 
-    result.new_pkg_id = new_pkg_id
-    result.new_sub_id = new_sub?.id
+    upload.new_pkg_id = new_pkg_id
+    upload.new_sub_id = new_sub.id
   }
-  
+    
   def lookupOrCreateTitleInstance(identifiers,title,publisher) {
     log.debug("lookupOrCreateTitleInstance ${identifiers}, ${title}, ${publisher}");
-    def result = TitleInstance.lookupOrCreate(identifiers, title);
+    def result = TitleInstance.lookupOrCreateViaIdMap(identifiers, title);
     if ( !result.getPublisher() ) {
       def pub_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Publisher');
       OrgRole.assertOrgTitleLink(publisher, result, pub_role);
@@ -458,7 +219,18 @@ class UploadController {
     def parsed_date = null;
     for(Iterator i = possible_formats.iterator(); ( i.hasNext() && ( parsed_date == null ) ); ) {
       try {
-        parsed_date = i.next().parse(datestr);
+        def formatter = i.next();
+        parsed_date = formatter.parse(datestr);
+        java.util.Calendar c = new java.util.GregorianCalendar();
+        c.setTime(parsed_date)
+        if ( ( 0 < c.get(java.util.Calendar.MONTH) ) && ( c.get(java.util.Calendar.MONTH) < 13 ) ) {
+          // Month is valid
+        }
+        else {
+          // Invalid date
+          parsed_date = null
+        // log.debug("Parsed ${datestr} using ${formatter.toPattern()} : ${parsed_date}");
+        }
       }
       catch ( Exception e ) {
       }
@@ -476,4 +248,381 @@ class UploadController {
     return false
   }
 
+  def readSubscriptionOfferedCSV(input_stream, upload_filename) {
+
+    def result = [:]
+  	result.processFile=true
+  	
+    // File level messages
+	  result.messages=[]
+
+    log.debug("Reading Stream");
+
+    CSVReader r = new CSVReader( new InputStreamReader(input_stream) )
+
+    String [] nl;
+
+    processCsvLine(r.readNext(),'soName',1,result,'str',null,true)
+    processCsvLine(r.readNext(),'soIdentifier',1,result,'str',null,false)
+    processCsvLine(r.readNext(),'soProvider',1,result,'str',null,false)
+    processCsvLine(r.readNext(),'soPackageIdentifier',1,result,'str',null,true)
+    processCsvLine(r.readNext(),'soPackageName',1,result,'str',null,true)
+    processCsvLine(r.readNext(),'aggreementTermStartYear',1,result,'date',null,true)
+    processCsvLine(r.readNext(),'aggreementTermEndYear',1,result,'date',null,true)
+    processCsvLine(r.readNext(),'consortium',1,result,'str',null,false)
+    
+    // result['soName'].messages=['This is an soName message','And so is this'];
+    nl = r.readNext()
+    result.soHeaderLine = []
+    nl.each { h ->
+      result.soHeaderLine.add(h.toLowerCase());
+    }
+    
+
+    result.tipps = []
+    while ((nl = r.readNext()) != null) {
+      // result.tipps.add(tipp_row)
+      result.tipps.add(readTippRow(result.soHeaderLine, nl))
+    }
+
+    return result;
+  }
+  
+  def readTippRow(cols, nl) {
+    def result = [:]
+
+    result.messages = []
+    result.row = []
+    
+    for ( int i=0; i<nl.length; i++ ) {
+      result.row.add(nl[i]);
+      if ( ( nl[i] != null ) && ( nl[i].trim() != '' ) ) {
+        def column_components = cols[i].split('\\.')
+        def column_name = column_components[0]
+        def column_defn = csv_column_config[column_name]
+        //log.debug("Process ${cols[i]} ${column_name} : ${column_defn}")
+        if ( column_defn ) {
+          switch ( column_defn.coltype ) {
+            case 'simple': 
+              result[column_name] = nl[i]
+              break;
+            case 'map':
+              if ( result[column_name] == null )
+                result[column_name] = [:]
+            
+              // If this is a simple map, like id.issn or id.eissn just set the value
+              if ( column_components.length == 2 ) {
+                result[column_name][column_components[1]] = nl[i].trim();    
+              }
+              else {
+                // We have an object like platform.host:1.name, platform.host:2.name
+                if ( result[column_name][column_components[1]] == null ) {
+                  // We're setting up the object. Add new object to platform map, keyed as second part of col name
+                  result[column_name][column_components[1]]=[:]
+                  def column_types = column_components[1].split(':');
+                  // Add a coltype to the values, so platform.host.name gets a coltype of "host"
+                  result[column_name][column_components[1]].coltype=column_types[0]
+                }
+                result[column_name][column_components[1]][column_components[2]] = nl[i].trim();
+              }
+              break;
+          } 
+        }
+        else {
+          // Unknown column
+        }
+      }
+    }
+    return result;
+  }
+  
+  def processCsvLine(csv_line,field_name,col_num,result_map,parseAs,defval,isMandatory) {  
+    log.debug("  processCsvLine ${csv_line} ${field_name} ${col_num}... mandatory=${isMandatory}");
+	  def result = [:]
+  	result.messages = []
+	  result.origValue = csv_line[col_num]
+
+    if ( ( col_num <= csv_line.length ) && ( csv_line[col_num] != null ) ) {      
+      switch(parseAs) {
+        case 'int':
+          result.value = Integer.parseInt(result.origValue?:defval)
+          break;
+        case 'date':
+		      result.value = parseDate(result.origValue,possible_date_formats)
+          log.debug("Parse date, ${result.origValue}, result = ${result.value}");
+  		    break;
+        case 'str':
+        default:
+          result.value = result.origValue
+          break;
+      }
+      result_map[field_name] = result
+    }
+	
+	  
+    if ( ( result.value == null ) || ( result.value.toString().trim() == '' ) ) {
+      log.debug("Mandatory flag set, checking value");
+	    if ( isMandatory ) {
+	      log.debug("Mandatory property is null.. error");
+	      result_map.processFile=false
+		    result_map[field_name] = [messages:["Missing mandatory property: ${field_name}"]]
+	    }
+      else {
+	      result_map[field_name] = [messages:["Missing property: ${field_name}"]]	  
+	    }
+    }
+    else {
+    }
+    
+ 	  log.debug("result = ${result}");
+  }
+  
+  def validate(upload) {
+	  
+	  def result = generateAndValidateSubOfferedIdentifier(upload) &&
+	               generateAndValidatePackageIdentifier(upload) &&
+                 validateConsortia(upload) &&
+		             validateColumnHeadings(upload)
+			      	   
+		if ( upload.processFile ) {
+		  validateTipps(upload)
+		}
+		else {
+		}
+  }
+  
+  def validateTipps(upload) {
+  
+    def id_list = []
+    
+    int counter = 0;
+    upload.tipps.each { tipp ->
+    
+      log.debug("Validate tipp: ${tipp}");
+
+      if ( ( tipp.publication_title == null ) || ( tipp.publication_title.trim() == '' ) ) {
+        tipp.messages.add("Title (row ${counter}) must not be empty");
+        upload.processFile=false;
+      }
+      
+      //if ( ! atLeastOneOf(tipp,['print_identifier', 'online_identifier', 'DOI', 'Proprietary_ID.isbn']) ) {
+      //  tipp.messages.add("Title (row ${counter}) must reference at least one identifier");
+      //  upload.processFile=false;
+      //}
+      
+      log.debug("tipp id = ${tipp.id}");
+            
+      if (!tipp.id) {
+        tipp.messages.add("Title (row ${counter}) does not contain a valid ID (at least one of \"id.issn\", \"id.isbn\", \"id.eissn\" required, found: ${tipp.id})");
+        upload.processFile=false;
+      }
+            
+      if ( !validISSN(tipp.id?.issn) ) {
+        tipp.messages.add("Title (row ${counter}) does not contain a valid ISSN (Column should be id.issn, value in file was ${tipp.id?.issn})");
+        upload.processFile=false;
+      }
+      
+      if ( ! validISSN(tipp.id?.eissn) ) {
+        tipp.messages.add("Title (row ${counter}) does not contain a valid eISSN  (Column name should be id.eissn, value in file was ${tipp.id?.issn})");
+        upload.processFile=false;
+      }
+
+      if ( ! validISBN(tipp.id?.isbn) ) {
+        tipp.messages.add("Title (row ${counter}) does not contain a valid ISBN (Column name should be id.isbn,value in file was ${tipp.id?.issn})");
+        upload.processFile=false;
+      }
+      
+      if ( tipp.id ) {
+        ["issn", "eissn", "isbn", "doi"].each { idtype ->
+          if ( ( tipp.id[idtype] ) && ( tipp.id[idtype] != '' ) ) {
+            if ( id_list.contains(tipp.id[idtype]) ) {
+              tipp.messages.add("Title (row ${counter}) contains a repeated ${idtype} - ${tipp[idtype].origValue}");
+              upload.processFile=false;
+            }
+            else {
+              id_list.add(tipp.id[idtype])
+            }
+          }
+        }
+      }
+
+      //if ( ( tipp_row.host_platform_url.origValue == null ) || ( tipp_row.host_platform_url.origValue.trim() == '' ) ) {
+      //  tipp.messages.add("Title (row ${counter}) does not contain a valid host platform");
+      //  upload.processFile=false;
+      // }
+      
+      //tipp.platforms?.each { plat ->
+      //  if ( ( plat.role.toLowerCase().trim() != 'host' ) &&
+      //       ( plat.role.toLowerCase().trim() != 'administrative' ) ) {
+      //    tipp.messages.add("Title (row ${counter}) Containts a non-host or admin platform");
+      //    upload.processFile=false;          
+      //  }
+      // }
+      
+      //if ( tipp.parsed_start_date == null ) {
+      //  tipp.messages.add("Title (row ${counter}) Invalid start date");
+      //  upload.processFile=false;                  
+      //}
+      
+      //if ( tipp.parsed_end_date == null ) {
+      //  tipp.messages.add("Title (row ${counter}) Invalid end date");
+      //  upload.processFile=false;                  
+      //}
+      
+      tipp.parsedStartDate = parseDate(tipp.date_first_issue_online,possible_date_formats)
+      if ( tipp.parsedStartDate == null ) {
+        tipp.messages.add("Invalid tipp date_first_issue_online");
+        upload.processFile=false;
+      }
+      
+      if ( tipp.date_last_issue_online && ( tipp.date_last_issue_online.trim() != '' ) ) {
+        tipp.parsedEndDate = parseDate(tipp.date_last_issue_online,possible_date_formats)
+        if ( tipp.parsedEndDate == null ) {
+          tipp.messages.add("Invalid tipp date_last_issue_online");
+          upload.processFile=false;
+        }
+      }
+      
+      if ( ( tipp.coverage_depth != null ) &&
+           ( tipp.coverage_depth.trim() != '' ) &&
+           ( ! ( ['fulltext','selected articles','abstracts'].contains(tipp.coverage_depth.toLowerCase())) ) ) {
+        tipp.messages.add("coverage depth must be one of fulltext, selected articles or abstracts");
+        upload.processFile=false;                             
+      }
+      else {
+        // log.debug("${tipp.coverage_depth} is valid");
+        //  tipp.messages.add("Missing tipp coverage depth");
+        //  upload.processFile=false;                                     
+
+      }
+      
+      if ( tipp.platform ) {
+        def plat = tipp.platform.values().find { it.coltype=='host' }
+        if ( plat && plat.url && ( plat.url.trim() != '' ) ) {
+          // Cool - found platform
+        }
+        else {
+          tipp.messages.add("Unable to locate host platform");
+          upload.processFile=false;
+        }
+      }
+      else {
+        tipp.messages.add("No platform information for tipp");
+        upload.processFile=false;                             
+      }
+      
+      counter++
+    }
+    
+    return true;
+  }
+  
+  def validISSN(issn_string) {
+    def result = true;
+    if ( ( issn_string ) && ( issn_string.trim() != '' ) ) {
+      // Check issn_string matches regexp "[0-9]{4}-[0-9]{3}[0-9X]"
+      if ( issn_string ==~ '[0-9]{4}-[0-9]{3}[0-9X]' ) {
+        // Matches, all is good.
+      }
+      else {
+        result = false
+      }
+    }
+    return result;
+  }
+
+  def validISBN(isbn_string) {
+    def result = true;
+    if ( ( isbn_string ) && ( isbn_string.trim() != '' ) ) {
+      // Check issn_string matches regexp "[0-9]{4}-[0-9]{3}[0-9X]"
+      if ( isbn_string ==~ '97(8|9))?[0-9]{9}[0-9X])' ) {
+        // Matches, all is good.
+      }
+      else {
+        result = false
+      }
+    }
+    return result;
+  }
+
+  def generateAndValidateSubOfferedIdentifier(upload) {
+    // Create normalised SO ID
+    if ( upload['soIdentifier'].value ) {
+      upload.normalisedSoIdentifier = upload['soIdentifier'].value?.trim().toLowerCase().replaceAll('-','_')
+      if ( ( upload.normalisedSoIdentifier == null ) || ( upload.normalisedSoIdentifier.trim().length() == 0 ) ) {
+        log.error("No subscription offered identifier");
+        upload['soIdentifier'].messages.add("Unable to use this identifier")
+        upload.processFile=false
+      }
+      else {
+        log.debug("Generated sub offered Id: ${upload.normalisedSoIdentifier}");
+
+        // Generated identifier is valid, check one does not exist already
+        if ( Subscription.findByIdentifier(upload.normalisedSoIdentifier) ) {
+          upload['soIdentifier'].messages.add("Subscription identifier already present")
+          upload.processFile=false
+        }
+      }
+    }
+    else {
+      upload['soIdentifier'].messages.add("No SO Identifier present")
+      upload.processFile=false
+    }
+    return true
+  }
+  
+  def generateAndValidatePackageIdentifier(upload) {
+
+    if ( upload.soProvider?.value && upload.soPackageIdentifier?.value ) {
+      upload.normPkgIdentifier = "${upload.soProvider.value?.trim()}:${upload.soPackageIdentifier.value?.trim()}".toLowerCase().replaceAll('-','_');
+      if ( ( upload.normPkgIdentifier == null ) || ( upload.normPkgIdentifier.trim().length() == 0 ) ) {
+        log.error("No package identifier");
+        upload['soPackageIdentifier'].messages.add("Unable to use this identifier")
+        upload.processFile=false
+      }
+      else {
+        // Generated identifier is valid, check one does not exist already
+        if ( Package.findByIdentifier(upload.normPkgIdentifier) ) {
+          upload['soPackageIdentifier'].messages.add("Package identifier already present")
+          upload.processFile=false
+        }
+      }
+    }
+    else {
+      log.error("No package identifier");
+      upload['soPackageIdentifier'].messages.add("Unable to use this identifier")
+      upload.processFile=false
+    }
+
+    return true
+  }
+
+  def validateConsortia(upload) {
+	if ( ( upload.consortium ) && ( upload.consortium.value ) ) {
+	  upload.consortiumOrg = Org.findByName(upload.consortium.value)
+	  if ( upload.consortiumOrg == null ) {
+		  upload.consortium.messages.add("Unable to locate org with name ${upload.consortium.value}")
+		  upload.processFile=false
+	  }
+	}
+	return true
+  }
+
+  def validateColumnHeadings(upload) {
+    def cols_so_far = []
+    int col = 0;
+    upload.soHeaderLine.each { p ->
+      if ( p.trim() != '' ) {
+        if ( cols_so_far.contains(p) ) {
+          upload.messages.add("Field ${p} (col ${col}) seems to be repeated in the header. This should never happen. If you are, for example, adding multiple admin platforms, please use the format platform.first.name, platform.second.name instead of simply repeating platform.name. This allows us to join together urls with corresponding values");
+          upload.process_file=false;
+        }
+        else {
+          cols_so_far.add(p);
+        }
+      }
+      col++
+    }		   
+  }
+  
 }

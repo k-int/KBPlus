@@ -1,8 +1,9 @@
 package com.k_int.kbplus.auth
 
 import org.apache.commons.lang.builder.HashCodeBuilder
+import javax.persistence.Transient
 
-class UserRole implements Serializable {
+class UserRole implements Serializable, Comparable {
 
   User user
   Role role
@@ -53,5 +54,15 @@ class UserRole implements Serializable {
   static mapping = {
     id composite: ['role', 'user']
     version false
+  }
+
+  @Transient
+  def getSortString() {
+    return user?.display+' '+role?.authority
+  }
+
+  @Transient
+  int compareTo(obj) {
+    sortString.compareTo(obj?.sortString)
   }
 }

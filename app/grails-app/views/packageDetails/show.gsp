@@ -12,7 +12,12 @@
       <div class="container">
 
         <div class="page-header">
-          <h1><g:message code="default.edit.label" args="[entityName]" /></h1>
+          <h1> <span id="packageNameEdit"
+                        class="xEditableValue"
+                        data-type="textarea"
+                        data-pk="${packageInstance.class.name}:${packageInstance.id}"
+                        data-name="name"
+                        data-url='<g:createLink controller="ajax" action="editableSetValue"/>'>${packageInstance.name}</span></h1>
         </div>
 
         <g:if test="${flash.message}">
@@ -48,6 +53,11 @@
             <fieldset>
 
               <dl>
+                <dt>Package Name</dt>
+                <dd> <g:xEditable owner="${packageInstance}" field="name" /></dd>
+              </dl>
+
+              <dl>
                 <dt>Org Links</dt>
                 <dd><g:render template="orgLinks" 
                             contextPath="../templates" 
@@ -57,11 +67,7 @@
               <dl>
                 <dt>Package Type</dt>
                 <dd>
-                  <g:relation domain='Package'
-                            pk='${packageInstance?.id}'
-                            field='packageType'
-                            class='refdataedit'
-                            id='PackageType'>${packageInstance?.packageType?.value?:'Not set'}</g:relation>
+                  <g:xEditableRefData owner="${packageInstance}" field="packageType" config='PackageType'/>
                 </dd>
               </dl>
 
@@ -85,7 +91,8 @@
                 <td style="vertical-align:top;">
                    ${t.title.title}
                    <g:link controller="titleDetails" action="edit" id="${t.title.id}">(Title)</g:link>
-                   <g:link controller="titleDetails" action="edit" id="${t.title.id}">(TIPP)</g:link>
+                   <g:link controller="tipp" action="show" id="${t.id}">(TIPP)</g:link>
+                   (<g:xEditableRefData owner="${t}" field="status" config='TIPPStatus'/>)
                 </td>
                 <td style="white-space: nowrap;vertical-align:top;">${t.platform?.name}</td>
                 <td style="white-space: nowrap;vertical-align:top;">
@@ -95,19 +102,19 @@
                 </td>
 
                 <td style="white-space: nowrap">
-                  Date: <g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.startDate}"/>
-                        <input id="TitleInstancePackagePlatform:${t.id}:startDate" type="hidden" class="dp1" /><br/>
-                  Volume: <g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="startVolume" id="startVolume" class="newipe">${t.startVolume}</g:inPlaceEdit><br/>
-                  Issue: <g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="endIssue" id="endIssue" class="newipe">${t.startIssue}</g:inPlaceEdit>                
+                  Date: <g:xEditable owner="${t}" type="date" field="startDate" /><br/>
+                  Volume: <g:xEditable owner="${t}" field="startVolume" /><br/>
+                  Issue: <g:xEditable owner="${t}" field="startIssue" />     
                 </td>
 
                 <td style="white-space: nowrap"> 
-                   Date:<g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.endDate}"/>
-                    <input id="TitleInstancePackagePlatform:${t.id}:endDate" type="hidden" class="dp1" /><br/>
-                   Volume: <g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="endVolume" id="endVolume" class="newipe">${t.endVolume}</g:inPlaceEdit><br/>
-                   Issue: <g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="endIssue" id="endIssue" class="newipe">${t.endIssue}</g:inPlaceEdit>
+                   Date: <g:xEditable owner="${t}" type="date" field="endDate" /><br/>
+                   Volume: <g:xEditable owner="${t}" field="endVolume" /><br/>
+                   Issue: <g:xEditable owner="${t}" field="endIssue" />
                 </td>
-                <td><g:inPlaceEdit domain="TitleInstancePackagePlatform" pk="${t.id}" field="coverageDepth" id="coverageDepth" class="newipe">${t.coverageDepth}</g:inPlaceEdit></td>
+                <td>
+                  <g:xEditable owner="${t}" field="coverageDepth" />
+                </td>
               </tr>
             </g:each>
             </tbody>
@@ -118,6 +125,16 @@
 
             </fieldset>
         </fieldset>
+        
+        <h3>Add title to package</h3>
+        <g:form controller="ajax" action="addToCollection">
+          <input type="hidden" name="__context" value="${packageInstance.class.name}:${packageInstance.id}"/>
+          <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.TitleInstancePackagePlatform"/>
+          <input type="hidden" name="__recip" value="pkg"/>
+          title: <g:simpleReferenceTypedown class="input-xxlarge" name="title" baseClass="com.k_int.kbplus.TitleInstance"/>
+          platform: <g:simpleReferenceTypedown class="input-large" name="platform" baseClass="com.k_int.kbplus.Platform"/>
+          <input type="submit" value="Add Title..."/>
+         </g:form>
 
 
       </div>
@@ -129,114 +146,10 @@
               model="${[roleLinks:packageInstance?.orgs,parent:packageInstance.class.name+':'+packageInstance.id,property:'orgs',recip_prop:'pkg']}" />
 
     <script language="JavaScript">
-
-      $(document).ready(function(){
-         $('dd span.refdataedit').editable('<g:createLink controller="ajax" params="${[resultProp:'value']}" action="genericSetRel" />', {
-           loadurl: '<g:createLink controller="ajax" params="${[id:'PackageType',format:'json']}" action="refdataSearch" />',
-           type   : 'select',
-           cancel : 'Cancel',
-           submit : 'OK',
-           id     : 'elementid',
-           tooltip: 'Click to edit...',
-           callback : function(value, settings) {
-           }
-         });
-
-         $('.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" />', {
-           type      : 'textarea',
-           cancel    : 'Cancel',
-           submit    : 'OK',
-           id        : 'elementid',
-           rows      : 3,
-           tooltip   : 'Click to edit...',
-           onblur        : 'ignore'
-         });
-
-
-         // On jEditable click remove the hide the icon and show it
-         // when one of the buttons are clicked or ESC is hit.
-
-         $('.newipe').click(function() {
-            // Ensure we're not clicking in an editing element.
-            if($(this).hasClass('clicked')) {
-                return;
-            }
-
-                // Hide edit icon with overwriting style.
-                $(this).addClass('clicked');
-
-            var e = $(this);
-
-            var outsideElements;
-
-            setTimeout(function() {
-                outsideElements = e.parent().find("span:not(.clicked)");
-                console.log(outsideElements);
-                outsideElements.hide();
-            }, 1);
-
-                var removeClicked = function() {
-                        setTimeout(function() {
-                                e.removeClass('clicked');
-                                if(outsideElements) {
-                                        outsideElements.show();
-                                }
-                        }, 1);
-                }
-
-                setTimeout(function() {
-                        e.find('form button').click(function() {
-                                removeClicked();
-                        });
-                        e.keydown(function(event) {
-                                if(event.keyCode == 27) {
-                                        removeClicked();
-                                }
-                        });
-                }, 1);
-         });
-
-
-        var datepicker_config = {
-          buttonImage: '../../images/calendar.gif',
-          buttonImageOnly: true,
-          changeMonth: true,
-          changeYear: true,
-          showOn: 'both',
-          showButtonPanel: true,
-          showClearButton: true,
-          clearText: "Clear",
-          onSelect: function(dateText, inst) {
-            var elem_id = inst.input[0].id;
-            $.ajax({url: '<g:createLink controller="ajax" action="genericSetValue"/>?elementid='+
-                             elem_id+'&value='+dateText+'&dt=date&idf=MM/dd/yyyy&odf=${session.sessionPreferences?.globalDateFormat}',
-                   success: function(result){inst.input.parent().find('span').html(result)}
-                   });
-          },
-          beforeShow: function( input ) {
-            setTimeout(function() {
-                var buttonPane = $( input )
-                    .datepicker( "widget" )
-                    .find( ".ui-datepicker-buttonpane" );
-
-                $( "<button/>", {
-                    text: "Clear",
-                    click: function() {
-                      // var parent=$(this).parent('.dp1')
-                      console.log("%o",input)
-                      $(input).parent().find('span.datevalue').html("")
-                      $.ajax({url: '<g:createLink controller="ajax" action="genericSetValue"/>?elementid='+input.id+'&value=__NULL__',});
-                      $(input).value="__NULL__"
-                    }
-                }).appendTo( buttonPane ).addClass("ui-datepicker-clear ui-state-default ui-priority-primary ui-corner-all");
-            }, 1 );
-          }
-        };
-
-        $("input.dp1").datepicker(datepicker_config);
-
+      $(function(){
+        $.fn.editable.defaults.mode = 'inline';
+        $('.xEditableValue').editable();
       });
-
     </script>
 
   </body>

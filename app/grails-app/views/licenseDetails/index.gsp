@@ -25,10 +25,7 @@
     </div>
 
     <div class="container">
-      <h1>${license.licensee?.name} ${license.type?.value} Licence : 
-
-<g:inPlaceEdit domain="License" pk="${license.id}" style="padding-top: 5px;" field="reference" id="reference" class="${editable?'newipe':''}">${license.reference}</g:inPlaceEdit></h1>
-
+      <h1>${license.licensee?.name} ${license.type?.value} Licence : <g:xEditable owner="${license}" field="reference" id="reference"/></h1>
       <g:render template="nav" contextPath="." />
     </div>
 
@@ -100,42 +97,55 @@
                   <dl>
                       <dt><label class="control-label" for="reference">Reference</label></dt>
                       <dd>
-                        <p id="reference" class="${editable?'ipe':''}" >${license.reference}</p>
+                        <g:xEditable owner="${license}" field="reference" id="reference"/>
                       </dd>
                   </dl>
       
                   <dl>
                       <dt><label class="control-label" for="noticePeriod">Notice Period</label></dt>
                       <dd>
-                        <p id="noticePeriod" class="${editable?'ipe':''}" >${license.noticePeriod}</p>
-                      </dd>
+                        <g:inPlaceEdit domain="${license.class.name}" 
+                                       pk="${license.id}" 
+                                       field="noticePeriod" 
+                                       id="noticePeriod">${license.noticePeriod}</g:inPlaceEdit>
+                     </dd>
                   </dl>
       
                   <dl>
                       <dt><label class="control-label" for="licenseUrl">Licence Url</label></dt>
                       <dd>
-                        <p id="licenseUrl" class="${editable?'ipe':''}">${license.licenseUrl}</p>
+                        <g:inPlaceEdit domain="${license.class.name}" 
+                                       pk="${license.id}" 
+                                       field="licenseUrl" 
+                                       id="licenseUrl">${license.licenseUrl}</g:inPlaceEdit>
+
                       </dd>
                   </dl>
       
                   <dl>
                       <dt><label class="control-label" for="licensorRef">Licensor Ref</label></dt>
                       <dd>
-                        <p id="licensorRef" class="${editable?'ipe':''}">${license.licensorRef}</p>
+                        <g:inPlaceEdit domain="${license.class.name}" 
+                                       pk="${license.id}" 
+                                       field="licensorRef" 
+                                       id="licensorRef">${license.licensorRef}</g:inPlaceEdit>
                       </dd>
                   </dl>
       
                   <dl>
                       <dt><label class="control-label" for="licenseeRef">Licensee Ref</label></dt>
                       <dd>
-                        <div id="licenseeRef" class="${editable?'ipe':''}" >${license.licenseeRef}</div>
+                        <g:inPlaceEdit domain="${license.class.name}" 
+                                       pk="${license.id}" 
+                                       field="licenseeRef" 
+                                       id="licenseeRef">${license.licenseeRef}</g:inPlaceEdit>
                       </dd>
                   </dl>
 
                   <dl>
                       <dt><label class="control-label" for="licenseeRef">Public?</label></dt>
                       <dd>
-                        <g:refdataValue val="${license.isPublic?.value}" domain="License" pk="${license.id}" field="isPublic" cat='YN' class="${editable?'ynrefdataedit':''}"/>
+                        <g:xEditableRefData owner="${license}" field="isPublic" config='YN'/>
                       </dd>
                   </dl>
 
@@ -156,9 +166,9 @@
             <table class="table table-bordered licence-properties">
               <thead>
                 <tr>
-                  <td>Property</td>
-                  <td>Status</td>
-                  <td>Notes</td>
+                  <th>Property</th>
+                  <th>Status</th>
+                  <th>Notes</th>
                 </tr>
               </thead>
               <tbody>
@@ -176,36 +186,35 @@
                     <td><g:singleValueFieldNote domain="concurrentUsers" value="${license.getNote('concurrentUsers')}" class="${editable?'fieldNote':''}"/></td></tr>
   
                 <tr><td>Remote Access</td>
-                    <td><g:refdataValue val="${license.remoteAccess?.value}" domain="License" pk="${license.id}" field="remoteAccess" cat='YNO' class="${editable?'refdataedit':''}"/></td>
-                    <td><g:singleValueFieldNote domain="remoteAccess" value="${license.getNote('remoteAccess')}" class="${editable?'fieldNote':''}"/></td></tr>
-  
+                    <td><g:xEditableRefData owner="${license}" field="remoteAccess" config='YN' /></td>
+                    <td><g:xEditableFieldNote owner="${license}" field="remoteAccess" id="remoteAccess" class="${editable?'refdataedit':''}"/></td></tr>  
                 <tr><td>Walk In Access</td>
-                    <td><g:refdataValue val="${license.walkinAccess?.value}" domain="License" pk="${license.id}" field="walkinAccess" cat='YNO' class="${editable?'refdataedit':''}"/></td>
-                    <td><g:singleValueFieldNote domain="walkinAccess" value="${license.getNote('walkinAccess')}" class="${editable?'fieldNote':''}"/></td></tr>
+                     <td><g:xEditableRefData owner="${license}" field="walkinAccess" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableFieldNote owner="${license}" field="walkinAccess" id="walkinAccess"/></td></tr>
                 <tr><td>Multi Site Access</td>
-                    <td><g:refdataValue val="${license.multisiteAccess?.value}" domain="License" pk="${license.id}" field="multisiteAccess" cat='YNO' class="${editable?'refdataedit':''}"/></td>
-                    <td><g:singleValueFieldNote domain="multisiteAccess" value="${license.getNote('multisiteAccess')}" class="${editable?'fieldNote':''}"/></td></tr>
+                    <td><g:xEditableRefData owner="${license}" field="multisiteAccess" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableFieldNote owner="${license}" field="multisiteAccess" id="multisiteAccess"/></td></tr>
                 <tr><td>Partners Access</td>
-                    <td><g:refdataValue val="${license.partnersAccess?.value}" domain="License" pk="${license.id}" field="partnersAccess" cat='YNO' class="${editable?'refdataedit':''}"/></td>
-                    <td><g:singleValueFieldNote domain="partnersAccess" value="${license.getNote('partnersAccess')}" class="${editable?'fieldNote':''}"/></td></tr>
+                    <td><g:xEditableRefData owner="${license}" field="partnersAccess" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableFieldNote owner="${license}" field="partnersAccess" id="partnersAccess"/></td></tr>
                 <tr><td>Alumni Access</td>
-                    <td><g:refdataValue val="${license.alumniAccess?.value}" domain="License" pk="${license.id}" field="alumniAccess" cat='YNO' class="${editable?'refdataedit':''}"/></td>
-                    <td><g:singleValueFieldNote domain="alumniAccess" value="${license.getNote('alumniAccess')}" class="${editable?'fieldNote':''}"/></td></tr>
+                    <td><g:xEditableRefData owner="${license}" field="alumniAccess" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableFieldNote owner="${license}" field="alumniAccess" id="alumniAccess"/></td></tr>
                 <tr><td>ILL - Inter Library Loans</td>
-                    <td><g:refdataValue val="${license.ill?.value}" domain="License" pk="${license.id}" field="ill" cat='YNO' class="${editable?'refdataedit':''}"/></td>
-                    <td><g:singleValueFieldNote domain="ill" value="${license.getNote('ill')}" class="${editable?'fieldNote':''}"/></td></tr>
+                    <td><g:xEditableRefData owner="${license}" field="ill" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableFieldNote owner="${license}" field="ill" id="ill"/></td></tr>
                 <tr><td>Include In Coursepacks</td>
-                    <td><g:refdataValue val="${license.coursepack?.value}" domain="License" pk="${license.id}" field="coursepack" cat='YNO' class="${editable?'refdataedit':''}"/></td>
-                    <td><g:singleValueFieldNote domain="coursepack" value="${license.getNote('coursepack')}" class="${editable?'fieldNote':''}"/></td></tr>
+                    <td><g:xEditableRefData owner="${license}" field="coursepack" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableFieldNote owner="${license}" field="coursepack" id="coursepack"/></td></tr>
                 <tr><td>Include in VLE</td>
-                    <td><g:refdataValue val="${license.vle?.value}" domain="License" pk="${license.id}" field="vle" cat='YNO' class="${editable?'refdataedit':''}"/></td>
-                    <td><g:singleValueFieldNote domain="vle" value="${license.getNote('vle')}" class="${editable?'fieldNote':''}"/></td></tr>
+                    <td><g:xEditableRefData owner="${license}" field="vle" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableFieldNote owner="${license}" field="vle" id="vle"/></td></tr>
                 <tr><td>Enterprise Access</td>
-                    <td><g:refdataValue val="${license.enterprise?.value}" domain="License" pk="${license.id}" field="enterprise" cat='YNO' class="${editable?'refdataedit':''}"/></td>
-                    <td><g:singleValueFieldNote domain="enterprise" value="${license.getNote('enterprise')}" class="${editable?'fieldNote':''}"/></td></tr>
+                    <td><g:xEditableRefData owner="${license}" field='enterprise' config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableFieldNote owner="${license}" field="enterprise" id="enterprise"/></td></tr>
                 <tr><td>Post Cancellation Access Entitlement</td>
-                    <td><g:refdataValue val="${license.pca?.value}" domain="License" pk="${license.id}" field="pca" cat='YNO' class="${editable?'refdataedit':''}"/></td>
-                    <td><g:singleValueFieldNote domain="pca" value="${license.getNote('pca')}" class="${editable?'fieldNote':''}"/></td></tr>
+                    <td><g:xEditableRefData owner="${license}" field="pca" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableFieldNote owner="${license}" field="pca" id="pca"/></td></tr>
               </tbody>
             </table>
   
@@ -222,179 +231,16 @@
               model="${[roleLinks:license?.orgLinks,parent:license.class.name+':'+license.id,property:'orgLinks',recip_prop:'lic']}" />
 
     <script language="JavaScript">
+    
+       console.log("ed1");
+       
       <g:if test="${editable}">
+       console.log("ed2");
+
       $(document).ready(function() {
-         var checkEmptyEditable = function() {
-           $('.ipe, .refdataedit, .fieldNote, .ynrefdataedit').each(function() {
-             if($(this).text().length == 0) {
-               $(this).addClass('editableEmpty');
-             } else {
-               $(this).removeClass('editableEmpty');
-             }
-           });
-         }
+      
+         console.log("ed3f");
 
-         checkEmptyEditable();
-
-         if ( '${license.concurrentUsers?.value}'==='Specified' ) {
-           $('#cucwrap').show();
-         }
-         else {
-           $('#cucwrap').hide();
-         }
-         
-         // On jEditable click remove the hide the icon and show it 
-         // when one of the buttons are clicked or ESC is hit.
-
-         $('.ipe, .intedit, .refdataedit, .cuedit, .fieldNote, .ynrefdataedit, .newipe').click(function() {
-            // Ensure we're not clicking in an editing element.
-            if($(this).hasClass('clicked')) {
-                return;
-            }
-            
-         	// Hide edit icon with overwriting style.
-         	$(this).addClass('clicked');
-            
-            var e = $(this);
-            
-            var outsideElements;
-                        
-            setTimeout(function() {
-                outsideElements = e.parent().find("span:not(.clicked)");
-                console.log(outsideElements);
-                outsideElements.hide();
-            }, 1);
-         	
-         	var removeClicked = function() {
-         		setTimeout(function() {
-         			e.removeClass('clicked');
-         			if(outsideElements) {
-         				outsideElements.show();
-         			}
-         		}, 1);
-         	}
-         	
-         	setTimeout(function() {
-         		e.find('form button').click(function() {
-         			removeClicked();
-         		});
-         		e.keydown(function(event) {
-         			if(event.keyCode == 27) {
-         				removeClicked();
-         			}
-         		});
-         	}, 1);
-         });
-         
-         $('.ipe').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="setValue" />', { 
-           type      : 'textarea',
-           cancel    : 'Cancel',
-           submit    : 'OK',
-           id        : 'elementid',
-           rows      : 3,
-           tooltip   : 'Click to edit...',
-           onblur	 : 'ignore'
-         });
-
-         $('.intedit').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="setValue" />', {
-           type      : 'text',
-           cols      : '5',
-           width     : '30',
-           cancel    : 'Cancel',
-           submit    : 'OK',
-           id        : 'elementid',
-           tooltip   : 'Click to edit...',
-           onblur	 : 'ignore'
-         });
-
-
-         $('.refdataedit').editable('<g:createLink controller="ajax" action="genericSetRef" />', {
-           data   : {'Yes':'Yes', 'No':'No','Other':'Other'},
-           type   : 'select',
-           cancel : 'Cancel',
-           submit : 'OK',
-           id     : 'elementid',
-           tooltip: 'Click to edit...',
-           onblur	 : 'ignore',
-           callback : function(value) {
-               var iconList = {
-                   'Yes' : 'greenTick',
-                   'No' : 'redCross',
-                   'Other' : 'purpleQuestion'
-               };
-               
-               var icon = $(document.createElement('span'));
-               $(this).prepend(icon.addClass('select-icon').addClass(iconList[value]));
-           }
-         });
-
-         $('.ynrefdataedit').editable('<g:createLink controller="ajax" action="genericSetRef" />', {
-           data   : {'Yes':'Yes', 'No':'No'},
-           type   : 'select',
-           cancel : 'Cancel',
-           submit : 'OK',
-           id     : 'elementid',
-           tooltip: 'Click to edit...',
-           onblur        : 'ignore',
-           callback : function(value) {
-               var iconList = {
-                   'Yes' : 'greenTick',
-                   'No' : 'redCross'
-               };
-
-               var icon = $(document.createElement('span'));
-               $(this).prepend(icon.addClass('select-icon').addClass(iconList[value]));
-           }
-         });
-
-
-         $('.cuedit').editable('<g:createLink controller="ajax" action="genericSetRef" />', {
-           data   : {'No limit':'No limit', 'Specified':'Specified','Not Specified':'Not Specified', 'Other':'Other'},
-           type   : 'select',
-           cancel : 'Cancel',
-           submit : 'OK',
-           id     : 'elementid',
-           tooltip: 'Click to edit...',
-           onblur	 : 'ignore',
-           callback : function(value, settings) {
-             if ( value==='Specified' ) {
-               $('#cucwrap').show();
-             }
-             else {
-               $('#cucwrap').hide();
-             }
-             
-             var iconList = {
-                 'No limit' : 'greenTick',
-                 'Specified' : 'redCross',
-                 'Not Specified' : 'purpleQuestion',
-                 'Other' : 'purpleQuestion'
-             };
-               
-             var icon = $(document.createElement('span'));
-             $(this).prepend(icon.addClass('select-icon').addClass(iconList[value]));
-           }
-         });
-
-         $('.fieldNote').editable('<g:createLink controller="ajax" params="${[type:'License']}" id="${params.id}" action="setFieldNote" />', {
-           type      : 'textarea',
-           cancel    : 'Cancel',
-           submit    : 'OK',
-           id        : 'elementid',
-           rows      : 3,
-           tooltip   : 'Click to edit...',
-           onblur	 : 'ignore'
-         });
-
-         $('.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" />', {
-           type      : 'textarea',
-           cancel    : 'Cancel',
-           submit    : 'OK',
-           id        : 'elementid',
-           rows      : 3,
-           tooltip   : 'Click to edit...',
-           onblur	 : 'ignore'
-         });
 
          $( "#dialog-form" ).dialog({
            autoOpen: false,
@@ -414,6 +260,8 @@
              allFields.val( "" ).removeClass( "ui-state-error" );
            }
          });
+
+         console.log("ed3fr");
 
          $(".announce").click(function(){
            var id = $(this).data('id');
@@ -440,8 +288,12 @@
 
 
        });
+                console.log("ed3fr outer");
+
       </g:if>
       <g:else>
+                console.log("ed3fr else");
+
         $(document).ready(function() {
           $(".announce").click(function(){
             var id = $(this).data('id');
@@ -450,6 +302,7 @@
           });
         }
       </g:else>
+                console.log("done");
 
     </script>
 

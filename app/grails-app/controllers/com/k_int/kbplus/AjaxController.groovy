@@ -40,7 +40,25 @@ class AjaxController {
       qryParams:[],
       cols:['value'],
       format:'simple'
+    ],
+    'YN' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='YN'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='YN'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'TIPPStatus' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TIPP Status'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='TIPP Status'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
     ]
+
+
   ]
 
 
@@ -137,6 +155,34 @@ class AjaxController {
     outs.close()
   }
 
+   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def setFieldTableNote() {
+      println "Params:"+params
+    def domain_class=grailsApplication.getArtefact('Domain',"com.k_int.kbplus.${params.type}")
+    if ( domain_class ) {
+        println params.id
+      def instance = domain_class.getClazz().get(params.id)
+       
+      if ( instance ) {
+           String temp = '__fieldNote_'+params.name
+        if ( temp?.startsWith('__fieldNote_') ) {
+          def note_domain = temp.substring(12)
+          println "note_domain: " + note_domain +" : "+ params.value
+          instance.setNote(note_domain, params.value);
+          instance.save(flush:true)
+        }
+      }
+    }
+    else {
+      log.error("no type");
+    }
+
+    response.setContentType('text/plain')
+    def outs = response.outputStream
+    outs << params.value
+    outs.flush()
+    outs.close()
+  }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def genericSetValue() {
@@ -196,46 +242,6 @@ class AjaxController {
     outs.close()
   }
 
-
-  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def genericSetRef() {
-    // [id:1, value:JISC_Collections_NESLi2_Lic_IOP_Institute_of_Physics_NESLi2_2011-2012_01012011-31122012.., type:License, action:inPlaceSave, controller:ajax
-    // def clazz=grailsApplication.domainClasses.findByFullName(params.type)
-    log.debug("genericSetRef ${params}");
-
-    // params.elementid (The id from the html element)  must be formed as domain:pk:property:refdatacat:otherstuff
-    String[] oid_components = params.elementid.split(":");
-
-    def domain_class=grailsApplication.getArtefact('Domain',"com.k_int.kbplus.${oid_components[0]}")
-    def result = params.value
-
-
-    if ( domain_class ) {
-      def instance = domain_class.getClazz().get(oid_components[1])
-      if ( instance ) {
-        log.debug("Got instance ${instance}");
-        def rdv = RefdataCategory.lookupOrCreate(oid_components[3], params.value)
-        def binding_properties = [ "${oid_components[2]}":rdv ]
-        log.debug("Merge: ${binding_properties}");
-        // see http://grails.org/doc/latest/ref/Controllers/bindData.html
-        bindData(instance, binding_properties)
-        instance.save(flush:true);
-      }
-      else {
-        log.debug("no instance");
-      }
-    }
-    else {
-      log.debug("no type");
-    }
-
-    response.setContentType('text/plain')
-    def outs = response.outputStream
-    outs << result
-    outs.flush()
-    outs.close()
-  }
-
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def genericSetRel() {
     // [id:1, value:JISC_Collections_NESLi2_Lic_IOP_Institute_of_Physics_NESLi2_2011-2012_01012011-31122012.., type:License, action:inPlaceSave, controller:ajax
@@ -243,7 +249,7 @@ class AjaxController {
     log.debug("genericSetRel ${params}");
 
     // params.elementid (The id from the html element)  must be formed as domain:pk:property:refdatacat:otherstuff
-    String[] target_components = params.elementid.split(":");
+    String[] target_components = params.pk.split(":");
     String[] value_components = params.value.split(":");
 
     def target=resolveOID(target_components);
@@ -252,25 +258,31 @@ class AjaxController {
     def result = null
 
     if ( target && value ) {
-      def binding_properties = [ "${target_components[2]}":value ]
+      def binding_properties = [ "${params.name}":value ]
       bindData(target, binding_properties)
       target.save(flush:true);
       if ( params.resultProp ) {
         result = value[params.resultProp]
       }
       else {
-        result = value.toString()
+        if ( value ) {
+          result = renderObjectValue(value);
+          // result = value.toString()
+        }
       }
     }
     else {
       log.debug("no type (target=${target_components}, value=${value_components}");
     }
 
-    response.setContentType('text/plain')
-    def outs = response.outputStream
-    outs << result
-    outs.flush()
-    outs.close()
+    // response.setContentType('text/plain')
+    def resp = [ newValue: result ]
+    log.debug("return ${resp as JSON}");
+    render resp as JSON
+    //def outs = response.outputStream
+    //outs << result
+    //outs.flush()
+    //outs.close()
   }
 
   def resolveOID(oid_components) {
@@ -329,13 +341,10 @@ class AjaxController {
   
   def refdataSearch() {
 
-    // log.debug("refdataSearch params: ${params}");
+    log.debug("refdataSearch params: ${params}");
     
     // http://datatables.net/blog/Introducing_Scroller_-_Virtual_Scrolling_for_DataTables
     def result = [:]
-
-
-
     
     def config = refdata_config[params.id]
     if ( config ) {
@@ -387,6 +396,54 @@ class AjaxController {
       }
     }
 
+    // log.debug("refdataSearch returning ${result as JSON}");
+    withFormat {
+      html {
+        result
+      }
+      json {
+        render result as JSON
+      }
+    }
+  }
+
+  def sel2RefdataSearch() {
+
+    log.debug("sel2RefdataSearch params: ${params}");
+    
+    def result = []
+    
+    def config = refdata_config[params.id]
+    if ( config ) {
+
+      def query_params = []
+      config.qryParams.each { qp ->
+        if ( qp.clos ) {
+          query_params.add(qp.clos(params[qp.param]?:''));
+        }
+        else {
+          query_params.add(params[qp.param]);
+        }
+      }
+
+  //     log.debug("Params: ${query_params}");
+  //    log.debug("Count qry: ${config.countQry}");
+  //    log.debug("Row qry: ${config.rowQry}");
+
+      def cq = Org.executeQuery(config.countQry,query_params);    
+      def rq = Org.executeQuery(config.rowQry,
+                                query_params,
+                                [max:params.iDisplayLength?:10,offset:params.iDisplayStart?:0]);
+
+      rq.each { it ->
+        result.add([value:"${it.class.name}:${it.id}",text:"${it[config.cols[0]]}"]);
+      }
+    }
+    else {
+      log.error("No config for refdata search ${params.id}");
+    }
+
+    //log.debug("refdataSearch returning ${result as JSON}");
     withFormat {
       html {
         result
@@ -436,6 +493,7 @@ class AjaxController {
       result.values = domain_class.getClazz().refdataFind(params);
     }
     else {
+      log.error("Unable to locate domain class ${params.baseClass}");
       result.values=[]
     }
     //result.values = [[id:'Person:45',text:'Fred'],
@@ -446,7 +504,7 @@ class AjaxController {
   }
 
   def addToCollection() {
-    log.debug("AjaxController::lookup ${params}");
+    log.debug("AjaxController::addToCollection ${params}");
 
     def contextObj = resolveOID2(params.__context)
     def domain_class = grailsApplication.getArtefact('Domain',params.__newObjectClass)
@@ -486,7 +544,9 @@ class AjaxController {
           new_obj[params.__recip] = contextObj
         }
 
+        log.debug("Saving ${new_obj}");
         if ( new_obj.save() ) {
+          log.debug("Saved OK");
         }
         else {
           new_obj.errors.each { e ->
@@ -494,10 +554,13 @@ class AjaxController {
           }
         }
 
-
-
       }
-
+      else {
+        log.debug("Unable to locate instance of context class with oid ${params.__context}");
+      }
+    }
+    else {
+      log.error("Unable to ookup domain class ${params.__newObjectClass}");
     }
 
     redirect(url: request.getHeader('referer'))
@@ -536,11 +599,28 @@ class AjaxController {
 
   }
 
+  def deleteManyToMany() {
+    log.debug("deleteManyToMany(${params})");
+    def context_object = resolveOID2(params.contextOid)
+    def target_object = resolveOID2(params.targetOid)
+    if ( context_object."${params.contextProperty}".contains(target_object) ) {
+      context_object."${params.contextProperty}".remove(target_object)
+      context_object.save(flush:true);
+    }
+    redirect(url: request.getHeader('referer'))    
+  }
+
+
   def editableSetValue() {
     log.debug("editableSetValue ${params}");
     def target_object = resolveOID2(params.pk)
     if ( target_object ) {
-      target_object."${params.name}" = params.value
+      if ( params.type=='date' ) {
+        target_object."${params.name}" = params.date('value','yyyy-MM-dd')
+      }
+      else {
+        target_object."${params.name}" = params.value
+      }
       target_object.save(flush:true);
     }
 
@@ -550,4 +630,38 @@ class AjaxController {
     outs.flush()
     outs.close()
   }
+
+  def removeUserRole() {
+    def user = resolveOID2(params.user);
+    def role = resolveOID2(params.role);
+    if ( user && role ) {
+      com.k_int.kbplus.auth.UserRole.remove(user,role,true);
+    }
+    redirect(url: request.getHeader('referer'))    
+  }
+
+  /**
+   * ToDo: This function is a duplicate of the one found in InplaceTagLib, both should be moved to a shared static utility
+   */
+  def renderObjectValue(value) {
+    def result=''
+    if ( value ) {
+      switch ( value.class ) {
+        case com.k_int.kbplus.RefdataValue.class:
+          if ( value.icon != null ) {
+            result="<span class=\"select-icon ${value.icon}\"></span>${value.value}"
+          }
+          else {
+            result=value.value
+          }
+          break;
+        default:
+          result=value.toString();
+          break;
+      }
+    }
+    // log.debug("Result of render: ${value} : ${result}");
+    result;
+  }
+
 }

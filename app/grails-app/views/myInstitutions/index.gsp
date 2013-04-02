@@ -31,9 +31,7 @@
         <tr>
           <th colspan="3">Note attached to</th>
         </tr>
-        <tr class="no-background">
-          <th>Date</th>
-          <th>Sharing</th>
+        <tr>
           <th>Note</th>
         </tr>
         <g:each in="${userAlerts}" var="ua">
@@ -58,14 +56,13 @@
           </tr>
           <g:each in="${ua.notes}" var="n">
             <tr>
-              <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${n.alert.createTime}" /></td>
               <td>
-                <g:if test="${n.alert.sharingLevel==2}">- Shared with KB+ Community -</g:if>
-                <g:elseif test="${n.alert.sharingLevel==1}">- JC Only -</g:elseif>
-                <g:else>- Private -</g:else>
-              </td>
-              <td>
-                  ${n.owner.content}
+                  ${n.owner.content}<br/>
+                  <div class="pull-right"><i>${n.owner.type?.value} (
+                    <g:if test="${n.alert.sharingLevel==2}">Shared with KB+ Community</g:if>
+                    <g:elseif test="${n.alert.sharingLevel==1}">JC Only</g:elseif>
+                    <g:else>Private</g:else>
+) By ${n.owner.user?.displayName} on <g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${n.alert.createTime}" /></i></div>
               </td>
             </tr>
           </g:each>

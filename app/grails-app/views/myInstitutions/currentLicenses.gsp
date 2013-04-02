@@ -68,7 +68,7 @@
 
       <g:if test="${licenses?.size() > 0}">
         <div class="container licence-results">
-          <table class="table table-bordered">
+          <table class="table table-bordered table-striped">
             <thead>
               <tr>
                 <th>Select</th>

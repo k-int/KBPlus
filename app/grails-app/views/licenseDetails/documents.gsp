@@ -32,15 +32,15 @@
                 <input type="hidden" name="licid" value="${params.id}"/>
         </div>
 
-        <table class="table table-striped table-bordered licence-documents">
+        <table class="table table-striped table-bordered table-condensed licence-documents">
             <thead>
                 <tr>
-                    <td></td>
-                    <td>Title</td>
-                    <td>File Name</td>
-                    <td>Download</td>
-                    <td>Creator</td>
-                    <td>Type</td>
+                    <th></th>
+                    <th>Title</th>
+                    <th>File Name</th>
+                    <th>Download</th>
+                    <th>Creator</th>
+                    <th>Type</th>
                 </tr>
             </thead>
             <tbody>

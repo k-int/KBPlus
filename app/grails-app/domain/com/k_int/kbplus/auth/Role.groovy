@@ -23,4 +23,18 @@ class Role {
     authority blank: false, unique: true
     roleType blank: false, nullable:true
   }
+
+  static def refdataFind(params) {
+    def result = [];
+    def ql = null;
+    ql = Role.findAllByAuthorityIlike("${params.q}%",params)
+
+    if ( ql ) {
+      ql.each { id ->
+        result.add([id:"${id.class.name}:${id.id}",text:"${id.authority}"])
+      }
+    }
+
+    result
+  }
 }

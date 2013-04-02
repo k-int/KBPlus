@@ -24,8 +24,16 @@ class ChangeNotificationService {
     log.debug("notifySubscriptionChange...${l} create future");
 
     def future = executorService.submit({
-      log.debug("inside submitted job");
-      processSubscriptionChange(l,propname,oldvalue,newvalue,note,type)
+      try {
+        log.debug("inside submitted job - notify subscription change ${propname} - ${oldvalue} to ${newvalue}....... waiting");
+        processSubscriptionChange(l,propname,oldvalue,newvalue,note,type)
+      }
+      catch ( Throwable t ) {
+        log.error("problem processing sub change notification",t);
+      }
+      finally {
+        log.debug("Call to processSubscriptionChange completed");
+      }
     } as java.util.concurrent.Callable)
 
   }
@@ -42,7 +50,7 @@ class ChangeNotificationService {
 
       if ( hasDerivedLicenses(lic_being_changed) ) {
         Doc change_doc = new Doc(title:'Template Change notification',
-                                 contentType:1,
+                                 contentType:2,
                                  content:'The template license for this actual license has changed. You can accept the changes').save();
 
         lic_being_changed.outgoinglinks.each { ol ->
@@ -78,19 +86,21 @@ class ChangeNotificationService {
     }
   }
 
-  def processSubscriptionChange(l, propname, oldvalue, newvalue, note) {
-    log.debug("processChange...");
+  def processSubscriptionChange(l, propname, oldvalue, newvalue, note, type) {
 
     Subscription sub_being_changed = Subscription.get(l);
 
     try {
 
+      log.debug("Does the edited sub have derived subs? ${hasDerivedSubscriptions(sub_being_changed)}");
+
       if ( hasDerivedSubscriptions(sub_being_changed) ) {
         Doc change_doc = new Doc(title:'Template Change notification',
-                                 contentType:1,
+                                 contentType:2,
                                  content:'The template subscription for this sub has changed. You can accept the changes').save();
 
         sub_being_changed.derivedSubscriptions?.each { st ->
+          log.debug("Adding note for derived ST: ${st.id}");
           Alert a = new Alert(sharingLevel:2).save(flush:true)
 
           DocContext ctx = new DocContext(owner:change_doc,

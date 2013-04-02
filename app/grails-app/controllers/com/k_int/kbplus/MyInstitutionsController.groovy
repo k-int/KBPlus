@@ -45,18 +45,6 @@ class MyInstitutionsController {
     result.staticAlerts = alertsService.getStaticAlerts(request);
 
     
-    log.debug("result.userAlerts: ${result.userAlerts}");
-    log.debug("result.userAlerts.size(): ${result.userAlerts.size()}");
-    log.debug("result.userAlerts.class.name: ${result.userAlerts.class.name}");
-    // def adminRole = Role.findByAuthority('ROLE_ADMIN')
-    // if ( result.user.authorities.contains(adminRole) ) {
-    //   log.debug("User is in admin role");
-    //   result.orgs = Org.findAllBySector("Higher Education");
-    // }
-    // else {
-    //   result.orgs = Org.findAllBySector("Higher Education");
-    // }
-
     if ( ( result.user.affiliations == null ) || ( result.user.affiliations.size() == 0 ) ) {
       redirect controller:'profile', action: 'index'
     }
@@ -194,6 +182,21 @@ class MyInstitutionsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
+    
+    def date_restriction = null;
+    def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
+    
+    if ( params.validOn == null ) {
+      result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+      date_restriction = sdf.parse(result.validOn)
+    }
+    else if ( params.validOn == '' ) {     
+      result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+    }
+    else {
+      result.validOn=params.validOn
+      date_restriction = sdf.parse(params.validOn)
+    }
 
     if ( !checkUserIsMember(result.user, result.institution) ) {
       flash.error="You do not have permission to access ${result.institution.name} pages. Please request access on the profile page";
@@ -225,6 +228,12 @@ class MyInstitutionsController {
       qry_params.add("%${params.q.trim().toLowerCase()}%");
       qry_params.add("%${params.q.trim().toLowerCase()}%");
     }
+    
+    if ( date_restriction ) {
+      base_qry += " and s.startDate <= ? and s.endDate >= ? "
+      qry_params.add(date_restriction)
+      qry_params.add(date_restriction)
+    }
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
       base_qry += " order by ${params.sort} ${params.order}"
@@ -245,6 +254,21 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
+    def date_restriction = null;
+    def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
+    
+    if ( params.validOn == null ) {
+      result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+      date_restriction = sdf.parse(result.validOn)
+    }
+    else if ( params.validOn == '' ) {     
+      result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+    }
+    else {
+      result.validOn=params.validOn
+      date_restriction = sdf.parse(params.validOn)
+    }
+    
     // if ( !checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
     if ( !checkUserIsMember(result.user,result.institution) ) {
       flash.error="You do not have admin permissions to access ${result.institution.name} pages. Please request access on the profile page";
@@ -277,6 +301,12 @@ class MyInstitutionsController {
       base_qry += " and ( lower(s.name) like ? or exists ( select sp from SubscriptionPackage as sp where sp.subscription = s and ( lower(sp.pkg.name) like ? ) ) ) "
       qry_params.add("%${params.q.trim().toLowerCase()}%");
       qry_params.add("%${params.q.trim().toLowerCase()}%");
+    }
+
+    if ( date_restriction ) {
+      base_qry += " and s.startDate <= ? and s.endDate >= ? "
+      qry_params.add(date_restriction)
+      qry_params.add(date_restriction)
     }
 
     // Only list subscriptions where the user has view perms against the org
@@ -479,13 +509,17 @@ class MyInstitutionsController {
     
 
     if ( license?.hasPerm("edit",result.user) ) {
-      if ( ( license.subscriptions == null ) || ( license.subscriptions.size() == 0 ) ) {
+      def current_subscription_status = RefdataCategory.lookupOrCreate('Subscription Status','Current');
+
+      def subs_using_this_license = Subscription.findAllByOwnerAndStatus(license,current_subscription_status)
+      
+      if ( subs_using_this_license.size() == 0 ) {
         def deletedStatus = RefdataCategory.lookupOrCreate('License Status','Deleted');
         license.status = deletedStatus
         license.save(flush:true);
       }
       else {
-        flash.error = "Unable to delete - The selected license has attached subscriptions"
+        flash.error = "Unable to delete - The selected license has attached subscriptions marked as Current"
       }
     }
     else {
@@ -690,7 +724,7 @@ class MyInstitutionsController {
         if ( !has_filter )
           has_filter = true
         else
-          sw.append(" OR ")
+          sw.append(" AND ")
 
         String[] filter_components = p.key.split(':');
             switch ( filter_components[1] ) {
@@ -969,29 +1003,31 @@ class MyInstitutionsController {
 
       // For each subscription in the shopping basket
       sub.issueEntitlements.each { ie ->
-        def title_info = titleMap[ie.tipp.title.id]
-        if ( !title_info ) {
-          // log.debug("Adding ie: ${ie}");
-          title_info = [:]
-          title_info.title_idx = titleMap.size()
-          title_info.id = ie.tipp.title.id;
-          title_info.issn = ie.tipp.title.getIdentifierValue('ISSN');
-          title_info.eissn = ie.tipp.title.getIdentifierValue('eISSN');
-          title_info.title = ie.tipp.title.title
-          if ( first ) {
-            if ( ie.startDate )
-              title_info.current_start_date = formatter.format(ie.startDate)
-            if ( ie.endDate )
-              title_info.current_end_date = formatter.format(ie.endDate)
-            title_info.current_embargo = ie.embargo
-            title_info.current_depth = ie.coverageDepth
-            title_info.current_coverage_note = ie.coverageNote
-            title_info.is_core = ie.coreStatus?.value
-            title_info.core_start_date = ie.coreStatusStart ? formatter.format(ie.coreStatusStart) : ''
-            title_info.core_end_date = ie.coreStatusEnd ? formatter.format(ie.coreStatusEnd) : ''
-            // log.debug("added title info: ${title_info}");
+        if ( ! (ie.status?.value=='Deleted')  ) {
+          def title_info = titleMap[ie.tipp.title.id]
+          if ( !title_info ) {
+            // log.debug("Adding ie: ${ie}");
+            title_info = [:]
+            title_info.title_idx = titleMap.size()
+            title_info.id = ie.tipp.title.id;
+            title_info.issn = ie.tipp.title.getIdentifierValue('ISSN');
+            title_info.eissn = ie.tipp.title.getIdentifierValue('eISSN');
+            title_info.title = ie.tipp.title.title
+            if ( first ) {
+              if ( ie.startDate )
+                title_info.current_start_date = formatter.format(ie.startDate)
+              if ( ie.endDate )
+                title_info.current_end_date = formatter.format(ie.endDate)
+              title_info.current_embargo = ie.embargo
+              title_info.current_depth = ie.coverageDepth
+              title_info.current_coverage_note = ie.coverageNote
+              title_info.is_core = ie.coreStatus?.value
+              title_info.core_start_date = ie.coreStatusStart ? formatter.format(ie.coreStatusStart) : ''
+              title_info.core_end_date = ie.coreStatusEnd ? formatter.format(ie.coreStatusEnd) : ''
+              // log.debug("added title info: ${title_info}");
+            }
+            titleMap[ie.tipp.title.id] = title_info;
           }
-          titleMap[ie.tipp.title.id] = title_info;
         }
       }
       first=false
@@ -1467,6 +1503,8 @@ class MyInstitutionsController {
             break;
           case 'P+E':
           case 'E+P':
+          case 'PRINT+ELECTRONIC':
+          case 'ELECTRONIC+PRINT':
             new_core_status = RefdataCategory.lookupOrCreate('CoreStatus','Print+Electronic');
             is_core = true;
             break;

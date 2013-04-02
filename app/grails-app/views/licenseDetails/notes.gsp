@@ -31,14 +31,14 @@
                 <input type="submit" class="btn btn-danger" value="Delete Selected Notes"/>
             </div>
 
-            <table class="table table-striped table-bordered licence-notes">
+            <table class="table table-striped table-bordered table-condensed licence-notes">
                 <thead>
                     <tr>
-                        <td>Select</td>
-                        <td>Title</td>
-                        <td>Note</td>
-                        <td>Creator</td>
-                        <td>Type</td>
+                        <th>Select</th>
+                        <th>Title</th>
+                        <th>Note</th>
+                        <th>Creator</th>
+                        <th>Type</th>
                     </tr>
                 </thead>
                 <tbody>

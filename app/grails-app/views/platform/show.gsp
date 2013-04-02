@@ -63,12 +63,12 @@
             </tr>
             <tr>
               <g:each in="${packages}" var="p">
-                <th><g:link controller="package" action="show" id="${p.id}">${p.name} (${p.contentProvider?.name})</g:link></th>
+                <td><g:link controller="package" action="show" id="${p.id}">${p.name} (${p.contentProvider?.name})</g:link></td>
               </g:each>
             </tr>
             <g:each in="${titles}" var="t">
               <tr>
-                <th style="text-align:left;"><g:link controller="titleInstance" action="show" id="${t.title.id}">${t.title.title}</g:link>&nbsp;</th>
+                <td style="text-align:left;"><g:link controller="titleInstance" action="show" id="${t.title.id}">${t.title.title}</g:link>&nbsp;</td>
                 <td>${t?.title?.getIdentifierValue('ISSN')}</td>
                 <td>${t?.title?.getIdentifierValue('eISSN')}</td>
                 <g:each in="${crosstab[t.position]}" var="tipp">
