@@ -64,7 +64,7 @@
   
                 <h6>Information</h6>
 
-                <div class="licence-info">
+                <div class="inline-lists">
 
                 <g:if test="${flash.message}">
                   <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>

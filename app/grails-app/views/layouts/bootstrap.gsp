@@ -136,7 +136,7 @@
         </div>
     </div>
 
-    <div id="SupportTab">
+    <div class="support-tab">
         <a href="mailto:kbplus@jisc-collections.ac.uk?subject=KBPlus%20Support%20Query"><i class="icon-question-sign icon-white"></i>Support Queries</a>
     </div>
             

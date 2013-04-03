@@ -52,12 +52,12 @@
               </tbody>
             </table>
 
-            <g:form controller="ajax" action="addToCollection">
+            <g:form controller="ajax" action="addToCollection" class="form-inline">
               <input type="hidden" name="__context" value="${ti.class.name}:${ti.id}"/>
               <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.IdentifierOccurrence"/>
               <input type="hidden" name="__recip" value="ti"/>
               <input type="hidden" name="identifier" id="addIdentifierSelect"/>
-              <input type="submit" value="Add Identifier..."/>
+              <input type="submit" value="Add Identifier..." class="btn btn-primary btn-small"/>
             </g:form>
 
             <h3>Org Links</h3>
@@ -82,13 +82,13 @@
               </tbody>
             </table>
 
-            <g:form controller="ajax" action="addToCollection">
+            <g:form controller="ajax" action="addToCollection" class="form-inline">
               <input type="hidden" name="__context" value="${ti.class.name}:${ti.id}"/>
               <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.OrgRole"/>
               <input type="hidden" name="__recip" value="title"/>
               <input type="hidden" name="org" id="addOrgSelect"/>
               <input type="hidden" name="roleType" id="orgRoleSelect"/>
-              <input type="submit" value="Add Identifier..."/>
+              <input type="submit" value="Add Identifier..." class="btn btn-primary btn-small"/>
             </g:form>
 
           </div>

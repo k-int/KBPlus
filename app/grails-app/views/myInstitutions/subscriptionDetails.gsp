@@ -71,7 +71,7 @@
                 </tr>  
                 <tr>  
                   <th><input type="checkbox" name="chkall" onClick="javascript:selectAll();"/></th>
-                  <th colspan="4"><input type="Submit" value="Apply Batch Changes"/></th>
+                  <th colspan="4"><input type="Submit" value="Apply Batch Changes" class="btn btn-success"/></th>
                   <th><span id="entitlementBatchEdit" class="entitlementBatchEdit"></span><input type="hidden" name="bulk_core" id="bulk_core"/></th>
                   <th><span>edit</span> <input name="bulk_start_date" type="hidden" class="hdp" /></th>
                   <th><span>edit</span> <input name="bulk_end_date" type="hidden" class="hdp" /></th>

@@ -15,7 +15,7 @@
                             <li>
                                 <a href="${createLink(uri: '/')}"> Home </a>
                             </li>
-                            <li class="active">
+                            <li>
                                 <a href="${createLink(uri: '/about')}"> About KB+ </a>
                             </li>
                             <li>
@@ -24,7 +24,7 @@
                             <li>
                                 <a href="${createLink(uri: '/publicExport')}"> Exports </a>
                             </li>
-                            <li class="last">
+                            <li class="active last">
                                 <a href="${createLink(uri: '/contact-us')}"> Contact Us </a>
                             </li>
                         </ul>           
@@ -60,7 +60,7 @@
                 <div class="span4">
                     <div class="well">
                         <h2>Login</h2>
-                        <p><span class="externalLinkIcon"><g:link controller="myInstitutions" action="dashboard">Knowledge Base+ Member Login</g:link></span></p>
+                        <p><span class="external-link"><g:link controller="myInstitutions" action="dashboard">Knowledge Base+ Member Login</g:link></span></p>
                     </div>                                    
                     <div class="twitter">                    
                         <script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
@@ -93,7 +93,7 @@
                         </script>
                         <noscript>
                         <div class="well">
-                            <p><span class="externalLinkIcon"><a rel="external" href="http://twitter.com/JISCKBPlus">Follow Knowledge Base + on Twitter (@JISCKBPlus)</a></span></p>
+                            <p><span class="external-link"><a rel="external" href="http://twitter.com/JISCKBPlus">Follow Knowledge Base + on Twitter (@JISCKBPlus)</a></span></p>
                         </div>
                         </noscript>
                     </div>

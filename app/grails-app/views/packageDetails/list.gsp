@@ -17,7 +17,7 @@
         <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
       </g:if>
         
-      <table class="table table-striped">
+      <table class="table table-bordered table-striped">
         <thead>
           <tr>
             <g:sortableColumn property="identifier" title="${message(code: 'package.identifier.label', default: 'Identifier')}" />

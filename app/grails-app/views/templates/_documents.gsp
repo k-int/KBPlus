@@ -1,9 +1,9 @@
 <div class="well documents">
-  <h7>Documents</h7>
+  <h5>Documents</h5>
   <ul>
     <g:each in="${doclist}" var="docctx">
       <g:if test="${((docctx.owner?.contentType==1) && ( docctx.status?.value!='Deleted'))}">
-        <li class="externalLinkIcon">
+        <li class="external-link">
           <g:link controller="docstore" id="${docctx.owner.uuid}">
             ${docctx.owner.id}:<g:if test="${docctx.owner?.title}"><em>${docctx.owner.title}</em></g:if>
             <g:else>
@@ -28,34 +28,36 @@
     <input type="hidden" name="ownerclass" value="${ownobj.class.name}"/>
     <input type="hidden" name="ownertp" value="${owntp}"/>
     <div class="modal-body">
-      <dl>
-        <dt>
-          <label>Document Name:</label>
-        </dt>
-        <dd>
-          <input type="text" name="upload_title">
-        </dd>
-      </dl>
-      <dl>
-        <dt>
-          <label>File:</label>
-        </dt>
-        <dd>
-          <input type="file" name="upload_file" />
-        </dd>
-      </dl>
-      <dl>
-        <dt>
-          <label>Document Type:</label>
-        </dt>
-        <dd>
-          <select name="doctype">
-            <option value="License">License</option>
-            <option value="General">General</option>
-            <option value="General">Addendum</option>
-          </select>
-        </dd>
-      </dl>
+        <div class="inline-lists">
+            <dl>
+                <dt>
+                <label>Document Name:</label>
+                </dt>
+                <dd>
+                    <input type="text" name="upload_title">
+                </dd>
+            </dl>
+            <dl>
+                <dt>
+                <label>File:</label>
+                </dt>
+                <dd>
+                    <input type="file" name="upload_file" />
+                </dd>
+            </dl>
+            <dl>
+                <dt>
+                <label>Document Type:</label>
+                </dt>
+                <dd>
+                    <select name="doctype">
+                        <option value="License">License</option>
+                        <option value="General">General</option>
+                        <option value="General">Addendum</option>
+                    </select>
+                </dd>
+            </dl>
+        </div>
     </div>
     <div class="modal-footer">
       <a href="#" class="btn" data-dismiss="modal">Close</a>

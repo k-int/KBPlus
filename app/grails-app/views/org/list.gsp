@@ -38,17 +38,19 @@
 				<h1>Organisations</h1>
 				</div>
 
-          <g:form action="list" method="get">
+                <div class="well">
+          <g:form action="list" method="get" class="form-inline">
             Org Name Contains: <input type="text" name="orgNameContains" value="${params.orgNameContains}"/> Restrict to orgs who are 
             <g:select name="orgRole" noSelection="${['':'Select One...']}" from="${RefdataValue.findAllByOwner(RefdataCategory.get(2))}" value="${params.orgRole}" optionKey="id" optionValue="value"/>
-            <input type="submit" value="GO ->"/> (${orgInstanceTotal} Matches)
+            <input type="submit" value="GO" class="btn btn-primary"/> (${orgInstanceTotal} Matches)
           </g:form>
+                </div>
 
 				<g:if test="${flash.message}">
 				<bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
 				</g:if>
 				
-				<table class="table table-striped">
+				<table class="table table-bordered table-striped">
 					<thead>
 						<tr>
 							<g:sortableColumn property="name" title="${message(code: 'org.name.label', default: 'Name')}" />

@@ -74,7 +74,7 @@
                 <div class="span4">
 					<div class="well">
 						<h2>Login</h2>
-						<p><span class="externalLinkIcon"><a href="http://knowplus.edina.ac.uk/kbplus/myInstitutions/dashboard">Knowledge Base+ Member Login</a></span></p>
+						<p><span class="external-link"><a href="http://knowplus.edina.ac.uk/kbplus/myInstitutions/dashboard">Knowledge Base+ Member Login</a></span></p>
 					</div>                    
                     <img src="http://placehold.it/90x30"/>
                     <p>To the extent possible under law, <strong>KB+</strong> has waived all copyright and related or neighboring rights to Knowledge Base Plus. This work is published from: United Kingdom.</p>

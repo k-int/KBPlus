@@ -1,5 +1,5 @@
 <div class="well notes">
-  <h7>Notes</h7>
+  <h5>Notes</h5>
   <ul>
     <g:each in="${doclist}" var="docctx">
       <g:if test="${((docctx.owner?.contentType==0) && !(docctx.domain) && (docctx.status?.value!='Deleted') )}">
