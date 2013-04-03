@@ -6497,9 +6497,13 @@ dl > dt {
 */
 .well {
   padding: 10px;
+  word-break: break-all;
 }
 .well > form {
   margin: 0;
+}
+.well .external-link {
+  width: 100%;
 }
 .documents ul,
 .documents ol,
@@ -6645,162 +6649,6 @@ dl > dt {
   margin-right: 8px;
   border-right: 1px solid white;
   padding-right: 8px;
-}
-.editableEmpty {
-  font-style: italic;
-  color: #AAA;
-}
-.editableHover:hover {
-  background-color: #D9E5F2;
-}
-.ipe,
-.fieldNote,
-.refdataedit,
-.cuedit,
-.isedit,
-.intedit,
-.ynrefdataedit {
-  display: inline;
-  background-position: right center;
-  padding-right: 25px;
-  background-image: url('../../images/edit_icon.gif');
-  background-repeat: no-repeat;
-  word-wrap: break-word;
-}
-.intedit {
-  padding-top: 0!important;
-}
-#cucwrap {
-  margin-left: 30px;
-}
-.fieldNote:hover,
-.refdataedit:hover,
-.cuedit:hover,
-.newipe:hover,
-.isedit:hover,
-.intedit:hover {
-  background-color: #D9E5F2;
-  cursor: pointer;
-}
-.cuedit,
-.refdataedit {
-  min-height: 20px;
-  line-height: 20px;
-  display: block;
-}
-.cuedit .intedit {
-  float: left;
-}
-.ipe:hover,
-.fieldNote:hover,
-.refdataedit:hover,
-.cuedit:hover {
-  background-color: #D9E5F2;
-  cursor: pointer;
-}
-.ipe form {
-  background-color: #D9E5F2;
-  padding: 10px;
-  overflow: hidden;
-}
-.fieldNote form,
-.cuedit form,
-.refdataedit form,
-.isedit form,
-.intedit form {
-  background-color: #D9E5F2;
-  margin: -8px;
-  padding: 8px;
-}
-.intedit form {
-  margin-top: 3px;
-}
-.newipe form {
-  background-color: #D9E5F2;
-  padding: 10px;
-}
-.clicked {
-  background-image: none;
-  padding-right: 0px;
-}
-.ipe textarea,
-.fieldNote textarea,
-.refdataedit select,
-.cuedit select,
-.newipe textarea,
-.isedit textarea {
-  height: auto;
-  overflow: auto;
-  width: 100%!important;
-}
-.intedit input {
-  width: 90%!important;
-}
-.ipe select {
-  display: block;
-}
-.ipe button[type="submit"],
-.fieldNote button[type="submit"],
-.refdataedit button[type="submit"],
-.cuedit button[type="submit"],
-.newipe[type="submit"],
-.isedit[type="submit"],
-.intedit button[type="submit"] {
-  background-color: #0074CC;
-  background-image: linear-gradient(bottom, #29547e 34%, #386593 67%);
-  background-image: -o-linear-gradient(bottom, #29547e 34%, #386593 67%);
-  background-image: -moz-linear-gradient(bottom, #29547e 34%, #386593 67%);
-  background-image: -webkit-linear-gradient(bottom, #29547e 34%, #386593 67%);
-  background-image: -ms-linear-gradient(bottom, #29547e 34%, #386593 67%);
-  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.34, #29547e), color-stop(0.67, #386593));
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#29547E', endColorstr='#386693', GradientType=0);
-  background-repeat: repeat-x;
-  border-color: #05C #05C #003580;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  border-top: #29547E;
-  filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-  color: white;
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-}
-.ipe button,
-.fieldNote button,
-.refdataedit button,
-.cuedit button,
-.newipe button,
-.isedit button,
-.intedit button {
-  margin-top: 10px;
-  margin-right: 10px;
-  display: inline-block;
-  padding: 4px 10px 4px;
-  margin-bottom: 0;
-  font-size: 13px;
-  line-height: 18px;
-  color: #333;
-  text-align: center;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
-  vertical-align: middle;
-  cursor: pointer;
-  background-color: whiteSmoke;
-  background-image: -ms-linear-gradient(top, #ffffff, #e6e6e6);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e6e6e6));
-  background-image: -webkit-linear-gradient(top, #ffffff, #e6e6e6);
-  background-image: -o-linear-gradient(top, #ffffff, #e6e6e6);
-  background-image: linear-gradient(top, #ffffff, #e6e6e6);
-  background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6);
-  background-repeat: repeat-x;
-  border: 1px solid #CCC;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  border-color: #E6E6E6 #E6E6E6 #BFBFBF;
-  border-bottom-color: #B3B3B3;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-  filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ffffff', endColorstr='#e6e6e6', GradientType=0);
-  filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-  -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 .public .navbar-fixed-top .navbar-inner {
   background-repeat: no-repeat;
