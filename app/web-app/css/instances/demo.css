@@ -1,12 +1,3 @@
-/*!
- * Bootstrap v2.3.1
- *
- * Copyright 2012 Twitter, Inc
- * Licensed under the Apache License v2.0
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Designed and built with all the love in the world @twitter by @mdo and @fat.
- */
 .clearfix {
   *zoom: 1;
 }
@@ -1568,7 +1559,6 @@ input.search-query {
   -moz-border-radius: 15px;
   border-radius: 15px;
 }
-/* Allow for input prepend/append in search forms */
 .form-search .input-append .search-query,
 .form-search .input-prepend .search-query {
   -webkit-border-radius: 0;
@@ -1955,7 +1945,6 @@ table th[class*="span"],
   background-repeat: no-repeat;
   margin-top: 1px;
 }
-/* White icons with optional class, or on hover/focus/active states of certain elements */
 .icon-white,
 .nav-pills > .active > a > [class^="icon-"],
 .nav-pills > .active > a > [class*=" icon-"],
@@ -3540,7 +3529,6 @@ input[type="submit"].btn.btn-mini {
   border-top-color: #162e44;
   border-bottom-color: #162e44;
 }
-/* move down carets for tabs */
 .nav-tabs .dropdown-toggle .caret {
   margin-top: 8px;
 }
@@ -5253,15 +5241,6 @@ a.badge:focus {
 .affix {
   position: fixed;
 }
-/*!
- * Bootstrap Responsive v2.3.1
- *
- * Copyright 2012 Twitter, Inc
- * Licensed under the Apache License v2.0
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Designed and built with all the love in the world @twitter by @mdo and @fat.
- */
 @-ms-viewport {
   width: device-width;
 }
@@ -6323,8 +6302,6 @@ a.badge:focus {
 .navbar .brand {
   color: #ffffff;
 }
-/* Common styles included in all instances. */
-/* Elements */
 p > a {
   border-color: #1c3a58;
   border-bottom: 1px solid;
@@ -6344,17 +6321,47 @@ h5,
 h6 {
   color: #7a005e;
 }
+/* Heading 1
+
+    <h1>Example Text</h1>
+*/
 h1 {
   font-size: 2em;
 }
+/* Heading 2
+
+    <h2>Example Text</h2>
+*/
 h2 {
   font-size: 1.6em;
 }
+/* Heading 3
+
+    <h3>Example Text</h3>
+*/
+h3 {
+  font-size: 1.4em;
+}
+/* Heading 4
+
+    <h4>Example Text</h4>
+*/
+h4 {
+  font-size: 1.2em;
+}
+/* Heading 5
+
+    <h5>Example Text</h5>
+*/
 h5 {
   font-size: 1.2em;
   font-weight: normal;
   margin: 0;
 }
+/* Heading 6
+
+    <h6>Example Text</h6>
+*/
 h6 {
   font-size: 1.2em;
   text-transform: none;
@@ -6364,6 +6371,54 @@ h6 {
   margin-bottom: 10px;
   font-weight: normal;
 }
+/* Buttons
+
+    <a href="#" class="btn">Default</a>
+    <a href="#" class="btn btn-primary">Primary</a>
+    <a href="#" class="btn btn-info">Info</a>
+    <a href="#" class="btn btn-success">Success</a>
+    <a href="#" class="btn btn-warning">Warning</a>
+    <a href="#" class="btn btn-danger">Danger</a>
+    <a href="#" class="btn btn-inverse">Inverse</a>
+    <a href="#" class="btn btn-link>Deemphasize</a>
+*/
+/* Table with heading
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Column 1</th>
+                <th>Column 2</th>
+                <th>Column 3</th>
+                <th>Column 4</th>
+                <th>Column 5</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Contents</td>
+                <td>Contents</td>
+                <td>Contents</td>
+                <td>Contents</td>
+                <td>Contents</td>
+            </tr>
+            <tr>
+                <td>Contents</td>
+                <td>Contents</td>
+                <td>Contents</td>
+                <td>Contents</td>
+                <td>Contents</td>
+            </tr>
+            <tr>
+                <td>Contents</td>
+                <td>Contents</td>
+                <td>Contents</td>
+                <td>Contents</td>
+                <td>Contents</td>
+            </tr>
+        </tbody>
+    </table>
+*/
 th,
 thead > tr > td,
 .table-striped tbody > tr:first-child > th {
@@ -6396,6 +6451,24 @@ dl {
 dl > dt {
   font-weight: bold;
 }
+/* Inline Definition Lists
+
+
+    <div class="inline-lists">
+        <dl>
+            <dt><label>Title</label></dt>
+            <dd><input type="text" value="Example Value"></dd>
+        </dl>
+        <dl>
+            <dt><label>Title</label></dt>
+            <dd><input type="text" value="Example Value"></dd>
+        </dl>
+        <dl>
+            <dt>Title</dt>
+            <dd>Content</dd>
+        </dl>
+    </div>
+*/
 .inline-lists > dl > dt,
 .inline-lists > dl > dd {
   display: inline-block;
@@ -6411,12 +6484,17 @@ dl > dt {
   width: 70%;
   word-wrap: break-word;
 }
-/* Structure / Layout */
 #Footer {
   margin-top: 30px;
   margin-bottom: 40px;
 }
-/* Common */
+/* Contents Well
+
+    <div class="well">
+        <h6>Notes</h6>
+        <p>Note 1</p>
+    </div>
+*/
 .well {
   padding: 10px;
 }
@@ -6444,19 +6522,48 @@ dl > dt {
 .notes li:last-child {
   border-bottom: none;
 }
-.breadcrumb {
+/* Breadcrumbs 
+
+    <ul class="breadcrumb">
+        <li><a href="#">Home</a> <span class="divider">/</span></li>
+        <li><a href="#">Library</a> <span class="divider">/</span></li>
+        <li class="active">Data</li>
+    </ul>
+*/
+.container .breadcrumb {
   margin-top: -20px;
   font-size: 0.8em;
 }
+/* Pagination
+
+    <div class="pagination">
+        <ul>
+            <li><a href="#">Prev</a></li>
+            <li><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>
+            <li><a href="#">Next</a></li>
+        </ul>
+    </div>
+*/
+/* External link
+
+    <a class="external-link">Link</a>
+*/
 .external-link {
   display: inline-block;
   background-image: url('../../images/external_link_icon.gif');
   background-position: right center;
   background-repeat: no-repeat;
   padding-right: 25px;
-  width: 100%;
   box-sizing: border-box;
 }
+/* Comments Link
+
+    <a class="comments">Comments 1</a>
+*/
 .comments {
   background-image: url('../../images/comments_icon.png');
   background-repeat: no-repeat;
@@ -6464,11 +6571,18 @@ dl > dt {
   padding-right: 20px;
   text-align: right;
 }
+/* Form - Inline
+
+    <form class="form form-inline">
+        <label for="text1">Input</label> <input id="text1" title="Text 1 field" "type="text" value="Example Text" />
+        <label for="text2">Input 2</label> <input id="text2" title="Text 2 field" "type="text" value="Example Text" />
+        <input type="Submit" value="Submit" class="btn btn-primary btn-small" />
+    </form>
+*/
 .modal form {
   margin: 0;
 }
-/* Support Tab */
-#SupportTab {
+.support-tab {
   text-align: center;
   font-size: 15px;
   line-height: 30px;
@@ -6517,22 +6631,21 @@ dl > dt {
   /* IE6-9 */
 
 }
-#SupportTab a {
+.support-tab a {
   color: white;
 }
-#SupportTab a:hover {
+.support-tab a:hover {
   text-decoration: none;
 }
-#SupportTab:hover {
+.support-tab:hover {
   background: #606c88;
 }
-#SupportTab i {
+.support-tab i {
   margin-top: 3px;
   margin-right: 8px;
   border-right: 1px solid white;
   padding-right: 8px;
 }
-/* jeditable styles */
 .editableEmpty {
   font-style: italic;
   color: #AAA;
@@ -6689,7 +6802,6 @@ dl > dt {
   -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
-/* Public */
 .public .navbar-fixed-top .navbar-inner {
   background-repeat: no-repeat;
   background-position: right 90%;
@@ -6702,7 +6814,6 @@ dl > dt {
 .public .navbar-fixed-top .nav {
   margin-top: 104px;
 }
-/* Twitter Widget */
 .twtr-widget a {
   border-bottom: none;
 }
@@ -6710,17 +6821,51 @@ dl > dt {
   background-repeat: no-repeat;
   font-size: 0;
 }
+/* JISC Collections Logo
+
+    <div class="sprite sprite-jisc_collections_logo"></div>
+*/
 .sprite-jisc_collections_logo {
   background-image: url('../../images/jisc_collections_logo.jpg');
   height: 70px;
   width: 195px;
 }
+/* KBPlus Logo
+
+    <div class="sprite sprite-kbplus_logo"></div>
+*/
 .sprite-kbplus_logo {
   background-image: url('../../images/kbplus_logo.jpg');
   height: 70px;
   width: 95px;
 }
-/* Navigation */
+/* Navigation
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+         <a class="brand" href="">KB+</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Data Explorer <b class="caret"></b> </a>
+                <ul class="dropdown-menu" style="max-width:none;">
+                  <li class="active"'><a href="">Home</a></li>
+                  <li><a>Package</a></li>
+                  <li><a>Organisations</a></li>
+                  <li><a>Platform</a></li>
+                  <li><a>Title Instance</a></li>
+                  <li><a>Title Instance Package Platform</a></li>
+                  <li><a>Subscriptions</a></li>
+                  <li><a>Licences</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+*/
 .brand:hover {
   border-bottom: none;
 }
@@ -6775,7 +6920,42 @@ dl > dt {
 .nav-pills > li > a:hover {
   border: none;
 }
-/* Navigation - Footer */
+/* Navigation in the footer
+
+    <div class="navbar navbar-footer">
+          <div class="navbar-inner">
+              <div class="container">
+                  <div>
+                      <ul class="footer-sublinks nav">
+                          <li><a href="">Terms & Conditions</a></li>
+                          <li><a href="">Privacy Policy</a></li>
+                          <li><a href="">Freedom of Information Policy</a></li>
+                      </ul>
+                  </div>
+                      
+                  <div class="pull-right">
+                      <div class="nav-collapse">
+                          <ul class="nav">
+                              <li class="dropdown">
+                                  <a href="#"
+                                     class="dropdown-toggle"
+                                     data-toggle="dropdown">
+                                      Tools
+                                      <b class="caret"></b>
+                                  </a>
+                                  <ul class="dropdown-menu">
+                                      <li><a href="http://www.kbplus.ac.uk/kbplus/myInstitutions/index">KB+</a></li>
+                                      <li><a href="http://demo.kbplus.ac.uk/kbplus/myInstitutions/index">KB+ Demo</a></li>
+                                      <li><a href="http://test.kbplus.ac.uk/kbplus/myInstitutions/index">KB+ Sandpit</a></li>
+                                  </ul>
+                              </li>
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+*/
 .navbar-footer .navbar-inner {
   background-color: #eeeeee;
   background-image: none;
@@ -6816,7 +6996,6 @@ dl > dt {
   left: auto!important;
   right: 10px;
 }
-/* Bootstrap Responsive Overwrites */
 @media (min-width: 1200px) {
   .navbar-footer.navbar .container {
     width: 1170px!important;

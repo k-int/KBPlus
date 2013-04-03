@@ -1559,7 +1559,6 @@ input.search-query {
   -moz-border-radius: 15px;
   border-radius: 15px;
 }
-/* Allow for input prepend/append in search forms */
 .form-search .input-append .search-query,
 .form-search .input-prepend .search-query {
   -webkit-border-radius: 0;
@@ -1946,7 +1945,6 @@ table th[class*="span"],
   background-repeat: no-repeat;
   margin-top: 1px;
 }
-/* White icons with optional class, or on hover/focus/active states of certain elements */
 .icon-white,
 .nav-pills > .active > a > [class^="icon-"],
 .nav-pills > .active > a > [class*=" icon-"],
@@ -3531,7 +3529,6 @@ input[type="submit"].btn.btn-mini {
   border-top-color: #162e44;
   border-bottom-color: #162e44;
 }
-/* move down carets for tabs */
 .nav-tabs .dropdown-toggle .caret {
   margin-top: 8px;
 }
@@ -6335,6 +6332,20 @@ h1 {
 h2 {
   font-size: 1.6em;
 }
+/* Heading 3
+
+    <h3>Example Text</h3>
+*/
+h3 {
+  font-size: 1.4em;
+}
+/* Heading 4
+
+    <h4>Example Text</h4>
+*/
+h4 {
+  font-size: 1.2em;
+}
 /* Heading 5
 
     <h5>Example Text</h5>
@@ -6357,16 +6368,27 @@ h6 {
   margin-bottom: 10px;
   font-weight: normal;
 }
+/* Buttons
+
+    <a href="#" class="btn">Default</a>
+    <a href="#" class="btn btn-primary">Primary</a>
+    <a href="#" class="btn btn-info">Info</a>
+    <a href="#" class="btn btn-success">Success</a>
+    <a href="#" class="btn btn-warning">Warning</a>
+    <a href="#" class="btn btn-danger">Danger</a>
+    <a href="#" class="btn btn-inverse">Inverse</a>
+    <a href="#" class="btn btn-link>Deemphasize</a>
+*/
 /* Table with heading
 
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <td>Column 1</td>
-                <td>Column 2</td>
-                <td>Column 3</td>
-                <td>Column 4</td>
-                <td>Column 5</td>
+                <th>Column 1</th>
+                <th>Column 2</th>
+                <th>Column 3</th>
+                <th>Column 4</th>
+                <th>Column 5</th>
             </tr>
         </thead>
         <tbody>
@@ -6497,10 +6519,32 @@ dl > dt {
 .notes li:last-child {
   border-bottom: none;
 }
-.breadcrumb {
+/* Breadcrumbs 
+
+    <ul class="breadcrumb">
+        <li><a href="#">Home</a> <span class="divider">/</span></li>
+        <li><a href="#">Library</a> <span class="divider">/</span></li>
+        <li class="active">Data</li>
+    </ul>
+*/
+.container .breadcrumb {
   margin-top: -20px;
   font-size: 0.8em;
 }
+/* Pagination
+
+    <div class="pagination">
+        <ul>
+            <li><a href="#">Prev</a></li>
+            <li><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>
+            <li><a href="#">Next</a></li>
+        </ul>
+    </div>
+*/
 /* External link
 
     <a class="external-link">Link</a>
@@ -6511,7 +6555,6 @@ dl > dt {
   background-position: right center;
   background-repeat: no-repeat;
   padding-right: 25px;
-  width: 100%;
   box-sizing: border-box;
 }
 /* Comments Link
@@ -6528,20 +6571,15 @@ dl > dt {
 /* Form - Inline
 
     <form class="form form-inline">
-        <label>Input</label> <input type="text" value="Example Text" />
-        <label>Input 2</label> <input type="text" value="Example Text" />
+        <label for="text1">Input</label> <input id="text1" title="Text 1 field" "type="text" value="Example Text" />
+        <label for="text2">Input 2</label> <input id="text2" title="Text 2 field" "type="text" value="Example Text" />
         <input type="Submit" value="Submit" class="btn btn-primary btn-small" />
     </form>
 */
 .modal form {
   margin: 0;
 }
-/* Support Tab 
-    <div id="SupportTab">
-        <a href="mailto:kbplus@jisc-collections.ac.uk?subject=KBPlus%20Support%20Query"><i class="icon-question-sign icon-white"></i>Request Support</a>
-    </div>
-*/
-#SupportTab {
+.support-tab {
   text-align: center;
   font-size: 15px;
   line-height: 30px;
@@ -6590,16 +6628,16 @@ dl > dt {
   /* IE6-9 */
 
 }
-#SupportTab a {
+.support-tab a {
   color: white;
 }
-#SupportTab a:hover {
+.support-tab a:hover {
   text-decoration: none;
 }
-#SupportTab:hover {
+.support-tab:hover {
   background: #606c88;
 }
-#SupportTab i {
+.support-tab i {
   margin-top: 3px;
   margin-right: 8px;
   border-right: 1px solid white;
@@ -6780,11 +6818,19 @@ dl > dt {
   background-repeat: no-repeat;
   font-size: 0;
 }
+/* JISC Collections Logo
+
+    <div class="sprite sprite-jisc_collections_logo"></div>
+*/
 .sprite-jisc_collections_logo {
   background-image: url('../../images/jisc_collections_logo.jpg');
   height: 70px;
   width: 195px;
 }
+/* KBPlus Logo
+
+    <div class="sprite sprite-kbplus_logo"></div>
+*/
 .sprite-kbplus_logo {
   background-image: url('../../images/kbplus_logo.jpg');
   height: 70px;
