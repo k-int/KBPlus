@@ -111,15 +111,15 @@
 
                 <dl><dt>Consortia</dt><dd>${subscriptionInstance.getConsortia()?.name}<br/></dd></dl>
 
-                <dl><dt>Start Date</dt><dd><span><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${subscriptionInstance.startDate}"/></span>
-                <input id="Subscription:${subscriptionInstance.id}:startDate" type="hidden" class="${editable?'dp1':''}" />
+                <dl><dt>Start Date</dt><dd>
+                    <g:xEditable owner="${subscriptionInstance}" field="startDate" type="date"/>
                 </dd>
                 </dl>
 
                <dl>
                     <dt>End Date</dt>
-                    <dd><span><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${subscriptionInstance.endDate}"/></span>
-                        <input id="Subscription:${subscriptionInstance.id}:endDate" type="hidden" class="${editable?'dp1':''}" />
+                    <dd>
+                       <g:xEditable owner="${subscriptionInstance}" field="endDate" type="date"/>
                     </dd>
                </dl>
 
