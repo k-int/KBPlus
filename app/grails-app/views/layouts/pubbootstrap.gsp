@@ -14,13 +14,13 @@
     <meta name="author" content="">
 
     <meta name="viewport" content="initial-scale = 1.0">
+    <r:require modules="kbplus"/>
+
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-
-    <r:require modules="scaffolding"/>
 
     <g:layoutHead/>
     <r:layoutResources/>

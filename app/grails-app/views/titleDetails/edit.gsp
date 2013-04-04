@@ -4,8 +4,6 @@
   <head>
     <meta name="layout" content="mmbootstrap">
     <title>${ti.title}</title>
-    <r:require modules="jeditable"/>
-    <r:require module="jquery-ui"/>
   </head>
   <body>
       <div class="container">

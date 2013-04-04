@@ -3,9 +3,6 @@
   <head>
     <meta name="layout" content="mmbootstrap"/>
     <title>KB+ Data import explorer</title>
-        <r:require modules="jeditable"/>
-    <r:require module="jquery-ui"/>
-
   </head>
   <body>
 

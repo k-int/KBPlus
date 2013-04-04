@@ -4,8 +4,6 @@
   <head>
     <meta name="layout" content="mmbootstrap">
     <title><g:message code="default.edit.label" args="[entityName]" /></title>
-    <r:require modules="jeditable"/>
-    <r:require module="jquery-ui"/>
   </head>
   <body>
       <div class="container">

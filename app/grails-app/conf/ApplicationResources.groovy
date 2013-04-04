@@ -10,6 +10,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 //         println("AppRes - Prod");
 //         break
 // }
+// resource url:"css/instances/${ApplicationHolder.application.config.defaultCssSkin?:'standard.css'}"
 
 modules = {
   application {
@@ -22,7 +23,17 @@ modules = {
   kbplus {
     // resource url:'css/bootstrap.css'
     resource url:'css/style.css'
-    // println("Including css: css/${ApplicationHolder.application.config.defaultCssSkin?:'live.css'}");
-    // resource url:"css/instances/${ApplicationHolder.application.config.defaultCssSkin?:'standard.css'}"
+    resource url:'css/jquery.dataTables.css'
+    resource url:'css/bootstrap-editable.css'
+    resource url:'css/select2.css'
+    resource url:"css/instances/${ApplicationHolder.application.config.defaultCssSkin?:'standard.css'}"
+
+    resource url:'js/jquery-1.9.1.min.js'
+    resource url:'js/bootstrap.min.js'
+    resource url:'js/bootstrap-editable.min.js'
+    resource url:'js/moment.min.js'
+    resource url:'js/select2.js'
   }
+
+
 }

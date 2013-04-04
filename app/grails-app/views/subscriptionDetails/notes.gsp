@@ -3,8 +3,6 @@
   <head>
     <meta name="layout" content="mmbootstrap"/>
     <title>KB+</title>
-    <r:require modules="jeditable"/>
-    <r:require module="jquery-ui"/>
   </head>
 
   <body>

@@ -21,14 +21,10 @@
     <!-- Le fav and touch icons -->
     <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
 
+    <r:require modules="kbplus"/>
+
     <!-- Stylesheets -->
-    <r:require modules="scaffolding"/>
     <r:layoutResources/>
-    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
-    <link rel="stylesheet" href="${resource(dir: 'css', file: 'bootstrap-editable.css')}" type="text/css">
-    <link href="${resource(dir: 'css', file: 'select2.css')}" rel="stylesheet"/>
-    <script src="${resource(dir: 'js', file: 'select2.js')}"></script>
-    <script src="${resource(dir: 'js', file: 'moment.min.js')}"></script>
     
     <r:layoutResources/>
   </head>
@@ -284,8 +280,6 @@
 
     <script type="text/javascript">
 
-      console.log("whaaaa");
-
       // $(function(){
       $(document).ready(function() {
 
@@ -298,7 +292,6 @@
             alert("editable hidden");
           }
         });
-        console.log("whaaaa2");
         
         $(".simpleReferenceTypedown").select2({
           placeholder: "Search for...",
@@ -318,8 +311,6 @@
             }
           }
         });
-        console.log("whaaaa3");
-
       });
     </script>
   </body>

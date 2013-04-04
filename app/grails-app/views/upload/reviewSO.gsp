@@ -5,9 +5,6 @@
     <meta name="layout" content="mmbootstrap">
     <g:set var="entityName" value="${message(code: 'package.label', default: 'Package')}" />
     <title><g:message code="default.edit.label" args="[entityName]" /></title>
-    <!-- r:require modules="bootstrap-typeahead"-->
-    <r:require modules="jeditable"/>
-    <r:require module="jquery-ui"/>
   </head>
   <body>
       <div class="container">
