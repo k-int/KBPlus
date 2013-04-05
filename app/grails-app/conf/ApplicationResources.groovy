@@ -32,7 +32,9 @@ modules = {
     resource url:'js/bootstrap.min.js'
     resource url:'js/bootstrap-editable.min.js'
     resource url:'js/moment.min.js'
-    resource url:'js/select2.js'
+    resource url:'js/select2.min.js'
+    resource url:'js/jquery.dataTables.min.js'
+    resource url:'js/dataTables.scroller.js'
   }
 
 

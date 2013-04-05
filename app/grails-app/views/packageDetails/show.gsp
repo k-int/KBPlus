@@ -124,15 +124,21 @@
             </fieldset>
         </fieldset>
         
-        <h3>Add title to package</h3>
         <g:form controller="ajax" action="addToCollection">
-          <input type="hidden" name="__context" value="${packageInstance.class.name}:${packageInstance.id}"/>
-          <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.TitleInstancePackagePlatform"/>
-          <input type="hidden" name="__recip" value="pkg"/>
-          title: <g:simpleReferenceTypedown class="input-xxlarge" name="title" baseClass="com.k_int.kbplus.TitleInstance"/>
-          platform: <g:simpleReferenceTypedown class="input-large" name="platform" baseClass="com.k_int.kbplus.Platform"/>
-          <input type="submit" value="Add Title..."/>
-         </g:form>
+          <fieldset>
+            <legend><h3>Add A Title To This Package</h3></legend>
+            <input type="hidden" name="__context" value="${packageInstance.class.name}:${packageInstance.id}"/>
+            <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.TitleInstancePackagePlatform"/>
+            <input type="hidden" name="__recip" value="pkg"/>
+            <label>Title To Add</label>
+            <g:simpleReferenceTypedown class="input-xxlarge" style="width:350px;" name="title" baseClass="com.k_int.kbplus.TitleInstance"/><br/>
+            <span class="help-block"></span>
+            <label>Platform For Added Title</label>
+            <g:simpleReferenceTypedown class="input-large" style="width:350px;" name="platform" baseClass="com.k_int.kbplus.Platform"/><br/>
+            <span class="help-block"></span>
+            <button type="submit" class="btn">Add Title...</button>
+          </fieldset>
+        </g:form>
 
 
       </div>
