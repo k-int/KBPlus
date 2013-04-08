@@ -69,7 +69,7 @@
 
             <br/>
             
-            <h6>This Subscription : ${issueEntitlementInstance.subscription.name}</h6>
+            <h6>Issue Entitlement details under subscription : ${issueEntitlementInstance.subscription.name}</h6>
 
             <table class="table table-bordered table-striped">
                 <tr>
@@ -77,18 +77,18 @@
                     <th>To Date</th><th>To Volume</th><th>To Issue</th>
                 </tr>
                 <tr>
-                    <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${issueEntitlementInstance.startDate}"/></td>
-                <td>${issueEntitlementInstance.startVolume}</td>
-                <td>${issueEntitlementInstance.startIssue}</td>
-                <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${issueEntitlementInstance.endDate}"/></td>
-                <td>${issueEntitlementInstance.endVolume}</td>
-                <td>${issueEntitlementInstance.endIssue}</td>
+                  <td><g:xEditable owner="${issueEntitlementInstance}" field="startDate" type="date"/></td>
+                  <td><g:xEditable owner="${issueEntitlementInstance}" field="startVolume"/></td>
+                  <td><g:xEditable owner="${issueEntitlementInstance}" field="startIssue"/></td>
+                  <td><g:xEditable owner="${issueEntitlementInstance}" field="endDate" type="date"/></td>
+                  <td><g:xEditable owner="${issueEntitlementInstance}" field="endVolume"/></td>
+                  <td><g:xEditable owner="${issueEntitlementInstance}" field="endIssue"/></td>
                 </tr>
             </table>
 
             <dl>
                 <dt>Embargo</dt>
-                <dd>${issueEntitlementInstance.embargo}</dd>
+                <dd><g:xEditable owner="${issueEntitlementInstance}" field="embargo"/></dd>
             </dl>
 
             <dl>
@@ -103,25 +103,26 @@
 
             <br/>
             
-            <h6>Package : ${issueEntitlementInstance.tipp.pkg.name}</h6>
+            <h6>Defaults from package : ${issueEntitlementInstance.tipp.pkg.name}</h6>
 
             <table class="table table-bordered table-striped">
                 <tr>
                     <th>From Date</th><th>From Volume</th><th>From Issue</th>
                     <th>To Date</th><th>To Volume</th><th>To Issue</th>
                 </tr>
+                
                 <tr>
-                    <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${issueEntitlementInstance.tipp.startDate}"/></td>
-                <td>${issueEntitlementInstance.tipp.startVolume}</td>
-                <td>${issueEntitlementInstance.tipp.startIssue}</td>
-                <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${issueEntitlementInstance.tipp.endDate}"/></td>
-                <td>${issueEntitlementInstance.tipp.endVolume}</td>
-                <td>${issueEntitlementInstance.tipp.endIssue}</td>
+                  <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${issueEntitlementInstance.tipp.startDate}"/></td>
+                  <td>${issueEntitlementInstance.tipp.startVolume}</td>
+                  <td>${issueEntitlementInstance.tipp.startIssue}</td>
+                  <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${issueEntitlementInstance.tipp.endDate}"/></td>
+                  <td>${issueEntitlementInstance.tipp.endVolume}</td>
+                  <td>${issueEntitlementInstance.tipp.endIssue}</td>
                 </tr>
             </table>
 
             <dl>
-                <dt>Embargo</dt>
+                <dt>Embargo (tipp)</dt>
                 <dd>${issueEntitlementInstance.tipp.embargo}</dd>
             </dl>
 
