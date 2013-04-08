@@ -86,7 +86,7 @@
               <input type="hidden" name="__recip" value="title"/>
               <input type="hidden" name="org" id="addOrgSelect"/>
               <input type="hidden" name="roleType" id="orgRoleSelect"/>
-              <input type="submit" value="Add Identifier..." class="btn btn-primary btn-small"/>
+              <input type="submit" value="Add Org Role..." class="btn btn-primary btn-small"/>
             </g:form>
 
           </div>
