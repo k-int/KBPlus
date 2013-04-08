@@ -29,7 +29,7 @@
           <g:each in="${packageInstanceList}" var="packageInstance">
             <tr>
               <td>${fieldValue(bean: packageInstance, field: "identifier")}</td>
-              <td>${fieldValue(bean: packageInstance, field: "name")} (${packageInstance?.contentProvider?.name})</td>
+              <td>${fieldValue(bean: packageInstance, field: "name")}</td>
               <td class="link">
                 <g:link action="show" id="${packageInstance.id}" class="btn btn-small">Show &raquo;</g:link>
               </td>
