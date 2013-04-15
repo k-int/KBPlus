@@ -539,7 +539,7 @@ class UploadController {
     def result = true;
     if ( ( isbn_string ) && ( isbn_string.trim() != '' ) ) {
       // Check issn_string matches regexp "[0-9]{4}-[0-9]{3}[0-9X]"
-      if ( isbn_string ==~ '97(8|9))?[0-9]{9}[0-9X])' ) {
+      if ( isbn_string ==~ '(97(8|9))?[0-9]{9}[0-9X]' ) {
         // Matches, all is good.
       }
       else {
