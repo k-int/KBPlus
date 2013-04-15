@@ -15,8 +15,10 @@ class TitleDetailsController {
     // find all titles by n_title proposedTitle
     def result=[:]
     if ( params.proposedTitle ) {
-      def proposed_title_key = com.k_int.kbplus.TitleInstance.generateKeyTitle(params.proposedTitle)
-      result.titleMatches=com.k_int.kbplus.TitleInstance.findAllByKeyTitle(proposed_title_key)
+      // def proposed_title_key = com.k_int.kbplus.TitleInstance.generateKeyTitle(params.proposedTitle)
+      // result.titleMatches=com.k_int.kbplus.TitleInstance.findAllByKeyTitle(proposed_title_key)
+      def normalised_title = com.k_int.kbplus.TitleInstance.generateNormTitle(params.proposedTitle)
+      result.titleMatches=com.k_int.kbplus.TitleInstance.findAllByNormTitleLike("${normalised_title}%")
     }
     result
   }

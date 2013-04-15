@@ -45,9 +45,9 @@
                         <tr>
                             <td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td>
                             <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="title" id="doctitle" class="fieldNote">${docctx.owner.title}</g:inPlaceEdit></td>
-                        <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="content" id="doctitle" class="fieldNote">${docctx.owner.content}</g:inPlaceEdit></td>
-                        <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="creators" id="docCreator" class="fieldNote">${docctx.owner.creator}</g:inPlaceEdit></td>
-                        <td>${docctx.owner?.type?.value}</td>
+                            <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="content" id="doctitle" class="fieldNote">${docctx.owner.content}</g:inPlaceEdit></td>
+                            <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="creators" id="docCreator" class="fieldNote">${docctx.owner.creator}</g:inPlaceEdit></td>
+                            <td>${docctx.owner?.type?.value}</td>
                         </tr>
                     </g:if>
                 </g:each>

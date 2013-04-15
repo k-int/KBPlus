@@ -159,9 +159,12 @@ class TitleInstance {
 
 
   public static String generateNormTitle(String input_title) {
-    return input_title;
+    def result = input_title.replaceAll('&',' and ');
+    result = result.trim();
+    result = result.toLowerCase();
+    result = alphanum.matcher(s).replaceAll("");
+    return asciify(result)
   }
-
 
   public static String generateKeyTitle(String s) {
         s.replaceAll('&',' and ');
