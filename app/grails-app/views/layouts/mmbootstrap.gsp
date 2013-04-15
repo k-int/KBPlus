@@ -289,7 +289,11 @@
         $(".xEditableManyToOne").editable();
         $(".simpleHiddenRefdata").editable({
           url: function(params) {
-            alert("editable hidden");
+            var hidden_field_id = $(this).data('hidden-id');
+            alert("editable hidden "+hidden_field_id+"="+params.value);
+            console.log("%o",params);
+            $("#"+hidden_field_id).val(params.value);
+            // Element has a data-hidden-id which is the hidden form property that should be set to the appropriate value
           }
         });
         

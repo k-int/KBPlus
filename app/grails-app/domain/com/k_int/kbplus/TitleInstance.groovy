@@ -162,7 +162,7 @@ class TitleInstance {
     def result = input_title.replaceAll('&',' and ');
     result = result.trim();
     result = result.toLowerCase();
-    result = alphanum.matcher(s).replaceAll("");
+    result = alphanum.matcher(result).replaceAll("");
     return asciify(result)
   }
 
