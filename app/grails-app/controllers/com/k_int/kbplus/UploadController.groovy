@@ -211,6 +211,9 @@ class UploadController {
       OrgRole.assertOrgTitleLink(publisher, result, pub_role);
       result.save();
     }
+
+    // ToDo: Check to see that all the identifiers we have
+
     log.debug("Done: ${result}");
     result;
   }
@@ -255,10 +258,10 @@ class UploadController {
   def readSubscriptionOfferedCSV(input_stream, upload_filename) {
 
     def result = [:]
-  	result.processFile=true
-  	
+    result.processFile=true
+    
     // File level messages
-	  result.messages=[]
+    result.messages=[]
 
     log.debug("Reading Stream");
 
@@ -342,9 +345,9 @@ class UploadController {
   
   def processCsvLine(csv_line,field_name,col_num,result_map,parseAs,defval,isMandatory) {  
     log.debug("  processCsvLine ${csv_line} ${field_name} ${col_num}... mandatory=${isMandatory}");
-	  def result = [:]
-  	result.messages = []
-	  result.origValue = csv_line[col_num]
+    def result = [:]
+    result.messages = []
+    result.origValue = csv_line[col_num]
 
     if ( ( col_num <= csv_line.length ) && ( csv_line[col_num] != null ) ) {      
       switch(parseAs) {
@@ -354,7 +357,7 @@ class UploadController {
         case 'date':
           result.value = parseDate(result.origValue,possible_date_formats)
           log.debug("Parse date, ${result.origValue}, result = ${result.value}");
-  		    break;
+          break;
         case 'str':
         default:
           result.value = result.origValue
@@ -362,37 +365,37 @@ class UploadController {
       }
       result_map[field_name] = result
     }
-	
-	  
+  
+    
     if ( ( result.value == null ) || ( result.value.toString().trim() == '' ) ) {
       log.debug("Mandatory flag set, checking value");
-	    if ( isMandatory ) {
-	      log.debug("Mandatory property is null.. error");
-	      result_map.processFile=false
-		    result_map[field_name] = [messages:["Missing mandatory property: ${field_name}"]]
-	    }
+      if ( isMandatory ) {
+        log.debug("Mandatory property is null.. error");
+        result_map.processFile=false
+        result_map[field_name] = [messages:["Missing mandatory property: ${field_name}"]]
+      }
       else {
-	      result_map[field_name] = [messages:["Missing property: ${field_name}"]]	  
-	    }
+        result_map[field_name] = [messages:["Missing property: ${field_name}"]]    
+      }
     }
     else {
     }
     
- 	  log.debug("result = ${result}");
+     log.debug("result = ${result}");
   }
   
   def validate(upload) {
-	  
-	  def result = generateAndValidateSubOfferedIdentifier(upload) &&
-	               generateAndValidatePackageIdentifier(upload) &&
+    
+    def result = generateAndValidateSubOfferedIdentifier(upload) &&
+                 generateAndValidatePackageIdentifier(upload) &&
                  validateConsortia(upload) &&
-		             validateColumnHeadings(upload)
-			      	   
-		if ( upload.processFile ) {
-		  validateTipps(upload)
-		}
-		else {
-		}
+                 validateColumnHeadings(upload)
+                 
+    if ( upload.processFile ) {
+      validateTipps(upload)
+    }
+    else {
+    }
   }
   
   def validateTipps(upload) {
@@ -450,29 +453,12 @@ class UploadController {
         }
       }
 
-      //if ( ( tipp_row.host_platform_url.origValue == null ) || ( tipp_row.host_platform_url.origValue.trim() == '' ) ) {
-      //  tipp.messages.add("Title (row ${counter}) does not contain a valid host platform");
-      //  upload.processFile=false;
-      // }
-      
-      //tipp.platforms?.each { plat ->
-      //  if ( ( plat.role.toLowerCase().trim() != 'host' ) &&
-      //       ( plat.role.toLowerCase().trim() != 'administrative' ) ) {
-      //    tipp.messages.add("Title (row ${counter}) Containts a non-host or admin platform");
-      //    upload.processFile=false;          
-      //  }
-      // }
-      
-      //if ( tipp.parsed_start_date == null ) {
-      //  tipp.messages.add("Title (row ${counter}) Invalid start date");
-      //  upload.processFile=false;                  
-      //}
-      
-      //if ( tipp.parsed_end_date == null ) {
-      //  tipp.messages.add("Title (row ${counter}) Invalid end date");
-      //  upload.processFile=false;                  
-      //}
-      
+      def matched_titles = findTitleIdentifierIntersection(tipp.id)
+      if ( matched_titles.size() > 1 ) {
+        tipp.messages.add("Mix of identifiers in row ${counter} match more than one title:(${matched_titles}). Please correct. identifiers:${tipp.id}");
+        upload.processFile=false;
+      }
+
       tipp.parsedStartDate = parseDate(tipp.date_first_issue_online,possible_date_formats)
       if ( tipp.parsedStartDate == null ) {
         tipp.messages.add("Invalid tipp date_first_issue_online");
@@ -602,14 +588,14 @@ class UploadController {
   }
 
   def validateConsortia(upload) {
-	if ( ( upload.consortium ) && ( upload.consortium.value ) ) {
-	  upload.consortiumOrg = Org.findByName(upload.consortium.value)
-	  if ( upload.consortiumOrg == null ) {
-		  upload.consortium.messages.add("Unable to locate org with name ${upload.consortium.value}")
-		  upload.processFile=false
-	  }
-	}
-	return true
+  if ( ( upload.consortium ) && ( upload.consortium.value ) ) {
+    upload.consortiumOrg = Org.findByName(upload.consortium.value)
+    if ( upload.consortiumOrg == null ) {
+      upload.consortium.messages.add("Unable to locate org with name ${upload.consortium.value}")
+      upload.processFile=false
+    }
+  }
+  return true
   }
 
   def validateColumnHeadings(upload) {
@@ -626,7 +612,19 @@ class UploadController {
         }
       }
       col++
-    }		   
+    }       
+  }
+
+  def findTitleIdentifierIntersection(idlist) {
+    Set matched_title_ids = new Set()
+    idlist.each { id ->
+      def title = TitleInstance.findByIdentifier([[namespace:id.namespace,value:id.value]])
+      if ( ( title ) && ( ! matched_title_ids.contains(title.id) ) ) {
+        matched_title_ids.add(title.id)
+      }
+    }
+
+    return matched_title_ids;
   }
   
 }

@@ -710,7 +710,7 @@ class MyInstitutionsController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def renewalsSearch() {
 
-    log.debug("Search : ${params}");
+    log.debug("renewalsSearch : ${params}");
     log.debug("Start year filters: ${params.startYear}");
 
     StringWriter sw = new StringWriter()
