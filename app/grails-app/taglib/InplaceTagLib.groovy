@@ -206,4 +206,9 @@ class InplaceTagLib {
     out << body()
     out << "</a>";
   }
+
+  def simpleHiddenValue = { attrs, body ->
+    out << "<a href=\"#\" class=\"simpleHiddenRefdata ${attrs.class?:''}\" data-type=\"${attrs.type?:'textarea'}\" data-hidden-id=\"${attrs.name}\"></a>"
+    out << "<input type=\"hidden\" id=\"${attrs.id}\" name=\"${attrs.name}\"/>"
+  }
 }

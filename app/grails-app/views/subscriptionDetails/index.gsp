@@ -195,8 +195,9 @@
                 	<g:simpleHiddenRefdata id="bulk_core" name="bulk_core" refdataCategory="CoreStatus"/>
               	</th>
 
-              <th><g:if test="${editable}"><span class="datevalue">edit</span> <input name="bulk_start_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
-              <th><g:if test="${editable}"><span class="datevalue">edit</span> <input name="bulk_end_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
+              <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_start_date" name="bulk_start_date" type="date"/> </g:if> </th>
+
+              <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_end_date" name="bulk_end_date" type="date"/> </g:if></th>
               <th colspan="4"></th>
             </tr>
 

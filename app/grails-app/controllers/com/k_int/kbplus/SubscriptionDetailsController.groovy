@@ -152,7 +152,8 @@ class SubscriptionDetailsController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def subscriptionBatchUpdate() {
     def subscriptionInstance = Subscription.get(params.id)
-    def formatter = new java.text.SimpleDateFormat("MM/dd/yyyy")
+    // def formatter = new java.text.SimpleDateFormat("MM/dd/yyyy")
+    def formatter = new java.text.SimpleDateFormat("yyyy-MM-dd")
     def user = User.get(springSecurityService.principal.id)
 
     if ( ! subscriptionInstance.hasPerm("edit",user) ) {
