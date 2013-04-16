@@ -183,12 +183,9 @@ class SubscriptionDetailsController {
           }
 
           if ( params.bulk_core.trim().length() > 0 ) {
-            if ( params.bulk_core == 'true' ) {
-              // ie.coreTitle = true
-            }
-            else {
-              // ie.coreTitle = false
-            }
+            def selected_refdata = genericOIDService.resolveOID(params.bulk_core.trim())
+            log.debug("Selected core status is ${selected_refdata}");
+            ie.coreStatus = selected_refdata
           }
   
           if ( params.bulk_coverage && (params.bulk_coverage.trim().length() > 0 ) ) {

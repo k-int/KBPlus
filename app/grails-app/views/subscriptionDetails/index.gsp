@@ -192,7 +192,7 @@
                   <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()" class="btn btn-primary"/></g:if></th>
 
               	<th>
-                	<g:simpleHiddenRefdata name="bulk_core" refdataCategory="CoreStatus"/>
+                	<g:simpleHiddenRefdata id="bulk_core" name="bulk_core" refdataCategory="CoreStatus"/>
               	</th>
 
               <th><g:if test="${editable}"><span class="datevalue">edit</span> <input name="bulk_start_date" type="hidden" class="${editable?'hdp':''}" /></g:if></th>
