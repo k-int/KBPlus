@@ -237,52 +237,51 @@
 
       $(document).ready(function() {
       
-         console.log("ed3f");
+         // console.log("ed3f");
 
 
-         $( "#dialog-form" ).dialog({
-           autoOpen: false,
-           height: 300,
-           width: 350,
-           modal: true,
-           buttons: {
-             Save: function() {
-               $( "#upload_new_doc_form" ).submit();
-               $( this ).dialog( "close" );
-             },
-             Cancel: function() {
-               $( this ).dialog( "close" );
-             }
-           },
-           close: function() {
-             allFields.val( "" ).removeClass( "ui-state-error" );
-           }
-         });
+         // $( "#dialog-form" ).dialog({
+         //   autoOpen: false,
+         //   height: 300,
+         //   width: 350,
+         //   modal: true,
+         //   buttons: {
+         //     Save: function() {
+         //       $( "#upload_new_doc_form" ).submit();
+         //       $( this ).dialog( "close" );
+         //     },
+         //     Cancel: function() {
+         //       $( this ).dialog( "close" );
+         //     }
+         //   },
+         //   close: function() {
+         //     allFields.val( "" ).removeClass( "ui-state-error" );
+         //   }
+         // });
+         // console.log("ed3fr");
 
-         console.log("ed3fr");
+         // $(".announce").click(function(){
+         //   var id = $(this).data('id');
+         //   $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" />/'+id);
+         //   $('#modalComments').modal('show');
+         // });
 
-         $(".announce").click(function(){
-           var id = $(this).data('id');
-           $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" />/'+id);
-           $('#modalComments').modal('show');
-         });
+         // $( "#attach-doc" )
+         //     .button()
+         //     .click(function() {
+         //       $( "#dialog-form" ).dialog( "open" );
+         //     });
 
-         $( "#attach-doc" )
-             .button()
-             .click(function() {
-               $( "#dialog-form" ).dialog( "open" );
-             });
+         // $( "#delete-doc" )
+         //     .button()
+         //     .click(function() {
+         //       $( "#delete_doc_form" ).submit();
+         //     });
 
-         $( "#delete-doc" )
-             .button()
-             .click(function() {
-               $( "#delete_doc_form" ).submit();
-             });
-
-         url = document.location.href.split('#');
-         if(url[1] != undefined) {
-           $('[href=#'+url[1]+']').tab('show');
-         }
+         // url = document.location.href.split('#');
+         // if(url[1] != undefined) {
+         //   $('[href=#'+url[1]+']').tab('show');
+         // }
 
 
        });
