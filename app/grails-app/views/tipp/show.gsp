@@ -61,12 +61,30 @@
           <dt>Host Platform</dt>
           <dd>${tipp.platform.name}</dd>
 
+          <dt>Additional Platforms</td>
+          <dd>
+            <table class="table">
+              <thead>
+                <tr><th>Relation</th><th>Platform Name</th><th>Primary URL</th></tr>
+              </thead>
+              <tbody>
+                <g:each in="${tipp.additionalPlatforms}" var="ap">
+                  <tr>
+                    <td>${ap.rel}</td>
+                    <td>${ap.platform.name}</td>
+                    <td>${ap.platform.primaryUrl}</td>
+                  </tr>
+                </g:each>
+              </tbody>
+            </table>
+          </dd>
+
 
 
           <g:if test="${titleInstanceInstance?.tipps}">
             <dt><g:message code="titleInstance.tipps.label" default="Occurences of this title against Packages / Platforms" /></dt>
             <dd>
-            <table border="1" cellpadding="5" cellspacing="5">
+            <table class="table">
               <tr>
                 <th>From Date</th><th>From Volume</th><th>From Issue</th>
                 <th>To Date</th><th>To Volume</th><th>To Issue</th><th>Coverage Depth</th>
