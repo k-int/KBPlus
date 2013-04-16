@@ -69,16 +69,22 @@
               <g:if test="${(docctx.owner.contentType==1) && (docctx.status?.value != 'Deleted')}">
                 <tr>
                   <g:if test="${editable}"><td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td></g:if>
-                  <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="title" id="doctitle" class="${editable?'newipe':''}">${docctx.owner.title}</g:inPlaceEdit></td>
-                  <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="filename" id="docfilename" class="${editable?'newipe':''}">${docctx.owner.filename}</g:inPlaceEdit></td>
+
+                  <td>
+                    <g:xEditable owner="${docctx.owner}" field="title" id="title"/>
+                  </td>
+                  <td>
+                    <g:xEditable owner="${docctx.owner}" field="filename" id="filename"/>
+                  </td>
                   <td>
                     <g:if test="${docctx.owner?.contentType==1}">
                       <g:link controller="docstore" id="${docctx.owner.uuid}">Download Doc</g:link>
                     </g:if>
                   </td>
-                  <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="creator" id="docCreator" class="${editable?'newipe':''}">${docctx.owner.creator}</g:inPlaceEdit></td>
+                  <td>
+                    <g:xEditable owner="${docctx.owner}" field="creator" id="creator"/>
+                  </td>
                   <td>${docctx.owner?.type?.value}</td>
-                  <!--${docctx.owner?.uuid}-->
                 </tr>
               </g:if>
             </g:each>
@@ -87,19 +93,6 @@
       </g:form>
     </div>
     
-    <script language="JavaScript">
-      $(document).ready(function() {
-         $('.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" />', {
-           type      : 'textarea',
-           cancel    : 'Cancel',
-           submit    : 'OK',
-           id        : 'elementid',
-           rows      : 3,
-           tooltip   : 'Click to edit...'
-         });
-       });
-    </script>
-
 <!-- Lightbox modal for creating a document taken from licenceDocuments.html -->
 <div class="modal hide" id="modalCreateDocument">
   <div class="modal-header">

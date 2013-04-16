@@ -45,17 +45,23 @@
             <g:each in="${license.documents}" var="docctx">
                 <g:if test="${((docctx.owner?.contentType==1) && ( docctx.status?.value!='Deleted'))}">
                     <tr>
-                        <td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td>
-                        <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="title" id="doctitle" class="fieldNote">${docctx.owner.title}</g:inPlaceEdit></td>
-                    <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="filename" id="docfilename" class="fieldNote">${docctx.owner.filename}</g:inPlaceEdit></td>
-                    <td>
-                    <g:if test="${docctx.owner?.contentType==1}">
-                        <g:link controller="docstore" id="${docctx.owner.uuid}">Download Doc</g:link>
-                    </g:if>
-                    </td>
-                    <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="creator" id="docCreator" class="fieldNote">${docctx.owner.creator}</g:inPlaceEdit></td>
-                    <td>${docctx.owner?.type?.value}</td>
-                    <!--${docctx.owner?.uuid}-->
+                      <td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td>
+                      <td>
+                        <g:xEditable owner="${docctx.owner}" field="title" id="title"/>
+                      </td>
+                      <td>
+                        <g:xEditable owner="${docctx.owner}" field="filename" id="filename"/>
+                      </td>
+                      <td>
+                      <g:if test="${docctx.owner?.contentType==1}">
+                          <g:link controller="docstore" id="${docctx.owner.uuid}">Download Doc</g:link>
+                      </g:if>
+                      </td>
+                      <td>
+                        <g:xEditable owner="${docctx.owner}" field="creator" id="creator"/>
+                       </td>
+                      <td>${docctx.owner?.type?.value}</td>
+                      <!--${docctx.owner?.uuid}-->
                     </tr>
                 </g:if>
             </g:each>

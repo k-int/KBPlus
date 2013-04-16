@@ -53,9 +53,15 @@
               <g:if test="${docctx.owner.contentType==0 && ( docctx.status == null || docctx.status?.value != 'Deleted')}">
                 <tr>
                   <g:if test="${editable}"><td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td></g:if>
-                  <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="title" id="doctitle" class="${editable?'newipe':''}">${docctx.owner.title}</g:inPlaceEdit></td>
-                  <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="content" id="doctitle" class="${editable?'newipe':''}">${docctx.owner.content}</g:inPlaceEdit></td>
-                  <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="creator" id="docCreator" class="${editable?'newipe':''}">${docctx.owner.creator}</g:inPlaceEdit></td>
+                  <td>
+                    <g:xEditable owner="${docctx.owner}" field="title" id="title"/>
+                  </td>
+                  <td>
+                    <g:xEditable owner="${docctx.owner}" field="content" id="content"/>
+                  </td>
+                  <td>
+                    <g:xEditable owner="${docctx.owner}" field="creator" id="creator"/>
+                  </td>
                   <td>${docctx.owner?.type?.value}</td>
                 </tr>
               </g:if>

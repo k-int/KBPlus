@@ -44,9 +44,15 @@
                     <g:if test="${docctx.owner.contentType==0 && ( docctx.status == null || docctx.status?.value != 'Deleted')}">
                         <tr>
                             <td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td>
-                            <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="title" id="doctitle" class="fieldNote">${docctx.owner.title}</g:inPlaceEdit></td>
-                            <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="content" id="doctitle" class="fieldNote">${docctx.owner.content}</g:inPlaceEdit></td>
-                            <td><g:inPlaceEdit domain="Doc" pk="${docctx.owner.id}" field="creators" id="docCreator" class="fieldNote">${docctx.owner.creator}</g:inPlaceEdit></td>
+                            <td>
+                              <g:xEditable owner="${docctx.owner}" field="title" id="title"/>
+                            </td>
+                            <td>
+                              <g:xEditable owner="${docctx.owner}" field="content" id="content"/>
+                            </td>
+                            <td>
+                              <g:xEditable owner="${docctx.owner}" field="creator" id="creator"/>
+                            </td>
                             <td>${docctx.owner?.type?.value}</td>
                         </tr>
                     </g:if>
@@ -55,61 +61,6 @@
             </table>
         </g:form>
     </div>
-
-    <script language="JavaScript">
-        $(document).ready(function() {
-      
-            var checkEmptyEditable = function() {
-                $('.fieldNote').each(function() {
-                    if($(this).text().length == 0) {
-                        $(this).addClass('editableEmpty');
-                    } else {
-                        $(this).removeClass('editableEmpty');
-                    }
-                });
-            }
-
-            checkEmptyEditable();
-
-            $('.fieldNote').click(function() {
-                // Hide edit icon with overwriting style.
-                $(this).addClass('clicked');  	
-         	
-                var e = $(this);
-         	
-                var removeClicked = function() {
-                    setTimeout(function() {
-                        e.removeClass('clicked');
-         			
-                        if(iconStyle) {
-                            e.parent().find('.select-icon').show();
-                        }
-                    }, 1);
-                }
-         	
-                setTimeout(function() {
-                    e.find('form button').click(function() {
-                        removeClicked();
-                    });
-                    e.keydown(function(event) {
-                        if(event.keyCode == 27) {
-                            removeClicked();
-                        }
-                    });
-                }, 1);
-            });
-         
-            $('.fieldNote').editable('<g:createLink controller="ajax" action="genericSetValue" />', {
-                type      : 'textarea',
-                cancel    : 'Cancel',
-                submit    : 'OK',
-                id        : 'elementid',
-                rows      : 3,
-                tooltip   : 'Click to edit...',
-                onblur	 : 'ignore'
-            });
-        });
-    </script>
 
     <!-- JS for licence documents -->
     <script type="text/javascript">
