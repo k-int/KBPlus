@@ -69,8 +69,10 @@ class TitleInstance {
     candidate_identifiers.each { i ->
       def id = Identifier.lookupOrCreateCanonicalIdentifier(i.namespace, i.value)
       def io = IdentifierOccurrence.findByIdentifier(id)
-      if ( io && io.ti )
+
+      if ( io && io.ti ) {
         return io.ti;
+      }
     }
     return null;     
   }

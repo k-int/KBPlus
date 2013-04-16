@@ -458,6 +458,11 @@ class UploadController {
         tipp.messages.add("Mix of identifiers in row ${counter} match more than one title:(${matched_titles}). Please correct. identifiers:${tipp.id}");
         upload.processFile=false;
       }
+      else {
+        if ( matched_titles.size() == 1 ) {
+          checkTitleFingerprintMatch(matched_titles[0], tipp.publication_title, tipp,upload)
+        }
+      }
 
       tipp.parsedStartDate = parseDate(tipp.date_first_issue_online,possible_date_formats)
       if ( tipp.parsedStartDate == null ) {
@@ -616,15 +621,30 @@ class UploadController {
   }
 
   def findTitleIdentifierIntersection(idlist) {
-    Set matched_title_ids = new Set()
+    Set matched_title_ids = new HashSet()
     idlist.each { id ->
-      def title = TitleInstance.findByIdentifier([[namespace:id.namespace,value:id.value]])
+      def title = TitleInstance.findByIdentifier([[namespace:id.key,value:id.value]])
       if ( ( title ) && ( ! matched_title_ids.contains(title.id) ) ) {
+        log.debug("Adding matched title ${title.id} to matching titles list");
         matched_title_ids.add(title.id)
+      }
+      else {
+        log.debug("no title by identifier match for ${id.key} : ${id.value}");
       }
     }
 
+    log.debug("Identifiers matched the following title ids: ${matched_title_ids}");
     return matched_title_ids;
   }
   
+  def checkTitleFingerprintMatch(matched_title_id, title_from_import_file, tipp, upload) {
+    def title_instance = TitleInstance.get(matched_title_id)
+    def generated_key_title = TitleInstance.generateKeyTitle(title_from_import_file)
+    log.debug("checkTitleFingerprintMatch ${matched_title_id}, ${title_from_import_file} == ${generated_key_title}");
+
+    if ( title_instance.keyTitle != generated_key_title ) {
+      tipp.messages.add("Matched title identifier does not pass title fingerprint match. titleid=${matched_title_id}, ${title_instance.keyTitle} != ${generated_key_title}");
+      upload.processFile=false;
+    }
+  }
 }
