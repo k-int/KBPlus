@@ -624,9 +624,14 @@ class UploadController {
     Set matched_title_ids = new HashSet()
     idlist.each { id ->
       def title = TitleInstance.findByIdentifier([[namespace:id.key,value:id.value]])
-      if ( ( title ) && ( ! matched_title_ids.contains(title.id) ) ) {
-        log.debug("Adding matched title ${title.id} to matching titles list");
-        matched_title_ids.add(title.id)
+      if ( title ) {
+        if ( matched_title_ids.contains(title.id) )  {
+          log.debug("Matched titles already contains that title");
+        }
+        else {
+          log.debug("Adding matched title ${title.id} to matching titles list");
+          matched_title_ids.add(title.id)
+        }
       }
       else {
         log.debug("no title by identifier match for ${id.key} : ${id.value}");
