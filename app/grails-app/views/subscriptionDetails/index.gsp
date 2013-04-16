@@ -267,32 +267,12 @@
       
         $.fn.editable.defaults.mode = 'inline';
 
-        $('span.entitlementBatchEdit').editable(function(value, settings) { 
-          $("#bulk_core").val(value);
-          return(value);          
-        },{ data:{'Yes':'Yes',
-                  'No':'No',
-                  'Print':'Print',
-                  'Electronic':'Electronic',
-                  'Print+Electronic':'Print+Electronic'}, type:'select',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px', onblur:'ignore'});
-
-        $('span.embargoBatchEdit').editable(function(value, settings) { 
-          $("#bulk_embargo").val(value);
-          return(value);
-        },{type:'textarea',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px', onblur:'ignore'});
-
-        $('span.coverageBatchEdit').editable(function(value, settings) { 
-          $("#bulk_coverage").val(value);
-          return(value);
-        },{type:'textarea',cancel:'Cancel',submit:'OK', rows:3, tooltop:'Click to edit...', width:'100px', onblur:'ignore'});
-
         $(".announce").click(function(){
            var id = $(this).data('id');
            $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" />/'+id);
            $('#modalComments').modal('show');
          });
 
-         
          $('#collapseableSubDetails').on('show', function() {
             $('.hidden-license-details i').removeClass('icon-plus').addClass('icon-minus');
         });
