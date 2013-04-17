@@ -105,6 +105,23 @@ class TitleInstance {
         throw new RuntimeException("Problem creating title instance : ${result.errors?.toString()}");
       }
     }
+    else {
+      boolean modified = false;
+      // Check that all the identifiers listed are present 
+      ids.each { identifier ->
+        // it == an ID
+        // Does result.ids contain an identifier occurrence that matches this ID
+        def existing_id = result.ids.find { it -> it.identifier == identifier }
+        if ( existing_id == null ) {
+          log.debug("Adding additional identifier ${identifier}");
+          result.ids.add(new IdentifierOccurrence(identifier:identifier, ti:result));
+          modified=true;
+        }
+      }
+      if ( modified ) {
+        result.save();
+      }
+    }
     
     return result;     
 
