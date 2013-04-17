@@ -464,11 +464,8 @@ class UploadController {
         }
       }
 
+      // Git issue 419 - Allow tipps without a start date (:-/)
       tipp.parsedStartDate = parseDate(tipp.date_first_issue_online,possible_date_formats)
-      if ( tipp.parsedStartDate == null ) {
-        tipp.messages.add("Invalid tipp date_first_issue_online");
-        upload.processFile=false;
-      }
       
       if ( tipp.date_last_issue_online && ( tipp.date_last_issue_online.trim() != '' ) ) {
         tipp.parsedEndDate = parseDate(tipp.date_last_issue_online,possible_date_formats)
