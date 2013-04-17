@@ -66,15 +66,16 @@ class TitleInstance {
    * @param candidate_identifiers A list of maps containing identifiers and namespaces [ { namespace:'ISSN', value:'Xnnnn-nnnn' }, {namespace:'ISSN', value:'Xnnnn-nnnn'} ]
    */
   static def findByIdentifier(candidate_identifiers) {
+    def result = null
     candidate_identifiers.each { i ->
       def id = Identifier.lookupOrCreateCanonicalIdentifier(i.namespace, i.value)
       def io = IdentifierOccurrence.findByIdentifier(id)
-
-      if ( io && io.ti ) {
-        return io.ti;
+      if ( ( io != null ) && ( io.ti != null ) ) {
+        result = io.ti;
       }
     }
-    return null;     
+    
+    return result;     
   }
   
   static def lookupOrCreate(candidate_identifiers, title) {

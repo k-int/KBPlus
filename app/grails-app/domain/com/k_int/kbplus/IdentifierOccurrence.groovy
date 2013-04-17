@@ -23,4 +23,8 @@ class IdentifierOccurrence {
       ti(nullable:true)
     tipp(nullable:true)
   }
+  
+  String toString() {
+    "IdentifierOccurrence(${id} - ti:${ti}, org:${org}, tipp:${tipp}";
+  }
 }

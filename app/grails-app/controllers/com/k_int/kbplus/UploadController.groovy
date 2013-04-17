@@ -621,15 +621,16 @@ class UploadController {
   }
 
   def findTitleIdentifierIntersection(idlist) {
-    Set matched_title_ids = new HashSet()
+    def matched_title_ids = []
     idlist.each { id ->
       def title = TitleInstance.findByIdentifier([[namespace:id.key,value:id.value]])
-      if ( title ) {
+      log.debug("found title ${title}");
+      if ( title != null ) {
         if ( matched_title_ids.contains(title.id) )  {
-          log.debug("Matched titles already contains that title");
+          //log.debug("Matched titles already contains that title");
         }
         else {
-          log.debug("Adding matched title ${title.id} to matching titles list");
+          //log.debug("Adding matched title ${title.id} to matching titles list");
           matched_title_ids.add(title.id)
         }
       }
