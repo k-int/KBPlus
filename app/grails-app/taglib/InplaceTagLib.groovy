@@ -59,60 +59,79 @@ class InplaceTagLib {
    *   class [optional] - additional classes
    */
   def xEditable = { attrs, body ->
-    def oid = "${attrs.owner.class.name}:${attrs.owner.id}"
-    def id = attrs.id ?: "${oid}:${attrs.field}"
+    
+    boolean editable = request.getAttribute('editable') ?: true;
+    
+    if ( editable ) {
+      def oid = "${attrs.owner.class.name}:${attrs.owner.id}"
+      def id = attrs.id ?: "${oid}:${attrs.field}"
 
-    out << "<span id=\"${id}\" class=\"xEditableValue ${attrs.class?:''}\""
-    out << " data-type=\"${attrs.type?:'textarea'}\" data-pk=\"${oid}\""
-    out << " data-name=\"${attrs.field}\""
+      out << "<span id=\"${id}\" class=\"xEditableValue ${attrs.class?:''}\""
+      out << " data-type=\"${attrs.type?:'textarea'}\" data-pk=\"${oid}\""
+      out << " data-name=\"${attrs.field}\""
 
-    def data_link = null
-    switch ( attrs.type ) {
-      case 'date':
-        data_link = createLink(controller:'ajax', action: 'editableSetValue', params:[type:'date',format:'yyyy/MM/dd'])
-        break;
-      case 'string':
-      default:
-        data_link = createLink(controller:'ajax', action: 'editableSetValue')
-        break;
-    }
+      def data_link = null
+      switch ( attrs.type ) {
+        case 'date':
+          data_link = createLink(controller:'ajax', action: 'editableSetValue', params:[type:'date',format:'yyyy/MM/dd'])
+          break;
+        case 'string':
+        default:
+          data_link = createLink(controller:'ajax', action: 'editableSetValue')
+          break;
+      }
 
-    out << " data-url=\"${data_link}\""
-    out << ">"
+      out << " data-url=\"${data_link}\""
+      out << ">"
 
-    if ( body ) {
-      out << body()
+      if ( body ) {
+        out << body()
+      }
+      else {
+        if ( attrs.owner[attrs.field] && attrs.type=='date' ) {
+          def sdf = new java.text.SimpleDateFormat(attrs.format?:'yyyy-MM-dd')
+          out << sdf.format(attrs.owner[attrs.field])
+        }
+        else {
+          out << attrs.owner[attrs.field]
+        }
+      }
+      out << "</span>"
     }
     else {
-      if ( attrs.owner[attrs.field] && attrs.type=='date' ) {
-        def sdf = new java.text.SimpleDateFormat(attrs.format?:'yyyy-MM-dd')
-        out << sdf.format(attrs.owner[attrs.field])
+      if ( body ) {
+        out << body()
       }
       else {
         out << attrs.owner[attrs.field]
       }
     }
-    out << "</span>"
   }
 
 
   def xEditableRefData = { attrs, body ->
-    // out << "editable many to one: <div id=\"${attrs.id}\" class=\"xEditableManyToOne\" data-type=\"select2\" data-config=\"${attrs.config}\" />"
-    def data_link = createLink(controller:'ajax', action: 'sel2RefdataSearch', params:[id:attrs.config,format:'json'])
-    def update_link = createLink(controller:'ajax', action: 'genericSetRel')
-    def oid = "${attrs.owner.class.name}:${attrs.owner.id}"
-    def id = attrs.id ?: "${oid}:${attrs.field}"
+     boolean editable = request.getAttribute('editable') ?: true;
+     
+    if ( editable ) {
+      def data_link = createLink(controller:'ajax', action: 'sel2RefdataSearch', params:[id:attrs.config,format:'json'])
+      def update_link = createLink(controller:'ajax', action: 'genericSetRel')
+      def oid = "${attrs.owner.class.name}:${attrs.owner.id}"
+      def id = attrs.id ?: "${oid}:${attrs.field}"
    
-    out << "<span>"
+      out << "<span>"
    
-    // Output an editable link
-    out << "<span id=\"${id}\" class=\"xEditableManyToOne\" data-pk=\"${oid}\" data-type=\"select\" data-name=\"${attrs.field}\" data-source=\"${data_link}\" data-url=\"${update_link}\">"
+      // Output an editable link
+      out << "<span id=\"${id}\" class=\"xEditableManyToOne\" data-pk=\"${oid}\" data-type=\"select\" data-name=\"${attrs.field}\" data-source=\"${data_link}\" data-url=\"${update_link}\">"
 
-    // Here we can register different ways of presenting object references. The most pressing need to be
-    // outputting a span containing an icon for refdata fields.
-    out << renderObjectValue(attrs.owner[attrs.field])
+      // Here we can register different ways of presenting object references. The most pressing need to be
+      // outputting a span containing an icon for refdata fields.
+      out << renderObjectValue(attrs.owner[attrs.field])
 
-    out << "</span></span>"
+      out << "</span></span>"
+    }
+    else {
+      out << renderObjectValue(attrs.owner[attrs.field])
+    }
   }
 
   /**
