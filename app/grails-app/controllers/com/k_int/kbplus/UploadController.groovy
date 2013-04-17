@@ -129,6 +129,7 @@ class UploadController {
         }
       }
           
+      log.debug("Lookup or create title ${tipp.id}");
       tipp.title_obj = lookupOrCreateTitleInstance(tipp.id,tipp.publication_title,publisher);
       
       if ( tipp.title_obj && tipp.host_platform && new_pkg ) {

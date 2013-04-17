@@ -106,6 +106,7 @@ class TitleInstance {
       }
     }
     else {
+      println("Checking that all identifiers are already present in title");
       boolean modified = false;
       // Check that all the identifiers listed are present 
       ids.each { identifier ->
@@ -113,9 +114,12 @@ class TitleInstance {
         // Does result.ids contain an identifier occurrence that matches this ID
         def existing_id = result.ids.find { it -> it.identifier == identifier }
         if ( existing_id == null ) {
-          log.debug("Adding additional identifier ${identifier}");
+          println("Adding additional identifier ${identifier}");
           result.ids.add(new IdentifierOccurrence(identifier:identifier, ti:result));
           modified=true;
+        }
+        else {
+          println("Identifier ${identifier} already present in existing title ${result}");
         }
       }
       if ( modified ) {
@@ -136,13 +140,18 @@ class TitleInstance {
     def ids = []
     
     candidate_identifiers.each { i ->
-      if ( !result ) {
-        def id = Identifier.lookupOrCreateCanonicalIdentifier(i.key, i.value)
-        ids.add(id);
+      def id = Identifier.lookupOrCreateCanonicalIdentifier(i.key, i.value)
+      ids.add(id);
         
-        def io = IdentifierOccurrence.findByIdentifier(id)
-        if ( io && io.ti ) {
+      def io = IdentifierOccurrence.findByIdentifier(id)
+      if ( io && io.ti ) {
+        if ( result == null ) {
           result = io.ti;
+        }
+        else {
+          if ( result != io.ti ) {
+            throw new RuntimeException("Identifiers(${candidate_identifiers}) reference multiple titles");
+          }
         }
       }
     }
@@ -156,6 +165,27 @@ class TitleInstance {
       }
       if ( ! result.save() ) {
         throw new RuntimeException("Problem creating title instance : ${result.errors?.toString()}");
+      }
+    }
+    else {
+      //println("Checking that all identifiers are already present in title (${ids})");
+      boolean modified = false;
+      // Check that all the identifiers listed are present 
+      ids.each { identifier ->
+        // it == an ID
+        // Does result.ids contain an identifier occurrence that matches this ID
+        def existing_id = result.ids.find { it -> it.identifier == identifier }
+        if ( existing_id == null ) {
+          //println("Adding additional identifier ${identifier}");
+          result.ids.add(new IdentifierOccurrence(identifier:identifier, ti:result));
+          modified=true;
+        }
+        else {
+          //println("Identifier ${identifier} already present in existing title ${result}");
+        }
+      }
+      if ( modified ) {
+        result.save();
       }
     }
     
