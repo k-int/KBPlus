@@ -102,41 +102,28 @@
                   <dl>
                       <dt><label class="control-label" for="noticePeriod">Notice Period</label></dt>
                       <dd>
-                        <g:inPlaceEdit domain="${license.class.name}" 
-                                       pk="${license.id}" 
-                                       field="noticePeriod" 
-                                       id="noticePeriod">${license.noticePeriod}</g:inPlaceEdit>
+                        <g:xEditable owner="${license}" field="noticePeriod" id="noticePeriod"/>
                      </dd>
                   </dl>
       
                   <dl>
                       <dt><label class="control-label" for="licenseUrl">Licence Url</label></dt>
                       <dd>
-                        <g:inPlaceEdit domain="${license.class.name}" 
-                                       pk="${license.id}" 
-                                       field="licenseUrl" 
-                                       id="licenseUrl">${license.licenseUrl}</g:inPlaceEdit>
-
+                        <g:xEditable owner="${license}" field="licenseUrl" id="licenseUrl"/>
                       </dd>
                   </dl>
       
                   <dl>
                       <dt><label class="control-label" for="licensorRef">Licensor Ref</label></dt>
                       <dd>
-                        <g:inPlaceEdit domain="${license.class.name}" 
-                                       pk="${license.id}" 
-                                       field="licensorRef" 
-                                       id="licensorRef">${license.licensorRef}</g:inPlaceEdit>
+                        <g:xEditable owner="${license}" field="licensorRef" id="licensorRef"/>
                       </dd>
                   </dl>
       
                   <dl>
                       <dt><label class="control-label" for="licenseeRef">Licensee Ref</label></dt>
                       <dd>
-                        <g:inPlaceEdit domain="${license.class.name}" 
-                                       pk="${license.id}" 
-                                       field="licenseeRef" 
-                                       id="licenseeRef">${license.licenseeRef}</g:inPlaceEdit>
+                        <g:xEditable owner="${license}" field="licenseeRef" id="licenseeRef"/>
                       </dd>
                   </dl>
 
