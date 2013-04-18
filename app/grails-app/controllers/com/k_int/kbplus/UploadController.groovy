@@ -408,7 +408,8 @@ class UploadController {
     
       log.debug("Validate tipp: ${tipp}");
 
-      if ( ( tipp.publication_title == null ) || ( tipp.publication_title.trim() == '' ) ) {
+      if ( ( tipp.publication_title == null ) || 
+           ( tipp.publication_title.trim() == '' ) ) {
         tipp.messages.add("Title (row ${counter}) must not be empty");
         upload.processFile=false;
       }
@@ -460,7 +461,7 @@ class UploadController {
         upload.processFile=false;
       }
       else {
-        if ( matched_titles.size() == 1 ) {
+        if ( ( matched_titles.size() == 1 ) && ( tipp.publication_title != null ) ) {
           checkTitleFingerprintMatch(matched_titles[0], tipp.publication_title, tipp,upload)
         }
       }
