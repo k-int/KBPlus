@@ -31,7 +31,7 @@ class SubscriptionDetailsController {
     result.subscriptionInstance = Subscription.get(params.id)
 
     if ( ! result.subscriptionInstance.hasPerm("view",result.user) ) {
-      render status: 401
+      response.sendError(401);
       return
     }
 
@@ -157,7 +157,7 @@ class SubscriptionDetailsController {
     def user = User.get(springSecurityService.principal.id)
 
     if ( ! subscriptionInstance.hasPerm("edit",user) ) {
-      render status: 401
+      response.sendError(401);
       return
     }
 
@@ -232,7 +232,7 @@ class SubscriptionDetailsController {
     result.institution = result.subscriptionInstance.subscriber
 
     if ( ! result.subscriptionInstance.hasPerm("edit",result.user) ) {
-      render status: 401
+      response.sendError(401);
       return
     }
 
@@ -296,7 +296,7 @@ class SubscriptionDetailsController {
     result.institution = result.subscriptionInstance?.subscriber
 
     if ( ! result.subscriptionInstance.hasPerm("edit",result.user) ) {
-      render status: 401
+      response.sendError(401);
       return
     }
 
@@ -367,7 +367,7 @@ class SubscriptionDetailsController {
     }
 
     if ( ! result.subscriptionInstance.hasPerm("view",result.user) ) {
-      render status: 401
+      response.sendError(401);
       return
     }
 
@@ -390,7 +390,7 @@ class SubscriptionDetailsController {
     result.institution = result.subscriptionInstance.subscriber
 
     if ( ! result.subscriptionInstance.hasPerm("view",result.user) ) {
-      render status: 401
+      response.sendError(401);
       return
     }
 
@@ -415,7 +415,7 @@ class SubscriptionDetailsController {
     result.subscriptionInstance = Subscription.get(params.id)
     result.institution = result.subscriptionInstance.subscriber
     if ( ! result.subscriptionInstance.hasPerm("view",result.user) ) {
-      render status: 401
+      response.sendError(401);
       return
     }
 

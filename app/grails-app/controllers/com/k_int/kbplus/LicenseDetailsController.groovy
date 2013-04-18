@@ -28,7 +28,7 @@ class LicenseDetailsController {
 
     if ( ! result.license.hasPerm("view",result.user) ) {
       log.debug("return 401....");
-      render(status: '401', text:"You do not have permission to view license ${params.id}");
+      response.sendError(401);
       return
     }
 
@@ -51,7 +51,7 @@ class LicenseDetailsController {
     result.license = License.get(params.id)
 
     if ( ! result.license.hasPerm("view",result.user) ) {
-      render status: 401
+      response.sendError(401);
       return
     }
 
@@ -66,7 +66,7 @@ class LicenseDetailsController {
     result.license = License.get(params.id)
 
     if ( ! result.license.hasPerm("view",result.user) ) {
-      render status: 401
+      response.sendError(401);
       return
     }
 
@@ -89,7 +89,7 @@ class LicenseDetailsController {
     result.license = License.get(params.id)
 
     if ( ! result.license.hasPerm("view",result.user) ) {
-      render status: 401
+      response.sendError(401);
       return
     }
 
@@ -104,7 +104,7 @@ class LicenseDetailsController {
     result.license = License.get(params.id)
 
     if ( ! result.license.hasPerm("view",result.user) ) {
-      render status: 401
+      response.sendError(401);
       return
     }
 
@@ -122,7 +122,7 @@ class LicenseDetailsController {
     def l = License.get(params.licid);
 
     if ( ! l.hasPerm("edit",result.user) ) {
-      render status: 401
+      response.sendError(401);
       return
     }
 
@@ -165,7 +165,7 @@ class LicenseDetailsController {
     def l = License.get(params.licid);
 
     if ( ! l.hasPerm("edit",user) ) {
-      render status: 401
+      response.sendError(401);
       return
     }
 
