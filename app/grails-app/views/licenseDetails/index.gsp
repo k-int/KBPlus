@@ -164,7 +164,7 @@
                          </span>
                          <span id="cucwrap">
                              <span>(</span>
-                               <g:xEditableRefData owner="${license}" field="concurrentUserCount" config='concurrentUserCount'/>
+                               <g:xEditable owner="${license}" field="concurrentUserCount" id='concurrentUserCount'/>
                              <span>)</span>
                          </span>
                     </td>
