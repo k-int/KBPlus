@@ -179,6 +179,14 @@ class SubscriptionDetailsController {
             ie.endDate = formatter.parse(params.bulk_end_date)
           }
 
+          if ( params.bulk_core_start && ( params.bulk_core_start.trim().length() > 0 ) ) {
+            ie.coreStatusStart = formatter.parse(params.bulk_core_start)
+          }
+
+          if ( params.bulk_core_end && ( params.bulk_core_end.trim().length() > 0 ) ) {
+            ie.coreStatusEnd = formatter.parse(params.bulk_core_end)
+          }
+
           if ( params.bulk_embargo && ( params.bulk_embargo.trim().length() > 0 ) ) {
             ie.embargo = params.bulk_embargo
           }
