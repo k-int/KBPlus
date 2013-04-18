@@ -49,10 +49,26 @@ class AjaxController {
       cols:['value'],
       format:'simple'
     ],
+    'YNO' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='YNO'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='YNO'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
     'TIPPStatus' : [
       domain:'RefdataValue',
       countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TIPP Status'",
       rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='TIPP Status'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'ConcurrentAccess' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Concurrent Access'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Concurrent Access'",
       qryParams:[],
       cols:['value'],
       format:'simple'

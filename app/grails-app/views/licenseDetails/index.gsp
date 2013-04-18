@@ -173,7 +173,7 @@
                 <tr><td>Concurrent Access</td>
                     <td>
                          <span>
-                         <g:refdataValue val="${license.concurrentUsers?.value}" domain="License" pk="${license.id}" field="concurrentUsers" cat='Concurrent Access' class="${editable?'cuedit':''}"/>
+                         <g:xEditableRefData owner="${license}" field="concurrentUsers" config='ConcurrentAccess'/>
                          </span>
                          <span id="cucwrap">
                              <span>(</span>
@@ -181,37 +181,39 @@
                              <span>)</span>
                          </span>
                     </td>
-                    <td><g:singleValueFieldNote domain="concurrentUsers" value="${license.getNote('concurrentUsers')}" class="${editable?'fieldNote':''}"/></td></tr>
+                    <td>
+                      <g:xEditableFieldNote owner="${license}" field="concurrentUsers" id="concurrentUsers"/></td>
+                </tr>
   
                 <tr><td>Remote Access</td>
-                    <td><g:xEditableRefData owner="${license}" field="remoteAccess" config='YN' /></td>
+                    <td><g:xEditableRefData owner="${license}" field="remoteAccess" config='YNO' /></td>
                     <td><g:xEditableFieldNote owner="${license}" field="remoteAccess" id="remoteAccess" class="${editable?'refdataedit':''}"/></td></tr>  
                 <tr><td>Walk In Access</td>
-                     <td><g:xEditableRefData owner="${license}" field="walkinAccess" config='YN' class="${editable?'refdataedit':''}"/></td>
+                     <td><g:xEditableRefData owner="${license}" field="walkinAccess" config='YNO' class="${editable?'refdataedit':''}"/></td>
                     <td><g:xEditableFieldNote owner="${license}" field="walkinAccess" id="walkinAccess"/></td></tr>
                 <tr><td>Multi Site Access</td>
-                    <td><g:xEditableRefData owner="${license}" field="multisiteAccess" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableRefData owner="${license}" field="multisiteAccess" config='YNO' class="${editable?'refdataedit':''}"/></td>
                     <td><g:xEditableFieldNote owner="${license}" field="multisiteAccess" id="multisiteAccess"/></td></tr>
                 <tr><td>Partners Access</td>
-                    <td><g:xEditableRefData owner="${license}" field="partnersAccess" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableRefData owner="${license}" field="partnersAccess" config='YNO' class="${editable?'refdataedit':''}"/></td>
                     <td><g:xEditableFieldNote owner="${license}" field="partnersAccess" id="partnersAccess"/></td></tr>
                 <tr><td>Alumni Access</td>
-                    <td><g:xEditableRefData owner="${license}" field="alumniAccess" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableRefData owner="${license}" field="alumniAccess" config='YNO' class="${editable?'refdataedit':''}"/></td>
                     <td><g:xEditableFieldNote owner="${license}" field="alumniAccess" id="alumniAccess"/></td></tr>
                 <tr><td>ILL - Inter Library Loans</td>
                     <td><g:xEditableRefData owner="${license}" field="ill" config='YN' class="${editable?'refdataedit':''}"/></td>
                     <td><g:xEditableFieldNote owner="${license}" field="ill" id="ill"/></td></tr>
                 <tr><td>Include In Coursepacks</td>
-                    <td><g:xEditableRefData owner="${license}" field="coursepack" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableRefData owner="${license}" field="coursepack" config='YNO' class="${editable?'refdataedit':''}"/></td>
                     <td><g:xEditableFieldNote owner="${license}" field="coursepack" id="coursepack"/></td></tr>
                 <tr><td>Include in VLE</td>
-                    <td><g:xEditableRefData owner="${license}" field="vle" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableRefData owner="${license}" field="vle" config='YNO' class="${editable?'refdataedit':''}"/></td>
                     <td><g:xEditableFieldNote owner="${license}" field="vle" id="vle"/></td></tr>
                 <tr><td>Enterprise Access</td>
-                    <td><g:xEditableRefData owner="${license}" field='enterprise' config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableRefData owner="${license}" field='enterprise' config='YNO' class="${editable?'refdataedit':''}"/></td>
                     <td><g:xEditableFieldNote owner="${license}" field="enterprise" id="enterprise"/></td></tr>
                 <tr><td>Post Cancellation Access Entitlement</td>
-                    <td><g:xEditableRefData owner="${license}" field="pca" config='YN' class="${editable?'refdataedit':''}"/></td>
+                    <td><g:xEditableRefData owner="${license}" field="pca" config='YNO' class="${editable?'refdataedit':''}"/></td>
                     <td><g:xEditableFieldNote owner="${license}" field="pca" id="pca"/></td></tr>
               </tbody>
             </table>
