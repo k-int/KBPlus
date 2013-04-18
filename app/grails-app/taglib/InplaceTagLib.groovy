@@ -60,9 +60,9 @@ class InplaceTagLib {
    */
   def xEditable = { attrs, body ->
     
-    boolean editable = request.getAttribute('editable') ?: true;
+    boolean editable = request.getAttribute('editable')
     
-    if ( editable ) {
+    if ( editable == true ) {
       def oid = "${attrs.owner.class.name}:${attrs.owner.id}"
       def id = attrs.id ?: "${oid}:${attrs.field}"
 
@@ -110,9 +110,10 @@ class InplaceTagLib {
 
 
   def xEditableRefData = { attrs, body ->
+
      boolean editable = request.getAttribute('editable') ?: true;
      
-    if ( editable ) {
+    if ( editable == true ) {
       def data_link = createLink(controller:'ajax', action: 'sel2RefdataSearch', params:[id:attrs.config,format:'json'])
       def update_link = createLink(controller:'ajax', action: 'genericSetRel')
       def oid = "${attrs.owner.class.name}:${attrs.owner.id}"
