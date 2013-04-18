@@ -164,7 +164,7 @@
                          </span>
                          <span id="cucwrap">
                              <span>(</span>
-                             <span id="concurrentUserCount" class="intedit" style="padding-top: 5px;">${license.concurrentUserCount}</span>
+                               <g:xEditableRefData owner="${license}" field="concurrentUserCount" config='concurrentUserCount'/>
                              <span>)</span>
                          </span>
                     </td>
