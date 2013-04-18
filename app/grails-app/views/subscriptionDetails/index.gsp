@@ -198,7 +198,7 @@
               <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_start_date" name="bulk_start_date" type="date"/> </g:if> </th>
               <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_end_date" name="bulk_end_date" type="date"/> </g:if></th>
               <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_core_start" name="bulk_core_start" type="date"/> </g:if></th>
-              <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_end" name="bulk_core_end" type="date"/> </g:if></th>
+              <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_core_end" name="bulk_core_end" type="date"/> </g:if></th>
               <th colspan="2"></th>
             </tr>
 
