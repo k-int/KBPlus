@@ -73,8 +73,6 @@ class AjaxController {
       cols:['value'],
       format:'simple'
     ]
-
-
   ]
 
 

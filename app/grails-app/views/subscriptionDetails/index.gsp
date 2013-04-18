@@ -213,24 +213,19 @@
                 </td>
                 <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
                 <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
-                <td><g:refdataValue val="${ie.coreStatus?.value}" 
-                                    domain="IssueEntitlement" 
-                                    pk="${ie.id}" 
-                                    field="coreStatus" 
-                                    cat="CoreStatus"
-                                    class="${editable?'corestatusedit':''}"/></td>
                 <td>
-                    <span class="datevalue"><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.startDate}"/></span>
-                    <input id="IssueEntitlement:${ie.id}:startDate" type="hidden" class="${editable?'dp1':''}" />
+                  <g:xEditableRefData owner="${ie}" field="coreStatus" config='CoreStatus'/></td>
+                <td>
+                    <g:xEditable owner="${ie}" type="date" field="startDate" />
                 </td>
-                <td><span class="datevalue"><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.endDate}"/></span>
-                    <input id="IssueEntitlement:${ie.id}:endDate" type="hidden" class="${editable?'dp1':''}" />
+                <td>
+                    <g:xEditable owner="${ie}" type="date" field="endDate" />
                 </td>
-                <td><span class="datevalue"><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.coreStatusStart}"/></span>
-                    <input id="IssueEntitlement:${ie.id}:coreStatusStart" type="hidden" class="${editable?'dp1':''}" />
+                <td>
+                    <g:xEditable owner="${ie}" type="date" field="coreStatusStart" />
                 </td>
-                <td><span class="datevalue"><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.coreStatusEnd}"/></span>
-                    <input id="IssueEntitlement:${ie.id}:coreStatusEnd" type="hidden" class="${editable?'dp1':''}" />
+                <td>
+                    <g:xEditable owner="${ie}" type="date" field="coreStatusEnd" />
                 </td>
                 <td>
                   <g:if test="${editable}"><g:link action="removeEntitlement" params="${[ieid:ie.id, sub:subscriptionInstance.id]}" onClick="return confirm('Are you sure you wish to delete this entitlement');">Delete</g:link></g:if>
