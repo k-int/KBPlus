@@ -211,14 +211,16 @@ class TitleInstance {
   public static String generateNormTitle(String input_title) {
     def result = input_title.replaceAll('&',' and ');
     result = result.trim();
+    result = result.replaceAll("\\s+", " ");
     result = result.toLowerCase();
     result = alphanum.matcher(result).replaceAll("");
     return asciify(result)
   }
 
   public static String generateKeyTitle(String s) {
-        s.replaceAll('&',' and ');
+        s = s.replaceAll('&',' and ');
         s = s.trim(); // first off, remove whitespace around the string
+        s = s.replaceAll("\\s+", " ");
         s = s.toLowerCase(); // then lowercase it
         s = alphanum.matcher(s).replaceAll(""); // then remove all punctuation and control chars
         String[] frags = StringUtils.split(s); // split by whitespace

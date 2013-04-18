@@ -58,13 +58,16 @@ class DataloadService {
 
     updateES(esclient, com.k_int.kbplus.TitleInstance.class) { ti ->
       def result = [:]
-      if ( ti.keyTitle != com.k_int.kbplus.TitleInstance.generateKeyTitle(ti.title) ) {
+      def new_key_title =  com.k_int.kbplus.TitleInstance.generateKeyTitle(ti.title)
+      if ( ti.keyTitle != new_key_title ) {
         ti.normTitle = com.k_int.kbplus.TitleInstance.generateNormTitle(ti.title)
         ti.keyTitle = com.k_int.kbplus.TitleInstance.generateKeyTitle(ti.title)
         //
         // This alone should trigger before update to do the necessary...
         //
         ti.save()
+      }
+      else {
       }
       result._id = ti.impId
       result.title = ti.title
