@@ -49,7 +49,7 @@
               ${ua.owner.content}
             </td>
             <td>
-              ${ua.alert.createdBy.displayName}
+              ${ua.alert?.createdBy?.displayName}
             </td>
           </tr>
         </g:each>
