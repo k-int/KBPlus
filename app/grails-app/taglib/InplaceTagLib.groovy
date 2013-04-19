@@ -117,7 +117,7 @@ class InplaceTagLib {
 
   def xEditableRefData = { attrs, body ->
 
-     boolean editable = request.getAttribute('editable') ?: true;
+    boolean editable = request.getAttribute('editable')
      
     if ( editable == true ) {
       def data_link = createLink(controller:'ajax', action: 'sel2RefdataSearch', params:[id:attrs.config,format:'json'])
