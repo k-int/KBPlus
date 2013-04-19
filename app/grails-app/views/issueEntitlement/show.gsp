@@ -12,7 +12,7 @@
       <ul class="breadcrumb">
         <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
         <g:if test="${issueEntitlementInstance?.subscription.subscriber}">
-          <li> <g:link controller="myInstitutions" action="currentSubscriptions" params="${[shortcode:issueEntitlementInstance?.subscription.subscriber.shortcode]}"> ${issueEntitlementInstance?.subscription.subscriber.name} Current Subscriptions</g:link> <span class="divider">/</span> </li>
+          <li> <g:link controller="myInstitutions" action="currentSubscriptions" params="${[shortcode:issueEntitlementInstance?.subscription.subscriber.shortcode]}"> ${issueEntitlementInstance?.subscription.subscriber.name} Subscriptions</g:link> <span class="divider">/</span> </li>
         </g:if>
         <li> <g:link controller="subscriptionDetails" action="index" id="${issueEntitlementInstance?.subscription.id}">${issueEntitlementInstance?.subscription.name}</g:link>  <span class="divider">/</span> </li>
         <li> <g:link controller="issueEntitlement" action="show" id="${issueEntitlementInstance?.id}">${issueEntitlementInstance?.tipp.title.title}</g:link> </li>
