@@ -106,8 +106,6 @@
                   </dd>
                 </dl> 
 
-                <dl><dt>Consortia</dt><dd>${subscriptionInstance.getConsortia()?.name}<br/></dd></dl>
-
                 <dl><dt>Start Date</dt><dd>
                     <g:xEditable owner="${subscriptionInstance}" field="startDate" type="date"/>
                 </dd>
