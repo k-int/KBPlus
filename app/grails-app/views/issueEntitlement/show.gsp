@@ -25,7 +25,7 @@
     <div class="container">
 
         <div class="page-header">
-            <h1><g:message code="default.show.label" args="[entityName]" /></h1>
+            <h1>Issue Entitlements for "${issueEntitlementInstance?.tipp.title.title}"</h1>
         </div>
 
         <g:if test="${flash.message}">
@@ -60,10 +60,11 @@
             <dl>
                 <g:if test="${issueEntitlementInstance?.tipp.title?.ids}">
                     <dt>Title Identfiers</dt>
-
-                    <g:each in="${issueEntitlementInstance?.tipp.title?.ids}" var="i">
-                        <dd>${i.identifier.ns.ns}:${i.identifier.value}</dd>
-                    </g:each>
+                    <dd><ul>
+                      <g:each in="${issueEntitlementInstance?.tipp.title?.ids}" var="i">
+                          <li>${i.identifier.ns.ns}:${i.identifier.value}</li>
+                      </g:each>
+                    <ul></dd>
 
                 </g:if>
             </dl>
