@@ -24,21 +24,21 @@ class IssueEntitlementController {
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def create() {
-		switch (request.method) {
-		case 'GET':
-        	[issueEntitlementInstance: new IssueEntitlement(params)]
-			break
-		case 'POST':
-	        def issueEntitlementInstance = new IssueEntitlement(params)
-	        if (!issueEntitlementInstance.save(flush: true)) {
-	            render view: 'create', model: [issueEntitlementInstance: issueEntitlementInstance]
-	            return
-	        }
+    switch (request.method) {
+    case 'GET':
+          [issueEntitlementInstance: new IssueEntitlement(params)]
+      break
+    case 'POST':
+          def issueEntitlementInstance = new IssueEntitlement(params)
+          if (!issueEntitlementInstance.save(flush: true)) {
+              render view: 'create', model: [issueEntitlementInstance: issueEntitlementInstance]
+              return
+          }
 
-			flash.message = message(code: 'default.created.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), issueEntitlementInstance.id])
-	        redirect action: 'show', id: issueEntitlementInstance.id
-			break
-		}
+      flash.message = message(code: 'default.created.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), issueEntitlementInstance.id])
+          redirect action: 'show', id: issueEntitlementInstance.id
+      break
+    }
     }
 
 
@@ -68,66 +68,66 @@ class IssueEntitlementController {
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def edit() {
-		switch (request.method) {
-		case 'GET':
-	        def issueEntitlementInstance = IssueEntitlement.get(params.id)
-	        if (!issueEntitlementInstance) {
-	            flash.message = message(code: 'default.not.found.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), params.id])
-	            redirect action: 'list'
-	            return
-	        }
+    switch (request.method) {
+    case 'GET':
+          def issueEntitlementInstance = IssueEntitlement.get(params.id)
+          if (!issueEntitlementInstance) {
+              flash.message = message(code: 'default.not.found.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), params.id])
+              redirect action: 'list'
+              return
+          }
 
-	        [issueEntitlementInstance: issueEntitlementInstance]
-			break
-		case 'POST':
-	        def issueEntitlementInstance = IssueEntitlement.get(params.id)
-	        if (!issueEntitlementInstance) {
-	            flash.message = message(code: 'default.not.found.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), params.id])
-	            redirect action: 'list'
-	            return
-	        }
+          [issueEntitlementInstance: issueEntitlementInstance]
+      break
+    case 'POST':
+          def issueEntitlementInstance = IssueEntitlement.get(params.id)
+          if (!issueEntitlementInstance) {
+              flash.message = message(code: 'default.not.found.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), params.id])
+              redirect action: 'list'
+              return
+          }
 
-	        if (params.version) {
-	            def version = params.version.toLong()
-	            if (issueEntitlementInstance.version > version) {
-	                issueEntitlementInstance.errors.rejectValue('version', 'default.optimistic.locking.failure',
-	                          [message(code: 'issueEntitlement.label', default: 'IssueEntitlement')] as Object[],
-	                          "Another user has updated this IssueEntitlement while you were editing")
-	                render view: 'edit', model: [issueEntitlementInstance: issueEntitlementInstance]
-	                return
-	            }
-	        }
+          if (params.version) {
+              def version = params.version.toLong()
+              if (issueEntitlementInstance.version > version) {
+                  issueEntitlementInstance.errors.rejectValue('version', 'default.optimistic.locking.failure',
+                            [message(code: 'issueEntitlement.label', default: 'IssueEntitlement')] as Object[],
+                            "Another user has updated this IssueEntitlement while you were editing")
+                  render view: 'edit', model: [issueEntitlementInstance: issueEntitlementInstance]
+                  return
+              }
+          }
 
-	        issueEntitlementInstance.properties = params
+          issueEntitlementInstance.properties = params
 
-	        if (!issueEntitlementInstance.save(flush: true)) {
-	            render view: 'edit', model: [issueEntitlementInstance: issueEntitlementInstance]
-	            return
-	        }
+          if (!issueEntitlementInstance.save(flush: true)) {
+              render view: 'edit', model: [issueEntitlementInstance: issueEntitlementInstance]
+              return
+          }
 
-			flash.message = message(code: 'default.updated.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), issueEntitlementInstance.id])
-	        redirect action: 'show', id: issueEntitlementInstance.id
-			break
-		}
+      flash.message = message(code: 'default.updated.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), issueEntitlementInstance.id])
+          redirect action: 'show', id: issueEntitlementInstance.id
+      break
+    }
     }
 
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-    def delete() {
-        def issueEntitlementInstance = IssueEntitlement.get(params.id)
-        if (!issueEntitlementInstance) {
-			flash.message = message(code: 'default.not.found.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), params.id])
-            redirect action: 'list'
-            return
-        }
-
-        try {
-            issueEntitlementInstance.delete(flush: true)
-			flash.message = message(code: 'default.deleted.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), params.id])
-            redirect action: 'list'
-        }
-        catch (DataIntegrityViolationException e) {
-			flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), params.id])
-            redirect action: 'show', id: params.id
-        }
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def delete() {
+    def issueEntitlementInstance = IssueEntitlement.get(params.id)
+    if (!issueEntitlementInstance) {
+    flash.message = message(code: 'default.not.found.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), params.id])
+        redirect action: 'list'
+        return
     }
+
+    try {
+      issueEntitlementInstance.delete(flush: true)
+      flash.message = message(code: 'default.deleted.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), params.id])
+      redirect action: 'list'
+    }
+    catch (DataIntegrityViolationException e) {
+      flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), params.id])
+      redirect action: 'show', id: params.id
+    }
+  }
 }
