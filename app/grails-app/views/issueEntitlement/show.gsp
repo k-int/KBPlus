@@ -7,6 +7,21 @@
     <title><g:message code="default.show.label" args="[entityName]" /></title>
 </head>
 <body>
+
+   <div class="container">
+      <ul class="breadcrumb">
+        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
+        <g:if test="${issueEntitlementInstance?.subscription.subscriber}">
+          <li> <g:link controller="myInstitutions" action="currentSubscriptions" params="${[shortcode:issueEntitlementInstance?.subscription.subscriber.shortcode]}"> ${issueEntitlementInstance?.subscription.subscriber.name} Current Subscriptions</g:link> <span class="divider">/</span> </li>
+        </g:if>
+        <li> <g:link controller="subscriptionDetails" action="index" id="${issueEntitlementInstance?.subscription.id}">${issueEntitlementInstance?.subscription.name}</g:link>  <span class="divider">/</span> </li>
+        <li> <g:link controller="issueEntitlement" action="show" id="${issueEntitlementInstance?.id}">${issueEntitlementInstance?.tipp.title.title}</g:link> </li>
+        <g:if test="${editable}">
+          <li class="pull-right">Editable by you&nbsp;</li>
+        </g:if>
+      </ul>
+    </div>
+
     <div class="container">
 
         <div class="page-header">

@@ -15,7 +15,7 @@ class TippController {
     def result = [:]
 
     result.user = User.get(springSecurityService.principal.id)
-    result.subscriptionInstance = Subscription.get(params.id)
+    result.editable = true
 
     result.tipp = TitleInstancePackagePlatform.get(params.id)
     result.titleInstanceInstance = result.tipp.title

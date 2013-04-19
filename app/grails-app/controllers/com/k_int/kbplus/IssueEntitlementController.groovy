@@ -49,8 +49,12 @@ class IssueEntitlementController {
       result.user = User.get(springSecurityService.principal.id)
       result.issueEntitlementInstance = IssueEntitlement.get(params.id)
 
-      // result.tipp = TitleInstancePackagePlatform.get(params.id)
-      // result.titleInstanceInstance = result.tipp.title
+      if ( result.issueEntitlementInstance.subscription.isEditableBy(result.user) ) {
+        result.editable = true
+      }
+      else {
+        result.editable = false
+      }
 
       if (!result.issueEntitlementInstance) {
         flash.message = message(code: 'default.not.found.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), params.id])
