@@ -34,7 +34,7 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <g:link controller="myInstitutions" action="dashboard" class="brand">KB+</g:link>
+          <g:link controller="myInstitutions" action="dashboard" class="brand" alt="KB+ ${grailsApplication.metadata.'app.version'} / build ${grailsApplication.metadata.'app.buildNumber'}">KB+</g:link>
           <div class="nav-collapse">
             <ul class="nav">
               <sec:ifLoggedIn>

@@ -16,6 +16,7 @@ class UrlMappings {
     "/"(view:"/publichome")
 
     "/about"(view:"/about")
+    "/appinfo"(view:"/appinfo")
     "/terms-and-conditions"(view:"/terms-and-conditions")
     "/privacy-policy"(view:"/privacy-policy")
     "/freedom-of-information-policy"(view:"/freedom-of-information-policy")
