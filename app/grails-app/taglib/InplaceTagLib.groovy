@@ -186,26 +186,38 @@ class InplaceTagLib {
   
    def xEditableFieldNote = { attrs, body ->
    
-    def data_link = createLink(controller:'ajax', action: 'setFieldTableNote')
-    data_link = data_link +"/"+attrs.owner.id +"?type=License"
-    def oid = "${attrs.owner.class.name}:${attrs.owner.id}S"
-    def id = attrs.id ?: "${oid}:${attrs.field}"
-    def org = ""
-    if (attrs.owner.getNote("${attrs.field}")){
-       org =attrs.owner.getNote("${attrs.field}").owner.content
-    }
-    else{
-       org = attrs.owner.getNote("${attrs.field}")
-    }
+    boolean editable = request.getAttribute('editable')
+     
+    if ( editable == true ) {
+      def data_link = createLink(controller:'ajax', action: 'setFieldTableNote')
+      data_link = data_link +"/"+attrs.owner.id +"?type=License"
+      def oid = "${attrs.owner.class.name}:${attrs.owner.id}S"
+      def id = attrs.id ?: "${oid}:${attrs.field}"
+      def org = ""
+      if (attrs.owner.getNote("${attrs.field}")){
+         org =attrs.owner.getNote("${attrs.field}").owner.content
+      }
+      else{
+         org = attrs.owner.getNote("${attrs.field}")
+      }
     
-    out << "<span id=\"${id}\" class=\"xEditableValue ${attrs.class?:''}\" data-type=\"textarea\" data-pk=\"${oid}\" data-name=\"${attrs.field}\" data-url=\"${data_link}\"  data-original-title=\"${org}\">"
-    if ( body ) {
-      out << body()
+      out << "<span id=\"${id}\" class=\"xEditableValue ${attrs.class?:''}\" data-type=\"textarea\" data-pk=\"${oid}\" data-name=\"${attrs.field}\" data-url=\"${data_link}\"  data-original-title=\"${org}\">"
+      if ( body ) {
+        out << body()
+      }
+      else {
+        out << org
+      }
+      out << "</span>"
     }
     else {
-      out << org
+      if ( body ) {
+        out << body()
+      }
+      else {
+        out << org
+      }
     }
-    out << "</span>"
   }
 
 
