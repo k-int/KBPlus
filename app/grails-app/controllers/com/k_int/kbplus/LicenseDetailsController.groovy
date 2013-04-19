@@ -50,6 +50,14 @@ class LicenseDetailsController {
     // result.institution = Org.findByShortcode(params.shortcode)
     result.license = License.get(params.id)
 
+    if ( result.license.hasPerm("edit",result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
+    }
+
+
     if ( ! result.license.hasPerm("view",result.user) ) {
       response.sendError(401);
       return
@@ -68,6 +76,13 @@ class LicenseDetailsController {
     if ( ! result.license.hasPerm("view",result.user) ) {
       response.sendError(401);
       return
+    }
+
+    if ( result.license.hasPerm("edit",result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
     }
 
     result.max = params.max ?: 20;
@@ -93,6 +108,12 @@ class LicenseDetailsController {
       return
     }
 
+    if ( result.license.hasPerm("edit",result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
+    }
     result
   }
 
@@ -108,6 +129,12 @@ class LicenseDetailsController {
       return
     }
 
+    if ( result.license.hasPerm("edit",result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
+    }
     result
   }
 

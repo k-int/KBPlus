@@ -8,10 +8,19 @@
 <body>
 
     <div class="container">
-        <ul class="breadcrumb">
-            <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
-            <li>Licences</li>
-        </ul>
+      <ul class="breadcrumb">
+        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
+        <g:if test="${license.licensee}">
+          <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:license.licensee.shortcode]}"> ${license.licensee.name} Current Licenses</g:link> <span class="divider">/</span> </li>
+        </g:if>
+        <li> <g:link controller="licenseDetails" action="index" id="${params.id}">License Details</g:link> <span class="divider">/</span></li>
+        <li> <g:link controller="licenseDetails" action="documents" id="${params.id}">License Documents</g:link> </li>
+
+        <g:if test="${editable}">
+          <li class="pull-right">Editable by you&nbsp;</li>
+        </g:if>
+
+      </ul>
     </div>
 
     <div class="container">
