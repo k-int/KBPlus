@@ -133,8 +133,15 @@ class License {
     def note = DocContext.findByLicenseAndDomain(this, domain)
     if ( note ) {
       log.debug("update existing note...");
-      note.owner.content = note_content
-      note.owner.save(flush:true);
+      if ( note_content == '' ) {
+        log.debug("Delete note doc ctx...");
+        note.delete();
+        note.owner.delete(flush:true);
+      }
+      else {
+        note.owner.content = note_content
+        note.owner.save(flush:true);
+      }
     }
     else {
       log.debug("Create new note...");

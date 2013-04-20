@@ -181,7 +181,7 @@ class AjaxController {
         String temp = '__fieldNote_'+params.name
         if ( temp?.startsWith('__fieldNote_') ) {
           def note_domain = temp.substring(12)
-          println "note_domain: " + note_domain +" : "+ params.value
+          log.debug("note_domain: " + note_domain +" : \""+ params.value+"\"")
           instance.setNote(note_domain, params.value);
           instance.save(flush:true)
         }
