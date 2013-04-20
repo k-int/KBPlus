@@ -8,14 +8,25 @@
     <title><g:message code="default.list.label" args="[entityName]" /></title>
   </head>
   <body>
+
     <div class="container">
       <div class="page-header">
-        <h1><g:message code="default.list.label" args="[entityName]" /></h1>
+        <h1>Packages</h1>
       </div>
-
       <g:if test="${flash.message}">
         <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
       </g:if>
+    </div>
+
+    <div class="container" style="text-align:center">
+      <g:form action="list" method="get" class="form-inline">
+        <label>Search text</label> <input type="text" name="q" placeholder="enter search term..." value="${params.q?.encodeAsHTML()}"  />
+        <!--<label>Valid On</label> <input name="validOn" type="text" value="${validOn}"/>-->
+        <input type="submit" class="btn btn-primary" value="Search" />
+      </g:form><br/>
+    </div>
+
+    <div class="container">
         
       <table class="table table-bordered table-striped">
         <thead>

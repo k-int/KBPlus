@@ -25,8 +25,38 @@ class PackageDetailsController {
       def result = [:]
       result.user = User.get(springSecurityService.principal.id)
       params.max = Math.min(params.max ? params.int('max') : 10, 100)
-      result.packageInstanceList=Package.list(params)
-      result.packageInstanceTotal=Package.count()
+
+      def paginate_after = params.paginate_after ?: 19;
+      result.max = params.max 
+      result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
+      def deleted_package_status =  RefdataCategory.lookupOrCreate( 'Package Status', 'Deleted' );
+      def qry_params = [deleted_package_status]
+
+      def base_qry = " from Package as p where ( (p.packageStatus is null ) OR ( p.packageStatus = ? ) ) "
+
+      if ( params.q?.length() > 0 ) {
+        base_qry += " and ( ( lower(p.name) like ? ) or ( lower(p.identifier) like ? ) )"
+        qry_params.add("%${params.q.trim().toLowerCase()}%");
+        qry_params.add("%${params.q.trim().toLowerCase()}%");
+      }
+
+      // if ( date_restriction ) {
+      //   base_qry += " and s.startDate <= ? and s.endDate >= ? "
+      //   qry_params.add(date_restriction)
+      //   qry_params.add(date_restriction)
+      // }
+
+      // if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
+      //   base_qry += " order by ${params.sort} ${params.order}"
+      // }
+      // else {
+      //   base_qry += " order by s.name asc"
+      // }
+
+      result.packageInstanceTotal = Subscription.executeQuery("select count(p) "+base_qry, qry_params )[0]
+      result.packageInstanceList = Subscription.executeQuery("select p ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
+
       result
     }
 
