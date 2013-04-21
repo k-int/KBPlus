@@ -11,14 +11,9 @@
     <div class="container">
       <ul class="breadcrumb">
         <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
-        <g:if test="${subscriptionInstance.subscriber}">
-          <li> <g:link controller="myInstitutions" action="currentSubscriptions" params="${[shortcode:subscriptionInstance.subscriber.shortcode]}"> ${subscriptionInstance.subscriber.name} Current Subscriptions</g:link> <span class="divider">/</span> </li>
-        </g:if>
-        <li> <g:link controller="packageDetails" action="show" id="${tipp.pkg.id}">Package ${subscriptionInstance.id} Details</g:link> <span class="divider">/</span> </li>
-        <li> <g:link controller="tipp" action="show" id="${tipp.id}">TIPP ${tipp.id} Details</g:link> </li>
-        <li class="pull-right">
-          <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter]}">CSV Export</g:link>
-          <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter,omitHeader:'Y']}">(No header)</g:link></li>
+        <li> <g:link controller="packageDetails" action="show" id="${tipp.pkg.id}">${tipp.pkg.name} [package]</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="tipp" action="show" id="${tipp.id}">${tipp.title.title}</g:link> [title]</li>
+
         <g:if test="${editable}">
           <li class="pull-right">Editable by you&nbsp;</li>
         </g:if>
