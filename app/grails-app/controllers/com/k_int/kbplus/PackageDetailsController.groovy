@@ -26,6 +26,8 @@ class PackageDetailsController {
       result.user = User.get(springSecurityService.principal.id)
       params.max = Math.min(params.max ? params.int('max') : 10, 100)
 
+      result.editable = true
+
       def paginate_after = params.paginate_after ?: 19;
       result.max = params.max 
       result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
@@ -106,6 +108,7 @@ class PackageDetailsController {
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
     def show() {
       def result = [:]
+      result.editable=true
       result.user = User.get(springSecurityService.principal.id)
       def packageInstance = Package.get(params.id)
       if (!packageInstance) {
