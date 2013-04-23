@@ -38,13 +38,21 @@
         
         <br/>
 
-        <g:each in="${validationResult?.messages}" var="msg">
-          <div class="alert alert-error">${msg}</div>
-        </g:each>
-
-
         <g:if test="${validationResult}">
-           <hr/>
+          <g:if test="${validationResult.stats != null}">
+            <h3>Stats</h3>
+            <ul>
+              <g:each in="${validationResult?.stats}" var="msg">
+                <li>${msg.key} = ${msg.value}</li>
+              </g:each>
+            </ul>
+          </g:if>
+
+          <g:each in="${validationResult?.messages}" var="msg">
+            <div class="alert alert-error">${msg}</div>
+          </g:each>
+
+          <hr/>
 
           <g:if test="${validationResult.processFile==true}">
             <bootstrap:alert class="alert-success">File passed validation checks, new SO details follow:<br/>

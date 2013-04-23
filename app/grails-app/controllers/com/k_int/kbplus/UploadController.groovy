@@ -70,7 +70,14 @@ class UploadController {
   
   def processUploadSO(upload) {
 
-    def content_provider_org = Org.findByName(upload.soProvider.value) ?: new Org(name:upload.soProvider.value,impId:java.util.UUID.randomUUID().toString()).save();    
+    def content_provider_org = Org.findByName(upload.soProvider.value) 
+    if ( content_provider_org == null ) {
+      content_provider_org = new Org(name:upload.soProvider.value,impId:java.util.UUID.randomUUID().toString()).save();    
+      incrementStatsCounter(upload,'Content Provider Org Created');
+    }
+    else {
+      incrementStatsCounter(upload,'Content Provider Org Matched');
+    }
     
     def pkg_type = RefdataCategory.lookupOrCreate('PackageTypes','Unknown');
     def cp_role = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider');
@@ -112,7 +119,14 @@ class UploadController {
     
       def publisher = null;
       if ( tipp.publisher_name && ( tipp.publisher_name.trim() != '' ) )  {
-        publisher = Org.findByName(tipp.publisher_name) ?: new Org(name:tipp.publisher_name).save();
+        publisher = Org.findByName(tipp.publisher_name)
+        if ( publisher == null ) {
+          publisher = new Org(name:tipp.publisher_name).save();
+          incrementStatsCounter(upload,'Publisher Org Created');
+        }
+        else {
+          incrementStatsCounter(upload,'Publisher Org Matched');
+        }
       }
 
       tipp.host_platform = null;
@@ -136,6 +150,7 @@ class UploadController {
         // Got all the components we need to create a tipp
         def dbtipp = TitleInstancePackagePlatform.findByPkgAndPlatformAndTitle(new_pkg,tipp.host_platform,tipp.title_obj)
         if ( dbtipp == null ) {
+          incrementStatsCounter(upload,'TIPP Created');
           dbtipp = new TitleInstancePackagePlatform(pkg:new_pkg,
                                                     platform:tipp.host_platform,
                                                     title:tipp.title_obj,
@@ -651,6 +666,19 @@ class UploadController {
     if ( title_instance.keyTitle != generated_key_title ) {
       tipp.messages.add("Matched title identifier does not pass title fingerprint match. titleid=${matched_title_id}, ${title_instance.keyTitle} != ${generated_key_title}");
       upload.processFile=false;
+    }
+  }
+
+  def incrementStatsCounter(result, counter) {
+    if ( result.stats == null ) {
+      result.stats = [:]
+    }
+
+    if ( result.stats[counter] == null ) {
+      result.stats[counter] = 0
+    }
+    else {
+      result.stats[counter]++
     }
   }
 }
