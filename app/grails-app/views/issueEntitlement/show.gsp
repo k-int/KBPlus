@@ -64,7 +64,10 @@
                       <g:each in="${issueEntitlementInstance?.tipp.title?.ids}" var="i">
                           <li>${i.identifier.ns.ns}:${i.identifier.value}
                             <g:if test="${i.identifier.ns.ns.equalsIgnoreCase('issn')}">
-                              (<a href="http://suncat.edina.ac.uk/F?func=find-c&ccl_term=022=${i.identifier.value}">suncat</a>)
+                              (<a href="http://suncat.edina.ac.uk/F?func=find-c&ccl_term=022=${i.identifier.value}">search on SUNCAT</a>)
+                            </g:if>
+                            <g:if test="${i.identifier.ns.ns.equalsIgnoreCase('eissn')}">
+                              (<a href="http://suncat.edina.ac.uk/F?func=find-c&ccl_term=022=${i.identifier.value}">search on SUNCAT</a>)
                             </g:if>
                           </li>
                       </g:each>
