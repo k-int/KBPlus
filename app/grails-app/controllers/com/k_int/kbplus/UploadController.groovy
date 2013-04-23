@@ -432,7 +432,7 @@ class UploadController {
       }
       
       if ( ! validISSN(tipp.id?.eissn) ) {
-        tipp.messages.add("Title (row ${counter}) does not contain a valid eISSN  (Column name should be id.eissn, value in file was ${tipp.id?.issn})");
+        tipp.messages.add("Title (row ${counter}) does not contain a valid eISSN  (Column name should be id.eissn, value in file was ${tipp.id?.eissn})");
         upload.processFile=false;
       }
 
