@@ -633,7 +633,10 @@ class AjaxController {
         target_object."${params.name}" = params.date('value','yyyy-MM-dd')
       }
       else {
-        target_object."${params.name}" = params.value
+        def binding_properties = [:]
+        binding_properties[ params.name ] = params.value
+        bindData(target_object, binding_properties)
+        // target_object."${params.name}" = params.value
       }
       target_object.save(flush:true);
     }
