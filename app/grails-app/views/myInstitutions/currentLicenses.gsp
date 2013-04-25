@@ -44,7 +44,7 @@
         <div class="row">
             <div class="span6">
                 <form class="form-inline">
-                    <input type="text" name="keyword-search" placeholder="enter search term..." />
+                    <input type="text" name="keyword-search" placeholder="enter search term..." value="${params['keyword-search']?:''}" />
                     <input type="submit" class="btn btn-primary" value="Search" />
                 </form>
             </div>

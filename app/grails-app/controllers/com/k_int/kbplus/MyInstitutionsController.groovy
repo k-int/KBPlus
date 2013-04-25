@@ -114,8 +114,6 @@ class MyInstitutionsController {
       result.is_admin=false;
     }
 
-
-
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
     def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
 
@@ -125,9 +123,9 @@ class MyInstitutionsController {
     // def qry = "select l from License as l left outer join l.orgLinks ol where ( ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
     def qry = "select l from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
 
-    if ( ( params.keyword-search != null ) && ( params.keyword-search.trim().length() > 0 ) ) {
-      qry += " and l.reference like ?"
-      qry_params += "%${params.keyword-search}%"
+    if ( ( params['keyword-search'] != null ) && ( params['keyword-search'].trim().length() > 0 ) ) {
+      qry += " and lower(l.reference) like ?"
+      qry_params += "%${params['keyword-search'].toLowerCase()}%"
     }
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
