@@ -162,7 +162,7 @@ class UploadController {
                                                     endIssue:tipp.num_last_issue_online,
                                                     embargo:tipp.embargo_info,
                                                     coverageDepth:tipp.coverage_depth,
-                                                    coverageNote:tipp.coverage_note,
+                                                    coverageNote:tipp.coverage_notes,
                                                     hostPlatformURL:null, // t.host_platform_url,
                                                     impId:java.util.UUID.randomUUID().toString(),
                                                     ids:[])
