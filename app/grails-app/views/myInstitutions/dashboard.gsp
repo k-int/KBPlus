@@ -37,9 +37,14 @@
         </div>
         <div class="span4">
           <div class="well">
-            <h6>Reports</h6>
+            <h6>Titles</h6>
             <dl>
-              <dd><a href="/reports">View reports</a><dd>
+              <g:each in="${user.authorizedOrgs}" var="org">
+                <dd><g:link controller="myInstitutions" 
+                            action="currentTitles" 
+                            params="${[shortcode:org?.shortcode]}">${org.name}
+                </g:link></dd>
+              </g:each>
             </dl>
           </div>
         </div>

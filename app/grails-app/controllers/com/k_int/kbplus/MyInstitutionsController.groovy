@@ -314,7 +314,7 @@ class MyInstitutionsController {
 
     // Or the user is a member of an org who has a consortial membership that has view perms
     // base_qry += " or ( 2==2 ) )"
-
+    
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
       base_qry += " order by ${params.sort} ${params.order}"
     }
@@ -641,6 +641,95 @@ class MyInstitutionsController {
     else {
       flash.message = message(code: 'subscription.unknown.message')
       redirect action: 'addSubscription', params:params
+    }
+  }
+  
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def currentTitles() {
+    if (params.sub.equals("all")) params.sub = null
+    if (!params.order) params.order = "asc"
+    if (!params.sort) params.sort = "tipp.title.title"
+
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+    
+    def date_restriction = null;
+    def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
+    
+    if ( params.validOn == null ) {
+      result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+      date_restriction = sdf.parse(result.validOn)
+    }
+    else if ( params.validOn == '' ) {     
+      result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+    }
+    else {
+      result.validOn=params.validOn
+      date_restriction = sdf.parse(params.validOn)
+    }
+
+    if ( !checkUserIsMember(result.user, result.institution) ) {
+      flash.error="You do not have permission to access ${result.institution.name} pages. Please request access on the profile page";
+      response.sendError(401)
+      return;
+    }
+
+    if ( checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
+      result.is_admin = true
+    }
+    else {
+      result.is_admin=false;
+    }
+
+    def public_flag = RefdataCategory.lookupOrCreate('YN','Yes');
+
+    def paginate_after = params.paginate_after ?: 19;
+    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+    
+
+    def sub_qry = "SELECT s FROM Subscription AS s WHERE  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' )"
+    def sub_qry_params = [result.institution]
+    result.subscriptions = Subscription.executeQuery("${sub_qry}", sub_qry_params);
+
+    def sub_list_str = ""
+    result.subscriptions.eachWithIndex() { s, i ->
+        if(i > 0) sub_list_str += ","
+        sub_list_str += "'${s.id}'"
+    }
+    
+    def query = 
+    "from IssueEntitlement as ie " +
+    "where ie.subscription.id  IN (${sub_list_str}) and ie.status.value != 'Deleted' "
+    if (params.sub){ 
+        query += "and exists ( "+
+            "from IssueEntitlement as ie2 " +
+            "where ie2.subscription.id  = ${params.sub} " +
+            "and ie2.tipp.title = ie.tipp.title ) "
+    }
+    query += "group by ie.tipp.title.title " +
+    "order by ie.tipp.title.title ${params.order} "
+
+    result.num_ti_rows = 
+        IssueEntitlement.executeQuery("select ie.tipp.title ${query}").size()
+    result.titles = IssueEntitlement.executeQuery(
+        "select ie.tipp.title, min(ie.startDate), max(ie.endDate), count(ie.subscription) ${query}", [max:result.max, offset:result.offset]);
+    
+    def title_list_str = ""
+    result.titles.eachWithIndex() { ti, i ->
+        if(i > 0) title_list_str += ","
+        title_list_str += "'${ti[0].id}'"
+    }
+    
+    result.entitlements = IssueEntitlement.executeQuery(
+        "select ie from IssueEntitlement as ie " + 
+        "where ie.subscription.id IN (${sub_list_str}) and ( ie.status.value != 'Deleted' ) " +
+        "and ie.tipp.title.title.id IN (${title_list_str}) " +
+        "order by ie.tipp.title.title ${params.order}" );
+    
+    withFormat {
+      html result
     }
   }
 
@@ -1589,7 +1678,7 @@ class MyInstitutionsController {
 
     result
   }
-
+  
   def checkUserHasRole(user, org, role) {
     def uoq = UserOrg.createCriteria()
     def grants = uoq.list {
