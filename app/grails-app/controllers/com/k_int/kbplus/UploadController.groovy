@@ -281,7 +281,7 @@ class UploadController {
 
     log.debug("Reading Stream");
 
-    CSVReader r = new CSVReader( new InputStreamReader(input_stream), java.nio.charset.Charset.forName('UTF-8') )
+    CSVReader r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ) )
 
     String [] nl;
 
