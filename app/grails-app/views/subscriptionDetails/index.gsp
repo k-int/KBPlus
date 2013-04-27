@@ -82,11 +82,12 @@
                 <dl>
                     <dt>License</dt>
                     <dd><g:if test="${subscriptionInstance.subscriber}">
-                           <g:relation domain='Subscription' 
-                            pk='${subscriptionInstance.id}' 
-                            field='owner' 
-                            class='reldataedit'
-                            id='ownerLicense'>${subscriptionInstance?.owner?.reference}</g:relation></g:if><g:else>N/A (Subscription offered)</g:else>
+                      <g:simpleReferenceTypedown class="input-xxlarge" 
+                                                 style="width:350px;" 
+                                                 name="title" 
+                                                 baseClass="com.k_int.kbplus.License" 
+                                                 data-qp-ctx="${subscriptionInstance.class.name}:${subscriptionInstance.id}"/>
+                        </g:if><g:else>N/A (Subscription offered)</g:else>
                     </dd>
                 </dl>
 

@@ -164,7 +164,6 @@ class InplaceTagLib {
   }
   
   def xEditableManyToOne = { attrs, body ->
-    // out << "editable many to one: <div id=\"${attrs.id}\" class=\"xEditableManyToOne\" data-type=\"select2\" data-config=\"${attrs.config}\" />"
     def data_link = createLink(controller:'ajax', action: 'sel2RefdataSearch', params:[id:attrs.config,format:'json'])
     def oid = "${attrs.owner.class.name}:${attrs.owner.id}"
     def id = attrs.id ?: "${oid}:${attrs.field}"
@@ -184,7 +183,7 @@ class InplaceTagLib {
   def relationAutocomplete = { attrs, body ->
   }
   
-   def xEditableFieldNote = { attrs, body ->
+  def xEditableFieldNote = { attrs, body ->
    
     boolean editable = request.getAttribute('editable')
      
@@ -233,6 +232,13 @@ class InplaceTagLib {
     if ( attrs.style ) {
       out << "style=\"${attrs.style}\" "
     }
+
+    attrs.each { att ->
+      if ( att.key.startsWith("data-") ) {
+        out << "${att.key}=\"${att.value}\" "
+      }
+    }
+
     out << "class=\"simpleReferenceTypedown ${attrs.class}\" />"
   }
 
