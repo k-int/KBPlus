@@ -515,7 +515,7 @@ class SubscriptionDetailsController {
 
       def license_list = License.executeQuery(qry, qry_params);
       license_list.each { l ->
-        result.add([value:"${l.class.name}:${l.id}",text:l.reference]);
+        result.add([value:"${l.class.name}:${l.id}",text:l.reference ?: "No reference - license ${l.id}"]);
       }
     }
     render result as JSON
