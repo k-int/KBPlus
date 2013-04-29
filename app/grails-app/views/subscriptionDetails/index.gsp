@@ -82,11 +82,7 @@
                 <dl>
                     <dt>License</dt>
                     <dd><g:if test="${subscriptionInstance.subscriber}">
-                      <g:simpleReferenceTypedown class="input-xxlarge" 
-                                                 style="width:350px;" 
-                                                 name="title" 
-                                                 baseClass="com.k_int.kbplus.License" 
-                                                 data-qp-ctx="${subscriptionInstance.class.name}:${subscriptionInstance.id}"/>
+                          <g:xEditableRefData owner="${subscriptionInstance}" field="owner" dataController="subscriptionDetails" dataAction="possibleLicensesForSubscription"/>
                         </g:if><g:else>N/A (Subscription offered)</g:else>
                     </dd>
                 </dl>

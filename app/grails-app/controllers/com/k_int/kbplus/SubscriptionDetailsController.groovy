@@ -498,5 +498,28 @@ class SubscriptionDetailsController {
   }
 
 
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def possibleLicensesForSubscription() {
+    def result = []
+
+    def subscription = genericOIDService.resolveOID(params.oid)
+    def subscriber = subscription.getSubscriber();
+    if ( subscriber ) {
+
+      def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
+      def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
+
+      def qry_params = [subscriber, licensee_role]
+  
+      def qry = "select l from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
+
+      def license_list = License.executeQuery(qry, qry_params);
+      license_list.each { l ->
+        result.add([value:"${l.class.name}:${l.id}",text:l.reference]);
+      }
+    }
+    render result as JSON
+  }
+
 }
 

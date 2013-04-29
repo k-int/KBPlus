@@ -120,9 +120,12 @@ class InplaceTagLib {
     boolean editable = request.getAttribute('editable')
      
     if ( editable == true ) {
-      def data_link = createLink(controller:'ajax', action: 'sel2RefdataSearch', params:[id:attrs.config,format:'json'])
-      def update_link = createLink(controller:'ajax', action: 'genericSetRel')
+
       def oid = "${attrs.owner.class.name}:${attrs.owner.id}"
+      def dataController = attrs.dataController ?: 'ajax'
+      def dataAction = attrs.dataAction ?: 'sel2RefdataSearch'
+      def data_link = createLink(controller:dataController, action: dataAction, params:[id:attrs.config,format:'json',oid:oid])
+      def update_link = createLink(controller:'ajax', action: 'genericSetRel')
       def id = attrs.id ?: "${oid}:${attrs.field}"
    
       out << "<span>"
@@ -163,15 +166,6 @@ class InplaceTagLib {
     result;
   }
   
-  def xEditableManyToOne = { attrs, body ->
-    def data_link = createLink(controller:'ajax', action: 'sel2RefdataSearch', params:[id:attrs.config,format:'json'])
-    def oid = "${attrs.owner.class.name}:${attrs.owner.id}"
-    def id = attrs.id ?: "${oid}:${attrs.field}"
-    out << "<a href=\"#\" id=\"${id}\" class=\"xEditableManyToOne\" data-pk=\"${oid}\" data-type=\"select\" data-name=\"${attrs.field}\" data-source=\"${data_link}\">"
-    out << body()
-    out << "</a>";
-  }
-
   def relation = { attrs, body ->
     out << "<span class=\"${attrs.class}\" id=\"${attrs.domain}:${attrs.pk}:${attrs.field}:${attrs.id}\">"
     if ( body ) {
