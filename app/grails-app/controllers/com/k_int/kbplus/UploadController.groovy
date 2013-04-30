@@ -209,8 +209,8 @@ class UploadController {
     def new_sub = reloaded_pkg.createSubscription('Subscription Offered', 
                                              upload.soName.value, 
                                              upload.normalisedSoIdentifier, 
-                                             upload.agreementTermStartYear?.value, 
-                                             upload.agreementTermEndYear?.value, 
+                                             upload.aggreementTermStartYear?.value, 
+                                             upload.aggreementTermEndYear?.value, 
                                              upload.consortiumOrg) 
     
     log.debug("Completed New package is ${new_pkg.id}, new sub is ${new_sub.id}");
