@@ -137,6 +137,7 @@ class UploadController {
         def platform = Platform.lookupOrCreatePlatform(name:pl.name, primaryUrl:pl.url)
         if ( pl.coltype == 'host' ) {
           tipp.host_platform = platform
+          tipp.host_platform_url = pl.url;
         }
         else {
           tipp.additional_platforms.add([plat:platform, role:pl.coltype, url:pl.url])
@@ -163,7 +164,7 @@ class UploadController {
                                                     embargo:tipp.embargo_info,
                                                     coverageDepth:tipp.coverage_depth,
                                                     coverageNote:tipp.coverage_notes,
-                                                    hostPlatformURL:null, // t.host_platform_url,
+                                                    hostPlatformURL:tipp.host_platform_url,
                                                     impId:java.util.UUID.randomUUID().toString(),
                                                     ids:[])
   
