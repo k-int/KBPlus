@@ -39,7 +39,7 @@
           <div class="well">
             <h6>Reports</h6>
             <dl>
-              <dd><a href="/reports">View reports</a><dd>
+              <dd>Currently unavailable<dd>
             </dl>
           </div>
         </div>
