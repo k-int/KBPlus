@@ -457,7 +457,7 @@ class UploadController {
       }
       
       if ( tipp.id ) {
-        ["eissn", "isbn", "doi"].each { idtype ->
+        ["eissn", "issn", "doi"].each { idtype ->
           if ( ( tipp.id[idtype] ) && ( tipp.id[idtype] != '' ) ) {
             if ( id_list.contains(tipp.id[idtype]) ) {
               tipp.messages.add("Title (row ${counter}) contains a repeated ${idtype} - ${tipp.id[idtype]}");
