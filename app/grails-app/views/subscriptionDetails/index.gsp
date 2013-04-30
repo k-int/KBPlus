@@ -82,11 +82,8 @@
                 <dl>
                     <dt>License</dt>
                     <dd><g:if test="${subscriptionInstance.subscriber}">
-                           <g:relation domain='Subscription' 
-                            pk='${subscriptionInstance.id}' 
-                            field='owner' 
-                            class='reldataedit'
-                            id='ownerLicense'>${subscriptionInstance?.owner?.reference}</g:relation></g:if><g:else>N/A (Subscription offered)</g:else>
+                          <g:xEditableRefData owner="${subscriptionInstance}" field="owner" dataController="subscriptionDetails" dataAction="possibleLicensesForSubscription"/>
+                        </g:if><g:else>N/A (Subscription offered)</g:else>
                     </dd>
                 </dl>
 

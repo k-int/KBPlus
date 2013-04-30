@@ -62,7 +62,7 @@ class Package {
     def result = new Subscription( name:subname,
                                    status:RefdataCategory.lookupOrCreate('Subscription Status','Current'),
                                    identifier:subidentifier,
-                                   impId:null,
+                                   impId:java.util.UUID.randomUUID().toString(),
                                    startDate:startdate,
                                    endDate:enddate,
                                    isPublic: RefdataCategory.lookupOrCreate('YN','Yes'),

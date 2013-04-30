@@ -114,13 +114,19 @@ class MyInstitutionsController {
       result.is_admin=false;
     }
 
-
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
     def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
+
+    def qry_params = [result.institution, licensee_role]
 
     // def qry = "select l from License as l left outer join l.orgLinks ol where ( ( l.type = ? ) OR ( ol.org = ? and ol.roleType = ? ) ) AND l.status.value != 'Deleted'"
     // def qry = "select l from License as l left outer join l.orgLinks ol where ( ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
     def qry = "select l from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
+
+    if ( ( params['keyword-search'] != null ) && ( params['keyword-search'].trim().length() > 0 ) ) {
+      qry += " and lower(l.reference) like ?"
+      qry_params += "%${params['keyword-search'].toLowerCase()}%"
+    }
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
       qry += " order by l.${params.sort} ${params.order}"
@@ -130,7 +136,7 @@ class MyInstitutionsController {
     }
 
     // result.licenses = License.executeQuery(qry, [template_license_type, result.institution, licensee_role] )
-    result.licenses = License.executeQuery(qry, [result.institution, licensee_role] )
+    result.licenses = License.executeQuery(qry, qry_params);
 
     result
   }

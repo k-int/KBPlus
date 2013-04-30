@@ -162,7 +162,7 @@ class UploadController {
                                                     endIssue:tipp.num_last_issue_online,
                                                     embargo:tipp.embargo_info,
                                                     coverageDepth:tipp.coverage_depth,
-                                                    coverageNote:tipp.coverage_note,
+                                                    coverageNote:tipp.coverage_notes,
                                                     hostPlatformURL:null, // t.host_platform_url,
                                                     impId:java.util.UUID.randomUUID().toString(),
                                                     ids:[])
@@ -209,8 +209,8 @@ class UploadController {
     def new_sub = reloaded_pkg.createSubscription('Subscription Offered', 
                                              upload.soName.value, 
                                              upload.normalisedSoIdentifier, 
-                                             upload.agreementTermStartYear?.value, 
-                                             upload.agreementTermEndYear?.value, 
+                                             upload.aggreementTermStartYear?.value, 
+                                             upload.aggreementTermEndYear?.value, 
                                              upload.consortiumOrg) 
     
     log.debug("Completed New package is ${new_pkg.id}, new sub is ${new_sub.id}");
@@ -281,7 +281,7 @@ class UploadController {
 
     log.debug("Reading Stream");
 
-    CSVReader r = new CSVReader( new InputStreamReader(input_stream) )
+    CSVReader r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ) )
 
     String [] nl;
 
@@ -457,7 +457,7 @@ class UploadController {
       }
       
       if ( tipp.id ) {
-        ["eissn", "isbn", "doi"].each { idtype ->
+        ["eissn", "issn", "doi"].each { idtype ->
           if ( ( tipp.id[idtype] ) && ( tipp.id[idtype] != '' ) ) {
             if ( id_list.contains(tipp.id[idtype]) ) {
               tipp.messages.add("Title (row ${counter}) contains a repeated ${idtype} - ${tipp.id[idtype]}");
