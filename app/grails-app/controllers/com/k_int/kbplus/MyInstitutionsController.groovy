@@ -647,6 +647,7 @@ class MyInstitutionsController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def currentTitles() {
     if (params.sub.equals("all")) params.sub = null
+    if (params.pvd.equals("all")) params.pvd = null
     if (!params.order) params.order = "asc"
     if (!params.sort) params.sort = "tipp.title.title"
 
@@ -685,9 +686,7 @@ class MyInstitutionsController {
     def paginate_after = params.paginate_after ?: 19;
     result.max = params.max ? Integer.parseInt(params.max) : 10;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
-    
-    def qry_params = [institution: result.institution]
-    
+        
     def sub_qry = 
         "From Subscription As s \
         Where Exists ( \
@@ -695,40 +694,63 @@ class MyInstitutionsController {
             Where o.roleType.value = 'Subscriber' \
             And o.org = :institution ) \
         And s.status.value != 'Deleted' "
-
-    def start = new Date()
-    result.subscriptions = Subscription.executeQuery("SELECT s ${sub_qry}", qry_params);
-    def end = new Date()
-    use(groovy.time.TimeCategory) {
-        def duration = end - start
-        print "Sub Query: ${duration.minutes}:${duration.seconds}:${duration.millis}"
-    }
     
+    result.subscriptions = Subscription.executeQuery(
+        "SELECT s ${sub_qry}", [institution: result.institution] );
+            
+    result.providers = Subscription.executeQuery(
+        "Select Distinct(role.org) From SubscriptionPackage sp Inner Join sp.pkg.orgs As role \
+         Where Exists ( ${sub_qry} And sp.subscription = s ) \
+         And role.roleType.value = 'Content Provider' "
+        , [institution: result.institution]);
+    
+    print("result.providers: ${result.providers}")
+
     if ( result.subscriptions.isEmpty() ) {
       flash.error="Sorry, we could not find any Subscription for ${result.institution.name}";
       result.titles = []
       result.entitlements = []
       return result;
     }
-
-    def title_query = 
-        "From IssueEntitlement As ie \
-         Where Exists ( ${sub_qry} And ie.subscription.id = s.id ) "
     
-    print("param.sub: ${params.sub}")
-    if (params.sub){ 
-        title_query += "\
-            And Exists ( \
-                Select ie2 From IssueEntitlement As ie2 \
-                Where ie2.subscription.id  = :subscriptions \
-                And ie2.tipp.title = ie.tipp.title ) "
-        qry_params.subscriptions = Long.valueOf(params.sub)
+    def qry_params = [:]
+    
+    def title_query = "From IssueEntitlement As ie "
+    if (params.pvd)
+        title_query += "Inner Join ie.tipp.pkg.orgs As role "
+       
+    if (!params.sub){
+        title_query += "Where Exists ( ${sub_qry} And ie.subscription.id = s.id ) "
+        qry_params.institution = result.institution
+    }else{
+        title_query += "Where ie.subscription.id = :subscription "
+        qry_params.subscription = Long.valueOf(params.sub)
     }
+    
+    if (params.pvd){
+        title_query += "\
+            And role.roleType.value = 'Content Provider' \
+            And role.org.id = :provider "
+        qry_params.provider = Long.valueOf(params.pvd)
+    }
+    
+    // We were using 'Where Exists' to picj up other subscriptions of the same titles
+    // Should be now cover by result.entitlements
+//    if (params.sub){ 
+//        title_query += "\
+//            And Exists ( \
+//                Select ie2 From IssueEntitlement As ie2 \
+//                Where ie2.subscription.id  = :subscription \
+//                And ie2.tipp.title = ie.tipp.title ) "
+//        qry_params.subscription = Long.valueOf(params.sub)
+//    }
     
     def title_query_grouping = 
         "Group By ie.tipp.title \
          Order By ie.tipp.title.title ${params.order} "
 
+    print("Final query:\n${title_query}")
+    
     result.num_ti_rows = IssueEntitlement.executeQuery("Select Count(Distinct ie.tipp.title) ${title_query}", qry_params)[0]
 //    result.num_ti_rows = IssueEntitlement.executeQuery("Select ie.tipp.title  ${title_query} ${title_query_ordering}", qry_params).size()
 
@@ -737,16 +759,29 @@ class MyInstitutionsController {
         qry_params, 
         [max:result.max, offset:result.offset] );
     
+    if ( result.titles.isEmpty() ) {
+      flash.error="Sorry, we could not find any Titles.";
+      result.entitlements = []
+      return result;
+    }
+    
     def title_list = []
     result.titles.each() { ti -> title_list.add(ti[0]) }
 
 //    start = new Date()
-
+    
     result.entitlements = IssueEntitlement.executeQuery("\
             Select ie From IssueEntitlement As ie \
             Where ie.subscription In (:subscriptions) And ( ie.status.value != 'Deleted' ) \
             And ie.tipp.title In (:titles)", 
         [subscriptions: result.subscriptions, titles: title_list] );
+
+//        Where ie.subscription In (${result.subscriptions}) And ( ie.status.value != 'Deleted' ) \
+//        And ie.tipp.title In (${title_list})" );
+//        "Order By ie.tipp.title.title ${params.order}" 
+//        "Select ie2 From IssueEntitlement As ie2 " + 
+//        "Where Exists ( ${title_query} And ie.subscription.id = ie2.subscription.id ${title_query_grouping} LIMIT ${result.max}, ${result.offset} ) "
+//        "Order By ie2.tipp.title.title ${params.order}"
 
 //    end = new Date()
 //    use(groovy.time.TimeCategory) {

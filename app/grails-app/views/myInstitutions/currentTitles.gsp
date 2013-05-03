@@ -29,6 +29,7 @@
       <h1>${institution?.name} - Current Titles</h1>
       
       <g:set var="filterSub" value="${params.sub?:"all"}" />
+      <g:set var="filterPvd" value="${params.pvd?:"all"}" />
       
       <ul class="nav nav-pills">
         <li class="active"><a>Filtering :</a></li>
@@ -51,17 +52,27 @@
             <% params.sub = filterSub %>
           </ul>
         </li>
-        <li class="dropdown disabled">
+        <li class="dropdown">
           <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">
             Content Provider
             <b class="caret"></b>
           </a>
           <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-            <%--
-            <g:each in="${subscriptions}" var="s">
-              <li>${s.getConsortia()?.name}</li>
+            <li<%= (filterPvd.equals("all")) ? ' class="active"' : '' %>>
+              <% params.pvd = "all" %>
+              <g:link action="currentTitles" params="${params}">All Content Providers</g:link>
+            </li>
+            <g:each in="${providers}" var="p">
+              <% 
+              def pvdId = p.id.toString()
+              def pvdName = p.name 
+              %>
+              <li<%= (filterPvd.equals(pvdId)) ? ' class="active"' : '' %>>
+                <% params.pvd = pvdId %>
+                <g:link action="currentTitles" params="${params}">${pvdName}</g:link>
+              </li>
             </g:each>
-            --%>
+            <% params.pvd = filterPvd %>
           </ul>
         </li>
         <li class="dropdown disabled">
