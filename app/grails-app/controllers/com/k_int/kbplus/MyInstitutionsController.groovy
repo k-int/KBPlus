@@ -682,51 +682,77 @@ class MyInstitutionsController {
       result.is_admin=false;
     }
 
-    def public_flag = RefdataCategory.lookupOrCreate('YN','Yes');
-
     def paginate_after = params.paginate_after ?: 19;
     result.max = params.max ? Integer.parseInt(params.max) : 10;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
     
+    def qry_params = [institution: result.institution]
+    
+    def sub_qry = 
+        "From Subscription As s \
+        Where Exists ( \
+            Select o From s.orgRelations As o \
+            Where o.roleType.value = 'Subscriber' \
+            And o.org = :institution ) \
+        And s.status.value != 'Deleted' "
 
-    def sub_qry = "SELECT s FROM Subscription AS s WHERE  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' )"
-    def sub_qry_params = [result.institution]
-    result.subscriptions = Subscription.executeQuery("${sub_qry}", sub_qry_params);
-
-    def sub_list_str = ""
-    result.subscriptions.eachWithIndex() { s, i ->
-        if(i > 0) sub_list_str += ","
-        sub_list_str += "'${s.id}'"
+    def start = new Date()
+    result.subscriptions = Subscription.executeQuery("SELECT s ${sub_qry}", qry_params);
+    def end = new Date()
+    use(groovy.time.TimeCategory) {
+        def duration = end - start
+        print "Sub Query: ${duration.minutes}:${duration.seconds}:${duration.millis}"
     }
     
-    def query = 
-    "from IssueEntitlement as ie " +
-    "where ie.subscription.id  IN (${sub_list_str}) and ie.status.value != 'Deleted' "
+    if ( result.subscriptions.isEmpty() ) {
+      flash.error="Sorry, we could not find any Subscription for ${result.institution.name}";
+      result.titles = []
+      result.entitlements = []
+      return result;
+    }
+
+    def title_query = 
+        "From IssueEntitlement As ie \
+         Where Exists ( ${sub_qry} And ie.subscription.id = s.id ) "
+    
+    print("param.sub: ${params.sub}")
     if (params.sub){ 
-        query += "and exists ( "+
-            "from IssueEntitlement as ie2 " +
-            "where ie2.subscription.id  = ${params.sub} " +
-            "and ie2.tipp.title = ie.tipp.title ) "
+        title_query += "\
+            And Exists ( \
+                Select ie2 From IssueEntitlement As ie2 \
+                Where ie2.subscription.id  = :subscriptions \
+                And ie2.tipp.title = ie.tipp.title ) "
+        qry_params.subscriptions = Long.valueOf(params.sub)
     }
-    query += "group by ie.tipp.title.title " +
-    "order by ie.tipp.title.title ${params.order} "
+    
+    def title_query_grouping = 
+        "Group By ie.tipp.title \
+         Order By ie.tipp.title.title ${params.order} "
 
-    result.num_ti_rows = 
-        IssueEntitlement.executeQuery("select ie.tipp.title ${query}").size()
+    result.num_ti_rows = IssueEntitlement.executeQuery("Select Count(Distinct ie.tipp.title) ${title_query}", qry_params)[0]
+//    result.num_ti_rows = IssueEntitlement.executeQuery("Select ie.tipp.title  ${title_query} ${title_query_ordering}", qry_params).size()
+
     result.titles = IssueEntitlement.executeQuery(
-        "select ie.tipp.title, min(ie.startDate), max(ie.endDate), count(ie.subscription) ${query}", [max:result.max, offset:result.offset]);
+        "Select ie.tipp.title, Min(ie.startDate), Max(ie.endDate), Count(ie.subscription) ${title_query} ${title_query_grouping}", 
+        qry_params, 
+        [max:result.max, offset:result.offset] );
     
-    def title_list_str = ""
-    result.titles.eachWithIndex() { ti, i ->
-        if(i > 0) title_list_str += ","
-        title_list_str += "'${ti[0].id}'"
-    }
-    
-    result.entitlements = IssueEntitlement.executeQuery(
-        "select ie from IssueEntitlement as ie " + 
-        "where ie.subscription.id IN (${sub_list_str}) and ( ie.status.value != 'Deleted' ) " +
-        "and ie.tipp.title.title.id IN (${title_list_str}) " +
-        "order by ie.tipp.title.title ${params.order}" );
+    def title_list = []
+    result.titles.each() { ti -> title_list.add(ti[0]) }
+
+//    start = new Date()
+
+    result.entitlements = IssueEntitlement.executeQuery("\
+            Select ie From IssueEntitlement As ie \
+            Where ie.subscription In (:subscriptions) And ( ie.status.value != 'Deleted' ) \
+            And ie.tipp.title In (:titles)", 
+        [subscriptions: result.subscriptions, titles: title_list] );
+
+//    end = new Date()
+//    use(groovy.time.TimeCategory) {
+//        def duration = end - start
+//        print "IE Query: ${duration.minutes}:${duration.seconds}:${duration.millis}"
+//    }
     
     withFormat {
       html result
