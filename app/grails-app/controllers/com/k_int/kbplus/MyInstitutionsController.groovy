@@ -727,24 +727,24 @@ class MyInstitutionsController {
         qry_params.subscription = Long.valueOf(params.sub)
     }
     
+    // copied from SubscriptionDetailsController
+    if ( params.filter ) {
+      title_query += 
+        "And ( ( Lower(ie.tipp.title.title) like :filterTrim ) \
+         Or ( Exists ( From IdentifierOccurrence io \
+            Where io.ti.id = ie.tipp.title.id \
+            And io.identifier.value like :filter ) ) )"
+      qry_params.filterTrim = "%${params.filter.trim().toLowerCase()}%"
+      qry_params.filter = "%${params.filter}%"
+    }
+    
     if (params.pvd){
         title_query += "\
             And role.roleType.value = 'Content Provider' \
             And role.org.id = :provider "
         qry_params.provider = Long.valueOf(params.pvd)
     }
-    
-    // We were using 'Where Exists' to picj up other subscriptions of the same titles
-    // Should be now cover by result.entitlements
-//    if (params.sub){ 
-//        title_query += "\
-//            And Exists ( \
-//                Select ie2 From IssueEntitlement As ie2 \
-//                Where ie2.subscription.id  = :subscription \
-//                And ie2.tipp.title = ie.tipp.title ) "
-//        qry_params.subscription = Long.valueOf(params.sub)
-//    }
-    
+        
     def title_query_grouping = 
         "Group By ie.tipp.title \
          Order By ie.tipp.title.title ${params.order} "
@@ -775,13 +775,6 @@ class MyInstitutionsController {
             Where ie.subscription In (:subscriptions) And ( ie.status.value != 'Deleted' ) \
             And ie.tipp.title In (:titles)", 
         [subscriptions: result.subscriptions, titles: title_list] );
-
-//        Where ie.subscription In (${result.subscriptions}) And ( ie.status.value != 'Deleted' ) \
-//        And ie.tipp.title In (${title_list})" );
-//        "Order By ie.tipp.title.title ${params.order}" 
-//        "Select ie2 From IssueEntitlement As ie2 " + 
-//        "Where Exists ( ${title_query} And ie.subscription.id = ie2.subscription.id ${title_query_grouping} LIMIT ${result.max}, ${result.offset} ) "
-//        "Order By ie2.tipp.title.title ${params.order}"
 
 //    end = new Date()
 //    use(groovy.time.TimeCategory) {

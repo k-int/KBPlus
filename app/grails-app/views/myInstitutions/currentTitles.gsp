@@ -106,12 +106,12 @@
     <div class="container">
       <dl>
         <dt>Titles ( ${offset+1} to ${offset+(titles.size())} of ${num_ti_rows} )
-          <g:form action="index" params="${params}" method="get" class="form-inline">
+          <g:form action="currentTitles" params="${params}" method="get" class="form-inline">
              <input type="hidden" name="sort" value="${params.sort}">
              <input type="hidden" name="order" value="${params.order}">
              <label>Filter:</label> 
-             <input name="filter" value="${params.filter}" disabled="disabled"/>
-             <input type="submit" class="btn btn-primary" disabled="disabled"/>
+             <input name="filter" value="${params.filter}"/> <!-- disabled="disabled"-->
+             <input type="submit" class="btn btn-primary"/> <!-- disabled="disabled"-->
           </g:form>
         </dt>
         <dd>
