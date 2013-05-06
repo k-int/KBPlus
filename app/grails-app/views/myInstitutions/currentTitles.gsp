@@ -3,6 +3,10 @@
   <head>
     <meta name="layout" content="mmbootstrap"/>
     <title>KB+</title>
+    
+    <style>
+      .filtering-dropdown-menu {max-height: 400px; overflow: hidden; overflow-y: auto;}
+    </style>
   </head>
 
   <body>
@@ -28,8 +32,10 @@
     <div class="container">
       <h1>${institution?.name} - Current Titles</h1>
       
-      <g:set var="filterSub" value="${params.sub?:"all"}" />
-      <g:set var="filterPvd" value="${params.pvd?:"all"}" />
+      <g:set var="filterSub" value="${params.filterSub?:"all"}" />
+      <g:set var="filterPvd" value="${params.filterPvd?:"all"}" />
+      <g:set var="filterHostPlat" value="${params.filterHostPlat?:"all"}" />
+      <g:set var="filterOtherPlat" value="${params.filterOtherPlat?:"all"}" />
       
       <ul class="nav nav-pills">
         <li class="active"><a>Filtering :</a></li>
@@ -38,18 +44,18 @@
             Subscriptions
             <b class="caret"></b>
           </a>
-          <ul class="dropdown-menu" role="menu" aria-labelledby="subscription-menu">
+          <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="subscription-menu">
             <li<%= (filterSub.equals("all")) ? ' class="active"' : '' %>>
-              <% params.sub = "all" %>
+              <% params.filterSub = "all" %>
               <g:link action="currentTitles" params="${params}">All Subscriptions</g:link>
             </li>
             <g:each in="${subscriptions}" var="s">
               <li<%= (filterSub.equals(s.id.toString())) ? ' class="active"' : '' %>>
-                <% params.sub = s.id %>
+                <% params.filterSub = s.id %>
                 <g:link action="currentTitles" params="${params}">${s.name} <g:if test="${s.consortia}">( ${s.consortia.name} )</g:if></g:link>
               </li>
             </g:each>
-            <% params.sub = filterSub %>
+            <% params.filterSub = filterSub %>
           </ul>
         </li>
         <li class="dropdown">
@@ -57,9 +63,9 @@
             Content Provider
             <b class="caret"></b>
           </a>
-          <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+          <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="dLabel">
             <li<%= (filterPvd.equals("all")) ? ' class="active"' : '' %>>
-              <% params.pvd = "all" %>
+              <% params.filterPvd = "all" %>
               <g:link action="currentTitles" params="${params}">All Content Providers</g:link>
             </li>
             <g:each in="${providers}" var="p">
@@ -68,29 +74,57 @@
               def pvdName = p.name 
               %>
               <li<%= (filterPvd.equals(pvdId)) ? ' class="active"' : '' %>>
-                <% params.pvd = pvdId %>
+                <% params.filterPvd = pvdId %>
                 <g:link action="currentTitles" params="${params}">${pvdName}</g:link>
               </li>
             </g:each>
-            <% params.pvd = filterPvd %>
+            <% params.filterPvd = filterPvd %>
           </ul>
         </li>
-        <li class="dropdown disabled">
+        <li class="dropdown">
           <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">
             Host platform
             <b class="caret"></b>
           </a>
-          <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-            <!--List of Host platform-->
+          <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="dLabel">
+            <li<%= (filterHostPlat.equals("all")) ? ' class="active"' : '' %>>
+              <% params.filterHostPlat = "all" %>
+              <g:link action="currentTitles" params="${params}">All Host Platforms</g:link>
+            </li>
+            <g:each in="${hostplatforms}" var="hp">
+              <% 
+              def hostId = hp.id.toString()
+              def hostName = hp.name 
+              %>
+              <li<%= (filterHostPlat.equals(hostId)) ? ' class="active"' : '' %>>
+                <% params.filterHostPlat = hostId %>
+                <g:link action="currentTitles" params="${params}">${hostName}</g:link>
+              </li>
+            </g:each>
+            <% params.filterHostPlat = filterHostPlat %>
           </ul>
         </li>
-        <li class="dropdown disabled">
+        <li class="dropdown">
           <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">
             Other platform
             <b class="caret"></b>
           </a>
-          <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-            <!--List of Other platform-->
+          <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="dLabel">
+            <li<%= (filterOtherPlat.equals("all")) ? ' class="active"' : '' %>>
+              <% params.filterOtherPlat = "all" %>
+              <g:link action="currentTitles" params="${params}">All Additional Platforms</g:link>
+            </li>
+            <g:each in="${otherplatforms}" var="op">
+              <% 
+              def platId = op.id.toString()
+              def platName = op.name 
+              %>
+              <li<%= (filterOtherPlat.equals(platId)) ? ' class="active"' : '' %>>
+                <% params.filterOtherPlat = platId %>
+                <g:link action="currentTitles" params="${params}">${platName}</g:link>
+              </li>
+            </g:each>
+            <% params.filterOtherPlat = filterOtherPlat %>
           </ul>
         </li>
       </ul>
@@ -203,6 +237,53 @@
           <bootstrap:paginate  action="currentTitles" controller="myInstitutions" params="${params}" next="Next" prev="Prev" maxsteps="${max}" total="${num_ti_rows}" />
         </g:if>
       </div>
+      
+      
+      <!-- For Development Only -->
+      <g:if env="development">
+      <div class="accordion" id="accordions">
+        <div class="accordion-group"> 
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordions" href="#collapse-full-table">
+              For Test Only: Full Table (show/hide)
+            </a>
+          </div>
+          <div id="collapse-full-table" class="accordion-body collapse out">
+            <div class="accordion-inner">
+              <table  class="table table-striped table-bordered">
+                <tr>
+                  <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
+                  <th>ISSN</th>
+                  <th>eISSN</th>
+                  <th>Earliest Date</th>
+                  <th>Latest Date</th>
+                  <th>Subscription</th>
+                  <th>Host Platform</th>
+                  <th>Other Platform</th>
+                </tr>
+                <g:each in="${entitlements}" var="ie">
+                  <tr>
+                    <td>${ie.tipp.title.title}</td>
+                    <td>${ie.tipp.title.getIdentifierValue('ISSN')}</td>
+                    <td>${ie.tipp.title.getIdentifierValue('eISSN')}</td>
+                    <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.startDate}"/></td>
+                    <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.endDate}"/></td>
+                    <td>${ie.subscription.name}</td>
+                    <td><div><i class="icon-globe"></i><span>${ie.tipp.platform.name}</span></div></td>
+                    <td>
+                      <g:each in="${ie.tipp.additionalPlatforms}" var="p">
+                        <div><i class="icon-globe"></i><span>${p.platform.name}</span></div>
+                      </g:each>
+                    </td>
+                  </tr> 
+                </g:each>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      </g:if>
+      <!-- End - For Development Only -->
     </div>
   
   </body>

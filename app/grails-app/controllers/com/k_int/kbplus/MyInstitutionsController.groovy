@@ -643,11 +643,13 @@ class MyInstitutionsController {
       redirect action: 'addSubscription', params:params
     }
   }
-  
+
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def currentTitles() {
-    if (params.sub.equals("all")) params.sub = null
-    if (params.pvd.equals("all")) params.pvd = null
+    if (params.filterSub.equals("all")) params.filterSub = null
+    if (params.filterPvd.equals("all")) params.filterPvd = null
+    if (params.filterHostPlat.equals("all")) params.filterHostPlat = null
+    if (params.filterOtherPlat.equals("all")) params.filterOtherPlat = null
     if (!params.order) params.order = "asc"
     if (!params.sort) params.sort = "tipp.title.title"
 
@@ -696,12 +698,13 @@ class MyInstitutionsController {
         And s.status.value != 'Deleted' "
     
     result.subscriptions = Subscription.executeQuery(
-        "SELECT s ${sub_qry}", [institution: result.institution] );
+        "SELECT s ${sub_qry} Order By s.name" , [institution: result.institution] );
             
     result.providers = Subscription.executeQuery(
         "Select Distinct(role.org) From SubscriptionPackage sp Inner Join sp.pkg.orgs As role \
          Where Exists ( ${sub_qry} And sp.subscription = s ) \
-         And role.roleType.value = 'Content Provider' "
+         And role.roleType.value = 'Content Provider' \
+         Order By role.org.name"
         , [institution: result.institution]);
     
     print("result.providers: ${result.providers}")
@@ -713,18 +716,33 @@ class MyInstitutionsController {
       return result;
     }
     
+    result.hostplatforms = IssueEntitlement.executeQuery("\
+            Select distinct(ie.tipp.platform) From IssueEntitlement As ie \
+            Where Exists ( ${sub_qry} And ie.subscription.id = s.id ) \
+            Order By ie.tipp.platform.name",
+            [institution: result.institution] );
+    
+    result.otherplatforms = IssueEntitlement.executeQuery("\
+            Select distinct(p.platform) From IssueEntitlement As ie \
+            Inner Join ie.tipp.additionalPlatforms as p \
+            Where Exists ( ${sub_qry} And ie.subscription.id = s.id ) \
+            Order By p.platform.name",
+            [institution: result.institution] );
+    
     def qry_params = [:]
     
     def title_query = "From IssueEntitlement As ie "
-    if (params.pvd)
+    if (params.filterPvd)
         title_query += "Inner Join ie.tipp.pkg.orgs As role "
+    if (params.filterHostPlat)
+        title_query += "Inner Join ie.tipp.platform As hplat "
        
-    if (!params.sub){
-        title_query += "Where Exists ( ${sub_qry} And ie.subscription.id = s.id ) "
+    if (!params.filterSub){
+        title_query += "Where Exists ( ${sub_qry} And ie.subscription = s ) "
         qry_params.institution = result.institution
     }else{
         title_query += "Where ie.subscription.id = :subscription "
-        qry_params.subscription = Long.valueOf(params.sub)
+        qry_params.subscription = Long.valueOf(params.filterSub)
     }
     
     // copied from SubscriptionDetailsController
@@ -738,24 +756,44 @@ class MyInstitutionsController {
       qry_params.filter = "%${params.filter}%"
     }
     
-    if (params.pvd){
+    if (params.filterPvd){
         title_query += "\
             And role.roleType.value = 'Content Provider' \
             And role.org.id = :provider "
-        qry_params.provider = Long.valueOf(params.pvd)
+        qry_params.provider = Long.valueOf(params.filterPvd)
     }
-        
-    def title_query_grouping = 
-        "Group By ie.tipp.title \
-         Order By ie.tipp.title.title ${params.order} "
+    
+    if (params.filterHostPlat){
+        title_query += "\
+            And hplat.id = :hostPlatform "
+        qry_params.hostPlatform = Long.valueOf(params.filterHostPlat)
+    }
+    
+    if (params.filterOtherPlat){
+        title_query += "\
+            And Exists ( \
+                From IssueEntitlement ie2 \
+                Where Exists ( \
+                    From ie2.tipp.additionalPlatforms As ap \
+                    Where ap.platform.id = :otherPlatform \
+                ) \
+                And ie2.tipp.title = ie.tipp.title \
+            ) "
+        qry_params.otherPlatform = Long.valueOf(params.filterOtherPlat)
+    }
+    
+    title_query += "And ( ie.status.value != 'Deleted' ) "
+    
+    def title_query_grouping = "Group By ie.tipp.title "
+    def title_query_ordering = "Order By ie.tipp.title.title ${params.order} "
 
-    print("Final query:\n${title_query}")
+    print("Final query:\n${title_query.replaceAll("\\s+", " ")}")
     
     result.num_ti_rows = IssueEntitlement.executeQuery("Select Count(Distinct ie.tipp.title) ${title_query}", qry_params)[0]
 //    result.num_ti_rows = IssueEntitlement.executeQuery("Select ie.tipp.title  ${title_query} ${title_query_ordering}", qry_params).size()
 
     result.titles = IssueEntitlement.executeQuery(
-        "Select ie.tipp.title, Min(ie.startDate), Max(ie.endDate), Count(ie.subscription) ${title_query} ${title_query_grouping}", 
+        "Select ie.tipp.title, Min(ie.startDate), Max(ie.endDate), Count(ie.subscription) ${title_query} ${title_query_grouping} ${title_query_ordering}", 
         qry_params, 
         [max:result.max, offset:result.offset] );
     
@@ -769,13 +807,14 @@ class MyInstitutionsController {
     result.titles.each() { ti -> title_list.add(ti[0]) }
 
 //    start = new Date()
-    
-    result.entitlements = IssueEntitlement.executeQuery("\
-            Select ie From IssueEntitlement As ie \
-            Where ie.subscription In (:subscriptions) And ( ie.status.value != 'Deleted' ) \
-            And ie.tipp.title In (:titles)", 
-        [subscriptions: result.subscriptions, titles: title_list] );
 
+    qry_params.titles = title_list
+    result.entitlements = IssueEntitlement.executeQuery("\
+        Select ie ${title_query} \
+        And ie.tipp.title In (:titles) \
+        ${title_query_ordering}", 
+        qry_params );
+    
 //    end = new Date()
 //    use(groovy.time.TimeCategory) {
 //        def duration = end - start
@@ -784,6 +823,38 @@ class MyInstitutionsController {
     
     withFormat {
       html result
+      csv {
+//         def jc_id = result.subscriptionInstance.getSubscriber()?.getIdentifierByType('JC')?.value
+//
+//         response.setHeader("Content-disposition", "attachment; filename=${result.subscriptionInstance.identifier}.csv")
+//         response.contentType = "text/csv"
+//         def out = response.outputStream
+//         out.withWriter { writer ->
+//           def tsdate = result.subscriptionInstance.startDate ? formatter.format(result.subscriptionInstance.startDate) : ''
+//           def tedate = result.subscriptionInstance.endDate ? formatter.format(result.subscriptionInstance.endDate) : ''
+//           if ( ( params.omitHeader == null ) || ( params.omitHeader != 'Y' ) ) {
+//             writer.write("FileType,SpecVersion,JC_ID,TermStartDate,TermEndDate,SubURI,SystemIdentifier\n")
+//             writer.write("${result.subscriptionInstance.type.value},\"2.0\",${jc_id?:''},${tsdate},${tedate},\"uri://kbplus/sub/${result.subscriptionInstance.identifier}\",${result.subscriptionInstance.impId}\n")
+//           }
+//
+//           // Output the body text
+//           // writer.write("publication_title,print_identifier,online_identifier,date_first_issue_subscribed,num_first_vol_subscribed,num_first_issue_subscribed,date_last_issue_subscribed,num_last_vol_subscribed,num_last_issue_subscribed,embargo_info,title_url,first_author,title_id,coverage_note,coverage_depth,publisher_name\n");
+//           writer.write("publication_title,print_identifier,online_identifier,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,title_url,first_author,title_id,embargo_info,coverage_depth,coverage_notes,publisher_name\n");
+//
+//           result.entitlements.each { e ->
+//
+//             def start_date = e.startDate ? formatter.format(e.startDate) : '';
+//             def end_date = e.endDate ? formatter.format(e.endDate) : '';
+//             def title_doi = (e.tipp?.title?.getIdentifierValue('DOI'))?:''
+//             def publisher = e.tipp?.title?.publisher
+//
+//             writer.write("\"${e.tipp.title.title}\",\"${e.tipp?.title?.getIdentifierValue('ISSN')?:''}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')?:''}\",${start_date},${e.startVolume?:''},${e.startIssue?:''},${end_date},${e.endVolume?:''},${e.endIssue?:''},\"${e.tipp?.hostPlatformURL?:''}\",,\"${title_doi}\",\"${e.embargo?:''}\",\"${e.tipp?.coverageDepth?:''}\",\"${e.tipp?.coverageNote?:''}\",\"${publisher?.name?:''}\"\n");
+//           }
+//           writer.flush()
+//           writer.close()
+//         }
+//         out.close()
+      }
     }
   }
 
