@@ -47,6 +47,9 @@ class Package {
         packageStatus(nullable:true, blank:false)
       nominalPlatform(nullable:true, blank:false)
     packageListStatus(nullable:true, blank:false)
+            startDate(nullable:true, blank:false)
+              endDate(nullable:true, blank:false)
+
   }
 
   /**
