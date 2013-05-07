@@ -782,6 +782,11 @@ class MyInstitutionsController {
         qry_params.otherPlatform = Long.valueOf(params.filterOtherPlat)
     }
     
+    if ( date_restriction ) {
+      title_query += " And ie.subscription.startDate <= :date_restriction And ie.subscription.endDate >= :date_restriction "
+      qry_params.date_restriction = date_restriction
+    }
+    
     title_query += "And ( ie.status.value != 'Deleted' ) "
     
     def title_query_grouping = "Group By ie.tipp.title "

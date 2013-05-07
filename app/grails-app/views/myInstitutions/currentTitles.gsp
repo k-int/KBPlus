@@ -132,8 +132,8 @@
       
     <div class="container" style="text-align:center">
       <g:form action="currentTitles" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="get" class="form-inline">
-        <label>Subscription(s) Valid On</label> <input name="validOn" type="text" value="${validOn}" disabled="disabled"/>
-        <input type="submit" class="btn btn-primary" value="Reload" disabled="disabled"/>
+        <label>Subscription(s) Valid On</label> <input name="validOn" type="text" value="${validOn}"/><!-- disabled="disabled"-->
+        <input type="submit" class="btn btn-primary" value="Reload"/> <!-- disabled="disabled"-->
       </g:form><br/>
     </div>
   
