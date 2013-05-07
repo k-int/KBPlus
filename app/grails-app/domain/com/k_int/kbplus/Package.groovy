@@ -52,6 +52,15 @@ class Package {
 
   }
 
+  def getConsortia() {
+    def result = null;
+    orgs.each { or ->
+      if ( or?.roleType?.value=='Package Consortia' )
+        result = or.org;
+    }
+    result
+  }
+  
   /**
    * Materialise this package into a subscription of the given type (taken or offered)
    * @param subtype One of 'Subscription Offered' or 'Subscription Taken'

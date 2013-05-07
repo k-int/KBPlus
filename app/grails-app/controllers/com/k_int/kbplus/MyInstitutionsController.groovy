@@ -297,20 +297,19 @@ class MyInstitutionsController {
     result.max = params.max ? Integer.parseInt(params.max) : 10;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
-
     // def base_qry = " from Subscription as s where s.type.value = 'Subscription Offered' and s.isPublic=?"
-    def base_qry = " from Subscription as s where s.type.value = 'Subscription Offered'"
-    // def qry_params = [public_flag]
     def qry_params = []
-
-    if ( params.q?.length() > 0 ) {
-      base_qry += " and ( lower(s.name) like ? or exists ( select sp from SubscriptionPackage as sp where sp.subscription = s and ( lower(sp.pkg.name) like ? ) ) ) "
-      qry_params.add("%${params.q.trim().toLowerCase()}%");
+    def base_qry = " from Package as p where lower(p.name) like ?"
+    
+    if ( params.q == null ) {
+      qry_params.add("%");
+    }
+    else {
       qry_params.add("%${params.q.trim().toLowerCase()}%");
     }
-
+    
     if ( date_restriction ) {
-      base_qry += " and s.startDate <= ? and s.endDate >= ? "
+      base_qry += " and p.startDate <= ? and p.endDate >= ? "
       qry_params.add(date_restriction)
       qry_params.add(date_restriction)
     }
@@ -325,11 +324,11 @@ class MyInstitutionsController {
       base_qry += " order by ${params.sort} ${params.order}"
     }
     else {
-      base_qry += " order by s.name asc"
+      base_qry += " order by p.name asc"
     }
 
-    result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
-    result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
+    result.num_pkg_rows = Package.executeQuery("select count(p) "+base_qry, qry_params )[0]
+    result.packages = Package.executeQuery("select p ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
 
     result
   }
