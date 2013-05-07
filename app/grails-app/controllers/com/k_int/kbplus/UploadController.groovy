@@ -88,11 +88,18 @@ class UploadController {
       consortium = Org.findByName(upload.consortium.value) ?: new Org(name:upload.consortium.value).save();
     }
 
-    def new_pkg = new Package(identifier:upload.soPackageIdentifier.value,
-                              name:upload.soPackageName.value,
-                              type:pkg_type,
-                              contentProvider:content_provider_org,
-                              impId:java.util.UUID.randomUUID().toString());
+    def new_pkg = new Package(identifier: upload.soPackageIdentifier.value,
+                              name: upload.soPackageName.value,
+                              type: pkg_type,
+                              contentProvider: content_provider_org,
+                              startDate: upload.aggreementTermStartYear?.value, 
+                              endDate: upload.aggreementTermEndYear?.value, 
+                              impId: java.util.UUID.randomUUID().toString());
+
+    if ( upload.consortiumOrg ) {                              
+      def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
+      def or = new OrgRole(org: consortium_org, pkg:result, roleType:sc_role).save();
+    }
 
     if ( new_pkg.save(flush:true) ) {
       //log.debug("New package ${pkg.identifier} saved");
@@ -196,30 +203,9 @@ class UploadController {
       }
     }
 
-    // Create an SO by creating a header and copying the tipps from this package into IE's
-    // log.debug("Copying Package TIPPs into issue entitlements");
-    def new_pkg_id = new_pkg.id;
-    new_pkg.discard();
-    def session = sessionFactory.currentSession
-    session.flush()
-    session.clear()
-    propertyInstanceMap.get().clear()
-
-    def reloaded_pkg = Package.get(new_pkg_id);
-    reloaded_pkg.updateNominalPlatform();
-    reloaded_pkg.save(flush:true);
-
-    def new_sub = reloaded_pkg.createSubscription('Subscription Offered', 
-                                             upload.soName.value, 
-                                             upload.normalisedSoIdentifier, 
-                                             upload.aggreementTermStartYear?.value, 
-                                             upload.aggreementTermEndYear?.value, 
-                                             upload.consortiumOrg) 
-    
-    log.debug("Completed New package is ${new_pkg.id}, new sub is ${new_sub.id}");
+    log.debug("Completed New package is ${new_pkg.id}");
 
     upload.new_pkg_id = new_pkg_id
-    upload.new_sub_id = new_sub.id
   }
     
   def lookupOrCreateTitleInstance(identifiers,title,publisher) {

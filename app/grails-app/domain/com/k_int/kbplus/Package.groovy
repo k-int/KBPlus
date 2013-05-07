@@ -11,6 +11,8 @@ class Package {
   RefdataValue packageStatus
   RefdataValue packageListStatus
   Platform nominalPlatform
+  Date startDate
+  Date endDate
   Date dateCreated
   Date lastUpdated
 
@@ -35,6 +37,8 @@ class Package {
     packageListStatus column:'pkg_list_status_rv_fk'
       nominalPlatform column:'pkg_nominal_platform_fk'
                 tipps sort:'title.title', order: 'asc'
+            startDate column:'pkg_start_date'
+              endDate column:'pkg_end_date'
 //                 orgs sort:'org.name', order: 'asc'
   }
 
