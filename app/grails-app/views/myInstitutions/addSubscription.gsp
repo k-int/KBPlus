@@ -85,7 +85,7 @@
         </g:if>
   
         <div class="pagination" style="text-align:center">
-          <g:if test="${subscriptions}" >
+          <g:if test="${packages}" >
             <bootstrap:paginate  action="addSubscription" controller="myInstitutions" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${num_pkg_rows}" />
           </g:if>
         </div>
