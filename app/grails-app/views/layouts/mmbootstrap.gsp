@@ -155,6 +155,11 @@
                 </sec:ifAnyGranted>
               </sec:ifLoggedIn>
             </ul>
+
+            <ul class="nav pull-right">
+              <li><a class="dlpopover" href="#"><i class="icon-search icon-white"></i></a></li>
+            </ul>
+
             <ul class="nav pull-right">
               <sec:ifLoggedIn>
                 <g:if test="${user}">
@@ -312,7 +317,27 @@
             }
           }
         });
+
+        $('.dlpopover').popover({html:true,
+                                 placement:'bottom',
+                                 title:'search', 
+                                 trigger:'click', 
+template: '<div class="popover" style="width: 400px"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"></div></div></div>',
+                                 'max-width':400, 
+                                 content:function() {return getContent()}});
       });
+
+      function getContent() {
+        var result=""
+        jQuery.ajax({
+         url:"<g:createLink controller='spotlight' action='index' />",
+         success: function(r) {
+                    result=r;
+                  },
+         async:   false
+        });          
+        return result;
+      }
     </script>
   </body>
 </html>
