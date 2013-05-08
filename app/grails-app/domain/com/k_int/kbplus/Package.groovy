@@ -15,7 +15,7 @@ class Package {
   Date endDate
   Date dateCreated
   Date lastUpdated
-
+  License license
 
   static hasMany = [tipps: TitleInstancePackagePlatform, 
                     orgs: OrgRole, 
@@ -36,9 +36,11 @@ class Package {
         packageStatus column:'pkg_status_rv_fk'
     packageListStatus column:'pkg_list_status_rv_fk'
       nominalPlatform column:'pkg_nominal_platform_fk'
-                tipps sort:'title.title', order: 'asc'
             startDate column:'pkg_start_date'
               endDate column:'pkg_end_date'
+              license column:'pkg_license_fk'
+                tipps sort:'title.title', order: 'asc'
+
 //                 orgs sort:'org.name', order: 'asc'
   }
 
@@ -49,6 +51,7 @@ class Package {
     packageListStatus(nullable:true, blank:false)
             startDate(nullable:true, blank:false)
               endDate(nullable:true, blank:false)
+              license(nullable:true, blank:false)
 
   }
 
