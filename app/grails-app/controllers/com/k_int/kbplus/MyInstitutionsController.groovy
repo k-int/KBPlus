@@ -570,78 +570,19 @@ class MyInstitutionsController {
 
     log.debug("processAddSubscription ${params}");
 
-    def baseSubscription = Subscription.get(params.subOfferedId);
+    def basePackage = Package.get(params.packageId);
 
-    if ( baseSubscription ) {
-      log.debug("Copying base subscription ${baseSubscription.id} for org ${institution.id}");
+    if ( basePackage ) {
+      // 
+      def new_sub = basePackage.createSubscription("Subscription Taken",
+                                                   "A New subscription....",
+                                                   "A New subscription identifier.....",
+                                                   basePackage.startDate,
+                                                   basePackage.endDate,
+                                                   basePackage.getConsortia())
 
-      if ( ! baseSubscription.hasPerm("view",user) ) {
-        flash.message = message(code:'noperm',default:'You do not have edit permission for the selected subscription.')
-        redirect(url: request.getHeader('referer'))
-        return
-      }
-      
-      def subscriptionInstance = new Subscription(
-                                     status:baseSubscription.status,
-                                     type:RefdataCategory.lookupOrCreate('Subscription Type','Subscription Taken'),
-                                     name:"Copy of ${baseSubscription.name}",
-                                     identifier:baseSubscription.identifier,
-                                     impId:null,
-                                     startDate:baseSubscription.startDate,
-                                     endDate:baseSubscription.endDate,
-                                     instanceOf:baseSubscription,
-                                     noticePeriod:baseSubscription.noticePeriod,
-                                     dateCreated:new Date(),
-                                     lastUpdated:new Date(),
-                                     issueEntitlements: new java.util.TreeSet()
-                                 );
-
-      // Now copy reference data and issue entitlements
-      if (!subscriptionInstance.save(flush: true)) {
-        log.error("Problem saving license ${licenseInstance.errors}");
-      }
-      else {
-        if ( params.createSubAction == 'copy' ) {
-          log.debug("Copy issue entitlements");
-          // These IE's are save on cascade
-          int ic = 0;
-          baseSubscription.issueEntitlements.each { bie ->
-            log.debug("Adding issue entitlement... ${bie.id} [${ic++}]");
-  
-            new IssueEntitlement(status:bie.status,
-                                 startDate:bie.startDate,
-                                 startVolume:bie.startVolume,
-                                 startIssue:bie.startIssue,
-                                 endDate:bie.endDate,
-                                 endVolume:bie.endVolume,
-                                 endIssue:bie.endIssue,
-                                 embargo:bie.embargo,
-                                 coverageDepth:bie.coverageDepth,
-                                 coverageNote:bie.coverageNote,
-                                 coreStatus:bie.coreStatus,
-                                 subscription:subscriptionInstance,
-                                 tipp: bie.tipp).save();
-          }
-        }
-  
-        log.debug("Setting sub/org link");
-        def subscriber_org_link = new OrgRole(org:institution, sub:subscriptionInstance, roleType: RefdataCategory.lookupOrCreate('Organisational Role','Subscriber')).save();
-
-        log.debug("Adding packages");
-        baseSubscription.packages.each { bp ->
-          new SubscriptionPackage(subscription:subscriptionInstance, pkg:bp.pkg).save();
-        }
-
-        // Copy any org links
-        baseSubscription.orgRelations.each { or ->
-          new OrgRole(org:or.org, roleType:or.roleType, sub:subscriptionInstance).save();
-        }
-
-        log.debug("Save ok");
-      }
-
-      flash.message = message(code: 'subscription.created.message', args: [message(code: 'subscription.label', default: 'License'), subscriptionInstance.id])
-      redirect controller: 'subscriptionDetails', action:'index', params:params, id:subscriptionInstance.id
+      flash.message = message(code: 'subscription.created.message', args: [message(code: 'subscription.label', default: 'Package'), basePackage.id])
+      redirect controller: 'subscriptionDetails', action:'index', params:params, id:new_sub.id
     }
     else {
       flash.message = message(code: 'subscription.unknown.message')
