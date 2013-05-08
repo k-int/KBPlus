@@ -7,7 +7,9 @@ where p.pkg_id = sp.sp_pkg_fk and sp.sp_sub_fk = s.sub_id
 
 set @rdc_so='';
 select (@rdc_so:=rdv_id) from refdata_value where rdv_value = 'Subscription Offered';
-
-
-select s.sub_id, s.sub_owner_license_fk from subscription s where s.sub_type_rv_fk = @rdc_so;
+update package p, subscription_package sp, subscription s
+set p.pkg_license_fk = s.sub_owner_license_fk
+where p.pkg_id = sp.sp_pkg_fk 
+  and sp.sp_sub_fk = s.sub_id
+  and s.sub_type_rv_fk = @rdc_so;
 
