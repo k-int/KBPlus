@@ -797,7 +797,7 @@ class MyInstitutionsController {
     result.num_ti_rows = IssueEntitlement.executeQuery("Select Count(Distinct ie.tipp.title) ${title_query}", qry_params)[0]
 //    result.num_ti_rows = IssueEntitlement.executeQuery("Select ie.tipp.title  ${title_query} ${title_query_ordering}", qry_params).size()
     
-    def limits = (!params.format.equals("csv"))?[max:result.max, offset:result.offset]:[offset:0]
+    def limits = (!(params.format.equals("csv")||params.format.equals("json")))?[max:result.max, offset:result.offset]:[offset:0]
     result.titles = IssueEntitlement.executeQuery(
         "Select ie.tipp.title, Min(ie.startDate), Max(ie.endDate), Count(ie.subscription) ${title_query} ${title_query_grouping} ${title_query_ordering}", 
         qry_params, limits );
@@ -917,6 +917,61 @@ class MyInstitutionsController {
                 writer.close()
             }
             out.close()
+        }
+        json {
+            def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+            
+            // Get distinct ID.Namespace
+            def namespaces = []
+            title_list.each(){ ti ->
+                ti.ids.each(){ id ->
+                    namespaces.add(id.identifier.ns.ns)
+                }
+            }
+            namespaces.unique()
+            
+            def response = []
+            
+            result.titles.each { ti ->
+                def title = [:]
+                title.Title = ti[0].title
+                title.IDs = [:]
+                namespaces.each(){ ns ->
+                    if(ti[0].getIdentifierValue(ns)) 
+                        title.IDs[ns] = ti[0].getIdentifierValue(ns)
+                }
+                def entitlements = title."Issue Entitlements" = []
+                result.entitlements.each(){ 
+                    def ie = [:]
+                    if(it.tipp.title.id.equals(ti[0].id)){
+                        ie."Subscription name" = it.subscription.name
+                        ie."Start date" = it.startDate?formatter.format(it.startDate):''
+                        ie."Start volume" = it.startVolume?:''
+                        ie."Start issue" = it.startIssue?:''
+                        ie."End date" = it.endDate?formatter.format(it.endDate):''
+                        ie."End volume" = it.endVolume?:''
+                        ie."End issue" = it.endIssue?:''
+                        ie."Embargo" = it.embargo?:''
+                        ie."Coverage" = it.coverageDepth?:''
+                        ie."Coverage note" = it.coverageNote?:''
+                        ie."Host Platform Name" = it.tipp?.platform?.name?:''
+                        ie."Host Platform URL" = it.tipp?.hostPlatformURL?:''
+                        ie."Additional Platforms" = [:]
+                        it.tipp?.additionalPlatforms.each(){ ap ->
+                            ie."Additional Platforms".name = ap.platform?.name?:''
+                            ie."Additional Platforms".role = ap.rel?:''
+                            ie."Additional Platforms".URL = ap.platform?.primaryUrl?:''
+                        }
+                        ie."Core status" = it.coreStatus?.value?:''
+                        ie."Core start" = it.coreStatusStart?formatter.format(it.coreStatusStart):''
+                        ie."Core end" = it.coreStatusEnd?formatter.format(it.coreStatusEnd):''
+                        
+                        entitlements.add(ie)
+                    }
+                }
+                response.add(title)
+            }
+            render response as JSON
         }
     }
   }
