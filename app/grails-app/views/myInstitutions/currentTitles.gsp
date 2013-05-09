@@ -20,19 +20,11 @@
             </a>
             <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
               <li>
-                <% 
-                def ps_csv = [:]
-                ps_csv.putAll(params)
-                ps_csv.format = 'csv'
-                %>
+                <% def ps_csv = [:]; ps_csv.putAll(params); ps_csv.format = 'csv'; %>
                 <g:link action="currentTitles" params="${ps_csv}">CSV Export</g:link>
               </li>
               <li>
-                <% 
-                def ps_json = [:]
-                ps_json.putAll(params)
-                ps_json.format = 'json'
-                %>
+                <% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
                 <g:link action="currentTitles" params="${ps_json}">Json Export</g:link>
               </li>
             </ul>
