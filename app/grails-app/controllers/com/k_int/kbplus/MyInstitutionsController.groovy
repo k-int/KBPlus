@@ -698,7 +698,7 @@ class MyInstitutionsController {
         And s.status.value != 'Deleted' "
     
     result.subscriptions = Subscription.executeQuery(
-        "SELECT s ${sub_qry} Order By s.name" , [institution: result.institution] );
+        "Select s ${sub_qry} Order By s.name" , [institution: result.institution] );
             
     result.providers = Subscription.executeQuery(
         "Select Distinct(role.org) From SubscriptionPackage sp Inner Join sp.pkg.orgs As role \
@@ -796,11 +796,11 @@ class MyInstitutionsController {
     
     result.num_ti_rows = IssueEntitlement.executeQuery("Select Count(Distinct ie.tipp.title) ${title_query}", qry_params)[0]
 //    result.num_ti_rows = IssueEntitlement.executeQuery("Select ie.tipp.title  ${title_query} ${title_query_ordering}", qry_params).size()
-
+    
+    def limits = (!params.format.equals("csv"))?[max:result.max, offset:result.offset]:[offset:0]
     result.titles = IssueEntitlement.executeQuery(
         "Select ie.tipp.title, Min(ie.startDate), Max(ie.endDate), Count(ie.subscription) ${title_query} ${title_query_grouping} ${title_query_ordering}", 
-        qry_params, 
-        [max:result.max, offset:result.offset] );
+        qry_params, limits );
     
     if ( result.titles.isEmpty() ) {
       flash.error="Sorry, we could not find any Titles.";
@@ -809,7 +809,11 @@ class MyInstitutionsController {
     }
     
     def title_list = []
-    result.titles.each() { ti -> title_list.add(ti[0]) }
+    def max_nb_ie = 0
+    result.titles.each() { 
+        ti -> title_list.add(ti[0])
+        max_nb_ie = max_nb_ie<ti[3]?ti[3]:max_nb_ie
+    }
 
 //    start = new Date()
 
@@ -827,39 +831,93 @@ class MyInstitutionsController {
 //    }
     
     withFormat {
-      html result
-      csv {
-//         def jc_id = result.subscriptionInstance.getSubscriber()?.getIdentifierByType('JC')?.value
-//
-//         response.setHeader("Content-disposition", "attachment; filename=${result.subscriptionInstance.identifier}.csv")
-//         response.contentType = "text/csv"
-//         def out = response.outputStream
-//         out.withWriter { writer ->
-//           def tsdate = result.subscriptionInstance.startDate ? formatter.format(result.subscriptionInstance.startDate) : ''
-//           def tedate = result.subscriptionInstance.endDate ? formatter.format(result.subscriptionInstance.endDate) : ''
-//           if ( ( params.omitHeader == null ) || ( params.omitHeader != 'Y' ) ) {
-//             writer.write("FileType,SpecVersion,JC_ID,TermStartDate,TermEndDate,SubURI,SystemIdentifier\n")
-//             writer.write("${result.subscriptionInstance.type.value},\"2.0\",${jc_id?:''},${tsdate},${tedate},\"uri://kbplus/sub/${result.subscriptionInstance.identifier}\",${result.subscriptionInstance.impId}\n")
-//           }
-//
-//           // Output the body text
-//           // writer.write("publication_title,print_identifier,online_identifier,date_first_issue_subscribed,num_first_vol_subscribed,num_first_issue_subscribed,date_last_issue_subscribed,num_last_vol_subscribed,num_last_issue_subscribed,embargo_info,title_url,first_author,title_id,coverage_note,coverage_depth,publisher_name\n");
-//           writer.write("publication_title,print_identifier,online_identifier,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,title_url,first_author,title_id,embargo_info,coverage_depth,coverage_notes,publisher_name\n");
-//
-//           result.entitlements.each { e ->
-//
-//             def start_date = e.startDate ? formatter.format(e.startDate) : '';
-//             def end_date = e.endDate ? formatter.format(e.endDate) : '';
-//             def title_doi = (e.tipp?.title?.getIdentifierValue('DOI'))?:''
-//             def publisher = e.tipp?.title?.publisher
-//
-//             writer.write("\"${e.tipp.title.title}\",\"${e.tipp?.title?.getIdentifierValue('ISSN')?:''}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')?:''}\",${start_date},${e.startVolume?:''},${e.startIssue?:''},${end_date},${e.endVolume?:''},${e.endIssue?:''},\"${e.tipp?.hostPlatformURL?:''}\",,\"${title_doi}\",\"${e.embargo?:''}\",\"${e.tipp?.coverageDepth?:''}\",\"${e.tipp?.coverageNote?:''}\",\"${publisher?.name?:''}\"\n");
-//           }
-//           writer.flush()
-//           writer.close()
-//         }
-//         out.close()
-      }
+        html result
+        csv {
+            def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+
+            // Get distinct ID.Namespace
+            def namespaces = []
+            title_list.each(){ ti ->
+                ti.ids.each(){ id ->
+                    namespaces.add(id.identifier.ns.ns)
+                }
+            }
+            namespaces.unique()
+
+            response.setHeader("Content-disposition", "attachment; filename=titles_listing_${result.institution?.name}.csv")
+            response.contentType = "text/csv"
+            def out = response.outputStream
+            out.withWriter { writer ->
+//            if ( ( params.omitHeader == null ) || ( params.omitHeader != 'Y' ) ) {
+//                writer.write("FileType,SpecVersion,JC_ID,TermStartDate,TermEndDate,SubURI,SystemIdentifier\n")
+//                writer.write("Titles listing,\"2.0\",${jc_id?:''},${tsdate},${tedate},\"uri://kbplus/sub/${result.subscriptionInstance.identifier}\",${result.subscriptionInstance.impId}\n")
+//            }
+
+                // Output the header
+                writer.write("Title,")
+                namespaces.each(){ ns -> writer.write("${ns},") }
+                writer.write("Earliest date,Latest date")
+                (1..max_nb_ie).each(){
+                    writer.write(",IE.${it}.Subscription name,")
+                    writer.write("IE.${it}.Start date,")
+                    writer.write("IE.${it}.Start Volume,")
+                    writer.write("IE.${it}.Start Issue,")
+                    writer.write("IE.${it}.End date,")
+                    writer.write("IE.${it}.End Volume,")
+                    writer.write("IE.${it}.End Issue,")
+                    writer.write("IE.${it}.Embargo,")
+                    writer.write("IE.${it}.Coverage,")
+                    writer.write("IE.${it}.Coverage note,")
+                    writer.write("IE.${it}.platform.host.name,")
+                    writer.write("IE.${it}.platform.host.url,")
+                    writer.write("IE.${it}.platform.admin.name,")
+                    writer.write("IE.${it}.Core status,")
+                    writer.write("IE.${it}.Core start,")
+                    writer.write("IE.${it}.Core end")
+                }
+                writer.write("\n")
+
+                result.titles.each { ti ->
+                    writer.write("\"${ti[0].title}\",");
+                    namespaces.each(){ ns ->
+                        writer.write("\"${ti[0].getIdentifierValue(ns)?:''}\",");
+                    }
+                    writer.write("${ti[1] ? formatter.format(ti[1]) : ''},");
+                    writer.write("${ti[2] ? formatter.format(ti[2]) : ''}");
+                    
+                    result.entitlements.each(){ ie->
+                        if(ie.tipp.title.id.equals(ti[0].id)){
+                            writer.write(",\"${ie.subscription.name}\",")
+                            writer.write("${ie.startDate?formatter.format(ie.startDate):''},")
+                            writer.write("\"${ie.startVolume?:''}\",")
+                            writer.write("\"${ie.startIssue?:''}\",")
+                            writer.write("${ie.endDate?formatter.format(ie.endDate):''},")
+                            writer.write("\"${ie.endVolume?:''}\",")
+                            writer.write("\"${ie.endIssue?:''}\",")
+                            writer.write("\"${ie.embargo?:''}\",")
+                            writer.write("\"${ie.coverageDepth?:''}\",")
+                            writer.write("\"${ie.coverageNote?:''}\",")
+                            writer.write("\"${ie.tipp?.platform?.name?:''}\",")
+                            writer.write("\"${ie.tipp?.hostPlatformURL?:''}\",")
+                            writer.write("\"")
+                            ie.tipp?.additionalPlatforms.eachWithIndex(){ ap, i ->
+                                if(i>0) writer.write(", ")
+                                writer.write("${ap.platform.name}")
+                            }
+                            writer.write("\",")
+                            writer.write("IE.platform.admin.name,")
+                            writer.write("\"${ie.coreStatus?.value?:''}\",")
+                            writer.write("${ie.coreStatusStart?formatter.format(ie.coreStatusStart):''},")
+                            writer.write("${ie.coreStatusEnd?formatter.format(ie.coreStatusEnd):''}")
+                        }
+                    }
+                    writer.write("\n");
+                }
+                writer.flush()
+                writer.close()
+            }
+            out.close()
+        }
     }
   }
 

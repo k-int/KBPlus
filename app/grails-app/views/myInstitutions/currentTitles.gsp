@@ -12,8 +12,16 @@
   <body>
     <div class="container">
         <ul class="breadcrumb">
-            <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
-           <li> <g:link controller="reports" action="list">${institution.name}  Current Titles</g:link> </li>
+          <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
+          <li> <g:link controller="reports" action="list">${institution.name}  Current Titles</g:link> </li>
+          <li class="pull-right">
+            <% 
+            def ps_csv = [:]
+            ps_csv.putAll(params)
+            ps_csv.format = 'csv'
+            %>
+            <g:link action="currentTitles" params="${ps_csv}">CSV Export</g:link>
+          </li>
         </ul>
     </div>
     
