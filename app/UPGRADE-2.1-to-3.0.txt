@@ -1,7 +1,7 @@
 
 update package p, subscription_package sp, subscription s
 set p.pkg_end_date=s.sub_end_date, p.pkg_start_date=s.sub_start_date
-where p.pkg_id = sp.sp_pkg_fk and sp.sp_sub_fk = s.sub_id
+where p.pkg_id = sp.sp_pkg_fk and sp.sp_sub_fk = s.sub_id;
 
 
 
@@ -46,4 +46,7 @@ where o_r.or_sub_fk = s.sub_id
   and o_r.or_roletype_fk = @rdv_sc
   and s.sub_type_rv_fk = @rdv_so
   and sp.sp_sub_fk = s.sub_id
+
+
+update refdata_value, refdata_category set rdv_icon = 'greenTick' where rdv_value = 'No limit' and rdc_id = rdv_owner and rdc_description = 'Concurrent Access'
 
