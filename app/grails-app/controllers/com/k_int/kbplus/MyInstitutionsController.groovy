@@ -688,7 +688,8 @@ class MyInstitutionsController {
     def paginate_after = params.paginate_after ?: 19;
     result.max = params.max ? Integer.parseInt(params.max) : 10;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
-        
+    
+    def sub_params = [institution: result.institution]
     def sub_qry = 
         "From Subscription As s \
         Where Exists ( \
@@ -696,16 +697,19 @@ class MyInstitutionsController {
             Where o.roleType.value = 'Subscriber' \
             And o.org = :institution ) \
         And s.status.value != 'Deleted' "
+    if ( date_restriction ) {
+      sub_qry += " And s.startDate <= :date_restriction And s.endDate >= :date_restriction "
+      sub_params.date_restriction = date_restriction
+    }
     
     result.subscriptions = Subscription.executeQuery(
-        "Select s ${sub_qry} Order By s.name" , [institution: result.institution] );
+        "Select s ${sub_qry} Order By s.name", sub_params );
             
     result.providers = Subscription.executeQuery(
         "Select Distinct(role.org) From SubscriptionPackage sp Inner Join sp.pkg.orgs As role \
          Where Exists ( ${sub_qry} And sp.subscription = s ) \
          And role.roleType.value = 'Content Provider' \
-         Order By role.org.name"
-        , [institution: result.institution]);
+         Order By role.org.name", sub_params);
     
     print("result.providers: ${result.providers}")
 
@@ -720,14 +724,14 @@ class MyInstitutionsController {
             Select distinct(ie.tipp.platform) From IssueEntitlement As ie \
             Where Exists ( ${sub_qry} And ie.subscription.id = s.id ) \
             Order By ie.tipp.platform.name",
-            [institution: result.institution] );
+            sub_params );
     
     result.otherplatforms = IssueEntitlement.executeQuery("\
             Select distinct(p.platform) From IssueEntitlement As ie \
             Inner Join ie.tipp.additionalPlatforms as p \
             Where Exists ( ${sub_qry} And ie.subscription.id = s.id ) \
             Order By p.platform.name",
-            [institution: result.institution] );
+            sub_params );
     
     def qry_params = [:]
     
@@ -905,7 +909,6 @@ class MyInstitutionsController {
                                 writer.write("${ap.platform.name}")
                             }
                             writer.write("\",")
-                            writer.write("IE.platform.admin.name,")
                             writer.write("\"${ie.coreStatus?.value?:''}\",")
                             writer.write("${ie.coreStatusStart?formatter.format(ie.coreStatusStart):''},")
                             writer.write("${ie.coreStatusEnd?formatter.format(ie.coreStatusEnd):''}")
