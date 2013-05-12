@@ -590,7 +590,12 @@ class UploadController {
   def generateAndValidatePackageIdentifier(upload) {
 
     if ( upload.soProvider?.value && upload.soPackageIdentifier?.value ) {
-      upload.normPkgIdentifier = "${upload.soProvider.value?.trim()}:${upload.soPackageIdentifier.value?.trim()}".toLowerCase().replaceAll('-','_');
+      upload.normPkgIdentifier = "${upload.soProvider.value?.trim()}:${upload.soPackageIdentifier.value?.trim()}"
+                                      .toLowerCase()
+                                      .replaceAll('-','_')
+                                      .replaceAll('&','_')
+                                      .replaceAll(' ','_')
+                                      .replaceAll(':','_');
       if ( ( upload.normPkgIdentifier == null ) || ( upload.normPkgIdentifier.trim().length() == 0 ) ) {
         log.error("No package identifier");
         upload['soPackageIdentifier'].messages.add("Unable to use this identifier")
