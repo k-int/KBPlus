@@ -61,7 +61,6 @@
           <tr>
             <th>Select</th>
             <g:sortableColumn params="${params}" property="s.name" title="Name" />
-            <th>Parent</th>
             <th>Package Name</th>
             <th>Consortia</th>
             <g:sortableColumn params="${params}" property="s.startDate" title="Start Date" />
@@ -74,9 +73,6 @@
               <td><input type="radio" name="basesubscription" value="${s.id}"/></td>
               <td>
                 <g:link controller="subscriptionDetails" action="index" id="${s.id}">${s.name} <g:if test="${s.consortia}">( ${s.consortia?.name} )</g:if></g:link>
-              </td>
-              <td>
-                <g:if test="${s.instanceOf}"><g:link controller="SubscriptionDetails" action="index" id="${s.instanceOf.id}">${s.instanceOf.name}</g:link></g:if>
               </td>
               <td>
                 <g:each in="${s.packages}" var="sp">
