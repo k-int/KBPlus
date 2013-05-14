@@ -581,6 +581,10 @@ class MyInstitutionsController {
                                                    basePackage.endDate,
                                                    basePackage.getConsortia())
 
+      def new_sub_link = new OrgRole(org:institution, sub:new_sub, roleType: RefdataCategory.lookupOrCreate('Organisational Role','Subscriber')).save();
+
+      def new_sub_package = new SubscriptionPackage(subscription: new_sub, pkg: basePackage).save();
+
       flash.message = message(code: 'subscription.created.message', args: [message(code: 'subscription.label', default: 'Package'), basePackage.id])
       redirect controller: 'subscriptionDetails', action:'index', params:params, id:new_sub.id
     }
