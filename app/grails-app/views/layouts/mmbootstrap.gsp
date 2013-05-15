@@ -71,6 +71,9 @@
                                        action="currentSubscriptions" 
                                        params="${[shortcode:org.shortcode]}">${org.name} - Subscriptions</g:link></li>
                            <li><g:link controller="myInstitutions" 
+                                       action="currentTitles" 
+                                       params="${[shortcode:org.shortcode]}">${org.name} - Titles</g:link></li>
+                           <li><g:link controller="myInstitutions" 
                                        action="renewalsSearch" 
                                        params="${[shortcode:org.shortcode]}">${org.name} - Generate Renewals Worksheet</g:link></li>
                            <li><g:link controller="myInstitutions" 

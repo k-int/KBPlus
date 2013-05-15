@@ -320,7 +320,7 @@ class MyInstitutionsController {
 
     // Or the user is a member of an org who has a consortial membership that has view perms
     // base_qry += " or ( 2==2 ) )"
-
+    
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
       base_qry += " order by ${params.sort} ${params.order}"
     }
@@ -647,6 +647,346 @@ class MyInstitutionsController {
     else {
       flash.message = message(code: 'subscription.unknown.message')
       redirect action: 'addSubscription', params:params
+    }
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def currentTitles() {
+    if (params.filterSub.equals("all")) params.filterSub = null
+    if (params.filterPvd.equals("all")) params.filterPvd = null
+    if (params.filterHostPlat.equals("all")) params.filterHostPlat = null
+    if (params.filterOtherPlat.equals("all")) params.filterOtherPlat = null
+    if (!params.order) params.order = "asc"
+    if (!params.sort) params.sort = "tipp.title.title"
+
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+    
+    def date_restriction = null;
+    def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
+    
+    if ( params.validOn == null ) {
+      result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+      date_restriction = sdf.parse(result.validOn)
+    }
+    else if ( params.validOn == '' ) {     
+      result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+    }
+    else {
+      result.validOn=params.validOn
+      date_restriction = sdf.parse(params.validOn)
+    }
+
+    if ( !checkUserIsMember(result.user, result.institution) ) {
+      flash.error="You do not have permission to access ${result.institution.name} pages. Please request access on the profile page";
+      response.sendError(401)
+      return;
+    }
+
+    if ( checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
+      result.is_admin = true
+    }
+    else {
+      result.is_admin=false;
+    }
+
+    def paginate_after = params.paginate_after ?: 19;
+    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+    
+    def sub_params = [institution: result.institution]
+    def sub_qry = 
+        "From Subscription As s \
+        Where Exists ( \
+            Select o From s.orgRelations As o \
+            Where o.roleType.value = 'Subscriber' \
+            And o.org = :institution ) \
+        And s.status.value != 'Deleted' "
+    if ( date_restriction ) {
+      sub_qry += " And s.startDate <= :date_restriction And s.endDate >= :date_restriction "
+      sub_params.date_restriction = date_restriction
+    }
+    
+    result.subscriptions = Subscription.executeQuery(
+        "Select s ${sub_qry} Order By s.name", sub_params );
+            
+    result.providers = Subscription.executeQuery(
+        "Select Distinct(role.org) From SubscriptionPackage sp Inner Join sp.pkg.orgs As role \
+         Where Exists ( ${sub_qry} And sp.subscription = s ) \
+         And role.roleType.value = 'Content Provider' \
+         Order By role.org.name", sub_params);
+    
+    print("result.providers: ${result.providers}")
+
+    if ( result.subscriptions.isEmpty() ) {
+      flash.error="Sorry, we could not find any Subscription for ${result.institution.name}";
+      result.titles = []
+      result.entitlements = []
+      return result;
+    }
+    
+    result.hostplatforms = IssueEntitlement.executeQuery("\
+            Select distinct(ie.tipp.platform) From IssueEntitlement As ie \
+            Where Exists ( ${sub_qry} And ie.subscription.id = s.id ) \
+            Order By ie.tipp.platform.name",
+            sub_params );
+    
+    result.otherplatforms = IssueEntitlement.executeQuery("\
+            Select distinct(p.platform) From IssueEntitlement As ie \
+            Inner Join ie.tipp.additionalPlatforms as p \
+            Where Exists ( ${sub_qry} And ie.subscription.id = s.id ) \
+            Order By p.platform.name",
+            sub_params );
+    
+    def qry_params = [:]
+    
+    def title_query = "From IssueEntitlement As ie "
+    if (params.filterPvd)
+        title_query += "Inner Join ie.tipp.pkg.orgs As role "
+    if (params.filterHostPlat)
+        title_query += "Inner Join ie.tipp.platform As hplat "
+       
+    if (!params.filterSub){
+        title_query += "Where Exists ( ${sub_qry} And ie.subscription = s ) "
+        qry_params.institution = result.institution
+    }else{
+        title_query += "Where ie.subscription.id = :subscription "
+        qry_params.subscription = Long.valueOf(params.filterSub)
+    }
+    
+    // copied from SubscriptionDetailsController
+    if ( params.filter ) {
+      title_query += 
+        "And ( ( Lower(ie.tipp.title.title) like :filterTrim ) \
+         Or ( Exists ( From IdentifierOccurrence io \
+            Where io.ti.id = ie.tipp.title.id \
+            And io.identifier.value like :filter ) ) )"
+      qry_params.filterTrim = "%${params.filter.trim().toLowerCase()}%"
+      qry_params.filter = "%${params.filter}%"
+    }
+    
+    if (params.filterPvd){
+        title_query += "\
+            And role.roleType.value = 'Content Provider' \
+            And role.org.id = :provider "
+        qry_params.provider = Long.valueOf(params.filterPvd)
+    }
+    
+    if (params.filterHostPlat){
+        title_query += "\
+            And hplat.id = :hostPlatform "
+        qry_params.hostPlatform = Long.valueOf(params.filterHostPlat)
+    }
+    
+    if (params.filterOtherPlat){
+        title_query += "\
+            And Exists ( \
+                From IssueEntitlement ie2 \
+                Where Exists ( \
+                    From ie2.tipp.additionalPlatforms As ap \
+                    Where ap.platform.id = :otherPlatform \
+                ) \
+                And ie2.tipp.title = ie.tipp.title \
+            ) "
+        qry_params.otherPlatform = Long.valueOf(params.filterOtherPlat)
+    }
+    
+    if ( date_restriction ) {
+      title_query += " And ie.subscription.startDate <= :date_restriction And ie.subscription.endDate >= :date_restriction "
+      qry_params.date_restriction = date_restriction
+    }
+    
+    title_query += "And ( ie.status.value != 'Deleted' ) "
+    
+    def title_query_grouping = "Group By ie.tipp.title "
+    def title_query_ordering = "Order By ie.tipp.title.title ${params.order} " //COLLATE utf8_unicode_ci
+
+    print("Final query:\n${title_query.replaceAll("\\s+", " ")}")
+    
+    // Use of createQuery
+//    result.num_ti_rows = ( (Integer) grailsApplication.mainContext.sessionFactory.getCurrentSession().
+//            createQuery("Select Count(Distinct ie.tipp.title) ${title_query}").setProperties(qry_params)
+//                .iterate().next() ).intValue();
+    result.num_ti_rows = IssueEntitlement.executeQuery("Select Count(Distinct ie.tipp.title) ${title_query}", qry_params)[0]
+//    result.num_ti_rows = IssueEntitlement.executeQuery("Select ie.tipp.title  ${title_query} ${title_query_ordering}", qry_params).size()
+
+
+    def limits = (!(params.format.equals("csv")||params.format.equals("json")))?[max:result.max, offset:result.offset]:[offset:0]
+    result.titles = IssueEntitlement.executeQuery(
+        "Select ie.tipp.title, Min(ie.startDate), Max(ie.endDate), Count(ie.subscription) ${title_query} ${title_query_grouping} ${title_query_ordering}", 
+        qry_params, limits );
+    
+    if( result.titles.isEmpty() ) {
+      flash.error="Sorry, we could not find any Titles.";
+      result.entitlements = []
+      return result;
+    }
+    
+    def title_list = []
+    def max_nb_ie = 0
+    result.titles.each() { 
+        ti -> title_list.add(ti[0])
+        max_nb_ie = max_nb_ie<ti[3]?ti[3]:max_nb_ie
+    }
+
+//    start = new Date()
+
+    qry_params.titles = title_list
+    result.entitlements = IssueEntitlement.executeQuery("\
+        Select ie ${title_query} \
+        And ie.tipp.title In (:titles) \
+        ${title_query_ordering}", 
+        qry_params );
+    
+//    end = new Date()
+//    use(groovy.time.TimeCategory) {
+//        def duration = end - start
+//        print "IE Query: ${duration.minutes}:${duration.seconds}:${duration.millis}"
+//    }
+    
+    withFormat {
+        html result
+        csv {
+            def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+
+            // Get distinct ID.Namespace
+            def namespaces = []
+            title_list.each(){ ti ->
+                ti.ids.each(){ id ->
+                    namespaces.add(id.identifier.ns.ns)
+                }
+            }
+            namespaces.unique()
+
+            response.setHeader("Content-disposition", "attachment; filename=titles_listing_${result.institution?.name}.csv")
+            response.contentType = "text/csv"
+            def out = response.outputStream
+            out.withWriter { writer ->
+//            if ( ( params.omitHeader == null ) || ( params.omitHeader != 'Y' ) ) {
+//                writer.write("FileType,SpecVersion,JC_ID,TermStartDate,TermEndDate,SubURI,SystemIdentifier\n")
+//                writer.write("Titles listing,\"2.0\",${jc_id?:''},${tsdate},${tedate},\"uri://kbplus/sub/${result.subscriptionInstance.identifier}\",${result.subscriptionInstance.impId}\n")
+//            }
+
+                // Output the header
+                writer.write("Title,")
+                namespaces.each(){ ns -> writer.write("${ns},") }
+                writer.write("Earliest date,Latest date")
+                (1..max_nb_ie).each(){
+                    writer.write(",IE.${it}.Subscription name,")
+                    writer.write("IE.${it}.Start date,")
+                    writer.write("IE.${it}.Start Volume,")
+                    writer.write("IE.${it}.Start Issue,")
+                    writer.write("IE.${it}.End date,")
+                    writer.write("IE.${it}.End Volume,")
+                    writer.write("IE.${it}.End Issue,")
+                    writer.write("IE.${it}.Embargo,")
+                    writer.write("IE.${it}.Coverage,")
+                    writer.write("IE.${it}.Coverage note,")
+                    writer.write("IE.${it}.platform.host.name,")
+                    writer.write("IE.${it}.platform.host.url,")
+                    writer.write("IE.${it}.platform.admin.name,")
+                    writer.write("IE.${it}.Core status,")
+                    writer.write("IE.${it}.Core start,")
+                    writer.write("IE.${it}.Core end")
+                }
+                writer.write("\n")
+
+                result.titles.each { ti ->
+                    writer.write("\"${ti[0].title}\",");
+                    namespaces.each(){ ns ->
+                        writer.write("\"${ti[0].getIdentifierValue(ns)?:''}\",");
+                    }
+                    writer.write("${ti[1] ? formatter.format(ti[1]) : ''},");
+                    writer.write("${ti[2] ? formatter.format(ti[2]) : ''}");
+                    
+                    result.entitlements.each(){ ie->
+                        if(ie.tipp.title.id.equals(ti[0].id)){
+                            writer.write(",\"${ie.subscription.name}\",")
+                            writer.write("${ie.startDate?formatter.format(ie.startDate):''},")
+                            writer.write("\"${ie.startVolume?:''}\",")
+                            writer.write("\"${ie.startIssue?:''}\",")
+                            writer.write("${ie.endDate?formatter.format(ie.endDate):''},")
+                            writer.write("\"${ie.endVolume?:''}\",")
+                            writer.write("\"${ie.endIssue?:''}\",")
+                            writer.write("\"${ie.embargo?:''}\",")
+                            writer.write("\"${ie.coverageDepth?:''}\",")
+                            writer.write("\"${ie.coverageNote?:''}\",")
+                            writer.write("\"${ie.tipp?.platform?.name?:''}\",")
+                            writer.write("\"${ie.tipp?.hostPlatformURL?:''}\",")
+                            writer.write("\"")
+                            ie.tipp?.additionalPlatforms.eachWithIndex(){ ap, i ->
+                                if(i>0) writer.write(", ")
+                                writer.write("${ap.platform.name}")
+                            }
+                            writer.write("\",")
+                            writer.write("\"${ie.coreStatus?.value?:''}\",")
+                            writer.write("${ie.coreStatusStart?formatter.format(ie.coreStatusStart):''},")
+                            writer.write("${ie.coreStatusEnd?formatter.format(ie.coreStatusEnd):''}")
+                        }
+                    }
+                    writer.write("\n");
+                }
+                writer.flush()
+                writer.close()
+            }
+            out.close()
+        }
+        json {
+            def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+            
+            // Get distinct ID.Namespace
+            def namespaces = []
+            title_list.each(){ ti ->
+                ti.ids.each(){ id ->
+                    namespaces.add(id.identifier.ns.ns)
+                }
+            }
+            namespaces.unique()
+            
+            def response = []
+            
+            result.titles.each { ti ->
+                def title = [:]
+                title.Title = ti[0].title
+                title.IDs = [:]
+                namespaces.each(){ ns ->
+                    if(ti[0].getIdentifierValue(ns)) 
+                        title.IDs[ns] = ti[0].getIdentifierValue(ns)
+                }
+                def entitlements = title."Issue Entitlements" = []
+                result.entitlements.each(){ 
+                    def ie = [:]
+                    if(it.tipp.title.id.equals(ti[0].id)){
+                        ie."Subscription name" = it.subscription.name
+                        ie."Start date" = it.startDate?formatter.format(it.startDate):''
+                        ie."Start volume" = it.startVolume?:''
+                        ie."Start issue" = it.startIssue?:''
+                        ie."End date" = it.endDate?formatter.format(it.endDate):''
+                        ie."End volume" = it.endVolume?:''
+                        ie."End issue" = it.endIssue?:''
+                        ie."Embargo" = it.embargo?:''
+                        ie."Coverage" = it.coverageDepth?:''
+                        ie."Coverage note" = it.coverageNote?:''
+                        ie."Host Platform Name" = it.tipp?.platform?.name?:''
+                        ie."Host Platform URL" = it.tipp?.hostPlatformURL?:''
+                        ie."Additional Platforms" = [:]
+                        it.tipp?.additionalPlatforms.each(){ ap ->
+                            ie."Additional Platforms".name = ap.platform?.name?:''
+                            ie."Additional Platforms".role = ap.rel?:''
+                            ie."Additional Platforms".URL = ap.platform?.primaryUrl?:''
+                        }
+                        ie."Core status" = it.coreStatus?.value?:''
+                        ie."Core start" = it.coreStatusStart?formatter.format(it.coreStatusStart):''
+                        ie."Core end" = it.coreStatusEnd?formatter.format(it.coreStatusEnd):''
+                        
+                        entitlements.add(ie)
+                    }
+                }
+                response.add(title)
+            }
+            render response as JSON
+        }
     }
   }
 
@@ -1595,7 +1935,7 @@ class MyInstitutionsController {
 
     result
   }
-
+  
   def checkUserHasRole(user, org, role) {
     def uoq = UserOrg.createCriteria()
     def grants = uoq.list {
