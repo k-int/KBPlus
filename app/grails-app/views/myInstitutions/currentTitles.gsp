@@ -189,7 +189,7 @@
                     <%--
                     <div class="accordion" id="accordions">
                       <div class="accordion-group"> 
-                      --%>
+                    --%>
                         <div class="accordion-heading">
                           <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordions" href="#collapse-${ti[0].id}">
                             ${ti[3]} subscriptions (show/hide)
@@ -273,6 +273,7 @@
                   <th>Earliest Date</th>
                   <th>Latest Date</th>
                   <th>Subscription</th>
+                  <th>Content Provider</th>
                   <th>Host Platform</th>
                   <th>Other Platform</th>
                 </tr>
@@ -284,6 +285,11 @@
                     <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.startDate}"/></td>
                     <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.endDate}"/></td>
                     <td>${ie.subscription.name}</td>
+                    <td>
+                      <g:each in="${ie.tipp.pkg.orgs}" var="role">
+                        <g:if test="${role.roleType?.value?.equals('Content Provider')}" >${role.org.name}</g:if>
+                      </g:each>
+                    </td>
                     <td><div><i class="icon-globe"></i><span>${ie.tipp.platform.name}</span></div></td>
                     <td>
                       <g:each in="${ie.tipp.additionalPlatforms}" var="p">

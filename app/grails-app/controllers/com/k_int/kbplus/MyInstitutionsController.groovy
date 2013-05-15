@@ -794,19 +794,24 @@ class MyInstitutionsController {
     title_query += "And ( ie.status.value != 'Deleted' ) "
     
     def title_query_grouping = "Group By ie.tipp.title "
-    def title_query_ordering = "Order By ie.tipp.title.title ${params.order} "
+    def title_query_ordering = "Order By ie.tipp.title.title ${params.order} " //COLLATE utf8_unicode_ci
 
     print("Final query:\n${title_query.replaceAll("\\s+", " ")}")
     
+    // Use of createQuery
+//    result.num_ti_rows = ( (Integer) grailsApplication.mainContext.sessionFactory.getCurrentSession().
+//            createQuery("Select Count(Distinct ie.tipp.title) ${title_query}").setProperties(qry_params)
+//                .iterate().next() ).intValue();
     result.num_ti_rows = IssueEntitlement.executeQuery("Select Count(Distinct ie.tipp.title) ${title_query}", qry_params)[0]
 //    result.num_ti_rows = IssueEntitlement.executeQuery("Select ie.tipp.title  ${title_query} ${title_query_ordering}", qry_params).size()
-    
+
+
     def limits = (!(params.format.equals("csv")||params.format.equals("json")))?[max:result.max, offset:result.offset]:[offset:0]
     result.titles = IssueEntitlement.executeQuery(
         "Select ie.tipp.title, Min(ie.startDate), Max(ie.endDate), Count(ie.subscription) ${title_query} ${title_query_grouping} ${title_query_ordering}", 
         qry_params, limits );
     
-    if ( result.titles.isEmpty() ) {
+    if( result.titles.isEmpty() ) {
       flash.error="Sorry, we could not find any Titles.";
       result.entitlements = []
       return result;
