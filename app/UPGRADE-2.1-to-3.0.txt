@@ -45,8 +45,8 @@ from org_role o_r, subscription s, refdata_value rdv, subscription_package sp
 where o_r.or_sub_fk = s.sub_id
   and o_r.or_roletype_fk = @rdv_sc
   and s.sub_type_rv_fk = @rdv_so
-  and sp.sp_sub_fk = s.sub_id
+  and sp.sp_sub_fk = s.sub_id;
 
 
-update refdata_value, refdata_category set rdv_icon = 'greenTick' where rdv_value = 'No limit' and rdc_id = rdv_owner and rdc_description = 'Concurrent Access'
+update refdata_value, refdata_category set rdv_icon = 'greenTick' where rdv_value = 'No limit' and rdc_id = rdv_owner and rdc_description = 'Concurrent Access';
 
