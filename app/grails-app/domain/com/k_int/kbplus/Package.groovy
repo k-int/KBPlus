@@ -11,9 +11,11 @@ class Package {
   RefdataValue packageStatus
   RefdataValue packageListStatus
   Platform nominalPlatform
+  Date startDate
+  Date endDate
   Date dateCreated
   Date lastUpdated
-
+  License license
 
   static hasMany = [tipps: TitleInstancePackagePlatform, 
                     orgs: OrgRole, 
@@ -34,7 +36,11 @@ class Package {
         packageStatus column:'pkg_status_rv_fk'
     packageListStatus column:'pkg_list_status_rv_fk'
       nominalPlatform column:'pkg_nominal_platform_fk'
+            startDate column:'pkg_start_date'
+              endDate column:'pkg_end_date'
+              license column:'pkg_license_fk'
                 tipps sort:'title.title', order: 'asc'
+
 //                 orgs sort:'org.name', order: 'asc'
   }
 
@@ -43,8 +49,21 @@ class Package {
         packageStatus(nullable:true, blank:false)
       nominalPlatform(nullable:true, blank:false)
     packageListStatus(nullable:true, blank:false)
+            startDate(nullable:true, blank:false)
+              endDate(nullable:true, blank:false)
+              license(nullable:true, blank:false)
+
   }
 
+  def getConsortia() {
+    def result = null;
+    orgs.each { or ->
+      if ( or?.roleType?.value=='Package Consortia' )
+        result = or.org;
+    }
+    result
+  }
+  
   /**
    * Materialise this package into a subscription of the given type (taken or offered)
    * @param subtype One of 'Subscription Offered' or 'Subscription Taken'

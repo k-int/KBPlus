@@ -23,7 +23,7 @@
                                    params="${[shortcode:params.shortcode]}">Current Subscriptions</g:link></li>
         <li class="active"><g:link controller="myInstitutions" 
                                action="addSubscription" 
-                               params="${[shortcode:params.shortcode]}">Subscriptions Offered / Add New</g:link></li>
+                               params="${[shortcode:params.shortcode]}">Add New Subscription</g:link></li>
       </ul>
     </div>
 
@@ -39,7 +39,7 @@
       </div>
 
     <div class="container">
-        <g:if test="${subscriptions}" >
+        <g:if test="${packages}" >
           <g:form action="processAddSubscription" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="post">
  
             <div class="pull-left subscription-create">
@@ -57,43 +57,36 @@
             <table class="table table-striped table-bordered subscriptions-list">
                 <tr>
                   <th>Select</th>
-                  <g:sortableColumn params="${params}" property="s.name" title="Name" />
-                  <th>Package Name(s)</th>
+                  <g:sortableColumn params="${params}" property="p.name" title="Name" />
                   <th>Consortia</th>
-                  <g:sortableColumn params="${params}" property="s.startDate" title="Start Date" />
-                  <g:sortableColumn params="${params}" property="s.endDate" title="End Date" />
-                  <th>Platform(s)</th>
+                  <g:sortableColumn params="${params}" property="p.startDate" title="Start Date" />
+                  <g:sortableColumn params="${params}" property="p.endDate" title="End Date" />
+                  <th>Platform</th>
                   <th>License</th>
                 </tr>
-                <g:each in="${subscriptions}" var="s">
+                <g:each in="${packages}" var="p">
                   <tr>
-                    <td><input type="radio" name="subOfferedId" value="${s.id}"/></td>
+                    <td><input type="radio" name="packageId" value="${p.id}"/></td>
                     <td>
-                      <g:link controller="subscriptionDetails" action="index" id="${s.id}">${s.name} <g:if test="${s.consortia}">( ${s.consortia?.name} )</g:if></g:link>
+                      <g:link controller="packageDetails" action="show" id="${p.id}">${p.name}</g:link>
                     </td>
+                    <td>${p.getConsortia()?.name}</td>
+                    <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${p.startDate}"/></td>
+                    <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${p.endDate}"/></td>
                     <td>
-                      <g:each in="${s.packages}" var="sp">
-                        ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
-                      </g:each>
+                      ${p.nominalPlatform?.name}<br/>
                     </td>
-                    <td>${s.getConsortia()?.name}</td>
-                    <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${s.startDate}"/></td>
-                    <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${s.endDate}"/></td>
-                    <td>
-                      <g:each in="${s.packages}" var="sp">
-                        ${sp.pkg?.nominalPlatform?.name}<br/>
-                      </g:each>
-                    </td>
-                    <td><g:if test="${s.owner}"><g:link controller="licenseDetails" action="index" id="${s.owner.id}">${s.owner?.reference}</g:link></g:if></td>
+                    <td><g:if test="${p.license!=null}"><g:link controller="licenseDetails" action="index" id="${p.license.id}">${p.license.reference}</g:link></g:if></td>
                   </tr>
+                  
                 </g:each>
              </table>
           </g:form>
         </g:if>
   
         <div class="pagination" style="text-align:center">
-          <g:if test="${subscriptions}" >
-            <bootstrap:paginate  action="addSubscription" controller="myInstitutions" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${num_sub_rows}" />
+          <g:if test="${packages}" >
+            <bootstrap:paginate  action="addSubscription" controller="myInstitutions" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${num_pkg_rows}" />
           </g:if>
         </div>
     </div>

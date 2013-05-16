@@ -45,7 +45,7 @@
                 <tr>
                   <td>${af.id}</td>
                   <td>${af.org.name}</td>
-                  <td>${af.formalRole.authority}</td>
+                  <td>${af.formalRole?.authority}</td>
                   <td>${['Pending','Approved','Rejected','Auto Approved'][af.status]}</td>
                   <td><g:link controller="ajax" action="deleteThrough" params='${[contextOid:"${ui.class.name}:${ui.id}",contextProperty:"affiliations",targetOid:"${af.class.name}:${af.id}"]}'>Delete Affiliation</g:link></td>
                 </tr>

@@ -1,0 +1,52 @@
+
+update package p, subscription_package sp, subscription s
+set p.pkg_end_date=s.sub_end_date, p.pkg_start_date=s.sub_start_date
+where p.pkg_id = sp.sp_pkg_fk and sp.sp_sub_fk = s.sub_id;
+
+
+
+set @rdv_so='';
+set @rdv_sc='';
+set @rdv_sp='';
+select (@rdv_so:=rdv_id) from refdata_value where rdv_value = 'Subscription Offered';
+select (@rdv_sc:=rdv_id) from refdata_value where rdv_value = 'Subscription Consortia';
+select (@rdv_pc:=rdv_id) from refdata_value where rdv_value = 'Package Consortia';
+
+update package p, subscription_package sp, subscription s
+set p.pkg_license_fk = s.sub_owner_license_fk
+where p.pkg_id = sp.sp_pkg_fk 
+  and sp.sp_sub_fk = s.sub_id
+  and s.sub_type_rv_fk = @rdv_so;
+
+
+# select * from org_role o_r, subscription s
+# where o_r.or_sub_fk = s.sub_id
+# and s.sub_type_rv_fk = @rdv_so
+# and o_r.or_roletype_fk = @rdv.sc
+# 
+# 
+# select o_r.or_id, o_r.or_org_fk, s.sub_id, sp.sp_pkg_fk, rdv.rdv_value 
+# from org_role o_r, subscription s, refdata_value rdv, subscription_package sp
+# where o_r.or_sub_fk = s.sub_id
+#   and o_r.or_roletype_fk = rdv.rdv_id
+#   and s.sub_type_rv_fk = @rdv_so
+#   and sp.sp_sub_fk = s.sub_id
+# 
+# select o_r.* from org_role o_r, package p 
+# where or_pkg_fk = p.pkg_id;
+# 
+# This is for testing
+# delete from org_role where or_pkg_fk is not null and or_roletype_fk = @rdv_pc;
+# 
+
+insert into org_role(or_pkg_fk,or_org_fk,or_roletype_fk) 
+select distinct sp.sp_pkg_fk, o_r.or_org_fk, @rdv_pc
+from org_role o_r, subscription s, refdata_value rdv, subscription_package sp
+where o_r.or_sub_fk = s.sub_id
+  and o_r.or_roletype_fk = @rdv_sc
+  and s.sub_type_rv_fk = @rdv_so
+  and sp.sp_sub_fk = s.sub_id
+
+
+update refdata_value, refdata_category set rdv_icon = 'greenTick' where rdv_value = 'No limit' and rdc_id = rdv_owner and rdc_description = 'Concurrent Access'
+

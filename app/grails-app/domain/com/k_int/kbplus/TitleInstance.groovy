@@ -12,6 +12,7 @@ class TitleInstance {
   String title
   String normTitle
   String keyTitle
+  String sortTitle
   String impId
   RefdataValue status
   RefdataValue type
@@ -39,6 +40,7 @@ class TitleInstance {
     type(nullable:true, blank:false);
     title(nullable:true, blank:false,maxSize:1024);
     normTitle(nullable:true, blank:false,maxSize:1024);
+    sortTitle(nullable:true, blank:false,maxSize:1024);
     keyTitle(nullable:true, blank:false,maxSize:1024);
   }
 
@@ -204,6 +206,7 @@ class TitleInstance {
     if ( title != null ) {
       normTitle = generateNormTitle(title)
       keyTitle = generateKeyTitle(title)
+      sortTitle = asciify(title).toLowerCase()
     }
   }
 

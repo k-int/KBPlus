@@ -178,4 +178,10 @@ class Subscription {
     }
   }
 
+  def beforeInsert() {
+    if (impId == null) {
+      impId = java.util.UUID.randomUUID().toString();
+    }
+  }
 }
+
