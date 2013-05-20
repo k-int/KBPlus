@@ -91,6 +91,23 @@ class DataloadService {
       result.dbId = pkg.id
       result.visible = ['Public']
       result.rectype = 'Package'
+      result.consortiaId = pkg.getConsortia()?.id
+      result.consortiaName = pkg.getConsortia()?.name
+
+      if ( pkg.startDate ) {
+        GregorianCalendar c = new GregorianCalendar()
+        c.setTime(pkg.startDate) 
+        result.startYear = "${c.get(Calendar.YEAR)}"
+        result.startYearAndMonth = "${c.get(Calendar.YEAR)}-${(c.get(Calendar.MONTH))+1}"
+      }
+
+      if ( pkg.endDate ) {
+        GregorianCalendar c = new GregorianCalendar()
+        c.setTime(pkg.endDate) 
+        result.endYear = "${c.get(Calendar.YEAR)}"
+        result.endYearAndMonth = "${c.get(Calendar.YEAR)}-${(c.get(Calendar.MONTH))+1}"
+      }
+
       result
     }
 

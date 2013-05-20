@@ -1224,7 +1224,8 @@ class MyInstitutionsController {
 
     StringWriter sw = new StringWriter()
 
-    sw.write("subtype:'Subscription Offered'")
+    // sw.write("subtype:'Subscription Offered'")
+    sw.write("rectype:'Package'")
 
     renewals_reversemap.each { mapping ->
 
