@@ -25,14 +25,11 @@
 
     <g:set var="counter" value="${-1}" />
 
-    <g:if test="${base_subscription}">
+    <g:if test="${1==1}">
       <form  action="processRenewal" method="post" params="${params}">
-        <input type="hidden" name="baseSubscription" value="${base_subscription.id}"/>
         <div class="container">
         <hr/>
-          Uploaded worksheet will create a new subscription taken for ${institution.name} based on subscription offered 
-          <g:link controller="subscriptionDetails" action="index" id="${base_subscription.id}">${base_subscription.id} - ${base_subscription.name}</g:link><br/>
-          The uploaded worksheet will generate the following issue entitlements:<br/>
+          Uploaded worksheet will create a new subscription taken for ${institution.name} based on the following rows...<br/>
   
           <table class="table table-bordered">
             <thead>
@@ -55,8 +52,7 @@
             <tbody>
               <g:each in="${entitlements}" var="e">
                 <tr>
-                  <td><input type="hidden" name="entitlements.${++counter}.tipp_id" value="${e.base_entitlement.tipp.id}"/>
-		      <input type="hidden" name="entitlements.${counter}.entitlement_id" value="${e.base_entitlement.id}"/>
+                  <td><input type="hidden" name="entitlements.${++counter}.tipp_id" value="${e.base_entitlement.id}"/>
                       <input type="hidden" name="entitlements.${counter}.core_status" value="${e.core_status}"/>
                       <input type="hidden" name="entitlements.${counter}.start_date" value="${e.start_date}"/>
                       <input type="hidden" name="entitlements.${counter}.end_date" value="${e.end_date}"/>
@@ -64,10 +60,10 @@
                       <input type="hidden" name="entitlements.${counter}.coverage_note" value="${e.coverage_note}"/>
                       <input type="hidden" name="entitlements.${counter}.core_start_date" value="${e.core_start_date}"/>
                       <input type="hidden" name="entitlements.${counter}.core_end_date" value="${e.core_end_date}"/>
-                      ${e.base_entitlement.tipp.title.title}</td>
-                  <td>${e.base_entitlement.tipp.pkg.id}</td>
-                  <td>${e.base_entitlement.tipp.title.getIdentifierValue('ISSN')}</td>
-                  <td>${e.base_entitlement.tipp.title.getIdentifierValue('eISSN')}</td>
+                      ${e.base_entitlement.title.title}</td>
+                  <td><g:link controller="packageDetails" action="show" id="${e.base_entitlement.pkg.id}">${e.base_entitlement.pkg.name}(${e.base_entitlement.pkg.id})</g:link></td>
+                  <td>${e.base_entitlement.title.getIdentifierValue('ISSN')}</td>
+                  <td>${e.base_entitlement.title.getIdentifierValue('eISSN')}</td>
                   <td>${e.start_date} (Default:<g:formatDate format="dd MMMM yyyy" date="${e.base_entitlement.startDate}"/>)</td>
                   <td>${e.base_entitlement.startVolume}</td>
                   <td>${e.base_entitlement.startIssue}</td>

@@ -1672,8 +1672,8 @@ class MyInstitutionsController {
       HSSFRow package_ids_row = firstSheet.getRow(5)
       for (int i=SO_START_COL;((i<package_ids_row.getLastCellNum())&&(package_ids_row.getCell(i)));i++) {
         log.debug("Got package identifier: ${package_ids_row.getCell(i).toString()}");
-        def sub_id = Long.parseLong(package_ids_row.getCell(i).toString())
-        def sub_rec = Subscription.get(sub_id);
+        def sub_id = package_ids_row.getCell(i).toString()
+        def sub_rec = genericOIDService.resolveOID(sub_id) // Subscription.get(sub_id);
         if ( sub_rec ) {
           sub_info.add(sub_rec);
         }
@@ -1712,15 +1712,6 @@ class MyInstitutionsController {
                 
               if ( subscribe == 'Y' || subscribe == 'y' ) {
                 log.debug("Add an issue entitlement from subscription[${j}] for title ${title_id_long}");
-                if ( result.base_subscription ) {
-                  // if ( result.base_subscription != sub_info[j] ) {
-                  //   log.error("Critical error - Worksheet merges entitlements from 2 different subscriptions offered");
-                  //   result.errors.add("Critical error - Worksheet merges entitlements from 2 different subscriptions offered");
-                  // }
-                }
-                else {
-                  result.base_subscription = sub_info[j]
-                }
 
                 def entitlement_info = [:]
                 entitlement_info.title_id = title_id_long
@@ -1751,10 +1742,10 @@ class MyInstitutionsController {
     result
   }
 
-  def extractEntitlement(sub, title_id) {
-    def result = sub.issueEntitlements.find { e -> e.tipp?.title?.id == title_id }
+  def extractEntitlement(pkg, title_id) {
+    def result = pkg.tipps.find { e -> e.title?.id == title_id }
     if ( result == null ) {
-      log.error("Failed to look up title ${title_id} in subscription ${sub.sub_name}");
+      log.error("Failed to look up title ${title_id} in package ${pkg.name}");
     }
     result
   }
@@ -1778,24 +1769,24 @@ class MyInstitutionsController {
 
     int ent_count = Integer.parseInt(params.ecount);
 
-    def db_sub = Subscription.get(params.baseSubscription);
-
     def new_subscription = new Subscription(
-                                 identifier: "${db_sub.identifier}:${result.institution.name}",
-                                 status:RefdataCategory.lookupOrCreate('Subscription Status','Current'),
-                                 impId:null,
-                                 name: db_sub.name,
-                                 startDate: db_sub.startDate,
-                                 endDate: db_sub.endDate,
-                                 instanceOf: db_sub,
+                                 identifier: java.util.UUID.randomUUID().toString(),
+                                 status: RefdataCategory.lookupOrCreate('Subscription Status','Current'),
+                                 impId: java.util.UUID.randomUUID().toString(),
+                                 name: "Unset",
+                                 // startDate: db_sub.startDate,
+                                 // endDate: db_sub.endDate,
+                                 // instanceOf: db_sub,
                                  type: RefdataValue.findByValue('Subscription Taken') )
+
+    def packages_referenced = []
 
     if ( new_subscription.save() ) {
       // log.debug("New subscriptionT saved...");
       // Copy package links from SO to ST
-      db_sub.packages.each { sopkg ->
-        def new_package_link = new SubscriptionPackage(subscription:new_subscription, pkg:sopkg.pkg).save();
-      }
+      // db_sub.packages.each { sopkg ->
+      //   def new_package_link = new SubscriptionPackage(subscription:new_subscription, pkg:sopkg.pkg).save();
+      // }
 
       // assert an org-role
       def org_link = new OrgRole(org:result.institution,
@@ -1803,11 +1794,11 @@ class MyInstitutionsController {
                                  roleType: RefdataCategory.lookupOrCreate('Organisational Role','Subscriber')).save();
 
       // Copy any links from SO
-      db_sub.orgRelations.each { or ->
-        if ( or.roleType?.value != 'Subscriber' ) {
-          def new_or = new OrgRole(org: or.org, sub: new_subscription, roleType: or.roleType).save();
-        }
-      }
+      // db_sub.orgRelations.each { or ->
+      //   if ( or.roleType?.value != 'Subscriber' ) {
+      //     def new_or = new OrgRole(org: or.org, sub: new_subscription, roleType: or.roleType).save();
+      //   }
+      // }
     }
     else {
       log.error("Problem saving new subscription, ${new_subscription.errors}");
@@ -1826,8 +1817,12 @@ class MyInstitutionsController {
 
       def dbtipp = TitleInstancePackagePlatform.get(entitlement.tipp_id)
 
+      if ( ! packages_referenced.contains(dbtipp.pkg) ) {
+        packages_referenced.add(dbtipp.pkg)
+        def new_package_link = new SubscriptionPackage(subscription:new_subscription, pkg:dbtipp.pkg).save();
+      }
+
       if ( dbtipp ) {
-        def original_entitlement = IssueEntitlement.get(entitlement.entitlement_id)
         def live_issue_entitlement = RefdataCategory.lookupOrCreate('Entitlement Issue Status', 'Live');
         def is_core = false
 
