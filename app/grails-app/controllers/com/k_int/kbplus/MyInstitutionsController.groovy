@@ -1068,7 +1068,7 @@ class MyInstitutionsController {
 
     if ( params.addBtn ) {
       log.debug("Add item ${params.addBtn} to basket");
-      def oid = "com.k_int.kbplus.Subscription:${params.addBtn}"
+      def oid = "com.k_int.kbplus.Package:${params.addBtn}"
       shopping_basket.addIfNotPresent(oid)
       shopping_basket.save(flush:true);
     }
@@ -1266,12 +1266,13 @@ class MyInstitutionsController {
     result
   }
 
-  def generate(slist, inst) {
-    def m = generateMatrix(slist)
+  def generate(plist, inst) {
+    def m = generateMatrix(plist)
     exportWorkbook(m, inst)
   }
 
-  def generateMatrix(slist) {
+  def generateMatrix(plist) {
+
     def titleMap = [:]
     def subscriptionMap = [:]
 
@@ -1281,46 +1282,68 @@ class MyInstitutionsController {
 
     def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
 
-    // Step one - Assemble a list of all titles and packages
-    slist.each { sub ->
+    // Step one - Assemble a list of all titles and packages.. We aren't assembling the matrix
+    // of titles x packages yet.. Just gathering the data for the X and Y axis
+    plist.each { sub ->
 
       def sub_info = [
         sub_idx : subscriptionMap.size(),
         sub_name : sub.name,
-        sub_id : sub.id
+        sub_id : "${sub.class.name}:${sub.id}"
       ]
 
       subscriptionMap[sub.id] = sub_info
 
       // For each subscription in the shopping basket
-      sub.issueEntitlements.each { ie ->
-        if ( ! (ie.status?.value=='Deleted')  ) {
-          def title_info = titleMap[ie.tipp.title.id]
-          if ( !title_info ) {
-            // log.debug("Adding ie: ${ie}");
-            title_info = [:]
-            title_info.title_idx = titleMap.size()
-            title_info.id = ie.tipp.title.id;
-            title_info.issn = ie.tipp.title.getIdentifierValue('ISSN');
-            title_info.eissn = ie.tipp.title.getIdentifierValue('eISSN');
-            title_info.title = ie.tipp.title.title
-            if ( first ) {
-              if ( ie.startDate )
-                title_info.current_start_date = formatter.format(ie.startDate)
-              if ( ie.endDate )
-                title_info.current_end_date = formatter.format(ie.endDate)
-              title_info.current_embargo = ie.embargo
-              title_info.current_depth = ie.coverageDepth
-              title_info.current_coverage_note = ie.coverageNote
-              title_info.is_core = ie.coreStatus?.value
-              title_info.core_start_date = ie.coreStatusStart ? formatter.format(ie.coreStatusStart) : ''
-              title_info.core_end_date = ie.coreStatusEnd ? formatter.format(ie.coreStatusEnd) : ''
-              // log.debug("added title info: ${title_info}");
+      if ( sub instanceof Subscription ) {
+        sub.issueEntitlements.each { ie ->
+          if ( ! (ie.status?.value=='Deleted')  ) {
+            def title_info = titleMap[ie.tipp.title.id]
+            if ( !title_info ) {
+              // log.debug("Adding ie: ${ie}");
+              title_info = [:]
+              title_info.title_idx = titleMap.size()
+              title_info.id = ie.tipp.title.id;
+              title_info.issn = ie.tipp.title.getIdentifierValue('ISSN');
+              title_info.eissn = ie.tipp.title.getIdentifierValue('eISSN');
+              title_info.title = ie.tipp.title.title
+              if ( first ) {
+                if ( ie.startDate )
+                  title_info.current_start_date = formatter.format(ie.startDate)
+                if ( ie.endDate )
+                  title_info.current_end_date = formatter.format(ie.endDate)
+                title_info.current_embargo = ie.embargo
+                title_info.current_depth = ie.coverageDepth
+                title_info.current_coverage_note = ie.coverageNote
+                title_info.is_core = ie.coreStatus?.value
+                title_info.core_start_date = ie.coreStatusStart ? formatter.format(ie.coreStatusStart) : ''
+                title_info.core_end_date = ie.coreStatusEnd ? formatter.format(ie.coreStatusEnd) : ''
+                // log.debug("added title info: ${title_info}");
+              }
+              titleMap[ie.tipp.title.id] = title_info;
             }
-            titleMap[ie.tipp.title.id] = title_info;
           }
         }
       }
+      else if ( sub instanceof Package ) {
+        log.debug("Adding package into renewals worksheet");
+        sub.tipps.each { tipp ->
+          if ( ! (tipp.status?.value=='Deleted')  ) {
+            def title_info = titleMap[tipp.title.id]
+            if ( !title_info ) {
+              // log.debug("Adding ie: ${ie}");
+              title_info = [:]
+              title_info.title_idx = titleMap.size()
+              title_info.id = tipp.title.id;
+              title_info.issn = tipp.title.getIdentifierValue('ISSN');
+              title_info.eissn = tipp.title.getIdentifierValue('eISSN');
+              title_info.title = tipp.title.title
+              titleMap[tipp.title.id] = title_info;
+            }
+          }
+        }
+      }
+
       first=false
     }
 
@@ -1331,36 +1354,70 @@ class MyInstitutionsController {
     Object[] sub_info_arr = new Object[subscriptionMap.size()]
     Object[] title_info_arr = new Object[titleMap.size()]
 
+    // Run through the list of packages, and set the X axis headers accordingly
     subscriptionMap.values().each { v ->
       sub_info_arr[v.sub_idx] = v
     }
 
+    // Run through the titles and set the Y axis headers accordingly
     titleMap.values().each { v ->
       title_info_arr[v.title_idx] = v
     }
 
-    slist.each { sub ->
+    // Fill out the matrix by looking through each sub/package and adding the appropriate cell info
+    plist.each { sub ->
       def sub_info = subscriptionMap[sub.id]
-      sub.issueEntitlements.each { ie ->
-        def title_info = titleMap[ie.tipp.title.id]
-        def ie_info = [:]
-        log.debug("Adding tipp info ${ie.tipp.startDate} ${ie.tipp.derivedFrom}");
-        ie_info.tipp_id = ie.tipp.id;
-        ie_info.core = ie.coreStatus?.value
-        ie_info.startDate_d = ie.tipp.startDate ?: ie.tipp.derivedFrom?.startDate
-        ie_info.startDate = ie_info.startDate_d ? formatter.format(ie_info.startDate_d) : null
-        ie_info.startVolume = ie.tipp.startVolume ?: ie.tipp.derivedFrom?.startVolume
-        ie_info.startIssue = ie.tipp.startIssue ?: ie.tipp.derivedFrom?.startIssue
-        ie_info.endDate_d = ie.endDate ?: ie.tipp.derivedFrom?.endDate
-        ie_info.endDate = ie_info.endDate_d ? formatter.format(ie_info.endDate_d) : null
-        ie_info.endVolume = ie.endVolume ?: ie.tipp.derivedFrom?.endVolume
-        ie_info.endIssue = ie.endIssue ?: ie.tipp.derivedFrom?.endIssue
-        ti_info_arr[title_info.title_idx][sub_info.sub_idx] = ie_info
+      if ( sub instanceof Subscription ) {
+        log.debug("Filling out renewal sheet column for an ST");
+        sub.issueEntitlements.each { ie ->
+          if ( ! (ie.status?.value=='Deleted')  ) {
+            def title_info = titleMap[ie.tipp.title.id]
+            def ie_info = [:]
+            log.debug("Adding tipp info ${ie.tipp.startDate} ${ie.tipp.derivedFrom}");
+            ie_info.tipp_id = ie.tipp.id;
+            ie_info.core = ie.coreStatus?.value
+            ie_info.startDate_d = ie.tipp.startDate ?: ie.tipp.derivedFrom?.startDate
+            ie_info.startDate = ie_info.startDate_d ? formatter.format(ie_info.startDate_d) : null
+            ie_info.startVolume = ie.tipp.startVolume ?: ie.tipp.derivedFrom?.startVolume
+            ie_info.startIssue = ie.tipp.startIssue ?: ie.tipp.derivedFrom?.startIssue
+            ie_info.endDate_d = ie.endDate ?: ie.tipp.derivedFrom?.endDate
+            ie_info.endDate = ie_info.endDate_d ? formatter.format(ie_info.endDate_d) : null
+            ie_info.endVolume = ie.endVolume ?: ie.tipp.derivedFrom?.endVolume
+            ie_info.endIssue = ie.endIssue ?: ie.tipp.derivedFrom?.endIssue
+
+            ti_info_arr[title_info.title_idx][sub_info.sub_idx] = ie_info
+          }
+        }
+      }
+      else if ( sub instanceof Package ) {
+        log.debug("Filling out renewal sheet column for a package");
+        sub.tipps.each { tipp ->
+          if ( ! (tipp.status?.value=='Deleted')  ) {
+            def title_info = titleMap[tipp.title.id]
+            def ie_info = [:]
+            log.debug("Adding tipp info ${tipp.startDate} ${tipp.derivedFrom}");
+            ie_info.tipp_id = tipp.id;
+            ie_info.startDate_d = tipp.startDate
+            ie_info.startDate = ie_info.startDate_d ? formatter.format(ie_info.startDate_d) : null
+            ie_info.startVolume = tipp.startVolume
+            ie_info.startIssue = tipp.startIssue
+            ie_info.endDate_d = tipp.endDate
+            ie_info.endDate = ie_info.endDate_d ? formatter.format(ie_info.endDate_d) : null
+            ie_info.endVolume = tipp.endVolume ?: tipp.derivedFrom?.endVolume
+            ie_info.endIssue = tipp.endIssue ?: tipp.derivedFrom?.endIssue
+
+            ti_info_arr[title_info.title_idx][sub_info.sub_idx] = ie_info
+          }
+        }
       }
     }
 
 
-    [ti_info:ti_info_arr,title_info:title_info_arr,sub_info:sub_info_arr]
+    def final_result = [
+                        ti_info:ti_info_arr,                      // A crosstab array of the packages where a title occours
+                        title_info:title_info_arr,                // A list of the titles
+                        sub_info:sub_info_arr ]                   // The subscriptions offered (Packages)
+    return final_result
   }
 
   def exportWorkbook(m, inst) {
