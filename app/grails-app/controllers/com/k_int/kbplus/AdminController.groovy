@@ -169,6 +169,9 @@ class AdminController {
     log.debug("Delete all existing FT Control entries");
     FTControl.executeUpdate("delete FTControl c");
 
+    log.debug("Clear ES");
+    dataloadService.clearDownAndInitES();
+
     log.debug("manual start full text index");
     dataloadService.updateFTIndexes();
     log.debug("redirecting to home...");
