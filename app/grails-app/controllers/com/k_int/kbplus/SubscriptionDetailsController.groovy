@@ -250,36 +250,36 @@ class SubscriptionDetailsController {
 
     log.debug("filter: \"${params.filter}\"");
 
-    if ( result.subscriptionInstance?.instanceOf ) {
+    if ( result.subscriptionInstance ) {
       // We need all issue entitlements from the parent subscription where no row exists in the current subscription for that item.
       def basequery = null;
-      def qry_params = [result.subscriptionInstance.instanceOf, result.subscriptionInstance]
+      def qry_params = [result.subscriptionInstance]
 
       if ( params.filter ) {
         log.debug("Filtering....");
-        basequery = " from IssueEntitlement as ie where ie.subscription = ? and ie.status.value != 'Deleted' and ( not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp and ie2.status.value != 'Deleted' ) ) and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( select io from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) )"
-        qry_params.add("%${params.filter.trim().toLowerCase()}%")
-        qry_params.add("%${params.filter}%")
+        // basequery = " from IssueEntitlement as ie where ie.subscription = ? and ie.status.value != 'Deleted' and ( not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp and ie2.status.value != 'Deleted' ) ) and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( select io from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) )"
+        basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? )"
+        // qry_params.add("%${params.filter.trim().toLowerCase()}%")
+        // qry_params.add("%${params.filter}%")
       }
       else {
-        basequery = "from IssueEntitlement ie where ie.subscription = ? and not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp  and ie2.status.value != 'Deleted' )"
+        // basequery = "from IssueEntitlement ie where ie.subscription = ? and not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp  and ie2.status.value != 'Deleted' )"
+        basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? )"
       }
 
       if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
-        basequery += " order by ie.${params.sort} ${params.order} "
+        basequery += " order by tipp.${params.sort} ${params.order} "
       }
       else {
-        basequery += " order by ie.tipp.title.title asc "
+        basequery += " order by tipp.title.title asc "
       }
 
-
-
-      result.num_sub_rows = IssueEntitlement.executeQuery("select count(ie) "+basequery, qry_params )[0]
-      result.available_issues = IssueEntitlement.executeQuery("select ie ${basequery}", qry_params, [max:result.max, offset:result.offset]);
+      result.num_tipp_rows = IssueEntitlement.executeQuery("select count(tipp) "+basequery, qry_params )[0]
+      result.tipps = IssueEntitlement.executeQuery("select tipp ${basequery}", qry_params, [max:result.max, offset:result.offset]);
     }
     else {
       result.num_sub_rows = 0;
-      result.available_issues = []
+      result.tipps = []
     }
     
     result

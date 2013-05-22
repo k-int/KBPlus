@@ -67,6 +67,7 @@
             <g:sortableColumn params="${params}" property="s.endDate" title="End Date" />
             <th>Platform</th>
             <th>License</th>
+            <g:sortableColumn params="${params}" property="s.lastUpdated" title="Last Updated" />
           </tr>
           <g:each in="${subscriptions}" var="s">
             <tr>
@@ -88,6 +89,7 @@
                 </g:each>
               </td>
               <td><g:if test="${s.owner}"><g:link controller="licenseDetails" action="index" id="${s.owner.id}">${s.owner?.reference}</g:link></g:if></td>
+              <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${s.lastUpdated}"/></td>
             </tr>
           </g:each>
         </table>
