@@ -253,18 +253,20 @@ class SubscriptionDetailsController {
     if ( result.subscriptionInstance ) {
       // We need all issue entitlements from the parent subscription where no row exists in the current subscription for that item.
       def basequery = null;
-      def qry_params = [result.subscriptionInstance]
+      def qry_params = [result.subscriptionInstance, result.subscriptionInstance]
 
       if ( params.filter ) {
         log.debug("Filtering....");
         // basequery = " from IssueEntitlement as ie where ie.subscription = ? and ie.status.value != 'Deleted' and ( not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp and ie2.status.value != 'Deleted' ) ) and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( select io from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) )"
-        basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? )"
+        basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status.value != 'Deleted' and ( not exists ( select ie.tipp from IssueEntitlement ie where ie.subscription = ? and ie.tipp = tipp ) )"
+        // select ie.tipp from IssueEntitlement where ie.subscription = ? and ie.tipp = tipp
         // qry_params.add("%${params.filter.trim().toLowerCase()}%")
         // qry_params.add("%${params.filter}%")
       }
       else {
         // basequery = "from IssueEntitlement ie where ie.subscription = ? and not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp  and ie2.status.value != 'Deleted' )"
-        basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? )"
+        // basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? )"
+        basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status.value != 'Deleted' and ( not exists ( select ie.tipp from IssueEntitlement ie where ie.subscription = ? and ie.tipp = tipp ) )"
       }
 
       if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
