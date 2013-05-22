@@ -311,29 +311,32 @@ class SubscriptionDetailsController {
     if ( result.subscriptionInstance ) {
       params.each { p ->
         if (p.key.startsWith('_bulkflag.') ) {
-          def ie_to_edit = p.key.substring(10);
-          def ie = IssueEntitlement.get(ie_to_edit)
+          def tipp_id = p.key.substring(10);
+          // def ie = IssueEntitlement.get(ie_to_edit)
+          def tipp = TitleInstancePackagePlatform.get(tipp_id)
 
-          if ( ie == null ) {
-            log.error("Unable to locate entitlement ${ie_to_edit}");
-            flash.error("Unable to locate entitlement ${ie_to_edit}");
+          if ( tipp == null ) {
+            log.error("Unable to tipp ${tipp_id}");
+            flash.error("Unable to tipp ${tipp_id}");
           }
           else {
-            def new_ie = new IssueEntitlement(status: ie.status,
+            def ie_current = RefdataCategory.lookupOrCreate('Entitlement Issue Status','Current');
+
+            def new_ie = new IssueEntitlement(status: ie_current,
                                               subscription: result.subscriptionInstance,
-                                              tipp: ie.tipp,
-                                              startDate:ie.tipp.startDate,
-                                              startVolume:ie.tipp.startVolume,
-                                              startIssue:ie.tipp.startIssue,
-                                              endDate:ie.tipp.endDate,
-                                              endVolume:ie.tipp.endVolume,
-                                              endIssue:ie.tipp.endIssue,
-                                              embargo:ie.tipp.embargo,
-                                              coverageDepth:ie.tipp.coverageDepth,
-                                              coverageNote:ie.tipp.coverageNote,
+                                              tipp: tipp,
+                                              startDate:tipp.startDate,
+                                              startVolume:tipp.startVolume,
+                                              startIssue:tipp.startIssue,
+                                              endDate:tipp.endDate,
+                                              endVolume:tipp.endVolume,
+                                              endIssue:tipp.endIssue,
+                                              embargo:tipp.embargo,
+                                              coverageDepth:tipp.coverageDepth,
+                                              coverageNote:tipp.coverageNote,
                                               ieReason:'Manually Added by User')
             if ( new_ie.save(flush:true) ) {
-              log.debug("Added IE ${ie_to_edit} to sub ${params.siid}");
+              log.debug("Added tipp ${tipp_id} to sub ${params.siid}");
             }
             else {
               new_ie.errors.each { e ->
