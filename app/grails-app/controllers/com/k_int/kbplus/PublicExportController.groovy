@@ -15,11 +15,11 @@ class PublicExportController {
   def index() { 
     def result = [:]
 
-    def base_qry = " from Subscription as s where s.type.value = 'Subscription Offered' order by s.name asc"
+    def base_qry = " from Package as p order by p.name asc"
     def qry_params = []
 
-    result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
-    result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.num_sub_rows]);
+    result.num_pkg_rows = Package.executeQuery("select count(p) "+base_qry, qry_params )[0]
+    result.packages = Package.executeQuery("select p ${base_qry}", qry_params, [max:result.num_pkg_rows]);
 
     result
   }
