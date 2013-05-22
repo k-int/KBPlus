@@ -247,18 +247,21 @@ class SubscriptionDetailsController {
       result.editable = false
     }
 
+    def tipp_deleted = RefdataCategory.lookupOrCreate('TIPP Status','Deleted');
+    def ie_deleted = RefdataCategory.lookupOrCreate('Entitlement Issue Status','Deleted');
 
     log.debug("filter: \"${params.filter}\"");
 
     if ( result.subscriptionInstance ) {
       // We need all issue entitlements from the parent subscription where no row exists in the current subscription for that item.
       def basequery = null;
-      def qry_params = [result.subscriptionInstance, result.subscriptionInstance]
+      def qry_params = [result.subscriptionInstance, tipp_deleted, result.subscriptionInstance, ie_deleted]
 
       if ( params.filter ) {
         log.debug("Filtering....");
         // basequery = " from IssueEntitlement as ie where ie.subscription = ? and ie.status.value != 'Deleted' and ( not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp and ie2.status.value != 'Deleted' ) ) and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( select io from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) )"
-        basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status.value != 'Deleted' and ( not exists ( select ie.tipp from IssueEntitlement ie where ie.subscription = ? and ie.tipp = tipp ) )"
+        // basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status.value != 'Deleted' and ( not exists ( select ie from IssueEntitlement ie where ie.subscription = ? and ie.tipp = tipp and ie.status.value != 'Deleted' ) )"
+        basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status != ? and ( not exists ( select ie from IssueEntitlement ie where ie.subscription = ? and ie.tipp.id = tipp.id and ie.status != ? ) )"
         // select ie.tipp from IssueEntitlement where ie.subscription = ? and ie.tipp = tipp
         // qry_params.add("%${params.filter.trim().toLowerCase()}%")
         // qry_params.add("%${params.filter}%")
@@ -266,7 +269,8 @@ class SubscriptionDetailsController {
       else {
         // basequery = "from IssueEntitlement ie where ie.subscription = ? and not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp  and ie2.status.value != 'Deleted' )"
         // basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? )"
-        basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status.value != 'Deleted' and ( not exists ( select ie.tipp from IssueEntitlement ie where ie.subscription = ? and ie.tipp = tipp ) )"
+        // basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status.value != 'Deleted' and ( not exists ( select ie.tipp from IssueEntitlement ie where ie.subscription = ? and ie.tipp = tipp and ie.status.value != 'Deleted' ) )"
+        basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status != ? and ( not exists ( select ie from IssueEntitlement ie where ie.subscription = ? and ie.tipp.id = tipp.id and ie.status != ? ) )"
       }
 
       if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
@@ -276,6 +280,8 @@ class SubscriptionDetailsController {
         basequery += " order by tipp.title.title asc "
       }
 
+      log.debug("Query ${basequery} ${qry_params}");
+      
       result.num_tipp_rows = IssueEntitlement.executeQuery("select count(tipp) "+basequery, qry_params )[0]
       result.tipps = IssueEntitlement.executeQuery("select tipp ${basequery}", qry_params, [max:result.max, offset:result.offset]);
     }

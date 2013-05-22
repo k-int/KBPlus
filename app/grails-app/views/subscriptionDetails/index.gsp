@@ -200,7 +200,7 @@
           <g:if test="${entitlements}">
             <g:each in="${entitlements}" var="ie">
               <tr>
-                <td><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></g:if></td>
+                <td><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></g:if> (${ie.tipp.id})</td>
                 <td>${counter++}</td>
                 <td>
                   <g:link controller="issueEntitlement" id="${ie.id}" action="show">${ie.tipp.title.title}</g:link>

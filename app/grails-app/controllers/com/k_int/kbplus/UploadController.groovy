@@ -82,6 +82,7 @@ class UploadController {
     
     def pkg_type = RefdataCategory.lookupOrCreate('PackageTypes','Unknown');
     def cp_role = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider');
+    def tipp_current = RefdataCategory.lookupOrCreate('TIPP Status','Current');
     
     def consortium = null;
     if ( upload.consortium != null )  {
@@ -161,6 +162,7 @@ class UploadController {
         def dbtipp = TitleInstancePackagePlatform.findByPkgAndPlatformAndTitle(new_pkg,tipp.host_platform,tipp.title_obj)
         if ( dbtipp == null ) {
           incrementStatsCounter(upload,'TIPP Created');
+           
           dbtipp = new TitleInstancePackagePlatform(pkg:new_pkg,
                                                     platform:tipp.host_platform,
                                                     title:tipp.title_obj,
@@ -175,6 +177,7 @@ class UploadController {
                                                     coverageNote:tipp.coverage_notes,
                                                     hostPlatformURL:tipp.host_platform_url,
                                                     impId:java.util.UUID.randomUUID().toString(),
+                                                    status:tipp_current,
                                                     ids:[])
   
           if ( ! dbtipp.save() ) {
