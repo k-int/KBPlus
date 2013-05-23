@@ -239,9 +239,13 @@ class LicenseDetailsController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def processNewTemplateLicense() {
     if ( params.reference && ( ! params.reference.trim().equals('') ) ) {
+
       def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
+      def license_status_current = RefdataCategory.lookupOrCreate('License Status','Current');
+      
       def new_template_license = new License(reference:params.reference,
-                                             type:template_license_type).save(flush:true);
+                                             type:template_license_type,
+                                             status:license_status_current).save(flush:true);
       redirect(action:'index', id:new_template_license.id);
     }
     else {
