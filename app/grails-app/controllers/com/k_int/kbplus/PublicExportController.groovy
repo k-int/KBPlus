@@ -15,11 +15,11 @@ class PublicExportController {
   def index() { 
     def result = [:]
 
-    def base_qry = " from Subscription as s where s.type.value = 'Subscription Offered' order by s.name asc"
+    def base_qry = " from Package as p order by p.name asc"
     def qry_params = []
 
-    result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
-    result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.num_sub_rows]);
+    result.num_pkg_rows = Package.executeQuery("select count(p) "+base_qry, qry_params )[0]
+    result.packages = Package.executeQuery("select p ${base_qry}", qry_params, [max:result.num_pkg_rows]);
 
     result
   }
@@ -133,12 +133,116 @@ class PublicExportController {
     }
   }
 
+  def pkg() {
+    log.debug("package export id:${params.id} format=${response.format}");
+    def result = [:]
+
+    def paginate_after = params.paginate_after ?: 19;
+    result.max = params.max ? Integer.parseInt(params.max) : ( response.format == "csv" ? 10000 : 10 );
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
+    log.debug("max = ${result.max}");
+    result.packageInstance = Package.get(params.id)
+
+    def base_qry = null;
+
+    def qry_params = [result.packageInstance]
+
+    if ( params.filter ) {
+      base_qry = " from TitleInstancePackagePlatform as tipp where tipp.pkg = ? and ( tipp.status.value != 'Deleted' ) and ( ( lower(tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = tipp.title.id and io.identifier.value like ? ) ) )"
+      qry_params.add("%${params.filter.trim().toLowerCase()}%")
+      qry_params.add("%${params.filter}%")
+    }
+    else {
+      base_qry = " from TitleInstancePackagePlatform as tipp where tipp.pkg = ? and ( tipp.status.value != 'Deleted' ) "
+    }
+
+    if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
+      base_qry += "order by tipp.${params.sort} ${params.order} "
+    }
+    
+    log.debug("Base query for pkg export: ${base_qry}");
+    
+    result.num_pkg_rows = TitleInstancePackagePlatform.executeQuery("select count(tipp) "+base_qry, qry_params )[0]
+
+    result.tipps = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, [max:result.max, offset:result.offset]);
+
+    log.debug("package returning... ${result.num_pkg_rows} rows ");
+    withFormat {
+      html result
+      csv {
+         response.setHeader("Content-disposition", "attachment; filename=kbplus_pkg_${result.packageInstance.id}.csv")
+         response.contentType = "text/csv"
+         def out = response.outputStream
+         out.withWriter { writer ->
+           if ( ( params.omitHeader == null ) || ( params.omitHeader != 'Y' ) ) {
+             writer.write("FileType,SpecVersion,JC_ID,TermStartDate,TermEndDate,SubURI,SystemIdentifier\n")
+             writer.write("Package,\"3.0\",,${result.packageInstance.startDate},${result.packageInstance.endDate},\"uri://kbplus/pkg/${result.packageInstance.id}\",${result.packageInstance.impId}\n")
+           }
+
+           // Output the body text
+           // writer.write("publication_title,print_identifier,online_identifier,date_first_issue_subscribed,num_first_vol_subscribed,num_first_issue_subscribed,date_last_issue_subscribed,num_last_vol_subscribed,num_last_issue_subscribed,embargo_info,title_url,first_author,title_id,coverage_note,coverage_depth,publisher_name\n");
+           writer.write("publication_title,print_identifier,online_identifier,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,title_url,first_author,title_id,embargo_info,coverage_depth,coverage_notes,publisher_name\n");
+
+           result.tipps.each { t ->
+             def start_date = t.startDate ? formatter.format(t.startDate) : '';
+             def end_date = t.endDate ? formatter.format(t.endDate) : '';
+             def title_doi = (t.title?.getIdentifierValue('DOI'))?:''
+             def publisher = t.title?.publisher
+
+             writer.write("\"${t.title.title}\",\"${t.title?.getIdentifierValue('ISSN')?:''}\",\"${t?.title?.getIdentifierValue('eISSN')?:''}\",${start_date},${t.startVolume?:''},${t.startIssue?:''},${end_date},${t.endVolume?:''},${t.endIssue?:''},\"${t.hostPlatformURL?:''}\",,\"${title_doi}\",\"${t.embargo?:''}\",\"${t.coverageDepth?:''}\",\"${t.coverageNote?:''}\",\"${publisher?.name?:''}\"\n");
+           }
+           writer.flush()
+           writer.close()
+         }
+         out.close()
+      }
+      json {
+         // def jc_id = result.subscriptionInstance.getSubscriber()?.getIdentifierByType('JC')?.value
+         def response = [:]
+         response.header = [:]
+         response.titles = []
+
+         response.header.version = "2.0"
+         response.header.jcid = ''
+         response.header.url = "uri://kbplus/pkg/${result.packageInstance.id}"
+
+         result.tipps.each { e ->
+
+             def start_date = e.startDate ? formatter.format(e.startDate) : '';
+             def end_date = e.endDate ? formatter.format(e.endDate) : '';
+             def title_doi = (e.title?.getIdentifierValue('DOI'))?:''
+             def publisher = e.title?.publisher
+
+             def tipp = [:]
+             tipp.title=e.title.title
+             tipp.issn=e.title?.getIdentifierValue('ISSN')
+             tipp.eissn=e.title?.getIdentifierValue('eISSN')
+             tipp.startDate=start_date;
+             tipp.endDate=end_date;
+             tipp.startVolume=e.startVolume?:''
+             tipp.endVolume=e.endVolume?:''
+             tipp.startIssue=e.startIssue?:''
+             tipp.endIssue=e.endIssue?:''
+             tipp.embargo=e.embargo?:''
+             tipp.titleUrl=e.hostPlatformURL?:''
+             tipp.doi=title_doi
+             tipp.coverageDepth = e.coverageDepth
+             tipp.coverageNote = e.coverageNote
+             tipp.publisher = publisher?.name
+             response.titles.add(tipp);
+         }
+         render response as JSON
+      }
+    }
+  }
+
   def idx() {
-    def base_qry = " from Subscription as s where s.type.value = 'Subscription Offered' order by s.name asc"
+    def base_qry = " from Package as p order by p.name asc"
     def qry_params = []
 
-    def num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
-    def subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params);
+    def num_pkg_rows = Subscription.executeQuery("select count(p) "+base_qry, qry_params )[0]
+    def packages = Subscription.executeQuery("select p ${base_qry}", qry_params);
 
     withFormat {
       csv {
@@ -147,8 +251,8 @@ class PublicExportController {
         def out = response.outputStream
         out.withWriter { writer ->
            writer.write("name,uri,identifier\n")
-           subscriptions.each { s ->
-             writer.write("\"${s.name}\",\"publicExport/so/${s.identifier}?format=csv\",\"${s.identifier}\"\n");
+           packages.each { p ->
+             writer.write("\"${p.name}\",\"publicExport/pkg/${p.id}?format=csv\",\"${p.id}\"\n");
            }
         }
         writer.flush()
@@ -157,11 +261,11 @@ class PublicExportController {
       xml {
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)
-        xml.KbPlusSubscriptionsOffered {
-          subscriptions.each { s->
-            subscriptionOffered {
-              name(s.name)
-              identifier(s.identifier)
+        xml.KbPlusPackages {
+          packages.each { p->
+            packages {
+              name(p.name)
+              identifier(p.id)
             }
           }
         }
@@ -169,9 +273,9 @@ class PublicExportController {
       }
       json {
         def response = [:]
-        response.subscriptionsOffered = []
-        subscriptions.each { s->
-          response.subscriptionsOffered.add([name:s.name,identifier:s.identifier])
+        response.packages = []
+        packages.each { p->
+          response.packages.add([name:p.name,identifier:p.id])
         }
         render response as JSON
       }

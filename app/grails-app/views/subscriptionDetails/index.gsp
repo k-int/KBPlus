@@ -82,11 +82,8 @@
                 <dl>
                     <dt>License</dt>
                     <dd><g:if test="${subscriptionInstance.subscriber}">
-                           <g:relation domain='Subscription' 
-                            pk='${subscriptionInstance.id}' 
-                            field='owner' 
-                            class='reldataedit'
-                            id='ownerLicense'>${subscriptionInstance?.owner?.reference}</g:relation></g:if><g:else>N/A (Subscription offered)</g:else>
+                          <g:xEditableRefData owner="${subscriptionInstance}" field="owner" dataController="subscriptionDetails" dataAction="possibleLicensesForSubscription"/>
+                        </g:if><g:else>N/A (Subscription offered)</g:else>
                     </dd>
                 </dl>
 
@@ -203,7 +200,7 @@
           <g:if test="${entitlements}">
             <g:each in="${entitlements}" var="ie">
               <tr>
-                <td><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></g:if></td>
+                <td><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></g:if> (${ie.tipp.id})</td>
                 <td>${counter++}</td>
                 <td>
                   <g:link controller="issueEntitlement" id="${ie.id}" action="show">${ie.tipp.title.title}</g:link>

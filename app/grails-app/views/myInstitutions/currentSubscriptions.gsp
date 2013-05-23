@@ -29,15 +29,7 @@
 
       <h1>${institution?.name} - Current Subscriptions</h1>
 
-      <ul class="nav nav-pills">
-       <li class="active"><g:link controller="myInstitutions" 
-                                  action="currentSubscriptions" 
-                                  params="${[shortcode:params.shortcode]}">Current Subscriptions</g:link></li>
-
-          <li><g:link controller="myInstitutions" 
-                                  action="addSubscription" 
-                                  params="${[shortcode:params.shortcode]}">Subscriptions Offered / Add New</g:link></li>
-      </ul>
+      <g:render template="subsNav" contextPath="." />
     </div>
 
     <div class="container" style="text-align:center">
@@ -61,22 +53,19 @@
           <tr>
             <th>Select</th>
             <g:sortableColumn params="${params}" property="s.name" title="Name" />
-            <th>Parent</th>
             <th>Package Name</th>
             <th>Consortia</th>
             <g:sortableColumn params="${params}" property="s.startDate" title="Start Date" />
             <g:sortableColumn params="${params}" property="s.endDate" title="End Date" />
             <th>Platform</th>
             <th>License</th>
+            <g:sortableColumn params="${params}" property="s.lastUpdated" title="Last Updated" />
           </tr>
           <g:each in="${subscriptions}" var="s">
             <tr>
               <td><input type="radio" name="basesubscription" value="${s.id}"/></td>
               <td>
                 <g:link controller="subscriptionDetails" action="index" id="${s.id}">${s.name} <g:if test="${s.consortia}">( ${s.consortia?.name} )</g:if></g:link>
-              </td>
-              <td>
-                <g:if test="${s.instanceOf}"><g:link controller="SubscriptionDetails" action="index" id="${s.instanceOf.id}">${s.instanceOf.name}</g:link></g:if>
               </td>
               <td>
                 <g:each in="${s.packages}" var="sp">
@@ -92,6 +81,7 @@
                 </g:each>
               </td>
               <td><g:if test="${s.owner}"><g:link controller="licenseDetails" action="index" id="${s.owner.id}">${s.owner?.reference}</g:link></g:if></td>
+              <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${s.lastUpdated}"/></td>
             </tr>
           </g:each>
         </table>

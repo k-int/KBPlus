@@ -48,18 +48,38 @@ curl -X PUT "localhost:9200/kbplus/com.k_int.kbplus.Org/_mapping" -d '{
 
 
 curl -X PUT "localhost:9200/kbplus/com.k_int.kbplus.Package/_mapping" -d '{
-  "com.k_int.kbplus.Org" : {
+  "com.k_int.kbplus.Package" : {
     "properties" : {
       "name" : {
         type : "string",
         analyzer : "snowball"
+      }
+      "consortia" : {
+        type : "string",
+        index : "not_analyzed"
+      } ,
+      "consortiaName" : {
+        type : "string",
+        index : "not_analyzed"
+      } ,
+      "contentProvider" : {
+        type : "string",
+        index : "not_analyzed"
+      } ,
+      "startYear" : {
+        type : "string",
+        index : "not_analyzed"
+      },
+      "startYearAndMonth" : {
+        type : "string",
+        index : "not_analyzed"
       }
     }
   }
 }'
 
 curl -X PUT "localhost:9200/kbplus/com.k_int.kbplus.Platform/_mapping" -d '{
-  "com.k_int.kbplus.Org" : {
+  "com.k_int.kbplus.Platform" : {
     "properties" : {
       "name" : {
         type : "string",

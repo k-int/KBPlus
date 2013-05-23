@@ -13,6 +13,7 @@ import org.apache.log4j.*
 import au.com.bytecode.opencsv.CSVReader
 import java.text.SimpleDateFormat
 
+import org.mozilla.universalchardet.UniversalDetector;
 
 
 class UploadController {
@@ -52,13 +53,13 @@ class UploadController {
     result.user = User.get(springSecurityService.principal.id)
     
     if ( request.method == 'POST' ) {
-      def upload_mime_type = request.getFile("soFile")?.contentType
-      def upload_filename = request.getFile("soFile")?.getOriginalFilename()
-      log.debug("Uploaded so type: ${upload_mime_type} filename was ${upload_filename}");
-      result.validationResult = readSubscriptionOfferedCSV(request.getFile("soFile")?.inputStream, upload_filename )
+
+
+      result.validationResult = readSubscriptionOfferedCSV(request)
+
       validate(result.validationResult)
       if ( result.validationResult.processFile == true ) {
-        log.debug("Passed first phase validation, continue...");
+        // log.debug("Passed first phase validation, continue...");
         processUploadSO(result.validationResult)
       }
     }
@@ -81,17 +82,25 @@ class UploadController {
     
     def pkg_type = RefdataCategory.lookupOrCreate('PackageTypes','Unknown');
     def cp_role = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider');
+    def tipp_current = RefdataCategory.lookupOrCreate('TIPP Status','Current');
     
     def consortium = null;
     if ( upload.consortium != null )  {
       consortium = Org.findByName(upload.consortium.value) ?: new Org(name:upload.consortium.value).save();
     }
 
-    def new_pkg = new Package(identifier:upload.soPackageIdentifier.value,
-                              name:upload.soPackageName.value,
-                              type:pkg_type,
-                              contentProvider:content_provider_org,
-                              impId:java.util.UUID.randomUUID().toString());
+    def new_pkg = new Package(identifier: upload.soPackageIdentifier.value,
+                              name: upload.soPackageName.value,
+                              type: pkg_type,
+                              contentProvider: content_provider_org,
+                              startDate: upload.aggreementTermStartYear?.value, 
+                              endDate: upload.aggreementTermEndYear?.value, 
+                              impId: java.util.UUID.randomUUID().toString());
+
+    if ( upload.consortiumOrg ) {                              
+      def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
+      def or = new OrgRole(org: consortium_org, pkg:result, roleType:sc_role).save();
+    }
 
     if ( new_pkg.save(flush:true) ) {
       //log.debug("New package ${pkg.identifier} saved");
@@ -137,13 +146,15 @@ class UploadController {
         def platform = Platform.lookupOrCreatePlatform(name:pl.name, primaryUrl:pl.url)
         if ( pl.coltype == 'host' ) {
           tipp.host_platform = platform
+          tipp.host_platform_url = pl.url;
         }
         else {
           tipp.additional_platforms.add([plat:platform, role:pl.coltype, url:pl.url])
         }
       }
           
-      log.debug("Lookup or create title ${tipp.id}");
+      // log.debug("Lookup or create title ${tipp.id}");
+
       tipp.title_obj = lookupOrCreateTitleInstance(tipp.id,tipp.publication_title,publisher);
       
       if ( tipp.title_obj && tipp.host_platform && new_pkg ) {
@@ -151,6 +162,7 @@ class UploadController {
         def dbtipp = TitleInstancePackagePlatform.findByPkgAndPlatformAndTitle(new_pkg,tipp.host_platform,tipp.title_obj)
         if ( dbtipp == null ) {
           incrementStatsCounter(upload,'TIPP Created');
+           
           dbtipp = new TitleInstancePackagePlatform(pkg:new_pkg,
                                                     platform:tipp.host_platform,
                                                     title:tipp.title_obj,
@@ -162,9 +174,10 @@ class UploadController {
                                                     endIssue:tipp.num_last_issue_online,
                                                     embargo:tipp.embargo_info,
                                                     coverageDepth:tipp.coverage_depth,
-                                                    coverageNote:tipp.coverage_note,
-                                                    hostPlatformURL:null, // t.host_platform_url,
+                                                    coverageNote:tipp.coverage_notes,
+                                                    hostPlatformURL:tipp.host_platform_url,
                                                     impId:java.util.UUID.randomUUID().toString(),
+                                                    status:tipp_current,
                                                     ids:[])
   
           if ( ! dbtipp.save() ) {
@@ -176,7 +189,7 @@ class UploadController {
             }
           }
           else {
-            log.debug("new TIPP Save OK ${dbtipp.id}");
+            // log.debug("new TIPP Save OK ${dbtipp.id}");
             tipp.messages.add([type:'alert-success',message:"New tipp created: ${dbtipp.id}"]);
             tipp.additional_platforms.each { ap ->
               PlatformTIPP pt = new PlatformTIPP(tipp:dbtipp,platform:ap.plat,titleUrl:ap.url,rel:ap.role)
@@ -193,34 +206,13 @@ class UploadController {
       }
     }
 
-    // Create an SO by creating a header and copying the tipps from this package into IE's
-    log.debug("Copying Package TIPPs into issue entitlements");
-    def new_pkg_id = new_pkg.id;
-    new_pkg.discard();
-    def session = sessionFactory.currentSession
-    session.flush()
-    session.clear()
-    propertyInstanceMap.get().clear()
-
-    def reloaded_pkg = Package.get(new_pkg_id);
-    reloaded_pkg.updateNominalPlatform();
-    reloaded_pkg.save(flush:true);
-
-    def new_sub = reloaded_pkg.createSubscription('Subscription Offered', 
-                                             upload.soName.value, 
-                                             upload.normalisedSoIdentifier, 
-                                             upload.agreementTermStartYear?.value, 
-                                             upload.agreementTermEndYear?.value, 
-                                             upload.consortiumOrg) 
-    
-    log.debug("Completed New package is ${new_pkg.id}, new sub is ${new_sub.id}");
+    log.debug("Completed New package is ${new_pkg.id}");
 
     upload.new_pkg_id = new_pkg_id
-    upload.new_sub_id = new_sub.id
   }
     
   def lookupOrCreateTitleInstance(identifiers,title,publisher) {
-    log.debug("lookupOrCreateTitleInstance ${identifiers}, ${title}, ${publisher}");
+    // log.debug("lookupOrCreateTitleInstance ${identifiers}, ${title}, ${publisher}");
     def result = TitleInstance.lookupOrCreateViaIdMap(identifiers, title);
     if ( !result.getPublisher() ) {
       def pub_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Publisher');
@@ -230,7 +222,7 @@ class UploadController {
 
     // ToDo: Check to see that all the identifiers we have
 
-    log.debug("Done: ${result}");
+    // log.debug("Done: ${result}");
     result;
   }
   
@@ -271,17 +263,35 @@ class UploadController {
     return false
   }
 
-  def readSubscriptionOfferedCSV(input_stream, upload_filename) {
+  def readSubscriptionOfferedCSV(request) {
 
     def result = [:]
     result.processFile=true
-    
+
+    def upload_mime_type = request.getFile("soFile")?.contentType
+    def upload_filename = request.getFile("soFile")?.getOriginalFilename()
+    log.debug("Uploaded so type: ${upload_mime_type} filename was ${upload_filename}");
+
+    def charset = checkCharset(request.getFile("soFile")?.inputStream)
+
+    def input_stream = request.getFile("soFile")?.inputStream
+
     // File level messages
     result.messages=[]
 
     log.debug("Reading Stream");
 
-    CSVReader r = new CSVReader( new InputStreamReader(input_stream) )
+    if  ( ( charset != null ) && ( ! charset.equals('UTF-8') ) ) {
+      result.messages.add("** WARNING: Detected input character stream encoding: ${charset}. Expected UTF-8");
+    }
+
+    CSVReader r = null
+    if ( request.docstyle?.equals("tsv") ) {
+      r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ), '\t' )
+    }
+    else {
+      r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ) )
+    }
 
     String [] nl;
 
@@ -421,7 +431,7 @@ class UploadController {
     int counter = 0;
     upload.tipps.each { tipp ->
     
-      log.debug("Validate tipp: ${tipp}");
+      // log.debug("Validate tipp: ${tipp}");
 
       if ( ( tipp.publication_title == null ) || 
            ( tipp.publication_title.trim() == '' ) ) {
@@ -434,7 +444,7 @@ class UploadController {
       //  upload.processFile=false;
       //}
       
-      log.debug("tipp id = ${tipp.id}");
+      // log.debug("tipp id = ${tipp.id}");
             
       if (!tipp.id) {
         tipp.messages.add("Title (row ${counter}) does not contain a valid ID (at least one of \"id.issn\", \"id.isbn\", \"id.eissn\" required, found: ${tipp.id})");
@@ -457,7 +467,7 @@ class UploadController {
       }
       
       if ( tipp.id ) {
-        ["eissn", "isbn", "doi"].each { idtype ->
+        ["eissn", "issn", "doi"].each { idtype ->
           if ( ( tipp.id[idtype] ) && ( tipp.id[idtype] != '' ) ) {
             if ( id_list.contains(tipp.id[idtype]) ) {
               tipp.messages.add("Title (row ${counter}) contains a repeated ${idtype} - ${tipp.id[idtype]}");
@@ -583,7 +593,12 @@ class UploadController {
   def generateAndValidatePackageIdentifier(upload) {
 
     if ( upload.soProvider?.value && upload.soPackageIdentifier?.value ) {
-      upload.normPkgIdentifier = "${upload.soProvider.value?.trim()}:${upload.soPackageIdentifier.value?.trim()}".toLowerCase().replaceAll('-','_');
+      upload.normPkgIdentifier = "${upload.soProvider.value?.trim()}:${upload.soPackageIdentifier.value?.trim()}"
+                                      .toLowerCase()
+                                      .replaceAll('-','_')
+                                      .replaceAll('&','_')
+                                      .replaceAll(' ','_')
+                                      .replaceAll(':','_');
       if ( ( upload.normPkgIdentifier == null ) || ( upload.normPkgIdentifier.trim().length() == 0 ) ) {
         log.error("No package identifier");
         upload['soPackageIdentifier'].messages.add("Unable to use this identifier")
@@ -638,7 +653,7 @@ class UploadController {
     def matched_title_ids = []
     idlist.each { id ->
       def title = TitleInstance.findByIdentifier([[namespace:id.key,value:id.value]])
-      log.debug("found title ${title}");
+      // log.debug("found title ${title}");
       if ( title != null ) {
         if ( matched_title_ids.contains(title.id) )  {
           //log.debug("Matched titles already contains that title");
@@ -653,18 +668,18 @@ class UploadController {
       }
     }
 
-    log.debug("Identifiers matched the following title ids: ${matched_title_ids}");
+    // log.debug("Identifiers matched the following title ids: ${matched_title_ids}");
     return matched_title_ids;
   }
   
   def checkTitleFingerprintMatch(matched_title_id, title_from_import_file, tipp, upload) {
-    log.debug("checkTitleFingerprintMatch ${matched_title_id}, ${title_from_import_file}");
+    // log.debug("checkTitleFingerprintMatch ${matched_title_id}, ${title_from_import_file}");
     def title_instance = TitleInstance.get(matched_title_id)
     def generated_key_title = TitleInstance.generateKeyTitle(title_from_import_file)
-    log.debug("checkTitleFingerprintMatch ${matched_title_id}, ${title_from_import_file} == ${generated_key_title}");
+    // log.debug("checkTitleFingerprintMatch ${matched_title_id}, ${title_from_import_file} == ${generated_key_title}");
 
-    if ( title_instance.keyTitle != generated_key_title ) {
-      tipp.messages.add("Matched title identifier does not pass title fingerprint match. titleid=${matched_title_id}, ${title_instance.keyTitle} != ${generated_key_title}");
+    if ( ! title_instance.keyTitle.equals(generated_key_title) ) {
+      tipp.messages.add("Matched title identifier does not pass title fingerprint match. titleid=${matched_title_id}, \"${title_instance.keyTitle}\" != \"${generated_key_title}\"");
       upload.processFile=false;
     }
   }
@@ -680,5 +695,39 @@ class UploadController {
     else {
       result.stats[counter]++
     }
+  }
+
+  def checkCharset(file_input_stream) {
+
+    def result = null;
+
+    byte[] buf = new byte[4096];
+
+    // (1)
+    UniversalDetector detector = new UniversalDetector(null);
+
+    // (2)
+    int nread;
+    while ((nread = file_input_stream.read(buf)) > 0 && !detector.isDone()) {
+      detector.handleData(buf, 0, nread);
+    }
+    // (3)
+    detector.dataEnd();
+
+    // (4)
+    String encoding = detector.getDetectedCharset();
+    if (encoding != null) {
+      result = encoding; 
+      System.out.println("Detected encoding = " + encoding);
+      if ( encoding.equals('WINDOWS-1252') ) {
+      }
+    } else {
+      System.out.println("No encoding detected.");
+    }
+
+    // (5)
+    detector.reset();
+
+    result
   }
 }

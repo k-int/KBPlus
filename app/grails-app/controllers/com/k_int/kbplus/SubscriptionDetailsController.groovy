@@ -247,39 +247,47 @@ class SubscriptionDetailsController {
       result.editable = false
     }
 
+    def tipp_deleted = RefdataCategory.lookupOrCreate('TIPP Status','Deleted');
+    def ie_deleted = RefdataCategory.lookupOrCreate('Entitlement Issue Status','Deleted');
 
     log.debug("filter: \"${params.filter}\"");
 
-    if ( result.subscriptionInstance?.instanceOf ) {
+    if ( result.subscriptionInstance ) {
       // We need all issue entitlements from the parent subscription where no row exists in the current subscription for that item.
       def basequery = null;
-      def qry_params = [result.subscriptionInstance.instanceOf, result.subscriptionInstance]
+      def qry_params = [result.subscriptionInstance, tipp_deleted, result.subscriptionInstance, ie_deleted]
 
       if ( params.filter ) {
         log.debug("Filtering....");
-        basequery = " from IssueEntitlement as ie where ie.subscription = ? and ie.status.value != 'Deleted' and ( not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp and ie2.status.value != 'Deleted' ) ) and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( select io from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) )"
+        // basequery = " from IssueEntitlement as ie where ie.subscription = ? and ie.status.value != 'Deleted' and ( not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp and ie2.status.value != 'Deleted' ) ) and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( select io from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) )"
+        // basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status.value != 'Deleted' and ( not exists ( select ie from IssueEntitlement ie where ie.subscription = ? and ie.tipp = tipp and ie.status.value != 'Deleted' ) )"
+        basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status != ? and ( not exists ( select ie from IssueEntitlement ie where ie.subscription = ? and ie.tipp.id = tipp.id and ie.status != ? ) ) and ( ( lower(tipp.title.title) like ? ) OR ( exists ( select io from IdentifierOccurrence io where io.ti.id = tipp.title.id and io.identifier.value like ? ) ) ) "
+        // select ie.tipp from IssueEntitlement where ie.subscription = ? and ie.tipp = tipp
         qry_params.add("%${params.filter.trim().toLowerCase()}%")
         qry_params.add("%${params.filter}%")
       }
       else {
-        basequery = "from IssueEntitlement ie where ie.subscription = ? and not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp  and ie2.status.value != 'Deleted' )"
+        // basequery = "from IssueEntitlement ie where ie.subscription = ? and not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp  and ie2.status.value != 'Deleted' )"
+        // basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? )"
+        // basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status.value != 'Deleted' and ( not exists ( select ie.tipp from IssueEntitlement ie where ie.subscription = ? and ie.tipp = tipp and ie.status.value != 'Deleted' ) )"
+        basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status != ? and ( not exists ( select ie from IssueEntitlement ie where ie.subscription = ? and ie.tipp.id = tipp.id and ie.status != ? ) )"
       }
 
       if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
-        basequery += " order by ie.${params.sort} ${params.order} "
+        basequery += " order by tipp.${params.sort} ${params.order} "
       }
       else {
-        basequery += " order by ie.tipp.title.title asc "
+        basequery += " order by tipp.title.title asc "
       }
 
-
-
-      result.num_sub_rows = IssueEntitlement.executeQuery("select count(ie) "+basequery, qry_params )[0]
-      result.available_issues = IssueEntitlement.executeQuery("select ie ${basequery}", qry_params, [max:result.max, offset:result.offset]);
+      log.debug("Query ${basequery} ${qry_params}");
+      
+      result.num_tipp_rows = IssueEntitlement.executeQuery("select count(tipp) "+basequery, qry_params )[0]
+      result.tipps = IssueEntitlement.executeQuery("select tipp ${basequery}", qry_params, [max:result.max, offset:result.offset]);
     }
     else {
       result.num_sub_rows = 0;
-      result.available_issues = []
+      result.tipps = []
     }
     
     result
@@ -303,29 +311,32 @@ class SubscriptionDetailsController {
     if ( result.subscriptionInstance ) {
       params.each { p ->
         if (p.key.startsWith('_bulkflag.') ) {
-          def ie_to_edit = p.key.substring(10);
-          def ie = IssueEntitlement.get(ie_to_edit)
+          def tipp_id = p.key.substring(10);
+          // def ie = IssueEntitlement.get(ie_to_edit)
+          def tipp = TitleInstancePackagePlatform.get(tipp_id)
 
-          if ( ie == null ) {
-            log.error("Unable to locate entitlement ${ie_to_edit}");
-            flash.error("Unable to locate entitlement ${ie_to_edit}");
+          if ( tipp == null ) {
+            log.error("Unable to tipp ${tipp_id}");
+            flash.error("Unable to tipp ${tipp_id}");
           }
           else {
-            def new_ie = new IssueEntitlement(status: ie.status,
+            def ie_current = RefdataCategory.lookupOrCreate('Entitlement Issue Status','Current');
+
+            def new_ie = new IssueEntitlement(status: ie_current,
                                               subscription: result.subscriptionInstance,
-                                              tipp: ie.tipp,
-                                              startDate:ie.tipp.startDate,
-                                              startVolume:ie.tipp.startVolume,
-                                              startIssue:ie.tipp.startIssue,
-                                              endDate:ie.tipp.endDate,
-                                              endVolume:ie.tipp.endVolume,
-                                              endIssue:ie.tipp.endIssue,
-                                              embargo:ie.tipp.embargo,
-                                              coverageDepth:ie.tipp.coverageDepth,
-                                              coverageNote:ie.tipp.coverageNote,
+                                              tipp: tipp,
+                                              startDate:tipp.startDate,
+                                              startVolume:tipp.startVolume,
+                                              startIssue:tipp.startIssue,
+                                              endDate:tipp.endDate,
+                                              endVolume:tipp.endVolume,
+                                              endIssue:tipp.endIssue,
+                                              embargo:tipp.embargo,
+                                              coverageDepth:tipp.coverageDepth,
+                                              coverageNote:tipp.coverageNote,
                                               ieReason:'Manually Added by User')
             if ( new_ie.save(flush:true) ) {
-              log.debug("Added IE ${ie_to_edit} to sub ${params.siid}");
+              log.debug("Added tipp ${tipp_id} to sub ${params.siid}");
             }
             else {
               new_ie.errors.each { e ->
@@ -497,6 +508,29 @@ class SubscriptionDetailsController {
     redirect controller: 'subscriptionDetails', action:'index',id:params.id
   }
 
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def possibleLicensesForSubscription() {
+    def result = []
+
+    def subscription = genericOIDService.resolveOID(params.oid)
+    def subscriber = subscription.getSubscriber();
+    if ( subscriber ) {
+
+      def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
+      def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
+
+      def qry_params = [subscriber, licensee_role]
+  
+      def qry = "select l from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
+
+      def license_list = License.executeQuery(qry, qry_params);
+      license_list.each { l ->
+        result.add([value:"${l.class.name}:${l.id}",text:l.reference ?: "No reference - license ${l.id}"]);
+      }
+    }
+    render result as JSON
+  }
 
 }
 

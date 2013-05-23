@@ -32,7 +32,15 @@
         </g:hasErrors>
 
         <g:form action="reviewSO" method="post" enctype="multipart/form-data">
-            <input type="file" id="soFile" name="soFile"/>
+            Updload File: <input type="file" id="soFile" name="soFile"/><br/>
+
+            Doc Style: <select name="docstyle">
+              <option value="csv" selected>Comma Separated</option>
+              <option value="tsv">Tab Separated</option>
+            </select></br/>
+
+            Override Character Set Test: <input type="checkbox" name="OverrideCharset" checked="false"/>
+
             <button type="submit" class="btn btn-primary">Upload SO</button>
         </g:form>
         
@@ -118,8 +126,6 @@
             </tbody>
           </table>
           
-          <pre>${validationResult}
-          </pre>
         </g:if>
         
       </div>

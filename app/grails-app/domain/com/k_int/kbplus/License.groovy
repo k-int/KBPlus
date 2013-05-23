@@ -253,4 +253,14 @@ class License {
   }
 
 
+  public String toString() {
+    String result
+    if ( reference ) {
+      result = reference
+    }
+    else {
+      result = super.toString();
+    }
+    return result;
+  }
 }

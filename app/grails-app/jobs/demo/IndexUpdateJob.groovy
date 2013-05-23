@@ -13,10 +13,6 @@ class IndexUpdateJob {
   }
 
   def execute() {
-    // Used to be disabled code below, but for now we use manual invocation
-  }
-
-  def disabled() {
 
     log.debug("Execute IndexUpdateJob starting at ${new Date()}");
     def start_time = System.currentTimeMillis();

@@ -87,7 +87,6 @@
                        <li class="divider"></li>
                        <li><g:link controller="myInstitutions" action="dashboard">Dashboard</g:link></li>
                        <li><g:link controller="myInstitutions" action="index">Alerts</g:link></li>
-                       <li><a href="/reports">Reports</a></li>
                        <li><a href="https://knowledgebaseplus.wordpress.com/kb-support/">Help</a></li>
                     </ul>
                   </li>
@@ -159,6 +158,11 @@
                 </sec:ifAnyGranted>
               </sec:ifLoggedIn>
             </ul>
+
+            <ul class="nav pull-right">
+              <li><a class="dlpopover" href="#"><i class="icon-search icon-white"></i></a></li>
+            </ul>
+
             <ul class="nav pull-right">
               <sec:ifLoggedIn>
                 <g:if test="${user}">
@@ -316,7 +320,42 @@
             }
           }
         });
+
+        $('.dlpopover').popover({html:true,
+                                 placement:'bottom',
+                                 title:'search', 
+                                 trigger:'click', 
+template: '<div class="popover" style="width: 400px;"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"></div></div></div>',
+                                 'max-width':400, 
+                                 content:function() {return getContent()}});
       });
+
+      function getContent() {
+        return $('#spotlight_popover_content_wrapper').html();
+        // var result=""
+        // jQuery.ajax({
+        //  url:"<g:createLink controller='spotlight' action='index' />",
+        //  success: function(r) {
+        //             result=r;
+        //           },
+        //  async:   false
+        // });          
+        // return result;
+      }
+
+      function reloadSpotlightSearchResults() {
+        console.log("reload...");
+        $('#spotlight-search-results').load("<g:createLink controller='spotlight' action='search' />");
+      }
     </script>
+
+    <div id="spotlight_popover_content_wrapper" style="display: none">
+      <form class="form-search">
+        <input type="text" class="input-medium search-query" onkeyup="reloadSpotlightSearchResults()">
+      </form>
+      <div id="spotlight-search-results">
+      </div>
+    </div>
+
   </body>
 </html>

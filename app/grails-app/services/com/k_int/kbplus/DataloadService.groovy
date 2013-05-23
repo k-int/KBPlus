@@ -91,6 +91,23 @@ class DataloadService {
       result.dbId = pkg.id
       result.visible = ['Public']
       result.rectype = 'Package'
+      result.consortiaId = pkg.getConsortia()?.id
+      result.consortiaName = pkg.getConsortia()?.name
+
+      if ( pkg.startDate ) {
+        GregorianCalendar c = new GregorianCalendar()
+        c.setTime(pkg.startDate) 
+        result.startYear = "${c.get(Calendar.YEAR)}"
+        result.startYearAndMonth = "${c.get(Calendar.YEAR)}-${(c.get(Calendar.MONTH))+1}"
+      }
+
+      if ( pkg.endDate ) {
+        GregorianCalendar c = new GregorianCalendar()
+        c.setTime(pkg.endDate) 
+        result.endYear = "${c.get(Calendar.YEAR)}"
+        result.endYearAndMonth = "${c.get(Calendar.YEAR)}-${(c.get(Calendar.MONTH))+1}"
+      }
+
       result
     }
 
@@ -1115,4 +1132,181 @@ class DataloadService {
     session.clear()
     propertyInstanceMap.get().clear()
   }
+
+  def clearDownAndInitES() {
+    log.debug("Clear down and init ES");
+    org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
+    org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
+
+    // Get hold of an index admin client
+    org.elasticsearch.groovy.client.GIndicesAdminClient index_admin_client = new org.elasticsearch.groovy.client.GIndicesAdminClient(esclient);
+
+    try {
+      // Drop any existing kbplus index
+      log.debug("Dropping old ES index....");
+      def future = index_admin_client.delete {
+        indices 'kbplus'
+      }
+    }
+    catch ( Exception e ) {
+      log.warn("Problem deleting index...",e);
+    }
+
+    // Create an index if none exists
+    log.debug("Create new ES index....");
+    def future = index_admin_client.create {
+      index 'kbplus'
+    }
+
+    log.debug("Add title mappings....");
+    future = index_admin_client.putMapping {
+      indices 'kbplus'
+      type 'com.k_int.kbplus.TitleInstance'
+      source  {
+        title {
+          properties {
+            title {
+              type = "string"
+              analyzer = "snowball"
+            }
+          }
+        }
+      }
+    }
+
+    log.debug("Add org mappings....");
+    future = index_admin_client.putMapping {
+      indices 'kbplus'
+      type 'com.k_int.kbplus.Org'
+      source  {
+        org {
+          properties {
+            name {
+              type = "string"
+              analyzer = "snowball"
+            }
+          }
+        }
+      }
+    }
+
+    log.debug("Add package mappings....");
+    future = index_admin_client.putMapping {
+      indices 'kbplus'
+      type 'com.k_int.kbplus.Package'
+      source  {
+        'package' {
+          properties {
+            "name" {
+              type = "string"
+              analyzer = "snowball"
+            }
+            "consortia" {
+              type = "string"
+              index = "not_analyzed"
+            }
+            "consortiaName" {
+              type = "string"
+              index = "not_analyzed"
+            }
+            "contentProvider" {
+              type = "string"
+              index = "not_analyzed"
+            }
+            "startYear" {
+              type = "string"
+              index = "not_analyzed"
+            }
+            "startYearAndMonth" {
+              type = "string"
+              index = "not_analyzed"
+            }
+          }
+        }
+      }
+    }
+
+    log.debug("Add platform mappings....");
+    future = index_admin_client.putMapping {
+      indices 'kbplus'
+      type 'com.k_int.kbplus.Platform'
+      source  {
+        platform {
+          properties {
+            "name" {
+              type = "string"
+              analyzer = "snowball"
+            }
+          }
+        }
+      }
+    }
+
+    log.debug("Add subscription mappings....");
+    future = index_admin_client.putMapping {
+      indices 'kbplus'
+      type 'com.k_int.kbplus.Subscription'
+      source  {
+        'subscription' {
+          properties {
+            "name" {
+              type = "string"
+              analyzer = "snowball"
+            }
+            "subtype" {
+              type = "string"
+              index = "not_analyzed"
+            }
+            "packages" {
+              "properties" {
+                "cpname" {
+                  type = "string"
+                  index = "not_analyzed"
+                }
+              }
+            }
+            "consortia" {
+              type = "string"
+              index = "not_analyzed"
+            }
+            "consortiaName" {
+              type = "string"
+              index = "not_analyzed"
+            }
+            "contentProvider" {
+              type = "string"
+              index = "not_analyzed"
+            }
+            "startYear" {
+              type = "string"
+              index = "not_analyzed"
+            }
+            "startYearAndMonth" {
+              type = "string"
+              index = "not_analyzed"
+            }
+          }
+        }
+      }
+    }
+
+    log.debug("Add license mappings....");
+    future = index_admin_client.putMapping {
+      indices 'kbplus'
+      type 'com.k_int.kbplus.License'
+      source  {
+        license {
+          properties {
+            "title" {
+              type = "string"
+              analyzer = "snowball"
+            }
+          }
+        }
+      }
+    }
+
+  }
+
+
 }

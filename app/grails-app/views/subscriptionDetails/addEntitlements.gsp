@@ -34,7 +34,7 @@
     <div class="container">
 
       <dl>
-        <dt>Available Entitlements ( ${offset+1} to ${offset+(available_issues?.size())} of ${num_sub_rows} )
+        <dt>Available Titles ( ${offset+1} to ${offset+(tipps?.size())} of ${num_tipp_rows} )
           <g:form action="addEntitlements" params="${params}" method="get">
             <input type="hidden" name="sort" value="${params.sort}">
             <input type="hidden" name="order" value="${params.order}">
@@ -52,7 +52,6 @@
                   <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
                   <th>ISSN</th>
                   <th>eISSN</th>
-                  <g:sortableColumn params="${params}" property="coreStatus" title="Core" />
                   <g:sortableColumn params="${params}" property="startDate" title="Start Date" />
                   <g:sortableColumn params="${params}" property="endDate" title="End Date" />
                   <th>Embargo</th>
@@ -61,22 +60,21 @@
                 </tr>
               </thead>
               <tbody>
-                <g:each in="${available_issues}" var="ie">
+                <g:each in="${tipps}" var="tipp">
                   <tr>
-                    <td><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></td>
+                    <td><input type="checkbox" name="_bulkflag.${tipp.id}" class="bulkcheck"/></td>
                     <td>${counter++}</td>
-                    <td>
-                      <g:if test="${ie.tipp?.hostPlatformURL}"><a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">${ie.tipp.title.title}</a></g:if>
-                      <g:else>${ie.tipp.title.title}</g:else>
+                    <td> (${tipp.id})
+                      <g:if test="${tipp?.hostPlatformURL}"><a href="${tipp?.hostPlatformURL}" TITLE="${tipp?.hostPlatformURL}">${tipp.title.title}</a></g:if>
+                      <g:else>${tipp.title.title}</g:else>
                     </td>
-                    <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
-                    <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
-                    <td>${ie.coreStatus?.value}</td>
-                    <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.startDate}"/></td>
-                    <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.endDate}"/></td>
-                    <td>${ie.embargo}</td>
-                    <td>${ie.coverageDepth}</td>
-                    <td>${ie.coverageNote}</td>
+                    <td>${tipp?.title?.getIdentifierValue('ISSN')}</td>
+                    <td>${tipp?.title?.getIdentifierValue('eISSN')}</td>
+                    <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${tipp.startDate}"/></td>
+                    <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${tipp.endDate}"/></td>
+                    <td>${tipp.embargo}</td>
+                    <td>${tipp.coverageDepth}</td>
+                    <td>${tipp.coverageNote}</td>
                   </tr>
                 </g:each>
               </tbody>
@@ -88,12 +86,12 @@
 
 
             <div class="pagination" style="text-align:center">
-              <g:if test="${available_issues}" >
+              <g:if test="${tipps}" >
                 <bootstrap:paginate controller="subscriptionDetails" 
                                   action="addEntitlements" 
                                   params="${params}" next="Next" prev="Prev" 
                                   max="${max}" 
-                                  total="${num_sub_rows}" />
+                                  total="${num_tipp_rows}" />
               </g:if>
             </div>
           </g:form>

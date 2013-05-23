@@ -54,6 +54,27 @@
                 <dt>Package Name</dt>
                 <dd> <g:xEditable owner="${packageInstance}" field="name" /></dd>
               </dl>
+              
+              <dl>
+                <dt>Public?</dt>
+                <dd>
+                  <g:xEditableRefData owner="${packageInstance}" field="isPublic" config='YN'/>
+                </dd>
+              </dl> 
+
+                <dl><dt>Start Date</dt><dd>
+                    <g:xEditable owner="${packageInstance}" field="startDate" type="date"/>
+                </dd>
+                </dl>
+
+               <dl>
+                    <dt>End Date</dt>
+                    <dd>
+                       <g:xEditable owner="${packageInstance}" field="endDate" type="date"/>
+                    </dd>
+               </dl>
+
+
 
               <dl>
                 <dt>Org Links</dt>

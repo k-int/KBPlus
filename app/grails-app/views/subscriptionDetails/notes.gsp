@@ -24,7 +24,7 @@
 
       ${institution?.name} ${subscriptionInstance?.type?.value} Subscription Taken
 
-       <h1><g:inPlaceEdit domain="Subscription" pk="${subscriptionInstance.id}" field="name" id="name" class="${editable?'newipe':''}">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
+       <h1>${subscriptionInstance?.name}</h1>
 
        <g:render template="nav" contextPath="." />
 

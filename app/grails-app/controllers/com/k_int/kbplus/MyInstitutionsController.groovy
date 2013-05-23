@@ -114,13 +114,19 @@ class MyInstitutionsController {
       result.is_admin=false;
     }
 
-
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
     def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
+
+    def qry_params = [result.institution, licensee_role]
 
     // def qry = "select l from License as l left outer join l.orgLinks ol where ( ( l.type = ? ) OR ( ol.org = ? and ol.roleType = ? ) ) AND l.status.value != 'Deleted'"
     // def qry = "select l from License as l left outer join l.orgLinks ol where ( ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
     def qry = "select l from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
+
+    if ( ( params['keyword-search'] != null ) && ( params['keyword-search'].trim().length() > 0 ) ) {
+      qry += " and lower(l.reference) like ?"
+      qry_params += "%${params['keyword-search'].toLowerCase()}%"
+    }
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
       qry += " order by l.${params.sort} ${params.order}"
@@ -130,7 +136,7 @@ class MyInstitutionsController {
     }
 
     // result.licenses = License.executeQuery(qry, [template_license_type, result.institution, licensee_role] )
-    result.licenses = License.executeQuery(qry, [result.institution, licensee_role] )
+    result.licenses = License.executeQuery(qry, qry_params);
 
     result
   }
@@ -242,6 +248,8 @@ class MyInstitutionsController {
       base_qry += " order by s.name asc"
     }
 
+    log.debug("current subs base query: ${base_qry} params: ${qry_params}");
+
     result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
     result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
 
@@ -291,20 +299,19 @@ class MyInstitutionsController {
     result.max = params.max ? Integer.parseInt(params.max) : 10;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
-
     // def base_qry = " from Subscription as s where s.type.value = 'Subscription Offered' and s.isPublic=?"
-    def base_qry = " from Subscription as s where s.type.value = 'Subscription Offered'"
-    // def qry_params = [public_flag]
     def qry_params = []
-
-    if ( params.q?.length() > 0 ) {
-      base_qry += " and ( lower(s.name) like ? or exists ( select sp from SubscriptionPackage as sp where sp.subscription = s and ( lower(sp.pkg.name) like ? ) ) ) "
-      qry_params.add("%${params.q.trim().toLowerCase()}%");
+    def base_qry = " from Package as p where lower(p.name) like ?"
+    
+    if ( params.q == null ) {
+      qry_params.add("%");
+    }
+    else {
       qry_params.add("%${params.q.trim().toLowerCase()}%");
     }
-
+    
     if ( date_restriction ) {
-      base_qry += " and s.startDate <= ? and s.endDate >= ? "
+      base_qry += " and p.startDate <= ? and p.endDate >= ? "
       qry_params.add(date_restriction)
       qry_params.add(date_restriction)
     }
@@ -319,13 +326,49 @@ class MyInstitutionsController {
       base_qry += " order by ${params.sort} ${params.order}"
     }
     else {
-      base_qry += " order by s.name asc"
+      base_qry += " order by p.name asc"
     }
 
-    result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
-    result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
+    result.num_pkg_rows = Package.executeQuery("select count(p) "+base_qry, qry_params )[0]
+    result.packages = Package.executeQuery("select p ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
 
     result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def emptySubscription() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+    result
+  }
+  
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def processEmptySubscription() {
+    log.debug(params)
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+    
+    def new_sub = new Subscription(type: RefdataValue.findByValue("Subscription Taken"),
+                                   status:RefdataCategory.lookupOrCreate('Subscription Status','Current'),
+                                   name:params.newEmptySubName,
+                                   identifier:java.util.UUID.randomUUID().toString(),
+                                   impId:java.util.UUID.randomUUID().toString())
+    if ( new_sub.save() ) {                           
+      def new_sub_link = new OrgRole(org:result.institution, 
+                                     sub:new_sub, 
+                                     roleType: RefdataCategory.lookupOrCreate('Organisational Role','Subscriber')).save();
+
+      redirect controller:'subscriptionDetails', action:'index', id:new_sub.id
+    }
+    else {
+      new_sub.errors.each { e ->
+        log.debug("Problem creating new sub: ${e}");
+      }
+      flash.error=new_sub.errors
+      redirect action:'emptySubscription', params:[shortcode:params.shortcode]
+    }
   }
 
   def buildQuery(params) {
@@ -565,78 +608,23 @@ class MyInstitutionsController {
 
     log.debug("processAddSubscription ${params}");
 
-    def baseSubscription = Subscription.get(params.subOfferedId);
+    def basePackage = Package.get(params.packageId);
 
-    if ( baseSubscription ) {
-      log.debug("Copying base subscription ${baseSubscription.id} for org ${institution.id}");
+    if ( basePackage ) {
+      // 
+      def new_sub = basePackage.createSubscription("Subscription Taken",
+                                                   "A New subscription....",
+                                                   "A New subscription identifier.....",
+                                                   basePackage.startDate,
+                                                   basePackage.endDate,
+                                                   basePackage.getConsortia())
 
-      if ( ! baseSubscription.hasPerm("view",user) ) {
-        flash.message = message(code:'noperm',default:'You do not have edit permission for the selected subscription.')
-        redirect(url: request.getHeader('referer'))
-        return
-      }
-      
-      def subscriptionInstance = new Subscription(
-                                     status:baseSubscription.status,
-                                     type:RefdataCategory.lookupOrCreate('Subscription Type','Subscription Taken'),
-                                     name:"Copy of ${baseSubscription.name}",
-                                     identifier:baseSubscription.identifier,
-                                     impId:null,
-                                     startDate:baseSubscription.startDate,
-                                     endDate:baseSubscription.endDate,
-                                     instanceOf:baseSubscription,
-                                     noticePeriod:baseSubscription.noticePeriod,
-                                     dateCreated:new Date(),
-                                     lastUpdated:new Date(),
-                                     issueEntitlements: new java.util.TreeSet()
-                                 );
+      def new_sub_link = new OrgRole(org:institution, sub:new_sub, roleType: RefdataCategory.lookupOrCreate('Organisational Role','Subscriber')).save();
 
-      // Now copy reference data and issue entitlements
-      if (!subscriptionInstance.save(flush: true)) {
-        log.error("Problem saving license ${licenseInstance.errors}");
-      }
-      else {
-        if ( params.createSubAction == 'copy' ) {
-          log.debug("Copy issue entitlements");
-          // These IE's are save on cascade
-          int ic = 0;
-          baseSubscription.issueEntitlements.each { bie ->
-            log.debug("Adding issue entitlement... ${bie.id} [${ic++}]");
-  
-            new IssueEntitlement(status:bie.status,
-                                 startDate:bie.startDate,
-                                 startVolume:bie.startVolume,
-                                 startIssue:bie.startIssue,
-                                 endDate:bie.endDate,
-                                 endVolume:bie.endVolume,
-                                 endIssue:bie.endIssue,
-                                 embargo:bie.embargo,
-                                 coverageDepth:bie.coverageDepth,
-                                 coverageNote:bie.coverageNote,
-                                 coreStatus:bie.coreStatus,
-                                 subscription:subscriptionInstance,
-                                 tipp: bie.tipp).save();
-          }
-        }
-  
-        log.debug("Setting sub/org link");
-        def subscriber_org_link = new OrgRole(org:institution, sub:subscriptionInstance, roleType: RefdataCategory.lookupOrCreate('Organisational Role','Subscriber')).save();
+      def new_sub_package = new SubscriptionPackage(subscription: new_sub, pkg: basePackage).save();
 
-        log.debug("Adding packages");
-        baseSubscription.packages.each { bp ->
-          new SubscriptionPackage(subscription:subscriptionInstance, pkg:bp.pkg).save();
-        }
-
-        // Copy any org links
-        baseSubscription.orgRelations.each { or ->
-          new OrgRole(org:or.org, roleType:or.roleType, sub:subscriptionInstance).save();
-        }
-
-        log.debug("Save ok");
-      }
-
-      flash.message = message(code: 'subscription.created.message', args: [message(code: 'subscription.label', default: 'License'), subscriptionInstance.id])
-      redirect controller: 'subscriptionDetails', action:'index', params:params, id:subscriptionInstance.id
+      flash.message = message(code: 'subscription.created.message', args: [message(code: 'subscription.label', default: 'Package'), basePackage.id])
+      redirect controller: 'subscriptionDetails', action:'index', params:params, id:new_sub.id
     }
     else {
       flash.message = message(code: 'subscription.unknown.message')
@@ -1108,7 +1096,7 @@ AND EXISTS (
 
     if ( params.addBtn ) {
       log.debug("Add item ${params.addBtn} to basket");
-      def oid = "com.k_int.kbplus.Subscription:${params.addBtn}"
+      def oid = "com.k_int.kbplus.Package:${params.addBtn}"
       shopping_basket.addIfNotPresent(oid)
       shopping_basket.save(flush:true);
     }
@@ -1264,7 +1252,8 @@ AND EXISTS (
 
     StringWriter sw = new StringWriter()
 
-    sw.write("subtype:'Subscription Offered'")
+    // sw.write("subtype:'Subscription Offered'")
+    sw.write("rectype:'Package'")
 
     renewals_reversemap.each { mapping ->
 
@@ -1305,12 +1294,13 @@ AND EXISTS (
     result
   }
 
-  def generate(slist, inst) {
-    def m = generateMatrix(slist)
+  def generate(plist, inst) {
+    def m = generateMatrix(plist)
     exportWorkbook(m, inst)
   }
 
-  def generateMatrix(slist) {
+  def generateMatrix(plist) {
+
     def titleMap = [:]
     def subscriptionMap = [:]
 
@@ -1320,46 +1310,68 @@ AND EXISTS (
 
     def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
 
-    // Step one - Assemble a list of all titles and packages
-    slist.each { sub ->
+    // Step one - Assemble a list of all titles and packages.. We aren't assembling the matrix
+    // of titles x packages yet.. Just gathering the data for the X and Y axis
+    plist.each { sub ->
 
       def sub_info = [
         sub_idx : subscriptionMap.size(),
         sub_name : sub.name,
-        sub_id : sub.id
+        sub_id : "${sub.class.name}:${sub.id}"
       ]
 
       subscriptionMap[sub.id] = sub_info
 
       // For each subscription in the shopping basket
-      sub.issueEntitlements.each { ie ->
-        if ( ! (ie.status?.value=='Deleted')  ) {
-          def title_info = titleMap[ie.tipp.title.id]
-          if ( !title_info ) {
-            // log.debug("Adding ie: ${ie}");
-            title_info = [:]
-            title_info.title_idx = titleMap.size()
-            title_info.id = ie.tipp.title.id;
-            title_info.issn = ie.tipp.title.getIdentifierValue('ISSN');
-            title_info.eissn = ie.tipp.title.getIdentifierValue('eISSN');
-            title_info.title = ie.tipp.title.title
-            if ( first ) {
-              if ( ie.startDate )
-                title_info.current_start_date = formatter.format(ie.startDate)
-              if ( ie.endDate )
-                title_info.current_end_date = formatter.format(ie.endDate)
-              title_info.current_embargo = ie.embargo
-              title_info.current_depth = ie.coverageDepth
-              title_info.current_coverage_note = ie.coverageNote
-              title_info.is_core = ie.coreStatus?.value
-              title_info.core_start_date = ie.coreStatusStart ? formatter.format(ie.coreStatusStart) : ''
-              title_info.core_end_date = ie.coreStatusEnd ? formatter.format(ie.coreStatusEnd) : ''
-              // log.debug("added title info: ${title_info}");
+      if ( sub instanceof Subscription ) {
+        sub.issueEntitlements.each { ie ->
+          if ( ! (ie.status?.value=='Deleted')  ) {
+            def title_info = titleMap[ie.tipp.title.id]
+            if ( !title_info ) {
+              // log.debug("Adding ie: ${ie}");
+              title_info = [:]
+              title_info.title_idx = titleMap.size()
+              title_info.id = ie.tipp.title.id;
+              title_info.issn = ie.tipp.title.getIdentifierValue('ISSN');
+              title_info.eissn = ie.tipp.title.getIdentifierValue('eISSN');
+              title_info.title = ie.tipp.title.title
+              if ( first ) {
+                if ( ie.startDate )
+                  title_info.current_start_date = formatter.format(ie.startDate)
+                if ( ie.endDate )
+                  title_info.current_end_date = formatter.format(ie.endDate)
+                title_info.current_embargo = ie.embargo
+                title_info.current_depth = ie.coverageDepth
+                title_info.current_coverage_note = ie.coverageNote
+                title_info.is_core = ie.coreStatus?.value
+                title_info.core_start_date = ie.coreStatusStart ? formatter.format(ie.coreStatusStart) : ''
+                title_info.core_end_date = ie.coreStatusEnd ? formatter.format(ie.coreStatusEnd) : ''
+                // log.debug("added title info: ${title_info}");
+              }
+              titleMap[ie.tipp.title.id] = title_info;
             }
-            titleMap[ie.tipp.title.id] = title_info;
           }
         }
       }
+      else if ( sub instanceof Package ) {
+        log.debug("Adding package into renewals worksheet");
+        sub.tipps.each { tipp ->
+          if ( ! (tipp.status?.value=='Deleted')  ) {
+            def title_info = titleMap[tipp.title.id]
+            if ( !title_info ) {
+              // log.debug("Adding ie: ${ie}");
+              title_info = [:]
+              title_info.title_idx = titleMap.size()
+              title_info.id = tipp.title.id;
+              title_info.issn = tipp.title.getIdentifierValue('ISSN');
+              title_info.eissn = tipp.title.getIdentifierValue('eISSN');
+              title_info.title = tipp.title.title
+              titleMap[tipp.title.id] = title_info;
+            }
+          }
+        }
+      }
+
       first=false
     }
 
@@ -1370,36 +1382,70 @@ AND EXISTS (
     Object[] sub_info_arr = new Object[subscriptionMap.size()]
     Object[] title_info_arr = new Object[titleMap.size()]
 
+    // Run through the list of packages, and set the X axis headers accordingly
     subscriptionMap.values().each { v ->
       sub_info_arr[v.sub_idx] = v
     }
 
+    // Run through the titles and set the Y axis headers accordingly
     titleMap.values().each { v ->
       title_info_arr[v.title_idx] = v
     }
 
-    slist.each { sub ->
+    // Fill out the matrix by looking through each sub/package and adding the appropriate cell info
+    plist.each { sub ->
       def sub_info = subscriptionMap[sub.id]
-      sub.issueEntitlements.each { ie ->
-        def title_info = titleMap[ie.tipp.title.id]
-        def ie_info = [:]
-        log.debug("Adding tipp info ${ie.tipp.startDate} ${ie.tipp.derivedFrom}");
-        ie_info.tipp_id = ie.tipp.id;
-        ie_info.core = ie.coreStatus?.value
-        ie_info.startDate_d = ie.tipp.startDate ?: ie.tipp.derivedFrom?.startDate
-        ie_info.startDate = ie_info.startDate_d ? formatter.format(ie_info.startDate_d) : null
-        ie_info.startVolume = ie.tipp.startVolume ?: ie.tipp.derivedFrom?.startVolume
-        ie_info.startIssue = ie.tipp.startIssue ?: ie.tipp.derivedFrom?.startIssue
-        ie_info.endDate_d = ie.endDate ?: ie.tipp.derivedFrom?.endDate
-        ie_info.endDate = ie_info.endDate_d ? formatter.format(ie_info.endDate_d) : null
-        ie_info.endVolume = ie.endVolume ?: ie.tipp.derivedFrom?.endVolume
-        ie_info.endIssue = ie.endIssue ?: ie.tipp.derivedFrom?.endIssue
-        ti_info_arr[title_info.title_idx][sub_info.sub_idx] = ie_info
+      if ( sub instanceof Subscription ) {
+        log.debug("Filling out renewal sheet column for an ST");
+        sub.issueEntitlements.each { ie ->
+          if ( ! (ie.status?.value=='Deleted')  ) {
+            def title_info = titleMap[ie.tipp.title.id]
+            def ie_info = [:]
+            log.debug("Adding tipp info ${ie.tipp.startDate} ${ie.tipp.derivedFrom}");
+            ie_info.tipp_id = ie.tipp.id;
+            ie_info.core = ie.coreStatus?.value
+            ie_info.startDate_d = ie.tipp.startDate ?: ie.tipp.derivedFrom?.startDate
+            ie_info.startDate = ie_info.startDate_d ? formatter.format(ie_info.startDate_d) : null
+            ie_info.startVolume = ie.tipp.startVolume ?: ie.tipp.derivedFrom?.startVolume
+            ie_info.startIssue = ie.tipp.startIssue ?: ie.tipp.derivedFrom?.startIssue
+            ie_info.endDate_d = ie.endDate ?: ie.tipp.derivedFrom?.endDate
+            ie_info.endDate = ie_info.endDate_d ? formatter.format(ie_info.endDate_d) : null
+            ie_info.endVolume = ie.endVolume ?: ie.tipp.derivedFrom?.endVolume
+            ie_info.endIssue = ie.endIssue ?: ie.tipp.derivedFrom?.endIssue
+
+            ti_info_arr[title_info.title_idx][sub_info.sub_idx] = ie_info
+          }
+        }
+      }
+      else if ( sub instanceof Package ) {
+        log.debug("Filling out renewal sheet column for a package");
+        sub.tipps.each { tipp ->
+          if ( ! (tipp.status?.value=='Deleted')  ) {
+            def title_info = titleMap[tipp.title.id]
+            def ie_info = [:]
+            log.debug("Adding tipp info ${tipp.startDate} ${tipp.derivedFrom}");
+            ie_info.tipp_id = tipp.id;
+            ie_info.startDate_d = tipp.startDate
+            ie_info.startDate = ie_info.startDate_d ? formatter.format(ie_info.startDate_d) : null
+            ie_info.startVolume = tipp.startVolume
+            ie_info.startIssue = tipp.startIssue
+            ie_info.endDate_d = tipp.endDate
+            ie_info.endDate = ie_info.endDate_d ? formatter.format(ie_info.endDate_d) : null
+            ie_info.endVolume = tipp.endVolume ?: tipp.derivedFrom?.endVolume
+            ie_info.endIssue = tipp.endIssue ?: tipp.derivedFrom?.endIssue
+
+            ti_info_arr[title_info.title_idx][sub_info.sub_idx] = ie_info
+          }
+        }
       }
     }
 
 
-    [ti_info:ti_info_arr,title_info:title_info_arr,sub_info:sub_info_arr]
+    def final_result = [
+                        ti_info:ti_info_arr,                      // A crosstab array of the packages where a title occours
+                        title_info:title_info_arr,                // A list of the titles
+                        sub_info:sub_info_arr ]                   // The subscriptions offered (Packages)
+    return final_result
   }
 
   def exportWorkbook(m, inst) {
@@ -1654,8 +1700,8 @@ AND EXISTS (
       HSSFRow package_ids_row = firstSheet.getRow(5)
       for (int i=SO_START_COL;((i<package_ids_row.getLastCellNum())&&(package_ids_row.getCell(i)));i++) {
         log.debug("Got package identifier: ${package_ids_row.getCell(i).toString()}");
-        def sub_id = Long.parseLong(package_ids_row.getCell(i).toString())
-        def sub_rec = Subscription.get(sub_id);
+        def sub_id = package_ids_row.getCell(i).toString()
+        def sub_rec = genericOIDService.resolveOID(sub_id) // Subscription.get(sub_id);
         if ( sub_rec ) {
           sub_info.add(sub_rec);
         }
@@ -1694,15 +1740,6 @@ AND EXISTS (
                 
               if ( subscribe == 'Y' || subscribe == 'y' ) {
                 log.debug("Add an issue entitlement from subscription[${j}] for title ${title_id_long}");
-                if ( result.base_subscription ) {
-                  // if ( result.base_subscription != sub_info[j] ) {
-                  //   log.error("Critical error - Worksheet merges entitlements from 2 different subscriptions offered");
-                  //   result.errors.add("Critical error - Worksheet merges entitlements from 2 different subscriptions offered");
-                  // }
-                }
-                else {
-                  result.base_subscription = sub_info[j]
-                }
 
                 def entitlement_info = [:]
                 entitlement_info.title_id = title_id_long
@@ -1733,10 +1770,10 @@ AND EXISTS (
     result
   }
 
-  def extractEntitlement(sub, title_id) {
-    def result = sub.issueEntitlements.find { e -> e.tipp?.title?.id == title_id }
+  def extractEntitlement(pkg, title_id) {
+    def result = pkg.tipps.find { e -> e.title?.id == title_id }
     if ( result == null ) {
-      log.error("Failed to look up title ${title_id} in subscription ${sub.sub_name}");
+      log.error("Failed to look up title ${title_id} in package ${pkg.name}");
     }
     result
   }
@@ -1760,24 +1797,26 @@ AND EXISTS (
 
     int ent_count = Integer.parseInt(params.ecount);
 
-    def db_sub = Subscription.get(params.baseSubscription);
-
     def new_subscription = new Subscription(
-                                 identifier: "${db_sub.identifier}:${result.institution.name}",
-                                 status:RefdataCategory.lookupOrCreate('Subscription Status','Current'),
-                                 impId:null,
-                                 name: db_sub.name,
-                                 startDate: db_sub.startDate,
-                                 endDate: db_sub.endDate,
-                                 instanceOf: db_sub,
+                                 identifier: java.util.UUID.randomUUID().toString(),
+                                 status: RefdataCategory.lookupOrCreate('Subscription Status','Current'),
+                                 impId: java.util.UUID.randomUUID().toString(),
+                                 name: "Unset: Generated by renewals import",
+                                 // startDate: db_sub.startDate,
+                                 // endDate: db_sub.endDate,
+                                 // instanceOf: db_sub,
                                  type: RefdataValue.findByValue('Subscription Taken') )
+
+    def packages_referenced = []
+    Date earliest_start_date =  null
+    Date latest_end_date = null
 
     if ( new_subscription.save() ) {
       // log.debug("New subscriptionT saved...");
       // Copy package links from SO to ST
-      db_sub.packages.each { sopkg ->
-        def new_package_link = new SubscriptionPackage(subscription:new_subscription, pkg:sopkg.pkg).save();
-      }
+      // db_sub.packages.each { sopkg ->
+      //   def new_package_link = new SubscriptionPackage(subscription:new_subscription, pkg:sopkg.pkg).save();
+      // }
 
       // assert an org-role
       def org_link = new OrgRole(org:result.institution,
@@ -1785,11 +1824,11 @@ AND EXISTS (
                                  roleType: RefdataCategory.lookupOrCreate('Organisational Role','Subscriber')).save();
 
       // Copy any links from SO
-      db_sub.orgRelations.each { or ->
-        if ( or.roleType?.value != 'Subscriber' ) {
-          def new_or = new OrgRole(org: or.org, sub: new_subscription, roleType: or.roleType).save();
-        }
-      }
+      // db_sub.orgRelations.each { or ->
+      //   if ( or.roleType?.value != 'Subscriber' ) {
+      //     def new_or = new OrgRole(org: or.org, sub: new_subscription, roleType: or.roleType).save();
+      //   }
+      // }
     }
     else {
       log.error("Problem saving new subscription, ${new_subscription.errors}");
@@ -1808,8 +1847,16 @@ AND EXISTS (
 
       def dbtipp = TitleInstancePackagePlatform.get(entitlement.tipp_id)
 
+      if ( ! packages_referenced.contains(dbtipp.pkg) ) {
+        packages_referenced.add(dbtipp.pkg)
+        def new_package_link = new SubscriptionPackage(subscription:new_subscription, pkg:dbtipp.pkg).save();
+        if ( ( earliest_start_date == null ) || ( dbtipp.pkg.startDate < earliest_start_date ) )
+          earliest_start_date = dbtipp.pkg.startDate
+        if ( ( latest_end_date == null ) || ( dbtipp.pkg.endDate > latest_end_date ) )
+          latest_end_date = dbtipp.pkg.endDate
+      }
+
       if ( dbtipp ) {
-        def original_entitlement = IssueEntitlement.get(entitlement.entitlement_id)
         def live_issue_entitlement = RefdataCategory.lookupOrCreate('Entitlement Issue Status', 'Live');
         def is_core = false
 
@@ -1881,6 +1928,10 @@ AND EXISTS (
       }
     }
     log.debug("done entitlements...");
+
+    new_subscription.startDate = earliest_start_date
+    new_subscription.endDate = latest_end_date
+    new_subscription.save()
 
     if ( new_subscription )
       redirect controller:'subscriptionDetails', action:'index', id:new_subscription.id
