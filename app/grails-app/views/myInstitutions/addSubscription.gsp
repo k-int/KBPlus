@@ -16,15 +16,7 @@
 
     <div class="container">
       <h1>${institution?.name} - Add Subscription</h1>
-
-      <ul class="nav nav-pills">
-        <li><g:link controller="myInstitutions" 
-                                   action="currentSubscriptions" 
-                                   params="${[shortcode:params.shortcode]}">Current Subscriptions</g:link></li>
-        <li class="active"><g:link controller="myInstitutions" 
-                               action="addSubscription" 
-                               params="${[shortcode:params.shortcode]}">Add New Subscription</g:link></li>
-      </ul>
+      <g:render template="subsNav" contextPath="." />
     </div>
 
         

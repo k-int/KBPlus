@@ -335,6 +335,42 @@ class MyInstitutionsController {
     result
   }
 
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def emptySubscription() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+    result
+  }
+  
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def processEmptySubscription() {
+    log.debug(params)
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+    
+    def new_sub = new Subscription(type: RefdataValue.findByValue("Subscription Taken"),
+                                   status:RefdataCategory.lookupOrCreate('Subscription Status','Current'),
+                                   name:params.newEmptySubName,
+                                   identifier:java.util.UUID.randomUUID().toString(),
+                                   impId:java.util.UUID.randomUUID().toString())
+    if ( new_sub.save() ) {                           
+      def new_sub_link = new OrgRole(org:result.institution, 
+                                     sub:new_sub, 
+                                     roleType: RefdataCategory.lookupOrCreate('Organisational Role','Subscriber')).save();
+
+      redirect controller:'subscriptionDetails', action:'index', id:new_sub.id
+    }
+    else {
+      new_sub.errors.each { e ->
+        log.debug("Problem creating new sub: ${e}");
+      }
+      flash.error=new_sub.errors
+      redirect action:'emptySubscription', params:[shortcode:params.shortcode]
+    }
+  }
+
   def buildQuery(params) {
     log.debug("BuildQuery...");
 

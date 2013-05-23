@@ -17,7 +17,7 @@ select (@rdc_tipp_status:=rdc_id) from refdata_category where rdc_description = 
 select (@rdv_pc:=rdv_id) from refdata_value where rdv_value = 'Current' and rdv_owner = @rdc_tipp_status;
 
 update package p, subscription_package sp, subscription s
-set p.pkg_license_fk = s.sub_owner_license_fk
+set p.pkg_license_fk = s.sub_owner_license_fk, p.pkg_is_public = s.sub_is_public
 where p.pkg_id = sp.sp_pkg_fk 
   and sp.sp_sub_fk = s.sub_id
   and s.sub_type_rv_fk = @rdv_so;
