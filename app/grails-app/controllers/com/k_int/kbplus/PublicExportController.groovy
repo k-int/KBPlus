@@ -185,8 +185,8 @@ class PublicExportController {
            writer.write("publication_title,print_identifier,online_identifier,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,title_url,first_author,title_id,embargo_info,coverage_depth,coverage_notes,publisher_name\n");
 
            result.tipps.each { t ->
-             def start_date = t.startDate ? formatter.format(e.startDate) : '';
-             def end_date = t.endDate ? formatter.format(e.endDate) : '';
+             def start_date = t.startDate ? formatter.format(t.startDate) : '';
+             def end_date = t.endDate ? formatter.format(t.endDate) : '';
              def title_doi = (t.title?.getIdentifierValue('DOI'))?:''
              def publisher = t.title?.publisher
 
