@@ -70,7 +70,7 @@
                <dl>
                     <dt>End Date</dt>
                     <dd>
-                       <g:xEditable owner="${package  Instance}" field="endDate" type="date"/>
+                       <g:xEditable owner="${packageInstance}" field="endDate" type="date"/>
                     </dd>
                </dl>
 
