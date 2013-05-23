@@ -23,9 +23,15 @@
     <div class="container">
       <p>This form will create a new subscription not attached to any packages. You will need to add packages using the Add Package tab
          on the subscription details page</p>
-      <g:form action="processEmptySubscription" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="post" class="form-inline">                
-        <label>New Subscription Name</label> <input type="text" name="newEmptySubName"/>
-                              <input type="submit" class="btn btn-primary" value="Create ->" />
+      <g:form action="processEmptySubscription" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="post" class="form-inline"> 
+        <table> 
+          <tr>              
+            <td><label>New Subscription Name: </label> <input type="text" name="newEmptySubName"/>&nbsp;</td>
+            <td><label>Valid From: </label> <g:simpleHiddenValue id="valid_from" name="validFrom" type="date"/>&nbsp;</td>
+            <td><label>Valid To: </label> <g:simpleHiddenValue id="valid_to" name="validTo" type="date"/>&nbsp;</td>
+            <td><input type="submit" class="btn btn-primary" value="Create ->" /></td>
+          </tr>
+        </table>
       </g:form>
     </div>       
     
