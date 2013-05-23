@@ -10,6 +10,7 @@ class Package {
   RefdataValue packageType
   RefdataValue packageStatus
   RefdataValue packageListStatus
+  RefdataValue isPublic
   Platform nominalPlatform
   Date startDate
   Date endDate
@@ -39,6 +40,7 @@ class Package {
             startDate column:'pkg_start_date'
               endDate column:'pkg_end_date'
               license column:'pkg_license_fk'
+             isPublic column:'pkg_is_public'
                 tipps sort:'title.title', order: 'asc'
 
 //                 orgs sort:'org.name', order: 'asc'
@@ -52,7 +54,7 @@ class Package {
             startDate(nullable:true, blank:false)
               endDate(nullable:true, blank:false)
               license(nullable:true, blank:false)
-
+             isPublic(nullable:true, blank:false)
   }
 
   def getConsortia() {
