@@ -94,9 +94,9 @@ This work is published from:
         <g:each in="${packages}" var="p">
           <div class="span4"><div class="well">
             <h4>${p.name}</h4>
-            <g:link action="so" params="${[format:'csv', id:p.id]}">CSV With KBPlus header</g:link><br/>
-            <g:link action="so" params="${[format:'csv',omitHeader:'Y', id:p.id]}">CSV Without KBPlus header (KBART)</g:link><br/>
-            <g:link action="so" params="${[format:'json',id:p.id]}">JSON</g:link>
+            <g:link action="pkg" params="${[format:'csv', id:p.id]}">CSV With KBPlus header</g:link><br/>
+            <g:link action="pkg" params="${[format:'csv',omitHeader:'Y', id:p.id]}">CSV Without KBPlus header (KBART)</g:link><br/>
+            <g:link action="pkg" params="${[format:'json',id:p.id]}">JSON</g:link>
           </div></div>
         </g:each>
       </div>
