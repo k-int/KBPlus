@@ -54,4 +54,4 @@ where o_r.or_sub_fk = s.sub_id
 
 update refdata_value, refdata_category set rdv_icon = 'greenTick' where rdv_value = 'No limit' and rdc_id = rdv_owner and rdc_description = 'Concurrent Access';
 
-update title_instance_package_platform set tipp_status_rv_fk = @rdv_tipp_current where tipp_status_rv_fk is null;
+update title_instance_package_platform set tipp_status_rv_fk = @rdv_tipp_current where tipp_status_rv_fk is null or tipp_status_rv_fk = 0;

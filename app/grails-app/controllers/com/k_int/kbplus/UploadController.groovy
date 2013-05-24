@@ -99,7 +99,7 @@ class UploadController {
 
     if ( upload.consortiumOrg ) {                              
       def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
-      def or = new OrgRole(org: consortium_org, pkg:result, roleType:sc_role).save();
+      def or = new OrgRole(org: consortium, pkg:result, roleType:sc_role).save();
     }
 
     if ( new_pkg.save(flush:true) ) {
