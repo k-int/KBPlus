@@ -71,6 +71,7 @@ class UploadController {
   
   def processUploadSO(upload) {
 
+    def new_pkg_id = null
     def content_provider_org = Org.findByName(upload.soProvider.value) 
     if ( content_provider_org == null ) {
       content_provider_org = new Org(name:upload.soProvider.value,impId:java.util.UUID.randomUUID().toString()).save();    
@@ -109,6 +110,7 @@ class UploadController {
       if ( content_provider_org ) {
         OrgRole.assertOrgPackageLink(content_provider_org, new_pkg, cp_role);
       }
+      new_pkg_id = new_pkg.id
     }
     else {
       log.error("Problem saving new package");

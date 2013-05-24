@@ -1157,6 +1157,7 @@ class DataloadService {
     def future = index_admin_client.create {
       index 'kbplus'
     }
+    future.get()
 
     log.debug("Add title mappings....");
     future = index_admin_client.putMapping {
@@ -1173,7 +1174,8 @@ class DataloadService {
         }
       }
     }
-
+    future.get()
+    
     log.debug("Add org mappings....");
     future = index_admin_client.putMapping {
       indices 'kbplus'
@@ -1189,7 +1191,8 @@ class DataloadService {
         }
       }
     }
-
+    future.get()
+    
     log.debug("Add package mappings....");
     future = index_admin_client.putMapping {
       indices 'kbplus'
@@ -1225,7 +1228,8 @@ class DataloadService {
         }
       }
     }
-
+    future.get()
+    
     log.debug("Add platform mappings....");
     future = index_admin_client.putMapping {
       indices 'kbplus'
@@ -1241,7 +1245,8 @@ class DataloadService {
         }
       }
     }
-
+    future.get()
+    
     log.debug("Add subscription mappings....");
     future = index_admin_client.putMapping {
       indices 'kbplus'
@@ -1289,7 +1294,8 @@ class DataloadService {
         }
       }
     }
-
+    future.get()
+    
     log.debug("Add license mappings....");
     future = index_admin_client.putMapping {
       indices 'kbplus'
@@ -1305,7 +1311,8 @@ class DataloadService {
         }
       }
     }
-
+    future.get()
+    
   }
 
 
