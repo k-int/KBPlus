@@ -16,6 +16,8 @@ class SubscriptionDetailsController {
   def gazetteerService
   def alertsService
   def genericOIDService
+  
+  def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'name' ]
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
@@ -538,8 +540,163 @@ class SubscriptionDetailsController {
     result.user = User.get(springSecurityService.principal.id)
     result.subscriptionInstance = Subscription.get(params.id)
     result.institution = result.subscriptionInstance.subscriber
+    
+    
+    StringWriter sw = new StringWriter()
+    def fq = null;
+    boolean has_filter = false
+  
+    params.each { p ->
+      if ( p.key.startsWith('fct:') && p.value.equals("on") ) {
+        log.debug("start year ${p.key} : -${p.value}-");
+
+        if ( !has_filter )
+          has_filter = true
+        else
+          sw.append(" AND ")
+
+        String[] filter_components = p.key.split(':');
+            switch ( filter_components[1] ) {
+              case 'consortiaName':
+                sw.append('consortiaName')
+                break;
+              case 'startYear':
+                sw.append('startYear')
+                break;
+              case 'contentProvider':
+                sw.append('packages.cpname')
+                break;
+            }
+            if ( filter_components[2].indexOf(' ') > 0 ) {
+              sw.append(":'");
+              sw.append(filter_components[2])
+              sw.append("'");
+            }
+            else {
+              sw.append(":");
+              sw.append(filter_components[2])
+            }
+      }
+    }
+
+    if ( has_filter ) {
+      fq = sw.toString();
+      log.debug("Filter Query: ${fq}");
+    }
+
+    try {
+
+      // Get hold of some services we might use ;)
+      org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
+      org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
+      
+          params.max = Math.min(params.max ? params.int('max') : 10, 100)
+          params.offset = params.offset ? params.int('offset') : 0
+
+          //def params_set=params.entrySet()
+
+          def query_str = buildRenewalsQuery(params)
+          if ( fq ) 
+            query_str = query_str + " AND ( " + fq + " ) "
+          
+          log.debug("query: ${query_str}");
+
+          def search = esclient.search{
+            indices "kbplus"
+            source {
+              from = params.offset
+              size = params.max
+              query {
+                query_string (query: query_str)
+              }
+              facets {
+                consortiaName {
+                  terms {
+                    field = 'consortiaName'
+                  }
+                }
+                contentProvider {
+                  terms {
+                    field = 'packages.cpname'
+                  }
+                }
+                startYear {
+                  terms {
+                    field = 'startYear'
+                  }
+                }
+              }
+
+            }
+
+          }
+
+          if ( search?.response ) {
+            result.hits = search.response.hits
+            result.resultsTotal = search.response.hits.totalHits
+
+            // We pre-process the facet response to work around some translation issues in ES
+            if ( search.response.facets != null ) {
+              result.facets = [:]
+              search.response.facets.facets.each { facet ->
+                def facet_values = []
+                facet.value.entries.each { fe ->
+                  facet_values.add([term: fe.term,display:fe.term,count:"${fe.count}"])
+                }
+                result.facets[facet.key] = facet_values
+              }
+            }
+          }
+    }
+    finally {
+      try {
+      }
+      catch ( Exception e ) {
+        log.error("problem",e);
+      }
+    }
+
+    
     result
   }
 
+  def buildRenewalsQuery(params) {
+    log.debug("BuildQuery...");
+
+    StringWriter sw = new StringWriter()
+
+    // sw.write("subtype:'Subscription Offered'")
+    sw.write("rectype:'Package'")
+
+    renewals_reversemap.each { mapping ->
+
+      // log.debug("testing ${mapping.key}");
+
+      if ( params[mapping.key] != null ) {
+        if ( params[mapping.key].class == java.util.ArrayList) {
+          params[mapping.key].each { p ->
+                sw.write(" AND ")
+                sw.write(mapping.value)
+                sw.write(":")
+                sw.write("\"${p}\"")
+          }
+        }
+        else {
+          // Only add the param if it's length is > 0 or we end up with really ugly URLs
+          // II : Changed to only do this if the value is NOT an *
+          if ( params[mapping.key].length() > 0 && ! ( params[mapping.key].equalsIgnoreCase('*') ) ) {
+            sw.write(" AND ")
+            sw.write(mapping.value)
+            sw.write(":")
+            sw.write("\"${params[mapping.key]}\"")
+          }
+        }
+      }
+    }
+
+
+    def result = sw.toString();
+    result;
+  }
 }
 
