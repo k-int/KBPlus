@@ -532,5 +532,14 @@ class SubscriptionDetailsController {
     render result as JSON
   }
 
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def linkPackage() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.subscriptionInstance = Subscription.get(params.id)
+    result.institution = result.subscriptionInstance.subscriber
+    result
+  }
+
 }
 

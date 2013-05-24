@@ -44,7 +44,7 @@ where p.pkg_id = sp.sp_pkg_fk
 # 
 
 insert into org_role(or_pkg_fk,or_org_fk,or_roletype_fk) 
-select distinct sp.sp_pkg_fk, o_r.or_org_fk, @rdv_pc
+select distinct sp.sp_pkg_fk, o_r.or_org_fk, o_r.or_roletype_fk
 from org_role o_r, subscription s, refdata_value rdv, subscription_package sp
 where o_r.or_sub_fk = s.sub_id
   and o_r.or_roletype_fk = @rdv_sc

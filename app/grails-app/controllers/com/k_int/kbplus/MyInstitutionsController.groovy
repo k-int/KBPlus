@@ -354,6 +354,7 @@ class MyInstitutionsController {
                                    status:RefdataCategory.lookupOrCreate('Subscription Status','Current'),
                                    name:params.newEmptySubName,
                                    identifier:java.util.UUID.randomUUID().toString(),
+                                   isPublic: RefdataCategory.lookupOrCreate('YN','No'),
                                    impId:java.util.UUID.randomUUID().toString())
     if ( new_sub.save() ) {                           
       def new_sub_link = new OrgRole(org:result.institution, 

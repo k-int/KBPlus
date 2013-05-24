@@ -1,10 +1,16 @@
 <ul class="nav nav-pills">
+
   <li <%='index'== actionName ? ' class="active"' : '' %>><g:link controller="subscriptionDetails" action="index" params="${[id:params.id]}">Current Entitlements</g:link></li>
+
   <g:if test="${editable}">
     <li <%='addEntitlements'== actionName ? ' class="active"' : '' %>><g:link controller="subscriptionDetails" 
       action="addEntitlements" 
       params="${[id:params.id]}">Add Entitlements</g:link></li>
   </g:if>
+
+  <li <%='linkPackage'== actionName ? ' class="active"' : '' %>><g:link controller="subscriptionDetails" 
+                    action="linkPackage" 
+                    params="${[id:params.id]}">Link Package</g:link></li>
 
   <li <%='documents'== actionName ? ' class="active"' : '' %>><g:link controller="subscriptionDetails" 
               action="documents" 

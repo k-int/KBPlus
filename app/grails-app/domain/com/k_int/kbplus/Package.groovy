@@ -86,7 +86,7 @@ class Package {
                                    impId:java.util.UUID.randomUUID().toString(),
                                    startDate:startdate,
                                    endDate:enddate,
-                                   isPublic: RefdataCategory.lookupOrCreate('YN','Yes'),
+                                   isPublic: RefdataCategory.lookupOrCreate('YN','No'),
                                    type: RefdataValue.findByValue(subtype))
 
     if ( result.save(flush:true) ) {
