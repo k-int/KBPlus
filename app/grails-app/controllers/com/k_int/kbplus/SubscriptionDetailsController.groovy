@@ -541,6 +541,18 @@ class SubscriptionDetailsController {
     result.subscriptionInstance = Subscription.get(params.id)
     result.institution = result.subscriptionInstance.subscriber
     
+    if ( result.subscriptionInstance.isEditableBy(result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
+    }
+
+    if ( result.institution ) {
+      result.subscriber_shortcode = result.institution.shortcode
+      result.institutional_usage_identifier = result.institution.getIdentifierByType('JUSP');
+    }
+
     
     StringWriter sw = new StringWriter()
     def fq = null;
@@ -647,6 +659,8 @@ class SubscriptionDetailsController {
               }
             }
           }
+          
+          
     }
     finally {
       try {
@@ -655,6 +669,7 @@ class SubscriptionDetailsController {
         log.error("problem",e);
       }
     }
+    
 
     
     result

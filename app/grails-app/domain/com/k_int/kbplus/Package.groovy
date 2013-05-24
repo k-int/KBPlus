@@ -60,7 +60,7 @@ class Package {
   def getConsortia() {
     def result = null;
     orgs.each { or ->
-      if ( or?.roleType?.value=='Package Consortia' )
+      if ( or?.roleType?.value=='Subscription Consortia' )
         result = or.org;
     }
     result
