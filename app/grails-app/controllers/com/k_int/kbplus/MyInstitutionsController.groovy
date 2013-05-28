@@ -672,7 +672,7 @@ class MyInstitutionsController {
       date_restriction = sdf.parse(result.validOn)
     }
     else if ( params.validOn == '' ) {     
-      result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+      result.validOn = "" //sdf.format(new Date(System.currentTimeMillis()))
     }
     else {
       result.validOn=params.validOn
@@ -680,7 +680,7 @@ class MyInstitutionsController {
     }
 
     if ( !checkUserIsMember(result.user, result.institution) ) {
-      flash.error="You do not have permission to access ${result.institution.name} pages. Please request access on the profile page";
+      flash.error="You do not have permission to access ${result.institution?.name} pages. Please request access on the profile page";
       response.sendError(401)
       return;
     }

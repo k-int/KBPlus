@@ -13,7 +13,7 @@
     <div class="container">
         <ul class="breadcrumb">
           <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
-          <li> <g:link controller="reports" action="list">${institution.name}  Current Titles</g:link> </li>
+          <li> <g:link controller="myInstitutions" action="currentTitles" params="[shortcode:params.shortcode]">${institution.name}  Current Titles</g:link> </li>
           <li class="dropdown pull-right">
             <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">
               Exports<b class="caret"></b>
@@ -87,7 +87,7 @@
       	</select>
       	<select size="5" name="filterOtherPlat" class="span3">
       		<option<%= (filterOtherPlat.equals("all")) ? ' selected="selected"' : '' %> value="all">All Additional Platforms</option>
-      		<g:each in="${hostplatforms}" var="op">
+      		<g:each in="${otherplatforms}" var="op">
               <% 
               def platId = op.id.toString()
               def platName = op.name 
@@ -105,8 +105,8 @@
 		        <input type="hidden" name="order" value="${params.order}">
 		        <label>Search text:</label> 
 		        <input name="filter" value="${params.filter}" placeholder="enter search term..."/>
-		        <label>Subscription Valid On</label> <input name="validOn" type="text" value="${validOn}"/>
-		        <input type="submit" class="btn btn-primary" value="Reload"/>
+		        <label>Subscriptions Valid on</label> <input name="validOn" type="text" value="${validOn}"/>
+		        <input type="submit" class="btn btn-primary" value="Search"/>
 	        </div>
 	    </div>
     </g:form>
