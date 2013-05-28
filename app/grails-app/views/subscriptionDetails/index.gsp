@@ -79,57 +79,32 @@
             <br/>
             <h6>Subscription Information</h6>
             <div class="inline-lists"> 
-                <dl>
-                    <dt>License</dt>
-                    <dd><g:if test="${subscriptionInstance.subscriber}">
-                          <g:xEditableRefData owner="${subscriptionInstance}" field="owner" dataController="subscriptionDetails" dataAction="possibleLicensesForSubscription"/>
-                        </g:if><g:else>N/A (Subscription offered)</g:else>
-                    </dd>
-                </dl>
-
-                <dl>
-                    <dt>Package Name</dt>
-                    <dd>
-                        <g:each in="${subscriptionInstance.packages}" var="sp">
-                            ${sp?.pkg?.name} (${sp.pkg?.contentProvider?.name}) <br/>
-                        </g:each>
-                    </dd>
-                </dl>
-
-                <dl>
-                  <dt>Public?</dt>
-                  <dd>
-                    <g:xEditableRefData owner="${subscriptionInstance}" field="isPublic" config='YN'/>
-                  </dd>
-                </dl> 
-
-                <dl><dt>Start Date</dt><dd>
-                    <g:xEditable owner="${subscriptionInstance}" field="startDate" type="date"/>
-                </dd>
-                </dl>
-
-               <dl>
-                    <dt>End Date</dt>
-                    <dd>
-                       <g:xEditable owner="${subscriptionInstance}" field="endDate" type="date"/>
-                    </dd>
+               <dl><dt>License</dt><dd><g:if test="${subscriptionInstance.subscriber}">
+                         <g:xEditableRefData owner="${subscriptionInstance}" field="owner" dataController="subscriptionDetails" dataAction="possibleLicensesForSubscription"/>
+                       </g:if><g:else>N/A (Subscription offered)</g:else>
+                   </dd>
                </dl>
 
-               <dl>
-                    <dt>Nominal Platform(s)</dt>
-                    <dd> 
-                    <g:each in="${subscriptionInstance.packages}" var="sp">
-                        ${sp.pkg?.nominalPlatform?.name}<br/>
-                    </g:each>
-                    </dd>
-                </dl>
+               <dl><dt>Package Name</dt><dd><g:each in="${subscriptionInstance.packages}" var="sp">
+                           ${sp?.pkg?.name} (${sp.pkg?.contentProvider?.name}) <br/>
+                       </g:each></dd></dl>
 
-                <dl>
-                      <dt><label class="control-label" for="licenseeRef">Org Links</label></dt>
-                      <dd>
-                        <g:render template="orgLinks" contextPath="../templates" model="${[roleLinks:subscriptionInstance?.orgRelations,editmode:editable]}" />
-                      </dd>
-                </dl>
+               <dl><dt>Subscription Identifier</dt><dd>${subscriptionInstance.identifier}</dd></dl>
+
+               <dl><dt>Public?</dt><dd><g:xEditableRefData owner="${subscriptionInstance}" field="isPublic" config='YN'/></dd></dl> 
+
+               <dl><dt>Start Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="startDate" type="date"/></dd></dl>
+
+               <dl><dt>End Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="endDate" type="date"/></dd></dl>
+
+               <dl><dt>Nominal Platform(s)</dt><dd><g:each in="${subscriptionInstance.packages}" var="sp">
+                        ${sp.pkg?.nominalPlatform?.name}<br/>
+                    </g:each></dd></dl>
+
+               <dl><dt><label class="control-label" for="licenseeRef">Org Links</label></dt><dd>
+                       <g:render template="orgLinks" contextPath="../templates" model="${[roleLinks:subscriptionInstance?.orgRelations,editmode:editable]}" />
+                     </dd>
+               </dl>
 
                 <div class="clear-fix"></div>
             </div>

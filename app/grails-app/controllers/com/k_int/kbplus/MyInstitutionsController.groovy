@@ -360,11 +360,17 @@ class MyInstitutionsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
+
+    def sdf = new SimpleDateFormat('yyyy/MM/dd')
+    def startDate = sdf.parse(params.validFrom)
+    def endDate = sdf.parse(params.validTo)
     
     def new_sub = new Subscription(type: RefdataValue.findByValue("Subscription Taken"),
                                    status:RefdataCategory.lookupOrCreate('Subscription Status','Current'),
                                    name:params.newEmptySubName,
-                                   identifier:java.util.UUID.randomUUID().toString(),
+                                   startDate:startDate,
+                                   endDate:endDate,
+                                   identifier:params.newEmptySubId,
                                    isPublic: RefdataCategory.lookupOrCreate('YN','No'),
                                    impId:java.util.UUID.randomUUID().toString())
     if ( new_sub.save() ) {                           
