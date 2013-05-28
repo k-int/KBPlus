@@ -56,7 +56,7 @@
       	<select size="5" name="filterSub" class="span3"> <!-- onchange="this.form.submit()" -->
       		<option<%= (filterSub.equals("all")) ? ' selected="selected"' : '' %> value="all">All Subscriptions</option>
       		<g:each in="${subscriptions}" var="s">
-              <option<%= (filterSub.equals(s.id.toString())) ? ' selected="selected"' : '' %> value="${s.id}">
+              <option<%= (filterSub.equals(s.id.toString())) ? ' selected="selected"' : '' %> value="${s.id}" title="${s.name}${s.consortia?' ('+s.consortia.name+')':''}">
                 ${s.name} <g:if test="${s.consortia}">( ${s.consortia.name} )</g:if>
               </option>
             </g:each>
@@ -68,7 +68,7 @@
               def pvdId = p.id.toString()
               def pvdName = p.name 
               %>
-              <option<%= (filterPvd.equals(pvdId)) ? ' selected="selected"' : '' %> value="${pvdId}">
+              <option<%= (filterPvd.equals(pvdId)) ? ' selected="selected"' : '' %> value="${pvdId}" title="${pvdName}">
                 ${pvdName}
               </option>
             </g:each>
@@ -80,7 +80,7 @@
               def hostId = hp.id.toString()
               def hostName = hp.name 
               %>
-              <option<%= (filterHostPlat.equals(hostId)) ? ' selected="selected"' : '' %> value="${hostId}">
+              <option<%= (filterHostPlat.equals(hostId)) ? ' selected="selected"' : '' %> value="${hostId}" title="${hostName}">
                 ${hostName}
               </option>
             </g:each>
@@ -92,7 +92,7 @@
               def platId = op.id.toString()
               def platName = op.name 
               %>
-              <option<%= (filterOtherPlat.equals(platId)) ? ' selected="selected"' : '' %> value="${platId}">
+              <option<%= (filterOtherPlat.equals(platId)) ? ' selected="selected"' : '' %> value="${platId}" title="${platName}">
                 ${platName}
               </option>
             </g:each>
