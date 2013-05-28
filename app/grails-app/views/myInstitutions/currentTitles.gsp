@@ -92,7 +92,7 @@
               def platId = op.id.toString()
               def platName = op.name 
               %>
-              <option<%= (filterOtherPlat.equals(hostId)) ? ' selected="selected"' : '' %> value="${platId}">
+              <option<%= (filterOtherPlat.equals(platId)) ? ' selected="selected"' : '' %> value="${platId}">
                 ${platName}
               </option>
             </g:each>
