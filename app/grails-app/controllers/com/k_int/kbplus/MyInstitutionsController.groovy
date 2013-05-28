@@ -354,6 +354,7 @@ class MyInstitutionsController {
                                    status:RefdataCategory.lookupOrCreate('Subscription Status','Current'),
                                    name:params.newEmptySubName,
                                    identifier:java.util.UUID.randomUUID().toString(),
+                                   isPublic: RefdataCategory.lookupOrCreate('YN','No'),
                                    impId:java.util.UUID.randomUUID().toString())
     if ( new_sub.save() ) {                           
       def new_sub_link = new OrgRole(org:result.institution, 
@@ -621,7 +622,8 @@ class MyInstitutionsController {
 
       def new_sub_link = new OrgRole(org:institution, sub:new_sub, roleType: RefdataCategory.lookupOrCreate('Organisational Role','Subscriber')).save();
 
-      def new_sub_package = new SubscriptionPackage(subscription: new_sub, pkg: basePackage).save();
+      // This is done by basePackage.createSubscription
+      // def new_sub_package = new SubscriptionPackage(subscription: new_sub, pkg: basePackage).save();
 
       flash.message = message(code: 'subscription.created.message', args: [message(code: 'subscription.label', default: 'Package'), basePackage.id])
       redirect controller: 'subscriptionDetails', action:'index', params:params, id:new_sub.id
@@ -1812,12 +1814,6 @@ AND EXISTS (
     Date latest_end_date = null
 
     if ( new_subscription.save() ) {
-      // log.debug("New subscriptionT saved...");
-      // Copy package links from SO to ST
-      // db_sub.packages.each { sopkg ->
-      //   def new_package_link = new SubscriptionPackage(subscription:new_subscription, pkg:sopkg.pkg).save();
-      // }
-
       // assert an org-role
       def org_link = new OrgRole(org:result.institution,
                                  sub: new_subscription,

@@ -14,7 +14,7 @@ select (@rdv_so:=rdv_id) from refdata_value where rdv_value = 'Subscription Offe
 select (@rdv_sc:=rdv_id) from refdata_value where rdv_value = 'Subscription Consortia';
 select (@rdv_pc:=rdv_id) from refdata_value where rdv_value = 'Package Consortia';
 select (@rdc_tipp_status:=rdc_id) from refdata_category where rdc_description = 'TIPP Status';
-select (@rdv_pc:=rdv_id) from refdata_value where rdv_value = 'Current' and rdv_owner = @rdc_tipp_status;
+select (@rdv_tipp_current:=rdv_id) from refdata_value where rdv_value = 'Current' and rdv_owner = @rdc_tipp_status;
 
 update package p, subscription_package sp, subscription s
 set p.pkg_license_fk = s.sub_owner_license_fk, p.pkg_is_public = s.sub_is_public
@@ -44,7 +44,7 @@ where p.pkg_id = sp.sp_pkg_fk
 # 
 
 insert into org_role(or_pkg_fk,or_org_fk,or_roletype_fk) 
-select distinct sp.sp_pkg_fk, o_r.or_org_fk, @rdv_pc
+select distinct sp.sp_pkg_fk, o_r.or_org_fk, o_r.or_roletype_fk
 from org_role o_r, subscription s, refdata_value rdv, subscription_package sp
 where o_r.or_sub_fk = s.sub_id
   and o_r.or_roletype_fk = @rdv_sc
@@ -54,4 +54,4 @@ where o_r.or_sub_fk = s.sub_id
 
 update refdata_value, refdata_category set rdv_icon = 'greenTick' where rdv_value = 'No limit' and rdc_id = rdv_owner and rdc_description = 'Concurrent Access';
 
-update title_instance_package_platform set tipp_status_rv_fk = @rdv_tipp_current where tipp_status_rv_fk is null;
+update title_instance_package_platform set tipp_status_rv_fk = @rdv_tipp_current where tipp_status_rv_fk is null or tipp_status_rv_fk = 0;

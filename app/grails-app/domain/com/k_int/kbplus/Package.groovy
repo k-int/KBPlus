@@ -60,7 +60,7 @@ class Package {
   def getConsortia() {
     def result = null;
     orgs.each { or ->
-      if ( or?.roleType?.value=='Package Consortia' )
+      if ( or?.roleType?.value=='Subscription Consortia' )
         result = or.org;
     }
     result
@@ -86,7 +86,7 @@ class Package {
                                    impId:java.util.UUID.randomUUID().toString(),
                                    startDate:startdate,
                                    endDate:enddate,
-                                   isPublic: RefdataCategory.lookupOrCreate('YN','Yes'),
+                                   isPublic: RefdataCategory.lookupOrCreate('YN','No'),
                                    type: RefdataValue.findByValue(subtype))
 
     if ( result.save(flush:true) ) {
