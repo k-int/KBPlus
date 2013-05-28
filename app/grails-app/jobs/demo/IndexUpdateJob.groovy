@@ -6,6 +6,7 @@ class IndexUpdateJob {
 
   def mongoService 
   def ESWrapperService
+  def dataloadService
 
   static triggers = {
     // Delay 20 seconds, run every 10 mins.
@@ -13,6 +14,10 @@ class IndexUpdateJob {
   }
 
   def execute() {
+    dataloadService.doFTUpdate()
+  }
+
+  def oldExecute() {
 
     log.debug("Execute IndexUpdateJob starting at ${new Date()}");
     def start_time = System.currentTimeMillis();
