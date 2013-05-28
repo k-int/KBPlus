@@ -340,6 +340,17 @@ class MyInstitutionsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
+    def cal = new java.util.GregorianCalendar()
+    def sdf = new SimpleDateFormat('yyyy/MM/dd')
+
+    cal.setTimeInMillis(System.currentTimeMillis())
+    cal.set(Calendar.MONTH,Calendar.JANUARY)
+    cal.set(Calendar.DAY_OF_MONTH,1)
+    result.defaultStartYear=sdf.format(cal.getTime())
+    cal.set(Calendar.MONTH,Calendar.DECEMBER)
+    cal.set(Calendar.DAY_OF_MONTH,31)
+    result.defaultEndYear=sdf.format(cal.getTime())
+    result.defaultSubIdentifier=java.util.UUID.randomUUID().toString()
     result
   }
   
