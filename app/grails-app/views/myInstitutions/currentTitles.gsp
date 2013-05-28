@@ -140,7 +140,7 @@
                   <g:each in="${entitlements}" var="ie">
                     <g:if test="${ie.tipp.title.id == ti[0].id}">
                       <p>
-                        ${ie.subscription.name}:
+                        <g:link controller="subscriptionDetails" action="index" id="${ie.subscription.id}">${ie.subscription.name}</g:link>:
                         <g:if test="${ie.startVolume}">Vol. ${ie.startVolume}</g:if>
                         <g:if test="${ie.startIssue}">Iss. ${ie.startIssue}</g:if>
                         <g:formatDate format="yyyy" date="${ie.startDate}"/>
@@ -148,8 +148,7 @@
                         <g:if test="${ie.endVolume}">Vol. ${ie.endVolume}</g:if>
                         <g:if test="${ie.endIssue}">Iss. ${ie.endIssue}</g:if>
                         <g:formatDate format="yyyy" date="${ie.endDate}"/>
-                        (<g:link controller="subscriptionDetails" action="index" id="${ie.subscription.id}">${ie.subscription.name}</g:link>;
-                        <g:link controller="issueEntitlement" action="show" id="${ie.id}">Full details</g:link>)
+                        (<g:link controller="issueEntitlement" action="show" id="${ie.id}">Full details</g:link>)
                       </p>
                     </g:if>
                   </g:each>
@@ -168,9 +167,8 @@
         </g:if>
       </div>
       
-      
-      <!-- For Test Only -->
       <g:if env="development">
+      <!-- For Test Only -->
 	      <div class="accordion" id="accordions">
 	        <div class="accordion-group"> 
 	          <div class="accordion-heading">
@@ -218,8 +216,8 @@
 	          </div>
 	        </div>
 	      </div>
-      </g:if>
       <!-- End - For Test Only -->
+      </g:if>
     </div>
   
   </body>
