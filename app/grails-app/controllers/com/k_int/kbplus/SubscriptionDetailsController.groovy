@@ -661,6 +661,17 @@ class SubscriptionDetailsController {
           }
           
           
+      if ( params.addBtn ) {
+        log.debug("Add package ${params.addBtn} to subscription ${params}");
+        // result.subscriptionInstance
+        def pkg_to_link = Package.get(params.addBtn)
+        def new_pkg_sub = new SubscriptionPackage(subscription:result.subscriptionInstance, pkg:pkg_to_link).save();
+        redirect action:'addEntitlements', id:params.id
+        // def oid = "com.k_int.kbplus.Package:${params.addBtn}"
+        // shopping_basket.addIfNotPresent(oid)
+        // shopping_basket.save(flush:true);
+      }
+
     }
     finally {
       try {

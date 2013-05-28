@@ -22,7 +22,7 @@
 
     <div class="container">
       ${institution?.name} ${subscriptionInstance?.type?.value}
-       <h1>${subscriptionInstance.name}</h1>
+       <h1>${subscriptionInstance.name} : Link Subscription to Packages</h1>
        <g:render template="nav" contextPath="." />
     </div>
 
@@ -49,7 +49,7 @@
               </g:each>
           </div>
         </div>
-        <div class="span10">
+        <div class="span8">
           <div class="well">
              <g:if test="${hits}" >
                 <div class="paginateButtons" style="text-align:center">
@@ -82,6 +82,15 @@
                   <span><g:paginate controller="subscriptionDetails" action="linkPackage" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${hits.totalHits}" /></span>
                 </g:if>
               </div>
+          </div>
+        </div>
+        <div class="span2">
+          <div class="well">
+            <h4>Current Links</h4>
+            <hr/>
+            <g:each in="${subscriptionInstance.packages}" var="sp">
+              <g:link controller="packageDetails" action="show" id="${sp.pkg.id}">${sp.pkg.name}</g:link><br/>
+            </g:each>
           </div>
         </div>
       </div>
