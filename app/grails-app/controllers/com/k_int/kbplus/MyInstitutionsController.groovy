@@ -814,10 +814,13 @@ AND EXISTS (
 	if(!(params.format.equals("csv")||params.format.equals("json")))
     	result.num_ti_rows = 
 			IssueEntitlement.executeQuery("SELECT COUNT(Distinct ie.tipp.title) ${title_query}", qry_params)[0]
-
+	
     def limits = (!(params.format.equals("csv")||params.format.equals("json")))?[max:result.max, offset:result.offset]:[offset:0]
+	
+	// MAX(CASE WHEN ie.endDate IS NULL THEN '~' ELSE ie.endDate END) should get the max date or a null string if there is any empty ie.ie_end_date
+	// We need to do that as an empty string actually means 'up to the most current issue available'
     result.titles = IssueEntitlement.executeQuery(
-        "SELECT ie.tipp.title, MIN(ie.startDate), MAX(ie.endDate), COUNT(ie.subscription) ${title_query} ${title_query_grouping} ${title_query_ordering}", 
+        "SELECT ie.tipp.title, MIN(ie.startDate), MAX(CASE WHEN ie.endDate IS NULL THEN '~' ELSE DATE_FORMAT(ie.endDate, '${session.sessionPreferences?.globalDateFormatSQL?:'%Y-%m-%d'}') END), COUNT(ie.subscription) ${title_query} ${title_query_grouping} ${title_query_ordering}", 
         qry_params, limits );
     
     if( result.titles.isEmpty() ) {

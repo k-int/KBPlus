@@ -135,7 +135,7 @@
                 <td>${ti[0].getIdentifierValue('ISSN')}</td>
                 <td>${ti[0].getIdentifierValue('eISSN')}</td>
                 <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ti[1]}"/></td>
-                <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ti[2]}"/></td>
+                <td><g:if test="${!ti[2].equals('~')}">${ti[2]}</g:if></td>
                 <td>
                   <g:each in="${entitlements}" var="ie">
                     <g:if test="${ie.tipp.title.id == ti[0].id}">
