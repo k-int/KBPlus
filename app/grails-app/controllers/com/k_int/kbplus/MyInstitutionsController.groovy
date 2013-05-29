@@ -361,9 +361,9 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
-    def sdf = new SimpleDateFormat('yyyy/MM/dd')
-    def startDate = sdf.parse(params.validFrom)
-    def endDate = sdf.parse(params.validTo)
+    def sdf = new SimpleDateFormat('yyyy-MM-dd')
+    def startDate = sdf.parse(params.valid_from)
+    def endDate = sdf.parse(params.valid_to)
     
     def new_sub = new Subscription(type: RefdataValue.findByValue("Subscription Taken"),
                                    status:RefdataCategory.lookupOrCreate('Subscription Status','Current'),
