@@ -27,8 +27,8 @@
         <dl>
           <dt><label>New Subscription Name: </label></dt><dd> <input type="text" name="newEmptySubName" placeholder="New Subscription Name"/>&nbsp;</dd>
           <dt><label>New Subscription Identifier: </label></dt><dd> <input type="text" name="newEmptySubId" value="${defaultSubIdentifier}"/>&nbsp;</dd>
-          <dt><label>Valid From: </label></dt><dd> <g:simpleHiddenValue id="valid_from" name="validFrom" type="date" value="${defaultStartYear}"/>&nbsp;</dd>
-          <dt><label>Valid To: </label></dt><dd> <g:simpleHiddenValue id="valid_to" name="validTo" type="date" value="${defaultEndYear}"/>&nbsp;</dd>
+          <dt><label>Valid From: </label></dt><dd> <g:simpleHiddenValue id="valid_from" name="valid_from" type="date" value="${defaultStartYear}"/>&nbsp;</dd>
+          <dt><label>Valid To: </label></dt><dd> <g:simpleHiddenValue id="valid_to" name="valid_to" type="date" value="${defaultEndYear}"/>&nbsp;</dd>
           <br/>
           <input type="submit" class="btn btn-primary" value="Create ->" />
         </dl>
