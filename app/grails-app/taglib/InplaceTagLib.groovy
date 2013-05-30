@@ -93,7 +93,10 @@ class InplaceTagLib {
           out << sdf.format(attrs.owner[attrs.field])
         }
         else {
-          out << attrs.owner[attrs.field]
+          if ( ( attrs.owner[attrs.field] == null ) || ( attrs.owner[attrs.field].toString().length()==0 ) ) {
+          }
+          else
+            out << attrs.owner[attrs.field]
         }
       }
       out << "</span>"
@@ -108,7 +111,10 @@ class InplaceTagLib {
           out << sdf.format(attrs.owner[attrs.field])
         }
         else {
-          out << attrs.owner[attrs.field]
+          if ( ( attrs.owner[attrs.field] == null ) || ( attrs.owner[attrs.field].toString().length()==0 ) ) {
+          }
+          else
+            out << attrs.owner[attrs.field]
         }
       }
     }
