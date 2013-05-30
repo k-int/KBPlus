@@ -53,7 +53,7 @@
           <tr>
             <th>Select</th>
             <g:sortableColumn params="${params}" property="s.name" title="Name" />
-            <th>Package Name</th>
+            <th>Linked Packages</th>
             <th>Consortia</th>
             <g:sortableColumn params="${params}" property="s.startDate" title="Start Date" />
             <g:sortableColumn params="${params}" property="s.endDate" title="End Date" />
@@ -65,12 +65,18 @@
             <tr>
               <td><input type="radio" name="basesubscription" value="${s.id}"/></td>
               <td>
-                <g:link controller="subscriptionDetails" action="index" id="${s.id}">${s.name} <g:if test="${s.consortia}">( ${s.consortia?.name} )</g:if></g:link>
+                <g:link controller="subscriptionDetails" action="index" id="${s.id}">
+                  <g:if test="${s.name}">${s.name}</g:if><g:else>-- Name Not Set  --</g:else>
+                  <g:if test="${s.consortia}">( ${s.consortia?.name} )</g:if>
+                </g:link>
               </td>
               <td>
                 <g:each in="${s.packages}" var="sp">
                   ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
                 </g:each>
+                <g:if test="${((s.packages==null) || (s.packages.size()==0))}">
+                  <i>None currently, Add packages via <g:link controller="packageDetails" action="linkPackage" id="${s.id}">Link Package</g:link></i>
+                </g:if>
               </td>
               <td>${s.getConsortia()?.name}</td>
               <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${s.startDate}"/></td>

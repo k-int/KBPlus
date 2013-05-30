@@ -52,7 +52,7 @@
 
               <dl>
                 <dt>Package Name</dt>
-                <dd> <g:xEditable owner="${packageInstance}" field="name" /></dd>
+                <dd> <g:xEditable owner="${packageInstance}" field="name"/></dd>
               </dl>
               
               <dl>
