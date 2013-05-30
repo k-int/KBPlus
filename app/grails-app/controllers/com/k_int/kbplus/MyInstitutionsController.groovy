@@ -892,7 +892,7 @@ AND EXISTS (
                         writer.write("\"${ti[0].getIdentifierValue(ns)?:''}\",");
                     }
                     writer.write("${ti[1] ? formatter.format(ti[1]) : ''},");
-                    writer.write("${ti[2] ? formatter.format(ti[2]) : ''}");
+                    writer.write("${ti[2].equals('~')?'':ti[2]}"); //formatter.format(ti[2])
                     
                     result.entitlements.each(){ ie->
                         if(ie.tipp.title.id.equals(ti[0].id)){
