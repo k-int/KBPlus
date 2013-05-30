@@ -159,9 +159,11 @@
               </sec:ifLoggedIn>
             </ul>
 
+            <!--
             <ul class="nav pull-right">
               <li><a class="dlpopover" href="#"><i class="icon-search icon-white"></i></a></li>
             </ul>
+            -->
 
             <ul class="nav pull-right">
               <sec:ifLoggedIn>
