@@ -630,12 +630,15 @@ class MyInstitutionsController {
 
     if ( basePackage ) {
       // 
+      def add_entitlements = ( params.createSubAction == 'Copy' ? true : false )
+
       def new_sub = basePackage.createSubscription("Subscription Taken",
                                                    "A New subscription....",
                                                    "A New subscription identifier.....",
                                                    basePackage.startDate,
                                                    basePackage.endDate,
-                                                   basePackage.getConsortia())
+                                                   basePackage.getConsortia(),
+                                                   add_entitlements)
 
       def new_sub_link = new OrgRole(org:institution, sub:new_sub, roleType: RefdataCategory.lookupOrCreate('Organisational Role','Subscriber')).save();
 
