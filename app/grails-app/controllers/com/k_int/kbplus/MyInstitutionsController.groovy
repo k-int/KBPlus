@@ -957,7 +957,9 @@ class MyInstitutionsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def currentTitles() {
-    if (params.filterSub.equals("all")) params.filterSub = null
+	def filterSub = params.list("filterSub")
+    if(filterSub.contains("all")) filterSub = null
+	
     if (params.filterPvd.equals("all")) params.filterPvd = null
     if (params.filterHostPlat.equals("all")) params.filterHostPlat = null
     if (params.filterOtherPlat.equals("all")) params.filterOtherPlat = null
@@ -1052,7 +1054,7 @@ ORDER BY p.platform.name""", sub_params );
         title_query += "INNER JOIN ie.tipp.platform AS hplat "
 	//if (!params.filterSub)
     title_query += ", Subscription AS s INNER JOIN s.orgRelations AS o "
-	if (params.filterSub)
+	if (filterSub)
 		title_query += ", IssueEntitlement AS ie2 "
 		
     //if (!params.filterSub){
@@ -1064,12 +1066,12 @@ AND s.status.value != 'Deleted' \
 AND s = ie.subscription "
 	qry_params.institution = result.institution
 	
-    if (params.filterSub){ //}else{
+    if (filterSub){ //}else{
         //title_query += "WHERE ie.subscription.id = :subscription "
 		title_query += "\
 AND ie2.tipp.title = ie.tipp.title \
-AND ie2.subscription.id = :subscription "
-        qry_params.subscription = Long.valueOf(params.filterSub)
+AND ie2.subscription.id IN (:subscriptions) "
+        qry_params.subscriptions = filterSub.collect(new ArrayList<Long>()) { Long.valueOf(it) }
     }
     
     // copied from SubscriptionDetailsController
@@ -1134,7 +1136,10 @@ AND EXISTS (
 	// MAX(CASE WHEN ie.endDate IS NULL THEN '~' ELSE ie.endDate END) should get the max date or a null string if there is any empty ie.ie_end_date
 	// We need to do that as an empty string actually means 'up to the most current issue available'
     result.titles = IssueEntitlement.executeQuery(
-        "SELECT ie.tipp.title, MIN(ie.startDate), MAX(CASE WHEN ie.endDate IS NULL THEN '~' ELSE DATE_FORMAT(ie.endDate, '${session.sessionPreferences?.globalDateFormatSQL?:'%Y-%m-%d'}') END), COUNT(ie.subscription) ${title_query} ${title_query_grouping} ${title_query_ordering}", 
+"SELECT ie.tipp.title, MIN(ie.startDate), \
+MAX(CASE WHEN ie.endDate IS NULL THEN '~' ELSE DATE_FORMAT(ie.endDate, '${session.sessionPreferences?.globalDateFormatSQL?:'%Y-%m-%d'}') END), \
+COUNT(ie.subscription) \
+${title_query} ${title_query_grouping} ${title_query_ordering}", 
         qry_params, limits );
     
     if( result.titles.isEmpty() ) {

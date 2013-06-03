@@ -57,15 +57,15 @@
 		<g:set var="filterHostPlat" value="${params.filterHostPlat?:"all"}" />
 		<g:set var="filterOtherPlat" value="${params.filterOtherPlat?:"all"}" />
       
-      	<select size="5" name="filterSub" class="span3"> <!-- onchange="this.form.submit()" -->
-      		<option<%= (filterSub.equals("all")) ? ' selected="selected"' : '' %> value="all">All Subscriptions</option>
+      	<select size="5" name="filterSub" class="span3" multiple="multiple"> <!-- onchange="this.form.submit()" -->
+      		<option<%= (filterSub.contains("all")) ? ' selected="selected"' : '' %> value="all">All Subscriptions</option>
       		<g:each in="${subscriptions}" var="s">
-              <option<%= (filterSub.equals(s.id.toString())) ? ' selected="selected"' : '' %> value="${s.id}" title="${s.name}${s.consortia?' ('+s.consortia.name+')':''}">
+              <option<%= (filterSub.contains(s.id.toString())) ? ' selected="selected"' : '' %> value="${s.id}" title="${s.name}${s.consortia?' ('+s.consortia.name+')':''}">
                 ${s.name} <g:if test="${s.consortia}">( ${s.consortia.name} )</g:if>
               </option>
             </g:each>
       	</select>
-      	<select size="5" name="filterPvd" class="span3">
+      	<select size="5" name="filterPvd" class="span3" multiple="multiple">
       		<option<%= (filterPvd.equals("all")) ? ' selected="selected"' : '' %> value="all">All Content Providers</option>
       		<g:each in="${providers}" var="p">
               <% 
@@ -77,7 +77,7 @@
               </option>
             </g:each>
       	</select>
-      	<select size="5" name="filterHostPlat" class="span3">
+      	<select size="5" name="filterHostPlat" class="span3" multiple="multiple">
       		<option<%= (filterHostPlat.equals("all")) ? ' selected="selected"' : '' %> value="all">All Host Platforms</option>
       		<g:each in="${hostplatforms}" var="hp">
               <% 
@@ -89,7 +89,7 @@
               </option>
             </g:each>
       	</select>
-      	<select size="5" name="filterOtherPlat" class="span3">
+      	<select size="5" name="filterOtherPlat" class="span3" multiple="multiple">
       		<option<%= (filterOtherPlat.equals("all")) ? ' selected="selected"' : '' %> value="all">All Additional Platforms</option>
       		<g:each in="${otherplatforms}" var="op">
               <% 
