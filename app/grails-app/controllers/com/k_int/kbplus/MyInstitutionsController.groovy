@@ -826,7 +826,7 @@ AND EXISTS (
     /* Get Total number of Titles for HTML view */
 	if(!(params.format.equals("csv")||params.format.equals("json")))
     	result.num_ti_rows = 
-			IssueEntitlement.executeQuery("SELECT COUNT(Distinct ie.tipp.title) ${title_query}", qry_params)[0]
+			IssueEntitlement.executeQuery("SELECT ie.tipp.title ${title_query} ${title_query_grouping}", qry_params).size()
 	
     def limits = (!(params.format.equals("csv")||params.format.equals("json")))?[max:result.max, offset:result.offset]:[offset:0]
 	
