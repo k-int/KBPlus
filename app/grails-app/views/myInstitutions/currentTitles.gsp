@@ -100,6 +100,11 @@
     	</div>
       	<br/><br/>
 	    <div class="container" style="text-align:center">
+      		<div class="pull-left">
+      			<label class="checkbox">
+      				<input type="checkbox" name="filterMultiIE" value="${true}"<%=(params.filterMultiIE)?' checked="true"':''%>/> Titles with 2 or more linked IEs
+				</label>
+      		</div>
 	    	<div class="pull-right">
 		        <input type="hidden" name="sort" value="${params.sort}">
 		        <input type="hidden" name="order" value="${params.order}">
@@ -148,7 +153,7 @@
                         <g:if test="${ie.endVolume}">Vol. ${ie.endVolume}</g:if>
                         <g:if test="${ie.endIssue}">Iss. ${ie.endIssue}</g:if>
                         <g:formatDate format="yyyy" date="${ie.endDate}"/>
-                        (<g:link controller="issueEntitlement" action="show" id="${ie.id}">Full details</g:link>)
+                        (<g:link controller="issueEntitlement" action="show" id="${ie.id}">Full Issue Entitlement Details</g:link>)
                       </p>
                     </g:if>
                   </g:each>

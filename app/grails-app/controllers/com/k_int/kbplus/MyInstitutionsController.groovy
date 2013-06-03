@@ -746,19 +746,25 @@ ORDER BY p.platform.name""", sub_params );
         title_query += "INNER JOIN ie.tipp.pkg.orgs AS role "
     if (params.filterHostPlat)
         title_query += "INNER JOIN ie.tipp.platform AS hplat "
-	if (!params.filterSub)
-        title_query += ", Subscription AS s INNER JOIN s.orgRelations AS o "
+	//if (!params.filterSub)
+    title_query += ", Subscription AS s INNER JOIN s.orgRelations AS o "
+	if (params.filterSub)
+		title_query += ", IssueEntitlement AS ie2 "
 		
-    if (!params.filterSub){
-        //title_query += "WHERE EXISTS ( FROM ${sub_qry} AND ie.subscription = s ) "
-		title_query += "\
+    //if (!params.filterSub){
+		//title_query += "WHERE EXISTS ( FROM ${sub_qry} AND ie.subscription = s ) "
+	title_query += "\
 WHERE o.roleType.value = 'Subscriber' \
 AND o.org = :institution \
 AND s.status.value != 'Deleted' \
 AND s = ie.subscription "
-		qry_params.institution = result.institution
-    }else{
-        title_query += "WHERE ie.subscription.id = :subscription "
+	qry_params.institution = result.institution
+	
+    if (params.filterSub){ //}else{
+        //title_query += "WHERE ie.subscription.id = :subscription "
+		title_query += "\
+AND ie2.tipp.title = ie.tipp.title \
+AND ie2.subscription.id = :subscription "
         qry_params.subscription = Long.valueOf(params.filterSub)
     }
     
@@ -805,10 +811,14 @@ AND EXISTS (
     
     title_query += "AND ( ie.status.value != 'Deleted' ) "
     
-    def title_query_grouping = "Group By ie.tipp.title "
+    def title_query_grouping = "GROUP By ie.tipp.title "
     def title_query_ordering = "ORDER BY ie.tipp.title.title ${params.order} " //COLLATE utf8_unicode_ci
+	
+	if (params.filterMultiIE){
+		title_query_grouping += "HAVING COUNT(ie) >= 2 "
+	}
 
-    println("Final query:\n${title_query.replaceAll("\\s+", " ")}\nParams:${qry_params}")
+    println("Final query:\n${title_query.replaceAll("\\s+", " ")}{title_query_grouping}\nParams:${qry_params}")
     
     /* Get Total number of Titles for HTML view */
 	if(!(params.format.equals("csv")||params.format.equals("json")))
