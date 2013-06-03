@@ -22,6 +22,8 @@ where p.pkg_id = sp.sp_pkg_fk
   and sp.sp_sub_fk = s.sub_id
   and s.sub_type_rv_fk = @rdv_so;
 
+update subscription set sub_owner_license_fk = null where sub_type_rv_fk = @rdv_so;
+
 
 # select * from org_role o_r, subscription s
 # where o_r.or_sub_fk = s.sub_id

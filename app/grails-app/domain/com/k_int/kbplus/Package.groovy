@@ -77,7 +77,17 @@ class Package {
                          startdate, 
                          enddate, 
                          consortium_org) {
+    createSubscription(subtype,subname,subidentifier,startdate,enddate,consortium_org,true)
+  }
 
+  @Transient
+  def createSubscription(subtype,
+                         subname,
+                         subidentifier,
+                         startdate,
+                         enddate,
+                         consortium_org,
+                         add_entitlements) {
     // Create the header
 
     def result = new Subscription( name:subname,
@@ -101,22 +111,24 @@ class Package {
       // Copy the tipps into the IEs
       log.debug("Copy tipp entries into new subscription");
 
-      tipps.each { tipp ->
-        log.debug("adding ${tipp}");
+      if ( add_entitlements ) {
+        tipps.each { tipp ->
+          log.debug("adding ${tipp}");
 
-        def new_ie = new IssueEntitlement(status: live_issue_entitlement,
-                                          subscription: result,
-                                          tipp: tipp,
-                                          startDate:tipp.startDate,
-                                          startVolume:tipp.startVolume,
-                                          startIssue:tipp.startIssue,
-                                          endDate:tipp.endDate,
-                                          endVolume:tipp.endVolume,
-                                          endIssue:tipp.endIssue,
-                                          embargo:tipp.embargo,
-                                          coverageDepth:tipp.coverageDepth,
-                                          coverageNote:tipp.coverageNote).save()
-
+          def new_ie = new IssueEntitlement(status: live_issue_entitlement,
+                                            subscription: result,
+                                            tipp: tipp,
+                                            startDate:tipp.startDate,
+                                            startVolume:tipp.startVolume,
+                                            startIssue:tipp.startIssue,
+                                            endDate:tipp.endDate,
+                                            endVolume:tipp.endVolume,
+                                            endIssue:tipp.endIssue,
+                                            embargo:tipp.embargo,
+                                            coverageDepth:tipp.coverageDepth,
+                                            coverageNote:tipp.coverageNote).save()
+  
+        }
       }
     }
     else {

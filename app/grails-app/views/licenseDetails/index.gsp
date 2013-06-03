@@ -91,6 +91,18 @@
                       </dd>
                   </dl>
                 
+                  <dl>
+                      <dt><label class="control-label" for="subscriptions">Linked Packages</label></dt>
+                      <dd>
+                        <g:if test="${license.pkgs && ( license.pkgs.size() > 0 )}">
+                          <g:each in="${license.pkgs}" var="pkg">
+                            <g:link controller="packageDetails" action="index" id="${pkg.id}">${pkg.id} (${pkg.name})</g:link><br/>
+                          </g:each>
+                        </g:if>
+                        <g:else>No currently linked packages.</g:else>
+                      </dd>
+                  </dl>
+                
       
                   <dl>
                       <dt><label class="control-label" for="reference">Reference</label></dt>

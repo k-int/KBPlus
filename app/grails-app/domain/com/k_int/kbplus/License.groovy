@@ -35,6 +35,7 @@ class License {
   long lastmod
 
   static hasMany = [
+    pkgs:Package, 
     subscriptions:Subscription, 
     documents:DocContext,
     orgLinks:OrgRole,
@@ -43,7 +44,9 @@ class License {
     pendingChanges:PendingChange
   ]
 
-  static mappedBy = [ subscriptions: 'owner',
+  static mappedBy = [ 
+                      pkgs: 'license',
+                      subscriptions: 'owner',
                       documents: 'license',
                       orgLinks:'lic',
                       outgoinglinks:'fromLic',
