@@ -61,6 +61,8 @@
                     <ul class="dropdown-menu" style="max-width:none;">
   
   
+                       <li><g:link controller="packageDetails" action="index">All Packages</g:link></li>
+                       <li class="divider"></li>
                        <g:set var="usaf" value="${user.authorizedOrgs}" />
                        <g:if test="${usaf && usaf.size() > 0}">
                          <g:each in="${usaf}" var="org">
