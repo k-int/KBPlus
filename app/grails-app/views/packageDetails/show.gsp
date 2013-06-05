@@ -30,12 +30,6 @@
                         data-url='<g:createLink controller="ajax" action="editableSetValue"/>'>${packageInstance.name}</span></h1>
           </div>
 
-          <div class="pull-right">
-            <select>
-              <option value="one">One</option>
-              <option value="two">two</option>
-            </select>
-          </div>
         </div>
     </div>
 
@@ -101,9 +95,25 @@
               </dl>
           </fieldset>
         </div>
-      </div>
-      <div class="row">
         <div class="span4">
+          <div class="well notes">
+            <g:if test="${(subscriptionList != null) && (subscriptionList?.size() > 0)}">
+              <h5>Add package to..</h5>
+              <g:form action="addToSub">
+                <select>
+                  <g:each in="${subscriptionList}" var="s">
+                    <option value="${s.sub.id}">${s.org.name} : ${s.sub.name ?: "unnamed subscription ${s.sub.id}"}</option>
+                  </g:each>
+                </select><br/>
+                Create Entitlements in Subscripion: <input type="checkbox" name="addEntitlements"/><br/>
+                <input type="submit"/>
+              </g:form>
+            </g:if>
+            <g:else>
+              No subscriptions available to link to this package
+            </g:else>
+          </div>
+    
           <g:render template="documents" contextPath="../templates" model="${[doclist:packageInstance.documents, ownobj:packageInstance, owntp:'package']}" />
           <g:render template="notes" contextPath="../templates" model="${[doclist:packageInstance.documents, ownobj:packageInstance, owntp:'package']}" />
         </div>
