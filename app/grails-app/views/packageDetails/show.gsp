@@ -98,11 +98,11 @@
         <div class="span4">
           <div class="well notes">
             <g:if test="${(subscriptionList != null) && (subscriptionList?.size() > 0)}">
-              <h5>Add package to..</h5>
+              <h5>Add package to institutional subscription:</h5>
               <g:form action="addToSub">
                 <select>
                   <g:each in="${subscriptionList}" var="s">
-                    <option value="${s.sub.id}">${s.org.name} : ${s.sub.name ?: "unnamed subscription ${s.sub.id}"}</option>
+                    <option value="${s.sub.id}">${s.sub.name ?: "unnamed subscription ${s.sub.id}"} - ${s.org.name}</option>
                   </g:each>
                 </select><br/>
                 Create Entitlements in Subscripion: <input type="checkbox" name="addEntitlements"/><br/>

@@ -122,21 +122,14 @@ class PackageDetailsController {
       // and subscription that does not already link this package
       result.user?.getAuthorizedAffiliations().each { ua ->
         if ( ua.formalRole.authority == 'INST_ADM' ) {
-          log.debug("Adding subs from ${ua.org}");
           def qry_params = [ua.org, packageInstance]
           def q = "select s from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) AND ( not exists ( select sp from s.packages as sp where sp.pkg = ? ) )"
           Subscription.executeQuery(q, qry_params).each { s ->
             if ( ! result.subscriptionList.contains(s) ) {
-              log.debug("Adding ${s}");
               // Need to make sure that this package is not already linked to this subscription
               result.subscriptionList.add([org:ua.org,sub:s])
             }
           }
-          log.debug("Done processing for ${ua.org}");
-
-        }
-        else {
-          log.debug("Skipping, role==${ua.formalRole.authority}");
         }
       }
 
