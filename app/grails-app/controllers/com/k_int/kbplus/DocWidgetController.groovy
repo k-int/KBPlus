@@ -46,6 +46,7 @@ class DocWidgetController {
           }
         }
 
+        log.debug("Setting new context type to ${params.ownertp}..");
         def doc_context = new DocContext("${params.ownertp}":instance,
                                          owner:doc_content,
                                          doctype:RefdataCategory.lookupOrCreate('Document Type',params.doctype),
