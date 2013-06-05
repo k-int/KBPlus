@@ -99,7 +99,7 @@
           <div class="well notes">
             <g:if test="${(subscriptionList != null) && (subscriptionList?.size() > 0)}">
               <h5>Add package to institutional subscription:</h5>
-              <g:form action="addToSub">
+              <g:form controller="packageDetails" action="addToSub" id="${packageInstance.id}">
                 <select>
                   <g:each in="${subscriptionList}" var="s">
                     <option value="${s.sub.id}">${s.sub.name ?: "unnamed subscription ${s.sub.id}"} - ${s.org.name}</option>

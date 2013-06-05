@@ -451,4 +451,9 @@ class PackageDetailsController {
   }
 
 
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def addToSub() {
+    def pkg = Package.get(params.id)
+    redirect(action:'show', id:params.id);
+  }
 }
