@@ -176,4 +176,33 @@ class Package {
     nominalPlatform = selected_platform
   }
 
+  @Transient
+  def addToSubscription(subscription, createEntitlements) {
+    // Add this package to the specified subscription
+    // Step 1 - Make sure this package is not already attached to the sub
+    // Step 2 - Connect
+    def new_pkg_sub = new SubscriptionPackage(subscription:subscription, pkg:this).save();
+    // Step 3 - If createEntitlements ...
+
+    if ( createEntitlements ) {
+       def live_issue_entitlement = RefdataCategory.lookupOrCreate('Entitlement Issue Status', 'Live');
+      tipps.each { tipp ->
+        def new_ie = new IssueEntitlement(status: live_issue_entitlement,
+                                          subscription: subscription,
+                                          tipp: tipp,
+                                          startDate:tipp.startDate,
+                                          startVolume:tipp.startVolume,
+                                          startIssue:tipp.startIssue,
+                                          endDate:tipp.endDate,
+                                          endVolume:tipp.endVolume,
+                                          endIssue:tipp.endIssue,
+                                          embargo:tipp.embargo,
+                                          coverageDepth:tipp.coverageDepth,
+                                          coverageNote:tipp.coverageNote).save()
+
+        }
+    }
+
+  }
+ 
 }

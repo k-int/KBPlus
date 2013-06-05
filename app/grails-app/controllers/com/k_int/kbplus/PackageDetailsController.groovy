@@ -454,6 +454,11 @@ class PackageDetailsController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def addToSub() {
     def pkg = Package.get(params.id)
+    def sub = Subscription.get(params.subid)
+
+    def add_entitlements = ( params.addEntitlements == 'true' ? true : false )
+    pkg.addToSubscription(sub,add_entitlements)
+
     redirect(action:'show', id:params.id);
   }
 }

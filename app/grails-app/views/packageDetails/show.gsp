@@ -100,12 +100,12 @@
             <g:if test="${(subscriptionList != null) && (subscriptionList?.size() > 0)}">
               <h5>Add package to institutional subscription:</h5>
               <g:form controller="packageDetails" action="addToSub" id="${packageInstance.id}">
-                <select>
+                <select name="subid">
                   <g:each in="${subscriptionList}" var="s">
                     <option value="${s.sub.id}">${s.sub.name ?: "unnamed subscription ${s.sub.id}"} - ${s.org.name}</option>
                   </g:each>
                 </select><br/>
-                Create Entitlements in Subscripion: <input type="checkbox" name="addEntitlements"/><br/>
+                Create Entitlements in Subscripion: <input type="checkbox" name="addEntitlements" value="true"/><br/>
                 <input type="submit"/>
               </g:form>
             </g:if>
