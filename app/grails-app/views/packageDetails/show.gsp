@@ -7,16 +7,37 @@
     <title><g:message code="default.edit.label" args="[entityName]" /></title>
   </head>
   <body>
+
+
+    <div class="container">
+      <ul class="breadcrumb">
+        <li><g:link controller="packageDetails" action="index">All Packages</g:link><span class="divider">/</span></li>
+        <li><g:link controller="packageDetails" action="show" id="${packageInstance.id}">${packageInstance.name}</g:link></li>
+      </ul>
+    </div>
+  
+   
+
       <div class="container">
 
         <div class="page-header">
+          <div>
           <h1> <span id="packageNameEdit"
                         class="xEditableValue"
                         data-type="textarea"
                         data-pk="${packageInstance.class.name}:${packageInstance.id}"
                         data-name="name"
                         data-url='<g:createLink controller="ajax" action="editableSetValue"/>'>${packageInstance.name}</span></h1>
+          </div>
+
+          <div class="pull-right">
+            <select>
+              <option value="one">One</option>
+              <option value="two">two</option>
+            </select>
+          </div>
         </div>
+    </div>
 
         <g:if test="${flash.message}">
         <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
@@ -32,22 +53,11 @@
         </bootstrap:alert>
         </g:hasErrors>
 
-        <fieldset>
+    <div class="container">
+      <div class="row">
+        <div class="span8">
+            <h6>Package Information</h6>
             <g:hiddenField name="version" value="${packageInstance?.version}" />
-
-            <!--
-              packageType
-              packageStatus
-              contentProvider
-              nominalPlatform
-              packageListStatus
-              identifier
-              impId
-              name
-              orgs
-              subscriptions
-              tipps
-            -->
             <fieldset>
 
               <dl>
@@ -89,6 +99,18 @@
                   <g:xEditableRefData owner="${packageInstance}" field="packageType" config='PackageType'/>
                 </dd>
               </dl>
+          </fieldset>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span4">
+          <g:render template="documents" contextPath="../templates" model="${[doclist:packageInstance.documents, ownobj:packageInstance, owntp:'package']}" />
+          <g:render template="notes" contextPath="../templates" model="${[doclist:packageInstance.documents, ownobj:packageInstance, owntp:'package']}" />
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
 
         <dl>
           <dt>Titles</dt>
@@ -142,8 +164,6 @@
         </dl>
 
 
-            </fieldset>
-        </fieldset>
         
         <g:form controller="ajax" action="addToCollection">
           <fieldset>

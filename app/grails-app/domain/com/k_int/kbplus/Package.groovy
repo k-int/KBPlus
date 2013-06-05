@@ -20,10 +20,12 @@ class Package {
 
   static hasMany = [tipps: TitleInstancePackagePlatform, 
                     orgs: OrgRole, 
+                    documents:DocContext,
                     subscriptions: SubscriptionPackage]
 
   static mappedBy = [tipps: 'pkg', 
                      orgs: 'pkg',
+                     documents:'pkg',
                      subscriptions: 'pkg']
 
 
