@@ -630,7 +630,7 @@ class MyInstitutionsController {
 
     if ( basePackage ) {
       // 
-      def add_entitlements = ( params.createSubAction == 'Copy' ? true : false )
+      def add_entitlements = ( params.createSubAction == 'copy' ? true : false )
 
       def new_sub = basePackage.createSubscription("Subscription Taken",
                                                    "A New subscription....",
