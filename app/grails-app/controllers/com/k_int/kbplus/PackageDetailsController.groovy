@@ -133,6 +133,26 @@ class PackageDetailsController {
         }
       }
 
+      
+      result.max = params.max ? Integer.parseInt(params.max) : 25
+      def paginate_after = params.paginate_after ?: ( (2*result.max)-1);
+      result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
+      def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
+      def qry_params = [packageInstance]
+
+      if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
+        base_qry += " order by ${params.sort} ${params.order}"
+      }
+      else {
+        base_qry += " order by tipp.title.title asc"
+      }
+
+      log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
+      result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, [max:result.max, offset:result.offset]);
+      result.num_tipp_rows = TitleInstancePackagePlatform.executeQuery("select count(tipp) "+base_qry, qry_params )[0]
+
+
       result.packageInstance = packageInstance
       result
     }

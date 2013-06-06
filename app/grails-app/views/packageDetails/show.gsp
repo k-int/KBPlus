@@ -128,7 +128,7 @@
           <table class="table table-bordered">
             <thead>
             <tr>
-              <th rowspan="2" style="">Title</th>
+              <g:sortableColumn rowspan="2" params="${params}" property="tipp.title.title" title="Title" />
               <th rowspan="2" style="">Platform</th>
               <th rowspan="2" style="">Identifiers</th>
               <th rowspan="2" style="">Start</th>
@@ -137,7 +137,7 @@
             </tr>
             </thead>
             <tbody>
-            <g:each in="${packageInstance?.tipps}" var="t">
+            <g:each in="${titlesList}" var="t">
               <tr>
                 <td style="vertical-align:top;">
                    ${t.title.title}
@@ -172,6 +172,13 @@
           </table>
           </dd>
         </dl>
+
+        <div class="pagination" style="text-align:center">
+          <g:if test="${titlesList}" >
+            <bootstrap:paginate  action="show" controller="packageDetails" params="${params}" next="Next" prev="Prev" maxsteps="${max}" total="${num_tipp_rows}" />
+          </g:if>
+        </div>
+
 
 
         
