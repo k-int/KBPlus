@@ -90,7 +90,8 @@ class UploadController {
       consortium = Org.findByName(upload.consortium.value) ?: new Org(name:upload.consortium.value).save();
     }
 
-    def new_pkg = new Package(identifier: upload.soPackageIdentifier.value,
+
+    def new_pkg = new Package(identifier: upload.normPkgIdentifier,
                               name: upload.soPackageName.value,
                               type: pkg_type,
                               contentProvider: content_provider_org,
@@ -617,6 +618,12 @@ class UploadController {
     else {
       log.error("No package identifier");
       upload['soPackageIdentifier'].messages.add("Unable to use this identifier")
+      upload.processFile=false
+    }
+
+    if ( upload.processFile && ( Package.findByIdentifier(upload.soPackageIdentifier) != null ) ) {
+      log.error("Repeate package identifier");
+      upload['soPackageIdentifier'].messages.add("Package identifier ${upload.normPkgIdentifier} already in database. Unable to repeat upload")
       upload.processFile=false
     }
 
