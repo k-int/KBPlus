@@ -181,7 +181,7 @@
                         <td>${t.endIssue}</td>
                         <td>${t.coverageDepth}</td>
                         <td><g:link controller="platform" action="show" id="${t.platform.id}">${t.platform.name}</g:link></td>
-                        <td><g:link controller="package" action="show" id="${t.pkg.id}">${t.pkg.name} (${t.pkg.contentProvider?.name})</g:link></td>
+                        <td><g:link controller="packageDetails" action="show" id="${t.pkg.id}">${t.pkg.name} (${t.pkg.contentProvider?.name})</g:link></td>
                         <td><g:link controller="titleInstancePackagePlatform" action="show" id="${t.id}">Full TIPP record</g:link></td>
                         </tr>
                     </g:each>
