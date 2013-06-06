@@ -179,7 +179,8 @@
                 <td>${counter++}</td>
                 <td>
                   <g:link controller="issueEntitlement" id="${ie.id}" action="show">${ie.tipp.title.title}</g:link>
-                  <g:if test="${ie.tipp?.hostPlatformURL}">( <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">Host Link</a> )</g:if>
+                  <g:if test="${ie.tipp?.hostPlatformURL}">( <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">Host Link</a> 
+                            <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL} (In new window)" target="_blank"><i class="icon-share-alt"></i></a>)</g:if>
                 </td>
                 <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
                 <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
