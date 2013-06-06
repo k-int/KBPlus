@@ -37,7 +37,7 @@
             <dl>
                 <g:if test="${issueEntitlementInstance?.status}">
                     <dt><g:message code="issueEntitlement.status.label" default="Status" /></dt>
-                    <dd><g:link controller="refdataValue" action="show" id="${issueEntitlementInstance?.status?.id}">${issueEntitlementInstance?.status?.value.encodeAsHTML()}</g:link></dd>
+                    <dd>${issueEntitlementInstance?.status?.value.encodeAsHTML()}</dd>
                 </g:if>
             </dl>
 
