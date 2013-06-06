@@ -27,7 +27,8 @@
     </div>
 
     <div class="container">
-      <g:form action="linkPackage" method="get" params="${params}">
+      <g:form action="linkPackage" method="get" params="${params}"
+              onsubmit="return confirm('Are you sure you wish to link with/without entitlements');">
       <input type="hidden" name="offset" value="${params.offset}"/>
       <div class="row">
         <div class="span12">

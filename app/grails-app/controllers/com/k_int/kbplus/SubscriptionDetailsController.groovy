@@ -664,12 +664,12 @@ class SubscriptionDetailsController {
       if ( params.addBtn ) {
         log.debug("Add package ${params.addBtn} to subscription ${params}");
         def pkg_to_link = Package.get(params.addBtn)
-        pkg_to_link.addToSubscription(result.subscriptionInstance, false) {
+        pkg_to_link.addToSubscription(result.subscriptionInstance, false)
         redirect action:'addEntitlements', id:params.id
       }
       else if ( params.addWithEntitlementsBtn ) {
-        def pkg_to_link = Package.get(params.addBtn)
-        pkg_to_link.addToSubscription(result.subscriptionInstance, true) {
+        def pkg_to_link = Package.get(params.addWithEntitlementsBtn)
+        pkg_to_link.addToSubscription(result.subscriptionInstance, true)
         redirect action:'addEntitlements', id:params.id
       }
 
