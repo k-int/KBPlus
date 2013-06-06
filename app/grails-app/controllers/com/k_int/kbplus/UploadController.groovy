@@ -72,12 +72,16 @@ class UploadController {
   def processUploadSO(upload) {
 
     def new_pkg_id = null
+    log.debug("Content provider value is ${upload.soProvider.value}");
+
     def content_provider_org = Org.findByName(upload.soProvider.value) 
     if ( content_provider_org == null ) {
+      log.debug("content_provider_org is present and set to ${content_provider_org}");
       content_provider_org = new Org(name:upload.soProvider.value,impId:java.util.UUID.randomUUID().toString()).save();    
       incrementStatsCounter(upload,'Content Provider Org Created');
     }
     else {
+      log.debug("Matched ${content_provider_org} using name ${upload.soProvider.value}");
       incrementStatsCounter(upload,'Content Provider Org Matched');
     }
     
@@ -109,7 +113,11 @@ class UploadController {
       // Content Provider?
       log.debug("Package [${new_pkg.id}] with identifier ${new_pkg.identifier} created......");
       if ( content_provider_org ) {
+        log.debug("Linking to org as content provider");
         OrgRole.assertOrgPackageLink(content_provider_org, new_pkg, cp_role);
+      }
+      else {
+        log.debug("No content provider org");
       }
       new_pkg_id = new_pkg.id
     }
@@ -618,12 +626,6 @@ class UploadController {
     else {
       log.error("No package identifier");
       upload['soPackageIdentifier'].messages.add("Unable to use this identifier")
-      upload.processFile=false
-    }
-
-    if ( upload.processFile && ( Package.findByIdentifier(upload.soPackageIdentifier) != null ) ) {
-      log.error("Repeate package identifier");
-      upload['soPackageIdentifier'].messages.add("Package identifier ${upload.normPkgIdentifier} already in database. Unable to repeat upload")
       upload.processFile=false
     }
 
