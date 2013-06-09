@@ -106,7 +106,6 @@ class UploadController {
     
     if ( new_pkg.save(flush:true, failOnError:true) ) {
 
-      log.debug("New package ${pkg.identifier} saved");
       log.debug("Package [${new_pkg.id}] with identifier ${new_pkg.identifier} created......");
 
       if ( upload.consortiumOrg ) {                              
