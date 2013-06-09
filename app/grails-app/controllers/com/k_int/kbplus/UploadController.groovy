@@ -103,18 +103,21 @@ class UploadController {
                               endDate: upload.aggreementTermEndYear?.value, 
                               impId: java.util.UUID.randomUUID().toString());
 
-    if ( upload.consortiumOrg ) {                              
-      def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
-      def or = new OrgRole(org: consortium, pkg:new_pkg, roleType:sc_role).save();
-    }
+    
+    if ( new_pkg.save(flush:true, failOnError:true) ) {
 
-    if ( new_pkg.save(flush:true) ) {
-      //log.debug("New package ${pkg.identifier} saved");
-      // Content Provider?
+      log.debug("New package ${pkg.identifier} saved");
       log.debug("Package [${new_pkg.id}] with identifier ${new_pkg.identifier} created......");
+
+      if ( upload.consortiumOrg ) {                              
+        def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
+        def or = new OrgRole(org: consortium, pkg:new_pkg, roleType:sc_role).save();
+      }
+
+      // Content Provider?
       if ( content_provider_org ) {
         log.debug("Linking to org as content provider");
-        OrgRole.assertOrgPackageLink(content_provider_org, new_pkg, cp_role);
+        def cp_or = new OrgRole(org: content_provider_org, pkg:new_pkg, roleType:cp_role).save();
       }
       else {
         log.debug("No content provider org");
