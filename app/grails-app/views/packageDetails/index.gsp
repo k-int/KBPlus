@@ -19,6 +19,7 @@
     <div class="container">
       <g:form action="index" method="get" params="${params}">
       <input type="hidden" name="offset" value="${params.offset}"/>
+
       <div class="row">
         <div class="span12">
           <div class="well">
@@ -29,6 +30,7 @@
           </div>
         </div>
       </div>
+
       <div class="row">
         <div class="span2">
           <div class="well">

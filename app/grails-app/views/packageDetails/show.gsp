@@ -66,6 +66,14 @@
                 </dd>
               </dl> 
 
+              <dl>
+                <dt>License</dt>
+                <dd>
+                  <g:xEditableRefData owner="${packageInstance}" field="license" config='Licenses'/>
+                </dd>
+              </dl>
+
+
                 <dl><dt>Start Date</dt><dd>
                     <g:xEditable owner="${packageInstance}" field="startDate" type="date"/>
                 </dd>
