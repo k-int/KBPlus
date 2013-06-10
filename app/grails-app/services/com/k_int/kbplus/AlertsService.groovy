@@ -15,6 +15,7 @@ class AlertsService {
     log.debug("all public notes: ${all_public_notes}");
 
     all_public_notes.each { pn ->
+
       // log.debug("Processing: ${pn}");
 
       def info = null;
@@ -36,17 +37,31 @@ class AlertsService {
           info.notes = [:]
         }
       }
+      else if (pn.pkg) {
+        info = roots["pkg:${pn.pkg.id}"]
+        if ( !info ) {
+          info = [:]
+          roots["pkg:${pn.pkg.id}"] = info
+          info.rootObj = pn.pkg
+          info.notes = [:]
+        }
+      }
       else {
         log.error("unhandled type");
       }
 
-      if (info.notes[pn.id]) {
-        // The note is already present under this object, skip
-        log.debug("${pn.id} already present");
+      if ( info != null ) {
+        if (info.notes[pn.id]) {
+          // The note is already present under this object, skip
+          log.debug("${pn.id} already present");
+        }
+        else {
+          log.debug("Adding note ${pn.id}");
+          info.notes[pn.id] = pn
+        }
       }
       else {
-        log.debug("Adding note ${pn.id}");
-        info.notes[pn.id] = pn
+        log.error("Unhandled note owner!!!!");
       }
     }
 
