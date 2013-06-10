@@ -27,3 +27,10 @@ character_set_server=utf8
 To manually search ES:
 
 http://localhost:9200/kbplus/_search?q=Subscription
+
+
+Testing
+
+Experimenting with functional-test
+
+First test in test/functional/demo/DataloadFunctionalTests.groovy run with grails test-app -functional
