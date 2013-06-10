@@ -44,7 +44,7 @@ class LoginController {
    * Show the login page.
    */
   def auth = {
-    log.debug("auth ${request.session.id} localauth:${grailsApplication.config.localauth}");
+    log.debug("auth session:${request.session.id} localauth:${grailsApplication.config.localauth}");
 
     def config = SpringSecurityUtils.securityConfig
 
@@ -64,6 +64,7 @@ class LoginController {
     String requestUrl = savedRequest?.getRedirectUrl();
 
     if ( grailsApplication.config.localauth ) {
+      log.debug("Using localauth... send login form");
       String view = 'auth'
       String postUrl = "${request.contextPath}${config.apf.filterProcessesUrl}"
       render view: view, model: [postUrl: postUrl, rememberMeParameter: config.rememberMe.parameter]
@@ -74,6 +75,7 @@ class LoginController {
       // redirect(uri:"http://edina.ac.uk/cgi-bin/Login/kbplus_explorer-dev?context=${requestUrl}");
       redirect(uri:"${grailsApplication.config.authuri}?context=${requestUrl}");
     }
+    log.debug("auth completed");
   }
 
   /**
