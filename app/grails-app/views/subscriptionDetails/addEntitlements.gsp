@@ -65,8 +65,9 @@
                     <td><input type="checkbox" name="_bulkflag.${tipp.id}" class="bulkcheck"/></td>
                     <td>${counter++}</td>
                     <td>
-                      <g:if test="${tipp?.hostPlatformURL}"><a href="${tipp?.hostPlatformURL}" TITLE="${tipp?.hostPlatformURL}">${tipp.title.title}</a></g:if>
-                      <g:else>${tipp.title.title}</g:else>
+                      <g:link controller="tipp" id="${tipp.id}" action="show">${tipp.title.title}</g:link>
+                      <g:if test="${tipp?.hostPlatformURL}">( <a href="${tipp?.hostPlatformURL}" TITLE="${tipp?.hostPlatformURL}">Host Link</a>
+                            <a href="${tipp?.hostPlatformURL}" TITLE="${tipp?.hostPlatformURL} (In new window)" target="_blank"><i class="icon-share-alt"></i></a>)</g:if>
                     </td>
                     <td>${tipp?.title?.getIdentifierValue('ISSN')}</td>
                     <td>${tipp?.title?.getIdentifierValue('eISSN')}</td>
