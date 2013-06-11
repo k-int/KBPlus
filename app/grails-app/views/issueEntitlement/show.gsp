@@ -182,7 +182,7 @@
                         <td>${t.coverageDepth}</td>
                         <td><g:link controller="platform" action="show" id="${t.platform.id}">${t.platform.name}</g:link></td>
                         <td><g:link controller="packageDetails" action="show" id="${t.pkg.id}">${t.pkg.name}</g:link></td>
-                        <td><g:link controller="titleInstancePackagePlatform" action="show" id="${t.id}">Full TIPP record</g:link></td>
+                        <td><g:link controller="tipp" action="show" id="${t.id}">Full TIPP record</g:link></td>
                         </tr>
                     </g:each>
                 </table>
