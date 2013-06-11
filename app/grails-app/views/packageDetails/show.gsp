@@ -149,7 +149,7 @@
               <tr>
                 <td style="vertical-align:top;">
                    ${t.title.title}
-                   <g:link controller="titleDetails" action="edit" id="${t.title.id}">(Title)</g:link>
+                   <g:link controller="titleDetails" action="show" id="${t.title.id}">(Title)</g:link>
                    <g:link controller="tipp" action="show" id="${t.id}">(TIPP)</g:link>
                    (<g:xEditableRefData owner="${t}" field="status" config='TIPPStatus'/>)
                 </td>

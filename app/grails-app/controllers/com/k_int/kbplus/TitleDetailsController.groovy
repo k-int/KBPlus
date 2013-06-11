@@ -10,7 +10,7 @@ import com.k_int.kbplus.*;
 
 class TitleDetailsController {
 
-  @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def findTitleMatches() { 
     // find all titles by n_title proposedTitle
     def result=[:]
@@ -23,7 +23,7 @@ class TitleDetailsController {
     result
   }
 
-  @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def createTitle() {
     log.debug("Create new title for ${params.title}");
     def new_title = new TitleInstance(title:params.title, impId:java.util.UUID.randomUUID().toString())
@@ -39,8 +39,15 @@ class TitleDetailsController {
     }
   }
 
-  @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def edit() {
+    def result = [:]
+    result.ti = TitleInstance.get(params.id)
+    result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def show() {
     def result = [:]
     result.ti = TitleInstance.get(params.id)
     result
