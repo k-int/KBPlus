@@ -135,6 +135,7 @@ class PackageDetailsController {
 
       
       result.max = params.max ? Integer.parseInt(params.max) : 25
+      params.max = result.max
       def paginate_after = params.paginate_after ?: ( (2*result.max)-1);
       result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
