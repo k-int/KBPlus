@@ -340,18 +340,30 @@ class MyInstitutionsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
-    def cal = new java.util.GregorianCalendar()
-    def sdf = new SimpleDateFormat('yyyy-MM-dd')
+    if ( checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
+      result.is_admin = true
+    }
+    else {
+      result.is_admin=false;
+    }
 
-    cal.setTimeInMillis(System.currentTimeMillis())
-    cal.set(Calendar.MONTH,Calendar.JANUARY)
-    cal.set(Calendar.DAY_OF_MONTH,1)
-    result.defaultStartYear=sdf.format(cal.getTime())
-    cal.set(Calendar.MONTH,Calendar.DECEMBER)
-    cal.set(Calendar.DAY_OF_MONTH,31)
-    result.defaultEndYear=sdf.format(cal.getTime())
-    result.defaultSubIdentifier=java.util.UUID.randomUUID().toString()
-    result
+    if ( result.is_admin ) {
+      def cal = new java.util.GregorianCalendar()
+      def sdf = new SimpleDateFormat('yyyy-MM-dd')
+
+      cal.setTimeInMillis(System.currentTimeMillis())
+      cal.set(Calendar.MONTH,Calendar.JANUARY)
+      cal.set(Calendar.DAY_OF_MONTH,1)
+      result.defaultStartYear=sdf.format(cal.getTime())
+      cal.set(Calendar.MONTH,Calendar.DECEMBER)
+      cal.set(Calendar.DAY_OF_MONTH,31)
+      result.defaultEndYear=sdf.format(cal.getTime())
+      result.defaultSubIdentifier=java.util.UUID.randomUUID().toString()
+      result
+    }
+    else {
+      redirect action:'currentSubscriptions', params:[shortcode:params.shortcode]
+    }
   }
   
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -361,31 +373,37 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
-    def sdf = new SimpleDateFormat('yyyy-MM-dd')
-    def startDate = sdf.parse(params.valid_from)
-    def endDate = sdf.parse(params.valid_to)
-    
-    def new_sub = new Subscription(type: RefdataValue.findByValue("Subscription Taken"),
-                                   status:RefdataCategory.lookupOrCreate('Subscription Status','Current'),
-                                   name:params.newEmptySubName,
-                                   startDate:startDate,
-                                   endDate:endDate,
-                                   identifier:params.newEmptySubId,
-                                   isPublic: RefdataCategory.lookupOrCreate('YN','No'),
-                                   impId:java.util.UUID.randomUUID().toString())
-    if ( new_sub.save() ) {                           
-      def new_sub_link = new OrgRole(org:result.institution, 
-                                     sub:new_sub, 
-                                     roleType: RefdataCategory.lookupOrCreate('Organisational Role','Subscriber')).save();
+    if ( checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
 
-      redirect controller:'subscriptionDetails', action:'index', id:new_sub.id
+      def sdf = new SimpleDateFormat('yyyy-MM-dd')
+      def startDate = sdf.parse(params.valid_from)
+      def endDate = sdf.parse(params.valid_to)
+    
+      def new_sub = new Subscription(type: RefdataValue.findByValue("Subscription Taken"),
+                                     status:RefdataCategory.lookupOrCreate('Subscription Status','Current'),
+                                     name:params.newEmptySubName,
+                                     startDate:startDate,
+                                     endDate:endDate,
+                                     identifier:params.newEmptySubId,
+                                     isPublic: RefdataCategory.lookupOrCreate('YN','No'),
+                                     impId:java.util.UUID.randomUUID().toString())
+      if ( new_sub.save() ) {                           
+        def new_sub_link = new OrgRole(org:result.institution, 
+                                       sub:new_sub, 
+                                       roleType: RefdataCategory.lookupOrCreate('Organisational Role','Subscriber')).save();
+  
+        redirect controller:'subscriptionDetails', action:'index', id:new_sub.id
+      }
+      else {
+        new_sub.errors.each { e ->
+          log.debug("Problem creating new sub: ${e}");
+        }
+        flash.error=new_sub.errors
+        redirect action:'emptySubscription', params:[shortcode:params.shortcode]
+      }
     }
     else {
-      new_sub.errors.each { e ->
-        log.debug("Problem creating new sub: ${e}");
-      }
-      flash.error=new_sub.errors
-      redirect action:'emptySubscription', params:[shortcode:params.shortcode]
+      redirect action:'currentSubscriptions', params:[shortcode:params.shortcode]
     }
   }
 

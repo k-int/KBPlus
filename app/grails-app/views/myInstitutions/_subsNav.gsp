@@ -9,9 +9,11 @@
               params="${[shortcode:params.shortcode]}">New Subscription (via Package)</g:link></li>
   -->
               
+  <g:if test="${is_admin}">
   <li class="${actionName=='emptySubscription'?'active':''}"><g:link controller="myInstitutions" 
               action="emptySubscription" 
               params="${[shortcode:params.shortcode]}">New Subscription (Empty)</g:link></li>
+  </g:if>
 
 </ul>
 
