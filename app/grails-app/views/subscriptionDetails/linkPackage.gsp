@@ -27,8 +27,7 @@
     </div>
 
     <div class="container">
-      <g:form action="linkPackage" method="get" params="${params}"
-              onsubmit="return confirm('Are you sure you wish to link with/without entitlements');">
+      <g:form id="LinkPackageForm" action="linkPackage" method="get" params="${params}">
       <input type="hidden" name="offset" value="${params.offset}"/>
       <div class="row">
         <div class="span12">
@@ -72,8 +71,8 @@
                       <tr>
                         <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name} (${hit.source.type})</g:link></td>
                         <td>${hit.source.consortiaName}</td>
-                        <td><button type="submit" class="btn" name="addBtn" value="${hit.source.dbId}">Link</button>
-                            <button type="submit" class="btn" name="addWithEntitlementsBtn" value="${hit.source.dbId}">Link + Entitlements</button></td>
+                        <td><button class="btn" name="addBtn" value="${hit.source.dbId}" onClick="javascript:confirmSubmitNoEntitlements();">Link</button>
+                            <button class="btn" name="addWithEntitlementsBtn" value="${hit.source.dbId}" onClick="javascript:confirmSubmitWithEntitlements();">Link + Entitlements</button></td>
                       </tr>
                     </g:each>
                   </table>
@@ -98,5 +97,19 @@
       </div>
       </g:form>
     </div>    
+    <script language="JavaScript">
+      function confirmSubmitWithEntitlements() {
+        if (confirm("Are you sure you want to link with entitlements?")) {
+          document.getElementById("LinkPackageForm").submit();
+        }
+        return false;
+      }
+      function confirmSubmitNoEntitlements() {
+        if (confirm("Are you sure you want to link with NO entitlements?")) {
+          document.getElementById("LinkPackageForm").submit();
+        }
+        return false;
+      }
+    </script>
   </body>
 </html>
