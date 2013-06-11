@@ -75,7 +75,7 @@
                   ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
                 </g:each>
                 <g:if test="${((s.packages==null) || (s.packages.size()==0))}">
-                  <i>None currently, Add packages via <g:link controller="packageDetails" action="linkPackage" id="${s.id}">Link Package</g:link></i>
+                  <i>None currently, Add packages via <g:link controller="subscriptionDetails" action="linkPackage" id="${s.id}">Link Package</g:link></i>
                 </g:if>
               </td>
               <td>${s.getConsortia()?.name}</td>
