@@ -64,7 +64,7 @@
                   <tr>
                     <td><input type="checkbox" name="_bulkflag.${tipp.id}" class="bulkcheck"/></td>
                     <td>${counter++}</td>
-                    <td> (${tipp.id})
+                    <td>
                       <g:if test="${tipp?.hostPlatformURL}"><a href="${tipp?.hostPlatformURL}" TITLE="${tipp?.hostPlatformURL}">${tipp.title.title}</a></g:if>
                       <g:else>${tipp.title.title}</g:else>
                     </td>
