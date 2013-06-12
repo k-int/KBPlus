@@ -93,6 +93,8 @@ class DataloadService {
       result.rectype = 'Package'
       result.consortiaId = pkg.getConsortia()?.id
       result.consortiaName = pkg.getConsortia()?.name
+      result.cpname = pkg.contentProvider?.name
+      result.cpid = pkg.contentProvider?.id
 
       if ( pkg.startDate ) {
         GregorianCalendar c = new GregorianCalendar()
