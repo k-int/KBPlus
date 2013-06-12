@@ -136,17 +136,20 @@
           <table class="table table-bordered">
             <thead>
             <tr>
-              <g:sortableColumn rowspan="2" params="${params}" property="tipp.title.title" title="Title" />
-              <th rowspan="2" style="">Platform</th>
-              <th rowspan="2" style="">Identifiers</th>
-              <th rowspan="2" style="">Start</th>
-              <th rowspan="2" style="">End</th>
-              <th rowspan="2" style="">Coverage Depth</th>
+              <th>&nbsp;</th>
+              <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
+              <th style="">Platform</th>
+              <th style="">Identifiers</th>
+              <th style="">Start</th>
+              <th style="">End</th>
+              <th style="">Coverage Depth</th>
             </tr>
             </thead>
             <tbody>
+            <g:set var="counter" value="${offset+1}" />
             <g:each in="${titlesList}" var="t">
               <tr>
+                <td>${counter++}</td>
                 <td style="vertical-align:top;">
                    ${t.title.title}
                    <g:link controller="titleDetails" action="show" id="${t.title.id}">(Title)</g:link>
