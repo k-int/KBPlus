@@ -108,7 +108,12 @@ class PackageDetailsController {
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def show() {
       def result = [:]
-      result.editable=true
+      
+      if ( authenticateService.ifAllGranted('ROLE_ADMIN') )
+        result.editable=true
+      else
+        result.editable=false
+
       result.user = User.get(springSecurityService.principal.id)
       def packageInstance = Package.get(params.id)
       if (!packageInstance) {
