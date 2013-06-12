@@ -131,7 +131,7 @@
     <div class="container">
 
         <dl>
-          <dt>Titles</dt>
+          <dt>Titles (${offset+1} to ${lasttipp}  of ${num_tipp_rows})</dt>
           <dd>
           <table class="table table-bordered">
             <thead>
