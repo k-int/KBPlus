@@ -280,6 +280,12 @@ class SubscriptionDetailsController {
         basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status != ? and ( not exists ( select ie from IssueEntitlement ie where ie.subscription = ? and ie.tipp.id = tipp.id and ie.status != ? ) )"
       }
 
+      if ( params.pkgfilter && ( params.pkgfilter != '' ) ) {
+        basequery += " and tipp.pkg.id = ? "
+        qry_params.add(Long.parseLong(params.pkgfilter));
+      }
+
+
       if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
         basequery += " order by tipp.${params.sort} ${params.order} "
       }

@@ -35,10 +35,17 @@
 
       <dl>
         <dt>Available Titles ( ${offset+1} to ${offset+(tipps?.size())} of ${num_tipp_rows} )
-          <g:form action="addEntitlements" params="${params}" method="get">
+          <g:form action="addEntitlements" params="${params}" method="get" class="form-inline">
             <input type="hidden" name="sort" value="${params.sort}">
             <input type="hidden" name="order" value="${params.order}">
-            Filter: <input name="filter" value="${params.filter}"/><input type="submit" class="btn btn-primary">
+            <label>Filter:</label> <input name="filter" value="${params.filter}"/>
+            <label>From Package:</label> <select name="pkgfilter">
+                               <g:each in="${subscriptionInstance.packages}" var="sp">
+                                 <option value="${sp.pkg.id}" ${sp.pkg.id.toString()==params.pkgfilter?'selected=true':''}>${sp.pkg.name}</option>
+                               </g:each>
+                            </select>
+
+            <input type="submit" class="btn btn-primary">
           </g:form>
         </dt>
         <dd>
