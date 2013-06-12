@@ -56,12 +56,17 @@ class SubscriptionDetailsController {
     def qry_params = [result.subscriptionInstance]
 
     if ( params.filter ) {
-      base_qry = " from IssueEntitlement as ie where ie.subscription = ? and ( ie.status.value != 'Deleted' ) and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) )"
+      base_qry = " from IssueEntitlement as ie where ie.subscription = ? and ( ie.status.value != 'Deleted' ) and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) ) "
       qry_params.add("%${params.filter.trim().toLowerCase()}%")
       qry_params.add("%${params.filter}%")
     }
     else {
       base_qry = " from IssueEntitlement as ie where ie.subscription = ? and ( ie.status.value != 'Deleted' ) "
+    }
+
+    if ( params.pkgfilter && ( params.pkgfilter != '' ) ) {
+      base_qry += " and ie.tipp.pkg.id = ? "
+      qry_params.add(Long.parseLong(params.pkgfilter));
     }
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {

@@ -124,6 +124,11 @@
              <input type="hidden" name="sort" value="${params.sort}">
              <input type="hidden" name="order" value="${params.order}">
              <label>Filter:</label> <input name="filter" value="${params.filter}"/>
+             <label>From Package:</label> <select name="pkgfilter">
+                               <g:each in="${subscriptionInstance.packages}" var="sp">
+                                 <option value="${sp.pkg.id}" ${sp.pkg.id==params.pkgfilter?'selected=true':''}>${sp.pkg.name}</option>
+                               </g:each>
+                            </select>
              <input type="submit" class="btn btn-primary" />
           </g:form>
         </dt>
