@@ -45,7 +45,7 @@
                 <g:if test="${issueEntitlementInstance?.subscription}">
                     <dt><g:message code="issueEntitlement.subscription.label" default="Subscription" /></dt>
 
-                    <dd><g:link controller="subscription" action="show" id="${issueEntitlementInstance?.subscription?.id}">${issueEntitlementInstance?.subscription?.name.encodeAsHTML()}</g:link></dd>
+                    <dd><g:link controller="subscriptionDetails" action="index" id="${issueEntitlementInstance?.subscription?.id}">${issueEntitlementInstance?.subscription?.name.encodeAsHTML()}</g:link></dd>
 
                 </g:if>
             </dl>
