@@ -8,15 +8,16 @@ import grails.plugins.springsecurity.Secured
 import com.k_int.kbplus.auth.*;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 class PackageDetailsController {
 
   def ESWrapperService
+  def springSecurityService
 
   def pkg_qry_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'name' ]
 
 
-  def springSecurityService
 
     static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
 
@@ -109,7 +110,7 @@ class PackageDetailsController {
     def show() {
       def result = [:]
       
-      if ( authenticateService.ifAllGranted('ROLE_ADMIN') )
+      if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') )
         result.editable=true
       else
         result.editable=false
