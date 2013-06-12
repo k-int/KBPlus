@@ -148,6 +148,12 @@ class PackageDetailsController {
       def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
       def qry_params = [packageInstance]
 
+      if ( params.filter ) {
+        base_qry += " and ( ( lower(tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = tipp.title.id and io.identifier.value like ? ) ) )"
+        qry_params.add("%${params.filter.trim().toLowerCase()}%")
+        qry_params.add("%${params.filter}%")
+      }
+
       if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
         base_qry += " order by ${params.sort} ${params.order}"
       }
