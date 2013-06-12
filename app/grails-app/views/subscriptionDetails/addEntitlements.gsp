@@ -54,7 +54,9 @@
             <table  class="table table-striped table-bordered columns10">
               <thead>
                 <tr>
-                  <th></th>
+                  <th>
+                    <g:if test="${editable}"><input type="checkbox" name="chkall" onClick="javascript:selectAll();"/></g:if>
+                  </th>
                   <th>#</th>
                   <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
                   <th>ISSN</th>
@@ -117,6 +119,10 @@
           rows      : 3,
           tooltip   : 'Click to edit...'
         });
+      });
+
+      function selectAll() {
+        $('.bulkcheck').attr('checked', true);
       }
     </script>
   </body>
