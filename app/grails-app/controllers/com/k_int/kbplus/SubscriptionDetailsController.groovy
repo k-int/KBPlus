@@ -587,7 +587,7 @@ class SubscriptionDetailsController {
               case 'startYear':
                 sw.append('startYear')
                 break;
-              case 'contentProvider':
+              case 'cpname':
                 sw.append('cpname')
                 break;
             }
@@ -639,7 +639,7 @@ class SubscriptionDetailsController {
                     field = 'consortiaName'
                   }
                 }
-                contentProvider {
+                cpname {
                   terms {
                     field = 'cpname'
                   }
