@@ -27,8 +27,9 @@
     </div>
 
     <div class="container">
-      <g:form id="LinkPackageForm" action="linkPackage" method="get" params="${params}">
+      <g:form name="LinkPackageForm" action="linkPackage" method="get" params="${params}">
       <input type="hidden" name="offset" value="${params.offset}"/>
+      <input type="hidden" name="id" value="${params.id}"/>
       <div class="row">
         <div class="span12">
           <div class="well">
@@ -71,8 +72,8 @@
                       <tr>
                         <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name} (${hit.source.type})</g:link></td>
                         <td>${hit.source.consortiaName}</td>
-                        <td><button class="btn" name="addBtn" value="${hit.source.dbId}" onClick="javascript:confirmSubmitNoEntitlements();">Link</button>
-                            <button class="btn" name="addWithEntitlementsBtn" value="${hit.source.dbId}" onClick="javascript:confirmSubmitWithEntitlements();">Link + Entitlements</button></td>
+                        <td><button type="submit" class="btn" name="addBtn" value="${hit.source.dbId}" onClick="javascript:confirmSubmitNoEntitlements();">Link</button>
+                            <button type="submit" class="btn" name="addWithEntitlementsBtn" value="${hit.source.dbId}" onClick="javascript:confirmSubmitWithEntitlements();">Link + Entitlements</button></td>
                       </tr>
                     </g:each>
                   </table>

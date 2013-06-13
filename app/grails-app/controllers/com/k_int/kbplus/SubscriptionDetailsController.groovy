@@ -547,6 +547,7 @@ class SubscriptionDetailsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def linkPackage() {
+    log.debug("Link package, params: ${params}");
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.subscriptionInstance = Subscription.get(params.id)
