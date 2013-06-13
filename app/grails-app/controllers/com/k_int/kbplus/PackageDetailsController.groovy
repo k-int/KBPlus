@@ -340,7 +340,7 @@ class PackageDetailsController {
               case 'startYear':
                 sw.append('startYear')
                 break;
-              case 'contentProvider':
+              case 'cpname':
                 sw.append('cpname')
                 break;
             }
@@ -400,7 +400,7 @@ class PackageDetailsController {
                     field = 'consortiaName'
                   }
                 }
-                contentProvider {
+                cpname {
                   terms {
                     field = 'cpname'
                   }
