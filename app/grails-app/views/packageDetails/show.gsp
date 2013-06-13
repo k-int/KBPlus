@@ -92,7 +92,7 @@
                 <dt>Org Links</dt>
                 <dd><g:render template="orgLinks" 
                             contextPath="../templates" 
-                            model="${[roleLinks:packageInstance?.orgs,parent:packageInstance.class.name+':'+packageInstance.id,property:'orgs',editmode:true]}" /></dd>
+                            model="${[roleLinks:packageInstance?.orgs,parent:packageInstance.class.name+':'+packageInstance.id,property:'orgs',editmode:editable]}" /></dd>
               </dl>
 
               <dl>
