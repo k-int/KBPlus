@@ -1284,6 +1284,14 @@ class DataloadService {
               type = "string"
               index = "not_analyzed"
             }
+            "cpname" {
+              type = "string"
+              index = "not_analyzed"
+            }
+            "cpid" {
+              type = "string"
+              index = "not_analyzed"
+            }
             "startYear" {
               type = "string"
               index = "not_analyzed"
