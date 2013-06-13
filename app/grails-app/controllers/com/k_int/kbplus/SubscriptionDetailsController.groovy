@@ -588,7 +588,7 @@ class SubscriptionDetailsController {
                 sw.append('startYear')
                 break;
               case 'contentProvider':
-                sw.append('packages.cpname')
+                sw.append('cpname')
                 break;
             }
             if ( filter_components[2].indexOf(' ') > 0 ) {
@@ -641,7 +641,7 @@ class SubscriptionDetailsController {
                 }
                 contentProvider {
                   terms {
-                    field = 'packages.cpname'
+                    field = 'cpname'
                   }
                 }
                 startYear {
