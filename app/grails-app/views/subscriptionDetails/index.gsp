@@ -125,6 +125,7 @@
              <input type="hidden" name="order" value="${params.order}">
              <label>Filter:</label> <input name="filter" value="${params.filter}"/>
              <label>From Package:</label> <select name="pkgfilter">
+                                <option value="">All</option>
                                <g:each in="${subscriptionInstance.packages}" var="sp">
                                  <option value="${sp.pkg.id}" ${sp.pkg.id.toString()==params.pkgfilter?'selected=true':''}>${sp.pkg.name}</option>
                                </g:each>
