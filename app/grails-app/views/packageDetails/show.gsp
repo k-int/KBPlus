@@ -199,6 +199,7 @@
 
 
 
+        <g:if test="${editable}">
         
         <g:form controller="ajax" action="addToCollection">
           <fieldset>
@@ -216,6 +217,8 @@
           </fieldset>
         </g:form>
 
+
+        </g:if>
 
       </div>
 
