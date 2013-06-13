@@ -341,7 +341,7 @@ class PackageDetailsController {
                 sw.append('startYear')
                 break;
               case 'contentProvider':
-                sw.append('packages.cpname')
+                sw.append('cpname')
                 break;
             }
             if ( filter_components[2].indexOf(' ') > 0 ) {
@@ -402,7 +402,7 @@ class PackageDetailsController {
                 }
                 contentProvider {
                   terms {
-                    field = 'packages.cpname'
+                    field = 'cpname'
                   }
                 }
                 startYear {
