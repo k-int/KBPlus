@@ -42,6 +42,12 @@ class TitleDetailsController {
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def edit() {
     def result = [:]
+
+    if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') )
+      result.editable=true
+    else
+      result.editable=false
+
     result.ti = TitleInstance.get(params.id)
     result
   }
@@ -49,6 +55,12 @@ class TitleDetailsController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def show() {
     def result = [:]
+
+    if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') )
+      result.editable=true
+    else
+      result.editable=false
+
     result.ti = TitleInstance.get(params.id)
     result
   }

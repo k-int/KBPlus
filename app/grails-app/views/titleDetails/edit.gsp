@@ -11,13 +11,13 @@
           <div class="span12">
 
             <div class="page-header">
-              <h1><span id="titleEdit" 
+              <h1><g:if test="${editable}"><span id="titleEdit" 
                         class="xEditableValue"
                         data-type="textarea" 
                         data-pk="${ti.class.name}:${ti.id}"
                         data-name="title" 
                         data-url='<g:createLink controller="ajax" action="editableSetValue"/>'
-                        data-original-title="${ti.title}">${ti.title}</span></h1>
+                        data-original-title="${ti.title}">${ti.title}</span></g:if><g:else>${ti.title}</g:else></h1>
             </div>
 
             <g:if test="${flash.message}">
@@ -44,12 +44,14 @@
                     <td>${io.id}</td>
                     <td>${io.identifier.ns.ns}</td>
                     <td>${io.identifier.value}</td>
-                    <td><g:link controller="ajax" action="deleteThrough" params='${[contextOid:"${ti.class.name}:${ti.id}",contextProperty:"ids",targetOid:"${io.class.name}:${io.id}"]}'>Delete Identifier</g:link></td>
+                    <td><g:if test="${editable}"><g:link controller="ajax" action="deleteThrough" params='${[contextOid:"${ti.class.name}:${ti.id}",contextProperty:"ids",targetOid:"${io.class.name}:${io.id}"]}'>Delete Identifier</g:link></g:if></td>
                   </tr>
                 </g:each>
               </tbody>
             </table>
 
+           
+            <g:if test="${editable}">
             <g:form controller="ajax" action="addToCollection" class="form-inline">
               <input type="hidden" name="__context" value="${ti.class.name}:${ti.id}"/>
               <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.IdentifierOccurrence"/>
@@ -57,7 +59,7 @@
               <input type="hidden" name="identifier" id="addIdentifierSelect"/>
               <input type="submit" value="Add Identifier..." class="btn btn-primary btn-small"/>
             </g:form>
-
+            </g:if>
             <h3>Org Links</h3>
             <table class="table table-bordered">
               <thead>
@@ -74,12 +76,13 @@
                     <td>${org.id}</td>
                     <td>${org.org.name}</td>
                     <td>${org.roleType.value}</td>
-                    <td><g:link controller="ajax" action="deleteThrough" params='${[contextOid:"${ti.class.name}:${ti.id}",contextProperty:"orgs",targetOid:"${org.class.name}:${org.id}"]}'>Delete Org Link</g:link></td>
+                    <td><g:if test="${editable}"><g:link controller="ajax" action="deleteThrough" params='${[contextOid:"${ti.class.name}:${ti.id}",contextProperty:"orgs",targetOid:"${org.class.name}:${org.id}"]}'>Delete Org Link</g:link></g:if></td>
                   </tr>
                 </g:each>
               </tbody>
             </table>
 
+            <g:if test="${editable}">
             <g:form controller="ajax" action="addToCollection" class="form-inline">
               <input type="hidden" name="__context" value="${ti.class.name}:${ti.id}"/>
               <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.OrgRole"/>
@@ -88,6 +91,7 @@
               <input type="hidden" name="roleType" id="orgRoleSelect"/>
               <input type="submit" value="Add Org Role..." class="btn btn-primary btn-small"/>
             </g:form>
+            </g:if>
 
           </div>
         </div>
@@ -101,6 +105,7 @@
       // $.fn.editable.defaults.mode = 'inline';
       // $('.xEditableValue').editable();
 
+      <g:if test="${editable}">
       $("#addIdentifierSelect").select2({
         placeholder: "Search for an identifier...",
         minimumInputLength: 1,
@@ -163,7 +168,7 @@
           }
         }
       });
-
+      </g:if>
 
 
 
