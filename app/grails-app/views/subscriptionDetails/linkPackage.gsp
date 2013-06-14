@@ -72,8 +72,8 @@
                       <tr>
                         <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name} (${hit.source.type})</g:link></td>
                         <td>${hit.source.consortiaName}</td>
-                        <td><button type="submit" class="btn" name="addBtn" value="${hit.source.dbId}" onClick="javascript:confirmSubmitNoEntitlements();">Link</button>
-                            <button type="submit" class="btn" name="addWithEntitlementsBtn" value="${hit.source.dbId}" onClick="javascript:confirmSubmitWithEntitlements();">Link + Entitlements</button></td>
+                        <td><button type="submit" class="btn" name="addBtn" value="${hit.source.dbId}">Link</button>
+                            <button type="submit" class="btn" name="addWithEntitlementsBtn" value="${hit.source.dbId}">Link + Entitlements</button></td>
                       </tr>
                     </g:each>
                   </table>
