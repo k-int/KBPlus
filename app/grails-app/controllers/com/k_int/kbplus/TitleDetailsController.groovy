@@ -6,7 +6,7 @@ import com.k_int.kbplus.auth.*;
 import org.apache.log4j.*
 import java.text.SimpleDateFormat
 import com.k_int.kbplus.*;
-
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 class TitleDetailsController {
 
