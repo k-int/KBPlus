@@ -22,12 +22,12 @@
 
         <div class="page-header">
           <div>
-          <h1> <span id="packageNameEdit"
+          <h1><g:if test="${editable}"><span id="packageNameEdit"
                         class="xEditableValue"
                         data-type="textarea"
                         data-pk="${packageInstance.class.name}:${packageInstance.id}"
                         data-name="name"
-                        data-url='<g:createLink controller="ajax" action="editableSetValue"/>'>${packageInstance.name}</span></h1>
+                        data-url='<g:createLink controller="ajax" action="editableSetValue"/>'>${packageInstance.name}</span></g:if><g:else>${packageInstance.name}</g:else></h1>
           </div>
 
         </div>
