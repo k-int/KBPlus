@@ -299,9 +299,9 @@ class UploadController {
     }
 
     CSVReader r = null
-    if ( request.docstyle?.equals("tsv") ) {
+    if ( params.docstyle?.equals("tsv") ) {
       log.debug("Processing TSV");
-      r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ), '\t' )
+      r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ), (char)'\t' )
     }
     else {
       log.debug("Processing CSV");
