@@ -673,16 +673,17 @@ class SubscriptionDetailsController {
           }
           
           
-      if ( params.addBtn ) {
-        log.debug("Add package ${params.addBtn} to subscription ${params}");
-        def pkg_to_link = Package.get(params.addBtn)
-        pkg_to_link.addToSubscription(result.subscriptionInstance, false)
-        redirect action:'addEntitlements', id:params.id
-      }
-      else if ( params.addWithEntitlementsBtn ) {
-        def pkg_to_link = Package.get(params.addWithEntitlementsBtn)
-        pkg_to_link.addToSubscription(result.subscriptionInstance, true)
-        redirect action:'addEntitlements', id:params.id
+      if ( params.addType && ( params.addType != '' ) ) {
+        def pkg_to_link = Package.get(params.addId)
+        log.debug("Add package ${params.addType} to subscription ${params}");
+        if ( params.addType == 'With' ) {
+          pkg_to_link.addToSubscription(result.subscriptionInstance, true)
+          redirect action:'addEntitlements', id:params.id
+        }
+        else if ( params.addType == 'Without' ) {
+          pkg_to_link.addToSubscription(result.subscriptionInstance, false)
+          redirect action:'addEntitlements', id:params.id
+        }
       }
 
     }
