@@ -111,7 +111,7 @@
               </g:elseif>
               <g:elseif test="${ua.rootObj.class.name=='com.k_int.kbplus.Package'}">
                 <span class="label label-info">Package</span>
-                <em><g:link action="index"
+                <em><g:link action="show"
                         controller="packageDetails" 
                         id="${ua.rootObj.id}">${ua.rootObj.name}</g:link></em>
               </g:elseif>
