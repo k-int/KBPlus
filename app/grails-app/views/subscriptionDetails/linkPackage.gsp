@@ -28,8 +28,6 @@
 
     <div class="container">
       <g:form name="LinkPackageForm" action="linkPackage" method="get" params="${params}">
-      <input id="btnAddType" type="hidden" name="addType" value=""/>
-      <input id="btnAddId" type="hidden" name="addId" value=""/>
       <input type="hidden" name="offset" value="${params.offset}"/>
       <input type="hidden" name="id" value="${params.id}"/>
       <div class="row">
@@ -74,8 +72,14 @@
                       <tr>
                         <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name} (${hit.source.type})</g:link></td>
                         <td>${hit.source.consortiaName}</td>
-                        <td><button class="btn" onClick="javascript:confirmSubmitNoEntitlements(${hit.source.dbId});">Link</button>
-                            <button class="btn" onClick="javascript:confirmSubmitWithEntitlements(${hit.source.dbId});">Link + Entitlements</button></td>
+                        <td><g:link action="linkPackage" 
+                               id="${params.id}"
+                               params="${[addId:hit.source.dbId,addType:'Without']}"
+                               onClick="confirm('Are you sure you want to add without entitlements?');">Link (no Entitlements)</g:link><br/>
+                            <g:link action="linkPackage" 
+                               id="${params.id}" 
+                               params="${[addId:hit.source.dbId,addType:'With']}"
+                               onClick="confirm('Are you sure you want to add with entitlements?');">Link (with Entitlements)</g:link></td>
                       </tr>
                     </g:each>
                   </table>
@@ -100,23 +104,5 @@
       </div>
       </g:form>
     </div>    
-    <script language="JavaScript">
-      function confirmSubmitWithEntitlements(id) {
-        if (confirm("Are you sure you want to link with entitlements?")) {
-          document.getElementById("LinkPackageForm").submit();
-          $('#btnAddId').val(id)
-          $('#btnAddType').val("With")
-        }
-        return false;
-      }
-      function confirmSubmitNoEntitlements(id) {
-        if (confirm("Are you sure you want to link with NO entitlements?")) {
-          document.getElementById("LinkPackageForm").submit();
-          $('#btnAddId').val(id)
-          $('#btnAddType').val("Without")
-        }
-        return false;
-      }
-    </script>
   </body>
 </html>
