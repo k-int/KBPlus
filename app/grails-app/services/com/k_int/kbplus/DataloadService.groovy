@@ -87,7 +87,7 @@ class DataloadService {
     updateES(esclient, com.k_int.kbplus.Package.class) { pkg ->
       def result = [:]
       result._id = pkg.impId
-      result.name = "${pkg.name} (${pkg.contentProvider?.name})"
+      result.name = "${pkg.name}"
       result.dbId = pkg.id
       result.visible = ['Public']
       result.rectype = 'Package'
