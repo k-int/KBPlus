@@ -75,11 +75,11 @@
                         <td><g:link action="linkPackage" 
                                id="${params.id}"
                                params="${[addId:hit.source.dbId,addType:'Without']}"
-                               onClick="confirm('Are you sure you want to add without entitlements?');">Link (no Entitlements)</g:link><br/>
+                               onClick="return confirm('Are you sure you want to add without entitlements?');">Link (no Entitlements)</g:link><br/>
                             <g:link action="linkPackage" 
                                id="${params.id}" 
                                params="${[addId:hit.source.dbId,addType:'With']}"
-                               onClick="confirm('Are you sure you want to add with entitlements?');">Link (with Entitlements)</g:link></td>
+                               onClick="return confirm('Are you sure you want to add with entitlements?');">Link (with Entitlements)</g:link></td>
                       </tr>
                     </g:each>
                   </table>
