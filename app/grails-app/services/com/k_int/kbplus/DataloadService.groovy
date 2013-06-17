@@ -1185,10 +1185,10 @@ class DataloadService {
       source  {
         org {
           properties {
-            name {
-              type = "string"
-              analyzer = "snowball"
-            }
+            // name {
+            //   type = "string"
+            //   analyzer = "snowball"
+            // }
           }
         }
       }
@@ -1202,10 +1202,10 @@ class DataloadService {
       source  {
         'package' {
           properties {
-            "name" {
-              type = "string"
-              analyzer = "snowball"
-            }
+            // "name" {
+            //   type = "string"
+            //   analyzer = "snowball"
+            // }
             "consortia" {
               type = "string"
               index = "not_analyzed"
@@ -1247,10 +1247,10 @@ class DataloadService {
       source  {
         platform {
           properties {
-            "name" {
-              type = "string"
-              analyzer = "snowball"
-            }
+            // "name" {
+            //   type = "string"
+            //   analyzer = "snowball"
+            // }
           }
         }
       }
@@ -1264,10 +1264,10 @@ class DataloadService {
       source  {
         'subscription' {
           properties {
-            "name" {
-              type = "string"
-              analyzer = "snowball"
-            }
+            // "name" {
+            //   type = "string"
+            //   analyzer = "snowball"
+            // }
             "subtype" {
               type = "string"
               index = "not_analyzed"
