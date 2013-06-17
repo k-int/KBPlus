@@ -64,7 +64,7 @@
                     <tr><th>Package Name</th><th>Consortium</th><th>Additional Info</th></tr>
                     <g:each in="${hits}" var="hit">
                       <tr>
-                        <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name} (${hit.source.type})</g:link></td>
+                        <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
                         <td>${hit.source.consortiaName}</td>
                         <td></td>
                       </tr>
