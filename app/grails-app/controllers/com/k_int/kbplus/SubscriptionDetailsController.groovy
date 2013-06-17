@@ -552,6 +552,12 @@ class SubscriptionDetailsController {
     result.user = User.get(springSecurityService.principal.id)
     result.subscriptionInstance = Subscription.get(params.id)
     result.institution = result.subscriptionInstance.subscriber
+
+    if ( ! subscriptionInstance.hasPerm("edit",user) ) {
+      response.sendError(401);
+      return
+    }
+
     
     if ( result.subscriptionInstance.isEditableBy(result.user) ) {
       result.editable = true
