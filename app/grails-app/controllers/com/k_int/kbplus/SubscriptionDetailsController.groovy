@@ -553,7 +553,7 @@ class SubscriptionDetailsController {
     result.subscriptionInstance = Subscription.get(params.id)
     result.institution = result.subscriptionInstance.subscriber
 
-    if ( ! subscriptionInstance.hasPerm("edit",user) ) {
+    if ( ! subscriptionInstance.hasPerm("edit",result.user) ) {
       response.sendError(401);
       return
     }
