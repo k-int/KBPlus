@@ -88,6 +88,7 @@ class DataloadService {
       def result = [:]
       result._id = pkg.impId
       result.name = "${pkg.name}"
+      result.tokname = result.name.replaceAll(':',' ')
       result.dbId = pkg.id
       result.visible = ['Public']
       result.rectype = 'Package'
@@ -1202,10 +1203,10 @@ class DataloadService {
       source  {
         'package' {
           properties {
-            // "name" {
-            //   type = "string"
-            //   analyzer = "snowball"
-            // }
+            "name" {
+              type = "string"
+              analyzer = "snowball"
+            }
             "consortia" {
               type = "string"
               index = "not_analyzed"

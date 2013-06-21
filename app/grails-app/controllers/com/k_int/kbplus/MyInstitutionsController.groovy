@@ -24,7 +24,7 @@ class MyInstitutionsController {
   def genericOIDService
 
   // Map the parameter names we use in the webapp with the ES fields
-  def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'name' ]
+  def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
   def reversemap = ['subject':'subject', 'provider':'provid', 'studyMode':'presentations.studyMode','qualification':'qual.type','level':'qual.level' ]
 
   def possible_date_formats = [
