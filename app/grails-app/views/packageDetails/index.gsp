@@ -60,15 +60,19 @@
                 </div>
 
                 <div id="resultsarea">
-                  <table cellpadding="5" cellspacing="5">
-                    <tr><th>Package Name</th><th>Consortium</th><th>Additional Info</th></tr>
-                    <g:each in="${hits}" var="hit">
-                      <tr>
-                        <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
-                        <td>${hit.source.consortiaName}</td>
-                        <td></td>
-                      </tr>
-                    </g:each>
+                  <table class="table table-bordered table-striped">
+                    <thead>
+                      <tr><th>Package Name</th><th>Consortium</th><th>Additional Info</th></tr>
+                    </thead>
+                    <tbody>
+                      <g:each in="${hits}" var="hit">
+                        <tr>
+                          <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
+                          <td>${hit.source.consortiaName}</td>
+                          <td></td>
+                        </tr>
+                      </g:each>
+                    </tbody>
                   </table>
                 </div>
              </g:if>
