@@ -705,7 +705,7 @@ class UploadController {
     }
 
     if ( result.stats[counter] == null ) {
-      result.stats[counter] = 0
+      result.stats[counter] = 1
     }
     else {
       result.stats[counter]++
