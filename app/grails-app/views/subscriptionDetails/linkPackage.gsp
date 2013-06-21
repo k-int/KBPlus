@@ -66,22 +66,26 @@
                 </div>
 
                 <div id="resultsarea">
-                  <table cellpadding="5" cellspacing="5">
-                    <tr><th>Package Name</th><th>Consortium</th><th>Additional Info</th></tr>
-                    <g:each in="${hits}" var="hit">
-                      <tr>
-                        <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
-                        <td>${hit.source.consortiaName}</td>
-                        <td><g:link action="linkPackage" 
-                               id="${params.id}"
-                               params="${[addId:hit.source.dbId,addType:'Without']}"
-                               onClick="return confirm('Are you sure you want to add without entitlements?');">Link (no Entitlements)</g:link><br/>
-                            <g:link action="linkPackage" 
-                               id="${params.id}" 
-                               params="${[addId:hit.source.dbId,addType:'With']}"
-                               onClick="return confirm('Are you sure you want to add with entitlements?');">Link (with Entitlements)</g:link></td>
-                      </tr>
-                    </g:each>
+                  <table class="table table-bordered table-striped">
+                    <thead>
+                      <tr><th>Package Name</th><th>Consortium</th><th>Additional Info</th></tr>
+                    </thead>
+                    <tbody>
+                      <g:each in="${hits}" var="hit">
+                        <tr>
+                          <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
+                          <td>${hit.source.consortiaName}</td>
+                          <td><g:link action="linkPackage" 
+                                 id="${params.id}"
+                                 params="${[addId:hit.source.dbId,addType:'Without']}"
+                                 onClick="return confirm('Are you sure you want to add without entitlements?');">Link (no Entitlements)</g:link><br/>
+                              <g:link action="linkPackage" 
+                                 id="${params.id}" 
+                                 params="${[addId:hit.source.dbId,addType:'With']}"
+                                 onClick="return confirm('Are you sure you want to add with entitlements?');">Link (with Entitlements)</g:link></td>
+                        </tr>
+                      </g:each>
+                    </tbody>
                   </table>
                 </div>
              </g:if>
