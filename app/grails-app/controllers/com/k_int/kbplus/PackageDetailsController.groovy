@@ -330,7 +330,7 @@ class PackageDetailsController {
         if ( !has_filter )
           has_filter = true
         else
-          sw.append(" AND ")
+          sw.append(" and ")
 
         String[] filter_components = p.key.split(':');
             switch ( filter_components[1] ) {
@@ -382,7 +382,7 @@ class PackageDetailsController {
 
           def query_str = buildPackageQuery(params)
           if ( fq ) 
-            query_str = query_str + " AND ( " + fq + " ) "
+            query_str = query_str + " and ( " + fq + " ) "
           
           log.debug("query: ${query_str}");
 
@@ -461,7 +461,7 @@ class PackageDetailsController {
       if ( params[mapping.key] != null ) {
         if ( params[mapping.key].class == java.util.ArrayList) {
           params[mapping.key].each { p ->
-                sw.write(" AND ")
+                sw.write(" and ")
                 sw.write(mapping.value)
                 sw.write(":")
                 sw.write("\"${p}\"")
@@ -471,7 +471,7 @@ class PackageDetailsController {
           // Only add the param if it's length is > 0 or we end up with really ugly URLs
           // II : Changed to only do this if the value is NOT an *
           if ( params[mapping.key].length() > 0 && ! ( params[mapping.key].equalsIgnoreCase('*') ) ) {
-            sw.write(" AND ")
+            sw.write(" and ")
             sw.write(mapping.value)
             sw.write(":")
             sw.write("\"${params[mapping.key]}\"")
