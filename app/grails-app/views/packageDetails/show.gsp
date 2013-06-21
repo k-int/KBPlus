@@ -207,6 +207,10 @@
             <input type="hidden" name="__context" value="${packageInstance.class.name}:${packageInstance.id}"/>
             <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.TitleInstancePackagePlatform"/>
             <input type="hidden" name="__recip" value="pkg"/>
+
+            <!-- N.B. this should really be looked up in the controller and set, not hard coded here -->
+            <input type="hidden" name="status" value="com.k_int.kbplus.RefdataValue:29"/>
+
             <label>Title To Add</label>
             <g:simpleReferenceTypedown class="input-xxlarge" style="width:350px;" name="title" baseClass="com.k_int.kbplus.TitleInstance"/><br/>
             <span class="help-block"></span>
