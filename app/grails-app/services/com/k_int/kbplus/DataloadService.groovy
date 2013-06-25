@@ -168,6 +168,7 @@ class DataloadService {
 
   def updateES(esclient, domain, recgen_closure) {
 
+    def count = 0;
     try {
       log.debug("updateES - ${domain.name}");
 
@@ -179,7 +180,6 @@ class DataloadService {
       }
 
       log.debug("updateES ${domain.name} since ${latest_ft_record.lastTimestamp}");
-      def count = 0;
       def total = 0;
       Date from = new Date(latest_ft_record.lastTimestamp);
       // def qry = domain.findAllByLastUpdatedGreaterThan(from,[sort:'lastUpdated']);
