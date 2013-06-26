@@ -17,7 +17,7 @@ class SubscriptionDetailsController {
   def alertsService
   def genericOIDService
   
-  def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'name' ]
+  def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {

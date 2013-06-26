@@ -15,7 +15,7 @@ class PackageDetailsController {
   def ESWrapperService
   def springSecurityService
 
-  def pkg_qry_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'name' ]
+  def pkg_qry_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
 
 
 
