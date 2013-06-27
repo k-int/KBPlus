@@ -400,19 +400,19 @@ class PackageDetailsController {
                 consortiaName {
                   terms {
                     field = 'consortiaName'
-                    all_terms = true
+                    size = 0
                   }
                 }
                 cpname {
                   terms {
                     field = 'cpname'
-                    all_terms = true
+                    size = 0
                   }
                 }
                 startYear {
                   terms {
                     field = 'startYear'
-                    all_terms = true
+                    size = 0
                   }
                 }
               }
