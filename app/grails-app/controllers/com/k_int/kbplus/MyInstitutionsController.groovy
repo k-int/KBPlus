@@ -1110,9 +1110,9 @@ AND EXISTS (
                 break;
             }
             if ( filter_components[2].indexOf(' ') > 0 ) {
-              sw.append(":'");
+              sw.append(":\"");
               sw.append(filter_components[2])
-              sw.append("'");
+              sw.append("\"");
             }
             else {
               sw.append(":");
