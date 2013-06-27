@@ -206,6 +206,7 @@ class PublicExportController {
          response.header.version = "2.0"
          response.header.jcid = ''
          response.header.url = "uri://kbplus/pkg/${result.packageInstance.id}"
+         response.header.pkgcount = result.num_pkg_rows
 
          result.tipps.each { e ->
 
