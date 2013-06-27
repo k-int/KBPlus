@@ -330,9 +330,10 @@ class PackageDetailsController {
         if ( !has_filter )
           has_filter = true
         else
-          sw.append(" and ")
+          sw.append(" AND ")
 
         String[] filter_components = p.key.split(':');
+
             switch ( filter_components[1] ) {
               case 'consortiaName':
                 sw.append('consortiaName')
@@ -382,7 +383,7 @@ class PackageDetailsController {
 
           def query_str = buildPackageQuery(params)
           if ( fq ) 
-            query_str = query_str + " and ( " + fq + " ) "
+            query_str = query_str + " AND ( " + fq + " ) "
           
           log.debug("query: ${query_str}");
           result.es_query = query_str;
