@@ -418,7 +418,6 @@ class PackageDetailsController {
               }
 
             }
-
           }
 
           if ( search?.response ) {
