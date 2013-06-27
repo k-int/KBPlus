@@ -398,16 +398,19 @@ class PackageDetailsController {
                 consortiaName {
                   terms {
                     field = 'consortiaName'
+                    all_terms = true
                   }
                 }
                 cpname {
                   terms {
                     field = 'cpname'
+                    all_terms = true
                   }
                 }
                 startYear {
                   terms {
                     field = 'startYear'
+                    all_terms = true
                   }
                 }
               }
