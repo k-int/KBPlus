@@ -532,11 +532,11 @@ class UploadController {
       
       if ( tipp.platform ) {
         def plat = tipp.platform.values().find { it.coltype=='host' }
-        if ( plat && plat.url && ( plat.url.trim() != '' ) ) {
+        if ( plat && plat.url && ( plat.url.trim() != '' && plat.name && plat.name.trim() != '' ) ) {
           // Cool - found platform
         }
         else {
-          tipp.messages.add("Unable to locate host platform");
+          tipp.messages.add("Error in Platform Information - Unable to locate host platform OR platform url/name not specified");
           upload.processFile=false;
         }
       }
