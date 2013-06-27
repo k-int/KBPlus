@@ -66,37 +66,37 @@
             </g:each>
       	</select>
       	<select size="5" name="filterPvd" class="span3" multiple="multiple">
-      		<option<%= (filterPvd.equals("all")) ? ' selected="selected"' : '' %> value="all">All Content Providers</option>
+      		<option<%= (filterPvd.contains("all")) ? ' selected="selected"' : '' %> value="all">All Content Providers</option>
       		<g:each in="${providers}" var="p">
               <% 
               def pvdId = p.id.toString()
               def pvdName = p.name 
               %>
-              <option<%= (filterPvd.equals(pvdId)) ? ' selected="selected"' : '' %> value="${pvdId}" title="${pvdName}">
+              <option<%= (filterPvd.contains(pvdId)) ? ' selected="selected"' : '' %> value="${pvdId}" title="${pvdName}">
                 ${pvdName}
               </option>
             </g:each>
       	</select>
       	<select size="5" name="filterHostPlat" class="span3" multiple="multiple">
-      		<option<%= (filterHostPlat.equals("all")) ? ' selected="selected"' : '' %> value="all">All Host Platforms</option>
+      		<option<%= (filterHostPlat.contains("all")) ? ' selected="selected"' : '' %> value="all">All Host Platforms</option>
       		<g:each in="${hostplatforms}" var="hp">
               <% 
               def hostId = hp.id.toString()
               def hostName = hp.name 
               %>
-              <option<%= (filterHostPlat.equals(hostId)) ? ' selected="selected"' : '' %> value="${hostId}" title="${hostName}">
+              <option<%= (filterHostPlat.contains(hostId)) ? ' selected="selected"' : '' %> value="${hostId}" title="${hostName}">
                 ${hostName}
               </option>
             </g:each>
       	</select>
       	<select size="5" name="filterOtherPlat" class="span3" multiple="multiple">
-      		<option<%= (filterOtherPlat.equals("all")) ? ' selected="selected"' : '' %> value="all">All Additional Platforms</option>
+      		<option<%= (filterOtherPlat.contains("all")) ? ' selected="selected"' : '' %> value="all">All Additional Platforms</option>
       		<g:each in="${otherplatforms}" var="op">
               <% 
               def platId = op.id.toString()
               def platName = op.name 
               %>
-              <option<%= (filterOtherPlat.equals(platId)) ? ' selected="selected"' : '' %> value="${platId}" title="${platName}">
+              <option<%= (filterOtherPlat.contains(platId)) ? ' selected="selected"' : '' %> value="${platId}" title="${platName}">
                 ${platName}
               </option>
             </g:each>

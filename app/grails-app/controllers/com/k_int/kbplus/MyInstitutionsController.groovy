@@ -959,10 +959,13 @@ class MyInstitutionsController {
   def currentTitles() {
 	def filterSub = params.list("filterSub")
     if(filterSub.contains("all")) filterSub = null
-	
-    if (params.filterPvd.equals("all")) params.filterPvd = null
-    if (params.filterHostPlat.equals("all")) params.filterHostPlat = null
-    if (params.filterOtherPlat.equals("all")) params.filterOtherPlat = null
+	def filterPvd = params.list("filterPvd")
+	if(filterPvd.contains("all")) filterPvd = null
+	def filterHostPlat = params.list("filterHostPlat")
+	if(filterHostPlat.contains("all")) filterHostPlat = null
+	def filterOtherPlat = params.list("filterOtherPlat")
+	if(filterOtherPlat.contains("all")) filterOtherPlat = null
+
     if (!params.order) params.order = "asc"
     if (!params.sort) params.sort = "tipp.title.title"
 
@@ -1054,8 +1057,8 @@ ORDER BY p.platform.name""", sub_params );
         title_query += "INNER JOIN ie.tipp.platform AS hplat "
 	//if (!params.filterSub)
     title_query += ", Subscription AS s INNER JOIN s.orgRelations AS o "
-	if (filterSub)
-		title_query += ", IssueEntitlement AS ie2 "
+//	if (filterSub)
+//		title_query += ", IssueEntitlement AS ie2 "
 		
     //if (!params.filterSub){
 		//title_query += "WHERE EXISTS ( FROM ${sub_qry} AND ie.subscription = s ) "
@@ -1069,8 +1072,12 @@ AND s = ie.subscription "
     if (filterSub){ //}else{
         //title_query += "WHERE ie.subscription.id = :subscription "
 		title_query += "\
-AND ie2.tipp.title = ie.tipp.title \
-AND ie2.subscription.id IN (:subscriptions) "
+AND ( \
+ie.subscription.id IN (:subscriptions) \
+OR ( EXISTS ( FROM IssueEntitlement AS ie2 \
+WHERE ie2.tipp.title = ie.tipp.title \
+AND ie2.subscription.id IN (:subscriptions) \
+)))"
         qry_params.subscriptions = filterSub.collect(new ArrayList<Long>()) { Long.valueOf(it) }
     }
     
@@ -1085,29 +1092,29 @@ AND io.identifier.value like :filter ) ) )"
       qry_params.filter = "%${params.filter}%"
     }
     
-    if (params.filterPvd){
+    if (filterPvd){
         title_query += "\
 AND role.roleType.value = 'Content Provider' \
-AND role.org.id = :provider "
-        qry_params.provider = Long.valueOf(params.filterPvd)
+AND role.org.id IN (:provider) "
+        qry_params.provider = filterPvd.collect(new ArrayList<Long>()) { Long.valueOf(it) } //Long.valueOf(params.filterPvd)
     }
     
-    if (params.filterHostPlat){
-        title_query += "AND hplat.id = :hostPlatform "
-        qry_params.hostPlatform = Long.valueOf(params.filterHostPlat)
+    if (filterHostPlat){
+        title_query += "AND hplat.id IN (:hostPlatform) "
+        qry_params.hostPlatform = filterHostPlat.collect(new ArrayList<Long>()) { Long.valueOf(it) } //Long.valueOf(params.filterHostPlat)
     }
     
-    if (params.filterOtherPlat){
+    if (filterOtherPlat){
         title_query += """
 AND EXISTS ( 
 	FROM IssueEntitlement ie2 
 	WHERE EXISTS ( 
 		FROM ie2.tipp.additionalPlatforms AS ap 
-		WHERE ap.platform.id = :otherPlatform 
+		WHERE ap.platform.id IN (:otherPlatform) 
 	) 
 	AND ie2.tipp.title = ie.tipp.title 
 ) """
-        qry_params.otherPlatform = Long.valueOf(params.filterOtherPlat)
+        qry_params.otherPlatform = filterOtherPlat.collect(new ArrayList<Long>()) { Long.valueOf(it) } //Long.valueOf(params.filterOtherPlat)
     }
     
     if ( date_restriction ) {
