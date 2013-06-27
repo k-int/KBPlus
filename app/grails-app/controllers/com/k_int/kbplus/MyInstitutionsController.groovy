@@ -1795,20 +1795,26 @@ AND EXISTS (
                 log.debug("Add an issue entitlement from subscription[${j}] for title ${title_id_long}");
 
                 def entitlement_info = [:]
-                entitlement_info.title_id = title_id_long
-                entitlement_info.subscribe = subscribe
                 entitlement_info.base_entitlement = extractEntitlement(sub_info[j], title_id_long)
+                if ( entitlement_info.base_entitlement ) {
+                  entitlement_info.title_id = title_id_long
+                  entitlement_info.subscribe = subscribe
 
-                entitlement_info.start_date = title_row.getCell(4)
-                entitlement_info.end_date = title_row.getCell(5)
-                entitlement_info.coverage = title_row.getCell(6)
-                entitlement_info.coverage_note = title_row.getCell(7)
-                entitlement_info.core_status = title_row.getCell(8)
-                entitlement_info.core_start_date = title_row.getCell(9)
-                entitlement_info.core_end_date = title_row.getCell(10)
-
-                log.debug("Added entitlement_info ${entitlement_info}");
-                result.entitlements.add(entitlement_info)
+                  entitlement_info.start_date = title_row.getCell(4)
+                  entitlement_info.end_date = title_row.getCell(5)
+                  entitlement_info.coverage = title_row.getCell(6)
+                  entitlement_info.coverage_note = title_row.getCell(7)
+                  entitlement_info.core_status = title_row.getCell(8)
+                  entitlement_info.core_start_date = title_row.getCell(9)
+                  entitlement_info.core_end_date = title_row.getCell(10)
+  
+                  log.debug("Added entitlement_info ${entitlement_info}");
+                  result.entitlements.add(entitlement_info)
+                }
+                else {
+                  log.error("TIPP not found in package.");
+                  flash.error="You have selected an invalid title/package combination for title ${title_id_long}";
+                }
               }
             }
           }
