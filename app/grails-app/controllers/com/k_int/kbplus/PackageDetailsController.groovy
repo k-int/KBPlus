@@ -388,7 +388,7 @@ class PackageDetailsController {
           log.debug("query: ${query_str}");
           result.es_query = query_str;
 
-          def search = esclient.search{
+         def search = esclient.search{
             indices "kbplus"
             source {
               from = params.offset
@@ -400,27 +400,24 @@ class PackageDetailsController {
                 consortiaName {
                   terms {
                     field = 'consortiaName'
-                    size = 0
-                    all_terms = false;
+                    size = 25
                   }
                 }
                 cpname {
                   terms {
                     field = 'cpname'
-                    size = 0
-                    all_terms = false;
+                    size = 25
                   }
                 }
                 startYear {
                   terms {
                     field = 'startYear'
-                    size = 0
-                    all_terms = false;
+                    size = 100
                   }
                 }
               }
-
             }
+
           }
 
           if ( search?.response ) {
