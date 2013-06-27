@@ -385,6 +385,7 @@ class PackageDetailsController {
             query_str = query_str + " and ( " + fq + " ) "
           
           log.debug("query: ${query_str}");
+          result.es_query = query_str;
 
           def search = esclient.search{
             indices "kbplus"
