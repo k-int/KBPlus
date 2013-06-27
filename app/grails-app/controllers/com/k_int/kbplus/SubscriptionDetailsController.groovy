@@ -630,6 +630,7 @@ class SubscriptionDetailsController {
             query_str = query_str + " AND ( " + fq + " ) "
           
           log.debug("query: ${query_str}");
+          result.es_query = query_str;
 
           def search = esclient.search{
             indices "kbplus"
