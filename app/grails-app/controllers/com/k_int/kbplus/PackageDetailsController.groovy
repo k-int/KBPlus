@@ -401,21 +401,21 @@ class PackageDetailsController {
                   terms {
                     field = 'consortiaName'
                     size = 0
-                    all_terms = false
+                    //all_terms = false
                   }
                 }
                 cpname {
                   terms {
                     field = 'cpname'
                     size = 0
-                    all_terms = false
+                    //all_terms = false
                   }
                 }
                 startYear {
                   terms {
                     field = 'startYear'
                     size = 0
-                    all_terms = false
+                    //all_terms = false
                   }
                 }
               }
