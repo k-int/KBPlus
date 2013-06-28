@@ -1190,6 +1190,11 @@ AND EXISTS (
                 query_string (query: query_str)
               }
               facets {
+                startYear {
+                  terms {
+                    field = 'startYear'
+                  }
+                }
                 consortiaName {
                   terms {
                     field = 'consortiaName'
@@ -1198,11 +1203,6 @@ AND EXISTS (
                 contentProvider {
                   terms {
                     field = 'cpname'
-                  }
-                }
-                startYear {
-                  terms {
-                    field = 'startYear'
                   }
                 }
               }
