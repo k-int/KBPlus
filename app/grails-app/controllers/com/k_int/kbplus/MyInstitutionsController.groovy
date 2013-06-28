@@ -960,50 +960,60 @@ AND EXISTS (
         json {
             def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
             
-            // Get distinct ID.Namespace
-            def namespaces = []
-            title_list.each(){ ti ->
-                ti.ids.each(){ id ->
-                    namespaces.add(id.identifier.ns.ns)
-                }
-            }
-            namespaces.unique()
-            
             def response = []
             
             result.titles.each { ti ->
                 def title = [:]
-                title.Title = ti[0].title
-                title.IDs = [:]
-                namespaces.each(){ ns ->
-                    if(ti[0].getIdentifierValue(ns)) 
-                        title.IDs[ns] = ti[0].getIdentifierValue(ns)
+                title."Title" = ti[0].title
+                
+				log.debug("there are ${ti[0].ids.size()} ids")
+				def ids = [:]
+				ti[0].ids.each(){ id ->
+					def value = id.identifier.value
+					def ns = id.identifier.ns.ns
+					log.debug("ns:${ns} val:${value}")
+					if(ids.containsKey(ns)){
+						def current = ids[ns]
+						def newval = []
+						newval << current
+						newval << value
+						ids[ns] = newval
+					} else {
+						ids[ns]=value
+					}
                 }
-                def entitlements = title."Issue Entitlements" = []
+				title."TitleIDs" = ids
+				
+                def entitlements = title."IssueEntitlements" = []
                 result.entitlements.each(){ 
                     def ie = [:]
                     if(it.tipp.title.id.equals(ti[0].id)){
-                        ie."Subscription name" = it.subscription.name
-                        ie."Start date" = it.startDate?formatter.format(it.startDate):''
-                        ie."Start volume" = it.startVolume?:''
-                        ie."Start issue" = it.startIssue?:''
-                        ie."End date" = it.endDate?formatter.format(it.endDate):''
-                        ie."End volume" = it.endVolume?:''
-                        ie."End issue" = it.endIssue?:''
+                        ie."SubscriptionID" = it.subscription.id
+                        ie."SubscriptionName" = it.subscription.name
+                        ie."StartDate" = it.startDate?formatter.format(it.startDate):''
+                        ie."StartVolume" = it.startVolume?:''
+                        ie."StartIssue" = it.startIssue?:''
+                        ie."EndDate" = it.endDate?formatter.format(it.endDate):''
+                        ie."EndVolume" = it.endVolume?:''
+                        ie."EndIssue" = it.endIssue?:''
                         ie."Embargo" = it.embargo?:''
                         ie."Coverage" = it.coverageDepth?:''
-                        ie."Coverage note" = it.coverageNote?:''
-                        ie."Host Platform Name" = it.tipp?.platform?.name?:''
-                        ie."Host Platform URL" = it.tipp?.hostPlatformURL?:''
-                        ie."Additional Platforms" = [:]
+                        ie."CoverageNote" = it.coverageNote?:''
+                        ie."HostPlatformName" = it.tipp?.platform?.name?:''
+                        ie."HostPlatformURL" = it.tipp?.hostPlatformURL?:''
+                        ie."AdditionalPlatforms" = []
                         it.tipp?.additionalPlatforms.each(){ ap ->
-                            ie."Additional Platforms".name = ap.platform?.name?:''
-                            ie."Additional Platforms".role = ap.rel?:''
-                            ie."Additional Platforms".URL = ap.platform?.primaryUrl?:''
+							def platform = [:]
+                            platform.PlatformName = ap.platform?.name?:''
+                            platform.PlatformRole = ap.rel?:''
+                            platform.PlatformURL = ap.platform?.primaryUrl?:''
+							ie."AdditionalPlatforms" << platform
                         }
-                        ie."Core status" = it.coreStatus?.value?:''
-                        ie."Core start" = it.coreStatusStart?formatter.format(it.coreStatusStart):''
-                        ie."Core end" = it.coreStatusEnd?formatter.format(it.coreStatusEnd):''
+                        ie."CoreStatus" = it.coreStatus?.value?:''
+                        ie."CoreStart" = it.coreStatusStart?formatter.format(it.coreStatusStart):''
+                        ie."CoreEnd" = it.coreStatusEnd?formatter.format(it.coreStatusEnd):''
+						ie."PackageID" = it.tipp?.pkg?.id?:''
+						ie."PackageName" = it.tipp?.pkg?.name?:''
                         
                         entitlements.add(ie)
                     }
