@@ -1105,7 +1105,7 @@ AND EXISTS (
               case 'startYear':
                 sw.append('startYear')
                 break;
-              case 'contentProvider':
+              case 'cpname':
                 sw.append('cpname')
                 break;
             }
@@ -1193,16 +1193,19 @@ AND EXISTS (
                 startYear {
                   terms {
                     field = 'startYear'
+                    size = 25
                   }
                 }
                 consortiaName {
                   terms {
                     field = 'consortiaName'
+                    size = 25
                   }
                 }
-                contentProvider {
+                cpname {
                   terms {
                     field = 'cpname'
+                    size = 25
                   }
                 }
               }
