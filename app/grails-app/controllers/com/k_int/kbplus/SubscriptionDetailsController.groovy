@@ -644,16 +644,19 @@ class SubscriptionDetailsController {
                 consortiaName {
                   terms {
                     field = 'consortiaName'
+                    size = 25
                   }
                 }
                 cpname {
                   terms {
                     field = 'cpname'
+                    size = 25
                   }
                 }
                 startYear {
                   terms {
                     field = 'startYear'
+                    size = 25
                   }
                 }
               }
