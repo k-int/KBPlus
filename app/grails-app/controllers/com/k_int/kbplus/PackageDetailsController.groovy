@@ -396,9 +396,9 @@ class PackageDetailsController {
               query {
                 query_string (query: query_str)
               }
-              sort = [
-                name : [ order = "asc" ]
-              ]
+              // sort = [
+              //   name : [ order = "asc" ]
+              // ]
               facets {
                 consortiaName {
                   terms {
