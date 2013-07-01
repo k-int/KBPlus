@@ -244,9 +244,11 @@
       </div>
   </div>
   
+  <!--
   <div class="support-tab">
       <a href="mailto:kbplus@jisc-collections.ac.uk?subject=KBPlus%20Support%20Query"><i class="icon-question-sign icon-white"></i>Request Support</a>
   </div>
+  -->
       
   <!-- For datatable -->
   <script type="text/javascript" charset="utf-8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
@@ -258,7 +260,6 @@
   <!-- For select2 -->
   <script src="${resource(dir: 'js', file: 'select2.js')}"></script>
       
-  <!--
   <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.4/zenbox.js"></script>
   <style type="text/css" media="screen, projection">
     @import url(//assets.zendesk.com/external/zenbox/v2.4/zenbox.css);
@@ -274,7 +275,6 @@
       });
     }
   </script>
-  -->
       
   <script type="text/javascript">
       var _gaq = _gaq || [];
