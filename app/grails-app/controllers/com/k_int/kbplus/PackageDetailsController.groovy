@@ -393,9 +393,9 @@ class PackageDetailsController {
             source {
               from = params.offset
               size = params.max
-              // sort = [
-              //   'sortnname' : [ 'order' : 'asc' ]
-              // ]
+              sort = [
+                'sortname' : [ 'order' : 'asc' ]
+              ]
               query {
                 query_string (query: query_str)
               }
