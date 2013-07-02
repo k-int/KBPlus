@@ -1189,9 +1189,9 @@ AND EXISTS (
               query {
                 query_string (query: query_str)
               }
-              sort = [
-                'name' : [ 'order' : 'asc' ]
-              ]
+              // sort = [
+              //   'name' : [ 'order' : 'asc' ]
+              // ]
               facets {
                 startYear {
                   terms {
