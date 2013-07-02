@@ -2,7 +2,7 @@ package com.k_int.kbplus
 
 class OrgTitleStats {
 
-  Date dateLastRetrieved
+  long lastRetrievedTimestamp
 
   TitleInstance title
   Org org
