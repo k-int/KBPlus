@@ -88,6 +88,7 @@ class DataloadService {
       def result = [:]
       result._id = pkg.impId
       result.name = "${pkg.name}"
+      result.sortname = "${pkg.name.toLowerCase()}"
       result.tokname = result.name.replaceAll(':',' ')
       result.dbId = pkg.id
       result.visible = ['Public']
@@ -1206,6 +1207,10 @@ class DataloadService {
             "name" {
               type = "string"
               analyzer = "snowball"
+            }
+            "sortname" {
+              type = "string"
+              index = "not_analyzed"
             }
             "consortia" {
               type = "string"
