@@ -393,12 +393,12 @@ class PackageDetailsController {
             source {
               from = params.offset
               size = params.max
+              sort = [
+                'name' : [ 'order' : 'asc' ]
+              ]
               query {
                 query_string (query: query_str)
               }
-              // sort = [
-              //   name : [ order = "asc" ]
-              // ]
               facets {
                 consortiaName {
                   terms {
