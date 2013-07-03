@@ -17,6 +17,7 @@ class Package {
   Date dateCreated
   Date lastUpdated
   License license
+  String forumId
 
   static hasMany = [tipps: TitleInstancePackagePlatform, 
                     orgs: OrgRole, 
@@ -43,6 +44,7 @@ class Package {
               endDate column:'pkg_end_date'
               license column:'pkg_license_fk'
              isPublic column:'pkg_is_public'
+              forumId column:'pkg_forum_id'
                 tipps sort:'title.title', order: 'asc'
 
 //                 orgs sort:'org.name', order: 'asc'
@@ -57,6 +59,7 @@ class Package {
               endDate(nullable:true, blank:false)
               license(nullable:true, blank:false)
              isPublic(nullable:true, blank:false)
+              forumId(nullable:true, blank:false)
   }
 
   def getConsortia() {
