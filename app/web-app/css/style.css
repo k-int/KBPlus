@@ -763,3 +763,10 @@ div.comments {
     padding-bottom: 5px;
     border-bottom: 1px solid #DDD;
 }
+
+.truncate {
+	width: 250px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

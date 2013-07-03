@@ -86,5 +86,6 @@
       </div>
       </g:form>
     </div>
+    <!-- ES Query: ${es_query} -->
   </body>
 </html>

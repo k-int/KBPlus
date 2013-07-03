@@ -330,9 +330,10 @@ class PackageDetailsController {
         if ( !has_filter )
           has_filter = true
         else
-          sw.append(" and ")
+          sw.append(" AND ")
 
         String[] filter_components = p.key.split(':');
+
             switch ( filter_components[1] ) {
               case 'consortiaName':
                 sw.append('consortiaName')
@@ -345,9 +346,9 @@ class PackageDetailsController {
                 break;
             }
             if ( filter_components[2].indexOf(' ') > 0 ) {
-              sw.append(":'");
+              sw.append(":\"");
               sw.append(filter_components[2])
-              sw.append("'");
+              sw.append("\"");
             }
             else {
               sw.append(":");
@@ -382,15 +383,19 @@ class PackageDetailsController {
 
           def query_str = buildPackageQuery(params)
           if ( fq ) 
-            query_str = query_str + " and ( " + fq + " ) "
+            query_str = query_str + " AND ( " + fq + " ) "
           
           log.debug("query: ${query_str}");
+          result.es_query = query_str;
 
-          def search = esclient.search{
+         def search = esclient.search{
             indices "kbplus"
             source {
               from = params.offset
               size = params.max
+              sort = [
+                'sortname' : [ 'order' : 'asc' ]
+              ]
               query {
                 query_string (query: query_str)
               }
@@ -398,20 +403,22 @@ class PackageDetailsController {
                 consortiaName {
                   terms {
                     field = 'consortiaName'
+                    size = 25
                   }
                 }
                 cpname {
                   terms {
                     field = 'cpname'
+                    size = 25
                   }
                 }
                 startYear {
                   terms {
                     field = 'startYear'
+                    size = 100
                   }
                 }
               }
-
             }
 
           }

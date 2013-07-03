@@ -108,5 +108,6 @@
       </div>
       </g:form>
     </div>    
+    <!-- ES Query String: ${es_query} -->
   </body>
 </html>
