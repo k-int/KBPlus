@@ -25,7 +25,7 @@
               </li>
               <li>
                 <% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
-                <g:link action="currentTitles" params="${ps_json}">Json Export</g:link>
+                <g:link action="currentTitles" params="${ps_json}" target="_blank">Json Export</g:link>
               </li>
             </ul>
           </li>
