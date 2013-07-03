@@ -10,6 +10,21 @@
         <ul class="breadcrumb">
             <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
            <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:params.shortcode]}">${institution.name} Current Licenses</g:link> </li>
+       		<li class="dropdown pull-right">
+		        <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">
+			  		Exports<b class="caret"></b>
+				</a>
+				<ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
+			  		<li>
+				    	<% def ps_csv = [:]; ps_csv.putAll(params); ps_csv.format = 'csv'; %>
+						<g:link action="currentLicenses" params="${ps_csv}">CSV Export</g:link>
+					</li>
+					<li>
+			  			<% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
+						<g:link action="currentLicenses" params="${ps_json}">Json Export</g:link>
+		      		</li>
+			    </ul>
+			</li>
         </ul>
     </div>
 

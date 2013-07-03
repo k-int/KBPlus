@@ -138,7 +138,88 @@ class MyInstitutionsController {
     // result.licenses = License.executeQuery(qry, [template_license_type, result.institution, licensee_role] )
     result.licenses = License.executeQuery(qry, qry_params);
 
-    result
+    withFormat {
+		html result
+		json {
+			def licenses = result.licenses
+			
+			def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+			
+			def response = [:]
+			
+			response."Licences" = []
+			
+			licenses.each {
+				def licence = [:]
+				licence."LicenceReference" = it.reference
+				licence."NoticePeriod" = it.noticePeriod
+				licence."LicenceURL" = it.licenseUrl
+				licence."LicensorRef" = it.licensorRef
+				licence."LicenseeRef" = it.licenseeRef
+					
+				licence."RelatedOrgs" = []
+				it.orgLinks.each { or ->
+					def org = [:]
+					org."OrgID" = or.org.id
+					org."OrgName" = or.org.name
+					org."OrgRole" = or.roleType.value
+					
+					licence."RelatedOrgs" << org
+				}
+				
+				def prop = licence."LicenceProperties" = [:]
+				
+				def ca = prop."ConcurrentAccess" = [:]
+				ca."Status" = it.concurrentUsers?.value
+				ca."UserCount" = it.concurrentUserCount
+				ca."Notes" = it.getNote("concurrentUsers")?.owner?.content?:""
+				
+				def ra = prop."RemoteAccess" = [:]
+				ra."Status" = it.remoteAccess?.value
+				ra."Notes" = it.getNote("remoteAccess")?.owner?.content?:""
+				
+				def wa = prop."WalkingAccess" = [:]
+				wa."Status" = it.walkinAccess?.value
+				wa."Notes" = it.getNote("remoteAccess")?.owner?.content?:""
+				
+				def ma = prop."MultisiteAccess" = [:]
+				ma."Status" = it.multisiteAccess?.value
+				ma."Notes" = it.getNote("multisiteAccess")?.owner?.content?:""
+				
+				def pa = prop."PartnersAccess" = [:]
+				pa."Status" = it.partnersAccess?.value
+				pa."Notes" = it.getNote("partnersAccess")?.owner?.content?:""
+				
+				def aa = prop."AlumniAccess" = [:]
+				aa."Status" = it.alumniAccess?.value
+				aa."Notes" = it.getNote("alumniAccess")?.owner?.content?:""
+				
+				def ill = prop."InterLibraryLoans" = [:]
+				ill."Status" = it.ill?.value
+				ill."Notes" = it.getNote("ill")?.owner?.content?:""
+				
+				def cp = prop."IncludeinCoursepacks" = [:]
+				cp."Status" = it.coursepack?.value
+				cp."Notes" = it.getNote("coursepack")?.owner?.content?:""
+				
+				def vle = prop."IncludeinVLE" = [:]
+				vle."Status" = it.vle?.value
+				vle."Notes" = it.getNote("vle")?.owner?.content?:""
+				
+				def ea = prop."EntrepriseAccess" = [:]
+				ea."Status" = it.enterprise?.value
+				ea."Notes" = it.getNote("enterprise")?.owner?.content?:""
+				
+				def pca = prop."PostCancellationAccessEntitlement" = [:]
+				pca."Status" = it.pca?.value
+				pca."Notes" = it.getNote("pca")?.owner?.content?:""
+				
+				response."Licences" << licence
+			}
+			
+			render response as JSON
+		}
+    }
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -252,8 +333,164 @@ class MyInstitutionsController {
 
     result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
     result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
-
-    result
+	
+	withFormat {
+		html result
+		json {
+			def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+			
+			def response = [:]
+			def subscriptions = []
+			
+			result.subscriptions.each { sub ->
+				def subscription = [:]
+				subscription."SubscriptionID" = sub.id
+				subscription."SubscriptionName" = sub.name
+				subscription."SubTermStartDate" = sub.startDate?formatter.format(sub.startDate):''
+				subscription."SubTermEndDate" = sub.endDate?formatter.format(sub.endDate):''
+				
+				subscription."RelatedOrgs" = []
+				sub.orgRelations.each { or ->
+					def org = [:]
+					org."OrgID" = or.org.id
+					org."OrgName" = or.org.name
+					org."OrgRole" = or.roleType.value
+					
+					subscription."RelatedOrgs" << org
+				}
+				
+				subscription."Licences" = []
+				def licence = [:]
+				
+				if(sub.owner){
+					def owner = sub.owner
+					
+					licence."LicenceReference" = owner.reference
+					licence."NoticePeriod" = owner.noticePeriod
+					licence."LicenceURL" = owner.licenseUrl
+					licence."LicensorRef" = owner.licensorRef
+					licence."LicenseeRef" = owner.licenseeRef
+						
+					licence."RelatedOrgs" = []
+					sub.owner?.orgLinks.each { or ->
+						def org = [:]
+						org."OrgID" = or.org.id
+						org."OrgName" = or.org.name
+						org."OrgRole" = or.roleType.value
+						
+						licence."RelatedOrgs" << org
+					}
+					
+					
+					
+					def prop = licence."LicenceProperties" = [:]
+					def ca = prop."ConcurrentAccess" = [:]
+					ca."Status" = owner.concurrentUsers?.value
+					ca."UserCount" = owner.concurrentUserCount
+					ca."Notes" = owner.getNote("concurrentUsers")?.owner?.content?:""
+					def ra = prop."RemoteAccess" = [:]
+					ra."Status" = owner.remoteAccess?.value
+					ra."Notes" = owner.getNote("remoteAccess")?.owner?.content?:""
+					def wa = prop."WalkingAccess" = [:]
+					wa."Status" = owner.walkinAccess?.value
+					wa."Notes" = owner.getNote("remoteAccess")?.owner?.content?:""
+					def ma = prop."MultisiteAccess" = [:]
+					ma."Status" = owner.multisiteAccess?.value
+					ma."Notes" = owner.getNote("multisiteAccess")?.owner?.content?:""
+					def pa = prop."PartnersAccess" = [:]
+					pa."Status" = owner.partnersAccess?.value
+					pa."Notes" = owner.getNote("partnersAccess")?.owner?.content?:""
+					def aa = prop."AlumniAccess" = [:]
+					aa."Status" = owner.alumniAccess?.value
+					aa."Notes" = owner.getNote("alumniAccess")?.owner?.content?:""
+					def ill = prop."InterLibraryLoans" = [:]
+					ill."Status" = owner.ill?.value
+					ill."Notes" = owner.getNote("ill")?.owner?.content?:""
+					def cp = prop."IncludeinCoursepacks" = [:]
+					cp."Status" = owner.coursepack?.value
+					cp."Notes" = owner.getNote("coursepack")?.owner?.content?:""
+					def vle = prop."IncludeinVLE" = [:]
+					vle."Status" = owner.vle?.value
+					vle."Notes" = owner.getNote("vle")?.owner?.content?:""
+					def ea = prop."EntrepriseAccess" = [:]
+					ea."Status" = owner.enterprise?.value
+					ea."Notes" = owner.getNote("enterprise")?.owner?.content?:""
+					def pca = prop."PostCancellationAccessEntitlement" = [:]
+					pca."Status" = owner.pca?.value
+					pca."Notes" = owner.getNote("pca")?.owner?.content?:""
+				}
+				
+				// Should only be one, we have an array to keep teh same format has licenses json
+				subscription."Licences" << licence
+								
+				subscription."TitleList" = []
+				sub.issueEntitlements.each { entitlement ->
+					def ti = entitlement.tipp.title
+					
+					def title = [:]
+					title."Title" = ti.title
+					
+					def ids = [:]
+					ti.ids.each(){ id ->
+						def value = id.identifier.value
+						def ns = id.identifier.ns.ns
+						if(ids.containsKey(ns)){
+							def current = ids[ns]
+							def newval = []
+							newval << current
+							newval << value
+							ids[ns] = newval
+						} else {
+							ids[ns]=value
+						}
+					}
+					title."TitleIDs" = ids
+					
+					// Should only be one, we have an array to keep teh same format has titles json
+					title."CoverageStatements" = []
+					
+					def ie = [:]
+					ie."CoverageStatementType" = "Issue Entitlement"
+					ie."SubscriptionID" = sub.id
+					ie."SubscriptionName" = sub.name
+					ie."StartDate" = entitlement.startDate?formatter.format(entitlement.startDate):''
+					ie."StartVolume" = entitlement.startVolume?:''
+					ie."StartIssue" = entitlement.startIssue?:''
+					ie."EndDate" = entitlement.endDate?formatter.format(entitlement.endDate):''
+					ie."EndVolume" = entitlement.endVolume?:''
+					ie."EndIssue" = entitlement.endIssue?:''
+					ie."Embargo" = entitlement.embargo?:''
+					ie."Coverage" = entitlement.coverageDepth?:''
+					ie."CoverageNote" = entitlement.coverageNote?:''
+					ie."HostPlatformName" = entitlement.tipp?.platform?.name?:''
+					ie."HostPlatformURL" = entitlement.tipp?.hostPlatformURL?:''
+					ie."AdditionalPlatforms" = []
+					ie.tipp?.additionalPlatforms.each(){ ap ->
+						def platform = [:]
+						platform.PlatformName = ap.platform?.name?:''
+						platform.PlatformRole = ap.rel?:''
+						platform.PlatformURL = ap.platform?.primaryUrl?:''
+						ie."AdditionalPlatforms" << platform
+					}
+					ie."CoreStatus" = entitlement.coreStatus?.value?:''
+					ie."CoreStart" = entitlement.coreStatusStart?formatter.format(entitlement.coreStatusStart):''
+					ie."CoreEnd" = entitlement.coreStatusEnd?formatter.format(entitlement.coreStatusEnd):''
+					ie."PackageID" = entitlement.tipp?.pkg?.id?:''
+					ie."PackageName" = entitlement.tipp?.pkg?.name?:''
+						
+					title."CoverageStatements".add(ie)
+					
+					subscription."TitleList" << title
+				}
+				
+				subscriptions.add(subscription)
+			}
+			
+			response."Subscriptions" = subscriptions
+			
+			render response as JSON
+		}
+	}
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -960,13 +1197,12 @@ AND EXISTS (
         json {
             def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
             
-            def response = []
+            def response = [:]
             
             result.titles.each { ti ->
                 def title = [:]
                 title."Title" = ti[0].title
                 
-				log.debug("there are ${ti[0].ids.size()} ids")
 				def ids = [:]
 				ti[0].ids.each(){ id ->
 					def value = id.identifier.value
@@ -984,10 +1220,11 @@ AND EXISTS (
                 }
 				title."TitleIDs" = ids
 				
-                def entitlements = title."IssueEntitlements" = []
+                def entitlements = title."CoverageStatements" = []
                 result.entitlements.each(){ 
                     def ie = [:]
                     if(it.tipp.title.id.equals(ti[0].id)){
+						ie."CoverageStatementType" = "Issue Entitlement"
                         ie."SubscriptionID" = it.subscription.id
                         ie."SubscriptionName" = it.subscription.name
                         ie."StartDate" = it.startDate?formatter.format(it.startDate):''
@@ -1018,7 +1255,7 @@ AND EXISTS (
                         entitlements.add(ie)
                     }
                 }
-                response.add(title)
+                response."TitleList" = title
             }
             render response as JSON
         }
