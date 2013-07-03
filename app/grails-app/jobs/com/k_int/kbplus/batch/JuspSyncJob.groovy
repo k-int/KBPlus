@@ -16,7 +16,7 @@ class JuspSyncJob {
 
   def execute() {
     log.debug("JuspSyncJob");
-
+      juspSyncService.doSync() {
   }
 
 }
