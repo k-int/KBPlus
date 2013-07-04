@@ -74,17 +74,13 @@ class ZenDeskSyncService {
       // http://groovy.codehaus.org/modules/http-builder/apidocs/groovyx/net/http/EncoderRegistry.html#encodeJSONjava.lang.Object
       // def create_request = { category = { name = catname} }
       // def create_request = [ category : [ name : catname] ]
-      def create_request = category { name = catname }
-      http.post(JSON) { req ->
-        uri.path='/api/v2/categories.json'
-        requestContentType = ContentType.JSON
-        body = [ category : [ name : "${catname}" ] ]
-        response.success = { resp, json ->
-          log.debug("Create category : ${json}");
-        }
-        response.failure = { resp ->
-          log.error("Request failed with status ${resp.status}")
-        }
+      // def create_request = category { name = catname }
+      http.post( path : '/api/v2/categories.json', 
+                 requestContentType : ContentType.JSON, 
+                 body : [ 'category' : [ 'name' : catname.toString() ] ]) { resp, json ->
+        log.debug("Result: ${resp}, ${json}");
+        // Result: groovyx.net.http.HttpResponseDecorator@48691d94, [category:[url:https://kbplus.zendesk.com/api/v2/categories/20104091.json, id:20104091, name:NRC Research Press ( IanHubbleDev ), description:null, position:9999, created_at:2013-07-04T08:36:21Z, updated_at:2013-07-04T08:36:21Z]]
+
       }
 
     }
