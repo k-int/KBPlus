@@ -124,6 +124,11 @@
     
           <g:render template="documents" contextPath="../templates" model="${[doclist:packageInstance.documents, ownobj:packageInstance, owntp:'pkg']}" />
           <g:render template="notes" contextPath="../templates" model="${[doclist:packageInstance.documents, ownobj:packageInstance, owntp:'pkg']}" />
+          <g:if test="${packageInstance.forumId != null}">
+            <div class="well notes">
+              <a href="https://kbplus.zendesk.com/forums/${packageInstance.forumId}">Discuss this package</a>
+            </div>
+          </g:if>
         </div>
       </div>
     </div>

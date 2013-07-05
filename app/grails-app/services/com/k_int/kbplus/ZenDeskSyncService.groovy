@@ -40,6 +40,8 @@ class ZenDeskSyncService {
             cp.categoryId = lookupOrCreateZenDeskCategory(http,"${cp.name} ( ${ApplicationHolder.application.config.kbplusSystemId} )");
             cp.save(flush:true);
           }
+          pkg.forumId = createForum(http,pkg,cp.categoryId)
+          pkg.save(flush:true);
         }
         // Create forum in category
       }
@@ -50,12 +52,31 @@ class ZenDeskSyncService {
   }
 
 
-  def createForum() {
+  def createForum(http,pkg,categoryId) {
+    def result = null
     // curl https://{subdomain}.zendesk.com/api/v2/forums.json \
     //   -H "Content-Type: application/json" -X POST \
     //   -d '{"forum": {"name": "My Forum", "forum_type": "articles", "access": "logged-in users", "category_id":"xx"  }}' \
     //   -v -u {email_address}:{password}
+    def forum_name = pkg.name+" (Package from "+ApplicationHolder.application.config.kbplusSystemId+")".toString()
+    def forum_desc = 'Questions and discussions relating to package :'+pkg.name.toString()
 
+    log.debug("Create forum: ${forum_name}, ${forum_desc}, ${categoryId}");
+
+    http.post( path : '/api/v2/forums.json', 
+               requestContentType : ContentType.JSON, 
+               body : [ 'forum' : [ 'name' : forum_name,
+                                    'forum_type': 'questions', 
+                                    'access': 'logged-in users',
+                                    'category_id' : "${categoryId}".toString(),
+                                    'description' : forum_desc,
+                                    'tags' : [ 'kbpluspkg' , "pkg:${pkg.id}".toString(), ApplicationHolder.application.config.kbplusSystemId.toString()  ]  
+                                  ] 
+                      ]) { resp, json ->
+      log.debug("Result: ${resp}, ${json}");
+      result = json.forum.id
+    }
+    result
   }
 
   def lookupOrCreateZenDeskCategory(http,catname) {
@@ -67,25 +88,18 @@ class ZenDeskSyncService {
     if ( current_category == null ) {
       log.debug("Not found, create...");
 
-      // curl https://{subdomain}.zendesk.com/api/v2/categories.json \
-      //   -H "Content-Type: application/json" -d '{"category": {"name": "My Category"}}' \
-      //   -v -u {email_address}:{password} -X POST
-
-      // http://groovy.codehaus.org/modules/http-builder/apidocs/groovyx/net/http/EncoderRegistry.html#encodeJSONjava.lang.Object
-      // def create_request = { category = { name = catname} }
-      // def create_request = [ category : [ name : catname] ]
-      // def create_request = category { name = catname }
       http.post( path : '/api/v2/categories.json', 
                  requestContentType : ContentType.JSON, 
                  body : [ 'category' : [ 'name' : catname.toString() ] ]) { resp, json ->
         log.debug("Result: ${resp}, ${json}");
         // Result: groovyx.net.http.HttpResponseDecorator@48691d94, [category:[url:https://kbplus.zendesk.com/api/v2/categories/20104091.json, id:20104091, name:NRC Research Press ( IanHubbleDev ), description:null, position:9999, created_at:2013-07-04T08:36:21Z, updated_at:2013-07-04T08:36:21Z]]
-
+        result = json.category.id
       }
 
     }
     else {
       log.debug("Found: ${current_category}");
+      result = current_category.id
     }
 
     result
