@@ -39,7 +39,91 @@ class LicenseDetailsController {
       result.editable = false
     }
 
-    result
+    withFormat {
+		  html result
+		  json {
+			  def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+			  
+			  def response = [:]
+			  def licences = []
+			  
+			  def lic = [:]
+			  def licence = result.license
+			  
+			  lic."LicenceReference" = licence.reference
+			  lic."NoticePeriod" = licence.noticePeriod
+			  lic."LicenceURL" = licence.licenseUrl
+			  lic."LicensorRef" = licence.licensorRef
+			  lic."LicenseeRef" = licence.licenseeRef
+				  
+			  lic."RelatedOrgs" = []
+			  licence.orgLinks.each { or ->
+				  def org = [:]
+				  org."OrgID" = or.org.id
+				  org."OrgName" = or.org.name
+				  org."OrgRole" = or.roleType.value
+				  
+				  def ids = [:]
+				  or.org.ids.each(){ id ->
+					  def value = id.identifier.value
+					  def ns = id.identifier.ns.ns
+					  if(ids.containsKey(ns)){
+						  def current = ids[ns]
+						  def newval = []
+						  newval << current
+						  newval << value
+						  ids[ns] = newval
+					  } else {
+						  ids[ns]=value
+					  }
+				  }
+				  org."OrgIDs" = ids
+				  
+				  lic."RelatedOrgs" << org
+			  }
+			  
+			  def prop = lic."LicenceProperties" = [:]
+			  def ca = prop."ConcurrentAccess" = [:]
+			  ca."Status" = licence.concurrentUsers?.value
+			  ca."UserCount" = licence.concurrentUserCount
+			  ca."Notes" = licence.getNote("concurrentUsers")?.owner?.content?:""
+			  def ra = prop."RemoteAccess" = [:]
+			  ra."Status" = licence.remoteAccess?.value
+			  ra."Notes" = licence.getNote("remoteAccess")?.owner?.content?:""
+			  def wa = prop."WalkingAccess" = [:]
+			  wa."Status" = licence.walkinAccess?.value
+			  wa."Notes" = licence.getNote("remoteAccess")?.owner?.content?:""
+			  def ma = prop."MultisiteAccess" = [:]
+			  ma."Status" = licence.multisiteAccess?.value
+			  ma."Notes" = licence.getNote("multisiteAccess")?.owner?.content?:""
+			  def pa = prop."PartnersAccess" = [:]
+			  pa."Status" = licence.partnersAccess?.value
+			  pa."Notes" = licence.getNote("partnersAccess")?.owner?.content?:""
+			  def aa = prop."AlumniAccess" = [:]
+			  aa."Status" = licence.alumniAccess?.value
+			  aa."Notes" = licence.getNote("alumniAccess")?.owner?.content?:""
+			  def ill = prop."InterLibraryLoans" = [:]
+			  ill."Status" = licence.ill?.value
+			  ill."Notes" = licence.getNote("ill")?.owner?.content?:""
+			  def cp = prop."IncludeinCoursepacks" = [:]
+			  cp."Status" = licence.coursepack?.value
+			  cp."Notes" = licence.getNote("coursepack")?.owner?.content?:""
+			  def vle = prop."IncludeinVLE" = [:]
+			  vle."Status" = licence.vle?.value
+			  vle."Notes" = licence.getNote("vle")?.owner?.content?:""
+			  def ea = prop."EntrepriseAccess" = [:]
+			  ea."Status" = licence.enterprise?.value
+			  ea."Notes" = licence.getNote("enterprise")?.owner?.content?:""
+			  def pca = prop."PostCancellationAccessEntitlement" = [:]
+			  pca."Status" = licence.pca?.value
+			  pca."Notes" = licence.getNote("pca")?.owner?.content?:""
+			  
+			  licences << lic
+			  response."Licences" = licences
+			  
+			  render response as JSON
+		  }
+    }
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])

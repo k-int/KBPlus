@@ -164,6 +164,22 @@ class MyInstitutionsController {
 					org."OrgName" = or.org.name
 					org."OrgRole" = or.roleType.value
 					
+					def ids = [:]
+					or.org.ids.each(){ id ->
+						def value = id.identifier.value
+						def ns = id.identifier.ns.ns
+						if(ids.containsKey(ns)){
+							def current = ids[ns]
+							def newval = []
+							newval << current
+							newval << value
+							ids[ns] = newval
+						} else {
+							ids[ns]=value
+						}
+					}
+					org."OrgIDs" = ids
+					
 					licence."RelatedOrgs" << org
 				}
 				
@@ -356,6 +372,22 @@ class MyInstitutionsController {
 					org."OrgName" = or.org.name
 					org."OrgRole" = or.roleType.value
 					
+					def ids = [:]
+					or.org.ids.each(){ id ->
+						def value = id.identifier.value
+						def ns = id.identifier.ns.ns
+						if(ids.containsKey(ns)){
+							def current = ids[ns]
+							def newval = []
+							newval << current
+							newval << value
+							ids[ns] = newval
+						} else {
+							ids[ns]=value
+						}
+					}
+					org."OrgIDs" = ids
+					
 					subscription."RelatedOrgs" << org
 				}
 				
@@ -377,6 +409,22 @@ class MyInstitutionsController {
 						org."OrgID" = or.org.id
 						org."OrgName" = or.org.name
 						org."OrgRole" = or.roleType.value
+						
+						def ids = [:]
+						or.org.ids.each(){ id ->
+							def value = id.identifier.value
+							def ns = id.identifier.ns.ns
+							if(ids.containsKey(ns)){
+								def current = ids[ns]
+								def newval = []
+								newval << current
+								newval << value
+								ids[ns] = newval
+							} else {
+								ids[ns]=value
+							}
+						}
+						org."OrgIDs" = ids
 						
 						licence."RelatedOrgs" << org
 					}
@@ -462,10 +510,10 @@ class MyInstitutionsController {
 					ie."Embargo" = entitlement.embargo?:''
 					ie."Coverage" = entitlement.coverageDepth?:''
 					ie."CoverageNote" = entitlement.coverageNote?:''
-					ie."HostPlatformName" = entitlement.tipp?.platform?.name?:''
-					ie."HostPlatformURL" = entitlement.tipp?.hostPlatformURL?:''
+					ie."HostPlatformName" = entitlement.tipp.platform?.name?:''
+					ie."HostPlatformURL" = entitlement.tipp.hostPlatformURL?:''
 					ie."AdditionalPlatforms" = []
-					ie.tipp?.additionalPlatforms.each(){ ap ->
+					entitlement.tipp.additionalPlatforms?.each(){ ap ->
 						def platform = [:]
 						platform.PlatformName = ap.platform?.name?:''
 						platform.PlatformRole = ap.rel?:''
@@ -1198,6 +1246,7 @@ AND EXISTS (
             def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
             
             def response = [:]
+			def titles = []
             
             result.titles.each { ti ->
                 def title = [:]
@@ -1255,8 +1304,11 @@ AND EXISTS (
                         entitlements.add(ie)
                     }
                 }
-                response."TitleList" = title
+				titles.add(title)
             }
+			
+			response."TitleList" = titles
+			
             render response as JSON
         }
     }
