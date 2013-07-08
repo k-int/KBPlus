@@ -159,6 +159,7 @@ grails.plugins.springsecurity.basic.realmName = "KBPlus"
 
 
 // II : This doesn't work because we are calling registerFilter to install the ediauth filter.. need to find a different solution, which is annoying
+// See http://jira.grails.org/browse/GPSPRINGSECURITYCORE-210
 // This stanza then says everything should use form apart from /api
 // More info: http://stackoverflow.com/questions/7065089/how-to-configure-grails-spring-authentication-scheme-per-url
 // grails.plugins.springsecurity.filterChain.chainMap = [
