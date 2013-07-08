@@ -92,7 +92,7 @@ class LicenseDetailsController {
 			  ra."Notes" = licence.getNote("remoteAccess")?.owner?.content?:""
 			  def wa = prop."WalkingAccess" = [:]
 			  wa."Status" = licence.walkinAccess?.value
-			  wa."Notes" = licence.getNote("remoteAccess")?.owner?.content?:""
+			  wa."Notes" = licence.getNote("walkinAccess")?.owner?.content?:""
 			  def ma = prop."MultisiteAccess" = [:]
 			  ma."Status" = licence.multisiteAccess?.value
 			  ma."Notes" = licence.getNote("multisiteAccess")?.owner?.content?:""
@@ -122,6 +122,90 @@ class LicenseDetailsController {
 			  response."Licences" = licences
 			  
 			  render response as JSON
+		  }
+		  xml {
+			  def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+			  
+			  def writer = new StringWriter()
+			  def xmlBuilder = new MarkupBuilder(writer)
+			  xmlBuilder.getMkp().xmlDeclaration(version:'1.0', encoding: 'UTF-8')
+			  
+			  def licence = result.license
+			  
+			  xmlBuilder.Licences() {
+				  Licence(){
+					  LicenceReference(licence.reference)
+					  NoticePeriod(licence.noticePeriod)
+					  LicenceURL(licence.licenseUrl)
+					  LicensorRef(licence.licensorRef)
+					  LicenseeRef(licence.licenseeRef)
+					  
+					  licence.orgLinks.each { or ->
+						  RelatdOrg(id: or.org.id){
+							  OrgName(or.org.name)
+							  OrgRole(or.roleType.value)
+							  
+							  OrgIDs(){
+								  or.org.ids.each(){ id ->
+									  def value = id.identifier.value
+									  def ns = id.identifier.ns.ns
+									  ID(namespace: ns, value)
+								  }
+							  }
+						  }
+					  }
+					  
+					  LicenceProperties(){
+						  ConcurrentAccess(){
+							  Status(licence.concurrentUsers?.value)
+							  UserCount(licence.concurrentUserCount)
+							  Notes(licence.getNote("concurrentUsers")?.owner?.content?:"")
+						  }
+						  RemoteAccess(){
+							  Status(licence.remoteAccess?.value)
+							  Notes(licence.getNote("remoteAccess")?.owner?.content?:"")
+						  }
+						  WalkingAccess(){
+							  Status(licence.walkinAccess?.value)
+							  Notes(licence.getNote("walkinAccess")?.owner?.content?:"")
+						  }
+						  MultisiteAccess(){
+							  Status(licence.multisiteAccess?.value)
+							  Notes(licence.getNote("multisiteAccess")?.owner?.content?:"")
+						  }
+						  PartnersAccess(){
+							  Status(licence.partnersAccess?.value)
+							  Notes(licence.getNote("partnersAccess")?.owner?.content?:"")
+						  }
+						  AlumniAccess(){
+							  Status(licence.alumniAccess?.value)
+							  Notes(licence.getNote("alumniAccess")?.owner?.content?:"")
+						  }
+						  InterLibraryLoans(){
+							  Status(licence.ill?.value)
+							  Notes(licence.getNote("ill")?.owner?.content?:"")
+						  }
+						  IncludeinCoursepacks(){
+							  Status(licence.coursepack?.value)
+							  Notes(licence.getNote("coursepack")?.owner?.content?:"")
+						  }
+						  IncludeinVLE(){
+							  Status(licence.vle?.value)
+							  Notes(licence.getNote("vle")?.owner?.content?:"")
+						  }
+						  EntrepriseAccess(){
+							  Status(licence.enterprise?.value)
+							  Notes(licence.getNote("enterprise")?.owner?.content?:"")
+						  }
+						  PostCancellationAccessEntitlement(){
+							  Status(licence.pca?.value)
+							  Notes(licence.getNote("pca")?.owner?.content?:"")
+						  }
+					  }
+				  }
+			  }
+			  
+			  render writer.toString()
 		  }
     }
   }
