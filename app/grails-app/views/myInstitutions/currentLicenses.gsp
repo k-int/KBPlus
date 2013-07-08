@@ -15,10 +15,6 @@
 			  		Exports<b class="caret"></b>
 				</a>
 				<ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
-			  		<li>
-				    	<% def ps_csv = [:]; ps_csv.putAll(params); ps_csv.format = 'csv'; %>
-						<g:link action="currentLicenses" params="${ps_csv}">CSV Export</g:link>
-					</li>
 					<li>
 			  			<% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
 						<g:link action="currentLicenses" params="${ps_json}" target="_blank">Json Export</g:link>
