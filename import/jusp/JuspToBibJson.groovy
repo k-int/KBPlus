@@ -35,15 +35,43 @@ sql = Sql.newInstance( 'jdbc:mysql://localhost/JUSP?autoReconnect=true&useUnicod
 // Our result will be a JSON list
 def result = []
 
+def count = 0;
+
 // Select some data
 sql.eachRow( 'select * from Journal' ) { 
   // This nurse will be a JSON map
   def journal = [:]
 
   journal.id = it.JID
+  journal.title = it.Title
+  journal.identifier = []
+  addIdIfPresent(journal.identifier, 'ISSN', it.ISSN)
+  addIdIfPresent(journal.identifier, 'eISSN', it.eISSN)
+  addIdIfPresent(journal.identifier, 'DOI', it.DOI)
+
   def json_string = groovy.json.JsonOutput.toJson(journal)
-  println(json_string)
+  println("[${++count}] ${json_string}")
 }
 
+sql.eachRow( 'select * from JournalAuthority' ) {
+  // This nurse will be a JSON map
+  def journal = [:]
+
+  journal.id = it.JAID
+  journal.title = it.JATitle
+  journal.identifier = []
+  addIdIfPresent(journal.identifier, 'ISSN', it.JAISSN)
+  addIdIfPresent(journal.identifier, 'eISSN', it.JAeISSN)
+  addIdIfPresent(journal.identifier, 'DOI', it.JADOI)
+  def json_string = groovy.json.JsonOutput.toJson(journal)
+  println("[${++count}] ${json_string}")
+}
+
+
+def addIdIfPresent(l, tp, v) {
+  if ( ( v != null ) && ( v != '' ) ) {
+    l.add(["type":tp, id:v]);
+  }
+}
 
 
