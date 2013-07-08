@@ -12,8 +12,6 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.hslf.model.*;
 import java.text.SimpleDateFormat
 
-
-
 class MyInstitutionsController {
 
   def springSecurityService
@@ -1127,11 +1125,11 @@ AND EXISTS (
     println("Final query:\n${title_query.replaceAll("\\s+", " ")}{title_query_grouping}\nParams:${qry_params}")
     
     /* Get Total number of Titles for HTML view */
-	if(!(params.format.equals("csv")||params.format.equals("json")))
+	if((!params.format||params.format.equals("html")))
     	result.num_ti_rows = 
 			IssueEntitlement.executeQuery("SELECT ie.tipp.title ${title_query} ${title_query_grouping}", qry_params).size()
 	
-    def limits = (!(params.format.equals("csv")||params.format.equals("json")))?[max:result.max, offset:result.offset]:[offset:0]
+    def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
 	
 	// MAX(CASE WHEN ie.endDate IS NULL THEN '~' ELSE ie.endDate END) should get the max date or a null string if there is any empty ie.ie_end_date
 	// We need to do that as an empty string actually means 'up to the most current issue available'
@@ -1158,6 +1156,10 @@ AND EXISTS (
         AND ie.tipp.title In (:titles) \
         ${title_query_ordering}", 
         qry_params );
+	
+	if(params.format.equals("xml")||params.format.equals("json")){
+		
+	}
     
     withFormat {
         html result
@@ -1311,6 +1313,65 @@ AND EXISTS (
 			
             render response as JSON
         }
+		xml {
+			def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+			
+			def writer = new StringWriter()
+			def xmlBuilder = new MarkupBuilder(writer)
+			xmlBuilder.getMkp().xmlDeclaration(version:'1.0', encoding: 'UTF-8')
+			
+			xmlBuilder.TitleList() {			
+				result.titles.each { ti ->
+					TitleListEntry{
+						Title(ti[0].title)
+						
+						TitleIDS(){
+							ti[0].ids.each(){ id ->
+								def value = id.identifier.value
+								def ns = id.identifier.ns.ns
+								ID(namespace: ns, value )
+							}
+						}
+						
+						CoverageStatement(type: 'Issue Entitlement'){
+							result.entitlements.each(){
+								if(it.tipp.title.id.equals(ti[0].id)){
+									SubscriptionID(it.subscription.id)
+									SubscriptionName(it.subscription.name)
+									StartDate(it.startDate?formatter.format(it.startDate):'')
+									StartVolume(it.startVolume?:'')
+									StartIssue(it.startIssue?:'')
+									EndDate(it.endDate?formatter.format(it.endDate):'')
+									EndVolume(it.endVolume?:'')
+									EndIssue(it.endIssue?:'')
+									Embargo(it.embargo?:'')
+									Coverage(it.coverageDepth?:'')
+									CoverageNote(it.coverageNote?:'')
+									HostPlatformName(it.tipp?.platform?.name?:'')
+									HostPlatformURL(it.tipp?.hostPlatformURL?:'')
+									
+									it.tipp?.additionalPlatforms.each(){ ap ->
+										Platform(){
+											PlatformName(ap.platform?.name?:'')
+											PlatformRole(ap.rel?:'')
+											PlatformURL(ap.platform?.primaryUrl?:'')
+										}
+									}
+									
+									CoreStatus(it.coreStatus?.value?:'')
+									CoreStart(it.coreStatusStart?formatter.format(it.coreStatusStart):'')
+									CoreEnd(it.coreStatusEnd?formatter.format(it.coreStatusEnd):'')
+									PackageID(it.tipp?.pkg?.id?:'')
+									PackageName(it.tipp?.pkg?.name?:'')
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			render writer.toString()
+		}
     }
   }
 
