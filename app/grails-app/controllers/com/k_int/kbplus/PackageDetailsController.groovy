@@ -138,13 +138,14 @@ class PackageDetailsController {
           }
         }
       }
-
-      
+	  
       result.max = params.max ? Integer.parseInt(params.max) : 25
       params.max = result.max
       def paginate_after = params.paginate_after ?: ( (2*result.max)-1);
       result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
-
+	  
+	  def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
+	  
       def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
       def qry_params = [packageInstance]
 
@@ -162,7 +163,7 @@ class PackageDetailsController {
       }
 
       log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
-      result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, [max:result.max, offset:result.offset]);
+      result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, limits);
       result.num_tipp_rows = TitleInstancePackagePlatform.executeQuery("select count(tipp) "+base_qry, qry_params )[0]
 
       result.lasttipp = result.offset + result.max > result.num_tipp_rows ? result.num_tipp_rows : result.offset + result.max;
@@ -351,6 +352,161 @@ class PackageDetailsController {
 			  response."Packages" = packages
 			  
 			  render response as JSON
+		  }
+		  xml {
+			  def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+			  
+			  def writer = new StringWriter()
+			  def xmlBuilder = new MarkupBuilder(writer)
+			  xmlBuilder.getMkp().xmlDeclaration(version:'1.0', encoding: 'UTF-8')
+			  
+			  def pi = packageInstance
+			  
+			  xmlBuilder.Packages() {
+				  Package(){
+					  PackageID(pi.id)
+					  PackageName(pi.name)
+					  PackageTermStartDate(pi.startDate)
+					  PackageTermEndDate(pi.endDate)
+					  
+					  pi.orgs.each { or ->
+						  RelatedOrg(id: or.org.id){
+							  OrgName(or.org.name)
+							  OrgRole(or.roleType.value)
+							  
+							  OrgIDs(){
+								  or.org.ids.each(){ id ->
+									  def value = id.identifier.value
+									  def ns = id.identifier.ns.ns
+									  ID(namespace: ns, value)
+								  }
+							  }
+						  }
+					  }
+							  
+					  Licence(){
+						  if(pi.license){
+							  def licence = pi.license
+							  
+							  LicenceReference(licence.reference)
+							  NoticePeriod(licence.noticePeriod)
+							  LicenceURL(licence.licenseUrl)
+							  LicensorRef(licence.licensorRef)
+							  LicenseeRef(licence.licenseeRef)
+							  
+							  licence.orgLinks.each { or ->
+								  RelatdOrg(id: or.org.id){
+									  OrgName(or.org.name)
+									  OrgRole(or.roleType.value)
+									  
+									  OrgIDs(){
+										  or.org.ids.each(){ id ->
+											  def value = id.identifier.value
+											  def ns = id.identifier.ns.ns
+											  ID(namespace: ns, value)
+										  }
+									  }
+								  }
+							  }
+							  
+							  LicenceProperties(){
+								  ConcurrentAccess(){
+									  Status(licence.concurrentUsers?.value)
+									  UserCount(licence.concurrentUserCount)
+									  Notes(licence.getNote("concurrentUsers")?.owner?.content?:"")
+								  }
+								  RemoteAccess(){
+									  Status(licence.remoteAccess?.value)
+									  Notes(licence.getNote("remoteAccess")?.owner?.content?:"")
+								  }
+								  WalkingAccess(){
+									  Status(licence.walkinAccess?.value)
+									  Notes(licence.getNote("walkinAccess")?.owner?.content?:"")
+								  }
+								  MultisiteAccess(){
+									  Status(licence.multisiteAccess?.value)
+									  Notes(licence.getNote("multisiteAccess")?.owner?.content?:"")
+								  }
+								  PartnersAccess(){
+									  Status(licence.partnersAccess?.value)
+									  Notes(licence.getNote("partnersAccess")?.owner?.content?:"")
+								  }
+								  AlumniAccess(){
+									  Status(licence.alumniAccess?.value)
+									  Notes(licence.getNote("alumniAccess")?.owner?.content?:"")
+								  }
+								  InterLibraryLoans(){
+									  Status(licence.ill?.value)
+									  Notes(licence.getNote("ill")?.owner?.content?:"")
+								  }
+								  IncludeinCoursepacks(){
+									  Status(licence.coursepack?.value)
+									  Notes(licence.getNote("coursepack")?.owner?.content?:"")
+								  }
+								  IncludeinVLE(){
+									  Status(licence.vle?.value)
+									  Notes(licence.getNote("vle")?.owner?.content?:"")
+								  }
+								  EntrepriseAccess(){
+									  Status(licence.enterprise?.value)
+									  Notes(licence.getNote("enterprise")?.owner?.content?:"")
+								  }
+								  PostCancellationAccessEntitlement(){
+									  Status(licence.pca?.value)
+									  Notes(licence.getNote("pca")?.owner?.content?:"")
+								  }
+							  }
+						  }
+					  }
+							  
+					  TitleList(){
+						  result.titlesList.each { tipp ->
+							  def ti = tipp.title
+							  TitleListEntry(){
+								  Title(ti.title)
+								  
+								  TitleIDs(){
+									  ti.ids.each(){ id ->
+										  def value = id.identifier.value
+										  def ns = id.identifier.ns.ns
+										  ID(namespace: ns, value)
+									  }
+								  }
+								  
+								  CoverageStatement(type: 'TIPP'){
+										StartDate(tipp.startDate?formatter.format(tipp.startDate):'')
+										StartVolume(tipp.startVolume?:'')
+										StartIssue(tipp.startIssue?:'')
+										EndDate(tipp.endDate?formatter.format(tipp.endDate):'')
+										EndVolume(tipp.endVolume?:'')
+										EndIssue(tipp.endIssue?:'')
+										Embargo(tipp.embargo?:'')
+										Coverage(tipp.coverageDepth?:'')
+										CoverageNote(tipp.coverageNote?:'')
+										HostPlatformName(tipp.platform?.name?:'')
+										HostPlatformURL(tipp.hostPlatformURL?:'')
+							
+										tipp.additionalPlatforms.each(){ ap ->
+											Platform(){
+												PlatformName(ap.platform?.name?:'')
+												PlatformRole(ap.rel?:'')
+												PlatformURL(ap.platform?.primaryUrl?:'')
+											}
+										}
+										
+										CoreStatus(tipp.status?.value?:'')
+										CoreStart(tipp.coreStatusStart?formatter.format(tipp.coreStatusStart):'')
+										CoreEnd(tipp.coreStatusEnd?formatter.format(tipp.coreStatusEnd):'')
+										PackageID(tipp.pkg?.id?:'')
+										PackageName(tipp.pkg?.name?:'')
+								  }
+							  }
+						  }
+					  }
+				  }
+			  }
+			  
+			  render writer.toString()
 		  }
 	  	
 	  }
