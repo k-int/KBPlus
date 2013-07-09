@@ -22,8 +22,16 @@ class ApiController {
   def index() { 
   }
 
-  @Secured(['ROLE_API', 'IS_AUTHENTICATED_FULLY'])
   def uploadBibJson() {
+    def result=[:]
     log.debug("uploadBibJson");
+    log.debug("Auth request from ${request.getRemoteAddr()}");
+    if ( request.getRemoteAddr() == '127.0.0.1' ) {
+      result.message = "Working...";
+    }
+    else {
+      result.message = "uploadBibJson only callable from 127.0.0.1";
+    }
+    render result as JSON
   }
 }
