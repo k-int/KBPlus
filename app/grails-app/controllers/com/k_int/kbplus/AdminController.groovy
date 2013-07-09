@@ -8,6 +8,7 @@ class AdminController {
 
   def springSecurityService
   def dataloadService
+  def zenDeskSyncService
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def index() { }
@@ -176,5 +177,11 @@ class AdminController {
     dataloadService.updateFTIndexes();
     log.debug("redirecting to home...");
     redirect(controller:'home')
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def forumSync() {
+    redirect(controller:'home')
+    zenDeskSyncService.doSync()
   }
 }
