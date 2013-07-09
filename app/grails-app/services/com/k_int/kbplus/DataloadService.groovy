@@ -1168,12 +1168,9 @@ class DataloadService {
       indices 'kbplus'
       type 'com.k_int.kbplus.TitleInstance'
       source  {
-        title {
+        'title' {
           properties {
-            title {
-              type = "string"
-              analyzer = "snowball"
-            }
+            title = [ type : "string" ]
           }
         }
       }
@@ -1187,10 +1184,7 @@ class DataloadService {
       source  {
         org {
           properties {
-            // name {
-            //   type = "string"
-            //   analyzer = "snowball"
-            // }
+            name = [ type : "string" ]
           }
         }
       }
@@ -1204,42 +1198,15 @@ class DataloadService {
       source  {
         'package' {
           properties {
-            "name" {
-              type = "string"
-              analyzer = "snowball"
-            }
-            "sortname" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "consortia" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "consortiaName" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "contentProvider" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "cpname" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "cpid" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "startYear" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "startYearAndMonth" {
-              type = "string"
-              index = "not_analyzed"
-            }
+            name = [ type : "string", analyzer : "snowball" ]
+            sortname = [ type : "string", index : "not_analyzed" ]
+            consortia = [ type : "string", index : "not_analyzed" ]
+            consortiaName = [ type : "string", index : "not_analyzed" ]
+            contentProvider = [ type : "string", index : "not_analyzed" ]
+            cpname = [ type : "string", index : "not_analyzed" ]
+            cpid = [ type : "string", index : "not_analyzed" ]
+            startYear = [ type : "string", index : "not_analyzed" ]
+            startYearAndMonth = [ type : "string", index : "not_analyzed" ]
           }
         }
       }
@@ -1253,10 +1220,7 @@ class DataloadService {
       source  {
         platform {
           properties {
-            // "name" {
-            //   type = "string"
-            //   analyzer = "snowball"
-            // }
+            name = [ type : "string" ]
           }
         }
       }
@@ -1270,50 +1234,15 @@ class DataloadService {
       source  {
         'subscription' {
           properties {
-            // "name" {
-            //   type = "string"
-            //   analyzer = "snowball"
-            // }
-            "subtype" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "packages" {
-              "properties" {
-                "cpname" {
-                  type = "string"
-                  index = "not_analyzed"
-                }
-              }
-            }
-            "consortia" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "consortiaName" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "contentProvider" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "cpname" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "cpid" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "startYear" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "startYearAndMonth" {
-              type = "string"
-              index = "not_analyzed"
-            }
+            name = [ type : "string" ]
+            subtype = [ type : "string", index : "not_analyzed" ]
+            consortia = [ type : "string", index : "not_analyzed" ]
+            consortiaName = [ type : "string", index : "not_analyzed" ]
+            contentProvider = [ type : "string", index : "not_analyzed" ]
+            cpname = [ type : "string", index : "not_analyzed" ]
+            cpid = [ type : "string", index : "not_analyzed" ]
+            startYear = [ type : "string", index : "not_analyzed" ]
+            startYearAndMonth = [ type : "string", index : "not_analyzed" ]
           }
         }
       }
@@ -1325,12 +1254,9 @@ class DataloadService {
       indices 'kbplus'
       type 'com.k_int.kbplus.License'
       source  {
-        license {
+        'license' {
           properties {
-            "title" {
-              type = "string"
-              analyzer = "snowball"
-            }
+            title = [ type : "string" ]
           }
         }
       }
