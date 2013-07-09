@@ -154,8 +154,8 @@ appDefaultPrefs {
 }
 
 // The following 2 entries make the app use basic auth by default
-grails.plugins.springsecurity.useBasicAuth = true
-grails.plugins.springsecurity.basic.realmName = "KBPlus"
+// grails.plugins.springsecurity.useBasicAuth = true
+// grails.plugins.springsecurity.basic.realmName = "KBPlus"
 
 
 // II : This doesn't work because we are calling registerFilter to install the ediauth filter.. need to find a different solution, which is annoying
