@@ -18,6 +18,12 @@ class ZenDeskSyncService {
 
   def doSync() {
 
+    if ( ApplicationHolder.application.config.ZenDeskBaseURL == null || 
+         ApplicationHolder.application.config.ZenDeskBaseURL == '' ||
+         ApplicationHolder.application.config.kbplusSystemId == null ||
+         ApplicationHolder.application.config.kbplusSystemId == '' )
+      return;
+
     // Select all public packages where there is currently no forumId
     def http = new RESTClient(ApplicationHolder.application.config.ZenDeskBaseURL)
 
