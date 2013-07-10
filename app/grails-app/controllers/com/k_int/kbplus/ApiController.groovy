@@ -39,16 +39,19 @@ class ApiController {
           log.debug("Lookup using ${candidate_identifiers}");
           def title = TitleInstance.findByIdentifier(candidate_identifiers)
           if ( title != null ) {
-            log.debug("Located title ${title}");
+            log.debug("Located title ${title}  Current identifiers: ${title.ids}");
             result.matchedTitleId=title.id
-            if ( title.getIdentifierValue('JUSP') != null ) {
-              result.message = "JUSP ID already present against title";
+            if ( title.getIdentifierValue('jusp') != null ) {
+              result.message = "jusp ID already present against title";
             }
             else {
-              def jid = request.JSON.identifier.find { it.type=='JUSP' }
+              log.debug("Adding jusp Identifier to title");
+              def jid = request.JSON.identifier.find { it.type=='jusp' }
+              log.debug("Add identifier identifier ${jid}");
               if ( jid != null ) {
-                result.message = "Adding JUSP ID ${jid.id}to title";
-                // def new_jusp_id = Identifier.lookupOrCreateCanonicalIdentifier('JUSP',"${}");
+                result.message = "Adding jusp ID ${jid.id}to title";
+                def new_jusp_id = Identifier.lookupOrCreateCanonicalIdentifier('jusp',"${jid.id}");
+                def new_io = new IdentifierOccurrence(identifier:new_jusp_id, ti:title).save(flush:true);
               }
               else {
                 result.message = "Unable to locate JID in BibJson record";

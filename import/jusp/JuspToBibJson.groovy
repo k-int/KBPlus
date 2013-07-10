@@ -68,7 +68,7 @@ sql.eachRow( 'select * from Journal' ) {
   addIdIfPresent(journal.identifier, 'ISSN', it.ISSN)
   addIdIfPresent(journal.identifier, 'eISSN', it.eISSN)
   addIdIfPresent(journal.identifier, 'DOI', it.DOI)
-  addIdIfPresent(journal.identifier, 'JUSP', it.JID)
+  addIdIfPresent(journal.identifier, 'jusp', it.JID)
   post(http, journal);
   // def json_string = groovy.json.JsonOutput.toJson(journal)
   println("[${++count}]");
@@ -86,7 +86,7 @@ sql.eachRow( 'select * from JournalAuthority' ) {
   // addIdIfPresent(journal.identifier, 'ISSN', it.JAISSN)
   // addIdIfPresent(journal.identifier, 'eISSN', it.JAeISSN)
   addIdIfPresent(journal.identifier, 'DOI', it.JADOI)
-  addIdIfPresent(journal.identifier, 'JUSP', it.JAID)
+  addIdIfPresent(journal.identifier, 'jusp', it.JAID)
   post(http, journal);
   // def json_string = groovy.json.JsonOutput.toJson(journal)
   println("[${++count}]");
