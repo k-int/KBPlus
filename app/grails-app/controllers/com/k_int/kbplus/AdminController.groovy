@@ -9,6 +9,7 @@ class AdminController {
   def springSecurityService
   def dataloadService
   def zenDeskSyncService
+  def juspSyncService
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def index() { }
@@ -184,4 +185,11 @@ class AdminController {
     redirect(controller:'home')
     zenDeskSyncService.doSync()
   }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def juspSync() {
+    redirect(controller:'home')
+    juspSyncService.doSync()
+  }
+
 }
