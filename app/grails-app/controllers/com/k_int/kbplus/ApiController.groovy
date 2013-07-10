@@ -45,13 +45,24 @@ class ApiController {
               result.message = "JUSP ID already present against title";
             }
             else {
-              result.message = "Adding JUSP ID to title";
+              def jid = request.JSON.identifier.find { it.type=='JUSP' }
+              if ( jid != null ) {
+                result.message = "Adding JUSP ID ${jid.id}to title";
+                // def new_jusp_id = Identifier.lookupOrCreateCanonicalIdentifier('JUSP',"${}");
+              }
+              else {
+                result.message = "Unable to locate JID in BibJson record";
+              }
             }
           }
           else {
             result.message = "Unable to locate title on matchpoints : ${candidate_identifiers}";
           }
         }
+        else {
+          result.message = "No matchable identifiers. ${request.JSON.identifier}";
+        }
+        
       }
       else {
         result.message = "non post";

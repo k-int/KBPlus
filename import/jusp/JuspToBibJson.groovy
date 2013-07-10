@@ -83,8 +83,8 @@ sql.eachRow( 'select * from JournalAuthority' ) {
   journal.id = it.JAID
   journal.title = it.JATitle
   journal.identifier = []
-  addIdIfPresent(journal.identifier, 'ISSN', it.JAISSN)
-  addIdIfPresent(journal.identifier, 'eISSN', it.JAeISSN)
+  // addIdIfPresent(journal.identifier, 'ISSN', it.JAISSN)
+  // addIdIfPresent(journal.identifier, 'eISSN', it.JAeISSN)
   addIdIfPresent(journal.identifier, 'DOI', it.JADOI)
   addIdIfPresent(journal.identifier, 'JUSP', it.JAID)
   post(http, journal);
