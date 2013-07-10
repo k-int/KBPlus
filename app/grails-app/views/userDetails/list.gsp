@@ -36,7 +36,7 @@
           <tbody>
           <g:each in="${users}" var="user">
             <tr>
-              <td><g:link  action="edit" id="${user.id}">${fieldValue(bean: user, field: "username")}</g:link></td>
+              <td><g:link  action="edit" id="${user.id}">${user.displayName}</g:link></td>
               <td>${fieldValue(bean: user, field: "display")}</td>
               <td>${fieldValue(bean: user, field: "instname")}</td>
             </tr>

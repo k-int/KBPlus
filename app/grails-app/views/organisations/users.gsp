@@ -31,7 +31,7 @@
  
         <g:each in="${orgInstance.affiliations}" var="a">
           <tr>
-            <td>${a.user.display}</td>
+            <td><g:link controller="userDetails" action="edit" id="${a.user.id}">${a.user.displayName}</g:link></td>
             <td>${a.formalRole?.authority}</td>
             <td>
               <g:if test="${a.status==0}">Pending</g:if>
