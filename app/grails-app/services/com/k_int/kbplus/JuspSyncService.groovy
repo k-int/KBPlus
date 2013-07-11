@@ -15,6 +15,7 @@ import org.apache.http.protocol.*
 class JuspSyncService {
 
   def executorService
+  def factService
 
   def doSync() {
     log.debug("JuspSyncService::doSync");
@@ -102,7 +103,8 @@ class JuspSyncService {
                     fact.type = "JUSP:${r.key}"
                     fact.value = r.value
                     fact.facets = [ title:to[0].id, supplier:to[1].id, subscriber:to[2].id ]
-                    log.debug("registerFact: ${fact}");
+                    factService.registerFact(fact);
+                    // log.debug("registerFact: ${fact}");
                   }
                 }
               }
