@@ -55,6 +55,24 @@ def result = []
 
 def count = 0;
 
+println("Processing JournalAuthority table");
+
+sql.eachRow( 'select * from JournalAuthority' ) {
+  // This nurse will be a JSON map
+  def journal = [:]
+
+  journal.id = it.JAID
+  journal.title = it.JATitle
+  journal.identifier = []
+  // addIdIfPresent(journal.identifier, 'ISSN', it.JAISSN)
+  // addIdIfPresent(journal.identifier, 'eISSN', it.JAeISSN)
+  addIdIfPresent(journal.identifier, 'DOI', it.JADOI)
+  addIdIfPresent(journal.identifier, 'jusp', it.JAID)
+  post(http, journal);
+  // def json_string = groovy.json.JsonOutput.toJson(journal)
+  println("[${++count}]");
+}
+
 println("Processing Journal table");
 
 // Select some data
@@ -69,24 +87,6 @@ sql.eachRow( 'select * from Journal' ) {
   addIdIfPresent(journal.identifier, 'eISSN', it.eISSN)
   addIdIfPresent(journal.identifier, 'DOI', it.DOI)
   addIdIfPresent(journal.identifier, 'jusp', it.JID)
-  post(http, journal);
-  // def json_string = groovy.json.JsonOutput.toJson(journal)
-  println("[${++count}]");
-}
-
-println("Processing JournalAuthority table");
-
-sql.eachRow( 'select * from JournalAuthority' ) {
-  // This nurse will be a JSON map
-  def journal = [:]
-
-  journal.id = it.JAID
-  journal.title = it.JATitle
-  journal.identifier = []
-  // addIdIfPresent(journal.identifier, 'ISSN', it.JAISSN)
-  // addIdIfPresent(journal.identifier, 'eISSN', it.JAeISSN)
-  addIdIfPresent(journal.identifier, 'DOI', it.JADOI)
-  addIdIfPresent(journal.identifier, 'jusp', it.JAID)
   post(http, journal);
   // def json_string = groovy.json.JsonOutput.toJson(journal)
   println("[${++count}]");

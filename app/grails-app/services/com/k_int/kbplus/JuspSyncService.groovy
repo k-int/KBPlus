@@ -48,7 +48,7 @@ class JuspSyncService {
     //           "join tipp.pkg.orgs as po where po.roleType.value='Content Provider' " +
     //           "and exists ( select tid from tipp.title.ids as tid where tid.identifier.ns.ns = 'jusp' ) " +
     //           "and exists ( select oid from po.org.ids as oid where oid.identifier.ns.ns = 'juspsid' ) "
-    def q = "select distinct ie.tipp.title, po.org, orgrel.org from IssueEntitlement as ie " +
+    def q = "select distinct ie.tipp.title, po.org, orgrel.org, jusptid from IssueEntitlement as ie " +
               "join ie.tipp.pkg.orgs as po " +
               "join ie.subscription.orgRelations as orgrel "+
               "join ie.tipp.title.ids as jusptid where jusptid.identifier.ns.ns = 'jusp' "+
@@ -63,9 +63,10 @@ class JuspSyncService {
 
     l1.each { to ->
       // log.debug("Processing titile/provider pair: ${to[0].title}, ${to[1].name}");
-      def jusp_title_id = to[0].getIdentifierValue('jusp')
+      // def jusp_title_id = to[0].getIdentifierValue('jusp')
       def jusp_supplier_id = to[1].getIdentifierByType('juspsid').value
       def jusp_login = to[2].getIdentifierByType('jusplogin').value
+      def jusp_title_id = to[3].identifier.value
       // log.debug(" -> Title jusp id: ${jusp_title_id}");
       // log.debug(" -> Suppllier jusp id: ${jusp_supplier_id}");
       // log.debug(" -> Subscriber jusp id: ${jusp_login}");
@@ -75,7 +76,7 @@ class JuspSyncService {
       }
 
       if ( ( csr.haveUpTo == null ) || ( csr.haveUpTo < most_recent_closed_period ) ) {
-        log.debug("Cursor for ${jusp_title_id}:${jusp_supplier_id}:${jusp_login} is ${csr.haveUpTo} and is null or < ${most_recent_closed_period}, requesting data");
+        log.debug("Cursor for ${jusp_title_id}(${to[0].id}):${jusp_supplier_id}(${to[1].id}):${jusp_login}(${to[2].id}) is ${csr.haveUpTo} and is null or < ${most_recent_closed_period}, requesting data");
         def from_period = csr.haveUpTo ?: '1800-01'
         // log.debug("Request from ${from_period} up to ${most_recent_closed_period}");
 
