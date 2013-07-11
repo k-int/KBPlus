@@ -94,7 +94,8 @@ class JuspSyncService {
                 log.debug("Report Periods present: ${json.ReportPeriods}");
                 json.ReportPeriods.each { p ->
                   def fact = [:]
-                  fact.date=p.Start
+                  fact.start=p.Start
+                  fact.end=p.End
                   p.Reports.each { r ->
                     fact.type = "JUSP:${r.key}"
                     fact.value = r.value
