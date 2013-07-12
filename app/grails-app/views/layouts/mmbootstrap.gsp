@@ -157,6 +157,9 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'forumSync'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="forumSync">Run Forum Sync</g:link>
                       </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'juspSync'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="juspSync">Run JUSP Sync</g:link>
+                      </li>
                     </ul>
                   </li>
   

@@ -29,6 +29,9 @@ class ProcessLoginController {
     def ctx = grailsApplication.mainContext
 
     // Check that request comes from 127.0.0.1
+    log.debug("Auth request from ${request.getRemoteAddr()}");
+    // request.getHeader("X-Forwarded-For")
+    // request.getHeader("Client-IP")
 
 
     log.debug("remote institution appears to be : ${params.ea_edinaOrgId}");
