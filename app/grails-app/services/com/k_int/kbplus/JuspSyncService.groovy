@@ -119,6 +119,8 @@ class JuspSyncService {
               }
             }
           }
+          csr.haveUpTo=most_recent_closed_period
+          csr.save(flush:true);
         }
         catch ( Exception e ) {
           log.error("Problem fetching JUSP data",e);
