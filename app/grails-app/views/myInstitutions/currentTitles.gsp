@@ -52,10 +52,10 @@
 	    <div class="container">
 	    <h1>${institution?.name} - Current Titles</h1>
 	      
-		<g:set var="filterSub" value="${params.filterSub?:"all"}" />
-		<g:set var="filterPvd" value="${params.filterPvd?:"all"}" />
-		<g:set var="filterHostPlat" value="${params.filterHostPlat?:"all"}" />
-		<g:set var="filterOtherPlat" value="${params.filterOtherPlat?:"all"}" />
+		<g:set var="filterSub" value="${params.filterSub?params.list('filterSub'):"all"}" />
+		<g:set var="filterPvd" value="${params.filterPvd?params.list('filterPvd'):"all"}" />
+		<g:set var="filterHostPlat" value="${params.filterHostPlat?params.list('filterHostPlat'):"all"}" />
+		<g:set var="filterOtherPlat" value="${params.filterOtherPlat?params.list('filterOtherPlat'):"all"}" />
       
       	<select size="5" name="filterSub" class="span3" multiple="multiple"> <!-- onchange="this.form.submit()" -->
       		<option<%= (filterSub.contains("all")) ? ' selected="selected"' : '' %> value="all">All Subscriptions</option>
