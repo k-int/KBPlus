@@ -13,6 +13,22 @@
       <ul class="breadcrumb">
         <li><g:link controller="packageDetails" action="index">All Packages</g:link><span class="divider">/</span></li>
         <li><g:link controller="packageDetails" action="show" id="${packageInstance.id}">${packageInstance.name}</g:link></li>
+        
+        <li class="dropdown pull-right">
+	        <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">
+		  		Exports<b class="caret"></b>
+			</a>
+			<ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
+				<li>
+		  			<% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
+					<g:link action="show" params="${ps_json}" target="_blank">Json Export</g:link>
+	      		</li>
+				<li>
+		  			<% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
+					<g:link action="show" params="${ps_xml}" target="_blank">XML Export</g:link>
+	      		</li>
+		    </ul>
+		</li>
       </ul>
     </div>
   

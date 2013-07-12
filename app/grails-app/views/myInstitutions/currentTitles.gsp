@@ -25,7 +25,11 @@
               </li>
               <li>
                 <% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
-                <g:link action="currentTitles" params="${ps_json}">Json Export</g:link>
+                <g:link action="currentTitles" params="${ps_json}" target="_blank">Json Export</g:link>
+              </li>
+              <li>
+                <% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
+                <g:link action="currentTitles" params="${ps_xml}" target="_blank">XML Export</g:link>
               </li>
             </ul>
           </li>

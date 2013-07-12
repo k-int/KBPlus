@@ -14,12 +14,31 @@
           <li> <g:link controller="myInstitutions" action="currentSubscriptions" params="${[shortcode:subscriptionInstance.subscriber.shortcode]}"> ${subscriptionInstance.subscriber.name} Current Subscriptions</g:link> <span class="divider">/</span> </li>
         </g:if>
         <li> <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}">Subscription ${subscriptionInstance.id} Details</g:link> </li>
+        
+        <!-- OLD VERSION
         <li class="pull-right">
           <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter]}">CSV Export</g:link> 
           <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter,omitHeader:'Y']}">(No header)</g:link></li>
         <g:if test="${editable}">
           <li class="pull-right">Editable by you&nbsp;</li>
         </g:if>
+        -->
+        
+        <li class="dropdown pull-right">
+	        <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">
+		  		Exports<b class="caret"></b>
+			</a>
+			<ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
+				<li>
+		  			<% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
+					<g:link action="index" params="${ps_json}" target="_blank">Json Export</g:link>
+	      		</li>
+				<li>
+		  			<% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
+					<g:link action="index" params="${ps_xml}" target="_blank">XML Export</g:link>
+	      		</li>
+		    </ul>
+		</li>
       </ul>
     </div>
 

@@ -12,8 +12,6 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.hslf.model.*;
 import java.text.SimpleDateFormat
 
-
-
 class MyInstitutionsController {
 
   def springSecurityService
@@ -138,7 +136,104 @@ class MyInstitutionsController {
     // result.licenses = License.executeQuery(qry, [template_license_type, result.institution, licensee_role] )
     result.licenses = License.executeQuery(qry, qry_params);
 
-    result
+    withFormat {
+		html result
+		json {
+			def licenses = result.licenses
+			
+			def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+			
+			def response = [:]
+			
+			response."Licences" = []
+			
+			licenses.each {
+				def licence = [:]
+				licence."LicenceReference" = it.reference
+				licence."NoticePeriod" = it.noticePeriod
+				licence."LicenceURL" = it.licenseUrl
+				licence."LicensorRef" = it.licensorRef
+				licence."LicenseeRef" = it.licenseeRef
+					
+				licence."RelatedOrgs" = []
+				it.orgLinks.each { or ->
+					def org = [:]
+					org."OrgID" = or.org.id
+					org."OrgName" = or.org.name
+					org."OrgRole" = or.roleType.value
+					
+					def ids = [:]
+					or.org.ids.each(){ id ->
+						def value = id.identifier.value
+						def ns = id.identifier.ns.ns
+						if(ids.containsKey(ns)){
+							def current = ids[ns]
+							def newval = []
+							newval << current
+							newval << value
+							ids[ns] = newval
+						} else {
+							ids[ns]=value
+						}
+					}
+					org."OrgIDs" = ids
+					
+					licence."RelatedOrgs" << org
+				}
+				
+				def prop = licence."LicenceProperties" = [:]
+				
+				def ca = prop."ConcurrentAccess" = [:]
+				ca."Status" = it.concurrentUsers?.value
+				ca."UserCount" = it.concurrentUserCount
+				ca."Notes" = it.getNote("concurrentUsers")?.owner?.content?:""
+				
+				def ra = prop."RemoteAccess" = [:]
+				ra."Status" = it.remoteAccess?.value
+				ra."Notes" = it.getNote("remoteAccess")?.owner?.content?:""
+				
+				def wa = prop."WalkingAccess" = [:]
+				wa."Status" = it.walkinAccess?.value
+				wa."Notes" = it.getNote("remoteAccess")?.owner?.content?:""
+				
+				def ma = prop."MultisiteAccess" = [:]
+				ma."Status" = it.multisiteAccess?.value
+				ma."Notes" = it.getNote("multisiteAccess")?.owner?.content?:""
+				
+				def pa = prop."PartnersAccess" = [:]
+				pa."Status" = it.partnersAccess?.value
+				pa."Notes" = it.getNote("partnersAccess")?.owner?.content?:""
+				
+				def aa = prop."AlumniAccess" = [:]
+				aa."Status" = it.alumniAccess?.value
+				aa."Notes" = it.getNote("alumniAccess")?.owner?.content?:""
+				
+				def ill = prop."InterLibraryLoans" = [:]
+				ill."Status" = it.ill?.value
+				ill."Notes" = it.getNote("ill")?.owner?.content?:""
+				
+				def cp = prop."IncludeinCoursepacks" = [:]
+				cp."Status" = it.coursepack?.value
+				cp."Notes" = it.getNote("coursepack")?.owner?.content?:""
+				
+				def vle = prop."IncludeinVLE" = [:]
+				vle."Status" = it.vle?.value
+				vle."Notes" = it.getNote("vle")?.owner?.content?:""
+				
+				def ea = prop."EntrepriseAccess" = [:]
+				ea."Status" = it.enterprise?.value
+				ea."Notes" = it.getNote("enterprise")?.owner?.content?:""
+				
+				def pca = prop."PostCancellationAccessEntitlement" = [:]
+				pca."Status" = it.pca?.value
+				pca."Notes" = it.getNote("pca")?.owner?.content?:""
+				
+				response."Licences" << licence
+			}
+			
+			render response as JSON
+		}
+    }
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -252,8 +347,196 @@ class MyInstitutionsController {
 
     result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
     result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
-
-    result
+	
+	withFormat {
+		html result
+		json {
+			def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+			
+			def response = [:]
+			def subscriptions = []
+			
+			result.subscriptions.each { sub ->
+				def subscription = [:]
+				subscription."SubscriptionID" = sub.id
+				subscription."SubscriptionName" = sub.name
+				subscription."SubTermStartDate" = sub.startDate?formatter.format(sub.startDate):''
+				subscription."SubTermEndDate" = sub.endDate?formatter.format(sub.endDate):''
+				
+				subscription."RelatedOrgs" = []
+				sub.orgRelations.each { or ->
+					def org = [:]
+					org."OrgID" = or.org.id
+					org."OrgName" = or.org.name
+					org."OrgRole" = or.roleType.value
+					
+					def ids = [:]
+					or.org.ids.each(){ id ->
+						def value = id.identifier.value
+						def ns = id.identifier.ns.ns
+						if(ids.containsKey(ns)){
+							def current = ids[ns]
+							def newval = []
+							newval << current
+							newval << value
+							ids[ns] = newval
+						} else {
+							ids[ns]=value
+						}
+					}
+					org."OrgIDs" = ids
+					
+					subscription."RelatedOrgs" << org
+				}
+				
+				subscription."Licences" = []
+				def licence = [:]
+				
+				if(sub.owner){
+					def owner = sub.owner
+					
+					licence."LicenceReference" = owner.reference
+					licence."NoticePeriod" = owner.noticePeriod
+					licence."LicenceURL" = owner.licenseUrl
+					licence."LicensorRef" = owner.licensorRef
+					licence."LicenseeRef" = owner.licenseeRef
+						
+					licence."RelatedOrgs" = []
+					sub.owner?.orgLinks.each { or ->
+						def org = [:]
+						org."OrgID" = or.org.id
+						org."OrgName" = or.org.name
+						org."OrgRole" = or.roleType.value
+						
+						def ids = [:]
+						or.org.ids.each(){ id ->
+							def value = id.identifier.value
+							def ns = id.identifier.ns.ns
+							if(ids.containsKey(ns)){
+								def current = ids[ns]
+								def newval = []
+								newval << current
+								newval << value
+								ids[ns] = newval
+							} else {
+								ids[ns]=value
+							}
+						}
+						org."OrgIDs" = ids
+						
+						licence."RelatedOrgs" << org
+					}
+					
+					
+					
+					def prop = licence."LicenceProperties" = [:]
+					def ca = prop."ConcurrentAccess" = [:]
+					ca."Status" = owner.concurrentUsers?.value
+					ca."UserCount" = owner.concurrentUserCount
+					ca."Notes" = owner.getNote("concurrentUsers")?.owner?.content?:""
+					def ra = prop."RemoteAccess" = [:]
+					ra."Status" = owner.remoteAccess?.value
+					ra."Notes" = owner.getNote("remoteAccess")?.owner?.content?:""
+					def wa = prop."WalkingAccess" = [:]
+					wa."Status" = owner.walkinAccess?.value
+					wa."Notes" = owner.getNote("remoteAccess")?.owner?.content?:""
+					def ma = prop."MultisiteAccess" = [:]
+					ma."Status" = owner.multisiteAccess?.value
+					ma."Notes" = owner.getNote("multisiteAccess")?.owner?.content?:""
+					def pa = prop."PartnersAccess" = [:]
+					pa."Status" = owner.partnersAccess?.value
+					pa."Notes" = owner.getNote("partnersAccess")?.owner?.content?:""
+					def aa = prop."AlumniAccess" = [:]
+					aa."Status" = owner.alumniAccess?.value
+					aa."Notes" = owner.getNote("alumniAccess")?.owner?.content?:""
+					def ill = prop."InterLibraryLoans" = [:]
+					ill."Status" = owner.ill?.value
+					ill."Notes" = owner.getNote("ill")?.owner?.content?:""
+					def cp = prop."IncludeinCoursepacks" = [:]
+					cp."Status" = owner.coursepack?.value
+					cp."Notes" = owner.getNote("coursepack")?.owner?.content?:""
+					def vle = prop."IncludeinVLE" = [:]
+					vle."Status" = owner.vle?.value
+					vle."Notes" = owner.getNote("vle")?.owner?.content?:""
+					def ea = prop."EntrepriseAccess" = [:]
+					ea."Status" = owner.enterprise?.value
+					ea."Notes" = owner.getNote("enterprise")?.owner?.content?:""
+					def pca = prop."PostCancellationAccessEntitlement" = [:]
+					pca."Status" = owner.pca?.value
+					pca."Notes" = owner.getNote("pca")?.owner?.content?:""
+				}
+				
+				// Should only be one, we have an array to keep teh same format has licenses json
+				subscription."Licences" << licence
+								
+				subscription."TitleList" = []
+				sub.issueEntitlements.each { entitlement ->
+					def ti = entitlement.tipp.title
+					
+					def title = [:]
+					title."Title" = ti.title
+					
+					def ids = [:]
+					ti.ids.each(){ id ->
+						def value = id.identifier.value
+						def ns = id.identifier.ns.ns
+						if(ids.containsKey(ns)){
+							def current = ids[ns]
+							def newval = []
+							newval << current
+							newval << value
+							ids[ns] = newval
+						} else {
+							ids[ns]=value
+						}
+					}
+					title."TitleIDs" = ids
+					
+					// Should only be one, we have an array to keep teh same format has titles json
+					title."CoverageStatements" = []
+					
+					def ie = [:]
+					ie."CoverageStatementType" = "Issue Entitlement"
+					ie."SubscriptionID" = sub.id
+					ie."SubscriptionName" = sub.name
+					ie."StartDate" = entitlement.startDate?formatter.format(entitlement.startDate):''
+					ie."StartVolume" = entitlement.startVolume?:''
+					ie."StartIssue" = entitlement.startIssue?:''
+					ie."EndDate" = entitlement.endDate?formatter.format(entitlement.endDate):''
+					ie."EndVolume" = entitlement.endVolume?:''
+					ie."EndIssue" = entitlement.endIssue?:''
+					ie."Embargo" = entitlement.embargo?:''
+					ie."Coverage" = entitlement.coverageDepth?:''
+					ie."CoverageNote" = entitlement.coverageNote?:''
+					ie."HostPlatformName" = entitlement.tipp.platform?.name?:''
+					ie."HostPlatformURL" = entitlement.tipp.hostPlatformURL?:''
+					ie."AdditionalPlatforms" = []
+					entitlement.tipp.additionalPlatforms?.each(){ ap ->
+						def platform = [:]
+						platform.PlatformName = ap.platform?.name?:''
+						platform.PlatformRole = ap.rel?:''
+						platform.PlatformURL = ap.platform?.primaryUrl?:''
+						ie."AdditionalPlatforms" << platform
+					}
+					ie."CoreStatus" = entitlement.coreStatus?.value?:''
+					ie."CoreStart" = entitlement.coreStatusStart?formatter.format(entitlement.coreStatusStart):''
+					ie."CoreEnd" = entitlement.coreStatusEnd?formatter.format(entitlement.coreStatusEnd):''
+					ie."PackageID" = entitlement.tipp?.pkg?.id?:''
+					ie."PackageName" = entitlement.tipp?.pkg?.name?:''
+						
+					title."CoverageStatements".add(ie)
+					
+					subscription."TitleList" << title
+				}
+				
+				subscriptions.add(subscription)
+			}
+			
+			response."Subscriptions" = subscriptions
+			
+			render response as JSON
+		}
+	}
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -842,11 +1125,11 @@ AND EXISTS (
     println("Final query:\n${title_query.replaceAll("\\s+", " ")}{title_query_grouping}\nParams:${qry_params}")
     
     /* Get Total number of Titles for HTML view */
-	if(!(params.format.equals("csv")||params.format.equals("json")))
+	if((!params.format||params.format.equals("html")))
     	result.num_ti_rows = 
 			IssueEntitlement.executeQuery("SELECT ie.tipp.title ${title_query} ${title_query_grouping}", qry_params).size()
 	
-    def limits = (!(params.format.equals("csv")||params.format.equals("json")))?[max:result.max, offset:result.offset]:[offset:0]
+    def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
 	
 	// MAX(CASE WHEN ie.endDate IS NULL THEN '~' ELSE ie.endDate END) should get the max date or a null string if there is any empty ie.ie_end_date
 	// We need to do that as an empty string actually means 'up to the most current issue available'
@@ -873,6 +1156,10 @@ AND EXISTS (
         AND ie.tipp.title In (:titles) \
         ${title_query_ordering}", 
         qry_params );
+	
+	if(params.format.equals("xml")||params.format.equals("json")){
+		
+	}
     
     withFormat {
         html result
@@ -960,58 +1247,131 @@ AND EXISTS (
         json {
             def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
             
-            // Get distinct ID.Namespace
-            def namespaces = []
-            title_list.each(){ ti ->
-                ti.ids.each(){ id ->
-                    namespaces.add(id.identifier.ns.ns)
-                }
-            }
-            namespaces.unique()
-            
-            def response = []
+            def response = [:]
+			def titles = []
             
             result.titles.each { ti ->
                 def title = [:]
-                title.Title = ti[0].title
-                title.IDs = [:]
-                namespaces.each(){ ns ->
-                    if(ti[0].getIdentifierValue(ns)) 
-                        title.IDs[ns] = ti[0].getIdentifierValue(ns)
+                title."Title" = ti[0].title
+                
+				def ids = [:]
+				ti[0].ids.each(){ id ->
+					def value = id.identifier.value
+					def ns = id.identifier.ns.ns
+					log.debug("ns:${ns} val:${value}")
+					if(ids.containsKey(ns)){
+						def current = ids[ns]
+						def newval = []
+						newval << current
+						newval << value
+						ids[ns] = newval
+					} else {
+						ids[ns]=value
+					}
                 }
-                def entitlements = title."Issue Entitlements" = []
+				title."TitleIDs" = ids
+				
+                def entitlements = title."CoverageStatements" = []
                 result.entitlements.each(){ 
                     def ie = [:]
                     if(it.tipp.title.id.equals(ti[0].id)){
-                        ie."Subscription name" = it.subscription.name
-                        ie."Start date" = it.startDate?formatter.format(it.startDate):''
-                        ie."Start volume" = it.startVolume?:''
-                        ie."Start issue" = it.startIssue?:''
-                        ie."End date" = it.endDate?formatter.format(it.endDate):''
-                        ie."End volume" = it.endVolume?:''
-                        ie."End issue" = it.endIssue?:''
+						ie."CoverageStatementType" = "Issue Entitlement"
+                        ie."SubscriptionID" = it.subscription.id
+                        ie."SubscriptionName" = it.subscription.name
+                        ie."StartDate" = it.startDate?formatter.format(it.startDate):''
+                        ie."StartVolume" = it.startVolume?:''
+                        ie."StartIssue" = it.startIssue?:''
+                        ie."EndDate" = it.endDate?formatter.format(it.endDate):''
+                        ie."EndVolume" = it.endVolume?:''
+                        ie."EndIssue" = it.endIssue?:''
                         ie."Embargo" = it.embargo?:''
                         ie."Coverage" = it.coverageDepth?:''
-                        ie."Coverage note" = it.coverageNote?:''
-                        ie."Host Platform Name" = it.tipp?.platform?.name?:''
-                        ie."Host Platform URL" = it.tipp?.hostPlatformURL?:''
-                        ie."Additional Platforms" = [:]
+                        ie."CoverageNote" = it.coverageNote?:''
+                        ie."HostPlatformName" = it.tipp?.platform?.name?:''
+                        ie."HostPlatformURL" = it.tipp?.hostPlatformURL?:''
+                        ie."AdditionalPlatforms" = []
                         it.tipp?.additionalPlatforms.each(){ ap ->
-                            ie."Additional Platforms".name = ap.platform?.name?:''
-                            ie."Additional Platforms".role = ap.rel?:''
-                            ie."Additional Platforms".URL = ap.platform?.primaryUrl?:''
+							def platform = [:]
+                            platform.PlatformName = ap.platform?.name?:''
+                            platform.PlatformRole = ap.rel?:''
+                            platform.PlatformURL = ap.platform?.primaryUrl?:''
+							ie."AdditionalPlatforms" << platform
                         }
-                        ie."Core status" = it.coreStatus?.value?:''
-                        ie."Core start" = it.coreStatusStart?formatter.format(it.coreStatusStart):''
-                        ie."Core end" = it.coreStatusEnd?formatter.format(it.coreStatusEnd):''
+                        ie."CoreStatus" = it.coreStatus?.value?:''
+                        ie."CoreStart" = it.coreStatusStart?formatter.format(it.coreStatusStart):''
+                        ie."CoreEnd" = it.coreStatusEnd?formatter.format(it.coreStatusEnd):''
+						ie."PackageID" = it.tipp?.pkg?.id?:''
+						ie."PackageName" = it.tipp?.pkg?.name?:''
                         
                         entitlements.add(ie)
                     }
                 }
-                response.add(title)
+				titles.add(title)
             }
+			
+			response."TitleList" = titles
+			
             render response as JSON
         }
+		xml {
+			def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+			
+			def writer = new StringWriter()
+			def xmlBuilder = new MarkupBuilder(writer)
+			xmlBuilder.getMkp().xmlDeclaration(version:'1.0', encoding: 'UTF-8')
+			
+			xmlBuilder.TitleList() {			
+				result.titles.each { ti ->
+					TitleListEntry{
+						Title(ti[0].title)
+						
+						TitleIDS(){
+							ti[0].ids.each(){ id ->
+								def value = id.identifier.value
+								def ns = id.identifier.ns.ns
+								ID(namespace: ns, value )
+							}
+						}
+						
+						CoverageStatement(type: 'Issue Entitlement'){
+							result.entitlements.each(){
+								if(it.tipp.title.id.equals(ti[0].id)){
+									SubscriptionID(it.subscription.id)
+									SubscriptionName(it.subscription.name)
+									StartDate(it.startDate?formatter.format(it.startDate):'')
+									StartVolume(it.startVolume?:'')
+									StartIssue(it.startIssue?:'')
+									EndDate(it.endDate?formatter.format(it.endDate):'')
+									EndVolume(it.endVolume?:'')
+									EndIssue(it.endIssue?:'')
+									Embargo(it.embargo?:'')
+									Coverage(it.coverageDepth?:'')
+									CoverageNote(it.coverageNote?:'')
+									HostPlatformName(it.tipp?.platform?.name?:'')
+									HostPlatformURL(it.tipp?.hostPlatformURL?:'')
+									
+									it.tipp?.additionalPlatforms.each(){ ap ->
+										Platform(){
+											PlatformName(ap.platform?.name?:'')
+											PlatformRole(ap.rel?:'')
+											PlatformURL(ap.platform?.primaryUrl?:'')
+										}
+									}
+									
+									CoreStatus(it.coreStatus?.value?:'')
+									CoreStart(it.coreStatusStart?formatter.format(it.coreStatusStart):'')
+									CoreEnd(it.coreStatusEnd?formatter.format(it.coreStatusEnd):'')
+									PackageID(it.tipp?.pkg?.id?:'')
+									PackageName(it.tipp?.pkg?.name?:'')
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			render writer.toString()
+		}
     }
   }
 
