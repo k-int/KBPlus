@@ -52,51 +52,51 @@
 	    <div class="container">
 	    <h1>${institution?.name} - Current Titles</h1>
 	      
-		<g:set var="filterSub" value="${params.filterSub?:"all"}" />
-		<g:set var="filterPvd" value="${params.filterPvd?:"all"}" />
-		<g:set var="filterHostPlat" value="${params.filterHostPlat?:"all"}" />
-		<g:set var="filterOtherPlat" value="${params.filterOtherPlat?:"all"}" />
+		<g:set var="filterSub" value="${params.filterSub?params.list('filterSub'):"all"}" />
+		<g:set var="filterPvd" value="${params.filterPvd?params.list('filterPvd'):"all"}" />
+		<g:set var="filterHostPlat" value="${params.filterHostPlat?params.list('filterHostPlat'):"all"}" />
+		<g:set var="filterOtherPlat" value="${params.filterOtherPlat?params.list('filterOtherPlat'):"all"}" />
       
-      	<select size="5" name="filterSub" class="span3"> <!-- onchange="this.form.submit()" -->
-      		<option<%= (filterSub.equals("all")) ? ' selected="selected"' : '' %> value="all">All Subscriptions</option>
+      	<select size="5" name="filterSub" class="span3" multiple="multiple"> <!-- onchange="this.form.submit()" -->
+      		<option<%= (filterSub.contains("all")) ? ' selected="selected"' : '' %> value="all">All Subscriptions</option>
       		<g:each in="${subscriptions}" var="s">
-              <option<%= (filterSub.equals(s.id.toString())) ? ' selected="selected"' : '' %> value="${s.id}" title="${s.name}${s.consortia?' ('+s.consortia.name+')':''}">
+              <option<%= (filterSub.contains(s.id.toString())) ? ' selected="selected"' : '' %> value="${s.id}" title="${s.name}${s.consortia?' ('+s.consortia.name+')':''}">
                 ${s.name} <g:if test="${s.consortia}">( ${s.consortia.name} )</g:if>
               </option>
             </g:each>
       	</select>
-      	<select size="5" name="filterPvd" class="span3">
-      		<option<%= (filterPvd.equals("all")) ? ' selected="selected"' : '' %> value="all">All Content Providers</option>
+      	<select size="5" name="filterPvd" class="span3" multiple="multiple">
+      		<option<%= (filterPvd.contains("all")) ? ' selected="selected"' : '' %> value="all">All Content Providers</option>
       		<g:each in="${providers}" var="p">
               <% 
               def pvdId = p.id.toString()
               def pvdName = p.name 
               %>
-              <option<%= (filterPvd.equals(pvdId)) ? ' selected="selected"' : '' %> value="${pvdId}" title="${pvdName}">
+              <option<%= (filterPvd.contains(pvdId)) ? ' selected="selected"' : '' %> value="${pvdId}" title="${pvdName}">
                 ${pvdName}
               </option>
             </g:each>
       	</select>
-      	<select size="5" name="filterHostPlat" class="span3">
-      		<option<%= (filterHostPlat.equals("all")) ? ' selected="selected"' : '' %> value="all">All Host Platforms</option>
+      	<select size="5" name="filterHostPlat" class="span3" multiple="multiple">
+      		<option<%= (filterHostPlat.contains("all")) ? ' selected="selected"' : '' %> value="all">All Host Platforms</option>
       		<g:each in="${hostplatforms}" var="hp">
               <% 
               def hostId = hp.id.toString()
               def hostName = hp.name 
               %>
-              <option<%= (filterHostPlat.equals(hostId)) ? ' selected="selected"' : '' %> value="${hostId}" title="${hostName}">
+              <option<%= (filterHostPlat.contains(hostId)) ? ' selected="selected"' : '' %> value="${hostId}" title="${hostName}">
                 ${hostName}
               </option>
             </g:each>
       	</select>
-      	<select size="5" name="filterOtherPlat" class="span3">
-      		<option<%= (filterOtherPlat.equals("all")) ? ' selected="selected"' : '' %> value="all">All Additional Platforms</option>
+      	<select size="5" name="filterOtherPlat" class="span3" multiple="multiple">
+      		<option<%= (filterOtherPlat.contains("all")) ? ' selected="selected"' : '' %> value="all">All Additional Platforms</option>
       		<g:each in="${otherplatforms}" var="op">
               <% 
               def platId = op.id.toString()
               def platName = op.name 
               %>
-              <option<%= (filterOtherPlat.equals(platId)) ? ' selected="selected"' : '' %> value="${platId}" title="${platName}">
+              <option<%= (filterOtherPlat.contains(platId)) ? ' selected="selected"' : '' %> value="${platId}" title="${platName}">
                 ${platName}
               </option>
             </g:each>
