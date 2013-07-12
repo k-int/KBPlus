@@ -11,11 +11,16 @@ import org.apache.http.entity.mime.content.*
 import java.nio.charset.Charset
 import org.apache.http.*
 import org.apache.http.protocol.*
+import java.text.SimpleDateFormat
+
 
 class JuspSyncService {
 
+  static transactional = false
+
   def executorService
   def factService
+  def juspTimeStampFormat = new SimpleDateFormat('yyyy-MM')
 
   def doSync() {
     log.debug("JuspSyncService::doSync");
@@ -94,14 +99,15 @@ class JuspSyncService {
             // log.debug("Result: ${resp}, ${json}");
             if ( json ) {
               if ( json.ReportPeriods != null ) {
-                log.debug("Report Periods present: ${json.ReportPeriods}");
+                // log.debug("Report Periods present: ${json.ReportPeriods}");
                 json.ReportPeriods.each { p ->
                   def fact = [:]
-                  fact.start=p.Start
-                  fact.end=p.End
+                  fact.from=juspTimeStampFormat.parse(p.Start)
+                  fact.to=juspTimeStampFormat.parse(p.End)
                   p.Reports.each { r ->
                     fact.type = "JUSP:${r.key}"
                     fact.value = r.value
+                    fact.uid = "${jusp_title_id}:${jusp_supplier_id}:${jusp_login}:${p.End}"
                     fact.facets = [ title:to[0].id, supplier:to[1].id, subscriber:to[2].id ]
                     factService.registerFact(fact);
                     // log.debug("registerFact: ${fact}");
@@ -115,7 +121,7 @@ class JuspSyncService {
           }
         }
         catch ( Exception e ) {
-          log.error("Problem fetching JUSP data: ${e}");
+          log.error("Problem fetching JUSP data",e);
         }
         finally {
         }

@@ -6,7 +6,7 @@ class FactClassifier {
   long type
 
   // PK of type
-  long key
+  long relatedKey
 
   // Related fact
   Fact fact
