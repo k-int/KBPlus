@@ -6,8 +6,6 @@ class FactService {
 
     def registerFact(fact) {
 
-      log.debug("registerFact: type:${fact.type} uid:${fact.uid} from:${fact.from} to:${fact.to} value:${fact.value} facets:${fact.facets}");
-
       if ( ( fact.type == null ) || 
            ( fact.type == '' ) ) 
         return
@@ -24,7 +22,10 @@ class FactService {
                                     factFrom:fact.from,
                                     factTo:fact.to,
                                     factValue:fact.value,
-                                    factUid:fact.uid)
+                                    factUid:fact.uid,
+                                    relatedTitle:fact.title,
+                                    supplier:fact.supplier,
+                                    inst:fact.inst)
             if ( current_fact.save(flush:true) ) {
             }
             else {

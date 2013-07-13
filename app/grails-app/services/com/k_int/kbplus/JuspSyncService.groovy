@@ -108,9 +108,10 @@ class JuspSyncService {
                     fact.type = "JUSP:${r.key}"
                     fact.value = r.value
                     fact.uid = "${jusp_title_id}:${jusp_supplier_id}:${jusp_login}:${p.End}"
-                    fact.facets = [ title:to[0].id, supplier:to[1].id, subscriber:to[2].id ]
+                    fact.title = to[0]
+                    fact.supplier = to[1]
+                    fact.inst =  to[2]
                     factService.registerFact(fact);
-                    // log.debug("registerFact: ${fact}");
                   }
                 }
               }

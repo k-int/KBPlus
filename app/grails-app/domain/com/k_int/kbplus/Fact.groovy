@@ -7,6 +7,19 @@ class Fact {
   Date factTo
   String factValue
   String factUid
-  static mappedBy = [classifiers: 'fact']
-  static hasMany = [classifiers: FactClassifier]
+
+  TitleInstance relatedTitle
+  Org supplier
+  Org inst
+
+  static constraints = {
+    factUid(nullable:true, blank:false)
+    relatedTitle(nullable:true, blank:false)
+    supplier(nullable:true, blank:false)
+    inst(nullable:true, blank:false)
+  }
+
+
 }
+
+
