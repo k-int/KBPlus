@@ -25,7 +25,8 @@ class FactService {
                                     factUid:fact.uid,
                                     relatedTitle:fact.title,
                                     supplier:fact.supplier,
-                                    inst:fact.inst)
+                                    inst:fact.inst,
+                                    juspio:fact.juspio)
             if ( current_fact.save(flush:true) ) {
             }
             else {

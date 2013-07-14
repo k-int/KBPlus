@@ -111,6 +111,7 @@ class JuspSyncService {
                     fact.title = to[0]
                     fact.supplier = to[1]
                     fact.inst =  to[2]
+                    fact.juspio =  to[3]
                     factService.registerFact(fact);
                   }
                 }
