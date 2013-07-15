@@ -1946,14 +1946,14 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
     cell.setCellStyle(core_cell_style);  
     cell = row.createCell(cc++);
     cell.setCellValue(new HSSFRichTextString("Not In Subscription"));
-    cell = row.createCell(11);
+    cell = row.createCell(21);
     cell.setCellValue(new HSSFRichTextString("Current Sub"));
-    cell = row.createCell(12);
+    cell = row.createCell(22);
     cell.setCellValue(new HSSFRichTextString("Candidates ->"));
     
 
     row = firstSheet.createRow(rc++);
-    cc=11
+    cc=21
     m.sub_info.each { sub ->
       cell = row.createCell(cc++);
       cell.setCellValue(new HSSFRichTextString("${sub.sub_id}"));
@@ -1984,6 +1984,28 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
     cell.setCellValue(new HSSFRichTextString("Core Start Date"));
     cell = row.createCell(cc++);
     cell.setCellValue(new HSSFRichTextString("Core End Date"));
+
+    // USAGE History
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("JR1\nYear-4"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("JR1a\nYear-4"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("JR1\nYear-3"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("JR1a\nYear-3"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("JR1\nYear-2"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("JR1a\nYear-2"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("JR1\nYear-1"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("JR1a\nYear-1"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("JR1\nYTD"));
+    cell = row.createCell(cc++);
+    cell.setCellValue(new HSSFRichTextString("JR1a\nYTD"));
 
     m.sub_info.each { sub ->
       cell = row.createCell(cc++);
@@ -2041,6 +2063,28 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
       // Core End Date
       cell = row.createCell(cc++);
       cell.setCellValue(new HSSFRichTextString("${title.core_end_date?:''}"));
+
+      // Usage Stats
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("JR1-4"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("JR1a-4"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("JR1-3"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("JR1a-3"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("JR1-2"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("JR1a-2"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("JR1-1"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("JR1a-1"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("JR1-YTD"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("JR1a-YTD"));
 
       m.sub_info.each { sub ->
         cell = row.createCell(cc++);
@@ -2112,7 +2156,7 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
   }
 
   def processRenewalUpload(input_stream, upload_filename, result) {
-    int SO_START_COL=12
+    int SO_START_COL=22
     int SO_START_ROW=7
     log.debug("processRenewalUpload - opening upload input stream as HSSFWorkbook");
     if ( input_stream ) {
