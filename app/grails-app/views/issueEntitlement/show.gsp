@@ -159,6 +159,18 @@
                 <dd>${issueEntitlementInstance.tipp.coverageNote}</dd>
             </dl>
 
+            <h6>JUSP Usage Statistics</h6>
+            <table class="table table-bordered table-striped">
+              <tr>
+                <th>Reporting Period</th><th>JR1</th><th>JR1a</th>
+              </tr>
+              <g:each in="${usage}" var="v">
+                <tr>
+                  <td>${v[0]}</td> <td>${v[1]}</td> <td>${v[2]}</td>
+                </tr>
+              </g:each>
+            </table>
+
             <g:if test="${issueEntitlementInstance.tipp.title?.tipps}">
 
                 <br/>

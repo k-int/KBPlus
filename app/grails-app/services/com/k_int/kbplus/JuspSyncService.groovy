@@ -22,8 +22,15 @@ class JuspSyncService {
   def factService
   def juspTimeStampFormat = new SimpleDateFormat('yyyy-MM')
 
+  def running = false;
+
   def doSync() {
     log.debug("JuspSyncService::doSync");
+
+    if ( running ) 
+      return
+
+    running = true
 
 
 //     def future = executorService.submit({ internalDoSync() } as java.util.concurrent.Callable)
@@ -98,16 +105,20 @@ class JuspSyncService {
                                          granularity:'monthly'] ) { resp, json ->
             // log.debug("Result: ${resp}, ${json}");
             if ( json ) {
+              def cal = new GregorianCalendar();
               if ( json.ReportPeriods != null ) {
                 // log.debug("Report Periods present: ${json.ReportPeriods}");
                 json.ReportPeriods.each { p ->
                   def fact = [:]
                   fact.from=juspTimeStampFormat.parse(p.Start)
                   fact.to=juspTimeStampFormat.parse(p.End)
+                  cal.setTime(fact.to)
+                  fact.reportingYear=cal.get(Calendar.YEAR)
+                  fact.reportingMonth=cal.get(Calendar.MONTH)+1
                   p.Reports.each { r ->
                     fact.type = "JUSP:${r.key}"
                     fact.value = r.value
-                    fact.uid = "${jusp_title_id}:${jusp_supplier_id}:${jusp_login}:${p.End}"
+                    fact.uid = "${jusp_title_id}:${jusp_supplier_id}:${jusp_login}:${p.End}:${r.key}"
                     fact.title = to[0]
                     fact.supplier = to[1]
                     fact.inst =  to[2]
@@ -143,5 +154,6 @@ class JuspSyncService {
         // Update/create any records
       
     log.debug("internalDoSync exit");
+    running = false
   }
 }

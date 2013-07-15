@@ -56,6 +56,25 @@ class IssueEntitlementController {
         result.editable = false
       }
 
+      // Get usage statistics
+      def title_id = result.issueEntitlementInstance.tipp.title?.id
+      def org_id = result.issueEntitlementInstance.subscription.subscriber?.id
+      def supplier_id = result.issueEntitlementInstance.tipp.pkg.contentProvider?.id
+
+      result.usage = []
+
+      if ( title_id != null && 
+           org_id != null &&
+           supplier_id != null ) {
+
+        def q = "select sum(f.factValue),f.reportingYear,f.reportingMonth,f.factType from Fact as f where f.relatedTitle.id=? and f.supplier.id=? and f.inst.id=? group by f.factType, f.reportingYear, f.reportingMonth order by f.reportingYear,f.reportingMonth,f.factType.value"
+        def l1 = Fact.executeQuery(q,[title_id, supplier_id, org_id])
+
+        l1.each { f ->
+          result.usage.add([f[0],f[1]+' '+f[2],f[3].value])
+        }
+      }
+
       if (!result.issueEntitlementInstance) {
         flash.message = message(code: 'default.not.found.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), params.id])
         redirect action: 'list'
