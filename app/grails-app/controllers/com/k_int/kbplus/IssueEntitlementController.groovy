@@ -10,7 +10,9 @@ import com.k_int.kbplus.auth.*;
 
 class IssueEntitlementController {
 
-    static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
+  def factService
+
+   static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
    def springSecurityService
 
     def index() {
@@ -61,44 +63,12 @@ class IssueEntitlementController {
       def org_id = result.issueEntitlementInstance.subscription.subscriber?.id
       def supplier_id = result.issueEntitlementInstance.tipp.pkg.contentProvider?.id
 
-      result.usage = []
+      def fsresult = factService.generateMonthlyUsageGrid(title_id,org_id,supplier_id)
+      // def fsresult = factService.generateYearlyUsageGrid(title_id,org_id,supplier_id)
 
-      if ( title_id != null && 
-           org_id != null &&
-           supplier_id != null ) {
-
-        def q = "select sum(f.factValue),f.reportingYear,f.reportingMonth,f.factType from Fact as f where f.relatedTitle.id=? and f.supplier.id=? and f.inst.id=? group by f.factType, f.reportingYear, f.reportingMonth order by f.reportingYear,f.reportingMonth,f.factType.value"
-        def l1 = Fact.executeQuery(q,[title_id, supplier_id, org_id])
-
-        def y_axis_labels = []
-        def x_axis_labels = []
-
-        l1.each { f ->
-          def y_label = "${f[1]}-${String.format('%02d',f[2])}"
-          def x_label = f[3].value
-          if ( ! y_axis_labels.contains(y_label) )
-            y_axis_labels.add(y_label)
-          if ( ! x_axis_labels.contains(x_label) )
-            x_axis_labels.add(x_label)
-        }
-        
-        x_axis_labels.sort();
-        y_axis_labels.sort();
-
-        log.debug("X Labels: ${x_axis_labels}");
-        log.debug("Y Labels: ${y_axis_labels}");
-
-        result.usage=new long[y_axis_labels.size()][x_axis_labels.size()]
-
-        l1.each { f ->
-          def y_label = "${f[1]}-${String.format('%02d',f[2])}"
-          def x_label = f[3].value
-          result.usage[y_axis_labels.indexOf(y_label)][x_axis_labels.indexOf(x_label)] += Long.parseLong(f[0])
-        }
-
-        result.x_axis_labels = x_axis_labels;
-        result.y_axis_labels = y_axis_labels;
-      }
+      result.usage = fsresult?.usage
+      result.x_axis_labels = fsresult?.x_axis_labels;
+      result.y_axis_labels = fsresult?.y_axis_labels;
 
       if (!result.issueEntitlementInstance) {
         flash.message = message(code: 'default.not.found.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), params.id])

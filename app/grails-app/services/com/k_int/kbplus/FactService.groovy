@@ -88,6 +88,7 @@ class FactService {
       result.x_axis_labels = x_axis_labels;
       result.y_axis_labels = y_axis_labels;
     }
+    result
   }
 
   def generateYearlyUsageGrid(title_id, org_id, supplier_id) {
@@ -130,6 +131,8 @@ class FactService {
       result.x_axis_labels = x_axis_labels;
       result.y_axis_labels = y_axis_labels;
     }
+
+    result
   }
 
 }
