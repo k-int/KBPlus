@@ -1643,7 +1643,7 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
         def pkg_idx = package_list.indexOf("${t.pkg.id}:${t.platform.id}");
 
         if ( title_idx == -1 ) {
-          log.debug("  -> Adding title ${title.id} to matrix result");
+          // log.debug("  -> Adding title ${title.id} to matrix result");
           title_list.add("${title.id}");
           title_idx = title_list.size();
         }
@@ -1852,7 +1852,7 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
           if ( ! (ie.status?.value=='Deleted')  ) {
             def title_info = titleMap[ie.tipp.title.id]
             def ie_info = [:]
-            log.debug("Adding tipp info ${ie.tipp.startDate} ${ie.tipp.derivedFrom}");
+            // log.debug("Adding tipp info ${ie.tipp.startDate} ${ie.tipp.derivedFrom}");
             ie_info.tipp_id = ie.tipp.id;
             ie_info.core = ie.coreStatus?.value
             ie_info.startDate_d = ie.tipp.startDate ?: ie.tipp.derivedFrom?.startDate
@@ -1874,7 +1874,7 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
           if ( ! (tipp.status?.value=='Deleted')  ) {
             def title_info = titleMap[tipp.title.id]
             def ie_info = [:]
-            log.debug("Adding tipp info ${tipp.startDate} ${tipp.derivedFrom}");
+            // log.debug("Adding tipp info ${tipp.startDate} ${tipp.derivedFrom}");
             ie_info.tipp_id = tipp.id;
             ie_info.startDate_d = tipp.startDate
             ie_info.startDate = ie_info.startDate_d ? formatter.format(ie_info.startDate_d) : null
