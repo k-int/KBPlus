@@ -24,7 +24,7 @@ class JuspSyncService {
 
   def running = false;
 
-  def doSync() {
+  def synchronized doSync() {
     log.debug("JuspSyncService::doSync");
 
     if ( running ) 
@@ -32,12 +32,10 @@ class JuspSyncService {
 
     running = true
 
+    def future = executorService.submit({ internalDoSync() } as java.util.concurrent.Callable)
+  }
 
-//     def future = executorService.submit({ internalDoSync() } as java.util.concurrent.Callable)
-//     log.debug("doSync returning");
-//   }
-
-//   def internalDoSync() {
+  def internalDoSync() {
 
     def jusp_api = ApplicationHolder.application.config.JuspApiUrl
 
