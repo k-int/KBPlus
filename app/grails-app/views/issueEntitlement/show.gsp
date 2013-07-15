@@ -162,11 +162,18 @@
             <h6>JUSP Usage Statistics</h6>
             <table class="table table-bordered table-striped">
               <tr>
-                <th>Reporting Period</th><th>JR1</th><th>JR1a</th>
+                <th>Reporting Period</th>
+                <g:each in="${x_axis_labels}" var="l">
+                  <th>${l}</th>
+                </g:each>
               </tr>
+              <g:set var="counter" value="${0}" />
               <g:each in="${usage}" var="v">
                 <tr>
-                  <td>${v[0]}</td> <td>${v[1]}</td> <td>${v[2]}</td>
+                  <td>${y_axis_labels[counter++]}</td>
+                  <g:each in="${v}" var="v2">
+                    <td>${v2}</td>
+                  </g:each>
                 </tr>
               </g:each>
             </table>
