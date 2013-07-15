@@ -135,4 +135,40 @@ class FactService {
     result
   }
 
+
+  /**
+   *  Return an array of size n where array[0] = total for year, array[1]=year-1, array[2]=year=2 etc
+   *  Array is zero padded for blank years
+   */
+  def lastNYearsByType(title_id, org_id, supplier_id, report_type, n, year) {
+
+    def result = new String[n+1]
+
+    // def c = new GregorianCalendar()
+    // c.setTime(new Date());
+    // def current_year = c.get(Calendar.YEAR)
+
+    if ( title_id != null &&
+         org_id != null &&
+         supplier_id != null ) {
+
+      def q = "select sum(f.factValue),f.reportingYear,f.factType from Fact as f where f.relatedTitle.id=? and f.supplier.id=? and f.inst.id=? and f.factType.value = ? and f.reportingYear >= ? group by f.factType, f.reportingYear  order by f.reportingYear,f.factType.value"
+      def l1 = Fact.executeQuery(q,[title_id, supplier_id, org_id, report_type, (long)(year-n)])
+
+      l1.each{ y ->
+        if ( y[1] >= (year - n) ) {
+          int idx = year - y[1]
+          // log.debug("IDX = ${idx} year = ${y[1]} value=${y[0]}");
+          result[idx] = y[0].toString()
+        }
+      }
+    }
+
+    // result.each{r->
+    //   log.debug(r)
+    // }
+    result
+  }
+
+
 }

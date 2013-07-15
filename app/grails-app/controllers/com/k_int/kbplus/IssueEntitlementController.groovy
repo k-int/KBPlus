@@ -70,6 +70,11 @@ class IssueEntitlementController {
       result.x_axis_labels = fsresult?.x_axis_labels;
       result.y_axis_labels = fsresult?.y_axis_labels;
 
+      // def c = new GregorianCalendar()
+      // c.setTime(new Date());
+      // def current_year = c.get(Calendar.YEAR)
+      // factService.lastNYearsByType(title_id, org_id, supplier_id, 'JUSP:JR1', 14, current_year)
+
       if (!result.issueEntitlementInstance) {
         flash.message = message(code: 'default.not.found.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), params.id])
         redirect action: 'list'

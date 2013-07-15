@@ -20,6 +20,7 @@ class MyInstitutionsController {
   def gazetteerService
   def alertsService
   def genericOIDService
+  def factService
 
   // Map the parameter names we use in the webapp with the ES fields
   def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
@@ -1726,11 +1727,11 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
   }
 
   def generate(plist, inst) {
-    def m = generateMatrix(plist)
+    def m = generateMatrix(plist, inst)
     exportWorkbook(m, inst)
   }
 
-  def generateMatrix(plist) {
+  def generateMatrix(plist, inst) {
 
     def titleMap = [:]
     def subscriptionMap = [:]
@@ -1777,6 +1778,25 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
                 title_info.is_core = ie.coreStatus?.value
                 title_info.core_start_date = ie.coreStatusStart ? formatter.format(ie.coreStatusStart) : ''
                 title_info.core_end_date = ie.coreStatusEnd ? formatter.format(ie.coreStatusEnd) : ''
+
+                // Add in JR1 and JR1a reports
+                def c = new GregorianCalendar()
+                c.setTime(new Date());
+                def current_year = c.get(Calendar.YEAR)
+
+                try {
+                  title_info.jr1_last_4_years = factService.lastNYearsByType(title_info.id, 
+                                                                             inst.id, 
+                                                                             ie.tipp.pkg.contentProvider.id, 'JUSP:JR1', 4, current_year)
+
+                  title_info.jr1a_last_4_years = factService.lastNYearsByType(title_info.id, 
+                                                                              inst.id, 
+                                                                              ie.tipp.pkg.contentProvider.id, 'JUSP:JR1a', 4, current_year)
+                }
+                catch ( Exception e ) {
+                  log.error("Problem collating JUSP report info for title ${title_info.id}",e);
+                }
+
                 // log.debug("added title info: ${title_info}");
               }
               titleMap[ie.tipp.title.id] = title_info;
@@ -2066,25 +2086,25 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
 
       // Usage Stats
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1-4"));
+      cell.setCellValue(new HSSFRichTextString(title.jr1_last_4_years[4]?:'0'));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1a-4"));
+      cell.setCellValue(new HSSFRichTextString(title.jr1a_last_4_years[4]?:'0'));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1-3"));
+      cell.setCellValue(new HSSFRichTextString(title.jr1_last_4_years[3]?:'0'));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1a-3"));
+      cell.setCellValue(new HSSFRichTextString(title.jr1a_last_4_years[3]?:'0'));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1-2"));
+      cell.setCellValue(new HSSFRichTextString(title.jr1_last_4_years[2]?:'0'));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1a-2"));
+      cell.setCellValue(new HSSFRichTextString(title.jr1a_last_4_years[2]?:'0'));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1-1"));
+      cell.setCellValue(new HSSFRichTextString(title.jr1_last_4_years[1]?:'0'));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1a-1"));
+      cell.setCellValue(new HSSFRichTextString(title.jr1a_last_4_years[1]?:'0'));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1-YTD"));
+      cell.setCellValue(new HSSFRichTextString(title.jr1_last_4_years[0]?:'0'));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1a-YTD"));
+      cell.setCellValue(new HSSFRichTextString(title.jr1a_last_4_years[0]?:'0'));
 
       m.sub_info.each { sub ->
         cell = row.createCell(cc++);
@@ -2106,6 +2126,10 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
     row = firstSheet.createRow(rc++);
     cell = row.createCell(0);
     cell.setCellValue(new HSSFRichTextString("END"));
+
+    // firstSheet.autoSizeRow(6); //adjust width of row 6 (Headings for JUSP Stats)
+    Row jusp_heads_row = firstSheet.getRow(6);
+    jusp_heads_row.setHeight((short)(jusp_heads_row.getHeight() * 2));
 
     firstSheet.autoSizeColumn(0); //adjust width of the first column
     firstSheet.autoSizeColumn(1); //adjust width of the first column
