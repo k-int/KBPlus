@@ -188,8 +188,8 @@ class AdminController {
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def juspSync() {
-    redirect(controller:'home')
     juspSyncService.doSync()
+    redirect(controller:'home')
   }
 
 }
