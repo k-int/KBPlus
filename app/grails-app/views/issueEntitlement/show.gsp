@@ -159,24 +159,26 @@
                 <dd>${issueEntitlementInstance.tipp.coverageNote}</dd>
             </dl>
 
-            <h6>JUSP Usage Statistics</h6>
-            <table class="table table-bordered table-striped">
-              <tr>
-                <th>Reporting Period</th>
-                <g:each in="${x_axis_labels}" var="l">
-                  <th>${l}</th>
-                </g:each>
-              </tr>
-              <g:set var="counter" value="${0}" />
-              <g:each in="${usage}" var="v">
+            <g:if test="${( usage != null ) && ( usage.size() > 0 ) }">
+              <h6>JUSP Usage Statistics</h6>
+              <table class="table table-bordered table-striped">
                 <tr>
-                  <td>${y_axis_labels[counter++]}</td>
-                  <g:each in="${v}" var="v2">
-                    <td>${v2}</td>
+                  <th>Reporting Period</th>
+                  <g:each in="${x_axis_labels}" var="l">
+                    <th>${l}</th>
                   </g:each>
                 </tr>
-              </g:each>
-            </table>
+                <g:set var="counter" value="${0}" />
+                <g:each in="${usage}" var="v">
+                  <tr>
+                    <td>${y_axis_labels[counter++]}</td>
+                    <g:each in="${v}" var="v2">
+                      <td>${v2}</td>
+                    </g:each>
+                  </tr>
+                </g:each>
+              </table>
+            </g:if>
 
             <g:if test="${issueEntitlementInstance.tipp.title?.tipps}">
 

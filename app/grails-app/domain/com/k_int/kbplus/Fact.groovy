@@ -25,6 +25,12 @@ class Fact {
     reportingMonth(nullable:true, blank:false)
   }
 
+  static mapping = {
+                id column:'fact_id'
+           version column:'fact_version'
+           factUid column:'fact_uid', index:'fact_uid_idx'
+          factType column:'fact_type_rdv_fk', index:'fact_uid_idx'
+  }
 
 }
 
