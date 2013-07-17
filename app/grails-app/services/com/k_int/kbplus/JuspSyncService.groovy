@@ -73,7 +73,8 @@ class JuspSyncService {
     def l1 = IssueEntitlement.executeQuery(q)
 
     l1.each { to ->
-      // log.debug("Processing titile/provider pair: ${to[0].title}, ${to[1].name}");
+   
+      log.debug("Processing titile/provider/org triple: ${to[0].title}, ${to[1].name}, ${to[2].name}");
       // def jusp_title_id = to[0].getIdentifierValue('jusp')
       def jusp_supplier_id = to[1].getIdentifierByType('juspsid').value
       def jusp_login = to[2].getIdentifierByType('jusplogin').value
@@ -91,6 +92,7 @@ class JuspSyncService {
         def from_period = csr.haveUpTo ?: '1800-01'
         log.debug("https://www.jusp.mimas.ac.uk/api/v1/Journals/Statistics/?jid=${jusp_title_id}&sid=${jusp_supplier_id}&loginid=${jusp_login}&startrange=${from_period}&endrange=${most_recent_closed_period}&granularity=monthly");
         try {
+          log.debug("Making JUSP API Call");
           jusp_api_endpoint.get( 
                                  path : 'api/v1/Journals/Statistics/',
                                  contentType: JSON,
@@ -101,7 +103,7 @@ class JuspSyncService {
                                          startrange:from_period,
                                          endrange:most_recent_closed_period,
                                          granularity:'monthly'] ) { resp, json ->
-            // log.debug("Result: ${resp}, ${json}");
+            log.debug("Got JUSP Result");
             if ( json ) {
               def cal = new GregorianCalendar();
               if ( json.ReportPeriods != null ) {
