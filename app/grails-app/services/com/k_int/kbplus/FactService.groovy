@@ -16,7 +16,7 @@ class FactService {
 
           // Are we updating an existing fact?
           if ( fact.uid != null ) {
-            def current_fact = Fact.findByFactTypeAndFactUid(fact_type_refdata_value,fact.uid)
+            def current_fact = Fact.findByFactUidAndFactType(fact.uid,fact_type_refdata_value)
             if ( current_fact == null ) {
               log.debug("Create new fact..");
               current_fact = new Fact(factType:fact_type_refdata_value, 
