@@ -5,6 +5,7 @@ class FactService {
   static transactional = false;
 
     def registerFact(fact) {
+      log.debug("Enter registerFact");
 
       if ( ( fact.type == null ) || 
            ( fact.type == '' ) ) 
@@ -44,6 +45,9 @@ class FactService {
       }
       catch ( Exception e ) {
         log.error("Problem registering fact",e);
+      }
+      finally {
+        log.debug("Leave registerFact");
       }
     }
 
