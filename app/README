@@ -1,4 +1,4 @@
-bump bump
+bump bump bump
 Current option set
 
 export JAVA_OPTS="-Xmx2G -server -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC"
