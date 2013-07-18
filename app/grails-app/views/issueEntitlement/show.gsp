@@ -37,7 +37,7 @@
             <dl>
                 <g:if test="${issueEntitlementInstance?.status}">
                     <dt><g:message code="issueEntitlement.status.label" default="Status" /></dt>
-                    <dd><g:link controller="refdataValue" action="show" id="${issueEntitlementInstance?.status?.id}">${issueEntitlementInstance?.status?.value.encodeAsHTML()}</g:link></dd>
+                    <dd>${issueEntitlementInstance?.status?.value.encodeAsHTML()}</dd>
                 </g:if>
             </dl>
 
@@ -45,7 +45,7 @@
                 <g:if test="${issueEntitlementInstance?.subscription}">
                     <dt><g:message code="issueEntitlement.subscription.label" default="Subscription" /></dt>
 
-                    <dd><g:link controller="subscription" action="show" id="${issueEntitlementInstance?.subscription?.id}">${issueEntitlementInstance?.subscription?.name.encodeAsHTML()}</g:link></dd>
+                    <dd><g:link controller="subscriptionDetails" action="index" id="${issueEntitlementInstance?.subscription?.id}">${issueEntitlementInstance?.subscription?.name.encodeAsHTML()}</g:link></dd>
 
                 </g:if>
             </dl>
@@ -121,7 +121,7 @@
 
             <dl>
                 <dt>Coverage Note</dt>
-                <dd>${issueEntitlementInstance.coverageNote}</dd>
+                <dd><g:xEditable owner="${issueEntitlementInstance}" field="coverageNote"/></dd>
             </dl>
 
             <br/>
@@ -159,6 +159,27 @@
                 <dd>${issueEntitlementInstance.tipp.coverageNote}</dd>
             </dl>
 
+            <g:if test="${( usage != null ) && ( usage.size() > 0 ) }">
+              <h6>JUSP Usage Statistics</h6>
+              <table class="table table-bordered table-striped">
+                <tr>
+                  <th>Reporting Period</th>
+                  <g:each in="${x_axis_labels}" var="l">
+                    <th>${l}</th>
+                  </g:each>
+                </tr>
+                <g:set var="counter" value="${0}" />
+                <g:each in="${usage}" var="v">
+                  <tr>
+                    <td>${y_axis_labels[counter++]}</td>
+                    <g:each in="${v}" var="v2">
+                      <td>${v2}</td>
+                    </g:each>
+                  </tr>
+                </g:each>
+              </table>
+            </g:if>
+
             <g:if test="${issueEntitlementInstance.tipp.title?.tipps}">
 
                 <br/>
@@ -181,8 +202,8 @@
                         <td>${t.endIssue}</td>
                         <td>${t.coverageDepth}</td>
                         <td><g:link controller="platform" action="show" id="${t.platform.id}">${t.platform.name}</g:link></td>
-                        <td><g:link controller="package" action="show" id="${t.pkg.id}">${t.pkg.name} (${t.pkg.contentProvider?.name})</g:link></td>
-                        <td><g:link controller="titleInstancePackagePlatform" action="show" id="${t.id}">Full TIPP record</g:link></td>
+                        <td><g:link controller="packageDetails" action="show" id="${t.pkg.id}">${t.pkg.name}</g:link></td>
+                        <td><g:link controller="tipp" action="show" id="${t.id}">Full TIPP record</g:link></td>
                         </tr>
                     </g:each>
                 </table>

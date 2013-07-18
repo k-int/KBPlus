@@ -72,12 +72,16 @@ class UploadController {
   def processUploadSO(upload) {
 
     def new_pkg_id = null
+    log.debug("Content provider value is ${upload.soProvider.value}");
+
     def content_provider_org = Org.findByName(upload.soProvider.value) 
     if ( content_provider_org == null ) {
+      log.debug("content_provider_org is present and set to ${content_provider_org}");
       content_provider_org = new Org(name:upload.soProvider.value,impId:java.util.UUID.randomUUID().toString()).save();    
       incrementStatsCounter(upload,'Content Provider Org Created');
     }
     else {
+      log.debug("Matched ${content_provider_org} using name ${upload.soProvider.value}");
       incrementStatsCounter(upload,'Content Provider Org Matched');
     }
     
@@ -90,7 +94,8 @@ class UploadController {
       consortium = Org.findByName(upload.consortium.value) ?: new Org(name:upload.consortium.value).save();
     }
 
-    def new_pkg = new Package(identifier: upload.soPackageIdentifier.value,
+
+    def new_pkg = new Package(identifier: upload.normPkgIdentifier,
                               name: upload.soPackageName.value,
                               type: pkg_type,
                               contentProvider: content_provider_org,
@@ -98,17 +103,23 @@ class UploadController {
                               endDate: upload.aggreementTermEndYear?.value, 
                               impId: java.util.UUID.randomUUID().toString());
 
-    if ( upload.consortiumOrg ) {                              
-      def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
-      def or = new OrgRole(org: consortium, pkg:new_pkg, roleType:sc_role).save();
-    }
+    
+    if ( new_pkg.save(flush:true, failOnError:true) ) {
 
-    if ( new_pkg.save(flush:true) ) {
-      //log.debug("New package ${pkg.identifier} saved");
-      // Content Provider?
       log.debug("Package [${new_pkg.id}] with identifier ${new_pkg.identifier} created......");
+
+      if ( upload.consortiumOrg ) {                              
+        def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
+        def or = new OrgRole(org: consortium, pkg:new_pkg, roleType:sc_role).save();
+      }
+
+      // Content Provider?
       if ( content_provider_org ) {
-        OrgRole.assertOrgPackageLink(content_provider_org, new_pkg, cp_role);
+        log.debug("Linking to org as content provider");
+        def cp_or = new OrgRole(org: content_provider_org, pkg:new_pkg, roleType:cp_role).save();
+      }
+      else {
+        log.debug("No content provider org");
       }
       new_pkg_id = new_pkg.id
     }
@@ -288,10 +299,12 @@ class UploadController {
     }
 
     CSVReader r = null
-    if ( request.docstyle?.equals("tsv") ) {
-      r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ), '\t' )
+    if ( params.docstyle?.equals("tsv") ) {
+      log.debug("Processing TSV");
+      r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ), (char)'\t' )
     }
     else {
+      log.debug("Processing CSV");
       r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ) )
     }
 
@@ -519,11 +532,11 @@ class UploadController {
       
       if ( tipp.platform ) {
         def plat = tipp.platform.values().find { it.coltype=='host' }
-        if ( plat && plat.url && ( plat.url.trim() != '' ) ) {
+        if ( plat && plat.url && ( plat.url.trim() != '' && plat.name && plat.name.trim() != '' ) ) {
           // Cool - found platform
         }
         else {
-          tipp.messages.add("Unable to locate host platform");
+          tipp.messages.add("Error in Platform Information - Unable to locate host platform OR platform url/name not specified");
           upload.processFile=false;
         }
       }
@@ -692,7 +705,7 @@ class UploadController {
     }
 
     if ( result.stats[counter] == null ) {
-      result.stats[counter] = 0
+      result.stats[counter] = 1
     }
     else {
       result.stats[counter]++

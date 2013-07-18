@@ -8,7 +8,7 @@
 
 <html lang="en">
   <head>
-    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title><g:layoutTitle default="${meta(name: 'app.name')}"/></title>
     <meta name="description" content="">
     <meta name="viewport" content="initial-scale = 1.0">
@@ -61,6 +61,8 @@
                     <ul class="dropdown-menu" style="max-width:none;">
   
   
+                       <li><g:link controller="packageDetails" action="index">All Packages</g:link></li>
+                       <li class="divider"></li>
                        <g:set var="usaf" value="${user.authorizedOrgs}" />
                        <g:if test="${usaf && usaf.size() > 0}">
                          <g:each in="${usaf}" var="org">
@@ -103,8 +105,8 @@
                          <g:link controller="packageDetails" action="create">New Package</g:link></li>
                        -->
                        <li class="divider"></li>
-                         <li <%= ( ( 'upload'== controllerName ) && ( 'reviewSO'==actionName ) ) ? ' class="active"' : '' %>>
-                             <g:link controller="upload" action="reviewSO">Upload new SO file</g:link></li>
+                       <li <%= ( ( 'upload'== controllerName ) && ( 'reviewSO'==actionName ) ) ? ' class="active"' : '' %>>
+                                                <g:link controller="upload" action="reviewSO">Upload new Package</g:link></li>
                          <li <%= ( ( 'licenseImport'== controllerName ) && ( 'doImport'==actionName ) ) ? ' class="active"' : '' %>>
                              <g:link controller="licenseImport" action="doImport">Import ONIX-PL license</g:link></li>
                        <li class="divider"></li>
@@ -153,6 +155,12 @@
                       </li>
                       <li <%= ( ( 'userDetails'== controllerName ) && ( 'list'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="userDetails" action="list">User Details</g:link>
+                      </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'forumSync'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="forumSync">Run Forum Sync</g:link>
+                      </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'juspSync'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="juspSync">Run JUSP Sync</g:link>
                       </li>
                     </ul>
                   </li>
@@ -244,9 +252,11 @@
       </div>
   </div>
   
+  <!--
   <div class="support-tab">
       <a href="mailto:kbplus@jisc-collections.ac.uk?subject=KBPlus%20Support%20Query"><i class="icon-question-sign icon-white"></i>Request Support</a>
   </div>
+  -->
       
   <!-- For datatable -->
   <script type="text/javascript" charset="utf-8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
@@ -258,7 +268,6 @@
   <!-- For select2 -->
   <script src="${resource(dir: 'js', file: 'select2.js')}"></script>
       
-  <!--
   <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.4/zenbox.js"></script>
   <style type="text/css" media="screen, projection">
     @import url(//assets.zendesk.com/external/zenbox/v2.4/zenbox.css);
@@ -274,7 +283,6 @@
       });
     }
   </script>
-  -->
       
   <script type="text/javascript">
       var _gaq = _gaq || [];

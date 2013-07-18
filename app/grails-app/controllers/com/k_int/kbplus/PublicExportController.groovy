@@ -29,7 +29,7 @@ class PublicExportController {
     def result = [:]
 
     def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : ( response.format == "csv" ? 10000 : 10 );
+    result.max = params.max ? Integer.parseInt(params.max) : ( ( response.format == "csv" || response.format == "json" ) ? 10000 : 10 );
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
     log.debug("max = ${result.max}");
@@ -138,7 +138,7 @@ class PublicExportController {
     def result = [:]
 
     def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : ( response.format == "csv" ? 10000 : 10 );
+    result.max = params.max ? Integer.parseInt(params.max) : ( ( response.format == "csv" || response.format == "json" ) ? 10000 : 10 );
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
     log.debug("max = ${result.max}");
@@ -206,6 +206,7 @@ class PublicExportController {
          response.header.version = "2.0"
          response.header.jcid = ''
          response.header.url = "uri://kbplus/pkg/${result.packageInstance.id}"
+         response.header.pkgcount = result.num_pkg_rows
 
          result.tipps.each { e ->
 

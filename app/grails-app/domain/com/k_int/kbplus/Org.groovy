@@ -12,6 +12,7 @@ class Org {
   String scope
   Date dateCreated
   Date lastUpdated
+  String categoryId
 
   // Used to generate friendly semantic URLs
   String shortcode
@@ -31,22 +32,24 @@ class Org {
                     affiliations: UserOrg]
 
   static mapping = {
-         id column:'org_id'
-    version column:'org_version'
-      impId column:'org_imp_id', index:'org_imp_id_idx'
-       name column:'org_name', index:'org_name_idx'
-    address column:'org_address'
-    ipRange column:'org_ip_range'
-  shortcode column:'org_shortcode'
-      scope column:'org_scope'
+            id column:'org_id'
+       version column:'org_version'
+         impId column:'org_imp_id', index:'org_imp_id_idx'
+          name column:'org_name', index:'org_name_idx'
+       address column:'org_address'
+       ipRange column:'org_ip_range'
+     shortcode column:'org_shortcode'
+         scope column:'org_scope'
+    categoryId column:'org_cat'
   }
 
   static constraints = {
-    address(nullable:true, blank:true,maxSize:256);
-    ipRange(nullable:true, blank:true, maxSize:1024);
-    sector(nullable:true, blank:true, maxSize:128);
-    shortcode(nullable:true, blank:true, maxSize:128);
-    scope(nullable:true, blank:true, maxSize:128);
+       address(nullable:true, blank:true,maxSize:256);
+       ipRange(nullable:true, blank:true, maxSize:1024);
+        sector(nullable:true, blank:true, maxSize:128);
+     shortcode(nullable:true, blank:true, maxSize:128);
+         scope(nullable:true, blank:true, maxSize:128);
+    categoryId(nullable:true, blank:true, maxSize:128);
   }
 
   def beforeInsert() {

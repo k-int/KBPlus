@@ -45,7 +45,7 @@ class OrgRole {
         else
           porg.links.add(link)
   
-        porg.save();
+        porg.save(flush:true, failOnError:true);
       }
     }
   }

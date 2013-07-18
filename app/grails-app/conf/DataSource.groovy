@@ -40,7 +40,7 @@ environments {
             username = "sa"
             password = ""
             dialect = org.hibernate.dialect.H2Dialect
-            dbCreate = "update"
+            dbCreate = "create-drop"
             url = "jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
         }
     }
