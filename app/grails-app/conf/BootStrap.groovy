@@ -11,7 +11,7 @@ class BootStrap {
 
 
   def init = { servletContext ->
-
+	
     def evt_startup = new EventLog(event:'kbplus.startup',message:'Normal startup',tstp:new Date(System.currentTimeMillis())).save(flush:true)
 
     def so_filetype = DataloadFileType.findByName('Subscription Offered File') ?: new DataloadFileType(name:'Subscription Offered File');
@@ -95,7 +95,13 @@ class BootStrap {
 
     // Some extra refdata
     def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
-
+	
+	// Transforms types and formats Refdata
+	def json_format = RefdataCategory.lookupOrCreate('Transform Format', 'json');
+	def xml_format = RefdataCategory.lookupOrCreate('Transform Format', 'xml');
+	def url_format = RefdataCategory.lookupOrCreate('Transform Format', 'url');
+	def subscription_type = RefdataCategory.lookupOrCreate('Transform Type', 'subscription');
+	def licence_type = RefdataCategory.lookupOrCreate('Transform Type', 'licence');
   }
 
   def destroy = {
