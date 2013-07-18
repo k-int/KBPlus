@@ -117,6 +117,13 @@
                         <g:xEditable owner="${license}" field="noticePeriod" id="noticePeriod"/>
                      </dd>
                   </dl>
+
+                    <dl>
+                        <dt><label class="control-label">ONIX-PL License</label></dt>
+                        <dd>
+                            <g:link controller="onixplLicenseDetails" action="index" id="${license.onixplLicense?.id}">${license.onixplLicense}</g:link>
+                        </dd>
+                    </dl>
       
                   <dl>
                       <dt><label class="control-label" for="licenseUrl">Licence Url</label></dt>

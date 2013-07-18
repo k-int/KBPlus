@@ -42,7 +42,7 @@
           </g:form>
 
           <br/>
-
+${result}
       <%-- Show summary --%>
           <g:if test="${result}">
               Upload successful
@@ -52,6 +52,9 @@
                   and associated with license ${result.license.id}.
               </div>
               </g:if>
+              <g:else>
+                  You messed up fool!
+              </g:else>
 
               <g:if test="${result.termStatuses!= null}">
                   <div class="alert alert-info">

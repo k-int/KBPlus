@@ -126,8 +126,14 @@ class LicenseImportController {
 
     // Create or find a license
     //def l = License.get(params.licid);
-    def license = new License();
-    license.save(flush: true);
+      def license = null;
+     license = new License();
+    if (!license.save(flush: true)) {
+        license.errors.each {
+            log.error("License error:" + it);
+        }
+    }
+
     log.debug("Created empty license "+license.id);
 
     def file = request.getFile("importFile");
@@ -172,16 +178,18 @@ class LicenseImportController {
             filename: upload_filename,
             mimeType: upload_mime_type,
             title: params.upload_title,
-            type:doctype)
+            type:doctype,
+            user: upload.user)
             .save()
-
+          def opl = recordOnixplLicense(license, doc_content);
         def doc_context = new DocContext(
             license:license,
             owner:doc_content,
-            user: upload.user,
             doctype:doctype).save(flush:true);
 
-        def opl = recordOnixplLicense(license, doc_content);
+          log.error("License: " + license.id);
+
+
 
         if (upload.usageTerms) {
           upload.usageTerms.each { ut ->
@@ -208,6 +216,7 @@ class LicenseImportController {
    */
   def recordOnixplLicense(license, doc) {
     def opl = null;
+      log.error("License2: " + license.id);
     try {
       opl = new OnixplLicense(
           lastmod:new Date(),
@@ -245,17 +254,21 @@ class LicenseImportController {
     );
     term.save(flush: true);
     //log.debug("Term "+term.id);
-
+    log.error("OPL: " + opl);
     // License Text
     usageTerm.licenseTexts.each { lt ->
       def oplt = new OnixplLicenseText(
           text:lt.text,
           elementId:lt.elId,
-          usageTerm:term,
           oplLicense:opl
       );
       oplt.save(validate:false, flush: true, insert:true);
       //log.debug("LicenseText "+oplt.id);
+        def oputlt = new OnixplUsageTermLicenseText(
+                usageTerm: term,
+                licenseText: oplt
+        );
+        oputlt.save(validate: false, flush: true, insert: true);
     }
   }
 
