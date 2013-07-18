@@ -35,10 +35,18 @@
 
       <dl>
         <dt>Available Titles ( ${offset+1} to ${offset+(tipps?.size())} of ${num_tipp_rows} )
-          <g:form action="addEntitlements" params="${params}" method="get">
+          <g:form action="addEntitlements" params="${params}" method="get" class="form-inline">
             <input type="hidden" name="sort" value="${params.sort}">
             <input type="hidden" name="order" value="${params.order}">
-            Filter: <input name="filter" value="${params.filter}"/><input type="submit" class="btn btn-primary">
+            <label>Filter:</label> <input name="filter" value="${params.filter}"/>
+            <label>From Package:</label> <select name="pkgfilter">
+                               <option value="">All</option>
+                               <g:each in="${subscriptionInstance.packages}" var="sp">
+                                 <option value="${sp.pkg.id}" ${sp.pkg.id.toString()==params.pkgfilter?'selected=true':''}>${sp.pkg.name}</option>
+                               </g:each>
+                            </select>
+
+            <input type="submit" class="btn btn-primary">
           </g:form>
         </dt>
         <dd>
@@ -47,7 +55,9 @@
             <table  class="table table-striped table-bordered columns10">
               <thead>
                 <tr>
-                  <th></th>
+                  <th>
+                    <g:if test="${editable}"><input type="checkbox" name="chkall" onClick="javascript:selectAll();"/></g:if>
+                  </th>
                   <th>#</th>
                   <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
                   <th>ISSN</th>
@@ -64,9 +74,10 @@
                   <tr>
                     <td><input type="checkbox" name="_bulkflag.${tipp.id}" class="bulkcheck"/></td>
                     <td>${counter++}</td>
-                    <td> (${tipp.id})
-                      <g:if test="${tipp?.hostPlatformURL}"><a href="${tipp?.hostPlatformURL}" TITLE="${tipp?.hostPlatformURL}">${tipp.title.title}</a></g:if>
-                      <g:else>${tipp.title.title}</g:else>
+                    <td>
+                      <g:link controller="tipp" id="${tipp.id}" action="show">${tipp.title.title}</g:link>
+                      <g:if test="${tipp?.hostPlatformURL}">( <a href="${tipp?.hostPlatformURL}" TITLE="${tipp?.hostPlatformURL}">Host Link</a>
+                            <a href="${tipp?.hostPlatformURL}" TITLE="${tipp?.hostPlatformURL} (In new window)" target="_blank"><i class="icon-share-alt"></i></a>)</g:if>
                     </td>
                     <td>${tipp?.title?.getIdentifierValue('ISSN')}</td>
                     <td>${tipp?.title?.getIdentifierValue('eISSN')}</td>
@@ -109,6 +120,10 @@
           rows      : 3,
           tooltip   : 'Click to edit...'
         });
+      });
+
+      function selectAll() {
+        $('.bulkcheck').attr('checked', true);
       }
     </script>
   </body>

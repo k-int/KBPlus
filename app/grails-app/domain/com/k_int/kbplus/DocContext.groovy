@@ -10,6 +10,7 @@ class DocContext {
   RefdataValue doctype
   License license
   Subscription subscription
+  Package pkg
   Alert alert
 
   // We may attach a note to a particular column, in which case, we set domain here as a discriminator
@@ -22,6 +23,7 @@ class DocContext {
           doctype column:'dc_rv_doctype_fk'
           license column:'dc_lic_fk'
      subscription column:'dc_sub_fk'
+              pkg column:'dc_pkg_fk'
            status column:'dc_status_fk'
             alert column:'dc_alert_fk'
   }
@@ -30,6 +32,7 @@ class DocContext {
     doctype(nullable:true, blank:false);
     license(nullable:true, blank:false);
     subscription(nullable:true, blank:false);
+    pkg(nullable:true, blank:false);
     domain(nullable:true, blank:false);
     status(nullable:true, blank:false);
     alert(nullable:true, blank:false);

@@ -14,6 +14,7 @@
       <li>Groovy version: ${GroovySystem.getVersion()}</li>
       <li>JVM version: ${System.getProperty('java.version')}</li>
       <li>Reloading active: ${grails.util.Environment.reloadingAgentEnabled}</li>
+      <li>Build Date: <g:meta name="app.buildDate"/></li>
     </ul>
   </body>
 </html>

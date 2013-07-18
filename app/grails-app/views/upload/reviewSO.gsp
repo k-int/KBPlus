@@ -10,7 +10,7 @@
       <div class="container">
 
         <div class="page-header">
-          <h1>Subscription Offered - Manual Upload</h1>
+          <h1>Package - Manual Upload</h1>
         </div>
 
         <g:if test="${flash.message}">
@@ -65,7 +65,6 @@
           <g:if test="${validationResult.processFile==true}">
             <bootstrap:alert class="alert-success">File passed validation checks, new SO details follow:<br/>
               <g:link controller="packageDetails" action="show" id="${validationResult.new_pkg_id}">New Package Details</g:link><br/>
-              <g:link controller="subscriptionDetails" action="index" id="${validationResult.new_sub_id}">New Subscription Details</g:link>
             </bootstrap:alert>
           </g:if>
           <g:else>

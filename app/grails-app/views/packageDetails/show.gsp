@@ -7,16 +7,47 @@
     <title><g:message code="default.edit.label" args="[entityName]" /></title>
   </head>
   <body>
+
+
+    <div class="container">
+      <ul class="breadcrumb">
+        <li><g:link controller="packageDetails" action="index">All Packages</g:link><span class="divider">/</span></li>
+        <li><g:link controller="packageDetails" action="show" id="${packageInstance.id}">${packageInstance.name}</g:link></li>
+        
+        <li class="dropdown pull-right">
+	        <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">
+		  		Exports<b class="caret"></b>
+			</a>
+			<ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
+				<li>
+		  			<% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
+					<g:link action="show" params="${ps_json}" target="_blank">Json Export</g:link>
+	      		</li>
+				<li>
+		  			<% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
+					<g:link action="show" params="${ps_xml}" target="_blank">XML Export</g:link>
+	      		</li>
+		    </ul>
+		</li>
+      </ul>
+    </div>
+  
+   
+
       <div class="container">
 
         <div class="page-header">
-          <h1> <span id="packageNameEdit"
+          <div>
+          <h1><g:if test="${editable}"><span id="packageNameEdit"
                         class="xEditableValue"
                         data-type="textarea"
                         data-pk="${packageInstance.class.name}:${packageInstance.id}"
                         data-name="name"
-                        data-url='<g:createLink controller="ajax" action="editableSetValue"/>'>${packageInstance.name}</span></h1>
+                        data-url='<g:createLink controller="ajax" action="editableSetValue"/>'>${packageInstance.name}</span></g:if><g:else>${packageInstance.name}</g:else></h1>
+          </div>
+
         </div>
+    </div>
 
         <g:if test="${flash.message}">
         <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
@@ -32,22 +63,11 @@
         </bootstrap:alert>
         </g:hasErrors>
 
-        <fieldset>
+    <div class="container">
+      <div class="row">
+        <div class="span8">
+            <h6>Package Information</h6>
             <g:hiddenField name="version" value="${packageInstance?.version}" />
-
-            <!--
-              packageType
-              packageStatus
-              contentProvider
-              nominalPlatform
-              packageListStatus
-              identifier
-              impId
-              name
-              orgs
-              subscriptions
-              tipps
-            -->
             <fieldset>
 
               <dl>
@@ -61,6 +81,14 @@
                   <g:xEditableRefData owner="${packageInstance}" field="isPublic" config='YN'/>
                 </dd>
               </dl> 
+
+              <dl>
+                <dt>License</dt>
+                <dd>
+                  <g:xEditableRefData owner="${packageInstance}" field="license" config='Licenses'/>
+                </dd>
+              </dl>
+
 
                 <dl><dt>Start Date</dt><dd>
                     <g:xEditable owner="${packageInstance}" field="startDate" type="date"/>
@@ -80,7 +108,7 @@
                 <dt>Org Links</dt>
                 <dd><g:render template="orgLinks" 
                             contextPath="../templates" 
-                            model="${[roleLinks:packageInstance?.orgs,parent:packageInstance.class.name+':'+packageInstance.id,property:'orgs',editmode:true]}" /></dd>
+                            model="${[roleLinks:packageInstance?.orgs,parent:packageInstance.class.name+':'+packageInstance.id,property:'orgs',editmode:editable]}" /></dd>
               </dl>
 
               <dl>
@@ -89,27 +117,70 @@
                   <g:xEditableRefData owner="${packageInstance}" field="packageType" config='PackageType'/>
                 </dd>
               </dl>
+          </fieldset>
+        </div>
+        <div class="span4">
+          <div class="well notes">
+            <g:if test="${(subscriptionList != null) && (subscriptionList?.size() > 0)}">
+              <h5>Add package to institutional subscription:</h5>
+              <g:form controller="packageDetails" action="addToSub" id="${packageInstance.id}">
+                <select name="subid">
+                  <g:each in="${subscriptionList}" var="s">
+                    <option value="${s.sub.id}">${s.sub.name ?: "unnamed subscription ${s.sub.id}"} - ${s.org.name}</option>
+                  </g:each>
+                </select><br/>
+                Create Entitlements in Subscription: <input type="checkbox" name="addEntitlements" value="true"/><br/>
+                <input type="submit"/>
+              </g:form>
+            </g:if>
+            <g:else>
+              No subscriptions available to link to this package
+            </g:else>
+          </div>
+    
+          <g:render template="documents" contextPath="../templates" model="${[doclist:packageInstance.documents, ownobj:packageInstance, owntp:'pkg']}" />
+          <g:render template="notes" contextPath="../templates" model="${[doclist:packageInstance.documents, ownobj:packageInstance, owntp:'pkg']}" />
+          <g:if test="${packageInstance.forumId != null}">
+            <div class="well notes">
+              <a href="https://kbplus.zendesk.com/forums/${packageInstance.forumId}">Discuss this package</a>
+            </div>
+          </g:if>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+        <g:form action="show" params="${params}" method="get" class="form-inline">
+           <input type="hidden" name="sort" value="${params.sort}">
+           <input type="hidden" name="order" value="${params.order}">
+           <label>Filter:</label> <input name="filter" value="${params.filter}"/>
+           <input type="submit" class="btn btn-primary" />
+        </g:form>
 
         <dl>
-          <dt>Titles</dt>
+          <dt>Titles (${offset+1} to ${lasttipp}  of ${num_tipp_rows})</dt>
           <dd>
           <table class="table table-bordered">
             <thead>
             <tr>
-              <th rowspan="2" style="">Title</th>
-              <th rowspan="2" style="">Platform</th>
-              <th rowspan="2" style="">Identifiers</th>
-              <th rowspan="2" style="">Start</th>
-              <th rowspan="2" style="">End</th>
-              <th rowspan="2" style="">Coverage Depth</th>
+              <th>&nbsp;</th>
+              <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
+              <th style="">Platform</th>
+              <th style="">Identifiers</th>
+              <th style="">Start</th>
+              <th style="">End</th>
+              <th style="">Coverage Depth</th>
             </tr>
             </thead>
             <tbody>
-            <g:each in="${packageInstance?.tipps}" var="t">
+            <g:set var="counter" value="${offset+1}" />
+            <g:each in="${titlesList}" var="t">
               <tr>
+                <td>${counter++}</td>
                 <td style="vertical-align:top;">
                    ${t.title.title}
-                   <g:link controller="titleDetails" action="edit" id="${t.title.id}">(Title)</g:link>
+                   <g:link controller="titleDetails" action="show" id="${t.title.id}">(Title)</g:link>
                    <g:link controller="tipp" action="show" id="${t.id}">(TIPP)</g:link>
                    (<g:xEditableRefData owner="${t}" field="status" config='TIPPStatus'/>)
                 </td>
@@ -141,9 +212,15 @@
           </dd>
         </dl>
 
+        <div class="pagination" style="text-align:center">
+          <g:if test="${titlesList}" >
+            <bootstrap:paginate  action="show" controller="packageDetails" params="${params}" next="Next" prev="Prev" maxsteps="${max}" total="${num_tipp_rows}" />
+          </g:if>
+        </div>
 
-            </fieldset>
-        </fieldset>
+
+
+        <g:if test="${editable}">
         
         <g:form controller="ajax" action="addToCollection">
           <fieldset>
@@ -151,6 +228,10 @@
             <input type="hidden" name="__context" value="${packageInstance.class.name}:${packageInstance.id}"/>
             <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.TitleInstancePackagePlatform"/>
             <input type="hidden" name="__recip" value="pkg"/>
+
+            <!-- N.B. this should really be looked up in the controller and set, not hard coded here -->
+            <input type="hidden" name="status" value="com.k_int.kbplus.RefdataValue:29"/>
+
             <label>Title To Add</label>
             <g:simpleReferenceTypedown class="input-xxlarge" style="width:350px;" name="title" baseClass="com.k_int.kbplus.TitleInstance"/><br/>
             <span class="help-block"></span>
@@ -161,6 +242,8 @@
           </fieldset>
         </g:form>
 
+
+        </g:if>
 
       </div>
 

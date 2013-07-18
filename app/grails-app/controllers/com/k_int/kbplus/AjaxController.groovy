@@ -72,6 +72,14 @@ class AjaxController {
       qryParams:[],
       cols:['value'],
       format:'simple'
+    ],
+    'Licenses' : [
+      domain:'License',
+      countQry:"select count(l) from License as l",
+      rowQry:"select l from License as l",
+      qryParams:[],
+      cols:['reference'],
+      format:'simple'
     ]
   ]
 

@@ -14,12 +14,31 @@
           <li> <g:link controller="myInstitutions" action="currentSubscriptions" params="${[shortcode:subscriptionInstance.subscriber.shortcode]}"> ${subscriptionInstance.subscriber.name} Current Subscriptions</g:link> <span class="divider">/</span> </li>
         </g:if>
         <li> <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}">Subscription ${subscriptionInstance.id} Details</g:link> </li>
+        
+        <!-- OLD VERSION
         <li class="pull-right">
           <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter]}">CSV Export</g:link> 
           <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter,omitHeader:'Y']}">(No header)</g:link></li>
         <g:if test="${editable}">
           <li class="pull-right">Editable by you&nbsp;</li>
         </g:if>
+        -->
+        
+        <li class="dropdown pull-right">
+	        <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">
+		  		Exports<b class="caret"></b>
+			</a>
+			<ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
+				<li>
+		  			<% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
+					<g:link action="index" params="${ps_json}" target="_blank">Json Export</g:link>
+	      		</li>
+				<li>
+		  			<% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
+					<g:link action="index" params="${ps_xml}" target="_blank">XML Export</g:link>
+	      		</li>
+		    </ul>
+		</li>
       </ul>
     </div>
 
@@ -124,6 +143,12 @@
              <input type="hidden" name="sort" value="${params.sort}">
              <input type="hidden" name="order" value="${params.order}">
              <label>Filter:</label> <input name="filter" value="${params.filter}"/>
+             <label>From Package:</label> <select name="pkgfilter">
+                                <option value="">All</option>
+                               <g:each in="${subscriptionInstance.packages}" var="sp">
+                                 <option value="${sp.pkg.id}" ${sp.pkg.id.toString()==params.pkgfilter?'selected=true':''}>${sp.pkg.name}</option>
+                               </g:each>
+                            </select>
              <input type="submit" class="btn btn-primary" />
           </g:form>
         </dt>
@@ -175,11 +200,12 @@
           <g:if test="${entitlements}">
             <g:each in="${entitlements}" var="ie">
               <tr>
-                <td><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></g:if> (${ie.tipp.id})</td>
+                <td><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></g:if></td>
                 <td>${counter++}</td>
                 <td>
                   <g:link controller="issueEntitlement" id="${ie.id}" action="show">${ie.tipp.title.title}</g:link>
-                  <g:if test="${ie.tipp?.hostPlatformURL}">( <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">Host Link</a> )</g:if>
+                  <g:if test="${ie.tipp?.hostPlatformURL}">( <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">Host Link</a> 
+                            <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL} (In new window)" target="_blank"><i class="icon-share-alt"></i></a>)</g:if>
                 </td>
                 <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
                 <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>

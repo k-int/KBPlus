@@ -10,7 +10,9 @@ import com.k_int.kbplus.auth.*;
 
 class IssueEntitlementController {
 
-    static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
+  def factService
+
+   static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
    def springSecurityService
 
     def index() {
@@ -55,6 +57,23 @@ class IssueEntitlementController {
       else {
         result.editable = false
       }
+
+      // Get usage statistics
+      def title_id = result.issueEntitlementInstance.tipp.title?.id
+      def org_id = result.issueEntitlementInstance.subscription.subscriber?.id
+      def supplier_id = result.issueEntitlementInstance.tipp.pkg.contentProvider?.id
+
+      def fsresult = factService.generateMonthlyUsageGrid(title_id,org_id,supplier_id)
+      // def fsresult = factService.generateYearlyUsageGrid(title_id,org_id,supplier_id)
+
+      result.usage = fsresult?.usage
+      result.x_axis_labels = fsresult?.x_axis_labels;
+      result.y_axis_labels = fsresult?.y_axis_labels;
+
+      // def c = new GregorianCalendar()
+      // c.setTime(new Date());
+      // def current_year = c.get(Calendar.YEAR)
+      // factService.lastNYearsByType(title_id, org_id, supplier_id, 'JUSP:JR1', 14, current_year)
 
       if (!result.issueEntitlementInstance) {
         flash.message = message(code: 'default.not.found.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), params.id])

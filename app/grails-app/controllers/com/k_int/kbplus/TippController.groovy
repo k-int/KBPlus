@@ -5,6 +5,7 @@ import grails.plugins.springsecurity.Secured
 import grails.converters.*
 import groovy.xml.MarkupBuilder
 import com.k_int.kbplus.auth.*;
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 class TippController {
 
@@ -15,7 +16,10 @@ class TippController {
     def result = [:]
 
     result.user = User.get(springSecurityService.principal.id)
-    result.editable = true
+    if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') )
+      result.editable=true
+    else
+      result.editable=false
 
     result.tipp = TitleInstancePackagePlatform.get(params.id)
     result.titleInstanceInstance = result.tipp.title
