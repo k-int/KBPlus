@@ -2,28 +2,728 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9fb39bc6-e75b-48d9-a230-3eee43f33b0c" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/grails-app/views/onixplLicenseTextDetails/_nav.gsp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/grails-app/views/onixplLicenseTextDetails/index.gsp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/grails-app/views/onixplUsageTermsDetails/index.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/grails-app/conf/Config.groovy" afterPath="$PROJECT_DIR$/app/grails-app/conf/Config.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/grails-app/services/com/k_int/kbplus/DocstoreService.groovy" afterPath="$PROJECT_DIR$/app/grails-app/services/com/k_int/kbplus/DocstoreService.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/grails-app/domain/com/k_int/kbplus/License.groovy" afterPath="$PROJECT_DIR$/app/grails-app/domain/com/k_int/kbplus/License.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/LicenseController.groovy" afterPath="$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/LicenseController.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/LicenseDetailsController.groovy" afterPath="$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/LicenseDetailsController.groovy" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/ApplicationResources$_run_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/ApplicationResources$_run_closure1_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/ApplicationResources$_run_closure1_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/ApplicationResources.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/BootStrap$_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/BootStrap$_closure1_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/BootStrap$_closure1_closure3_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/BootStrap$_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/BootStrap.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/BuildConfig$_run_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/BuildConfig$_run_closure1_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/BuildConfig$_run_closure1_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/BuildConfig$_run_closure1_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/BuildConfig$_run_closure1_closure4_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/BuildConfig$_run_closure1_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/BuildConfig.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/Config$_run_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/Config$_run_closure1_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/Config$_run_closure1_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/Config$_run_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/Config$_run_closure2_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/Config$_run_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/Config$_run_closure3_closure8.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/Config$_run_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/Config.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/DataSource$_run_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/DataSource$_run_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/DataSource$_run_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/DataSource$_run_closure3_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/DataSource$_run_closure3_closure4_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/DataSource$_run_closure3_closure4_closure7_closure8.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/DataSource$_run_closure3_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/DataSource$_run_closure3_closure5_closure9.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/DataSource$_run_closure3_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/DataSource$_run_closure3_closure6_closure10.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/DataSource$_run_closure3_closure6_closure10_closure11.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/DataSource.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/EditTwoTagLib$_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/EditTwoTagLib.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/EnhancedEditingTagLib$_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/EnhancedEditingTagLib.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/InplaceTagLib$_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/InplaceTagLib$_closure10.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/InplaceTagLib$_closure11.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/InplaceTagLib$_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/InplaceTagLib$_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/InplaceTagLib$_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/InplaceTagLib$_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/InplaceTagLib$_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/InplaceTagLib$_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/InplaceTagLib$_closure8.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/InplaceTagLib$_closure9.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/InplaceTagLib$_closure9_closure12.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/InplaceTagLib.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/LoginController$_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/LoginController$_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/LoginController$_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/LoginController$_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/LoginController$_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/LoginController$_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/LoginController$_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/LoginController$_closure8.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/LoginController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/LogoutController$_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/LogoutController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/PreferencesFilters$_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/PreferencesFilters$_closure1_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/PreferencesFilters$_closure1_closure2_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/PreferencesFilters.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/UrlMappings$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/UrlMappings$__clinit__closure1_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/UrlMappings$__clinit__closure1_closure2_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/UrlMappings.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/application.properties" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/custprops/ObjectDefinition$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/custprops/ObjectDefinition.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/custprops/ObjectProperty$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/custprops/ObjectProperty.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/custprops/PropertyValue$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/custprops/PropertyValue.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/custprops/TypeDefinition$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/custprops/TypeDefinition.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AdminController$_allNotes_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AdminController$_allNotes_closure2_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AdminController$_showAffiliations_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AdminController$_showAffiliations_closure1_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AdminController$_showAffiliations_closure1_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AdminController$_showAffiliations_closure1_closure4_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AdminController$_showAffiliations_closure1_closure4_closure5_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AdminController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AjaxController$_addOrgRole_closure10.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AjaxController$_addToCollection_closure11.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AjaxController$_addToCollection_closure12.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AjaxController$_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AjaxController$_orgs_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AjaxController$_refdataSearch_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AjaxController$_refdataSearch_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AjaxController$_refdataSearch_closure4_closure13.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AjaxController$_refdataSearch_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AjaxController$_refdataSearch_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AjaxController$_refdataSearch_closure6_closure14.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AjaxController$_refdataSearch_closure6_closure15.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AjaxController$_sel2RefdataSearch_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AjaxController$_sel2RefdataSearch_closure8.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AjaxController$_sel2RefdataSearch_closure9.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AjaxController$_sel2RefdataSearch_closure9_closure16.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AjaxController$_sel2RefdataSearch_closure9_closure17.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AjaxController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Alert$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Alert$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Alert.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AlertController$_addComment_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AlertController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AlertsService$_alertIsVisible_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AlertsService$_alertIsVisible_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AlertsService$_getActiveAlerts_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AlertsService$_getActiveAlerts_closure3_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AlertsService$_getActiveAlerts_closure3_closure7_closure8.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AlertsService$_getAllVisibleAlerts_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AlertsService$_getAllVisibleAlerts_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AlertsService$_getAllVisibleAlerts_closure2_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/AlertsService.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ChangeNotificationService$_notifyLicenseChange_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ChangeNotificationService$_notifySubscriptionChange_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ChangeNotificationService$_processLicenseChange_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ChangeNotificationService$_processSubscriptionChange_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ChangeNotificationService.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Combo$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Combo$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Combo.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Comment$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Comment$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Comment.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DatafileValidatorController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadFileInstance$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadFileInstance.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadFileType$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadFileType$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadFileType.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_assertOrgLicenseLink_closure15.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_assertOrgLicenseLink_closure15_closure63.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_assertOrgLicenseLink_closure15_closure63_closure64.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_assertOrgPackageLink_closure14.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_assertOrgPackageLink_closure14_closure61.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_assertOrgPackageLink_closure14_closure61_closure62.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_assertOrgTitleLink_closure13.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_assertOrgTitleLink_closure13_closure59.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_assertOrgTitleLink_closure13_closure59_closure60.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure21.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure22.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure23.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure23_closure68.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure23_closure68_closure69.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure23_closure68_closure69_closure70.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure23_closure68_closure69_closure70_closure71.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure24.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure24_closure72.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure24_closure72_closure73.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure24_closure72_closure73_closure74.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure24_closure72_closure73_closure74_closure75.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure25.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure25_closure76.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure25_closure76_closure77.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure25_closure76_closure77_closure78.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure25_closure76_closure77_closure78_closure79.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure25_closure76_closure77_closure78_closure80.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure25_closure76_closure77_closure78_closure81.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure25_closure76_closure77_closure78_closure82.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure25_closure76_closure77_closure78_closure83.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure25_closure76_closure77_closure78_closure84.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure26.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure26_closure85.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure26_closure85_closure86.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure26_closure85_closure86_closure87.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure26_closure85_closure86_closure87_closure88.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure27.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure27_closure89.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure27_closure89_closure90.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure27_closure89_closure90_closure91.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure27_closure89_closure90_closure91_closure92.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure27_closure89_closure90_closure91_closure93.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure27_closure89_closure90_closure91_closure94.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure27_closure89_closure90_closure91_closure94_closure100.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure27_closure89_closure90_closure91_closure94_closure100_closure101.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure27_closure89_closure90_closure91_closure95.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure27_closure89_closure90_closure91_closure96.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure27_closure89_closure90_closure91_closure97.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure27_closure89_closure90_closure91_closure98.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure27_closure89_closure90_closure91_closure99.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure28.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure28_closure102.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure28_closure102_closure103.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure28_closure102_closure103_closure104.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_clearDownAndInitES_closure28_closure102_closure103_closure104_closure105.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_dataCleanse_closure17.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_doDataCleanse_closure18.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_doDataCleanse_closure18_closure65.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_doDataCleanse_closure18_closure66.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_doFTUpdate_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_doFTUpdate_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_doFTUpdate_closure3_closure29.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_doFTUpdate_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_doFTUpdate_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_doFTUpdate_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_doFTUpdate_closure6_closure30.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_doTitleAugment_closure20.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_doTitleAugment_closure20_closure67.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_handleChangesSince_closure16.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_reloadLicenses_closure12.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_reloadLicenses_closure12_closure54.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_reloadLicenses_closure12_closure54_closure55.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_reloadLicenses_closure12_closure54_closure56.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_reloadLicenses_closure12_closure54_closure56_closure58.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_reloadLicenses_closure12_closure54_closure57.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_reloadSTData_closure11.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_reloadSTData_closure11_closure48.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_reloadSTData_closure11_closure48_closure49.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_reloadSTData_closure11_closure48_closure50.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_reloadSTData_closure11_closure48_closure51.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_reloadSTData_closure11_closure48_closure52.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_reloadSTData_closure11_closure48_closure52_closure53.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_requestReconciliation_closure9.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_titleAugment_closure19.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_updateES_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_updateES_closure8.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_updateFTIndexes_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_update_closure10.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_update_closure10_closure31.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_update_closure10_closure31_closure37.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_update_closure10_closure31_closure38.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_update_closure10_closure32.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_update_closure10_closure33.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_update_closure10_closure34.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_update_closure10_closure34_closure39.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_update_closure10_closure34_closure40.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_update_closure10_closure35.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_update_closure10_closure35_closure41.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_update_closure10_closure35_closure42.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_update_closure10_closure36.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_update_closure10_closure36_closure43.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_update_closure10_closure36_closure44.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_update_closure10_closure36_closure45.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_update_closure10_closure36_closure46.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService$_update_closure10_closure36_closure47.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DataloadService.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Doc$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Doc$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Doc.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DocContext$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DocContext$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DocContext.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DocController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DocWidgetController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DocstoreController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DocstoreService$_createDeleteRequest_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DocstoreService$_createDeleteRequest_closure3_closure9.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DocstoreService$_createDeleteRequest_closure3_closure9_closure10.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DocstoreService$_createDeleteRequest_closure3_closure9_closure10_closure11.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DocstoreService$_createRequest_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DocstoreService$_createRequest_closure2_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DocstoreService$_createRequest_closure2_closure7_closure8.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DocstoreService$_createRetrieveRequest_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DocstoreService$_createRetrieveRequest_closure4_closure12.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DocstoreService$_createRetrieveRequest_closure4_closure12_closure13.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DocstoreService$_uploadBag_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DocstoreService$_uploadBag_closure1_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DocstoreService$_uploadBag_closure1_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/DocstoreService.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ESWrapperService$_init_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ESWrapperService$_init_closure1_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ESWrapperService$_init_closure1_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ESWrapperService$_init_closure1_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ESWrapperService$_init_closure1_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ESWrapperService$_init_closure1_closure5_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ESWrapperService$_init_closure1_closure5_closure6_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ESWrapperService$_init_closure1_closure5_closure6_closure7_closure8.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ESWrapperService.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/EdinaPublicationsAPIService$_lookup_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/EdinaPublicationsAPIService$_lookup_closure1_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/EdinaPublicationsAPIService$_lookup_closure1_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/EdinaPublicationsAPIService.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/EventLog$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/EventLog$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/EventLog.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/FTControl$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/FTControl.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/FolderItem$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/FolderItem$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/FolderItem.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/GenericOIDService.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/GenericReconcilerService$_applyChanges_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/GenericReconcilerService$_applyChanges_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/GenericReconcilerService$_checkForConflicts_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/GenericReconcilerService$_createLookupQuery_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/GenericReconcilerService$_createLookupQuery_closure6_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/GenericReconcilerService$_lookupRuleIsApplicable_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/GenericReconcilerService$_resolve_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/GenericReconcilerService.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_buildOutputElements_closure8.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_buildQuery_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_buildQuery_closure5_closure22.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_closure1_closure9.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_closure1_closure9_closure10.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_index_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_index_closure2_closure11.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_index_closure2_closure11_closure12.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_index_closure2_closure11_closure13.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_index_closure2_closure11_closure13_closure14.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_index_closure2_closure11_closure13_closure14_closure15.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_index_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_index_closure3_closure16.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_index_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_index_closure4_closure17.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_index_closure4_closure18.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_index_closure4_closure19.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_index_closure4_closure20.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_index_closure4_closure21.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_renderATOMResponse_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_renderATOMResponse_closure7_closure27.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_renderATOMResponse_closure7_closure28.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_renderATOMResponse_closure7_closure28_closure29.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_renderATOMResponse_closure7_closure28_closure29_closure30.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_renderRSSResponse_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_renderRSSResponse_closure6_closure23.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_renderRSSResponse_closure6_closure23_closure24.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_renderRSSResponse_closure6_closure23_closure24_closure25.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController$_renderRSSResponse_closure6_closure23_closure24_closure25_closure26.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/HomeController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Identifier$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Identifier$__clinit__closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Identifier$_refdataFind_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Identifier.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/IdentifierController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/IdentifierNamespace$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/IdentifierNamespace$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/IdentifierNamespace.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/IdentifierOccurrence$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/IdentifierOccurrence$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/IdentifierOccurrence.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/IdentifierOccurrenceController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/IssueEntitlement$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/IssueEntitlement$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/IssueEntitlement.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/IssueEntitlementController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/License$__clinit__closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/License$__clinit__closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/License$_checkPermissions_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/License$_checkPermissions_closure4_closure9.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/License$_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/License$_closure1_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/License$_closure1_closure8.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/License$_getLicensee_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/License$_getLicensor_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/License.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/LicenseController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/LicenseDetailsController$_deleteDocuments_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/LicenseDetailsController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/LicenseImportController$_processImport_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/LicenseImportController$_processImport_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/LicenseImportController$_readOfferedOnixPl_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/LicenseImportController$_readOfferedOnixPl_closure1_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/LicenseImportController$_readOfferedOnixPl_closure1_closure5_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/LicenseImportController$_readOfferedOnixPl_closure1_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/LicenseImportController$_recordOnixplUsageTerm_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/LicenseImportController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Link$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Link$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Link.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MongoService.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_availableLicenses_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_buildQuery_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_buildQuery_closure2_closure25.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_buildRenewalsQuery_closure12.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_buildRenewalsQuery_closure12_closure54.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_checkUserHasRole_closure24.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_checkUserHasRole_closure24_closure63.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_checkUserHasRole_closure24_closure64.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_checkUserIsMember_closure23.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_checkUserIsMember_closure23_closure60.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_checkUserIsMember_closure23_closure60_closure61.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_checkUserIsMember_closure23_closure60_closure62.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_currentTitles_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_currentTitles_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_currentTitles_closure6_closure26.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_currentTitles_closure6_closure26_closure28.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_currentTitles_closure6_closure26_closure28_closure30.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_currentTitles_closure6_closure26_closure29.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_currentTitles_closure6_closure26_closure29_closure31.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_currentTitles_closure6_closure26_closure29_closure32.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_currentTitles_closure6_closure26_closure29_closure33.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_currentTitles_closure6_closure26_closure29_closure33_closure34.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_currentTitles_closure6_closure26_closure29_closure33_closure35.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_currentTitles_closure6_closure26_closure29_closure33_closure35_closure36.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_currentTitles_closure6_closure27.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_currentTitles_closure6_closure27_closure37.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_currentTitles_closure6_closure27_closure37_closure39.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_currentTitles_closure6_closure27_closure38.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_currentTitles_closure6_closure27_closure38_closure40.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_currentTitles_closure6_closure27_closure38_closure41.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_currentTitles_closure6_closure27_closure38_closure41_closure42.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_deleteDocuments_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_exportWorkbook_closure18.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_exportWorkbook_closure19.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_exportWorkbook_closure20.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_exportWorkbook_closure20_closure59.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_extractEntitlement_closure21.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_generateMatrix_closure14.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_generateMatrix_closure14_closure55.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_generateMatrix_closure14_closure56.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_generateMatrix_closure15.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_generateMatrix_closure16.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_generateMatrix_closure17.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_generateMatrix_closure17_closure57.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_generateMatrix_closure17_closure58.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_materialiseFolder_closure13.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_newLicense_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_processEmptySubscription_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_processRenewal_closure22.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_renewalsSearch_closure10.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_renewalsSearch_closure10_closure52.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_renewalsSearch_closure8.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_renewalsSearch_closure9.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_renewalsSearch_closure9_closure43.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_renewalsSearch_closure9_closure43_closure44.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_renewalsSearch_closure9_closure43_closure45.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_renewalsSearch_closure9_closure43_closure45_closure46.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_renewalsSearch_closure9_closure43_closure45_closure46_closure49.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_renewalsSearch_closure9_closure43_closure45_closure47.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_renewalsSearch_closure9_closure43_closure45_closure47_closure50.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_renewalsSearch_closure9_closure43_closure45_closure48.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_renewalsSearch_closure9_closure43_closure45_closure48_closure51.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_selectPackages_closure11.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController$_selectPackages_closure11_closure53.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/MyInstitutionsController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/NewDataloadController$_handleChangesSince_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/NewDataloadController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplLicense$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplLicense$__clinit__closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplLicense$_checkPermissions_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplLicense$_checkPermissions_closure1_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplLicense.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplLicenseController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplLicenseDetailsController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplLicenseText$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplLicenseText$__clinit__closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplLicenseText$_checkPermissions_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplLicenseText$_checkPermissions_closure1_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplLicenseText.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplLicenseTextController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplLicenseTextDetailsController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplUsageTerm$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplUsageTerm$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplUsageTerm$__clinit__closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplUsageTerm$_checkPermissions_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplUsageTerm$_checkPermissions_closure1_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplUsageTerm.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplUsageTermController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplUsageTermLicenseText$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplUsageTermLicenseText$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplUsageTermLicenseText.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OnixplUsageTermsDetailsController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Org$__clinit__closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Org$__clinit__closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Org$_getIdentifierByType_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Org$_refdataFind_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Org.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OrgController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OrgPermShare$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OrgPermShare$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OrgPermShare.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OrgRole$__clinit__closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OrgRole$__clinit__closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OrgRole$_assertOrgPackageLink_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OrgRole$_assertOrgPackageLink_closure2_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OrgRole$_assertOrgPackageLink_closure2_closure7_closure8.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OrgRole$_assertOrgTitleLink_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OrgRole$_assertOrgTitleLink_closure1_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OrgRole$_assertOrgTitleLink_closure1_closure5_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OrgRole.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/OrganisationsController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Package$__clinit__closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Package$__clinit__closure8.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Package$_createSubscription_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Package$_createSubscription_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Package$_getConsortia_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Package$_getContentProvider_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Package$_updateNominalPlatform_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Package$_updateNominalPlatform_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Package.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PackageController$_create_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PackageController$_show_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PackageController$_show_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PackageController$_show_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PackageController$_show_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PackageController$_show_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PackageController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PackageDetailsController$_attemptv1XLSLoad_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PackageDetailsController$_create_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PackageDetailsController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PendingChange$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PendingChange$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PendingChange.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Platform$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Platform$__clinit__closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Platform$_refdataFind_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Platform.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PlatformController$_show_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PlatformController$_show_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PlatformController$_show_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PlatformController$_show_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PlatformController$_show_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PlatformController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PlatformTIPP$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PlatformTIPP.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ProcessLoginController$_createUserOrgLink_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ProcessLoginController$_index_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ProcessLoginController$_index_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ProcessLoginController$_index_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ProcessLoginController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ProfileController$_processJoinRequest_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ProfileController$_processJoinRequest_closure1_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ProfileController$_processJoinRequest_closure1_closure2_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/ProfileController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_idx_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_idx_closure3_closure14.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_idx_closure3_closure14_closure17.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_idx_closure3_closure14_closure17_closure18.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_idx_closure3_closure15.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_idx_closure3_closure15_closure19.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_idx_closure3_closure15_closure19_closure20.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_idx_closure3_closure15_closure19_closure20_closure21.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_idx_closure3_closure16.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_idx_closure3_closure16_closure22.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_pkg_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_pkg_closure2_closure10.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_pkg_closure2_closure10_closure13.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_pkg_closure2_closure9.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_pkg_closure2_closure9_closure11.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_pkg_closure2_closure9_closure11_closure12.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_so_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_so_closure1_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_so_closure1_closure4_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_so_closure1_closure4_closure6_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_so_closure1_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController$_so_closure1_closure5_closure8.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/PublicExportController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/RefdataCategory$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/RefdataCategory$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/RefdataCategory.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/RefdataValue$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/RefdataValue$__clinit__closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/RefdataValue$_refdataFind_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/RefdataValue.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Setting$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Setting$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Setting.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SpotlightController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/StartFTIndexController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Subscription$__clinit__closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Subscription$__clinit__closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Subscription$_checkPermissions_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Subscription$_checkPermissions_closure5_closure9.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Subscription$_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Subscription$_closure1_closure8.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Subscription$_getConsortia_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Subscription$_getProvider_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Subscription$_getSubscriber_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/Subscription.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionController$_show_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionController$_show_closure1_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionController$_show_closure1_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_buildRenewalsQuery_closure9.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_buildRenewalsQuery_closure9_closure26.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_deleteDocuments_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_index_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_index_closure1_closure10.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_index_closure1_closure10_closure12.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_index_closure1_closure10_closure12_closure13.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_index_closure1_closure11.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_index_closure1_closure11_closure14.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_linkPackage_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_linkPackage_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_linkPackage_closure7_closure16.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_linkPackage_closure7_closure16_closure17.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_linkPackage_closure7_closure16_closure18.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_linkPackage_closure7_closure16_closure18_closure19.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_linkPackage_closure7_closure16_closure18_closure19_closure22.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_linkPackage_closure7_closure16_closure18_closure20.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_linkPackage_closure7_closure16_closure18_closure20_closure23.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_linkPackage_closure7_closure16_closure18_closure21.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_linkPackage_closure7_closure16_closure18_closure21_closure24.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_linkPackage_closure8.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_linkPackage_closure8_closure25.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_possibleLicensesForSubscription_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_processAddEntitlements_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_processAddEntitlements_closure3_closure15.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController$_subscriptionBatchUpdate_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionDetailsController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionPackage$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionPackage$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/SubscriptionPackage.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TippController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleDetailsController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstance$__clinit__closure12.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstance$__clinit__closure13.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstance$_findByIdentifier_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstance$_getIdentifierValue_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstance$_getPublisher_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstance$_identifiersAsString_closure11.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstance$_lookupOrCreateViaIdMap_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstance$_lookupOrCreateViaIdMap_closure8.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstance$_lookupOrCreateViaIdMap_closure9.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstance$_lookupOrCreateViaIdMap_closure9_closure15.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstance$_lookupOrCreate_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstance$_lookupOrCreate_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstance$_lookupOrCreate_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstance$_lookupOrCreate_closure6_closure14.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstance$_refdataFind_closure10.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstance.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstanceController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstancePackagePlatform$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstancePackagePlatform$__clinit__closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstancePackagePlatform$_getHostPlatform_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstancePackagePlatform.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/TitleInstancePackagePlatformController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/UploadController$_findTitleIdentifierIntersection_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/UploadController$_processUploadSO_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/UploadController$_processUploadSO_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/UploadController$_processUploadSO_closure2_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/UploadController$_processUploadSO_closure2_closure8.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/UploadController$_processUploadSO_closure2_closure9.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/UploadController$_readSubscriptionOfferedCSV_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/UploadController$_validateColumnHeadings_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/UploadController$_validateTipps_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/UploadController$_validateTipps_closure4_closure10.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/UploadController$_validateTipps_closure4_closure11.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/UploadController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/UserDetailsController$_list_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/UserDetailsController$_list_closure1_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/UserDetailsController.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/UserFolder$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/UserFolder$__clinit__closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/UserFolder$_addIfNotPresent_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/UserFolder.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/Perm$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/Perm$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/Perm.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/PermGrant$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/PermGrant$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/PermGrant.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/Role$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/Role$__clinit__closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/Role$_refdataFind_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/Role.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/User$__clinit__closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/User$__clinit__closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/User$_getAuthorities_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/User$_getAuthorizedAffiliations_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/User$_listPrincipalsGrantingPermission_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/User$_listPrincipalsGrantingPermission_closure3_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/User$_listPrincipalsGrantingPermission_closure3_closure7_closure9.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/User$_listPrincipalsGrantingPermission_closure3_closure8.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/User$_listPrincipalsGrantingPermission_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/User$_listPrincipalsGrantingPermission_closure4_closure10.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/User$_listPrincipalsGrantingPermission_closure4_closure10_closure11.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/User.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/UserOrg$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/UserOrg.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/UserRole$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/auth/UserRole.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/filter/EdiauthFilter.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/mixins/PendingChangeMixin$_expungePendingChange_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/mixins/PendingChangeMixin$_expungePendingChange_closure1_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/mixins/PendingChangeMixin$_expungePendingChange_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/mixins/PendingChangeMixin$_expungePendingChange_closure2_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/mixins/PendingChangeMixin.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/processing/OrgsProcessing$__clinit__closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/processing/OrgsProcessing$__clinit__closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/processing/OrgsProcessing$__clinit__closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/processing/OrgsProcessing$__clinit__closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/processing/OrgsProcessing$__clinit__closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/processing/OrgsProcessing.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/com/k_int/kbplus/utils/TitleComparator.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/demo/IndexUpdateJob$__clinit__closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/demo/IndexUpdateJob$_oldExecute_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/demo/IndexUpdateJob$_oldExecute_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/demo/IndexUpdateJob$_oldExecute_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/demo/IndexUpdateJob$_oldExecute_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/demo/IndexUpdateJob$_updateES_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/demo/IndexUpdateJob$_updateES_closure5_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/demo/IndexUpdateJob.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/resources$_run_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/resources$_run_closure1_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/resources$_run_closure1_closure3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/resources$_run_closure1_closure4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/resources$_run_closure1_closure5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/resources$_run_closure1_closure6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/resources$_run_closure1_closure7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/resources.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/twitter/bootstrap/scaffolding/AlertsTagLib$_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/twitter/bootstrap/scaffolding/AlertsTagLib.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/twitter/bootstrap/scaffolding/FormsTagLib$_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/twitter/bootstrap/scaffolding/FormsTagLib$_closure1_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/twitter/bootstrap/scaffolding/FormsTagLib.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/twitter/bootstrap/scaffolding/PaginationTagLib$_closure1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/twitter/bootstrap/scaffolding/PaginationTagLib$_closure1_closure2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/target/classes/twitter/bootstrap/scaffolding/PaginationTagLib.class" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/grails-app/conf/BuildConfig.groovy" afterPath="$PROJECT_DIR$/app/grails-app/conf/BuildConfig.groovy" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/LicenseImportController.groovy" afterPath="$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/LicenseImportController.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/grails-app/domain/com/k_int/kbplus/OnixplLicense.groovy" afterPath="$PROJECT_DIR$/app/grails-app/domain/com/k_int/kbplus/OnixplLicense.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/grails-app/domain/com/k_int/kbplus/OnixplLicenseText.groovy" afterPath="$PROJECT_DIR$/app/grails-app/domain/com/k_int/kbplus/OnixplLicenseText.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/grails-app/domain/com/k_int/kbplus/OnixplUsageTerm.groovy" afterPath="$PROJECT_DIR$/app/grails-app/domain/com/k_int/kbplus/OnixplUsageTerm.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/grails-app/views/licenseDetails/_nav.gsp" afterPath="$PROJECT_DIR$/app/grails-app/views/licenseDetails/_nav.gsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app-grailsPlugins.iml" afterPath="$PROJECT_DIR$/app/app-grailsPlugins.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/application.properties" afterPath="$PROJECT_DIR$/app/application.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/grails-app/views/licenseImport/doImport.gsp" afterPath="$PROJECT_DIR$/app/grails-app/views/licenseImport/doImport.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/grails-app/views/licenseDetails/index.gsp" afterPath="$PROJECT_DIR$/app/grails-app/views/licenseDetails/index.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/grails-app/views/layouts/mmbootstrap.gsp" afterPath="$PROJECT_DIR$/app/grails-app/views/layouts/mmbootstrap.gsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/target/stacktrace.log" afterPath="$PROJECT_DIR$/app/target/stacktrace.log" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="KBPlus.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$USER_HOME$/.grails/" />
-    <file path="/Dummy.txt" changelist="9fb39bc6-e75b-48d9-a230-3eee43f33b0c" time="1373873983314" ignored="false" />
+    <file path="/Dummy.txt" changelist="9fb39bc6-e75b-48d9-a230-3eee43f33b0c" time="1374137104268" ignored="false" />
     <file path="/OnixplLicense.groovy" changelist="9fb39bc6-e75b-48d9-a230-3eee43f33b0c" time="1374057192334" ignored="false" />
     <file path="/onixpl.gsp" changelist="9fb39bc6-e75b-48d9-a230-3eee43f33b0c" time="1374068020073" ignored="false" />
     <file path="/OnixplUsageTerm.groovy" changelist="9fb39bc6-e75b-48d9-a230-3eee43f33b0c" time="1374066074816" ignored="false" />
@@ -44,6 +744,7 @@
     <file path="$PROJECT_DIR$/app/test/unit/com/k_int/kbplus/OnixplUsageTermsDetailsControllerTests.groovy" changelist="9fb39bc6-e75b-48d9-a230-3eee43f33b0c" time="1374065976684" ignored="false" />
     <file path="/OnixplUsageTermsDetailsController.groovy" changelist="9fb39bc6-e75b-48d9-a230-3eee43f33b0c" time="1374066013854" ignored="false" />
     <file path="/LicenseDetailsController.groovy" changelist="9fb39bc6-e75b-48d9-a230-3eee43f33b0c" time="1374067504983" ignored="false" />
+    <file path="/BuildConfig.groovy" changelist="9fb39bc6-e75b-48d9-a230-3eee43f33b0c" time="1374137130577" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,7 +808,7 @@
       <file leaf-file-name="OnixplLicenseDetailsController.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/OnixplLicenseDetailsController.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="3" selection-start="219" selection-end="270" vertical-scroll-proportion="-3.9130435">
+            <state line="8" column="3" selection-start="219" selection-end="270" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -116,7 +817,7 @@
       <file leaf-file-name="index.gsp" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/grails-app/views/onixplLicenseDetails/index.gsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="63" column="132" selection-start="2201" selection-end="2305" vertical-scroll-proportion="-12.25532">
+            <state line="63" column="132" selection-start="2201" selection-end="2305" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -125,21 +826,8 @@
       <file leaf-file-name="OnixplUsageTermsDetailsController.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/OnixplUsageTermsDetailsController.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="4" selection-start="153" selection-end="258" vertical-scroll-proportion="-4.5652175">
-              <folding>
-                <element signature="e#26#59#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="OnixplLicenseController.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/OnixplLicenseController.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="119" column="0" selection-start="5092" selection-end="5092" vertical-scroll-proportion="-39.695652">
-              <folding>
-                <element signature="e#26#70#0" expanded="true" />
-              </folding>
+            <state line="7" column="4" selection-start="153" selection-end="258" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -147,7 +835,7 @@
       <file leaf-file-name="OnixplLicense.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/grails-app/domain/com/k_int/kbplus/OnixplLicense.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="46" column="0" selection-start="909" selection-end="3163" vertical-scroll-proportion="-2.1">
+            <state line="46" column="0" selection-start="909" selection-end="3163" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -159,7 +847,7 @@
       <file leaf-file-name="OnixplUsageTerm.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/grails-app/domain/com/k_int/kbplus/OnixplUsageTerm.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="75" column="8" selection-start="2356" selection-end="2356" vertical-scroll-proportion="-8.12">
+            <state line="75" column="8" selection-start="2356" selection-end="2356" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -171,10 +859,8 @@
       <file leaf-file-name="OnixplLicenseTextDetailsController.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/OnixplLicenseTextDetailsController.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="0" selection-start="180" selection-end="180" vertical-scroll-proportion="-5.2173915">
-              <folding>
-                <element signature="e#26#59#0" expanded="true" />
-              </folding>
+            <state line="8" column="0" selection-start="180" selection-end="180" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -182,7 +868,7 @@
       <file leaf-file-name="index.gsp" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/grails-app/views/onixplLicenseTextDetails/index.gsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="25" column="23" selection-start="563" selection-end="563" vertical-scroll-proportion="-7.9787235">
+            <state line="25" column="23" selection-start="563" selection-end="563" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -191,10 +877,8 @@
       <file leaf-file-name="OnixplUsageTermController.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/OnixplUsageTermController.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="99" column="53" selection-start="4306" selection-end="4306" vertical-scroll-proportion="-64.565216">
-              <folding>
-                <element signature="e#26#70#0" expanded="true" />
-              </folding>
+            <state line="99" column="53" selection-start="4306" selection-end="4306" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -202,7 +886,7 @@
       <file leaf-file-name="onixpl.gsp" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/grails-app/views/licenseDetails/onixpl.gsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="68" column="30" selection-start="2863" selection-end="2863" vertical-scroll-proportion="-12.574468">
+            <state line="68" column="30" selection-start="2863" selection-end="2863" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -211,7 +895,7 @@
       <file leaf-file-name="LicenseDetailsController.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/LicenseDetailsController.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="2" column="0" selection-start="26" selection-end="26" vertical-scroll-proportion="-1.3043479">
+            <state line="2" column="0" selection-start="26" selection-end="26" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -220,7 +904,7 @@
       <file leaf-file-name="index.gsp" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/grails-app/views/licenseDetails/index.gsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="123" column="113" selection-start="5236" selection-end="5236" vertical-scroll-proportion="-7.9787235">
+            <state line="123" column="70" selection-start="5211" selection-end="5211" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -229,18 +913,27 @@
       <file leaf-file-name="BuildConfig.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/grails-app/conf/BuildConfig.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+            <state line="36" column="16" selection-start="1528" selection-end="1528" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mmbootstrap.gsp" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="LicenseImportController.groovy" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/LicenseImportController.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="257" column="0" selection-start="8797" selection-end="8797" vertical-scroll-proportion="0.70151305">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mmbootstrap.gsp" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/grails-app/views/layouts/mmbootstrap.gsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="108" column="31" selection-start="6830" selection-end="6830" vertical-scroll-proportion="0.57931036">
+            <state line="108" column="31" selection-start="6795" selection-end="6795" vertical-scroll-proportion="-0.625">
               <folding>
-                <marker date="1374132348000" expanded="false" signature="17834:17847" placeholder="..." />
+                <marker date="1374136942000" expanded="false" signature="18522:18535" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -258,7 +951,7 @@
       <file leaf-file-name="_nav.gsp" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/grails-app/views/licenseDetails/_nav.gsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="26" column="97" selection-start="1959" selection-end="1959" vertical-scroll-proportion="-8.297873">
+            <state line="26" column="97" selection-start="1959" selection-end="1959" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -267,7 +960,7 @@
       <file leaf-file-name="License.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/grails-app/domain/com/k_int/kbplus/License.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="36" column="32" selection-start="730" selection-end="743" vertical-scroll-proportion="-9.6">
+            <state line="36" column="32" selection-start="730" selection-end="743" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -279,7 +972,7 @@
       <file leaf-file-name="LicenseController.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/LicenseController.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="53" selection-start="543" selection-end="543" vertical-scroll-proportion="-6.521739">
+            <state line="16" column="53" selection-start="543" selection-end="543" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -288,7 +981,7 @@
       <file leaf-file-name="DocContext.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/grails-app/domain/com/k_int/kbplus/DocContext.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="0" selection-start="87" selection-end="87" vertical-scroll-proportion="-2.1">
+            <state line="7" column="0" selection-start="87" selection-end="87" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -300,7 +993,7 @@
       <file leaf-file-name="Doc.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/grails-app/domain/com/k_int/kbplus/Doc.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="29" column="37" selection-start="708" selection-end="708" vertical-scroll-proportion="-8.7">
+            <state line="29" column="37" selection-start="708" selection-end="708" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -327,8 +1020,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/LicenseImportController.groovy" />
-        <option value="$PROJECT_DIR$/app/grails-app/domain/com/k_int/kbplus/OnixplLicense.groovy" />
         <option value="$PROJECT_DIR$/app/grails-app/domain/com/k_int/kbplus/OnixplUsageTerm.groovy" />
         <option value="$PROJECT_DIR$/app/grails-app/views/onixplUsageTermsDetails/index.gsp" />
         <option value="$PROJECT_DIR$/app/grails-app/views/onixplLicenseTextDetails/index.gsp" />
@@ -343,6 +1034,8 @@
         <option value="$PROJECT_DIR$/app/grails-app/views/licenseDetails/onixpl.gsp" />
         <option value="$PROJECT_DIR$/app/grails-app/views/licenseDetails/index.gsp" />
         <option value="$PROJECT_DIR$/app/grails-app/views/layouts/mmbootstrap.gsp" />
+        <option value="$PROJECT_DIR$/app/grails-app/conf/BuildConfig.groovy" />
+        <option value="$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/LicenseImportController.groovy" />
       </list>
     </option>
   </component>
@@ -369,7 +1062,7 @@
     <option name="STATE" value="0" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
+    <navigator proportions="" version="1" splitterProportion="0.5">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -380,44 +1073,7 @@
       <autoscrollFromSource />
       <sortByType />
     </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="KBPlus" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="KBPlus" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="KBPlus" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="grails-app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
     <property name="GoToFile.includeJavaFiles" value="false" />
@@ -432,9 +1088,9 @@
     <property name="MemberChooser.showClasses" value="true" />
     <property name="FullScreen" value="false" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="dynamic.classpath" value="false" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="dynamic.classpath" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -443,12 +1099,6 @@
     </key>
   </component>
   <component name="RunManager" selected="Grails.Grails:app">
-    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
-      <module name="" />
-      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m" />
-      <option name="PROGRAM_PARAMETERS" />
-      <method />
-    </configuration>
     <configuration default="true" type="GrailsRunConfigurationType" factoryName="Grails">
       <module name="" />
       <setting name="vmparams" value="" />
@@ -459,12 +1109,31 @@
       <setting name="launchBrowser" value="false" />
       <method />
     </configuration>
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m" />
+      <option name="PROGRAM_PARAMETERS" />
+      <method />
+    </configuration>
     <configuration default="true" type="Remote" factoryName="Remote">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
       <option name="SERVER_MODE" value="false" />
       <option name="SHMEM_ADDRESS" value="javadebug" />
       <option name="HOST" value="localhost" />
       <option name="PORT" value="5005" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
@@ -493,19 +1162,6 @@
       <envs />
       <properties />
       <listeners />
-      <method />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -622,7 +1278,6 @@
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Persistence" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298077" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -630,7 +1285,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298077" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298077" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Grails View" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16205752" sideWeight="0.79134613" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Grails View" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16205752" sideWeight="0.7923077" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CDI" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -641,10 +1296,11 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20865385" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20769231" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298077" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -713,49 +1369,28 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/OnixplUsageTermsDetailsController.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="4" selection-start="153" selection-end="258" vertical-scroll-proportion="-4.5652175">
-          <folding>
-            <element signature="e#26#59#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/grails-app/domain/com/k_int/kbplus/OnixplLicenseText.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="74" column="19" selection-start="2185" selection-end="2185" vertical-scroll-proportion="-7.82">
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="org.jetbrains.plugins.grails.perspectives.DomainClassesRelationsEditorProvider">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/LicenseController.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="53" selection-start="543" selection-end="543" vertical-scroll-proportion="-6.521739">
+        <state line="16" column="53" selection-start="543" selection-end="543" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/LicenseDetailsController.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="0" selection-start="26" selection-end="26" vertical-scroll-proportion="-1.3043479">
+        <state line="2" column="0" selection-start="26" selection-end="26" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/grails-app/views/onixplUsageTermsDetails/index.gsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="24" selection-start="1731" selection-end="1731" vertical-scroll-proportion="-12.680851">
-          <folding />
-        </state>
+        <state line="57" column="24" selection-start="1731" selection-end="1731" vertical-scroll-proportion="-12.680851" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/grails-app/domain/com/k_int/kbplus/License.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="32" selection-start="730" selection-end="743" vertical-scroll-proportion="-9.6">
+        <state line="36" column="32" selection-start="730" selection-end="743" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -765,44 +1400,40 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/OnixplLicenseDetailsController.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="3" selection-start="219" selection-end="270" vertical-scroll-proportion="-3.9130435">
+        <state line="8" column="3" selection-start="219" selection-end="270" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/grails-app/views/onixplLicenseDetails/index.gsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="63" column="132" selection-start="2201" selection-end="2305" vertical-scroll-proportion="-12.25532">
+        <state line="63" column="132" selection-start="2201" selection-end="2305" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/grails-app/views/licenseDetails/onixpl.gsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="68" column="30" selection-start="2863" selection-end="2863" vertical-scroll-proportion="-12.574468">
+        <state line="68" column="30" selection-start="2863" selection-end="2863" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/grails-app/views/licenseDetails/index.gsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="123" column="113" selection-start="5236" selection-end="5236" vertical-scroll-proportion="-7.9787235">
+        <state line="123" column="70" selection-start="5211" selection-end="5211" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/grails-app/views/onixplLicenseTextDetails/_nav.gsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.0">
-          <folding />
-        </state>
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/grails-app/views/licenseImport/doImport.gsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="31" selection-start="1487" selection-end="1487" vertical-scroll-proportion="-7.0212765">
-          <folding />
-        </state>
+        <state line="38" column="31" selection-start="1487" selection-end="1487" vertical-scroll-proportion="-7.0212765" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/grails-app/conf/Config.groovy">
@@ -814,7 +1445,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/grails-app/conf/BuildConfig.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+        <state line="36" column="16" selection-start="1528" selection-end="1528" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -831,10 +1462,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/grails-app/views/layouts/mmbootstrap.gsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="108" column="31" selection-start="6830" selection-end="6830" vertical-scroll-proportion="0.57931036">
+        <state line="108" column="31" selection-start="6795" selection-end="6795" vertical-scroll-proportion="-0.625">
           <folding>
-            <marker date="1374132348000" expanded="false" signature="17834:17847" placeholder="..." />
+            <marker date="1374136942000" expanded="false" signature="18522:18535" placeholder="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/OnixplLicenseController.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="119" column="0" selection-start="5092" selection-end="5092" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/grails-app/controllers/com/k_int/kbplus/LicenseImportController.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="257" column="0" selection-start="8797" selection-end="8797" vertical-scroll-proportion="0.70151305">
+          <folding />
         </state>
       </provider>
     </entry>
@@ -845,8 +1490,8 @@
         <entry key="app">
           <value>
             <GrailsSettings>
-              <option name="buildConfigCrc" value="-2072794549" />
-              <option name="pluginDependenciesCrc" value="-1551405162" />
+              <option name="buildConfigCrc" value="1319253750" />
+              <option name="pluginDependenciesCrc" value="271316200" />
               <option name="fixedGrailsVersion" value="2.2.2" />
               <option name="properties">
                 <map>

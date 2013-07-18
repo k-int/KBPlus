@@ -254,7 +254,7 @@ class LicenseImportController {
     );
     term.save(flush: true);
     //log.debug("Term "+term.id);
-    log.error("OPL: " + opl);
+
     // License Text
     usageTerm.licenseTexts.each { lt ->
       def oplt = new OnixplLicenseText(
