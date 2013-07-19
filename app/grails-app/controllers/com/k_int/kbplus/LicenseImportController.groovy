@@ -156,7 +156,7 @@ class LicenseImportController {
     results.filename = upload_filename
     results.contentType = upload_mime_type
 
-    if ( /*license &&*/ input_stream ) {
+    if ( input_stream ) {
 
       // stats update
       results.termStatuses = [:]
@@ -226,7 +226,6 @@ class LicenseImportController {
    */
   def recordOnixplLicense(license, doc) {
     def opl = null;
-      log.error("License2: " + license.id);
     try {
       opl = new OnixplLicense(
           lastmod:new Date(),

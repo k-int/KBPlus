@@ -75,8 +75,9 @@
               </g:if>
 
               <g:if test="${validationResult.success==true}">
-                  Upload successful
                   <div class="alert alert-success">
+                      <h2>Upload successful</h2>
+
                       Imported ${validationResult.filename} (${validationResult.contentType})
                       and associated with license ${validationResult.license?validationResult.license.id:"none"}.
                   </div>
