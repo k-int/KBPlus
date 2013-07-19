@@ -17,7 +17,7 @@ class SubscriptionDetailsController {
   def alertsService
   def genericOIDService
   
-  def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'name' ]
+  def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
@@ -25,8 +25,8 @@ class SubscriptionDetailsController {
     def result = [:]
 
     def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : ( response.format == "csv" ? 10000 : 10 );
-    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+    result.max = params.max ? Integer.parseInt(params.max) : ( (response.format && response.format != "html" && response.format != "all" ) ? 10000 : 10 );
+    result.offset = (params.offset && response.format && response.format != "html") ? Integer.parseInt(params.offset) : 0;
 
     log.debug("max = ${result.max}");
     result.user = User.get(springSecurityService.principal.id)
@@ -56,12 +56,17 @@ class SubscriptionDetailsController {
     def qry_params = [result.subscriptionInstance]
 
     if ( params.filter ) {
-      base_qry = " from IssueEntitlement as ie where ie.subscription = ? and ( ie.status.value != 'Deleted' ) and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) )"
+      base_qry = " from IssueEntitlement as ie where ie.subscription = ? and ( ie.status.value != 'Deleted' ) and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) ) "
       qry_params.add("%${params.filter.trim().toLowerCase()}%")
       qry_params.add("%${params.filter}%")
     }
     else {
       base_qry = " from IssueEntitlement as ie where ie.subscription = ? and ( ie.status.value != 'Deleted' ) "
+    }
+
+    if ( params.pkgfilter && ( params.pkgfilter != '' ) ) {
+      base_qry += " and ie.tipp.pkg.id = ? "
+      qry_params.add(Long.parseLong(params.pkgfilter));
     }
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
@@ -111,43 +116,348 @@ class SubscriptionDetailsController {
          }
          out.close()
       }
-      json {
-         def jc_id = result.subscriptionInstance.getSubscriber()?.getIdentifierByType('JC')?.value
-         def response = [:]
-         response.header = [:]
-         response.entitlements = []
-
-         response.header.type = result.subscriptionInstance.type.value
-         response.header.version = "2.0"
-         response.header.jcid = jc_id
-         response.header.url = "uri://kbplus/sub/${result.subscriptionInstance.identifier}"
-
-         result.entitlements.each { e ->
-           def start_date = e.startDate ? formatter.format(e.startDate) : '';
-           def end_date = e.endDate ? formatter.format(e.endDate) : '';
-           def title_doi = (e.tipp?.title?.getIdentifierValue('DOI'))?:''
-           def publisher = e.tipp?.title?.publisher
-
-           def entitlement = [:]
-           entitlement.title=e.tipp.title.title
-           entitlement.issn=e.tipp?.title?.getIdentifierValue('ISSN')
-           entitlement.eissn=e.tipp?.title?.getIdentifierValue('eISSN')
-           entitlement.startDate=start_date;
-           entitlement.endDate=end_date;
-           entitlement.startVolume=e.startVolume?:''
-           entitlement.endVolume=e.endVolume?:''
-           entitlement.startIssue=e.startIssue?:''
-           entitlement.endIssue=e.endIssue?:''
-           entitlement.embargo=e.embargo?:''
-           entitlement.titleUrl=e.tipp.hostPlatformURL?:''
-           entitlement.doi=title_doi
-           entitlement.coverageDepth = e.tipp.coverageDepth
-           entitlement.coverageNote = e.tipp.coverageNote
-           entitlement.publisher = publisher.name
-           response.entitlements.add(entitlement);
-         }
-         render response as JSON
-      }
+      json {		  
+		  def response = [:]
+		  def subscriptions = []
+		  
+		  def sub = result.subscriptionInstance
+		  def subscription = [:]
+		  subscription."SubscriptionID" = sub.id
+		  subscription."SubscriptionName" = sub.name
+		  subscription."SubTermStartDate" = sub.startDate?formatter.format(sub.startDate):''
+		  subscription."SubTermEndDate" = sub.endDate?formatter.format(sub.endDate):''
+		  
+		  subscription."RelatedOrgs" = []
+		  
+		  sub.orgRelations.each { or ->
+			  def org = [:]
+			  org."OrgID" = or.org.id
+			  org."OrgName" = or.org.name
+			  org."OrgRole" = or.roleType.value
+			  
+			  def ids = [:]
+			  or.org.ids.each(){ id ->
+				  def value = id.identifier.value
+				  def ns = id.identifier.ns.ns
+				  if(ids.containsKey(ns)){
+					  def current = ids[ns]
+					  def newval = []
+					  newval << current
+					  newval << value
+					  ids[ns] = newval
+				  } else {
+					  ids[ns]=value
+				  }
+			  }
+			  org."OrgIDs" = ids
+				  
+			  subscription."RelatedOrgs" << org
+		  }
+		  
+		  subscription."Licences" = []
+		  def licence = [:]
+		  
+		  if(sub.owner){
+			  def owner = sub.owner
+			  
+			  licence."LicenceReference" = owner.reference
+			  licence."NoticePeriod" = owner.noticePeriod
+			  licence."LicenceURL" = owner.licenseUrl
+			  licence."LicensorRef" = owner.licensorRef
+			  licence."LicenseeRef" = owner.licenseeRef
+				  
+			  licence."RelatedOrgs" = []
+			  sub.owner?.orgLinks.each { or ->
+				  def org = [:]
+				  org."OrgID" = or.org.id
+				  org."OrgName" = or.org.name
+				  org."OrgRole" = or.roleType.value
+				  
+				  def ids = [:]
+				  or.org.ids.each(){ id ->
+					  def value = id.identifier.value
+					  def ns = id.identifier.ns.ns
+					  if(ids.containsKey(ns)){
+						  def current = ids[ns]
+						  def newval = []
+						  newval << current
+						  newval << value
+						  ids[ns] = newval
+					  } else {
+						  ids[ns]=value
+					  }
+				  }
+				  org."OrgIDs" = ids
+					  
+				  licence."RelatedOrgs" << org
+			  }
+			  
+			  
+			  
+			  def prop = licence."LicenceProperties" = [:]
+			  def ca = prop."ConcurrentAccess" = [:]
+			  ca."Status" = owner.concurrentUsers?.value
+			  ca."UserCount" = owner.concurrentUserCount
+			  ca."Notes" = owner.getNote("concurrentUsers")?.owner?.content?:""
+			  def ra = prop."RemoteAccess" = [:]
+			  ra."Status" = owner.remoteAccess?.value
+			  ra."Notes" = owner.getNote("remoteAccess")?.owner?.content?:""
+			  def wa = prop."WalkingAccess" = [:]
+			  wa."Status" = owner.walkinAccess?.value
+			  wa."Notes" = owner.getNote("remoteAccess")?.owner?.content?:""
+			  def ma = prop."MultisiteAccess" = [:]
+			  ma."Status" = owner.multisiteAccess?.value
+			  ma."Notes" = owner.getNote("multisiteAccess")?.owner?.content?:""
+			  def pa = prop."PartnersAccess" = [:]
+			  pa."Status" = owner.partnersAccess?.value
+			  pa."Notes" = owner.getNote("partnersAccess")?.owner?.content?:""
+			  def aa = prop."AlumniAccess" = [:]
+			  aa."Status" = owner.alumniAccess?.value
+			  aa."Notes" = owner.getNote("alumniAccess")?.owner?.content?:""
+			  def ill = prop."InterLibraryLoans" = [:]
+			  ill."Status" = owner.ill?.value
+			  ill."Notes" = owner.getNote("ill")?.owner?.content?:""
+			  def cp = prop."IncludeinCoursepacks" = [:]
+			  cp."Status" = owner.coursepack?.value
+			  cp."Notes" = owner.getNote("coursepack")?.owner?.content?:""
+			  def vle = prop."IncludeinVLE" = [:]
+			  vle."Status" = owner.vle?.value
+			  vle."Notes" = owner.getNote("vle")?.owner?.content?:""
+			  def ea = prop."EntrepriseAccess" = [:]
+			  ea."Status" = owner.enterprise?.value
+			  ea."Notes" = owner.getNote("enterprise")?.owner?.content?:""
+			  def pca = prop."PostCancellationAccessEntitlement" = [:]
+			  pca."Status" = owner.pca?.value
+			  pca."Notes" = owner.getNote("pca")?.owner?.content?:""
+		  }
+		  
+		  // Should only be one, we have an array to keep teh same format has licenses json
+		  subscription."Licences" << licence
+						  
+		  subscription."TitleList" = []
+		  result.entitlements.each { entitlement ->
+			  def ti = entitlement.tipp.title
+			  
+			  def title = [:]
+			  title."Title" = ti.title
+			  
+			  def ids = [:]
+			  ti.ids.each(){ id ->
+				  def value = id.identifier.value
+				  def ns = id.identifier.ns.ns
+				  if(ids.containsKey(ns)){
+					  def current = ids[ns]
+					  def newval = []
+					  newval << current
+					  newval << value
+					  ids[ns] = newval
+				  } else {
+					  ids[ns]=value
+				  }
+			  }
+			  title."TitleIDs" = ids
+			  
+			  // Should only be one, we have an array to keep teh same format has titles json
+			  title."CoverageStatements" = []
+			  
+			  def ie = [:]
+			  ie."CoverageStatementType" = "Issue Entitlement"
+			  ie."SubscriptionID" = sub.id
+			  ie."SubscriptionName" = sub.name
+			  ie."StartDate" = entitlement.startDate?formatter.format(entitlement.startDate):''
+			  ie."StartVolume" = entitlement.startVolume?:''
+			  ie."StartIssue" = entitlement.startIssue?:''
+			  ie."EndDate" = entitlement.endDate?formatter.format(entitlement.endDate):''
+			  ie."EndVolume" = entitlement.endVolume?:''
+			  ie."EndIssue" = entitlement.endIssue?:''
+			  ie."Embargo" = entitlement.embargo?:''
+			  ie."Coverage" = entitlement.coverageDepth?:''
+			  ie."CoverageNote" = entitlement.coverageNote?:''
+			  ie."HostPlatformName" = entitlement.tipp?.platform?.name?:''
+			  ie."HostPlatformURL" = entitlement.tipp?.hostPlatformURL?:''
+			  ie."AdditionalPlatforms" = []
+			  entitlement.tipp?.additionalPlatforms.each(){ ap ->
+				  def platform = [:]
+				  platform.PlatformName = ap.platform?.name?:''
+				  platform.PlatformRole = ap.rel?:''
+				  platform.PlatformURL = ap.platform?.primaryUrl?:''
+				  ie."AdditionalPlatforms" << platform
+			  }
+			  ie."CoreStatus" = entitlement.coreStatus?.value?:''
+			  ie."CoreStart" = entitlement.coreStatusStart?formatter.format(entitlement.coreStatusStart):''
+			  ie."CoreEnd" = entitlement.coreStatusEnd?formatter.format(entitlement.coreStatusEnd):''
+			  ie."PackageID" = entitlement.tipp?.pkg?.id?:''
+			  ie."PackageName" = entitlement.tipp?.pkg?.name?:''
+				  
+			  title."CoverageStatements".add(ie)
+			  
+			  subscription."TitleList" << title
+		  }
+			  
+		  subscriptions.add(subscription)
+		  
+		  response."Subscriptions" = subscriptions
+		  
+		  render response as JSON
+		  
+	  }
+	  xml {
+		  def writer = new StringWriter()
+		  def xmlBuilder = new MarkupBuilder(writer)
+		  xmlBuilder.getMkp().xmlDeclaration(version:'1.0', encoding: 'UTF-8')
+		  
+		  def sub = result.subscriptionInstance
+		  
+		  xmlBuilder.Subscriptions() {
+			  Subscription(){
+				  SubscriptionID(sub.id)
+				  SubscriptionName(sub.name)
+				  SubTermStartDate(sub.startDate?formatter.format(sub.startDate):'')
+				  SubTermEndDate(sub.endDate?formatter.format(sub.endDate):'')
+				  
+				  sub.orgRelations.each { or ->
+					  RelatedOrg(id: or.org.id){
+						  OrgName(or.org.name)
+						  OrgRole(or.roleType.value)
+						  
+						  OrgIDs(){
+							  or.org.ids.each(){ id ->
+								  def value = id.identifier.value
+								  def ns = id.identifier.ns.ns
+								  ID(namespace: ns, value)
+							  }
+						  }
+						  
+						  
+					  }
+				  }
+				  
+				  def owner = sub.owner
+				  Licence(){
+					  if(owner){
+						  LicenceReference(owner.reference)
+						  NoticePeriod(owner.noticePeriod)
+						  LicenceURL(owner.licenseUrl)
+						  LicensorRef(owner.licensorRef)
+						  LicenseeRef(owner.licenseeRef)
+						  
+						  sub.owner?.orgLinks.each { or ->
+							  RelatedOrg(id: or.org.id){
+								  OrgName(or.org.name)
+								  OrgRole(or.roleType.value)
+								  
+								  OrgIDs(){
+									  or.org.ids.each(){ id ->
+										  def value = id.identifier.value
+										  def ns = id.identifier.ns.ns
+										  ID(namespace: ns, value)
+									  }
+								  }
+							  }
+						  }
+						  
+						  LicenceProperties(){
+							  ConcurrentAccess(){
+								  Status(owner.concurrentUsers?.value)
+								  UserCount(owner.concurrentUserCount)
+								  Notes(owner.getNote("concurrentUsers")?.owner?.content?:"")
+							  }
+							  RemoteAccess(){
+								  Status(owner.remoteAccess?.value)
+								  Notes(owner.getNote("remoteAccess")?.owner?.content?:"")
+							  }
+							  WalkingAccess(){
+								  Status(owner.walkinAccess?.value)
+								  Notes(owner.getNote("walkinAccess")?.owner?.content?:"")
+							  }
+							  MultisiteAccess(){
+								  Status(owner.multisiteAccess?.value)
+								  Notes(owner.getNote("multisiteAccess")?.owner?.content?:"")
+							  }
+							  PartnersAccess(){
+								  Status(owner.partnersAccess?.value)
+								  Notes(owner.getNote("partnersAccess")?.owner?.content?:"")
+							  }
+							  AlumniAccess(){
+								  Status(owner.alumniAccess?.value)
+								  Notes(owner.getNote("alumniAccess")?.owner?.content?:"")
+							  }
+							  InterLibraryLoans(){
+								  Status(owner.ill?.value)
+								  Notes(owner.getNote("ill")?.owner?.content?:"")
+							  }
+							  IncludeinCoursepacks(){
+								  Status(owner.coursepack?.value)
+								  Notes(owner.getNote("coursepack")?.owner?.content?:"")
+							  }
+							  IncludeinVLE(){
+								  Status(owner.vle?.value)
+								  Notes(owner.getNote("vle")?.owner?.content?:"")
+							  }
+							  EntrepriseAccess(){
+								  Status(owner.enterprise?.value)
+								  Notes(owner.getNote("enterprise")?.owner?.content?:"")
+							  }
+							  PostCancellationAccessEntitlement(){
+								  Status(owner.pca?.value)
+								  Notes(owner.getNote("pca")?.owner?.content?:"")
+							  }
+						  }
+					  }
+				  }//End Licence
+				  
+				  Title{
+					  result.entitlements.each { entitlement ->
+						  def ti = entitlement.tipp.title
+						  
+						  TitleListEntry(){
+							  Title(ti.title)
+							  
+							  TitleIDs(){
+								  ti.ids.each(){ id ->
+									  def value = id.identifier.value
+									  def ns = id.identifier.ns.ns
+									  ID(namespace: ns, value)
+								  }
+							  }
+							  
+							  CoverageStatement(type: 'Issue Entitlement'){
+								  SubscriptionID(sub.id)
+								  SubscriptionName(sub.name)
+								  StartDate(entitlement.startDate?formatter.format(entitlement.startDate):'')
+								  StartVolume(entitlement.startVolume?:'')
+								  StartIssue(entitlement.startIssue?:'')
+								  EndDate(entitlement.endDate?formatter.format(entitlement.endDate):'')
+								  EndVolume(entitlement.endVolume?:'')
+								  EndIssue(entitlement.endIssue?:'')
+								  Embargo(entitlement.embargo?:'')
+								  Coverage(entitlement.coverageDepth?:'')
+								  CoverageNote(entitlement.coverageNote?:'')
+								  HostPlatformName(entitlement.tipp?.platform?.name?:'')
+								  HostPlatformURL(entitlement.tipp?.hostPlatformURL?:'')
+								  
+								  Patform(){
+									  entitlement.tipp?.additionalPlatforms.each(){ ap ->
+										  PlatformName(ap.platform?.name?:'')
+										  PlatformRole(ap.rel?:'')
+										  PlatformURL(ap.platform?.primaryUrl?:'')
+									  }
+								  }
+								  
+								  CoreStatus(entitlement.coreStatus?.value?:'')
+								  CoreStart(entitlement.coreStatusStart?formatter.format(entitlement.coreStatusStart):'')
+								  CoreEnd(entitlement.coreStatusEnd?formatter.format(entitlement.coreStatusEnd):'')
+								  PackageID(entitlement.tipp?.pkg?.id?:'')
+								  PackageName(entitlement.tipp?.pkg?.name?:'')
+							  }
+						  }
+					  }
+				  }
+			  }
+		  }
+		  		  
+		  render writer.toString()
+	  }
     }
   }
 
@@ -274,6 +584,12 @@ class SubscriptionDetailsController {
         // basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status.value != 'Deleted' and ( not exists ( select ie.tipp from IssueEntitlement ie where ie.subscription = ? and ie.tipp = tipp and ie.status.value != 'Deleted' ) )"
         basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status != ? and ( not exists ( select ie from IssueEntitlement ie where ie.subscription = ? and ie.tipp.id = tipp.id and ie.status != ? ) )"
       }
+
+      if ( params.pkgfilter && ( params.pkgfilter != '' ) ) {
+        basequery += " and tipp.pkg.id = ? "
+        qry_params.add(Long.parseLong(params.pkgfilter));
+      }
+
 
       if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
         basequery += " order by tipp.${params.sort} ${params.order} "
@@ -536,10 +852,17 @@ class SubscriptionDetailsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def linkPackage() {
+    log.debug("Link package, params: ${params}");
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.subscriptionInstance = Subscription.get(params.id)
     result.institution = result.subscriptionInstance.subscriber
+
+    if ( ! result.subscriptionInstance.hasPerm("edit",result.user) ) {
+      response.sendError(401);
+      return
+    }
+
     
     if ( result.subscriptionInstance.isEditableBy(result.user) ) {
       result.editable = true
@@ -575,14 +898,14 @@ class SubscriptionDetailsController {
               case 'startYear':
                 sw.append('startYear')
                 break;
-              case 'contentProvider':
-                sw.append('packages.cpname')
+              case 'cpname':
+                sw.append('cpname')
                 break;
             }
             if ( filter_components[2].indexOf(' ') > 0 ) {
-              sw.append(":'");
+              sw.append(":\"");
               sw.append(filter_components[2])
-              sw.append("'");
+              sw.append("\"");
             }
             else {
               sw.append(":");
@@ -612,12 +935,16 @@ class SubscriptionDetailsController {
             query_str = query_str + " AND ( " + fq + " ) "
           
           log.debug("query: ${query_str}");
+          result.es_query = query_str;
 
           def search = esclient.search{
             indices "kbplus"
             source {
               from = params.offset
               size = params.max
+              sort = [
+                'sortname' : [ 'order' : 'asc' ]
+              ]
               query {
                 query_string (query: query_str)
               }
@@ -625,51 +952,54 @@ class SubscriptionDetailsController {
                 consortiaName {
                   terms {
                     field = 'consortiaName'
+                    size = 25
                   }
                 }
-                contentProvider {
+                cpname {
                   terms {
-                    field = 'packages.cpname'
+                    field = 'cpname'
+                    size = 25
                   }
                 }
                 startYear {
                   terms {
                     field = 'startYear'
+                    size = 25
                   }
                 }
               }
-
             }
 
           }
 
-          if ( search?.response ) {
-            result.hits = search.response.hits
-            result.resultsTotal = search.response.hits.totalHits
+      if ( search?.response ) {
+        result.hits = search.response.hits
+        result.resultsTotal = search.response.hits.totalHits
 
-            // We pre-process the facet response to work around some translation issues in ES
-            if ( search.response.facets != null ) {
-              result.facets = [:]
-              search.response.facets.facets.each { facet ->
-                def facet_values = []
-                facet.value.entries.each { fe ->
-                  facet_values.add([term: fe.term,display:fe.term,count:"${fe.count}"])
-                }
-                result.facets[facet.key] = facet_values
-              }
+        // We pre-process the facet response to work around some translation issues in ES
+        if ( search.response.facets != null ) {
+          result.facets = [:]
+          search.response.facets.facets.each { facet ->
+            def facet_values = []
+            facet.value.entries.each { fe ->
+              facet_values.add([term: fe.term,display:fe.term,count:"${fe.count}"])
             }
+            result.facets[facet.key] = facet_values
           }
+        }
+      }
           
-          
-      if ( params.addBtn ) {
-        log.debug("Add package ${params.addBtn} to subscription ${params}");
-        // result.subscriptionInstance
-        def pkg_to_link = Package.get(params.addBtn)
-        def new_pkg_sub = new SubscriptionPackage(subscription:result.subscriptionInstance, pkg:pkg_to_link).save();
-        redirect action:'addEntitlements', id:params.id
-        // def oid = "com.k_int.kbplus.Package:${params.addBtn}"
-        // shopping_basket.addIfNotPresent(oid)
-        // shopping_basket.save(flush:true);
+      if ( params.addType && ( params.addType != '' ) ) {
+        def pkg_to_link = Package.get(params.addId)
+        log.debug("Add package ${params.addType} to subscription ${params}");
+        if ( params.addType == 'With' ) {
+          pkg_to_link.addToSubscription(result.subscriptionInstance, true)
+          redirect action:'addEntitlements', id:params.id
+        }
+        else if ( params.addType == 'Without' ) {
+          pkg_to_link.addToSubscription(result.subscriptionInstance, false)
+          redirect action:'addEntitlements', id:params.id
+        }
       }
 
     }
@@ -680,8 +1010,6 @@ class SubscriptionDetailsController {
         log.error("problem",e);
       }
     }
-    
-
     
     result
   }

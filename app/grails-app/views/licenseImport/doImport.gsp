@@ -42,8 +42,8 @@
           </g:form>
 
           <br/>
-
           <hr/>
+
       <%-- Show summary --%>
           <g:if test="${validationResult}">
 
@@ -52,6 +52,9 @@
                       <div class="alert alert-info">${msg}</div>
                   </g:each>
               </g:if>
+              <g:else>
+                  You messed up fool!
+              </g:else>
 
 
               <g:if test="${validationResult.errors!=null}">

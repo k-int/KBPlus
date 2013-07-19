@@ -78,6 +78,7 @@ class OrganisationsController {
     def show() {
       def result = [:]
       result.user = User.get(springSecurityService.principal.id)
+      result.editable = true
       def orgInstance = Org.get(params.id)
       if (!orgInstance) {
         flash.message = message(code: 'default.not.found.message', args: [message(code: 'org.label', default: 'Org'), params.id])

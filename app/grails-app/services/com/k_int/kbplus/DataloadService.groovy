@@ -87,12 +87,16 @@ class DataloadService {
     updateES(esclient, com.k_int.kbplus.Package.class) { pkg ->
       def result = [:]
       result._id = pkg.impId
-      result.name = "${pkg.name} (${pkg.contentProvider?.name})"
+      result.name = "${pkg.name}"
+      result.sortname = "${pkg.name.toLowerCase()}"
+      result.tokname = result.name.replaceAll(':',' ')
       result.dbId = pkg.id
       result.visible = ['Public']
       result.rectype = 'Package'
       result.consortiaId = pkg.getConsortia()?.id
       result.consortiaName = pkg.getConsortia()?.name
+      result.cpname = pkg.contentProvider?.name
+      result.cpid = pkg.contentProvider?.id
 
       if ( pkg.startDate ) {
         GregorianCalendar c = new GregorianCalendar()
@@ -165,6 +169,7 @@ class DataloadService {
 
   def updateES(esclient, domain, recgen_closure) {
 
+    def count = 0;
     try {
       log.debug("updateES - ${domain.name}");
 
@@ -176,7 +181,6 @@ class DataloadService {
       }
 
       log.debug("updateES ${domain.name} since ${latest_ft_record.lastTimestamp}");
-      def count = 0;
       def total = 0;
       Date from = new Date(latest_ft_record.lastTimestamp);
       // def qry = domain.findAllByLastUpdatedGreaterThan(from,[sort:'lastUpdated']);
@@ -1164,12 +1168,9 @@ class DataloadService {
       indices 'kbplus'
       type 'com.k_int.kbplus.TitleInstance'
       source  {
-        title {
+        'title' {
           properties {
-            title {
-              type = "string"
-              analyzer = "snowball"
-            }
+            title = [ type : "string" ]
           }
         }
       }
@@ -1183,10 +1184,7 @@ class DataloadService {
       source  {
         org {
           properties {
-            name {
-              type = "string"
-              analyzer = "snowball"
-            }
+            name = [ type : "string" ]
           }
         }
       }
@@ -1200,30 +1198,15 @@ class DataloadService {
       source  {
         'package' {
           properties {
-            "name" {
-              type = "string"
-              analyzer = "snowball"
-            }
-            "consortia" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "consortiaName" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "contentProvider" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "startYear" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "startYearAndMonth" {
-              type = "string"
-              index = "not_analyzed"
-            }
+            name = [ type : "string", analyzer : "snowball" ]
+            sortname = [ type : "string", index : "not_analyzed" ]
+            consortia = [ type : "string", index : "not_analyzed" ]
+            consortiaName = [ type : "string", index : "not_analyzed" ]
+            contentProvider = [ type : "string", index : "not_analyzed" ]
+            cpname = [ type : "string", index : "not_analyzed" ]
+            cpid = [ type : "string", index : "not_analyzed" ]
+            startYear = [ type : "string", index : "not_analyzed" ]
+            startYearAndMonth = [ type : "string", index : "not_analyzed" ]
           }
         }
       }
@@ -1237,10 +1220,7 @@ class DataloadService {
       source  {
         platform {
           properties {
-            "name" {
-              type = "string"
-              analyzer = "snowball"
-            }
+            name = [ type : "string" ]
           }
         }
       }
@@ -1254,42 +1234,15 @@ class DataloadService {
       source  {
         'subscription' {
           properties {
-            "name" {
-              type = "string"
-              analyzer = "snowball"
-            }
-            "subtype" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "packages" {
-              "properties" {
-                "cpname" {
-                  type = "string"
-                  index = "not_analyzed"
-                }
-              }
-            }
-            "consortia" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "consortiaName" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "contentProvider" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "startYear" {
-              type = "string"
-              index = "not_analyzed"
-            }
-            "startYearAndMonth" {
-              type = "string"
-              index = "not_analyzed"
-            }
+            name = [ type : "string" ]
+            subtype = [ type : "string", index : "not_analyzed" ]
+            consortia = [ type : "string", index : "not_analyzed" ]
+            consortiaName = [ type : "string", index : "not_analyzed" ]
+            contentProvider = [ type : "string", index : "not_analyzed" ]
+            cpname = [ type : "string", index : "not_analyzed" ]
+            cpid = [ type : "string", index : "not_analyzed" ]
+            startYear = [ type : "string", index : "not_analyzed" ]
+            startYearAndMonth = [ type : "string", index : "not_analyzed" ]
           }
         }
       }
@@ -1301,12 +1254,9 @@ class DataloadService {
       indices 'kbplus'
       type 'com.k_int.kbplus.License'
       source  {
-        license {
+        'license' {
           properties {
-            "title" {
-              type = "string"
-              analyzer = "snowball"
-            }
+            title = [ type : "string" ]
           }
         }
       }

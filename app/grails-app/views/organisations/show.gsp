@@ -50,12 +50,23 @@
             
           </g:if>
         
-          <g:if test="${orgInstance?.ids}">
             <dt><g:message code="org.ids.label" default="Ids" /></dt>
+            <g:if test="${orgInstance?.ids}">
               <g:each in="${orgInstance.ids}" var="i">
               <dd><g:link controller="identifier" action="show" id="${i.identifier.id}">${i?.identifier?.ns?.ns?.encodeAsHTML()} : ${i?.identifier?.value?.encodeAsHTML()}</g:link></dd>
               </g:each>
+            </g:if>
+
+          <g:if test="${editable}">
+            <g:form controller="ajax" action="addToCollection" class="form-inline">
+              <input type="hidden" name="__context" value="${orgInstance.class.name}:${orgInstance.id}"/>
+              <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.IdentifierOccurrence"/>
+              <input type="hidden" name="__recip" value="org"/>
+              <input type="hidden" name="identifier" id="addIdentifierSelect"/>
+              <input type="submit" value="Add Identifier..." class="btn btn-primary btn-small"/>
+            </g:form>
           </g:if>
+
 
           <g:if test="${orgInstance?.outgoingCombos}">
             <dt><g:message code="org.outgoingCombos.label" default="Outgoing Combos" /></dt>
@@ -105,5 +116,38 @@
         </dl>
 
     </div>
+  <script language="JavaScript">
+
+    $(function(){
+      // moved to mm_bootstrap
+      // $.fn.editable.defaults.mode = 'inline';
+      // $('.xEditableValue').editable();
+
+      <g:if test="${editable}">
+      $("#addIdentifierSelect").select2({
+        placeholder: "Search for an identifier...",
+        minimumInputLength: 1,
+        ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+          url: "<g:createLink controller='ajax' action='lookup'/>",
+          dataType: 'json',
+          data: function (term, page) {
+              return {
+                  q: term, // search term
+                  page_limit: 10,
+                  baseClass:'com.k_int.kbplus.Identifier'
+              };
+          },
+          results: function (data, page) {
+            return {results: data.values};
+          }
+        },
+        createSearchChoice:function(term, data) {
+          return {id:'com.k_int.kbplus.Identifier:__new__:'+term,text:term};
+        }
+      });
+    });
+    </g:if>
+  </script>
+  
   </body>
 </html>

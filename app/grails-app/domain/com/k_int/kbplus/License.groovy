@@ -34,6 +34,8 @@ class License {
   String licenseStatus
   long lastmod
 
+  static hasOne = [onixplLicense: OnixplLicense]
+
   static hasMany = [
     pkgs:Package, 
     subscriptions:Subscription, 
@@ -106,6 +108,7 @@ class License {
     licenseType(nullable:true, blank:true)
     licenseStatus(nullable:true, blank:true)
     lastmod(nullable:true, blank:true)
+      onixplLicense(nullable: true, blank: true)
  }
 
   def getLicensor() {

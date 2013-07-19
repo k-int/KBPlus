@@ -133,10 +133,14 @@ class LicenseImportController {
 
     // Create or find a license
     //def l = License.get(params.licid);
-    /*def license = new License();
-    license.save(flush: true);
+     def license = null;
+     /*license = new License();
+    if (!license.save(flush: true)) {
+        license.errors.each {
+            log.error("License error:" + it);
+        }
+    }
     log.debug("Created empty license "+license.id);*/
-    def license = null;
 
     def file = request.getFile("importFile");
     log.debug("Processing imported ONIX-PL document "+file);
@@ -181,13 +185,13 @@ class LicenseImportController {
             filename: upload_filename,
             mimeType: upload_mime_type,
             title: params.upload_title,
-            type:doctype)
+            type:doctype,
+            user: upload.user)
             .save()
 
         def doc_context = new DocContext(
             license:license,
             owner:doc_content,
-            user: upload.user,
             doctype:doctype).save(flush:true);
 
         def opl = recordOnixplLicense(license, doc_content);
@@ -221,6 +225,7 @@ class LicenseImportController {
    */
   def recordOnixplLicense(license, doc) {
     def opl = null;
+      log.error("License2: " + license.id);
     try {
       opl = new OnixplLicense(
           lastmod:new Date(),
@@ -262,7 +267,6 @@ class LicenseImportController {
       def oplt = new OnixplLicenseText(
           text:lt.text,
           elementId:lt.elId,
-          usageTerm:term,
           oplLicense:opl
       );
       oplt.save(validate:false, flush: true, insert:true);
@@ -273,6 +277,11 @@ class LicenseImportController {
       )
       ass.save(flush: true);
       //log.debug("LicenseText "+oplt.id);
+        def oputlt = new OnixplUsageTermLicenseText(
+                usageTerm: term,
+                licenseText: oplt
+        );
+        oputlt.save(validate: false, flush: true, insert: true);
     }
   }
 

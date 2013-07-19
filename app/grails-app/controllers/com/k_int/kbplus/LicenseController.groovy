@@ -5,7 +5,8 @@ import grails.converters.*
 import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.MarkupBuilder
 import grails.plugins.springsecurity.Secured
-import com.k_int.kbplus.auth.*;
+import com.k_int.kbplus.auth.*
+import org.springframework.security.access.annotation.Secured;
 
 class LicenseController {
 

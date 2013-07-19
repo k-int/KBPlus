@@ -22,4 +22,9 @@ class OnixplUsageTermLicenseText {
     licenseText column: 'opul_oplt_fk', index:'opul_entry_idx'
   }
 
+    static constraints = {
+        usageTerm(nullable:false, blank: false)
+        licenseText(nullable:false, blank: false)
+    }
+
 }
