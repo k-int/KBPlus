@@ -12,12 +12,11 @@ class OnixplUsageTermsDetailsController {
     def index() {
         def user = User.get(springSecurityService.principal.id)
         def onixplUsageTerm = OnixplUsageTerm.get(params.id)
-        if ( !onixplUsageTerm.hasPerm("view",user) ) {
-            log.debug("return 401....");
-            response.sendError(401);
-            return
-        }
-        def editable = onixplUsageTerm.hasPerm("edit", user)
-        [onixplUsageTerm: onixplUsageTerm, user: user, editable: editable]
+//        if ( !onixplUsageTerm.hasPerm("view",user) ) {
+//            log.debug("return 401....");
+//            response.sendError(401);
+//            return
+//        }
+        [onixplUsageTerm: onixplUsageTerm, user: user]
     }
 }

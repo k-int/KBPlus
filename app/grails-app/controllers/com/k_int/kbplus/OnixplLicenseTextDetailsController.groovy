@@ -12,12 +12,11 @@ class OnixplLicenseTextDetailsController {
     def index() {
         def user = User.get(springSecurityService.principal.id)
         def onixplLicenseText = OnixplLicenseText.get(params.id)
-        if ( ! onixplLicenseText.hasPerm("view",user) ) {
-            log.debug("return 401....");
-            response.sendError(401);
-            return
-        }
-        def editable = onixplLicenseText.hasPerm("edit", user)
-        [onixplLicenseText: onixplLicenseText, user: user, editable: editable]
+//        if ( ! onixplLicenseText.hasPerm("view",user) ) {
+//            log.debug("return 401....");
+//            response.sendError(401);
+//            return
+//        }
+        [onixplLicenseText: onixplLicenseText, user: user]
     }
 }

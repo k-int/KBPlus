@@ -13,13 +13,12 @@ class OnixplLicenseDetailsController {
     def index() {
         def user = User.get(springSecurityService.principal.id)
         def onixplLicense = OnixplLicense.get(params.id)
-        if ( ! onixplLicense.hasPerm("view",user) ) {
-            log.debug("return 401....");
-            response.sendError(401);
-            return
-        }
-        def editable = onixplLicense.hasPerm("edit", user)
-        [onixplLicense: onixplLicense, user: user, editable: editable]
+//        if ( ! onixplLicense.hasPerm("view",user) ) {
+//            log.debug("return 401....");
+//            response.sendError(401);
+//            return
+//        }
+        [onixplLicense: onixplLicense, user: user]
     }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -27,12 +26,11 @@ class OnixplLicenseDetailsController {
         log.debug("licenseDetails id:${params.id}");
         def user = User.get(springSecurityService.principal.id)
         def onixplLicense = OnixplLicense.get(params.id)
-        if ( ! onixplLicense.hasPerm("view",user) ) {
-            response.sendError(401);
-            return
-        }
-        def editable = onixplLicense.hasPerm("edit", user)
-        [onixplLicense: onixplLicense, user: user, editable: editable]
+//        if ( ! onixplLicense.hasPerm("view",user) ) {
+//            response.sendError(401);
+//            return
+//        }
+        [onixplLicense: onixplLicense, user: user]
     }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -40,12 +38,11 @@ class OnixplLicenseDetailsController {
         log.debug("licenseDetails id:${params.id}");
         def user = User.get(springSecurityService.principal.id)
         def onixplLicense = OnixplLicense.get(params.id)
-        if ( ! onixplLicense.hasPerm("view",user) ) {
-            response.sendError(401);
-            return
-        }
-        def editable = onixplLicense.hasPerm("edit", user)
-        [onixplLicense: onixplLicense, user: user, editable: editable]
+//        if ( ! onixplLicense.hasPerm("view",user) ) {
+//            response.sendError(401);
+//            return
+//        }
+        [onixplLicense: onixplLicense, user: user]
     }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -54,20 +51,17 @@ class OnixplLicenseDetailsController {
         def user = User.get(springSecurityService.principal.id)
         def onixplLicense = OnixplLicense.get(params.id)
 
-        if ( ! onixplLicense.hasPerm("view",user) ) {
-            response.sendError(401);
-            return
-        }
-
-        def editable = onixplLicense.hasPerm("edit", user)
-
+//        if ( ! onixplLicense.hasPerm("view",user) ) {
+//            response.sendError(401);
+//            return
+//        }
         def max = params.max ?: 20;
         def offset = params.offset ?: 0;
 
         def qry_params = [onixplLicense.class.name, "${onixplLicense.id}"]
         def historyLines = AuditLogEvent.executeQuery("select e from AuditLogEvent as e where className=? and persistedObjectId=? order by id desc", qry_params, [max:max, offset:offset]);
         def historyLinesTotal = AuditLogEvent.executeQuery("select count(e.id) from AuditLogEvent as e where className=? and persistedObjectId=?",qry_params)[0];
-        [onixplLicense: onixplLicense, user: user, editable: editable, max: max, offset: offset, historyLines: historyLines, historyLinesTotal: historyLinesTotal]
+        [onixplLicense: onixplLicense, user: user, max: max, offset: offset, historyLines: historyLines, historyLinesTotal: historyLinesTotal]
     }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])

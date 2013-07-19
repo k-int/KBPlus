@@ -50,13 +50,9 @@
 
                             <g:sortableColumn property="Status" title="${message(code: 'onixplLicense.status.label', default: 'Status')}" />
 
-							<g:sortableColumn property="Document" title="${message(code: 'onixplLicense.document.label', default: 'Document')}" />
-						
-							<g:sortableColumn property="License Text" title="${message(code: 'onixplLicense.licenseText.label', default: 'License Text')}" />
-						
-							<g:sortableColumn property="Usage Term" title="${message(code: 'onixplLicense.usageTerm.label', default: 'Usage Term')}" />
-						
-							<th></th>
+                            <g:sortableColumn property="Document" title="${message(code: 'onixplLicense.document.label', default: 'Document')}" />
+
+                            <th></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -64,39 +60,19 @@
 						<tr>
 						
 							<td>
-                                <g:link controller="licenseDetails" action="index" id="${onixplLicenseInstance.license.id}">${onixplLicenseInstance.license}</g:link>
+                                <g:link controller="licenseDetails" action="index" id="${onixplLicenseInstance.license?.id}">${onixplLicenseInstance.license}</g:link>
                             </td>
 
                             <td>
-                                ${onixplLicenseInstance.license.type.value}
+                                ${onixplLicenseInstance.license?.type?.value}
                             </td>
 
                             <td>
-                                ${onixplLicenseInstance.license.status.value}
+                                ${onixplLicenseInstance.license?.status?.value}
                             </td>
 						
 							<td>
-                                <g:link controller="doc" action="show" id="${onixplLicenseInstance.doc.id}">${onixplLicenseInstance.doc.title}</g:link>
-                            </td>
-						
-							<td>
-                                <ul>
-                                <g:each in="${onixplLicenseInstance.licenseText}">
-                                    <li>
-                                        <g:link controller="onixplLicenseText" action="show" id="${it.id}">${it.text}</g:link>
-                                    </li>
-                                </g:each>
-                                </ul>
-                            </td>
-						
-							<td>
-                                <ul>
-                                <g:each in="${onixplLicenseInstance.usageTerm.sort {it.usageType.value}}">
-                                    <li>
-                                        <g:link controller="onixplUsageTerm" action="show" id="${it.id}">${it.usageType.value} | ${it.usageStatus.value}</g:link>
-                                    </li>
-                                </g:each>
-                                </ul>
+                                <g:link controller="doc" action="show" id="${onixplLicenseInstance.doc.id}">${onixplLicenseInstance.doc?.title}</g:link>
                             </td>
 						
 							<td class="link">

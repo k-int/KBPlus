@@ -249,6 +249,7 @@ class LicenseImportController {
    * @param usageTerm a struct representing the UsageTerm
    */
   def recordOnixplUsageTerm(opl, usageTerm) {
+      log.error("OPL:" + opl);
     // Retrieve the type and status
     def rdvType = RefdataCategory.lookupOrCreate(CAT_TYPE, usageTerm.type);
     def rdvStatus = RefdataCategory.lookupOrCreate(CAT_STATUS, usageTerm.status);
