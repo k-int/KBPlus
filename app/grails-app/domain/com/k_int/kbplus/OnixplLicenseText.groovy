@@ -19,7 +19,7 @@ class OnixplLicenseText {
       oplLicense:OnixplLicense
   ]*/
 
-  static hasMany = [ licenseText:OnixplUsageTermLicenseText ]
+  static hasMany = [ usageTermLicenseText:OnixplUsageTermLicenseText ]
 
   static mappedBy = [ usageTerm: 'licenseText' ]
 

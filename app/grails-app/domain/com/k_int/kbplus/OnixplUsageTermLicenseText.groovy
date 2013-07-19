@@ -8,7 +8,7 @@ class OnixplUsageTermLicenseText {
 
   static hasOne= [
       usageTerm:OnixplUsageTerm,
-      licenseText:OnixplLicenseText
+      usageTermLicenseText:OnixplLicenseText
   ]
 
   static belongsTo = [
@@ -19,12 +19,12 @@ class OnixplUsageTermLicenseText {
     //id column:        'opul_id'
     //version column:   'opul_version'
     usageTerm column:   'opul_oput_fk', index:'opul_entry_idx'
-    licenseText column: 'opul_oplt_fk', index:'opul_entry_idx'
+    usageTermLicenseText column: 'opul_oplt_fk', index:'opul_entry_idx'
   }
 
     static constraints = {
-        usageTerm(nullable:false, blank: false)
-        licenseText(nullable:false, blank: false)
+      usageTerm(nullable:false, blank: false)
+      usageTermLicenseText(nullable:false, blank: false)
     }
 
 }
