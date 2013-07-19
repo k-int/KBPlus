@@ -276,13 +276,7 @@ class LicenseImportController {
           usageTerm: term,
           licenseText: oplt
       )
-      ass.save(flush: true);
-      //log.debug("LicenseText "+oplt.id);
-        def oputlt = new OnixplUsageTermLicenseText(
-                usageTerm: term,
-                licenseText: oplt
-        );
-        oputlt.save(validate: false, flush: true, insert: true);
+      ass.save(validate: false, flush: true, insert: true);
     }
   }
 
