@@ -78,6 +78,7 @@ class LicenseImportController {
     // ------------------------------------------------------------------------
     // File level messages
     result.messages=[]
+    result.errors=[]
 
     //log.debug("Reading Stream");
     if  ( ( charset != null ) && ( ! charset.equals('UTF-8') ) ) {

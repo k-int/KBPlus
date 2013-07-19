@@ -7,12 +7,12 @@ import com.k_int.kbplus.auth.Role
  */
 class OnixplUsageTerm {
 
-    OnixplLicense oplLicense
+  OnixplLicense oplLicense
   RefdataValue usageType
   RefdataValue usageStatus
 
   //static hasMany = [ licenseText:OnixplLicenseText ]
-  static hasMany = [ licenseText:OnixplUsageTermLicenseText ]
+  static hasMany = [ usageTermLicenseText:OnixplUsageTermLicenseText ]
 
   static belongsTo = [
       oplLicense:OnixplLicense
@@ -20,7 +20,7 @@ class OnixplUsageTerm {
   //static hasOne = [onixplLicense:OnixplLicense]
 
     static mappedBy = [
-            usageTermLicenseText: 'usageTerm'
+        usageTermLicenseText: 'usageTerm'
     ]
   static mapping = {
     id column:          'oput_id'
@@ -30,11 +30,11 @@ class OnixplUsageTerm {
     usageStatus column: 'oput_usage_status_rv_fk', index:'oput_entry_idx'
   }
 
-    static constraints = {
-        oplLicense(nullable:false, blank: false)
-        usageType(nullable:false, blank: false)
-        usageStatus(nullable:false, blank: false)
-    }
+  static constraints = {
+    oplLicense(nullable:false, blank: false)
+    usageType(nullable:false, blank: false)
+    usageStatus(nullable:false, blank: false)
+  }
 
   /*static constraints = {
     licenseText unique: true
