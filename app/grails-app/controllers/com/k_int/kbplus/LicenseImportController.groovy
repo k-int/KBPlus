@@ -23,6 +23,9 @@ class LicenseImportController {
   def doImport() {
 
     def result = [:]
+    result.validationResult = [:]
+    result.validationResult.messages = []
+    result.validationResult.errors = []
     if (!"anonymousUser".equals(springSecurityService.principal)) {
       result.user = User.get(springSecurityService.principal.id);
     }
@@ -30,14 +33,21 @@ class LicenseImportController {
     // Try and read the file, and if it is okay, process the import
     if ( request.method == 'POST' ) {
       result.validationResult = readOfferedOnixPl(request)
+      result.validationResult.success = false
       if ( result.validationResult.processFile == true ) {
-        log.debug("Passed first phase validation, continue...");
-        //processImport(result.validationResult)
-        processImport(result.validationResult)
-        // TODO show import summary
+        result.validationResult.messages.add("Document validated")
+        //if (result.validationResult.messages) result.validationResult.messages.addAll(result.validationResult.messages)
+        log.debug("Passed first phase validation, continue...")
+        def importResults = processImport(result.validationResult)
+        result.validationResult.putAll(importResults)
+        if (importResults.termStatuses) {
+          result.validationResult.termStatuses = importResults.termStatuses
+          result.validationResult.success = true
+          //result.validationResult.messages.add("Document processed") i
+        }
         // TODO show licenses to link to
       } else {
-        // TODO show messages
+
       }
     }
     else {   }
@@ -47,7 +57,6 @@ class LicenseImportController {
     // Redirect to some ONIX-PL display page
     //log.debug("Redirecting...");
     //redirect controller: 'licenseDetails', action:'index', id:params.licid, fragment:params.fragment
-
   }
 
 
@@ -59,10 +68,8 @@ class LicenseImportController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def readOfferedOnixPl(request) {
     def result = [:]
-    // Authorise user and create/get license
-    result.user = User.get(springSecurityService.principal.id)
-
     def file = request.getFile("importFile");
+    result.file = file;
     def charset = checkCharset(file?.inputStream)
     log.debug("Request to upload ONIX-PL file type: ${file?.contentType} filename ${file?.getOriginalFilename()}");
 
@@ -104,10 +111,10 @@ class LicenseImportController {
       result.processFile=true
     } catch (SAXException e) {
       result.processFile=false
-      result.messages.add("ERROR: Could not parse file; is this a valid ONIX-PL file?");
+      result.errors.add("ERROR: Could not parse file; is this a valid ONIX-PL file?");
     } catch (IOException e) {
       result.processFile=false
-      result.messages.add("ERROR: There was an error processing the file; " +
+      result.errors.add("ERROR: There was an error processing the file; " +
           "please check the file you have supplied is a valid ONIX-PL file, try again.");
     }
 
@@ -126,9 +133,10 @@ class LicenseImportController {
 
     // Create or find a license
     //def l = License.get(params.licid);
-    def license = new License();
+    /*def license = new License();
     license.save(flush: true);
-    log.debug("Created empty license "+license.id);
+    log.debug("Created empty license "+license.id);*/
+    def license = null;
 
     def file = request.getFile("importFile");
     log.debug("Processing imported ONIX-PL document "+file);
@@ -139,10 +147,11 @@ class LicenseImportController {
 
     // A stats struct holding summary info for display to the user
     def results = [:]
+    results.messages=[]
     results.filename = upload_filename
     results.contentType = upload_mime_type
 
-    if ( license && input_stream ) {
+    if ( /*license &&*/ input_stream ) {
 
       // stats update
       results.termStatuses = [:]
@@ -182,15 +191,19 @@ class LicenseImportController {
             doctype:doctype).save(flush:true);
 
         def opl = recordOnixplLicense(license, doc_content);
+        //results.messages.add("ONIX-PL License with id "+opl.id)
 
         if (upload.usageTerms) {
+          def ts = results.termStatuses
           upload.usageTerms.each { ut ->
             recordOnixplUsageTerm(opl, ut);
-            def ts = results.termStatuses,
-                n = ts.get(ut.usageStatus) ? ts.get(ut.usageStatus)++ : 0;
-            ts.put(ut.usageStatus, n)
+            def n = ts.get(ut.status)!=null ? ts.get(ut.status)+1 : 0;
+            //log.debug("term statuses "+ut.status+" = "+ts.get(ut.status)+" to "+n)
+            ts.put(ut.status, n)
           }
         }
+
+      } else {
 
       }
     }
@@ -232,8 +245,6 @@ class LicenseImportController {
    */
   def recordOnixplUsageTerm(opl, usageTerm) {
     // Retrieve the type and status
-    //def rdvType = RefdataValue.find { value==usageType.type };
-    //def rdvStatus = RefdataValue.find { value==usageType.status };
     def rdvType = RefdataCategory.lookupOrCreate(CAT_TYPE, usageTerm.type);
     def rdvStatus = RefdataCategory.lookupOrCreate(CAT_STATUS, usageTerm.status);
     //log.debug("Recording usage term $rdvType : $rdvStatus")
@@ -255,6 +266,12 @@ class LicenseImportController {
           oplLicense:opl
       );
       oplt.save(validate:false, flush: true, insert:true);
+      // Create the association object:
+      def ass = new OnixplUsageTermLicenseText(
+          usageTerm: term,
+          licenseText: oplt
+      )
+      ass.save(flush: true);
       //log.debug("LicenseText "+oplt.id);
     }
   }

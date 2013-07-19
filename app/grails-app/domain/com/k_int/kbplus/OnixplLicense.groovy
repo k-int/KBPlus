@@ -1,7 +1,10 @@
 package com.k_int.kbplus
 
 /**
- * An OnixplLicense has many OnixplUsageTerms.
+ * An OnixplLicense has many OnixplUsageTerms and OnixplLicenseTexts.
+ * It can be associated with 0..1 license.
+ * The OnixplLicenseTexts relation is redundant as UsageTerms refer to the
+ * LicenseTexts, but is a convenient way to access the whole license text.
  */
 class OnixplLicense {
 
@@ -10,11 +13,6 @@ class OnixplLicense {
   // An ONIX-PL license relates to a KB+ license and a doc
   License license;
   Doc doc;
-
-  /*static belongsTo = [
-      license:License,
-      doc:Doc
-  ]*/
 
   // One to many
   static hasMany = [
@@ -36,8 +34,9 @@ class OnixplLicense {
     lastmod column: 'opl_lastmod'
   }
 
-  static constraints = {
 
+  static constraints = {
+    license(nullable:true)
   }
 
 

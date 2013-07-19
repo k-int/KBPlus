@@ -1,5 +1,9 @@
 package com.k_int.kbplus
 
+/**
+ * An OnixplLicenseText belongs to a OnixPlLicense, and one or more
+ * OnixplUsageTerms in a many-to-many relation via OnixplUsageTermLicenseText.
+ */
 class OnixplLicenseText {
 
   String elementId;
@@ -7,13 +11,13 @@ class OnixplLicenseText {
   String text;
 
   static belongsTo = OnixplUsageTerm;
+  OnixplLicense oplLicense
   /*static belongsTo = [
       OnixplUsageTerm,
       oplLicense:OnixplLicense
   ]*/
-  OnixplLicense oplLicense
 
-  static hasMany = [ usageTerm:OnixplUsageTerm ]
+  static hasMany = [ licenseText:OnixplUsageTermLicenseText ]
 
   static mappedBy = [ usageTerm: 'licenseText' ]
 

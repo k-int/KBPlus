@@ -8,7 +8,8 @@ class OnixplUsageTerm {
   RefdataValue usageType
   RefdataValue usageStatus
 
-  static hasMany = [ licenseText:OnixplLicenseText ]
+  //static hasMany = [ licenseText:OnixplLicenseText ]
+  static hasMany = [ licenseText:OnixplUsageTermLicenseText ]
 
   static belongsTo = [
       oplLicense:OnixplLicense
