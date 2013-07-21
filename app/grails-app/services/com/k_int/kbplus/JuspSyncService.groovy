@@ -181,7 +181,7 @@ class JuspSyncService {
                       fact.inst =  org_inst
                       fact.juspio =  title_io_inst
                       if ( factService.registerFact(fact) ) {
-                        log.debug("New fact count: ${++newFactCount}");
+                        // log.debug("New fact count: ${++newFactCount}");
                       }
                     }
                   }
