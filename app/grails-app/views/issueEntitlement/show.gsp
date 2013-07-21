@@ -159,6 +159,19 @@
                 <dd>${issueEntitlementInstance.tipp.coverageNote}</dd>
             </dl>
 
+            <dl>
+                <dt>JUSP Usage Link</dt>
+                <dd>
+                  <g:if test="${jusplink != null}">
+                    <a href="${jusplink}">Click Here</a>
+                  </g:if>
+                  <g:else>
+                    No link available (Check Title, Content Provider and Subscriber have relevant jusp, juspsid and jusplogin identifers)
+                  </g:else>
+                </dd>
+            </dl>
+
+
             <g:if test="${( usage != null ) && ( usage.size() > 0 ) }">
               <h6>JUSP Usage Statistics</h6>
               <table class="table table-bordered table-striped">
