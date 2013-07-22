@@ -51,6 +51,7 @@
                       <li <%='titleInstancePackagePlatform'== controllerName ? ' class="active"' : '' %>><g:link controller="titleInstancePackagePlatform">Title Instance Package Platform</g:link></li>
                       <li <%='subscription'== controllerName ? ' class="active"' : '' %>><g:link controller="subscription">Subscriptions</g:link></li>
                       <li <%='license'== controllerName ? ' class="active"' : '' %>><g:link controller="license">Licences</g:link></li>
+                      <li <%='onixplLicense'== controllerName ? ' class="active"' : '' %>><g:link controller="onixplLicenseDetails" action="list">ONIX-PL Licences</g:link></li>
                     </ul>
                   </li>
                 </sec:ifAnyGranted>
@@ -105,8 +106,10 @@
                          <g:link controller="packageDetails" action="create">New Package</g:link></li>
                        -->
                        <li class="divider"></li>
-                       <li <%= ( ( 'upload'== controllerName ) && ( 'reviewSO'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="upload" action="reviewSO">Upload new Package</g:link></li>
+                         <li <%= ( ( 'upload'== controllerName ) && ( 'reviewSO'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="upload" action="reviewSO">Upload new Package</g:link></li>
+                         <li <%= ( ( 'licenseImport'== controllerName ) && ( 'doImport'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="licenseImport" action="doImport">Import ONIX-PL license</g:link></li>
                        <li class="divider"></li>
                        <li <%= ( ( 'titleDetails'== controllerName ) && ( 'findTitleMatches'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="titleDetails" action="findTitleMatches">New Title</g:link></li>
