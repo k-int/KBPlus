@@ -69,8 +69,8 @@ class IssueEntitlementController {
 
         def fsresult = factService.generateMonthlyUsageGrid(title_id,org_id,supplier_id)
 
-        def jusp_login = result.issueEntitlementInstance.subscription.subscriber?.getIdentifierByType('jusplogin').value
-        def jusp_sid = result.issueEntitlementInstance.tipp.pkg.contentProvider?.getIdentifierByType('juspsid').value
+        def jusp_login = result.issueEntitlementInstance.subscription.subscriber?.getIdentifierByType('jusplogin')?.value
+        def jusp_sid = result.issueEntitlementInstance.tipp.pkg.contentProvider?.getIdentifierByType('juspsid')?.value
         def jusp_title_id = result.issueEntitlementInstance.tipp.title.getIdentifierValue('jusp')
 
         // def fsresult = factService.generateYearlyUsageGrid(title_id,org_id,supplier_id)
