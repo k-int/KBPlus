@@ -13,19 +13,19 @@ class OnixplLicense {
   Date lastmod;
 
   // An ONIX-PL license relates to a KB+ license and a doc
-  License license;
+  License license = null;
   Doc doc;
 
   // One to many
   static hasMany = [
-      usageTerm:   OnixplUsageTerm,
-      licenseText: OnixplLicenseText
+    usageTerm:   OnixplUsageTerm,
+    licenseText: OnixplLicenseText
   ]
 
   // Reference to license in the many
   static mappedBy = [
-      usageTerm:   'oplLicense',
-      licenseText: 'oplLicense'
+    usageTerm:   'oplLicense',
+    licenseText: 'oplLicense'
   ]
 
   static mapping = {
@@ -37,12 +37,12 @@ class OnixplLicense {
   }
 
   static constraints = {
-      license(nullable: true, blank: false)
-      doc(nullable: false, blank: false)
-      lastmod(nullable: true, blank: true)
+    license(nullable: true, blank: true, unique: true)
+    doc(nullable: false, blank: false)
+    lastmod(nullable: true, blank: true)
   }
 
-    def hasPerm(perm, user) {
+  def hasPerm(perm, user) {
         def result = false
 
         if (perm == 'view' && license.isPublic?.value == 'Yes') {
