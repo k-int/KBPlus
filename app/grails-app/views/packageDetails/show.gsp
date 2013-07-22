@@ -76,6 +76,11 @@
               </dl>
               
               <dl>
+                <dt>Package Persistent Identifier</dt>
+                <dd> <a href="uri://kbplus/${grailsApplication.config.kbplusSystemId}/package/${packageInstance?.id}">uri://kbplus/${grailsApplication.config.kbplusSystemId}/package/${packageInstance?.id}</dd>
+              </dl>
+              
+              <dl>
                 <dt>Public?</dt>
                 <dd>
                   <g:xEditableRefData owner="${packageInstance}" field="isPublic" config='YN'/>
