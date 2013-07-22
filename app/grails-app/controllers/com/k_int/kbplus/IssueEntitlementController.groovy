@@ -73,8 +73,10 @@ class IssueEntitlementController {
         def jusp_sid = result.issueEntitlementInstance.tipp.pkg.contentProvider?.getIdentifierByType('juspsid')?.value
         def jusp_title_id = result.issueEntitlementInstance.tipp.title.getIdentifierValue('jusp')
 
-        // def fsresult = factService.generateYearlyUsageGrid(title_id,org_id,supplier_id)
-        result.jusplink = "https://www.jusp.mimas.ac.uk/api/v1/Journals/Statistics/?jid=${jusp_title_id}&sid=${jusp_sid}&loginid=${jusp_login}&startrange=1800-01&endrange=2100-01&granularity=monthly"
+        if ( ( jusp_login != null ) && ( jusp_sid != null ) && ( jusp_title_id != null ) ) {
+          // def fsresult = factService.generateYearlyUsageGrid(title_id,org_id,supplier_id)
+          result.jusplink = "https://www.jusp.mimas.ac.uk/api/v1/Journals/Statistics/?jid=${jusp_title_id}&sid=${jusp_sid}&loginid=${jusp_login}&startrange=1800-01&endrange=2100-01&granularity=monthly"
+        }
 
         result.usage = fsresult?.usage
         result.x_axis_labels = fsresult?.x_axis_labels;
