@@ -135,13 +135,15 @@ class LicenseImportController {
     // Create or find a license
     //def l = License.get(params.licid);
      def license = null;
-     /*license = new License();
-    if (!license.save(flush: true)) {
-        license.errors.each {
-            log.error("License error:" + it);
-        }
-    }
-    log.debug("Created empty license "+license.id);*/
+     license = new License(
+       reference: params.upload_title
+     );
+     if (!license.save(flush: true)) {
+       license.errors.each {
+         log.error("License error:" + it);
+       }
+     }
+     log.debug("Created empty license "+license.id);
 
     def file = request.getFile("importFile");
     log.debug("Processing imported ONIX-PL document "+file);

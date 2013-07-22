@@ -22,10 +22,17 @@ class RefdataCategory {
     def result = RefdataValue.findByOwnerAndValue(cat, value)
 
     if ( !result ) {
-      new RefdataValue(owner:cat, value:value).save(fliush:true);
+      new RefdataValue(owner:cat, value:value).save(flush:true);
       result = RefdataValue.findByOwnerAndValue(cat, value);
     }
 
     result
   }
+
+  static def lookupOrCreate(category_name, icon, value) {
+    def result = lookupOrCreate(category_name, value)
+    result.icon = icon
+    result
+  }
+
 }
