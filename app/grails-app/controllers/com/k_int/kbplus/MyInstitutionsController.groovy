@@ -12,8 +12,6 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.hslf.model.*;
 import java.text.SimpleDateFormat
 
-
-
 class MyInstitutionsController {
 
   def springSecurityService
@@ -22,6 +20,7 @@ class MyInstitutionsController {
   def gazetteerService
   def alertsService
   def genericOIDService
+  def factService
 
   // Map the parameter names we use in the webapp with the ES fields
   def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
@@ -138,7 +137,104 @@ class MyInstitutionsController {
     // result.licenses = License.executeQuery(qry, [template_license_type, result.institution, licensee_role] )
     result.licenses = License.executeQuery(qry, qry_params);
 
-    result
+    withFormat {
+		html result
+		json {
+			def licenses = result.licenses
+			
+			def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+			
+			def response = [:]
+			
+			response."Licences" = []
+			
+			licenses.each {
+				def licence = [:]
+				licence."LicenceReference" = it.reference
+				licence."NoticePeriod" = it.noticePeriod
+				licence."LicenceURL" = it.licenseUrl
+				licence."LicensorRef" = it.licensorRef
+				licence."LicenseeRef" = it.licenseeRef
+					
+				licence."RelatedOrgs" = []
+				it.orgLinks.each { or ->
+					def org = [:]
+					org."OrgID" = or.org.id
+					org."OrgName" = or.org.name
+					org."OrgRole" = or.roleType.value
+					
+					def ids = [:]
+					or.org.ids.each(){ id ->
+						def value = id.identifier.value
+						def ns = id.identifier.ns.ns
+						if(ids.containsKey(ns)){
+							def current = ids[ns]
+							def newval = []
+							newval << current
+							newval << value
+							ids[ns] = newval
+						} else {
+							ids[ns]=value
+						}
+					}
+					org."OrgIDs" = ids
+					
+					licence."RelatedOrgs" << org
+				}
+				
+				def prop = licence."LicenceProperties" = [:]
+				
+				def ca = prop."ConcurrentAccess" = [:]
+				ca."Status" = it.concurrentUsers?.value
+				ca."UserCount" = it.concurrentUserCount
+				ca."Notes" = it.getNote("concurrentUsers")?.owner?.content?:""
+				
+				def ra = prop."RemoteAccess" = [:]
+				ra."Status" = it.remoteAccess?.value
+				ra."Notes" = it.getNote("remoteAccess")?.owner?.content?:""
+				
+				def wa = prop."WalkingAccess" = [:]
+				wa."Status" = it.walkinAccess?.value
+				wa."Notes" = it.getNote("remoteAccess")?.owner?.content?:""
+				
+				def ma = prop."MultisiteAccess" = [:]
+				ma."Status" = it.multisiteAccess?.value
+				ma."Notes" = it.getNote("multisiteAccess")?.owner?.content?:""
+				
+				def pa = prop."PartnersAccess" = [:]
+				pa."Status" = it.partnersAccess?.value
+				pa."Notes" = it.getNote("partnersAccess")?.owner?.content?:""
+				
+				def aa = prop."AlumniAccess" = [:]
+				aa."Status" = it.alumniAccess?.value
+				aa."Notes" = it.getNote("alumniAccess")?.owner?.content?:""
+				
+				def ill = prop."InterLibraryLoans" = [:]
+				ill."Status" = it.ill?.value
+				ill."Notes" = it.getNote("ill")?.owner?.content?:""
+				
+				def cp = prop."IncludeinCoursepacks" = [:]
+				cp."Status" = it.coursepack?.value
+				cp."Notes" = it.getNote("coursepack")?.owner?.content?:""
+				
+				def vle = prop."IncludeinVLE" = [:]
+				vle."Status" = it.vle?.value
+				vle."Notes" = it.getNote("vle")?.owner?.content?:""
+				
+				def ea = prop."EntrepriseAccess" = [:]
+				ea."Status" = it.enterprise?.value
+				ea."Notes" = it.getNote("enterprise")?.owner?.content?:""
+				
+				def pca = prop."PostCancellationAccessEntitlement" = [:]
+				pca."Status" = it.pca?.value
+				pca."Notes" = it.getNote("pca")?.owner?.content?:""
+				
+				response."Licences" << licence
+			}
+			
+			render response as JSON
+		}
+    }
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -252,8 +348,196 @@ class MyInstitutionsController {
 
     result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
     result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
-
-    result
+	
+	withFormat {
+		html result
+		json {
+			def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+			
+			def response = [:]
+			def subscriptions = []
+			
+			result.subscriptions.each { sub ->
+				def subscription = [:]
+				subscription."SubscriptionID" = sub.id
+				subscription."SubscriptionName" = sub.name
+				subscription."SubTermStartDate" = sub.startDate?formatter.format(sub.startDate):''
+				subscription."SubTermEndDate" = sub.endDate?formatter.format(sub.endDate):''
+				
+				subscription."RelatedOrgs" = []
+				sub.orgRelations.each { or ->
+					def org = [:]
+					org."OrgID" = or.org.id
+					org."OrgName" = or.org.name
+					org."OrgRole" = or.roleType.value
+					
+					def ids = [:]
+					or.org.ids.each(){ id ->
+						def value = id.identifier.value
+						def ns = id.identifier.ns.ns
+						if(ids.containsKey(ns)){
+							def current = ids[ns]
+							def newval = []
+							newval << current
+							newval << value
+							ids[ns] = newval
+						} else {
+							ids[ns]=value
+						}
+					}
+					org."OrgIDs" = ids
+					
+					subscription."RelatedOrgs" << org
+				}
+				
+				subscription."Licences" = []
+				def licence = [:]
+				
+				if(sub.owner){
+					def owner = sub.owner
+					
+					licence."LicenceReference" = owner.reference
+					licence."NoticePeriod" = owner.noticePeriod
+					licence."LicenceURL" = owner.licenseUrl
+					licence."LicensorRef" = owner.licensorRef
+					licence."LicenseeRef" = owner.licenseeRef
+						
+					licence."RelatedOrgs" = []
+					sub.owner?.orgLinks.each { or ->
+						def org = [:]
+						org."OrgID" = or.org.id
+						org."OrgName" = or.org.name
+						org."OrgRole" = or.roleType.value
+						
+						def ids = [:]
+						or.org.ids.each(){ id ->
+							def value = id.identifier.value
+							def ns = id.identifier.ns.ns
+							if(ids.containsKey(ns)){
+								def current = ids[ns]
+								def newval = []
+								newval << current
+								newval << value
+								ids[ns] = newval
+							} else {
+								ids[ns]=value
+							}
+						}
+						org."OrgIDs" = ids
+						
+						licence."RelatedOrgs" << org
+					}
+					
+					
+					
+					def prop = licence."LicenceProperties" = [:]
+					def ca = prop."ConcurrentAccess" = [:]
+					ca."Status" = owner.concurrentUsers?.value
+					ca."UserCount" = owner.concurrentUserCount
+					ca."Notes" = owner.getNote("concurrentUsers")?.owner?.content?:""
+					def ra = prop."RemoteAccess" = [:]
+					ra."Status" = owner.remoteAccess?.value
+					ra."Notes" = owner.getNote("remoteAccess")?.owner?.content?:""
+					def wa = prop."WalkingAccess" = [:]
+					wa."Status" = owner.walkinAccess?.value
+					wa."Notes" = owner.getNote("remoteAccess")?.owner?.content?:""
+					def ma = prop."MultisiteAccess" = [:]
+					ma."Status" = owner.multisiteAccess?.value
+					ma."Notes" = owner.getNote("multisiteAccess")?.owner?.content?:""
+					def pa = prop."PartnersAccess" = [:]
+					pa."Status" = owner.partnersAccess?.value
+					pa."Notes" = owner.getNote("partnersAccess")?.owner?.content?:""
+					def aa = prop."AlumniAccess" = [:]
+					aa."Status" = owner.alumniAccess?.value
+					aa."Notes" = owner.getNote("alumniAccess")?.owner?.content?:""
+					def ill = prop."InterLibraryLoans" = [:]
+					ill."Status" = owner.ill?.value
+					ill."Notes" = owner.getNote("ill")?.owner?.content?:""
+					def cp = prop."IncludeinCoursepacks" = [:]
+					cp."Status" = owner.coursepack?.value
+					cp."Notes" = owner.getNote("coursepack")?.owner?.content?:""
+					def vle = prop."IncludeinVLE" = [:]
+					vle."Status" = owner.vle?.value
+					vle."Notes" = owner.getNote("vle")?.owner?.content?:""
+					def ea = prop."EntrepriseAccess" = [:]
+					ea."Status" = owner.enterprise?.value
+					ea."Notes" = owner.getNote("enterprise")?.owner?.content?:""
+					def pca = prop."PostCancellationAccessEntitlement" = [:]
+					pca."Status" = owner.pca?.value
+					pca."Notes" = owner.getNote("pca")?.owner?.content?:""
+				}
+				
+				// Should only be one, we have an array to keep teh same format has licenses json
+				subscription."Licences" << licence
+								
+				subscription."TitleList" = []
+				sub.issueEntitlements.each { entitlement ->
+					def ti = entitlement.tipp.title
+					
+					def title = [:]
+					title."Title" = ti.title
+					
+					def ids = [:]
+					ti.ids.each(){ id ->
+						def value = id.identifier.value
+						def ns = id.identifier.ns.ns
+						if(ids.containsKey(ns)){
+							def current = ids[ns]
+							def newval = []
+							newval << current
+							newval << value
+							ids[ns] = newval
+						} else {
+							ids[ns]=value
+						}
+					}
+					title."TitleIDs" = ids
+					
+					// Should only be one, we have an array to keep teh same format has titles json
+					title."CoverageStatements" = []
+					
+					def ie = [:]
+					ie."CoverageStatementType" = "Issue Entitlement"
+					ie."SubscriptionID" = sub.id
+					ie."SubscriptionName" = sub.name
+					ie."StartDate" = entitlement.startDate?formatter.format(entitlement.startDate):''
+					ie."StartVolume" = entitlement.startVolume?:''
+					ie."StartIssue" = entitlement.startIssue?:''
+					ie."EndDate" = entitlement.endDate?formatter.format(entitlement.endDate):''
+					ie."EndVolume" = entitlement.endVolume?:''
+					ie."EndIssue" = entitlement.endIssue?:''
+					ie."Embargo" = entitlement.embargo?:''
+					ie."Coverage" = entitlement.coverageDepth?:''
+					ie."CoverageNote" = entitlement.coverageNote?:''
+					ie."HostPlatformName" = entitlement.tipp.platform?.name?:''
+					ie."HostPlatformURL" = entitlement.tipp.hostPlatformURL?:''
+					ie."AdditionalPlatforms" = []
+					entitlement.tipp.additionalPlatforms?.each(){ ap ->
+						def platform = [:]
+						platform.PlatformName = ap.platform?.name?:''
+						platform.PlatformRole = ap.rel?:''
+						platform.PlatformURL = ap.platform?.primaryUrl?:''
+						ie."AdditionalPlatforms" << platform
+					}
+					ie."CoreStatus" = entitlement.coreStatus?.value?:''
+					ie."CoreStart" = entitlement.coreStatusStart?formatter.format(entitlement.coreStatusStart):''
+					ie."CoreEnd" = entitlement.coreStatusEnd?formatter.format(entitlement.coreStatusEnd):''
+					ie."PackageID" = entitlement.tipp?.pkg?.id?:''
+					ie."PackageName" = entitlement.tipp?.pkg?.name?:''
+						
+					title."CoverageStatements".add(ie)
+					
+					subscription."TitleList" << title
+				}
+				
+				subscriptions.add(subscription)
+			}
+			
+			response."Subscriptions" = subscriptions
+			
+			render response as JSON
+		}
+	}
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -674,10 +958,15 @@ class MyInstitutionsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def currentTitles() {
-    if (params.filterSub.equals("all")) params.filterSub = null
-    if (params.filterPvd.equals("all")) params.filterPvd = null
-    if (params.filterHostPlat.equals("all")) params.filterHostPlat = null
-    if (params.filterOtherPlat.equals("all")) params.filterOtherPlat = null
+	def filterSub = params.list("filterSub")
+    if(filterSub.contains("all")) filterSub = null
+	def filterPvd = params.list("filterPvd")
+	if(filterPvd.contains("all")) filterPvd = null
+	def filterHostPlat = params.list("filterHostPlat")
+	if(filterHostPlat.contains("all")) filterHostPlat = null
+	def filterOtherPlat = params.list("filterOtherPlat")
+	if(filterOtherPlat.contains("all")) filterOtherPlat = null
+
     if (!params.order) params.order = "asc"
     if (!params.sort) params.sort = "tipp.title.title"
 
@@ -769,8 +1058,8 @@ ORDER BY p.platform.name""", sub_params );
         title_query += "INNER JOIN ie.tipp.platform AS hplat "
 	//if (!params.filterSub)
     title_query += ", Subscription AS s INNER JOIN s.orgRelations AS o "
-	if (params.filterSub)
-		title_query += ", IssueEntitlement AS ie2 "
+//	if (filterSub)
+//		title_query += ", IssueEntitlement AS ie2 "
 		
     //if (!params.filterSub){
 		//title_query += "WHERE EXISTS ( FROM ${sub_qry} AND ie.subscription = s ) "
@@ -781,12 +1070,16 @@ AND s.status.value != 'Deleted' \
 AND s = ie.subscription "
 	qry_params.institution = result.institution
 	
-    if (params.filterSub){ //}else{
+    if (filterSub){ //}else{
         //title_query += "WHERE ie.subscription.id = :subscription "
 		title_query += "\
-AND ie2.tipp.title = ie.tipp.title \
-AND ie2.subscription.id = :subscription "
-        qry_params.subscription = Long.valueOf(params.filterSub)
+AND ( \
+ie.subscription.id IN (:subscriptions) \
+OR ( EXISTS ( FROM IssueEntitlement AS ie2 \
+WHERE ie2.tipp.title = ie.tipp.title \
+AND ie2.subscription.id IN (:subscriptions) \
+)))"
+        qry_params.subscriptions = filterSub.collect(new ArrayList<Long>()) { Long.valueOf(it) }
     }
     
     // copied from SubscriptionDetailsController
@@ -800,29 +1093,29 @@ AND io.identifier.value like :filter ) ) )"
       qry_params.filter = "%${params.filter}%"
     }
     
-    if (params.filterPvd){
+    if (filterPvd){
         title_query += "\
 AND role.roleType.value = 'Content Provider' \
-AND role.org.id = :provider "
-        qry_params.provider = Long.valueOf(params.filterPvd)
+AND role.org.id IN (:provider) "
+        qry_params.provider = filterPvd.collect(new ArrayList<Long>()) { Long.valueOf(it) } //Long.valueOf(params.filterPvd)
     }
     
-    if (params.filterHostPlat){
-        title_query += "AND hplat.id = :hostPlatform "
-        qry_params.hostPlatform = Long.valueOf(params.filterHostPlat)
+    if (filterHostPlat){
+        title_query += "AND hplat.id IN (:hostPlatform) "
+        qry_params.hostPlatform = filterHostPlat.collect(new ArrayList<Long>()) { Long.valueOf(it) } //Long.valueOf(params.filterHostPlat)
     }
     
-    if (params.filterOtherPlat){
+    if (filterOtherPlat){
         title_query += """
 AND EXISTS ( 
 	FROM IssueEntitlement ie2 
 	WHERE EXISTS ( 
 		FROM ie2.tipp.additionalPlatforms AS ap 
-		WHERE ap.platform.id = :otherPlatform 
+		WHERE ap.platform.id IN (:otherPlatform) 
 	) 
 	AND ie2.tipp.title = ie.tipp.title 
 ) """
-        qry_params.otherPlatform = Long.valueOf(params.filterOtherPlat)
+        qry_params.otherPlatform = filterOtherPlat.collect(new ArrayList<Long>()) { Long.valueOf(it) } //Long.valueOf(params.filterOtherPlat)
     }
     
     if ( date_restriction ) {
@@ -842,16 +1135,19 @@ AND EXISTS (
     println("Final query:\n${title_query.replaceAll("\\s+", " ")}{title_query_grouping}\nParams:${qry_params}")
     
     /* Get Total number of Titles for HTML view */
-	if(!(params.format.equals("csv")||params.format.equals("json")))
+	if((!params.format||params.format.equals("html")))
     	result.num_ti_rows = 
 			IssueEntitlement.executeQuery("SELECT ie.tipp.title ${title_query} ${title_query_grouping}", qry_params).size()
 	
-    def limits = (!(params.format.equals("csv")||params.format.equals("json")))?[max:result.max, offset:result.offset]:[offset:0]
+    def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
 	
 	// MAX(CASE WHEN ie.endDate IS NULL THEN '~' ELSE ie.endDate END) should get the max date or a null string if there is any empty ie.ie_end_date
 	// We need to do that as an empty string actually means 'up to the most current issue available'
     result.titles = IssueEntitlement.executeQuery(
-        "SELECT ie.tipp.title, MIN(ie.startDate), MAX(CASE WHEN ie.endDate IS NULL THEN '~' ELSE DATE_FORMAT(ie.endDate, '${session.sessionPreferences?.globalDateFormatSQL?:'%Y-%m-%d'}') END), COUNT(ie.subscription) ${title_query} ${title_query_grouping} ${title_query_ordering}", 
+"SELECT ie.tipp.title, MIN(ie.startDate), \
+MAX(CASE WHEN ie.endDate IS NULL THEN '~' ELSE DATE_FORMAT(ie.endDate, '${session.sessionPreferences?.globalDateFormatSQL?:'%Y-%m-%d'}') END), \
+COUNT(ie.subscription) \
+${title_query} ${title_query_grouping} ${title_query_ordering}", 
         qry_params, limits );
     
     if( result.titles.isEmpty() ) {
@@ -873,6 +1169,10 @@ AND EXISTS (
         AND ie.tipp.title In (:titles) \
         ${title_query_ordering}", 
         qry_params );
+	
+	if(params.format.equals("xml")||params.format.equals("json")){
+		
+	}
     
     withFormat {
         html result
@@ -960,58 +1260,131 @@ AND EXISTS (
         json {
             def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
             
-            // Get distinct ID.Namespace
-            def namespaces = []
-            title_list.each(){ ti ->
-                ti.ids.each(){ id ->
-                    namespaces.add(id.identifier.ns.ns)
-                }
-            }
-            namespaces.unique()
-            
-            def response = []
+            def response = [:]
+			def titles = []
             
             result.titles.each { ti ->
                 def title = [:]
-                title.Title = ti[0].title
-                title.IDs = [:]
-                namespaces.each(){ ns ->
-                    if(ti[0].getIdentifierValue(ns)) 
-                        title.IDs[ns] = ti[0].getIdentifierValue(ns)
+                title."Title" = ti[0].title
+                
+				def ids = [:]
+				ti[0].ids.each(){ id ->
+					def value = id.identifier.value
+					def ns = id.identifier.ns.ns
+					log.debug("ns:${ns} val:${value}")
+					if(ids.containsKey(ns)){
+						def current = ids[ns]
+						def newval = []
+						newval << current
+						newval << value
+						ids[ns] = newval
+					} else {
+						ids[ns]=value
+					}
                 }
-                def entitlements = title."Issue Entitlements" = []
+				title."TitleIDs" = ids
+				
+                def entitlements = title."CoverageStatements" = []
                 result.entitlements.each(){ 
                     def ie = [:]
                     if(it.tipp.title.id.equals(ti[0].id)){
-                        ie."Subscription name" = it.subscription.name
-                        ie."Start date" = it.startDate?formatter.format(it.startDate):''
-                        ie."Start volume" = it.startVolume?:''
-                        ie."Start issue" = it.startIssue?:''
-                        ie."End date" = it.endDate?formatter.format(it.endDate):''
-                        ie."End volume" = it.endVolume?:''
-                        ie."End issue" = it.endIssue?:''
+						ie."CoverageStatementType" = "Issue Entitlement"
+                        ie."SubscriptionID" = it.subscription.id
+                        ie."SubscriptionName" = it.subscription.name
+                        ie."StartDate" = it.startDate?formatter.format(it.startDate):''
+                        ie."StartVolume" = it.startVolume?:''
+                        ie."StartIssue" = it.startIssue?:''
+                        ie."EndDate" = it.endDate?formatter.format(it.endDate):''
+                        ie."EndVolume" = it.endVolume?:''
+                        ie."EndIssue" = it.endIssue?:''
                         ie."Embargo" = it.embargo?:''
                         ie."Coverage" = it.coverageDepth?:''
-                        ie."Coverage note" = it.coverageNote?:''
-                        ie."Host Platform Name" = it.tipp?.platform?.name?:''
-                        ie."Host Platform URL" = it.tipp?.hostPlatformURL?:''
-                        ie."Additional Platforms" = [:]
+                        ie."CoverageNote" = it.coverageNote?:''
+                        ie."HostPlatformName" = it.tipp?.platform?.name?:''
+                        ie."HostPlatformURL" = it.tipp?.hostPlatformURL?:''
+                        ie."AdditionalPlatforms" = []
                         it.tipp?.additionalPlatforms.each(){ ap ->
-                            ie."Additional Platforms".name = ap.platform?.name?:''
-                            ie."Additional Platforms".role = ap.rel?:''
-                            ie."Additional Platforms".URL = ap.platform?.primaryUrl?:''
+							def platform = [:]
+                            platform.PlatformName = ap.platform?.name?:''
+                            platform.PlatformRole = ap.rel?:''
+                            platform.PlatformURL = ap.platform?.primaryUrl?:''
+							ie."AdditionalPlatforms" << platform
                         }
-                        ie."Core status" = it.coreStatus?.value?:''
-                        ie."Core start" = it.coreStatusStart?formatter.format(it.coreStatusStart):''
-                        ie."Core end" = it.coreStatusEnd?formatter.format(it.coreStatusEnd):''
+                        ie."CoreStatus" = it.coreStatus?.value?:''
+                        ie."CoreStart" = it.coreStatusStart?formatter.format(it.coreStatusStart):''
+                        ie."CoreEnd" = it.coreStatusEnd?formatter.format(it.coreStatusEnd):''
+						ie."PackageID" = it.tipp?.pkg?.id?:''
+						ie."PackageName" = it.tipp?.pkg?.name?:''
                         
                         entitlements.add(ie)
                     }
                 }
-                response.add(title)
+				titles.add(title)
             }
+			
+			response."TitleList" = titles
+			
             render response as JSON
         }
+		xml {
+			def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+			
+			def writer = new StringWriter()
+			def xmlBuilder = new MarkupBuilder(writer)
+			xmlBuilder.getMkp().xmlDeclaration(version:'1.0', encoding: 'UTF-8')
+			
+			xmlBuilder.TitleList() {			
+				result.titles.each { ti ->
+					TitleListEntry{
+						Title(ti[0].title)
+						
+						TitleIDS(){
+							ti[0].ids.each(){ id ->
+								def value = id.identifier.value
+								def ns = id.identifier.ns.ns
+								ID(namespace: ns, value )
+							}
+						}
+						
+						CoverageStatement(type: 'Issue Entitlement'){
+							result.entitlements.each(){
+								if(it.tipp.title.id.equals(ti[0].id)){
+									SubscriptionID(it.subscription.id)
+									SubscriptionName(it.subscription.name)
+									StartDate(it.startDate?formatter.format(it.startDate):'')
+									StartVolume(it.startVolume?:'')
+									StartIssue(it.startIssue?:'')
+									EndDate(it.endDate?formatter.format(it.endDate):'')
+									EndVolume(it.endVolume?:'')
+									EndIssue(it.endIssue?:'')
+									Embargo(it.embargo?:'')
+									Coverage(it.coverageDepth?:'')
+									CoverageNote(it.coverageNote?:'')
+									HostPlatformName(it.tipp?.platform?.name?:'')
+									HostPlatformURL(it.tipp?.hostPlatformURL?:'')
+									
+									it.tipp?.additionalPlatforms.each(){ ap ->
+										Platform(){
+											PlatformName(ap.platform?.name?:'')
+											PlatformRole(ap.rel?:'')
+											PlatformURL(ap.platform?.primaryUrl?:'')
+										}
+									}
+									
+									CoreStatus(it.coreStatus?.value?:'')
+									CoreStart(it.coreStatusStart?formatter.format(it.coreStatusStart):'')
+									CoreEnd(it.coreStatusEnd?formatter.format(it.coreStatusEnd):'')
+									PackageID(it.tipp?.pkg?.id?:'')
+									PackageName(it.tipp?.pkg?.name?:'')
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			render writer.toString()
+		}
     }
   }
 
@@ -1189,6 +1562,9 @@ AND EXISTS (
               query {
                 query_string (query: query_str)
               }
+              sort = [
+                 'sortname' : [ 'order' : 'asc' ]
+              ]
               facets {
                 startYear {
                   terms {
@@ -1267,7 +1643,7 @@ AND EXISTS (
         def pkg_idx = package_list.indexOf("${t.pkg.id}:${t.platform.id}");
 
         if ( title_idx == -1 ) {
-          log.debug("  -> Adding title ${title.id} to matrix result");
+          // log.debug("  -> Adding title ${title.id} to matrix result");
           title_list.add("${title.id}");
           title_idx = title_list.size();
         }
@@ -1351,11 +1727,17 @@ AND EXISTS (
   }
 
   def generate(plist, inst) {
-    def m = generateMatrix(plist)
-    exportWorkbook(m, inst)
+    try {
+      def m = generateMatrix(plist, inst)
+      exportWorkbook(m, inst)
+    }
+    catch ( Exception e ) {
+      log.error("Problem",e);
+      response.sendError(500)
+    }
   }
 
-  def generateMatrix(plist) {
+  def generateMatrix(plist, inst) {
 
     def titleMap = [:]
     def subscriptionMap = [:]
@@ -1402,6 +1784,25 @@ AND EXISTS (
                 title_info.is_core = ie.coreStatus?.value
                 title_info.core_start_date = ie.coreStatusStart ? formatter.format(ie.coreStatusStart) : ''
                 title_info.core_end_date = ie.coreStatusEnd ? formatter.format(ie.coreStatusEnd) : ''
+
+                // Add in JR1 and JR1a reports
+                def c = new GregorianCalendar()
+                c.setTime(new Date());
+                def current_year = c.get(Calendar.YEAR)
+
+                try {
+                  title_info.jr1_last_4_years = factService.lastNYearsByType(title_info.id, 
+                                                                             inst.id, 
+                                                                             ie.tipp.pkg.contentProvider.id, 'JUSP:JR1', 4, current_year)
+
+                  title_info.jr1a_last_4_years = factService.lastNYearsByType(title_info.id, 
+                                                                              inst.id, 
+                                                                              ie.tipp.pkg.contentProvider.id, 'JUSP:JR1a', 4, current_year)
+                }
+                catch ( Exception e ) {
+                  log.error("Problem collating JUSP report info for title ${title_info.id}",e);
+                }
+
                 // log.debug("added title info: ${title_info}");
               }
               titleMap[ie.tipp.title.id] = title_info;
@@ -1457,7 +1858,7 @@ AND EXISTS (
           if ( ! (ie.status?.value=='Deleted')  ) {
             def title_info = titleMap[ie.tipp.title.id]
             def ie_info = [:]
-            log.debug("Adding tipp info ${ie.tipp.startDate} ${ie.tipp.derivedFrom}");
+            // log.debug("Adding tipp info ${ie.tipp.startDate} ${ie.tipp.derivedFrom}");
             ie_info.tipp_id = ie.tipp.id;
             ie_info.core = ie.coreStatus?.value
             ie_info.startDate_d = ie.tipp.startDate ?: ie.tipp.derivedFrom?.startDate
@@ -1479,7 +1880,7 @@ AND EXISTS (
           if ( ! (tipp.status?.value=='Deleted')  ) {
             def title_info = titleMap[tipp.title.id]
             def ie_info = [:]
-            log.debug("Adding tipp info ${tipp.startDate} ${tipp.derivedFrom}");
+            // log.debug("Adding tipp info ${tipp.startDate} ${tipp.derivedFrom}");
             ie_info.tipp_id = tipp.id;
             ie_info.startDate_d = tipp.startDate
             ie_info.startDate = ie_info.startDate_d ? formatter.format(ie_info.startDate_d) : null
@@ -1496,6 +1897,7 @@ AND EXISTS (
       }
     }
 
+    log.debug("Completed.. returning final result");
 
     def final_result = [
                         ti_info:ti_info_arr,                      // A crosstab array of the packages where a title occours
@@ -1505,205 +1907,269 @@ AND EXISTS (
   }
 
   def exportWorkbook(m, inst) {
-
-    // read http://stackoverflow.com/questions/2824486/groovy-grails-how-do-you-stream-or-buffer-a-large-file-in-a-controllers-respon
-
-    HSSFWorkbook workbook = new HSSFWorkbook();
- 
-    CreationHelper factory = workbook.getCreationHelper();
-
-    //
-    // Create two sheets in the excel document and name it First Sheet and
-    // Second Sheet.
-    //
-    HSSFSheet firstSheet = workbook.createSheet("Renewals Worksheet");
-    Drawing drawing = firstSheet.createDrawingPatriarch();
-
- 
-    // Cell style for a present TI
-    HSSFCellStyle present_cell_style = workbook.createCellStyle();  
-    present_cell_style.setFillForegroundColor(HSSFColor.LIGHT_GREEN.index);  
-    present_cell_style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);  
-
-    // Cell style for a core TI
-    HSSFCellStyle core_cell_style = workbook.createCellStyle();  
-    core_cell_style.setFillForegroundColor(HSSFColor.LIGHT_YELLOW.index);  
-    core_cell_style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);  
-
-    int rc=0;
-    // header
-    int cc=0;
-    HSSFRow row = null;
-    HSSFCell cell = null;
-
-    // Blank rows
-    row = firstSheet.createRow(rc++);
-    row = firstSheet.createRow(rc++);
-    cc=0;
-    cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("Subscriber ID"));
-    cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("Subscriber Name"));
-    cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("Subscriber Shortcode"));
-
-    row = firstSheet.createRow(rc++);
-    cc=0;
-    cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("${inst.id}"));
-    cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString(inst.name));
-    cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString(inst.shortcode));
-
-    row = firstSheet.createRow(rc++);
-
-    // Key
-    row = firstSheet.createRow(rc++);
-    cc=0;
-    cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("Key"));
-    cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("Title In Subscription"));
-    cell.setCellStyle(present_cell_style);  
-    cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("Core Title"));
-    cell.setCellStyle(core_cell_style);  
-    cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("Not In Subscription"));
-    cell = row.createCell(11);
-    cell.setCellValue(new HSSFRichTextString("Current Sub"));
-    cell = row.createCell(12);
-    cell.setCellValue(new HSSFRichTextString("Candidates ->"));
-    
-
-    row = firstSheet.createRow(rc++);
-    cc=11
-    m.sub_info.each { sub ->
-      cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("${sub.sub_id}"));
-    }
-    
-    // headings
-    row = firstSheet.createRow(rc++);
-    cc=0;
-    cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("Title ID"));
-    cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("Title"));
-    cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("ISSN"));
-    cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("eISSN"));
-    cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("current Start Date"));
-    cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("Current End Date"));
-    cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("Current Coverage Depth"));
-    cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("Current Coverage Note"));
-    cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("IsCore?"));
-    cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("Core Start Date"));
-    cell = row.createCell(cc++);
-    cell.setCellValue(new HSSFRichTextString("Core End Date"));
-
-    m.sub_info.each { sub ->
-      cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("${sub.sub_name}"));
-
-      // Hyperlink link = createHelper.createHyperlink(Hyperlink.LINK_URL);
-      // link.setAddress("http://poi.apache.org/");
-      // cell.setHyperlink(link);
-    }
-
-    m.title_info.each { title ->
-
+    try {
+      log.debug("export workbook");
+  
+      // read http://stackoverflow.com/questions/2824486/groovy-grails-how-do-you-stream-or-buffer-a-large-file-in-a-controllers-respon
+  
+      HSSFWorkbook workbook = new HSSFWorkbook();
+   
+      CreationHelper factory = workbook.getCreationHelper();
+  
+      //
+      // Create two sheets in the excel document and name it First Sheet and
+      // Second Sheet.
+      //
+      HSSFSheet firstSheet = workbook.createSheet("Renewals Worksheet");
+      Drawing drawing = firstSheet.createDrawingPatriarch();
+  
+   
+      // Cell style for a present TI
+      HSSFCellStyle present_cell_style = workbook.createCellStyle();  
+      present_cell_style.setFillForegroundColor(HSSFColor.LIGHT_GREEN.index);  
+      present_cell_style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);  
+  
+      // Cell style for a core TI
+      HSSFCellStyle core_cell_style = workbook.createCellStyle();  
+      core_cell_style.setFillForegroundColor(HSSFColor.LIGHT_YELLOW.index);  
+      core_cell_style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);  
+  
+      int rc=0;
+      // header
+      int cc=0;
+      HSSFRow row = null;
+      HSSFCell cell = null;
+  
+      // Blank rows
       row = firstSheet.createRow(rc++);
-      cc = 0;
-
-      // Internal title ID
+      row = firstSheet.createRow(rc++);
+      cc=0;
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("${title.id}"));
-      // Title
+      cell.setCellValue(new HSSFRichTextString("Subscriber ID"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("${title.title?:''}"));
-
-      // ISSN
+      cell.setCellValue(new HSSFRichTextString("Subscriber Name"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("${title.issn?:''}"));
-
-      // eISSN
+      cell.setCellValue(new HSSFRichTextString("Subscriber Shortcode"));
+  
+      row = firstSheet.createRow(rc++);
+      cc=0;
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("${title.eissn?:''}"));
-
-      // startDate
+      cell.setCellValue(new HSSFRichTextString("${inst.id}"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("${title.current_start_date?:''}"));
-
-      // endDate
+      cell.setCellValue(new HSSFRichTextString(inst.name));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("${title.current_end_date?:''}"));
-
-      // coverageDepth
+      cell.setCellValue(new HSSFRichTextString(inst.shortcode));
+  
+      row = firstSheet.createRow(rc++);
+  
+      // Key
+      row = firstSheet.createRow(rc++);
+      cc=0;
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("${title.current_depth?:''}"));
-
-      // embargo
+      cell.setCellValue(new HSSFRichTextString("Key"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("${title.current_coverage_note?:''}"));
-
-      // IsCore
+      cell.setCellValue(new HSSFRichTextString("Title In Subscription"));
+      cell.setCellStyle(present_cell_style);  
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("${title.is_core?:''}"));
-
-      // Core Start Date
+      cell.setCellValue(new HSSFRichTextString("Core Title"));
+      cell.setCellStyle(core_cell_style);  
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("${title.core_start_date?:''}"));
-
-      // Core End Date
-      cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("${title.core_end_date?:''}"));
-
+      cell.setCellValue(new HSSFRichTextString("Not In Subscription"));
+      cell = row.createCell(21);
+      cell.setCellValue(new HSSFRichTextString("Current Sub"));
+      cell = row.createCell(22);
+      cell.setCellValue(new HSSFRichTextString("Candidates ->"));
+      
+  
+      row = firstSheet.createRow(rc++);
+      cc=21
       m.sub_info.each { sub ->
         cell = row.createCell(cc++);
-        def ie_info = m.ti_info[title.title_idx][sub.sub_idx]
-        if ( ie_info ) {
-          if ( ( ie_info.core ) && ( ie_info.core != 'No' ) ) {
-            cell.setCellValue(new HSSFRichTextString(""));
-            cell.setCellStyle(core_cell_style);  
-          }
-          else {
-            cell.setCellValue(new HSSFRichTextString(""));
-            cell.setCellStyle(present_cell_style);  
-          }
-          addCellComment(row, cell,"${title.title} provided by ${sub.sub_name}\nStart Date:${ie_info.startDate?:'Not set'}\nStart Volume:${ie_info.startVolume?:'Not set'}\nStart Issue:${ie_info.startIssue?:'Not set'}\nEnd Date:${ie_info.endDate?:'Not set'}\nEnd Volume:${ie_info.endVolume?:'Not set'}\nEnd Issue:${ie_info.endIssue?:'Not set'}\nSelect Title by setting this cell to Y", drawing, factory);
-        }
-
+        cell.setCellValue(new HSSFRichTextString("${sub.sub_id}"));
       }
+      
+      // headings
+      row = firstSheet.createRow(rc++);
+      cc=0;
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("Title ID"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("Title"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("ISSN"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("eISSN"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("current Start Date"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("Current End Date"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("Current Coverage Depth"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("Current Coverage Note"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("IsCore?"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("Core Start Date"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("Core End Date"));
+  
+      // USAGE History
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("JR1\nYear-4"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("JR1a\nYear-4"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("JR1\nYear-3"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("JR1a\nYear-3"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("JR1\nYear-2"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("JR1a\nYear-2"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("JR1\nYear-1"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("JR1a\nYear-1"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("JR1\nYTD"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("JR1a\nYTD"));
+  
+      m.sub_info.each { sub ->
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${sub.sub_name}"));
+  
+        // Hyperlink link = createHelper.createHyperlink(Hyperlink.LINK_URL);
+        // link.setAddress("http://poi.apache.org/");
+        // cell.setHyperlink(link);
+      }
+  
+      m.title_info.each { title ->
+  
+        row = firstSheet.createRow(rc++);
+        cc = 0;
+  
+        // Internal title ID
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.id}"));
+        // Title
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.title?:''}"));
+  
+        // ISSN
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.issn?:''}"));
+  
+        // eISSN
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.eissn?:''}"));
+  
+        // startDate
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.current_start_date?:''}"));
+  
+        // endDate
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.current_end_date?:''}"));
+  
+        // coverageDepth
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.current_depth?:''}"));
+  
+        // embargo
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.current_coverage_note?:''}"));
+  
+        // IsCore
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.is_core?:''}"));
+  
+        // Core Start Date
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.core_start_date?:''}"));
+  
+        // Core End Date
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.core_end_date?:''}"));
+  
+        // Usage Stats
+        cell = row.createCell(cc++);
+        if ( title.jr1_last_4_years )
+          cell.setCellValue(new HSSFRichTextString(title.jr1_last_4_years[4]?:'0'));
+        cell = row.createCell(cc++);
+        if ( title.jr1_last_4_years )
+          cell.setCellValue(new HSSFRichTextString(title.jr1a_last_4_years[4]?:'0'));
+        cell = row.createCell(cc++);
+        if ( title.jr1_last_4_years )
+          cell.setCellValue(new HSSFRichTextString(title.jr1_last_4_years[3]?:'0'));
+        cell = row.createCell(cc++);
+        if ( title.jr1_last_4_years )
+          cell.setCellValue(new HSSFRichTextString(title.jr1a_last_4_years[3]?:'0'));
+        cell = row.createCell(cc++);
+        if ( title.jr1_last_4_years )
+          cell.setCellValue(new HSSFRichTextString(title.jr1_last_4_years[2]?:'0'));
+        cell = row.createCell(cc++);
+        if ( title.jr1_last_4_years )
+          cell.setCellValue(new HSSFRichTextString(title.jr1a_last_4_years[2]?:'0'));
+        cell = row.createCell(cc++);
+        if ( title.jr1_last_4_years )
+          cell.setCellValue(new HSSFRichTextString(title.jr1_last_4_years[1]?:'0'));
+        cell = row.createCell(cc++);
+        if ( title.jr1_last_4_years )
+          cell.setCellValue(new HSSFRichTextString(title.jr1a_last_4_years[1]?:'0'));
+        cell = row.createCell(cc++);
+        if ( title.jr1_last_4_years )
+          cell.setCellValue(new HSSFRichTextString(title.jr1_last_4_years[0]?:'0'));
+        cell = row.createCell(cc++);
+        if ( title.jr1_last_4_years )
+          cell.setCellValue(new HSSFRichTextString(title.jr1a_last_4_years[0]?:'0'));
+  
+        m.sub_info.each { sub ->
+          cell = row.createCell(cc++);
+          def ie_info = m.ti_info[title.title_idx][sub.sub_idx]
+          if ( ie_info ) {
+            if ( ( ie_info.core ) && ( ie_info.core != 'No' ) ) {
+              cell.setCellValue(new HSSFRichTextString(""));
+              cell.setCellStyle(core_cell_style);  
+            }
+            else {
+              cell.setCellValue(new HSSFRichTextString(""));
+              cell.setCellStyle(present_cell_style);  
+            }
+            addCellComment(row, cell,"${title.title} provided by ${sub.sub_name}\nStart Date:${ie_info.startDate?:'Not set'}\nStart Volume:${ie_info.startVolume?:'Not set'}\nStart Issue:${ie_info.startIssue?:'Not set'}\nEnd Date:${ie_info.endDate?:'Not set'}\nEnd Volume:${ie_info.endVolume?:'Not set'}\nEnd Issue:${ie_info.endIssue?:'Not set'}\nSelect Title by setting this cell to Y", drawing, factory);
+          }
+  
+        }
+      }
+      row = firstSheet.createRow(rc++);
+      cell = row.createCell(0);
+      cell.setCellValue(new HSSFRichTextString("END"));
+  
+      // firstSheet.autoSizeRow(6); //adjust width of row 6 (Headings for JUSP Stats)
+      Row jusp_heads_row = firstSheet.getRow(6);
+      jusp_heads_row.setHeight((short)(jusp_heads_row.getHeight() * 2));
+  
+      firstSheet.autoSizeColumn(0); //adjust width of the first column
+      firstSheet.autoSizeColumn(1); //adjust width of the first column
+      firstSheet.autoSizeColumn(2); //adjust width of the first column
+      firstSheet.autoSizeColumn(3); //adjust width of the first column
+      for ( int i=0; i<m.sub_info.size(); i++ ) {
+        firstSheet.autoSizeColumn(7+i); //adjust width of the second column
+      }
+  
+  
+  
+      response.setHeader "Content-disposition", "attachment; filename='comparison.xls'"
+      // response.contentType = 'application/xls'
+      response.contentType = 'application/vnd.ms-excel'
+      workbook.write(response.outputStream)
+      response.outputStream.flush()
     }
-    row = firstSheet.createRow(rc++);
-    cell = row.createCell(0);
-    cell.setCellValue(new HSSFRichTextString("END"));
-
-    firstSheet.autoSizeColumn(0); //adjust width of the first column
-    firstSheet.autoSizeColumn(1); //adjust width of the first column
-    firstSheet.autoSizeColumn(2); //adjust width of the first column
-    firstSheet.autoSizeColumn(3); //adjust width of the first column
-    for ( int i=0; i<m.sub_info.size(); i++ ) {
-      firstSheet.autoSizeColumn(7+i); //adjust width of the second column
+    catch ( Exception e ) {
+      log.error("Problem",e);
+      response.sendError(500)
     }
-
-
-
-    response.setHeader "Content-disposition", "attachment; filename='comparison.xls'"
-    // response.contentType = 'application/xls'
-    response.contentType = 'application/vnd.ms-excel'
-    workbook.write(response.outputStream)
-    response.outputStream.flush()
- 
   }
 
 
@@ -1737,7 +2203,7 @@ AND EXISTS (
   }
 
   def processRenewalUpload(input_stream, upload_filename, result) {
-    int SO_START_COL=12
+    int SO_START_COL=22
     int SO_START_ROW=7
     log.debug("processRenewalUpload - opening upload input stream as HSSFWorkbook");
     if ( input_stream ) {

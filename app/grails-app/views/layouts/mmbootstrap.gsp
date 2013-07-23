@@ -51,6 +51,7 @@
                       <li <%='titleInstancePackagePlatform'== controllerName ? ' class="active"' : '' %>><g:link controller="titleInstancePackagePlatform">Title Instance Package Platform</g:link></li>
                       <li <%='subscription'== controllerName ? ' class="active"' : '' %>><g:link controller="subscription">Subscriptions</g:link></li>
                       <li <%='license'== controllerName ? ' class="active"' : '' %>><g:link controller="license">Licences</g:link></li>
+                      <li <%='onixplLicense'== controllerName ? ' class="active"' : '' %>><g:link controller="onixplLicenseDetails" action="list">ONIX-PL Licences</g:link></li>
                     </ul>
                   </li>
                 </sec:ifAnyGranted>
@@ -105,8 +106,10 @@
                          <g:link controller="packageDetails" action="create">New Package</g:link></li>
                        -->
                        <li class="divider"></li>
-                       <li <%= ( ( 'upload'== controllerName ) && ( 'reviewSO'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="upload" action="reviewSO">Upload new Package</g:link></li>
+                         <li <%= ( ( 'upload'== controllerName ) && ( 'reviewSO'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="upload" action="reviewSO">Upload new Package</g:link></li>
+                         <li <%= ( ( 'licenseImport'== controllerName ) && ( 'doImport'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="licenseImport" action="doImport">Import ONIX-PL license</g:link></li>
                        <li class="divider"></li>
                        <li <%= ( ( 'titleDetails'== controllerName ) && ( 'findTitleMatches'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="titleDetails" action="findTitleMatches">New Title</g:link></li>
@@ -153,6 +156,12 @@
                       </li>
                       <li <%= ( ( 'userDetails'== controllerName ) && ( 'list'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="userDetails" action="list">User Details</g:link>
+                      </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'forumSync'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="forumSync">Run Forum Sync</g:link>
+                      </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'juspSync'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="juspSync">Run JUSP Sync</g:link>
                       </li>
                     </ul>
                   </li>
@@ -244,9 +253,11 @@
       </div>
   </div>
   
+  <!--
   <div class="support-tab">
       <a href="mailto:kbplus@jisc-collections.ac.uk?subject=KBPlus%20Support%20Query"><i class="icon-question-sign icon-white"></i>Request Support</a>
   </div>
+  -->
       
   <!-- For datatable -->
   <script type="text/javascript" charset="utf-8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
@@ -258,7 +269,6 @@
   <!-- For select2 -->
   <script src="${resource(dir: 'js', file: 'select2.js')}"></script>
       
-  <!--
   <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.4/zenbox.js"></script>
   <style type="text/css" media="screen, projection">
     @import url(//assets.zendesk.com/external/zenbox/v2.4/zenbox.css);
@@ -274,7 +284,6 @@
       });
     }
   </script>
-  -->
       
   <script type="text/javascript">
       var _gaq = _gaq || [];

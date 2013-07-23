@@ -13,6 +13,22 @@
       <ul class="breadcrumb">
         <li><g:link controller="packageDetails" action="index">All Packages</g:link><span class="divider">/</span></li>
         <li><g:link controller="packageDetails" action="show" id="${packageInstance.id}">${packageInstance.name}</g:link></li>
+        
+        <li class="dropdown pull-right">
+	        <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">
+		  		Exports<b class="caret"></b>
+			</a>
+			<ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
+				<li>
+		  			<% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
+					<g:link action="show" params="${ps_json}" target="_blank">Json Export</g:link>
+	      		</li>
+				<li>
+		  			<% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
+					<g:link action="show" params="${ps_xml}" target="_blank">XML Export</g:link>
+	      		</li>
+		    </ul>
+		</li>
       </ul>
     </div>
   
@@ -57,6 +73,11 @@
               <dl>
                 <dt>Package Name</dt>
                 <dd> <g:xEditable owner="${packageInstance}" field="name"/></dd>
+              </dl>
+              
+              <dl>
+                <dt>Package Persistent Identifier</dt>
+                <dd> <a href="uri://kbplus/${grailsApplication.config.kbplusSystemId}/package/${packageInstance?.id}">uri://kbplus/${grailsApplication.config.kbplusSystemId}/package/${packageInstance?.id}</dd>
               </dl>
               
               <dl>
@@ -124,6 +145,11 @@
     
           <g:render template="documents" contextPath="../templates" model="${[doclist:packageInstance.documents, ownobj:packageInstance, owntp:'pkg']}" />
           <g:render template="notes" contextPath="../templates" model="${[doclist:packageInstance.documents, ownobj:packageInstance, owntp:'pkg']}" />
+          <g:if test="${packageInstance.forumId != null}">
+            <div class="well notes">
+              <a href="https://kbplus.zendesk.com/forums/${packageInstance.forumId}">Discuss this package</a>
+            </div>
+          </g:if>
         </div>
       </div>
     </div>

@@ -52,10 +52,10 @@ class DocstoreService {
 
     def uuid = extractDocId(result.tempfile);
 
-    FileUtils.deleteQuietly(result.tempfile)
-
-    FileUtils.deleteQuietly(zippedbag);
-    FileUtils.deleteQuietly(tempdir);
+//    FileUtils.deleteQuietly(result.tempfile)
+//
+//    FileUtils.deleteQuietly(zippedbag);
+//    FileUtils.deleteQuietly(tempdir);
 
     uuid
   }
@@ -142,6 +142,7 @@ class DocstoreService {
 
   def extractDocId(bagresponsezip) {
     def uuid = null
+
     try {
       java.util.zip.ZipFile zf = new java.util.zip.ZipFile(bagresponsezip);
       java.util.zip.ZipEntry bag_dir_entry = zf.getEntry('bag_dir');
@@ -228,7 +229,7 @@ class DocstoreService {
     // uuid(dl.id)
     writer.flush();
     writer.close();
-  
+
     // println("upload.xml: ${writer.toString()}");
   }
 

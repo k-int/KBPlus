@@ -8,6 +8,8 @@ class AdminController {
 
   def springSecurityService
   def dataloadService
+  def zenDeskSyncService
+  def juspSyncService
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def index() { }
@@ -177,4 +179,17 @@ class AdminController {
     log.debug("redirecting to home...");
     redirect(controller:'home')
   }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def forumSync() {
+    redirect(controller:'home')
+    zenDeskSyncService.doSync()
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def juspSync() {
+    juspSyncService.doSync()
+    redirect(controller:'home')
+  }
+
 }

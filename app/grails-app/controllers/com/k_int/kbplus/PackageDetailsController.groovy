@@ -138,13 +138,14 @@ class PackageDetailsController {
           }
         }
       }
-
-      
+	  
       result.max = params.max ? Integer.parseInt(params.max) : 25
       params.max = result.max
       def paginate_after = params.paginate_after ?: ( (2*result.max)-1);
       result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
-
+	  
+	  def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
+	  
       def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
       def qry_params = [packageInstance]
 
@@ -162,15 +163,354 @@ class PackageDetailsController {
       }
 
       log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
-      result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, [max:result.max, offset:result.offset]);
+      result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, limits);
       result.num_tipp_rows = TitleInstancePackagePlatform.executeQuery("select count(tipp) "+base_qry, qry_params )[0]
 
       result.lasttipp = result.offset + result.max > result.num_tipp_rows ? result.num_tipp_rows : result.offset + result.max;
 
 
       result.packageInstance = packageInstance
-      result
-    }
+	  
+	  withFormat {
+		  html result
+		  json {
+			  def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+			  
+			  def response = [:]
+			  def packages = []
+			  
+			  def pi = packageInstance
+			  
+			  def pck = [:]
+			  
+			  pck."PackageID" = pi.id
+			  pck."PackageName" = pi.name
+			  pck."PackageTermStartDate" = pi.startDate
+			  pck."PackageTermEndDate" = pi.endDate
+			  
+			  pck."RelatedOrgs" = []
+			  pi.orgs.each { or ->
+				  def org = [:]
+				  org."OrgID" = or.org.id
+				  org."OrgName" = or.org.name
+				  org."OrgRole" = or.roleType.value
+				  
+				  def ids = [:]
+				  or.org.ids.each(){ id ->
+					  def value = id.identifier.value
+					  def ns = id.identifier.ns.ns
+					  if(ids.containsKey(ns)){
+						  def current = ids[ns]
+						  def newval = []
+						  newval << current
+						  newval << value
+						  ids[ns] = newval
+					  } else {
+						  ids[ns]=value
+					  }
+				  }
+				  org."OrgIDs" = ids
+					  
+				  pck."RelatedOrgs" << org
+			  }
+			  
+			  pck."Licences" = []
+			  def lic = [:]
+			  if(pi.license){
+				  def licence = pi.license
+				  lic."LicenceReference" = licence.reference
+				  lic."NoticePeriod" = licence.noticePeriod
+				  lic."LicenceURL" = licence.licenseUrl
+				  lic."LicensorRef" = licence.licensorRef
+				  lic."LicenseeRef" = licence.licenseeRef
+					  
+				  lic."RelatedOrgs" = []
+				  licence.orgLinks.each { or ->
+					  def org = [:]
+					  org."OrgID" = or.org.id
+					  org."OrgName" = or.org.name
+					  org."OrgRole" = or.roleType.value
+				  
+					  def ids = [:]
+					  or.org.ids.each(){ id ->
+						  def value = id.identifier.value
+						  def ns = id.identifier.ns.ns
+						  if(ids.containsKey(ns)){
+							  def current = ids[ns]
+							  def newval = []
+							  newval << current
+							  newval << value
+							  ids[ns] = newval
+						  } else {
+							  ids[ns]=value
+						  }
+					  }
+					  org."OrgIDs" = ids
+					  
+					  lic."RelatedOrgs" << org
+				  }
+				  
+				  def prop = lic."LicenceProperties" = [:]
+				  def ca = prop."ConcurrentAccess" = [:]
+				  ca."Status" = licence.concurrentUsers?.value
+				  ca."UserCount" = licence.concurrentUserCount
+				  ca."Notes" = licence.getNote("concurrentUsers")?.owner?.content?:""
+				  def ra = prop."RemoteAccess" = [:]
+				  ra."Status" = licence.remoteAccess?.value
+				  ra."Notes" = licence.getNote("remoteAccess")?.owner?.content?:""
+				  def wa = prop."WalkingAccess" = [:]
+				  wa."Status" = licence.walkinAccess?.value
+				  wa."Notes" = licence.getNote("remoteAccess")?.owner?.content?:""
+				  def ma = prop."MultisiteAccess" = [:]
+				  ma."Status" = licence.multisiteAccess?.value
+				  ma."Notes" = licence.getNote("multisiteAccess")?.owner?.content?:""
+				  def pa = prop."PartnersAccess" = [:]
+				  pa."Status" = licence.partnersAccess?.value
+				  pa."Notes" = licence.getNote("partnersAccess")?.owner?.content?:""
+				  def aa = prop."AlumniAccess" = [:]
+				  aa."Status" = licence.alumniAccess?.value
+				  aa."Notes" = licence.getNote("alumniAccess")?.owner?.content?:""
+				  def ill = prop."InterLibraryLoans" = [:]
+				  ill."Status" = licence.ill?.value
+				  ill."Notes" = licence.getNote("ill")?.owner?.content?:""
+				  def cp = prop."IncludeinCoursepacks" = [:]
+				  cp."Status" = licence.coursepack?.value
+				  cp."Notes" = licence.getNote("coursepack")?.owner?.content?:""
+				  def vle = prop."IncludeinVLE" = [:]
+				  vle."Status" = licence.vle?.value
+				  vle."Notes" = licence.getNote("vle")?.owner?.content?:""
+				  def ea = prop."EntrepriseAccess" = [:]
+				  ea."Status" = licence.enterprise?.value
+				  ea."Notes" = licence.getNote("enterprise")?.owner?.content?:""
+				  def pca = prop."PostCancellationAccessEntitlement" = [:]
+				  pca."Status" = licence.pca?.value
+				  pca."Notes" = licence.getNote("pca")?.owner?.content?:""
+			  }
+			  // Should only be one, we have an array to keep teh same format has licenses json
+			  pck."Licences" << lic
+			  
+			  pck."TitleList" = []
+			  
+			  result.titlesList.each { tipp ->
+				  def ti = tipp.title
+				  
+				  def title = [:]
+				  title."Title" = ti.title
+				  
+				  def ids = [:]
+				  ti.ids.each(){ id ->
+					  def value = id.identifier.value
+					  def ns = id.identifier.ns.ns
+					  if(ids.containsKey(ns)){
+						  def current = ids[ns]
+						  def newval = []
+						  newval << current
+						  newval << value
+						  ids[ns] = newval
+					  } else {
+						  ids[ns]=value
+					  }
+				  }
+				  title."TitleIDs" = ids
+				  
+				  // Should only be one, we have an array to keep teh same format has titles json
+				  title."CoverageStatements" = []
+				  
+				  def ie = [:]
+				  ie."CoverageStatementType" = "TIPP"
+				  ie."StartDate" = tipp.startDate?formatter.format(tipp.startDate):''
+				  ie."StartVolume" = tipp.startVolume?:''
+				  ie."StartIssue" = tipp.startIssue?:''
+				  ie."EndDate" = tipp.endDate?formatter.format(tipp.endDate):''
+				  ie."EndVolume" = tipp.endVolume?:''
+				  ie."EndIssue" = tipp.endIssue?:''
+				  ie."Embargo" = tipp.embargo?:''
+				  ie."Coverage" = tipp.coverageDepth?:''
+				  ie."CoverageNote" = tipp.coverageNote?:''
+				  ie."HostPlatformName" = tipp?.platform?.name?:''
+				  ie."HostPlatformURL" = tipp?.hostPlatformURL?:''
+				  ie."AdditionalPlatforms" = []
+				  tipp.additionalPlatforms?.each(){ ap ->
+					  def platform = [:]
+					  platform.PlatformName = ap.platform?.name?:''
+					  platform.PlatformRole = ap.rel?:''
+					  platform.PlatformURL = ap.platform?.primaryUrl?:''
+					  ie."AdditionalPlatforms" << platform
+				  }
+				  ie."CoreStatus" = tipp.status?.value?:''
+				  ie."CoreStart" = tipp.coreStatusStart?formatter.format(tipp.coreStatusStart):''
+				  ie."CoreEnd" = tipp.coreStatusEnd?formatter.format(tipp.coreStatusEnd):''
+				  ie."PackageID" = tipp?.pkg?.id?:''
+				  ie."PackageName" = tipp?.pkg?.name?:''
+					  
+				  title."CoverageStatements".add(ie)
+				  
+				  pck."TitleList" << title
+			  }
+			  
+			  packages << pck
+			  response."Packages" = packages
+			  
+			  render response as JSON
+		  }
+		  xml {
+			  def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+			  
+			  def writer = new StringWriter()
+			  def xmlBuilder = new MarkupBuilder(writer)
+			  xmlBuilder.getMkp().xmlDeclaration(version:'1.0', encoding: 'UTF-8')
+			  
+			  def pi = packageInstance
+			  
+			  xmlBuilder.Packages() {
+				  Package(){
+					  PackageID(pi.id)
+					  PackageName(pi.name)
+					  PackageTermStartDate(pi.startDate)
+					  PackageTermEndDate(pi.endDate)
+					  
+					  pi.orgs.each { or ->
+						  RelatedOrg(id: or.org.id){
+							  OrgName(or.org.name)
+							  OrgRole(or.roleType.value)
+							  
+							  OrgIDs(){
+								  or.org.ids.each(){ id ->
+									  def value = id.identifier.value
+									  def ns = id.identifier.ns.ns
+									  ID(namespace: ns, value)
+								  }
+							  }
+						  }
+					  }
+							  
+					  Licence(){
+						  if(pi.license){
+							  def licence = pi.license
+							  
+							  LicenceReference(licence.reference)
+							  NoticePeriod(licence.noticePeriod)
+							  LicenceURL(licence.licenseUrl)
+							  LicensorRef(licence.licensorRef)
+							  LicenseeRef(licence.licenseeRef)
+							  
+							  licence.orgLinks.each { or ->
+								  RelatdOrg(id: or.org.id){
+									  OrgName(or.org.name)
+									  OrgRole(or.roleType.value)
+									  
+									  OrgIDs(){
+										  or.org.ids.each(){ id ->
+											  def value = id.identifier.value
+											  def ns = id.identifier.ns.ns
+											  ID(namespace: ns, value)
+										  }
+									  }
+								  }
+							  }
+							  
+							  LicenceProperties(){
+								  ConcurrentAccess(){
+									  Status(licence.concurrentUsers?.value)
+									  UserCount(licence.concurrentUserCount)
+									  Notes(licence.getNote("concurrentUsers")?.owner?.content?:"")
+								  }
+								  RemoteAccess(){
+									  Status(licence.remoteAccess?.value)
+									  Notes(licence.getNote("remoteAccess")?.owner?.content?:"")
+								  }
+								  WalkingAccess(){
+									  Status(licence.walkinAccess?.value)
+									  Notes(licence.getNote("walkinAccess")?.owner?.content?:"")
+								  }
+								  MultisiteAccess(){
+									  Status(licence.multisiteAccess?.value)
+									  Notes(licence.getNote("multisiteAccess")?.owner?.content?:"")
+								  }
+								  PartnersAccess(){
+									  Status(licence.partnersAccess?.value)
+									  Notes(licence.getNote("partnersAccess")?.owner?.content?:"")
+								  }
+								  AlumniAccess(){
+									  Status(licence.alumniAccess?.value)
+									  Notes(licence.getNote("alumniAccess")?.owner?.content?:"")
+								  }
+								  InterLibraryLoans(){
+									  Status(licence.ill?.value)
+									  Notes(licence.getNote("ill")?.owner?.content?:"")
+								  }
+								  IncludeinCoursepacks(){
+									  Status(licence.coursepack?.value)
+									  Notes(licence.getNote("coursepack")?.owner?.content?:"")
+								  }
+								  IncludeinVLE(){
+									  Status(licence.vle?.value)
+									  Notes(licence.getNote("vle")?.owner?.content?:"")
+								  }
+								  EntrepriseAccess(){
+									  Status(licence.enterprise?.value)
+									  Notes(licence.getNote("enterprise")?.owner?.content?:"")
+								  }
+								  PostCancellationAccessEntitlement(){
+									  Status(licence.pca?.value)
+									  Notes(licence.getNote("pca")?.owner?.content?:"")
+								  }
+							  }
+						  }
+					  }
+							  
+					  TitleList(){
+						  result.titlesList.each { tipp ->
+							  def ti = tipp.title
+							  TitleListEntry(){
+								  Title(ti.title)
+								  
+								  TitleIDs(){
+									  ti.ids.each(){ id ->
+										  def value = id.identifier.value
+										  def ns = id.identifier.ns.ns
+										  ID(namespace: ns, value)
+									  }
+								  }
+								  
+								  CoverageStatement(type: 'TIPP'){
+										StartDate(tipp.startDate?formatter.format(tipp.startDate):'')
+										StartVolume(tipp.startVolume?:'')
+										StartIssue(tipp.startIssue?:'')
+										EndDate(tipp.endDate?formatter.format(tipp.endDate):'')
+										EndVolume(tipp.endVolume?:'')
+										EndIssue(tipp.endIssue?:'')
+										Embargo(tipp.embargo?:'')
+										Coverage(tipp.coverageDepth?:'')
+										CoverageNote(tipp.coverageNote?:'')
+										HostPlatformName(tipp.platform?.name?:'')
+										HostPlatformURL(tipp.hostPlatformURL?:'')
+							
+										tipp.additionalPlatforms.each(){ ap ->
+											Platform(){
+												PlatformName(ap.platform?.name?:'')
+												PlatformRole(ap.rel?:'')
+												PlatformURL(ap.platform?.primaryUrl?:'')
+											}
+										}
+										
+										CoreStatus(tipp.status?.value?:'')
+										CoreStart(tipp.coreStatusStart?formatter.format(tipp.coreStatusStart):'')
+										CoreEnd(tipp.coreStatusEnd?formatter.format(tipp.coreStatusEnd):'')
+										PackageID(tipp.pkg?.id?:'')
+										PackageName(tipp.pkg?.name?:'')
+								  }
+							  }
+						  }
+					  }
+				  }
+			  }
+			  
+			  render writer.toString()
+		  }
+	  	
+	  }
+	}
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def uploadTitles() {
@@ -393,6 +733,9 @@ class PackageDetailsController {
             source {
               from = params.offset
               size = params.max
+              sort = [
+                'sortname' : [ 'order' : 'asc' ]
+              ]
               query {
                 query_string (query: query_str)
               }
