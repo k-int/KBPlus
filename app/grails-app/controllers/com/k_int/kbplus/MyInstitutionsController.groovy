@@ -2529,5 +2529,9 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
   }
 
   def instdash() {
+   def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+    result
   }
 }

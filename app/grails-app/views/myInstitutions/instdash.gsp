@@ -7,14 +7,32 @@
 
   <body>
 
+    <div class="container">
+      <ul class="breadcrumb">
+        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="myInstitutions" action="instdash" params="${[shortcode:params.shortcode]}">${institution.name} Dashboard</g:link> </li>
+      </ul>
+    </div>
+
+
     <div class="container home-page">
-      <h1>Org Name</h1>
-      <ul>
-        <li>Licenses</li>
-        <li>Subscriptions</li>
-        <li>Titles</li>
-        <li>Generate Renewals Worksheet</li>
-        <li>Import Renewals</li>
+      <h1>${institution.name} Dashboard</h1>
+      <ul class="inline">
+        <li><g:link controller="myInstitutions" 
+                                       action="currentLicenses" 
+                                       params="${[shortcode:params.shortcode]}">Licences</g:link></li>
+        <li><g:link controller="myInstitutions" 
+                                       action="currentSubscriptions" 
+                                       params="${[shortcode:params.shortcode]}">Subscriptions</g:link></li>
+        <li><g:link controller="myInstitutions" 
+                                       action="currentTitles" 
+                                       params="${[shortcode:params.shortcode]}">Titles</g:link></li>
+        <li><g:link controller="myInstitutions" 
+                                       action="renewalsSearch" 
+                                       params="${[shortcode:params.shortcode]}">Generate Renewals Worksheet</g:link></li>
+        <li><g:link controller="myInstitutions" 
+                                       action="renewalsUpload" 
+                                       params="${[shortcode:params.shortcode]}">Import Renewals</g:link></li>
       </ul>
     </div>
 
