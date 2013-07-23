@@ -28,4 +28,11 @@ class RefdataCategory {
 
     result
   }
+
+  static def lookupOrCreate(category_name, icon, value) {
+    def result = lookupOrCreate(category_name, value)
+    result.icon = icon
+    result
+  }
+
 }
