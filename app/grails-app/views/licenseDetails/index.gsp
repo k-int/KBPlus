@@ -182,6 +182,18 @@
                       </dd>
                   </dl>
 
+                  <dl>
+                      <dt><label class="control-label" for="licenseeRef">Incoming License Links</label></dt>
+                      <dd>
+                        <ul>
+                          <g:each in="${license?.incomingLinks}" var="il">
+                            <li><g:link controller="licenseDetails" action="index" id="${il.fromLic.id}">${il.fromLic.reference} (${il.type?.value})</g:link></li>
+                          </g:each>
+                        </ul>
+                      </dd>
+                  </dl>
+
+
 
 
                   <div class="clearfix"></div>

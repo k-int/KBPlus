@@ -61,7 +61,7 @@ class MyInstitutionsController {
     result.userAlerts = alertsService.getAllVisibleAlerts(result.user);
     result.staticAlerts = alertsService.getStaticAlerts(request);
 
-    log.debug("result.userAlerts: ${result.userAlerts}");
+    // log.debug("result.userAlerts: ${result.userAlerts}");
     log.debug("result.userAlerts.size(): ${result.userAlerts.size()}");
     log.debug("result.userAlerts.class.name: ${result.userAlerts.class.name}");
     // def adminRole = Role.findByAuthority('ROLE_ADMIN')
