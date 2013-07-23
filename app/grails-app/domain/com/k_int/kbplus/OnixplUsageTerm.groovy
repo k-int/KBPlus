@@ -14,24 +14,25 @@ class OnixplUsageTerm {
   //static hasMany = [ licenseText:OnixplLicenseText ]
   static hasMany = [ usageTermLicenseText:OnixplUsageTermLicenseText ]
 
-  static belongsTo = [
-      oplLicense:OnixplLicense
-  ]
+  // static belongsTo = [
+  //   oplLicense:OnixplLicense
+  // ]
   //static hasOne = [onixplLicense:OnixplLicense]
 
-    static mappedBy = [
-        usageTermLicenseText: 'usageTerm'
-    ]
+  static mappedBy = [
+    usageTermLicenseText: 'usageTerm'
+  ]
+
   static mapping = {
     id column:          'oput_id'
     version column:     'oput_version'
-    oplLicense column:  'oput_opl_fk', index:'oput_entry_idx'
+    oplLicense column:  'oput_opl_fk'
     usageType column:   'oput_usage_type_rv_fk', index:'oput_entry_idx'
     usageStatus column: 'oput_usage_status_rv_fk', index:'oput_entry_idx'
   }
 
   static constraints = {
-    oplLicense(nullable:false, blank: false)
+    oplLicense(nullable:true, blank: true)
     usageType(nullable:false, blank: false)
     usageStatus(nullable:false, blank: false)
   }

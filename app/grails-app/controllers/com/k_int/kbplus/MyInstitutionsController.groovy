@@ -2527,4 +2527,7 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
     }
     parsed_date
   }
+
+  def instdash() {
+  }
 }
