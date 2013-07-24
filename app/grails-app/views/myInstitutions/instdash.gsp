@@ -53,6 +53,11 @@
         <div class="span4">
           <div class="well">
             <h6>ToDo</h6>
+            <ul>
+              <g:each in="${todos}" var="todo">
+                <li>${todo}</li>
+              </g:each>
+            </ul>
           </div>
         </div>
         <div class="span4">
