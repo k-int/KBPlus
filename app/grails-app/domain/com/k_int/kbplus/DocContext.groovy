@@ -8,9 +8,12 @@ class DocContext {
 
   RefdataValue status
   RefdataValue doctype
+
   License license
   Subscription subscription
   Package pkg
+  boolean global=false
+
   Alert alert
 
   // We may attach a note to a particular column, in which case, we set domain here as a discriminator
@@ -24,6 +27,7 @@ class DocContext {
           license column:'dc_lic_fk'
      subscription column:'dc_sub_fk'
               pkg column:'dc_pkg_fk'
+           global column:'dc_is_global'
            status column:'dc_status_fk'
             alert column:'dc_alert_fk'
   }
@@ -36,5 +40,6 @@ class DocContext {
     domain(nullable:true, blank:false);
     status(nullable:true, blank:false);
     alert(nullable:true, blank:false);
+    gobal(nullable:true, blank:false);
   }
 }
