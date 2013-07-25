@@ -10,7 +10,7 @@
     <div class="container">
       <ul class="breadcrumb">
         <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
-        <li> <g:link controller="myInstitutions" action="instdash" params="${[shortcode:params.shortcode]}">${institution.name} Dashboard</g:link> </li>
+        <li> <g:link controller="announcement" action="index">Announcements</g:link> </li>
       </ul>
     </div>
 
@@ -27,15 +27,15 @@
     </g:if>
 
     <div class="container">
-      <div class="row">
-        Create announcements
-      </div>
+      <h1>Create announcement</h1>
+      <g:form action="createAnnouncement">
+        <textarea name="annTxt" class="span12"></textarea><br/>
+        <input type="submit" class="btn btn-primary" value="Create Announcement..."/>
+      </g:form>
     </div>
 
     <div class="container">
-      <div class="row">
         Search and manage previous announcements
-      </div>
     </div>
 
   </body>

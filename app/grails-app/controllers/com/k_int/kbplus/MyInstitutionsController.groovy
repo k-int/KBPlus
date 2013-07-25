@@ -2528,6 +2528,7 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
     parsed_date
   }
 
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def instdash() {
    def result = [:]
     result.user = User.get(springSecurityService.principal.id)
