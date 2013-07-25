@@ -91,7 +91,7 @@ class LicenseImportController {
 
     try {
       def onixpl = new XmlSlurper().parse(file.inputStream);
-      result.description = onixpl.LicenseDetails.Description.text()
+      result.description = onixpl.LicenseDetail.Description.text()
       result.usageTerms = []
       onixpl.UsageTerms.Usage.eachWithIndex { ut, n ->
         result.usageTerms[n] = [:]
@@ -148,10 +148,14 @@ class LicenseImportController {
       // Try finding by id first
       if (params.license_id) license = License.findById(params.license_id)
       // Create an outline license
+      RefdataValue currentStatus = RefdataCategory.lookupOrCreate('License Status', 'Current')
+      RefdataValue templateType  = RefdataCategory.lookupOrCreate('License Type', 'Template')
       license = new License(
           reference:     upload.description,
-          licenseStatus: RefdataCategory.lookupOrCreate('License Status', 'Current').value,
-          licenseType:   RefdataCategory.lookupOrCreate('License Type', 'Template').value
+          licenseStatus: currentStatus.value,
+          licenseType:   templateType.value,
+          status:        currentStatus,
+          type:          templateType
       );
       if (!license.save(flush: true)) {
         license.errors.each {
