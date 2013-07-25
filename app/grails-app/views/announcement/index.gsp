@@ -40,8 +40,9 @@
       <table class="table">
         <g:each in="${recentAnnouncements}" var="ra">
           <tr>
-            <td><g:formatDate date="${ra.dateCreated}" format="yyyy-MM-dd"/> : <strong>${ra.title}</strong> <br/>
-            ${ra.content} <span class="pull-right"><em>${ra.user.displayName}</em></span></td>
+            <td><strong>${ra.title}</strong> <br/>
+            ${ra.content} 
+            <span class="pull-right">posted by <em><g:link controller="userDetails" action="pub" id="${ra.user.id}">${ra.user.displayName}</g:link></em> on <g:formatDate date="${ra.dateCreated}" format="yyyy-MM-dd hh:mm a"/></span>
           </tr>
         </g:each>
       </table>
