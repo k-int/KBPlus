@@ -31,7 +31,7 @@ class OnixplLicense {
   static mapping = {
     id column:      'opl_id'
     version column: 'opl_version'
-    license column: 'opl_l_lic_fk'
+    license column: 'opl_lic_fk'
     doc column:     'opl_doc_fk'
     lastmod column: 'opl_lastmod'
   }
