@@ -56,7 +56,7 @@ class AlertsService {
           log.debug("${pn.id} already present");
         }
         else {
-          log.debug("Adding note ${pn.id}");
+          // log.debug("Adding note ${pn.id}");
           info.notes[pn.id] = pn
         }
       }
