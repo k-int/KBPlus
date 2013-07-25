@@ -12,7 +12,7 @@ class DocContext {
   License license
   Subscription subscription
   Package pkg
-  boolean global=false
+  Boolean globannounce=false
 
   Alert alert
 
@@ -27,7 +27,7 @@ class DocContext {
           license column:'dc_lic_fk'
      subscription column:'dc_sub_fk'
               pkg column:'dc_pkg_fk'
-           global column:'dc_is_global'
+     globannounce column:'dc_is_global'
            status column:'dc_status_fk'
             alert column:'dc_alert_fk'
   }
@@ -40,6 +40,6 @@ class DocContext {
     domain(nullable:true, blank:false);
     status(nullable:true, blank:false);
     alert(nullable:true, blank:false);
-    gobal(nullable:true, blank:false);
+    globannounce(nullable:true, blank:true);
   }
 }
