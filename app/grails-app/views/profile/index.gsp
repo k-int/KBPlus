@@ -38,7 +38,11 @@
         <g:form action="updateProfile" class="form-inline">
             <label>Your Display Name (Appears top right)</label>
             <input type="text" name="userDispName" value="${user.display}"/>
-            <input type="submit" value="Update Profile" class="btn btn-primary">
+            <label>Email Address (For admin purposes)</label>
+            <input type="text" name="email" value="${user.email}"/>
+            <input type="submit" value="Update Profile" class="btn btn-primary"><br/>
+            <p>Please note, membership requests may be slow to process if you do not corretly set display name and email address above. Please ensure your
+               these are set properly before requesting instutional memberships below</p>
         </g:form>
       </div>
     </div>
