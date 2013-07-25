@@ -44,6 +44,9 @@
                         data-pk="${packageInstance.class.name}:${packageInstance.id}"
                         data-name="name"
                         data-url='<g:createLink controller="ajax" action="editableSetValue"/>'>${packageInstance.name}</span></g:if><g:else>${packageInstance.name}</g:else></h1>
+            <g:link controller="announcement" action="index" params='[at:"Package Link: ${pkg_link_str}",as:"RE: Package ${packageInstance.name}"]'>Mention this package in an annoucement</g:link> |
+            <g:link controller="announcement" action="index" params='[]'>Discuss this package in forums</g:link>
+
           </div>
 
         </div>

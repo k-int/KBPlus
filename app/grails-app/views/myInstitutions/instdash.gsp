@@ -67,8 +67,8 @@
             <table class="table">
               <g:each in="${recentAnnouncements}" var="ra">
                 <tr>
-                  <td><g:formatDate date="${ra.dateCreated}" format="yyyy-MM-dd"/> : <strong>${ra.title}</strong> <span class="pull-right">${ra.user.displayName}</span><br/>
-                  ${ra.content}</td>
+                  <td><g:formatDate date="${ra.dateCreated}" format="yyyy-MM-dd"/> : <strong>${ra.title}</strong> <br/>
+                  ${ra.content} <span class="pull-right"><em>${ra.user.displayName}</em></span></td>
                 </tr>
               </g:each>
             </table>

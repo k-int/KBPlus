@@ -29,8 +29,8 @@
     <div class="container">
       <h2>Create announcement</h2>
       <g:form action="createAnnouncement">
-        Subject: <input type="text" name="subjectTxt" class="span12"/><br/>
-        <textarea name="annTxt" class="span12"></textarea><br/>
+        Subject: <input type="text" name="subjectTxt" class="span12" value="${params.as}"/><br/>
+        <textarea name="annTxt" class="span12">${params.at}</textarea><br/>
         <input type="submit" class="btn btn-primary" value="Create Announcement..."/>
       </g:form>
     </div>
@@ -40,8 +40,8 @@
       <table class="table">
         <g:each in="${recentAnnouncements}" var="ra">
           <tr>
-            <td><g:formatDate date="${ra.dateCreated}" format="yyyy-MM-dd"/> : <strong>${ra.title}</strong> <span class="pull-right">${ra.user.displayName}</span><br/>
-            ${ra.content}</td>
+            <td><g:formatDate date="${ra.dateCreated}" format="yyyy-MM-dd"/> : <strong>${ra.title}</strong> <br/>
+            ${ra.content} <span class="pull-right"><em>${ra.user.displayName}</em></span></td>
           </tr>
         </g:each>
       </table>

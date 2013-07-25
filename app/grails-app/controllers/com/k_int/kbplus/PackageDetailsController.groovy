@@ -123,6 +123,7 @@ class PackageDetailsController {
         return
       }
 
+      result.pkg_link_str="BASEURL/packageDetails/show/${params.id}"
       result.subscriptionList=[]
       // We need to cycle through all the users institutions, and their respective subscripions, and add to this list
       // and subscription that does not already link this package
