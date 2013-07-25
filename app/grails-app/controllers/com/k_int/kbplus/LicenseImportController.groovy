@@ -30,6 +30,9 @@ class LicenseImportController {
       result.user = User.get(springSecurityService.principal.id);
     }
 
+    // Find a license if id specified
+    if (params.license_id) result.license = License.findById(params.license_id)
+
     // Try and read the file, and if it is okay, process the import
     if ( request.method == 'POST' ) {
       result.validationResult = readOfferedOnixPl(request)
@@ -38,6 +41,7 @@ class LicenseImportController {
         result.validationResult.messages.add("Document validated")
         //if (result.validationResult.messages) result.validationResult.messages.addAll(result.validationResult.messages)
         log.debug("Passed first phase validation, continue...")
+        result.validationResult.license = result.license;
         def importResults = processImport(result.validationResult)
         result.validationResult.putAll(importResults)
         if (importResults.termStatuses) {
@@ -87,6 +91,7 @@ class LicenseImportController {
 
     try {
       def onixpl = new XmlSlurper().parse(file.inputStream);
+      result.description = onixpl.LicenseDetails.Description.text()
       result.usageTerms = []
       onixpl.UsageTerms.Usage.eachWithIndex { ut, n ->
         result.usageTerms[n] = [:]
@@ -131,26 +136,30 @@ class LicenseImportController {
    * @return a stats object about the import
    */
   def processImport(upload) {
-
-    // Create or find a license
-    //def l = License.get(params.licid);
-     def license = null;
-     license = new License(
-       reference: params.upload_title
-     );
-     if (!license.save(flush: true)) {
-       license.errors.each {
-         log.error("License error:" + it);
-       }
-     }
-     log.debug("Created empty license "+license.id);
-
     def file = request.getFile("importFile");
     log.debug("Processing imported ONIX-PL document "+file);
 
     def upload_mime_type = file?.contentType
     def upload_filename = file?.getOriginalFilename()
     def input_stream = file?.inputStream
+
+    def license = upload.license;
+    if (upload.license==null) {
+      // Try finding by id first
+      if (params.license_id) license = License.findById(params.license_id)
+      // Create an outline license
+      license = new License(
+          reference:     upload.description,
+          licenseStatus: RefdataCategory.lookupOrCreate('License Status', 'Current').value,
+          licenseType:   RefdataCategory.lookupOrCreate('License Type', 'Template').value
+      );
+      if (!license.save(flush: true)) {
+        license.errors.each {
+          log.error("License error:" + it);
+        }
+      }
+      log.debug("Created empty KB+ license "+license.id+" for "+upload.description);
+    }
 
     // A stats struct holding summary info for display to the user
     def results = [:]
@@ -162,7 +171,6 @@ class LicenseImportController {
 
       // stats update
       results.termStatuses = [:]
-      results.license = license
 
       // ------------------------------------------------------------------------
       // Upload the doc to docstore
@@ -198,6 +206,7 @@ class LicenseImportController {
             doctype:doctype).save(flush:true);
 
         def opl = recordOnixplLicense(license, doc_content);
+        results.onixpl_license = opl
         //results.messages.add("ONIX-PL License with id "+opl.id)
 
         if (upload.usageTerms) {
@@ -233,8 +242,9 @@ class LicenseImportController {
           lastmod:new Date(),
           license: license,
           doc: doc
-      ).save(flush:true, failOnError: true);
-      log.debug("Created ONIX-PL License "+opl.id);
+      );
+      opl.save(flush:true, failOnError: true);
+      log.debug("Created ONIX-PL License "+opl.getId());
     } catch (Exception e) {
       log.debug("Exception saving ONIX-PL License");
       e.printStackTrace();
@@ -251,7 +261,7 @@ class LicenseImportController {
    * @param usageTerm a struct representing the UsageTerm
    */
   def recordOnixplUsageTerm(opl, usageTerm) {
-      log.error("OPL:" + opl);
+    log.error("OPL:" + opl);
     // Retrieve the type and status
     def rdvType = RefdataCategory.lookupOrCreate(CAT_TYPE, usageTerm.type);
     def rdvStatus = RefdataCategory.lookupOrCreate(CAT_STATUS, usageTerm.status);
