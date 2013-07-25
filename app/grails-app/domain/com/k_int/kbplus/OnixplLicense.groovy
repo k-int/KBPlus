@@ -13,7 +13,7 @@ class OnixplLicense {
   Date lastmod;
 
   // An ONIX-PL license relates to a KB+ license and a doc
-  License license = null;
+  License license;
   Doc doc;
 
   // One to many
@@ -24,8 +24,8 @@ class OnixplLicense {
 
   // Reference to license in the many
   static mappedBy = [
-    usageTerm:   'oplLicense',
-    licenseText: 'oplLicense'
+      usageTerm:   'oplLicense',
+      licenseText: 'oplLicense',
   ]
 
   static mapping = {

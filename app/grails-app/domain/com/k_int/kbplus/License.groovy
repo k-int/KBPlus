@@ -35,6 +35,7 @@ class License {
   long lastmod
 
   static hasOne = [onixplLicense: OnixplLicense]
+  //OnixplLicense onixplLicense;
 
   static hasMany = [
     pkgs:Package, 
@@ -53,7 +54,9 @@ class License {
                       orgLinks:'lic',
                       outgoinglinks:'fromLic',
                       incomingLinks:'toLic',
-                      pendingChanges:'license']
+                      pendingChanges:'license',
+                      onixplLicense:'license'
+                      ]
 
   static mapping = {
                      id column:'lic_id'
@@ -108,7 +111,7 @@ class License {
     licenseType(nullable:true, blank:true)
     licenseStatus(nullable:true, blank:true)
     lastmod(nullable:true, blank:true)
-      onixplLicense(nullable: true, blank: true)
+    onixplLicense(nullable: true, blank: true)
  }
 
   def getLicensor() {

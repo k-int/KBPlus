@@ -143,7 +143,14 @@
                     <dl>
                         <dt><label class="control-label">ONIX-PL License</label></dt>
                         <dd>
-                            <g:link controller="onixplLicenseDetails" action="index" id="${license.onixplLicense?.id}">${license.onixplLicense}</g:link>
+                            <g:if test="${license.onixplLicense}">
+                                <g:link controller="onixplLicenseDetails" action="index" id="${license.onixplLicense?.id}">${license.onixplLicense}</g:link>
+                            </g:if>
+                            <g:else>
+                                <%--<input class="btn btn-warning" value="Import an ONIX-PL license"
+                                       href="${createLink(controller: 'licenseImport', action: 'doImport', params: '[license_id: license.id]')}" />--%>
+                                <g:link class="btn btn-warning" controller='licenseImport' action='doImport' params='[license_id: license.id]'>Import an ONIX-PL license</g:link>
+                            </g:else>
                         </dd>
                     </dl>
       
