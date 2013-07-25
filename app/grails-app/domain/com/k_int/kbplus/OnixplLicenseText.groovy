@@ -33,6 +33,7 @@ class OnixplLicenseText {
   }
 
   static constraints = {
+    oplLicense(nullable:true,blank:true)
     displayNum(nullable:true)
     text(nullable:false)
     elementId(nullable:false)

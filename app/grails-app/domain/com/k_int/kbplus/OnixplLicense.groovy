@@ -31,15 +31,15 @@ class OnixplLicense {
   static mapping = {
     id column:      'opl_id'
     version column: 'opl_version'
-    license column: 'opl_lic_fk'
+    license column: 'opl_l_lic_fk'
     doc column:     'opl_doc_fk'
     lastmod column: 'opl_lastmod'
   }
 
   static constraints = {
-    license(nullable: true, blank: true, unique: true)
-    doc(nullable: false, blank: false)
-    lastmod(nullable: true, blank: true)
+      license(nullable:true, blank:true)
+      doc(nullable:false, blank: false)
+      lastmod(nullable:true, blank: true)
   }
 
   def hasPerm(perm, user) {

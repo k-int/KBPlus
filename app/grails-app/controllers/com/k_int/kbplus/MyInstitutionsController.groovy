@@ -61,7 +61,7 @@ class MyInstitutionsController {
     result.userAlerts = alertsService.getAllVisibleAlerts(result.user);
     result.staticAlerts = alertsService.getStaticAlerts(request);
 
-    log.debug("result.userAlerts: ${result.userAlerts}");
+    // log.debug("result.userAlerts: ${result.userAlerts}");
     log.debug("result.userAlerts.size(): ${result.userAlerts.size()}");
     log.debug("result.userAlerts.class.name: ${result.userAlerts.class.name}");
     // def adminRole = Role.findByAuthority('ROLE_ADMIN')
@@ -2526,5 +2526,30 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
       }
     }
     parsed_date
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def instdash() {
+   def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+
+    def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
+    def subscriber_role = RefdataCategory.lookupOrCreate('Organisational Role','Subscriber');
+
+    // Licenses for this org query
+    def lic_subq="select l from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
+
+    // Subscriptions for this org query
+    def sub_subq="select s from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType = ? and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' )"
+
+    // Therefore - Pending changes for this org are
+    def todo_query = "select pc from PendingChange as pc where pc.license in (${lic_subq}) or pc.subscription in (${sub_subq})"
+
+    def qry_params = [result.institution,licensee_role,subscriber_role,result.institution]
+
+    result.todos = PendingChange.executeQuery(todo_query, qry_params)
+
+    result
   }
 }
