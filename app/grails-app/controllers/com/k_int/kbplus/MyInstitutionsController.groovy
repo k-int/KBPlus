@@ -2550,6 +2550,10 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
 
     result.todos = PendingChange.executeQuery(todo_query, qry_params)
 
+    def announcement_type = RefdataCategory.lookupOrCreate('Document Type','Announcement')
+    result.recentAnnouncements = Doc.findAllByType(announcement_type,[max:10,sort:'dateCreated',order:'desc'])
+
+
     result
   }
 }

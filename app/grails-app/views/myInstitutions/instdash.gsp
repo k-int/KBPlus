@@ -63,6 +63,16 @@
         <div class="span4">
           <div class="well">
             <h6>Announcements</h6>
+
+            <table class="table">
+              <g:each in="${recentAnnouncements}" var="ra">
+                <tr>
+                  <td><g:formatDate date="${ra.dateCreated}" format="yyyy-MM-dd"/> : <strong>${ra.title}</strong> <span class="pull-right">${ra.user.displayName}</span><br/>
+                  ${ra.content}</td>
+                </tr>
+              </g:each>
+            </table>
+
           </div>
         </div>
         <div class="span4">
