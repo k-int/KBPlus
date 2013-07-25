@@ -205,6 +205,15 @@
     </div>
 
    <div class="navbar-push"></div>
+   <sec:ifLoggedIn>
+     <g:if test="${user!=null && ( user.display==null || user.display=='' ) }">
+       <div class="container">
+         <bootstrap:alert class="alert-info">Your display name is not currently set in user preferences. Please <g:link controller="profile" action="index">update
+            Your display name</g:link> as soon as possible.
+         </bootstrap:alert>
+       </div>
+     </g:if>
+   </sec:ifLoggedIn>
 
        
   <g:layoutBody/>

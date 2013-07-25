@@ -37,7 +37,7 @@
       <div class="span12">
         <g:form action="updateProfile" class="form-inline">
             <label>Your Display Name (Appears top right)</label>
-            <input type="text" name="userDispName" value="${user.displayName}"/>
+            <input type="text" name="userDispName" value="${user.display}"/>
             <input type="submit" value="Update Profile" class="btn btn-primary">
         </g:form>
       </div>
