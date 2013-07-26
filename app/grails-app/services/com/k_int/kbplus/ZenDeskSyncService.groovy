@@ -131,12 +131,17 @@ class ZenDeskSyncService {
     if ( current_category == null ) {
       log.debug("Not found, create...");
 
-      http.post( path : '/api/v2/categories.json', 
-                 requestContentType : ContentType.JSON, 
-                 body : [ 'category' : [ 'name' : catname.toString() ] ]) { resp, json ->
-        log.debug("Result: ${resp}, ${json}");
-        // Result: groovyx.net.http.HttpResponseDecorator@48691d94, [category:[url:https://kbplus.zendesk.com/api/v2/categories/20104091.json, id:20104091, name:NRC Research Press ( IanHubbleDev ), description:null, position:9999, created_at:2013-07-04T08:36:21Z, updated_at:2013-07-04T08:36:21Z]]
-        result = json.category.id
+      try {
+        http.post( path : '/api/v2/categories.json', 
+                   requestContentType : ContentType.JSON, 
+                   body : [ 'category' : [ 'name' : catname.toString() ] ]) { resp, json ->
+          log.debug("Result: ${resp}, ${json}");
+          // Result: groovyx.net.http.HttpResponseDecorator@48691d94, [category:[url:https://kbplus.zendesk.com/api/v2/categories/20104091.json, id:20104091, name:NRC Research Press ( IanHubbleDev ), description:null, position:9999, created_at:2013-07-04T08:36:21Z, updated_at:2013-07-04T08:36:21Z]]
+          result = json.category.id
+        }
+      }
+      catch ( Exception e ) {
+        log.error("Problem creating category: ${catname.toString()}",e)
       }
 
     }
