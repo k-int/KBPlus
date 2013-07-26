@@ -18,20 +18,20 @@ class OnixplLicense {
 
   // One to many
   static hasMany = [
-      usageTerm:   OnixplUsageTerm,
-      licenseText: OnixplLicenseText
+    usageTerm:   OnixplUsageTerm,
+    licenseText: OnixplLicenseText
   ]
 
   // Reference to license in the many
   static mappedBy = [
       usageTerm:   'oplLicense',
-      licenseText: 'oplLicense'
+      licenseText: 'oplLicense',
   ]
 
   static mapping = {
     id column:      'opl_id'
     version column: 'opl_version'
-    license column: 'opl_l_lic_fk'
+    license column: 'opl_lic_fk'
     doc column:     'opl_doc_fk'
     lastmod column: 'opl_lastmod'
   }
@@ -42,7 +42,7 @@ class OnixplLicense {
       lastmod(nullable:true, blank: true)
   }
 
-    def hasPerm(perm, user) {
+  def hasPerm(perm, user) {
         def result = false
 
         if (perm == 'view' && license.isPublic?.value == 'Yes') {

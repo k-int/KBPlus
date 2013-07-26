@@ -14,10 +14,6 @@ class RefdataCategory {
   }
 
   static def lookupOrCreate(category_name, value) {
-    lookupOrCreate(category_name, value, null);
-  }
-
-  static def lookupOrCreate(category_name, value, icon) {
     def cat = RefdataCategory.findByDesc(category_name);
     if ( !cat ) {
       cat = new RefdataCategory(desc:category_name).save();
@@ -26,10 +22,17 @@ class RefdataCategory {
     def result = RefdataValue.findByOwnerAndValue(cat, value)
 
     if ( !result ) {
-      new RefdataValue(owner:cat, value:value, icon:icon).save(fliush:true);
+      new RefdataValue(owner:cat, value:value).save(flush:true);
       result = RefdataValue.findByOwnerAndValue(cat, value);
     }
 
     result
   }
+
+  static def lookupOrCreate(category_name, icon, value) {
+    def result = lookupOrCreate(category_name, value)
+    result.icon = icon
+    result
+  }
+
 }

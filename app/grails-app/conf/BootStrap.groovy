@@ -93,9 +93,8 @@ class BootStrap {
       log.warn("There are user org rows with no role set. Please update the table to add role FKs");
     }
 
-    // Some extra refdata
-    def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
 
+    setupRefdata();
   }
 
   def destroy = {
@@ -113,4 +112,56 @@ class BootStrap {
       log.debug("grant already exists ${role}, ${perm}");
     }
   }
+
+  // Setup extra refdata
+  def setupRefdata = { 
+    // New Organisational Role
+    def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
+
+    // -------------------------------------------------------------------
+    // ONIX-PL Additions
+    // -------------------------------------------------------------------
+    // New document type
+    RefdataCategory.lookupOrCreate('Document Type','ONIX-PL License')
+    // Controlled values from the <UsageType> element.
+    /*
+    log.debug("Adding ONIX-PL UsageTypes to RefdataCategory");
+    // Disabled until we know whether we need to know all possible terms in advance
+    RefdataCategory.lookupOrCreate('UsageType', 'Access')
+    RefdataCategory.lookupOrCreate('UsageType', 'AccessByRobot')
+    RefdataCategory.lookupOrCreate('UsageType', 'AccessByStreaming')
+    RefdataCategory.lookupOrCreate('UsageType', 'Copy')
+    RefdataCategory.lookupOrCreate('UsageType', 'Deposit')
+    RefdataCategory.lookupOrCreate('UsageType', 'DepositInPerpetuity')
+    RefdataCategory.lookupOrCreate('UsageType', 'Include')
+    RefdataCategory.lookupOrCreate('UsageType', 'MakeAvailable')
+    RefdataCategory.lookupOrCreate('UsageType', 'MakeAvailableByStreaming')
+    RefdataCategory.lookupOrCreate('UsageType', 'MakeDerivedWork')
+    RefdataCategory.lookupOrCreate('UsageType', 'MakeDigitalCopy')
+    RefdataCategory.lookupOrCreate('UsageType', 'MakeTemporaryDigitalCopy')
+    RefdataCategory.lookupOrCreate('UsageType', 'Modify')
+    RefdataCategory.lookupOrCreate('UsageType', 'Perform')
+    RefdataCategory.lookupOrCreate('UsageType', 'Photocopy')
+    RefdataCategory.lookupOrCreate('UsageType', 'PrintCopy')
+    RefdataCategory.lookupOrCreate('UsageType', 'ProvideIntegratedAccess')
+    RefdataCategory.lookupOrCreate('UsageType', 'ProvideIntegratedIndex')
+    RefdataCategory.lookupOrCreate('UsageType', 'Reformat')
+    RefdataCategory.lookupOrCreate('UsageType', 'RemoveObscureOrModify')
+    RefdataCategory.lookupOrCreate('UsageType', 'Sell')
+    RefdataCategory.lookupOrCreate('UsageType', 'SupplyCopy')
+    RefdataCategory.lookupOrCreate('UsageType', 'SystematicallyCopy')
+    RefdataCategory.lookupOrCreate('UsageType', 'Use')
+    RefdataCategory.lookupOrCreate('UsageType', 'UseForDataMining')
+    */
+    // Controlled values from the <UsageStatus> element. All are prefixed with "onixPL:" in the document
+    log.debug("Adding ONIX-PL UsageStatuses to RefdataCategory");
+    RefdataCategory.lookupOrCreate('UsageStatus', 'greenTick',      'UseForDataMining')
+    RefdataCategory.lookupOrCreate('UsageStatus', 'greenTick',      'InterpretedAsPermitted')
+    RefdataCategory.lookupOrCreate('UsageStatus', 'redCross',       'InterpretedAsProhibited')
+    RefdataCategory.lookupOrCreate('UsageStatus', 'greenTick',      'Permitted')
+    RefdataCategory.lookupOrCreate('UsageStatus', 'redCross',       'Prohibited')
+    RefdataCategory.lookupOrCreate('UsageStatus', 'purpleQuestion', 'SilentUninterpreted')
+    RefdataCategory.lookupOrCreate('UsageStatus', 'purpleQuestion', 'NotApplicable')
+  }
+
 }
