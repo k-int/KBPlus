@@ -70,6 +70,7 @@
                            <li><g:link controller="myInstitutions" 
                                        action="instdash" 
                                        params="${[shortcode:org.shortcode]}">${org.name} - Dashboard</g:link></li>
+                           <!--
                            <li><g:link controller="myInstitutions" 
                                        action="currentLicenses" 
                                        params="${[shortcode:org.shortcode]}">${org.name} - Licences</g:link></li>
@@ -85,6 +86,7 @@
                            <li><g:link controller="myInstitutions" 
                                        action="renewalsUpload" 
                                        params="${[shortcode:org.shortcode]}">${org.name} - Import Renewals</g:link></li>
+                           -->
                          </g:each>
                        </g:if>
                        <g:else>
