@@ -27,18 +27,26 @@
     </g:if>
 
     <div class="container">
-      <h1>Create announcement</h1>
+      <h2>Create announcement</h2>
       <g:form action="createAnnouncement">
-        <textarea name="annTxt" class="span12"></textarea><br/>
+        Subject: <input type="text" name="subjectTxt" class="span12" value="${params.as}"/><br/>
+        <textarea name="annTxt" class="span12">${params.at}</textarea><br/>
         <input type="submit" class="btn btn-primary" value="Create Announcement..."/>
       </g:form>
     </div>
 
     <div class="container">
-        Search and manage previous announcements
+      <h2>previous announcements</h2>
+      <table class="table">
+        <g:each in="${recentAnnouncements}" var="ra">
+          <tr>
+            <td><strong>${ra.title}</strong> <br/>
+            ${ra.content} 
+            <span class="pull-right">posted by <em><g:link controller="userDetails" action="pub" id="${ra.user.id}">${ra.user.displayName}</g:link></em> on <g:formatDate date="${ra.dateCreated}" format="yyyy-MM-dd hh:mm a"/></span>
+          </tr>
+        </g:each>
+      </table>
     </div>
 
-  </body>
-</html>
   </body>
 </html>

@@ -27,6 +27,8 @@ class ZenDeskSyncService {
     // Select all public packages where there is currently no forumId
     def http = new RESTClient(ApplicationHolder.application.config.ZenDeskBaseURL)
 
+    log.debug("Add zendesk creds: ${ApplicationHolder.application.config.ZenDeskLoginEmail}:${ApplicationHolder.application.config.ZenDeskLoginPass}");
+
     http.client.addRequestInterceptor( new HttpRequestInterceptor() {
       void process(HttpRequest httpRequest, HttpContext httpContext) {
         String auth = "${ApplicationHolder.application.config.ZenDeskLoginEmail}:${ApplicationHolder.application.config.ZenDeskLoginPass}"
@@ -36,27 +38,62 @@ class ZenDeskSyncService {
     })
 
 
-    if ( ApplicationHolder.application.config.kbplusSystemId != null ) {
-      Package.findAllByForumId(null).each { pkg ->
-        // Check that there is a category for the content provider, if not, create
-        def cp = pkg.getContentProvider()
-        def cp_category_id = null
-        if ( cp != null ) {
-          if ( cp.categoryId == null ) {
-            cp.categoryId = lookupOrCreateZenDeskCategory(http,"${cp.name} ( ${ApplicationHolder.application.config.kbplusSystemId} )");
-            cp.save(flush:true);
-          }
-          pkg.forumId = createForum(http,pkg,cp.categoryId)
-          pkg.save(flush:true);
+    // If we re-import a live database the odds are that the package-forum links will be incorrect.
+    // This function reconnects packages in the connected zendesk system to any packages where pkg.forumId is null
+    reconnectOrphanedZendeskForums(http);
+
+    Package.findAllByForumId(null).each { pkg ->
+      // Check that there is a category for the content provider, if not, create
+      def cp = pkg.getContentProvider()
+      def cp_category_id = null
+      if ( cp != null ) {
+        if ( cp.categoryId == null ) {
+          cp.categoryId = lookupOrCreateZenDeskCategory(http,"${cp.name} ( ${ApplicationHolder.application.config.kbplusSystemId} )");
+          cp.save(flush:true);
         }
-        // Create forum in category
+        pkg.forumId = createForum(http,pkg,cp.categoryId)
+        pkg.save(flush:true);
       }
-    }
-    else {
-      log.error("KBPlus ZenDesk sync cannot run - You MUST set a KBPlus System ID");
+      // Create forum in category
     }
   }
 
+  def reconnectOrphanedZendeskForums(http) {
+    log.debug("reconnectOrphanedZendeskForums starting...");
+
+    http.get( path : '/api/v2/forums.json', requestContentType : ContentType.JSON) { resp, json ->
+      if ( json ) {
+        json.forums.each { f ->
+          try {
+            log.debug("Checking ${f.name} (${f.id})");
+            if ( f.name ==~ /(.*)\(Package (\d+) from (.*)(\)$)/ ) {
+              def pkg_info = f.name =~ /(.*)\(Package (\d+) from (.*)(\)$)/
+              def package_name = pkg_name[0][1]
+              def package_id = pkg_id[0][2]
+              def system_id = pkg_id[0][3]
+  
+              // Only hook up forums if they correspond to our local system identifier
+              if ( system_id == ApplicationHolder.application.config.kbplusSystemId ) {
+                // Lookup package with package_id
+                def pkg = Package.get(Long.parseLong(package_id))
+                if ( pkg != null ) {
+                  if ( pkg.forumId == null ) {
+                    log.debug("Update package ${pkg.id} - link to forum ${f.id}");
+                    pkg.forumId = f.id
+                    pkg.save()
+                  }
+                }
+              }
+            }
+          }
+          catch ( Exception e ) {
+            log.error("Problem reconnecting orphaned forums",e);
+          }
+        }
+      }
+    }
+    log.debug("reconnectOrphanedZendeskForums completed");
+  }
 
   def createForum(http,pkg,categoryId) {
     def result = null
@@ -64,7 +101,7 @@ class ZenDeskSyncService {
     //   -H "Content-Type: application/json" -X POST \
     //   -d '{"forum": {"name": "My Forum", "forum_type": "articles", "access": "logged-in users", "category_id":"xx"  }}' \
     //   -v -u {email_address}:{password}
-    def forum_name = pkg.name+" (Package from "+ApplicationHolder.application.config.kbplusSystemId+")".toString()
+    def forum_name = pkg.name+" (Package ${pkg.id} from ${ApplicationHolder.application.config.kbplusSystemId})".toString()
     def forum_desc = 'Questions and discussions relating to package :'+pkg.name.toString()
 
     log.debug("Create forum: ${forum_name}, ${forum_desc}, ${categoryId}");
@@ -75,8 +112,8 @@ class ZenDeskSyncService {
                                     'forum_type': 'questions', 
                                     'access': 'logged-in users',
                                     'category_id' : "${categoryId}".toString(),
-                                    'description' : forum_desc,
-                                    'tags' : [ 'kbpluspkg' , "pkg:${pkg.id}".toString(), ApplicationHolder.application.config.kbplusSystemId.toString()  ]  
+                                    'description' : forum_desc//,
+                                    // 'tags' : [ 'kbpluspkg' , "pkg:${pkg.id}".toString(), ApplicationHolder.application.config.kbplusSystemId.toString()  ]  
                                   ] 
                       ]) { resp, json ->
       log.debug("Result: ${resp}, ${json}");
@@ -121,4 +158,7 @@ class ZenDeskSyncService {
 
     result
   }
+
+  // Latest activity:
+  // http://developer.zendesk.com/documentation/rest_api/activity_stream.html
 }

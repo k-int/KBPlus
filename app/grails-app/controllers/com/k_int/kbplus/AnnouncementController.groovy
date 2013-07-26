@@ -19,6 +19,8 @@ class AnnouncementController {
   def index() { 
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
+    def announcement_type = RefdataCategory.lookupOrCreate('Document Type','Announcement')
+    result.recentAnnouncements = Doc.findAllByType(announcement_type,[max:10,sort:'dateCreated',order:'desc'])
     result
   }
 
@@ -27,6 +29,12 @@ class AnnouncementController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     flash.message="Annoucement Created"
+    def announcement_type = RefdataCategory.lookupOrCreate('Document Type','Announcement')
+    def new_announcement = new Doc(title:params.subjectTxt, 
+                                   content:params.annTxt, 
+                                   user:result.user, 
+                                   type:announcement_type, 
+                                   contentType:0 ).save(flush:true)
     redirect(action:'index')
   }
 
