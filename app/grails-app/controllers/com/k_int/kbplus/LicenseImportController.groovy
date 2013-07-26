@@ -19,7 +19,7 @@ class LicenseImportController {
    * Review the offered import to make sure it is a valid ONIX-PL file.
    * @return
    */
-  @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def doImport() {
 
     def result = [:]
