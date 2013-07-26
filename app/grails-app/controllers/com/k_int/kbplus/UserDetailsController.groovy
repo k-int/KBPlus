@@ -48,6 +48,7 @@ class UserDetailsController {
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def edit() {
     def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
     def userInstance = User.get(params.id)
     if (!userInstance) {
         flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'Org'), params.id])
@@ -61,6 +62,7 @@ class UserDetailsController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def pub() {
     def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
     def userInstance = User.get(params.id)
     result.ui = userInstance
     result

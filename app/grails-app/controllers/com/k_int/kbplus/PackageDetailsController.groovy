@@ -9,6 +9,8 @@ import com.k_int.kbplus.auth.*;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+
 
 class PackageDetailsController {
 
@@ -123,7 +125,12 @@ class PackageDetailsController {
         return
       }
 
-      result.pkg_link_str="BASEURL/packageDetails/show/${params.id}"
+      result.pkg_link_str="${ApplicationHolder.application.config.SystemBaseURL}/packageDetails/show/${params.id}"
+
+      if ( packageInstance.forumId != null ) {
+        result.forum_url = "${ApplicationHolder.application.config.ZenDeskBaseURL}/forums/${packageInstance.forumId}"
+      }
+
       result.subscriptionList=[]
       // We need to cycle through all the users institutions, and their respective subscripions, and add to this list
       // and subscription that does not already link this package
