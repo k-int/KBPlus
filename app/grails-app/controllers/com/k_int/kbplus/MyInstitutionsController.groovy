@@ -21,6 +21,7 @@ class MyInstitutionsController {
   def alertsService
   def genericOIDService
   def factService
+  def zenDeskSyncService
 
   // Map the parameter names we use in the webapp with the ES fields
   def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
@@ -2540,6 +2541,7 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
     def announcement_type = RefdataCategory.lookupOrCreate('Document Type','Announcement')
     result.recentAnnouncements = Doc.findAllByType(announcement_type,[max:10,sort:'dateCreated',order:'desc'])
 
+    result.forumActivity = zenDeskSyncService.getLatestForumActivity()
 
     result
   }

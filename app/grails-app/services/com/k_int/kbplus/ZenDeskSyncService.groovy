@@ -14,6 +14,9 @@ import org.apache.http.protocol.*
 
 class ZenDeskSyncService {
 
+  def last_forum_check = 0;
+  def cached_forum_activity = null
+
   // see http://developer.zendesk.com/documentation/rest_api/forums.html#create-forum
 
   def doSync() {
@@ -166,4 +169,37 @@ class ZenDeskSyncService {
 
   // Latest activity:
   // http://developer.zendesk.com/documentation/rest_api/activity_stream.html
+
+
+  def getLatestForumActivity() {
+    // https://ostephens.zendesk.com/api/v2/search.json?query=type:topic
+    def now = System.currentTimeMillis();
+    def intervalms = 1000 * 60 * 60 * 1  // Re-fetch forum activity every hour
+    if ( now - last_forum_check > intervalms ) {
+      try {
+        def http = new RESTClient(ApplicationHolder.application.config.ZenDeskBaseURL)
+
+        http.client.addRequestInterceptor( new HttpRequestInterceptor() {
+          void process(HttpRequest httpRequest, HttpContext httpContext) {
+            String auth = "${ApplicationHolder.application.config.ZenDeskLoginEmail}:${ApplicationHolder.application.config.ZenDeskLoginPass}"
+            String enc_auth = auth.bytes.encodeBase64().toString()
+            httpRequest.addHeader('Authorization', 'Basic ' + enc_auth);
+          }
+        })
+
+        http.get(path:'/api/v2/search.json',
+                 query:[query:'type:topic', sort_by:'updated_at', sort_order:'desc']) { resp, data ->
+          cached_forum_activity = data
+        }
+      }
+      catch ( Exception e ) {
+        log.error("Problem collecting feed activity",e)
+      }
+      finally {
+        last_forum_check = now
+      }
+    }
+
+    cached_forum_activity
+  }
 }

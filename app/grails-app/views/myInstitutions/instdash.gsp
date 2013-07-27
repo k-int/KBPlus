@@ -93,6 +93,22 @@
         <div class="span4">
           <div class="well">
             <h6>Latest Discussions</h6>
+            <g:if test="${forumActivity}">
+              <table class="table">
+                <g:each in="${forumActivity.results}" var="fa">
+                  <tr>
+                    <td>
+                      <a href="${fa.url}">${fa.title}</a><br>
+                      <span class="pull-right"><a href="${fa.url}">View Discussion</a></span>
+                    </td>
+                  </tr>
+                </g:each>
+              </table>
+            </g:if>
+            <g:else>
+              Recent forum activity not available.
+              Please retry later.
+            </g:else>
           </div>
         </div>
       </div>
