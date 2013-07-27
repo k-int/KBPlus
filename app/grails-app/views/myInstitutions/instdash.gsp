@@ -53,11 +53,26 @@
         <div class="span4">
           <div class="well">
             <h6>ToDo</h6>
-            <ul>
+            <table class="table">
               <g:each in="${todos}" var="todo">
-                <li>${todo}</li>
+                <tr>
+                  <td>
+                    Changes(s) to ${todo.value.objtp} <br/>
+                    <strong>
+                      <g:if test="${todo.value.objtp=='Subscription'}">
+                        <g:link controller="subscriptionDetails" action="index" id="${todo.value.targetObject.id}">${todo.value.title}</g:link>
+                      </g:if>
+                      <g:else>
+                        <g:link controller="licenseDetails" action="index" id="${todo.value.targetObject.id}">${todo.value.title}</g:link>
+                      </g:else>
+                    </strong><br/>
+                    <span class="pull-right"><strong>${todo.value.changes.size()}</strong> 
+                                             Changes between <g:formatDate date="${todo.value.earliest}" format="yyyy-MM-dd hh:mm a"/></span> <br/>
+                    <span class="pull-right">and <g:formatDate date="${todo.value.latest}" format="yyyy-MM-dd hh:mm a"/> </span>
+                  </td>
+                </tr>
               </g:each>
-            </ul>
+            </table>
           </div>
         </div>
         <div class="span4">

@@ -2530,9 +2530,22 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def instdash() {
-   def result = [:]
+    def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
+
+    result.todos = getPendingChangesForOrg(result.institution)
+
+
+    def announcement_type = RefdataCategory.lookupOrCreate('Document Type','Announcement')
+    result.recentAnnouncements = Doc.findAllByType(announcement_type,[max:10,sort:'dateCreated',order:'desc'])
+
+
+    result
+  }
+
+  def getPendingChangesForOrg(org) {
+    def result = [:]
 
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
     def subscriber_role = RefdataCategory.lookupOrCreate('Organisational Role','Subscriber');
@@ -2544,15 +2557,50 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
     def sub_subq="select s from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType = ? and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' )"
 
     // Therefore - Pending changes for this org are
-    def todo_query = "select pc from PendingChange as pc where pc.license in (${lic_subq}) or pc.subscription in (${sub_subq})"
+    def todo_query = "select pc from PendingChange as pc where pc.license in (${lic_subq}) or pc.subscription in (${sub_subq}) order by pc.id"
 
-    def qry_params = [result.institution,licensee_role,subscriber_role,result.institution]
+    def qry_params = [org,licensee_role,subscriber_role,org]
 
-    result.todos = PendingChange.executeQuery(todo_query, qry_params)
+    def active_todos = PendingChange.executeQuery(todo_query, qry_params)
 
-    def announcement_type = RefdataCategory.lookupOrCreate('Document Type','Announcement')
-    result.recentAnnouncements = Doc.findAllByType(announcement_type,[max:10,sort:'dateCreated',order:'desc'])
+    // Post process todos into a list of subs/licenses with details below that
+    active_todos.each { at ->
+      def target_of_todo = null
+      def target_obj = null
+      def objtp = null
+      def target_display_name = null
+      if ( at.subscription != null ) {
+        target_of_todo = "${at.subscription.id}"
+        objtp="Subscription"
+        target_display_name = "${at.subscription.name}"
+        target_obj = at.subscription
+      }
+      else {
+        target_of_todo = "License:${at.license}"
+        target_display_name = "${at.license.reference}"
+        objtp="License"
+        target_obj = at.license
+      }
 
+      def pending_changes_against_target = result.get(target_of_todo)
+      if ( pending_changes_against_target == null ) {
+        pending_changes_against_target = [:]
+        result[target_of_todo] = pending_changes_against_target
+        pending_changes_against_target.targetObject = target_obj
+        pending_changes_against_target.title = target_display_name
+        pending_changes_against_target.objtp = objtp
+        pending_changes_against_target.changes = []
+      }
+
+      pending_changes_against_target.changes.add(at)
+      if ( (pending_changes_against_target.earliest == null ) ||
+           (at.doc.dateCreated.getTime() < pending_changes_against_target.earliest.getTime() ) )
+        pending_changes_against_target.earliest = at.doc.dateCreated
+
+      if ( (pending_changes_against_target.latest == null ) ||
+           (at.doc.dateCreated.getTime() > pending_changes_against_target.latest.getTime() ) )
+        pending_changes_against_target.latest = at.doc.dateCreated
+    }
 
     result
   }
