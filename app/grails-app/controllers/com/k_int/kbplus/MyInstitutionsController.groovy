@@ -2,9 +2,8 @@ package com.k_int.kbplus
 
 import grails.converters.*
 import grails.plugins.springsecurity.Secured
-import grails.converters.*
 import org.elasticsearch.groovy.common.xcontent.*
-import groovy.xml.MarkupBuilder
+import groovy.xml.StreamingMarkupBuilder
 import com.k_int.kbplus.auth.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.hssf.usermodel.*;
@@ -20,6 +19,7 @@ class MyInstitutionsController {
   def gazetteerService
   def alertsService
   def genericOIDService
+  def transformerService
 
   // Map the parameter names we use in the webapp with the ES fields
   def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
@@ -957,6 +957,7 @@ class MyInstitutionsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def currentTitles() {
+	  
 	def filterSub = params.list("filterSub")
     if(filterSub.contains("all")) filterSub = null
 	def filterPvd = params.list("filterPvd")
@@ -972,6 +973,14 @@ class MyInstitutionsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
+	
+	// If transformer check user has access to it
+	if(params.transforms && !transformerService.hasTransformId(result.user, params.transforms)) {
+		flash.error = "It looks like you are trying to use an unvalid transformer or one you don't have access to!"
+		params.remove("transforms")
+		params.remove("format")
+		redirect action:'currentTitles', params:params
+	}
     
     def date_restriction = null;
     def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
@@ -1172,7 +1181,8 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
 	if(params.format.equals("xml")||params.format.equals("json")){
 		
 	}
-    
+	
+	def filename = "titles_listing_${result.institution.shortcode}"
     withFormat {
         html result
         csv {
@@ -1187,7 +1197,7 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
             }
             namespaces.unique()
 
-            response.setHeader("Content-disposition", "attachment; filename=titles_listing_${result.institution?.name}.csv")
+            response.setHeader("Content-disposition", "attachment; filename=${filename}.csv")
             response.contentType = "text/csv"
 			
             def out = response.outputStream
@@ -1259,7 +1269,7 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
         json {
             def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
             
-            def response = [:]
+            def map = [:]
 			def titles = []
             
             result.titles.each { ti ->
@@ -1321,60 +1331,65 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
 				titles.add(title)
             }
 			
-			response."TitleList" = titles
+			map."TitleList" = titles
 			
-            render response as JSON
+			if(params.transforms){
+				transformerService.triggerTransform(result.user, filename, params.transforms, writer.toString(), response)
+			}else{
+				response.setHeader("Content-disposition", "attachment; filename=\"${filename}.json\"")
+				response.contentType = "application/json"
+				render map as JSON
+			}
         }
 		xml {
 			def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
 			
-			def writer = new StringWriter()
-			def xmlBuilder = new MarkupBuilder(writer)
-			xmlBuilder.getMkp().xmlDeclaration(version:'1.0', encoding: 'UTF-8')
-			
-			xmlBuilder.TitleList() {			
-				result.titles.each { ti ->
-					TitleListEntry{
-						Title(ti[0].title)
-						
-						TitleIDS(){
-							ti[0].ids.each(){ id ->
-								def value = id.identifier.value
-								def ns = id.identifier.ns.ns
-								ID(namespace: ns, value )
+			def xml = new StreamingMarkupBuilder().bind{
+				mkp.xmlDeclaration(version:'1.0', encoding: 'UTF-8')
+				TitleList() {			
+					result.titles.each { ti ->
+						TitleListEntry{
+							Title(ti[0].title)
+							
+							TitleIDS(){
+								ti[0].ids.each(){ id ->
+									def value = id.identifier.value
+									def ns = id.identifier.ns.ns
+									ID(namespace: ns, value )
+								}
 							}
-						}
-						
-						CoverageStatement(type: 'Issue Entitlement'){
-							result.entitlements.each(){
-								if(it.tipp.title.id.equals(ti[0].id)){
-									SubscriptionID(it.subscription.id)
-									SubscriptionName(it.subscription.name)
-									StartDate(it.startDate?formatter.format(it.startDate):'')
-									StartVolume(it.startVolume?:'')
-									StartIssue(it.startIssue?:'')
-									EndDate(it.endDate?formatter.format(it.endDate):'')
-									EndVolume(it.endVolume?:'')
-									EndIssue(it.endIssue?:'')
-									Embargo(it.embargo?:'')
-									Coverage(it.coverageDepth?:'')
-									CoverageNote(it.coverageNote?:'')
-									HostPlatformName(it.tipp?.platform?.name?:'')
-									HostPlatformURL(it.tipp?.hostPlatformURL?:'')
-									
-									it.tipp?.additionalPlatforms.each(){ ap ->
-										Platform(){
-											PlatformName(ap.platform?.name?:'')
-											PlatformRole(ap.rel?:'')
-											PlatformURL(ap.platform?.primaryUrl?:'')
+							
+							result.entitlements.each() { e ->
+								if(e.tipp.title.id.equals(ti[0].id)){
+									CoverageStatement(type: 'Issue Entitlement'){
+										SubscriptionID(e.subscription?.id?:'')
+										SubscriptionName(e.subscription?.name?:'')
+										StartDate(e.startDate?formatter.format(e.startDate):'')
+										StartVolume(e.startVolume?:'')
+										StartIssue(e.startIssue?:'')
+										EndDate(e.endDate?formatter.format(e.endDate):'')
+										EndVolume(e.endVolume?:'')
+										EndIssue(e.endIssue?:'')
+										Embargo(e.embargo?:'')
+										Coverage(e.coverageDepth?:'')
+										CoverageNote(e.coverageNote?:'')
+										HostPlatformName(e.tipp?.platform?.name?:'')
+										HostPlatformURL(e.tipp?.hostPlatformURL?:'')
+										
+										e.tipp.additionalPlatforms.each(){ ap ->
+											Platform(){
+												PlatformName(ap.platform?.name?:'')
+												PlatformRole(ap.rel?:'')
+												PlatformURL(ap.platform?.primaryUrl?:'')
+											}
 										}
+										
+										CoreStatus(e.coreStatus?.value?:'')
+										CoreStart(e.coreStatusStart?formatter.format(e.coreStatusStart):'')
+										CoreEnd(e.coreStatusEnd?formatter.format(e.coreStatusEnd):'')
+										PackageID(e.tipp?.pkg?.id?:'')
+										PackageName(e.tipp?.pkg?.name?:'')
 									}
-									
-									CoreStatus(it.coreStatus?.value?:'')
-									CoreStart(it.coreStatusStart?formatter.format(it.coreStatusStart):'')
-									CoreEnd(it.coreStatusEnd?formatter.format(it.coreStatusEnd):'')
-									PackageID(it.tipp?.pkg?.id?:'')
-									PackageName(it.tipp?.pkg?.name?:'')
 								}
 							}
 						}
@@ -1382,11 +1397,17 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
 				}
 			}
 			
-			render writer.toString()
+			if(params.transforms){
+				transformerService.triggerTransform(result.user, filename, params.transforms, xml.toString(), response)
+			}else{
+				response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
+				response.contentType = "text/xml"
+				render xml.toString() 
+			}
 		}
     }
   }
-
+  
   def availableLicenses() {
     // def sub = resolveOID(params.elementid);
     // OrgRole.findAllByOrgAndRoleType(result.institution, licensee_role).collect { it.lic }

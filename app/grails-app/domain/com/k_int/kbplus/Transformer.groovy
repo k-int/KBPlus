@@ -15,7 +15,7 @@ class Transformer {
     }
 	
 	static constraints = {
-		id(nullable:false, unique: true, blank:false)
+		//id(nullable:false, unique: true, blank:false)
 		name(nullable:false, blank:false)
 		url(nullable:false, unique: true, blank:false)
 	}
