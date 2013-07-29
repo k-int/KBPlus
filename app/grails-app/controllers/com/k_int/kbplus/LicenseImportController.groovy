@@ -28,6 +28,7 @@ class LicenseImportController {
     result.validationResult.errors = []
     if (!"anonymousUser".equals(springSecurityService.principal)) {
       result.user = User.get(springSecurityService.principal.id);
+      //result.user.roles.each{r->log.debug("Role: "+r)}
     }
 
     // Find a license if id specified
@@ -211,6 +212,8 @@ class LicenseImportController {
 
         def opl = recordOnixplLicense(license, doc_content, upload.description);
         results.onixpl_license = opl
+        license.onixplLicense = opl
+        license.save(flush:true)
         //results.messages.add("ONIX-PL License with id "+opl.id)
 
         if (upload.usageTerms) {
@@ -244,8 +247,6 @@ class LicenseImportController {
     try {
       opl = new OnixplLicense(
           lastmod:new Date(),
-          licenses: license,
-          license: license,
           doc: doc,
           title: title
       );

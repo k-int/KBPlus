@@ -39,7 +39,6 @@ class OnixplLicense {
   }
 
   static constraints = {
-    licenses(nullable: false, blank: false, unique: true)
     doc(nullable: false, blank: false)
     lastmod(nullable: true, blank: true)
     title(nullable: false, blank: false)
