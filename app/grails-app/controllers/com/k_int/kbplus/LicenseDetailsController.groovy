@@ -426,6 +426,7 @@ class LicenseDetailsController {
     def onixpl() {
         def user = User.get(springSecurityService.principal.id)
         def onixplLicense = License.get(params.id).onixplLicense;
+        if (onixplLicense==null) return false;
         if ( ! onixplLicense.hasPerm("view",user) ) {
             log.debug("return 401....");
             response.sendError(401);

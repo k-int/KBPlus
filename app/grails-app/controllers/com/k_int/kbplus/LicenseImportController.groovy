@@ -28,6 +28,7 @@ class LicenseImportController {
     result.validationResult.errors = []
     if (!"anonymousUser".equals(springSecurityService.principal)) {
       result.user = User.get(springSecurityService.principal.id);
+      //result.user.roles.each{r->log.debug("Role: "+r)}
     }
 
     // Find a license if id specified
@@ -69,7 +70,7 @@ class LicenseImportController {
    * @param request
    * @return result object
    */
-  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def readOfferedOnixPl(request) {
     def result = [:]
     def file = request.getFile("importFile");
@@ -209,8 +210,10 @@ class LicenseImportController {
             owner:doc_content,
             doctype:doctype).save(flush:true);
 
-        def opl = recordOnixplLicense(license, doc_content);
+        def opl = recordOnixplLicense(license, doc_content, upload.description);
         results.onixpl_license = opl
+        license.onixplLicense = opl
+        license.save(flush:true)
         //results.messages.add("ONIX-PL License with id "+opl.id)
 
         if (upload.usageTerms) {
@@ -239,13 +242,13 @@ class LicenseImportController {
    * @param doc an uploaded Doc
    * @return an OnixplLicense, or null
    */
-  def recordOnixplLicense(license, doc) {
+  def recordOnixplLicense(license, doc, title) {
     def opl = null;
     try {
       opl = new OnixplLicense(
           lastmod:new Date(),
-          license: license,
-          doc: doc
+          doc: doc,
+          title: title
       );
       opl.save(flush:true, failOnError: true);
       log.debug("Created ONIX-PL License "+opl.getId());
