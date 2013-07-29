@@ -10,6 +10,8 @@ import com.k_int.kbplus.auth.*;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+
 
 class PackageDetailsController {
 
@@ -123,6 +125,12 @@ class PackageDetailsController {
         flash.message = message(code: 'default.not.found.message', args: [message(code: 'package.label', default: 'Package'), params.id])
         redirect action: 'list'
         return
+      }
+
+      result.pkg_link_str="${ApplicationHolder.application.config.SystemBaseURL}/packageDetails/show/${params.id}"
+
+      if ( packageInstance.forumId != null ) {
+        result.forum_url = "${ApplicationHolder.application.config.ZenDeskBaseURL}/forums/${packageInstance.forumId}"
       }
 
       result.subscriptionList=[]

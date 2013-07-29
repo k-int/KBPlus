@@ -155,6 +155,20 @@
                         <g:xEditable owner="${license}" field="noticePeriod" id="noticePeriod"/>
                      </dd>
                   </dl>
+
+                    <dl>
+                        <dt><label class="control-label">ONIX-PL License</label></dt>
+                        <dd>
+                            <g:if test="${license.onixplLicense}">
+                                <g:link controller="onixplLicenseDetails" action="index" id="${license.onixplLicense?.id}">${license.onixplLicense}</g:link>
+                            </g:if>
+                            <g:else>
+                                <%--<input class="btn btn-warning" value="Import an ONIX-PL license"
+                                       href="${createLink(controller: 'licenseImport', action: 'doImport', params: '[license_id: license.id]')}" />--%>
+                                <g:link class="btn btn-warning" controller='licenseImport' action='doImport' params='[license_id: license.id]'>Import an ONIX-PL license</g:link>
+                            </g:else>
+                        </dd>
+                    </dl>
       
                   <dl>
                       <dt><label class="control-label" for="licenseUrl">Licence Url</label></dt>
@@ -190,6 +204,18 @@
                         <g:render template="orgLinks" contextPath="../templates" model="${[roleLinks:license?.orgLinks,editmode:editable]}" />
                       </dd>
                   </dl>
+
+                  <dl>
+                      <dt><label class="control-label" for="licenseeRef">Incoming License Links</label></dt>
+                      <dd>
+                        <ul>
+                          <g:each in="${license?.incomingLinks}" var="il">
+                            <li><g:link controller="licenseDetails" action="index" id="${il.fromLic.id}">${il.fromLic.reference} (${il.type?.value})</g:link></li>
+                          </g:each>
+                        </ul>
+                      </dd>
+                  </dl>
+
 
 
 

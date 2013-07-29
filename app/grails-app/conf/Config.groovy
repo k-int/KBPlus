@@ -88,6 +88,10 @@ log4j = {
         console name: "stdout", threshold: org.apache.log4j.Level.ALL
     }
 
+//    // Enable Hibernate SQL logging with param values
+//    trace 'org.hibernate.type'
+//    debug 'org.hibernate.SQL'
+
     error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
            'org.codehaus.groovy.grails.web.pages', //  GSP
            'org.codehaus.groovy.grails.web.sitemesh', //  layouts

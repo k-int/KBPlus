@@ -11,6 +11,7 @@ class UrlMappings {
 
     "/myInstitutions/$shortcode/$action"(controller:'myInstitutions')
     "/myInstitutions/$shortcode/$action/$id"(controller:'myInstitutions')
+    "/myInstitutions/$shortcode/dashboard"(controller:'myInstitutions', action:'instdash')
 
     // "/"(controller:"home")
     "/"(view:"/publichome")

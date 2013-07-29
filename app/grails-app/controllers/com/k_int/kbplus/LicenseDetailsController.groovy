@@ -6,6 +6,7 @@ import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.StreamingMarkupBuilder
 import com.k_int.kbplus.auth.*;
 import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
+import org.springframework.security.access.annotation.Secured
 
 @Mixin(com.k_int.kbplus.mixins.PendingChangeMixin)
 class LicenseDetailsController {
@@ -432,4 +433,17 @@ class LicenseDetailsController {
       redirect(action:'create');
     }
   }
+
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def onixpl() {
+        def user = User.get(springSecurityService.principal.id)
+        def onixplLicense = License.get(params.id).onixplLicense;
+        if ( ! onixplLicense.hasPerm("view",user) ) {
+            log.debug("return 401....");
+            response.sendError(401);
+            return
+        }
+        def editable = onixplLicense.hasPerm("edit", user)
+        [onixplLicense: onixplLicense, user: user, editable: editable]
+    }
 }
