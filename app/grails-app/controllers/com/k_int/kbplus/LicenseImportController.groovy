@@ -220,7 +220,7 @@ class LicenseImportController {
           def ts = results.termStatuses
           upload.usageTerms.each { ut ->
             recordOnixplUsageTerm(opl, ut);
-            def n = ts.get(ut.status)!=null ? ts.get(ut.status)+1 : 0;
+            def n = ts.get(ut.status)!=null ? ts.get(ut.status)+1 : 1;
             //log.debug("term statuses "+ut.status+" = "+ts.get(ut.status)+" to "+n)
             ts.put(ut.status, n)
           }
