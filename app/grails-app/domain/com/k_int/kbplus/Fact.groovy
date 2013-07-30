@@ -7,6 +7,31 @@ class Fact {
   Date factTo
   String factValue
   String factUid
-  static mappedBy = [classifiers: 'fact']
-  static hasMany = [classifiers: FactClassifier]
+  Long reportingYear
+  Long reportingMonth
+
+  TitleInstance relatedTitle
+  Org supplier
+  Org inst
+  IdentifierOccurrence juspio
+
+  static constraints = {
+    factUid(nullable:true, blank:false,unique:true)
+    relatedTitle(nullable:true, blank:false)
+    supplier(nullable:true, blank:false)
+    inst(nullable:true, blank:false)
+    juspio(nullable:true, blank:false)
+    reportingYear(nullable:true, blank:false)
+    reportingMonth(nullable:true, blank:false)
+  }
+
+  static mapping = {
+                id column:'fact_id'
+           version column:'fact_version'
+           factUid column:'fact_uid', index:'fact_uid_idx'
+          factType column:'fact_type_rdv_fk', index:'fact_uid_idx'
+  }
+
 }
+
+

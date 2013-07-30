@@ -55,6 +55,7 @@ class ProfileController {
   def updateProfile() {
     def user = User.get(springSecurityService.principal.id)
     user.display = params.userDispName
+    user.email = params.email
     user.save();
 
     flash.message="Profile Updated"
