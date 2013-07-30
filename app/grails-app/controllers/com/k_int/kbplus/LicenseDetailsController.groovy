@@ -438,4 +438,32 @@ class LicenseDetailsController {
         def editable = onixplLicense.hasPerm("edit", user)
         [license: license, onixplLicense: onixplLicense, user: user, editable: editable]
     }
+
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def unlinkLicense() {
+        License license = License.get(params.license_id);
+        OnixplLicense opl = license.onixplLicense;
+        String oplTitle = opl.title;
+        DocContext dc = DocContext.findByOwner(opl.doc);
+        Doc doc = opl.doc;
+        license.removeFromDocuments(dc);
+        opl.removeFromLicenses(license);
+        // If there are no more links to this ONIX-PL License then delete the license and
+        // associated data
+        if (opl.licenses.isEmpty()) {
+            dc.delete();
+            opl.delete();
+            docstoreService.deleteDocs([doc.uuid]);
+            doc.delete();
+        }
+        if (license.hasErrors()) {
+            license.errors.each {
+                log.error("License error: " + it);
+            }
+            flash.message = "An error occurred when unlinking the ONIX-PL license '${oplTitle}'";
+        } else {
+            flash.message = "The ONIX-PL license '${oplTitle}' was unlinked successfully";
+        }
+        redirect(action: 'index', id: license.id);
+    }
 }

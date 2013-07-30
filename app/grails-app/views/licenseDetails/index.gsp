@@ -145,6 +145,9 @@
                         <dd>
                             <g:if test="${license.onixplLicense}">
                                 <g:link controller="onixplLicenseDetails" action="index" id="${license.onixplLicense?.id}">${license.onixplLicense.title}</g:link>
+                                <g:if test="${editable}">
+                                    <g:link class="btn btn-warning" controller="licenseDetails" action="unlinkLicense" params="[license_id: license.id, opl_id: onixplLicense.id]">Unlink</g:link>
+                                </g:if>
                             </g:if>
                             <g:else>
                                 <%--<input class="btn btn-warning" value="Import an ONIX-PL license"
@@ -252,7 +255,7 @@
                     <td><g:xEditableFieldNote owner="${license}" field="pca" id="pca"/></td></tr>
               </tbody>
             </table>
-
+                  <g:if test="${onixplLicense}">
                   <h6>ONIX-PL Licence Properties</h6>
 
                   <table class="table table-bordered licence-properties">
@@ -264,7 +267,7 @@
                       </tr>
                       </thead>
                       <tbody>
-                      <g:each in="${onixplLicense.usageTerm.sort {it.usageType.value}}">
+                      <g:each in="${onixplLicense?.usageTerm.sort {it.usageType.value}}">
                           <tr><td><g:link controller="onixplUsageTermsDetails" action="index" id="${it.id}">${it.usageType.value}</g:link></td>
                               <td><g:refdataValue cat="UsageStatus" val="${it.usageStatus.value}" /></td>
                               <td><g:each in="${it.usageTermLicenseText.licenseText.sort {it.elementId}}">
@@ -275,7 +278,8 @@
                       </g:each>
                       </tbody>
                   </table>
-  
+                  </g:if>
+
               </div>
               <div class="span4">
                 <g:render template="documents" contextPath="../templates" model="${[doclist:license.documents, ownobj:license, owntp:'license']}" />
