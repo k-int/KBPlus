@@ -144,7 +144,7 @@
                         <dt><label class="control-label">ONIX-PL License</label></dt>
                         <dd>
                             <g:if test="${license.onixplLicense}">
-                                <g:link controller="onixplLicenseDetails" action="index" id="${license.onixplLicense?.id}">${license.onixplLicense}</g:link>
+                                <g:link controller="onixplLicenseDetails" action="index" id="${license.onixplLicense?.id}">${license.onixplLicense.title}</g:link>
                             </g:if>
                             <g:else>
                                 <%--<input class="btn btn-warning" value="Import an ONIX-PL license"
@@ -252,6 +252,29 @@
                     <td><g:xEditableFieldNote owner="${license}" field="pca" id="pca"/></td></tr>
               </tbody>
             </table>
+
+                  <h6>ONIX-PL Licence Properties</h6>
+
+                  <table class="table table-bordered licence-properties">
+                      <thead>
+                      <tr>
+                          <th>Property</th>
+                          <th>Status</th>
+                          <th>Notes</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <g:each in="${onixplLicense.usageTerm.sort {it.usageType.value}}">
+                          <tr><td><g:link controller="onixplUsageTermsDetails" action="index" id="${it.id}">${it.usageType.value}</g:link></td>
+                              <td><g:refdataValue cat="UsageStatus" val="${it.usageStatus.value}" /></td>
+                              <td><g:each in="${it.usageTermLicenseText.licenseText.sort {it.elementId}}">
+                                  ${it.elementId} - <g:link controller="onixplLicenseTextDetails" action="index" id="${it.id}">${it.text}</g:link><br>
+                              </g:each>
+                              </td></tr>
+
+                      </g:each>
+                      </tbody>
+                  </table>
   
               </div>
               <div class="span4">

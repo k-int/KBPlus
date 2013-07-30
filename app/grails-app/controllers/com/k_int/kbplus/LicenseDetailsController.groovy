@@ -40,6 +40,8 @@ class LicenseDetailsController {
       result.editable = false
     }
 
+    result.onixplLicense = result.license.onixplLicense
+
     withFormat {
 		  html result
 		  json {
@@ -425,7 +427,8 @@ class LicenseDetailsController {
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def onixpl() {
         def user = User.get(springSecurityService.principal.id)
-        def onixplLicense = License.get(params.id).onixplLicense;
+        def license = License.get(params.id);
+        def onixplLicense = license.onixplLicense;
         if (onixplLicense==null) return false;
         if ( ! onixplLicense.hasPerm("view",user) ) {
             log.debug("return 401....");
@@ -433,6 +436,6 @@ class LicenseDetailsController {
             return
         }
         def editable = onixplLicense.hasPerm("edit", user)
-        [onixplLicense: onixplLicense, user: user, editable: editable]
+        [license: license, onixplLicense: onixplLicense, user: user, editable: editable]
     }
 }
