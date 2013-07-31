@@ -255,30 +255,6 @@
                     <td><g:xEditableFieldNote owner="${license}" field="pca" id="pca"/></td></tr>
               </tbody>
             </table>
-                  <g:if test="${onixplLicense}">
-                  <h6>ONIX-PL Licence Properties</h6>
-
-                  <table class="table table-bordered licence-properties">
-                      <thead>
-                      <tr>
-                          <th>Property</th>
-                          <th>Status</th>
-                          <th>Notes</th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      <g:each in="${onixplLicense?.usageTerm.sort {it.usageType.value}}">
-                          <tr><td><g:link controller="onixplUsageTermsDetails" action="index" id="${it.id}">${it.usageType.value}</g:link></td>
-                              <td><g:refdataValue cat="UsageStatus" val="${it.usageStatus.value}" /></td>
-                              <td><g:each in="${it.usageTermLicenseText.licenseText.sort {it.elementId}}">
-                                  ${it.elementId} - <g:link controller="onixplLicenseTextDetails" action="index" id="${it.id}">${it.text}</g:link><br>
-                              </g:each>
-                              </td></tr>
-
-                      </g:each>
-                      </tbody>
-                  </table>
-                  </g:if>
 
               </div>
               <div class="span4">
