@@ -39,8 +39,9 @@ class LicenseDetailsController {
     else {
       result.editable = false
     }
-	
-	def filename = "licenceDetails_${result.license.name}"
+    def filename = "licenceDetails_${result.license.name}"
+    result.onixplLicense = result.license.onixplLicense
+
     withFormat {
 		  html result
 		  json {
@@ -437,13 +438,43 @@ class LicenseDetailsController {
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def onixpl() {
         def user = User.get(springSecurityService.principal.id)
-        def onixplLicense = License.get(params.id).onixplLicense;
+        def license = License.get(params.id);
+        def onixplLicense = license.onixplLicense;
+        if (onixplLicense==null) return false;
         if ( ! onixplLicense.hasPerm("view",user) ) {
             log.debug("return 401....");
             response.sendError(401);
             return
         }
         def editable = onixplLicense.hasPerm("edit", user)
-        [onixplLicense: onixplLicense, user: user, editable: editable]
+        [license: license, onixplLicense: onixplLicense, user: user, editable: editable]
+    }
+
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def unlinkLicense() {
+        License license = License.get(params.license_id);
+        OnixplLicense opl = license.onixplLicense;
+        String oplTitle = opl.title;
+        DocContext dc = DocContext.findByOwner(opl.doc);
+        Doc doc = opl.doc;
+        license.removeFromDocuments(dc);
+        opl.removeFromLicenses(license);
+        // If there are no more links to this ONIX-PL License then delete the license and
+        // associated data
+        if (opl.licenses.isEmpty()) {
+            dc.delete();
+            opl.delete();
+            docstoreService.deleteDocs([doc.uuid]);
+            doc.delete();
+        }
+        if (license.hasErrors()) {
+            license.errors.each {
+                log.error("License error: " + it);
+            }
+            flash.message = "An error occurred when unlinking the ONIX-PL license '${oplTitle}'";
+        } else {
+            flash.message = "The ONIX-PL license '${oplTitle}' was unlinked successfully";
+        }
+        redirect(action: 'index', id: license.id);
     }
 }

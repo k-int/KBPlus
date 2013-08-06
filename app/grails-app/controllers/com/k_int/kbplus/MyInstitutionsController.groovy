@@ -809,7 +809,9 @@ class MyInstitutionsController {
                                           enterprise:baseLicense?.enterprise,
                                           pca:baseLicense?.pca,
                                           noticePeriod:baseLicense?.noticePeriod,
-                                          licenseUrl:baseLicense?.licenseUrl)
+                                          licenseUrl:baseLicense?.licenseUrl,
+                                          onixplLicense:baseLicense?.onixplLicense
+        )
 
         // the url will set the shortcode of the organisation that this license should be linked with.
         if (!licenseInstance.save(flush: true)) {

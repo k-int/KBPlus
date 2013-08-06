@@ -18,9 +18,9 @@
 <div class="container">
     <ul class="breadcrumb">
         <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
-        <g:if test="${onixplLicense?.license?.licensee}">
-            <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:onixplLicense?.license?.licensee?.shortcode]}"> ${onixplLicense?.license?.licensee?.name} Current Licenses</g:link> <span class="divider">/</span> </li>
-        </g:if>
+        %{--<g:if test="${onixplLicense?.license?.licensee}">--}%
+            %{--<li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:onixplLicense?.license?.licensee?.shortcode]}"> ${onixplLicense?.license?.licensee?.name} Current Licenses</g:link> <span class="divider">/</span> </li>--}%
+        %{--</g:if>--}%
         <li> <g:link controller="licenseDetails" action="index" id="${params.id}">ONIX-PL License Details</g:link> </li>
         <g:if test="${editable}">
             <li class="pull-right">Editable by you&nbsp;</li>
@@ -29,7 +29,7 @@
     </div>
 
 <div class="container">
-    <h1>ONIX-PL Licence : ${onixplLicense?.license}</h1>
+    <h1>ONIX-PL Licence : ${onixplLicense.title}</h1>
 </div>
 
 <div class="container">
@@ -42,12 +42,9 @@
                 <dl>
                     <dt><label class="control-label" for="license">Reference</label></dt>
                     <dd>
-                        <g:if test="${onixplLicense.license}">
-                            <g:link name="license" controller="licenseDetails" action="index" id="${onixplLicense?.license?.id}">${onixplLicense?.license}</g:link>
-                        </g:if>
-                        <g:else>
-                            No license associated
-                        </g:else>
+                        <g:each in="${onixplLicense.licenses}">
+                            <g:link name="license" controller="licenseDetails" action="index" id="${it.id}">${it.reference}</g:link>
+                        </g:each>
                     </dd>
                 </dl>
                 </div>

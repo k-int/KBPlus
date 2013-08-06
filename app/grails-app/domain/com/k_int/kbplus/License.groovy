@@ -35,7 +35,6 @@ class License {
   long lastmod
 
   static hasOne = [onixplLicense: OnixplLicense]
-  //OnixplLicense onixplLicense;
 
   static hasMany = [
     pkgs:Package, 
@@ -55,8 +54,7 @@ class License {
                       outgoinglinks:'fromLic',
                       incomingLinks:'toLic',
                       pendingChanges:'license',
-                      onixplLicense:'license'
-                      ]
+  ]
 
   static mapping = {
                      id column:'lic_id'
@@ -85,6 +83,7 @@ class License {
           licenseStatus column:'lic_license_status_str'
                 lastmod column:'lic_lastmod'
               documents sort:'owner.id', order:'desc'
+          onixplLicense column: 'lic_opl_fk'
   }
 
   static constraints = {
