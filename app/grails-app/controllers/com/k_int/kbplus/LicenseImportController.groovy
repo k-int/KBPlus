@@ -7,7 +7,8 @@ import org.xml.sax.SAXException
 
 class LicenseImportController {
 
-  def CAT_TYPE = "UsageType", CAT_STATUS = "UsageStatus", CAT_DOCTYPE = 'Document Type', DOCTYPE = 'ONIX-PL License';
+  def CAT_TYPE = "UsageType", CAT_STATUS = "UsageStatus", CAT_DOCTYPE = 'Document Type', DOCTYPE = 'ONIX-PL License',
+DEFAULT_DOC_TITLE = 'ONIX-PL Licence document'
 
   // NOTE The spring security is not implemented properly in this class
   // See UploadController
@@ -38,6 +39,7 @@ class LicenseImportController {
     if ( request.method == 'POST' ) {
       result.validationResult = readOfferedOnixPl(request)
       result.validationResult.success = false
+      result.validationResult.upload_title  = DEFAULT_DOC_TITLE
       if ( result.validationResult.processFile == true ) {
         result.validationResult.messages.add("Document validated")
         //if (result.validationResult.messages) result.validationResult.messages.addAll(result.validationResult.messages)
@@ -180,13 +182,9 @@ class LicenseImportController {
       // ------------------------------------------------------------------------
       // Upload the doc to docstore
       // ------------------------------------------------------------------------
-      log.debug("Uploading ONIX-PL document to docstore: "+params.upload_title);
-      def docstore_uuid = docstoreService.uploadStream(input_stream, upload_filename, params.upload_title)
+      log.debug("Uploading ONIX-PL document to docstore: "+upload_filename);
+      def docstore_uuid = docstoreService.uploadStream(input_stream, upload_filename, upload.upload_title)
       log.debug("Docstore uuid is ${docstore_uuid}");
-
-      def d = new Doc(lastmod:new Date());
-      d.save(flush: true);
-      log.debug("Created new doc "+d.id);
 
       // ------------------------------------------------------------------------
       // Create doc records
@@ -200,7 +198,7 @@ class LicenseImportController {
             uuid: docstore_uuid,
             filename: upload_filename,
             mimeType: upload_mime_type,
-            title: params.upload_title,
+            title: upload.upload_title,
             type:doctype,
             user: upload.user)
             .save()
