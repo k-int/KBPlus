@@ -50,7 +50,6 @@ class LicenseImportController {
 
     // Now process if a form was posted
     if ( request.method == 'POST' ) {
-
       // Record form submission values
       result.import_file   = params.import_file?.getOriginalFilename()
       // hidden values
