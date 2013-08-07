@@ -233,7 +233,6 @@ class LicenseImportController {
       usageTerms[n] = [:]
       usageTerms[n].type = ut.UsageType.text().replace(onixplPrefix,'')
       usageTerms[n].status = ut.UsageStatus.text().replace(onixplPrefix,'')
-      //def licText = onixpl.LicenseDocumentText.TextElement.find{ it.@id==ut.LicenseTextLink.@href }
       def licTexts = []
       ut.LicenseTextLink.each{ ltl ->
         licTexts.add(onixpl.LicenseDocumentText.TextElement.find{ it.@id == ltl.@href })
@@ -244,7 +243,8 @@ class LicenseImportController {
       licTexts.eachWithIndex { lt, m ->
         usageTerms[n].licenseTexts[m] = [:]
         usageTerms[n].licenseTexts[m].text = [lt.TextPreceding.text(), lt.Text.text()].join(" ")
-        usageTerms[n].licenseTexts[m].elId = lt.SortNumber.text()
+        usageTerms[n].licenseTexts[m].elId = lt.@id //lt.SortNumber.text()
+        usageTerms[n].licenseTexts[m].displayNum = lt.DisplayNumber?.text()
       }
     }
     log.debug("Found "+usageTerms.size()+" usage terms")
@@ -436,6 +436,7 @@ class LicenseImportController {
       def oplt = new OnixplLicenseText(
           text:lt.text,
           elementId:lt.elId,
+          displayNum:lt.displayNum,
           oplLicense:opl
       );
       oplt.save(validate:false, flush: true, insert:true);
