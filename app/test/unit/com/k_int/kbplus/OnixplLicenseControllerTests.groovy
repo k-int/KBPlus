@@ -6,150 +6,90 @@ import org.junit.*
 import grails.test.mixin.*
 
 @TestFor(OnixplLicenseController)
-@Mock([OnixplLicense,OnixplLicenseController])
+@Mock([OnixplLicense,OnixplLicenseController,Doc])
 class OnixplLicenseControllerTests {
 
-    def populateValidParams(params) {
-        assert params != null
-        // TODO: Populate valid properties like...
-        //params["name"] = 'someValidName'
-    }
+  def populateValidParams(params) {
+    assert params != null
+    params['lastmod'] = new Date()
+    params['doc'] = new Doc()
+    params['title'] = "A Title"
+  }
 
-    void testIndex() {
-        controller.index()
-        assert "/onixplLicense/list" == response.redirectedUrl
-    }
+  void testIndex() {
+    controller.index()
+    assert "/onixplLicense/list" == response.redirectedUrl
+  }
 
-    void testList() {
+  void testList() {
 
-        def model = controller.list()
+    def model = controller.list()
 
-        assert model.onixplLicenseInstanceList.size() == 0
-        assert model.onixplLicenseInstanceTotal == 0
-    }
+    assert model.onixplLicenseInstanceList.size() == 0
+    assert model.onixplLicenseInstanceTotal == 0
+  }
 
-    void testCreate() {
-        def model = controller.create()
+  void testCreate() {
+    def model = controller.create()
 
-        assert model.onixplLicenseInstance != null
-    }
+    assert model.onixplLicenseInstance != null
+  }
 
-    void testSave() {
-        controller.save()
+  void testShow() {
+    controller.show()
 
-        assert model.onixplLicenseInstance != null
-        assert view == '/onixplLicense/create'
+    assert flash.message != null
+    assert response.redirectedUrl == '/onixplLicense/list'
 
-        response.reset()
+    populateValidParams(params)
+    def onixplLicense = new OnixplLicense(params)
 
-        populateValidParams(params)
-        controller.save()
+    assert onixplLicense.save() != null
 
-        assert response.redirectedUrl == '/onixplLicense/show/1'
-        assert controller.flash.message != null
-        assert OnixplLicense.count() == 1
-    }
+    params.id = onixplLicense.id
 
-    void testShow() {
-        controller.show()
+    def model = controller.show()
 
-        assert flash.message != null
-        assert response.redirectedUrl == '/onixplLicense/list'
+    assert model.onixplLicenseInstance == onixplLicense
+  }
 
-        populateValidParams(params)
-        def onixplLicense = new OnixplLicense(params)
+  void testEdit() {
+    controller.edit()
 
-        assert onixplLicense.save() != null
+    assert flash.message != null
+    assert response.redirectedUrl == '/onixplLicense/list'
 
-        params.id = onixplLicense.id
+    populateValidParams(params)
+    def onixplLicense = new OnixplLicense(params)
 
-        def model = controller.show()
+    assert onixplLicense.save() != null
 
-        assert model.onixplLicenseInstance == onixplLicense
-    }
+    params.id = onixplLicense.id
 
-    void testEdit() {
-        controller.edit()
+    def model = controller.edit()
 
-        assert flash.message != null
-        assert response.redirectedUrl == '/onixplLicense/list'
+    assert model.onixplLicenseInstance == onixplLicense
+  }
 
-        populateValidParams(params)
-        def onixplLicense = new OnixplLicense(params)
+  void testDelete() {
+    controller.delete()
+    assert flash.message != null
+    assert response.redirectedUrl == '/onixplLicense/list'
 
-        assert onixplLicense.save() != null
+    response.reset()
 
-        params.id = onixplLicense.id
+    populateValidParams(params)
+    def onixplLicense = new OnixplLicense(params)
 
-        def model = controller.edit()
+    assert onixplLicense.save() != null
+    assert OnixplLicense.count() == 1
 
-        assert model.onixplLicenseInstance == onixplLicense
-    }
+    params.id = onixplLicense.id
 
-    void testUpdate() {
-        controller.update()
+    controller.delete()
 
-        assert flash.message != null
-        assert response.redirectedUrl == '/onixplLicense/list'
-
-        response.reset()
-
-        populateValidParams(params)
-        def onixplLicense = new OnixplLicense(params)
-
-        assert onixplLicense.save() != null
-
-        // test invalid parameters in update
-        params.id = onixplLicense.id
-        //TODO: add invalid values to params object
-
-        controller.update()
-
-        assert view == "/onixplLicense/edit"
-        assert model.onixplLicenseInstance != null
-
-        onixplLicense.clearErrors()
-
-        populateValidParams(params)
-        controller.update()
-
-        assert response.redirectedUrl == "/onixplLicense/show/$onixplLicense.id"
-        assert flash.message != null
-
-        //test outdated version number
-        response.reset()
-        onixplLicense.clearErrors()
-
-        populateValidParams(params)
-        params.id = onixplLicense.id
-        params.version = -1
-        controller.update()
-
-        assert view == "/onixplLicense/edit"
-        assert model.onixplLicenseInstance != null
-        assert model.onixplLicenseInstance.errors.getFieldError('version')
-        assert flash.message != null
-    }
-
-    void testDelete() {
-        controller.delete()
-        assert flash.message != null
-        assert response.redirectedUrl == '/onixplLicense/list'
-
-        response.reset()
-
-        populateValidParams(params)
-        def onixplLicense = new OnixplLicense(params)
-
-        assert onixplLicense.save() != null
-        assert OnixplLicense.count() == 1
-
-        params.id = onixplLicense.id
-
-        controller.delete()
-
-        assert OnixplLicense.count() == 0
-        assert OnixplLicense.get(onixplLicense.id) == null
-        assert response.redirectedUrl == '/onixplLicense/list'
-    }
+    assert OnixplLicense.count() == 0
+    assert OnixplLicense.get(onixplLicense.id) == null
+    assert response.redirectedUrl == '/onixplLicense/list'
+  }
 }
