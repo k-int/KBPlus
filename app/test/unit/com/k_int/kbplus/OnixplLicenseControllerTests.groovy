@@ -6,7 +6,7 @@ import org.junit.*
 import grails.test.mixin.*
 
 @TestFor(OnixplLicenseController)
-@Mock(OnixplLicense)
+@Mock([OnixplLicense,OnixplLicenseController])
 class OnixplLicenseControllerTests {
 
     def populateValidParams(params) {

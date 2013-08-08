@@ -33,9 +33,10 @@ class OnixplLicenseText {
   }
 
   static constraints = {
-    displayNum(nullable:true)
+    displayNum(nullable:true, blank:true)
     text(nullable:false)
     elementId(nullable:false)
+    oplLicense(nullable:false)
   }
 
     def hasPerm(perm, user) {
@@ -102,4 +103,14 @@ class OnixplLicenseText {
         result
     }
 
+  @Override
+  public java.lang.String toString() {
+    return "OnixplLicenseText{" +
+        "id=" + id +
+        ", elementId='" + elementId + '\'' +
+        ", displayNum='" + displayNum + '\'' +
+        ", text='" + text + '\'' +
+        ", oplLicense=" + oplLicense +
+        '}';
+  }
 }

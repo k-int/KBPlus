@@ -36,6 +36,7 @@ class OnixplUsageTerm {
     usageStatus(nullable:false, blank: false)
   }
 
+
   /*static constraints = {
     licenseText unique: true
   }*/
@@ -104,4 +105,13 @@ class OnixplUsageTerm {
         result
     }
 
+  @Override
+  public java.lang.String toString() {
+    return "OnixplUsageTerm{" +
+        "id=" + id +
+        ", oplLicense=" + oplLicense +
+        ", usageType=" + usageType +
+        ", usageStatus=" + usageStatus +
+        '}';
+  }
 }

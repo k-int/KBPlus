@@ -14,40 +14,44 @@ import org.junit.*
 @TestFor(OnixplLicenseText)
 class OnixplLicenseTextTests {
 
-  def ELEMENT_ID = "Ex001", DISPLAY_NUM = "1.1", TEXT = "Some license text"
+  def ELEMENT_ID = "Ex001", DISPLAY_NUM = "1.1", TEXT = "Some license text",
+      OPL = new OnixplLicense()
 
   def oplt, incompleteOplt, blankDisplayNumOplt, blankTextOplt
   def oplts, validOplts
 
   void setUp() {
+    // Create mocked OPL, invalid but works as a placeholder
+    mockForConstraintsTests(OnixplLicense, [OPL])
+
+    // Full license text
     oplt = new OnixplLicenseText(
         text: TEXT,
         elementId: ELEMENT_ID,
         displayNum: DISPLAY_NUM,
-        oplLicense: OnixplLicense
+        oplLicense: OPL
     )
     incompleteOplt = new OnixplLicenseText()
+    // Blank display num is ok
     blankDisplayNumOplt = new OnixplLicenseText(
         text: TEXT,
         elementId: ELEMENT_ID,
         displayNum: "",
-        oplLicense: OnixplLicense
+        oplLicense: OPL
     )
+    // Blank text is ok
     blankTextOplt = new OnixplLicenseText(
         text: "",
         elementId: ELEMENT_ID,
         displayNum: DISPLAY_NUM,
-        oplLicense: OnixplLicense
+        oplLicense: OPL
     )
-    // Create the association object:
-    /*def ass = new OnixplUsageTermLicenseText(
-        usageTerm: term,
-        licenseText: oplt
-    )*/
+
     oplts = [oplt, incompleteOplt, blankDisplayNumOplt, blankTextOplt]
     validOplts = [oplt, blankDisplayNumOplt, blankTextOplt]
     // Mock the OPLT instances with constraint methods
     mockForConstraintsTests(OnixplLicenseText, oplts)
+    //mockDomain(OnixplLicenseText, oplts)
     oplts.each { it.save() }
   }
 
@@ -57,17 +61,20 @@ class OnixplLicenseTextTests {
 
   void testDomain() {
     // Only 3 should be successfully saved
-    assertEquals 3, OnixplLicenseText.all.size()
+    assertEquals validOplts.size(), OnixplLicenseText.all.size()
     assertEquals 2, OnixplLicenseText.findAllByText(TEXT).size()
     assertEquals 3, OnixplLicenseText.findAllByElementId(ELEMENT_ID).size()
     // Text can be blank but not null
     assertEquals 1, OnixplLicenseText.findAllByText("").size()
-    assertEquals 0, OnixplLicenseText.findAllByText(null).size()
+    assertEquals 0, OnixplLicenseText.findAllByTextIsNull().size()
     // 2 displaynum, 1 blank displaynum
     assertEquals 2, OnixplLicenseText.findAllByDisplayNum(DISPLAY_NUM).size()
     // Blank display num apparently recorded as null when nullable
     assertEquals 1, OnixplLicenseText.findAllByDisplayNum(null).size()
     assertEquals 0, OnixplLicenseText.findAllByDisplayNum("").size()
+
+    assertEquals 0, OnixplLicenseText.findAllByOplLicense(null).size()
+    assertEquals validOplts.size(), OnixplLicenseText.findAllByOplLicense(OPL).size()
   }
 
 
@@ -83,16 +90,15 @@ class OnixplLicenseTextTests {
     assertEquals "nullable", incompleteOplt.errors["text"]
     assertEquals "nullable", incompleteOplt.errors["elementId"]
 
-    // Blank display num license text is ok
-    assertTrue blankDisplayNumOplt.validate()
+    validOplts.each {
+      assertTrue it.validate()
+      assertNotNull it.text
+      assertNotNull it.elementId
+      assertTrue it.elementId.size() <= 20
+      assertTrue it.elementId.size() >= 0
+      if (it.usageTermLicenseText) assertTrue it.usageTermLicenseText.size() >= 1
+    }
 
-    // Blank text license text is ok
-    assertTrue blankTextOplt.validate()
-    //assertEquals 1, blankTextOplt.errors.errorCount
-    //assertEquals "blank", blankTextOplt.errors["text"]
-
-    // Full license text should be ok
-    assertTrue oplt.validate()
   }
 
 
