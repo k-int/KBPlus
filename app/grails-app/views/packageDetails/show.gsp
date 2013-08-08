@@ -77,7 +77,7 @@
               
               <dl>
                 <dt>Package Persistent Identifier</dt>
-                <dd> <a href="uri://kbplus/${grailsApplication.config.kbplusSystemId}/package/${packageInstance?.id}">uri://kbplus/${grailsApplication.config.kbplusSystemId}/package/${packageInstance?.id}</dd>
+                <dd>uri://kbplus/${grailsApplication.config.kbplusSystemId}/package/${packageInstance?.id}</dd>
               </dl>
               
               <dl>
