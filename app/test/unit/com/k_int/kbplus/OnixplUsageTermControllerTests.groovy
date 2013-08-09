@@ -28,6 +28,7 @@ class OnixplUsageTermControllerTests {
     }
 
     void testCreate() {
+        request.method = 'GET'
         def model = controller.create()
 
         assert model.onixplUsageTermInstance != null
@@ -53,6 +54,7 @@ class OnixplUsageTermControllerTests {
     }
 
     void testEdit() {
+        request.method = 'GET'
         controller.edit()
 
         assert flash.message != null

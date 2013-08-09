@@ -25,7 +25,6 @@ class OnixplUsageTermController {
     def create() {
         switch (request.method) {
             case 'GET':
-            default:
                 [onixplUsageTermInstance: new OnixplUsageTerm(params)]
                 break
             case 'POST':
@@ -57,7 +56,6 @@ class OnixplUsageTermController {
     def edit() {
         switch (request.method) {
             case 'GET':
-            default:
                 def onixplUsageTermInstance = OnixplUsageTerm.get(params.id)
                 if (!onixplUsageTermInstance) {
                     flash.message = message(code: 'default.not.found.message', args: [message(code: 'onixplUsageTerm.label', default: 'OnixplUsageTerm'), params.id])

@@ -34,6 +34,7 @@ class OnixplLicenseTextControllerTests {
   }
 
   void testCreate() {
+    request.method = 'GET'
     def model = controller.create()
 
     assert model.onixplLicenseTextInstance != null
@@ -59,6 +60,7 @@ class OnixplLicenseTextControllerTests {
   }
 
   void testEdit() {
+    request.method = 'GET'
     controller.edit()
 
     assert flash.message != null

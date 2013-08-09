@@ -18,7 +18,6 @@ class OnixplLicenseTextController {
     def create() {
         switch (request.method) {
             case 'GET':
-            default:
                 [onixplLicenseTextInstance: new OnixplLicenseText(params)]
                 break
             case 'POST':
@@ -48,7 +47,6 @@ class OnixplLicenseTextController {
     def edit() {
         switch (request.method) {
             case 'GET':
-            default:
                 def onixplLicenseTextInstance = OnixplLicenseText.get(params.id)
                 if (!onixplLicenseTextInstance) {
                     flash.message = message(code: 'default.not.found.message', args: [message(code: 'onixplLicenseText.label', default: 'OnixplLicenseText'), params.id])
