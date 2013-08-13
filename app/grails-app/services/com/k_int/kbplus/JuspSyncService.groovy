@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat
 class JuspSyncService {
 
   static transactional = false
-  static def FIXED_THREAD_POOL_SIZE=10
+  def FIXED_THREAD_POOL_SIZE = ApplicationHolder.application.config.juspThreadPoolSize ?: 10
   def executorService
   def factService
   def sessionFactory
