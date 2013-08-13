@@ -18,7 +18,7 @@ class NotificationsJob {
 
   def execute() {
     log.debug("NotificationsJob");
-    if ( ApplicationHolder.application.config.KBPlusMaster == true )
+    if ( ApplicationHolder.application.config.KBPlusMaster == true ) {
       log.debug("This server is marked as KBPlus master. Running ZENDESK sync batch job");
       zenDeskSyncService.doSync()
     }
