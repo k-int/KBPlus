@@ -1745,7 +1745,13 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
   def materialiseFolder(f) {
     def result = []
     f.each {
-      result.add(genericOIDService.resolveOID(it.referencedOid))
+      def item_to_add = genericOIDService.resolveOID(it.referencedOid)
+      if (item_to_add) {
+        result.add(item_to_add)
+      }
+      else {
+        flash.message="Folder contains item that cannot be found";
+      }
     }
     result
   }
