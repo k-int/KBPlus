@@ -26,13 +26,16 @@ class JuspSyncService {
   static int completedCount=0
   static int newFactCount=0
 
-  def running = false;
+  // Change to static just to be super sure
+  static boolean running = false;
 
   def synchronized doSync() {
     log.debug("JuspSyncService::doSync");
 
-    if ( running ) 
+    if ( running == true ) {
+      log.debug("Skipping sync.. task already running");
       return
+    }
 
     running = true
 
@@ -47,6 +50,7 @@ class JuspSyncService {
 
     def ftp = null
     try {
+      log.debug("create thread pool");
       ftp = java.util.concurrent.Executors.newFixedThreadPool(FIXED_THREAD_POOL_SIZE)
 
 
@@ -197,7 +201,7 @@ class JuspSyncService {
         }
         catch ( Exception e ) {
           log.error("Problem fetching JUSP data",e);
-          log.error("URL giving error: https://www.jusp.mimas.ac.uk/api/v1/Journals/Statistics/?jid=${jusp_title_id}&sid=${jusp_supplier_id}&loginid=${jusp_login}&startrange=${from_period}&endrange=${most_recent_closed_period}&granularity=monthly");
+          log.error("URL giving error(${e.message}): https://www.jusp.mimas.ac.uk/api/v1/Journals/Statistics/?jid=${jusp_title_id}&sid=${jusp_supplier_id}&loginid=${jusp_login}&startrange=${from_period}&endrange=${most_recent_closed_period}&granularity=monthly");
         }
         finally {
         }
