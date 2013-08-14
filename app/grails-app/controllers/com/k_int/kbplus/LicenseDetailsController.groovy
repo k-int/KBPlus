@@ -39,7 +39,7 @@ class LicenseDetailsController {
     else {
       result.editable = false
     }
-    def filename = "licenceDetails_${result.license.name}"
+    def filename = "licenceDetails_${result.license.reference}"
     result.onixplLicense = result.license.onixplLicense
 
     withFormat {
