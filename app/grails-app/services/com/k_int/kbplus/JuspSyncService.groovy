@@ -30,14 +30,15 @@ class JuspSyncService {
   static boolean running = false;
 
   def synchronized doSync() {
-    log.debug("JuspSyncService::doSync");
+    log.debug("JuspSyncService::doSync ${this.hashCode()}");
 
-    if ( running == true ) {
+    if ( this.running == true ) {
       log.debug("Skipping sync.. task already running");
       return
     }
 
-    running = true
+    log.debug("Mark JuspSyncTask as running...");
+    this.running = true
 
     submitCount=0
     completedCount=0
@@ -52,7 +53,6 @@ class JuspSyncService {
     try {
       log.debug("create thread pool");
       ftp = java.util.concurrent.Executors.newFixedThreadPool(FIXED_THREAD_POOL_SIZE)
-
 
       def jusp_api = ApplicationHolder.application.config.JuspApiUrl
       if ( ( jusp_api == null ) || ( jusp_api == '' ) ) {
@@ -108,7 +108,8 @@ class JuspSyncService {
           log.debug("FTP still running....");
         }
       }
-      running = false
+      log.debug("Mark JuspSyncTask as not running...");
+      this.running = false
     }
   }
 
