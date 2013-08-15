@@ -37,12 +37,11 @@
           <g:form action="doImport" method="post" enctype="multipart/form-data">
               Upload File: <input type="file" id="importFile" name="importFile"/>
               <br/>
-              Title for document: <input type="text" name="upload_title"/>
-              <br/>
               <button type="submit" class="btn btn-primary">
                   Import license
               </button>
               <g:hiddenField name="license_id" value="${params.license_id}" />
+              <g:hiddenField name="upload_title" value="${upload_title}" />
           </g:form>
 
           <br/>

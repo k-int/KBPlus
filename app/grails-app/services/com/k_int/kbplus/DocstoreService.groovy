@@ -301,7 +301,7 @@ class DocstoreService {
     def uuid = extractDocId(result.tempfile);
 
     FileUtils.deleteQuietly(zippedbag);
-    FileUtils.deleteQuietly(results.tempfile);
+    FileUtils.deleteQuietly(result.tempfile);
     FileUtils.deleteQuietly(tempdir);
 
     uuid

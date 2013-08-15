@@ -2,9 +2,8 @@ package com.k_int.kbplus
 
 import grails.converters.*
 import grails.plugins.springsecurity.Secured
-import grails.converters.*
 import org.elasticsearch.groovy.common.xcontent.*
-import groovy.xml.MarkupBuilder
+import groovy.xml.StreamingMarkupBuilder
 import com.k_int.kbplus.auth.*;
 import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 import org.springframework.security.access.annotation.Secured
@@ -18,6 +17,7 @@ class LicenseDetailsController {
   def gazetteerService
   def alertsService
   def genericOIDService
+  def transformerService
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
@@ -39,6 +39,8 @@ class LicenseDetailsController {
     else {
       result.editable = false
     }
+    def filename = "licenceDetails_${result.license.reference}"
+    result.onixplLicense = result.license.onixplLicense
 
     withFormat {
 		  html result
@@ -122,91 +124,102 @@ class LicenseDetailsController {
 			  licences << lic
 			  response."Licences" = licences
 			  
-			  render response as JSON
+			  def json = response as JSON
+			  if(params.transforms){
+				  transformerService.triggerTransform(result.user, filename, params.transforms, json.toString(), response)
+			  }else{
+				  response.setHeader("Content-disposition", "attachment; filename=\"${filename}.json\"")
+				  response.contentType = "application/json"
+				  render json.toString()
+			  }
 		  }
 		  xml {
 			  def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
-			  
-			  def writer = new StringWriter()
-			  def xmlBuilder = new MarkupBuilder(writer)
-			  xmlBuilder.getMkp().xmlDeclaration(version:'1.0', encoding: 'UTF-8')
-			  
 			  def licence = result.license
 			  
-			  xmlBuilder.Licences() {
-				  Licence(){
-					  LicenceReference(licence.reference)
-					  NoticePeriod(licence.noticePeriod)
-					  LicenceURL(licence.licenseUrl)
-					  LicensorRef(licence.licensorRef)
-					  LicenseeRef(licence.licenseeRef)
-					  
-					  licence.orgLinks.each { or ->
-						  RelatdOrg(id: or.org.id){
-							  OrgName(or.org.name)
-							  OrgRole(or.roleType.value)
-							  
-							  OrgIDs(){
-								  or.org.ids.each(){ id ->
-									  def value = id.identifier.value
-									  def ns = id.identifier.ns.ns
-									  ID(namespace: ns, value)
+			  def xml = new StreamingMarkupBuilder().bind{
+				  mkp.xmlDeclaration(version:'1.0', encoding: 'UTF-8')
+				  Licences() {
+					  Licence(){
+						  LicenceReference(licence.reference)
+						  NoticePeriod(licence.noticePeriod)
+						  LicenceURL(licence.licenseUrl)
+						  LicensorRef(licence.licensorRef)
+						  LicenseeRef(licence.licenseeRef)
+						  
+						  licence.orgLinks.each { or ->
+							  RelatdOrg(id: or.org.id){
+								  OrgName(or.org.name)
+								  OrgRole(or.roleType.value)
+								  
+								  OrgIDs(){
+									  or.org.ids.each(){ id ->
+										  def value = id.identifier.value
+										  def ns = id.identifier.ns.ns
+										  ID(namespace: ns, value)
+									  }
 								  }
 							  }
 						  }
-					  }
-					  
-					  LicenceProperties(){
-						  ConcurrentAccess(){
-							  Status(licence.concurrentUsers?.value)
-							  UserCount(licence.concurrentUserCount)
-							  Notes(licence.getNote("concurrentUsers")?.owner?.content?:"")
-						  }
-						  RemoteAccess(){
-							  Status(licence.remoteAccess?.value)
-							  Notes(licence.getNote("remoteAccess")?.owner?.content?:"")
-						  }
-						  WalkingAccess(){
-							  Status(licence.walkinAccess?.value)
-							  Notes(licence.getNote("walkinAccess")?.owner?.content?:"")
-						  }
-						  MultisiteAccess(){
-							  Status(licence.multisiteAccess?.value)
-							  Notes(licence.getNote("multisiteAccess")?.owner?.content?:"")
-						  }
-						  PartnersAccess(){
-							  Status(licence.partnersAccess?.value)
-							  Notes(licence.getNote("partnersAccess")?.owner?.content?:"")
-						  }
-						  AlumniAccess(){
-							  Status(licence.alumniAccess?.value)
-							  Notes(licence.getNote("alumniAccess")?.owner?.content?:"")
-						  }
-						  InterLibraryLoans(){
-							  Status(licence.ill?.value)
-							  Notes(licence.getNote("ill")?.owner?.content?:"")
-						  }
-						  IncludeinCoursepacks(){
-							  Status(licence.coursepack?.value)
-							  Notes(licence.getNote("coursepack")?.owner?.content?:"")
-						  }
-						  IncludeinVLE(){
-							  Status(licence.vle?.value)
-							  Notes(licence.getNote("vle")?.owner?.content?:"")
-						  }
-						  EntrepriseAccess(){
-							  Status(licence.enterprise?.value)
-							  Notes(licence.getNote("enterprise")?.owner?.content?:"")
-						  }
-						  PostCancellationAccessEntitlement(){
-							  Status(licence.pca?.value)
-							  Notes(licence.getNote("pca")?.owner?.content?:"")
+						  
+						  LicenceProperties(){
+							  ConcurrentAccess(){
+								  Status(licence.concurrentUsers?.value)
+								  UserCount(licence.concurrentUserCount)
+								  Notes(licence.getNote("concurrentUsers")?.owner?.content?:"")
+							  }
+							  RemoteAccess(){
+								  Status(licence.remoteAccess?.value)
+								  Notes(licence.getNote("remoteAccess")?.owner?.content?:"")
+							  }
+							  WalkingAccess(){
+								  Status(licence.walkinAccess?.value)
+								  Notes(licence.getNote("walkinAccess")?.owner?.content?:"")
+							  }
+							  MultisiteAccess(){
+								  Status(licence.multisiteAccess?.value)
+								  Notes(licence.getNote("multisiteAccess")?.owner?.content?:"")
+							  }
+							  PartnersAccess(){
+								  Status(licence.partnersAccess?.value)
+								  Notes(licence.getNote("partnersAccess")?.owner?.content?:"")
+							  }
+							  AlumniAccess(){
+								  Status(licence.alumniAccess?.value)
+								  Notes(licence.getNote("alumniAccess")?.owner?.content?:"")
+							  }
+							  InterLibraryLoans(){
+								  Status(licence.ill?.value)
+								  Notes(licence.getNote("ill")?.owner?.content?:"")
+							  }
+							  IncludeinCoursepacks(){
+								  Status(licence.coursepack?.value)
+								  Notes(licence.getNote("coursepack")?.owner?.content?:"")
+							  }
+							  IncludeinVLE(){
+								  Status(licence.vle?.value)
+								  Notes(licence.getNote("vle")?.owner?.content?:"")
+							  }
+							  EntrepriseAccess(){
+								  Status(licence.enterprise?.value)
+								  Notes(licence.getNote("enterprise")?.owner?.content?:"")
+							  }
+							  PostCancellationAccessEntitlement(){
+								  Status(licence.pca?.value)
+								  Notes(licence.getNote("pca")?.owner?.content?:"")
+							  }
 						  }
 					  }
 				  }
 			  }
 			  
-			  render writer.toString()
+			  if(params.transforms){
+				  transformerService.triggerTransform(result.user, filename, params.transforms, xml.toString(), response)
+			  }else{
+				  response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
+				  response.contentType = "text/xml"
+				  render xml.toString()
+			  }
 		  }
     }
   }
@@ -425,13 +438,43 @@ class LicenseDetailsController {
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def onixpl() {
         def user = User.get(springSecurityService.principal.id)
-        def onixplLicense = License.get(params.id).onixplLicense;
+        def license = License.get(params.id);
+        def onixplLicense = license.onixplLicense;
+        if (onixplLicense==null) return false;
         if ( ! onixplLicense.hasPerm("view",user) ) {
             log.debug("return 401....");
             response.sendError(401);
             return
         }
         def editable = onixplLicense.hasPerm("edit", user)
-        [onixplLicense: onixplLicense, user: user, editable: editable]
+        [license: license, onixplLicense: onixplLicense, user: user, editable: editable]
+    }
+
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def unlinkLicense() {
+        License license = License.get(params.license_id);
+        OnixplLicense opl = license.onixplLicense;
+        String oplTitle = opl.title;
+        DocContext dc = DocContext.findByOwner(opl.doc);
+        Doc doc = opl.doc;
+        license.removeFromDocuments(dc);
+        opl.removeFromLicenses(license);
+        // If there are no more links to this ONIX-PL License then delete the license and
+        // associated data
+        if (opl.licenses.isEmpty()) {
+            dc.delete();
+            opl.delete();
+            docstoreService.deleteDocs([doc.uuid]);
+            doc.delete();
+        }
+        if (license.hasErrors()) {
+            license.errors.each {
+                log.error("License error: " + it);
+            }
+            flash.message = "An error occurred when unlinking the ONIX-PL license '${oplTitle}'";
+        } else {
+            flash.message = "The ONIX-PL license '${oplTitle}' was unlinked successfully";
+        }
+        redirect(action: 'index', id: license.id);
     }
 }

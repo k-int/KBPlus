@@ -38,7 +38,7 @@
                     <dt><label class="control-label" for="oplLicense">ONIX-PL License</label></dt>
                     <dd>
                         <g:link name="oplLicense" controller="onixplLicenseDetails" action="index"
-                                id="${onixplLicenseText.oplLicense.id}">${onixplLicenseText.oplLicense}</g:link>
+                                id="${onixplLicenseText.oplLicense.id}">${onixplLicenseText.oplLicense.title}</g:link>
                     </dd>
                 </dl>
                 <dl>
@@ -51,7 +51,7 @@
                     <dt><span class="control-label">Usage Term</span></dt>
                     <dd>
                         <g:each in="${onixplLicenseText.usageTermLicenseText.usageTerm}">
-                            <g:link controller="onixplUsageTermsDetails" action="index" id="${it.id}">${it}</g:link>
+                            <g:link controller="onixplUsageTermsDetails" action="index" id="${it.id}">${it.usageType.value} - ${it.usageStatus.value}</g:link>
                         </g:each>
                     </dd>
                 </dl>

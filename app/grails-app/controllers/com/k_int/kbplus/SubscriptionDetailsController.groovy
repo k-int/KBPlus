@@ -5,7 +5,13 @@ import grails.plugins.springsecurity.Secured
 import grails.converters.*
 import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.MarkupBuilder
+import groovy.xml.StreamingMarkupBuilder
 import com.k_int.kbplus.auth.*;
+
+//For Transform
+import groovyx.net.http.*
+import static groovyx.net.http.ContentType.*
+import static groovyx.net.http.Method.*
 
 @Mixin(com.k_int.kbplus.mixins.PendingChangeMixin)
 class SubscriptionDetailsController {
@@ -16,6 +22,7 @@ class SubscriptionDetailsController {
   def gazetteerService
   def alertsService
   def genericOIDService
+  def transformerService
   
   def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
 
@@ -31,7 +38,15 @@ class SubscriptionDetailsController {
     log.debug("max = ${result.max}");
     result.user = User.get(springSecurityService.principal.id)
     result.subscriptionInstance = Subscription.get(params.id)
-
+	
+	// If transformer check user has access to it
+	if(params.transforms && !transformerService.hasTransformId(result.user, params.transforms)) {
+		flash.error = "It looks like you are trying to use an unvalid transformer or one you don't have access to!"
+		params.remove("transforms")
+		params.remove("format")
+		redirect action:'currentTitles', params:params
+	}
+	
     if ( ! result.subscriptionInstance.hasPerm("view",result.user) ) {
       response.sendError(401);
       return
@@ -82,6 +97,7 @@ class SubscriptionDetailsController {
 
     def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
     log.debug("subscriptionInstance returning... ${result.num_sub_rows} rows ");
+	def filename = "subscriptionDetails_${result.subscriptionInstance.identifier}"
     withFormat {
       html result
       csv {
@@ -116,20 +132,84 @@ class SubscriptionDetailsController {
          }
          out.close()
       }
-      json {		  
-		  def response = [:]
-		  def subscriptions = []
+      json {
+		  def json = buildMap(result) as JSON
+		  if(params.transforms){
+			  transformerService.triggerTransform(result.user, filename, params.transforms, json.toString(), response)
+		  }else{
+			  response.setHeader("Content-disposition", "attachment; filename=\"${filename}.json\"")
+			  response.contentType = "application/json"
+			  render json.toString()
+		  }
+	  }
+	  xml {
+		  def xml = buildXML(result)
 		  
-		  def sub = result.subscriptionInstance
-		  def subscription = [:]
-		  subscription."SubscriptionID" = sub.id
-		  subscription."SubscriptionName" = sub.name
-		  subscription."SubTermStartDate" = sub.startDate?formatter.format(sub.startDate):''
-		  subscription."SubTermEndDate" = sub.endDate?formatter.format(sub.endDate):''
+		  if(params.transforms){
+			  transformerService.triggerTransform(result.user, filename, params.transforms, xml.toString(), response)
+		  }else{
+			  response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
+			  response.contentType = "text/xml"
+			  render xml.toString()
+		  }
+	  }
+    }
+  }
+  
+  private def buildMap(result) {
+	  def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+	  
+	  def map = [:]
+	  def subscriptions = []
+	  
+	  def sub = result.subscriptionInstance
+	  def subscription = [:]
+	  subscription."SubscriptionID" = sub.id
+	  subscription."SubscriptionName" = sub.name
+	  subscription."SubTermStartDate" = sub.startDate?formatter.format(sub.startDate):''
+	  subscription."SubTermEndDate" = sub.endDate?formatter.format(sub.endDate):''
+	  
+	  subscription."RelatedOrgs" = []
+	  
+	  sub.orgRelations.each { or ->
+		  def org = [:]
+		  org."OrgID" = or.org.id
+		  org."OrgName" = or.org.name
+		  org."OrgRole" = or.roleType.value
 		  
-		  subscription."RelatedOrgs" = []
+		  def ids = [:]
+		  or.org.ids.each(){ id ->
+			  def value = id.identifier.value
+			  def ns = id.identifier.ns.ns
+			  if(ids.containsKey(ns)){
+				  def current = ids[ns]
+				  def newval = []
+				  newval << current
+				  newval << value
+				  ids[ns] = newval
+			  } else {
+				  ids[ns]=value
+			  }
+		  }
+		  org."OrgIDs" = ids
+			  
+		  subscription."RelatedOrgs" << org
+	  }
+	  
+	  subscription."Licences" = []
+	  def licence = [:]
+	  
+	  if(sub.owner){
+		  def owner = sub.owner
 		  
-		  sub.orgRelations.each { or ->
+		  licence."LicenceReference" = owner.reference
+		  licence."NoticePeriod" = owner.noticePeriod
+		  licence."LicenceURL" = owner.licenseUrl
+		  licence."LicensorRef" = owner.licensorRef
+		  licence."LicenseeRef" = owner.licenseeRef
+			  
+		  licence."RelatedOrgs" = []
+		  sub.owner?.orgLinks.each { or ->
 			  def org = [:]
 			  org."OrgID" = or.org.id
 			  org."OrgName" = or.org.name
@@ -151,164 +231,125 @@ class SubscriptionDetailsController {
 			  }
 			  org."OrgIDs" = ids
 				  
-			  subscription."RelatedOrgs" << org
+			  licence."RelatedOrgs" << org
 		  }
 		  
-		  subscription."Licences" = []
-		  def licence = [:]
 		  
-		  if(sub.owner){
-			  def owner = sub.owner
-			  
-			  licence."LicenceReference" = owner.reference
-			  licence."NoticePeriod" = owner.noticePeriod
-			  licence."LicenceURL" = owner.licenseUrl
-			  licence."LicensorRef" = owner.licensorRef
-			  licence."LicenseeRef" = owner.licenseeRef
-				  
-			  licence."RelatedOrgs" = []
-			  sub.owner?.orgLinks.each { or ->
-				  def org = [:]
-				  org."OrgID" = or.org.id
-				  org."OrgName" = or.org.name
-				  org."OrgRole" = or.roleType.value
-				  
-				  def ids = [:]
-				  or.org.ids.each(){ id ->
-					  def value = id.identifier.value
-					  def ns = id.identifier.ns.ns
-					  if(ids.containsKey(ns)){
-						  def current = ids[ns]
-						  def newval = []
-						  newval << current
-						  newval << value
-						  ids[ns] = newval
-					  } else {
-						  ids[ns]=value
-					  }
-				  }
-				  org."OrgIDs" = ids
-					  
-				  licence."RelatedOrgs" << org
-			  }
-			  
-			  
-			  
-			  def prop = licence."LicenceProperties" = [:]
-			  def ca = prop."ConcurrentAccess" = [:]
-			  ca."Status" = owner.concurrentUsers?.value
-			  ca."UserCount" = owner.concurrentUserCount
-			  ca."Notes" = owner.getNote("concurrentUsers")?.owner?.content?:""
-			  def ra = prop."RemoteAccess" = [:]
-			  ra."Status" = owner.remoteAccess?.value
-			  ra."Notes" = owner.getNote("remoteAccess")?.owner?.content?:""
-			  def wa = prop."WalkingAccess" = [:]
-			  wa."Status" = owner.walkinAccess?.value
-			  wa."Notes" = owner.getNote("remoteAccess")?.owner?.content?:""
-			  def ma = prop."MultisiteAccess" = [:]
-			  ma."Status" = owner.multisiteAccess?.value
-			  ma."Notes" = owner.getNote("multisiteAccess")?.owner?.content?:""
-			  def pa = prop."PartnersAccess" = [:]
-			  pa."Status" = owner.partnersAccess?.value
-			  pa."Notes" = owner.getNote("partnersAccess")?.owner?.content?:""
-			  def aa = prop."AlumniAccess" = [:]
-			  aa."Status" = owner.alumniAccess?.value
-			  aa."Notes" = owner.getNote("alumniAccess")?.owner?.content?:""
-			  def ill = prop."InterLibraryLoans" = [:]
-			  ill."Status" = owner.ill?.value
-			  ill."Notes" = owner.getNote("ill")?.owner?.content?:""
-			  def cp = prop."IncludeinCoursepacks" = [:]
-			  cp."Status" = owner.coursepack?.value
-			  cp."Notes" = owner.getNote("coursepack")?.owner?.content?:""
-			  def vle = prop."IncludeinVLE" = [:]
-			  vle."Status" = owner.vle?.value
-			  vle."Notes" = owner.getNote("vle")?.owner?.content?:""
-			  def ea = prop."EntrepriseAccess" = [:]
-			  ea."Status" = owner.enterprise?.value
-			  ea."Notes" = owner.getNote("enterprise")?.owner?.content?:""
-			  def pca = prop."PostCancellationAccessEntitlement" = [:]
-			  pca."Status" = owner.pca?.value
-			  pca."Notes" = owner.getNote("pca")?.owner?.content?:""
-		  }
 		  
-		  // Should only be one, we have an array to keep teh same format has licenses json
-		  subscription."Licences" << licence
-						  
-		  subscription."TitleList" = []
-		  result.entitlements.each { entitlement ->
-			  def ti = entitlement.tipp.title
-			  
-			  def title = [:]
-			  title."Title" = ti.title
-			  
-			  def ids = [:]
-			  ti.ids.each(){ id ->
-				  def value = id.identifier.value
-				  def ns = id.identifier.ns.ns
-				  if(ids.containsKey(ns)){
-					  def current = ids[ns]
-					  def newval = []
-					  newval << current
-					  newval << value
-					  ids[ns] = newval
-				  } else {
-					  ids[ns]=value
-				  }
-			  }
-			  title."TitleIDs" = ids
-			  
-			  // Should only be one, we have an array to keep teh same format has titles json
-			  title."CoverageStatements" = []
-			  
-			  def ie = [:]
-			  ie."CoverageStatementType" = "Issue Entitlement"
-			  ie."SubscriptionID" = sub.id
-			  ie."SubscriptionName" = sub.name
-			  ie."StartDate" = entitlement.startDate?formatter.format(entitlement.startDate):''
-			  ie."StartVolume" = entitlement.startVolume?:''
-			  ie."StartIssue" = entitlement.startIssue?:''
-			  ie."EndDate" = entitlement.endDate?formatter.format(entitlement.endDate):''
-			  ie."EndVolume" = entitlement.endVolume?:''
-			  ie."EndIssue" = entitlement.endIssue?:''
-			  ie."Embargo" = entitlement.embargo?:''
-			  ie."Coverage" = entitlement.coverageDepth?:''
-			  ie."CoverageNote" = entitlement.coverageNote?:''
-			  ie."HostPlatformName" = entitlement.tipp?.platform?.name?:''
-			  ie."HostPlatformURL" = entitlement.tipp?.hostPlatformURL?:''
-			  ie."AdditionalPlatforms" = []
-			  entitlement.tipp?.additionalPlatforms.each(){ ap ->
-				  def platform = [:]
-				  platform.PlatformName = ap.platform?.name?:''
-				  platform.PlatformRole = ap.rel?:''
-				  platform.PlatformURL = ap.platform?.primaryUrl?:''
-				  ie."AdditionalPlatforms" << platform
-			  }
-			  ie."CoreStatus" = entitlement.coreStatus?.value?:''
-			  ie."CoreStart" = entitlement.coreStatusStart?formatter.format(entitlement.coreStatusStart):''
-			  ie."CoreEnd" = entitlement.coreStatusEnd?formatter.format(entitlement.coreStatusEnd):''
-			  ie."PackageID" = entitlement.tipp?.pkg?.id?:''
-			  ie."PackageName" = entitlement.tipp?.pkg?.name?:''
-				  
-			  title."CoverageStatements".add(ie)
-			  
-			  subscription."TitleList" << title
-		  }
-			  
-		  subscriptions.add(subscription)
-		  
-		  response."Subscriptions" = subscriptions
-		  
-		  render response as JSON
-		  
+		  def prop = licence."LicenceProperties" = [:]
+		  def ca = prop."ConcurrentAccess" = [:]
+		  ca."Status" = owner.concurrentUsers?.value
+		  ca."UserCount" = owner.concurrentUserCount
+		  ca."Notes" = owner.getNote("concurrentUsers")?.owner?.content?:""
+		  def ra = prop."RemoteAccess" = [:]
+		  ra."Status" = owner.remoteAccess?.value
+		  ra."Notes" = owner.getNote("remoteAccess")?.owner?.content?:""
+		  def wa = prop."WalkingAccess" = [:]
+		  wa."Status" = owner.walkinAccess?.value
+		  wa."Notes" = owner.getNote("remoteAccess")?.owner?.content?:""
+		  def ma = prop."MultisiteAccess" = [:]
+		  ma."Status" = owner.multisiteAccess?.value
+		  ma."Notes" = owner.getNote("multisiteAccess")?.owner?.content?:""
+		  def pa = prop."PartnersAccess" = [:]
+		  pa."Status" = owner.partnersAccess?.value
+		  pa."Notes" = owner.getNote("partnersAccess")?.owner?.content?:""
+		  def aa = prop."AlumniAccess" = [:]
+		  aa."Status" = owner.alumniAccess?.value
+		  aa."Notes" = owner.getNote("alumniAccess")?.owner?.content?:""
+		  def ill = prop."InterLibraryLoans" = [:]
+		  ill."Status" = owner.ill?.value
+		  ill."Notes" = owner.getNote("ill")?.owner?.content?:""
+		  def cp = prop."IncludeinCoursepacks" = [:]
+		  cp."Status" = owner.coursepack?.value
+		  cp."Notes" = owner.getNote("coursepack")?.owner?.content?:""
+		  def vle = prop."IncludeinVLE" = [:]
+		  vle."Status" = owner.vle?.value
+		  vle."Notes" = owner.getNote("vle")?.owner?.content?:""
+		  def ea = prop."EntrepriseAccess" = [:]
+		  ea."Status" = owner.enterprise?.value
+		  ea."Notes" = owner.getNote("enterprise")?.owner?.content?:""
+		  def pca = prop."PostCancellationAccessEntitlement" = [:]
+		  pca."Status" = owner.pca?.value
+		  pca."Notes" = owner.getNote("pca")?.owner?.content?:""
 	  }
-	  xml {
-		  def writer = new StringWriter()
-		  def xmlBuilder = new MarkupBuilder(writer)
-		  xmlBuilder.getMkp().xmlDeclaration(version:'1.0', encoding: 'UTF-8')
+	  
+	  // Should only be one, we have an array to keep teh same format has licenses json
+	  subscription."Licences" << licence
+					  
+	  subscription."TitleList" = []
+	  result.entitlements.each { entitlement ->
+		  def ti = entitlement.tipp.title
 		  
-		  def sub = result.subscriptionInstance
+		  def title = [:]
+		  title."Title" = ti.title
 		  
-		  xmlBuilder.Subscriptions() {
+		  def ids = [:]
+		  ti.ids.each(){ id ->
+			  def value = id.identifier.value
+			  def ns = id.identifier.ns.ns
+			  if(ids.containsKey(ns)){
+				  def current = ids[ns]
+				  def newval = []
+				  newval << current
+				  newval << value
+				  ids[ns] = newval
+			  } else {
+				  ids[ns]=value
+			  }
+		  }
+		  title."TitleIDs" = ids
+		  
+		  // Should only be one, we have an array to keep teh same format has titles json
+		  title."CoverageStatements" = []
+		  
+		  def ie = [:]
+		  ie."CoverageStatementType" = "Issue Entitlement"
+		  ie."SubscriptionID" = sub.id
+		  ie."SubscriptionName" = sub.name
+		  ie."StartDate" = entitlement.startDate?formatter.format(entitlement.startDate):''
+		  ie."StartVolume" = entitlement.startVolume?:''
+		  ie."StartIssue" = entitlement.startIssue?:''
+		  ie."EndDate" = entitlement.endDate?formatter.format(entitlement.endDate):''
+		  ie."EndVolume" = entitlement.endVolume?:''
+		  ie."EndIssue" = entitlement.endIssue?:''
+		  ie."Embargo" = entitlement.embargo?:''
+		  ie."Coverage" = entitlement.coverageDepth?:''
+		  ie."CoverageNote" = entitlement.coverageNote?:''
+		  ie."HostPlatformName" = entitlement.tipp?.platform?.name?:''
+		  ie."HostPlatformURL" = entitlement.tipp?.hostPlatformURL?:''
+		  ie."AdditionalPlatforms" = []
+		  entitlement.tipp?.additionalPlatforms.each(){ ap ->
+			  def platform = [:]
+			  platform.PlatformName = ap.platform?.name?:''
+			  platform.PlatformRole = ap.rel?:''
+			  platform.PlatformURL = ap.platform?.primaryUrl?:''
+			  ie."AdditionalPlatforms" << platform
+		  }
+		  ie."CoreStatus" = entitlement.coreStatus?.value?:''
+		  ie."CoreStart" = entitlement.coreStatusStart?formatter.format(entitlement.coreStatusStart):''
+		  ie."CoreEnd" = entitlement.coreStatusEnd?formatter.format(entitlement.coreStatusEnd):''
+		  ie."PackageID" = entitlement.tipp?.pkg?.id?:''
+		  ie."PackageName" = entitlement.tipp?.pkg?.name?:''
+			  
+		  title."CoverageStatements".add(ie)
+		  
+		  subscription."TitleList" << title
+	  }
+		  
+	  subscriptions.add(subscription)
+	  
+	  map."Subscriptions" = subscriptions
+	  
+	  return map
+  }
+
+  private def buildXML(result) {
+	  def sub = result.subscriptionInstance
+	  def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+	  
+	  def xml = new StreamingMarkupBuilder().bind{
+		  mkp.xmlDeclaration(version:'1.0', encoding: 'UTF-8')
+		  Subscriptions() {
 			  Subscription(){
 				  SubscriptionID(sub.id)
 				  SubscriptionName(sub.name)
@@ -455,12 +496,11 @@ class SubscriptionDetailsController {
 				  }
 			  }
 		  }
-		  		  
-		  render writer.toString()
 	  }
-    }
+	  
+	  return writer
   }
-
+  
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def subscriptionBatchUpdate() {
     def subscriptionInstance = Subscription.get(params.id)

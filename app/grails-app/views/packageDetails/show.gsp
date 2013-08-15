@@ -44,6 +44,11 @@
                         data-pk="${packageInstance.class.name}:${packageInstance.id}"
                         data-name="name"
                         data-url='<g:createLink controller="ajax" action="editableSetValue"/>'>${packageInstance.name}</span></g:if><g:else>${packageInstance.name}</g:else></h1>
+            <g:link controller="announcement" action="index" params='[at:"Package Link: ${pkg_link_str}",as:"RE: Package ${packageInstance.name}"]'>Mention this package in an annoucement</g:link>
+            <g:if test="${forum_url != null}">
+              | <a href="${forum_url}">Discuss this package in forums</a>
+            </g:if>
+
           </div>
 
         </div>
@@ -145,11 +150,6 @@
     
           <g:render template="documents" contextPath="../templates" model="${[doclist:packageInstance.documents, ownobj:packageInstance, owntp:'pkg']}" />
           <g:render template="notes" contextPath="../templates" model="${[doclist:packageInstance.documents, ownobj:packageInstance, owntp:'pkg']}" />
-          <g:if test="${packageInstance.forumId != null}">
-            <div class="well notes">
-              <a href="https://kbplus.zendesk.com/forums/${packageInstance.forumId}">Discuss this package</a>
-            </div>
-          </g:if>
         </div>
       </div>
     </div>

@@ -32,12 +32,28 @@
 				</li>
 				<li>
 		  			<% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
-					<g:link action="index" params="${ps_json}" target="_blank">Json Export</g:link>
+					<g:link action="index" params="${ps_json}">Json Export</g:link>
 	      		</li>
 				<li>
 		  			<% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
-					<g:link action="index" params="${ps_xml}" target="_blank">XML Export</g:link>
+					<g:link action="index" params="${ps_xml}">XML Export</g:link>
 	      		</li>
+	      		
+	      		<g:each in="${com.k_int.kbplus.UserTransforms.findAllByUser(user)}" var="ut">
+	      			<g:if test="${ut.transforms.accepts_type.value == "licence"}">
+	      				<% 
+						  	def ps_trans = [:];
+						  	if(ut.transforms.accepts_format.value == "xml")
+				  				ps_trans.putAll(ps_xml);
+						  	else if(ut.transforms.accepts_format.value == "json")
+								ps_trans.putAll(ps_json);
+							ps_trans.transforms=ut.transforms.id;
+					  	%>
+	      				<li>
+							<g:link action="index" params="${ps_trans}">${ut.transforms.name}</g:link>
+			      		</li>
+	      			</g:if>
+	      		</g:each>
 		    </ul>
 		</li>
 
@@ -144,7 +160,10 @@
                         <dt><label class="control-label">ONIX-PL License</label></dt>
                         <dd>
                             <g:if test="${license.onixplLicense}">
-                                <g:link controller="onixplLicenseDetails" action="index" id="${license.onixplLicense?.id}">${license.onixplLicense}</g:link>
+                                <g:link controller="onixplLicenseDetails" action="index" id="${license.onixplLicense?.id}">${license.onixplLicense.title}</g:link>
+                                <g:if test="${editable}">
+                                    <g:link class="btn btn-warning" controller="licenseDetails" action="unlinkLicense" params="[license_id: license.id, opl_id: onixplLicense.id]">Unlink</g:link>
+                                </g:if>
                             </g:if>
                             <g:else>
                                 <%--<input class="btn btn-warning" value="Import an ONIX-PL license"
@@ -188,6 +207,18 @@
                         <g:render template="orgLinks" contextPath="../templates" model="${[roleLinks:license?.orgLinks,editmode:editable]}" />
                       </dd>
                   </dl>
+
+                  <dl>
+                      <dt><label class="control-label" for="licenseeRef">Incoming License Links</label></dt>
+                      <dd>
+                        <ul>
+                          <g:each in="${license?.incomingLinks}" var="il">
+                            <li><g:link controller="licenseDetails" action="index" id="${il.fromLic.id}">${il.fromLic.reference} (${il.type?.value})</g:link></li>
+                          </g:each>
+                        </ul>
+                      </dd>
+                  </dl>
+
 
 
 
@@ -252,7 +283,7 @@
                     <td><g:xEditableFieldNote owner="${license}" field="pca" id="pca"/></td></tr>
               </tbody>
             </table>
-  
+
               </div>
               <div class="span4">
                 <g:render template="documents" contextPath="../templates" model="${[doclist:license.documents, ownobj:license, owntp:'license']}" />

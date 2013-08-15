@@ -37,8 +37,12 @@
       <div class="span12">
         <g:form action="updateProfile" class="form-inline">
             <label>Your Display Name (Appears top right)</label>
-            <input type="text" name="userDispName" value="${user.displayName}"/>
-            <input type="submit" value="Update Profile" class="btn btn-primary">
+            <input type="text" name="userDispName" value="${user.display}"/>
+            <label>Email Address (For admin purposes)</label>
+            <input type="text" name="email" value="${user.email}"/>
+            <input type="submit" value="Update Profile" class="btn btn-primary"><br/>
+            <p>Please note, membership requests may be slow to process if you do not corretly set display name and email address above. Please ensure your
+               these are set properly before requesting instutional memberships below</p>
         </g:form>
       </div>
     </div>
@@ -103,7 +107,52 @@
 
             <button data-complete-text="Request Membership" type="submit" class="btn btn-primary btn-small">Request Membership</button>
           </g:form>
-          <form>
+        </div>
+      </div>
+      
+      <div class="span6">
+        <div class="well">
+          <h2>Add Transformers</h2>
+          <p>Select a transformation you wish to add to your list of exports.</p>
+  
+          <g:form name="transForm" url="[action:'addTransforms',controller:'profile']" class="form-inline">
+            <g:select name="transformId"
+                      from="${com.k_int.kbplus.Transforms.findAll()}"
+                      optionKey="id"
+                      optionValue="name"
+                      class="input-medium"/>
+
+            <button type="submit" data-complete-text="Add Transformation" class="btn btn-primary btn-small">Add Transformation</button>
+          </g:form>
+          
+          <h2>Existing Transformations</h2>
+			
+          <table class="table table-striped table-bordered table-condensed">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>URL</th>
+                <th>Type</th>
+                <th>Format</th>
+                <th>Return File Extension</th>
+                <th>Return MIME</th>
+                <th>Remove</th>
+              </tr>
+            </thead>
+            <tbody>
+              <g:each in="${com.k_int.kbplus.UserTransforms.findAllByUser(user)}" var="ut">
+                <tr>
+                  <td>${ut.transforms.transformer.name}</td>
+                  <td>${ut.transforms.transformer.url}</td>
+                  <td>${ut.transforms.accepts_type.value}</td>
+                  <td>${ut.transforms.accepts_format.value}</td>
+                  <td>${ut.transforms.return_file_extention}</td>
+                  <td>${ut.transforms.return_mime}</td>
+                  <td><g:link action="removeTransforms" params="[transformId: ut.transforms.id]"><i class="icon-remove"></i></g:link></td>
+                </tr>
+              </g:each>
+            </tbody>
+          </table>
         </div>
       </div>
     </div></div>

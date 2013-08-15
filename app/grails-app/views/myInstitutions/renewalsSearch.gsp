@@ -60,7 +60,7 @@
                         <tr>
                           <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
                           <td>${hit.source.consortiaName}</td>
-                          <td><button type="submit" class="btn" name="addBtn" value="${hit.source.dbId}">Add to basket</button></td>
+                          <td><button type="submit" class="btn" name="addBtn" value="${hit.source.dbId}">Add to<br/>basket</button></td>
                         </tr>
                       </g:each>
                     </tbody>
