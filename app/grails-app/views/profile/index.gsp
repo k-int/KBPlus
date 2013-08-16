@@ -120,7 +120,7 @@
                       from="${com.k_int.kbplus.Transforms.findAll()}"
                       optionKey="id"
                       optionValue="name"
-                      class="input-medium"/>
+                      class="input-xlarge"/>
 
             <button type="submit" data-complete-text="Add Transformation" class="btn btn-primary btn-small">Add Transformation</button>
           </g:form>
@@ -131,23 +131,19 @@
             <thead>
               <tr>
                 <th>Name</th>
-                <th>URL</th>
                 <th>Type</th>
                 <th>Format</th>
-                <th>Return File Extension</th>
-                <th>Return MIME</th>
+                <th>File Extension</th>
                 <th>Remove</th>
               </tr>
             </thead>
             <tbody>
               <g:each in="${com.k_int.kbplus.UserTransforms.findAllByUser(user)}" var="ut">
                 <tr>
-                  <td>${ut.transforms.transformer.name}</td>
-                  <td>${ut.transforms.transformer.url}</td>
+                  <td>${ut.transforms.name}</td>
                   <td>${ut.transforms.accepts_type.value}</td>
                   <td>${ut.transforms.accepts_format.value}</td>
                   <td>${ut.transforms.return_file_extention}</td>
-                  <td>${ut.transforms.return_mime}</td>
                   <td><g:link action="removeTransforms" params="[transformId: ut.transforms.id]"><i class="icon-remove"></i></g:link></td>
                 </tr>
               </g:each>
