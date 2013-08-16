@@ -109,7 +109,7 @@ class SubscriptionDetailsController {
          response.contentType = "text/csv"
          def out = response.outputStream
 		 def header = ( params.omitHeader == null ) || ( params.omitHeader != 'Y' )
-         exportService.StreamOutSubsCSV(out, result.subscriptionInstance, header)
+         exportService.StreamOutSubsCSV(out, result.subscriptionInstance, result.entitlements, header)
          out.close()
 		 exportService.printDuration(verystarttime, "Overall Time")
       }

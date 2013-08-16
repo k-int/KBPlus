@@ -208,7 +208,7 @@ class PackageDetailsController {
 		  }
 		  xml {
 			  def starttime = exportService.printStart("Building XML Doc")
-			  def doc = exportService.buildDocXML("Subscriptions")
+			  def doc = exportService.buildDocXML("Packages")
 			  exportService.addPackageIntoXML(doc, doc.getDocumentElement(), packageInstance, result.titlesList)
 			  exportService.printDuration(starttime, "Building XML Doc")
 			  

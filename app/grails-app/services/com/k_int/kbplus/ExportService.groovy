@@ -21,7 +21,7 @@ class ExportService {
 	/*****************/
 	/** CSV Exports **/
 	/*****************/
-	def StreamOutSubsCSV(out, sub, header){
+	def StreamOutSubsCSV(out, sub, entitlements, header){
 		def jc_id = sub.getSubscriber()?.getIdentifierByType('JC')?.value
 		out.withWriter { writer ->
 			def tsdate = sub.startDate ? formatter.format(sub.startDate) : ''
@@ -35,7 +35,7 @@ class ExportService {
 			// writer.write("publication_title,print_identifier,online_identifier,date_first_issue_subscribed,num_first_vol_subscribed,num_first_issue_subscribed,date_last_issue_subscribed,num_last_vol_subscribed,num_last_issue_subscribed,embargo_info,title_url,first_author,title_id,coverage_note,coverage_depth,publisher_name\n");
 			writer.write("publication_title,print_identifier,online_identifier,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,title_url,first_author,title_id,embargo_info,coverage_depth,coverage_notes,publisher_name\n");
 	 
-			result.entitlements.each { e ->
+			entitlements.each { e ->
 	 
 				def start_date = e.startDate ? formatter.format(e.startDate) : '';
 				def end_date = e.endDate ? formatter.format(e.endDate) : '';
@@ -332,7 +332,7 @@ class ExportService {
 		
 		if(sub.owner) addLicencesIntoXML(doc, subElem, [sub.owner])
 		
-		def titlesElem = addXMLElementInto(doc, into_elem, "TitleList", null)
+		def titlesElem = addXMLElementInto(doc, subElem, "TitleList", null)
 		addTitleListXML(doc, titlesElem, entitlements)
 	}
 	
@@ -608,7 +608,7 @@ class ExportService {
 					
 		packages.add(pckage)
 		
-		map."Subscriptions" = packages
+		map."Packages" = packages
 		
 		return map
 	}
