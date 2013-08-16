@@ -408,7 +408,7 @@ class ExportService {
 			
 			if(tipp.title.id != current_title_id){
 				//start new title
-				titles.add(title)
+				if(current_title_id!=-1) titles.add(title) // not the first time
 				title = [:]
 				
 				current_title_id = tipp.title.id
@@ -465,6 +465,7 @@ class ExportService {
 			
 			entitlements.add(ie)
 		}
+		titles.add(title) // add last title
 		
 		into_map."TitleList" = titles
 	}
