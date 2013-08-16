@@ -153,6 +153,14 @@ class ExportService {
 				entitlements_str += "\"${e.coreStatusEnd?formatter.format(e.coreStatusEnd):''}\""
 //                    }
 			}
+			
+			//Write earliest and latest dates for last title
+			writer.write("\"${earliest_date?formatter.format(earliest_date):''}\",");
+			writer.write("\"${latest_date?formatter.format(latest_date):''}\"");
+			//Write entitlements for last title
+			writer.write("${entitlements_str}");
+			writer.write("\n");
+			
 			writer.flush()
 			writer.close()
 		}
