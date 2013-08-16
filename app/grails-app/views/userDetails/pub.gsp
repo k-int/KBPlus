@@ -11,7 +11,7 @@
         <div class="span12">
 
           <div class="page-header">
-             <h1>${ui.displayName} (${ui.username})</h1>
+             <h1>${ui.displayName?:'No username'}</h1>
           </div>
 
           <g:if test="${flash.message}">

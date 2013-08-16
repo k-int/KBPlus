@@ -1,5 +1,7 @@
 package com.k_int.kbplus.batch
 
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+
 
 
 class NotificationsJob {
@@ -16,7 +18,13 @@ class NotificationsJob {
 
   def execute() {
     log.debug("NotificationsJob");
-    zenDeskSyncService.doSync()
+    if ( ApplicationHolder.application.config.KBPlusMaster == true ) {
+      log.debug("This server is marked as KBPlus master. Running ZENDESK sync batch job");
+      zenDeskSyncService.doSync()
+    }
+    else {
+      log.debug("This server is NOT marked as KBPlus master. NOT Running ZENDESK SYNC batch job");
+    }
   }
 
 }
