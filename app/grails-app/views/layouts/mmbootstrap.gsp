@@ -68,6 +68,10 @@
                        <g:if test="${usaf && usaf.size() > 0}">
                          <g:each in="${usaf}" var="org">
                            <li><g:link controller="myInstitutions" 
+                                       action="instdash" 
+                                       params="${[shortcode:org.shortcode]}">${org.name} - Dashboard</g:link></li>
+                           <!--
+                           <li><g:link controller="myInstitutions" 
                                        action="currentLicenses" 
                                        params="${[shortcode:org.shortcode]}">${org.name} - Licences</g:link></li>
                            <li><g:link controller="myInstitutions" 
@@ -82,6 +86,7 @@
                            <li><g:link controller="myInstitutions" 
                                        action="renewalsUpload" 
                                        params="${[shortcode:org.shortcode]}">${org.name} - Import Renewals</g:link></li>
+                           -->
                          </g:each>
                        </g:if>
                        <g:else>
@@ -99,6 +104,8 @@
                    <li class="dropdown">
                      <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Editors <b class="caret"></b> </a>
                      <ul class="dropdown-menu">
+                       <li <%= ( ( 'announcement'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="announcement" action="index">Announcements</g:link></li>
                        <li <%= ( ( 'packageDetails'== controllerName ) && ( 'list'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="packageDetails" action="list">Search Packages</g:link></li>
                        <!--
@@ -200,6 +207,15 @@
     </div>
 
    <div class="navbar-push"></div>
+   <sec:ifLoggedIn>
+     <g:if test="${user!=null && ( user.display==null || user.display=='' ) }">
+       <div class="container">
+         <bootstrap:alert class="alert-info">Your display name is not currently set in user preferences. Please <g:link controller="profile" action="index">update
+            Your display name</g:link> as soon as possible.
+         </bootstrap:alert>
+       </div>
+     </g:if>
+   </sec:ifLoggedIn>
 
        
   <g:layoutBody/>

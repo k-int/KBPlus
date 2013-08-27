@@ -63,17 +63,25 @@ class IssueEntitlementController {
       def org_id = result.issueEntitlementInstance.subscription.subscriber?.id
       def supplier_id = result.issueEntitlementInstance.tipp.pkg.contentProvider?.id
 
-      def fsresult = factService.generateMonthlyUsageGrid(title_id,org_id,supplier_id)
-      // def fsresult = factService.generateYearlyUsageGrid(title_id,org_id,supplier_id)
+      if ( title_id != null && 
+           org_id != null &&
+           supplier_id != null ) {
 
-      result.usage = fsresult?.usage
-      result.x_axis_labels = fsresult?.x_axis_labels;
-      result.y_axis_labels = fsresult?.y_axis_labels;
+        def fsresult = factService.generateMonthlyUsageGrid(title_id,org_id,supplier_id)
 
-      // def c = new GregorianCalendar()
-      // c.setTime(new Date());
-      // def current_year = c.get(Calendar.YEAR)
-      // factService.lastNYearsByType(title_id, org_id, supplier_id, 'JUSP:JR1', 14, current_year)
+        def jusp_login = result.issueEntitlementInstance.subscription.subscriber?.getIdentifierByType('jusplogin')?.value
+        def jusp_sid = result.issueEntitlementInstance.tipp.pkg.contentProvider?.getIdentifierByType('juspsid')?.value
+        def jusp_title_id = result.issueEntitlementInstance.tipp.title.getIdentifierValue('jusp')
+
+        if ( ( jusp_login != null ) && ( jusp_sid != null ) && ( jusp_title_id != null ) ) {
+          // def fsresult = factService.generateYearlyUsageGrid(title_id,org_id,supplier_id)
+          result.jusplink = "https://www.jusp.mimas.ac.uk/api/v1/Journals/Statistics/?jid=${jusp_title_id}&sid=${jusp_sid}&loginid=${jusp_login}&startrange=1800-01&endrange=2100-01&granularity=monthly"
+        }
+
+        result.usage = fsresult?.usage
+        result.x_axis_labels = fsresult?.x_axis_labels;
+        result.y_axis_labels = fsresult?.y_axis_labels;
+      }
 
       if (!result.issueEntitlementInstance) {
         flash.message = message(code: 'default.not.found.message', args: [message(code: 'issueEntitlement.label', default: 'IssueEntitlement'), params.id])
