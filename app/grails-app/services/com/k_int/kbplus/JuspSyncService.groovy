@@ -103,7 +103,7 @@ class JuspSyncService {
       log.debug("JUSP Sync query completed....");
 
       l1.each { to ->
-        log.debug("Submit job ${++submitCount} to fixed thread pool");
+        // log.debug("Submit job ${++submitCount} to fixed thread pool");
         ftp.submit( { processTriple(to[0],to[1],to[2],to[3], most_recent_closed_period) } as java.util.concurrent.Callable )
       }
     }
