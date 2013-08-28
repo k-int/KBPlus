@@ -16,8 +16,6 @@ class OnixplUsageTermLicenseText {
   ]
 
   static mapping = {
-    //id column:        'opul_id'
-    //version column:   'opul_version'
     usageTerm column:   'opul_oput_fk', index:'opul_entry_idx'
     licenseText column: 'opul_oplt_fk', index:'opul_entry_idx'
   }
@@ -27,4 +25,13 @@ class OnixplUsageTermLicenseText {
       licenseText(nullable:false, blank: false)
     }
 
+  @Override
+  public java.lang.String toString() {
+    return "OnixplUsageTermLicenseText{" +
+        "id=" + id +
+        ", version=" + version +
+        ", usageTerm=" + usageTerm +
+        ", licenseText=" + licenseText +
+        '}';
+  }
 }
