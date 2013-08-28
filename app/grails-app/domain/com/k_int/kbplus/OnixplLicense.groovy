@@ -36,6 +36,8 @@ class OnixplLicense {
     doc column:     'opl_doc_fk'
     lastmod column: 'opl_lastmod'
     title column:   'opl_title'
+    usageTerm cascade: 'all-delete-orphan'
+
   }
 
   static constraints = {
@@ -54,10 +56,15 @@ class OnixplLicense {
     false;
   }
 
+
   @Override
-  public String toString() {
-    return "Id: " + id + " | Version: " + version + " | Title: " + title
-    + " | Licenses: " + licenses.size() + " | Document: " + doc.toString();
+  public java.lang.String toString() {
+    return "OnixplLicense{" +
+        "id=" + id +
+        ", lastmod=" + lastmod +
+        ", title='" + title + '\'' +
+        ", doc=" + doc +
+        '}';
   }
 
 }

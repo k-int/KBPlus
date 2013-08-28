@@ -23,11 +23,14 @@ class SubscriptionDetailsController {
   def alertsService
   def genericOIDService
   def transformerService
+  def exportService
   
   def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
+	def verystarttime = exportService.printStart("SubscriptionDetails")
+	
     log.debug("subscriptionDetails id:${params.id} format=${response.format}");
     def result = [:]
 
@@ -95,410 +98,62 @@ class SubscriptionDetailsController {
 
     result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, qry_params, [max:result.max, offset:result.offset]);
 
-    def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+	exportService.printDuration(verystarttime, "Querying")
+	
     log.debug("subscriptionInstance returning... ${result.num_sub_rows} rows ");
 	def filename = "subscriptionDetails_${result.subscriptionInstance.identifier}"
     withFormat {
       html result
       csv {
-         def jc_id = result.subscriptionInstance.getSubscriber()?.getIdentifierByType('JC')?.value
-
          response.setHeader("Content-disposition", "attachment; filename=${result.subscriptionInstance.identifier}.csv")
          response.contentType = "text/csv"
          def out = response.outputStream
-         out.withWriter { writer ->
-           def tsdate = result.subscriptionInstance.startDate ? formatter.format(result.subscriptionInstance.startDate) : ''
-           def tedate = result.subscriptionInstance.endDate ? formatter.format(result.subscriptionInstance.endDate) : ''
-           if ( ( params.omitHeader == null ) || ( params.omitHeader != 'Y' ) ) {
-             writer.write("FileType,SpecVersion,JC_ID,TermStartDate,TermEndDate,SubURI,SystemIdentifier\n")
-             writer.write("${result.subscriptionInstance.type.value},\"2.0\",${jc_id?:''},${tsdate},${tedate},\"uri://kbplus/sub/${result.subscriptionInstance.identifier}\",${result.subscriptionInstance.impId}\n")
-           }
-
-           // Output the body text
-           // writer.write("publication_title,print_identifier,online_identifier,date_first_issue_subscribed,num_first_vol_subscribed,num_first_issue_subscribed,date_last_issue_subscribed,num_last_vol_subscribed,num_last_issue_subscribed,embargo_info,title_url,first_author,title_id,coverage_note,coverage_depth,publisher_name\n");
-           writer.write("publication_title,print_identifier,online_identifier,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,title_url,first_author,title_id,embargo_info,coverage_depth,coverage_notes,publisher_name\n");
-
-           result.entitlements.each { e ->
-
-             def start_date = e.startDate ? formatter.format(e.startDate) : '';
-             def end_date = e.endDate ? formatter.format(e.endDate) : '';
-             def title_doi = (e.tipp?.title?.getIdentifierValue('DOI'))?:''
-             def publisher = e.tipp?.title?.publisher
-
-             writer.write("\"${e.tipp.title.title}\",\"${e.tipp?.title?.getIdentifierValue('ISSN')?:''}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')?:''}\",${start_date},${e.startVolume?:''},${e.startIssue?:''},${end_date},${e.endVolume?:''},${e.endIssue?:''},\"${e.tipp?.hostPlatformURL?:''}\",,\"${title_doi}\",\"${e.embargo?:''}\",\"${e.tipp?.coverageDepth?:''}\",\"${e.tipp?.coverageNote?:''}\",\"${publisher?.name?:''}\"\n");
-           }
-           writer.flush()
-           writer.close()
-         }
+		 def header = ( params.omitHeader == null ) || ( params.omitHeader != 'Y' )
+         exportService.StreamOutSubsCSV(out, result.subscriptionInstance, result.entitlements, header)
          out.close()
+		 exportService.printDuration(verystarttime, "Overall Time")
       }
       json {
-		  def json = buildMap(result) as JSON
+		  def starttime = exportService.printStart("Building Map")
+		  def map = exportService.getSubscriptionMap(result.subscriptionInstance, result.entitlements)
+		  exportService.printDuration(starttime, "Building Map")
+		  
+		  starttime = exportService.printStart("Create JSON")
+		  def json = map as JSON
+		  exportService.printDuration(starttime, "Create JSON")
+		  
 		  if(params.transforms){
-			  transformerService.triggerTransform(result.user, filename, params.transforms, json.toString(), response)
+			  transformerService.triggerTransform(result.user, filename, params.transforms, json, response)
 		  }else{
 			  response.setHeader("Content-disposition", "attachment; filename=\"${filename}.json\"")
 			  response.contentType = "application/json"
-			  render json.toString()
+			  render json
 		  }
+		  exportService.printDuration(verystarttime, "Overall Time")
 	  }
 	  xml {
-		  def xml = buildXML(result)
+		  def starttime = exportService.printStart("Building XML Doc")
+		  def doc = exportService.buildDocXML("Subscriptions")
+		  exportService.addSubIntoXML(doc, doc.getDocumentElement(), result.subscriptionInstance, result.entitlements)
+		  exportService.printDuration(starttime, "Building XML Doc")
 		  
 		  if(params.transforms){
-			  transformerService.triggerTransform(result.user, filename, params.transforms, xml.toString(), response)
+			  starttime = exportService.printStart("Get String")
+			  String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
+			  exportService.printDuration(starttime, "Get String")
+			  starttime = exportService.printStart("Calling Transformer Service")
+			  transformerService.triggerTransform(result.user, filename, params.transforms, xml, response)
+			  exportService.printDuration(starttime, "Calling Transformer Service")
 		  }else{
 			  response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
 			  response.contentType = "text/xml"
-			  render xml.toString()
+			  starttime = exportService.printStart("Sending XML")
+			  exportService.streamOutXML(doc, response.outputStream)
+			  exportService.printDuration(starttime, "Sending XML")
 		  }
+		  exportService.printDuration(verystarttime, "Overall Time")
 	  }
     }
-  }
-  
-  private def buildMap(result) {
-	  def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
-	  
-	  def map = [:]
-	  def subscriptions = []
-	  
-	  def sub = result.subscriptionInstance
-	  def subscription = [:]
-	  subscription."SubscriptionID" = sub.id
-	  subscription."SubscriptionName" = sub.name
-	  subscription."SubTermStartDate" = sub.startDate?formatter.format(sub.startDate):''
-	  subscription."SubTermEndDate" = sub.endDate?formatter.format(sub.endDate):''
-	  
-	  subscription."RelatedOrgs" = []
-	  
-	  sub.orgRelations.each { or ->
-		  def org = [:]
-		  org."OrgID" = or.org.id
-		  org."OrgName" = or.org.name
-		  org."OrgRole" = or.roleType.value
-		  
-		  def ids = [:]
-		  or.org.ids.each(){ id ->
-			  def value = id.identifier.value
-			  def ns = id.identifier.ns.ns
-			  if(ids.containsKey(ns)){
-				  def current = ids[ns]
-				  def newval = []
-				  newval << current
-				  newval << value
-				  ids[ns] = newval
-			  } else {
-				  ids[ns]=value
-			  }
-		  }
-		  org."OrgIDs" = ids
-			  
-		  subscription."RelatedOrgs" << org
-	  }
-	  
-	  subscription."Licences" = []
-	  def licence = [:]
-	  
-	  if(sub.owner){
-		  def owner = sub.owner
-		  
-		  licence."LicenceReference" = owner.reference
-		  licence."NoticePeriod" = owner.noticePeriod
-		  licence."LicenceURL" = owner.licenseUrl
-		  licence."LicensorRef" = owner.licensorRef
-		  licence."LicenseeRef" = owner.licenseeRef
-			  
-		  licence."RelatedOrgs" = []
-		  sub.owner?.orgLinks.each { or ->
-			  def org = [:]
-			  org."OrgID" = or.org.id
-			  org."OrgName" = or.org.name
-			  org."OrgRole" = or.roleType.value
-			  
-			  def ids = [:]
-			  or.org.ids.each(){ id ->
-				  def value = id.identifier.value
-				  def ns = id.identifier.ns.ns
-				  if(ids.containsKey(ns)){
-					  def current = ids[ns]
-					  def newval = []
-					  newval << current
-					  newval << value
-					  ids[ns] = newval
-				  } else {
-					  ids[ns]=value
-				  }
-			  }
-			  org."OrgIDs" = ids
-				  
-			  licence."RelatedOrgs" << org
-		  }
-		  
-		  
-		  
-		  def prop = licence."LicenceProperties" = [:]
-		  def ca = prop."ConcurrentAccess" = [:]
-		  ca."Status" = owner.concurrentUsers?.value
-		  ca."UserCount" = owner.concurrentUserCount
-		  ca."Notes" = owner.getNote("concurrentUsers")?.owner?.content?:""
-		  def ra = prop."RemoteAccess" = [:]
-		  ra."Status" = owner.remoteAccess?.value
-		  ra."Notes" = owner.getNote("remoteAccess")?.owner?.content?:""
-		  def wa = prop."WalkingAccess" = [:]
-		  wa."Status" = owner.walkinAccess?.value
-		  wa."Notes" = owner.getNote("remoteAccess")?.owner?.content?:""
-		  def ma = prop."MultisiteAccess" = [:]
-		  ma."Status" = owner.multisiteAccess?.value
-		  ma."Notes" = owner.getNote("multisiteAccess")?.owner?.content?:""
-		  def pa = prop."PartnersAccess" = [:]
-		  pa."Status" = owner.partnersAccess?.value
-		  pa."Notes" = owner.getNote("partnersAccess")?.owner?.content?:""
-		  def aa = prop."AlumniAccess" = [:]
-		  aa."Status" = owner.alumniAccess?.value
-		  aa."Notes" = owner.getNote("alumniAccess")?.owner?.content?:""
-		  def ill = prop."InterLibraryLoans" = [:]
-		  ill."Status" = owner.ill?.value
-		  ill."Notes" = owner.getNote("ill")?.owner?.content?:""
-		  def cp = prop."IncludeinCoursepacks" = [:]
-		  cp."Status" = owner.coursepack?.value
-		  cp."Notes" = owner.getNote("coursepack")?.owner?.content?:""
-		  def vle = prop."IncludeinVLE" = [:]
-		  vle."Status" = owner.vle?.value
-		  vle."Notes" = owner.getNote("vle")?.owner?.content?:""
-		  def ea = prop."EntrepriseAccess" = [:]
-		  ea."Status" = owner.enterprise?.value
-		  ea."Notes" = owner.getNote("enterprise")?.owner?.content?:""
-		  def pca = prop."PostCancellationAccessEntitlement" = [:]
-		  pca."Status" = owner.pca?.value
-		  pca."Notes" = owner.getNote("pca")?.owner?.content?:""
-	  }
-	  
-	  // Should only be one, we have an array to keep teh same format has licenses json
-	  subscription."Licences" << licence
-					  
-	  subscription."TitleList" = []
-	  result.entitlements.each { entitlement ->
-		  def ti = entitlement.tipp.title
-		  
-		  def title = [:]
-		  title."Title" = ti.title
-		  
-		  def ids = [:]
-		  ti.ids.each(){ id ->
-			  def value = id.identifier.value
-			  def ns = id.identifier.ns.ns
-			  if(ids.containsKey(ns)){
-				  def current = ids[ns]
-				  def newval = []
-				  newval << current
-				  newval << value
-				  ids[ns] = newval
-			  } else {
-				  ids[ns]=value
-			  }
-		  }
-		  title."TitleIDs" = ids
-		  
-		  // Should only be one, we have an array to keep teh same format has titles json
-		  title."CoverageStatements" = []
-		  
-		  def ie = [:]
-		  ie."CoverageStatementType" = "Issue Entitlement"
-		  ie."SubscriptionID" = sub.id
-		  ie."SubscriptionName" = sub.name
-		  ie."StartDate" = entitlement.startDate?formatter.format(entitlement.startDate):''
-		  ie."StartVolume" = entitlement.startVolume?:''
-		  ie."StartIssue" = entitlement.startIssue?:''
-		  ie."EndDate" = entitlement.endDate?formatter.format(entitlement.endDate):''
-		  ie."EndVolume" = entitlement.endVolume?:''
-		  ie."EndIssue" = entitlement.endIssue?:''
-		  ie."Embargo" = entitlement.embargo?:''
-		  ie."Coverage" = entitlement.coverageDepth?:''
-		  ie."CoverageNote" = entitlement.coverageNote?:''
-		  ie."HostPlatformName" = entitlement.tipp?.platform?.name?:''
-		  ie."HostPlatformURL" = entitlement.tipp?.hostPlatformURL?:''
-		  ie."AdditionalPlatforms" = []
-		  entitlement.tipp?.additionalPlatforms.each(){ ap ->
-			  def platform = [:]
-			  platform.PlatformName = ap.platform?.name?:''
-			  platform.PlatformRole = ap.rel?:''
-			  platform.PlatformURL = ap.platform?.primaryUrl?:''
-			  ie."AdditionalPlatforms" << platform
-		  }
-		  ie."CoreStatus" = entitlement.coreStatus?.value?:''
-		  ie."CoreStart" = entitlement.coreStatusStart?formatter.format(entitlement.coreStatusStart):''
-		  ie."CoreEnd" = entitlement.coreStatusEnd?formatter.format(entitlement.coreStatusEnd):''
-		  ie."PackageID" = entitlement.tipp?.pkg?.id?:''
-		  ie."PackageName" = entitlement.tipp?.pkg?.name?:''
-			  
-		  title."CoverageStatements".add(ie)
-		  
-		  subscription."TitleList" << title
-	  }
-		  
-	  subscriptions.add(subscription)
-	  
-	  map."Subscriptions" = subscriptions
-	  
-	  return map
-  }
-
-  private def buildXML(result) {
-	  def sub = result.subscriptionInstance
-	  def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
-	  
-	  def xml = new StreamingMarkupBuilder().bind{
-		  mkp.xmlDeclaration(version:'1.0', encoding: 'UTF-8')
-		  Subscriptions() {
-			  Subscription(){
-				  SubscriptionID(sub.id)
-				  SubscriptionName(sub.name)
-				  SubTermStartDate(sub.startDate?formatter.format(sub.startDate):'')
-				  SubTermEndDate(sub.endDate?formatter.format(sub.endDate):'')
-				  
-				  sub.orgRelations.each { or ->
-					  RelatedOrg(id: or.org.id){
-						  OrgName(or.org.name)
-						  OrgRole(or.roleType.value)
-						  
-						  OrgIDs(){
-							  or.org.ids.each(){ id ->
-								  def value = id.identifier.value
-								  def ns = id.identifier.ns.ns
-								  ID(namespace: ns, value)
-							  }
-						  }
-						  
-						  
-					  }
-				  }
-				  
-				  def owner = sub.owner
-				  Licence(){
-					  if(owner){
-						  LicenceReference(owner.reference)
-						  NoticePeriod(owner.noticePeriod)
-						  LicenceURL(owner.licenseUrl)
-						  LicensorRef(owner.licensorRef)
-						  LicenseeRef(owner.licenseeRef)
-						  
-						  sub.owner?.orgLinks.each { or ->
-							  RelatedOrg(id: or.org.id){
-								  OrgName(or.org.name)
-								  OrgRole(or.roleType.value)
-								  
-								  OrgIDs(){
-									  or.org.ids.each(){ id ->
-										  def value = id.identifier.value
-										  def ns = id.identifier.ns.ns
-										  ID(namespace: ns, value)
-									  }
-								  }
-							  }
-						  }
-						  
-						  LicenceProperties(){
-							  ConcurrentAccess(){
-								  Status(owner.concurrentUsers?.value)
-								  UserCount(owner.concurrentUserCount)
-								  Notes(owner.getNote("concurrentUsers")?.owner?.content?:"")
-							  }
-							  RemoteAccess(){
-								  Status(owner.remoteAccess?.value)
-								  Notes(owner.getNote("remoteAccess")?.owner?.content?:"")
-							  }
-							  WalkingAccess(){
-								  Status(owner.walkinAccess?.value)
-								  Notes(owner.getNote("walkinAccess")?.owner?.content?:"")
-							  }
-							  MultisiteAccess(){
-								  Status(owner.multisiteAccess?.value)
-								  Notes(owner.getNote("multisiteAccess")?.owner?.content?:"")
-							  }
-							  PartnersAccess(){
-								  Status(owner.partnersAccess?.value)
-								  Notes(owner.getNote("partnersAccess")?.owner?.content?:"")
-							  }
-							  AlumniAccess(){
-								  Status(owner.alumniAccess?.value)
-								  Notes(owner.getNote("alumniAccess")?.owner?.content?:"")
-							  }
-							  InterLibraryLoans(){
-								  Status(owner.ill?.value)
-								  Notes(owner.getNote("ill")?.owner?.content?:"")
-							  }
-							  IncludeinCoursepacks(){
-								  Status(owner.coursepack?.value)
-								  Notes(owner.getNote("coursepack")?.owner?.content?:"")
-							  }
-							  IncludeinVLE(){
-								  Status(owner.vle?.value)
-								  Notes(owner.getNote("vle")?.owner?.content?:"")
-							  }
-							  EntrepriseAccess(){
-								  Status(owner.enterprise?.value)
-								  Notes(owner.getNote("enterprise")?.owner?.content?:"")
-							  }
-							  PostCancellationAccessEntitlement(){
-								  Status(owner.pca?.value)
-								  Notes(owner.getNote("pca")?.owner?.content?:"")
-							  }
-						  }
-					  }
-				  }//End Licence
-				  
-				  Title{
-					  result.entitlements.each { entitlement ->
-						  def ti = entitlement.tipp.title
-						  
-						  TitleListEntry(){
-							  Title(ti.title)
-							  
-							  TitleIDs(){
-								  ti.ids.each(){ id ->
-									  def value = id.identifier.value
-									  def ns = id.identifier.ns.ns
-									  ID(namespace: ns, value)
-								  }
-							  }
-							  
-							  CoverageStatement(type: 'Issue Entitlement'){
-								  SubscriptionID(sub.id)
-								  SubscriptionName(sub.name)
-								  StartDate(entitlement.startDate?formatter.format(entitlement.startDate):'')
-								  StartVolume(entitlement.startVolume?:'')
-								  StartIssue(entitlement.startIssue?:'')
-								  EndDate(entitlement.endDate?formatter.format(entitlement.endDate):'')
-								  EndVolume(entitlement.endVolume?:'')
-								  EndIssue(entitlement.endIssue?:'')
-								  Embargo(entitlement.embargo?:'')
-								  Coverage(entitlement.coverageDepth?:'')
-								  CoverageNote(entitlement.coverageNote?:'')
-								  HostPlatformName(entitlement.tipp?.platform?.name?:'')
-								  HostPlatformURL(entitlement.tipp?.hostPlatformURL?:'')
-								  
-								  Patform(){
-									  entitlement.tipp?.additionalPlatforms.each(){ ap ->
-										  PlatformName(ap.platform?.name?:'')
-										  PlatformRole(ap.rel?:'')
-										  PlatformURL(ap.platform?.primaryUrl?:'')
-									  }
-								  }
-								  
-								  CoreStatus(entitlement.coreStatus?.value?:'')
-								  CoreStart(entitlement.coreStatusStart?formatter.format(entitlement.coreStatusStart):'')
-								  CoreEnd(entitlement.coreStatusEnd?formatter.format(entitlement.coreStatusEnd):'')
-								  PackageID(entitlement.tipp?.pkg?.id?:'')
-								  PackageName(entitlement.tipp?.pkg?.name?:'')
-							  }
-						  }
-					  }
-				  }
-			  }
-		  }
-	  }
-	  
-	  return writer
   }
   
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])

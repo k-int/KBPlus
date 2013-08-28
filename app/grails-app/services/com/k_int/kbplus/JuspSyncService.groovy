@@ -25,6 +25,7 @@ class JuspSyncService {
   static int submitCount=0
   static int completedCount=0
   static int newFactCount=0
+  static int totalTime=0
 
   // Change to static just to be super sure
   static boolean running = false;
@@ -122,6 +123,8 @@ class JuspSyncService {
 
     def juspTimeStampFormat = new SimpleDateFormat('yyyy-MM')
 
+    def start_time = System.currentTimeMillis();
+
     Fact.withTransaction { status ->
   
       log.debug("processTriple");
@@ -150,7 +153,7 @@ class JuspSyncService {
         def from_period = csr.haveUpTo ?: '1800-01'
         log.debug("Cursor for ${jusp_title_id}(${title_inst.id}):${jusp_supplier_id}(${supplier_inst.id}):${jusp_login}(${org_inst.id}) is ${csr.haveUpTo} and is null or < ${most_recent_closed_period}. Will be requesting data from ${from_period}");
         try {
-          // log.debug("Making JUSP API Call");
+          log.debug("Making JUSP API Call");
           jusp_api_endpoint.get( 
                                  path : 'api/v1/Journals/Statistics/',
                                  contentType: JSON,
@@ -161,7 +164,8 @@ class JuspSyncService {
                                          startrange:from_period,
                                          endrange:most_recent_closed_period,
                                          granularity:'monthly'] ) { resp, json ->
-            // log.debug("Got JUSP Result");
+     
+            log.debug("Got JUSP Result");
             if ( json ) {
               def cal = new GregorianCalendar();
               if ( json.ReportPeriods != null ) {
@@ -169,7 +173,7 @@ class JuspSyncService {
                   log.debug("report periods jsonnull");
                 }
                 else {
-                  // log.debug("Report Periods present: ${json.ReportPeriods}");
+                  log.debug("Report Periods present: ${json.ReportPeriods}");
                   json.ReportPeriods.each { p ->
                     def fact = [:]
                     fact.from=juspTimeStampFormat.parse(p.Start)
@@ -197,6 +201,7 @@ class JuspSyncService {
               }
             }
           }
+          log.debug("Update csr");
           csr.haveUpTo=most_recent_closed_period
           csr.save(flush:true);
         }
@@ -210,7 +215,9 @@ class JuspSyncService {
   
       csr.save(flush:true);
       cleanUpGorm();
-      log.debug("jusp triple completed and updated.. ${++completedCount} tasks completed out of ${submitCount}");
+      def elapsed = System.currentTimeMillis() - start_time;
+      totalTime+=elapsed
+      log.debug("jusp triple completed and updated.. ${++completedCount} tasks completed out of ${submitCount}. Elasped=${elapsed}. Average=${totalTime/completedCount}");
     }
   }
   
