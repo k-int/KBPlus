@@ -50,6 +50,15 @@
                 </g:if>
             </dl>
 
+        <dl>
+            <g:if test="${issueEntitlementInstance?.subscription.owner}">
+                <dt><g:message code="issueEntitlement.licence.label" default="Licence" /></dt>
+
+                <dd><g:link controller="licenseDetails" action="index" id="${issueEntitlementInstance?.subscription?.owner.id}">${issueEntitlementInstance?.subscription?.owner.reference.encodeAsHTML()}</g:link></dd>
+
+            </g:if>
+        </dl>
+
             <dl>
                 <g:if test="${issueEntitlementInstance?.tipp}">
                     <dt><g:message code="issueEntitlement.tipp.title.label" default="Title" /></dt>

@@ -236,7 +236,7 @@ class BootStrap {
     RefdataCategory.lookupOrCreate('UsageType', 'UseForDataMining')
     */
     // Controlled values from the <UsageStatus> element. All are prefixed with "onixPL:" in the document
-    log.debug("Adding ONIX-PL UsageStatuses to RefdataCategory");
+
     RefdataCategory.lookupOrCreate('UsageStatus', 'greenTick',      'UseForDataMining')
     RefdataCategory.lookupOrCreate('UsageStatus', 'greenTick',      'InterpretedAsPermitted')
     RefdataCategory.lookupOrCreate('UsageStatus', 'redCross',       'InterpretedAsProhibited')

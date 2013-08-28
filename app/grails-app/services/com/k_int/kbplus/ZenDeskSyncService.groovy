@@ -45,6 +45,8 @@ class ZenDeskSyncService {
     // This function reconnects packages in the connected zendesk system to any packages where pkg.forumId is null
     reconnectOrphanedZendeskForums(http);
 
+
+    // Create forums for any packages we don't have yet.
     Package.findAllByForumId(null).each { pkg ->
       // Check that there is a category for the content provider, if not, create
       def cp = pkg.getContentProvider()
@@ -71,9 +73,9 @@ class ZenDeskSyncService {
             log.debug("Checking ${f.name} (${f.id})");
             if ( f.name ==~ /(.*)\(Package (\d+) from (.*)(\)$)/ ) {
               def pkg_info = f.name =~ /(.*)\(Package (\d+) from (.*)(\)$)/
-              def package_name = pkg_name[0][1]
-              def package_id = pkg_id[0][2]
-              def system_id = pkg_id[0][3]
+              def package_name = pkg_info[0][1]
+              def package_id = pkg_info[0][2]
+              def system_id = pkg_info[0][3]
   
               // Only hook up forums if they correspond to our local system identifier
               if ( system_id == ApplicationHolder.application.config.kbplusSystemId ) {
