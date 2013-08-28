@@ -16,6 +16,8 @@ class AppinfoController {
     result.juspSyncService.completedCount=juspSyncService.completedCount
     result.juspSyncService.newFactCount=juspSyncService.newFactCount
     result.juspSyncService.totalTime=juspSyncService.totalTime
+    result.juspSyncService.threads=juspSyncService.FIXED_THREAD_POOL_SIZE
+    result.juspSyncService.queryTime=juspSyncService.queryTime
 
 
     result;

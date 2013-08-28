@@ -26,6 +26,7 @@ class JuspSyncService {
   static int completedCount=0
   static int newFactCount=0
   static int totalTime=0
+  static int queryTime=0
 
   // Change to static just to be super sure
   static boolean running = false;
@@ -44,6 +45,8 @@ class JuspSyncService {
     submitCount=0
     completedCount=0
     newFactCount=0
+    totalTime=0
+    queryTime=0
 
     def future = executorService.submit({ internalDoSync() } as java.util.concurrent.Callable)
   }
@@ -67,6 +70,7 @@ class JuspSyncService {
       // Remember months are zero based - hence the +1 in this line!
       def most_recent_closed_period = "${c.get(Calendar.YEAR)}-${String.format('%02d',c.get(Calendar.MONTH)+1)}"
 
+      def start_time = System.currentTimeMillis()
 
       // Select distinct list of Title+Provider (TIPP->Package-CP->ID[jusplogin] with jusp identifiers
       // def q = "select distinct tipp.title, po.org, tipp.pkg from TitleInstancePackagePlatform as tipp " +
@@ -87,6 +91,7 @@ class JuspSyncService {
 
       def l1 = IssueEntitlement.executeQuery(q)
 
+      queryTime = System.currentTimeMillis() - start_time 
 
       log.debug("JUSP Sync query completed....");
 
