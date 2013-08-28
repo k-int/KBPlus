@@ -27,6 +27,10 @@ class JuspSyncService {
   static int newFactCount=0
   static int totalTime=0
   static int queryTime=0
+  static int exceptionCount=0
+  static int syncStartTime=0
+  static int syncElapsed=0
+  static def activityHistogram = [:]
 
   // Change to static just to be super sure
   static boolean running = false;
@@ -47,6 +51,9 @@ class JuspSyncService {
     newFactCount=0
     totalTime=0
     queryTime=0
+    syncStartTime=System.currentTimeMillis()
+    syncElapsed=0
+    activityHistogram = [:]
 
     def future = executorService.submit({ internalDoSync() } as java.util.concurrent.Callable)
   }
@@ -132,14 +139,14 @@ class JuspSyncService {
 
     Fact.withTransaction { status ->
   
-      log.debug("processTriple");
+      //log.debug("processTriple");
   
       def title_inst = TitleInstance.get(a);
       def supplier_inst = Org.get(b);
       def org_inst = Org.get(c);
       def title_io_inst = IdentifierOccurrence.get(d);
   
-      log.debug("Processing titile/provider/org triple: ${title_inst.title}, ${supplier_inst.name}, ${org_inst.name}");
+      //log.debug("Processing titile/provider/org triple: ${title_inst.title}, ${supplier_inst.name}, ${org_inst.name}");
   
       def jusp_supplier_id = supplier_inst.getIdentifierByType('juspsid').value
       def jusp_login = org_inst.getIdentifierByType('jusplogin').value
@@ -156,9 +163,9 @@ class JuspSyncService {
   
       if ( ( csr.haveUpTo == null ) || ( csr.haveUpTo < most_recent_closed_period ) ) {
         def from_period = csr.haveUpTo ?: '1800-01'
-        log.debug("Cursor for ${jusp_title_id}(${title_inst.id}):${jusp_supplier_id}(${supplier_inst.id}):${jusp_login}(${org_inst.id}) is ${csr.haveUpTo} and is null or < ${most_recent_closed_period}. Will be requesting data from ${from_period}");
+        //log.debug("Cursor for ${jusp_title_id}(${title_inst.id}):${jusp_supplier_id}(${supplier_inst.id}):${jusp_login}(${org_inst.id}) is ${csr.haveUpTo} and is null or < ${most_recent_closed_period}. Will be requesting data from ${from_period}");
         try {
-          log.debug("Making JUSP API Call");
+          //log.debug("Making JUSP API Call");
           jusp_api_endpoint.get( 
                                  path : 'api/v1/Journals/Statistics/',
                                  contentType: JSON,
@@ -170,7 +177,7 @@ class JuspSyncService {
                                          endrange:most_recent_closed_period,
                                          granularity:'monthly'] ) { resp, json ->
      
-            log.debug("Got JUSP Result");
+            //log.debug("Got JUSP Result");
             if ( json ) {
               def cal = new GregorianCalendar();
               if ( json.ReportPeriods != null ) {
@@ -180,22 +187,27 @@ class JuspSyncService {
                 else {
                   log.debug("Report Periods present: ${json.ReportPeriods}");
                   json.ReportPeriods.each { p ->
-                    def fact = [:]
-                    fact.from=juspTimeStampFormat.parse(p.Start)
-                    fact.to=juspTimeStampFormat.parse(p.End)
-                    cal.setTime(fact.to)
-                    fact.reportingYear=cal.get(Calendar.YEAR)
-                    fact.reportingMonth=cal.get(Calendar.MONTH)+1
-                    p.Reports.each { r ->
-                      fact.type = "JUSP:${r.key}"
-                      fact.value = r.value
-                      fact.uid = "${jusp_title_id}:${jusp_supplier_id}:${jusp_login}:${p.End}:${r.key}"
-                      fact.title = title_inst
-                      fact.supplier = supplier_inst
-                      fact.inst =  org_inst
-                      fact.juspio =  title_io_inst
-                      if ( factService.registerFact(fact) ) {
-                        // log.debug("New fact count: ${++newFactCount}");
+                    if ( p instanceof net.sf.json.JSONNull ) {
+                      // Safely ignore
+                    }
+                    else {
+                      def fact = [:]
+                      fact.from=juspTimeStampFormat.parse(p.Start)
+                      fact.to=juspTimeStampFormat.parse(p.End)
+                      cal.setTime(fact.to)
+                      fact.reportingYear=cal.get(Calendar.YEAR)
+                      fact.reportingMonth=cal.get(Calendar.MONTH)+1
+                      p.Reports.each { r ->
+                        fact.type = "JUSP:${r.key}"
+                        fact.value = r.value
+                        fact.uid = "${jusp_title_id}:${jusp_supplier_id}:${jusp_login}:${p.End}:${r.key}"
+                        fact.title = title_inst
+                        fact.supplier = supplier_inst
+                        fact.inst =  org_inst
+                        fact.juspio =  title_io_inst
+                        if ( factService.registerFact(fact) ) {
+                          // log.debug("New fact count: ${++newFactCount}");
+                        }
                       }
                     }
                   }
@@ -213,6 +225,7 @@ class JuspSyncService {
         catch ( Exception e ) {
           log.error("Problem fetching JUSP data",e);
           log.error("URL giving error(${e.message}): https://www.jusp.mimas.ac.uk/api/v1/Journals/Statistics/?jid=${jusp_title_id}&sid=${jusp_supplier_id}&loginid=${jusp_login}&startrange=${from_period}&endrange=${most_recent_closed_period}&granularity=monthly");
+          exceptionCount++
         }
         finally {
         }
@@ -222,17 +235,35 @@ class JuspSyncService {
       cleanUpGorm();
       def elapsed = System.currentTimeMillis() - start_time;
       totalTime+=elapsed
-      log.debug("jusp triple completed and updated.. ${++completedCount} tasks completed out of ${submitCount}. Elasped=${elapsed}. Average=${totalTime/completedCount}");
+      incrementActivityHistogram();
+      // log.debug("jusp triple completed and updated.. ${completedCount} tasks completed out of ${submitCount}. Elasped=${elapsed}. Average=${totalTime/completedCount}");
     }
   }
   
   
   def cleanUpGorm() {
-    log.debug("Clean up GORM");
+    // log.debug("Clean up GORM");
     def session = sessionFactory.currentSession
     session.flush()
     session.clear()
     propertyInstanceMap.get().clear()
   }
+
+  public static synchronized void incrementActivityHistogram() {
+    def sdf = new SimpleDateFormat('yyyy/MM/dd HH:mm')
+    def col_identifier = sdf.format(new Date())
+
+    completedCount++
+
+    if ( activityHistogram[col_identifier] == null ) {
+      activityHistogram[col_identifier] = new Long(1)
+    }
+    else {
+      activityHistogram[col_identifier]++
+    }
+
+    syncElapsed = System.currentTimeMillis() - syncStartTime 
+  }
   
+
 }
