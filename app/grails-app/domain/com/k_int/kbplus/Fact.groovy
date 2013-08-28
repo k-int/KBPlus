@@ -2,13 +2,13 @@ package com.k_int.kbplus
 
 class Fact {
 
-  RefdataValue factType
   Date factFrom
   Date factTo
   String factValue
   String factUid
   Long reportingYear
   Long reportingMonth
+  RefdataValue factType
 
   TitleInstance relatedTitle
   Org supplier
@@ -29,7 +29,7 @@ class Fact {
                 id column:'fact_id'
            version column:'fact_version'
            factUid column:'fact_uid', index:'fact_uid_idx'
-          factType column:'fact_type_rdv_fk', index:'fact_uid_idx'
+          factType column:'fact_type_rdv_fk'
   }
 
 }
