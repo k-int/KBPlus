@@ -12,6 +12,20 @@ class TransformerService {
 	
 	def exportService
 	
+	/**
+	 * The function first check that the user is allow to access the given {@link com.k_int.kbplus.Transforms}
+	 * Then it will make a HTTP request to the {@link com.k_int.kbplus.Transforms} URL
+	 * and pass the given content (XML or JSON), wait for the response and send the returned file
+	 * to the main {@link #javax.servlet.http.HttpServletResponse HttpServletResponse}.
+	 * 
+	 * @param user - the {@link com.k_int.kbplus.auth.User}
+	 * @param filename - name of the file to be created
+	 * @param tr_id - the {@link com.k_int.kbplus.Transforms} id
+	 * @param content - the JSON or XML content depending on what the transform is working with
+	 * @param main_response - the main {@link #javax.servlet.http.HttpServletResponse HttpServletResponse} 
+	 * to which the transformation need to be sent to. We want to differentiate this object with the HttpServletResponse created
+	 * to communicate with the transformer.
+	 */
     def triggerTransform(user, filename, tr_id, content, main_response) {
 		def starttime = exportService.printStart("Transformer service")
 		
@@ -92,8 +106,13 @@ class TransformerService {
 		}
     }
 	
-	
-	//check user has access to the transform
+	/**
+	 * Check if the user has access to the {@link com.k_int.kbplus.Transforms}
+	 * 
+	 * @param user - the {@link com.k_int.kbplus.auth.User}
+	 * @param tr_id - the {@link com.k_int.kbplus.Transforms} id
+	 * @return the {@link com.k_int.kbplus.Transforms} object or null if the user doesn't have access
+	 */
 	def hasTransformId(user, tr_id){
 		def transform = UserTransforms.findAllByUser(user).findAll{ it.transforms.id == Long.valueOf(tr_id) }
 		if(transform.size() == 1){

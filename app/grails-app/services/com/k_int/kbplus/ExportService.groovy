@@ -1,6 +1,5 @@
 package com.k_int.kbplus
 
-// XML doc stuff
 import java.io.File;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -15,12 +14,20 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+/**
+ * This service should contain the methods required to build the different exported files.
+ * CSV methods will stream out the content of the file to a given output.
+ * XML methods are provided to build the XML document
+ * JSON methods build a Map object which can then be converted into Json.
+ * 
+ * @author wpetit
+ */
 class ExportService {
 	def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
 	
-	/*****************/
-	/** CSV Exports **/
-	/*****************/
+	/* *************
+	 *  CSV Exports 
+	 */
 	def StreamOutSubsCSV(out, sub, entitlements, header){
 		def jc_id = sub.getSubscriber()?.getIdentifierByType('JC')?.value
 		out.withWriter { writer ->
@@ -49,6 +56,12 @@ class ExportService {
 		}
 	}
 	
+	/**
+	 * This function will stream out the list of titles in a CSV format.
+	 * 
+	 * @param out - the {@link #java.io.OutputStream OutputStream}
+	 * @param entitlements - the list of {@link #com.k_int.kbplus.IssueEntitlement IssueEntitlement}
+	 */
 	def StreamOutTitlesCSV(out, entitlements){
 		def starttime = printStart("Get Namespaces and max IE")
 		// Get distinct ID.Namespace and the maximum of entitlements for one title
@@ -166,15 +179,15 @@ class ExportService {
 		}
 	}
 	
-	/*****************/
-	/** XML Exports **/
-	/*****************/
+	/* ************
+	 * XML Exports
+	 */
 	
 	/**
 	 * Create the document and with the root Element of the XML file
 	 * 
-	 * @param root - the name of the root Element
-	 * @return the Document
+	 * @param root - the name of the root {@link #org.w3c.dom.Element Element}
+	 * @return the {@link #org.w3c.dom.Document Document} created
 	 */
 	def buildDocXML(root) {
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -191,11 +204,10 @@ class ExportService {
 	/**
 	 * Add a list of titles from a given entitlement list into a given Element
 	 * 
-	 * @param doc - the document
-	 * @param into_elem - the Element into which we want to insert the list of titles
-	 * @param entries - the list of entitlements or tipps
-	 * @param entries - the list of entitlements or tipps
-	 * @return type -  either "TIPP" or default "Issue Entitlement"
+	 * @param doc - the {@link #org.w3c.dom.Document Document}
+	 * @param into_elem - the {@link #org.w3c.dom.Element Element} into which we want to insert the list of titles
+	 * @param entries - the list of {@link com.k_int.kbplus.IssueEntitlement} or {@link com.k_int.kbplus.TitleInstancePackagePlatform}
+	 * @param type -  either "TIPP" or default "Issue Entitlement"
 	 */
     def addTitleListXML(Document doc, Element into_elem, List entries, String type = "Issue Entitlement") {
 		def current_title_id = -1
@@ -261,6 +273,13 @@ class ExportService {
 		}
     }
 	
+	/**
+	 * Add the licences of a given list into a given XML element.
+	 * 
+	 * @param doc - the {@link #org.w3c.dom.Document Document} to update
+	 * @param into_elem - the {@link #org.w3c.dom.Element Element} we want to put the list of licence(s) in.
+	 * @param lics - the {@link com.k_int.kbplus.License} list
+	 */
 	def addLicencesIntoXML(Document doc, Element into_elem, List lics) {
 		lics.each() { licence ->
 			def licElem = addXMLElementInto(doc, into_elem, "Licence", null)
@@ -321,6 +340,15 @@ class ExportService {
 		}
 	}
 	
+	/**
+	 * Add a subscription into a XML file
+	 * It will also add the Licence (owner) and Titles of that subscription
+	 * 
+	 * @param doc - the {@link #org.w3c.dom.Document Document} to update
+	 * @param into_elem - the {@link #org.w3c.dom.Element Element} we want to put the list of licence(s) in.
+	 * @param sub - the {@link com.k_int.kbplus.Subscription}
+	 * @param entitlements - the list of {@link com.k_int.kbplus.IssueEntitlement}
+	 */
 	def addSubIntoXML(Document doc, Element into_elem, sub, entitlements) {
 		def subElem = addXMLElementInto(doc, into_elem, "Subscription", null)
 		addXMLElementInto(doc, subElem, "SubscriptionID", sub.id.toString())
@@ -336,6 +364,15 @@ class ExportService {
 		addTitleListXML(doc, titlesElem, entitlements)
 	}
 	
+	/**
+	 * Add a package into a XML file
+	 * It will also add the Licence and the Titles of that subscription
+	 * 
+	 * @param doc - the {@link #org.w3c.dom.Document Document} to update
+	 * @param into_elem - the {@link #org.w3c.dom.Element Element} we want to put the list of licence(s) in.
+	 * @param pck - the {@link com.k_int.kbplus.Package}
+	 * @param tipps - the list of {@link com.k_int.kbplus.TitleInstancePackagePlatform}
+	 */
 	def addPackageIntoXML(Document doc, Element into_elem, pck, tipps) {
 		def subElem = addXMLElementInto(doc, into_elem, "Package", null)
 		addXMLElementInto(doc, subElem, "PackageID", pck.id.toString())
@@ -351,6 +388,13 @@ class ExportService {
 		addTitleListXML(doc, titlesElem, tipps, "TIPP")
 	}
 	
+	/**
+	 * Add Organisation into a given Element.
+	 * 
+	 * @param doc - the {@link #org.w3c.dom.Document Document} to update
+	 * @param into_elem - the {@link #org.w3c.dom.Element Element} we want to put the list of licence(s) in.
+	 * @param orgs - list of {@link com.k_int.kbplus.Organisations}
+	 */
 	private addRelatedOrgsIntoXML(Document doc, Element into_elem, orgs){
 		orgs.each { or ->
 			def orgElem = addXMLElementInto(doc, into_elem, "RelatedOrg", null)
@@ -368,6 +412,15 @@ class ExportService {
 		}
 	}
 	
+	/**
+	 * Stream out a given Document into a given output.
+	 * This function is using TransformerFactory to create the XML output.
+	 * It will use UTF-8 and add line break and space to get a readable XML architecture.
+	 * 
+	 * @param doc - the {@link #org.w3c.dom.Document Document} to stream
+	 * @param out - the {@link java.io.OutputStream}
+	 * @return - the {@link javax.xml.transform.stream.StreamResult} created
+	 */
 	def streamOutXML(doc, out) {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
@@ -384,13 +437,33 @@ class ExportService {
 		return streamout
 	}
 	
-	/* A few usefull method to build XML document */
+	/* 
+	 * A few usefull method to build XML document 
+	 */
+	
+	/**
+	 * Add an attribute into a given Element
+	 * 
+	 * @param doc - the {@link #org.w3c.dom.Document Document}
+	 * @param e - the {@link #org.w3c.dom.Element Element} to update
+	 * @param name - name of the attribute
+	 * @param val - value of the attribute
+	 */
 	private Element addXMLAttr(Document doc, Element e, String name, String val){
 		Attr attr = doc.createAttribute(name);
 		attr.setValue(val);
 		e.setAttributeNode(attr);
 	}
 	
+	/**
+	 * Add XML Element into another given Element
+	 * 
+	 * @param doc - the {@link #org.w3c.dom.Document Document}
+	 * @param p - parent {@link #org.w3c.dom.Element Element}
+	 * @param name - name of the element
+	 * @param content - text content of the element 
+	 * @return the {@link #org.w3c.dom.Element Element} created
+	 */
 	private Element addXMLElementInto(def doc, Element p, String name, def content){
 		Element e = doc.createElement(name);
 		if(content)
@@ -399,10 +472,17 @@ class ExportService {
 		return e
 	}
 	
-	/******************/
-	/** JSON EXPORTS **/
-	/******************/
+	/* *************
+	 * JSON EXPORTS
+	 */
 	
+	/**
+	 * Add a list of titles from a given entitlement list into a given Map.
+	 * The Map created with this function has the purpose to be transformed into JSON.
+	 * 
+	 * @param into_map - Map which will contain the list
+	 * @param ie_list - list of {@link com.k_int.kbplus.IssueEntitlement}
+	 */
 	def addTitlesToMap(into_map, ie_list, String type = "Issue Entitlement"){
 		def current_title_id = -1
 		def titles = []
@@ -478,6 +558,13 @@ class ExportService {
 		into_map."TitleList" = titles
 	}
 	
+	/**
+	 * Add Organisations into a given Map.
+	 * The Map created with this function has the purpose to be transformed into JSON.
+	 * 
+	 * @param into_map - map which will contain the list of organisation
+	 * @param orgs - list of {@link com.k_int.kbplus.Org}
+	 */
 	def addOrgMap(into_map, orgs){
 		orgs.each { or ->
 			def org = [:]
@@ -505,6 +592,14 @@ class ExportService {
 		}
 	}
 	
+	/**
+	 * Add Licences into a given Map.
+	 * The Map created with this function has the purpose to be transformed into JSON.
+	 * 
+	 * @param into_map - map which will contain the list of licences
+	 * @param lics - list of {@link com.k_int.kbplus.License}
+	 * @return the Map created
+	 */
 	def addLicensesToMap(into_map, lics){
 		def licences = []
 		
@@ -563,6 +658,14 @@ class ExportService {
 		return into_map
 	}
 	
+	
+	/**
+	 * Create a Subscription Map which has the purpose to be transformed into JSON.
+	 * 
+	 * @param sub - the {@link com.k_int.kbplus.Subscription}
+	 * @param entitlements - list of {@link com.k_int.kbplus.IssueEntitlement}
+	 * @return the Map created
+	 */
 	def getSubscriptionMap(sub, entitlements){
 		def map = [:]
 		def subscriptions = []
@@ -588,6 +691,13 @@ class ExportService {
 		return map
 	}
 	
+	/**
+	 * Create a Package Map which has the purpose to be transformed into JSON.
+	 * 
+	 * @param pck - the {@link com.k_int.kbplus.Package}
+	 * @param tipps - the list of {@link com.k_int.kbplus.TitleInstancePackagePlatform}
+	 * @return the Map created
+	 */
 	def getPackageMap(pck, tipps){
 		def map = [:]
 		def packages = []
@@ -613,16 +723,31 @@ class ExportService {
 		return map
 	}
 	
-	/*******************/
-	/** OTHER METHODS **/
-	/*******************/
+	/* **************
+	 * OTHER METHODS
+	 */
 	
+	/**
+	 * This function has been created to track the time taken by the different methods provided by this service
+	 * It's suppose to be run at the start of an event and it will catch the time and display it.
+	 * 
+	 * @param event - text which will be print out, describing the event
+	 * @return time when the method is called
+	 */
 	def printStart(event){
 		def starttime = new Date();
 		log.debug("******* Start ${event}: ${starttime} *******")
 		return starttime
 	}
 	
+	/**
+	 * This function has been created to track the time taken by the different methods provided by this service.
+	 * It's suppose to be run at the end of an event.
+	 * It will print the duration between the given time and the current time.
+	 * 
+	 * @param starttime - the time when the event started
+	 * @param event - text which will be print out, describing the event
+	 */
 	def printDuration(starttime, event){
 		use(groovy.time.TimeCategory) {
 			def duration = new Date() - starttime
