@@ -438,7 +438,7 @@ class ExportService {
 	}
 	
 	/* 
-	 * A few usefull method to build XML document 
+	 * A few useful method to build XML document 
 	 */
 	
 	/**

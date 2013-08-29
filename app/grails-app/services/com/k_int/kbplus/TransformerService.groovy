@@ -29,14 +29,14 @@ class TransformerService {
     def triggerTransform(user, filename, tr_id, content, main_response) {
 		def starttime = exportService.printStart("Transformer service")
 		
+		// Check that user has access to this transform
 		def transform = hasTransformId(user, tr_id)
 		if( transform ){
-			def tr = transform[0].transforms
+			def tr = transform.transforms
 			def format = tr.accepts_format.value
 			def reqMIME = 'text/xml'
 			if(format == 'json')
 				reqMIME = 'application/json'
-			
 			
 			main_response.setHeader("Content-disposition", "attachment; filename=${filename}.${tr.return_file_extention}")
 			main_response.contentType = tr.return_mime //"text/plain"
@@ -44,67 +44,68 @@ class TransformerService {
 			
 			log.debug("Calling transformer: ${tr.transformer.url}")
 			
+			// Split URL to get the server and path
 			URL url = new URL(tr.transformer.url);
 			def server = "${url.getProtocol()}://${url.getAuthority()}"
 			def path = "${url.getPath()}"
 			
-			def http = new HTTPBuilder(server)
-			def msg = ""
-			
-			def is_file = new InputStreamBody(new ByteArrayInputStream(content.getBytes()), reqMIME, 'file')
-			
 			starttime = exportService.printStart("Connection")
 			
-			//HTTPBuilder has no direct methods to add timeouts. We have to add them to the HttpParams of the underlying HttpClient
+			// Create HTTBuilder
+			def http = new HTTPBuilder(server)
+			// HTTPBuilder has no direct methods to add timeouts. We have to add them to the HttpParams of the underlying HttpClient
 			http.getClient().getParams().setParameter("http.connection.timeout", new Integer(30000))
 			http.getClient().getParams().setParameter("http.socket.timeout", new Integer(300000))
 			
+			// Use HTTPBuilder to manage request/response with the Transformer
 			http.request( POST ) { request ->
 				uri.path = path
 				
+				// Setting multipart/form coded HTTP entity consisting of multiple body parts.
 				MultipartEntity mpe = new MultipartEntity();
 				mpe.addPart('path', new StringBody(tr.path_to_stylesheet))
-				mpe.addPart(format, is_file)
+				mpe.addPart(format, new InputStreamBody(new ByteArrayInputStream(content.getBytes()), reqMIME, 'file'))
 				request.entity = mpe
-				request.getParams().setParameter("http.connection.timeout", new Integer(30000))
-				request.getParams().setParameter("http.socket.timeout", new Integer(300000))
 				
-				response.'401' = { resp ->
-					log.error('access denied')
-				}
-				
+				// Read response and send it to user outputStream
 				response.success = { resp, reader ->
 					exportService.printDuration(starttime, "Connection")
 					starttime = exportService.printStart("Reading Transformer Output")
 					
-					assert resp.statusLine.statusCode == 200
-					msg += "\nresponse status: ${resp.statusLine}\n"
-					msg += "Headers:\n"
-					resp.headers.each {
-						msg += "${it.name} : ${it.value}\n"
-					}
-					log.debug(msg)
+					log.debug(getResponseHeader(resp))
+					
 					out << reader
 					
 					exportService.printDuration(starttime, "Reading Transformer Output")
 				}
 				
-				response.failure = { resp ->
-					msg += "\nresponse failed: ${resp.statusLine}\n"
-					msg += "Headers:\n"
-					resp.headers.each {
-						msg += "${it.name} : ${it.value}\n"
-					}
-					log.error(msg)
-					out << msg
-				}
+				// handle denied access
+				response.'401' = { resp -> log.error('access denied') }
+				
+				// handle response failure - fill the file sent with an error message
+				response.failure = { resp -> out << getResponseHeader(resp) }
 			}
 			out.close()
 		}
 		else{
+			// fill the file sent with an error message
 			out << "Looks like you dont't have access to that transform"
 		}
     }
+	
+	/**
+	 * Simple function to display the response header for debug purpose.
+	 * 
+	 * @param resp - {@link #javax.servlet.http.HttpServletResponse HttpServletResponse} from transform
+	 * @return a string representation of the header
+	 */
+	def getResponseHeader(resp){
+		def msg = "\nresponse failed: ${resp.statusLine}\n"
+		msg += "Headers:\n"
+		resp.headers.each { msg += "${it.name} : ${it.value}\n" }
+		
+		return msg
+	}
 	
 	/**
 	 * Check if the user has access to the {@link com.k_int.kbplus.Transforms}
@@ -116,7 +117,7 @@ class TransformerService {
 	def hasTransformId(user, tr_id){
 		def transform = UserTransforms.findAllByUser(user).findAll{ it.transforms.id == Long.valueOf(tr_id) }
 		if(transform.size() == 1){
-			transform
+			transform[0]
 		}else{
 			null
 		}
