@@ -65,11 +65,11 @@ class LicenseImportController {
 
       // If a replace_opl result is specified, record it
       if (params.replace_opl) {
-        log.debug("replace_opl ${params.replace_opl}")
+        //log.debug("replace_opl ${params.replace_opl}")
         result.replace_opl  = params.replace_opl
       }
       // Otherwise check upload file
-      else if (!params.existing_opl) {
+      else if (!result.existing_opl) {
         // Check user-specified params
         if (!result.import_file) {
           result.validationResult.errors.add("Please specify a file to upload.")
@@ -242,7 +242,7 @@ class LicenseImportController {
       licTexts.eachWithIndex { lt, m ->
         usageTerms[n].licenseTexts[m] = [:]
         usageTerms[n].licenseTexts[m].text = [lt.TextPreceding.text(), lt.Text.text()].join(" ")
-        usageTerms[n].licenseTexts[m].elId = lt.@id //lt.SortNumber.text()
+        usageTerms[n].licenseTexts[m].elId = lt.@id.text() //lt.SortNumber.text()
         usageTerms[n].licenseTexts[m].displayNum = lt.DisplayNumber?.text()
       }
     }
@@ -371,8 +371,11 @@ class LicenseImportController {
           ts.put(ut.status, n)
         }
       }
-    } else {
+      // Set success flag
+      importResult.success = true
 
+    } else {
+      // No uuid from docstore
     }
 
     importResult
@@ -438,13 +441,13 @@ class LicenseImportController {
           displayNum:lt.displayNum,
           oplLicense:opl
       );
-      oplt.save(validate:false, flush: true, insert:true);
+      oplt.save(flush: true, insert:true);
       // Create the association object:
       def ass = new OnixplUsageTermLicenseText(
           usageTerm: term,
           licenseText: oplt
       )
-      ass.save(validate: false, flush: true, insert: true);
+      ass.save(flush: true, insert: true);
     }
   }
 
