@@ -131,11 +131,22 @@
 
         <br/>
         <g:if test="${validationResult.onixpl_license}">
-            <g:link action="index"
-                    controller="onixplLicenseDetails"
-                    class="btn btn-info"
-                    id="${validationResult.onixpl_license.id}">
-                View ${validationResult.replace ? 'updated' : 'new'} ONIX-PL license</g:link>
+            <g:if test="${validationResult.license}">
+            <%-- Show link to license's ONIX-PL display if license specified --%>
+                <g:link action="onixpl"
+                        controller="licenseDetails"
+                        class="btn btn-info"
+                        id="${validationResult.license.id}">
+                    View ${validationResult.replace ? 'updated' : 'new'} ONIX-PL details</g:link>
+            </g:if>
+            <g:else>
+            <%-- Show link to ONIX-PL display if no associated license specified, or multiple ones --%>
+                <g:link action="index"
+                        controller="onixplLicenseDetails"
+                        class="btn btn-info"
+                        id="${validationResult.onixpl_license.id}">
+                    View ${validationResult.replace ? 'updated' : 'new'} ONIX-PL license</g:link>
+            </g:else>
         </g:if>
         </div>
     </g:if>
