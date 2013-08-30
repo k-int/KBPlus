@@ -14,25 +14,28 @@
         </ul>
     </div>
 
+    <g:if test="${flash.message}">
+      <div class="container">
+        <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
+      </div>
+    </g:if>
+
+    <g:if test="${flash.error}">
+      <div class="container">
+        <bootstrap:alert class="error-info">${flash.error}</bootstrap:alert>
+      </div>
+    </g:if>
+
+
     <div class="container">
       <g:form action="editContentItem">
         <dl>
           <dt>Key</dt>
-          <dd><input name="key" type="text"/></dd>
-
-          <dt>Locale (Or blank for none)</dt>
-          <dd><select name="locale">
-                <option value="">No Locale (Default)</option>
-                <option value="en_GB">British English</option>
-                <option value="es">Español</option>
-                <option value="fr">Français</option>
-                <option value="it">Italiano</option>
-                <option value="ja">日本人</option>
-                <option value="zn-CH">中国的</option>
-                <option value="en_US">US English</option>
-              </select></dd>
+          <dd>${contentItem.key}</dd>
+          <dt>Locale</dt>
+          <dd>${contentItem.locale}</dd>
           <dt>Content (Markdown)</dt>
-          <dd><textarea name="content" rows="5"></textarea></dd>
+          <dd><textarea name="content" rows="5">${contentItem.content}</textarea></dd>
         </dl>
         <input type="submit" class="btn btn-primary"/>
       </g:form>
