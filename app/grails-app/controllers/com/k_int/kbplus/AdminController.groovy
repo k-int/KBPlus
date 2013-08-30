@@ -193,4 +193,42 @@ class AdminController {
     redirect(controller:'home')
   }
 
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def manageContentItems() {
+    def result=[:]
+
+    params.max = Math.min(params.max ? params.int('max') : 10, 100)
+    result.items = ContentItem.list(params)
+    result
+
+    result
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def newContentItem() {
+    def result=[:]
+    if ( ( params.key != null ) && ( params.content != null ) && ( params.key.length() > 0 ) && ( params.content.length() > 0 ) ) {
+
+      def locale = ( ( params.locale != null ) && ( params.locale.length() > 0 ) ) ? params.locale : null
+
+      if ( ContentItem.findByKeyAndLocale(params.key,locale) != null ) {
+        flash.message = 'Content item already exists'
+      }
+      else {
+        def newci = new ContentItem(key:params.key, locale:locale, content:params.content).save()
+      }
+
+    }
+
+    redirect(action:'editContentItem',id:"${params.key}:${params.locale}")
+
+    result
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def editContentItem() {
+    def result=[:]
+    result
+  }
+
 }

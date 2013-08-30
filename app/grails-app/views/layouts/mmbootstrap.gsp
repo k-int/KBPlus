@@ -170,6 +170,9 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'juspSync'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="juspSync">Run JUSP Sync</g:link>
                       </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'manageContentItems'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="manageContentItems">Manage Content Items</g:link>
+                      </li>
                     </ul>
                   </li>
   
