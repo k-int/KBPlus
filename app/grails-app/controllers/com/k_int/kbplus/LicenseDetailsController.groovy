@@ -2,9 +2,8 @@ package com.k_int.kbplus
 
 import grails.converters.*
 import grails.plugins.springsecurity.Secured
-import grails.converters.*
 import org.elasticsearch.groovy.common.xcontent.*
-import groovy.xml.MarkupBuilder
+import groovy.xml.StreamingMarkupBuilder
 import com.k_int.kbplus.auth.*;
 import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 import org.springframework.security.access.annotation.Secured
@@ -18,6 +17,8 @@ class LicenseDetailsController {
   def gazetteerService
   def alertsService
   def genericOIDService
+  def transformerService
+  def exportService
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
@@ -39,176 +40,36 @@ class LicenseDetailsController {
     else {
       result.editable = false
     }
-
+	
+    def filename = "licenceDetails_${result.license.reference.replace(" ", "_")}"
     result.onixplLicense = result.license.onixplLicense
 
     withFormat {
 		  html result
 		  json {
-			  def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+			  def map = exportService.addLicensesToMap([:], [result.license])
 			  
-			  def response = [:]
-			  def licences = []
-			  
-			  def lic = [:]
-			  def licence = result.license
-			  
-			  lic."LicenceReference" = licence.reference
-			  lic."NoticePeriod" = licence.noticePeriod
-			  lic."LicenceURL" = licence.licenseUrl
-			  lic."LicensorRef" = licence.licensorRef
-			  lic."LicenseeRef" = licence.licenseeRef
-				  
-			  lic."RelatedOrgs" = []
-			  licence.orgLinks.each { or ->
-				  def org = [:]
-				  org."OrgID" = or.org.id
-				  org."OrgName" = or.org.name
-				  org."OrgRole" = or.roleType.value
-				  
-				  def ids = [:]
-				  or.org.ids.each(){ id ->
-					  def value = id.identifier.value
-					  def ns = id.identifier.ns.ns
-					  if(ids.containsKey(ns)){
-						  def current = ids[ns]
-						  def newval = []
-						  newval << current
-						  newval << value
-						  ids[ns] = newval
-					  } else {
-						  ids[ns]=value
-					  }
-				  }
-				  org."OrgIDs" = ids
-				  
-				  lic."RelatedOrgs" << org
+			  def json = map as JSON
+			  if(params.transforms){
+				  transformerService.triggerTransform(result.user, filename, params.transforms, json.toString(), response)
+			  }else{
+				  response.setHeader("Content-disposition", "attachment; filename=\"${filename}.json\"")
+				  response.contentType = "application/json"
+				  render json.toString()
 			  }
-			  
-			  def prop = lic."LicenceProperties" = [:]
-			  def ca = prop."ConcurrentAccess" = [:]
-			  ca."Status" = licence.concurrentUsers?.value
-			  ca."UserCount" = licence.concurrentUserCount
-			  ca."Notes" = licence.getNote("concurrentUsers")?.owner?.content?:""
-			  def ra = prop."RemoteAccess" = [:]
-			  ra."Status" = licence.remoteAccess?.value
-			  ra."Notes" = licence.getNote("remoteAccess")?.owner?.content?:""
-			  def wa = prop."WalkingAccess" = [:]
-			  wa."Status" = licence.walkinAccess?.value
-			  wa."Notes" = licence.getNote("walkinAccess")?.owner?.content?:""
-			  def ma = prop."MultisiteAccess" = [:]
-			  ma."Status" = licence.multisiteAccess?.value
-			  ma."Notes" = licence.getNote("multisiteAccess")?.owner?.content?:""
-			  def pa = prop."PartnersAccess" = [:]
-			  pa."Status" = licence.partnersAccess?.value
-			  pa."Notes" = licence.getNote("partnersAccess")?.owner?.content?:""
-			  def aa = prop."AlumniAccess" = [:]
-			  aa."Status" = licence.alumniAccess?.value
-			  aa."Notes" = licence.getNote("alumniAccess")?.owner?.content?:""
-			  def ill = prop."InterLibraryLoans" = [:]
-			  ill."Status" = licence.ill?.value
-			  ill."Notes" = licence.getNote("ill")?.owner?.content?:""
-			  def cp = prop."IncludeinCoursepacks" = [:]
-			  cp."Status" = licence.coursepack?.value
-			  cp."Notes" = licence.getNote("coursepack")?.owner?.content?:""
-			  def vle = prop."IncludeinVLE" = [:]
-			  vle."Status" = licence.vle?.value
-			  vle."Notes" = licence.getNote("vle")?.owner?.content?:""
-			  def ea = prop."EntrepriseAccess" = [:]
-			  ea."Status" = licence.enterprise?.value
-			  ea."Notes" = licence.getNote("enterprise")?.owner?.content?:""
-			  def pca = prop."PostCancellationAccessEntitlement" = [:]
-			  pca."Status" = licence.pca?.value
-			  pca."Notes" = licence.getNote("pca")?.owner?.content?:""
-			  
-			  licences << lic
-			  response."Licences" = licences
-			  
-			  render response as JSON
 		  }
 		  xml {
-			  def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+			  def doc = exportService.buildDocXML("Licences")
+			  exportService.addLicencesIntoXML(doc, doc.getDocumentElement(), [result.license])
 			  
-			  def writer = new StringWriter()
-			  def xmlBuilder = new MarkupBuilder(writer)
-			  xmlBuilder.getMkp().xmlDeclaration(version:'1.0', encoding: 'UTF-8')
-			  
-			  def licence = result.license
-			  
-			  xmlBuilder.Licences() {
-				  Licence(){
-					  LicenceReference(licence.reference)
-					  NoticePeriod(licence.noticePeriod)
-					  LicenceURL(licence.licenseUrl)
-					  LicensorRef(licence.licensorRef)
-					  LicenseeRef(licence.licenseeRef)
-					  
-					  licence.orgLinks.each { or ->
-						  RelatdOrg(id: or.org.id){
-							  OrgName(or.org.name)
-							  OrgRole(or.roleType.value)
-							  
-							  OrgIDs(){
-								  or.org.ids.each(){ id ->
-									  def value = id.identifier.value
-									  def ns = id.identifier.ns.ns
-									  ID(namespace: ns, value)
-								  }
-							  }
-						  }
-					  }
-					  
-					  LicenceProperties(){
-						  ConcurrentAccess(){
-							  Status(licence.concurrentUsers?.value)
-							  UserCount(licence.concurrentUserCount)
-							  Notes(licence.getNote("concurrentUsers")?.owner?.content?:"")
-						  }
-						  RemoteAccess(){
-							  Status(licence.remoteAccess?.value)
-							  Notes(licence.getNote("remoteAccess")?.owner?.content?:"")
-						  }
-						  WalkingAccess(){
-							  Status(licence.walkinAccess?.value)
-							  Notes(licence.getNote("walkinAccess")?.owner?.content?:"")
-						  }
-						  MultisiteAccess(){
-							  Status(licence.multisiteAccess?.value)
-							  Notes(licence.getNote("multisiteAccess")?.owner?.content?:"")
-						  }
-						  PartnersAccess(){
-							  Status(licence.partnersAccess?.value)
-							  Notes(licence.getNote("partnersAccess")?.owner?.content?:"")
-						  }
-						  AlumniAccess(){
-							  Status(licence.alumniAccess?.value)
-							  Notes(licence.getNote("alumniAccess")?.owner?.content?:"")
-						  }
-						  InterLibraryLoans(){
-							  Status(licence.ill?.value)
-							  Notes(licence.getNote("ill")?.owner?.content?:"")
-						  }
-						  IncludeinCoursepacks(){
-							  Status(licence.coursepack?.value)
-							  Notes(licence.getNote("coursepack")?.owner?.content?:"")
-						  }
-						  IncludeinVLE(){
-							  Status(licence.vle?.value)
-							  Notes(licence.getNote("vle")?.owner?.content?:"")
-						  }
-						  EntrepriseAccess(){
-							  Status(licence.enterprise?.value)
-							  Notes(licence.getNote("enterprise")?.owner?.content?:"")
-						  }
-						  PostCancellationAccessEntitlement(){
-							  Status(licence.pca?.value)
-							  Notes(licence.getNote("pca")?.owner?.content?:"")
-						  }
-					  }
-				  }
+			  if(params.transforms){
+				  String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
+				  transformerService.triggerTransform(result.user, filename, params.transforms, xml, response)
+			  }else{
+				  response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
+				  response.contentType = "text/xml"
+				  exportService.streamOutXML(doc, response.outputStream)
 			  }
-			  
-			  render writer.toString()
 		  }
     }
   }

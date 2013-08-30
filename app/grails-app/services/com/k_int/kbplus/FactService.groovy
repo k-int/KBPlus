@@ -5,21 +5,21 @@ class FactService {
   static transactional = false;
 
     def registerFact(fact) {
-      log.debug("Enter registerFact");
+      // log.debug("Enter registerFact");
+      def result = false;
 
       if ( ( fact.type == null ) || 
            ( fact.type == '' ) ) 
-        return
+        return result;
 
       try {
-        Fact.withTransaction { status ->
           def fact_type_refdata_value = RefdataCategory.lookupOrCreate('FactType',fact.type);
 
           // Are we updating an existing fact?
           if ( fact.uid != null ) {
             def current_fact = Fact.findByFactUidAndFactType(fact.uid,fact_type_refdata_value)
             if ( current_fact == null ) {
-              log.debug("Create new fact..");
+              // log.debug("Create new fact..");
               current_fact = new Fact(factType:fact_type_refdata_value, 
                                       factFrom:fact.from,
                                       factTo:fact.to,
@@ -31,7 +31,8 @@ class FactService {
                                       juspio:fact.juspio,
                                       reportingYear:fact.reportingYear,
                                       reportingMonth:fact.reportingMonth)
-              if ( current_fact.save(flush:true) ) {
+              if ( current_fact.save() ) {
+                result=true
               }
               else {
                 log.error("Problem saving fact: ${current_fact.errors}");
@@ -41,14 +42,14 @@ class FactService {
               log.debug("update existing fact ${current_fact.id}");
             }
           }
-        }
       }
       catch ( Exception e ) {
         log.error("Problem registering fact",e);
       }
       finally {
-        log.debug("Leave registerFact");
+        // log.debug("Leave registerFact");
       }
+      return result;
     }
 
 
