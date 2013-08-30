@@ -25,8 +25,6 @@
 
     <!-- Stylesheets -->
     <r:layoutResources/>
-    
-    <r:layoutResources/>
   </head>
 
   <body>
@@ -159,7 +157,7 @@
                          <g:link controller="admin" action="titleAugment">Run Data Cleaning (Title Augment)</g:link>
                       </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'fullReset'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="fullReset">Full Reset</g:link>
+                         <g:link controller="admin" action="fullReset">Run Full ES Index Reset</g:link>
                       </li>
                       <li <%= ( ( 'userDetails'== controllerName ) && ( 'list'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="userDetails" action="list">User Details</g:link>
@@ -169,6 +167,9 @@
                       </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'juspSync'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="juspSync">Run JUSP Sync</g:link>
+                      </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'manageContentItems'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="manageContentItems">Manage Content Items</g:link>
                       </li>
                     </ul>
                   </li>

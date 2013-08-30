@@ -42,6 +42,9 @@
         <div class="container">
             <div class="row">
                 <div class="span8">
+
+                    <g:dbContent key="kbplus.welcome.text"/>
+
                     <p>Welcome to Knowledge Base+, a new shared community service from JISC Collections launching in the autumn that aims to help UK libraries manage their e-resources more efficiently. Over the course of the last year <abbr title="Higher Education Funding Council for England">HEFCE</abbr> has invested significantly in the creation of a shared service knowledge base for UK academic libraries to support the management of e-resources by the academic community – Knowledge Base+ (KB+).</p>
                     <p>This is the phase one release of KB+. At its core is a centrally maintained knowledgebase, where JISC Collections will undertake the verification, normalisation, updating and sharing of data held in KB+.</p>
                     <p>What data will be included?</p>

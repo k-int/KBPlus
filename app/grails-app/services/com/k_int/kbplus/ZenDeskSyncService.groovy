@@ -45,13 +45,16 @@ class ZenDeskSyncService {
     // This function reconnects packages in the connected zendesk system to any packages where pkg.forumId is null
     reconnectOrphanedZendeskForums(http);
 
+    def current_categories = getCategories(http);
+
+    // Create forums for any packages we don't have yet.
     Package.findAllByForumId(null).each { pkg ->
       // Check that there is a category for the content provider, if not, create
       def cp = pkg.getContentProvider()
       def cp_category_id = null
       if ( cp != null ) {
         if ( cp.categoryId == null ) {
-          cp.categoryId = lookupOrCreateZenDeskCategory(http,"${cp.name} ( ${ApplicationHolder.application.config.kbplusSystemId} )");
+          cp.categoryId = lookupOrCreateZenDeskCategory(http,"${cp.name} ( ${ApplicationHolder.application.config.kbplusSystemId} )", current_categories);
           cp.save(flush:true);
         }
         pkg.forumId = createForum(http,pkg,cp.categoryId)
@@ -71,9 +74,9 @@ class ZenDeskSyncService {
             log.debug("Checking ${f.name} (${f.id})");
             if ( f.name ==~ /(.*)\(Package (\d+) from (.*)(\)$)/ ) {
               def pkg_info = f.name =~ /(.*)\(Package (\d+) from (.*)(\)$)/
-              def package_name = pkg_name[0][1]
-              def package_id = pkg_id[0][2]
-              def system_id = pkg_id[0][3]
+              def package_name = pkg_info[0][1]
+              def package_id = pkg_info[0][2]
+              def system_id = pkg_info[0][3]
   
               // Only hook up forums if they correspond to our local system identifier
               if ( system_id == ApplicationHolder.application.config.kbplusSystemId ) {
@@ -125,12 +128,15 @@ class ZenDeskSyncService {
     result
   }
 
-  def lookupOrCreateZenDeskCategory(http,catname) {
+  def lookupOrCreateZenDeskCategory(http,catname,current_categories) {
     log.debug("lookupOrCreateZenDeskCategory(${catname})");
     def result = null
 
-    def current_categories = getCategories(http);
-    def current_category = current_categories.categories.find { c -> c.name == catname }
+    def current_category = null
+    if ( current_categories != null ) {
+      current_category = current_categories.categories.find { c -> c.name == catname }
+    }
+
     if ( current_category == null ) {
       log.debug("Not found, create...");
 
@@ -139,7 +145,6 @@ class ZenDeskSyncService {
                    requestContentType : ContentType.JSON, 
                    body : [ 'category' : [ 'name' : catname.toString() ] ]) { resp, json ->
           log.debug("Result: ${resp}, ${json}");
-          // Result: groovyx.net.http.HttpResponseDecorator@48691d94, [category:[url:https://kbplus.zendesk.com/api/v2/categories/20104091.json, id:20104091, name:NRC Research Press ( IanHubbleDev ), description:null, position:9999, created_at:2013-07-04T08:36:21Z, updated_at:2013-07-04T08:36:21Z]]
           result = json.category.id
         }
       }
@@ -160,8 +165,13 @@ class ZenDeskSyncService {
     def result = null
 
     // GET /api/v2/categories.json
-    http.get(path:'/api/v2/categories.json') { resp, data ->
-      result = data
+    try {
+      http.get(path:'/api/v2/categories.json') { resp, data ->
+        result = data
+      }
+    }
+    catch ( Exception e ) {
+      log.error("Problem fetching categories.. think this can happen if there aren't any cats yet",e);
     }
 
     result

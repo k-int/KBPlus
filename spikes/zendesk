@@ -1,0 +1,7 @@
+
+
+curl https://{subdomain}.zendesk.com/api/v2/users.json -v -u {email_address}:{password}
+
+
+curl https://ostephens.zendesk.com/api/v2/search.json?query=type:topic -v -u ian.ibbotson+kbpluszen@k-int.com:****
+
