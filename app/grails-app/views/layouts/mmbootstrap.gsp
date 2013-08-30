@@ -25,8 +25,6 @@
 
     <!-- Stylesheets -->
     <r:layoutResources/>
-    
-    <r:layoutResources/>
   </head>
 
   <body>

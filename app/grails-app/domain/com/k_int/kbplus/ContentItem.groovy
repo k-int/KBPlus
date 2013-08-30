@@ -15,7 +15,7 @@ class ContentItem {
 
   static constraints = {
         key(nullable:false, blank:false)
-     locale(nullable:true, blank:true)
+     locale(nullable:false, blank:true)
     content(nullable:false, blank:false)
   }
 }
