@@ -28,7 +28,7 @@
 
 
     <div class="container">
-      <g:form action="editContentItem">
+      <g:form action="editContentItem" id="${params.id}">
         <dl>
           <dt>Key</dt>
           <dd>${contentItem.key}</dd>

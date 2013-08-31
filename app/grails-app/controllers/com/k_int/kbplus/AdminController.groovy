@@ -10,6 +10,7 @@ class AdminController {
   def dataloadService
   def zenDeskSyncService
   def juspSyncService
+  def messageService
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def index() { }
@@ -228,7 +229,7 @@ class AdminController {
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def editContentItem() {
     def result=[:]
-    def idparts = params.id.split(':')
+    def idparts = params.id?.split(':')
     if ( idparts.length > 0 ) {
       def key = idparts[0]
       def locale = idparts.length > 1 ? idparts[1] : ''
@@ -241,8 +242,11 @@ class AdminController {
         flash.message="Unable to locate content item for key ${idparts}"
         redirect(action:'manageContentItems');
       }
-      // contentItem.content = params.content
-      // contentItem.save()
+      if ( request.method.equalsIgnoreCase("post")) {
+        contentItem.content = params.content
+        contentItem.save(flush:true)
+        messageService.update(key,locale)
+      }
     }
     else {
       flash.message="Unable to parse content item id ${params.id} - ${idparts}"
