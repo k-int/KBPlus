@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>KBPlus Transformer Test</title>
+	<meta name="generator" content="BBEdit 9.6" />
+</head>
+<body>
+<h1>KBPlus Transformer Test</h1>
+<p>This is a simple form that posts a file and xslt path to the XSLT transformer script on dev.kbplus.</p>
+<p>To work it you must have an XML file downloaded from the KBPlus app representing the titles that you want to transform.</p>
+
+<h2>Post to dev.kbplus</h2>
+<form enctype="multipart/form-data"
+        action="http://dev.kbplus.ac.uk/cgi-bin/KBPlus_transformer.cgi"
+        method="POST">
+   XSLT: <select name="path">
+   	<option value="/home/kbwww/www/stylesheets/serialssolutions.xslt">serialssolutions.xslt</option>
+   </select>
+<br />
+   File: <input type="FILE" name="xml"/>
+   <input type="submit" name="Upload" value="Upload" />
+  </form>
+<h3>Example curl command</h3>
+<p>This does the same thing from the CLI:</p>
+<pre>curl -X POST -F "xml=@./titles_listing_2210.xml;type=text/xml" -F "path=/home/kbwww/www/stylesheets/serialssolutions.xslt" http://dev.kbplus.ac.uk/cgi-bin/KBPlus_transformer.cgi</pre>  
+  <h2>Post to Cesare's dev machine</h2>
+  <form enctype="multipart/form-data"
+        action="http://dlib-potenza.ucs.ed.ac.uk/cgi-bin/KBPlus_transformer.cgi"
+        method="POST">
+   XSLT: <select name="path">
+   	<option value="/home/cbellini/eclipse4.3_workspace/PerlTest/transform.xslt">serialssolutions.xslt</option>
+   </select>
+<br />
+   File: <input type="FILE" name="xml"/>
+   <input type="submit" name="Upload" value="Upload" />
+  </form>
+  
+<h3>Example curl command</h3>
+<p>This does the same thing from the CLI:</p>
+<pre>curl -X POST -F "xml=@./titles_listing_2210.xml;type=text/xml" -F "path=/home/cbellini/eclipse4.3_workspace/PerlTest/transform.xslt" http://dlib-potenza.ucs.ed.ac.uk/cgi-bin/KBPlus_transformer.cgi</pre>
+
+  <h2>Post to Des's dev machine</h2>
+  <form enctype="multipart/form-data"
+        action="http://dlib-crinan.ucs.ed.ac.uk/cgi-bin/kbplus/KBPlus_transformer.cgi"
+        method="POST">
+   XSLT: <select name="path">
+   	<option value="/Users/dreid9/git/KBPlus/transformer/stylesheets/serialssolutions.xslt">serialssolutions.xslt</option>
+   </select>
+<br />
+   File: <input type="FILE" name="xml"/>
+   <input type="submit" name="Upload" value="Upload" />
+  </form>
+  
+<h3>Example curl command</h3>
+<p>This does the same thing from the CLI:</p>
+<pre>curl -X POST -F "xml=@./titles_listing_2210.xml;type=text/xml" -F "path=/Users/dreid9/git/KBPlus/transformer/stylesheets/serialssolutions.xslt" http://dlib-crinan.ucs.ed.ac.uk/cgi-bin/KBPlus_transformer.cgi</pre>
+ 
+ 
+</body>
+</html>
