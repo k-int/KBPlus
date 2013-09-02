@@ -27,7 +27,7 @@ class OnixplLicenseText {
     id column:         'oplt_id'
     version column:    'oplt_version'
     oplLicense column: 'oplt_opl_fk'
-    elementId column:  'oplt_el_id',      index:'oplt_el_id_idx', maxSize:20
+    elementId column:  'oplt_el_id',      index:'oplt_el_id_idx'
     displayNum column: 'oplt_display_num'
     text column:       'oplt_text',       type:'text'
   }
@@ -36,7 +36,7 @@ class OnixplLicenseText {
     oplLicense(nullable:true,blank:true)
     displayNum(nullable:true)
     text(nullable:false)
-    elementId(nullable:false)
+    elementId(nullable:false,maxSize:50)
     oplLicense(nullable:false)
   }
 

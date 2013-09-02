@@ -1,0 +1,3082 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<TitleList>
+  <TitleListEntry>
+    <Title>Applied Cognitive Psychology</Title>
+    <TitleIDS>
+      <ID namespace='ISSN'>0888-4080</ID>
+      <ID namespace='eISSN'>1099-0720</ID>
+      <ID namespace='SUNCAT'>SC00256171205</ID>
+      <ID namespace='DOI'>10.1002/(ISSN)1099-0720</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume></StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1002/(ISSN)1099-0720</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Architectural Design</Title>
+    <TitleIDS>
+      <ID namespace='eISSN'>1554-2769</ID>
+      <ID namespace='SUNCAT'>SC00477294910</ID>
+      <ID namespace='ISSN'>0003-8504</ID>
+      <ID namespace='DOI'>10.1002/(ISSN)1554-2769</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>2005/01/01</StartDate>
+      <StartVolume>75</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1002/(ISSN)1554-2769</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Print+Electronic</CoreStatus>
+      <CoreStart>1937/02/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Art History</Title>
+    <TitleIDS>
+      <ID namespace='ISSN'>0141-6790</ID>
+      <ID namespace='SUNCAT'>SC00480872406</ID>
+      <ID namespace='eISSN'>1467-8365</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-8365</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>20</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-8365</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1980/02/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>British Journal of Clinical Psychology</Title>
+    <TitleIDS>
+      <ID namespace='eISSN'>2044-8260</ID>
+      <ID namespace='SUNCAT'>SC00444691208</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)2044-8260</ID>
+      <ID namespace='ISSN'>0144-6657</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1999/01/01</StartDate>
+      <StartVolume>38</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)2044-8260</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1981/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>British Journal of Developmental Psychology</Title>
+    <TitleIDS>
+      <ID namespace='eISSN'>2044-835X</ID>
+      <ID namespace='ISSN'>0261-510X</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)2044-835X</ID>
+      <ID namespace='SUNCAT'>SC00256105700</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1999/01/01</StartDate>
+      <StartVolume>17</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)2044-835X</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1998/03/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>British Journal of Educational Psychology</Title>
+    <TitleIDS>
+      <ID namespace='ISSN'>0007-0998</ID>
+      <ID namespace='SUNCAT'>SC00326509202</ID>
+      <ID namespace='eISSN'>2044-8279</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)2044-8279</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>67</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)2044-8279</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1991/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>British Journal of Learning Disabilities</Title>
+    <TitleIDS>
+      <ID namespace='ISSN'>1354-4187</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-3156</ID>
+      <ID namespace='eISSN'>1468-3156</ID>
+      <ID namespace='SUNCAT'>SC00257459201</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>25</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-3156</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>British Journal of Management</Title>
+    <TitleIDS>
+      <ID namespace='ISSN'>1045-3172</ID>
+      <ID namespace='SUNCAT'>SC00256218704</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-8551</ID>
+      <ID namespace='eISSN'>1467-8551</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>8</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-8551</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1990/03/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>British Journal of Psychology</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)2044-8295</ID>
+      <ID namespace='eISSN'>2044-8295</ID>
+      <ID namespace='SUNCAT'>SC00327507104</ID>
+      <ID namespace='ISSN'>0007-1269</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>88</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)2044-8295</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1965/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>British Journal of Social Psychology</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)2044-8309</ID>
+      <ID namespace='ISSN'>0144-6665</ID>
+      <ID namespace='eISSN'>2044-8309</ID>
+      <ID namespace='SUNCAT'>SC00480845409</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1999/01/01</StartDate>
+      <StartVolume>38</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)2044-8309</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1981/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Bulletin of Economic Research</Title>
+    <TitleIDS>
+      <ID namespace='ISSN'>0307-3378</ID>
+      <ID namespace='SUNCAT'>SC00256137900</ID>
+      <ID namespace='eISSN'>1467-8586</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-8586</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>49</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-8586</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Business Strategy Review</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-8616</ID>
+      <ID namespace='SUNCAT'>SC00257160707</ID>
+      <ID namespace='eISSN'>1467-8616</ID>
+      <ID namespace='ISSN'>0955-6419</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>8</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-8616</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1990/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Business ethics: A European Review</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-8608</ID>
+      <ID namespace='SUNCAT'>SC00242916706</ID>
+      <ID namespace='eISSN'>1467-8608</ID>
+      <ID namespace='ISSN'>0962-8770</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>6</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-8608</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1992/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Child Abuse Review</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00026271901</ID>
+      <ID namespace='ISSN'>0952-9136</ID>
+      <ID namespace='DOI'>10.1002/(ISSN)1099-0852</ID>
+      <ID namespace='eISSN'>1099-0852</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume></StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1002/(ISSN)1099-0852</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Child Development</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-8624</ID>
+      <ID namespace='eISSN'>1467-8624</ID>
+      <ID namespace='ISSN'>0009-3920</ID>
+      <ID namespace='SUNCAT'>SC00473655600</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>68</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-8624</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Child Development Perspectives</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)1750-8606</ID>
+      <ID namespace='ISSN'>1750-8592</ID>
+      <ID namespace='eISSN'>1750-8606</ID>
+      <ID namespace='SUNCAT'>SC00340461207</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>2007/01/01</StartDate>
+      <StartVolume>1</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1750-8606</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Child and Adolescent Mental Health</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)1475-3588</ID>
+      <ID namespace='ISSN'>1475-357X</ID>
+      <ID namespace='SUNCAT'>SC00461346504</ID>
+      <ID namespace='eISSN'>1475-3588</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>2</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1475-3588</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Child and Family Social Work</Title>
+    <TitleIDS>
+      <ID namespace='ISSN'>1356-7500</ID>
+      <ID namespace='eISSN'>1365-2206</ID>
+      <ID namespace='SUNCAT'>SC00301040608</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1365-2206</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>2</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1365-2206</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Children and Society</Title>
+    <TitleIDS>
+      <ID namespace='eISSN'>1099-0860</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1099-0860</ID>
+      <ID namespace='SUNCAT'>SC00008414810</ID>
+      <ID namespace='ISSN'>0951-0605</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>11</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1099-0860</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Cognitive Science - A Multidisciplinary Journal</Title>
+    <TitleIDS>
+      <ID namespace='ISSN'>0364-0213</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1551-6709</ID>
+      <ID namespace='SUNCAT'>SC00256148305</ID>
+      <ID namespace='eISSN'>1551-6709</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume></StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1551-6709</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Creativity and innovation Management</Title>
+    <TitleIDS>
+      <ID namespace='ISSN'>0963-1690</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-8691</ID>
+      <ID namespace='SUNCAT'>SC00256202105</ID>
+      <ID namespace='eISSN'>1467-8691</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>6</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-8691</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Criminal Behaviour and Mental Health</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00251514600</ID>
+      <ID namespace='DOI'>10.1002/(ISSN)1471-2857</ID>
+      <ID namespace='eISSN'>1471-2857</ID>
+      <ID namespace='ISSN'>0957-9664</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume></StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1002/(ISSN)1471-2857</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>2001/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Criminology</Title>
+    <TitleIDS>
+      <ID namespace='eISSN'>1745-9125</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1745-9125</ID>
+      <ID namespace='SUNCAT'>SC00318411004</ID>
+      <ID namespace='ISSN'>0011-1384</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>35</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1745-9125</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Criminology and Public Policy</Title>
+    <TitleIDS>
+      <ID namespace='ISSN'>1538-6473</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1745-9133</ID>
+      <ID namespace='eISSN'>1745-9133</ID>
+      <ID namespace='SUNCAT'>SC00362160406</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>2001/01/01</StartDate>
+      <StartVolume>1</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1745-9133</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Developing World Bioethics</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)1471-8847</ID>
+      <ID namespace='SUNCAT'>SC00357702709</ID>
+      <ID namespace='ISSN'>1471-8731</ID>
+      <ID namespace='eISSN'>1471-8847</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>2001/01/01</StartDate>
+      <StartVolume>1</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1471-8847</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Early Medieval Europe</Title>
+    <TitleIDS>
+      <ID namespace='ISSN'>0963-9462</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-0254</ID>
+      <ID namespace='SUNCAT'>SC00256203505</ID>
+      <ID namespace='eISSN'>1468-0254</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>6</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-0254</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Print+Electronic</CoreStatus>
+      <CoreStart>1992/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Economic Affairs</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00042893105</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-0270</ID>
+      <ID namespace='eISSN'>1468-0270</ID>
+      <ID namespace='ISSN'>0265-0665</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>17</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-0270</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Economic History Review</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00477298310</ID>
+      <ID namespace='ISSN'>0013-0117</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-0289</ID>
+      <ID namespace='eISSN'>1468-0289</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>50</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-0289</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1995/03/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Economic Policy</Title>
+    <TitleIDS>
+      <ID namespace='eISSN'>1468-0327</ID>
+      <ID namespace='SUNCAT'>SC00473631304</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-0327</ID>
+      <ID namespace='ISSN'>0266-4658</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>12</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-0327</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Educational Philosophy and theory</Title>
+    <TitleIDS>
+      <ID namespace='eISSN'>1469-5812</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1469-5812</ID>
+      <ID namespace='SUNCAT'>SC00261056509</ID>
+      <ID namespace='ISSN'>0013-1857</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>455</SubscriptionID>
+      <SubscriptionName>T&amp;F SSH Collection - 2013-2013 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>29</StartVolume>
+      <StartIssue>1</StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage>fulltext</Coverage>
+      <CoverageNote>new for 2013</CoverageNote>
+      <HostPlatformName>Taylor &amp; Francis Online</HostPlatformName>
+      <HostPlatformURL>http://www.tandfonline.com/loi/rept20</HostPlatformURL>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1997/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>172</PackageID>
+      <PackageName>Taylor &amp; Francis:NESLI2:Social Science and Humanities Collection:2012-2014:Year 2</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Educational theory</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00481279910</ID>
+      <ID namespace='ISSN'>0013-2004</ID>
+      <ID namespace='eISSN'>1741-5446</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1741-5446</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>47</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1741-5446</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>English Literary Renaissance</Title>
+    <TitleIDS>
+      <ID namespace='ISSN'>0013-8312</ID>
+      <ID namespace='SUNCAT'>SC00469215106</ID>
+      <ID namespace='eISSN'>1475-6757</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1475-6757</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>27</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1475-6757</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>2009/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>English in Education</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)1754-8845</ID>
+      <ID namespace='ISSN'>0425-0494</ID>
+      <ID namespace='SUNCAT'>SC00171741505</ID>
+      <ID namespace='eISSN'>1754-8845</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>31</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1754-8845</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Entrepreneurship theory and Practice</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00477274406</ID>
+      <ID namespace='ISSN'>1042-2587</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1540-6520</ID>
+      <ID namespace='eISSN'>1540-6520</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>2002/01/01</StartDate>
+      <StartVolume>27</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1540-6520</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>European Journal of Education</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00473001901</ID>
+      <ID namespace='eISSN'>1465-3435</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1465-3435</ID>
+      <ID namespace='ISSN'>0141-8211</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>2000/01/01</StartDate>
+      <StartVolume>35</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1465-3435</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>European Journal of Social Psychology</Title>
+    <TitleIDS>
+      <ID namespace='eISSN'>1099-0992</ID>
+      <ID namespace='ISSN'>0046-2772</ID>
+      <ID namespace='DOI'>10.1002/(ISSN)1099-0992</ID>
+      <ID namespace='SUNCAT'>SC00172233707</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume></StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1002/(ISSN)1099-0992</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1975/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Family Process</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00172254707</ID>
+      <ID namespace='eISSN'>1545-5300</ID>
+      <ID namespace='ISSN'>0014-7370</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1545-5300</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>36</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1545-5300</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Financial Accountability and Management</Title>
+    <TitleIDS>
+      <ID namespace='ISSN'>0267-4424</ID>
+      <ID namespace='eISSN'>1468-0408</ID>
+      <ID namespace='SUNCAT'>SC00301993502</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-0408</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>13</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-0408</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Financial Management</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00354894604</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1755-053X</ID>
+      <ID namespace='eISSN'>1755-053X</ID>
+      <ID namespace='ISSN'>0046-3892</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>2005/01/01</StartDate>
+      <StartVolume>34</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1755-053X</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Fiscal Studies</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)1475-5890</ID>
+      <ID namespace='ISSN'>0143-5671</ID>
+      <ID namespace='eISSN'>1475-5890</ID>
+      <ID namespace='SUNCAT'>SC00197281007</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>18</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1475-5890</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Gender and History</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00334110304</ID>
+      <ID namespace='eISSN'>1468-0424</ID>
+      <ID namespace='ISSN'>0953-5233</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-0424</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>9</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-0424</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1994/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Higher Education Quarterly</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-2273</ID>
+      <ID namespace='ISSN'>0951-5224</ID>
+      <ID namespace='SUNCAT'>SC00256185200</ID>
+      <ID namespace='eISSN'>1468-2273</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>51</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-2273</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Historical Research</Title>
+    <TitleIDS>
+      <ID namespace='ISSN'>0950-3471</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-2281</ID>
+      <ID namespace='eISSN'>1468-2281</ID>
+      <ID namespace='SUNCAT'>SC00424912105</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>70</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-2281</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1923/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>History</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00418620802</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-229X</ID>
+      <ID namespace='ISSN'>0018-2648</ID>
+      <ID namespace='eISSN'>1468-229X</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>82</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-229X</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1912/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>History Compass </Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)1478-0542</ID>
+      <ID namespace='eISSN'>1478-0542</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>2003/01/01</StartDate>
+      <StartVolume>1</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1478-0542</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>International Journal of Training and Development</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00473742902</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-2419</ID>
+      <ID namespace='ISSN'>1360-3736</ID>
+      <ID namespace='eISSN'>1468-2419</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>1</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-2419</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>International Journal of tourism Research</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00440842609</ID>
+      <ID namespace='DOI'>10.1002/(ISSN)1522-1970</ID>
+      <ID namespace='eISSN'>1522-1970</ID>
+      <ID namespace='ISSN'>1099-2340</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1999/01/01</StartDate>
+      <StartVolume>1</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1002/(ISSN)1522-1970</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>International Social Science Journal</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00473532306</ID>
+      <ID namespace='ISSN'>0020-8701</ID>
+      <ID namespace='eISSN'>1468-2451</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-2451</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1998/01/01</StartDate>
+      <StartVolume>50</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-2451</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>International Transactions in Operational Research</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00256986005</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1475-3995</ID>
+      <ID namespace='eISSN'>1475-3995</ID>
+      <ID namespace='ISSN'>0969-6016</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume></StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1475-3995</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>JCMS: Journal of Common Market Studies</Title>
+    <TitleIDS>
+      <ID namespace='eISSN'>1468-5965</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-5965</ID>
+      <ID namespace='SUNCAT'>SC00256007808</ID>
+      <ID namespace='ISSN'>0021-9886</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>35</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-5965</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Journal of Applied Research in intellectual Disabilities</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00199018208</ID>
+      <ID namespace='eISSN'>1468-3148</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-3148</ID>
+      <ID namespace='ISSN'>1360-2322</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>10</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-3148</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Journal of Architectural Education</Title>
+    <TitleIDS>
+      <ID namespace='eISSN'>1531-314X</ID>
+      <ID namespace='SUNCAT'>SC00067269009</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1531-314X</ID>
+      <ID namespace='ISSN'>1046-4883</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>455</SubscriptionID>
+      <SubscriptionName>T&amp;F SSH Collection - 2013-2013 NESLI2</SubscriptionName>
+      <StartDate>2012/01/01</StartDate>
+      <StartVolume>66</StartVolume>
+      <StartIssue>1</StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage>fulltext</Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Taylor &amp; Francis Online</HostPlatformName>
+      <HostPlatformURL>http://www.tandfonline.com/loi/rjae20</HostPlatformURL>
+      <CoreStatus></CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>172</PackageID>
+      <PackageName>Taylor &amp; Francis:NESLI2:Social Science and Humanities Collection:2012-2014:Year 2</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Journal of Business Finance and Accounting</Title>
+    <TitleIDS>
+      <ID namespace='ISSN'>0306-686X</ID>
+      <ID namespace='SUNCAT'>SC00256137203</ID>
+      <ID namespace='eISSN'>1468-5957</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-5957</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>24</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-5957</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Journal of Community Psychology</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1002/(ISSN)1520-6629</ID>
+      <ID namespace='ISSN'>0090-4392</ID>
+      <ID namespace='eISSN'>1520-6629</ID>
+      <ID namespace='SUNCAT'>SC00257197010</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume></StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1002/(ISSN)1520-6629</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Journal of Community and Applied Social Psychology</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1002/(ISSN)1099-1298</ID>
+      <ID namespace='ISSN'>1052-9284</ID>
+      <ID namespace='eISSN'>1099-1298</ID>
+      <ID namespace='SUNCAT'>SC00256222010</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume></StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1002/(ISSN)1099-1298</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Journal of Family therapy</Title>
+    <TitleIDS>
+      <ID namespace='ISSN'>0163-4445</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-6427</ID>
+      <ID namespace='eISSN'>1467-6427</ID>
+      <ID namespace='SUNCAT'>SC00439402707</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>19</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote>free back issues after 2000 back to 1979</CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-6427</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Journal of Food Science Education</Title>
+    <TitleIDS>
+      <ID namespace='eISSN'>1541-4329</ID>
+      <ID namespace='SUNCAT'>SC00014744800</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1541-4329</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>488</SubscriptionID>
+      <SubscriptionName>Wiley STM Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>2002/01/01</StartDate>
+      <StartVolume>1</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1541-4329</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>No</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>7</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library STM Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Journal of Law and Society</Title>
+    <TitleIDS>
+      <ID namespace='eISSN'>1467-6478</ID>
+      <ID namespace='SUNCAT'>SC00355215504</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-6478</ID>
+      <ID namespace='ISSN'>0263-323X</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>24</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-6478</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Journal of Personality</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00411503902</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-6494</ID>
+      <ID namespace='eISSN'>1467-6494</ID>
+      <ID namespace='ISSN'>0022-3506</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>65</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-6494</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Journal of Philosophy of Education</Title>
+    <TitleIDS>
+      <ID namespace='eISSN'>1467-9752</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-9752</ID>
+      <ID namespace='SUNCAT'>SC00256142606</ID>
+      <ID namespace='ISSN'>0309-8249</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>31</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-9752</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Journal of Popular Music Studies</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)1533-1598</ID>
+      <ID namespace='SUNCAT'>SC00340313106</ID>
+      <ID namespace='eISSN'>1533-1598</ID>
+      <ID namespace='ISSN'>1524-2226</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>9</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1533-1598</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>2006/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Journal of Research in Reading</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-9817</ID>
+      <ID namespace='SUNCAT'>SC00256074005</ID>
+      <ID namespace='eISSN'>1467-9817</ID>
+      <ID namespace='ISSN'>0141-0423</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>20</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-9817</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>2009/02/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Journal of Sociolinguistics</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-9841</ID>
+      <ID namespace='SUNCAT'>SC00027215700</ID>
+      <ID namespace='ISSN'>1360-6441</ID>
+      <ID namespace='eISSN'>1467-9841</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>1</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-9841</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Journal of intellectual Disability Research</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00439372107</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1365-2788</ID>
+      <ID namespace='ISSN'>0964-2633</ID>
+      <ID namespace='eISSN'>1365-2788</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>41</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1365-2788</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Learning Disabilities Research and Practice</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)1540-5826</ID>
+      <ID namespace='eISSN'>1540-5826</ID>
+      <ID namespace='ISSN'>0938-8982</ID>
+      <ID namespace='SUNCAT'>SC00046948201</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>2001/01/01</StartDate>
+      <StartVolume>16</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1540-5826</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>2005/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Legal and Criminological Psychology</Title>
+    <TitleIDS>
+      <ID namespace='eISSN'>2044-8333</ID>
+      <ID namespace='SUNCAT'>SC00256237601</ID>
+      <ID namespace='ISSN'>1355-3259</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)2044-8333</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1999/01/01</StartDate>
+      <StartVolume>4</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)2044-8333</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>2001/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Literacy</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)1741-4369</ID>
+      <ID namespace='ISSN'>1741-4350</ID>
+      <ID namespace='eISSN'>1741-4369</ID>
+      <ID namespace='SUNCAT'>SC00246993409</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>31</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1741-4369</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Music Analysis</Title>
+    <TitleIDS>
+      <ID namespace='ISSN'>0262-5245</ID>
+      <ID namespace='eISSN'>1468-2249</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-2249</ID>
+      <ID namespace='SUNCAT'>SC00246592007</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1999/01/01</StartDate>
+      <StartVolume>18</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-2249</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1982/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Nations and Nationalism</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)1469-8129</ID>
+      <ID namespace='ISSN'>1354-5078</ID>
+      <ID namespace='SUNCAT'>SC00256942207</ID>
+      <ID namespace='eISSN'>1469-8129</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>3</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1469-8129</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>New Technology, Work and Employment</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00256492005</ID>
+      <ID namespace='ISSN'>0268-1072</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-005X</ID>
+      <ID namespace='eISSN'>1468-005X</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>12</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-005X</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1989/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Personnel Psychology</Title>
+    <TitleIDS>
+      <ID namespace='eISSN'>1744-6570</ID>
+      <ID namespace='SUNCAT'>SC00032952006</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1744-6570</ID>
+      <ID namespace='ISSN'>0031-5826</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>50</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1744-6570</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Political Studies</Title>
+    <TitleIDS>
+      <ID namespace='ISSN'>0032-3217</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-9248</ID>
+      <ID namespace='eISSN'>1467-9248</ID>
+      <ID namespace='SUNCAT'>SC00480804101</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>45</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-9248</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Public Administration</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00477309610</ID>
+      <ID namespace='ISSN'>0033-3298</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-9299</ID>
+      <ID namespace='eISSN'>1467-9299</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>75</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-9299</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1955/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Public Policy Research</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00331722108</ID>
+      <ID namespace='ISSN'>1744-5396</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1744-540X</ID>
+      <ID namespace='eISSN'>1744-540X</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>4</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1744-540X</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Scottish Journal of Political Economy</Title>
+    <TitleIDS>
+      <ID namespace='eISSN'>1467-9485</ID>
+      <ID namespace='SUNCAT'>SC00256040508</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-9485</ID>
+      <ID namespace='ISSN'>0036-9292</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>44</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-9485</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Social Policy and Administration</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-9515</ID>
+      <ID namespace='SUNCAT'>SC00258665008</ID>
+      <ID namespace='eISSN'>1467-9515</ID>
+      <ID namespace='ISSN'>0144-5596</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>31</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-9515</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Sociology of Health and Illness</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-9566</ID>
+      <ID namespace='SUNCAT'>SC00256076108</ID>
+      <ID namespace='ISSN'>0141-9889</ID>
+      <ID namespace='eISSN'>1467-9566</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>19</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote>free back issues after 4 years back to 1979</CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-9566</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Strategic Management Journal</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1002/(ISSN)1097-0266</ID>
+      <ID namespace='ISSN'>0143-2095</ID>
+      <ID namespace='eISSN'>1097-0266</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume></StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1002/(ISSN)1097-0266</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1983/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Support For Learning</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00307343102</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-9604</ID>
+      <ID namespace='ISSN'>0268-2141</ID>
+      <ID namespace='eISSN'>1467-9604</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>12</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-9604</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1991/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Sustainable Development</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00477365402</ID>
+      <ID namespace='eISSN'>1099-1719</ID>
+      <ID namespace='ISSN'>0968-0802</ID>
+      <ID namespace='DOI'>10.1002/(ISSN)1099-1719</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume></StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1002/(ISSN)1099-1719</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1994/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>Systems Research and Behavioral Science</Title>
+    <TitleIDS>
+      <ID namespace='ISSN'>1092-7026</ID>
+      <ID namespace='eISSN'>1099-1743</ID>
+      <ID namespace='DOI'>10.1002/(ISSN)1099-1743</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume></StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1002/(ISSN)1099-1743</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>The British Journal of Sociology</Title>
+    <TitleIDS>
+      <ID namespace='eISSN'>1468-4446</ID>
+      <ID namespace='ISSN'>0007-1315</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-4446</ID>
+      <ID namespace='SUNCAT'>SC00439722510</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1999/01/01</StartDate>
+      <StartVolume>50</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-4446</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>The Economic Journal</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-0297</ID>
+      <ID namespace='eISSN'>1468-0297</ID>
+      <ID namespace='ISSN'>0013-0133</ID>
+      <ID namespace='SUNCAT'>SC00416078201</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>107</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-0297</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>The Howard Journal of Criminal Justice</Title>
+    <TitleIDS>
+      <ID namespace='ISSN'>0265-5527</ID>
+      <ID namespace='SUNCAT'>SC00256113909</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-2311</ID>
+      <ID namespace='eISSN'>1468-2311</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>36</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-2311</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>The Journal of Analytical Psychology</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-5922</ID>
+      <ID namespace='eISSN'>1468-5922</ID>
+      <ID namespace='ISSN'>0021-8774</ID>
+      <ID namespace='SUNCAT'>SC00256439400</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>42</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-5922</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>The Journal of Child Psychology and Psychiatry and Allied Disciplines</Title>
+    <TitleIDS>
+      <ID namespace='eISSN'>1469-7610</ID>
+      <ID namespace='SUNCAT'>SC00256007601</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1469-7610</ID>
+      <ID namespace='ISSN'>0021-9630</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>38</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1469-7610</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1996/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>The Journal of Popular Culture</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00257219107</ID>
+      <ID namespace='ISSN'>0022-3840</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1540-5931</ID>
+      <ID namespace='eISSN'>1540-5931</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>31</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1540-5931</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>The Journal of industrial Economics</Title>
+    <TitleIDS>
+      <ID namespace='eISSN'>1467-6451</ID>
+      <ID namespace='SUNCAT'>SC00256011408</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-6451</ID>
+      <ID namespace='ISSN'>0022-1821</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>45</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-6451</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>The Modern Law Review</Title>
+    <TitleIDS>
+      <ID namespace='ISSN'>0026-7961</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1468-2230</ID>
+      <ID namespace='eISSN'>1468-2230</ID>
+      <ID namespace='SUNCAT'>SC00457847502</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>60</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1468-2230</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart>1937/01/01</CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>The Political Quarterly</Title>
+    <TitleIDS>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-923X</ID>
+      <ID namespace='ISSN'>0032-3179</ID>
+      <ID namespace='SUNCAT'>SC00440666109</ID>
+      <ID namespace='eISSN'>1467-923X</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>68</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-923X</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+  <TitleListEntry>
+    <Title>The Sociological Review</Title>
+    <TitleIDS>
+      <ID namespace='SUNCAT'>SC00476732409</ID>
+      <ID namespace='DOI'>10.1111/(ISSN)1467-954X</ID>
+      <ID namespace='ISSN'>0038-0261</ID>
+      <ID namespace='eISSN'>1467-954X</ID>
+    </TitleIDS>
+    <CoverageStatement type='Issue Entitlement'>
+      <SubscriptionID>492</SubscriptionID>
+      <SubscriptionName>Wiley SSH Collection - 2012-2014 NESLI2</SubscriptionName>
+      <StartDate>1997/01/01</StartDate>
+      <StartVolume>45</StartVolume>
+      <StartIssue></StartIssue>
+      <EndDate></EndDate>
+      <EndVolume></EndVolume>
+      <EndIssue></EndIssue>
+      <Embargo></Embargo>
+      <Coverage></Coverage>
+      <CoverageNote></CoverageNote>
+      <HostPlatformName>Wiley Online Library</HostPlatformName>
+      <HostPlatformURL>http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-954X</HostPlatformURL>
+      <Platform>
+        <PlatformName>Wiley Online Library</PlatformName>
+        <PlatformRole>administrative</PlatformRole>
+        <PlatformURL>http://onlinelibrary.wiley.com/</PlatformURL>
+      </Platform>
+      <CoreStatus>Electronic</CoreStatus>
+      <CoreStart></CoreStart>
+      <CoreEnd></CoreEnd>
+      <PackageID>37</PackageID>
+      <PackageName>Wiley:NESLI2:Online Library SSH Collection:2012-2014:Year 1</PackageName>
+    </CoverageStatement>
+  </TitleListEntry>
+</TitleList>

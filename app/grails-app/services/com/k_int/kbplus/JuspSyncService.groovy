@@ -185,7 +185,7 @@ class JuspSyncService {
                   log.debug("report periods jsonnull");
                 }
                 else {
-                  log.debug("Report Periods present: ${json.ReportPeriods}");
+                  // log.debug("Report Periods present: ${json.ReportPeriods}");
                   json.ReportPeriods.each { p ->
                     if ( p instanceof net.sf.json.JSONNull ) {
                       // Safely ignore
@@ -206,7 +206,7 @@ class JuspSyncService {
                         fact.inst =  org_inst
                         fact.juspio =  title_io_inst
                         if ( factService.registerFact(fact) ) {
-                          // log.debug("New fact count: ${++newFactCount}");
+                          ++newFactCount
                         }
                       }
                     }
@@ -218,7 +218,7 @@ class JuspSyncService {
               }
             }
           }
-          log.debug("Update csr");
+          // log.debug("Update csr");
           csr.haveUpTo=most_recent_closed_period
           csr.save(flush:true);
         }

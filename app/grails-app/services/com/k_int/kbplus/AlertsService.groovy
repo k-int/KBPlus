@@ -53,7 +53,7 @@ class AlertsService {
       if ( info != null ) {
         if (info.notes[pn.id]) {
           // The note is already present under this object, skip
-          log.debug("${pn.id} already present");
+          // log.debug("${pn.id} already present");
         }
         else {
           // log.debug("Adding note ${pn.id}");
