@@ -64,7 +64,7 @@ class TransformerService {
 				// Setting multipart/form coded HTTP entity consisting of multiple body parts.
 				MultipartEntity mpe = new MultipartEntity();
 				mpe.addPart('path', new StringBody(tr.path_to_stylesheet))
-				mpe.addPart(format, new InputStreamBody(new ByteArrayInputStream(content.getBytes()), reqMIME, 'file'))
+				mpe.addPart(format, new InputStreamBody(new ByteArrayInputStream(content.getBytes("UTF-8")), reqMIME, 'file'))
 				request.entity = mpe
 				
 				// Read response and send it to user outputStream
