@@ -29,6 +29,15 @@
         <tr><td>Total Time (All Threads)</td><td>${juspSyncService.totalTime} (ms)</td></tr>
         <tr><td>Total Time Elapsed</td><td>${juspSyncService.syncElapsed} (ms)</td></tr>
         <tr><td>Thread Pool Size</td><td>${juspSyncService.threads}</td></tr>
+        <tr><td>Last Start Time</td>
+            <td>
+              <g:if test="${juspSyncService.syncStartTime != 0}">
+                <g:formatDate date="${new Date(juspSyncService.syncStartTime)}" format="yyyy-MM-dd hh:mm"/>
+              </g:if>
+              <g:else>
+                Not started yet
+              </g:else>
+          </tr>
         <tr><td>Initial Query Time</td><td>${juspSyncService.queryTime} (ms)</td></tr>
 
         <g:if test="${((juspSyncService.completedCount != 0) && (juspSyncService.totalTime != 0))}">
