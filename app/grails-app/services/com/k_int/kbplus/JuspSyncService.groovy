@@ -116,11 +116,12 @@ class JuspSyncService {
       log.debug("internalDoSync complete");
       if ( ftp != null ) {
         ftp.shutdown()
-        if ( ftp.awaitTermination(5,java.util.concurrent.TimeUnit.DAYS) ) {
+        if ( ftp.awaitTermination(6,java.util.concurrent.TimeUnit.HOURS) ) {
           log.debug("FTP cleanly terminated");
         }
         else {
-          log.debug("FTP still running....");
+          log.debug("FTP still running.... Calling shutdown now to terminate any outstanding requests");
+          ftp.shutdownNow()
         }
       }
       log.debug("Mark JuspSyncTask as not running...");
