@@ -65,26 +65,30 @@
                        <g:set var="usaf" value="${user.authorizedOrgs}" />
                        <g:if test="${usaf && usaf.size() > 0}">
                          <g:each in="${usaf}" var="org">
-                           <li><g:link controller="myInstitutions" 
-                                       action="instdash" 
-                                       params="${[shortcode:org.shortcode]}">${org.name} - Dashboard</g:link></li>
-                           <!--
-                           <li><g:link controller="myInstitutions" 
-                                       action="currentLicenses" 
-                                       params="${[shortcode:org.shortcode]}">${org.name} - Licences</g:link></li>
-                           <li><g:link controller="myInstitutions" 
-                                       action="currentSubscriptions" 
-                                       params="${[shortcode:org.shortcode]}">${org.name} - Subscriptions</g:link></li>
-                           <li><g:link controller="myInstitutions" 
-                                       action="currentTitles" 
-                                       params="${[shortcode:org.shortcode]}">${org.name} - Titles</g:link></li>
-                           <li><g:link controller="myInstitutions" 
-                                       action="renewalsSearch" 
-                                       params="${[shortcode:org.shortcode]}">${org.name} - Generate Renewals Worksheet</g:link></li>
-                           <li><g:link controller="myInstitutions" 
-                                       action="renewalsUpload" 
-                                       params="${[shortcode:org.shortcode]}">${org.name} - Import Renewals</g:link></li>
-                           -->
+                           <li class="dropdown-submenu">
+                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">${org.name}</i> </a>
+                             <ul class="dropdown-menu">
+                               <li><g:link controller="myInstitutions" 
+                                           action="instdash" 
+                                           params="${[shortcode:org.shortcode]}">Dashboard</g:link></li>
+                               <li><g:link controller="myInstitutions" 
+                                           action="currentLicenses" 
+                                           params="${[shortcode:org.shortcode]}">Licences</g:link></li>
+                               <li><g:link controller="myInstitutions" 
+                                           action="currentSubscriptions" 
+                                           params="${[shortcode:org.shortcode]}">Subscriptions</g:link></li>
+                               <li><g:link controller="myInstitutions" 
+                                           action="currentTitles" 
+                                           params="${[shortcode:org.shortcode]}">Titles</g:link></li>
+                               <li><g:link controller="myInstitutions" 
+                                           action="renewalsSearch" 
+                                           params="${[shortcode:org.shortcode]}">Generate Renewals Worksheet</g:link></li>
+                               <li><g:link controller="myInstitutions" 
+                                           action="renewalsUpload" 
+                                           params="${[shortcode:org.shortcode]}">Import Renewals</g:link></li>
+
+                             </ul>
+                           </li>
                          </g:each>
                        </g:if>
                        <g:else>
