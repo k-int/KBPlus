@@ -1,1 +1,2 @@
-./UPGRADE-3.0-to-3.1.txt
+drop index fact_uid_idx on fact;
+create index fact_uid_idx on fact ( fact_uid );
