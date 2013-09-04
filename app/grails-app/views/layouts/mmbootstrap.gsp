@@ -86,6 +86,9 @@
                                <li><g:link controller="myInstitutions" 
                                            action="renewalsUpload" 
                                            params="${[shortcode:org.shortcode]}">Import Renewals</g:link></li>
+                               <li><g:link controller="organisations"
+                                           action="show" 
+                                           params="${[id:org.id]}">Organisation Information</g:link></li>
 
                              </ul>
                            </li>
