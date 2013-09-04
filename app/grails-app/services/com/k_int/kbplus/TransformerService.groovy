@@ -41,7 +41,7 @@ class TransformerService {
 			main_response.setHeader("Content-disposition", "attachment; filename=${filename}.${tr.return_file_extention}")
 			main_response.contentType = tr.return_mime //"text/plain"
 			main_response.setCharacterEncoding("UTF-8");
-			def out = main_response.outputStream
+			def out = main_response.writer
 			
 			log.debug("Calling transformer: ${tr.transformer.url}")
 			
