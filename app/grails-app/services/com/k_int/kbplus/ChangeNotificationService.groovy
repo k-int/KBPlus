@@ -147,29 +147,26 @@ class ChangeNotificationService {
 
 
   def broadcastEvent(contextObjectOID, 
-                     changeDescription, 
                      changeDetailDocument) {
-    def future = executorService.submit({
-      log.debug("broadCastEvent");
+    log.debug("broadCastEvent");
 
-      def contextObject = genericOIDService.resolveOID(contextObjectOID);
+    def contextObject = genericOIDService.resolveOID(contextObjectOID);
 
-      if ( contextObject.metaClass.respondsTo(contextObject, 'getNotificationEndpoints') ) {
-        // Does the objct have a zendesk URL, or any other comms URLs for that matter?
-        // How do we decouple Same-As links? Only the object should know about what
-        // notification services it's registered with? What about the case where we're adding
-        // a new thing? Whats registered?
-        contextObject.getNotificationEndpoints.each { ne ->
-          switch ( ne.service ) {
-            case 'zendesk-forum': 
-              log.debug("Send zendesk forum notification for ${ne.remoteid}");
-              break;
-            default:
-              break;
-          }
+    if ( contextObject.metaClass.respondsTo(contextObject, 'getNotificationEndpoints') ) {
+      // Does the objct have a zendesk URL, or any other comms URLs for that matter?
+      // How do we decouple Same-As links? Only the object should know about what
+      // notification services it's registered with? What about the case where we're adding
+      // a new thing? Whats registered?
+      contextObject.getNotificationEndpoints.each { ne ->
+        switch ( ne.service ) {
+          case 'zendesk-forum': 
+            log.debug("Send zendesk forum notification for ${ne.remoteid} - ${changeDetailDocument}");
+            break;
+          default:
+            break;
         }
       }
-    } as java.util.concurrent.Callable)
+    }
   }
 
   /**
@@ -179,11 +176,10 @@ class ChangeNotificationService {
    *  Therefore, we get a new handle to the object
    */
   def notifyChangeEvent(changeDocument) {
+    log.debug("notifyChangeEvent(${changeDocument})");
     def future = executorService.submit({
       def contextObject = genericOIDService.resolveOID(contextObjectOID);
-
       contextObject.notifyDependencies(changeDocument)
-
     } as java.util.concurrent.Callable)
   }
 }

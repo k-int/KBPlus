@@ -1,6 +1,12 @@
 package com.k_int.kbplus
 
+import javax.persistence.Transient
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+
+
 class TitleInstancePackagePlatform {
+
+  static auditable = true
 
   Date startDate
   String rectype="so"
@@ -89,4 +95,53 @@ class TitleInstancePackagePlatform {
     }
     result
   }
+
+  @Transient
+  def onChange = { oldMap,newMap ->
+
+    log.debug("onChange")
+
+    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+
+    def controlledProperties = ['startDate', 
+                                'startVolume', 
+                                'startIssue', 
+                                'endDate', 
+                                'endVolume', 
+                                'endIssue', 
+                                'embargo', 
+                                'coverageDepth', 
+                                'coverageNote',
+                                'status' ]
+
+    controlledProperties.each { cp ->
+      if ( oldMap[cp] != newMap[cp] ) {
+        changeNotificationService.notifyChangeEvent([
+                                                     OID:"${this.class.name}:${this.id}",
+                                                     event:'TippChange',
+                                                     prop:cp, old:oldMap[cp], new:newMap[cp]
+                                                    ])
+      }
+    }
+  }
+
+  @Transient
+  def onSave = {
+    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+    changeNotificationService.notifyChangeEvent([
+                                                 OID:"${this.class.name}:${this.id}",
+                                                 event:'NewTipp',
+                                                 tippId:this.id
+                                                ])
+  }
+
+  @Transient
+  def notifyDependencies(changeDocument) {
+    log.debug("notifyDependencies(${changeDocument})");
+
+    changeNotificationService.broadcastEvent("${pkg.class.name}:${pkg.id}", changeDocument);
+  }
+
+  
+
 }

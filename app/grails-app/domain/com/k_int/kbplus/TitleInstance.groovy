@@ -5,10 +5,14 @@ import java.util.TreeSet;
 import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import javax.persistence.Transient
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+
 
 class TitleInstance {
 
   static final Pattern alphanum = Pattern.compile("\\p{Punct}|\\p{Cntrl}");
+
+  static auditable = true
 
   String title
   String normTitle
@@ -508,9 +512,13 @@ class TitleInstance {
 
   @Transient
   def notifyDependencies(changeDocument) {
-   log.debug("notifyDependencies(${changeDocument})");
-        // changeNotificationService.broadcastEvent("${this.class.name}:${this.id}", 
-        //                                          "${cp} changed from ${oldMap[cp]} to ${newMap[cp]}",
-        //                                          [:]);
+    log.debug("notifyDependencies(${changeDocument})");
+    
+    tipps.each { tipp ->
+      // Notify each package that a component title has changed
+      changeNotificationService.broadcastEvent("${tipp.pkg.class.name}:${tipp.pkg.id}", changeDocument);
+    }
+    
+    changeNotificationService.broadcastEvent("${this.class.name}:${this.id}", changeDocument);
   }
 }

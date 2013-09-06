@@ -212,4 +212,28 @@ class ZenDeskSyncService {
 
     cached_forum_activity
   }
+
+  def postInForum(header, text, forumurl) {
+    try {
+        def http = new RESTClient(ApplicationHolder.application.config.ZenDeskBaseURL)
+
+        http.client.addRequestInterceptor( new HttpRequestInterceptor() {
+          void process(HttpRequest httpRequest, HttpContext httpContext) {
+            String auth = "${ApplicationHolder.application.config.ZenDeskLoginEmail}:${ApplicationHolder.application.config.ZenDeskLoginPass}"
+            String enc_auth = auth.bytes.encodeBase64().toString()
+            httpRequest.addHeader('Authorization', 'Basic ' + enc_auth);
+          }
+        })
+
+        // http.get(path:'/api/v2/search.json',
+        //          query:[query:'type:topic', sort_by:'updated_at', sort_order:'desc']) { resp, data ->
+        //   cached_forum_activity = data
+        // }
+    }
+    catch ( Exception e ) {
+      log.error("Problem activity",e)
+    }
+    finally {
+    }
+  }
 }
