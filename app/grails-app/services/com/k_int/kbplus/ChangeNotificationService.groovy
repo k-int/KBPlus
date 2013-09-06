@@ -171,4 +171,19 @@ class ChangeNotificationService {
       }
     } as java.util.concurrent.Callable)
   }
+
+  /**
+   *  An object has changed. Because we don't want to do heavy work of calculating dependent objects in the thread doing the DB
+   *  commit, responsibility for handling the change is delegated to this method. However, the source object is the seat of
+   *  knowledge for what dependencies there are (For example, a title change should propagate to all packages using that title).
+   *  Therefore, we get a new handle to the object
+   */
+  def notifyChangeEvent(changeDocument) {
+    def future = executorService.submit({
+      def contextObject = genericOIDService.resolveOID(contextObjectOID);
+
+      contextObject.notifyDependencies(changeDocument)
+
+    } as java.util.concurrent.Callable)
+  }
 }

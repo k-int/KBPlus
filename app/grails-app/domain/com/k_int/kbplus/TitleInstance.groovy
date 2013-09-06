@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
+import javax.persistence.Transient
 
 class TitleInstance {
 
@@ -476,6 +477,8 @@ class TitleInstance {
     result
   }
   
+
+  @Transient
   def identifiersAsString() {
     def result = new StringWriter()
     ids.each { id ->
@@ -484,6 +487,7 @@ class TitleInstance {
     return result.toString()
   }
 
+  @Transient
   def onChange = { oldMap,newMap ->
 
     log.debug("onChange")
@@ -493,10 +497,20 @@ class TitleInstance {
 
     controlledProperties.each { cp ->
       if ( oldMap[cp] != newMap[cp] ) {
-        changeNotificationService.broadcastEvent("${this.class.name}:${this.id}", 
-                                                 "${cp} changed from ${oldMap[cp]} to ${newMap[cp]}",
-                                                 [:]);
+        changeNotificationService.notifyChangeEvent([
+                                                     OID:"${this.class.name}:${this.id}"
+                                                     event:'TitleInstance.propertyChange',
+                                                     prop:cp, old:oldMap[cp], new:newMap[cp]
+                                                    ])
       }
     }
+  }
+
+  @Transient
+  def notifyDependencies(changeDocument) {
+   log.debug("notifyDependencies(${changeDocument})");
+        // changeNotificationService.broadcastEvent("${this.class.name}:${this.id}", 
+        //                                          "${cp} changed from ${oldMap[cp]} to ${newMap[cp]}",
+        //                                          [:]);
   }
 }
