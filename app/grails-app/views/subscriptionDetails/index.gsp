@@ -124,7 +124,7 @@
                </dl>
 
                <dl><dt>Package Name</dt><dd><g:each in="${subscriptionInstance.packages}" var="sp">
-                           ${sp?.pkg?.name} (${sp.pkg?.contentProvider?.name}) <br/>
+                           <g:link controller="packageDetails" action="show" id="${sp.pkg.id}">${sp?.pkg?.name}</g:link> (${sp.pkg?.contentProvider?.name}) <br/>
                        </g:each></dd></dl>
 
                <dl><dt>Subscription Identifier</dt><dd>${subscriptionInstance.identifier}</dd></dl>

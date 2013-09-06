@@ -6,6 +6,7 @@ import com.k_int.kbplus.*;
 class ChangeNotificationService {
 
   def executorService
+  def genericOIDService
 
   // N,B, This is critical for this service as it's called from domain object OnChange handlers
   static transactional = false;
@@ -142,5 +143,32 @@ class ChangeNotificationService {
     if ( sub.derivedSubscriptions?.size() > 0 )
       result = true;
     result;
+  }
+
+
+  def broadcastEvent(contextObjectOID, 
+                     changeDescription, 
+                     changeDetailDocument) {
+    def future = executorService.submit({
+      log.debug("broadCastEvent");
+
+      def contextObject = genericOIDService.resolveOID(contextObjectOID);
+
+      if ( contextObject.metaClass.respondsTo(contextObject, 'getNotificationEndpoints') ) {
+        // Does the objct have a zendesk URL, or any other comms URLs for that matter?
+        // How do we decouple Same-As links? Only the object should know about what
+        // notification services it's registered with? What about the case where we're adding
+        // a new thing? Whats registered?
+        contextObject.getNotificationEndpoints.each { ne ->
+          switch ( ne.service ) {
+            case 'zendesk-forum': 
+              log.debug("Send zendesk forum notification for ${ne.remoteid}");
+              break;
+            default:
+              break;
+          }
+        }
+      }
+    } as java.util.concurrent.Callable)
   }
 }

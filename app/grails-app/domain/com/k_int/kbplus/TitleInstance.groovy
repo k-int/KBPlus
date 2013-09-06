@@ -483,4 +483,20 @@ class TitleInstance {
     }
     return result.toString()
   }
+
+  def onChange = { oldMap,newMap ->
+
+    log.debug("onChange")
+
+    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+    def controlledProperties = ['title']
+
+    controlledProperties.each { cp ->
+      if ( oldMap[cp] != newMap[cp] ) {
+        changeNotificationService.broadcastEvent("${this.class.name}:${this.id}", 
+                                                 "${cp} changed from ${oldMap[cp]} to ${newMap[cp]}",
+                                                 [:]);
+      }
+    }
+  }
 }

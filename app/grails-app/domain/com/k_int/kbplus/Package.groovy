@@ -208,4 +208,15 @@ class Package {
 
   }
  
+
+  /**
+   *  Tell the event notification service how this object is known to any registered notification
+   *  systems.
+   */
+  @Transient
+  getNotificationEndpoints() {
+    [
+      [ service:'zendesk.forum', remoteid:this.forumId ]
+    ]
+  }
 }
