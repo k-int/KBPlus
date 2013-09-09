@@ -7,6 +7,7 @@ class ChangeNotificationService {
 
   def executorService
   def genericOIDService
+  def zenDeskSyncService
 
   // N,B, This is critical for this service as it's called from domain object OnChange handlers
   static transactional = false;
@@ -146,26 +147,34 @@ class ChangeNotificationService {
   }
 
 
-  def broadcastEvent(contextObjectOID, 
-                     changeDetailDocument) {
-    log.debug("broadCastEvent");
+  def broadcastEvent(contextObjectOID, changeDetailDocument) {
+    log.debug("broadcastEvent(${contextObjectOID},${changeDetailDocument})");
 
     def contextObject = genericOIDService.resolveOID(contextObjectOID);
 
     if ( contextObject.metaClass.respondsTo(contextObject, 'getNotificationEndpoints') ) {
+      log.debug("  -> looking at notification endpoints...");
       // Does the objct have a zendesk URL, or any other comms URLs for that matter?
       // How do we decouple Same-As links? Only the object should know about what
       // notification services it's registered with? What about the case where we're adding
       // a new thing? Whats registered?
-      contextObject.getNotificationEndpoints.each { ne ->
+      contextObject.notificationEndpoints.each { ne ->
+        log.debug("  -> consider ${ne}");
         switch ( ne.service ) {
-          case 'zendesk-forum': 
+          case 'zendesk.forum': 
             log.debug("Send zendesk forum notification for ${ne.remoteid} - ${changeDetailDocument}");
+            zenDeskSyncService.postTopicCommentInForum(changeDetailDocument.toString(), 
+                                                       ne.remoteid.toString(), 
+                                                       'System Notifications', 
+                                                       'System generated alerts and notifications will appear as comments under this topic');
             break;
           default:
             break;
         }
       }
+    }
+    else {
+      log.debug("  -> Object does not respond to getNotificationEndpoints");
     }
   }
 
@@ -178,8 +187,14 @@ class ChangeNotificationService {
   def notifyChangeEvent(changeDocument) {
     log.debug("notifyChangeEvent(${changeDocument})");
     def future = executorService.submit({
-      def contextObject = genericOIDService.resolveOID(contextObjectOID);
-      contextObject.notifyDependencies(changeDocument)
+      try {
+        log.debug("inside executor task submission... ${changeDocument.OID}");
+        def contextObject = genericOIDService.resolveOID(changeDocument.OID);
+        contextObject.notifyDependencies(changeDocument)
+      }
+      catch ( Exception e ) {
+        log.error("Problem with event transmission",e);
+      }
     } as java.util.concurrent.Callable)
   }
 }

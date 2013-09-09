@@ -514,6 +514,7 @@ class TitleInstance {
   def notifyDependencies(changeDocument) {
     log.debug("notifyDependencies(${changeDocument})");
     
+    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
     tipps.each { tipp ->
       // Notify each package that a component title has changed
       changeNotificationService.broadcastEvent("${tipp.pkg.class.name}:${tipp.pkg.id}", changeDocument);

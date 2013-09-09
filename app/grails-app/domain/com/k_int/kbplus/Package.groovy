@@ -214,7 +214,7 @@ class Package {
    *  systems.
    */
   @Transient
-  getNotificationEndpoints() {
+  def getNotificationEndpoints() {
     [
       [ service:'zendesk.forum', remoteid:this.forumId ]
     ]

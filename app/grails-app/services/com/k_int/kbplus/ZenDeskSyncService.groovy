@@ -213,7 +213,8 @@ class ZenDeskSyncService {
     cached_forum_activity
   }
 
-  def postInForum(header, text, forumurl) {
+  def postTopicCommentInForum(text, forumId, topicName, topicBody) {
+    log.debug("postTopicCommentInForum ${forumId}");
     try {
         def http = new RESTClient(ApplicationHolder.application.config.ZenDeskBaseURL)
 
@@ -225,15 +226,52 @@ class ZenDeskSyncService {
           }
         })
 
-        // http.get(path:'/api/v2/search.json',
-        //          query:[query:'type:topic', sort_by:'updated_at', sort_order:'desc']) { resp, data ->
-        //   cached_forum_activity = data
-        // }
+        def topic_id = lookupOrCreateTopicInForum(forumId, topicName, topicBody, http);
+
+        log.debug("Posting in topic ${topic_id}");
+
+        http.post(path:"/api/v2/topics/${topic_id}/comments.json",
+                    requestContentType : ContentType.JSON,
+                    body : [ 'topic_comment' : [ 'body' : text ] ]) { resp, json ->
+        }
     }
     catch ( Exception e ) {
       log.error("Problem activity",e)
     }
     finally {
     }
+  }
+
+  def lookupOrCreateTopicInForum(forumId, topicName, topicBody, endpoint) {
+    log.debug("lookupOrCreateTopicInForum(${forumId},${topicName}...)");
+
+    def result = null
+    def currentForumTopics = endpoint.get(path:"/api/v2/forums/${forumId}/topics.json") { resp, data ->
+
+      log.debug("Consider existing topics : ${data}");
+
+      data.topics.each { topic ->
+        log.debug("Consider existing topic: ${topic}");
+        if ( topic.title == topicName ) 
+          result = topic.id
+      }
+    }
+ 
+    if ( result == null ) {
+      log.debug("Create new topic with name ${topicName}");
+      // Not able to locate topic with topicName in the identified forum.. Create it
+      endpoint.post(path:"/api/v2/topics.json",
+                    requestContentType : ContentType.JSON,
+                    body : [ 'topic' : [ 'forum_id' : forumId,
+                                         'title': topicName,
+                                         'body' : topicBody
+                                       ]
+                      ]) { resp, json ->
+        result = json.topic.id
+      }
+    }
+
+    log.debug("Result of lookupOrCreateTopicInForum is ${result}");
+    result
   }
 }
