@@ -173,48 +173,77 @@ class ChangeNotificationService {
   // notify any registered channels
   def aggregateAndNotifyChanges() {
 
-    def pendingOIDChanges = ChangeNotificationQueueItem.executeQuery("select distinct c.oid from ChangeNotificationQueueItem as c order by c.oid");
+    try {
+      def pendingOIDChanges = ChangeNotificationQueueItem.executeQuery("select distinct c.oid from ChangeNotificationQueueItem as c order by c.oid");
 
-    pendingOIDChanges.each { poidc ->
-      log.debug("Consider pending changes for ${poidc}");
+      pendingOIDChanges.each { poidc ->
+    
+        log.debug("Consider pending changes for ${poidc}");
 
-      def pendingChanges = ChangeNotificationQueueItem.executeQuery("select c from ChangeNotificationQueueItem as c where c.oid = ? order by c.ts asc",[poidc]);
+        def contextObject = genericOIDService.resolveOID(poidc);
 
-      pendingChanges.each { pc ->
-        log.debug("Process pending change ${pc}");
-      }
+        def pendingChanges = ChangeNotificationQueueItem.executeQuery("select c from ChangeNotificationQueueItem as c where c.oid = ? order by c.ts asc",[poidc]);
 
-      def contextObject = null
-      def changeDetailDocument = null
+        StringWriter sw = new StringWriter();
 
+        sw.write("Changes on ${new Date().toString()}\n\n");
 
-      if ( contextObject != null ) {
-        if ( contextObject.metaClass.respondsTo(contextObject, 'getNotificationEndpoints') ) {
-          log.debug("  -> looking at notification endpoints...");
-          // Does the objct have a zendesk URL, or any other comms URLs for that matter?
-          // How do we decouple Same-As links? Only the object should know about what
-          // notification services it's registered with? What about the case where we're adding
-          // a new thing? Whats registered?
-          contextObject.notificationEndpoints.each { ne ->
-            log.debug("  -> consider ${ne}");
-            switch ( ne.service ) {
-              case 'zendesk.forum': 
-                log.debug("Send zendesk forum notification for ${ne.remoteid} - ${changeDetailDocument}");
-                zenDeskSyncService.postTopicCommentInForum(changeDetailDocument.toString(), 
-                                                           ne.remoteid.toString(), 
-                                                           'System Notifications', 
-                                                           'System generated alerts and notifications will appear as comments under this topic');
-                break;
-              default:
-                break;
-            }
+        pendingChanges.each { pc ->
+          log.debug("Process pending change ${pc}");    
+          def parsed_event_info = JSON.parse(pc.changeDocument)
+          def change_template = ContentItem.findByKey("ChangeNotification.${parsed_event_info.event}")
+          if ( change_template != null ) {
+            log.debug("Found change template... ${change_template.content}");
+            // groovy.util.Eval.x(r, 'x.' + rh.property)
+            def event_props = [o:contextObject, evt:parsed_event_info]
+
+            // Use doStuff to cleverly render change_template with variable substitution 
+            log.debug("Make engine");
+            def engine = new groovy.text.GStringTemplateEngine()
+            log.debug("createTemplate..");
+            def tmpl = engine.createTemplate(change_template.content).make(event_props)
+            log.debug("Write to string writer");
+            sw.write(tmpl.toString());
+          }
+          else {
+            sw.write("Unable to find template for change event \"ChangeNotification.${parsed_event_info.event}\". Event info follows\n\n${pc.changeDocument}\n\n");
           }
         }
-        else {
-          log.debug("  -> Object does not respond to getNotificationEndpoints");
+
+        if ( contextObject != null ) {
+          if ( contextObject.metaClass.respondsTo(contextObject, 'getNotificationEndpoints') ) {
+            log.debug("  -> looking at notification endpoints...");
+            // Does the objct have a zendesk URL, or any other comms URLs for that matter?
+              // How do we decouple Same-As links? Only the object should know about what
+            // notification services it's registered with? What about the case where we're adding
+            // a new thing? Whats registered?
+            contextObject.notificationEndpoints.each { ne ->
+              log.debug("  -> consider ${ne}");
+              switch ( ne.service ) {
+                case 'zendesk.forum': 
+                  log.debug("Send zendesk forum notification for ${ne.remoteid}");
+                  zenDeskSyncService.postTopicCommentInForum(sw.toString(),
+                                                             ne.remoteid.toString(), 
+                                                             'System Notifications', 
+                                                             'System generated alerts and notifications will appear as comments under this topic');
+                  break;
+                default:
+                  break;
+              }
+            }
+          }
+          else {
+          }
         }
       }
     }
+    catch ( Exception e ) {
+      log.error("Problem",e);
+    }
+    finally {
+      log.debug("aggregateAndNotifyChanges completed");
+    }
+ 
   }
 
   /**

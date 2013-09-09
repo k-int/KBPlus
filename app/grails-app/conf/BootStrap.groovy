@@ -244,6 +244,23 @@ class BootStrap {
     RefdataCategory.lookupOrCreate('UsageStatus', 'redCross',       'Prohibited')
     RefdataCategory.lookupOrCreate('UsageStatus', 'purpleQuestion', 'SilentUninterpreted')
     RefdataCategory.lookupOrCreate('UsageStatus', 'purpleQuestion', 'NotApplicable')
+
+
+    log.debug("validate content items...");
+    // The default template for a property change on a title
+    ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.propertyChange','','''
+There was a title change - The ${evt.prop} field was changed from  "${evt.old}" to ${evt.new}.
+''');
+
+    ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.identifierAdded','','''
+An identifier was added to title ${o.id}.
+''');
+
+    ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.identifierRemoved','','''
+An identifier was removed from title ${o.id}.
+''');
+
+
   }
 
 }
