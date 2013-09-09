@@ -98,8 +98,13 @@
                 <g:each in="${forumActivity.results}" var="fa">
                   <tr>
                     <td>
-                      <a href="${fa.url}">${fa.title}</a><br>
-                      <span class="pull-right"><a href="${fa.url}">View Discussion</a></span>
+                      ${fa.title}<br>
+                      <g:if test="${fa.result_type=='topic'}">
+                        <span class="pull-right"><a href="${grailsApplication.config.ZenDeskBaseURL}/entries/${fa.id}">View Topic</a></span>
+                      </g:if>
+                      <g:else>
+                        <span class="pull-right"><a href="${fa.url}">View ${fa.result_type}</a></span>
+                      </g:else>
                     </td>
                   </tr>
                 </g:each>
