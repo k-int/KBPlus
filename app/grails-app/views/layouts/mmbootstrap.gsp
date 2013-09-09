@@ -178,6 +178,9 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'manageContentItems'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="manageContentItems">Manage Content Items</g:link>
                       </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'forceSendNotifications'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="forceSendNotifications">Send Pending Notifications</g:link>
+                      </li>
                     </ul>
                   </li>
   

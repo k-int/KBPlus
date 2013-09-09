@@ -150,31 +150,67 @@ class ChangeNotificationService {
   def broadcastEvent(contextObjectOID, changeDetailDocument) {
     log.debug("broadcastEvent(${contextObjectOID},${changeDetailDocument})");
 
+    
     def contextObject = genericOIDService.resolveOID(contextObjectOID);
 
-    if ( contextObject.metaClass.respondsTo(contextObject, 'getNotificationEndpoints') ) {
-      log.debug("  -> looking at notification endpoints...");
-      // Does the objct have a zendesk URL, or any other comms URLs for that matter?
-      // How do we decouple Same-As links? Only the object should know about what
-      // notification services it's registered with? What about the case where we're adding
-      // a new thing? Whats registered?
-      contextObject.notificationEndpoints.each { ne ->
-        log.debug("  -> consider ${ne}");
-        switch ( ne.service ) {
-          case 'zendesk.forum': 
-            log.debug("Send zendesk forum notification for ${ne.remoteid} - ${changeDetailDocument}");
-            zenDeskSyncService.postTopicCommentInForum(changeDetailDocument.toString(), 
-                                                       ne.remoteid.toString(), 
-                                                       'System Notifications', 
-                                                       'System generated alerts and notifications will appear as comments under this topic');
-            break;
-          default:
-            break;
-        }
-      }
+    def new_queue_item = new ChangeNotificationQueueItem(oid:contextObjectOID, 
+                                                         changeDocument:changeDetailDocument.toString(),
+                                                         ts:new Date())
+    if ( new_queue_item.save() ) {
+      log.debug("Pending change saved ok");
     }
     else {
-      log.debug("  -> Object does not respond to getNotificationEndpoints");
+      log.error(new_queue_item.errors);
+    }
+
+  }
+
+
+  // Gather together all the changes for a give context object, formate them into an aggregated document
+  // notify any registered channels
+  def aggregateAndNotifyChanges() {
+
+    def pendingOIDChanges = ChangeNotificationQueueItem.executeQuery("select distinct c.oid from ChangeNotificationQueueItem as c order by c.oid");
+
+    pendingOIDChanges.each { poidc ->
+      log.debug("Consider pending changes for ${poidc}");
+
+      def pendingChanges = ChangeNotificationQueueItem.executeQuery("select c from ChangeNotificationQueueItem as c where c.oid = ? order by c.ts asc",[poidc]);
+
+      pendingChanges.each { pc ->
+        log.debug("Process pending change ${pc}");
+      }
+
+      def contextObject = null
+      def changeDetailDocument = null
+
+
+      if ( contextObject != null ) {
+        if ( contextObject.metaClass.respondsTo(contextObject, 'getNotificationEndpoints') ) {
+          log.debug("  -> looking at notification endpoints...");
+          // Does the objct have a zendesk URL, or any other comms URLs for that matter?
+          // How do we decouple Same-As links? Only the object should know about what
+          // notification services it's registered with? What about the case where we're adding
+          // a new thing? Whats registered?
+          contextObject.notificationEndpoints.each { ne ->
+            log.debug("  -> consider ${ne}");
+            switch ( ne.service ) {
+              case 'zendesk.forum': 
+                log.debug("Send zendesk forum notification for ${ne.remoteid} - ${changeDetailDocument}");
+                zenDeskSyncService.postTopicCommentInForum(changeDetailDocument.toString(), 
+                                                           ne.remoteid.toString(), 
+                                                           'System Notifications', 
+                                                           'System generated alerts and notifications will appear as comments under this topic');
+                break;
+              default:
+                break;
+            }
+          }
+        }
+        else {
+          log.debug("  -> Object does not respond to getNotificationEndpoints");
+        }
+      }
     }
   }
 
