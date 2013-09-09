@@ -2,6 +2,8 @@ package com.k_int.kbplus
 
 import com.k_int.kbplus.auth.*;
 import com.k_int.kbplus.*;
+import grails.converters.*
+
 
 class ChangeNotificationService {
 
@@ -153,8 +155,9 @@ class ChangeNotificationService {
     
     def contextObject = genericOIDService.resolveOID(contextObjectOID);
 
+    def jsonChangeDocument = changeDetailDocument as JSON
     def new_queue_item = new ChangeNotificationQueueItem(oid:contextObjectOID, 
-                                                         changeDocument:changeDetailDocument.toString(),
+                                                         changeDocument:jsonChangeDocument.toString(),
                                                          ts:new Date())
     if ( new_queue_item.save() ) {
       log.debug("Pending change saved ok");
