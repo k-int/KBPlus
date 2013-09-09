@@ -184,7 +184,7 @@ class ZenDeskSyncService {
   def getLatestForumActivity() {
     // https://ostephens.zendesk.com/api/v2/search.json?query=type:topic
     def now = System.currentTimeMillis();
-    def intervalms = 1000 * 60 * 60 * 1  // Re-fetch forum activity every hour
+    def intervalms = 1000 * 60 * 5 // Re-fetch forum activity every 5 minutes
     if ( now - last_forum_check > intervalms ) {
       try {
         def http = new RESTClient(ApplicationHolder.application.config.ZenDeskBaseURL)

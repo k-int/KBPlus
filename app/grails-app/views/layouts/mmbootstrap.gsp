@@ -12,6 +12,7 @@
     <title><g:layoutTitle default="${meta(name: 'app.name')}"/></title>
     <meta name="description" content="">
     <meta name="viewport" content="initial-scale = 1.0">
+    <r:require modules="kbplus"/>
     <g:layoutHead/>
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
@@ -21,9 +22,9 @@
     <!-- Le fav and touch icons -->
     <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
 
-    <r:require modules="kbplus"/>
 
     <!-- Stylesheets -->
+    <r:layoutResources/>
     <r:layoutResources/>
   </head>
 
