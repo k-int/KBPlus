@@ -249,7 +249,7 @@ class BootStrap {
     log.debug("validate content items...");
     // The default template for a property change on a title
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.propertyChange','','''
-There was a title change - The ${evt.prop} field was changed from  "${evt.old}" to ${evt.new}.
+Title change - The <strong>${evt.prop}</strong> field was changed from  "<strong>${evt.old}</strong>" to "<strong>${evt.new}</strong>".
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.identifierAdded','','''

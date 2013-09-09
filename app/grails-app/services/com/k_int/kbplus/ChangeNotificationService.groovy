@@ -172,6 +172,13 @@ class ChangeNotificationService {
   // Gather together all the changes for a give context object, formate them into an aggregated document
   // notify any registered channels
   def aggregateAndNotifyChanges() {
+    def future = executorService.submit({
+      internalAggregateAndNotifyChanges();
+    } as java.util.concurrent.Callable)
+  }
+
+
+  def internalAggregateAndNotifyChanges() {
 
     try {
       def pendingOIDChanges = ChangeNotificationQueueItem.executeQuery("select distinct c.oid from ChangeNotificationQueueItem as c order by c.oid");
@@ -179,14 +186,11 @@ class ChangeNotificationService {
       pendingOIDChanges.each { poidc ->
     
         log.debug("Consider pending changes for ${poidc}");
-
         def contextObject = genericOIDService.resolveOID(poidc);
-
         def pendingChanges = ChangeNotificationQueueItem.executeQuery("select c from ChangeNotificationQueueItem as c where c.oid = ? order by c.ts asc",[poidc]);
-
         StringWriter sw = new StringWriter();
-
-        sw.write("Changes on ${new Date().toString()}\n\n");
+        sw.write("<p>Changes on ${new Date().toString()}</p><p><ul>");
+        def pc_delete_list = []
 
         pendingChanges.each { pc ->
           log.debug("Process pending change ${pc}");    
@@ -203,12 +207,16 @@ class ChangeNotificationService {
             log.debug("createTemplate..");
             def tmpl = engine.createTemplate(change_template.content).make(event_props)
             log.debug("Write to string writer");
+            sw.write("<li>");
             sw.write(tmpl.toString());
+            sw.write("</li>");
           }
           else {
-            sw.write("Unable to find template for change event \"ChangeNotification.${parsed_event_info.event}\". Event info follows\n\n${pc.changeDocument}\n\n");
+            sw.write("<li>Unable to find template for change event \"ChangeNotification.${parsed_event_info.event}\". Event info follows\n\n${pc.changeDocument}</li>");
           }
+          pc_delete_list.add(pc)
         }
+        sw.write("</ul></p>");
 
         if ( contextObject != null ) {
           if ( contextObject.metaClass.respondsTo(contextObject, 'getNotificationEndpoints') ) {
@@ -224,7 +232,7 @@ class ChangeNotificationService {
                   log.debug("Send zendesk forum notification for ${ne.remoteid}");
                   zenDeskSyncService.postTopicCommentInForum(sw.toString(),
                                                              ne.remoteid.toString(), 
-                                                             'System Notifications', 
+                                                             "Changes related to ${contextObject.toString()}".toString(),
                                                              'System generated alerts and notifications will appear as comments under this topic');
                   break;
                 default:
@@ -234,6 +242,12 @@ class ChangeNotificationService {
           }
           else {
           }
+        }
+
+        log.debug("Delete reported changes...");
+        // If we got this far, all is OK, delete any pending changes
+        pc_delete_list.each { pc ->
+          pc.delete()
         }
       }
     }

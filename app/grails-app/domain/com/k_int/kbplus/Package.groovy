@@ -219,4 +219,8 @@ class Package {
       [ service:'zendesk.forum', remoteid:this.forumId ]
     ]
   }
+
+  public String toString() {
+    "Package ${name}";
+  }
 }
