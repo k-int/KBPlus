@@ -1,1 +1,2 @@
+drop index fact_uid_idx on fact;
 create index fact_uid_idx on fact ( fact_uid );
