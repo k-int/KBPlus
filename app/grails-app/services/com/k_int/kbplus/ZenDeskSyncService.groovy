@@ -116,7 +116,7 @@ class ZenDeskSyncService {
                requestContentType : ContentType.JSON, 
                body : [ 'forum' : [ 'name' : forum_name,
                                     'forum_type': 'questions', 
-                                    'access': 'logged-in users',
+                                    'access': 'everybody', // 'logged-in users',
                                     'category_id' : "${categoryId}".toString(),
                                     'description' : forum_desc//,
                                     // 'tags' : [ 'kbpluspkg' , "pkg:${pkg.id}".toString(), ApplicationHolder.application.config.kbplusSystemId.toString()  ]  
