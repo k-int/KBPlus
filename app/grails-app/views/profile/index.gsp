@@ -51,9 +51,9 @@
           <div class="control-group">
             <dt>Default Dashboard</dt>
             <dd>
-              <select name="defaultDash" value="">
+              <select name="defaultDash" value="${user.defaultDash?.id}">
                 <g:each in="${user.affiliations}" var="assoc">
-                  <option value="${assoc.org.id}">${assoc.org.name}</option>
+                  <option value="${assoc.org.id}" ${user.defaultDash?.id==assoc.org.id?'selected':''}>${assoc.org.name}</option>
                 </g:each>
               </select>
             </dd>
