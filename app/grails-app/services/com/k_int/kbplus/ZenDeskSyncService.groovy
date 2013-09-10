@@ -115,14 +115,14 @@ class ZenDeskSyncService {
     http.post( path : '/api/v2/forums.json', 
                requestContentType : ContentType.JSON, 
                body : [ 'forum' : [ 'name' : forum_name,
-                                    'forum_type': 'questions', 
-                                    'access': 'everybody', // 'logged-in users',
+                                    'forum_type': 'articles', // 'questions', 
+                                    'access': 'everybody', // 'logged-in users'
                                     'category_id' : "${categoryId}".toString(),
                                     'description' : forum_desc//,
                                     // 'tags' : [ 'kbpluspkg' , "pkg:${pkg.id}".toString(), ApplicationHolder.application.config.kbplusSystemId.toString()  ]  
                                   ] 
                       ]) { resp, json ->
-      log.debug("Result: ${resp}, ${json}");
+      log.debug("Create forum Result: ${resp.status}, ${json}");
       result = json.forum.id
     }
     result
