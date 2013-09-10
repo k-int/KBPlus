@@ -118,7 +118,7 @@ class TitleInstancePackagePlatform {
       if ( oldMap[cp] != newMap[cp] ) {
         changeNotificationService.notifyChangeEvent([
                                                      OID:"${this.class.name}:${this.id}",
-                                                     event:'TippChange',
+                                                     event:'TitleInstancePackagePlatform.updated',
                                                      prop:cp, old:oldMap[cp], new:newMap[cp]
                                                     ])
       }
@@ -127,11 +127,33 @@ class TitleInstancePackagePlatform {
 
   @Transient
   def onSave = {
+
+    log.debug("onSave")
     def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+
+    changeNotificationService.notifyChangeEvent([
+                                                 OID:"${this.class.name}:${thisti.id}",
+                                                 event:'TitleInstancePackagePlatform.added',
+                                                 linkedTitle:title.title,
+                                                 linkedTitleId:title.id,
+                                                 linkedPackage:pkg.name,
+                                                 linkedPlatform:platform.name
+                                                ])
+  }
+
+  @Transient
+  def onDelete = {
+
+    log.debug("onDelete")
+    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+
     changeNotificationService.notifyChangeEvent([
                                                  OID:"${this.class.name}:${this.id}",
-                                                 event:'NewTipp',
-                                                 tippId:this.id
+                                                 event:'TitleInstancePackagePlatform.deleted',
+                                                 linkedTitle:title.title,
+                                                 linkedTitleId:title.id,
+                                                 linkedPackage:pkg.name,
+                                                 linkedPlatform:platform.name
                                                 ])
   }
 
@@ -139,9 +161,9 @@ class TitleInstancePackagePlatform {
   def notifyDependencies(changeDocument) {
     log.debug("notifyDependencies(${changeDocument})");
 
-    changeNotificationService.broadcastEvent("${pkg.class.name}:${pkg.id}", changeDocument);
+    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+    changeNotificationService.broadcastEvent("com.k_int.kbplus.Package:${pkg.id}", changeDocument);
+    changeNotificationService.broadcastEvent("${this.class.name}:${this.id}", changeDocument);
   }
-
-  
 
 }

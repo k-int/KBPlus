@@ -260,6 +260,18 @@ An identifier was added to title ${o.id}.
 An identifier was removed from title ${o.id}.
 ''');
 
+    ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.updated','','''
+TIPP change - The <strong>${evt.prop}</strong> field was changed from  "<strong>${evt.old}</strong>" to "<strong>${evt.new}</strong>".
+''');
+
+    ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.added','','''
+TIPP Added for title ${o.linkedTitle} on platform ${o.linkedPlatform} .
+''');
+
+    ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.deleted','','''
+TIPP Deleted for title ${o.linkedTitle} on platform ${o.linkedPlatform} .
+''');
+
 
   }
 
