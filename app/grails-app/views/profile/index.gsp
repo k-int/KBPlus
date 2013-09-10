@@ -64,8 +64,8 @@
             <dd><input type="submit" value="Update Profile" class="btn btn-primary"/></dd>
           </div>
 
-          <p>Please note, membership requests may be slow to process if you do not corretly set display name and email address above. Please ensure your
-               these are set properly before requesting instutional memberships below</p>
+          <p>Please note, membership requests may be slow to process if you do not set a meaningful display name and email address. Please ensure
+               these are set correctly before requesting instutional memberships</p>
         </g:form>
       </div>
     </div>
