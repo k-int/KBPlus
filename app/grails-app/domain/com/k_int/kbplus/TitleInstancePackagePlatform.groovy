@@ -132,7 +132,7 @@ class TitleInstancePackagePlatform {
     def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
 
     changeNotificationService.notifyChangeEvent([
-                                                 OID:"${this.class.name}:${thisti.id}",
+                                                 OID:"${this.class.name}:${this.id}",
                                                  event:'TitleInstancePackagePlatform.added',
                                                  linkedTitle:title.title,
                                                  linkedTitleId:title.id,
