@@ -113,7 +113,7 @@ class Org {
 
   public boolean hasUserWithRole(com.k_int.kbplus.auth.User user, String rolename) {
     def role = com.k_int.kbplus.auth.Role.findByAuthority(rolename)
-    return hasRole(user,role);
+    return hasUserWithRole(user,role);
   }
 
   /**
