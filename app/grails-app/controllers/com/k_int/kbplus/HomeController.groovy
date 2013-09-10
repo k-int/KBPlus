@@ -25,9 +25,9 @@ class HomeController {
     }
     else {
       if ( result.user.affiliations.size() == 1 ) {
-        result.user.defaultDash = result.user.affiliations.get(0).org
+        result.user.defaultDash = result.user.affiliations.getAt(0).org
         result.user.save();
-        redirect(controller:'myInstitutions', action:'dashboard', params:[shortcode:result.user.affiliations.get(0).org.shortcode]);
+        redirect(controller:'myInstitutions', action:'dashboard', params:[shortcode:result.user.affiliations.getAt(0).org.shortcode]);
       }
       else {
         flash.message="Please select an institution to use as your default home dashboard"
