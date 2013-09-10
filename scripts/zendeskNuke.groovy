@@ -20,9 +20,9 @@ import org.apache.http.*
 import org.apache.http.protocol.*
 
 
-def zendesk_login_email = ''
-def zendesk_login_pass = ''
-def zendesk_base_url = ''
+def zendesk_login_email = args[0]
+def zendesk_login_pass = args[1]
+def zendesk_base_url = args[2]
 
 
 // Select all public packages where there is currently no forumId
@@ -41,8 +41,21 @@ try {
   http.get(path:'/api/v2/categories.json') { resp, data ->
     result = data
     result.categories.each { cat ->
-      http.delete(path:"/api/v2/categories/${cat.id}.json") { resp ->
-        println(resp);
+      def cat_delete_response = http.delete(path:"/api/v2/categories/${cat.id}.json")
+      println("Delete forum ${cat.id} : ${cat_delete_response.status}");
+    }
+  }
+
+  int fdc = 1
+  while ( fdc > 0 ) {
+    fdc = 0
+    http.get(path:'/api/v2/forums.json') { resp, data ->
+      result = data
+      result.forums.each { forum ->
+        if ( forum.name.contains('Package') ) {
+          forum_delete_response = http.delete(path:"/api/v2/forums/${forum.id}.json")
+          println("Delete forum[${fdc++}] ${forum.id}(${forum.name}) : ${forum_delete_response.status}");
+        }
       }
     }
   }
