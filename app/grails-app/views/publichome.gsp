@@ -43,7 +43,7 @@
                 <div class="span4">
 					<div class="well">
 						<h2>Login</h2>
-						<p><span class="external-link"><g:link controller="myInstitutions" action="dashboard">Knowledge Base+ Member Login</g:link></span></p>
+						<p><span class="external-link"><g:link controller="home" action="index">Knowledge Base+ Member Login</g:link></span></p>
 					</div>                                   
 <div class="twitter">
 <script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>

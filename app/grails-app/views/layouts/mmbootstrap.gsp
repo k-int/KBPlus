@@ -33,7 +33,7 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <g:link controller="myInstitutions" action="dashboard" class="brand" alt="KB+ ${grailsApplication.metadata.'app.version'} / build ${grailsApplication.metadata.'app.buildNumber'}">KB+</g:link>
+          <g:link controller="home" action="index" class="brand" alt="KB+ ${grailsApplication.metadata.'app.version'} / build ${grailsApplication.metadata.'app.buildNumber'}">KB+</g:link>
           <div class="nav-collapse">
             <ul class="nav">
               <sec:ifLoggedIn>
@@ -42,7 +42,7 @@
                   <li class="dropdown">
                     <a href="#" class="dropdown-toggle explorer-link" data-toggle="dropdown"> Data Explorer <b class="caret"></b> </a>
                     <ul class="dropdown-menu" style="max-width:none;">
-                      <li<%= request.forwardURI == "${createLink(uri: '/home')}" ? ' class="active"' : '' %>><a href="${createLink(uri: '/home')}">Search</a></li>
+                      <li<%= request.forwardURI == "${createLink(uri: '/home/search')}" ? ' class="active"' : '' %>><a href="${createLink(uri: '/home/search')}">Search</a></li>
                       <li <%='package'== controllerName ? ' class="active"' : '' %>><g:link controller="package">Package</g:link></li>
                       <li <%='org'== controllerName ? ' class="active"' : '' %>><g:link controller="org">Organisations</g:link></li>
                       <li <%='platform'== controllerName ? ' class="active"' : '' %>><g:link controller="platform">Platform</g:link></li>

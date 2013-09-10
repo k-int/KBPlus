@@ -14,8 +14,23 @@ class HomeController {
 
   // Map the parameter names we use in the webapp with the ES fields
   def reversemap = ['subject':'subject', 'provider':'provid', 'studyMode':'presentations.studyMode','qualification':'qual.type','level':'qual.level' ]
-  
+ 
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() { 
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+
+    if ( result.user?.defaultDash != null ) {
+      redirect(controller:'myInstitutions', action:'dashboard', params:[shortcode:result.user.defaultDash.shortcode]);
+    }
+    else {
+      flash.message="Please select an institution to use as your default dashboard"
+      redirect(controller:'profile', action:'index')
+    }
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def search() { 
     // log.debug("Search Index, params.coursetitle=${params.coursetitle}, params.coursedescription=${params.coursedescription}, params.freetext=${params.freetext}")
     log.debug("Search Index, params.q=${params.q}, format=${params.format}")
 
@@ -94,7 +109,7 @@ class HomeController {
 
     withFormat {
       html {
-        render(view:'index',model:result)
+        render(view:'search',model:result)
       }
       rss {
         renderRSSResponse(result)

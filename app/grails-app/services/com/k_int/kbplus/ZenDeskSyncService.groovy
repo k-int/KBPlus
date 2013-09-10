@@ -144,7 +144,7 @@ class ZenDeskSyncService {
         http.post( path : '/api/v2/categories.json', 
                    requestContentType : ContentType.JSON, 
                    body : [ 'category' : [ 'name' : catname.toString() ] ]) { resp, json ->
-          log.debug("Result: ${resp}, ${json}");
+          log.debug("Result: ${resp.status}, ${json}");
           result = json.category.id
         }
       }
