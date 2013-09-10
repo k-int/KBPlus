@@ -265,11 +265,11 @@ TIPP change - The <strong>${evt.prop}</strong> field was changed from  "<strong>
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.added','','''
-TIPP Added for title ${o.linkedTitle} on platform ${o.linkedPlatform} .
+TIPP Added for title ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.deleted','','''
-TIPP Deleted for title ${o.linkedTitle} on platform ${o.linkedPlatform} .
+TIPP Deleted for title ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
 ''');
 
 
