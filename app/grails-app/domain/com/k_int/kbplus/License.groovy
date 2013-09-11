@@ -299,11 +299,12 @@ class License {
 
     // Find any licenses derived from this license
     // create a new pending change object
-    def derived_licenses = License.executeQuery('select l from License join l.incomingLinks as lil where lil.fromLic = ?',this)
+    def derived_licenses = License.executeQuery('select l from License as l where exists ( select link from Link as link where link.toLic=l and link.fromLic=? )',this)
     derived_licenses.each { dl ->
+      log.debug("Send pending change to ${dl.id}");
       changeNotificationService.registerPendingChange('license',
                                                       dl,
-                                                      "${changeDocument.prop} changed from ${changeDocument.oldLabel} to ${changeDocument.newLabel} on the template license. Accept this change to make the same change to this actual license",
+                                                      "${changeDocument.prop} changed from \"${changeDocument.oldLabel?:changeDocument.old}\" to \"${changeDocument.newLabel?:changeDocument.new}\" on the template license. Accept this change to make the same change to this actual license",
                                                       dl.getLicensee(),
                                                       [
                                                         changeType:'PropertyChange',
