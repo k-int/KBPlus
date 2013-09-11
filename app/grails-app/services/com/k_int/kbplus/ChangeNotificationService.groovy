@@ -221,6 +221,7 @@ class ChangeNotificationService {
         if ( contextObject != null ) {
           if ( contextObject.metaClass.respondsTo(contextObject, 'getNotificationEndpoints') ) {
             log.debug("  -> looking at notification endpoints...");
+            def announcement_content = sw.toString();
             // Does the objct have a zendesk URL, or any other comms URLs for that matter?
               // How do we decouple Same-As links? Only the object should know about what
             // notification services it's registered with? What about the case where we're adding
@@ -230,10 +231,19 @@ class ChangeNotificationService {
               switch ( ne.service ) {
                 case 'zendesk.forum': 
                   log.debug("Send zendesk forum notification for ${ne.remoteid}");
-                  zenDeskSyncService.postTopicCommentInForum(sw.toString(),
+                  zenDeskSyncService.postTopicCommentInForum(announcement_content,
                                                              ne.remoteid.toString(), 
                                                              "Changes related to ${contextObject.toString()}".toString(),
                                                              'System generated alerts and notifications will appear as comments under this topic');
+                  break;
+                case 'announcements':
+                  def announcement_type = RefdataCategory.lookupOrCreate('Document Type','Announcement')
+                  // result.recentAnnouncements = Doc.findAllByType(announcement_type,[max:10,sort:'dateCreated',order:'desc'])
+                  def newAnnouncement = new Doc(type:announcement_type,
+                                                content:announcement_content,
+                                                dateCreated:new Date(),
+                                                user:User.findByUsername('admin')).save();
+
                   break;
                 default:
                   break;
