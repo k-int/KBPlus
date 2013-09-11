@@ -99,7 +99,7 @@ class SubscriptionImportController {
     }
     else if ( params.generate=='yes' ) {
       log.debug("Generate");
-      // generate(materialiseFolder(shopping_basket.items), result.institution)
+      generate(materialiseFolder(shopping_basket.items))
       return
     }
 
@@ -237,6 +237,339 @@ class SubscriptionImportController {
 
     def result = sw.toString();
     result;
+  }
+
+  def generate(plist) {
+    try {
+      def m = generateMatrix(plist)
+      exportWorkbook(m);
+    }
+    catch ( Exception e ) {
+      log.error("Problem",e);
+      response.sendError(500)
+    }
+  }
+
+
+  def generateMatrix(plist) {
+
+    def titleMap = [:]
+    def subscriptionMap = [:]
+
+    log.debug("pre-pre-process");
+
+    boolean first = true;
+
+    def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+
+    // Step one - Assemble a list of all titles and packages.. We aren't assembling the matrix
+    // of titles x packages yet.. Just gathering the data for the X and Y axis
+    plist.each { sub ->
+
+      def sub_info = [
+        sub_idx : subscriptionMap.size(),
+        sub_name : sub.name,
+        sub_id : "${sub.class.name}:${sub.id}"
+      ]
+
+      log.debug("Added sub entry ${sub_info}");
+
+      subscriptionMap[sub.id] = sub_info
+
+      if ( sub instanceof Package ) {
+        log.debug("Adding package into renewals worksheet");
+        sub.tipps.each { tipp ->
+          if ( ! (tipp.status?.value=='Deleted')  ) {
+            def title_info = titleMap[tipp.title.id]
+            if ( !title_info ) {
+              // log.debug("Adding ie: ${ie}");
+              title_info = [:]
+              title_info.title_idx = titleMap.size()
+              title_info.id = tipp.title.id;
+              title_info.issn = tipp.title.getIdentifierValue('ISSN');
+              title_info.eissn = tipp.title.getIdentifierValue('eISSN');
+              title_info.title = tipp.title.title
+              titleMap[tipp.title.id] = title_info;
+            }
+          }
+        }
+      }
+
+      first=false
+    }
+
+    log.debug("Result will be a matrix of size ${titleMap.size()} by ${subscriptionMap.size()}");
+
+    // Object[][] result = new Object[subscriptionMap.size()+1][titleMap.size()+1]
+    Object[][] ti_info_arr = new Object[titleMap.size()][subscriptionMap.size()]
+    Object[] sub_info_arr = new Object[subscriptionMap.size()]
+    Object[] title_info_arr = new Object[titleMap.size()]
+
+    // Run through the list of packages, and set the X axis headers accordingly
+    subscriptionMap.values().each { v ->
+      sub_info_arr[v.sub_idx] = v
+    }
+
+    // Run through the titles and set the Y axis headers accordingly
+    titleMap.values().each { v ->
+      title_info_arr[v.title_idx] = v
+    }
+
+    // Fill out the matrix by looking through each sub/package and adding the appropriate cell info
+    plist.each { sub ->
+      def sub_info = subscriptionMap[sub.id]
+      if ( sub instanceof Package ) {
+        log.debug("Filling out renewal sheet column for a package");
+        sub.tipps.each { tipp ->
+          if ( ! (tipp.status?.value=='Deleted')  ) {
+            def title_info = titleMap[tipp.title.id]
+            def ie_info = [:]
+            // log.debug("Adding tipp info ${tipp.startDate} ${tipp.derivedFrom}");
+            ie_info.tipp_id = tipp.id;
+            ie_info.startDate_d = tipp.startDate
+            ie_info.startDate = ie_info.startDate_d ? formatter.format(ie_info.startDate_d) : null
+            ie_info.startVolume = tipp.startVolume
+            ie_info.startIssue = tipp.startIssue
+            ie_info.endDate_d = tipp.endDate
+            ie_info.endDate = ie_info.endDate_d ? formatter.format(ie_info.endDate_d) : null
+            ie_info.endVolume = tipp.endVolume ?: tipp.derivedFrom?.endVolume
+            ie_info.endIssue = tipp.endIssue ?: tipp.derivedFrom?.endIssue
+
+            ti_info_arr[title_info.title_idx][sub_info.sub_idx] = ie_info
+          }
+        }
+      }
+    }
+
+    log.debug("Completed.. returning final result");
+
+    def final_result = [
+                        ti_info:ti_info_arr,                      // A crosstab array of the packages where a title occours
+                        title_info:title_info_arr,                // A list of the titles
+                        sub_info:sub_info_arr ]                   // The subscriptions offered (Packages)
+    return final_result
+  }
+
+  def exportWorkbook(m) {
+    try {
+      log.debug("export workbook");
+  
+      // read http://stackoverflow.com/questions/2824486/groovy-grails-how-do-you-stream-or-buffer-a-large-file-in-a-controllers-respon
+  
+      HSSFWorkbook workbook = new HSSFWorkbook();
+   
+      CreationHelper factory = workbook.getCreationHelper();
+  
+      //
+      // Create two sheets in the excel document and name it First Sheet and
+      // Second Sheet.
+      //
+      HSSFSheet firstSheet = workbook.createSheet("Renewals Worksheet");
+      Drawing drawing = firstSheet.createDrawingPatriarch();
+  
+   
+      // Cell style for a present TI
+      HSSFCellStyle present_cell_style = workbook.createCellStyle();  
+      present_cell_style.setFillForegroundColor(HSSFColor.LIGHT_GREEN.index);  
+      present_cell_style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);  
+  
+      // Cell style for a core TI
+      HSSFCellStyle core_cell_style = workbook.createCellStyle();  
+      core_cell_style.setFillForegroundColor(HSSFColor.LIGHT_YELLOW.index);  
+      core_cell_style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);  
+  
+      int rc=0;
+      // header
+      int cc=0;
+      HSSFRow row = null;
+      HSSFCell cell = null;
+  
+      // Blank rows
+      row = firstSheet.createRow(rc++);
+      row = firstSheet.createRow(rc++);
+      cc=0;
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("Subscriber ID"));
+      cell = row.createCell(cc++);
+  
+      row = firstSheet.createRow(rc++);
+      cc=0;
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("--PLEASE COMPLETE--"));
+  
+      row = firstSheet.createRow(rc++);
+  
+      // Key
+      row = firstSheet.createRow(rc++);
+      cc=0;
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("Key"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("Title"));
+      cell.setCellStyle(present_cell_style);  
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("Core Title"));
+      cell.setCellStyle(core_cell_style);  
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("Not In Subscription"));
+  
+      row = firstSheet.createRow(rc++);
+      cc=11
+      m.sub_info.each { sub ->
+        log.debug("Adding package OID to sheet: ${sub.sub_id}");
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${sub.sub_id}"));
+      }
+
+      log.debug("Done adding package IDs to sheet.. rows..");
+      
+      // headings
+      row = firstSheet.createRow(rc++);
+      cc=0;
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("Title ID"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("Title"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("ISSN"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("eISSN"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("current Start Date"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("Current End Date"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("Current Coverage Depth"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("Current Coverage Note"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("IsCore?"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("Core Start Date"));
+      cell = row.createCell(cc++);
+      cell.setCellValue(new HSSFRichTextString("Core End Date"));
+  
+      m.sub_info.each { sub ->
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${sub.sub_name}"));
+  
+        // Hyperlink link = createHelper.createHyperlink(Hyperlink.LINK_URL);
+        // link.setAddress("http://poi.apache.org/");
+        // cell.setHyperlink(link);
+      }
+  
+      m.title_info.each { title ->
+  
+        row = firstSheet.createRow(rc++);
+        cc = 0;
+  
+        // Internal title ID
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.id}"));
+        // Title
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.title?:''}"));
+  
+        // ISSN
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.issn?:''}"));
+  
+        // eISSN
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.eissn?:''}"));
+  
+        // startDate
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.current_start_date?:''}"));
+  
+        // endDate
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.current_end_date?:''}"));
+  
+        // coverageDepth
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.current_depth?:''}"));
+  
+        // embargo
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.current_coverage_note?:''}"));
+  
+        // IsCore
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.is_core?:''}"));
+  
+        // Core Start Date
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.core_start_date?:''}"));
+  
+        // Core End Date
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${title.core_end_date?:''}"));
+  
+        m.sub_info.each { sub ->
+          cell = row.createCell(cc++);
+          def ie_info = m.ti_info[title.title_idx][sub.sub_idx]
+          if ( ie_info ) {
+            if ( ( ie_info.core ) && ( ie_info.core != 'No' ) ) {
+              cell.setCellValue(new HSSFRichTextString(""));
+              cell.setCellStyle(core_cell_style);  
+            }
+            else {
+              cell.setCellValue(new HSSFRichTextString(""));
+              cell.setCellStyle(present_cell_style);  
+            }
+            addCellComment(row, cell,"${title.title} provided by ${sub.sub_name}\nStart Date:${ie_info.startDate?:'Not set'}\nStart Volume:${ie_info.startVolume?:'Not set'}\nStart Issue:${ie_info.startIssue?:'Not set'}\nEnd Date:${ie_info.endDate?:'Not set'}\nEnd Volume:${ie_info.endVolume?:'Not set'}\nEnd Issue:${ie_info.endIssue?:'Not set'}\nSelect Title by setting this cell to Y", drawing, factory);
+          }
+  
+        }
+      }
+      row = firstSheet.createRow(rc++);
+      cell = row.createCell(0);
+      cell.setCellValue(new HSSFRichTextString("END"));
+  
+      // firstSheet.autoSizeRow(6); //adjust width of row 6 (Headings for JUSP Stats)
+      Row jusp_heads_row = firstSheet.getRow(6);
+      jusp_heads_row.setHeight((short)(jusp_heads_row.getHeight() * 2));
+  
+      firstSheet.autoSizeColumn(0); //adjust width of the first column
+      firstSheet.autoSizeColumn(1); //adjust width of the first column
+      firstSheet.autoSizeColumn(2); //adjust width of the first column
+      firstSheet.autoSizeColumn(3); //adjust width of the first column
+      for ( int i=0; i<m.sub_info.size(); i++ ) {
+        firstSheet.autoSizeColumn(7+i); //adjust width of the second column
+      }
+  
+  
+  
+      response.setHeader "Content-disposition", "attachment; filename='NewSubscriptionTemplate.xls'"
+      // response.contentType = 'application/xls'
+      response.contentType = 'application/vnd.ms-excel'
+      workbook.write(response.outputStream)
+      response.outputStream.flush()
+    }
+    catch ( Exception e ) {
+      log.error("Problem",e);
+      response.sendError(500)
+    }
+  }
+
+  def addCellComment(row, cell, comment_text, drawing, factory) {
+
+    // When the comment box is visible, have it show in a 1x3 space
+    ClientAnchor anchor = factory.createClientAnchor();
+    anchor.setCol1(cell.getColumnIndex());
+    anchor.setCol2(cell.getColumnIndex()+7);
+    anchor.setRow1(row.getRowNum());
+    anchor.setRow2(row.getRowNum()+9);
+
+    // Create the comment and set the text+author
+    def comment = drawing.createCellComment(anchor);
+    RichTextString str = factory.createRichTextString(comment_text);
+    comment.setString(str);
+    comment.setAuthor("KBPlus System");
+
+    // Assign the comment to the cell
+    cell.setCellComment(comment);
   }
 
 }
