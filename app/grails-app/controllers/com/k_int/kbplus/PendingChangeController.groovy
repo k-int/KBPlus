@@ -45,16 +45,28 @@ class PendingChangeController {
   }
 
   private void performAccept(change) {
-    def parsed_change_info = JSON.parse(change.changeDoc)
-    log.debug("Process change ${parsed_change_info}");
-    switch ( parsed_change_info.changeType ) {
-      case 'TIPPDeleted' :
-        // "changeType":"TIPPDeleted","tippId":"com.k_int.kbplus.TitleInstancePackagePlatform:6482"}
-      
-        break;
-      default:
-        log.error("Unhandled change type : ${pc.changeDoc}");
-        break;
+    try {
+      def parsed_change_info = JSON.parse(change.changeDoc)
+      log.debug("Process change ${parsed_change_info}");
+      switch ( parsed_change_info.changeType ) {
+        case 'TIPPDeleted' :
+          // "changeType":"TIPPDeleted","tippId":"com.k_int.kbplus.TitleInstancePackagePlatform:6482"}
+          def sub_to_change = Subscription.get(parsed_change_info.subId)
+          def tipp = genericOIDService.resolveOID(parsed_change_info.tippId)
+          def ie_to_update = IssueEntitlement.findBySubscriptionAndTipp(sub_to_change,tipp)
+          if ( ie_to_update != null ) {
+            ie_to_update.status = RefdataCategory.lookupOrCreate('Entitlement Issue Status','Deleted');
+            ie_to_update.save();
+          }
+          break;
+        default:
+          log.error("Unhandled change type : ${pc.changeDoc}");
+          break;
+      }
+      change.delete()
+    }
+    catch ( Exception e ) {
+      log.error("Problem accepting change",e);
     }
 
   }
