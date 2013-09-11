@@ -268,8 +268,10 @@ class License {
                                                      OID:"${this.class.name}:${this.id}",
                                                      event:'License.updated',
                                                      prop:cp,
-                                                     old:oldMap[cp],
-                                                     new:newMap[cp]
+                                                     old:old_oid,
+                                                     oldLabel:oldMap[cp]?.toString(),
+                                                     new:new_oid,
+                                                     newLabel:newMap[cp]?.toString()
                                                     ])
       }
     }
@@ -297,6 +299,18 @@ class License {
 
     // Find any licenses derived from this license
     // create a new pending change object
+    def derived_licenses = License.executeQuery('select l from License join l.incomingLinks as lil where lil.fromLic = ?',this)
+    derived_licenses.each { dl ->
+      changeNotificationService.registerPendingChange('license',
+                                                      dl,
+                                                      "${changeDocument.prop} changed from ${changeDocument.oldLabel} to ${changeDocument.newLabel} on the template license. Accept this change to make the same change to this actual license",
+                                                      dl.getLicensee(),
+                                                      [
+                                                        changeType:'PropertyChange',
+                                                        changeDoc:changeDocument
+                                                      ])
+
+    }
   }
 
 }

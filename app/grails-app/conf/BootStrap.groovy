@@ -276,6 +276,10 @@ TIPP Deleted for title ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
 New package added.
 ''');
 
+    ContentItem.lookupOrCreate('kbplus.noHostPlatformURL','','''
+No Host Platform URL Content
+''');
+
 
   }
 
