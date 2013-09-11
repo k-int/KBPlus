@@ -267,11 +267,11 @@ class License {
         changeNotificationService.notifyChangeEvent([
                                                      OID:"${this.class.name}:${this.id}",
                                                      event:'License.updated',
-                                                     prop:cp,
+                                                     prop:crp,
                                                      old:old_oid,
-                                                     oldLabel:oldMap[cp]?.toString(),
+                                                     oldLabel:oldMap[crp]?.toString(),
                                                      new:new_oid,
-                                                     newLabel:newMap[cp]?.toString()
+                                                     newLabel:newMap[crp]?.toString()
                                                     ])
       }
     }

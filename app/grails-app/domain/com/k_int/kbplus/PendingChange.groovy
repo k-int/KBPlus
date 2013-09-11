@@ -14,10 +14,10 @@ class PendingChange {
       subscription column:'pc_sub_fk'
            license column:'pc_lic_fk'
                oid column:'pc_oid'
-               doc column:'pc_change_doc'
+         changeDoc column:'pc_change_doc', type:'text'
                 ts column:'pc_ts'
              owner column:'pc_owner'
-              desc column:'pc_desc'
+              desc column:'pc_desc', type:'text'
   }
 
   static constraints = {
