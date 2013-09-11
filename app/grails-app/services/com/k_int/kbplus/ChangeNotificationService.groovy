@@ -189,7 +189,12 @@ class ChangeNotificationService {
         def contextObject = genericOIDService.resolveOID(poidc);
         def pendingChanges = ChangeNotificationQueueItem.executeQuery("select c from ChangeNotificationQueueItem as c where c.oid = ? order by c.ts asc",[poidc]);
         StringWriter sw = new StringWriter();
-        sw.write("<p>Changes on ${new Date().toString()}</p><p><ul>");
+        if ( contextObject.metaClass.respondsTo(contextObject, 'getURL') ) {
+          sw.write("<p>Changes on <a href=\"${contextObject.getURL()}\">${contextObject.toString()}</a> ${new Date().toString()}</p><p><ul>");
+        }
+        else  {
+          sw.write("<p>Changes on ${contextObject.toString()} ${new Date().toString()}</p><p><ul>");
+        }
         def pc_delete_list = []
 
         pendingChanges.each { pc ->
@@ -257,6 +262,7 @@ class ChangeNotificationService {
         log.debug("Delete reported changes...");
         // If we got this far, all is OK, delete any pending changes
         pc_delete_list.each { pc ->
+          log.debug("Deleting reported change ${pc.id}");
           pc.delete()
         }
       }

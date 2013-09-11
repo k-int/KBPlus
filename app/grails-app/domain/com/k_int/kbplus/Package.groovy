@@ -1,6 +1,7 @@
 package com.k_int.kbplus
 
 import javax.persistence.Transient
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 class Package {
 
@@ -223,5 +224,10 @@ class Package {
 
   public String toString() {
     "Package ${name}";
+  }
+
+  @Transient
+  public String getURL() {
+    "${ApplicationHolder.application.config.SystemBaseURL}/packageDetails/show/${id}".toString();
   }
 }
