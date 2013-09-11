@@ -171,7 +171,7 @@ class SubscriptionDetailsController {
     log.debug("subscriptionBatchUpdate ${params}");
 
     params.each { p ->
-      if (p.key.startsWith('_bulkflag.') ) {
+      if ( p.key.startsWith('_bulkflag.') && (p.value=='on'))  {
         def ie_to_edit = p.key.substring(10);
 
         def ie = IssueEntitlement.get(ie_to_edit)
