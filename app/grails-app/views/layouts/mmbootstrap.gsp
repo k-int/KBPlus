@@ -126,7 +126,9 @@
                          <g:link controller="titleDetails" action="findTitleMatches">New Title</g:link></li>
                        <li <%= ( ( 'licenseDetails'== controllerName ) && ( 'create'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="licenseDetails" action="create">New License</g:link></li>
-
+                       <li class="divider"></li>
+                       <li <%= ( ( 'subscriptionImport'== controllerName ) && ( 'generateImportWorksheet'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="subscriptionImport" action="generateImportWorksheet">Generate Subscription Taken Worksheet</g:link></li>
                      </ul>
                    </li>
                 </sec:ifAnyGranted>
