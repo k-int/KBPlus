@@ -125,8 +125,8 @@ class TitleInstancePackagePlatform {
         def prop_info = domain_class.getPersistentProperty(cp)
         if ( prop_info.isAssociation() ) {
           log.debug("Convert object reference into OID");
-          oldMap[cp]= oldMap[cp] != null ? "${deproxy(oldMap[cp]).class.name}:${oldMap[cp].id}" : null;
-          newMap[cp]= newMap[cp] != null ? "${deproxy(newMap[cp]).class.name}:${newMap[cp].id}" : null;
+          oldMap[cp]= oldMap[cp].toString() // != null ? "${deproxy(oldMap[cp]).class.name}:${oldMap[cp].id}" : null;
+          newMap[cp]= newMap[cp].toString() // != null ? "${deproxy(newMap[cp]).class.name}:${newMap[cp].id}" : null;
         }
 
         changeNotificationService.notifyChangeEvent([
@@ -181,7 +181,27 @@ class TitleInstancePackagePlatform {
     changeNotificationService.broadcastEvent("${this.class.name}:${this.id}", changeDocument);
 
     if ( ( changeDocument.event=='TitleInstancePackagePlatform.updated' ) && ( changeDocument.prop == 'status' ) ) {
+
       log.debug("TIPP STATUS CHANGE:: Broadcast pending change to IEs based on this tipp new status: ${changeDocument.new}");
+
+      def dep_ies = IssueEntitlement.findAllByTipp(this)
+      dep_ies.each { dep_ie ->
+        def sub = deproxy(dep_ie.subscription)
+        log.debug("Notify dependent ie ${dep_ie.id} whos sub is ${sub.id} and subscriber is ${sub.getSubscriber()}");
+        if ( sub.getSubscriber() == null ) {
+          // SO - Ignore!
+        }
+        else {
+          changeNotificationService.registerPendingChange('subscription',
+                                                          dep_ie.subscription,
+                                                          "The package entry for title \"${this.title.title}\" was deleted",
+                                                          sub.getSubscriber(),
+                                                          [
+                                                            changeType:'TIPPDeleted',
+                                                            tippId:"${this.class.name}:${this.id}"
+                                                          ])
+        }
+      }
     }
   }
 

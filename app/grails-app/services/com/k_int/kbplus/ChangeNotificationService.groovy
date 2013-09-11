@@ -160,4 +160,19 @@ class ChangeNotificationService {
       }
     } as java.util.concurrent.Callable)
   }
+
+
+
+  def registerPendingChange(prop, target, desc, objowner, changeMap ) {
+
+    def new_pending_change = new PendingChange()
+    new_pending_change[prop] = target;
+    def jsonChangeDocument = changeMap as JSON
+    new_pending_change.changeDoc = jsonChangeDocument.toString();
+    new_pending_change.desc = desc
+    new_pending_change.owner = objowner
+    new_pending_change.ts = new Date();
+    new_pending_change.save()
+  }
+
 }
