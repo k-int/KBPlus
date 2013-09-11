@@ -125,8 +125,8 @@ class TitleInstancePackagePlatform {
         def prop_info = domain_class.getPersistentProperty(cp)
         if ( prop_info.isAssociation() ) {
           log.debug("Convert object reference into OID");
-          oldMap[cp]= oldMap[cp].toString() // != null ? "${deproxy(oldMap[cp]).class.name}:${oldMap[cp].id}" : null;
-          newMap[cp]= newMap[cp].toString() // != null ? "${deproxy(newMap[cp]).class.name}:${newMap[cp].id}" : null;
+          oldMap[cp]= oldMap[cp] != null ? "${deproxy(oldMap[cp]).class.name}:${oldMap[cp].id}" : null;
+          newMap[cp]= newMap[cp] != null ? "${deproxy(newMap[cp]).class.name}:${newMap[cp].id}" : null;
         }
 
         changeNotificationService.notifyChangeEvent([
@@ -134,7 +134,9 @@ class TitleInstancePackagePlatform {
                                                      event:'TitleInstancePackagePlatform.updated',
                                                      prop:cp, 
                                                      old:oldMap[cp], 
-                                                     new:newMap[cp]
+                                                     oldLabel:oldMap[cp].toString(), 
+                                                     new:newMap[cp],
+                                                     newLabel:newMap[cp].toString()
                                                     ])
       }
     }
@@ -180,9 +182,12 @@ class TitleInstancePackagePlatform {
     changeNotificationService.broadcastEvent("com.k_int.kbplus.Package:${pkg.id}", changeDocument);
     changeNotificationService.broadcastEvent("${this.class.name}:${this.id}", changeDocument);
 
+    def deleted_tipp_status = RefdataCategory.lookupOrCreate('TIPP Status','Deleted');
+    def deleted_tipp_status_oid = "com.k_int.kbplus.RefdataValue:${deleted_tipp_status.id}".toString()
+
     if ( ( changeDocument.event=='TitleInstancePackagePlatform.updated' ) && 
          ( changeDocument.prop == 'status' ) && 
-         ( changeDocument.new == 'Deleted' ) ) {
+         ( changeDocument.new == deleted_tipp_status_oid ) ) {
 
       log.debug("TIPP STATUS CHANGE:: Broadcast pending change to IEs based on this tipp new status: ${changeDocument.new}");
 
@@ -196,12 +201,12 @@ class TitleInstancePackagePlatform {
         else {
           changeNotificationService.registerPendingChange('subscription',
                                                           dep_ie.subscription,
-                                                          "The package entry for title \"${this.title.title}\" was deleted. Apply this change to remove the corresponding Issue Entitlement from your Subscription",
+                                                          "The package entry for title \"${this.title.title}\" was deleted. Apply this change to remove the corresponding Issue Entitlement from this Subscription",
                                                           sub.getSubscriber(),
                                                           [
                                                             changeType:'TIPPDeleted',
                                                             tippId:"${this.class.name}:${this.id}",
-                                                            subId:${sub.id}
+                                                            subId:"${sub.id}"
                                                           ])
         }
       }

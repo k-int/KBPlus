@@ -79,8 +79,8 @@
     <g:if test="${subscriptionInstance.pendingChanges?.size() > 0}">
       <div class="container alert-warn">
         <h6>This Subscription has pending change notifications</h6>
-        <g:link controller="pendingChange" action="acceptAll" id="${subscriptionInstance.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept All</g:link>
-        <g:link controller="pendingChange" action="rejectAll" id="${subscriptionInstance.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject All</g:link>
+        <g:link controller="pendingChange" action="acceptAll" id="com.k_int.kbplus.Subscription:${subscriptionInstance.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept All</g:link>
+        <g:link controller="pendingChange" action="rejectAll" id="com.k_int.kbplus.Subscription:${subscriptionInstance.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject All</g:link>
         <br/>&nbsp;<br/>
         <table class="table table-bordered">
           <thead>
