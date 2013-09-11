@@ -7,6 +7,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 class NotificationsJob {
 
   def zenDeskSyncService
+  def changeNotificationService
 
   static triggers = {
     // Delay 20 seconds, run every 10 mins.
@@ -21,6 +22,7 @@ class NotificationsJob {
     if ( ApplicationHolder.application.config.KBPlusMaster == true ) {
       log.debug("This server is marked as KBPlus master. Running ZENDESK sync batch job");
       zenDeskSyncService.doSync()
+      changeNotificationService.aggregateAndNotifyChanges();
     }
     else {
       log.debug("This server is NOT marked as KBPlus master. NOT Running ZENDESK SYNC batch job");
