@@ -2,9 +2,13 @@ package com.k_int.kbplus
 
 import javax.persistence.Transient
 import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.hibernate.proxy.HibernateProxy
 
 
 class TitleInstancePackagePlatform {
+
+  // @Transient
+  // def grailsApplication
 
   static auditable = true
 
@@ -114,12 +118,23 @@ class TitleInstancePackagePlatform {
                                 'coverageNote',
                                 'status' ]
 
+    def domain_class = ApplicationHolder.application.getArtefact('Domain','com.k_int.kbplus.TitleInstancePackagePlatform');
+
     controlledProperties.each { cp ->
       if ( oldMap[cp] != newMap[cp] ) {
+        def prop_info = domain_class.getPersistentProperty(cp)
+        if ( prop_info.isAssociation() ) {
+          log.debug("Convert object reference into OID");
+          oldMap[cp]= oldMap[cp] != null ? "${deproxy(oldMap[cp]).class.name}:${oldMap[cp].id}" : null;
+          newMap[cp]= newMap[cp] != null ? "${deproxy(newMap[cp]).class.name}:${newMap[cp].id}" : null;
+        }
+
         changeNotificationService.notifyChangeEvent([
                                                      OID:"${this.class.name}:${this.id}",
                                                      event:'TitleInstancePackagePlatform.updated',
-                                                     prop:cp, old:oldMap[cp], new:newMap[cp]
+                                                     prop:cp, 
+                                                     old:oldMap[cp], 
+                                                     new:newMap[cp]
                                                     ])
       }
     }
@@ -164,6 +179,17 @@ class TitleInstancePackagePlatform {
     def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
     changeNotificationService.broadcastEvent("com.k_int.kbplus.Package:${pkg.id}", changeDocument);
     changeNotificationService.broadcastEvent("${this.class.name}:${this.id}", changeDocument);
+
+    if ( ( changeDocument.event=='TitleInstancePackagePlatform.updated' ) && ( changeDocument.prop == 'status' ) ) {
+      log.debug("TIPP STATUS CHANGE:: Broadcast pending change to IEs based on this tipp new status: ${changeDocument.new}");
+    }
+  }
+
+  public static <T> T deproxy(def element) {
+    if (element instanceof HibernateProxy) {
+      return (T) ((HibernateProxy) element).getHibernateLazyInitializer().getImplementation();
+    }
+    return (T) element;
   }
 
 }

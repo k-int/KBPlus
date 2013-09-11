@@ -2,6 +2,11 @@ package com.k_int.kbplus
 
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import com.k_int.kbplus.auth.Role
+import javax.persistence.Transient
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+
+
+
 
 class License {
 
@@ -244,7 +249,13 @@ class License {
 
     controlledProperties.each { cp ->
       if ( oldMap[cp] != newMap[cp] ) {
-        changeNotificationService.notifyLicenseChange(this.id, cp, oldMap[cp], newMap[cp], null, 'S');
+        changeNotificationService.notifyChangeEvent([
+                                                     OID:"${this.class.name}:${this.id}",
+                                                     event:'License.updated',
+                                                     prop:cp,
+                                                     old:oldMap[cp],
+                                                     new:newMap[cp]
+                                                    ])
       }
     }
 
@@ -253,7 +264,13 @@ class License {
         log.debug("Sending reference change...");
         def old_oid = oldMap[crp] ? "${oldMap[crp].class.name}:${oldMap[crp].id}" : null;
         def new_oid = oldMap[crp] ? "${newMap[crp].class.name}:${newMap[crp].id}" : null;
-        changeNotificationService.notifyLicenseChange(this.id, crp, old_oid, new_oid, null, 'R');
+        changeNotificationService.notifyChangeEvent([
+                                                     OID:"${this.class.name}:${this.id}",
+                                                     event:'License.updated',
+                                                     prop:cp,
+                                                     old:oldMap[cp],
+                                                     new:newMap[cp]
+                                                    ])
       }
     }
 
@@ -271,4 +288,15 @@ class License {
     }
     return result;
   }
+
+  @Transient
+  def notifyDependencies(changeDocument) {
+    log.debug("notifyDependencies(${changeDocument})");
+
+    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+
+    // Find any licenses derived from this license
+    // create a new pending change object
+  }
+
 }
