@@ -560,4 +560,10 @@ class PackageDetailsController {
 
     redirect(action:'show', id:params.id);
   }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def packageBatchUpdate() {
+    log.debug(params);
+    redirect(action:'show', id:params.id);
+  }
 }
