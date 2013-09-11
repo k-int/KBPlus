@@ -504,7 +504,9 @@ class TitleInstance {
         changeNotificationService.notifyChangeEvent([
                                                      OID:"${this.class.name}:${this.id}",
                                                      event:'TitleInstance.propertyChange',
-                                                     prop:cp, old:oldMap[cp], new:newMap[cp]
+                                                     prop:cp, 
+                                                     old:oldMap[cp], 
+                                                     new:newMap[cp]
                                                     ])
       }
     }

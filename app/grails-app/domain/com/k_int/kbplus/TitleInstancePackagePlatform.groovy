@@ -123,6 +123,10 @@ class TitleInstancePackagePlatform {
     controlledProperties.each { cp ->
       if ( oldMap[cp] != newMap[cp] ) {
         def prop_info = domain_class.getPersistentProperty(cp)
+
+        def oldLabel = oldMap[cp].toString();
+        def newLabel = newMap[cp].toString();
+
         if ( prop_info.isAssociation() ) {
           log.debug("Convert object reference into OID");
           oldMap[cp]= oldMap[cp] != null ? "${deproxy(oldMap[cp]).class.name}:${oldMap[cp].id}" : null;
@@ -134,9 +138,9 @@ class TitleInstancePackagePlatform {
                                                      event:'TitleInstancePackagePlatform.updated',
                                                      prop:cp, 
                                                      old:oldMap[cp], 
-                                                     oldLabel:oldMap[cp].toString(), 
+                                                     oldLabel:oldLabel,
                                                      new:newMap[cp],
-                                                     newLabel:newMap[cp].toString()
+                                                     newLabel:newLabel
                                                     ])
       }
     }

@@ -45,10 +45,12 @@ class PendingChangeController {
   }
 
   private void performAccept(change) {
-    def parsed_change_info = JSON.parse(pc.changeDoc)
+    def parsed_change_info = JSON.parse(change.changeDoc)
+    log.debug("Process change ${parsed_change_info}");
     switch ( parsed_change_info.changeType ) {
       case 'TIPPDeleted' :
         // "changeType":"TIPPDeleted","tippId":"com.k_int.kbplus.TitleInstancePackagePlatform:6482"}
+      
         break;
       default:
         log.error("Unhandled change type : ${pc.changeDoc}");

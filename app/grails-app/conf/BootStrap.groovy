@@ -249,7 +249,7 @@ class BootStrap {
     log.debug("validate content items...");
     // The default template for a property change on a title
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.propertyChange','','''
-Title change - The <strong>${evt.prop}</strong> field was changed from  "<strong>${evt.old}</strong>" to "<strong>${evt.new}</strong>".
+Title change - The <strong>${evt.prop}</strong> field was changed from  "<strong>${evt.oldLabel?:evt.old}</strong>" to "<strong>${evt.newLabel?:evt.new}</strong>".
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.identifierAdded','','''
@@ -261,7 +261,7 @@ An identifier was removed from title ${o.id}.
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.updated','','''
-TIPP change - The <strong>${evt.prop}</strong> field was changed from  "<strong>${evt.old}</strong>" to "<strong>${evt.new}</strong>".
+TIPP change - The <strong>${evt.prop}</strong> field was changed from  "<strong>${evt.oldLabel?:evt.old}</strong>" to "<strong>${evt.newLabel?:evt.new}</strong>".
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.added','','''
