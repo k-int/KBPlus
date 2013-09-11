@@ -2165,7 +2165,21 @@ AND EXISTS (
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
-    result.todos = getPendingChangesForOrg(result.institution)
+    def change_summary = PendingChange.executeQuery("select distinct(pc.oid), count(pc), min(pc.ts), max(pc.ts) from PendingChange as pc where pc.owner = ? group by pc.oid",result.institution);
+    result.todos = []
+    change_summary.each { cs ->
+      log.debug("Change summary row : ${cs}");
+      def item_with_changes = genericOIDService.resolveOID(cs[0])
+      result.todos.add([
+                         item_with_changes:item_with_changes,
+                         oid:cs[0],
+                         num_changes:cs[1],
+                         earliest:cs[2],
+                         latest:cs[3],
+                      ]);
+    }
+    
+     //.findAllByOwner(result.user,sort:'ts',order:'asc')
 
 
     def announcement_type = RefdataCategory.lookupOrCreate('Document Type','Announcement')

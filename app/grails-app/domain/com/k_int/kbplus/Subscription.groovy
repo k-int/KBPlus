@@ -198,5 +198,9 @@ class Subscription {
     log.debug("notifyDependencies(${changeDocument})");
   }
 
+  public String toString() {
+    "Subscription ${id} - ${name}".toString();
+  }
+
 }
 

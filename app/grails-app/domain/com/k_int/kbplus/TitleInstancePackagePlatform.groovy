@@ -180,7 +180,9 @@ class TitleInstancePackagePlatform {
     changeNotificationService.broadcastEvent("com.k_int.kbplus.Package:${pkg.id}", changeDocument);
     changeNotificationService.broadcastEvent("${this.class.name}:${this.id}", changeDocument);
 
-    if ( ( changeDocument.event=='TitleInstancePackagePlatform.updated' ) && ( changeDocument.prop == 'status' ) ) {
+    if ( ( changeDocument.event=='TitleInstancePackagePlatform.updated' ) && 
+         ( changeDocument.prop == 'status' ) && 
+         ( changeDocument.new == 'Deleted' ) ) {
 
       log.debug("TIPP STATUS CHANGE:: Broadcast pending change to IEs based on this tipp new status: ${changeDocument.new}");
 
@@ -194,11 +196,12 @@ class TitleInstancePackagePlatform {
         else {
           changeNotificationService.registerPendingChange('subscription',
                                                           dep_ie.subscription,
-                                                          "The package entry for title \"${this.title.title}\" was deleted",
+                                                          "The package entry for title \"${this.title.title}\" was deleted. Apply this change to remove the corresponding Issue Entitlement from your Subscription",
                                                           sub.getSubscriber(),
                                                           [
                                                             changeType:'TIPPDeleted',
-                                                            tippId:"${this.class.name}:${this.id}"
+                                                            tippId:"${this.class.name}:${this.id}",
+                                                            subId:${sub.id}
                                                           ])
         }
       }

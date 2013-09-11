@@ -171,6 +171,7 @@ class ChangeNotificationService {
     new_pending_change.changeDoc = jsonChangeDocument.toString();
     new_pending_change.desc = desc
     new_pending_change.owner = objowner
+    new_pending_change.oid = "${target.class.name}:${target.id}"
     new_pending_change.ts = new Date();
     new_pending_change.save()
   }

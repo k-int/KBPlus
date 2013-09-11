@@ -82,22 +82,13 @@
         <table class="table table-bordered">
           <thead>
             <tr>
-              <td>Field</td>
-              <td>Has changed to</td>
-              <td>Reason</td>
-              <td>Actions</td>
+              <td>Info</td>
             </tr>
           </thead>
           <tbody>
             <g:each in="${subscriptionInstance.pendingChanges}" var="pc">
               <tr>
-                <td style="white-space:nowrap;">${pc.updateProperty}</td>
-                <td>${pc.updateValue}</td>
-                <td>${pc.updateReason}</td>
-                <td>
-                  <g:link controller="subscriptionDetails" action="acceptChange" id="${params.id}" params="${[changeid:pc.id]}" class="btn btn-primary">Accept</g:link>
-                  <g:link controller="subscriptionDetails" action="rejectChange" id="${params.id}" params="${[changeid:pc.id]}" class="btn btn-primary">Reject</g:link>
-                </td>
+                <td style="white-space:nowrap;">${pc.desc}</td>
               </tr>
             </g:each>
           </tbody>
