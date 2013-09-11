@@ -4,6 +4,8 @@ import grails.converters.*
 import grails.plugins.springsecurity.Secured
 import com.k_int.kbplus.auth.*;
 import grails.converters.*
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+
 
 class PendingChangeController {
 
@@ -51,12 +53,29 @@ class PendingChangeController {
       switch ( parsed_change_info.changeType ) {
         case 'TIPPDeleted' :
           // "changeType":"TIPPDeleted","tippId":"com.k_int.kbplus.TitleInstancePackagePlatform:6482"}
-          def sub_to_change = Subscription.get(parsed_change_info.subId)
+          def sub_to_change = change.subscription
           def tipp = genericOIDService.resolveOID(parsed_change_info.tippId)
           def ie_to_update = IssueEntitlement.findBySubscriptionAndTipp(sub_to_change,tipp)
           if ( ie_to_update != null ) {
             ie_to_update.status = RefdataCategory.lookupOrCreate('Entitlement Issue Status','Deleted');
             ie_to_update.save();
+          }
+          break;
+        case 'PropertyChange' :
+          def target_object = change.license ? change.license : change.subscription
+          if ( target_object ) {
+            // Work out if parsed_change_info.changeDoc.prop is an association - If so we will need to resolve the OID in the value
+            def domain_class = ApplicationHolder.application.getArtefact('Domain',target_object.class.name);
+            def prop_info = domain_class.getPersistentProperty(parsed_change_info.changeDoc.prop)
+            if ( prop_info.isAssociation() ) {
+              log.debug("Setting association for ${parsed_change_info.changeDoc.prop} to ${parsed_change_info.changeDoc.new}");
+              target_object[parsed_change_info.changeDoc.prop] = genericOIDService.resolveOID(parsed_change_info.changeDoc.new)
+            }
+            else {
+              log.debug("Setting value for ${parsed_change_info.changeDoc.prop} to ${parsed_change_info.changeDoc.new}");
+              target_object[parsed_change_info.changeDoc.prop] = parsed_change_info.changeDoc.new
+            }
+            target_object.save()
           }
           break;
         default:
