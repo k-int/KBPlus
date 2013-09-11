@@ -21,18 +21,15 @@ class HomeController {
     result.user = User.get(springSecurityService.principal.id)
 
     if ( result.user?.defaultDash != null ) {
-      log.debug("instdash..");
       redirect(controller:'myInstitutions', action:'dashboard', params:[shortcode:result.user.defaultDash.shortcode]);
     }
     else {
       if ( result.user.affiliations.size() == 1 ) {
-        log.debug("default instdash..");
-        result.user.defaultDash = result.user.affiliations.get(0).org
+        result.user.defaultDash = result.user.affiliations.getAt(0).org
         result.user.save();
-        redirect(controller:'myInstitutions', action:'dashboard', params:[shortcode:result.user.affiliations.get(0).org.shortcode]);
+        redirect(controller:'myInstitutions', action:'dashboard', params:[shortcode:result.user.affiliations.getAt(0).org.shortcode]);
       }
       else {
-        log.debug("profile..");
         flash.message="Please select an institution to use as your default home dashboard"
         redirect(controller:'profile', action:'index')
       }
