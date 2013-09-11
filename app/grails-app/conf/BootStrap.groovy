@@ -272,6 +272,10 @@ TIPP Added for title ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
 TIPP Deleted for title ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
 ''');
 
+    ContentItem.lookupOrCreate('ChangeNotification.Package.created','','''
+New package added.
+''');
+
 
   }
 

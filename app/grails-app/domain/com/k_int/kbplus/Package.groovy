@@ -5,6 +5,8 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 class Package {
 
+  static auditable = true
+
   String identifier
   String name
   String impId
@@ -230,4 +232,37 @@ class Package {
   public String getURL() {
     "${ApplicationHolder.application.config.SystemBaseURL}/packageDetails/show/${id}".toString();
   }
+
+  @Transient
+  def onChange = { oldMap,newMap ->
+
+    log.debug("onChange")
+
+    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+
+    //controlledProperties.each { cp ->
+    //  if ( oldMap[cp] != newMap[cp] ) {
+    //    changeNotificationService.notifyChangeEvent([
+    //                                                 OID:"${this.class.name}:${this.id}",
+    //                                                 event:'TitleInstance.propertyChange',
+    //                                                 prop:cp, old:oldMap[cp], new:newMap[cp]
+    //                                                ])
+    //  }
+    //}
+  }
+
+ @Transient
+  def onSave = {
+
+    log.debug("onSave")
+    if ( ti != null ) {
+      def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+
+      changeNotificationService.notifyChangeEvent([
+                                                   OID:"com.k_int.kbplus.Package:${id}",
+                                                   event:'Package.created'
+                                                  ])
+    }
+  }
+
 }
