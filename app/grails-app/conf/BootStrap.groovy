@@ -244,6 +244,43 @@ class BootStrap {
     RefdataCategory.lookupOrCreate('UsageStatus', 'redCross',       'Prohibited')
     RefdataCategory.lookupOrCreate('UsageStatus', 'purpleQuestion', 'SilentUninterpreted')
     RefdataCategory.lookupOrCreate('UsageStatus', 'purpleQuestion', 'NotApplicable')
+
+
+    log.debug("validate content items...");
+    // The default template for a property change on a title
+    ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.propertyChange','','''
+Title change - The <strong>${evt.prop}</strong> field was changed from  "<strong>${evt.oldLabel?:evt.old}</strong>" to "<strong>${evt.newLabel?:evt.new}</strong>".
+''');
+
+    ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.identifierAdded','','''
+An identifier was added to title ${o.id}.
+''');
+
+    ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.identifierRemoved','','''
+An identifier was removed from title ${o.id}.
+''');
+
+    ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.updated','','''
+TIPP change - The <strong>${evt.prop}</strong> field was changed from  "<strong>${evt.oldLabel?:evt.old}</strong>" to "<strong>${evt.newLabel?:evt.new}</strong>".
+''');
+
+    ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.added','','''
+TIPP Added for title ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
+''');
+
+    ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.deleted','','''
+TIPP Deleted for title ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
+''');
+
+    ContentItem.lookupOrCreate('ChangeNotification.Package.created','','''
+New package added.
+''');
+
+    ContentItem.lookupOrCreate('kbplus.noHostPlatformURL','','''
+No Host Platform URL Content
+''');
+
+
   }
 
 }

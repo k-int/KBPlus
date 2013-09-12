@@ -560,4 +560,61 @@ class PackageDetailsController {
 
     redirect(action:'show', id:params.id);
   }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def packageBatchUpdate() {
+    def formatter = new java.text.SimpleDateFormat("yyyy-MM-dd")
+
+    def bulk_fields = [
+      [ formProp:'start_date', domainClassProp:'startDate', type:'date'],
+      [ formProp:'start_volume', domainClassProp:'startVolume'],
+      [ formProp:'start_issue', domainClassProp:'startIssue'],
+      [ formProp:'end_date', domainClassProp:'endDate', type:'date'],
+      [ formProp:'end_volume', domainClassProp:'endVolume'],
+      [ formProp:'end_issue', domainClassProp:'endIssue'],
+      [ formProp:'coverage_depth', domainClassProp:'coverageDepth'],
+      [ formProp:'coverage_note', domainClassProp:'coverageNote'],
+      [ formProp:'embargo', domainClassProp:'embargo'],
+    ]
+
+    params.each { p ->
+      if (p.key.startsWith('_bulkflag.') && ( p.value == 'on' ) ) {
+        def tipp_id_to_edit = p.key.substring(10);
+        log.debug("row selected for bulk edit: ${tipp_id_to_edit}");
+        def tipp_to_bulk_edit = TitleInstancePackagePlatform.get(tipp_id_to_edit);
+        boolean changed = false
+
+        if ( params.bulkOperation=='edit') {
+          bulk_fields.each { bulk_field_defn ->
+            if ( params["clear_${bulk_field_defn.formProp}"] == 'on' ) {
+              log.debug("Request to clear field ${bulk_field_defn.formProp}");
+              tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = null
+              changed = true
+            }
+            else {
+              def proposed_value = params['bulk_'+bulk_field_defn.formProp]
+              if ( ( proposed_value != null ) && ( proposed_value.length() > 0 ) ) {
+                log.debug("Set field ${bulk_field_defn.formProp} to proposed_value");
+                if ( bulk_field_defn.type == 'date' ) {
+                  tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = formatter.parse(proposed_value)
+                }
+                else {
+                  tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = proposed_value
+                }
+                changed = true
+              }
+            }
+          }
+          if ( changed )
+            tipp_to_bulk_edit.save();
+        }
+        else {
+          log.debug("Bulk removal ${tipp_to_bulk_edit.id}");
+          tipp_to_bulk_edit.status = RefdataCategory.lookupOrCreate( 'TIPP Status', 'Deleted' );
+          tipp_to_bulk_edit.save();
+        }
+      }
+    }
+    redirect(action:'show', id:params.id);
+  }
 }

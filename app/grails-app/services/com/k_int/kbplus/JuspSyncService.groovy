@@ -22,13 +22,14 @@ class JuspSyncService {
   def factService
   def sessionFactory
   def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
+
   static int submitCount=0
   static int completedCount=0
   static int newFactCount=0
   static int totalTime=0
   static int queryTime=0
   static int exceptionCount=0
-  static int syncStartTime=0
+  static long syncStartTime=0
   static int syncElapsed=0
   static def activityHistogram = [:]
 
@@ -52,6 +53,7 @@ class JuspSyncService {
     totalTime=0
     queryTime=0
     syncStartTime=System.currentTimeMillis()
+    log.debug("Launch jusp sync at ${syncStartTime} ( ${System.currentTimeMillis()} )");
     syncElapsed=0
     activityHistogram = [:]
 
@@ -114,11 +116,12 @@ class JuspSyncService {
       log.debug("internalDoSync complete");
       if ( ftp != null ) {
         ftp.shutdown()
-        if ( ftp.awaitTermination(180,java.util.concurrent.TimeUnit.MINUTES) ) {
+        if ( ftp.awaitTermination(6,java.util.concurrent.TimeUnit.HOURS) ) {
           log.debug("FTP cleanly terminated");
         }
         else {
-          log.debug("FTP still running....");
+          log.debug("FTP still running.... Calling shutdown now to terminate any outstanding requests");
+          ftp.shutdownNow()
         }
       }
       log.debug("Mark JuspSyncTask as not running...");

@@ -12,7 +12,7 @@ class AlertsService {
     def all_public_notes = DocContext.findAll("from DocContext as ctx where ctx.alert.sharingLevel=2 order by ctx.owner.lastUpdated desc")
     // def all_public_notes = DocContext.findAll('from DocContext as ctx where ctx.alert.sharingLevel=2');
 
-    log.debug("all public notes: ${all_public_notes}");
+    // log.debug("all public notes: ${all_public_notes}");
 
     all_public_notes.each { pn ->
 

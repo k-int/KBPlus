@@ -36,13 +36,36 @@
     <div class="container">
       <div class="span12">
         <g:form action="updateProfile" class="form-inline">
-            <label>Your Display Name (Appears top right)</label>
-            <input type="text" name="userDispName" value="${user.display}"/>
-            <label>Email Address (For admin purposes)</label>
-            <input type="text" name="email" value="${user.email}"/>
-            <input type="submit" value="Update Profile" class="btn btn-primary"><br/>
-            <p>Please note, membership requests may be slow to process if you do not corretly set display name and email address above. Please ensure your
-               these are set properly before requesting instutional memberships below</p>
+          <dl class="dl-horizontal">
+
+          <div class="control-group">
+            <dt>Display Name</dt>
+            <dd><input type="text" name="userDispName" value="${user.display}"/></dd>
+          </div>
+
+          <div class="control-group">
+            <dt>Email Address</dt>
+            <dd><input type="text" name="email" value="${user.email}"/></dd>
+          </div>
+
+          <div class="control-group">
+            <dt>Default Dashboard</dt>
+            <dd>
+              <select name="defaultDash" value="${user.defaultDash?.id}">
+                <g:each in="${user.affiliations}" var="assoc">
+                  <option value="${assoc.org.id}" ${user.defaultDash?.id==assoc.org.id?'selected':''}>${assoc.org.name}</option>
+                </g:each>
+              </select>
+            </dd>
+          </div>
+
+          <div class="control-group">
+            <dt></dt>
+            <dd><input type="submit" value="Update Profile" class="btn btn-primary"/></dd>
+          </div>
+
+          <p>Please note, membership requests may be slow to process if you do not set a meaningful display name and email address. Please ensure
+               these are set correctly before requesting instutional memberships</p>
         </g:form>
       </div>
     </div>

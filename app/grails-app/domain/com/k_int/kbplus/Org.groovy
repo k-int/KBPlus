@@ -110,4 +110,22 @@ class Org {
   static def refdataCreate(value) {
     return new Org(name:value);
   }
+
+  public boolean hasUserWithRole(com.k_int.kbplus.auth.User user, String rolename) {
+    def role = com.k_int.kbplus.auth.Role.findByAuthority(rolename)
+    return hasUserWithRole(user,role);
+  }
+
+  /**
+   *  Does user have perm against this org?
+   */
+  public boolean hasUserWithRole( com.k_int.kbplus.auth.User user, com.k_int.kbplus.auth.Role formalRole ) {
+    def result = false;
+    def l = com.k_int.kbplus.auth.UserOrg.findAllByUserAndOrgAndFormalRole(user,this,formalRole)
+    if ( l.size() > 0 )
+      result = true
+    return result;
+  }
+
+
 }

@@ -42,20 +42,7 @@
         <div class="container">
             <div class="row">
                 <div class="span8 contact-wells">
-                    <div class="well">
-                        <h4>General Enquiries</h4>
-                        <p>For general enquires please email us via <a href="mailto:kbplus@jisc-collections.ac.uk">kbplus@jisc-collections.ac.uk</a>.
-                    </div>
-                    <div class="well">
-                        <h4>To Sign Up</h4>
-                        <p>For questions regarding sign up to Knowledge Base+ please email us via <a href="mailto:help@jisc-collections.ac.uk">help@jisc-collections.ac.uk</a></p>
-                    </div>
-                    <div class="well">
-                        <h4>Further Discussion</h4>
-                        <p>For any further questions please feel free to contact the project director, Liam Earney.</p>
-                        <p>Telephone: <a href="tel: 020 3006 6002">020 3006 6002</a></p>
-                        <p>Email: <a href="mailto:l.earney@jisc-collections.ac.uk">l.earney@jisc-collections.ac.uk</a></p>                      
-                    </div>
+                    <markdown:renderHtml><g:dbContent key="kbplus.contact.text"/></markdown:renderHtml>
                 </div>
                 <div class="span4">
                     <div class="well">

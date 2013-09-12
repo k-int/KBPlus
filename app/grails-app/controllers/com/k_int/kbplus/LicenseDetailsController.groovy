@@ -41,7 +41,9 @@ class LicenseDetailsController {
       result.editable = false
     }
 	
-    def filename = "licenceDetails_${result.license.reference.replace(" ", "_")}"
+    def license_reference_str = result.license.reference?:'NO_LIC_REF_FOR_ID_'+params.id
+
+    def filename = "licenceDetails_${license_reference_str.replace(" ", "_")}"
     result.onixplLicense = result.license.onixplLicense
 
     withFormat {

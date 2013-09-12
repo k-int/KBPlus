@@ -1,6 +1,16 @@
 package com.k_int.kbplus
 
+import javax.persistence.Transient
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.hibernate.proxy.HibernateProxy
+
+
 class TitleInstancePackagePlatform {
+
+  // @Transient
+  // def grailsApplication
+
+  static auditable = true
 
   Date startDate
   String rectype="so"
@@ -89,4 +99,129 @@ class TitleInstancePackagePlatform {
     }
     result
   }
+
+  @Transient
+  def onChange = { oldMap,newMap ->
+
+    log.debug("onChange")
+
+    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+
+    def controlledProperties = ['startDate', 
+                                'startVolume', 
+                                'startIssue', 
+                                'endDate', 
+                                'endVolume', 
+                                'endIssue', 
+                                'embargo', 
+                                'coverageDepth', 
+                                'coverageNote',
+                                'status' ]
+
+    def domain_class = ApplicationHolder.application.getArtefact('Domain','com.k_int.kbplus.TitleInstancePackagePlatform');
+
+    controlledProperties.each { cp ->
+      if ( oldMap[cp] != newMap[cp] ) {
+        def prop_info = domain_class.getPersistentProperty(cp)
+
+        def oldLabel = oldMap[cp].toString();
+        def newLabel = newMap[cp].toString();
+
+        if ( prop_info.isAssociation() ) {
+          log.debug("Convert object reference into OID");
+          oldMap[cp]= oldMap[cp] != null ? "${deproxy(oldMap[cp]).class.name}:${oldMap[cp].id}" : null;
+          newMap[cp]= newMap[cp] != null ? "${deproxy(newMap[cp]).class.name}:${newMap[cp].id}" : null;
+        }
+
+        changeNotificationService.notifyChangeEvent([
+                                                     OID:"${this.class.name}:${this.id}",
+                                                     event:'TitleInstancePackagePlatform.updated',
+                                                     prop:cp, 
+                                                     old:oldMap[cp], 
+                                                     oldLabel:oldLabel,
+                                                     new:newMap[cp],
+                                                     newLabel:newLabel
+                                                    ])
+      }
+    }
+  }
+
+  @Transient
+  def onSave = {
+
+    log.debug("onSave")
+    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+
+    changeNotificationService.notifyChangeEvent([
+                                                 OID:"${this.class.name}:${this.id}",
+                                                 event:'TitleInstancePackagePlatform.added',
+                                                 linkedTitle:title.title,
+                                                 linkedTitleId:title.id,
+                                                 linkedPackage:pkg.name,
+                                                 linkedPlatform:platform.name
+                                                ])
+  }
+
+  @Transient
+  def onDelete = {
+
+    log.debug("onDelete")
+    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+
+    changeNotificationService.notifyChangeEvent([
+                                                 OID:"${this.class.name}:${this.id}",
+                                                 event:'TitleInstancePackagePlatform.deleted',
+                                                 linkedTitle:title.title,
+                                                 linkedTitleId:title.id,
+                                                 linkedPackage:pkg.name,
+                                                 linkedPlatform:platform.name
+                                                ])
+  }
+
+  @Transient
+  def notifyDependencies(changeDocument) {
+    log.debug("notifyDependencies(${changeDocument})");
+
+    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+    changeNotificationService.broadcastEvent("com.k_int.kbplus.Package:${pkg.id}", changeDocument);
+    changeNotificationService.broadcastEvent("${this.class.name}:${this.id}", changeDocument);
+
+    def deleted_tipp_status = RefdataCategory.lookupOrCreate('TIPP Status','Deleted');
+    def deleted_tipp_status_oid = "com.k_int.kbplus.RefdataValue:${deleted_tipp_status.id}".toString()
+
+    if ( ( changeDocument.event=='TitleInstancePackagePlatform.updated' ) && 
+         ( changeDocument.prop == 'status' ) && 
+         ( changeDocument.new == deleted_tipp_status_oid ) ) {
+
+      log.debug("TIPP STATUS CHANGE:: Broadcast pending change to IEs based on this tipp new status: ${changeDocument.new}");
+
+      def dep_ies = IssueEntitlement.findAllByTipp(this)
+      dep_ies.each { dep_ie ->
+        def sub = deproxy(dep_ie.subscription)
+        log.debug("Notify dependent ie ${dep_ie.id} whos sub is ${sub.id} and subscriber is ${sub.getSubscriber()}");
+        if ( sub.getSubscriber() == null ) {
+          // SO - Ignore!
+        }
+        else {
+          changeNotificationService.registerPendingChange('subscription',
+                                                          dep_ie.subscription,
+                                                          "The package entry for title \"${this.title.title}\" was deleted. Apply this change to remove the corresponding Issue Entitlement from this Subscription",
+                                                          sub.getSubscriber(),
+                                                          [
+                                                            changeType:'TIPPDeleted',
+                                                            tippId:"${this.class.name}:${this.id}",
+                                                            subId:"${sub.id}"
+                                                          ])
+        }
+      }
+    }
+  }
+
+  public static <T> T deproxy(def element) {
+    if (element instanceof HibernateProxy) {
+      return (T) ((HibernateProxy) element).getHibernateLazyInitializer().getImplementation();
+    }
+    return (T) element;
+  }
+
 }

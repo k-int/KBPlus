@@ -12,6 +12,7 @@
     <title><g:layoutTitle default="${meta(name: 'app.name')}"/></title>
     <meta name="description" content="">
     <meta name="viewport" content="initial-scale = 1.0">
+    <r:require modules="kbplus"/>
     <g:layoutHead/>
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
@@ -21,9 +22,9 @@
     <!-- Le fav and touch icons -->
     <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
 
-    <r:require modules="kbplus"/>
 
     <!-- Stylesheets -->
+    <r:layoutResources/>
     <r:layoutResources/>
   </head>
 
@@ -32,7 +33,7 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <g:link controller="myInstitutions" action="dashboard" class="brand" alt="KB+ ${grailsApplication.metadata.'app.version'} / build ${grailsApplication.metadata.'app.buildNumber'}">KB+</g:link>
+          <g:link controller="home" action="index" class="brand" alt="KB+ ${grailsApplication.metadata.'app.version'} / build ${grailsApplication.metadata.'app.buildNumber'}">KB+</g:link>
           <div class="nav-collapse">
             <ul class="nav">
               <sec:ifLoggedIn>
@@ -41,7 +42,7 @@
                   <li class="dropdown">
                     <a href="#" class="dropdown-toggle explorer-link" data-toggle="dropdown"> Data Explorer <b class="caret"></b> </a>
                     <ul class="dropdown-menu" style="max-width:none;">
-                      <li<%= request.forwardURI == "${createLink(uri: '/home')}" ? ' class="active"' : '' %>><a href="${createLink(uri: '/home')}">Search</a></li>
+                      <li<%= request.forwardURI == "${createLink(uri: '/home/search')}" ? ' class="active"' : '' %>><a href="${createLink(uri: '/home/search')}">Search</a></li>
                       <li <%='package'== controllerName ? ' class="active"' : '' %>><g:link controller="package">Package</g:link></li>
                       <li <%='org'== controllerName ? ' class="active"' : '' %>><g:link controller="org">Organisations</g:link></li>
                       <li <%='platform'== controllerName ? ' class="active"' : '' %>><g:link controller="platform">Platform</g:link></li>
@@ -65,34 +66,39 @@
                        <g:set var="usaf" value="${user.authorizedOrgs}" />
                        <g:if test="${usaf && usaf.size() > 0}">
                          <g:each in="${usaf}" var="org">
-                           <li><g:link controller="myInstitutions" 
-                                       action="instdash" 
-                                       params="${[shortcode:org.shortcode]}">${org.name} - Dashboard</g:link></li>
-                           <!--
-                           <li><g:link controller="myInstitutions" 
-                                       action="currentLicenses" 
-                                       params="${[shortcode:org.shortcode]}">${org.name} - Licences</g:link></li>
-                           <li><g:link controller="myInstitutions" 
-                                       action="currentSubscriptions" 
-                                       params="${[shortcode:org.shortcode]}">${org.name} - Subscriptions</g:link></li>
-                           <li><g:link controller="myInstitutions" 
-                                       action="currentTitles" 
-                                       params="${[shortcode:org.shortcode]}">${org.name} - Titles</g:link></li>
-                           <li><g:link controller="myInstitutions" 
-                                       action="renewalsSearch" 
-                                       params="${[shortcode:org.shortcode]}">${org.name} - Generate Renewals Worksheet</g:link></li>
-                           <li><g:link controller="myInstitutions" 
-                                       action="renewalsUpload" 
-                                       params="${[shortcode:org.shortcode]}">${org.name} - Import Renewals</g:link></li>
-                           -->
+                           <li class="dropdown-submenu">
+                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">${org.name}</i> </a>
+                             <ul class="dropdown-menu">
+                               <li><g:link controller="myInstitutions" 
+                                           action="instdash" 
+                                           params="${[shortcode:org.shortcode]}">Dashboard</g:link></li>
+                               <li><g:link controller="myInstitutions" 
+                                           action="currentLicenses" 
+                                           params="${[shortcode:org.shortcode]}">Licences</g:link></li>
+                               <li><g:link controller="myInstitutions" 
+                                           action="currentSubscriptions" 
+                                           params="${[shortcode:org.shortcode]}">Subscriptions</g:link></li>
+                               <li><g:link controller="myInstitutions" 
+                                           action="currentTitles" 
+                                           params="${[shortcode:org.shortcode]}">Titles</g:link></li>
+                               <li><g:link controller="myInstitutions" 
+                                           action="renewalsSearch" 
+                                           params="${[shortcode:org.shortcode]}">Generate Renewals Worksheet</g:link></li>
+                               <li><g:link controller="myInstitutions" 
+                                           action="renewalsUpload" 
+                                           params="${[shortcode:org.shortcode]}">Import Renewals</g:link></li>
+                               <li><g:link controller="organisations"
+                                           action="show" 
+                                           params="${[id:org.id]}">Organisation Information</g:link></li>
+
+                             </ul>
+                           </li>
                          </g:each>
                        </g:if>
                        <g:else>
                          <li>Please request institutional affiliations via your <g:link controller="profile" action="index">Profile Page</g:link></li>
                        </g:else>
                        <li class="divider"></li>
-                       <li><g:link controller="myInstitutions" action="dashboard">Dashboard</g:link></li>
-                       <li><g:link controller="myInstitutions" action="index">Alerts</g:link></li>
                        <li><a href="https://knowledgebaseplus.wordpress.com/kb-support/">Help</a></li>
                     </ul>
                   </li>
@@ -120,7 +126,9 @@
                          <g:link controller="titleDetails" action="findTitleMatches">New Title</g:link></li>
                        <li <%= ( ( 'licenseDetails'== controllerName ) && ( 'create'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="licenseDetails" action="create">New License</g:link></li>
-
+                       <li class="divider"></li>
+                       <li <%= ( ( 'subscriptionImport'== controllerName ) && ( 'generateImportWorksheet'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="subscriptionImport" action="generateImportWorksheet">Generate Subscription Taken Worksheet</g:link></li>
                      </ul>
                    </li>
                 </sec:ifAnyGranted>
@@ -170,6 +178,9 @@
                       </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'manageContentItems'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="manageContentItems">Manage Content Items</g:link>
+                      </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'forceSendNotifications'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="forceSendNotifications">Send Pending Notifications</g:link>
                       </li>
                     </ul>
                   </li>

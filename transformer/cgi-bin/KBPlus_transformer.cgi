@@ -17,9 +17,9 @@ $CGI::POST_MAX = 1024 * 1024 * 20; #Limit post to 20MB
 my $q = CGI->new;
 
 print $q->header(
-        -type    => 'text/plain',
-	-charset => 'utf-8',
-        );
+-type    => 'text/plain',
+-charset => 'utf-8',
+);
 my $params = $q->Vars;
 my $xslt_path;
 eval{ $xslt_path = $q->param('path');};
@@ -57,9 +57,5 @@ if (defined $stylesheet){
 		$output = $stylesheet->output_string($result);  
 }
 
-
-my $header = "Title\tISSN/ISBN\tType\tStatus\tDefault Dates\tCustom Date From\tCustom Date To\tTitle Id\tPublication date\tEdition\tPublisher\tPublic Note\tDisplay Public Note\tLocation Note\tDisplay Location Note\tDefault URL\tCustom URL\n";
-
-print $header;
 print $output; 
 
