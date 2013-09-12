@@ -307,6 +307,7 @@ class License {
                                                       "${changeDocument.prop} changed from \"${changeDocument.oldLabel?:changeDocument.old}\" to \"${changeDocument.newLabel?:changeDocument.new}\" on the template license. Accept this change to make the same change to this actual license",
                                                       dl.getLicensee(),
                                                       [
+                                                        changeTarget:"com.k_int.kbplus.License:${dl.id}",
                                                         changeType:'PropertyChange',
                                                         changeDoc:changeDocument
                                                       ])
