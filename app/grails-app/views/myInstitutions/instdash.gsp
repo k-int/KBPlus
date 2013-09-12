@@ -72,6 +72,10 @@
                 </tr>
               </g:each>
             </table>
+            <div style="text-align:center;">
+              <g:link action="todo" params="${[shortcode:params.shortcode]}" class="btn">View ToDo List</g:link>
+            </div>
+            &nbsp;<br/>
           </div>
         </div>
         <div class="span4">
@@ -86,6 +90,10 @@
                 </tr>
               </g:each>
             </table>
+            <div style="text-align:center;">
+              <g:link action="announcements" params="${[shortcode:params.shortcode]}" class="btn">View Announcements</g:link>
+            </div>
+            &nbsp;<br/>
 
           </div>
         </div>
@@ -113,6 +121,10 @@
               Recent forum activity not available.
               Please retry later.
             </g:else>
+            <div style="text-align:center;">
+              <a href="${grailsApplication.config.ZenDeskBaseURL}/forums" class="btn">Visit Forums</a>
+            </div>
+            &nbsp;<br/>
           </div>
         </div>
       </div>

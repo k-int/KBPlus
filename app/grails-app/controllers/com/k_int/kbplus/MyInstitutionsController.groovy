@@ -2250,4 +2250,20 @@ AND EXISTS (
 
     result
   }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def todo() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+    result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def announcements() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+    result
+  }
 }
