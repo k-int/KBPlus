@@ -95,45 +95,52 @@ class UploadController {
     }
 
 
-    def new_pkg = new Package(identifier: upload.normPkgIdentifier,
-                              name: upload.soPackageName.value,
-                              type: pkg_type,
-                              contentProvider: content_provider_org,
-                              startDate: upload.aggreementTermStartYear?.value, 
-                              endDate: upload.aggreementTermEndYear?.value, 
-                              impId: java.util.UUID.randomUUID().toString());
+    def new_pkg = null;
 
-    
-    if ( new_pkg.save(flush:true, failOnError:true) ) {
-
-      log.debug("Package [${new_pkg.id}] with identifier ${new_pkg.identifier} created......");
-
-      if ( upload.consortiumOrg ) {                              
-        def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
-        def or = new OrgRole(org: consortium, pkg:new_pkg, roleType:sc_role).save();
-      }
-
-      // Content Provider?
-      if ( content_provider_org ) {
-        log.debug("Linking to org as content provider");
-        def cp_or = new OrgRole(org: content_provider_org, pkg:new_pkg, roleType:cp_role).save();
-      }
-      else {
-        log.debug("No content provider org");
-      }
+    if ( upload.incremental ) {
+      log.debug("Processing incremental load....");
+      new_pkg = Package.findByIdentifier(upload.normPkgIdentifier);
       new_pkg_id = new_pkg.id
     }
     else {
-      log.error("Problem saving new package");
-      upload.nessages.add("Problem saving new package");
-      new_pkg.errors.each { pe ->
-        log.error("Problem saving package: ${pe}");
-        upload.nessages.add("Problem saving package: ${pe}");
-      }
-      flash.error="Problem saving new package ${new_pkg.errors}";
-      return
-    }
+      def new_pkg = new Package(identifier: upload.normPkgIdentifier,
+                                name: upload.soPackageName.value,
+                                type: pkg_type,
+                                contentProvider: content_provider_org,
+                                startDate: upload.aggreementTermStartYear?.value, 
+                                endDate: upload.aggreementTermEndYear?.value, 
+                                impId: java.util.UUID.randomUUID().toString());
 
+      if ( new_pkg.save(flush:true, failOnError:true) ) {
+
+        log.debug("Package [${new_pkg.id}] with identifier ${new_pkg.identifier} created......");
+
+        if ( upload.consortiumOrg ) {                              
+          def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
+          def or = new OrgRole(org: consortium, pkg:new_pkg, roleType:sc_role).save();
+        }
+
+        // Content Provider?
+        if ( content_provider_org ) {
+          log.debug("Linking to org as content provider");
+          def cp_or = new OrgRole(org: content_provider_org, pkg:new_pkg, roleType:cp_role).save();
+        }
+        else {
+          log.debug("No content provider org");
+        }
+        new_pkg_id = new_pkg.id
+      }
+      else {
+        log.error("Problem saving new package");
+        upload.nessages.add("Problem saving new package");
+        new_pkg.errors.each { pe ->
+          log.error("Problem saving package: ${pe}");
+          upload.nessages.add("Problem saving package: ${pe}");
+        }
+        flash.error="Problem saving new package ${new_pkg.errors}";
+        return
+      }
+    }
 
     log.debug("processing titles");
     // Title info
@@ -210,8 +217,8 @@ class UploadController {
           }
         }
         else {
-          log.error("TIPP already exists!! This should never be the case as we are creating a new package!!!");
-          tipp.messages.add([type:'alert-error',message:"WARNING: An existing tipp record was located. This should never happen. Contact support!"]);
+          log.error("TIPP already exists!! this can happen in incrementals... just ignore now");
+          tipp.messages.add([type:'alert-error',message:"WARNING: An existing tipp record was located. This can happen in incremental imports. This row has been ignored"]);
         }        
       }
       else {
@@ -280,6 +287,7 @@ class UploadController {
 
     def result = [:]
     result.processFile=true
+    result.incremental=false
 
     def upload_mime_type = request.getFile("soFile")?.contentType
     def upload_filename = request.getFile("soFile")?.getOriginalFilename()
@@ -427,8 +435,7 @@ class UploadController {
   
   def validate(upload) {
     
-    def result = generateAndValidateSubOfferedIdentifier(upload) &&
-                 generateAndValidatePackageIdentifier(upload) &&
+    def result = generateAndValidatePackageIdentifier(upload) &&
                  validateConsortia(upload) &&
                  validateColumnHeadings(upload)
                  
@@ -579,32 +586,6 @@ class UploadController {
     return result;
   }
 
-  def generateAndValidateSubOfferedIdentifier(upload) {
-    // Create normalised SO ID
-    if ( upload['soIdentifier'].value ) {
-      upload.normalisedSoIdentifier = upload['soIdentifier'].value?.trim().toLowerCase().replaceAll('-','_')
-      if ( ( upload.normalisedSoIdentifier == null ) || ( upload.normalisedSoIdentifier.trim().length() == 0 ) ) {
-        log.error("No subscription offered identifier");
-        upload['soIdentifier'].messages.add("Unable to use this identifier")
-        upload.processFile=false
-      }
-      else {
-        log.debug("Generated sub offered Id: ${upload.normalisedSoIdentifier}");
-
-        // Generated identifier is valid, check one does not exist already
-        if ( Subscription.findByIdentifier(upload.normalisedSoIdentifier) ) {
-          upload['soIdentifier'].messages.add("Subscription identifier already present")
-          upload.processFile=false
-        }
-      }
-    }
-    else {
-      upload['soIdentifier'].messages.add("No SO Identifier present")
-      upload.processFile=false
-    }
-    return true
-  }
-  
   def generateAndValidatePackageIdentifier(upload) {
 
     if ( upload.soProvider?.value && upload.soPackageIdentifier?.value ) {
@@ -622,8 +603,9 @@ class UploadController {
       else {
         // Generated identifier is valid, check one does not exist already
         if ( Package.findByIdentifier(upload.normPkgIdentifier) ) {
-          upload['soPackageIdentifier'].messages.add("Package identifier already present")
-          upload.processFile=false
+          upload['soPackageIdentifier'].messages.add("Package identifier already present - Assuming incremental import")
+          // upload.processFile=false
+          upload.incremental=true
         }
       }
     }
