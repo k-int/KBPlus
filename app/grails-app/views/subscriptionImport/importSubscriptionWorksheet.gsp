@@ -39,10 +39,11 @@
     <g:set var="counter" value="${-1}" />
 
     <g:if test="${1==1}">
-      <form  action="processRenewal" method="post" params="${params}">
+      <form  action="processSubscriptionImport" method="post" params="${params}">
         <div class="container"> 
         <g:if test="${subOrg!=null}">
           Import will create a subscription for ${subOrg.name}
+          <input type="hidden" name="orgId" value="${subOrg.id}"/>
         </g:if>
         <hr/>
           <table class="table table-bordered">
