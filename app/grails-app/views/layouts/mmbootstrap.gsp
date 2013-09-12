@@ -90,6 +90,12 @@
                                <li><g:link controller="organisations"
                                            action="show" 
                                            params="${[id:org.id]}">Organisation Information</g:link></li>
+                               <li><g:link controller="subscriptionImport" 
+                                           action="generateImportWorksheet"
+                                           params="${[id:org.id]}">Generate Subscription Taken Worksheet</g:link></li>
+                               <li><g:link controller="subscriptionImport" 
+                                           action="importSubscriptionWorksheet"
+                                           params="${[id:org.id]}">Import Subscription Taken Worksheet</g:link></li>
 
                              </ul>
                            </li>
@@ -129,6 +135,8 @@
                        <li class="divider"></li>
                        <li <%= ( ( 'subscriptionImport'== controllerName ) && ( 'generateImportWorksheet'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="subscriptionImport" action="generateImportWorksheet">Generate Subscription Taken Worksheet</g:link></li>
+                       <li <%= ( ( 'subscriptionImport'== controllerName ) && ( 'importSubscriptionWorksheet'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="subscriptionImport" action="importSubscriptionWorksheet">Import Subscription Taken Worksheet</g:link></li>
                      </ul>
                    </li>
                 </sec:ifAnyGranted>

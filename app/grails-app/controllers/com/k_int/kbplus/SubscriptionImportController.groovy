@@ -77,7 +77,8 @@ class SubscriptionImportController {
     // Internal testing with http://localhost:9200/kbplus/_search?q=subtype:'Subscription%20Offered'
     def result=[:]
 
-    result.institution = Org.findByShortcode(params.shortcode)
+    //result.institution = Org.findByShortcode(params.shortcode)
+    def inst = params.id ? Org.get(params.id) : null
 
     // Get hold of some services we might use ;)
     org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
@@ -99,7 +100,7 @@ class SubscriptionImportController {
     }
     else if ( params.generate=='yes' ) {
       log.debug("Generate");
-      generate(materialiseFolder(shopping_basket.items))
+      generate(materialiseFolder(shopping_basket.items), inst)
       return
     }
 
@@ -239,10 +240,10 @@ class SubscriptionImportController {
     result;
   }
 
-  def generate(plist) {
+  def generate(plist, inst) {
     try {
       def m = generateMatrix(plist)
-      exportWorkbook(m);
+      exportWorkbook(m, inst);
     }
     catch ( Exception e ) {
       log.error("Problem",e);
@@ -350,7 +351,7 @@ class SubscriptionImportController {
     return final_result
   }
 
-  def exportWorkbook(m) {
+  def exportWorkbook(m, inst) {
     try {
       log.debug("export workbook");
   
@@ -394,8 +395,19 @@ class SubscriptionImportController {
   
       row = firstSheet.createRow(rc++);
       cc=0;
-      cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("--PLEASE COMPLETE--"));
+
+      if ( inst != null ) {
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("${inst.id}"));
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString(inst.name));
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString(inst.shortcode));
+      }
+      else {
+        cell = row.createCell(cc++);
+        cell.setCellValue(new HSSFRichTextString("--PLEASE COMPLETE--"));
+      }
   
       row = firstSheet.createRow(rc++);
   
@@ -570,6 +582,144 @@ class SubscriptionImportController {
 
     // Assign the comment to the cell
     cell.setCellComment(comment);
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def importSubscriptionWorksheet() {
+    def result = [:]
+
+    result.user = User.get(springSecurityService.principal.id)
+    // result.institution = Org.findByShortcode(params.shortcode)
+
+    // if ( !checkUserIsMember(result.user, result.institution) ) {
+    //   flash.error="You do not have permission to view ${result.institution.name}. Please request access on the profile page";
+    //   response.sendError(401)
+    //   return;
+    // }
+
+    result.errors = []
+
+    log.debug("upload");
+
+    if ( request.method == 'POST' ) {
+      def upload_mime_type = request.getFile("renewalsWorksheet")?.contentType
+      def upload_filename = request.getFile("renewalsWorksheet")?.getOriginalFilename()
+      log.debug("Uploaded worksheet type: ${upload_mime_type} filename was ${upload_filename}");
+      def input_stream = request.getFile("renewalsWorksheet")?.inputStream
+      processRenewalUpload(input_stream, upload_filename, result)
+    }
+
+    result
+  }
+
+  def processRenewalUpload(input_stream, upload_filename, result) {
+    int SO_START_COL=11
+    int SO_START_ROW=7
+    log.debug("processRenewalUpload - opening upload input stream as HSSFWorkbook");
+    if ( input_stream ) {
+      HSSFWorkbook wb = new HSSFWorkbook(input_stream);
+      HSSFSheet firstSheet = wb.getSheetAt(0);
+
+      // Step 1 - Extract institution id, name and shortcode
+      HSSFRow org_details_row = firstSheet.getRow(2)
+      String org_name = org_details_row?.getCell(1)?.toString()
+      String org_id = org_details_row?.getCell(0)?.toString()
+      String org_shortcode = org_details_row?.getCell(2)?.toString()
+      log.debug("Worksheet upload on behalf of ${org_name}, ${org_id}, ${org_shortcode}");
+      result.subOrg = Org.get(org_id)
+
+      if ( result.subOrg == null ) {
+        flash.message="Unable to locate Org"
+        return
+      }
+
+      def sub_info = []
+      // Step 2 - Row 5 (6, but 0 based) contains package identifiers starting in column 4(5)
+      HSSFRow package_ids_row = firstSheet.getRow(5)
+      for (int i=SO_START_COL;((i<package_ids_row.getLastCellNum())&&(package_ids_row.getCell(i)));i++) {
+        log.debug("Got package identifier: ${package_ids_row.getCell(i).toString()}");
+        def sub_id = package_ids_row.getCell(i).toString()
+        def sub_rec = genericOIDService.resolveOID(sub_id) // Subscription.get(sub_id);
+        if ( sub_rec ) {
+          sub_info.add(sub_rec);
+        }
+        else  {
+          log.error("Unable to resolve the package identifier in row 6 column ${i+5}, please check");
+          return
+        }
+      }
+
+      result.entitlements = []
+
+      boolean processing = true
+      // Step three, process each title row, starting at row 11(10)
+      for (int i=SO_START_ROW;((i<firstSheet.getLastRowNum())&&(processing)); i++) {
+        log.debug("processing row ${i}");
+
+        HSSFRow title_row = firstSheet.getRow(i)
+        // Title ID
+        def title_id = title_row.getCell(0).toString()
+        if ( title_id == 'END' ) {
+          log.debug("Encountered END title");
+          processing = false;
+        }
+        else {
+          log.debug("Upload Process title: ${title_id}, num subs=${sub_info.size()}, last cell=${title_row.getLastCellNum()}");
+          def title_id_long = Long.parseLong(title_id)
+          def title_rec = TitleInstance.get(title_id_long);
+          for ( int j=0; ( ((j+SO_START_COL)<title_row.getLastCellNum()) && (j<=sub_info.size() ) ); j++ ) {
+            def resp_cell = title_row.getCell(j+SO_START_COL)
+            if ( resp_cell ) {
+              log.debug("  -> Testing col[${j+SO_START_COL}] val=${resp_cell.toString()}");
+
+              def subscribe=resp_cell.toString()
+
+              log.debug("Entry : sub:${subscribe}");
+                
+              if ( subscribe == 'Y' || subscribe == 'y' ) {
+                log.debug("Add an issue entitlement from subscription[${j}] for title ${title_id_long}");
+
+                def entitlement_info = [:]
+                entitlement_info.base_entitlement = extractEntitlement(sub_info[j], title_id_long)
+                if ( entitlement_info.base_entitlement ) {
+                  entitlement_info.title_id = title_id_long
+                  entitlement_info.subscribe = subscribe
+
+                  entitlement_info.start_date = title_row.getCell(4)
+                  entitlement_info.end_date = title_row.getCell(5)
+                  entitlement_info.coverage = title_row.getCell(6)
+                  entitlement_info.coverage_note = title_row.getCell(7)
+                  entitlement_info.core_status = title_row.getCell(8)
+                  entitlement_info.core_start_date = title_row.getCell(9)
+                  entitlement_info.core_end_date = title_row.getCell(10)
+  
+                  log.debug("Added entitlement_info ${entitlement_info}");
+                  result.entitlements.add(entitlement_info)
+                }
+                else {
+                  log.error("TIPP not found in package.");
+                  flash.error="You have selected an invalid title/package combination for title ${title_id_long}";
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    else {
+      log.error("Input stream is null");
+    }
+    log.debug("Done");
+
+    result
+  }
+
+  def extractEntitlement(pkg, title_id) {
+    def result = pkg.tipps.find { e -> e.title?.id == title_id }
+    if ( result == null ) {
+      log.error("Failed to look up title ${title_id} in package ${pkg.name}");
+    }
+    result
   }
 
 }
