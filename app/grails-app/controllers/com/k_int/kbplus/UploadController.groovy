@@ -103,7 +103,7 @@ class UploadController {
       new_pkg_id = new_pkg.id
     }
     else {
-      def new_pkg = new Package(identifier: upload.normPkgIdentifier,
+      new_pkg = new Package(identifier: upload.normPkgIdentifier,
                                 name: upload.soPackageName.value,
                                 type: pkg_type,
                                 contentProvider: content_provider_org,
