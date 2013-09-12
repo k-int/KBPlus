@@ -1,20 +1,24 @@
 package com.k_int.kbplus
 
+import grails.plugins.springsecurity.Secured
 import org.springframework.dao.DataIntegrityViolationException
 
 class OnixplLicenseTextController {
 
     static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def index() {
         redirect action: 'list', params: params
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def list() {
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
         [onixplLicenseTextInstanceList: OnixplLicenseText.list(params), onixplLicenseTextInstanceTotal: OnixplLicenseText.count()]
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def create() {
         switch (request.method) {
             case 'GET':
@@ -33,6 +37,7 @@ class OnixplLicenseTextController {
         }
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def show() {
         def onixplLicenseTextInstance = OnixplLicenseText.get(params.id)
         if (!onixplLicenseTextInstance) {
@@ -44,6 +49,7 @@ class OnixplLicenseTextController {
         [onixplLicenseTextInstance: onixplLicenseTextInstance]
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def edit() {
         switch (request.method) {
             case 'GET':
@@ -88,6 +94,7 @@ class OnixplLicenseTextController {
         }
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def delete() {
         def onixplLicenseTextInstance = OnixplLicenseText.get(params.id)
         if (!onixplLicenseTextInstance) {
