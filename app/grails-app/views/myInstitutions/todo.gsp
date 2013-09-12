@@ -16,6 +16,25 @@
 
 
     <div class="container home-page">
+            <table class="table">
+              <g:each in="${todos}" var="todo">
+                <tr>
+                  <td>
+                    <span class="badge badge-warning">${todo.num_changes}</span> <em>${todo.item_with_changes.toString()}</em> </br>
+                    <span class="pull-right">Changes between <g:formatDate date="${todo.earliest}" format="yyyy-MM-dd hh:mm a"/></span><br/>
+                    <span class="pull-right">and <g:formatDate date="${todo.latest}" format="yyyy-MM-dd hh:mm a"/></span><br/>
+                    <strong class="pull-right">
+                      <g:if test="${todo.item_with_changes instanceof com.k_int.kbplus.Subscription}">
+                        <g:link controller="subscriptionDetails" action="index" id="${todo.item_with_changes.id}">View Subscription</g:link>
+                      </g:if>
+                      <g:else>
+                        <g:link controller="licenseDetails" action="index" id="${todo.item_with_changes.id}">View License</g:link>
+                      </g:else>
+                    </strong>
+                  </td>
+                </tr>
+              </g:each>
+            </table>
     </div>
 
   </body>
