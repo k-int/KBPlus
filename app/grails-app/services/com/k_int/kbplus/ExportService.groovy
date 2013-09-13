@@ -523,7 +523,7 @@ class ExportService {
 			}
 			
 			def ie = [:]
-			ie."CoverageStatementType" = "Issue Entitlement"
+			ie."CoverageStatementType" = type
 			ie."SubscriptionID" = sub?.id
 			ie."SubscriptionName" = sub?.name
 			ie."StartDate" = e.startDate?formatter.format(e.startDate):''
