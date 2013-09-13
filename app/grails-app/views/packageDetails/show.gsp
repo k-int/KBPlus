@@ -160,6 +160,10 @@
            <input type="hidden" name="sort" value="${params.sort}">
            <input type="hidden" name="order" value="${params.order}">
            <label>Filter:</label> <input name="filter" value="${params.filter}"/>
+            <br/>
+            <label>Starts Before (YYYY/MM/DD)</label> <input name="startsBefore" type="text" value="${params.startsBefore}"/>
+            <label>Ends After (YYYY/MM/DD)</label> <input name="endsAfter" type="text" value="${params.endsAfter}"/>
+
            <input type="submit" class="btn btn-primary" />
         </g:form>
 
