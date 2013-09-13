@@ -84,6 +84,9 @@
           <dt>Hybrid OA</dt>
           <dd><g:xEditableRefData owner="${tipp}" field="hybridOA" config='TIPPHybridOA'/><dd>
 
+          <dt>Payment</dt>
+          <dd><g:xEditableRefData owner="${tipp}" field="payment" config='TIPPPaymentType'/><dd>
+
           <dt>Host Platform</dt>
           <dd>${tipp.platform.name}</dd>
 

@@ -256,6 +256,14 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("Tipp.StatusReason", "Xfer Out").save()
     RefdataCategory.lookupOrCreate("Tipp.StatusReason", "Xfer In").save()
 
+        RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Complimentary").save()
+        RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Limited Promotion").save()
+        RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Paid").save()
+        RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "OA").save()
+        RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Opt Out Promotion").save()
+        RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Uncharged").save()
+        RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Unknown").save()
+
 
 
 

@@ -105,6 +105,14 @@ class AjaxController {
       cols:['value'],
       format:'simple'
     ],
+    'TIPPPaymentType' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.PaymentType'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.PaymentType'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
 
 
   ]

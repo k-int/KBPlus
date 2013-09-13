@@ -38,6 +38,7 @@ class TitleInstancePackagePlatform {
   RefdataValue delayedOA
   RefdataValue hybridOA
   RefdataValue statusReason
+  RefdataValue payment
   String hostPlatformURL
   Date coreStatusStart
   Date coreStatusEnd
@@ -77,6 +78,7 @@ class TitleInstancePackagePlatform {
          delayedOA column:'tipp_delayedoa_rv_fk'
           hybridOA column:'tipp_hybridoa_rv_fk'
       statusReason column:'tipp_status_reason_rv_fk'
+           payment column:'tipp_payment_rv_fk'
             option column:'tipp_option_rv_fk'
    hostPlatformURL column:'tipp_host_platform_url'
                sub column:'tipp_sub_fk'
@@ -100,6 +102,7 @@ class TitleInstancePackagePlatform {
     delayedOA(nullable:true, blank:false);
     hybridOA(nullable:true, blank:false);
     statusReason(nullable:true, blank:false);
+    payment(nullable:true, blank:false);
     option(nullable:true, blank:false);
     sub(nullable:true, blank:false);
     hostPlatformURL(nullable:true, blank:true);
