@@ -276,13 +276,20 @@ class SubscriptionDetailsController {
         basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status != ? and ( not exists ( select ie from IssueEntitlement ie where ie.subscription = ? and ie.tipp.id = tipp.id and ie.status != ? ) )"
       }
 
-      if ( params.validOn && params.validOn.length() > 0 ) {
+      if ( params.endsAfter && params.endsAfter.length() > 0 ) {
         def sdf = new java.text.SimpleDateFormat('yyyy/MM/dd');
-        def d = sdf.parse(params.validOn)
-        basequery += " and tipp.startDate <= ? and tipp.endDate >= ?"
-        qry_params.add(d)
+        def d = sdf.parse(params.endsAfter)
+        basequery += " and tipp.endDate >= ?"
         qry_params.add(d)
       }
+
+      if ( params.startsBefore && params.startsBefore.length() > 0 ) {
+        def sdf = new java.text.SimpleDateFormat('yyyy/MM/dd');
+        def d = sdf.parse(params.startsBefore)
+        basequery += " and tipp.startDate <= ?"
+        qry_params.add(d)
+      }
+
 
       if ( params.pkgfilter && ( params.pkgfilter != '' ) ) {
         basequery += " and tipp.pkg.id = ? "

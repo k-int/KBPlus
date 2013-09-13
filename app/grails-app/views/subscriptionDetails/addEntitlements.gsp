@@ -45,7 +45,9 @@
                                  <option value="${sp.pkg.id}" ${sp.pkg.id.toString()==params.pkgfilter?'selected=true':''}>${sp.pkg.name}</option>
                                </g:each>
                             </select> &nbsp;
-            <label>Valid On (YYYY/MM/DD)</label> <input name="validOn" type="text" value="${params.validOn}"/>
+            <br/>
+            <label>Starts Before (YYYY/MM/DD)</label> <input name="startsBefore" type="text" value="${params.startsBefore}"/>
+            <label>Ends After (YYYY/MM/DD)</label> <input name="endsAfter" type="text" value="${params.endsAfter}"/>
 
             <input type="submit" class="btn btn-primary">
           </g:form>
