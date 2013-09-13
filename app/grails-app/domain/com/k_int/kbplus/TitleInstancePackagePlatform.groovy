@@ -11,6 +11,16 @@ class TitleInstancePackagePlatform {
   // def grailsApplication
 
   static auditable = true
+  static     def controlledProperties = ['startDate',
+                                         'startVolume',
+                                         'startIssue',
+                                         'endDate',
+                                         'endVolume',
+                                         'endIssue',
+                                         'embargo',
+                                         'coverageDepth',
+                                         'coverageNote' ]
+
 
   Date startDate
   String rectype="so"
@@ -106,17 +116,6 @@ class TitleInstancePackagePlatform {
     log.debug("onChange")
 
     def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
-
-    def controlledProperties = ['startDate', 
-                                'startVolume', 
-                                'startIssue', 
-                                'endDate', 
-                                'endVolume', 
-                                'endIssue', 
-                                'embargo', 
-                                'coverageDepth', 
-                                'coverageNote',
-                                'status' ]
 
     def domain_class = ApplicationHolder.application.getArtefact('Domain','com.k_int.kbplus.TitleInstancePackagePlatform');
 
@@ -215,6 +214,25 @@ class TitleInstancePackagePlatform {
         }
       }
     }
+    else if (changeDocument.event=='TitleInstancePackagePlatform.updated') {
+      // Tipp Property Change Event.. notify any dependent IEs
+      def dep_ies = IssueEntitlement.findAllByTipp(this)
+      dep_ies.each { dep_ie ->
+        def sub = deproxy(dep_ie.subscription)
+        changeNotificationService.registerPendingChange('subscription',
+                                                        dep_ie.subscription,
+                                                        "Information about title \"${this.title.title}\" changed in the package. \"${changeDocument.prop}\" was updated from \"${changeDocument.oldLabel}\" to \"${changeDocument.newLabel}\". Accept this change to make the same update to your issue entitlement",
+                                                        sub.getSubscriber(),
+                                                        [
+                                                          changeTarget:"com.k_int.kbplus.IssueEntitlement:${dep_ie.id}",
+                                                          changeType:'PropertyChange',
+                                                          changeDoc:changeDocument
+                                                        ])
+
+      }
+    }
+
+    //If the change is in a controller property, store it up and note it against subs
   }
 
   public static <T> T deproxy(def element) {

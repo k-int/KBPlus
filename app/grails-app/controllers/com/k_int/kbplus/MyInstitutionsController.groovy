@@ -2250,4 +2250,48 @@ AND EXISTS (
 
     result
   }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def todo() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+
+    def change_summary = PendingChange.executeQuery("select distinct(pc.oid), count(pc), min(pc.ts), max(pc.ts) from PendingChange as pc where pc.owner = ? group by pc.oid",result.institution);
+    result.todos = []
+    change_summary.each { cs ->
+      log.debug("Change summary row : ${cs}");
+      def item_with_changes = genericOIDService.resolveOID(cs[0])
+      result.todos.add([
+                         item_with_changes:item_with_changes,
+                         oid:cs[0],
+                         num_changes:cs[1],
+                         earliest:cs[2],
+                         latest:cs[3],
+                      ]);
+    }
+
+    result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def announcements() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+
+    def paginate_after = params.paginate_after ?: 19;
+    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
+
+    def announcement_type = RefdataCategory.lookupOrCreate('Document Type','Announcement')
+    result.recentAnnouncements = Doc.findAllByType(announcement_type,[max:10,sort:'dateCreated',order:'desc'])
+
+    // result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
+    // result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
+
+
+    result
+  }
 }
