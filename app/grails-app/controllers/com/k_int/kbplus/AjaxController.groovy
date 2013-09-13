@@ -80,7 +80,33 @@ class AjaxController {
       qryParams:[],
       cols:['reference'],
       format:'simple'
-    ]
+    ],
+    'TIPPStatusReason' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Tipp.StatusReason'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Tipp.StatusReason'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'TIPPDelayedOA' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.DelayedOA'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.DelayedOA'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'TIPPHybridOA' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.HybridOA'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.HybridOA'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+
+
   ]
 
 

@@ -245,6 +245,19 @@ class BootStrap {
     RefdataCategory.lookupOrCreate('UsageStatus', 'purpleQuestion', 'SilentUninterpreted')
     RefdataCategory.lookupOrCreate('UsageStatus', 'purpleQuestion', 'NotApplicable')
 
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.DelayedOA", "No").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.DelayedOA", "Unknown").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.DelayedOA", "Yes").save()
+
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", "No").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", "Unknown").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", "Yes").save()
+
+    RefdataCategory.lookupOrCreate("Tipp.StatusReason", "Xfer Out").save()
+    RefdataCategory.lookupOrCreate("Tipp.StatusReason", "Xfer In").save()
+
+
+
 
     log.debug("validate content items...");
     // The default template for a property change on a title

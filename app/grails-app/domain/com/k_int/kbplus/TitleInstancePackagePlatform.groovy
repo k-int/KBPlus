@@ -35,6 +35,9 @@ class TitleInstancePackagePlatform {
   String impId
   RefdataValue status
   RefdataValue option
+  RefdataValue delayedOA
+  RefdataValue hybridOA
+  RefdataValue statusReason
   String hostPlatformURL
   Date coreStatusStart
   Date coreStatusEnd
@@ -71,6 +74,9 @@ class TitleInstancePackagePlatform {
       coverageNote column:'tipp_coverage_note',type: 'text'
              impId column:'tipp_imp_id', index: 'tipp_imp_id_idx'
             status column:'tipp_status_rv_fk'
+         delayedOA column:'tipp_delayedoa_rv_fk'
+          hybridOA column:'tipp_hybridoa_rv_fk'
+      statusReason column:'tipp_status_reason_rv_fk'
             option column:'tipp_option_rv_fk'
    hostPlatformURL column:'tipp_host_platform_url'
                sub column:'tipp_sub_fk'
@@ -91,6 +97,9 @@ class TitleInstancePackagePlatform {
     coverageNote(nullable:true, blank:true);
     impId(nullable:true, blank:true);
     status(nullable:true, blank:false);
+    delayedOA(nullable:true, blank:false);
+    hybridOA(nullable:true, blank:false);
+    statusReason(nullable:true, blank:false);
     option(nullable:true, blank:false);
     sub(nullable:true, blank:false);
     hostPlatformURL(nullable:true, blank:true);
