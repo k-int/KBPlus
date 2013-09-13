@@ -51,7 +51,6 @@
                       <li <%='subscription'== controllerName ? ' class="active"' : '' %>><g:link controller="subscription">Subscriptions</g:link></li>
                       <li <%='license'== controllerName ? ' class="active"' : '' %>><g:link controller="license">Licences</g:link></li>
                       <li <%='onixplLicenseDetails'== controllerName ? ' class="active"' : '' %>><g:link controller="onixplLicenseDetails" action="list">ONIX-PL Licences</g:link></li>
-                      <li <%='onixplLicenseCompare'== controllerName ? ' class="active"' : '' %>><g:link controller="onixplLicenseCompare" action="index">ONIX-PL Licence Comparison</g:link></li>
                     </ul>
                   </li>
                 </sec:ifAnyGranted>
@@ -63,6 +62,8 @@
   
   
                        <li><g:link controller="packageDetails" action="index">All Packages</g:link></li>
+                       <li><g:link controller="onixplLicenseCompare"
+                                   action="index">Compare ONIX-PL Licences</g:link></li>
                        <li class="divider"></li>
                        <g:set var="usaf" value="${user.authorizedOrgs}" />
                        <g:if test="${usaf && usaf.size() > 0}">
