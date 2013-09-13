@@ -50,7 +50,8 @@
                       <li <%='titleInstancePackagePlatform'== controllerName ? ' class="active"' : '' %>><g:link controller="titleInstancePackagePlatform">Title Instance Package Platform</g:link></li>
                       <li <%='subscription'== controllerName ? ' class="active"' : '' %>><g:link controller="subscription">Subscriptions</g:link></li>
                       <li <%='license'== controllerName ? ' class="active"' : '' %>><g:link controller="license">Licences</g:link></li>
-                      <li <%='onixplLicense'== controllerName ? ' class="active"' : '' %>><g:link controller="onixplLicenseDetails" action="list">ONIX-PL Licences</g:link></li>
+                      <li <%='onixplLicenseDetails'== controllerName ? ' class="active"' : '' %>><g:link controller="onixplLicenseDetails" action="list">ONIX-PL Licences</g:link></li>
+                      <li <%='onixplLicenseCompare'== controllerName ? ' class="active"' : '' %>><g:link controller="onixplLicenseCompare" action="index">ONIX-PL Licence Comparison</g:link></li>
                     </ul>
                   </li>
                 </sec:ifAnyGranted>
