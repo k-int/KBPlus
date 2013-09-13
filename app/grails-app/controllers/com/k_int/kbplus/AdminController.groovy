@@ -11,6 +11,7 @@ class AdminController {
   def zenDeskSyncService
   def juspSyncService
   def messageService
+  def changeNotificationService
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def index() { }
@@ -256,4 +257,10 @@ class AdminController {
     result
   }
 
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def forceSendNotifications() {
+    changeNotificationService.aggregateAndNotifyChanges()
+    redirect(controller:'home')
+
+  }
 }

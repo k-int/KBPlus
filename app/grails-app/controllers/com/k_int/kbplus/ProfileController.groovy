@@ -56,6 +56,16 @@ class ProfileController {
     def user = User.get(springSecurityService.principal.id)
     user.display = params.userDispName
     user.email = params.email
+
+    if ( params.defaultDash != user.defaultDash?.id ) {
+      if ( params.defaultDash == '' ) {
+        user.defaultDash = null
+      }
+      else {
+        user.defaultDash = Org.get(params.defaultDash);
+      }
+    }
+
     user.save();
 
     flash.message="Profile Updated"

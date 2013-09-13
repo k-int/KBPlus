@@ -167,8 +167,53 @@
           <dt>Titles (${offset+1} to ${lasttipp}  of ${num_tipp_rows})</dt>
           <dd>
           <table class="table table-bordered">
+            <g:form action="packageBatchUpdate" params="${[id:packageInstance?.id]}">
             <thead>
+            <tr class="no-background">
+
+              <th>
+                <g:if test="${editable}"><input type="checkbox" name="chkall" onClick="javascript:selectAll();"/></g:if>
+              </th>
+
+              <th colspan="7">
+                <g:if test="${editable}">
+                  <select id="bulkOperationSelect" name="bulkOperation" class="input-xxlarge">
+                    <option value="edit">Batch Edit Selected Rows Using the following values</option>
+                    <option value="remove">Batch Remove Selected Rows</option>
+                  </select>
+                  <br/>
+                  <table class="table table-bordered">
+                    <tr>
+                      <td>Start Date: <g:simpleHiddenValue id="bulk_start_date" name="bulk_start_date" type="date"/> 
+                          <input type="checkbox" name="clear_start_date"/> (Check to clear)</td>
+                      <td>Start Volume: <g:simpleHiddenValue id="bulk_start_volume" name="bulk_start_volume" />
+                          <input type="checkbox" name="clear_start_volume"/>(Check to clear)</td>
+                      <td>Start Issue: <g:simpleHiddenValue id="bulk_start_issue" name="bulk_start_issue"/>
+                          <input type="checkbox" name="clear_start_issue"/>(Check to clear)</td>
+                    </tr>
+                    <tr>
+                      <td>End Date:  <g:simpleHiddenValue id="bulk_end_date" name="bulk_end_date" type="date"/>
+                          <input type="checkbox" name="clear_end_date"/>(Check to clear)</td>
+                      <td>End Volume: <g:simpleHiddenValue id="bulk_end_volume" name="bulk_end_volume"/>
+                          <input type="checkbox" name="clear_end_volume"/>(Check to clear)</td>
+                      <td>End Issue: <g:simpleHiddenValue id="bulk_end_issue" name="bulk_end_issue"/>
+                          <input type="checkbox" name="clear_end_issue"/>(Check to clear)</td>
+                    </tr>
+                    <tr>
+                      <td>Coverage Depth: <g:simpleHiddenValue id="bulk_coverage_depth" name="bulk_coverage_depth"/>
+                          <input type="checkbox" name="clear_coverage_depth"/>(Check to clear)</td>
+                      <td>Coverage Note: <g:simpleHiddenValue id="bulk_coverage_note" name="bulk_coverage_note"/>
+                          <input type="checkbox" name="clear_coverage_note"/>(Check to clear)</td>
+                      <td>Embargo:  <g:simpleHiddenValue id="bulk_embargo" name="bulk_embargo"/>
+                          <input type="checkbox" name="clear_embargo"/>(Check to clear)</td>
+                    </tr>
+                  </table>
+                  <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()" class="btn btn-primary"/>
+                </g:if>
+              </th>
+            </tr>
             <tr>
+              <th>&nbsp;</th>
               <th>&nbsp;</th>
               <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
               <th style="">Platform</th>
@@ -177,11 +222,14 @@
               <th style="">End</th>
               <th style="">Coverage Depth</th>
             </tr>
+
+
             </thead>
             <tbody>
             <g:set var="counter" value="${offset+1}" />
             <g:each in="${titlesList}" var="t">
               <tr>
+                <td><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${t.id}" class="bulkcheck"/></g:if></td>
                 <td>${counter++}</td>
                 <td style="vertical-align:top;">
                    ${t.title.title}
@@ -213,6 +261,7 @@
               </tr>
             </g:each>
             </tbody>
+            </g:form>
           </table>
           </dd>
         </dl>
@@ -263,6 +312,10 @@
         $.fn.editable.defaults.mode = 'inline';
         $('.xEditableValue').editable();
       });
+      function selectAll() {
+        $('.bulkcheck').attr('checked', true);
+      }
+
     </script>
 
   </body>

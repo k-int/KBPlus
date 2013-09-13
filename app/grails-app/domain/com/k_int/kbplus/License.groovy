@@ -2,6 +2,11 @@ package com.k_int.kbplus
 
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import com.k_int.kbplus.auth.Role
+import javax.persistence.Transient
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+
+
+
 
 class License {
 
@@ -244,7 +249,13 @@ class License {
 
     controlledProperties.each { cp ->
       if ( oldMap[cp] != newMap[cp] ) {
-        changeNotificationService.notifyLicenseChange(this.id, cp, oldMap[cp], newMap[cp], null, 'S');
+        changeNotificationService.notifyChangeEvent([
+                                                     OID:"${this.class.name}:${this.id}",
+                                                     event:'License.updated',
+                                                     prop:cp,
+                                                     old:oldMap[cp],
+                                                     new:newMap[cp]
+                                                    ])
       }
     }
 
@@ -253,7 +264,15 @@ class License {
         log.debug("Sending reference change...");
         def old_oid = oldMap[crp] ? "${oldMap[crp].class.name}:${oldMap[crp].id}" : null;
         def new_oid = oldMap[crp] ? "${newMap[crp].class.name}:${newMap[crp].id}" : null;
-        changeNotificationService.notifyLicenseChange(this.id, crp, old_oid, new_oid, null, 'R');
+        changeNotificationService.notifyChangeEvent([
+                                                     OID:"${this.class.name}:${this.id}",
+                                                     event:'License.updated',
+                                                     prop:crp,
+                                                     old:old_oid,
+                                                     oldLabel:oldMap[crp]?.toString(),
+                                                     new:new_oid,
+                                                     newLabel:newMap[crp]?.toString()
+                                                    ])
       }
     }
 
@@ -271,4 +290,29 @@ class License {
     }
     return result;
   }
+
+  @Transient
+  def notifyDependencies(changeDocument) {
+    log.debug("notifyDependencies(${changeDocument})");
+
+    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+
+    // Find any licenses derived from this license
+    // create a new pending change object
+    def derived_licenses = License.executeQuery('select l from License as l where exists ( select link from Link as link where link.toLic=l and link.fromLic=? )',this)
+    derived_licenses.each { dl ->
+      log.debug("Send pending change to ${dl.id}");
+      changeNotificationService.registerPendingChange('license',
+                                                      dl,
+                                                      "${changeDocument.prop} changed from \"${changeDocument.oldLabel?:changeDocument.old}\" to \"${changeDocument.newLabel?:changeDocument.new}\" on the template license. Accept this change to make the same change to this actual license",
+                                                      dl.getLicensee(),
+                                                      [
+                                                        changeTarget:"com.k_int.kbplus.License:${dl.id}",
+                                                        changeType:'PropertyChange',
+                                                        changeDoc:changeDocument
+                                                      ])
+
+    }
+  }
+
 }

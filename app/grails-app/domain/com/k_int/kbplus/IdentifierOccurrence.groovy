@@ -1,6 +1,12 @@
 package com.k_int.kbplus
 
+import javax.persistence.Transient
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+
+
 class IdentifierOccurrence {
+
+  static auditable = true
 
   Identifier identifier
 
@@ -27,4 +33,34 @@ class IdentifierOccurrence {
   String toString() {
     "IdentifierOccurrence(${id} - ti:${ti}, org:${org}, tipp:${tipp}";
   }
+
+  @Transient
+  def onSave = {
+
+    log.debug("onSave")
+    if ( ti != null ) {
+      def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+
+      changeNotificationService.notifyChangeEvent([
+                                                   OID:"${ti.class.name}:${ti.id}",
+                                                   event:'TitleInstance.identifierAdded'
+                                                  ])
+    }
+  }
+
+  @Transient
+  def onDelete = {
+
+    log.debug("onDelete")
+    if ( ti != null ) {
+      def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+
+      changeNotificationService.notifyChangeEvent([
+                                                   OID:"${ti.class.name}:${ti.id}",
+                                                   event:'TitleInstance.identifierRemoved'
+                                                  ])
+    }
+  }
+
+
 }

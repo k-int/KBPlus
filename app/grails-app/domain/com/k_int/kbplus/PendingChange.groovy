@@ -4,30 +4,29 @@ class PendingChange {
 
   Subscription subscription
   License license
-  Doc doc
-  String updateProperty
-  String updateValue
-  String updateReason
-  String changeType
+  Date ts
+  Org owner
+  String oid
+  String changeDoc
+  String desc
 
   static mapping = {
       subscription column:'pc_sub_fk'
            license column:'pc_lic_fk'
-               doc column:'pc_doc_fk'
-    updateProperty column:'pc_update_prop'
-       updateValue column:'pc_update_value'
-      updateReason column:'pc_update_reason'
-        changeType column:'pc_change_type'
-
+               oid column:'pc_oid'
+         changeDoc column:'pc_change_doc', type:'text'
+                ts column:'pc_ts'
+             owner column:'pc_owner'
+              desc column:'pc_desc', type:'text'
   }
 
   static constraints = {
     subscription(nullable:true, blank:false);
     license(nullable:true, blank:false);
-    doc(nullable:true, blank:false);
-    updateProperty(nullable:false, blank:false);
-    updateValue(nullable:false, blank:false);
-    updateReason(nullable:true, blank:false);
-    changeType(nullable:true, blank:false);
+    changeDoc(nullable:true, blank:false);
+    ts(nullable:true, blank:false);
+    owner(nullable:true, blank:false);
+    oid(nullable:true, blank:false);
+    desc(nullable:true, blank:false);
   }
 }

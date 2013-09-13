@@ -115,4 +115,25 @@ class OnixplUsageTerm {
         ", usageStatus=" + usageStatus +
         '}';
   }
+
+    /**
+     * Given a usage term a comparison will be made. Usage type, usage status and license text content are all taken
+     * into account.
+     * @param oput
+     * @return
+     */
+    public Boolean compare(OnixplUsageTerm oput) {
+        if (oput == null) {
+            return false;
+        }
+        StringBuilder text1 = new StringBuilder();
+        StringBuilder text2 = new StringBuilder();
+        for (OnixplUsageTermLicenseText utlt : this.usageTermLicenseText.sort {it.licenseText.text}) {
+            text1.append(utlt.licenseText.text);
+        }
+        for (OnixplUsageTermLicenseText utlt : oput.usageTermLicenseText.sort {it.licenseText.text}) {
+            text2.append(utlt.licenseText.text);
+        }
+        return (this.usageType.id == oput.usageType.id && this.usageStatus.id == oput.usageStatus.id && text1.toString() == text2.toString());
+    }
 }

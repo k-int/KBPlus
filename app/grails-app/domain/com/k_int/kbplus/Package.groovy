@@ -1,8 +1,11 @@
 package com.k_int.kbplus
 
 import javax.persistence.Transient
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 class Package {
+
+  static auditable = true
 
   String identifier
   String name
@@ -208,4 +211,58 @@ class Package {
 
   }
  
+
+  /**
+   *  Tell the event notification service how this object is known to any registered notification
+   *  systems.
+   */
+  @Transient
+  def getNotificationEndpoints() {
+    [
+      [ service:'zendesk.forum', remoteid:this.forumId ],
+      [ service:'announcements' ]
+    ]
+  }
+
+  public String toString() {
+    "Package ${name}";
+  }
+
+  @Transient
+  public String getURL() {
+    "${ApplicationHolder.application.config.SystemBaseURL}/packageDetails/show/${id}".toString();
+  }
+
+  @Transient
+  def onChange = { oldMap,newMap ->
+
+    log.debug("onChange")
+
+    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+
+    //controlledProperties.each { cp ->
+    //  if ( oldMap[cp] != newMap[cp] ) {
+    //    changeNotificationService.notifyChangeEvent([
+    //                                                 OID:"${this.class.name}:${this.id}",
+    //                                                 event:'TitleInstance.propertyChange',
+    //                                                 prop:cp, old:oldMap[cp], new:newMap[cp]
+    //                                                ])
+    //  }
+    //}
+  }
+
+ @Transient
+  def onSave = {
+
+    log.debug("onSave")
+    if ( ti != null ) {
+      def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+
+      changeNotificationService.notifyChangeEvent([
+                                                   OID:"com.k_int.kbplus.Package:${id}",
+                                                   event:'Package.created'
+                                                  ])
+    }
+  }
+
 }

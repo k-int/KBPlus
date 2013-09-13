@@ -7,6 +7,8 @@ import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.MarkupBuilder
 import groovy.xml.StreamingMarkupBuilder
 import com.k_int.kbplus.auth.*;
+import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
+
 
 //For Transform
 import groovyx.net.http.*
@@ -171,7 +173,7 @@ class SubscriptionDetailsController {
     log.debug("subscriptionBatchUpdate ${params}");
 
     params.each { p ->
-      if (p.key.startsWith('_bulkflag.') ) {
+      if ( p.key.startsWith('_bulkflag.') && (p.value=='on'))  {
         def ie_to_edit = p.key.substring(10);
 
         def ie = IssueEntitlement.get(ie_to_edit)
@@ -266,18 +268,20 @@ class SubscriptionDetailsController {
 
       if ( params.filter ) {
         log.debug("Filtering....");
-        // basequery = " from IssueEntitlement as ie where ie.subscription = ? and ie.status.value != 'Deleted' and ( not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp and ie2.status.value != 'Deleted' ) ) and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( select io from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) )"
-        // basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status.value != 'Deleted' and ( not exists ( select ie from IssueEntitlement ie where ie.subscription = ? and ie.tipp = tipp and ie.status.value != 'Deleted' ) )"
         basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status != ? and ( not exists ( select ie from IssueEntitlement ie where ie.subscription = ? and ie.tipp.id = tipp.id and ie.status != ? ) ) and ( ( lower(tipp.title.title) like ? ) OR ( exists ( select io from IdentifierOccurrence io where io.ti.id = tipp.title.id and io.identifier.value like ? ) ) ) "
-        // select ie.tipp from IssueEntitlement where ie.subscription = ? and ie.tipp = tipp
         qry_params.add("%${params.filter.trim().toLowerCase()}%")
         qry_params.add("%${params.filter}%")
       }
       else {
-        // basequery = "from IssueEntitlement ie where ie.subscription = ? and not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp  and ie2.status.value != 'Deleted' )"
-        // basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? )"
-        // basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status.value != 'Deleted' and ( not exists ( select ie.tipp from IssueEntitlement ie where ie.subscription = ? and ie.tipp = tipp and ie.status.value != 'Deleted' ) )"
         basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status != ? and ( not exists ( select ie from IssueEntitlement ie where ie.subscription = ? and ie.tipp.id = tipp.id and ie.status != ? ) )"
+      }
+
+      if ( params.validOn && params.validOn.length() > 0 ) {
+        def sdf = new java.text.SimpleDateFormat('yyyy/MM/dd');
+        def d = sdf.parse(params.validOn)
+        basequery += " and tipp.startDate <= ? and tipp.endDate >= ?"
+        qry_params.add(d)
+        qry_params.add(d)
       }
 
       if ( params.pkgfilter && ( params.pkgfilter != '' ) ) {
@@ -747,5 +751,35 @@ class SubscriptionDetailsController {
     def result = sw.toString();
     result;
   }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def history() {
+    log.debug("licenseDetails id:${params.id}");
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.subscription = Subscription.get(params.id)
+
+    if ( ! result.subscription.hasPerm("view",result.user) ) {
+      response.sendError(401);
+      return
+    }
+
+    if ( result.subscription.hasPerm("edit",result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
+    }
+
+    result.max = params.max ?: 20;
+    result.offset = params.offset ?: 0;
+
+    def qry_params = [result.subscription.class.name, "${result.subscription.id}"]
+    result.historyLines = AuditLogEvent.executeQuery("select e from AuditLogEvent as e where className=? and persistedObjectId=? order by id desc", qry_params, [max:result.max, offset:result.offset]);
+    result.historyLinesTotal = AuditLogEvent.executeQuery("select count(e.id) from AuditLogEvent as e where className=? and persistedObjectId=?",qry_params)[0];
+
+    result
+  }
+
 }
 
