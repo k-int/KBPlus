@@ -7,6 +7,8 @@ import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.MarkupBuilder
 import groovy.xml.StreamingMarkupBuilder
 import com.k_int.kbplus.auth.*;
+import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
+
 
 //For Transform
 import groovyx.net.http.*
@@ -749,5 +751,35 @@ class SubscriptionDetailsController {
     def result = sw.toString();
     result;
   }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def history() {
+    log.debug("licenseDetails id:${params.id}");
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.subscription = Subscription.get(params.id)
+
+    if ( ! result.subscription.hasPerm("view",result.user) ) {
+      response.sendError(401);
+      return
+    }
+
+    if ( result.subscription.hasPerm("edit",result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
+    }
+
+    result.max = params.max ?: 20;
+    result.offset = params.offset ?: 0;
+
+    def qry_params = [result.subscription.class.name, "${result.subscription.id}"]
+    result.historyLines = AuditLogEvent.executeQuery("select e from AuditLogEvent as e where className=? and persistedObjectId=? order by id desc", qry_params, [max:result.max, offset:result.offset]);
+    result.historyLinesTotal = AuditLogEvent.executeQuery("select count(e.id) from AuditLogEvent as e where className=? and persistedObjectId=?",qry_params)[0];
+
+    result
+  }
+
 }
 
