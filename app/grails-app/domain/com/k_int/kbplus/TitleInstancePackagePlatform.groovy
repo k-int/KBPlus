@@ -123,8 +123,8 @@ class TitleInstancePackagePlatform {
       if ( oldMap[cp] != newMap[cp] ) {
         def prop_info = domain_class.getPersistentProperty(cp)
 
-        def oldLabel = oldMap[cp].toString();
-        def newLabel = newMap[cp].toString();
+        def oldLabel = stringify(oldMap[cp])
+        def newLabel = stringify(newMap[cp])
 
         if ( prop_info.isAssociation() ) {
           log.debug("Convert object reference into OID");
@@ -143,6 +143,20 @@ class TitleInstancePackagePlatform {
                                                     ])
       }
     }
+  }
+
+  private def stringify(obj) {
+    def result = null
+    if ( obj != null ) {
+      if ( obj instanceof Date ) {
+        def df = new java.text.SimpleDateFormat('yyyy-MM-dd');
+        result = df.format(obj);
+      }
+      else {
+        result = obj.toString()
+      }
+    }
+    result
   }
 
   @Transient
