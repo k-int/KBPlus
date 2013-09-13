@@ -23,7 +23,7 @@ import org.w3c.dom.Element;
  * @author wpetit
  */
 class ExportService {
-	def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
+	def formatter = new java.text.SimpleDateFormat("yyyy-MM-dd")
 	
 	/* *************
 	 *  CSV Exports 
@@ -384,7 +384,7 @@ class ExportService {
 		
 		if(pck.license) addLicencesIntoXML(doc, subElem, [pck.license])
 		
-		def titlesElem = addXMLElementInto(doc, into_elem, "TitleList", null)
+		def titlesElem = addXMLElementInto(doc, subElem, "TitleList", null)
 		addTitleListXML(doc, titlesElem, tipps, "TIPP")
 	}
 	
