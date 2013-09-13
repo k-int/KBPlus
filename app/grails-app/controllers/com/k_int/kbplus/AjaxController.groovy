@@ -113,7 +113,38 @@ class AjaxController {
       cols:['value'],
       format:'simple'
     ],
-
+    'Package.ListStatus' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.ListStatus'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.ListStatus'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'Package.Breakable' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Breakable'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Breakable'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'Package.Consistent' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Consistent'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Consistent'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'Package.Fixed' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Fixed'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Fixed'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
 
   ]
 
