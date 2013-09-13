@@ -127,6 +127,35 @@
                   <g:xEditableRefData owner="${packageInstance}" field="packageType" config='PackageType'/>
                 </dd>
               </dl>
+
+             <dl>
+                <dt>List Status</dt>
+                <dd>
+                  <g:xEditableRefData owner="${packageInstance}" field="packageListStatus" config='Package.ListStatus'/>
+                </dd>
+             </dl>
+
+             <dl>
+                <dt>Breakable</dt>
+                <dd>
+                  <g:xEditableRefData owner="${packageInstance}" field="breakable" config='Package.Breakable'/>
+                </dd>
+             </dl>
+
+             <dl>
+                <dt>Consistent</dt>
+                <dd>
+                  <g:xEditableRefData owner="${packageInstance}" field="consistent" config='Package.Consistent'/>
+                </dd>
+             </dl>
+
+             <dl>
+                <dt>Fixed</dt>
+                <dd>
+                  <g:xEditableRefData owner="${packageInstance}" field="fixed" config='Package.Fixed'/>
+                </dd>
+             </dl>
+
           </fieldset>
         </div>
         <div class="span4">
@@ -160,6 +189,10 @@
            <input type="hidden" name="sort" value="${params.sort}">
            <input type="hidden" name="order" value="${params.order}">
            <label>Filter:</label> <input name="filter" value="${params.filter}"/>
+            <br/>
+            <label>Starts Before (YYYY/MM/DD)</label> <input name="startsBefore" type="text" value="${params.startsBefore}"/>
+            <label>Ends After (YYYY/MM/DD)</label> <input name="endsAfter" type="text" value="${params.endsAfter}"/>
+
            <input type="submit" class="btn btn-primary" />
         </g:form>
 

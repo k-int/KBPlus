@@ -245,6 +245,39 @@ class BootStrap {
     RefdataCategory.lookupOrCreate('UsageStatus', 'purpleQuestion', 'SilentUninterpreted')
     RefdataCategory.lookupOrCreate('UsageStatus', 'purpleQuestion', 'NotApplicable')
 
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.DelayedOA", "No").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.DelayedOA", "Unknown").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.DelayedOA", "Yes").save()
+
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", "No").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", "Unknown").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", "Yes").save()
+
+    RefdataCategory.lookupOrCreate("Tipp.StatusReason", "Xfer Out").save()
+    RefdataCategory.lookupOrCreate("Tipp.StatusReason", "Xfer In").save()
+
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Complimentary").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Limited Promotion").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Paid").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "OA").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Opt Out Promotion").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Uncharged").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Unknown").save()
+
+    RefdataCategory.lookupOrCreate("Package.ListStatus", "Checked").save()
+    RefdataCategory.lookupOrCreate("Package.ListStatus", "In Progress").save()
+    RefdataCategory.lookupOrCreate("Package.Breakable", "No").save()
+    RefdataCategory.lookupOrCreate("Package.Breakable", "Yes").save()
+    RefdataCategory.lookupOrCreate("Package.Breakable", "Unknown").save()
+    RefdataCategory.lookupOrCreate("Package.Consistent", "No").save()
+    RefdataCategory.lookupOrCreate("Package.Consistent", "Yes").save()
+    RefdataCategory.lookupOrCreate("Package.Consistent", "Unknown").save()
+    RefdataCategory.lookupOrCreate("Package.Fixed", "No").save()
+    RefdataCategory.lookupOrCreate("Package.Fixed", "Yes").save()
+    RefdataCategory.lookupOrCreate("Package.Fixed", "Unknown").save()
+
+
+
 
     log.debug("validate content items...");
     // The default template for a property change on a title

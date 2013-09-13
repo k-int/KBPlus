@@ -13,6 +13,9 @@ class Package {
   RefdataValue packageType
   RefdataValue packageStatus
   RefdataValue packageListStatus
+  RefdataValue breakable
+  RefdataValue consistent
+  RefdataValue fixed
   RefdataValue isPublic
   Platform nominalPlatform
   Date startDate
@@ -42,6 +45,9 @@ class Package {
           packageType column:'pkg_type_rv_fk'
         packageStatus column:'pkg_status_rv_fk'
     packageListStatus column:'pkg_list_status_rv_fk'
+            breakable column:'pkg_breakable_rv_fk'
+           consistent column:'pkg_consistent_rv_fk'
+                fixed column:'pkg_fixed_rv_fk'
       nominalPlatform column:'pkg_nominal_platform_fk'
             startDate column:'pkg_start_date'
               endDate column:'pkg_end_date'
@@ -58,6 +64,9 @@ class Package {
         packageStatus(nullable:true, blank:false)
       nominalPlatform(nullable:true, blank:false)
     packageListStatus(nullable:true, blank:false)
+            breakable(nullable:true, blank:false)
+           consistent(nullable:true, blank:false)
+                fixed(nullable:true, blank:false)
             startDate(nullable:true, blank:false)
               endDate(nullable:true, blank:false)
               license(nullable:true, blank:false)

@@ -30,4 +30,7 @@
                     action="additionalInfo" 
                     params="${[id:params.id]}">Additional Info</g:link></li>
 
+  <li <%='history'== actionName ? ' class="active"' : '' %>><g:link controller="subscriptionDetails" 
+                    action="history" 
+                    params="${[id:params.id]}">History</g:link></li>
 </ul>

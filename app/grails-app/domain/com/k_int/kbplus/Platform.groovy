@@ -11,6 +11,8 @@ class Platform {
   String provenance
   RefdataValue type
   RefdataValue status
+  RefdataValue serviceProvider
+  RefdataValue softwareProvider
   Date dateCreated
   Date lastUpdated
 
@@ -28,6 +30,8 @@ class Platform {
         primaryUrl column:'plat_primary_url'
               type column:'plat_type_rv_fk'
             status column:'plat_status_rv_fk'
+   serviceProvider column:'plat_servprov_rv_fk'
+  softwareProvider column:'plat_softprov_rv_fk'
              tipps sort: 'title.title', order: 'asc'
   }
 
@@ -37,6 +41,8 @@ class Platform {
     provenance(nullable:true, blank:false)
     type(nullable:true, blank:false)
     status(nullable:true, blank:false)
+    serviceProvider(nullable:true, blank:false)
+    softwareProvider(nullable:true, blank:false)
   }
 
   def static lookupOrCreatePlatform(Map params=[:]) {

@@ -80,7 +80,72 @@ class AjaxController {
       qryParams:[],
       cols:['reference'],
       format:'simple'
-    ]
+    ],
+    'TIPPStatusReason' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Tipp.StatusReason'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Tipp.StatusReason'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'TIPPDelayedOA' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.DelayedOA'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.DelayedOA'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'TIPPHybridOA' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.HybridOA'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.HybridOA'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'TIPPPaymentType' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.PaymentType'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.PaymentType'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'Package.ListStatus' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.ListStatus'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.ListStatus'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'Package.Breakable' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Breakable'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Breakable'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'Package.Consistent' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Consistent'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Consistent'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'Package.Fixed' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Fixed'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Fixed'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+
   ]
 
 

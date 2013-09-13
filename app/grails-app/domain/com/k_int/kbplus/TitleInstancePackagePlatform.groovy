@@ -35,6 +35,10 @@ class TitleInstancePackagePlatform {
   String impId
   RefdataValue status
   RefdataValue option
+  RefdataValue delayedOA
+  RefdataValue hybridOA
+  RefdataValue statusReason
+  RefdataValue payment
   String hostPlatformURL
   Date coreStatusStart
   Date coreStatusEnd
@@ -71,6 +75,10 @@ class TitleInstancePackagePlatform {
       coverageNote column:'tipp_coverage_note',type: 'text'
              impId column:'tipp_imp_id', index: 'tipp_imp_id_idx'
             status column:'tipp_status_rv_fk'
+         delayedOA column:'tipp_delayedoa_rv_fk'
+          hybridOA column:'tipp_hybridoa_rv_fk'
+      statusReason column:'tipp_status_reason_rv_fk'
+           payment column:'tipp_payment_rv_fk'
             option column:'tipp_option_rv_fk'
    hostPlatformURL column:'tipp_host_platform_url'
                sub column:'tipp_sub_fk'
@@ -91,6 +99,10 @@ class TitleInstancePackagePlatform {
     coverageNote(nullable:true, blank:true);
     impId(nullable:true, blank:true);
     status(nullable:true, blank:false);
+    delayedOA(nullable:true, blank:false);
+    hybridOA(nullable:true, blank:false);
+    statusReason(nullable:true, blank:false);
+    payment(nullable:true, blank:false);
     option(nullable:true, blank:false);
     sub(nullable:true, blank:false);
     hostPlatformURL(nullable:true, blank:true);
@@ -123,8 +135,8 @@ class TitleInstancePackagePlatform {
       if ( oldMap[cp] != newMap[cp] ) {
         def prop_info = domain_class.getPersistentProperty(cp)
 
-        def oldLabel = oldMap[cp].toString();
-        def newLabel = newMap[cp].toString();
+        def oldLabel = stringify(oldMap[cp])
+        def newLabel = stringify(newMap[cp])
 
         if ( prop_info.isAssociation() ) {
           log.debug("Convert object reference into OID");
@@ -143,6 +155,20 @@ class TitleInstancePackagePlatform {
                                                     ])
       }
     }
+  }
+
+  private def stringify(obj) {
+    def result = null
+    if ( obj != null ) {
+      if ( obj instanceof Date ) {
+        def df = new java.text.SimpleDateFormat('yyyy-MM-dd');
+        result = df.format(obj);
+      }
+      else {
+        result = obj.toString()
+      }
+    }
+    result
   }
 
   @Transient
@@ -221,7 +247,7 @@ class TitleInstancePackagePlatform {
         def sub = deproxy(dep_ie.subscription)
         changeNotificationService.registerPendingChange('subscription',
                                                         dep_ie.subscription,
-                                                        "Information about title \"${this.title.title}\" changed in the package. \"${changeDocument.prop}\" was updated from \"${changeDocument.oldLabel}\" to \"${changeDocument.newLabel}\". Accept this change to make the same update to your issue entitlement",
+                                                        "Information about title <a href=\"${ApplicationHolder.application.config.SystemBaseURL}/titleDetails/show/${this.title.id}\">\"${this.title.title}\"</a> changed in package <a href=\"${ApplicationHolder.application.config.SystemBaseURL}/packageDetails/show/${id}\">${this.pkg.name}</a>. \"${changeDocument.prop}\" was updated from \"${changeDocument.oldLabel}\" to \"${changeDocument.newLabel}\". Accept this change to make the same update to your issue entitlement",
                                                         sub.getSubscriber(),
                                                         [
                                                           changeTarget:"com.k_int.kbplus.IssueEntitlement:${dep_ie.id}",
