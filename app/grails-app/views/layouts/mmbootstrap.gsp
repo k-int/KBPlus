@@ -330,6 +330,14 @@
   <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', '${grailsApplication.config.kbplus.analytics.code}']);
+      <g:if test="${params.shortcode != null}">
+      _gaq.push(['_setCustomVar',
+            1,                     // This custom var is set to slot #1.  Required parameter.
+            'Institution',         // The name acts as a kind of category for the user activity.  Required parameter.
+            "${params.shortcode}", // This value of the custom variable.  Required parameter.
+            2                      // Sets the scope to session-level.  Optional parameter.
+         ]);
+      </g:if>
       _gaq.push(['_trackPageview']);
       (function() {
           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
