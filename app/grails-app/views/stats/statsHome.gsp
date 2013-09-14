@@ -9,60 +9,27 @@
     <div class="container">
       <div class="row">
 
-        <h1>Accounts by institutions</h1>
+        <h1>Org Info</h1>
         <table class="table table-bordered">
           <thead>
             <tr>
               <th>Institution</th>
-              <th>Num accounts</th>
+              <th>Number of accounts</th>
+              <th>Number of subscriptions</th>
+              <th>Number of licenses</th>
             </tr>
           </thead>
           <tbody>
-            <g:each in="${instStats}" var="is">
+            <g:each in="${orginfo}" var="is">
               <tr>
-                <td>${is[0].name}</td>
-                <td>${is[1]}</td>
+                <td>${is.key.name}</td>
+                <td>${is.value['userCount']}</td>
+                <td>${is.value['subCount']}</td>
+                <td>${is.value['licCount']}</td>
               </tr>
             </g:each>
           </tbody>
         </table>
-
-        <h1>Subscriptions by institutions</h1>
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Institution</th>
-              <th>Num Subscriptions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <g:each in="${soStats}" var="is">
-              <tr>
-                <td>${is[0].name}</td>
-                <td>${is[1]}</td>
-              </tr>
-            </g:each>
-          </tbody>
-        </table>
-
-        <h1>Licenses by institutions</h1>
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Institution</th>
-              <th>Num Licenses</th>
-            </tr>
-          </thead>
-          <tbody>
-            <g:each in="${lStats}" var="is">
-              <tr>
-                <td>${is[0].name}</td>
-                <td>${is[1]}</td>
-              </tr>
-            </g:each>
-          </tbody>
-        </table>
-
       </div>
     </div>
   </body>
