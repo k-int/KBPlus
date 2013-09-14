@@ -42,7 +42,7 @@ class OnixplLicenseCompareController {
         if (offset > end) {
             offset = end;
         }
-        if (filteredLicenseList.get(0) != null) {
+        if (filteredLicenseList.size() > 0 && filteredLicenseList.get(0) != null) {
             filteredLicenseList = filteredLicenseList.subList(offset, end);
         }
 
