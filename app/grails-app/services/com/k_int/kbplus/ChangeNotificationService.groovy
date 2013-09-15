@@ -70,6 +70,10 @@ class ChangeNotificationService {
             log.debug("Found change template... ${change_template.content}");
             // groovy.util.Eval.x(r, 'x.' + rh.property)
             def event_props = [o:contextObject, evt:parsed_event_info]
+            if ( parsed_event_info.OID != null && parsed_event_info.OID.length() > 0 ) {
+              event_props.OID = genericOIDService.resolveOID(parsed_event_info.OID);
+            }
+ 
 
             // Use doStuff to cleverly render change_template with variable substitution 
             log.debug("Make engine");
@@ -165,7 +169,7 @@ class ChangeNotificationService {
 
 
   def registerPendingChange(prop, target, desc, objowner, changeMap ) {
-
+    log.debug("Register pending change ${prop} ${target.class.name}:${target.id}");
     def new_pending_change = new PendingChange()
     new_pending_change[prop] = target;
     def jsonChangeDocument = changeMap as JSON
@@ -174,7 +178,7 @@ class ChangeNotificationService {
     new_pending_change.owner = objowner
     new_pending_change.oid = "${target.class.name}:${target.id}"
     new_pending_change.ts = new Date();
-    new_pending_change.save()
+    new_pending_change.save(flush:true)
   }
 
 }

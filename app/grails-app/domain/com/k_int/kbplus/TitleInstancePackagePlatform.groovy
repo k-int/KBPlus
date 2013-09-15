@@ -11,15 +11,16 @@ class TitleInstancePackagePlatform {
   // def grailsApplication
 
   static auditable = true
-  static     def controlledProperties = ['startDate',
-                                         'startVolume',
-                                         'startIssue',
-                                         'endDate',
-                                         'endVolume',
-                                         'endIssue',
-                                         'embargo',
-                                         'coverageDepth',
-                                         'coverageNote' ]
+  static def controlledProperties = ['status',
+                                     'startDate',
+                                     'startVolume',
+                                     'startIssue',
+                                     'endDate',
+                                     'endVolume',
+                                     'endIssue',
+                                     'embargo',
+                                     'coverageDepth',
+                                     'coverageNote' ]
 
 
   Date startDate
@@ -132,6 +133,7 @@ class TitleInstancePackagePlatform {
     def domain_class = ApplicationHolder.application.getArtefact('Domain','com.k_int.kbplus.TitleInstancePackagePlatform');
 
     controlledProperties.each { cp ->
+      log.debug("checking ${cp}")
       if ( oldMap[cp] != newMap[cp] ) {
         def prop_info = domain_class.getPersistentProperty(cp)
 
@@ -144,6 +146,7 @@ class TitleInstancePackagePlatform {
           newMap[cp]= newMap[cp] != null ? "${deproxy(newMap[cp]).class.name}:${newMap[cp].id}" : null;
         }
 
+        log.debug("notify change event")
         changeNotificationService.notifyChangeEvent([
                                                      OID:"${this.class.name}:${this.id}",
                                                      event:'TitleInstancePackagePlatform.updated',
@@ -155,6 +158,7 @@ class TitleInstancePackagePlatform {
                                                     ])
       }
     }
+    log.debug("onChange completed")
   }
 
   private def stringify(obj) {

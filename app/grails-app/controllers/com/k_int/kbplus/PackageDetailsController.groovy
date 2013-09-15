@@ -166,7 +166,7 @@ class PackageDetailsController {
       def qry_params = [packageInstance]
 
 
-      if ( showDeletedTipps=='Y' ) {
+      if ( showDeletedTipps==true ) {
       }
       else {
         base_qry += "and tipp.status.value != 'Deleted' "

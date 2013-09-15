@@ -294,15 +294,15 @@ An identifier was removed from title ${o.id}.
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.updated','','''
-TIPP change - The <strong>${evt.prop}</strong> field was changed from  "<strong>${evt.oldLabel?:evt.old}</strong>" to "<strong>${evt.newLabel?:evt.new}</strong>".
+TIPP change for title ${OID?.title?.title} - The <strong>${evt.prop}</strong> field was changed from  "<strong>${evt.oldLabel?:evt.old}</strong>" to "<strong>${evt.newLabel?:evt.new}</strong>".
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.added','','''
-TIPP Added for title ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
+TIPP Added for title ${OID?.title?.title} ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.deleted','','''
-TIPP Deleted for title ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
+TIPP Deleted for title ${OID?.title?.title} ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.Package.created','','''
