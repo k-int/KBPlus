@@ -253,8 +253,8 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", "Unknown").save()
     RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", "Yes").save()
 
-    RefdataCategory.lookupOrCreate("Tipp.StatusReason", "Xfer Out").save()
-    RefdataCategory.lookupOrCreate("Tipp.StatusReason", "Xfer In").save()
+    RefdataCategory.lookupOrCreate("Tipp.StatusReason", "Transfer Out").save()
+    RefdataCategory.lookupOrCreate("Tipp.StatusReason", "Transfer In").save()
 
     RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Complimentary").save()
     RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Limited Promotion").save()
