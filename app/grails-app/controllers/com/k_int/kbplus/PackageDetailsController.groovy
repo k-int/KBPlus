@@ -115,11 +115,15 @@ class PackageDetailsController {
 	  def verystarttime = exportService.printStart("SubscriptionDetails")
 	  
       def result = [:]
+      boolean showDeletedTipps=false
       
-      if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') )
+      if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') ) {
         result.editable=true
-      else
+        showDeletedTipps=true
+      }
+      else {
         result.editable=false
+      }
 
       result.user = User.get(springSecurityService.principal.id)
       def packageInstance = Package.get(params.id)
@@ -160,6 +164,13 @@ class PackageDetailsController {
 	  
       def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
       def qry_params = [packageInstance]
+
+
+      if ( showDeletedTipps=='Y' ) {
+      }
+      else {
+        base_qry += "and tipp.status.value != 'Deleted' "
+      }
 
       if ( params.filter ) {
         base_qry += " and ( ( lower(tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = tipp.title.id and io.identifier.value like ? ) ) )"
