@@ -24,7 +24,7 @@ class SubscriptionImportController {
   def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
  
 
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def generateImportWorksheet() { 
 
     log.debug("renewalsSearch : ${params}");
@@ -722,7 +722,7 @@ class SubscriptionImportController {
     result
   }
 
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def processSubscriptionImport() {
     def result = [:]
 
