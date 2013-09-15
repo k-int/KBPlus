@@ -626,7 +626,8 @@ class SubscriptionImportController {
       String org_id = org_details_row?.getCell(0)?.toString()
       String org_shortcode = org_details_row?.getCell(2)?.toString()
       log.debug("Worksheet upload on behalf of ${org_name}, ${org_id}, ${org_shortcode}");
-      result.subOrg = Org.get(org_id)
+      Double d = Double.parseDouble(org_id)
+      result.subOrg = Org.get(d.intValue())
 
       if ( result.subOrg == null ) {
         flash.message="Unable to locate Org"
