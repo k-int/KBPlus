@@ -253,8 +253,8 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", "Unknown").save()
     RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", "Yes").save()
 
-    RefdataCategory.lookupOrCreate("Tipp.StatusReason", "Xfer Out").save()
-    RefdataCategory.lookupOrCreate("Tipp.StatusReason", "Xfer In").save()
+    RefdataCategory.lookupOrCreate("Tipp.StatusReason", "Transfer Out").save()
+    RefdataCategory.lookupOrCreate("Tipp.StatusReason", "Transfer In").save()
 
     RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Complimentary").save()
     RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Limited Promotion").save()
@@ -294,15 +294,15 @@ An identifier was removed from title ${o.id}.
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.updated','','''
-TIPP change - The <strong>${evt.prop}</strong> field was changed from  "<strong>${evt.oldLabel?:evt.old}</strong>" to "<strong>${evt.newLabel?:evt.new}</strong>".
+TIPP change for title ${OID?.title?.title} - The <strong>${evt.prop}</strong> field was changed from  "<strong>${evt.oldLabel?:evt.old}</strong>" to "<strong>${evt.newLabel?:evt.new}</strong>".
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.added','','''
-TIPP Added for title ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
+TIPP Added for title ${OID?.title?.title} ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.deleted','','''
-TIPP Deleted for title ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
+TIPP Deleted for title ${OID?.title?.title} ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.Package.created','','''

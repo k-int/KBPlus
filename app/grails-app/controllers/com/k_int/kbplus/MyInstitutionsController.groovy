@@ -60,6 +60,7 @@ class MyInstitutionsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def dashboard() {
+    // redirect(controller:'home', action:'index');
     // Work out what orgs this user has admin level access to
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
@@ -67,8 +68,8 @@ class MyInstitutionsController {
     result.staticAlerts = alertsService.getStaticAlerts(request);
 
     // log.debug("result.userAlerts: ${result.userAlerts}");
-    log.debug("result.userAlerts.size(): ${result.userAlerts.size()}");
-    log.debug("result.userAlerts.class.name: ${result.userAlerts.class.name}");
+    // log.debug("result.userAlerts.size(): ${result.userAlerts.size()}");
+    // log.debug("result.userAlerts.class.name: ${result.userAlerts.class.name}");
     // def adminRole = Role.findByAuthority('ROLE_ADMIN')
     // if ( result.user.authorities.contains(adminRole) ) {
     //   log.debug("User is in admin role");
@@ -83,7 +84,6 @@ class MyInstitutionsController {
     }
     else {
     }
-
     result
   }
 
