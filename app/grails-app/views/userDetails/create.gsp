@@ -19,7 +19,7 @@
         </g:if>
         
         <div class="well">
-          <g:form action="create" method="post">
+          <g:form id="createUserForm" action="create" method="post">
              <div class="inline-lists">
                <dl><dt>Username</dt><dd><input type="text" name="username" value="${params.username}"/></dd></dl>
                <dl><dt>Dispay Name</dt><dd><input type="text" name="display" value="${params.display}"/></dd></dl>

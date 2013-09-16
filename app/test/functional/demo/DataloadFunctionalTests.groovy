@@ -23,5 +23,16 @@ class DataloadFunctionalTests extends BrowserTestCase {
           click "submit"
         }
 
+        get('/userDetails/create')
+
+        // Create TestUserA - We will assign perms later on
+        form('createUserForm') {
+          username='TestUserA;
+          display='TestUserA';
+          password='password'
+          email='TestUserA@InstitutionA.ac.uk'
+          click "submit"
+        }
+
     }
 }
