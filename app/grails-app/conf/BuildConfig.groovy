@@ -50,6 +50,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
+        compile ":h2:0.2.6"
         runtime ":hibernate:$grailsVersion"
         runtime ":resources:1.2.RC2"
         runtime ':fields:1.2'
