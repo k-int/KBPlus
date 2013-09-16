@@ -51,7 +51,7 @@
                     <dt><span class="control-label">Usage Term</span></dt>
                     <dd>
                         <g:each in="${onixplLicenseText.usageTermLicenseText.usageTerm}">
-                            <g:link controller="onixplUsageTermsDetails" action="index" id="${it.id}">${it.usageType.value} - ${it.usageStatus.value}</g:link>
+                            <g:link controller="onixplUsageTermDetails" action="index" id="${it.id}">${it.usageType.value} - ${it.usageStatus.value}</g:link>
                         </g:each>
                     </dd>
                 </dl>
