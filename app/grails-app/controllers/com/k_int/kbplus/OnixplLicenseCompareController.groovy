@@ -16,7 +16,7 @@ class OnixplLicenseCompareController {
     def matrix() {
         Integer max = checkParam(params.max, 5);
         Integer offset = checkParam(params.offset, 0);
-        ArrayList<RefdataValue> termList = RefdataValue.findAllByOwner(RefdataCategory.get(30)).sort { it.id };
+        ArrayList<RefdataValue> termList = RefdataValue.findAllByOwner(RefdataCategory.findByDesc("UsageType")).sort { it.id };
         Integer id1 = checkParam(params.license1, null);
         OnixplLicense opl1 = OnixplLicense.get(id1);
         ArrayList<OnixplLicense> licenseList;
