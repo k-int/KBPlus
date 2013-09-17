@@ -264,14 +264,12 @@ class Package {
   def onSave = {
 
     log.debug("onSave")
-    if ( ti != null ) {
-      def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
 
-      changeNotificationService.notifyChangeEvent([
-                                                   OID:"com.k_int.kbplus.Package:${id}",
-                                                   event:'Package.created'
-                                                  ])
-    }
+    changeNotificationService.notifyChangeEvent([
+                                                 OID:"com.k_int.kbplus.Package:${id}",
+                                                 event:'Package.created'
+                                                ])
   }
 
 }
