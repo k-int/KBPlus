@@ -1,9 +1,10 @@
 package demo
 
+import functionaltestplugin.*
 import com.grailsrocks.functionaltest.*
 
 
-class DataloadFunctionalTests extends BrowserTestCase {
+class DataloadFunctionalTests extends FunctionalTestCase {
 
     void testSomeWebsiteFeature() {
         setBrowser("CHROME")

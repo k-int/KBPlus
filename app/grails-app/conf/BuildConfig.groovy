@@ -6,6 +6,10 @@ grails.project.target.level = 1.7
 grails.project.source.level = 1.7
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 
+// This is commented out so as not to cause probelms in the CI environment
+// grails.plugin.location."functional-test" = "../../grails-functional-test"
+
+
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
     inherits("global") {
@@ -54,6 +58,8 @@ grails.project.dependency.resolution = {
         runtime ":hibernate:$grailsVersion"
         runtime ":resources:1.2.RC2"
         runtime ':fields:1.2'
+        // This is commented out so as not to cause probelms in the CI environment
+        // build ":functional-test:2.0.RC2-SNAPSHOT"  // Build == not required in war
 
         // Uncomment these (or add new ones) to enable additional resources capabilities
         //runtime ":zipped-resources:1.0"
