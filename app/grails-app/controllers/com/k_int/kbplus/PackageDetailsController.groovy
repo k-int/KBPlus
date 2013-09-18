@@ -144,8 +144,8 @@ class PackageDetailsController {
       // and subscription that does not already link this package
       result.user?.getAuthorizedAffiliations().each { ua ->
         if ( ua.formalRole.authority == 'INST_ADM' ) {
-          def qry_params = [ua.org, packageInstance]
-          def q = "select s from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) AND ( not exists ( select sp from s.packages as sp where sp.pkg = ? ) )"
+          def qry_params = [ua.org, packageInstance, new Date()]
+          def q = "select s from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) AND ( not exists ( select sp from s.packages as sp where sp.pkg = ? ) ) AND s.endDate >= ?"
           Subscription.executeQuery(q, qry_params).each { s ->
             if ( ! result.subscriptionList.contains(s) ) {
               // Need to make sure that this package is not already linked to this subscription
