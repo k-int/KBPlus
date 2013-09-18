@@ -700,7 +700,7 @@ class SubscriptionDetailsController {
         log.debug("Add package ${params.addType} to subscription ${params}");
         if ( params.addType == 'With' ) {
           pkg_to_link.addToSubscription(result.subscriptionInstance, true)
-          redirect action:'addEntitlements', id:params.id
+          redirect action:'index', id:params.id
         }
         else if ( params.addType == 'Without' ) {
           pkg_to_link.addToSubscription(result.subscriptionInstance, false)
