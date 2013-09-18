@@ -132,8 +132,8 @@
             </dl>
 
             <dl>
-                <dt>Coverage</dt>
-                <dd>${issueEntitlementInstance.coverageDepth}</dd>
+                <dt>Coverage Depth</dt>
+                <dd><g:xEditable owner="${issueEntitlementInstance}" field="coverageDepth"/></dd>
             </dl>
 
             <dl>
