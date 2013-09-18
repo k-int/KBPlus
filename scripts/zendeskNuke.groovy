@@ -51,11 +51,17 @@ try {
       }
     }
   }
+}
+catch (Exception e) {
+  e.printStackTrace();
+}
 
+try {
   int fdc = 1
   while ( fdc > 0 ) {
     fdc = 0
     http.get(path:'/api/v2/forums.json') { resp, data ->
+      println("Got forum list..");
       result = data
       result.forums.each { forum ->
         if ( forum.name.contains('Package') ) {
@@ -64,7 +70,7 @@ try {
             println("Delete forum[${fdc++}] ${forum.id}(${forum.name}) : ${forum_delete_response.status}");
           }
           catch ( Exception e ) {
-            println(e.message);
+            println(e.message+" /api/v2/forums/${forum.id}.json" );
           }
         }
       }
