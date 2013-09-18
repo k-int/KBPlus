@@ -215,6 +215,10 @@ class UploadController {
               PlatformTIPP pt = new PlatformTIPP(tipp:dbtipp,platform:ap.plat,titleUrl:ap.url,rel:ap.role)
             }
           }
+
+          // Really not happy with this as a way forward, hoping for feedback from OS
+          if ( tipp.id.kbart_title_id ) {
+          }
         }
         else {
           log.error("TIPP already exists!! this can happen in incrementals... just ignore now");
