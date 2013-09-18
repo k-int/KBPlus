@@ -39,18 +39,7 @@
           <textarea name="licenceNote"></textarea>
         </dd>
       </dl>
-      <dl>
-        <dt>
-          <label>Shared:</label>
-        </dt>
-        <dd>
-          <select name="licenceNoteShared">
-            <option value="0">Not Shared</option>
-            <!-- <option value="1">JISC Collections</option> -->
-            <option value="2">Community</option>
-          </select>
-        </dd>
-      </dl>
+      <input type="hidden" name="licenceNoteShared" value="0"/>
     </div>
     <div class="modal-footer">
       <a href="#" class="btn" data-dismiss="modal">Close</a>
