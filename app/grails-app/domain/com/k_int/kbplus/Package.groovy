@@ -78,7 +78,7 @@ class Package {
   def getConsortia() {
     def result = null;
     orgs.each { or ->
-      if ( or?.roleType?.value=='Subscription Consortia' )
+      if ( ( or?.roleType?.value=='Subscription Consortia' ) || ( or?.roleType?.value=='Package Consortia' ) )
         result = or.org;
     }
     result
@@ -119,7 +119,7 @@ class Package {
 
     if ( result.save(flush:true) ) {
       if ( consortium_org ) {
-        def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscription Consortia');
+        def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
         def or = new OrgRole(org: consortium_org, sub:result, roleType:sc_role).save();
       }
 
