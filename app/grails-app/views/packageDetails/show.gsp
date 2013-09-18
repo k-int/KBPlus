@@ -149,6 +149,13 @@
                 </dd>
              </dl>
 
+              <dl>
+                <dt>Package Scope</dt>
+                <dd>
+                  <g:xEditableRefData owner="${packageInstance}" field="packageScope" config='Package.Scope'/>
+                </dd>
+              </dl>
+
           </fieldset>
         </div>
         <div class="span4">

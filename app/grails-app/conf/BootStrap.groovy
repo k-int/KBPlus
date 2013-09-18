@@ -275,6 +275,11 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("Package.Fixed", "No").save()
     RefdataCategory.lookupOrCreate("Package.Fixed", "Yes").save()
     RefdataCategory.lookupOrCreate("Package.Fixed", "Unknown").save()
+    RefdataCategory.lookupOrCreate("Package.Scope", "Aggregator").save()
+    RefdataCategory.lookupOrCreate("Package.Scope", "Front File").save()
+    RefdataCategory.lookupOrCreate("Package.Scope", "Back File").save()
+    RefdataCategory.lookupOrCreate("Package.Scope", "Master File").save()
+    RefdataCategory.lookupOrCreate("Package.Scope", "Scope Undefined").save()
 
 
 

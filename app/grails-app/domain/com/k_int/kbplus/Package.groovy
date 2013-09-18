@@ -17,6 +17,7 @@ class Package {
   RefdataValue consistent
   RefdataValue fixed
   RefdataValue isPublic
+  RefdataValue packageScope
   Platform nominalPlatform
   Date startDate
   Date endDate
