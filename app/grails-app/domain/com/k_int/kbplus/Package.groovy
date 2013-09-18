@@ -54,6 +54,7 @@ class Package {
               endDate column:'pkg_end_date'
               license column:'pkg_license_fk'
              isPublic column:'pkg_is_public'
+         packageScope column:'pkg_scope_rv_fk'
               forumId column:'pkg_forum_id'
                 tipps sort:'title.title', order: 'asc'
 
@@ -72,6 +73,7 @@ class Package {
               endDate(nullable:true, blank:false)
               license(nullable:true, blank:false)
              isPublic(nullable:true, blank:false)
+         packageScope(nullable:true, blank:false)
               forumId(nullable:true, blank:false)
   }
 
