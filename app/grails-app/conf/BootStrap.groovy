@@ -173,9 +173,6 @@ class BootStrap {
       log.warn("There are user org rows with no role set. Please update the table to add role FKs");
     }
 
-    // Some extra refdata
-    def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
-	
     setupRefdata();
   }
 
