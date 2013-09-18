@@ -121,13 +121,6 @@
                             model="${[roleLinks:packageInstance?.orgs,parent:packageInstance.class.name+':'+packageInstance.id,property:'orgs',editmode:editable]}" /></dd>
               </dl>
 
-              <dl>
-                <dt>Package Type</dt>
-                <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="packageType" config='PackageType'/>
-                </dd>
-              </dl>
-
              <dl>
                 <dt>List Status</dt>
                 <dd>
