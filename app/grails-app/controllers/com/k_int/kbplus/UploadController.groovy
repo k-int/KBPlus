@@ -24,6 +24,7 @@ class UploadController {
   
   def csv_column_config = [
     'id':[coltype:'map'],
+    'tippid':[coltype:'map'],
     'publication_title':[coltype:'simple'],
     'date_first_issue_online':[coltype:'simple'],
     'num_first_vol_online':[coltype:'simple'],
@@ -214,11 +215,14 @@ class UploadController {
             tipp.additional_platforms.each { ap ->
               PlatformTIPP pt = new PlatformTIPP(tipp:dbtipp,platform:ap.plat,titleUrl:ap.url,rel:ap.role)
             }
+            // Really not happy with this as a way forward, hoping for feedback from OS
+            tipp.tippid.each { tippid ->
+              def canonical_id = Identifier.lookupOrCreateCanonicalIdentifier(tippid.key, tippid.value)
+              def new_io = new IdentifierOccurrence(identifier:canonical_id,tipp:dbtipp).save()
+              tipp.messages.add([type:'alert-success',message:"tipp identifier created: ${tippid.key}:${tippid.value} ${new_io.id}"]);
+            }
           }
 
-          // Really not happy with this as a way forward, hoping for feedback from OS
-          if ( tipp.id.kbart_title_id ) {
-          }
         }
         else {
           log.error("TIPP already exists!! this can happen in incrementals... just ignore now");
