@@ -9,7 +9,7 @@
 
     <div class="container">
         <ul class="breadcrumb">
-        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <li class="active">Search</li>
       </ul>
     </div>
