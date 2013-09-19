@@ -13,7 +13,7 @@ class BootStrap {
   def init = { servletContext ->
 	
     if ( grailsApplication.config.kbplusSystemId != null ) {
-      def system_object = System.findBySysId(grailsApplication.config.kbplusSystemId) ?: new System(sysId:grailsApplication.config.kbplusSystemId).save(flush:true);
+      def system_object = SystemObject.findBySysId(grailsApplication.config.kbplusSystemId) ?: new SystemObject(sysId:grailsApplication.config.kbplusSystemId).save(flush:true);
     }
 
     def evt_startup = new EventLog(event:'kbplus.startup',message:'Normal startup',tstp:new Date(System.currentTimeMillis())).save(flush:true)

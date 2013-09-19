@@ -2,7 +2,7 @@ package com.k_int.kbplus
 
 import javax.persistence.Transient
 
-class System {
+class SystemObject {
 
   String sysId
   String announcementsForumId
