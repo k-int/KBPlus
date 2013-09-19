@@ -216,13 +216,25 @@
                 
                 <h6><g:message code="titleInstance.tipps.label" default="Occurences of this title against Packages / Platforms" /><g:message code="titleInstance.tipps.label" default="Occurences of this title against Packages / Platforms" /></h6>
 
+
+                <g:form action="show" params="${params}" method="get" class="form-inline">
+                  <input type="hidden" name="sort" value="${params.sort}">
+                  <input type="hidden" name="order" value="${params.order}">
+                  <label>Filters - Package Name:</label> <input name="filter" value="${params.filter}"/> &nbsp;
+                  &nbsp; <label>Starts Before: </label>
+                  <g:simpleHiddenValue id="startsBefore" name="startsBefore" type="date" value="${params.startsBefore}"/>
+                  &nbsp; <label>Ends After: </label>
+                  <g:simpleHiddenValue id="endsAfter" name="endsAfter" type="date" value="${params.endsAfter}"/>
+                  <input type="submit" class="btn btn-primary">
+                </g:form>
+
                 <table class="table table-bordered table-striped">
                     <tr>
                         <th>From Date</th><th>From Volume</th><th>From Issue</th>
                         <th>To Date</th><th>To Volume</th><th>To Issue</th><th>Coverage Depth</th>
                         <th>Platform</th><th>Package</th><th>Actions</th>
                     </tr>
-                    <g:each in="${issueEntitlementInstance.tipp.title.tipps}" var="t">
+                    <g:each in="${tippList}" var="t">
                         <tr>
                             <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.startDate}"/></td>
                         <td>${t.startVolume}</td>
