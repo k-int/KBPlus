@@ -12,6 +12,10 @@ class BootStrap {
 
   def init = { servletContext ->
 	
+    if ( grailsApplication.config.kbplusSystemId != null ) {
+      def system_object = System.findBySysId(grailsApplication.config.kbplusSystemId) ?: new System(sysId:grailsApplication.config.kbplusSystemId).save(flush:true);
+    }
+
     def evt_startup = new EventLog(event:'kbplus.startup',message:'Normal startup',tstp:new Date(System.currentTimeMillis())).save(flush:true)
 
     def so_filetype = DataloadFileType.findByName('Subscription Offered File') ?: new DataloadFileType(name:'Subscription Offered File');
