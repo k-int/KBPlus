@@ -193,10 +193,10 @@ class PackageDetailsController {
       }
 
       if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
-        base_qry += " order by ${params.sort} ${params.order}"
+        base_qry += " order by lower(${params.sort}) ${params.order}"
       }
       else {
-        base_qry += " order by tipp.title.title asc"
+        base_qry += " order by lower(tipp.title.title) asc"
       }
 
       log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
