@@ -160,7 +160,7 @@ auditLog {
 
 appDefaultPrefs {
   globalDateFormat='yyyy-MM-dd'
-  globalDateFormatSQL='%Y/%m/%d'
+  globalDateFormatSQL='%Y-%m-%d'
 }
 
 // The following 2 entries make the app use basic auth by default
