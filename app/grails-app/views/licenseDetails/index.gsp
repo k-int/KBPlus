@@ -151,6 +151,7 @@
                      </dd>
                   </dl>
 
+                  <sec:ifAnyGranted roles="ROLE_ADMIN,KBPLUS_EDITOR">
                     <dl>
                         <dt><label class="control-label">ONIX-PL License</label></dt>
                         <dd>
@@ -167,6 +168,7 @@
                             </g:else>
                         </dd>
                     </dl>
+                  </sec:ifAnyGranted>
       
                   <dl>
                       <dt><label class="control-label" for="licenseUrl">Licence Url</label></dt>

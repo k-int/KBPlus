@@ -107,7 +107,9 @@
                     <td>
                       ${fa.title}<br>
                       <g:if test="${fa.result_type=='topic'}">
-                        <span class="pull-right"><a href="${grailsApplication.config.ZenDeskBaseURL}/entries/${fa.id}">View Topic</a></span>
+                        <span class="pull-right"><a href="${grailsApplication.config.ZenDeskBaseURL}/entries/${fa.id}">View Topic</a>
+                          <a href="${grailsApplication.config.ZenDeskBaseURL}/entries/${fa.id}" title="View Topic (new Window)" target="_blank"><i class="icon-share-alt"></i></a>
+                        </span>
                       </g:if>
                       <g:else>
                         <span class="pull-right"><a href="${fa.url}">View ${fa.result_type}</a></span>

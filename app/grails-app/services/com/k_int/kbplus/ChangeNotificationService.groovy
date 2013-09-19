@@ -43,6 +43,7 @@ class ChangeNotificationService {
   }
 
 
+  // Sum up all pending changes by OID and write a unified message
   def internalAggregateAndNotifyChanges() {
 
     try {

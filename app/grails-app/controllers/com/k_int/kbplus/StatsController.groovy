@@ -42,6 +42,20 @@ group by o
       storeOrgInfo(result.orginfo, r[0], 'subCount', r[1]);
     }
 
+    result.currentsoStats = Subscription.executeQuery('''
+select distinct(o), count(s)
+from Org as o, Subscription as s, OrgRole as orl
+where orl.org = o 
+and orl.sub = s 
+and orl.roleType.value = 'Subscriber'
+and s.status.value != 'Deleted'
+group by o
+''');
+    result.currentsoStats.each { r ->
+      storeOrgInfo(result.orginfo, r[0], 'currentSoCount', r[1]);
+    }
+
+
 
     result.lStats = Subscription.executeQuery('''
 select distinct(o), count(l)
@@ -51,10 +65,25 @@ and orl.lic = l
 and orl.roleType.value = 'Licensee'
 group by o
 ''');
-
     result.lStats.each { r ->
       storeOrgInfo(result.orginfo, r[0], 'licCount', r[1]);
     }
+
+
+   result.currentlStats = Subscription.executeQuery('''
+select distinct(o), count(l)
+from Org as o, License as l, OrgRole as orl
+where orl.org = o 
+and orl.lic = l 
+and orl.roleType.value = 'Licensee'
+and l.status.value != 'Deleted'
+group by o
+''');
+    result.currentlStats.each { r ->
+      storeOrgInfo(result.orginfo, r[0], 'currentLicCount', r[1]);
+    }
+
+
 
     result
   }

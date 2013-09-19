@@ -113,13 +113,25 @@
           <g:if test="${titleInstanceInstance?.tipps}">
             <dt><g:message code="titleInstance.tipps.label" default="Occurences of this title against Packages / Platforms" /></dt>
             <dd>
+
+               <g:form action="show" params="${params}" method="get" class="form-inline">
+                  <input type="hidden" name="sort" value="${params.sort}">
+                  <input type="hidden" name="order" value="${params.order}">
+                  <label>Filters - Package Name:</label> <input name="filter" value="${params.filter}"/> &nbsp;
+                  &nbsp; <label>Starts Before: </label>
+                  <g:simpleHiddenValue id="startsBefore" name="startsBefore" type="date" value="${params.startsBefore}"/>
+                  &nbsp; <label>Ends After: </label>
+                  <g:simpleHiddenValue id="endsAfter" name="endsAfter" type="date" value="${params.endsAfter}"/>
+                  <input type="submit" class="btn btn-primary">
+                </g:form>
+
             <table class="table">
               <tr>
                 <th>From Date</th><th>From Volume</th><th>From Issue</th>
                 <th>To Date</th><th>To Volume</th><th>To Issue</th><th>Coverage Depth</th>
                 <th>Platform</th><th>Package</th><th>Actions</th>
               </tr>
-              <g:each in="${titleInstanceInstance.tipps}" var="t">
+              <g:each in="${tippList}" var="t">
                 <tr>
                   <td><g:formatDate format="dd MMM yyyy" date="${t.startDate}"/></td>
                   <td>${t.startVolume}</td>
