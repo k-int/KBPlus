@@ -188,20 +188,22 @@
 
     <div class="container">
 
+        <dl>
+          <dt>Titles (${offset+1} to ${lasttipp}  of ${num_tipp_rows})</dt>
+          <dd>
+
         <g:form action="show" params="${params}" method="get" class="form-inline">
            <input type="hidden" name="sort" value="${params.sort}">
            <input type="hidden" name="order" value="${params.order}">
-           <label>Filter:</label> <input name="filter" value="${params.filter}"/>
-            <br/>
-            <label>Starts Before (YYYY/MM/DD)</label> <input name="startsBefore" type="text" value="${params.startsBefore}"/>
-            <label>Ends After (YYYY/MM/DD)</label> <input name="endsAfter" type="text" value="${params.endsAfter}"/>
+           <label>Filters - Package Name:</label> <input name="filter" value="${params.filter}"/>
+            &nbsp;<label>Starts Before:</label> 
+            <g:simpleHiddenValue id="startsBefore" name="startsBefore" type="date" value="${params.startsBefore}"/>
+            &nbsp;<label>Ends After:</label>
+            <g:simpleHiddenValue id="endsAfter" name="endsAfter" type="date" value="${params.endsAfter}"/>
 
            <input type="submit" class="btn btn-primary" />
         </g:form>
 
-        <dl>
-          <dt>Titles (${offset+1} to ${lasttipp}  of ${num_tipp_rows})</dt>
-          <dd>
           <table class="table table-bordered">
             <g:form action="packageBatchUpdate" params="${[id:packageInstance?.id]}">
             <thead>

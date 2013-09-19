@@ -179,14 +179,14 @@ class PackageDetailsController {
       }
 
       if ( params.endsAfter && params.endsAfter.length() > 0 ) {
-        def sdf = new java.text.SimpleDateFormat('yyyy/MM/dd');
+        def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
         def d = sdf.parse(params.endsAfter)
         base_qry += " and tipp.endDate >= ?"
         qry_params.add(d)
       }
 
       if ( params.startsBefore && params.startsBefore.length() > 0 ) {
-        def sdf = new java.text.SimpleDateFormat('yyyy/MM/dd');
+        def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
         def d = sdf.parse(params.startsBefore)
         base_qry += " and tipp.startDate <= ?"
         qry_params.add(d)
