@@ -275,4 +275,8 @@ class Package {
                                                 ])
   }
 
+  @Transient
+  def notifyDependencies(changeDocument) {
+  }
+
 }
