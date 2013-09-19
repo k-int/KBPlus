@@ -27,4 +27,8 @@ class SystemObject {
     result;
   }
 
+
+  public String toString() {
+    sysId
+  }
 }

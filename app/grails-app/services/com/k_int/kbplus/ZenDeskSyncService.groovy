@@ -62,6 +62,13 @@ class ZenDeskSyncService {
       }
       // Create forum in category
     }
+
+
+    def systemObject = SystemObject.findBySysId(ApplicationHolder.application.config.kbplusSystemId)
+    if ( systemObject.announcementsForumId == null ) {
+      systemObject.announcementsForumId = createSysForum(http);
+      systemObject.save();
+    }
   }
 
   def reconnectOrphanedZendeskForums(http) {
@@ -96,6 +103,13 @@ class ZenDeskSyncService {
                       pkg.save()
                     }
                   }
+                }
+              }
+              else if ( f.name == 'Announcements' ) {
+                def systemObject = SystemObject.findBySysId(ApplicationHolder.application.config.kbplusSystemId)
+                if ( systemObject.announcementsForumId == null ) {
+                  systemObject.announcementsForumId = f.id
+                  systemObject.save();
                 }
               }
             }
@@ -142,6 +156,25 @@ class ZenDeskSyncService {
       result = json.forum.id
     }
     result
+  }
+
+  def createSysForum(http) {
+    def result = null
+
+    http.post( path : '/api/v2/forums.json',
+               requestContentType : ContentType.JSON,
+               body : [ 'forum' : [ 'name' : 'Announcements',
+                                    'forum_type': 'articles', // 'questions', 
+                                    'access': 'everybody', // 'logged-in users'
+                                    'description' : 'Announcements' //,
+                                    // 'tags' : [ 'kbpluspkg' , "pkg:${pkg.id}".toString(), ApplicationHolder.application.config.kbplusSystemId.toString()  ]  
+                                  ]
+                      ]) { resp, json ->
+      log.debug("Create forum Result: ${resp.status}, ${json}");
+      result = json.forum.id
+    }
+    result
+
   }
 
   def lookupOrCreateZenDeskCategory(http,catname,current_categories) {
@@ -262,29 +295,34 @@ class ZenDeskSyncService {
     log.debug("lookupOrCreateTopicInForum(${forumId},${topicName}...)");
 
     def result = null
-    def currentForumTopics = endpoint.get(path:"/api/v2/forums/${forumId}/topics.json") { resp, data ->
+    try {
+      def currentForumTopics = endpoint.get(path:"/api/v2/forums/${forumId}/topics.json") { resp, data ->
 
-      log.debug("Consider existing topics : ${data}");
+        log.debug("Consider existing topics : ${data}");
 
-      data.topics.each { topic ->
-        log.debug("Consider existing topic: ${topic}");
-        if ( topic.title == topicName ) 
-          result = topic.id
+        data.topics.each { topic ->
+          log.debug("Consider existing topic: ${topic}");
+          if ( topic.title == topicName ) 
+            result = topic.id
+        }
+      }
+ 
+      if ( result == null ) {
+        log.debug("Create new topic with name ${topicName}");
+        // Not able to locate topic with topicName in the identified forum.. Create it
+        endpoint.post(path:"/api/v2/topics.json",
+                      requestContentType : ContentType.JSON,
+                      body : [ 'topic' : [ 'forum_id' : forumId,
+                                           'title': topicName,
+                                           'body' : topicBody
+                                         ]
+                        ]) { resp, json ->
+          result = json.topic.id
+        }
       }
     }
- 
-    if ( result == null ) {
-      log.debug("Create new topic with name ${topicName}");
-      // Not able to locate topic with topicName in the identified forum.. Create it
-      endpoint.post(path:"/api/v2/topics.json",
-                    requestContentType : ContentType.JSON,
-                    body : [ 'topic' : [ 'forum_id' : forumId,
-                                         'title': topicName,
-                                         'body' : topicBody
-                                       ]
-                      ]) { resp, json ->
-        result = json.topic.id
-      }
+    catch ( Exception e ) {
+      log.error("Problem trying to lookupOrCreateTopicInForum",e);
     }
 
     log.debug("Result of lookupOrCreateTopicInForum is ${result}");

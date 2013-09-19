@@ -282,9 +282,6 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("Package.Scope", "Master File").save()
     RefdataCategory.lookupOrCreate("Package.Scope", "Scope Undefined").save()
 
-
-
-
     log.debug("validate content items...");
     // The default template for a property change on a title
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.propertyChange','','''

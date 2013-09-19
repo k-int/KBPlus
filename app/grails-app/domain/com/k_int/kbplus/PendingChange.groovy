@@ -4,6 +4,7 @@ class PendingChange {
 
   Subscription subscription
   License license
+  SystemObject systemObject
   Date ts
   Org owner
   String oid
