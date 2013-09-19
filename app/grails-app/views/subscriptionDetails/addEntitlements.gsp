@@ -46,8 +46,10 @@
                                </g:each>
                             </select> &nbsp;
             <br/>
-            <label>Starts Before (YYYY/MM/DD)</label> <input name="startsBefore" type="text" value="${params.startsBefore}"/>
-            <label>Ends After (YYYY/MM/DD)</label> <input name="endsAfter" type="text" value="${params.endsAfter}"/>
+            <label>Starts Before (YYYY/MM/DD)</label> 
+            <g:simpleHiddenValue id="startsBefore" name="startsBefore" type="date" value="${params.startsBefore}"/>
+            <label>Ends After (YYYY/MM/DD)</label> 
+            <g:simpleHiddenValue id="endsAfter" name="endsAfter" type="date" value="${params.endsAfter}"/>
 
             <input type="submit" class="btn btn-primary">
           </g:form>
