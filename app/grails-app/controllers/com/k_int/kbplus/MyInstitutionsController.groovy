@@ -717,7 +717,8 @@ class MyInstitutionsController {
 	
 	// Set Date Restriction
     def date_restriction = null;
-    def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
+
+    def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
     if ( params.validOn == null ) {
       result.validOn = sdf.format(new Date(System.currentTimeMillis()))
       date_restriction = sdf.parse(result.validOn)

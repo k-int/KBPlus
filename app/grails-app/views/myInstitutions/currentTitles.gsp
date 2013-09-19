@@ -129,7 +129,8 @@
 		        <input type="hidden" name="order" value="${params.order}">
 		        <label>Search text:</label> 
 		        <input name="filter" value="${params.filter}" placeholder="enter search term..."/>
-		        <label>Subscriptions Valid on</label> <input name="validOn" type="text" value="${validOn}"/>
+		        <label>Subscriptions Valid on</label> 
+                        <g:simpleHiddenValue id="validOn" name="validOn" type="date" value="${params.validOn}"/>
 		        <input type="submit" class="btn btn-primary" value="Search"/>
 	        </div>
 	    </div>
