@@ -45,6 +45,15 @@
         </div>
     </div>
 
+      <div class="container">
+        <g:form action="addLicense" params="${params}" method="get" class="form-inline">
+          <input type="hidden" name="sort" value="${params.sort}">
+          <input type="hidden" name="order" value="${params.order}">
+          <label>Filters - License Name:</label> <input name="filter" value="${params.filter}"/> &nbsp;
+          <input type="submit" class="btn btn-primary">
+        </g:form>
+      </div>
+
     <g:form action="actionLicenses"
             controller="myInstitutions" 
             params="${[shortcode:params.shortcode]}">
