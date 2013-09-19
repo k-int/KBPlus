@@ -17,6 +17,7 @@ class Package {
   RefdataValue consistent
   RefdataValue fixed
   RefdataValue isPublic
+  RefdataValue packageScope
   Platform nominalPlatform
   Date startDate
   Date endDate
@@ -53,6 +54,7 @@ class Package {
               endDate column:'pkg_end_date'
               license column:'pkg_license_fk'
              isPublic column:'pkg_is_public'
+         packageScope column:'pkg_scope_rv_fk'
               forumId column:'pkg_forum_id'
                 tipps sort:'title.title', order: 'asc'
 
@@ -71,13 +73,14 @@ class Package {
               endDate(nullable:true, blank:false)
               license(nullable:true, blank:false)
              isPublic(nullable:true, blank:false)
+         packageScope(nullable:true, blank:false)
               forumId(nullable:true, blank:false)
   }
 
   def getConsortia() {
     def result = null;
     orgs.each { or ->
-      if ( or?.roleType?.value=='Subscription Consortia' )
+      if ( ( or?.roleType?.value=='Subscription Consortia' ) || ( or?.roleType?.value=='Package Consortia' ) )
         result = or.org;
     }
     result
@@ -118,7 +121,7 @@ class Package {
 
     if ( result.save(flush:true) ) {
       if ( consortium_org ) {
-        def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscription Consortia');
+        def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
         def or = new OrgRole(org: consortium_org, sub:result, roleType:sc_role).save();
       }
 
@@ -264,14 +267,12 @@ class Package {
   def onSave = {
 
     log.debug("onSave")
-    if ( ti != null ) {
-      def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
 
-      changeNotificationService.notifyChangeEvent([
-                                                   OID:"com.k_int.kbplus.Package:${id}",
-                                                   event:'Package.created'
-                                                  ])
-    }
+    changeNotificationService.notifyChangeEvent([
+                                                 OID:"com.k_int.kbplus.Package:${id}",
+                                                 event:'Package.created'
+                                                ])
   }
 
 }

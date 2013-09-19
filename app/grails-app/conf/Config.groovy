@@ -159,7 +159,7 @@ auditLog {
 // }
 
 appDefaultPrefs {
-  globalDateFormat='yyyy/MM/dd'
+  globalDateFormat='yyyy-MM-dd'
   globalDateFormatSQL='%Y/%m/%d'
 }
 

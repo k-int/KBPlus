@@ -145,6 +145,15 @@ class AjaxController {
       cols:['value'],
       format:'simple'
     ],
+    'Package.Scope' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Scope'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Scope'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+
 
   ]
 

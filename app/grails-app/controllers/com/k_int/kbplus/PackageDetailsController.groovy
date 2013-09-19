@@ -144,8 +144,8 @@ class PackageDetailsController {
       // and subscription that does not already link this package
       result.user?.getAuthorizedAffiliations().each { ua ->
         if ( ua.formalRole.authority == 'INST_ADM' ) {
-          def qry_params = [ua.org, packageInstance]
-          def q = "select s from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) AND ( not exists ( select sp from s.packages as sp where sp.pkg = ? ) )"
+          def qry_params = [ua.org, packageInstance, new Date()]
+          def q = "select s from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) AND ( not exists ( select sp from s.packages as sp where sp.pkg = ? ) ) AND s.endDate >= ?"
           Subscription.executeQuery(q, qry_params).each { s ->
             if ( ! result.subscriptionList.contains(s) ) {
               // Need to make sure that this package is not already linked to this subscription
@@ -179,24 +179,24 @@ class PackageDetailsController {
       }
 
       if ( params.endsAfter && params.endsAfter.length() > 0 ) {
-        def sdf = new java.text.SimpleDateFormat('yyyy/MM/dd');
+        def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
         def d = sdf.parse(params.endsAfter)
         base_qry += " and tipp.endDate >= ?"
         qry_params.add(d)
       }
 
       if ( params.startsBefore && params.startsBefore.length() > 0 ) {
-        def sdf = new java.text.SimpleDateFormat('yyyy/MM/dd');
+        def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
         def d = sdf.parse(params.startsBefore)
         base_qry += " and tipp.startDate <= ?"
         qry_params.add(d)
       }
 
       if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
-        base_qry += " order by ${params.sort} ${params.order}"
+        base_qry += " order by lower(${params.sort}) ${params.order}"
       }
       else {
-        base_qry += " order by tipp.title.title asc"
+        base_qry += " order by lower(tipp.title.title) asc"
       }
 
       log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");

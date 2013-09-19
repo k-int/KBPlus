@@ -9,7 +9,7 @@
 
     <div class="container">
       <ul class="breadcrumb">
-        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <g:if test="${subscriptionInstance.subscriber}">
           <li> <g:link controller="myInstitutions" action="currentSubscriptions" params="${[shortcode:subscriptionInstance.subscriber.shortcode]}"> ${subscriptionInstance.subscriber.name} Current Subscriptions</g:link> <span class="divider">/</span> </li>
         </g:if>
@@ -46,8 +46,10 @@
                                </g:each>
                             </select> &nbsp;
             <br/>
-            <label>Starts Before (YYYY/MM/DD)</label> <input name="startsBefore" type="text" value="${params.startsBefore}"/>
-            <label>Ends After (YYYY/MM/DD)</label> <input name="endsAfter" type="text" value="${params.endsAfter}"/>
+            <label>Starts Before (YYYY/MM/DD)</label> 
+            <g:simpleHiddenValue id="startsBefore" name="startsBefore" type="date" value="${params.startsBefore}"/>
+            <label>Ends After (YYYY/MM/DD)</label> 
+            <g:simpleHiddenValue id="endsAfter" name="endsAfter" type="date" value="${params.endsAfter}"/>
 
             <input type="submit" class="btn btn-primary">
           </g:form>

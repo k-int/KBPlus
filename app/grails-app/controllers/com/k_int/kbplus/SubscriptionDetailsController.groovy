@@ -90,10 +90,10 @@ class SubscriptionDetailsController {
     }
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
-      base_qry += "order by ie.${params.sort} ${params.order} "
+      base_qry += "order by lower(ie.${params.sort}) ${params.order} "
     }
     else {
-      base_qry += "order by ie.tipp.title.title asc"
+      base_qry += "order by lower(ie.tipp.title.title) asc"
     }
 
     result.num_sub_rows = IssueEntitlement.executeQuery("select count(ie) "+base_qry, qry_params )[0]
@@ -277,14 +277,14 @@ class SubscriptionDetailsController {
       }
 
       if ( params.endsAfter && params.endsAfter.length() > 0 ) {
-        def sdf = new java.text.SimpleDateFormat('yyyy/MM/dd');
+        def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
         def d = sdf.parse(params.endsAfter)
         basequery += " and tipp.endDate >= ?"
         qry_params.add(d)
       }
 
       if ( params.startsBefore && params.startsBefore.length() > 0 ) {
-        def sdf = new java.text.SimpleDateFormat('yyyy/MM/dd');
+        def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
         def d = sdf.parse(params.startsBefore)
         basequery += " and tipp.startDate <= ?"
         qry_params.add(d)
@@ -700,7 +700,7 @@ class SubscriptionDetailsController {
         log.debug("Add package ${params.addType} to subscription ${params}");
         if ( params.addType == 'With' ) {
           pkg_to_link.addToSubscription(result.subscriptionInstance, true)
-          redirect action:'addEntitlements', id:params.id
+          redirect action:'index', id:params.id
         }
         else if ( params.addType == 'Without' ) {
           pkg_to_link.addToSubscription(result.subscriptionInstance, false)
