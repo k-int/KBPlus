@@ -65,8 +65,14 @@
                     <tr>
                         <td><g:link controller="onixplUsageTermDetails" action="index" id="${it.id}">${it.usageType.value}</g:link></td>
                         <td><g:refdataValue cat="UsageStatus" owner="${onixplLicense}" val="${it.usageStatus.value}" /></td>
-                        <td><g:each in="${it.usageTermLicenseText.licenseText.sort {it.elementId}}">
-                            ${it.elementId} - <g:link controller="onixplLicenseTextDetails" action="index" id="${it.id}">${it.text}</g:link><br>
+                        <td><g:each in="${it.usageTermLicenseText.licenseText.sort {it.displayNum}}">
+                            <g:if test="${it.displayNum}">
+                                ${it.displayNum}
+                            </g:if>
+                            <g:else>
+                                ${it.elementId}
+                            </g:else>
+                                - <g:link controller="onixplLicenseTextDetails" action="index" id="${it.id}">${it.text}</g:link><br>
                         </g:each>
                         </td>
                     </tr>
