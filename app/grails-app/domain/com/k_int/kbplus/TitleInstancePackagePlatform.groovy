@@ -11,15 +11,16 @@ class TitleInstancePackagePlatform {
   // def grailsApplication
 
   static auditable = true
-  static     def controlledProperties = ['startDate',
-                                         'startVolume',
-                                         'startIssue',
-                                         'endDate',
-                                         'endVolume',
-                                         'endIssue',
-                                         'embargo',
-                                         'coverageDepth',
-                                         'coverageNote' ]
+  static def controlledProperties = ['status',
+                                     'startDate',
+                                     'startVolume',
+                                     'startIssue',
+                                     'endDate',
+                                     'endVolume',
+                                     'endIssue',
+                                     'embargo',
+                                     'coverageDepth',
+                                     'coverageNote' ]
 
 
   Date startDate
@@ -35,6 +36,10 @@ class TitleInstancePackagePlatform {
   String impId
   RefdataValue status
   RefdataValue option
+  RefdataValue delayedOA
+  RefdataValue hybridOA
+  RefdataValue statusReason
+  RefdataValue payment
   String hostPlatformURL
   Date coreStatusStart
   Date coreStatusEnd
@@ -71,6 +76,10 @@ class TitleInstancePackagePlatform {
       coverageNote column:'tipp_coverage_note',type: 'text'
              impId column:'tipp_imp_id', index: 'tipp_imp_id_idx'
             status column:'tipp_status_rv_fk'
+         delayedOA column:'tipp_delayedoa_rv_fk'
+          hybridOA column:'tipp_hybridoa_rv_fk'
+      statusReason column:'tipp_status_reason_rv_fk'
+           payment column:'tipp_payment_rv_fk'
             option column:'tipp_option_rv_fk'
    hostPlatformURL column:'tipp_host_platform_url'
                sub column:'tipp_sub_fk'
@@ -91,6 +100,10 @@ class TitleInstancePackagePlatform {
     coverageNote(nullable:true, blank:true);
     impId(nullable:true, blank:true);
     status(nullable:true, blank:false);
+    delayedOA(nullable:true, blank:false);
+    hybridOA(nullable:true, blank:false);
+    statusReason(nullable:true, blank:false);
+    payment(nullable:true, blank:false);
     option(nullable:true, blank:false);
     sub(nullable:true, blank:false);
     hostPlatformURL(nullable:true, blank:true);
@@ -120,6 +133,7 @@ class TitleInstancePackagePlatform {
     def domain_class = ApplicationHolder.application.getArtefact('Domain','com.k_int.kbplus.TitleInstancePackagePlatform');
 
     controlledProperties.each { cp ->
+      log.debug("checking ${cp}")
       if ( oldMap[cp] != newMap[cp] ) {
         def prop_info = domain_class.getPersistentProperty(cp)
 
@@ -132,6 +146,7 @@ class TitleInstancePackagePlatform {
           newMap[cp]= newMap[cp] != null ? "${deproxy(newMap[cp]).class.name}:${newMap[cp].id}" : null;
         }
 
+        log.debug("notify change event")
         changeNotificationService.notifyChangeEvent([
                                                      OID:"${this.class.name}:${this.id}",
                                                      event:'TitleInstancePackagePlatform.updated',
@@ -143,6 +158,7 @@ class TitleInstancePackagePlatform {
                                                     ])
       }
     }
+    log.debug("onChange completed")
   }
 
   private def stringify(obj) {

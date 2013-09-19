@@ -10,7 +10,7 @@
 
     <div class="container">
       <ul class="breadcrumb">
-        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <li> <g:link controller="packageDetails" action="show" id="${tipp.pkg.id}">${tipp.pkg.name} [package]</g:link> <span class="divider">/</span> </li>
         <li> <g:link controller="tipp" action="show" id="${tipp.id}">${tipp.title.title}</g:link> [title]</li>
 
@@ -35,9 +35,10 @@
           <g:if test="${titleInstanceInstance?.ids}">
             <dt><g:message code="titleInstance.ids.label" default="Ids" /></dt>
             
-              <g:each in="${titleInstanceInstance.ids}" var="i">
-              <dd>${i.identifier.ns.ns}:${i.identifier.value}</dd>
+              <dd><g:each in="${titleInstanceInstance.ids}" var="i">
+              ${i.identifier.ns.ns}:${i.identifier.value}<br/>
               </g:each>
+              </dd>
             
           </g:if>
         
@@ -70,6 +71,21 @@
 
           <dt>Host URL</dt>
           <dd><g:xEditable owner="${tipp}" field="hostPlatformURL"/></dd>
+
+          <dt>Status</dt>
+          <dd><g:xEditableRefData owner="${tipp}" field="status" config='TIPPStatus'/><dd>
+
+          <dt>Status Reason</dt>
+          <dd><g:xEditableRefData owner="${tipp}" field="statusReason" config='TIPPStatusReason'/><dd>
+
+          <dt>Delayed OA</dt>
+          <dd><g:xEditableRefData owner="${tipp}" field="delayedOA" config='TIPPDelayedOA'/><dd>
+
+          <dt>Hybrid OA</dt>
+          <dd><g:xEditableRefData owner="${tipp}" field="hybridOA" config='TIPPHybridOA'/><dd>
+
+          <dt>Payment</dt>
+          <dd><g:xEditableRefData owner="${tipp}" field="payment" config='TIPPPaymentType'/><dd>
 
           <dt>Host Platform</dt>
           <dd>${tipp.platform.name}</dd>

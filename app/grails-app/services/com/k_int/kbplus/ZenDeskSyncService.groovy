@@ -67,33 +67,49 @@ class ZenDeskSyncService {
   def reconnectOrphanedZendeskForums(http) {
     log.debug("reconnectOrphanedZendeskForums starting...");
 
-    http.get( path : '/api/v2/forums.json', requestContentType : ContentType.JSON) { resp, json ->
-      if ( json ) {
-        json.forums.each { f ->
-          try {
-            log.debug("Checking ${f.name} (${f.id})");
-            if ( f.name ==~ /(.*)\(Package (\d+) from (.*)(\)$)/ ) {
-              def pkg_info = f.name =~ /(.*)\(Package (\d+) from (.*)(\)$)/
-              def package_name = pkg_info[0][1]
-              def package_id = pkg_info[0][2]
-              def system_id = pkg_info[0][3]
-  
-              // Only hook up forums if they correspond to our local system identifier
-              if ( system_id == ApplicationHolder.application.config.kbplusSystemId ) {
-                // Lookup package with package_id
-                def pkg = Package.get(Long.parseLong(package_id))
-                if ( pkg != null ) {
-                  if ( pkg.forumId == null ) {
-                    log.debug("Update package ${pkg.id} - link to forum ${f.id}");
-                    pkg.forumId = f.id
-                    pkg.save()
+    boolean has_next_page = true;
+    int pageno = 1
+
+    while ( has_next_page ) {
+      log.debug("Requesting forum list page ${pageno}");
+      http.get( path : '/api/v2/forums.json', 
+                query : [ page: pageno ],
+                requestContentType : ContentType.JSON) { resp, json ->
+        if ( json ) {
+          json.forums.each { f ->
+            try {
+              log.debug("Checking ${f.name} (${f.id})");
+              if ( f.name ==~ /(.*)\(Package (\d+) from (.*)(\)$)/ ) {
+                def pkg_info = f.name =~ /(.*)\(Package (\d+) from (.*)(\)$)/
+                def package_name = pkg_info[0][1]
+                def package_id = pkg_info[0][2]
+                def system_id = pkg_info[0][3]
+    
+                // Only hook up forums if they correspond to our local system identifier
+                if ( system_id == ApplicationHolder.application.config.kbplusSystemId ) {
+                  // Lookup package with package_id
+                    def pkg = Package.get(Long.parseLong(package_id))
+                  if ( pkg != null ) {
+                    if ( pkg.forumId == null ) {
+                      log.debug("Update package ${pkg.id} - link to forum ${f.id}");
+                      pkg.forumId = f.id
+                      pkg.save()
+                    }
                   }
                 }
               }
             }
+            catch ( Exception e ) {
+              log.error("Problem reconnecting orphaned forums",e);
+            }
           }
-          catch ( Exception e ) {
-            log.error("Problem reconnecting orphaned forums",e);
+          log.debug("json.next_page is ${json.next_page}, class is ${json.next_page.class.name}");
+          if ( ( json.next_page != null ) && ( ! json.next_page.equals (net.sf.json.JSONNull.getInstance() ) ) ) {
+            pageno++
+          }
+          else {
+            log.debug("No more pages in forum list...");
+            has_next_page = false
           }
         }
       }

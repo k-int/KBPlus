@@ -60,6 +60,7 @@ class MyInstitutionsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def dashboard() {
+    // redirect(controller:'home', action:'index');
     // Work out what orgs this user has admin level access to
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
@@ -67,8 +68,8 @@ class MyInstitutionsController {
     result.staticAlerts = alertsService.getStaticAlerts(request);
 
     // log.debug("result.userAlerts: ${result.userAlerts}");
-    log.debug("result.userAlerts.size(): ${result.userAlerts.size()}");
-    log.debug("result.userAlerts.class.name: ${result.userAlerts.class.name}");
+    // log.debug("result.userAlerts.size(): ${result.userAlerts.size()}");
+    // log.debug("result.userAlerts.class.name: ${result.userAlerts.class.name}");
     // def adminRole = Role.findByAuthority('ROLE_ADMIN')
     // if ( result.user.authorities.contains(adminRole) ) {
     //   log.debug("User is in admin role");
@@ -83,7 +84,6 @@ class MyInstitutionsController {
     }
     else {
     }
-
     result
   }
 
@@ -1379,6 +1379,11 @@ AND EXISTS (
 
     def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
 
+    // Add in JR1 and JR1a reports
+    def c = new GregorianCalendar()
+    c.setTime(new Date());
+    def current_year = c.get(Calendar.YEAR)
+
     // Step one - Assemble a list of all titles and packages.. We aren't assembling the matrix
     // of titles x packages yet.. Just gathering the data for the X and Y axis
     plist.each { sub ->
@@ -1416,10 +1421,6 @@ AND EXISTS (
                 title_info.core_start_date = ie.coreStatusStart ? formatter.format(ie.coreStatusStart) : ''
                 title_info.core_end_date = ie.coreStatusEnd ? formatter.format(ie.coreStatusEnd) : ''
 
-                // Add in JR1 and JR1a reports
-                def c = new GregorianCalendar()
-                c.setTime(new Date());
-                def current_year = c.get(Calendar.YEAR)
 
                 try {
                   title_info.jr1_last_4_years = factService.lastNYearsByType(title_info.id, 
@@ -1533,7 +1534,8 @@ AND EXISTS (
     def final_result = [
                         ti_info:ti_info_arr,                      // A crosstab array of the packages where a title occours
                         title_info:title_info_arr,                // A list of the titles
-                        sub_info:sub_info_arr ]                   // The subscriptions offered (Packages)
+                        sub_info:sub_info_arr,
+                        current_year:current_year ]                   // The subscriptions offered (Packages)
     return final_result
   }
 
@@ -1647,25 +1649,25 @@ AND EXISTS (
   
       // USAGE History
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1\nYear-4"));
+      cell.setCellValue(new HSSFRichTextString("JR1\n${m.current_year-4}"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1a\nYear-4"));
+      cell.setCellValue(new HSSFRichTextString("JR1a\n${m.current_year-4}"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1\nYear-3"));
+      cell.setCellValue(new HSSFRichTextString("JR1\n${m.current_year-3}"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1a\nYear-3"));
+      cell.setCellValue(new HSSFRichTextString("JR1a\n${m.current_year-3}"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1\nYear-2"));
+      cell.setCellValue(new HSSFRichTextString("JR1\n${m.current_year-2}"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1a\nYear-2"));
+      cell.setCellValue(new HSSFRichTextString("JR1a\n${m.current_year-2}"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1\nYear-1"));
+      cell.setCellValue(new HSSFRichTextString("JR1\n${m.current_year-1}"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1a\nYear-1"));
+      cell.setCellValue(new HSSFRichTextString("JR1a\n${m.current_year-1}"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1\nYTD"));
+      cell.setCellValue(new HSSFRichTextString("JR1\n${m.current_year}"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1a\nYTD"));
+      cell.setCellValue(new HSSFRichTextString("JR1a\n${m.current_year}"));
   
       m.sub_info.each { sub ->
         cell = row.createCell(cc++);

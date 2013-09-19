@@ -24,6 +24,7 @@ class UploadController {
   
   def csv_column_config = [
     'id':[coltype:'map'],
+    'tippid':[coltype:'map'],
     'publication_title':[coltype:'simple'],
     'date_first_issue_online':[coltype:'simple'],
     'num_first_vol_online':[coltype:'simple'],
@@ -214,7 +215,14 @@ class UploadController {
             tipp.additional_platforms.each { ap ->
               PlatformTIPP pt = new PlatformTIPP(tipp:dbtipp,platform:ap.plat,titleUrl:ap.url,rel:ap.role)
             }
+            // Really not happy with this as a way forward, hoping for feedback from OS
+            tipp.tippid.each { tippid ->
+              def canonical_id = Identifier.lookupOrCreateCanonicalIdentifier(tippid.key, tippid.value)
+              def new_io = new IdentifierOccurrence(identifier:canonical_id,tipp:dbtipp).save()
+              tipp.messages.add([type:'alert-success',message:"tipp identifier created: ${tippid.key}:${tippid.value} ${new_io.id}"]);
+            }
           }
+
         }
         else {
           log.error("TIPP already exists!! this can happen in incrementals... just ignore now");
@@ -489,7 +497,7 @@ class UploadController {
       }
       
       if ( tipp.id ) {
-        ["eissn", "issn", "doi"].each { idtype ->
+        ["eissn", "issn", "doi", "isbn" ].each { idtype ->
           if ( ( tipp.id[idtype] ) && ( tipp.id[idtype] != '' ) ) {
             if ( id_list.contains(tipp.id[idtype]) ) {
               tipp.messages.add("Title (row ${counter}) contains a repeated ${idtype} - ${tipp.id[idtype]}");
@@ -648,20 +656,26 @@ class UploadController {
 
   def findTitleIdentifierIntersection(idlist) {
     def matched_title_ids = []
+    def identifiers_to_check = ["eissn", "issn", "doi", "isbn"]
     idlist.each { id ->
-      def title = TitleInstance.findByIdentifier([[namespace:id.key,value:id.value]])
-      // log.debug("found title ${title}");
-      if ( title != null ) {
-        if ( matched_title_ids.contains(title.id) )  {
-          //log.debug("Matched titles already contains that title");
+      if ( identifiers_to_check.contains(id.key) ) {
+        def title = TitleInstance.findByIdentifier([[namespace:id.key,value:id.value]])
+        // log.debug("found title ${title}");
+        if ( title != null ) {
+          if ( matched_title_ids.contains(title.id) )  {
+            //log.debug("Matched titles already contains that title");
+          }
+          else {
+            //log.debug("Adding matched title ${title.id} to matching titles list");
+            matched_title_ids.add(title.id)
+          }
         }
         else {
-          //log.debug("Adding matched title ${title.id} to matching titles list");
-          matched_title_ids.add(title.id)
+          log.debug("no title by identifier match for ${id.key} : ${id.value}");
         }
       }
       else {
-        log.debug("no title by identifier match for ${id.key} : ${id.value}");
+        log.debug("Not checking identifier of type ${id.key}");
       }
     }
 

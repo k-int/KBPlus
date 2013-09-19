@@ -9,7 +9,7 @@
 
     <div class="container">
       <ul class="breadcrumb">
-        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <g:if test="${subscriptionInstance.subscriber}">
           <li> <g:link controller="myInstitutions" action="currentSubscriptions" params="${[shortcode:subscriptionInstance.subscriber.shortcode]}"> ${subscriptionInstance.subscriber.name} Current Subscriptions</g:link> <span class="divider">/</span> </li>
         </g:if>
@@ -45,7 +45,11 @@
                                  <option value="${sp.pkg.id}" ${sp.pkg.id.toString()==params.pkgfilter?'selected=true':''}>${sp.pkg.name}</option>
                                </g:each>
                             </select> &nbsp;
-            <label>Valid On (YYYY/MM/DD)</label> <input name="validOn" type="text" value="${params.validOn}"/>
+            <br/>
+            <label>Starts Before (YYYY/MM/DD)</label> 
+            <g:simpleHiddenValue id="startsBefore" name="startsBefore" type="date" value="${params.startsBefore}"/>
+            <label>Ends After (YYYY/MM/DD)</label> 
+            <g:simpleHiddenValue id="endsAfter" name="endsAfter" type="date" value="${params.endsAfter}"/>
 
             <input type="submit" class="btn btn-primary">
           </g:form>

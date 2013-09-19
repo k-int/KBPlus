@@ -15,7 +15,7 @@ class AnnouncementController {
   def genericOIDService
 
 
-  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def index() { 
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
@@ -24,7 +24,7 @@ class AnnouncementController {
     result
   }
 
-  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def createAnnouncement() { 
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)

@@ -17,7 +17,7 @@
 
 <div class="container">
     <ul class="breadcrumb">
-        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <li> <g:link controller="licenseDetails" action="index" id="${params.id}">ONIX-PL License Details</g:link> </li>
         <g:if test="${editable}">
             <li class="pull-right">Editable by you&nbsp;</li>

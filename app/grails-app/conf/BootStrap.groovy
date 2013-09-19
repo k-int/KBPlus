@@ -173,9 +173,6 @@ class BootStrap {
       log.warn("There are user org rows with no role set. Please update the table to add role FKs");
     }
 
-    // Some extra refdata
-    def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
-	
     setupRefdata();
   }
 
@@ -245,6 +242,44 @@ class BootStrap {
     RefdataCategory.lookupOrCreate('UsageStatus', 'purpleQuestion', 'SilentUninterpreted')
     RefdataCategory.lookupOrCreate('UsageStatus', 'purpleQuestion', 'NotApplicable')
 
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.DelayedOA", "No").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.DelayedOA", "Unknown").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.DelayedOA", "Yes").save()
+
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", "No").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", "Unknown").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", "Yes").save()
+
+    RefdataCategory.lookupOrCreate("Tipp.StatusReason", "Transfer Out").save()
+    RefdataCategory.lookupOrCreate("Tipp.StatusReason", "Transfer In").save()
+
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Complimentary").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Limited Promotion").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Paid").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "OA").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Opt Out Promotion").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Uncharged").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Unknown").save()
+
+    RefdataCategory.lookupOrCreate("Package.ListStatus", "Checked").save()
+    RefdataCategory.lookupOrCreate("Package.ListStatus", "In Progress").save()
+    RefdataCategory.lookupOrCreate("Package.Breakable", "No").save()
+    RefdataCategory.lookupOrCreate("Package.Breakable", "Yes").save()
+    RefdataCategory.lookupOrCreate("Package.Breakable", "Unknown").save()
+    RefdataCategory.lookupOrCreate("Package.Consistent", "No").save()
+    RefdataCategory.lookupOrCreate("Package.Consistent", "Yes").save()
+    RefdataCategory.lookupOrCreate("Package.Consistent", "Unknown").save()
+    RefdataCategory.lookupOrCreate("Package.Fixed", "No").save()
+    RefdataCategory.lookupOrCreate("Package.Fixed", "Yes").save()
+    RefdataCategory.lookupOrCreate("Package.Fixed", "Unknown").save()
+    RefdataCategory.lookupOrCreate("Package.Scope", "Aggregator").save()
+    RefdataCategory.lookupOrCreate("Package.Scope", "Front File").save()
+    RefdataCategory.lookupOrCreate("Package.Scope", "Back File").save()
+    RefdataCategory.lookupOrCreate("Package.Scope", "Master File").save()
+    RefdataCategory.lookupOrCreate("Package.Scope", "Scope Undefined").save()
+
+
+
 
     log.debug("validate content items...");
     // The default template for a property change on a title
@@ -261,15 +296,15 @@ An identifier was removed from title ${o.id}.
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.updated','','''
-TIPP change - The <strong>${evt.prop}</strong> field was changed from  "<strong>${evt.oldLabel?:evt.old}</strong>" to "<strong>${evt.newLabel?:evt.new}</strong>".
+TIPP change for title ${OID?.title?.title} - The <strong>${evt.prop}</strong> field was changed from  "<strong>${evt.oldLabel?:evt.old}</strong>" to "<strong>${evt.newLabel?:evt.new}</strong>".
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.added','','''
-TIPP Added for title ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
+TIPP Added for title ${OID?.title?.title} ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.deleted','','''
-TIPP Deleted for title ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
+TIPP Deleted for title ${OID?.title?.title} ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.Package.created','','''
