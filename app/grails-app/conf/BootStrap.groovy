@@ -309,7 +309,7 @@ TIPP Deleted for title ${OID?.title?.title} ${evt.linkedTitle} on platform ${evt
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.Package.created','','''
-New package added.
+New package added with id ${OID.id} - "${OID.name}".
 ''');
 
     ContentItem.lookupOrCreate('kbplus.noHostPlatformURL','','''
