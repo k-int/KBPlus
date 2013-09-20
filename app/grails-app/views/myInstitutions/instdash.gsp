@@ -102,12 +102,14 @@
             <h6>Latest Discussions</h6>
             <g:if test="${forumActivity}">
               <table class="table">
-                <g:each in="${forumActivity.results}" var="fa">
+                <g:each in="${forumActivity}" var="fa">
                   <tr>
                     <td>
                       ${fa.title}<br>
                       <g:if test="${fa.result_type=='topic'}">
-                        <span class="pull-right"><a href="${grailsApplication.config.ZenDeskBaseURL}/entries/${fa.id}">View Topic</a>
+                        <span class="pull-right">
+                          <g:formatDate date="${fa.updated_at}" format="yyyy-MM-dd hh:mm a"/>
+                          <a href="${grailsApplication.config.ZenDeskBaseURL}/entries/${fa.id}">View Topic</a>
                           <a href="${grailsApplication.config.ZenDeskBaseURL}/entries/${fa.id}" title="View Topic (new Window)" target="_blank"><i class="icon-share-alt"></i></a>
                         </span>
                       </g:if>
