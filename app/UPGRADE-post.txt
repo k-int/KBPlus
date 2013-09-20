@@ -14,3 +14,5 @@ delete from org_role where or_id in ( select or_id from org_roles_to_delete );
 
 drop table org_roles_to_delete;
 
+
+update user set default_page_size=10 where default_page_size is null;

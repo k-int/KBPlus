@@ -104,6 +104,7 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
+
     if ( !checkUserIsMember(result.user, result.institution) ) {
       flash.error="You do not have permission to view ${result.institution.name}. Please request access on the profile page";
       response.sendError(401)
@@ -118,14 +119,15 @@ class MyInstitutionsController {
       result.is_admin=false;
     }
 
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
     def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
 
     def qry_params = [result.institution, licensee_role]
 
-    // def qry = "select l from License as l left outer join l.orgLinks ol where ( ( l.type = ? ) OR ( ol.org = ? and ol.roleType = ? ) ) AND l.status.value != 'Deleted'"
-    // def qry = "select l from License as l left outer join l.orgLinks ol where ( ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
-    def qry = "select l from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
+    def qry = "from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
 
     if ( ( params['keyword-search'] != null ) && ( params['keyword-search'].trim().length() > 0 ) ) {
       qry += " and lower(l.reference) like ?"
@@ -139,8 +141,8 @@ class MyInstitutionsController {
       qry += " order by l.reference asc"
     }
 
-    // result.licenses = License.executeQuery(qry, [template_license_type, result.institution, licensee_role] )
-    result.licenses = License.executeQuery(qry, qry_params);
+    result.licenseCount = License.executeQuery("select count(l) ${qry}", qry_params)[0];
+    result.licenses = License.executeQuery("select l ${qry}", qry_params, [max:result.max, offset:result.offset]);
 
     withFormat {
 		html result
@@ -152,6 +154,9 @@ class MyInstitutionsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
+
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
     // if ( !checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
     if ( !checkUserIsMember(result.user,result.institution) ) {
@@ -173,9 +178,7 @@ class MyInstitutionsController {
     def public_flag = RefdataCategory.lookupOrCreate('YN','Yes');
     def qparams = [template_license_type, result.institution, licensee_role, public_flag]
 
-    // def qry = "select l from License as l left outer join l.orgLinks ol where ( ( l.type = ? ) OR ( ol.org = ? and ol.roleType = ? ) ) AND l.status.value != 'Deleted'"
-    // def qry = "select l from License as l left outer join l.orgLinks ol where l.type = ? AND l.status.value != 'Deleted'"
-    def qry = "select l from License as l where ( ( l.type = ? ) OR ( exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) ) OR ( l.isPublic=? ) ) AND l.status.value != 'Deleted'"
+    def qry = "from License as l where ( ( l.type = ? ) OR ( exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) ) OR ( l.isPublic=? ) ) AND l.status.value != 'Deleted'"
 
     if ( params.filter ) {
       qry += " and l.reference like ?"
@@ -190,8 +193,8 @@ class MyInstitutionsController {
     }
 
 
-    result.licenses = License.executeQuery(qry, qparams)
-    // result.licenses = License.executeQuery(qry, [template_license_type])
+    result.numLicenses = License.executeQuery("select count(l) ${qry}", qparams)[0]
+    result.licenses = License.executeQuery("select l ${qry}", qparams, [max:result.max, offset:result.offset])
 
     result
   }
@@ -232,8 +235,7 @@ class MyInstitutionsController {
 
     def public_flag = RefdataCategory.lookupOrCreate('YN','Yes');
 
-    def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
 
@@ -310,8 +312,7 @@ class MyInstitutionsController {
 
     def public_flag = RefdataCategory.lookupOrCreate('YN','Yes');
 
-    def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
     // def base_qry = " from Subscription as s where s.type.value = 'Subscription Offered' and s.isPublic=?"
@@ -740,8 +741,7 @@ class MyInstitutionsController {
 	if (!params.sort) params.sort = "tipp.title.title"
 	
 	// Set offset and max
-    def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
     	
 	// Put Lists for the filters into result
@@ -1176,7 +1176,7 @@ AND EXISTS (
 
       try {
 
-          params.max = Math.min(params.max ? params.int('max') : 10, 100)
+          params.max = Math.min(params.max ? params.int('max') : result.user.defaultPageSize, 100)
           params.offset = params.offset ? params.int('offset') : 0
 
           //def params_set=params.entrySet()
@@ -2290,13 +2290,12 @@ AND EXISTS (
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
-    def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
 
     def announcement_type = RefdataCategory.lookupOrCreate('Document Type','Announcement')
-    result.recentAnnouncements = Doc.findAllByType(announcement_type,[max:10,sort:'dateCreated',order:'desc'])
+    result.recentAnnouncements = Doc.findAllByType(announcement_type,[max:max,sort:'dateCreated',order:'desc'])
 
     // result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
     // result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.max, offset:result.offset]);

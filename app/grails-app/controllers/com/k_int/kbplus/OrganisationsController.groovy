@@ -196,7 +196,7 @@ class OrganisationsController {
       def result = [:]
       result.user = User.get(springSecurityService.principal.id)
       UserOrg uo = UserOrg.get(params.grant)
-      if ( uo.org.hasUserWithRole(user,'INST_ADM') ) {
+      if ( uo.org.hasUserWithRole(result.user,'INST_ADM') ) {
         uo.status = 2;
         uo.save();
       }
@@ -208,7 +208,7 @@ class OrganisationsController {
       def result = [:]
       result.user = User.get(springSecurityService.principal.id)
       UserOrg uo = UserOrg.get(params.grant)
-      if ( uo.org.hasUserWithRole(user,'INST_ADM') ) {
+      if ( uo.org.hasUserWithRole(result.user,'INST_ADM') ) {
         uo.status = 1;
         uo.save();
       }
@@ -221,7 +221,7 @@ class OrganisationsController {
       def result = [:]
       result.user = User.get(springSecurityService.principal.id)
       UserOrg uo = UserOrg.get(params.grant)
-      if ( uo.org.hasUserWithRole(user,'INST_ADM') ) {
+      if ( uo.org.hasUserWithRole(result.user,'INST_ADM') ) {
         uo.delete();
       }
       redirect action: 'users', id: params.id

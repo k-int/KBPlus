@@ -262,7 +262,7 @@
 
       <div class="pagination" style="text-align:center">
         <g:if test="${entitlements}" >
-          <bootstrap:paginate  action="index" controller="subscriptionDetails" params="${params}" next="Next" prev="Prev" maxsteps="${max}" total="${num_sub_rows}" />
+          <bootstrap:paginate  action="index" controller="subscriptionDetails" params="${params}" next="Next" prev="Prev" max="${max}" total="${num_sub_rows}" />
         </g:if>
       </div>
     </div>

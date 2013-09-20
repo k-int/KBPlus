@@ -93,7 +93,12 @@
             </tbody>
           </table>
         </div>
+        <div class="pagination" style="text-align:center">
+          <bootstrap:paginate action="currentLicenses" controller="myInstitutions" params="${params}" next="Next" prev="Prev" max="${max}" total="${licenseCount}" />
+        </div>
+
       </g:if>
+
     </g:form>
     <script type="text/javascript">
         $('.licence-results input[type="radio"]').click(function () {
