@@ -106,7 +106,14 @@
               </g:each>
             </tbody>
           </table>
+
+          <div class="pagination" style="text-align:center">
+            <g:if test="${licenses}" >
+              <bootstrap:paginate  action="addLicense" controller="myInstitutions" params="${params}" next="Next" prev="Prev" max="${max}" total="${numLicenses}" />
+            </g:if>
+          </div>
         </div>
+
       </g:if>
     </g:form>
 
