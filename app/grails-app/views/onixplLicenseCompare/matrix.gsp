@@ -20,6 +20,17 @@
     <ul class="breadcrumb">
         <li><g:link controller="home" action="index">Home</g:link> <span class="divider">/</span></li>
         <li>ONIX-PL License Comparison</li>
+
+        <li class="dropdown pull-right">
+            <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">
+                Exports<b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
+                <li>
+                    <% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
+                    <g:link action="export" params="${params}">TSV Export</g:link>
+                </li>
+        </li>
     </ul>
 </div>
 
@@ -30,6 +41,9 @@
 <div class="container">
     <div class="row">
         <div class="span10">
+            <g:if test="${flash.message}">
+                <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
+            </g:if>
         <g:if test="${!license}">
             No license could be found!
         </g:if>
@@ -39,6 +53,7 @@
             <g:else>
                 <g:if test="${!"all".equals(section) && !"".equals(match)}">${OnixplLicenseCompareController.getSectionMessage(match, section)}</g:if>
                 <div class="pagination">
+                    ${params.setProperty("action", "matrix")}
                     <bootstrap:paginate total="${total}" params="${params}" />
                 </div>
             <table class="table table-bordered">
@@ -59,7 +74,7 @@
                 </tr>
                 <g:each in="${termList}" var="it" status="i">
                     <g:set var="ltermList"
-                           value="${OnixplUsageTerm.findAllByOplLicenseAndUsageType(license, it).sort { it.usageTermLicenseText.toList().get(0).licenseText.text }}"/>
+                           value="${com.k_int.kbplus.OnixplLicenseCompareController.getUsageTermList(license, it)}"/>
                     <tr>
                         <td>${it.value}</td>
                         <td>
@@ -77,7 +92,7 @@
                         </td>
                         <g:each in="${list}" var="j">
                                 <g:if test="${OnixplUsageTerm.findAllByOplLicenseAndUsageType(j, it)}">
-                                    <g:set var="l2termList" value="${OnixplUsageTerm.findAllByOplLicenseAndUsageType(j, it).sort {it.usageTermLicenseText.toList().get(0).licenseText.text}}"/>
+                                    <g:set var="l2termList" value="${com.k_int.kbplus.OnixplLicenseCompareController.getUsageTermList(j, it)}"/>
                                     <g:if test="${l2termList.size() >= ltermList.size()}">
                                         <g:set var="match" value="${true}"/>
                                         <g:each in="${ltermList}" var="u1" status="k">
@@ -115,9 +130,6 @@
                     <bootstrap:paginate total="${total}" params="${params}" />
                 </div>
             </g:else>
-        </div>
-        <div class="span1">
-            <g:link class="btn btn-primary" controller="onixplLicenseCompare" action="export" params="${params}">Export</g:link>
         </div>
     </div>
 </div>

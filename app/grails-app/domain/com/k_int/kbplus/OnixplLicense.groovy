@@ -124,16 +124,10 @@ class OnixplLicense {
             // A license can have multiple usage terms for a certain usage type and these usage terms can have multiple
             // license texts associated with them. In order to be able to compare these they have to be put in the same
             // order. They are ordered using the usageType initially and then the content of the license text.
-            def utList1 = opl.usageTerm.sort { a, b ->
-                a.usageType.value <=> b.usageType.value ?:
-                    a.usageTermLicenseText.sort { it.licenseText.text }.get(0).licenseText.text <=>
-                            b.usageTermLicenseText.sort { it.licenseText.text }.get(0).licenseText.text
-            }.toList();
-            def utList2 = this.usageTerm.sort { a, b ->
-                a.usageType.value <=> b.usageType.value ?:
-                    a.usageTermLicenseText.sort { it.licenseText.text }.get(0).licenseText.text <=>
-                            b.usageTermLicenseText.sort { it.licenseText.text }.get(0).licenseText.text
-            }.toList();
+            def utList1 = opl.usageTerm.sort {it.usageType.value};
+            utList1.sort {it.usageStatus.value}
+            def utList2 = this.usageTerm.sort {it.usageType.value};
+            utList2.sort {it.usageStatus.value}
             for (int i = 0; i < utList1.size(); i++) {
                 if (utList1.get(i).usageType?.value != utList2.get(i).usageType?.value) {
                     return false;
