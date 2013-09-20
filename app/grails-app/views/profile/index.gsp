@@ -163,7 +163,7 @@
               <g:each in="${com.k_int.kbplus.UserTransforms.findAllByUser(user)}" var="ut">
                 <tr>
                   <td>${ut.transforms.name}</td>
-                  <td>${ut.transforms.accepts_type.value}</td>
+                  <td>${ut.transforms.displayTypes()}</td>
                   <td>${ut.transforms.accepts_format.value}</td>
                   <td>${ut.transforms.return_file_extention}</td>
                   <td><g:link action="removeTransforms" params="[transformId: ut.transforms.id]"><i class="icon-remove"></i></g:link></td>

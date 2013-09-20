@@ -32,7 +32,7 @@
 	              <g:link action="currentTitles" params="${ps_xml}">XML Export</g:link>
 	            </li>
               	<g:each in="${com.k_int.kbplus.UserTransforms.findAllByUser(user)}" var="ut">
-    				<g:if test="${ut.transforms.accepts_type.value == "title"}">
+    				<g:if test="${ut.transforms.hasType("title")}">
      				<% 
 					  	def ps_trans = [:];
 					  	if(ut.transforms.accepts_format.value == "xml")

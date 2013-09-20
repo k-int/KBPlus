@@ -36,7 +36,7 @@
 	      		</li>
 	      		
 	      		<g:each in="${com.k_int.kbplus.UserTransforms.findAllByUser(user)}" var="ut">
-	      			<g:if test="${ut.transforms.accepts_type.value == "licence"}">
+	      			<g:if test="${ut.transforms.hasType("licence")}">
 	      				<% 
 						  	def ps_trans = [:];
 						  	if(ut.transforms.accepts_format.value == "xml")

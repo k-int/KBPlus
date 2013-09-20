@@ -83,10 +83,17 @@ class BootStrap {
 		def formats = RefdataValue.findAllByOwner(RefdataCategory.findByDesc('Transform Format'))
 		
 		if ( transforms ) {
-		  if ( transforms.accepts_type.value != tr.type ) {
-			  log.debug("Change transformer [${transformName}] type to ${tr.type}");
-			  def type = types.findAll{ t -> t.value == tr.type }
-			  transforms.accepts_type = type[0];
+			
+		  if( tr.type ){
+			  // split values
+			  def type_list = tr.type.split(",")
+			  type_list.each { new_type ->
+				  if( !transforms.accepts_types.any { f -> f.value == new_type } ){
+					  log.debug("Add transformer [${transformName}] type: ${new_type}");
+					  def type = types.find{ t -> t.value == new_type }
+					  transforms.addToAccepts_types(type)
+				  }
+			  }
 		  }
 		  if ( transforms.accepts_format.value != tr.format ) {
 			  log.debug("Change transformer [${transformName}] format to ${tr.format}");
@@ -108,20 +115,23 @@ class BootStrap {
 		  transforms.save(failOnError: true, flush: true)
 		}
 		else {
-			def type = types.findAll{ t -> t.value == tr.type }
 			def format = formats.findAll{ t -> t.value == tr.format }
 			
-			assert type.size()==1
 			assert format.size()==1
 			
 			transforms = new Transforms(
 				name: transformName,
-				accepts_type: type[0],
 				accepts_format: format[0],
 				return_mime: tr.return_mime,
 				return_file_extention: tr.return_file_extension,
 				path_to_stylesheet: tr.path_to_stylesheet,
 				transformer: transformer).save(failOnError: true, flush: true)
+				
+			def type_list = tr.type.split(",")
+			type_list.each { new_type ->
+				def type = types.find{ t -> t.value == new_type }
+				transforms.addToAccepts_types(type)
+			}
 		}
 	}
 	
