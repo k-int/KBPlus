@@ -36,12 +36,12 @@ class SubscriptionDetailsController {
     log.debug("subscriptionDetails id:${params.id} format=${response.format}");
     def result = [:]
 
-    def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : ( (response.format && response.format != "html" && response.format != "all" ) ? 10000 : 10 );
+    result.user = User.get(springSecurityService.principal.id)
+
+    result.max = params.max ? Integer.parseInt(params.max) : ( (response.format && response.format != "html" && response.format != "all" ) ? 10000 : result.user.defaultPageSize );
     result.offset = (params.offset && response.format && response.format != "html") ? Integer.parseInt(params.offset) : 0;
 
     log.debug("max = ${result.max}");
-    result.user = User.get(springSecurityService.principal.id)
     result.subscriptionInstance = Subscription.get(params.id)
 	
 	// If transformer check user has access to it
@@ -245,8 +245,7 @@ class SubscriptionDetailsController {
       return
     }
 
-    def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.max = params.max ? Integer.parseInt(params.max) : request.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
     if ( result.subscriptionInstance.isEditableBy(result.user) ) {
@@ -631,7 +630,7 @@ class SubscriptionDetailsController {
       org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
       org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
       
-          params.max = Math.min(params.max ? params.int('max') : 10, 100)
+          params.max = Math.min(params.max ? params.int('max') : result.user.defaultPageSize, 100)
           params.offset = params.offset ? params.int('offset') : 0
 
           //def params_set=params.entrySet()
@@ -778,7 +777,7 @@ class SubscriptionDetailsController {
       result.editable = false
     }
 
-    result.max = params.max ?: 20;
+    result.max = params.max ?: result.user.defaultPageSize;
     result.offset = params.offset ?: 0;
 
     def qry_params = [result.subscription.class.name, "${result.subscription.id}"]

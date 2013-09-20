@@ -18,7 +18,7 @@ class User {
   boolean accountExpired
   boolean accountLocked
   boolean passwordExpired
-  Long defaultPageSize
+  Long defaultPageSize = new Long(10);
 
   SortedSet affiliations
   SortedSet roles
