@@ -62,11 +62,11 @@ class ProfileController {
     if ( params.defaultPageSize != null ) {
       try {
         long l = Long.parseLong(params.defaultPageSize);
-        if ( ( l >= 10 ) && ( l <= 100 ) ) {
+        if ( ( l >= 5 ) && ( l <= 100 ) ) {
           user.defaultPageSize = new Long(l);
         }
         else {
-          flash.message="Default page size must be between 10 and 100";
+          flash.message="Default page size must be between 5 and 100";
         }
       }
       catch ( Exception e ) {

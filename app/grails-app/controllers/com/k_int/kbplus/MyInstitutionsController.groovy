@@ -232,8 +232,7 @@ class MyInstitutionsController {
 
     def public_flag = RefdataCategory.lookupOrCreate('YN','Yes');
 
-    def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
 
@@ -310,8 +309,7 @@ class MyInstitutionsController {
 
     def public_flag = RefdataCategory.lookupOrCreate('YN','Yes');
 
-    def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
     // def base_qry = " from Subscription as s where s.type.value = 'Subscription Offered' and s.isPublic=?"
@@ -740,8 +738,7 @@ class MyInstitutionsController {
 	if (!params.sort) params.sort = "tipp.title.title"
 	
 	// Set offset and max
-    def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
     	
 	// Put Lists for the filters into result
@@ -1176,7 +1173,7 @@ AND EXISTS (
 
       try {
 
-          params.max = Math.min(params.max ? params.int('max') : 10, 100)
+          params.max = Math.min(params.max ? params.int('max') : result.user.defaultPageSize, 100)
           params.offset = params.offset ? params.int('offset') : 0
 
           //def params_set=params.entrySet()
@@ -2290,13 +2287,12 @@ AND EXISTS (
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
-    def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
 
     def announcement_type = RefdataCategory.lookupOrCreate('Document Type','Announcement')
-    result.recentAnnouncements = Doc.findAllByType(announcement_type,[max:10,sort:'dateCreated',order:'desc'])
+    result.recentAnnouncements = Doc.findAllByType(announcement_type,[max:max,sort:'dateCreated',order:'desc'])
 
     // result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
     // result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
