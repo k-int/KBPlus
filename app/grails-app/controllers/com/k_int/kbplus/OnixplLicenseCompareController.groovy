@@ -29,9 +29,11 @@ class OnixplLicenseCompareController {
                 }
             } else {
                 def id2 = checkParam(params.license2, null);
-                licenseList = new ArrayList<OnixplLicense>() {{
-                    add(OnixplLicense.get(id2));
-                }};
+                licenseList = new ArrayList<OnixplLicense>() {
+                    {
+                        add(OnixplLicense.get(id2));
+                    }
+                };
             }
         } else {
             licenseList = OnixplLicense.list();
@@ -53,30 +55,34 @@ class OnixplLicenseCompareController {
     def export() {
         StringBuilder sb = new StringBuilder();
         OnixplLicense opl1 = OnixplLicense.get(checkParam(params.license1, null));
-        sb.append("\t\t${opl1.title}");
-        if (!params.license2 instanceof Object[] && !"all".equals(params.license2)) {
-            ArrayList<OnixplLicense> opl2 = new ArrayList<OnixplLicense>();
-            opl2.add(OnixplLicense.get(checkParam(params.license2, null)));
-            ArrayList<OnixplLicense> filteredLicenseList = filterLicenses(opl2, opl1, params.match, params.section);
-            sb.append(buildExportTable(opl1, filteredLicenseList));
-        } else {
-            ArrayList<OnixplLicense> licenseList;
-            if (params.license2 instanceof Object[]) {
-                licenseList = new ArrayList<OnixplLicense>();
-                for (String licenseId in params.license2) {
-                    licenseList.add(OnixplLicense.get(checkParam(licenseId, null)));
-                }
+        if (opl1) {
+            sb.append("\t\t${opl1.title}");
+            if (!params.license2 instanceof Object[] && !"all".equals(params.license2)) {
+                ArrayList<OnixplLicense> opl2 = new ArrayList<OnixplLicense>();
+                opl2.add(OnixplLicense.get(checkParam(params.license2, null)));
+                ArrayList<OnixplLicense> filteredLicenseList = filterLicenses(opl2, opl1, params.match, params.section);
+                sb.append(buildExportTable(opl1, filteredLicenseList));
             } else {
-                licenseList = OnixplLicense.list();
+                ArrayList<OnixplLicense> licenseList;
+                if (params.license2 instanceof Object[]) {
+                    licenseList = new ArrayList<OnixplLicense>();
+                    for (String licenseId in params.license2) {
+                        licenseList.add(OnixplLicense.get(checkParam(licenseId, null)));
+                    }
+                } else {
+                    licenseList = OnixplLicense.list();
+                }
+                ArrayList<OnixplLicense> filteredLicenseList = filterLicenses(licenseList, opl1, params.match, params.section);
+                sb.append(buildExportTable(opl1, filteredLicenseList));
             }
-            ArrayList<OnixplLicense> filteredLicenseList = filterLicenses(licenseList, opl1, params.match, params.section);
-            sb.append(buildExportTable(opl1, filteredLicenseList));
+            response.setHeader("Content-disposition", "attachment; filename=export.tsv");
+            response.contentType = "text/tab-separated-values";
+            response.outputStream << sb.toString();
+            response.outputStream.flush();
+        } else {
+            flash.message = "No data to export!";
+            redirect(controller: "OnixplLicenseCompare", action: "matrix", params: params);
         }
-
-        response.setHeader("Content-disposition", "attachment; filename=export.tsv");
-        response.contentType = "text/tab-separated-values";
-        response.outputStream << sb.toString();
-        response.outputStream.flush();
     }
 
     /**
@@ -87,7 +93,7 @@ class OnixplLicenseCompareController {
      */
     private static String buildExportTable(OnixplLicense opl, ArrayList<OnixplLicense> licenseList) {
         StringBuilder sb = new StringBuilder();
-        ArrayList<RefdataValue> termList = RefdataValue.findAllByOwner(RefdataCategory.get(30)).sort { it.id };
+        ArrayList<RefdataValue> termList = RefdataValue.findAllByOwner(RefdataCategory.findByDesc("UsageType")).sort { it.id };
         for (OnixplLicense license : licenseList) {
             sb.append("\t${license.title}");
         }
@@ -209,5 +215,13 @@ class OnixplLicenseCompareController {
         } else {
             return "Showing results that do not match section ${rdv.value}";
         }
+    }
+
+    public static List<OnixplUsageTerm> getUsageTermList(OnixplLicense opl, RefdataValue rdv) {
+        List<OnixplUsageTerm> outList = OnixplUsageTerm.findAllByOplLicenseAndUsageType(opl, rdv);
+        outList.sort {it.usageType.value}
+        outList.sort {a,b -> a.usageTermLicenseText.licenseText.text.toString() <=> b.usageTermLicenseText.licenseText.text.toString() ?: a.usageStatus.value <=> b.usageStatus.value}
+
+        return outList;
     }
 }
