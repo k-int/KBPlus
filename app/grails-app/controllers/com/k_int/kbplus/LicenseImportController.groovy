@@ -244,6 +244,9 @@ class LicenseImportController {
         usageTerms[n].licenseTexts[m].text = [lt.TextPreceding.text(), lt.Text.text()].join(" ")
         usageTerms[n].licenseTexts[m].elId = lt.@id.text() //lt.SortNumber.text()
         usageTerms[n].licenseTexts[m].displayNum = lt.DisplayNumber?.text()
+        if (!usageTerms[n].licenseTexts[m].displayNum) {
+            usageTerms[n].licenseTexts[m].displayNum = lt.SortNumber?.text()
+        }
       }
     }
     log.debug("Found "+usageTerms.size()+" usage terms")
