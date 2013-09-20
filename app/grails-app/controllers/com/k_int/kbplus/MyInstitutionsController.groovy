@@ -104,6 +104,7 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
+
     if ( !checkUserIsMember(result.user, result.institution) ) {
       flash.error="You do not have permission to view ${result.institution.name}. Please request access on the profile page";
       response.sendError(401)
@@ -118,14 +119,15 @@ class MyInstitutionsController {
       result.is_admin=false;
     }
 
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
     def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
 
     def qry_params = [result.institution, licensee_role]
 
-    // def qry = "select l from License as l left outer join l.orgLinks ol where ( ( l.type = ? ) OR ( ol.org = ? and ol.roleType = ? ) ) AND l.status.value != 'Deleted'"
-    // def qry = "select l from License as l left outer join l.orgLinks ol where ( ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
-    def qry = "select l from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
+    def qry = "from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
 
     if ( ( params['keyword-search'] != null ) && ( params['keyword-search'].trim().length() > 0 ) ) {
       qry += " and lower(l.reference) like ?"
@@ -139,8 +141,8 @@ class MyInstitutionsController {
       qry += " order by l.reference asc"
     }
 
-    // result.licenses = License.executeQuery(qry, [template_license_type, result.institution, licensee_role] )
-    result.licenses = License.executeQuery(qry, qry_params);
+    result.licenseCount = License.executeQuery("select count(l) ${qry}", qry_params)[0];
+    result.licenses = License.executeQuery("select l ${qry}", qry_params, [max:result.max, offset:result.offset]);
 
     withFormat {
 		html result
