@@ -781,7 +781,7 @@ class MyInstitutionsController {
 		// We need to do that as an empty string actually means 'up to the most current issue available'
     	result.titles = IssueEntitlement.executeQuery(
 "SELECT ie.tipp.title, MIN(ie.startDate), \
-MAX(CASE WHEN ie.endDate IS NULL THEN '~' ELSE DATE_FORMAT(ie.endDate, '${session.sessionPreferences?.globalDateFormatSQL?:'%Y-%m-%d'}') END), \
+MAX(CASE WHEN ie.endDate IS NULL THEN '~' ELSE DATE_FORMAT(ie.endDate, '%Y-%m-%d') END), \
 ${title_query_extra} \
 ${title_query} ${title_query_grouping} ${title_query_ordering}", 
         qry_params, limits );
