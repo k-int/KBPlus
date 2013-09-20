@@ -18,6 +18,7 @@ class User {
   boolean accountExpired
   boolean accountLocked
   boolean passwordExpired
+  Long defaultPageSize
 
   SortedSet affiliations
   SortedSet roles
@@ -35,6 +36,7 @@ class User {
     email blank: true, nullable: true
     shibbScope blank: true, nullable: true
     defaultDash blank: true, nullable: true
+    defaultPageSize blank: true, nullable: true
   }
 
   static mapping = {

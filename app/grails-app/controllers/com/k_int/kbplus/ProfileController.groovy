@@ -57,6 +57,22 @@ class ProfileController {
     user.display = params.userDispName
     user.email = params.email
 
+    flash.message="Profile Updated"
+
+    if ( params.defaultPageSize != null ) {
+      try {
+        long l = Long.parseLong(params.defaultPageSize);
+        if ( ( l >= 10 ) && ( l <= 100 ) ) {
+          user.defaultPageSize = new Long(l);
+        }
+        else {
+          flash.message="Default page size must be between 10 and 100";
+        }
+      }
+      catch ( Exception e ) {
+      }
+    }
+
     if ( params.defaultDash != user.defaultDash?.id ) {
       if ( params.defaultDash == '' ) {
         user.defaultDash = null
@@ -68,7 +84,6 @@ class ProfileController {
 
     user.save();
 
-    flash.message="Profile Updated"
 
     redirect(action: "index")
   }
