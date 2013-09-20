@@ -273,6 +273,15 @@ class Package {
                                                  OID:"com.k_int.kbplus.Package:${id}",
                                                  event:'Package.created'
                                                 ])
+
+  }
+
+  @Transient
+  def notifyDependencies(changeDocument) {
+    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+    if ( changeDocument.event=='Package.created' ) {
+      changeNotificationService.broadcastEvent("com.k_int.kbplus.SystemObject:1", changeDocument);
+    }
   }
 
 }

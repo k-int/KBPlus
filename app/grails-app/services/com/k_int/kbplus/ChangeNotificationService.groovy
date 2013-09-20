@@ -43,6 +43,7 @@ class ChangeNotificationService {
   }
 
 
+  // Sum up all pending changes by OID and write a unified message
   def internalAggregateAndNotifyChanges() {
 
     try {
@@ -73,7 +74,6 @@ class ChangeNotificationService {
             if ( parsed_event_info.OID != null && parsed_event_info.OID.length() > 0 ) {
               event_props.OID = genericOIDService.resolveOID(parsed_event_info.OID);
             }
- 
 
             // Use doStuff to cleverly render change_template with variable substitution 
             log.debug("Make engine");
@@ -104,11 +104,16 @@ class ChangeNotificationService {
               log.debug("  -> consider ${ne}");
               switch ( ne.service ) {
                 case 'zendesk.forum': 
-                  log.debug("Send zendesk forum notification for ${ne.remoteid}");
-                  zenDeskSyncService.postTopicCommentInForum(announcement_content,
-                                                             ne.remoteid.toString(), 
-                                                             "Changes related to ${contextObject.toString()}".toString(),
-                                                             'System generated alerts and notifications will appear as comments under this topic');
+                  if ( ne.remoteid != null ) {
+                    log.debug("Send zendesk forum notification for ${ne.remoteid}");
+                    zenDeskSyncService.postTopicCommentInForum(announcement_content,
+                                                               ne.remoteid.toString(), 
+                                                               "Changes related to ${contextObject.toString()}".toString(),
+                                                               'System generated alerts and notifications will appear as comments under this topic');
+                  }
+                  else {
+                    log.warn("Context object has no forum... ${poidc}");
+                  }
                   break;
                 case 'announcements':
                   def announcement_type = RefdataCategory.lookupOrCreate('Document Type','Announcement')

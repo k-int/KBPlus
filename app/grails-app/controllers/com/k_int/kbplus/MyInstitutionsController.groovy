@@ -153,6 +153,9 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
     // if ( !checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
     if ( !checkUserIsMember(result.user,result.institution) ) {
       flash.error="You do not have permission to view ${result.institution.name}. Please request access on the profile page";
@@ -171,10 +174,14 @@ class MyInstitutionsController {
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
     def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
     def public_flag = RefdataCategory.lookupOrCreate('YN','Yes');
+    def qparams = [template_license_type, result.institution, licensee_role, public_flag]
 
-    // def qry = "select l from License as l left outer join l.orgLinks ol where ( ( l.type = ? ) OR ( ol.org = ? and ol.roleType = ? ) ) AND l.status.value != 'Deleted'"
-    // def qry = "select l from License as l left outer join l.orgLinks ol where l.type = ? AND l.status.value != 'Deleted'"
-    def qry = "select l from License as l where ( ( l.type = ? ) OR ( exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) ) OR ( l.isPublic=? ) ) AND l.status.value != 'Deleted'"
+    def qry = "from License as l where ( ( l.type = ? ) OR ( exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) ) OR ( l.isPublic=? ) ) AND l.status.value != 'Deleted'"
+
+    if ( params.filter ) {
+      qry += " and l.reference like ?"
+      qparams.add("%${params.filter}%")
+    }
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
       qry += " order by l.${params.sort} ${params.order}"
@@ -183,8 +190,9 @@ class MyInstitutionsController {
       qry += " order by reference asc"
     }
 
-    result.licenses = License.executeQuery(qry, [template_license_type, result.institution, licensee_role, public_flag] )
-    // result.licenses = License.executeQuery(qry, [template_license_type])
+
+    result.numLicenses = License.executeQuery("select count(l) ${qry}", qparams)[0]
+    result.licenses = License.executeQuery("select l ${qry}", qparams, [max:result.max, offset:result.offset])
 
     result
   }
@@ -225,8 +233,7 @@ class MyInstitutionsController {
 
     def public_flag = RefdataCategory.lookupOrCreate('YN','Yes');
 
-    def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
 
@@ -303,8 +310,7 @@ class MyInstitutionsController {
 
     def public_flag = RefdataCategory.lookupOrCreate('YN','Yes');
 
-    def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
     // def base_qry = " from Subscription as s where s.type.value = 'Subscription Offered' and s.isPublic=?"
@@ -710,7 +716,8 @@ class MyInstitutionsController {
 	
 	// Set Date Restriction
     def date_restriction = null;
-    def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
+
+    def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
     if ( params.validOn == null ) {
       result.validOn = sdf.format(new Date(System.currentTimeMillis()))
       date_restriction = sdf.parse(result.validOn)
@@ -732,8 +739,7 @@ class MyInstitutionsController {
 	if (!params.sort) params.sort = "tipp.title.title"
 	
 	// Set offset and max
-    def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
     	
 	// Put Lists for the filters into result
@@ -773,7 +779,7 @@ class MyInstitutionsController {
 		// We need to do that as an empty string actually means 'up to the most current issue available'
     	result.titles = IssueEntitlement.executeQuery(
 "SELECT ie.tipp.title, MIN(ie.startDate), \
-MAX(CASE WHEN ie.endDate IS NULL THEN '~' ELSE DATE_FORMAT(ie.endDate, '${session.sessionPreferences?.globalDateFormatSQL?:'%Y-%m-%d'}') END), \
+MAX(CASE WHEN ie.endDate IS NULL THEN '~' ELSE DATE_FORMAT(ie.endDate, '%Y-%m-%d') END), \
 ${title_query_extra} \
 ${title_query} ${title_query_grouping} ${title_query_ordering}", 
         qry_params, limits );
@@ -1168,7 +1174,7 @@ AND EXISTS (
 
       try {
 
-          params.max = Math.min(params.max ? params.int('max') : 10, 100)
+          params.max = Math.min(params.max ? params.int('max') : result.user.defaultPageSize, 100)
           params.offset = params.offset ? params.int('offset') : 0
 
           //def params_set=params.entrySet()
@@ -2282,13 +2288,12 @@ AND EXISTS (
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
-    def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
 
     def announcement_type = RefdataCategory.lookupOrCreate('Document Type','Announcement')
-    result.recentAnnouncements = Doc.findAllByType(announcement_type,[max:10,sort:'dateCreated',order:'desc'])
+    result.recentAnnouncements = Doc.findAllByType(announcement_type,[max:max,sort:'dateCreated',order:'desc'])
 
     // result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
     // result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.max, offset:result.offset]);

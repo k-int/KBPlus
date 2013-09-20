@@ -48,6 +48,11 @@
           </div>
 
           <div class="control-group">
+            <dt>Default Page Size</dt>
+            <dd><input type="text" name="defaultPageSize" value="${user.defaultPageSize}"/></dd>
+          </div>
+
+          <div class="control-group">
             <dt>Default Dashboard</dt>
             <dd>
               <select name="defaultDash" value="${user.defaultDash?.id}">

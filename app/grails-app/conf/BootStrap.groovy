@@ -12,6 +12,10 @@ class BootStrap {
 
   def init = { servletContext ->
 	
+    if ( grailsApplication.config.kbplusSystemId != null ) {
+      def system_object = SystemObject.findBySysId(grailsApplication.config.kbplusSystemId) ?: new SystemObject(sysId:grailsApplication.config.kbplusSystemId).save(flush:true);
+    }
+
     def evt_startup = new EventLog(event:'kbplus.startup',message:'Normal startup',tstp:new Date(System.currentTimeMillis())).save(flush:true)
 
     def so_filetype = DataloadFileType.findByName('Subscription Offered File') ?: new DataloadFileType(name:'Subscription Offered File');
@@ -278,9 +282,6 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("Package.Scope", "Master File").save()
     RefdataCategory.lookupOrCreate("Package.Scope", "Scope Undefined").save()
 
-
-
-
     log.debug("validate content items...");
     // The default template for a property change on a title
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.propertyChange','','''
@@ -288,11 +289,11 @@ Title change - The <strong>${evt.prop}</strong> field was changed from  "<strong
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.identifierAdded','','''
-An identifier was added to title ${o.id}.
+An identifier was added to title ${OID?.title}.
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.identifierRemoved','','''
-An identifier was removed from title ${o.id}.
+An identifier was removed from title ${OID?.title}.
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.updated','','''
@@ -308,7 +309,7 @@ TIPP Deleted for title ${OID?.title?.title} ${evt.linkedTitle} on platform ${evt
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.Package.created','','''
-New package added.
+New package added with id ${OID.id} - "${OID.name}".
 ''');
 
     ContentItem.lookupOrCreate('kbplus.noHostPlatformURL','','''

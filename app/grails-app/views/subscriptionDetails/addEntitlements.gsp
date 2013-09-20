@@ -38,17 +38,16 @@
           <g:form action="addEntitlements" params="${params}" method="get" class="form-inline">
             <input type="hidden" name="sort" value="${params.sort}">
             <input type="hidden" name="order" value="${params.order}">
-            <label>Filter:</label> <input name="filter" value="${params.filter}"/> &nbsp;
+            <label>Filters - Title:</label> <input name="filter" value="${params.filter}"/> &nbsp;
             <label>From Package:</label> <select name="pkgfilter">
                                <option value="">All</option>
                                <g:each in="${subscriptionInstance.packages}" var="sp">
                                  <option value="${sp.pkg.id}" ${sp.pkg.id.toString()==params.pkgfilter?'selected=true':''}>${sp.pkg.name}</option>
                                </g:each>
                             </select> &nbsp;
-            <br/>
-            <label>Starts Before (YYYY/MM/DD)</label> 
+            &nbsp; <label>Starts Before: </label> 
             <g:simpleHiddenValue id="startsBefore" name="startsBefore" type="date" value="${params.startsBefore}"/>
-            <label>Ends After (YYYY/MM/DD)</label> 
+            &nbsp; <label>Ends After: </label> 
             <g:simpleHiddenValue id="endsAfter" name="endsAfter" type="date" value="${params.endsAfter}"/>
 
             <input type="submit" class="btn btn-primary">
@@ -130,6 +129,16 @@
       function selectAll() {
         $('.bulkcheck').attr('checked', true);
       }
+
+      simpleHiddenRefdata").editable({
+          url: function(params) {
+            var hidden_field_id = $(this).data('hidden-id');
+            $("#"+hidden_field_id).val(params.value);
+            // Element has a data-hidden-id which is the hidden form property that should be set to the appropriate value
+          }
+        });
+    </script>
+
     </script>
   </body>
 </html>
