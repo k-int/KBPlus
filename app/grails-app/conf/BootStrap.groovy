@@ -289,11 +289,11 @@ Title change - The <strong>${evt.prop}</strong> field was changed from  "<strong
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.identifierAdded','','''
-An identifier was added to title ${o.id}.
+An identifier was added to title ${OID?.title}.
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.identifierRemoved','','''
-An identifier was removed from title ${o.id}.
+An identifier was removed from title ${OID?.title}.
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.updated','','''
