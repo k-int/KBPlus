@@ -214,7 +214,7 @@
 
                 <br/>
                 
-                <h6><g:message code="titleInstance.tipps.label" default="Occurences of this title against Packages / Platforms" /><g:message code="titleInstance.tipps.label" default="Occurences of this title against Packages / Platforms" /></h6>
+                <h6><g:message code="titleInstance.tipps.label" default="Occurrences of this title against Packages / Platforms" /><g:message code="titleInstance.tipps.label" default="Occurences of this title against Packages / Platforms" /></h6>
 
 
                 <g:form action="show" params="${params}" method="get" class="form-inline">
