@@ -56,13 +56,21 @@
                 <tr>
                     <th>Property</th>
                     <th>Status</th>
+                    <th>User</th>
+                    <th>Used Resource</th>
                     <th>Notes</th>
                 </tr>
                 </thead>
                 <tbody>
                 <g:each in="${onixplLicense.usageTerm.sort {it.usageType.value}}">
-                    <tr><td><g:link controller="onixplUsageTermsDetails" action="index" id="${it.id}">${it.usageType.value}</g:link></td>
+                    <tr><td><g:link controller="onixplUsageTermDetails" action="index" id="${it.id}">${it.usageType.value}</g:link></td>
                     <td><g:refdataValue cat="UsageStatus" val="${it.usageStatus.value}" /></td>
+                        <td><g:each in="${it.user}" var="u">
+                            ${u.value}
+                        </g:each> </td>
+                        <td><g:each in="${it.usedResource}" var="u">
+                            ${u.value}
+                        </g:each> </td>
                     <td><g:each in="${it.usageTermLicenseText.licenseText.sort {it.elementId}}">
                         <g:if test="${it.displayNum}">
                             ${it.displayNum}
