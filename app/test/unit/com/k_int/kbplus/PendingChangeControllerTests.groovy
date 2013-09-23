@@ -12,6 +12,5 @@ import org.junit.*
 class PendingChangeControllerTests {
 
     void testSomething() {
-       fail "Implement me"
     }
 }

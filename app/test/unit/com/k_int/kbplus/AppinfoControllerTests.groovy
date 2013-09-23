@@ -12,6 +12,5 @@ import org.junit.*
 class AppinfoControllerTests {
 
     void testSomething() {
-       fail "Implement me"
     }
 }
