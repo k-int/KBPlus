@@ -60,24 +60,11 @@ class MyInstitutionsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def dashboard() {
-    // redirect(controller:'home', action:'index');
     // Work out what orgs this user has admin level access to
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.userAlerts = alertsService.getAllVisibleAlerts(result.user);
     result.staticAlerts = alertsService.getStaticAlerts(request);
-
-    // log.debug("result.userAlerts: ${result.userAlerts}");
-    // log.debug("result.userAlerts.size(): ${result.userAlerts.size()}");
-    // log.debug("result.userAlerts.class.name: ${result.userAlerts.class.name}");
-    // def adminRole = Role.findByAuthority('ROLE_ADMIN')
-    // if ( result.user.authorities.contains(adminRole) ) {
-    //   log.debug("User is in admin role");
-    //   result.orgs = Org.findAllBySector("Higher Education");
-    // }
-    // else {
-    //   result.orgs = Org.findAllBySector("Higher Education");
-    // }
 
     if ( ( result.user.affiliations == null ) || ( result.user.affiliations.size() == 0 ) ) {
       redirect controller:'profile', action: 'index'
@@ -108,7 +95,6 @@ class MyInstitutionsController {
     if ( !checkUserIsMember(result.user, result.institution) ) {
       flash.error="You do not have permission to view ${result.institution.name}. Please request access on the profile page";
       response.sendError(401)
-      // render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
       return;
     }
 
@@ -2175,6 +2161,19 @@ AND EXISTS (
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
+    if ( !checkUserIsMember(result.user, result.institution) ) {
+      flash.error="You do not have permission to access ${result.institution.name} pages. Please request access on the profile page";
+      response.sendError(401)
+      return;
+    }
+
+    if ( checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
+      result.is_admin = true
+    }
+    else {
+      result.is_admin=false;
+    }
+
     def change_summary = PendingChange.executeQuery("select distinct(pc.oid), count(pc), min(pc.ts), max(pc.ts) from PendingChange as pc where pc.owner = ? group by pc.oid",result.institution);
     result.todos = []
     change_summary.each { cs ->
@@ -2295,7 +2294,7 @@ AND EXISTS (
 
 
     def announcement_type = RefdataCategory.lookupOrCreate('Document Type','Announcement')
-    result.recentAnnouncements = Doc.findAllByType(announcement_type,[max:max,sort:'dateCreated',order:'desc'])
+    result.recentAnnouncements = Doc.findAllByType(announcement_type,[max:result.max,sort:'dateCreated',order:'desc'])
 
     // result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
     // result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
