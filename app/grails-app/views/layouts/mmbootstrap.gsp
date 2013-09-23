@@ -156,9 +156,6 @@
                       <li <%= ( ( 'organisations'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="organisations" action="index">Manage Organisations</g:link>
                       </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'reconcile'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="reconcile">Manage Data Reconciliation</g:link>
-                      </li>
                       <li <%= ( ( 'startFTIndex'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="startFTIndex" action="index">Start FT Index Update</g:link>
                       </li>
