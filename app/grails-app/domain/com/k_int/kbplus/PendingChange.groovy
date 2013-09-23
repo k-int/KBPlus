@@ -12,6 +12,7 @@ class PendingChange {
   String desc
 
   static mapping = {
+      systemObject column:'pc_sys_obj'
       subscription column:'pc_sub_fk'
            license column:'pc_lic_fk'
                oid column:'pc_oid'
@@ -22,6 +23,7 @@ class PendingChange {
   }
 
   static constraints = {
+    systemObject(nullable:true, blank:false);
     subscription(nullable:true, blank:false);
     license(nullable:true, blank:false);
     changeDoc(nullable:true, blank:false);
