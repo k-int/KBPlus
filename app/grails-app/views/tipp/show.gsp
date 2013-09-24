@@ -10,7 +10,7 @@
 
     <div class="container">
       <ul class="breadcrumb">
-        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <li> <g:link controller="packageDetails" action="show" id="${tipp.pkg.id}">${tipp.pkg.name} [package]</g:link> <span class="divider">/</span> </li>
         <li> <g:link controller="tipp" action="show" id="${tipp.id}">${tipp.title.title}</g:link> [title]</li>
 
@@ -35,9 +35,10 @@
           <g:if test="${titleInstanceInstance?.ids}">
             <dt><g:message code="titleInstance.ids.label" default="Ids" /></dt>
             
-              <g:each in="${titleInstanceInstance.ids}" var="i">
-              <dd>${i.identifier.ns.ns}:${i.identifier.value}</dd>
+              <dd><g:each in="${titleInstanceInstance.ids}" var="i">
+              ${i.identifier.ns.ns}:${i.identifier.value}<br/>
               </g:each>
+              </dd>
             
           </g:if>
         
@@ -71,6 +72,21 @@
           <dt>Host URL</dt>
           <dd><g:xEditable owner="${tipp}" field="hostPlatformURL"/></dd>
 
+          <dt>Status</dt>
+          <dd><g:xEditableRefData owner="${tipp}" field="status" config='TIPPStatus'/><dd>
+
+          <dt>Status Reason</dt>
+          <dd><g:xEditableRefData owner="${tipp}" field="statusReason" config='TIPPStatusReason'/><dd>
+
+          <dt>Delayed OA</dt>
+          <dd><g:xEditableRefData owner="${tipp}" field="delayedOA" config='TIPPDelayedOA'/><dd>
+
+          <dt>Hybrid OA</dt>
+          <dd><g:xEditableRefData owner="${tipp}" field="hybridOA" config='TIPPHybridOA'/><dd>
+
+          <dt>Payment</dt>
+          <dd><g:xEditableRefData owner="${tipp}" field="payment" config='TIPPPaymentType'/><dd>
+
           <dt>Host Platform</dt>
           <dd>${tipp.platform.name}</dd>
 
@@ -97,13 +113,25 @@
           <g:if test="${titleInstanceInstance?.tipps}">
             <dt><g:message code="titleInstance.tipps.label" default="Occurences of this title against Packages / Platforms" /></dt>
             <dd>
+
+               <g:form action="show" params="${params}" method="get" class="form-inline">
+                  <input type="hidden" name="sort" value="${params.sort}">
+                  <input type="hidden" name="order" value="${params.order}">
+                  <label>Filters - Package Name:</label> <input name="filter" value="${params.filter}"/> &nbsp;
+                  &nbsp; <label>Starts Before: </label>
+                  <g:simpleHiddenValue id="startsBefore" name="startsBefore" type="date" value="${params.startsBefore}"/>
+                  &nbsp; <label>Ends After: </label>
+                  <g:simpleHiddenValue id="endsAfter" name="endsAfter" type="date" value="${params.endsAfter}"/>
+                  <input type="submit" class="btn btn-primary">
+                </g:form>
+
             <table class="table">
               <tr>
                 <th>From Date</th><th>From Volume</th><th>From Issue</th>
                 <th>To Date</th><th>To Volume</th><th>To Issue</th><th>Coverage Depth</th>
                 <th>Platform</th><th>Package</th><th>Actions</th>
               </tr>
-              <g:each in="${titleInstanceInstance.tipps}" var="t">
+              <g:each in="${tippList}" var="t">
                 <tr>
                   <td><g:formatDate format="dd MMM yyyy" date="${t.startDate}"/></td>
                   <td>${t.startVolume}</td>

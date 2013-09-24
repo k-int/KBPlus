@@ -12,6 +12,5 @@ import org.junit.*
 class AnnouncementControllerTests {
 
     void testSomething() {
-       fail "Implement me"
     }
 }

@@ -770,3 +770,39 @@ div.comments {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+
+.compare-radio {
+    margin: 0px;
+    vertical-align: middle
+}
+
+.compare-license {
+    width: 400px;
+}
+
+.compare-section {
+    width: 200px;
+}
+
+.compare-results {
+    width: 50px;
+}
+
+.matrix-cell {
+    white-space: nowrap;
+    padding-bottom: 5px;
+    padding-right: 30px;
+    padding-top: 5px
+}
+
+.matrix-match {
+    background-color: rgba(33,204,14,0.1);
+}
+
+.matrix-no-match {
+    background-color: rgba(213,0,0,0.1);
+}
+
+.matrix-no-value {
+    background-color: rgba(248,248,0,0.1);
+}

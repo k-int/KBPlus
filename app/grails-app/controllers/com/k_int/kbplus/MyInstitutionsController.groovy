@@ -66,24 +66,11 @@ class MyInstitutionsController {
     result.userAlerts = alertsService.getAllVisibleAlerts(result.user);
     result.staticAlerts = alertsService.getStaticAlerts(request);
 
-    // log.debug("result.userAlerts: ${result.userAlerts}");
-    log.debug("result.userAlerts.size(): ${result.userAlerts.size()}");
-    log.debug("result.userAlerts.class.name: ${result.userAlerts.class.name}");
-    // def adminRole = Role.findByAuthority('ROLE_ADMIN')
-    // if ( result.user.authorities.contains(adminRole) ) {
-    //   log.debug("User is in admin role");
-    //   result.orgs = Org.findAllBySector("Higher Education");
-    // }
-    // else {
-    //   result.orgs = Org.findAllBySector("Higher Education");
-    // }
-
     if ( ( result.user.affiliations == null ) || ( result.user.affiliations.size() == 0 ) ) {
       redirect controller:'profile', action: 'index'
     }
     else {
     }
-
     result
   }
 
@@ -104,10 +91,10 @@ class MyInstitutionsController {
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
+
     if ( !checkUserIsMember(result.user, result.institution) ) {
       flash.error="You do not have permission to view ${result.institution.name}. Please request access on the profile page";
       response.sendError(401)
-      // render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
       return;
     }
 
@@ -118,14 +105,15 @@ class MyInstitutionsController {
       result.is_admin=false;
     }
 
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
     def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
 
     def qry_params = [result.institution, licensee_role]
 
-    // def qry = "select l from License as l left outer join l.orgLinks ol where ( ( l.type = ? ) OR ( ol.org = ? and ol.roleType = ? ) ) AND l.status.value != 'Deleted'"
-    // def qry = "select l from License as l left outer join l.orgLinks ol where ( ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
-    def qry = "select l from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
+    def qry = "from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
 
     if ( ( params['keyword-search'] != null ) && ( params['keyword-search'].trim().length() > 0 ) ) {
       qry += " and lower(l.reference) like ?"
@@ -139,8 +127,8 @@ class MyInstitutionsController {
       qry += " order by l.reference asc"
     }
 
-    // result.licenses = License.executeQuery(qry, [template_license_type, result.institution, licensee_role] )
-    result.licenses = License.executeQuery(qry, qry_params);
+    result.licenseCount = License.executeQuery("select count(l) ${qry}", qry_params)[0];
+    result.licenses = License.executeQuery("select l ${qry}", qry_params, [max:result.max, offset:result.offset]);
 
     withFormat {
 		html result
@@ -152,6 +140,9 @@ class MyInstitutionsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
+
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
     // if ( !checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
     if ( !checkUserIsMember(result.user,result.institution) ) {
@@ -171,10 +162,14 @@ class MyInstitutionsController {
     def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
     def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
     def public_flag = RefdataCategory.lookupOrCreate('YN','Yes');
+    def qparams = [template_license_type, result.institution, licensee_role, public_flag]
 
-    // def qry = "select l from License as l left outer join l.orgLinks ol where ( ( l.type = ? ) OR ( ol.org = ? and ol.roleType = ? ) ) AND l.status.value != 'Deleted'"
-    // def qry = "select l from License as l left outer join l.orgLinks ol where l.type = ? AND l.status.value != 'Deleted'"
-    def qry = "select l from License as l where ( ( l.type = ? ) OR ( exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) ) OR ( l.isPublic=? ) ) AND l.status.value != 'Deleted'"
+    def qry = "from License as l where ( ( l.type = ? ) OR ( exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) ) OR ( l.isPublic=? ) ) AND l.status.value != 'Deleted'"
+
+    if ( params.filter ) {
+      qry += " and l.reference like ?"
+      qparams.add("%${params.filter}%")
+    }
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
       qry += " order by l.${params.sort} ${params.order}"
@@ -183,8 +178,9 @@ class MyInstitutionsController {
       qry += " order by reference asc"
     }
 
-    result.licenses = License.executeQuery(qry, [template_license_type, result.institution, licensee_role, public_flag] )
-    // result.licenses = License.executeQuery(qry, [template_license_type])
+
+    result.numLicenses = License.executeQuery("select count(l) ${qry}", qparams)[0]
+    result.licenses = License.executeQuery("select l ${qry}", qparams, [max:result.max, offset:result.offset])
 
     result
   }
@@ -225,8 +221,7 @@ class MyInstitutionsController {
 
     def public_flag = RefdataCategory.lookupOrCreate('YN','Yes');
 
-    def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
 
@@ -303,8 +298,7 @@ class MyInstitutionsController {
 
     def public_flag = RefdataCategory.lookupOrCreate('YN','Yes');
 
-    def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
     // def base_qry = " from Subscription as s where s.type.value = 'Subscription Offered' and s.isPublic=?"
@@ -710,7 +704,8 @@ class MyInstitutionsController {
 	
 	// Set Date Restriction
     def date_restriction = null;
-    def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
+
+    def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
     if ( params.validOn == null ) {
       result.validOn = sdf.format(new Date(System.currentTimeMillis()))
       date_restriction = sdf.parse(result.validOn)
@@ -732,8 +727,7 @@ class MyInstitutionsController {
 	if (!params.sort) params.sort = "tipp.title.title"
 	
 	// Set offset and max
-    def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
     	
 	// Put Lists for the filters into result
@@ -773,7 +767,7 @@ class MyInstitutionsController {
 		// We need to do that as an empty string actually means 'up to the most current issue available'
     	result.titles = IssueEntitlement.executeQuery(
 "SELECT ie.tipp.title, MIN(ie.startDate), \
-MAX(CASE WHEN ie.endDate IS NULL THEN '~' ELSE DATE_FORMAT(ie.endDate, '${session.sessionPreferences?.globalDateFormatSQL?:'%Y-%m-%d'}') END), \
+MAX(CASE WHEN ie.endDate IS NULL THEN '~' ELSE DATE_FORMAT(ie.endDate, '%Y-%m-%d') END), \
 ${title_query_extra} \
 ${title_query} ${title_query_grouping} ${title_query_ordering}", 
         qry_params, limits );
@@ -1168,7 +1162,7 @@ AND EXISTS (
 
       try {
 
-          params.max = Math.min(params.max ? params.int('max') : 10, 100)
+          params.max = Math.min(params.max ? params.int('max') : result.user.defaultPageSize, 100)
           params.offset = params.offset ? params.int('offset') : 0
 
           //def params_set=params.entrySet()
@@ -1379,6 +1373,11 @@ AND EXISTS (
 
     def formatter = new java.text.SimpleDateFormat("yyyy/MM/dd")
 
+    // Add in JR1 and JR1a reports
+    def c = new GregorianCalendar()
+    c.setTime(new Date());
+    def current_year = c.get(Calendar.YEAR)
+
     // Step one - Assemble a list of all titles and packages.. We aren't assembling the matrix
     // of titles x packages yet.. Just gathering the data for the X and Y axis
     plist.each { sub ->
@@ -1416,10 +1415,6 @@ AND EXISTS (
                 title_info.core_start_date = ie.coreStatusStart ? formatter.format(ie.coreStatusStart) : ''
                 title_info.core_end_date = ie.coreStatusEnd ? formatter.format(ie.coreStatusEnd) : ''
 
-                // Add in JR1 and JR1a reports
-                def c = new GregorianCalendar()
-                c.setTime(new Date());
-                def current_year = c.get(Calendar.YEAR)
 
                 try {
                   title_info.jr1_last_4_years = factService.lastNYearsByType(title_info.id, 
@@ -1533,7 +1528,8 @@ AND EXISTS (
     def final_result = [
                         ti_info:ti_info_arr,                      // A crosstab array of the packages where a title occours
                         title_info:title_info_arr,                // A list of the titles
-                        sub_info:sub_info_arr ]                   // The subscriptions offered (Packages)
+                        sub_info:sub_info_arr,
+                        current_year:current_year ]                   // The subscriptions offered (Packages)
     return final_result
   }
 
@@ -1647,25 +1643,25 @@ AND EXISTS (
   
       // USAGE History
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1\nYear-4"));
+      cell.setCellValue(new HSSFRichTextString("JR1\n${m.current_year-4}"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1a\nYear-4"));
+      cell.setCellValue(new HSSFRichTextString("JR1a\n${m.current_year-4}"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1\nYear-3"));
+      cell.setCellValue(new HSSFRichTextString("JR1\n${m.current_year-3}"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1a\nYear-3"));
+      cell.setCellValue(new HSSFRichTextString("JR1a\n${m.current_year-3}"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1\nYear-2"));
+      cell.setCellValue(new HSSFRichTextString("JR1\n${m.current_year-2}"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1a\nYear-2"));
+      cell.setCellValue(new HSSFRichTextString("JR1a\n${m.current_year-2}"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1\nYear-1"));
+      cell.setCellValue(new HSSFRichTextString("JR1\n${m.current_year-1}"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1a\nYear-1"));
+      cell.setCellValue(new HSSFRichTextString("JR1a\n${m.current_year-1}"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1\nYTD"));
+      cell.setCellValue(new HSSFRichTextString("JR1\n${m.current_year}"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("JR1a\nYTD"));
+      cell.setCellValue(new HSSFRichTextString("JR1a\n${m.current_year}"));
   
       m.sub_info.each { sub ->
         cell = row.createCell(cc++);
@@ -2165,7 +2161,34 @@ AND EXISTS (
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
 
-    result.todos = getPendingChangesForOrg(result.institution)
+    if ( !checkUserIsMember(result.user, result.institution) ) {
+      flash.error="You do not have permission to access ${result.institution.name} pages. Please request access on the profile page";
+      response.sendError(401)
+      return;
+    }
+
+    if ( checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
+      result.is_admin = true
+    }
+    else {
+      result.is_admin=false;
+    }
+
+    def change_summary = PendingChange.executeQuery("select distinct(pc.oid), count(pc), min(pc.ts), max(pc.ts) from PendingChange as pc where pc.owner = ? group by pc.oid",result.institution);
+    result.todos = []
+    change_summary.each { cs ->
+      log.debug("Change summary row : ${cs}");
+      def item_with_changes = genericOIDService.resolveOID(cs[0])
+      result.todos.add([
+                         item_with_changes:item_with_changes,
+                         oid:cs[0],
+                         num_changes:cs[1],
+                         earliest:cs[2],
+                         latest:cs[3],
+                      ]);
+    }
+    
+     //.findAllByOwner(result.user,sort:'ts',order:'asc')
 
 
     def announcement_type = RefdataCategory.lookupOrCreate('Document Type','Announcement')
@@ -2233,6 +2256,49 @@ AND EXISTS (
            (at.doc.dateCreated.getTime() > pending_changes_against_target.latest.getTime() ) )
         pending_changes_against_target.latest = at.doc.dateCreated
     }
+
+    result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def todo() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+
+    def change_summary = PendingChange.executeQuery("select distinct(pc.oid), count(pc), min(pc.ts), max(pc.ts) from PendingChange as pc where pc.owner = ? group by pc.oid",result.institution);
+    result.todos = []
+    change_summary.each { cs ->
+      log.debug("Change summary row : ${cs}");
+      def item_with_changes = genericOIDService.resolveOID(cs[0])
+      result.todos.add([
+                         item_with_changes:item_with_changes,
+                         oid:cs[0],
+                         num_changes:cs[1],
+                         earliest:cs[2],
+                         latest:cs[3],
+                      ]);
+    }
+
+    result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def announcements() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
+
+    def announcement_type = RefdataCategory.lookupOrCreate('Document Type','Announcement')
+    result.recentAnnouncements = Doc.findAllByType(announcement_type,[max:result.max,sort:'dateCreated',order:'desc'])
+
+    // result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
+    // result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
+
 
     result
   }

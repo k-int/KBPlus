@@ -56,4 +56,7 @@ class RefdataValue {
     return null;
   }
 
+  public String toString() {
+    value
+  }
 }

@@ -68,5 +68,24 @@ class UserDetailsController {
     result
   }    
 
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def create() {
+    switch (request.method) {
+      case 'GET':
+        [orgInstance: new Org(params)]
+        break
+      case 'POST':
+        def userInstance = new User(params)
+        if (!userInstance.save(flush: true)) {
+          render view: 'create', model: [userInstance: userInstance]
+          return
+        }
+
+        flash.message = message(code: 'default.created.message', args: [message(code: 'user.label', default: 'User'), userInstance.id])
+        redirect action: 'show', id: userInstance.id
+        break
+    }
+  }
+  
   
 }

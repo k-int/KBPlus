@@ -14,141 +14,6 @@ class ChangeNotificationService {
   // N,B, This is critical for this service as it's called from domain object OnChange handlers
   static transactional = false;
 
-  def notifyLicenseChange(l, propname, oldvalue, newvalue, note, type) {
-    log.debug("notifyLicenseChange...${l},type=${type}  create future");
-
-    def future = executorService.submit({
-      log.debug("inside submitted job");
-      processLicenseChange(l,propname,oldvalue,newvalue,note,type)
-    } as java.util.concurrent.Callable)
-
-  }
-
-  def notifySubscriptionChange(l, propname, oldvalue, newvalue, note, type) {
-    log.debug("notifySubscriptionChange...${l} create future");
-
-    def future = executorService.submit({
-      try {
-        log.debug("inside submitted job - notify subscription change ${propname} - ${oldvalue} to ${newvalue}....... waiting");
-        processSubscriptionChange(l,propname,oldvalue,newvalue,note,type)
-      }
-      catch ( Throwable t ) {
-        log.error("problem processing sub change notification",t);
-      }
-      finally {
-        log.debug("Call to processSubscriptionChange completed");
-      }
-    } as java.util.concurrent.Callable)
-
-  }
-
-  /**
-   *  type "S"imple or "R"eference
-   */ 
-  def processLicenseChange(l, propname, oldvalue, newvalue, note, type) {
-    log.debug("processLicenseChange...(type=${type})");
-
-    License lic_being_changed = License.get(l);
-
-    try {
-
-      if ( hasDerivedLicenses(lic_being_changed) ) {
-        Doc change_doc = new Doc(title:'Template Change notification',
-                                 contentType:2,
-                                 content:'The template license for this actual license has changed. You can accept the changes').save();
-
-        lic_being_changed.outgoinglinks.each { ol ->
-          def derived_licence = ol.toLic;
-          log.debug("Notify license ${ol.toLic.id} of change");
-
-          Alert a = new Alert(sharingLevel:2).save(flush:true)
-
-          DocContext ctx = new DocContext(owner:change_doc, 
-                                          license:derived_licence,
-                                          alert:a).save(flush:true);
-
-          PendingChange pc = new PendingChange(license:derived_licence,
-                                               doc:change_doc,
-                                               changeType:type,
-                                               updateProperty:propname, 
-                                               updateValue: newvalue,
-                                               updateReason:"The template used to derive this licence has changed")
-          if ( pc.save(flush:true) ) {
-          }
-          else {
-            log.error("Problem saving pending change: ${pc.errors}");
-          }
-
-        }
-      }
-    }
-    catch ( Exception e ) {
-      log.error("Problem processng change notification",e);
-    }
-    finally {
-      log.debug("processChange completed");
-    }
-  }
-
-  def processSubscriptionChange(l, propname, oldvalue, newvalue, note, type) {
-
-    Subscription sub_being_changed = Subscription.get(l);
-
-    try {
-
-      log.debug("Does the edited sub have derived subs? ${hasDerivedSubscriptions(sub_being_changed)}");
-
-      if ( hasDerivedSubscriptions(sub_being_changed) ) {
-        Doc change_doc = new Doc(title:'Template Change notification',
-                                 contentType:2,
-                                 content:'The template subscription for this sub has changed. You can accept the changes').save();
-
-        sub_being_changed.derivedSubscriptions?.each { st ->
-          log.debug("Adding note for derived ST: ${st.id}");
-          Alert a = new Alert(sharingLevel:2).save(flush:true)
-
-          DocContext ctx = new DocContext(owner:change_doc,
-                                          subscription:st,
-                                          alert:a).save(flush:true);
-
-          PendingChange pc = new PendingChange(subscription:st,
-                                               doc:change_doc,
-                                               changeType:type,
-                                               updateProperty:propname,
-                                               updateValue: type=='R' ? "${newvalue.class.name}:${newvalue.id}" : newvalue,
-                                               updateReason:"The template used to derive this subscription has changed").save(flush:true);
-
-        }
-      }
-    }
-    catch ( Exception e ) {
-      log.error("Problem processng change notification",e);
-    }
-    finally {
-      log.debug("processChange completed");
-    }
-  }
-
-
-  /**
-   *  Taken this simple test out to a function of it's own in preparation for license link types when
-   *  this test will likely become more involved.
-   */
-  def hasDerivedLicenses(lic) {
-    def result = false;
-    if ( lic.outgoinglinks?.size() > 0 )
-      result = true;
-    result;
-  }
-
-  def hasDerivedSubscriptions(sub) {
-    def result = false;
-    if ( sub.derivedSubscriptions?.size() > 0 )
-      result = true;
-    result;
-  }
-
-
   def broadcastEvent(contextObjectOID, changeDetailDocument) {
     log.debug("broadcastEvent(${contextObjectOID},${changeDetailDocument})");
 
@@ -178,6 +43,7 @@ class ChangeNotificationService {
   }
 
 
+  // Sum up all pending changes by OID and write a unified message
   def internalAggregateAndNotifyChanges() {
 
     try {
@@ -189,7 +55,12 @@ class ChangeNotificationService {
         def contextObject = genericOIDService.resolveOID(poidc);
         def pendingChanges = ChangeNotificationQueueItem.executeQuery("select c from ChangeNotificationQueueItem as c where c.oid = ? order by c.ts asc",[poidc]);
         StringWriter sw = new StringWriter();
-        sw.write("<p>Changes on ${new Date().toString()}</p><p><ul>");
+        if ( contextObject.metaClass.respondsTo(contextObject, 'getURL') ) {
+          sw.write("<p>Changes on <a href=\"${contextObject.getURL()}\">${contextObject.toString()}</a> ${new Date().toString()}</p><p><ul>");
+        }
+        else  {
+          sw.write("<p>Changes on ${contextObject.toString()} ${new Date().toString()}</p><p><ul>");
+        }
         def pc_delete_list = []
 
         pendingChanges.each { pc ->
@@ -200,6 +71,9 @@ class ChangeNotificationService {
             log.debug("Found change template... ${change_template.content}");
             // groovy.util.Eval.x(r, 'x.' + rh.property)
             def event_props = [o:contextObject, evt:parsed_event_info]
+            if ( parsed_event_info.OID != null && parsed_event_info.OID.length() > 0 ) {
+              event_props.OID = genericOIDService.resolveOID(parsed_event_info.OID);
+            }
 
             // Use doStuff to cleverly render change_template with variable substitution 
             log.debug("Make engine");
@@ -221,6 +95,7 @@ class ChangeNotificationService {
         if ( contextObject != null ) {
           if ( contextObject.metaClass.respondsTo(contextObject, 'getNotificationEndpoints') ) {
             log.debug("  -> looking at notification endpoints...");
+            def announcement_content = sw.toString();
             // Does the objct have a zendesk URL, or any other comms URLs for that matter?
               // How do we decouple Same-As links? Only the object should know about what
             // notification services it's registered with? What about the case where we're adding
@@ -229,11 +104,26 @@ class ChangeNotificationService {
               log.debug("  -> consider ${ne}");
               switch ( ne.service ) {
                 case 'zendesk.forum': 
-                  log.debug("Send zendesk forum notification for ${ne.remoteid}");
-                  zenDeskSyncService.postTopicCommentInForum(sw.toString(),
-                                                             ne.remoteid.toString(), 
-                                                             "Changes related to ${contextObject.toString()}".toString(),
-                                                             'System generated alerts and notifications will appear as comments under this topic');
+                  if ( ne.remoteid != null ) {
+                    log.debug("Send zendesk forum notification for ${ne.remoteid}");
+                    zenDeskSyncService.postTopicCommentInForum(announcement_content,
+                                                               ne.remoteid.toString(), 
+                                                               "Changes related to ${contextObject.toString()}".toString(),
+                                                               'System generated alerts and notifications will appear as comments under this topic');
+                  }
+                  else {
+                    log.warn("Context object has no forum... ${poidc}");
+                  }
+                  break;
+                case 'announcements':
+                  def announcement_type = RefdataCategory.lookupOrCreate('Document Type','Announcement')
+                  // result.recentAnnouncements = Doc.findAllByType(announcement_type,[max:10,sort:'dateCreated',order:'desc'])
+                  def newAnnouncement = new Doc(title:'Automated Announcement',
+                                                type:announcement_type,
+                                                content:announcement_content,
+                                                dateCreated:new Date(),
+                                                user:User.findByUsername('admin')).save();
+
                   break;
                 default:
                   break;
@@ -247,6 +137,7 @@ class ChangeNotificationService {
         log.debug("Delete reported changes...");
         // If we got this far, all is OK, delete any pending changes
         pc_delete_list.each { pc ->
+          log.debug("Deleting reported change ${pc.id}");
           pc.delete()
         }
       }
@@ -279,4 +170,24 @@ class ChangeNotificationService {
       }
     } as java.util.concurrent.Callable)
   }
+
+
+
+  def registerPendingChange(prop, target, desc, objowner, changeMap ) {
+    log.debug("Register pending change ${prop} ${target.class.name}:${target.id}");
+    def new_pending_change = new PendingChange()
+    new_pending_change[prop] = target;
+    def jsonChangeDocument = changeMap as JSON
+    new_pending_change.changeDoc = jsonChangeDocument.toString();
+    new_pending_change.desc = desc
+    new_pending_change.owner = objowner
+    new_pending_change.oid = "${target.class.name}:${target.id}"
+    new_pending_change.ts = new Date();
+    if ( new_pending_change.save(flush:true) ) {
+    }
+    else {
+      log.error("Problem saving pending change: ${new_pending_change.errors}");
+    }
+  }
+
 }

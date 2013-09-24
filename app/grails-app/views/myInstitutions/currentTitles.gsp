@@ -12,7 +12,7 @@
   <body>
     <div class="container">
         <ul class="breadcrumb">
-          <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
+          <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
           <li> <g:link controller="myInstitutions" action="currentTitles" params="[shortcode:params.shortcode]">${institution.name}  Current Titles</g:link> </li>
           <li class="dropdown pull-right">
             <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">
@@ -32,7 +32,7 @@
 	              <g:link action="currentTitles" params="${ps_xml}">XML Export</g:link>
 	            </li>
               	<g:each in="${com.k_int.kbplus.UserTransforms.findAllByUser(user)}" var="ut">
-    				<g:if test="${ut.transforms.accepts_type.value == "title"}">
+    				<g:if test="${ut.transforms.hasType("title")}">
      				<% 
 					  	def ps_trans = [:];
 					  	if(ut.transforms.accepts_format.value == "xml")
@@ -129,8 +129,9 @@
 		        <input type="hidden" name="order" value="${params.order}">
 		        <label>Search text:</label> 
 		        <input name="filter" value="${params.filter}" placeholder="enter search term..."/>
-		        <label>Subscriptions Valid on</label> <input name="validOn" type="text" value="${validOn}"/>
-		        <input type="submit" class="btn btn-primary" value="Search"/>
+		        <label>Subscriptions Valid on</label> 
+                        <g:simpleHiddenValue id="validOn" name="validOn" type="date" value="${validOn}"/>
+		        &nbsp;<input type="submit" class="btn btn-primary" value="Search"/>
 	        </div>
 	    </div>
     </g:form>

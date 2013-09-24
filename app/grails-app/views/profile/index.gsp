@@ -10,8 +10,7 @@
     <div class="container">
         <ul class="breadcrumb">
         <li> <g:link controller="home">KBPlus</g:link> <span class="divider">/</span> </li>
-        <li> <g:link controller='myInstitutions' action='index'>My Institutions</g:link> <span class="divider">/</span> </li>
-        <li class="active">Manage Affiliations</li>
+        <li class="active">Profile</li>
       </ul>
     </div>
 
@@ -46,6 +45,11 @@
           <div class="control-group">
             <dt>Email Address</dt>
             <dd><input type="text" name="email" value="${user.email}"/></dd>
+          </div>
+
+          <div class="control-group">
+            <dt>Default Page Size</dt>
+            <dd><input type="text" name="defaultPageSize" value="${user.defaultPageSize}"/></dd>
           </div>
 
           <div class="control-group">
@@ -164,7 +168,7 @@
               <g:each in="${com.k_int.kbplus.UserTransforms.findAllByUser(user)}" var="ut">
                 <tr>
                   <td>${ut.transforms.name}</td>
-                  <td>${ut.transforms.accepts_type.value}</td>
+                  <td>${ut.transforms.displayTypes()}</td>
                   <td>${ut.transforms.accepts_format.value}</td>
                   <td>${ut.transforms.return_file_extention}</td>
                   <td><g:link action="removeTransforms" params="[transformId: ut.transforms.id]"><i class="icon-remove"></i></g:link></td>

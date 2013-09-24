@@ -115,11 +115,15 @@ class PackageDetailsController {
 	  def verystarttime = exportService.printStart("SubscriptionDetails")
 	  
       def result = [:]
+      boolean showDeletedTipps=false
       
-      if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') )
+      if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') ) {
         result.editable=true
-      else
+        showDeletedTipps=true
+      }
+      else {
         result.editable=false
+      }
 
       result.user = User.get(springSecurityService.principal.id)
       def packageInstance = Package.get(params.id)
@@ -140,8 +144,8 @@ class PackageDetailsController {
       // and subscription that does not already link this package
       result.user?.getAuthorizedAffiliations().each { ua ->
         if ( ua.formalRole.authority == 'INST_ADM' ) {
-          def qry_params = [ua.org, packageInstance]
-          def q = "select s from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) AND ( not exists ( select sp from s.packages as sp where sp.pkg = ? ) )"
+          def qry_params = [ua.org, packageInstance, new Date()]
+          def q = "select s from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) AND ( not exists ( select sp from s.packages as sp where sp.pkg = ? ) ) AND s.endDate >= ?"
           Subscription.executeQuery(q, qry_params).each { s ->
             if ( ! result.subscriptionList.contains(s) ) {
               // Need to make sure that this package is not already linked to this subscription
@@ -161,17 +165,38 @@ class PackageDetailsController {
       def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
       def qry_params = [packageInstance]
 
+
+      if ( showDeletedTipps==true ) {
+      }
+      else {
+        base_qry += "and tipp.status.value != 'Deleted' "
+      }
+
       if ( params.filter ) {
         base_qry += " and ( ( lower(tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = tipp.title.id and io.identifier.value like ? ) ) )"
         qry_params.add("%${params.filter.trim().toLowerCase()}%")
         qry_params.add("%${params.filter}%")
       }
 
+      if ( params.endsAfter && params.endsAfter.length() > 0 ) {
+        def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
+        def d = sdf.parse(params.endsAfter)
+        base_qry += " and tipp.endDate >= ?"
+        qry_params.add(d)
+      }
+
+      if ( params.startsBefore && params.startsBefore.length() > 0 ) {
+        def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
+        def d = sdf.parse(params.startsBefore)
+        base_qry += " and tipp.startDate <= ?"
+        qry_params.add(d)
+      }
+
       if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
-        base_qry += " order by ${params.sort} ${params.order}"
+        base_qry += " order by lower(${params.sort}) ${params.order}"
       }
       else {
-        base_qry += " order by tipp.title.title asc"
+        base_qry += " order by lower(tipp.title.title) asc"
       }
 
       log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
@@ -433,7 +458,7 @@ class PackageDetailsController {
 
       try {
 
-          params.max = Math.min(params.max ? params.int('max') : 10, 100)
+          params.max = Math.min(params.max ? params.int('max') : result.user.defaultPageSize, 100)
           params.offset = params.offset ? params.int('offset') : 0
 
           //def params_set=params.entrySet()
@@ -558,6 +583,63 @@ class PackageDetailsController {
     def add_entitlements = ( params.addEntitlements == 'true' ? true : false )
     pkg.addToSubscription(sub,add_entitlements)
 
+    redirect(action:'show', id:params.id);
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def packageBatchUpdate() {
+    def formatter = new java.text.SimpleDateFormat("yyyy-MM-dd")
+
+    def bulk_fields = [
+      [ formProp:'start_date', domainClassProp:'startDate', type:'date'],
+      [ formProp:'start_volume', domainClassProp:'startVolume'],
+      [ formProp:'start_issue', domainClassProp:'startIssue'],
+      [ formProp:'end_date', domainClassProp:'endDate', type:'date'],
+      [ formProp:'end_volume', domainClassProp:'endVolume'],
+      [ formProp:'end_issue', domainClassProp:'endIssue'],
+      [ formProp:'coverage_depth', domainClassProp:'coverageDepth'],
+      [ formProp:'coverage_note', domainClassProp:'coverageNote'],
+      [ formProp:'embargo', domainClassProp:'embargo'],
+    ]
+
+    params.each { p ->
+      if (p.key.startsWith('_bulkflag.') && ( p.value == 'on' ) ) {
+        def tipp_id_to_edit = p.key.substring(10);
+        log.debug("row selected for bulk edit: ${tipp_id_to_edit}");
+        def tipp_to_bulk_edit = TitleInstancePackagePlatform.get(tipp_id_to_edit);
+        boolean changed = false
+
+        if ( params.bulkOperation=='edit') {
+          bulk_fields.each { bulk_field_defn ->
+            if ( params["clear_${bulk_field_defn.formProp}"] == 'on' ) {
+              log.debug("Request to clear field ${bulk_field_defn.formProp}");
+              tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = null
+              changed = true
+            }
+            else {
+              def proposed_value = params['bulk_'+bulk_field_defn.formProp]
+              if ( ( proposed_value != null ) && ( proposed_value.length() > 0 ) ) {
+                log.debug("Set field ${bulk_field_defn.formProp} to proposed_value");
+                if ( bulk_field_defn.type == 'date' ) {
+                  tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = formatter.parse(proposed_value)
+                }
+                else {
+                  tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = proposed_value
+                }
+                changed = true
+              }
+            }
+          }
+          if ( changed )
+            tipp_to_bulk_edit.save();
+        }
+        else {
+          log.debug("Bulk removal ${tipp_to_bulk_edit.id}");
+          tipp_to_bulk_edit.status = RefdataCategory.lookupOrCreate( 'TIPP Status', 'Deleted' );
+          tipp_to_bulk_edit.save();
+        }
+      }
+    }
     redirect(action:'show', id:params.id);
   }
 }

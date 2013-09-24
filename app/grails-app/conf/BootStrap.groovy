@@ -12,6 +12,10 @@ class BootStrap {
 
   def init = { servletContext ->
 	
+//    if ( grailsApplication.config.kbplusSystemId != null ) {
+//      def system_object = SystemObject.findBySysId(grailsApplication.config.kbplusSystemId) ?: new SystemObject(sysId:grailsApplication.config.kbplusSystemId).save(flush:true);
+//    }
+
     def evt_startup = new EventLog(event:'kbplus.startup',message:'Normal startup',tstp:new Date(System.currentTimeMillis())).save(flush:true)
 
     def so_filetype = DataloadFileType.findByName('Subscription Offered File') ?: new DataloadFileType(name:'Subscription Offered File');
@@ -41,7 +45,14 @@ class BootStrap {
       institutionalUser = new Role(authority: 'INST_USER', roleType:'user').save(failOnError: true)
     }
     ensurePermGrant(institutionalUser,view_permission);
-	
+
+    // Allows values to be added to the vocabulary control list by passing an array with RefdataCategory as the key
+    // and a list of values to be added to the RefdataValue table.
+    grailsApplication.config.refdatavalues.each { rdc, rdvList ->
+        rdvList.each { rdv ->
+            RefdataCategory.lookupOrCreate(rdc, rdv);
+        }
+    }
 	// Transforms types and formats Refdata 
 	// !!! HAS TO BE BEFORE the script adding the Transformers as it is used by those tables !!!
 	def json_format = RefdataCategory.lookupOrCreate('Transform Format', 'json');
@@ -79,10 +90,17 @@ class BootStrap {
 		def formats = RefdataValue.findAllByOwner(RefdataCategory.findByDesc('Transform Format'))
 		
 		if ( transforms ) {
-		  if ( transforms.accepts_type.value != tr.type ) {
-			  log.debug("Change transformer [${transformName}] type to ${tr.type}");
-			  def type = types.findAll{ t -> t.value == tr.type }
-			  transforms.accepts_type = type[0];
+			
+		  if( tr.type ){
+			  // split values
+			  def type_list = tr.type.split(",")
+			  type_list.each { new_type ->
+				  if( !transforms.accepts_types.any { f -> f.value == new_type } ){
+					  log.debug("Add transformer [${transformName}] type: ${new_type}");
+					  def type = types.find{ t -> t.value == new_type }
+					  transforms.addToAccepts_types(type)
+				  }
+			  }
 		  }
 		  if ( transforms.accepts_format.value != tr.format ) {
 			  log.debug("Change transformer [${transformName}] format to ${tr.format}");
@@ -104,20 +122,23 @@ class BootStrap {
 		  transforms.save(failOnError: true, flush: true)
 		}
 		else {
-			def type = types.findAll{ t -> t.value == tr.type }
 			def format = formats.findAll{ t -> t.value == tr.format }
 			
-			assert type.size()==1
 			assert format.size()==1
 			
 			transforms = new Transforms(
 				name: transformName,
-				accepts_type: type[0],
 				accepts_format: format[0],
 				return_mime: tr.return_mime,
 				return_file_extention: tr.return_file_extension,
 				path_to_stylesheet: tr.path_to_stylesheet,
 				transformer: transformer).save(failOnError: true, flush: true)
+				
+			def type_list = tr.type.split(",")
+			type_list.each { new_type ->
+				def type = types.find{ t -> t.value == new_type }
+				transforms.addToAccepts_types(type)
+			}
 		}
 	}
 	
@@ -173,9 +194,6 @@ class BootStrap {
       log.warn("There are user org rows with no role set. Please update the table to add role FKs");
     }
 
-    // Some extra refdata
-    def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
-	
     setupRefdata();
   }
 
@@ -245,31 +263,74 @@ class BootStrap {
     RefdataCategory.lookupOrCreate('UsageStatus', 'purpleQuestion', 'SilentUninterpreted')
     RefdataCategory.lookupOrCreate('UsageStatus', 'purpleQuestion', 'NotApplicable')
 
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.DelayedOA", "No").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.DelayedOA", "Unknown").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.DelayedOA", "Yes").save()
+
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", "No").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", "Unknown").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", "Yes").save()
+
+    RefdataCategory.lookupOrCreate("Tipp.StatusReason", "Transfer Out").save()
+    RefdataCategory.lookupOrCreate("Tipp.StatusReason", "Transfer In").save()
+
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Complimentary").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Limited Promotion").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Paid").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "OA").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Opt Out Promotion").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Uncharged").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Unknown").save()
+
+    RefdataCategory.lookupOrCreate("Package.ListStatus", "Checked").save()
+    RefdataCategory.lookupOrCreate("Package.ListStatus", "In Progress").save()
+    RefdataCategory.lookupOrCreate("Package.Breakable", "No").save()
+    RefdataCategory.lookupOrCreate("Package.Breakable", "Yes").save()
+    RefdataCategory.lookupOrCreate("Package.Breakable", "Unknown").save()
+    RefdataCategory.lookupOrCreate("Package.Consistent", "No").save()
+    RefdataCategory.lookupOrCreate("Package.Consistent", "Yes").save()
+    RefdataCategory.lookupOrCreate("Package.Consistent", "Unknown").save()
+    RefdataCategory.lookupOrCreate("Package.Fixed", "No").save()
+    RefdataCategory.lookupOrCreate("Package.Fixed", "Yes").save()
+    RefdataCategory.lookupOrCreate("Package.Fixed", "Unknown").save()
+    RefdataCategory.lookupOrCreate("Package.Scope", "Aggregator").save()
+    RefdataCategory.lookupOrCreate("Package.Scope", "Front File").save()
+    RefdataCategory.lookupOrCreate("Package.Scope", "Back File").save()
+    RefdataCategory.lookupOrCreate("Package.Scope", "Master File").save()
+    RefdataCategory.lookupOrCreate("Package.Scope", "Scope Undefined").save()
 
     log.debug("validate content items...");
     // The default template for a property change on a title
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.propertyChange','','''
-Title change - The <strong>${evt.prop}</strong> field was changed from  "<strong>${evt.old}</strong>" to "<strong>${evt.new}</strong>".
+Title change - The <strong>${evt.prop}</strong> field was changed from  "<strong>${evt.oldLabel?:evt.old}</strong>" to "<strong>${evt.newLabel?:evt.new}</strong>".
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.identifierAdded','','''
-An identifier was added to title ${o.id}.
+An identifier was added to title ${OID?.title}.
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.identifierRemoved','','''
-An identifier was removed from title ${o.id}.
+An identifier was removed from title ${OID?.title}.
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.updated','','''
-TIPP change - The <strong>${evt.prop}</strong> field was changed from  "<strong>${evt.old}</strong>" to "<strong>${evt.new}</strong>".
+TIPP change for title ${OID?.title?.title} - The <strong>${evt.prop}</strong> field was changed from  "<strong>${evt.oldLabel?:evt.old}</strong>" to "<strong>${evt.newLabel?:evt.new}</strong>".
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.added','','''
-TIPP Added for title ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
+TIPP Added for title ${OID?.title?.title} ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
 ''');
 
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.deleted','','''
-TIPP Deleted for title ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
+TIPP Deleted for title ${OID?.title?.title} ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
+''');
+
+    ContentItem.lookupOrCreate('ChangeNotification.Package.created','','''
+New package added with id ${OID.id} - "${OID.name}".
+''');
+
+    ContentItem.lookupOrCreate('kbplus.noHostPlatformURL','','''
+No Host Platform URL Content
 ''');
 
 

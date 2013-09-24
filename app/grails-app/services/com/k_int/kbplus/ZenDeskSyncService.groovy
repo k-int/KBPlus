@@ -11,6 +11,8 @@ import org.apache.http.entity.mime.content.*
 import java.nio.charset.Charset
 import org.apache.http.*
 import org.apache.http.protocol.*
+import java.text.SimpleDateFormat
+
 
 class ZenDeskSyncService {
 
@@ -62,38 +64,68 @@ class ZenDeskSyncService {
       }
       // Create forum in category
     }
+
+
+    def systemObject = SystemObject.findBySysId(ApplicationHolder.application.config.kbplusSystemId)
+    if ( systemObject.announcementsForumId == null ) {
+      systemObject.announcementsForumId = createSysForum(http);
+      systemObject.save();
+    }
   }
 
   def reconnectOrphanedZendeskForums(http) {
     log.debug("reconnectOrphanedZendeskForums starting...");
 
-    http.get( path : '/api/v2/forums.json', requestContentType : ContentType.JSON) { resp, json ->
-      if ( json ) {
-        json.forums.each { f ->
-          try {
-            log.debug("Checking ${f.name} (${f.id})");
-            if ( f.name ==~ /(.*)\(Package (\d+) from (.*)(\)$)/ ) {
-              def pkg_info = f.name =~ /(.*)\(Package (\d+) from (.*)(\)$)/
-              def package_name = pkg_info[0][1]
-              def package_id = pkg_info[0][2]
-              def system_id = pkg_info[0][3]
-  
-              // Only hook up forums if they correspond to our local system identifier
-              if ( system_id == ApplicationHolder.application.config.kbplusSystemId ) {
-                // Lookup package with package_id
-                def pkg = Package.get(Long.parseLong(package_id))
-                if ( pkg != null ) {
-                  if ( pkg.forumId == null ) {
-                    log.debug("Update package ${pkg.id} - link to forum ${f.id}");
-                    pkg.forumId = f.id
-                    pkg.save()
+    boolean has_next_page = true;
+    int pageno = 1
+
+    while ( has_next_page ) {
+      log.debug("Requesting forum list page ${pageno}");
+      http.get( path : '/api/v2/forums.json', 
+                query : [ page: pageno ],
+                requestContentType : ContentType.JSON) { resp, json ->
+        if ( json ) {
+          json.forums.each { f ->
+            try {
+              log.debug("Checking ${f.name} (${f.id})");
+              if ( f.name ==~ /(.*)\(Package (\d+) from (.*)(\)$)/ ) {
+                def pkg_info = f.name =~ /(.*)\(Package (\d+) from (.*)(\)$)/
+                def package_name = pkg_info[0][1]
+                def package_id = pkg_info[0][2]
+                def system_id = pkg_info[0][3]
+    
+                // Only hook up forums if they correspond to our local system identifier
+                if ( system_id == ApplicationHolder.application.config.kbplusSystemId ) {
+                  // Lookup package with package_id
+                    def pkg = Package.get(Long.parseLong(package_id))
+                  if ( pkg != null ) {
+                    if ( pkg.forumId == null ) {
+                      log.debug("Update package ${pkg.id} - link to forum ${f.id}");
+                      pkg.forumId = f.id
+                      pkg.save()
+                    }
                   }
                 }
               }
+              else if ( f.name == 'Announcements' ) {
+                def systemObject = SystemObject.findBySysId(ApplicationHolder.application.config.kbplusSystemId)
+                if ( systemObject.announcementsForumId == null ) {
+                  systemObject.announcementsForumId = f.id
+                  systemObject.save();
+                }
+              }
+            }
+            catch ( Exception e ) {
+              log.error("Problem reconnecting orphaned forums",e);
             }
           }
-          catch ( Exception e ) {
-            log.error("Problem reconnecting orphaned forums",e);
+          log.debug("json.next_page is ${json.next_page}, class is ${json.next_page.class.name}");
+          if ( ( json.next_page != null ) && ( ! json.next_page.equals (net.sf.json.JSONNull.getInstance() ) ) ) {
+            pageno++
+          }
+          else {
+            log.debug("No more pages in forum list...");
+            has_next_page = false
           }
         }
       }
@@ -126,6 +158,25 @@ class ZenDeskSyncService {
       result = json.forum.id
     }
     result
+  }
+
+  def createSysForum(http) {
+    def result = null
+
+    http.post( path : '/api/v2/forums.json',
+               requestContentType : ContentType.JSON,
+               body : [ 'forum' : [ 'name' : 'Announcements',
+                                    'forum_type': 'articles', // 'questions', 
+                                    'access': 'everybody', // 'logged-in users'
+                                    'description' : 'Announcements' //,
+                                    // 'tags' : [ 'kbpluspkg' , "pkg:${pkg.id}".toString(), ApplicationHolder.application.config.kbplusSystemId.toString()  ]  
+                                  ]
+                      ]) { resp, json ->
+      log.debug("Create forum Result: ${resp.status}, ${json}");
+      result = json.forum.id
+    }
+    result
+
   }
 
   def lookupOrCreateZenDeskCategory(http,catname,current_categories) {
@@ -185,7 +236,9 @@ class ZenDeskSyncService {
     // https://ostephens.zendesk.com/api/v2/search.json?query=type:topic
     def now = System.currentTimeMillis();
     def intervalms = 1000 * 60 * 5 // Re-fetch forum activity every 5 minutes
-    if ( now - last_forum_check > intervalms ) {
+
+    def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    if ( 1==1 ) { // if ( now - last_forum_check > intervalms ) {
       try {
         def http = new RESTClient(ApplicationHolder.application.config.ZenDeskBaseURL)
 
@@ -197,9 +250,15 @@ class ZenDeskSyncService {
           }
         })
 
-        http.get(path:'/api/v2/search.json',
-                 query:[query:'type:topic', sort_by:'updated_at', sort_order:'desc']) { resp, data ->
-          cached_forum_activity = data
+        http.get(path:'/api/v2/search.json', query:[query:'type:topic', sort_by:'updated_at', sort_order:'desc']) { resp, data ->
+          cached_forum_activity = []
+          data.results.each { r ->
+            cached_forum_activity.add([
+                                       id:r.id, 
+                                       title:r.title, 
+                                       updated_at: ( r.updated_at != null ? sdf.parse(r.updated_at) : null ),
+                                       result_type:r.result_type])
+          }
         }
       }
       catch ( Exception e ) {
@@ -209,6 +268,8 @@ class ZenDeskSyncService {
         last_forum_check = now
       }
     }
+
+    log.debug(cached_forum_activity)
 
     cached_forum_activity
   }
@@ -246,29 +307,34 @@ class ZenDeskSyncService {
     log.debug("lookupOrCreateTopicInForum(${forumId},${topicName}...)");
 
     def result = null
-    def currentForumTopics = endpoint.get(path:"/api/v2/forums/${forumId}/topics.json") { resp, data ->
+    try {
+      def currentForumTopics = endpoint.get(path:"/api/v2/forums/${forumId}/topics.json") { resp, data ->
 
-      log.debug("Consider existing topics : ${data}");
+        log.debug("Consider existing topics : ${data}");
 
-      data.topics.each { topic ->
-        log.debug("Consider existing topic: ${topic}");
-        if ( topic.title == topicName ) 
-          result = topic.id
+        data.topics.each { topic ->
+          log.debug("Consider existing topic: ${topic}");
+          if ( topic.title == topicName ) 
+            result = topic.id
+        }
+      }
+ 
+      if ( result == null ) {
+        log.debug("Create new topic with name ${topicName}");
+        // Not able to locate topic with topicName in the identified forum.. Create it
+        endpoint.post(path:"/api/v2/topics.json",
+                      requestContentType : ContentType.JSON,
+                      body : [ 'topic' : [ 'forum_id' : forumId,
+                                           'title': topicName,
+                                           'body' : topicBody
+                                         ]
+                        ]) { resp, json ->
+          result = json.topic.id
+        }
       }
     }
- 
-    if ( result == null ) {
-      log.debug("Create new topic with name ${topicName}");
-      // Not able to locate topic with topicName in the identified forum.. Create it
-      endpoint.post(path:"/api/v2/topics.json",
-                    requestContentType : ContentType.JSON,
-                    body : [ 'topic' : [ 'forum_id' : forumId,
-                                         'title': topicName,
-                                         'body' : topicBody
-                                       ]
-                      ]) { resp, json ->
-        result = json.topic.id
-      }
+    catch ( Exception e ) {
+      log.error("Problem trying to lookupOrCreateTopicInForum",e);
     }
 
     log.debug("Result of lookupOrCreateTopicInForum is ${result}");

@@ -12,7 +12,7 @@ class OnixplUsageTerm {
   RefdataValue usageStatus
 
   //static hasMany = [ licenseText:OnixplLicenseText ]
-  static hasMany = [ usageTermLicenseText:OnixplUsageTermLicenseText ]
+  static hasMany = [ usageTermLicenseText:OnixplUsageTermLicenseText, usedResource:RefdataValue, user:RefdataValue ]
 
   static belongsTo = [
     oplLicense:OnixplLicense
@@ -24,11 +24,11 @@ class OnixplUsageTerm {
   ]
 
   static mapping = {
-    id column:          'oput_id'
-    version column:     'oput_version'
-    oplLicense column:  'oput_opl_fk', index:'oput_entry_idx'
-    usageType column:   'oput_usage_type_rv_fk', index:'oput_entry_idx'
-    usageStatus column: 'oput_usage_status_rv_fk', index:'oput_entry_idx'
+    id column:              'oput_id'
+    version column:         'oput_version'
+    oplLicense column:      'oput_opl_fk', index:'oput_entry_idx'
+    usageType column:       'oput_usage_type_rv_fk', index:'oput_entry_idx'
+    usageStatus column:     'oput_usage_status_rv_fk', index:'oput_entry_idx'
   }
 
   static constraints = {
@@ -113,6 +113,86 @@ class OnixplUsageTerm {
         ", oplLicense=" + oplLicense +
         ", usageType=" + usageType +
         ", usageStatus=" + usageStatus +
+        ", usedResource=" + usedResource +
+        ", user=" + user +
         '}';
   }
+
+    /**
+     * Display method that takes all of the license text associated with a usage term and formats it for display. Not
+     * all license texts have a display number and so, in their absence, the elementId is used.
+     * @param oput
+     * @return
+     */
+    public String getLicenseText() {
+        StringBuilder sb = new StringBuilder();
+        for (OnixplUsageTermLicenseText utlt : this.usageTermLicenseText.sort { it.licenseText.text }) {
+            if (utlt.licenseText.displayNum) {
+                sb.append(utlt.licenseText.displayNum + " ");
+            } else {
+                sb.append(utlt.licenseText.elementId + " ");
+            }
+            sb.append(utlt.licenseText.text);
+            sb.append("\n");
+        }
+        return sb.toString().trim();
+    }
+
+    /**
+     * Given a usage term a comparison will be made. Usage type, usage status, user, used resource and license text
+     * content are all taken into account.
+     * @param oput
+     * @return
+     */
+    public Boolean compare(OnixplUsageTerm oput) {
+        log.error("Usage term 1: ${this.id} | Usage term 2: ${oput.id}")
+        if (oput == null) {
+            return false;
+        }
+        if (this.usageType.value != oput.usageType.value) {
+            log.error("Usage types don't match");
+            return false;
+        }
+        if (this.usageStatus.value != oput.usageStatus.value) {
+            log.error("Usage statuses don't match");
+            return false;
+        }
+        StringBuilder text1 = new StringBuilder();
+        for (OnixplUsageTermLicenseText utlt : this.usageTermLicenseText.sort {it.licenseText.text}) {
+            text1.append(utlt.licenseText.text);
+        }
+        StringBuilder text2 = new StringBuilder();
+        for (OnixplUsageTermLicenseText utlt : oput.usageTermLicenseText.sort {it.licenseText.text}) {
+            text2.append(utlt.licenseText.text);
+        }
+        if (text1.toString() != text2.toString()) {
+            log.error("Licence texts don't match");
+            return false;
+        }
+        StringBuilder user1 = new StringBuilder();
+        for (RefdataValue user : this.user.sort {it.value}) {
+            user1.append(user.value);
+        }
+        StringBuilder user2 = new StringBuilder();
+        for (RefdataValue user : oput.user.sort {it.value}) {
+            user2.append(user.value);
+        }
+        if (user1.toString() != user2.toString()) {
+            log.error("Users don't match")
+            return false;
+        }
+        StringBuilder ur1 = new StringBuilder();
+        for (RefdataValue ur : this.usedResource.sort {it.value}) {
+            ur1.append(ur.value);
+        }
+        StringBuilder ur2 = new StringBuilder();
+        for (RefdataValue ur : oput.usedResource.sort {it.value}) {
+            ur2.append(ur.value);
+        }
+        if (ur1.toString() != ur2.toString()) {
+            log.error("Used resources don't match");
+            return false;
+        }
+        return true;
+    }
 }

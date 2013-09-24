@@ -23,6 +23,7 @@ class UrlMappings {
     "/contact-us"(view:"/contact-us")
     "/publichome"(view:"/publichome")
     "/signup"(view:"/signup")
+    "/noHostPlatformUrl"(view:"/noHostPlatformUrl")
 
     "500"(view:'/error')
     "401"(view:'/forbidden')

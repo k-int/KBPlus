@@ -17,10 +17,7 @@
 
 <div class="container">
     <ul class="breadcrumb">
-        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
-        %{--<g:if test="${onixplLicense?.license?.licensee}">--}%
-            %{--<li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:onixplLicense?.license?.licensee?.shortcode]}"> ${onixplLicense?.license?.licensee?.name} Current Licenses</g:link> <span class="divider">/</span> </li>--}%
-        %{--</g:if>--}%
+        <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <li> <g:link controller="licenseDetails" action="index" id="${params.id}">ONIX-PL License Details</g:link> </li>
         <g:if test="${editable}">
             <li class="pull-right">Editable by you&nbsp;</li>
@@ -29,7 +26,7 @@
     </div>
 
 <div class="container">
-    <h1>ONIX-PL Licence : ${onixplLicense.title}</h1>
+    <h1>ONIX-PL Licence : ${onixplLicense?.title}</h1>
 </div>
 
 <div class="container">
@@ -38,6 +35,10 @@
 
             <h6>KB+ License Information</h6>
 
+            <g:if test="${!onixplLicense}">
+            Could not find ONIX-PL license
+            </g:if>
+            <g:else>
             <div class="inline-lists">
                 <dl>
                     <dt><label class="control-label" for="license">Reference</label></dt>
@@ -62,17 +63,23 @@
                 <tbody>
                 <g:each in="${onixplLicense.usageTerm.sort {it.usageType.value}}">
                     <tr>
-                        <td><g:link controller="onixplUsageTermsDetails" action="index" id="${it.id}">${it.usageType.value}</g:link></td>
+                        <td><g:link controller="onixplUsageTermDetails" action="index" id="${it.id}">${it.usageType.value}</g:link></td>
                         <td><g:refdataValue cat="UsageStatus" owner="${onixplLicense}" val="${it.usageStatus.value}" /></td>
-                        <td><g:each in="${it.usageTermLicenseText.licenseText.sort {it.elementId}}">
-                            ${it.elementId} - <g:link controller="onixplLicenseTextDetails" action="index" id="${it.id}">${it.text}</g:link><br>
+                        <td><g:each in="${it.usageTermLicenseText.licenseText.sort {it.displayNum}}">
+                            <g:if test="${it.displayNum}">
+                                ${it.displayNum}
+                            </g:if>
+                            <g:else>
+                                ${it.elementId}
+                            </g:else>
+                                - <g:link controller="onixplLicenseTextDetails" action="index" id="${it.id}">${it.text}</g:link><br>
                         </g:each>
                         </td>
                     </tr>
                 </g:each>
                 </tbody>
             </table>
-
+            </g:else>
         </div>
     </div>
 </div>

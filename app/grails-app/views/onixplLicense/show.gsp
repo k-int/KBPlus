@@ -46,7 +46,7 @@
                 <dt><g:message code="onixplLicense.license.label" default="License"/></dt>
 
                 <dd><g:link controller="license" action="show"
-                            id="${onixplLicenseInstance?.license?.id}">${onixplLicenseInstance?.license?.encodeAsHTML()}</g:link></dd>
+                            id="${onixplLicenseInstance?.licenses?.id}">${onixplLicenseInstance?.licenses?.encodeAsHTML()}</g:link></dd>
 
             </g:if>
 

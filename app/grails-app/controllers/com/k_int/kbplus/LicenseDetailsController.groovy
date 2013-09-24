@@ -44,7 +44,7 @@ class LicenseDetailsController {
     def license_reference_str = result.license.reference?:'NO_LIC_REF_FOR_ID_'+params.id
 
     def filename = "licenceDetails_${license_reference_str.replace(" ", "_")}"
-    result.onixplLicense = result.license.onixplLicense
+    result.onixplLicense = result.license.onixplLicense;
 
     withFormat {
 		  html result

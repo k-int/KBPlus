@@ -9,7 +9,7 @@
 
     <div class="container">
       <ul class="breadcrumb">
-        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <li> <g:link controller="myInstitutions" action="instdash" params="${[shortcode:params.shortcode]}">${institution.name} Dashboard</g:link> </li>
       </ul>
     </div>
@@ -57,22 +57,25 @@
               <g:each in="${todos}" var="todo">
                 <tr>
                   <td>
-                    Changes(s) to ${todo.value.objtp} <br/>
-                    <strong>
-                      <g:if test="${todo.value.objtp=='Subscription'}">
-                        <g:link controller="subscriptionDetails" action="index" id="${todo.value.targetObject.id}">${todo.value.title}</g:link>
+                    <span class="badge badge-warning">${todo.num_changes}</span> <em>${todo.item_with_changes.toString()}</em> </br>
+                    <span class="pull-right">Changes between <g:formatDate date="${todo.earliest}" format="yyyy-MM-dd hh:mm a"/></span><br/>
+                    <span class="pull-right">and <g:formatDate date="${todo.latest}" format="yyyy-MM-dd hh:mm a"/></span><br/>
+                    <strong class="pull-right">
+                      <g:if test="${todo.item_with_changes instanceof com.k_int.kbplus.Subscription}">
+                        <g:link controller="subscriptionDetails" action="index" id="${todo.item_with_changes.id}">View Subscription</g:link>
                       </g:if>
                       <g:else>
-                        <g:link controller="licenseDetails" action="index" id="${todo.value.targetObject.id}">${todo.value.title}</g:link>
+                        <g:link controller="licenseDetails" action="index" id="${todo.item_with_changes.id}">View License</g:link>
                       </g:else>
-                    </strong><br/>
-                    <span class="pull-right"><strong>${todo.value.changes.size()}</strong> 
-                                             Changes between <g:formatDate date="${todo.value.earliest}" format="yyyy-MM-dd hh:mm a"/></span> <br/>
-                    <span class="pull-right">and <g:formatDate date="${todo.value.latest}" format="yyyy-MM-dd hh:mm a"/> </span>
+                    </strong>
                   </td>
                 </tr>
               </g:each>
             </table>
+            <div style="text-align:center;">
+              <g:link action="todo" params="${[shortcode:params.shortcode]}" class="btn">View ToDo List</g:link>
+            </div>
+            &nbsp;<br/>
           </div>
         </div>
         <div class="span4">
@@ -87,6 +90,10 @@
                 </tr>
               </g:each>
             </table>
+            <div style="text-align:center;">
+              <g:link action="announcements" params="${[shortcode:params.shortcode]}" class="btn">View Announcements</g:link>
+            </div>
+            &nbsp;<br/>
 
           </div>
         </div>
@@ -95,12 +102,16 @@
             <h6>Latest Discussions</h6>
             <g:if test="${forumActivity}">
               <table class="table">
-                <g:each in="${forumActivity.results}" var="fa">
+                <g:each in="${forumActivity}" var="fa">
                   <tr>
                     <td>
                       ${fa.title}<br>
                       <g:if test="${fa.result_type=='topic'}">
-                        <span class="pull-right"><a href="${grailsApplication.config.ZenDeskBaseURL}/entries/${fa.id}">View Topic</a></span>
+                        <span class="pull-right">
+                          <g:formatDate date="${fa.updated_at}" format="yyyy-MM-dd hh:mm a"/>
+                          <a href="${grailsApplication.config.ZenDeskBaseURL}/entries/${fa.id}">View Topic</a>
+                          <a href="${grailsApplication.config.ZenDeskBaseURL}/entries/${fa.id}" title="View Topic (new Window)" target="_blank"><i class="icon-share-alt"></i></a>
+                        </span>
                       </g:if>
                       <g:else>
                         <span class="pull-right"><a href="${fa.url}">View ${fa.result_type}</a></span>
@@ -114,6 +125,10 @@
               Recent forum activity not available.
               Please retry later.
             </g:else>
+            <div style="text-align:center;">
+              <a href="${grailsApplication.config.ZenDeskBaseURL}/forums" class="btn">Visit Forums</a>
+            </div>
+            &nbsp;<br/>
           </div>
         </div>
       </div>

@@ -9,13 +9,13 @@
 
     <div class="container">
         <ul class="breadcrumb">
-            <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
+            <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
             <li>Licences</li>
         </ul>
     </div>
 
     <div class="container">
-        <h1>${license.licensee?.name} ${license.type?.value} Licence : <span id="reference" class="ipe" style="padding-top: 5px;">${license.reference}</span></h1>
+        <h1>${license.licensee?.name} ${license.type?.value} Licence : ${license.reference}</h1>
 
 <g:render template="nav" contextPath="." />
 

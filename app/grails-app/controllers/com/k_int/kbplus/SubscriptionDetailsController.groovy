@@ -7,6 +7,8 @@ import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.MarkupBuilder
 import groovy.xml.StreamingMarkupBuilder
 import com.k_int.kbplus.auth.*;
+import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
+
 
 //For Transform
 import groovyx.net.http.*
@@ -34,12 +36,12 @@ class SubscriptionDetailsController {
     log.debug("subscriptionDetails id:${params.id} format=${response.format}");
     def result = [:]
 
-    def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : ( (response.format && response.format != "html" && response.format != "all" ) ? 10000 : 10 );
+    result.user = User.get(springSecurityService.principal.id)
+
+    result.max = params.max ? Integer.parseInt(params.max) : ( (response.format && response.format != "html" && response.format != "all" ) ? 10000 : result.user.defaultPageSize );
     result.offset = (params.offset && response.format && response.format != "html") ? Integer.parseInt(params.offset) : 0;
 
     log.debug("max = ${result.max}");
-    result.user = User.get(springSecurityService.principal.id)
     result.subscriptionInstance = Subscription.get(params.id)
 	
 	// If transformer check user has access to it
@@ -88,10 +90,10 @@ class SubscriptionDetailsController {
     }
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
-      base_qry += "order by ie.${params.sort} ${params.order} "
+      base_qry += "order by lower(ie.${params.sort}) ${params.order} "
     }
     else {
-      base_qry += "order by ie.tipp.title.title asc"
+      base_qry += "order by lower(ie.tipp.title.title) asc"
     }
 
     result.num_sub_rows = IssueEntitlement.executeQuery("select count(ie) "+base_qry, qry_params )[0]
@@ -171,7 +173,7 @@ class SubscriptionDetailsController {
     log.debug("subscriptionBatchUpdate ${params}");
 
     params.each { p ->
-      if (p.key.startsWith('_bulkflag.') ) {
+      if ( p.key.startsWith('_bulkflag.') && (p.value=='on'))  {
         def ie_to_edit = p.key.substring(10);
 
         def ie = IssueEntitlement.get(ie_to_edit)
@@ -243,8 +245,7 @@ class SubscriptionDetailsController {
       return
     }
 
-    def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : 10;
+    result.max = params.max ? Integer.parseInt(params.max) : request.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
     if ( result.subscriptionInstance.isEditableBy(result.user) ) {
@@ -266,19 +267,28 @@ class SubscriptionDetailsController {
 
       if ( params.filter ) {
         log.debug("Filtering....");
-        // basequery = " from IssueEntitlement as ie where ie.subscription = ? and ie.status.value != 'Deleted' and ( not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp and ie2.status.value != 'Deleted' ) ) and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( select io from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) )"
-        // basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status.value != 'Deleted' and ( not exists ( select ie from IssueEntitlement ie where ie.subscription = ? and ie.tipp = tipp and ie.status.value != 'Deleted' ) )"
         basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status != ? and ( not exists ( select ie from IssueEntitlement ie where ie.subscription = ? and ie.tipp.id = tipp.id and ie.status != ? ) ) and ( ( lower(tipp.title.title) like ? ) OR ( exists ( select io from IdentifierOccurrence io where io.ti.id = tipp.title.id and io.identifier.value like ? ) ) ) "
-        // select ie.tipp from IssueEntitlement where ie.subscription = ? and ie.tipp = tipp
         qry_params.add("%${params.filter.trim().toLowerCase()}%")
         qry_params.add("%${params.filter}%")
       }
       else {
-        // basequery = "from IssueEntitlement ie where ie.subscription = ? and not exists ( select ie2 from IssueEntitlement ie2 where ie2.subscription = ? and ie2.tipp = ie.tipp  and ie2.status.value != 'Deleted' )"
-        // basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? )"
-        // basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status.value != 'Deleted' and ( not exists ( select ie.tipp from IssueEntitlement ie where ie.subscription = ? and ie.tipp = tipp and ie.status.value != 'Deleted' ) )"
         basequery = "from TitleInstancePackagePlatform tipp where tipp.pkg in ( select pkg from SubscriptionPackage sp where sp.subscription = ? ) and tipp.status != ? and ( not exists ( select ie from IssueEntitlement ie where ie.subscription = ? and ie.tipp.id = tipp.id and ie.status != ? ) )"
       }
+
+      if ( params.endsAfter && params.endsAfter.length() > 0 ) {
+        def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
+        def d = sdf.parse(params.endsAfter)
+        basequery += " and tipp.endDate >= ?"
+        qry_params.add(d)
+      }
+
+      if ( params.startsBefore && params.startsBefore.length() > 0 ) {
+        def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
+        def d = sdf.parse(params.startsBefore)
+        basequery += " and tipp.startDate <= ?"
+        qry_params.add(d)
+      }
+
 
       if ( params.pkgfilter && ( params.pkgfilter != '' ) ) {
         basequery += " and tipp.pkg.id = ? "
@@ -620,7 +630,7 @@ class SubscriptionDetailsController {
       org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
       org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
       
-          params.max = Math.min(params.max ? params.int('max') : 10, 100)
+          params.max = Math.min(params.max ? params.int('max') : result.user.defaultPageSize, 100)
           params.offset = params.offset ? params.int('offset') : 0
 
           //def params_set=params.entrySet()
@@ -689,7 +699,7 @@ class SubscriptionDetailsController {
         log.debug("Add package ${params.addType} to subscription ${params}");
         if ( params.addType == 'With' ) {
           pkg_to_link.addToSubscription(result.subscriptionInstance, true)
-          redirect action:'addEntitlements', id:params.id
+          redirect action:'index', id:params.id
         }
         else if ( params.addType == 'Without' ) {
           pkg_to_link.addToSubscription(result.subscriptionInstance, false)
@@ -747,5 +757,35 @@ class SubscriptionDetailsController {
     def result = sw.toString();
     result;
   }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def history() {
+    log.debug("licenseDetails id:${params.id}");
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.subscription = Subscription.get(params.id)
+
+    if ( ! result.subscription.hasPerm("view",result.user) ) {
+      response.sendError(401);
+      return
+    }
+
+    if ( result.subscription.hasPerm("edit",result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
+    }
+
+    result.max = params.max ?: result.user.defaultPageSize;
+    result.offset = params.offset ?: 0;
+
+    def qry_params = [result.subscription.class.name, "${result.subscription.id}"]
+    result.historyLines = AuditLogEvent.executeQuery("select e from AuditLogEvent as e where className=? and persistedObjectId=? order by id desc", qry_params, [max:result.max, offset:result.offset]);
+    result.historyLinesTotal = AuditLogEvent.executeQuery("select count(e.id) from AuditLogEvent as e where className=? and persistedObjectId=?",qry_params)[0];
+
+    result
+  }
+
 }
 

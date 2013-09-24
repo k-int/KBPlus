@@ -8,7 +8,7 @@
 
     <div class="container">
       <ul class="breadcrumb">
-        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <li> <g:link controller="myInstitutions" action="currentSubscriptions" params="${[shortcode:params.shortcode]}">${institution.name} Current Subscriptions</g:link> </li>
       </ul>
     </div>
@@ -93,9 +93,10 @@
         </table>
       </div>
 
+  
       <div class="pagination" style="text-align:center">
         <g:if test="${subscriptions}" >
-          <bootstrap:paginate  action="currentSubscriptions" controller="myInstitutions" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${num_sub_rows}" />
+          <bootstrap:paginate  action="currentSubscriptions" controller="myInstitutions" params="${params}" next="Next" prev="Prev" max="${max}" total="${num_sub_rows}" />
         </g:if>
       </div>
 

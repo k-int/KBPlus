@@ -8,7 +8,7 @@
 
     <div class="container">
         <ul class="breadcrumb">
-            <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
+            <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
            <li> <g:link controller="myInstitutions" action="addLicense" params="${[shortcode:params.shortcode]}">${institution.name} Add License</g:link> </li>
         </ul>
     </div>
@@ -44,6 +44,15 @@
             </div>
         </div>
     </div>
+
+      <div class="container">
+        <g:form action="addLicense" params="${params}" method="get" class="form-inline">
+          <input type="hidden" name="sort" value="${params.sort}">
+          <input type="hidden" name="order" value="${params.order}">
+          <label>Filters - License Name:</label> <input name="filter" value="${params.filter}"/> &nbsp;
+          <input type="submit" class="btn btn-primary">
+        </g:form>
+      </div>
 
     <g:form action="actionLicenses"
             controller="myInstitutions" 
@@ -97,7 +106,14 @@
               </g:each>
             </tbody>
           </table>
+
+          <div class="pagination" style="text-align:center">
+            <g:if test="${licenses}" >
+              <bootstrap:paginate  action="addLicense" controller="myInstitutions" params="${params}" next="Next" prev="Prev" max="${max}" total="${numLicenses}" />
+            </g:if>
+          </div>
         </div>
+
       </g:if>
     </g:form>
 

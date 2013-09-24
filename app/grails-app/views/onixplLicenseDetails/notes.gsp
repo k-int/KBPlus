@@ -9,7 +9,7 @@
 
     <div class="container">
       <ul class="breadcrumb">
-        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <g:if test="${onixplLicense.license.licensee}">
           <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:onixplLicense.license.licensee.shortcode]}"> ${onixplLicense.license.licensee.name} Current Licenses</g:link> <span class="divider">/</span> </li>
         </g:if>

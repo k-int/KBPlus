@@ -12,6 +12,5 @@ import org.junit.*
 class TitleStatsServiceTests {
 
     void testSomething() {
-        fail "Implement me"
     }
 }

@@ -71,7 +71,7 @@
           <g:if test="${orgInstance?.outgoingCombos}">
             <dt><g:message code="org.outgoingCombos.label" default="Outgoing Combos" /></dt>
             <g:each in="${orgInstance.outgoingCombos}" var="i">
-              <dd>${i.type?.value} - <g:link controller="org" action="show" id="${i.toOrg.id}">${i.toOrg?.name}</g:link>
+              <dd>${i.type?.value} - <g:link controller="organisations" action="show" id="${i.toOrg.id}">${i.toOrg?.name}</g:link>
                 (<g:each in="${i.toOrg?.ids}" var="id">
                   ${id.identifier.ns.ns}:${id.identifier.value} 
                 </g:each>)
@@ -96,8 +96,8 @@
             <dd><ul>
               <g:each in="${orgInstance.links}" var="i">
                 <li>
-                  <g:if test="${i.pkg}"><g:link controller="package" action="show" id="${i.pkg.id}">Package: ${i.pkg.name} (${i.pkg?.packageStatus?.value})</g:link></g:if>
-                  <g:if test="${i.sub}"><g:link controller="subscription" action="show" id="${i.sub.id}">Subscription: ${i.sub.name} (${i.sub.status?.value})</g:link></g:if>
+                  <g:if test="${i.pkg}"><g:link controller="packageDetails" action="show" id="${i.pkg.id}">Package: ${i.pkg.name} (${i.pkg?.packageStatus?.value})</g:link></g:if>
+                  <g:if test="${i.sub}"><g:link controller="subscriptionDetails" action="show" id="${i.sub.id}">Subscription: ${i.sub.name} (${i.sub.status?.value})</g:link></g:if>
                   <g:if test="${i.lic}">Licence: ${i.lic.id} (${i.lic.status?.value})</g:if>
                   <g:if test="${i.title}"><g:link controller="titleInstance" action="show" id="${i.title.id}">Title: ${i.title.title} (${i.title.status?.value})</g:link></g:if>
                   (${i.roleType?.value}) </li>

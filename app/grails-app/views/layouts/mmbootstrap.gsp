@@ -50,7 +50,7 @@
                       <li <%='titleInstancePackagePlatform'== controllerName ? ' class="active"' : '' %>><g:link controller="titleInstancePackagePlatform">Title Instance Package Platform</g:link></li>
                       <li <%='subscription'== controllerName ? ' class="active"' : '' %>><g:link controller="subscription">Subscriptions</g:link></li>
                       <li <%='license'== controllerName ? ' class="active"' : '' %>><g:link controller="license">Licences</g:link></li>
-                      <li <%='onixplLicense'== controllerName ? ' class="active"' : '' %>><g:link controller="onixplLicenseDetails" action="list">ONIX-PL Licences</g:link></li>
+                      <li <%='onixplLicenseDetails'== controllerName ? ' class="active"' : '' %>><g:link controller="onixplLicenseDetails" action="list">ONIX-PL Licences</g:link></li>
                     </ul>
                   </li>
                 </sec:ifAnyGranted>
@@ -62,6 +62,8 @@
   
   
                        <li><g:link controller="packageDetails" action="index">All Packages</g:link></li>
+                       <li><g:link controller="onixplLicenseCompare"
+                                   action="index">Compare ONIX-PL Licences</g:link></li>
                        <li class="divider"></li>
                        <g:set var="usaf" value="${user.authorizedOrgs}" />
                        <g:if test="${usaf && usaf.size() > 0}">
@@ -90,6 +92,12 @@
                                <li><g:link controller="organisations"
                                            action="show" 
                                            params="${[id:org.id]}">Organisation Information</g:link></li>
+                               <li><g:link controller="subscriptionImport" 
+                                           action="generateImportWorksheet"
+                                           params="${[id:org.id]}">Generate Subscription Taken Worksheet</g:link></li>
+                               <li><g:link controller="subscriptionImport" 
+                                           action="importSubscriptionWorksheet"
+                                           params="${[id:org.id]}">Import Subscription Taken Worksheet</g:link></li>
 
                              </ul>
                            </li>
@@ -126,7 +134,11 @@
                          <g:link controller="titleDetails" action="findTitleMatches">New Title</g:link></li>
                        <li <%= ( ( 'licenseDetails'== controllerName ) && ( 'create'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="licenseDetails" action="create">New License</g:link></li>
-
+                       <li class="divider"></li>
+                       <li <%= ( ( 'subscriptionImport'== controllerName ) && ( 'generateImportWorksheet'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="subscriptionImport" action="generateImportWorksheet">Generate Subscription Taken Worksheet</g:link></li>
+                       <li <%= ( ( 'subscriptionImport'== controllerName ) && ( 'importSubscriptionWorksheet'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="subscriptionImport" action="importSubscriptionWorksheet">Import Subscription Taken Worksheet</g:link></li>
                      </ul>
                    </li>
                 </sec:ifAnyGranted>
@@ -143,9 +155,6 @@
                       <li class="divider"></li>
                       <li <%= ( ( 'organisations'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="organisations" action="index">Manage Organisations</g:link>
-                      </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'reconcile'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="reconcile">Manage Data Reconciliation</g:link>
                       </li>
                       <li <%= ( ( 'startFTIndex'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="startFTIndex" action="index">Start FT Index Update</g:link>
@@ -179,6 +188,10 @@
                       </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'forceSendNotifications'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="forceSendNotifications">Send Pending Notifications</g:link>
+                      </li>
+                      <li class="divider"></li>
+                      <li <%= ( ( 'stats'== controllerName ) && ( 'statsHome'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="stats" action="statsHome">Statistics</g:link>
                       </li>
                     </ul>
                   </li>
@@ -295,25 +308,34 @@
   <!-- For select2 -->
   <script src="${resource(dir: 'js', file: 'select2.js')}"></script>
       
-  <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.4/zenbox.js"></script>
+  <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
   <style type="text/css" media="screen, projection">
-    @import url(//assets.zendesk.com/external/zenbox/v2.4/zenbox.css);
+    @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
   </style>
   <script type="text/javascript">
     if (typeof(Zenbox) !== "undefined") {
       Zenbox.init({
-        dropboxID:   "20059881",
+        dropboxID:   "20234067",
         url:         "https://kbplus.zendesk.com",
-        tabID:       "feedback",
-        tabColor:    "green",
+        tabTooltip:  "Support",
+        tabImageURL: "https://assets.zendesk.com/external/zenbox/images/tab_support_right.png",
+        tabColor:    "#008000",
         tabPosition: "Right"
       });
     }
   </script>
-      
+
   <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', '${grailsApplication.config.kbplus.analytics.code}']);
+      <g:if test="${params.shortcode != null}">
+      _gaq.push(['_setCustomVar',
+            1,                     // This custom var is set to slot #1.  Required parameter.
+            'Institution',         // The name acts as a kind of category for the user activity.  Required parameter.
+            "${params.shortcode}", // This value of the custom variable.  Required parameter.
+            2                      // Sets the scope to session-level.  Optional parameter.
+         ]);
+      </g:if>
       _gaq.push(['_trackPageview']);
       (function() {
           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;

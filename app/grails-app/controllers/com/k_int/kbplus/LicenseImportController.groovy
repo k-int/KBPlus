@@ -11,7 +11,9 @@ class LicenseImportController {
       CAT_STATUS = "UsageStatus",
       CAT_DOCTYPE = 'Document Type',
       DOCTYPE = 'ONIX-PL License',
-      DEFAULT_DOC_TITLE = 'ONIX-PL Licence document'
+      DEFAULT_DOC_TITLE = 'ONIX-PL Licence document',
+      CAT_USER = "User",
+      CAT_USEDRESOURCE = "UsedResource"
 
   def MAX_FILE_SIZE_MB = 10
   def MAX_FILE_SIZE    = MAX_FILE_SIZE_MB * 1024 * 1024 // 10Mb
@@ -232,6 +234,14 @@ class LicenseImportController {
       usageTerms[n] = [:]
       usageTerms[n].type = ut.UsageType.text().replace(onixplPrefix,'')
       usageTerms[n].status = ut.UsageStatus.text().replace(onixplPrefix,'')
+      usageTerms[n].user = []
+      ut.User.eachWithIndex { user, m ->
+          usageTerms[n].user[m] = user.text().replace(onixplPrefix, '')
+      }
+      usageTerms[n].usedResource = []
+      ut.UsedResource.eachWithIndex { ur, m ->
+          usageTerms[n].usedResource[m] = ur.text().replace(onixplPrefix, '')
+      }
       def licTexts = []
       ut.LicenseTextLink.each{ ltl ->
         licTexts.add(onixpl.LicenseDocumentText.TextElement.find{ it.@id == ltl.@href })
@@ -244,6 +254,9 @@ class LicenseImportController {
         usageTerms[n].licenseTexts[m].text = [lt.TextPreceding.text(), lt.Text.text()].join(" ")
         usageTerms[n].licenseTexts[m].elId = lt.@id.text() //lt.SortNumber.text()
         usageTerms[n].licenseTexts[m].displayNum = lt.DisplayNumber?.text()
+        if (!usageTerms[n].licenseTexts[m].displayNum) {
+            usageTerms[n].licenseTexts[m].displayNum = lt.SortNumber?.text()
+        }
       }
     }
     log.debug("Found "+usageTerms.size()+" usage terms")
@@ -423,12 +436,24 @@ class LicenseImportController {
     // Retrieve the type and status
     def rdvType = RefdataCategory.lookupOrCreate(CAT_TYPE, usageTerm.type);
     def rdvStatus = RefdataCategory.lookupOrCreate(CAT_STATUS, usageTerm.status);
+    // Get the 'users' and 'used resources' for the usage term
+    def rdvUser = [];
+    usageTerm.user.each { user ->
+      rdvUser.add(RefdataCategory.lookupOrCreate(CAT_USER, user));
+    }
+    def rdvUsedResource = [];
+    usageTerm.usedResource.each { ur ->
+        rdvUsedResource.add(RefdataCategory.lookupOrCreate(CAT_USEDRESOURCE, ur));
+    }
+    log.error("Usage term user: ${usageTerm.user}, Used resource: ${usageTerm.usedResource}");
     //log.debug("Recording usage term $rdvType : $rdvStatus")
     // Create the term
     def term = new OnixplUsageTerm(
         oplLicense:opl,
         usageType:rdvType,
-        usageStatus:rdvStatus
+        usageStatus:rdvStatus,
+        user:rdvUser,
+        usedResource:rdvUsedResource
     );
     term.save(flush: true);
     //log.debug("Term "+term.id);

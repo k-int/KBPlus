@@ -12,6 +12,5 @@ import org.junit.*
 class JuspSyncServiceTests {
 
     void testSomething() {
-        fail "Implement me"
     }
 }
