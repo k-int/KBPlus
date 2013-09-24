@@ -6,7 +6,7 @@ import com.grailsrocks.functionaltest.*
 
 class DataloadFunctionalTests extends FunctionalTestCase {
 
-    void testSomeWebsiteFeature() {
+    void testUserCreation() {
         setBrowser("CHROME")
         // setBrowser(BrowserVersion.CHROME_16)
         // Here call get(uri) or post(uri) to start the session
