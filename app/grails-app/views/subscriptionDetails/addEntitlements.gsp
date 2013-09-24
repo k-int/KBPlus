@@ -130,7 +130,7 @@
         $('.bulkcheck').attr('checked', true);
       }
 
-      simpleHiddenRefdata").editable({
+      $("simpleHiddenRefdata").editable({
           url: function(params) {
             var hidden_field_id = $(this).data('hidden-id');
             $("#"+hidden_field_id).val(params.value);
