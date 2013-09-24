@@ -85,7 +85,7 @@
 
                         <dd>
                         <g:each in="${usageTerm.usageTermLicenseText.sort {it.licenseText.text}}" var="u">
-                            ${u?.licenseText?.text.encodeAsHTML()}<br>
+                            ${u.licenseText.displayNum} ${u.licenseText?.text.encodeAsHTML()}<br>
                         </g:each>
                         </dd>
                     </g:if>
