@@ -49,9 +49,17 @@ class PendingChangeController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def rejectAll() {
     def owner = genericOIDService.resolveOID(params.id)
+
+    def changes_to_reject = []
+
     owner.pendingChanges.each { pc ->
+      changes_to_reject.add(pc)
+    }
+
+    changes_to_reject.each { pc ->
       performReject(pc)
     }
+
     redirect(url: request.getHeader('referer'))
   }
 
@@ -120,6 +128,8 @@ class PendingChangeController {
   }
 
   private void performReject(change) {
-    change.delete();
+    PendingChange.withNewTransaction { TransactionStatus status ->
+      change.delete();
+    }
   }
 }
