@@ -217,11 +217,18 @@ class OnixplLicenseCompareController {
         }
     }
 
+    /**
+     * Produce a sorted list of usage terms for a particular ONIX-PL licence and refdata value. Sort by usage type,
+     * licence text, user and usedresource.
+     * @param opl
+     * @param rdv
+     * @return
+     */
     public static List<OnixplUsageTerm> getUsageTermList(OnixplLicense opl, RefdataValue rdv) {
         List<OnixplUsageTerm> outList = OnixplUsageTerm.findAllByOplLicenseAndUsageType(opl, rdv);
-        outList.sort {it.usageType.value}
-        outList.sort {a,b -> a.usageTermLicenseText.licenseText.text.toString() <=> b.usageTermLicenseText.licenseText.text.toString() ?: a.usageStatus.value <=> b.usageStatus.value}
-
-        return outList;
+        return outList.sort {a,b ->
+                def aString = a.usageType.value.toString() + a.usageTermLicenseText.licenseText.sort {it.displayNum}.text.toString() + a.user.sort {it.value}.value.toString() + a.usedResource.sort {it.value}.value.toString();
+                def bString = b.usageType.value.toString() + b.usageTermLicenseText.licenseText.sort {it.displayNum}.text.toString() + b.user.sort {it.value}.value.toString() + b.usedResource.sort {it.value}.value.toString();
+        aString <=> bString};
     }
 }

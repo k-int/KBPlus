@@ -151,6 +151,11 @@ class OnixplLicense {
             if (sb1.toString() != sb2.toString()) {
                 return false;
             }
+            def userList1 = opl.usageTerm.sort {it.usageType.value}.user.sort {it.value};
+            def userList2 = this.usageTerm.sort {it.usageType.value}.user.sort {it.value};
+            if (userList1.toString() != userList2.toString()) {
+                return false;
+            }
             return true;
         }
     }
