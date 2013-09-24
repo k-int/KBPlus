@@ -4,6 +4,10 @@
 
 	<xsl:strip-space elements="*" />
 
+<xsl:template match="/">
+	<xsl:apply-templates select="//TitleListEntry" />
+</xsl:template>
+
    <xsl:template match="TitleListEntry">
       <xsl:choose>
       	<xsl:when test="./TitleIDs/ID[@namespace='ISSN'] != ''">
