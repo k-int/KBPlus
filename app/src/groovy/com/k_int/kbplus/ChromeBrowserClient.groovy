@@ -10,7 +10,7 @@ public class ChromeBrowserClient extends com.grailsrocks.functionaltest.client.B
      this.listener = listener
      browser='CHROME'
      _client = new com.gargoylesoftware.htmlunit.WebClient(com.gargoylesoftware.htmlunit.BrowserVersion['CHROME'])
-     _client.addWebWindowListener(this)
+     _client.addWebWindowListener((com.grailsrocks.functionaltest.client.BrowserClient)this)
      _client.redirectEnabled = false // We're going to handle this thanks very much
      _client.popupBlockerEnabled = true
      _client.javaScriptEnabled = true

@@ -5,7 +5,7 @@ import grails.plugins.springsecurity.Secured
 import com.k_int.kbplus.auth.*;
 import grails.converters.*
 import org.codehaus.groovy.grails.commons.ApplicationHolder
-
+import org.springframework.transaction.TransactionStatus
 
 class PendingChangeController {
 
