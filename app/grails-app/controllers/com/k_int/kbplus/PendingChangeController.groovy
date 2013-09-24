@@ -31,15 +31,16 @@ class PendingChangeController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def acceptAll() {
     def owner = genericOIDService.resolveOID(params.id)
-    def delete_queue = []
+
+    def changes_to_accept = []
+
 
     owner.pendingChanges.each { pc ->
-      if ( performAccept(pc) )
-        delete_queue.add(pc)
+      changes_to_accept.add(pc)
     }
 
-    delete_queue.each { pc ->
-      pc.delete()
+    changes_to_accept.each { pc ->
+      performAccept(pc)
     }
 
     redirect(url: request.getHeader('referer'))
@@ -108,6 +109,7 @@ class PendingChangeController {
         change.license?.save();
         change.subscription?.pendingChanges?.remove(change)
         change.subscription?.save();
+        change.delete();
       }
       catch ( Exception e ) {
         log.error("Problem accepting change",e);
