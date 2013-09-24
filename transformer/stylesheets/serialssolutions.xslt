@@ -6,7 +6,7 @@
     
    <xsl:template match="/">
    		<xsl:text>Title&#x9;ISSN/ISBN&#x9;Type&#x9;Status&#x9;Default Dates&#x9;Custom Date From&#x9;Custom Date To&#x9;Title Id&#x9;Publication date&#x9;Edition&#x9;Publisher&#x9;Public Note&#x9;Display Public Note&#x9;Location Note&#x9;Display Location Note&#x9;Default URL&#x9;Custom URL&#xA;</xsl:text>
-   		<xsl:apply-templates />
+   		<xsl:apply-templates select="//TitleListEntry" />
    </xsl:template>
    
    <xsl:template match="TitleListEntry">
