@@ -219,9 +219,12 @@ class OnixplLicenseCompareController {
 
     public static List<OnixplUsageTerm> getUsageTermList(OnixplLicense opl, RefdataValue rdv) {
         List<OnixplUsageTerm> outList = OnixplUsageTerm.findAllByOplLicenseAndUsageType(opl, rdv);
-        outList.sort {it.usageType.value}
-        outList.sort {a,b -> a.usageTermLicenseText.licenseText.text.toString() <=> b.usageTermLicenseText.licenseText.text.toString() ?: a.usageStatus.value <=> b.usageStatus.value}
-
+        outList.sort {a,b ->
+                a.usedResource.value.toString() <=> b.usedResource.value.toString() ?:
+                    a.user.value.toString() <=> b.user.value.toString()};
+        if ("Include".equals(rdv.value)) {
+            println("License: ${opl.id} | RDV: ${rdv} | Outlist: " + outList);
+        }
         return outList;
     }
 }

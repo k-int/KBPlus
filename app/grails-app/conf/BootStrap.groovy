@@ -45,7 +45,15 @@ class BootStrap {
       institutionalUser = new Role(authority: 'INST_USER', roleType:'user').save(failOnError: true)
     }
     ensurePermGrant(institutionalUser,view_permission);
-	
+
+    // Allows values to be added to the vocabulary control list by passing an array with RefdataCategory as the key
+    // and a list of values to be added to the RefdataValue table.
+    grailsApplication.config.refdatavalues.each { rdc, rdvList ->
+        rdvList.each { rdv ->
+            log.debug("Creating rdc ${rdc} with rdv association ${rdv}");
+            RefdataCategory.lookupOrCreate(rdc, rdv);
+        }
+    }
 	// Transforms types and formats Refdata 
 	// !!! HAS TO BE BEFORE the script adding the Transformers as it is used by those tables !!!
 	def json_format = RefdataCategory.lookupOrCreate('Transform Format', 'json');

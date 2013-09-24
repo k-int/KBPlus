@@ -30,6 +30,7 @@
                     <% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
                     <g:link action="export" params="${params}">TSV Export</g:link>
                 </li>
+            </ul>
         </li>
     </ul>
 </div>
@@ -81,7 +82,7 @@
                             <g:if test="${OnixplUsageTerm.findAllByOplLicenseAndUsageType(license, it)}">
                                 <g:each in="${ltermList}" var="lterm">
                                     <div class="matrix-cell">
-                                        <g:link controller="onixplUsageTermDetails" action="index" id="${lterm.id}" title="${OnixplLicenseCompareController.getLicenseText(lterm)}"><g:refdataValue cat="UsageStatus" owner="${license}"
+                                        <g:link controller="onixplUsageTermDetails" action="index" id="${lterm.id}" title="${lterm.getLicenseText()}"><g:refdataValue cat="UsageStatus" owner="${license}"
                                                         val="${lterm.usageStatus.value}"/></g:link>
                                     </div>
                                 </g:each>

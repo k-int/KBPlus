@@ -61,6 +61,24 @@
 
                     </g:if>
 
+                <g:if test="${usageTerm?.user}">
+                    <dt><g:message code="onixplUsageTerm.usageStatus.label" default="Users"/></dt>
+                    <dd><ul>
+                    <g:each in="${usageTerm.user}">
+                        <li>${it.value.encodeAsHTML()}</li>
+                    </g:each>
+                    </ul></dd>
+                </g:if>
+
+                <g:if test="${usageTerm?.usedResource}">
+                    <dt><g:message code="onixplUsageTerm.usageStatus.label" default="Used Resource"/></dt>
+                    <dd><ul>
+                    <g:each in="${usageTerm.usedResource}">
+                        <li>${it.value.encodeAsHTML()}</li>
+                    </g:each>
+                    </ul></dd>
+                </g:if>
+
                     <g:if test="${usageTerm?.usageTermLicenseText}">
                         <dt><g:message code="onixplUsageTerm.usageTermLicenseText.label"
                                        default="Usage Term License Text"/></dt>

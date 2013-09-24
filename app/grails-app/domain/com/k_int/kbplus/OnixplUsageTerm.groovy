@@ -113,8 +113,30 @@ class OnixplUsageTerm {
         ", oplLicense=" + oplLicense +
         ", usageType=" + usageType +
         ", usageStatus=" + usageStatus +
+        ", usedResource=" + usedResource +
+        ", user=" + user +
         '}';
   }
+
+    /**
+     * Display method that takes all of the license text associated with a usage term and formats it for display. Not
+     * all license texts have a display number and so, in their absence, the elementId is used.
+     * @param oput
+     * @return
+     */
+    public String getLicenseText() {
+        StringBuilder sb = new StringBuilder();
+        for (OnixplUsageTermLicenseText utlt : this.usageTermLicenseText.sort { it.licenseText.text }) {
+            if (utlt.licenseText.displayNum) {
+                sb.append(utlt.licenseText.displayNum + " ");
+            } else {
+                sb.append(utlt.licenseText.elementId + " ");
+            }
+            sb.append(utlt.licenseText.text);
+            sb.append("\n");
+        }
+        return sb.toString().trim();
+    }
 
     /**
      * Given a usage term a comparison will be made. Usage type, usage status and license text content are all taken
