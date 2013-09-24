@@ -37,12 +37,16 @@ class OnixplUsageTermTests {
                 usageType: RDV,
                 usageStatus: RDV,
                 usageTermLicenseText: [TLT],
+                user: [RDV],
+                usedResource: [RDV],
         )
         oput2 = new OnixplUsageTerm(
                 oplLicense: OPL,
                 usageType: RDV,
                 usageStatus: RDV,
                 usageTermLicenseText: [TLT2],
+                user: [RDV],
+                usedResource: [RDV],
         )
         nullOput = new OnixplUsageTerm(
                 oplLicense: null,

@@ -30,36 +30,48 @@ class OnixplLicenseCompareControllerTests {
     }
 
     void testFilterLicenses() {
-        OnixplUsageTerm ut1 = new OnixplUsageTerm(usageType: RefdataValue.findById(135), usageStatus: RefdataValue.findById(141));
+        OnixplUsageTerm ut1 = new OnixplUsageTerm(usageType: RefdataValue.findByValue("Include"), usageStatus: RefdataValue.findByValue("Permitted"));
         OnixplLicense opl1 = new OnixplLicense(title: "Test1", usageTerm: [ut1]);
         ArrayList<OnixplLicense> filteredList = OnixplLicenseCompareController.filterLicenses(buildList(opl1), opl1, "", "");
         assert filteredList.size() == 4;
     }
 
     void testFilterLicensesMatch() {
-        OnixplUsageTerm ut1 = new OnixplUsageTerm(usageType: RefdataValue.findById(135), usageStatus: RefdataValue.findById(141));
-        OnixplLicense opl1 = new OnixplLicense(title: "Test1", usageTerm: [ut1]);
+        RefdataValue type = new RefdataValue(value: "Include");
+        RefdataValue status = new RefdataValue(value: "Permitted");
+        OnixplUsageTerm ut1 = new OnixplUsageTerm(usageType: type, usageStatus: status);
+        OnixplLicenseText lt = new OnixplLicenseText(text: "Test text");
+        OnixplLicense opl1 = new OnixplLicense(title: "Test1", usageTerm: [ut1], licenseText: [lt]);
         ArrayList<OnixplLicense> filteredList = OnixplLicenseCompareController.filterLicenses(buildList(opl1), opl1, "true", "");
-        assert filteredList.size() == 4;
+        assert filteredList.size() == 1;
     }
 
     void testFilterLicensesNoMatch() {
-        OnixplUsageTerm ut1 = new OnixplUsageTerm(usageType: RefdataValue.findById(135), usageStatus: RefdataValue.findById(141));
-        OnixplLicense opl1 = new OnixplLicense(title: "Test1", usageTerm: [ut1]);
+        RefdataValue type = new RefdataValue(value: "Include");
+        RefdataValue status = new RefdataValue(value: "Permitted");
+        OnixplUsageTerm ut1 = new OnixplUsageTerm(usageType: type, usageStatus: status);
+        OnixplLicenseText lt = new OnixplLicenseText(text: "Test text");
+        OnixplLicense opl1 = new OnixplLicense(title: "Test1", usageTerm: [ut1], licenseText: [lt]);
         ArrayList<OnixplLicense> filteredList = OnixplLicenseCompareController.filterLicenses(buildList(opl1), opl1, "false", "");
-        assert filteredList.size() == 0;
+        assert filteredList.size() == 3;
     }
 
     private ArrayList<OnixplLicense> buildList(OnixplLicense opl) {
-        OnixplUsageTerm ut1 = new OnixplUsageTerm(usageType: RefdataValue.get(135), usageStatus: RefdataValue.get(141));
-        OnixplUsageTerm ut2 = new OnixplUsageTerm(usageType: RefdataValue.get(136), usageStatus: RefdataValue.get(141));
+        RefdataValue type = new RefdataValue(value: "Include");
+        RefdataValue type2 = new RefdataValue(value: "Access");
+        RefdataValue status = new RefdataValue(value: "Permitted");
+        OnixplUsageTerm ut1 = new OnixplUsageTerm(usageType: type, usageStatus: status);
+        OnixplUsageTerm ut2 = new OnixplUsageTerm(usageType: type2, usageStatus: status);
         mockForConstraintsTests(OnixplUsageTerm, [ut1, ut2]);
-        OnixplLicense opl1 = new OnixplLicense(title: "Test1", usageTerm: [ut1]);
-        OnixplLicense opl2 = new OnixplLicense(title: "Test2", usageTerm: [ut1]);
-        OnixplLicense opl3 = new OnixplLicense(title: "Test3", usageTerm: [ut2]);
-        OnixplLicense opl4 = new OnixplLicense(title: "Test1", usageTerm: [ut2]);
+        OnixplLicenseText lt1 = new OnixplLicenseText(text: "Test text");
+        OnixplLicenseText lt2 = new OnixplLicenseText(text: "Test text2");
+        mockForConstraintsTests(OnixplLicenseText, [lt1, lt2]);
+        OnixplLicense opl1 = new OnixplLicense(title: "Test1", usageTerm: [ut1], licenseText: [lt1]);
+        OnixplLicense opl2 = new OnixplLicense(title: "Test2", usageTerm: [ut1], licenseText: [lt2]);
+        OnixplLicense opl3 = new OnixplLicense(title: "Test3", usageTerm: [ut2], licenseText: [lt1]);
+        OnixplLicense opl4 = new OnixplLicense(title: "Test1", usageTerm: [ut2], licenseText: [lt2]);
         mockForConstraintsTests(OnixplLicense, [opl1, opl2, opl3, opl4]);
-        return new ArrayList<OnixplLicense>(3) {{
+        return new ArrayList<OnixplLicense>(5) {{
             add(opl);
             add(opl1);
             add(opl2);
