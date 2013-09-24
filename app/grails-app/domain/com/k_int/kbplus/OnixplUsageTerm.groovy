@@ -139,23 +139,60 @@ class OnixplUsageTerm {
     }
 
     /**
-     * Given a usage term a comparison will be made. Usage type, usage status and license text content are all taken
-     * into account.
+     * Given a usage term a comparison will be made. Usage type, usage status, user, used resource and license text
+     * content are all taken into account.
      * @param oput
      * @return
      */
     public Boolean compare(OnixplUsageTerm oput) {
+        log.error("Usage term 1: ${this.id} | Usage term 2: ${oput.id}")
         if (oput == null) {
             return false;
         }
+        if (this.usageType.value != oput.usageType.value) {
+            log.error("Usage types don't match");
+            return false;
+        }
+        if (this.usageStatus.value != oput.usageStatus.value) {
+            log.error("Usage statuses don't match");
+            return false;
+        }
         StringBuilder text1 = new StringBuilder();
-        StringBuilder text2 = new StringBuilder();
         for (OnixplUsageTermLicenseText utlt : this.usageTermLicenseText.sort {it.licenseText.text}) {
             text1.append(utlt.licenseText.text);
         }
+        StringBuilder text2 = new StringBuilder();
         for (OnixplUsageTermLicenseText utlt : oput.usageTermLicenseText.sort {it.licenseText.text}) {
             text2.append(utlt.licenseText.text);
         }
-        return (this.usageType.id == oput.usageType.id && this.usageStatus.id == oput.usageStatus.id && text1.toString() == text2.toString());
+        if (text1.toString() != text2.toString()) {
+            log.error("Licence texts don't match");
+            return false;
+        }
+        StringBuilder user1 = new StringBuilder();
+        for (RefdataValue user : this.user.sort {it.value}) {
+            user1.append(user.value);
+        }
+        StringBuilder user2 = new StringBuilder();
+        for (RefdataValue user : oput.user.sort {it.value}) {
+            user2.append(user.value);
+        }
+        if (user1.toString() != user2.toString()) {
+            log.error("Users don't match")
+            return false;
+        }
+        StringBuilder ur1 = new StringBuilder();
+        for (RefdataValue ur : this.usedResource.sort {it.value}) {
+            ur1.append(ur.value);
+        }
+        StringBuilder ur2 = new StringBuilder();
+        for (RefdataValue ur : oput.usedResource.sort {it.value}) {
+            ur2.append(ur.value);
+        }
+        if (ur1.toString() != ur2.toString()) {
+            log.error("Used resources don't match");
+            return false;
+        }
+        return true;
     }
 }

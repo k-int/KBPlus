@@ -50,7 +50,6 @@ class BootStrap {
     // and a list of values to be added to the RefdataValue table.
     grailsApplication.config.refdatavalues.each { rdc, rdvList ->
         rdvList.each { rdv ->
-            log.debug("Creating rdc ${rdc} with rdv association ${rdv}");
             RefdataCategory.lookupOrCreate(rdc, rdv);
         }
     }

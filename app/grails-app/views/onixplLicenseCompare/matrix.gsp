@@ -94,7 +94,7 @@
                         <g:each in="${list}" var="j">
                                 <g:if test="${OnixplUsageTerm.findAllByOplLicenseAndUsageType(j, it)}">
                                     <g:set var="l2termList" value="${com.k_int.kbplus.OnixplLicenseCompareController.getUsageTermList(j, it)}"/>
-                                    <g:if test="${l2termList.size() >= ltermList.size()}">
+                                    <g:if test="${l2termList.size() == ltermList.size()}">
                                         <g:set var="match" value="${true}"/>
                                         <g:each in="${ltermList}" var="u1" status="k">
                                             <g:if test="${!u1.compare(l2termList.get(k))}">
@@ -105,6 +105,9 @@
                                             <g:set var="match" value="${false}"/>
                                         </g:if>
                                     </g:if>
+                                    <g:else>
+                                        <g:set var="match" value="${false}"/>
+                                    </g:else>
                                     <g:if test="${match}">
                                         <td class="matrix-match">
                                     </g:if>
