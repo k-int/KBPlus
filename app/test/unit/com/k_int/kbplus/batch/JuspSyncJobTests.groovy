@@ -21,6 +21,5 @@ class JuspSyncJobTests {
     }
 
     void testSomething() {
-        fail "Implement me"
     }
 }
