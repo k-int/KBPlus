@@ -129,6 +129,10 @@ class PendingChangeController {
 
   private void performReject(change) {
     PendingChange.withNewTransaction { TransactionStatus status ->
+      change.license?.pendingChanges?.remove(change)
+      change.license?.save();
+      change.subscription?.pendingChanges?.remove(change)
+      change.subscription?.save();
       change.delete();
     }
   }
