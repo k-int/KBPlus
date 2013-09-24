@@ -59,8 +59,8 @@ grails.project.dependency.resolution = {
         runtime ":resources:1.2.RC2"
         runtime ':fields:1.2'
         // This is commented out so as not to cause probelms in the CI environment
-        // build ":functional-test:2.0.RC2-SNAPSHOT"  // Build == not required in war
-
+        build ":functional-test:2.0.RC2-SNAPSHOT"  // Build == not required in war
+        // compile ":functional-test:2.0.RC1"
         // Uncomment these (or add new ones) to enable additional resources capabilities
         //runtime ":zipped-resources:1.0"
         //runtime ":cached-resources:1.0"
