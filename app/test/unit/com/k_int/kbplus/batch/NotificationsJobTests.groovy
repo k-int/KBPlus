@@ -21,6 +21,5 @@ class NotificationsJobTests {
     }
 
     void testSomething() {
-        fail "Implement me"
     }
 }
