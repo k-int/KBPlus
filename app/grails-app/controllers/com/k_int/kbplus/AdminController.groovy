@@ -56,27 +56,6 @@ class AdminController {
 
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
-  def reconcile() {
-    def result = [:]
-    result.recon_status = dataloadService.getReconStatus();
-    result
-  }
-
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
-  def startReconciliation() {
-    def test = RefdataCategory.findByDesc('isCoreTitle');
-    if ( test != null ) {
-      log.debug("Starting reconciliation process");
-      flash.message="Reconciliation started";
-      dataloadService.requestReconciliation();
-    }
-    else {
-      flash.message="Reconciliation not started - Is the reference data set up?";
-    }
-    redirect(action:'reconcile');
-  }
-
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def showAffiliations() {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)

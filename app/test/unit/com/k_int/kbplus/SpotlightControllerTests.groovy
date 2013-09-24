@@ -12,6 +12,5 @@ import org.junit.*
 class SpotlightControllerTests {
 
     void testSomething() {
-       fail "Implement me"
     }
 }

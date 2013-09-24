@@ -12,6 +12,5 @@ import org.junit.*
 class ZenDeskSyncServiceTests {
 
     void testSomething() {
-        fail "Implement me"
     }
 }

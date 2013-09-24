@@ -183,7 +183,11 @@ class ChangeNotificationService {
     new_pending_change.owner = objowner
     new_pending_change.oid = "${target.class.name}:${target.id}"
     new_pending_change.ts = new Date();
-    new_pending_change.save(flush:true)
+    if ( new_pending_change.save(flush:true) ) {
+    }
+    else {
+      log.error("Problem saving pending change: ${new_pending_change.errors}");
+    }
   }
 
 }
