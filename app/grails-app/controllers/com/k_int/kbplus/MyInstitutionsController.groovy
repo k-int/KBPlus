@@ -249,7 +249,7 @@ class MyInstitutionsController {
       base_qry += " order by s.name asc"
     }
 
-    log.debug("current subs base query: ${base_qry} params: ${qry_params}");
+    log.debug("current subs base query: ${base_qry} params: ${qry_params} max:${result.max} offset:${result.offset}");
 
     result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
     result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.max, offset:result.offset]);

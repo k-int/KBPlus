@@ -55,7 +55,7 @@ class PendingChangeController {
   }
 
   private boolean performAccept(change) {
-    result = true
+    def result = true
     PendingChange.withNewTransaction { TransactionStatus status ->
       try {
         def parsed_change_info = JSON.parse(change.changeDoc)
@@ -105,7 +105,9 @@ class PendingChangeController {
             break;
         }
         change.license?.pendingChanges?.remove(change)
+        change.license?.save();
         change.subscription?.pendingChanges?.remove(change)
+        change.subscription?.save();
       }
       catch ( Exception e ) {
         log.error("Problem accepting change",e);
