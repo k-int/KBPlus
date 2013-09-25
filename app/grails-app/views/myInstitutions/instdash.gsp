@@ -59,7 +59,7 @@
               <thead>
                 <th>
                   <h5 class="pull-left">To Do</h5>
-                  <img src="/demo/static/images/icon_todo.png" alt="To-Dos" class="pull-right" />
+                  <img src="${resource(dir: 'images', file: 'icon_todo.png')}" alt="To-Dos" class="pull-right" />
                 </th>
               </thead>
               <tbody>
@@ -67,7 +67,7 @@
                 <tr>
                   <td>
                     <div class="pull-left icon">
-                      <img src="/demo/static/images/icon_todo.png" alt="To-Dos" /><br/>
+                      <img src="${resource(dir: 'images', file: 'icon_todo.png')}" alt="To-Dos" /><br/>
                       <span class="badge badge-warning">${todo.num_changes}</span>
                     </div>
                     <div class="pull-right message">
@@ -98,7 +98,7 @@
               <thead>
                 <th>
                   <h5 class="pull-left">Announcements</h5>
-                  <img src="/demo/static/images/icon_announce.png" alt="To-Dos" class="pull-right" />
+                  <img src="${resource(dir: 'images', file: 'icon_announce.png')}" alt="To-Dos" class="pull-right" />
                 </th>
               </thead>
               <tbody>
@@ -106,7 +106,7 @@
                 <tr>
                   <td>
                     <div class="pull-left icon">
-                      <img src="/demo/static/images/icon_announce.png" alt="Annoucement" />
+                      <img src="${resource(dir: 'images', file: 'icon_announce.png')}" alt="Annoucement" />
                     </div>
                     <div class="pull-right message">
                       <p><strong>${ra.title}</strong></p>
@@ -132,7 +132,7 @@
               <thead>
                 <th>
                   <h5 class="pull-left">Latest Discussions</h5>
-                  <img src="/demo/static/images/icon_discuss.png" alt="Discussions" class="pull-right" />
+                  <img src="${resource(dir: 'images', file: 'icon_discuss.png')}" alt="Discussions" class="pull-right" />
                 </th>
               </thead>
               <tbody>
@@ -141,7 +141,7 @@
                   <tr>
                     <td>
                       <div class="pull-left icon">
-                        <img src="/demo/static/images/icon_discuss.png" alt="Discussion" />
+                        <img src="${resource(dir: 'images', file: 'icon_discuss.png')}" alt="Discussion" />
                       </div>
                       <div class="pull-right message">
                         <p><strong>${fa.title}</strong></p>
