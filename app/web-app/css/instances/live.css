@@ -6448,6 +6448,12 @@ dl {
 dl > dt {
   font-weight: bold;
 }
+.dashboard-widget th {
+  background-color: #990100;
+}
+.dashboard-widget h5 {
+  color: white;
+}
 /* Inline Definition Lists
 
 

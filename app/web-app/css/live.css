@@ -2,3 +2,6 @@
  *  Live CSS
  */
 
+html, body {
+	background-color: red;
+}

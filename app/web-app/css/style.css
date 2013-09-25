@@ -806,3 +806,45 @@ div.comments {
 .matrix-no-value {
     background-color: rgba(248,248,0,0.1);
 }
+
+/* Dashboard Widget */
+
+.dashboard-widget th {
+    padding: 10px 5px 10px 5px;
+}
+
+.dashboard-widget h5 {
+    height: 25px;
+    line-height: 25px;
+}
+
+.dashboard-widget td {
+    padding: 15px;
+}
+
+.dashboard-widget .icon {
+    width: 10%;
+    text-align: left;
+}
+
+.dashboard-widget .message {
+    width: 89%;
+}
+
+.dashboard-widget .see-more {
+    display: none;
+    text-align: right;
+    border-bottom: none;
+    margin-top: -5px;
+    margin-bottom: 10px;
+}
+
+.dashboard-widget .badge {
+    width: 28px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    padding: 1px 0 1px;
+    text-align: center;
+    color: black;
+    text-shadow: none;
+}
