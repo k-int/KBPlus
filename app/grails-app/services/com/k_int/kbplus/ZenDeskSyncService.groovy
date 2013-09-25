@@ -331,6 +331,10 @@ class ZenDeskSyncService {
                         ]) { resp, json ->
           result = json.topic.id
         }
+        // try to sleep to give zendesk time to digest the creation
+        synchronized(this) {
+          Thread.sleep(2000);
+        }
       }
     }
     catch ( Exception e ) {
