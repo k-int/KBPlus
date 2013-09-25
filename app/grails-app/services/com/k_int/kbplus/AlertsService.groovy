@@ -12,7 +12,7 @@ class AlertsService {
     def all_public_notes = DocContext.findAll("from DocContext as ctx where ctx.alert.sharingLevel=2 order by ctx.owner.lastUpdated desc")
     // def all_public_notes = DocContext.findAll('from DocContext as ctx where ctx.alert.sharingLevel=2');
 
-    log.debug("all public notes: ${all_public_notes}");
+    // log.debug("all public notes: ${all_public_notes}");
 
     all_public_notes.each { pn ->
 
@@ -53,10 +53,10 @@ class AlertsService {
       if ( info != null ) {
         if (info.notes[pn.id]) {
           // The note is already present under this object, skip
-          log.debug("${pn.id} already present");
+          // log.debug("${pn.id} already present");
         }
         else {
-          log.debug("Adding note ${pn.id}");
+          // log.debug("Adding note ${pn.id}");
           info.notes[pn.id] = pn
         }
       }

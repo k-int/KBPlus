@@ -12,25 +12,40 @@
   <body>
     <div class="container">
         <ul class="breadcrumb">
-          <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
+          <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
           <li> <g:link controller="myInstitutions" action="currentTitles" params="[shortcode:params.shortcode]">${institution.name}  Current Titles</g:link> </li>
           <li class="dropdown pull-right">
             <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">
               Exports<b class="caret"></b>
             </a>
             <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
-              <li>
-                <% def ps_csv = [:]; ps_csv.putAll(params); ps_csv.format = 'csv'; %>
-                <g:link action="currentTitles" params="${ps_csv}">CSV Export</g:link>
-              </li>
-              <li>
-                <% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
-                <g:link action="currentTitles" params="${ps_json}" target="_blank">Json Export</g:link>
-              </li>
-              <li>
-                <% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
-                <g:link action="currentTitles" params="${ps_xml}" target="_blank">XML Export</g:link>
-              </li>
+	            <li>
+	              <% def ps_csv = [:]; ps_csv.putAll(params); ps_csv.format = 'csv'; %>
+	              <g:link action="currentTitles" params="${ps_csv}">CSV Export</g:link>
+	            </li>
+	            <li>
+	              <% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
+	              <g:link action="currentTitles" params="${ps_json}">Json Export</g:link>
+	            </li>
+	            <li>
+	              <% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
+	              <g:link action="currentTitles" params="${ps_xml}">XML Export</g:link>
+	            </li>
+              	<g:each in="${com.k_int.kbplus.UserTransforms.findAllByUser(user)}" var="ut">
+    				<g:if test="${ut.transforms.hasType("title")}">
+     				<% 
+					  	def ps_trans = [:];
+					  	if(ut.transforms.accepts_format.value == "xml")
+			  				ps_trans.putAll(ps_xml);
+					  	else if(ut.transforms.accepts_format.value == "json")
+							ps_trans.putAll(ps_json);
+						ps_trans.transforms=ut.transforms.id;
+				  	%>
+      				<li>
+						<g:link action="currentTitles" params="${ps_trans}">${ut.transforms.name}</g:link>
+		      		</li>
+      				</g:if>
+     			</g:each>
             </ul>
           </li>
         </ul>
@@ -114,8 +129,9 @@
 		        <input type="hidden" name="order" value="${params.order}">
 		        <label>Search text:</label> 
 		        <input name="filter" value="${params.filter}" placeholder="enter search term..."/>
-		        <label>Subscriptions Valid on</label> <input name="validOn" type="text" value="${validOn}"/>
-		        <input type="submit" class="btn btn-primary" value="Search"/>
+		        <label>Subscriptions Valid on</label> 
+                        <g:simpleHiddenValue id="validOn" name="validOn" type="date" value="${validOn}"/>
+		        &nbsp;<input type="submit" class="btn btn-primary" value="Search"/>
 	        </div>
 	    </div>
     </g:form>

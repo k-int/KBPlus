@@ -17,9 +17,9 @@
 
 <div class="container">
     <ul class="breadcrumb">
-        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
-        <g:if test="${onixplLicense.license.licensee}">
-            <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:onixplLicense.license.licensee.shortcode]}"> ${onixplLicense.license.licensee.name} Current Licenses</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
+        <g:if test="${license?.licensee}">
+            <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:license.licensee.shortcode]}"> ${license.licensee.name} Current Licenses</g:link> <span class="divider">/</span> </li>
         </g:if>
         <li> <g:link controller="licenseDetails" action="index" id="${params.id}">License Details</g:link> <span class="divider">/</span></li>
         <li> <g:link controller="licenseDetails" action="onixpl" id="${params.id}">ONIX-PL License</g:link> </li>
@@ -30,8 +30,10 @@
     </div>
 
 <div class="container">
-    <h1>${onixplLicense.license.licensee?.name} ${onixplLicense.license.type?.value} Licence : <g:xEditable owner="${onixplLicense.license}" field="reference" id="reference"/></h1>
-    <g:render template="nav" contextPath="." />
+    <g:if test="${license}">
+        <h1>${license?.licensee?.name} ${license?.type?.value} Licence : <g:xEditable owner="${license}" field="reference" id="reference"/></h1>
+        <g:render template="nav" contextPath="." />
+    </g:if>
 </div>
 
 <div class="container">
@@ -44,7 +46,7 @@
                 <dl>
                     <dt>ONIX-PL License</dt>
                     <dd>
-                        <g:link controller="onixplLicenseDetails" action="index" id="${onixplLicense.id}">${onixplLicense}</g:link>
+                        <g:link controller="onixplLicenseDetails" action="index" id="${onixplLicense?.id}">${onixplLicense?.title}</g:link>
                     </dd>
                 </dl>
                 </div>
@@ -56,27 +58,31 @@
                 <tr>
                     <th>Property</th>
                     <th>Status</th>
-                    <th>Notes</th>
+                    <th>License Text</th>
                 </tr>
                 </thead>
                 <tbody>
-                <g:each in="${onixplLicense.usageTerm.sort {it.usageType.value}}">
-                    <tr><td><g:link controller="onixplUsageTermsDetails" action="index" id="${it.id}">${it.usageType.value}</g:link></td>
-                    <td><g:refdataValue cat="UsageStatus" val="${it.usageStatus.value}" /></td>
-                    <td><g:each in="${it.usageTermLicenseText.licenseText.sort {it.elementId}}">
-                        ${it.elementId} - <g:link controller="onixplLicenseTextDetails" action="index" id="${it.id}">${it.text}</g:link><br>
-                        </g:each>
-                    </td></tr>
-
+                <g:each in="${onixplLicense?.usageTerm?.sort {it.usageType.value}}">
+                    <tr>
+                        <td><g:link controller="onixplUsageTermDetails" action="index" id="${it.id}">${it.usageType.value}</g:link></td>
+                        <td><g:refdataValue cat="UsageStatus" val="${it.usageStatus.value}" /></td>
+                        <td>
+                            <g:each in="${it.usageTermLicenseText.sort {it.licenseText.text}}" var="u">
+                                ${u.licenseText.displayNum} ${u.licenseText?.text.encodeAsHTML()}<br>
+                            </g:each>
+                        </td>
+                    </tr>
                 </g:each>
                 </tbody>
             </table>
 
         </div>
+        <g:if test="${license}">
         <div class="span4">
-            <g:render template="documents" contextPath="../templates" model="${[doclist:onixplLicense.license.documents, ownobj:onixplLicense.license, owntp:'license']}" />
-            <g:render template="notes" contextPath="../templates" model="${[doclist:onixplLicense.license.documents, ownobj:onixplLicense.license, owntp:'license']}" />
+            <g:render template="documents" contextPath="../templates" model="${[doclist:license?.documents, ownobj:license, owntp:'license']}" />
+            <g:render template="notes" contextPath="../templates" model="${[doclist:license?.documents, ownobj:license, owntp:'license']}" />
         </div>
+        </g:if>
     </div>
 </div>
 

@@ -75,6 +75,12 @@ environments {
     }
 }
 
+grails.cache.config = {
+   cache {
+      name 'message'
+   }
+}
+
 // log4j configuration
 log4j = {
     // Example of changing the log pattern for the default console
@@ -153,8 +159,8 @@ auditLog {
 // }
 
 appDefaultPrefs {
-  globalDateFormat='yyyy/MM/dd'
-  globalDateFormatSQL='%Y/%m/%d'
+  globalDateFormat='yyyy-MM-dd'
+  globalDateFormatSQL='%Y-%m-%d'
 }
 
 // The following 2 entries make the app use basic auth by default
@@ -170,3 +176,27 @@ appDefaultPrefs {
 //    '/api/**': 'JOINED_FILTERS,-exceptionTranslationFilter',
 //    '/**': 'JOINED_FILTERS,-basicAuthenticationFilter,-basicExceptionTranslationFilter'
 // ]
+
+// Refdata values that need to be added to the database to allow ONIX-PL licences to be compared properly. The code will
+// add them to the DB if they don't already exist.
+refdatavalues = [ "User" : [ "Authorized User", "ExternalAcademic", "ExternalLibrarian", "ExternalStudent",
+        "ExternalTeacher", "ExternalTeacherInCountryOfLicensee", "LibraryUserUnaffiliated", "Licensee",
+        "LicenseeAlumnus", "LicenseeAuxiliary", "LicenseeContractor", "LicenseeContractorOrganization",
+        "LicenseeContractorStaff", "LicenseeDistanceLearningStudent", "LicenseeExternalStudent", "LicenseeFaculty",
+        "LicenseeInternalStudent", "LicenseeLibrary", "LicenseeLibraryStaff", "LicenseeNonFacultyStaff",
+        "LicenseeResearcher", "LicenseeRetiredStaff", "LicenseeStaff", "LicenseeStudent", "LoansomeDocUser",
+        "OtherTeacherOfAuthorizedUsers", "RegulatoryAuthority", "ResearchSponsor", "ThirdParty", "ThirdPartyLibrary",
+        "ThirdPartyNonCommercialLibrary", "ThirdPartyOrganization", "ThirdPartyPerson", "WalkInUser" ],
+        "UsedResource" : ["AcademicPaper", "AcademicWork", "AcademicWorkIncludingLicensedContent",
+                "AcknowledgmentOfSource", "AuthoredContent", "AuthoredContentPeerReviewedCopy", "AuthorizedUserOwnWork",
+                "CatalogOrInformationSystem", "CombinedWorkIncludingLicensedContent", "CompleteArticle", "CompleteBook",
+                "CompleteChapter", "CompleteIssue", "CopyrightNotice", "CopyrightNoticesOrDisclaimers",
+                "CoursePackElectronic", "CoursePackPrinted", "CourseReserveElectronic", "CourseReservePrinted",
+                "DataFromLicensedContent", "DerivedWork", "DigitalInstructionalMaterial",
+                "DigitalInstructionalMaterialIncludingLicensedContent",
+                "DigitalInstructionalMaterialWithLinkToLicensedContent", "DownloadedLicensedContent",
+                "ImagesInLicensedContent", "LicensedContent", "LicensedContentBriefExcerpt", "LicensedContentMetadata",
+                "LicensedContentPart", "LicensedContentPartDigital", "LicensedContentPartPrinted", "LicenseeContent",
+                "LicenseeWebsite", "LinkToLicensedContent", "MaterialForPresentation", "PersonalPresentationMaterial",
+                "PrintedInstructionalMaterial", "SpecialNeedsInstructionalMaterial", "ThirdPartyWebsite",
+                "TrainingMaterial", "UserContent", "UserWebsite"]]

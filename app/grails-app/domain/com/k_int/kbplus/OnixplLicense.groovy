@@ -4,115 +4,160 @@ import com.k_int.kbplus.auth.Role
 
 /**
  * An OnixplLicense has many OnixplUsageTerms and OnixplLicenseTexts.
- * It can be associated with 0..1 license.
+ * It can be associated with many licenses.
  * The OnixplLicenseTexts relation is redundant as UsageTerms refer to the
  * LicenseTexts, but is a convenient way to access the whole license text.
  */
 class OnixplLicense {
 
-  Date lastmod;
+    Date lastmod;
+    String title;
 
-  // An ONIX-PL license relates to a KB+ license and a doc
-  License license;
-  Doc doc;
+    // An ONIX-PL license relates to a a doc
+    Doc doc;
 
-  // One to many
-  static hasMany = [
-    usageTerm:   OnixplUsageTerm,
-    licenseText: OnixplLicenseText
-  ]
+    // One to many
+    static hasMany = [
+            usageTerm: OnixplUsageTerm,
+            licenseText: OnixplLicenseText,
+            licenses: License
+    ]
 
-  // Reference to license in the many
-  static mappedBy = [
-      usageTerm:   'oplLicense',
-      licenseText: 'oplLicense',
-  ]
+    // Reference to license in the many
+    static mappedBy = [
+            usageTerm: 'oplLicense',
+            licenseText: 'oplLicense',
+            licenses: 'onixplLicense',
+    ]
 
-  static mapping = {
-    id column:      'opl_id'
-    version column: 'opl_version'
-    license column: 'opl_lic_fk'
-    doc column:     'opl_doc_fk'
-    lastmod column: 'opl_lastmod'
-  }
+    static mapping = {
+        id column: 'opl_id'
+        version column: 'opl_version'
+        doc column: 'opl_doc_fk'
+        lastmod column: 'opl_lastmod'
+        title column: 'opl_title'
+        usageTerm cascade: 'all-delete-orphan'
 
-  static constraints = {
-    license(nullable: false, blank: false, unique: true)
-    doc(nullable: false, blank: false)
-    lastmod(nullable: true, blank: true)
-  }
-
-  def hasPerm(perm, user) {
-        def result = false
-
-        if (perm == 'view' && license.isPublic?.value == 'Yes') {
-            result = true;
-        }
-
-        if (!result) {
-            // If user is a member of admin role, they can do anything.
-            def admin_role = Role.findByAuthority('ROLE_ADMIN');
-            if (admin_role) {
-                if (user.getAuthorities().contains(admin_role)) {
-                    result = true;
-                }
-            }
-        }
-
-        if (!result) {
-            result = checkPermissions(perm, user);
-        }
-
-        result;
     }
 
-    def checkPermissions(perm, user) {
-        def result = false
-        def principles = user.listPrincipalsGrantingPermission(perm);   // This will list all the orgs and people granted the given perm
-        log.debug("The target list if principles : ${principles}");
-
-        // Now we need to see if we can find a path from this object to any of those resources... Any of these orgs can edit
-
-        // If this is a concrete license, the owner is the
-        // If it's a template, the owner is the consortia that negotiated
-        // def owning org list
-        // We're looking for all org links that grant a role with the corresponding edit property.
-        Set object_orgs = new HashSet();
-        license.orgLinks.each { ol ->
-            def perm_exists = false
-            if (!ol.roleType)
-                log.warn("Org link with no role type! Org Link ID is ${ol.id}");
-
-            ol.roleType?.sharedPermissions.each { sp ->
-                if (sp.perm.code == perm)
-                    perm_exists = true;
-            }
-            if (perm_exists) {
-                log.debug("Looks like org ${ol.org} has perm ${perm} shared with it.. so add to list")
-                object_orgs.add("${ol.org.id}:${perm}")
-            }
-        }
-
-        log.debug("After analysis, the following relevant org_permissions were located ${object_orgs}, user has the following orgs for that perm ${principles}")
-
-        // Now find the intersection
-        def intersection = principles.retainAll(object_orgs)
-
-        log.debug("intersection is ${principles}")
-
-        if (principles.size() > 0)
-            result = true
-
-        result
+    static constraints = {
+        doc(nullable: false, blank: false)
+        lastmod(nullable: true, blank: true)
+        title(nullable: false, blank: false)
     }
 
-    def getNote(domain) {
-        def note = DocContext.findByLicenseAndDomain(license, domain);
-        note
+    // Only admin has permission to change ONIX-PL licenses;
+    // anyone can view them.
+    def hasPerm(perm, user) {
+        if (perm == 'view') return true;
+        // If user is a member of admin role, they can do anything.
+        def admin_role = Role.findByAuthority('ROLE_ADMIN');
+        if (admin_role) return user.getAuthorities().contains(admin_role);
+        false;
     }
+
 
     @Override
-    public String toString() {
-        return "Id: " + id + " | Version: " + version + " | License: " + license.toString() + " | Document: " + doc.toString();
+    public java.lang.String toString() {
+        return "OnixplLicense{" +
+                "id=" + id +
+                ", lastmod=" + lastmod +
+                ", title='" + title + '\'' +
+                ", doc=" + doc +
+                '}';
     }
+
+    /**
+     * Given an ONIX-PL license and a section of the license this method will return a boolean reflecting whether
+     * the usage terms are the same in each license. The status value and the content of the license text are used in
+     * this comparison.
+     * @param opl
+     * @param section
+     * @return
+     */
+    private Boolean compareSection(OnixplLicense opl, RefdataValue section) {
+        ArrayList<OnixplUsageTerm> utlist1 = OnixplUsageTerm.findAllByOplLicenseAndUsageType(opl, section).sort { it.usageTermLicenseText.sort { it.licenseText.text }.get(0).licenseText.text };
+        ArrayList<OnixplUsageTerm> utlist2 = OnixplUsageTerm.findAllByOplLicenseAndUsageType(this, section).sort { it.usageTermLicenseText.sort { it.licenseText.text }.get(0).licenseText.text };
+        if (utlist1.size() != utlist2.size()) {
+            return false;
+        }
+        for (int i = 0; i < utlist1.size(); i++) {
+            OnixplUsageTerm ut1 = utlist1.get(i);
+            OnixplUsageTerm ut2 = utlist2.get(i);
+            if (ut1.usageType.value != ut2.usageType.value) {
+                return false;
+            }
+            if (ut1.usageStatus.value != ut2.usageStatus.value) {
+                return false;
+            }
+            ArrayList<OnixplUsageTermLicenseText> ltList1 = ut1.usageTermLicenseText.sort { it.licenseText.text }.asList();
+            ArrayList<OnixplUsageTermLicenseText> ltList2 = ut2.usageTermLicenseText.sort { it.licenseText.text }.asList();
+            StringBuilder sb1 = new StringBuilder();
+            for (OnixplUsageTermLicenseText lt : ltList1) {
+                sb1.append(lt.licenseText.text);
+            }
+            StringBuilder sb2 = new StringBuilder();
+            for (OnixplUsageTermLicenseText lt : ltList2) {
+                sb2.append(lt.licenseText.text);
+            }
+            if (sb1.toString() != sb2.toString()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * If a section is specified then the licenses will be compared only taking into account the section. If no section
+     * is given then both licenses will be compared in their entirety.
+     * @param opl
+     * @param section
+     * @return
+     */
+    public Boolean compare(OnixplLicense opl, Integer section) {
+        if (section) {
+            return compareSection(opl, RefdataValue.get(section));
+        } else {
+            if (opl.usageTerm.size() != this.usageTerm.size()) {
+                return false;
+            }
+            // A license can have multiple usage terms for a certain usage type and these usage terms can have multiple
+            // license texts associated with them. In order to be able to compare these they have to be put in the same
+            // order. They are ordered using the usageType initially and then the content of the license text.
+            def utList1 = opl.usageTerm.sort {it.usageType.value};
+            utList1.sort {it.usageStatus.value}
+            def utList2 = this.usageTerm.sort {it.usageType.value};
+            utList2.sort {it.usageStatus.value}
+            for (int i = 0; i < utList1.size(); i++) {
+                if (utList1.get(i).usageType?.value != utList2.get(i).usageType?.value) {
+                    return false;
+                } else if (utList1.get(i).usageStatus.value != utList2.get(i).usageStatus.value) {
+                    return false;
+                }
+            }
+            // In order to compare the license text for a given usage term the license texts are ordered and then
+            // combined. If the aggregated strings are the same then it is assumed that the content of the license
+            // texts was the same.
+            def ltList1 = opl.licenseText.sort { it.text }.toList();
+            StringBuilder sb1 = new StringBuilder();
+            for (OnixplLicenseText lt1 : ltList1) {
+                sb1.append(lt1.text);
+            }
+            def ltList2 = this.licenseText.sort { it.text }.toList();
+            StringBuilder sb2 = new StringBuilder();
+            for (OnixplLicenseText lt2 : ltList2) {
+                sb2.append(lt2.text);
+            }
+            if (sb1.toString() != sb2.toString()) {
+                return false;
+            }
+            def userList1 = opl.usageTerm.sort {it.usageType.value}.user.sort {it.value};
+            def userList2 = this.usageTerm.sort {it.usageType.value}.user.sort {it.value};
+            if (userList1.toString() != userList2.toString()) {
+                return false;
+            }
+            return true;
+        }
+    }
+
 }

@@ -58,7 +58,7 @@
             <g:each in="${onixplLicenseInstanceList}" var="onixplLicenseInstance">
                 <tr>
 
-                    <td>${fieldValue(bean: onixplLicenseInstance, field: "license")}</td>
+                    <td>${onixplLicenseInstance.licenses.toString()}</td>
 
                     <td>${fieldValue(bean: onixplLicenseInstance, field: "doc")}</td>
 

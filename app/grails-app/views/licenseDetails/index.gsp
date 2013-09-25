@@ -9,7 +9,7 @@
 
     <div class="container">
       <ul class="breadcrumb">
-        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <g:if test="${license.licensee}">
           <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:license.licensee.shortcode]}"> ${license.licensee.name} Current Licenses</g:link> <span class="divider">/</span> </li>
         </g:if>
@@ -26,18 +26,30 @@
 		  		Exports<b class="caret"></b>
 			</a>
 			<ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
-		  		<li>
-			    	<% def ps_csv = [:]; ps_csv.putAll(params); ps_csv.format = 'csv'; %>
-					<g:link action="index" params="${ps_csv}">CSV Export</g:link>
-				</li>
 				<li>
 		  			<% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
-					<g:link action="index" params="${ps_json}" target="_blank">Json Export</g:link>
+					<g:link action="index" params="${ps_json}">Json Export</g:link>
 	      		</li>
 				<li>
 		  			<% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
-					<g:link action="index" params="${ps_xml}" target="_blank">XML Export</g:link>
+					<g:link action="index" params="${ps_xml}">XML Export</g:link>
 	      		</li>
+	      		
+	      		<g:each in="${com.k_int.kbplus.UserTransforms.findAllByUser(user)}" var="ut">
+	      			<g:if test="${ut.transforms.hasType("licence")}">
+	      				<% 
+						  	def ps_trans = [:];
+						  	if(ut.transforms.accepts_format.value == "xml")
+				  				ps_trans.putAll(ps_xml);
+						  	else if(ut.transforms.accepts_format.value == "json")
+								ps_trans.putAll(ps_json);
+							ps_trans.transforms=ut.transforms.id;
+					  	%>
+	      				<li>
+							<g:link action="index" params="${ps_trans}">${ut.transforms.name}</g:link>
+			      		</li>
+	      			</g:if>
+	      		</g:each>
 		    </ul>
 		</li>
 
@@ -51,25 +63,24 @@
 
     <g:if test="${license.pendingChanges?.size() > 0}">
       <div class="container alert-warn">
-        <h6>This Licence has pending change notifications</h6>
+        <h6>This Subscription has pending change notifications</h6>
+        <g:link controller="pendingChange" action="acceptAll" id="com.k_int.kbplus.License:${license.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept All</g:link>
+        <g:link controller="pendingChange" action="rejectAll" id="com.k_int.kbplus.License:${license.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject All</g:link>
+        <br/>&nbsp;<br/>
         <table class="table table-bordered">
           <thead>
             <tr>
-              <td>Field</td>
-              <td>Has changed to</td>
-              <td>Reason</td>
-              <td>Actions</td>
+              <td>Info</td>
+              <td>Action</td>
             </tr>
           </thead>
           <tbody>
             <g:each in="${license.pendingChanges}" var="pc">
               <tr>
-                <td style="white-space:nowrap;">${pc.updateProperty}</td>
-                <td>${pc.updateValue}</td>
-                <td>${pc.updateReason}</td>
+                <td>${pc.desc}</td>
                 <td>
-                  <g:link controller="licenseDetails" action="acceptChange" id="${params.id}" params="${[changeid:pc.id]}" class="btn btn-primary">Accept</g:link>
-                  <g:link controller="licenseDetails" action="rejectChange" id="${params.id}" params="${[changeid:pc.id]}" class="btn btn-primary">Reject</g:link>
+                  <g:link controller="pendingChange" action="accept" id="${pc.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept</g:link>
+                  <g:link controller="pendingChange" action="reject" id="${pc.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject</g:link>
                 </td>
               </tr>
             </g:each>
@@ -140,11 +151,15 @@
                      </dd>
                   </dl>
 
+                  <sec:ifAnyGranted roles="ROLE_ADMIN,KBPLUS_EDITOR">
                     <dl>
                         <dt><label class="control-label">ONIX-PL License</label></dt>
                         <dd>
                             <g:if test="${license.onixplLicense}">
-                                <g:link controller="onixplLicenseDetails" action="index" id="${license.onixplLicense?.id}">${license.onixplLicense}</g:link>
+                                <g:link controller="onixplLicenseDetails" action="index" id="${license.onixplLicense?.id}">${license.onixplLicense.title}</g:link>
+                                <g:if test="${editable}">
+                                    <g:link class="btn btn-warning" controller="licenseDetails" action="unlinkLicense" params="[license_id: license.id, opl_id: onixplLicense.id]">Unlink</g:link>
+                                </g:if>
                             </g:if>
                             <g:else>
                                 <%--<input class="btn btn-warning" value="Import an ONIX-PL license"
@@ -153,6 +168,7 @@
                             </g:else>
                         </dd>
                     </dl>
+                  </sec:ifAnyGranted>
       
                   <dl>
                       <dt><label class="control-label" for="licenseUrl">Licence Url</label></dt>
@@ -188,6 +204,18 @@
                         <g:render template="orgLinks" contextPath="../templates" model="${[roleLinks:license?.orgLinks,editmode:editable]}" />
                       </dd>
                   </dl>
+
+                  <dl>
+                      <dt><label class="control-label" for="licenseeRef">Incoming License Links</label></dt>
+                      <dd>
+                        <ul>
+                          <g:each in="${license?.incomingLinks}" var="il">
+                            <li><g:link controller="licenseDetails" action="index" id="${il.fromLic.id}">${il.fromLic.reference} (${il.type?.value})</g:link></li>
+                          </g:each>
+                        </ul>
+                      </dd>
+                  </dl>
+
 
 
 
@@ -252,7 +280,7 @@
                     <td><g:xEditableFieldNote owner="${license}" field="pca" id="pca"/></td></tr>
               </tbody>
             </table>
-  
+
               </div>
               <div class="span4">
                 <g:render template="documents" contextPath="../templates" model="${[doclist:license.documents, ownobj:license, owntp:'license']}" />

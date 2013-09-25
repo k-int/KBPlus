@@ -20,12 +20,6 @@
 								<g:message code="default.list.label" args="[entityName]" />
 							</g:link>
 						</li>
-						<li>
-							<g:link class="create" action="create">
-								<i class="icon-plus"></i>
-								<g:message code="default.create.label" args="[entityName]" />
-							</g:link>
-						</li>
 					</ul>
 				</div>
 			</div>
@@ -44,7 +38,9 @@
 					<thead>
 						<tr>
 						
-							<th class="header"><g:message code="onixplLicense.license.label" default="KB+ License" /></th>
+							<th class="header"><g:message code="onixplLicense.title.label" default="Title" /></th>
+
+                            <th class="header"><g:message code="onixplLicense.licenses.label" default="KB+ Licenses" /></th>
 
                             <g:sortableColumn property="Type" title="${message(code: 'onixplLicense.type.label', default: 'Type')}" />
 
@@ -58,17 +54,35 @@
 					<tbody>
 					<g:each in="${onixplLicenseInstanceList}" var="onixplLicenseInstance">
 						<tr>
+
+                            <td>
+                                ${onixplLicenseInstance.title}
+                            </td>
 						
 							<td>
-                                <g:link controller="licenseDetails" action="index" id="${onixplLicenseInstance.license?.id}">${onixplLicenseInstance.license}</g:link>
+                                <ul>
+                                    <g:each in="${onixplLicenseInstance.licenses}">
+                                        <li>
+                                            <g:link controller="licenseDetails" action="index" id="${it.id}">${it}</g:link>
+                                        </li>
+                                    </g:each>
+                                </ul>
                             </td>
 
                             <td>
-                                ${onixplLicenseInstance.license?.type?.value}
+                                <g:each in="${onixplLicenseInstance.licenses}">
+                                <li>
+                                    ${it.type?.value}
+                                </li>
+                            </g:each>
                             </td>
 
                             <td>
-                                ${onixplLicenseInstance.license?.status?.value}
+                                <g:each in="${onixplLicenseInstance.licenses}">
+                                    <li>
+                                        ${it.status?.value}
+                                    </li>
+                                </g:each>
                             </td>
 						
 							<td>

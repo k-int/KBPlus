@@ -14,7 +14,7 @@ class OrganisationsController {
 
     static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
 
-    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def index() {
         redirect action: 'list', params: params
     }
@@ -74,12 +74,14 @@ class OrganisationsController {
 		}
     }
 
-    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def show() {
       def result = [:]
       result.user = User.get(springSecurityService.principal.id)
-      result.editable = true
       def orgInstance = Org.get(params.id)
+
+      result.editable = orgInstance.hasUserWithRole(result.user,'INST_ADM');
+
       if (!orgInstance) {
         flash.message = message(code: 'default.not.found.message', args: [message(code: 'org.label', default: 'Org'), params.id])
         redirect action: 'list'
@@ -90,7 +92,7 @@ class OrganisationsController {
       result
     }
 
-    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def users() {
       def result = [:]
       result.user = User.get(springSecurityService.principal.id)
@@ -189,27 +191,39 @@ class OrganisationsController {
         }
     }
 
-    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def revokeRole() {
+      def result = [:]
+      result.user = User.get(springSecurityService.principal.id)
       UserOrg uo = UserOrg.get(params.grant)
-      uo.status = 2;
-      uo.save();
+      if ( uo.org.hasUserWithRole(result.user,'INST_ADM') ) {
+        uo.status = 2;
+        uo.save();
+      }
       redirect action: 'users', id: params.id
     }
 
-    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def enableRole() {
+      def result = [:]
+      result.user = User.get(springSecurityService.principal.id)
       UserOrg uo = UserOrg.get(params.grant)
-      uo.status = 1;
-      uo.save();
+      if ( uo.org.hasUserWithRole(result.user,'INST_ADM') ) {
+        uo.status = 1;
+        uo.save();
+      }
       redirect action: 'users', id: params.id
     }
 
 
-    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def deleteRole() {
+      def result = [:]
+      result.user = User.get(springSecurityService.principal.id)
       UserOrg uo = UserOrg.get(params.grant)
-      uo.delete();
+      if ( uo.org.hasUserWithRole(result.user,'INST_ADM') ) {
+        uo.delete();
+      }
       redirect action: 'users', id: params.id
     }
 

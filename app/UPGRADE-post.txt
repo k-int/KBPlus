@@ -1,0 +1,18 @@
+
+set @sub_cons_refdata_value_id='';
+set @pkg_cons_refdata_value_id='';
+select (@sub_cons_refdata_value_id:=rdv_id) from refdata_value where rdv_value = 'Subscription Consortia';
+select (@pkg_cons_refdata_value_id:=rdv_id) from refdata_value where rdv_value = 'Package Consortia';
+
+update org_role set or_roletype_fk = @pkg_cons_refdata_value_id 
+where or_roletype_fk = @sub_cons_refdata_value_id
+and or_pkg_fk is not null;
+
+create table org_roles_to_delete as select max(or2.or_id) or_id from org_role or2 where or2.or_org_fk is not null and or2.or_pkg_fk is not null group by or2.or_org_fk, or2.or_pkg_fk, or2.or_roletype_fk having count(*) > 1;
+
+delete from org_role where or_id in ( select or_id from org_roles_to_delete );
+
+drop table org_roles_to_delete;
+
+
+update user set default_page_size=10 where default_page_size is null;

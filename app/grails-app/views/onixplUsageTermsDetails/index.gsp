@@ -18,7 +18,7 @@
 
 <div class="container">
     <ul class="breadcrumb">
-        <li><g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span></li>
+        <li><g:link controller="home" action="index">Home</g:link> <span class="divider">/</span></li>
         <li>Usage Term</li>
     </ul>
 </div>
@@ -38,7 +38,7 @@
                     <dt><label class="control-label" for="oplLicense">ONIX-PL License</label></dt>
                     <dd>
                         <g:link name="oplLicense" controller="onixplLicenseDetails" action="index"
-                                id="${onixplUsageTerm.oplLicense.id}">${onixplUsageTerm.oplLicense}</g:link>
+                                id="${onixplUsageTerm.oplLicense.id}">${onixplUsageTerm.oplLicense.title}</g:link>
                     </dd>
                 </dl>
                 <dl>

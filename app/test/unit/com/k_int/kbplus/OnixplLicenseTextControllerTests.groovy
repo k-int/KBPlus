@@ -6,150 +6,98 @@ import org.junit.*
 import grails.test.mixin.*
 
 @TestFor(OnixplLicenseTextController)
-@Mock(OnixplLicenseText)
+@Mock([OnixplLicenseText,OnixplLicense])
 class OnixplLicenseTextControllerTests {
 
-    def populateValidParams(params) {
-        assert params != null
-        // TODO: Populate valid properties like...
-        //params["name"] = 'someValidName'
-    }
+  def ELEMENT_ID = "Ex001", DISPLAY_NUM = "1.1", TEXT = "Some license text",
+      OPL = new OnixplLicense()
 
-    void testIndex() {
-        controller.index()
-        assert "/onixplLicenseText/list" == response.redirectedUrl
-    }
+  def populateValidParams(params) {
+    assert params != null
+    params['text'] = TEXT
+    params['elementId'] = ELEMENT_ID
+    params['displayNum'] = DISPLAY_NUM
+    params['oplLicense'] = OPL
+  }
 
-    void testList() {
+  void testIndex() {
+    controller.index()
+    assert "/onixplLicenseText/list" == response.redirectedUrl
+  }
 
-        def model = controller.list()
+  void testList() {
 
-        assert model.onixplLicenseTextInstanceList.size() == 0
-        assert model.onixplLicenseTextInstanceTotal == 0
-    }
+    def model = controller.list()
 
-    void testCreate() {
-        def model = controller.create()
+    assert model.onixplLicenseTextInstanceList.size() == 0
+    assert model.onixplLicenseTextInstanceTotal == 0
+  }
 
-        assert model.onixplLicenseTextInstance != null
-    }
+  void testCreate() {
+    request.method = 'GET'
+    def model = controller.create()
 
-    void testSave() {
-        controller.save()
+    assert model.onixplLicenseTextInstance != null
+  }
 
-        assert model.onixplLicenseTextInstance != null
-        assert view == '/onixplLicenseText/create'
 
-        response.reset()
+  void testShow() {
+    controller.show()
 
-        populateValidParams(params)
-        controller.save()
+    assert flash.message != null
+    assert response.redirectedUrl == '/onixplLicenseText/list'
 
-        assert response.redirectedUrl == '/onixplLicenseText/show/1'
-        assert controller.flash.message != null
-        assert OnixplLicenseText.count() == 1
-    }
+    populateValidParams(params)
+    def onixplLicenseText = new OnixplLicenseText(params)
 
-    void testShow() {
-        controller.show()
+    assert onixplLicenseText.save() != null
 
-        assert flash.message != null
-        assert response.redirectedUrl == '/onixplLicenseText/list'
+    params.id = onixplLicenseText.id
 
-        populateValidParams(params)
-        def onixplLicenseText = new OnixplLicenseText(params)
+    def model = controller.show()
 
-        assert onixplLicenseText.save() != null
+    assert model.onixplLicenseTextInstance == onixplLicenseText
+  }
 
-        params.id = onixplLicenseText.id
+  void testEdit() {
+    request.method = 'GET'
+    controller.edit()
 
-        def model = controller.show()
+    assert flash.message != null
+    assert response.redirectedUrl == '/onixplLicenseText/list'
 
-        assert model.onixplLicenseTextInstance == onixplLicenseText
-    }
+    populateValidParams(params)
+    def onixplLicenseText = new OnixplLicenseText(params)
 
-    void testEdit() {
-        controller.edit()
+    assert onixplLicenseText.save() != null
 
-        assert flash.message != null
-        assert response.redirectedUrl == '/onixplLicenseText/list'
+    params.id = onixplLicenseText.id
 
-        populateValidParams(params)
-        def onixplLicenseText = new OnixplLicenseText(params)
+    def model = controller.edit()
 
-        assert onixplLicenseText.save() != null
+    assert model.onixplLicenseTextInstance == onixplLicenseText
+  }
 
-        params.id = onixplLicenseText.id
 
-        def model = controller.edit()
+  void testDelete() {
+    controller.delete()
+    assert flash.message != null
+    assert response.redirectedUrl == '/onixplLicenseText/list'
 
-        assert model.onixplLicenseTextInstance == onixplLicenseText
-    }
+    response.reset()
 
-    void testUpdate() {
-        controller.update()
+    populateValidParams(params)
+    def onixplLicenseText = new OnixplLicenseText(params)
 
-        assert flash.message != null
-        assert response.redirectedUrl == '/onixplLicenseText/list'
+    assert onixplLicenseText.save() != null
+    assert OnixplLicenseText.count() == 1
 
-        response.reset()
+    params.id = onixplLicenseText.id
 
-        populateValidParams(params)
-        def onixplLicenseText = new OnixplLicenseText(params)
+    controller.delete()
 
-        assert onixplLicenseText.save() != null
-
-        // test invalid parameters in update
-        params.id = onixplLicenseText.id
-        //TODO: add invalid values to params object
-
-        controller.update()
-
-        assert view == "/onixplLicenseText/edit"
-        assert model.onixplLicenseTextInstance != null
-
-        onixplLicenseText.clearErrors()
-
-        populateValidParams(params)
-        controller.update()
-
-        assert response.redirectedUrl == "/onixplLicenseText/show/$onixplLicenseText.id"
-        assert flash.message != null
-
-        //test outdated version number
-        response.reset()
-        onixplLicenseText.clearErrors()
-
-        populateValidParams(params)
-        params.id = onixplLicenseText.id
-        params.version = -1
-        controller.update()
-
-        assert view == "/onixplLicenseText/edit"
-        assert model.onixplLicenseTextInstance != null
-        assert model.onixplLicenseTextInstance.errors.getFieldError('version')
-        assert flash.message != null
-    }
-
-    void testDelete() {
-        controller.delete()
-        assert flash.message != null
-        assert response.redirectedUrl == '/onixplLicenseText/list'
-
-        response.reset()
-
-        populateValidParams(params)
-        def onixplLicenseText = new OnixplLicenseText(params)
-
-        assert onixplLicenseText.save() != null
-        assert OnixplLicenseText.count() == 1
-
-        params.id = onixplLicenseText.id
-
-        controller.delete()
-
-        assert OnixplLicenseText.count() == 0
-        assert OnixplLicenseText.get(onixplLicenseText.id) == null
-        assert response.redirectedUrl == '/onixplLicenseText/list'
-    }
+    assert OnixplLicenseText.count() == 0
+    assert OnixplLicenseText.get(onixplLicenseText.id) == null
+    assert response.redirectedUrl == '/onixplLicenseText/list'
+  }
 }

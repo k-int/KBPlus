@@ -10,6 +10,8 @@ class AdminController {
   def dataloadService
   def zenDeskSyncService
   def juspSyncService
+  def messageService
+  def changeNotificationService
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def index() { }
@@ -52,27 +54,6 @@ class AdminController {
     redirect(action: "manageAffiliationRequests")
   }
 
-
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
-  def reconcile() {
-    def result = [:]
-    result.recon_status = dataloadService.getReconStatus();
-    result
-  }
-
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
-  def startReconciliation() {
-    def test = RefdataCategory.findByDesc('isCoreTitle');
-    if ( test != null ) {
-      log.debug("Starting reconciliation process");
-      flash.message="Reconciliation started";
-      dataloadService.requestReconciliation();
-    }
-    else {
-      flash.message="Reconciliation not started - Is the reference data set up?";
-    }
-    redirect(action:'reconcile');
-  }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def showAffiliations() {
@@ -188,8 +169,77 @@ class AdminController {
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def juspSync() {
+    log.debug("juspSync()");
     juspSyncService.doSync()
     redirect(controller:'home')
   }
 
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def manageContentItems() {
+    def result=[:]
+
+    params.max = Math.min(params.max ? params.int('max') : 10, 100)
+    result.items = ContentItem.list(params)
+    result
+
+    result
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def newContentItem() {
+    def result=[:]
+    if ( ( params.key != null ) && ( params.content != null ) && ( params.key.length() > 0 ) && ( params.content.length() > 0 ) ) {
+
+      def locale = ( ( params.locale != null ) && ( params.locale.length() > 0 ) ) ? params.locale : ''
+
+      if ( ContentItem.findByKeyAndLocale(params.key,locale) != null ) {
+        flash.message = 'Content item already exists'
+      }
+      else {
+        def newci = new ContentItem(key:params.key, locale:locale, content:params.content).save()
+      }
+
+    }
+
+    redirect(action:'editContentItem',id:"${params.key}:${params.locale}")
+
+    result
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def editContentItem() {
+    def result=[:]
+    def idparts = params.id?.split(':')
+    if ( idparts.length > 0 ) {
+      def key = idparts[0]
+      def locale = idparts.length > 1 ? idparts[1] : ''
+
+      def contentItem = ContentItem.findByKeyAndLocale(key,locale)
+      if ( contentItem != null ) {
+        result.contentItem = contentItem
+      }
+      else {
+        flash.message="Unable to locate content item for key ${idparts}"
+        redirect(action:'manageContentItems');
+      }
+      if ( request.method.equalsIgnoreCase("post")) {
+        contentItem.content = params.content
+        contentItem.save(flush:true)
+        messageService.update(key,locale)
+      }
+    }
+    else {
+      flash.message="Unable to parse content item id ${params.id} - ${idparts}"
+      redirect(action:'manageContentItems');
+    }
+    
+    result
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def forceSendNotifications() {
+    changeNotificationService.aggregateAndNotifyChanges()
+    redirect(controller:'home')
+
+  }
 }

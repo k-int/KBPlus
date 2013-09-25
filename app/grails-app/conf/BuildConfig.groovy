@@ -1,10 +1,14 @@
-grails.servlet.version = "2.5" // Change depending on target container compliance (2.5 or 3.0)
+grails.servlet.version = "3.0" // Change depending on target container compliance (2.5 or 3.0)
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
-grails.project.target.level = 1.6
-grails.project.source.level = 1.6
+grails.project.target.level = 1.7
+grails.project.source.level = 1.7
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
+
+// This is commented out so as not to cause probelms in the CI environment
+// grails.plugin.location."functional-test" = "../../grails-functional-test"
+
 
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
@@ -35,7 +39,7 @@ grails.project.dependency.resolution = {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
         compile 'commons-codec:commons-codec:1.6'
-        runtime 'mysql:mysql-connector-java:5.1.25'
+        runtime 'mysql:mysql-connector-java:5.1.26'
         runtime 'com.gmongo:gmongo:1.1'
         runtime 'org.elasticsearch:elasticsearch-lang-groovy:1.4.0'
         // runtime 'org.elasticsearch:elasticsearch-lang-groovy:1.3.0'
@@ -50,10 +54,13 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
+        compile ":h2:0.2.6"
         runtime ":hibernate:$grailsVersion"
         runtime ":resources:1.2.RC2"
         runtime ':fields:1.2'
-
+        // This is commented out so as not to cause probelms in the CI environment
+        // build ":functional-test:2.0.RC2-SNAPSHOT"  // Build == not required in war
+        compile ":functional-test:2.0.RC1"
         // Uncomment these (or add new ones) to enable additional resources capabilities
         //runtime ":zipped-resources:1.0"
         //runtime ":cached-resources:1.0"

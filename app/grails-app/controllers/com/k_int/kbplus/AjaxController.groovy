@@ -80,7 +80,81 @@ class AjaxController {
       qryParams:[],
       cols:['reference'],
       format:'simple'
-    ]
+    ],
+    'TIPPStatusReason' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Tipp.StatusReason'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Tipp.StatusReason'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'TIPPDelayedOA' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.DelayedOA'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.DelayedOA'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'TIPPHybridOA' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.HybridOA'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.HybridOA'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'TIPPPaymentType' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.PaymentType'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.PaymentType'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'Package.ListStatus' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.ListStatus'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.ListStatus'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'Package.Breakable' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Breakable'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Breakable'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'Package.Consistent' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Consistent'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Consistent'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'Package.Fixed' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Fixed'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Fixed'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+    'Package.Scope' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Scope'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Scope'",
+      qryParams:[],
+      cols:['value'],
+      format:'simple'
+    ],
+
+
   ]
 
 
@@ -88,14 +162,14 @@ class AjaxController {
   def setValue() {
     // [id:1, value:JISC_Collections_NESLi2_Lic_IOP_Institute_of_Physics_NESLi2_2011-2012_01012011-31122012.., type:License, action:inPlaceSave, controller:ajax
     // def clazz=grailsApplication.domainClasses.findByFullName(params.type)
-    log.debug("setValue ${params}");
+    // log.debug("setValue ${params}");
     def domain_class=grailsApplication.getArtefact('Domain',"com.k_int.kbplus.${params.type}")
     if ( domain_class ) {
       def instance = domain_class.getClazz().get(params.id) 
       if ( instance ) {
-        log.debug("Got instance ${instance}");
+        // log.debug("Got instance ${instance}");
         def binding_properties = [ "${params.elementid}":params.value ]
-        log.debug("Merge: ${binding_properties}");
+        // log.debug("Merge: ${binding_properties}");
         // see http://grails.org/doc/latest/ref/Controllers/bindData.html
         if ( binding_properties[params.elementid] == '__NULL__' ) {
           binding_properties[params.elementid] = null;
@@ -125,7 +199,7 @@ class AjaxController {
     if ( domain_class ) {
       def instance = domain_class.getClazz().get(params.id)
       if ( instance ) {
-        log.debug("Got instance ${instance}");
+        // log.debug("Got instance ${instance}");
         // Lookup refdata value
         def binding_properties = [ "${params.elementid}":rdv ]
         // see http://grails.org/doc/latest/ref/Controllers/bindData.html
@@ -179,7 +253,7 @@ class AjaxController {
 
    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def setFieldTableNote() {
-    log.debug("setFieldTableNote(${params})")
+    // log.debug("setFieldTableNote(${params})")
     def domain_class=grailsApplication.getArtefact('Domain',"com.k_int.kbplus.${params.type}")
     if ( domain_class ) {
       println params.id
@@ -189,7 +263,7 @@ class AjaxController {
         String temp = '__fieldNote_'+params.name
         if ( temp?.startsWith('__fieldNote_') ) {
           def note_domain = temp.substring(12)
-          log.debug("note_domain: " + note_domain +" : \""+ params.value+"\"")
+          // log.debug("note_domain: " + note_domain +" : \""+ params.value+"\"")
           instance.setNote(note_domain, params.value);
           instance.save(flush:true)
         }
@@ -210,7 +284,7 @@ class AjaxController {
   def genericSetValue() {
     // [id:1, value:JISC_Collections_NESLi2_Lic_IOP_Institute_of_Physics_NESLi2_2011-2012_01012011-31122012.., type:License, action:inPlaceSave, controller:ajax
     // def clazz=grailsApplication.domainClasses.findByFullName(params.type)
-    log.debug("genericSetValue:${params}");
+    // log.debug("genericSetValue:${params}");
 
     // params.elementid (The id from the html element)  must be formed as domain:pk:property:otherstuff
     String[] oid_components = params.elementid.split(":");
@@ -229,7 +303,7 @@ class AjaxController {
         }
         else {
           if ( params.dt == 'date' ) {
-            log.debug("Special date processing, idf=${params.idf}");
+            // log.debug("Special date processing, idf=${params.idf}");
             def formatter = new java.text.SimpleDateFormat(params.idf)
             value = formatter.parse(params.value)
             if ( params.odf ) {
@@ -242,9 +316,9 @@ class AjaxController {
             }
           }
         }
-        log.debug("Got instance ${instance}");
+        // log.debug("Got instance ${instance}");
         def binding_properties = [ "${oid_components[2]}":value ]
-        log.debug("Merge: ${binding_properties}");
+        // log.debug("Merge: ${binding_properties}");
         // see http://grails.org/doc/latest/ref/Controllers/bindData.html
         bindData(instance, binding_properties)
         instance.save(flush:true);
@@ -268,7 +342,7 @@ class AjaxController {
   def genericSetRel() {
     // [id:1, value:JISC_Collections_NESLi2_Lic_IOP_Institute_of_Physics_NESLi2_2011-2012_01012011-31122012.., type:License, action:inPlaceSave, controller:ajax
     // def clazz=grailsApplication.domainClasses.findByFullName(params.type)
-    log.debug("genericSetRel ${params}");
+    // log.debug("genericSetRel ${params}");
 
     // params.elementid (The id from the html element)  must be formed as domain:pk:property:refdatacat:otherstuff
     String[] target_components = params.pk.split(":");
@@ -299,7 +373,7 @@ class AjaxController {
 
     // response.setContentType('text/plain')
     def resp = [ newValue: result ]
-    log.debug("return ${resp as JSON}");
+    // log.debug("return ${resp as JSON}");
     render resp as JSON
     //def outs = response.outputStream
     //outs << result
@@ -328,7 +402,7 @@ class AjaxController {
   }
 
   def orgs() {
-    log.debug("Orgs: ${params}");
+    // log.debug("Orgs: ${params}");
 
     def result = [
       options:[]
@@ -336,7 +410,7 @@ class AjaxController {
 
     def query_params = ["%${params.query.trim().toLowerCase()}%"];
 
-    log.debug("q params: ${query_params}");
+    // log.debug("q params: ${query_params}");
 
     // result.options = Org.executeQuery("select o.name from Org as o where lower(o.name) like ? order by o.name desc",["%${params.query.trim().toLowerCase()}%"],[max:10]);
     def ol = Org.executeQuery("select o from Org as o where lower(o.name) like ? order by o.name asc",query_params,[max:10,offset:0]);
@@ -363,7 +437,7 @@ class AjaxController {
   
   def refdataSearch() {
 
-    log.debug("refdataSearch params: ${params}");
+    // log.debug("refdataSearch params: ${params}");
     
     // http://datatables.net/blog/Introducing_Scroller_-_Virtual_Scrolling_for_DataTables
     def result = [:]
@@ -384,9 +458,9 @@ class AjaxController {
         }
       }
 
-      log.debug("Params: ${query_params}");
-      log.debug("Count qry: ${config.countQry}");
-      log.debug("Row qry: ${config.rowQry}");
+      // log.debug("Params: ${query_params}");
+      // log.debug("Count qry: ${config.countQry}");
+      // log.debug("Row qry: ${config.rowQry}");
 
       def cq = Org.executeQuery(config.countQry,query_params);    
 
@@ -431,7 +505,7 @@ class AjaxController {
 
   def sel2RefdataSearch() {
 
-    log.debug("sel2RefdataSearch params: ${params}");
+    // log.debug("sel2RefdataSearch params: ${params}");
     
     def result = []
     
@@ -477,16 +551,16 @@ class AjaxController {
   }
 
   def addOrgRole() {
-    log.debug("addOrgRole ${params}");
+    // log.debug("addOrgRole ${params}");
     def org_to_link = resolveOID(params.orm_orgoid?.split(":"))
     def owner = resolveOID(params.parent?.split(":"))
     def rel = RefdataValue.get(params.orm_orgRole);
 
-    log.debug("Add link to ${org_to_link} from ${owner} rel is ${rel} recip_prop is ${params.recip_prop}");
+    // log.debug("Add link to ${org_to_link} from ${owner} rel is ${rel} recip_prop is ${params.recip_prop}");
     def new_link = new OrgRole(org:org_to_link,roleType:rel)
     new_link[params.recip_prop] = owner
     if ( new_link.save(flush:true) ) {
-      log.debug("Org link added");
+      // log.debug("Org link added");
     }
     else {
       log.error("Problem saving new org link...");
@@ -499,15 +573,15 @@ class AjaxController {
   }
 
   def delOrgRole() {
-    log.debug("delOrgRole ${params}");
+    // log.debug("delOrgRole ${params}");
     def or = OrgRole.get(params.id)
     or.delete(flush:true);
-    log.debug("Delete link: ${or}");
+    // log.debug("Delete link: ${or}");
     redirect(url: request.getHeader('referer'))
   }
 
   def lookup() {
-    log.debug("AjaxController::lookup ${params}");
+    // log.debug("AjaxController::lookup ${params}");
     def result = [:]
     params.max = params.max ?: 10;
     def domain_class = grailsApplication.getArtefact('Domain',params.baseClass)
@@ -526,7 +600,7 @@ class AjaxController {
   }
 
   def addToCollection() {
-    log.debug("AjaxController::addToCollection ${params}");
+    // log.debug("AjaxController::addToCollection ${params}");
 
     def contextObj = resolveOID2(params.__context)
     def domain_class = grailsApplication.getArtefact('Domain',params.__newObjectClass)
@@ -534,41 +608,41 @@ class AjaxController {
     if ( domain_class ) {
 
       if ( contextObj ) {
-        log.debug("Create a new instance of ${params.__newObjectClass}");
+        // log.debug("Create a new instance of ${params.__newObjectClass}");
 
         def new_obj = domain_class.getClazz().newInstance();
 
         domain_class.getPersistentProperties().each { p -> // list of GrailsDomainClassProperty
-          log.debug("${p.name} (assoc=${p.isAssociation()}) (oneToMany=${p.isOneToMany()}) (ManyToOne=${p.isManyToOne()}) (OneToOne=${p.isOneToOne()})");
+          // log.debug("${p.name} (assoc=${p.isAssociation()}) (oneToMany=${p.isOneToMany()}) (ManyToOne=${p.isManyToOne()}) (OneToOne=${p.isOneToOne()})");
           if ( params[p.name] ) {
             if ( p.isAssociation() ) {
               if ( p.isManyToOne() || p.isOneToOne() ) {
                 // Set ref property
-                log.debug("set assoc ${p.name} to lookup of OID ${params[p.name]}");
+                // log.debug("set assoc ${p.name} to lookup of OID ${params[p.name]}");
                 // if ( key == __new__ then we need to create a new instance )
                 new_obj[p.name] = resolveOID2(params[p.name])              
               }
               else {
                 // Add to collection
-                log.debug("add to collection ${p.name} for OID ${params[p.name]}");
+                // log.debug("add to collection ${p.name} for OID ${params[p.name]}");
                 new_obj[p.name].add(resolveOID2(params[p.name]))
               }
             }
             else {
-              log.debug("Set simple prop ${p.name} = ${params[p.name]}");
+              // log.debug("Set simple prop ${p.name} = ${params[p.name]}");
               new_obj[p.name] = params[p.name]
             }
           }
         }
 
         if ( params.__recip ) {
-          log.debug("Set reciprocal property ${params.__recip} to ${contextObj}");
+          // log.debug("Set reciprocal property ${params.__recip} to ${contextObj}");
           new_obj[params.__recip] = contextObj
         }
 
-        log.debug("Saving ${new_obj}");
+        // log.debug("Saving ${new_obj}");
         if ( new_obj.save() ) {
-          log.debug("Saved OK");
+          // log.debug("Saved OK");
         }
         else {
           new_obj.errors.each { e ->
@@ -596,7 +670,7 @@ class AjaxController {
     if ( domain_class ) {
       if ( oid_components[1]=='__new__' ) {
         result = domain_class.getClazz().refdataCreate(oid_components)
-        log.debug("Result of create ${oid} is ${result}");
+        // log.debug("Result of create ${oid} is ${result}");
       }
       else {
         result = domain_class.getClazz().get(oid_components[1])
@@ -609,7 +683,7 @@ class AjaxController {
   }
 
   def deleteThrough() {
-    log.debug("deleteThrough(${params})");
+    // log.debug("deleteThrough(${params})");
     def context_object = resolveOID2(params.contextOid)
     def target_object = resolveOID2(params.targetOid)
     if ( context_object."${params.contextProperty}".contains(target_object) ) {
@@ -622,7 +696,7 @@ class AjaxController {
   }
 
   def deleteManyToMany() {
-    log.debug("deleteManyToMany(${params})");
+    // log.debug("deleteManyToMany(${params})");
     def context_object = resolveOID2(params.contextOid)
     def target_object = resolveOID2(params.targetOid)
     if ( context_object."${params.contextProperty}".contains(target_object) ) {
@@ -634,7 +708,7 @@ class AjaxController {
 
 
   def editableSetValue() {
-    log.debug("editableSetValue ${params}");
+    // log.debug("editableSetValue ${params}");
     def target_object = resolveOID2(params.pk)
     if ( target_object ) {
       if ( params.type=='date' ) {

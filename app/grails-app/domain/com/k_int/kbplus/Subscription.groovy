@@ -2,6 +2,8 @@ package com.k_int.kbplus
 
 import com.k_int.kbplus.auth.*;
 import org.codehaus.groovy.grails.commons.ApplicationHolder
+import javax.persistence.Transient
+
 
 
 class Subscription {
@@ -173,7 +175,14 @@ class Subscription {
 
     controlledProperties.each { cp ->
       if ( oldMap[cp] != newMap[cp] ) {
-        changeNotificationService.notifySubscriptionChange(this.id, cp, oldMap[cp], newMap[cp], null, 'S');
+        //changeNotificationService.notifySubscriptionChange(this.id, cp, oldMap[cp], newMap[cp], null, 'S');
+        changeNotificationService.notifyChangeEvent([
+                                                     OID:"${this.class.name}:${this.id}",
+                                                     event:'Subscription.updated',
+                                                     prop:cp,
+                                                     old:oldMap[cp],
+                                                     new:newMap[cp]
+                                                    ])
       }
     }
   }
@@ -183,5 +192,15 @@ class Subscription {
       impId = java.util.UUID.randomUUID().toString();
     }
   }
+
+  @Transient
+  def notifyDependencies(changeDocument) {
+    log.debug("notifyDependencies(${changeDocument})");
+  }
+
+  public String toString() {
+    "Subscription ${id} - ${name}".toString();
+  }
+
 }
 

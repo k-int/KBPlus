@@ -8,19 +8,8 @@
 
     <div class="container">
         <ul class="breadcrumb">
-            <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
+            <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
            <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:params.shortcode]}">${institution.name} Current Licenses</g:link> </li>
-       		<li class="dropdown pull-right">
-		        <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">
-			  		Exports<b class="caret"></b>
-				</a>
-				<ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
-					<li>
-			  			<% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
-						<g:link action="currentLicenses" params="${ps_json}" target="_blank">Json Export</g:link>
-		      		</li>
-			    </ul>
-			</li>
         </ul>
     </div>
 
@@ -104,7 +93,12 @@
             </tbody>
           </table>
         </div>
+        <div class="pagination" style="text-align:center">
+          <bootstrap:paginate action="currentLicenses" controller="myInstitutions" params="${params}" next="Next" prev="Prev" max="${max}" total="${licenseCount}" />
+        </div>
+
       </g:if>
+
     </g:form>
     <script type="text/javascript">
         $('.licence-results input[type="radio"]').click(function () {

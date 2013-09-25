@@ -23,8 +23,9 @@ class OnixplLicenseController {
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def create() {
-        switch (request.method) {
+      switch (request.method) {
             case 'GET':
+            default:
                 [onixplLicenseInstance: new OnixplLicense(params)]
                 break
             case 'POST':
@@ -56,6 +57,7 @@ class OnixplLicenseController {
     def edit() {
         switch (request.method) {
             case 'GET':
+            default:
                 def onixplLicenseInstance = OnixplLicense.get(params.id)
                 if (!onixplLicenseInstance) {
                     flash.message = message(code: 'default.not.found.message', args: [message(code: 'onixplLicense.label', default: 'OnixplLicense'), params.id])

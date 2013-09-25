@@ -18,9 +18,11 @@ class User {
   boolean accountExpired
   boolean accountLocked
   boolean passwordExpired
+  Long defaultPageSize = new Long(10);
 
   SortedSet affiliations
   SortedSet roles
+  Org defaultDash
 
   static hasMany = [ affiliations: com.k_int.kbplus.auth.UserOrg, roles: com.k_int.kbplus.auth.UserRole ]
   static mappedBy = [ affiliations: 'user', roles: 'user' ]
@@ -33,6 +35,8 @@ class User {
     instcode blank: true, nullable: true
     email blank: true, nullable: true
     shibbScope blank: true, nullable: true
+    defaultDash blank: true, nullable: true
+    defaultPageSize blank: true, nullable: true
   }
 
   static mapping = {

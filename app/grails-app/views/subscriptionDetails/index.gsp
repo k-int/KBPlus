@@ -9,7 +9,7 @@
 
     <div class="container">
       <ul class="breadcrumb">
-        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <g:if test="${subscriptionInstance.subscriber}">
           <li> <g:link controller="myInstitutions" action="currentSubscriptions" params="${[shortcode:subscriptionInstance.subscriber.shortcode]}"> ${subscriptionInstance.subscriber.name} Current Subscriptions</g:link> <span class="divider">/</span> </li>
         </g:if>
@@ -30,13 +30,32 @@
 			</a>
 			<ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
 				<li>
+          			<g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter]}">CSV Export</g:link> 
+          			<g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter,omitHeader:'Y']}">CSV Export (No header)</g:link>
+        		</li>
+				<li>
 		  			<% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
-					<g:link action="index" params="${ps_json}" target="_blank">Json Export</g:link>
+					<g:link action="index" params="${ps_json}">Json Export</g:link>
 	      		</li>
 				<li>
 		  			<% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
-					<g:link action="index" params="${ps_xml}" target="_blank">XML Export</g:link>
+					<g:link action="index" params="${ps_xml}">XML Export</g:link>
 	      		</li>
+	      		<g:each in="${com.k_int.kbplus.UserTransforms.findAllByUser(user)}" var="ut">
+	      			<g:if test="${ut.transforms.hasType("subscription")}">
+	      				<% 
+						  	def ps_trans = [:];
+						  	if(ut.transforms.accepts_format.value == "xml")
+				  				ps_trans.putAll(ps_xml);
+						  	else if(ut.transforms.accepts_format.value == "json")
+								ps_trans.putAll(ps_json);
+							ps_trans.transforms=ut.transforms.id;
+					  	%>
+	      				<li>
+							<g:link action="index" params="${ps_trans}">${ut.transforms.name}</g:link>
+			      		</li>
+	      			</g:if>
+	      		</g:each>
 		    </ul>
 		</li>
       </ul>
@@ -60,24 +79,23 @@
     <g:if test="${subscriptionInstance.pendingChanges?.size() > 0}">
       <div class="container alert-warn">
         <h6>This Subscription has pending change notifications</h6>
+        <g:link controller="pendingChange" action="acceptAll" id="com.k_int.kbplus.Subscription:${subscriptionInstance.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept All</g:link>
+        <g:link controller="pendingChange" action="rejectAll" id="com.k_int.kbplus.Subscription:${subscriptionInstance.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject All</g:link>
+        <br/>&nbsp;<br/>
         <table class="table table-bordered">
           <thead>
             <tr>
-              <td>Field</td>
-              <td>Has changed to</td>
-              <td>Reason</td>
-              <td>Actions</td>
+              <td>Info</td>
+              <td>Action</td>
             </tr>
           </thead>
           <tbody>
             <g:each in="${subscriptionInstance.pendingChanges}" var="pc">
               <tr>
-                <td style="white-space:nowrap;">${pc.updateProperty}</td>
-                <td>${pc.updateValue}</td>
-                <td>${pc.updateReason}</td>
+                <td>${pc.desc}</td>
                 <td>
-                  <g:link controller="subscriptionDetails" action="acceptChange" id="${params.id}" params="${[changeid:pc.id]}" class="btn btn-primary">Accept</g:link>
-                  <g:link controller="subscriptionDetails" action="rejectChange" id="${params.id}" params="${[changeid:pc.id]}" class="btn btn-primary">Reject</g:link>
+                  <g:link controller="pendingChange" action="accept" id="${pc.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept</g:link>
+                  <g:link controller="pendingChange" action="reject" id="${pc.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject</g:link>
                 </td>
               </tr>
             </g:each>
@@ -105,7 +123,7 @@
                </dl>
 
                <dl><dt>Package Name</dt><dd><g:each in="${subscriptionInstance.packages}" var="sp">
-                           ${sp?.pkg?.name} (${sp.pkg?.contentProvider?.name}) <br/>
+                           <g:link controller="packageDetails" action="show" id="${sp.pkg.id}">${sp?.pkg?.name}</g:link> (${sp.pkg?.contentProvider?.name}) <br/>
                        </g:each></dd></dl>
 
                <dl><dt>Subscription Identifier</dt><dd>${subscriptionInstance.identifier}</dd></dl>
@@ -244,7 +262,7 @@
 
       <div class="pagination" style="text-align:center">
         <g:if test="${entitlements}" >
-          <bootstrap:paginate  action="index" controller="subscriptionDetails" params="${params}" next="Next" prev="Prev" maxsteps="${max}" total="${num_sub_rows}" />
+          <bootstrap:paginate  action="index" controller="subscriptionDetails" params="${params}" next="Next" prev="Prev" max="${max}" total="${num_sub_rows}" />
         </g:if>
       </div>
     </div>

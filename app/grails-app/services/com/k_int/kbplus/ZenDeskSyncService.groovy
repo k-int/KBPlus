@@ -11,8 +11,13 @@ import org.apache.http.entity.mime.content.*
 import java.nio.charset.Charset
 import org.apache.http.*
 import org.apache.http.protocol.*
+import java.text.SimpleDateFormat
+
 
 class ZenDeskSyncService {
+
+  def last_forum_check = 0;
+  def cached_forum_activity = null
 
   // see http://developer.zendesk.com/documentation/rest_api/forums.html#create-forum
 
@@ -27,6 +32,8 @@ class ZenDeskSyncService {
     // Select all public packages where there is currently no forumId
     def http = new RESTClient(ApplicationHolder.application.config.ZenDeskBaseURL)
 
+    log.debug("Add zendesk creds: ${ApplicationHolder.application.config.ZenDeskLoginEmail}:${ApplicationHolder.application.config.ZenDeskLoginPass}");
+
     http.client.addRequestInterceptor( new HttpRequestInterceptor() {
       void process(HttpRequest httpRequest, HttpContext httpContext) {
         String auth = "${ApplicationHolder.application.config.ZenDeskLoginEmail}:${ApplicationHolder.application.config.ZenDeskLoginPass}"
@@ -36,27 +43,95 @@ class ZenDeskSyncService {
     })
 
 
-    if ( ApplicationHolder.application.config.kbplusSystemId != null ) {
-      Package.findAllByForumId(null).each { pkg ->
-        // Check that there is a category for the content provider, if not, create
-        def cp = pkg.getContentProvider()
-        def cp_category_id = null
-        if ( cp != null ) {
-          if ( cp.categoryId == null ) {
-            cp.categoryId = lookupOrCreateZenDeskCategory(http,"${cp.name} ( ${ApplicationHolder.application.config.kbplusSystemId} )");
-            cp.save(flush:true);
-          }
-          pkg.forumId = createForum(http,pkg,cp.categoryId)
-          pkg.save(flush:true);
+    // If we re-import a live database the odds are that the package-forum links will be incorrect.
+    // This function reconnects packages in the connected zendesk system to any packages where pkg.forumId is null
+    reconnectOrphanedZendeskForums(http);
+
+    def current_categories = getCategories(http);
+
+    // Create forums for any packages we don't have yet.
+    Package.findAllByForumId(null).each { pkg ->
+      // Check that there is a category for the content provider, if not, create
+      def cp = pkg.getContentProvider()
+      def cp_category_id = null
+      if ( cp != null ) {
+        if ( cp.categoryId == null ) {
+          cp.categoryId = lookupOrCreateZenDeskCategory(http,"${cp.name} ( ${ApplicationHolder.application.config.kbplusSystemId} )", current_categories);
+          cp.save(flush:true);
         }
-        // Create forum in category
+        pkg.forumId = createForum(http,pkg,cp.categoryId)
+        pkg.save(flush:true);
       }
+      // Create forum in category
     }
-    else {
-      log.error("KBPlus ZenDesk sync cannot run - You MUST set a KBPlus System ID");
+
+
+    def systemObject = SystemObject.findBySysId(ApplicationHolder.application.config.kbplusSystemId)
+    if ( systemObject.announcementsForumId == null ) {
+      systemObject.announcementsForumId = createSysForum(http);
+      systemObject.save();
     }
   }
 
+  def reconnectOrphanedZendeskForums(http) {
+    log.debug("reconnectOrphanedZendeskForums starting...");
+
+    boolean has_next_page = true;
+    int pageno = 1
+
+    while ( has_next_page ) {
+      log.debug("Requesting forum list page ${pageno}");
+      http.get( path : '/api/v2/forums.json', 
+                query : [ page: pageno ],
+                requestContentType : ContentType.JSON) { resp, json ->
+        if ( json ) {
+          json.forums.each { f ->
+            try {
+              log.debug("Checking ${f.name} (${f.id})");
+              if ( f.name ==~ /(.*)\(Package (\d+) from (.*)(\)$)/ ) {
+                def pkg_info = f.name =~ /(.*)\(Package (\d+) from (.*)(\)$)/
+                def package_name = pkg_info[0][1]
+                def package_id = pkg_info[0][2]
+                def system_id = pkg_info[0][3]
+    
+                // Only hook up forums if they correspond to our local system identifier
+                if ( system_id == ApplicationHolder.application.config.kbplusSystemId ) {
+                  // Lookup package with package_id
+                    def pkg = Package.get(Long.parseLong(package_id))
+                  if ( pkg != null ) {
+                    if ( pkg.forumId == null ) {
+                      log.debug("Update package ${pkg.id} - link to forum ${f.id}");
+                      pkg.forumId = f.id
+                      pkg.save()
+                    }
+                  }
+                }
+              }
+              else if ( f.name == 'Announcements' ) {
+                def systemObject = SystemObject.findBySysId(ApplicationHolder.application.config.kbplusSystemId)
+                if ( systemObject.announcementsForumId == null ) {
+                  systemObject.announcementsForumId = f.id
+                  systemObject.save();
+                }
+              }
+            }
+            catch ( Exception e ) {
+              log.error("Problem reconnecting orphaned forums",e);
+            }
+          }
+          log.debug("json.next_page is ${json.next_page}, class is ${json.next_page.class.name}");
+          if ( ( json.next_page != null ) && ( ! json.next_page.equals (net.sf.json.JSONNull.getInstance() ) ) ) {
+            pageno++
+          }
+          else {
+            log.debug("No more pages in forum list...");
+            has_next_page = false
+          }
+        }
+      }
+    }
+    log.debug("reconnectOrphanedZendeskForums completed");
+  }
 
   def createForum(http,pkg,categoryId) {
     def result = null
@@ -64,7 +139,7 @@ class ZenDeskSyncService {
     //   -H "Content-Type: application/json" -X POST \
     //   -d '{"forum": {"name": "My Forum", "forum_type": "articles", "access": "logged-in users", "category_id":"xx"  }}' \
     //   -v -u {email_address}:{password}
-    def forum_name = pkg.name+" (Package from "+ApplicationHolder.application.config.kbplusSystemId+")".toString()
+    def forum_name = pkg.name+" (Package ${pkg.id} from ${ApplicationHolder.application.config.kbplusSystemId})".toString()
     def forum_desc = 'Questions and discussions relating to package :'+pkg.name.toString()
 
     log.debug("Create forum: ${forum_name}, ${forum_desc}, ${categoryId}");
@@ -72,34 +147,60 @@ class ZenDeskSyncService {
     http.post( path : '/api/v2/forums.json', 
                requestContentType : ContentType.JSON, 
                body : [ 'forum' : [ 'name' : forum_name,
-                                    'forum_type': 'questions', 
-                                    'access': 'logged-in users',
+                                    'forum_type': 'articles', // 'questions', 
+                                    'access': 'everybody', // 'logged-in users'
                                     'category_id' : "${categoryId}".toString(),
-                                    'description' : forum_desc,
-                                    'tags' : [ 'kbpluspkg' , "pkg:${pkg.id}".toString(), ApplicationHolder.application.config.kbplusSystemId.toString()  ]  
+                                    'description' : forum_desc//,
+                                    // 'tags' : [ 'kbpluspkg' , "pkg:${pkg.id}".toString(), ApplicationHolder.application.config.kbplusSystemId.toString()  ]  
                                   ] 
                       ]) { resp, json ->
-      log.debug("Result: ${resp}, ${json}");
+      log.debug("Create forum Result: ${resp.status}, ${json}");
       result = json.forum.id
     }
     result
   }
 
-  def lookupOrCreateZenDeskCategory(http,catname) {
+  def createSysForum(http) {
+    def result = null
+
+    http.post( path : '/api/v2/forums.json',
+               requestContentType : ContentType.JSON,
+               body : [ 'forum' : [ 'name' : 'Announcements',
+                                    'forum_type': 'articles', // 'questions', 
+                                    'access': 'everybody', // 'logged-in users'
+                                    'description' : 'Announcements' //,
+                                    // 'tags' : [ 'kbpluspkg' , "pkg:${pkg.id}".toString(), ApplicationHolder.application.config.kbplusSystemId.toString()  ]  
+                                  ]
+                      ]) { resp, json ->
+      log.debug("Create forum Result: ${resp.status}, ${json}");
+      result = json.forum.id
+    }
+    result
+
+  }
+
+  def lookupOrCreateZenDeskCategory(http,catname,current_categories) {
     log.debug("lookupOrCreateZenDeskCategory(${catname})");
     def result = null
 
-    def current_categories = getCategories(http);
-    def current_category = current_categories.categories.find { c -> c.name == catname }
+    def current_category = null
+    if ( current_categories != null ) {
+      current_category = current_categories.categories.find { c -> c.name == catname }
+    }
+
     if ( current_category == null ) {
       log.debug("Not found, create...");
 
-      http.post( path : '/api/v2/categories.json', 
-                 requestContentType : ContentType.JSON, 
-                 body : [ 'category' : [ 'name' : catname.toString() ] ]) { resp, json ->
-        log.debug("Result: ${resp}, ${json}");
-        // Result: groovyx.net.http.HttpResponseDecorator@48691d94, [category:[url:https://kbplus.zendesk.com/api/v2/categories/20104091.json, id:20104091, name:NRC Research Press ( IanHubbleDev ), description:null, position:9999, created_at:2013-07-04T08:36:21Z, updated_at:2013-07-04T08:36:21Z]]
-        result = json.category.id
+      try {
+        http.post( path : '/api/v2/categories.json', 
+                   requestContentType : ContentType.JSON, 
+                   body : [ 'category' : [ 'name' : catname.toString() ] ]) { resp, json ->
+          log.debug("Result: ${resp.status}, ${json}");
+          result = json.category.id
+        }
+      }
+      catch ( Exception e ) {
+        log.error("Problem creating category: ${catname.toString()}",e)
       }
 
     }
@@ -115,10 +216,128 @@ class ZenDeskSyncService {
     def result = null
 
     // GET /api/v2/categories.json
-    http.get(path:'/api/v2/categories.json') { resp, data ->
-      result = data
+    try {
+      http.get(path:'/api/v2/categories.json') { resp, data ->
+        result = data
+      }
+    }
+    catch ( Exception e ) {
+      log.error("Problem fetching categories.. think this can happen if there aren't any cats yet",e);
     }
 
+    result
+  }
+
+  // Latest activity:
+  // http://developer.zendesk.com/documentation/rest_api/activity_stream.html
+
+
+  def getLatestForumActivity() {
+    // https://ostephens.zendesk.com/api/v2/search.json?query=type:topic
+    def now = System.currentTimeMillis();
+    def intervalms = 1000 * 60 * 5 // Re-fetch forum activity every 5 minutes
+
+    def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    if ( 1==1 ) { // if ( now - last_forum_check > intervalms ) {
+      try {
+        def http = new RESTClient(ApplicationHolder.application.config.ZenDeskBaseURL)
+
+        http.client.addRequestInterceptor( new HttpRequestInterceptor() {
+          void process(HttpRequest httpRequest, HttpContext httpContext) {
+            String auth = "${ApplicationHolder.application.config.ZenDeskLoginEmail}:${ApplicationHolder.application.config.ZenDeskLoginPass}"
+            String enc_auth = auth.bytes.encodeBase64().toString()
+            httpRequest.addHeader('Authorization', 'Basic ' + enc_auth);
+          }
+        })
+
+        http.get(path:'/api/v2/search.json', query:[query:'type:topic', sort_by:'updated_at', sort_order:'desc']) { resp, data ->
+          cached_forum_activity = []
+          data.results.each { r ->
+            cached_forum_activity.add([
+                                       id:r.id, 
+                                       title:r.title, 
+                                       updated_at: ( r.updated_at != null ? sdf.parse(r.updated_at) : null ),
+                                       result_type:r.result_type])
+          }
+        }
+      }
+      catch ( Exception e ) {
+        log.error("Problem collecting feed activity",e)
+      }
+      finally {
+        last_forum_check = now
+      }
+    }
+
+    log.debug(cached_forum_activity)
+
+    cached_forum_activity
+  }
+
+  def postTopicCommentInForum(text, forumId, topicName, topicBody) {
+    log.debug("postTopicCommentInForum ${forumId}");
+    try {
+        def http = new RESTClient(ApplicationHolder.application.config.ZenDeskBaseURL)
+
+        http.client.addRequestInterceptor( new HttpRequestInterceptor() {
+          void process(HttpRequest httpRequest, HttpContext httpContext) {
+            String auth = "${ApplicationHolder.application.config.ZenDeskLoginEmail}:${ApplicationHolder.application.config.ZenDeskLoginPass}"
+            String enc_auth = auth.bytes.encodeBase64().toString()
+            httpRequest.addHeader('Authorization', 'Basic ' + enc_auth);
+          }
+        })
+
+        def topic_id = lookupOrCreateTopicInForum(forumId, topicName, topicBody, http);
+
+        log.debug("Posting in topic ${topic_id}");
+
+        http.post(path:"/api/v2/topics/${topic_id}/comments.json",
+                    requestContentType : ContentType.JSON,
+                    body : [ 'topic_comment' : [ 'body' : text ] ]) { resp, json ->
+        }
+    }
+    catch ( Exception e ) {
+      log.error("Problem activity",e)
+    }
+    finally {
+    }
+  }
+
+  def lookupOrCreateTopicInForum(forumId, topicName, topicBody, endpoint) {
+    log.debug("lookupOrCreateTopicInForum(${forumId},${topicName}...)");
+
+    def result = null
+    try {
+      def currentForumTopics = endpoint.get(path:"/api/v2/forums/${forumId}/topics.json") { resp, data ->
+
+        log.debug("Consider existing topics : ${data}");
+
+        data.topics.each { topic ->
+          log.debug("Consider existing topic: ${topic}");
+          if ( topic.title == topicName ) 
+            result = topic.id
+        }
+      }
+ 
+      if ( result == null ) {
+        log.debug("Create new topic with name ${topicName}");
+        // Not able to locate topic with topicName in the identified forum.. Create it
+        endpoint.post(path:"/api/v2/topics.json",
+                      requestContentType : ContentType.JSON,
+                      body : [ 'topic' : [ 'forum_id' : forumId,
+                                           'title': topicName,
+                                           'body' : topicBody
+                                         ]
+                        ]) { resp, json ->
+          result = json.topic.id
+        }
+      }
+    }
+    catch ( Exception e ) {
+      log.error("Problem trying to lookupOrCreateTopicInForum",e);
+    }
+
+    log.debug("Result of lookupOrCreateTopicInForum is ${result}");
     result
   }
 }

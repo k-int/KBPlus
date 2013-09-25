@@ -10,7 +10,7 @@
 
    <div class="container">
       <ul class="breadcrumb">
-        <li> <g:link controller="myInstitutions" action="dashboard">Home</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <g:if test="${issueEntitlementInstance?.subscription.subscriber}">
           <li> <g:link controller="myInstitutions" action="currentSubscriptions" params="${[shortcode:issueEntitlementInstance?.subscription.subscriber.shortcode]}"> ${issueEntitlementInstance?.subscription.subscriber.name} Subscriptions</g:link> <span class="divider">/</span> </li>
         </g:if>
@@ -49,6 +49,23 @@
 
                 </g:if>
             </dl>
+
+        <dl>
+            <g:if test="${issueEntitlementInstance?.subscription.owner}">
+                <dt><g:message code="issueEntitlement.licence.label" default="Licence" /></dt>
+
+                <dd><g:link controller="licenseDetails" action="index" id="${issueEntitlementInstance?.subscription?.owner.id}">${issueEntitlementInstance?.subscription?.owner.reference.encodeAsHTML()}</g:link></dd>
+
+            </g:if>
+        </dl>
+
+        <dl>
+            <g:if test="${issueEntitlementInstance?.subscription?.owner?.onixplLicense}">
+                <dt><g:message code="issueEntitlement.onixplLicence.label" default="ONIX-PL Licence" /></dt>
+
+                <dd><g:link controller="onixplLicenseDetails" action="index" id="${issueEntitlementInstance.subscription.owner.onixplLicense.id}">${issueEntitlementInstance.subscription.owner.onixplLicense.title.encodeAsHTML()}</g:link></dd>
+            </g:if>
+        </dl>
 
             <dl>
                 <g:if test="${issueEntitlementInstance?.tipp}">
@@ -115,8 +132,8 @@
             </dl>
 
             <dl>
-                <dt>Coverage</dt>
-                <dd>${issueEntitlementInstance.coverageDepth}</dd>
+                <dt>Coverage Depth</dt>
+                <dd><g:xEditable owner="${issueEntitlementInstance}" field="coverageDepth"/></dd>
             </dl>
 
             <dl>
@@ -197,7 +214,19 @@
 
                 <br/>
                 
-                <h6><g:message code="titleInstance.tipps.label" default="Occurences of this title against Packages / Platforms" /><g:message code="titleInstance.tipps.label" default="Occurences of this title against Packages / Platforms" /></h6>
+                <h6><g:message code="titleInstance.tipps.label" default="Occurrences of this title against Packages / Platforms" /><g:message code="titleInstance.tipps.label" default="Occurences of this title against Packages / Platforms" /></h6>
+
+
+                <g:form action="show" params="${params}" method="get" class="form-inline">
+                  <input type="hidden" name="sort" value="${params.sort}">
+                  <input type="hidden" name="order" value="${params.order}">
+                  <label>Filters - Package Name:</label> <input name="filter" value="${params.filter}"/> &nbsp;
+                  &nbsp; <label>Starts Before: </label>
+                  <g:simpleHiddenValue id="startsBefore" name="startsBefore" type="date" value="${params.startsBefore}"/>
+                  &nbsp; <label>Ends After: </label>
+                  <g:simpleHiddenValue id="endsAfter" name="endsAfter" type="date" value="${params.endsAfter}"/>
+                  <input type="submit" class="btn btn-primary">
+                </g:form>
 
                 <table class="table table-bordered table-striped">
                     <tr>
@@ -205,7 +234,7 @@
                         <th>To Date</th><th>To Volume</th><th>To Issue</th><th>Coverage Depth</th>
                         <th>Platform</th><th>Package</th><th>Actions</th>
                     </tr>
-                    <g:each in="${issueEntitlementInstance.tipp.title.tipps}" var="t">
+                    <g:each in="${tippList}" var="t">
                         <tr>
                             <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.startDate}"/></td>
                         <td>${t.startVolume}</td>

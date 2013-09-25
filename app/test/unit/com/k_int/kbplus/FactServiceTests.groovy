@@ -12,6 +12,5 @@ import org.junit.*
 class FactServiceTests {
 
     void testSomething() {
-        fail "Implement me"
     }
 }

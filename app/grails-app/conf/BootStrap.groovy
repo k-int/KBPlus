@@ -11,6 +11,10 @@ class BootStrap {
 
 
   def init = { servletContext ->
+	
+    if ( grailsApplication.config.kbplusSystemId != null ) {
+      def system_object = SystemObject.findBySysId(grailsApplication.config.kbplusSystemId) ?: new SystemObject(sysId:grailsApplication.config.kbplusSystemId).save(flush:true);
+    }
 
     def evt_startup = new EventLog(event:'kbplus.startup',message:'Normal startup',tstp:new Date(System.currentTimeMillis())).save(flush:true)
 
@@ -42,6 +46,103 @@ class BootStrap {
     }
     ensurePermGrant(institutionalUser,view_permission);
 
+    // Allows values to be added to the vocabulary control list by passing an array with RefdataCategory as the key
+    // and a list of values to be added to the RefdataValue table.
+    grailsApplication.config.refdatavalues.each { rdc, rdvList ->
+        rdvList.each { rdv ->
+            RefdataCategory.lookupOrCreate(rdc, rdv);
+        }
+    }
+	// Transforms types and formats Refdata 
+	// !!! HAS TO BE BEFORE the script adding the Transformers as it is used by those tables !!!
+	def json_format = RefdataCategory.lookupOrCreate('Transform Format', 'json');
+	def xml_format = RefdataCategory.lookupOrCreate('Transform Format', 'xml');
+	def url_format = RefdataCategory.lookupOrCreate('Transform Format', 'url');
+	def subscription_type = RefdataCategory.lookupOrCreate('Transform Type', 'subscription');
+	def licence_type = RefdataCategory.lookupOrCreate('Transform Type', 'licence');
+	def title_type = RefdataCategory.lookupOrCreate('Transform Type', 'title');
+	def package_type = RefdataCategory.lookupOrCreate('Transform Type', 'package');
+	
+	// Add Transformers and Transforms define in the demo-config.groovy
+	grailsApplication.config.systransforms.each { tr ->
+		def transformName = tr.transforms_name //"${tr.name}-${tr.format}-${tr.type}"
+		
+		def transforms = Transforms.findByName("${transformName}")
+		def transformer = Transformer.findByName("${tr.transformer_name}")
+		if ( transformer ) {
+			if ( transformer.url != tr.url ) {
+			  log.debug("Change transformer [${tr.transformer_name}] url to ${tr.url}");
+			  transformer.url = tr.url;
+			  transformer.save(failOnError: true, flush: true)
+			}
+			else {
+			  log.debug("${tr.transformer_name} present and correct");
+			}
+		} else {
+		  log.debug("Create transformer ${tr.transformer_name}...");
+		  transformer = new Transformer(
+						name: tr.transformer_name,
+						url: tr.url).save(failOnError: true, flush: true)
+		}
+		
+		log.debug("Create transform ${transformName}...");
+		def types = RefdataValue.findAllByOwner(RefdataCategory.findByDesc('Transform Type'))
+		def formats = RefdataValue.findAllByOwner(RefdataCategory.findByDesc('Transform Format'))
+		
+		if ( transforms ) {
+			
+		  if( tr.type ){
+			  // split values
+			  def type_list = tr.type.split(",")
+			  type_list.each { new_type ->
+				  if( !transforms.accepts_types.any { f -> f.value == new_type } ){
+					  log.debug("Add transformer [${transformName}] type: ${new_type}");
+					  def type = types.find{ t -> t.value == new_type }
+					  transforms.addToAccepts_types(type)
+				  }
+			  }
+		  }
+		  if ( transforms.accepts_format.value != tr.format ) {
+			  log.debug("Change transformer [${transformName}] format to ${tr.format}");
+			  def format = formats.findAll{ t -> t.value == tr.format }
+			  transforms.accepts_format = format[0]
+		  }
+		  if ( transforms.return_mime != tr.return_mime ) {
+			  log.debug("Change transformer [${transformName}] return format to ${tr.'mime'}");
+			  transforms.return_mime = tr.return_mime;
+		  }
+		  if ( transforms.return_file_extention != tr.return_file_extension ) {
+			  log.debug("Change transformer [${transformName}] return format to ${tr.'return'}");
+			  transforms.return_file_extention = tr.return_file_extension;
+		  }
+		  if ( transforms.path_to_stylesheet != tr.path_to_stylesheet ) {
+			  log.debug("Change transformer [${transformName}] return format to ${tr.'path'}");
+			  transforms.path_to_stylesheet = tr.path_to_stylesheet;
+		  }
+		  transforms.save(failOnError: true, flush: true)
+		}
+		else {
+			def format = formats.findAll{ t -> t.value == tr.format }
+			
+			assert format.size()==1
+			
+			transforms = new Transforms(
+				name: transformName,
+				accepts_format: format[0],
+				return_mime: tr.return_mime,
+				return_file_extention: tr.return_file_extension,
+				path_to_stylesheet: tr.path_to_stylesheet,
+				transformer: transformer).save(failOnError: true, flush: true)
+				
+			def type_list = tr.type.split(",")
+			type_list.each { new_type ->
+				def type = types.find{ t -> t.value == new_type }
+				transforms.addToAccepts_types(type)
+			}
+		}
+	}
+	
+	
     if ( grailsApplication.config.localauth ) {
       log.debug("localauth is set.. ensure user accounts present (From local config file) ${grailsApplication.config.sysusers}");
 
@@ -92,7 +193,6 @@ class BootStrap {
     if ( uo_with_null_role.size() > 0 ) {
       log.warn("There are user org rows with no role set. Please update the table to add role FKs");
     }
-
 
     setupRefdata();
   }
@@ -154,7 +254,7 @@ class BootStrap {
     RefdataCategory.lookupOrCreate('UsageType', 'UseForDataMining')
     */
     // Controlled values from the <UsageStatus> element. All are prefixed with "onixPL:" in the document
-    log.debug("Adding ONIX-PL UsageStatuses to RefdataCategory");
+
     RefdataCategory.lookupOrCreate('UsageStatus', 'greenTick',      'UseForDataMining')
     RefdataCategory.lookupOrCreate('UsageStatus', 'greenTick',      'InterpretedAsPermitted')
     RefdataCategory.lookupOrCreate('UsageStatus', 'redCross',       'InterpretedAsProhibited')
@@ -162,6 +262,78 @@ class BootStrap {
     RefdataCategory.lookupOrCreate('UsageStatus', 'redCross',       'Prohibited')
     RefdataCategory.lookupOrCreate('UsageStatus', 'purpleQuestion', 'SilentUninterpreted')
     RefdataCategory.lookupOrCreate('UsageStatus', 'purpleQuestion', 'NotApplicable')
+
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.DelayedOA", "No").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.DelayedOA", "Unknown").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.DelayedOA", "Yes").save()
+
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", "No").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", "Unknown").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", "Yes").save()
+
+    RefdataCategory.lookupOrCreate("Tipp.StatusReason", "Transfer Out").save()
+    RefdataCategory.lookupOrCreate("Tipp.StatusReason", "Transfer In").save()
+
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Complimentary").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Limited Promotion").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Paid").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "OA").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Opt Out Promotion").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Uncharged").save()
+    RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Unknown").save()
+
+    RefdataCategory.lookupOrCreate("Package.ListStatus", "Checked").save()
+    RefdataCategory.lookupOrCreate("Package.ListStatus", "In Progress").save()
+    RefdataCategory.lookupOrCreate("Package.Breakable", "No").save()
+    RefdataCategory.lookupOrCreate("Package.Breakable", "Yes").save()
+    RefdataCategory.lookupOrCreate("Package.Breakable", "Unknown").save()
+    RefdataCategory.lookupOrCreate("Package.Consistent", "No").save()
+    RefdataCategory.lookupOrCreate("Package.Consistent", "Yes").save()
+    RefdataCategory.lookupOrCreate("Package.Consistent", "Unknown").save()
+    RefdataCategory.lookupOrCreate("Package.Fixed", "No").save()
+    RefdataCategory.lookupOrCreate("Package.Fixed", "Yes").save()
+    RefdataCategory.lookupOrCreate("Package.Fixed", "Unknown").save()
+    RefdataCategory.lookupOrCreate("Package.Scope", "Aggregator").save()
+    RefdataCategory.lookupOrCreate("Package.Scope", "Front File").save()
+    RefdataCategory.lookupOrCreate("Package.Scope", "Back File").save()
+    RefdataCategory.lookupOrCreate("Package.Scope", "Master File").save()
+    RefdataCategory.lookupOrCreate("Package.Scope", "Scope Undefined").save()
+
+    log.debug("validate content items...");
+    // The default template for a property change on a title
+    ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.propertyChange','','''
+Title change - The <strong>${evt.prop}</strong> field was changed from  "<strong>${evt.oldLabel?:evt.old}</strong>" to "<strong>${evt.newLabel?:evt.new}</strong>".
+''');
+
+    ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.identifierAdded','','''
+An identifier was added to title ${OID?.title}.
+''');
+
+    ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.identifierRemoved','','''
+An identifier was removed from title ${OID?.title}.
+''');
+
+    ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.updated','','''
+TIPP change for title ${OID?.title?.title} - The <strong>${evt.prop}</strong> field was changed from  "<strong>${evt.oldLabel?:evt.old}</strong>" to "<strong>${evt.newLabel?:evt.new}</strong>".
+''');
+
+    ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.added','','''
+TIPP Added for title ${OID?.title?.title} ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
+''');
+
+    ContentItem.lookupOrCreate('ChangeNotification.TitleInstancePackagePlatform.deleted','','''
+TIPP Deleted for title ${OID?.title?.title} ${evt.linkedTitle} on platform ${evt.linkedPlatform} .
+''');
+
+    ContentItem.lookupOrCreate('ChangeNotification.Package.created','','''
+New package added with id ${OID.id} - "${OID.name}".
+''');
+
+    ContentItem.lookupOrCreate('kbplus.noHostPlatformURL','','''
+No Host Platform URL Content
+''');
+
+
   }
 
 }
