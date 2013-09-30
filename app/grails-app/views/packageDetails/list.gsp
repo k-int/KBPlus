@@ -33,6 +33,8 @@
           <tr>
             <g:sortableColumn property="identifier" title="${message(code: 'package.identifier.label', default: 'Identifier')}" />
             <g:sortableColumn property="name" title="${message(code: 'package.name.label', default: 'Name')}" />
+            <g:sortableColumn property="dateCreated" title="${message(code: 'package.dateCreated.label', default: 'Created')}" />
+            <g:sortableColumn property="lastUpdated" title="${message(code: 'package.lastUpdated.label', default: 'Last Updated')}" />
             <th></th>
           </tr>
         </thead>
@@ -41,6 +43,8 @@
             <tr>
               <td>${fieldValue(bean: packageInstance, field: "identifier")}</td>
               <td>${fieldValue(bean: packageInstance, field: "name")}</td>
+              <td>${fieldValue(bean: packageInstance, field: "dateCreated")}</td>
+              <td>${fieldValue(bean: packageInstance, field: "lastUpdated")}</td>
               <td class="link">
                 <g:link action="show" id="${packageInstance.id}" class="btn btn-small">Show &raquo;</g:link>
               </td>
