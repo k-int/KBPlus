@@ -725,6 +725,9 @@ class SubscriptionImportController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def processSubscriptionImport() {
+
+    log.debug("processSubscriptionImport...");
+
     def result = [:]
 
     result.user = User.get(springSecurityService.principal.id)

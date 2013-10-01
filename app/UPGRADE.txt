@@ -1,4 +1,0 @@
-drop index fact_uid_idx on fact;
-create index fact_uid_idx on fact ( fact_uid );
-update package set pkg_forum_id = null;
-update org set org_cat = null;

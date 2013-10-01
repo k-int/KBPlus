@@ -113,7 +113,12 @@ class ProcessLoginController {
       log.debug(ediAuthTokenMap)
 
       if ( ( params.ea_context ) && ( params.ea_context.trim().length() > 0 ) ) {
-        response_str="${params.ea_context}?ediauthToken=${tok}"
+        if ( params.ea_context.indexOf('?') > 0 ) {
+          response_str="${params.ea_context.replaceAll('ediauthToken','_oldeat_')}&ediauthToken=${tok}"
+        }
+        else {
+          response_str="${params.ea_context}?ediauthToken=${tok}"
+        }
       }
       else {
         response_str="http://knowplus.edina.ac.uk/kbplus/?ediauthToken=${tok}"

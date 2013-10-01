@@ -1,4 +1,0 @@
-update package set pkg_forum_id = null;
-update org set org_cat = null;
-drop index fact_uid_idx on fact;
-drop table pending_change;
