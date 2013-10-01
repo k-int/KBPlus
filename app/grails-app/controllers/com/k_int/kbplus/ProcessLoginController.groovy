@@ -113,13 +113,7 @@ class ProcessLoginController {
       log.debug(ediAuthTokenMap)
 
       if ( ( params.ea_context ) && ( params.ea_context.trim().length() > 0 ) ) {
-        if ( params.ea_context.indexOf('?') > 0 ) {
-          log.error("** EDGE CASE - ea_context already contains a query string: ${params.ea_context} **");
-          response_str="${params.ea_context}&ediauthToken=${tok}"
-        }
-        else {
-          response_str="${params.ea_context}?ediauthToken=${tok}"
-        }
+        response_str="${params.ea_context.replaceAll('ediauthToken','_oldeat_')}&ediauthToken=${tok}"
       }
       else {
         response_str="http://knowplus.edina.ac.uk/kbplus/?ediauthToken=${tok}"
