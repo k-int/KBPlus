@@ -464,6 +464,8 @@ class DataloadService {
       def future = index_admin_client.delete {
         indices 'kbplus'
       }
+      future.get()
+      log.debug("Drop old ES index completed OK");
     }
     catch ( Exception e ) {
       log.warn("Problem deleting index...",e);
