@@ -150,7 +150,9 @@ class AdminController {
   def fullReset() {
     new EventLog(event:'kbplus.fullReset',message:'Full Reset',tstp:new Date(System.currentTimeMillis())).save(flush:true)
     log.debug("Delete all existing FT Control entries");
-    FTControl.executeUpdate("delete FTControl c");
+    FTControl.withTransaction {
+      FTControl.executeUpdate("delete FTControl c");
+    }
 
     log.debug("Clear ES");
     dataloadService.clearDownAndInitES();
