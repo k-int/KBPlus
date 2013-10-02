@@ -195,7 +195,7 @@ class ZenDeskSyncService {
         http.post( path : '/api/v2/categories.json', 
                    requestContentType : ContentType.JSON, 
                    body : [ 'category' : [ 'name' : catname.toString() ] ]) { resp, json ->
-          log.debug("Result: ${resp.status}, ${json}");
+          // log.debug("Result: ${resp.status}, ${json}");
           result = json.category.id
         }
       }
@@ -269,7 +269,7 @@ class ZenDeskSyncService {
       }
     }
 
-    log.debug(cached_forum_activity)
+    // log.debug(cached_forum_activity)
 
     cached_forum_activity
   }
