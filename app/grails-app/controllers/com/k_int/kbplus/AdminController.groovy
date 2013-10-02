@@ -168,6 +168,7 @@ class AdminController {
       }
       finally {
         ftupdate_running = false
+        log.debug("fullReset complete..");
       }
     }
     else {
