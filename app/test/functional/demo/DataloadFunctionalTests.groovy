@@ -3,11 +3,14 @@ package demo
 import functionaltestplugin.*
 import com.grailsrocks.functionaltest.*
 
+import com.k_int.kbplus.ChromeBrowserClient
+
 
 class DataloadFunctionalTests extends FunctionalTestCase {
 
     void testUserCreation() {
-        setBrowser("CHROME")
+        // setBrowser("CHROME")
+        client('default',ChromeBrowserClient.class)
         // setBrowser(BrowserVersion.CHROME_16)
         // Here call get(uri) or post(uri) to start the session
         // and then use the custom assertXXXX calls etc to check the response

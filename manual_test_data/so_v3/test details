@@ -3,63 +3,64 @@ Organisation "Test Org 1" must exist
 
 The test upload files are dependent on each other for the specified outcome. For example test_upload_1.csv has to upload successfully as defined here for test_upload_6.csv to give the result as listed.
 
-test_upload_1.csv	Testing successful import for all new package/TIs/TIPPs.
-					Should succeed with messages:
-						"Content Provider "Test Provider 1" did not exist, new Organisation "Test Provider 1" will be created"; 
-						"Processing this file will create 1 new platform"; 
-						"No titles matched. 5 new titles created"; 
-						"5 new TIPPs"
-						"New Package created with name "Test Package 1"" (with hyperlink to Package)
-						"New Subscription Offered created with name "Test SO 1"" (with hyperlink to SO)
-test_upload_2.csv	Testing range of pre-flight check errors in header
-					Should fail with error messages: 
-						"Upload file does not contain a Subscription Offered Name"; 
-						"Upload file does not contain a Package Name"; 
-						"The file does not specify a valid start date for the Subscription Offered"; 
-						"The file does not specify a valid end date for the Subscription Offered";
-						"The Consortium N does not exist. Create this consortium or correct the file before uploading file"
-test_upload_3.csv	Testing failure due to pre-existing Sub and Package with matching normalised identifiers
-					Should fail with error messages:
-						"Subscription with ID $ {normalised_identifier} already exists in database"; 
-						"Package with ID $ {norm_pkg_identifier} already exists in database"
-test_upload_4.csv	Testing failure due to lack of platform.host.url
-					Should fail with error messages:
-						"Unable to locate host platform"
-test_upload_5.csv	Testing range of pre-flight checks at TIPP level
-					Should fail with error messages:
-						"The TIPP in row 12 of the file is missing a title"; 
-						"The TIPP in row 17 (Dressing) has no valid identifiers"; 
-						"The TIPP in row 13 (Arms & Armour) has an invalid ISSN of 17416124"; 
-						"The TIPP in row 14 (Byzantine and Modern Greek Studies) has an invalid eISSN of 1749625X"; 
-						"The ISSN 0590-8876 appears to be repeated in the TIPP rows"; 
-						"The eISSN 1749-6306 appears to be repeated in the TIPP rows"; 
-						"The TIPP in row 17 (Dressing) has no host platform URL"; 
-						"The TIPP in row 18 (Dress) has an invalid Start Date"; 
-						"The TIPP in row 18 (Dress) has an invalid Coverage Depth (must be one of “fulltext”, “selected articles”, “abstracts”)"
-test_upload_6.csv	Testing matching of existing TIs
-					Should pass preflight checks OK. TIPP rows should match/fail to match TIs as follows: 
-						* row 10 matches ISSN and eISSN against single title, but has a different title string fingerprint BAD MATCH - error "A line in the upload file has IDs which match an existing title "Ambix:  The Journal of the Society for the History of Alchemy and Chemistry" which is different to the title specified in the upload file "Ambix". Please correct the existing record or the file before proceeding with the upload"
-						* row 11 matches ISSN and eISSN against a single title and successfully matches title string fingerprint GOOD MATCH
-						* row 12 gets different matches on ISSN and eISSN BAD MATCH - error "A line in the upload file matches multiple existing Titles. Either the file or the existing KB+ records must be amended before the file can be loaded. Upload data: Title = Byzantine & Modern Greek Studies, ISSN = 0361-2112, eISSN = 1749-625X; Match 1: Title = Byzantine and Modern Greek Studies, ISSN = 0307-0131, eISSN = 1749-625X; Match 2: Title = Dress, ISSN = 0361-2112, eISSN = 2042-1729
-						* row 13 matches ISSN and eISSN against single title; DOI doesn't match any existing record; title string fingerprint matches same title as ISSN/eISSN. GOOD MATCH and DOI from upload file added to TI as a new ID in DOI namespace
-test_upload_7.csv	Testing creation of new TIPP with two ISBNs and an additional proprietary identifier
-					Should succeed creating with messages:
-						"Processing this file will create 1 new platform"; 
-						"No titles matched. 1 new title created"; 
-						"1 new TIPP"
-						"New Package created with name "Test Package 3"" (with hyperlink to Package)
-						"New Subscription Offered created with name "Test SO 3"" (with hyperlink to SO)
-test_upload_8.csv	Testing matching of TI on ISBN and creation of a new TIPP
-					Should succeed creating with messages:
-						"1 matched title"
-						"1 new TIPP"
-						"New Package created with name "Test Package 4"" (with hyperlink to Package)
-						"New Subscription Offered created with name "Test SO 4"" (with hyperlink to SO)
-test_upload_9.csv	Testing addition of new TI ID where there is a positive TI match
-					Should succeed creating with messages:
-						"1 matched title"
-						"1 new TIPP"
-						"New Package created with name "Test Package 5"" (with hyperlink to Package)
-						"New Subscription Offered created with name "Test SO 5"" (with hyperlink to SO)
-					Should result in TI "Costume: Journal of the Costume Society,0590-8876,1749-6306" having a DOI added "DOI1234"
-
+test_upload_1.csv 	Testing successful import for all new package/TIs/TIPPs.
+                  					Should succeed with messages:
+                  						"Content Provider "Test Provider 1" did not exist, new Organisation "Test Provider 1" will be created"; 
+                  						"Processing this file will create 1 new platform"; 
+                  						"No titles matched. 5 new titles created"; 
+                  						"5 new TIPPs"
+                  						"New Package created with name "Test Package 1"" (with hyperlink to Package)
+                  						"New Subscription Offered created with name "Test SO 1"" (with hyperlink to SO)
+test_upload_2.csv 	Testing range of pre-flight check errors in header
+                  					Should fail with error messages: 
+                  						"Upload file does not contain a Subscription Offered Name"; 
+                  						"Upload file does not contain a Package Name"; 
+                  						"The file does not specify a valid start date for the Subscription Offered"; 
+                  						"The file does not specify a valid end date for the Subscription Offered";
+                  						"The Consortium N does not exist. Create this consortium or correct the file before uploading file"
+test_upload_3.csv 	Testing failure due to pre-existing Sub and Package with matching normalised identifiers
+                  					Should fail with error messages:
+                  						"Subscription with ID $ {normalised_identifier} already exists in database"; 
+                  						"Package with ID $ {norm_pkg_identifier} already exists in database"
+test_upload_4.csv 	Testing failure due to lack of platform.host.url
+                  					Should fail with error messages:
+                  						"Unable to locate host platform"
+test_upload_5.csv 	Testing range of pre-flight checks at TIPP level
+                  					Should fail with error messages:
+                  						"The TIPP in row 12 of the file is missing a title"; 
+                  						"The TIPP in row 17 (Dressing) has no valid identifiers"; 
+                  						"The TIPP in row 13 (Arms & Armour) has an invalid ISSN of 17416124"; 
+                  						"The TIPP in row 14 (Byzantine and Modern Greek Studies) has an invalid eISSN of 1749625X"; 
+                  						"The ISSN 0590-8876 appears to be repeated in the TIPP rows"; 
+                  						"The eISSN 1749-6306 appears to be repeated in the TIPP rows"; 
+                  						"The TIPP in row 17 (Dressing) has no host platform URL"; 
+                  						"The TIPP in row 18 (Dress) has an invalid Start Date"; 
+                  						"The TIPP in row 18 (Dress) has an invalid Coverage Depth (must be one of “fulltext”, “selected articles”, “abstracts”)"
+test_upload_6.csv 	Testing matching of existing TIs
+                  					Should pass preflight checks OK. TIPP rows should match/fail to match TIs as follows: 
+                  						* row 10 matches ISSN and eISSN against single title, but has a different title string fingerprint BAD MATCH - error "A line in the upload file has IDs which match an existing title "Ambix:  The Journal of the Society for the History of Alchemy and Chemistry" which is different to the title specified in the upload file "Ambix". Please correct the existing record or the file before proceeding with the upload"
+                  						* row 11 matches ISSN and eISSN against a single title and successfully matches title string fingerprint GOOD MATCH
+                  						* row 12 gets different matches on ISSN and eISSN BAD MATCH - error "A line in the upload file matches multiple existing Titles. Either the file or the existing KB+ records must be amended before the file can be loaded. Upload data: Title = Byzantine & Modern Greek Studies, ISSN = 0361-2112, eISSN = 1749-625X; Match 1: Title = Byzantine and Modern Greek Studies, ISSN = 0307-0131, eISSN = 1749-625X; Match 2: Title = Dress, ISSN = 0361-2112, eISSN = 2042-1729
+                  						* row 13 matches ISSN and eISSN against single title; DOI doesn't match any existing record; title string fingerprint matches same title as ISSN/eISSN. GOOD MATCH and DOI from upload file added to TI as a new ID in DOI namespace
+test_upload_7.csv 	Testing creation of new TIPP with two ISBNs and an additional proprietary identifier
+                  					Should succeed creating with messages:
+                  						"Processing this file will create 1 new platform"; 
+                  						"No titles matched. 1 new title created"; 
+                  						"1 new TIPP"
+                  						"New Package created with name "Test Package 3"" (with hyperlink to Package)
+                  						"New Subscription Offered created with name "Test SO 3"" (with hyperlink to SO)
+test_upload_8.csv 	Testing matching of TI on ISBN and creation of a new TIPP
+                  					Should succeed creating with messages:
+                  						"1 matched title"
+                  						"1 new TIPP"
+                  						"New Package created with name "Test Package 4"" (with hyperlink to Package)
+                  						"New Subscription Offered created with name "Test SO 4"" (with hyperlink to SO)
+test_upload_9.csv 	Testing addition of new TI ID where there is a positive TI match
+                  					Should succeed creating with messages:
+                  						"1 matched title"
+                  						"1 new TIPP"
+                  						"New Package created with name "Test Package 5"" (with hyperlink to Package)
+                  						"New Subscription Offered created with name "Test SO 5"" (with hyperlink to SO)
+                  					Should result in TI "Costume: Journal of the Costume Society,0590-8876,1749-6306" having a DOI added "DOI1234"
+test_upload_10.csv	Undefined
+test_upload_11.csv	Testing addition of TIPPs to existing Package. Requires test_upload_1.csv to have been uploaded successfully first

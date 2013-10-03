@@ -216,7 +216,7 @@ class DataloadService {
         total++
         if ( count > 100 ) {
           count = 0;
-          log.debug("processed ${++total} records");
+          log.debug("processed ${++total} records (${domain.name})");
           latest_ft_record.save(flush:true);
           cleanUpGorm();
         }
@@ -464,6 +464,8 @@ class DataloadService {
       def future = index_admin_client.delete {
         indices 'kbplus'
       }
+      future.get()
+      log.debug("Drop old ES index completed OK");
     }
     catch ( Exception e ) {
       log.warn("Problem deleting index...",e);
@@ -575,6 +577,8 @@ class DataloadService {
       }
     }
     future.get()
+
+    log.debug("Clear down and init ES completed...");
     
   }
 

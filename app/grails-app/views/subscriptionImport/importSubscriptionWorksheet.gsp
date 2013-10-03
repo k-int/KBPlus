@@ -39,7 +39,7 @@
     <g:set var="counter" value="${-1}" />
 
     <g:if test="${1==1}">
-      <form  action="processSubscriptionImport" method="post" params="${params}">
+      <g:form  action="processSubscriptionImport" method="post" params="${params}">
         <div class="container"> 
         <g:if test="${subOrg!=null}">
           Import will create a subscription for ${subOrg.name}
@@ -98,7 +98,7 @@
             <button type="submit" class="btn btn-primary">Accept and Process</button>
           </div>
         </div>
-      </form>
+      </g:form>
     </g:if>
 
   </body>

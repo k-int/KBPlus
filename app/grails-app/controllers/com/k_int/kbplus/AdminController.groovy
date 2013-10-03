@@ -13,6 +13,8 @@ class AdminController {
   def messageService
   def changeNotificationService
 
+  static boolean ftupdate_running = false
+
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def index() { }
 
@@ -148,17 +150,34 @@ class AdminController {
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def fullReset() {
-    new EventLog(event:'kbplus.fullReset',message:'Full Reset',tstp:new Date(System.currentTimeMillis())).save(flush:true)
-    log.debug("Delete all existing FT Control entries");
-    FTControl.executeUpdate("delete FTControl c");
 
-    log.debug("Clear ES");
-    dataloadService.clearDownAndInitES();
+    if ( ftupdate_running == false ) {
+      try {
+        ftupdate_running = true
+        new EventLog(event:'kbplus.fullReset',message:'Full Reset',tstp:new Date(System.currentTimeMillis())).save(flush:true)
+        log.debug("Delete all existing FT Control entries");
+        FTControl.withTransaction {
+          FTControl.executeUpdate("delete FTControl c");
+        }
 
-    log.debug("manual start full text index");
-    dataloadService.updateFTIndexes();
+        log.debug("Clear ES");
+        dataloadService.clearDownAndInitES();
+  
+        log.debug("manual start full text index");
+        dataloadService.updateFTIndexes();
+      }
+      finally {
+        ftupdate_running = false
+        log.debug("fullReset complete..");
+      }
+    }
+    else {
+      log.debug("FT update already running");
+    }
+
     log.debug("redirecting to home...");
     redirect(controller:'home')
+
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
