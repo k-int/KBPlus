@@ -85,7 +85,10 @@ class OnixplUsageTermTests {
             assertEquals null, anOput.oplLicense
             assertEquals null, anOput.usageType
             assertEquals null, anOput.usageStatus
-            ["oplLicense", "usageType", "usageStatus"].each { prop ->
+            ["oplLicense"].each { prop ->
+                assertEquals null, anOput.errors[prop]
+            }
+            ["usageType", "usageStatus"].each { prop ->
                 assertEquals "nullable", anOput.errors[prop]
             }
         }
