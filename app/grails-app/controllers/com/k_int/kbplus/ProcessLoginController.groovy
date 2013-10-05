@@ -49,79 +49,86 @@ class ProcessLoginController {
       log.debug("email = ${map.mail}");
       log.debug("Inst Addr = ${map.authInstitutionAddress}");
 
-      def user = com.k_int.kbplus.auth.User.findByUsername(map.eduPersonTargetedID)
-      if ( !user ) {
-        log.debug("Creating user");
-        user = new com.k_int.kbplus.auth.User(username:map.eduPersonTargetedID,
-                                              password:'**',
-                                              enabled:true,
-                                              accountExpired:false,
-                                              accountLocked:false, 
-                                              passwordExpired:false,
-                                              instname:map.authInstitutionName,
-                                              shibbScope:map.shibbScope,
-                                              email:map.mail)
-
-        if ( user.save(flush:true) ) {
-          log.debug("Created user, allocating user role");
-          def userRole = com.k_int.kbplus.auth.Role.findByAuthority('ROLE_USER')
-
-          if ( userRole ) {
-            log.debug("looked up user role: ${userRole}");
-            def new_role_allocation = new com.k_int.kbplus.auth.UserRole(user:user,role:userRole);
+      if ( ( map.eduPersonTargetedID != null ) && ( map.eduPersonTargetedID.length() > 0 ) ) {
   
-            if ( new_role_allocation.save(flush:true) ) {
-              log.debug("New role created...");
-            }
-            else {
-              new_role_allocation.errors.each { e ->
-                log.error(e);
+        def user = com.k_int.kbplus.auth.User.findByUsername(map.eduPersonTargetedID)
+        if ( !user ) {
+          log.debug("Creating user");
+          user = new com.k_int.kbplus.auth.User(username:map.eduPersonTargetedID,
+                                                password:'**',
+                                                enabled:true,
+                                                accountExpired:false,
+                                                accountLocked:false, 
+                                                passwordExpired:false,
+                                                instname:map.authInstitutionName,
+                                                shibbScope:map.shibbScope,
+                                                email:map.mail)
+  
+          if ( user.save(flush:true) ) {
+            log.debug("Created user, allocating user role");
+            def userRole = com.k_int.kbplus.auth.Role.findByAuthority('ROLE_USER')
+  
+            if ( userRole ) {
+              log.debug("looked up user role: ${userRole}");
+              def new_role_allocation = new com.k_int.kbplus.auth.UserRole(user:user,role:userRole);
+    
+              if ( new_role_allocation.save(flush:true) ) {
+                log.debug("New role created...");
+              }
+              else {
+                new_role_allocation.errors.each { e ->
+                  log.error(e);
+                }
               }
             }
-          }
-          else {
-            log.error("Unable to look up ROLE_USER");
-          }
-  
-          // log.debug("Granting user ROLE_EDITOR");
-          // new com.k_int.kbplus.auth.UserRole(user:user,role:com.k_int.kbplus.auth.Role.findByAuthority('ROLE_EDITOR')).save(flush:true)
-
-          // See if we can find the org this user is attached to
-          if ( grailsApplication.config.autoAffiliate ) {
-            createUserOrgLink(user, map.authInstitutionName, map.shibbScope);
-          }
-  
-          log.debug("Done creating user");
-        }
-      }
-      else {
-        log.error("Problem creating user......");
-        user.errors.each { err ->
-          log.error(err);
-        }
-      }
+            else {
+              log.error("Unable to look up ROLE_USER");
+            }
     
-      // securityContext.authentication = new PreAuthenticatedAuthenticationToken(map.eduPersonTargetedID, map, roles)
-      // securityContext.authentication.setDetails(user)
-      // log.debug("Auth set, isAuthenticated = ${securityContext.authentication.isAuthenticated()}, name=${securityContext.authentication.getName()}");
-      // log.debug("ea_context=${map.ea_context}");
-
-      def tok = java.util.UUID.randomUUID().toString()
-      ediAuthTokenMap[tok] = map.eduPersonTargetedID
-
-      log.debug("Setting entry in ediAuthTokenMap to ${tok} = ${map.eduPersonTargetedID}");
-      log.debug(ediAuthTokenMap)
-
-      if ( ( params.ea_context ) && ( params.ea_context.trim().length() > 0 ) ) {
-        if ( params.ea_context.indexOf('?') > 0 ) {
-          response_str="${params.ea_context.replaceAll('ediauthToken','_oldeat_')}&ediauthToken=${tok}"
+            // log.debug("Granting user ROLE_EDITOR");
+            // new com.k_int.kbplus.auth.UserRole(user:user,role:com.k_int.kbplus.auth.Role.findByAuthority('ROLE_EDITOR')).save(flush:true)
+  
+            // See if we can find the org this user is attached to
+            if ( grailsApplication.config.autoAffiliate ) {
+              createUserOrgLink(user, map.authInstitutionName, map.shibbScope);
+            }
+    
+            log.debug("Done creating user");
+          }
         }
         else {
-          response_str="${params.ea_context}?ediauthToken=${tok}"
+          log.error("Problem creating user......");
+          user.errors.each { err ->
+            log.error(err);
+          }
+        }
+      
+        // securityContext.authentication = new PreAuthenticatedAuthenticationToken(map.eduPersonTargetedID, map, roles)
+        // securityContext.authentication.setDetails(user)
+        // log.debug("Auth set, isAuthenticated = ${securityContext.authentication.isAuthenticated()}, name=${securityContext.authentication.getName()}");
+        // log.debug("ea_context=${map.ea_context}");
+  
+        def tok = java.util.UUID.randomUUID().toString()
+        ediAuthTokenMap[tok] = map.eduPersonTargetedID
+  
+        log.debug("Setting entry in ediAuthTokenMap to ${tok} = ${map.eduPersonTargetedID}");
+        log.debug(ediAuthTokenMap)
+  
+        if ( ( params.ea_context ) && ( params.ea_context.trim().length() > 0 ) ) {
+          if ( params.ea_context.indexOf('?') > 0 ) {
+            response_str="${params.ea_context.replaceAll('ediauthToken','_oldeat_')}&ediauthToken=${tok}"
+          }
+          else {
+            response_str="${params.ea_context}?ediauthToken=${tok}"
+          }
+        }
+        else {
+          response_str="http://knowplus.edina.ac.uk/kbplus/?ediauthToken=${tok}"
         }
       }
       else {
-        response_str="http://knowplus.edina.ac.uk/kbplus/?ediauthToken=${tok}"
+        response.sendError(401);
+        return
       }
     }
 
