@@ -76,7 +76,7 @@
 
             <dl>
                 <g:if test="${issueEntitlementInstance?.tipp.title?.ids}">
-                    <dt>Title Identfiers</dt>
+                    <dt>Title Identifiers</dt>
                     <dd><ul>
                       <g:each in="${issueEntitlementInstance?.tipp.title?.ids}" var="i">
                           <li>${i.identifier.ns.ns}:${i.identifier.value}
