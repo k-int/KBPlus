@@ -37,12 +37,16 @@ class OnixplUsageTermTests {
                 usageType: RDV,
                 usageStatus: RDV,
                 usageTermLicenseText: [TLT],
+                user: [RDV],
+                usedResource: [RDV],
         )
         oput2 = new OnixplUsageTerm(
                 oplLicense: OPL,
                 usageType: RDV,
                 usageStatus: RDV,
                 usageTermLicenseText: [TLT2],
+                user: [RDV],
+                usedResource: [RDV],
         )
         nullOput = new OnixplUsageTerm(
                 oplLicense: null,
@@ -81,7 +85,10 @@ class OnixplUsageTermTests {
             assertEquals null, anOput.oplLicense
             assertEquals null, anOput.usageType
             assertEquals null, anOput.usageStatus
-            ["oplLicense", "usageType", "usageStatus"].each { prop ->
+            ["oplLicense"].each { prop ->
+                assertEquals null, anOput.errors[prop]
+            }
+            ["usageType", "usageStatus"].each { prop ->
                 assertEquals "nullable", anOput.errors[prop]
             }
         }

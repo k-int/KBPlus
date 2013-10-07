@@ -56,7 +56,7 @@
             <dt>Default Dashboard</dt>
             <dd>
               <select name="defaultDash" value="${user.defaultDash?.id}">
-                <g:each in="${user.affiliations}" var="assoc">
+                <g:each in="${user.authorizedAffiliations}" var="assoc">
                   <option value="${assoc.org.id}" ${user.defaultDash?.id==assoc.org.id?'selected':''}>${assoc.org.name}</option>
                 </g:each>
               </select>

@@ -145,16 +145,13 @@ class OnixplUsageTerm {
      * @return
      */
     public Boolean compare(OnixplUsageTerm oput) {
-        log.error("Usage term 1: ${this.id} | Usage term 2: ${oput.id}")
         if (oput == null) {
             return false;
         }
         if (this.usageType.value != oput.usageType.value) {
-            log.error("Usage types don't match");
             return false;
         }
         if (this.usageStatus.value != oput.usageStatus.value) {
-            log.error("Usage statuses don't match");
             return false;
         }
         StringBuilder text1 = new StringBuilder();
@@ -166,7 +163,6 @@ class OnixplUsageTerm {
             text2.append(utlt.licenseText.text);
         }
         if (text1.toString() != text2.toString()) {
-            log.error("Licence texts don't match");
             return false;
         }
         StringBuilder user1 = new StringBuilder();
@@ -178,7 +174,6 @@ class OnixplUsageTerm {
             user2.append(user.value);
         }
         if (user1.toString() != user2.toString()) {
-            log.error("Users don't match")
             return false;
         }
         StringBuilder ur1 = new StringBuilder();
@@ -190,7 +185,6 @@ class OnixplUsageTerm {
             ur2.append(ur.value);
         }
         if (ur1.toString() != ur2.toString()) {
-            log.error("Used resources don't match");
             return false;
         }
         return true;
