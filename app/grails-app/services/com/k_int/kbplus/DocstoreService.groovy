@@ -181,6 +181,7 @@ class DocstoreService {
       def targetfile = result_doc.documents.document.documentName.text()
 
       if ( result_doc.documents.status.text() == 'failure' ) {
+        log.error("unable to locate doc in docstore...");
         throw new RuntimeException("Unable to locate document in docstore : ${is2.text()}");
       }
       else {
