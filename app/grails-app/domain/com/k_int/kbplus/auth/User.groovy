@@ -14,6 +14,8 @@ class User {
   String instcode
   String email
   String shibbScope
+  String apikey
+  String apisecret
   boolean enabled
   boolean accountExpired
   boolean accountLocked
@@ -37,6 +39,8 @@ class User {
     shibbScope blank: true, nullable: true
     defaultDash blank: true, nullable: true
     defaultPageSize blank: true, nullable: true
+    apikey blank: true, nullable: true
+    apisecret blank: true, nullable: true
   }
 
   static mapping = {

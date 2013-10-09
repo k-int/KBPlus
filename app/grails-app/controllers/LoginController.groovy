@@ -13,6 +13,7 @@ import org.springframework.security.web.WebAttributes
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.authentication.AbstractProcessingFilter;
 import org.springframework.security.web.savedrequest.*;
+import java.security.MessageDigest
 
 class LoginController {
 
@@ -63,7 +64,36 @@ class LoginController {
 
     String requestUrl = savedRequest?.getRedirectUrl();
 
-    if ( grailsApplication.config.localauth ) {
+    if ( grailsApplication.config.apikeyon &&
+         savedRequest.parameterMap.apikey != null && 
+         savedRequest.parameterMap.apitime != null && 
+         savedRequest.parameterMap.apisig != null ) {
+
+      log.debug("Request contains APIKey signing... attempt");
+      def dbuser = com.k_int.kbplus.auth.User.findByApikey(savedRequest.parameterMap.apikey) 
+      if ( dbuser != null && dbuser.apisecret != null ) {
+        def sig = "${savedRequest.parameterMap.apikey[0]}:${savedRequest.parameterMap.apitime[0]}:${dbuser.apisecret}".toString()
+
+        log.debug("Sig = ${sig}");
+
+        MessageDigest md5_digest = MessageDigest.getInstance("MD5");
+        md5_digest.update(sig.getBytes())
+        byte[] md5sum = md5_digest.digest();
+        String md5sumHex = new BigInteger(1, md5sum).toString(16);
+
+        log.debug("computed md5: ${md5sumHex}, sent=${savedRequest.parameterMap.apisig[0]}");
+
+        if ( md5sumHex.equals(savedRequest.parameterMap.apisig[0]) ) {
+          log.debug("AUTH OK - Create session and forward to request");
+        }
+      }
+      else {
+        log.debug("User with APIKey ${savedRequest.parameterMap.apikey[0]} not found or has null apisecret");
+      }
+
+      // SecurityContextHolder.getContext().setAuthentication(authResult)
+    }
+    else if ( grailsApplication.config.localauth ) {
       log.debug("Using localauth... send login form");
       String view = 'auth'
       String postUrl = "${request.contextPath}${config.apf.filterProcessesUrl}"
