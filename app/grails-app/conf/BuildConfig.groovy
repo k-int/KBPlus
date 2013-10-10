@@ -55,9 +55,9 @@ grails.project.dependency.resolution = {
 
     plugins {
         compile ":h2:0.2.6"
-        runtime ":hibernate:$grailsVersion"
+        runtime ':hibernate:3.6.10.M3'
         runtime ":resources:1.2.RC2"
-        runtime ':fields:1.2'
+        runtime ':fields:1.3'
         // This is commented out so as not to cause probelms in the CI environment
         // build ":functional-test:2.0.RC2-SNAPSHOT"  // Build == not required in war
         compile ":functional-test:2.0.RC1"
@@ -66,6 +66,15 @@ grails.project.dependency.resolution = {
         //runtime ":cached-resources:1.0"
         //runtime ":yui-minify-resources:0.1.4"
 
-        build ":tomcat:$grailsVersion"
+        build ':tomcat:7.0.40.1'
+
+        runtime ":database-migration:1.3.2"
+
+        compile ':cache:1.0.1'
+
+        compile ':mail:1.0.1', {
+           excludes 'spring-test'
+        }
+
     }
 }
