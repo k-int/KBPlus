@@ -58,15 +58,21 @@ class ProfileController {
     flash.message=""
 
     if ( user.display != params.userDispName ) {
+      user.display = params.userDispName
       flash.message += "User display name updated<br/>"
     }
 
     if ( user.email != params.email ) {
-      flash.message += "User email address updated<br/>"
+      mailPattern = /[_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})/
+      if ( params.email ==~ mailPattern ) {
+        user.email = params.email
+        flash.message += "User email address updated<br/>"
+      }
+      else {
+        flash.error = "Emails must be of the form user@domain.name<br/>
+      }
     }
 
-    user.display = params.userDispName
-    user.email = params.email
 
 
     if ( params.defaultPageSize != null ) {
