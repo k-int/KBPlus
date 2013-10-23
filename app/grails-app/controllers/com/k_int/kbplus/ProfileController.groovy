@@ -69,7 +69,7 @@ class ProfileController {
         flash.message += "User email address updated<br/>"
       }
       else {
-        flash.error = "Emails must be of the form user@domain.name<br/>
+        flash.error = "Emails must be of the form user@domain.name<br/>"
       }
     }
 

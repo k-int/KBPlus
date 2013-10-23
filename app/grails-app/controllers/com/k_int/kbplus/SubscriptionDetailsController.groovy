@@ -538,6 +538,9 @@ class SubscriptionDetailsController {
 
     def subscription = genericOIDService.resolveOID(params.oid)
     def subscriber = subscription.getSubscriber();
+
+    result.add([value:'', text:'None']);
+
     if ( subscriber ) {
 
       def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
