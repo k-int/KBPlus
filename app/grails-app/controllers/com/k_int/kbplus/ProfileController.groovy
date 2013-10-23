@@ -54,26 +54,42 @@ class ProfileController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def updateProfile() {
     def user = User.get(springSecurityService.principal.id)
+
+    flash.message=""
+
+    if ( user.display != params.userDispName ) {
+      flash.message += "User display name updated<br/>"
+    }
+
+    if ( user.email != params.email ) {
+      flash.message += "User email address updated<br/>"
+    }
+
     user.display = params.userDispName
     user.email = params.email
 
-    flash.message="Profile Updated"
 
     if ( params.defaultPageSize != null ) {
       try {
         long l = Long.parseLong(params.defaultPageSize);
         if ( ( l >= 5 ) && ( l <= 100 ) ) {
-          user.defaultPageSize = new Long(l);
+          Long new_long = new Long(l);
+          if ( new_long != user.defaultPageSize ) {
+            flash.message += "User default page size updated<br/>"
+          }
+          user.defaultPageSize = new_long
+     
         }
         else {
-          flash.message="Default page size must be between 5 and 100";
+          flash.message+="Default page size must be between 5 and 100<br/>";
         }
       }
       catch ( Exception e ) {
       }
     }
 
-    if ( params.defaultDash != user.defaultDash?.id ) {
+    if ( params.defaultDash != user.defaultDash?.id.toString() ) {
+      flash.message+="User default dashboard updated<br/>"
       if ( params.defaultDash == '' ) {
         user.defaultDash = null
       }
