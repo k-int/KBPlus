@@ -90,48 +90,48 @@ class ProfileController {
   
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def addTransforms() {
-	  def user = User.get(springSecurityService.principal.id)
-	  def transforms = Transforms.findById(params.transformId)
-	  
-	  //Check if has already transforms
-	  if(user && transforms){
-		  def userTransforms = UserTransforms.findAllByUser(user)
-		  if(userTransforms.find { it.transforms ==  transforms}){
-			  flash.error="You already have added this transform."
-		  }else{
-			  new UserTransforms(
-				  user: user,
-				  transforms: transforms).save(failOnError: true)
-			  flash.message="Transformation added"
-		  }
-	  }else{  
-	  	log.error("Unable to locate transforms");
-	  	flash.error="Error we could not add this transformation"
-	  }
-	  
-	  redirect(action: "index")
+
+    def user = User.get(springSecurityService.principal.id)
+    def transforms = Transforms.findById(params.transformId)
+    
+    if(user && transforms){
+      def existing_transform = UserTransforms.findByUserAndTransforms(user,transforms);
+      if ( existing_transform == null ) {
+        new UserTransforms(
+            user: user,
+            transforms: transforms).save(failOnError: true)
+        flash.message="Transformation added"
+      }
+      else {
+        flash.error="You already have added this transform."
+      }
+    }else{  
+      log.error("Unable to locate transforms");
+      flash.error="Error we could not add this transformation"
+    }
+
+    redirect(action: "index")
   }
   
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def removeTransforms() {
-	  def user = User.get(springSecurityService.principal.id)
-	  def transforms = Transforms.findById(params.transformId)
-	  
-	  //Check if has already transforms
-	  if(user && transforms){
-		  def userTransforms = UserTransforms.findAllByUser(user)
-		  def transform = userTransforms.find { it.transforms ==  transforms}
-		  if(transform){
-			  transform.delete(failOnError: true, flush: true)
-			  flash.message="Transformation removed from your list."
-		  }else{
-			  flash.error="This transformation is not in your list."
-		  }
-	  }else{
-		  log.error("Unable to locate transforms");
-		  flash.error="Error we could not remove this transformation"
-	  }
-	  
-	  redirect(action: "index")
+    def user = User.get(springSecurityService.principal.id)
+    def transforms = Transforms.findById(params.transformId)
+    
+    //Check if has already transforms
+    if(user && transforms){
+      def existing_transform = UserTransforms.findByUserAndTransforms(user,transforms);
+      if(existing_transform){
+        transform.delete(failOnError: true, flush: true)
+        flash.message="Transformation removed from your list."
+      }else{
+        flash.error="This transformation is not in your list."
+      }
+    }else{
+      log.error("Unable to locate transforms");
+      flash.error="Error we could not remove this transformation"
+    }
+    
+    redirect(action: "index")
   }
 }
