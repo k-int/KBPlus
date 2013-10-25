@@ -21,7 +21,11 @@
             <g:if test="${flash.error}">
             <bootstrap:alert class="alert-info">${flash.error}</bootstrap:alert>
             </g:if>
+          </div>
+        </div>
 
+        <div class="row">
+          <div class="span6">
             <h3>Identifiers</h3>
             <table class="table table-bordered">
               <thead>
@@ -41,7 +45,8 @@
                 </g:each>
               </tbody>
             </table>
-
+	  </div>
+          <div class="span6">
             <h3>Org Links</h3>
             <table class="table table-bordered">
               <thead>
@@ -61,9 +66,13 @@
                 </g:each>
               </tbody>
             </table>
+          </div>
+        </div>
+        <div class="row">
+          <div class="span12">
 
 
-            <h3>TIPPS</h3>
+            <h3>Appears in...</h3>
             <table class="table table-bordered table-striped">
                     <tr>
                         <th>From Date</th><th>From Volume</th><th>From Issue</th>
