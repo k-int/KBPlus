@@ -76,6 +76,13 @@ class TitleDetailsController {
 
     log.debug("titleSearch : ${params}");
 
+    def result=[:]
+
+    if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') )
+      result.editable=true
+    else
+      result.editable=false
+
     StringWriter sw = new StringWriter()
     def fq = null;
     boolean has_filter = false
@@ -120,10 +127,6 @@ class TitleDetailsController {
       log.debug("Filter Query: ${fq}");
     }
 
-    // Be mindful that the behavior of this controller is strongly influenced by the schema setup in ES.
-    // Specifically, see KBPlus/import/processing/processing/dbreset.sh for the mappings that control field type and analysers
-    // Internal testing with http://localhost:9200/kbplus/_search?q=subtype:'Subscription%20Offered'
-    def result=[:]
 
     // Get hold of some services we might use ;)
     org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()

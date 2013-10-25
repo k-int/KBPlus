@@ -68,7 +68,12 @@
                     <tbody>
                       <g:each in="${hits}" var="hit">
                         <tr>
-                          <td><g:link controller="titleDetails" action="show" id="${hit.source.dbId}">${hit.source.title}</g:link></td>
+                          <td>
+                            <g:link controller="titleDetails" action="show" id="${hit.source.dbId}">${hit.source.title}</g:link>
+                            <g:if test="${editable}">
+                              <g:link controller="titleDetails" action="edit" id="${hit.source.dbId}">(Edit)</g:link>
+                            </g:if>
+                          </td>
                           <td>
                             <g:each in="${hit.source.identifiers}" var="id">
                               ${id.type}:${id.value}<br/>
