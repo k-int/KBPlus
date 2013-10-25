@@ -501,6 +501,12 @@ class PackageDetailsController {
                     size = 100
                   }
                 }
+                endYear {
+                  terms {
+                    field = 'endYear'
+                    size = 100
+                  }
+                }
               }
             }
 
