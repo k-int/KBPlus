@@ -13,7 +13,7 @@ class TitleDetailsController {
   def springSecurityService
   def ESWrapperService
 
-  def title_qry_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
+  def title_qry_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname', 'title':'title' ]
 
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])

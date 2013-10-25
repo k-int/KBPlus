@@ -31,6 +31,7 @@
       </div>
 
       <div class="row">
+        <!--
         <div class="span2">
           <div class="well">
               <g:each in="${facets}" var="facet">
@@ -43,7 +44,8 @@
               </g:each>
           </div>
         </div>
-        <div class="span10">
+        -->
+        <div class="span12">
           <div class="well">
              <g:if test="${hits}" >
                 <div class="paginateButtons" style="text-align:center">
