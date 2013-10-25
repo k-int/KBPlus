@@ -61,13 +61,17 @@
                 <div id="resultsarea">
                   <table class="table table-bordered table-striped">
                     <thead>
-                      <tr><th>Title</th><th>Additional Info</th></tr>
+                      <tr><th>Title</th><th>Identifiers</th></tr>
                     </thead>
                     <tbody>
                       <g:each in="${hits}" var="hit">
                         <tr>
-                          <td><g:link controller="titleDetails" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
-                          <td></td>
+                          <td><g:link controller="titleDetails" action="show" id="${hit.source.dbId}">${hit.source.title}</g:link></td>
+                          <td>
+                            <g:each in="${hit.source.identifiers}" var="id">
+                              ${id.type}:${id.value}<br/>
+                            </g:each>
+                          </td>
                         </tr>
                       </g:each>
                     </tbody>

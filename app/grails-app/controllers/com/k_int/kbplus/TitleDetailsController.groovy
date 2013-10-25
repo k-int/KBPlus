@@ -74,8 +74,7 @@ class TitleDetailsController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
 
-    log.debug("packaheSearch : ${params}");
-    log.debug("Start year filters: ${params.startYear}");
+    log.debug("titleSearch : ${params}");
 
     StringWriter sw = new StringWriter()
     def fq = null;
@@ -132,71 +131,54 @@ class TitleDetailsController {
     result.user = springSecurityService.getCurrentUser()
 
     if (springSecurityService.isLoggedIn()) {
-     try {
+      try {
 
-          params.max = Math.min(params.max ? params.int('max') : result.user.defaultPageSize, 100)
-          params.offset = params.offset ? params.int('offset') : 0
+        params.max = Math.min(params.max ? params.int('max') : result.user.defaultPageSize, 100)
+        params.offset = params.offset ? params.int('offset') : 0
+ 
+        def query_str = buildTitleQuery(params)
+        if ( fq )
+          query_str = query_str + " AND ( " + fq + " ) "
 
-          //def params_set=params.entrySet()
-
-          def query_str = buildTitleQuery(params)
-          if ( fq )
-            query_str = query_str + " AND ( " + fq + " ) "
-
-          log.debug("query: ${query_str}");
-          result.es_query = query_str;
-
-         def search = esclient.search{
-            indices "kbplus"
-            source {
-              from = params.offset
-              size = params.max
-              sort = [
-                'sortname' : [ 'order' : 'asc' ]
-              ]
-              query {
-                query_string (query: query_str)
-              }
-              facets {
-                consortiaName {
-                  terms {
-                    field = 'consortiaName'
-                    size = 25
-                  }
-                }
-                cpname {
-                  terms {
-                    field = 'cpname'
-                    size = 25
-                  }
-                }
-                startYear {
-                  terms {
-                    field = 'startYear'
-                    size = 100
-                  }
-                }
-              }
+        log.debug("query: ${query_str}");
+        result.es_query = query_str;
+ 
+        def search = esclient.search{
+          indices "kbplus"
+          source {
+            from = params.offset
+            size = params.max
+            sort = [
+              'sortname' : [ 'order' : 'asc' ]
+            ]
+            query {
+              query_string (query: query_str)
             }
-
-          }
-
-          if ( search?.response ) {
-            result.hits = search.response.hits
-            result.resultsTotal = search.response.hits.totalHits
-
-            // We pre-process the facet response to work around some translation issues in ES
-            if ( search.response.facets != null ) {
-              result.facets = [:]
-              search.response.facets.facets.each { facet ->
-                def facet_values = []
-                facet.value.entries.each { fe ->
-                  facet_values.add([term: fe.term,display:fe.term,count:"${fe.count}"])
-                }
-                result.facets[facet.key] = facet_values
-              }
+            facets {
             }
           }
+        }
+
+        if ( search?.response ) {
+          log.debug("Found ${search.response.hits} titles");
+          result.hits = search.response.hits
+          result.resultsTotal = search.response.hits.totalHits
+
+          // We pre-process the facet response to work around some translation issues in ES
+          if ( search.response.facets != null ) {
+            result.facets = [:]
+            search.response.facets.facets.each { facet ->
+              def facet_values = []
+              facet.value.entries.each { fe ->
+                facet_values.add([term: fe.term,display:fe.term,count:"${fe.count}"])
+              }
+              result.facets[facet.key] = facet_values
+            }
+          }
+        }
+        else {
+          log.error("No search response for title search");
+        }
       }
       finally {
         try {
@@ -206,7 +188,7 @@ class TitleDetailsController {
         }
       }
     }
-
+    result
   }
 
   def buildTitleQuery(params) {
@@ -215,7 +197,7 @@ class TitleDetailsController {
     StringWriter sw = new StringWriter()
 
     // sw.write("subtype:'Subscription Offered'")
-    sw.write("rectype:'Package'")
+    sw.write("rectype:'Title'")
 
     title_qry_reversemap.each { mapping ->
 
@@ -242,7 +224,6 @@ class TitleDetailsController {
         }
       }
     }
-
 
     def result = sw.toString();
     result;
