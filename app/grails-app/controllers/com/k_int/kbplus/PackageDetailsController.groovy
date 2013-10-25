@@ -416,26 +416,27 @@ class PackageDetailsController {
 
         String[] filter_components = p.key.split(':');
 
-            switch ( filter_components[1] ) {
-              case 'consortiaName':
+        switch ( filter_components[1] ) {
+          case 'consortiaName':
                 sw.append('consortiaName')
                 break;
-              case 'startYear':
+          case 'startYear':
                 sw.append('startYear')
                 break;
-              case 'cpname':
+          case 'cpname':
                 sw.append('cpname')
                 break;
-            }
-            if ( filter_components[2].indexOf(' ') > 0 ) {
-              sw.append(":\"");
-              sw.append(filter_components[2])
-              sw.append("\"");
-            }
-            else {
-              sw.append(":");
-              sw.append(filter_components[2])
-            }
+        }
+
+        if ( filter_components[2].indexOf(' ') > 0 ) {
+          sw.append(":\"");
+          sw.append(filter_components[2])
+          sw.append("\"");
+        }
+        else {
+          sw.append(":");
+          sw.append(filter_components[2])
+        }
       }
     }
 
