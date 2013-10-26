@@ -1097,6 +1097,9 @@ AND EXISTS (
               case 'startYear':
                 sw.append('startYear')
                 break;
+              case 'endYear':
+                sw.append('endYear')
+                break;
               case 'cpname':
                 sw.append('cpname')
                 break;
@@ -1188,6 +1191,12 @@ AND EXISTS (
                 startYear {
                   terms {
                     field = 'startYear'
+                    size = 25
+                  }
+                }
+                endYear {
+                  terms {
+                    field = 'endYear'
                     size = 25
                   }
                 }

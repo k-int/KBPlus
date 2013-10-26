@@ -538,6 +538,9 @@ class SubscriptionDetailsController {
 
     def subscription = genericOIDService.resolveOID(params.oid)
     def subscriber = subscription.getSubscriber();
+
+    result.add([value:'', text:'None']);
+
     if ( subscriber ) {
 
       def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role','Licensee');
@@ -545,7 +548,7 @@ class SubscriptionDetailsController {
 
       def qry_params = [subscriber, licensee_role]
   
-      def qry = "select l from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
+      def qry = "select l from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted' order by l.reference"
 
       def license_list = License.executeQuery(qry, qry_params);
       license_list.each { l ->

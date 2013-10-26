@@ -848,3 +848,19 @@ div.comments {
     color: black;
     text-shadow: none;
 }
+
+th.sortable a {
+        background-position: right;
+        background-repeat: no-repeat;
+        padding-right: 1.1em;
+        text-decoration: underline!important;
+}
+
+th.asc a {
+        background-image: url('../images/sorted_asc_black.gif');
+}
+
+th.desc a {
+        background-image: url('../images/sorted_desc_black.gif');
+}
+

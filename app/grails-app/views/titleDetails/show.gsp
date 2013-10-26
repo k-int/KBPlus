@@ -21,7 +21,11 @@
             <g:if test="${flash.error}">
             <bootstrap:alert class="alert-info">${flash.error}</bootstrap:alert>
             </g:if>
+          </div>
+        </div>
 
+        <div class="row">
+          <div class="span6">
             <h3>Identifiers</h3>
             <table class="table table-bordered">
               <thead>
@@ -41,7 +45,8 @@
                 </g:each>
               </tbody>
             </table>
-
+	  </div>
+          <div class="span6">
             <h3>Org Links</h3>
             <table class="table table-bordered">
               <thead>
@@ -61,6 +66,35 @@
                 </g:each>
               </tbody>
             </table>
+          </div>
+        </div>
+        <div class="row">
+          <div class="span12">
+
+
+            <h3>Appears in...</h3>
+            <table class="table table-bordered table-striped">
+                    <tr>
+                        <th>From Date</th><th>From Volume</th><th>From Issue</th>
+                        <th>To Date</th><th>To Volume</th><th>To Issue</th><th>Coverage Depth</th>
+                        <th>Platform</th><th>Package</th><th>Actions</th>
+                    </tr>
+                    <g:each in="${ti.tipps}" var="t">
+                        <tr>
+                            <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.startDate}"/></td>
+                        <td>${t.startVolume}</td>
+                        <td>${t.startIssue}</td>
+                        <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.endDate}"/></td>
+                        <td>${t.endVolume}</td>
+                        <td>${t.endIssue}</td>
+                        <td>${t.coverageDepth}</td>
+                        <td><g:link controller="platform" action="show" id="${t.platform.id}">${t.platform.name}</g:link></td>
+                        <td><g:link controller="packageDetails" action="show" id="${t.pkg.id}">${t.pkg.name}</g:link></td>
+                        <td><g:link controller="tipp" action="show" id="${t.id}">Full TIPP record</g:link></td>
+                        </tr>
+                    </g:each>
+            </table>
+
           </div>
         </div>
       </div>

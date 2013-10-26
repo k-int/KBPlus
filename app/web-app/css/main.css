@@ -445,14 +445,15 @@ th.sortable a {
 	background-position: right;
 	background-repeat: no-repeat;
 	padding-right: 1.1em;
+        text-decoration: underline!important;
 }
 
 th.asc a {
-	background-image: url(../images/skin/sorted_asc.gif) no-repeat;
+	background-image: url(../images/skin/sorted_asc.gif) no-repeat!important;
 }
 
 th.desc a {
-	background-image: url(../images/skin/sorted_desc.gif) no-repeat;
+	background-image: url(../images/skin/sorted_desc.gif) no-repeat!important;
 }
 
 .odd {
