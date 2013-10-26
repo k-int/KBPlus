@@ -3,8 +3,9 @@ package com.k_int.kbplus
 import grails.converters.*
 import grails.plugins.springsecurity.Secured
 import grails.web.JSONBuilder
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.codehaus.groovy.grails.web.json.*
+// import org.json.simple.JSONArray;
+// import org.json.simple.JSONObject;
 import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.MarkupBuilder
 import groovy.xml.StreamingMarkupBuilder

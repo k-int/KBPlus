@@ -48,6 +48,7 @@ grails.project.dependency.resolution = {
         runtime 'net.sf.opencsv:opencsv:2.0'
         runtime 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
 
+
         runtime ( 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2' ) { 
           excludes "org.codehaus.groovy", "groovy"
         }
@@ -55,9 +56,10 @@ grails.project.dependency.resolution = {
 
     plugins {
         compile ":h2:0.2.6"
-        runtime ':hibernate:3.6.10.M3'
+        runtime ':hibernate:3.6.10.2'
         runtime ":resources:1.2.RC2"
         runtime ':fields:1.3'
+        compile ":scaffolding:2.0.1"
         // This is commented out so as not to cause probelms in the CI environment
         // build ":functional-test:2.0.RC2-SNAPSHOT"  // Build == not required in war
         compile ":functional-test:2.0.RC1"
