@@ -47,7 +47,7 @@ grails.project.dependency.resolution = {
         runtime 'org.apache.poi:poi:3.8'
         runtime 'net.sf.opencsv:opencsv:2.0'
         runtime 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
-
+        test 'org.hamcrest:hamcrest-all:1.3'
 
         runtime ( 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2' ) { 
           excludes "org.codehaus.groovy", "groovy"
@@ -61,13 +61,11 @@ grails.project.dependency.resolution = {
         runtime ':fields:1.3'
         compile ":scaffolding:2.0.1"
         // This is commented out so as not to cause probelms in the CI environment
-        // build ":functional-test:2.0.RC2-SNAPSHOT"  // Build == not required in war
-        compile ":functional-test:2.0.RC1"
+        // compile ":functional-test:2.0.RC1"
         // Uncomment these (or add new ones) to enable additional resources capabilities
         //runtime ":zipped-resources:1.0"
         //runtime ":cached-resources:1.0"
         //runtime ":yui-minify-resources:0.1.4"
-
         build ':tomcat:7.0.40.1'
 
         runtime ":database-migration:1.3.2"
@@ -77,6 +75,7 @@ grails.project.dependency.resolution = {
         compile ':mail:1.0.1', {
            excludes 'spring-test'
         }
+
 
     }
 }
