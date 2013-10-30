@@ -30,6 +30,12 @@ class ProcessLoginController {
 
     // Check that request comes from 127.0.0.1
     log.debug("Auth request from ${request.getRemoteAddr()}");
+
+    if ( request.getRemoteAddr() == '127.0.0.1' ) {
+    }
+    else {
+      return
+    }
     // request.getHeader("X-Forwarded-For")
     // request.getHeader("Client-IP")
 
