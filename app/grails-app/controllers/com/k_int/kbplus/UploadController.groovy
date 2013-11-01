@@ -326,17 +326,27 @@ class UploadController {
 
     String [] nl;
 
-    processCsvLine(r.readNext(),'soName',1,result,'str',null,true)
-    processCsvLine(r.readNext(),'soIdentifier',1,result,'str',null,false)
-    processCsvLine(r.readNext(),'soProvider',1,result,'str',null,false)
-    processCsvLine(r.readNext(),'soPackageIdentifier',1,result,'str',null,true)
-    processCsvLine(r.readNext(),'soPackageName',1,result,'str',null,true)
-    processCsvLine(r.readNext(),'aggreementTermStartYear',1,result,'date',null,true)
-    processCsvLine(r.readNext(),'aggreementTermEndYear',1,result,'date',null,true)
-    processCsvLine(r.readNext(),'consortium',1,result,'str',null,false)
-    
-    // result['soName'].messages=['This is an soName message','And so is this'];
+    def possible_header_properties = [
+      [ name:'soName', type:'str', mandatory:true ],
+      [ name:'soIdentifier', type:'str', mandatory:false ],
+      [ name:'soProvider', type:'str', mandatory:false ],
+      [ name:'soPackageIdentifier', type:'str', mandatory:true ],
+      [ name:'soPackageName', type:'str', mandatory:true ],
+      [ name:'aggreementTermStartYear', type:'date', mandatory:true ],
+      [ name:'aggreementTermEndYear', type:'date', mandatory:true ],
+      [ name:'consortium', type:'str', mandatory:false ],
+    ]
+
+    // Read rows whilst we are processing header properties defined above, as soon as we encounter a row that doesn't
+    // contain a header property, move on to the column definitions.
     nl = r.readNext()
+    def header_conf = possible_header_properties.find{ it.name==nl[0] }
+    while( header_conf != null ) {
+      processCsvLine(nl,header_conf.name,1,result,header_conf.type,null,header_conf.mandatory)
+      r.readNext()
+      header_conf = possible_header_properties.find{ it.name==nl[0] }
+    }
+    
     result.soHeaderLine = []
     nl.each { h ->
       result.soHeaderLine.add(h.toLowerCase());
