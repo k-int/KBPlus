@@ -112,7 +112,7 @@ class PackageDetailsController {
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def show() {
-	  def verystarttime = exportService.printStart("SubscriptionDetails")
+      def verystarttime = exportService.printStart("SubscriptionDetails")
 	  
       def result = [:]
       boolean showDeletedTipps=false

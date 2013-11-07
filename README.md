@@ -11,7 +11,7 @@ See the wiki for details on setting up a development environment: https://github
 Other wiki pages are listed here: https://github.com/k-int/KBPlus/wiki/_pages
 
 
-Copyright 2012-2013 Knowledge Integration Ltd Licensed under the
+Copyright 2012-2013 Jisc Collections Ltd Licensed under the
 Educational Community License, Version 2.0 (the "License"); you may
 not use this file except in compliance with the License. You may
 obtain a copy of the License at

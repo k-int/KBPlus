@@ -34,8 +34,8 @@ class OnixplLicenseText {
 
   static constraints = {
     oplLicense(nullable:true,blank:true)
-    displayNum(nullable:true)
-    text(nullable:false)
+    displayNum(nullable:true,blank:true)
+    text(nullable:false,blank:true)
     elementId(nullable:false,maxSize:50)
     oplLicense(nullable:false)
   }
