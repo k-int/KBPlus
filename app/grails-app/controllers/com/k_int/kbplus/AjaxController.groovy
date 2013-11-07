@@ -3,6 +3,7 @@ package com.k_int.kbplus
 import org.springframework.dao.DataIntegrityViolationException
 import grails.plugins.springsecurity.Secured
 import grails.converters.*
+import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 class AjaxController {
 
@@ -482,19 +483,21 @@ class AjaxController {
         result.iTotalDisplayRecords = cq[0]
     
         rq.each { it ->
+          rowobj = GrailsHibernateUtil.unwrapIfProxy(it)
           int ctr = 0;
           def row = [:]
           config.cols.each { cd ->
             // log.debug("Processing result col ${cd} pos ${ctr}");
-            row["${ctr++}"] = it[cd]
+            row["${ctr++}"] = rowobj[cd]
           }
-          row["DT_RowId"] = "${it.class.name}:${it.id}"
+          row["DT_RowId"] = "${rowobj.class.name}:${rowobj.id}"
           result.aaData.add(row)
         }
       }
       else {
         rq.each { it ->
-          result["${it.class.name}:${it.id}"] = it[config.cols[0]];
+          rowobj = GrailsHibernateUtil.unwrapIfProxy(it)
+          result["${rowobj.class.name}:${rowobj.id}"] = rowobj[config.cols[0]];
         }
       }
     }
