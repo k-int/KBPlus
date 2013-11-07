@@ -39,6 +39,13 @@ class ProcessLoginController {
     // request.getHeader("X-Forwarded-For")
     // request.getHeader("Client-IP")
 
+    if ( request.getRemoteAddr() == '127.0.0.1' ) {
+    }
+    else {
+      return
+    }
+
+
 
     log.debug("remote institution appears to be : ${params.ea_edinaOrgId}");
     log.debug("remote user appears to be : ${params.ea_edinaUserId}");
