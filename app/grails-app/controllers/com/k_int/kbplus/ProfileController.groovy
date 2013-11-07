@@ -63,7 +63,7 @@ class ProfileController {
     }
 
     if ( user.email != params.email ) {
-      mailPattern = /[_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})/
+      def mailPattern = /[_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})/
       if ( params.email ==~ mailPattern ) {
         user.email = params.email
         flash.message += "User email address updated<br/>"
