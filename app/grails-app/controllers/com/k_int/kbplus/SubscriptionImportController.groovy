@@ -24,6 +24,13 @@ class SubscriptionImportController {
 
   def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
  
+  def possible_date_formats = [
+    new SimpleDateFormat('yyyy/MM/dd'),
+    new SimpleDateFormat('dd/MM/yyyy'),
+    new SimpleDateFormat('dd/MM/yy'),
+    new SimpleDateFormat('yyyy/MM'),
+    new SimpleDateFormat('yyyy')
+  ];
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def generateImportWorksheet() { 
