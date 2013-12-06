@@ -483,7 +483,7 @@ class AjaxController {
         result.iTotalDisplayRecords = cq[0]
     
         rq.each { it ->
-          rowobj = GrailsHibernateUtil.unwrapIfProxy(it)
+          def rowobj = GrailsHibernateUtil.unwrapIfProxy(it)
           int ctr = 0;
           def row = [:]
           config.cols.each { cd ->
@@ -496,7 +496,7 @@ class AjaxController {
       }
       else {
         rq.each { it ->
-          rowobj = GrailsHibernateUtil.unwrapIfProxy(it)
+          def rowobj = GrailsHibernateUtil.unwrapIfProxy(it)
           result["${rowobj.class.name}:${rowobj.id}"] = rowobj[config.cols[0]];
         }
       }
