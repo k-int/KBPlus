@@ -178,6 +178,11 @@ class PackageDetailsController {
         qry_params.add("%${params.filter}%")
       }
 
+      if ( params.coverageNoteFilter ) {
+        base_qry += "and lower(tipp.coverageNote) like ?"
+        qry_params.add("%${params.coverageNoteFilter}%")
+      }
+
       if ( params.endsAfter && params.endsAfter.length() > 0 ) {
         def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
         def d = sdf.parse(params.endsAfter)

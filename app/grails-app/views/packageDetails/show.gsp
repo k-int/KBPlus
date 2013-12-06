@@ -212,6 +212,7 @@
            <input type="hidden" name="sort" value="${params.sort}">
            <input type="hidden" name="order" value="${params.order}">
            <label>Filters - Package Name:</label> <input name="filter" value="${params.filter}"/>
+           <label>Coverage note:</label> <input name="coverageNoteFilter" value="${params.coverageNoteFilter}"/>
             &nbsp;<label>Starts Before:</label> 
             <g:simpleHiddenValue id="startsBefore" name="startsBefore" type="date" value="${params.startsBefore}"/>
             &nbsp;<label>Ends After:</label>
@@ -282,9 +283,10 @@
             <tbody>
             <g:set var="counter" value="${offset+1}" />
             <g:each in="${titlesList}" var="t">
+              <g:set var="hasCoverageNote" value="${t.coverageNote?.length() > 0}" />
               <tr>
-                <td><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${t.id}" class="bulkcheck"/></g:if></td>
-                <td>${counter++}</td>
+                <td ${hasCoverageNote==true?'rowspan="2"':''}><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${t.id}" class="bulkcheck"/></g:if></td>
+                <td ${hasCoverageNote==true?'rowspan="2"':''}>${counter++}</td>
                 <td style="vertical-align:top;">
                    ${t.title.title}
                    <g:link controller="titleDetails" action="show" id="${t.title.id}">(Title)</g:link>
@@ -313,6 +315,13 @@
                   <g:xEditable owner="${t}" field="coverageDepth" />
                 </td>
               </tr>
+
+              <g:if test="${hasCoverageNote==true}">
+                <tr>
+                  <td colspan="6">coverageNote: ${t.coverageNote}</td>
+                </tr>
+              </g:if>
+
             </g:each>
             </tbody>
             </g:form>
