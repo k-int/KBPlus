@@ -202,5 +202,19 @@ class Subscription {
     "Subscription ${id} - ${name}".toString();
   }
 
+  // JSON definition of the subscription object
+  static {
+    grails.converters.JSON.registerObjectMarshaller(User) {
+      // you can filter here the key-value pairs to output:
+      return it.properties.findAll {k,v -> k != 'passwd'}
+    }
+  }
+
+  // XML.registerObjectMarshaller Facility, { facility, xml ->
+  //    xml.attribute 'id', facility.id
+  //               xml.build {
+  //      name(facility.name)  
+  //    }
+  //  }
 }
 
