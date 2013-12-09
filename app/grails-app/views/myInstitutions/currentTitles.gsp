@@ -31,21 +31,11 @@
 	              <% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
 	              <g:link action="currentTitles" params="${ps_xml}">XML Export</g:link>
 	            </li>
-              	<g:each in="${com.k_int.kbplus.UserTransforms.findAllByUser(user)}" var="ut">
-    				<g:if test="${ut.transforms.hasType("title")}">
-     				<% 
-					  	def ps_trans = [:];
-					  	if(ut.transforms.accepts_format.value == "xml")
-			  				ps_trans.putAll(ps_xml);
-					  	else if(ut.transforms.accepts_format.value == "json")
-							ps_trans.putAll(ps_json);
-						ps_trans.transforms=ut.transforms.id;
-				  	%>
-      				<li>
-						<g:link action="currentTitles" params="${ps_trans}">${ut.transforms.name}</g:link>
-		      		</li>
-      				</g:if>
-     			</g:each>
+
+              <g:each in="${transforms}" var="transkey,transval">
+                <li><g:link action="index" id="${params.id}" params="${[format:'xml',transformId:transkey]}"> ${transval.name}</g:link></li>
+              </g:each>
+
             </ul>
           </li>
         </ul>
