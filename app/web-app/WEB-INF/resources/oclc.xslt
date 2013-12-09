@@ -11,11 +11,110 @@
    
    <xsl:template match="TitleListEntry">
 
+      <!-- publication_title -->
       <xsl:call-template name="tsventry">
         <xsl:with-param name="txt" select="./Title" />
       </xsl:call-template>
 
-      
+      <!-- print_identifier -->
+      <xsl:call-template name="tsventry">
+        <xsl:with-param name="txt" select="./TitleIDs/ID[@namespace='ISSN']" />
+      </xsl:call-template>
+
+      <!-- online_identifier -->
+      <xsl:call-template name="tsventry">
+        <xsl:with-param name="txt" select="./TitleIDs/ID[@namespace='eISSN']" />
+      </xsl:call-template>
+
+      <!-- date_first_issue_online -->
+      <xsl:call-template name="tsventry">
+        <xsl:with-param name="txt">
+          <xsl:if test="./CoverageStatement/StartDate != ''">
+            <xsl:call-template name="formats_date">
+              <xsl:with-param name="date" select="./CoverageStatement/StartDate" />
+            </xsl:call-template>
+          </xsl:if>
+        </xsl:with-param>
+      </xsl:call-template>
+
+      <!-- num_first_vol_online -->
+      <xsl:call-template name="tsventry">
+      </xsl:call-template>
+
+      <!-- num_first_issue_online -->
+      <xsl:call-template name="tsventry">
+      </xsl:call-template>
+
+      <!-- date_last_issue_online -->
+      <xsl:call-template name="tsventry">
+        <xsl:with-param name="txt">
+          <xsl:if test="./CoverageStatement/EndDate != ''">
+	    <xsl:call-template name="formats_date">
+	      <xsl:with-param name="date" select="./CoverageStatement/EndDate" />
+	    </xsl:call-template>
+          </xsl:if>
+        </xsl:with-param>
+      </xsl:call-template>
+
+      <!-- num_last_vol_online -->
+      <xsl:call-template name="tsventry">
+      </xsl:call-template>
+
+      <!-- num_last_issue_online -->
+      <xsl:call-template name="tsventry">
+      </xsl:call-template>
+
+      <!-- title_url -->
+      <xsl:call-template name="tsventry">
+      </xsl:call-template>
+
+      <!-- first_author -->
+      <xsl:call-template name="tsventry">
+      </xsl:call-template>
+
+      <!-- title_id -->
+      <xsl:call-template name="tsventry">
+      </xsl:call-template>
+
+      <!-- coverage_depth -->
+      <xsl:call-template name="tsventry">
+      </xsl:call-template>
+
+      <!-- coverage_notes -->
+      <xsl:call-template name="tsventry">
+      </xsl:call-template>
+
+      <!-- publisher_name -->
+      <xsl:call-template name="tsventry">
+      </xsl:call-template>
+      <!-- location -->
+      <xsl:call-template name="tsventry">
+      </xsl:call-template>
+
+      <!-- title_notes -->
+      <xsl:call-template name="tsventry">
+      </xsl:call-template>
+
+      <!-- oclc_collection_name -->
+      <xsl:call-template name="tsventry">
+      </xsl:call-template>
+
+      <!-- oclc_collection_id -->
+      <xsl:call-template name="tsventry">
+      </xsl:call-template>
+
+      <!-- oclc_entry_id -->
+      <xsl:call-template name="tsventry">
+      </xsl:call-template>
+
+      <!-- oclc_linkscheme -->
+      <xsl:call-template name="tsventry">
+      </xsl:call-template>
+
+      <!-- oclc_number -->
+      <xsl:call-template name="tsventry">
+      </xsl:call-template>
+
       <xsl:call-template name="tsventry">
         <xsl:with-param name="txt">ACTION</xsl:with-param>
       </xsl:call-template>
@@ -23,61 +122,7 @@
 
       <!-- Old stuff -->
 
-      <xsl:text>"</xsl:text>
-      <xsl:choose>
-      	<xsl:when test="./TitleIDs/ID[@namespace='ISSN'] != ''">
-        	<xsl:value-of select="./TitleIDs/ID[@namespace='ISSN']"/>
-        </xsl:when>
-        <xsl:otherwise>
-        	<xsl:value-of select="./TitleIDs/ID[@namespace='eISSN']"/>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:text>"</xsl:text>
 
-      <xsl:text>&#x9;</xsl:text>
-
-      <xsl:text>"Journal"</xsl:text>
-      <xsl:text>&#x9;</xsl:text>
-      <xsl:text>"Subscribed"</xsl:text>
-      <xsl:text>&#x9;</xsl:text>
-      <xsl:text>""</xsl:text>
-      <xsl:text>&#x9;</xsl:text>
-      <xsl:text>"</xsl:text>
-      <xsl:if test="./CoverageStatement/StartDate != ''">
-	      <xsl:call-template name="formats_date">
-	        <xsl:with-param name="date" select="./CoverageStatement/StartDate" />
-	      </xsl:call-template>
-      </xsl:if>
-      <xsl:text>"</xsl:text>
-      <xsl:text>&#x9;</xsl:text>
-      <xsl:text>"</xsl:text>
-      <xsl:if test="./CoverageStatement/EndDate != ''">
-	      <xsl:call-template name="formats_date">
-	        <xsl:with-param name="date" select="./CoverageStatement/EndDate" />
-	      </xsl:call-template>
-      </xsl:if>
-      <xsl:text>"</xsl:text>
-      <xsl:text>&#x9;</xsl:text>
-      <xsl:text>""</xsl:text>
-      <xsl:text>&#x9;</xsl:text>
-      <xsl:text>""</xsl:text>
-      <xsl:text>&#x9;</xsl:text>
-      <xsl:text>""</xsl:text>
-      <xsl:text>&#x9;</xsl:text>
-      <xsl:text>""</xsl:text>
-      <xsl:text>&#x9;</xsl:text>
-      <xsl:text>""</xsl:text>
-      <xsl:text>&#x9;</xsl:text>
-      <xsl:text>""</xsl:text>
-      <xsl:text>&#x9;</xsl:text>
-      <xsl:text>""</xsl:text>
-      <xsl:text>&#x9;</xsl:text>
-      <xsl:text>""</xsl:text>
-      <xsl:text>&#x9;</xsl:text>
-      <xsl:text>""</xsl:text>
-      <xsl:text>&#x9;</xsl:text>
-      <xsl:text>""</xsl:text>
-      <xsl:text>&#xA;</xsl:text>
    </xsl:template>
    
    <xsl:template name="formats_date">
