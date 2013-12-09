@@ -15,52 +15,21 @@
         </g:if>
         <li> <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}">Subscription ${subscriptionInstance.id} Details</g:link> </li>
         
-        <!-- OLD VERSION
-        <li class="pull-right">
-          <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter]}">CSV Export</g:link> 
-          <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter,omitHeader:'Y']}">(No header)</g:link></li>
-        <g:if test="${editable}">
-          <li class="pull-right">Editable by you&nbsp;</li>
-        </g:if>
-        -->
-        
         <li class="dropdown pull-right">
-	        <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">
-		  		Exports<b class="caret"></b>
-			</a>
-			<ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
-				<li>
-          			<g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter]}">CSV Export</g:link> 
-          			<g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter,omitHeader:'Y']}">CSV Export (No header)</g:link>
-        		</li>
-				<li>
-		  			<% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
-					<g:link action="index" params="${ps_json}">Json Export</g:link>
-	      		</li>
-				<li>
-		  			<% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
-					<g:link action="index" params="${ps_xml}">XML Export</g:link>
-	      		</li>
-	      		<g:each in="${com.k_int.kbplus.UserTransforms.findAllByUser(user)}" var="ut">
-	      			<g:if test="${ut.transforms.hasType("subscription")}">
-	      				<% 
-						  	def ps_trans = [:];
-						  	if(ut.transforms.accepts_format.value == "xml")
-				  				ps_trans.putAll(ps_xml);
-						  	else if(ut.transforms.accepts_format.value == "json")
-								ps_trans.putAll(ps_json);
-							ps_trans.transforms=ut.transforms.id;
-					  	%>
-	      				<li>
-							<g:link action="index" params="${ps_trans}">${ut.transforms.name}</g:link>
-			      		</li>
-	      			</g:if>
-	      		</g:each>
-                        <g:each in="${transforms}" var="transkey,transval">
-                          <li><g:link action="index" id="${params.id}" params="${[trans:transkey]}"> ${transval.name}</g:link></li>
-                        </g:each>
-		    </ul>
-		</li>
+          <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>
+          <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
+            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter]}">CSV Export</g:link><li>
+            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter,omitHeader:'Y']}">CSV Export (No header)</g:link></li>
+            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'json',sort:params.sort,order:params.order,filter:params.filter]}">JSON</g:link></li>
+            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'xml',sort:params.sort,order:params.order,filter:params.filter]}">JSON</g:link></li>
+            <g:each in="${transforms}" var="transkey,transval">
+              <li><g:link action="index" id="${params.id}" params="${[format:'xml',transformId:transkey]}"> ${transval.name}</g:link></li>
+            </g:each>
+        </ul>
+    </li>
+        <g:if test="${editable}">
+          <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
+        </g:if>
       </ul>
     </div>
 
@@ -208,9 +177,9 @@
 
                   <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()" class="btn btn-primary"/></g:if></th>
 
-              	<th>
-                	<g:if test="${editable}"><g:simpleHiddenRefdata id="bulk_core" name="bulk_core" refdataCategory="CoreStatus"/></g:if>
-              	</th>
+                <th>
+                  <g:if test="${editable}"><g:simpleHiddenRefdata id="bulk_core" name="bulk_core" refdataCategory="CoreStatus"/></g:if>
+                </th>
 
               <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_start_date" name="bulk_start_date" type="date"/> </g:if> </th>
               <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_end_date" name="bulk_end_date" type="date"/> </g:if></th>

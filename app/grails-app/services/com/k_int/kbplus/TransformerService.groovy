@@ -24,30 +24,27 @@ class TransformerService {
    *
    * @param user - the {@link com.k_int.kbplus.auth.User}
    * @param filename - name of the file to be created
-   * @param tr_id - the {@link com.k_int.kbplus.Transforms} id
+   * @param tr - Transformer config row from Config.groovy
    * @param content - the JSON or XML content depending on what the transform is working with
    * @param main_response - the main {@link #javax.servlet.http.HttpServletResponse HttpServletResponse} 
    */
-  def triggerTransform(user, filename, tr_id, content, main_response) {
-    log.debug("triggerTransform... ${filename} ${tr_id}...");
+  def triggerTransform(user, filename, tr, content, main_response) {
+    log.debug("triggerTransform... ${filename} ${tr}...");
 
-    def transform = hasTransformId(user, tr_id)
-
-    if ( transform ) {
-      def tr = transform.transforms
-      def format = tr.accepts_format.value
-      def reqMIME = 'text/xml'
-      if(format == 'json')
-        reqMIME = 'application/json'
+    if ( tr ) {
+      // def format = tr.accepts_format.value
+      // def reqMIME = 'text/xml'
+      // if(format == 'json')
+      //   reqMIME = 'application/json'
       
-      main_response.setHeader("Content-disposition", "attachment; filename=${filename}.${tr.return_file_extention}")
-      main_response.contentType = tr.return_mime //"text/plain"
+      main_response.setHeader("Content-disposition", "attachment; filename=${filename}.${tr.returnFileExtention}")
+      main_response.contentType = tr.returnMime //"text/plain"
       main_response.setCharacterEncoding("UTF-8");
       def out = main_response.writer
       
-      def xsl_file = tr.path_to_stylesheet.substring(tr.path_to_stylesheet.lastIndexOf('/'), tr.path_to_stylesheet.length())
-      log.debug("Lookup XSL: ${xsl_file}");
-      def xslt = grailsApplication.mainContext.getResource('/WEB-INF/resources'+xsl_file).inputStream
+      // def xsl_file = tr.path_to_stylesheet.substring(tr.path_to_stylesheet.lastIndexOf('/'), tr.path_to_stylesheet.length())
+      // log.debug("Lookup XSL: ${xsl_file}");
+      def xslt = grailsApplication.mainContext.getResource('/WEB-INF/resources/'+tr.xsl).inputStream
 
       if ( xslt != null ) {
         // Run transform against document and store output in license.summaryStatement

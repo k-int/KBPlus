@@ -84,10 +84,10 @@ grails.cache.config = {
 }
 
 subscriptionTransforms = [
-  'oclc':[name:'OCLC Resolver', xsl:'oclc.xslt'],
-  'ss':[name:'Serials Solutions Resolver', xsl:'serialssolutions.xslt'],
-  'sfx':[name:'SFX Resolver', xsl:'SFX.xslt'],
-  'kbplus':[name:'KBPlus Import Format', xsl:'kbplusimp.xslt'],
+  'oclc':[name:'OCLC Resolver', xsl:'oclc.xslt', returnFileExtention:'txt', returnMime:'text/plain'],
+  'ss':[name:'Serials Solutions Resolver', xsl:'serialssolutions.xslt', returnFileExtention:'txt', returnMime:'text/plain'],
+  'sfx':[name:'SFX Resolver', xsl:'SFX.xslt', returnFileExtention:'txt', returnMime:'text/plain'],
+  'kbplus':[name:'KBPlus Import Format', xsl:'kbplusimp.xslt', returnFileExtention:'txt', returnMime:'text/plain'],
 ]
 
 // log4j configuration

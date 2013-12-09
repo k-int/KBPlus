@@ -102,61 +102,58 @@ class SubscriptionDetailsController {
 
     result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, qry_params, [max:result.max, offset:result.offset]);
 
-  exportService.printDuration(verystarttime, "Querying")
+    exportService.printDuration(verystarttime, "Querying")
   
     log.debug("subscriptionInstance returning... ${result.num_sub_rows} rows ");
-  def filename = "subscriptionDetails_${result.subscriptionInstance.identifier}"
+    def filename = "subscriptionDetails_${result.subscriptionInstance.identifier}"
+
     withFormat {
       html result
       csv {
          response.setHeader("Content-disposition", "attachment; filename=${result.subscriptionInstance.identifier}.csv")
          response.contentType = "text/csv"
          def out = response.outputStream
-     def header = ( params.omitHeader == null ) || ( params.omitHeader != 'Y' )
+         def header = ( params.omitHeader == null ) || ( params.omitHeader != 'Y' )
          exportService.StreamOutSubsCSV(out, result.subscriptionInstance, result.entitlements, header)
          out.close()
-     exportService.printDuration(verystarttime, "Overall Time")
+         exportService.printDuration(verystarttime, "Overall Time")
       }
       json {
-      def starttime = exportService.printStart("Building Map")
-      def map = exportService.getSubscriptionMap(result.subscriptionInstance, result.entitlements)
-      exportService.printDuration(starttime, "Building Map")
+          def starttime = exportService.printStart("Building Map")
+          def map = exportService.getSubscriptionMap(result.subscriptionInstance, result.entitlements)
+          exportService.printDuration(starttime, "Building Map")
       
-      starttime = exportService.printStart("Create JSON")
-      def json = map as JSON
-      exportService.printDuration(starttime, "Create JSON")
+          starttime = exportService.printStart("Create JSON")
+          def json = map as JSON
+          exportService.printDuration(starttime, "Create JSON")
       
-      if(params.transforms){
-        transformerService.triggerTransform(result.user, filename, params.transforms, json, response)
-      }else{
-        response.setHeader("Content-disposition", "attachment; filename=\"${filename}.json\"")
-        response.contentType = "application/json"
-        render json
+          if(params.transforms){
+            transformerService.triggerTransform(result.user, filename, params.transforms, json, response)
+          }else{
+            response.setHeader("Content-disposition", "attachment; filename=\"${filename}.json\"")
+            response.contentType = "application/json"
+            render json
+          }
+          exportService.printDuration(verystarttime, "Overall Time")
       }
-      exportService.printDuration(verystarttime, "Overall Time")
-    }
-    xml {
-      def starttime = exportService.printStart("Building XML Doc")
-      def doc = exportService.buildDocXML("Subscriptions")
-      exportService.addSubIntoXML(doc, doc.getDocumentElement(), result.subscriptionInstance, result.entitlements)
-      exportService.printDuration(starttime, "Building XML Doc")
+      xml {
+          def starttime = exportService.printStart("Building XML Doc")
+          def doc = exportService.buildDocXML("Subscriptions")
+          exportService.addSubIntoXML(doc, doc.getDocumentElement(), result.subscriptionInstance, result.entitlements)
+          exportService.printDuration(starttime, "Building XML Doc")
       
-      if(params.transforms){
-        starttime = exportService.printStart("Get String")
-        String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
-        exportService.printDuration(starttime, "Get String")
-        starttime = exportService.printStart("Calling Transformer Service")
-        transformerService.triggerTransform(result.user, filename, params.transforms, xml, response)
-        exportService.printDuration(starttime, "Calling Transformer Service")
-      }else{
-        response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
-        response.contentType = "text/xml"
-        starttime = exportService.printStart("Sending XML")
-        exportService.streamOutXML(doc, response.outputStream)
-        exportService.printDuration(starttime, "Sending XML")
+          if( ( params.transformId ) && ( result.transforms[params.transformId] != null ) ) {
+            String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
+            transformerService.triggerTransform(result.user, filename, result.transforms[params.transformId], xml, response)
+          }else{
+            response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
+            response.contentType = "text/xml"
+            starttime = exportService.printStart("Sending XML")
+            exportService.streamOutXML(doc, response.outputStream)
+            exportService.printDuration(starttime, "Sending XML")
+          }
+          exportService.printDuration(verystarttime, "Overall Time")
       }
-      exportService.printDuration(verystarttime, "Overall Time")
-    }
     }
   }
   
