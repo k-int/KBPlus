@@ -5,7 +5,7 @@
    <xsl:strip-space elements="*" />
     
    <xsl:template match="/">
-   		<xsl:text>publication_title&#x9;print_identifier&#x9;online_identifier&#x9;date_first_issue_online&#x9;num_first_vol_online&#x9;num_first_issue_online&#x9;date_last_issue_online&#x9;num_last_vol_online&#x9;num_last_issue_online&#x9;title_url&#x9;first_author&#x9;title_id&#x9;coverage_depth&#x9;coverage_notes&#x9;publisher_name&#x9;location&#x9;title_notes&#x9;oclc_collection_name&#x9;oclc_collection_id&#x9;oclc_entry_id&#x9;oclc_linkscheme&#x9;oclc_number&#x9;ACTION&#x9;</xsl:text>
+   		<xsl:text>publication_title&#x9;print_identifier&#x9;online_identifier&#x9;date_first_issue_online&#x9;num_first_vol_online&#x9;num_first_issue_online&#x9;date_last_issue_online&#x9;num_last_vol_online&#x9;num_last_issue_online&#x9;title_url&#x9;first_author&#x9;title_id&#x9;coverage_depth&#x9;coverage_notes&#x9;publisher_name&#x9;location&#x9;title_notes&#x9;oclc_collection_name&#x9;oclc_collection_id&#x9;oclc_entry_id&#x9;oclc_linkscheme&#x9;oclc_number&#x9;ACTION&#x9;</xsl:text><xsl:text>&#xA;</xsl:text>
    		<xsl:apply-templates select="//TitleListEntry" />
    </xsl:template>
    
@@ -119,9 +119,7 @@
         <xsl:with-param name="txt">ACTION</xsl:with-param>
       </xsl:call-template>
 
-
-      <!-- Old stuff -->
-
+      <xsl:text>&#xA;</xsl:text>
 
    </xsl:template>
    
