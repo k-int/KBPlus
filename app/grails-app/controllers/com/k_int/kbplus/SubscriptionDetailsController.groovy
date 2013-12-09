@@ -26,32 +26,34 @@ class SubscriptionDetailsController {
   def genericOIDService
   def transformerService
   def exportService
+  def grailsApplication
   
   def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
-	def verystarttime = exportService.printStart("SubscriptionDetails")
-	
+  def verystarttime = exportService.printStart("SubscriptionDetails")
+  
     log.debug("subscriptionDetails id:${params.id} format=${response.format}");
     def result = [:]
 
     result.user = User.get(springSecurityService.principal.id)
+    result.transforms = grailsApplication.config.subscriptionTransforms
 
     result.max = params.max ? Integer.parseInt(params.max) : ( (response.format && response.format != "html" && response.format != "all" ) ? 10000 : result.user.defaultPageSize );
     result.offset = (params.offset && response.format && response.format != "html") ? Integer.parseInt(params.offset) : 0;
 
     log.debug("max = ${result.max}");
     result.subscriptionInstance = Subscription.get(params.id)
-	
-	// If transformer check user has access to it
-	if(params.transforms && !transformerService.hasTransformId(result.user, params.transforms)) {
-		flash.error = "It looks like you are trying to use an unvalid transformer or one you don't have access to!"
-		params.remove("transforms")
-		params.remove("format")
-		redirect action:'currentTitles', params:params
-	}
-	
+  
+  // If transformer check user has access to it
+  if(params.transforms && !transformerService.hasTransformId(result.user, params.transforms)) {
+    flash.error = "It looks like you are trying to use an unvalid transformer or one you don't have access to!"
+    params.remove("transforms")
+    params.remove("format")
+    redirect action:'currentTitles', params:params
+  }
+  
     if ( ! result.subscriptionInstance.hasPerm("view",result.user) ) {
       response.sendError(401);
       return
@@ -100,61 +102,61 @@ class SubscriptionDetailsController {
 
     result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, qry_params, [max:result.max, offset:result.offset]);
 
-	exportService.printDuration(verystarttime, "Querying")
-	
+  exportService.printDuration(verystarttime, "Querying")
+  
     log.debug("subscriptionInstance returning... ${result.num_sub_rows} rows ");
-	def filename = "subscriptionDetails_${result.subscriptionInstance.identifier}"
+  def filename = "subscriptionDetails_${result.subscriptionInstance.identifier}"
     withFormat {
       html result
       csv {
          response.setHeader("Content-disposition", "attachment; filename=${result.subscriptionInstance.identifier}.csv")
          response.contentType = "text/csv"
          def out = response.outputStream
-		 def header = ( params.omitHeader == null ) || ( params.omitHeader != 'Y' )
+     def header = ( params.omitHeader == null ) || ( params.omitHeader != 'Y' )
          exportService.StreamOutSubsCSV(out, result.subscriptionInstance, result.entitlements, header)
          out.close()
-		 exportService.printDuration(verystarttime, "Overall Time")
+     exportService.printDuration(verystarttime, "Overall Time")
       }
       json {
-		  def starttime = exportService.printStart("Building Map")
-		  def map = exportService.getSubscriptionMap(result.subscriptionInstance, result.entitlements)
-		  exportService.printDuration(starttime, "Building Map")
-		  
-		  starttime = exportService.printStart("Create JSON")
-		  def json = map as JSON
-		  exportService.printDuration(starttime, "Create JSON")
-		  
-		  if(params.transforms){
-			  transformerService.triggerTransform(result.user, filename, params.transforms, json, response)
-		  }else{
-			  response.setHeader("Content-disposition", "attachment; filename=\"${filename}.json\"")
-			  response.contentType = "application/json"
-			  render json
-		  }
-		  exportService.printDuration(verystarttime, "Overall Time")
-	  }
-	  xml {
-		  def starttime = exportService.printStart("Building XML Doc")
-		  def doc = exportService.buildDocXML("Subscriptions")
-		  exportService.addSubIntoXML(doc, doc.getDocumentElement(), result.subscriptionInstance, result.entitlements)
-		  exportService.printDuration(starttime, "Building XML Doc")
-		  
-		  if(params.transforms){
-			  starttime = exportService.printStart("Get String")
-			  String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
-			  exportService.printDuration(starttime, "Get String")
-			  starttime = exportService.printStart("Calling Transformer Service")
-			  transformerService.triggerTransform(result.user, filename, params.transforms, xml, response)
-			  exportService.printDuration(starttime, "Calling Transformer Service")
-		  }else{
-			  response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
-			  response.contentType = "text/xml"
-			  starttime = exportService.printStart("Sending XML")
-			  exportService.streamOutXML(doc, response.outputStream)
-			  exportService.printDuration(starttime, "Sending XML")
-		  }
-		  exportService.printDuration(verystarttime, "Overall Time")
-	  }
+      def starttime = exportService.printStart("Building Map")
+      def map = exportService.getSubscriptionMap(result.subscriptionInstance, result.entitlements)
+      exportService.printDuration(starttime, "Building Map")
+      
+      starttime = exportService.printStart("Create JSON")
+      def json = map as JSON
+      exportService.printDuration(starttime, "Create JSON")
+      
+      if(params.transforms){
+        transformerService.triggerTransform(result.user, filename, params.transforms, json, response)
+      }else{
+        response.setHeader("Content-disposition", "attachment; filename=\"${filename}.json\"")
+        response.contentType = "application/json"
+        render json
+      }
+      exportService.printDuration(verystarttime, "Overall Time")
+    }
+    xml {
+      def starttime = exportService.printStart("Building XML Doc")
+      def doc = exportService.buildDocXML("Subscriptions")
+      exportService.addSubIntoXML(doc, doc.getDocumentElement(), result.subscriptionInstance, result.entitlements)
+      exportService.printDuration(starttime, "Building XML Doc")
+      
+      if(params.transforms){
+        starttime = exportService.printStart("Get String")
+        String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
+        exportService.printDuration(starttime, "Get String")
+        starttime = exportService.printStart("Calling Transformer Service")
+        transformerService.triggerTransform(result.user, filename, params.transforms, xml, response)
+        exportService.printDuration(starttime, "Calling Transformer Service")
+      }else{
+        response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
+        response.contentType = "text/xml"
+        starttime = exportService.printStart("Sending XML")
+        exportService.streamOutXML(doc, response.outputStream)
+        exportService.printDuration(starttime, "Sending XML")
+      }
+      exportService.printDuration(verystarttime, "Overall Time")
+    }
     }
   }
   

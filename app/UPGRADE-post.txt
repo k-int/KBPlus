@@ -2,3 +2,5 @@
 insert into transforms( version,tr_accepts_format_rv_fk,tr_name,tr_path_to_stylesheet,tr_return_file_extention,tr_return_mime,tr_transformer_fk)
 values (0, 219, 'OCLC Transform', '/home/kbwww/git/KBPlus/transformer/stylesheets/oclc.xslt','txt','text/plain',1);
 
+insert into transforms_refdata_value values ( 3, 221 );
+insert into transforms_refdata_value values ( 3, 223 );

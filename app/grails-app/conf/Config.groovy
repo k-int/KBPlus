@@ -83,6 +83,13 @@ grails.cache.config = {
    }
 }
 
+subscriptionTransforms = [
+  'oclc':[name:'OCLC Resolver', xsl:'oclc.xslt'],
+  'ss':[name:'Serials Solutions Resolver', xsl:'serialssolutions.xslt'],
+  'sfx':[name:'SFX Resolver', xsl:'SFX.xslt'],
+  'kbplus':[name:'KBPlus Import Format', xsl:'kbplusimp.xslt'],
+]
+
 // log4j configuration
 log4j = {
     // Example of changing the log pattern for the default console

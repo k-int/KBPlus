@@ -56,6 +56,9 @@
 			      		</li>
 	      			</g:if>
 	      		</g:each>
+                        <g:each in="${transforms}" var="transkey,transval">
+                          <li><g:link action="index" id="${params.id}" params="${[trans:transkey]}"> ${transval.name}</g:link></li>
+                        </g:each>
 		    </ul>
 		</li>
       </ul>
