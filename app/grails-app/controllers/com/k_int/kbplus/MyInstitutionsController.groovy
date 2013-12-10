@@ -733,7 +733,13 @@ class MyInstitutionsController {
 
     def qry_params = ['institution':result.institution]
     // def sub_qry =  "select ie from IssueEntitlement as ie JOIN ie.subscription.orgRelations as o LEFT OUTER JOIN ie.tipp.additionalPlatforms as ap LEFT OUTER JOIN ie.tipp.pkg.orgs AS role WHERE ie.tipp.title = t and o.roleType.value = 'Subscriber' AND o.org = :institution AND ie.subscription.status.value != 'Deleted'"
-    def sub_qry =  "from IssueEntitlement as ie JOIN ie.subscription.orgRelations as o LEFT OUTER JOIN ie.tipp.additionalPlatforms as ap LEFT OUTER JOIN ie.tipp.pkg.orgs AS role WHERE o.roleType.value = 'Subscriber' AND o.org = :institution AND ie.subscription.status.value != 'Deleted'"
+    def sub_qry =  "from IssueEntitlement as ie INNER JOIN ie.subscription.orgRelations as o "
+    if ( filterOtherPlat ) { sub_qry += "INNER JOIN ie.tipp.additionalPlatforms as ap " }
+    if ( filterPvd ) { sub_qry += "INNER JOIN ie.tipp.pkg.orgs AS role " }
+    sub_qry += "WHERE o.roleType.value = 'Subscriber' "
+    sub_qry += "AND o.org = :institution "
+    sub_qry += "AND ie.subscription.status.value != 'Deleted' "
+    sub_qry += "AND ie.status != 'Deleted'"
 
     if ( date_restriction ) {
       sub_qry += " AND ie.subscription.startDate <= :date_restriction AND ie.subscription.endDate >= :date_restriction "
@@ -770,12 +776,13 @@ class MyInstitutionsController {
     // def title_qry = "from TitleInstance as t where exists ( ${sub_qry} )"
     def title_qry = sub_qry
 
-    result.titles = IssueEntitlement.executeQuery( "SELECT ie.tipp.title as dt, count(ie) as tc  ${title_qry}  group by ie.tipp.title order by ie.tipp.title.title",qry_params,limits)
+    def having_clause = params.filterMultiIE ? 'having count(ie) > 1' : ''
 
-    log.debug("Page1: ${result.titles}");
-    result.num_ti_rows = IssueEntitlement.executeQuery( "SELECT count(distinct ie.tipp.title) ${title_qry}",qry_params)[0]
+    result.titles = IssueEntitlement.executeQuery( "SELECT ie.tipp.title, count(ie) ${title_qry} group by ie.tipp.title ${having_clause} order by ie.tipp.title.title",qry_params,limits)
 
-    log.debug("Title [${result.institution}] count is ${result.num_ti_rows}");
+    log.debug("Get count...");
+    def cr = IssueEntitlement.executeQuery( "SELECT count(t) from TitleInstance as t where exists ( select count(ie) as tc ${title_qry} AND ie.tipp.title = t group by ie.tipp.title ${having_clause})",qry_params)
+    result.num_ti_rows = cr[0]
 
     result
   }
@@ -853,6 +860,7 @@ class MyInstitutionsController {
     log.debug("Final query:\n${title_query.replaceAll("\\s+", " ")}{title_query_grouping}\nParams:${qry_params}")
     
     // Get Total number of Titles for HTML view
+    // The following 2 lines should be reviewed.
     if(isHtmlOutput)
       result.num_ti_rows = IssueEntitlement.executeQuery("SELECT ie.tipp.title ${title_query} ${title_query_grouping}", qry_params).size()
   
