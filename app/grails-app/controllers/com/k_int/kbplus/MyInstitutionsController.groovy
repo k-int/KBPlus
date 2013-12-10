@@ -732,7 +732,8 @@ class MyInstitutionsController {
     def limits = (isHtmlOutput)?[max:result.max, offset:result.offset]:[offset:0]
 
     def qry_params = ['institution':result.institution]
-    def sub_qry =  "select ie from IssueEntitlement as ie JOIN ie.subscription.orgRelations as o LEFT OUTER JOIN ie.tipp.additionalPlatforms as ap LEFT OUTER JOIN ie.tipp.pkg.orgs AS role WHERE ie.tipp.title = t and o.roleType.value = 'Subscriber' AND o.org = :institution AND ie.subscription.status.value != 'Deleted'"
+    // def sub_qry =  "select ie from IssueEntitlement as ie JOIN ie.subscription.orgRelations as o LEFT OUTER JOIN ie.tipp.additionalPlatforms as ap LEFT OUTER JOIN ie.tipp.pkg.orgs AS role WHERE ie.tipp.title = t and o.roleType.value = 'Subscriber' AND o.org = :institution AND ie.subscription.status.value != 'Deleted'"
+    def sub_qry =  "from IssueEntitlement as ie JOIN ie.subscription.orgRelations as o LEFT OUTER JOIN ie.tipp.additionalPlatforms as ap LEFT OUTER JOIN ie.tipp.pkg.orgs AS role WHERE o.roleType.value = 'Subscriber' AND o.org = :institution AND ie.subscription.status.value != 'Deleted'"
 
     if ( date_restriction ) {
       sub_qry += " AND ie.subscription.startDate <= :date_restriction AND ie.subscription.endDate >= :date_restriction "
@@ -766,9 +767,13 @@ class MyInstitutionsController {
     }
 
     // First get a neat list of the titles from all subscriptions in this institution
-    def title_qry = "from TitleInstance as t where exists ( ${sub_qry} )"
-    result.titles = IssueEntitlement.executeQuery( "SELECT t ${title_qry} order by t.title",qry_params,limits)
-    result.num_ti_rows = IssueEntitlement.executeQuery( "SELECT count(t) ${title_qry} order by t.title",qry_params)[0]
+    // def title_qry = "from TitleInstance as t where exists ( ${sub_qry} )"
+    def title_qry = sub_qry
+
+    result.titles = IssueEntitlement.executeQuery( "SELECT ie.tipp.title as dt, count(ie) as tc  ${title_qry}  group by ie.tipp.title order by ie.tipp.title.title",qry_params,limits)
+
+    log.debug("Page1: ${result.titles}");
+    result.num_ti_rows = IssueEntitlement.executeQuery( "SELECT count(distinct ie.tipp.title) ${title_qry}",qry_params)[0]
 
     log.debug("Title [${result.institution}] count is ${result.num_ti_rows}");
 
