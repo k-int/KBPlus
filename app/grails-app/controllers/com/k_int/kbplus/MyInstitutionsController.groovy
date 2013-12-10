@@ -750,6 +750,11 @@ class MyInstitutionsController {
       qry_params.subs = filterSub.collect(new ArrayList<Long>()) { Long.valueOf(it) }
     }
 
+    if ( filterHostPlat ) {
+       sub_qry += " AND ie.tipp.platform.id in ( :plats )"
+      qry_params.plats = filterHostPlat.collect(new ArrayList<Long>()) { Long.valueOf(it) }
+    }
+
     // First get a neat list of the titles from all subscriptions in this institution
     def title_qry = "from TitleInstance as t where exists ( ${sub_qry} )"
     result.titles = IssueEntitlement.executeQuery( "SELECT t ${title_qry} order by t.title",qry_params,limits)
