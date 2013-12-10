@@ -732,7 +732,7 @@ class MyInstitutionsController {
     def limits = (isHtmlOutput)?[max:result.max, offset:result.offset]:[offset:0]
 
     def qry_params = ['institution':result.institution]
-    def sub_qry =  "select ie from IssueEntitlement as ie JOIN ie.subscription.orgRelations as o WHERE ie.tipp.title = t and o.roleType.value = 'Subscriber' AND o.org = :institution AND ie.subscription.status.value != 'Deleted'"
+    def sub_qry =  "select ie from IssueEntitlement as ie JOIN ie.subscription.orgRelations as o LEFT OUTER JOIN ie.tipp.additionalPlatforms as ap WHERE ie.tipp.title = t and o.roleType.value = 'Subscriber' AND o.org = :institution AND ie.subscription.status.value != 'Deleted'"
 
     if ( date_restriction ) {
       sub_qry += " AND ie.subscription.startDate <= :date_restriction AND ie.subscription.endDate >= :date_restriction "
@@ -748,6 +748,11 @@ class MyInstitutionsController {
     if ( filterSub ) {
       sub_qry += " AND ie.subscription.id in ( :subs )"
       qry_params.subs = filterSub.collect(new ArrayList<Long>()) { Long.valueOf(it) }
+    }
+
+    if ( filterOtherPlat ) {
+       sub_qry += " AND ap.id in ( :addplats )"
+      qry_params.addplats = filterOtherPlat.collect(new ArrayList<Long>()) { Long.valueOf(it) }
     }
 
     if ( filterHostPlat ) {
