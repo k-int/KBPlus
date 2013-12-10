@@ -526,6 +526,7 @@ class TitleInstance {
   }
 
   def getInstitutionalCoverageSummary(institution, dateformat) {
+    def sdf = new java.text.SimpleDateFormat(dateformat)
     def qry = "select ie from IssueEntitlement as ie JOIN ie.subscription.orgRelations as o where ie.tipp.title = :title and o.org = :institution AND ie.subscription.status.value != 'Deleted'"
     def ies = IssueEntitlement.executeQuery(qry,['title':this, institution:institution])
     def earliest = null
@@ -538,8 +539,8 @@ class TitleInstance {
     }
 
     [
-      earliest:earliest,
-      latest: open ? '': latest,
+      earliest:earliest?sdf.format(earliest):'',
+      latest: open ? '': (latest?sdf.format(latest):''),
       ies:ies
     ]
   }
