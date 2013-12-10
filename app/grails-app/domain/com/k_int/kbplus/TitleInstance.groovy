@@ -524,4 +524,23 @@ class TitleInstance {
     
     changeNotificationService.broadcastEvent("${this.class.name}:${this.id}", changeDocument);
   }
+
+  def getInstitutionalCoverageSummary(institution, dateformat) {
+    def qry = "select ie from IssueEntitlement as ie JOIN ie.subscription.orgRelations as o where ie.tipp.title = :title and o.org = :institution AND ie.subscription.status.value != 'Deleted'"
+    def ies = IssueEntitlement.executeQuery(qry,['title':this, institution:institution])
+    def earliest = null
+    def latest = null
+    boolean open = false
+    ies.each { ie ->
+      if ( earliest == null ) { earliest = ie.startDate } else { if ( ie.startDate < earliest ) { earliest = ie.startDate } }
+      if ( latest == null ) { latest = ie.endDate } else { if ( ie.endDate > latest ) { latest = ie.endDate } }
+      if ( ie.endDate == null ) open = true;
+    }
+
+    [
+      earliest:earliest,
+      latest: open ? '': latest,
+      ies:ies
+    ]
+  }
 }

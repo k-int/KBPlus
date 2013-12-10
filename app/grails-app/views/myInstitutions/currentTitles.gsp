@@ -146,14 +146,16 @@
             
             <g:each in="${titles}" var="ti">
               <tr>
-                <td>${ti[0].title}</td>
-                <td>${ti[0].getIdentifierValue('ISSN')}</td>
-                <td>${ti[0].getIdentifierValue('eISSN')}</td>
-                <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ti[1]}"/></td>
-                <td><g:if test="${!ti[2].equals('~')}">${ti[2]}</g:if></td>
+                <td>${ti.title}</td>
+                <td>${ti.getIdentifierValue('ISSN')}</td>
+                <td>${ti.getIdentifierValue('eISSN')}</td>
+
+                <g:set var="title_coverage_info" value="${ti.getInstitutionalCoverageSummary(institution, session.sessionPreferences?.globalDateFormat)}" />
+
+                <td>${title_coverage_info.earliest}</td>
+                <td>${title_coverage_info.latest}</td>
                 <td>
-                  <g:each in="${entitlements}" var="ie">
-                    <g:if test="${ie.tipp.title.id == ti[0].id}">
+                  <g:each in="${title_coverage_info.ies}" var="ie">
                       <p>
                         <g:link controller="subscriptionDetails" action="index" id="${ie.subscription.id}">${ie.subscription.name}</g:link>:
                         <g:if test="${ie.startVolume}">Vol. ${ie.startVolume}</g:if>
@@ -165,7 +167,6 @@
                         <g:formatDate format="yyyy" date="${ie.endDate}"/>
                         (<g:link controller="issueEntitlement" action="show" id="${ie.id}">Full Issue Entitlement Details</g:link>)
                       </p>
-                    </g:if>
                   </g:each>
                 </td>
               </tr>

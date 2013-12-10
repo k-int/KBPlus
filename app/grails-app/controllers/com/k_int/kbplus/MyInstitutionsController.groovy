@@ -679,22 +679,13 @@ class MyInstitutionsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def currentTitles() {
-  def verystarttime = exportService.printStart("currentTitles")
-  
-  // define if we're dealing with a HTML request or an Export (i.e. XML or HTML) 
-  boolean isHtmlOutput = !params.format||params.format.equals("html")
+    // define if we're dealing with a HTML request or an Export (i.e. XML or HTML) 
+    boolean isHtmlOutput = !params.format||params.format.equals("html")
   
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
     result.transforms = grailsApplication.config.subscriptionTransforms
-  
-  // Check if user is member of the institution
-  if ( !checkUserIsMember(result.user, result.institution) ) {
-    flash.error="You do not have permission to access ${result.institution?.name} pages. Please request access on the profile page";
-    response.sendError(401)
-    return;
-  }
   
     // Set Date Restriction
     def date_restriction = null;
@@ -712,53 +703,127 @@ class MyInstitutionsController {
       date_restriction = sdf.parse(params.validOn)
     }
   
-  // Set is_admin
+    // Set is_admin
     if ( checkUserHasRole(result.user, result.institution, 'INST_ADM') ) result.is_admin = true
     else result.is_admin=false;
   
-  // Set default order and sort
-  if (!params.order) params.order = "asc"
-  if (!params.sort) params.sort = "tipp.title.title"
+    // Set default order and sort
+    if (!params.order) params.order = "asc"
+    if (!params.sort) params.sort = "tipp.title.title"
   
-  // Set offset and max
+    // Set offset and max
     result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
       
-  // Put Lists for the filters into result
-  if (isHtmlOutput){ 
-    result = setFiltersLists(result, date_restriction)
-    
-    // !!!! Not sure it does actually ever happen? !!!!
-    if ( result.subscriptions.isEmpty() ) {
-      flash.error="Sorry, we could not find any Subscription for ${result.institution.name}";
-      result.titles = []
-      result.entitlements = []
-      return result;
+    // Put Lists for the filters into result
+    if (isHtmlOutput){ 
+      result = setFiltersLists(result, date_restriction)
     }
+
+
+    def limits = (isHtmlOutput)?[max:result.max, offset:result.offset]:[offset:0]
+
+    def qry_params = ['institution':result.institution]
+    def sub_qry =  "select ie from IssueEntitlement as ie JOIN ie.subscription.orgRelations as o WHERE ie.tipp.title = t and o.roleType.value = 'Subscriber' AND o.org = :institution AND ie.subscription.status.value != 'Deleted'"
+
+    if ( date_restriction ) {
+      sub_qry += " AND ie.subscription.startDate <= :date_restriction AND ie.subscription.endDate >= :date_restriction "
+      qry_params.date_restriction = date_restriction
+    }
+
+
+    // First get a neat list of the titles from all subscriptions in this institution
+    def title_qry = "from TitleInstance as t where exists ( ${sub_qry} )"
+    result.titles = IssueEntitlement.executeQuery( "SELECT t ${title_qry} order by t.title",qry_params,limits)
+    result.num_ti_rows = IssueEntitlement.executeQuery( "SELECT count(t) ${title_qry} order by t.title",qry_params)[0]
+
+    log.debug("Title [${result.institution}] count is ${result.num_ti_rows}");
+
+    result
   }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def currentTitlesOld() {
+    def verystarttime = exportService.printStart("currentTitles")
+  
+    // define if we're dealing with a HTML request or an Export (i.e. XML or HTML) 
+    boolean isHtmlOutput = !params.format||params.format.equals("html")
+  
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+    result.transforms = grailsApplication.config.subscriptionTransforms
+  
+    // Check if user is member of the institution
+    if ( !checkUserIsMember(result.user, result.institution) ) {
+      flash.error="You do not have permission to access ${result.institution?.name} pages. Please request access on the profile page";
+      response.sendError(401)
+      return;
+    }
+  
+    // Set Date Restriction
+    def date_restriction = null;
+
+    def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
+    if ( params.validOn == null ) {
+      result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+      date_restriction = sdf.parse(result.validOn)
+    }
+    else if ( params.validOn == '' ) {     
+      result.validOn = "" //sdf.format(new Date(System.currentTimeMillis()))
+    }
+    else {
+      result.validOn=params.validOn
+      date_restriction = sdf.parse(params.validOn)
+    }
+  
+    // Set is_admin
+    if ( checkUserHasRole(result.user, result.institution, 'INST_ADM') ) result.is_admin = true
+    else result.is_admin=false;
+  
+    // Set default order and sort
+    if (!params.order) params.order = "asc"
+    if (!params.sort) params.sort = "tipp.title.title"
+  
+    // Set offset and max
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+      
+    // Put Lists for the filters into result
+    if (isHtmlOutput){ 
+      result = setFiltersLists(result, date_restriction)
     
-  // Build query for titles
-  def qry_build = buildCurrentTitlesQuery(result.institution, date_restriction)
-  def title_query = qry_build.query
-  def qry_params = qry_build.parameters
+      // !!!! Not sure it does actually ever happen? !!!!
+      if ( result.subscriptions.isEmpty() ) {
+        flash.error="Sorry, we could not find any Subscription for ${result.institution.name}";
+        result.titles = []
+        result.entitlements = []
+        return result;
+      }
+    }
+    
+    // Build query for titles
+    def qry_build = buildCurrentTitlesQuery(result.institution, date_restriction)
+    def title_query = qry_build.query
+    def qry_params = qry_build.parameters
   
     def title_query_grouping = "GROUP By ie.tipp.title "
     def title_query_ordering = "ORDER BY ie.tipp.title.title ${params.order} " //COLLATE utf8_unicode_ci
-  def title_query_extra = "COUNT(ie.subscription) "
-  if(params.filterMultiIE) title_query_grouping += "HAVING COUNT(ie) >= 2 "
+    def title_query_extra = "COUNT(ie.subscription) "
+    if(params.filterMultiIE) title_query_grouping += "HAVING COUNT(ie) >= 2 "
 
     log.debug("Final query:\n${title_query.replaceAll("\\s+", " ")}{title_query_grouping}\nParams:${qry_params}")
     
     // Get Total number of Titles for HTML view
-  if(isHtmlOutput)
+    if(isHtmlOutput)
       result.num_ti_rows = IssueEntitlement.executeQuery("SELECT ie.tipp.title ${title_query} ${title_query_grouping}", qry_params).size()
   
-  // Other cases we just need the entitlements list.
-  if(isHtmlOutput||params.filterMultiIE){ 
-    def limits = (isHtmlOutput)?[max:result.max, offset:result.offset]:[offset:0]
+    // Other cases we just need the entitlements list.
+    if(isHtmlOutput||params.filterMultiIE){ 
+      def limits = (isHtmlOutput)?[max:result.max, offset:result.offset]:[offset:0]
     
-    // MAX(CASE WHEN ie.endDate IS NULL THEN '~' ELSE ie.endDate END) should get the max date or a null string if there is any empty ie.ie_end_date
-    // We need to do that as an empty string actually means 'up to the most current issue available'
+      // MAX(CASE WHEN ie.endDate IS NULL THEN '~' ELSE ie.endDate END) should get the max date or a null string if there is any empty ie.ie_end_date
+      // We need to do that as an empty string actually means 'up to the most current issue available'
       result.titles = IssueEntitlement.executeQuery(
 "SELECT ie.tipp.title, MIN(ie.startDate), \
 MAX(CASE WHEN ie.endDate IS NULL THEN '~' ELSE DATE_FORMAT(ie.endDate, '%Y-%m-%d') END), \
@@ -785,6 +850,8 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
     ie_query += "AND ie.tipp.title In (:titles) "
   }
   ie_query += "${title_query_ordering}"
+
+  log.debug("IE Query: ${ie_query}");
   result.entitlements = IssueEntitlement.executeQuery(ie_query, qry_params);
     
   exportService.printDuration(verystarttime, "Querying")
