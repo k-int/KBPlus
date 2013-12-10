@@ -720,6 +720,14 @@ class MyInstitutionsController {
       result = setFiltersLists(result, date_restriction)
     }
 
+    def filterSub = params.list("filterSub")
+    if(filterSub.contains("all")) filterSub = null
+    def filterPvd = params.list("filterPvd")
+    if(filterPvd.contains("all")) filterPvd = null
+    def filterHostPlat = params.list("filterHostPlat")
+    if(filterHostPlat.contains("all")) filterHostPlat = null
+    def filterOtherPlat = params.list("filterOtherPlat")
+    if(filterOtherPlat.contains("all")) filterOtherPlat = null
 
     def limits = (isHtmlOutput)?[max:result.max, offset:result.offset]:[offset:0]
 
@@ -731,6 +739,11 @@ class MyInstitutionsController {
       qry_params.date_restriction = date_restriction
     }
 
+    if ( ( params.filter ) && ( params.filter.length() > 0 ) ) {
+      log.debug("Adding title filter ${params.filter}");
+      sub_qry += " AND ie.tipp.title.title like :titlestr"
+      qry_params.titlestr = "%${params.filter}%";
+    }
 
     // First get a neat list of the titles from all subscriptions in this institution
     def title_qry = "from TitleInstance as t where exists ( ${sub_qry} )"
