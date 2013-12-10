@@ -146,11 +146,11 @@
             
             <g:each in="${titles}" var="ti">
               <tr>
-                <td>${ti[0].title}</td>
+                <td>${ti[0].title} ${date_restriction}..</td>
                 <td style="white-space:nowrap">${ti[0].getIdentifierValue('ISSN')}</td>
                 <td style="white-space:nowrap">${ti[0].getIdentifierValue('eISSN')}</td>
 
-                <g:set var="title_coverage_info" value="${ti[0].getInstitutionalCoverageSummary(institution, session.sessionPreferences?.globalDateFormat)}" />
+                <g:set var="title_coverage_info" value="${ti[0].getInstitutionalCoverageSummary(institution, session.sessionPreferences?.globalDateFormat, date_restriction)}" />
 
                 <td  style="white-space:nowrap">${title_coverage_info.earliest}</td>
                 <td  style="white-space:nowrap">${title_coverage_info.latest}</td>

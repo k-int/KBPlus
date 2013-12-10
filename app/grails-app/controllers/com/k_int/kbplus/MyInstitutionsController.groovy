@@ -243,6 +243,7 @@ class MyInstitutionsController {
       qry_params.add(date_restriction)
     }
 
+
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
       base_qry += " order by ${params.sort} ${params.order}"
     }
@@ -254,6 +255,7 @@ class MyInstitutionsController {
 
     result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
     result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
+    result.date_restriction = date_restriction;
   
   withFormat {
     html result
@@ -745,6 +747,7 @@ class MyInstitutionsController {
       sub_qry += " AND ie.subscription.startDate <= :date_restriction AND ie.subscription.endDate >= :date_restriction "
       qry_params.date_restriction = date_restriction
     }
+    result.date_restriction = date_restriction;
 
     if ( ( params.filter ) && ( params.filter.length() > 0 ) ) {
       log.debug("Adding title filter ${params.filter}");
