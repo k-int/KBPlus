@@ -40,39 +40,35 @@ class LicenseDetailsController {
     else {
       result.editable = false
     }
-	
+  
     def license_reference_str = result.license.reference?:'NO_LIC_REF_FOR_ID_'+params.id
 
     def filename = "licenceDetails_${license_reference_str.replace(" ", "_")}"
     result.onixplLicense = result.license.onixplLicense;
 
     withFormat {
-		  html result
-		  json {
-			  def map = exportService.addLicensesToMap([:], [result.license])
-			  
-			  def json = map as JSON
-			  if(params.transforms){
-				  transformerService.triggerTransform(result.user, filename, params.transforms, json.toString(), response)
-			  }else{
-				  response.setHeader("Content-disposition", "attachment; filename=\"${filename}.json\"")
-				  response.contentType = "application/json"
-				  render json.toString()
-			  }
-		  }
-		  xml {
-			  def doc = exportService.buildDocXML("Licences")
-			  exportService.addLicencesIntoXML(doc, doc.getDocumentElement(), [result.license])
-			  
-			  if(params.transforms){
-				  String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
-				  transformerService.triggerTransform(result.user, filename, params.transforms, xml, response)
-			  }else{
-				  response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
-				  response.contentType = "text/xml"
-				  exportService.streamOutXML(doc, response.outputStream)
-			  }
-		  }
+      html result
+      json {
+        def map = exportService.addLicensesToMap([:], [result.license])
+        
+        def json = map as JSON
+        response.setHeader("Content-disposition", "attachment; filename=\"${filename}.json\"")
+        response.contentType = "application/json"
+        render json.toString()
+      }
+      xml {
+        def doc = exportService.buildDocXML("Licences")
+        exportService.addLicencesIntoXML(doc, doc.getDocumentElement(), [result.license])
+        
+        if( ( params.transformId ) && ( result.transforms[params.transformId] != null ) ) {
+          String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
+          transformerService.triggerTransform(result.user, filename, result.transforms[params.transformId], xml, response)
+        }else{ // send the XML to the user
+          response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
+          response.contentType = "text/xml"
+          exportService.streamOutXML(doc, response.outputStream)
+        }
+      }
     }
   }
 
