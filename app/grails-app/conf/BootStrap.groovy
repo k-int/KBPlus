@@ -302,6 +302,10 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("Package.Scope", "Master File").save()
     RefdataCategory.lookupOrCreate("Package.Scope", "Scope Undefined").save()
 
+    RefdataCategory.lookupOrCreate("PeningChangeStatus", "Pending").save()
+    RefdataCategory.lookupOrCreate("PeningChangeStatus", "Accepted").save()
+    RefdataCategory.lookupOrCreate("PeningChangeStatus", "Rejected").save()
+
     log.debug("validate content items...");
     // The default template for a property change on a title
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.propertyChange','','''
