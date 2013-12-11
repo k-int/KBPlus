@@ -103,6 +103,23 @@ class PendingChangeController {
                   target_object[parsed_change_info.changeDoc.prop] = parsed_change_info.changeDoc.new
                 }
                 target_object.save()
+
+                def change_audit_object = change.license ? change.license : change.subscription
+                def change_audit_id = change_audit_object.id
+                def change_audit_class_name = change_audit_object.class.name
+
+                // Log a change record against the object
+                // def new_audit_event = new org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent()
+                // new_audit_event.actor=null;
+                // new_audit_event.uri=null;
+                // new_audit_event.className=change_audit_class_name
+                // new_audit_event.persistedObjectId = change_audit_id
+                // new_audit_event.persistedObjectVersion = change_audit_object.version
+                // new_audit_event.eventName="ChangeAccepted"
+                // new_audit_event.propertyName=null;
+                // new_audit_event.oldValue=null;
+                // new_audit_event.newValue=change.desc;
+                // new_audit_event.save()
               }
             }
             break;
@@ -134,6 +151,23 @@ class PendingChangeController {
       change.subscription?.pendingChanges?.remove(change)
       change.subscription?.save();
       change.delete();
+
+      def change_audit_object = change.license ? change.license : change.subscription
+      def change_audit_id = change_audit_object.id
+      def change_audit_class_name = change_audit_object.class.name
+
+      // Log a change record against the object
+      // def new_audit_event = new org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent()
+      // new_audit_event.actor=null;
+      // new_audit_event.uri=null;
+      // new_audit_event.className=change_audit_class_name
+      // new_audit_event.persistedObjectId = change_audit_id
+      // new_audit_event.persistedObjectVersion = change_audit_object.version
+      // new_audit_event.eventName="ChangeRejected"
+      // new_audit_event.propertyName=null;
+      // new_audit_event.oldValue=null;
+      // new_audit_event.newValue=change.desc;
+      // new_audit_event.save()
     }
   }
 }
