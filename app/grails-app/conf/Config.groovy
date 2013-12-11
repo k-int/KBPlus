@@ -90,6 +90,14 @@ subscriptionTransforms = [
   'kbplus':[name:'KBPlus Import Format', xsl:'kbplusimp.xslt', returnFileExtention:'txt', returnMime:'text/plain'],
 ]
 
+// KBPlus import not available in titlelist because we need sub id and it's possible for multiple IEs to appear
+// per title, which isn't valid inside a KB+ package file
+titlelistTransforms = [
+  'oclc':[name:'OCLC Resolver', xsl:'oclc.xslt', returnFileExtention:'txt', returnMime:'text/plain'],
+  'ss':[name:'Serials Solutions Resolver', xsl:'serialssolutions.xslt', returnFileExtention:'txt', returnMime:'text/plain'],
+  'sfx':[name:'SFX Resolver', xsl:'SFX.xslt', returnFileExtention:'txt', returnMime:'text/plain'],
+]
+
 // log4j configuration
 log4j = {
     // Example of changing the log pattern for the default console

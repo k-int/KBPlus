@@ -687,7 +687,7 @@ class MyInstitutionsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.institution = Org.findByShortcode(params.shortcode)
-    result.transforms = grailsApplication.config.subscriptionTransforms
+    result.transforms = grailsApplication.config.titlelistTransforms
   
     // Set Date Restriction
     def date_restriction = null;
@@ -717,11 +717,6 @@ class MyInstitutionsController {
     result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
       
-    // Put Lists for the filters into result
-    if (isHtmlOutput){ 
-      result = setFiltersLists(result, date_restriction)
-    }
-
     def filterSub = params.list("filterSub")
     if(filterSub.contains("all")) filterSub = null
     def filterPvd = params.list("filterPvd")
@@ -787,7 +782,51 @@ class MyInstitutionsController {
     def cr = IssueEntitlement.executeQuery( "SELECT count(t) from TitleInstance as t where exists ( select count(ie) as tc ${title_qry} AND ie.tipp.title = t group by ie.tipp.title ${having_clause})",qry_params)
     result.num_ti_rows = cr[0]
 
-    result
+    // Put Lists for the filters into result
+    if (isHtmlOutput){ 
+      result = setFiltersLists(result, date_restriction)
+    }
+    else {
+      result.entitlements = IssueEntitlement.executeQuery("select ie ${title_qry} order by ie.tipp.title.title",qry_params)
+    }
+
+    def filename = "titles_listing_${result.institution.shortcode}"
+    withFormat {
+      html {
+        result
+      }
+      csv {           
+        response.setHeader("Content-disposition", "attachment; filename=${filename}.csv")
+        response.contentType = "text/csv"
+      
+        def out = response.outputStream
+        exportService.StreamOutTitlesCSV(out, result.entitlements)
+        out.close()
+        }
+      json {
+        def map = [:]
+        exportService.addTitlesToMap(map, result.entitlements)
+        def content = map as JSON
+
+        response.setHeader("Content-disposition", "attachment; filename=\"${filename}.json\"")
+        response.contentType = "application/json"
+        
+        render content
+      }
+      xml {
+        def doc = exportService.buildDocXML("TitleList")
+        exportService.addTitleListXML(doc, doc.getDocumentElement(), result.entitlements)
+      
+        if( ( params.transformId ) && ( result.transforms[params.transformId] != null ) ) {
+          String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
+          transformerService.triggerTransform(result.user, filename, result.transforms[params.transformId], xml, response)
+        }else{ // send the XML to the user
+          response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
+          response.contentType = "text/xml"
+          exportService.streamOutXML(doc, response.outputStream)
+        }
+      }
+    }
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
