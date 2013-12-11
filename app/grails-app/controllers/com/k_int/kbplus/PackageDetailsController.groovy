@@ -21,7 +21,7 @@ class PackageDetailsController {
 
   def pkg_qry_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
 
-  	def exportService
+    def exportService
 
     static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
 
@@ -113,7 +113,7 @@ class PackageDetailsController {
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def show() {
       def verystarttime = exportService.printStart("SubscriptionDetails")
-	  
+    
       def result = [:]
       boolean showDeletedTipps=false
       
@@ -154,14 +154,14 @@ class PackageDetailsController {
           }
         }
       }
-	  
+    
       result.max = params.max ? Integer.parseInt(params.max) : 25
       params.max = result.max
       def paginate_after = params.paginate_after ?: ( (2*result.max)-1);
       result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
-	  
-	  def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
-	  
+    
+    def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
+    
       def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
       def qry_params = [packageInstance]
 
@@ -212,52 +212,37 @@ class PackageDetailsController {
 
 
       result.packageInstance = packageInstance
-	  
-	  exportService.printDuration(verystarttime, "Querying")
-	  
-	  def filename = "packageDetails_${result.packageInstance.name}"
-	  withFormat {
-		  html result
-		  json {
-			  def starttime = exportService.printStart("Building Map")
-			  def map = exportService.getPackageMap(packageInstance, result.titlesList)
-			  exportService.printDuration(starttime, "Building Map")
-			  
-			  starttime = exportService.printStart("Create JSON")
-			  def json = map as JSON
-			  exportService.printDuration(starttime, "Create JSON")
-			  
-			  if(params.transforms){
-				  transformerService.triggerTransform(result.user, filename, params.transforms, json, response)
-			  }else{
-				  response.setHeader("Content-disposition", "attachment; filename=\"${filename}.json\"")
-				  response.contentType = "application/json"
-				  render json
-			  }
-			  exportService.printDuration(verystarttime, "Overall Time")
-		  }
-		  xml {
-			  def starttime = exportService.printStart("Building XML Doc")
-			  def doc = exportService.buildDocXML("Packages")
-			  exportService.addPackageIntoXML(doc, doc.getDocumentElement(), packageInstance, result.titlesList)
-			  exportService.printDuration(starttime, "Building XML Doc")
-			  
-			  if(params.transforms){
-				  String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
-				  exportService.printDuration(starttime, "Get String")
-				  transformerService.triggerTransform(result.user, filename, params.transforms, xml, response)
-			  }else{
-				  response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
-				  response.contentType = "text/xml"
-				  starttime = exportService.printStart("Sending XML")
-				  exportService.streamOutXML(doc, response.outputStream)
-				  exportService.printDuration(starttime, "Sending XML")
-			  }
-			  exportService.printDuration(verystarttime, "Overall Time")
-		  }
-	  	
-	  }
-	}
+    
+    def filename = "packageDetails_${result.packageInstance.name}"
+    withFormat {
+      html result
+      json {
+        def map = exportService.getPackageMap(packageInstance, result.titlesList)
+        
+        def json = map as JSON
+        
+          response.setHeader("Content-disposition", "attachment; filename=\"${filename}.json\"")
+          response.contentType = "application/json"
+          render json
+      }
+      xml {
+        def starttime = exportService.printStart("Building XML Doc")
+        def doc = exportService.buildDocXML("Packages")
+        exportService.addPackageIntoXML(doc, doc.getDocumentElement(), packageInstance, result.titlesList)
+        exportService.printDuration(starttime, "Building XML Doc")
+        
+        if( ( params.transformId ) && ( result.transforms[params.transformId] != null ) ) {
+          String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
+          transformerService.triggerTransform(result.user, filename, result.transforms[params.transformId], xml, response)
+        }else{ // send the XML to the user
+          response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
+          response.contentType = "text/xml"
+          exportService.streamOutXML(doc, response.outputStream)
+        }
+
+      }
+    }
+  }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def uploadTitles() {

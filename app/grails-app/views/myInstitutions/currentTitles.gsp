@@ -107,7 +107,7 @@
             </g:each>
       	</select>
     	</div>
-      	<br/><br/>
+      	<br/>
 	    <div class="container" style="text-align:center">
       		<div class="pull-left">
       			<label class="checkbox">
