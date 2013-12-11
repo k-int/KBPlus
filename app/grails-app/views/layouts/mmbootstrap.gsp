@@ -418,6 +418,5 @@ template: '<div class="popover" style="width: 400px;"><div class="arrow"></div><
       <div id="spotlight-search-results">
       </div>
     </div>
-
   </body>
 </html>

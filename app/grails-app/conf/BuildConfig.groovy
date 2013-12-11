@@ -76,6 +76,7 @@ grails.project.dependency.resolution = {
            excludes 'spring-test'
         }
 
+        // compile ":profiler:0.5"
 
     }
 }

@@ -136,6 +136,8 @@ log4j = {
            'grails.app.jobs',
            'grails.app.conf.BootStrap' // ,
         // 'org.springframework.security'
+
+    info   'com.linkedin.grails'
 }
 
 // Added by the Spring Security Core plugin:
