@@ -4,10 +4,6 @@ grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 grails.project.target.level = 1.7
 grails.project.source.level = 1.7
-//grails.project.war.file = "target/${appName}-${appVersion}.war"
-
-// This is commented out so as not to cause probelms in the CI environment
-// grails.plugin.location."functional-test" = "../../grails-functional-test"
 
 
 grails.project.dependency.resolution = {
@@ -18,6 +14,8 @@ grails.project.dependency.resolution = {
     }
     log "error" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     checksums true // Whether to verify checksums on resolve
+    def gebVersion = "0.9.2"
+    def seleniumVersion = "2.32.0"
 
     repositories {
         inherits true // Whether to inherit repository definitions from plugins
@@ -47,7 +45,15 @@ grails.project.dependency.resolution = {
         runtime 'org.apache.poi:poi:3.8'
         runtime 'net.sf.opencsv:opencsv:2.0'
         runtime 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
+
         test 'org.hamcrest:hamcrest-all:1.3'
+        test("org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion")
+        test("org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion")
+        
+        // http://www.gebish.org/manual/current/build-integrations.html#grails
+        // https://github.com/geb/geb-example-grails
+        test "org.spockframework:spock-grails-support:0.7-groovy-2.0"
+        test "org.gebish:geb-spock:$gebVersion"
 
         runtime ( 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2' ) { 
           excludes "org.codehaus.groovy", "groovy"
@@ -77,6 +83,10 @@ grails.project.dependency.resolution = {
         }
 
         // compile ":profiler:0.5"
+        test ":spock:0.7" {
+          exclude "spock-grails-support"
+        }
+        test ":geb:$gebVersion"
 
     }
 }
