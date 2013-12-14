@@ -105,12 +105,12 @@ class UploadController {
     }
     else {
       new_pkg = new Package(identifier: upload.normPkgIdentifier,
-                                name: upload.soPackageName.value,
-                                type: pkg_type,
-                                contentProvider: content_provider_org,
-                                startDate: upload.aggreementTermStartYear?.value, 
-                                endDate: upload.aggreementTermEndYear?.value, 
-                                impId: java.util.UUID.randomUUID().toString());
+                            name: upload.soPackageName.value,
+                            type: pkg_type,
+                            contentProvider: content_provider_org,
+                            startDate: upload.aggreementTermStartYear?.value, 
+                            endDate: upload.aggreementTermEndYear?.value, 
+                            impId: java.util.UUID.randomUUID().toString());
 
       if ( new_pkg.save(flush:true, failOnError:true) ) {
 
@@ -327,24 +327,24 @@ class UploadController {
     String [] nl;
 
     def possible_header_properties = [
-      [ name:'soName', type:'str', mandatory:true ],
-      [ name:'soIdentifier', type:'str', mandatory:false ],
-      [ name:'soProvider', type:'str', mandatory:false ],
-      [ name:'soPackageIdentifier', type:'str', mandatory:true ],
-      [ name:'soPackageName', type:'str', mandatory:true ],
-      [ name:'aggreementTermStartYear', type:'date', mandatory:true ],
-      [ name:'aggreementTermEndYear', type:'date', mandatory:true ],
-      [ name:'consortium', type:'str', mandatory:false ],
+      [ key:'so name', name:'soName', type:'str', mandatory:false ],
+      [ key:'so identifier', name:'soIdentifier', type:'str', mandatory:false ],
+      [ key:'provider', name:'soProvider', type:'str', mandatory:false ],
+      [ key:'package identifier', name:'soPackageIdentifier', type:'str', mandatory:true ],
+      [ key:'package name', name:'soPackageName', type:'str', mandatory:true ],
+      [ key:'agreement term start year', name:'aggreementTermStartYear', type:'date', mandatory:true ],
+      [ key:'agreement term end year', name:'aggreementTermEndYear', type:'date', mandatory:true ],
+      [ key:'consortium', name:'consortium', type:'str', mandatory:false ],
     ]
 
     // Read rows whilst we are processing header properties defined above, as soon as we encounter a row that doesn't
     // contain a header property, move on to the column definitions.
     nl = r.readNext()
-    def header_conf = possible_header_properties.find{ it.name==nl[0] }
+    def header_conf = possible_header_properties.find{ it.key == nl[0].toLowerCase() }
     while( header_conf != null ) {
       processCsvLine(nl,header_conf.name,1,result,header_conf.type,null,header_conf.mandatory)
-      r.readNext()
-      header_conf = possible_header_properties.find{ it.name==nl[0] }
+      nl = r.readNext()
+      header_conf = possible_header_properties.find{ it.key == nl[0].toLowerCase() }
     }
     
     result.soHeaderLine = []
@@ -410,7 +410,7 @@ class UploadController {
     return result;
   }
   
-  def processCsvLine(csv_line,field_name,col_num,result_map,parseAs,defval,isMandatory) {  
+  def processCsvLine(csv_line, field_name, col_num,result_map, parseAs, defval, isMandatory) {  
     log.debug("  processCsvLine ${csv_line} ${field_name} ${col_num}... mandatory=${isMandatory}");
     def result = [:]
     result.messages = []
