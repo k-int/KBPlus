@@ -6,7 +6,8 @@
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.chrome.ChromeDriver
 
-driver = { new ChromeDriver() }
+// driver = { new ChromeDriver() }
+driver = { new FirefoxDriver() }
 
 environments {
         

@@ -201,7 +201,6 @@ class BootStrap {
   }
 
   def destroy = {
-    def evt_startup = new EventLog(event:'kbplus.shutdown',message:'Normal shutdown',tstp:new Date(System.currentTimeMillis())).save(flush:true)
   }
 
   def ensurePermGrant(role,perm) {
