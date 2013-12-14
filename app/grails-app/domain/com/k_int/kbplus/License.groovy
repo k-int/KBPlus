@@ -17,6 +17,7 @@ class License {
 
   String reference
 
+  RefdataValue licenseCategory
   RefdataValue concurrentUsers
   RefdataValue remoteAccess
   RefdataValue walkinAccess
@@ -89,6 +90,7 @@ class License {
                 lastmod column:'lic_lastmod'
               documents sort:'owner.id', order:'desc'
           onixplLicense column: 'lic_opl_fk'
+        licenseCategory column: 'lic_category_rdv_fk'
   }
 
   static constraints = {
@@ -116,6 +118,7 @@ class License {
     licenseStatus(nullable:true, blank:true)
     lastmod(nullable:true, blank:true)
     onixplLicense(nullable: true, blank: true)
+    licenseCategory(nullable: true, blank: true)
  }
 
   def getLicensor() {

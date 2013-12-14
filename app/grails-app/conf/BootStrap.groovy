@@ -305,6 +305,10 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("PendingChangeStatus", "Accepted").save()
     RefdataCategory.lookupOrCreate("PendingChangeStatus", "Rejected").save()
 
+    RefdataCategory.lookupOrCreate("LicenseCategory", "Content").save()
+    RefdataCategory.lookupOrCreate("LicenseCategory", "Software").save()
+    RefdataCategory.lookupOrCreate("LicenseCategory", "Other").save()
+
     log.debug("validate content items...");
     // The default template for a property change on a title
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.propertyChange','','''

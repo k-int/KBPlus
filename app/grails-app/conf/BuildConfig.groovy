@@ -6,6 +6,13 @@ grails.project.target.level = 1.7
 grails.project.source.level = 1.7
 
 
+grails.project.fork = [
+   test: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, daemon:true],
+   run: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256],
+   war: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256],
+   console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
+]
+
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
     inherits("global") {
@@ -47,8 +54,8 @@ grails.project.dependency.resolution = {
         runtime 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
 
         test 'org.hamcrest:hamcrest-all:1.3'
-        test("org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion")
-        test("org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion")
+        test "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
+        test "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
         
         // http://www.gebish.org/manual/current/build-integrations.html#grails
         // https://github.com/geb/geb-example-grails
@@ -83,7 +90,7 @@ grails.project.dependency.resolution = {
         }
 
         // compile ":profiler:0.5"
-        test ":spock:0.7" {
+        test ":spock:0.7", {
           exclude "spock-grails-support"
         }
         test ":geb:$gebVersion"

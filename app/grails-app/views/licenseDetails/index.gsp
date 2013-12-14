@@ -176,9 +176,16 @@
                   </dl>
 
                   <dl>
-                      <dt><label class="control-label" for="licenseeRef">Public?</label></dt>
+                      <dt><label class="control-label" for="isPublic">Public?</label></dt>
                       <dd>
                         <g:xEditableRefData owner="${license}" field="isPublic" config='YN'/>
+                      </dd>
+                  </dl>
+
+                  <dl>
+                      <dt><label class="control-label" for="licenseCategory">License Category</label></dt>
+                      <dd>
+                        <g:xEditableRefData owner="${license}" field="licenseCategory" config='LicenseCategory'/>
                       </dd>
                   </dl>
 

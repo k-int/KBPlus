@@ -451,6 +451,19 @@ class AjaxController {
     def result = [:]
     
     def config = refdata_config[params.id]
+
+    if ( config == null ) {
+      // If we werent able to locate a specific config override, assume the ID is just a refdata key
+      config = [
+        domain:'RefdataValue',
+        countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='${params.id}'",
+        rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='${params.id}'",
+        qryParams:[],
+        cols:['value'],
+        format:'simple'
+      ]
+    }
+
     if ( config ) {
 
       // result.config = config
@@ -520,6 +533,19 @@ class AjaxController {
     def result = []
     
     def config = refdata_config[params.id]
+
+    if ( config == null ) {
+      // If we werent able to locate a specific config override, assume the ID is just a refdata key
+      config = [
+        domain:'RefdataValue',
+        countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='${params.id}'",
+        rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='${params.id}'",
+        qryParams:[],
+        cols:['value'],
+        format:'simple'
+      ]
+    }
+
     if ( config ) {
 
       def query_params = []
@@ -531,10 +557,6 @@ class AjaxController {
           query_params.add(params[qp.param]);
         }
       }
-
-  //     log.debug("Params: ${query_params}");
-  //    log.debug("Count qry: ${config.countQry}");
-  //    log.debug("Row qry: ${config.rowQry}");
 
       def cq = Org.executeQuery(config.countQry,query_params);    
       def rq = Org.executeQuery(config.rowQry,
@@ -549,7 +571,6 @@ class AjaxController {
       log.error("No config for refdata search ${params.id}");
     }
 
-    //log.debug("refdataSearch returning ${result as JSON}");
     withFormat {
       html {
         result

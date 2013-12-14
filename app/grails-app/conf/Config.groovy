@@ -4,11 +4,14 @@
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 
+println("Invoke per-env config...");
 environments {
     development {
+        System.out.println("Dev config");
         grails.config.locations = [ "file:${userHome}/.grails/${appName}-config.groovy"]
     }
     production {
+        System.out.println("Prod config");
         grails.config.locations = [ "file:${userHome}/.grails/${appName}-config.groovy"]
     }
 }
