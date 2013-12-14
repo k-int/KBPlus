@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="layout" content="mmbootstrap"/>
-    <title>KB+ Data import explorer</title>
+    <title>KB+ Institutional Dash :: ${institution.name}</title>
   </head>
 
   <body>

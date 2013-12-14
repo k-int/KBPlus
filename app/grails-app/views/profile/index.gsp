@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="layout" content="mmbootstrap"/>
-    <title>KB+ Data import explorer</title>
+    <title>KB+ User Profile</title>
   </head>
 
   <body>
@@ -118,7 +118,7 @@
              organisations will be referred to the administrative users of that organisation. If you feel you should be the administrator of an organisation
              please contact the KBPlus team for support.</p>
   
-          <g:form controller="profile" action="processJoinRequest" form class="form-search">
+          <g:form id="affiliationRequestForm" controller="profile" action="processJoinRequest" form class="form-search">
 
             <g:select name="org"
                       from="${com.k_int.kbplus.Org.findAllBySector('Higher Education')}"
@@ -132,7 +132,7 @@
                       optionValue="${ {role->g.message(code:'cv.roles.'+role.authority) } }"
                       class="input-medium"/>
 
-            <button data-complete-text="Request Membership" type="submit" class="btn btn-primary btn-small">Request Membership</button>
+            <button id="submitARForm" data-complete-text="Request Membership" type="submit" class="btn btn-primary btn-small">Request Membership</button>
           </g:form>
         </div>
       </div>

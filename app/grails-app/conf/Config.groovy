@@ -4,24 +4,9 @@
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 
-println("Invoke per-env config...");
-environments {
-    development {
-        System.out.println("Dev config");
-        grails.config.locations = [ "file:${userHome}/.grails/${appName}-config.groovy"]
-    }
-    production {
-        System.out.println("Prod config");
-        grails.config.locations = [ "file:${userHome}/.grails/${appName}-config.groovy"]
-    }
-}
+grails.config.locations = [ "file:${userHome}/.grails/${appName}-config.groovy"]
 
-// if (System.properties["${appName}.config.location"]) {
-//    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
-// }
-
-System.out.println("conf: ${grails.config.locations}");
-
+System.out.println("conf locations: loc:${grails.config.locations}");
 
 grails.project.groupId = appName // change this to alter the default package name and Maven publishing destination
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
@@ -145,7 +130,7 @@ log4j = {
            'grails.app.conf.BootStrap' // ,
         // 'org.springframework.security'
 
-    info   'com.linkedin.grails'
+    // info   'com.linkedin.grails'
 }
 
 // Added by the Spring Security Core plugin:

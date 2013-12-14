@@ -6,12 +6,12 @@ grails.project.target.level = 1.7
 grails.project.source.level = 1.7
 
 
-grails.project.fork = [
-   test: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, daemon:true],
-   run: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256],
-   war: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256],
-   console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
-]
+// grails.project.fork = [
+//    test: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256], // Removed ", daemon:true" because geb doesn't play nice with forked mode atm
+//    run: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256],
+//    war: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256],
+//    console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
+// ]
 
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
@@ -56,6 +56,7 @@ grails.project.dependency.resolution = {
         test 'org.hamcrest:hamcrest-all:1.3'
         test "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
         test "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
+        test "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
         
         // http://www.gebish.org/manual/current/build-integrations.html#grails
         // https://github.com/geb/geb-example-grails

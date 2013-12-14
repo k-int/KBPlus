@@ -54,7 +54,7 @@
 						<fieldset>
 							<f:all bean="orgInstance"/>
 							<div class="form-actions">
-								<button type="submit" class="btn btn-primary">
+								<button id="SubmitButton" type="submit" class="btn btn-primary">
 									<i class="icon-ok icon-white"></i>
 									<g:message code="default.button.create.label" default="Create" />
 								</button>

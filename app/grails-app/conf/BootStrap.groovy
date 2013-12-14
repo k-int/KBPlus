@@ -13,7 +13,7 @@ class BootStrap {
   def init = { servletContext ->
 
       log.error("Sys id: ${grailsApplication.config.kbplusSystemId}")
-	
+  
     if ( grailsApplication.config.kbplusSystemId != null ) {
       def system_object = SystemObject.findBySysId(grailsApplication.config.kbplusSystemId) ?: new SystemObject(sysId:grailsApplication.config.kbplusSystemId).save(flush:true);
     }
@@ -55,96 +55,97 @@ class BootStrap {
             RefdataCategory.lookupOrCreate(rdc, rdv);
         }
     }
-	// Transforms types and formats Refdata 
-	// !!! HAS TO BE BEFORE the script adding the Transformers as it is used by those tables !!!
-	def json_format = RefdataCategory.lookupOrCreate('Transform Format', 'json');
-	def xml_format = RefdataCategory.lookupOrCreate('Transform Format', 'xml');
-	def url_format = RefdataCategory.lookupOrCreate('Transform Format', 'url');
-	def subscription_type = RefdataCategory.lookupOrCreate('Transform Type', 'subscription');
-	def licence_type = RefdataCategory.lookupOrCreate('Transform Type', 'licence');
-	def title_type = RefdataCategory.lookupOrCreate('Transform Type', 'title');
-	def package_type = RefdataCategory.lookupOrCreate('Transform Type', 'package');
-	
-	// Add Transformers and Transforms define in the demo-config.groovy
-	grailsApplication.config.systransforms.each { tr ->
-		def transformName = tr.transforms_name //"${tr.name}-${tr.format}-${tr.type}"
-		
-		def transforms = Transforms.findByName("${transformName}")
-		def transformer = Transformer.findByName("${tr.transformer_name}")
-		if ( transformer ) {
-			if ( transformer.url != tr.url ) {
-			  log.debug("Change transformer [${tr.transformer_name}] url to ${tr.url}");
-			  transformer.url = tr.url;
-			  transformer.save(failOnError: true, flush: true)
-			}
-			else {
-			  log.debug("${tr.transformer_name} present and correct");
-			}
-		} else {
-		  log.debug("Create transformer ${tr.transformer_name}...");
-		  transformer = new Transformer(
-						name: tr.transformer_name,
-						url: tr.url).save(failOnError: true, flush: true)
-		}
-		
-		log.debug("Create transform ${transformName}...");
-		def types = RefdataValue.findAllByOwner(RefdataCategory.findByDesc('Transform Type'))
-		def formats = RefdataValue.findAllByOwner(RefdataCategory.findByDesc('Transform Format'))
-		
-		if ( transforms ) {
-			
-		  if( tr.type ){
-			  // split values
-			  def type_list = tr.type.split(",")
-			  type_list.each { new_type ->
-				  if( !transforms.accepts_types.any { f -> f.value == new_type } ){
-					  log.debug("Add transformer [${transformName}] type: ${new_type}");
-					  def type = types.find{ t -> t.value == new_type }
-					  transforms.addToAccepts_types(type)
-				  }
-			  }
-		  }
-		  if ( transforms.accepts_format.value != tr.format ) {
-			  log.debug("Change transformer [${transformName}] format to ${tr.format}");
-			  def format = formats.findAll{ t -> t.value == tr.format }
-			  transforms.accepts_format = format[0]
-		  }
-		  if ( transforms.return_mime != tr.return_mime ) {
-			  log.debug("Change transformer [${transformName}] return format to ${tr.'mime'}");
-			  transforms.return_mime = tr.return_mime;
-		  }
-		  if ( transforms.return_file_extention != tr.return_file_extension ) {
-			  log.debug("Change transformer [${transformName}] return format to ${tr.'return'}");
-			  transforms.return_file_extention = tr.return_file_extension;
-		  }
-		  if ( transforms.path_to_stylesheet != tr.path_to_stylesheet ) {
-			  log.debug("Change transformer [${transformName}] return format to ${tr.'path'}");
-			  transforms.path_to_stylesheet = tr.path_to_stylesheet;
-		  }
-		  transforms.save(failOnError: true, flush: true)
-		}
-		else {
-			def format = formats.findAll{ t -> t.value == tr.format }
-			
-			assert format.size()==1
-			
-			transforms = new Transforms(
-				name: transformName,
-				accepts_format: format[0],
-				return_mime: tr.return_mime,
-				return_file_extention: tr.return_file_extension,
-				path_to_stylesheet: tr.path_to_stylesheet,
-				transformer: transformer).save(failOnError: true, flush: true)
-				
-			def type_list = tr.type.split(",")
-			type_list.each { new_type ->
-				def type = types.find{ t -> t.value == new_type }
-				transforms.addToAccepts_types(type)
-			}
-		}
-	}
-	
-	
+
+  // Transforms types and formats Refdata 
+  // !!! HAS TO BE BEFORE the script adding the Transformers as it is used by those tables !!!
+  def json_format = RefdataCategory.lookupOrCreate('Transform Format', 'json');
+  def xml_format = RefdataCategory.lookupOrCreate('Transform Format', 'xml');
+  def url_format = RefdataCategory.lookupOrCreate('Transform Format', 'url');
+  def subscription_type = RefdataCategory.lookupOrCreate('Transform Type', 'subscription');
+  def licence_type = RefdataCategory.lookupOrCreate('Transform Type', 'licence');
+  def title_type = RefdataCategory.lookupOrCreate('Transform Type', 'title');
+  def package_type = RefdataCategory.lookupOrCreate('Transform Type', 'package');
+  
+  // Add Transformers and Transforms define in the demo-config.groovy
+  grailsApplication.config.systransforms.each { tr ->
+    def transformName = tr.transforms_name //"${tr.name}-${tr.format}-${tr.type}"
+    
+    def transforms = Transforms.findByName("${transformName}")
+    def transformer = Transformer.findByName("${tr.transformer_name}")
+    if ( transformer ) {
+      if ( transformer.url != tr.url ) {
+        log.debug("Change transformer [${tr.transformer_name}] url to ${tr.url}");
+        transformer.url = tr.url;
+        transformer.save(failOnError: true, flush: true)
+      }
+      else {
+        log.debug("${tr.transformer_name} present and correct");
+      }
+    } else {
+      log.debug("Create transformer ${tr.transformer_name}...");
+      transformer = new Transformer(
+            name: tr.transformer_name,
+            url: tr.url).save(failOnError: true, flush: true)
+    }
+    
+    log.debug("Create transform ${transformName}...");
+    def types = RefdataValue.findAllByOwner(RefdataCategory.findByDesc('Transform Type'))
+    def formats = RefdataValue.findAllByOwner(RefdataCategory.findByDesc('Transform Format'))
+    
+    if ( transforms ) {
+      
+      if( tr.type ){
+        // split values
+        def type_list = tr.type.split(",")
+        type_list.each { new_type ->
+          if( !transforms.accepts_types.any { f -> f.value == new_type } ){
+            log.debug("Add transformer [${transformName}] type: ${new_type}");
+            def type = types.find{ t -> t.value == new_type }
+            transforms.addToAccepts_types(type)
+          }
+        }
+      }
+      if ( transforms.accepts_format.value != tr.format ) {
+        log.debug("Change transformer [${transformName}] format to ${tr.format}");
+        def format = formats.findAll{ t -> t.value == tr.format }
+        transforms.accepts_format = format[0]
+      }
+      if ( transforms.return_mime != tr.return_mime ) {
+        log.debug("Change transformer [${transformName}] return format to ${tr.'mime'}");
+        transforms.return_mime = tr.return_mime;
+      }
+      if ( transforms.return_file_extention != tr.return_file_extension ) {
+        log.debug("Change transformer [${transformName}] return format to ${tr.'return'}");
+        transforms.return_file_extention = tr.return_file_extension;
+      }
+      if ( transforms.path_to_stylesheet != tr.path_to_stylesheet ) {
+        log.debug("Change transformer [${transformName}] return format to ${tr.'path'}");
+        transforms.path_to_stylesheet = tr.path_to_stylesheet;
+      }
+      transforms.save(failOnError: true, flush: true)
+    }
+    else {
+      def format = formats.findAll{ t -> t.value == tr.format }
+      
+      assert format.size()==1
+      
+      transforms = new Transforms(
+        name: transformName,
+        accepts_format: format[0],
+        return_mime: tr.return_mime,
+        return_file_extention: tr.return_file_extension,
+        path_to_stylesheet: tr.path_to_stylesheet,
+        transformer: transformer).save(failOnError: true, flush: true)
+        
+      def type_list = tr.type.split(",")
+      type_list.each { new_type ->
+        def type = types.find{ t -> t.value == new_type }
+        transforms.addToAccepts_types(type)
+      }
+    }
+  }
+  
+  
     if ( grailsApplication.config.localauth ) {
       log.debug("localauth is set.. ensure user accounts present (From local config file) ${grailsApplication.config.sysusers}");
 
