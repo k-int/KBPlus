@@ -22,7 +22,38 @@
     </div>
 
     <div class="container">
-License history
+ToDo History
+      <table  class="table table-striped table-bordered">
+        <tr>
+          <th>ToDo Description</th>
+          <th>Outcome</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+        <g:if test="${todoHistoryLines}">
+          <g:each in="${todoHistoryLines}" var="hl">
+            <tr>
+              <td>${hl.desc}</td>
+              <td>${hl.status?.value?:'Pending'}
+                <g:if test="${((hl.status?.value=='Accepted')||(hl.status?.value=='Rejected'))}">
+                  By ${hl.user?.display?:hl.user?.username} on <g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${hl.actionDate}"/>
+                </g:if>
+              </td>
+              <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${hl.ts}"/></td>
+              <td>
+                <g:if test="${((hl.status==null)||(hl.status.value=='Pending'))}">
+                  <g:link controller="pendingChange" action="accept" id="${hl.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept</g:link>
+                  <g:link controller="pendingChange" action="reject" id="${hl.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject</g:link>
+                </g:if>
+              </td>
+
+            </tr>
+          </g:each>
+        </g:if>
+    </div>
+
+    <div class="container">
+Edit history
       <table  class="table table-striped table-bordered">
         <tr>
           <th>Event ID</th>

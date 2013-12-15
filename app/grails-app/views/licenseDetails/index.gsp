@@ -45,7 +45,7 @@
       <g:render template="nav" contextPath="." />
     </div>
 
-    <g:if test="${license.pendingChanges?.size() > 0}">
+    <g:if test="${pendingChanges?.size() > 0}">
       <div class="container alert-warn">
         <h6>This Subscription has pending change notifications</h6>
         <g:link controller="pendingChange" action="acceptAll" id="com.k_int.kbplus.License:${license.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept All</g:link>
@@ -59,7 +59,7 @@
             </tr>
           </thead>
           <tbody>
-            <g:each in="${license.pendingChanges}" var="pc">
+            <g:each in="${pendingChanges}" var="pc">
               <tr>
                 <td>${pc.desc}</td>
                 <td>

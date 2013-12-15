@@ -45,7 +45,10 @@ class SubscriptionDetailsController {
 
     log.debug("max = ${result.max}");
     result.subscriptionInstance = Subscription.get(params.id)
-  
+
+    def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
+    result.pendingChanges = PendingChange.executeQuery("select pc from PendingChange as pc where subscription=? and ( pc.status is null or pc.status = ? ) order by ts desc", [result.subscriptionInstance, pending_change_pending_status]);
+
   // If transformer check user has access to it
   if(params.transforms && !transformerService.hasTransformId(result.user, params.transforms)) {
     flash.error = "It looks like you are trying to use an unvalid transformer or one you don't have access to!"
@@ -785,6 +788,7 @@ class SubscriptionDetailsController {
     def qry_params = [result.subscription.class.name, "${result.subscription.id}"]
     result.historyLines = AuditLogEvent.executeQuery("select e from AuditLogEvent as e where className=? and persistedObjectId=? order by id desc", qry_params, [max:result.max, offset:result.offset]);
     result.historyLinesTotal = AuditLogEvent.executeQuery("select count(e.id) from AuditLogEvent as e where className=? and persistedObjectId=?",qry_params)[0];
+    result.todoHistoryLines = PendingChange.executeQuery("select pc from PendingChange as pc where subscription=? order by ts desc", result.subscription);
 
     result
   }

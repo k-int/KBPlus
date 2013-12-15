@@ -1,5 +1,7 @@
 package com.k_int.kbplus
 
+import com.k_int.kbplus.auth.User
+
 class PendingChange {
 
   Subscription subscription
@@ -11,6 +13,9 @@ class PendingChange {
   String changeDoc
   String desc
   RefdataValue status
+  Date actionDate
+  User user
+
 
   static mapping = {
       systemObject column:'pc_sys_obj'
@@ -22,6 +27,8 @@ class PendingChange {
              owner column:'pc_owner'
               desc column:'pc_desc', type:'text'
             status column:'pc_status_rdv_fk'
+        actionDate column:'pc_action_date'
+              user column:'pc_action_user_fk'
   }
 
   static constraints = {
@@ -34,5 +41,7 @@ class PendingChange {
     oid(nullable:true, blank:false);
     desc(nullable:true, blank:false);
     status(nullable:true, blank:false);
+    actionDate(nullable:true, blank:false);
+    user(nullable:true, blank:false);
   }
 }

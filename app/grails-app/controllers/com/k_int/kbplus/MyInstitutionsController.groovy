@@ -2322,7 +2322,8 @@ AND EXISTS (
       result.is_admin=false;
     }
 
-    def change_summary = PendingChange.executeQuery("select distinct(pc.oid), count(pc), min(pc.ts), max(pc.ts) from PendingChange as pc where pc.owner = ? group by pc.oid",result.institution);
+    def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
+    def change_summary = PendingChange.executeQuery("select distinct(pc.oid), count(pc), min(pc.ts), max(pc.ts) from PendingChange as pc where pc.owner = ? and ( pc.status is null OR pc.status=? ) group by pc.oid", [result.institution, pending_change_pending_status]);
     result.todos = []
     change_summary.each { cs ->
       log.debug("Change summary row : ${cs}");

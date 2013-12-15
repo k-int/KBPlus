@@ -134,7 +134,10 @@ class PendingChangeController {
         change.license?.save();
         change.subscription?.pendingChanges?.remove(change)
         change.subscription?.save();
-        change.delete();
+        change.status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Accepted")
+        change.actionDate = new Date()
+        change.user = request.user
+        change.save(flush:true);
       }
       catch ( Exception e ) {
         log.error("Problem accepting change",e);
@@ -150,7 +153,9 @@ class PendingChangeController {
       change.license?.save();
       change.subscription?.pendingChanges?.remove(change)
       change.subscription?.save();
-      change.delete();
+      change.actionDate = new Date()
+      change.user = request.user
+      change.status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Rejected")
 
       def change_audit_object = change.license ? change.license : change.subscription
       def change_audit_id = change_audit_object.id
