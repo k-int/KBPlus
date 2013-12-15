@@ -10,6 +10,7 @@ class PendingChange {
   String oid
   String changeDoc
   String desc
+  RefdataValue status
 
   static mapping = {
       systemObject column:'pc_sys_obj'
@@ -20,6 +21,7 @@ class PendingChange {
                 ts column:'pc_ts'
              owner column:'pc_owner'
               desc column:'pc_desc', type:'text'
+            status column:'pc_status_rdv_fk'
   }
 
   static constraints = {
@@ -31,5 +33,6 @@ class PendingChange {
     owner(nullable:true, blank:false);
     oid(nullable:true, blank:false);
     desc(nullable:true, blank:false);
+    status(nullable:true, blank:false);
   }
 }
