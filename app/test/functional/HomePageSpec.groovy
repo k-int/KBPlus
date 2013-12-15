@@ -4,7 +4,7 @@ import pages.*
 
 @Stepwise
 class HomePageSpec extends GebReportingSpec {
-        
+
   def "The KBPlus Home Page Displays OK"() {
     when:
     go "/demo"
@@ -69,16 +69,6 @@ class HomePageSpec extends GebReportingSpec {
     browser.page.title.startsWith "KB+ Institutional Dash :: Functional Test Organisation"
   }
 
-  def "Test Package Import"() {
-    when:
-    go '/demo/upload/reviewSO'
-    $('form').soFile='/tmp/Art Journals_Master_2014.csv'
-    $('button').click()
-    then:
-    browser.page.title.startsWith "Edit Package"
-    // response page sends back a link containing the new package ID <a href="/demo/packageDetails/show/590">New Package Details</a>
-  }
-
   def "Check empty subscription creation works"() {
     when:
     go '/demo/myInstitutions/Functional_Test_Organisation/emptySubscription'
@@ -86,6 +76,30 @@ class HomePageSpec extends GebReportingSpec {
     $('input', type:'submit').click()
     then:
     $('h1 span').text() == 'FTO New Sub One'
+  }
+
+  def "Test Package Import And Add To Sub"() {
+    when:
+    go '/demo/upload/reviewSO'
+    $('form').soFile='/tmp/Art Journals_Master_2014.csv'
+    $('button').click()
+    then:
+    browser.page.title.startsWith "Edit Package"
+
+    when:
+    $('a',text:'New Package Details').click()
+
+    then:
+    browser.page.title.startsWith "Edit Package"
+
+    when:
+    $('form').subid='FTO New Sub One - Functional Test Organisation'
+    $('form input').click()
+    $('form input',type:'submit').click()
+
+    then:
+    1==1
+    // response page sends back a link containing the new package ID <a href="/demo/packageDetails/show/590">New Package Details</a>
   }
 
   // def "Check Link Package Works OK"() {
