@@ -76,9 +76,10 @@ class HomePageSpec extends GebReportingSpec {
     $('button').click()
     then:
     browser.page.title.startsWith "Edit Package"
+    // response page sends back a link containing the new package ID <a href="/demo/packageDetails/show/590">New Package Details</a>
   }
 
-  def "Check empty package creation works"() {
+  def "Check empty subscription creation works"() {
     when:
     go '/demo/myInstitutions/Functional_Test_Organisation/emptySubscription'
     $('form').newEmptySubName='FTO New Sub One'
@@ -86,4 +87,8 @@ class HomePageSpec extends GebReportingSpec {
     then:
     $('h1 span').text() == 'FTO New Sub One'
   }
+
+  // def "Check Link Package Works OK"() {
+    // http://localhost:8080/demo/subscriptionDetails/linkPackage/2650?addId=33&addType=With
+  // }
 }     
