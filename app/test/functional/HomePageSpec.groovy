@@ -78,4 +78,12 @@ class HomePageSpec extends GebReportingSpec {
     browser.page.title.startsWith "Edit Package"
   }
 
+  def "Check empty package creation works"() {
+    when:
+    go '/demo/myInstitutions/Functional_Test_Organisation/emptySubscription'
+    $('form').newEmptySubName='FTO New Sub One'
+    $('input', type:'submit').click()
+    then:
+    $('h1 span').text() == 'FTO New Sub One'
+  }
 }     
