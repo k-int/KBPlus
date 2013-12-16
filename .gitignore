@@ -1,3 +1,11 @@
 *.iml
 .idea
 app/target
+app/target-eclipse
+.metadata
+Servers
+.settings
+RemoteSystemTempFiles
+.classpath
+.directory
+.project
