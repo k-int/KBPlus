@@ -109,4 +109,11 @@ class HomePageSpec extends GebReportingSpec {
     then:
     browser.page.title.startsWith "KB+ Functional Test Organisation - Current Subscriptions"
   }
+
+  def "Test FTO New Sub One Link from current subscriptions"() {
+    when:
+    $('a',text:'FTO New Sub One').click()
+    then:
+    browser.page.title.startsWith "KB+"
+  }
 }     

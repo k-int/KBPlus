@@ -244,14 +244,15 @@ class TitleInstancePackagePlatform {
         }
       }
     }
-    else if (changeDocument.event=='TitleInstancePackagePlatform.updated') {
+    else if ( (changeDocument.event=='TitleInstancePackagePlatform.updated') && ( changeDocument.new != changeDocument.old ) ) {
+
       // Tipp Property Change Event.. notify any dependent IEs
       def dep_ies = IssueEntitlement.findAllByTipp(this)
       dep_ies.each { dep_ie ->
         def sub = deproxy(dep_ie.subscription)
         changeNotificationService.registerPendingChange('subscription',
                                                         dep_ie.subscription,
-                                                        "Information about title <a href=\"${ApplicationHolder.application.config.SystemBaseURL}/titleDetails/show/${this.title.id}\">\"${this.title.title}\"</a> changed in package <a href=\"${ApplicationHolder.application.config.SystemBaseURL}/packageDetails/show/${id}\">${this.pkg.name}</a>. \"${changeDocument.prop}\" was updated from \"${changeDocument.oldLabel}\" to \"${changeDocument.newLabel}\". Accept this change to make the same update to your issue entitlement",
+                                                        "Information about title <a href=\"${ApplicationHolder.application.config.SystemBaseURL}/titleDetails/show/${this.title.id}\">\"${this.title.title}\"</a> changed in package <a href=\"${ApplicationHolder.application.config.SystemBaseURL}/packageDetails/show/${id}\">${this.pkg.name}</a>. \"${changeDocument.prop}\" was updated from \"${changeDocument.oldLabel}\"(${changeDocument.old}) to \"${changeDocument.newLabel}\"(${changeDocument.new}). Accept this change to make the same update to your issue entitlement",
                                                         sub.getSubscriber(),
                                                         [
                                                           changeTarget:"com.k_int.kbplus.IssueEntitlement:${dep_ie.id}",
