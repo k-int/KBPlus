@@ -102,7 +102,11 @@ class HomePageSpec extends GebReportingSpec {
     // response page sends back a link containing the new package ID <a href="/demo/packageDetails/show/590">New Package Details</a>
   }
 
-  // def "Check Link Package Works OK"() {
-    // http://localhost:8080/demo/subscriptionDetails/linkPackage/2650?addId=33&addType=With
-  // }
+  def "Check Home Page Now Goes to Inst Dash and Shows New Sub"() {
+    when:
+    go '/demo/home/index'
+    $('a',text:'Subscriptions').click()
+    then:
+    browser.page.title.startsWith "KB+ Functional Test Organisation - Current Subscriptions"
+  }
 }     
