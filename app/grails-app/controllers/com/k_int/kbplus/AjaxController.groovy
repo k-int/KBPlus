@@ -1,6 +1,7 @@
 package com.k_int.kbplus
 
 import org.springframework.dao.DataIntegrityViolationException
+import com.k_int.kbplus.auth.User
 import grails.plugins.springsecurity.Secured
 import grails.converters.*
 import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsHibernateUtil
@@ -360,6 +361,13 @@ class AjaxController {
           def binding_properties = [ "${params.name}":value ]
           bindData(target, binding_properties)
           target.save(flush:true);
+          
+          // We should clear the session values for a user if this is a user to force reload of the,
+          // parameters.
+          if (target instanceof User) {
+            session.userPereferences = null
+          }
+          
           if ( params.resultProp ) {
             result = value[params.resultProp]
           }
