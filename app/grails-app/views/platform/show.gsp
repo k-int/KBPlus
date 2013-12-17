@@ -1,5 +1,5 @@
-
 <%@ page import="com.k_int.kbplus.Platform" %>
+<r:require module="annotations" />
 <!doctype html>
 <html>
   <head>
@@ -44,12 +44,14 @@
 
         <dl>
         
-          <g:if test="${platformInstance?.name}">
-            <dt><g:message code="platform.name.label" default="Name" /></dt>
-            
-              <dd><g:fieldValue bean="${platformInstance}" field="name"/></dd>
-            
-          </g:if>
+        <g:if test="${platformInstance?.name}">
+          <dt>
+            <g:annotatedLabel owner="${platformInstance}" property="Name">
+              <g:message code="platform.name.label" default="Name" />
+            </g:annotatedLabel>
+          </dt>
+          <dd><g:fieldValue bean="${platformInstance}" field="name"/></dd>
+        </g:if>
         
         <dl>
           <dt>Availability of titles in this platform by package</dt>
