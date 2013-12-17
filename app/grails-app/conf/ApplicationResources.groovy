@@ -33,6 +33,14 @@ modules = {
     resource url:'js/jquery.dataTables.min.js'
     resource url:'js/dataTables.scroller.js'
   }
-
-
+  
+  annotations {
+    dependsOn 'kbplus'
+    dependsOn 'font-awesome'
+    resource url:'js/summernote.min.js'
+    resource url:'css/summernote.css'
+    resource url:'css/summernote-bs2.css'
+    resource url:'js/annotations.js'
+    resource url:'css/annotations.css'
+  }
 }
