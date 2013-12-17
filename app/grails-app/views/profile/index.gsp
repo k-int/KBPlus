@@ -26,6 +26,25 @@
     </div>
     </g:if>
 
+
+		<div class="container">
+			<div class="span12">
+				<h1>Preferences</h1>
+			</div>
+		</div>
+		<div class="container">
+      <div class="span12">
+        <dl class="dl-horizontal">
+	        <div class="control-group">
+            <dt>Show Info Icon</dt>
+            <dd>
+              <g:xEditableRefData owner="${user}" field="showInfoIcon" config="YN" />
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
     <div class="container">
       <div class="span12">
         <h1>User Profile</h1>
