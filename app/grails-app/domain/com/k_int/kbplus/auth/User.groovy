@@ -45,6 +45,7 @@ class User {
     defaultPageSize blank: true, nullable: true
     apikey blank: true, nullable: true
     apisecret blank: true, nullable: true
+    showInfoIcon blank:false, nullable:true
   }
 
   static mapping = {
