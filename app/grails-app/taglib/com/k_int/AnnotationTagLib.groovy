@@ -98,7 +98,7 @@ class AnnotationTagLib {
       }
 
       // Add our props.
-      ann_props['data-url'] << createLink(controller:'ajaxSupport', action: 'editableSetValue')
+      ann_props['data-url'] << createLink(controller:'ajax', action: 'editableSetValue')
       ann_props['data-pk'] << "${ClassUtils.deproxy(annotation).class.name}:${annotation.id}"
       ann_props['data-name'] << "value"
       ann_props['class'] << 'annotation'
