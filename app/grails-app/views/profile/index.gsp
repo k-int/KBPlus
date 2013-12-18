@@ -88,7 +88,7 @@
           </div>
 
           <p>Please note, membership requests may be slow to process if you do not set a meaningful display name and email address. Please ensure
-               these are set correctly before requesting instutional memberships</p>
+               these are set correctly before requesting institutional memberships</p>
         </g:form>
       </div>
     </div>
