@@ -1,4 +1,6 @@
 <!doctype html>
+<r:require module="annotations" />
+
 <html>
   <head>
     <meta name="layout" content="mmbootstrap"/>
@@ -53,7 +55,7 @@
           <tr>
             <th>Select</th>
             <g:sortableColumn params="${params}" property="s.name" title="Name" />
-            <th>Linked Packages</th>
+            <th><g:annotatedLabel owner="${institution}" property="linkedPackages">Linked Packages</g:annotatedLabel></th>
             <th>Consortia</th>
             <g:sortableColumn params="${params}" property="s.startDate" title="Start Date" />
             <g:sortableColumn params="${params}" property="s.endDate" title="End Date" />

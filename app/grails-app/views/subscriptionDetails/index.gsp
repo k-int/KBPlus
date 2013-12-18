@@ -1,4 +1,6 @@
 <%@ page import="com.k_int.kbplus.Subscription" %>
+<r:require module="annotations" />
+
 <!doctype html>
 <html>
   <head>
@@ -107,7 +109,11 @@
 
                <dl><dt>End Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="endDate" type="date"/></dd></dl>
 
-               <dl><dt>Nominal Platform(s)</dt><dd><g:each in="${subscriptionInstance.packages}" var="sp">
+               <dl>
+                 <dt>
+                   <g:annotatedLabel owner="${subscriptionInstance}" property="nominalPlatform">Nominal Platform(s)</g:annotatedLabel>
+                 </dt><dd>
+                    <g:each in="${subscriptionInstance.packages}" var="sp">
                         ${sp.pkg?.nominalPlatform?.name}<br/>
                     </g:each></dd></dl>
 
@@ -129,11 +135,15 @@
 
     <div class="container">
       <dl>
-        <dt>Entitlements ( ${offset+1} to ${offset+(entitlements?.size())} of ${num_sub_rows} )
+        <dt>
+          <g:annotatedLabel owner="${subscriptionInstance}" property="entitlements">
+            Entitlements ( ${offset+1} to ${offset+(entitlements?.size())} of ${num_sub_rows} )
+          </g:annotatedLabel>
           <g:form action="index" params="${params}" method="get" class="form-inline">
              <input type="hidden" name="sort" value="${params.sort}">
              <input type="hidden" name="order" value="${params.order}">
-             <label>Filter:</label> <input name="filter" value="${params.filter}"/>
+             <label><g:annotatedLabel owner="${subscriptionInstance}" property="qryFilter"> Filter: </g:annotatedLabel></label>
+             <input name="filter" value="${params.filter}"/>
              <label>From Package:</label> <select name="pkgfilter">
                                 <option value="">All</option>
                                <g:each in="${subscriptionInstance.packages}" var="sp">
