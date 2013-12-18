@@ -16,6 +16,7 @@ class ProfileController {
   def index() {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
+    result.editable = true
     result
   }
 
