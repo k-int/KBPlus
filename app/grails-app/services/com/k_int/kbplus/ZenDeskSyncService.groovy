@@ -250,14 +250,19 @@ class ZenDeskSyncService {
           }
         })
 
-        http.get(path:'/api/v2/search.json', query:[query:'type:topic', sort_by:'updated_at', sort_order:'desc']) { resp, data ->
+        http.get(path:'/api/v2/search.json', query:[query:'type:topic"', sort_by:'updated_at', sort_order:'desc']) { resp, data ->
           cached_forum_activity = []
           data.results.each { r ->
-            cached_forum_activity.add([
-                                       id:r.id, 
-                                       title:r.title, 
-                                       updated_at: ( r.updated_at != null ? sdf.parse(r.updated_at) : null ),
-                                       result_type:r.result_type])
+            if ( r.title.startsWith('Changes related to Package') ) {
+              // Ignore
+            }
+            else {
+              cached_forum_activity.add([
+                                         id:r.id, 
+                                         title:r.title, 
+                                         updated_at: ( r.updated_at != null ? sdf.parse(r.updated_at) : null ),
+                                         result_type:r.result_type])
+            }
           }
         }
       }
@@ -293,7 +298,7 @@ class ZenDeskSyncService {
 
         http.post(path:"/api/v2/topics/${topic_id}/comments.json",
                     requestContentType : ContentType.JSON,
-                    body : [ 'topic_comment' : [ 'body' : text ] ]) { resp, json ->
+                    body : [ 'topic_comment' : [ 'body' : text, 'informative' : false ] ]) { resp, json ->
         }
     }
     catch ( Exception e ) {

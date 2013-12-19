@@ -31,6 +31,7 @@
     </li>
         <g:if test="${editable}">
           <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
+          <li class="pull-right"><span class="badge badge-info"><g:annotatedLabel owner="${subscriptionInstance}" property="detailsPageInfo">help</g:annotatedLabel></span>&nbsp;</li>
         </g:if>
       </ul>
     </div>
@@ -101,9 +102,9 @@
                            <g:link controller="packageDetails" action="show" id="${sp.pkg.id}">${sp?.pkg?.name}</g:link> (${sp.pkg?.contentProvider?.name}) <br/>
                        </g:each></dd></dl>
 
-               <dl><dt>Subscription Identifier</dt><dd>${subscriptionInstance.identifier}</dd></dl>
+               <dl><dt><g:annotatedLabel owner="${subscriptionInstance}" property="identifier">Subscription Identifier</g:annotatedLabel></dt><dd>${subscriptionInstance.identifier}</dd></dl>
 
-               <dl><dt>Public?</dt><dd><g:xEditableRefData owner="${subscriptionInstance}" field="isPublic" config='YN'/></dd></dl> 
+               <dl><dt> <g:annotatedLabel owner="${subscriptionInstance}" property="isPublic">Public?</g:annotatedLabel> </dt><dd><g:xEditableRefData owner="${subscriptionInstance}" field="isPublic" config='YN'/></dd></dl> 
 
                <dl><dt>Start Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="startDate" type="date"/></dd></dl>
 
