@@ -26,7 +26,7 @@
       
       // Add buttons as a sibling of the editor.
       var wrapper = $('<div />').addClass('editor-buttons').append(
-        $('<button class="btn btn-small btn-success" />').text("Save").click(function() {
+        $('<button class="btn btn-small btn-success" />').text("Save").click(function(e) {
 
           // The popover
           var popover = editor_el.closest('.popover');
@@ -60,12 +60,16 @@
             // Refresh the position.
             refreshAnnotationPos (popover.prev('.annotated'), popover);
           });
+          
+          // Stop event bubbling and cancel the default action (submit).
+          e.stopPropagation();
+          e.preventDefault();
         })
       );
       
       // Append the cancel button.
       wrapper.append(
-        $('<button class="btn btn-small btn-danger" />').text("Cancel").click(function() {
+        $('<button class="btn btn-small btn-danger" />').text("Cancel").click(function(e) {
           editor_el.destroy();
           showHideEditorButtons(editor_el, false);
 
@@ -78,6 +82,10 @@
           
           // Refresh the position.
           refreshAnnotationPos (annotated, popover);
+          
+          // Stop event bubbling and cancel the default action (submit).
+          e.stopPropagation();
+          e.preventDefault();
         })
       );
       
