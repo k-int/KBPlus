@@ -70,7 +70,7 @@
             <dl>
                 <g:if test="${issueEntitlementInstance?.tipp}">
                     <dt><g:message code="issueEntitlement.tipp.title.label" default="Title" /></dt>
-                    <dd>${issueEntitlementInstance?.tipp?.title.title.encodeAsHTML()}</dd>
+                    <dd><g:link controller="titleDetails" action="show" id="${issueEntitlementInstance?.tipp?.title.id}">${issueEntitlementInstance?.tipp?.title.title.encodeAsHTML()}</g:link></dd>
                 </g:if>
             </dl>
 

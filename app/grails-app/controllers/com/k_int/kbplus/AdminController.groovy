@@ -261,4 +261,32 @@ class AdminController {
     redirect(controller:'home')
 
   }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def titleMerge() {
+
+    log.debug(params)
+
+    def result=[:]
+
+    if ( ( params.titleIdToDeprecate != null ) &&
+         ( params.titleIdToDeprecate.length() > 0 ) &&
+         ( params.correctTitleId != null ) &&
+         ( params.correctTitleId.length() > 0 ) ) {
+      result.title_to_deprecate = TitleInstance.get(params.titleIdToDeprecate)
+      result.correct_title = TitleInstance.get(params.correctTitleId)
+
+      if ( params.MergeButton=='Go' ) {
+        log.debug("Execute title merge....");
+        result.title_to_deprecate.tipps.each { tipp ->
+          log.debug("Update tipp... ${tipp.id}");
+          tipp.title = result.correct_title
+          tipp.save()
+        }
+        redirect(action:'titleMerge',params:[titleIdToDeprecate:params.titleIdToDeprecate, correctTitleId:params.correctTitleId])
+      }
+    }
+    result
+  }
+
 }

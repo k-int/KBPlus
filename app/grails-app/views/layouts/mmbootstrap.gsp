@@ -190,6 +190,9 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'forceSendNotifications'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="forceSendNotifications">Send Pending Notifications</g:link>
                       </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'titleMerge'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="titleMerge">Title Merge</g:link>
+                      </li>
                       <li class="divider"></li>
                       <li <%= ( ( 'stats'== controllerName ) && ( 'statsHome'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="stats" action="statsHome">Statistics</g:link>
