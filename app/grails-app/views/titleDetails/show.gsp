@@ -100,7 +100,7 @@
 
                 <g:if test="${editable}">
                   <tr>
-                    <td><input type="checkbox" name="checkall"/></td>
+                    <td><input type="checkbox" name="checkall" onClick="javascript:$('.bulkcheck').attr('checked', true);"/></td>
                     <td colspan="2"><button class="btn btn-primary" type="submit" value="Go" name="BatchEdit">Apply Batch Changes</button></td>
                     <td>Date:<g:simpleHiddenValue id="bulk_start_date" name="bulk_start_date" type="date"/><br/>
                         Volume:<g:simpleHiddenValue id="bulk_start_volume" name="bulk_start_volume"/><br/>
@@ -118,7 +118,7 @@
   
                 <g:each in="${ti.tipps}" var="t">
                   <tr>
-                    <td><g:if test="${editable}"><input type="checkbox" name="bulkedit:${t.id}"/></g:if></td>
+                    <td><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${t.id}" class="bulkcheck"/></g:if></td>
                     <td><g:link controller="platform" action="show" id="${t.platform.id}">${t.platform.name}</g:link></td>
                     <td><g:link controller="packageDetails" action="show" id="${t.pkg.id}">${t.pkg.name}</g:link></td>
   

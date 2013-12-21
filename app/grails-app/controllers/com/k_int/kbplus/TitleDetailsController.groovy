@@ -71,9 +71,44 @@ class TitleDetailsController {
     result
   }
 
-  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def batchUpdate() {
     log.debug(params);
+    def formatter = new java.text.SimpleDateFormat("yyyy-MM-dd")
+    def user = User.get(springSecurityService.principal.id)
+
+    params.each { p ->
+      if ( p.key.startsWith('_bulkflag.') && (p.value=='on'))  {
+        def tipp_to_edit = p.key.substring(10);
+        def tipp = TitleInstancePackagePlatform.get(tipp_to_edit)
+
+        if ( tipp != null ) {
+          if ( params.bulk_start_date && ( params.bulk_start_date.trim().length() > 0 ) ) {
+            tipp.startDate = formatter.parse(params.bulk_start_date)
+          }
+
+          if ( params.bulk_end_date && ( params.bulk_end_date.trim().length() > 0 ) ) {
+            tipp.endDate = formatter.parse(params.bulk_end_date)
+          }
+
+          
+          def bulk_props_map = [ 'bulk_coverage_depth' : 'coverageDepth', 
+                                 'bulk_start_volume' : 'startVolume', 
+                                 'bulk_start_issue' : 'startIssue', 
+                                 'bulk_end_volume' : 'endVolume', 
+                                 'bulk_end_issue' : 'endIssue']
+
+          bulk_props_map.each { formProp, titleProp ->
+            if ( params[formProp] && (params[formProp].trim().length() > 0 ) ) {
+              tipp[titleProp] = params[formProp]
+            }
+          }
+
+          tipp.save();
+        }
+      }
+    }
+
     redirect(controller:'titleDetails', action:'show', id:params.id);
   }
 
