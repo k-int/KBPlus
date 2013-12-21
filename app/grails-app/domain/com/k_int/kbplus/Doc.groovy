@@ -1,10 +1,14 @@
 package com.k_int.kbplus
 
 import com.k_int.kbplus.auth.User;
+import java.sql.Blob;
+import org.hibernate.Hibernate;
 
 class Doc {
 
+  static transients = [ 'blobSize', 'blobData', 'sessionFactory' ]
   private static final MAX_SIZE = 1073741824 // 4GB 
+  def sessionFactory
 
   RefdataValue status
   RefdataValue type
@@ -16,7 +20,7 @@ class Doc {
   String mimeType
   Integer contentType=0 // 0=String, 1=docstore, 2=update notification, 3=blob
   String content 
-  byte[] blobContent 
+  Blob blobContent 
   String uuid 
   Date dateCreated
   Date lastUpdated
@@ -52,5 +56,36 @@ class Doc {
     filename(nullable:true, blank:false)
     mimeType(nullable:true, blank:false)
     user(nullable:true, blank:false)
+  }
+
+  def setBlobData(InputStream is, long length) {
+    def session = sessionFactory.getCurrentSession() 
+    binaryData = Hibernate.createBlob(is, (int)length)
+  }
+    
+  def getBlobData() {
+    return binaryData?.binaryStream
+  }
+
+
+  Long getBlobSize() {
+    return binaryData?.length() ?: 0
+  }
+    
+  def render(def response) {
+    response.contentType = "application/octet-stream"
+    response.outputStream << data
+  }
+    
+  static fromUpload(def file) {
+    if(!file) return new Doc()
+        
+    def origFileName = file.originalFilename
+    def slashIndex = Math.max(origFileName.lastIndexOf("/"),origFileName.lastIndexOf("\\"))
+    if(slashIndex > -1) origFileName = origFileName.substring(slashIndex + 1)
+        
+    def doc = new Doc(name: origFileName)
+    doc.setBlobData(file.inputStream, file.size)
+    return doc
   }
 }
