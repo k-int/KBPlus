@@ -56,6 +56,9 @@ grails.project.dependency.resolution = {
 
         test 'org.hamcrest:hamcrest-all:1.3'
         test "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
+        test("org.seleniumhq.selenium:selenium-htmlunit-driver:$seleniumVersion") {
+            exclude 'xml-apis'
+        }
         test "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
         test "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
         

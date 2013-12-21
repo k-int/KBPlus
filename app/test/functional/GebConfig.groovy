@@ -5,9 +5,15 @@
 
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.htmlunit.HtmlUnitDriver
 
 // driver = { new ChromeDriver() }
 driver = { new FirefoxDriver() }
+// driver = { 
+//   def d = new HtmlUnitDriver()
+//   d.setJavascriptEnabled(true) 
+//   return d
+// }
 
 environments {
         
