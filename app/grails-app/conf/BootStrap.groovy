@@ -8,7 +8,7 @@ class BootStrap {
 
   def ESWrapperService 
   def grailsApplication
-
+  def docstoreService
 
   def init = { servletContext ->
 
@@ -199,6 +199,10 @@ class BootStrap {
     }
 
     setupRefdata();
+
+    if ( grailsApplication.config.doDocstoreMigration == true ) {
+      docstoreService.migrateToDb();
+    }
   }
 
   def destroy = {

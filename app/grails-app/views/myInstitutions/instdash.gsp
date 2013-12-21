@@ -114,7 +114,7 @@
                         <span class="widget-content">${ra.content}</span>
                         <div class="see-more"><a href="">[ See More ]</a></div>
                       </div> 
-                      <p>Posted by <em><g:link controller="userDetails" action="pub" id="${ra.user.id}">${ra.user.displayName}</g:link></em> on <g:formatDate date="${ra.dateCreated}" format="yyyy-MM-dd hh:mm a"/></p>
+                      <p>Posted by <em><g:link controller="userDetails" action="pub" id="${ra.user?.id}">${ra.user?.displayName}</g:link></em> on <g:formatDate date="${ra.dateCreated}" format="yyyy-MM-dd hh:mm a"/></p>
                     </div>
                   </td>
                 </tr>

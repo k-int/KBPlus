@@ -25,6 +25,7 @@ class Doc {
   Date dateCreated
   Date lastUpdated
   User user
+  String migrated
 
   static mapping = {
                 id column:'doc_id'
@@ -41,6 +42,7 @@ class Doc {
        blobContent column:'doc_blob_content'
           mimeType column:'doc_mimeType'
               user column:'doc_user_fk'
+              user column:'doc_migrated'
   }
 
   static constraints = {
@@ -56,6 +58,7 @@ class Doc {
     filename(nullable:true, blank:false)
     mimeType(nullable:true, blank:false)
     user(nullable:true, blank:false)
+    migrated(nullable:true, blank:false, maxSize:1)
   }
 
   def setBlobData(InputStream is, long length) {
