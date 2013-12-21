@@ -72,6 +72,12 @@ class TitleDetailsController {
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def batchUpdate() {
+    log.debug(params);
+    redirect(controller:'titleDetails', action:'show', id:params.id);
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
 
     log.debug("titleSearch : ${params}");
