@@ -864,3 +864,12 @@ th.desc a {
         background-image: url('../images/sorted_desc_black.gif');
 }
 
+.editable-inline textarea {
+  line-height: 1.2em;
+  height: 1.2em;
+  width: 200px;
+  white-space: nowrap;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
