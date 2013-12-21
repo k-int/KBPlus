@@ -180,48 +180,6 @@ class LicenseDetailsController {
 
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def uploadDocument() {
-    log.debug("upload document....");
-
-    def user = User.get(springSecurityService.principal.id)
-
-    def l = License.get(params.licid);
-
-    if ( ! l.hasPerm("edit",result.user) ) {
-      response.sendError(401);
-      return
-    }
-
-    def input_stream = request.getFile("upload_file")?.inputStream
-    def original_filename = request.getFile("upload_file")?.originalFilename
-
-    log.debug("uploadDocument ${params} upload file = ${original_filename}");
-
-    if ( l && input_stream ) {
-      def docstore_uuid = docstoreService.uploadStream(input_stream, original_filename, params.upload_title)
-      log.debug("Docstore uuid is ${docstore_uuid}");
-
-      if ( docstore_uuid ) {
-        log.debug("Docstore uuid present (${docstore_uuid}) Saving info");
-        def doc_content = new Doc(contentType:1,
-                                  uuid: docstore_uuid,
-                                  filename: original_filename,
-                                  mimeType: request.getFile("upload_file")?.contentType,
-                                  title: params.upload_title,
-                                  type:RefdataCategory.lookupOrCreate('Document Type',params.doctype)).save()
-
-        def doc_context = new DocContext(license:l,
-                                         owner:doc_content,
-                                         user: user,
-                                         doctype:RefdataCategory.lookupOrCreate('Document Type',params.doctype)).save(flush:true);
-      }
-    }
-
-    log.debug("Redirecting...");
-    redirect controller: 'licenseDetails', action:'index', id:params.licid, fragment:params.fragment
-  }
-
-  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def deleteDocuments() {
     def ctxlist = []
 

@@ -20,7 +20,16 @@ class DocstoreController {
   def index() { 
     def doc = Doc.findByUuid(params.id);
     if ( doc ) {
-      docstoreService.retrieve(params.id, response, doc.mimeType, doc.filename);
+      switch ( doc.contentType ) {
+        case 0:
+          break;
+        case 1:
+          docstoreService.retrieve(params.id, response, doc.mimeType, doc.filename);
+          break;
+        case 3:
+          doc.render(response)
+          break;
+      }
     }
   }
 }

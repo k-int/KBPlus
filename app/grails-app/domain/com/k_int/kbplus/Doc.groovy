@@ -60,31 +60,32 @@ class Doc {
 
   def setBlobData(InputStream is, long length) {
     def session = sessionFactory.getCurrentSession() 
-    binaryData = Hibernate.createBlob(is, (int)length)
+    blobContent = Hibernate.createBlob(is, (int)length)
   }
     
   def getBlobData() {
-    return binaryData?.binaryStream
+    return blobContent?.binaryStream
   }
 
 
   Long getBlobSize() {
-    return binaryData?.length() ?: 0
+    return blobContent?.length() ?: 0
   }
     
   def render(def response) {
-    response.contentType = "application/octet-stream"
-    response.outputStream << data
+    response.setContentType(mimeType)
+    response.addHeader("content-disposition", "attachment; filename=\"${filename}\"")
+    response.outputStream << getBlobData()
   }
     
   static fromUpload(def file) {
     if(!file) return new Doc()
         
-    def origFileName = file.originalFilename
-    def slashIndex = Math.max(origFileName.lastIndexOf("/"),origFileName.lastIndexOf("\\"))
-    if(slashIndex > -1) origFileName = origFileName.substring(slashIndex + 1)
+    def filename = file.originalFilename
+    def slashIndex = Math.max(filename.lastIndexOf("/"),filename.lastIndexOf("\\"))
+    if(slashIndex > -1) filename = filename.substring(slashIndex + 1)
         
-    def doc = new Doc(name: origFileName)
+    def doc = new Doc(filename: filename)
     doc.setBlobData(file.inputStream, file.size)
     return doc
   }
