@@ -36,7 +36,7 @@
         </bootstrap:alert>
     </g:hasErrors>
 
-<%-- Show summary --%>
+    <%-- Show summary --%>
     <g:if test="${validationResult}">
 
         <g:if test="${validationResult.messages!=null}">
@@ -44,10 +44,6 @@
                 <div class="alert alert-info">${msg}</div>
             </g:each>
         </g:if>
-        <g:else>
-        <%--<div class="alert alert-info">No messages!</div>--%>
-        </g:else>
-
 
         <g:if test="${validationResult.errors!=null}">
             <g:each in="${validationResult.errors}" var="msg">
@@ -132,7 +128,7 @@
         <br/>
         <g:if test="${validationResult.onixpl_license}">
             <g:if test="${validationResult.license}">
-            <%-- Show link to license's ONIX-PL display if license specified --%>
+            <%-- Show link to licenses ONIX-PL display if license specified --%>
                 <g:link action="onixpl"
                         controller="licenseDetails"
                         class="btn btn-info"

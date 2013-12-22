@@ -15,26 +15,25 @@
         </g:if>
         <li> <g:link controller="licenseDetails" action="index" id="${params.id}">License Details</g:link> </li>
     
+        <li class="dropdown pull-right">
+          <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>&nbsp;
+          <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
+            <li>
+              <% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
+              <g:link action="index" params="${ps_json}">Json Export</g:link>
+            </li>
+            <li>
+                <% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
+              <g:link action="index" params="${ps_xml}">XML Export</g:link>
+            </li>
+          </ul>
+        </li>
+
         <g:if test="${editable}">
           <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
         </g:if>
-        <li class="pull-right"><span class="badge badge-info"><g:annotatedLabel owner="${license}" property="detailsPageInfo">help</g:annotatedLabel></span>&nbsp;</li>
 
-        <li class="dropdown pull-right">
-          <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">
-          Exports<b class="caret"></b>
-      </a>
-      <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
-        <li>
-            <% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
-          <g:link action="index" params="${ps_json}">Json Export</g:link>
-            </li>
-        <li>
-            <% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
-          <g:link action="index" params="${ps_xml}">XML Export</g:link>
-            </li>
-        </ul>
-    </li>
+        <li class="pull-right"><span class="badge badge-info"><g:annotatedLabel owner="${license}" property="detailsPageInfo">help</g:annotatedLabel></span>&nbsp;</li>
 
       </ul>
     </div>
