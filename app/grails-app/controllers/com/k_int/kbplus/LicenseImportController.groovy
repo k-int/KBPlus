@@ -298,8 +298,8 @@ class LicenseImportController {
       log.debug("Created template KB+ license ${license}")
     }
 
-    def onix_file_input_stream = result.uploaded_file ? new FileInputStream(result.uploaded_file) : result.offered_file?.inputStream
-    def onix_file_size = result.uploaded_file ? result.uploaded_file.size : result.offered_file.size
+    def onix_file_input_stream = upload.uploaded_file ? new FileInputStream(upload.uploaded_file) : upload.offered_file?.inputStream
+    def onix_file_size = upload.uploaded_file ? upload.uploaded_file.size : upload.offered_file.size
 
     def doctype = RefdataCategory.lookupOrCreate(CAT_DOCTYPE, DOCTYPE);
     def doc_content, doc_context
