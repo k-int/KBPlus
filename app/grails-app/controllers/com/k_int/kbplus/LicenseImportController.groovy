@@ -63,7 +63,7 @@ class LicenseImportController {
       result.existing_opl = OnixplLicense.findById(result.existing_opl_id)
 
       // A file offered for upload
-      def offeredFile = request.getFile("import_file")
+      def offered_multipart_file = request.getFile("import_file")
 
       // If a replace_opl result is specified, record it
       if (params.replace_opl) {
@@ -88,19 +88,19 @@ class LicenseImportController {
       try {
         // Read file if one is being offered for upload, and check if it matches
         // an existing OPL
-        if (offeredFile) {
-          log.debug("Request to upload ONIX-PL file type: ${offeredFile.contentType}" +
-              " filename ${offeredFile.originalFilename}");
-          def fileResult = readOfferedFile(offeredFile)
+        if (offered_multipart_file) {
+          log.debug("Request to upload ONIX-PL file type: ${offered_multipart_file.contentType}" + " filename ${offered_multipart_file.originalFilename}");
+
+          // 1. Read the file and parse it as XML
+          def fileResult = readOfferedFile(offered_multipart_file)
           if (fileResult.errors) {
             result.validationResult.errors.addAll(fileResult.errors)
             return result
           }
-          result.offered_file = offeredFile
+          result.offered_file = offered_multipart_file
           result.accepted_file = fileResult
           result.putAll(fileResult)
-          //result.input_stream = offeredFile.inputStream
-          result.validationResult.messages.add("Document validated: ${offeredFile.originalFilename}")
+          result.validationResult.messages.add("Document validated: ${offered_multipart_file.originalFilename}")
           log.debug("Passed first phase validation")
 
           // If the specified license does not already have an OPL associated,
@@ -115,7 +115,7 @@ class LicenseImportController {
               // automatically deleted when JVM exits
               File tmp = File.createTempFile("opl_upload", ".xml")
               tmp.deleteOnExit()
-              offeredFile.transferTo(tmp)
+              offered_multipart_file.transferTo(tmp)
               result.uploaded_file = tmp
               result.existing_opl = existingOpl
               return result
@@ -164,18 +164,16 @@ class LicenseImportController {
     def charset = UploadController.checkCharset(file?.inputStream)
     if  ( ( charset != null ) && ( ! charset.equals('UTF-8') ) ) {
       fileResult.errors = []
-      fileResult.errors.add(
-          "Detected input character stream encoding: ${charset}. Expected UTF-8."
-      )
+      fileResult.errors.add("Detected input character stream encoding: ${charset}. Expected UTF-8.")
       return fileResult
     } else {
       // Extract the description,
       fileResult.description = new XmlSlurper().parse(file.inputStream).LicenseDetail.Description.text()
-      log.debug("Set license title to "+fileResult.description)
     }
     // Record mime type, filename
     fileResult.upload_mime_type = file?.contentType
     fileResult.upload_filename = file?.originalFilename
+    fileResult.size = file?.size
     fileResult
   }
 
