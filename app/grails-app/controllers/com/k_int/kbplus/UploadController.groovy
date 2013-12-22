@@ -718,7 +718,7 @@ class UploadController {
     }
   }
 
-  def checkCharset(file_input_stream) {
+  def public static checkCharset(file_input_stream) {
 
     def result = null;
 

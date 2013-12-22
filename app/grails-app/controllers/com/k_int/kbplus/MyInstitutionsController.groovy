@@ -19,7 +19,6 @@ import java.text.SimpleDateFormat
 class MyInstitutionsController {
 
   def springSecurityService
-  def docstoreService
   def ESWrapperService
   def gazetteerService
   def alertsService

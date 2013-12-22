@@ -161,7 +161,7 @@ class LicenseImportController {
     def fileResult = [:]
     // Verify the character set of the offered ONIX-PL file, and read the title
     // if the file is okay.
-    def charset = checkCharset(file?.inputStream)
+    def charset = UploadController.checkCharset(file?.inputStream)
     if  ( ( charset != null ) && ( ! charset.equals('UTF-8') ) ) {
       fileResult.errors = []
       fileResult.errors.add(
@@ -475,48 +475,6 @@ class LicenseImportController {
       ass.save(flush: true, insert: true);
     }
   }
-
-
-
-  // -------------------------------------------------------------------------
-  // Validation methods
-  // -------------------------------------------------------------------------
-
-  // Copied from UploadController
-  def checkCharset(file_input_stream) {
-
-    def result = null;
-
-    byte[] buf = new byte[4096];
-
-    // (1)
-    UniversalDetector detector = new UniversalDetector(null);
-
-    // (2)
-    int nread;
-    while ((nread = file_input_stream.read(buf)) > 0 && !detector.isDone()) {
-      detector.handleData(buf, 0, nread);
-    }
-    // (3)
-    detector.dataEnd();
-
-    // (4)
-    String encoding = detector.getDetectedCharset();
-    if (encoding != null) {
-      result = encoding;
-      System.out.println("Detected encoding = " + encoding);
-      if ( encoding.equals('WINDOWS-1252') ) {
-      }
-    } else {
-      System.out.println("No encoding detected.");
-    }
-
-    // (5)
-    detector.reset();
-
-    result
-  }
-
 
 }
 
