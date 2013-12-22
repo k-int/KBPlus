@@ -145,8 +145,6 @@
                                 </g:if>
                             </g:if>
                             <g:else>
-                                <%--<input class="btn btn-warning" value="Import an ONIX-PL license"
-                                       href="${createLink(controller: 'licenseImport', action: 'doImport', params: '[license_id: license.id]')}" />--%>
                                 <g:link class="btn btn-warning" controller='licenseImport' action='doImport' params='[license_id: license.id]'>Import an ONIX-PL license</g:link>
                             </g:else>
                         </dd>
