@@ -102,5 +102,7 @@ grails.project.dependency.resolution = {
         
         // Font awesome for font based icons.
         compile ":font-awesome-resources:3.2.1"
+
+        // build ':spring-security-shibboleth-native-sp:1.0.3'
     }
 }
