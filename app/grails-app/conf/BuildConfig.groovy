@@ -7,7 +7,7 @@ grails.project.source.level = 1.7
 
 
 // grails.project.fork = [
-//    test: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256], // Removed ", daemon:true" because geb doesn't play nice with forked mode atm
+//    test: [maxMemory: 768, minMemory: 64, debug: true, maxPerm: 256], // Removed ", daemon:true" because geb doesn't play nice with forked mode atm
 //    run: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256],
 //    war: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256],
 //    console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
@@ -103,6 +103,8 @@ grails.project.dependency.resolution = {
         // Font awesome for font based icons.
         compile ":font-awesome-resources:3.2.1"
 
-        // build ':spring-security-shibboleth-native-sp:1.0.3'
+        compile ':spring-security-core:1.2.7.3'
+        compile ':spring-security-ldap:1.0.6'
+        compile ':spring-security-shibboleth-native-sp:1.0.3'
     }
 }
