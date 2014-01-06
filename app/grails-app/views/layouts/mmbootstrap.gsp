@@ -12,19 +12,19 @@
     <title><g:layoutTitle default="${meta(name: 'app.name')}"/></title>
     <meta name="description" content="">
     <meta name="viewport" content="initial-scale = 1.0">
+
     <r:require modules="kbplus"/>
+
     <g:layoutHead/>
+
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     
-    <!-- Le fav and touch icons -->
     <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
 
 
-    <!-- Stylesheets -->
-    <r:layoutResources/>
     <r:layoutResources/>
   </head>
 
@@ -347,72 +347,6 @@
           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
   </script>
-  
-    <r:layoutResources/>
-
-    <script type="text/javascript">
-
-      // $(function(){
-      $(document).ready(function() {
-
-        $.fn.editable.defaults.mode = 'inline';
-
-        $('.xEditableValue').editable();
-        $(".xEditableManyToOne").editable();
-        $(".simpleHiddenRefdata").editable({
-          url: function(params) {
-            var hidden_field_id = $(this).data('hidden-id');
-            $("#"+hidden_field_id).val(params.value);
-            // Element has a data-hidden-id which is the hidden form property that should be set to the appropriate value
-          }
-        });
-        
-        $(".simpleReferenceTypedown").select2({
-          placeholder: "Search for...",
-          minimumInputLength: 1,
-          ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-            url: "<g:createLink controller='ajax' action='lookup'/>",
-            dataType: 'json',
-            data: function (term, page) {
-                return {
-                    format:'json',
-                    q: term,
-                    baseClass:$(this).data('domain')
-                };
-            },
-            results: function (data, page) {
-              return {results: data.values};
-            }
-          }
-        });
-
-        $('.dlpopover').popover({html:true,
-                                 placement:'bottom',
-                                 title:'search', 
-                                 trigger:'click', 
-template: '<div class="popover" style="width: 400px;"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"></div></div></div>',
-                                 'max-width':400, 
-                                 content:function() {return getContent()}});
-      });
-
-      function getContent() {
-        return $('#spotlight_popover_content_wrapper').html();
-        // var result=""
-        // jQuery.ajax({
-        //  url:"<g:createLink controller='spotlight' action='index' />",
-        //  success: function(r) {
-        //             result=r;
-        //           },
-        //  async:   false
-        // });          
-        // return result;
-      }
-
-      function reloadSpotlightSearchResults() {
-        console.log("reload...");
-        $('#spotlight-search-results').load("<g:createLink controller='spotlight' action='search' />");
-      }
-    </script>
 
     <div id="spotlight_popover_content_wrapper" style="display: none">
       <form class="form-search">
@@ -421,5 +355,6 @@ template: '<div class="popover" style="width: 400px;"><div class="arrow"></div><
       <div id="spotlight-search-results">
       </div>
     </div>
+    <r:layoutResources/>
   </body>
 </html>
