@@ -127,7 +127,8 @@ log4j = {
            // 'grails.app.tagLib',
            'grails.app.conf',
            'grails.app.jobs',
-           'grails.app.conf.BootStrap' // ,
+           'grails.app.conf.BootStrap',
+           'edu.umn.shibboleth.sp'
         // 'org.springframework.security'
 
     // info   'com.linkedin.grails'
