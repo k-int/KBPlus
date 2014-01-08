@@ -50,6 +50,27 @@
               </g:each>
             </td></tr>
       </table>
+
+      <ul>
+        <g:each in="${request.getAttributeNames()}" var="an">
+          <li>${an} = ${request.getAttribute(an)}</li>
+        </g:each>
+        <ul> authenticationMethodObject = ${request.getAttribute('Shib-Authentication-Method')}</ul>
+        <ul> identityProviderObject = ${request.getAttribute('Shib-Identity-Provider')}</ul>
+        <ul> principalUsernameObject = (${grailsApplication.config.grails.plugins.springsecurity.shibboleth.principalUsername.attribute}) 
+                                       ${request.getAttribute(grailsApplication.config.grails.plugins.springsecurity.shibboleth.principalUsername.attribute)}</ul>
+        <ul> authenticationInstantObject = ${request.getAttribute('Shib-Authentication-Instant')}</ul>
+        <ul> usernameObject = (EPPN) ${request.getAttribute('EPPN')}</ul>
+        <ul> eduPersonPrincipalName = ${request.getAttribute('eduPersonPrincipalName')}</ul>
+        <ul> eduPersonScopedAffiliation = ${request.getAttribute('eduPersonScopedAffiliation')}</ul>
+        <ul> eduPersonPrincipalName = ${request.getAttribute('eduPersonPrincipalName')}</ul>
+        <ul> eduPersonEntitlement = ${request.getAttribute('eduPersonEntitlement')}</ul>
+        <ul> uid = ${request.getAttribute('uid')}</ul>
+        <ul> mail = ${request.getAttribute('mail')}</ul>
+        <ul> affiliation = ${request.getAttribute('affiliation')}</ul>
+        <ul> entitlement = ${request.getAttribute('entitlement')}</ul>
+        <ul> persistent-id = ${request.getAttribute('persistent-id')}</ul>
+      </ul>
     </div>
   </body>
 </html>
