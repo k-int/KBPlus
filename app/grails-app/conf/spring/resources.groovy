@@ -20,6 +20,7 @@ beans = {
   }
 
   ediauthFilter(com.k_int.kbplus.filter.EdiauthFilter){
+    grailsApplication = ref('grailsApplication')
     authenticationManager = ref('authenticationManager')
     ediAuthTokenMap = ref('ediAuthTokenMap')
   }
