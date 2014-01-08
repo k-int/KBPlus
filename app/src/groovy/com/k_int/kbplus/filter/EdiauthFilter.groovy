@@ -32,35 +32,37 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
             log.debug("User found, all is well");
           }
           else {
-            existing_user = new com.k_int.kbplus.auth.User(username:request.getRemoteUser()
-                                                password:'**',
-                                                enabled:true,
-                                                accountExpired:false,
-                                                accountLocked:false,
-                                                passwordExpired:false,
-                                                instname:null,
-                                                shibbScope:null,
-                                                email:request.getAttribute('email'))
+            existing_user = new User(
+                                     username:request.getRemoteUser(),
+                                     password:'**',
+                                     enabled:true,
+                                     accountExpired:false,
+                                     accountLocked:false,
+                                     passwordExpired:false,
+                                     instname:null,
+                                     shibbScope:null,
+                                     email:request.getAttribute('email'))
 
-          if ( existing_user.save(flush:true) ) {
-            log.debug("Created user, allocating user role");
-            def userRole = com.k_int.kbplus.auth.Role.findByAuthority('ROLE_USER')
-
-            if ( userRole ) {
-              log.debug("looked up user role: ${userRole}");
-              def new_role_allocation = new com.k_int.kbplus.auth.UserRole(user:user,role:userRole);
-
-              if ( new_role_allocation.save(flush:true) ) {
-                log.debug("New role created...");
-              }
-              else {
-                new_role_allocation.errors.each { e ->
-                  log.error(e);
+            if ( existing_user.save(flush:true) ) {
+              log.debug("Created user, allocating user role");
+              def userRole = com.k_int.kbplus.auth.Role.findByAuthority('ROLE_USER')
+  
+              if ( userRole ) {
+                log.debug("looked up user role: ${userRole}");
+                def new_role_allocation = new com.k_int.kbplus.auth.UserRole(user:existing_user,role:userRole);
+  
+                if ( new_role_allocation.save(flush:true) ) {
+                  log.debug("New role created...");
+                }
+                else {
+                    new_role_allocation.errors.each { e ->
+                    log.error(e);
+                  }
                 }
               }
-            }
-            else {
-              log.error("Unable to look up ROLE_USER");
+              else {
+                log.error("Unable to look up ROLE_USER");
+              }
             }
           }
         }
