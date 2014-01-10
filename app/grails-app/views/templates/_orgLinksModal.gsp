@@ -43,7 +43,7 @@
 
 </div>
 
-<script language="JavaScript">
+<g:javascript>
     var oOrTable;
 
     $(document).ready(function(){
@@ -76,4 +76,4 @@
         oOrTable.fnAdjustColumnSizing();
 
     });
-</script>
+</g:javascript>
