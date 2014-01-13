@@ -2012,30 +2012,30 @@ AND EXISTS (
       boolean processing = true
       // Step three, process each title row, starting at row 11(10)
       for (int i=SO_START_ROW;((i<firstSheet.getLastRowNum())&&(processing)); i++) {
-        log.debug("processing row ${i}");
+        // log.debug("processing row ${i}");
 
         HSSFRow title_row = firstSheet.getRow(i)
         // Title ID
         def title_id = title_row.getCell(0).toString()
         if ( title_id == 'END' ) {
-          log.debug("Encountered END title");
+          // log.debug("Encountered END title");
           processing = false;
         }
         else {
-          log.debug("Upload Process title: ${title_id}, num subs=${sub_info.size()}, last cell=${title_row.getLastCellNum()}");
+          // log.debug("Upload Process title: ${title_id}, num subs=${sub_info.size()}, last cell=${title_row.getLastCellNum()}");
           def title_id_long = Long.parseLong(title_id)
           def title_rec = TitleInstance.get(title_id_long);
           for ( int j=0; ( ((j+SO_START_COL)<title_row.getLastCellNum()) && (j<=sub_info.size() ) ); j++ ) {
             def resp_cell = title_row.getCell(j+SO_START_COL)
             if ( resp_cell ) {
-              log.debug("  -> Testing col[${j+SO_START_COL}] val=${resp_cell.toString()}");
+              // log.debug("  -> Testing col[${j+SO_START_COL}] val=${resp_cell.toString()}");
 
               def subscribe=resp_cell.toString()
 
-              log.debug("Entry : sub:${subscribe}");
+              // log.debug("Entry : sub:${subscribe}");
                 
               if ( subscribe == 'Y' || subscribe == 'y' ) {
-                log.debug("Add an issue entitlement from subscription[${j}] for title ${title_id_long}");
+                // log.debug("Add an issue entitlement from subscription[${j}] for title ${title_id_long}");
 
                 def entitlement_info = [:]
                 entitlement_info.base_entitlement = extractEntitlement(sub_info[j], title_id_long)
@@ -2051,7 +2051,7 @@ AND EXISTS (
                   entitlement_info.core_start_date = title_row.getCell(9)
                   entitlement_info.core_end_date = title_row.getCell(10)
   
-                  log.debug("Added entitlement_info ${entitlement_info}");
+                  // log.debug("Added entitlement_info ${entitlement_info}");
                   result.entitlements.add(entitlement_info)
                 }
                 else {

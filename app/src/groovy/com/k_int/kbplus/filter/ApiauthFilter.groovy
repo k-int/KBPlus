@@ -47,15 +47,12 @@ class ApiauthFilter extends GenericFilterBean implements ApplicationEventPublish
       Authentication auth
       UsernamePasswordAuthenticationToken upat
              
-      if ( username && password ) {
+      if ( ( username != null ) && ( password != null ) && ( username.length() > 0 ) && ( password.length() > 0 ) ) {
         try {
           upat = new UsernamePasswordAuthenticationToken(username, password)
                      
           if (upat != null) {
             auth = authenticationManager.authenticate(upat)
-                         
-            logger.debug("Authentication success: " + auth);
-                         
             onSuccessfulAuthentication(request, response, auth)
           }
         } catch (AuthenticationException authenticationException) {
