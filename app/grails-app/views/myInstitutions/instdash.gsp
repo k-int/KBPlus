@@ -179,9 +179,9 @@
     </div>
 
     <!-- For DotDotDot -->
-    <script src="${resource(dir: 'js', file: 'jquery.dotdotdot.min.js')}"></script>
+    <g:javascript src="${resource(dir: 'js', file: 'jquery.dotdotdot.min.js')}"/>
 
-    <script type="text/javascript">
+    <g:javascript>
       $(document).ready(function() {
         $(".widget-content").dotdotdot({
           height: 50,
@@ -199,7 +199,7 @@
           $(this).hide();
         });
       });
-    </script>
+    </g:javascript>
 
   </body>
 </html>
