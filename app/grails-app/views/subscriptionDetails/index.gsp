@@ -23,7 +23,7 @@
             <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter]}">CSV Export</g:link><li>
             <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter,omitHeader:'Y']}">CSV Export (No header)</g:link></li>
             <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'json',sort:params.sort,order:params.order,filter:params.filter]}">JSON</g:link></li>
-            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'xml',sort:params.sort,order:params.order,filter:params.filter]}">JSON</g:link></li>
+            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'xml',sort:params.sort,order:params.order,filter:params.filter]}">XML</g:link></li>
             <g:each in="${transforms}" var="transkey,transval">
               <li><g:link action="index" id="${params.id}" params="${[format:'xml',transformId:transkey]}"> ${transval.name}</g:link></li>
             </g:each>
