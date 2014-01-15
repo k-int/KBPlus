@@ -68,7 +68,8 @@ class DocstoreService {
     response.addHeader("content-disposition", "attachment; filename=\"${filename}\"")
     def docstore_response = getDocstoreResponseDoc(uuid)
     def outs = response.outputStream
-    streamResponseDoc(result.tempfile, outs)
+    streamResponseDoc(docstore_response, outs)
+    // streamResponseDoc(result.tempfile, outs)
     // outs << 
     outs.flush()
     outs.close()
