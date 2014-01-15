@@ -167,8 +167,8 @@ class MyInstitutionsController {
     def qry = "from License as l where ( ( l.type = ? ) OR ( exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) ) OR ( l.isPublic=? ) ) AND l.status.value != 'Deleted'"
 
     if ( params.filter ) {
-      qry += " and l.reference like ?"
-      qparams.add("%${params.filter}%")
+      qry += " and lower(l.reference) like ?"
+      qparams.add("%${params.filter.toLowerCase()}%")
     }
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
