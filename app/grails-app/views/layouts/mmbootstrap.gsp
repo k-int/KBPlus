@@ -296,27 +296,7 @@
       </div>
   </div>
   
-  <!--
-  <div class="support-tab">
-      <a href="mailto:kbplus@jisc-collections.ac.uk?subject=KBPlus%20Support%20Query"><i class="icon-question-sign icon-white"></i>Request Support</a>
-  </div>
-  -->
-      
-  <!-- For datatable -->
-  <script type="text/javascript" charset="utf-8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
-  <script type="text/javascript" charset="utf-8" src="http://datatables.net/release-datatables/extras/Scroller/media/js/dataTables.scroller.js"></script>
-      
-  <!-- For x-editable -->
-  <script src="${resource(dir: 'js', file: 'bootstrap-editable.js')}"></script>
-      
-  <!-- For select2 -->
-  <script src="${resource(dir: 'js', file: 'select2.js')}"></script>
-      
-  <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
-  <style type="text/css" media="screen, projection">
-    @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
-  </style>
-  <script type="text/javascript">
+  <r:script type="text/javascript">
     if (typeof(Zenbox) !== "undefined") {
       Zenbox.init({
         dropboxID:   "20234067",
@@ -327,9 +307,9 @@
         tabPosition: "Right"
       });
     }
-  </script>
+  </r:script>
 
-  <script type="text/javascript">
+  <r:script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', '${grailsApplication.config.kbplus.analytics.code}']);
       <g:if test="${params.shortcode != null}">
@@ -346,7 +326,7 @@
           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
-  </script>
+  </r:script>
 
     <div id="spotlight_popover_content_wrapper" style="display: none">
       <form class="form-search">
@@ -356,5 +336,10 @@
       </div>
     </div>
     <r:layoutResources/>
+
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
+    </style>
   </body>
 </html>
