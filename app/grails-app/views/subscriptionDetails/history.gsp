@@ -20,7 +20,9 @@
     </div>
 
     <div class="container">
-ToDo History
+
+      <h3>ToDo History</h3>
+
       <table  class="table table-striped table-bordered">
         <tr>
           <th>ToDo Description</th>
@@ -51,7 +53,7 @@ ToDo History
 
 
     <div class="container">
-Subscription history
+      <h3>Subscription history</h3>
       <table  class="table table-striped table-bordered">
         <tr>
           <th>Event ID</th>
