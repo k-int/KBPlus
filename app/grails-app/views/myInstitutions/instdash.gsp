@@ -178,10 +178,7 @@
       </div>
     </div>
 
-    <!-- For DotDotDot -->
-    <g:javascript src="${resource(dir: 'js', file: 'jquery.dotdotdot.min.js')}"/>
-
-    <g:javascript>
+    <r:script>
       $(document).ready(function() {
         $(".widget-content").dotdotdot({
           height: 50,
@@ -199,7 +196,7 @@
           $(this).hide();
         });
       });
-    </g:javascript>
+    </r:script>
 
   </body>
 </html>
