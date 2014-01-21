@@ -260,7 +260,7 @@
               contextPath="../templates" 
               model="${[roleLinks:subscriptionInstance?.orgRelations,parent:subscriptionInstance.class.name+':'+subscriptionInstance.id,property:'orgs',recip_prop:'sub']}" />
 
-    <script language="JavaScript">
+    <r:script language="JavaScript">
       <g:if test="${editable}">
       $(document).ready(function() {
       
@@ -306,6 +306,6 @@
           });
         }
       </g:else>
-    </script>
+    </r:script>
   </body>
 </html>
