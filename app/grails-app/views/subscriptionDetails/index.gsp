@@ -138,7 +138,12 @@
       <dl>
         <dt>
           <g:annotatedLabel owner="${subscriptionInstance}" property="entitlements">
-            Entitlements ( ${offset+1} to ${offset+(entitlements?.size())} of ${num_sub_rows} )
+            <g:if test="${entitlements?.size() > 0}">
+              Entitlements ( ${offset+1} to ${offset+(entitlements?.size())} of ${num_sub_rows} )
+            </g:if>
+            <g:else>
+              No entitlements yet
+            </g:else>
           </g:annotatedLabel>
           <g:form action="index" params="${params}" method="get" class="form-inline">
              <input type="hidden" name="sort" value="${params.sort}">
