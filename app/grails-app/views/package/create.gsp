@@ -36,7 +36,7 @@
         <button id="addbtn" class="btn btn-primary disabled">Create Package</button>
       </g:form>
     </div>
-    <script language="JavaScript">
+    <r:script language="JavaScript">
       $(document).ready(function() {
         var options = {
           // see http://stackoverflow.com/questions/9232748/twitter-bootstrap-typeahead-ajax-example
@@ -100,6 +100,6 @@
           },
         });
       }
-    </script>
+    </r:script>
   </body>
 </html>

@@ -20,7 +20,7 @@
     <g:layoutHead/>
     <r:layoutResources/>
 
-    <script type="text/javascript">
+    <r:script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', '${grailsApplication.config.kbplus.analytics.code}']);
       _gaq.push(['_trackPageview']);
@@ -29,7 +29,7 @@
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
-    </script>
+    </r:script>
   </head>
 
   <body>
@@ -144,7 +144,7 @@
     <style type="text/css" media="screen, projection">
       @import url(//assets.zendesk.com/external/zenbox/v2.4/zenbox.css);
     </style>
-    <script type="text/javascript">
+    <r:script type="text/javascript">
       if (typeof(Zenbox) !== "undefined") {
         Zenbox.init({
           dropboxID:   "20059881",
@@ -154,7 +154,7 @@
           tabPosition: "Right"
         });
       }
-    </script>
+    </r:script>
 
   </body>
 </html>

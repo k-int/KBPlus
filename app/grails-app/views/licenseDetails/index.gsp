@@ -277,7 +277,7 @@
               contextPath="../templates" 
               model="${[roleLinks:license?.orgLinks,parent:license.class.name+':'+license.id,property:'orgLinks',recip_prop:'lic']}" />
 
-    <script language="JavaScript">
+    <r:script language="JavaScript">
     
       <g:if test="${editable}">
       </g:if>
@@ -291,7 +291,7 @@
         }
       </g:else>
 
-    </script>
+    </r:script>
 
   </body>
 </html>

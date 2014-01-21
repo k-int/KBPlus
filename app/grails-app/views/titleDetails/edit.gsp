@@ -131,7 +131,7 @@
       </div>
 
 
-  <script language="JavaScript">
+  <r:script language="JavaScript">
 
     $(function(){
       // moved to mm_bootstrap
@@ -206,7 +206,7 @@
 
 
     });
-  </script>
+  </r:script>
 
   </body>
 </html>

@@ -354,7 +354,7 @@
               contextPath="../templates" 
               model="${[roleLinks:packageInstance?.orgs,parent:packageInstance.class.name+':'+packageInstance.id,property:'orgs',recip_prop:'pkg']}" />
 
-    <script language="JavaScript">
+    <r:script language="JavaScript">
       $(function(){
         $.fn.editable.defaults.mode = 'inline';
         $('.xEditableValue').editable();
@@ -363,7 +363,7 @@
         $('.bulkcheck').attr('checked', true);
       }
 
-    </script>
+    </r:script>
 
   </body>
 </html>

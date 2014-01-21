@@ -117,7 +117,7 @@
       </g:if>
     </g:form>
 
-    <script type="text/javascript">
+    <r:script type="text/javascript">
         $('.licence-results input[type="radio"]').click(function () {
             $('.licence-options').slideDown('fast');
         });
@@ -128,7 +128,7 @@
                 $('.licence-options').slideUp('fast');
             })
         })
-    </script>
+    </r:script>
 
   </body>
 </html>
