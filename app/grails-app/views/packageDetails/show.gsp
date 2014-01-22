@@ -103,7 +103,9 @@
               </dl>
 
 
-                <dl><dt>Start Date</dt><dd>
+                <dl>
+                  <dt>Start Date</dt>
+                  <dd>
                     <g:xEditable owner="${packageInstance}" field="startDate" type="date"/>
                 </dd>
                 </dl>
