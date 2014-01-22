@@ -82,7 +82,7 @@
           </g:if>
         </div>
     </div>
-    <script type="text/javascript">
+    <r:script type="text/javascript">
         $(document).ready(function() {
             var activateButton = function() {
                 $('.subscription-create input').removeClass('disabled');
@@ -95,6 +95,6 @@
             // Activates the create subscription button when a radio button is selected.
             $('.subscriptions-list input[type=radio]').click(activateButton);
         });
-    </script>
+    </r:script>
   </body>
 </html>

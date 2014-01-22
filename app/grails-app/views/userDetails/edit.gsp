@@ -84,7 +84,7 @@
     </div>
 
 
-  <script language="JavaScript">
+  <r:script language="JavaScript">
 
     $(function(){
       $.fn.editable.defaults.mode = 'inline';
@@ -110,6 +110,6 @@
       });
     });
 
-  </script>
+  </r:script>
   </body>
 </html>

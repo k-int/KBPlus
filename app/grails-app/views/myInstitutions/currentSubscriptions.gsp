@@ -104,7 +104,7 @@
 
     </g:form>
 
-    <script type="text/javascript">
+    <r:script type="text/javascript">
         $('.subscription-results input[type="radio"]').click(function () {
             $('.subscription-options').slideDown('fast');
         });
@@ -115,7 +115,7 @@
                 $('.subscription-options').slideUp('fast');
             })
         })                
-    </script>
+    </r:script>
 
   </body>
 </html>

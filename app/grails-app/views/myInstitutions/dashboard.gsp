@@ -147,7 +147,7 @@
     <div class="modal hide fade" id="modalComments">
     </div>
 
-    <script type="text/javascript">
+    <r:script type="text/javascript">
       // http://stackoverflow.com/questions/10626885/passing-data-to-a-bootstrap-modal
       $(document).ready(function() {
          $(".announce").click(function(){ 
@@ -156,6 +156,6 @@
            $('#modalComments').modal('show');
          });
       });
-    </script>
+    </r:script>
   </body>
 </html>

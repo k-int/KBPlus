@@ -138,7 +138,12 @@
       <dl>
         <dt>
           <g:annotatedLabel owner="${subscriptionInstance}" property="entitlements">
-            Entitlements ( ${offset+1} to ${offset+(entitlements?.size())} of ${num_sub_rows} )
+            <g:if test="${entitlements?.size() > 0}">
+              Entitlements ( ${offset+1} to ${offset+(entitlements?.size())} of ${num_sub_rows} )
+            </g:if>
+            <g:else>
+              No entitlements yet
+            </g:else>
           </g:annotatedLabel>
           <g:form action="index" params="${params}" method="get" class="form-inline">
              <input type="hidden" name="sort" value="${params.sort}">
@@ -255,7 +260,7 @@
               contextPath="../templates" 
               model="${[roleLinks:subscriptionInstance?.orgRelations,parent:subscriptionInstance.class.name+':'+subscriptionInstance.id,property:'orgs',recip_prop:'sub']}" />
 
-    <script language="JavaScript">
+    <r:script language="JavaScript">
       <g:if test="${editable}">
       $(document).ready(function() {
       
@@ -301,6 +306,6 @@
           });
         }
       </g:else>
-    </script>
+    </r:script>
   </body>
 </html>

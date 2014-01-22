@@ -21,7 +21,7 @@
 </div>
 
 
-<script language="JavaScript">
+<r:script language="JavaScript">
 
   var oTable;
 
@@ -76,5 +76,5 @@
     });
   }
 
-</script>
+</r:script>
 

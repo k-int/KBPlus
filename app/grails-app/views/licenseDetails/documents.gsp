@@ -79,13 +79,6 @@
       </g:form>
     </div>
 
-<script language="JavaScript">
-  $(document).ready(function() {
-
-   });
-</script>
-
-
 <!-- Lightbox modal for creating a document taken from licenceDocuments.html -->
 <div class="modal hide" id="modalCreateDocument">
     <div class="modal-header">
@@ -134,7 +127,7 @@
 </div>
 <!-- End lightbox modal -->
 
-<script language="JavaScript">
+<r:script language="JavaScript">
   $(document).ready(function() {
       
       var checkEmptyEditable = function() {
@@ -187,10 +180,10 @@
        onblur	 : 'ignore'
      });
    });
-</script>
+</r:script>
 
 <!-- JS for licence documents -->
-<script type="text/javascript">
+<r:script type="text/javascript">
     $('.licence-documents input[type="checkbox"]').click(function () {
         if ($('.licence-documents input:checked').length > 0) {
             $('.licence-documents-options').slideDown('fast');
@@ -209,7 +202,7 @@
             $('.licence-documents-options').slideUp('fast');
         });
     })
-</script>
+</r:script>
 
 
 </body>
