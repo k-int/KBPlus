@@ -197,7 +197,7 @@
         <g:form action="show" params="${params}" method="get" class="form-inline">
            <input type="hidden" name="sort" value="${params.sort}">
            <input type="hidden" name="order" value="${params.order}">
-           <label>Filters - Package Name:</label> <input name="filter" value="${params.filter}"/>
+           <label>Filters - Title:</label> <input name="filter" value="${params.filter}"/>
            <label>Coverage note:</label> <input name="coverageNoteFilter" value="${params.coverageNoteFilter}"/>
             &nbsp;<label>Starts Before:</label> 
             <g:simpleHiddenValue id="startsBefore" name="startsBefore" type="date" value="${params.startsBefore}"/>
