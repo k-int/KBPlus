@@ -76,7 +76,7 @@
         <div class="span8">
             <h6>Package Information</h6>
             <g:hiddenField name="version" value="${packageInstance?.version}" />
-            <fieldset>
+            <fieldset class="inline-lists">
 
               <dl>
                 <dt>Package Name</dt>
