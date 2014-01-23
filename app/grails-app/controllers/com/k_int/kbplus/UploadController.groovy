@@ -49,7 +49,7 @@ class UploadController {
   ];
 
   @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
-  def reviewSO() { 
+  def reviewPackage() { 
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     
@@ -61,7 +61,7 @@ class UploadController {
       validate(result.validationResult)
       if ( result.validationResult.processFile == true ) {
         // log.debug("Passed first phase validation, continue...");
-        processUploadSO(result.validationResult)
+        processUploadPackage(result.validationResult)
       }
     }
     else {
@@ -70,7 +70,7 @@ class UploadController {
     return result
   }
   
-  def processUploadSO(upload) {
+  def processUploadPackage(upload) {
 
     def new_pkg_id = null
     log.debug("Content provider value is ${upload.soProvider.value}");

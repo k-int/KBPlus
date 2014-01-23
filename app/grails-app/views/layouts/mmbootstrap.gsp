@@ -126,8 +126,8 @@
                          <g:link controller="packageDetails" action="create">New Package</g:link></li>
                        -->
                        <li class="divider"></li>
-                         <li <%= ( ( 'upload'== controllerName ) && ( 'reviewSO'==actionName ) ) ? ' class="active"' : '' %>>
-                             <g:link controller="upload" action="reviewSO">Upload new Package</g:link></li>
+                         <li <%= ( ( 'upload'== controllerName ) && ( 'reviewPackage'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="upload" action="reviewPackage">Upload new Package</g:link></li>
                          <li <%= ( ( 'licenseImport'== controllerName ) && ( 'doImport'==actionName ) ) ? ' class="active"' : '' %>>
                              <g:link controller="licenseImport" action="doImport">Import ONIX-PL license</g:link></li>
                        <li class="divider"></li>
