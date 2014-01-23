@@ -21,6 +21,7 @@ import org.apache.log4j.*
 import au.com.bytecode.opencsv.CSVReader
 import java.text.SimpleDateFormat
 import org.apache.commons.vfs2.*
+import java.util.Calendar
 
 // Custom entity resolution
 import java.io.StringReader;
@@ -55,11 +56,11 @@ public class CuftsConverter {
      [ outputCol:'date_last_issue_online',source:'CUFTS', inputCol:'ft_end_date', pos:-1 ],
      [ outputCol:'num_last_vol_online',source:'CUFTS', inputCol:'vol_ft_end', pos:-1 ],
      [ outputCol:'num_last_issue_online',source:'CUFTS', inputCol:'iss_ft_end', pos:-1 ],
-     [ outputCol:'ID.kbart_title_id',source:null, inputCol:null, pos:-1 ],
-     [ outputCol:'embargo_info',source:null, inputCol:null, pos:-1 ],
+     [ outputCol:'ID.kbart_title_id',source:'CUFTS', inputCol:'db_identifier', pos:-1 ],
+     [ outputCol:'embargo_info',source:'CUFTS', inputCol:'embargo_months', pos:-1 ],
      [ outputCol:'coverage_depth',source:'CUFTS', inputCol:'coverage', pos:-1 ],
      [ outputCol:'coverage_notes',source:'CUFTS', inputCol:'coverage', pos:-1 ],
-     [ outputCol:'publisher_name',source:'CUFTS', inputCol:'', pos:-1 ],
+     [ outputCol:'publisher_name',source:'CUFTS', inputCol:'publisher', pos:-1 ],
      [ outputCol:'ID.doi',source:null, inputCol:null, pos:-1 ],
      [ outputCol:'platform.host.name',source:'CUFTS', inputCol:'', pos:-1 ],
      [ outputCol:'platform.host.url',source:'CUFTS', inputCol:'journal_url', pos:-1 ],
@@ -74,7 +75,7 @@ public class CuftsConverter {
     def cc=new CuftsConverter()
     cc.loadCuftsFile(args[0])
   }
-  
+
   def loadCuftsFile(filename) {
     println("loading data from ${filename}");
     def fsManager = VFS.getManager();
@@ -152,12 +153,13 @@ public class CuftsConverter {
     new File("./target/${resource_meta_info.key}").withWriter { out ->
   
       println("Processing cufts FILE ${resource_meta_info.key}");
+      int year = Calendar.getInstance().get(Calendar.YEAR);
   
       out.writeLine("Provider,${resource_meta_info.provider}")
       out.writeLine("Package Identifier,CUFTS-${resource_meta_info.key}")
       out.writeLine("Package Name,${resource_meta_info.name}")
-      out.writeLine("Agreement Term Start Year,")
-      out.writeLine("Agreement Term End Year,")
+      out.writeLine("Agreement Term Start Year,01/01/${year}")
+      out.writeLine("Agreement Term End Year,01/01/${year+1}")
       out.writeLine("Consortium,")
   
       def sub = [:]

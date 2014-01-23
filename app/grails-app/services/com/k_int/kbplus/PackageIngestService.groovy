@@ -15,6 +15,33 @@ public class PackageIngestService {
   def sessionFactory
   def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
 
+  def possible_date_formats = [
+    [regexp:'[0-9]{2}/[0-9]{2}/[0-9]{4}', format: new SimpleDateFormat('dd/MM/yyyy')],
+    [regexp:'[0-9]{4}/[0-9]{2}/[0-9]{2}', format: new SimpleDateFormat('yyyy/MM/dd')],
+    [regexp:'[0-9]{2}/[0-9]{2}/[0-9]{2}', format: new SimpleDateFormat('dd/MM/yy')],
+    [regexp:'[0-9]{4}/[0-9]{2}', format: new SimpleDateFormat('yyyy/MM')],
+    [regexp:'[0-9]{4}', format: new SimpleDateFormat('yyyy')]
+  ];
+
+  def csv_column_config = [
+    'id':[coltype:'map'],
+    'tippid':[coltype:'map'],
+    'publication_title':[coltype:'simple'],
+    'date_first_issue_online':[coltype:'simple'],
+    'num_first_vol_online':[coltype:'simple'],
+    'num_first_issue_online':[coltype:'simple'],
+    'date_last_issue_online':[coltype:'simple'],
+    'num_last_vol_online':[coltype:'simple'],
+    'num_last_issue_online':[coltype:'simple'],
+    'title_id':[coltype:'simple'],
+    'embargo_info':[coltype:'simple'],
+    'coverage_depth':[coltype:'simple'],
+    'coverage_notes':[coltype:'simple'],
+    'publisher_name':[coltype:'simple'],
+    'platform':[coltype:'map']
+  ];
+
+
   def processUploadPackage(upload) {
 
     def new_pkg_id = null
@@ -236,7 +263,7 @@ public class PackageIngestService {
     return false
   }
 
-  def readPackageCSV(upload_mime_type, upload_filename, charset, input_stream) {
+  def readPackageCSV(upload_mime_type, upload_filename, charset, input_stream, docstyle) {
 
     def result = [:]
     result.processFile=true
@@ -252,7 +279,7 @@ public class PackageIngestService {
     }
 
     CSVReader r = null
-    if ( params.docstyle?.equals("tsv") ) {
+    if ( docstyle?.equals("tsv") ) {
       log.debug("Processing TSV");
       r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ), (char)'\t' )
     }

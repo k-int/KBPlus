@@ -62,7 +62,7 @@ class UploadController {
       def charset = checkCharset(request.getFile("soFile")?.inputStream)
       def input_stream = request.getFile("soFile")?.inputStream
 
-      result.validationResult = packageIngestService.readPackageCSV(upload_mime_type, upload_filename, charset, input_stream)
+      result.validationResult = packageIngestService.readPackageCSV(upload_mime_type, upload_filename, charset, input_stream, params.docstyle)
 
       packageIngestService.validate(result.validationResult)
 
@@ -76,4 +76,39 @@ class UploadController {
     
     return result
   }
+
+  def public static checkCharset(file_input_stream) {
+
+    def result = null;
+
+    byte[] buf = new byte[4096];
+
+    // (1)
+    UniversalDetector detector = new UniversalDetector(null);
+
+    // (2)
+    int nread;
+    while ((nread = file_input_stream.read(buf)) > 0 && !detector.isDone()) {
+      detector.handleData(buf, 0, nread);
+    }
+    // (3)
+    detector.dataEnd();
+
+    // (4)
+    String encoding = detector.getDetectedCharset();
+    if (encoding != null) {
+      result = encoding;
+      System.out.println("Detected encoding = " + encoding);
+      if ( encoding.equals('WINDOWS-1252') ) {
+      }
+    } else {
+      System.out.println("No encoding detected.");
+    }
+
+    // (5)
+    detector.reset();
+
+    result
+  }
+
 }
