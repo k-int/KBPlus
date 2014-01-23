@@ -4,6 +4,11 @@ import com.k_int.kbplus.*
 import org.hibernate.ScrollMode
 import java.nio.charset.Charset
 import java.util.GregorianCalendar
+import org.mozilla.universalchardet.UniversalDetector;
+import org.apache.log4j.*
+import au.com.bytecode.opencsv.CSVReader
+import java.text.SimpleDateFormat
+
 
 public class PackageIngestService {
 
