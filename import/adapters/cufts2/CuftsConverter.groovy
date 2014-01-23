@@ -178,36 +178,33 @@ public class CuftsConverter {
       String[] nl = null;
   
       while ((nl = fr.readNext()) != null) {
-        if (nl.length == header.size()) {
-          def cufts_row = [:]
-          int num_cols = header.size()
-          // println("Cool, row has right number of cols...${nl.length}, header length=${num_cols}");
-          for ( int i=0; i < num_cols; i++ ) {
-            cufts_row[header[i]] = nl[i];
+
+        println(nl.join(','))
+
+        def result_row = []
+        kbplus_column_config.each { kcc ->
+          if ( ( kcc.pos >= 0 ) && ( kcc.pos < nl.length ) ) {
+            result_row.add('"'+nl[kcc.pos]+'"')
           }
-  
-          // println("process row ${cufts_row}");
-  
-          // Title level processing begins here
-          def target_identifiers = [];
-  
-          def publisher = null
-          // publisher = lookupOrCreateOrg(name:____, db:db, stats:stats);
-  
-          // If there is an identifier, set up the appropriate matching...
-          if ( cufts_row.issn && cufts_row.issn.trim().length() > 0 )
-            target_identifiers.add([value:cufts_row.issn.trim(), type:'ISSN'])
-        
-          if ( cufts_row.e_issn && cufts_row.e_issn.trim()?.length() > 0 )
-            target_identifiers.add([value:cufts_row.e_issn.trim(), type:'eISSN'])
-  
-          if ( target_identifiers.size() > 0 ) {
-  
-            def parsed_start_date = parseDate(cufts_row.ft_start_date,possible_date_formats)
-            def parsed_end_date = parseDate(cufts_row.ft_end_date,possible_date_formats)
-  
+          else {
+            result_row.add('');
           }
         }
+
+        out.writeLine(result_row.join(','))
+
+        // If there is an identifier, set up the appropriate matching...
+        // if ( cufts_row.issn && cufts_row.issn.trim().length() > 0 )
+        // target_identifiers.add([value:cufts_row.issn.trim(), type:'ISSN'])
+        
+        // if ( cufts_row.e_issn && cufts_row.e_issn.trim()?.length() > 0 )
+        // target_identifiers.add([value:cufts_row.e_issn.trim(), type:'eISSN'])
+  
+        // if ( target_identifiers.size() > 0 ) {
+        // def parsed_start_date = parseDate(cufts_row.ft_start_date,possible_date_formats)
+        // def parsed_end_date = parseDate(cufts_row.ft_end_date,possible_date_formats)
+        // }
+        // 
       }
     }
   }
@@ -278,7 +275,7 @@ public class CuftsConverter {
   
   def parseDate(datestr, possible_formats) {
     def parsed_date = null;
-    for(i = possible_formats.iterator(); ( i.hasNext() && ( parsed_date == null ) ); ) {
+    for(Iterator i = possible_formats.iterator(); ( i.hasNext() && ( parsed_date == null ) ); ) {
       try {
         parsed_date = i.next().parse(datestr);
       }
