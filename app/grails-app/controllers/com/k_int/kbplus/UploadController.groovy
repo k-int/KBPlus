@@ -55,8 +55,13 @@ class UploadController {
     
     if ( request.method == 'POST' ) {
 
+      def upload_mime_type = request.getFile("soFile")?.contentType
+      def upload_filename = request.getFile("soFile")?.getOriginalFilename()
+      log.debug("Uploaded so type: ${upload_mime_type} filename was ${upload_filename}");
+      def charset = checkCharset(request.getFile("soFile")?.inputStream)
+      def input_stream = request.getFile("soFile")?.inputStream
 
-      result.validationResult = readSubscriptionOfferedCSV(request)
+      result.validationResult = readPackageCSV(request, upload_mime_type, upload_filename, charset, input_stream)
 
       validate(result.validationResult)
       if ( result.validationResult.processFile == true ) {
@@ -291,19 +296,11 @@ class UploadController {
     return false
   }
 
-  def readSubscriptionOfferedCSV(request) {
+  def readPackageCSV(request, upload_mime_type, upload_filename, charset, input_stream) {
 
     def result = [:]
     result.processFile=true
     result.incremental=false
-
-    def upload_mime_type = request.getFile("soFile")?.contentType
-    def upload_filename = request.getFile("soFile")?.getOriginalFilename()
-    log.debug("Uploaded so type: ${upload_mime_type} filename was ${upload_filename}");
-
-    def charset = checkCharset(request.getFile("soFile")?.inputStream)
-
-    def input_stream = request.getFile("soFile")?.inputStream
 
     // File level messages
     result.messages=[]
