@@ -85,7 +85,7 @@
               <g:each in="${orgInstance.links}" var="i">
                 <li>
                   <g:if test="${i.pkg}"><g:link controller="package" action="show" id="${i.pkg.id}">Package: ${i.pkg.name}</g:link></g:if>
-                  <g:if test="${i.sub}"><g:link controller="subscriptionDetails" action="show" id="${i.sub.id}">Subscription: ${i.sub.name}</g:link></g:if>
+                  <g:if test="${i.sub}"><g:link controller="subscriptionDetails" action="index" id="${i.sub.id}">Subscription: ${i.sub.name}</g:link></g:if>
                   <g:if test="${i.lic}">Licence: ${i.lic.id}</g:if>
                   <g:if test="${i.title}"><g:link controller="titleInstance" action="show" id="${i.title.id}">Title: ${i.title.title}</g:link></g:if>
                   (${i.roleType?.value}) </li>
