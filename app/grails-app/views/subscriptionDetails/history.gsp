@@ -49,6 +49,7 @@
             </tr>
           </g:each>
         </g:if>
+      </table>
     </div>
 
 
