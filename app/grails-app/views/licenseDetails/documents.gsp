@@ -52,7 +52,7 @@
             </thead>
             <tbody>
             <g:each in="${license.documents}" var="docctx">
-                <g:if test="${((docctx.owner?.contentType==1) && ( docctx.status?.value!='Deleted'))}">
+                <g:if test="${(((docctx.owner?.contentType==1)||(docctx.owner?.contentType==3)) && ( docctx.status?.value!='Deleted'))}">
                     <tr>
                       <td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td>
                       <td>
