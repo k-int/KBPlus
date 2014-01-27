@@ -1,4 +1,6 @@
 <!doctype html>
+<r:require module="annotations" />
+
 <html>
   <head>
     <meta name="layout" content="mmbootstrap"/>
@@ -32,9 +34,7 @@
         <g:if test="${editable}">
           <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
         </g:if>
-
-        <li class="pull-right"><span class="badge badge-info"><g:annotatedLabel owner="${license}" property="detailsPageInfo">help</g:annotatedLabel></span>&nbsp;</li>
-
+        <li class="pull-right"><g:annotatedLabel owner="${license}" property="detailsPageInfo">help</g:annotatedLabel>&nbsp;</li>
       </ul>
     </div>
 
