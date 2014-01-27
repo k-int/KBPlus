@@ -29,11 +29,12 @@ class PackageDetailsController {
     def list() {
       def result = [:]
       result.user = User.get(springSecurityService.principal.id)
-      params.max = Math.min(params.max ? params.int('max') : 10, 100)
+
+      result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
 
       result.editable = true
 
-      def paginate_after = params.paginate_after ?: 19;
+      def paginate_after = params.paginate_after ?: ( (2*result.max)-1);
       result.max = params.max 
       result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
