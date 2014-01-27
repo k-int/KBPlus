@@ -22,7 +22,7 @@
     </div>
 
     <div class="container">
-ToDo History
+      <h3>ToDo History</h3>
       <table  class="table table-striped table-bordered">
         <tr>
           <th>ToDo Description</th>
@@ -50,10 +50,11 @@ ToDo History
             </tr>
           </g:each>
         </g:if>
+      </table>
     </div>
 
     <div class="container">
-Edit history
+      <h3>Edit history</h3>
       <table  class="table table-striped table-bordered">
         <tr>
           <th>Event ID</th>
