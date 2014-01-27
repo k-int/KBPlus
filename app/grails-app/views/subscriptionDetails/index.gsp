@@ -32,7 +32,7 @@
         <g:if test="${editable}">
           <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
         </g:if>
-        <li class="pull-right"><g:annotatedLabel owner="${subscriptionInstance}" property="detailsPageInfo">help</g:annotatedLabel>&nbsp;</li>
+        <li class="pull-right"><g:annotatedLabel owner="${subscriptionInstance}" property="detailsPageInfo"></g:annotatedLabel>&nbsp;</li>
       </ul>
     </div>
 
