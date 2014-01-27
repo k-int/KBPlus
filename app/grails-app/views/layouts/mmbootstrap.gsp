@@ -335,7 +335,7 @@
       <div id="spotlight-search-results">
       </div>
     </div>
-    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"/>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
     <r:layoutResources/>
 
     <style type="text/css" media="screen, projection">
