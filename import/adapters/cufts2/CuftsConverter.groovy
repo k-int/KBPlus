@@ -47,25 +47,25 @@ public class CuftsConverter {
 
   // Copy without parameters will copy forward to same name in NoSQL DB
   def kbplus_column_config = [
-     [ outputCol:'publication_title', source:'CUFTS', inputCol:'title', pos:-1 ],
-     [ outputCol:'ID.issn',source:'CUFTS', inputCol:'issn', pos:-1 ],
-     [ outputCol:'ID.eissn',source:'CUFTS', inputCol:'e_issn', pos:-1 ],
-     [ outputCol:'date_first_issue_online',source:'CUFTS', inputCol:'ft_start_date', pos:-1 ],
-     [ outputCol:'num_first_vol_online',source:'CUFTS', inputCol:'vol_ft_start', pos:-1 ],
-     [ outputCol:'num_first_issue_online',source:'CUFTS', inputCol:'iss_ft_start', pos:-1 ],
-     [ outputCol:'date_last_issue_online',source:'CUFTS', inputCol:'ft_end_date', pos:-1 ],
-     [ outputCol:'num_last_vol_online',source:'CUFTS', inputCol:'vol_ft_end', pos:-1 ],
-     [ outputCol:'num_last_issue_online',source:'CUFTS', inputCol:'iss_ft_end', pos:-1 ],
-     [ outputCol:'ID.kbart_title_id',source:'CUFTS', inputCol:'db_identifier', pos:-1 ],
-     [ outputCol:'embargo_info',source:'CUFTS', inputCol:'embargo_months', pos:-1 ],
-     [ outputCol:'coverage_depth',source:'CUFTS', inputCol:'coverage', pos:-1 ],
-     [ outputCol:'coverage_notes',source:'CUFTS', inputCol:'coverage', pos:-1 ],
-     [ outputCol:'publisher_name',source:'CUFTS', inputCol:'publisher', pos:-1 ],
-     [ outputCol:'ID.doi',source:null, inputCol:null, pos:-1 ],
-     [ outputCol:'platform.host.name',source:'CUFTS', inputCol:'', pos:-1 ],
-     [ outputCol:'platform.host.url',source:'CUFTS', inputCol:'journal_url', pos:-1 ],
-     [ outputCol:'platform.administrative.name',source:'CUFTS', inputCol:'', pos:-1 ],
-     [ outputCol:'platform.administrative.url',source:'CUFTS', inputCol:'', pos:-1 ]
+     [ outputCol:'publication_title', source:'CUFTS', inputCol:'title', pos:-1, conv:null ],
+     [ outputCol:'ID.issn',source:'CUFTS', inputCol:'issn', pos:-1, conv:[isxn:'y']],
+     [ outputCol:'ID.eissn',source:'CUFTS', inputCol:'e_issn', pos:-1, conv:[isxn:'y'] ],
+     [ outputCol:'date_first_issue_online',source:'CUFTS', inputCol:'ft_start_date', pos:-1, conv:null ],
+     [ outputCol:'num_first_vol_online',source:'CUFTS', inputCol:'vol_ft_start', pos:-1, conv:null ],
+     [ outputCol:'num_first_issue_online',source:'CUFTS', inputCol:'iss_ft_start', pos:-1, conv:null ],
+     [ outputCol:'date_last_issue_online',source:'CUFTS', inputCol:'ft_end_date', pos:-1, conv:null ],
+     [ outputCol:'num_last_vol_online',source:'CUFTS', inputCol:'vol_ft_end', pos:-1, conv:null ],
+     [ outputCol:'num_last_issue_online',source:'CUFTS', inputCol:'iss_ft_end', pos:-1, conv:null ],
+     [ outputCol:'ID.kbart_title_id',source:'CUFTS', inputCol:'db_identifier', pos:-1, conv:null ],
+     [ outputCol:'embargo_info',source:'CUFTS', inputCol:'embargo_months', pos:-1, conv:null ],
+     [ outputCol:'coverage_depth',source:'CUFTS', inputCol:'coverage', pos:-1, conv:null ],
+     [ outputCol:'coverage_notes',source:'CUFTS', inputCol:'coverage', pos:-1, conv:null ],
+     [ outputCol:'publisher_name',source:'CUFTS', inputCol:'publisher', pos:-1, conv:null ],
+     [ outputCol:'ID.doi',source:null, inputCol:null, pos:-1, conv:null ],
+     [ outputCol:'platform.host.name',source:'CUFTS', inputCol:'', pos:-1, conv:null ],
+     [ outputCol:'platform.host.url',source:'CUFTS', inputCol:'journal_url', pos:-1, conv:null ],
+     [ outputCol:'platform.administrative.name',source:'CUFTS', inputCol:'', pos:-1, conv:null ],
+     [ outputCol:'platform.administrative.url',source:'CUFTS', inputCol:'', pos:-1, conv:null ]
   ]
   
   
@@ -181,12 +181,20 @@ public class CuftsConverter {
   
       while ((nl = fr.readNext()) != null) {
 
-        println(nl.join(','))
-
         def result_row = []
         kbplus_column_config.each { kcc ->
+
+
           if ( ( kcc.pos >= 0 ) && ( kcc.pos < nl.length ) ) {
-            result_row.add('"'+nl[kcc.pos]+'"')
+
+            if ( ( kcc.conv?.isxn=='y' ) && ( nl[kcc.pos].length() >= 8 ) ) {
+              def p1=nl[kcc.pos].substring(0,4);
+              def p2=nl[kcc.pos].substring(4,8);
+              result_row.add('"'+p1+'-'+p2+'"')
+            }
+            else {
+              result_row.add('"'+nl[kcc.pos]+'"')
+            }
           }
           else {
             result_row.add('');
