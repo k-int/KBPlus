@@ -299,7 +299,7 @@ class LicenseImportController {
     }
 
     def onix_file_input_stream = upload.uploaded_file ? new FileInputStream(upload.uploaded_file) : upload.offered_file?.inputStream
-    def onix_file_size = upload.uploaded_file ? upload.uploaded_file.size : upload.offered_file.size
+    def onix_file_size = upload.uploaded_file ? new File(upload.uploaded_file).size() : upload.offered_file.size()
 
     def doctype = RefdataCategory.lookupOrCreate(CAT_DOCTYPE, DOCTYPE);
     def doc_content, doc_context
