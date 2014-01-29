@@ -176,6 +176,7 @@
                 <dd>${issueEntitlementInstance.tipp.coverageNote}</dd>
             </dl>
 
+        <g:if test="${editable}">
             <dl>
                 <dt>JUSP Usage Link</dt>
                 <dd>
@@ -187,6 +188,7 @@
                   </g:else>
                 </dd>
             </dl>
+        </g:if>
 
 
             <g:if test="${( usage != null ) && ( usage.size() > 0 ) }">
