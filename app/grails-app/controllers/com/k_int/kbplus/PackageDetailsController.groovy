@@ -117,6 +117,8 @@ class PackageDetailsController {
     
       def result = [:]
       boolean showDeletedTipps=false
+
+      result.transforms = grailsApplication.config.packageTransforms
       
       if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') ) {
         result.editable=true

@@ -16,24 +16,18 @@
         <li><g:link controller="packageDetails" action="show" id="${packageInstance.id}">${packageInstance.name}</g:link></li>
         
         <li class="dropdown pull-right">
-	        <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">
-		  		Exports<b class="caret"></b>
-			</a>
-			<ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
-				<li>
-		  			<% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
-					<g:link action="show" params="${ps_json}">Json Export</g:link>
-	      		</li>
-				<li>
-		  			<% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
-					<g:link action="show" params="${ps_xml}">XML Export</g:link>
-	      		</li>
-		    </ul>
-		</li>
+          <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>
+
+          <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
+            <li><g:link action="show" params="${params+[format:'json']}">Json Export</g:link></li>
+            <li><g:link action="show" params="${params+[format:'xml']}">XML Export</g:link></li>
+            <g:each in="${transforms}" var="transkey,transval">
+              <li><g:link action="show" id="${params.id}" params="${[format:'xml',transformId:transkey]}"> ${transval.name}</g:link></li>
+            </g:each>
+          </ul>
+        </li>
       </ul>
     </div>
-  
-   
 
       <div class="container">
 

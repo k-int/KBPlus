@@ -2,16 +2,14 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
    <xsl:output method="text" encoding="utf-8"/>
    <xsl:strip-space elements="*" />
-    
-   <xsl:template match="/">
-SO Name,value,,,,,,,,,,,,,,,,,,,
+   <xsl:template match="/">SO Name,value,,,,,,,,,,,,,,,,,,,
 SO Identifier,value,,,,,,,,,,,,,,,,,,,
 Provider,value,,,,,,,,,,,,,,,,,,,
-Package Identifier,value,,,,,,,,,,,,,,,,,,, <xsl:text>&#xA;</xsl:text>
-Package Name,value,,,,,,,,,,,,,,,,,,, <xsl:text>&#xA;</xsl:text>
-Agreement Term Start Year,value,,,,,,,,,,,,,,,,,,, <xsl:text>&#xA;</xsl:text>
-Agreement Term End Year,value,,,,,,,,,,,,,,,,,,, <xsl:text>&#xA;</xsl:text>
-Consortium,value,,,,,,,,,,,,,,,,,,, <xsl:text>&#xA;</xsl:text>
+Package Identifier,value,,,,,,,,,,,,,,,,,,,
+Package Name,value,,,,,,,,,,,,,,,,,,,
+Agreement Term Start Year,value,,,,,,,,,,,,,,,,,,,
+Agreement Term End Year,value,,,,,,,,,,,,,,,,,,,
+Consortium,value,,,,,,,,,,,,,,,,,,,
 publication_title,ID.issn,ID.eissn,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,ID.kbart_title_id,embargo_info,coverage_depth,coverage_notes,publisher_name,ID.doi,platform.host.name,platform.host.url,platform.administrative.name,platform.administrative.url <xsl:text>&#xA;</xsl:text>
    	<xsl:apply-templates select="//TitleListEntry" />
    </xsl:template>
