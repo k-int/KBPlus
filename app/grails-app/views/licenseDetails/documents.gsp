@@ -39,7 +39,7 @@
                 <input type="hidden" name="licid" value="${params.id}"/>
         </div>
 
-        <table class="table table-striped table-bordered table-condensed licence-documents">
+        <table class="table table-striped table-bordered table-condensed licence-documents" style="table-layout: fixed; word-wrap: break-word;">
             <thead>
                 <tr>
                     <th></th>
