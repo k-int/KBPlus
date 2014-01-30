@@ -28,7 +28,6 @@
           <th>ToDo Description</th>
           <th>Outcome</th>
           <th>Date</th>
-          <th>Action</th>
         </tr>
         <g:if test="${todoHistoryLines}">
           <g:each in="${todoHistoryLines}" var="hl">
@@ -40,13 +39,6 @@
                 </g:if>
               </td>
               <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${hl.ts}"/></td>
-              <td>
-                <g:if test="${((hl.status==null)||(hl.status.value=='Pending'))}">
-                  <g:link controller="pendingChange" action="accept" id="${hl.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept</g:link>
-                  <g:link controller="pendingChange" action="reject" id="${hl.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject</g:link>
-                </g:if>
-              </td>
-
             </tr>
           </g:each>
         </g:if>
