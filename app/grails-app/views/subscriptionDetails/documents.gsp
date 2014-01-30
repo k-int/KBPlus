@@ -70,10 +70,11 @@
                 <tr>
                   <g:if test="${editable}"><td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td></g:if>
 
-                  <td>
+                  <td style="max-width: 300px;overflow: hidden;text-overflow: ellipsis;">
                     <g:xEditable owner="${docctx.owner}" field="title" id="title"/>
                   </td>
-                  <td><!-- Consider  max-width:200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -->
+                  <td style="max-width: 300px;overflow: hidden;text-overflow: ellipsis;">
+                    <!-- Consider  max-width:200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -->
                     <g:xEditable owner="${docctx.owner}" field="filename" id="filename"/>
                   </td>
                   <td>

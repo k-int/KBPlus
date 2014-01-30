@@ -39,7 +39,7 @@
                 <input type="hidden" name="licid" value="${params.id}"/>
         </div>
 
-        <table class="table table-striped table-bordered table-condensed licence-documents" style="table-layout: fixed; word-wrap: break-word;">
+        <table class="table table-striped table-bordered table-condensed licence-documents">
             <thead>
                 <tr>
                     <th></th>
@@ -55,10 +55,10 @@
                 <g:if test="${(((docctx.owner?.contentType==1)||(docctx.owner?.contentType==3)) && ( docctx.status?.value!='Deleted'))}">
                     <tr>
                       <td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td>
-                      <td>
+                      <td style="max-width: 300px;overflow: hidden;text-overflow: ellipsis;">
                         <g:xEditable owner="${docctx.owner}" field="title" id="title"/>
                       </td>
-                      <td>
+                      <td style="max-width: 300px;overflow: hidden;text-overflow: ellipsis;">
                         <g:xEditable owner="${docctx.owner}" field="filename" id="filename"/>
                       </td>
                       <td>
