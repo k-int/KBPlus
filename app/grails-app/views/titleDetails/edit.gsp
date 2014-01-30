@@ -52,13 +52,13 @@
 
            
             <g:if test="${editable}">
-            <g:form controller="ajax" action="addToCollection" class="form-inline">
-              <input type="hidden" name="__context" value="${ti.class.name}:${ti.id}"/>
-              <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.IdentifierOccurrence"/>
-              <input type="hidden" name="__recip" value="ti"/>
-              <input type="hidden" name="identifier" id="addIdentifierSelect"/>
-              <input type="submit" value="Add Identifier..." class="btn btn-primary btn-small"/>
-            </g:form>
+              <g:form controller="ajax" action="addToCollection" class="form-inline">
+                <input type="hidden" name="__context" value="${ti.class.name}:${ti.id}"/>
+                <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.IdentifierOccurrence"/>
+                <input type="hidden" name="__recip" value="ti"/>
+                <input type="hidden" name="identifier" id="addIdentifierSelect"/>
+                <input type="submit" value="Add Identifier..." class="btn btn-primary btn-small"/>
+              </g:form>
             </g:if>
             <h3>Org Links</h3>
             <table class="table table-bordered">
@@ -83,14 +83,14 @@
             </table>
 
             <g:if test="${editable}">
-            <g:form controller="ajax" action="addToCollection" class="form-inline">
-              <input type="hidden" name="__context" value="${ti.class.name}:${ti.id}"/>
-              <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.OrgRole"/>
-              <input type="hidden" name="__recip" value="title"/>
-              <input type="hidden" name="org" id="addOrgSelect"/>
-              <input type="hidden" name="roleType" id="orgRoleSelect"/>
-              <input type="submit" value="Add Org Role..." class="btn btn-primary btn-small"/>
-            </g:form>
+              <g:form id="addOrgForm" controller="ajax" action="addToCollection" class="form-inline" onsubmit="return validateAddOrgForm()">
+                <input type="hidden" name="__context" value="${ti.class.name}:${ti.id}"/>
+                <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.OrgRole"/>
+                <input type="hidden" name="__recip" value="title"/>
+                <input type="hidden" name="org" id="addOrgSelect"/>
+                <input type="hidden" name="roleType" id="orgRoleSelect"/>
+                <input type="submit" value="Add Org Role..." class="btn btn-primary btn-small"/>
+              </g:form>
             </g:if>
 
           </div>
@@ -206,6 +206,12 @@
 
 
     });
+
+    function validateAddOrgForm() {
+      var orgname=document.forms["addOrgForm"]["addOrgSelect"].value;
+      var role=document.forms["addOrgForm"]["orgRoleSelect"].value;
+      return true;
+    }
   </r:script>
 
   </body>
