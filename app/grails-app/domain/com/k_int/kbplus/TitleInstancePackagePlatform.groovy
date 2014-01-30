@@ -20,7 +20,8 @@ class TitleInstancePackagePlatform {
                                      'endIssue',
                                      'embargo',
                                      'coverageDepth',
-                                     'coverageNote' ]
+                                     'coverageNote',
+                                     'hostPlatformURL' ]
 
 
   Date startDate
