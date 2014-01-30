@@ -73,7 +73,7 @@
                   <td>
                     <g:xEditable owner="${docctx.owner}" field="title" id="title"/>
                   </td>
-                  <td>
+                  <td><!-- Consider  max-width:200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -->
                     <g:xEditable owner="${docctx.owner}" field="filename" id="filename"/>
                   </td>
                   <td>
