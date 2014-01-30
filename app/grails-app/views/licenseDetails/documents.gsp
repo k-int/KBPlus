@@ -62,7 +62,7 @@
                         <g:xEditable owner="${docctx.owner}" field="filename" id="filename"/>
                       </td>
                       <td>
-                      <g:if test="${docctx.owner?.contentType==1}">
+                      <g:if test="${((docctx.owner?.contentType==1)||(docctx.owner?.contentType==3))}">
                           <g:link controller="docstore" id="${docctx.owner.uuid}">Download Doc</g:link>
                       </g:if>
                       </td>
