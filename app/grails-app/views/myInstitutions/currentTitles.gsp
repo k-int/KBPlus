@@ -33,7 +33,7 @@
 	            </li>
 
               <g:each in="${transforms}" var="transkey,transval">
-                <li><g:link action="currentTitles" id="${params.id}" params="${[format:'xml',transformId:transkey]}"> ${transval.name}</g:link></li>
+                <li><g:link action="currentTitles" id="${params.id}" params="${params+[format:'xml',transformId:transkey]}"> ${transval.name}</g:link></li>
               </g:each>
 
             </ul>
