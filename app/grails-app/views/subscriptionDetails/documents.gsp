@@ -53,7 +53,7 @@
 
 
   
-        <table class="table table-striped table-bordered table-condensed">
+        <table class="table table-striped table-bordered table-condensed" style="table-layout: fixed; word-wrap: break-word;">
           <thead>
             <tr>
               <g:if test="${editable}"><th>Select</th></g:if>
