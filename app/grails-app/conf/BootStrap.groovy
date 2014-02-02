@@ -314,6 +314,9 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("LicenseCategory", "Software").save()
     RefdataCategory.lookupOrCreate("LicenseCategory", "Other").save()
 
+    RefdataCategory.lookupOrCreate("TitleInstanceStatus", "Current").save()
+    RefdataCategory.lookupOrCreate("TitleInstanceStatus", "Deleted").save()
+
     log.debug("validate content items...");
     // The default template for a property change on a title
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.propertyChange','','''
