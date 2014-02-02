@@ -274,6 +274,7 @@ class LicenseImportController {
         createNewLicense = !upload.license && !replaceOplRecord,
         // Use specified license if there is one
         license = upload.license
+
     log.debug("replaceOplRecord: ${replaceOplRecord} createNewDocument: ${createNewDocument} createNewLicense: ${createNewLicense} upload.replace_opl: ${upload.replace_opl} license: ${upload.license!=null}")
     importResult.replace = replaceOplRecord
     RefdataValue currentStatus = RefdataCategory.lookupOrCreate('License Status', 'Current')
@@ -312,7 +313,7 @@ class LicenseImportController {
 
     // Update doc properties
     doc_content.uuid     = java.util.UUID.randomUUID().toString()
-    doc_content.filename = filename
+    doc_content.filename = upload.uploaded_file
     doc_content.mimeType = upload.upload_mime_type
     doc_content.title    = upload.upload_title
     doc_content.type     = doctype
