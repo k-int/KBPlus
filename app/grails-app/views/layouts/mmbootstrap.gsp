@@ -12,19 +12,19 @@
     <title><g:layoutTitle default="${meta(name: 'app.name')}"/></title>
     <meta name="description" content="">
     <meta name="viewport" content="initial-scale = 1.0">
+
     <r:require modules="kbplus"/>
+
     <g:layoutHead/>
+
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     
-    <!-- Le fav and touch icons -->
     <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
 
 
-    <!-- Stylesheets -->
-    <r:layoutResources/>
     <r:layoutResources/>
   </head>
 
@@ -190,6 +190,9 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'forceSendNotifications'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="forceSendNotifications">Send Pending Notifications</g:link>
                       </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'titleMerge'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="titleMerge">Title Merge</g:link>
+                      </li>
                       <li class="divider"></li>
                       <li <%= ( ( 'stats'== controllerName ) && ( 'statsHome'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="stats" action="statsHome">Statistics</g:link>
@@ -293,27 +296,7 @@
       </div>
   </div>
   
-  <!--
-  <div class="support-tab">
-      <a href="mailto:kbplus@jisc-collections.ac.uk?subject=KBPlus%20Support%20Query"><i class="icon-question-sign icon-white"></i>Request Support</a>
-  </div>
-  -->
-      
-  <!-- For datatable -->
-  <script type="text/javascript" charset="utf-8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
-  <script type="text/javascript" charset="utf-8" src="http://datatables.net/release-datatables/extras/Scroller/media/js/dataTables.scroller.js"></script>
-      
-  <!-- For x-editable -->
-  <script src="${resource(dir: 'js', file: 'bootstrap-editable.js')}"></script>
-      
-  <!-- For select2 -->
-  <script src="${resource(dir: 'js', file: 'select2.js')}"></script>
-      
-  <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
-  <style type="text/css" media="screen, projection">
-    @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
-  </style>
-  <script type="text/javascript">
+  <r:script type="text/javascript">
     if (typeof(Zenbox) !== "undefined") {
       Zenbox.init({
         dropboxID:   "20234067",
@@ -324,9 +307,9 @@
         tabPosition: "Right"
       });
     }
-  </script>
+  </r:script>
 
-  <script type="text/javascript">
+  <r:script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', '${grailsApplication.config.kbplus.analytics.code}']);
       <g:if test="${params.shortcode != null}">
@@ -343,73 +326,7 @@
           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
-  </script>
-  
-    <r:layoutResources/>
-
-    <script type="text/javascript">
-
-      // $(function(){
-      $(document).ready(function() {
-
-        $.fn.editable.defaults.mode = 'inline';
-
-        $('.xEditableValue').editable();
-        $(".xEditableManyToOne").editable();
-        $(".simpleHiddenRefdata").editable({
-          url: function(params) {
-            var hidden_field_id = $(this).data('hidden-id');
-            $("#"+hidden_field_id).val(params.value);
-            // Element has a data-hidden-id which is the hidden form property that should be set to the appropriate value
-          }
-        });
-        
-        $(".simpleReferenceTypedown").select2({
-          placeholder: "Search for...",
-          minimumInputLength: 1,
-          ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-            url: "<g:createLink controller='ajax' action='lookup'/>",
-            dataType: 'json',
-            data: function (term, page) {
-                return {
-                    format:'json',
-                    q: term,
-                    baseClass:$(this).data('domain')
-                };
-            },
-            results: function (data, page) {
-              return {results: data.values};
-            }
-          }
-        });
-
-        $('.dlpopover').popover({html:true,
-                                 placement:'bottom',
-                                 title:'search', 
-                                 trigger:'click', 
-template: '<div class="popover" style="width: 400px;"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"></div></div></div>',
-                                 'max-width':400, 
-                                 content:function() {return getContent()}});
-      });
-
-      function getContent() {
-        return $('#spotlight_popover_content_wrapper').html();
-        // var result=""
-        // jQuery.ajax({
-        //  url:"<g:createLink controller='spotlight' action='index' />",
-        //  success: function(r) {
-        //             result=r;
-        //           },
-        //  async:   false
-        // });          
-        // return result;
-      }
-
-      function reloadSpotlightSearchResults() {
-        console.log("reload...");
-        $('#spotlight-search-results').load("<g:createLink controller='spotlight' action='search' />");
-      }
-    </script>
+  </r:script>
 
     <div id="spotlight_popover_content_wrapper" style="display: none">
       <form class="form-search">
@@ -418,6 +335,11 @@ template: '<div class="popover" style="width: 400px;"><div class="arrow"></div><
       <div id="spotlight-search-results">
       </div>
     </div>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
+    <r:layoutResources/>
 
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
+    </style>
   </body>
 </html>

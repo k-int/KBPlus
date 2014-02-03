@@ -202,5 +202,22 @@ class Subscription {
     "Subscription ${id} - ${name}".toString();
   }
 
+  // JSON definition of the subscription object
+  // see http://manbuildswebsite.com/2010/02/15/rendering-json-in-grails-part-3-customise-your-json-with-object-marshallers/
+  // Also http://jwicz.wordpress.com/2011/07/11/grails-custom-xml-marshaller/
+  // Also http://lucy-michael.klenk.ch/index.php/informatik/grails/c/
+  static {
+    grails.converters.JSON.registerObjectMarshaller(User) {
+      // you can filter here the key-value pairs to output:
+      return it.properties.findAll {k,v -> k != 'passwd'}
+    }
+  }
+
+  // XML.registerObjectMarshaller Facility, { facility, xml ->
+  //    xml.attribute 'id', facility.id
+  //               xml.build {
+  //      name(facility.name)  
+  //    }
+  //  }
 }
 

@@ -125,7 +125,7 @@
     </div>
 
     </div>
-    <script language="JavaScript">
+    <r:script language="JavaScript">
       $(document).ready(function() {
 
         var datepicker_config = {
@@ -216,6 +216,6 @@
         $('.bulkcheck').attr('checked', true);
       }
 
-    </script>
+    </r:script>
   </body>
 </html>

@@ -1,8 +1,14 @@
 package com.k_int.kbplus
 
 import com.k_int.kbplus.auth.User;
+import java.sql.Blob;
+import org.hibernate.Hibernate;
 
 class Doc {
+
+  static transients = [ 'blobSize', 'blobData', 'sessionFactory' ]
+  private static final MAX_SIZE = 1073741824 // 4GB 
+  def sessionFactory
 
   RefdataValue status
   RefdataValue type
@@ -12,12 +18,14 @@ class Doc {
   String filename
   String creator
   String mimeType
-  Integer contentType=0 // 0=String, 1=docstore, 2=update notification
+  Integer contentType=0 // 0=String, 1=docstore, 2=update notification, 3=blob
   String content 
+  Blob blobContent 
   String uuid 
   Date dateCreated
   Date lastUpdated
   User user
+  String migrated
 
   static mapping = {
                 id column:'doc_id'
@@ -31,8 +39,10 @@ class Doc {
            creator column:'doc_creator'
           filename column:'doc_filename'
            content column:'doc_content', type:'text'
+       blobContent column:'doc_blob_content'
           mimeType column:'doc_mimeType'
               user column:'doc_user_fk'
+              user column:'doc_migrated'
   }
 
   static constraints = {
@@ -40,6 +50,7 @@ class Doc {
     type(nullable:true, blank:false)
     alert(nullable:true, blank:false)
     content(nullable:true, blank:false)
+    blobContent(nullable:true, blank:false, maxSize:MAX_SIZE)
     uuid(nullable:true, blank:false)
     contentType(nullable:true, blank:false)
     title(nullable:true, blank:false)
@@ -47,5 +58,38 @@ class Doc {
     filename(nullable:true, blank:false)
     mimeType(nullable:true, blank:false)
     user(nullable:true, blank:false)
+    migrated(nullable:true, blank:false, maxSize:1)
+  }
+
+  def setBlobData(InputStream is, long length) {
+    def session = sessionFactory.getCurrentSession() 
+    blobContent = Hibernate.createBlob(is, (int)length)
+  }
+    
+  def getBlobData() {
+    return blobContent?.binaryStream
+  }
+
+
+  Long getBlobSize() {
+    return blobContent?.length() ?: 0
+  }
+    
+  def render(def response) {
+    response.setContentType(mimeType)
+    response.addHeader("content-disposition", "attachment; filename=\"${filename}\"")
+    response.outputStream << getBlobData()
+  }
+    
+  static fromUpload(def file) {
+    if(!file) return new Doc()
+        
+    def filename = file.originalFilename
+    def slashIndex = Math.max(filename.lastIndexOf("/"),filename.lastIndexOf("\\"))
+    if(slashIndex > -1) filename = filename.substring(slashIndex + 1)
+        
+    def doc = new Doc(filename: filename)
+    doc.setBlobData(file.inputStream, file.size)
+    return doc
   }
 }

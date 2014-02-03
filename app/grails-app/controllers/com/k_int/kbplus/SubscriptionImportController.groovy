@@ -3,8 +3,9 @@ package com.k_int.kbplus
 import grails.converters.*
 import grails.plugins.springsecurity.Secured
 import grails.web.JSONBuilder
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.codehaus.groovy.grails.web.json.*
+// import org.json.simple.JSONArray;
+// import org.json.simple.JSONObject;
 import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.MarkupBuilder
 import groovy.xml.StreamingMarkupBuilder
@@ -23,6 +24,13 @@ class SubscriptionImportController {
 
   def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
  
+  def possible_date_formats = [
+    new SimpleDateFormat('yyyy/MM/dd'),
+    new SimpleDateFormat('dd/MM/yyyy'),
+    new SimpleDateFormat('dd/MM/yy'),
+    new SimpleDateFormat('yyyy/MM'),
+    new SimpleDateFormat('yyyy')
+  ];
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def generateImportWorksheet() { 

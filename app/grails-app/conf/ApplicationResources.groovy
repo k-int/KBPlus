@@ -24,7 +24,6 @@ modules = {
     resource url:'css/bootstrap-editable.css'
     resource url:'css/select2.css'
     resource url:"css/instances/${ApplicationHolder.application.config.defaultCssSkin?:'standard.css'}"
-
     resource url:'js/jquery-1.9.1.min.js'
     resource url:'js/bootstrap.min.js'
     resource url:'js/bootstrap-editable.min.js'
@@ -32,7 +31,16 @@ modules = {
     resource url:'js/select2.min.js'
     resource url:'js/jquery.dataTables.min.js'
     resource url:'js/dataTables.scroller.js'
+    resource url:'js/kbplusapp.js.gsp'
+    resource url:'js/jquery.dotdotdot.min.js'
   }
-
-
+  annotations {
+    dependsOn 'kbplus'
+    dependsOn 'font-awesome'
+    resource url:'js/summernote.min.js'
+    resource url:'css/summernote.css'
+    resource url:'css/summernote-bs2.css'
+    resource url:'js/annotations.js'
+    resource url:'css/annotations.css'
+  }
 }

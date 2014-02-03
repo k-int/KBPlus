@@ -16,40 +16,18 @@
         <li><g:link controller="packageDetails" action="show" id="${packageInstance.id}">${packageInstance.name}</g:link></li>
         
         <li class="dropdown pull-right">
-	        <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">
-		  		Exports<b class="caret"></b>
-			</a>
-			<ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
-				<li>
-		  			<% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
-					<g:link action="show" params="${ps_json}">Json Export</g:link>
-	      		</li>
-				<li>
-		  			<% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
-					<g:link action="show" params="${ps_xml}">XML Export</g:link>
-	      		</li>
-	      		
-	      		<g:each in="${com.k_int.kbplus.UserTransforms.findAllByUser(user)}" var="ut">
-	      			<g:if test="${ut.transforms.hasType("package")}">
-	      				<% 
-						  	def ps_trans = [:];
-						  	if(ut.transforms.accepts_format.value == "xml")
-				  				ps_trans.putAll(ps_xml);
-						  	else if(ut.transforms.accepts_format.value == "json")
-								ps_trans.putAll(ps_json);
-							ps_trans.transforms=ut.transforms.id;
-					  	%>
-	      				<li>
-							<g:link action="index" params="${ps_trans}">${ut.transforms.name}</g:link>
-			      		</li>
-	      			</g:if>
-	      		</g:each>
-		    </ul>
-		</li>
+          <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>
+
+          <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
+            <li><g:link action="show" params="${params+[format:'json']}">Json Export</g:link></li>
+            <li><g:link action="show" params="${params+[format:'xml']}">XML Export</g:link></li>
+            <g:each in="${transforms}" var="transkey,transval">
+              <li><g:link action="show" id="${params.id}" params="${[format:'xml',transformId:transkey]}"> ${transval.name}</g:link></li>
+            </g:each>
+          </ul>
+        </li>
       </ul>
     </div>
-  
-   
 
       <div class="container">
 
@@ -92,7 +70,7 @@
         <div class="span8">
             <h6>Package Information</h6>
             <g:hiddenField name="version" value="${packageInstance?.version}" />
-            <fieldset>
+            <fieldset class="inline-lists">
 
               <dl>
                 <dt>Package Name</dt>
@@ -119,7 +97,9 @@
               </dl>
 
 
-                <dl><dt>Start Date</dt><dd>
+                <dl>
+                  <dt>Start Date</dt>
+                  <dd>
                     <g:xEditable owner="${packageInstance}" field="startDate" type="date"/>
                 </dd>
                 </dl>
@@ -211,7 +191,8 @@
         <g:form action="show" params="${params}" method="get" class="form-inline">
            <input type="hidden" name="sort" value="${params.sort}">
            <input type="hidden" name="order" value="${params.order}">
-           <label>Filters - Package Name:</label> <input name="filter" value="${params.filter}"/>
+           <label>Filters - Title:</label> <input name="filter" value="${params.filter}"/>
+           <label>Coverage note:</label> <input name="coverageNoteFilter" value="${params.coverageNoteFilter}"/>
             &nbsp;<label>Starts Before:</label> 
             <g:simpleHiddenValue id="startsBefore" name="startsBefore" type="date" value="${params.startsBefore}"/>
             &nbsp;<label>Ends After:</label>
@@ -282,9 +263,10 @@
             <tbody>
             <g:set var="counter" value="${offset+1}" />
             <g:each in="${titlesList}" var="t">
+              <g:set var="hasCoverageNote" value="${t.coverageNote?.length() > 0}" />
               <tr>
-                <td><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${t.id}" class="bulkcheck"/></g:if></td>
-                <td>${counter++}</td>
+                <td ${hasCoverageNote==true?'rowspan="2"':''}><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${t.id}" class="bulkcheck"/></g:if></td>
+                <td ${hasCoverageNote==true?'rowspan="2"':''}>${counter++}</td>
                 <td style="vertical-align:top;">
                    ${t.title.title}
                    <g:link controller="titleDetails" action="show" id="${t.title.id}">(Title)</g:link>
@@ -313,6 +295,13 @@
                   <g:xEditable owner="${t}" field="coverageDepth" />
                 </td>
               </tr>
+
+              <g:if test="${hasCoverageNote==true}">
+                <tr>
+                  <td colspan="6">coverageNote: ${t.coverageNote}</td>
+                </tr>
+              </g:if>
+
             </g:each>
             </tbody>
             </g:form>
@@ -361,7 +350,7 @@
               contextPath="../templates" 
               model="${[roleLinks:packageInstance?.orgs,parent:packageInstance.class.name+':'+packageInstance.id,property:'orgs',recip_prop:'pkg']}" />
 
-    <script language="JavaScript">
+    <r:script language="JavaScript">
       $(function(){
         $.fn.editable.defaults.mode = 'inline';
         $('.xEditableValue').editable();
@@ -370,7 +359,7 @@
         $('.bulkcheck').attr('checked', true);
       }
 
-    </script>
+    </r:script>
 
   </body>
 </html>

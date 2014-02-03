@@ -53,7 +53,7 @@
 
 
   
-        <table class="table table-striped table-bordered table-condensed">
+        <table class="table table-striped table-bordered table-condensed" style="table-layout: fixed; word-wrap: break-word;">
           <thead>
             <tr>
               <g:if test="${editable}"><th>Select</th></g:if>
@@ -66,18 +66,19 @@
           </thead>
           <tbody>
             <g:each in="${subscriptionInstance.documents}" var="docctx">
-              <g:if test="${(docctx.owner.contentType==1) && (docctx.status?.value != 'Deleted')}">
+              <g:if test="${((docctx.owner.contentType==1)||(docctx.owner?.contentType==3)) && (docctx.status?.value != 'Deleted')}">
                 <tr>
                   <g:if test="${editable}"><td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td></g:if>
 
-                  <td>
+                  <td style="max-width: 300px;overflow: hidden;text-overflow: ellipsis;">
                     <g:xEditable owner="${docctx.owner}" field="title" id="title"/>
                   </td>
-                  <td>
+                  <td style="max-width: 300px;overflow: hidden;text-overflow: ellipsis;">
+                    <!-- Consider  max-width:200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -->
                     <g:xEditable owner="${docctx.owner}" field="filename" id="filename"/>
                   </td>
                   <td>
-                    <g:if test="${docctx.owner?.contentType==1}">
+                    <g:if test="${((docctx.owner?.contentType==1)||(docctx.owner?.contentType==3))}">
                       <g:link controller="docstore" id="${docctx.owner.uuid}">Download Doc</g:link>
                     </g:if>
                   </td>

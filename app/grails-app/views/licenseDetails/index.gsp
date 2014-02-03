@@ -1,4 +1,6 @@
 <!doctype html>
+<r:require module="annotations" />
+
 <html>
   <head>
     <meta name="layout" content="mmbootstrap"/>
@@ -14,45 +16,25 @@
           <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:license.licensee.shortcode]}"> ${license.licensee.name} Current Licenses</g:link> <span class="divider">/</span> </li>
         </g:if>
         <li> <g:link controller="licenseDetails" action="index" id="${params.id}">License Details</g:link> </li>
-		
-		<!-- Old version
-        <g:if test="${editable}">
-          <li class="pull-right">Editable by you&nbsp;</li>
-        </g:if>
-         -->
-         
+    
         <li class="dropdown pull-right">
-	        <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">
-		  		Exports<b class="caret"></b>
-			</a>
-			<ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
-				<li>
-		  			<% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
-					<g:link action="index" params="${ps_json}">Json Export</g:link>
-	      		</li>
-				<li>
-		  			<% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
-					<g:link action="index" params="${ps_xml}">XML Export</g:link>
-	      		</li>
-	      		
-	      		<g:each in="${com.k_int.kbplus.UserTransforms.findAllByUser(user)}" var="ut">
-	      			<g:if test="${ut.transforms.hasType("licence")}">
-	      				<% 
-						  	def ps_trans = [:];
-						  	if(ut.transforms.accepts_format.value == "xml")
-				  				ps_trans.putAll(ps_xml);
-						  	else if(ut.transforms.accepts_format.value == "json")
-								ps_trans.putAll(ps_json);
-							ps_trans.transforms=ut.transforms.id;
-					  	%>
-	      				<li>
-							<g:link action="index" params="${ps_trans}">${ut.transforms.name}</g:link>
-			      		</li>
-	      			</g:if>
-	      		</g:each>
-		    </ul>
-		</li>
+          <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>&nbsp;
+          <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
+            <li>
+              <% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
+              <g:link action="index" params="${ps_json}">Json Export</g:link>
+            </li>
+            <li>
+                <% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
+              <g:link action="index" params="${ps_xml}">XML Export</g:link>
+            </li>
+          </ul>
+        </li>
 
+        <g:if test="${editable}">
+          <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
+        </g:if>
+        <li class="pull-right"><g:annotatedLabel owner="${license}" property="detailsPageInfo"></g:annotatedLabel>&nbsp;</li>
       </ul>
     </div>
 
@@ -61,11 +43,13 @@
       <g:render template="nav" contextPath="." />
     </div>
 
-    <g:if test="${license.pendingChanges?.size() > 0}">
+    <g:if test="${pendingChanges?.size() > 0}">
       <div class="container alert-warn">
         <h6>This Subscription has pending change notifications</h6>
-        <g:link controller="pendingChange" action="acceptAll" id="com.k_int.kbplus.License:${license.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept All</g:link>
-        <g:link controller="pendingChange" action="rejectAll" id="com.k_int.kbplus.License:${license.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject All</g:link>
+        <g:if test="${editable}">
+          <g:link controller="pendingChange" action="acceptAll" id="com.k_int.kbplus.License:${license.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept All</g:link>
+          <g:link controller="pendingChange" action="rejectAll" id="com.k_int.kbplus.License:${license.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject All</g:link>
+        </g:if>
         <br/>&nbsp;<br/>
         <table class="table table-bordered">
           <thead>
@@ -75,12 +59,14 @@
             </tr>
           </thead>
           <tbody>
-            <g:each in="${license.pendingChanges}" var="pc">
+            <g:each in="${pendingChanges}" var="pc">
               <tr>
                 <td>${pc.desc}</td>
                 <td>
-                  <g:link controller="pendingChange" action="accept" id="${pc.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept</g:link>
-                  <g:link controller="pendingChange" action="reject" id="${pc.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject</g:link>
+                  <g:if test="${editable}">
+                    <g:link controller="pendingChange" action="accept" id="${pc.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept</g:link>
+                    <g:link controller="pendingChange" action="reject" id="${pc.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject</g:link>
+                  </g:if>
                 </td>
               </tr>
             </g:each>
@@ -162,8 +148,6 @@
                                 </g:if>
                             </g:if>
                             <g:else>
-                                <%--<input class="btn btn-warning" value="Import an ONIX-PL license"
-                                       href="${createLink(controller: 'licenseImport', action: 'doImport', params: '[license_id: license.id]')}" />--%>
                                 <g:link class="btn btn-warning" controller='licenseImport' action='doImport' params='[license_id: license.id]'>Import an ONIX-PL license</g:link>
                             </g:else>
                         </dd>
@@ -192,9 +176,16 @@
                   </dl>
 
                   <dl>
-                      <dt><label class="control-label" for="licenseeRef">Public?</label></dt>
+                      <dt><label class="control-label" for="isPublic">Public?</label></dt>
                       <dd>
                         <g:xEditableRefData owner="${license}" field="isPublic" config='YN'/>
+                      </dd>
+                  </dl>
+
+                  <dl>
+                      <dt><label class="control-label" for="licenseCategory">License Category</label></dt>
+                      <dd>
+                        <g:xEditableRefData owner="${license}" field="licenseCategory" config='LicenseCategory'/>
                       </dd>
                   </dl>
 
@@ -215,9 +206,6 @@
                         </ul>
                       </dd>
                   </dl>
-
-
-
 
                   <div class="clearfix"></div>
                   </div>
@@ -293,69 +281,11 @@
               contextPath="../templates" 
               model="${[roleLinks:license?.orgLinks,parent:license.class.name+':'+license.id,property:'orgLinks',recip_prop:'lic']}" />
 
-    <script language="JavaScript">
+    <r:script language="JavaScript">
     
-       console.log("ed1");
-       
       <g:if test="${editable}">
-       console.log("ed2");
-
-      $(document).ready(function() {
-      
-         // console.log("ed3f");
-
-
-         // $( "#dialog-form" ).dialog({
-         //   autoOpen: false,
-         //   height: 300,
-         //   width: 350,
-         //   modal: true,
-         //   buttons: {
-         //     Save: function() {
-         //       $( "#upload_new_doc_form" ).submit();
-         //       $( this ).dialog( "close" );
-         //     },
-         //     Cancel: function() {
-         //       $( this ).dialog( "close" );
-         //     }
-         //   },
-         //   close: function() {
-         //     allFields.val( "" ).removeClass( "ui-state-error" );
-         //   }
-         // });
-         // console.log("ed3fr");
-
-         // $(".announce").click(function(){
-         //   var id = $(this).data('id');
-         //   $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" />/'+id);
-         //   $('#modalComments').modal('show');
-         // });
-
-         // $( "#attach-doc" )
-         //     .button()
-         //     .click(function() {
-         //       $( "#dialog-form" ).dialog( "open" );
-         //     });
-
-         // $( "#delete-doc" )
-         //     .button()
-         //     .click(function() {
-         //       $( "#delete_doc_form" ).submit();
-         //     });
-
-         // url = document.location.href.split('#');
-         // if(url[1] != undefined) {
-         //   $('[href=#'+url[1]+']').tab('show');
-         // }
-
-
-       });
-                console.log("ed3fr outer");
-
       </g:if>
       <g:else>
-                console.log("ed3fr else");
-
         $(document).ready(function() {
           $(".announce").click(function(){
             var id = $(this).data('id');
@@ -364,9 +294,8 @@
           });
         }
       </g:else>
-                console.log("done");
 
-    </script>
+    </r:script>
 
   </body>
 </html>

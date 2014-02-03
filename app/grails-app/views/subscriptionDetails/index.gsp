@@ -1,4 +1,6 @@
 <%@ page import="com.k_int.kbplus.Subscription" %>
+<r:require module="annotations" />
+
 <!doctype html>
 <html>
   <head>
@@ -15,49 +17,22 @@
         </g:if>
         <li> <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}">Subscription ${subscriptionInstance.id} Details</g:link> </li>
         
-        <!-- OLD VERSION
-        <li class="pull-right">
-          <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter]}">CSV Export</g:link> 
-          <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter,omitHeader:'Y']}">(No header)</g:link></li>
-        <g:if test="${editable}">
-          <li class="pull-right">Editable by you&nbsp;</li>
-        </g:if>
-        -->
-        
         <li class="dropdown pull-right">
-	        <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">
-		  		Exports<b class="caret"></b>
-			</a>
-			<ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
-				<li>
-          			<g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter]}">CSV Export</g:link> 
-          			<g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter,omitHeader:'Y']}">CSV Export (No header)</g:link>
-        		</li>
-				<li>
-		  			<% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
-					<g:link action="index" params="${ps_json}">Json Export</g:link>
-	      		</li>
-				<li>
-		  			<% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
-					<g:link action="index" params="${ps_xml}">XML Export</g:link>
-	      		</li>
-	      		<g:each in="${com.k_int.kbplus.UserTransforms.findAllByUser(user)}" var="ut">
-	      			<g:if test="${ut.transforms.hasType("subscription")}">
-	      				<% 
-						  	def ps_trans = [:];
-						  	if(ut.transforms.accepts_format.value == "xml")
-				  				ps_trans.putAll(ps_xml);
-						  	else if(ut.transforms.accepts_format.value == "json")
-								ps_trans.putAll(ps_json);
-							ps_trans.transforms=ut.transforms.id;
-					  	%>
-	      				<li>
-							<g:link action="index" params="${ps_trans}">${ut.transforms.name}</g:link>
-			      		</li>
-	      			</g:if>
-	      		</g:each>
-		    </ul>
-		</li>
+          <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>
+          <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
+            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter]}">CSV Export</g:link><li>
+            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter,omitHeader:'Y']}">CSV Export (No header)</g:link></li>
+            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'json',sort:params.sort,order:params.order,filter:params.filter]}">JSON</g:link></li>
+            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'xml',sort:params.sort,order:params.order,filter:params.filter]}">XML</g:link></li>
+            <g:each in="${transforms}" var="transkey,transval">
+              <li><g:link action="index" id="${params.id}" params="${[format:'xml',transformId:transkey]}"> ${transval.name}</g:link></li>
+            </g:each>
+        </ul>
+    </li>
+        <g:if test="${editable}">
+          <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
+        </g:if>
+        <li class="pull-right"><g:annotatedLabel owner="${subscriptionInstance}" property="detailsPageInfo"></g:annotatedLabel>&nbsp;</li>
       </ul>
     </div>
 
@@ -76,11 +51,13 @@
     </div>
 
 
-    <g:if test="${subscriptionInstance.pendingChanges?.size() > 0}">
+    <g:if test="${pendingChanges?.size() > 0}">
       <div class="container alert-warn">
         <h6>This Subscription has pending change notifications</h6>
-        <g:link controller="pendingChange" action="acceptAll" id="com.k_int.kbplus.Subscription:${subscriptionInstance.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept All</g:link>
-        <g:link controller="pendingChange" action="rejectAll" id="com.k_int.kbplus.Subscription:${subscriptionInstance.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject All</g:link>
+        <g:if test="${editable}">
+          <g:link controller="pendingChange" action="acceptAll" id="com.k_int.kbplus.Subscription:${subscriptionInstance.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept All</g:link>
+          <g:link controller="pendingChange" action="rejectAll" id="com.k_int.kbplus.Subscription:${subscriptionInstance.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject All</g:link>
+        </g:if>
         <br/>&nbsp;<br/>
         <table class="table table-bordered">
           <thead>
@@ -90,12 +67,14 @@
             </tr>
           </thead>
           <tbody>
-            <g:each in="${subscriptionInstance.pendingChanges}" var="pc">
+            <g:each in="${pendingChanges}" var="pc">
               <tr>
                 <td>${pc.desc}</td>
                 <td>
-                  <g:link controller="pendingChange" action="accept" id="${pc.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept</g:link>
-                  <g:link controller="pendingChange" action="reject" id="${pc.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject</g:link>
+                  <g:if test="${editable}">
+                    <g:link controller="pendingChange" action="accept" id="${pc.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept</g:link>
+                    <g:link controller="pendingChange" action="reject" id="${pc.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject</g:link>
+                  </g:if>
                 </td>
               </tr>
             </g:each>
@@ -127,15 +106,19 @@
                            <g:link controller="packageDetails" action="show" id="${sp.pkg.id}">${sp?.pkg?.name}</g:link> (${sp.pkg?.contentProvider?.name}) <br/>
                        </g:each></dd></dl>
 
-               <dl><dt>Subscription Identifier</dt><dd>${subscriptionInstance.identifier}</dd></dl>
+               <dl><dt><g:annotatedLabel owner="${subscriptionInstance}" property="identifier">Subscription Identifier</g:annotatedLabel></dt><dd>${subscriptionInstance.identifier}</dd></dl>
 
-               <dl><dt>Public?</dt><dd><g:xEditableRefData owner="${subscriptionInstance}" field="isPublic" config='YN'/></dd></dl> 
+               <dl><dt> <g:annotatedLabel owner="${subscriptionInstance}" property="isPublic">Public?</g:annotatedLabel> </dt><dd><g:xEditableRefData owner="${subscriptionInstance}" field="isPublic" config='YN'/></dd></dl> 
 
                <dl><dt>Start Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="startDate" type="date"/></dd></dl>
 
                <dl><dt>End Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="endDate" type="date"/></dd></dl>
 
-               <dl><dt>Nominal Platform(s)</dt><dd><g:each in="${subscriptionInstance.packages}" var="sp">
+               <dl>
+                 <dt>
+                   <g:annotatedLabel owner="${subscriptionInstance}" property="nominalPlatform">Nominal Platform(s)</g:annotatedLabel>
+                 </dt><dd>
+                    <g:each in="${subscriptionInstance.packages}" var="sp">
                         ${sp.pkg?.nominalPlatform?.name}<br/>
                     </g:each></dd></dl>
 
@@ -157,11 +140,20 @@
 
     <div class="container">
       <dl>
-        <dt>Entitlements ( ${offset+1} to ${offset+(entitlements?.size())} of ${num_sub_rows} )
+        <dt>
+          <g:annotatedLabel owner="${subscriptionInstance}" property="entitlements">
+            <g:if test="${entitlements?.size() > 0}">
+              Entitlements ( ${offset+1} to ${offset+(entitlements?.size())} of ${num_sub_rows} )
+            </g:if>
+            <g:else>
+              No entitlements yet
+            </g:else>
+          </g:annotatedLabel>
           <g:form action="index" params="${params}" method="get" class="form-inline">
              <input type="hidden" name="sort" value="${params.sort}">
              <input type="hidden" name="order" value="${params.order}">
-             <label>Filter:</label> <input name="filter" value="${params.filter}"/>
+             <label><g:annotatedLabel owner="${subscriptionInstance}" property="qryFilter"> Filter: </g:annotatedLabel></label>
+             <input name="filter" value="${params.filter}"/>
              <label>From Package:</label> <select name="pkgfilter">
                                 <option value="">All</option>
                                <g:each in="${subscriptionInstance.packages}" var="sp">
@@ -205,9 +197,9 @@
 
                   <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()" class="btn btn-primary"/></g:if></th>
 
-              	<th>
-                	<g:if test="${editable}"><g:simpleHiddenRefdata id="bulk_core" name="bulk_core" refdataCategory="CoreStatus"/></g:if>
-              	</th>
+                <th>
+                  <g:if test="${editable}"><g:simpleHiddenRefdata id="bulk_core" name="bulk_core" refdataCategory="CoreStatus"/></g:if>
+                </th>
 
               <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_start_date" name="bulk_start_date" type="date"/> </g:if> </th>
               <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_end_date" name="bulk_end_date" type="date"/> </g:if></th>
@@ -272,7 +264,7 @@
               contextPath="../templates" 
               model="${[roleLinks:subscriptionInstance?.orgRelations,parent:subscriptionInstance.class.name+':'+subscriptionInstance.id,property:'orgs',recip_prop:'sub']}" />
 
-    <script language="JavaScript">
+    <r:script language="JavaScript">
       <g:if test="${editable}">
       $(document).ready(function() {
       
@@ -318,6 +310,6 @@
           });
         }
       </g:else>
-    </script>
+    </r:script>
   </body>
 </html>

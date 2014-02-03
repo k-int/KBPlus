@@ -20,32 +20,19 @@
             </a>
             <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
 	            <li>
-	              <% def ps_csv = [:]; ps_csv.putAll(params); ps_csv.format = 'csv'; %>
-	              <g:link action="currentTitles" params="${ps_csv}">CSV Export</g:link>
+	              <g:link action="currentTitles" params="${params+[format:'csv']}">CSV Export</g:link>
 	            </li>
 	            <li>
-	              <% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
-	              <g:link action="currentTitles" params="${ps_json}">Json Export</g:link>
+	              <g:link action="currentTitles" params="${params+[format:'json']}">Json Export</g:link>
 	            </li>
 	            <li>
-	              <% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
-	              <g:link action="currentTitles" params="${ps_xml}">XML Export</g:link>
+	              <g:link action="currentTitles" params="${params+[format:'xml',shortcode:params.shortcode]}">XML Export</g:link>
 	            </li>
-              	<g:each in="${com.k_int.kbplus.UserTransforms.findAllByUser(user)}" var="ut">
-    				<g:if test="${ut.transforms.hasType("title")}">
-     				<% 
-					  	def ps_trans = [:];
-					  	if(ut.transforms.accepts_format.value == "xml")
-			  				ps_trans.putAll(ps_xml);
-					  	else if(ut.transforms.accepts_format.value == "json")
-							ps_trans.putAll(ps_json);
-						ps_trans.transforms=ut.transforms.id;
-				  	%>
-      				<li>
-						<g:link action="currentTitles" params="${ps_trans}">${ut.transforms.name}</g:link>
-		      		</li>
-      				</g:if>
-     			</g:each>
+
+              <g:each in="${transforms}" var="transkey,transval">
+                <li><g:link action="currentTitles" id="${params.id}" params="${params+[format:'xml',transformId:transkey]}"> ${transval.name}</g:link></li>
+              </g:each>
+
             </ul>
           </li>
         </ul>
@@ -117,7 +104,7 @@
             </g:each>
       	</select>
     	</div>
-      	<br/><br/>
+      	<br/>
 	    <div class="container" style="text-align:center">
       		<div class="pull-left">
       			<label class="checkbox">
@@ -156,14 +143,16 @@
             
             <g:each in="${titles}" var="ti">
               <tr>
-                <td>${ti[0].title}</td>
-                <td>${ti[0].getIdentifierValue('ISSN')}</td>
-                <td>${ti[0].getIdentifierValue('eISSN')}</td>
-                <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ti[1]}"/></td>
-                <td><g:if test="${!ti[2].equals('~')}">${ti[2]}</g:if></td>
+                <td>${ti[0].title} ${date_restriction}..</td>
+                <td style="white-space:nowrap">${ti[0].getIdentifierValue('ISSN')}</td>
+                <td style="white-space:nowrap">${ti[0].getIdentifierValue('eISSN')}</td>
+
+                <g:set var="title_coverage_info" value="${ti[0].getInstitutionalCoverageSummary(institution, session.sessionPreferences?.globalDateFormat, date_restriction)}" />
+
+                <td  style="white-space:nowrap">${title_coverage_info.earliest}</td>
+                <td  style="white-space:nowrap">${title_coverage_info.latest}</td>
                 <td>
-                  <g:each in="${entitlements}" var="ie">
-                    <g:if test="${ie.tipp.title.id == ti[0].id}">
+                  <g:each in="${title_coverage_info.ies}" var="ie">
                       <p>
                         <g:link controller="subscriptionDetails" action="index" id="${ie.subscription.id}">${ie.subscription.name}</g:link>:
                         <g:if test="${ie.startVolume}">Vol. ${ie.startVolume}</g:if>
@@ -175,7 +164,6 @@
                         <g:formatDate format="yyyy" date="${ie.endDate}"/>
                         (<g:link controller="issueEntitlement" action="show" id="${ie.id}">Full Issue Entitlement Details</g:link>)
                       </p>
-                    </g:if>
                   </g:each>
                 </td>
               </tr>

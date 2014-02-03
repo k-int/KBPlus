@@ -67,11 +67,5 @@
       </table>
     </div>
     
-    <script language="JavaScript">
-      $(document).ready(function() {
-
-       });
-    </script>
-
   </body>
 </html>

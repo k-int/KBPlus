@@ -40,39 +40,42 @@ class LicenseDetailsController {
     else {
       result.editable = false
     }
-	
+  
     def license_reference_str = result.license.reference?:'NO_LIC_REF_FOR_ID_'+params.id
 
     def filename = "licenceDetails_${license_reference_str.replace(" ", "_")}"
     result.onixplLicense = result.license.onixplLicense;
 
+    def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
+    result.pendingChanges = PendingChange.executeQuery("select pc from PendingChange as pc where license=? and ( pc.status is null or pc.status = ? ) order by ts desc", [result.license, pending_change_pending_status]);
+
+
+    log.debug("pc result is ${result.pendingChanges}");
+
+
     withFormat {
-		  html result
-		  json {
-			  def map = exportService.addLicensesToMap([:], [result.license])
-			  
-			  def json = map as JSON
-			  if(params.transforms){
-				  transformerService.triggerTransform(result.user, filename, params.transforms, json.toString(), response)
-			  }else{
-				  response.setHeader("Content-disposition", "attachment; filename=\"${filename}.json\"")
-				  response.contentType = "application/json"
-				  render json.toString()
-			  }
-		  }
-		  xml {
-			  def doc = exportService.buildDocXML("Licences")
-			  exportService.addLicencesIntoXML(doc, doc.getDocumentElement(), [result.license])
-			  
-			  if(params.transforms){
-				  String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
-				  transformerService.triggerTransform(result.user, filename, params.transforms, xml, response)
-			  }else{
-				  response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
-				  response.contentType = "text/xml"
-				  exportService.streamOutXML(doc, response.outputStream)
-			  }
-		  }
+      html result
+      json {
+        def map = exportService.addLicensesToMap([:], [result.license])
+        
+        def json = map as JSON
+        response.setHeader("Content-disposition", "attachment; filename=\"${filename}.json\"")
+        response.contentType = "application/json"
+        render json.toString()
+      }
+      xml {
+        def doc = exportService.buildDocXML("Licences")
+        exportService.addLicencesIntoXML(doc, doc.getDocumentElement(), [result.license])
+        
+        if( ( params.transformId ) && ( result.transforms[params.transformId] != null ) ) {
+          String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
+          transformerService.triggerTransform(result.user, filename, result.transforms[params.transformId], xml, response)
+        }else{ // send the XML to the user
+          response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
+          response.contentType = "text/xml"
+          exportService.streamOutXML(doc, response.outputStream)
+        }
+      }
     }
   }
 
@@ -126,6 +129,8 @@ class LicenseDetailsController {
     result.historyLines = AuditLogEvent.executeQuery("select e from AuditLogEvent as e where className=? and persistedObjectId=? order by id desc", qry_params, [max:result.max, offset:result.offset]);
     result.historyLinesTotal = AuditLogEvent.executeQuery("select count(e.id) from AuditLogEvent as e where className=? and persistedObjectId=?",qry_params)[0];
 
+    result.todoHistoryLines = PendingChange.executeQuery("select pc from PendingChange as pc where license=? order by ts desc", result.license);
+
     result
   }
 
@@ -173,48 +178,6 @@ class LicenseDetailsController {
   }
 
 
-
-  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def uploadDocument() {
-    log.debug("upload document....");
-
-    def user = User.get(springSecurityService.principal.id)
-
-    def l = License.get(params.licid);
-
-    if ( ! l.hasPerm("edit",result.user) ) {
-      response.sendError(401);
-      return
-    }
-
-    def input_stream = request.getFile("upload_file")?.inputStream
-    def original_filename = request.getFile("upload_file")?.originalFilename
-
-    log.debug("uploadDocument ${params} upload file = ${original_filename}");
-
-    if ( l && input_stream ) {
-      def docstore_uuid = docstoreService.uploadStream(input_stream, original_filename, params.upload_title)
-      log.debug("Docstore uuid is ${docstore_uuid}");
-
-      if ( docstore_uuid ) {
-        log.debug("Docstore uuid present (${docstore_uuid}) Saving info");
-        def doc_content = new Doc(contentType:1,
-                                  uuid: docstore_uuid,
-                                  filename: original_filename,
-                                  mimeType: request.getFile("upload_file")?.contentType,
-                                  title: params.upload_title,
-                                  type:RefdataCategory.lookupOrCreate('Document Type',params.doctype)).save()
-
-        def doc_context = new DocContext(license:l,
-                                         owner:doc_content,
-                                         user: user,
-                                         doctype:RefdataCategory.lookupOrCreate('Document Type',params.doctype)).save(flush:true);
-      }
-    }
-
-    log.debug("Redirecting...");
-    redirect controller: 'licenseDetails', action:'index', id:params.licid, fragment:params.fragment
-  }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def deleteDocuments() {

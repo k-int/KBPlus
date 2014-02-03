@@ -44,6 +44,7 @@ class Org {
   }
 
   static constraints = {
+         impId(nullable:true, blank:true,maxSize:256);
        address(nullable:true, blank:true,maxSize:256);
        ipRange(nullable:true, blank:true, maxSize:1024);
         sector(nullable:true, blank:true, maxSize:128);

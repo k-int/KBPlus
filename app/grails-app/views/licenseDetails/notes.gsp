@@ -72,7 +72,7 @@
     </div>
 
     <!-- JS for licence documents -->
-    <script type="text/javascript">
+    <r:script type="text/javascript">
         $('.licence-notes input[type="checkbox"]').click(function () {
             if ($('.licence-notes input:checked').length > 0) {
                 $('.licence-notes-options').slideDown('fast');
@@ -91,7 +91,7 @@
                 $('.licence-notes-options').slideUp('fast');
             });
         })
-    </script>
+    </r:script>
 
 </body>
 </html>

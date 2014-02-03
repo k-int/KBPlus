@@ -1,4 +1,3 @@
-
 <%@ page import="com.k_int.kbplus.TitleInstance" %>
 <!doctype html>
 <html>
@@ -20,7 +19,7 @@
       </ul>
     </div>
 
-    <div class="container">
+    <div class="container inline-lists">
       
         <div class="page-header">
           <h1>"${titleInstanceInstance?.title}" in "${tipp.pkg.name}" on ${tipp.platform.name}</h1>
@@ -31,7 +30,6 @@
         </g:if>
 
         <dl>
-        
           <g:if test="${titleInstanceInstance?.ids}">
             <dt><g:message code="titleInstance.ids.label" default="Ids" /></dt>
             
@@ -41,55 +39,83 @@
               </dd>
             
           </g:if>
-        
+        </dl>
+        <dl>
           <dt>TIPP Start Date</dt>
           <dd><g:xEditable owner="${tipp}" type="date" field="startDate"/></dd>
-
+        </dl>
+        <dl>
           <dt>TIPP Start Volume</dt>
           <dd><g:xEditable owner="${tipp}" field="startVolume"/></dd>
-
+        </dl>
+        <dl>
           <dt>TIPP Start Issue</dt>
           <dd><g:xEditable owner="${tipp}" field="startIssue"/></dd>
+        </dl>
+        <dl>
 
           <dt>TIPP End Date</dt>
           <dd><g:xEditable owner="${tipp}"  type="date" field="endDate"/></dd>
+        </dl>
+        <dl>
 
           <dt>TIPP End Volume</dt>
           <dd><g:xEditable owner="${tipp}" field="endVolume"/></dd>
+        </dl>
+        <dl>
 
           <dt>TIPP End Issue</dt>
           <dd><g:xEditable owner="${tipp}" field="endIssue"/></dd>
+        </dl>
+        <dl>
 
           <dt>Coverage Depth</dt>
           <dd><g:xEditable owner="${tipp}" field="coverageDepth"/></dd>
+        </dl>
+        <dl>
 
           <dt>Coverage Note</dt>
           <dd><g:xEditable owner="${tipp}" field="coverageNote"/></dd>
+        </dl>
+        <dl>
 
           <dt>Embargo</dt>
           <dd><g:xEditable owner="${tipp}" field="embargo"/></dd>
+        </dl>
+        <dl>
 
           <dt>Host URL</dt>
-          <dd><g:xEditable owner="${tipp}" field="hostPlatformURL"/></dd>
+          <dd><g:xEditable type="text" owner="${tipp}" field="hostPlatformURL"/></dd>
+        </dl>
+        <dl>
 
           <dt>Status</dt>
           <dd><g:xEditableRefData owner="${tipp}" field="status" config='TIPPStatus'/><dd>
+        </dl>
+        <dl>
 
           <dt>Status Reason</dt>
           <dd><g:xEditableRefData owner="${tipp}" field="statusReason" config='TIPPStatusReason'/><dd>
+        </dl>
+        <dl>
 
           <dt>Delayed OA</dt>
           <dd><g:xEditableRefData owner="${tipp}" field="delayedOA" config='TIPPDelayedOA'/><dd>
+        </dl>
+        <dl>
 
           <dt>Hybrid OA</dt>
           <dd><g:xEditableRefData owner="${tipp}" field="hybridOA" config='TIPPHybridOA'/><dd>
-
+        </dl>
+        <dl>
           <dt>Payment</dt>
           <dd><g:xEditableRefData owner="${tipp}" field="payment" config='TIPPPaymentType'/><dd>
-
+        </dl>
+        <dl>
           <dt>Host Platform</dt>
           <dd>${tipp.platform.name}</dd>
-
+        </dl>
+        <dl>
           <dt>Additional Platforms</td>
           <dd>
             <table class="table">
@@ -107,10 +133,12 @@
               </tbody>
             </table>
           </dd>
+        </dl>
 
 
 
           <g:if test="${titleInstanceInstance?.tipps}">
+            <dl>
             <dt><g:message code="titleInstance.tipps.label" default="Occurences of this title against Packages / Platforms" /></dt>
             <dd>
 
@@ -148,10 +176,8 @@
 
             </table>
             </dd>
+            </dl>
           </g:if>
-        
-        </dl>
-
     </div>
   </body>
 </html>

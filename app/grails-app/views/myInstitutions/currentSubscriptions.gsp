@@ -1,8 +1,10 @@
 <!doctype html>
+<r:require module="annotations" />
+
 <html>
   <head>
     <meta name="layout" content="mmbootstrap"/>
-    <title>KB+ Data import explorer</title>
+    <title>KB+ ${institution.name} - Current Subscriptions</title>
   </head>
   <body>
 
@@ -53,7 +55,7 @@
           <tr>
             <th>Select</th>
             <g:sortableColumn params="${params}" property="s.name" title="Name" />
-            <th>Linked Packages</th>
+            <th><g:annotatedLabel owner="${institution}" property="linkedPackages">Linked Packages</g:annotatedLabel></th>
             <th>Consortia</th>
             <g:sortableColumn params="${params}" property="s.startDate" title="Start Date" />
             <g:sortableColumn params="${params}" property="s.endDate" title="End Date" />
@@ -102,7 +104,7 @@
 
     </g:form>
 
-    <script type="text/javascript">
+    <r:script type="text/javascript">
         $('.subscription-results input[type="radio"]').click(function () {
             $('.subscription-options').slideDown('fast');
         });
@@ -113,7 +115,7 @@
                 $('.subscription-options').slideUp('fast');
             })
         })                
-    </script>
+    </r:script>
 
   </body>
 </html>

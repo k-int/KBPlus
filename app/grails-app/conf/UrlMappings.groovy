@@ -13,6 +13,8 @@ class UrlMappings {
     "/myInstitutions/$shortcode/$action/$id"(controller:'myInstitutions')
     "/myInstitutions/$shortcode/dashboard"(controller:'myInstitutions', action:'instdash')
 
+    "/ajax/$action?/$id?"(controller:'ajax')
+
     // "/"(controller:"home")
     "/"(view:"/publichome")
 

@@ -105,7 +105,7 @@
               contextPath="../templates" 
               model="${[roleLinks:packageInstance?.orgs,parent:packageInstance.class.name+':'+packageInstance.id,property:'orgs',recip_prop:'pkg']}" />
 
-    <script language="JavaScript">
+    <r:script language="JavaScript">
 
       $(document).ready(function(){
          $('div span.refdataedit').editable('<g:createLink controller="ajax" params="${[resultProp:'value']}" action="genericSetRel" />', {
@@ -120,7 +120,7 @@
          });
       });
 
-    </script>
+    </r:script>
 
   </body>
 </html>

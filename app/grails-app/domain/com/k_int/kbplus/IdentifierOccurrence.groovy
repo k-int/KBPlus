@@ -36,30 +36,10 @@ class IdentifierOccurrence {
 
   @Transient
   def onSave = {
-
-    log.debug("onSave")
-    if ( ti != null ) {
-      def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
-
-      changeNotificationService.notifyChangeEvent([
-                                                   OID:"${ti.class.name}:${ti.id}",
-                                                   event:'TitleInstance.identifierAdded'
-                                                  ])
-    }
   }
 
   @Transient
   def onDelete = {
-
-    log.debug("onDelete")
-    if ( ti != null ) {
-      def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
-
-      changeNotificationService.notifyChangeEvent([
-                                                   OID:"${ti.class.name}:${ti.id}",
-                                                   event:'TitleInstance.identifierRemoved'
-                                                  ])
-    }
   }
 
 

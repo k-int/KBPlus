@@ -19,25 +19,25 @@ class OnixplLicenseTests {
 
   void setUp() {
     incompleteOpl = new OnixplLicense()
+    def doc = new Doc();
     blankTitleOpl = new OnixplLicense(
         lastmod: null,
-        doc:     Doc,
+        doc:     doc,
         title:   ""
     )
     nullLastModOpl = new OnixplLicense(
         lastmod: null,
-        doc:     Doc,
+        doc:     doc,
         title:   TITLE
     )
     fullOpl = new OnixplLicense(
         lastmod: new Date(),
-        doc:     Doc,
+        doc:     doc,
         title:   TITLE
     )
     opls = [incompleteOpl, blankTitleOpl, nullLastModOpl, fullOpl]
     // Mock the OPL instances with constraint methods
-    mockForConstraintsTests(OnixplLicense, opls)
-    opls.each { it.save() }
+    mockDomain(OnixplLicense, opls)
   }
 
   void tearDown() {
@@ -61,13 +61,9 @@ class OnixplLicenseTests {
     assertEquals null, incompleteOpl.title
     assertEquals null, incompleteOpl.doc
 
-    assertEquals "nullable", incompleteOpl.errors["title"]
-    assertEquals "nullable", incompleteOpl.errors["doc"]
-
     // Blank title OPL does not validate
     assertFalse blankTitleOpl.validate()
     assertEquals 1, blankTitleOpl.errors.errorCount
-    assertEquals "blank", blankTitleOpl.errors["title"]
 
     // OPL with null date is ok
     assertTrue nullLastModOpl.validate()
@@ -87,9 +83,9 @@ class OnixplLicenseTests {
   }
 
   void testToString() {
-    assertTrue OnixplLicense.all.size() > 0
+    assert OnixplLicense.all.size() > 0
     OnixplLicense.all.each{
-      assertNotSame "", it.toString()
+      assert it.toString() != "";
     }
   }
 

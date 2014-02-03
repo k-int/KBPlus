@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="layout" content="mmbootstrap"/>
-    <title>KB+ Data import explorer</title>
+    <title>KB+ Institutional Dash :: ${org?.name}</title>
   </head>
 
   <body>
@@ -18,7 +18,7 @@
               <g:each in="${user.authorizedOrgs}" var="org">
                 <dd><g:link controller="myInstitutions" 
                                      action="currentLicenses" 
-                                     params="${[shortcode:org?.shortcode]}">${org.name}</g:link></dd>
+                                     params="${[shortcode:org?.shortcode]}">${org?.name}</g:link></dd>
               </g:each>
             </dl>
           </div>
@@ -30,7 +30,7 @@
               <g:each in="${user.authorizedOrgs}" var="org">
                 <dd><g:link controller="myInstitutions" 
                                      action="currentSubscriptions" 
-                                     params="${[shortcode:org?.shortcode]}">${org.name}</g:link></dd>
+                                     params="${[shortcode:org?.shortcode]}">${org?.name}</g:link></dd>
               </g:each>
             </dl>
           </div>
@@ -42,7 +42,7 @@
               <g:each in="${user.authorizedOrgs}" var="org">
                 <dd><g:link controller="myInstitutions" 
                             action="currentTitles" 
-                            params="${[shortcode:org?.shortcode]}">${org.name}
+                            params="${[shortcode:org?.shortcode]}">${org?.name}
                 </g:link></dd>
               </g:each>
             </dl>
@@ -147,7 +147,7 @@
     <div class="modal hide fade" id="modalComments">
     </div>
 
-    <script type="text/javascript">
+    <r:script type="text/javascript">
       // http://stackoverflow.com/questions/10626885/passing-data-to-a-bootstrap-modal
       $(document).ready(function() {
          $(".announce").click(function(){ 
@@ -156,6 +156,6 @@
            $('#modalComments').modal('show');
          });
       });
-    </script>
+    </r:script>
   </body>
 </html>

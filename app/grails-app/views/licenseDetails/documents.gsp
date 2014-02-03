@@ -52,17 +52,17 @@
             </thead>
             <tbody>
             <g:each in="${license.documents}" var="docctx">
-                <g:if test="${((docctx.owner?.contentType==1) && ( docctx.status?.value!='Deleted'))}">
+                <g:if test="${(((docctx.owner?.contentType==1)||(docctx.owner?.contentType==3)) && ( docctx.status?.value!='Deleted'))}">
                     <tr>
                       <td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td>
-                      <td>
+                      <td style="max-width: 300px;overflow: hidden;text-overflow: ellipsis;">
                         <g:xEditable owner="${docctx.owner}" field="title" id="title"/>
                       </td>
-                      <td>
+                      <td style="max-width: 300px;overflow: hidden;text-overflow: ellipsis;">
                         <g:xEditable owner="${docctx.owner}" field="filename" id="filename"/>
                       </td>
                       <td>
-                      <g:if test="${docctx.owner?.contentType==1}">
+                      <g:if test="${((docctx.owner?.contentType==1)||(docctx.owner?.contentType==3))}">
                           <g:link controller="docstore" id="${docctx.owner.uuid}">Download Doc</g:link>
                       </g:if>
                       </td>
@@ -78,13 +78,6 @@
         </table>
       </g:form>
     </div>
-
-<script language="JavaScript">
-  $(document).ready(function() {
-
-   });
-</script>
-
 
 <!-- Lightbox modal for creating a document taken from licenceDocuments.html -->
 <div class="modal hide" id="modalCreateDocument">
@@ -134,7 +127,7 @@
 </div>
 <!-- End lightbox modal -->
 
-<script language="JavaScript">
+<r:script language="JavaScript">
   $(document).ready(function() {
       
       var checkEmptyEditable = function() {
@@ -187,10 +180,10 @@
        onblur	 : 'ignore'
      });
    });
-</script>
+</r:script>
 
 <!-- JS for licence documents -->
-<script type="text/javascript">
+<r:script type="text/javascript">
     $('.licence-documents input[type="checkbox"]').click(function () {
         if ($('.licence-documents input:checked').length > 0) {
             $('.licence-documents-options').slideDown('fast');
@@ -209,7 +202,7 @@
             $('.licence-documents-options').slideUp('fast');
         });
     })
-</script>
+</r:script>
 
 
 </body>

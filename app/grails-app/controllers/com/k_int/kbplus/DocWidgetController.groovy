@@ -70,7 +70,8 @@ class DocWidgetController {
   def uploadDocument() {
     log.debug("upload document....");
 
-    def input_stream = request.getFile("upload_file")?.inputStream
+    def input_file = request.getFile("upload_file")
+    def input_stream = input_file?.inputStream
     def original_filename = request.getFile("upload_file")?.originalFilename
 
     def user = User.get(springSecurityService.principal.id)
@@ -83,23 +84,24 @@ class DocWidgetController {
         log.debug("Got owner instance ${instance}");
 
         if ( input_stream ) {
-          def docstore_uuid = docstoreService.uploadStream(input_stream, original_filename, params.upload_title)
-          log.debug("Docstore uuid is ${docstore_uuid}");
+          // def docstore_uuid = docstoreService.uploadStream(input_stream, original_filename, params.upload_title)
+          // log.debug("Docstore uuid is ${docstore_uuid}");
     
-          if ( docstore_uuid ) {
-            log.debug("Docstore uuid present (${docstore_uuid}) Saving info");
-            def doc_content = new Doc(contentType:1,
-                                      uuid: docstore_uuid,
-                                      filename: original_filename,
-                                      mimeType: request.getFile("upload_file")?.contentType,
-                                      title: params.upload_title,
-                                      type:RefdataCategory.lookupOrCreate('Document Type',params.doctype)).save()
+          def doc_content = new Doc(contentType:3,
+                                    uuid: java.util.UUID.randomUUID().toString(),
+                                    filename: original_filename,
+                                    mimeType: request.getFile("upload_file")?.contentType,
+                                    title: params.upload_title,
+                                    type:RefdataCategory.lookupOrCreate('Document Type',params.doctype))
+          doc_content.setBlobData(input_stream, input_file.size)
+          doc_content.save()
 
-            def doc_context = new DocContext("${params.ownertp}":instance,
-                                             owner:doc_content,
-                                             user:user,
-                                             doctype:RefdataCategory.lookupOrCreate('Document Type',params.doctype)).save(flush:true);
-          }
+          def doc_context = new DocContext("${params.ownertp}":instance,
+                                           owner:doc_content,
+                                           user:user,
+                                           doctype:RefdataCategory.lookupOrCreate('Document Type',params.doctype)).save(flush:true);
+
+          log.debug("Doc created and new doc context set on ${params.ownertp} for ${params.ownerid}");
         }
         
       }

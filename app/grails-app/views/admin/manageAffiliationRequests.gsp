@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="layout" content="mmbootstrap"/>
-    <title>KB+ Data import explorer</title>
+    <title>KB+ Manage Affiliation Requests</title>
   </head>
 
   <body>

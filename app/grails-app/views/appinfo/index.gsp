@@ -50,6 +50,34 @@
               </g:each>
             </td></tr>
       </table>
+
+      <ul>
+        <g:each in="${request.getAttributeNames()}" var="an">
+          <li>${an} = ${request.getAttribute(an)}</li>
+        </g:each>
+        <li> authenticationMethodObject = ${request.getAttribute('Shib-Authentication-Method')}</li>
+        <li> identityProviderObject = ${request.getAttribute('Shib-Identity-Provider')}</li>
+        <li> principalUsernameObject = (${grailsApplication.config.grails.plugins.springsecurity.shibboleth.principalUsername.attribute}) 
+                                       ${request.getAttribute(grailsApplication.config.grails.plugins.springsecurity.shibboleth.principalUsername.attribute)}</li>
+        <li> authenticationInstantObject = ${request.getAttribute('Shib-Authentication-Instant')}</li>
+        <li> usernameObject = (EPPN) ${request.getAttribute('EPPN')}</li>
+        <li> eduPersonPrincipalName = ${request.getAttribute('eduPersonPrincipalName')}</li>
+        <li> eduPersonScopedAffiliation = ${request.getAttribute('eduPersonScopedAffiliation')}</li>
+        <li> eduPersonPrincipalName = ${request.getAttribute('eduPersonPrincipalName')}</li>
+        <li> eduPersonEntitlement = ${request.getAttribute('eduPersonEntitlement')}</li>
+        <li> uid = ${request.getAttribute('uid')}</li>
+        <li> mail = ${request.getAttribute('mail')}</li>
+        <li> affiliation = ${request.getAttribute('affiliation')}</li>
+        <li> entitlement = ${request.getAttribute('entitlement')}</li>
+        <li> persistent-id = ${request.getAttribute('persistent-id')}</li>
+        <li> authInstitutionName = ${request.getAttribute('authInstitutionName')}</li>
+        <li> eduPersonTargetedID = ${request.getAttribute('eduPersonTargetedID')}</li>
+        <li> authInstitutionAddress = ${request.getAttribute('authInstitutionAddress')}</li>
+        <li> targeted-id = ${request.getAttribute('targeted-id')}</li>
+        <li> uid = ${request.getAttribute('uid')}</li>
+        <li> REMOTE_USER = ${request.getAttribute('REMOTE_USER')}</li>
+        <li> REMOTE_USER (fm) = ${request.getRemoteUser()}</li>
+      </ul>
     </div>
   </body>
 </html>

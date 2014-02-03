@@ -146,12 +146,15 @@ class DataloadService {
 
       sub.packages.each { sp ->
         def pgkinfo = [:]
-        pgkinfo.pkgname = sp.pkg.name
-        pgkinfo.pkgidstr= sp.pkg.identifier
-        pgkinfo.pkgid= sp.pkg.id
-        pgkinfo.cpname = sp.pkg.contentProvider?.name
-        pgkinfo.cpid = sp.pkg.contentProvider?.id
-        result.packages.add(pgkinfo);
+        if ( sp.pkg != null ) {
+          // Defensive - it appears that there can be a SP without a package. 
+          pgkinfo.pkgname = sp.pkg.name
+          pgkinfo.pkgidstr= sp.pkg.identifier
+          pgkinfo.pkgid= sp.pkg.id
+          pgkinfo.cpname = sp.pkg.contentProvider?.name
+          pgkinfo.cpid = sp.pkg.contentProvider?.id
+          result.packages.add(pgkinfo);
+        }
       }
 
       if ( sub.subscriber ) {

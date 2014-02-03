@@ -114,7 +114,7 @@
       </dl>
     </div>
 
-    <script language="JavaScript">
+    <r:script language="JavaScript">
       $(document).ready(function() {
         $('span.newipe').editable('<g:createLink controller="ajax" action="genericSetValue" />', {
           type      : 'textarea',
@@ -137,8 +137,7 @@
             // Element has a data-hidden-id which is the hidden form property that should be set to the appropriate value
           }
         });
-    </script>
+    </r:script>
 
-    </script>
   </body>
 </html>

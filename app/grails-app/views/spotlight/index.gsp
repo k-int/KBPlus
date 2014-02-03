@@ -6,8 +6,8 @@
 </div>
 <div id="spotlight-search-results">
 </div>
-<script language="JavaScript">
+<r:script language="JavaScript">
   function reloadSpotlightSearchResults() {
     console.log("reload...");
   }
-</script>
+</r:script>

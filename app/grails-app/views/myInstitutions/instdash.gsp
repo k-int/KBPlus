@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="layout" content="mmbootstrap"/>
-    <title>KB+ Data import explorer</title>
+    <title>KB+ Institutional Dash :: ${institution?.name}</title>
   </head>
 
   <body>
@@ -10,7 +10,7 @@
     <div class="container">
       <ul class="breadcrumb">
         <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
-        <li> <g:link controller="myInstitutions" action="instdash" params="${[shortcode:params.shortcode]}">${institution.name} Dashboard</g:link> </li>
+        <li> <g:link controller="myInstitutions" action="instdash" params="${[shortcode:params.shortcode]}">${institution?.name} Dashboard</g:link> </li>
       </ul>
     </div>
 
@@ -114,7 +114,7 @@
                         <span class="widget-content">${ra.content}</span>
                         <div class="see-more"><a href="">[ See More ]</a></div>
                       </div> 
-                      <p>Posted by <em><g:link controller="userDetails" action="pub" id="${ra.user.id}">${ra.user.displayName}</g:link></em> on <g:formatDate date="${ra.dateCreated}" format="yyyy-MM-dd hh:mm a"/></p>
+                      <p>Posted by <em><g:link controller="userDetails" action="pub" id="${ra.user?.id}">${ra.user?.displayName}</g:link></em> on <g:formatDate date="${ra.dateCreated}" format="yyyy-MM-dd hh:mm a"/></p>
                     </div>
                   </td>
                 </tr>
@@ -178,10 +178,7 @@
       </div>
     </div>
 
-    <!-- For DotDotDot -->
-    <script src="${resource(dir: 'js', file: 'jquery.dotdotdot.min.js')}"></script>
-
-    <script type="text/javascript">
+    <r:script>
       $(document).ready(function() {
         $(".widget-content").dotdotdot({
           height: 50,
@@ -199,7 +196,7 @@
           $(this).hide();
         });
       });
-    </script>
+    </r:script>
 
   </body>
 </html>

@@ -4,11 +4,14 @@ grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 grails.project.target.level = 1.7
 grails.project.source.level = 1.7
-//grails.project.war.file = "target/${appName}-${appVersion}.war"
 
-// This is commented out so as not to cause probelms in the CI environment
-// grails.plugin.location."functional-test" = "../../grails-functional-test"
 
+// grails.project.fork = [
+//    test: [maxMemory: 768, minMemory: 64, debug: true, maxPerm: 256], // Removed ", daemon:true" because geb doesn't play nice with forked mode atm
+//    run: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256],
+//    war: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256],
+//    console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
+// ]
 
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
@@ -18,6 +21,9 @@ grails.project.dependency.resolution = {
     }
     log "error" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     checksums true // Whether to verify checksums on resolve
+    def gebVersion = "0.9.2"
+    // def seleniumVersion = "2.32.0"
+    def seleniumVersion = "2.39.0"
 
     repositories {
         inherits true // Whether to inherit repository definitions from plugins
@@ -48,6 +54,19 @@ grails.project.dependency.resolution = {
         runtime 'net.sf.opencsv:opencsv:2.0'
         runtime 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
 
+        test 'org.hamcrest:hamcrest-all:1.3'
+        test "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
+        test("org.seleniumhq.selenium:selenium-htmlunit-driver:$seleniumVersion") {
+            exclude 'xml-apis'
+        }
+        test "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
+        test "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
+        
+        // http://www.gebish.org/manual/current/build-integrations.html#grails
+        // https://github.com/geb/geb-example-grails
+        test "org.spockframework:spock-grails-support:0.7-groovy-2.0"
+        test "org.gebish:geb-spock:$gebVersion"
+
         runtime ( 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2' ) { 
           excludes "org.codehaus.groovy", "groovy"
         }
@@ -55,17 +74,39 @@ grails.project.dependency.resolution = {
 
     plugins {
         compile ":h2:0.2.6"
-        runtime ":hibernate:$grailsVersion"
-        runtime ":resources:1.2.RC2"
-        runtime ':fields:1.2'
+        runtime ':hibernate:3.6.10.2'
+        runtime ":resources:1.2"
+        runtime ':fields:1.3'
+        compile ":scaffolding:2.0.1"
         // This is commented out so as not to cause probelms in the CI environment
-        // build ":functional-test:2.0.RC2-SNAPSHOT"  // Build == not required in war
-        compile ":functional-test:2.0.RC1"
+        // compile ":functional-test:2.0.RC1"
         // Uncomment these (or add new ones) to enable additional resources capabilities
         //runtime ":zipped-resources:1.0"
         //runtime ":cached-resources:1.0"
         //runtime ":yui-minify-resources:0.1.4"
+        build ':tomcat:7.0.40.1'
 
-        build ":tomcat:$grailsVersion"
+        // runtime ":database-migration:1.3.2"
+
+        compile ':cache:1.0.1'
+
+        compile ':mail:1.0.1', {
+           excludes 'spring-test'
+        }
+
+        // compile ":profiler:0.5"
+        test ":spock:0.7", {
+          exclude "spock-grails-support"
+        }
+        test ":geb:$gebVersion"
+        
+        // Font awesome for font based icons.
+        compile ":font-awesome-resources:3.2.1"
+
+        compile ':spring-security-core:1.2.7.3'
+        compile ':spring-security-ldap:1.0.6'
+        compile ':spring-security-shibboleth-native-sp:1.0.3'
+
+        runtime ":gsp-resources:0.4.4"
     }
 }

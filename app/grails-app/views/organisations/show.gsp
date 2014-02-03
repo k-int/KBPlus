@@ -116,7 +116,7 @@
         </dl>
 
     </div>
-  <script language="JavaScript">
+  <r:script language="JavaScript">
 
     $(function(){
       // moved to mm_bootstrap
@@ -147,7 +147,7 @@
       });
     });
     </g:if>
-  </script>
+  </r:script>
   
   </body>
 </html>

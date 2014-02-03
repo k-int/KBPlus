@@ -2,6 +2,7 @@ package com.k_int.kbplus.auth
 
 import javax.persistence.Transient
 import com.k_int.kbplus.Org
+import com.k_int.kbplus.RefdataValue
 
 class User {
 
@@ -25,6 +26,9 @@ class User {
   SortedSet affiliations
   SortedSet roles
   Org defaultDash
+  
+  
+  RefdataValue showInfoIcon
 
   static hasMany = [ affiliations: com.k_int.kbplus.auth.UserOrg, roles: com.k_int.kbplus.auth.UserRole ]
   static mappedBy = [ affiliations: 'user', roles: 'user' ]
@@ -41,6 +45,7 @@ class User {
     defaultPageSize blank: true, nullable: true
     apikey blank: true, nullable: true
     apisecret blank: true, nullable: true
+    showInfoIcon blank:false, nullable:true
   }
 
   static mapping = {
@@ -136,6 +141,17 @@ class User {
 
     log.debug("user granted ${perm} for ${result}")
     result
+  }
+  
+  
+  
+  transient def getUserPreferences() {
+    def userPrefs = [
+      "showInfoIcon" : (showInfoIcon?.value?.equalsIgnoreCase("Yes") ? true : false)
+    ]
+    
+    // Return the prefs.
+    userPrefs
   }
 
   def hasPerm(perm,user) {

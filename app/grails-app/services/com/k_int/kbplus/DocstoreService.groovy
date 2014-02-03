@@ -17,6 +17,9 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 class DocstoreService {
 
+  def sessionFactory
+  def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
+
   def uploadStream(source_stream, original_filename, title) {
 
     final BagFactory bf = new BagFactory();
@@ -61,6 +64,20 @@ class DocstoreService {
   }
 
   def retrieve(uuid, response, mimetype, filename) {
+    response.setContentType(mimetype)
+    response.addHeader("content-disposition", "attachment; filename=\"${filename}\"")
+    def docstore_response = getDocstoreResponseDoc(uuid)
+    def outs = response.outputStream
+    streamResponseDoc(docstore_response, outs)
+    // streamResponseDoc(result.tempfile, outs)
+    // outs << 
+    outs.flush()
+    outs.close()
+
+    uuid
+  }
+
+  def getDocstoreResponseDoc(uuid) {
     log.debug("Retrieve");
     final BagFactory bf = new BagFactory();
 
@@ -71,7 +88,6 @@ class DocstoreService {
 
     File bag_dir = new File(tempdir, 'bag_dir');
 
-    // tempdir.mkdirs();
     bag_dir.mkdirs();
 
     // Create request.xml file with a single entry, which is the new uploaded file
@@ -89,20 +105,7 @@ class DocstoreService {
     // Upload
     def result = uploadBag(zippedbag)
 
-    // FileUtils.deleteQuietly(result.tempfile)
-    // FileUtils.deleteQuietly(zippedbag);
-    // FileUtils.deleteQuietly(tempdir);
-
-    response.setContentType(mimetype)
-    response.addHeader("content-disposition", "attachment; filename=\"${filename}\"")
-    def outs = response.outputStream
-    streamResponseDoc(result.tempfile, outs)
-    // outs << 
-    outs.flush()
-    outs.close()
-
-
-    uuid
+    result.tempfile
   }
 
 
@@ -356,5 +359,41 @@ class DocstoreService {
     writer.close();
   }
 
+
+
+  def migrateToDb() {
+    def docstore_docs = Doc.executeQuery("select id from Doc where contentType=1");
+
+    docstore_docs.each { dsd_id ->
+      def dsd = Doc.get(dsd_id);
+  
+      try {
+        log.debug("Migrate document ${dsd.id}, ${dsd.uuid}");
+        def ds_resp = getDocstoreResponseDoc(dsd.uuid);
+        OutputStream os = new ByteArrayOutputStream()
+        streamResponseDoc(ds_resp, os)
+        byte[] blob = os.toByteArray()
+        dsd.setBlobData(new ByteArrayInputStream(blob), blob.length);
+        dsd.contentType = 3;
+        dsd.migrated = 'y';
+        dsd.save(flush:true)
+        log.debug("${dsd.id} completed");
+      }
+      catch ( Exception e ) {
+        dsd.migrated = 'e';
+        dsd.save(flush:true)
+        log.error("Failed to migrate",e);
+      }
+      cleanUpGorm()
+    }
+
+  }
+
+  def cleanUpGorm() {
+    def session = sessionFactory.currentSession
+    session.flush()
+    session.clear()
+    propertyInstanceMap.get().clear()
+  }
 
 }

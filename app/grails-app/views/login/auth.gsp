@@ -38,12 +38,12 @@
         </form>
       </div>
     </div>
-    <script type='text/javascript'>
+    <r:script type='text/javascript'>
       <!--
       (function() {
         document.forms['loginForm'].elements['j_username'].focus();
       })();
       // -->
-    </script>
+    </r:script>
   </body>
 </html>

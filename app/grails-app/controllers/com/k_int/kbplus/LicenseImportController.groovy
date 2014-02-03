@@ -22,7 +22,6 @@ class LicenseImportController {
   def CMD_CREATE_OPL   = "create"
 
   def springSecurityService
-  def docstoreService
   def onixplPrefix = 'onixPL:'
 
   /**
@@ -63,7 +62,7 @@ class LicenseImportController {
       result.existing_opl = OnixplLicense.findById(result.existing_opl_id)
 
       // A file offered for upload
-      def offeredFile = request.getFile("import_file")
+      def offered_multipart_file = request.getFile("import_file")
 
       // If a replace_opl result is specified, record it
       if (params.replace_opl) {
@@ -88,19 +87,20 @@ class LicenseImportController {
       try {
         // Read file if one is being offered for upload, and check if it matches
         // an existing OPL
-        if (offeredFile) {
-          log.debug("Request to upload ONIX-PL file type: ${offeredFile.contentType}" +
-              " filename ${offeredFile.originalFilename}");
-          def fileResult = readOfferedFile(offeredFile)
-          if (fileResult.errors) {
-            result.validationResult.errors.addAll(fileResult.errors)
+        if (offered_multipart_file) {
+          log.debug("Request to upload ONIX-PL file type: ${offered_multipart_file.contentType}" + " filename ${offered_multipart_file.originalFilename}");
+
+          // 1. Read the file and parse it as XML - Extract properties and set them on the onix_parse_result map
+          def onix_parse_result = readOnixMultipartFile(offered_multipart_file)
+          if (onix_parse_result.errors) {
+            result.validationResult.errors.addAll(onix_parse_result.errors)
             return result
           }
-          result.offered_file = offeredFile
-          result.accepted_file = fileResult
-          result.putAll(fileResult)
-          //result.input_stream = offeredFile.inputStream
-          result.validationResult.messages.add("Document validated: ${offeredFile.originalFilename}")
+          result.offered_file = offered_multipart_file
+          result.accepted_file = onix_parse_result
+          result.putAll(onix_parse_result)
+
+          result.validationResult.messages.add("Document validated: ${offered_multipart_file.originalFilename}")
           log.debug("Passed first phase validation")
 
           // If the specified license does not already have an OPL associated,
@@ -115,7 +115,7 @@ class LicenseImportController {
               // automatically deleted when JVM exits
               File tmp = File.createTempFile("opl_upload", ".xml")
               tmp.deleteOnExit()
-              offeredFile.transferTo(tmp)
+              offered_multipart_file.transferTo(tmp)
               result.uploaded_file = tmp
               result.existing_opl = existingOpl
               return result
@@ -123,8 +123,7 @@ class LicenseImportController {
           }
         }
 
-        // Read the ONIX-PL file stream (from temp or upload, whichever is
-        // specified in the result object
+        // Read the ONIX-PL file stream (from temp or upload, whichever is specified in the result object
         result.usageTerms = parseOnixPl(result)
         // Process the import and combine results
         result.validationResult.putAll(processImport(result))
@@ -150,48 +149,32 @@ class LicenseImportController {
    * Verify an uploaded file and extract metadata.
    *
    * @param file a MultipartFile upload
-   * @return a fileResult object with extracted metadata
+   * @return a onix_parse_result object with extracted metadata
    * @throws SAXException
    * @throws IOException
    */
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
-  def readOfferedFile(file) throws SAXException, IOException {
+  def readOnixMultipartFile(file) throws SAXException, IOException {
     log.debug("Reading uploaded ONIX-PL file ${file?.originalFilename} " +
         "of type ${file?.contentType}")
-    def fileResult = [:]
+    def onix_parse_result = [:]
     // Verify the character set of the offered ONIX-PL file, and read the title
     // if the file is okay.
-    def charset = checkCharset(file?.inputStream)
+    def charset = UploadController.checkCharset(file?.inputStream)
     if  ( ( charset != null ) && ( ! charset.equals('UTF-8') ) ) {
-      fileResult.errors = []
-      fileResult.errors.add(
-          "Detected input character stream encoding: ${charset}. Expected UTF-8."
-      )
-      return fileResult
+      onix_parse_result.errors = []
+      onix_parse_result.errors.add("Detected input character stream encoding: ${charset}. Expected UTF-8.")
+      return onix_parse_result
     } else {
       // Extract the description,
-      fileResult.description = new XmlSlurper().parse(file.inputStream).LicenseDetail.Description.text()
-      log.debug("Set license title to "+fileResult.description)
+      onix_parse_result.description = new XmlSlurper().parse(file.inputStream).LicenseDetail.Description.text()
     }
     // Record mime type, filename
-    fileResult.upload_mime_type = file?.contentType
-    fileResult.upload_filename = file?.originalFilename
-    fileResult
+    onix_parse_result.upload_mime_type = file?.contentType
+    onix_parse_result.upload_filename = file?.originalFilename
+    onix_parse_result.size = file?.size
+    onix_parse_result
   }
-
-
-  /**
-   * Retrieve an InputStream from the appropriate object in the result struct.
-   * This will be a FileInputStream from a tmp file, if the file has already
-   * been uploaded, or a an InputStream from the offered upload.
-   * @param result
-   * @return
-   */
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
-  def getInputStream(result) {
-    return result.uploaded_file ? new FileInputStream(result.uploaded_file) : result.offered_file?.inputStream
-  }
-
 
   /**
    * Check whether an OPL exists with the same title.
@@ -227,7 +210,10 @@ class LicenseImportController {
   def parseOnixPl(result)  throws SAXException, IOException {
     //log.debug("parseOnixPl(result) "); result.each{k,v-> log.debug("  ${k} -> ${v}")}
     log.debug("Parsing ONIX-PL")
-    def onixpl = new XmlSlurper().parse(getInputStream(result));
+    
+    def onix_file_input_stream = result.uploaded_file ? new FileInputStream(result.uploaded_file) : result.offered_file?.inputStream
+    def onixpl = new XmlSlurper().parse(onix_file_input_stream);
+
     result.description = onixpl.LicenseDetail.Description.text()
     def usageTerms = []
     onixpl.UsageTerms.Usage.eachWithIndex { ut, n ->
@@ -288,6 +274,7 @@ class LicenseImportController {
         createNewLicense = !upload.license && !replaceOplRecord,
         // Use specified license if there is one
         license = upload.license
+
     log.debug("replaceOplRecord: ${replaceOplRecord} createNewDocument: ${createNewDocument} createNewLicense: ${createNewLicense} upload.replace_opl: ${upload.replace_opl} license: ${upload.license!=null}")
     importResult.replace = replaceOplRecord
     RefdataValue currentStatus = RefdataCategory.lookupOrCreate('License Status', 'Current')
@@ -312,84 +299,77 @@ class LicenseImportController {
       log.debug("Created template KB+ license ${license}")
     }
 
-    // Send the uploaded document to docstore
-    def filename = upload.upload_filename
-    log.debug("Uploading ONIX-PL document '${filename}' to docstore");
-    def docstore_uuid = docstoreService.uploadStream(
-        getInputStream(upload), filename, upload.upload_title
-    )
+    def onix_file_input_stream = upload.uploaded_file ? new FileInputStream(upload.uploaded_file) : upload.offered_file?.inputStream
+    def onix_file_size = upload.uploaded_file ? new File(upload.uploaded_file).size() : upload.offered_file.size
 
-    // Create doc records for the upload
-    if ( docstore_uuid ) {
-      //log.debug("Docstore uuid present (${docstore_uuid}) Saving info");
-      def doctype = RefdataCategory.lookupOrCreate(CAT_DOCTYPE, DOCTYPE);
-      def doc_content, doc_context
-      // If we are creating a new document for the upload
-      if (createNewDocument) doc_content = new Doc(contentType: 1)
-      // Otherwise update the existing doc's description
-      else doc_content = upload.existing_opl.doc
+    def doctype = RefdataCategory.lookupOrCreate(CAT_DOCTYPE, DOCTYPE);
+    def doc_content, doc_context
 
-      // Update doc properties
-      doc_content.uuid     = docstore_uuid
-      doc_content.filename = filename
-      doc_content.mimeType = upload.upload_mime_type
-      doc_content.title    = upload.upload_title
-      doc_content.type     = doctype
-      doc_content.user     = upload.user
-      doc_content.save(flush:true)
-      log.debug("${createNewDocument?'Created new':'Updated'} document ${doc_content}")
-      // Record a doc context if there is a new document or a new license.
-      // We don't want duplicate doc_contexts.
-      if (createNewDocument || createNewLicense) {
-        doc_context = new DocContext(
-            license: license,
-            owner:   doc_content,
-            doctype: doctype
-        ).save(flush:true)
-        log.debug("Created new document context ${doc_context}")
-      }
+    // If we are creating a new document for the upload
+    if (createNewDocument) doc_content = new Doc(contentType: 3)
 
-      // Create an OnixplLicense and update the KB+ License
-      def opl
-      if (replaceOplRecord) {
-        opl = upload.existing_opl
-        opl.lastmod = new Date()
-        opl.doc = doc_content
-        opl.title = upload.description
-        // Delete existing usage terms
-        //opl.usageTerm.each { ut -> ut.delete() }
-        opl.usageTerm.clear()
-        opl.save()
-      } else {
-        opl = recordOnixplLicense(doc_content, upload.description)
-      }
-      log.debug("${replaceOplRecord?'Updated':'Created new'} ONIX-PL License ${opl}")
-      // If a single license is specified, link it to the OPL
-      if (license) {
-        license.onixplLicense = opl
-        license.save(flush:true)
-        log.debug("Linked OPL ${opl.id} to LIC ${license.id}")
-      }
-      importResult.license = license
-      importResult.onixpl_license = opl
+    // Otherwise update the existing doc's description
+    else doc_content = upload.existing_opl.doc
 
-      // Record the usage terms
-      importResult.termStatuses = [:]
-      if (upload.usageTerms) {
-        def ts = importResult.termStatuses
-        upload.usageTerms.each { ut ->
-          recordOnixplUsageTerm(opl, ut);
-          def n = ts.get(ut.status)!=null ? ts.get(ut.status)+1 : 1;
-          //log.debug("term statuses "+ut.status+" = "+ts.get(ut.status)+" to "+n)
-          ts.put(ut.status, n)
-        }
-      }
-      // Set success flag
-      importResult.success = true
+    // Update doc properties
+    doc_content.uuid     = java.util.UUID.randomUUID().toString()
+    doc_content.filename = upload.uploaded_file
+    doc_content.mimeType = upload.upload_mime_type
+    doc_content.title    = upload.upload_title
+    doc_content.type     = doctype
+    doc_content.user     = upload.user
+    doc_content.setBlobData(onix_file_input_stream, onix_file_size)
+    doc_content.save(flush:true)
 
-    } else {
-      // No uuid from docstore
+    log.debug("${createNewDocument?'Created new':'Updated'} document ${doc_content}")
+    // Record a doc context if there is a new document or a new license.
+    // We don't want duplicate doc_contexts.
+    if (createNewDocument || createNewLicense) {
+      doc_context = new DocContext(
+        license: license,
+          owner:   doc_content,
+          doctype: doctype
+      ).save(flush:true)
+      log.debug("Created new document context ${doc_context}")
     }
+
+    // Create an OnixplLicense and update the KB+ License
+    def opl
+    if (replaceOplRecord) {
+      opl = upload.existing_opl
+      opl.lastmod = new Date()
+      opl.doc = doc_content
+      opl.title = upload.description
+      // Delete existing usage terms
+      //opl.usageTerm.each { ut -> ut.delete() }
+      opl.usageTerm.clear()
+      opl.save()
+    } else {
+      opl = recordOnixplLicense(doc_content, upload.description)
+    }
+    log.debug("${replaceOplRecord?'Updated':'Created new'} ONIX-PL License ${opl}")
+    // If a single license is specified, link it to the OPL
+    if (license) {
+      license.onixplLicense = opl
+      license.save(flush:true)
+      log.debug("Linked OPL ${opl.id} to LIC ${license.id}")
+    }
+    importResult.license = license
+    importResult.onixpl_license = opl
+
+    // Record the usage terms
+    importResult.termStatuses = [:]
+    if (upload.usageTerms) {
+      def ts = importResult.termStatuses
+      upload.usageTerms.each { ut ->
+        recordOnixplUsageTerm(opl, ut);
+        def n = ts.get(ut.status)!=null ? ts.get(ut.status)+1 : 1;
+        //log.debug("term statuses "+ut.status+" = "+ts.get(ut.status)+" to "+n)
+        ts.put(ut.status, n)
+      }
+    }
+    // Set success flag
+    importResult.success = true
 
     importResult
   }
@@ -475,48 +455,6 @@ class LicenseImportController {
       ass.save(flush: true, insert: true);
     }
   }
-
-
-
-  // -------------------------------------------------------------------------
-  // Validation methods
-  // -------------------------------------------------------------------------
-
-  // Copied from UploadController
-  def checkCharset(file_input_stream) {
-
-    def result = null;
-
-    byte[] buf = new byte[4096];
-
-    // (1)
-    UniversalDetector detector = new UniversalDetector(null);
-
-    // (2)
-    int nread;
-    while ((nread = file_input_stream.read(buf)) > 0 && !detector.isDone()) {
-      detector.handleData(buf, 0, nread);
-    }
-    // (3)
-    detector.dataEnd();
-
-    // (4)
-    String encoding = detector.getDetectedCharset();
-    if (encoding != null) {
-      result = encoding;
-      System.out.println("Detected encoding = " + encoding);
-      if ( encoding.equals('WINDOWS-1252') ) {
-      }
-    } else {
-      System.out.println("No encoding detected.");
-    }
-
-    // (5)
-    detector.reset();
-
-    result
-  }
-
 
 }
 

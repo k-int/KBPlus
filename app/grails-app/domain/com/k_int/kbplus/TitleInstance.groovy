@@ -524,4 +524,35 @@ class TitleInstance {
     
     changeNotificationService.broadcastEvent("${this.class.name}:${this.id}", changeDocument);
   }
+
+  def getInstitutionalCoverageSummary(institution, dateformat) {
+    getInstitutionalCoverageSummary(institution, dateformat, null);
+  }
+
+  def getInstitutionalCoverageSummary(institution, dateformat, date_restriction) {
+    def sdf = new java.text.SimpleDateFormat(dateformat)
+    def qry = "select ie from IssueEntitlement as ie JOIN ie.subscription.orgRelations as o where ie.tipp.title = :title and o.org = :institution AND o.roleType.value = 'Subscriber' AND ie.subscription.status.value != 'Deleted' AND ie.status != 'Deleted'"
+    def qry_params = ['title':this, institution:institution]
+
+    if ( date_restriction ) {
+      qry += " AND ie.subscription.startDate <= :date_restriction AND ie.subscription.endDate >= :date_restriction "
+      qry_params.date_restriction = date_restriction
+    }
+
+    def ies = IssueEntitlement.executeQuery(qry,qry_params)
+    def earliest = null
+    def latest = null
+    boolean open = false
+    ies.each { ie ->
+      if ( earliest == null ) { earliest = ie.startDate } else { if ( ie.startDate < earliest ) { earliest = ie.startDate } }
+      if ( latest == null ) { latest = ie.endDate } else { if ( ie.endDate > latest ) { latest = ie.endDate } }
+      if ( ie.endDate == null ) open = true;
+    }
+
+    [
+      earliest:earliest?sdf.format(earliest):'',
+      latest: open ? '': (latest?sdf.format(latest):''),
+      ies:ies
+    ]
+  }
 }

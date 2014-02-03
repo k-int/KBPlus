@@ -83,7 +83,24 @@ group by o
       storeOrgInfo(result.orginfo, r[0], 'currentLicCount', r[1]);
     }
 
+    withFormat {
+      html result
+      csv {
+        response.setHeader("Content-disposition", "attachment; filename=KBPlusStats.csv")
+        response.contentType = "text/csv"
+        def out = response.outputStream
+        out.withWriter { writer ->
+          writer.write("Institution,Affiliated Users,Total Subscriptions, Current Subscriptions, Total Licenses, Current Licenses\n")
+          result.orginfo.each { is ->
+            writer.write("\"${is.key.name?:''}\",\"${is.value['userCount']?:''}\",\"${is.value['subCount']?:''}\",\"${is.value['currentSoCount']?:''}\",\"${is.value['licCount']?:''}\",\"${is.value['currentLicCount']?:''}\"\n")
+          }
 
+          writer.flush()
+          writer.close()
+        }
+        out.close()
+      }
+    }
 
     result
   }

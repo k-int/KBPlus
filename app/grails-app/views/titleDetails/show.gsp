@@ -6,6 +6,20 @@
     <title>${ti.title}</title>
   </head>
   <body>
+
+    <div class="container">
+      <ul class="breadcrumb">
+        <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="titleDetails" action="show" id="${ti.id}">Title ${ti.title}</g:link> </li>
+
+        <li class="dropdown pull-right">
+
+        <g:if test="${editable}">
+          <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
+        </g:if>
+      </ul>
+    </div>
+
       <div class="container">
         <div class="row">
           <div class="span12">
@@ -73,27 +87,53 @@
 
 
             <h3>Appears in...</h3>
-            <table class="table table-bordered table-striped">
-                    <tr>
-                        <th>From Date</th><th>From Volume</th><th>From Issue</th>
-                        <th>To Date</th><th>To Volume</th><th>To Issue</th><th>Coverage Depth</th>
-                        <th>Platform</th><th>Package</th><th>Actions</th>
-                    </tr>
-                    <g:each in="${ti.tipps}" var="t">
-                        <tr>
-                            <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.startDate}"/></td>
-                        <td>${t.startVolume}</td>
-                        <td>${t.startIssue}</td>
-                        <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.endDate}"/></td>
-                        <td>${t.endVolume}</td>
-                        <td>${t.endIssue}</td>
-                        <td>${t.coverageDepth}</td>
-                        <td><g:link controller="platform" action="show" id="${t.platform.id}">${t.platform.name}</g:link></td>
-                        <td><g:link controller="packageDetails" action="show" id="${t.pkg.id}">${t.pkg.name}</g:link></td>
-                        <td><g:link controller="tipp" action="show" id="${t.id}">Full TIPP record</g:link></td>
-                        </tr>
-                    </g:each>
-            </table>
+            <g:form id="${params.id}" controller="titleDetails" action="batchUpdate">
+              <table class="table table-bordered table-striped">
+                <tr>
+                  <th></th>
+                  <th>Platform</th><th>Package</th>
+                  <th>Start</th>
+                  <th>End</th>
+                  <th>Coverage Depth</th>
+                  <th>Actions</th>
+                </tr>
+
+                <g:if test="${editable}">
+                  <tr>
+                    <td><input type="checkbox" name="checkall" onClick="javascript:$('.bulkcheck').attr('checked', true);"/></td>
+                    <td colspan="2"><button class="btn btn-primary" type="submit" value="Go" name="BatchEdit">Apply Batch Changes</button></td>
+                    <td>Date:<g:simpleHiddenValue id="bulk_start_date" name="bulk_start_date" type="date"/><br/>
+                        Volume:<g:simpleHiddenValue id="bulk_start_volume" name="bulk_start_volume"/><br/>
+                        Issue:<g:simpleHiddenValue id="bulk_start_issue" name="bulk_start_issue"/>
+                    </td>
+                    <td>Date:<g:simpleHiddenValue id="bulk_end_date" name="bulk_end_date" type="date"/><br/>
+                        Volume: <g:simpleHiddenValue id="bulk_end_volume" name="bulk_end_volume"/><br/>
+                        Issue: <g:simpleHiddenValue id="bulk_end_issue" name="bulk_end_issue"/>
+                    </td>
+                    <td><g:simpleHiddenValue id="bulk_coverage_depth" name="bulk_coverage_depth"/>
+                    </td>
+                    <td/>
+                  </tr>
+                </g:if>
+  
+                <g:each in="${ti.tipps}" var="t">
+                  <tr>
+                    <td><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${t.id}" class="bulkcheck"/></g:if></td>
+                    <td><g:link controller="platform" action="show" id="${t.platform.id}">${t.platform.name}</g:link></td>
+                    <td><g:link controller="packageDetails" action="show" id="${t.pkg.id}">${t.pkg.name}</g:link></td>
+  
+                    <td>Date: <g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.startDate}"/><br/>
+                    Volume: ${t.startVolume}<br/>
+                    Issue: ${t.startIssue}</td>
+                    <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.endDate}"/><br/>
+                    Volume: ${t.endVolume}<br/>
+                    Issue: ${t.endIssue}</td>
+                    <td>${t.coverageDepth}</td>
+                    <td><g:link controller="tipp" action="show" id="${t.id}">Full TIPP record</g:link></td>
+                  </tr>
+                </g:each>
+              </table>
+            </g:form>
 
           </div>
         </div>
