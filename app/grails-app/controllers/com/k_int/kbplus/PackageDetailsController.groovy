@@ -61,7 +61,6 @@ class PackageDetailsController {
       //   base_qry += " order by s.name asc"
       // }
 
-      log.debug([max:result.max, offset:result.offset]);
       result.packageInstanceTotal = Subscription.executeQuery("select count(p) "+base_qry, qry_params )[0]
       result.packageInstanceList = Subscription.executeQuery("select p ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
 
