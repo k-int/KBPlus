@@ -35,7 +35,6 @@ class PackageDetailsController {
       result.editable = true
 
       def paginate_after = params.paginate_after ?: ( (2*result.max)-1);
-      result.max = params.max 
       result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
       def deleted_package_status =  RefdataCategory.lookupOrCreate( 'Package Status', 'Deleted' );
@@ -62,6 +61,7 @@ class PackageDetailsController {
       //   base_qry += " order by s.name asc"
       // }
 
+      log.debug([max:result.max, offset:result.offset]);
       result.packageInstanceTotal = Subscription.executeQuery("select count(p) "+base_qry, qry_params )[0]
       result.packageInstanceList = Subscription.executeQuery("select p ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
 
