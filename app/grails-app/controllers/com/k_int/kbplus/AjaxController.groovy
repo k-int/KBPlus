@@ -572,7 +572,8 @@ class AjaxController {
                                 [max:params.iDisplayLength?:10,offset:params.iDisplayStart?:0]);
 
       rq.each { it ->
-        result.add([value:"${it.class.name}:${it.id}",text:"${it[config.cols[0]]}"]);
+        def rowobj = GrailsHibernateUtil.unwrapIfProxy(it)
+        result.add([value:"${rowobj.class.name}:${rowobj.id}",text:"${rowobj[config.cols[0]]}"]);
       }
     }
     else {
