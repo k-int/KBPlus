@@ -35,7 +35,6 @@ class PackageDetailsController {
       result.editable = true
 
       def paginate_after = params.paginate_after ?: ( (2*result.max)-1);
-      result.max = params.max 
       result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
       def deleted_package_status =  RefdataCategory.lookupOrCreate( 'Package Status', 'Deleted' );
