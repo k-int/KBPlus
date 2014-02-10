@@ -36,7 +36,9 @@ class GlobalSourceSyncService {
   }
 
   def private doOAISync(sync_job) {
-    println("doOAISync");
+
+    println("doOAISync(${sync_job})");
+
     // oai_client = new OAIClient(url:sync_job.url)
     // oai_client.getRecordsSince(date)
     // sync_job.maxTimestamp=oai_client.maxTimestamp
