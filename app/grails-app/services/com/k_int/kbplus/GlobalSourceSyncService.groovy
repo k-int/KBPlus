@@ -1,11 +1,14 @@
 package com.k_int.kbplus
 
+import com.k_int.goai.OaiClient
+
 class GlobalSourceSyncService {
 
   def executorService
 
   def runAllActiveSyncTasks() {
-    def future = executorService.submit({ internalRunAllActiveSyncTasks() } as java.util.concurrent.Callable)
+    // def future = executorService.submit({ internalRunAllActiveSyncTasks() } as java.util.concurrent.Callable)
+    internalRunAllActiveSyncTasks()
   }
 
   def internalRunAllActiveSyncTasks() {
@@ -36,11 +39,17 @@ class GlobalSourceSyncService {
   }
 
   def private doOAISync(sync_job) {
-
+    def future = executorService.submit({ internalOAISync(sync_job) } as java.util.concurrent.Callable)
+  }
+ 
+  def internalOAISync(sync_job) {
     println("doOAISync(${sync_job})");
+    def date = new Date()
+    def oai_client = new OaiClient(host:sync_job.uri)
+    oai_client.getChangesSince(date, 'oai_dc') {
+      println("Processing a record");
+    }
 
-    // oai_client = new OAIClient(url:sync_job.url)
-    // oai_client.getRecordsSince(date)
     // sync_job.maxTimestamp=oai_client.maxTimestamp
     // save
   }
