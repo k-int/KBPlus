@@ -17,7 +17,7 @@
     </div>
 
     <div class="container" style="text-align:center">
-      <g:form action="list" method="get" class="form-inline">
+      <g:form action="index" method="get" class="form-inline">
         <label>Search text</label> <input type="text" name="q" placeholder="enter search term..." value="${params.q?.encodeAsHTML()}"  />
         <input type="submit" class="btn btn-primary" value="Search" />
       </g:form><br/>
@@ -46,10 +46,9 @@
             </tr>
             <g:each in="${item.trackers}" var="tracker">
               <tr>
-                <td colspan="4">
-                  ${tracker}
+                <td colspan="5">
+                  -> Tracking as ${tracker.name}
                 </td>
-                <td></td>
               </tr>
             </g:each>
           </g:each>
