@@ -53,7 +53,7 @@
         </tbody>
       </table>
       <div class="pagination">
-        <bootstrap:paginate  action="index" controller="subscriptionDetails" params="${params}" next="Next" prev="Prev" max="${max}" total="${packageInstanceTotal}" />
+        <bootstrap:paginate  action="list" controller="subscriptionDetails" params="${params}" next="Next" prev="Prev" max="${max}" total="${packageInstanceTotal}" />
       </div>
     </div>
   </body>

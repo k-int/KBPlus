@@ -48,18 +48,20 @@ class GlobalSourceSyncService {
     def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     println("doOAISync(${sync_job})");
     try {
-      def date = new Date()
+      def date = new Date(sync_job.haveUpTo?:0)
       def oai_client = new OaiClient(host:sync_job.uri)
       def max_timestamp = 0
       oai_client.getChangesSince(date, 'oai_dc') { rec ->
         log.debug("Processing a record ${rec}");
         log.debug(rec.header.identifier)
         log.debug(rec.header.datestamp)
+        log.debug("metadata: "+rec.metadata.dc.text())
+        log.debug("title: "+rec.metadata.dc.title)
         def qryparams = [sync_job.id, rec.header.identifier.text()]
         def record_timestamp = sdf.parse(rec.header.datestamp.text())
         log.debug("Find: ${qryparams}");
         def existing_record_info = GlobalRecordInfo.executeQuery('select r from GlobalRecordInfo as r where r.source.id = ? and r.identifier = ?',qryparams);
-        if ( existing_record_info == 1 ) {
+        if ( existing_record_info.size() == 1 ) {
           log.debug("dbg found");
         }
         else {
@@ -67,18 +69,25 @@ class GlobalSourceSyncService {
           // Because we don't know about this record, we can't possibly be already tracking it. Just create a local tracking record.
           existing_record_info = new GlobalRecordInfo(
                                                       ts:record_timestamp,
+                                                      name:rec.metadata.dc.title.text(),
                                                       identifier:rec.header.identifier.text(), 
                                                       source: sync_job).save()
         }
+        if ( record_timestamp.getTime() > max_timestamp ) {
+          max_timestamp = record_timestamp.getTime()
+          log.debug("Max timestamp is now ${record_timestamp}");
+        }
 	log.debug("--");
       }
+
+      log.debug("Updating sync job max timestamp");
+      sync_job.haveUpTo=new Date(max_timestamp).
+      sync_job.save();
     }
     catch ( Exception e ) {
       e.printStackTrace();
     }
 
-    // sync_job.maxTimestamp=oai_client.maxTimestamp
-    // save
   }
 
   def parseDate(datestr, possible_formats) {
