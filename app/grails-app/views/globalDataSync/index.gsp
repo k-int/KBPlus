@@ -9,7 +9,7 @@
 
     <div class="container">
       <div class="page-header">
-        <h1>Global Data Download - Search for global packages</h1>
+        <h1>Track Changes to Global Data</h1>
       </div>
       <g:if test="${flash.message}">
         <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
@@ -30,21 +30,19 @@
           <tr>
             <g:sortableColumn property="identifier" title="${message(code: 'package.identifier.label', default: 'Identifier')}" />
             <g:sortableColumn property="name" title="${message(code: 'package.name.label', default: 'Name')}" />
-            <g:sortableColumn property="dateCreated" title="${message(code: 'package.dateCreated.label', default: 'Created')}" />
-            <g:sortableColumn property="lastUpdated" title="${message(code: 'package.lastUpdated.label', default: 'Last Updated')}" />
-            <th></th>
+            <g:sortableColumn property="source.name" title="${message(code: 'package.name.label', default: 'Source')}" />
+            <g:sortableColumn property="type" title="${message(code: 'package.name.label', default: 'Type')}" />
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <g:each in="${packageInstanceList}" var="packageInstance">
+          <g:each in="${items}" var="item">
             <tr>
-              <td>${fieldValue(bean: packageInstance, field: "identifier")}</td>
-              <td>${fieldValue(bean: packageInstance, field: "name")}</td>
-              <td>${fieldValue(bean: packageInstance, field: "dateCreated")}</td>
-              <td>${fieldValue(bean: packageInstance, field: "lastUpdated")}</td>
-              <td class="link">
-                <g:link action="show" id="${packageInstance.id}" class="btn btn-small">Show &raquo;</g:link>
-              </td>
+              <td>${fieldValue(bean: item, field: "identifier")}</td>
+              <td>${fieldValue(bean: item, field: "name")}</td>
+              <td>${item.source.name}</td>
+              <td>Package</td>
+              <td><g:link action="newTracker" controller="globalDataSync" id="${item.id}" class="btn btn-success">Track Locally -></g:link></td>
             </tr>
           </g:each>
         </tbody>
