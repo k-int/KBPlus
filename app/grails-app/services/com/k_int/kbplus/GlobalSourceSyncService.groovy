@@ -5,6 +5,10 @@ import java.text.SimpleDateFormat
 
 class GlobalSourceSyncService {
 
+  def static rectypes = [
+    [ name:'Package' ]
+  ]
+
   def executorService
 
   def runAllActiveSyncTasks() {
@@ -71,7 +75,8 @@ class GlobalSourceSyncService {
                                                       ts:record_timestamp,
                                                       name:rec.metadata.dc.title.text(),
                                                       identifier:rec.header.identifier.text(), 
-                                                      source: sync_job).save()
+                                                      source: sync_job,
+                                                      rectype:0).save()
         }
         if ( record_timestamp.getTime() > max_timestamp ) {
           max_timestamp = record_timestamp.getTime()
@@ -81,7 +86,7 @@ class GlobalSourceSyncService {
       }
 
       log.debug("Updating sync job max timestamp");
-      sync_job.haveUpTo=new Date(max_timestamp).
+      sync_job.haveUpTo=new Date(max_timestamp)
       sync_job.save();
     }
     catch ( Exception e ) {

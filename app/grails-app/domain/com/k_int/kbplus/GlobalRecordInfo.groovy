@@ -8,7 +8,13 @@ class GlobalRecordInfo {
   GlobalRecordSource source
   String identifier
   String name
+  Long rectype
   Date ts
+  Set trackers 
+
+  static hasMany = [ trackers : GlobalRecordTracker ]
+  static mappedBy = [ trackers : 'owner']
+
 
   static mapping = {
                    id column:'gri_id'
@@ -17,10 +23,22 @@ class GlobalRecordInfo {
             timestamp column:'gri_timestamp'
            identifier column:'gri_identifier'
                  name column:'gri_name'
+              rectype column:'gri_rectype'
   }
 
   static constraints = {
           name(nullable:true, blank:false)
+       rectype(nullable:true, blank:false)
+  }
+
+  transient String getDisplayRectype() {
+    def result=""
+    switch ( rectype ) {
+      case 0:
+        result = 'Package'
+        break;
+    }
+    result
   }
 
 }

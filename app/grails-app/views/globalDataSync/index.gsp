@@ -41,9 +41,17 @@
               <td>${fieldValue(bean: item, field: "identifier")}</td>
               <td>${fieldValue(bean: item, field: "name")}</td>
               <td>${item.source.name}</td>
-              <td>Package</td>
+              <td>${item.displayRectype}</td>
               <td><g:link action="newTracker" controller="globalDataSync" id="${item.id}" class="btn btn-success">Track Locally -></g:link></td>
             </tr>
+            <g:each in="${item.trackers}" var="tracker">
+              <tr>
+                <td colspan="4">
+                  ${tracker}
+                </td>
+                <td></td>
+              </tr>
+            </g:each>
           </g:each>
         </tbody>
       </table>
