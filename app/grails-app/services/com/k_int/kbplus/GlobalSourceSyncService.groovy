@@ -34,6 +34,7 @@ class GlobalSourceSyncService {
        // String credentials
        switch ( sync_job.type ) {
          case 'OAI':
+           log.debug("start internal sync");
            doOAISync(sync_job)
            break;
          default:
@@ -49,12 +50,13 @@ class GlobalSourceSyncService {
  
   def internalOAISync(sync_job_id) {
     def sync_job = GlobalRecordSource.get(sync_job_id)
+    log.debug("internalOAISync ${sync_job} records from ${sync_job.uri} since ${sync_job.haveUpTo} using oai_dc");
     def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    println("doOAISync(${sync_job})");
     try {
-      def date = new Date(sync_job.haveUpTo?:0)
+      def date = sync_job.haveUpTo ?: new Date(0)
       def oai_client = new OaiClient(host:sync_job.uri)
       def max_timestamp = 0
+      log.debug("Collect changes since ${date}");
       oai_client.getChangesSince(date, 'oai_dc') { rec ->
         log.debug("Processing a record ${rec}");
         log.debug(rec.header.identifier)

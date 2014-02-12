@@ -196,6 +196,7 @@ class AdminController {
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def globalSync() {
+    log.debug("start global sync...");
     globalSourceSyncService.internalRunAllActiveSyncTasks()
     redirect(controller:'home')
   }
