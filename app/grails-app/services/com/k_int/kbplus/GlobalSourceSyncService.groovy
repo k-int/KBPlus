@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat
 class GlobalSourceSyncService {
 
   def static rectypes = [
-    [ name:'Package' ]
+    [ name:'Package', method:'syncPackage' ]
   ]
 
   def executorService

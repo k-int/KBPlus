@@ -12,6 +12,8 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 class GlobalDataSyncController {
 
   def springSecurityService
+  def globalSourceSyncService
+
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() { 
