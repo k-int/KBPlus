@@ -121,10 +121,6 @@
                          <g:link controller="announcement" action="index">Announcements</g:link></li>
                        <li <%= ( ( 'packageDetails'== controllerName ) && ( 'list'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="packageDetails" action="list">Search Packages</g:link></li>
-                       <!--
-                       <li <%= ( ( 'packageDetails'== controllerName ) && ( 'create'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="packageDetails" action="create">New Package</g:link></li>
-                       -->
                        <li class="divider"></li>
                          <li <%= ( ( 'upload'== controllerName ) && ( 'reviewSO'==actionName ) ) ? ' class="active"' : '' %>>
                              <g:link controller="upload" action="reviewSO">Upload new Package</g:link></li>
@@ -140,6 +136,11 @@
                          <g:link controller="subscriptionImport" action="generateImportWorksheet">Generate Subscription Taken Worksheet</g:link></li>
                        <li <%= ( ( 'subscriptionImport'== controllerName ) && ( 'importSubscriptionWorksheet'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="subscriptionImport" action="importSubscriptionWorksheet">Import Subscription Taken Worksheet</g:link></li>
+                       <!--
+                       <li class="divider"></li>
+                       <li <%= ( ( 'globalDataSync'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="globalDataSync" action="index">Global Data Download [Packages]</g:link></li>
+                       -->
                      </ul>
                    </li>
                 </sec:ifAnyGranted>
@@ -192,6 +193,9 @@
                       </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'titleMerge'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="titleMerge">Title Merge</g:link>
+                      </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'globalSync'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="globalSync">Start Global Data Sync</g:link>
                       </li>
                       <li class="divider"></li>
                       <li <%= ( ( 'stats'== controllerName ) && ( 'statsHome'==actionName ) ) ? ' class="active"' : '' %>>

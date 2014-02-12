@@ -1,5 +1,3 @@
-
-<%@ page import="com.k_int.kbplus.Package" %>
 <!doctype html>
 <html>
   <head>
@@ -11,7 +9,7 @@
 
     <div class="container">
       <div class="page-header">
-        <h1>Packages</h1>
+        <h1>Track Changes to Global Data</h1>
       </div>
       <g:if test="${flash.message}">
         <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
@@ -19,9 +17,8 @@
     </div>
 
     <div class="container" style="text-align:center">
-      <g:form action="list" method="get" class="form-inline">
+      <g:form action="index" method="get" class="form-inline">
         <label>Search text</label> <input type="text" name="q" placeholder="enter search term..." value="${params.q?.encodeAsHTML()}"  />
-        <!--<label>Valid On</label> <input name="validOn" type="text" value="${validOn}"/>-->
         <input type="submit" class="btn btn-primary" value="Search" />
       </g:form><br/>
     </div>
@@ -33,27 +30,32 @@
           <tr>
             <g:sortableColumn property="identifier" title="${message(code: 'package.identifier.label', default: 'Identifier')}" />
             <g:sortableColumn property="name" title="${message(code: 'package.name.label', default: 'Name')}" />
-            <g:sortableColumn property="dateCreated" title="${message(code: 'package.dateCreated.label', default: 'Created')}" />
-            <g:sortableColumn property="lastUpdated" title="${message(code: 'package.lastUpdated.label', default: 'Last Updated')}" />
-            <th></th>
+            <g:sortableColumn property="source.name" title="${message(code: 'package.name.label', default: 'Source')}" />
+            <g:sortableColumn property="type" title="${message(code: 'package.name.label', default: 'Type')}" />
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <g:each in="${packageInstanceList}" var="packageInstance">
+          <g:each in="${items}" var="item">
             <tr>
-              <td>${fieldValue(bean: packageInstance, field: "identifier")}</td>
-              <td>${fieldValue(bean: packageInstance, field: "name")}</td>
-              <td>${fieldValue(bean: packageInstance, field: "dateCreated")}</td>
-              <td>${fieldValue(bean: packageInstance, field: "lastUpdated")}</td>
-              <td class="link">
-                <g:link action="show" id="${packageInstance.id}" class="btn btn-small">Show &raquo;</g:link>
-              </td>
+              <td>${fieldValue(bean: item, field: "identifier")}</td>
+              <td>${fieldValue(bean: item, field: "name")}</td>
+              <td>${item.source.name}</td>
+              <td>${item.displayRectype}</td>
+              <td><g:link action="newTracker" controller="globalDataSync" id="${item.id}" class="btn btn-success">Track Locally -></g:link></td>
             </tr>
+            <g:each in="${item.trackers}" var="tracker">
+              <tr>
+                <td colspan="5">
+                  -> Tracking as ${tracker.name}
+                </td>
+              </tr>
+            </g:each>
           </g:each>
         </tbody>
       </table>
       <div class="pagination">
-        <bootstrap:paginate  action="list" controller="packageDetails" params="${params}" next="Next" prev="Prev" max="${max}" total="${packageInstanceTotal}" />
+        <bootstrap:paginate  action="index" controller="globalDataSync" params="${params}" next="Next" prev="Prev" max="${max}" total="${globalItemTotal}" />
       </div>
     </div>
   </body>

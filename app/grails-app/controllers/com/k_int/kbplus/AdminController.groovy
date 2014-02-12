@@ -10,6 +10,7 @@ class AdminController {
   def dataloadService
   def zenDeskSyncService
   def juspSyncService
+  def globalSourceSyncService
   def messageService
   def changeNotificationService
 
@@ -190,6 +191,12 @@ class AdminController {
   def juspSync() {
     log.debug("juspSync()");
     juspSyncService.doSync()
+    redirect(controller:'home')
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def globalSync() {
+    globalSourceSyncService.internalRunAllActiveSyncTasks()
     redirect(controller:'home')
   }
 
