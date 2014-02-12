@@ -5,16 +5,55 @@ import java.text.SimpleDateFormat
 
 class GlobalSourceSyncService {
 
+  def packageReconcile = { info,oldpkg,newpkg ->
+    log.debug("\n\nreconcile package\n");
+    com.k_int.kbplus.GokbDiffEngine.diff(oldpkg, newpkg)
+  }
+
   def packageConv = { xml ->
     // Convert XML to internal structure ansd return
     println("packageConv");
-    byte[] result = xml.text().getBytes();
+    def result = [:]
+    // result.parsed_rec = xml.text().getBytes();
+    result.title = xml.package.packageName.text()
+
+    result.parsed_rec = [:]
+    result.parsed_rec.packageName = xml.package.packageName.text()
+    result.parsed_rec.packageId = xml.package.packageId.text()
+    result.parsed_rec.tipps = []
+    xml.package.packageTitles.TIP.each { tip ->
+      def newtip = [
+                     title:tip.title.text(), 
+                     titleId:tip.titleId.text(),
+                     platform:tip.platform.text(),
+                     platformId:tip.platformId.text(),
+                     coverage:[
+                       startDate:tip.coverage.'@startDate'.text(),
+                       endDate:tip.coverage.'@endDate'.text(),
+                       startVolume:tip.coverage.'@startVolume'.text(),
+                       endVolume:tip.coverage.'@endVolume'.text(),
+                       startIssue:tip.coverage.'@startIssue'.text(),
+                       endIssue:tip.coverage.'@endIssue'.text(),
+                       coverageDepth:tip.coverage.'@coverageDepth'.text(),
+                       coverageNote:tip.coverage.'@coverageNote'.text(),
+                     ],
+                     identifiers:[]
+                   ];
+
+      tip.titleIdentifiers.each { id ->
+        newtip.identifiers.add([ns:id.'@namespace'.text(), value:id.'@value'.text()]);
+      }
+
+      result.parsed_rec.tipps.add(newtip)
+    }
+
+    result.parsed_rec.tipps.sort{it.titleId}
 
     return result
   }
 
   def rectypes = [
-    [ name:'Package', converter:packageConv ]
+    [ name:'Package', converter:packageConv, reconciler:packageReconcile ]
   ]
 
   def executorService
@@ -26,7 +65,7 @@ class GlobalSourceSyncService {
 
   def internalRunAllActiveSyncTasks() {
 
-     log.debug("Batch job running...");
+     log.debug("internalRunAllActiveSyncTasks() running...");
 
      def jobs = GlobalRecordSource.findAll() 
 
@@ -44,7 +83,8 @@ class GlobalSourceSyncService {
        switch ( sync_job.type ) {
          case 'OAI':
            log.debug("start internal sync");
-           doOAISync(sync_job)
+           this.doOAISync(sync_job)
+           log.debug("Complete internal sync");
            break;
          default:
            log.error("Unhandled sync job type: ${sync_job.type}");
@@ -54,54 +94,79 @@ class GlobalSourceSyncService {
   }
 
   def private doOAISync(sync_job) {
-    def future = executorService.submit({ internalOAISync(sync_job.id) } as java.util.concurrent.Callable)
+    log.debug("doOAISync");
+    def future = executorService.submit({ intOAI(sync_job.id) } as java.util.concurrent.Callable)
+    log.debug("doneOAISync");
   }
  
-  def internalOAISync(sync_job_id) {
+  def intOAI(sync_job_id) {
 
     def sync_job = GlobalRecordSource.get(sync_job_id)
 
-    log.debug("internalOAISync records from ${sync_job.uri} since ${sync_job.haveUpTo} using ${sync_job.listPrefix}");
-
-    def cfg = rectypes[sync_job.rectype]
-
-    def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     try {
-      def date = sync_job.haveUpTo ?: new Date(0)
+      log.debug("internalOAISync records from ${sync_job.uri} since ${sync_job.haveUpTo} using ${sync_job.fullPrefix}");
+
+      int rectype = sync_job.rectype.longValue()
+      def cfg = rectypes[rectype]
+
+      def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+      def date = sync_job.haveUpTo
+
+      log.debug("upto: ${date}");
+
       def oai_client = new OaiClient(host:sync_job.uri)
       def max_timestamp = 0
+
       log.debug("Collect changes since ${date}");
-      oai_client.getChangesSince(date, sync_job.listPrefix) { rec ->
-        log.debug("Processing a record ${rec}");
+
+      oai_client.getChangesSince(date, sync_job.fullPrefix) { rec ->
         log.debug(rec.header.identifier)
         log.debug(rec.header.datestamp)
-        log.debug("metadata: "+rec.metadata.dc.text())
-        log.debug("title: "+rec.metadata.dc.title)
         def qryparams = [sync_job.id, rec.header.identifier.text()]
         def record_timestamp = sdf.parse(rec.header.datestamp.text())
         log.debug("Find: ${qryparams}");
         def existing_record_info = GlobalRecordInfo.executeQuery('select r from GlobalRecordInfo as r where r.source.id = ? and r.identifier = ?',qryparams);
         if ( existing_record_info.size() == 1 ) {
-          log.debug("dbg found");
+          log.debug("Update to an existing record....");
+          def parsed_rec = cfg.converter.call(rec.metadata)
+
+          // Deserialize
+          def bais = new ByteArrayInputStream((byte[])(existing_record_info[0].record))
+          def ins = new ObjectInputStream(bais);
+          def old_rec_info = ins.readObject()
+          ins.close()
+          def new_record_info = parsed_rec.parsed_rec
+
+          cfg.reconciler(existing_record_info[0], old_rec_info, new_record_info)
         }
         else {
-          log.debug("dbg not found");
+          def parsed_rec = cfg.converter.call(rec.metadata)
 
-          def internal_rep = cfg.converter.call(rec.metadata)
+          def baos = new ByteArrayOutputStream()
+          def out= new ObjectOutputStream(baos)
+          out.writeObject(parsed_rec.parsed_rec)
+          out.close()
 
           // Because we don't know about this record, we can't possibly be already tracking it. Just create a local tracking record.
           existing_record_info = new GlobalRecordInfo(
                                                       ts:record_timestamp,
-                                                      name:rec.metadata.dc.title.text(),
-                                                      identifier:rec.header.identifier.text(), 
+                                                      name:parsed_rec.title,
+                                                      identifier:rec.header.identifier.text(),
                                                       source: sync_job,
-                                                      rectype:0,
-                                                      internal_rep);
+                                                      rectype:sync_job.rectype,
+                                                      record: baos.toByteArray());
+
+          if ( ! existing_record_info.save() ) {
+            log.error("Problem saving record info: ${existing_record_info.errors}");
+          }
         }
+
         if ( record_timestamp.getTime() > max_timestamp ) {
           max_timestamp = record_timestamp.getTime()
           log.debug("Max timestamp is now ${record_timestamp}");
         }
+
 	log.debug("--");
       }
 
@@ -112,7 +177,9 @@ class GlobalSourceSyncService {
     catch ( Exception e ) {
       log.error("Problem",e);
     }
-    log.debug("internalOAISync completed");
+    finally {
+      log.debug("internalOAISync completed");
+    }
   }
 
   def parseDate(datestr, possible_formats) {
@@ -129,4 +196,7 @@ class GlobalSourceSyncService {
     parsed_date
   }
 
+  def dumpPkgRec(pr) {
+    log.debug(pr);
+  }
 }

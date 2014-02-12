@@ -233,6 +233,7 @@ class ZenDeskSyncService {
 
 
   def getLatestForumActivity() {
+    log.debug("getLatestForumActivity()");
     // https://ostephens.zendesk.com/api/v2/search.json?query=type:topic
     def now = System.currentTimeMillis();
     def intervalms = 1000 * 60 * 5 // Re-fetch forum activity every 5 minutes
@@ -271,6 +272,7 @@ class ZenDeskSyncService {
       }
       finally {
         last_forum_check = now
+        log.debug("getLatestForumActivity() completed");
       }
     }
 

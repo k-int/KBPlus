@@ -198,6 +198,7 @@ class AdminController {
   def globalSync() {
     log.debug("start global sync...");
     globalSourceSyncService.internalRunAllActiveSyncTasks()
+    log.debug("done global sync...");
     redirect(controller:'home')
   }
 
@@ -267,7 +268,6 @@ class AdminController {
   def forceSendNotifications() {
     changeNotificationService.aggregateAndNotifyChanges()
     redirect(controller:'home')
-
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])

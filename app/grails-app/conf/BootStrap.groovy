@@ -361,7 +361,8 @@ No Host Platform URL Content
                                                                                          listPrefix:'oai_dc',
                                                                                          fullPrefix:'gokb',
                                                                                          principal:null,
-                                                                                         credentials:null).save(flush:true)
+                                                                                         credentials:null,
+                                                                                         rectype:0).save(flush:true)
 
   }
 

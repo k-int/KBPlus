@@ -25,7 +25,7 @@ class GlobalRecordInfo {
            identifier column:'gri_identifier'
                  name column:'gri_name'
               rectype column:'gri_rectype'
-               record column:'gri_record', type:'blob'
+               record column:'gri_record', length:(1024*1024*5)
   }
 
   static constraints = {
