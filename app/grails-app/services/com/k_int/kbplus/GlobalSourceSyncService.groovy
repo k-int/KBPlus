@@ -5,8 +5,16 @@ import java.text.SimpleDateFormat
 
 class GlobalSourceSyncService {
 
-  def static rectypes = [
-    [ name:'Package', method:'syncPackage' ]
+  def packageConv = { xml ->
+    // Convert XML to internal structure ansd return
+    println("packageConv");
+    byte[] result = xml.text().getBytes();
+
+    return result
+  }
+
+  def rectypes = [
+    [ name:'Package', converter:packageConv ]
   ]
 
   def executorService
@@ -21,6 +29,7 @@ class GlobalSourceSyncService {
      log.debug("Batch job running...");
 
      def jobs = GlobalRecordSource.findAll() 
+
      jobs.each { sync_job ->
        log.debug(sync_job);
        // String identifier
@@ -49,15 +58,20 @@ class GlobalSourceSyncService {
   }
  
   def internalOAISync(sync_job_id) {
+
     def sync_job = GlobalRecordSource.get(sync_job_id)
-    log.debug("internalOAISync ${sync_job} records from ${sync_job.uri} since ${sync_job.haveUpTo} using oai_dc");
+
+    log.debug("internalOAISync records from ${sync_job.uri} since ${sync_job.haveUpTo} using ${sync_job.listPrefix}");
+
+    def cfg = rectypes[sync_job.rectype]
+
     def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     try {
       def date = sync_job.haveUpTo ?: new Date(0)
       def oai_client = new OaiClient(host:sync_job.uri)
       def max_timestamp = 0
       log.debug("Collect changes since ${date}");
-      oai_client.getChangesSince(date, 'oai_dc') { rec ->
+      oai_client.getChangesSince(date, sync_job.listPrefix) { rec ->
         log.debug("Processing a record ${rec}");
         log.debug(rec.header.identifier)
         log.debug(rec.header.datestamp)
@@ -72,13 +86,17 @@ class GlobalSourceSyncService {
         }
         else {
           log.debug("dbg not found");
+
+          def internal_rep = cfg.converter.call(rec.metadata)
+
           // Because we don't know about this record, we can't possibly be already tracking it. Just create a local tracking record.
           existing_record_info = new GlobalRecordInfo(
                                                       ts:record_timestamp,
                                                       name:rec.metadata.dc.title.text(),
                                                       identifier:rec.header.identifier.text(), 
                                                       source: sync_job,
-                                                      rectype:0).save()
+                                                      rectype:0,
+                                                      internal_rep);
         }
         if ( record_timestamp.getTime() > max_timestamp ) {
           max_timestamp = record_timestamp.getTime()
@@ -92,9 +110,9 @@ class GlobalSourceSyncService {
       sync_job.save();
     }
     catch ( Exception e ) {
-      e.printStackTrace();
+      log.error("Problem",e);
     }
-
+    log.debug("internalOAISync completed");
   }
 
   def parseDate(datestr, possible_formats) {

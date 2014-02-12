@@ -11,6 +11,7 @@ class GlobalRecordInfo {
   Long rectype
   Date ts
   Set trackers 
+  byte[] record
 
   static hasMany = [ trackers : GlobalRecordTracker ]
   static mappedBy = [ trackers : 'owner']
@@ -24,6 +25,7 @@ class GlobalRecordInfo {
            identifier column:'gri_identifier'
                  name column:'gri_name'
               rectype column:'gri_rectype'
+               record column:'gri_record', type:'blob'
   }
 
   static constraints = {
