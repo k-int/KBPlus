@@ -5,11 +5,16 @@ import java.text.SimpleDateFormat
 
 class GlobalSourceSyncService {
 
+  def genericOIDService
+
   def packageReconcile = { grt ,oldpkg, newpkg ->
     log.debug("\n\nreconcile package\n");
     def pkg = null;
     // Firstly, make sure that there is a package for this record
-    if ( grt.localOid == null ) {
+    if ( grt.localOid != null ) {
+      pkg = genericOIDService.resolveOID(grt.localOid)
+    }
+    else {
       // create a new package
       pkg = new Package(
                          identifier:grt.identifier,
@@ -23,7 +28,23 @@ class GlobalSourceSyncService {
       }
     }
 
-    com.k_int.kbplus.GokbDiffEngine.diff(oldpkg, newpkg)
+    def onNewTipp = { ctx, tipp ->
+      println("new tipp");
+    }
+
+    def onUpdatedTipp = { ctx, tipp ->
+      println("updated tipp");
+    }
+
+    def onDeletedTipp = { ctx, tipp ->
+      println("deletd tipp");
+    }
+
+    def onPkgPropChange = { ctx, propname, value ->
+      println("updated pkg prop");
+    }
+
+    com.k_int.kbplus.GokbDiffEngine.diff(pkg, oldpkg, newpkg, onNewTipp, onUpdatedTipp, onDeletedTipp, onPkgPropChange)
   }
 
   def packageConv = { md ->

@@ -2,7 +2,7 @@ package com.k_int.kbplus
 
 public class GokbDiffEngine {
 
-  def static diff(oldpkg, newpkg) {
+  def static diff(ctx, oldpkg, newpkg, newTippClosure, updatedTippClosure, deletedTippClosure, pkgPropChangeClosure) {
 
     if (( oldpkg == null )||(newpkg==null)) {
       println("Error - null package passed to diff");
@@ -11,6 +11,7 @@ public class GokbDiffEngine {
   
     if ( oldpkg.packageName != newpkg.packageName ) {
       println("packageName updated from ${oldpkg.packageName} to ${newpkg.packageName}");
+      pkgPropChangeClosure(ctx, 'title', newpkg.packageName);
     }
     else {
       println("packageName consistent");
@@ -39,6 +40,7 @@ public class GokbDiffEngine {
            tippb != null &&
            tippa.titleId == tippb.titleId ) {
         System.out.println("  "+tippa.titleId+"    =    "+tippb.titleId);
+        updatedTippClosure(ctx, tippb)
         // See if any of the actual properties are null
         tippa = ai.hasNext() ? ai.next() : null
         tippb = bi.hasNext() ? bi.next() : null
@@ -47,9 +49,11 @@ public class GokbDiffEngine {
                   ( ( tippa == null ) ||
                     ( tippa.compareTo(tippb) > 0 ) ) ) {
         System.out.println("Title "+tippb.titleId+" Was added to the package");
+        newTippClosure(ctx, tippb)
         tippb = bi.hasNext() ? bi.next() : null;
       }
       else {
+        deletedTippClosure(ctx, tippa)
         System.out.println("Title "+tippa.titleId+" Was removed from the package");
         tippa = ai.hasNext() ? ai.next() : null;
       }
