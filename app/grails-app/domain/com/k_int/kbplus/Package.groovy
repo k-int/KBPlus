@@ -75,6 +75,7 @@ class Package {
              isPublic(nullable:true, blank:false)
          packageScope(nullable:true, blank:false)
               forumId(nullable:true, blank:false)
+                impId(nullable:true, blank:false)
   }
 
   def getConsortia() {

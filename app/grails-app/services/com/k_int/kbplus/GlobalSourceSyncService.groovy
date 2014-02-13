@@ -7,6 +7,22 @@ class GlobalSourceSyncService {
 
   def packageReconcile = { grt ,oldpkg, newpkg ->
     log.debug("\n\nreconcile package\n");
+    def pkg = null;
+    // Firstly, make sure that there is a package for this record
+    if ( grt.localOid == null ) {
+      // create a new package
+      pkg = new Package(
+                         identifier:grt.identifier,
+                         name:newpkg.packageName,
+                         impId:grt.owner.identifier
+                       )
+
+      if ( pkg.save() ) {
+        grt.localOid = "com.k_int.kbplus.package:${pkg.id}"
+        grt.save()
+      }
+    }
+
     com.k_int.kbplus.GokbDiffEngine.diff(oldpkg, newpkg)
   }
 
@@ -218,7 +234,11 @@ class GlobalSourceSyncService {
   }
 
   def initialiseTracker(grt) {
+    int rectype = grt.owner.rectype.longValue()
+    def cfg = rectypes[rectype]
+
     def oldrec = [:]
+    oldrec.tipps=[]
     def bais = new ByteArrayInputStream((byte[])(grt.owner.record))
     def ins = new ObjectInputStream(bais);
     def newrec = ins.readObject()
