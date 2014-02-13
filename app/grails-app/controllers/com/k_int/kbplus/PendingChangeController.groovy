@@ -34,7 +34,6 @@ class PendingChangeController {
 
     def changes_to_accept = []
 
-
     owner.pendingChanges.each { pc ->
       changes_to_accept.add(pc)
     }
