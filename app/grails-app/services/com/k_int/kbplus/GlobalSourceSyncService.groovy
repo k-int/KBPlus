@@ -29,7 +29,11 @@ class GlobalSourceSyncService {
     }
 
     def onNewTipp = { ctx, tipp ->
-      println("new tipp");
+      println("new tipp: ${tipp}");
+      println("identifiers: ${tipp.title.identifiers}");
+
+      def title_instance = TitleInstance.lookupOrCreate(tipp.title.identifiers,tipp.title.name)
+      println("Result of lookup or create for ${tipp.title.name} with identifiers ${tipp.title.identifiers} is ${title_instance}");
     }
 
     def onUpdatedTipp = { ctx, tipp ->
@@ -59,7 +63,10 @@ class GlobalSourceSyncService {
     result.parsed_rec.tipps = []
     md.gokb.package.TIPPs.TIPP.each { tip ->
       def newtip = [
-                     title:tip.title.name.text(), 
+                     title: [
+                       name:tip.title.name.text(), 
+                       identifiers:[]
+                     ],
                      titleId:tip.title.'@id'.text(),
                      platform:tip.platform.name.text(),
                      platformId:tip.platform.'@id'.text(),
@@ -82,7 +89,7 @@ class GlobalSourceSyncService {
       }
 
       tip.title.identifiers.identifier.each { id ->
-        newtip.identifiers.add([ns:id.'@namespace'.text(), value:id.'@value'.text()]);
+        newtip.title.identifiers.add([namespace:id.'@namespace'.text(), value:id.'@value'.text()]);
       }
 
       result.parsed_rec.tipps.add(newtip)

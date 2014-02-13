@@ -39,7 +39,7 @@ public class GokbDiffEngine {
       if ( tippa != null &&
            tippb != null &&
            tippa.titleId == tippb.titleId ) {
-        System.out.println("  "+tippa.titleId+"    =    "+tippb.titleId);
+        System.out.println("  "+tippa+"    =    "+tippb);
         updatedTippClosure(ctx, tippb)
         // See if any of the actual properties are null
         tippa = ai.hasNext() ? ai.next() : null
@@ -48,13 +48,13 @@ public class GokbDiffEngine {
       else if ( ( tippb != null ) &&
                   ( ( tippa == null ) ||
                     ( tippa.compareTo(tippb) > 0 ) ) ) {
-        System.out.println("Title "+tippb.titleId+" Was added to the package");
+        System.out.println("Title "+tippb+" Was added to the package");
         newTippClosure(ctx, tippb)
         tippb = bi.hasNext() ? bi.next() : null;
       }
       else {
         deletedTippClosure(ctx, tippa)
-        System.out.println("Title "+tippa.titleId+" Was removed from the package");
+        System.out.println("Title "+tippa+" Was removed from the package");
         tippa = ai.hasNext() ? ai.next() : null;
       }
     }
