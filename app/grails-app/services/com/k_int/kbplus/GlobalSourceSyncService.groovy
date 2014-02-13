@@ -29,6 +29,7 @@ class GlobalSourceSyncService {
     }
 
     def onNewTipp = { ctx, tipp ->
+      def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
       println("new tipp: ${tipp}");
       println("identifiers: ${tipp.title.identifiers}");
 
@@ -41,6 +42,16 @@ class GlobalSourceSyncService {
       new_tipp.pkg = pkg;
       new_tipp.platform = plat_instance;
       new_tipp.title = title_instance;
+      new_tipp.startDate= tipp.startDate != null ? sdf.parse(tipp.startDate) : null;
+      new_tipp.startVolume=tipp.startVolume;
+      new_tipp.startIssue=tipp.startIssue;
+      new_tipp.endDate= tipp.startDate != null ? sdf.parse(tipp.endDate) : null;
+      new_tipp.endVolume=tipp.endVolume;
+      new_tipp.endIssue=tipp.endIssue;
+      new_tipp.embargo=tipp.embargo;
+      new_tipp.coverageDepth=tipp.coverageDepth;
+      new_tipp.coverageNote=tipp.coverageNote;
+
       new_tipp.save();
     }
 
