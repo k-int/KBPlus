@@ -42,15 +42,21 @@ class GlobalSourceSyncService {
       new_tipp.pkg = pkg;
       new_tipp.platform = plat_instance;
       new_tipp.title = title_instance;
-      new_tipp.startDate= tipp.startDate != null ? sdf.parse(tipp.startDate) : null;
-      new_tipp.startVolume=tipp.startVolume;
-      new_tipp.startIssue=tipp.startIssue;
-      new_tipp.endDate= tipp.startDate != null ? sdf.parse(tipp.endDate) : null;
-      new_tipp.endVolume=tipp.endVolume;
-      new_tipp.endIssue=tipp.endIssue;
-      new_tipp.embargo=tipp.embargo;
-      new_tipp.coverageDepth=tipp.coverageDepth;
-      new_tipp.coverageNote=tipp.coverageNote;
+
+      // We rely upon there only being 1 coverage statement for now, it seems likely this will need
+      // to change in the future.
+      tipp.coverage.each { cov ->
+        new_tipp.startDate=((cov.startDate != null ) && ( cov.startDate.length() > 0 ) ) ? sdf.parse(cov.startDate) : null;
+        new_tipp.startVolume=cov.startVolume;
+        new_tipp.startIssue=cov.startIssue;
+        new_tipp.endDate= ((cov.endDate != null ) && ( cov.endDate.length() > 0 ) ) ? sdf.parse(cov.endDate) : null;
+        new_tipp.endVolume=cov.endVolume;
+        new_tipp.endIssue=cov.endIssue;
+        new_tipp.embargo=cov.embargo;
+        new_tipp.coverageDepth=cov.coverageDepth;
+        new_tipp.coverageNote=cov.coverageNote;
+      }
+      new_tipp.hostPlatformURL=tipp.url;
 
       new_tipp.save();
     }
