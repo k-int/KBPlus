@@ -34,6 +34,14 @@ class GlobalSourceSyncService {
 
       def title_instance = TitleInstance.lookupOrCreate(tipp.title.identifiers,tipp.title.name)
       println("Result of lookup or create for ${tipp.title.name} with identifiers ${tipp.title.identifiers} is ${title_instance}");
+
+      def plat_instance = Platform.lookupOrCreatePlatform([name:tipp.platform]);
+    
+      def new_tipp = new TitleInstancePackagePlatform()
+      new_tipp.pkg = pkg;
+      new_tipp.platform = plat_instance;
+      new_tipp.title = title_instance;
+      new_tipp.save();
     }
 
     def onUpdatedTipp = { ctx, tipp ->
