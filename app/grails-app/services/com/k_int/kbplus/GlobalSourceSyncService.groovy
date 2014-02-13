@@ -39,7 +39,7 @@ class GlobalSourceSyncService {
       def plat_instance = Platform.lookupOrCreatePlatform([name:tipp.platform]);
     
       def new_tipp = new TitleInstancePackagePlatform()
-      new_tipp.pkg = pkg;
+      new_tipp.pkg = ctx;
       new_tipp.platform = plat_instance;
       new_tipp.title = title_instance;
 
@@ -63,6 +63,9 @@ class GlobalSourceSyncService {
 
     def onUpdatedTipp = { ctx, tipp ->
       println("updated tipp");
+      // Find title with ID tipp... in package ctx
+      def title_of_tipp_to_update = TitleInstance.lookupOrCreate(tipp.title.identifiers,tipp.title.name)
+      def db_tipp = ctx.tipps.find { it.title == title_of_tipp_to_update }
     }
 
     def onDeletedTipp = { ctx, tipp ->
