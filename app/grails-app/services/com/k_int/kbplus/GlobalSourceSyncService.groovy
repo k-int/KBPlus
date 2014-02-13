@@ -5,42 +5,46 @@ import java.text.SimpleDateFormat
 
 class GlobalSourceSyncService {
 
-  def packageReconcile = { info,oldpkg,newpkg ->
+  def packageReconcile = { grt ,oldpkg, newpkg ->
     log.debug("\n\nreconcile package\n");
     com.k_int.kbplus.GokbDiffEngine.diff(oldpkg, newpkg)
   }
 
-  def packageConv = { xml ->
+  def packageConv = { md ->
     // Convert XML to internal structure ansd return
-    println("packageConv");
     def result = [:]
     // result.parsed_rec = xml.text().getBytes();
-    result.title = xml.package.packageName.text()
+    result.title = md.gokb.package.name.text()
 
     result.parsed_rec = [:]
-    result.parsed_rec.packageName = xml.package.packageName.text()
-    result.parsed_rec.packageId = xml.package.packageId.text()
+    result.parsed_rec.packageName = md.gokb.package.name.text()
+    result.parsed_rec.packageId = md.gokb.package.'@id'.text()
     result.parsed_rec.tipps = []
-    xml.package.packageTitles.TIP.each { tip ->
+    md.gokb.package.TIPPs.TIPP.each { tip ->
       def newtip = [
-                     title:tip.title.text(), 
-                     titleId:tip.titleId.text(),
-                     platform:tip.platform.text(),
-                     platformId:tip.platformId.text(),
-                     coverage:[
-                       startDate:tip.coverage.'@startDate'.text(),
-                       endDate:tip.coverage.'@endDate'.text(),
-                       startVolume:tip.coverage.'@startVolume'.text(),
-                       endVolume:tip.coverage.'@endVolume'.text(),
-                       startIssue:tip.coverage.'@startIssue'.text(),
-                       endIssue:tip.coverage.'@endIssue'.text(),
-                       coverageDepth:tip.coverage.'@coverageDepth'.text(),
-                       coverageNote:tip.coverage.'@coverageNote'.text(),
-                     ],
+                     title:tip.title.name.text(), 
+                     titleId:tip.title.'@id'.text(),
+                     platform:tip.platform.name.text(),
+                     platformId:tip.platform.'@id'.text(),
+                     coverage:[],
+                     url:tip.url.text(),
                      identifiers:[]
                    ];
 
-      tip.titleIdentifiers.each { id ->
+      tip.coverage.each { cov ->
+        newtip.coverage.add([
+                       startDate:cov.'@startDate'.text(),
+                       endDate:cov.'@endDate'.text(),
+                       startVolume:cov.'@startVolume'.text(),
+                       endVolume:cov.'@endVolume'.text(),
+                       startIssue:cov.'@startIssue'.text(),
+                       endIssue:cov.'@endIssue'.text(),
+                       coverageDepth:cov.'@coverageDepth'.text(),
+                       coverageNote:cov.'@coverageNote'.text(),
+                     ]);
+      }
+
+      tip.title.identifiers.identifier.each { id ->
         newtip.identifiers.add([ns:id.'@namespace'.text(), value:id.'@value'.text()]);
       }
 
@@ -48,6 +52,7 @@ class GlobalSourceSyncService {
     }
 
     result.parsed_rec.tipps.sort{it.titleId}
+    println("Rec conversion for package returns object with title ${result.parsed_rec.title} and ${result.parsed_rec.tipps.size()} tipps");
 
     return result
   }
@@ -129,6 +134,7 @@ class GlobalSourceSyncService {
         def existing_record_info = GlobalRecordInfo.executeQuery('select r from GlobalRecordInfo as r where r.source.id = ? and r.identifier = ?',qryparams);
         if ( existing_record_info.size() == 1 ) {
           log.debug("Update to an existing record....");
+
           def parsed_rec = cfg.converter.call(rec.metadata)
 
           // Deserialize
@@ -138,10 +144,21 @@ class GlobalSourceSyncService {
           ins.close()
           def new_record_info = parsed_rec.parsed_rec
 
-          cfg.reconciler(existing_record_info[0], old_rec_info, new_record_info)
+          // Call this for each __tracker__
+          // cfg.reconciler(existing_record_info[0], old_rec_info, new_record_info)
+
+          // Finally, update our local copy of the remote object
+          def baos = new ByteArrayOutputStream()
+          def out= new ObjectOutputStream(baos)
+          out.writeObject(new_record_info)
+          out.close()
+          existing_record_info[0].record = baos.toByteArray();
+          existing_record_info[0].save()
         }
         else {
+          log.debug("First time we have seen this record - converting");
           def parsed_rec = cfg.converter.call(rec.metadata)
+          log.debug("Converter thinks this rec is ${parsed_rec.title}");
 
           def baos = new ByteArrayOutputStream()
           def out= new ObjectOutputStream(baos)
@@ -198,5 +215,15 @@ class GlobalSourceSyncService {
 
   def dumpPkgRec(pr) {
     log.debug(pr);
+  }
+
+  def initialiseTracker(grt) {
+    def oldrec = [:]
+    def bais = new ByteArrayInputStream((byte[])(grt.owner.record))
+    def ins = new ObjectInputStream(bais);
+    def newrec = ins.readObject()
+    ins.close()
+
+    cfg.reconciler(grt,oldrec,newrec)
   }
 }

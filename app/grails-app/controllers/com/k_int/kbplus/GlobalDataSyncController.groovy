@@ -49,16 +49,25 @@ class GlobalDataSyncController {
 
     if ( ( params.trackerName != null ) && ( params.trackerId != null ) ) {
       // new tracker and redirect back to list page
-      log.debug("redirecting...");
-      def grt = new GlobalRecordTracker(owner:result.item, identifier:params.trackerId, name:params.trackerName)
-      if ( grt.save() ) {
+
+      // Check that the new tracker ID will be valid
+
+      def valid = true
+      if ( valid ) {
+        log.debug("redirecting...");
+        def grt = new GlobalRecordTracker(owner:result.item, identifier:params.trackerId, name:params.trackerName)
+        if ( grt.save() ) {
+          globalSourceSyncService.initialiseTracker(grt);
+        }
+        else {
+          log.error(grt.errors)
+        }
+        redirect(action:'index',params:[q:result.item.name])
       }
       else {
-        log.error(grt.errors)
       }
-
-      redirect(action:'index',params:[q:result.item.name])
     }
+
     result
   }
 }

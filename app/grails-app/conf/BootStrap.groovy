@@ -357,7 +357,7 @@ No Host Platform URL Content
                                                                                          name:'GOKB Package List',
                                                                                          type:'OAI',
                                                                                          haveUpTo:null,
-                                                                                         uri:'http://gokb.k-int.com/oai/packages',
+                                                                                         uri:'https://gokb.k-int.com/oai/packages',
                                                                                          listPrefix:'oai_dc',
                                                                                          fullPrefix:'gokb',
                                                                                          principal:null,
