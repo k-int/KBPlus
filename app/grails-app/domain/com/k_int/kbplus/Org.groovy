@@ -129,4 +129,30 @@ class Org {
   }
 
 
+  
+  static def lookupOrCreate(name, sector, consortium, identifiers, iprange) {
+
+    def result = null;
+
+    // See if we can uniquely match on any of the identifiers
+    identifiers.each { k,v ->
+      if ( v != null ) {
+        def o = Org.executeQuery("select o from Org as o join o.ids as io where io.identifier.ns.ns = ? and io.identifier.value = ?",[k,v])
+        if ( o.size() == 1 ) {
+          result = o[0]
+        }
+      }
+    }
+
+    // No match by identifier, try and match by name
+    if ( result == null ) {
+      // log.debug("Match by name ${name}");
+    }
+
+    if ( result == null ) {
+      // log.debug("Create new entry for ${name}");
+    }
+ 
+    result 
+  }
 }

@@ -3,6 +3,8 @@ package com.k_int.kbplus
 import com.k_int.kbplus.auth.*;
 import grails.plugins.springsecurity.Secured
 import grails.converters.*
+import au.com.bytecode.opencsv.CSVReader
+
 
 class AdminController {
 
@@ -316,6 +318,33 @@ class AdminController {
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def orgsImport() {
+
+    if ( request.method=="POST" ) {
+      def upload_mime_type = request.getFile("orgs_file")?.contentType
+      def upload_filename = request.getFile("orgs_file")?.getOriginalFilename()
+      def input_stream = request.getFile("orgs_file")?.inputStream
+
+      CSVReader r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ) )
+      String[] nl;
+      def first = true
+      while ((nl = r.readNext()) != null) {
+        if ( first ) {
+          first = false; // Skip header
+        }
+        def candidate_identifiers = [
+          'jusplogin':nl[3],
+          'JC':nl[4],
+          'Ringold':nl[5],
+          'UKAMF':nl[6],
+        ]
+        log.debug("Load ${nl[0]}, ${nl[1]}, ${nl[2]} ${candidate_identifiers} ${nl[7]}");
+        Org.lookupOrCreate(nl[0],
+                           nl[1],
+                           nl[2],
+                           candidate_identifiers,
+                           nl[7])
+      }
+    }
   }
 
 }
