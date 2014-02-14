@@ -19,6 +19,7 @@ modules = {
   }
   kbplus {
     // resource url:'css/bootstrap.css'
+    dependsOn : 'jsTree'
     resource url:'css/style.css'
     resource url:'css/jquery.dataTables.css'
     resource url:'css/bootstrap-editable.css'
