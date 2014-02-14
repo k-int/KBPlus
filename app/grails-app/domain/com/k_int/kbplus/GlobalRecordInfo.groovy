@@ -21,7 +21,7 @@ class GlobalRecordInfo {
                    id column:'gri_id'
               version column:'gri_version'
                source column:'gri_source_fk'
-            timestamp column:'gri_timestamp'
+                   ts column:'gri_timestamp'
            identifier column:'gri_identifier'
                  name column:'gri_name'
               rectype column:'gri_rectype'
@@ -31,6 +31,7 @@ class GlobalRecordInfo {
   static constraints = {
           name(nullable:true, blank:false)
        rectype(nullable:true, blank:false)
+            ts(nullable:true, blank:false)
   }
 
   transient String getDisplayRectype() {
