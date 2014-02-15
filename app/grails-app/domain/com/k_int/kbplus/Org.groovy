@@ -138,7 +138,7 @@ class Org {
     identifiers.each { k,v ->
       if ( v != null ) {
         def o = Org.executeQuery("select o from Org as o join o.ids as io where io.identifier.ns.ns = ? and io.identifier.value = ?",[k,v])
-        if ( o.size() == 1 ) {
+        if ( o.size() > 0 ) {
           result = o[0]
         }
       }
@@ -148,7 +148,7 @@ class Org {
     if ( result == null ) {
       // log.debug("Match by name ${name}");
       def o = Org.executeQuery("select o from Org as o where lower(o.name) = ?",[name.toLowerCase()])
-      if ( o.size() == 1 ) {
+      if ( o.size() > 0 ) {
         result = o[0]
       }
     }
@@ -158,15 +158,17 @@ class Org {
       result = new Org(
                        name:name, 
                        sector:sector,
-                       iprange:ipRange).save()
+                       ipRange:iprange,
+                       impId:java.util.UUID.randomUUID().toString()).save()
+
       identifiers.each { k,v ->
         def io = new IdentifierOccurrence(org:result, identifier:Identifier.lookupOrCreateCanonicalIdentifier(k,v)).save()
       }
 
       if ( ( consortium != null ) && ( consortium.length() > 0 ) ) {
-        def consortium = Org.lookupOrCreate(consortium, null, null, [:], null)
+        def db_consortium = Org.lookupOrCreate(consortium, null, null, [:], null)
         def consLink = new Combo(fromOrg:result,
-                                 toOrg:consortium,
+                                 toOrg:db_consortium,
                                  status:null,
                                  type: RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia')).save()
       }
