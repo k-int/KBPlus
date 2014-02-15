@@ -331,18 +331,20 @@ class AdminController {
         if ( first ) {
           first = false; // Skip header
         }
-        def candidate_identifiers = [
-          'jusplogin':nl[3],
-          'JC':nl[4],
-          'Ringold':nl[5],
-          'UKAMF':nl[6],
-        ]
-        log.debug("Load ${nl[0]}, ${nl[1]}, ${nl[2]} ${candidate_identifiers} ${nl[7]}");
-        Org.lookupOrCreate(nl[0],
-                           nl[1],
-                           nl[2],
-                           candidate_identifiers,
-                           nl[7])
+        else {
+          def candidate_identifiers = [
+            'jusplogin':nl[3],
+            'JC':nl[4],
+            'Ringold':nl[5],
+            'UKAMF':nl[6],
+          ]
+          log.debug("Load ${nl[0]}, ${nl[1]}, ${nl[2]} ${candidate_identifiers} ${nl[7]}");
+          Org.lookupOrCreate(nl[0],
+                             nl[1],
+                             nl[2],
+                             candidate_identifiers,
+                             nl[7])
+        }
       }
     }
   }
