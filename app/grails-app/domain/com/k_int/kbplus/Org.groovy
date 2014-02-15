@@ -147,10 +147,29 @@ class Org {
     // No match by identifier, try and match by name
     if ( result == null ) {
       // log.debug("Match by name ${name}");
+      def o = Org.executeQuery("select o from Org as o where lower(o.name) = ?",[name.toLowerCase()])
+      if ( o.size() == 1 ) {
+        result = o[0]
+      }
     }
 
     if ( result == null ) {
       // log.debug("Create new entry for ${name}");
+      result = new Org(
+                       name:name, 
+                       sector:sector,
+                       iprange:ipRange).save()
+      identifiers.each { k,v ->
+        def io = new IdentifierOccurrence(org:result, identifier:Identifier.lookupOrCreateCanonicalIdentifier(k,v)).save()
+      }
+
+      if ( ( consortium != null ) && ( consortium.length() > 0 ) ) {
+        def consortium = Org.lookupOrCreate(consortium, null, null, [:], null)
+        def consLink = new Combo(fromOrg:result,
+                                 toOrg:consortium,
+                                 status:null,
+                                 type: RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia')).save()
+      }
     }
  
     result 
