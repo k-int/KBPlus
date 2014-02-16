@@ -135,6 +135,9 @@ class PackageDetailsController {
         return
       }
 
+      def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
+      result.pendingChanges = PendingChange.executeQuery("select pc from PendingChange as pc where package=? and ( pc.status is null or pc.status = ? ) order by ts desc", [result.packageInstance, pending_change_pending_status]);
+
       result.pkg_link_str="${ApplicationHolder.application.config.SystemBaseURL}/packageDetails/show/${params.id}"
 
       if ( packageInstance.forumId != null ) {
