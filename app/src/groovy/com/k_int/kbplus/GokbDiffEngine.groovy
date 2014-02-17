@@ -2,7 +2,7 @@ package com.k_int.kbplus
 
 public class GokbDiffEngine {
 
-  def static diff(ctx, oldpkg, newpkg, newTippClosure, updatedTippClosure, deletedTippClosure, pkgPropChangeClosure) {
+  def static diff(ctx, oldpkg, newpkg, newTippClosure, updatedTippClosure, deletedTippClosure, pkgPropChangeClosure, auto_accept) {
 
     if (( oldpkg == null )||(newpkg==null)) {
       println("Error - null package passed to diff");
@@ -11,7 +11,7 @@ public class GokbDiffEngine {
   
     if ( oldpkg.packageName != newpkg.packageName ) {
       println("packageName updated from ${oldpkg.packageName} to ${newpkg.packageName}");
-      pkgPropChangeClosure(ctx, 'title', newpkg.packageName);
+      pkgPropChangeClosure(ctx, 'title', newpkg.packageName, auto_accept);
     }
     else {
       println("packageName consistent");
@@ -39,26 +39,49 @@ public class GokbDiffEngine {
       if ( tippa != null &&
            tippb != null &&
            tippa.titleId == tippb.titleId ) {
-        System.out.println("  "+tippa+"    =    "+tippb);
-        updatedTippClosure(ctx, tippb)
-        // See if any of the actual properties are null
-        tippa = ai.hasNext() ? ai.next() : null
-        tippb = bi.hasNext() ? bi.next() : null
+
+        def tipp_diff = getTippDiff(tippa, tippb)
+
+        if ( tipp_diff.size() == 0 ) {
+          System.out.println("  "+tippa+"    =    "+tippb);
+        } 
+        else {
+          updatedTippClosure(ctx, tippb, auto_accept)
+          // See if any of the actual properties are null
+          tippa = ai.hasNext() ? ai.next() : null
+          tippb = bi.hasNext() ? bi.next() : null
+        }
       }
       else if ( ( tippb != null ) &&
                   ( ( tippa == null ) ||
                     ( tippa.compareTo(tippb) > 0 ) ) ) {
         System.out.println("Title "+tippb+" Was added to the package");
-        newTippClosure(ctx, tippb)
+        newTippClosure(ctx, tippb, auto_accept)
         tippb = bi.hasNext() ? bi.next() : null;
       }
       else {
-        deletedTippClosure(ctx, tippa)
+        deletedTippClosure(ctx, tippa, auto_accept)
         System.out.println("Title "+tippa+" Was removed from the package");
         tippa = ai.hasNext() ? ai.next() : null;
       }
     }
 
+  }
+
+  def getTippDiff(tippa, tippb) {
+    def result = []
+    if ( tippa.url?:'' != tippb.url?:'' ) {
+      result.add([field:'url',value:tippb.url])
+    }
+
+    if ( tippa.coverage.equals(tippb.coverage) ) {
+    }
+    else {
+      result.add([field:'coverage',value:tippb.coverage])
+    }
+
+    // See if the coverage is the same?
+    result;
   }
 
 }

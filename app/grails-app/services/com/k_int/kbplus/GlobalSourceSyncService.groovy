@@ -28,7 +28,7 @@ class GlobalSourceSyncService {
       }
     }
 
-    def onNewTipp = { ctx, tipp ->
+    def onNewTipp = { ctx, tipp, auto_accept ->
       def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
       println("new tipp: ${tipp}");
       println("identifiers: ${tipp.title.identifiers}");
@@ -61,7 +61,7 @@ class GlobalSourceSyncService {
       new_tipp.save();
     }
 
-    def onUpdatedTipp = { ctx, tipp ->
+    def onUpdatedTipp = { ctx, tipp, auto_accept ->
       println("updated tipp");
       // Find title with ID tipp... in package ctx
       def title_of_tipp_to_update = TitleInstance.lookupOrCreate(tipp.title.identifiers,tipp.title.name)
@@ -72,11 +72,12 @@ class GlobalSourceSyncService {
       println("deletd tipp");
     }
 
-    def onPkgPropChange = { ctx, propname, value ->
+    def onPkgPropChange = { ctx, propname, value, auto_accept ->
       println("updated pkg prop");
     }
 
-    com.k_int.kbplus.GokbDiffEngine.diff(pkg, oldpkg, newpkg, onNewTipp, onUpdatedTipp, onDeletedTipp, onPkgPropChange)
+    boolean auto_accept = true
+    com.k_int.kbplus.GokbDiffEngine.diff(pkg, oldpkg, newpkg, onNewTipp, onUpdatedTipp, onDeletedTipp, onPkgPropChange, auto_accept)
   }
 
   def packageConv = { md ->
@@ -125,6 +126,7 @@ class GlobalSourceSyncService {
 
     result.parsed_rec.tipps.sort{it.titleId}
     println("Rec conversion for package returns object with title ${result.parsed_rec.title} and ${result.parsed_rec.tipps.size()} tipps");
+    println(result.parsed_rec);
 
     return result
   }
