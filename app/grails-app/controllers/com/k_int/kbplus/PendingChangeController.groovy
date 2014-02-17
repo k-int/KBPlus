@@ -92,9 +92,14 @@ class PendingChangeController {
                 }
                 else if ( prop_info.getType() == java.util.Date ) {
                   log.debug("Date processing.... parse \"${parsed_change_info.changeDoc.new}\"");
-                  def df = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // yyyy-MM-dd'T'HH:mm:ss.SSSZ 2013-08-31T23:00:00Z
-                  def d = df.parse(parsed_change_info.changeDoc.new)
-                  target_object[parsed_change_info.changeDoc.prop] = d
+                  if ( ( parsed_change_info.changeDoc.new != null ) && ( parsed_change_info.changeDoc.new != 'null' ) ) {
+                    def df = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // yyyy-MM-dd'T'HH:mm:ss.SSSZ 2013-08-31T23:00:00Z
+                    def d = df.parse(parsed_change_info.changeDoc.new)
+                    target_object[parsed_change_info.changeDoc.prop] = d
+                  }
+                  else {
+                    target_object[parsed_change_info.changeDoc.prop] = null
+                  }
                 }
                 else {
                   log.debug("Setting value for ${parsed_change_info.changeDoc.prop} to ${parsed_change_info.changeDoc.new}");

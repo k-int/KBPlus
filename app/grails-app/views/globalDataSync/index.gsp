@@ -30,6 +30,7 @@
           <tr>
             <g:sortableColumn property="identifier" title="${message(code: 'package.identifier.label', default: 'Identifier')}" />
             <g:sortableColumn property="name" title="${message(code: 'package.name.label', default: 'Name')}" />
+            <g:sortableColumn property="desc" title="${message(code: 'package.name.label', default: 'Description')}" />
             <g:sortableColumn property="source.name" title="${message(code: 'package.name.label', default: 'Source')}" />
             <g:sortableColumn property="type" title="${message(code: 'package.name.label', default: 'Type')}" />
             <th>Actions</th>
@@ -40,9 +41,10 @@
             <tr>
               <td>${fieldValue(bean: item, field: "identifier")}</td>
               <td>${fieldValue(bean: item, field: "name")}</td>
+              <td>${fieldValue(bean: item, field: "desc")}</td>
               <td>${item.source.name}</td>
               <td>${item.displayRectype}</td>
-              <td><g:link action="newTracker" controller="globalDataSync" id="${item.id}" class="btn btn-success">Track Locally -></g:link></td>
+              <td><g:link action="newTracker" controller="globalDataSync" id="${item.id}" class="btn btn-success">Track</g:link></td>
             </tr>
             <g:each in="${item.trackers}" var="tracker">
               <tr>

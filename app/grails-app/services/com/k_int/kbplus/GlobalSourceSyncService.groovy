@@ -125,7 +125,7 @@ class GlobalSourceSyncService {
     }
 
     result.parsed_rec.tipps.sort{it.titleId}
-    println("Rec conversion for package returns object with title ${result.parsed_rec.title} and ${result.parsed_rec.tipps.size()} tipps");
+    println("Rec conversion for package returns object with title ${result.parsed_rec.title} and ${result.parsed_rec.tipps?.size()} tipps");
     println(result.parsed_rec);
 
     return result
@@ -227,6 +227,7 @@ class GlobalSourceSyncService {
           out.writeObject(new_record_info)
           out.close()
           existing_record_info[0].record = baos.toByteArray();
+          existing_record_info[0].desc="Package ${parsed_rec.title} consisting of ${parsed_rec.parsed_rec.tipps?.size()} titles"
           existing_record_info[0].save()
         }
         else {
@@ -244,6 +245,7 @@ class GlobalSourceSyncService {
                                                       ts:record_timestamp,
                                                       name:parsed_rec.title,
                                                       identifier:rec.header.identifier.text(),
+                                                      desc:"Package ${parsed_rec.title} consisting of ${parsed_rec.parsed_rec?.tipps?.size()} titles",
                                                       source: sync_job,
                                                       rectype:sync_job.rectype,
                                                       record: baos.toByteArray());
