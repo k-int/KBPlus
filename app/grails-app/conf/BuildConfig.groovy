@@ -45,7 +45,9 @@ grails.project.dependency.resolution = {
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
-        compile 'com.k-int:goai:1.0-SNAPSHOT'
+        compile ('com.k-int:goai:1.0') {
+          exclude 'groovy'
+        }
         compile 'commons-codec:commons-codec:1.6'
         runtime 'mysql:mysql-connector-java:5.1.26'
         runtime 'com.gmongo:gmongo:1.1'

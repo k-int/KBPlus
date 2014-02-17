@@ -143,7 +143,7 @@
             
             <g:each in="${titles}" var="ti">
               <tr>
-                <td>${ti[0].title} ${date_restriction}..</td>
+                <td>${ti[0].title}</td>
                 <td style="white-space:nowrap">${ti[0].getIdentifierValue('ISSN')}</td>
                 <td style="white-space:nowrap">${ti[0].getIdentifierValue('eISSN')}</td>
 

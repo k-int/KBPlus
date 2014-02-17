@@ -182,7 +182,7 @@ class PackageDetailsController {
 
       if ( params.coverageNoteFilter ) {
         base_qry += "and lower(tipp.coverageNote) like ?"
-        qry_params.add("%${params.coverageNoteFilter}%")
+        qry_params.add("%${params.coverageNoteFilter?.toLowerCase()}%")
       }
 
       if ( params.endsAfter && params.endsAfter.length() > 0 ) {
