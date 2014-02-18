@@ -51,7 +51,7 @@
                 <td colspan="5">
                   -> Tracking using id
                   <g:if test="${tracker.localOid != null}">
-                    <g:if test="${tracker.localOid.startsWith('com.k_int.kbplus.package')}">
+                    <g:if test="${tracker.localOid.startsWith('com.k_int.kbplus.Package')}">
                       <g:link controller="packageDetails" action="show" id="${tracker.localOid.split(':')[1]}">${tracker.name}</g:link>
                     </g:if>
                   </g:if>
