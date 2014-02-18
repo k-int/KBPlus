@@ -126,8 +126,6 @@ class GlobalSourceSyncService {
 
     result.parsed_rec.tipps.sort{it.titleId}
     println("Rec conversion for package returns object with title ${result.parsed_rec.title} and ${result.parsed_rec.tipps?.size()} tipps");
-    println(result.parsed_rec);
-
     return result
   }
 
@@ -260,12 +258,11 @@ class GlobalSourceSyncService {
           log.debug("Max timestamp is now ${record_timestamp}");
         }
 
-	log.debug("--");
+        log.debug("Updating sync job max timestamp");
+        sync_job.haveUpTo=new Date(max_timestamp)
+        sync_job.save();
       }
 
-      log.debug("Updating sync job max timestamp");
-      sync_job.haveUpTo=new Date(max_timestamp)
-      sync_job.save();
     }
     catch ( Exception e ) {
       log.error("Problem",e);
