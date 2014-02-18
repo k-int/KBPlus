@@ -25,6 +25,11 @@
 
     <div class="container">
         
+      <g:if test="${items != null}">
+        <div class="container" style="text-align:center">
+          Records ${offset} to ${offset+items.size()} of ${globalItemTotal}
+        </div>
+      </g:if>
       <table class="table table-bordered table-striped">
         <thead>
           <tr>
