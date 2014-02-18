@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat
 class GlobalSourceSyncService {
 
   def genericOIDService
+  def changeNotificationService
 
   def packageReconcile = { grt ,oldpkg, newpkg ->
     log.debug("\n\nreconcile package\n");
@@ -61,12 +62,32 @@ class GlobalSourceSyncService {
       new_tipp.save();
     }
 
-    def onUpdatedTipp = { ctx, tipp, auto_accept ->
+    def onUpdatedTipp = { ctx, tipp, changes, auto_accept ->
       println("updated tipp, ctx = ${ctx.toString()}");
 
       // Find title with ID tipp... in package ctx
       def title_of_tipp_to_update = TitleInstance.lookupOrCreate(tipp.title.identifiers,tipp.title.name)
-      def db_tipp = ctx.tipps.find { it.title == title_of_tipp_to_update }
+
+      def db_tipp = ctx.tipps.find { it.title.id == title_of_tipp_to_update.id }
+
+      if ( db_tipp != null) {
+        changes.each { chg ->
+
+          def change_doc = [ "prop":chg.field, "new":chg.newValue]
+          changeNotificationService.registerPendingChange('pkg',
+                                                          ctx,
+                                                          "A tipp update ${chg}",
+                                                          null,
+                                                          [
+                                                            changeTarget:"com.k_int.kbplus.TitleInstancePackagePlatform:${db_tipp.id}",
+                                                            changeType:'PropertyChange',
+                                                            changeDoc:change_doc
+                                                          ])
+        }
+      }
+      else {
+        throw new RuntimeException("Unable to locate TIPP for update. ctx:${ctx}, tipp:${tipp}");
+      }
     }
 
     def onDeletedTipp = { ctx, tipp ->

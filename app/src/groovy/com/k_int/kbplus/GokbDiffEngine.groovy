@@ -46,7 +46,7 @@ public class GokbDiffEngine {
         else {
           // See if any of the actual properties are null
           println("Got tipp diffs: ${tipp_diff}");
-          updatedTippClosure(ctx, tippb, auto_accept)
+          updatedTippClosure(ctx, tippb, tipp_diff, auto_accept)
         }
 
         tippa = ai.hasNext() ? ai.next() : null
@@ -74,13 +74,13 @@ public class GokbDiffEngine {
     if ( (tippa.url?:'').toString().compareTo((tippb.url?:'').toString()) == 0 ) {
     }
     else {
-      result.add([field:'url',value:tippb.url])
+      result.add([field:'hostPlatformURL',newValue:tippb.url,oldValue:tippa.url])
     }
 
     if ( tippa.coverage.equals(tippb.coverage) ) {
     }
     else {
-      result.add([field:'coverage',value:tippb.coverage])
+      result.add([field:'coverage',newValue:tippb.coverage,oldValue:tippa.coverage])
     }
 
     // See if the coverage is the same?
