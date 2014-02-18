@@ -1,4 +1,4 @@
-import org.codehaus.groovy.grails.commons.ApplicationHolder
+import grails.util.Holders
 
 // OK this works, but isn't ideal
 // import grails.util.Environment
@@ -24,7 +24,7 @@ modules = {
     resource url:'css/jquery.dataTables.css'
     resource url:'css/bootstrap-editable.css'
     resource url:'css/select2.css'
-    resource url:"css/instances/${ApplicationHolder.application.config.defaultCssSkin?:'standard.css'}"
+    resource url:"css/instances/${Holders.config.defaultCssSkin?:'standard.css'}"
     resource url:'css/jstree-themes/default/style.min.css'
     resource url:'css/style.css'
     resource url:'js/bootstrap.min.js'
