@@ -25,16 +25,19 @@ class Package {
   Date lastUpdated
   License license
   String forumId
+  Set pendingChanges
 
   static hasMany = [tipps: TitleInstancePackagePlatform, 
                     orgs: OrgRole, 
                     documents:DocContext,
-                    subscriptions: SubscriptionPackage]
+                    subscriptions: SubscriptionPackage,
+                    pendingChanges:PendingChange ]
 
   static mappedBy = [tipps: 'pkg', 
                      orgs: 'pkg',
                      documents:'pkg',
-                     subscriptions: 'pkg']
+                     subscriptions: 'pkg',
+                     pendingChanges: 'pkg']
 
 
   static mapping = {

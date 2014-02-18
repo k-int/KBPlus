@@ -107,7 +107,10 @@ class PendingChangeController {
                 }
                 target_object.save()
 
-                def change_audit_object = change.license ? change.license : change.subscription
+                def change_audit_object = null
+                if ( change.license ) change_audit_object = change.license;
+                if ( change.subscription ) change_audit_object = change.subscription;
+                if ( change.pkg ) change_audit_object = change.pkg;
                 def change_audit_id = change_audit_object.id
                 def change_audit_class_name = change_audit_object.class.name
               }
@@ -120,6 +123,8 @@ class PendingChangeController {
             log.error("Unhandled change type : ${pc.changeDoc}");
             break;
         }
+        change.pkg?.pendingChanges?.remove(change)
+        change.pkg?.save();
         change.license?.pendingChanges?.remove(change)
         change.license?.save();
         change.subscription?.pendingChanges?.remove(change)
