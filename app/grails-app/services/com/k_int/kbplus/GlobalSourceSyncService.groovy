@@ -23,7 +23,7 @@ class GlobalSourceSyncService {
                        )
 
       if ( pkg.save() ) {
-        grt.localOid = "com.k_int.kbplus.package:${pkg.id}"
+        grt.localOid = "com.k_int.kbplus.Package:${pkg.id}"
         grt.save()
       }
     }
@@ -62,7 +62,8 @@ class GlobalSourceSyncService {
     }
 
     def onUpdatedTipp = { ctx, tipp, auto_accept ->
-      println("updated tipp");
+      println("updated tipp, ctx = ${ctx.toString()}");
+
       // Find title with ID tipp... in package ctx
       def title_of_tipp_to_update = TitleInstance.lookupOrCreate(tipp.title.identifiers,tipp.title.name)
       def db_tipp = ctx.tipps.find { it.title == title_of_tipp_to_update }
@@ -216,8 +217,10 @@ class GlobalSourceSyncService {
           ins.close()
           def new_record_info = parsed_rec.parsed_rec
 
-          // Call this for each __tracker__
-          // cfg.reconciler(existing_record_info[0], old_rec_info, new_record_info)
+          // For each tracker we need to update the local object which reflects that remote record
+          existing_record_info[0].trackers.each { tracker ->
+            cfg.reconciler(tracker, old_rec_info, new_record_info)
+          }
 
           // Finally, update our local copy of the remote object
           def baos = new ByteArrayOutputStream()

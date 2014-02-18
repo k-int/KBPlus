@@ -35,7 +35,6 @@ public class GokbDiffEngine {
 
     while ( tippa != null || tippb != null ) {
 
-      System.out.println("Compare "+tippa+" and "+tippb);
       if ( tippa != null &&
            tippb != null &&
            tippa.titleId == tippb.titleId ) {
@@ -43,14 +42,15 @@ public class GokbDiffEngine {
         def tipp_diff = getTippDiff(tippa, tippb)
 
         if ( tipp_diff.size() == 0 ) {
-          System.out.println("  "+tippa+"    =    "+tippb);
         } 
         else {
-          updatedTippClosure(ctx, tippb, auto_accept)
           // See if any of the actual properties are null
-          tippa = ai.hasNext() ? ai.next() : null
-          tippb = bi.hasNext() ? bi.next() : null
+          println("Got tipp diffs: ${tipp_diff}");
+          updatedTippClosure(ctx, tippb, auto_accept)
         }
+
+        tippa = ai.hasNext() ? ai.next() : null
+        tippb = bi.hasNext() ? bi.next() : null
       }
       else if ( ( tippb != null ) &&
                   ( ( tippa == null ) ||
@@ -68,9 +68,12 @@ public class GokbDiffEngine {
 
   }
 
-  def getTippDiff(tippa, tippb) {
+  def static getTippDiff(tippa, tippb) {
     def result = []
-    if ( tippa.url?:'' != tippb.url?:'' ) {
+
+    if ( (tippa.url?:'').toString().compareTo((tippb.url?:'').toString()) == 0 ) {
+    }
+    else {
       result.add([field:'url',value:tippb.url])
     }
 
