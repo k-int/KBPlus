@@ -14,18 +14,19 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 modules = {
   application {
+    dependsOn 'jquery'
     resource url:'js/application.js'
     resource url:'js/plugins.min.js'
   }
   kbplus {
     // resource url:'css/bootstrap.css'
-    dependsOn : 'jsTree'
-    resource url:'css/style.css'
+    dependsOn 'jquery'
     resource url:'css/jquery.dataTables.css'
     resource url:'css/bootstrap-editable.css'
     resource url:'css/select2.css'
     resource url:"css/instances/${ApplicationHolder.application.config.defaultCssSkin?:'standard.css'}"
-//    resource url:'js/jquery-1.9.1.min.js'
+    resource url:'css/jstree-themes/default/style.min.css'
+    resource url:'css/style.css'
     resource url:'js/bootstrap.min.js'
     resource url:'js/bootstrap-editable.min.js'
     resource url:'js/moment.min.js'
@@ -34,6 +35,7 @@ modules = {
     resource url:'js/dataTables.scroller.js'
     resource url:'js/kbplusapp.js.gsp'
     resource url:'js/jquery.dotdotdot.min.js'
+    resource url:'js/jstree.min.js'
   }
   annotations {
     dependsOn 'kbplus'
