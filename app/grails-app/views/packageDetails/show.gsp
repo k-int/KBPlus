@@ -306,7 +306,14 @@
                    <g:link controller="tipp" action="show" id="${t.id}">(TIPP)</g:link>
                    (<g:xEditableRefData owner="${t}" field="status" config='TIPPStatus'/>)
                 </td>
-                <td style="white-space: nowrap;vertical-align:top;">${t.platform?.name}</td>
+                <td style="white-space: nowrap;vertical-align:top;">
+                   <g:if test="${t.hostPlatformURL != null}">
+                     <a href="${t.hostPlatformURL}">${t.platform?.name}</a>
+                   </g:if>
+                   <g:else>
+                     ${t.platform?.name}
+                   </g:else>
+                </td>
                 <td style="white-space: nowrap;vertical-align:top;">
                   <g:each in="${t.title.ids}" var="id">
                     ${id.identifier.ns.ns}:${id.identifier.value}<br/>
