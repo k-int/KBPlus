@@ -78,7 +78,7 @@ class GlobalSourceSyncService {
                            platform:"com.k_int.kbplus.Platform:${plat_instance.id}",
                            title:"com.k_int.kbplus.TitleInstance:${title_instance.id}",
                            startDate:((cov.startDate != null ) && ( cov.startDate.length() > 0 ) ) ? sdf.parse(cov.startDate) : null,
-                           startVolume:cov.startVolume;
+                           startVolume:cov.startVolume,
                            startIssue:cov.startIssue,
                            endDate:((cov.endDate != null ) && ( cov.endDate.length() > 0 ) ) ? sdf.parse(cov.endDate) : null,
                            endVolume:cov.endVolume,
