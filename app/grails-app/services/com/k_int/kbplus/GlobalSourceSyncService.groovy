@@ -55,7 +55,8 @@ class GlobalSourceSyncService {
 
         // We rely upon there only being 1 coverage statement for now, it seems likely this will need
         // to change in the future.
-        tipp.coverage.each { cov ->
+        // tipp.coverage.each { cov ->
+        def cov = tipp.coverage[0]
           new_tipp.startDate=((cov.startDate != null ) && ( cov.startDate.length() > 0 ) ) ? sdf.parse(cov.startDate) : null;
           new_tipp.startVolume=cov.startVolume;
           new_tipp.startIssue=cov.startIssue;
@@ -65,7 +66,7 @@ class GlobalSourceSyncService {
           new_tipp.embargo=cov.embargo;
           new_tipp.coverageDepth=cov.coverageDepth;
           new_tipp.coverageNote=cov.coverageNote;
-        }
+        // }
         new_tipp.hostPlatformURL=tipp.url;
 
         new_tipp.save();
@@ -73,6 +74,7 @@ class GlobalSourceSyncService {
       else {
         println("Register new tipp event for user to accept or reject");
 
+        def cov = tipp.coverage[0]
         def change_doc = [ 
                            pkg:"com.k_int.kbplus.Package:${ctx.id}",
                            platform:"com.k_int.kbplus.Platform:${plat_instance.id}",
