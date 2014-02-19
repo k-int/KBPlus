@@ -11,17 +11,25 @@ class GlobalSourceSyncService {
   def packageReconcile = { grt ,oldpkg, newpkg ->
     log.debug("\n\nreconcile package\n");
     def pkg = null;
+    boolean auto_accept = false
+
     // Firstly, make sure that there is a package for this record
     if ( grt.localOid != null ) {
       pkg = genericOIDService.resolveOID(grt.localOid)
     }
     else {
       // create a new package
+
+      // Auto accept everything whilst we load the package initially
+      auto_accept = true;
+
       pkg = new Package(
                          identifier:grt.identifier,
                          name:newpkg.packageName,
-                         impId:grt.owner.identifier
+                         impId:grt.owner.identifier,
+                         autoAccept:false
                        )
+
 
       if ( pkg.save() ) {
         grt.localOid = "com.k_int.kbplus.Package:${pkg.id}"
@@ -98,7 +106,6 @@ class GlobalSourceSyncService {
       println("updated pkg prop");
     }
 
-    boolean auto_accept = true
     com.k_int.kbplus.GokbDiffEngine.diff(pkg, oldpkg, newpkg, onNewTipp, onUpdatedTipp, onDeletedTipp, onPkgPropChange, auto_accept)
   }
 

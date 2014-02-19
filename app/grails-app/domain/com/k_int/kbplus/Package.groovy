@@ -26,6 +26,7 @@ class Package {
   License license
   String forumId
   Set pendingChanges
+  Boolean autoAccept = false
 
   static hasMany = [tipps: TitleInstancePackagePlatform, 
                     orgs: OrgRole, 
