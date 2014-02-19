@@ -13,6 +13,15 @@ class GlobalSourceSyncService {
     def pkg = null;
     boolean auto_accept_flag = false
 
+    def scope = RefdataCategory.lookupOrCreate('Package.Scope',(newpkg?.scope)?:'Unknown');
+    def listStatus = RefdataCategory.lookupOrCreate('Package.ListStatus',(newpkg?.listStatus)?:'Unknown');
+    def breakable = RefdataCategory.lookupOrCreate('Package.Breakable',(newpkg?.breakable)?:'Unknown');
+    def consistent = RefdataCategory.lookupOrCreate('Package.Consistent',(newpkg?.consistent)?:'Unknown');
+    def fixed = RefdataCategory.lookupOrCreate('Package.Fixed',(newpkg?.fixed)?:'Unknown');
+    def paymentType = RefdataCategory.lookupOrCreate('Package.PaymentType',(newpkg?.paymentType)?:'Unknown');
+    def global = RefdataCategory.lookupOrCreate('Package.Global',(newpkg?.global)?:'Unknown');
+    def isPublic = RefdataCategory.lookupOrCreate('YN','Yes');
+
     // Firstly, make sure that there is a package for this record
     if ( grt.localOid != null ) {
       pkg = genericOIDService.resolveOID(grt.localOid)
@@ -27,7 +36,15 @@ class GlobalSourceSyncService {
                          identifier:grt.identifier,
                          name:newpkg.packageName,
                          impId:grt.owner.identifier,
-                         autoAccept:false
+                         autoAccept:false,
+                         packageType:null,
+                         packageStatus:null,
+                         packageListStatus:listStatus,
+                         breakable:breakable,
+                         consistent:consistent,
+                         fixed:fixed,
+                         isPublic:isPublic,
+                         packageScope:scope
                        )
 
 
