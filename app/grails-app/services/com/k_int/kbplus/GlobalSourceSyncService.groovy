@@ -46,12 +46,14 @@ class GlobalSourceSyncService {
       println("Result of lookup or create for ${tipp.title.name} with identifiers ${tipp.title.identifiers} is ${title_instance}");
 
       def plat_instance = Platform.lookupOrCreatePlatform([name:tipp.platform]);
+      def tipp_status = RefdataCategory.lookupOrCreate('TIPP Status',tipp.status?:'Current');
 
       if ( auto_accept ) {
         def new_tipp = new TitleInstancePackagePlatform()
         new_tipp.pkg = ctx;
         new_tipp.platform = plat_instance;
         new_tipp.title = title_instance;
+        new_tipp.status = tipp_status;
 
         // We rely upon there only being 1 coverage statement for now, it seems likely this will need
         // to change in the future.
@@ -79,6 +81,7 @@ class GlobalSourceSyncService {
                            pkg:[id:ctx.id],
                            platform:[id:plat_instance.id],
                            title:[id:title_instance.id],
+                           status:[id:tipp_status.id],
                            startDate:((cov.startDate != null ) && ( cov.startDate.length() > 0 ) ) ? sdf.parse(cov.startDate) : null,
                            startVolume:cov.startVolume,
                            startIssue:cov.startIssue,
