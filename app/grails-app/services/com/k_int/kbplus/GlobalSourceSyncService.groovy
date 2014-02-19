@@ -11,7 +11,7 @@ class GlobalSourceSyncService {
   def packageReconcile = { grt ,oldpkg, newpkg ->
     log.debug("\n\nreconcile package\n");
     def pkg = null;
-    boolean auto_accept = false
+    boolean auto_accept_flag = false
 
     // Firstly, make sure that there is a package for this record
     if ( grt.localOid != null ) {
@@ -21,7 +21,7 @@ class GlobalSourceSyncService {
       // create a new package
 
       // Auto accept everything whilst we load the package initially
-      auto_accept = true;
+      auto_accept_flag = true;
 
       pkg = new Package(
                          identifier:grt.identifier,
@@ -136,7 +136,7 @@ class GlobalSourceSyncService {
       println("updated pkg prop");
     }
 
-    com.k_int.kbplus.GokbDiffEngine.diff(pkg, oldpkg, newpkg, onNewTipp, onUpdatedTipp, onDeletedTipp, onPkgPropChange, auto_accept)
+    com.k_int.kbplus.GokbDiffEngine.diff(pkg, oldpkg, newpkg, onNewTipp, onUpdatedTipp, onDeletedTipp, onPkgPropChange, auto_accept_flag)
   }
 
   def packageConv = { md ->
