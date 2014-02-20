@@ -20,20 +20,17 @@
             </a>
             <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
 	            <li>
-	              <% def ps_csv = [:]; ps_csv.putAll(params); ps_csv.format = 'csv'; %>
-	              <g:link action="currentTitles" params="${ps_csv}">CSV Export</g:link>
+	              <g:link action="currentTitles" params="${params+[format:'csv']}">CSV Export</g:link>
 	            </li>
 	            <li>
-	              <% def ps_json = [:]; ps_json.putAll(params); ps_json.format = 'json'; %>
-	              <g:link action="currentTitles" params="${ps_json}">Json Export</g:link>
+	              <g:link action="currentTitles" params="${params+[format:'json']}">Json Export</g:link>
 	            </li>
 	            <li>
-	              <% def ps_xml = [:]; ps_xml.putAll(params); ps_xml.format = 'xml'; %>
-	              <g:link action="currentTitles" params="${ps_xml}">XML Export</g:link>
+	              <g:link action="currentTitles" params="${params+[format:'xml',shortcode:params.shortcode]}">XML Export</g:link>
 	            </li>
 
               <g:each in="${transforms}" var="transkey,transval">
-                <li><g:link action="index" id="${params.id}" params="${[format:'xml',transformId:transkey]}"> ${transval.name}</g:link></li>
+                <li><g:link action="currentTitles" id="${params.id}" params="${params+[format:'xml',transformId:transkey]}"> ${transval.name}</g:link></li>
               </g:each>
 
             </ul>

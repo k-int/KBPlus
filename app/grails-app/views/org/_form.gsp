@@ -23,7 +23,7 @@
 		<g:message code="org.sector.label" default="Sector" />
 		
 	</label>
-	<g:textField name="sector" maxlength="128" value="${orgInstance?.sector}"/>
+        <g:select name="sector" from="${['Higher Education']}" value="${orgInstance?.sector}" />
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: orgInstance, field: 'ids', 'error')} ">

@@ -44,6 +44,7 @@ class Org {
   }
 
   static constraints = {
+         impId(nullable:true, blank:true,maxSize:256);
        address(nullable:true, blank:true,maxSize:256);
        ipRange(nullable:true, blank:true, maxSize:1024);
         sector(nullable:true, blank:true, maxSize:128);
@@ -128,4 +129,51 @@ class Org {
   }
 
 
+  
+  static def lookupOrCreate(name, sector, consortium, identifiers, iprange) {
+
+    def result = null;
+
+    // See if we can uniquely match on any of the identifiers
+    identifiers.each { k,v ->
+      if ( v != null ) {
+        def o = Org.executeQuery("select o from Org as o join o.ids as io where io.identifier.ns.ns = ? and io.identifier.value = ?",[k,v])
+        if ( o.size() > 0 ) {
+          result = o[0]
+        }
+      }
+    }
+
+    // No match by identifier, try and match by name
+    if ( result == null ) {
+      // log.debug("Match by name ${name}");
+      def o = Org.executeQuery("select o from Org as o where lower(o.name) = ?",[name.toLowerCase()])
+      if ( o.size() > 0 ) {
+        result = o[0]
+      }
+    }
+
+    if ( result == null ) {
+      // log.debug("Create new entry for ${name}");
+      result = new Org(
+                       name:name, 
+                       sector:sector,
+                       ipRange:iprange,
+                       impId:java.util.UUID.randomUUID().toString()).save()
+
+      identifiers.each { k,v ->
+        def io = new IdentifierOccurrence(org:result, identifier:Identifier.lookupOrCreateCanonicalIdentifier(k,v)).save()
+      }
+
+      if ( ( consortium != null ) && ( consortium.length() > 0 ) ) {
+        def db_consortium = Org.lookupOrCreate(consortium, null, null, [:], null)
+        def consLink = new Combo(fromOrg:result,
+                                 toOrg:db_consortium,
+                                 status:null,
+                                 type: RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia')).save()
+      }
+    }
+ 
+    result 
+  }
 }

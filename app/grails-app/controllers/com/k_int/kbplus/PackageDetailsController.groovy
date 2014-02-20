@@ -29,12 +29,12 @@ class PackageDetailsController {
     def list() {
       def result = [:]
       result.user = User.get(springSecurityService.principal.id)
-      params.max = Math.min(params.max ? params.int('max') : 10, 100)
+
+      result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
 
       result.editable = true
 
-      def paginate_after = params.paginate_after ?: 19;
-      result.max = params.max 
+      def paginate_after = params.paginate_after ?: ( (2*result.max)-1);
       result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
       def deleted_package_status =  RefdataCategory.lookupOrCreate( 'Package Status', 'Deleted' );
@@ -116,6 +116,8 @@ class PackageDetailsController {
     
       def result = [:]
       boolean showDeletedTipps=false
+
+      result.transforms = grailsApplication.config.packageTransforms
       
       if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') ) {
         result.editable=true
@@ -132,6 +134,9 @@ class PackageDetailsController {
         redirect action: 'list'
         return
       }
+
+      def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
+      result.pendingChanges = PendingChange.executeQuery("select pc from PendingChange as pc where pkg=? and ( pc.status is null or pc.status = ? ) order by ts desc", [result.packageInstance, pending_change_pending_status]);
 
       result.pkg_link_str="${ApplicationHolder.application.config.SystemBaseURL}/packageDetails/show/${params.id}"
 

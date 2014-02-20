@@ -52,17 +52,17 @@
             </thead>
             <tbody>
             <g:each in="${license.documents}" var="docctx">
-                <g:if test="${((docctx.owner?.contentType==1) && ( docctx.status?.value!='Deleted'))}">
+                <g:if test="${(((docctx.owner?.contentType==1)||(docctx.owner?.contentType==3)) && ( docctx.status?.value!='Deleted'))}">
                     <tr>
                       <td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td>
-                      <td>
+                      <td style="max-width: 300px;overflow: hidden;text-overflow: ellipsis;">
                         <g:xEditable owner="${docctx.owner}" field="title" id="title"/>
                       </td>
-                      <td>
+                      <td style="max-width: 300px;overflow: hidden;text-overflow: ellipsis;">
                         <g:xEditable owner="${docctx.owner}" field="filename" id="filename"/>
                       </td>
                       <td>
-                      <g:if test="${docctx.owner?.contentType==1}">
+                      <g:if test="${((docctx.owner?.contentType==1)||(docctx.owner?.contentType==3))}">
                           <g:link controller="docstore" id="${docctx.owner.uuid}">Download Doc</g:link>
                       </g:if>
                       </td>

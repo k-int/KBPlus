@@ -314,6 +314,9 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("LicenseCategory", "Software").save()
     RefdataCategory.lookupOrCreate("LicenseCategory", "Other").save()
 
+    RefdataCategory.lookupOrCreate("TitleInstanceStatus", "Current").save()
+    RefdataCategory.lookupOrCreate("TitleInstanceStatus", "Deleted").save()
+
     log.debug("validate content items...");
     // The default template for a property change on a title
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.propertyChange','','''
@@ -348,6 +351,18 @@ New package added with id ${OID.id} - "${OID.name}".
 No Host Platform URL Content
 ''');
 
+
+   def gokb_record_source = GlobalRecordSource.findByIdentifier('gokbPackages') ?: new GlobalRecordSource(
+                                                                                         identifier:'gokbPackages',
+                                                                                         name:'GOKB',
+                                                                                         type:'OAI',
+                                                                                         haveUpTo:null,
+                                                                                         uri:'https://gokb.k-int.com/gokb/oai/packages',
+                                                                                         listPrefix:'oai_dc',
+                                                                                         fullPrefix:'gokb',
+                                                                                         principal:null,
+                                                                                         credentials:null,
+                                                                                         rectype:0).save(flush:true)
 
   }
 

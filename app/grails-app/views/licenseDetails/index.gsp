@@ -1,4 +1,6 @@
 <!doctype html>
+<r:require module="annotations" />
+
 <html>
   <head>
     <meta name="layout" content="mmbootstrap"/>
@@ -32,9 +34,7 @@
         <g:if test="${editable}">
           <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
         </g:if>
-
-        <li class="pull-right"><span class="badge badge-info"><g:annotatedLabel owner="${license}" property="detailsPageInfo">help</g:annotatedLabel></span>&nbsp;</li>
-
+        <li class="pull-right"><g:annotatedLabel owner="${license}" property="detailsPageInfo"></g:annotatedLabel>&nbsp;</li>
       </ul>
     </div>
 
@@ -46,8 +46,10 @@
     <g:if test="${pendingChanges?.size() > 0}">
       <div class="container alert-warn">
         <h6>This Subscription has pending change notifications</h6>
-        <g:link controller="pendingChange" action="acceptAll" id="com.k_int.kbplus.License:${license.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept All</g:link>
-        <g:link controller="pendingChange" action="rejectAll" id="com.k_int.kbplus.License:${license.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject All</g:link>
+        <g:if test="${editable}">
+          <g:link controller="pendingChange" action="acceptAll" id="com.k_int.kbplus.License:${license.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept All</g:link>
+          <g:link controller="pendingChange" action="rejectAll" id="com.k_int.kbplus.License:${license.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject All</g:link>
+        </g:if>
         <br/>&nbsp;<br/>
         <table class="table table-bordered">
           <thead>
@@ -61,8 +63,10 @@
               <tr>
                 <td>${pc.desc}</td>
                 <td>
-                  <g:link controller="pendingChange" action="accept" id="${pc.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept</g:link>
-                  <g:link controller="pendingChange" action="reject" id="${pc.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject</g:link>
+                  <g:if test="${editable}">
+                    <g:link controller="pendingChange" action="accept" id="${pc.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept</g:link>
+                    <g:link controller="pendingChange" action="reject" id="${pc.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject</g:link>
+                  </g:if>
                 </td>
               </tr>
             </g:each>

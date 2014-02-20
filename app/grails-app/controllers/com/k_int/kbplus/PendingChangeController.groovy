@@ -34,7 +34,6 @@ class PendingChangeController {
 
     def changes_to_accept = []
 
-
     owner.pendingChanges.each { pc ->
       changes_to_accept.add(pc)
     }
@@ -80,8 +79,7 @@ class PendingChangeController {
               ie_to_update.save();
             }
             break;
-          case 'PropertyChange' :
-            // def target_object = change.license ? change.license : change.subscription
+          case 'PropertyChange' :  // Generic property change
             if ( ( parsed_change_info.changeTarget != null ) && ( parsed_change_info.changeTarget.length() > 0 ) ) {
               def target_object = genericOIDService.resolveOID(parsed_change_info.changeTarget);
               if ( target_object ) {
@@ -94,9 +92,14 @@ class PendingChangeController {
                 }
                 else if ( prop_info.getType() == java.util.Date ) {
                   log.debug("Date processing.... parse \"${parsed_change_info.changeDoc.new}\"");
-                  def df = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // yyyy-MM-dd'T'HH:mm:ss.SSSZ 2013-08-31T23:00:00Z
-                  def d = df.parse(parsed_change_info.changeDoc.new)
-                  target_object[parsed_change_info.changeDoc.prop] = d
+                  if ( ( parsed_change_info.changeDoc.new != null ) && ( parsed_change_info.changeDoc.new != 'null' ) ) {
+                    def df = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // yyyy-MM-dd'T'HH:mm:ss.SSSZ 2013-08-31T23:00:00Z
+                    def d = df.parse(parsed_change_info.changeDoc.new)
+                    target_object[parsed_change_info.changeDoc.prop] = d
+                  }
+                  else {
+                    target_object[parsed_change_info.changeDoc.prop] = null
+                  }
                 }
                 else {
                   log.debug("Setting value for ${parsed_change_info.changeDoc.prop} to ${parsed_change_info.changeDoc.new}");
@@ -107,19 +110,6 @@ class PendingChangeController {
                 def change_audit_object = change.license ? change.license : change.subscription
                 def change_audit_id = change_audit_object.id
                 def change_audit_class_name = change_audit_object.class.name
-
-                // Log a change record against the object
-                // def new_audit_event = new org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent()
-                // new_audit_event.actor=null;
-                // new_audit_event.uri=null;
-                // new_audit_event.className=change_audit_class_name
-                // new_audit_event.persistedObjectId = change_audit_id
-                // new_audit_event.persistedObjectVersion = change_audit_object.version
-                // new_audit_event.eventName="ChangeAccepted"
-                // new_audit_event.propertyName=null;
-                // new_audit_event.oldValue=null;
-                // new_audit_event.newValue=change.desc;
-                // new_audit_event.save()
               }
             }
             break;
@@ -160,19 +150,6 @@ class PendingChangeController {
       def change_audit_object = change.license ? change.license : change.subscription
       def change_audit_id = change_audit_object.id
       def change_audit_class_name = change_audit_object.class.name
-
-      // Log a change record against the object
-      // def new_audit_event = new org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent()
-      // new_audit_event.actor=null;
-      // new_audit_event.uri=null;
-      // new_audit_event.className=change_audit_class_name
-      // new_audit_event.persistedObjectId = change_audit_id
-      // new_audit_event.persistedObjectVersion = change_audit_object.version
-      // new_audit_event.eventName="ChangeRejected"
-      // new_audit_event.propertyName=null;
-      // new_audit_event.oldValue=null;
-      // new_audit_event.newValue=change.desc;
-      // new_audit_event.save()
     }
   }
 }
