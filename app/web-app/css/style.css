@@ -873,3 +873,8 @@ th.desc a {
   overflow-y: hidden;
 }
 
+.tree a.jstree-hovered {
+	box-shadow : none !important;
+	border:none !important;
+	background:#B1B8BB none !important;
+}
