@@ -10,12 +10,11 @@ import org.grails.plugin.resource.ResourceTagLib
 class TreeSelectTagLib {
   static defaultEncodeAs = 'raw'
   def grailsApplication
-  ResourceTagLib resourceTagLib
   
   private void addRequirements (props) {
     
     // Get the resources taglib.
-    resourceTagLib = resourceTagLib ?: grailsApplication.mainContext.getBean(
+    ResourceTagLib resourceTagLib = grailsApplication.mainContext.getBean(
       'org.grails.plugin.resource.ResourceTagLib'
     )
     
