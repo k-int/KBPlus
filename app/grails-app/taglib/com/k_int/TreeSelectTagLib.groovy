@@ -75,7 +75,7 @@ class TreeSelectTagLib {
               val = "${att}"
             }
           default :
-            out << " ${att}=\"${val.encodeAsURL()}\" "
+            out << " ${att}=\"${val}\" "
         }
       }
       out << "class=\"${classes}\" >${text}</option>"
