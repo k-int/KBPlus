@@ -5,8 +5,11 @@ $(function () {
     // Convert each tree select into a nice tree widget.
     $("select.tree").each(function() {
       
-      // the tree.      
+      // The tree.      
       var tree = $(this);
+      
+      // Hidden element id prefix.
+      var hidden_prefix = "tree-hidden-";
       
       // Method to ensure there is an id set.
       var ensureID = function (op, count) {
@@ -18,10 +21,14 @@ $(function () {
       };
       
       var addHiddenField = function (attr, after) {
-        var field = $("<input type='hidden' />").attr(attr);
         
-        // Append after the div.
-        $(after).after(field);
+        // Only insert if not already present.
+        if ($('hidden#' + attr['id']).length === 0) {
+          var field = $("<input type='hidden' />").attr(attr);
+          
+          // Append after the div.
+          $(after).after(field);
+        }
       }
       
       // Method to add all options.
@@ -127,14 +134,72 @@ $(function () {
         addHiddenField ({
           "name"  : sName,
           "value" : data.node['li_attr']['data-value'],
-          "id"    : "tree-hidden-" + data.node['id']
-        }, tree_div);        
+          "id"    : hidden_prefix + data.node['id']
+        }, tree_div);
+        
+        // Get the jstree instance.
+        var jstree = $(this).jstree(true);
+        
+        // Build the list of ids that we need to remove.
+        var ids = [];
+        
+        var actOnChildren = function (children) {
+          children.each (function (index, child) {
+              
+            // Add the id of each child and check it's children.
+            child = $(child);
+            var id = child.attr("id");
+            
+            // Add the hidden field.
+            addHiddenField ({
+              "name"  : sName,
+              "value" : child.attr('data-value'),
+              "id"    : hidden_prefix + id
+            }, tree_div);
+            
+            // Act on the children of this element too.
+            actOnChildren (jstree.get_children_dom(id));
+          });
+        };
+        
+        // Act on all the children of this node.
+        actOnChildren (jstree.get_children_dom(data.node));
         
       }).on("deselect_node.jstree", function (e, data) {
         
-        // Remove the linked hidden attribute.
-        $("#tree-hidden-" + data.node.id).remove();
+        // Method to act on the children of this element.
+        var actOnChildren = function (children) {
+          children.each (function (index, child) {
+              
+            // Add the id of each child and check it's children.
+            var id = $(child).attr("id");
+            
+            // Add the hidden field.
+            ids.push ("#" + hidden_prefix + id);
+            
+            // Act on the children of this element too.
+            actOnChildren (jstree.get_children_dom(id));
+          });
+        };
         
+        // Get the jstreee instance.
+        var jstree = $(this).jstree(true);
+        
+        // Build the list of ids that we need to remove.
+        var ids = ["#" + hidden_prefix + data.node.id];
+        
+        // Add the parent ids.
+        var p = jstree.get_parent(data.node);
+        while (p && p != "#") {
+          ids.push("#" + hidden_prefix + p);
+          p = jstree.get_parent(p);
+        }
+        
+        // Act on all children too.
+        actOnChildren(jstree.get_children_dom(data.node))
+        
+        // Remove all the linked hidden elements.
+        $("" + ids).remove();
       });
       
       // Replace the original list with the div, followed by the hidden element.
