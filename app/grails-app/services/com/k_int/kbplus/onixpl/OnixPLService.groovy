@@ -15,8 +15,6 @@ class OnixPLService {
   OnixPLHelperService onixPLHelperService
   def grailsApplication
   
-  private List<Map> tsComparisonPoints = []
-  
   /**
    * Build the list of comparison points into a format for the treeSelect.
    * 
@@ -75,14 +73,7 @@ class OnixPLService {
    */
   public getTsComparisonPoints () {
     
-    // Just return the list if already built.
-    if (tsComparisonPoints) return tsComparisonPoints
-    
-    // Build and return the comparison points available.
-    tsComparisonPoints = buildAvailableComparisonPointsForTreeSelect(
-      grailsApplication.config.onix.comparisonPoints
-    )
-    tsComparisonPoints
+    buildAvailableComparisonPointsForTreeSelect(grailsApplication.config.onix.comparisonPoints)
   }
   
   public GPathResult getSampleDoc () {
