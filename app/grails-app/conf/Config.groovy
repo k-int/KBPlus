@@ -7,80 +7,88 @@ import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 onix = [
   "codelist" : "ONIX_PublicationsLicense_CodeLists.xsd",
   "comparisonPoints" : [
-    'template' : 'PublicationsLicenseExpression/$value$',
+    'template' : '$value$',
     'values' : [
-      'Definitions' : [
-        'text' : 'Definitions'
-      ],
-      'LicenseGrant' : [
-        'text' : 'License Grant'
-      ],
-      'UsageTerms' : [
-        'text' : 'Usage Terms',
+      '*' : [
+        'text' : 'All',
         'children' : [
-          'template' : 'Usage/UsageType[normalize-space(text())="$value$"]',
+          'template' : 'PublicationsLicenseExpression/$value$',
           'values' : [
-            'onixPL:MakeTemporaryDigitalCopy' : ['text' :  'Make Temporary Digital Copy'],
-            'onixPL:ProvideIntegratedAccess' : ['text' :  'Provide Integrated Access'],
-            'onixPL:ProvideIntegratedIndex' : ['text' :  'Provide Integrated Index'],
-            'onixPL:AccessViaSecureAuthentication' : ['text' :  'Access Via Secure Authentication'],
-            'onixPL:MakeDigitalCopy' : ['text' :  'Make Digital Copy'],
-            'onixPL:IncludeInPrintedInstructionalMaterial' : ['text' :  'Include In Printed Instructional Material'],
-            'onixPL:IncludeInDigitalInstructionalMaterial' : ['text' :  'Include In Digital Instructional Material'],
-            'onixPL:IncludeInSpecialNeedsInstructionalMaterial' : ['text' :  'Include In Special Needs Instructional Material'],
-            'onixPL:IncludeInAcademicWork' : ['text' :  'Include In Academic Work'],
-            'onixPL:SupplyCopyByPost' : ['text' :  'Supply Copy By Post'],
-            'onixPL:SupplyCopyByFax' : ['text' :  'Supply Copy By Fax'],
-            'onixPL:SupplyCopyBySecureElectronicTransmission' : ['text' :  'Supply Copy By Secure Electronic Transmission'],
-            'onixPL:UseForPromotingLicensedContent' : ['text' :  'Use for Promoting Licensed Content'],
-            'onixPL:UseForTestingLicensedContent' : ['text' :  'Use for Testing Licensed Content'],
-            'onixPL:UseForTrainingAuthorizedUsers' : ['text' :  'Use for Training Authorized Users'],
-            'onixPL:IncludeMaterialForPresentation' : ['text' :  'Include Material For Presentation'],
-            'onixPL:CopyForTrainingAuthorizedUsers' : ['text' :  'Copy for Training Authorized Users'],
-            'onixPL:DepositInPerpetuity' : ['text' :  'Deposit In Perpetuity'],
-            'onixPL:Sell' : ['text' :  'Sell'],
-            'onixPL:RemoveObscureOrModify' : ['text' :  'Remove Obscure Or Modify'],
-            'onixPL:Modify' : ['text' :  'Modify'],
-            'onixPL:MakeAvailable' : ['text' :  'Make Available'],
-            'onixPL:UseForCommercialUse' : ['text' :  'Use for Commercial Use'],
-            'onixPL:UseForNonAcademicUse' : ['text' :  'Use for Non Academic Use'],
+            'Definitions' : [
+              'text' : 'Definitions'
+            ],
+            'LicenseGrant' : [
+              'text' : 'License Grant'
+            ],
+            'UsageTerms' : [
+              'text' : 'Usage Terms',
+              'children' : [
+                'template' : 'Usage/UsageType[normalize-space(text())="$value$"]',
+                'values' : [
+                  'onixPL:MakeTemporaryDigitalCopy' : ['text' :  'Make Temporary Digital Copy'],
+                  'onixPL:ProvideIntegratedAccess' : ['text' :  'Provide Integrated Access'],
+                  'onixPL:ProvideIntegratedIndex' : ['text' :  'Provide Integrated Index'],
+                  'onixPL:AccessViaSecureAuthentication' : ['text' :  'Access Via Secure Authentication'],
+                  'onixPL:MakeDigitalCopy' : ['text' :  'Make Digital Copy'],
+                  'onixPL:IncludeInPrintedInstructionalMaterial' : ['text' :  'Include In Printed Instructional Material'],
+                  'onixPL:IncludeInDigitalInstructionalMaterial' : ['text' :  'Include In Digital Instructional Material'],
+                  'onixPL:IncludeInSpecialNeedsInstructionalMaterial' : ['text' :  'Include In Special Needs Instructional Material'],
+                  'onixPL:IncludeInAcademicWork' : ['text' :  'Include In Academic Work'],
+                  'onixPL:SupplyCopyByPost' : ['text' :  'Supply Copy By Post'],
+                  'onixPL:SupplyCopyByFax' : ['text' :  'Supply Copy By Fax'],
+                  'onixPL:SupplyCopyBySecureElectronicTransmission' : ['text' :  'Supply Copy By Secure Electronic Transmission'],
+                  'onixPL:UseForPromotingLicensedContent' : ['text' :  'Use for Promoting Licensed Content'],
+                  'onixPL:UseForTestingLicensedContent' : ['text' :  'Use for Testing Licensed Content'],
+                  'onixPL:UseForTrainingAuthorizedUsers' : ['text' :  'Use for Training Authorized Users'],
+                  'onixPL:IncludeMaterialForPresentation' : ['text' :  'Include Material For Presentation'],
+                  'onixPL:CopyForTrainingAuthorizedUsers' : ['text' :  'Copy for Training Authorized Users'],
+                  'onixPL:DepositInPerpetuity' : ['text' :  'Deposit In Perpetuity'],
+                  'onixPL:Sell' : ['text' :  'Sell'],
+                  'onixPL:RemoveObscureOrModify' : ['text' :  'Remove Obscure Or Modify'],
+                  'onixPL:Modify' : ['text' :  'Modify'],
+                  'onixPL:MakeAvailable' : ['text' :  'Make Available'],
+                  'onixPL:UseForCommercialUse' : ['text' :  'Use for Commercial Use'],
+                  'onixPL:UseForNonAcademicUse' : ['text' :  'Use for Non Academic Use'],
+                ]
+              ]
+            ],
+            'SupplyTerms' : [
+              'text' : 'Supply Terms',
+              'children' : [
+                'template' : 'SupplyTerm/SupplyTermType[normalize-space(text())="$value$"]',
+                'values' : [
+                  'onixPL:StartOfService' : ['text' :  'Start Of Service' ],
+                  'onixPL:ConcurrencyWithPrintVersion' : ['text' :  'Concurrency With Print Version' ],
+                  'onixPL:ServicePerformance' : ['text' :  'Service Performance' ],
+                  'onixPL:UserSupport' : ['text' :  'User Support' ],
+                  'onixPL:ProductDocumentation' : ['text' :  'Product Documentation' ],
+                  'onixPL:ComplianceWithOpenURLStandard' : ['text' :  'Compliance With OpenURL Standard' ],
+                  'onixPL:ComplianceWithAccessibilityStandards' : ['text' :  'Compliance With Accessibility Standards' ],
+                  'onixPL:UsageStatistics' : ['text' :  'Usage Statistics' ],
+                  'onixPL:ChangesToLicensedContent' : ['text' :  'Changes To Licensed Content' ],
+                  'onixPL:ComplianceWithProjectTransferCode' : ['text' :  'Compliance With Project Transfer Code' ],
+                  'onixPL:ArchiveCopy' : ['text' :  'Archive Copy' ]
+                ]
+              ]
+            ],
+            'ContinuingAccessTerms' : [
+              'text' : 'Continuing Access Terms',
+              'children' : [
+                'template' : 'ContinuingAccessTerm/ContinuingAccessTermType[normalize-space(text())="$value$"]',
+                'values' : [
+                  'onixPL:ContinuingAccess' : ['text' :  'Continuing Access' ],
+                  'onixPL:ArchiveCopy' : ['text' :  'Archive Copy' ]
+                ]
+              ]
+            ],
+            'PaymentTerms' : [
+              'text' : 'Payment Terms'
+            ],
+            'GeneralTerms' : [
+              'text' : 'General Terms'
+            ]
           ]
         ]
-      ],
-      'SupplyTerms' : [
-        'text' : 'Supply Terms',
-        'children' : [
-          'template' : 'SupplyTerm/SupplyTermType[normalize-space(text())="$value$"]',
-          'values' : [
-            'onixPL:StartOfService' : ['text' :  'Start Of Service' ],
-            'onixPL:ConcurrencyWithPrintVersion' : ['text' :  'Concurrency With Print Version' ],
-            'onixPL:ServicePerformance' : ['text' :  'Service Performance' ],
-            'onixPL:UserSupport' : ['text' :  'User Support' ],
-            'onixPL:ProductDocumentation' : ['text' :  'Product Documentation' ],
-            'onixPL:ComplianceWithOpenURLStandard' : ['text' :  'Compliance With OpenURL Standard' ],
-            'onixPL:ComplianceWithAccessibilityStandards' : ['text' :  'Compliance With Accessibility Standards' ],
-            'onixPL:UsageStatistics' : ['text' :  'Usage Statistics' ],
-            'onixPL:ChangesToLicensedContent' : ['text' :  'Changes To Licensed Content' ],
-            'onixPL:ComplianceWithProjectTransferCode' : ['text' :  'Compliance With Project Transfer Code' ],
-            'onixPL:ArchiveCopy' : ['text' :  'Archive Copy' ]
-          ]
-        ]
-      ],
-      'ContinuingAccessTerms' : [
-        'text' : 'Continuing Access Terms',
-        'children' : [
-          'template' : 'ContinuingAccessTerm/ContinuingAccessTermType[normalize-space(text())="$value$"]',
-          'values' : [
-            'onixPL:ContinuingAccess' : ['text' :  'Continuing Access' ],
-            'onixPL:ArchiveCopy' : ['text' :  'Archive Copy' ]
-          ]
-        ]
-      ],
-      'PaymentTerms' : [
-        'text' : 'Payment Terms'
-      ],
-      'GeneralTerms' : [
-        'text' : 'General Terms'
       ]
     ]
   ]
