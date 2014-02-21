@@ -14,6 +14,7 @@ import au.com.bytecode.opencsv.CSVReader
 import java.text.SimpleDateFormat
 
 import org.mozilla.universalchardet.UniversalDetector;
+import org.apache.commons.io.input.BOMInputStream
 
 
 class UploadController {
@@ -303,7 +304,7 @@ class UploadController {
 
     def charset = checkCharset(request.getFile("soFile")?.inputStream)
 
-    def input_stream = request.getFile("soFile")?.inputStream
+    def input_stream = new BOMInputStream(request.getFile("soFile")?.inputStream)
 
     // File level messages
     result.messages=[]

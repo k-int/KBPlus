@@ -11,17 +11,42 @@ class GlobalSourceSyncService {
   def packageReconcile = { grt ,oldpkg, newpkg ->
     log.debug("\n\nreconcile package\n");
     def pkg = null;
+    boolean auto_accept_flag = false
+
+    def scope = RefdataCategory.lookupOrCreate('Package.Scope',(newpkg?.scope)?:'Unknown');
+    def listStatus = RefdataCategory.lookupOrCreate('Package.ListStatus',(newpkg?.listStatus)?:'Unknown');
+    def breakable = RefdataCategory.lookupOrCreate('Package.Breakable',(newpkg?.breakable)?:'Unknown');
+    def consistent = RefdataCategory.lookupOrCreate('Package.Consistent',(newpkg?.consistent)?:'Unknown');
+    def fixed = RefdataCategory.lookupOrCreate('Package.Fixed',(newpkg?.fixed)?:'Unknown');
+    def paymentType = RefdataCategory.lookupOrCreate('Package.PaymentType',(newpkg?.paymentType)?:'Unknown');
+    def global = RefdataCategory.lookupOrCreate('Package.Global',(newpkg?.global)?:'Unknown');
+    def isPublic = RefdataCategory.lookupOrCreate('YN','Yes');
+
     // Firstly, make sure that there is a package for this record
     if ( grt.localOid != null ) {
       pkg = genericOIDService.resolveOID(grt.localOid)
     }
     else {
       // create a new package
+
+      // Auto accept everything whilst we load the package initially
+      auto_accept_flag = true;
+
       pkg = new Package(
                          identifier:grt.identifier,
                          name:newpkg.packageName,
-                         impId:grt.owner.identifier
+                         impId:grt.owner.identifier,
+                         autoAccept:false,
+                         packageType:null,
+                         packageStatus:null,
+                         packageListStatus:listStatus,
+                         breakable:breakable,
+                         consistent:consistent,
+                         fixed:fixed,
+                         isPublic:isPublic,
+                         packageScope:scope
                        )
+
 
       if ( pkg.save() ) {
         grt.localOid = "com.k_int.kbplus.Package:${pkg.id}"
@@ -38,28 +63,63 @@ class GlobalSourceSyncService {
       println("Result of lookup or create for ${tipp.title.name} with identifiers ${tipp.title.identifiers} is ${title_instance}");
 
       def plat_instance = Platform.lookupOrCreatePlatform([name:tipp.platform]);
-    
-      def new_tipp = new TitleInstancePackagePlatform()
-      new_tipp.pkg = ctx;
-      new_tipp.platform = plat_instance;
-      new_tipp.title = title_instance;
+      def tipp_status = RefdataCategory.lookupOrCreate('TIPP Status',tipp.status?:'Current');
 
-      // We rely upon there only being 1 coverage statement for now, it seems likely this will need
-      // to change in the future.
-      tipp.coverage.each { cov ->
-        new_tipp.startDate=((cov.startDate != null ) && ( cov.startDate.length() > 0 ) ) ? sdf.parse(cov.startDate) : null;
-        new_tipp.startVolume=cov.startVolume;
-        new_tipp.startIssue=cov.startIssue;
-        new_tipp.endDate= ((cov.endDate != null ) && ( cov.endDate.length() > 0 ) ) ? sdf.parse(cov.endDate) : null;
-        new_tipp.endVolume=cov.endVolume;
-        new_tipp.endIssue=cov.endIssue;
-        new_tipp.embargo=cov.embargo;
-        new_tipp.coverageDepth=cov.coverageDepth;
-        new_tipp.coverageNote=cov.coverageNote;
+      if ( auto_accept ) {
+        def new_tipp = new TitleInstancePackagePlatform()
+        new_tipp.pkg = ctx;
+        new_tipp.platform = plat_instance;
+        new_tipp.title = title_instance;
+        new_tipp.status = tipp_status;
+
+        // We rely upon there only being 1 coverage statement for now, it seems likely this will need
+        // to change in the future.
+        // tipp.coverage.each { cov ->
+        def cov = tipp.coverage[0]
+          new_tipp.startDate=((cov.startDate != null ) && ( cov.startDate.length() > 0 ) ) ? sdf.parse(cov.startDate) : null;
+          new_tipp.startVolume=cov.startVolume;
+          new_tipp.startIssue=cov.startIssue;
+          new_tipp.endDate= ((cov.endDate != null ) && ( cov.endDate.length() > 0 ) ) ? sdf.parse(cov.endDate) : null;
+          new_tipp.endVolume=cov.endVolume;
+          new_tipp.endIssue=cov.endIssue;
+          new_tipp.embargo=cov.embargo;
+          new_tipp.coverageDepth=cov.coverageDepth;
+          new_tipp.coverageNote=cov.coverageNote;
+        // }
+        new_tipp.hostPlatformURL=tipp.url;
+
+        new_tipp.save();
       }
-      new_tipp.hostPlatformURL=tipp.url;
+      else {
+        println("Register new tipp event for user to accept or reject");
 
-      new_tipp.save();
+        def cov = tipp.coverage[0]
+        def change_doc = [ 
+                           pkg:[id:ctx.id],
+                           platform:[id:plat_instance.id],
+                           title:[id:title_instance.id],
+                           status:[id:tipp_status.id],
+                           startDate:((cov.startDate != null ) && ( cov.startDate.length() > 0 ) ) ? sdf.parse(cov.startDate) : null,
+                           startVolume:cov.startVolume,
+                           startIssue:cov.startIssue,
+                           endDate:((cov.endDate != null ) && ( cov.endDate.length() > 0 ) ) ? sdf.parse(cov.endDate) : null,
+                           endVolume:cov.endVolume,
+                           endIssue:cov.endIssue,
+                           embargo:cov.embargo,
+                           coverageDepth:cov.coverageDepth,
+                           coverageNote: cov.coverageNote];
+
+        changeNotificationService.registerPendingChange('pkg',
+                                                        ctx,
+                                                        "New TIPP for ${title_instance.title} from ${plat_instance.name}",
+                                                        null,
+                                                        [
+                                                          newObjectClass:"com.k_int.kbplus.TitleInstancePackagePlatform",
+                                                          changeType:'New Object',
+                                                          changeDoc:change_doc
+                                                        ])
+
+      }
     }
 
     def onUpdatedTipp = { ctx, tipp, changes, auto_accept ->
@@ -98,8 +158,7 @@ class GlobalSourceSyncService {
       println("updated pkg prop");
     }
 
-    boolean auto_accept = true
-    com.k_int.kbplus.GokbDiffEngine.diff(pkg, oldpkg, newpkg, onNewTipp, onUpdatedTipp, onDeletedTipp, onPkgPropChange, auto_accept)
+    com.k_int.kbplus.GokbDiffEngine.diff(pkg, oldpkg, newpkg, onNewTipp, onUpdatedTipp, onDeletedTipp, onPkgPropChange, auto_accept_flag)
   }
 
   def packageConv = { md ->

@@ -119,6 +119,12 @@ class PendingChangeController {
           case 'TIPPEdit':
             // A tipp was edited, the user wants their change applied to the IE
             break;
+          case 'New Object' :
+             def new_domain_class = ApplicationHolder.application.getArtefact('Domain',parsed_change_info.newObjectClass);
+             if ( new_domain_class != null ) {
+               def new_instance = new_domain_class.getClazz().newInstance(parsed_change_info.changeDoc).save()
+             }
+            break;
           default:
             log.error("Unhandled change type : ${pc.changeDoc}");
             break;
