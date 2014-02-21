@@ -144,59 +144,55 @@ $(function () {
         var ids = [];
         
         var actOnChildren = function (children) {
-          children.each (function (index, child) {
+          $.each (children, function (index, child_id) {
               
             // Add the id of each child and check it's children.
-            child = $(child);
-            var id = child.attr("id");
+            var child = jstree.get_node(child_id);
             
             // Add the hidden field.
             addHiddenField ({
               "name"  : sName,
-              "value" : child.attr('data-value'),
-              "id"    : hidden_prefix + id
+              "value" : child.li_attr['data-value'],
+              "id"    : hidden_prefix + child_id
             }, tree_div);
             
             // Act on the children of this element too.
-            actOnChildren (jstree.get_children_dom(id));
+            actOnChildren (child.children);
           });
         };
         
         // Act on all the children of this node.
-        actOnChildren (jstree.get_children_dom(data.node));
+        actOnChildren (data.node.children);
         
       }).on("deselect_node.jstree", function (e, data) {
         
-        // Method to act on the children of this element.
-        var actOnChildren = function (children) {
-          children.each (function (index, child) {
-              
-            // Add the id of each child and check it's children.
-            var id = $(child).attr("id");
-            
-            // Add the hidden field.
-            ids.push ("#" + hidden_prefix + id);
-            
-            // Act on the children of this element too.
-            actOnChildren (jstree.get_children_dom(id));
-          });
-        };
-        
         // Get the jstreee instance.
         var jstree = $(this).jstree(true);
+        
+        // Method to act on the children of this element.
+        var actOnChildren = function (children) {
+          $.each (children, function (index, child_id) {
+            
+            var child = jstree.get_node(child_id);
+            
+            // Add the hidden field.
+            ids.push ("#" + hidden_prefix + child_id);
+            
+            // Act on the children of this element too.
+            actOnChildren (child.children);
+          });
+        };
         
         // Build the list of ids that we need to remove.
         var ids = ["#" + hidden_prefix + data.node.id];
         
         // Add the parent ids.
-        var p = jstree.get_parent(data.node);
-        while (p && p != "#") {
-          ids.push("#" + hidden_prefix + p);
-          p = jstree.get_parent(p);
-        }
+        $.each (data.node.parents, function (i, p) {
+          if (p != '#') ids.push("#" + hidden_prefix + p);
+        });
         
         // Act on all children too.
-        actOnChildren(jstree.get_children_dom(data.node))
+        actOnChildren(data.node.children)
         
         // Remove all the linked hidden elements.
         $("" + ids).remove();
