@@ -16,6 +16,9 @@ class AdminController {
   def messageService
   def changeNotificationService
 
+  def docstoreService
+
+
   static boolean ftupdate_running = false
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
@@ -349,4 +352,9 @@ class AdminController {
     }
   }
 
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def docstoreMigrate() {
+    docstoreService.migrateToDb()
+    redirect(controller:'home')
+  }
 }

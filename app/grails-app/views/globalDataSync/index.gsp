@@ -48,7 +48,7 @@
             </tr>
             <g:each in="${item.trackers}" var="tracker">
               <tr>
-                <td colspan="5">
+                <td colspan="6">
                   -> Tracking using id
                   <g:if test="${tracker.localOid != null}">
                     <g:if test="${tracker.localOid.startsWith('com.k_int.kbplus.Package')}">
