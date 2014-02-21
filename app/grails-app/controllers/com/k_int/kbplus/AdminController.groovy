@@ -299,4 +299,10 @@ class AdminController {
     result
   }
 
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def docstoreMigrate() {
+    docstoreService.migrateToDb()
+    redirect(controller:'home')
+  }
+
 }
