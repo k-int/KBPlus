@@ -314,6 +314,10 @@ class Package {
 
     result.tipps = []
     this.tipps.each { tip ->
+
+      // Title.ID needs to be the global identifier, so we need to pull out the global id for each title
+      // and use that.
+
       def newtip = [
                      title: [
                        name:tip.title.title,
@@ -323,26 +327,24 @@ class Package {
                      platform:tip.platform.name,
                      platformId:tip.platform.identifier,
                      coverage:[],
-                     url:tip.url,
+                     url:tip.hostPlatformURL,
                      identifiers:[]
                    ];
 
-      // tip.coverage.each { cov ->
-      //   newtip.coverage.add([
-      //                  startDate:cov.'@startDate'.text(),
-      //                  endDate:cov.'@endDate'.text(),
-      //                  startVolume:cov.'@startVolume'.text(),
-      //                  endVolume:cov.'@endVolume'.text(),
-      //                  startIssue:cov.'@startIssue'.text(),
-      //                  endIssue:cov.'@endIssue'.text(),
-      //                  coverageDepth:cov.'@coverageDepth'.text(),
-      //                  coverageNote:cov.'@coverageNote'.text(),
-      //                ]);
-      }
+      newtip.coverage.add([
+                        startDate:tip.startDate,
+                        endDate:tip.endDate,
+                        startVolume:tip.startVolume,
+                        endVolume:tip.endVolume,
+                        startIssue:tip.startIssue,
+                        endIssue:tip.endIssue,
+                        coverageDepth:tip.coverageDepth,
+                        coverageNote:tip.coverageNote
+                      ]);
 
-      // tip.title.identifiers.identifier.each { id ->
-      //   newtip.title.identifiers.add([namespace:id.'@namespace'.text(), value:id.'@value'.text()]);
-      // }
+      tip.title.identifiers.ids.each { id ->
+        newtip.title.identifiers.add([namespace:id.identifier.ns.ns, value:id.identifier.value]);
+      }
 
       // result.tipps.add(newtip)
     }

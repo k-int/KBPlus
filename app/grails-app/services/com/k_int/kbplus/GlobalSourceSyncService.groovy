@@ -201,6 +201,9 @@ class GlobalSourceSyncService {
       tip.title.identifiers.identifier.each { id ->
         newtip.title.identifiers.add([namespace:id.'@namespace'.text(), value:id.'@value'.text()]);
       }
+      newtip.title.identifiers.add([namespace:'globalScope',value:newtip.titleId]);
+
+      harmoniseTitleIdentifiers(newtip);
 
       result.parsed_rec.tipps.add(newtip)
     }
@@ -397,4 +400,15 @@ class GlobalSourceSyncService {
     cfg.reconciler(grt,oldrec,newrec)
   }
 
+  /**
+   *  When this system sees a title from a remote source, we need to try and find a common canonical identifier. We will use the
+   *  GoKB TitleID for this. Each time a title is seen we make sure that we locally know what the GoKB Title ID is for that remote
+   *  record.
+   */
+  def harmoniseTitleIdentifiers(titleinfo) {
+    println("harmoniseTitleIdentifiers");
+    println("Remote Title ID: ${titleinfo.titleId}");
+    println("Identifiers: ${titleinfo.title.identifiers}");
+    def title_instance = TitleInstance.lookupOrCreate(titleinfo.title.identifiers,titleinfo.title.name)
+  }
 }
