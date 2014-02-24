@@ -308,6 +308,48 @@ class Package {
   @Transient
   def toComparablePackage() {
     def result = [:]
+
+    result.packageName = this.name
+    result.packageId = this.identifier
+
+    result.tipps = []
+    this.tipps.each { tip ->
+      def newtip = [
+                     title: [
+                       name:tip.title.title,
+                       identifiers:[]
+                     ],
+                     titleId:tip.title.id,
+                     platform:tip.platform.name,
+                     platformId:tip.platform.identifier,
+                     coverage:[],
+                     url:tip.url,
+                     identifiers:[]
+                   ];
+
+      // tip.coverage.each { cov ->
+      //   newtip.coverage.add([
+      //                  startDate:cov.'@startDate'.text(),
+      //                  endDate:cov.'@endDate'.text(),
+      //                  startVolume:cov.'@startVolume'.text(),
+      //                  endVolume:cov.'@endVolume'.text(),
+      //                  startIssue:cov.'@startIssue'.text(),
+      //                  endIssue:cov.'@endIssue'.text(),
+      //                  coverageDepth:cov.'@coverageDepth'.text(),
+      //                  coverageNote:cov.'@coverageNote'.text(),
+      //                ]);
+      }
+
+      // tip.title.identifiers.identifier.each { id ->
+      //   newtip.title.identifiers.add([namespace:id.'@namespace'.text(), value:id.'@value'.text()]);
+      // }
+
+      // result.tipps.add(newtip)
+    }
+
+    result.tipps.sort{it.titleId}
+    println("Rec conversion for package returns object with title ${result.title} and ${result.parsed_rec.tipps?.size()} tipps");
+
     result
   }
 
