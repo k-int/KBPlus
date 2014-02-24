@@ -201,7 +201,7 @@ class GlobalSourceSyncService {
       tip.title.identifiers.identifier.each { id ->
         newtip.title.identifiers.add([namespace:id.'@namespace'.text(), value:id.'@value'.text()]);
       }
-      newtip.title.identifiers.add([namespace:'globalScope',value:newtip.titleId]);
+      newtip.title.identifiers.add([namespace:'uri',value:newtip.titleId]);
 
       harmoniseTitleIdentifiers(newtip);
 
