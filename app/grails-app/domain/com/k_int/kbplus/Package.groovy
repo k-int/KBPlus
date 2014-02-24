@@ -305,5 +305,10 @@ class Package {
   }
 
 
+  @Transient
+  def toComparablePackage() {
+    def result = [:]
+    result
+  }
 
 }

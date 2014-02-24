@@ -65,9 +65,12 @@ class GlobalDataSyncController {
           break;
         case 'existing':
           log.debug("merge remote package with existing local package...");
-          // def grt = new GlobalRecordTracker(owner:result.item, identifier:new_tracker_id, name:params.trackerName)
+          // def grt = new GlobalRecordTracker(
+          //                                      owner:result.item, 
+          //                                      identifier:new_tracker_id, 
+          //                                      name:params.trackerName)
           // if ( grt.save() ) {
-          //   globalSourceSyncService.initialiseTracker(grt);
+          globalSourceSyncService.initialiseTracker(grt, params.localPkg);
           // }
           // else {
           //   log.error(grt.errors)

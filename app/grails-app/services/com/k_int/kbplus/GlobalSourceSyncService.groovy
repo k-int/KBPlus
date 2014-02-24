@@ -386,4 +386,15 @@ class GlobalSourceSyncService {
 
     cfg.reconciler(grt,oldrec,newrec)
   }
+
+  def initialiseTracker(grt, localPkgOID) {
+    int rectype = grt.owner.rectype.longValue()
+    def cfg = rectypes[rectype]
+    def localPkg = genericOIDService.resolveOID(localPkgOID)
+
+    def oldrec = localPkg.toComparablePackage()
+
+    cfg.reconciler(grt,oldrec,newrec)
+  }
+
 }
