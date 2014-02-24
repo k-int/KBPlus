@@ -381,9 +381,9 @@ class DocstoreService {
         log.debug("${dsd.id} completed");
       }
       catch ( Exception e ) {
+        log.error("Failed to migrate",e);
         dsd.migrated = 'e';
         dsd.save(flush:true)
-        log.error("Failed to migrate",e);
       }
       cleanUpGorm()
     }

@@ -46,25 +46,37 @@ class GlobalDataSyncController {
     def result = [:]
 
     result.item = GlobalRecordInfo.get(params.id)
+    def new_tracker_id = java.util.UUID.randomUUID().toString()
 
-    if ( ( params.trackerName != null ) && ( params.trackerId != null ) ) {
+    if ( (params.synctype != null ) && ( params.trackerName != null ) && ( params.trackerId != null ) ) {
       // new tracker and redirect back to list page
 
-      // Check that the new tracker ID will be valid
-
-      def valid = true
-      if ( valid ) {
-        log.debug("redirecting...");
-        def grt = new GlobalRecordTracker(owner:result.item, identifier:params.trackerId, name:params.trackerName)
-        if ( grt.save() ) {
-          globalSourceSyncService.initialiseTracker(grt);
-        }
-        else {
-          log.error(grt.errors)
-        }
-        redirect(action:'index',params:[q:result.item.name])
-      }
-      else {
+      switch ( params.synctype ) {
+        case 'new':
+          log.debug("merge remote package with new local package...");
+          def grt = new GlobalRecordTracker(owner:result.item, identifier:new_tracker_id, name:params.trackerName)
+          if ( grt.save() ) {
+            globalSourceSyncService.initialiseTracker(grt);
+          }
+          else {
+            log.error(grt.errors)
+          }
+          redirect(action:'index',params:[q:result.item.name])
+          break;
+        case 'existing':
+          log.debug("merge remote package with existing local package...");
+          // def grt = new GlobalRecordTracker(owner:result.item, identifier:new_tracker_id, name:params.trackerName)
+          // if ( grt.save() ) {
+          //   globalSourceSyncService.initialiseTracker(grt);
+          // }
+          // else {
+          //   log.error(grt.errors)
+          // }
+          redirect(action:'index',params:[q:result.item.name])
+          break;
+        default:
+          log.error("Unhandled package tracking type");
+          break;
       }
     }
 
