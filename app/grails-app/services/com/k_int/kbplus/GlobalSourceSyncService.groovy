@@ -397,6 +397,14 @@ class GlobalSourceSyncService {
 
     def oldrec = localPkg.toComparablePackage()
 
+    def bais = new ByteArrayInputStream((byte[])(grt.owner.record))
+    def ins = new ObjectInputStream(bais);
+    def newrec = ins.readObject()
+    ins.close()
+
+    log.debug("Generated comparable for existing package : ${oldrec}");
+    log.debug("new package : ${newrec}");
+
     cfg.reconciler(grt,oldrec,newrec)
   }
 

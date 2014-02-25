@@ -317,13 +317,14 @@ class Package {
 
       // Title.ID needs to be the global identifier, so we need to pull out the global id for each title
       // and use that.
+      def title_id = tip.title.getIdentifierValue('uri')?:"uri://KBPlus/localhost/title/${tip.title.id}";
 
       def newtip = [
                      title: [
                        name:tip.title.title,
                        identifiers:[]
                      ],
-                     titleId:tip.title.id,
+                     titleId:title_id,
                      platform:tip.platform.name,
                      platformId:tip.platform.identifier,
                      coverage:[],
