@@ -158,7 +158,10 @@ class PendingChangeController {
       change.user = request.user
       change.status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Rejected")
 
-      def change_audit_object = change.license ? change.license : change.subscription
+      def change_audit_object = null
+      if ( change.license ) change_audit_object = change.license;
+      if ( change.subscription ) change_audit_object = change.subscription;
+      if ( change.pkg ) change_audit_object = change.pkg;
       def change_audit_id = change_audit_object.id
       def change_audit_class_name = change_audit_object.class.name
     }
