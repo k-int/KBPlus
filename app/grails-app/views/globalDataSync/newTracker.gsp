@@ -21,7 +21,7 @@
       <p>This form will create a new tracker for "${item.name}" from "${item.source.name}".
          In order to do this, a new unique identifier must be created. An identifier is proposed below</p>
       <g:form action="newTracker" id="${params.id}">
-        <input type="hidden" name"synctype" value="new"/>
+        <input type="hidden" name="synctype" value="new"/>
         <fieldset class="inline-lists">
 
           <dl>
@@ -37,7 +37,7 @@
     <div class="container well">
       <h1>Merge with an existing package</h1>
       <g:form action="newTracker" id="${params.id}">
-        <input type="hidden" name"synctype" value="existing"/>
+        <input type="hidden" name="synctype" value="existing"/>
         <fieldset class="inline-lists">
          
           <dl>

@@ -414,9 +414,9 @@ class GlobalSourceSyncService {
    *  record.
    */
   def harmoniseTitleIdentifiers(titleinfo) {
-    println("harmoniseTitleIdentifiers");
-    println("Remote Title ID: ${titleinfo.titleId}");
-    println("Identifiers: ${titleinfo.title.identifiers}");
-    def title_instance = TitleInstance.lookupOrCreate(titleinfo.title.identifiers,titleinfo.title.name)
+    // println("harmoniseTitleIdentifiers");
+    // println("Remote Title ID: ${titleinfo.titleId}");
+    // println("Identifiers: ${titleinfo.title.identifiers}");
+    def title_instance = TitleInstance.lookupOrCreate(titleinfo.title.identifiers,titleinfo.title.name, true)
   }
 }

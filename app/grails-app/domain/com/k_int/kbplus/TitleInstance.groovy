@@ -86,18 +86,20 @@ class TitleInstance {
   }
   
   static def lookupOrCreate(candidate_identifiers, title) {
+    lookupOrCreate(candidate_identifiers, title, false)
+  }
+
+  static def lookupOrCreate(candidate_identifiers, title, enrich) {
     def result = null;
-    def ids = []
+    def lu_ids = []
     
     candidate_identifiers.each { i ->
-      if ( !result ) {
-        def id = Identifier.lookupOrCreateCanonicalIdentifier(i.namespace, i.value)
-        ids.add(id);
+      def id = Identifier.lookupOrCreateCanonicalIdentifier(i.namespace, i.value)
+      lu_ids.add(id);
         
-        def io = IdentifierOccurrence.findByIdentifier(id)
-        if ( io && io.ti ) {
-          result = io.ti;
-        }
+      def io = IdentifierOccurrence.findByIdentifier(id)
+      if ( io && io.ti ) {
+        result = io.ti;
       }
     }
     
@@ -105,32 +107,36 @@ class TitleInstance {
       result = new TitleInstance(title:title, impId:java.util.UUID.randomUUID().toString());
       
       result.ids=[]
-      ids.each { 
-        result.ids.add(new IdentifierOccurrence(identifier:it, ti:result));
+      lu_ids.each { 
+        def new_io = new IdentifierOccurrence(identifier:it, ti:result).save();
+        // result.ids.add(new IdentifierOccurrence(identifier:it, ti:result));
       }
       if ( ! result.save() ) {
         throw new RuntimeException("Problem creating title instance : ${result.errors?.toString()}");
       }
     }
     else {
-      println("Checking that all identifiers are already present in title");
-      boolean modified = false;
-      // Check that all the identifiers listed are present 
-      ids.each { identifier ->
-        // it == an ID
-        // Does result.ids contain an identifier occurrence that matches this ID
-        def existing_id = result.ids.find { it -> it.identifier == identifier }
-        if ( existing_id == null ) {
-          println("Adding additional identifier ${identifier}");
-          result.ids.add(new IdentifierOccurrence(identifier:identifier, ti:result));
-          modified=true;
+      if ( enrich ) {
+        // println("Checking that all identifiers are already present in title");
+        boolean modified = false;
+        // Check that all the identifiers listed are present 
+        lu_ids.each { identifier ->
+          // it == an ID
+          // Does result.ids contain an identifier occurrence that matches this ID
+          def existing_id = result.ids.find { it -> it.identifier == identifier }
+          if ( existing_id == null ) {
+            // println("Adding additional identifier ${identifier}");
+            def new_io = new IdentifierOccurrence(identifier:identifier, ti:result).save();
+            // result.ids.add(new IdentifierOccurrence(identifier:identifier, ti:result));
+            modified=true;
+          }
+          else {
+            // println("Identifier ${identifier} already present in existing title ${result}");
+          }
         }
-        else {
-          println("Identifier ${identifier} already present in existing title ${result}");
+        if ( modified ) {
+          result.save();
         }
-      }
-      if ( modified ) {
-        result.save();
       }
     }
     
@@ -494,7 +500,7 @@ class TitleInstance {
   @Transient
   def onChange = { oldMap,newMap ->
 
-    log.debug("onChange")
+    // log.debug("onChange")
 
     def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
     def controlledProperties = ['title']
@@ -514,7 +520,7 @@ class TitleInstance {
 
   @Transient
   def notifyDependencies(changeDocument) {
-    log.debug("notifyDependencies(${changeDocument})");
+    // log.debug("notifyDependencies(${changeDocument})");
     
     def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
     tipps.each { tipp ->

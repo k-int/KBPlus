@@ -48,7 +48,7 @@ class GlobalDataSyncController {
     result.item = GlobalRecordInfo.get(params.id)
     def new_tracker_id = java.util.UUID.randomUUID().toString()
 
-    if ( (params.synctype != null ) && ( params.trackerName != null ) && ( params.trackerId != null ) ) {
+    if ( (params.synctype != null ) && ( params.trackerName != null ) ) {
       // new tracker and redirect back to list page
 
       switch ( params.synctype ) {
@@ -68,7 +68,8 @@ class GlobalDataSyncController {
           def grt = new GlobalRecordTracker( 
                                             owner:result.item, 
                                             identifier:new_tracker_id, 
-                                            name:params.trackerName)
+                                            name:params.trackerName,
+                                            localOid:params.localPkg)
           if ( grt.save() ) {
             globalSourceSyncService.initialiseTracker(grt, params.localPkg);
           }
