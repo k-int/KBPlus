@@ -34,7 +34,7 @@ class GlobalSourceSyncService {
 
       pkg = new Package(
                          identifier:grt.identifier,
-                         name:newpkg.packageName,
+                         name:grt.name,
                          impId:grt.owner.identifier,
                          autoAccept:false,
                          packageType:null,

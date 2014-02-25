@@ -199,6 +199,7 @@ class TitleInstance {
       }
       if ( modified ) {
         result.save();
+        result.refresh();
       }
     }
     

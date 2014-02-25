@@ -309,6 +309,8 @@ class Package {
   def toComparablePackage() {
     def result = [:]
 
+    def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
     result.packageName = this.name
     result.packageId = this.identifier
 
@@ -326,15 +328,16 @@ class Package {
                      ],
                      titleId:title_id,
                      platform:tip.platform.name,
-                     platformId:tip.platform.identifier,
+                     platformId:tip.platform.id,
                      coverage:[],
                      url:tip.hostPlatformURL,
                      identifiers:[]
                    ];
 
+      // Need to format these dates using correct mask
       newtip.coverage.add([
-                        startDate:tip.startDate,
-                        endDate:tip.endDate,
+                        startDate:tip.startDate ? sdf.format(tip.startDate) : null,
+                        endDate:tip.endDate ? sdf.format(tip.endDate) : null,
                         startVolume:tip.startVolume,
                         endVolume:tip.endVolume,
                         startIssue:tip.startIssue,
@@ -343,15 +346,15 @@ class Package {
                         coverageNote:tip.coverageNote
                       ]);
 
-      tip.title.identifiers.ids.each { id ->
+      tip.title.ids.each { id ->
         newtip.title.identifiers.add([namespace:id.identifier.ns.ns, value:id.identifier.value]);
       }
 
-      // result.tipps.add(newtip)
+      result.tipps.add(newtip)
     }
 
     result.tipps.sort{it.titleId}
-    println("Rec conversion for package returns object with title ${result.title} and ${result.parsed_rec.tipps?.size()} tipps");
+    println("Rec conversion for package returns object with title ${result.title} and ${result.tipps?.size()} tipps");
 
     result
   }

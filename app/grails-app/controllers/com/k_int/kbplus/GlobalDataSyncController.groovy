@@ -48,11 +48,14 @@ class GlobalDataSyncController {
     result.item = GlobalRecordInfo.get(params.id)
     def new_tracker_id = java.util.UUID.randomUUID().toString()
 
-    if ( (params.synctype != null ) && ( params.trackerName != null ) ) {
+    if ( params.synctype != null ) {
       // new tracker and redirect back to list page
 
       switch ( params.synctype ) {
         case 'new':
+          if ( params.trackerName == null ) {
+            return
+          }
           log.debug("merge remote package with new local package...");
           def grt = new GlobalRecordTracker(owner:result.item, identifier:new_tracker_id, name:params.trackerName)
           if ( grt.save() ) {

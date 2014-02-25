@@ -15,7 +15,7 @@ class ChangeNotificationService {
   static transactional = false;
 
   def broadcastEvent(contextObjectOID, changeDetailDocument) {
-    log.debug("broadcastEvent(${contextObjectOID},${changeDetailDocument})");
+    // log.debug("broadcastEvent(${contextObjectOID},${changeDetailDocument})");
 
     
     def contextObject = genericOIDService.resolveOID(contextObjectOID);
@@ -25,7 +25,7 @@ class ChangeNotificationService {
                                                          changeDocument:jsonChangeDocument.toString(),
                                                          ts:new Date())
     if ( new_queue_item.save() ) {
-      log.debug("Pending change saved ok");
+      // log.debug("Pending change saved ok");
     }
     else {
       log.error(new_queue_item.errors);
@@ -51,7 +51,7 @@ class ChangeNotificationService {
 
       pendingOIDChanges.each { poidc ->
     
-        log.debug("Consider pending changes for ${poidc}");
+        // log.debug("Consider pending changes for ${poidc}");
         def contextObject = genericOIDService.resolveOID(poidc);
         def pendingChanges = ChangeNotificationQueueItem.executeQuery("select c from ChangeNotificationQueueItem as c where c.oid = ? order by c.ts asc",[poidc]);
         StringWriter sw = new StringWriter();
@@ -64,11 +64,11 @@ class ChangeNotificationService {
         def pc_delete_list = []
 
         pendingChanges.each { pc ->
-          log.debug("Process pending change ${pc}");    
+          // log.debug("Process pending change ${pc}");    
           def parsed_event_info = JSON.parse(pc.changeDocument)
           def change_template = ContentItem.findByKey("ChangeNotification.${parsed_event_info.event}")
           if ( change_template != null ) {
-            log.debug("Found change template... ${change_template.content}");
+            // log.debug("Found change template... ${change_template.content}");
             // groovy.util.Eval.x(r, 'x.' + rh.property)
             def event_props = [o:contextObject, evt:parsed_event_info]
             if ( parsed_event_info.OID != null && parsed_event_info.OID.length() > 0 ) {
@@ -76,11 +76,11 @@ class ChangeNotificationService {
             }
 
             // Use doStuff to cleverly render change_template with variable substitution 
-            log.debug("Make engine");
+            // log.debug("Make engine");
             def engine = new groovy.text.GStringTemplateEngine()
-            log.debug("createTemplate..");
+            // log.debug("createTemplate..");
             def tmpl = engine.createTemplate(change_template.content).make(event_props)
-            log.debug("Write to string writer");
+            // log.debug("Write to string writer");
             sw.write("<li>");
             sw.write(tmpl.toString());
             sw.write("</li>");
@@ -94,18 +94,18 @@ class ChangeNotificationService {
 
         if ( contextObject != null ) {
           if ( contextObject.metaClass.respondsTo(contextObject, 'getNotificationEndpoints') ) {
-            log.debug("  -> looking at notification endpoints...");
+            // log.debug("  -> looking at notification endpoints...");
             def announcement_content = sw.toString();
             // Does the objct have a zendesk URL, or any other comms URLs for that matter?
               // How do we decouple Same-As links? Only the object should know about what
             // notification services it's registered with? What about the case where we're adding
             // a new thing? Whats registered?
             contextObject.notificationEndpoints.each { ne ->
-              log.debug("  -> consider ${ne}");
+              // log.debug("  -> consider ${ne}");
               switch ( ne.service ) {
                 case 'zendesk.forum': 
                   if ( ne.remoteid != null ) {
-                    log.debug("Send zendesk forum notification for ${ne.remoteid}");
+                    // log.debug("Send zendesk forum notification for ${ne.remoteid}");
                     zenDeskSyncService.postTopicCommentInForum(announcement_content,
                                                                ne.remoteid.toString(), 
                                                                "Changes related to ${contextObject.toString()}".toString(),
@@ -134,10 +134,10 @@ class ChangeNotificationService {
           }
         }
 
-        log.debug("Delete reported changes...");
+        // log.debug("Delete reported changes...");
         // If we got this far, all is OK, delete any pending changes
         pc_delete_list.each { pc ->
-          log.debug("Deleting reported change ${pc.id}");
+          // log.debug("Deleting reported change ${pc.id}");
           pc.delete()
         }
       }
@@ -146,7 +146,7 @@ class ChangeNotificationService {
       log.error("Problem",e);
     }
     finally {
-      log.debug("aggregateAndNotifyChanges completed");
+      // log.debug("aggregateAndNotifyChanges completed");
     }
  
   }
@@ -158,10 +158,10 @@ class ChangeNotificationService {
    *  Therefore, we get a new handle to the object
    */
   def notifyChangeEvent(changeDocument) {
-    log.debug("notifyChangeEvent(${changeDocument})");
+    // log.debug("notifyChangeEvent(${changeDocument})");
     def future = executorService.submit({
       try {
-        log.debug("inside executor task submission... ${changeDocument.OID}");
+        // log.debug("inside executor task submission... ${changeDocument.OID}");
         def contextObject = genericOIDService.resolveOID(changeDocument.OID);
         contextObject.notifyDependencies(changeDocument)
       }
@@ -174,7 +174,7 @@ class ChangeNotificationService {
 
 
   def registerPendingChange(prop, target, desc, objowner, changeMap ) {
-    log.debug("Register pending change ${prop} ${target.class.name}:${target.id}");
+    // log.debug("Register pending change ${prop} ${target.class.name}:${target.id}");
     def new_pending_change = new PendingChange()
     new_pending_change[prop] = target;
     def jsonChangeDocument = changeMap as JSON
