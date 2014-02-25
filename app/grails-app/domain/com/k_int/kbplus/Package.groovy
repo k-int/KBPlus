@@ -336,8 +336,8 @@ class Package {
 
       // Need to format these dates using correct mask
       newtip.coverage.add([
-                        startDate:tip.startDate ? sdf.format(tip.startDate) : null,
-                        endDate:tip.endDate ? sdf.format(tip.endDate) : null,
+                        startDate:tip.startDate ? sdf.format(tip.startDate) : '',
+                        endDate:tip.endDate ? sdf.format(tip.endDate) : '',
                         startVolume:tip.startVolume,
                         endVolume:tip.endVolume,
                         startIssue:tip.startIssue,
