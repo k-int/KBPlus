@@ -125,6 +125,15 @@ class PendingChangeController {
                def new_instance = new_domain_class.getClazz().newInstance(parsed_change_info.changeDoc).save()
              }
             break;
+          case 'Update Object' :
+            if ( ( parsed_change_info.changeTarget != null ) && ( parsed_change_info.changeTarget.length() > 0 ) ) {
+              def target_object = genericOIDService.resolveOID(parsed_change_info.changeTarget);
+              if ( target_object ) {
+                bindData(target_object, parsed_change_info.changeDoc)
+                target_object.save();
+              }
+            }
+            break;
           default:
             log.error("Unhandled change type : ${pc.changeDoc}");
             break;

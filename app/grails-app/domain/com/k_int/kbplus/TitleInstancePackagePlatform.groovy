@@ -253,7 +253,7 @@ class TitleInstancePackagePlatform {
         def sub = deproxy(dep_ie.subscription)
         changeNotificationService.registerPendingChange('subscription',
                                                         dep_ie.subscription,
-                                                        "Information about title <a href=\"${ApplicationHolder.application.config.SystemBaseURL}/titleDetails/show/${this.title.id}\">\"${this.title.title}\"</a> changed in package <a href=\"${ApplicationHolder.application.config.SystemBaseURL}/packageDetails/show/${id}\">${this.pkg.name}</a>. \"${changeDocument.prop}\" was updated from \"${changeDocument.oldLabel}\"(${changeDocument.old}) to \"${changeDocument.newLabel}\"(${changeDocument.new}). Accept this change to make the same update to your issue entitlement",
+                                                        "Information about title <a href=\"${ApplicationHolder.application.config.SystemBaseURL}/titleDetails/show/${this.title.id}\">\"${this.title.title}\"</a> changed in package <a href=\"${ApplicationHolder.application.config.SystemBaseURL}/packageDetails/show/${id}\">${this.pkg.name}</a>. <b>${changeDocument.prop}</b> was updated from <b>\"${changeDocument.oldLabel}\"</b>(${changeDocument.old}) to <b>\"${changeDocument.newLabel}\"</b>(${changeDocument.new}). Accept this change to make the same update to your issue entitlement",
                                                         sub.getSubscriber(),
                                                         [
                                                           changeTarget:"com.k_int.kbplus.IssueEntitlement:${dep_ie.id}",
