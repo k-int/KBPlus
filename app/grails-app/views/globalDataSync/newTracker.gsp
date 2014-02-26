@@ -41,6 +41,11 @@
         <fieldset class="inline-lists">
          
           <dl>
+            <dt>New Tracker Name</dt>
+            <dd><input type="text" name="trackerName" value="${item.name}" class="input-xxlarge"/></dd>
+          </dl>
+
+          <dl>
             <dt>Current Package</dt>
             <dd><g:simpleReferenceTypedown name="localPkg" baseClass="com.k_int.kbplus.Package" style="width:550px;"/></dd>
           </dl>

@@ -133,14 +133,32 @@ class GlobalSourceSyncService {
       if ( db_tipp != null) {
         changes.each { chg ->
 
-          def change_doc = [ "prop":chg.field, "new":chg.newValue]
+          def change_doc = [ 
+              startDate:tipp.coverage[0].startDate,
+              startVolume:tipp.coverage[0].startVolume,
+              startIssue:tipp.coverage[0].startIssue,
+              endDate:tipp.coverage[0].endDate,
+              endVolume:tipp.coverage[0].endVolume,
+              endIssue:tipp.coverage[0].endIssue,
+              embargo:tipp.coverage[0].embargo,
+              coverageDepth:tipp.coverage[0].coverageDepth,
+              coverageNote:tipp.coverage[0].coverageNote,
+              // status:null,
+              // option:null,
+              // delayedOA:null,
+              // hybridOA:null,
+              // statusReason:null,
+              // payment:null,
+              hostPlatformURL:tipp.url
+          ]
+
           changeNotificationService.registerPendingChange('pkg',
                                                           ctx,
-                                                          "A tipp update ${chg}",
+                                                          "A tipp/coverage update (Start Date:${tipp.coverage[0].startDate}, Start Volume:${tipp.coverage[0].startVolume}, Start Issue:${tipp.coverage[0].startIssue}, End Date:${tipp.coverage[0].endDate} , End Volume:${tipp.coverage[0].endVolume}, End Issue:${tipp.coverage[0].endIssue}, Embargo:${tipp.coverage[0].embargo}, Coverage Depth:${tipp.coverage[0].coverageDepth}, Coverage Note:${tipp.coverage[0].coverageNote}, url:${tipp.url}",
                                                           null,
                                                           [
                                                             changeTarget:"com.k_int.kbplus.TitleInstancePackagePlatform:${db_tipp.id}",
-                                                            changeType:'PropertyChange',
+                                                            changeType:'Update Object',
                                                             changeDoc:change_doc
                                                           ])
         }
