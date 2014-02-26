@@ -115,8 +115,11 @@
 
                 <sec:ifAnyGranted roles="ROLE_ADMIN,KBPLUS_EDITOR">
                    <li class="dropdown">
-                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Editors <b class="caret"></b> </a>
+                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Data Managers <b class="caret"></b> </a>
                      <ul class="dropdown-menu">
+                       <li <%= ( ( 'dataManager'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="dataManager" action="index">Data Manager Dashboard</g:link></li>
+                       <li class="divider"></li>
                        <li <%= ( ( 'announcement'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="announcement" action="index">Announcements</g:link></li>
                        <li <%= ( ( 'packageDetails'== controllerName ) && ( 'list'==actionName ) ) ? ' class="active"' : '' %>>
