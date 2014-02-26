@@ -57,7 +57,7 @@
   
                 <g:if test="${user}">
                   <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Manage <b class="caret"></b> </a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Institutions <b class="caret"></b> </a>
                     <ul class="dropdown-menu" style="max-width:none;">
   
   
