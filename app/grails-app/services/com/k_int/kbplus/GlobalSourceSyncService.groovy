@@ -154,7 +154,7 @@ class GlobalSourceSyncService {
 
           changeNotificationService.registerPendingChange('pkg',
                                                           ctx,
-                                                          "A tipp/coverage update (Start Date:${tipp.coverage[0].startDate}, Start Volume:${tipp.coverage[0].startVolume}, Start Issue:${tipp.coverage[0].startIssue}, End Date:${tipp.coverage[0].endDate} , End Volume:${tipp.coverage[0].endVolume}, End Issue:${tipp.coverage[0].endIssue}, Embargo:${tipp.coverage[0].embargo}, Coverage Depth:${tipp.coverage[0].coverageDepth}, Coverage Note:${tipp.coverage[0].coverageNote}, url:${tipp.url}",
+                                                          "A tipp/coverage update for \"${title_of_tipp_to_update.title}\" (Start Date:${tipp.coverage[0].startDate}, Start Volume:${tipp.coverage[0].startVolume}, Start Issue:${tipp.coverage[0].startIssue}, End Date:${tipp.coverage[0].endDate} , End Volume:${tipp.coverage[0].endVolume}, End Issue:${tipp.coverage[0].endIssue}, Embargo:${tipp.coverage[0].embargo}, Coverage Depth:${tipp.coverage[0].coverageDepth}, Coverage Note:${tipp.coverage[0].coverageNote}, url:${tipp.url}",
                                                           null,
                                                           [
                                                             changeTarget:"com.k_int.kbplus.TitleInstancePackagePlatform:${db_tipp.id}",
