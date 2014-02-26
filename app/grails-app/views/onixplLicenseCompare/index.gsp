@@ -1,11 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: rwincewicz
-  Date: 03/09/2013
-  Time: 09:44
-  To change this template use File | Settings | File Templates.
---%>
-
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!doctype html>
 <html>
@@ -31,7 +23,7 @@
     <div class="row">
         <div class="span8">
 
-            <g:form name="compare" action="matrix">
+            <g:form id="compare" name="compare" action="matrix">
                 <div>
                     <label for="license1">License 1:</label>
                     <g:select name="license1" class="compare-license" from="${list}" optionKey="id" optionValue="title" />
@@ -45,18 +37,14 @@
 
                 <div>
                     <label for="section">Compare section:</label>
-                    <g:select name="section" from="${termList}" optionKey="id" optionValue="value"
-                              class="compare-section" noSelection="${['all': "All"]}" value="all" />
+                    <g:treeSelect name="section" id="section" class="compare-section" options="${termList}" multiple="true" />
                 </div>
 
-                <div>
-                    Find licenses:<br>
-                    <g:radio id="same" class="compare-radio" name="match" value="true" />
-                    The same
-                    <g:radio id="diff" class="compare-radio" name="match" value="false" />
-                    Different
-                    <g:radio id="all" class="compare-radio" name="match" value="" checked="${true}" />
-                    Show all
+                <div id="limit-license-display">
+                    Only show licenses:<br />
+                    <g:radio id="same" class="compare-radio" name="match" value="true" />&nbsp;&nbsp;<label for="same" >The same</label><br />
+                    <g:radio id="diff" class="compare-radio" name="match" value="false" />&nbsp;&nbsp;<label for="diff" >Different</label><br />
+                    <g:radio id="all" class="compare-radio" name="match" value="" checked="${true}" />&nbsp;&nbsp;<label for="all" >Show all</label>
                 </div>
 
                 <div>

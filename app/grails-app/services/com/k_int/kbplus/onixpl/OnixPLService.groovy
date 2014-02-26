@@ -10,7 +10,6 @@ import com.k_int.kbplus.OnixplLicense
  * @author Steve Osguthorpe <steve.osguthorpe@k-int.com>
  *
  */
-@Transactional
 class OnixPLService {
   OnixPLHelperService onixPLHelperService
   def grailsApplication
