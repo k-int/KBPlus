@@ -123,7 +123,7 @@ class TitleInstance {
         lu_ids.each { identifier ->
           // it == an ID
           // Does result.ids contain an identifier occurrence that matches this ID
-          def existing_id = result.ids.find { it -> it.identifier == identifier }
+          def existing_id = result.ids.find { it -> ( ( it.identifier.value == identifier.value ) && ( it.identifier.ns.ns == identifier.ns.ns) ) }
           if ( existing_id == null ) {
             // println("Adding additional identifier ${identifier}");
             def new_io = new IdentifierOccurrence(identifier:identifier, ti:result).save();
