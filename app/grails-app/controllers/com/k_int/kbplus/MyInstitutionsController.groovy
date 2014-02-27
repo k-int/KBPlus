@@ -1529,6 +1529,9 @@ AND EXISTS (
     // of titles x packages yet.. Just gathering the data for the X and Y axis
     plist.each { sub ->
 
+      
+      log.debug("pre-pre-process (Sub ${sub.id})");
+
       def sub_info = [
         sub_idx : subscriptionMap.size(),
         sub_name : sub.name,
@@ -1540,6 +1543,7 @@ AND EXISTS (
       // For each subscription in the shopping basket
       if ( sub instanceof Subscription ) {
         sub.issueEntitlements.each { ie ->
+          log.debug("IE");
           if ( ! (ie.status?.value=='Deleted')  ) {
             def title_info = titleMap[ie.tipp.title.id]
             if ( !title_info ) {
@@ -1564,6 +1568,7 @@ AND EXISTS (
 
 
                 try {
+                  log.debug("get jusp usage");
                   title_info.jr1_last_4_years = factService.lastNYearsByType(title_info.id, 
                                                                              inst.id, 
                                                                              ie.tipp.pkg.contentProvider.id, 'JUSP:JR1', 4, current_year)
@@ -1586,6 +1591,7 @@ AND EXISTS (
       else if ( sub instanceof Package ) {
         log.debug("Adding package into renewals worksheet");
         sub.tipps.each { tipp ->
+          log.debug("Package tipp");
           if ( ! (tipp.status?.value=='Deleted')  ) {
             def title_info = titleMap[tipp.title.id]
             if ( !title_info ) {
