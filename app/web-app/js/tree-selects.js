@@ -130,13 +130,6 @@ $(function () {
       // Add event listeners.
       tree_div.on("select_node.jstree", function (e, data) {
         
-        // Add a hidden element.
-        addHiddenField ({
-          "name"  : sName,
-          "value" : data.node['li_attr']['data-value'],
-          "id"    : hidden_prefix + data.node['id']
-        }, tree_div);
-        
         // Get the jstree instance.
         var jstree = $(this).jstree(true);
         
@@ -149,20 +142,37 @@ $(function () {
             // Add the id of each child and check it's children.
             var child = jstree.get_node(child_id);
             
-            // Add the hidden field.
-            addHiddenField ({
-              "name"  : sName,
-              "value" : child.li_attr['data-value'],
-              "id"    : hidden_prefix + child_id
-            }, tree_div);
-            
-            // Act on the children of this element too.
-            actOnChildren (child.children);
+            if (child.children.length > 0) {
+              
+              // Act on the children of this element too.
+              actOnChildren (child.children);
+              
+            } else {
+              
+              // This is a leaf. Let's add a hidden field.
+              addHiddenField ({
+                "name"  : sName,
+                "value" : child.li_attr['data-value'],
+                "id"    : hidden_prefix + child_id
+              }, tree_div);
+            }
           });
         };
         
-        // Act on all the children of this node.
-        actOnChildren (data.node.children);
+        if (data.node.children.length > 0) {
+          
+          // Act on the children of this element too.
+          actOnChildren (data.node.children);
+          
+        } else {
+          
+          // Add a hidden element.
+          addHiddenField ({
+            "name"  : sName,
+            "value" : data.node['li_attr']['data-value'],
+            "id"    : hidden_prefix + data.node['id']
+          }, tree_div);
+        }
         
       }).on("deselect_node.jstree", function (e, data) {
         

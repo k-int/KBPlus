@@ -19,7 +19,7 @@ class OnixPLService {
    * 
    * @return List of entries for the treeSelect widget.
    */
-  private buildAvailableComparisonPointsForTreeSelect (values) {
+  private List<Map> buildAvailableComparisonPointsForTreeSelect (values, parent_path = null) {
     
     // Copy the entries so as not to keep a reference.
     TreeMap entries = [:]
@@ -27,9 +27,6 @@ class OnixPLService {
     
     // Create a List of Maps and define the defaults.
     List<Map> options = []
-    
-    // Go through each entry and add to options.
-    int count = 0
     
     def temp = entries.remove("template")
     entries.values.each { val, Map properties ->
@@ -39,40 +36,65 @@ class OnixPLService {
       props.putAll(properties)
       
       // Replace the value marker with the actual values.
-      props['value'] = temp.replaceAll("\\\$value\\\$", "${val}")
+      props['value'] = (parent_path ? "${parent_path}/" : "") + temp.replaceAll("\\\$value\\\$", "${val}")
       
       // Check for children.
       if (props['children']) {
-        props['children'] = (buildAvailableComparisonPointsForTreeSelect (props['children']))
+        props['children'] = (buildAvailableComparisonPointsForTreeSelect (props['children'], props['value']))
       }
       
       // Add to the options.
       options << props
-              
-      count ++
     }
     
     options
-  }  
-  /**
-   * Compare one or more licenses to a primary license.
-   * 
-   * @param primaryLicense
-   * @param licenses
-   * @return
-   */
-  public compare (OnixplLicense primaryLicense, OnixplLicense... licenses)   {
-    
-  }  
+  }
   
   /**
    * Builds if necessary and then returns the comparison points for the treeSelect widget.
    * 
    * @return List of entries for the treeSelect widget
    */
-  public getTsComparisonPoints () {
-    
+  public List<Map> getTsComparisonPoints () {
     buildAvailableComparisonPointsForTreeSelect(grailsApplication.config.onix.comparisonPoints)
+  }
+  
+  /**
+   * Get all comparison points available.
+   *
+   * @return List of entries for the treeSelect widget
+   */
+  public List<String> getAllComparisonPoints () {
+    buildAllComparisonPoints (grailsApplication.config.onix.comparisonPoints)
+  }
+  
+  private List<String> buildAllComparisonPoints (values, parent_path = null) {
+    
+    // Copy the entries so as not to keep a reference.
+    TreeMap entries = [:]
+    entries.putAll(values)
+    
+    // Create a List of Maps and define the defaults.
+    List<String> options = []
+    
+    def temp = entries.remove("template")
+    entries.values.each { val, Map properties ->
+      
+      // Get the properties.
+      TreeMap props = [:]
+      props.putAll(properties)
+      
+      // Replace the value marker with the actual values.
+      def opt = (parent_path ? "${parent_path}/" : "") + temp.replaceAll("\\\$value\\\$", "${val}")
+      options << opt
+      
+      // Check for children.
+      if (props['children']) {
+        options += (buildAllComparisonPoints (props['children'], opt))
+      }
+    }
+    
+    options
   }
   
   public GPathResult getSampleDoc () {

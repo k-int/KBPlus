@@ -9,10 +9,10 @@ onix = [
   "comparisonPoints" : [
     'template' : '$value$',
     'values' : [
-      '*' : [
+      '_:PublicationsLicenseExpression' : [
         'text' : 'All',
         'children' : [
-          'template' : 'PublicationsLicenseExpression/$value$',
+          'template' : '_:$value$',
           'values' : [
             'Definitions' : [
               'text' : 'Definitions'
@@ -23,7 +23,7 @@ onix = [
             'UsageTerms' : [
               'text' : 'Usage Terms',
               'children' : [
-                'template' : 'Usage/UsageType[normalize-space(text())="$value$"]',
+                'template' : '_:Usage[_:UsageType[normalize-space(text())="$value$"]]',
                 'values' : [
                   'onixPL:MakeTemporaryDigitalCopy' : ['text' :  'Make Temporary Digital Copy'],
                   'onixPL:ProvideIntegratedAccess' : ['text' :  'Provide Integrated Access'],
@@ -55,7 +55,7 @@ onix = [
             'SupplyTerms' : [
               'text' : 'Supply Terms',
               'children' : [
-                'template' : 'SupplyTerm/SupplyTermType[normalize-space(text())="$value$"]',
+                'template' : '_:SupplyTerms[_:SupplyTermType[normalize-space(text())="$value$"]]',
                 'values' : [
                   'onixPL:StartOfService' : ['text' :  'Start Of Service' ],
                   'onixPL:ConcurrencyWithPrintVersion' : ['text' :  'Concurrency With Print Version' ],
@@ -74,7 +74,7 @@ onix = [
             'ContinuingAccessTerms' : [
               'text' : 'Continuing Access Terms',
               'children' : [
-                'template' : 'ContinuingAccessTerm/ContinuingAccessTermType[normalize-space(text())="$value$"]',
+                'template' : '_:ContinuingAccessTerm[_:ContinuingAccessTermType[normalize-space(text())="$value$"]]',
                 'values' : [
                   'onixPL:ContinuingAccess' : ['text' :  'Continuing Access' ],
                   'onixPL:ArchiveCopy' : ['text' :  'Archive Copy' ]
