@@ -266,7 +266,7 @@ class License {
       if ( oldMap[crp] != newMap[crp] ) {
         log.debug("Sending reference change...");
         def old_oid = oldMap[crp] ? "${oldMap[crp].class.name}:${oldMap[crp].id}" : null;
-        def new_oid = oldMap[crp] ? "${newMap[crp].class.name}:${newMap[crp].id}" : null;
+        def new_oid = newMap[crp] ? "${newMap[crp].class.name}:${newMap[crp].id}" : null;
         changeNotificationService.notifyChangeEvent([
                                                      OID:"${this.class.name}:${this.id}",
                                                      event:'License.updated',
