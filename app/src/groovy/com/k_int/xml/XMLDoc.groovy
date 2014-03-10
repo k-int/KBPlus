@@ -21,6 +21,10 @@ class XMLDoc {
   private org.w3c.dom.Node doc
   private DocumentNSResolver nsr
 
+  protected void setDoc(org.w3c.dom.Node doc) {
+    this.doc = doc
+  }
+  
   public XMLDoc (InputStreamSource iss) {
     this ( iss.inputStream )
   }
@@ -122,9 +126,10 @@ class XMLDoc {
     def children = node.childNodes()
     if (children) {
       children.each { n ->
-//        data['children'] << nodeToMap (n)
-        data[n.name()] = nodeToMap (n)
+        if (data[n.name()] == null) data[n.name()] = []
+        data[n.name()] << nodeToMap (n)
       }
+      data['_type'] = "parent"
     } else {
       // Add the content.
       data['_type'] = "leaf"
@@ -134,9 +139,85 @@ class XMLDoc {
     data
   }
   
-  public Map toMap () {
+  /**
+   * If param determine_equality_with is supplied then the result is compared with the supplied value.
+   * An extra property _equality will be set on the returned data and cascaded up the map.
+   * 
+   * @return a map representation of the XML.
+   */
+  public Map toMap (Map determine_equality_with = null) {
     
     // Get the element.
-    nodeToMap (toGPath())
+    Map result = nodeToMap (toGPath())
+    
+    // Determine equality if necessary.
+    if (determine_equality_with) {
+      boolean eq = false
+      if (result) {
+        eq = determineEqualityOfNodeMaps (determine_equality_with, result)
+      }
+      
+      // Set the value.
+      result['_equality'] = eq
+    }
+    
+    result
+  }
+  
+  private static boolean determineEqualityOfNodeMaps (Map primary, Map secondary) {
+    
+    final def compare = ['_ns', '_content']
+    
+    // Check the type.
+    if (primary['_type'] == "leaf") {
+      
+      // Compare the various points for equality.
+      boolean eq = true
+      for (int i=0; eq && i<compare.size(); i++) {
+        
+        // Get the comparison value.
+        def c = compare.get(i)
+        
+        // Compare as space-normalised and lower-cased values.
+        eq = "${primary[c]}"?.replaceAll("\\s{2,}", " ").toLowerCase() ==
+          "${secondary[c]}"?.replaceAll("\\s{2,}", " ").toLowerCase()
+      }
+      
+      // Set the equality value.
+      secondary['_equality'] = eq
+      
+    } else {
+    
+      // Get the keys.
+      for (String key : primary.keySet()) {
+        if (!key.startsWith("_")) {
+          
+          // We need to look for each value on the secondary map.
+          List<Map> pri_vals = primary["${key}"]
+          List<Map> sec_vals = secondary["${key}"]
+          
+          if (sec_vals) {
+            
+            // Get each primary value.
+            boolean eq = true
+            for (int pri_num=0; eq && pri_num<pri_vals.size(); pri_num++) {
+              boolean found = false
+              for (int sec_num=0; sec_num<sec_vals.size(); sec_num++) {
+                found = determineEqualityOfNodeMaps( pri_vals[pri_num], sec_vals[sec_num] ) || found
+              }
+              eq = eq && found
+            }
+            
+            // Set the equality.
+            secondary['_equality'] = eq
+          } else {
+            secondary['_equality'] = false
+          }
+        }
+      }
+    }
+    
+    // Return the equality value.
+    secondary.get('_equality')
   }
 }

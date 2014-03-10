@@ -48,23 +48,18 @@ class OnixplLicenseCompareController {
       comparison_points = onixPLService.allComparisonPoints
     }
     
-    // Go through each of the available or requested comparison points and examine them to determine equality.
-    def compared_data = [:]    
+    // Filter.
+    def match = params."match" ?: OnixPLService.COMPARE_RETURN_ALL
     
-    comparison_points.each { xpath_expr ->
-      
-      // Query the main license for xpath results.
-      def results = main_license.getXML().XPath(xpath_expr)
-      
-      results.each { org.w3c.dom.Node node ->
-        
-        // Create our new XML element of the segment.        
-        compared_data[xpath_expr] = new XMLDoc (node).toMap()
-      }
-      
-    }
+    // Get the results.
+    def result = onixPLService.compareLicenses(main_license, compare_to, comparison_points, match)
     
-    render compared_data as JSON
+    def keys = result.keySet()
+    
+    JSON json = new JSON( result )
+    
+    render json.toString(true)
+//    render onixPLService.compareLicenses(main_license, compare_to, comparison_points) as JSON
     
 //    main_license.xml.transform(response.outputStream)
     

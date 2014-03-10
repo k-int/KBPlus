@@ -1,4 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="com.k_int.kbplus.onixpl.OnixPLService" %>
 <!doctype html>
 <html>
 <head>
@@ -42,12 +43,12 @@
 					</div>
 					<div id="limit-license-display">
 						Only show licenses:<br />
-						<g:radio id="same" class="compare-radio" name="match" value="true" />
+						<g:radio id="same" class="compare-radio" name="match" value="${OnixPLService.COMPARE_RETURN_SAME}" />
 						&nbsp;&nbsp;<label for="same">The same</label><br />
 						<g:radio id="diff" class="compare-radio" name="match"
-							value="false" />
+							value="${OnixPLService.COMPARE_RETURN_DIFFERENT}" />
 						&nbsp;&nbsp;<label for="diff">Different</label><br />
-						<g:radio id="all" class="compare-radio" name="match" value=""
+						<g:radio id="all" class="compare-radio" name="match" value="${OnixPLService.COMPARE_RETURN_ALL}"
 							checked="${true}" />
 						&nbsp;&nbsp;<label for="all">Show all</label>
 					</div>
