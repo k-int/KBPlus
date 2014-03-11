@@ -45,6 +45,10 @@ class GlobalDataSyncController {
     log.debug("params:"+params)
     def result = [:]
     result.item = GlobalRecordInfo.get(params.id)
+
+    log.debug("Calling diff....");
+    result.impact = globalSourceSyncService.diff(null, result.item)
+
     result.type='new'
     render view:'reviewTracker', model:result
   }
@@ -54,7 +58,6 @@ class GlobalDataSyncController {
     log.debug("params:"+params)
     def result = [:]
     result.item = GlobalRecordInfo.get(params.id)
-    result.impact = globalSourceSyncService.diff(null, result.item)
     result
   }
 
@@ -66,6 +69,8 @@ class GlobalDataSyncController {
     result.item = GlobalRecordInfo.get(params.id)
     result.localPkgOID = params.localPkg
     result.localPkg = genericOIDService.resolveOID(params.localPkg)
+
+    log.debug("Calling diff....");
     result.impact = globalSourceSyncService.diff(result.localPkg, result.item)
 
     render view:'reviewTracker', model:result

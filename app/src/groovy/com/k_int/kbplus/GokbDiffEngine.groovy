@@ -2,7 +2,7 @@ package com.k_int.kbplus
 
 public class GokbDiffEngine {
 
-  def static diff(ctx, oldpkg, newpkg, newTippClosure, updatedTippClosure, deletedTippClosure, pkgPropChangeClosure, auto_accept) {
+  def static diff(ctx, oldpkg, newpkg, newTippClosure, updatedTippClosure, deletedTippClosure, pkgPropChangeClosure, tippUnchangedClosure, auto_accept) {
 
     if (( oldpkg == null )||(newpkg==null)) {
       println("Error - null package passed to diff");
@@ -42,6 +42,7 @@ public class GokbDiffEngine {
         def tipp_diff = getTippDiff(tippa, tippb)
 
         if ( tipp_diff.size() == 0 ) {
+          tippUnchangedClosure(ctx, tippa);
         } 
         else {
           // See if any of the actual properties are null

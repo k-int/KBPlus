@@ -176,7 +176,10 @@ class GlobalSourceSyncService {
       println("updated pkg prop");
     }
 
-    com.k_int.kbplus.GokbDiffEngine.diff(pkg, oldpkg, newpkg, onNewTipp, onUpdatedTipp, onDeletedTipp, onPkgPropChange, auto_accept_flag)
+    def onTippUnchanged = {ctx, tippa ->
+    }
+
+    com.k_int.kbplus.GokbDiffEngine.diff(pkg, oldpkg, newpkg, onNewTipp, onUpdatedTipp, onDeletedTipp, onPkgPropChange, onTippUnchanged, auto_accept_flag)
   }
 
   def packageConv = { md ->
@@ -442,12 +445,19 @@ class GlobalSourceSyncService {
 
     def result = null
 
-    def oldrec = localPackage ? localPkg.toComparablePackage() : [:];
+    def oldpkg = localPackage ? localPackage.toComparablePackage() : [tipps:[]];
 
     def bais = new ByteArrayInputStream((byte[])(globalRecordInfo.record))
     def ins = new ObjectInputStream(bais);
-    def newrec = ins.readObject()
+    def newpkg = ins.readObject()
     ins.close()
 
+    def onNewTipp = { ctx, tipp, auto_accept -> println("onNewTipp"); }
+    def onUpdatedTipp = { ctx, tipp, changes, auto_accept -> println("onUpdatedTipp"); }
+    def onDeletedTipp = { ctx, tipp  -> println("onDeletedTipp"); }
+    def onPkgPropChange = { ctx, propname, value, auto_accept -> println("onPkgPropChange"); }
+    def onTippUnchanged = { ctx, tipp -> println("onTippUnchanged"); }
+
+    com.k_int.kbplus.GokbDiffEngine.diff(result, oldpkg, newpkg, onNewTipp, onUpdatedTipp, onDeletedTipp, onPkgPropChange, onTippUnchanged, false)
   }
 }
