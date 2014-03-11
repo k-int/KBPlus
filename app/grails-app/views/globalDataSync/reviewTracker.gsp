@@ -49,6 +49,50 @@
 
     <div class="container well">
       <h1>Package Sync Impact</h1>
+      <table class="table table-striped table-bordered">
+        <tr>
+          <th>
+            <g:if test="${type=='new'}">
+              No current package
+            </g:if>
+            <g:else>
+              ${localPkg.name} as now
+            </g:else>
+          </th>
+          <th>Action</th>
+          <th>
+            <g:if test="${type=='new'}">
+              New Package After Processing
+            </g:if>
+            <g:else>
+              ${localPkg.name} after sync
+            </g:else>
+          </th>
+        </tr>
+        <g:each in="${impact}" var="i">
+          <tr>
+            <td>
+              <g:if test="${i.action=='i'}">
+              </g:if>
+              <g:else>
+                ${i.tipp?.title?.name} (<g:each in="${i.tipp.title.identifiers}" var="id">${id.namespace}:${id.value} </g:each>) <br/>
+                ${i.tipp}
+              </g:else>
+            </td>
+            <td>${i.action}</td>
+            <td>
+              <g:if test="${i.action=='d'}">
+              </g:if>
+              <g:else>
+                ${i.tipp?.title?.name} (<g:each in="${i.tipp.title.identifiers}" var="id">${id.namespace}:${id.value} </g:each>) <br/>
+                ${i.tipp}
+              </g:else>
+            </td>
+            </td>
+          </tr>
+        </g:each>
+      
+      </table>
     </div>
 
   </body>
