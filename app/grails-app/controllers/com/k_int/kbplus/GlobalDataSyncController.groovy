@@ -13,7 +13,7 @@ class GlobalDataSyncController {
 
   def springSecurityService
   def globalSourceSyncService
-
+  def genericOIDService
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() { 
@@ -41,7 +41,38 @@ class GlobalDataSyncController {
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def newTracker() { 
+  def newCleanTracker() { 
+    log.debug("params:"+params)
+    def result = [:]
+    result.item = GlobalRecordInfo.get(params.id)
+    result.type='new'
+    render view:'reviewTracker', model:result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def selectLocalPackage() { 
+    log.debug("params:"+params)
+    def result = [:]
+    result.item = GlobalRecordInfo.get(params.id)
+    result.impact = globalSourceSyncService.diff(null, result.item)
+    result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def buildMergeTracker() { 
+    log.debug("params:"+params)
+    def result = [:]
+    result.type='merge'
+    result.item = GlobalRecordInfo.get(params.id)
+    result.localPkgOID = params.localPkg
+    result.localPkg = genericOIDService.resolveOID(params.localPkg)
+    result.impact = globalSourceSyncService.diff(result.localPkg, result.item)
+
+    render view:'reviewTracker', model:result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def reviewTracker() { 
     log.debug("params:"+params)
     def result = [:]
 

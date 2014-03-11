@@ -49,7 +49,8 @@
               <td>${fieldValue(bean: item, field: "desc")}</td>
               <td>${item.source.name}</td>
               <td>${item.displayRectype}</td>
-              <td><g:link action="newTracker" controller="globalDataSync" id="${item.id}" class="btn btn-success">Track</g:link></td>
+              <td><g:link action="newCleanTracker" controller="globalDataSync" id="${item.id}" class="btn btn-success">Track(New)</g:link>
+                  <g:link action="selectLocalPackage" controller="globalDataSync" id="${item.id}" class="btn btn-success">Track(Merge)</g:link></td>
             </tr>
             <g:each in="${item.trackers}" var="tracker">
               <tr>

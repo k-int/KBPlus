@@ -437,4 +437,17 @@ class GlobalSourceSyncService {
     // println("Identifiers: ${titleinfo.title.identifiers}");
     def title_instance = TitleInstance.lookupOrCreate(titleinfo.title.identifiers,titleinfo.title.name, true)
   }
+
+  def diff(localPackage, globalRecordInfo) {
+
+    def result = null
+
+    def oldrec = localPackage ? localPkg.toComparablePackage() : [:];
+
+    def bais = new ByteArrayInputStream((byte[])(globalRecordInfo.record))
+    def ins = new ObjectInputStream(bais);
+    def newrec = ins.readObject()
+    ins.close()
+
+  }
 }
