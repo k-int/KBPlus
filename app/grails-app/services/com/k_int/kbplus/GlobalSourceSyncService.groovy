@@ -454,7 +454,7 @@ class GlobalSourceSyncService {
 
     def onNewTipp = { ctx, tipp, auto_accept -> ctx.add([tipp:tipp, action:'i']); }
     def onUpdatedTipp = { ctx, tipp, changes, auto_accept -> ctx.add([tipp:tipp, action:'u', changes:changes]); }
-    def onDeletedTipp = { ctx, tipp  -> ctx.add([tipp:tipp, action:'d']); }
+    def onDeletedTipp = { ctx, tipp, auto_accept  -> ctx.add([tipp:tipp, action:'d']); }
     def onPkgPropChange = { ctx, propname, value, auto_accept -> null; }
     def onTippUnchanged = { ctx, tipp -> ctx.add([tipp:tipp, action:'-']);  }
 

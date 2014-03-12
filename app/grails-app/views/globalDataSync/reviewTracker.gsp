@@ -71,21 +71,25 @@
         </tr>
         <g:each in="${impact}" var="i">
           <tr>
-            <td>
+            <td width="47%">
               <g:if test="${i.action=='i'}">
               </g:if>
               <g:else>
-                ${i.tipp?.title?.name} (<g:each in="${i.tipp.title.identifiers}" var="id">${id.namespace}:${id.value} </g:each>) <br/>
-                ${i.tipp}
+                ${i.tipp?.title?.name} <br/>
+                (<g:each in="${i.tipp.title.identifiers}" var="id">${id.namespace}:${id.value} </g:each>) <br/>
               </g:else>
             </td>
-            <td>${i.action}</td>
-            <td>
+            <td width="6%">${i.action}</td>
+            <td width="47%">
+
               <g:if test="${i.action=='d'}">
               </g:if>
               <g:else>
-                ${i.tipp?.title?.name} (<g:each in="${i.tipp.title.identifiers}" var="id">${id.namespace}:${id.value} </g:each>) <br/>
-                ${i.tipp}
+                ${i.tipp?.title?.name} <br/>
+                (<g:each in="${i.tipp.title.identifiers}" var="id">${id.namespace}:${id.value} </g:each>) <br/>
+                <g:if test="${i.action=='c'}">
+                  ${t.tipp.changes}
+                </g:if>
               </g:else>
             </td>
             </td>

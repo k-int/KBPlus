@@ -621,7 +621,8 @@ class SubscriptionImportController {
   }
 
   private def processRenewalUpload(input_stream, upload_filename, result) {
-    int SO_START_COL=11
+    // int SO_START_COL=11
+    int SO_START_COL=21
     int SO_START_ROW=7
     log.debug("processRenewalUpload - opening upload input stream as HSSFWorkbook");
     if ( input_stream ) {
@@ -679,7 +680,7 @@ class SubscriptionImportController {
           for ( int j=0; ( ((j+SO_START_COL)<title_row.getLastCellNum()) && (j<=sub_info.size() ) ); j++ ) {
             def resp_cell = title_row.getCell(j+SO_START_COL)
             if ( resp_cell ) {
-              log.debug("  -> Testing col[${j+SO_START_COL}] val=${resp_cell.toString()}");
+              log.debug("  -> Testing col[${j+SO_START_COL}(${j}+${SO_START_COL})] val=${resp_cell.toString()}");
 
               def subscribe=resp_cell.toString()
 

@@ -53,9 +53,7 @@ public class GokbDiffEngine {
         tippa = ai.hasNext() ? ai.next() : null
         tippb = bi.hasNext() ? bi.next() : null
       }
-      else if ( ( tippb != null ) &&
-                  ( ( tippa == null ) ||
-                    ( tippa.compareTo(tippb) > 0 ) ) ) {
+      else if ( ( tippb != null ) && ( tippa == null ) ) {
         System.out.println("Title "+tippb+" Was added to the package");
         newTippClosure(ctx, tippb, auto_accept)
         tippb = bi.hasNext() ? bi.next() : null;
