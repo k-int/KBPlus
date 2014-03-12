@@ -19,7 +19,12 @@ class PackageDetailsController {
   def springSecurityService
   def transformerService
 
-  def pkg_qry_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
+  def pkg_qry_reversemap = ['subject':'subject', 
+                            'provider':'provid', 
+                            'startYear':'startYear', 
+                            'endYear':'endYear', 
+                            'endYear':'endYear', 
+                            'pkgname':'tokname' ]
 
     def exportService
 
@@ -420,6 +425,9 @@ class PackageDetailsController {
                 break;
           case 'startYear':
                 sw.append('startYear')
+                break;
+          case 'endYear':
+                sw.append('endYear')
                 break;
           case 'cpname':
                 sw.append('cpname')
