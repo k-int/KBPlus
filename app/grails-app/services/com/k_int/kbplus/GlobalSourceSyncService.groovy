@@ -9,7 +9,6 @@ class GlobalSourceSyncService {
   def changeNotificationService
 
   def packageReconcile = { grt ,oldpkg, newpkg ->
-    log.debug("\n\nreconcile package\n");
     def pkg = null;
     boolean auto_accept_flag = false
 
@@ -122,7 +121,7 @@ class GlobalSourceSyncService {
       }
     }
 
-    def onUpdatedTipp = { ctx, tipp, changes, auto_accept ->
+    def onUpdatedTipp = { ctx, tipp, oldtipp, changes, auto_accept ->
       println("updated tipp, ctx = ${ctx.toString()}");
 
       // Find title with ID tipp... in package ctx
@@ -247,8 +246,6 @@ class GlobalSourceSyncService {
 
   def internalRunAllActiveSyncTasks() {
 
-     log.debug("internalRunAllActiveSyncTasks() running...");
-
      def jobs = GlobalRecordSource.findAll() 
 
      jobs.each { sync_job ->
@@ -307,10 +304,8 @@ class GlobalSourceSyncService {
         log.debug(rec.header.datestamp)
         def qryparams = [sync_job.id, rec.header.identifier.text()]
         def record_timestamp = sdf.parse(rec.header.datestamp.text())
-        log.debug("Find: ${qryparams}");
         def existing_record_info = GlobalRecordInfo.executeQuery('select r from GlobalRecordInfo as r where r.source.id = ? and r.identifier = ?',qryparams);
         if ( existing_record_info.size() == 1 ) {
-          log.debug("Update to an existing record....");
 
           def parsed_rec = cfg.converter.call(rec.metadata)
 
@@ -423,9 +418,6 @@ class GlobalSourceSyncService {
     def newrec = ins.readObject()
     ins.close()
 
-    log.debug("Generated comparable for existing package : ${oldrec}");
-    log.debug("new package : ${newrec}");
-
     cfg.reconciler(grt,oldrec,newrec)
   }
 
@@ -453,8 +445,8 @@ class GlobalSourceSyncService {
     ins.close()
 
     def onNewTipp = { ctx, tipp, auto_accept -> ctx.add([tipp:tipp, action:'i']); }
-    def onUpdatedTipp = { ctx, tipp, changes, auto_accept -> ctx.add([tipp:tipp, action:'u', changes:changes]); }
-    def onDeletedTipp = { ctx, tipp, auto_accept  -> ctx.add([tipp:tipp, action:'d']); }
+    def onUpdatedTipp = { ctx, tipp, oldtipp, changes, auto_accept -> ctx.add([tipp:tipp, action:'u', changes:changes, oldtipp:oldtipp]); }
+    def onDeletedTipp = { ctx, tipp, auto_accept  -> ctx.add([oldtipp:tipp, action:'d']); }
     def onPkgPropChange = { ctx, propname, value, auto_accept -> null; }
     def onTippUnchanged = { ctx, tipp -> ctx.add([tipp:tipp, action:'-']);  }
 
