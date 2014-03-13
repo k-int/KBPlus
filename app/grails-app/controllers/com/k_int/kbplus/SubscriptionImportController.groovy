@@ -614,15 +614,19 @@ class SubscriptionImportController {
       def upload_filename = request.getFile("renewalsWorksheet")?.getOriginalFilename()
       log.debug("Uploaded worksheet type: ${upload_mime_type} filename was ${upload_filename}");
       def input_stream = request.getFile("renewalsWorksheet")?.inputStream
-      processRenewalUpload(input_stream, upload_filename, result)
+      def so_start_col = ( ( params.id != null ) ? 21 : 11 )
+      processRenewalUpload(input_stream, upload_filename, result, so_start_col)
     }
 
     result
   }
 
-  private def processRenewalUpload(input_stream, upload_filename, result) {
+  /**
+   *  SO_START_COL varies depending on the presence of JUSP stats
+   */
+  private def processRenewalUpload(input_stream, upload_filename, result, SO_START_COL) {
     // int SO_START_COL=11
-    int SO_START_COL=21
+    // int SO_START_COL=21
     int SO_START_ROW=7
     log.debug("processRenewalUpload - opening upload input stream as HSSFWorkbook");
     if ( input_stream ) {
