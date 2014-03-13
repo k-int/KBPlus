@@ -75,21 +75,33 @@
               <g:if test="${i.action=='i'}">
               </g:if>
               <g:else>
-                ${i.tipp?.title?.name} <br/>
-                (<g:each in="${i.tipp.title.identifiers}" var="id">${id.namespace}:${id.value} </g:each>) <br/>
+                <b><em>${i.oldtipp?.title?.name}</em></b> (<g:each in="${i.oldtipp.title.identifiers}" var="id">${id.namespace}:${id.value} </g:each>) <br/>
+                <table class="table">
+                  <tr><th></th><th>Volume</th><th>Issue</th><th>Date</th></tr>
+                  <g:each in="${i.oldtipp.coverage}" var="c">
+                    <tr><th>Start</th> <td>${c.startVolume}</td><td>${c.startIssue}</td>
+                        <td>${c.startDate}</td></tr>
+                    <tr><th>End</th> <td>${c.endVolume}</td><td> ${c.endIssue}</td><td>${c.endDate}</td></tr>
+                    <tr><td colspan="4"> ${c.coverageDepth} ${c.coverageNote}</td></tr>
+                  </g:each>
+                </table>
               </g:else>
             </td>
             <td width="6%">${i.action}</td>
             <td width="47%">
-
               <g:if test="${i.action=='d'}">
+                <b><em>Removed</em></b>
               </g:if>
               <g:else>
-                ${i.tipp?.title?.name} <br/>
-                (<g:each in="${i.tipp.title.identifiers}" var="id">${id.namespace}:${id.value} </g:each>) <br/>
-                <g:if test="${i.action=='c'}">
-                  ${t.tipp.changes}
-                </g:if>
+                <b><em>${i.tipp?.title?.name}</em></b> (<g:each in="${i.tipp.title.identifiers}" var="id">${id.namespace}:${id.value} </g:each>) <br/>
+                <table class="table">
+                  <tr><th></th><th>Volume</th><th>Issue</th><th>Date</th></tr>
+                  <g:each in="${i.tipp.coverage}" var="c">
+                    <tr><th>Start</th> <td>${c.startVolume}</td><td>${c.startIssue}</td><td>${c.startDate}</td></tr>
+                    <tr><th>End</th> <td>${c.endVolume}</td><td> ${c.endIssue}</td><td>${c.endDate}</td></tr>
+                    <tr><td colspan="4"> ${c.coverageDepth} ${c.coverageNote}</td></tr>
+                  </g:each>
+                </table>
               </g:else>
             </td>
             </td>

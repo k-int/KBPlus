@@ -10,18 +10,18 @@ public class GokbDiffEngine {
     }
   
     if ( oldpkg.packageName != newpkg.packageName ) {
-      println("packageName updated from ${oldpkg.packageName} to ${newpkg.packageName}");
+      // println("packageName updated from ${oldpkg.packageName} to ${newpkg.packageName}");
       pkgPropChangeClosure(ctx, 'title', newpkg.packageName, auto_accept);
     }
     else {
-      println("packageName consistent");
+      // println("packageName consistent");
     }
 
     if ( oldpkg.packageId != newpkg.packageId ) {
-      println("packageId updated from ${oldpkg.packageId} to ${newpkg.packageId}");
+      // println("packageId updated from ${oldpkg.packageId} to ${newpkg.packageId}");
     }
     else {
-      println("packageId consistent");
+      // println("packageId consistent");
     }
 
     oldpkg.tipps.sort { it.titleId }
@@ -47,7 +47,7 @@ public class GokbDiffEngine {
         else {
           // See if any of the actual properties are null
           println("Got tipp diffs: ${tipp_diff}");
-          updatedTippClosure(ctx, tippb, tipp_diff, auto_accept)
+          updatedTippClosure(ctx, tippb, tippa, tipp_diff, auto_accept)
         }
 
         tippa = ai.hasNext() ? ai.next() : null
