@@ -16,14 +16,17 @@
       </g:if>
     </div>
 
-    <g:form>
+    <g:form action="createTracker" controller="globalDataSync">
+
+      <input type="hidden" name="type" value="${type}"/>
+
       <div class="container well">
         <h1>Review Tracker</h1>
         <g:if test="${type=='new'}">
           <p>This tracker will create a new local package for "${item.name}" from "${item.source.name}". Set the new package name below.</p>
           <dl>
             <dt>New Package Name</dt>
-            <dd><input type="text" name="trackerName" value="${item.name}" class="input-xxlarge"/></dd>
+            <dd><input type="text" name="newPackageName" value="${item.name}" class="input-xxlarge"/></dd>
           </dl>
         </g:if>
         <g:else>
