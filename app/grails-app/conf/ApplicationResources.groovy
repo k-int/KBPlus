@@ -23,6 +23,8 @@ modules = {
     // resource url:'css/bootstrap.css'
     dependsOn 'jquery'
     resource url:'css/jquery.dataTables.css'
+    resource url:'css/dataTables.fixedColumns.min.css'
+    resource url:'css/dataTables.colVis.min.css'
     resource url:'css/bootstrap-editable.css'
     resource url:'css/select2.css'
     resource url:"css/instances/${Holders.config.defaultCssSkin?:'standard.css'}"
@@ -32,9 +34,12 @@ modules = {
     resource url:'js/moment.min.js'
     resource url:'js/select2.min.js'
     resource url:'js/jquery.dataTables.min.js'
+    resource url:'js/dataTables.colVis.min.js'
+    resource url:'js/dataTables.fixedColumns.min.js'
     resource url:'js/dataTables.scroller.js'
     resource url:'js/kbplusapp.js.gsp'
     resource url:'js/jquery.dotdotdot.min.js'
+    
   }
   annotations {
     dependsOn 'kbplus'
@@ -51,5 +56,11 @@ modules = {
     resource url:'css/jstree-themes/default/style.min.css'
     resource url:'js/jstree.min.js'
     resource url:'js/tree-selects.js'
+  }
+  
+  onixMatrix {
+    dependsOn 'kbplus'
+    resource url:'css/onix.css'
+    resource url:'js/onix.js'
   }
 }

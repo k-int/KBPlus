@@ -4,12 +4,34 @@ import com.k_int.kbplus.onixpl.OnixPLService
 import com.k_int.xml.XMLDoc
 import grails.converters.JSON
 import grails.plugins.springsecurity.Secured
+import grails.util.GrailsNameUtils
 import groovy.util.slurpersupport.GPathResult
 import groovy.util.slurpersupport.NodeChild
+import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
+import org.codehaus.groovy.grails.web.pages.discovery.GroovyPageScriptSource
+import org.springframework.core.io.Resource
 
 class OnixplLicenseCompareController {
+  
+  private static final String TEMPLATE_ROOT = "/templates/onix/"
+  private static final String TEMPLATE_DEFAULT = "default"
 
   OnixPLService onixPLService
+  GrailsConventionGroovyPageLocator groovyPageLocator
+  
+  private String getTemplatePathForItem(String template) {
+    
+    // Find the template.
+    GroovyPageScriptSource result = groovyPageLocator.findTemplateByPath("${TEMPLATE_ROOT}${template}")
+    
+    // Check the result.
+    if ( result ) {
+      return "${TEMPLATE_ROOT}${template}"
+    }
+    
+    // Return the default.
+    "${TEMPLATE_ROOT}${TEMPLATE_DEFAULT}"
+  }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
@@ -52,13 +74,32 @@ class OnixplLicenseCompareController {
     def match = params."match" ?: OnixPLService.COMPARE_RETURN_ALL
     
     // Get the results.
-    def result = onixPLService.compareLicenses(main_license, compare_to, comparison_points, match)
+    def result = [
+      "data"          : onixPLService.compareLicenses(main_license, compare_to, comparison_points, match)
+    ]
     
-    def keys = result.keySet()
-    
-    JSON json = new JSON( result )
-    
-    render json.toString(true)
+    // Serve the version required of the page.
+    switch(request.forwardURI){
+      case {String it -> it.endsWith(".json")} :
+        render new JSON (result).toString(true)
+        break;
+        
+      default :        
+        // Add the other display information.
+        result['header'] = [
+          "titles" : result.data.keySet() as LinkedHashSet
+        ]
+        result['rows'] = []
+        result.data.values().getAt(0).keySet().each { text ->
+          result['rows'] << [
+            'key'       : text,
+            'template'  : getTemplatePathForItem (GrailsNameUtils.getScriptName(text).replaceAll('\\-', "_")),
+            'title'     : GrailsNameUtils.getNaturalName(text)
+          ]
+        }
+        
+        return result
+    }
 //    render onixPLService.compareLicenses(main_license, compare_to, comparison_points) as JSON
     
 //    main_license.xml.transform(response.outputStream)

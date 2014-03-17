@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import grails.transaction.Transactional
+import grails.util.GrailsNameUtils
 import groovy.util.slurpersupport.GPathResult
 
 import com.k_int.kbplus.OnixplLicense
@@ -71,28 +72,37 @@ class OnixPLService {
   }
   
   /**
-   * Get all comparison points available as a flat list of XPath terms.
+   * Get all comparison points available as a flat list of XPath terms. Using the config definitions.
    *
    * @return List of entries for the treeSelect widget
    */
   public List<String> getAllComparisonPoints () {
-    buildAllComparisonPoints (grailsApplication.config.onix.comparisonPoints)
+    buildAllComparisonPointsMap (grailsApplication.config.onix.comparisonPoints).keySet() as List
   }
   
   /**
-   * Do the actual build of the full comparison points as a flat list of XPath terms. 
+   * Get all comparison points available as a map of XPath terms and names. Using the config definitions.
+   *
+   * @return List of entries for the treeSelect widget
+   */
+  public Map<String, String> getAllComparisonPointsMap () {
+    buildAllComparisonPointsMap (grailsApplication.config.onix.comparisonPoints)
+  }
+  
+  /**
+   * Get all comparison points as a one dimensional map of XPath terms and names. 
    * 
    * @param values from which we extract the relevant data.
    * @return list of XPath terms
    */
-  private List<String> buildAllComparisonPoints (values, parent_path = null) {
+  private Map<String, String> buildAllComparisonPointsMap (values, parent_path = null, template = null) {
     
     // Copy the entries so as not to keep a reference.
     TreeMap entries = [:]
     entries.putAll(values)
     
     // Create a List of Maps and define the defaults.
-    List<String> options = []
+    LinkedHashMap<String,String> options = [:]
     
     def temp = entries.remove("template")
     entries.values.each { val, Map properties ->
@@ -100,14 +110,23 @@ class OnixPLService {
       // Get the properties.
       TreeMap props = [:]
       props.putAll(properties)
+      def the_template = null
+      if (!template && parent_path) {
+        
+        // Set the template group.
+        the_template = GrailsNameUtils.getPropertyName(props['text']);
+      }
       
       // Replace the value marker with the actual values.
       def opt = (parent_path ? "${parent_path}/" : "") + temp.replaceAll("\\\$value\\\$", "${val}")
-      options << opt
+      options[opt] = [
+        "name" : props['text'],
+        "group" : the_template
+      ]
       
       // Check for children.
       if (props['children']) {
-        options += (buildAllComparisonPoints (props['children'], opt))
+        options.putAll(buildAllComparisonPointsMap (props['children'], opt, the_template))
       }
     }
     
@@ -126,13 +145,16 @@ class OnixPLService {
     def result = [:]
     
     // Get the main license as a map.
-    result.main = license.toMap()
+    def main = license.toMap()
+    
+    // Add the main to the result.
+    result["${license.title}"] = main
     
     // Now we need to check each license and decide whether it satisfies our filter (if not all).
     for (OnixplLicense l : licenses_to_compare) {
       
       // Get each map in turn passing in the main license for comparison.
-      def license_map = l.toMap(sections, result.main)
+      def license_map = l.toMap(sections, main)
       
       // Add the map to the results?
       boolean filter_out = false

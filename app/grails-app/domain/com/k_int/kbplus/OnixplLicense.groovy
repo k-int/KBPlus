@@ -94,24 +94,38 @@ class OnixplLicense {
   
   public Map toMap (List<String> sections = null, Map determine_equality_with = null) {
     
+    // Get all comparison points as a map.
+    Map all_points = onixService.allComparisonPointsMap
+    
     // Default to all points.
-    sections = sections ?: onixService.allComparisonPoints
+    sections = sections ?: all_points.keySet() as List
     
     // Go through each of the available or requested comparison points and examine them to determine equality.
-    def data = [:] as TreeMap
+    TreeMap data = [:]
     
     sections.each { xpath_expr ->
       
-      def xml = getXML()
+      def group = all_points."${xpath_expr}"?."group"
+      if (group) {
+        if (data[group] == null) data[group] = [:] as TreeMap
       
-      // Query for xpath results.
-      def results = xml.XPath(xpath_expr)
-      
-      // For each of the results we need to add a map representation to the result.
-      results.each { org.w3c.dom.Node node ->
+        def xml = getXML()
         
-        // Create our new XML element of the segment.
-        data[xpath_expr] = new OnixPLDoc (node).toMap(determine_equality_with ? determine_equality_with[xpath_expr] : null )
+        // Query for xpath results.
+        def results = xml.XPath(xpath_expr)
+        
+        if (results.length > 0) {
+        
+          // For each of the results we need to add a map representation to the result.
+          results.each { org.w3c.dom.Node node ->
+              
+            // Create our new XML element of the segment.
+            data[group][xpath_expr] = new OnixPLDoc (node).toMap(determine_equality_with ? determine_equality_with[xpath_expr] : null )
+            
+          }
+        } else {
+          data[group][xpath_expr] = [:]
+        }
       }
     }
     

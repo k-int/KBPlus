@@ -5,10 +5,42 @@
 <head>
 <meta name="layout" content="mmbootstrap" />
 <title>KB+</title>
+<r:script type="text/javascript">
+  (function ($) {
+    $(document).ready(function(){
+      var disableOption = function (dd1, dd2) {
+  
+        // current selected val.
+        var val = $("option:selected", dd1).attr("value");
+  
+        // Go through each option in 2 and ensure all are enabled,
+        // appart from a matching value.
+        $("option", dd2).each(function(){
+          var opt = $(this);
+          if (opt.attr("value") == val) {
+            // Hide this.
+            opt.hide();
+          } else {
+            opt.show();
+          }
+        });
+      }
+  
+      // Default.
+      var main = $('#license1');
+      var secondary = $('#license2');
+      disableOption (main, secondary);
+  
+      // Now add the onchange.
+      main.on("change", function() {
+        disableOption (this, secondary)
+      });
+    });
+  })(jQuery);
+</r:script>
 </head>
 
 <body>
-
 	<div class="container">
 		<ul class="breadcrumb">
 			<li><g:link controller="home" action="index">Home</g:link> <span
@@ -27,12 +59,12 @@
 				<g:form id="compare" name="compare" action="matrix" method="get">
 					<div>
 						<label for="license1">License 1:</label>
-						<g:select name="license1" class="compare-license" from="${list}"
+						<g:select id="license1" name="license1" class="compare-license" from="${list}"
 							optionKey="id" optionValue="title" />
 					</div>
 					<div>
 						<label for="license2">License 2:</label>
-						<g:select name="license2" class="compare-license" from="${list}"
+						<g:select id="license2" name="license2" class="compare-license" from="${list}"
 							optionKey="id" optionValue="title"
 							noSelection="${['all': "All"]}" multiple="true" value="all" />
 					</div>
@@ -52,10 +84,10 @@
 							checked="${true}" />
 						&nbsp;&nbsp;<label for="all">Show all</label>
 					</div>
-					<div>
-						<label for="max">Number of results per page: </label>
-						<g:select name="max" from="${[5, 10, 15]}" class="compare-results" />
-					</div>
+<%--					<div>--%>
+<%--						<label for="max">Number of results per page: </label>--%>
+<%--						<g:select name="max" from="${[5, 10, 15]}" class="compare-results" />--%>
+<%--					</div>--%>
 					<div>
 					  <g:submitButton name="Compare" class="btn btn-primary" />
 					</div>
