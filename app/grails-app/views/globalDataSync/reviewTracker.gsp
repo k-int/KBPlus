@@ -16,9 +16,10 @@
       </g:if>
     </div>
 
-    <g:form action="createTracker" controller="globalDataSync">
+    <g:form action="createTracker" controller="globalDataSync" id="${params.id}">
 
-      <input type="hidden" name="type" value="${type}"/>
+      <input type="hidden" name="localPkg" value="${params.localPkg}"/>
+      <input type="hidden" name="synctype" value="${type}"/>
 
       <div class="container well">
         <h1>Review Tracker</h1>
@@ -78,16 +79,30 @@
               <g:if test="${i.action=='i'}">
               </g:if>
               <g:else>
-                <b><em>${i.oldtipp?.title?.name}</em></b> (<g:each in="${i.oldtipp.title.identifiers}" var="id">${id.namespace}:${id.value} </g:each>) <br/>
-                <table class="table">
-                  <tr><th></th><th>Volume</th><th>Issue</th><th>Date</th></tr>
-                  <g:each in="${i.oldtipp.coverage}" var="c">
-                    <tr><th>Start</th> <td>${c.startVolume}</td><td>${c.startIssue}</td>
-                        <td>${c.startDate}</td></tr>
-                    <tr><th>End</th> <td>${c.endVolume}</td><td> ${c.endIssue}</td><td>${c.endDate}</td></tr>
-                    <tr><td colspan="4"> ${c.coverageDepth} ${c.coverageNote}</td></tr>
-                  </g:each>
-                </table>
+                <g:if test="${i.action=='-'}">
+                  <b><em>${i.tipp?.title?.name}</em></b> (<g:each in="${i.tipp?.title?.identifiers}" var="id">${id.namespace}:${id.value} </g:each>) <br/>
+                  <table class="table">
+                    <tr><th></th><th>Volume</th><th>Issue</th><th>Date</th></tr>
+                    <g:each in="${i.tipp.coverage}" var="c">
+                      <tr><th>Start</th> <td>${c.startVolume}</td><td>${c.startIssue}</td>
+                          <td>${c.startDate}</td></tr>
+                      <tr><th>End</th> <td>${c.endVolume}</td><td> ${c.endIssue}</td><td>${c.endDate}</td></tr>
+                      <tr><td colspan="4"> ${c.coverageDepth} ${c.coverageNote}</td></tr>
+                    </g:each>
+                  </table>
+                </g:if>
+                <g:else>
+                  <b><em>${i.oldtipp?.title?.name}</em></b> (<g:each in="${i.oldtipp?.title?.identifiers}" var="id">${id.namespace}:${id.value} </g:each>) <br/>
+                  <table class="table">
+                    <tr><th></th><th>Volume</th><th>Issue</th><th>Date</th></tr>
+                    <g:each in="${i.oldtipp.coverage}" var="c">
+                      <tr><th>Start</th> <td>${c.startVolume}</td><td>${c.startIssue}</td>
+                          <td>${c.startDate}</td></tr>
+                      <tr><th>End</th> <td>${c.endVolume}</td><td> ${c.endIssue}</td><td>${c.endDate}</td></tr>
+                      <tr><td colspan="4"> ${c.coverageDepth} ${c.coverageNote}</td></tr>
+                    </g:each>
+                  </table>
+                </g:else>
               </g:else>
             </td>
             <td width="6%">${i.action}</td>

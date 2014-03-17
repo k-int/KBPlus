@@ -65,7 +65,7 @@ class GlobalDataSyncController {
   def buildMergeTracker() { 
     log.debug("params:"+params)
     def result = [:]
-    result.type='merge'
+    result.type='existing'
     result.item = GlobalRecordInfo.get(params.id)
     result.localPkgOID = params.localPkg
     result.localPkg = genericOIDService.resolveOID(params.localPkg)
@@ -77,7 +77,7 @@ class GlobalDataSyncController {
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def reviewTracker() { 
+  def createTracker() {
     log.debug("params:"+params)
     def result = [:]
 
@@ -89,11 +89,8 @@ class GlobalDataSyncController {
 
       switch ( params.synctype ) {
         case 'new':
-          if ( params.trackerName == null ) {
-            return
-          }
           log.debug("merge remote package with new local package...");
-          def grt = new GlobalRecordTracker(owner:result.item, identifier:new_tracker_id, name:params.trackerName)
+          def grt = new GlobalRecordTracker(owner:result.item, identifier:new_tracker_id, name:params.newPackageName)
           if ( grt.save() ) {
             globalSourceSyncService.initialiseTracker(grt);
           }
@@ -107,7 +104,7 @@ class GlobalDataSyncController {
           def grt = new GlobalRecordTracker( 
                                             owner:result.item, 
                                             identifier:new_tracker_id, 
-                                            name:params.trackerName,
+                                            name:result.item.name,
                                             localOid:params.localPkg)
           if ( grt.save() ) {
             globalSourceSyncService.initialiseTracker(grt, params.localPkg);
@@ -118,11 +115,12 @@ class GlobalDataSyncController {
           redirect(action:'index',params:[q:result.item.name])
           break;
         default:
-          log.error("Unhandled package tracking type");
+          log.error("Unhandled package tracking type ${params.synctype}");
           break;
       }
     }
 
     result
   }
+
 }

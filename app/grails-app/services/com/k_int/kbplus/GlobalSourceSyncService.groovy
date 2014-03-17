@@ -167,7 +167,7 @@ class GlobalSourceSyncService {
       }
     }
 
-    def onDeletedTipp = { ctx, tipp ->
+    def onDeletedTipp = { ctx, tipp, auto_accept ->
       println("deletd tipp");
     }
 
@@ -191,7 +191,9 @@ class GlobalSourceSyncService {
     result.parsed_rec.packageName = md.gokb.package.name.text()
     result.parsed_rec.packageId = md.gokb.package.'@id'.text()
     result.parsed_rec.tipps = []
+    int ctr=0
     md.gokb.package.TIPPs.TIPP.each { tip ->
+      log.debug("Processing tipp ${ctr++}");
       def newtip = [
                      title: [
                        name:tip.title.name.text(), 

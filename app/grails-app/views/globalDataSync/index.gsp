@@ -61,6 +61,7 @@
                       <g:link controller="packageDetails" action="show" id="${tracker.localOid.split(':')[1]}">${tracker.name?:'No tracker name'}</g:link>
                     </g:if>
                   </g:if>
+                  <g:else>No tracker local oid</g:else>
                 </td>
               </tr>
             </g:each>
