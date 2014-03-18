@@ -12,6 +12,8 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 class GlobalDataSyncController {
 
   def springSecurityService
+  def globalSourceSyncService
+  def genericOIDService
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() { 
@@ -39,24 +41,86 @@ class GlobalDataSyncController {
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def newTracker() { 
+  def newCleanTracker() { 
+    log.debug("params:"+params)
+    def result = [:]
+    result.item = GlobalRecordInfo.get(params.id)
+
+    log.debug("Calling diff....");
+    result.impact = globalSourceSyncService.diff(null, result.item)
+
+    result.type='new'
+    render view:'reviewTracker', model:result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def selectLocalPackage() { 
+    log.debug("params:"+params)
+    def result = [:]
+    result.item = GlobalRecordInfo.get(params.id)
+    result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def buildMergeTracker() { 
+    log.debug("params:"+params)
+    def result = [:]
+    result.type='existing'
+    result.item = GlobalRecordInfo.get(params.id)
+    result.localPkgOID = params.localPkg
+    result.localPkg = genericOIDService.resolveOID(params.localPkg)
+
+    log.debug("Calling diff....");
+    result.impact = globalSourceSyncService.diff(result.localPkg, result.item)
+
+    render view:'reviewTracker', model:result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def createTracker() {
     log.debug("params:"+params)
     def result = [:]
 
     result.item = GlobalRecordInfo.get(params.id)
+    def new_tracker_id = java.util.UUID.randomUUID().toString()
 
-    if ( ( params.trackerName != null ) && ( params.trackerId != null ) ) {
+    if ( params.synctype != null ) {
       // new tracker and redirect back to list page
-      log.debug("redirecting...");
-      def grt = new GlobalRecordTracker(owner:result.item, identifier:params.trackerId, name:params.trackerName)
-      if ( grt.save() ) {
-      }
-      else {
-        log.error(grt.errors)
-      }
 
-      redirect(action:'index',params:[q:result.item.name])
+      switch ( params.synctype ) {
+        case 'new':
+          log.debug("merge remote package with new local package...");
+          def grt = new GlobalRecordTracker(owner:result.item, identifier:new_tracker_id, name:params.newPackageName)
+          if ( grt.save() ) {
+            globalSourceSyncService.initialiseTracker(grt);
+          }
+          else {
+            log.error(grt.errors)
+          }
+          redirect(action:'index',params:[q:result.item.name])
+          break;
+        case 'existing':
+          log.debug("merge remote package with existing local package...");
+          def grt = new GlobalRecordTracker( 
+                                            owner:result.item, 
+                                            identifier:new_tracker_id, 
+                                            name:result.item.name,
+                                            localOid:params.localPkg)
+          if ( grt.save() ) {
+            globalSourceSyncService.initialiseTracker(grt, params.localPkg);
+          }
+          else {
+            log.error(grt.errors)
+          }
+          redirect(action:'index',params:[q:result.item.name])
+          break;
+        default:
+          log.error("Unhandled package tracking type ${params.synctype}");
+          break;
+      }
     }
+
     result
   }
+
 }

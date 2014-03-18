@@ -194,7 +194,13 @@ class DataloadService {
       c.setFetchSize(Integer.MIN_VALUE);
 
       c.buildCriteria{
-          gt('lastUpdated', from)
+          or {
+            gt('lastUpdated', from)
+            and {
+              gt('dateCreated', from)
+              isNull('lastUpdated')
+            }
+          }
           order("lastUpdated", "asc")
       }
 

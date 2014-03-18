@@ -40,7 +40,8 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
         mavenRepo "https://oss.sonatype.org/content/repositories/releases"
-        mavenRepo "http://projects.k-int.com/nexus-webapp-1.4.0/content/repositories/snapshots"
+        // mavenRepo "http://projects.k-int.com/nexus-webapp-1.4.0/content/repositories/snapshots"
+        mavenRepo "http://projects.k-int.com/nexus-webapp-1.4.0/content/repositories/releases"
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
@@ -52,7 +53,6 @@ grails.project.dependency.resolution = {
         runtime 'mysql:mysql-connector-java:5.1.26'
         runtime 'com.gmongo:gmongo:1.1'
         runtime 'org.elasticsearch:elasticsearch-lang-groovy:1.4.0'
-        // runtime 'org.elasticsearch:elasticsearch-lang-groovy:1.3.0'
         runtime 'gov.loc:bagit:4.0'
         runtime 'org.apache.poi:poi:3.8'
         runtime 'net.sf.opencsv:opencsv:2.0'

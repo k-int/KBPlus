@@ -57,7 +57,7 @@
   
                 <g:if test="${user}">
                   <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Manage <b class="caret"></b> </a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Institutions <b class="caret"></b> </a>
                     <ul class="dropdown-menu" style="max-width:none;">
   
   
@@ -115,8 +115,11 @@
 
                 <sec:ifAnyGranted roles="ROLE_ADMIN,KBPLUS_EDITOR">
                    <li class="dropdown">
-                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Editors <b class="caret"></b> </a>
+                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Data Managers <b class="caret"></b> </a>
                      <ul class="dropdown-menu">
+                       <li <%= ( ( 'dataManager'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="dataManager" action="index">Data Manager Dashboard</g:link></li>
+                       <li class="divider"></li>
                        <li <%= ( ( 'announcement'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="announcement" action="index">Announcements</g:link></li>
                        <li <%= ( ( 'packageDetails'== controllerName ) && ( 'list'==actionName ) ) ? ' class="active"' : '' %>>
@@ -135,12 +138,10 @@
                        <li <%= ( ( 'subscriptionImport'== controllerName ) && ( 'generateImportWorksheet'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="subscriptionImport" action="generateImportWorksheet">Generate Subscription Taken Worksheet</g:link></li>
                        <li <%= ( ( 'subscriptionImport'== controllerName ) && ( 'importSubscriptionWorksheet'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="subscriptionImport" action="importSubscriptionWorksheet">Import Subscription Taken Worksheet</g:link></li>
-                       <!--
+                         <g:link controller="subscriptionImport" action="importSubscriptionWorksheet" params="${[dm:'true']}">Import Subscription Taken Worksheet</g:link></li>
                        <li class="divider"></li>
                        <li <%= ( ( 'globalDataSync'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="globalDataSync" action="index">Global Data Download [Packages]</g:link></li>
-                       -->
                      </ul>
                    </li>
                 </sec:ifAnyGranted>
@@ -196,6 +197,15 @@
                       </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'globalSync'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="globalSync">Start Global Data Sync</g:link>
+                      </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'orgsExport'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="orgsExport">Bulk Export Organisations</g:link>
+                      </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'orgsImport'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="orgsImport">Bulk Load Organisations</g:link>
+                      </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'docstoreMigrate'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="docstoreMigrate">Docstore Migration</g:link>
                       </li>
                       <li class="divider"></li>
                       <li <%= ( ( 'stats'== controllerName ) && ( 'statsHome'==actionName ) ) ? ' class="active"' : '' %>>

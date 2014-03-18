@@ -241,3 +241,5 @@ grails {
     }
 }
 remove this line */
+
+// grails.databinding.dateFormats = ['MMddyyyy', 'yyyy-MM-dd HH:mm:ss.S', "yyyy-MM-dd'T'hh:mm:ss'Z'"]

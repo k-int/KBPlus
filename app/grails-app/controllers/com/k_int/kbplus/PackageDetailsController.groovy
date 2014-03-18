@@ -19,7 +19,12 @@ class PackageDetailsController {
   def springSecurityService
   def transformerService
 
-  def pkg_qry_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
+  def pkg_qry_reversemap = ['subject':'subject', 
+                            'provider':'provid', 
+                            'startYear':'startYear', 
+                            'endYear':'endYear', 
+                            'endYear':'endYear', 
+                            'pkgname':'tokname' ]
 
     def exportService
 
@@ -134,6 +139,12 @@ class PackageDetailsController {
         redirect action: 'list'
         return
       }
+
+      def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
+
+      result.pendingChanges = PendingChange.executeQuery("select pc from PendingChange as pc where pc.pkg=? and ( pc.status is null or pc.status = ? ) order by ts desc", [packageInstance, pending_change_pending_status]);
+
+      log.debug("Package has ${result.pendingChanges?.size()} pending changes");
 
       result.pkg_link_str="${ApplicationHolder.application.config.SystemBaseURL}/packageDetails/show/${params.id}"
 
@@ -414,6 +425,9 @@ class PackageDetailsController {
                 break;
           case 'startYear':
                 sw.append('startYear')
+                break;
+          case 'endYear':
+                sw.append('endYear')
                 break;
           case 'cpname':
                 sw.append('cpname')

@@ -140,7 +140,7 @@
           <g:form id="affiliationRequestForm" controller="profile" action="processJoinRequest" form class="form-search">
 
             <g:select name="org"
-                      from="${com.k_int.kbplus.Org.findAllBySector('Higher Education')}"
+                      from="${com.k_int.kbplus.Org.findAllBySector('Higher Education',[sort:'name'])}"
                       optionKey="id"
                       optionValue="name"
                       class="input-medium"/>

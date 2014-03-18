@@ -38,8 +38,10 @@
 
     <g:set var="counter" value="${-1}" />
 
-    <g:if test="${1==1}">
-      <form  action="processRenewal" method="post" params="${params}">
+      <g:form action="processRenewal" method="post" enctype="multipart/form-data" params="${params}">
+
+        <input type="hidden" name="ecount" value="${counter}"/>
+
         <div class="container">
         <hr/>
           Uploaded worksheet will create a new subscription taken for ${institution.name} based on the following rows...<br/>
@@ -90,14 +92,12 @@
               </g:each>
             </tbody>
           </table>
-          <input type="hidden" name="ecount" value="${counter}"/>
 
           <div class="pull-right">
             <button type="submit" class="btn btn-primary">Accept and Process</button>
           </div>
         </div>
-      </form>
-    </g:if>
+      </g:form>
 
   </body>
 </html>

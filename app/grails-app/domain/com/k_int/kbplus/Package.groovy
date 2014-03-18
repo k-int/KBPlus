@@ -25,16 +25,20 @@ class Package {
   Date lastUpdated
   License license
   String forumId
+  Set pendingChanges
+  Boolean autoAccept = false
 
   static hasMany = [tipps: TitleInstancePackagePlatform, 
                     orgs: OrgRole, 
                     documents:DocContext,
-                    subscriptions: SubscriptionPackage]
+                    subscriptions: SubscriptionPackage,
+                    pendingChanges:PendingChange ]
 
   static mappedBy = [tipps: 'pkg', 
                      orgs: 'pkg',
                      documents:'pkg',
-                     subscriptions: 'pkg']
+                     subscriptions: 'pkg',
+                     pendingChanges: 'pkg']
 
 
   static mapping = {
@@ -75,6 +79,7 @@ class Package {
              isPublic(nullable:true, blank:false)
          packageScope(nullable:true, blank:false)
               forumId(nullable:true, blank:false)
+                impId(nullable:true, blank:false)
   }
 
   def getConsortia() {
@@ -282,6 +287,76 @@ class Package {
     if ( changeDocument.event=='Package.created' ) {
       changeNotificationService.broadcastEvent("com.k_int.kbplus.SystemObject:1", changeDocument);
     }
+  }
+
+  @Transient
+  static def refdataFind(params) {
+    def result = [];
+    def ql = null;
+    ql = Package.findAllByNameIlike("${params.q}%",params)
+
+    if ( ql ) {
+      ql.each { t ->
+        result.add([id:"${t.class.name}:${t.id}",text:"${t.name} (${t.identifier})"])
+      }
+    }
+
+    result
+  }
+
+
+  @Transient
+  def toComparablePackage() {
+    def result = [:]
+
+    def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+    result.packageName = this.name
+    result.packageId = this.identifier
+
+    result.tipps = []
+    this.tipps.each { tip ->
+
+      // Title.ID needs to be the global identifier, so we need to pull out the global id for each title
+      // and use that.
+      def title_id = tip.title.getIdentifierValue('uri')?:"uri://KBPlus/localhost/title/${tip.title.id}";
+
+      def newtip = [
+                     title: [
+                       name:tip.title.title,
+                       identifiers:[]
+                     ],
+                     titleId:title_id,
+                     platform:tip.platform.name,
+                     platformId:tip.platform.id,
+                     coverage:[],
+                     url:tip.hostPlatformURL,
+                     identifiers:[]
+                   ];
+
+      // Need to format these dates using correct mask
+      newtip.coverage.add([
+                        startDate:tip.startDate ? sdf.format(tip.startDate) : '',
+                        endDate:tip.endDate ? sdf.format(tip.endDate) : '',
+                        startVolume:tip.startVolume,
+                        endVolume:tip.endVolume,
+                        startIssue:tip.startIssue,
+                        endIssue:tip.endIssue,
+                        coverageDepth:tip.coverageDepth,
+                        coverageNote:tip.coverageNote
+                      ]);
+
+      tip.title.ids.each { id ->
+        newtip.title.identifiers.add([namespace:id.identifier.ns.ns, value:id.identifier.value]);
+      }
+
+      result.tipps.add(newtip)
+    }
+
+    result.tipps.sort{it.titleId}
+    println("Rec conversion for package returns object with title ${result.title} and ${result.tipps?.size()} tipps");
+
+    result
   }
 
 }

@@ -25,11 +25,17 @@
 
     <div class="container">
         
+      <g:if test="${items != null}">
+        <div class="container" style="text-align:center">
+          Records ${offset} to ${offset+items.size()} of ${globalItemTotal}
+        </div>
+      </g:if>
       <table class="table table-bordered table-striped">
         <thead>
           <tr>
             <g:sortableColumn property="identifier" title="${message(code: 'package.identifier.label', default: 'Identifier')}" />
             <g:sortableColumn property="name" title="${message(code: 'package.name.label', default: 'Name')}" />
+            <g:sortableColumn property="desc" title="${message(code: 'package.name.label', default: 'Description')}" />
             <g:sortableColumn property="source.name" title="${message(code: 'package.name.label', default: 'Source')}" />
             <g:sortableColumn property="type" title="${message(code: 'package.name.label', default: 'Type')}" />
             <th>Actions</th>
@@ -40,14 +46,22 @@
             <tr>
               <td>${fieldValue(bean: item, field: "identifier")}</td>
               <td>${fieldValue(bean: item, field: "name")}</td>
+              <td>${fieldValue(bean: item, field: "desc")}</td>
               <td>${item.source.name}</td>
               <td>${item.displayRectype}</td>
-              <td><g:link action="newTracker" controller="globalDataSync" id="${item.id}" class="btn btn-success">Track Locally -></g:link></td>
+              <td><g:link action="newCleanTracker" controller="globalDataSync" id="${item.id}" class="btn btn-success">Track(New)</g:link>
+                  <g:link action="selectLocalPackage" controller="globalDataSync" id="${item.id}" class="btn btn-success">Track(Merge)</g:link></td>
             </tr>
             <g:each in="${item.trackers}" var="tracker">
               <tr>
-                <td colspan="5">
-                  -> Tracking as ${tracker.name}
+                <td colspan="6">
+                  -> Tracking using id
+                  <g:if test="${tracker.localOid != null}">
+                    <g:if test="${tracker.localOid.startsWith('com.k_int.kbplus.Package')}">
+                      <g:link controller="packageDetails" action="show" id="${tracker.localOid.split(':')[1]}">${tracker.name?:'No tracker name'}</g:link>
+                    </g:if>
+                  </g:if>
+                  <g:else>No tracker local oid</g:else>
                 </td>
               </tr>
             </g:each>

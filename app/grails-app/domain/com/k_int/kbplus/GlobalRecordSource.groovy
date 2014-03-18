@@ -14,6 +14,7 @@ class GlobalRecordSource {
   String fullPrefix
   String principal
   String credentials
+  Long rectype
 
   static mapping = {
                    id column:'grs_id'
@@ -22,11 +23,12 @@ class GlobalRecordSource {
                  name column:'grs_name'
              haveUpTo column:'grs_have_up_to'
                   uri column:'grs_uri'
-           fullPrefix column:'grs_list_prefix'
-           listPrefix column:'grs_full_prefix'
+           fullPrefix column:'grs_full_prefix'
+           listPrefix column:'grs_list_prefix'
                  type column:'grs_type'
             principal column:'grs_principal'
           credentials column:'grs_creds'
+              rectype column:'grs_rectype'
   }
 
   static constraints = {

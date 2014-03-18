@@ -352,16 +352,17 @@ No Host Platform URL Content
 ''');
 
 
-   // def gokb_record_source = GlobalRecordSource.findByIdentifier('gokbPackages') ?: new GlobalRecordSource(
-   //                                                                                       identifier:'gokbPackages',
-   //                                                                                       name:'GOKB Package List',
-   //                                                                                       type:'OAI',
-   //                                                                                       haveUpTo:null,
-   //                                                                                       uri:'http://gokb.k-int.com/oai/packages',
-   //                                                                                       listPrefix:'oai_dc',
-   //                                                                                       fullPrefix:'gokb',
-   //                                                                                       principal:null,
-   //                                                                                       credentials:null).save(flush:true)
+   def gokb_record_source = GlobalRecordSource.findByIdentifier('gokbPackages') ?: new GlobalRecordSource(
+                                                                                         identifier:'gokbPackages',
+                                                                                         name:'GOKB',
+                                                                                         type:'OAI',
+                                                                                         haveUpTo:null,
+                                                                                         uri:'https://gokb.k-int.com/gokb/oai/packages',
+                                                                                         listPrefix:'oai_dc',
+                                                                                         fullPrefix:'gokb',
+                                                                                         principal:null,
+                                                                                         credentials:null,
+                                                                                         rectype:0).save(flush:true)
 
   }
 

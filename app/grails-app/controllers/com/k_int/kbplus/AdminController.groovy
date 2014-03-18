@@ -3,6 +3,8 @@ package com.k_int.kbplus
 import com.k_int.kbplus.auth.*;
 import grails.plugins.springsecurity.Secured
 import grails.converters.*
+import au.com.bytecode.opencsv.CSVReader
+
 
 class AdminController {
 
@@ -13,6 +15,9 @@ class AdminController {
   def globalSourceSyncService
   def messageService
   def changeNotificationService
+
+  def docstoreService
+
 
   static boolean ftupdate_running = false
 
@@ -196,7 +201,9 @@ class AdminController {
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def globalSync() {
+    log.debug("start global sync...");
     globalSourceSyncService.internalRunAllActiveSyncTasks()
+    log.debug("done global sync...");
     redirect(controller:'home')
   }
 
@@ -266,7 +273,6 @@ class AdminController {
   def forceSendNotifications() {
     changeNotificationService.aggregateAndNotifyChanges()
     redirect(controller:'home')
-
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
@@ -300,9 +306,55 @@ class AdminController {
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def orgsExport() {
+    response.setHeader("Content-disposition", "attachment; filename=orgsExport.csv")
+    response.contentType = "text/csv"
+    def out = response.outputStream
+    out << "org.name,sector,consortia,id.jusplogin,id.JC,id.Ringold,id.UKAMF,iprange\n"
+    Org.list().each { org ->
+      def consortium = org.outgoingCombos.find{it.type.value=='Consortium'}.collect{it.toOrg.name}.join(':')
+
+      out << "\"${org.name}\",\"${org.sector?:''}\",\"${consortium}\",\"${org.getIdentifierByType('jusplogin')?.value?:''}\",\"${org.getIdentifierByType('JC')?.value?:''}\",\"${org.getIdentifierByType('Ringold')?.value?:''}\",\"${org.getIdentifierByType('UKAMF')?.value?:''}\",\"${org.ipRange?:''}\"\n"
+    }
+    out.close()
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def orgsImport() {
+
+    if ( request.method=="POST" ) {
+      def upload_mime_type = request.getFile("orgs_file")?.contentType
+      def upload_filename = request.getFile("orgs_file")?.getOriginalFilename()
+      def input_stream = request.getFile("orgs_file")?.inputStream
+
+      CSVReader r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ) )
+      String[] nl;
+      def first = true
+      while ((nl = r.readNext()) != null) {
+        if ( first ) {
+          first = false; // Skip header
+        }
+        else {
+          def candidate_identifiers = [
+            'jusplogin':nl[3],
+            'JC':nl[4],
+            'Ringold':nl[5],
+            'UKAMF':nl[6],
+          ]
+          log.debug("Load ${nl[0]}, ${nl[1]}, ${nl[2]} ${candidate_identifiers} ${nl[7]}");
+          Org.lookupOrCreate(nl[0],
+                             nl[1],
+                             nl[2],
+                             candidate_identifiers,
+                             nl[7])
+        }
+      }
+    }
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def docstoreMigrate() {
     docstoreService.migrateToDb()
     redirect(controller:'home')
   }
-
 }
