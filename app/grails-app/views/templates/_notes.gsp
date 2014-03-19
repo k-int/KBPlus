@@ -17,7 +17,9 @@
       </g:if>
     </g:each>
   </ul>
-  <input type="submit" class="btn btn-primary" value="Add new note" data-toggle="modal" href="#modalCreateNote" />
+  <g:if test="${editable}"
+    <input type="submit" class="btn btn-primary" value="Add new note" data-toggle="modal" href="#modalCreateNote" />
+  </g:if>
 </div>
 
 <!-- Lightbox modal for creating a note taken from licenceNotes.html -->
