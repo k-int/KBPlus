@@ -36,7 +36,7 @@
             </table>
 
       <div class="pagination" style="text-align:center">
-        <g:if test="${todos}" >
+        <g:if test="${todos!=null}" >
           <bootstrap:paginate  action="todos" controller="myInstitutions" params="${params}" next="Next" prev="Prev" max="${max}" total="${num_todos}" />
         </g:if>
       </div>

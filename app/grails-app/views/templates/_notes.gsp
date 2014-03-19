@@ -17,7 +17,7 @@
       </g:if>
     </g:each>
   </ul>
-  <g:if test="${editable}"
+  <g:if test="${editable}">
     <input type="submit" class="btn btn-primary" value="Add new note" data-toggle="modal" href="#modalCreateNote" />
   </g:if>
 </div>
