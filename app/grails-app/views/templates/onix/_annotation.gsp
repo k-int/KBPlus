@@ -1,3 +1,1 @@
-<g:if test="${ data }" >
-  <p>${ data }</p>
-</g:if>
+${ AnnotationType[0]?."_content"?.replaceAll("onixPL\\:", "") } - ${ AnnotationText[0]?."_content" }

@@ -1,15 +1,13 @@
 package com.k_int.kbplus
 
-import com.k_int.kbplus.onixpl.OnixPLService
-import com.k_int.xml.XMLDoc
 import grails.converters.JSON
 import grails.plugins.springsecurity.Secured
 import grails.util.GrailsNameUtils
-import groovy.util.slurpersupport.GPathResult
-import groovy.util.slurpersupport.NodeChild
+
 import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
 import org.codehaus.groovy.grails.web.pages.discovery.GroovyPageScriptSource
-import org.springframework.core.io.Resource
+
+import com.k_int.kbplus.onixpl.OnixPLService
 
 class OnixplLicenseCompareController {
   

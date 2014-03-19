@@ -1,3 +1,12 @@
-<g:if test="${ data }" >
-  <p>${ data }</p>
-</g:if>
+<g:each var="text" in="${ TextElement }" >
+  <g:if test="${ text['TextPreceding'] }" >
+    <g:each var="tp" in="${ text['TextPreceding'] }" >
+      <span class="text-textpreceding">${ tp['_content'] }</span>
+    </g:each>
+  </g:if>
+  <g:if test="${ text['Text'] }" >
+    <g:each var="tp" in="${ text['Text'] }" >
+      <span class="text-text">${ tp['_content'] }</span>
+    </g:each>
+  </g:if>
+</g:each>
