@@ -2423,7 +2423,8 @@ AND EXISTS (
     result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
-    result.num_todos = PendingChange.executeQuery("select count(distinct pc.oid) from PendingChange as pc where pc.owner = ? group by pc.oid",[result.institution])[0]
+    result.num_todos = PendingChange.executeQuery("select count(distinct pc.oid) from PendingChange as pc where pc.owner = ?",[result.institution])[0]
+    log.debug("Count3=${result.num_todos}");
 
     def change_summary = PendingChange.executeQuery("select distinct(pc.oid), count(pc), min(pc.ts), max(pc.ts) from PendingChange as pc where pc.owner = ? group by pc.oid",[result.institution],[max:result.max, offset:result.offset]);
     result.todos = []
