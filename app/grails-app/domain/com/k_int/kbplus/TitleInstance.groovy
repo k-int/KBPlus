@@ -102,7 +102,7 @@ class TitleInstance {
         
       def io = IdentifierOccurrence.findByIdentifier(id)
       if ( io && io.ti ) {
-        static_logger.debug("located existing titie: ${ti.id}");
+        static_logger.debug("located existing titie: ${lo.ti.id}");
         result = io.ti;
       }
     }
