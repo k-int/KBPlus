@@ -130,6 +130,12 @@ class TitleInstance {
     else {
       static_logger.debug("Found existing title check for enrich...");
       if ( enrich ) {
+        // non-lazy fetch
+        current_ids = []
+        result.ids.each {
+          current_ids.add(it);
+        }
+
         static_logger.debug("enrich... current ids = ${result.ids}");
         // println("Checking that all identifiers are already present in title");
         boolean modified = false;
@@ -137,7 +143,7 @@ class TitleInstance {
         lu_ids.each { identifier ->
           // it == an ID
           // Does result.ids contain an identifier occurrence that matches this ID
-          def existing_id = result.ids.find { it -> ( ( it.identifier.value == identifier.value ) && ( it.identifier.ns.ns == identifier.ns.ns) ) }
+          def existing_id = current_ids.find { it -> ( ( it.identifier.value == identifier.value ) && ( it.identifier.ns.ns == identifier.ns.ns) ) }
           if ( existing_id == null ) {
             // println("Adding additional identifier ${identifier}");
             static_logger.debug("Can't find existing identifier ${identifier.ns.ns}:${identifier.value} - adding");
