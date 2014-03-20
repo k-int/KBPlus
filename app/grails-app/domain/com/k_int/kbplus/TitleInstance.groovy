@@ -131,7 +131,7 @@ class TitleInstance {
       static_logger.debug("Found existing title check for enrich...");
       if ( enrich ) {
         // non-lazy fetch
-        current_ids = []
+        def current_ids = []
         result.ids.each {
           current_ids.add(it);
         }
