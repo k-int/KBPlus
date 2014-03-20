@@ -110,13 +110,20 @@ class TitleInstance {
     if (!result) {
       static_logger.debug("No result - creating new title");
       result = new TitleInstance(title:title, impId:java.util.UUID.randomUUID().toString());
-      
+      result.save(flush:true);
+
       result.ids=[]
       lu_ids.each { 
-        def new_io = new IdentifierOccurrence(identifier:it, ti:result).save();
+        def new_io = new IdentifierOccurrence(identifier:it, ti:result)
+        if ( new_io.save(flush:true) ) {
+          log.debug("Created new IO");
+        }
+        else {
+          log.error("Problem creating new IO");
+        }
         // result.ids.add(new IdentifierOccurrence(identifier:it, ti:result));
       }
-      if ( ! result.save() ) {
+      if ( ! result.save(flush:true) ) {
         throw new RuntimeException("Problem creating title instance : ${result.errors?.toString()}");
       }
     }
