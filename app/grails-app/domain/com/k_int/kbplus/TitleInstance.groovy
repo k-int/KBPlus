@@ -10,7 +10,7 @@ import org.apache.commons.logging.*
 
 class TitleInstance {
 
-  static Log static_logger = LogFactory.getLogger("com.k_int.kbplus.TitleInstance") 
+  static Log static_logger = LogFactory.getLog(TitleInstance) 
 
   static final Pattern alphanum = Pattern.compile("\\p{Punct}|\\p{Cntrl}");
 
