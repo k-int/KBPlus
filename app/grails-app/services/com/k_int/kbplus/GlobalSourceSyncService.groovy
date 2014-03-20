@@ -225,6 +225,7 @@ class GlobalSourceSyncService {
       }
       newtip.title.identifiers.add([namespace:'uri',value:newtip.titleId]);
 
+      log.debug("Harmonise identifiers");
       harmoniseTitleIdentifiers(newtip);
 
       result.parsed_rec.tipps.add(newtip)
