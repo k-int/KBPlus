@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat
 
 class GlobalSourceSyncService {
 
+  public static boolean running = false;
   def genericOIDService
   def changeNotificationService
 
@@ -244,10 +245,18 @@ class GlobalSourceSyncService {
 
   def runAllActiveSyncTasks() {
     // def future = executorService.submit({ internalRunAllActiveSyncTasks() } as java.util.concurrent.Callable)
-    internalRunAllActiveSyncTasks()
+
+    if ( running == false ) {
+      internalRunAllActiveSyncTasks()
+    }
+    else {
+      log.warn("Not starting duplicate OAI thread");
+    }
   }
 
   def internalRunAllActiveSyncTasks() {
+
+      running = true;
 
      def jobs = GlobalRecordSource.findAll() 
 
@@ -374,6 +383,7 @@ class GlobalSourceSyncService {
     }
     finally {
       log.debug("internalOAISync completed");
+      running = true;
     }
   }
 
