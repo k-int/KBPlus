@@ -96,14 +96,17 @@ class TitleInstance {
     candidate_identifiers.each { i ->
       def id = Identifier.lookupOrCreateCanonicalIdentifier(i.namespace, i.value)
       lu_ids.add(id);
+      log.debug("processing candidate identifier ${i} as ${id}");
         
       def io = IdentifierOccurrence.findByIdentifier(id)
       if ( io && io.ti ) {
+        log.debug("located existing titie: ${ti.id}");
         result = io.ti;
       }
     }
     
     if (!result) {
+      log.debug("No result - creating new title");
       result = new TitleInstance(title:title, impId:java.util.UUID.randomUUID().toString());
       
       result.ids=[]
@@ -116,7 +119,9 @@ class TitleInstance {
       }
     }
     else {
+      log.debug("Found existing title check for enrich...");
       if ( enrich ) {
+        log.debug("enrich... current ids = ${result.ids}");
         // println("Checking that all identifiers are already present in title");
         boolean modified = false;
         // Check that all the identifiers listed are present 
@@ -126,6 +131,7 @@ class TitleInstance {
           def existing_id = result.ids.find { it -> ( ( it.identifier.value == identifier.value ) && ( it.identifier.ns.ns == identifier.ns.ns) ) }
           if ( existing_id == null ) {
             // println("Adding additional identifier ${identifier}");
+            log.debug("Can't find existing identifier ${identifier.ns.ns}:${identifier.value} - adding");
             def new_io = new IdentifierOccurrence(identifier:identifier, ti:result).save();
             // result.ids.add(new IdentifierOccurrence(identifier:identifier, ti:result));
             modified=true;
