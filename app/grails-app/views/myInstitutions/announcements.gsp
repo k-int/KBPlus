@@ -26,7 +26,7 @@
             </table>
 
       <div class="pagination" style="text-align:center">
-        <g:if test="${subscriptions}" >
+        <g:if test="${recentAnnouncements!=null}" >
           <bootstrap:paginate  action="announcements" controller="myInstitutions" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${num_announcements}" />
         </g:if>
       </div>
