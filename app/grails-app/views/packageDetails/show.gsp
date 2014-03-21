@@ -276,7 +276,8 @@
                           <input type="checkbox" name="clear_embargo"/>(Check to clear)</td>
                     </tr>
                   </table>
-                  <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()" class="btn btn-primary"/>
+                  <button name="BatchSelectedBtn" value="on" onClick="return confirmSubmit()" class="btn btn-primary">Apply Batch Changes (Selected)</button>
+                  <button name="BatchAllBtn" value="on" onClick="return confirmSubmit()" class="btn btn-primary">Apply Batch Changes (All)</button>
                 </g:if>
               </th>
             </tr>
@@ -397,6 +398,16 @@
       });
       function selectAll() {
         $('.bulkcheck').attr('checked', true);
+      }
+
+      function confirmSubmit() {
+        if ( $('#bulkOperationSelect').val() === 'remove' ) {
+          var agree=confirm("Are you sure you wish to continue?");
+          if (agree)
+            return true ;
+          else
+            return false ;
+        }
       }
 
     </r:script>
