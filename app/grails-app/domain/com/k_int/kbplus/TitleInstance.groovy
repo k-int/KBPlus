@@ -105,6 +105,7 @@ class TitleInstance {
         result = io.ti;
       }
       else {
+        static_logger.debug("No trace of ${id} - add to list to process later on");
         lu_ids.add(id);
       }
     }
@@ -132,24 +133,14 @@ class TitleInstance {
     else {
       static_logger.debug("Found existing title check for enrich...");
       if ( enrich ) {
-        static_logger.debug("enrich... current ids = ${result.ids}");
+        static_logger.debug("enrich... current ids = ${result.ids}, non-matching ids = ${lu_ids}");
         // println("Checking that all identifiers are already present in title");
         boolean modified = false;
         // Check that all the identifiers listed are present 
         lu_ids.each { identifier ->
-          // it == an ID
-          // Does result.ids contain an identifier occurrence that matches this ID
-          def existing_id = current_ids.find { it -> ( ( it.identifier.value == identifier.value ) && ( it.identifier.ns.ns == identifier.ns.ns) ) }
-          if ( existing_id == null ) {
-            // println("Adding additional identifier ${identifier}");
-            static_logger.debug("Can't find existing identifier ${identifier.ns.ns}:${identifier.value} - adding");
-            def new_io = new IdentifierOccurrence(identifier:identifier, ti:result).save();
-            // result.ids.add(new IdentifierOccurrence(identifier:identifier, ti:result));
-            modified=true;
-          }
-          else {
-            // println("Identifier ${identifier} already present in existing title ${result}");
-          }
+          static_logger.debug("adding identifier ${identifier.ns.ns}:${identifier.value} - adding");
+          def new_io = new IdentifierOccurrence(identifier:identifier, ti:result).save();
+          modified=true;
         }
         if ( modified ) {
           result.save();
