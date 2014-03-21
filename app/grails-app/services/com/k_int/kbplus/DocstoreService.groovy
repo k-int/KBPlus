@@ -171,7 +171,6 @@ class DocstoreService {
     java.util.zip.ZipFile zf = null;
 
     try {
-      def uuid = null
       zf = new java.util.zip.ZipFile(bagresponsezip);
       java.util.zip.ZipEntry bag_dir_entry = zf.getEntry('bag_dir');
 

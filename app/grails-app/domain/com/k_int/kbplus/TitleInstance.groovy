@@ -6,9 +6,11 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import javax.persistence.Transient
 import org.codehaus.groovy.grails.commons.ApplicationHolder
-
+import org.apache.commons.logging.*
 
 class TitleInstance {
+
+  static Log static_logger = LogFactory.getLog(TitleInstance) 
 
   static final Pattern alphanum = Pattern.compile("\\p{Punct}|\\p{Cntrl}");
 
@@ -95,44 +97,50 @@ class TitleInstance {
     
     candidate_identifiers.each { i ->
       def id = Identifier.lookupOrCreateCanonicalIdentifier(i.namespace, i.value)
-      lu_ids.add(id);
+      static_logger.debug("processing candidate identifier ${i} as ${id}");
         
       def io = IdentifierOccurrence.findByIdentifier(id)
       if ( io && io.ti ) {
+        static_logger.debug("located existing titie: ${io.ti.id}");
         result = io.ti;
+      }
+      else {
+        static_logger.debug("No trace of ${id} - add to list to process later on");
+        lu_ids.add(id);
       }
     }
     
     if (!result) {
+      static_logger.debug("No result - creating new title");
       result = new TitleInstance(title:title, impId:java.util.UUID.randomUUID().toString());
-      
+      result.save(flush:true);
+
       result.ids=[]
       lu_ids.each { 
-        def new_io = new IdentifierOccurrence(identifier:it, ti:result).save();
+        def new_io = new IdentifierOccurrence(identifier:it, ti:result)
+        if ( new_io.save(flush:true) ) {
+          log.debug("Created new IO");
+        }
+        else {
+          log.error("Problem creating new IO");
+        }
         // result.ids.add(new IdentifierOccurrence(identifier:it, ti:result));
       }
-      if ( ! result.save() ) {
+      if ( ! result.save(flush:true) ) {
         throw new RuntimeException("Problem creating title instance : ${result.errors?.toString()}");
       }
     }
     else {
+      static_logger.debug("Found existing title check for enrich...");
       if ( enrich ) {
+        static_logger.debug("enrich... current ids = ${result.ids}, non-matching ids = ${lu_ids}");
         // println("Checking that all identifiers are already present in title");
         boolean modified = false;
         // Check that all the identifiers listed are present 
         lu_ids.each { identifier ->
-          // it == an ID
-          // Does result.ids contain an identifier occurrence that matches this ID
-          def existing_id = result.ids.find { it -> ( ( it.identifier.value == identifier.value ) && ( it.identifier.ns.ns == identifier.ns.ns) ) }
-          if ( existing_id == null ) {
-            // println("Adding additional identifier ${identifier}");
-            def new_io = new IdentifierOccurrence(identifier:identifier, ti:result).save();
-            // result.ids.add(new IdentifierOccurrence(identifier:identifier, ti:result));
-            modified=true;
-          }
-          else {
-            // println("Identifier ${identifier} already present in existing title ${result}");
-          }
+          static_logger.debug("adding identifier ${identifier.ns.ns}:${identifier.value} - adding");
+          def new_io = new IdentifierOccurrence(identifier:identifier, ti:result).save();
+          modified=true;
         }
         if ( modified ) {
           result.save();
@@ -187,7 +195,9 @@ class TitleInstance {
       ids.each { identifier ->
         // it == an ID
         // Does result.ids contain an identifier occurrence that matches this ID
-        def existing_id = result.ids.find { it -> it.identifier == identifier }
+        // def existing_id = result.ids.find { it -> it.identifier == identifier }
+        def existing_id = IdentifierOccurrence.findByIdentifierAndTi(identifier,ti)
+
         if ( existing_id == null ) {
           //println("Adding additional identifier ${identifier}");
           result.ids.add(new IdentifierOccurrence(identifier:identifier, ti:result));
@@ -501,7 +511,7 @@ class TitleInstance {
   @Transient
   def onChange = { oldMap,newMap ->
 
-    // log.debug("onChange")
+    // static_logger.debug("onChange")
 
     def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
     def controlledProperties = ['title']
@@ -521,7 +531,7 @@ class TitleInstance {
 
   @Transient
   def notifyDependencies(changeDocument) {
-    // log.debug("notifyDependencies(${changeDocument})");
+    // static_logger.debug("notifyDependencies(${changeDocument})");
     
     def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
     tipps.each { tipp ->
