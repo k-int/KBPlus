@@ -208,7 +208,9 @@ class TitleInstance {
       ids.each { identifier ->
         // it == an ID
         // Does result.ids contain an identifier occurrence that matches this ID
-        def existing_id = result.ids.find { it -> it.identifier == identifier }
+        // def existing_id = result.ids.find { it -> it.identifier == identifier }
+        def existing_id = IdentifierOccurrence.findByIdentifierAndTi(identifier,ti)
+
         if ( existing_id == null ) {
           //println("Adding additional identifier ${identifier}");
           result.ids.add(new IdentifierOccurrence(identifier:identifier, ti:result));
