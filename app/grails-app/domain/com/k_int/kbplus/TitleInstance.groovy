@@ -97,13 +97,15 @@ class TitleInstance {
     
     candidate_identifiers.each { i ->
       def id = Identifier.lookupOrCreateCanonicalIdentifier(i.namespace, i.value)
-      lu_ids.add(id);
       static_logger.debug("processing candidate identifier ${i} as ${id}");
         
       def io = IdentifierOccurrence.findByIdentifier(id)
       if ( io && io.ti ) {
         static_logger.debug("located existing titie: ${io.ti.id}");
         result = io.ti;
+      }
+      else {
+        lu_ids.add(id);
       }
     }
     
@@ -130,12 +132,6 @@ class TitleInstance {
     else {
       static_logger.debug("Found existing title check for enrich...");
       if ( enrich ) {
-        // non-lazy fetch
-        def current_ids = []
-        result.ids.each {
-          current_ids.add(it);
-        }
-
         static_logger.debug("enrich... current ids = ${result.ids}");
         // println("Checking that all identifiers are already present in title");
         boolean modified = false;
