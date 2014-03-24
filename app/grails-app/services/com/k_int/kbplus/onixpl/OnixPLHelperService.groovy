@@ -11,7 +11,6 @@ import javax.xml.xpath.XPathConstants
  *
  * Helper service for ONIX-PL data extraction.
  */
-@Transactional
 class OnixPLHelperService {
   def grailsApplication
   
@@ -26,8 +25,13 @@ class OnixPLHelperService {
     )
   }
   
-  public String lookupCodeAnnotation (String name) {
-    getCodeList().XPath("/xs:schema/xs:simpleType[@name='${name}']/xs:annotation", XPathConstants.STRING)
+  public String lookupCodeTypeAnnotation (String type) {
+    getCodeList().XPath("/xs:schema/xs:simpleType[@name='${type}']/xs:annotation", XPathConstants.STRING)
+  }
+  
+  public String lookupCodeValueAnnotation (String value) {
+    def result = getCodeList().XPath("/xs:schema//*[@value='${value}']/xs:annotation", XPathConstants.STRING)
+    result
   }
   
 }

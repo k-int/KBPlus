@@ -120,8 +120,7 @@ class OnixplLicense {
           results.each { org.w3c.dom.Node node ->
               
             // Create our new XML element of the segment.
-            data[group][xpath_expr] = new OnixPLDoc (node).toMap(determine_equality_with ? determine_equality_with[xpath_expr] : null )
-            
+            data[group][xpath_expr] = new OnixPLDoc (node).toMap(determine_equality_with ? determine_equality_with[group][xpath_expr] : null )
           }
         } else {
           data[group][xpath_expr] = [:]

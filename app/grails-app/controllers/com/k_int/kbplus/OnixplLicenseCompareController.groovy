@@ -7,6 +7,7 @@ import grails.util.GrailsNameUtils
 import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
 import org.codehaus.groovy.grails.web.pages.discovery.GroovyPageScriptSource
 
+import com.k_int.kbplus.onixpl.OnixPLHelperService
 import com.k_int.kbplus.onixpl.OnixPLService
 
 class OnixplLicenseCompareController {
@@ -15,6 +16,7 @@ class OnixplLicenseCompareController {
   private static final String TEMPLATE_DEFAULT = "default"
 
   OnixPLService onixPLService
+  OnixPLHelperService onixPLHelperService
   GrailsConventionGroovyPageLocator groovyPageLocator
   
   private String getTemplatePathForItem(String template) {
@@ -64,7 +66,7 @@ class OnixplLicenseCompareController {
     ArrayList<String> comparison_points = params.list("sections")
     
     // Should we compare all?
-    if (comparison_points.remove("_:PublicationsLicenseExpression") == true) {
+    if (comparison_points.remove("_:PublicationsLicenseExpression") != false) {
       comparison_points = onixPLService.allComparisonPoints
     }
     
@@ -95,6 +97,7 @@ class OnixplLicenseCompareController {
             'title'     : GrailsNameUtils.getNaturalName(text)
           ]
         }
+        result['os'] = onixPLService
         
         return result
     }

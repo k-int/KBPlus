@@ -142,10 +142,10 @@ class OnixPLService {
   public Map compareLicenses (OnixplLicense license, List<OnixplLicense> licenses_to_compare, List<String> sections = null, String return_filter = COMPARE_RETURN_ALL) {
     
     // Map for the result.
-    def result = [:]
+    TreeMap result = [:]
     
     // Get the main license as a map.
-    def main = license.toMap()
+    def main = license.toMap(sections)
     
     // Add the main to the result.
     result["${license.title}"] = main
@@ -158,14 +158,24 @@ class OnixPLService {
       
       // Add the map to the results?
       boolean filter_out = false
-      switch (return_filter) {
-        case COMPARE_RETURN_SAME:
-          filter_out = !license_map['_equality']
-          break
-        case COMPARE_RETURN_DIFFERENT:
-          filter_out = license_map['_equality']
-          break
-      }
+//      switch (return_filter) {
+//        case COMPARE_RETURN_SAME:
+//          def vals = license_map.values()?.getAt(0)?.values()
+//          for (int i=0; !filter_out && i<vals.size(); i++) {
+//            def val = vals[i]
+//            def keys = val.keySet()
+//            def eq = val['_equality']
+//            filter_out = !val['_equality']
+//          }
+//          break
+//        case COMPARE_RETURN_DIFFERENT:
+//          def vals = license_map.values()
+//          for (int i=0; !filter_out && i<vals.size(); i++) {
+//            def val = vals[i]
+//            filter_out = val['_equality']
+//          }
+//          break
+//      }
       
       // Add the licence to the map, if we are to add it.
       if (!filter_out) {

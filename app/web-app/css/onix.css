@@ -7,9 +7,21 @@ table.onix-matrix th {
   border: 1px solid #000;
 }
 
+table.onix-matrix td {
+  font-size:0.9em;
+  line-height:1.1em;
+  vertical-align:top;
+}
+
+table.onix-matrix table td {
+  font-size:1em;
+  line-height:1em;
+  padding:5px;
+}
+
 .onix-matrix span.cell-inner {
 	display:block;
-	padding:10px 10px 10px 10px;
+	padding:10px;
 }
 
 ul.ColVis_collection {
@@ -41,4 +53,22 @@ table.onix-entry-table tr td {
 	min-width:1px;
 	width:auto;
 	max-width:auto;
+}
+
+table.onix-entry-table span.cell-inner {
+  display:block;
+  padding:5px;
+}
+
+.onix-code {
+	display:block;
+	font-weight:bold;
+	font-size:1.1em;
+}
+.onix-code-annotation{
+	font-style: italic;
+}
+
+.text-tag .textpreceding {
+	font-weight:bold;
 }

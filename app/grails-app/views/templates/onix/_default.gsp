@@ -4,7 +4,6 @@
       <tr>
         <th>Type</th>
         <th>Text</th>
-        <th>Notes</th>
       </tr>
     </thead>
     <tbody>
@@ -16,35 +15,35 @@
 				        <%-- For each of the entries look for the type which contains a value
 				          detailing how this affects the license. Also, output the text embedded
 				          and any notations --%>
-				        <td>
-				          <g:each var="entry" in="${ e[tag_name + 'Type'] }" >
-				            <g:render
-                     template="/templates/onix/generic_tag_type"
-                     model="${ entry }" />
-				          </g:each>
-				        </td>
-				        <td>
+				        <td><span class="cell-inner" >
+				          <g:each var="tag_n,tag_d" in="${e}" >
+				            <g:if test="${ tag_n != "licenseText" && tag_n != "Annotation" }" >
+						          <g:each var="entry" in="${ tag_d }" >
+						            <g:render
+		                     template="/templates/onix/code_annotation"
+		                     model="${ entry + ['os' :  os] }" />
+							        </g:each>
+							      </g:if>
+						      </g:each>
+				        </span></td>
+				        <td><span class="cell-inner" >
 				          <g:if test="${ e['licenseText'] }" >
-				            <ul>
-						          <g:each var="entry" in="${ e['licenseText'] }" >
-			                  <li><g:render
-			                   template="/templates/onix/license_text"
-			                   model="${ entry }" /></li>
-			                </g:each>
-			              </ul>
+					          <g:each var="entry" in="${ e['licenseText'] }" >
+		                  <p class="text-tag"><g:render
+		                   template="/templates/onix/license_text"
+		                   model="${ entry + ['os' : os] }" /></p>
+		                </g:each>
 		              </g:if>
-	              </td>
-				        <td>
 				          <g:if test="${ e['Annotation'] }" >
-				            <ul>
+				            <div class="annotation-tag"><ul>
 						          <g:each var="entry" in="${ e['Annotation'] }" >
 			                  <li><g:render
 			                    template="/templates/onix/annotation"
-			                    model="${ entry }" /></li>
+			                    model="${ entry + ['os' : os]}" /></li>
 			                </g:each>
-		                </ul>
+		                </ul></div>
 		              </g:if>
-	              </td>
+	              </span></td>
 					    </tr>
             </g:each>
 				  </g:if>

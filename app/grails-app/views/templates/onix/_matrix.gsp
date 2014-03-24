@@ -15,7 +15,7 @@
 		      <tr>
 		        <g:each var="licence_name,license_data" in="${ data }" >
 		          <td><span class="cell-inner" >
-		            <g:render template="${ row.template }" model="${ ['data' : license_data[row['key']]] }" />
+		            <g:render template="${ row.template }" model="${ ['data' : license_data[row['key']], 'os' : os] }" />
 		          </span></td>
 		        </g:each>
 		      </tr>

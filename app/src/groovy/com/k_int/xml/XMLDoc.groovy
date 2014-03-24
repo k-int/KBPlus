@@ -176,15 +176,20 @@ class XMLDoc {
       for (int i=0; eq && i<compare.size(); i++) {
         
         // Get the comparison value.
-        def c = compare.get(i)
+        def c = compare[i]
         
         // Compare as space-normalised and lower-cased values.
-        eq = "${primary[c]}"?.replaceAll("\\s{2,}", " ").toLowerCase() ==
-          "${secondary[c]}"?.replaceAll("\\s{2,}", " ").toLowerCase()
+        def val1 = "${primary[c]}"?.replaceAll("\\s{2,}", " ").trim().toLowerCase()
+        def val2 = "${secondary[c]}"?.replaceAll("\\s{2,}", " ").trim().toLowerCase()
+        eq = (val1 == val2)
       }
       
       // Set the equality value.
-      secondary['_equality'] = eq
+      if (!secondary['_equality']) {
+        secondary['_equality'] = eq
+      }
+      
+      return eq
       
     } else {
     
@@ -203,21 +208,21 @@ class XMLDoc {
             for (int pri_num=0; eq && pri_num<pri_vals.size(); pri_num++) {
               boolean found = false
               for (int sec_num=0; sec_num<sec_vals.size(); sec_num++) {
-                found = determineEqualityOfNodeMaps( pri_vals[pri_num], sec_vals[sec_num] ) || found
+                found = (determineEqualityOfNodeMaps( pri_vals[pri_num], sec_vals[sec_num] ) || found)
               }
               eq = eq && found
             }
             
             // Set the equality.
-            secondary['_equality'] = eq
-          } else {
-            secondary['_equality'] = false
+            if (!secondary['_equality']) {
+              secondary['_equality'] = eq
+            }
           }
         }
       }
     }
     
     // Return the equality value.
-    secondary.get('_equality')
+    secondary['_equality']
   }
 }
