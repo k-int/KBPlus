@@ -243,6 +243,8 @@ class TitleInstance {
   }
 
   public static String generateKeyTitle(String s) {
+    def result = null
+    if ( s != null ) {
         s = s.replaceAll('&',' and ');
         s = s.trim(); // first off, remove whitespace around the string
         s = s.replaceAll("\\s+", " ");
@@ -260,7 +262,9 @@ class TitleInstance {
             if ( i.hasNext() )
               b.append(' ');
         }
-        return asciify(b.toString()); // find ASCII equivalent to characters 
+        result asciify(b.toString()); // find ASCII equivalent to characters 
+    }
+    result
   }
 
   protected static String asciify(String s) {
