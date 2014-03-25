@@ -2,7 +2,7 @@ package com.k_int.kbplus
 
 public class GokbDiffEngine {
 
-  def static diff(ctx, oldpkg, newpkg, newTippClosure, updatedTippClosure, deletedTippClosure, pkgPropChangeClosure, auto_accept) {
+  def static diff(ctx, oldpkg, newpkg, newTippClosure, updatedTippClosure, deletedTippClosure, pkgPropChangeClosure, tippUnchangedClosure, auto_accept) {
 
     if (( oldpkg == null )||(newpkg==null)) {
       println("Error - null package passed to diff");
@@ -10,18 +10,18 @@ public class GokbDiffEngine {
     }
   
     if ( oldpkg.packageName != newpkg.packageName ) {
-      println("packageName updated from ${oldpkg.packageName} to ${newpkg.packageName}");
+      // println("packageName updated from ${oldpkg.packageName} to ${newpkg.packageName}");
       pkgPropChangeClosure(ctx, 'title', newpkg.packageName, auto_accept);
     }
     else {
-      println("packageName consistent");
+      // println("packageName consistent");
     }
 
     if ( oldpkg.packageId != newpkg.packageId ) {
-      println("packageId updated from ${oldpkg.packageId} to ${newpkg.packageId}");
+      // println("packageId updated from ${oldpkg.packageId} to ${newpkg.packageId}");
     }
     else {
-      println("packageId consistent");
+      // println("packageId consistent");
     }
 
     oldpkg.tipps.sort { it.titleId }
@@ -42,19 +42,18 @@ public class GokbDiffEngine {
         def tipp_diff = getTippDiff(tippa, tippb)
 
         if ( tipp_diff.size() == 0 ) {
+          tippUnchangedClosure(ctx, tippa);
         } 
         else {
           // See if any of the actual properties are null
           println("Got tipp diffs: ${tipp_diff}");
-          updatedTippClosure(ctx, tippb, auto_accept)
+          updatedTippClosure(ctx, tippb, tippa, tipp_diff, auto_accept)
         }
 
         tippa = ai.hasNext() ? ai.next() : null
         tippb = bi.hasNext() ? bi.next() : null
       }
-      else if ( ( tippb != null ) &&
-                  ( ( tippa == null ) ||
-                    ( tippa.compareTo(tippb) > 0 ) ) ) {
+      else if ( ( tippb != null ) && ( tippa == null ) ) {
         System.out.println("Title "+tippb+" Was added to the package");
         newTippClosure(ctx, tippb, auto_accept)
         tippb = bi.hasNext() ? bi.next() : null;
@@ -74,13 +73,13 @@ public class GokbDiffEngine {
     if ( (tippa.url?:'').toString().compareTo((tippb.url?:'').toString()) == 0 ) {
     }
     else {
-      result.add([field:'url',value:tippb.url])
+      result.add([field:'hostPlatformURL',newValue:tippb.url,oldValue:tippa.url])
     }
 
     if ( tippa.coverage.equals(tippb.coverage) ) {
     }
     else {
-      result.add([field:'coverage',value:tippb.coverage])
+      result.add([field:'coverage',newValue:tippb.coverage,oldValue:tippa.coverage])
     }
 
     // See if the coverage is the same?

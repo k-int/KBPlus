@@ -276,7 +276,8 @@
                           <input type="checkbox" name="clear_embargo"/>(Check to clear)</td>
                     </tr>
                   </table>
-                  <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()" class="btn btn-primary"/>
+                  <button name="BatchSelectedBtn" value="on" onClick="return confirmSubmit()" class="btn btn-primary">Apply Batch Changes (Selected)</button>
+                  <button name="BatchAllBtn" value="on" onClick="return confirmSubmit()" class="btn btn-primary">Apply Batch Changes (All)</button>
                 </g:if>
               </th>
             </tr>
@@ -306,7 +307,14 @@
                    <g:link controller="tipp" action="show" id="${t.id}">(TIPP)</g:link>
                    (<g:xEditableRefData owner="${t}" field="status" config='TIPPStatus'/>)
                 </td>
-                <td style="white-space: nowrap;vertical-align:top;">${t.platform?.name}</td>
+                <td style="white-space: nowrap;vertical-align:top;">
+                   <g:if test="${t.hostPlatformURL != null}">
+                     <a href="${t.hostPlatformURL}">${t.platform?.name}</a>
+                   </g:if>
+                   <g:else>
+                     ${t.platform?.name}
+                   </g:else>
+                </td>
                 <td style="white-space: nowrap;vertical-align:top;">
                   <g:each in="${t.title.ids}" var="id">
                     ${id.identifier.ns.ns}:${id.identifier.value}<br/>
@@ -390,6 +398,16 @@
       });
       function selectAll() {
         $('.bulkcheck').attr('checked', true);
+      }
+
+      function confirmSubmit() {
+        if ( $('#bulkOperationSelect').val() === 'remove' ) {
+          var agree=confirm("Are you sure you wish to continue?");
+          if (agree)
+            return true ;
+          else
+            return false ;
+        }
       }
 
     </r:script>

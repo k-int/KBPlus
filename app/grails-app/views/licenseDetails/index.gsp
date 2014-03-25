@@ -45,7 +45,7 @@
 
     <g:if test="${pendingChanges?.size() > 0}">
       <div class="container alert-warn">
-        <h6>This Subscription has pending change notifications</h6>
+        <h6>This license has pending change notifications</h6>
         <g:if test="${editable}">
           <g:link controller="pendingChange" action="acceptAll" id="com.k_int.kbplus.License:${license.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept All</g:link>
           <g:link controller="pendingChange" action="rejectAll" id="com.k_int.kbplus.License:${license.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject All</g:link>

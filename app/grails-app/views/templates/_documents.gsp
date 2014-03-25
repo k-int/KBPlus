@@ -15,7 +15,9 @@
       </g:if>
     </g:each>
   </ul>
-  <input type="submit" class="btn btn-primary" value="Add new document" data-toggle="modal" href="#modalCreateDocument" />
+  <g:if test="${editable}">
+    <input type="submit" class="btn btn-primary" value="Add new document" data-toggle="modal" href="#modalCreateDocument" />
+  </g:if>
 </div>
 
 <div class="modal hide" id="modalCreateDocument">

@@ -25,6 +25,11 @@
 
     <div class="container">
         
+      <g:if test="${items != null}">
+        <div class="container" style="text-align:center">
+          Records ${offset} to ${offset+items.size()} of ${globalItemTotal}
+        </div>
+      </g:if>
       <table class="table table-bordered table-striped">
         <thead>
           <tr>
@@ -44,17 +49,19 @@
               <td>${fieldValue(bean: item, field: "desc")}</td>
               <td>${item.source.name}</td>
               <td>${item.displayRectype}</td>
-              <td><g:link action="newTracker" controller="globalDataSync" id="${item.id}" class="btn btn-success">Track</g:link></td>
+              <td><g:link action="newCleanTracker" controller="globalDataSync" id="${item.id}" class="btn btn-success">Track(New)</g:link>
+                  <g:link action="selectLocalPackage" controller="globalDataSync" id="${item.id}" class="btn btn-success">Track(Merge)</g:link></td>
             </tr>
             <g:each in="${item.trackers}" var="tracker">
               <tr>
-                <td colspan="5">
+                <td colspan="6">
                   -> Tracking using id
                   <g:if test="${tracker.localOid != null}">
-                    <g:if test="${tracker.localOid.startsWith('com.k_int.kbplus.package')}">
-                      <g:link controller="packageDetails" action="show" id="${tracker.localOid.split(':')[1]}">${tracker.name}</g:link>
+                    <g:if test="${tracker.localOid.startsWith('com.k_int.kbplus.Package')}">
+                      <g:link controller="packageDetails" action="show" id="${tracker.localOid.split(':')[1]}">${tracker.name?:'No tracker name'}</g:link>
                     </g:if>
                   </g:if>
+                  <g:else>No tracker local oid</g:else>
                 </td>
               </tr>
             </g:each>

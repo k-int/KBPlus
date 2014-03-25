@@ -173,7 +173,6 @@ class DocstoreService {
     java.util.zip.ZipFile zf = null;
 
     try {
-      def uuid = null
       zf = new java.util.zip.ZipFile(bagresponsezip);
       java.util.zip.ZipEntry bag_dir_entry = zf.getEntry('bag_dir');
 
@@ -383,9 +382,9 @@ class DocstoreService {
         log.debug("${dsd.id} completed");
       }
       catch ( Exception e ) {
+        log.error("Failed to migrate",e);
         dsd.migrated = 'e';
         dsd.save(flush:true)
-        log.error("Failed to migrate",e);
       }
       cleanUpGorm()
     }

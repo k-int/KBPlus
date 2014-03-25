@@ -42,7 +42,12 @@
           <tr>
             <td><strong>${ra.title}</strong> <br/>
             ${ra.content} 
-            <span class="pull-right">posted by <em><g:link controller="userDetails" action="pub" id="${ra.user.id}">${ra.user.displayName}</g:link></em> on <g:formatDate date="${ra.dateCreated}" format="yyyy-MM-dd hh:mm a"/></span>
+            <g:if test="${ra.user != null}">
+              <span class="pull-right">posted by <em><g:link controller="userDetails" action="pub" id="${ra.user?.id}">${(ra.user?.displayName)?:'Unknown'}</g:link></em> on <g:formatDate date="${ra.dateCreated}" format="yyyy-MM-dd hh:mm a"/></span>
+            </g:if>
+            <g:else>
+              <span class="pull-right">posted automatically on <g:formatDate date="${ra.dateCreated}" format="yyyy-MM-dd hh:mm a"/></span>
+            </g:else>
           </tr>
         </g:each>
       </table>

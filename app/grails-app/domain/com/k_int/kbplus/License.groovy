@@ -266,7 +266,7 @@ class License {
       if ( oldMap[crp] != newMap[crp] ) {
         log.debug("Sending reference change...");
         def old_oid = oldMap[crp] ? "${oldMap[crp].class.name}:${oldMap[crp].id}" : null;
-        def new_oid = oldMap[crp] ? "${newMap[crp].class.name}:${newMap[crp].id}" : null;
+        def new_oid = newMap[crp] ? "${newMap[crp].class.name}:${newMap[crp].id}" : null;
         changeNotificationService.notifyChangeEvent([
                                                      OID:"${this.class.name}:${this.id}",
                                                      event:'License.updated',
@@ -307,7 +307,7 @@ class License {
       log.debug("Send pending change to ${dl.id}");
       changeNotificationService.registerPendingChange('license',
                                                       dl,
-                                                      "${changeDocument.prop} changed from \"${changeDocument.oldLabel?:changeDocument.old}\" to \"${changeDocument.newLabel?:changeDocument.new}\" on the template license. Accept this change to make the same change to this actual license",
+                                                      "<b>${changeDocument.prop}</b> changed from <b>\"${changeDocument.oldLabel?:changeDocument.old}\"</b> to <b>\"${changeDocument.newLabel?:changeDocument.new}\"</b> on the template license. Accept this change to make the same change to this actual license",
                                                       dl.getLicensee(),
                                                       [
                                                         changeTarget:"com.k_int.kbplus.License:${dl.id}",

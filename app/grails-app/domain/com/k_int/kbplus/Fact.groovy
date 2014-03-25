@@ -30,6 +30,9 @@ class Fact {
            version column:'fact_version'
            factUid column:'fact_uid', index:'fact_uid_idx'
           factType column:'fact_type_rdv_fk'
+      relatedTitle index:'fact_access_idx'
+          supplier index:'fact_access_idx'
+              inst index:'fact_access_idx'
   }
 
 }
