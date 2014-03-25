@@ -42,7 +42,6 @@ class AlertsService {
         }
       }
       else if (pn.pkg) {
-        if ( pn.pkg.status?.value != 'deleted' ) {
           info = roots["pkg:${pn.pkg.id}"]
           if ( !info ) {
             info = [:]
@@ -50,7 +49,6 @@ class AlertsService {
             info.rootObj = pn.pkg
             info.notes = [:]
           }
-        }
       }
       else {
         log.error("unhandled type");
