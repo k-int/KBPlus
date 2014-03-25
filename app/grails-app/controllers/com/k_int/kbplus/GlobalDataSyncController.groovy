@@ -94,10 +94,10 @@ class GlobalDataSyncController {
                                             owner:result.item, 
                                             identifier:new_tracker_id, 
                                             name:params.newPackageName,  
-                                            autoAcceptTippAddition:false,
-                                            autoAcceptTippDelete:false,
-                                            autoAcceptTippUpdate:false,
-                                            autoAcceptPackageUpdate:false)
+                                            autoAcceptTippAddition:params.autoAcceptTippUpdate=='on'?true:false,
+                                            autoAcceptTippDelete:params.autoAcceptTippDelete=='on'?true:false,
+                                            autoAcceptTippUpdate:params.autoAcceptTippAddition=='on'?true:false,
+                                            autoAcceptPackageUpdate:params.autoAcceptPackageChange=='on'?true:false)
           if ( grt.save() ) {
             globalSourceSyncService.initialiseTracker(grt);
           }
@@ -113,10 +113,10 @@ class GlobalDataSyncController {
                                             identifier:new_tracker_id, 
                                             name:result.item.name,
                                             localOid:params.localPkg,
-                                            autoAcceptTippAddition:false,
-                                            autoAcceptTippDelete:false,
-                                            autoAcceptTippUpdate:false,
-                                            autoAcceptPackageUpdate:false)
+                                            autoAcceptTippAddition:params.autoAcceptTippUpdate=='on'?true:false,
+                                            autoAcceptTippDelete:params.autoAcceptTippDelete=='on'?true:false,
+                                            autoAcceptTippUpdate:params.autoAcceptTippAddition=='on'?true:false,
+                                            autoAcceptPackageUpdate:params.autoAcceptPackageChange=='on'?true:false)
           if ( grt.save() ) {
             globalSourceSyncService.initialiseTracker(grt, params.localPkg);
           }
