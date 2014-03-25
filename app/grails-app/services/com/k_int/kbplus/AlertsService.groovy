@@ -42,7 +42,7 @@ class AlertsService {
         }
       }
       else if (pn.pkg) {
-        if ( pn.subscription.status?.value != 'deleted' ) {
+        if ( pn.pkg.status?.value != 'deleted' ) {
           info = roots["pkg:${pn.pkg.id}"]
           if ( !info ) {
             info = [:]
