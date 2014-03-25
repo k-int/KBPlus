@@ -90,7 +90,14 @@ class GlobalDataSyncController {
       switch ( params.synctype ) {
         case 'new':
           log.debug("merge remote package with new local package...");
-          def grt = new GlobalRecordTracker(owner:result.item, identifier:new_tracker_id, name:params.newPackageName)
+          def grt = new GlobalRecordTracker(
+                                            owner:result.item, 
+                                            identifier:new_tracker_id, 
+                                            name:params.newPackageName,  
+                                            autoAcceptTippAddition:false,
+                                            autoAcceptTippDelete:false,
+                                            autoAcceptTippUpdate:false,
+                                            autoAcceptPackageUpdate:false)
           if ( grt.save() ) {
             globalSourceSyncService.initialiseTracker(grt);
           }
@@ -105,7 +112,11 @@ class GlobalDataSyncController {
                                             owner:result.item, 
                                             identifier:new_tracker_id, 
                                             name:result.item.name,
-                                            localOid:params.localPkg)
+                                            localOid:params.localPkg,
+                                            autoAcceptTippAddition:false,
+                                            autoAcceptTippDelete:false,
+                                            autoAcceptTippUpdate:false,
+                                            autoAcceptPackageUpdate:false)
           if ( grt.save() ) {
             globalSourceSyncService.initialiseTracker(grt, params.localPkg);
           }
