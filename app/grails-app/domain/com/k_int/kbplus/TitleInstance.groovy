@@ -249,7 +249,7 @@ class TitleInstance {
         s = s.trim(); // first off, remove whitespace around the string
         s = s.replaceAll("\\s+", " ");
         s = s.toLowerCase(); // then lowercase it
-        s = alphanum.matcher(s).replaceAll(""); // then remove all punctuation and control chars
+        s = alphanum.matcher(s)?.replaceAll(''); // then remove all punctuation and control chars
         String[] frags = StringUtils.split(s); // split by whitespace
         TreeSet<String> set = new TreeSet<String>();
         for (String ss : frags) {
