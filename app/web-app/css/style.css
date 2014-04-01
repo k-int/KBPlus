@@ -771,6 +771,10 @@ div.comments {
 	text-overflow: ellipsis;
 }
 
+form#compare > div{
+	margin-bottom:10px;
+}
+
 .compare-radio {
     margin: 0px;
     vertical-align: middle
@@ -784,6 +788,10 @@ div.comments {
     width: 200px;
 }
 
+#limit-license-display label{
+	display: inline;
+}
+
 .compare-results {
     width: 50px;
 }
@@ -792,7 +800,7 @@ div.comments {
     white-space: nowrap;
     padding-bottom: 5px;
     padding-right: 30px;
-    padding-top: 5px
+    padding-top: 5px;
 }
 
 .matrix-match {
@@ -873,3 +881,8 @@ th.desc a {
   overflow-y: hidden;
 }
 
+.tree a.jstree-hovered {
+	box-shadow : none !important;
+	border:none !important;
+	background:#B1B8BB none !important;
+}

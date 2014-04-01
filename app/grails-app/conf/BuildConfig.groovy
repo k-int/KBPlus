@@ -82,6 +82,7 @@ grails.project.dependency.resolution = {
         runtime ":resources:1.2"
         runtime ':fields:1.3'
         compile ":scaffolding:2.0.1"
+        
         // This is commented out so as not to cause probelms in the CI environment
         // compile ":functional-test:2.0.RC1"
         // Uncomment these (or add new ones) to enable additional resources capabilities
@@ -112,5 +113,6 @@ grails.project.dependency.resolution = {
         compile ':spring-security-shibboleth-native-sp:1.0.3'
 
         runtime ":gsp-resources:0.4.4"
+        runtime ":jquery:1.9.1"
     }
 }

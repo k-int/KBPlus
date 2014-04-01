@@ -1,0 +1,74 @@
+table.onix-matrix td,
+table.onix-matrix th {
+	width: 583px;
+	max-width: 583px;
+	min-width: 583px;
+	padding:0 !important;
+  border: 1px solid #000;
+}
+
+table.onix-matrix td {
+  font-size:0.9em;
+  line-height:1.1em;
+  vertical-align:top;
+}
+
+table.onix-matrix table td {
+  font-size:1em;
+  line-height:1em;
+  padding:5px;
+}
+
+.onix-matrix span.cell-inner {
+	display:block;
+	padding:10px;
+}
+
+ul.ColVis_collection {
+	width:       auto;
+	max-height:  300px;
+	overflow-y:  auto;
+}
+
+ul.ColVis_collection li {
+	padding: 0;
+	margin-bottom:5px;
+}
+
+ul.ColVis_collection li label {
+	display:block;
+	padding:10px !important;
+	margin:0 !important;
+}
+
+/** The entry table itself **/
+table.onix-entry-table {
+	width :100%;
+  min-width :100%;
+  max-width :100%;
+}
+
+table.onix-entry-table tr th,
+table.onix-entry-table tr td {
+	min-width:1px;
+	width:auto;
+	max-width:auto;
+}
+
+table.onix-entry-table span.cell-inner {
+  display:block;
+  padding:5px;
+}
+
+.onix-code {
+	display:block;
+	font-weight:bold;
+	font-size:1.1em;
+}
+.onix-code-annotation{
+	font-style: italic;
+}
+
+.text-tag .textpreceding {
+	font-weight:bold;
+}
