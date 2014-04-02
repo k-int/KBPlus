@@ -80,7 +80,7 @@ class HomePageSpec extends GebReportingSpec {
 
   def "Test Package Import And Add To Sub"() {
     when:
-    go '/demo/upload/reviewSO'
+    go '/demo/upload/reviewPackage'
     // $('form').soFile='/tmp/Art Journals_Master_2014.csv'
     $('form').soFile="${System.getProperty('user.dir')}/../manual_test_data/so_v3/Art Journals_Master_2014.csv"
     $('button').click()

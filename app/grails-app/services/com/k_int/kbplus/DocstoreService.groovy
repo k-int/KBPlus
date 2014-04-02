@@ -1,21 +1,23 @@
 package com.k_int.kbplus
 
-import org.apache.commons.io.FileUtils
-import org.apache.commons.io.IOUtils
-import gov.loc.repository.bagit.BagFactory;
-import gov.loc.repository.bagit.PreBag;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import gov.loc.repository.bagit.BagFactory
+import gov.loc.repository.bagit.PreBag
 import groovy.xml.MarkupBuilder
+import groovyx.net.http.*
 import groovyx.net.http.ContentType.*
 import groovyx.net.http.Method.*
-import groovyx.net.http.*
+
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
+
+import org.apache.commons.io.FileUtils
+import org.apache.commons.io.IOUtils
 import org.apache.http.entity.mime.*
 import org.apache.http.entity.mime.content.*
-import java.nio.charset.Charset
-import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 class DocstoreService {
+  
+  def grailsApplication
 
   def sessionFactory
   def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
@@ -112,7 +114,7 @@ class DocstoreService {
   def uploadBag(bagfile) {
     println("uploading bagfile ${bagfile}");
     // def http = new groovyx.net.http.HTTPBuilder('http://knowplus.edina.ac.uk/oledocstore/KBPlusServlet')
-    def docstore_uri = ApplicationHolder.application.config.docstore
+    def docstore_uri = grailsApplication.config.docstore
 
     log.debug("Using docstore ${docstore_uri}");
 

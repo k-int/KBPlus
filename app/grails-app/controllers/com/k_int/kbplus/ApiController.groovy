@@ -11,6 +11,9 @@ import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.hslf.model.*;
 import java.text.SimpleDateFormat
+import com.k_int.kbplus.auth.*;
+import grails.plugins.springsecurity.Secured
+import grails.converters.*
 
 
 
@@ -19,9 +22,12 @@ class ApiController {
 
   def springSecurityService
 
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def index() { 
   }
 
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def uploadBibJson() {
     def result=[:]
     log.debug("uploadBibJson");

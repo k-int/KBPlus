@@ -173,49 +173,11 @@ class PackageDetailsController {
       def paginate_after = params.paginate_after ?: ( (2*result.max)-1);
       result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
     
-    def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
+      def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
     
-      def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
+      // def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
       def qry_params = [packageInstance]
-
-
-      if ( showDeletedTipps==true ) {
-      }
-      else {
-        base_qry += "and tipp.status.value != 'Deleted' "
-      }
-
-      if ( params.filter ) {
-        base_qry += " and ( ( lower(tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = tipp.title.id and io.identifier.value like ? ) ) )"
-        qry_params.add("%${params.filter.trim().toLowerCase()}%")
-        qry_params.add("%${params.filter}%")
-      }
-
-      if ( params.coverageNoteFilter ) {
-        base_qry += "and lower(tipp.coverageNote) like ?"
-        qry_params.add("%${params.coverageNoteFilter?.toLowerCase()}%")
-      }
-
-      if ( params.endsAfter && params.endsAfter.length() > 0 ) {
-        def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
-        def d = sdf.parse(params.endsAfter)
-        base_qry += " and tipp.endDate >= ?"
-        qry_params.add(d)
-      }
-
-      if ( params.startsBefore && params.startsBefore.length() > 0 ) {
-        def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
-        def d = sdf.parse(params.startsBefore)
-        base_qry += " and tipp.startDate <= ?"
-        qry_params.add(d)
-      }
-
-      if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
-        base_qry += " order by lower(${params.sort}) ${params.order}"
-      }
-      else {
-        base_qry += " order by lower(tipp.title.title) asc"
-      }
+      def base_qry = generateBasePackageQuery(params, qry_params, showDeletedTipps)
 
       log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
       result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, limits);
@@ -255,6 +217,51 @@ class PackageDetailsController {
 
       }
     }
+  }
+
+  def generateBasePackageQuery(params, qry_params, showDeletedTipps) {
+
+    def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
+
+    if ( showDeletedTipps==true ) {
+    }
+    else {
+      base_qry += "and tipp.status.value != 'Deleted' "
+    }
+
+    if ( params.filter ) {
+      base_qry += " and ( ( lower(tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = tipp.title.id and io.identifier.value like ? ) ) )"
+      qry_params.add("%${params.filter.trim().toLowerCase()}%")
+      qry_params.add("%${params.filter}%")
+    }
+
+    if ( params.coverageNoteFilter ) {
+      base_qry += "and lower(tipp.coverageNote) like ?"
+      qry_params.add("%${params.coverageNoteFilter?.toLowerCase()}%")
+    }
+
+    if ( params.endsAfter && params.endsAfter.length() > 0 ) {
+      def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
+      def d = sdf.parse(params.endsAfter)
+      base_qry += " and tipp.endDate >= ?"
+      qry_params.add(d)
+    }
+
+    if ( params.startsBefore && params.startsBefore.length() > 0 ) {
+      def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
+      def d = sdf.parse(params.startsBefore)
+      base_qry += " and tipp.startDate <= ?"
+      qry_params.add(d)
+    }
+
+    if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
+      base_qry += " order by lower(${params.sort}) ${params.order}"
+    }
+    else {
+      base_qry += " order by lower(tipp.title.title) asc"
+    }
+
+    return base_qry
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
@@ -601,6 +608,16 @@ class PackageDetailsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def packageBatchUpdate() {
+
+    def packageInstance = Package.get(params.id)
+    boolean showDeletedTipps=false
+
+    if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') ) {
+      showDeletedTipps=true
+    }
+
+    log.debug("packageBatchUpdate ${params}");
+
     def formatter = new java.text.SimpleDateFormat("yyyy-MM-dd")
 
     def bulk_fields = [
@@ -615,13 +632,55 @@ class PackageDetailsController {
       [ formProp:'embargo', domainClassProp:'embargo'],
     ]
 
-    params.each { p ->
-      if (p.key.startsWith('_bulkflag.') && ( p.value == 'on' ) ) {
-        def tipp_id_to_edit = p.key.substring(10);
-        log.debug("row selected for bulk edit: ${tipp_id_to_edit}");
-        def tipp_to_bulk_edit = TitleInstancePackagePlatform.get(tipp_id_to_edit);
-        boolean changed = false
-
+    
+    if ( params.BatchSelectedBtn=='on' ) {
+      params.each { p ->
+        if (p.key.startsWith('_bulkflag.') && ( p.value == 'on' ) ) {
+          def tipp_id_to_edit = p.key.substring(10);
+          log.debug("row selected for bulk edit: ${tipp_id_to_edit}");
+          def tipp_to_bulk_edit = TitleInstancePackagePlatform.get(tipp_id_to_edit);
+          boolean changed = false
+  
+          if ( params.bulkOperation=='edit') {
+            bulk_fields.each { bulk_field_defn ->
+              if ( params["clear_${bulk_field_defn.formProp}"] == 'on' ) {
+                log.debug("Request to clear field ${bulk_field_defn.formProp}");
+                tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = null
+                changed = true
+              }
+              else {
+                def proposed_value = params['bulk_'+bulk_field_defn.formProp]
+                if ( ( proposed_value != null ) && ( proposed_value.length() > 0 ) ) {
+                  log.debug("Set field ${bulk_field_defn.formProp} to proposed_value");
+                  if ( bulk_field_defn.type == 'date' ) {
+                    tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = formatter.parse(proposed_value)
+                  }
+                  else {
+                    tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = proposed_value
+                  }
+                  changed = true
+                }
+              }
+            }
+            if ( changed )
+              tipp_to_bulk_edit.save();
+          }
+          else {
+            log.debug("Bulk removal ${tipp_to_bulk_edit.id}");
+            tipp_to_bulk_edit.status = RefdataCategory.lookupOrCreate( 'TIPP Status', 'Deleted' );
+            tipp_to_bulk_edit.save();
+          }
+        }
+      }
+    }
+    else if ( params.BatchAllBtn=='on' ) {
+      log.debug("Batch process all");
+      def qry_params = [packageInstance]
+      def base_qry = generateBasePackageQuery(params, qry_params, showDeletedTipps)
+      def tipplist = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params)
+      tipplist.each {  tipp_to_bulk_edit ->
+        boolean changed=false
+        log.debug("update tipp ${tipp_to_bulk_edit.id}");
         if ( params.bulkOperation=='edit') {
           bulk_fields.each { bulk_field_defn ->
             if ( params["clear_${bulk_field_defn.formProp}"] == 'on' ) {
@@ -646,13 +705,9 @@ class PackageDetailsController {
           if ( changed )
             tipp_to_bulk_edit.save();
         }
-        else {
-          log.debug("Bulk removal ${tipp_to_bulk_edit.id}");
-          tipp_to_bulk_edit.status = RefdataCategory.lookupOrCreate( 'TIPP Status', 'Deleted' );
-          tipp_to_bulk_edit.save();
-        }
       }
     }
+
     redirect(action:'show', id:params.id);
   }
 }

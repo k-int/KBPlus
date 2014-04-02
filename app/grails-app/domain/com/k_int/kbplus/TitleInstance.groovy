@@ -243,11 +243,13 @@ class TitleInstance {
   }
 
   public static String generateKeyTitle(String s) {
+    def result = null
+    if ( s != null ) {
         s = s.replaceAll('&',' and ');
         s = s.trim(); // first off, remove whitespace around the string
         s = s.replaceAll("\\s+", " ");
         s = s.toLowerCase(); // then lowercase it
-        s = alphanum.matcher(s).replaceAll(""); // then remove all punctuation and control chars
+        s = alphanum.matcher(s)?.replaceAll(''); // then remove all punctuation and control chars
         String[] frags = StringUtils.split(s); // split by whitespace
         TreeSet<String> set = new TreeSet<String>();
         for (String ss : frags) {
@@ -260,7 +262,9 @@ class TitleInstance {
             if ( i.hasNext() )
               b.append(' ');
         }
-        return asciify(b.toString()); // find ASCII equivalent to characters 
+        result asciify(b.toString()); // find ASCII equivalent to characters 
+    }
+    result
   }
 
   protected static String asciify(String s) {

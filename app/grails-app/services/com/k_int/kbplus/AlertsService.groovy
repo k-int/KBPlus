@@ -20,31 +20,35 @@ class AlertsService {
 
       def info = null;
       if ( pn.license ) {
-        info = roots["license:${pn.license.id}"]
-        if ( !info ) {
-          info = [:]
-          roots["license:${pn.license.id}"] = info
-          info.rootObj = pn.license
-          info.notes = [:]
+        if ( pn.license.status?.value != 'deleted' ) {
+          info = roots["license:${pn.license.id}"]
+          if ( !info ) {
+            info = [:]
+            roots["license:${pn.license.id}"] = info
+            info.rootObj = pn.license
+            info.notes = [:]
+          }
         }
       }
       else if (pn.subscription) {
-        info = roots["subscription:${pn.subscription.id}"]
-        if ( !info ) {
-          info = [:]
-          roots["subscription:${pn.subscription.id}"] = info
-          info.rootObj = pn.subscription
-          info.notes = [:]
+        if ( pn.subscription.status?.value != 'deleted' ) {
+          info = roots["subscription:${pn.subscription.id}"]
+          if ( !info ) {
+            info = [:]
+            roots["subscription:${pn.subscription.id}"] = info
+            info.rootObj = pn.subscription
+            info.notes = [:]
+          }
         }
       }
       else if (pn.pkg) {
-        info = roots["pkg:${pn.pkg.id}"]
-        if ( !info ) {
-          info = [:]
-          roots["pkg:${pn.pkg.id}"] = info
-          info.rootObj = pn.pkg
-          info.notes = [:]
-        }
+          info = roots["pkg:${pn.pkg.id}"]
+          if ( !info ) {
+            info = [:]
+            roots["pkg:${pn.pkg.id}"] = info
+            info.rootObj = pn.pkg
+            info.notes = [:]
+          }
       }
       else {
         log.error("unhandled type");

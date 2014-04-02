@@ -280,6 +280,7 @@ class LicenseImportController {
     RefdataValue currentStatus = RefdataCategory.lookupOrCreate('License Status', 'Current')
     RefdataValue templateType  = RefdataCategory.lookupOrCreate('License Type', 'Template')
     // Create a new license
+
     if (createNewLicense) {
       license = new License(
           reference     : upload.description,
@@ -300,7 +301,7 @@ class LicenseImportController {
     }
 
     def onix_file_input_stream = upload.uploaded_file ? new FileInputStream(upload.uploaded_file) : upload.offered_file?.inputStream
-    def onix_file_size = upload.uploaded_file ? new File(upload.uploaded_file).size() : upload.offered_file.size
+    def onix_file_size = upload.uploaded_file ? new File(upload.uploaded_file).size() : upload.offered_file?.size()
 
     def doctype = RefdataCategory.lookupOrCreate(CAT_DOCTYPE, DOCTYPE);
     def doc_content, doc_context
@@ -313,7 +314,7 @@ class LicenseImportController {
 
     // Update doc properties
     doc_content.uuid     = java.util.UUID.randomUUID().toString()
-    doc_content.filename = upload.uploaded_file
+    doc_content.filename = filename
     doc_content.mimeType = upload.upload_mime_type
     doc_content.title    = upload.upload_title
     doc_content.type     = doctype

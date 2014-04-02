@@ -1,8 +1,10 @@
 package com.k_int.kbplus
 
-import com.k_int.kbplus.auth.User;
-import java.sql.Blob;
-import org.hibernate.Hibernate;
+import java.sql.Blob
+
+import org.hibernate.Session
+
+import com.k_int.kbplus.auth.User
 
 class Doc {
 
@@ -62,8 +64,8 @@ class Doc {
   }
 
   def setBlobData(InputStream is, long length) {
-    def session = sessionFactory.getCurrentSession() 
-    blobContent = Hibernate.createBlob(is, (int)length)
+    Session hib_ses = sessionFactory.getCurrentSession()
+    blobContent = hib_ses.getLobHelper().createBlob(is, length)
   }
     
   def getBlobData() {

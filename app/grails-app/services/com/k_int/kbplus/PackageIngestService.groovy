@@ -1,29 +1,28 @@
 package com.k_int.kbplus
 
-import org.springframework.dao.DataIntegrityViolationException
-import grails.converters.*
-import org.elasticsearch.groovy.common.xcontent.*
-import groovy.xml.MarkupBuilder
-import grails.plugins.springsecurity.Secured
-import com.k_int.kbplus.auth.*;
-import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.hssf.util.HSSFColor;
-
+import com.k_int.kbplus.*
+import org.hibernate.ScrollMode
+import java.nio.charset.Charset
+import java.util.GregorianCalendar
+import org.mozilla.universalchardet.UniversalDetector;
 import org.apache.log4j.*
 import au.com.bytecode.opencsv.CSVReader
 import java.text.SimpleDateFormat
 
-import org.mozilla.universalchardet.UniversalDetector;
-import org.apache.commons.io.input.BOMInputStream
 
+public class PackageIngestService {
 
-class UploadController {
-
-  def springSecurityService
   def sessionFactory
-  def packageIngestService
   def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
-  
+
+  def possible_date_formats = [
+    [regexp:'[0-9]{2}/[0-9]{2}/[0-9]{4}', format: new SimpleDateFormat('dd/MM/yyyy')],
+    [regexp:'[0-9]{4}/[0-9]{2}/[0-9]{2}', format: new SimpleDateFormat('yyyy/MM/dd')],
+    [regexp:'[0-9]{2}/[0-9]{2}/[0-9]{2}', format: new SimpleDateFormat('dd/MM/yy')],
+    [regexp:'[0-9]{4}/[0-9]{2}', format: new SimpleDateFormat('yyyy/MM')],
+    [regexp:'[0-9]{4}', format: new SimpleDateFormat('yyyy')]
+  ];
+
   def csv_column_config = [
     'id':[coltype:'map'],
     'tippid':[coltype:'map'],
@@ -42,37 +41,8 @@ class UploadController {
     'platform':[coltype:'map']
   ];
 
-  def possible_date_formats = [
-    [regexp:'[0-9]{2}/[0-9]{2}/[0-9]{4}', format: new SimpleDateFormat('dd/MM/yyyy')],
-    [regexp:'[0-9]{4}/[0-9]{2}/[0-9]{2}', format: new SimpleDateFormat('yyyy/MM/dd')],
-    [regexp:'[0-9]{2}/[0-9]{2}/[0-9]{2}', format: new SimpleDateFormat('dd/MM/yy')],
-    [regexp:'[0-9]{4}/[0-9]{2}', format: new SimpleDateFormat('yyyy/MM')],
-    [regexp:'[0-9]{4}', format: new SimpleDateFormat('yyyy')]
-  ];
 
-  @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
-  def reviewSO() { 
-    def result = [:]
-    result.user = User.get(springSecurityService.principal.id)
-    
-    if ( request.method == 'POST' ) {
-
-
-      result.validationResult = readSubscriptionOfferedCSV(request)
-
-      validate(result.validationResult)
-      if ( result.validationResult.processFile == true ) {
-        // log.debug("Passed first phase validation, continue...");
-        processUploadSO(result.validationResult)
-      }
-    }
-    else {
-    }
-    
-    return result
-  }
-  
-  def processUploadSO(upload) {
+  def processUploadPackage(upload) {
 
     def new_pkg_id = null
     log.debug("Content provider value is ${upload.soProvider.value}");
@@ -293,19 +263,11 @@ class UploadController {
     return false
   }
 
-  def readSubscriptionOfferedCSV(request) {
+  def readPackageCSV(upload_mime_type, upload_filename, charset, input_stream, docstyle) {
 
     def result = [:]
     result.processFile=true
     result.incremental=false
-
-    def upload_mime_type = request.getFile("soFile")?.contentType
-    def upload_filename = request.getFile("soFile")?.getOriginalFilename()
-    log.debug("Uploaded so type: ${upload_mime_type} filename was ${upload_filename}");
-
-    def charset = checkCharset(request.getFile("soFile")?.inputStream)
-
-    def input_stream = new BOMInputStream(request.getFile("soFile")?.inputStream)
 
     // File level messages
     result.messages=[]
@@ -317,7 +279,7 @@ class UploadController {
     }
 
     CSVReader r = null
-    if ( params.docstyle?.equals("tsv") ) {
+    if ( docstyle?.equals("tsv") ) {
       log.debug("Processing TSV");
       r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ), (char)'\t' )
     }
@@ -753,5 +715,6 @@ class UploadController {
 
     result
   }
+
 
 }

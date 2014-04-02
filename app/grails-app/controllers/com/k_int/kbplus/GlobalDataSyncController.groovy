@@ -90,7 +90,14 @@ class GlobalDataSyncController {
       switch ( params.synctype ) {
         case 'new':
           log.debug("merge remote package with new local package...");
-          def grt = new GlobalRecordTracker(owner:result.item, identifier:new_tracker_id, name:params.newPackageName)
+          def grt = new GlobalRecordTracker(
+                                            owner:result.item, 
+                                            identifier:new_tracker_id, 
+                                            name:params.newPackageName,  
+                                            autoAcceptTippAddition:params.autoAcceptTippUpdate=='on'?true:false,
+                                            autoAcceptTippDelete:params.autoAcceptTippDelete=='on'?true:false,
+                                            autoAcceptTippUpdate:params.autoAcceptTippAddition=='on'?true:false,
+                                            autoAcceptPackageUpdate:params.autoAcceptPackageChange=='on'?true:false)
           if ( grt.save() ) {
             globalSourceSyncService.initialiseTracker(grt);
           }
@@ -105,7 +112,11 @@ class GlobalDataSyncController {
                                             owner:result.item, 
                                             identifier:new_tracker_id, 
                                             name:result.item.name,
-                                            localOid:params.localPkg)
+                                            localOid:params.localPkg,
+                                            autoAcceptTippAddition:params.autoAcceptTippUpdate=='on'?true:false,
+                                            autoAcceptTippDelete:params.autoAcceptTippDelete=='on'?true:false,
+                                            autoAcceptTippUpdate:params.autoAcceptTippAddition=='on'?true:false,
+                                            autoAcceptPackageUpdate:params.autoAcceptPackageChange=='on'?true:false)
           if ( grt.save() ) {
             globalSourceSyncService.initialiseTracker(grt, params.localPkg);
           }

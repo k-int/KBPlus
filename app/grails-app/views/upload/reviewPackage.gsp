@@ -31,7 +31,7 @@
         </bootstrap:alert>
         </g:hasErrors>
 
-        <g:form action="reviewSO" method="post" enctype="multipart/form-data">
+        <g:form action="reviewPackage" method="post" enctype="multipart/form-data">
             Updload File: <input type="file" id="soFile" name="soFile"/><br/>
 
             Doc Style: <select name="docstyle">
