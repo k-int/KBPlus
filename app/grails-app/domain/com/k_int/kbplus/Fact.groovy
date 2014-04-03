@@ -26,6 +26,7 @@ class Fact {
   }
 
   static mapping = {
+             table 'kbplus_fact'
                 id column:'fact_id'
            version column:'fact_version'
            factUid column:'fact_uid', index:'fact_uid_idx'

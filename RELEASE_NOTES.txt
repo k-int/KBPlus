@@ -1,0 +1,4 @@
+KBPlus 4.1
+
+* The FACT table has been renamed KBPLUS_FACT as FACT seems to be a reserved word when creating tables in InnoDB. This table will need to be manually renamed as a part of the
+  4.1 installation process.
