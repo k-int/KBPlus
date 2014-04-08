@@ -2468,6 +2468,7 @@ AND EXISTS (
 
     def announcement_type = RefdataCategory.lookupOrCreate('Document Type','Announcement')
     result.recentAnnouncements = Doc.findAllByType(announcement_type,[max:result.max,sort:'dateCreated',order:'desc'])
+    result.num_announcements = result.recentAnnouncements.size()
 
     // result.num_sub_rows = Subscription.executeQuery("select count(s) "+base_qry, qry_params )[0]
     // result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
