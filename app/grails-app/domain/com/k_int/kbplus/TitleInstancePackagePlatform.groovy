@@ -289,7 +289,7 @@ class TitleInstancePackagePlatform {
   }
 
   public RefdataValue getDerivedStatus() {
-    return getDerivedStatus(new date());
+    return getDerivedStatus(new Date());
   }
   
 
