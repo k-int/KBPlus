@@ -24,6 +24,8 @@ class TitleInstancePackagePlatform {
                                      'hostPlatformURL' ]
 
 
+  Date accessStartDate
+  Date accessEndDate
   Date startDate
   String rectype="so"
   String startVolume
@@ -87,6 +89,8 @@ class TitleInstancePackagePlatform {
        derivedFrom column:'tipp_derived_from'
    coreStatusStart column:'tipp_core_status_start_date'
      coreStatusEnd column:'tipp_core_status_end_date'
+   accessStartDate column:'tipp_access_start_date'
+     accessEndDate column:'tipp_access_end_date'
   }
 
   static constraints = {
@@ -111,6 +115,8 @@ class TitleInstancePackagePlatform {
     derivedFrom(nullable:true, blank:true);
     coreStatusStart(nullable:true, blank:true);
     coreStatusEnd(nullable:true, blank:true);
+    accessStartDate(nullable:true, blank:true);
+    accessEndDate(nullable:true, blank:true);
   }
 
   
@@ -274,4 +280,39 @@ class TitleInstancePackagePlatform {
     return (T) element;
   }
 
+  public Date getDerivedAccessStartDate() {
+    accessStartDate ? accessStartDate : pkg.startDate
+  }
+
+  public Date getDerivedAccessEndDate() {
+    accessStartDate ? accessStartDate : pkg.endDate
+  }
+
+  public RefdataValue getDerivedStatus() {
+    return getDerivedStatus(new date());
+  }
+  
+
+  public RefdataValue getDerivedStatus(Date as_at) {
+    def result = null
+    // If StartDate <= as_at <= EndDate - Current
+    // if Date < StartDate - Expected
+    // if Date > EndDate - Expired
+    def tipp_access_start_date = getDerivedAccessStartDate()
+    def tipp_access_end_date = getDerivedAccessEndDate()
+    if ( as_at < tipp_access_start_date ) {
+      // expected
+      result = RefdataCategory.lookupOrCreate('TIPP Status','Expected');
+    }
+    else if ( as_at > tipp_access_end_date ) {
+      // expired
+      result = RefdataCategory.lookupOrCreate('TIPP Status','Expired');
+    }
+    else {
+      result = RefdataCategory.lookupOrCreate('TIPP Status','Current');
+    }
+    result
+  }
+
+  
 }
