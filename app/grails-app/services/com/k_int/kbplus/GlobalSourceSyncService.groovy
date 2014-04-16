@@ -275,7 +275,7 @@ class GlobalSourceSyncService {
          case 'OAI':
            log.debug("start internal sync");
            this.doOAISync(sync_job)
-           log.debug("Complete internal sync");
+           log.debug("this.doOAISync has returned...");
            break;
          default:
            log.error("Unhandled sync job type: ${sync_job.type}");
@@ -291,6 +291,8 @@ class GlobalSourceSyncService {
   }
  
   def intOAI(sync_job_id) {
+
+    log.debug("intOAI");
 
     def sync_job = GlobalRecordSource.get(sync_job_id)
 
