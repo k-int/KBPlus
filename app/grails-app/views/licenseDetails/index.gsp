@@ -129,6 +129,14 @@
                         <g:xEditable owner="${license}" field="reference" id="reference"/>
                       </dd>
                   </dl>
+
+                  <dl>
+                      <dt><label class="control-label" for="reference">Status</label></dt>
+                      <dd>
+                        <g:xEditableRefData owner="${license}" field="status" config='License Status'/>
+                      </dd>
+                  </dl>
+      
       
                   <dl>
                       <dt><label class="control-label" for="noticePeriod">Notice Period</label></dt>

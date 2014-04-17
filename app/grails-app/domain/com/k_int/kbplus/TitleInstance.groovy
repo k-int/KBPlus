@@ -161,17 +161,26 @@ class TitleInstance {
     def ids = []
     
     candidate_identifiers.each { i ->
-      def id = Identifier.lookupOrCreateCanonicalIdentifier(i.key, i.value)
-      ids.add(id);
-        
-      def io = IdentifierOccurrence.findByIdentifier(id)
-      if ( io && io.ti ) {
-        if ( result == null ) {
-          result = io.ti;
-        }
-        else {
-          if ( result != io.ti ) {
-            throw new RuntimeException("Identifiers(${candidate_identifiers}) reference multiple titles");
+
+      if ( ( i.key != null ) && 
+           ( i.value != null ) &&
+           ( i.key.length() > 0 ) &&
+           ( i.value.length() > 0 ) ) {
+
+        def id = Identifier.lookupOrCreateCanonicalIdentifier(i.key, i.value)
+        if ( id != null ) {
+          ids.add(id);
+          
+          def io = IdentifierOccurrence.findByIdentifier(id)
+          if ( io && io.ti ) {
+            if ( result == null ) {
+              result = io.ti;
+            }
+            else {
+              if ( result != io.ti ) {
+                throw new RuntimeException("Identifiers(${candidate_identifiers}) reference multiple titles");
+              }
+            }
           }
         }
       }
