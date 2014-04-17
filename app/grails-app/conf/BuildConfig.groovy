@@ -50,7 +50,7 @@ grails.project.dependency.resolution = {
           exclude 'groovy'
         }
         compile 'commons-codec:commons-codec:1.6'
-        runtime 'mysql:mysql-connector-java:5.1.26'
+        runtime 'mysql:mysql-connector-java:5.1.30'
         runtime 'com.gmongo:gmongo:1.1'
         runtime 'org.elasticsearch:elasticsearch-lang-groovy:1.4.0'
         runtime 'gov.loc:bagit:4.0'
