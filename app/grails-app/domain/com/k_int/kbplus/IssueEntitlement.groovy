@@ -2,6 +2,9 @@ package com.k_int.kbplus
 
 class IssueEntitlement implements Comparable {
 
+  Date accessStartDate
+  Date accessEndDate
+
   RefdataValue status
   Date startDate
   String startVolume
@@ -43,9 +46,11 @@ class IssueEntitlement implements Comparable {
       coverageNote column:'ie_coverage_note',type: 'text'
          // coreTitle column:'ie_core_title'
           ieReason column:'ie_reason'
-   coreStatusStart comumn:'ie_core_status_start'
-     coreStatusEnd comumn:'ie_core_status_end'
-        coreStatus comumn:'ie_core_status_rv_fk'
+   // coreStatusStart comumn:'ie_core_status_start'
+   //   coreStatusEnd comumn:'ie_core_status_end'
+   //      coreStatus comumn:'ie_core_status_rv_fk'
+   accessStartDate column:'ie_access_start_date'
+     accessEndDate column:'ie_access_end_date'
   }
 
   static constraints = {
@@ -66,6 +71,8 @@ class IssueEntitlement implements Comparable {
     coreStatusStart(nullable:true, blank:true);
     coreStatusEnd(nullable:true, blank:true);
     coreStatus(nullable:true, blank:true);
+    accessStartDate(nullable:true, blank:true);
+    accessEndDate(nullable:true, blank:true);
   }
 
 }

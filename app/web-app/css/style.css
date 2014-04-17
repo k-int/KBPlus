@@ -862,6 +862,7 @@ th.sortable a {
         background-repeat: no-repeat;
         padding-right: 1.1em;
         text-decoration: underline!important;
+        color:#990100;
 }
 
 th.asc a {
