@@ -262,7 +262,7 @@ class TitleInstance {
             if ( i.hasNext() )
               b.append(' ');
         }
-        result asciify(b.toString()); // find ASCII equivalent to characters 
+        result = asciify(b.toString()); // find ASCII equivalent to characters 
     }
     result
   }
