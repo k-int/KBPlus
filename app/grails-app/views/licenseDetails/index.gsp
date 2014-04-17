@@ -183,6 +183,20 @@
                   </dl>
 
                   <dl>
+                      <dt><label class="control-label" for="isPublic">Start Date</label></dt>
+                      <dd>
+                        <g:xEditable owner="${license}" type="date" field="startDate" />
+                      </dd>
+                  </dl>
+
+                  <dl>
+                      <dt><label class="control-label" for="isPublic">End Date</label></dt>
+                      <dd>
+                        <g:xEditable owner="${license}" type="date" field="endDate" />
+                      </dd>
+                  </dl>
+
+                  <dl>
                       <dt><label class="control-label" for="licenseCategory">License Category</label></dt>
                       <dd>
                         <g:xEditableRefData owner="${license}" field="licenseCategory" config='LicenseCategory'/>

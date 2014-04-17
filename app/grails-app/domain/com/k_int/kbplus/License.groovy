@@ -123,6 +123,8 @@ class License {
     lastmod(nullable:true, blank:true)
     onixplLicense(nullable: true, blank: true)
     licenseCategory(nullable: true, blank: true)
+    startDate(nullable: true, blank: true)
+    endDate(nullable: true, blank: true)
  }
 
   def getLicensor() {
