@@ -68,6 +68,7 @@
           </div>
       </div>
   </div>
+    <r:layoutResources/>
   </body>
 
 </html>
