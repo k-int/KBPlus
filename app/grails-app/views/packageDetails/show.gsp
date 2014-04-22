@@ -287,8 +287,8 @@
               <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
               <th style="">Platform</th>
               <th style="">Identifiers</th>
-              <th style="">Start</th>
-              <th style="">End</th>
+              <th style="">Coverage Start</th>
+              <th style="">Coverage End</th>
               <th style="">Coverage Depth</th>
             </tr>
 
@@ -304,8 +304,9 @@
                 <td style="vertical-align:top;">
                    ${t.title.title}
                    <g:link controller="titleDetails" action="show" id="${t.title.id}">(Title)</g:link>
-                   <g:link controller="tipp" action="show" id="${t.id}">(TIPP)</g:link>
-                   (Availability:${availabilityStatus?.value}, Record Status: <g:xEditableRefData owner="${t}" field="status" config='TIPPStatus'/>)
+                   <g:link controller="tipp" action="show" id="${t.id}">(TIPP)</g:link><br/>
+                   <span title="${t.availabilityStatusExplanation}">Availability: ${t.availabilityStatus?.value}</span><br/> 
+                   Record Status: <g:xEditableRefData owner="${t}" field="status" config='TIPPStatus'/>
                 </td>
                 <td style="white-space: nowrap;vertical-align:top;">
                    <g:if test="${t.hostPlatformURL != null}">

@@ -285,11 +285,11 @@ class TitleInstancePackagePlatform {
   }
 
   public Date getDerivedAccessEndDate() {
-    accessStartDate ? accessStartDate : pkg.endDate
+    accessEndDate ? accessEndDate : pkg.endDate
   }
 
   public RefdataValue getAvailabilityStatus() {
-    return getDerivedStatus(new Date());
+    return getAvailabilityStatus(new Date());
   }
   
 
@@ -300,7 +300,10 @@ class TitleInstancePackagePlatform {
     // if Date > EndDate - Expired
     def tipp_access_start_date = getDerivedAccessStartDate()
     def tipp_access_end_date = getDerivedAccessEndDate()
-    if ( as_at < tipp_access_start_date ) {
+    if ( ( accessEndDate == null ) && ( as_at > tipp_access_end_date ) ) {
+      result = RefdataCategory.lookupOrCreate('TIPP Status','Current(*)');
+    }
+    else if ( as_at < tipp_access_start_date ) {
       // expected
       result = RefdataCategory.lookupOrCreate('TIPP Status','Expected');
     }
@@ -313,6 +316,19 @@ class TitleInstancePackagePlatform {
     }
     result
   }
+
+  public getAvailabilityStatusExplanation() {
+    return getAvailabilityStatusExplanation(new Date());
+  }
+
+  public getAvailabilityStatusExplanation(Date as_at) {
+    StringWriter sw = new StringWriter()
+
+    sw.write("This tipp is ${getAvailabilityStatus(as_at).value} as at ${as_at} because the date specified was between the start date (${getDerivedAccessStartDate()} ${accessStartDate ? 'Set explicitly on this TIPP' : 'Defaulted from package start date'}) and the end date (${getDerivedAccessEndDate()} ${accessEndDate ? 'Set explicitly on this TIPP' : 'Defaulted from package end date'})");
+
+    return sw.toString();
+  }
+
 
   
 }
