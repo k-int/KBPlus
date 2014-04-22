@@ -288,12 +288,12 @@ class TitleInstancePackagePlatform {
     accessStartDate ? accessStartDate : pkg.endDate
   }
 
-  public RefdataValue getDerivedStatus() {
+  public RefdataValue getAvailabilityStatus() {
     return getDerivedStatus(new Date());
   }
   
 
-  public RefdataValue getDerivedStatus(Date as_at) {
+  public RefdataValue getAvailabilityStatus(Date as_at) {
     def result = null
     // If StartDate <= as_at <= EndDate - Current
     // if Date < StartDate - Expected

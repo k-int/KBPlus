@@ -305,7 +305,7 @@
                    ${t.title.title}
                    <g:link controller="titleDetails" action="show" id="${t.title.id}">(Title)</g:link>
                    <g:link controller="tipp" action="show" id="${t.id}">(TIPP)</g:link>
-                   (<g:xEditableRefData owner="${t}" field="status" config='TIPPStatus'/>)
+                   (Availability:${availabilityStatus?.value}, Record Status: <g:xEditableRefData owner="${t}" field="status" config='TIPPStatus'/>)
                 </td>
                 <td style="white-space: nowrap;vertical-align:top;">
                    <g:if test="${t.hostPlatformURL != null}">
