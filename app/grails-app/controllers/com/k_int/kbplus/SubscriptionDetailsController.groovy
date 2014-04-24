@@ -48,13 +48,13 @@ class SubscriptionDetailsController {
     def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
     result.pendingChanges = PendingChange.executeQuery("select pc from PendingChange as pc where subscription=? and ( pc.status is null or pc.status = ? ) order by ts desc", [result.subscriptionInstance, pending_change_pending_status]);
 
-  // If transformer check user has access to it
-  if(params.transforms && !transformerService.hasTransformId(result.user, params.transforms)) {
-    flash.error = "It looks like you are trying to use an unvalid transformer or one you don't have access to!"
-    params.remove("transforms")
-    params.remove("format")
-    redirect action:'currentTitles', params:params
-  }
+    // If transformer check user has access to it
+    if(params.transforms && !transformerService.hasTransformId(result.user, params.transforms)) {
+      flash.error = "It looks like you are trying to use an unvalid transformer or one you don't have access to!"
+      params.remove("transforms")
+      params.remove("format")
+      redirect action:'currentTitles', params:params
+    }
   
     if ( ! result.subscriptionInstance.hasPerm("view",result.user) ) {
       response.sendError(401);
