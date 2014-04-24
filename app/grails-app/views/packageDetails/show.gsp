@@ -111,7 +111,13 @@
     <div class="container">
       <div class="row">
         <div class="span8">
-            <h6>Package Information</h6>
+            <h6>Package Information
+          <div class="btn-group pull-right" data-toggle="buttons-radio">
+            <g:link controller="packageDetails" action="show" params="${params+['mode':'basic']}" class="btn btn-primary btn-mini ${((params.mode=='basic')||(params.mode==null))?'active':''}">Basic</g:link>
+            <g:link controller="packageDetails" action="show" params="${params+['mode':'advanced']}" button type="button" class="btn btn-primary btn-mini ${params.mode=='advanced'?'active':''}">Advanced</g:link>
+          </div>
+          &nbsp;
+</h6>
             <g:hiddenField name="version" value="${packageInstance?.version}" />
             <fieldset class="inline-lists">
 
