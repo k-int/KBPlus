@@ -153,7 +153,10 @@
         <dt>
           <g:annotatedLabel owner="${subscriptionInstance}" property="entitlements">
             <g:if test="${entitlements?.size() > 0}">
-              Entitlements ( ${offset+1} to ${offset+(entitlements?.size())} of ${num_sub_rows} )
+              Entitlements ( ${offset+1} to ${offset+(entitlements?.size())} of ${num_sub_rows}. 
+                <g:if test="${params.mode=='advanced'}">Includes Expected or Expired entitlements, switch to <g:link controller="subscriptionDetails" action="index" params="${params+['mode':'basic']}">Basic</g:link> view to hide</g:if>
+                <g:else>Expected or Expired entitlements are filtered, use <g:link controller="subscriptionDetails" action="index" params="${params+['mode':'advanced']}" button type="button" >Advanced</g:link> view to see them</g:else>
+              )
             </g:if>
             <g:else>
               No entitlements yet
@@ -239,6 +242,12 @@
                   <g:if test="${ie.tipp?.hostPlatformURL}">( <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">Host Link</a> 
                             <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL} (In new window)" target="_blank"><i class="icon-share-alt"></i></a>)</g:if> <br/>
                    Access: ${ie.availabilityStatus?.value}
+                   <g:if test="${ie.availabilityStatus?.value=='Expected'}">
+                     on <g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.accessStartDate}"/>
+                   </g:if>
+                   <g:if test="${ie.availabilityStatus?.value=='Expired'}">
+                     on <g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.accessEndDate}"/>
+                   </g:if>
                    <g:if test="${params.mode=='advanced'}">
                      <br/> Record Status: <g:xEditableRefData owner="${ie}" field="status" config='Entitlement Issue Status'/>
                      <br/> Access Start: <g:xEditable owner="${ie}" type="date" field="accessStartDate" /> (Leave empty to default to sub start date)
