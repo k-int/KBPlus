@@ -14,7 +14,7 @@
         <li><g:link controller="home" action="index">Home</g:link> <span class="divider">/</span></li>
         <li><g:link controller="packageDetails" action="index">All Packages</g:link><span class="divider">/</span></li>
         <li><g:link controller="packageDetails" action="show" id="${packageInstance.id}">${packageInstance.name}</g:link></li>
-        
+
         <li class="dropdown pull-right">
           <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>
 
@@ -26,6 +26,16 @@
             </g:each>
           </ul>
         </li>
+
+        <li class="pull-right">
+          View:
+          <div class="btn-group" data-toggle="buttons-radio">
+            <g:link controller="packageDetails" action="show" params="${params+['mode':'basic']}" class="btn btn-primary btn-mini ${((params.mode=='basic')||(params.mode==null))?'active':''}">Basic</g:link>
+            <g:link controller="packageDetails" action="show" params="${params+['mode':'advanced']}" button type="button" class="btn btn-primary btn-mini ${params.mode=='advanced'?'active':''}">Advanced</g:link>
+          </div>
+          &nbsp;
+        </li>
+        
       </ul>
     </div>
 
@@ -305,8 +315,12 @@
                    ${t.title.title}
                    <g:link controller="titleDetails" action="show" id="${t.title.id}">(Title)</g:link>
                    <g:link controller="tipp" action="show" id="${t.id}">(TIPP)</g:link><br/>
-                   <span title="${t.availabilityStatusExplanation}">Availability: ${t.availabilityStatus?.value}</span><br/> 
-                   Record Status: <g:xEditableRefData owner="${t}" field="status" config='TIPPStatus'/>
+                   <span title="${t.availabilityStatusExplanation}">Access: ${t.availabilityStatus?.value}</span>
+                   <g:if test="${params.mode=='advanced'}">
+                     <br/> Record Status: <g:xEditableRefData owner="${t}" field="status" config='TIPPStatus'/>
+                     <br/> Access Start: <g:xEditable owner="${t}" type="date" field="accessStartDate" />
+                     <br/> Access End: <g:xEditable owner="${t}" type="date" field="accessEndDate" />
+                   </g:if>
                 </td>
                 <td style="white-space: nowrap;vertical-align:top;">
                    <g:if test="${t.hostPlatformURL != null}">
