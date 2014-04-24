@@ -234,7 +234,12 @@
     <div class="container">
 
         <dl>
-          <dt>Titles (${offset+1} to ${lasttipp}  of ${num_tipp_rows})</dt>
+          <dt>Titles (${offset+1} to ${lasttipp}  of ${num_tipp_rows})
+            <g:if test="${params.mode=='advanced'}">Includes Expected or Expired titles, switch to the <g:link controller="packageDetails" action="show" params="${params+['mode':'basic']}">Basic</g:link> view to hide them</g:if>
+                <g:else>Expected or Expired titles are not shown, use the <g:link controller="packageDetails" action="show" params="${params+['mode':'advanced']}" button type="button" >Advanced</g:link> view to see them</g:else>
+              )
+
+          </dt>
           <dd>
 
         <g:form action="show" params="${params}" method="get" class="form-inline">
