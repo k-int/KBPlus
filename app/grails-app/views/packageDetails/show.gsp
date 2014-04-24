@@ -242,7 +242,7 @@
            <input type="hidden" name="order" value="${params.order}">
            <label>Filters - Title:</label> <input name="filter" value="${params.filter}"/>
            <label>Coverage note:</label> <input name="coverageNoteFilter" value="${params.coverageNoteFilter}"/>
-            &nbsp;<label>Starts Before:</label> 
+            &nbsp;<label>Coverage Starts Before:</label> 
             <g:simpleHiddenValue id="startsBefore" name="startsBefore" type="date" value="${params.startsBefore}"/>
             &nbsp;<label>Ends After:</label>
             <g:simpleHiddenValue id="endsAfter" name="endsAfter" type="date" value="${params.endsAfter}"/>
@@ -268,7 +268,7 @@
                   <br/>
                   <table class="table table-bordered">
                     <tr>
-                      <td>Start Date: <g:simpleHiddenValue id="bulk_start_date" name="bulk_start_date" type="date"/> 
+                      <td>Coverage Start Date: <g:simpleHiddenValue id="bulk_start_date" name="bulk_start_date" type="date"/> 
                           <input type="checkbox" name="clear_start_date"/> (Check to clear)</td>
                       <td>Start Volume: <g:simpleHiddenValue id="bulk_start_volume" name="bulk_start_volume" />
                           <input type="checkbox" name="clear_start_volume"/>(Check to clear)</td>
@@ -276,7 +276,7 @@
                           <input type="checkbox" name="clear_start_issue"/>(Check to clear)</td>
                     </tr>
                     <tr>
-                      <td>End Date:  <g:simpleHiddenValue id="bulk_end_date" name="bulk_end_date" type="date"/>
+                      <td>Coverage End Date:  <g:simpleHiddenValue id="bulk_end_date" name="bulk_end_date" type="date"/>
                           <input type="checkbox" name="clear_end_date"/>(Check to clear)</td>
                       <td>End Volume: <g:simpleHiddenValue id="bulk_end_volume" name="bulk_end_volume"/>
                           <input type="checkbox" name="clear_end_volume"/>(Check to clear)</td>
@@ -293,7 +293,7 @@
                     </tr>
                   </table>
                   <button name="BatchSelectedBtn" value="on" onClick="return confirmSubmit()" class="btn btn-primary">Apply Batch Changes (Selected)</button>
-                  <button name="BatchAllBtn" value="on" onClick="return confirmSubmit()" class="btn btn-primary">Apply Batch Changes (All)</button>
+                  <button name="BatchAllBtn" value="on" onClick="return confirmSubmit()" class="btn btn-primary">Apply Batch Changes (All in filtered list)</button>
                 </g:if>
               </th>
             </tr>
