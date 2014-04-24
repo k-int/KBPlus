@@ -219,5 +219,15 @@ class Subscription {
   //      name(facility.name)  
   //    }
   //  }
+
+  public Date getDerivedAccessStartDate() {
+    startDate ? startDate : null
+  }
+
+  public Date getDerivedAccessEndDate() {
+    endDate ? endDate : null
+  }
+
+
 }
 

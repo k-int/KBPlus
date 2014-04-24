@@ -21,8 +21,7 @@ class IssueEntitlement implements Comparable {
   Date coreStatusEnd
   RefdataValue coreStatus
 
-  static belongsTo = [subscription: Subscription,
-                      tipp: TitleInstancePackagePlatform]
+  static belongsTo = [subscription: Subscription, tipp: TitleInstancePackagePlatform]
 
 
   int compareTo(obj) {
@@ -74,5 +73,47 @@ class IssueEntitlement implements Comparable {
     accessStartDate(nullable:true, blank:true);
     accessEndDate(nullable:true, blank:true);
   }
+
+  public Date getDerivedAccessStartDate() {
+    accessStartDate ? accessStartDate : subscription.derivedAccessStartDate
+  }
+
+  public Date getDerivedAccessEndDate() {
+    accessEndDate ? accessEndDate : subscription.derivedAccessEndDate
+  }
+
+  public RefdataValue getAvailabilityStatus() {
+    return getAvailabilityStatus(new Date());
+  }
+
+
+  public RefdataValue getAvailabilityStatus(Date as_at) {
+    def result = null
+    // If StartDate <= as_at <= EndDate - Current
+    // if Date < StartDate - Expected
+    // if Date > EndDate - Expired
+    def ie_access_start_date = getDerivedAccessStartDate()
+    def ie_access_end_date = getDerivedAccessEndDate()
+
+    if ( ( ie_access_start_date == null ) || ( ie_access_end_date == null ) ) {
+      result = RefdataCategory.lookupOrCreate('IE Access Status','ERROR - No Subscription Start and/or End Date');
+    }
+    else if ( ( accessEndDate == null ) && ( as_at > ie_access_end_date ) ) {
+      result = RefdataCategory.lookupOrCreate('IE Access Status','Current(*)');
+    }
+    else if ( as_at < ie_access_start_date ) {
+      // expected
+      result = RefdataCategory.lookupOrCreate('IE Access Status','Expected');
+    }
+    else if ( as_at > ie_access_end_date ) {
+      // expired
+      result = RefdataCategory.lookupOrCreate('IE Access Status','Expired');
+    }
+    else {
+      result = RefdataCategory.lookupOrCreate('IE Access Status','Current');
+    }
+    result
+  }
+
 
 }

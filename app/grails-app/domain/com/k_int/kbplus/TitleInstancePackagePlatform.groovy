@@ -301,18 +301,18 @@ class TitleInstancePackagePlatform {
     def tipp_access_start_date = getDerivedAccessStartDate()
     def tipp_access_end_date = getDerivedAccessEndDate()
     if ( ( accessEndDate == null ) && ( as_at > tipp_access_end_date ) ) {
-      result = RefdataCategory.lookupOrCreate('TIPP Status','Current(*)');
+      result = RefdataCategory.lookupOrCreate('TIPP Access Status','Current(*)');
     }
     else if ( as_at < tipp_access_start_date ) {
       // expected
-      result = RefdataCategory.lookupOrCreate('TIPP Status','Expected');
+      result = RefdataCategory.lookupOrCreate('TIPP Access Status','Expected');
     }
     else if ( as_at > tipp_access_end_date ) {
       // expired
-      result = RefdataCategory.lookupOrCreate('TIPP Status','Expired');
+      result = RefdataCategory.lookupOrCreate('TIPP Access Status','Expired');
     }
     else {
-      result = RefdataCategory.lookupOrCreate('TIPP Status','Current');
+      result = RefdataCategory.lookupOrCreate('TIPP Access Status','Current');
     }
     result
   }

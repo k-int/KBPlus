@@ -28,6 +28,16 @@
               <li><g:link action="index" id="${params.id}" params="${[format:'xml',transformId:transkey]}"> ${transval.name}</g:link></li>
             </g:each>
         </ul>
+
+        <li class="pull-right">
+          View:
+          <div class="btn-group" data-toggle="buttons-radio">
+            <g:link controller="subscriptionDetails" action="index" params="${params+['mode':'basic']}" class="btn btn-primary btn-mini ${((params.mode=='basic')||(params.mode==null))?'active':''}">Basic</g:link>
+            <g:link controller="subscriptionDetails" action="index" params="${params+['mode':'advanced']}" button type="button" class="btn btn-primary btn-mini ${params.mode=='advanced'?'active':''}">Advanced</g:link>
+          </div>
+          &nbsp;
+        </li>
+
     </li>
         <g:if test="${editable}">
           <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
@@ -228,9 +238,13 @@
                   <g:link controller="issueEntitlement" id="${ie.id}" action="show">${ie.tipp.title.title}</g:link>
                   <g:if test="${ie.tipp?.hostPlatformURL}">( <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">Host Link</a> 
                             <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL} (In new window)" target="_blank"><i class="icon-share-alt"></i></a>)</g:if> <br/>
-                  <g:if test="${(ie.accessStartDate==null)&&(ie.accessEndDate==null)}"> 
-                    Access Dates as Subscription <g:link>(Override)</g:link>
-                  </g:if>
+                   Access: ${ie.availabilityStatus?.value}
+                   <g:if test="${params.mode=='advanced'}">
+                     <br/> Record Status: <g:xEditableRefData owner="${ie}" field="status" config='Entitlement Issue Status'/>
+                     <br/> Access Start: <g:xEditable owner="${ie}" type="date" field="accessStartDate" /> (Leave empty to default to sub start date)
+                     <br/> Access End: <g:xEditable owner="${ie}" type="date" field="accessEndDate" /> (Leave empty to default to sub end date)
+                   </g:if>
+
                 </td>
                 <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}<br/>
                 ${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
