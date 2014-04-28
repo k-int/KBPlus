@@ -21,7 +21,6 @@ class TitleInstancePackagePlatform {
                                      'embargo',
                                      'coverageDepth',
                                      'coverageNote',
-                                     'hostPlatformURL',
                                      'accessStartDate',
                                      'accessEndDate' ]
 
