@@ -80,6 +80,30 @@ class HomeController {
                     field = 'rectype'
                   }
                 }
+                startYear {
+                  terms {
+                    field = 'startYear'
+                    size = 25
+                  }
+                }
+                endYear {
+                  terms {
+                    field = 'endYear'
+                    size = 25
+                  }
+                }
+                consortiaName {
+                  terms {
+                    field = 'consortiaName'
+                    size = 25
+                  }
+                }
+                cpname {
+                  terms {
+                    field = 'cpname'
+                    size = 25
+                  }
+                }
               }
   
             }
