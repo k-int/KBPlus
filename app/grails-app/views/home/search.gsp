@@ -49,7 +49,7 @@
         <g:form role="form" action="search" controller="home" method="get" class="form-inline">
           <fieldset>
 
-            <g:each in="${['collections','categories','subjects']}" var="facet">
+            <g:each in="${['type']}" var="facet">
               <g:each in="${params.list(facet)}" var="selected_facet_value"><input type="hidden" name="${facet}" value="${selected_facet_value}"/></g:each>
             </g:each>
 
@@ -63,9 +63,9 @@
           </fieldset>
         </g:form>
         <p>
-          <g:each in="${['collections','categories','subjects']}" var="facet">
+          <g:each in="${['type']}" var="facet">
             <g:each in="${params.list(facet)}" var="fv">
-              <span class="badge alert-info">${fv} &nbsp; <g:link controller="home" action="search" params="${removeFacet(params,facet,fv)}"><span class="glyphicon glyphicon-remove"></span></g:link></span>
+              <span class="badge alert-info">${fv} &nbsp; <g:link controller="home" action="search" params="${removeFacet(params,facet,fv)}"><i class="icon-remove icon-white"></i></g:link></span>
             </g:each>
           </g:each>
         </p>
@@ -78,7 +78,7 @@
 
 
       <div class="container-fluid">
-        <div class="facetFilter col-lg-3">
+        <div class="facetFilter span3">
           <g:each in="${facets}" var="facet">
             <div class="panel panel-default">
               <div class="panel-heading">
@@ -103,7 +103,66 @@
             </div>
           </g:each>
         </div>
-        <div class="col-lg-9">
+        <div class="span9">
+
+
+              <g:if test="${hits}" >
+                <div class="paginateButtons" style="text-align:center">
+                  <g:if test="${params.int('offset')}">
+                   Showing Results ${params.int('offset') + 1} - ${hits.totalHits < (params.int('max') + params.int('offset')) ? hits.totalHits : (params.int('max') + params.int('offset'))} of ${hits.totalHits}
+                  </g:if>
+                  <g:elseif test="${hits.totalHits && hits.totalHits > 0}">
+                    Showing Results 1 - ${hits.totalHits < params.int('max') ? hits.totalHits : params.int('max')} of ${hits.totalHits}
+                  </g:elseif>
+                  <g:else>
+                    Showing ${hits.totalHits} Results
+                  </g:else>
+                </div>
+
+
+                <div id="resultsarea">
+                  <table cellpadding="5" cellspacing="5">
+                    <tr><th>Type</th><th>Title/Name</th><th>Additional Info</th></tr>
+                    <g:each in="${hits}" var="hit">
+                      <tr>
+                        <td>
+                          <g:if test="${hit.type=='com.k_int.kbplus.Org'}"><span class="label label-info">Organisation</span></g:if>
+                          <g:if test="${hit.type=='com.k_int.kbplus.TitleInstance'}"><span class="label label-info">Title Instance</span></g:if>
+                          <g:if test="${hit.type=='com.k_int.kbplus.Package'}"><span class="label label-info">Package</span></g:if>
+                          <g:if test="${hit.type=='com.k_int.kbplus.Platform'}"><span class="label label-info">Platform</span></g:if>
+                          <g:if test="${hit.type=='com.k_int.kbplus.Subscription'}"><span class="label label-info">Subscription</span></g:if>
+                          <g:if test="${hit.type=='com.k_int.kbplus.License'}"><span class="label label-info">License</span></g:if>
+                        </td>
+                        <g:if test="${hit.type=='com.k_int.kbplus.Org'}">
+                            <td><g:link controller="org" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
+                        </g:if>
+                        <g:if test="${hit.type=='com.k_int.kbplus.TitleInstance'}">
+                          <td><g:link controller="titleInstance" action="show" id="${hit.source.dbId}">${hit.source.title}</g:link></td>
+                          <td>
+                            <g:each in="${hit.source.identifiers}" var="id">
+                              ${id.type}:${id.value} &nbsp;
+                            </g:each>
+                          </td>
+                        </g:if>
+                        <g:if test="${hit.type=='com.k_int.kbplus.Package'}">
+                          <td><g:link controller="package" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
+                        </g:if>
+                        <g:if test="${hit.type=='com.k_int.kbplus.Platform'}">
+                          <td><g:link controller="platform" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
+                        </g:if>
+                        <g:if test="${hit.type=='com.k_int.kbplus.Subscription'}">
+                          <td><g:link controller="subscription" action="show" id="${hit.source.dbId}">${hit.source.name} (${hit.source.type})</g:link></td>
+                          <td>${hit.source.identifier}</td>
+                        </g:if>
+                        <g:if test="${hit.type=='com.k_int.kbplus.License'}">
+                          <td><g:link controller="license" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
+                        </g:if>
+                      </tr>
+                    </g:each>
+                  </table>
+                </div>
+              </g:if>
+
         </div>
       </div>
     </div>
