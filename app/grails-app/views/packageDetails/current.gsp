@@ -9,7 +9,6 @@
   <body>
 
 
-
     <div class="container">
       <ul class="breadcrumb">
         <li><g:link controller="home" action="index">Home</g:link> <span class="divider">/</span></li>
@@ -83,7 +82,8 @@
                         data-pk="${packageInstance.class.name}:${packageInstance.id}"
                         data-name="name"
                         data-url='<g:createLink controller="ajax" action="editableSetValue"/>'>${packageInstance.name}</span></g:if><g:else>${packageInstance.name}</g:else></h1>
-           <g:render template="nav" contextPath="." />
+            <g:render template="nav" contextPath="." />
+
             <sec:ifAnyGranted roles="ROLE_ADMIN,KBPLUS_EDITOR">
             <g:link controller="announcement" action="index" params='[at:"Package Link: ${pkg_link_str}",as:"RE: Package ${packageInstance.name}"]'>Mention this package in an announcement</g:link> |
             </sec:ifAnyGranted>
@@ -109,129 +109,6 @@
         </ul>
         </bootstrap:alert>
         </g:hasErrors>
-
-    <div class="container">
-      <div class="row">
-        <div class="span8">
-            <h6>Package Information
-          <div class="btn-group pull-right" data-toggle="buttons-radio">
-            <g:link controller="packageDetails" action="show" params="${params+['mode':'basic']}" class="btn btn-primary btn-mini ${((params.mode=='basic')||(params.mode==null))?'active':''}">Basic</g:link>
-            <g:link controller="packageDetails" action="show" params="${params+['mode':'advanced']}" button type="button" class="btn btn-primary btn-mini ${params.mode=='advanced'?'active':''}">Advanced</g:link>
-          </div>
-          &nbsp;
-</h6>
-            <g:hiddenField name="version" value="${packageInstance?.version}" />
-            <fieldset class="inline-lists">
-
-              <dl>
-                <dt>Package Name</dt>
-                <dd> <g:xEditable owner="${packageInstance}" field="name"/></dd>
-              </dl>
-              
-              <dl>
-                <dt>Package Persistent Identifier</dt>
-                <dd>uri://kbplus/${grailsApplication.config.kbplusSystemId}/package/${packageInstance?.id}</dd>
-              </dl>
-              
-              <dl>
-                <dt>Public?</dt>
-                <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="isPublic" config='YN'/>
-                </dd>
-              </dl> 
-
-              <dl>
-                <dt>License</dt>
-                <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="license" config='Licenses'/>
-                </dd>
-              </dl>
-
-
-                <dl>
-                  <dt>Start Date</dt>
-                  <dd>
-                    <g:xEditable owner="${packageInstance}" field="startDate" type="date"/>
-                </dd>
-                </dl>
-
-               <dl>
-                    <dt>End Date</dt>
-                    <dd>
-                       <g:xEditable owner="${packageInstance}" field="endDate" type="date"/>
-                    </dd>
-               </dl>
-
-
-
-              <dl>
-                <dt>Org Links</dt>
-                <dd><g:render template="orgLinks" 
-                            contextPath="../templates" 
-                            model="${[roleLinks:packageInstance?.orgs,parent:packageInstance.class.name+':'+packageInstance.id,property:'orgs',editmode:editable]}" /></dd>
-              </dl>
-
-             <dl>
-                <dt>List Status</dt>
-                <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="packageListStatus" config='Package.ListStatus'/>
-                </dd>
-             </dl>
-
-             <dl>
-                <dt>Breakable</dt>
-                <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="breakable" config='Package.Breakable'/>
-                </dd>
-             </dl>
-
-             <dl>
-                <dt>Consistent</dt>
-                <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="consistent" config='Package.Consistent'/>
-                </dd>
-             </dl>
-
-             <dl>
-                <dt>Fixed</dt>
-                <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="fixed" config='Package.Fixed'/>
-                </dd>
-             </dl>
-
-              <dl>
-                <dt>Package Scope</dt>
-                <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="packageScope" config='Package.Scope'/>
-                </dd>
-              </dl>
-
-          </fieldset>
-        </div>
-        <div class="span4">
-          <div class="well notes">
-            <g:if test="${(subscriptionList != null) && (subscriptionList?.size() > 0)}">
-              <h5>Add package to institutional subscription:</h5>
-              <g:form controller="packageDetails" action="addToSub" id="${packageInstance.id}">
-                <select name="subid">
-                  <g:each in="${subscriptionList}" var="s">
-                    <option value="${s.sub.id}">${s.sub.name ?: "unnamed subscription ${s.sub.id}"} - ${s.org.name}</option>
-                  </g:each>
-                </select><br/>
-                Create Entitlements in Subscription: <input type="checkbox" name="addEntitlements" value="true"/><br/>
-                <input type="submit"/>
-              </g:form>
-            </g:if>
-            <g:else>
-              No subscriptions available to link to this package
-            </g:else>
-          </div>
-    
-          <g:render template="documents" contextPath="../templates" model="${[doclist:packageInstance.documents, ownobj:packageInstance, owntp:'pkg']}" />
-          <g:render template="notes" contextPath="../templates" model="${[doclist:packageInstance.documents, ownobj:packageInstance, owntp:'pkg']}" />
-        </div>
-      </div>
-    </div>
 
     <div class="container">
 

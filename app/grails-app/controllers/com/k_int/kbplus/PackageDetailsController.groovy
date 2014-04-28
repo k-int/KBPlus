@@ -221,6 +221,52 @@ class PackageDetailsController {
     }
   }
 
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def current() {
+    log.debug("current ${params}");
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    def packageInstance = Package.get(params.id)
+    if (!packageInstance) {
+      flash.message = message(code: 'default.not.found.message', args: [message(code: 'package.label', default: 'Package'), params.id])
+      redirect action: 'list'
+      return
+    }
+    result.packageInstance = packageInstance
+    result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def expected() {
+    log.debug("expected ${params}");
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    def packageInstance = Package.get(params.id)
+    if (!packageInstance) {
+      flash.message = message(code: 'default.not.found.message', args: [message(code: 'package.label', default: 'Package'), params.id])
+      redirect action: 'list'
+      return
+    }
+    result.packageInstance = packageInstance
+    result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def previous() {
+    log.debug("previous ${params}");
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    def packageInstance = Package.get(params.id)
+    if (!packageInstance) {
+      flash.message = message(code: 'default.not.found.message', args: [message(code: 'package.label', default: 'Package'), params.id])
+      redirect action: 'list'
+      return
+    }
+    result.packageInstance = packageInstance
+    result
+  }
+
+
   def generateBasePackageQuery(params, qry_params, showDeletedTipps, asAt) {
 
     def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
