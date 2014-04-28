@@ -13,7 +13,10 @@ class HomeController {
   def springSecurityService
 
   // Map the parameter names we use in the webapp with the ES fields
-  def reversemap = ['subject':'subject', 'provider':'provid', 'studyMode':'presentations.studyMode','qualification':'qual.type','level':'qual.level' ]
+  def reversemap = ['subject':'subject', 
+                    'provider':'provid',
+                    'type':'rectype'
+                    ]
  
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() { 
@@ -148,11 +151,13 @@ class HomeController {
     else
       sw.write("*:*")
       
+    
     reversemap.each { mapping ->
 
-      // log.debug("testing ${mapping.key}");
+      log.debug("testing reverse mapping ${mapping.key}");
 
       if ( params[mapping.key] != null ) {
+        log.debug("Found...");
         if ( params[mapping.key].class == java.util.ArrayList) {
           params[mapping.key].each { p ->  
                 sw.write(" AND ")
