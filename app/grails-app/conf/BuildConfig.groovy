@@ -34,7 +34,7 @@ grails.project.dependency.resolution = {
 
         // uncomment these to enable remote dependency resolution from public Maven repositories
         //mavenCentral()
-        //mavenLocal()
+        mavenLocal()
         //mavenRepo "http://snapshots.repository.codehaus.org"
         //mavenRepo "http://repository.codehaus.org"
         //mavenRepo "http://download.java.net/maven/2/"
@@ -52,7 +52,8 @@ grails.project.dependency.resolution = {
         compile 'commons-codec:commons-codec:1.6'
         runtime 'mysql:mysql-connector-java:5.1.30'
         runtime 'com.gmongo:gmongo:1.1'
-        runtime 'org.elasticsearch:elasticsearch-lang-groovy:1.4.0'
+        runtime 'org.elasticsearch:elasticsearch:1.0.1'
+        runtime 'org.elasticsearch:elasticsearch-client-groovy:1.0.1'
         runtime 'gov.loc:bagit:4.0'
         runtime 'org.apache.poi:poi:3.8'
         runtime 'net.sf.opencsv:opencsv:2.0'
