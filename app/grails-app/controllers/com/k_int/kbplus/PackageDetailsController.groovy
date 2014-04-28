@@ -225,6 +225,7 @@ class PackageDetailsController {
   def current() {
     log.debug("current ${params}");
     def result = [:]
+    boolean showDeletedTipps=false
     result.user = User.get(springSecurityService.principal.id)
     def packageInstance = Package.get(params.id)
     if (!packageInstance) {
@@ -233,6 +234,27 @@ class PackageDetailsController {
       return
     }
     result.packageInstance = packageInstance
+
+    result.max = params.max ? Integer.parseInt(params.max) : 25
+    params.max = result.max
+    def paginate_after = params.paginate_after ?: ( (2*result.max)-1);
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
+    def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
+
+    // def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
+    def qry_params = [packageInstance]
+    def date_filter =  params.mode == 'advanced' ? null : new Date();
+
+    def base_qry = generateBasePackageQuery(params, qry_params, showDeletedTipps, date_filter);
+
+    log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
+    result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, limits);
+    result.num_tipp_rows = TitleInstancePackagePlatform.executeQuery("select count(tipp) "+base_qry, qry_params )[0]
+
+    result.lasttipp = result.offset + result.max > result.num_tipp_rows ? result.num_tipp_rows : result.offset + result.max;
+
+
     result
   }
 
@@ -240,6 +262,7 @@ class PackageDetailsController {
   def expected() {
     log.debug("expected ${params}");
     def result = [:]
+    boolean showDeletedTipps=false
     result.user = User.get(springSecurityService.principal.id)
     def packageInstance = Package.get(params.id)
     if (!packageInstance) {
@@ -248,6 +271,26 @@ class PackageDetailsController {
       return
     }
     result.packageInstance = packageInstance
+
+    result.max = params.max ? Integer.parseInt(params.max) : 25
+    params.max = result.max
+    def paginate_after = params.paginate_after ?: ( (2*result.max)-1);
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
+    def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
+
+    // def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
+    def qry_params = [packageInstance]
+    def date_filter =  params.mode == 'advanced' ? null : new Date();
+
+    def base_qry = generateBasePackageQuery(params, qry_params, showDeletedTipps, date_filter);
+
+    log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
+    result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, limits);
+    result.num_tipp_rows = TitleInstancePackagePlatform.executeQuery("select count(tipp) "+base_qry, qry_params )[0]
+
+    result.lasttipp = result.offset + result.max > result.num_tipp_rows ? result.num_tipp_rows : result.offset + result.max;
+
     result
   }
 
@@ -255,6 +298,7 @@ class PackageDetailsController {
   def previous() {
     log.debug("previous ${params}");
     def result = [:]
+    boolean showDeletedTipps=false
     result.user = User.get(springSecurityService.principal.id)
     def packageInstance = Package.get(params.id)
     if (!packageInstance) {
@@ -263,6 +307,26 @@ class PackageDetailsController {
       return
     }
     result.packageInstance = packageInstance
+
+    result.max = params.max ? Integer.parseInt(params.max) : 25
+    params.max = result.max
+    def paginate_after = params.paginate_after ?: ( (2*result.max)-1);
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
+    def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
+
+    // def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
+    def qry_params = [packageInstance]
+    def date_filter =  params.mode == 'advanced' ? null : new Date();
+
+    def base_qry = generateBasePackageQuery(params, qry_params, showDeletedTipps, date_filter);
+
+    log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
+    result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, limits);
+    result.num_tipp_rows = TitleInstancePackagePlatform.executeQuery("select count(tipp) "+base_qry, qry_params )[0]
+
+    result.lasttipp = result.offset + result.max > result.num_tipp_rows ? result.num_tipp_rows : result.offset + result.max;
+
     result
   }
 
