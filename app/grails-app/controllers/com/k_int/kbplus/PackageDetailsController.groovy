@@ -285,10 +285,9 @@ class PackageDetailsController {
 
     def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
     base_qry += "and tipp.status.value != 'Deleted' "
-    if ( asAt != null ) {
-      base_qry += " and ( ( ? >= coalesce(tipp.accessStartDate, tipp.pkg.startDate) ) and ( ( ? <= tipp.accessEndDate ) or ( tipp.accessEndDate is null ) ) ) "
-      qry_params.add(asAt);
-      qry_params.add(asAt);
+    if ( date_filter != null ) {
+      base_qry += " and ( coalesce(tipp.accessStartDate, tipp.pkg.startDate) >= ? ) "
+      qry_params.add(date_filter);
     }
 
 
@@ -329,12 +328,10 @@ class PackageDetailsController {
 
     def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
     base_qry += "and tipp.status.value != 'Deleted' "
-    if ( asAt != null ) {
-      base_qry += " and ( ( ? >= coalesce(tipp.accessStartDate, tipp.pkg.startDate) ) and ( ( ? <= tipp.accessEndDate ) or ( tipp.accessEndDate is null ) ) ) "
-      qry_params.add(asAt);
-      qry_params.add(asAt);
+    if ( date_filter != null ) {
+      base_qry += " and ( tipp.accessEndDate <= ? ) "
+      qry_params.add(date_filter);
     }
-
 
     log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
     result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, limits);
