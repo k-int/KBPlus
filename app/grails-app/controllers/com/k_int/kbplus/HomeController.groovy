@@ -15,8 +15,11 @@ class HomeController {
   // Map the parameter names we use in the webapp with the ES fields
   def reversemap = ['subject':'subject', 
                     'provider':'provid',
-                    'type':'rectype'
-                    ]
+                    'type':'rectype',
+                    'endYear':'endYear',
+                    'startYear':'startYear',
+                    'consortiaName':'consortiaName',
+                    'cpname':'cpname' ]
  
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() { 

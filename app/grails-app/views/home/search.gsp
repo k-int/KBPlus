@@ -49,7 +49,7 @@
         <g:form role="form" action="search" controller="home" method="get" class="form-inline">
           <fieldset>
 
-            <g:each in="${['type']}" var="facet">
+            <g:each in="${['type','endYear','startYear','consortiaName','cpname']}" var="facet">
               <g:each in="${params.list(facet)}" var="selected_facet_value"><input type="hidden" name="${facet}" value="${selected_facet_value}"/></g:each>
             </g:each>
 
@@ -63,9 +63,9 @@
           </fieldset>
         </g:form>
         <p>
-          <g:each in="${['type']}" var="facet">
+          <g:each in="${['type','endYear','startYear','consortiaName','cpname']}" var="facet">
             <g:each in="${params.list(facet)}" var="fv">
-              <span class="badge alert-info">${fv} &nbsp; <g:link controller="home" action="search" params="${removeFacet(params,facet,fv)}"><i class="icon-remove icon-white"></i></g:link></span>
+              <span class="badge alert-info">${facet}:${fv} &nbsp; <g:link controller="home" action="search" params="${removeFacet(params,facet,fv)}"><i class="icon-remove icon-white"></i></g:link></span>
             </g:each>
           </g:each>
         </p>
