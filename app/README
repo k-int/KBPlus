@@ -36,6 +36,7 @@ Testing
 
 Experimenting with functional-test
 
+Run unit tests with grails test-app -unit
 First test in test/functional/demo/DataloadFunctionalTests.groovy run with grails test-app -functional
 
 
