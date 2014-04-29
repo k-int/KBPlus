@@ -13,23 +13,23 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
 
   def getPreAuthenticatedPrincipal(javax.servlet.http.HttpServletRequest request) {
 
-    log.debug("EdiauthFilter::getPreAuthenticatedPrincipal ${request}");
+    // log.debug("EdiauthFilter::getPreAuthenticatedPrincipal ${request}");
 
     def result
 
     if ( grailsApplication?.config?.kbplus?.authmethod=='shib' ) {
       if ( request.getRemoteUser() != null ) {
-        log.debug("In shibboleth authentication mode. If we're here - the user is pre-authenticated. Extract username and make sure there is a user record");
+        // log.debug("In shibboleth authentication mode. If we're here - the user is pre-authenticated. Extract username and make sure there is a user record");
         // User ID should be in request.getAttribute('persistent-id');
-        log.debug("Remote User(fn):: ${request.getRemoteUser()}");
-        log.debug("Remote User:: ${request.getAttribute('REMOTE_USER')}");
-        log.debug("Persistent Id:: ${request.getAttribute('persistent-id')}");
+        // log.debug("Remote User(fn):: ${request.getRemoteUser()}");
+        // log.debug("Remote User:: ${request.getAttribute('REMOTE_USER')}");
+        // log.debug("Persistent Id:: ${request.getAttribute('persistent-id')}");
   
 
         User.withTransaction { status ->
           def existing_user = User.findByUsername(request.getRemoteUser())
           if ( existing_user ) {
-            log.debug("User found, all is well");
+            // log.debug("User found, all is well");
           }
           else {
             existing_user = new User(

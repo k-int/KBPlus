@@ -30,8 +30,8 @@
         <li class="pull-right">
           View:
           <div class="btn-group" data-toggle="buttons-radio">
-            <g:link controller="packageDetails" action="show" params="${params+['mode':'basic']}" class="btn btn-primary btn-mini ${((params.mode=='basic')||(params.mode==null))?'active':''}">Basic</g:link>
-            <g:link controller="packageDetails" action="show" params="${params+['mode':'advanced']}" button type="button" class="btn btn-primary btn-mini ${params.mode=='advanced'?'active':''}">Advanced</g:link>
+            <g:link controller="packageDetails" action="expected" params="${params+['mode':'basic']}" class="btn btn-primary btn-mini ${((params.mode=='basic')||(params.mode==null))?'active':''}">Basic</g:link>
+            <g:link controller="packageDetails" action="expected" params="${params+['mode':'advanced']}" button type="button" class="btn btn-primary btn-mini ${params.mode=='advanced'?'active':''}">Advanced</g:link>
           </div>
           &nbsp;
         </li>
