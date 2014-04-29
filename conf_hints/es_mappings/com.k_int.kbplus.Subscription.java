@@ -1,0 +1,16 @@
+{
+    "com.k_int.kbplus.Subscription" : {
+        "properties" : {
+          "name" : { type : "string" },
+          "subtype" : { type : "string", index : "not_analyzed" },
+          "consortia" : { type : "string", index : "not_analyzed" },
+          "consortiaName" : { type : "string", index : "not_analyzed" },
+          "contentProvider" : { type : "string", index : "not_analyzed" },
+          "cpname" : { type : "string", index : "not_analyzed" },
+          "cpid" : { type : "string", index : "not_analyzed" },
+          "startYear" : { type : "string", index : "not_analyzed" },
+          "startYearAndMonth" : { type : "string", index : "not_analyzed" }
+        }
+    }
+}
+

@@ -1,0 +1,8 @@
+{
+    "com.k_int.kbplus.License" : {
+        "properties" : {
+            "license" : {"type" : "string", "store" : true }
+        }
+    }
+}
+
