@@ -1,15 +1,8 @@
 package com.k_int.kbplus.onixpl
 
-import java.util.List;
-import java.util.Map;
-
-import grails.transaction.Transactional
 import grails.util.GrailsNameUtils
-import groovy.util.slurpersupport.GPathResult
 
 import com.k_int.kbplus.OnixplLicense
-import com.k_int.xml.OnixPLDoc
-import com.k_int.xml.XMLDoc
 
 
 /**
@@ -134,6 +127,13 @@ class OnixPLService {
   }
   
   /**
+   * Build the table data
+   */
+  private Map buildTable (def data) {
+    
+  }
+  
+  /**
    * Compares the licenses and returns the results as a map.
    * @param license
    * @param licenses_to_compare
@@ -141,47 +141,57 @@ class OnixPLService {
    */
   public Map compareLicenses (OnixplLicense license, List<OnixplLicense> licenses_to_compare, List<String> sections = null, String return_filter = COMPARE_RETURN_ALL) {
     
+    // The attributes for comparison. These will be lower-cased and compared. 
+    def comp = [
+      '_ns',
+      '_name',
+      '_content'
+    ]
+    
     // Map for the result.
     TreeMap result = [:]
     
     // Get the main license as a map.
-    def main = license.toMap(sections)
+    // This will form the base of each of our tables.
+    Map main = license.toMap(sections)
+    
+    // Use the main license, going through each section forming a map representing
+    // each table and its data.
+    for (String tableName in main.keySet()) {
+      
+      // Construct a path that we are looking at.
+      def path = [tableName]
+      
+      // The data.
+      def data = main[tableName]
+      
+      // Should be a single keyed map.
+      def xpath = data.keySet()[0]
+      path << xpath
+      
+      // Now go through the data.
+      data = data[xpath]
+      
+      
+    }
     
     // Add the main to the result.
     result["${license.title}"] = main
     
-    // Now we need to check each license and decide whether it satisfies our filter (if not all).
-    for (OnixplLicense l : licenses_to_compare) {
-      
-      // Get each map in turn passing in the main license for comparison.
-      def license_map = l.toMap(sections, main)
-      
-      // Add the map to the results?
-      boolean filter_out = false
-//      switch (return_filter) {
-//        case COMPARE_RETURN_SAME:
-//          def vals = license_map.values()?.getAt(0)?.values()
-//          for (int i=0; !filter_out && i<vals.size(); i++) {
-//            def val = vals[i]
-//            def keys = val.keySet()
-//            def eq = val['_equality']
-//            filter_out = !val['_equality']
-//          }
-//          break
-//        case COMPARE_RETURN_DIFFERENT:
-//          def vals = license_map.values()
-//          for (int i=0; !filter_out && i<vals.size(); i++) {
-//            def val = vals[i]
-//            filter_out = val['_equality']
-//          }
-//          break
+//    // Now we need to check each license and decide whether it satisfies our filter (if not all).
+//    for (OnixplLicense l : licenses_to_compare) {
+//      
+//      // Get each map in turn passing in the main license for comparison.
+//      def license_map = l.toMap(sections, main)
+//      
+//      // Add the map to the results?
+//      boolean filter_out = false
+//      
+//      // Add the licence to the map, if we are to add it.
+//      if (!filter_out) {
+//        result["${l.title}"] = license_map
 //      }
-      
-      // Add the licence to the map, if we are to add it.
-      if (!filter_out) {
-        result["${l.title}"] = license_map
-      }
-    }
+//    }
     
     // Return the result.
     result

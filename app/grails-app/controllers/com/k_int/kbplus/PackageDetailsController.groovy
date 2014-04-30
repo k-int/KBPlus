@@ -483,7 +483,7 @@ class PackageDetailsController {
           
           log.debug("query: ${query_str}");
           result.es_query = query_str;
-
+          
          def search = esclient.search{
             indices "kbplus"
             source {
