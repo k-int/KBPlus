@@ -2,6 +2,9 @@ package com.k_int.kbplus
 
 class IssueEntitlement implements Comparable {
 
+  Date accessStartDate
+  Date accessEndDate
+
   RefdataValue status
   Date startDate
   String startVolume
@@ -18,8 +21,7 @@ class IssueEntitlement implements Comparable {
   Date coreStatusEnd
   RefdataValue coreStatus
 
-  static belongsTo = [subscription: Subscription,
-                      tipp: TitleInstancePackagePlatform]
+  static belongsTo = [subscription: Subscription, tipp: TitleInstancePackagePlatform]
 
 
   int compareTo(obj) {
@@ -43,9 +45,11 @@ class IssueEntitlement implements Comparable {
       coverageNote column:'ie_coverage_note',type: 'text'
          // coreTitle column:'ie_core_title'
           ieReason column:'ie_reason'
-   coreStatusStart comumn:'ie_core_status_start'
-     coreStatusEnd comumn:'ie_core_status_end'
-        coreStatus comumn:'ie_core_status_rv_fk'
+   // coreStatusStart comumn:'ie_core_status_start'
+   //   coreStatusEnd comumn:'ie_core_status_end'
+   //      coreStatus comumn:'ie_core_status_rv_fk'
+   accessStartDate column:'ie_access_start_date'
+     accessEndDate column:'ie_access_end_date'
   }
 
   static constraints = {
@@ -66,6 +70,50 @@ class IssueEntitlement implements Comparable {
     coreStatusStart(nullable:true, blank:true);
     coreStatusEnd(nullable:true, blank:true);
     coreStatus(nullable:true, blank:true);
+    accessStartDate(nullable:true, blank:true);
+    accessEndDate(nullable:true, blank:true);
   }
+
+  public Date getDerivedAccessStartDate() {
+    accessStartDate ? accessStartDate : subscription.derivedAccessStartDate
+  }
+
+  public Date getDerivedAccessEndDate() {
+    accessEndDate ? accessEndDate : subscription.derivedAccessEndDate
+  }
+
+  public RefdataValue getAvailabilityStatus() {
+    return getAvailabilityStatus(new Date());
+  }
+
+
+  public RefdataValue getAvailabilityStatus(Date as_at) {
+    def result = null
+    // If StartDate <= as_at <= EndDate - Current
+    // if Date < StartDate - Expected
+    // if Date > EndDate - Expired
+    def ie_access_start_date = getDerivedAccessStartDate()
+    def ie_access_end_date = getDerivedAccessEndDate()
+
+    if ( ( ie_access_start_date == null ) || ( ie_access_end_date == null ) ) {
+      result = RefdataCategory.lookupOrCreate('IE Access Status','ERROR - No Subscription Start and/or End Date');
+    }
+    else if ( ( accessEndDate == null ) && ( as_at > ie_access_end_date ) ) {
+      result = RefdataCategory.lookupOrCreate('IE Access Status','Current(*)');
+    }
+    else if ( as_at < ie_access_start_date ) {
+      // expected
+      result = RefdataCategory.lookupOrCreate('IE Access Status','Expected');
+    }
+    else if ( as_at > ie_access_end_date ) {
+      // expired
+      result = RefdataCategory.lookupOrCreate('IE Access Status','Expired');
+    }
+    else {
+      result = RefdataCategory.lookupOrCreate('IE Access Status','Current');
+    }
+    result
+  }
+
 
 }

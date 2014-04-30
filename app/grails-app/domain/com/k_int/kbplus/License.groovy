@@ -39,6 +39,8 @@ class License {
   String licenseType
   String licenseStatus
   long lastmod
+  Date startDate
+  Date endDate
 
   static hasOne = [onixplLicense: OnixplLicense]
 
@@ -91,6 +93,8 @@ class License {
               documents sort:'owner.id', order:'desc'
           onixplLicense column: 'lic_opl_fk'
         licenseCategory column: 'lic_category_rdv_fk'
+              startDate column: 'lic_start_date'
+                endDate column: 'lic_end_date'
   }
 
   static constraints = {
@@ -119,6 +123,8 @@ class License {
     lastmod(nullable:true, blank:true)
     onixplLicense(nullable: true, blank: true)
     licenseCategory(nullable: true, blank: true)
+    startDate(nullable: true, blank: true)
+    endDate(nullable: true, blank: true)
  }
 
   def getLicensor() {

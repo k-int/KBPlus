@@ -28,6 +28,16 @@
               <li><g:link action="index" id="${params.id}" params="${[format:'xml',transformId:transkey]}"> ${transval.name}</g:link></li>
             </g:each>
         </ul>
+
+        <li class="pull-right">
+          View:
+          <div class="btn-group" data-toggle="buttons-radio">
+            <g:link controller="subscriptionDetails" action="index" params="${params+['mode':'basic']}" class="btn btn-primary btn-mini ${((params.mode=='basic')||(params.mode==null))?'active':''}">Basic</g:link>
+            <g:link controller="subscriptionDetails" action="index" params="${params+['mode':'advanced']}" button type="button" class="btn btn-primary btn-mini ${params.mode=='advanced'?'active':''}">Advanced</g:link>
+          </div>
+          &nbsp;
+        </li>
+
     </li>
         <g:if test="${editable}">
           <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
@@ -143,7 +153,10 @@
         <dt>
           <g:annotatedLabel owner="${subscriptionInstance}" property="entitlements">
             <g:if test="${entitlements?.size() > 0}">
-              Entitlements ( ${offset+1} to ${offset+(entitlements?.size())} of ${num_sub_rows} )
+              Entitlements ( ${offset+1} to ${offset+(entitlements?.size())} of ${num_sub_rows}. 
+                <g:if test="${params.mode=='advanced'}">Includes Expected or Expired entitlements, switch to <g:link controller="subscriptionDetails" action="index" params="${params+['mode':'basic']}">Basic</g:link> view to hide</g:if>
+                <g:else>Expected or Expired entitlements are filtered, use <g:link controller="subscriptionDetails" action="index" params="${params+['mode':'advanced']}" button type="button" >Advanced</g:link> view to see them</g:else>
+              )
             </g:if>
             <g:else>
               No entitlements yet
@@ -167,20 +180,26 @@
           <g:form action="subscriptionBatchUpdate" params="${[id:subscriptionInstance?.id]}" class="form-inline">
           <g:set var="counter" value="${offset+1}" />
           <table  class="table table-striped table-bordered">
+            <thead>
 
             <tr>
-              <th></th>
-              <th>#</th>
+              <th rowspan="2"></th>
+              <th rowspan="2">#</th>
               <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
               <th>ISSN</th>
-              <th>eISSN</th>
-              <g:sortableColumn params="${params}" property="coreStatus" title="Core Status" />
-              <g:sortableColumn params="${params}" property="startDate" title="Start Date" />
-              <g:sortableColumn params="${params}" property="endDate" title="End Date" />
+              <g:sortableColumn params="${params}" property="coreStatus" title="Core" />
+              <g:sortableColumn params="${params}" property="startDate" title="Coverage Start Date" />
               <g:sortableColumn params="${params}" property="coreStatusStart" title="Core Start Date" />
-              <g:sortableColumn params="${params}" property="coreStatusEnd" title="Core End Date" />
-              <th>Actions</th>
+              <th rowspan="2">Actions</th>
             </tr>  
+
+            <tr>
+              <th>Access Dates</th>
+              <th>eISSN</th>
+              <th></th>
+              <g:sortableColumn params="${params}" property="endDate" title="Coverage End Date" />
+              <g:sortableColumn params="${params}" property="coreStatusEnd" title="Core End Date"  />
+            </tr>
 
             <tr class="no-background">  
 
@@ -188,25 +207,30 @@
                 <g:if test="${editable}"><input type="checkbox" name="chkall" onClick="javascript:selectAll();"/></g:if>
               </th>
 
-              <th colspan="4">
+              <th colspan="3">
                 <g:if test="${editable}">
                   <select id="bulkOperationSelect" name="bulkOperation">
                     <option value="edit">Edit Selected</option>
                     <option value="remove">Remove Selected</option>
                   </select>
 
-                  <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()" class="btn btn-primary"/></g:if></th>
+                  <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()" class="btn btn-primary"/></g:if>
+              </th>
 
-                <th>
-                  <g:if test="${editable}"><g:simpleHiddenRefdata id="bulk_core" name="bulk_core" refdataCategory="CoreStatus"/></g:if>
-                </th>
+              <th>
+                <g:if test="${editable}"><g:simpleHiddenRefdata id="bulk_core" name="bulk_core" refdataCategory="CoreStatus"/></g:if>
+              </th>
 
-              <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_start_date" name="bulk_start_date" type="date"/> </g:if> </th>
-              <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_end_date" name="bulk_end_date" type="date"/> </g:if></th>
-              <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_core_start" name="bulk_core_start" type="date"/> </g:if></th>
-              <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_core_end" name="bulk_core_end" type="date"/> </g:if></th>
+              <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_start_date" name="bulk_start_date" type="date"/> </g:if> <br/>
+                  <g:if test="${editable}"> <g:simpleHiddenValue id="bulk_end_date" name="bulk_end_date" type="date"/> </g:if></th>
+
+              <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_core_start" name="bulk_core_start" type="date"/> </g:if> <br/>
+                  <g:if test="${editable}"> <g:simpleHiddenValue id="bulk_core_end" name="bulk_core_end" type="date"/> </g:if></th>
+
               <th colspan="2"></th>
             </tr>
+         </thead>
+         <tbody>
 
           <g:if test="${entitlements}">
             <g:each in="${entitlements}" var="ie">
@@ -216,22 +240,31 @@
                 <td>
                   <g:link controller="issueEntitlement" id="${ie.id}" action="show">${ie.tipp.title.title}</g:link>
                   <g:if test="${ie.tipp?.hostPlatformURL}">( <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">Host Link</a> 
-                            <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL} (In new window)" target="_blank"><i class="icon-share-alt"></i></a>)</g:if>
+                            <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL} (In new window)" target="_blank"><i class="icon-share-alt"></i></a>)</g:if> <br/>
+                   Access: ${ie.availabilityStatus?.value}
+                   <g:if test="${ie.availabilityStatus?.value=='Expected'}">
+                     on <g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.accessStartDate}"/>
+                   </g:if>
+                   <g:if test="${ie.availabilityStatus?.value=='Expired'}">
+                     on <g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.accessEndDate}"/>
+                   </g:if>
+                   <g:if test="${params.mode=='advanced'}">
+                     <br/> Record Status: <g:xEditableRefData owner="${ie}" field="status" config='Entitlement Issue Status'/>
+                     <br/> Access Start: <g:xEditable owner="${ie}" type="date" field="accessStartDate" /> (Leave empty to default to sub start date)
+                     <br/> Access End: <g:xEditable owner="${ie}" type="date" field="accessEndDate" /> (Leave empty to default to sub end date)
+                   </g:if>
+
                 </td>
-                <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</td>
-                <td>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
+                <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}<br/>
+                ${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
                 <td>
                   <g:xEditableRefData owner="${ie}" field="coreStatus" config='CoreStatus'/></td>
                 <td>
-                    <g:xEditable owner="${ie}" type="date" field="startDate" />
-                </td>
-                <td>
+                    <g:xEditable owner="${ie}" type="date" field="startDate" /><br/>
                     <g:xEditable owner="${ie}" type="date" field="endDate" />
                 </td>
                 <td>
-                    <g:xEditable owner="${ie}" type="date" field="coreStatusStart" />
-                </td>
-                <td>
+                    <g:xEditable owner="${ie}" type="date" field="coreStatusStart" /><br/>
                     <g:xEditable owner="${ie}" type="date" field="coreStatusEnd" />
                 </td>
                 <td>
@@ -248,6 +281,7 @@
               </tr>
             </g:each>
           </g:if>
+          </tbody>
           </table>
           </g:form>
         </dd>

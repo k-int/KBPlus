@@ -123,7 +123,10 @@ class PendingChangeController {
           case 'New Object' :
              def new_domain_class = ApplicationHolder.application.getArtefact('Domain',parsed_change_info.newObjectClass);
              if ( new_domain_class != null ) {
-               def new_instance = new_domain_class.getClazz().newInstance(parsed_change_info.changeDoc).save()
+               // def new_instance = new_domain_class.getClazz().newInstance(parsed_change_info.changeDoc).save()
+               def new_instance = new_domain_class.getClazz().newInstance()
+               bindData(new_instance, parsed_change_info.changeDoc)
+               new_instance.save();
              }
             break;
           case 'Update Object' :

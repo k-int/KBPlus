@@ -90,6 +90,8 @@
                 <th>Licensor</th>
                 <g:sortableColumn params="${params}" property="status.value" title="Status" />
                 <g:sortableColumn params="${params}" property="type.value" title="Type" />
+                <g:sortableColumn params="${params}" property="startDate" title="Start Date" />
+                <g:sortableColumn params="${params}" property="endDate" title="End Date" />
               </tr>
             </thead>
             <tbody>
@@ -102,6 +104,8 @@
                   <td>${l.licensor?.name}</td>
                   <td>${l.status?.value}</td>
                   <td>${l.type?.value}</td>
+                  <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${l.startDate}"/></td>
+                  <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${l.endDate}"/></td>
                 </tr>
               </g:each>
             </tbody>

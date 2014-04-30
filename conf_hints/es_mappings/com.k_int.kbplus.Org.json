@@ -1,0 +1,8 @@
+{
+    "com.k_int.kbplus.Org" : {
+        "properties" : {
+          "name" : { "type" : "string" },
+        }
+    }
+}
+

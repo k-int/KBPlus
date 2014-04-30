@@ -129,6 +129,14 @@
                         <g:xEditable owner="${license}" field="reference" id="reference"/>
                       </dd>
                   </dl>
+
+                  <dl>
+                      <dt><label class="control-label" for="reference">Status</label></dt>
+                      <dd>
+                        <g:xEditableRefData owner="${license}" field="status" config='License Status'/>
+                      </dd>
+                  </dl>
+      
       
                   <dl>
                       <dt><label class="control-label" for="noticePeriod">Notice Period</label></dt>
@@ -179,6 +187,20 @@
                       <dt><label class="control-label" for="isPublic">Public?</label></dt>
                       <dd>
                         <g:xEditableRefData owner="${license}" field="isPublic" config='YN'/>
+                      </dd>
+                  </dl>
+
+                  <dl>
+                      <dt><label class="control-label" for="isPublic">Start Date</label></dt>
+                      <dd>
+                        <g:xEditable owner="${license}" type="date" field="startDate" />
+                      </dd>
+                  </dl>
+
+                  <dl>
+                      <dt><label class="control-label" for="isPublic">End Date</label></dt>
+                      <dd>
+                        <g:xEditable owner="${license}" type="date" field="endDate" />
                       </dd>
                   </dl>
 

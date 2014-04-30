@@ -41,6 +41,18 @@
           </g:if>
         </dl>
         <dl>
+          <dt>Availability Status</dt>
+          <dd> <span title="${tipp.availabilityStatusExplanation}">${tipp.availabilityStatus?.value}</span></dd>
+        </dl>
+        <dl>
+          <dt>Access Start Date (Enters Package)</dt>
+          <dd><g:xEditable owner="${tipp}" type="date" field="accessStartDate" /></dd>
+        </dl>
+        <dl>
+          <dt>Access End Date (Leaves Package)</dt>
+          <dd><g:xEditable owner="${tipp}" type="date" field="accessEndDate" /></dd>
+        </dl>
+        <dl>
           <dt>TIPP Start Date</dt>
           <dd><g:xEditable owner="${tipp}" type="date" field="startDate"/></dd>
         </dl>
