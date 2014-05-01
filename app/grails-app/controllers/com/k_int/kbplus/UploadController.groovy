@@ -51,7 +51,7 @@ class UploadController {
   ];
 
   @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
-  def reviewSO() { 
+  def reviewPackage() { 
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     

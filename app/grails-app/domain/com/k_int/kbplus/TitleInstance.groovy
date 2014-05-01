@@ -205,7 +205,7 @@ class TitleInstance {
         // it == an ID
         // Does result.ids contain an identifier occurrence that matches this ID
         // def existing_id = result.ids.find { it -> it.identifier == identifier }
-        def existing_id = IdentifierOccurrence.findByIdentifierAndTi(identifier,ti)
+        def existing_id = IdentifierOccurrence.findByIdentifierAndTi(identifier,result)
 
         if ( existing_id == null ) {
           //println("Adding additional identifier ${identifier}");
@@ -216,9 +216,9 @@ class TitleInstance {
           //println("Identifier ${identifier} already present in existing title ${result}");
         }
       }
+
       if ( modified ) {
         result.save();
-        result.refresh();
       }
     }
     

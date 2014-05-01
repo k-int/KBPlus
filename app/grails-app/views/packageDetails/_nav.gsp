@@ -6,13 +6,13 @@
 
   <li <%='current'== actionName ? ' class="active"' : '' %>><g:link controller="packageDetails" 
               action="current" 
-              params="${[id:params.id]}">Entitlements</g:link></li>
+              params="${[id:params.id]}">Titles</g:link></li>
 
   <li<%='expected'== actionName ? ' class="active"' : '' %>><g:link controller="packageDetails" 
               action="expected" 
-              params="${[id:params.id]}">Expected Entilements</g:link></li>
+              params="${[id:params.id]}">Expected Titles</g:link></li>
 
   <li<%='previous'== actionName ? ' class="active"' : '' %>><g:link controller="packageDetails" 
               action="previous" 
-              params="${[id:params.id]}">Previous Entitlements</g:link></li>
+              params="${[id:params.id]}">Previous Titles</g:link></li>
 </ul>
