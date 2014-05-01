@@ -129,8 +129,60 @@ class OnixPLService {
   /**
    * Build the table data
    */
-  private Map buildTable (def data) {
+  private static Map buildTable (Map xmldata, List comp) {
     
+    // Data to return
+    Map data = (new TreeMap()).withDefault {
+      [:]
+    }
+    
+    // Check that we have a name.
+    String name = xmldata['_name']
+    if (name) {
+      
+      // The key.
+      String key = ""
+      
+      // Create a composite key for quick comparison.
+      for (String point in comp) {
+        String val = xmldata[point]
+        if (val) {
+          key += val.toLowerCase()
+        }
+      }
+    
+      // Output the table data. Adding a switch here will enable us to easily add
+      // special cases.
+      switch (name) {
+        default :
+        
+          // If this is a parent element then look at the children
+          if (xmldata['_type'] == 'parent') {
+        
+            // For each element.
+            for (String element_key in xmldata.keySet()) {
+              if (!element_key.startsWith("_")) {
+                
+                List elements = xmldata[element_key]
+                if (elements) {
+                  for (Map element in elements) {
+                    data[key] += buildTable (element, comp)
+                  }
+                }
+              }
+            }
+          } else {
+            // Leaf.
+            String val = xmldata['_content']
+            if (val) {
+              data[key] = val
+            } 
+          }
+          break
+      }
+    }
+    
+    data
   }
   
   /**
@@ -149,7 +201,9 @@ class OnixPLService {
     ]
     
     // Map for the result.
-    TreeMap result = [:]
+    Map result = (new TreeMap()).withDefault {
+      [:]
+    }
     
     // Get the main license as a map.
     // This will form the base of each of our tables.
@@ -172,26 +226,11 @@ class OnixPLService {
       // Now go through the data.
       data = data[xpath]
       
-      
+      result["${tableName}"]["${license.title}"] = buildTable (data, comp)
     }
     
     // Add the main to the result.
-    result["${license.title}"] = main
-    
-//    // Now we need to check each license and decide whether it satisfies our filter (if not all).
-//    for (OnixplLicense l : licenses_to_compare) {
-//      
-//      // Get each map in turn passing in the main license for comparison.
-//      def license_map = l.toMap(sections, main)
-//      
-//      // Add the map to the results?
-//      boolean filter_out = false
-//      
-//      // Add the licence to the map, if we are to add it.
-//      if (!filter_out) {
-//        result["${l.title}"] = license_map
-//      }
-//    }
+//    result["${license.title}"] = main
     
     // Return the result.
     result
