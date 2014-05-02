@@ -300,13 +300,13 @@
                     </tr>
                     <g:if test="${params.mode=='advanced'}">
                       <tr>
-                        <td>Delayed OA: <g:simpleHiddenRefdata id="delayed_oa_bulk" name="delayedOA" refdataCategory="TIPPDelayedOA"/>
-                          <input type="checkbox" name="clear_delayed_oa"/>(Check to clear)</td>
+                        <td>Delayed OA: <g:simpleHiddenRefdata id="bulk_delayedOA" name="bulk_delayedOA" refdataCategory="TIPPDelayedOA"/>
+                          <input type="checkbox" name="clear_delayedOA"/>(Check to clear)</td>
                         </td>
-                        <td>Hybrid OA: <g:simpleHiddenRefdata id="hybrid_oa_bulk" name="hybridOA" refdataCategory="TIPPHybridOA"/>
-                          <input type="checkbox" name="clear_hybrid_oa"/>(Check to clear)</td>
+                        <td>Hybrid OA: <g:simpleHiddenRefdata id="bulk_hybridOA" name="bulk_hybridOA" refdataCategory="TIPPHybridOA"/>
+                          <input type="checkbox" name="clear_hybridOA"/>(Check to clear)</td>
                         </td>
-                        <td>Payment: <g:simpleHiddenRefdata id="payment_bulk" name="payment" refdataCategory="TIPPPaymentType"/>
+                        <td>Payment: <g:simpleHiddenRefdata id="bulk_payment" name="bulk_payment" refdataCategory="TIPPPaymentType"/>
                           <input type="checkbox" name="clear_payment"/>(Check to clear)</td>
                         </td>
                       </tr>

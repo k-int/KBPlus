@@ -18,6 +18,7 @@ class PackageDetailsController {
   def ESWrapperService
   def springSecurityService
   def transformerService
+  def genericOIDService
 
   def pkg_qry_reversemap = ['subject':'subject', 
                             'provider':'provid', 
@@ -760,6 +761,9 @@ class PackageDetailsController {
       [ formProp:'coverage_depth', domainClassProp:'coverageDepth'],
       [ formProp:'coverage_note', domainClassProp:'coverageNote'],
       [ formProp:'embargo', domainClassProp:'embargo'],
+      [ formProp:'delayedOA', domainClassProp:'delayedOA', type:'ref'],
+      [ formProp:'hybridOA', domainClassProp:'hybridOA', type:'ref'],
+      [ formProp:'payment', domainClassProp:'payment', type:'ref'],
     ]
 
     
@@ -824,6 +828,9 @@ class PackageDetailsController {
                 log.debug("Set field ${bulk_field_defn.formProp} to proposed_value");
                 if ( bulk_field_defn.type == 'date' ) {
                   tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = formatter.parse(proposed_value)
+                }
+                if ( bulk_field_defn.type == 'ref' ) {
+                  tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = genericOIDService.resolveOID(proposed_value)
                 }
                 else {
                   tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = proposed_value
