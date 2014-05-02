@@ -298,6 +298,21 @@
                       <td>Embargo:  <g:simpleHiddenValue id="bulk_embargo" name="bulk_embargo"/>
                           <input type="checkbox" name="clear_embargo"/>(Check to clear)</td>
                     </tr>
+                    <g:if test="${params.mode=='advanced'}">
+                      <tr>
+                        <td>Delayed OA: <g:simpleHiddenRefdata id="delayed_oa_bulk" name="delayedOA" refdataCategory="TIPPDelayedOA"/>
+                          <input type="checkbox" name="clear_delayed_oa"/>(Check to clear)</td>
+                        </td>
+                        <td>Hybrid OA: <g:simpleHiddenRefdata id="hybrid_oa_bulk" name="hybridOA" refdataCategory="TIPPHybridOA"/>
+                          <input type="checkbox" name="clear_hybrid_oa"/>(Check to clear)</td>
+                        </td>
+                        <td>Payment: <g:simpleHiddenRefdata id="payment_bulk" name="payment" refdataCategory="TIPPPaymentType"/>
+                          <input type="checkbox" name="clear_payment"/>(Check to clear)</td>
+                        </td>
+                      </tr>
+                    </g:if>
+
+
                   </table>
                   <button name="BatchSelectedBtn" value="on" onClick="return confirmSubmit()" class="btn btn-primary">Apply Batch Changes (Selected)</button>
                   <button name="BatchAllBtn" value="on" onClick="return confirmSubmit()" class="btn btn-primary">Apply Batch Changes (All in filtered list)</button>
@@ -333,6 +348,9 @@
                      <br/> Record Status: <g:xEditableRefData owner="${t}" field="status" config='TIPPStatus'/>
                      <br/> Access Start: <g:xEditable owner="${t}" type="date" field="accessStartDate" />
                      <br/> Access End: <g:xEditable owner="${t}" type="date" field="accessEndDate" />
+                     <br/> Delayed OA: <g:xEditableRefData owner="${t}" field="delayedOA" config='TIPPDelayedOA'/>
+                     <br/> Hybrid OA: <g:xEditableRefData owner="${t}" field="hybridOA" config='TIPPHybridOA'/>
+                     <br/> Payment: <g:xEditableRefData owner="${t}" field="payment" config='TIPPPaymentType'/>
                    </g:if>
                 </td>
                 <td style="white-space: nowrap;vertical-align:top;">
