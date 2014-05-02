@@ -340,7 +340,7 @@
                 <td ${hasCoverageNote==true?'rowspan="2"':''}><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${t.id}" class="bulkcheck"/></g:if></td>
                 <td ${hasCoverageNote==true?'rowspan="2"':''}>${counter++}</td>
                 <td style="vertical-align:top;">
-                   ${t.title.title}
+                   <b>${t.title.title}</b>
                    <g:link controller="titleDetails" action="show" id="${t.title.id}">(Title)</g:link>
                    <g:link controller="tipp" action="show" id="${t.id}">(TIPP)</g:link><br/>
                    <span title="${t.availabilityStatusExplanation}">Access: ${t.availabilityStatus?.value}</span>
@@ -348,9 +348,6 @@
                      <br/> Record Status: <g:xEditableRefData owner="${t}" field="status" config='TIPPStatus'/>
                      <br/> Access Start: <g:xEditable owner="${t}" type="date" field="accessStartDate" />
                      <br/> Access End: <g:xEditable owner="${t}" type="date" field="accessEndDate" />
-                     <br/> Delayed OA: <g:xEditableRefData owner="${t}" field="delayedOA" config='TIPPDelayedOA'/>
-                     <br/> Hybrid OA: <g:xEditableRefData owner="${t}" field="hybridOA" config='TIPPHybridOA'/>
-                     <br/> Payment: <g:xEditableRefData owner="${t}" field="payment" config='TIPPPaymentType'/>
                    </g:if>
                 </td>
                 <td style="white-space: nowrap;vertical-align:top;">
@@ -383,9 +380,15 @@
                 </td>
               </tr>
 
-              <g:if test="${hasCoverageNote==true}">
+              <g:if test="${hasCoverageNote==true || params.mode=='advanced'}">
                 <tr>
-                  <td colspan="6">coverageNote: ${t.coverageNote}</td>
+                  <td colspan="6">coverageNote: ${t.coverageNote}
+                  <g:if test="${params.mode=='advanced'}">
+                    <br/> Delayed OA: <g:xEditableRefData owner="${t}" field="delayedOA" config='TIPPDelayedOA'/> &nbsp;
+                    Hybrid OA: <g:xEditableRefData owner="${t}" field="hybridOA" config='TIPPHybridOA'/> &nbsp;
+                    Payment: <g:xEditableRefData owner="${t}" field="payment" config='TIPPPaymentType'/> &nbsp;
+                  </g:if>
+                  </td>
                 </tr>
               </g:if>
 

@@ -806,7 +806,7 @@ class PackageDetailsController {
     else if ( params.BatchAllBtn=='on' ) {
       log.debug("Batch process all");
       def qry_params = [packageInstance]
-      def base_qry = generateBasePackageQuery(params, qry_params, showDeletedTipps)
+      def base_qry = generateBasePackageQuery(params, qry_params, showDeletedTipps, new Date())
       def tipplist = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params)
       tipplist.each {  tipp_to_bulk_edit ->
         boolean changed=false
