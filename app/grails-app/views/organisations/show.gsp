@@ -116,13 +116,11 @@
         </dl>
 
     </div>
+
+
   <r:script language="JavaScript">
 
     $(function(){
-      // moved to mm_bootstrap
-      // $.fn.editable.defaults.mode = 'inline';
-      // $('.xEditableValue').editable();
-
       <g:if test="${editable}">
       $("#addIdentifierSelect").select2({
         placeholder: "Search for an identifier...",
