@@ -132,7 +132,7 @@ class Subscription {
   def checkPermissions(perm, user) {
     def result = false
     def principles = user.listPrincipalsGrantingPermission(perm);   // This will list all the orgs and people granted the given perm
-    log.debug("The target list if principles : ${principles}");
+    log.debug("The target list of principles : ${principles}");
 
     // Now we need to see if we can find a path from this object to any of those resources... Any of these orgs can edit
 

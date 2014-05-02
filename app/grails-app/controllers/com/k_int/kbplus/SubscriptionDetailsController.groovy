@@ -57,6 +57,7 @@ class SubscriptionDetailsController {
     }
   
     if ( ! result.subscriptionInstance.hasPerm("view",result.user) ) {
+      log.debug("Result of hasPerm is false");
       response.sendError(401);
       return
     }
