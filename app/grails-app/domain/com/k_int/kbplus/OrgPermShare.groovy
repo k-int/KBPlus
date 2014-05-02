@@ -20,7 +20,7 @@ class OrgPermShare {
     def result = OrgPermShare.findByPermAndRdv(perm,rdv);
 
     if ( result == null ) {
-      result = new OrgPermShare(perm:perm, rdv:rdv).save();
+      result = new OrgPermShare(perm:perm, rdv:rdv).save(failOnError:true,flush:true);
     }
 
     result
