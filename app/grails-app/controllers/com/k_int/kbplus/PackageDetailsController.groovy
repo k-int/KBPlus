@@ -615,13 +615,15 @@ class PackageDetailsController {
           log.debug("query: ${query_str}");
           result.es_query = query_str;
 
+          // if params.sorting==lastmod
+
          def search = esclient.search{
             indices "kbplus"
             source {
               from = params.offset
               size = params.max
               sort = [
-                'sortname' : [ 'order' : 'asc' ]
+                ("${params.sorting?:'sortname'}".toString()) : [ 'order' : (params.order?:'asc') ]
               ]
               query {
                 query_string (query: query_str)

@@ -23,8 +23,16 @@
 
       <div class="row">
         <div class="span12">
-          <div class="well">
+          <div class="well form-horizontal">
             Package Name: <input name="pkgname" value="${params.pkgname}"/>
+            Sort: <select name="sorting">
+                    <option ${params.sorting=='sortname' ? 'selected' : ''} value="sortname">Package Name</option>
+                    <option ${params.sorting=='lastModified' ? 'selected' : ''} value="lastModified">Last Modified</option>
+                  </select>
+            Order: <select name="order" value="${params.order}">
+                    <option ${params.order=='asc' ? 'selected' : ''} value="asc">Ascending</option>
+                    <option ${params.order=='desc' ? 'selected' : ''} value="desc">Descending</option>
+                  </select>
             <button type="submit" name="search" value="yes">Search</button>
             <div class="pull-right">
             </div>
@@ -63,14 +71,14 @@
                 <div id="resultsarea">
                   <table class="table table-bordered table-striped">
                     <thead>
-                      <tr><th>Package Name</th><th>Consortium</th><th>Additional Info</th></tr>
+                      <tr><th>Package Name</th><th>Consortium</th><th>Last Modified</th></tr>
                     </thead>
                     <tbody>
                       <g:each in="${hits}" var="hit">
                         <tr>
                           <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
                           <td>${hit.source.consortiaName}</td>
-                          <td></td>
+                          <td>${hit.source.lastModified}</td>
                         </tr>
                       </g:each>
                     </tbody>
