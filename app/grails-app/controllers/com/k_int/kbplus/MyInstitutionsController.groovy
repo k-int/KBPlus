@@ -2476,4 +2476,28 @@ AND EXISTS (
 
     result
   }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def changeLog() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+
+    def query = "select pc from PendingChange as pc where owner = ? order by ts desc";
+      // Subscription subscription
+      // License license
+      // SystemObject systemObject
+      // Package pkg
+      // Date ts
+      // Org owner
+      // String oid
+      // String changeDoc
+      // String desc
+      // RefdataValue status
+      // Date actionDate
+      // User user
+
+    result.changes = PendingChange.executeQuery(query, [result.institution], params)
+    result
+  }
 }
