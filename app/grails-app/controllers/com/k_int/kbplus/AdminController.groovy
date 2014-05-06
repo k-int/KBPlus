@@ -15,6 +15,7 @@ class AdminController {
   def globalSourceSyncService
   def messageService
   def changeNotificationService
+  def enrichmentService
 
   def docstoreService
 
@@ -357,4 +358,12 @@ class AdminController {
     docstoreService.migrateToDb()
     redirect(controller:'home')
   }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def triggerHousekeeping() {
+    log.debug("trigggerHousekeeping()");
+    enrichmentService.initiateHousekeeping()
+    redirect(controller:'home')
+  }
+
 }

@@ -214,8 +214,8 @@
                       <li <%= ( ( 'stats'== controllerName ) && ( 'statsHome'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="stats" action="statsHome">Statistics</g:link>
                       </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'docstoreMigrate'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="docstoreMigrate">Docstore Migration</g:link>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'triggerHousekeeping'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="triggerHousekeeping">Trigger Housekeeping</g:link>
                       </li>
                     </ul>
                   </li>
