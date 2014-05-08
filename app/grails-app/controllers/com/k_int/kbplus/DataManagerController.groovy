@@ -15,5 +15,22 @@ class DataManagerController {
 
     result
   }
+
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def changeLog() { 
+    def result =[:]
+    def qry_params=['com.k_int.kbplus.Package']
+    // com.k_int.kbplus.License                      |
+    // com.k_int.kbplus.Subscription                 |
+    // com.k_int.kbplus.Package                      |
+    // com.k_int.kbplus.TitleInstancePackagePlatform |
+    // com.k_int.kbplus.TitleInstance                |
+    // com.k_int.kbplus.IdentifierOccurrence         |
+
+    result.historyLines = AuditLogEvent.executeQuery("select e from AuditLogEvent as e where className=? order by id desc", qry_params);
+
+    result
+  }
 }
 
