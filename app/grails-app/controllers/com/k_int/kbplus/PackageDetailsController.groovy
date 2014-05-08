@@ -10,8 +10,6 @@ import com.k_int.kbplus.auth.*;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
-import org.codehaus.groovy.grails.commons.ApplicationHolder
-
 
 class PackageDetailsController {
 
@@ -147,10 +145,10 @@ class PackageDetailsController {
 
       log.debug("Package has ${result.pendingChanges?.size()} pending changes");
 
-      result.pkg_link_str="${ApplicationHolder.application.config.SystemBaseURL}/packageDetails/show/${params.id}"
+      result.pkg_link_str="${grailsApplication.config.SystemBaseURL}/packageDetails/show/${params.id}"
 
       if ( packageInstance.forumId != null ) {
-        result.forum_url = "${ApplicationHolder.application.config.ZenDeskBaseURL}/forums/${packageInstance.forumId}"
+        result.forum_url = "${grailsApplication.config.ZenDeskBaseURL}/forums/${packageInstance.forumId}"
       }
 
       result.subscriptionList=[]
@@ -169,7 +167,7 @@ class PackageDetailsController {
         }
       }
     
-      result.max = params.max ? Integer.parseInt(params.max) : 25
+      result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
       params.max = result.max
       def paginate_after = params.paginate_after ?: ( (2*result.max)-1);
       result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
