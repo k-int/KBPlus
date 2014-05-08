@@ -57,36 +57,36 @@
    </xsl:template>
     
     <xsl:template name="only_end">
-	<xsl:text disable-output-escaping="yes"><![CDATA[$obj->parsedDate(">=",]]></xsl:text>
-	<xsl:choose>
-		<xsl:when test="not(./CoverageStatement/EndDate = '')">
-			<xsl:call-template name="extract_year">
-			        <xsl:with-param name="date" select="./CoverageStatement/EndDate" />
-			    </xsl:call-template>
-		</xsl:when>
-		<xsl:otherwise>
-			<xsl:text>undef</xsl:text>
-		</xsl:otherwise>
-	</xsl:choose>
-	<xsl:text>,</xsl:text>
-	<xsl:choose>
-		<xsl:when test="not(./CoverageStatement/EndVolume = '')">
-			<xsl:value-of select="./CoverageStatement/EndVolume"></xsl:value-of>
-		</xsl:when>
-		<xsl:otherwise>
-			<xsl:text>undef</xsl:text>
-			</xsl:otherwise>
-	</xsl:choose>
-	<xsl:text>,</xsl:text>
-	<xsl:choose>
-		<xsl:when test="not(./CoverageStatement/EndIssue = '')">
-			<xsl:value-of select="./CoverageStatement/EndIssue"></xsl:value-of>
-		</xsl:when>
-		<xsl:otherwise>
-			<xsl:text>undef</xsl:text>
-			</xsl:otherwise>
-	</xsl:choose>
-	<xsl:text>)</xsl:text>
+    <xsl:text disable-output-escaping="yes"><![CDATA[$obj->parsedDate("<=",]]></xsl:text>
+    <xsl:choose>
+        <xsl:when test="not(./CoverageStatement/EndDate = '')">
+            <xsl:call-template name="extract_year">
+                    <xsl:with-param name="date" select="./CoverageStatement/EndDate" />
+                </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:text>undef</xsl:text>
+        </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>,</xsl:text>
+    <xsl:choose>
+        <xsl:when test="not(./CoverageStatement/EndVolume = '')">
+            <xsl:value-of select="./CoverageStatement/EndVolume"></xsl:value-of>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:text>undef</xsl:text>
+            </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>,</xsl:text>
+    <xsl:choose>
+        <xsl:when test="not(./CoverageStatement/EndIssue = '')">
+            <xsl:value-of select="./CoverageStatement/EndIssue"></xsl:value-of>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:text>undef</xsl:text>
+            </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>)</xsl:text>
     </xsl:template>
     
     
