@@ -177,9 +177,6 @@
           results: function (data, page) {
             return {results: data.values};
           }
-        },
-        createSearchChoice:function(term, data) {
-          return {id:'com.k_int.kbplus.Org:__new__:'+term,text:term};
         }
       });
 
@@ -208,8 +205,12 @@
     });
 
     function validateAddOrgForm() {
-      var orgname=document.forms["addOrgForm"]["addOrgSelect"].value;
-      var role=document.forms["addOrgForm"]["orgRoleSelect"].value;
+      var org_name=$("#addOrgSelect").val();
+      var role=$("#orgRoleSelect").val();
+
+      if( !org_name || !role ){
+        return false;
+      }
       return true;
     }
   </r:script>
