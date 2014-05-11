@@ -40,6 +40,7 @@
               <td>Name</td>
               <td>Actor</td>
               <td>Event name</td>
+              <td>Property</td>
               <td>Old</td>
               <td>New</td>
               <td>date</td>
@@ -51,6 +52,7 @@
                 <td><a href="${hl.link}">${hl.name}</a></td>
                 <td><g:link controller="userDetails" action="edit" id="${hl.actor?.id}">${hl.actor?.displayName}</g:link></td>
                 <td>${hl.eventName}</td>
+                <td>${hl.propertyName}</td>
                 <td>${hl.oldValue}</td>
                 <td>${hl.newValue}</td>
                 <td><g:formatDate date="${hl.lastUpdated}"/></td>

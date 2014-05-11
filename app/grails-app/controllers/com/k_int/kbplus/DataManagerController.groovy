@@ -50,8 +50,8 @@ class DataManagerController {
           line_to_add = [ link: createLink(controller:'licenseDetails', action: 'show', id:hl.persistedObjectId),
                           name: license_object.toString(),
                           lastUpdated: hl.lastUpdated,
-                          eventName: hl.eventName,
-                          actor: User.findByUsername(hl.actor),
+                          actor: User.findByUsername(hl.actor), 
+                          propertyName: hl.propertyName,
                           oldValue: hl.oldValue,
                           newValue: hl.newValue
                         ]
@@ -63,7 +63,7 @@ class DataManagerController {
           line_to_add = [ link: createLink(controller:'packageDetails', action: 'show', id:hl.persistedObjectId),
                           name: package_object.toString(),
                           lastUpdated: hl.lastUpdated,
-                          eventName: hl.eventName,
+                          propertyName: hl.propertyName,
                           actor: User.findByUsername(hl.actor),
                           oldValue: hl.oldValue,
                           newValue: hl.newValue
@@ -74,6 +74,20 @@ class DataManagerController {
         case 'com.k_int.kbplus.TitleInstance':
           break;
         case 'com.k_int.kbplus.IdentifierOccurrence':
+          break;
+      }
+      switch ( hl.eventName ) {
+        case 'INSERT':
+          line_to_add.eventName= "New"
+          break;
+        case 'UPDATE':
+          line_to_add.eventName= "Updated"
+          break;
+        case 'DELETE':
+          line_to_add.eventName= "Deleted"
+          break;
+        default:
+          line_to_add.eventName= "Unknown"
           break;
       }
       result.formattedHistoryLines.add(line_to_add);
