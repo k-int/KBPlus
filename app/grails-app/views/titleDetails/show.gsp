@@ -131,7 +131,8 @@
                     <td/>
                   </tr>
                   <tr>
-                    <td colspan="6">Bulk coverage note change</td>
+                    <td colspan="6">Bulk coverage note change: <g:simpleHiddenValue id="bulk_coverage_note" name="bulk_coverage_note"/>
+                    - <input type="checkbox" name="clear_coverage_note"/> (clear)
                     </td>
                   </tr>
                 </g:if>
