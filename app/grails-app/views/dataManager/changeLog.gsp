@@ -31,9 +31,11 @@
       <h6>Change Log <span class="pull-right">${num_hl} changes</span></h6>
       <g:form action="changeLog" controller="dataManager" method="get">
         From Date: <input name="startDate" type="date" value="${params.startDate}"/>
-        To Date: <input name="endDate" type="date" value="${params.endDate}"/>
+        To Date: <input name="endDate" type="date" value="${params.endDate}"/><br/>
         Package Changes: <input type="checkbox" name="packages" value="Y" ${params.packages=='Y'?'checked':''}/>
         License Changes: <input type="checkbox" name="licenses" value="Y" ${params.licenses=='Y'?'checked':''}/>
+        New Items: <input type="checkbox" name="creates" value="Y" ${params.creates=='Y'?'checked':''}/>
+        Updates: <input type="checkbox" name="updates" value="Y" ${params.updates=='Y'?'checked':''}/>
         <input type="submit"/>
       </g:form>
     </div>
@@ -72,7 +74,7 @@
       ${num_hl} ${max}
       <div class="pagination" style="text-align:center">
         <g:if test="${historyLines != null}" >
-          <bootstrap:paginate  action="show" controller="packageDetails" params="${params}" next="Next" prev="Prev" maxsteps="${max}" total="${num_hl}" />
+          <bootstrap:paginate  action="changeLog" controller="dataManager" params="${params}" next="Next" prev="Prev" maxsteps="${max}" total="${num_hl}" />
         </g:if>
       </div>
 

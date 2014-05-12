@@ -37,6 +37,9 @@ class DataManagerController {
       params.startDate=formatter.format(cal.getTime())
     }
     if ( params.endDate == null ) { params.endDate = formatter.format(new Date()) }
+    if ( ( params.creates == null ) && ( params.updates == null ) ) {
+      params.creates='Y'
+    }
 
     def types_to_include = []
     if ( params.packages=="Y" ) types_to_include.add('com.k_int.kbplus.Package');
@@ -45,6 +48,11 @@ class DataManagerController {
     // com.k_int.kbplus.TitleInstancePackagePlatform |
     // com.k_int.kbplus.TitleInstance                |
     // com.k_int.kbplus.IdentifierOccurrence         |
+
+    def events_to_include=[]
+    if ( params.creates=="Y" ) events_to_include.add('INSERT');
+    if ( params.updates=="Y" ) events_to_include.add('UPDATE');
+    
 
 
     log.debug("${params}");
@@ -59,10 +67,10 @@ class DataManagerController {
       def start_date = formatter.parse(params.startDate)
       def end_date = formatter.parse(params.endDate)
   
-      result.historyLines = AuditLogEvent.executeQuery("select e from org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent as e where e.className in (:l) AND e.lastUpdated >= :s AND e.lastUpdated <= :e order by e.lastUpdated desc", 
-                                                       ['l':types_to_include,'s':start_date,'e':end_date], limits);
-      result.num_hl = AuditLogEvent.executeQuery("select count(e) from org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent as e where className in (:l) AND e.lastUpdated >= :s AND e.lastUpdated <= :e ", 
-                                                 ['l':types_to_include,'s':start_date,'e':end_date])[0];
+      result.historyLines = AuditLogEvent.executeQuery("select e from org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent as e where e.className in (:l) AND e.lastUpdated >= :s AND e.lastUpdated <= :e AND e.eventName in (:t) order by e.lastUpdated desc", 
+                                                       ['l':types_to_include,'s':start_date,'e':end_date, 't':events_to_include], limits);
+      result.num_hl = AuditLogEvent.executeQuery("select count(e) from org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent as e where className in (:l) AND e.lastUpdated >= :s AND e.lastUpdated <= :e AND e.eventName in (:t)", 
+                                                 ['l':types_to_include,'s':start_date,'e':end_date,'t':events_to_include])[0];
   
       result.formattedHistoryLines = []
       result.historyLines.each { hl ->
