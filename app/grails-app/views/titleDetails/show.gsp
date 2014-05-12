@@ -105,15 +105,28 @@
                   <tr>
                     <td rowspan="2"><input type="checkbox" name="checkall" onClick="javascript:$('.bulkcheck').attr('checked', true);"/></td>
                     <td colspan="2"><button class="btn btn-primary" type="submit" value="Go" name="BatchEdit">Apply Batch Changes</button></td>
-                    <td>Date:<g:simpleHiddenValue id="bulk_start_date" name="bulk_start_date" type="date"/><br/>
-                        Volume:<g:simpleHiddenValue id="bulk_start_volume" name="bulk_start_volume"/><br/>
+                    <td>Date:<g:simpleHiddenValue id="bulk_start_date" name="bulk_start_date" type="date"/>
+                       - <input type="checkbox" name="clear_start_date"/> (clear)
+                        <br/>
+                        Volume:<g:simpleHiddenValue id="bulk_start_volume" name="bulk_start_volume"/>
+                       - <input type="checkbox" name="clear_start_volume"/> (clear)
+                        <br/>
                         Issue:<g:simpleHiddenValue id="bulk_start_issue" name="bulk_start_issue"/>
+                       - <input type="checkbox" name="clear_start_issue"/> (clear)
+
                     </td>
-                    <td>Date:<g:simpleHiddenValue id="bulk_end_date" name="bulk_end_date" type="date"/><br/>
-                        Volume: <g:simpleHiddenValue id="bulk_end_volume" name="bulk_end_volume"/><br/>
+                    <td>Date:<g:simpleHiddenValue id="bulk_end_date" name="bulk_end_date" type="date"/>
+                       - <input type="checkbox" name="clear_end_date"/> (clear)
+                        <br/>
+                        Volume: <g:simpleHiddenValue id="bulk_end_volume" name="bulk_end_volume"/>
+                       - <input type="checkbox" name="clear_end_volume"/> (clear)
+                        <br/>
                         Issue: <g:simpleHiddenValue id="bulk_end_issue" name="bulk_end_issue"/>
+                       - <input type="checkbox" name="clear_end_issue"/> (clear)
+
                     </td>
                     <td><g:simpleHiddenValue id="bulk_coverage_depth" name="bulk_coverage_depth"/>
+                        - <input type="checkbox" name="clear_coverage_depth"/> (clear)
                     </td>
                     <td/>
                   </tr>
@@ -132,7 +145,7 @@
                     <td>Date: <g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.startDate}"/><br/>
                     Volume: ${t.startVolume}<br/>
                     Issue: ${t.startIssue}</td>
-                    <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.endDate}"/><br/>
+                    <td>Date: <g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${t.endDate}"/><br/>
                     Volume: ${t.endVolume}<br/>
                     Issue: ${t.endIssue}</td>
                     <td>${t.coverageDepth}</td>
