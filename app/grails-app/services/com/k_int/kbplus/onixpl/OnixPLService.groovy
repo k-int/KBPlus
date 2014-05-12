@@ -1,9 +1,13 @@
 package com.k_int.kbplus.onixpl
 
+import grails.converters.JSON
+import grails.util.GrailsNameUtils
+import org.apache.commons.collections.list.TreeList
+import org.codehaus.groovy.grails.commons.GrailsApplication
 import grails.util.GrailsNameUtils
 
 import com.k_int.kbplus.OnixplLicense
-
+import grails.util.Holders
 
 /**
  * This service handles the manipulation of the Onix-pl XML documents so they can be displayed, and compared.
@@ -16,8 +20,18 @@ class OnixPLService {
   public static final String COMPARE_RETURN_SAME = "EQUAL"
   public static final String COMPARE_RETURN_DIFFERENT = "DIFFERENT"
   
-  OnixPLHelperService onixPLHelperService
-  def grailsApplication
+  private static OnixPLHelperService onixPLHelperService
+  private static GrailsApplication grailsApplication
+  
+  private static GrailsApplication getGrailsApplication() {
+    if (grailsApplication == null) grailsApplication = Holders.getGrailsApplication()
+    grailsApplication
+  }
+  
+  private static OnixPLHelperService getOnixPLHelperService() {
+    if (onixPLHelperService == null) onixPLHelperService = getGrailsApplication().mainContext.getBean('onixPLHelperService')
+    onixPLHelperService
+  }
   
   /**
    * Build the list of comparison points into a format for the treeSelect.
@@ -61,7 +75,7 @@ class OnixPLService {
    * @return List of entries for the treeSelect widget
    */
   public List<Map> getTsComparisonPoints () {
-    buildAvailableComparisonPointsForTreeSelect(grailsApplication.config.onix.comparisonPoints)
+    buildAvailableComparisonPointsForTreeSelect(getGrailsApplication().config.onix.comparisonPoints)
   }
   
   /**
@@ -70,7 +84,7 @@ class OnixPLService {
    * @return List of entries for the treeSelect widget
    */
   public List<String> getAllComparisonPoints () {
-    buildAllComparisonPointsMap (grailsApplication.config.onix.comparisonPoints).keySet() as List
+    buildAllComparisonPointsMap (getGrailsApplication().config.onix.comparisonPoints).keySet() as List
   }
   
   /**
@@ -79,7 +93,7 @@ class OnixPLService {
    * @return List of entries for the treeSelect widget
    */
   public Map<String, String> getAllComparisonPointsMap () {
-    buildAllComparisonPointsMap (grailsApplication.config.onix.comparisonPoints)
+    buildAllComparisonPointsMap (getGrailsApplication().config.onix.comparisonPoints)
   }
   
   /**
@@ -97,14 +111,14 @@ class OnixPLService {
     // Create a List of Maps and define the defaults.
     LinkedHashMap<String,String> options = [:]
     
-    def temp = entries.remove("template")
+    String temp = entries.remove("template")
     entries.values.each { val, Map properties ->
       
       // Get the properties.
       TreeMap props = [:]
       props.putAll(properties)
-      def the_template = null
-      if (!template && parent_path) {
+      String the_template = template
+      if (the_template == null && parent_path != null) {
         
         // Set the template group.
         the_template = GrailsNameUtils.getPropertyName(props['text']);
@@ -127,62 +141,234 @@ class OnixPLService {
   }
   
   /**
-   * Build the table data
+   * Try and derive a title for the row.
+   * 
+   * @param data Row data
+   * @return Title if found or null if not
    */
-  private static Map buildTable (Map xmldata, List comp) {
+  private static String getRowHeading (Map data) {
     
-    // Data to return
-    Map data = (new TreeMap()).withDefault {
-      [:]
+    String title = null
+    String name = data['_name']
+    if (name != null) {
+    
+      // Map to house the single value.
+      Map row = new HashMap(1,2)
+      
+      // Check if there is a "type" element.
+      List entry = data.remove("${name}Type")
+      
+      if (entry != null) {
+        // Row heading.
+        return entry[0]['_content']
+      }
     }
+  }
+  
+  /**
+   * Treat the supplied text for display.
+   *
+   * @param text Text to treat.
+   * @return The treated text.
+   */
+  private static String treatTextForDisplay (String text) {
     
-    // Check that we have a name.
-    String name = xmldata['_name']
+    if (text?.startsWith("onixPL:")) {
+      return getOnixPLHelperService().lookupCodeValueAnnotation(text)
+    }
+
+    text
+  }
+  
+  /**
+   * Treat the supplied text for comparison.
+   * 
+   * @param text Text to treat.
+   * @return The treated text.
+   */
+  private static String treatTextForComparison (String text) {
+    "${text?.toLowerCase()}"
+  }
+  
+  /**
+   * Flatten the supplied structured row data for use in a table display.
+   * 
+   * Resulting map will have a single key => value pair. Key will be made up of comparison points 
+   * supplied and the value will be a Map of column names to column values. 
+   * 
+   * @param data Structured row data to be flattened
+   * @param compare_points List of comparison points.
+   * @return The flattened representation of the row.
+   */
+  private static void flattenRow (Map row, Map data, List<String> compare_points, String license_name) {
+    
+    // Get the name of the element from the XML that this row is built from.
+    String name = data['_name']
+    if (name != null) {
+      
+      // The treemap to hold the row columns
+      Map row_cells = new TreeMap()
+      
+      // Get a row heading.
+      String heading = getRowHeading(data)
+      
+      // Initial value of key is the heading.
+      TreeList<String> keys = [treatTextForComparison (heading)]
+      
+      // Add to the data as a cell.
+      row_cells["heading"] = [
+        "content"   : heading,
+        "text"      : heading ? GrailsNameUtils.getNaturalName( heading.replaceAll("onixPL:", "") ) : null,
+        "sub-text"  : treatTextForDisplay(heading)
+      ]
+      
+      // Create list of element names.
+      List el_names = data.keySet() as List
+      
+      int counter = 0
+      
+      // Go through each element in turn now and get the value for a column.
+      for (String el_name in el_names) {
+        
+        // Using a switch on the name allows us to have a default case but also,
+        // gives the option for special case handling.
+        switch (el_name) {
+          default :
+            // Get the element(s).
+            def vals = data.remove(el_name)
+            
+            // Cell data.
+            TreeMap<String, String> cell_data = [:]
+            
+            switch (vals) {
+              case {it instanceof Map} :
+                extractContent (vals, cell_data, compare_points, keys, counter)
+                break
+                
+              case {it instanceof Collection} :
+                // Treat each value as a separate entry into the same cell.
+                for (Map val in vals) {
+                  extractContent (val, cell_data, compare_points, keys, counter)
+                }
+                break
+            }
+            
+            // Add the cell.
+            if (!el_name.startsWith('_') && cell_data) {
+              row_cells["${el_name.toLowerCase()}_${counter}"] = cell_data
+            }
+            break
+        }
+        
+        counter ++
+      }
+      
+      if (!row["${keys.join('/')}"]) {
+        row["${keys.join('/')}"] = new TreeMap()
+      }
+      
+      row["${keys.join('/')}"][license_name] = row_cells
+    }
+  }
+  
+  /**
+   * Extract the content from the supplied val and it to the supplied cells map.
+   * Also add to the key if necessary too.
+   * 
+   * @param val Structured val to try and extract display values from.
+   * @param cells Cell map.
+   * @param compare_points Points used for comparison and also to construct the key.
+   * @param key Current key to which we should append.
+   * @return
+   */
+  private static void extractContent (Map val, Map cell, List<String> compare_points, List keys, int counter) {
+    
+    // Name.
+    String name = val['_name']
+    
     if (name) {
       
-      // The key.
-      String key = ""
-      
-      // Create a composite key for quick comparison.
-      for (String point in comp) {
-        String val = xmldata[point]
-        if (val) {
-          key += val.toLowerCase()
+      // Add any key values to the keys list.
+      for (String cp in val.keySet()) {
+        
+        if (!cp.startsWith('_') && !compare_points.contains(cp)) {
+          List value = val.get(cp)
+          if (value) {
+            value.each {
+              keys << treatTextForComparison(it?.get("_content"))
+            }
+          }
         }
       }
-    
-      // Output the table data. Adding a switch here will enable us to easily add
-      // special cases.
-      switch (name) {
-        default :
-        
-          // If this is a parent element then look at the children
-          if (xmldata['_type'] == 'parent') {
-        
-            // For each element.
-            for (String element_key in xmldata.keySet()) {
-              if (!element_key.startsWith("_")) {
+      
+      if (val['_content'] == null) {
+      
+        // Add each sub element.
+        for (String prop in val.keySet()) {
+          switch (prop) {
+            default :
+              if (!prop.startsWith("_")) {
                 
-                List elements = xmldata[element_key]
-                if (elements) {
-                  for (Map element in elements) {
-                    data[key] += buildTable (element, comp)
-                  }
+                // Recursively call this method.
+                for (Map v in val[prop]) {
+                  extractContent (v, cell, compare_points, keys, counter)
                 }
               }
-            }
-          } else {
-            // Leaf.
-            String val = xmldata['_content']
-            if (val) {
-              data[key] = val
-            } 
+              break
           }
-          break
+        }
+        
+      } else {
+        
+        // The text.
+        String content = val['_content']
+        
+        if (content) {
+          // Leaf add the text.
+          cell["${name.toLowerCase()}_${counter}"] = [
+            "content" : content,
+            "text"    : treatTextForDisplay(content)
+          ]
+        }
+      }
+    }
+  }
+  
+  /**
+   * Get the Map representation of the supplied sections of the License.
+   * 
+   * @param license
+   * @param sections
+   * @return
+   */
+  private static void tabularize (Map tables, OnixplLicense license, List<String> compare_points, List<String> sections = null, OnixplLicense compare_to = null) {
+    
+    if (!(tables instanceof MapWithDefault)) {
+      tables = tables.withDefault {
+        new LinkedHashMap()
       }
     }
     
-    data
+    // Get the title.
+    String title = license.title
+    
+    // Get the data.
+    Map data = license.toMap(sections)
+    
+    // Go through the items and add to the table.
+    for (String table in data.keySet()) {
+      
+      // The xpath used to return the elements.
+      for (String xpath in data["${table}"].keySet()) {
+        
+        // Each entry here is a row in the table.
+        for (Map row in data["${table}"]["${xpath}"]) {
+          
+          // The table rows need a composite key to group "equal" values in the table across licenses.
+          flattenRow (tables["${table.toLowerCase()}"], row, compare_points, title)
+        }
+      }
+    }
   }
   
   /**
@@ -194,43 +380,17 @@ class OnixPLService {
   public Map compareLicenses (OnixplLicense license, List<OnixplLicense> licenses_to_compare, List<String> sections = null, String return_filter = COMPARE_RETURN_ALL) {
     
     // The attributes for comparison. These will be lower-cased and compared. 
-    def comp = [
-      '_ns',
-      '_name',
-      '_content'
+    List<String> exclude = [
+      'SortNumber',
+      'DisplayNumber'
     ]
-    
-    // Map for the result.
-    Map result = (new TreeMap()).withDefault {
-      [:]
-    }
     
     // Get the main license as a map.
     // This will form the base of each of our tables.
-    Map main = license.toMap(sections)
+    Map result = [:]
     
-    // Use the main license, going through each section forming a map representing
-    // each table and its data.
-    for (String tableName in main.keySet()) {
-      
-      // Construct a path that we are looking at.
-      def path = [tableName]
-      
-      // The data.
-      def data = main[tableName]
-      
-      // Should be a single keyed map.
-      def xpath = data.keySet()[0]
-      path << xpath
-      
-      // Now go through the data.
-      data = data[xpath]
-      
-      result["${tableName}"]["${license.title}"] = buildTable (data, comp)
-    }
-    
-    // Add the main to the result.
-//    result["${license.title}"] = main
+    // Tabularise the license.
+    tabularize (result, license, exclude, sections)
     
     // Return the result.
     result

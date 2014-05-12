@@ -70,9 +70,13 @@ class OnixplLicenseCompareController {
     // Filter.
     def match = params."match" ?: OnixPLService.COMPARE_RETURN_ALL
     
+    // Comparison
+    Map comparison = new TreeMap()
+    comparison.putAll( onixPLService.compareLicenses(main_license, compare_to, comparison_points, match) )
+    
     // Get the results.
     def result = [
-      "data"          : onixPLService.compareLicenses(main_license, compare_to, comparison_points, match)
+      "data"          : comparison
     ]
     
     // Serve the version required of the page.
@@ -83,18 +87,17 @@ class OnixplLicenseCompareController {
         
       default :        
         // Add the other display information.
-        result['header'] = [
-          "titles" : result.data.keySet() as LinkedHashSet
-        ]
-        result['rows'] = []
-        result.data.values().getAt(0).keySet().each { text ->
-          result['rows'] << [
-            'key'       : text,
-//            'template'  : getTemplatePathForItem (GrailsNameUtils.getScriptName(text).replaceAll('\\-', "_")),
-            'title'     : GrailsNameUtils.getNaturalName(text)
-          ]
-        }
-        result['os'] = onixPLService
+//        result['header'] = [
+//          "titles" : result.data.keySet() as LinkedHashSet
+//        ]
+//        result['rows'] = []
+//        result.data.values().getAt(0).keySet().each { text ->
+//          result['rows'] << [
+//            'key'       : text,
+//            'title'     : GrailsNameUtils.getNaturalName(text)
+//          ]
+//        }
+//        result['os'] = onixPLService
         
         return result
     }

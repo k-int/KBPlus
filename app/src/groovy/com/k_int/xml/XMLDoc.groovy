@@ -145,10 +145,15 @@ class XMLDoc {
    * 
    * @return a map representation of the XML.
    */
-  public Map toMap (Map determine_equality_with = null) {
+  public List<Map> toMaps () {
+    
+    def gp = toGPath()
+    List<Map> result = []
     
     // Get the element.
-    Map result = nodeToMap (toGPath())
+    gp.each { n ->
+      result << nodeToMap (n)
+    }
     
     result
   }

@@ -6,6 +6,7 @@ import com.k_int.kbplus.auth.Role
 import com.k_int.kbplus.onixpl.OnixPLHelperService
 import com.k_int.kbplus.onixpl.OnixPLService
 import com.k_int.xml.XMLDoc
+import groovy.util.logging.Log4j
 
 /**
  * An OnixplLicense has many OnixplUsageTerms and OnixplLicenseTexts.
@@ -13,6 +14,8 @@ import com.k_int.xml.XMLDoc
  * The OnixplLicenseTexts relation is redundant as UsageTerms refer to the
  * LicenseTexts, but is a convenient way to access the whole license text.
  */
+
+@Log4j
 class OnixplLicense {
 
   Date lastmod;
@@ -107,13 +110,14 @@ class OnixplLicense {
     // Go through each of the available or requested comparison points and examine them to determine equality.
     TreeMap data = [:]
     
-    sections.each { xpath_expr ->
+    sections.each { String xpath_expr ->
       
       def group = all_points."${xpath_expr}"?."group"
       if (group) {
         if (data[group] == null) data[group] = [:] as TreeMap
       
         def xml = getXML()
+        log.debug("XPath expression: ${xpath_expr}")
         
         // Query for xpath results.
         def results = xml.XPath(xpath_expr)
@@ -128,10 +132,8 @@ class OnixplLicense {
             snippet = onixHelperService.replaceAllTextElements(xml, snippet)
               
             // Create our new XML element of the segment.
-            data[group][xpath_expr] = snippet.toMap()
+            data[group][xpath_expr] = snippet.toMaps()
           }
-        } else {
-          data[group][xpath_expr] = [:]
         }
       }
     }
