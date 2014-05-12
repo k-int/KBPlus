@@ -28,12 +28,19 @@
 
     <div class="container">
       <h2>Data Manager Dashboard</h2>
+      <h6>Change Log <span class="pull-right">${num_hl} changes</span></h6>
+      <g:form action="changeLog" controller="dataManager" method="get">
+        From Date: <input name="startDate" type="date" value="${params.startDate}"/>
+        To Date: <input name="endDate" type="date" value="${params.endDate}"/>
+        Package Changes: <input type="checkbox" name="packages" value="Y" ${params.packages=='Y'?'checked':''}/>
+        License Changes: <input type="checkbox" name="licenses" value="Y" ${params.licenses=='Y'?'checked':''}/>
+        <input type="submit"/>
+      </g:form>
     </div>
 
     <g:if test="${formattedHistoryLines?.size() > 0}">
 
       <div class="container alert-warn">
-        <h6>Change Log</h6>
         <table class="table table-bordered">
           <thead>
             <tr>

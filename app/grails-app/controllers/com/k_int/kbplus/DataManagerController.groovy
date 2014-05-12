@@ -21,79 +21,110 @@ class DataManagerController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def changeLog() { 
-    def result =[:]
 
-    // com.k_int.kbplus.License                      |
-    // com.k_int.kbplus.Subscription                 |
-    // com.k_int.kbplus.Package                      |
-    // com.k_int.kbplus.TitleInstancePackagePlatform |
-    // com.k_int.kbplus.TitleInstance                |
-    // com.k_int.kbplus.IdentifierOccurrence         |
-    def qry_params=['com.k_int.kbplus.Package']
+    def result =[:]
+    log.debug("changeLog ${params}");
+    def formatter = new java.text.SimpleDateFormat("yyyy-MM-dd")
 
     result.max = params.max ? Integer.parseInt(params.max) : 25
     params.max = result.max
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
-    def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
+    if ( params.startDate == null ) {
+      def cal = new java.util.GregorianCalendar()
+      cal.setTimeInMillis(System.currentTimeMillis())
+      cal.set(Calendar.DAY_OF_MONTH,1)
+      params.startDate=formatter.format(cal.getTime())
+    }
+    if ( params.endDate == null ) { params.endDate = formatter.format(new Date()) }
 
-    result.historyLines = AuditLogEvent.executeQuery("select e from org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent as e where className=? order by e.lastUpdated desc", qry_params, limits);
+    def types_to_include = []
+    if ( params.packages=="Y" ) types_to_include.add('com.k_int.kbplus.Package');
+    if ( params.licenses=="Y" ) types_to_include.add('com.k_int.kbplus.License');
+    // com.k_int.kbplus.Subscription                 |
+    // com.k_int.kbplus.TitleInstancePackagePlatform |
+    // com.k_int.kbplus.TitleInstance                |
+    // com.k_int.kbplus.IdentifierOccurrence         |
 
-    result.formattedHistoryLines = []
-    result.historyLines.each { hl ->
 
-      def line_to_add = [:]
-
-      switch(hl.className) {
-        case 'com.k_int.kbplus.License':
-          def license_object = License.get(hl.persistedObjectId);
-          line_to_add = [ link: createLink(controller:'licenseDetails', action: 'show', id:hl.persistedObjectId),
-                          name: license_object.toString(),
-                          lastUpdated: hl.lastUpdated,
-                          actor: User.findByUsername(hl.actor), 
-                          propertyName: hl.propertyName,
-                          oldValue: hl.oldValue,
-                          newValue: hl.newValue
-                        ]
-          break;
-        case 'com.k_int.kbplus.Subscription':
-          break;
-        case 'com.k_int.kbplus.Package':
-          def package_object = Package.get(hl.persistedObjectId);
-          line_to_add = [ link: createLink(controller:'packageDetails', action: 'show', id:hl.persistedObjectId),
-                          name: package_object.toString(),
-                          lastUpdated: hl.lastUpdated,
-                          propertyName: hl.propertyName,
-                          actor: User.findByUsername(hl.actor),
-                          oldValue: hl.oldValue,
-                          newValue: hl.newValue
-                        ]
-          break;
-        case 'com.k_int.kbplus.TitleInstancePackagePlatform':
-          break;
-        case 'com.k_int.kbplus.TitleInstance':
-          break;
-        case 'com.k_int.kbplus.IdentifierOccurrence':
-          break;
-      }
-      switch ( hl.eventName ) {
-        case 'INSERT':
-          line_to_add.eventName= "New"
-          break;
-        case 'UPDATE':
-          line_to_add.eventName= "Updated"
-          break;
-        case 'DELETE':
-          line_to_add.eventName= "Deleted"
-          break;
-        default:
-          line_to_add.eventName= "Unknown"
-          break;
-      }
-      result.formattedHistoryLines.add(line_to_add);
+    log.debug("${params}");
+    if ( types_to_include.size() == 0 ) {
+      types_to_include.add('com.k_int.kbplus.Package')
+      params.packages="Y"
     }
 
-    result.num_hl = AuditLogEvent.executeQuery("select count(e) from org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent as e where className=?", qry_params)[0];
+    if ( types_to_include.size() > 0 ) {
+  
+      def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
+      def start_date = formatter.parse(params.startDate)
+      def end_date = formatter.parse(params.endDate)
+  
+      result.historyLines = AuditLogEvent.executeQuery("select e from org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent as e where e.className in (:l) AND e.lastUpdated >= :s AND e.lastUpdated <= :e order by e.lastUpdated desc", 
+                                                       ['l':types_to_include,'s':start_date,'e':end_date], limits);
+      result.num_hl = AuditLogEvent.executeQuery("select count(e) from org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent as e where className in (:l) AND e.lastUpdated >= :s AND e.lastUpdated <= :e ", 
+                                                 ['l':types_to_include,'s':start_date,'e':end_date])[0];
+  
+      result.formattedHistoryLines = []
+      result.historyLines.each { hl ->
+  
+        def line_to_add = [:]
+        def linetype = null
+  
+        switch(hl.className) {
+          case 'com.k_int.kbplus.License':
+            def license_object = License.get(hl.persistedObjectId);
+            line_to_add = [ link: createLink(controller:'licenseDetails', action: 'show', id:hl.persistedObjectId),
+                            name: license_object.toString(),
+                            lastUpdated: hl.lastUpdated,
+                            actor: User.findByUsername(hl.actor), 
+                            propertyName: hl.propertyName,
+                            oldValue: hl.oldValue,
+                            newValue: hl.newValue
+                          ]
+            linetype = 'License'
+            break;
+          case 'com.k_int.kbplus.Subscription':
+            break;
+          case 'com.k_int.kbplus.Package':
+            def package_object = Package.get(hl.persistedObjectId);
+            line_to_add = [ link: createLink(controller:'packageDetails', action: 'show', id:hl.persistedObjectId),
+                            name: package_object.toString(),
+                            lastUpdated: hl.lastUpdated,
+                            propertyName: hl.propertyName,
+                            actor: User.findByUsername(hl.actor),
+                            oldValue: hl.oldValue,
+                            newValue: hl.newValue
+                          ]
+            linetype = 'Package'
+            break;
+          case 'com.k_int.kbplus.TitleInstancePackagePlatform':
+            break;
+          case 'com.k_int.kbplus.TitleInstance':
+            break;
+          case 'com.k_int.kbplus.IdentifierOccurrence':
+            break;
+        }
+        switch ( hl.eventName ) {
+          case 'INSERT':
+            line_to_add.eventName= "New ${linetype}"
+            break;
+          case 'UPDATE':
+            line_to_add.eventName= "Updated ${linetype}"
+            break;
+          case 'DELETE':
+            line_to_add.eventName= "Deleted ${linetype}"
+            break;
+          default:
+            line_to_add.eventName= "Unknown ${linetype}"
+            break;
+        }
+        result.formattedHistoryLines.add(line_to_add);
+      }
+  
+    }
+    else {
+      result.num_hl = 0
+    }
 
     result
   }
