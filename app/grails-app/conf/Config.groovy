@@ -14,7 +14,7 @@ onix = [
         'children' : [
           'template' : '_:$value$',
           'values' : [
-            'Definitions/_:DocumentDefinition' : [
+            'Definitions' : [
               'text' : 'Definitions'
             ],
             'LicenseGrant' : [

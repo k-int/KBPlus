@@ -14,21 +14,6 @@ class OnixplLicenseCompareController {
 
   OnixPLService onixPLService
   OnixPLHelperService onixPLHelperService
-//  GrailsConventionGroovyPageLocator groovyPageLocator
-  
-//  private String getTemplatePathForItem(String template) {
-//    
-//    // Find the template.
-//    GroovyPageScriptSource result = groovyPageLocator.findTemplateByPath("${TEMPLATE_ROOT}${template}")
-//    
-//    // Check the result.
-//    if ( result ) {
-//      return "${TEMPLATE_ROOT}${template}"
-//    }
-//    
-//    // Return the default.
-//    "${TEMPLATE_ROOT}${TEMPLATE_DEFAULT}"
-//  }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
@@ -76,7 +61,9 @@ class OnixplLicenseCompareController {
     
     // Get the results.
     def result = [
-      "data"          : comparison
+      "data"          : comparison,
+      "main_license"  : main_license.getTitle(),
+      "headings"      : [main_license.getTitle()] + (compare_to*.getTitle() as List)
     ]
     
     // Serve the version required of the page.
@@ -87,18 +74,10 @@ class OnixplLicenseCompareController {
         
       default :        
         // Add the other display information.
-//        result['header'] = [
-//          "titles" : result.data.keySet() as LinkedHashSet
-//        ]
-//        result['rows'] = []
-//        result.data.values().getAt(0).keySet().each { text ->
-//          result['rows'] << [
-//            'key'       : text,
-//            'title'     : GrailsNameUtils.getNaturalName(text)
-//          ]
-//        }
-//        result['os'] = onixPLService
-        
+      
+        result.putAll ([
+          "service"       : onixPLService
+        ])
         return result
     }
   }

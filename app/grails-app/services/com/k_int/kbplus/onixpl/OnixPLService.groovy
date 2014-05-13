@@ -1,13 +1,12 @@
 package com.k_int.kbplus.onixpl
 
-import grails.converters.JSON
 import grails.util.GrailsNameUtils
+import grails.util.Holders
+
 import org.apache.commons.collections.list.TreeList
 import org.codehaus.groovy.grails.commons.GrailsApplication
-import grails.util.GrailsNameUtils
 
 import com.k_int.kbplus.OnixplLicense
-import grails.util.Holders
 
 /**
  * This service handles the manipulation of the Onix-pl XML documents so they can be displayed, and compared.
@@ -23,12 +22,12 @@ class OnixPLService {
   private static OnixPLHelperService onixPLHelperService
   private static GrailsApplication grailsApplication
   
-  private static GrailsApplication getGrailsApplication() {
+  public static GrailsApplication getGrailsApplication() {
     if (grailsApplication == null) grailsApplication = Holders.getGrailsApplication()
     grailsApplication
   }
   
-  private static OnixPLHelperService getOnixPLHelperService() {
+  public static OnixPLHelperService getOnixPLHelperService() {
     if (onixPLHelperService == null) onixPLHelperService = getGrailsApplication().mainContext.getBean('onixPLHelperService')
     onixPLHelperService
   }
@@ -148,7 +147,6 @@ class OnixPLService {
    */
   private static String getRowHeading (Map data) {
     
-    String title = null
     String name = data['_name']
     if (name != null) {
     
@@ -163,6 +161,8 @@ class OnixPLService {
         return entry[0]['_content']
       }
     }
+    
+    return null
   }
   
   /**
@@ -187,7 +187,7 @@ class OnixPLService {
    * @return The treated text.
    */
   private static String treatTextForComparison (String text) {
-    "${text?.toLowerCase()}"
+    text?.toLowerCase()
   }
   
   /**
@@ -200,7 +200,7 @@ class OnixPLService {
    * @param compare_points List of comparison points.
    * @return The flattened representation of the row.
    */
-  private static void flattenRow (Map row, Map data, List<String> compare_points, String license_name) {
+  private static void flattenRow (Map rows, Map data, List<String> exclude, String license_name) {
     
     // Get the name of the element from the XML that this row is built from.
     String name = data['_name']
@@ -209,23 +209,17 @@ class OnixPLService {
       // The treemap to hold the row columns
       Map row_cells = new TreeMap()
       
+      // Initial value of key is the heading.
+      TreeList<String> keys = []
+      
       // Get a row heading.
       String heading = getRowHeading(data)
-      
-      // Initial value of key is the heading.
-      TreeList<String> keys = [treatTextForComparison (heading)]
-      
-      // Add to the data as a cell.
-      row_cells["heading"] = [
-        "content"   : heading,
-        "text"      : heading ? GrailsNameUtils.getNaturalName( heading.replaceAll("onixPL:", "") ) : null,
-        "sub-text"  : treatTextForDisplay(heading)
-      ]
+      if (heading) {
+        keys << treatTextForComparison (heading)
+      }
       
       // Create list of element names.
       List el_names = data.keySet() as List
-      
-      int counter = 0
       
       // Go through each element in turn now and get the value for a column.
       for (String el_name in el_names) {
@@ -237,37 +231,34 @@ class OnixPLService {
             // Get the element(s).
             def vals = data.remove(el_name)
             
-            // Cell data.
-            TreeMap<String, String> cell_data = [:]
-            
             switch (vals) {
               case {it instanceof Map} :
-                extractContent (vals, cell_data, compare_points, keys, counter)
+                generateKeys (vals, exclude, keys)
                 break
                 
               case {it instanceof Collection} :
                 // Treat each value as a separate entry into the same cell.
                 for (Map val in vals) {
-                  extractContent (val, cell_data, compare_points, keys, counter)
+                  generateKeys (val, exclude, keys)
                 }
                 break
             }
             
             // Add the cell.
-            if (!el_name.startsWith('_') && cell_data) {
-              row_cells["${el_name.toLowerCase()}_${counter}"] = cell_data
+            if (!el_name.startsWith('_')) {
+              row_cells["${el_name}"] = vals
             }
             break
         }
-        
-        counter ++
       }
       
-      if (!row["${keys.join('/')}"]) {
-        row["${keys.join('/')}"] = new TreeMap()
+      String key = "${keys.join('/')}"
+      
+      if (rows[key] == null) {
+        rows[key] = new TreeMap()
       }
       
-      row["${keys.join('/')}"][license_name] = row_cells
+      rows[key][license_name] = row_cells
     }
   }
   
@@ -281,7 +272,7 @@ class OnixPLService {
    * @param key Current key to which we should append.
    * @return
    */
-  private static void extractContent (Map val, Map cell, List<String> compare_points, List keys, int counter) {
+  private static void generateKeys (Map val, List<String> exclude, List keys) {
     
     // Name.
     String name = val['_name']
@@ -291,11 +282,14 @@ class OnixPLService {
       // Add any key values to the keys list.
       for (String cp in val.keySet()) {
         
-        if (!cp.startsWith('_') && !compare_points.contains(cp)) {
+        if (!cp.startsWith('_') && !exclude.contains(cp)) {
           List value = val.get(cp)
           if (value) {
             value.each {
-              keys << treatTextForComparison(it?.get("_content"))
+              String key = it?.get("_content")
+              if (key) {
+                keys << treatTextForComparison(key)
+              }
             }
           }
         }
@@ -311,24 +305,11 @@ class OnixPLService {
                 
                 // Recursively call this method.
                 for (Map v in val[prop]) {
-                  extractContent (v, cell, compare_points, keys, counter)
+                  generateKeys (v, exclude, keys)
                 }
               }
               break
           }
-        }
-        
-      } else {
-        
-        // The text.
-        String content = val['_content']
-        
-        if (content) {
-          // Leaf add the text.
-          cell["${name.toLowerCase()}_${counter}"] = [
-            "content" : content,
-            "text"    : treatTextForDisplay(content)
-          ]
         }
       }
     }
@@ -341,7 +322,7 @@ class OnixPLService {
    * @param sections
    * @return
    */
-  private static void tabularize (Map tables, OnixplLicense license, List<String> compare_points, List<String> sections = null, OnixplLicense compare_to = null) {
+  private static void tabularize (Map tables, OnixplLicense license, List<String> exclude, List<String> sections = null, OnixplLicense compare_to = null) {
     
     if (!(tables instanceof MapWithDefault)) {
       tables = tables.withDefault {
@@ -365,9 +346,13 @@ class OnixPLService {
         for (Map row in data["${table}"]["${xpath}"]) {
           
           // The table rows need a composite key to group "equal" values in the table across licenses.
-          flattenRow (tables["${table.toLowerCase()}"], row, compare_points, title)
+          flattenRow (tables["${table}"], row, exclude, title)
         }
       }
+      
+      tables["${table}"].putAll([
+        "_title"    : GrailsNameUtils.getNaturalName(table)
+      ])
     }
   }
   
@@ -391,6 +376,7 @@ class OnixPLService {
     
     // Tabularise the license.
     tabularize (result, license, exclude, sections)
+    tabularize (result, licenses_to_compare[0], exclude, sections)
     
     // Return the result.
     result
