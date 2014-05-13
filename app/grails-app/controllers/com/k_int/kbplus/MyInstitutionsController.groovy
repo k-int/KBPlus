@@ -745,8 +745,9 @@ class MyInstitutionsController {
 
     if ( ( params.filter ) && ( params.filter.length() > 0 ) ) {
       log.debug("Adding title filter ${params.filter}");
-      sub_qry += " AND ie.tipp.title.title like :titlestr"
-      qry_params.titlestr = "%${params.filter}%";
+       sub_qry += " AND LOWER(ie.tipp.title.title) like :titlestr"
+       qry_params.titlestr = "%${params.filter}%".toLowerCase();
+
     }
 
     if ( filterSub ) {

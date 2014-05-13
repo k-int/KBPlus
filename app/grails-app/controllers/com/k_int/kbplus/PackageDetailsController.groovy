@@ -346,11 +346,9 @@ class PackageDetailsController {
 
     def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
 
-    if ( showDeletedTipps==true ) {
-    }
-    else {
-      base_qry += "and tipp.status.value != 'Deleted' "
-    }
+     if ( showDeletedTipps != true ) {
+         base_qry += "and tipp.status.value != 'Deleted' "
+     }
 
     if ( asAt != null ) {
       base_qry += " and ( ( ? >= coalesce(tipp.accessStartDate, tipp.pkg.startDate) ) and ( ( ? <= tipp.accessEndDate ) or ( tipp.accessEndDate is null ) ) ) "
