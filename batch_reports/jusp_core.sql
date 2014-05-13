@@ -5,10 +5,11 @@ select @jusplogin :=idns_id from identifier_namespace where idns_ns='jusplogin';
 select @jusp:=idns_id from identifier_namespace where idns_ns='jusp';
 
 select cs_rdv.rdv_value, 
-       DATE_FORMAT(IFNULL(ie.core_status_start,IFNULL(tipp.tipp_access_start_date, pkg.pkg_start_date)),'%Y') core_start_year, 
-       DATE_FORMAT(IFNULL(ie.core_status_end,IFNULL(tipp.tipp_access_end_date, pkg.pkg_end_date)),'%Y') core_end_year, 
+       DATE_FORMAT(IFNULL(ie.core_status_start,IFNULL(ie.ie_access_start_date,IFNULL(tipp.tipp_access_start_date, pkg.pkg_start_date))),'%Y') core_start_year, 
+       DATE_FORMAT(IFNULL(ie.core_status_end,IFNULL(ie.ie_access_end_date,IFNULL(tipp.tipp_access_end_date, pkg.pkg_end_date))),'%Y') core_end_year, 
        title_identifier.id_value, 
-       org_identifier.id_value
+       org_identifier.id_value,
+       tipp.tipp_id
 from issue_entitlement ie,
      title_instance_package_platform tipp,
      refdata_value cs_rdv,
@@ -34,4 +35,6 @@ where ie.core_status_id = cs_rdv.rdv_id
   and title_identifier.id_ns_fk = @jusp 
   and org_identifier.id_ns_fk = @jusplogin
   and cs_rdv.rdv_value <> 'No'
+  and DATE_FORMAT(IFNULL(ie.core_status_start,IFNULL(ie.ie_access_start_date,IFNULL(tipp.tipp_access_start_date, pkg.pkg_start_date))),'%Y') > '1900'
+  and DATE_FORMAT(IFNULL(ie.core_status_end,IFNULL(ie.ie_access_end_date,IFNULL(tipp.tipp_access_end_date, pkg.pkg_end_date))),'%Y') > '1900'
 
