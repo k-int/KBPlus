@@ -778,22 +778,22 @@ class PackageDetailsController {
           if ( params.bulkOperation=='edit') {
             bulk_fields.each { bulk_field_defn ->
               if ( params["clear_${bulk_field_defn.formProp}"] == 'on' ) {
-                log.debug("Request to clear field ${bulk_field_defn.formProp}");
-                tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = null
-                changed = true
-              }
-              else {
-                def proposed_value = params['bulk_'+bulk_field_defn.formProp]
-                if ( ( proposed_value != null ) && ( proposed_value.length() > 0 ) ) {
-                  log.debug("Set field ${bulk_field_defn.formProp} to proposed_value");
-                  if ( bulk_field_defn.type == 'date' ) {
-                    tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = formatter.parse(proposed_value)
+                      log.debug("Request to clear field ${bulk_field_defn.formProp}");
+                      tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = null
+                      changed = true
                   }
                   else {
-                    tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = proposed_value
-                  }
-                  changed = true
-                }
+                      def proposed_value = params['bulk_'+bulk_field_defn.formProp]
+                      if ( ( proposed_value != null ) && ( proposed_value.length() > 0 ) ) {
+                          log.debug("Set field ${bulk_field_defn.formProp} to ${proposed_value}");
+                          if ( bulk_field_defn.type == 'date' ) {
+                              tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = formatter.parse(proposed_value)
+                          }
+                          else {
+                              tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = proposed_value
+                          }
+                          changed = true
+                      }
               }
             }
             if ( changed )
