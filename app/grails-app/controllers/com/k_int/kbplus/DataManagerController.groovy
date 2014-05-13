@@ -106,8 +106,28 @@ class DataManagerController {
             linetype = 'Package'
             break;
           case 'com.k_int.kbplus.TitleInstancePackagePlatform':
+            def tipp_object = TitleInstancePackagePlatform.get(hl.persistedObjectId);
+            line_to_add = [ link: createLink(controller:'tippDetails', action: 'show', id:hl.persistedObjectId),
+                            name: tipp_object.toString(),
+                            lastUpdated: hl.lastUpdated,
+                            propertyName: hl.propertyName,
+                            actor: User.findByUsername(hl.actor),
+                            oldValue: hl.oldValue,
+                            newValue: hl.newValue
+                          ]
+            linetype = 'TIPP'
             break;
           case 'com.k_int.kbplus.TitleInstance':
+            def title_object = TitleInstance.get(hl.persistedObjectId);
+            line_to_add = [ link: createLink(controller:'titleDetails', action: 'show', id:hl.persistedObjectId),
+                            name: title_object.toString(),
+                            lastUpdated: hl.lastUpdated,
+                            propertyName: hl.propertyName,
+                            actor: User.findByUsername(hl.actor),
+                            oldValue: hl.oldValue,
+                            newValue: hl.newValue
+                          ]
+            linetype = 'Title'
             break;
           case 'com.k_int.kbplus.IdentifierOccurrence':
             break;

@@ -34,8 +34,8 @@
         To Date: <input name="endDate" type="date" value="${params.endDate}"/><br/>
         Package Changes: <input type="checkbox" name="packages" value="Y" ${params.packages=='Y'?'checked':''}/>
         License Changes: <input type="checkbox" name="licenses" value="Y" ${params.licenses=='Y'?'checked':''}/>
-        Title Changes: <input type="checkbox" name="titles" value="Y" ${params.licenses=='Y'?'checked':''}/>
-        TIPP Changes: <input type="checkbox" name="tipps" value="Y" ${params.licenses=='Y'?'checked':''}/>
+        Title Changes: <input type="checkbox" name="titles" value="Y" ${params.titles=='Y'?'checked':''}/>
+        TIPP Changes: <input type="checkbox" name="tipps" value="Y" ${params.tipps=='Y'?'checked':''}/>
         New Items: <input type="checkbox" name="creates" value="Y" ${params.creates=='Y'?'checked':''}/>
         Updates: <input type="checkbox" name="updates" value="Y" ${params.updates=='Y'?'checked':''}/>
         <input type="submit"/>
