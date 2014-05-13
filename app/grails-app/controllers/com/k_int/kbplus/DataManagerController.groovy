@@ -44,9 +44,9 @@ class DataManagerController {
     def types_to_include = []
     if ( params.packages=="Y" ) types_to_include.add('com.k_int.kbplus.Package');
     if ( params.licenses=="Y" ) types_to_include.add('com.k_int.kbplus.License');
+    if ( params.titles=="Y" ) types_to_include.add('com.k_int.kbplus.TitleInstance');
+    if ( params.tipps=="Y" ) types_to_include.add('com.k_int.kbplus.TitleInstancePackagePlatform');
     // com.k_int.kbplus.Subscription                 |
-    // com.k_int.kbplus.TitleInstancePackagePlatform |
-    // com.k_int.kbplus.TitleInstance                |
     // com.k_int.kbplus.IdentifierOccurrence         |
 
     def events_to_include=[]
