@@ -65,7 +65,8 @@ table.onix-entry-table span.cell-inner {
 	font-weight:bold;
 	font-size:1.1em;
 }
-.onix-code-annotation{
+.onix-code .annotation{
+	font-weight: normal;
 	font-style: italic;
 }
 

@@ -60,6 +60,7 @@ modules = {
   
   onixMatrix {
     dependsOn 'kbplus'
+    dependsOn 'font-awesome'
     resource url:'css/onix.css'
     resource url:'js/onix.js'
   }

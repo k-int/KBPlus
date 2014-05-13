@@ -17,7 +17,7 @@ $(document).ready(function() {
     
     // Fix the first column.
     new $.fn.dataTable.FixedColumns( table, {
-      "iLeftColumns": 1
+      "iLeftColumns": 2
     });
 
     // Column filter.
@@ -73,4 +73,7 @@ $(document).ready(function() {
       scrolling = false;
     }
   });
+  
+  // Tooltips.
+  $('.onix-code').tooltip();
 });

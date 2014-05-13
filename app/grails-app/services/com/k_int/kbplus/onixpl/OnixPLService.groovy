@@ -154,7 +154,7 @@ class OnixPLService {
       Map row = new HashMap(1,2)
       
       // Check if there is a "type" element.
-      List entry = data.remove("${name}Type")
+      List entry = data["${name}Type"]
       
       if (entry != null) {
         // Row heading.
@@ -171,7 +171,7 @@ class OnixPLService {
    * @param text Text to treat.
    * @return The treated text.
    */
-  private static String treatTextForDisplay (String text) {
+  public static String treatTextForDisplay (String text) {
     
     if (text?.startsWith("onixPL:")) {
       return getOnixPLHelperService().lookupCodeValueAnnotation(text)
@@ -180,13 +180,22 @@ class OnixPLService {
     text
   }
   
+  public static String formatOnixValue (String text) {
+    String t = text?.replaceAll("onixPL:", "")
+    if (t) {
+      t = GrailsNameUtils.getNaturalName(t)
+    }
+    
+    t
+  }
+  
   /**
    * Treat the supplied text for comparison.
    * 
    * @param text Text to treat.
    * @return The treated text.
    */
-  private static String treatTextForComparison (String text) {
+  public static String treatTextForComparison (String text) {
     text?.toLowerCase()
   }
   
@@ -221,6 +230,8 @@ class OnixPLService {
       // Create list of element names.
       List el_names = data.keySet() as List
       
+      generateKeys(data, exclude, keys)
+      
       // Go through each element in turn now and get the value for a column.
       for (String el_name in el_names) {
         
@@ -228,25 +239,10 @@ class OnixPLService {
         // gives the option for special case handling.
         switch (el_name) {
           default :
-            // Get the element(s).
-            def vals = data.remove(el_name)
-            
-            switch (vals) {
-              case {it instanceof Map} :
-                generateKeys (vals, exclude, keys)
-                break
-                
-              case {it instanceof Collection} :
-                // Treat each value as a separate entry into the same cell.
-                for (Map val in vals) {
-                  generateKeys (val, exclude, keys)
-                }
-                break
-            }
             
             // Add the cell.
             if (!el_name.startsWith('_')) {
-              row_cells["${el_name}"] = vals
+              row_cells["${el_name}"] = data["${el_name}"]
             }
             break
         }
@@ -367,7 +363,11 @@ class OnixPLService {
     // The attributes for comparison. These will be lower-cased and compared. 
     List<String> exclude = [
       'SortNumber',
-      'DisplayNumber'
+      'DisplayNumber',
+      'TextPreceding',
+      'Text',
+      'AnnotationType',
+      'AnnotationText'
     ]
     
     // Get the main license as a map.

@@ -25,7 +25,7 @@
 				${flash.message}
 			</bootstrap:alert>
 		</g:if>
-		<g:render template="tables" model="${request.parameterMap}" ></g:render>
+		<g:render template="tables" model="${request.parameterMap}" />
 	</div>
 </body>
 </html>
