@@ -8,6 +8,7 @@ $(document).ready(function() {
     var table = $(this).dataTable( {
       // "bJQueryUI": true,
       "sScrollX"        : "100%",
+      "sScrollY"        : ($(window).height() - 150),
       "bPaginate"       : false,
       "bLengthChange"   : false,
       "bInfo"           : false,
@@ -75,5 +76,34 @@ $(document).ready(function() {
   });
   
   // Tooltips.
-  $('.onix-code').tooltip();
+  $('.onix-code, .usage-status').tooltip(
+      {placement: 'bottom', trigger:'hover', html: true, container: 'body'}
+  );
+  $('.onix-icons span i').popover(
+    {placement: 'bottom', trigger:'hover', html: true, container: 'body'}
+  );
+  
+  // Modal.
+  var modal = $('#onix-modal');
+  $('.text-icon').each(function(){
+    
+    // Me.
+    var me = $(this);
+    
+    // Get the adjacent text element.    
+    var textelement = me.next('.textelement');
+    
+    // Bind the on click.
+    me.click (function() {
+      
+      $('.modal-title', modal).text("Text Content");
+      
+      $('.modal-body', modal).html(
+        textelement.html()
+      );
+      
+      // Show the modal.
+      modal.modal();
+    });
+  });
 });

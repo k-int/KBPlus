@@ -145,24 +145,68 @@ class OnixPLService {
    * @param data Row data
    * @return Title if found or null if not
    */
-  private static String getRowHeading (Map data) {
+  public static Map getRowHeadingData (Map row_data) {
     
-    String name = data['_name']
-    if (name != null) {
+    // Just find the first example of an entry regardless of which license it's defined against.
+    row_data[row_data.keySet()[0]]
+  }
+  
+  public static String getSingleValue (Map data, String name) {
+    String content = data?.get("${name}")?.getAt(0)?.get('_content')
+    if (content) {
+      return "<span class='onix-code ${getClassValue(content)}' title='${getOnixValueAnnotation(content).encodeAsHTML()}' >${formatOnixValue(content)}</span>"
+    }
     
-      // Map to house the single value.
-      Map row = new HashMap(1,2)
+    return ""
+  }
+  
+  public static List sortTextElements (List elements) {
+    elements.sort { a, b ->
       
-      // Check if there is a "type" element.
-      List entry = data["${name}Type"]
+      // Sort values
+      String sorta = (a?.get('SortNumber') ?: "")
+      sorta += (a?.get('DisplayNumber') ?: "")
       
-      if (entry != null) {
-        // Row heading.
-        return entry[0]['_content']
+      String sortb = (b?.get('SortNumber') ?: "")
+      sortb += (b?.get('DisplayNumber') ?: "")
+      
+      sorta <=> sortb
+    }
+  }
+  
+  public static String getAllValues (Map data, String name, String separator, String last_sep = null) {
+    
+    // The text.
+    String text = ""
+    
+    // The item.
+    List items =  data?.get("${name}")
+    
+    if (items) {
+    
+      // Get the size of the elements.
+      int ds = items.size() ?: 0
+      
+      // Each element.
+      items.eachWithIndex { item, index ->
+        
+        String content = item['_content']
+        if (content) {
+          text += (index > 0 ? (last_sep && (index + 1 == ds) ? last_sep : separator) : "") +
+          "<span class='onix-code ${getClassValue(content)}' title='${getOnixValueAnnotation(content).encodeAsHTML()}' >${formatOnixValue(content)}</span>"
+        }
       }
     }
     
-    return null
+    text
+  }
+  
+  public static String getClassValue (String text) {
+    String t = ""
+    if (text) {
+      t = GrailsNameUtils.getScriptName(text)
+    }
+    t
   }
   
   /**
@@ -171,7 +215,7 @@ class OnixPLService {
    * @param text Text to treat.
    * @return The treated text.
    */
-  public static String treatTextForDisplay (String text) {
+  public static String getOnixValueAnnotation (String text) {
     
     if (text?.startsWith("onixPL:")) {
       return getOnixPLHelperService().lookupCodeValueAnnotation(text)
@@ -181,9 +225,16 @@ class OnixPLService {
   }
   
   public static String formatOnixValue (String text) {
-    String t = text?.replaceAll("onixPL:", "")
+    String t = text
+    
     if (t) {
-      t = GrailsNameUtils.getNaturalName(t)
+      def matcher = t =~ /onixPL:([\w]*)/
+      
+      matcher.each { match ->
+        
+        // Each string match without the onixPL:
+        t = t.replaceAll(match[0], GrailsNameUtils.getNaturalName(match[1]))
+      }
     }
     
     t
@@ -220,12 +271,6 @@ class OnixPLService {
       
       // Initial value of key is the heading.
       TreeList<String> keys = []
-      
-      // Get a row heading.
-      String heading = getRowHeading(data)
-      if (heading) {
-        keys << treatTextForComparison (heading)
-      }
       
       // Create list of element names.
       List el_names = data.keySet() as List
@@ -367,7 +412,8 @@ class OnixPLService {
       'TextPreceding',
       'Text',
       'AnnotationType',
-      'AnnotationText'
+      'AnnotationText',
+      'UsageStatus',
     ]
     
     // Get the main license as a map.
@@ -376,7 +422,9 @@ class OnixPLService {
     
     // Tabularise the license.
     tabularize (result, license, exclude, sections)
-    tabularize (result, licenses_to_compare[0], exclude, sections)
+    for (OnixplLicense l in licenses_to_compare) {
+      tabularize (result, l, exclude, sections)
+    }
     
     // Return the result.
     result
