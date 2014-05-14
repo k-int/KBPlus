@@ -70,9 +70,9 @@ ul.ColVis_collection li label {
   cursor: help;
 }
 
-.usage-status {
+.onix-status {
   cursor: help;
-  font-size: 4em;
+  font-size: 3.5em;
   line-height: 1em;
 }
 
@@ -119,7 +119,8 @@ ul.ColVis_collection li label {
 .onix-pl-interpreted-as-permitted:before,
 .onix-pl-prohibited:before,
 .onix-pl-interpreted-as-prohibited:before,
-.onix-pl-undefined:before {
+.onix-pl-undefined:before,
+.onix-status:before {
   font-family: FontAwesome;
   font-style: normal;
   font-weight: normal;
@@ -128,7 +129,8 @@ ul.ColVis_collection li label {
 }
 
 .onix-pl-permitted:before,
-.onix-pl-interpreted-as-permitted:before {
+.onix-pl-interpreted-as-permitted:before,
+.onix-tick:before {
   content: "";
   color:#2a9a32;
 }
@@ -139,9 +141,16 @@ ul.ColVis_collection li label {
   color:#FF0000;
 }
 
-.onix-pl-interpreted-as-prohibited:before,
+.onix-pl-interpreted-as-prohibited:before{
+	color:#ff7676;
+}
 .onix-pl-interpreted-as-permitted:before {
-  color:#ff9200;
+  color:#6ddd75;
+}
+
+.onix-info:before {
+  content: "";
+  color: #166fe7;
 }
 
 .onix-pl-undefined:before {

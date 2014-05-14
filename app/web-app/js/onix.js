@@ -9,6 +9,7 @@ $(document).ready(function() {
       // "bJQueryUI": true,
       "sScrollX"        : "100%",
       "sScrollY"        : ($(window).height() - 150),
+      "bScrollCollapse" : true,
       "bPaginate"       : false,
       "bLengthChange"   : false,
       "bInfo"           : false,
@@ -76,16 +77,16 @@ $(document).ready(function() {
   });
   
   // Tooltips.
-  $('.onix-code, .usage-status').tooltip(
+  $('.onix-code, .onix-status').tooltip(
       {placement: 'bottom', trigger:'hover', html: true, container: 'body'}
   );
   $('.onix-icons span i').popover(
-    {placement: 'bottom', trigger:'hover', html: true, container: 'body'}
+    {placement: 'left', trigger:'hover', html: true, container: 'body'}
   );
   
   // Modal.
   var modal = $('#onix-modal');
-  $('.text-icon').each(function(){
+  $('.text-icon, .main-annotation').each(function(){
     
     // Me.
     var me = $(this);
@@ -96,7 +97,9 @@ $(document).ready(function() {
     // Bind the on click.
     me.click (function() {
       
-      $('.modal-title', modal).text("Text Content");
+      $('.modal-title', modal).text(
+        me.is(".main-annotation") ? "Annotations" : "Text Content"
+      );
       
       $('.modal-body', modal).html(
         textelement.html()

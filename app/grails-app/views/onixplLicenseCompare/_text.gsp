@@ -19,6 +19,9 @@
 	  ${ val.get('Text')?.get(0)?.get('_content')?.encodeAsHTML()}</li>
 	</g:if>
 	<g:else>
+    <g:if test="${ last_preceding }" >
+      </ul>
+    </g:if>
     <li><g:if test="${display_num}" >
 	    <span class='text-num'>${ display_num.encodeAsHTML() } - </span>
 	  </g:if>
