@@ -19,7 +19,7 @@
 	  ${ val.get('Text')?.get(0)?.get('_content')?.encodeAsHTML()}</li>
 	</g:if>
 	<g:else>
-    <g:if test="${ last_preceding }" >
+    <g:if test="${ preceding != last_preceding }" >
       </ul>
     </g:if>
     <li><g:if test="${display_num}" >

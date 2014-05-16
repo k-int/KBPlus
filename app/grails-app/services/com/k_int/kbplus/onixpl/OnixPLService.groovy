@@ -151,15 +151,33 @@ class OnixPLService {
     row_data[row_data.keySet()[0]]
   }
   
+  /**
+   * Returns a single sanitised onix value along with it's definition data.
+   * 
+   * @param data
+   * @param name
+   * @return
+   */
   public static String getSingleValue (Map data, String name) {
+    String t = ""
     String content = data?.get("${name}")?.getAt(0)?.get('_content')
     if (content) {
-      return "<span class='onix-code ${getClassValue(content)}' title='${getOnixValueAnnotation(content).encodeAsHTML()}' >${formatOnixValue(content)}</span>"
+      if (content.startsWith("onixPL:")) {
+        t = "<span class='onix-code ${getClassValue(content)}' title='${getOnixValueAnnotation(content).encodeAsHTML()}' >${formatOnixValue(content)}</span>"
+      } else {
+        t = content.encodeAsHTML()
+      }
     }
     
-    return ""
+    return t
   }
   
+  /**
+   * Sorts the values into their correct order.
+   * 
+   * @param elements Should be TextElement from the Onix data.
+   * @return Sorted values.
+   */
   public static List sortTextElements (List elements) {
     elements.sort { a, b ->
       
@@ -174,6 +192,15 @@ class OnixPLService {
     }
   }
   
+  /**
+   * Sanitises 1..n Onix values and looks up their definitions from the spec.
+   * 
+   * @param data data to extract the data from
+   * @param name key name which we are to target
+   * @param separator The separator to use when setting out the multi-values.
+   * @param last_sep [Optional] Used when separating out the last 2 items of the list.
+   * @return HTML string for use in displaying.
+   */
   public static String getAllValues (Map data, String name, String separator, String last_sep = null) {
     
     // The text.
@@ -192,8 +219,12 @@ class OnixPLService {
         
         String content = item['_content']
         if (content) {
-          text += (index > 0 ? (last_sep && (index + 1 == ds) ? last_sep : separator) : "") +
-          "<span class='onix-code ${getClassValue(content)}' title='${getOnixValueAnnotation(content).encodeAsHTML()}' >${formatOnixValue(content)}</span>"
+          text += (index > 0 ? (last_sep && (index + 1 == ds) ? last_sep : separator) : "")
+          if (content.startsWith("onixPL:")) {
+             text += "<span class='onix-code ${getClassValue(content)}' title='${getOnixValueAnnotation(content).encodeAsHTML()}' >${formatOnixValue(content)}</span>"
+          } else {
+            text += content.encodeAsHTML()
+          }
         }
       }
     }
@@ -201,6 +232,11 @@ class OnixPLService {
     text
   }
   
+  /**
+   * Creates a value suitable to be used as a CSS class name from the supplied string.
+   * @param text
+   * @return sanitised string value.
+   */
   public static String getClassValue (String text) {
     String t = ""
     if (text) {
@@ -210,7 +246,7 @@ class OnixPLService {
   }
   
   /**
-   * Treat the supplied text for display.
+   * Looks up the annotation from the OnixPL specification.
    *
    * @param text Text to treat.
    * @return The treated text.
@@ -224,6 +260,12 @@ class OnixPLService {
     text
   }
   
+  /**
+   * Formats a string by changing values like onixPL:MyValue to "My Value" for use when displaying
+   * onix values out.
+   * @param text
+   * @return
+   */
   public static String formatOnixValue (String text) {
     String t = text
     
@@ -414,6 +456,14 @@ class OnixPLService {
       'AnnotationType',
       'AnnotationText',
       'UsageStatus',
+      'Description',
+      'Name',
+      'AgentPlaceRelator',
+      'RelatedPlace',
+      'AgentType',
+      'DocumentLabel',
+      'IDValue',
+      'PlaceIDType'
     ]
     
     // Get the main license as a map.
