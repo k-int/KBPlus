@@ -7,6 +7,7 @@
 
   <body>
 
+  <g:render template="addDocument" contextPath="../templates" model="${[doclist:subscriptionInstance.documents, ownobj:subscriptionInstance, owntp:'subscription']}" />
 
     <div class="container">
       <ul class="breadcrumb">
@@ -49,7 +50,7 @@
         <input type="hidden" name="subId" value="${params.id}"/>
         <input type="hidden" name="ctx" value="documents"/>
         <input type="submit" class="btn btn-danger" value="Delete Selected Notes"/>
-        <input type="submit" class="btn btn-primary" value="Add new document" data-toggle="modal" href="#modalCreateDocument" />
+          <input type="submit" class="btn btn-primary" value="Add new document" data-toggle="modal" href="#modalCreateDocument" />
       </g:if>
 
 
@@ -94,56 +95,6 @@
         </table>
       </g:form>
     </div>
-    
-<!-- Lightbox modal for creating a document taken from licenceDocuments.html -->
-<div class="modal hide" id="modalCreateDocument">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">×</button>
-    <h3>Create New Document</h3>
-  </div>
-  <g:form id="upload_new_doc_form" url="[controller:'docWidget',action:'uploadDocument']" method="post" enctype="multipart/form-data">
-    <input type="hidden" name="ownerid" value="${subscriptionInstance.id}"/>
-    <input type="hidden" name="ownertp" value="subscription"/>
-    <input type="hidden" name="ownerclass" value="com.k_int.kbplus.Subscription"/>
-    <div class="modal-body">
-        <div class="inline-lists">
-            <dl>
-                <dt>
-                <label>Document Name:</label>
-                </dt>
-                <dd>
-                    <input type="text" name="upload_title">
-                </dd>
-            </dl>
-            <dl>
-                <dt>
-                <label>File:</label>
-                </dt>
-                <dd>
-                    <input type="file" name="upload_file" />
-                </dd>
-            </dl>
-            <dl>
-                <dt>
-                <label>Document Type:</label>
-                </dt>
-                <dd>
-                    <select name="doctype">
-                        <option value="License">License</option>
-                        <option value="General">General</option>
-                        <option value="General">Addendum</option>
-                    </select>
-                </dd>
-            </dl>
-        </div>
-    </div>
-    <div class="modal-footer">
-      <a href="#" class="btn" data-dismiss="modal">Close</a>
-      <input type="submit" class="btn btn-primary" value="Save Changes">
-    </div>
-  </g:form>
-</div>
-<!-- End lightbox modal -->
 
   </body>
 </html>
