@@ -57,6 +57,7 @@ class SubscriptionDetailsController {
     }
   
     if ( ! result.subscriptionInstance.hasPerm("view",result.user) ) {
+      log.debug("Result of hasPerm is false");
       response.sendError(401);
       return
     }
@@ -497,7 +498,7 @@ class SubscriptionDetailsController {
       }
     }
 
-    redirect controller: 'subscriptionDetails', action:'documents', id:params.subId
+    redirect controller: 'subscriptionDetails', action:params.redirectAction, id:params.subId
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])

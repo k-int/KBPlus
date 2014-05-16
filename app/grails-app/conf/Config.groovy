@@ -222,8 +222,8 @@ log4j = {
            'grails.app.conf',
            'grails.app.jobs',
            'grails.app.conf.BootStrap',
-           'edu.umn.shibboleth.sp',
-           'com.k_int'
+           'edu.umn.shibboleth.sp'
+        //   'com.k_int'
         // 'org.springframework.security'
 
     // info   'com.linkedin.grails'

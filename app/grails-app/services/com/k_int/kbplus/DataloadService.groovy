@@ -101,6 +101,11 @@ class DataloadService {
       result.consortiaName = pkg.getConsortia()?.name
       result.cpname = pkg.contentProvider?.name
       result.cpid = pkg.contentProvider?.id
+      def lastmod = pkg.lastUpdated ?: pkg.dateCreated
+      if ( lastmod != null ) {
+        def formatter = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm")
+        result.lastModified = formatter.format(lastmod)
+      }
 
       if ( pkg.startDate ) {
         GregorianCalendar c = new GregorianCalendar()

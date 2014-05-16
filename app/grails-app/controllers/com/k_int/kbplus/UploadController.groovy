@@ -39,6 +39,7 @@ class UploadController {
     'coverage_depth':[coltype:'simple'],
     'coverage_notes':[coltype:'simple'],
     'publisher_name':[coltype:'simple'],
+    'hybrid_oa':[coltype:'simple'],
     'platform':[coltype:'map']
   ];
 
@@ -51,7 +52,7 @@ class UploadController {
   ];
 
   @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
-  def reviewSO() { 
+  def reviewPackage() { 
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     
@@ -185,7 +186,12 @@ class UploadController {
         def dbtipp = TitleInstancePackagePlatform.findByPkgAndPlatformAndTitle(new_pkg,tipp.host_platform,tipp.title_obj)
         if ( dbtipp == null ) {
           incrementStatsCounter(upload,'TIPP Created');
-           
+
+          def hybrid_oa_status_value = null;
+          if ( tipp.hybrid_oa != null ) {
+            hybrid_oa_status_value = RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", tipp.hybrid_oa)
+          }
+
           dbtipp = new TitleInstancePackagePlatform(pkg:new_pkg,
                                                     platform:tipp.host_platform,
                                                     title:tipp.title_obj,
@@ -201,6 +207,7 @@ class UploadController {
                                                     hostPlatformURL:tipp.host_platform_url,
                                                     impId:java.util.UUID.randomUUID().toString(),
                                                     status:tipp_current,
+                                                    hybridOA:hybrid_oa_status_value,
                                                     ids:[])
   
           if ( ! dbtipp.save() ) {

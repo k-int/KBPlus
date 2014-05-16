@@ -298,6 +298,21 @@
                       <td>Embargo:  <g:simpleHiddenValue id="bulk_embargo" name="bulk_embargo"/>
                           <input type="checkbox" name="clear_embargo"/>(Check to clear)</td>
                     </tr>
+                    <g:if test="${params.mode=='advanced'}">
+                      <tr>
+                        <td>Delayed OA: <g:simpleHiddenRefdata id="bulk_delayedOA" name="bulk_delayedOA" refdataCategory="TIPPDelayedOA"/>
+                          <input type="checkbox" name="clear_delayedOA"/>(Check to clear)</td>
+                        </td>
+                        <td>Hybrid OA: <g:simpleHiddenRefdata id="bulk_hybridOA" name="bulk_hybridOA" refdataCategory="TIPPHybridOA"/>
+                          <input type="checkbox" name="clear_hybridOA"/>(Check to clear)</td>
+                        </td>
+                        <td>Payment: <g:simpleHiddenRefdata id="bulk_payment" name="bulk_payment" refdataCategory="TIPPPaymentType"/>
+                          <input type="checkbox" name="clear_payment"/>(Check to clear)</td>
+                        </td>
+                      </tr>
+                    </g:if>
+
+
                   </table>
                   <button name="BatchSelectedBtn" value="on" onClick="return confirmSubmit()" class="btn btn-primary">Apply Batch Changes (Selected)</button>
                   <button name="BatchAllBtn" value="on" onClick="return confirmSubmit()" class="btn btn-primary">Apply Batch Changes (All in filtered list)</button>
@@ -325,7 +340,7 @@
                 <td ${hasCoverageNote==true?'rowspan="2"':''}><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${t.id}" class="bulkcheck"/></g:if></td>
                 <td ${hasCoverageNote==true?'rowspan="2"':''}>${counter++}</td>
                 <td style="vertical-align:top;">
-                   ${t.title.title}
+                   <b>${t.title.title}</b>
                    <g:link controller="titleDetails" action="show" id="${t.title.id}">(Title)</g:link>
                    <g:link controller="tipp" action="show" id="${t.id}">(TIPP)</g:link><br/>
                    <span title="${t.availabilityStatusExplanation}">Access: ${t.availabilityStatus?.value}</span>
@@ -365,9 +380,15 @@
                 </td>
               </tr>
 
-              <g:if test="${hasCoverageNote==true}">
+              <g:if test="${hasCoverageNote==true || params.mode=='advanced'}">
                 <tr>
-                  <td colspan="6">coverageNote: ${t.coverageNote}</td>
+                  <td colspan="6">coverageNote: ${t.coverageNote}
+                  <g:if test="${params.mode=='advanced'}">
+                    <br/> Delayed OA: <g:xEditableRefData owner="${t}" field="delayedOA" config='TIPPDelayedOA'/> &nbsp;
+                    Hybrid OA: <g:xEditableRefData owner="${t}" field="hybridOA" config='TIPPHybridOA'/> &nbsp;
+                    Payment: <g:xEditableRefData owner="${t}" field="payment" config='TIPPPaymentType'/> &nbsp;
+                  </g:if>
+                  </td>
                 </tr>
               </g:if>
 

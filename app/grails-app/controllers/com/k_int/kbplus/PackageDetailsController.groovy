@@ -10,14 +10,13 @@ import com.k_int.kbplus.auth.*;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
-import org.codehaus.groovy.grails.commons.ApplicationHolder
-
 
 class PackageDetailsController {
 
   def ESWrapperService
   def springSecurityService
   def transformerService
+  def genericOIDService
 
   def pkg_qry_reversemap = ['subject':'subject', 
                             'provider':'provid', 
@@ -146,10 +145,10 @@ class PackageDetailsController {
 
       log.debug("Package has ${result.pendingChanges?.size()} pending changes");
 
-      result.pkg_link_str="${ApplicationHolder.application.config.SystemBaseURL}/packageDetails/show/${params.id}"
+      result.pkg_link_str="${grailsApplication.config.SystemBaseURL}/packageDetails/show/${params.id}"
 
       if ( packageInstance.forumId != null ) {
-        result.forum_url = "${ApplicationHolder.application.config.ZenDeskBaseURL}/forums/${packageInstance.forumId}"
+        result.forum_url = "${grailsApplication.config.ZenDeskBaseURL}/forums/${packageInstance.forumId}"
       }
 
       result.subscriptionList=[]
@@ -168,7 +167,7 @@ class PackageDetailsController {
         }
       }
     
-      result.max = params.max ? Integer.parseInt(params.max) : 25
+      result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
       params.max = result.max
       def paginate_after = params.paginate_after ?: ( (2*result.max)-1);
       result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
@@ -256,6 +255,36 @@ class PackageDetailsController {
 
 
     result
+  }
+
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def deleteDocuments() {
+        def ctxlist = []
+
+        log.debug("deleteDocuments ${params}");
+
+        params.each { p ->
+            if (p.key.startsWith('_deleteflag.') ) {
+                def docctx_to_delete = p.key.substring(12);
+                log.debug("Looking up docctx ${docctx_to_delete} for delete");
+                def docctx = DocContext.get(docctx_to_delete)
+                docctx.status = RefdataCategory.lookupOrCreate('Document Context Status','Deleted');
+            }
+        }
+
+        redirect controller: 'packageDetails', action:params.redirectAction, id:params.subId
+    }
+
+
+
+  @Secured(['ROLE_USER','IS_AUTHENTICATED_FULLY'])
+  def documents() {
+      def result = [:]
+      result.user = User.get(springSecurityService.principal.id)
+      result.packageInstance = Package.get(params.id)
+      result.editable=isEditable()
+
+      result
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -347,11 +376,9 @@ class PackageDetailsController {
 
     def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
 
-    if ( showDeletedTipps==true ) {
-    }
-    else {
-      base_qry += "and tipp.status.value != 'Deleted' "
-    }
+     if ( showDeletedTipps != true ) {
+         base_qry += "and tipp.status.value != 'Deleted' "
+     }
 
     if ( asAt != null ) {
       base_qry += " and ( ( ? >= coalesce(tipp.accessStartDate, tipp.pkg.startDate) ) and ( ( ? <= tipp.accessEndDate ) or ( tipp.accessEndDate is null ) ) ) "
@@ -613,14 +640,16 @@ class PackageDetailsController {
           
           log.debug("query: ${query_str}");
           result.es_query = query_str;
-          
+
+          // if params.sorting==lastmod
+
          def search = esclient.search{
             indices "kbplus"
             source {
               from = params.offset
               size = params.max
               sort = [
-                'sortname' : [ 'order' : 'asc' ]
+                ("${params.sorting?:'sortname'}".toString()) : [ 'order' : (params.order?:'asc') ]
               ]
               query {
                 query_string (query: query_str)
@@ -685,6 +714,15 @@ class PackageDetailsController {
     result
   }
 
+  def isEditable(){
+      if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') ) {
+          return true
+      }
+      else {
+          return false
+      }
+  }
+
   def buildPackageQuery(params) {
     log.debug("BuildQuery...");
 
@@ -736,7 +774,19 @@ class PackageDetailsController {
     redirect(action:'show', id:params.id);
   }
 
-  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def notes() {
+
+        def result = [:]
+        result.user = User.get(springSecurityService.principal.id)
+        result.packageInstance = Package.get(params.id)
+        result.editable=isEditable()
+
+        result
+    }
+
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def packageBatchUpdate() {
 
     def packageInstance = Package.get(params.id)
@@ -760,6 +810,9 @@ class PackageDetailsController {
       [ formProp:'coverage_depth', domainClassProp:'coverageDepth'],
       [ formProp:'coverage_note', domainClassProp:'coverageNote'],
       [ formProp:'embargo', domainClassProp:'embargo'],
+      [ formProp:'delayedOA', domainClassProp:'delayedOA', type:'ref'],
+      [ formProp:'hybridOA', domainClassProp:'hybridOA', type:'ref'],
+      [ formProp:'payment', domainClassProp:'payment', type:'ref'],
     ]
 
     
@@ -774,22 +827,22 @@ class PackageDetailsController {
           if ( params.bulkOperation=='edit') {
             bulk_fields.each { bulk_field_defn ->
               if ( params["clear_${bulk_field_defn.formProp}"] == 'on' ) {
-                log.debug("Request to clear field ${bulk_field_defn.formProp}");
-                tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = null
-                changed = true
-              }
-              else {
-                def proposed_value = params['bulk_'+bulk_field_defn.formProp]
-                if ( ( proposed_value != null ) && ( proposed_value.length() > 0 ) ) {
-                  log.debug("Set field ${bulk_field_defn.formProp} to proposed_value");
-                  if ( bulk_field_defn.type == 'date' ) {
-                    tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = formatter.parse(proposed_value)
+                      log.debug("Request to clear field ${bulk_field_defn.formProp}");
+                      tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = null
+                      changed = true
                   }
                   else {
-                    tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = proposed_value
-                  }
-                  changed = true
-                }
+                      def proposed_value = params['bulk_'+bulk_field_defn.formProp]
+                      if ( ( proposed_value != null ) && ( proposed_value.length() > 0 ) ) {
+                          log.debug("Set field ${bulk_field_defn.formProp} to ${proposed_value}");
+                          if ( bulk_field_defn.type == 'date' ) {
+                              tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = formatter.parse(proposed_value)
+                          }
+                          else {
+                              tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = proposed_value
+                          }
+                          changed = true
+                      }
               }
             }
             if ( changed )
@@ -806,7 +859,7 @@ class PackageDetailsController {
     else if ( params.BatchAllBtn=='on' ) {
       log.debug("Batch process all");
       def qry_params = [packageInstance]
-      def base_qry = generateBasePackageQuery(params, qry_params, showDeletedTipps)
+      def base_qry = generateBasePackageQuery(params, qry_params, showDeletedTipps, new Date())
       def tipplist = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params)
       tipplist.each {  tipp_to_bulk_edit ->
         boolean changed=false
@@ -824,6 +877,9 @@ class PackageDetailsController {
                 log.debug("Set field ${bulk_field_defn.formProp} to proposed_value");
                 if ( bulk_field_defn.type == 'date' ) {
                   tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = formatter.parse(proposed_value)
+                }
+                if ( bulk_field_defn.type == 'ref' ) {
+                  tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = genericOIDService.resolveOID(proposed_value)
                 }
                 else {
                   tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = proposed_value

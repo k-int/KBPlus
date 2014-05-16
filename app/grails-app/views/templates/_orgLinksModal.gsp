@@ -27,7 +27,7 @@
                 <dd>    
                 <g:select name="orm_orgRole" 
                           noSelection="${['':'Select One...']}" 
-                          from="${com.k_int.kbplus.RefdataValue.findAllByOwner(com.k_int.kbplus.RefdataCategory.get(2))}" 
+                          from="${com.k_int.kbplus.RefdataValue.findAllByOwner(com.k_int.kbplus.RefdataCategory.findByDesc('Organisational Role'))}" 
                           optionKey="id" 
                           optionValue="value"/>
                 </dd>

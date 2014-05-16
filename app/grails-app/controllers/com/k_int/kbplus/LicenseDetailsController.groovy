@@ -49,6 +49,14 @@ class LicenseDetailsController {
     def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
     result.pendingChanges = PendingChange.executeQuery("select pc from PendingChange as pc where license=? and ( pc.status is null or pc.status = ? ) order by ts desc", [result.license, pending_change_pending_status]);
 
+      //Filter any deleted subscriptions out of displayed links
+      Iterator<Subscription> it = result.license.subscriptions.iterator()
+      while(it.hasNext()){
+          def sub = it.next();
+          if(sub.status == RefdataCategory.lookupOrCreate('Subscription Status','Deleted')){
+              it.remove();
+          }
+      }
 
     log.debug("pc result is ${result.pendingChanges}");
 

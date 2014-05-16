@@ -109,20 +109,22 @@
           <dt>Status Reason</dt>
           <dd><g:xEditableRefData owner="${tipp}" field="statusReason" config='TIPPStatusReason'/><dd>
         </dl>
-        <dl>
 
+        <dl>
           <dt>Delayed OA</dt>
           <dd><g:xEditableRefData owner="${tipp}" field="delayedOA" config='TIPPDelayedOA'/><dd>
         </dl>
-        <dl>
 
+        <dl>
           <dt>Hybrid OA</dt>
           <dd><g:xEditableRefData owner="${tipp}" field="hybridOA" config='TIPPHybridOA'/><dd>
         </dl>
+
         <dl>
           <dt>Payment</dt>
           <dd><g:xEditableRefData owner="${tipp}" field="payment" config='TIPPPaymentType'/><dd>
         </dl>
+
         <dl>
           <dt>Host Platform</dt>
           <dd>${tipp.platform.name}</dd>

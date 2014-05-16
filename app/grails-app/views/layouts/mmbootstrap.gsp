@@ -99,6 +99,9 @@
                                <li><g:link controller="subscriptionImport" 
                                            action="importSubscriptionWorksheet"
                                            params="${[id:org.id]}">Import Subscription Taken Worksheet</g:link></li>
+                               <li><g:link controller="myInstitutions" 
+                                           action="changeLog" 
+                                           params="${[shortcode:org.shortcode]}">Change Log</g:link></li>
 
                              </ul>
                            </li>
@@ -211,8 +214,8 @@
                       <li <%= ( ( 'stats'== controllerName ) && ( 'statsHome'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="stats" action="statsHome">Statistics</g:link>
                       </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'docstoreMigrate'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="docstoreMigrate">Docstore Migration</g:link>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'triggerHousekeeping'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="triggerHousekeeping">Trigger Housekeeping</g:link>
                       </li>
                     </ul>
                   </li>

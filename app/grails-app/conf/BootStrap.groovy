@@ -8,7 +8,7 @@ class BootStrap {
 
   def ESWrapperService 
   def grailsApplication
-  def docstoreService
+  // def docstoreService
 
   def init = { servletContext ->
 
@@ -26,6 +26,20 @@ class BootStrap {
     // Permissions
     def edit_permission = Perm.findByCode('edit') ?: new Perm(code:'edit').save(failOnError: true)
     def view_permission = Perm.findByCode('view') ?: new Perm(code:'view').save(failOnError: true)
+
+    def or_licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
+    def or_subscriber_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber');
+    def or_sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscription Consortia');
+    def cons_combo = RefdataCategory.lookupOrCreate('Combo Type', 'Consortium');
+
+    OrgPermShare.assertPermShare(view_permission, or_licensee_role);
+    OrgPermShare.assertPermShare(edit_permission, or_licensee_role);
+    OrgPermShare.assertPermShare(view_permission, or_subscriber_role);
+    OrgPermShare.assertPermShare(edit_permission, or_subscriber_role);
+    OrgPermShare.assertPermShare(view_permission, or_sc_role);
+    OrgPermShare.assertPermShare(edit_permission, or_sc_role);
+    OrgPermShare.assertPermShare(view_permission, cons_combo);
+
 
     // Global System Roles
     def userRole = Role.findByAuthority('ROLE_USER') ?: new Role(authority: 'ROLE_USER', roleType:'global').save(failOnError: true)
@@ -200,9 +214,9 @@ class BootStrap {
 
     setupRefdata();
 
-    if ( grailsApplication.config.doDocstoreMigration == true ) {
-      docstoreService.migrateToDb();
-    }
+    // if ( grailsApplication.config.doDocstoreMigration == true ) {
+    //   docstoreService.migrateToDb();
+    // }
   }
 
   def destroy = {
@@ -224,6 +238,7 @@ class BootStrap {
   def setupRefdata = { 
     // New Organisational Role
     def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
+    def or_licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
 
     // -------------------------------------------------------------------
     // ONIX-PL Additions

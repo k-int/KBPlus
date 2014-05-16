@@ -7,6 +7,8 @@ import org.elasticsearch.groovy.common.xcontent.*
 import groovy.xml.MarkupBuilder
 import grails.plugins.springsecurity.Secured
 import com.k_int.kbplus.auth.*;
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+
 
 class OrganisationsController {
 
@@ -80,7 +82,13 @@ class OrganisationsController {
       result.user = User.get(springSecurityService.principal.id)
       def orgInstance = Org.get(params.id)
 
-      result.editable = orgInstance.hasUserWithRole(result.user,'INST_ADM');
+      if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') ) {
+        result.editable = true
+      }
+      else {
+        result.editable = orgInstance.hasUserWithRole(result.user,'INST_ADM');
+      }
+
 
       if (!orgInstance) {
         flash.message = message(code: 'default.not.found.message', args: [message(code: 'org.label', default: 'Org'), params.id])

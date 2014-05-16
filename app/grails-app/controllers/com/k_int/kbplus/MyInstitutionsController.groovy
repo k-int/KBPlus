@@ -556,7 +556,21 @@ class MyInstitutionsController {
 
           // Clone documents
           baseLicense?.documents?.each { dctx ->
-            DocContext ndc = new DocContext(owner:dctx.owner,
+              Doc clonedContents = new Doc(blobContent: dctx.owner.blobContent,
+                      status:dctx.owner.status,
+                      type:dctx.owner.type,
+                      alert:dctx.owner.alert,
+                      content:dctx.owner.content,
+                      uuid:dctx.owner.uuid,
+                      contentType:dctx.owner.contentType,
+                      title:dctx.owner.title,
+                      creator:dctx.owner.creator,
+                      filename:dctx.owner.filename,
+                      mimeType:dctx.owner.mimeType,
+                      user:dctx.owner.user,
+                      migrated:dctx.owner.migrated).save()
+
+            DocContext ndc = new DocContext(owner:clonedContents,
                                             license: licenseInstance,
                                             domain: dctx.domain,
                                             status: dctx.status,
@@ -745,8 +759,9 @@ class MyInstitutionsController {
 
     if ( ( params.filter ) && ( params.filter.length() > 0 ) ) {
       log.debug("Adding title filter ${params.filter}");
-      sub_qry += " AND ie.tipp.title.title like :titlestr"
-      qry_params.titlestr = "%${params.filter}%";
+       sub_qry += " AND LOWER(ie.tipp.title.title) like :titlestr"
+       qry_params.titlestr = "%${params.filter}%".toLowerCase();
+
     }
 
     if ( filterSub ) {
@@ -2474,6 +2489,30 @@ AND EXISTS (
     // result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
 
 
+    result
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def changeLog() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.institution = Org.findByShortcode(params.shortcode)
+
+    def query = "select pc from PendingChange as pc where owner = ? order by ts desc";
+      // Subscription subscription
+      // License license
+      // SystemObject systemObject
+      // Package pkg
+      // Date ts
+      // Org owner
+      // String oid
+      // String changeDoc
+      // String desc
+      // RefdataValue status
+      // Date actionDate
+      // User user
+
+    result.changes = PendingChange.executeQuery(query, [result.institution], params)
     result
   }
 }
