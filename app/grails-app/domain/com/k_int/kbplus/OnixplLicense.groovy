@@ -114,9 +114,7 @@ class OnixplLicense {
       
       def group = all_points."${xpath_expr}"?."group"
       if (group) {
-        if (data[group] == null) data[group] = new TreeMap<String, List<Map>>().withDefault {
-          []
-        }
+        if (data[group] == null) data[group] = new TreeMap<String, List<Map>>()
       
         def xml = getXML()
         log.debug("XPath expression: ${xpath_expr}")
@@ -134,7 +132,7 @@ class OnixplLicense {
             snippet = onixHelperService.replaceAllTextElements(xml, snippet)
               
             // Create our new XML element of the segment.
-            data[group][xpath_expr] << snippet.toMaps()
+            data[group][xpath_expr] = snippet.toMaps()
           }
         }
       }

@@ -73,20 +73,16 @@
 						<g:treeSelect name="sections" id="section" class="compare-section"
 							options="${termList}" multiple="true" />
 					</div>
-					<div id="limit-license-display">
-						Only show licenses:<br />
-						<g:radio id="same" class="compare-radio" name="match" value="${OnixPLService.COMPARE_RETURN_SAME}" />
-						&nbsp;&nbsp;<label for="same">The same</label><br />
-						<g:radio id="diff" class="compare-radio" name="match"
-							value="${OnixPLService.COMPARE_RETURN_DIFFERENT}" />
-						&nbsp;&nbsp;<label for="diff">Different</label><br />
-						<g:radio id="all" class="compare-radio" name="match" value="${OnixPLService.COMPARE_RETURN_ALL}"
-							checked="${true}" />
-						&nbsp;&nbsp;<label for="all">Show all</label>
-					</div>
-<%--					<div>--%>
-<%--						<label for="max">Number of results per page: </label>--%>
-<%--						<g:select name="max" from="${[5, 10, 15]}" class="compare-results" />--%>
+<%--					<div id="limit-license-display">--%>
+<%--						Only show licenses:<br />--%>
+<%--						<g:radio id="same" class="compare-radio" name="match" value="${OnixPLService.COMPARE_RETURN_SAME}" />--%>
+<%--						&nbsp;&nbsp;<label for="same">The same</label><br />--%>
+<%--						<g:radio id="diff" class="compare-radio" name="match"--%>
+<%--							value="${OnixPLService.COMPARE_RETURN_DIFFERENT}" />--%>
+<%--						&nbsp;&nbsp;<label for="diff">Different</label><br />--%>
+<%--						<g:radio id="all" class="compare-radio" name="match" value="${OnixPLService.COMPARE_RETURN_ALL}"--%>
+<%--							checked="${true}" />--%>
+<%--						&nbsp;&nbsp;<label for="all">Show all</label>--%>
 <%--					</div>--%>
 					<div>
 					  <g:submitButton name="Compare" class="btn btn-primary" />
