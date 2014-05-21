@@ -16,7 +16,7 @@ Package Name,<xsl:call-template name="plainentry"><xsl:with-param name="txt" sel
 Agreement Term Start Year,<xsl:call-template name="formats_date"><xsl:with-param name="date" select="./PackageTermStartDate" /></xsl:call-template>
 Agreement Term End Year,<xsl:call-template name="formats_date"><xsl:with-param name="date" select="./PackageTermEndDate" /></xsl:call-template>
 Consortium,
-publication_title,ID.issn,ID.eissn,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,ID.kbart_title_id,embargo_info,coverage_depth,coverage_notes,publisher_name,ID.doi,platform.host.name,platform.host.url,platform.administrative.name,platform.administrative.url<xsl:text>&#xA;</xsl:text>
+publication_title,ID.issn,ID.eissn,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,ID.kbart_title_id,embargo_info,coverage_depth,coverage_notes,publisher_name,ID.doi,platform.host.name,platform.host.url,platform.administrative.name,platform.administrative.url,hybrid_oa<xsl:text>&#xA;</xsl:text>
    </xsl:template>
    
    <xsl:template match="TitleListEntry">
@@ -93,6 +93,14 @@ publication_title,ID.issn,ID.eissn,date_first_issue_online,num_first_vol_online,
        <!-- host_platform_names -->
       <xsl:call-template name="csventry">
         <xsl:with-param name="txt" select="./CoverageStatement/HostPlatformURL" />
+      </xsl:call-template>
+      <!-- platform.administrative.name -->
+      <xsl:call-template name="csventry"></xsl:call-template>
+      <!-- platform.administrative.url -->
+      <xsl:call-template name="csventry"></xsl:call-template>
+      <!-- hybrid_oa -->
+      <xsl:call-template name="csventry">
+        <xsl:with-param name="txt" select="./CoverageStatement/HybridOA" />
       </xsl:call-template>
       <xsl:text>&#xA;</xsl:text>
    </xsl:template>
