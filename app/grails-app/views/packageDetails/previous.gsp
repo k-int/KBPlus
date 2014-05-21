@@ -14,28 +14,6 @@
         <li><g:link controller="home" action="index">Home</g:link> <span class="divider">/</span></li>
         <li><g:link controller="packageDetails" action="index">All Packages</g:link><span class="divider">/</span></li>
         <li><g:link controller="packageDetails" action="show" id="${packageInstance.id}">${packageInstance.name}</g:link></li>
-
-        <li class="dropdown pull-right">
-          <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>
-
-          <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
-            <li><g:link action="show" params="${params+[format:'json']}">Json Export</g:link></li>
-            <li><g:link action="show" params="${params+[format:'xml']}">XML Export</g:link></li>
-            <g:each in="${transforms}" var="transkey,transval">
-              <li><g:link action="show" id="${params.id}" params="${[format:'xml',transformId:transkey]}"> ${transval.name}</g:link></li>
-            </g:each>
-          </ul>
-        </li>
-
-        <li class="pull-right">
-          View:
-          <div class="btn-group" data-toggle="buttons-radio">
-            <g:link controller="packageDetails" action="previous" params="${params+['mode':'basic']}" class="btn btn-primary btn-mini ${((params.mode=='basic')||(params.mode==null))?'active':''}">Basic</g:link>
-            <g:link controller="packageDetails" action="previous" params="${params+['mode':'advanced']}" button type="button" class="btn btn-primary btn-mini ${params.mode=='advanced'?'active':''}">Advanced</g:link>
-          </div>
-          &nbsp;
-        </li>
-        
       </ul>
     </div>
 
@@ -84,10 +62,10 @@
                         data-url='<g:createLink controller="ajax" action="editableSetValue"/>'>${packageInstance.name}</span></g:if><g:else>${packageInstance.name}</g:else></h1>
             <g:render template="nav" contextPath="." />
             <sec:ifAnyGranted roles="ROLE_ADMIN,KBPLUS_EDITOR">
-            <g:link controller="announcement" action="index" params='[at:"Package Link: ${pkg_link_str}",as:"RE: Package ${packageInstance.name}"]'>Mention this package in an announcement</g:link> |
+            <g:link controller="announcement" action="index" params='[at:"Package Link: ${pkg_link_str}",as:"RE: Package ${packageInstance.name}"]'>Mention this package in an announcement</g:link>
             </sec:ifAnyGranted>
             <g:if test="${forum_url != null}">
-              <a href="${forum_url}">Discuss this package in forums</a> <a href="${forum_url}" title="Discuss this package in forums (new Window)" target="_blank"><i class="icon-share-alt"></i></a>
+              <a href="${forum_url}">| Discuss this package in forums</a> <a href="${forum_url}" title="Discuss this package in forums (new Window)" target="_blank"><i class="icon-share-alt"></i></a>
             </g:if>
 
           </div>
@@ -113,9 +91,6 @@
 
         <dl>
           <dt>Titles (${offset+1} to ${lasttipp}  of ${num_tipp_rows})
-            <g:if test="${params.mode=='advanced'}">Includes Expected or Expired titles, switch to the <g:link controller="packageDetails" action="show" params="${params+['mode':'basic']}">Basic</g:link> view to hide them</g:if>
-                <g:else>Expected or Expired titles are not shown, use the <g:link controller="packageDetails" action="show" params="${params+['mode':'advanced']}" button type="button" >Advanced</g:link> view to see them</g:else>
-              )
 
           </dt>
           <dd>
