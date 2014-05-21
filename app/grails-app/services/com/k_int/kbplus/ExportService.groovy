@@ -537,6 +537,9 @@ class ExportService {
 			ie."CoverageNote" = e.coverageNote?:''
 			ie."HostPlatformName" = tipp?.platform?.name?:''
 			ie."HostPlatformURL" = tipp?.hostPlatformURL?:''
+                        ie."HybridOA" =  tipp?.hybridOA?.value?:''
+                        ie."DelayedOA"= tipp?.delayedOA?.value?:''
+                        ie."Payment" = tipp?.payment?.value?:''
 			ie."AdditionalPlatforms" = []
 			tipp?.additionalPlatforms.each(){ ap ->
 				def platform = [:]
