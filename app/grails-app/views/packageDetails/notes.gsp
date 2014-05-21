@@ -59,7 +59,7 @@
 </g:if>
 
 <div class="container">
-
+    <h1>${packageInstance?.name}</h1>
     <g:render template="nav"/>
 </div>
 
