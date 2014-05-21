@@ -58,75 +58,13 @@
     <div class="container"><bootstrap:alert class="alert-error">${flash.error}</bootstrap:alert></div>
 </g:if>
 
-<g:render template="nav" contextPath="." />
-<div class="container">
-    <g:form id="delete_doc_form" url="[controller:'packageDetails',action:'deleteDocuments']" method="post">
-           <g:if test="${editable}">
-            <input type="hidden" name="redirectAction" value="notes"/>
-            <input type="hidden" name="subId" value="${params.id}"/>
-            <input type="hidden" name="ctx" value="notes"/>
-            <input type="submit" class="btn btn-danger" value="Delete Selected Notes"/>
-            <input type="submit" class="btn btn-primary" value="Add new Note" data-toggle="modal" href="#modalCreateNote" />
-           </g:if>
-        <table class="table table-striped table-bordered table-condensed">
-            <thead>
-            <tr>
-                <g:if test="${editable}"><th>Select</th></g:if>
-                <th>Title</th>
-                <th>Note</th>
-                <th>Creator</th>
-                <th>Type</th>
-            </tr>
-            </thead>
-            <tbody>
-            <g:each in="${packageInstance.documents}" var="docctx">
-                <g:if test="${docctx.owner.contentType==0 && ( docctx.status == null || docctx.status?.value != 'Deleted')}">
-                    <tr>
-                    <g:if test="${editable}"><td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td></g:if>
-                        <td>
-                            <g:xEditable owner="${docctx.owner}" field="title" id="title"/>
-                        </td>
-                        <td>
-                            <g:xEditable owner="${docctx.owner}" field="content" id="content"/>
-                        </td>
-                        <td>
-                            <g:xEditable owner="${docctx.owner}" field="creator" id="creator"/>
-                        </td>
-                        <td>${docctx.owner?.type?.value}</td>
-                    </tr>
-                </g:if>
-            </g:each>
-            </tbody>
-        </table>
-    </g:form>
 
-<!-- Lightbox modal for creating a note taken from licenceNotes.html -->
-    <div class="modal hide" id="modalCreateNote">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">×</button>
-            <h3>Create New Note</h3>
-        </div>
-        <g:form id="create_note" url="[controller:'docWidget',action:'createNote']" method="post">
-            <input type="hidden" name="ownerid" value="${packageInstance.id}"/>
-            <input type="hidden" name="ownerclass" value="${packageInstance.class.name}"/>
-            <input type="hidden" name="ownertp" value="pkg"/>
-            <div class="modal-body">
-                <dl>
-                    <dt>
-                        <label>Note:</label>
-                    </dt>
-                    <dd>
-                        <textarea name="licenceNote"></textarea>
-                    </dd>
-                </dl>
-                <input type="hidden" name="licenceNoteShared" value="0"/>
-            </div>
-            <div class="modal-footer">
-                <a href="#" class="btn" data-dismiss="modal">Close</a>
-                <input type="submit" class="btn btn-primary" value="Save Changes">
-            </div>
-        </g:form>
-    </div>
+<g:render template="nav"/>
+<div class="container">
+    <g:render template="/templates/notes_table" model="${[instance: packageInstance, redirect: 'notes']}"/>
+
 </div>
+<g:render template="/templates/addNote"
+          model="${[doclist: packageInstance.documents, ownobj: packageInstance, owntp: 'pkg']}"/>
 </body>
 </html>

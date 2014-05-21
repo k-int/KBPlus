@@ -7,7 +7,7 @@
 
   <body>
 
-  <g:render template="addDocument" contextPath="../templates" model="${[doclist:subscriptionInstance.documents, ownobj:subscriptionInstance, owntp:'subscription']}" />
+  <g:render template="/templates/addDocument" model="${[doclist:subscriptionInstance.documents, ownobj:subscriptionInstance, owntp:'subscription']}" />
 
     <div class="container">
       <ul class="breadcrumb">
@@ -36,64 +36,15 @@
 
        <h1>${subscriptionInstance?.name}</h1>
 
-       <g:render template="nav" contextPath="." />
+       <g:render template="nav" />
 
     </div>
 
 
     <div class="container">
 
-
-      <g:form id="delete_doc_form" url="[controller:'subscriptionDetails',action:'deleteDocuments']" method="post">
-      <g:if test="${editable}">
-        <input type="hidden" name="redirectAction" value="documents"/>
-        <input type="hidden" name="subId" value="${params.id}"/>
-        <input type="hidden" name="ctx" value="documents"/>
-        <input type="submit" class="btn btn-danger" value="Delete Selected Notes"/>
-          <input type="submit" class="btn btn-primary" value="Add new document" data-toggle="modal" href="#modalCreateDocument" />
-      </g:if>
-
-
-  
-        <table class="table table-striped table-bordered table-condensed" style="table-layout: fixed; word-wrap: break-word;">
-          <thead>
-            <tr>
-              <g:if test="${editable}"><th>Select</th></g:if>
-              <th>Title</th>
-              <th>File Name</th>
-              <th>Download Link</th>
-              <th>Creator</th>
-              <th>Type</th>
-            </tr>
-          </thead>
-          <tbody>
-            <g:each in="${subscriptionInstance.documents}" var="docctx">
-              <g:if test="${((docctx.owner.contentType==1)||(docctx.owner?.contentType==3)) && (docctx.status?.value != 'Deleted')}">
-                <tr>
-                  <g:if test="${editable}"><td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td></g:if>
-
-                  <td style="max-width: 300px;overflow: hidden;text-overflow: ellipsis;">
-                    <g:xEditable owner="${docctx.owner}" field="title" id="title"/>
-                  </td>
-                  <td style="max-width: 300px;overflow: hidden;text-overflow: ellipsis;">
-                    <!-- Consider  max-width:200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -->
-                    <g:xEditable owner="${docctx.owner}" field="filename" id="filename"/>
-                  </td>
-                  <td>
-                    <g:if test="${((docctx.owner?.contentType==1)||(docctx.owner?.contentType==3))}">
-                      <g:link controller="docstore" id="${docctx.owner.uuid}">Download Doc</g:link>
-                    </g:if>
-                  </td>
-                  <td>
-                    <g:xEditable owner="${docctx.owner}" field="creator" id="creator"/>
-                  </td>
-                  <td>${docctx.owner?.type?.value}</td>
-                </tr>
-              </g:if>
-            </g:each>
-          </tbody>
-        </table>
-      </g:form>
+        <g:render template="/templates/documents_table"
+                  model="${[instance:subscriptionInstance,context:'documents',redirect:'documents']}" />
     </div>
 
   </body>

@@ -272,7 +272,7 @@ class PackageDetailsController {
             }
         }
 
-        redirect controller: 'packageDetails', action:params.redirectAction, id:params.subId
+        redirect controller: 'packageDetails', action:params.redirectAction, id:params.instanceId
     }
 
 

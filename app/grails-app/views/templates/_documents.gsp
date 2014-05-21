@@ -1,7 +1,7 @@
 <div class="well documents">
   <h5>Documents</h5>
   <ul>
-    <g:each in="${doclist}" var="docctx">
+    <g:each in="${ownobj.documents}" var="docctx">
       <g:if test="${(( (docctx.owner?.contentType==1) || ( docctx.owner?.contentType==3) ) && ( docctx.status?.value!='Deleted'))}">
         <li class="external-link">
           <g:link controller="docstore" id="${docctx.owner.uuid}">
@@ -19,6 +19,6 @@
     <input type="submit" class="btn btn-primary" value="Add new document" data-toggle="modal" href="#modalCreateDocument" />
   </g:if>
 </div>
-<g:render template="addDocument" contextPath="../templates" />
+<g:render template="/templates/addDocument"  />
 
 

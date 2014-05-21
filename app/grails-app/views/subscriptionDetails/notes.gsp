@@ -26,51 +26,15 @@
 
        <h1>${subscriptionInstance?.name}</h1>
 
-       <g:render template="nav" contextPath="." />
+       <g:render template="nav" />
 
     </div>
 
     <div class="container">
-      <g:form id="delete_doc_form" url="[controller:'subscriptionDetails',action:'deleteDocuments']" method="post">
-      <g:if test="${editable}">
-         <input type="hidden" name="redirectAction" value="notes"/>
-         <input type="hidden" name="subId" value="${params.id}"/>
-        <input type="hidden" name="ctx" value="notes"/>
-        <input type="submit" class="btn btn-danger" value="Delete Selected Notes"/>
-      </g:if>
-
-        <table class="table table-striped table-bordered table-condensed">
-          <thead>
-            <tr>
-              <g:if test="${editable}"><th>Select</th></g:if>
-              <th>Title</th>
-              <th>Note</th>
-              <th>Creator</th>
-              <th>Type</th>
-            </tr>
-          </thead>
-          <tbody>
-            <g:each in="${subscriptionInstance.documents}" var="docctx">
-              <g:if test="${docctx.owner.contentType==0 && ( docctx.status == null || docctx.status?.value != 'Deleted')}">
-                <tr>
-                  <g:if test="${editable}"><td><input type="checkbox" name="_deleteflag.${docctx.id}" value="true"/></td></g:if>
-                  <td>
-                    <g:xEditable owner="${docctx.owner}" field="title" id="title"/>
-                  </td>
-                  <td>
-                    <g:xEditable owner="${docctx.owner}" field="content" id="content"/>
-                  </td>
-                  <td>
-                    <g:xEditable owner="${docctx.owner}" field="creator" id="creator"/>
-                  </td>
-                  <td>${docctx.owner?.type?.value}</td>
-                </tr>
-              </g:if>
-            </g:each>
-          </tbody>
-        </table>
-      </g:form>
+        <g:render template="/templates/notes_table" model="${[instance: subscriptionInstance, redirect: 'notes']}"/>
     </div>
+  <g:render template="/templates/addNote"
+            model="${[doclist: subscriptionInstance.documents, ownobj: subscriptionInstance, owntp: 'subscription']}"/>
     
   </body>
 </html>

@@ -194,7 +194,7 @@ class LicenseDetailsController {
     log.debug("deleteDocuments ${params}");
 
     def user = User.get(springSecurityService.principal.id)
-    def l = License.get(params.licid);
+    def l = License.get(params.instanceId);
 
     if ( ! l.hasPerm("edit",user) ) {
       response.sendError(401);
@@ -211,7 +211,7 @@ class LicenseDetailsController {
       }
     }
 
-    redirect controller: 'licenseDetails', action:'index', params:[shortcode:params.shortcode], id:params.licid, fragment:'docstab'
+    redirect controller: 'licenseDetails', action:params.redirectAction, params:[shortcode:params.shortcode], id:params.instanceId, fragment:'docstab'
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])

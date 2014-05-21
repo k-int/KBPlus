@@ -1,4 +1,3 @@
-
 <div class="modal hide" id="modalCreateDocument">
     <g:form id="upload_new_doc_form" url="[controller:'docWidget',action:'uploadDocument']" method="post" enctype="multipart/form-data">
         <input type="hidden" name="ownerid" value="${ownobj.id}"/>

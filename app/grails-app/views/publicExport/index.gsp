@@ -5,7 +5,6 @@
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 
-<html>
   <head>
     <meta name="layout" content="pubbootstrap"/>
     <title>KB+ Data import explorer</title>
@@ -13,36 +12,11 @@
 
 
   <body class="public">
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner navbar-public">
-        <div class="container">
-          <img class="brand" alt="Knowledge Base + logo" src="images/kb_large_icon.png" />
-          <div class="nav-collapse">
-            <ul class="nav">
-              <li>
-                <a href="${createLink(uri: '/')}"> Home </a>
-              </li>
-              <li>
-                <a href="${createLink(uri: '/about')}"> About KB+ </a>
-              </li>
-              <li>
-                <a href="${createLink(uri: '/signup')}"> Sign Up </a>
-              </li>
-              <li class="active">
-                <a href="${createLink(uri: '/publicExport')}"> Exports </a>
-              </li>
-              <li class="last">
-                  <a href="${createLink(uri: '/contact-us')}"> Contact Us </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
 
-   <div class="navbar-push-public"></div>
+  <g:render template="public_navbar" contextPath="/templates" model="['active': 'publicExport']"/>
 
-    <div class="container">
+
+  <div class="container">
       <h1>Exports</h1>
     </div>
 
