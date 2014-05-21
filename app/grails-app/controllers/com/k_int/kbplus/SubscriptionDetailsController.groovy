@@ -78,15 +78,17 @@ class SubscriptionDetailsController {
 
     def base_qry = null;
 
+    def deleted_ie = RefdataCategory.lookupOrCreate('Entitlement Issue Status','Deleted');
     def qry_params = [result.subscriptionInstance]
 
     if ( params.filter ) {
       base_qry = " from IssueEntitlement as ie where ie.subscription = ? "
       if ( params.mode != 'advanced' ) {
         // If we are not in advanced mode, hide IEs that are not current, otherwise filter
-        base_qry += "and ( ? >= coalesce(ie.accessStartDate,subscription.startDate) ) and ( ( ? <= coalesce(ie.accessEndDate,subscription.endDate) ) OR ( ie.accessEndDate is null ) )  "
-      qry_params.add(new Date());
-      qry_params.add(new Date());
+        base_qry += "and ie.status <> ? and ( ? >= coalesce(ie.accessStartDate,subscription.startDate) ) and ( ( ? <= coalesce(ie.accessEndDate,subscription.endDate) ) OR ( ie.accessEndDate is null ) )  "
+        qry_params.add(deleted_ie);
+        qry_params.add(new Date());
+        qry_params.add(new Date());
       }
       base_qry += "and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) ) "
       qry_params.add("%${params.filter.trim().toLowerCase()}%")
@@ -97,7 +99,8 @@ class SubscriptionDetailsController {
       if ( params.mode != 'advanced' ) {
         // If we are not in advanced mode, hide IEs that are not current, otherwise filter
 
-        base_qry += "and ( ? >= coalesce(ie.accessStartDate,subscription.startDate) ) and ( ( ? <= coalesce(ie.accessEndDate,subscription.endDate) ) OR ( ie.accessEndDate is null ) ) "
+        base_qry += " and ie.status <> ? and ( ? >= coalesce(ie.accessStartDate,subscription.startDate) ) and ( ( ? <= coalesce(ie.accessEndDate,subscription.endDate) ) OR ( ie.accessEndDate is null ) ) "
+        qry_params.add(deleted_ie);
         qry_params.add(new Date());
         qry_params.add(new Date());
       }
