@@ -257,6 +257,36 @@ class PackageDetailsController {
     result
   }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def deleteDocuments() {
+        def ctxlist = []
+
+        log.debug("deleteDocuments ${params}");
+
+        params.each { p ->
+            if (p.key.startsWith('_deleteflag.') ) {
+                def docctx_to_delete = p.key.substring(12);
+                log.debug("Looking up docctx ${docctx_to_delete} for delete");
+                def docctx = DocContext.get(docctx_to_delete)
+                docctx.status = RefdataCategory.lookupOrCreate('Document Context Status','Deleted');
+            }
+        }
+
+        redirect controller: 'packageDetails', action:params.redirectAction, id:params.instanceId
+    }
+
+
+
+  @Secured(['ROLE_USER','IS_AUTHENTICATED_FULLY'])
+  def documents() {
+      def result = [:]
+      result.user = User.get(springSecurityService.principal.id)
+      result.packageInstance = Package.get(params.id)
+      result.editable=isEditable()
+
+      result
+  }
+
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def expected() {
     log.debug("expected ${params}");
@@ -346,11 +376,9 @@ class PackageDetailsController {
 
     def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
 
-    if ( showDeletedTipps==true ) {
-    }
-    else {
-      base_qry += "and tipp.status.value != 'Deleted' "
-    }
+     if ( showDeletedTipps != true ) {
+         base_qry += "and tipp.status.value != 'Deleted' "
+     }
 
     if ( asAt != null ) {
       base_qry += " and ( ( ? >= coalesce(tipp.accessStartDate, tipp.pkg.startDate) ) and ( ( ? <= tipp.accessEndDate ) or ( tipp.accessEndDate is null ) ) ) "
@@ -686,6 +714,15 @@ class PackageDetailsController {
     result
   }
 
+  def isEditable(){
+      if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') ) {
+          return true
+      }
+      else {
+          return false
+      }
+  }
+
   def buildPackageQuery(params) {
     log.debug("BuildQuery...");
 
@@ -737,7 +774,19 @@ class PackageDetailsController {
     redirect(action:'show', id:params.id);
   }
 
-  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def notes() {
+
+        def result = [:]
+        result.user = User.get(springSecurityService.principal.id)
+        result.packageInstance = Package.get(params.id)
+        result.editable=isEditable()
+
+        result
+    }
+
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def packageBatchUpdate() {
 
     def packageInstance = Package.get(params.id)
