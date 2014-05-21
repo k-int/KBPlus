@@ -8,6 +8,8 @@ $(document).ready(function() {
     var table = $(this).dataTable( {
       // "bJQueryUI": true,
       "sScrollX"        : "100%",
+      "sScrollY"        : ($(window).height() - 150),
+      "bScrollCollapse" : true,
       "bPaginate"       : false,
       "bLengthChange"   : false,
       "bInfo"           : false,
@@ -17,7 +19,7 @@ $(document).ready(function() {
     
     // Fix the first column.
     new $.fn.dataTable.FixedColumns( table, {
-      "iLeftColumns": 1
+      "iLeftColumns": 2
     });
 
     // Column filter.
@@ -72,5 +74,39 @@ $(document).ready(function() {
       // Scrolling finished.
       scrolling = false;
     }
+  });
+  
+  // Tooltips.
+  $('.onix-code, .onix-status').tooltip(
+      {placement: 'bottom', trigger:'hover', html: true, container: 'body'}
+  );
+  $('.onix-icons span i').popover(
+    {placement: 'left', trigger:'hover', html: true, container: 'body'}
+  );
+  
+  // Modal.
+  var modal = $('#onix-modal');
+  $('.text-icon, .main-annotation').each(function(){
+    
+    // Me.
+    var me = $(this);
+    
+    // Get the adjacent text element.    
+    var textelement = me.next('.textelement');
+    
+    // Bind the on click.
+    me.click (function() {
+      
+      $('.modal-title', modal).text(
+        me.is(".main-annotation") ? "Annotations" : "Text Content"
+      );
+      
+      $('.modal-body', modal).html(
+        textelement.html()
+      );
+      
+      // Show the modal.
+      modal.modal();
+    });
   });
 });
