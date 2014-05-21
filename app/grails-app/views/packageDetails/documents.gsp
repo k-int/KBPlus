@@ -58,9 +58,10 @@
 <g:if test="${flash.error}">
     <div class="container"><bootstrap:alert class="alert-error">${flash.error}</bootstrap:alert></div>
 </g:if>
+<div class="container">
 
 <g:render template="nav" />
-
+</div>
 <div class="container">
 
     <g:render template="/templates/documents_table"
