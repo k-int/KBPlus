@@ -103,10 +103,8 @@
 
                 </div>
                 <div class="span4">
-                    <div class="well">
-                        <h2>Login</h2>
-                        <p><span class="external-link"><g:link controller="myInstitutions" action="dashboard">Knowledge Base+ Member Login</g:link></span></p>
-                    </div>
+                    <g:render template="/templates/loginDiv"/>
+
                     <div class="twitter">
                         <g:render template="twitter" contextPath="/templates"/>
                     </div>
