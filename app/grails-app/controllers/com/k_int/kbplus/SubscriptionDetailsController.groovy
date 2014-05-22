@@ -370,7 +370,6 @@ class SubscriptionDetailsController {
                                               accessStartDate: tipp.accessStartDate,
                                               accessEndDate: tipp.accessEndDate,
                                               startDate:tipp.startDate,
-                                              startDate:tipp.startDate,
                                               startVolume:tipp.startVolume,
                                               startIssue:tipp.startIssue,
                                               endDate:tipp.endDate,
