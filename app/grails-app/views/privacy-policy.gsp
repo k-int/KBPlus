@@ -6,34 +6,7 @@
     </head>
 
     <body class="public">
-        <div class="navbar navbar-fixed-top">
-            <div class="navbar-inner navbar-public">
-                <div class="container">
-                    <img class="brand" alt="Knowledge Base + logo" src="images/kb_large_icon.png" />
-                    <div class="nav-collapse">               
-                        <ul class="nav">
-                            <li>
-                                <a href="${createLink(uri: '/')}"> Home </a>
-                            </li>
-                            <li class="active">
-                                <a href="${createLink(uri: '/about')}"> About KB+ </a>
-                            </li>
-                            <li>
-                                <a href="${createLink(uri: '/signup')}"> Sign Up </a>
-                            </li>
-                            <li>
-                                <a href="${createLink(uri: '/publicExport')}"> Exports </a>
-                            </li>
-                            <li class="last">
-                                <a href="${createLink(uri: '/contact-us')}"> Contact Us </a>
-                            </li>
-                        </ul>           
-                    </div>                     
-                </div>           
-            </div>
-        </div>
-
-        <div class="navbar-push-public"></div>
+    <g:render template="public_navbar" contextPath="/templates" model="['active':'about']"/>
 
         <div class="container">
             <h1>Privacy Policy</h1>
@@ -70,7 +43,7 @@
                     <p>Alternatively, you may wish to visit <a title="Find out more about cookies" href="http://www.aboutcookies.org">www.aboutcookies.org</a> which contains comprehensive information on how to do this on a wide variety of browsers. You will also find details on how to delete cookies from your computer as well as more general information about cookies. For information on how to do this on the browser of your mobile device you will need to refer to your manual for that device.</p>
                     <p>To opt out of being tracked by Google Analytics across all websites, please visit <a title="Find out more on how to opt out of being tracked by Google Analytics across all websites" href="http://tools.google.com/dlpage/gaoptout">http://tools.google.com/dlpage/gaoptout</a>. </p>
                     <p><em>Please be aware that restricting cookies may impact on the functionality of the website and your user experience. </em></p>
-                    
+
                     <h3>Use of cookies by JISC Collections</h3>
                     <p>Cookies are small text files that are placed on your computer by websites that you visit. They are widely used in order to make websites work, or work more efficiently, as well as to provide information to the owners of the site.</p>
                     <p>The table below explains the cookies we use and why.</p>
@@ -93,13 +66,13 @@
                             <tr>
                                 <td>Google Analytics</td>
                                 <td>_utma<br />_utmb<br />_utmc<br />_utmv<br />_utmz</td>
-                                <td>These cookies are used to collect information about how visitors use our site. We use the information to compile reports and help us improve the site. The cookies collect information in anonymous form, including the number of visitors to the site, where visitors have come to the site from and what pages they have visited.</td>  
+                                <td>These cookies are used to collect information about how visitors use our site. We use the information to compile reports and help us improve the site. The cookies collect information in anonymous form, including the number of visitors to the site, where visitors have come to the site from and what pages they have visited.</td>
                             </tr>
                         </tbody>
                     </table>
                     <h2><a name="share"></a>Do we share the information we receive?</h2>
                     <p>We do not sell, trade or rent information on our members to any third parties.</p>
-                    
+
                     <h3>Librarian tools:</h3>
                     <p>We may from time to time share institutional identification records such as Ringgold Id, IP address range, UK Access Management Federation IdP ID that are stored in Your Account with our project partners who are developing librarian tools such as <a title="Journal Usage  Statistics Portal (JUSP) website" href="http://jusp.mimas.ac.uk/">Journal Usage Statistics Portal (JUSP)</a>, <a title="Electronic  Licence Comparison &amp; Analysis Tool (ELCAT) website" href="http://www.jisc-elcat.com/">Electronic Licence Comparison &amp; Analysis Tool (ELCAT)</a> and the <a title="Find out more about the Entitlement Registry" href="/Entitlement-Registry-Project/">Entitlement Registry</a> to enhance the user experience. We do not transfer or share any personally identifiable information.</p>
                     <h2><a name="secure"></a>How secure is information about me?</h2>
@@ -127,50 +100,18 @@
                     <p>If you have any concern about privacy at <a title="The JISC Collections website" href="http://www.jisc-collections.ac.uk">www.jisc-collections.ac.uk</a>, please <a href="mailto:help@jisc-collections.ac.uk?subject=Query%20on%20the%20JISC%20Collections%20website">email</a> us a thorough description and we will try to resolve the issue for you.</p>
                     <p>Our business changes constantly and our Privacy Notice and the Conditions of Use will change also. We may email periodic reminders of our notices and conditions, unless you have instructed us not to, but you should check our website frequently to see recent changes. Unless stated otherwise, our current Privacy Notice applies to all information that we have about you and your account. We stand behind the promises we make, however, and will never materially change our policies and practices to make them less protective of member information collected in the past without the consent of affected members.</p>
                     <p>This privacy notice was last updated 9 August 2012.</p>
-                    
+
                 </div>
                 <div class="span4">
                     <div class="well">
                         <h2>Login</h2>
                         <p><span class="external-link"><g:link controller="myInstitutions" action="dashboard">Knowledge Base+ Member Login</g:link></span></p>
-                    </div>                                    
-                    <div class="twitter">                    
-                        <script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
-                        <script>
-                            new TWTR.Widget({
-                                version: 2,
-                                type: 'profile',
-                                rpp: 4,
-                                interval: 30000,
-                                width: 'auto',
-                                height: 300,
-                                theme: {
-                                    shell: {
-                                        background: '#990000',
-                                        color: '#ffffff'
-                                    },
-                                    tweets: {
-                                        background: '#ffffff',
-                                        color: '#222222',
-                                        links: '#005580'
-                                    }
-                                },
-                                features: {
-                                    scrollbar: false,
-                                    loop: false,
-                                    live: false,
-                                    behavior: 'all'
-                                }
-                            }).render().setUser('JISCKBPlus').start();
-                        </script>
-                        <noscript>
-                        <div class="well">
-                            <p><span class="external-link><a rel="external" href="http://twitter.com/JISCKBPlus">Follow Knowledge Base + on Twitter (@JISCKBPlus)</a></span></p>
-                        </div>
-                        </noscript>
+                    </div>
+                    <div class="twitter">
+                        <g:render template="twitter" contextPath="/templates"/>
                     </div>
                 </div>
             </div>
         </div>
-
+    </body>
 </html>

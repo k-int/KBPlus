@@ -293,8 +293,8 @@
 
               </div>
               <div class="span4">
-                <g:render template="documents" contextPath="../templates" model="${[doclist:license.documents, ownobj:license, owntp:'license']}" />
-                <g:render template="notes" contextPath="../templates" model="${[doclist:license.documents, ownobj:license, owntp:'license']}" />
+                <g:render template="/templates/documents" model="${[ ownobj:license, owntp:'license']}" />
+                <g:render template="/templates/notes"  model="${[ ownobj:license, owntp:'license']}" />
               </div>
             </div>
     </div>

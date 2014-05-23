@@ -556,7 +556,21 @@ class MyInstitutionsController {
 
           // Clone documents
           baseLicense?.documents?.each { dctx ->
-            DocContext ndc = new DocContext(owner:dctx.owner,
+              Doc clonedContents = new Doc(blobContent: dctx.owner.blobContent,
+                      status:dctx.owner.status,
+                      type:dctx.owner.type,
+                      alert:dctx.owner.alert,
+                      content:dctx.owner.content,
+                      uuid:dctx.owner.uuid,
+                      contentType:dctx.owner.contentType,
+                      title:dctx.owner.title,
+                      creator:dctx.owner.creator,
+                      filename:dctx.owner.filename,
+                      mimeType:dctx.owner.mimeType,
+                      user:dctx.owner.user,
+                      migrated:dctx.owner.migrated).save()
+
+            DocContext ndc = new DocContext(owner:clonedContents,
                                             license: licenseInstance,
                                             domain: dctx.domain,
                                             status: dctx.status,
@@ -745,8 +759,9 @@ class MyInstitutionsController {
 
     if ( ( params.filter ) && ( params.filter.length() > 0 ) ) {
       log.debug("Adding title filter ${params.filter}");
-      sub_qry += " AND ie.tipp.title.title like :titlestr"
-      qry_params.titlestr = "%${params.filter}%";
+       sub_qry += " AND LOWER(ie.tipp.title.title) like :titlestr"
+       qry_params.titlestr = "%${params.filter}%".toLowerCase();
+
     }
 
     if ( filterSub ) {

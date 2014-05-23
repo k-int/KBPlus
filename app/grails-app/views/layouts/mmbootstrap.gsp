@@ -21,7 +21,7 @@
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    
+
     <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
 
 
@@ -33,11 +33,10 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <g:link controller="home" action="index" class="brand" alt="KB+ ${grailsApplication.metadata.'app.version'} / build ${grailsApplication.metadata.'app.buildNumber'}">KB+</g:link>
-          <div class="nav-collapse">
             <ul class="nav">
-              <sec:ifLoggedIn>
-
+                    <g:link controller="home" action="index" class="brand" alt="KB+ ${grailsApplication.metadata.'app.version'} / build ${grailsApplication.metadata.'app.buildNumber'}">KB+</g:link>
+                <sec:ifLoggedIn>
+                <ul class="nav">
                 <sec:ifAnyGranted roles="ROLE_ADMIN">
                   <li class="dropdown">
                     <a href="#" class="dropdown-toggle explorer-link" data-toggle="dropdown"> Data Explorer <b class="caret"></b> </a>
@@ -54,13 +53,14 @@
                     </ul>
                   </li>
                 </sec:ifAnyGranted>
-  
+                </ul>
+                <ul class="nav">
                 <g:if test="${user}">
                   <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Institutions <b class="caret"></b> </a>
                     <ul class="dropdown-menu" style="max-width:none;">
-  
-  
+
+
                        <li><g:link controller="packageDetails" action="index">All Packages</g:link></li>
                        <li><g:link controller="titleDetails" action="index">All Titles</g:link></li>
                        <li><g:link controller="onixplLicenseCompare"
@@ -70,37 +70,37 @@
                        <g:if test="${usaf && usaf.size() > 0}">
                          <g:each in="${usaf}" var="org">
                            <li class="dropdown-submenu">
-                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">${org.name}</i> </a>
+                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">${org.name} </a>
                              <ul class="dropdown-menu">
-                               <li><g:link controller="myInstitutions" 
-                                           action="instdash" 
+                               <li><g:link controller="myInstitutions"
+                                           action="instdash"
                                            params="${[shortcode:org.shortcode]}">Dashboard</g:link></li>
-                               <li><g:link controller="myInstitutions" 
-                                           action="currentLicenses" 
+                               <li><g:link controller="myInstitutions"
+                                           action="currentLicenses"
                                            params="${[shortcode:org.shortcode]}">Licences</g:link></li>
-                               <li><g:link controller="myInstitutions" 
-                                           action="currentSubscriptions" 
+                               <li><g:link controller="myInstitutions"
+                                           action="currentSubscriptions"
                                            params="${[shortcode:org.shortcode]}">Subscriptions</g:link></li>
-                               <li><g:link controller="myInstitutions" 
-                                           action="currentTitles" 
+                               <li><g:link controller="myInstitutions"
+                                           action="currentTitles"
                                            params="${[shortcode:org.shortcode]}">Titles</g:link></li>
-                               <li><g:link controller="myInstitutions" 
-                                           action="renewalsSearch" 
+                               <li><g:link controller="myInstitutions"
+                                           action="renewalsSearch"
                                            params="${[shortcode:org.shortcode]}">Generate Renewals Worksheet</g:link></li>
-                               <li><g:link controller="myInstitutions" 
-                                           action="renewalsUpload" 
+                               <li><g:link controller="myInstitutions"
+                                           action="renewalsUpload"
                                            params="${[shortcode:org.shortcode]}">Import Renewals</g:link></li>
                                <li><g:link controller="organisations"
-                                           action="show" 
+                                           action="show"
                                            params="${[id:org.id]}">Organisation Information</g:link></li>
-                               <li><g:link controller="subscriptionImport" 
+                               <li><g:link controller="subscriptionImport"
                                            action="generateImportWorksheet"
                                            params="${[id:org.id]}">Generate Subscription Taken Worksheet</g:link></li>
-                               <li><g:link controller="subscriptionImport" 
+                               <li><g:link controller="subscriptionImport"
                                            action="importSubscriptionWorksheet"
                                            params="${[id:org.id]}">Import Subscription Taken Worksheet</g:link></li>
-                               <li><g:link controller="myInstitutions" 
-                                           action="changeLog" 
+                               <li><g:link controller="myInstitutions"
+                                           action="changeLog"
                                            params="${[shortcode:org.shortcode]}">Change Log</g:link></li>
 
                              </ul>
@@ -115,7 +115,8 @@
                     </ul>
                   </li>
                 </g:if>
-
+                </ul>
+                <ul class="nav">
                 <sec:ifAnyGranted roles="ROLE_ADMIN,KBPLUS_EDITOR">
                    <li class="dropdown">
                      <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Data Managers <b class="caret"></b> </a>
@@ -150,8 +151,8 @@
                      </ul>
                    </li>
                 </sec:ifAnyGranted>
-
-  
+                </ul>
+                <ul class="nav">
                 <sec:ifAnyGranted roles="ROLE_ADMIN">
                    <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Admin Actions <b class="caret"></b> </a>
@@ -221,8 +222,9 @@
                       </li>
                     </ul>
                   </li>
-  
+
                 </sec:ifAnyGranted>
+                </ul>
               </sec:ifLoggedIn>
             </ul>
 
@@ -233,6 +235,7 @@
             -->
 
             <ul class="nav pull-right">
+              <ul class="nav">
               <sec:ifLoggedIn>
                 <g:if test="${user}">
                   <li class="dropdown">
@@ -241,7 +244,7 @@
                       <li <%= ( ( 'profile'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="profile" action="index">Profile</g:link></li>
                       <li><g:link controller="logout">Logout</g:link></li>
-  
+
                     </ul>
                   </li>
                 </g:if>
@@ -249,8 +252,8 @@
               <sec:ifNotLoggedIn>
                 <li><g:link controller="myInstitutions" action="dashboard">Login</g:link></li>
               </sec:ifNotLoggedIn>
+
             </ul>
-          </div>
         </div>
       </div>
     </div>
@@ -266,9 +269,9 @@
      </g:if>
    </sec:ifLoggedIn>
 
-       
+
   <g:layoutBody/>
-      
+
   <div id="Footer">
       <div class="navbar navbar-footer">
           <div class="navbar-inner">
@@ -280,7 +283,7 @@
                           <li><a href=${createLink(uri: '/freedom-of-information-policy"')}>Freedom of Information Policy</a></li>
                       </ul>
                   </div>
-                      
+
                   <div class="pull-right">
                       <div class="nav-collapse">
                           <ul class="nav">
@@ -303,9 +306,9 @@
               </div>
           </div>
       </div>
-                
+
       <div class="clearfix"></div>
-          
+
       <div class="footer-links container">
           <div class="row">
               <div class="pull-left">
@@ -317,7 +320,7 @@
           </div>
       </div>
   </div>
-  
+
   <r:script type="text/javascript">
     if (typeof(Zenbox) !== "undefined") {
       Zenbox.init({

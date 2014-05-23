@@ -49,6 +49,14 @@ class LicenseDetailsController {
     def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
     result.pendingChanges = PendingChange.executeQuery("select pc from PendingChange as pc where license=? and ( pc.status is null or pc.status = ? ) order by ts desc", [result.license, pending_change_pending_status]);
 
+      //Filter any deleted subscriptions out of displayed links
+      Iterator<Subscription> it = result.license.subscriptions.iterator()
+      while(it.hasNext()){
+          def sub = it.next();
+          if(sub.status == RefdataCategory.lookupOrCreate('Subscription Status','Deleted')){
+              it.remove();
+          }
+      }
 
     log.debug("pc result is ${result.pendingChanges}");
 
@@ -186,7 +194,7 @@ class LicenseDetailsController {
     log.debug("deleteDocuments ${params}");
 
     def user = User.get(springSecurityService.principal.id)
-    def l = License.get(params.licid);
+    def l = License.get(params.instanceId);
 
     if ( ! l.hasPerm("edit",user) ) {
       response.sendError(401);
@@ -203,7 +211,7 @@ class LicenseDetailsController {
       }
     }
 
-    redirect controller: 'licenseDetails', action:'index', params:[shortcode:params.shortcode], id:params.licid, fragment:'docstab'
+    redirect controller: 'licenseDetails', action:params.redirectAction, params:[shortcode:params.shortcode], id:params.instanceId, fragment:'docstab'
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])

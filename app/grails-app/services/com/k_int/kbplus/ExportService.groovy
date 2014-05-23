@@ -269,8 +269,10 @@ class ExportService {
 			addXMLElementInto(doc, coveragestatement, "CoreEnd", e.coreStatusEnd?formatter.format(e.coreStatusEnd):'')
 			addXMLElementInto(doc, coveragestatement, "PackageID", tipp?.pkg?.id?:'')
 			addXMLElementInto(doc, coveragestatement, "PackageName", tipp?.pkg?.name?:'')
-					
-		}
+            addXMLElementInto(doc, coveragestatement, "AccessStatus", tipp?.getAvailabilityStatus().toString()?:'')
+            addXMLElementInto(doc, coveragestatement, "AccessFrom",  tipp?.accessStartDate?:'')
+            addXMLElementInto(doc, coveragestatement, "AccessTo", tipp?.accessEndDate?:'')
+        }
     }
 	
 	/**
@@ -537,6 +539,9 @@ class ExportService {
 			ie."CoverageNote" = e.coverageNote?:''
 			ie."HostPlatformName" = tipp?.platform?.name?:''
 			ie."HostPlatformURL" = tipp?.hostPlatformURL?:''
+                        ie."HybridOA" =  tipp?.hybridOA?.value?:''
+                        ie."DelayedOA"= tipp?.delayedOA?.value?:''
+                        ie."Payment" = tipp?.payment?.value?:''
 			ie."AdditionalPlatforms" = []
 			tipp?.additionalPlatforms.each(){ ap ->
 				def platform = [:]
@@ -550,8 +555,12 @@ class ExportService {
 			ie."CoreEnd" = e.coreStatusEnd?formatter.format(e.coreStatusEnd):''
 			ie."PackageID" = tipp?.pkg?.id?:''
 			ie."PackageName" = tipp?.pkg?.name?:''
-			
-			entitlements.add(ie)
+            ie."AccessFrom" = tipp?.accessStartDate?:''
+            ie."AccessTo" = tipp?.accessEndDate?:''
+            ie."AccessStatus" = tipp?.getAvailabilityStatus().toString()?:''
+
+
+            entitlements.add(ie)
 		}
 		titles.add(title) // add last title
 		

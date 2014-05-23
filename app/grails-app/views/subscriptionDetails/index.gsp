@@ -57,7 +57,7 @@
     <div class="container">
       ${institution?.name} ${subscriptionInstance?.type?.value}
        <h1><g:xEditable owner="${subscriptionInstance}" field="name" /></h1>
-       <g:render template="nav" contextPath="." />
+       <g:render template="nav"  />
     </div>
 
 
@@ -142,8 +142,8 @@
         </div>
 
         <div class="span4">
-          <g:render template="documents" contextPath="../templates" model="${[doclist:subscriptionInstance.documents, ownobj:subscriptionInstance, owntp:'subscription']}" />
-          <g:render template="notes" contextPath="../templates" model="${[doclist:subscriptionInstance.documents, ownobj:subscriptionInstance, owntp:'subscription']}" />
+          <g:render template="documents" contextPath="../templates" model="${[ ownobj:subscriptionInstance, owntp:'subscription']}" />
+          <g:render template="notes" contextPath="../templates" model="${[ ownobj:subscriptionInstance, owntp:'subscription']}" />
         </div>
       </div>
     </div>

@@ -6,34 +6,8 @@
     </head>
 
     <body class="public">
-        <div class="navbar navbar-fixed-top">
-            <div class="navbar-inner navbar-public">
-                <div class="container">
-                    <img class="brand" alt="Knowledge Base + logo" src="images/kb_large_icon.png" />
-                    <div class="nav-collapse">               
-                        <ul class="nav">
-                            <li>
-                                <a href="${createLink(uri: '/')}"> Home </a>
-                            </li>
-                            <li class="active">
-                                <a href="${createLink(uri: '/about')}"> About KB+ </a>
-                            </li>
-                            <li>
-                                <a href="${createLink(uri: '/signup')}"> Sign Up </a>
-                            </li>
-                            <li>
-                                <a href="${createLink(uri: '/publicExport')}"> Exports </a>
-                            </li>
-                            <li class="last">
-                                <a href="${createLink(uri: '/contact-us')}"> Contact Us </a>
-                            </li>
-                        </ul>          
-                    </div>                     
-                </div>           
-            </div>
-        </div>
+    <g:render template="public_navbar" contextPath="/templates" model="['active':'about']"/>
 
-        <div class="navbar-push-public"></div>
 
         <div class="container">
             <h1>Freedom of Information Policy</h1>
@@ -142,9 +116,9 @@
                         <li>A full written response by or on behalf of the CEO of JISC Collections to the second appeal will be made available to the enquirer within 25 days of receipt of the second appeal. If this is not possible the FOI Officer will provide a realistic date for response.</li>
                         <li>If the CEO of JISC Collections was directly involved in the management or handling of the original information access request, or the initial appeal, another senior member of JISC Collections nominated by the FOI Officer and/or the CEO, will assume responsibility for the consideration of the appeal and issue the final decision on behalf of JISC Collections.</li>
                     </ul>
-                    
+
                     <p>To complain write to:</p>
-                    
+
                             <address>
                                 FOI Officer<br/>
                                 JISC Collections<br/>
@@ -171,41 +145,9 @@
                     <div class="well">
                         <h2>Login</h2>
                         <p><span class="external-link"><g:link controller="myInstitutions" action="dashboard">Knowledge Base+ Member Login</g:link></span></p>
-                    </div>                                    
-                    <div class="twitter">                    
-                        <script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
-                        <script>
-                            new TWTR.Widget({
-                                version: 2,
-                                type: 'profile',
-                                rpp: 4,
-                                interval: 30000,
-                                width: 'auto',
-                                height: 300,
-                                theme: {
-                                    shell: {
-                                        background: '#990000',
-                                        color: '#ffffff'
-                                    },
-                                    tweets: {
-                                        background: '#ffffff',
-                                        color: '#222222',
-                                        links: '#005580'
-                                    }
-                                },
-                                features: {
-                                    scrollbar: false,
-                                    loop: false,
-                                    live: false,
-                                    behavior: 'all'
-                                }
-                            }).render().setUser('JISCKBPlus').start();
-                        </script>
-                        <noscript>
-                        <div class="well">
-                            <p><span class="external-link"><a rel="external" href="http://twitter.com/JISCKBPlus">Follow Knowledge Base + on Twitter (@JISCKBPlus)</a></span></p>
-                        </div>
-                        </noscript>
+                    </div>
+                    <div class="twitter">
+                            <g:render template="twitter" contextPath="/templates"/>
                     </div>
                 </div>
             </div>

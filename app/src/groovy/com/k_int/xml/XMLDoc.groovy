@@ -32,7 +32,7 @@ class XMLDoc {
   public XMLDoc (InputStream is) {
     
     // Set the doc.
-    doc = readXML(is)
+    setDoc (readXML(is))
     refreshNamespaceResolver()
   }
   
@@ -40,7 +40,7 @@ class XMLDoc {
     if (!override) {
       nsr = new DocumentNSResolver(doc)
     } else {
-    nsr = new DocumentNSResolver(override)
+      nsr = new DocumentNSResolver(override)
     }
   }
   
@@ -145,84 +145,16 @@ class XMLDoc {
    * 
    * @return a map representation of the XML.
    */
-  public Map toMap (Map determine_equality_with = null) {
+  public List<Map> toMaps () {
+    
+    def gp = toGPath()
+    List<Map> result = []
     
     // Get the element.
-    Map result = nodeToMap (toGPath())
-    
-    // Determine equality if necessary.
-    if (determine_equality_with) {
-      boolean eq = false
-      if (result) {
-        eq = determineEqualityOfNodeMaps (determine_equality_with, result)
-      }
-      
-      // Set the value.
-      result['_equality'] = eq
+    gp.each { n ->
+      result << nodeToMap (n)
     }
     
     result
-  }
-  
-  private static boolean determineEqualityOfNodeMaps (Map primary, Map secondary) {
-    
-    final def compare = ['_ns', '_content']
-    
-    // Check the type.
-    if (primary['_type'] == "leaf") {
-      
-      // Compare the various points for equality.
-      boolean eq = true
-      for (int i=0; eq && i<compare.size(); i++) {
-        
-        // Get the comparison value.
-        def c = compare[i]
-        
-        // Compare as space-normalised and lower-cased values.
-        def val1 = "${primary[c]}"?.replaceAll("\\s{2,}", " ").trim().toLowerCase()
-        def val2 = "${secondary[c]}"?.replaceAll("\\s{2,}", " ").trim().toLowerCase()
-        eq = (val1 == val2)
-      }
-      
-      // Set the equality value.
-      if (!secondary['_equality']) {
-        secondary['_equality'] = eq
-      }
-      
-      return eq
-      
-    } else {
-    
-      // Get the keys.
-      for (String key : primary.keySet()) {
-        if (!key.startsWith("_")) {
-          
-          // We need to look for each value on the secondary map.
-          List<Map> pri_vals = primary["${key}"]
-          List<Map> sec_vals = secondary["${key}"]
-          
-          if (sec_vals) {
-            
-            // Get each primary value.
-            boolean eq = true
-            for (int pri_num=0; eq && pri_num<pri_vals.size(); pri_num++) {
-              boolean found = false
-              for (int sec_num=0; sec_num<sec_vals.size(); sec_num++) {
-                found = (determineEqualityOfNodeMaps( pri_vals[pri_num], sec_vals[sec_num] ) || found)
-              }
-              eq = eq && found
-            }
-            
-            // Set the equality.
-            if (!secondary['_equality']) {
-              secondary['_equality'] = eq
-            }
-          }
-        }
-      }
-    }
-    
-    // Return the equality value.
-    secondary['_equality']
   }
 }

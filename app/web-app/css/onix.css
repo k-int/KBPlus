@@ -1,10 +1,29 @@
 table.onix-matrix td,
 table.onix-matrix th {
-	width: 583px;
-	max-width: 583px;
-	min-width: 583px;
+	width: 188px;
+	max-width: 188px;
+	min-width: 188px;
 	padding:0 !important;
   border: 1px solid #000;
+}
+
+table.onix-matrix thead th {
+	font-size:0.8em;
+}
+
+table.onix-matrix thead th span.cell-inner {
+	padding:4px;
+}
+
+table.onix-matrix th {
+	font-size: 0.9em;
+}
+
+table.onix-matrix td.cell-1,
+table.onix-matrix th.cell-1 {
+  width: 205px;
+  max-width: 205px;
+  min-width: 205px;
 }
 
 table.onix-matrix td {
@@ -13,15 +32,20 @@ table.onix-matrix td {
   vertical-align:top;
 }
 
-table.onix-matrix table td {
-  font-size:1em;
-  line-height:1em;
-  padding:5px;
+.onix-matrix span.cell-inner {
+  display:block;
+  padding:10px;
+  text-align:center;
 }
 
-.onix-matrix span.cell-inner {
-	display:block;
-	padding:10px;
+.onix-matrix td span.cell-inner {
+	padding-top:0 !important;
+}
+
+.onix-matrix td span.cell-inner-undefined {
+  display:block;
+  text-align:center;
+  padding:3.3em 10px 10px 10px !important;
 }
 
 ul.ColVis_collection {
@@ -41,34 +65,95 @@ ul.ColVis_collection li label {
 	margin:0 !important;
 }
 
-/** The entry table itself **/
-table.onix-entry-table {
-	width :100%;
-  min-width :100%;
-  max-width :100%;
-}
-
-table.onix-entry-table tr th,
-table.onix-entry-table tr td {
-	min-width:1px;
-	width:auto;
-	max-width:auto;
-}
-
-table.onix-entry-table span.cell-inner {
-  display:block;
-  padding:5px;
-}
-
 .onix-code {
-	display:block;
-	font-weight:bold;
-	font-size:1.1em;
-}
-.onix-code-annotation{
-	font-style: italic;
+  border-bottom:1px dashed;
+  cursor: help;
 }
 
-.text-tag .textpreceding {
+.onix-status {
+  cursor: help;
+  font-size: 3.5em;
+  line-height: 1em;
+}
+
+.exceptions i {
+  color: #ff8700;
+}
+
+.textelement {
+	display:none;
+}
+
+.onix-icons {
+	font-size: 1.5em;
+	position:relative;
+  padding: 10px;
+  text-align: right;
+}
+
+.onix-icons span {
+  cursor:help;
+  width:1em;
+  height:1em;
+  text-align: left;
+  margin-left:5px;
+}
+
+.onix-icons .text-icon {
+	cursor:pointer;
+}
+
+.text-preceding {
 	font-weight:bold;
+}
+
+#onix-modal {
+	display:none;
+}
+
+#onix-modal .modal-content {
+	padding:10px;
+}
+
+.onix-pl-permitted:before,
+.onix-pl-interpreted-as-permitted:before,
+.onix-pl-prohibited:before,
+.onix-pl-interpreted-as-prohibited:before,
+.onix-pl-undefined:before,
+.onix-status:before {
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  font-size: 1em;
+}
+
+.onix-pl-permitted:before,
+.onix-pl-interpreted-as-permitted:before,
+.onix-tick:before {
+  content: "";
+  color:#2a9a32;
+}
+
+.onix-pl-prohibited:before,
+.onix-pl-interpreted-as-prohibited:before {
+  content: "";
+  color:#FF0000;
+}
+
+.onix-pl-interpreted-as-prohibited:before{
+	color:#ff7676;
+}
+.onix-pl-interpreted-as-permitted:before {
+  color:#6ddd75;
+}
+
+.onix-info:before {
+  content: "";
+  color: #166fe7;
+}
+
+.onix-pl-undefined:before {
+	content: "";
+	color:#969696;
 }
