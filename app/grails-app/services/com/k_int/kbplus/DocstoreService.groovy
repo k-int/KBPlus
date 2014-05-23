@@ -173,7 +173,7 @@ class DocstoreService {
     java.util.zip.ZipFile zf = null;
 
     try {
-      zf = new java.util.zip.ZipFile(bagresponsezip);
+      zf = new java.util.zip.ZipFile((java.io.File)bagresponsezip);
       java.util.zip.ZipEntry bag_dir_entry = zf.getEntry('bag_dir');
 
       InputStream is = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
