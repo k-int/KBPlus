@@ -41,6 +41,8 @@ class UploadController {
     'publisher_name':[coltype:'simple'],
     'hybrid_oa':[coltype:'simple'],
     'platform':[coltype:'map']
+    'access_start_date':[coltype:'simple']
+    'access_end_date':[coltype:'simple']
   ];
 
   def possible_date_formats = [
@@ -577,6 +579,14 @@ class UploadController {
       else {
         tipp.messages.add("No platform information for tipp");
         upload.processFile=false;                             
+      }
+
+      if (  access_start_date && ( tipp.access_start_date.trim() != '' ) ) {
+        tipp.accessStartDate = parseDate(tipp.access_start_date,possible_date_formats)
+      }
+      
+      if (  access_end_date && ( tipp.access_end_date.trim() != '' ) ) {
+        tipp.accessEndDate = parseDate(tipp.access_end_date,possible_date_formats)
       }
       
       counter++
