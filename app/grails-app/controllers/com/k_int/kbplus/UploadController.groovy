@@ -210,6 +210,8 @@ class UploadController {
                                                     impId:java.util.UUID.randomUUID().toString(),
                                                     status:tipp_current,
                                                     hybridOA:hybrid_oa_status_value,
+                                                    accessStartDate: tipp.accessStartDate,
+                                                    accessEndDate: tipp.accessEndDate,
                                                     ids:[])
   
           if ( ! dbtipp.save() ) {
