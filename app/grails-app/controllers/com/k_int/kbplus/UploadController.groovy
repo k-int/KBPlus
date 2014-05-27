@@ -40,8 +40,8 @@ class UploadController {
     'coverage_notes':[coltype:'simple'],
     'publisher_name':[coltype:'simple'],
     'hybrid_oa':[coltype:'simple'],
-    'platform':[coltype:'map']
-    'access_start_date':[coltype:'simple']
+    'platform':[coltype:'map'],
+    'access_start_date':[coltype:'simple'],
     'access_end_date':[coltype:'simple']
   ];
 
