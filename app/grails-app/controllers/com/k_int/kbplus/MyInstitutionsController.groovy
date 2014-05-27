@@ -1991,8 +1991,11 @@ AND EXISTS (
     if ( !checkUserIsMember(result.user, result.institution) ) {
       flash.error="You do not have permission to view ${result.institution.name}. Please request access on the profile page";
       response.sendError(401)
-      // render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
       return;
+    }else if(!result.institution.hasUserWithRole(result.user,"INST_ADM") ){
+        flash.error="Renewals Upload screen is not available to read-only users."
+        response.sendError(401)
+        return ;
     }
 
     result.errors = []
@@ -2004,18 +2007,33 @@ AND EXISTS (
       def upload_filename = request.getFile("renewalsWorksheet")?.getOriginalFilename()
       log.debug("Uploaded worksheet type: ${upload_mime_type} filename was ${upload_filename}");
       def input_stream = request.getFile("renewalsWorksheet")?.inputStream
-      processRenewalUpload(input_stream, upload_filename, result)
+      if(input_stream.available() != 0 ) {
+          processRenewalUpload(input_stream, upload_filename, result)
+      }else{
+          flash.error="You haven't selected a worksheet for upload."
+      }
     }
 
     result
   }
 
-  def processRenewalUpload(input_stream, upload_filename, result) {
+  def  processRenewalUpload(input_stream, upload_filename, result) {
     int SO_START_COL=22
     int SO_START_ROW=7
     log.debug("processRenewalUpload - opening upload input stream as HSSFWorkbook");
     if ( input_stream ) {
-      HSSFWorkbook wb = new HSSFWorkbook(input_stream);
+        HSSFWorkbook wb;
+        try{
+            wb = new HSSFWorkbook(input_stream);
+        }catch(IOException e){
+            if(e.getMessage().contains("Invalid header signature")){
+                flash.error="Error creating workbook. Possible causes: document format, corrupted file."
+            }else{
+                flash.error="Error creating workbook."
+            }
+            log.debug("Error creating workbook from input stream. ",e)
+            return result;
+        }
       HSSFSheet firstSheet = wb.getSheetAt(0);
 
       // Step 1 - Extract institution id, name and shortcode

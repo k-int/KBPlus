@@ -235,7 +235,7 @@ class AdminController {
 
     }
 
-    redirect(action:'editContentItem',id:"${params.key}:${params.locale}")
+    redirect(action:'manageContentItems',id:"${params.key}:${params.locale}")
 
     result
   }
@@ -260,13 +260,14 @@ class AdminController {
         contentItem.content = params.content
         contentItem.save(flush:true)
         messageService.update(key,locale)
+        redirect(action:'manageContentItems');
       }
     }
     else {
       flash.message="Unable to parse content item id ${params.id} - ${idparts}"
       redirect(action:'manageContentItems');
     }
-    
+
     result
   }
 

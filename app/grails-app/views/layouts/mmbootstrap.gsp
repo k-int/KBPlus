@@ -252,7 +252,7 @@
               <sec:ifNotLoggedIn>
                 <li><g:link controller="myInstitutions" action="dashboard">Login</g:link></li>
               </sec:ifNotLoggedIn>
-
+            </ul>
             </ul>
         </div>
       </div>
@@ -280,7 +280,7 @@
                       <ul class="footer-sublinks nav">
                           <li><a href=${createLink(uri: '/terms-and-conditions')}>Terms & Conditions</a></li>
                           <li><a href=${createLink(uri: '/privacy-policy')}>Privacy Policy</a></li>
-                          <li><a href=${createLink(uri: '/freedom-of-information-policy"')}>Freedom of Information Policy</a></li>
+                          <li><a href=${createLink(uri: '/freedom-of-information-policy')}>Freedom of Information Policy</a></li>
                       </ul>
                   </div>
 

@@ -1,7 +1,6 @@
 package com.k_int.kbplus
 
 import com.k_int.kbplus.auth.*;
-import org.codehaus.groovy.grails.commons.ApplicationHolder
 import javax.persistence.Transient
 
 
@@ -9,6 +8,9 @@ import javax.persistence.Transient
 class Subscription {
 
   static auditable = true
+
+  @Transient
+  def grailsApplication
 
   RefdataValue status
   RefdataValue type
@@ -170,7 +172,7 @@ class Subscription {
 
     log.debug("onChange")
 
-    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+    def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
     def controlledProperties = ['name','startDate','endDate']
 
     controlledProperties.each { cp ->

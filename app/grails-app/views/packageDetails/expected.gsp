@@ -122,9 +122,9 @@
                    <g:link controller="titleDetails" action="show" id="${t.title.id}">(Title)</g:link>
                    <g:link controller="tipp" action="show" id="${t.id}">(TIPP)</g:link><br/>
                    <span title="${t.availabilityStatusExplanation}">Access: ${t.availabilityStatus?.value}</span>
-                   <g:if test="${params.mode=='advanced'}">
-                     <br/> Record Status: <g:xEditableRefData owner="${t}" field="status" config='TIPPStatus'/>
-                     <br/> Access Start: <g:xEditable owner="${t}" type="date" field="accessStartDate" />
+                    <br/> Access Start: <g:xEditable owner="${t}" type="date" field="accessStartDate" />
+                    <g:if test="${params.mode=='advanced'}">
+                       <br/> Record Status: <g:xEditableRefData owner="${t}" field="status" config='TIPPStatus'/>
                      <br/> Access End: <g:xEditable owner="${t}" type="date" field="accessEndDate" />
                    </g:if>
                 </td>

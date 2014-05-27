@@ -17,7 +17,7 @@ import java.security.MessageDigest
 
 class LoginController {
 
-  def grailsAppliation
+  def grailsApplication
 
   /**
    * Dependency injection for the authenticationTrustResolver.

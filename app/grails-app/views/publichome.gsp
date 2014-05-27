@@ -16,12 +16,8 @@
         </div>
 
         <div class="span4">
-            <div class="well">
-                <h2>Login</h2>
+            <g:render template="/templates/loginDiv"/>
 
-                <p><span class="external-link"><g:link controller="home"
-                                                       action="index">Knowledge Base+ Member Login</g:link></span></p>
-            </div>
 
             <div class="twitter">
                 <g:render template="twitter" contextPath="/templates"/>
