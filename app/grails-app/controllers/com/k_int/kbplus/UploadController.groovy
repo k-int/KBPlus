@@ -581,11 +581,11 @@ class UploadController {
         upload.processFile=false;                             
       }
 
-      if (  access_start_date && ( tipp.access_start_date.trim() != '' ) ) {
+      if ( tipp.access_start_date && ( tipp.access_start_date.trim() != '' ) ) {
         tipp.accessStartDate = parseDate(tipp.access_start_date,possible_date_formats)
       }
       
-      if (  access_end_date && ( tipp.access_end_date.trim() != '' ) ) {
+      if (  tipp.access_end_date && ( tipp.access_end_date.trim() != '' ) ) {
         tipp.accessEndDate = parseDate(tipp.access_end_date,possible_date_formats)
       }
       
