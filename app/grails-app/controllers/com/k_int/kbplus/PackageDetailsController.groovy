@@ -234,7 +234,7 @@ class PackageDetailsController {
     }
     result.packageInstance = packageInstance
 
-    result.max = params.max ? Integer.parseInt(params.max) : 25
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize
     params.max = result.max
     def paginate_after = params.paginate_after ?: ( (2*result.max)-1);
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
@@ -301,7 +301,7 @@ class PackageDetailsController {
     }
     result.packageInstance = packageInstance
 
-    result.max = params.max ? Integer.parseInt(params.max) : 25
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize
     params.max = result.max
     def paginate_after = params.paginate_after ?: ( (2*result.max)-1);
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;

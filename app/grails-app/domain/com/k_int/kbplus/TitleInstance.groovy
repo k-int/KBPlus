@@ -10,6 +10,9 @@ import org.apache.commons.logging.*
 
 class TitleInstance {
 
+  @Transient
+  def grailsApplication
+
   static Log static_logger = LogFactory.getLog(TitleInstance) 
 
   static final Pattern alphanum = Pattern.compile("\\p{Punct}|\\p{Cntrl}");
@@ -526,7 +529,7 @@ class TitleInstance {
 
     // static_logger.debug("onChange")
 
-    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+    def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
     def controlledProperties = ['title']
 
     controlledProperties.each { cp ->
@@ -546,7 +549,7 @@ class TitleInstance {
   def notifyDependencies(changeDocument) {
     // static_logger.debug("notifyDependencies(${changeDocument})");
     
-    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+    def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
     tipps.each { tipp ->
       // Notify each package that a component title has changed
       changeNotificationService.broadcastEvent("${tipp.pkg.class.name}:${tipp.pkg.id}", changeDocument);

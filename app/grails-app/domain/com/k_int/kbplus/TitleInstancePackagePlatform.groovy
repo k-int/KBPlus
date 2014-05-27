@@ -7,8 +7,8 @@ import org.hibernate.proxy.HibernateProxy
 
 class TitleInstancePackagePlatform {
 
-  // @Transient
-  // def grailsApplication
+   @Transient
+   def grailsApplication
 
   static auditable = true
   static def controlledProperties = ['status',
@@ -136,9 +136,9 @@ class TitleInstancePackagePlatform {
 
     log.debug("onChange")
 
-    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+    def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
 
-    def domain_class = ApplicationHolder.application.getArtefact('Domain','com.k_int.kbplus.TitleInstancePackagePlatform');
+    def domain_class = grailsApplication.getArtefact('Domain','com.k_int.kbplus.TitleInstancePackagePlatform');
 
     controlledProperties.each { cp ->
       log.debug("checking ${cp}")
@@ -187,7 +187,7 @@ class TitleInstancePackagePlatform {
   def onSave = {
 
     log.debug("onSave")
-    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+    def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
 
     changeNotificationService.notifyChangeEvent([
                                                  OID:"${this.class.name}:${this.id}",
@@ -203,7 +203,7 @@ class TitleInstancePackagePlatform {
   def onDelete = {
 
     log.debug("onDelete")
-    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+    def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
 
     changeNotificationService.notifyChangeEvent([
                                                  OID:"${this.class.name}:${this.id}",
@@ -219,7 +219,7 @@ class TitleInstancePackagePlatform {
   def notifyDependencies(changeDocument) {
     log.debug("notifyDependencies(${changeDocument})");
 
-    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+    def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
     changeNotificationService.broadcastEvent("com.k_int.kbplus.Package:${pkg.id}", changeDocument);
     changeNotificationService.broadcastEvent("${this.class.name}:${this.id}", changeDocument);
 
@@ -236,6 +236,7 @@ class TitleInstancePackagePlatform {
       dep_ies.each { dep_ie ->
         def sub = deproxy(dep_ie.subscription)
         log.debug("Notify dependent ie ${dep_ie.id} whos sub is ${sub.id} and subscriber is ${sub.getSubscriber()}");
+
         if ( sub.getSubscriber() == null ) {
           // SO - Ignore!
         }
@@ -253,14 +254,26 @@ class TitleInstancePackagePlatform {
       }
     }
     else if ( (changeDocument.event=='TitleInstancePackagePlatform.updated') && ( changeDocument.new != changeDocument.old ) ) {
-
-      // Tipp Property Change Event.. notify any dependent IEs
-      def dep_ies = IssueEntitlement.findAllByTipp(this)
-      dep_ies.each { dep_ie ->
+        def locale = org.springframework.context.i18n.LocaleContextHolder.getLocale()
+        ContentItem contentItemDesc = ContentItem.findByKeyAndLocale("kbplus.change.tipp."+changeDocument.prop, locale.toString())
+        def description = "Accept this change to make the same update to your issue entitlement"
+        if(contentItemDesc){
+            description = contentItemDesc.content
+        }else{
+            def defaultMsg =  ContentItem.findByKeyAndLocale("kbplus.change.tipp.default",locale.toString())
+            if(defaultMsg)
+                description = defaultMsg.content
+        }
+        // Tipp Property Change Event.. notify any dependent IEs
+        def dep_ies = IssueEntitlement.findAllByTipp(this)
+        dep_ies.each { dep_ie ->
         def sub = deproxy(dep_ie.subscription)
         changeNotificationService.registerPendingChange('subscription',
                                                         dep_ie.subscription,
-                                                        "Information about title <a href=\"${ApplicationHolder.application.config.SystemBaseURL}/titleDetails/show/${this.title.id}\">\"${this.title.title}\"</a> changed in package <a href=\"${ApplicationHolder.application.config.SystemBaseURL}/packageDetails/show/${id}\">${this.pkg.name}</a>. <b>${changeDocument.prop}</b> was updated from <b>\"${changeDocument.oldLabel}\"</b>(${changeDocument.old}) to <b>\"${changeDocument.newLabel}\"</b>(${changeDocument.new}). Accept this change to make the same update to your issue entitlement",
+                                                        "Information about title <a href=\"${grailsApplication.config.SystemBaseURL}/titleDetails/show/${this.title.id}\">\"${this.title.title}\"" +
+                                                                "</a> changed in package <a href=\"${grailsApplication.config.SystemBaseURL}/packageDetails/show/${id}\">${this.pkg.name}</a>. " +
+                                                                "<b>${changeDocument.prop}</b> was updated from <b>\"${changeDocument.oldLabel}\"</b>(${changeDocument.old}) to <b>\"${changeDocument.newLabel}\"</b>" +
+                                                                "(${changeDocument.new}). "+description,
                                                         sub.getSubscriber(),
                                                         [
                                                           changeTarget:"com.k_int.kbplus.IssueEntitlement:${dep_ie.id}",

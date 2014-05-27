@@ -1,11 +1,13 @@
 package com.k_int.kbplus
 
 import javax.persistence.Transient
-import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 class Package {
 
   static auditable = true
+
+  @Transient
+  def grailsApplication
 
   String identifier
   String name
@@ -247,7 +249,7 @@ class Package {
 
   @Transient
   public String getURL() {
-    "${ApplicationHolder.application.config.SystemBaseURL}/packageDetails/show/${id}".toString();
+    "${grailsApplication.config.SystemBaseURL}/packageDetails/show/${id}".toString();
   }
 
   @Transient
@@ -255,7 +257,7 @@ class Package {
 
     log.debug("onChange")
 
-    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+    def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
 
     //controlledProperties.each { cp ->
     //  if ( oldMap[cp] != newMap[cp] ) {
@@ -272,7 +274,7 @@ class Package {
   def onSave = {
 
     log.debug("onSave")
-    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+    def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
 
     changeNotificationService.notifyChangeEvent([
                                                  OID:"com.k_int.kbplus.Package:${id}",
@@ -283,7 +285,7 @@ class Package {
 
   @Transient
   def notifyDependencies(changeDocument) {
-    def changeNotificationService = ApplicationHolder.application.mainContext.getBean("changeNotificationService")
+    def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
     if ( changeDocument.event=='Package.created' ) {
       changeNotificationService.broadcastEvent("com.k_int.kbplus.SystemObject:1", changeDocument);
     }
