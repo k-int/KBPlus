@@ -58,7 +58,7 @@
     $('.licence-documents input[type="checkbox"]').click(showEditButtons);
 
     $('.licence-documents-options .delete-document').click(function () {
-        if (!confirm('Are you sure you wish to delete these documents?')) {
+        if (!confirm('Are you sure you wish to delete these notes?')) {
             $('.licence-documents input:checked').attr('checked', false);
             return false;
         }
