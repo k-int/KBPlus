@@ -331,8 +331,57 @@ class SubscriptionDetailsController {
     
     result
   }
-  
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def previous() {
+       previousAndExpected(params,'previous');
+    }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def expected() {
+        previousAndExpected(params,'expected');
+    }
+
+    def previousAndExpected (params, screen){
+        log.debug("previousAndExpected ${params}");
+        def result = [:]
+
+        result.user = User.get(springSecurityService.principal.id)
+        def subscriptionInstance = Subscription.get(params.id)
+        if (!subscriptionInstance) {
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'package.label', default: 'Subscription'), params.id])
+            redirect action: 'list'
+            return
+        }
+        result.subscriptionInstance = subscriptionInstance
+
+        result.max = params.max ? Integer.parseInt(params.max) : request.user.defaultPageSize
+        params.max = result.max
+        result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
+        def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
+
+        def qry_params = [subscriptionInstance]
+        def date_filter =  new Date();
+
+        def base_qry = "from IssueEntitlement as ie where ie.subscription = ? "
+        base_qry += "and ie.status.value != 'Deleted' "
+        if ( date_filter != null ) {
+            if(screen.equals('previous')) {
+                base_qry += " and ( ie.accessEndDate <= ? ) "
+            }else{
+                base_qry += " and (ie.accessStartDate > ? )"
+            }
+            qry_params.add(date_filter);
+        }
+
+        log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
+        result.titlesList = IssueEntitlement.executeQuery("select ie "+base_qry, qry_params, limits);
+        result.num_ie_rows = IssueEntitlement.executeQuery("select count(ie) "+base_qry, qry_params )[0]
+
+        result.lastie = result.offset + result.max > result.num_ie_rows ? result.num_ie_rows : result.offset + result.max;
+
+        result
+    }
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def processAddEntitlements() {
     log.debug("addEntitlements....");

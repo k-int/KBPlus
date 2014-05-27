@@ -33,4 +33,10 @@
   <li <%='history'== actionName ? ' class="active"' : '' %>><g:link controller="subscriptionDetails" 
                     action="history" 
                     params="${[id:params.id]}">History</g:link></li>
+    <li <%='previous'== actionName ? ' class="active"' : '' %>><g:link controller="subscriptionDetails"
+                                                                      action="previous"
+                                                                      params="${[id:params.id]}">Previous</g:link></li>
+    <li <%='expected'== actionName ? ' class="active"' : '' %>><g:link controller="subscriptionDetails"
+                                                                       action="expected"
+                                                                       params="${[id:params.id]}">Expected</g:link></li>
 </ul>
