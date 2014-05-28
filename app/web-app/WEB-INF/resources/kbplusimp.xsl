@@ -104,11 +104,23 @@ publication_title,ID.issn,ID.eissn,date_first_issue_online,num_first_vol_online,
       </xsl:call-template>
       <!-- access_start_date -->
       <xsl:call-template name="csventry">
-        <xsl:with-param name="txt" select="./CoverageStatement/AccessFrom" />
+        <xsl:with-param name="txt">
+          <xsl:if test="./CoverageStatement/AccessFrom != ''">
+            <xsl:call-template name="formats_date">
+              <xsl:with-param name="date" select="./CoverageStatement/AccessFrom" />
+            </xsl:call-template>
+          </xsl:if>
+        </xsl:with-param>
       </xsl:call-template>
       <!-- access_end_date -->
       <xsl:call-template name="csventry">
-        <xsl:with-param name="txt" select="./CoverageStatement/AccessTo" />
+        <xsl:with-param name="txt">
+          <xsl:if test="./CoverageStatement/AccessTo != ''">
+            <xsl:call-template name="formats_date">
+              <xsl:with-param name="date" select="./CoverageStatement/AccessTo" />
+            </xsl:call-template>
+          </xsl:if>
+        </xsl:with-param>
       </xsl:call-template>
       <xsl:text>&#xA;</xsl:text>
    </xsl:template>

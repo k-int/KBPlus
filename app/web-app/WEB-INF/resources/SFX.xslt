@@ -57,7 +57,7 @@
    </xsl:template>
     
     <xsl:template name="only_end">
-	<xsl:text disable-output-escaping="yes"><![CDATA[$obj->parsedDate(">=",]]></xsl:text>
+	<xsl:text disable-output-escaping="yes"><![CDATA[$obj->parsedDate("<=",]]></xsl:text>
 	<xsl:choose>
 		<xsl:when test="not(./CoverageStatement/EndDate = '')">
 			<xsl:call-template name="extract_year">
