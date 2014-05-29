@@ -255,6 +255,9 @@ class ExportService {
 			addXMLElementInto(doc, coveragestatement, "Coverage", e.coverageDepth?:'')
 			addXMLElementInto(doc, coveragestatement, "CoverageNote", e.coverageNote?:'')
 			addXMLElementInto(doc, coveragestatement, "HostPlatformName", tipp?.platform?.name?:'')
+			addXMLElementInto(doc, coveragestatement, "HybridOA", tipp?.hybridOA?.value?:'')
+			addXMLElementInto(doc, coveragestatement, "DelayedOA", tipp?.delayedOA?.value?:'')
+			addXMLElementInto(doc, coveragestatement, "Payment", tipp?.payment?.value?:'')
 			addXMLElementInto(doc, coveragestatement, "HostPlatformURL", tipp?.hostPlatformURL?:'')
 			
 			tipp.additionalPlatforms.each(){ ap ->
