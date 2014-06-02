@@ -255,6 +255,9 @@ class ExportService {
 			addXMLElementInto(doc, coveragestatement, "Coverage", e.coverageDepth?:'')
 			addXMLElementInto(doc, coveragestatement, "CoverageNote", e.coverageNote?:'')
 			addXMLElementInto(doc, coveragestatement, "HostPlatformName", tipp?.platform?.name?:'')
+			addXMLElementInto(doc, coveragestatement, "HybridOA", tipp?.hybridOA?.value?:'')
+			addXMLElementInto(doc, coveragestatement, "DelayedOA", tipp?.delayedOA?.value?:'')
+			addXMLElementInto(doc, coveragestatement, "Payment", tipp?.payment?.value?:'')
 			addXMLElementInto(doc, coveragestatement, "HostPlatformURL", tipp?.hostPlatformURL?:'')
 			
 			tipp.additionalPlatforms.each(){ ap ->
@@ -539,6 +542,9 @@ class ExportService {
 			ie."CoverageNote" = e.coverageNote?:''
 			ie."HostPlatformName" = tipp?.platform?.name?:''
 			ie."HostPlatformURL" = tipp?.hostPlatformURL?:''
+                        ie."HybridOA" =  tipp?.hybridOA?.value?:''
+                        ie."DelayedOA"= tipp?.delayedOA?.value?:''
+                        ie."Payment" = tipp?.payment?.value?:''
 			ie."AdditionalPlatforms" = []
 			tipp?.additionalPlatforms.each(){ ap ->
 				def platform = [:]

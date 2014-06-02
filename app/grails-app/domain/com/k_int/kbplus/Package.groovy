@@ -215,6 +215,8 @@ class Package {
         def new_ie = new IssueEntitlement(status: live_issue_entitlement,
                                           subscription: subscription,
                                           tipp: tipp,
+                                          accessStart:tipp.accessStart,
+                                          accessEnd:tipp.accessEnd,
                                           startDate:tipp.startDate,
                                           startVolume:tipp.startVolume,
                                           startIssue:tipp.startIssue,

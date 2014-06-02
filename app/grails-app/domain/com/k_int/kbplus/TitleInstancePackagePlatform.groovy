@@ -314,7 +314,8 @@ class TitleInstancePackagePlatform {
     // if Date > EndDate - Expired
     def tipp_access_start_date = getDerivedAccessStartDate()
     def tipp_access_end_date = getDerivedAccessEndDate()
-    if ( ( accessEndDate == null ) && ( as_at > tipp_access_end_date ) ) {
+    // if ( ( accessEndDate == null ) && ( as_at > tipp_access_end_date ) ) {
+    if ( tipp_access_end_date == null ) {
       result = RefdataCategory.lookupOrCreate('TIPP Access Status','Current(*)');
     }
     else if ( as_at < tipp_access_start_date ) {

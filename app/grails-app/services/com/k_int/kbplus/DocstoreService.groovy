@@ -173,7 +173,7 @@ class DocstoreService {
     java.util.zip.ZipFile zf = null;
 
     try {
-      zf = new java.util.zip.ZipFile(bagresponsezip);
+      zf = new java.util.zip.ZipFile((java.io.File)bagresponsezip);
       java.util.zip.ZipEntry bag_dir_entry = zf.getEntry('bag_dir');
 
       InputStream is = zf.getInputStream(zf.getEntry('bag_dir/data/response.xml'));
@@ -372,14 +372,19 @@ class DocstoreService {
       try {
         log.debug("Migrate document ${dsd.id}, ${dsd.uuid}");
         def ds_resp = getDocstoreResponseDoc(dsd.uuid);
-        OutputStream os = new ByteArrayOutputStream()
-        streamResponseDoc(ds_resp, os)
-        byte[] blob = os.toByteArray()
-        dsd.setBlobData(new ByteArrayInputStream(blob), blob.length);
-        dsd.contentType = 3;
-        dsd.migrated = 'y';
-        dsd.save(flush:true)
-        log.debug("${dsd.id} completed");
+        if ( ds_resp != null ) {
+          OutputStream os = new ByteArrayOutputStream()
+          streamResponseDoc(ds_resp, os)
+          byte[] blob = os.toByteArray()
+          dsd.setBlobData(new ByteArrayInputStream(blob), blob.length);
+          dsd.contentType = 3;
+          dsd.migrated = 'y';
+          dsd.save(flush:true)
+          log.debug("${dsd.id} completed");
+        }
+        else {
+          log.error("*** DOCSTORE Migrate Failed - getDocstoreResponseDoc is NULL ****");
+        }
       }
       catch ( Exception e ) {
         log.error("Failed to migrate",e);

@@ -40,7 +40,9 @@ class UploadController {
     'coverage_notes':[coltype:'simple'],
     'publisher_name':[coltype:'simple'],
     'hybrid_oa':[coltype:'simple'],
-    'platform':[coltype:'map']
+    'platform':[coltype:'map'],
+    'access_start_date':[coltype:'simple'],
+    'access_end_date':[coltype:'simple']
   ];
 
   def possible_date_formats = [
@@ -208,6 +210,8 @@ class UploadController {
                                                     impId:java.util.UUID.randomUUID().toString(),
                                                     status:tipp_current,
                                                     hybridOA:hybrid_oa_status_value,
+                                                    accessStartDate: tipp.accessStartDate,
+                                                    accessEndDate: tipp.accessEndDate,
                                                     ids:[])
   
           if ( ! dbtipp.save() ) {
@@ -577,6 +581,14 @@ class UploadController {
       else {
         tipp.messages.add("No platform information for tipp");
         upload.processFile=false;                             
+      }
+
+      if ( tipp.access_start_date && ( tipp.access_start_date.trim() != '' ) ) {
+        tipp.accessStartDate = parseDate(tipp.access_start_date,possible_date_formats)
+      }
+      
+      if (  tipp.access_end_date && ( tipp.access_end_date.trim() != '' ) ) {
+        tipp.accessEndDate = parseDate(tipp.access_end_date,possible_date_formats)
       }
       
       counter++

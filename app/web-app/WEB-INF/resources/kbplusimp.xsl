@@ -16,7 +16,7 @@ Package Name,<xsl:call-template name="plainentry"><xsl:with-param name="txt" sel
 Agreement Term Start Year,<xsl:call-template name="formats_date"><xsl:with-param name="date" select="./PackageTermStartDate" /></xsl:call-template>
 Agreement Term End Year,<xsl:call-template name="formats_date"><xsl:with-param name="date" select="./PackageTermEndDate" /></xsl:call-template>
 Consortium,
-publication_title,ID.issn,ID.eissn,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,ID.kbart_title_id,embargo_info,coverage_depth,coverage_notes,publisher_name,ID.doi,platform.host.name,platform.host.url,platform.administrative.name,platform.administrative.url,hybrid_oa<xsl:text>&#xA;</xsl:text>
+publication_title,ID.issn,ID.eissn,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,ID.kbart_title_id,embargo_info,coverage_depth,coverage_notes,publisher_name,ID.doi,platform.host.name,platform.host.url,platform.administrative.name,platform.administrative.url,hybrid_oa,access_start_date,access_end_date<xsl:text>&#xA;</xsl:text>
    </xsl:template>
    
    <xsl:template match="TitleListEntry">
@@ -101,6 +101,26 @@ publication_title,ID.issn,ID.eissn,date_first_issue_online,num_first_vol_online,
       <!-- hybrid_oa -->
       <xsl:call-template name="csventry">
         <xsl:with-param name="txt" select="./CoverageStatement/HybridOA" />
+      </xsl:call-template>
+      <!-- access_start_date -->
+      <xsl:call-template name="csventry">
+        <xsl:with-param name="txt">
+          <xsl:if test="./CoverageStatement/AccessFrom != ''">
+            <xsl:call-template name="formats_date">
+              <xsl:with-param name="date" select="./CoverageStatement/AccessFrom" />
+            </xsl:call-template>
+          </xsl:if>
+        </xsl:with-param>
+      </xsl:call-template>
+      <!-- access_end_date -->
+      <xsl:call-template name="csventry">
+        <xsl:with-param name="txt">
+          <xsl:if test="./CoverageStatement/AccessTo != ''">
+            <xsl:call-template name="formats_date">
+              <xsl:with-param name="date" select="./CoverageStatement/AccessTo" />
+            </xsl:call-template>
+          </xsl:if>
+        </xsl:with-param>
       </xsl:call-template>
       <xsl:text>&#xA;</xsl:text>
    </xsl:template>

@@ -143,6 +143,8 @@
                          <g:link controller="subscriptionImport" action="generateImportWorksheet">Generate Subscription Taken Worksheet</g:link></li>
                        <li <%= ( ( 'subscriptionImport'== controllerName ) && ( 'importSubscriptionWorksheet'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="subscriptionImport" action="importSubscriptionWorksheet" params="${[dm:'true']}">Import Subscription Taken Worksheet</g:link></li>
+                       <li <%= ( ( 'dataManager'== controllerName ) && ( 'changeLog'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="dataManager" action="changeLog">Data Manager Change Log</g:link></li>
                        <li class="divider"></li>
                        <li <%= ( ( 'globalDataSync'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="globalDataSync" action="index">Global Data Download [Packages]</g:link></li>
