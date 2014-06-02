@@ -71,6 +71,6 @@ class OnixPLHelperService {
     }
     
     // Because the XMLSlurper is lazy in modifications we need to serialize and re-parse.
-    new XMLDoc( new ByteArrayInputStream (groovy.xml.XmlUtil.serialize(gpath).getBytes()) )
+    new XMLDoc( new ByteArrayInputStream (groovy.xml.XmlUtil.serialize(gpath).getBytes("UTF-8")) )
   }
 }
