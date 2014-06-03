@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta name="layout" content="mmbootstrap"/>
-        <title>KB+</title>
+        <title>KB+ Licence</title>
 </head>
 
 <body>
@@ -17,7 +17,7 @@
     <div class="container">
         <h1>${license.licensee?.name} ${license.type?.value} Licence : ${license.reference}</h1>
 
-        <g:render template="nav" contextPath="." />
+        <g:render template="nav" />
     </div>
 
 
@@ -36,7 +36,7 @@
           <tr>
             <td>${ol.org.name}</td>
             <td>
-              Connected to this license through link ${ol.id} link role : ${ol.roleType?.value}.<br/>
+              Connected to this licence through link ${ol.id} link role : ${ol.roleType?.value}.<br/>
               This role grants the following permissions to members of that org whose membership role also includes the permission<br/>
               <ul>
                 <g:each in="${ol.roleType?.sharedPermissions}" var="sp">

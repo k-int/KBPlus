@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="layout" content="mmbootstrap"/>
-    <title>KB+ Renewals Generation - Search</title>
+    <title>KB+ Packages</title>
   </head>
 
   <body>

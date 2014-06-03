@@ -11,9 +11,9 @@
 
     <div class="page-header">
         <g:unless test="${validationResult?.success}">
-            <h1>Import ONIX-PL License
-            <g:if test="${license}"> for license '${license.reference}'</g:if>
-            <g:else> for unspecified license</g:else>
+            <h1>Import ONIX-PL licence
+            <g:if test="${license}"> for licence '${license.reference}'</g:if>
+            <g:else> for unspecified licence</g:else>
             </h1>
         </g:unless>
     </div>
@@ -68,7 +68,7 @@
             </g:if>
             <g:else>
                 <br/>
-                Existing associations with KB+ licenses were maintained.
+                Existing associations with KB+ licences were maintained.
             </g:else>
         </g:if>
     <%-- Show the form if no OPL has been created --%>
@@ -77,7 +77,7 @@
                 <g:hiddenField name="license_id" value="${params.license_id!=""?params.license_id:license_id}" />
             <%-- Show overwrite option if there is an existing OPL --%>
                 <g:if test="${existing_opl}">
-                    This ONIX-PL document appears to describe an existing ONIX-PL license:
+                    This ONIX-PL document appears to describe an existing ONIX-PL licence:
                     <div class="well">
                         <g:link action="index"
                                 controller="onixplLicenseDetails"
@@ -85,7 +85,7 @@
                             ${existing_opl.title}
                         </g:link>
                     </div>
-                    Would you like to replace the existing ONIX-PL license or create a new record?
+                    Would you like to replace the existing ONIX-PL licence or create a new record?
                     <br/>
                     <br/>
                     <button name="replace_opl" id="replace_opl" value="replace"
@@ -108,9 +108,7 @@
                     <input type="file" id="import_file" name="import_file" value="${import_file}"/>
                     <br/>
                     <br/>
-                    <button type="submit" class="btn btn-primary">
-                        Import license
-                    </button>
+                    <button type="submit" class="btn btn-primary">Import licence</button>
                 </g:else>
             </g:form>
         </g:else>
@@ -141,7 +139,7 @@
                         controller="onixplLicenseDetails"
                         class="btn btn-info"
                         id="${validationResult.onixpl_license.id}">
-                    View ${validationResult.replace ? 'updated' : 'new'} ONIX-PL license</g:link>
+                    View ${validationResult.replace ? 'updated' : 'new'} ONIX-PL licence</g:link>
             </g:else>
         </g:if>
         </div>

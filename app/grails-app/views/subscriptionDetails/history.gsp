@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta name="layout" content="mmbootstrap"/>
-        <title>KB+</title>
+        <title>KB+ Subscription</title>
 </head>
 
 <body>

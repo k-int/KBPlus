@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="layout" content="mmbootstrap"/>
-    <title>KB+</title>
+    <title>KB+ Licence</title>
 </head>
 
 <body>
@@ -11,10 +11,10 @@
     <ul class="breadcrumb">
         <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <g:if test="${license.licensee}">
-            <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:license.licensee.shortcode]}"> ${license.licensee.name} Current Licenses</g:link> <span class="divider">/</span> </li>
+            <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:license.licensee.shortcode]}"> ${license.licensee.name} Current Licences</g:link> <span class="divider">/</span> </li>
         </g:if>
-        <li> <g:link controller="licenseDetails" action="index" id="${params.id}">License Details</g:link> <span class="divider">/</span></li>
-        <li> <g:link controller="licenseDetails" action="documents" id="${params.id}">License Documents</g:link> </li>
+        <li> <g:link controller="licenseDetails" action="index" id="${params.id}">Licence Details</g:link> <span class="divider">/</span></li>
+        <li> <g:link controller="licenseDetails" action="documents" id="${params.id}">Licence Documents</g:link> </li>
 
         <g:if test="${editable}">
             <li class="pull-right">Editable by you&nbsp;</li>

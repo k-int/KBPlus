@@ -27,9 +27,10 @@ class UrlMappings {
     "/signup"(view:"/signup")
     "/noHostPlatformUrl"(view:"/noHostPlatformUrl")
 
-    "500"(view:'/error')
-    "401"(view:'/forbidden')
-    "403"(view:'/error')
+    "500"(view:'/serverCodes/error')
+    "401"(view:'/serverCodes/forbidden')
+    "403"(view:'/serverCodes/error')
+    "404"(view:'/serverCodes/notFound404')
  
   }
 }
