@@ -3,7 +3,7 @@ dataSource.url="jdbc:mysql://localhost/kbplusfunctest?autoReconnect=true&amp;cha
 aggr.es.cluster='elasticsearch'
 aggr.es.index='kbplustest'
 publicationService.baseurl='http://knowplus.edina.ac.uk:2012/kbplus/api'
-SystemBaseURL="http://localhost:8080/demo"
+SystemBaseURL="http://localhost:19080/demo"
 docstore='http://deprecated/deprecated'
 kbplusSystemId='KITestIntsance'
 ZenDeskBaseURL='https://projectname.zendesk.com'
