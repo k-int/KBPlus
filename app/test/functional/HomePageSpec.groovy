@@ -184,9 +184,9 @@ class HomePageSpec extends GebReportingSpec {
 //        then:
 //            catchException{deleteDocument()}//For some reason tests deny the existence of this method
         when:
-           at LicencePage
-           documents()
-           downloadDoc()
+            at LicencePage
+            $("a",text:"Documents").click()
+            downloadDoc()
         then:
             at LicencePage
     }
