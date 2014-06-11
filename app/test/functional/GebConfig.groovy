@@ -13,6 +13,8 @@ waiting {
         timeout = 10
         retryInterval = 1
 }
+baseUrl = 'http://localhost:19080/demo'
+
 atCheckWaiting = true
 // driver = { 
 //   def d = new HtmlUnitDriver()
