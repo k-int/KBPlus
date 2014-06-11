@@ -16,6 +16,7 @@ class HomePageSpec extends GebReportingSpec {
         to PublicPage
         println("CURRENT URL "+driver.currentUrl)
         loginLink()
+        at LogInPage
         println("CURRENT URL "+driver.currentUrl)
         login(Data.UserD_name,Data.UserD_passwd)
     when:

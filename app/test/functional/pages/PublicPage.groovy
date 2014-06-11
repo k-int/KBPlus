@@ -11,7 +11,7 @@ class PublicPage extends BasePage {
 
     static content = {
         loginLink {
-            $("a",text:"Knowledge Base+ Member Login").click(LogInPage)
+            $("a",text:"Knowledge Base+ Member Login").click()
         }
     }
 }
