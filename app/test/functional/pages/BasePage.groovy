@@ -1,6 +1,7 @@
 package pages
 
 import geb.Page
+import geb.error.RequiredPageContentNotPresent
 import org.openqa.selenium.Keys
 
 /**
@@ -82,6 +83,17 @@ class BasePage extends Page {
         startESUpdate {
             $("a",text:"Admin Actions").click()
             $("a",text:"Start ES Index Update").click()
+        }
+        catchException{ run ->
+            def exec = false;
+            try{
+                run()
+            }catch(RequiredPageContentNotPresent e){
+                exec = true;
+            }catch(org.openqa.selenium.ElementNotVisibleException ex){
+                exec= true;
+            }
+            exec
         }
 
     }

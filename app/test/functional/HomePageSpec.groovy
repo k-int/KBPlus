@@ -176,9 +176,9 @@ class HomePageSpec extends GebReportingSpec {
             thrown(RequiredPageContentNotPresent)
         when:
             at LicencePage
-            addDocument("whatever", "doc")
         then:
-            thrown(org.openqa.selenium.ElementNotVisibleException)
+            catchException{addDocument("whatever", "doc")}
+//            thrown(org.openqa.selenium.ElementNotVisibleException)
 //        when:
 //            documents()
 //            deleteDocument()//For some reason tests deny the existence of this method
@@ -198,13 +198,12 @@ class HomePageSpec extends GebReportingSpec {
         when:
              addLicence()
             licence(Data.Licence_template_D)
-            editRef("some val")
         then:
-            thrown(RequiredPageContentNotPresent)
+            catchException{ editRef("some val")}
         when:
-            addDocument("whatever", "doc")
+            at LicencePage
         then:
-            thrown(ElementNotVisibleException)
+           catchException{addDocument("whatever", "doc")}
 //        when:
 //            documents()
 //            deleteDocument()
@@ -268,22 +267,22 @@ class HomePageSpec extends GebReportingSpec {
         then:
             at LicencePage
         when:
-            editRef("some val")
+            at LicencePage
         then:
-            thrown(RequiredPageContentNotPresent)
+            catchException{editRef("some val")}
         when:
-            addDocument("whatever","doc")
+            at LicencePage
         then:
-            thrown(org.openqa.selenium.ElementNotVisibleException)
+            catchException{addDocument("whatever","doc")}
         when:
             documents()
-            deleteDocument()
+
         then:
-            thrown(RequiredPageContentNotPresent)
+            catchException{deleteDocument()}
         when:
-            concurentAccessNote("many")
+            at LicencePage
         then:
-            thrown(RequiredPageContentNotPresent)
+            catchException{concurentAccessNote("many")}
         when:
            downloadDoc()
         then:
@@ -352,9 +351,9 @@ class HomePageSpec extends GebReportingSpec {
             licences()
             deleteLicence(Data.Licence_template_copy_D)
         when:
-            licence(Data.Licence_template_copy_D)
+            at LicencePage
         then:
-            thrown(RequiredPageContentNotPresent)
+            catchException{licence(Data.Licence_template_copy_D)}
     }
     //ref 118 - 119
     def "Import Onix-PL Licence" (){
@@ -410,24 +409,17 @@ class HomePageSpec extends GebReportingSpec {
             allPackages()
             viewPackage(Data.Package_name)
         when:
-            addNote("test")
+            at PackageDetailsPage
         then:
-            thrown(org.openqa.selenium.ElementNotVisibleException)
+            catchException{addNote("test")}
         when:
-            addDocument("whatever","doc")
+            at PackageDetailsPage
         then:
-            thrown(org.openqa.selenium.ElementNotVisibleException)
+            catchException{addDocument("whatever","doc")}
         when:
-            def notFound = false
-            try{
-                editIsPublic("Yes")
-            }catch(RequiredPageContentNotPresent e){
-                notFound = true
-            }catch(WaitTimeoutException){
-                notFound = true
-            }
+            at PackageDetailsPage
         then:
-            notFound
+            catchException{editIsPublic("Yes")}
     }
     //ref 201
     def "View Package - User B"(){
@@ -437,24 +429,17 @@ class HomePageSpec extends GebReportingSpec {
             allPackages()
             viewPackage(Data.Package_name)
         when:
-            addNote("test")
+            at PackageDetailsPage
         then:
-            thrown(org.openqa.selenium.ElementNotVisibleException)
+            catchException{addNote("test")}
         when:
-            addDocument("whatever","doc")
+            at PackageDetailsPage
         then:
-            thrown(org.openqa.selenium.ElementNotVisibleException)
+            catchException{addDocument("whatever","doc")}
         when:
-            def notFound = false
-            try{
-                editIsPublic("Yes")
-            }catch(RequiredPageContentNotPresent e){
-                notFound = true
-            }catch(WaitTimeoutException){
-                notFound = true
-            }
+            at PackageDetailsPage
         then:
-            notFound
+            catchException{editIsPublic("Yes")}
     }
     //ref 202
     def "Add Subscription w/o entitlements" (){
@@ -479,24 +464,17 @@ class HomePageSpec extends GebReportingSpec {
             subscriptions()
             viewSubscription(Data.Subscription_name_A)
         when:
-            addNote("test")
+            at SubscrDetailsPage
         then:
-            thrown(org.openqa.selenium.ElementNotVisibleException)
+            catchException{addNote("test")}
         when:
-            addDocument("whatever","doc")
+            at SubscrDetailsPage
         then:
-            thrown(org.openqa.selenium.ElementNotVisibleException)
+            catchException{addDocument("whatever","doc")}
         when:
-            def notFound = false
-            try{
-                editIsPublic("Yes")
-            }catch(RequiredPageContentNotPresent e){
-                notFound = true
-            }catch(WaitTimeoutException){
-                notFound = true
-            }
+           at SubscrDetailsPage
         then:
-            notFound
+            catchException{editIsPublic("Yes")}
     }
     //ref 204
     def "Add Subscription (w/o entitlements B) "(){

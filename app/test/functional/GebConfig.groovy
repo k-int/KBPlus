@@ -9,10 +9,7 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver
 
 //driver = { new ChromeDriver() }
 driver = { new FirefoxDriver() }
-waiting {
-        timeout = 10
-        retryInterval = 1
-}
+
 atCheckWaiting = true
 // driver = { 
 //   def d = new HtmlUnitDriver()
