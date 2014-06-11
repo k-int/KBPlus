@@ -12,8 +12,11 @@ class HomePageSpec extends GebReportingSpec {
 
   def setupSpec() {
     setup:
+        println("CURRENT URL "+driver.currentUrl)
         to PublicPage
+        println("CURRENT URL "+driver.currentUrl)
         loginLink()
+        println("CURRENT URL "+driver.currentUrl)
         login(Data.UserD_name,Data.UserD_passwd)
     when:
         go "/demo/org/create"
