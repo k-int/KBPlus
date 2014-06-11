@@ -1,3 +1,4 @@
+println("------- Using demo config from conf hints ------- ")
 localauth=true
 dataSource.url="jdbc:mysql://localhost/kbplusfunctest?autoReconnect=true&amp;characterEncoding=utf8"
 aggr.es.cluster='elasticsearch'
@@ -43,3 +44,4 @@ sysusers = [
     roles:['ROLE_USER','ROLE_ADMIN',"INST_ADM"]
   ]
 ]
+
