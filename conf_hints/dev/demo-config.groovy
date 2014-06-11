@@ -1,7 +1,45 @@
 localauth=true
-// dataSource.url="jdbc:mysql://localhost/KBPlus?autoReconnect=true&amp;characterEncoding=utf8"
-dataSource.user="..."
-dataSource.password='...'
-aggr.es.cluster='...'
+dataSource.url="jdbc:mysql://localhost/kbplusfunctest?autoReconnect=true&amp;characterEncoding=utf8"
+aggr.es.cluster='elasticsearch'
+aggr.es.index='kbplustest'
 publicationService.baseurl='http://knowplus.edina.ac.uk:2012/kbplus/api'
-docstore='http://knowplus.edina.ac.uk:8080/oledocstore/KBPlusServlet'
+SystemBaseURL="http://localhost:8080/demo"
+docstore='http://deprecated/deprecated'
+kbplusSystemId='KITestIntsance'
+ZenDeskBaseURL='https://projectname.zendesk.com'
+ZenDeskLoginEmail='Zen.Desk@Host.Name'
+ZenDeskLoginPass='Zen.Desk.Password'
+KBPlusMaster=true
+juspThreadPoolSize=10
+doDocstoreMigration=false
+JuspApiUrl='https://www.jusp.mimas.ac.uk/'
+sysusers = [
+  [ 
+    name:'userb',
+    pass:'userb',
+    display:'UserB',
+    email:'read@localhost',
+    roles:['ROLE_USER','INST_USER']
+  ],
+    [ 
+    name:'userc',
+    pass:'userc',
+    display:'UserC',
+    email:'read@localhost',
+    roles:['ROLE_USER','INST_USER'
+]  ],
+    [ 
+    name:'usera',
+    pass:'usera',
+    display:'UserA',
+    email:'read@localhost',
+    roles:['ROLE_USER','INST_USER']  
+  ],
+    [ 
+    name:'admin',
+    pass:'admin',
+    display:'TestAdmin',
+    email:'read@localhost',
+    roles:['ROLE_USER','ROLE_ADMIN',"INST_ADM"]
+  ]
+]

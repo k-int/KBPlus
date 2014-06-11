@@ -28,7 +28,7 @@ class AnnouncementController {
   def createAnnouncement() { 
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
-    flash.message="Annoucement Created"
+    flash.message="Announcement Created"
     def announcement_type = RefdataCategory.lookupOrCreate('Document Type','Announcement')
     def new_announcement = new Doc(title:params.subjectTxt, 
                                    content:params.annTxt, 

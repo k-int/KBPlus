@@ -7,8 +7,13 @@ import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 
-// driver = { new ChromeDriver() }
+//driver = { new ChromeDriver() }
 driver = { new FirefoxDriver() }
+waiting {
+        timeout = 10
+        retryInterval = 1
+}
+atCheckWaiting = true
 // driver = { 
 //   def d = new HtmlUnitDriver()
 //   d.setJavascriptEnabled(true) 

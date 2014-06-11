@@ -21,12 +21,19 @@ class DataloadService {
   def mongoService
   def sessionFactory
   def edinaPublicationsAPIService
-  def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP 
+  def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
+  def grailsApplication
 
+
+  def es_index
   def dataload_running=false
   def dataload_stage=-1
   def dataload_message=''
 
+  @javax.annotation.PostConstruct
+  def init (){
+      es_index= grailsApplication.config.aggr.es.index ?: "kbplus"
+    }
   def updateFTIndexes() {
     log.debug("updateFTIndexes");
     new EventLog(event:'kbplus.updateFTIndexes',message:'Update FT indexes',tstp:new Date(System.currentTimeMillis())).save(flush:true)
@@ -222,7 +229,7 @@ class DataloadService {
         def idx_record = recgen_closure(r)
 
         def future = esclient.index {
-          index "kbplus"
+          index es_index
           type domain.name
           id idx_record['_id']
           source idx_record
@@ -480,7 +487,7 @@ class DataloadService {
       // Drop any existing kbplus index
       log.debug("Dropping old ES index....");
       def future = index_admin_client.delete {
-        indices 'kbplus'
+        indices es_index
       }
       future.get()
       log.debug("Drop old ES index completed OK");
@@ -492,7 +499,7 @@ class DataloadService {
     // Create an index if none exists
     log.debug("Create new ES index....");
     def future = index_admin_client.create {
-      index 'kbplus'
+      index es_index
     }
     future.get()
 

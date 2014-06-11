@@ -5,7 +5,7 @@
   <head>
     <meta name="layout" content="mmbootstrap">
     <g:set var="entityName" value="${message(code: 'org.label', default: 'Org')}" />
-    <title><g:message code="default.show.label" args="[entityName]" /></title>
+    <title>KB+ <g:message code="default.show.label" args="[entityName]" /></title>
   </head>
   <body>
     <div class="container">

@@ -27,6 +27,9 @@ class BootStrap {
     def edit_permission = Perm.findByCode('edit') ?: new Perm(code:'edit').save(failOnError: true)
     def view_permission = Perm.findByCode('view') ?: new Perm(code:'view').save(failOnError: true)
 
+    def ref_yes = RefdataCategory.lookupOrCreate("YN","Yes")
+    def ref_no = RefdataCategory.lookupOrCreate("YN","No")
+
     def or_licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
     def or_subscriber_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber');
     def or_sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscription Consortia');

@@ -9,6 +9,8 @@ class ESWrapperService {
 
   static transactional = false
 
+  def grailsApplication;
+
 
   def gNode = null;
 
@@ -23,7 +25,7 @@ class ESWrapperService {
     // Settings s = ImmutableSettings.settingsBuilder() .put(m).build();
     // TransportClient client = new TransportClient(s);
 
-    def clus_nm = ApplicationHolder.application.config.aggr.es.cluster ?: "aggr"
+    def clus_nm = grailsApplication.config.aggr.es.cluster ?: "aggr"
 
     log.debug("Using ${clus_nm} as ES cluster name...");
 

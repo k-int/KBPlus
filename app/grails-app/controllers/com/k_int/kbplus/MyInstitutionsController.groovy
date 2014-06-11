@@ -1343,7 +1343,7 @@ AND EXISTS (
           log.debug("query: ${query_str}");
 
           def search = esclient.search{
-            indices "kbplus"
+            indices grailsApplication.config.aggr.es.index ?: "kbplus"
             source {
               from = params.offset
               size = params.max
