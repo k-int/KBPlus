@@ -1,5 +1,6 @@
 package pages
 
+import geb.error.RequiredPageContentNotPresent
 import org.openqa.selenium.Keys
 
 /**
@@ -34,7 +35,11 @@ class AbstractDetails extends BasePage {
         }
         editIsPublic { option ->
             $("span",'data-name':"isPublic").click()
-            waitFor{$("form.editableform")}
+            try{
+                waitFor{$("form.editableform")}
+            }catch (geb.waiting.WaitTimeoutException e){
+                throw new RequiredPageContentNotPresent()
+            }
             $("select.input-medium").value(option)
             $("button.editable-submit").click()
         }

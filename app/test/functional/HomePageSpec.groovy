@@ -178,14 +178,13 @@ class HomePageSpec extends GebReportingSpec {
             at LicencePage
         then:
             catchException{addDocument("whatever", "doc")}
-//            thrown(org.openqa.selenium.ElementNotVisibleException)
 //        when:
 //            documents()
-//            deleteDocument()//For some reason tests deny the existence of this method
 //        then:
-//            thrown(RequiredPageContentNotPresent)
+//            catchException{deleteDocument()}//For some reason tests deny the existence of this method
         when:
-            documents()
+           at LicencePage
+           documents()
            downloadDoc()
         then:
             at LicencePage
