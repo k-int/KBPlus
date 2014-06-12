@@ -208,8 +208,8 @@ class HomePageSpec extends GebReportingSpec {
 //        then:
 //            at LicencePage
         when:
-           documents()
-           downloadDoc()
+        $("a",text:"Documents").click(LicencePage)
+        downloadDoc()
         then:
             at LicencePage
     }
