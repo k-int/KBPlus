@@ -8,7 +8,7 @@ class AdminMngContentItemsPage extends BasePage {
     static content = {
         addNewContent {key, contents ->
             $("input",name:"key").value(key)
-            $("select",name:"locale").value("en_US")
+            $("select",name:"locale").value("en_GB")
             $("textarea",name:"content").value(contents)
             $("input.btn",type:"submit").click()
         }
