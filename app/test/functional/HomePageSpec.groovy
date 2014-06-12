@@ -225,6 +225,7 @@ class HomePageSpec extends GebReportingSpec {
         then:
             at LicencePage
         when:
+            at LicencePage
             addDocument(Data.Test_Doc_name,Data.Test_Doc_file)
             addNote("Test note")
         then:
