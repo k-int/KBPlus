@@ -212,9 +212,7 @@ class AdminController {
   def manageContentItems() {
     def result=[:]
 
-    params.max = Math.min(params.max ? params.int('max') : 10, 100)
-    result.items = ContentItem.list(params)
-    result
+    result.items = ContentItem.list()
 
     result
   }
@@ -230,12 +228,11 @@ class AdminController {
         flash.message = 'Content item already exists'
       }
       else {
-        def newci = new ContentItem(key:params.key, locale:locale, content:params.content).save()
+        ContentItem.lookupOrCreate(params.key, locale, params.content)
       }
-
     }
 
-    redirect(action:'manageContentItems',id:"${params.key}:${params.locale}")
+    redirect(action:'manageContentItems')
 
     result
   }
