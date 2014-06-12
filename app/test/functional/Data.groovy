@@ -26,10 +26,10 @@ class Data {
     static Licence_actual_C = "Functional Test Licence C"
 
     static Licence_ONIX_PL =
-            "${System.getProperty('user.dir')}"+sep+".."+sep+"manual_test_data"+sep+"onix"+sep+"TX-DRAFT Nature Publishing Group Academic License Template-ople-t-1375739573670.xml"
+            "${System.getProperty('user.dir')}" + sep + ".." + sep + "manual_test_data" + sep + "onix" + sep + "TX-DRAFT Nature Publishing Group Academic License Template-ople-t-1375739573670.xml"
     static Test_Doc_name = "Functional Test Doc"
     static Test_Doc_file =
-            "${System.getProperty('user.dir')}"+sep+".."+sep+"manual_test_data"+sep+"so_v3"+sep+"os_test_1"
+            "${System.getProperty('user.dir')}" + sep + ".." + sep + "manual_test_data" + sep + "so_v3" + sep + "os_test_1"
     static Package_name = "Art Journals:Master:2014"
     static Subscription_name_A = "FT Subscription A"
     static Subscription_name_B = "FT Subscription B"
@@ -40,7 +40,7 @@ class Data {
     static Content_Item_welcome_key = "kbplus.welcome.text"
     static Content_Item_welcome_text = "Welcome to KBPlus fucntional tests"
 
-    static Package_import_file= "${System.getProperty('user.dir')}"+sep+".."+sep+"manual_test_data"+sep+"so_v3"+sep+"Art Journals_Master_2014.csv"
+    static Package_import_file = "${System.getProperty('user.dir')}" + sep + ".." + sep + "manual_test_data" + sep + "so_v3" + sep + "Art Journals_Master_2014.csv"
 
 
 }

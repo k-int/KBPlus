@@ -5,21 +5,21 @@ package pages
  */
 class DashboardPage extends BasePage {
     static url = "/demo/home/index"
-    static at = { browser.page.title.startsWith "KB+ Institutional Dash"  };
+    static at = { browser.page.title.startsWith "KB+ Institutional Dash" };
 
     static content = {
 
         subscriptions {
-            $("a",text:"Subscriptions").click(SubscrDetailsPage)
+            $("a", text: "Subscriptions").click(SubscrDetailsPage)
         }
         licences {
-            $("a",text:"Licences").click(LicencePage)
+            $("a", text: "Licences").click(LicencePage)
         }
         toDo { ref ->
-            $("a",text:ref).click(LicencePage)
+            $("a", text: ref).click(LicencePage)
         }
-        generateWorksheet{
-            $("a",text:"Generate Renewals Worksheet").click(MyInstitutionsPage)
+        generateWorksheet {
+            $("a", text: "Generate Renewals Worksheet").click(MyInstitutionsPage)
         }
 
     }
