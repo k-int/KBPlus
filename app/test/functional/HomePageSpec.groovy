@@ -207,9 +207,10 @@ class HomePageSpec extends GebReportingSpec {
 //            deleteDocument()
 //        then:
 //            at LicencePage
-        when:
-        $("a",text:"Documents").click(LicencePage)
-        downloadDoc()
+        when
+            println driver.currentUrl
+            $("a",text:"Documents").click()
+            downloadDoc()
         then:
             at LicencePage
     }
