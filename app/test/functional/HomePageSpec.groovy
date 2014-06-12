@@ -1,7 +1,5 @@
 import geb.error.RequiredPageContentNotPresent
-import geb.error.UnexpectedPageException
 import geb.spock.GebReportingSpec
-import org.openqa.selenium.ElementNotVisibleException
 import pages.*
 import spock.lang.*
 
@@ -39,7 +37,7 @@ class HomePageSpec extends GebReportingSpec {
         at AdminMngAffReqPage
         approve()
         approve()
-        to pages.ProfilePage
+        to ProfilePage
 
       when:
         go '/demo/myInstitutions/Functional_Test_Organisation/emptySubscription'
@@ -65,33 +63,33 @@ class HomePageSpec extends GebReportingSpec {
     // response page sends back a link containing the new package ID <a href="/demo/packageDetails/show/590">New Package Details</a>
 
   }
-    def "Start downloading titles"(){
-        when:
-            startESUpdate() // so that new package is displayed
-        then:
-            true;
-    }
+  def "Start downloading titles"(){
+    when:
+        startESUpdate() // so that new package is displayed
+    then:
+        true;
+  }
 
   def "Verify Package created"() {
-      when:
+    when:
         allPackages()
-      then:
+    then:
         !$("a",text:Data.Package_name).isEmpty()
-      cleanup:
+    cleanup:
         logout()
   }
 
 
   def "The KBPlus Home Page Displays OK"() {
     when:
-     to PublicPage
+        to PublicPage
     then:
-      at PublicPage
+        at PublicPage
   }
     //ref 001
   def "KB+ Member login"() {
-    at PublicPage
     when:
+        at PublicPage
         $("a",text:"Knowledge Base+ Member Login").click()
     then:
         at LogInPage
@@ -100,21 +98,20 @@ class HomePageSpec extends GebReportingSpec {
     //ref 002
     def "Amend Display Name"() {
         when:
-        to ProfilePage
-        displayName("TestUser")
+            to ProfilePage
+            displayName("TestUser")
         then:
-        messageBox("User display name updated")
-
+            messageBox("User display name updated")
         cleanup:
-        displayName(Data.UserA_displayName)
+            displayName(Data.UserA_displayName)
     }
     //ref 003
     def "Request new membership"(){
-        at ProfilePage
         when:
-        requestMembership(Data.Org_name,'Read only user')
+            at ProfilePage
+            requestMembership(Data.Org_name,'Read only user')
         then:
-        at ProfilePage
+            at ProfilePage
     }
 
     //ref 009
@@ -153,10 +150,11 @@ class HomePageSpec extends GebReportingSpec {
 //
 //    }
     def "Set up licence Template"(){
-        changeUser(Data.UserD_name,Data.UserD_passwd)
-        templateLicence()
-        $("input",name:"reference").value(Data.Licence_template_D)
-        $("input",type:"submit").click(LicencePage)
+        setup:
+            changeUser(Data.UserD_name,Data.UserD_passwd)
+            templateLicence()
+            $("input",name:"reference").value(Data.Licence_template_D)
+            $("input",type:"submit").click(LicencePage)
         when:
             editIsPublic("Yes")
             addDocument(Data.Test_Doc_name,Data.Test_Doc_file)
@@ -387,12 +385,12 @@ class HomePageSpec extends GebReportingSpec {
     //ref 011
     def "Change default page size"(){
         setup:
-        changeUser(Data.UserA_name,Data.UserA_passwd)
-        to ProfilePage
+            changeUser(Data.UserA_name,Data.UserA_passwd)
+            to ProfilePage
         when:
-        pageSize("50")
+            pageSize("50")
         then:
-        messageBox("User default page size updated")
+            messageBox("User default page size updated")
         // Keeps causing the tests to fail, not sure why
 //        when:
 //            allTitles()
@@ -613,7 +611,7 @@ class HomePageSpec extends GebReportingSpec {
         then:
             keyExists(Data.Content_Item_welcome_key)
         when:
-            to pages.PublicPage
+            to PublicPage
         then:
             !$("p").filter(text:Data.Content_Item_welcome_text).isEmpty()
     }
