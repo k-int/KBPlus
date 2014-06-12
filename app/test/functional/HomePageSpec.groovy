@@ -210,7 +210,7 @@ class HomePageSpec extends GebReportingSpec {
         when:
             println "_______________---------"+driver.currentUrl
             $("a",text:"Documents").click()
-            downloadDoc()
+            $("a",text:"Download Doc").click()
         then:
             at LicencePage
     }
