@@ -208,7 +208,7 @@ class HomePageSpec extends GebReportingSpec {
 //        then:
 //            at LicencePage
         when
-            println driver.currentUrl
+            println "_______________---------"+driver.currentUrl
             $("a",text:"Documents").click()
             downloadDoc()
         then:
