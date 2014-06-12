@@ -89,7 +89,7 @@ class HomePageSpec extends GebReportingSpec {
     //ref 001
   def "KB+ Member login"() {
     when:
-        at PublicPage
+        to PublicPage
         $("a",text:"Knowledge Base+ Member Login").click()
     then:
         at LogInPage
