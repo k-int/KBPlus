@@ -203,7 +203,6 @@ class HomePageSpec extends GebReportingSpec {
 //        then:
 //            at LicencePage
         when:
-            println "_______________---------" + driver.currentUrl
             $("a", text: "Documents").click()
             $("a", text: "Download Doc").click()
         then:
@@ -212,6 +211,7 @@ class HomePageSpec extends GebReportingSpec {
     //ref 103
     def "Add Actual Licence "() {
         setup:
+            changeUser(Data.UserB_name, Data.UserB_passwd)
             to DashboardPage
             waitFor { licences() }
         when:
