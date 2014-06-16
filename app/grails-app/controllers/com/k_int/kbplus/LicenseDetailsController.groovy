@@ -287,7 +287,6 @@ class LicenseDetailsController {
         if (opl.licenses.isEmpty()) {
             dc.delete();
             opl.delete();
-            docstoreService.deleteDocs([doc.uuid]);
             doc.delete();
         }
         if (license.hasErrors()) {
