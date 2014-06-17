@@ -15,11 +15,6 @@ class OnixplLicenseText {
   static belongsTo = [ term:OnixplUsageTerm,
                        oplLicense:OnixplLicense ]
 
-  /*static belongsTo = [
-      OnixplUsageTerm,
-      oplLicense:OnixplLicense
-  ]*/
-
   static hasMany = [ usageTermLicenseText:OnixplUsageTermLicenseText ]
 
   static mappedBy = [ usageTerm: 'licenseText' ]

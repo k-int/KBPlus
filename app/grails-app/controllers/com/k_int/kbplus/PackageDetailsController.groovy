@@ -632,6 +632,11 @@ class PackageDetailsController {
           params.max = Math.min(params.max ? params.int('max') : result.user.defaultPageSize, 100)
           params.offset = params.offset ? params.int('offset') : 0
 
+          if(params.search.equals("yes")){
+              //when searching make sure results start from first page
+            params.offset = 0
+            params.search = ""
+          }
           //def params_set=params.entrySet()
 
           def query_str = buildPackageQuery(params)
