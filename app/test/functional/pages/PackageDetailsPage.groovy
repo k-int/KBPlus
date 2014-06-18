@@ -23,5 +23,14 @@ class PackageDetailsPage extends AbstractDetails {
         alertMessage { msgtext ->
             !$("div.alert-block").children().filter("p", text: msgtext).isEmpty()
         }
+        searchPackage{ text ->
+            $("input",name:"pkgname").value(text)
+            $("button",name:"search").click()
+        }
+        numberOfResults{
+            String numString = $("div.paginateButtons").text()
+            numString = numString.substring(numString.lastIndexOf(" of ")+4)
+            numString.toInteger()
+        }
     }
 }

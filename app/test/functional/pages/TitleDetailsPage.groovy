@@ -14,5 +14,14 @@ class TitleDetailsPage extends BasePage {
         hasResults {
             $("div.paginateButtons").text().contains("Showing Results 1 -")
         }
+        searchTitle{ text ->
+            $("input",name:"title").value(text)
+            $("button",name:"search").click()
+        }
+        numberOfResults{
+            String numString = $("div.paginateButtons").text()
+            numString = numString.substring(numString.lastIndexOf(" of ")+4)
+            numString.toInteger()
+        }
     }
 }

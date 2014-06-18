@@ -639,5 +639,27 @@ class HomePageSpec extends GebReportingSpec {
         then:
             hasResults()
     }
-
+    //ref 501
+    def "Search within current titles"(){
+        setup:
+            to DashboardPage
+            $("a", text: "Institutions").click()
+            $("a", text: "All Titles").click(TitleDetailsPage)
+        when:
+            def totalTitles = numberOfResults()
+            searchTitle("A")
+        then:
+            totalTitles > numberOfResults()
+    }
+    //ref 505
+    def "Search within all Packages"(){
+        setup:
+              to DashboardPage
+              allPackages()
+        when:
+            def pkgs = numberOfResults()
+            searchPackage("Art")
+        then:
+            pkgs >= numberOfResults()
+    }
 }     
