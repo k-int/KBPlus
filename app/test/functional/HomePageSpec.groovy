@@ -1,5 +1,6 @@
 import geb.error.RequiredPageContentNotPresent
 import geb.spock.GebReportingSpec
+import org.openqa.selenium.Keys
 import pages.*
 import spock.lang.Stepwise
 
@@ -29,15 +30,11 @@ class HomePageSpec extends GebReportingSpec {
             changeUserNoDash(Data.UserB_name, Data.UserB_passwd)
             to ProfilePage
             requestMembership(Data.Org_name, 'Editor')
-            browser.report "Requested membership - UserB"
             changeUserNoDash(Data.UserD_name, Data.UserD_passwd)
-
             manageAffiliationReq()
             at AdminMngAffReqPage
-            browser.report "Approve both affiliation requests"
             approve()
             approve()
-            browser.report "Affiliation requests approved"
             to ProfilePage
         then:
             at ProfilePage
@@ -82,7 +79,6 @@ class HomePageSpec extends GebReportingSpec {
         cleanup:
             logout()
     }
-
 
     def "The KBPlus Home Page Displays OK"() {
         when:
@@ -152,12 +148,32 @@ class HomePageSpec extends GebReportingSpec {
     def "Set up licence Template"() {
         setup:
             changeUser(Data.UserD_name, Data.UserD_passwd)
+            to DashboardPage
             templateLicence()
             $("input", name: "reference").value(Data.Licence_template_D)
             $("input", type: "submit").click(LicencePage)
         when:
-            editIsPublic("Yes")
-            browser.report "Set is Public true"
+            browser.report "Click is public"
+
+            $("span", 'data-name': "isPublic").click()
+            try {
+                waitFor { $("form.editableform") }
+                browser.report "Is public form ready"
+
+            } catch (geb.waiting.WaitTimeoutException e) {
+                throw new RequiredPageContentNotPresent()
+            }
+            if(option.equals("No")){
+//                $("select.input-medium").value(option)
+                $("select.input-medium") << Keys.ARROW_DOWN
+                browser.report "Value is No"
+
+            }
+            browser.report "Value is set"
+
+            $("button.editable-submit").click()
+
+            browser.report "Change saved"
             addDocument(Data.Test_Doc_name, Data.Test_Doc_file)
         then:
             at LicencePage
@@ -193,14 +209,10 @@ class HomePageSpec extends GebReportingSpec {
     def "View template Licence UserB"() {
         setup:
             changeUser(Data.UserB_name, Data.UserB_passwd)
-            browser.report "UserB Dashboard"
             licences()
         when:
             addLicence()
-            browser.report "UserB add licence"
-
             licence(Data.Licence_template_D)
-            browser.report "Userb view template"
         then:
             catchException { editRef("some val") }
         when:
