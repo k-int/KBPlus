@@ -163,12 +163,11 @@ class HomePageSpec extends GebReportingSpec {
             } catch (geb.waiting.WaitTimeoutException e) {
                 throw new RequiredPageContentNotPresent()
             }
-            if(option.equals("No")){
-//                $("select.input-medium").value(option)
-                $("select.input-medium") << Keys.ARROW_DOWN
-                browser.report "Value is No"
-
-            }
+//            if(option.equals("No")){
+////                $("select.input-medium").value(option)
+//                $("select.input-medium") << Keys.ARROW_DOWN
+//                browser.report "Value is No"
+//            }
             browser.report "Value is set"
 
             $("button.editable-submit").click()
