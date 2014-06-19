@@ -29,11 +29,15 @@ class HomePageSpec extends GebReportingSpec {
             changeUserNoDash(Data.UserB_name, Data.UserB_passwd)
             to ProfilePage
             requestMembership(Data.Org_name, 'Editor')
+            report "Requested membership - UserB"
             changeUserNoDash(Data.UserD_name, Data.UserD_passwd)
+
             manageAffiliationReq()
             at AdminMngAffReqPage
+            report "Approve both affiliation requests"
             approve()
             approve()
+            report "Affiliation requests approved"
             to ProfilePage
         then:
             at ProfilePage
