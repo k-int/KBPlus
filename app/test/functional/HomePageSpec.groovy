@@ -41,7 +41,7 @@ class HomePageSpec extends GebReportingSpec {
             go "/demo/admin/globalSync"
 
         when:
-            go '/demo/myInstitutions/'+Data.Org_Url+'/emptySubscription'
+            go '/demo/myInstitutions/' + Data.Org_Url + '/emptySubscription'
             $('form').newEmptySubName = 'FTO New Sub One'
             $('input', type: 'submit').click()
         then:
@@ -163,11 +163,8 @@ class HomePageSpec extends GebReportingSpec {
             } catch (geb.waiting.WaitTimeoutException e) {
                 throw new RequiredPageContentNotPresent()
             }
-//            if(option.equals("No")){
-////                $("select.input-medium").value(option)
-//                $("select.input-medium") << Keys.ARROW_DOWN
-//                browser.report "Value is No"
-//            }
+            $("select.input-medium") << Keys.ARROW_DOWN
+
             browser.report "Value is set"
 
             $("button.editable-submit").click()
@@ -238,9 +235,7 @@ class HomePageSpec extends GebReportingSpec {
             waitFor { licences() }
         when:
             addLicence()
-            browser.report "Userb before create licence"
             createCopyOf(Data.Licence_template_D)
-            browser.report "UserB after create licence"
         then:
             at LicencePage
         when:
@@ -664,7 +659,7 @@ class HomePageSpec extends GebReportingSpec {
             hasResults()
     }
     //ref 501
-    def "Search within current titles"(){
+    def "Search within current titles"() {
         setup:
             go "/demo/startFTIndex/index"
             to DashboardPage
@@ -677,10 +672,10 @@ class HomePageSpec extends GebReportingSpec {
             totalTitles > numberOfResults()
     }
     //ref 505
-    def "Search within all Packages"(){
+    def "Search within all Packages"() {
         setup:
-              to DashboardPage
-              allPackages()
+            to DashboardPage
+            allPackages()
         when:
             def pkgs = numberOfResults()
             searchPackage("Art")
