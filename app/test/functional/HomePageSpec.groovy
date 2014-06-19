@@ -41,6 +41,7 @@ class HomePageSpec extends GebReportingSpec {
             to ProfilePage
         then:
             at ProfilePage
+            go "/demo/admin/globalSync"
 
         when:
             go '/demo/myInstitutions/'+Data.Org_Url+'/emptySubscription'
@@ -646,6 +647,7 @@ class HomePageSpec extends GebReportingSpec {
     //ref 501
     def "Search within current titles"(){
         setup:
+            go "/demo/startFTIndex/index"
             to DashboardPage
             $("a", text: "Institutions").click()
             $("a", text: "All Titles").click(TitleDetailsPage)
