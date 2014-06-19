@@ -157,6 +157,7 @@ class HomePageSpec extends GebReportingSpec {
             $("input", type: "submit").click(LicencePage)
         when:
             editIsPublic("Yes")
+            browser.report "Set is Public true"
             addDocument(Data.Test_Doc_name, Data.Test_Doc_file)
         then:
             at LicencePage
