@@ -192,10 +192,14 @@ class HomePageSpec extends GebReportingSpec {
     def "View template Licence UserB"() {
         setup:
             changeUser(Data.UserB_name, Data.UserB_passwd)
+            browser.report "UserB Dashboard"
             licences()
         when:
             addLicence()
+            browser.report "UserB add licence"
+
             licence(Data.Licence_template_D)
+            browser.report "Userb view template"
         then:
             catchException { editRef("some val") }
         when:
@@ -218,10 +222,13 @@ class HomePageSpec extends GebReportingSpec {
         setup:
             changeUser(Data.UserB_name, Data.UserB_passwd)
             to DashboardPage
+
             waitFor { licences() }
         when:
             addLicence()
+            browser.report "Userb before create licence"
             createCopyOf(Data.Licence_template_D)
+            browser.report "UserB after create licence"
         then:
             at LicencePage
         when:
