@@ -272,7 +272,7 @@ class ExportService {
 			addXMLElementInto(doc, coveragestatement, "CoreEnd", e.coreStatusEnd?formatter.format(e.coreStatusEnd):'')
 			addXMLElementInto(doc, coveragestatement, "PackageID", tipp?.pkg?.id?:'')
 			addXMLElementInto(doc, coveragestatement, "PackageName", tipp?.pkg?.name?:'')
-            addXMLElementInto(doc, coveragestatement, "AccessStatus", tipp?.getAvailabilityStatus().toString()?:'')
+            addXMLElementInto(doc, coveragestatement, "AccessStatus", tipp?.getAvailabilityStatusAsString()?:'')
             addXMLElementInto(doc, coveragestatement, "AccessFrom",  tipp?.accessStartDate?:'')
             addXMLElementInto(doc, coveragestatement, "AccessTo", tipp?.accessEndDate?:'')
         }

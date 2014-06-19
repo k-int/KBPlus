@@ -23,39 +23,39 @@ class ESWrapperService {
     // Settings s = ImmutableSettings.settingsBuilder() .put(m).build();
     // TransportClient client = new TransportClient(s);
 
-//    def clus_nm = ApplicationHolder.application.config.aggr.es.cluster ?: "aggr"
-//
-//    log.debug("Using ${clus_nm} as ES cluster name...");
-//
-//
-//    def nodeBuilder = new org.elasticsearch.groovy.node.GNodeBuilder()
-//
-//    log.debug("Construct node settings");
-//
-//    nodeBuilder.settings {
-//      node {
-//        client = true
-//      }
-//      cluster {
-//        name = clus_nm
-//      }
-//      http {
-//        enabled = false
-//      }
-//      discovery {
-//        zen {
-//          minimum_master_nodes=1
-//          ping {
-//            unicast {
-//              hosts = [ "localhost" ] 
-//            }
-//          }
-//        }
-//      }
-//    }
-//
-//    log.debug("Constructing node...");
-//    gNode = nodeBuilder.node()
+    def clus_nm = ApplicationHolder.application.config.aggr.es.cluster ?: "aggr"
+
+    log.debug("Using ${clus_nm} as ES cluster name...");
+
+
+    def nodeBuilder = new org.elasticsearch.groovy.node.GNodeBuilder()
+
+    log.debug("Construct node settings");
+
+    nodeBuilder.settings {
+      node {
+        client = true
+      }
+      cluster {
+        name = clus_nm
+      }
+      http {
+        enabled = false
+      }
+      discovery {
+        zen {
+          minimum_master_nodes=1
+          ping {
+            unicast {
+              hosts = [ "localhost" ] 
+            }
+          }
+        }
+      }
+    }
+
+    log.debug("Constructing node...");
+    gNode = nodeBuilder.node()
 
     // log.debug("Sending record to es");
     // def future = gNode.client.index {
