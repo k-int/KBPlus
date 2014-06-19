@@ -1,6 +1,7 @@
 package pages
 
 import geb.error.RequiredPageContentNotPresent
+import org.openqa.selenium.Keys
 
 /**
  * Created by ioannis on 03/06/2014.
@@ -39,7 +40,10 @@ class AbstractDetails extends BasePage {
             } catch (geb.waiting.WaitTimeoutException e) {
                 throw new RequiredPageContentNotPresent()
             }
-            $("select.input-medium").value(option)
+            if(option.equals("No")){            
+//                $("select.input-medium").value(option)
+                  $("select.input-medium") << Keys.ARROW_DOWN
+            }
             $("button.editable-submit").click()
         }
 
