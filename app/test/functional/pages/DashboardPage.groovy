@@ -21,6 +21,9 @@ class DashboardPage extends BasePage {
         generateWorksheet {
             $("a", text: "Generate Renewals Worksheet").click(MyInstitutionsPage)
         }
+        importRenewals {
+            $("a",text: "Import Renewals").click(MyInstitutionsPage)
+        }
 
     }
 }

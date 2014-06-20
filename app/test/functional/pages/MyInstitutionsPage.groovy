@@ -11,5 +11,9 @@ class MyInstitutionsPage extends BasePage {
             $("button", name: "addBtn", value: "2").click()
             $("button", name: "generate").click()
         }
+        renewalsUpload{file ->
+            $("#renewalsWorksheet",type:"file").value(file)
+            $("button",text:"Upload Renewals Worksheet").click()
+        }
     }
 }

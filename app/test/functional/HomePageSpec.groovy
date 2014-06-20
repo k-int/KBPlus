@@ -7,8 +7,7 @@ import spock.lang.Stepwise
 class HomePageSpec extends GebReportingSpec {
 // curl -XDELETE 'http://localhost:9200/kbplustest/'
 // curl -XPUT 'httop://localhost:9200/kbplustest/'
-
-    def setupSpec() {
+    def "Create organisation" (){
         setup:
             to PublicPage
             loginLink()
@@ -22,7 +21,8 @@ class HomePageSpec extends GebReportingSpec {
             $("#SubmitButton").click()
         then:
             browser.page.title.startsWith "Show Org"
-
+    }
+    def "Setup user affiliations"(){
         when:
             to ProfilePage
             requestMembership(Data.Org_name, 'Editor')
@@ -37,21 +37,24 @@ class HomePageSpec extends GebReportingSpec {
             to ProfilePage
         then:
             at ProfilePage
-            go "/demo/admin/globalSync"
-
+    }
+    def "Setup subscription"(){
         when:
+            go "/demo/admin/globalSync"
             go '/demo/myInstitutions/'+Data.Org_Url+'/emptySubscription'
             $('form').newEmptySubName = 'FTO New Sub One'
             $('input', type: 'submit').click()
         then:
             $('h1 span').text() == 'FTO New Sub One'
+    }
 
+    def "Setup new package" (){
         when:
             go '/demo/upload/reviewPackage'
             $('form').soFile = Data.Package_import_file
             $('button', text: "Upload SO").click()
         then:
-            !$("p", text: "File passed validation checks, new SO details follow:").isEmpty()
+            waitFor{$("div.alert-success")}
 
         when:
             $('a', text: 'New Package Details').click()
@@ -130,7 +133,7 @@ class HomePageSpec extends GebReportingSpec {
 //            changeUser(Data.UserD_name,Data.UserD_passwd)
 //            to ProfilePage
 //        when:
-//            showInfoIcon("Yes") //Select keeps not behaving properly
+//            showInfoIcon("Yes")
 //        then:
 //            to DashboardPage
 //            subscriptions()
@@ -664,4 +667,13 @@ class HomePageSpec extends GebReportingSpec {
         then:
             pkgs >= numberOfResults()
     }
+
+//    def "Renewals Upload" (){
+//        setup:
+//            changeUser(Data.UserB_name,Data.UserB_passwd)
+//            importRenewals()
+//        when:
+//            renewalsUpload(Data.RenewalsUploadFile)
+//
+//    }
 }     
