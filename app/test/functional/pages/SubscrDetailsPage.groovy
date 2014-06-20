@@ -11,12 +11,12 @@ class SubscrDetailsPage extends AbstractDetails {
     static content = {
         newSubscription { ref ->
             $("a", text: "New Subscription (Empty)").click()
-            $("input", name: "newEmptySubName").value(ref)
+            waitElement{$("input", name: "newEmptySubName").value(ref)}
             $("input", value: "Create").click()
         }
         licenceCategory {
             $("span", 'data-name': "licenceCategory").click()
-            $("button.editable-submit").click()
+            waitElement{$("button.editable-submit").click()}
         }
         viewSubscription { ref ->
             $("a", text: ref).click()
@@ -24,13 +24,14 @@ class SubscrDetailsPage extends AbstractDetails {
 
         addLicence { ref ->
             $("span", 'data-name': "owner").click()
-            waitFor { $("form.editableform") }
+            waitElement { $("form.editableform") }
+            waitFor{$("select.input-medium")}
             $("select.input-medium").value(ref)
             $("button.editable-submit").click()
         }
         linkPackage { ref, entitlements ->
             $("a", text: "Link Package").click()
-            def td = $("a", text: ref).parent().siblings().next()
+            def td = waitFor{$("a", text: ref).parent().siblings().next()}
             if (entitlements) {
                 withConfirm { td.find("a", text: "Link (with Entitlements)").click() }
             } else {

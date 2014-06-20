@@ -29,7 +29,7 @@ class BasePage extends Page {
         }
         logout {
             $("ul.pull-right").children().find("a.dropdown-toggle").click()
-            $("a", text: "Logout").click()
+            waitFor{$("a", text: "Logout").click()}
         }
         manageAffiliationReq {
             $("a", text: "Admin Actions").click()
@@ -49,7 +49,7 @@ class BasePage extends Page {
         }
         changeUser { user, passwd ->
             $("ul.pull-right").children().find("a.dropdown-toggle").click()
-            $("a", text: "Logout").click()
+            waitFor{$("a", text: "Logout").click()}
             waitFor { $("a", text: "Knowledge Base+ Member Login").click() }
             $("form").j_username = user
             $("form").j_password = passwd
@@ -93,6 +93,13 @@ class BasePage extends Page {
                 exec = true;
             }
             exec
+        }
+        waitElement {run ->
+            try{
+                waitFor{run}
+            } catch (geb.waiting.WaitTimeoutException e) {
+                throw new RequiredPageContentNotPresent()
+            }
         }
 
     }

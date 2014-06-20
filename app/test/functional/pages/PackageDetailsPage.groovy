@@ -16,7 +16,7 @@ class PackageDetailsPage extends AbstractDetails {
         }
         makeAnnouncement { title, msg ->
             $("a", text: "Mention this package in an announcement").click()
-            $("input", name: "subjectTxt").value(title)
+            waitFor{$("input", name: "subjectTxt").value(title)}
             $("textarea", name: "annTxt").value(msg)
             $("input.btn", type: "submit").click()
         }

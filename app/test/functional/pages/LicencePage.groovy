@@ -45,7 +45,7 @@ class LicencePage extends AbstractDetails {
         }
         concurentAccessNote { val ->
             $("#concurrentUsers").click()
-            $("textarea.input-large").value(val)
+            waitElement{$("textarea.input-large").value(val)}
             $("button.editable-submit").click()
         }
         acceptAll {
@@ -60,7 +60,7 @@ class LicencePage extends AbstractDetails {
         }
         importONIX { fileName ->
             $("a", text: "Import an ONIX-PL licence").click()
-            $("input", type: "file", name: "import_file").value(fileName)
+            waitFor{$("input", type: "file", name: "import_file").value(fileName)}
             $("button", text: "Import licence").click()
             def createNew = $("#replace_opl")
             if (!createNew.isEmpty()) {

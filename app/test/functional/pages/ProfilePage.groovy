@@ -43,9 +43,8 @@ class ProfilePage extends BasePage {
         showInfoIcon { option ->
             $("span", 'data-name': "showInfoIcon").click()
             waitFor { $("form.editableform") }
-            if (option.equals("No")) {
-                $("select.input-medium") << Keys.ARROW_DOWN
-            }
+            waitFor { $("select.input-medium")}
+            $("select.input-medium").value(option)
             $("button.editable-submit").click()
         }
     }

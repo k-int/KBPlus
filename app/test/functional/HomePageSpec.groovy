@@ -88,7 +88,7 @@ class HomePageSpec extends GebReportingSpec {
     //ref 001
     def "KB+ Member login"() {
         when:
-            loginLink()
+            go "/demo/home/index"
         then:
             at LogInPage
             login(Data.UserA_name, Data.UserA_passwd)
