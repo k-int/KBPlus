@@ -1,6 +1,5 @@
 import geb.error.RequiredPageContentNotPresent
 import geb.spock.GebReportingSpec
-import org.openqa.selenium.Keys
 import pages.*
 import spock.lang.Stepwise
 
@@ -41,7 +40,7 @@ class HomePageSpec extends GebReportingSpec {
             go "/demo/admin/globalSync"
 
         when:
-            go '/demo/myInstitutions/' + Data.Org_Url + '/emptySubscription'
+            go '/demo/myInstitutions/'+Data.Org_Url+'/emptySubscription'
             $('form').newEmptySubName = 'FTO New Sub One'
             $('input', type: 'submit').click()
         then:
@@ -89,7 +88,7 @@ class HomePageSpec extends GebReportingSpec {
     //ref 001
     def "KB+ Member login"() {
         when:
-            to LogInPage
+            loginLink()
         then:
             at LogInPage
             login(Data.UserA_name, Data.UserA_passwd)
@@ -148,28 +147,13 @@ class HomePageSpec extends GebReportingSpec {
     def "Set up licence Template"() {
         setup:
             changeUser(Data.UserD_name, Data.UserD_passwd)
-            to DashboardPage
             templateLicence()
             $("input", name: "reference").value(Data.Licence_template_D)
             $("input", type: "submit").click(LicencePage)
         when:
-            browser.report "Click is public"
-
-            $("span", 'data-name': "isPublic").click()
-            try {
-                waitFor { $("form.editableform") }
-                browser.report "Is public form ready"
-
-            } catch (geb.waiting.WaitTimeoutException e) {
-                throw new RequiredPageContentNotPresent()
-            }
-            $("select.input-medium") << Keys.ARROW_DOWN
-
-            browser.report "Value is set"
-
-            $("button.editable-submit").click()
-
-            browser.report "Change saved"
+            browser.report "Before set Yes"
+            editIsPublic("Yes")
+            browser.report "After set Yes"
             addDocument(Data.Test_Doc_name, Data.Test_Doc_file)
         then:
             at LicencePage
@@ -659,7 +643,7 @@ class HomePageSpec extends GebReportingSpec {
             hasResults()
     }
     //ref 501
-    def "Search within current titles"() {
+    def "Search within current titles"(){
         setup:
             go "/demo/startFTIndex/index"
             to DashboardPage
@@ -672,10 +656,10 @@ class HomePageSpec extends GebReportingSpec {
             totalTitles > numberOfResults()
     }
     //ref 505
-    def "Search within all Packages"() {
+    def "Search within all Packages"(){
         setup:
-            to DashboardPage
-            allPackages()
+              to DashboardPage
+              allPackages()
         when:
             def pkgs = numberOfResults()
             searchPackage("Art")
