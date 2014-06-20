@@ -9,13 +9,15 @@ class AbstractDetails extends BasePage {
     static content = {
         addDocument { title, file ->
             $("input", value: "Add new document").click()
-            waitElement { $("input", type: "text", name: "upload_title").value(title) }
+            waitElement { $("input", type: "text", name: "upload_title")}
+            $("input", type: "text", name: "upload_title").value(title)
             $("input", type: "file", name: "upload_file").value(file)
             $("input.btn", name: "SaveDoc", value: "Save Changes").click()
         }
         addNote { text ->
             $("input", value: "Add new note").click()
-            waitElement{$("textarea", name: "licenceNote").value(text)}
+            waitElement{$("textarea", name: "licenceNote")}
+            $("textarea", name: "licenceNote").value(text)
             $("input.btn", name: "SaveNote", value: "Save Changes").click()
         }
         deleteDocument {
@@ -29,7 +31,11 @@ class AbstractDetails extends BasePage {
 
         editRef { val ->
             $("span", 'data-name': "reference").click()
-            waitElement{$("textarea.input-large").value(val)}
+            browser.report( "Clicked span")
+            waitElement{$("textarea.input-large")}
+            $("textarea.input-large").value(val)
+            browser.report( "Clicked span")
+
             $("button.editable-submit").click()
         }
         editIsPublic { option ->

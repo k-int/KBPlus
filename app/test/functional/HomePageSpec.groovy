@@ -151,9 +151,7 @@ class HomePageSpec extends GebReportingSpec {
             $("input", name: "reference").value(Data.Licence_template_D)
             $("input", type: "submit").click(LicencePage)
         when:
-            browser.report "Before set Yes"
             editIsPublic("Yes")
-            browser.report "After set Yes"
             addDocument(Data.Test_Doc_name, Data.Test_Doc_file)
         then:
             at LicencePage

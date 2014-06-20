@@ -45,7 +45,8 @@ class LicencePage extends AbstractDetails {
         }
         concurentAccessNote { val ->
             $("#concurrentUsers").click()
-            waitElement{$("textarea.input-large").value(val)}
+            waitElement{$("textarea.input-large")}
+            $("textarea.input-large").value(val)
             $("button.editable-submit").click()
         }
         acceptAll {

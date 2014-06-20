@@ -96,7 +96,7 @@ class BasePage extends Page {
         }
         waitElement {run ->
             try{
-                waitFor{run}
+                waitFor{run()}
             } catch (geb.waiting.WaitTimeoutException e) {
                 throw new RequiredPageContentNotPresent()
             }

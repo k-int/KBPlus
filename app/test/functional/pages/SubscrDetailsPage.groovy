@@ -11,12 +11,14 @@ class SubscrDetailsPage extends AbstractDetails {
     static content = {
         newSubscription { ref ->
             $("a", text: "New Subscription (Empty)").click()
-            waitElement{$("input", name: "newEmptySubName").value(ref)}
+            waitElement{$("input", name: "newEmptySubName")}
+            $("input", name: "newEmptySubName").value(ref)
             $("input", value: "Create").click()
         }
         licenceCategory {
             $("span", 'data-name': "licenceCategory").click()
-            waitElement{$("button.editable-submit").click()}
+            waitElement{$("button.editable-submit")}
+            $("button.editable-submit").click()
         }
         viewSubscription { ref ->
             $("a", text: ref).click()
