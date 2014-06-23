@@ -40,7 +40,6 @@
 
       <g:form action="processRenewal" method="post" enctype="multipart/form-data" params="${params}">
 
-        <input type="hidden" name="ecount" value="${counter}"/>
 
         <div class="container">
         <hr/>
@@ -97,6 +96,7 @@
             <button type="submit" class="btn btn-primary">Accept and Process</button>
           </div>
         </div>
+        <input type="hidden" name="ecount" value="${counter}"/>
       </g:form>
 
   </body>
