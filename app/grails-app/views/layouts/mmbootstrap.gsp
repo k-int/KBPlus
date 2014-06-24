@@ -204,6 +204,9 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'globalSync'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="globalSync">Start Global Data Sync</g:link>
                       </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'manageGlobalSources'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="manageGlobalSources">Manage Global Sources</g:link>
+                      </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'orgsExport'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="orgsExport">Bulk Export Organisations</g:link>
                       </li>
