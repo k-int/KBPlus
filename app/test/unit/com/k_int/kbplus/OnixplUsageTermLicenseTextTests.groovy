@@ -56,9 +56,8 @@ class OnixplUsageTermLicenseTextTests {
 
     // Won't validate if null or blank values
     assertFalse nullOputlt.validate()
-    assertEquals 2, nullOputlt.errors.errorCount
+    assertEquals 1, nullOputlt.errors.errorCount
     assertEquals "nullable", nullOputlt.errors["usageTerm"]
-    assertEquals "nullable", nullOputlt.errors["licenseText"]
 
     assertEquals null, nullOputlt.usageTerm
     assertEquals null, nullOputlt.licenseText

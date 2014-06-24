@@ -10,7 +10,7 @@ import grails.test.mixin.*
 class OnixplLicenseTextControllerTests {
 
   def ELEMENT_ID = "Ex001", DISPLAY_NUM = "1.1", TEXT = "Some license text",
-      OPL = new OnixplLicense()
+      OPL = new OnixplLicense(), TERM = new OnixplUsageTerm()
 
   def populateValidParams(params) {
     assert params != null
@@ -18,6 +18,7 @@ class OnixplLicenseTextControllerTests {
     params['elementId'] = ELEMENT_ID
     params['displayNum'] = DISPLAY_NUM
     params['oplLicense'] = OPL
+    params['term'] = TERM
   }
 
   void testIndex() {

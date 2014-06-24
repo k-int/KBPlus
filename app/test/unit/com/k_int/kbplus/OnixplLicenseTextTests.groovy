@@ -15,7 +15,8 @@ import org.junit.*
 class OnixplLicenseTextTests {
 
   def ELEMENT_ID = "Ex001", DISPLAY_NUM = "1.1", TEXT = "Some license text",
-      OPL = new OnixplLicense(lastmod: new Date(), doc: new Doc(), title: "License title")
+      OPL = new OnixplLicense(lastmod: new Date(), doc: new Doc(), title: "License title"),
+      TERM = new OnixplUsageTerm()
 
   def oplt, incompleteOplt, blankDisplayNumOplt, blankTextOplt
   def oplts, validOplts
@@ -29,7 +30,8 @@ class OnixplLicenseTextTests {
         text: TEXT,
         elementId: ELEMENT_ID,
         displayNum: DISPLAY_NUM,
-        oplLicense: OPL
+        oplLicense: OPL,
+        term: TERM
     )
     incompleteOplt = new OnixplLicenseText()
     // Blank display num is ok
@@ -37,7 +39,8 @@ class OnixplLicenseTextTests {
         text: TEXT,
         elementId: ELEMENT_ID,
         displayNum: "",
-        oplLicense: OPL
+        oplLicense: OPL,
+        term: TERM
     )
     // Allowing blank values seems to be broken as any blank values are converted to null
     // Blank text is ok
@@ -84,7 +87,7 @@ class OnixplLicenseTextTests {
   void testConstraints() {
     // Empty license text does not validate because of no text, elementId or opl
     assertFalse incompleteOplt.validate()
-    assert 3 == incompleteOplt.errors.errorCount
+    assert 4 == incompleteOplt.errors.errorCount
 
     assert null == incompleteOplt.text
     assert null == incompleteOplt.elementId
