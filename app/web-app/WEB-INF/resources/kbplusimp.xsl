@@ -4,6 +4,7 @@
    <xsl:strip-space elements="*" />
    <xsl:template match="/">
    <xsl:apply-templates select="//Package" />
+   <xsl:apply-templates select="//TitleList" />
 	<xsl:apply-templates select="//TitleListEntry" />
    </xsl:template>
    <xsl:template match="Package">Provider,<xsl:for-each select="./RelatedOrg">
@@ -16,7 +17,8 @@ Package Name,<xsl:call-template name="plainentry"><xsl:with-param name="txt" sel
 Agreement Term Start Year,<xsl:call-template name="formats_date"><xsl:with-param name="date" select="./PackageTermStartDate" /></xsl:call-template>
 Agreement Term End Year,<xsl:call-template name="formats_date"><xsl:with-param name="date" select="./PackageTermEndDate" /></xsl:call-template>
 Consortium,
-publication_title,ID.issn,ID.eissn,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,ID.kbart_title_id,embargo_info,coverage_depth,coverage_notes,publisher_name,ID.doi,platform.host.name,platform.host.url,platform.administrative.name,platform.administrative.url,hybrid_oa,access_start_date,access_end_date<xsl:text>&#xA;</xsl:text>
+</xsl:template>
+  <xsl:template match="TitleList">publication_title,ID.issn,ID.eissn,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,ID.kbart_title_id,embargo_info,coverage_depth,coverage_notes,publisher_name,ID.doi,platform.host.name,platform.host.url,platform.administrative.name,platform.administrative.url,hybrid_oa,access_start_date,access_end_date<xsl:text>&#xA;</xsl:text>
    </xsl:template>
    
    <xsl:template match="TitleListEntry">
