@@ -1,7 +1,7 @@
 <ul class="nav nav-pills">
     <li <%='index'== actionName ? ' class="active"' : '' %>><g:link controller="licenseDetails"
                                                                     action="index"
-                                                                    params="${[id:params.id]}">License Details</g:link></li>
+                                                                    params="${[id:params.id]}">Licence Details</g:link></li>
 
     <li <%='documents'== actionName ? ' class="active"' : '' %>><g:link controller="licenseDetails"
                                                                         action="documents"
@@ -24,7 +24,7 @@
     <g:if test="${com.k_int.kbplus.License.get(params.id).onixplLicense}">
         <li <%='onixpl'== actionName ? ' class="active"' : '' %>><g:link controller="licenseDetails"
                                                                          action="onixpl"
-                                                                         params="${[id: params.id]}">ONIX-PL License</g:link></li>
+                                                                         params="${[id: params.id]}">ONIX-PL Licence</g:link></li>
     </g:if>
 
 </ul>

@@ -4,7 +4,7 @@
 <html>
   <head>
     <meta name="layout" content="mmbootstrap"/>
-    <title>KB+</title>
+    <title>KB+ Licence</title>
   </head>
 
   <body>
@@ -13,9 +13,9 @@
       <ul class="breadcrumb">
         <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <g:if test="${license.licensee}">
-          <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:license.licensee.shortcode]}"> ${license.licensee.name} Current Licenses</g:link> <span class="divider">/</span> </li>
+          <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:license.licensee.shortcode]}"> ${license.licensee.name} Current Licences</g:link> <span class="divider">/</span> </li>
         </g:if>
-        <li> <g:link controller="licenseDetails" action="index" id="${params.id}">License Details</g:link> </li>
+        <li> <g:link controller="licenseDetails" action="index" id="${params.id}">Licence Details</g:link> </li>
     
         <li class="dropdown pull-right">
           <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>&nbsp;
@@ -40,12 +40,12 @@
 
     <div class="container">
       <h1>${license.licensee?.name} ${license.type?.value} Licence : <g:xEditable owner="${license}" field="reference" id="reference"/></h1>
-      <g:render template="nav" contextPath="." />
+      <g:render template="nav" />
     </div>
 
     <g:if test="${pendingChanges?.size() > 0}">
       <div class="container alert-warn">
-        <h6>This license has pending change notifications</h6>
+        <h6>This licence has pending change notifications</h6>
         <g:if test="${editable}">
           <g:link controller="pendingChange" action="acceptAll" id="com.k_int.kbplus.License:${license.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept All</g:link>
           <g:link controller="pendingChange" action="rejectAll" id="com.k_int.kbplus.License:${license.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject All</g:link>
@@ -147,7 +147,7 @@
 
                   <sec:ifAnyGranted roles="ROLE_ADMIN,KBPLUS_EDITOR">
                     <dl>
-                        <dt><label class="control-label">ONIX-PL License</label></dt>
+                        <dt><label class="control-label">ONIX-PL Licence</label></dt>
                         <dd>
                             <g:if test="${license.onixplLicense}">
                                 <g:link controller="onixplLicenseDetails" action="index" id="${license.onixplLicense?.id}">${license.onixplLicense.title}</g:link>
@@ -156,7 +156,7 @@
                                 </g:if>
                             </g:if>
                             <g:else>
-                                <g:link class="btn btn-warning" controller='licenseImport' action='doImport' params='[license_id: license.id]'>Import an ONIX-PL license</g:link>
+                                <g:link class="btn btn-warning" controller='licenseImport' action='doImport' params='[license_id: license.id]'>Import an ONIX-PL licence</g:link>
                             </g:else>
                         </dd>
                     </dl>
@@ -205,7 +205,7 @@
                   </dl>
 
                   <dl>
-                      <dt><label class="control-label" for="licenseCategory">License Category</label></dt>
+                      <dt><label class="control-label" for="licenseCategory">Licence Category</label></dt>
                       <dd>
                         <g:xEditableRefData owner="${license}" field="licenseCategory" config='LicenseCategory'/>
                       </dd>
@@ -219,7 +219,7 @@
                   </dl>
 
                   <dl>
-                      <dt><label class="control-label" for="licenseeRef">Incoming License Links</label></dt>
+                      <dt><label class="control-label" for="licenseeRef">Incoming Licence Links</label></dt>
                       <dd>
                         <ul>
                           <g:each in="${license?.incomingLinks}" var="il">

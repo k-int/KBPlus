@@ -1,19 +1,23 @@
 <!doctype html>
 <html>
-  <head>
+<head>
     <meta name="layout" content="mmbootstrap"/>
     <title>KB+ Login</title>
-  </head>
+</head>
 
-  <body>
-    <div id='login' class="container">
-      <div class='inner'>
-        <div class='fheader'><g:message code="springSecurity.login.header"/></div>
-
-        <g:if test='${flash.message}'>
-          <div class='login_message'>${flash.message}</div>
+<body>
+<div id='login' class="container">
+    <div class='inner'>
+        <div class='header'>
+            <h1><g:message code="springSecurity.login.header"/></h1>
+        </div>
+    <p>
+        <g:if test="${flash.message}">
+            <div class="container">
+                <bootstrap:alert class="alert-error">${flash.message}</bootstrap:alert>
+            </div>
         </g:if>
-
+    </p>
         <form action='${postUrl}' method='POST' id='loginForm' class='cssform' autocomplete='off'>
             <div class="inline-lists">
                 <dl>
@@ -28,22 +32,23 @@
 
                 <dl id="remember_me_holder">
                     <dt><label for='remember_me'><g:message code="springSecurity.login.remember.me.label"/></label></dt>
-                    <dd><input type='checkbox' class='chk' name='${rememberMeParameter}' id='remember_me' <g:if test='${hasCookie}'>checked='checked'</g:if>/></dd>
+                    <dd><input type='checkbox' class='chk' name='${rememberMeParameter}' id='remember_me'
+                               <g:if test='${hasCookie}'>checked='checked'</g:if>/></dd>
                 </dl>
             </div>
 
-          <p>
-            <input type='submit' id="submit" class="btn btn-primary" value='${message(code: "springSecurity.login.button")}'/>
-          </p>
+            <p>
+                <input type='submit' id="submit" class="btn btn-primary"
+                       value='${message(code: "springSecurity.login.button")}'/>
+            </p>
         </form>
-      </div>
+
     </div>
-    <r:script type='text/javascript'>
-      <!--
-      (function() {
+</div>
+<r:script type='text/javascript'>
+    (function () {
         document.forms['loginForm'].elements['j_username'].focus();
-      })();
-      // -->
-    </r:script>
-  </body>
+    })();
+</r:script>
+</body>
 </html>

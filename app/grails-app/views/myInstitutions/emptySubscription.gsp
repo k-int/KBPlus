@@ -30,7 +30,7 @@
           <dt><label>Valid From: </label></dt><dd> <g:simpleHiddenValue id="valid_from" name="valid_from" type="date" value="${defaultStartYear}"/>&nbsp;</dd>
           <dt><label>Valid To: </label></dt><dd> <g:simpleHiddenValue id="valid_to" name="valid_to" type="date" value="${defaultEndYear}"/>&nbsp;</dd>
           <br/>
-          <input type="submit" class="btn btn-primary" value="Create ->" />
+          <input type="submit" class="btn btn-primary" value="Create" />
         </dl>
       </g:form>
     </div>       

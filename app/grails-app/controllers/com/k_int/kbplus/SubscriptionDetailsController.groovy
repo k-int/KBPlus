@@ -724,7 +724,7 @@ class SubscriptionDetailsController {
           result.es_query = query_str;
 
           def search = esclient.search{
-            indices "kbplus"
+            indices grailsApplication.config.aggr.es.index ?: "kbplus"
             source {
               from = params.offset
               size = params.max

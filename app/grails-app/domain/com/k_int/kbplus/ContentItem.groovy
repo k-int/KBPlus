@@ -22,7 +22,9 @@ class ContentItem {
   static def lookupOrCreate(key,locale,content) {
     def result = ContentItem.findByKeyAndLocale(key,locale)
     if ( result == null ) {
-      result = new ContentItem(key:key, locale:locale, content:content).save();
+      result = new ContentItem(key:key, locale:locale, content:content);
+      result.locale = locale
+      result.save()
     }
     result
   }

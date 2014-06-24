@@ -37,7 +37,7 @@
         </div>
         <div class="modal-footer">
             <a href="#" class="btn" data-dismiss="modal">Close</a>
-            <input type="submit" class="btn btn-primary" value="Save Changes">
+            <input type="submit" class="btn btn-primary" name ="SaveDoc" value="Save Changes">
         </div>
     </g:form>
 

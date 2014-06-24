@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="layout" content="mmbootstrap"/>
-    <title>KB+ Renewals Generation - Search</title>
+    <title>KB+ Packages</title>
   </head>
 
   <body>
@@ -34,11 +34,10 @@
                     <option ${params.order=='desc' ? 'selected' : ''} value="desc">Descending</option>
                   </select>
             <button type="submit" name="search" value="yes">Search</button>
-            <div class="pull-right">
-            </div>
           </div>
         </div>
       </div>
+      </g:form>
 
       <div class="row">
         <div class="span2">
@@ -49,7 +48,6 @@
                       <g:set var="facetname" value="fct:${facet.key}:${fe.display}" />
                       <div><g:checkBox class="pull-right" name="${facetname}" value="${params[facetname]}" />${fe.display} (${fe.count})</div>
                     </g:each>
-                </li>
               </g:each>
           </div>
         </div>
@@ -57,11 +55,11 @@
           <div class="well">
              <g:if test="${hits}" >
                 <div class="paginateButtons" style="text-align:center">
-                  <g:if test="${params.int('offset')}">
+                    <g:if test=" ${params.int('offset')}">
                    Showing Results ${params.int('offset') + 1} - ${hits.totalHits < (params.int('max') + params.int('offset')) ? hits.totalHits : (params.int('max') + params.int('offset'))} of ${hits.totalHits}
                   </g:if>
                   <g:elseif test="${hits.totalHits && hits.totalHits > 0}">
-                    Showing Results 1 - ${hits.totalHits < params.int('max') ? hits.totalHits : params.int('max')} of ${hits.totalHits}
+                      Showing Results 1 - ${hits.totalHits < params.int('max') ? hits.totalHits : params.int('max')} of ${hits.totalHits}
                   </g:elseif>
                   <g:else>
                     Showing ${hits.totalHits} Results
@@ -87,13 +85,12 @@
              </g:if>
              <div class="paginateButtons" style="text-align:center">
                 <g:if test="${hits}" >
-                  <span><g:paginate controller="packageDetails" action="index" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${hits.totalHits}" /></span>
+                  <span><g:paginate controller="packageDetails" action="index" params="${params}" next="Next" prev="Prev" total="${hits.totalHits}" /></span>
                 </g:if>
               </div>
           </div>
         </div>
       </div>
-      </g:form>
     </div>
     <!-- ES Query: ${es_query} -->
   </body>

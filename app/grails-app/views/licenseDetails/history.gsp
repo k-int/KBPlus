@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta name="layout" content="mmbootstrap"/>
-        <title>KB+</title>
+        <title>KB+ Licence</title>
 </head>
 
 <body>
@@ -17,7 +17,7 @@
     <div class="container">
         <h1>${license.licensee?.name} ${license.type?.value} Licence : ${license.reference}</h1>
 
-<g:render template="nav" contextPath="." />
+<g:render template="nav" />
 
     </div>
 

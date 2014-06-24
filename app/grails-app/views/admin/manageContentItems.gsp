@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="layout" content="mmbootstrap"/>
-    <title>KB+ Data import explorer</title>
+    <title>KB+ Manage Content Items</title>
   </head>
 
   <body>
@@ -27,8 +27,8 @@
     </g:if>
 
 
-    <div class="container">
-      <div class="row">
+    <div class="container-fluid">
+      <div class="row-fluid">
         <div class="span8">
           <table class="table table-bordered">
             <thead>
@@ -36,6 +36,7 @@
                 <td>Key</td>
                 <td>Locale</td>
                 <td>Content</td>
+                 <td></td>
               </tr>
             </thead>
             <tbody>

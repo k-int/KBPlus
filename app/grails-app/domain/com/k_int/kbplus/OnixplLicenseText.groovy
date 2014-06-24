@@ -12,12 +12,8 @@ class OnixplLicenseText {
   String displayNum;
   String text;
 
-  static belongsTo = OnixplUsageTerm;
-  OnixplLicense oplLicense
-  /*static belongsTo = [
-      OnixplUsageTerm,
-      oplLicense:OnixplLicense
-  ]*/
+  static belongsTo = [ term:OnixplUsageTerm,
+                       oplLicense:OnixplLicense ]
 
   static hasMany = [ usageTermLicenseText:OnixplUsageTermLicenseText ]
 

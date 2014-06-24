@@ -22,7 +22,9 @@ class OnixplUsageTermLicenseText {
 
     static constraints = {
       usageTerm(nullable:false, blank: false)
-      licenseText(nullable:false, blank: false)
+      licenseText(nullable:true, blank: false)
+      // nullable true may need reviewing. Added to stop ConstraintViollationException
+      // when deleting an OnixPl licence. error msg: collumn opul_oplt_fk cannot be null
     }
 
   @Override

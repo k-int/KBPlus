@@ -45,7 +45,7 @@
 		<ul class="breadcrumb">
 			<li><g:link controller="home" action="index">Home</g:link> <span
 				class="divider">/</span></li>
-			<li>ONIX-PL License Comparison</li>
+			<li>ONIX-PL Licence Comparison</li>
 		</ul>
 	</div>
 
@@ -58,12 +58,12 @@
 			<div class="span8">
 				<g:form id="compare" name="compare" action="matrix" method="get">
 					<div>
-						<label for="license1">License 1:</label>
+						<label for="license1">Licence 1:</label>
 						<g:select id="license1" name="license1" class="compare-license" from="${list}"
 							optionKey="id" optionValue="title" />
 					</div>
 					<div>
-						<label for="license2">License 2:</label>
+						<label for="license2">Licence 2:</label>
 						<g:select id="license2" name="license2" class="compare-license" from="${list}"
 							optionKey="id" optionValue="title"
 							noSelection="${['all': "All"]}" multiple="true" value="all" />
@@ -71,7 +71,7 @@
 					<div>
 						<label for="section">Compare section:</label>
 						<g:treeSelect name="sections" id="section" class="compare-section"
-							options="${termList}" multiple="true" />
+							options="${termList}" selected="true" multiple="true" />
 					</div>
 <%--					<div id="limit-license-display">--%>
 <%--						Only show licenses:<br />--%>

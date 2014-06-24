@@ -426,7 +426,7 @@ class LicenseImportController {
     usageTerm.usedResource.each { ur ->
         rdvUsedResource.add(RefdataCategory.lookupOrCreate(CAT_USEDRESOURCE, ur));
     }
-    log.error("Usage term user: ${usageTerm.user}, Used resource: ${usageTerm.usedResource}");
+    log.debug("Usage term user: ${usageTerm.user}, Used resource: ${usageTerm.usedResource}");
     //log.debug("Recording usage term $rdvType : $rdvStatus")
     // Create the term
     def term = new OnixplUsageTerm(
@@ -445,15 +445,16 @@ class LicenseImportController {
           text:lt.text,
           elementId:lt.elId,
           displayNum:lt.displayNum,
-          oplLicense:opl
+          oplLicense:opl,
+          term: term
       );
-      oplt.save(flush: true, insert:true);
-      // Create the association object:
+      oplt = oplt.save(flush: true, insert:true,failOnError: true);
+        // Create the association object:
       def ass = new OnixplUsageTermLicenseText(
           usageTerm: term,
           licenseText: oplt
       )
-      ass.save(flush: true, insert: true);
+      ass.save(flush: true, insert:true, failOnError: true);
     }
   }
 
