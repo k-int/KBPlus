@@ -503,11 +503,16 @@ class TitleInstance {
   static def refdataFind(params) {
     def result = [];
     def ql = null;
+    if ( params.sort==null ) {
+      params.sort="title"
+      params.order="desc"
+    }
     ql = TitleInstance.findAllByTitleIlike("${params.q}%",params)
 
+    int i = 1;
     if ( ql ) {
       ql.each { t ->
-        result.add([id:"${t.class.name}:${t.id}",text:"${t.title} (${t.identifiersAsString()})"])
+        result.add([id:"${t.class.name}:${t.id}",text:"[${i++}] ${t.title} (${t.identifiersAsString()})"])
       }
     }
 
