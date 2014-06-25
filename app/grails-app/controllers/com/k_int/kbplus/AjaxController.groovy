@@ -4,6 +4,7 @@ import org.springframework.dao.DataIntegrityViolationException
 import com.k_int.kbplus.auth.User
 import grails.plugins.springsecurity.Secured
 import grails.converters.*
+import com.k_int.custprops.PropertyDefinition
 import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 class AjaxController {
@@ -612,6 +613,28 @@ class AjaxController {
     redirect(url: request.getHeader('referer'))
   }
 
+  def addCustPropertyType(){
+
+//    String selected = params.cust_prop_type.split("class ")[1]
+//    Class typeClass = Class.forName(selected)
+    def newProp = PropertyDefinition.lookupOrCreateType(params.cust_prop_name, params.cust_prop_type, params.cust_prop_desc)
+    if(params.cust_prop_type.equals(RefdataValue.toString())){
+        def cat = RefdataCategory.get(params.refdatacategory)
+        newProp.setRefdataCategory(cat.desc)
+        newProp.save()
+    }
+    redirect(url: request.getHeader('referer'))
+  }
+
+  def addCustomPropertyValue(){
+    String id = params.propIdent.split(":")[1]
+    def licence = License.get(params.owner)
+    def newProp = PropertyDefinition.lookupOrCreateProp(id,licence)
+    log.debug("Property created: "+newProp)
+    licence.customProperties.add(newProp)
+    redirect(url: request.getHeader('referer'))
+  }
+
   def delOrgRole() {
     // log.debug("delOrgRole ${params}");
     def or = OrgRole.get(params.id)
@@ -619,7 +642,14 @@ class AjaxController {
     // log.debug("Delete link: ${or}");
     redirect(url: request.getHeader('referer'))
   }
-
+  def delCustomProperty(){
+      def className = params.propclass.split(" ")[1]
+      println(className)
+      def propClass = Class.forName(className)
+      def property = propClass.get(params.id)
+      property.delete()
+      redirect(url: request.getHeader('referer'))
+  }
   def lookup() {
     // log.debug("AjaxController::lookup ${params}");
     def result = [:]

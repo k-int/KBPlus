@@ -49,7 +49,8 @@ class License {
     orgLinks:OrgRole,
     outgoinglinks:Link,
     incomingLinks:Link,
-    pendingChanges:PendingChange
+    pendingChanges:PendingChange,
+    customProperties:LicenceCustomProp
   ]
 
   static mappedBy = [ 
@@ -93,6 +94,7 @@ class License {
         licenseCategory column: 'lic_category_rdv_fk'
               startDate column: 'lic_start_date'
                 endDate column: 'lic_end_date'
+       customProperties column: 'lic_custom_prop'
   }
 
   static constraints = {
@@ -123,6 +125,7 @@ class License {
     licenseCategory(nullable: true, blank: true)
     startDate(nullable: true, blank: true)
     endDate(nullable: true, blank: true)
+    customProperties(nullable: true, blank:true)
  }
 
   def getLicensor() {

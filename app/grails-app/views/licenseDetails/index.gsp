@@ -291,6 +291,9 @@
               </tbody>
             </table>
 
+            <br/>
+            <g:render template="/templates/custom_props" model="${[ ownobj:license ]}"/>
+
               </div>
               <div class="span4">
                 <g:render template="/templates/documents" model="${[ ownobj:license, owntp:'license']}" />
