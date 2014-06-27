@@ -1,9 +1,7 @@
 package com.k_int.custprops
 
-import com.k_int.kbplus.LicenceCustomProp
-import com.k_int.kbplus.License
 import com.k_int.kbplus.RefdataValue
-import com.k_int.kbplus.Subscription
+import com.k_int.kbplus.abstract_domain.CustomProperty
 
 import javax.persistence.Transient
 import javax.validation.UnexpectedTypeException
@@ -11,7 +9,7 @@ import javax.validation.UnexpectedTypeException
 class PropertyDefinition {
 
     String name
-    String desc
+    String descr
     String type
     String refdataCategory
     @Transient
@@ -19,14 +17,14 @@ class PropertyDefinition {
 
     static constraints = {
         name(nullable: false, blank: false)
-        desc(nullable: false, blank: true)
+        descr(nullable: false, blank: true)
         type(nullable: false, blank: false)
         refdataCategory(nullable:true)
     }
 
     static mapping = {
         id column: 'td_id'
-        desc column: 'td_description'
+        descr column: 'td_description'
         name column: 'td_name', index: 'td_name_idx'
         type column: 'td_type', index: 'td_type_idx'
     }
@@ -39,62 +37,40 @@ class PropertyDefinition {
             throw new UnexpectedTypeException()
         }
     }
-    static def lookupOrCreateProp(name, value, owner) {
-        typeIsValid(value.getClass().toString())
-        lookupOrCreateProp(name, value, '',owner)
-    }
 
     static def lookupOrCreateProp(id, owner){
         if(id instanceof String){
             id = id.toLong()
         }
-        def cat = PropertyDefinition.get(id)
-        println "PropertyDefinition is "+cat
-        createPropertyValue(owner, cat, "")
+        def type = get(id)
+        createPropertyValue(owner, type)
     }
 
-    static def lookupOrCreateProp(name, value, desc, owner) {
-        typeIsValid(value.getClass().toString())
-        def cat = lookupOrCreateType(name, value.getClass().toString(), desc)
-
-        createPropertyValue(owner, cat, value)
+    private static CustomProperty createPropertyValue(owner, PropertyDefinition type) {
+        String classString = owner.getClass().toString()
+        def ownerClassName = classString.substring(classString.lastIndexOf(".")+1)
+        ownerClassName="com.k_int.kbplus."+ownerClassName+"CustomProperty"
+        def newProp = Class.forName(ownerClassName).newInstance(type: type,owner: owner)
+        newProp.setNote("")
+        newProp.save(flush:true)
+        newProp
     }
 
-    private static void createPropertyValue(owner, PropertyDefinition cat, val) {
-        def result
-
-        if (owner instanceof License) {
-            result = LicenceCustomProp.findByOwnerAndValueToString(cat,val)
-
-            if (!result) {
-                def newProp = new LicenceCustomProp(owner: cat,licence: owner);
-                newProp.setNote("")
-                newProp.setValueToString("")
-                newProp.save(flush: true)
-                result = newProp
-            }
-        } else if (owner instanceof Subscription) {
-
+    static def lookupOrCreateType(name, typeClass, descr) {
+        typeIsValid(typeClass)
+        def type = findByNameAndTypeAndDescr(name, typeClass, descr);
+        if (!type) {
+            type = new PropertyDefinition(name: name, type: typeClass, descr: descr)
+            type.save()
         }
-        result
-    }
-
-    static def lookupOrCreateType(name, type, desc) {
-        typeIsValid(type)
-        def cat = PropertyDefinition.findByNameAndTypeAndDesc(name, type, desc);
-        if (!cat) {
-            cat = new PropertyDefinition(name: name, type: type, desc: desc).save();
-        }
-        cat
+        type
     }
     static def refdataFind(params) {
         def result = []
-        def ql = null
-
-        ql = PropertyDefinition.findAllByNameIlike("${params.q}%",params)
+        def  ql = findAllByNameIlike("${params.q}%",params)
         if ( ql ) {
-            ql.each { id ->
-                result.add([id:"${id.class.name}:${id.id}",text:"${id.name}"])
+            ql.each { prop ->
+                result.add([id:"${prop.id}",text:"${prop.name}"])
             }
         }
         result

@@ -37,7 +37,8 @@ class Subscription {
                      documents:DocContext,
                      orgRelations: OrgRole,
                      derivedSubscriptions: Subscription,
-                     pendingChanges:PendingChange ]
+                     pendingChanges:PendingChange,
+                     customProperties:SubscriptionCustomProperty  ]
 
   static mappedBy = [ packages : 'subscription', 
                       issueEntitlements: 'subscription',
@@ -72,6 +73,7 @@ class Subscription {
     instanceOf(nullable:true, blank:false)
     noticePeriod(nullable:true, blank:true)
     isPublic(nullable:true, blank:true)
+    customProperties(nullable:true)
     // vendor(nullable:true, blank:false)
   }
 

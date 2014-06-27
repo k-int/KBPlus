@@ -50,7 +50,7 @@ class License {
     outgoinglinks:Link,
     incomingLinks:Link,
     pendingChanges:PendingChange,
-    customProperties:LicenceCustomProp
+    customProperties:LicenseCustomProperty
   ]
 
   static mappedBy = [ 

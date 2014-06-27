@@ -615,8 +615,6 @@ class AjaxController {
 
   def addCustPropertyType(){
 
-//    String selected = params.cust_prop_type.split("class ")[1]
-//    Class typeClass = Class.forName(selected)
     def newProp = PropertyDefinition.lookupOrCreateType(params.cust_prop_name, params.cust_prop_type, params.cust_prop_desc)
     if(params.cust_prop_type.equals(RefdataValue.toString())){
         def cat = RefdataCategory.get(params.refdatacategory)
@@ -627,12 +625,11 @@ class AjaxController {
   }
 
   def addCustomPropertyValue(){
-    String id = params.propIdent.split(":")[1]
-    def licence = License.get(params.owner)
-    def newProp = PropertyDefinition.lookupOrCreateProp(id,licence)
-    log.debug("Property created: "+newProp)
-    licence.customProperties.add(newProp)
-    redirect(url: request.getHeader('referer'))
+    def owner =  grailsApplication.getArtefact("Domain",params.ownerClass.replace("class ",""))?.getClazz()?.get(params.ownerId)
+    def newProp = PropertyDefinition.lookupOrCreateProp( params.propIdent, owner)
+    log.debug("New Property created: "+newProp)
+    request.setAttribute("editable",params.editable == "true")
+    render(template: "/templates/custom_props",model:[ownobj:owner])
   }
 
   def delOrgRole() {
@@ -642,14 +639,19 @@ class AjaxController {
     // log.debug("Delete link: ${or}");
     redirect(url: request.getHeader('referer'))
   }
+
   def delCustomProperty(){
       def className = params.propclass.split(" ")[1]
-      println(className)
       def propClass = Class.forName(className)
       def property = propClass.get(params.id)
-      property.delete()
-      redirect(url: request.getHeader('referer'))
+      def owner =  grailsApplication.getArtefact("Domain",params.ownerClass.replace("class ",""))?.getClazz()?.get(params.ownerId)
+      owner.customProperties.remove(property)
+      property.delete(flush:true)
+      log.debug("Deleting Custom Property: "+property)
+      request.setAttribute("editable", params.editable == "true")
+      render(template: "/templates/custom_props",model:[ownobj:owner])
   }
+
   def lookup() {
     // log.debug("AjaxController::lookup ${params}");
     def result = [:]
