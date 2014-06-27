@@ -128,26 +128,26 @@ class HomePageSpec extends GebReportingSpec {
             approve()
     }
 
-//  //ref 012
-//    def "Show Info Icon" (){
-//        setup:
-//            changeUser(Data.UserD_name,Data.UserD_passwd)
-//            to ProfilePage
-//        when:
-//            showInfoIcon("Yes")
-//        then:
-//            to DashboardPage
-//            subscriptions()
-//            hasInfoIcon()
-//        when:
-//            to ProfilePage
-//            showInfoIcon("No")
-//        then:
-//            to DashboardPage
-//            subscriptions()
-//            !hasInfoIcon()
-//
-//    }
+  //ref 012
+    def "Show Info Icon" (){
+        setup:
+            changeUser(Data.UserD_name,Data.UserD_passwd)
+            to ProfilePage
+        when:
+            showInfoIcon("Yes")
+        then:
+            to DashboardPage
+            subscriptions()
+            hasInfoIcon()
+        when:
+            to ProfilePage
+            showInfoIcon("No")
+        then:
+            to DashboardPage
+            subscriptions()
+            !hasInfoIcon()
+
+    }
     def "Set up licence Template"() {
         setup:
             changeUser(Data.UserD_name, Data.UserD_passwd)
@@ -157,6 +157,7 @@ class HomePageSpec extends GebReportingSpec {
         when:
             editIsPublic("Yes")
             addDocument(Data.Test_Doc_name, Data.Test_Doc_file)
+//            addCustomPropType("FunctTestProp")
         then:
             at LicencePage
 
@@ -664,7 +665,7 @@ class HomePageSpec extends GebReportingSpec {
               allPackages()
         when:
             def pkgs = numberOfResults()
-            searchPackage("Art")
+            searchPackage("G")
         then:
             pkgs != numberOfResults()
     }
