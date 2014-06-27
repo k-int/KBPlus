@@ -7,6 +7,7 @@ import spock.lang.Stepwise
 class HomePageSpec extends GebReportingSpec {
 // curl -XDELETE 'http://localhost:9200/kbplustest/'
 // curl -XPUT 'httop://localhost:9200/kbplustest/'
+
     def "Create organisation" (){
         setup:
             to PublicPage
@@ -654,7 +655,7 @@ class HomePageSpec extends GebReportingSpec {
             def totalTitles = numberOfResults()
             searchTitle("A")
         then:
-            totalTitles > numberOfResults()
+            totalTitles != numberOfResults()
     }
     //ref 505
     def "Search within all Packages"(){
@@ -665,7 +666,7 @@ class HomePageSpec extends GebReportingSpec {
             def pkgs = numberOfResults()
             searchPackage("Art")
         then:
-            pkgs >= numberOfResults()
+            pkgs != numberOfResults()
     }
 
 //    def "Renewals Upload" (){
