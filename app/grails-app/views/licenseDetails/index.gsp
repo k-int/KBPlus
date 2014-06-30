@@ -4,6 +4,7 @@
 <html>
   <head>
     <meta name="layout" content="mmbootstrap"/>
+     <g:javascript src="custom_properties.js"/>
     <title>KB+ Licence</title>
   </head>
 
@@ -111,7 +112,7 @@
                   </dl>
                 
                   <dl>
-                      <dt><label class="control-label" for="subscriptions">Linked Packages</label></dt>
+                      <dt><label class="control-label" for="${license.pkgs}">Linked Packages</label></dt>
                       <dd>
                         <g:if test="${license.pkgs && ( license.pkgs.size() > 0 )}">
                           <g:each in="${license.pkgs}" var="pkg">
@@ -291,6 +292,10 @@
               </tbody>
             </table>
 
+            <br/>
+              <div id="custom_props_div">
+                  <g:render template="/templates/custom_props" model="${[ ownobj:license ]}"/>
+              </div>
               </div>
               <div class="span4">
                 <g:render template="/templates/documents" model="${[ ownobj:license, owntp:'license']}" />
@@ -316,7 +321,9 @@
           });
         }
       </g:else>
-
+     window.onload = function() {
+     runCustomPropsJS("<g:createLink controller='ajax' action='lookup'/>");
+    }
     </r:script>
 
   </body>

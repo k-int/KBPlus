@@ -6,6 +6,8 @@
   <head>
     <meta name="layout" content="mmbootstrap"/>
     <title>KB+ Subscription</title>
+      <g:javascript src="custom_properties.js"/>
+
   </head>
   <body>
 
@@ -136,7 +138,10 @@
                        <g:render template="orgLinks" contextPath="../templates" model="${[roleLinks:subscriptionInstance?.orgRelations,editmode:editable]}" />
                      </dd>
                </dl>
-
+                <br/>
+                <div id="custom_props_div">
+                    <g:render template="/templates/custom_props" model="${[ ownobj:subscriptionInstance ]}"/>
+                </div>
                 <div class="clear-fix"></div>
             </div>
         </div>
@@ -334,6 +339,7 @@
             return false ;
         }
       }
+
       </g:if>
       <g:else>
         $(document).ready(function() {
@@ -344,6 +350,9 @@
           });
         }
       </g:else>
+        window.onload = function() {
+            runCustomPropsJS("<g:createLink controller='ajax' action='lookup'/>");
+        }
     </r:script>
   </body>
 </html>

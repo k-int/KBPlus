@@ -1,4 +1,7 @@
 package pages
+
+import org.openqa.selenium.Keys
+
 /**
  * Created by ioannis on 29/05/2014.
  * For downloading document: https://blog.codecentric.de/en/2010/07/file-downloads-with-selenium-mission-impossible/
@@ -70,7 +73,26 @@ class LicencePage extends AbstractDetails {
             !$("h2", text: "Upload successful").isEmpty()
             $("a.btn-info").click()
         }
+        addCustomPropType{ name ->
+            $("#select2-chosen-2").click()
+            waitFor { $("#s2id_autogen2_search").isDisplayed() }
 
+            $("#s2id_autogen2_search").value (name)
+
+            waitFor { $("#select2-result-label-3").click()}
+            waitFor{ $("input",name:"cust_prop_name").value(name)}
+            $("#cust_prop_desc").value("Some random text discr")
+            $("#new_cust_prop_add_btn",value:"Add").click()
+
+            $("#select2-chosen-2").click()
+            waitFor { $("#s2id_autogen2_search").isDisplayed() }
+
+            $("#s2id_autogen2_search").value (name)
+            waitFor{ $("span.select2-match")}
+            $("#s2id_autogen2_search") <<Keys.ENTER
+            $("#s2id_autogen2_search") << Keys.ENTER
+            $("input",value:"Add Property...").click()
+        }
 
     }
 }

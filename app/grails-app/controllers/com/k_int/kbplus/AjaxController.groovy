@@ -4,6 +4,7 @@ import org.springframework.dao.DataIntegrityViolationException
 import com.k_int.kbplus.auth.User
 import grails.plugins.springsecurity.Secured
 import grails.converters.*
+import com.k_int.custprops.PropertyDefinition
 import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 class AjaxController {
@@ -612,12 +613,43 @@ class AjaxController {
     redirect(url: request.getHeader('referer'))
   }
 
+  def addCustPropertyType(){
+
+    def newProp = PropertyDefinition.lookupOrCreateType(params.cust_prop_name, params.cust_prop_type, params.cust_prop_desc)
+    if(params.cust_prop_type.equals(RefdataValue.toString())){
+        def cat = RefdataCategory.get(params.refdatacategory)
+        newProp.setRefdataCategory(cat.desc)
+        newProp.save()
+    }
+    redirect(url: request.getHeader('referer'))
+  }
+
+  def addCustomPropertyValue(){
+    def owner =  grailsApplication.getArtefact("Domain",params.ownerClass.replace("class ",""))?.getClazz()?.get(params.ownerId)
+    def newProp = PropertyDefinition.lookupOrCreateProp( params.propIdent, owner)
+    log.debug("New Property created: "+newProp)
+    request.setAttribute("editable",params.editable == "true")
+    render(template: "/templates/custom_props",model:[ownobj:owner])
+  }
+
   def delOrgRole() {
     // log.debug("delOrgRole ${params}");
     def or = OrgRole.get(params.id)
     or.delete(flush:true);
     // log.debug("Delete link: ${or}");
     redirect(url: request.getHeader('referer'))
+  }
+
+  def delCustomProperty(){
+      def className = params.propclass.split(" ")[1]
+      def propClass = Class.forName(className)
+      def property = propClass.get(params.id)
+      def owner =  grailsApplication.getArtefact("Domain",params.ownerClass.replace("class ",""))?.getClazz()?.get(params.ownerId)
+      owner.customProperties.remove(property)
+      property.delete(flush:true)
+      log.debug("Deleting Custom Property: "+property)
+      request.setAttribute("editable", params.editable == "true")
+      render(template: "/templates/custom_props",model:[ownobj:owner])
   }
 
   def lookup() {

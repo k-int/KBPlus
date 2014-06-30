@@ -29,8 +29,6 @@ class PackageDetailsPage extends AbstractDetails {
         }
         numberOfResults{
             String numString = $("div.paginateButtons").text()
-            numString = numString.substring(numString.lastIndexOf(" of ")+4)
-            numString.toInteger()
         }
     }
 }
