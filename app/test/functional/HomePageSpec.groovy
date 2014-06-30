@@ -127,27 +127,27 @@ class HomePageSpec extends GebReportingSpec {
             at AdminMngAffReqPage
             approve()
     }
+//
+//  //ref 012
+//    def "Show Info Icon" (){
+//        setup:
+//            changeUser(Data.UserD_name,Data.UserD_passwd)
+//            to ProfilePage
+//        when:
+//            showInfoIcon("Yes")
+//        then:
+//            to DashboardPage
+//            subscriptions()
+//            hasInfoIcon()
+//        when:
+//            to ProfilePage
+//            showInfoIcon("No")
+//        then:
+//            to DashboardPage
+//            subscriptions()
+//            !hasInfoIcon()
+//    }
 
-  //ref 012
-    def "Show Info Icon" (){
-        setup:
-            changeUser(Data.UserD_name,Data.UserD_passwd)
-            to ProfilePage
-        when:
-            showInfoIcon("Yes")
-        then:
-            to DashboardPage
-            subscriptions()
-            hasInfoIcon()
-        when:
-            to ProfilePage
-            showInfoIcon("No")
-        then:
-            to DashboardPage
-            subscriptions()
-            !hasInfoIcon()
-
-    }
     def "Set up licence Template"() {
         setup:
             changeUser(Data.UserD_name, Data.UserD_passwd)
