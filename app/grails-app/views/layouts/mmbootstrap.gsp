@@ -148,6 +148,10 @@
                        <li class="divider"></li>
                        <li <%= ( ( 'globalDataSync'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="globalDataSync" action="index">Global Data Download [Packages]</g:link></li>
+                       <li class="divider"></li>
+                         <li <%= ( ( 'jasperReports'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="jasperReports" action="index">Jasper Reports</g:link></li>
+
                      </ul>
                    </li>
                 </sec:ifAnyGranted>
@@ -217,6 +221,8 @@
                       <li <%= ( ( 'stats'== controllerName ) && ( 'statsHome'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="stats" action="statsHome">Statistics</g:link>
                       </li>
+                        <li <%= ( ( 'jasperReports'== controllerName ) && ( 'uploadReport'==actionName ) ) ? ' class="active"' : '' %>>
+                            <g:link controller="jasperReports" action="uploadReport">Upload Jasper Reports</g:link></li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'triggerHousekeeping'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="triggerHousekeeping">Trigger Housekeeping</g:link>
                       </li>

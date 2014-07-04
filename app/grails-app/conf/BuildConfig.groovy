@@ -75,6 +75,8 @@ grails.project.dependency.resolution = {
         runtime ( 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2' ) { 
           excludes "org.codehaus.groovy", "groovy"
         }
+        compile "com.lowagie:itext:2.1.7"
+        compile "net.sf.jasperreports:jasperreports:5.5.0"
     }
 
     plugins {
@@ -115,5 +117,6 @@ grails.project.dependency.resolution = {
 
         runtime ":gsp-resources:0.4.4"
         runtime ":jquery:1.9.1"
+        compile ':jasper:1.8.0'
     }
 }
