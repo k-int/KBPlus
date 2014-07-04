@@ -62,6 +62,7 @@ class JasperReportsController {
 			def newVal = new Timestamp(sdf.parse(stringVal).getTime())
 			params.putAt(key,newVal) 
 		}
+
 		addImagesURIIfHTMLReport(params, request.contextPath)
         JasperReportDef report = jasperService.buildReportDefinition(params, request.getLocale(), null)
         addJasperPrinterToSession(request.getSession(), report.jasperPrinter)
@@ -72,19 +73,16 @@ class JasperReportsController {
 	def uploadReport(){
 		def result = [:]
 		def errors = []
-		println "In upload "
-		if(request  instanceof MultipartHttpServletRequest){
-			println " Received multipart"
-			def files = request.getFile("report_files")
+ 
+ 		if(request  instanceof MultipartHttpServletRequest){
+			def files = request.getMultipartFiles().get("report_files")
+			
 			files.each { file->
-
 				def fileName = file.originalFilename
-				println " Processing file "+ fileName
 
 				if(fileName.endsWith(".jrxml") || fileName.endsWith(".jasper")){
-					def reportName = fileName.substring(0,fileName.indexOf("."))
-					if(JasperReportFile.findByName(reportName) == null){
-						JasperReportFile newReport = new JasperReportFile(name:reportName, reportFile:file.getBytes()).save(flush:true)
+					if(JasperReportFile.findByName(fileName) == null){
+						JasperReportFile newReport = new JasperReportFile(name:fileName, reportFile:file.getBytes()).save(flush:true)
 						if(newReport.hasErrors()){
 							errors.add("An error occured while storing "+fileName)
 						}else{
@@ -98,14 +96,18 @@ class JasperReportsController {
 					errors.add("One of the files uploaded is not a .jrxml or .jasper file and will be ignored.")
 				}
 			}
-			if(errors.isEmpty() && !files.isEmpty()){
+			if(errors.isEmpty() && !files?.isEmpty()){
 				flash.message = "Upload Completed"
 			}
 			flash.error = errors
 		}
 
 	}
-
+	def generateReport2(){
+		InputStream inputStream = new ByteArrayInputStream(JasperReportFile.findByName(reportName).reportFile)
+		JasperReport jreport = JasperCompileManager.compileReport(inputStream)
+		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,jasperParameter);
+	}
     /**
      * Generate a html response.
      */
