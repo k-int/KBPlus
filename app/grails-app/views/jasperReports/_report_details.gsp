@@ -13,7 +13,7 @@
 
 <g:form controller="jasperReports" action="generateReport">
     <input type="hidden" id="hiddenReportName" name="_file">
-
+    <input type="hidden" id="hiddenReportFormat" name="_format">
     <table class="table table-striped table-bordered table-condensed">
         <thead>
         <tr>
@@ -28,7 +28,7 @@
         </thead>
         <tbody>
 
-        <g:each in="${report_params}" var="rparam">
+        <g:each in="${report_parameters}" var="rparam">
             <tr>
             <td>${rparam.getDescription()}</td>
             <td>

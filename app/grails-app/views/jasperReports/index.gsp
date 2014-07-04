@@ -41,7 +41,7 @@
                 <dt>Download Format:</dt>
                 <dd>
                     <span>
-                        <g:select name="_format" from="${JasperReportsController.formats}"/>
+                        <g:select id="selectRepFormat" name="rep_format" from="${available_formats}"/>
                     </span>
                 </dd>
             </dl>
@@ -64,21 +64,25 @@
             ,complete:function(XMLHttpRequest,textStatus){runJasperJS()}});
         });
     });
+
+    $(function () {
+        $('#selectRepFormat').change(function() {
+            $('#hiddenReportFormat').val($("#selectRepFormat").val())
+        });
+    });
     function runJasperJS(){
-    copyReportName();
-    activateDatepicker();
+        copyReportVals();
+        activateDatepicker();
     }
-    function copyReportName() {
+    function copyReportVals() {
         $("#hiddenReportName").val($("#available_reports").val())
+        $('#hiddenReportFormat').val($("#selectRepFormat").val())
+
     }
 
     function activateDatepicker(){
-//          $("div.date").children().find("input").each(function()
-//          {
-//            this.datepicker();
-//          });
+
         $("div.date").children('input').datepicker()
-//        $("input[name='start_date']").datepicker()
     }
     document.onload = runJasperJS();
 </r:script>
