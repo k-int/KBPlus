@@ -76,7 +76,7 @@ grails.project.dependency.resolution = {
           excludes "org.codehaus.groovy", "groovy"
         }
         compile "com.lowagie:itext:2.1.7"
-        compile "net.sf.jasperreports:jasperreports:5.5.0"
+        compile "net.sf.jasperreports:jasperreports:5.6.0"
     }
 
     plugins {

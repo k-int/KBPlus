@@ -12,10 +12,20 @@ import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.Date
 import org.springframework.web.multipart.MultipartHttpServletRequest
+import org.codehaus.groovy.grails.plugins.jasper.JasperExportFormat
+import net.sf.jasperreports.engine.export.JRCsvExporter
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput
+import net.sf.jasperreports.engine.*
+import net.sf.jasperreports.engine.design.JasperDesign
+import net.sf.jasperreports.engine.xml.JRXmlLoader
+import net.sf.jasperreports.export.SimpleExporterInput
+import net.sf.jasperreports.export.SimpleWriterExporterOutput
+
+
 
 
 class JasperReportsController {
-	def jasperService
+def dataSource
 
 	@Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
 	def index(){
@@ -48,25 +58,6 @@ class JasperReportsController {
 		}else{
 			result
 		}
-
-
-	}
-
-	@Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-	def generateReport(){
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy");
-
-		def filteredParams =params.findAll {it.key.toString().contains("date") }
-		filteredParams.each { key, value ->
-			def stringVal = value
-			def newVal = new Timestamp(sdf.parse(stringVal).getTime())
-			params.putAt(key,newVal) 
-		}
-
-		addImagesURIIfHTMLReport(params, request.contextPath)
-        JasperReportDef report = jasperService.buildReportDefinition(params, request.getLocale(), null)
-        addJasperPrinterToSession(request.getSession(), report.jasperPrinter)
-        generateResponse(report)
 	}
 
 	@Secured(['ROLE_ADMIN','IS_AUTHENTICATED_FULLY'])
@@ -87,7 +78,6 @@ class JasperReportsController {
 							errors.add("An error occured while storing "+fileName)
 						}else{
 							println "Stored file "+ fileName
-							
 						}
 					}else{
 						errors.add("A report file with name "+fileName+" already exists.")
@@ -103,24 +93,57 @@ class JasperReportsController {
 		}
 
 	}
-	def generateReport2(){
-		InputStream inputStream = new ByteArrayInputStream(JasperReportFile.findByName(reportName).reportFile)
-		JasperReport jreport = JasperCompileManager.compileReport(inputStream)
-		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,jasperParameter);
+
+	@Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+	def generateReport(){
+
+		if(params._file.isEmpty()){
+			flash.error = ["Please select a report for download."]
+			return;
+		}
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy");
+
+		def filteredParams =params.findAll {it.key.toString().contains("date") }
+		filteredParams.each { key, value ->
+			def stringVal = value
+			def newVal = new Timestamp(sdf.parse(stringVal).getTime())
+			params.putAt(key,newVal) 
+		}
+		InputStream inputStream = new ByteArrayInputStream(JasperReportFile.findByName(params._file).reportFile)
+		JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
+		JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
+		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource.getConnection());
+
+		generateResponse(jasperPrint,response.outputStream, params._format, params)
+
 	}
-    /**
-     * Generate a html response.
-     */
-    def generateResponse = {reportDef ->
-        if (!reportDef.fileFormat.inline && !reportDef.parameters._inline) {
-            response.setHeader("Content-disposition", "attachment; filename=" + (reportDef.parameters._name ?: reportDef.name) + "." + reportDef.fileFormat.extension)
-            response.contentType = reportDef.fileFormat.mimeTyp
-            response.characterEncoding = "UTF-8"
-            response.outputStream << reportDef.contentStream.toByteArray()
-        } else {
-            render(text: reportDef.contentStream, contentType: reportDef.fileFormat.mimeTyp, encoding: reportDef.parameters.encoding ? reportDef.parameters.encoding : 'UTF-8')
-        }
-    }
+
+	def generateResponse(jasperPrint, outputStream, reportFormat, params){
+		def generateResponse = true;
+		switch(reportFormat){
+			case "PDF":
+				JasperExportManager.exportReportToPdfStream(jasperPrint,outputStream)
+				break;
+			case "CSV":
+				JRCsvExporter exporter = new JRCsvExporter()
+				exporter.setExporterOutput(new SimpleWriterExporterOutput(outputStream))
+				exporter.setExporterInput( new SimpleExporterInput(jasperPrint))
+				exporter.exportReport()
+				break;
+			default:
+				generateResponse = false
+				flash.error = "Format export implementation not complete. Please select another format."
+		}
+		if(generateResponse){
+			def exportFormat = JasperExportFormat.determineFileFormat(reportFormat)  
+			response.setHeader("Content-disposition", "attachment; filename=" + (params._file.replace(reportFormat,'')) + "." + exportFormat.extension)
+	        response.contentType = exportFormat.mimeTyp     
+	        response.characterEncoding = "UTF-8"
+		}else{
+			redirect action: 'index'
+		}
+	}
+
 
     private void addJasperPrinterToSession(HttpSession session, JasperPrint jasperPrinter) {
         session[ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE] = jasperPrinter
