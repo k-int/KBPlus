@@ -42,6 +42,8 @@ grails.project.dependency.resolution = {
         mavenRepo "https://oss.sonatype.org/content/repositories/releases"
         // mavenRepo "http://projects.k-int.com/nexus-webapp-1.4.0/content/repositories/snapshots"
         mavenRepo "http://projects.k-int.com/nexus-webapp-1.4.0/content/repositories/releases"
+        mavenRepo "http://jaspersoft.artifactoryonline.com/jaspersoft/third-party-ce-artifacts/"
+        mavenRepo "http://jasperreports.sourceforge.net/maven2/com/lowagie/itext/2.1.7.js1/"
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.

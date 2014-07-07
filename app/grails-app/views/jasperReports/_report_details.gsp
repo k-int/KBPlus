@@ -32,7 +32,7 @@
             <tr>
             <td>${rparam.getDescription()}</td>
             <td>
-                <g:if test="${rparam.getName().contains('date')}">
+                <g:if test="${rparam.getValueClass().equals(java.sql.Timestamp)}">
                     <div class="input-append date" data-date-format="yyyy-mm-dd">
                         <input class="span2" size="16" type="text" name="${rparam.getName()}">
                         <span class="add-on"><i class="icon-th"></i></span>

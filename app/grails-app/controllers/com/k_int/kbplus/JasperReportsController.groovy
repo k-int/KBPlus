@@ -20,7 +20,9 @@ import net.sf.jasperreports.engine.design.JasperDesign
 import net.sf.jasperreports.engine.xml.JRXmlLoader
 import net.sf.jasperreports.export.SimpleExporterInput
 import net.sf.jasperreports.export.SimpleWriterExporterOutput
-
+import net.sf.jasperreports.engine.export.HtmlExporter
+import net.sf.jasperreports.export.SimpleHtmlExporterOutput
+import net.sf.jasperreports.engine.JRExporterParameter
 
 
 
@@ -98,62 +100,51 @@ def dataSource
 	def generateReport(){
 
 		if(params._file.isEmpty()){
-			flash.error = ["Please select a report for download."]
-			return;
+			flash.error = "Please select a report for download."
+			redirect action: 'index'
 		}
+	
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy");
-
 		def filteredParams =params.findAll {it.key.toString().contains("date") }
 		filteredParams.each { key, value ->
 			def stringVal = value
 			def newVal = new Timestamp(sdf.parse(stringVal).getTime())
 			params.putAt(key,newVal) 
 		}
+		
 		InputStream inputStream = new ByteArrayInputStream(JasperReportFile.findByName(params._file).reportFile)
 		JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
 		JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
 		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource.getConnection());
 
-		generateResponse(jasperPrint,response.outputStream, params._format, params)
+		generateResponse(jasperPrint,response, params)
 
 	}
 
-	def generateResponse(jasperPrint, outputStream, reportFormat, params){
-		def generateResponse = true;
-		switch(reportFormat){
-			case "PDF":
-				JasperExportManager.exportReportToPdfStream(jasperPrint,outputStream)
-				break;
-			case "CSV":
-				JRCsvExporter exporter = new JRCsvExporter()
-				exporter.setExporterOutput(new SimpleWriterExporterOutput(outputStream))
-				exporter.setExporterInput( new SimpleExporterInput(jasperPrint))
-				exporter.exportReport()
-				break;
-			default:
-				generateResponse = false
-				flash.error = "Format export implementation not complete. Please select another format."
-		}
-		if(generateResponse){
-			def exportFormat = JasperExportFormat.determineFileFormat(reportFormat)  
-			response.setHeader("Content-disposition", "attachment; filename=" + (params._file.replace(reportFormat,'')) + "." + exportFormat.extension)
-	        response.contentType = exportFormat.mimeTyp     
-	        response.characterEncoding = "UTF-8"
-		}else{
-			redirect action: 'index'
-		}
+	def generateResponse(jasperPrint, response, params){
+
+        ByteArrayOutputStream byteArray = new ByteArrayOutputStream()
+
+		def exportFormat = JasperExportFormat.determineFileFormat(params._format)  
+		JRExporter exporter = JasperExportFormat.getExporter(exportFormat)
+		exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, byteArray)
+      	exporter.setParameter(JRExporterParameter.CHARACTER_ENCODING, "UTF-8")
+      	exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint)
+		exporter.exportReport()
+		/**
+			SimpleCsvExporterConfiguration conf = new SimpleCsvExporterConfiguration()
+			conf.setFieldDelimiter("")
+			conf.setRecordDelimiter("")
+			exporter.setConfiguration(conf)
+		**/
+		
+		response.setHeader("Content-disposition", "attachment; filename=" + (params._file.replace(params._format,'')) + "." + exportFormat.extension)
+        response.contentType = exportFormat.mimeTyp     
+        response.characterEncoding = "UTF-8"
+        response.outputStream << byteArray.toByteArray()
+
 	}
 
-
-    private void addJasperPrinterToSession(HttpSession session, JasperPrint jasperPrinter) {
-        session[ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE] = jasperPrinter
-    }
-
-    private void addImagesURIIfHTMLReport(Map parameters, String contextPath) {
-        if (JasperExportFormat.HTML_FORMAT == JasperExportFormat.determineFileFormat(parameters._format)) {
-            parameters.IMAGES_URI = "${contextPath}/reports/image?image="
-        }
-    }
 	def availableReportFormats(){
 		def formats = [] 
 		JasperExportFormat.values().each{
