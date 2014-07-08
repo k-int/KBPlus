@@ -5,7 +5,7 @@
   Time: 16:22
 --%>
 
-<%@ page import="com.k_int.kbplus.JasperReportsController; org.codehaus.groovy.grails.plugins.jasper.JasperExportFormat" contentType="text/html;charset=UTF-8" %>
+<%@ page import="com.k_int.kbplus.JasperReportsController; org.jasper.JasperExportFormat" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title>KB+ Jasper Reports</title>
@@ -15,7 +15,6 @@
 <body>
 
 <div class="container">
-    <div class="span8">
 
         <ul class="breadcrumb">
             <li><g:link controller="home" action="index">Home</g:link> <span class="divider">/</span></li>
@@ -50,7 +49,6 @@
         <div id="report_details">
             <g:render template="report_details" model="params"/>
         </div>
-    </div>
 </div>
 
 </body>

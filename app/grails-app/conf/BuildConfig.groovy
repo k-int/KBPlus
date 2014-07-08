@@ -119,6 +119,5 @@ grails.project.dependency.resolution = {
 
         runtime ":gsp-resources:0.4.4"
         runtime ":jquery:1.9.1"
-        compile ':jasper:1.8.0'
     }
 }
