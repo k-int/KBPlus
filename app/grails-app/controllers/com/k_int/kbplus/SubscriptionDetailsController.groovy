@@ -248,7 +248,7 @@ class SubscriptionDetailsController {
       }
     }
  
-    redirect action: 'index', params:[id:subscriptionInstance?.id], id:subscriptionInstance.id
+    redirect action: 'index', params:[id:subscriptionInstance?.id,sort:params.sort,order:params.order,offset:params.offset,max:params.max]
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])

@@ -170,6 +170,7 @@
           <g:form action="index" params="${params}" method="get" class="form-inline">
              <input type="hidden" name="sort" value="${params.sort}">
              <input type="hidden" name="order" value="${params.order}">
+
              <label><g:annotatedLabel owner="${subscriptionInstance}" property="qryFilter"> Filter: </g:annotatedLabel></label>
              <input name="filter" value="${params.filter}"/>
              <label>From Package:</label> <select name="pkgfilter">
@@ -184,6 +185,10 @@
         <dd>
           <g:form action="subscriptionBatchUpdate" params="${[id:subscriptionInstance?.id]}" class="form-inline">
           <g:set var="counter" value="${offset+1}" />
+          <g:hiddenField name="sort" value="${params.sort}"/>
+          <g:hiddenField name="order" value="${params.order}"/>
+          <g:hiddenField name="offset" value="${params.offset}"/>
+          <g:hiddenField name="max" value="${params.max}"/>
           <table  class="table table-striped table-bordered">
             <thead>
 
