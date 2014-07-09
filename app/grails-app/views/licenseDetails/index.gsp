@@ -275,7 +275,7 @@
                     <td><g:xEditableRefData owner="${license}" field="alumniAccess" config='YNO'/></td>
                     <td><g:xEditableFieldNote owner="${license}" field="alumniAccess" id="alumniAccess"/></td></tr>
                 <tr><td>ILL - Inter Library Loans</td>
-                    <td><g:xEditableRefData owner="${license}" field="ill" config='YN' /></td>
+                    <td><g:xEditableRefData owner="${license}" field="ill" config='YNO' /></td>
                     <td><g:xEditableFieldNote owner="${license}" field="ill" id="ill"/></td></tr>
                 <tr><td>Include In Coursepacks</td>
                     <td><g:xEditableRefData owner="${license}" field="coursepack" config='YNO' /></td>
