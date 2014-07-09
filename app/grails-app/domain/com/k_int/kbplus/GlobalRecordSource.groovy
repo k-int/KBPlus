@@ -43,4 +43,10 @@ class GlobalRecordSource {
     credentials(nullable:true, blank:false)
   }
 
+  @Transient
+  def getBaseUrl() {
+    // For now, assume type=gokb - and trim off the oai/packages
+    def result = uri.replaceAll('oai.*','');
+    result
+  }
 }

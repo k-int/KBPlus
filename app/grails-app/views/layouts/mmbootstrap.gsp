@@ -201,20 +201,19 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'titleMerge'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="titleMerge">Title Merge</g:link>
                       </li>
+                      <li class="divider"></li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'globalSync'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="globalSync">Start Global Data Sync</g:link>
                       </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'manageGlobalSources'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="manageGlobalSources">Manage Global Sources</g:link>
                       </li>
+                      <li class="divider"></li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'orgsExport'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="orgsExport">Bulk Export Organisations</g:link>
                       </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'orgsImport'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="orgsImport">Bulk Load Organisations</g:link>
-                      </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'docstoreMigrate'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="docstoreMigrate">Docstore Migration</g:link>
                       </li>
                       <li class="divider"></li>
                       <li <%= ( ( 'stats'== controllerName ) && ( 'statsHome'==actionName ) ) ? ' class="active"' : '' %>>

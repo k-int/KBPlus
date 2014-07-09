@@ -30,6 +30,11 @@ class BootStrap {
     def ref_yes = RefdataCategory.lookupOrCreate("YN","Yes")
     def ref_no = RefdataCategory.lookupOrCreate("YN","No")
 
+    def ref_yno_n = RefdataCategory.lookupOrCreate("YNO","No")
+    def ref_yno_y = RefdataCategory.lookupOrCreate("YNO","Yes")
+    def ref_yno_o = RefdataCategory.lookupOrCreate("YNO","Other")
+    def ref_yno_u = RefdataCategory.lookupOrCreate("YNO","Unknown")
+
     def or_licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
     def or_subscriber_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber');
     def or_sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscription Consortia');

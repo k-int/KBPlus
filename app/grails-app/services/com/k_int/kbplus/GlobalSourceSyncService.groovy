@@ -342,6 +342,7 @@ class GlobalSourceSyncService {
           out.close()
           existing_record_info[0].record = baos.toByteArray();
           existing_record_info[0].desc="Package ${parsed_rec.title} consisting of ${parsed_rec.parsed_rec.tipps?.size()} titles"
+          existing_record_info[0].kbplusCompliant = testKBPlusCompliance(parsed_rec.parsed_rec)
           existing_record_info[0].save()
         }
         else {
@@ -354,6 +355,9 @@ class GlobalSourceSyncService {
           out.writeObject(parsed_rec.parsed_rec)
           out.close()
 
+          // Evaluate the incoming record to see if it meets KB+ stringent data quality standards
+          def kbplus_compliant = testKBPlusCompliance(parsed_rec.parsed_rec) // RefdataCategory.lookupOrCreate("YNO","No")
+
           // Because we don't know about this record, we can't possibly be already tracking it. Just create a local tracking record.
           existing_record_info = new GlobalRecordInfo(
                                                       ts:record_timestamp,
@@ -362,7 +366,8 @@ class GlobalSourceSyncService {
                                                       desc:"Package ${parsed_rec.title} consisting of ${parsed_rec.parsed_rec?.tipps?.size()} titles",
                                                       source: sync_job,
                                                       rectype:sync_job.rectype,
-                                                      record: baos.toByteArray());
+                                                      record: baos.toByteArray(),
+                                                      kbplusCompliant: kbplus_compliant);
 
           if ( ! existing_record_info.save() ) {
             log.error("Problem saving record info: ${existing_record_info.errors}");
@@ -468,5 +473,9 @@ class GlobalSourceSyncService {
     com.k_int.kbplus.GokbDiffEngine.diff(result, oldpkg, newpkg, onNewTipp, onUpdatedTipp, onDeletedTipp, onPkgPropChange, onTippUnchanged, false)
 
     return result
+  }
+
+  def testKBPlusCompliance(json_record) {
+    return RefdataCategory.lookupOrCreate("YNO","Unknown")
   }
 }
