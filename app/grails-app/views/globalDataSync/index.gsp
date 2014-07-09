@@ -48,8 +48,8 @@
               <td> <a href="${item.source.baseUrl}resource/show/${item.identifier}">${fieldValue(bean: item, field: "identifier")}</a> </td>
               <td> <a href="${item.source.baseUrl}resource/show/${item.identifier}">${fieldValue(bean: item, field: "name")}</a></td>
               <td> <a href="${item.source.baseUrl}resource/show/${item.identifier}">${fieldValue(bean: item, field: "desc")}</a></td>
-              <td>${item.source.name}</td>
-              <td>${item.displayRectype}</td>
+              <td> <a href="${item.source.baseUrl}">${item.source.name}</a></td>
+              <td> <a href="${item.source.baseUrl}search/index?qbe=g:packages">${item.displayRectype}</a></td>
               <td>${item.kbplusCompliant?.value}</td>
               <td><g:link action="newCleanTracker" controller="globalDataSync" id="${item.id}" class="btn btn-success">Track(New)</g:link>
                   <g:link action="selectLocalPackage" controller="globalDataSync" id="${item.id}" class="btn btn-success">Track(Merge)</g:link></td>
