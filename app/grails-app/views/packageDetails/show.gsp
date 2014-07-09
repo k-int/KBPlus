@@ -254,11 +254,19 @@
             &nbsp;<label>Ends After:</label>
             <g:simpleHiddenValue id="endsAfter" name="endsAfter" type="date" value="${params.endsAfter}"/>
 
-           <input type="submit" class="btn btn-primary" />
+           <input type="submit" class="btn btn-primary" value="Filter Results" />
         </g:form>
 
           <table class="table table-bordered">
             <g:form action="packageBatchUpdate" params="${[id:packageInstance?.id]}">
+            <g:hiddenField name="filter" value="${params.filter}"/>
+            <g:hiddenField name="coverageNoteFilter" value="${params.coverageNoteFilter}"/>
+            <g:hiddenField name="startsBefore" value="${params.startsBefore}"/>
+            <g:hiddenField name="endsAfter" value="${params.endsAfter}"/>
+            <g:hiddenField name="sort" value="${params.sort}"/>
+            <g:hiddenField name="order" value="${params.order}"/>
+            <g:hiddenField name="offset" value="${params.offset}"/>
+            <g:hiddenField name="max" value="${params.max}"/>
             <thead>
             <tr class="no-background">
 

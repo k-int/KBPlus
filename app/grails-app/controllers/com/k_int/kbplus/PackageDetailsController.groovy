@@ -686,7 +686,6 @@ class PackageDetailsController {
                 }
               }
             }
-
           }
 
           if ( search?.response ) {
@@ -822,6 +821,11 @@ class PackageDetailsController {
 
     
     if ( params.BatchSelectedBtn=='on' ) {
+      log.debug("Apply batch changes - selected")
+      params.filter=null //remove filters
+      params.coverageNoteFilter=null
+      params.startsBefore=null
+      params.endsAfter=null
       params.each { p ->
         if (p.key.startsWith('_bulkflag.') && ( p.value == 'on' ) ) {
           def tipp_id_to_edit = p.key.substring(10);
@@ -843,6 +847,9 @@ class PackageDetailsController {
                           if ( bulk_field_defn.type == 'date' ) {
                               tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = formatter.parse(proposed_value)
                           }
+                          else if ( bulk_field_defn.type == 'ref' ) {
+                            tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = genericOIDService.resolveOID(proposed_value)
+                          }
                           else {
                               tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = proposed_value
                           }
@@ -862,7 +869,7 @@ class PackageDetailsController {
       }
     }
     else if ( params.BatchAllBtn=='on' ) {
-      log.debug("Batch process all");
+      log.debug("Batch process all filtered by: "+params.filter);
       def qry_params = [packageInstance]
       def base_qry = generateBasePackageQuery(params, qry_params, showDeletedTipps, new Date())
       def tipplist = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params)
@@ -883,7 +890,7 @@ class PackageDetailsController {
                 if ( bulk_field_defn.type == 'date' ) {
                   tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = formatter.parse(proposed_value)
                 }
-                if ( bulk_field_defn.type == 'ref' ) {
+                else if ( bulk_field_defn.type == 'ref' ) {
                   tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = genericOIDService.resolveOID(proposed_value)
                 }
                 else {
@@ -899,6 +906,6 @@ class PackageDetailsController {
       }
     }
 
-    redirect(action:'show', id:params.id);
+    redirect(action:'show', params:[id:params.id,sort:params.sort,order:params.order,max:params.max,offset:params.offset]);
   }
 }
