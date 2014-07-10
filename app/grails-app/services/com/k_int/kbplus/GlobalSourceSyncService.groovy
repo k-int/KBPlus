@@ -476,6 +476,39 @@ class GlobalSourceSyncService {
   }
 
   def testKBPlusCompliance(json_record) {
-    return RefdataCategory.lookupOrCreate("YNO","Unknown")
+    // Iterate through all titles..
+    def error = false
+    def result = null
+
+    log.debug(json_record.packageName);
+    log.debug(json_record.packageId);
+
+    // GOkb records containing titles with no identifiers are not valid in KB+ land
+    json_record?.tipps.each { tipp ->
+      log.debug(tipp.title.name);
+      // tipp.title.identifiers
+      if ( tipp.title?.identifiers?.size() > 0 ) {
+        // No problem
+      }
+      else {
+        error = true
+      }
+
+      // tipp.titleid
+      // tipp.platform
+      // tipp.platformId
+      // tipp.coverage
+      // tipp.url
+      // tipp.identifiers
+    }
+
+    if ( error ) {
+      result = RefdataCategory.lookupOrCreate("YNO","No")
+    }
+    else {
+      result = RefdataCategory.lookupOrCreate("YNO","Yes")
+    }
+    
+    return result
   }
 }
