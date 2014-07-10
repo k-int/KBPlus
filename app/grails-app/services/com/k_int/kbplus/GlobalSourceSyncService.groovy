@@ -335,6 +335,8 @@ class GlobalSourceSyncService {
             cfg.reconciler(tracker, old_rec_info, new_record_info)
           }
 
+          existing_record_info[0].kbplusCompliant = testKBPlusCompliance(parsed_rec.parsed_rec)
+
           // Finally, update our local copy of the remote object
           def baos = new ByteArrayOutputStream()
           def out= new ObjectOutputStream(baos)
@@ -342,7 +344,6 @@ class GlobalSourceSyncService {
           out.close()
           existing_record_info[0].record = baos.toByteArray();
           existing_record_info[0].desc="Package ${parsed_rec.title} consisting of ${parsed_rec.parsed_rec.tipps?.size()} titles"
-          existing_record_info[0].kbplusCompliant = testKBPlusCompliance(parsed_rec.parsed_rec)
           existing_record_info[0].save()
         }
         else {
@@ -350,13 +351,13 @@ class GlobalSourceSyncService {
           def parsed_rec = cfg.converter.call(rec.metadata)
           log.debug("Converter thinks this rec is ${parsed_rec.title}");
 
+          // Evaluate the incoming record to see if it meets KB+ stringent data quality standards
+          def kbplus_compliant = testKBPlusCompliance(parsed_rec.parsed_rec) // RefdataCategory.lookupOrCreate("YNO","No")
+
           def baos = new ByteArrayOutputStream()
           def out= new ObjectOutputStream(baos)
           out.writeObject(parsed_rec.parsed_rec)
           out.close()
-
-          // Evaluate the incoming record to see if it meets KB+ stringent data quality standards
-          def kbplus_compliant = testKBPlusCompliance(parsed_rec.parsed_rec) // RefdataCategory.lookupOrCreate("YNO","No")
 
           // Because we don't know about this record, we can't possibly be already tracking it. Just create a local tracking record.
           existing_record_info = new GlobalRecordInfo(
@@ -479,6 +480,7 @@ class GlobalSourceSyncService {
     // Iterate through all titles..
     def error = false
     def result = null
+    def problem_titles = []
 
     log.debug(json_record.packageName);
     log.debug(json_record.packageId);
@@ -491,6 +493,7 @@ class GlobalSourceSyncService {
         // No problem
       }
       else {
+        problem_titles.add(tipp.title.titleId)
         error = true
       }
 
