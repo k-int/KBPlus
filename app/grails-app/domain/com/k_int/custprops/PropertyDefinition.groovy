@@ -16,7 +16,7 @@ class PropertyDefinition {
     public static final String[] validTypes = [Integer.toString(), String.toString(), RefdataValue.toString(), BigDecimal.toString()]
 
     static constraints = {
-        name(nullable: false, blank: false)
+        name(nullable: false, blank: false, unique:true)
         descr(nullable: false, blank: true)
         type(nullable: false, blank: false)
         refdataCategory(nullable:true)

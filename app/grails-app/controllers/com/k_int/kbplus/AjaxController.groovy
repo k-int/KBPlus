@@ -614,22 +614,39 @@ class AjaxController {
   }
 
   def addCustPropertyType(){
-
-    def newProp = PropertyDefinition.lookupOrCreateType(params.cust_prop_name, params.cust_prop_type, params.cust_prop_desc)
+    def newProp
+    def error 
+    def owner =  grailsApplication.getArtefact("Domain",params.ownerClass.replace("class ",""))?.getClazz()?.get(params.ownerId)
     if(params.cust_prop_type.equals(RefdataValue.toString())){
-        def cat = RefdataCategory.get(params.refdatacategory)
-        newProp.setRefdataCategory(cat.desc)
-        newProp.save()
+        if(params.refdatacategory){
+          newProp = PropertyDefinition.lookupOrCreateType(params.cust_prop_name, params.cust_prop_type, params.cust_prop_desc)
+          def cat = RefdataCategory.get(params.refdatacategory)
+          newProp.setRefdataCategory(cat.desc)
+          newProp.save(flush:true)    
+        }else{
+          error = "Type creation failed. Please select a ref data type."
+        }
+    }else{
+        newProp = PropertyDefinition.lookupOrCreateType(params.cust_prop_name, params.cust_prop_type, params.cust_prop_desc)
     }
-    redirect(url: request.getHeader('referer'))
+     if(newProp?.hasErrors()){
+        log.error(newProp.errors)
+      }
+      request.setAttribute("editable",params.editable == "true")
+      render(template: "/templates/custom_props", model:[ownobj:owner, newProp:newProp])
   }
 
   def addCustomPropertyValue(){
     def owner =  grailsApplication.getArtefact("Domain",params.ownerClass.replace("class ",""))?.getClazz()?.get(params.ownerId)
     def newProp = PropertyDefinition.lookupOrCreateProp( params.propIdent, owner)
-    log.debug("New Property created: "+newProp)
+    def error 
+    if(newProp.hasErrors()){
+        log.error(newProp.errors)
+    }else{
+      log.debug("New Property created: "+newProp)
+    }
     request.setAttribute("editable",params.editable == "true")
-    render(template: "/templates/custom_props",model:[ownobj:owner])
+    render(template: "/templates/custom_props",model:[ownobj:owner, newProp:newProp])
   }
 
   def delOrgRole() {
@@ -647,9 +664,14 @@ class AjaxController {
       def owner =  grailsApplication.getArtefact("Domain",params.ownerClass.replace("class ",""))?.getClazz()?.get(params.ownerId)
       owner.customProperties.remove(property)
       property.delete(flush:true)
-      log.debug("Deleting Custom Property: "+property)
+      def error
+      if(property.hasErrors()){
+        log.error(property.errors)
+      }else{
+        log.debug("Deleted Custom Property: "+property)
+      }
       request.setAttribute("editable", params.editable == "true")
-      render(template: "/templates/custom_props",model:[ownobj:owner])
+      render(template: "/templates/custom_props",model:[ownobj:owner, newProp:property])
   }
 
   def lookup() {

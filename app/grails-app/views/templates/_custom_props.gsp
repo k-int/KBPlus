@@ -4,6 +4,17 @@
 <%@ page import="com.k_int.kbplus.RefdataValue; com.k_int.custprops.PropertyDefinition" %>
 <h6>Custom Properties</h6>
 
+<g:hasErrors bean="${newProp}">
+    <bootstrap:alert class="alert-error">
+    <ul>
+        <g:eachError bean="${newProp}" var="error">
+            <li> <g:message error="${error}"/></li>
+    </g:eachError>
+    </ul>
+    </bootstrap:alert>
+</g:hasErrors>
+
+
 <g:formRemote url="[controller: 'ajax', action: 'addCustomPropertyValue']" method="post" name="cust_prop_add_value"
               class="form-inline" update="custom_props_div" onComplete="runCustomPropsJS('${createLink(controller:'ajax', action:'lookup')}')">
     <input type="hidden" name="propIdent" id="customPropSelect"/>
@@ -56,7 +67,13 @@
 <div id="cust_prop_add_modal" class="modal hide">
 
     <g:formRemote id="create_cust_prop" name="modal_create_cust_prop"
-                  url="[controller: 'ajax', action: 'addCustPropertyType']" method="post">
+                  url="[controller: 'ajax', action: 'addCustPropertyType']" method="post" update="custom_props_div" 
+                  onComplete="runCustomPropsJS('${createLink(controller:'ajax', action:'lookup')}')">
+        <input type="hidden" name="ownerId" value="${ownobj.id}"/>
+        <input type="hidden" name="ownerClass" value="${ownobj.class}"/>
+        <input type="hidden" name="editable" value="${editable}"/>
+
+
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">×</button>
 
