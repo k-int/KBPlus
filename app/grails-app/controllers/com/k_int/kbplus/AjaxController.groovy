@@ -633,13 +633,13 @@ class AjaxController {
         log.error(newProp.errors)
       }
       request.setAttribute("editable",params.editable == "true")
-      render(template: "/templates/custom_props", model:[ownobj:owner, newProp:newProp])
+      render(template: "/templates/custom_props", model:[ownobj:owner, newProp:newProp, error:error])
   }
 
   def addCustomPropertyValue(){
     def owner =  grailsApplication.getArtefact("Domain",params.ownerClass.replace("class ",""))?.getClazz()?.get(params.ownerId)
     def newProp = PropertyDefinition.lookupOrCreateProp( params.propIdent, owner)
-    def error 
+
     if(newProp.hasErrors()){
         log.error(newProp.errors)
     }else{
@@ -664,7 +664,7 @@ class AjaxController {
       def owner =  grailsApplication.getArtefact("Domain",params.ownerClass.replace("class ",""))?.getClazz()?.get(params.ownerId)
       owner.customProperties.remove(property)
       property.delete(flush:true)
-      def error
+
       if(property.hasErrors()){
         log.error(property.errors)
       }else{

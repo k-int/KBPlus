@@ -14,6 +14,10 @@
     </bootstrap:alert>
 </g:hasErrors>
 
+<g:if test="${error}">
+    <bootstrap:alert class="alert-danger">${error}</bootstrap:alert>
+</g:if>
+
 
 <g:formRemote url="[controller: 'ajax', action: 'addCustomPropertyValue']" method="post" name="cust_prop_add_value"
               class="form-inline" update="custom_props_div" onComplete="runCustomPropsJS('${createLink(controller:'ajax', action:'lookup')}')">
