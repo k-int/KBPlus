@@ -79,6 +79,7 @@ grails.project.dependency.resolution = {
         }
         compile "com.lowagie:itext:2.1.7"
         compile "net.sf.jasperreports:jasperreports:5.6.0"
+        compile 'cglib:cglib:2.2.2'
     }
 
     plugins {
