@@ -6,6 +6,9 @@
 	<parameter name="coverage_note" class="java.lang.String">
 		<parameterDescription><![CDATA[Coverage note to search]]></parameterDescription>
 	</parameter>
+	<parameter name="report_description" class="java.lang.String">
+		<parameterDescription><![CDATA[List all titles with a matching coverage note, as the one provided]]></parameterDescription>
+	</parameter>
 	<queryString language="SQL">
 		<![CDATA[SELECT kbplus.title_instance_package_platform.tipp_id,
 	kbplus.title_instance_package_platform.tipp_version,
@@ -15,7 +18,7 @@ FROM kbplus.title_instance
 	 INNER JOIN kbplus.title_instance_package_platform ON 
 	 kbplus.title_instance_package_platform.tipp_ti_fk = kbplus.title_instance.ti_id 
 WHERE 
-	 kbplus.title_instance_package_platform.tipp_coverage_note LIKE $P{coverage_note} ]]>
+	 kbplus.title_instance_package_platform.tipp_coverage_note LIKE $P{coverage_note}]]>
 	</queryString>
 	<field name="tipp_id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -55,13 +58,13 @@ WHERE
 	<title>
 		<band height="72">
 			<frame>
-				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#006699" uuid="1ab40572-b316-441a-aae0-000db5a1667e"/>
+				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#007A5E" uuid="1ab40572-b316-441a-aae0-000db5a1667e"/>
 				<staticText>
-					<reportElement x="20" y="20" width="234" height="43" forecolor="#FFFFFF" uuid="bb707304-f70a-4b32-a4ec-c530d60f14a1"/>
+					<reportElement x="20" y="20" width="375" height="43" forecolor="#FFFFFF" uuid="bb707304-f70a-4b32-a4ec-c530d60f14a1"/>
 					<textElement>
-						<font size="34" isBold="true"/>
+						<font size="28" isBold="true"/>
 					</textElement>
-					<text><![CDATA[TITLE]]></text>
+					<text><![CDATA[Match Coverage Note]]></text>
 				</staticText>
 				<staticText>
 					<reportElement x="395" y="43" width="180" height="20" forecolor="#FFFFFF" uuid="2e1bac40-ce95-4530-8a88-3b86cc2c16d0"/>
@@ -82,25 +85,18 @@ WHERE
 				<reportElement x="-20" y="20" width="595" height="1" forecolor="#666666" uuid="a4c31434-07f2-4410-89b1-9fdd46a5d2f8"/>
 			</line>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="0" width="185" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="c57fd08d-4867-4a49-bc23-c4c51a8cd47f"/>
+				<reportElement mode="Opaque" x="0" y="0" width="130" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="c57fd08d-4867-4a49-bc23-c4c51a8cd47f"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[tipp_id]]></text>
+				<text><![CDATA[id]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="185" y="0" width="185" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="4b97a749-348f-4f10-ba28-638208a037b5"/>
+				<reportElement mode="Opaque" x="140" y="0" width="415" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="7b7b3107-efce-4271-aad7-b34d3b31fd66"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[tipp_version]]></text>
-			</staticText>
-			<staticText>
-				<reportElement mode="Opaque" x="370" y="0" width="185" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="7b7b3107-efce-4271-aad7-b34d3b31fd66"/>
-				<textElement textAlignment="Center">
-					<font size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[ti_title]]></text>
+				<text><![CDATA[Title]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -112,21 +108,14 @@ WHERE
 			<textField isStretchWithOverflow="true">
 				<reportElement x="0" y="0" width="185" height="20" uuid="7d41acd5-83f3-4d15-9b00-7f39066c20ba"/>
 				<textElement>
-					<font size="14"/>
+					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tipp_id}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="185" y="0" width="185" height="20" uuid="b34dc908-6b55-4942-b7ad-9430a0f206cf"/>
+				<reportElement x="140" y="0" width="415" height="20" uuid="92647cd1-c7f3-48df-a14d-2dad7331dd80"/>
 				<textElement>
-					<font size="14"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{tipp_version}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement x="370" y="0" width="185" height="20" uuid="92647cd1-c7f3-48df-a14d-2dad7331dd80"/>
-				<textElement>
-					<font size="14"/>
+					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ti_title}]]></textFieldExpression>
 			</textField>

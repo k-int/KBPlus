@@ -227,7 +227,7 @@ class BootStrap {
     if(nofilesFound){
       log.debug("No reports found, adding default reports.")
         def path = "resources/jasper_reports/"
-        def reports = ["subscriptions","titles","tipp_no_url"]
+        def reports = ["floating_titles","match_coverage","no_issn_e-issn","title_no_url"]
         reports.each { fileName ->
           def filePath = path + fileName + ".jrxml"
           def inputStreamBytes = grailsApplication.parentContext.getResource("classpath:$filePath").inputStream.bytes
