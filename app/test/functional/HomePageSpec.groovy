@@ -75,6 +75,8 @@ class HomePageSpec extends GebReportingSpec {
     }
 
     def "Verify Package created"() {
+        setup:
+            to DashboardPage
         when:
             allPackages()
         then:

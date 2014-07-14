@@ -15,7 +15,7 @@
 
 <body>
 <div class="container">
-    <div class="span8">
+    <div class="span12">
 
         <ul class="breadcrumb">
             <li><g:link controller="home" action="index">Home</g:link> <span class="divider">/</span></li>
@@ -27,9 +27,7 @@
             <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
         </g:if>
         <g:if test="${flash.error}">
-            <g:each in="${flash.error}">
-                <bootstrap:alert class="alert-error">${it}</bootstrap:alert>
-            </g:each>
+            <bootstrap:alert class="alert-error">${flash.error}</bootstrap:alert>
         </g:if>
 
         <p>The types of accepted files are .jasper and .jrxml. Any other files selected will be ignored.</p>

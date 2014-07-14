@@ -3,26 +3,19 @@ package com.k_int.kbplus
 import net.sf.jasperreports.engine.JasperCompileManager
 import net.sf.jasperreports.engine.JasperReport
 import grails.plugins.springsecurity.Secured
-import org.codehaus.groovy.grails.plugins.jasper.JasperExportFormat
+import org.jasper.JasperExportFormat
 import javax.servlet.http.HttpSession
 import net.sf.jasperreports.engine.JasperPrint
 import net.sf.jasperreports.j2ee.servlets.ImageServlet
-import org.codehaus.groovy.grails.plugins.jasper.JasperReportDef
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.Date
 import org.springframework.web.multipart.MultipartHttpServletRequest
-import org.codehaus.groovy.grails.plugins.jasper.JasperExportFormat
-import net.sf.jasperreports.engine.export.JRCsvExporter
-import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput
-import net.sf.jasperreports.engine.*
 import net.sf.jasperreports.engine.design.JasperDesign
 import net.sf.jasperreports.engine.xml.JRXmlLoader
-import net.sf.jasperreports.export.SimpleExporterInput
-import net.sf.jasperreports.export.SimpleWriterExporterOutput
-import net.sf.jasperreports.engine.export.HtmlExporter
-import net.sf.jasperreports.export.SimpleHtmlExporterOutput
 import net.sf.jasperreports.engine.JRExporterParameter
+import net.sf.jasperreports.engine.*
+
 
 
 
@@ -32,6 +25,8 @@ def dataSource
 	@Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
 	def index(){
 		def result=[:]
+		flash.error = ""
+ 		flash.message = ""
 		result.available_reports= availableReportNames()
 		def reportName= params.report_name?:result.available_reports[0]
 
@@ -65,8 +60,9 @@ def dataSource
 	@Secured(['ROLE_ADMIN','IS_AUTHENTICATED_FULLY'])
 	def uploadReport(){
 		def result = [:]
-		def errors = []
- 
+		flash.error = params.errorMsg?:""
+ 		flash.message = ""
+
  		if(request  instanceof MultipartHttpServletRequest){
 			def files = request.getMultipartFiles().get("report_files")
 			
@@ -74,34 +70,36 @@ def dataSource
 				def fileName = file.originalFilename
 
 				if(fileName.endsWith(".jrxml") || fileName.endsWith(".jasper")){
+					fileName = fileName.substring(0,fileName.lastIndexOf("."))
 					if(JasperReportFile.findByName(fileName) == null){
 						JasperReportFile newReport = new JasperReportFile(name:fileName, reportFile:file.getBytes()).save(flush:true)
 						if(newReport.hasErrors()){
-							errors.add("An error occured while storing "+fileName)
+							flash.error += message(code: 'jasper.upload.saveError', args: [fileName])+"<br/>"
 						}else{
-							println "Stored file "+ fileName
+							log.debug("Jasper Report Stored "+ fileName)
 						}
 					}else{
-						errors.add("A report file with name "+fileName+" already exists.")
+						flash.error += message(code: 'jasper.upload.exists', args: [fileName])+"<br/>"
 					} 
 				}else{
-					errors.add("One of the files uploaded is not a .jrxml or .jasper file and will be ignored.")
+					flash.error += message(code:'jasper.upload.wrongFormat',args:[fileName])"<br/>"
 				}
 			}
-			if(errors.isEmpty() && !files?.isEmpty()){
-				flash.message = "Upload Completed"
-			}
-			flash.error = errors
+			if(flash.error.equals("") && !files?.isEmpty()){
+				flash.message = message(code:'jasper.upload.success')
+			}		
 		}
 
 	}
 
 	@Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
 	def generateReport(){
-
+		flash.error = ""
+		flash.message = ""
+		
 		if(params._file.isEmpty()){
 			flash.error = "Please select a report for download."
-			redirect action: 'index'
+			chain action: 'index', model: [errorMsg:message(code:'jasper.generate.noSelection')]
 		}
 	
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy");
@@ -117,6 +115,7 @@ def dataSource
 		JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
 		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource.getConnection());
 
+		addJasperPrinterToSession(request.getSession(), jasperPrint)
 		generateResponse(jasperPrint,response, params)
 
 	}
@@ -137,13 +136,19 @@ def dataSource
 			conf.setRecordDelimiter("")
 			exporter.setConfiguration(conf)
 		**/
-		
-		response.setHeader("Content-disposition", "attachment; filename=" + (params._file.replace(params._format,'')) + "." + exportFormat.extension)
-        response.contentType = exportFormat.mimeTyp     
-        response.characterEncoding = "UTF-8"
-        response.outputStream << byteArray.toByteArray()
-
+		if(!exportFormat.inline){
+			response.setHeader("Content-disposition", "attachment; filename=" + (params._file.replace(params._format,'')) + "." + exportFormat.extension)
+	        response.contentType = exportFormat.mimeTyp     
+	        response.characterEncoding = "UTF-8"
+	        response.outputStream << byteArray.toByteArray()
+		}else{
+			render(text:byteArray,contentType:exportFormat.mimeTyp, encoding: "UTF-8")
+		}
 	}
+
+    private void addJasperPrinterToSession(HttpSession session, JasperPrint jasperPrinter) {
+        session[ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE] = jasperPrinter
+    }
 
 	def availableReportFormats(){
 		def formats = [] 
