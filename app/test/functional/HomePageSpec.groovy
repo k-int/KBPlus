@@ -129,7 +129,7 @@ class HomePageSpec extends GebReportingSpec {
             at AdminMngAffReqPage
             approve()
     }
-//
+
 //  //ref 012
 //    def "Show Info Icon" (){
 //        setup:
@@ -149,6 +149,37 @@ class HomePageSpec extends GebReportingSpec {
 //            subscriptions()
 //            !hasInfoIcon()
 //    }
+    def "Upload existing Jasper Report"(){
+        setup:
+            uploadJasper()
+            at JasperPage
+        when:
+            addReport(Data.JasperReportExistingFile)
+        then:
+            errorMsg("A report template with the name")
+    }
+
+    def "Upload new Jasper Report"(){
+        setup:
+            uploadJasper()
+            at JasperPage
+        when:
+            addReport(Data.JasperReportNewFile)
+        then:
+            alertMsg("Upload successful")
+    }
+
+    def "Generate Jasper Report"(){
+        setup:
+            generateJasper()
+            at JasperPage
+        when:
+            selectReport("titles")
+            getReport()
+        then:
+            at JasperPage
+    }
+
 
     def "Set up licence Template"() {
         setup:
@@ -164,6 +195,17 @@ class HomePageSpec extends GebReportingSpec {
             at LicencePage
 
     }
+
+    // def "Create Custom Property"(){
+    //     when:
+    //         $("a.select2-default").click()
+    //         waitFor { $("input.select2-input")}
+
+    //        $("input.select2-input").value("Ref")
+    //        $("input.select2-input") << Keys.ENTER
+    //     then:
+    //         at JasperPage
+    // }
     //ref 101
     def "View template Licence"() {
         setup:
