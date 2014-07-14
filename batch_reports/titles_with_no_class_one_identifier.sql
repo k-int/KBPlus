@@ -3,7 +3,7 @@ select @issn_type_id:=idns_id from identifier_namespace where idns_ns='ISSN';
 select @eissn_type_id:=idns_id from identifier_namespace where idns_ns='eISSN';
 select @doi_type_id:=idns_id from identifier_namespace where idns_ns='DOI';
 
-select ti.ti_id
+select ti.ti_id, ti_title
 from title_instance as ti
 where not exists ( select io.io_id 
                      from identifier_occurrence as io, 
