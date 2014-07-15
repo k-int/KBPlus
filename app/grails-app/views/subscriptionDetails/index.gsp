@@ -57,7 +57,7 @@
     </g:if>
 
     <div class="container">
-      ${institution?.name} ${subscriptionInstance?.type?.value}
+      <g:if test="${params.asAt}"><h1>Snapshot on ${params.asAt} from </h1></g:if>
        <h1><g:xEditable owner="${subscriptionInstance}" field="name" /></h1>
        <g:render template="nav"  />
     </div>
@@ -179,6 +179,10 @@
                                  <option value="${sp.pkg.id}" ${sp.pkg.id.toString()==params.pkgfilter?'selected=true':''}>${sp.pkg.name}</option>
                                </g:each>
                             </select>
+           <g:if test="${params.mode!='advanced'}">
+              <label>Entitlements as at:</label>
+              <g:simpleHiddenValue id="asAt" name="asAt" type="date" value="${params.asAt}"/>
+            </g:if>
              <input type="submit" class="btn btn-primary" />
           </g:form>
         </dt>
@@ -353,11 +357,16 @@
             $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" />/'+id);
             $('#modalComments').modal('show');
           });
-        }
+        });
       </g:else>
-        window.onload = function() {
-            runCustomPropsJS("<g:createLink controller='ajax' action='lookup'/>");
-        }
+
+      <g:if test="${params.asAt && params.asAt.length() > 0}"> $(function() {
+        document.body.style.background = "#fcf8e3";
+      });</g:if>
+      
+      window.onload = function() {
+       runCustomPropsJS("<g:createLink controller='ajax' action='lookup'/>");
+      }
     </r:script>
   </body>
 </html>

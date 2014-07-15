@@ -6,8 +6,7 @@
     <g:set var="entityName" value="${message(code: 'package.label', default: 'Package')}" />
     <title><g:message code="default.edit.label" args="[entityName]" /></title>
   </head>
-  <body>
-
+ <body>
 
 
     <div class="container">
@@ -74,7 +73,7 @@
 
 
       <div class="container">
-
+        <g:if test="${params.asAt}"><h1>Snapshot on ${params.asAt} from </h1></g:if>
         <div class="page-header">
           <div>
           <h1><g:if test="${editable}"><span id="packageNameEdit"
@@ -249,10 +248,14 @@
            <input type="hidden" name="order" value="${params.order}">
            <label>Filters - Title:</label> <input name="filter" value="${params.filter}"/>
            <label>Coverage note:</label> <input name="coverageNoteFilter" value="${params.coverageNoteFilter}"/>
-            &nbsp;<label>Coverage Starts Before:</label> 
+            <br/><label>Coverage Starts Before:</label> 
             <g:simpleHiddenValue id="startsBefore" name="startsBefore" type="date" value="${params.startsBefore}"/>
-            &nbsp;<label>Ends After:</label>
+            <label>Ends After:</label>
             <g:simpleHiddenValue id="endsAfter" name="endsAfter" type="date" value="${params.endsAfter}"/>
+            <g:if test="${params.mode!='advanced'}">
+              <label>Titles as at:</label>
+              <g:simpleHiddenValue id="asAt" name="asAt" type="date" value="${params.asAt}"/>
+            </g:if>
 
            <input type="submit" class="btn btn-primary" value="Filter Results" />
         </g:form>
@@ -344,7 +347,7 @@
             <g:set var="counter" value="${offset+1}" />
             <g:each in="${titlesList}" var="t">
               <g:set var="hasCoverageNote" value="${t.coverageNote?.length() > 0}" />
-              <tr>
+               <tr>
                 <td ${hasCoverageNote==true?'rowspan="2"':''}><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${t.id}" class="bulkcheck"/></g:if></td>
                 <td ${hasCoverageNote==true?'rowspan="2"':''}>${counter++}</td>
                 <td style="vertical-align:top;">
@@ -389,7 +392,7 @@
               </tr>
 
               <g:if test="${hasCoverageNote==true || params.mode=='advanced'}">
-                <tr>
+               <tr>
                   <td colspan="6">coverageNote: ${t.coverageNote}
                   <g:if test="${params.mode=='advanced'}">
                     <br/> Delayed OA: <g:xEditableRefData owner="${t}" field="delayedOA" config='TIPPDelayedOA'/> &nbsp;
@@ -466,7 +469,10 @@
             return false ;
         }
       }
-
+     
+      <g:if test="${params.asAt && params.asAt.length() > 0}"> $(function() {
+        document.body.style.background = "#fcf8e3";
+      });</g:if>
     </r:script>
 
   </body>

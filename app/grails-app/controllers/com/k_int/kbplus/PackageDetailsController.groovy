@@ -176,7 +176,18 @@ class PackageDetailsController {
     
       // def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
       def qry_params = [packageInstance]
-      def date_filter =  params.mode == 'advanced' ? null : new Date();
+
+      def date_filter
+      if(params.mode == 'advanced'){
+         date_filter = null
+         params.asAt = null
+      }else if(params.asAt && params.asAt.length() > 0 ) {
+         def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
+         date_filter = sdf.parse(params.asAt)    
+         result.editable= false
+      }else{
+         date_filter = new Date()
+      }
 
       def base_qry = generateBasePackageQuery(params, qry_params, showDeletedTipps, date_filter);
 
@@ -653,9 +664,7 @@ class PackageDetailsController {
             source {
               from = params.offset
               size = params.max
-              sort = [
-                ("${params.sorting?:'sortname'}".toString()) : [ 'order' : (params.order?:'asc') ]
-              ]
+
               query {
                 query_string (query: query_str)
               }
