@@ -115,6 +115,89 @@ class PackageDetailsController {
     }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def compare(){
+        log.debug("Compare packages")
+        def result = [:]
+        result.unionList=[]
+      
+        result.user = User.get(springSecurityService.principal.id)
+        result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+        params.max = result.max
+        result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
+        if(params.packageA != null && params.packageB != null || params.pkgA && params.pkgB ){
+
+          if(! params.pkgA){
+            result.pkgA = params.packageA
+            result.pkgB = params.packageB
+            result.dateA = params.packageADate
+            result.dateB = params.packageBDate
+          }else{
+            result.pkgA = params.pkgA
+            result.pkgB = params.pkgB
+            result.dateA = params.dateA
+            result.dateB = params.dateB
+          }
+          def pkgAID = params.packageA?:params.pkgA
+          def pkgBID = params.packageB?:params.pkgB
+
+          def dateAStr = params.packageADate?:params.dateA
+          def dateBStr = params.packageBDate?:params.dateB
+
+
+          def sdf = new java.text.SimpleDateFormat('dd/MM/yyyy')
+          def dateA = dateAStr?sdf.parse(dateAStr):new Date()
+          def dateB = dateBStr?sdf.parse(dateBStr):new Date()
+
+          def packageAId = pkgAID.substring( pkgAID.indexOf(":")+1)
+          def packageBId = pkgBID.substring( pkgBID.indexOf(":")+1)
+
+          def packageA = Package.get(packageAId)
+          def packageB = Package.get(packageBId)
+
+          log.debug("Package A ${packageA} and Package B ${packageB} on dates ${dateA} and"
+            + "${dateB} are submited for comparison.")
+
+          def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
+
+          def queryAParams = [packageA]
+          def queryA = generateBasePackageQuery(params,queryAParams, true, dateA)
+          def listA = TitleInstancePackagePlatform.executeQuery("select tipp "+queryA,  queryAParams, limits);
+
+          def queryBParams = [packageB]
+          def queryB = generateBasePackageQuery(params,queryBParams, true, dateB)
+          def listB = TitleInstancePackagePlatform.executeQuery("select tipp "+queryB,  queryBParams, limits);
+
+          def unionList = listA.plus(listB) as Set
+
+          result.listA = listA
+          result.listB = listB
+          result.unionList = unionList
+
+          log.debug("List sizes are ${listA.size()} and ${listB.size()} and the union is ${unionList.size()}")
+        }else{
+          flash.message = "Please select two packages for comparison"
+        }
+      
+
+        log.debug("HIDDEN SET ${params.pkgA}")
+        result
+    }
+    def createCompareList(pkg,dateStr,params){
+       def sdf = new java.text.SimpleDateFormat('dd/MM/yyyy')
+       def date = dateStr?sdf.parse(dateStr):new Date()
+       def packageId = pkg.substring( pkg.indexOf(":")+1)
+
+       def packageInstance = Package.get(packageId)
+       def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
+       def queryParams = [packageInstance]
+       def query = generateBasePackageQuery(params,queryParams, true, dateA)
+       def list = TitleInstancePackagePlatform.executeQuery("select tipp "+query,  queryParams, limits);
+
+       return list
+    }
+    
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def show() {
       def verystarttime = exportService.printStart("SubscriptionDetails")
     
@@ -664,7 +747,9 @@ class PackageDetailsController {
             source {
               from = params.offset
               size = params.max
-
+              sort = [
+                ("${params.sorting?:'sortname'}".toString()) : [ 'order' : (params.order?:'asc') ]
+              ]
               query {
                 query_string (query: query_str)
               }
