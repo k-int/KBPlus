@@ -122,10 +122,9 @@ class PackageDetailsController {
       
         result.user = User.get(springSecurityService.principal.id)
         result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
-        params.max = result.max
         result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
-        if(params.packageA != null && params.packageB != null || params.pkgA && params.pkgB ){
+        if((params.packageA != null && params.packageB != null )|| (params.pkgA && params.pkgB ) ){
 
           if(! params.pkgA){
             result.pkgA = params.packageA
@@ -138,35 +137,22 @@ class PackageDetailsController {
             result.dateA = params.dateA
             result.dateB = params.dateB
           }
+
           def pkgAID = params.packageA?:params.pkgA
           def pkgBID = params.packageB?:params.pkgB
 
           def dateAStr = params.packageADate?:params.dateA
           def dateBStr = params.packageBDate?:params.dateB
 
+          log.debug("Package A ${pkgAID} and Package B ${pkgBID} on dates ${dateAStr} and"
+            + "${dateBStr} are submited for comparison.")
 
-          def sdf = new java.text.SimpleDateFormat('dd/MM/yyyy')
-          def dateA = dateAStr?sdf.parse(dateAStr):new Date()
-          def dateB = dateBStr?sdf.parse(dateBStr):new Date()
+          result.pkgInsts = []
+          result.pkgDates = []
 
-          def packageAId = pkgAID.substring( pkgAID.indexOf(":")+1)
-          def packageBId = pkgBID.substring( pkgBID.indexOf(":")+1)
+          def listA = createCompareList(pkgAID, dateAStr, params, result)
+          def listB = createCompareList(pkgBID, dateBStr, params, result)
 
-          def packageA = Package.get(packageAId)
-          def packageB = Package.get(packageBId)
-
-          log.debug("Package A ${packageA} and Package B ${packageB} on dates ${dateA} and"
-            + "${dateB} are submited for comparison.")
-
-          def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
-
-          def queryAParams = [packageA]
-          def queryA = generateBasePackageQuery(params,queryAParams, true, dateA)
-          def listA = TitleInstancePackagePlatform.executeQuery("select tipp "+queryA,  queryAParams, limits);
-
-          def queryBParams = [packageB]
-          def queryB = generateBasePackageQuery(params,queryBParams, true, dateB)
-          def listB = TitleInstancePackagePlatform.executeQuery("select tipp "+queryB,  queryBParams, limits);
 
           def unionList = listA.plus(listB) as Set
 
@@ -176,24 +162,31 @@ class PackageDetailsController {
 
           log.debug("List sizes are ${listA.size()} and ${listB.size()} and the union is ${unionList.size()}")
         }else{
+          
           flash.message = "Please select two packages for comparison"
         }
       
-
-        log.debug("HIDDEN SET ${params.pkgA}")
         result
     }
-    def createCompareList(pkg,dateStr,params){
+    def createCompareList(pkg,dateStr,params, result){
+       def returnVals = [:]
        def sdf = new java.text.SimpleDateFormat('dd/MM/yyyy')
        def date = dateStr?sdf.parse(dateStr):new Date()
        def packageId = pkg.substring( pkg.indexOf(":")+1)
-
+        
        def packageInstance = Package.get(packageId)
-       def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
-       def queryParams = [packageInstance]
-       def query = generateBasePackageQuery(params,queryParams, true, dateA)
+
+       result.pkgInsts.add(packageInstance)
+
+       result.pkgDates.add(sdf.format(date))
+
+       def queryParams = [packageInstance]         
+
+       def limits = [max:result.max, offset:result.offset]
+       def query = generateBasePackageQuery(params,queryParams, true, date)
        def list = TitleInstancePackagePlatform.executeQuery("select tipp "+query,  queryParams, limits);
 
+       
        return list
     }
     

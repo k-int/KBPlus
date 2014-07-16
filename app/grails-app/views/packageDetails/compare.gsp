@@ -11,8 +11,10 @@
 
 <div class="container">
 
+<h2>Package Comparison</h2>
+
     <g:if test="${flash.message}">
-    <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
+	    <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
     </g:if>
 
 <g:form action="compare" controller="packageDetails">
@@ -49,17 +51,22 @@
 
 	<input type="submit" class="btn btn-primary" value="Compare">
 </g:form>
+
 <set var="pkgA" value="${pkgA}"/>
 <set var="pkgB" value="${pkgB}"/>
 <set var="dateA" value="${dateA}"/>
 <set var="dateB" value="${dateB}"/>
 
+<g:if test="${pkgInsts?.get(0) && pkgInsts?.get(1)}">
+	<h3>Comparing '${pkgInsts.get(0).name}'(1) and <br/>'${pkgInsts.get(1).name}'(2)</h3>
+
 <table class="table table-bordered">
 	<thead>
 		<tr> 
 			<th> Title </th>
-			<th> Package A</th>
-			<th> Package B </th>
+			<th> On ${pkgDates.get(0)} (1)</th>
+			<th> On ${pkgDates.get(1)} (2)</th>
+
 		</tr>
 	</thead>
 	<tbody>
@@ -69,7 +76,7 @@
 				
 				<g:if test="${listA.contains(item)}">
 					<g:if test="${listB.contains(item)}">
-						<td>both have it</td>
+						<td>Both have it</td>
 					</g:if>
 					<g:else><td class="danger">Got it but removed</td></g:else>
 				</g:if>
@@ -91,8 +98,12 @@
 		</g:each>
 	</tbody>
 </table>
-<g:paginate controller="packageDetails" params="[pkgA:pkgA, pkgB:pkgB, dateA: dateA, dateB:dateB]"
-	action="compare" total="${unionList.size()}" />
+<div class="paginateButtons" style="text-align:center">
+	<g:paginate controller="packageDetails" params="[pkgA:pkgA, pkgB:pkgB, dateA: dateA, dateB:dateB]"
+		action="compare" max="${max}"total="${unionList.size()}" />
+</div>
+</g:if>
+
 </div>
    
 <r:script language="JavaScript">
