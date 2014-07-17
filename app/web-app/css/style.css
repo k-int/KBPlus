@@ -15,6 +15,9 @@ td.danger {
 td.success {
     background-color: #dff0d8;
 }
+td.warning {
+    background-color: #fcf8e3;
+}
 .row_selected {
   background-color: #B0BED9 !important;
 }

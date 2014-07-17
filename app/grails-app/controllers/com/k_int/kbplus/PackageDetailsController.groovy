@@ -144,8 +144,8 @@ class PackageDetailsController {
           def dateAStr = params.packageADate?:params.dateA
           def dateBStr = params.packageBDate?:params.dateB
 
-          log.debug("Package A ${pkgAID} and Package B ${pkgBID} on dates ${dateAStr} and"
-            + "${dateBStr} are submited for comparison.")
+          // log.debug("Package A ${pkgAID} and Package B ${pkgBID} on dates ${dateAStr} and"
+          //   + "${dateBStr} are submited for comparison.")
 
           result.pkgInsts = []
           result.pkgDates = []
@@ -153,16 +153,20 @@ class PackageDetailsController {
           def listA = createCompareList(pkgAID, dateAStr, params, result)
           def listB = createCompareList(pkgBID, dateBStr, params, result)
 
+          def unionList = listA.plus(listB).unique {a,b ->  (a.title.title.equals(b.title.title))?0:1}
+          result.unionListSize = unionList.size()
+          unionList.sort{it.title.title}
 
-          def unionList = listA.plus(listB) as Set
+          log.debug("List sizes are ${listA.size()} and ${listB.size()} and the union is ${unionList.size()}")
 
+          def toIndex = result.offset+result.max < unionList.size()? result.offset+result.max: unionList.size()
+          unionList = unionList.subList(result.offset, toIndex.intValue())
           result.listA = listA
           result.listB = listB
           result.unionList = unionList
 
-          log.debug("List sizes are ${listA.size()} and ${listB.size()} and the union is ${unionList.size()}")
         }else{
-          
+
           flash.message = "Please select two packages for comparison"
         }
       
@@ -170,7 +174,7 @@ class PackageDetailsController {
     }
     def createCompareList(pkg,dateStr,params, result){
        def returnVals = [:]
-       def sdf = new java.text.SimpleDateFormat('dd/MM/yyyy')
+       def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd')
        def date = dateStr?sdf.parse(dateStr):new Date()
        def packageId = pkg.substring( pkg.indexOf(":")+1)
         
@@ -182,9 +186,8 @@ class PackageDetailsController {
 
        def queryParams = [packageInstance]         
 
-       def limits = [max:result.max, offset:result.offset]
        def query = generateBasePackageQuery(params,queryParams, true, date)
-       def list = TitleInstancePackagePlatform.executeQuery("select tipp "+query,  queryParams, limits);
+       def list = TitleInstancePackagePlatform.executeQuery("select tipp "+query,  queryParams);
 
        
        return list

@@ -17,7 +17,7 @@
 	    <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
     </g:if>
 
-<g:form action="compare" controller="packageDetails">
+<g:form action="compare" controller="packageDetails" method="GET">
 	<table class="table table-bordered">
 		<thead>
 			<tr>
@@ -58,14 +58,14 @@
 <set var="dateB" value="${dateB}"/>
 
 <g:if test="${pkgInsts?.get(0) && pkgInsts?.get(1)}">
-	<h3>Comparing '${pkgInsts.get(0).name}'(1) and <br/>'${pkgInsts.get(1).name}'(2)</h3>
+	<h3>Comparing '${pkgInsts.get(0).name}'(A) and <br/>'${pkgInsts.get(1).name}'(B)</h3>
 
 <table class="table table-bordered">
 	<thead>
 		<tr> 
 			<th> Title </th>
-			<th> On ${pkgDates.get(0)} (1)</th>
-			<th> On ${pkgDates.get(1)} (2)</th>
+			<th> On ${pkgDates.get(0)} (A)</th>
+			<th> On ${pkgDates.get(1)} (B)</th>
 
 		</tr>
 	</thead>
@@ -76,23 +76,51 @@
 				
 				<g:if test="${listA.contains(item)}">
 					<g:if test="${listB.contains(item)}">
-						<td>Both have it</td>
+						<td>
+						<g:if test="${listA.get(listA.indexOf(item))?.compareTo(listB.get(listB.indexOf(item))) == 1}">
+					 		DIFFEREEEEENCEEEEE
+				 		</g:if>
+						<g:render template="compare_cell" model="[obj:listA.get(listA.indexOf(item))]"/>
+						</td>
 					</g:if>
-					<g:else><td class="danger">Got it but removed</td></g:else>
+					<g:else>
+						<td class="danger">
+							<g:render template="compare_cell" model="[obj:listA.get(listA.indexOf(item))]"/>
+						</td>
+					</g:else>
 				</g:if>
 				<g:else><td></td></g:else>
 				
 			
 				<g:if test="${listB.contains(item)}">
 					<g:if test="${listA.contains(item)}">
-						<td>Both have it</td>
+						<td>
+						<g:render template="compare_cell" model="[obj:listB.get(listB.indexOf(item))]"/>
+						</td>
 					</g:if>
 					<g:else>
-						<td class="success"> Got it</td>
+						<td class="success">
+						<g:render template="compare_cell" model="[obj:listB.get(listB.indexOf(item))]"/>
+						</td>
 					</g:else>
 				</g:if>
 				
 				<g:else><td></td></g:else>
+
+				<g:if test="${listA.contains(item)}">
+					<g:if test="${item.coverageNote}">
+						<tr>
+						<td colspan="6"><p/>coverageNote (A): ${listA.get(listA.indexOf(item)).coverageNote}</td>
+						</tr>						
+					</g:if>
+				</g:if>
+				<g:if test="${listB.contains(item)}">
+					<g:if test="${item.coverageNote}">
+						<tr>
+						<td colspan="6"><p/>coverageNote (B): ${listB.get(listB.indexOf(item)).coverageNote}</td>
+						 </tr>
+					</g:if>
+				</g:if>
 				
 			</tr>
 		</g:each>
@@ -100,7 +128,7 @@
 </table>
 <div class="paginateButtons" style="text-align:center">
 	<g:paginate controller="packageDetails" params="[pkgA:pkgA, pkgB:pkgB, dateA: dateA, dateB:dateB]"
-		action="compare" max="${max}"total="${unionList.size()}" />
+		action="compare" max="${max}"total="${unionListSize}" />
 </div>
 </g:if>
 
@@ -109,6 +137,7 @@
 <r:script language="JavaScript">
     function applySelect2(element) {
       $(element).select2({
+      	width: "resolve",
         placeholder: "Type package name...",
         minimumInputLength: 1,
         ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
@@ -133,10 +162,10 @@
     });
 
     $('#packageADate').datepicker({
-    	format:"dd/mm/yyyy"
+    	format:"yyyy-mm-dd"
     });
     $('#packageBDate').datepicker({
-    	format:"dd/mm/yyyy"
+    	format:"yyyy-mm-dd"
     });
 
 </r:script>

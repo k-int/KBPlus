@@ -47,6 +47,7 @@ class TitleInstancePackagePlatform {
   String hostPlatformURL
   Date coreStatusStart
   Date coreStatusEnd
+  Integer controlledPropertiesHashCode
 
   TitleInstancePackagePlatform derivedFrom
 
@@ -140,13 +141,18 @@ class TitleInstancePackagePlatform {
 
     def domain_class = grailsApplication.getArtefact('Domain','com.k_int.kbplus.TitleInstancePackagePlatform');
 
+    StringBuilder sb = new StringBuilder()
+
     controlledProperties.each { cp ->
       log.debug("checking ${cp}")
+
       if ( oldMap[cp] != newMap[cp] ) {
         def prop_info = domain_class.getPersistentProperty(cp)
 
         def oldLabel = stringify(oldMap[cp])
         def newLabel = stringify(newMap[cp])
+       
+        sb.append(newLabel) 
 
         if ( prop_info.isAssociation() ) {
           log.debug("Convert object reference into OID");
@@ -166,6 +172,8 @@ class TitleInstancePackagePlatform {
                                                     ])
       }
     }
+    controlledPropertiesHashCode = sb.toString().hashCode()
+    this.save()
     log.debug("onChange completed")
   }
 
@@ -342,6 +350,26 @@ class TitleInstancePackagePlatform {
     sw.write("This tipp is ${getAvailabilityStatus(as_at).value} as at ${as_at} because the date specified was between the start date (${getDerivedAccessStartDate()} ${accessStartDate ? 'Set explicitly on this TIPP' : 'Defaulted from package start date'}) and the end date (${getDerivedAccessEndDate()} ${accessEndDate ? 'Set explicitly on this TIPP' : 'Defaulted from package end date'})");
 
     return sw.toString();
+  }
+
+  public int compareTo(TitleInstancePackagePlatform tippB){
+      if(!tippB) return 1
+        
+      StringBuilder sb = new StringBuilder("");
+      def a = sb.append(accessStartDate).append(accessEndDate).append(startVolume).
+      append(endVolume).append(startIssue).append(endIssue).append(coverageNote).toString().hashCode()
+      log.debug("HSAH " + a)
+      StringBuilder sb2 = new StringBuilder("");
+
+      def b = sb2.append(tippB.accessStartDate).append(tippB.accessEndDate).append(tippB.startVolume).
+      append(tippB.endVolume).append(tippB.startIssue).append(tippB.endIssue).append(tippB.coverageNote)
+      .toString().hashCode()
+      if(a.equals(b)){
+        return 0
+      }else{
+        return 1
+      }
+
   }
 
 
