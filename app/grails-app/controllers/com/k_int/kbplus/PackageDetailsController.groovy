@@ -116,7 +116,6 @@ class PackageDetailsController {
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def compare(){
-        log.debug("Compare packages")
         def result = [:]
         result.unionList=[]
       
@@ -124,39 +123,25 @@ class PackageDetailsController {
         result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
         result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
-        if((params.packageA != null && params.packageB != null )|| (params.pkgA && params.pkgB ) ){
+        if (params.pkgA?.length() >0 && params.pkgB?.length() >0 ){
 
-          if(! params.pkgA){
-            result.pkgA = params.packageA
-            result.pkgB = params.packageB
-            result.dateA = params.packageADate
-            result.dateB = params.packageBDate
-          }else{
-            result.pkgA = params.pkgA
-            result.pkgB = params.pkgB
-            result.dateA = params.dateA
-            result.dateB = params.dateB
-          }
-
-          def pkgAID = params.packageA?:params.pkgA
-          def pkgBID = params.packageB?:params.pkgB
-
-          def dateAStr = params.packageADate?:params.dateA
-          def dateBStr = params.packageBDate?:params.dateB
-
-          // log.debug("Package A ${pkgAID} and Package B ${pkgBID} on dates ${dateAStr} and"
-          //   + "${dateBStr} are submited for comparison.")
+          result.pkgA = params.pkgA
+          result.pkgB = params.pkgB
+          result.dateA = params.dateA
+          result.dateB = params.dateB
 
           result.pkgInsts = []
           result.pkgDates = []
 
-          def listA = createCompareList(pkgAID, dateAStr, params, result)
-          def listB = createCompareList(pkgBID, dateBStr, params, result)
+          def listA = createCompareList(params.pkgA, params.dateA, params, result)
+          def listB = createCompareList(params.pkgB, params.dateB, params, result)
 
-          def unionList = listA.plus(listB).unique {a,b ->  (a.title.title.equals(b.title.title))?0:1}
+          //FIXME: It should be possible to optimize the following lines
+          def unionList = listA.collect{it.title.title}.plus(listB.collect {it.title.title})
+          unionList = unionList.unique()
           result.unionListSize = unionList.size()
-          unionList.sort{it.title.title}
-
+          unionList.sort()
+          
           log.debug("List sizes are ${listA.size()} and ${listB.size()} and the union is ${unionList.size()}")
 
           def toIndex = result.offset+result.max < unionList.size()? result.offset+result.max: unionList.size()
@@ -166,7 +151,9 @@ class PackageDetailsController {
           result.unionList = unionList
 
         }else{
-
+          def currentDate = new java.text.SimpleDateFormat('yyyy-MM-dd').format(new Date())
+          result.dateA = currentDate
+          result.dateB = currentDate
           flash.message = "Please select two packages for comparison"
         }
       

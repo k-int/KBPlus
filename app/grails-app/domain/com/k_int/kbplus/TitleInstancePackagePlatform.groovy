@@ -119,6 +119,7 @@ class TitleInstancePackagePlatform {
     coreStatusEnd(nullable:true, blank:true);
     accessStartDate(nullable:true, blank:true);
     accessEndDate(nullable:true, blank:true);
+    controlledPropertiesHashCode(nullable:true, blank:true);
   }
 
   
@@ -131,7 +132,20 @@ class TitleInstancePackagePlatform {
     }
     result
   }
+  /**
+  * Calculate the controlledProperties hashCode using the properties toString method
+  **/
+  def calcControlledPropertiesHashCode(){
+    StringBuilder sb = new StringBuilder()
 
+    controlledProperties.each{
+      sb.append(this."$it")
+    }
+    controlledPropertiesHashCode = sb.toString().hashCode()
+    log.debug("Calculated hashCode from string ${sb.toString()} to ${controlledPropertiesHashCode}")
+    this.save(failOnError:true)
+
+  }
   @Transient
   def onChange = { oldMap,newMap ->
 
@@ -141,10 +155,10 @@ class TitleInstancePackagePlatform {
 
     def domain_class = grailsApplication.getArtefact('Domain','com.k_int.kbplus.TitleInstancePackagePlatform');
 
-    StringBuilder sb = new StringBuilder()
-
     controlledProperties.each { cp ->
       log.debug("checking ${cp}")
+      
+     
 
       if ( oldMap[cp] != newMap[cp] ) {
         def prop_info = domain_class.getPersistentProperty(cp)
@@ -152,7 +166,6 @@ class TitleInstancePackagePlatform {
         def oldLabel = stringify(oldMap[cp])
         def newLabel = stringify(newMap[cp])
        
-        sb.append(newLabel) 
 
         if ( prop_info.isAssociation() ) {
           log.debug("Convert object reference into OID");
@@ -172,9 +185,10 @@ class TitleInstancePackagePlatform {
                                                     ])
       }
     }
-    controlledPropertiesHashCode = sb.toString().hashCode()
-    this.save()
     log.debug("onChange completed")
+
+    calcControlledPropertiesHashCode()
+
   }
 
   private def stringify(obj) {
@@ -351,23 +365,24 @@ class TitleInstancePackagePlatform {
 
     return sw.toString();
   }
-
+  /**
+   * Compare the controlledPropertiesHashCode of two tipps.
+   * return 0 if they are same.
+  **/
   public int compareTo(TitleInstancePackagePlatform tippB){
       if(!tippB) return 1
-        
-      StringBuilder sb = new StringBuilder("");
-      def a = sb.append(accessStartDate).append(accessEndDate).append(startVolume).
-      append(endVolume).append(startIssue).append(endIssue).append(coverageNote).toString().hashCode()
-      log.debug("HSAH " + a)
-      StringBuilder sb2 = new StringBuilder("");
 
-      def b = sb2.append(tippB.accessStartDate).append(tippB.accessEndDate).append(tippB.startVolume).
-      append(tippB.endVolume).append(tippB.startIssue).append(tippB.endIssue).append(tippB.coverageNote)
-      .toString().hashCode()
-      if(a.equals(b)){
-        return 0
+      if (! controlledPropertiesHashCode ){
+        calcControlledPropertiesHashCode()
+      }
+      if( ! tippB.controlledPropertiesHashCode){
+        tippB.calcControlledPropertiesHashCode()
+      }
+
+      if(controlledPropertiesHashCode == tippB.controlledPropertiesHashCode){
+        0
       }else{
-        return 1
+        1
       }
 
   }
