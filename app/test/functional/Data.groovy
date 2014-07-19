@@ -44,6 +44,6 @@ class Data {
     static Package_import_file = workingDir + "manual_test_data" + sep + "so_v3" + sep + "Art Journals_Master_2014.csv"
 
     static RenewalsUploadFile = workingDir + "manual_test_data"+sep+"renewalsUpload" +sep+"EmeraldNewRenewalWorksheet.xls"
-    static JasperReportExistingFile = workingDir + "app" + sep + "grails-app"+sep+"conf"+sep+"resources"+sep+"jasper_reports"+sep+"tipp_no_url.jrxml"
+    static JasperReportExistingFile = workingDir + "app" + sep + "grails-app"+sep+"conf"+sep+"resources"+sep+"jasper_reports"+sep+"title_no_url.jrxml"
     static JasperReportNewFile = workingDir + "manual_test_data" +sep +"jasper"+sep+"titles.jrxml"
 }

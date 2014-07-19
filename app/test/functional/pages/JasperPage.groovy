@@ -10,11 +10,11 @@ class JasperPage extends BasePage{
     		$("input",type:"submit").click(JasperPage)
     	}
     	errorMsg { msg ->
-    		$("div.alert-error").children().filter("p").text().contains(msg)
+    		$("div.alert-error").children().filter("p").text()?.contains(msg)
     	}
 
     	alertMsg { msg ->
-    		$("div.alert-info").children().filter("p").text().contains(msg)
+    		$("div.alert-info").children().filter("p").text()?.contains(msg)
     	}
     	selectReport{ name ->
     		$("#available_reports").value(name)
