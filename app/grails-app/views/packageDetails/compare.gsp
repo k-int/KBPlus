@@ -164,7 +164,7 @@
 	</tbody>
 </table>
 <div class="paginateButtons" style="text-align:center">
-	<g:paginate controller="packageDetails" params="[pkgA:pkgA, pkgB:pkgB, dateA: dateA, dateB:dateB]"
+	<g:paginate controller="packageDetails" params="${params}"
 		action="compare" max="${max}"total="${unionListSize}" />
 </div>
 
