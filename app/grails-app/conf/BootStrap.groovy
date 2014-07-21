@@ -223,25 +223,27 @@ class BootStrap {
 
     //Add default Jasper reports, if there are currently no reports in DB
     log.debug("Query database for jasper reports")
-    def nofilesFound = JasperReportFile.findAll().isEmpty()
-    if(nofilesFound){
-      log.debug("No reports found, adding default reports.")
-        def path = "resources/jasper_reports/"
-        def reports = ["floating_titles","match_coverage","no_issn_e-issn","title_no_url"]
-        reports.each { fileName ->
-          def filePath = path + fileName + ".jrxml"
-          def inputStreamBytes = grailsApplication.parentContext.getResource("classpath:$filePath").inputStream.bytes
-          def newReport = new JasperReportFile(name:fileName, reportFile: inputStreamBytes).save()
-          if(newReport.hasErrors()){
-            log.debug("Jasper Report creation for "+fileName+".jrxml failed with errors: \n")
-            newReport.errors.each{
-              log.debug(it+"\n")
-            }
-          }else{
-            log.debug("Report added successfully.")
-          }
+    def reportsFound = JasperReportFile.findAll()
+    def defaultReports = ["floating_titles","match_coverage","no_issn_e-issn","title_no_url"]
+    defaultReports.each { reportName ->
+
+      def path = "resources/jasper_reports/"
+      def filePath = path + reportName + ".jrxml"
+      def inputStreamBytes = grailsApplication.parentContext.getResource("classpath:$filePath").inputStream.bytes
+      def newReport = reportsFound.find{ it.name == reportName }
+      if( newReport ){
+        newReport.setReportFile(inputStreamBytes)
+        newReport.save()
+      }else{
+        newReport = new JasperReportFile(name:reportName, reportFile: inputStreamBytes).save()
+      }
+      if(newReport.hasErrors()){
+        log.debug("Jasper Report creation for "+reportName+".jrxml failed with errors: \n")
+        newReport.errors.each{
+          log.debug(it+"\n")
         }
-    }
+      }   
+    }    
   }
 
   def destroy = {

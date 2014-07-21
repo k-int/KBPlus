@@ -10,15 +10,15 @@
 		<parameterDescription><![CDATA[List all titles with a matching coverage note, as the one provided]]></parameterDescription>
 	</parameter>
 	<queryString language="SQL">
-		<![CDATA[SELECT kbplus.title_instance_package_platform.tipp_id,
-	kbplus.title_instance_package_platform.tipp_version,
-	kbplus.title_instance.ti_title,
-	kbplus.title_instance_package_platform.tipp_coverage_note
-FROM kbplus.title_instance
-	 INNER JOIN kbplus.title_instance_package_platform ON 
-	 kbplus.title_instance_package_platform.tipp_ti_fk = kbplus.title_instance.ti_id 
+		<![CDATA[SELECT title_instance_package_platform.tipp_id,
+	title_instance_package_platform.tipp_version,
+	title_instance.ti_title,
+	title_instance_package_platform.tipp_coverage_note
+FROM title_instance
+	 INNER JOIN title_instance_package_platform ON 
+	 title_instance_package_platform.tipp_ti_fk = title_instance.ti_id 
 WHERE 
-	 kbplus.title_instance_package_platform.tipp_coverage_note LIKE $P{coverage_note}]]>
+	 title_instance_package_platform.tipp_coverage_note LIKE $P{coverage_note}]]>
 	</queryString>
 	<field name="tipp_id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>

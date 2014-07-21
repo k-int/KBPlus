@@ -19,7 +19,7 @@
 		<parameterDescription><![CDATA[This is the description of this report]]></parameterDescription>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT * FROM kbplus.title_instance where ti_id < $P{title_id}]]>
+		<![CDATA[SELECT * FROM title_instance where ti_id < $P{title_id}]]>
 	</queryString>
 	<field name="date_created" class="java.sql.Timestamp">
 		<fieldDescription><![CDATA[]]></fieldDescription>

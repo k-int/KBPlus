@@ -23,15 +23,15 @@
 		<parameterDescription><![CDATA[Start date after ]]></parameterDescription>
 	</parameter>
 	<queryString language="SQL">
-		<![CDATA[SELECT kbplus.subscription.sub_id,
-	kbplus.subscription.sub_name,
-	kbplus.subscription.sub_is_public,
-	kbplus.subscription.sub_end_date,
-	kbplus.subscription.sub_start_date
-FROM kbplus.subscription
+		<![CDATA[SELECT subscription.sub_id,
+	subscription.sub_name,
+	subscription.sub_is_public,
+	subscription.sub_end_date,
+	subscription.sub_start_date
+FROM subscription
 WHERE 
-	 kbplus.subscription.sub_id < $P{sub_id}
-	 AND kbplus.subscription.sub_start_date > $P{start_date}]]>
+	 subscription.sub_id < $P{sub_id}
+	 AND subscription.sub_start_date > $P{start_date}]]>
 	</queryString>
 	<field name="sub_name" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>

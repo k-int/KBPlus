@@ -7,12 +7,12 @@
 		<parameterDescription><![CDATA[Lists all titles that have no URL]]></parameterDescription>
 	</parameter>
 	<queryString language="SQL">
-		<![CDATA[SELECT kbplus.title_instance_package_platform.tipp_id,
-	kbplus.title_instance_package_platform.tipp_start_date,
-	kbplus.title_instance.ti_title
-FROM kbplus.title_instance
-	 INNER JOIN kbplus.title_instance_package_platform ON 
-	 kbplus.title_instance_package_platform.tipp_ti_fk = kbplus.title_instance.ti_id]]>
+		<![CDATA[SELECT title_instance_package_platform.tipp_id,
+	title_instance_package_platform.tipp_start_date,
+	title_instance.ti_title
+FROM title_instance
+	 INNER JOIN title_instance_package_platform ON 
+	 title_instance_package_platform.tipp_ti_fk = title_instance.ti_id]]>
 	</queryString>
 	<field name="tipp_id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
