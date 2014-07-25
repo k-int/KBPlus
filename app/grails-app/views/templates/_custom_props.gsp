@@ -9,7 +9,7 @@
     <ul>
         <g:eachError bean="${newProp}" var="error">
             <li> <g:message error="${error}"/></li>
-    </g:eachError>
+        </g:eachError>
     </ul>
     </bootstrap:alert>
 </g:hasErrors>

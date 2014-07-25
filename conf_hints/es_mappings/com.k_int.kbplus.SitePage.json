@@ -1,0 +1,12 @@
+{
+	"com.k_int.kbplus.SitePage" : {
+        "properties" : {
+			"alias" : { 
+				"type" : "string"},
+			"action" : { 
+				"type" : "string"},
+			"controller" : { 
+				"type" : "string"}
+		}
+	}
+}

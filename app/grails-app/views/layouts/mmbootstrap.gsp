@@ -235,11 +235,11 @@
               </sec:ifLoggedIn>
             </ul>
 
-            <!--
+           
             <ul class="nav pull-right">
               <li><a class="dlpopover" href="#"><i class="icon-search icon-white"></i></a></li>
             </ul>
-            -->
+           
 
             <ul class="nav pull-right">
               <ul class="nav">
@@ -290,7 +290,7 @@
                           <li><a href=${createLink(uri: '/freedom-of-information-policy')}>Freedom of Information Policy</a></li>
                       </ul>
                   </div>
-
+                  <g:set var="appVersion" value="${grailsApplication.metadata['app.version']}"/>
                   <div class="pull-right">
                       <div class="nav-collapse">
                           <ul class="nav">
@@ -307,6 +307,8 @@
                                       <li><a href="http://test.kbplus.ac.uk/kbplus/myInstitutions/index">KB+ Sandpit</a></li>
                                   </ul>
                               </li>
+                              <li><a href="https://github.com/k-int/KBPlus/releases/tag/${appVersion}">
+                              v${appVersion}</a></li>
                           </ul>
                       </div>
                   </div>
@@ -321,9 +323,11 @@
               <div class="pull-left">
                   <a href="http://www.jisc-collections.ac.uk/"><div class="sprite sprite-jisc_collections_logo">JISC Collections</div></a>
               </div>
+
               <div class="pull-right">
                   <a href="http://www.kbplus.ac.uk"><div class="sprite sprite-kbplus_logo">Knowledge Base Plus</div></a>
               </div>
+              
           </div>
       </div>
   </div>
@@ -360,14 +364,8 @@
       })();
   </r:script>
 
-    <div id="spotlight_popover_content_wrapper" style="display: none">
-      <form class="form-search">
-        <input type="text" class="input-medium search-query" onkeyup="reloadSpotlightSearchResults()">
-      </form>
-      <div id="spotlight-search-results">
-      </div>
-    </div>
-    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
+
+    <r:script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></r:script>
     <r:layoutResources/>
 
     <style type="text/css" media="screen, projection">

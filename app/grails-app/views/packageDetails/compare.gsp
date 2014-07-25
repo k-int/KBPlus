@@ -11,49 +11,49 @@
 
 <div class="container">
 <div class="row">
-<h2>Package Comparison</h2>
+	<h2>Package Comparison</h2>
 
-    <g:if test="${flash.message}">
-	    <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
-    </g:if>
+	    <g:if test="${flash.message}">
+		    <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
+	    </g:if>
 
-<g:form action="compare" controller="packageDetails" method="GET">
-	<table class="table table-bordered">
-		<thead>
-			<tr>
-				<th></th>
-				<th>Package A</th>
-				<th>Package B</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>Package name</td>
-				<td> <input type="hidden" name="pkgA" id="packageASelect" value="${pkgA}"/> </td>
-				<td> <input type="hidden" name="pkgB" id="packageBSelect" value="${pkgB}" /> </td>
-			</tr>
-			<tr>
-				<td> Package On date</td>
-				<td>
-					<div class="input-append date">
-						<input class="span2" size="16" type="text" 
-						name="dateA" id="dateA" value="${dateA}">
-						<span class="add-on"><i class="icon-th"></i></span> 
-					</div>
-				</td>
-				<td> 
-					<div class="input-append date">
-						<input class="span2" size="16" type="text" 
-						name="dateB" id="dateB" value="${dateB}">
-						<span class="add-on"><i class="icon-th"></i></span> 
-					</div>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+	<g:form action="compare" controller="packageDetails" method="GET">
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th></th>
+					<th>Package A</th>
+					<th>Package B</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Package name</td>
+					<td> <input type="hidden" name="pkgA" id="packageASelect" value="${pkgA}"/> </td>
+					<td> <input type="hidden" name="pkgB" id="packageBSelect" value="${pkgB}" /> </td>
+				</tr>
+				<tr>
+					<td> Package On date</td>
+					<td>
+						<div class="input-append date">
+							<input class="span2" size="16" type="text" 
+							name="dateA" id="dateA" value="${dateA}">
+							<span class="add-on"><i class="icon-th"></i></span> 
+						</div>
+					</td>
+					<td> 
+						<div class="input-append date">
+							<input class="span2" size="16" type="text" 
+							name="dateB" id="dateB" value="${dateB}">
+							<span class="add-on"><i class="icon-th"></i></span> 
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 
-	<input type="submit" class="btn btn-primary" value="Compare">
-</g:form>
+		<input type="submit" class="btn btn-primary" value="Compare">
+	</g:form>
 </div>
 
 
@@ -168,11 +168,10 @@
 		action="compare" max="${max}"total="${unionListSize}" />
 </div>
 
-</div>
 </g:if>
-
 </div>
-   
+
+
 <r:script language="JavaScript">
     function applySelect2(element) {
       $(element).select2({
