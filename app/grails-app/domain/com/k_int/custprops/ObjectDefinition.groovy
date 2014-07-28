@@ -1,6 +1,6 @@
 package com.k_int.custprops
 
-class ObjectDefinition extends TypeDefinition {
+class ObjectDefinition {//extends TypeDefinition
 
   static hasMany = [properties:ObjectProperty]
 

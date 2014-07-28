@@ -4,6 +4,7 @@ import org.springframework.dao.DataIntegrityViolationException
 import com.k_int.kbplus.auth.User
 import grails.plugins.springsecurity.Secured
 import grails.converters.*
+import com.k_int.custprops.PropertyDefinition
 import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 class AjaxController {
@@ -612,12 +613,65 @@ class AjaxController {
     redirect(url: request.getHeader('referer'))
   }
 
+  def addCustPropertyType(){
+    def newProp
+    def error 
+    def owner =  grailsApplication.getArtefact("Domain",params.ownerClass.replace("class ",""))?.getClazz()?.get(params.ownerId)
+    if(params.cust_prop_type.equals(RefdataValue.toString())){
+        if(params.refdatacategory){
+          newProp = PropertyDefinition.lookupOrCreateType(params.cust_prop_name, params.cust_prop_type, params.cust_prop_desc)
+          def cat = RefdataCategory.get(params.refdatacategory)
+          newProp.setRefdataCategory(cat.desc)
+          newProp.save(flush:true)    
+        }else{
+          error = "Type creation failed. Please select a ref data type."
+        }
+    }else{
+        newProp = PropertyDefinition.lookupOrCreateType(params.cust_prop_name, params.cust_prop_type, params.cust_prop_desc)
+    }
+     if(newProp?.hasErrors()){
+        log.error(newProp.errors)
+      }
+      request.setAttribute("editable",params.editable == "true")
+      render(template: "/templates/custom_props", model:[ownobj:owner, newProp:newProp, error:error])
+  }
+
+  def addCustomPropertyValue(){
+    def owner =  grailsApplication.getArtefact("Domain",params.ownerClass.replace("class ",""))?.getClazz()?.get(params.ownerId)
+    def newProp = PropertyDefinition.lookupOrCreateProp( params.propIdent, owner)
+
+    if(newProp.hasErrors()){
+        log.error(newProp.errors)
+    }else{
+      log.debug("New Property created: "+newProp)
+    }
+    request.setAttribute("editable",params.editable == "true")
+    render(template: "/templates/custom_props",model:[ownobj:owner, newProp:newProp])
+  }
+
   def delOrgRole() {
     // log.debug("delOrgRole ${params}");
     def or = OrgRole.get(params.id)
     or.delete(flush:true);
     // log.debug("Delete link: ${or}");
     redirect(url: request.getHeader('referer'))
+  }
+
+  def delCustomProperty(){
+      def className = params.propclass.split(" ")[1]
+      def propClass = Class.forName(className)
+      def property = propClass.get(params.id)
+      def owner =  grailsApplication.getArtefact("Domain",params.ownerClass.replace("class ",""))?.getClazz()?.get(params.ownerId)
+      owner.customProperties.remove(property)
+      property.delete(flush:true)
+
+      if(property.hasErrors()){
+        log.error(property.errors)
+      }else{
+        log.debug("Deleted Custom Property: "+property)
+      }
+      request.setAttribute("editable", params.editable == "true")
+      render(template: "/templates/custom_props",model:[ownobj:owner, newProp:property])
   }
 
   def lookup() {

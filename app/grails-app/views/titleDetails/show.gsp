@@ -131,8 +131,11 @@
                     <td/>
                   </tr>
                   <tr>
-                    <td colspan="6">Bulk coverage note change: <g:simpleHiddenValue id="bulk_coverage_note" name="bulk_coverage_note"/>
-                    - <input type="checkbox" name="clear_coverage_note"/> (clear)
+                    <td colspan="6">
+                      Bulk coverage note change: <g:simpleHiddenValue id="bulk_coverage_note" name="bulk_coverage_note"/>
+                       - <input type="checkbox" name="clear_coverage_note"/> (clear) <br/>
+                      Bulk Host Platform URL change: <g:simpleHiddenValue id="bulk_hostPlatformURL" name="bulk_hostPlatformURL"/>
+                       - <input type="checkbox" name="clear_hostPlatformURL"/> (clear) <br/>
                     </td>
                   </tr>
                 </g:if>
@@ -153,7 +156,8 @@
                     <td><g:link controller="tipp" action="show" id="${t.id}">Full TIPP record</g:link></td>
                   </tr>
                   <tr>
-                    <td colspan="6">${t.coverageNote?:'No coverage note'}</td>
+                    <td colspan="6">Coverage Note: ${t.coverageNote?:'No coverage note'}<br/>
+                                    Host Platform URL: ${t.hostPlatformURL?:'No Host Platform URL'}</td>
                   </tr>
                 </g:each>
               </table>

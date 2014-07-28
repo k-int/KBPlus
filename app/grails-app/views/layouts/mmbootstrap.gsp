@@ -63,6 +63,7 @@
 
                        <li><g:link controller="packageDetails" action="index">All Packages</g:link></li>
                        <li><g:link controller="titleDetails" action="index">All Titles</g:link></li>
+                       <li><g:link controller="packageDetails" action="compare">Compare Packages</g:link></li>
                        <li><g:link controller="onixplLicenseCompare"
                                    action="index">Compare ONIX-PL Licences</g:link></li>
                        <li class="divider"></li>
@@ -148,6 +149,10 @@
                        <li class="divider"></li>
                        <li <%= ( ( 'globalDataSync'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="globalDataSync" action="index">Global Data Download [Packages]</g:link></li>
+                       <li class="divider"></li>
+                         <li <%= ( ( 'jasperReports'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="jasperReports" action="index">Jasper Reports</g:link></li>
+
                      </ul>
                    </li>
                 </sec:ifAnyGranted>
@@ -219,6 +224,8 @@
                       <li <%= ( ( 'stats'== controllerName ) && ( 'statsHome'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="stats" action="statsHome">Statistics</g:link>
                       </li>
+                        <li <%= ( ( 'jasperReports'== controllerName ) && ( 'uploadReport'==actionName ) ) ? ' class="active"' : '' %>>
+                            <g:link controller="jasperReports" action="uploadReport">Upload Jasper Reports</g:link></li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'triggerHousekeeping'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="triggerHousekeeping">Trigger Housekeeping</g:link>
                       </li>
@@ -230,11 +237,12 @@
               </sec:ifLoggedIn>
             </ul>
 
-            <!--
+            <sec:ifLoggedIn>
             <ul class="nav pull-right">
               <li><a class="dlpopover" href="#"><i class="icon-search icon-white"></i></a></li>
             </ul>
-            -->
+            </sec:ifLoggedIn>
+           
 
             <ul class="nav pull-right">
               <ul class="nav">
@@ -285,7 +293,7 @@
                           <li><a href=${createLink(uri: '/freedom-of-information-policy')}>Freedom of Information Policy</a></li>
                       </ul>
                   </div>
-
+                  <g:set var="appVersion" value="${grailsApplication.metadata['app.version']}"/>
                   <div class="pull-right">
                       <div class="nav-collapse">
                           <ul class="nav">
@@ -302,6 +310,8 @@
                                       <li><a href="http://test.kbplus.ac.uk/kbplus/myInstitutions/index">KB+ Sandpit</a></li>
                                   </ul>
                               </li>
+                              <li><a href="https://github.com/k-int/KBPlus/releases/tag/${appVersion}">
+                              v${appVersion}</a></li>
                           </ul>
                       </div>
                   </div>
@@ -316,9 +326,11 @@
               <div class="pull-left">
                   <a href="http://www.jisc-collections.ac.uk/"><div class="sprite sprite-jisc_collections_logo">JISC Collections</div></a>
               </div>
+
               <div class="pull-right">
                   <a href="http://www.kbplus.ac.uk"><div class="sprite sprite-kbplus_logo">Knowledge Base Plus</div></a>
               </div>
+              
           </div>
       </div>
   </div>
@@ -355,14 +367,8 @@
       })();
   </r:script>
 
-    <div id="spotlight_popover_content_wrapper" style="display: none">
-      <form class="form-search">
-        <input type="text" class="input-medium search-query" onkeyup="reloadSpotlightSearchResults()">
-      </form>
-      <div id="spotlight-search-results">
-      </div>
-    </div>
-    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
+
+    <r:script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></r:script>
     <r:layoutResources/>
 
     <style type="text/css" media="screen, projection">

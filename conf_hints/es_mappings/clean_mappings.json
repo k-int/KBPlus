@@ -1,6 +1,22 @@
 {
   "kbplus": {
     "mappings": {
+      "com.k_int.kbplus.SitePage": {
+        "properties" :{
+          "alias": {
+              "type": "string"
+          },
+          "action": {
+              "type": "string"
+          },
+          "controller": {
+              "type": "string"
+          },
+          "rectype": {
+              "type": "string"
+          }
+        }
+      },
       "com.k_int.kbplus.License": {
         "properties": {}
       },

@@ -6,7 +6,8 @@ import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 class BootStrap {
 
-  def ESWrapperService 
+  def ESWrapperService
+  def dataloadService
   def grailsApplication
   // def docstoreService
 
@@ -225,8 +226,45 @@ class BootStrap {
     // if ( grailsApplication.config.doDocstoreMigration == true ) {
     //   docstoreService.migrateToDb();
     // }
+    addDefaultJasperReports()
+    addDefaultPageMappings()
+   
   }
+  def addDefaultPageMappings(){
+      if(! SitePage.findAll()){
+        def home = new SitePage(alias:"Home", action:"index",controller:"home").save()
+        def profile = new SitePage(alias:"Profile", action:"index",controller:"profile").save()
+        def pages = new SitePage(alias:"Pages", action:"managePages",controller:"spotlight").save()
 
+        dataloadService.updateSiteMapping()
+      }
+
+  }
+  def addDefaultJasperReports(){
+        //Add default Jasper reports, if there are currently no reports in DB
+    log.debug("Query database for jasper reports")
+    def reportsFound = JasperReportFile.findAll()
+    def defaultReports = ["floating_titles","match_coverage","no_issn_e-issn","title_no_url"]
+    defaultReports.each { reportName ->
+
+      def path = "resources/jasper_reports/"
+      def filePath = path + reportName + ".jrxml"
+      def inputStreamBytes = grailsApplication.parentContext.getResource("classpath:$filePath").inputStream.bytes
+      def newReport = reportsFound.find{ it.name == reportName }
+      if( newReport ){
+        newReport.setReportFile(inputStreamBytes)
+        newReport.save()
+      }else{
+        newReport = new JasperReportFile(name:reportName, reportFile: inputStreamBytes).save()
+      }
+      if(newReport.hasErrors()){
+        log.error("Jasper Report creation for "+reportName+".jrxml failed with errors: \n")
+        newReport.errors.each{
+          log.error(it+"\n")
+        }
+      }   
+    } 
+  }
   def destroy = {
   }
 
@@ -394,5 +432,4 @@ No Host Platform URL Content
     log.debug("New gokb record source: ${gokb_record_source}");
 
   }
-
 }

@@ -47,11 +47,13 @@ class DataloadService {
     log.debug("doFTUpdate");
     
     log.debug("Execute IndexUpdateJob starting at ${new Date()}");
+    updateSiteMapping()
+    
     def start_time = System.currentTimeMillis();
 
     org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
     org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
-
+    
     updateES(esclient, com.k_int.kbplus.Org.class) { org ->
       def result = [:]
       result._id = org.impId
@@ -185,7 +187,28 @@ class DataloadService {
     def elapsed = System.currentTimeMillis() - start_time;
     log.debug("IndexUpdateJob completed in ${elapsed}ms at ${new Date()}");
   }
+  def updateSiteMapping() {
 
+    log.debug("Updating ES site mapping...")
+    org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
+    org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
+    
+    SitePage.findAll().each{ site ->
+        def result = [:]
+        result._id = site.id.toString()
+        result.alias = site.alias
+        result.action = site.action
+        result.controller = site.controller
+        result.rectype = site.rectype
+    
+      def future = esclient.index {
+          index es_index
+          type site.class.name
+          id result._id
+          source result
+      }
+    }
+  }
   def updateES(esclient, domain, recgen_closure) {
 
     def count = 0;

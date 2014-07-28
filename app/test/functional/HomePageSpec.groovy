@@ -7,6 +7,7 @@ import spock.lang.Stepwise
 class HomePageSpec extends GebReportingSpec {
 // curl -XDELETE 'http://localhost:9200/kbplustest/'
 // curl -XPUT 'httop://localhost:9200/kbplustest/'
+
     def "Create organisation" (){
         setup:
             to PublicPage
@@ -74,6 +75,8 @@ class HomePageSpec extends GebReportingSpec {
     }
 
     def "Verify Package created"() {
+        setup:
+            to DashboardPage
         when:
             allPackages()
         then:
@@ -145,8 +148,39 @@ class HomePageSpec extends GebReportingSpec {
 //            to DashboardPage
 //            subscriptions()
 //            !hasInfoIcon()
-//
 //    }
+    def "Upload existing Jasper Report"(){
+        setup:
+            uploadJasper()
+            at JasperPage
+        when:
+            addReport(Data.JasperReportExistingFile)
+        then:
+            errorMsg("A report template with the name")
+    }
+
+    def "Upload new Jasper Report"(){
+        setup:
+            uploadJasper()
+            at JasperPage
+        when:
+            addReport(Data.JasperReportNewFile)
+        then:
+            alertMsg("Upload successful")
+    }
+
+    def "Generate Jasper Report"(){
+        setup:
+            generateJasper()
+            at JasperPage
+        when:
+            selectReport("titles")
+            getReport()
+        then:
+            at JasperPage
+    }
+
+
     def "Set up licence Template"() {
         setup:
             changeUser(Data.UserD_name, Data.UserD_passwd)
@@ -156,10 +190,22 @@ class HomePageSpec extends GebReportingSpec {
         when:
             editIsPublic("Yes")
             addDocument(Data.Test_Doc_name, Data.Test_Doc_file)
+//            addCustomPropType("FunctTestProp")
         then:
             at LicencePage
 
     }
+
+    // def "Create Custom Property"(){
+    //     when:
+    //         $("a.select2-default").click()
+    //         waitFor { $("input.select2-input")}
+
+    //        $("input.select2-input").value("Ref")
+    //        $("input.select2-input") << Keys.ENTER
+    //     then:
+    //         at JasperPage
+    // }
     //ref 101
     def "View template Licence"() {
         setup:
@@ -654,7 +700,7 @@ class HomePageSpec extends GebReportingSpec {
             def totalTitles = numberOfResults()
             searchTitle("A")
         then:
-            totalTitles > numberOfResults()
+            totalTitles != numberOfResults()
     }
     //ref 505
     def "Search within all Packages"(){
@@ -663,9 +709,9 @@ class HomePageSpec extends GebReportingSpec {
               allPackages()
         when:
             def pkgs = numberOfResults()
-            searchPackage("Art")
+            searchPackage("G")
         then:
-            pkgs >= numberOfResults()
+            pkgs != numberOfResults()
     }
 
 //    def "Renewals Upload" (){

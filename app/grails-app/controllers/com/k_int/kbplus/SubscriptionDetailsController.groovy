@@ -75,11 +75,24 @@ class SubscriptionDetailsController {
     else {
       result.editable = false
     }
+    
+    if (params.mode == "advanced"){
+      params.asAt = null
+    }
 
     def base_qry = null;
 
     def deleted_ie = RefdataCategory.lookupOrCreate('Entitlement Issue Status','Deleted');
     def qry_params = [result.subscriptionInstance]
+
+    def date_filter
+    if(params.asAt && params.asAt.length() > 0) {
+      def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
+      date_filter = sdf.parse(params.asAt)
+      result.editable = false;
+    }else{
+      date_filter = new Date()
+    }
 
     if ( params.filter ) {
       base_qry = " from IssueEntitlement as ie where ie.subscription = ? "
@@ -87,8 +100,8 @@ class SubscriptionDetailsController {
         // If we are not in advanced mode, hide IEs that are not current, otherwise filter
         base_qry += "and ie.status <> ? and ( ? >= coalesce(ie.accessStartDate,subscription.startDate) ) and ( ( ? <= coalesce(ie.accessEndDate,subscription.endDate) ) OR ( ie.accessEndDate is null ) )  "
         qry_params.add(deleted_ie);
-        qry_params.add(new Date());
-        qry_params.add(new Date());
+        qry_params.add(date_filter);
+        qry_params.add(date_filter);
       }
       base_qry += "and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) ) "
       qry_params.add("%${params.filter.trim().toLowerCase()}%")
@@ -101,8 +114,8 @@ class SubscriptionDetailsController {
 
         base_qry += " and ie.status <> ? and ( ? >= coalesce(ie.accessStartDate,subscription.startDate) ) and ( ( ? <= coalesce(ie.accessEndDate,subscription.endDate) ) OR ( ie.accessEndDate is null ) ) "
         qry_params.add(deleted_ie);
-        qry_params.add(new Date());
-        qry_params.add(new Date());
+        qry_params.add(date_filter);
+        qry_params.add(date_filter);
       }
     }
 
@@ -248,7 +261,7 @@ class SubscriptionDetailsController {
       }
     }
  
-    redirect action: 'index', params:[id:subscriptionInstance?.id], id:subscriptionInstance.id
+    redirect action: 'index', params:[id:subscriptionInstance?.id,sort:params.sort,order:params.order,offset:params.offset,max:params.max]
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])

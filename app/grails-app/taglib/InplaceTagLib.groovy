@@ -55,6 +55,7 @@ class InplaceTagLib {
    * Attributes:
    *   owner - Object
    *   field - property
+   *   type - type of input
    *   id [optional] - 
    *   class [optional] - additional classes
    */

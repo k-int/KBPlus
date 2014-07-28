@@ -6,6 +6,8 @@
   <head>
     <meta name="layout" content="mmbootstrap"/>
     <title>KB+ Subscription</title>
+      <g:javascript src="custom_properties.js"/>
+
   </head>
   <body>
 
@@ -55,7 +57,7 @@
     </g:if>
 
     <div class="container">
-      ${institution?.name} ${subscriptionInstance?.type?.value}
+      <g:if test="${params.asAt}"><h1>Snapshot on ${params.asAt} from </h1></g:if>
        <h1><g:xEditable owner="${subscriptionInstance}" field="name" /></h1>
        <g:render template="nav"  />
     </div>
@@ -136,7 +138,10 @@
                        <g:render template="orgLinks" contextPath="../templates" model="${[roleLinks:subscriptionInstance?.orgRelations,editmode:editable]}" />
                      </dd>
                </dl>
-
+                <br/>
+                <div id="custom_props_div">
+                    <g:render template="/templates/custom_props" model="${[ ownobj:subscriptionInstance ]}"/>
+                </div>
                 <div class="clear-fix"></div>
             </div>
         </div>
@@ -165,6 +170,7 @@
           <g:form action="index" params="${params}" method="get" class="form-inline">
              <input type="hidden" name="sort" value="${params.sort}">
              <input type="hidden" name="order" value="${params.order}">
+
              <label><g:annotatedLabel owner="${subscriptionInstance}" property="qryFilter"> Filter: </g:annotatedLabel></label>
              <input name="filter" value="${params.filter}"/>
              <label>From Package:</label> <select name="pkgfilter">
@@ -173,12 +179,20 @@
                                  <option value="${sp.pkg.id}" ${sp.pkg.id.toString()==params.pkgfilter?'selected=true':''}>${sp.pkg.name}</option>
                                </g:each>
                             </select>
+           <g:if test="${params.mode!='advanced'}">
+              <label>Entitlements as at:</label>
+              <g:simpleHiddenValue id="asAt" name="asAt" type="date" value="${params.asAt}"/>
+            </g:if>
              <input type="submit" class="btn btn-primary" />
           </g:form>
         </dt>
         <dd>
           <g:form action="subscriptionBatchUpdate" params="${[id:subscriptionInstance?.id]}" class="form-inline">
           <g:set var="counter" value="${offset+1}" />
+          <g:hiddenField name="sort" value="${params.sort}"/>
+          <g:hiddenField name="order" value="${params.order}"/>
+          <g:hiddenField name="offset" value="${params.offset}"/>
+          <g:hiddenField name="max" value="${params.max}"/>
           <table  class="table table-striped table-bordered">
             <thead>
 
@@ -334,6 +348,7 @@
             return false ;
         }
       }
+
       </g:if>
       <g:else>
         $(document).ready(function() {
@@ -342,8 +357,16 @@
             $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" />/'+id);
             $('#modalComments').modal('show');
           });
-        }
+        });
       </g:else>
+
+      <g:if test="${params.asAt && params.asAt.length() > 0}"> $(function() {
+        document.body.style.background = "#fcf8e3";
+      });</g:if>
+      
+      window.onload = function() {
+       runCustomPropsJS("<g:createLink controller='ajax' action='lookup'/>");
+      }
     </r:script>
   </body>
 </html>

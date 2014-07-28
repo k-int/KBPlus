@@ -115,6 +115,72 @@ class PackageDetailsController {
     }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def compare(){
+        def result = [:]
+        result.unionList=[]
+      
+        result.user = User.get(springSecurityService.principal.id)
+        result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+        result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
+        if (params.pkgA?.length() >0 && params.pkgB?.length() >0 ){
+
+          result.pkgA = params.pkgA
+          result.pkgB = params.pkgB
+          result.dateA = params.dateA
+          result.dateB = params.dateB
+
+          result.pkgInsts = []
+          result.pkgDates = []
+
+          def listA = createCompareList(params.pkgA, params.dateA, params, result)
+          def listB = createCompareList(params.pkgB, params.dateB, params, result)
+
+          //FIXME: It should be possible to optimize the following lines
+          def unionList = listA.collect{it.title.title}.plus(listB.collect {it.title.title})
+          unionList = unionList.unique()
+          result.unionListSize = unionList.size()
+          unionList.sort()
+          
+          log.debug("List sizes are ${listA.size()} and ${listB.size()} and the union is ${unionList.size()}")
+
+          def toIndex = result.offset+result.max < unionList.size()? result.offset+result.max: unionList.size()
+          unionList = unionList.subList(result.offset, toIndex.intValue())
+          result.listA = listA
+          result.listB = listB
+          result.unionList = unionList
+
+        }else{
+          def currentDate = new java.text.SimpleDateFormat('yyyy-MM-dd').format(new Date())
+          result.dateA = currentDate
+          result.dateB = currentDate
+          flash.message = "Please select two packages for comparison"
+        }
+      
+        result
+    }
+    def createCompareList(pkg,dateStr,params, result){
+       def returnVals = [:]
+       def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd')
+       def date = dateStr?sdf.parse(dateStr):new Date()
+       def packageId = pkg.substring( pkg.indexOf(":")+1)
+        
+       def packageInstance = Package.get(packageId)
+
+       result.pkgInsts.add(packageInstance)
+
+       result.pkgDates.add(sdf.format(date))
+
+       def queryParams = [packageInstance]         
+
+       def query = generateBasePackageQuery(params,queryParams, true, date)
+       def list = TitleInstancePackagePlatform.executeQuery("select tipp "+query,  queryParams);
+
+       
+       return list
+    }
+    
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def show() {
       def verystarttime = exportService.printStart("SubscriptionDetails")
     
@@ -176,7 +242,18 @@ class PackageDetailsController {
     
       // def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
       def qry_params = [packageInstance]
-      def date_filter =  params.mode == 'advanced' ? null : new Date();
+
+      def date_filter
+      if(params.mode == 'advanced'){
+         date_filter = null
+         params.asAt = null
+      }else if(params.asAt && params.asAt.length() > 0 ) {
+         def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
+         date_filter = sdf.parse(params.asAt)    
+         result.editable= false
+      }else{
+         date_filter = new Date()
+      }
 
       def base_qry = generateBasePackageQuery(params, qry_params, showDeletedTipps, date_filter);
 
@@ -686,7 +763,6 @@ class PackageDetailsController {
                 }
               }
             }
-
           }
 
           if ( search?.response ) {
@@ -818,10 +894,16 @@ class PackageDetailsController {
       [ formProp:'delayedOA', domainClassProp:'delayedOA', type:'ref'],
       [ formProp:'hybridOA', domainClassProp:'hybridOA', type:'ref'],
       [ formProp:'payment', domainClassProp:'payment', type:'ref'],
+      [ formProp:'hostPlatformURL', domainClassProp:'hostPlatformURL'],
     ]
 
     
     if ( params.BatchSelectedBtn=='on' ) {
+      log.debug("Apply batch changes - selected")
+      params.filter=null //remove filters
+      params.coverageNoteFilter=null
+      params.startsBefore=null
+      params.endsAfter=null
       params.each { p ->
         if (p.key.startsWith('_bulkflag.') && ( p.value == 'on' ) ) {
           def tipp_id_to_edit = p.key.substring(10);
@@ -843,6 +925,9 @@ class PackageDetailsController {
                           if ( bulk_field_defn.type == 'date' ) {
                               tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = formatter.parse(proposed_value)
                           }
+                          else if ( bulk_field_defn.type == 'ref' ) {
+                            tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = genericOIDService.resolveOID(proposed_value)
+                          }
                           else {
                               tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = proposed_value
                           }
@@ -862,7 +947,7 @@ class PackageDetailsController {
       }
     }
     else if ( params.BatchAllBtn=='on' ) {
-      log.debug("Batch process all");
+      log.debug("Batch process all filtered by: "+params.filter);
       def qry_params = [packageInstance]
       def base_qry = generateBasePackageQuery(params, qry_params, showDeletedTipps, new Date())
       def tipplist = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params)
@@ -883,7 +968,7 @@ class PackageDetailsController {
                 if ( bulk_field_defn.type == 'date' ) {
                   tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = formatter.parse(proposed_value)
                 }
-                if ( bulk_field_defn.type == 'ref' ) {
+                else if ( bulk_field_defn.type == 'ref' ) {
                   tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = genericOIDService.resolveOID(proposed_value)
                 }
                 else {
@@ -899,6 +984,6 @@ class PackageDetailsController {
       }
     }
 
-    redirect(action:'show', id:params.id);
+    redirect(action:'show', params:[id:params.id,sort:params.sort,order:params.order,max:params.max,offset:params.offset]);
   }
 }
