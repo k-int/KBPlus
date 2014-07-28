@@ -322,7 +322,7 @@
                         </td>
                       </tr>
                       <tr>
-                        <td colspan="3">Host Platform URL: <g:simpleHiddenValue id="bulk_hostPlatformURL" name="bulk_holsPlatformURL"/>
+                        <td colspan="3">Host Platform URL: <g:simpleHiddenValue id="bulk_hostPlatformURL" name="bulk_hostPlatformURL"/>
                           <input type="checkbox" name="clear_hostPlatformURL"/>(Check to clear)</td>
                         </td>
                       </tr>
