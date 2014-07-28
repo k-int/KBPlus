@@ -29,8 +29,14 @@
 			<tbody>
 				<tr>
 					<td>Package name</td>
-					<td> <input type="hidden" name="pkgA" id="packageASelect" value="${pkgA}"/> </td>
-					<td> <input type="hidden" name="pkgB" id="packageBSelect" value="${pkgB}" /> </td>
+					<td> <input type="hidden" name="pkgA" id="packageSelectA" value="${pkgA}"/> 
+						<br/>start after- <g:simpleHiddenValue id="startA" name="startA" type="date" value="${params.startA}"/>
+							end before- <g:simpleHiddenValue id="endA" name="endA" type="date" value="${params.endA}"/>
+					</td>
+					<td> <input type="hidden" name="pkgB" id="packageSelectB" value="${pkgB}" />
+					<br/>start after- <g:simpleHiddenValue id="startB" name="startB" type="date" value="${params.startB}"/>
+							end before- <g:simpleHiddenValue id="endB" name="endB" type="date" value="${params.endB}"/>
+					</td>
 				</tr>
 				<tr>
 					<td> Package On date</td>
@@ -173,8 +179,8 @@
 
 
 <r:script language="JavaScript">
-    function applySelect2(element) {
-      $(element).select2({
+    function applySelect2(filter) {
+      $("#packageSelect"+filter).select2({
       	width: "resolve",
         placeholder: "Type package name...",
         minimumInputLength: 1,
@@ -183,7 +189,7 @@
             dataType: 'json',
             data: function (term, page) {
                 return {
-                    q: term, // search term
+                    q: term + "{{"+ $("#start"+filter).val()+","+$("#end"+filter).val()+"}}", // search term
                     page_limit: 10,
                     baseClass:'com.k_int.kbplus.Package'
                 };
@@ -194,9 +200,11 @@
         }
 	    });
     }
+
+
     $(function(){
-    	applySelect2("#packageASelect")
-     	applySelect2("#packageBSelect")
+    	applySelect2("A")
+     	applySelect2("B")
     });
 
     $('#dateA').datepicker({
