@@ -321,6 +321,11 @@
                           <input type="checkbox" name="clear_payment"/>(Check to clear)</td>
                         </td>
                       </tr>
+                      <tr>
+                        <td colspan="3">Host Platform URL: <g:simpleHiddenValue id="bulk_hostPlatformURL" name="bulk_holsPlatformURL"/>
+                          <input type="checkbox" name="clear_hostPlatformURL"/>(Check to clear)</td>
+                        </td>
+                      </tr>
                     </g:if>
 
 
@@ -395,6 +400,7 @@
                <tr>
                   <td colspan="6">coverageNote: ${t.coverageNote}
                   <g:if test="${params.mode=='advanced'}">
+                    <br/> Host Platform URL: <g:xEditable owner="${t}" field="hostPlatformURL" />
                     <br/> Delayed OA: <g:xEditableRefData owner="${t}" field="delayedOA" config='TIPPDelayedOA'/> &nbsp;
                     Hybrid OA: <g:xEditableRefData owner="${t}" field="hybridOA" config='TIPPHybridOA'/> &nbsp;
                     Payment: <g:xEditableRefData owner="${t}" field="payment" config='TIPPPaymentType'/> &nbsp;

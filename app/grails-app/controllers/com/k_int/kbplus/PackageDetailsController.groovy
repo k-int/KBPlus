@@ -894,6 +894,7 @@ class PackageDetailsController {
       [ formProp:'delayedOA', domainClassProp:'delayedOA', type:'ref'],
       [ formProp:'hybridOA', domainClassProp:'hybridOA', type:'ref'],
       [ formProp:'payment', domainClassProp:'payment', type:'ref'],
+      [ formProp:'hostPlatformURL', domainClassProp:'hostPlatformURL'],
     ]
 
     
