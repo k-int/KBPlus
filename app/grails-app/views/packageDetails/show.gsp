@@ -398,7 +398,7 @@
 
               <g:if test="${hasCoverageNote==true || params.mode=='advanced'}">
                <tr>
-                  <td colspan="6">coverageNote: ${t.coverageNote}
+                  <td colspan="8">coverageNote: ${t.coverageNote}
                   <g:if test="${params.mode=='advanced'}">
                     <br/> Host Platform URL: <g:xEditable owner="${t}" field="hostPlatformURL" />
                     <br/> Delayed OA: <g:xEditableRefData owner="${t}" field="delayedOA" config='TIPPDelayedOA'/> &nbsp;
