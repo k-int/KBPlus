@@ -92,7 +92,8 @@ class TitleDetailsController {
                     [ formProp:'end_volume', domainClassProp:'endVolume'],
                     [ formProp:'end_issue', domainClassProp:'endIssue'],
                     [ formProp:'coverage_depth', domainClassProp:'coverageDepth'],
-                    [ formProp:'coverage_note', domainClassProp:'coverageNote']
+                    [ formProp:'coverage_note', domainClassProp:'coverageNote'],
+                    [ formProp:'hostPlatformURL', domainClassProp:'hostPlatformURL']
             ]
 
             bulk_fields.each { bulk_field_defn ->
