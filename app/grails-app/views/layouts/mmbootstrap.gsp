@@ -235,10 +235,11 @@
               </sec:ifLoggedIn>
             </ul>
 
-           
+            <sec:ifLoggedIn>
             <ul class="nav pull-right">
               <li><a class="dlpopover" href="#"><i class="icon-search icon-white"></i></a></li>
             </ul>
+            </sec:ifLoggedIn>
            
 
             <ul class="nav pull-right">

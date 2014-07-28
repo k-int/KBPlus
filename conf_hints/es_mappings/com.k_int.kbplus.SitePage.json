@@ -2,7 +2,8 @@
 	"com.k_int.kbplus.SitePage" : {
         "properties" : {
 			"alias" : { 
-				"type" : "string"},
+				"type" : "string",
+				"analyzer": "snowball"},
 			"action" : { 
 				"type" : "string"},
 			"controller" : { 

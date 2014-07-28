@@ -8,12 +8,10 @@ class SitePage {
 	String action
 	String controller
 	String rectype = "action"
-	List users
-
-    static hasMany = [users: User]
-
+	
 	static constraints = {
       alias(nullable: false, blank: false, unique:true)
+    
     }
 
 	def getLink(){

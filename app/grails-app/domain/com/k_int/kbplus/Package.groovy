@@ -297,8 +297,43 @@ class Package {
   static def refdataFind(params) {
     def result = [];
     def ql = null;
-    ql = Package.findAllByNameIlike("${params.q}%",params)
+   
+    def indxS = params.q.indexOf("{{")
 
+    if(indxS != -1 ){
+      def indxC = params.q.indexOf(",",indxS)
+      def indxE = params.q.indexOf("}}",indxC)
+     
+      def name = params.q.substring(0,indxS)
+
+      def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd")
+
+      def dateStart = params.q.substring(indxS+2,indxC)
+      def dateEnd = params.q.substring(indxC+1,indxE)
+
+      dateStart = dateStart.length() > 1 ? sdf.parse(dateStart) : null
+      dateEnd = dateEnd.length() > 1 ? sdf.parse(dateEnd)  : null
+
+
+      if(dateStart || dateEnd){
+        if(dateEnd && dateStart){
+          ql = Package.
+      findAllByNameIlikeAndStartDateGreaterThanEqualsAndEndDateLessThanEquals("${name}%",dateStart,dateEnd,params)
+        }else if(dateStart){
+  ql = Package.
+      findAllByNameIlikeAndStartDateGreaterThanEquals("${name}%",dateStart)
+        }else if(dateEnd){
+  ql = Package.
+      findAllByNameIlikeAndEndDateLessThanEquals("${name}%",dateEnd )
+          }
+      }else{
+        ql = Package.findAllByNameIlike("${name}%",params)
+      }   
+        
+    }else{
+      ql = Package.findAllByNameIlike("${params.q}%",params)
+    }
+   
     if ( ql ) {
       ql.each { t ->
         result.add([id:"${t.class.name}:${t.id}",text:"${t.name} (${t.identifier})"])

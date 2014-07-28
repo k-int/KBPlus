@@ -25,12 +25,6 @@ class SpotlightController {
     result.user = springSecurityService.getCurrentUser()
 
     def isAdmin = SpringSecurityUtils.ifAllGranted('ROLE_ADMIN')
-    // def pagesU = SitePage.withCriteria {
-    //   users {
-    //         eq(it, result.user) || eq(it, null)
-    //    }
-    // } 
-    // log.debug(pagesU)
 
     if ( isAdmin  ) {
        request.setAttribute("editable","true")
