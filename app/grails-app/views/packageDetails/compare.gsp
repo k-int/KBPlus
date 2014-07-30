@@ -1,4 +1,4 @@
-
+`2
 <%@ page import="com.k_int.kbplus.Package" %>
 <!doctype html>
 <html>
@@ -105,16 +105,26 @@
 	<thead>
 		<tr> 
 			<th> Title </th>
-			<th> On ${pkgDates.get(0)} (A)</th>
-			<th> On ${pkgDates.get(1)} (B)</th>
+			<th> Identifiers </th>
+			<th> ${pkgInsts.get(0).name} on ${pkgDates.get(0)} (A)</th>
+			<th> ${pkgInsts.get(1).name} on ${pkgDates.get(1)} (B)</th>
 		</tr>
 	</thead>
 	<tbody>
 		<g:each in="${unionList}" var="unionTitle">
-			<tr>
-				<td><b>${unionTitle}</b></td>
 				<g:set var="pkgATipp" value="${listA.find {it.title.title.equals(unionTitle)}}"/>
 				<g:set var="pkgBTipp" value="${listB.find {it.title.title.equals(unionTitle)}}"/>
+
+			<tr>
+				
+				<td><b>${unionTitle}</b> 
+				<i id="pkgDetails${pkgATipp.id}" onclick="showMore('${pkgATipp.id}')"class="icon-info-sign"></i>
+				</td>
+				<td>
+					<g:each in="${pkgATipp.title.ids}" var="id">
+                    ${id.identifier.ns.ns}:${id.identifier.value}<br/>
+                  </g:each>
+				</td>
 				<g:if test="${pkgATipp}">
 					<g:if test="${pkgBTipp}">
 						<g:if test="${pkgATipp?.compareTo(pkgBTipp) == 1}">
@@ -129,6 +139,7 @@
 					<g:else>
 						<td class="danger">
 							<g:render template="compare_cell" model="[obj:pkgATipp]"/>
+	
 						</td>
 					</g:else>
 				</g:if>
@@ -144,6 +155,7 @@
 				 			<td>
 				 		</g:else>
 						<g:render template="compare_cell" model="[obj:pkgBTipp]"/>
+
 						</td>
 					</g:if>
 					<g:else>
@@ -166,6 +178,8 @@
 					</tr>
 				</g:if>				
 			</tr>
+							<g:render template="compare_details" model="[pkgA:pkgATipp,pkgB:pkgBTipp]"/>
+
 		</g:each>
 	</tbody>
 </table>
@@ -201,10 +215,14 @@
 	    });
     }
 
+    function showMore(ident) {
+    		$("#compare_details"+ident).modal('show')
+    }
 
     $(function(){
     	applySelect2("A")
      	applySelect2("B")
+
     });
 
     $('#dateA').datepicker({
