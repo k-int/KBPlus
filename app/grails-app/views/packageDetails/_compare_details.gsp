@@ -1,5 +1,5 @@
-<div class="modal hide" id="compare_details${pkgA.id}">
 
+<div class="modal hide" id="compare_details${pkgA?.id}${pkgB?.id}">
 	<div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">×</button>
         <h3>Further details</h3>

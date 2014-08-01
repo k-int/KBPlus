@@ -105,8 +105,8 @@
 	<thead>
 		<tr> 
 			<th> Title </th>
-			<th> ${pkgInsts.get(0).name} on ${pkgDates.get(0)} (A)</th>
-			<th> ${pkgInsts.get(1).name} on ${pkgDates.get(1)} (B)</th>
+			<th> ${pkgInsts.get(0).name} on ${pkgDates.get(0)} </th>
+			<th> ${pkgInsts.get(1).name} on ${pkgDates.get(1)} </th>
 		</tr>
 	</thead>
 	<tbody>
@@ -118,7 +118,7 @@
 				
 				<td>
 				<b><g:link action="show" controller="titleDetails" id="${pkgATipp.title.id}">${unionTitle}</g:link></b> 
-				<i id="pkgDetails${pkgATipp.id}" onclick="showMore('${pkgATipp.id}')"class="icon-info-sign"></i>
+				<i id="pkgDetails${pkgATipp.id}" onclick="showMore('${pkgATipp?.id}${pkgBTipp?.id}')"class="icon-info-sign"></i>
 
 				<g:each in="${pkgATipp.title.ids}" var="id">
                     <br>${id.identifier.ns.ns}:${id.identifier.value}<br/>
@@ -169,7 +169,8 @@
 
 				
 			</tr>
-				<g:render template="compare_details" model="[pkgA:pkgATipp,pkgB:pkgBTipp]"/>
+			
+			<g:render template="compare_details" model="[pkgA:pkgATipp,pkgB:pkgBTipp]"/>
 
 		</g:each>
 	</tbody>
