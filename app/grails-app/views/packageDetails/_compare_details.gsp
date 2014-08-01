@@ -8,11 +8,11 @@
     <div class="modal-body">
     	<label><b>Parameter</b></label>
     	<h6>Package A value | Package B value</h6>
-		<label><b>Coverage Depth:</b></label> ${pkgA.coverageDepth} | ${pkgB.coverageDepth}
-		<label><b>Embargo:</b></label> ${pkgA.embargo} | ${pkgB.embargo}
+		<label><b>Coverage Depth:</b></label> ${pkgA?.coverageDepth} | ${pkgB?.coverageDepth}
+		<label><b>Embargo:</b></label> ${pkgA?.embargo} | ${pkgB?.embargo}
 
-		<label><b>Platform Host URL:</b></label> ${pkgA.hostPlatformURL} | ${pkgB.hostPlatformURL}
+		<label><b>Platform Host URL:</b></label> ${pkgA?.hostPlatformURL} | ${pkgB?.hostPlatformURL}
 
-		<label><b>Hybrid OA:</b></label> ${pkgA.hybridOA} | ${pkgB.hybridOA}
+		<label><b>Hybrid OA:</b></label> ${pkgA?.hybridOA} | ${pkgB?.hybridOA}
 	</div>
 </div>
