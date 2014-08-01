@@ -392,4 +392,10 @@ class AdminController {
     redirect(controller:'home')
   }
 
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def deleteGlobalSource() {
+    GlobalRecordSource.removeSource(params.long('id'));
+    redirect(action:'manageGlobalSources')
+  }
+
 }

@@ -43,6 +43,8 @@
                 <td>Principal</td>
                 <td>Credentials</td>
                 <td>RecType</td>
+                <td># Local Copies</td>
+                <td>Actions</td>
               </tr>
             </thead>
             <tbody>
@@ -58,6 +60,14 @@
                   <td>${source.principal}</td>
                   <td>${source.credentials}</td>
                   <td>${source.rectype}</td>
+                  <td>${source.getNumberLocalPackages()}</td>
+                  <td>
+                    <g:link class="btn btn-default" 
+                            controller="admin" 
+                            onclick="return confirm('Deleting this package will remove all tracking info and unlink any local packages - Are you sure?')"
+                            action="deleteGlobalSource" 
+                            id="${source.id}">Delete</g:link>
+                  </td>
                 </tr>
               </g:each>
             </tbody>
