@@ -298,9 +298,9 @@ class Package {
     def result = [];
     def ql = null;
    
-    def indxS = params.q.indexOf("{{")
 
-    if(indxS != -1 ){
+    if(params.hasDate ){
+      def indxS = params.q.indexOf("{{")
       def indxC = params.q.indexOf(",",indxS)
       def indxE = params.q.indexOf("}}",indxC)
      
@@ -333,8 +333,14 @@ class Package {
     }else{
       ql = Package.findAllByNameIlike("${params.q}%",params)
     }
-   
-    if ( ql ) {
+
+    if(params.hideIdent && params.hideIdent == "true"){
+      if ( ql ) {
+          ql.each { t ->
+            result.add([id:"${t.class.name}:${t.id}",text:"${t.name}"])
+          }
+      }  
+    }else if ( ql ) {
       ql.each { t ->
         result.add([id:"${t.class.name}:${t.id}",text:"${t.name} (${t.identifier})"])
       }
