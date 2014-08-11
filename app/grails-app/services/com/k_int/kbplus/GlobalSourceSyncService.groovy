@@ -314,7 +314,7 @@ class GlobalSourceSyncService {
   def runAllActiveSyncTasks() {
 
     if ( running == false ) {
-      def future = executorService.submit({ internalRunAllActiveSyncTasks(.id) } as java.util.concurrent.Callable)
+      def future = executorService.submit({ internalRunAllActiveSyncTasks() } as java.util.concurrent.Callable)
     }
     else {
       log.warn("Not starting duplicate OAI thread");
