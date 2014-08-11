@@ -52,19 +52,25 @@ class PackageDetailsController {
         qry_params.add("%${params.q.trim().toLowerCase()}%");
       }
 
-      // if ( date_restriction ) {
-      //   base_qry += " and s.startDate <= ? and s.endDate >= ? "
-      //   qry_params.add(date_restriction)
-      //   qry_params.add(date_restriction)
-      // }
+      if ( params.startDate.length() > 0 ) {
+        base_qry += " and ( p.lastUpdated > ? )"
+        qry_params.add(params.date('startDate','yyyy-MM-dd'));
+      }
 
-      // if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
-      //   base_qry += " order by ${params.sort} ${params.order}"
-      // }
-      // else {
-      //   base_qry += " order by s.name asc"
-      // }
+      if ( params.endDate.length() > 0 ) {
+        base_qry += " and ( p.lastUpdated < ? )"
+        qry_params.add(params.date('endDate','yyyy-MM-dd'));
+      }
 
+      if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
+        base_qry += " order by lower(p.${params.sort}) ${params.order}"
+      }
+      else {
+        base_qry += " order by lower(p.name) asc"
+      }
+
+
+      log.debug(base_qry)
       result.packageInstanceTotal = Subscription.executeQuery("select count(p) "+base_qry, qry_params )[0]
       result.packageInstanceList = Subscription.executeQuery("select p ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
 
