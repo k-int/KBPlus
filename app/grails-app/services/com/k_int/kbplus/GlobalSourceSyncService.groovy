@@ -3,11 +3,34 @@ package com.k_int.kbplus
 import com.k_int.goai.OaiClient
 import java.text.SimpleDateFormat
 
+/*
+ *  Implementing new rectypes..
+ *  the reconciler closure is responsible for reconciling the previous version of a record and the latest version
+ *  the converter is respnsible for creating the map strucuture passed to the reconciler. It needs to return a [:] sorted appropriate
+ *  to the work the reconciler will need to do (Often this includes sorting lists)
+ */
+
 class GlobalSourceSyncService {
+
 
   public static boolean running = false;
   def genericOIDService
+  def executorService
   def changeNotificationService
+  boolean parallel_jobs = false
+
+  def titleReconcile = { grt ,oldtitle, newtitle ->
+    log.debug("Reconcile ${oldtitle} ${newtitle}");
+  }
+
+  def titleConv = { md, synctask ->
+    log.debug("titleConv....");
+    def result = [:]
+    result.parsed_rec = [:]
+    result.title = md.gokb.title.name.text()
+
+    result
+  }
 
   def packageReconcile = { grt ,oldpkg, newpkg ->
     def pkg = null;
@@ -182,7 +205,52 @@ class GlobalSourceSyncService {
     com.k_int.kbplus.GokbDiffEngine.diff(pkg, oldpkg, newpkg, onNewTipp, onUpdatedTipp, onDeletedTipp, onPkgPropChange, onTippUnchanged, auto_accept_flag)
   }
 
+  def testTitleCompliance = { json_record ->
+    def result = RefdataCategory.lookupOrCreate("YNO","Yes")
+    result
+  }
+
+  // def testKBPlusCompliance = { json_record ->
+  def testPackageCompliance = { json_record ->
+    // Iterate through all titles..
+    def error = false
+    def result = null
+    def problem_titles = []
+
+    log.debug(json_record.packageName);
+    log.debug(json_record.packageId);
+
+    // GOkb records containing titles with no identifiers are not valid in KB+ land
+    json_record?.tipps.each { tipp ->
+      log.debug(tipp.title.name);
+      // tipp.title.identifiers
+      if ( tipp.title?.identifiers?.size() > 0 ) {
+        // No problem
+      }
+      else {
+        problem_titles.add(tipp.title.titleId)
+        error = true
+      }
+
+      // tipp.titleid
+      // tipp.platform
+      // tipp.platformId
+      // tipp.coverage
+      // tipp.url
+      // tipp.identifiers
+    }
+
+    if ( error ) {
+      result = RefdataCategory.lookupOrCreate("YNO","No")
+    }
+    else {
+      result = RefdataCategory.lookupOrCreate("YNO","Yes")
+    }
+    
+    return result
+  }
   def packageConv = { md, synctask ->
+    println("Package conv...");
     // Convert XML to internal structure ansd return
     def result = [:]
     // result.parsed_rec = xml.text().getBytes();
@@ -237,17 +305,16 @@ class GlobalSourceSyncService {
     return result
   }
 
+
   def rectypes = [
-    [ name:'Package', converter:packageConv, reconciler:packageReconcile ]
+    [ name:'Package', converter:packageConv, reconciler:packageReconcile, complianceCheck:testPackageCompliance ],
+    [ name:'Title', converter:titleConv, reconciler:titleReconcile, complianceCheck:testTitleCompliance ],
   ]
 
-  def executorService
-
   def runAllActiveSyncTasks() {
-    // def future = executorService.submit({ internalRunAllActiveSyncTasks() } as java.util.concurrent.Callable)
 
     if ( running == false ) {
-      internalRunAllActiveSyncTasks()
+      def future = executorService.submit({ internalRunAllActiveSyncTasks(.id) } as java.util.concurrent.Callable)
     }
     else {
       log.warn("Not starting duplicate OAI thread");
@@ -282,45 +349,57 @@ class GlobalSourceSyncService {
            break;
        }
      }
+     running = false
   }
 
   def private doOAISync(sync_job) {
     log.debug("doOAISync");
-    def future = executorService.submit({ intOAI(sync_job.id) } as java.util.concurrent.Callable)
+    if ( parallel_jobs ) {
+      def future = executorService.submit({ intOAI(sync_job.id) } as java.util.concurrent.Callable)
+    }
+    else {
+      intOAI(sync_job.id)
+    }
     log.debug("doneOAISync");
   }
  
   def intOAI(sync_job_id) {
 
-    log.debug("intOAI");
+    log.debug("internalOAI processing ${sync_job_id}");
 
     def sync_job = GlobalRecordSource.get(sync_job_id)
 
-    try {
-      log.debug("internalOAISync records from ${sync_job.uri} since ${sync_job.haveUpTo} using ${sync_job.fullPrefix}");
+    int rectype = sync_job.rectype.longValue()
+    def cfg = rectypes[rectype]
+    log.debug("Rectype: ${rectype} == config ${cfg}");
 
-      int rectype = sync_job.rectype.longValue()
-      def cfg = rectypes[rectype]
+    try {
+      log.debug("internalOAISync records from [job ${sync_job_id}] ${sync_job.uri} since ${sync_job.haveUpTo} using ${sync_job.fullPrefix}");
+
+      if ( cfg == null ) {
+        throw new RuntimeException("Unable to resolve config for ID ${sync_job.rectype}");
+      }
 
       def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
       def date = sync_job.haveUpTo
 
-      log.debug("upto: ${date}");
+      log.debug("upto: ${date} uri:${sync_job.uri} prefix:${sync_job.fullPrefix}");
 
       def oai_client = new OaiClient(host:sync_job.uri)
       def max_timestamp = 0
 
-      log.debug("Collect changes since ${date}");
+      log.debug("Collect ${cfg.name} changes since ${date}");
 
       oai_client.getChangesSince(date, sync_job.fullPrefix) { rec ->
-        log.debug(rec.header.identifier)
-        log.debug(rec.header.datestamp)
+
+        log.debug("Got OAI Record ${rec.header.identifier} datestamp: ${rec.header.datestamp} job:${sync_job.id} url:${sync_job.uri} cfg:${cfg.name}")
+
         def qryparams = [sync_job.id, rec.header.identifier.text()]
         def record_timestamp = sdf.parse(rec.header.datestamp.text())
         def existing_record_info = GlobalRecordInfo.executeQuery('select r from GlobalRecordInfo as r where r.source.id = ? and r.identifier = ?',qryparams);
         if ( existing_record_info.size() == 1 ) {
-
+          log.debug("convert xml into json - config is ${cfg} ");
           def parsed_rec = cfg.converter.call(rec.metadata, sync_job)
 
           // Deserialize
@@ -332,10 +411,11 @@ class GlobalSourceSyncService {
 
           // For each tracker we need to update the local object which reflects that remote record
           existing_record_info[0].trackers.each { tracker ->
-            cfg.reconciler(tracker, old_rec_info, new_record_info)
+            cfg.reconciler.call(tracker, old_rec_info, new_record_info)
           }
 
-          existing_record_info[0].kbplusCompliant = testKBPlusCompliance(parsed_rec.parsed_rec)
+          log.debug("Calling compliance check, cfg name is ${cfg.name}");
+          existing_record_info[0].kbplusCompliant = cfg.complianceCheck.call(parsed_rec.parsed_rec)
 
           // Finally, update our local copy of the remote object
           def baos = new ByteArrayOutputStream()
@@ -347,12 +427,12 @@ class GlobalSourceSyncService {
           existing_record_info[0].save()
         }
         else {
-          log.debug("First time we have seen this record - converting");
-          def parsed_rec = cfg.converter.call(rec.metadata)
-          log.debug("Converter thinks this rec is ${parsed_rec.title}");
+          log.debug("First time we have seen this record - converting ${cfg.name}");
+          def parsed_rec = cfg.converter.call(rec.metadata, sync_job)
+          log.debug("Converter thinks this rec has title :: ${parsed_rec.title}");
 
           // Evaluate the incoming record to see if it meets KB+ stringent data quality standards
-          def kbplus_compliant = testKBPlusCompliance(parsed_rec.parsed_rec) // RefdataCategory.lookupOrCreate("YNO","No")
+          def kbplus_compliant = cfg.complianceCheck.call(parsed_rec.parsed_rec) // RefdataCategory.lookupOrCreate("YNO","No")
 
           def baos = new ByteArrayOutputStream()
           def out= new ObjectOutputStream(baos)
@@ -364,7 +444,7 @@ class GlobalSourceSyncService {
                                                       ts:record_timestamp,
                                                       name:parsed_rec.title,
                                                       identifier:rec.header.identifier.text(),
-                                                      desc:"Package ${parsed_rec.title} consisting of ${parsed_rec.parsed_rec?.tipps?.size()} titles",
+                                                      desc:"${parsed_rec.title}",
                                                       source: sync_job,
                                                       rectype:sync_job.rectype,
                                                       record: baos.toByteArray(),
@@ -387,11 +467,10 @@ class GlobalSourceSyncService {
 
     }
     catch ( Exception e ) {
-      log.error("Problem",e);
+      log.error("Problem running job ${sync_job_id}, conf=${cfg}",e);
     }
     finally {
       log.debug("internalOAISync completed");
-      running = true;
     }
   }
 
@@ -424,7 +503,7 @@ class GlobalSourceSyncService {
     def newrec = ins.readObject()
     ins.close()
 
-    cfg.reconciler(grt,oldrec,newrec)
+    cfg.reconciler.call(grt,oldrec,newrec)
   }
 
   def initialiseTracker(grt, localPkgOID) {
@@ -439,7 +518,7 @@ class GlobalSourceSyncService {
     def newrec = ins.readObject()
     ins.close()
 
-    cfg.reconciler(grt,oldrec,newrec)
+    cfg.reconciler.call(grt,oldrec,newrec)
   }
 
   /**
@@ -476,42 +555,4 @@ class GlobalSourceSyncService {
     return result
   }
 
-  def testKBPlusCompliance(json_record) {
-    // Iterate through all titles..
-    def error = false
-    def result = null
-    def problem_titles = []
-
-    log.debug(json_record.packageName);
-    log.debug(json_record.packageId);
-
-    // GOkb records containing titles with no identifiers are not valid in KB+ land
-    json_record?.tipps.each { tipp ->
-      log.debug(tipp.title.name);
-      // tipp.title.identifiers
-      if ( tipp.title?.identifiers?.size() > 0 ) {
-        // No problem
-      }
-      else {
-        problem_titles.add(tipp.title.titleId)
-        error = true
-      }
-
-      // tipp.titleid
-      // tipp.platform
-      // tipp.platformId
-      // tipp.coverage
-      // tipp.url
-      // tipp.identifiers
-    }
-
-    if ( error ) {
-      result = RefdataCategory.lookupOrCreate("YNO","No")
-    }
-    else {
-      result = RefdataCategory.lookupOrCreate("YNO","Yes")
-    }
-    
-    return result
-  }
 }

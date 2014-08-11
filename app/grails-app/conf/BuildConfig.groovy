@@ -52,7 +52,7 @@ grails.project.dependency.resolution = {
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
-        compile ('com.k-int:goai:1.0.1') {
+        compile ('com.k-int:goai:1.0.2') {
           exclude 'groovy'
         }
         compile 'commons-codec:commons-codec:1.6'
