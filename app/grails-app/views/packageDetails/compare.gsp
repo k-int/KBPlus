@@ -1,4 +1,4 @@
-
+`2
 <%@ page import="com.k_int.kbplus.Package" %>
 <!doctype html>
 <html>
@@ -105,16 +105,26 @@
 	<thead>
 		<tr> 
 			<th> Title </th>
-			<th> On ${pkgDates.get(0)} (A)</th>
-			<th> On ${pkgDates.get(1)} (B)</th>
+			<th> ${pkgInsts.get(0).name} on ${pkgDates.get(0)} </th>
+			<th> ${pkgInsts.get(1).name} on ${pkgDates.get(1)} </th>
 		</tr>
 	</thead>
 	<tbody>
 		<g:each in="${unionList}" var="unionTitle">
-			<tr>
-				<td><b>${unionTitle}</b></td>
 				<g:set var="pkgATipp" value="${listA.find {it.title.title.equals(unionTitle)}}"/>
 				<g:set var="pkgBTipp" value="${listB.find {it.title.title.equals(unionTitle)}}"/>
+
+			<tr>
+				
+				<td>
+				<b><g:link action="show" controller="titleDetails" id="${pkgATipp.title.id}">${unionTitle}</g:link></b> 
+				<i id="pkgDetails${pkgATipp.id}" onclick="showMore('${pkgATipp?.id}${pkgBTipp?.id}')"class="icon-info-sign"></i>
+
+				<g:each in="${pkgATipp.title.ids}" var="id">
+                    <br>${id.identifier.ns.ns}:${id.identifier.value}<br/>
+                  </g:each>
+				</td>
+			
 				<g:if test="${pkgATipp}">
 					<g:if test="${pkgBTipp}">
 						<g:if test="${pkgATipp?.compareTo(pkgBTipp) == 1}">
@@ -129,6 +139,7 @@
 					<g:else>
 						<td class="danger">
 							<g:render template="compare_cell" model="[obj:pkgATipp]"/>
+	
 						</td>
 					</g:else>
 				</g:if>
@@ -144,6 +155,7 @@
 				 			<td>
 				 		</g:else>
 						<g:render template="compare_cell" model="[obj:pkgBTipp]"/>
+
 						</td>
 					</g:if>
 					<g:else>
@@ -155,17 +167,11 @@
 				
 				<g:else><td></td></g:else>
 
-				<g:if test="${pkgATipp?.coverageNote}">
-					<tr>
-						<td colspan="6"><p/>coverageNote (A): ${pkgATipp.coverageNote}</td>
-					</tr>						
-				</g:if>
-				<g:if test="${pkgBTipp?.coverageNote}">
-					<tr>
-						<td colspan="6"><p/>coverageNote (B): ${pkgBTipp.coverageNote}</td>
-					</tr>
-				</g:if>				
+				
 			</tr>
+			
+			<g:render template="compare_details" model="[pkgA:pkgATipp,pkgB:pkgBTipp]"/>
+
 		</g:each>
 	</tbody>
 </table>
@@ -181,7 +187,7 @@
 <r:script language="JavaScript">
     function applySelect2(filter) {
       $("#packageSelect"+filter).select2({
-      	width: "resolve",
+      	width: "element",
         placeholder: "Type package name...",
         minimumInputLength: 1,
         ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
@@ -189,6 +195,8 @@
             dataType: 'json',
             data: function (term, page) {
                 return {
+                	hideIdent: true,
+                	hasDate: true,
                     q: term + "{{"+ $("#start"+filter).val()+","+$("#end"+filter).val()+"}}", // search term
                     page_limit: 10,
                     baseClass:'com.k_int.kbplus.Package'
@@ -201,10 +209,14 @@
 	    });
     }
 
+    function showMore(ident) {
+    		$("#compare_details"+ident).modal('show')
+    }
 
     $(function(){
     	applySelect2("A")
      	applySelect2("B")
+
     });
 
     $('#dateA').datepicker({

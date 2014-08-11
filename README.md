@@ -18,3 +18,7 @@ not use this file except in compliance with the License. You may
 obtain a copy of the License at
 
 
+<<<<<<< HEAD
+=======
+http://sourceforge.net/projects/ireport/files/iReport/iReport-5.6.0/iReport-5.6.0.tar.gz/download
+>>>>>>> 4.2-dev

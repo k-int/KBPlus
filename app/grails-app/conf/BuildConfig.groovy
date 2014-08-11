@@ -52,7 +52,7 @@ grails.project.dependency.resolution = {
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
-        compile ('com.k-int:goai:1.0') {
+        compile ('com.k-int:goai:1.0.1') {
           exclude 'groovy'
         }
         compile 'commons-codec:commons-codec:1.6'
@@ -85,6 +85,7 @@ grails.project.dependency.resolution = {
         }
         compile "com.lowagie:itext:2.1.7"
         compile "net.sf.jasperreports:jasperreports:5.6.0"
+        compile 'cglib:cglib:2.2.2'
     }
 
     plugins {

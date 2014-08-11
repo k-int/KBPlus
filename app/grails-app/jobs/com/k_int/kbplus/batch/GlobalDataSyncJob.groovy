@@ -12,6 +12,10 @@ class GlobalDataSyncJob {
     // Example - every 10 mins 0 0/10 * * * ? 
     // At 5 past 5am every day
     cron name:'globalDataSyncTrigger', startDelay:20000, cronExpression: "0 5 5 * * ?"
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4.2-dev
     // cronExpression: "s m h D M W Y"
     //                  | | | | | | `- Year [optional]
     //                  | | | | | `- Day of Week, 1-7 or SUN-SAT, ?

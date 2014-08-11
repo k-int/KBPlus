@@ -182,7 +182,7 @@ class GlobalSourceSyncService {
     com.k_int.kbplus.GokbDiffEngine.diff(pkg, oldpkg, newpkg, onNewTipp, onUpdatedTipp, onDeletedTipp, onPkgPropChange, onTippUnchanged, auto_accept_flag)
   }
 
-  def packageConv = { md ->
+  def packageConv = { md, synctask ->
     // Convert XML to internal structure ansd return
     def result = [:]
     // result.parsed_rec = xml.text().getBytes();
@@ -194,7 +194,7 @@ class GlobalSourceSyncService {
     result.parsed_rec.tipps = []
     int ctr=0
     md.gokb.package.TIPPs.TIPP.each { tip ->
-      log.debug("Processing tipp ${ctr++}");
+      log.debug("Processing tipp ${ctr++} from package ${result.parsed_rec.packageId} - ${result.title} (source:${synctask.uri})");
       def newtip = [
                      title: [
                        name:tip.title.name.text(), 
@@ -321,7 +321,7 @@ class GlobalSourceSyncService {
         def existing_record_info = GlobalRecordInfo.executeQuery('select r from GlobalRecordInfo as r where r.source.id = ? and r.identifier = ?',qryparams);
         if ( existing_record_info.size() == 1 ) {
 
-          def parsed_rec = cfg.converter.call(rec.metadata)
+          def parsed_rec = cfg.converter.call(rec.metadata, sync_job)
 
           // Deserialize
           def bais = new ByteArrayInputStream((byte[])(existing_record_info[0].record))
