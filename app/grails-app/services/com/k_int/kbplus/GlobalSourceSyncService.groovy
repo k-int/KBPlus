@@ -21,14 +21,43 @@ class GlobalSourceSyncService {
 
   def titleReconcile = { grt ,oldtitle, newtitle ->
     log.debug("Reconcile ${oldtitle} ${newtitle}");
+
+    // See if we already hava a title with any of the identifiers
   }
 
   def titleConv = { md, synctask ->
     log.debug("titleConv....");
     def result = [:]
     result.parsed_rec = [:]
-    result.title = md.gokb.title.name.text()
+    result.identifiers = []
+    result.history = []
 
+    result.title = md.gokb.title.name.text()
+    result.publisher = md.gokb.title.publisher?.name?.text()
+
+    md.gokb.title.identifiers.identifier.each { id ->
+      result.identifiers.add([namespace:id.'@namespace', value:id.'@value'])
+    }
+
+    md.gokb.title.history?.historyEvent.each { he ->
+      def history_statement = [:]
+      history_statement.internalId = he.'@id'
+      history_statement.date = he.date.text()
+      history_statement.from = []
+      history_statement.to = []
+
+      he.from.each { hef ->
+        history_statement.from.add([title:hef.title.text()])
+      }
+
+      he.to.each { het ->
+        history_statement.to.add([title:het.title.text()])
+      }
+
+      result.history.add(history_statement)
+    }
+
+    log.debug(result);
     result
   }
 
