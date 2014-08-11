@@ -29,5 +29,7 @@
 	        }, 500);       	
         }
     });
+	
+	$("#spotlight_textg").focus()
 
 </script>
