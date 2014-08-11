@@ -8,6 +8,8 @@ import com.k_int.kbplus.auth.User
 
 class DataManagerController {
 
+  def springSecurityService 
+
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() { 
     def result =[:]
@@ -153,6 +155,28 @@ class DataManagerController {
     else {
       result.num_hl = 0
     }
+
+    result
+  }
+
+  @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
+  def deletedTitleManagement() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+
+    def paginate_after = params.paginate_after ?: ( (2*result.max)-1);
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
+    def deleted_title_status =  RefdataCategory.lookupOrCreate( 'Title Status', 'Deleted' );
+    def qry_params = [deleted_title_status]
+
+    def base_qry = " from TitleInstance as t where ( t.status = ? )"
+
+    result.titleInstanceTotal = Subscription.executeQuery("select count(t) "+base_qry, qry_params )[0]
+
+    result.titleList = Subscription.executeQuery("select t ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
 
     result
   }
