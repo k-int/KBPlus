@@ -72,9 +72,33 @@ class PackageDetailsController {
 
       log.debug(base_qry)
       result.packageInstanceTotal = Subscription.executeQuery("select count(p) "+base_qry, qry_params )[0]
-      result.packageInstanceList = Subscription.executeQuery("select p ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
 
-      result
+
+      withFormat {
+        html {
+          result.packageInstanceList = Subscription.executeQuery("select p ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
+          result
+        }
+        csv {
+           response.setHeader("Content-disposition", "attachment; filename=packages.csv")
+           response.contentType = "text/csv"
+           def packages = Subscription.executeQuery("select p ${base_qry}", qry_params) 
+           def out = response.outputStream
+	   log.debug('colheads');
+           out.withWriter { writer ->
+             writer.write('Package Name, Creation Date, Last Modified, Identifier\n');
+             packages.each { 
+               log.debug(it);
+               writer.write("${it.name},${it.dateCreated},${it.lastUpdated},${it.identifier}\n")
+             }
+             writer.write("END");
+             writer.flush();
+             writer.close();
+           }
+           out.close()
+        }
+      }
+
     }
 
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
