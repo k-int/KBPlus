@@ -47,11 +47,23 @@ class GlobalSourceSyncService {
       history_statement.to = []
 
       he.from.each { hef ->
-        history_statement.from.add([title:hef.title.text()])
+        def new_history_statement = [:]
+        new_history_statement.title=hef.title.text()
+        new_history_statement.ids = []
+        hef.identifiers.identifier.each { i ->
+          new_history_statement.ids.add([namespace:i.'@namespace', value:i.'@value'])
+        }
+        history_statement.from.add(new_history_statement);
       }
 
       he.to.each { het ->
-        history_statement.to.add([title:het.title.text()])
+        def new_history_statement = [:]
+        new_history_statement.title=het.title.text()
+        new_history_statement.ids = []
+        het.identifiers.identifier.each { i ->
+          new_history_statement.ids.add([namespace:i.'@namespace', value:i.'@value'])
+        }
+        history_statement.to.add(new_history_statement);
       }
 
       result.history.add(history_statement)
