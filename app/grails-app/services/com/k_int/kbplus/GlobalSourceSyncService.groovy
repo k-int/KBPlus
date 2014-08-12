@@ -23,6 +23,48 @@ class GlobalSourceSyncService {
     log.debug("Reconcile ${oldtitle} ${newtitle}");
 
     // See if we already hava a title with any of the identifiers
+
+    def title_instance = TitleInstance.lookupOrCreate(newtitle.identifiers,newtitle.title)
+
+    // DOes the remote title have a publisher (And is ours blank)
+    if ( ( newtitle.publisher != null ) && ( title_instance.getPublisher() == null ) ) {
+      def publisher_identifiers = []
+      def publisher = Org.lookupOrCreate(newtitle.publisher, 'publisher', null, publisher_identifiers, null)
+      def pub_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Publisher');
+      OrgRole.assertOrgTitleLink(publisher, title_instance, pub_role)
+    }
+
+    // Title history!!
+    newtitle.history.each { historyEvent ->
+      // See if we already have a reference
+      def fromset = []
+      def toset = []
+
+      historyEvent.from.each { he ->
+        def participant = TitleInstance.lookupOrCreate(he.ids,he.title)
+        fromset.add(participant)
+      }
+      historyEvent.to.each { he ->
+        def participant = TitleInstance.lookupOrCreate(he.ids,he.title)
+        toset.add(participant)
+      }
+
+      // Now - See if we can find a title history event for data and these particiapnts.
+      // Title History Events are IMMUTABLE - so we delete them rather than updating them.
+      def base_query = "select the from TitleHistoryEvent as the where the.eventDate == ? "
+      def query_params = [historyEvent.date]
+      fromset.each {
+        base_query += "and exists ( select p from as.participant as p where p.participant = ? and p.participantRole = 'from' ) "
+        query_params.add(it)
+      }
+      toset.each {
+        base_query += "and exists ( select p from as.participant as p where p.participant = ? and p.participantRole = 'to' ) "
+        query_params.add(it)
+      }
+
+      def existing_title_history_event = TitleHistoryEvent.executeQuery(base_query,query_params);
+      log.debug("Result of lookup : ${existing_title_history_event}");
+    }
   }
 
   def titleConv = { md, synctask ->
