@@ -28,6 +28,7 @@ class GlobalSourceSyncService {
     def title_instance = TitleInstance.lookupOrCreate(newtitle.identifiers,newtitle.title)
 
     // DOes the remote title have a publisher (And is ours blank)
+    
     if ( ( newtitle.publisher != null ) && ( title_instance.getPublisher() == null ) ) {
       def publisher_identifiers = []
       def publisher = Org.lookupOrCreate(newtitle.publisher, 'publisher', null, publisher_identifiers, null)
@@ -72,14 +73,15 @@ class GlobalSourceSyncService {
     log.debug("titleConv....");
     def result = [:]
     result.parsed_rec = [:]
-    result.identifiers = []
-    result.history = []
+    result.parsed_rec.identifiers = []
+    result.parsed_rec.history = []
 
     result.title = md.gokb.title.name.text()
-    result.publisher = md.gokb.title.publisher?.name?.text()
+    result.parsed_rec.title = md.gokb.title.name.text()
+    result.parsed_rec.publisher = md.gokb.title.publisher?.name?.text()
 
     md.gokb.title.identifiers.identifier.each { id ->
-      result.identifiers.add([namespace:id.'@namespace', value:id.'@value'])
+      result.parsed_rec.identifiers.add([namespace:id.'@namespace', value:id.'@value'])
     }
 
     md.gokb.title.history?.historyEvent.each { he ->
@@ -109,7 +111,7 @@ class GlobalSourceSyncService {
         history_statement.to.add(new_history_statement);
       }
 
-      result.history.add(history_statement)
+      result.parsed_rec.history.add(history_statement)
     }
 
     log.debug(result);
