@@ -45,12 +45,13 @@
         <tbody>
           <g:each in="${items}" var="item">
             <tr>
-              <td> <a href="${item.source.baseUrl}resource/show/${item.identifier}">${fieldValue(bean: item, field: "identifier")}</a> </td>
+              <td> <a href="${item.source.baseUrl}resource/show/${item.identifier}">${fieldValue(bean: item, field: "identifier")}</a><br/>
+                   (updated: <g:formatDate date="${item.ts}" format="dd-MM-yyyy"/>) </td>
               <td> <a href="${item.source.baseUrl}resource/show/${item.identifier}">${fieldValue(bean: item, field: "name")}</a></td>
               <td> <a href="${item.source.baseUrl}resource/show/${item.identifier}">${fieldValue(bean: item, field: "desc")}</a></td>
-              <td> <a href="${item.source.baseUrl}">${item.source.name}</a></td>
+              <td> <a href="${item.source.uri}?verb=getRecord&identifier=${item.identifier}&metadataPrefix=${item.source.fullPrefix}">${item.source.name}</a></td>
               <td> <a href="${item.source.baseUrl}search/index?qbe=g:packages">${item.displayRectype}</a></td>
-              <td>${item.kbplusCompliant?.value}</td>
+              <td>${item.kbplusCompliant.value}</td>
               <td><g:link action="newCleanTracker" controller="globalDataSync" id="${item.id}" class="btn btn-success">Track(New)</g:link>
                   <g:link action="selectLocalPackage" controller="globalDataSync" id="${item.id}" class="btn btn-success">Track(Merge)</g:link></td>
             </tr>

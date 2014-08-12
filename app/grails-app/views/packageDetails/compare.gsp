@@ -1,5 +1,3 @@
-`2
-<%@ page import="com.k_int.kbplus.Package" %>
 <!doctype html>
 <html>
   <head>
