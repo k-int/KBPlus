@@ -521,12 +521,6 @@ class GlobalSourceSyncService {
             existing_record_info[0].desc="Package ${parsed_rec.title} consisting of ${parsed_rec.parsed_rec.tipps?.size()} titles"
             existing_record_info[0].save()
           }
-<<<<<<< HEAD
-
-          if ( cfg.newRemoteRecordHandler != null ) {
-            cfg.newRemoteRecordHandler.call(existing_record_info, parsed_rec.parsed_rec)
-          }
-=======
           else {
             log.debug("First time we have seen this record - converting ${cfg.name}");
             def parsed_rec = cfg.converter.call(rec.metadata, sync_job)
@@ -556,6 +550,10 @@ class GlobalSourceSyncService {
             if ( ! existing_record_info.save(flush:true) ) {
               log.error("Problem saving record info: ${existing_record_info.errors}");
             }
+
+            if ( cfg.newRemoteRecordHandler != null ) {
+              cfg.newRemoteRecordHandler.call(existing_record_info, parsed_rec.parsed_rec)
+            }
           }
   
           if ( record_timestamp.getTime() > max_timestamp ) {
@@ -566,7 +564,6 @@ class GlobalSourceSyncService {
           log.debug("Updating sync job max timestamp");
           sync_job.haveUpTo=new Date(max_timestamp)
           sync_job.save(flush:true);
->>>>>>> a75d225f866b546375ad5df041527a4209a90a2a
         }
       }
       catch ( Exception e ) {
