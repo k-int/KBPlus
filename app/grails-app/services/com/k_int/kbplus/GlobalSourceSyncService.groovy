@@ -2,6 +2,7 @@ package com.k_int.kbplus
 
 import com.k_int.goai.OaiClient
 import java.text.SimpleDateFormat
+import org.springframework.transaction.annotation.*
 
 /*
  *  Implementing new rectypes..
@@ -23,20 +24,64 @@ class GlobalSourceSyncService {
     log.debug("Reconcile ${oldtitle} ${newtitle}");
 
     // See if we already hava a title with any of the identifiers
+
+    def title_instance = TitleInstance.lookupOrCreate(newtitle.identifiers,newtitle.title)
+
+    // DOes the remote title have a publisher (And is ours blank)
+    
+    if ( ( newtitle.publisher != null ) && ( title_instance.getPublisher() == null ) ) {
+      def publisher_identifiers = []
+      def publisher = Org.lookupOrCreate(newtitle.publisher, 'publisher', null, publisher_identifiers, null)
+      def pub_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Publisher');
+      OrgRole.assertOrgTitleLink(publisher, title_instance, pub_role)
+    }
+
+    // Title history!!
+    newtitle.history.each { historyEvent ->
+      // See if we already have a reference
+      def fromset = []
+      def toset = []
+
+      historyEvent.from.each { he ->
+        def participant = TitleInstance.lookupOrCreate(he.ids,he.title)
+        fromset.add(participant)
+      }
+      historyEvent.to.each { he ->
+        def participant = TitleInstance.lookupOrCreate(he.ids,he.title)
+        toset.add(participant)
+      }
+
+      // Now - See if we can find a title history event for data and these particiapnts.
+      // Title History Events are IMMUTABLE - so we delete them rather than updating them.
+      def base_query = "select the from TitleHistoryEvent as the where the.eventDate == ? "
+      def query_params = [historyEvent.date]
+      fromset.each {
+        base_query += "and exists ( select p from as.participant as p where p.participant = ? and p.participantRole = 'from' ) "
+        query_params.add(it)
+      }
+      toset.each {
+        base_query += "and exists ( select p from as.participant as p where p.participant = ? and p.participantRole = 'to' ) "
+        query_params.add(it)
+      }
+
+      def existing_title_history_event = TitleHistoryEvent.executeQuery(base_query,query_params);
+      log.debug("Result of lookup : ${existing_title_history_event}");
+    }
   }
 
   def titleConv = { md, synctask ->
     log.debug("titleConv....");
     def result = [:]
     result.parsed_rec = [:]
-    result.identifiers = []
-    result.history = []
+    result.parsed_rec.identifiers = []
+    result.parsed_rec.history = []
 
     result.title = md.gokb.title.name.text()
-    result.publisher = md.gokb.title.publisher?.name?.text()
+    result.parsed_rec.title = md.gokb.title.name.text()
+    result.parsed_rec.publisher = md.gokb.title.publisher?.name?.text()
 
     md.gokb.title.identifiers.identifier.each { id ->
-      result.identifiers.add([namespace:id.'@namespace', value:id.'@value'])
+      result.parsed_rec.identifiers.add([namespace:id.'@namespace', value:id.'@value'])
     }
 
     md.gokb.title.history?.historyEvent.each { he ->
@@ -66,7 +111,7 @@ class GlobalSourceSyncService {
         history_statement.to.add(new_history_statement);
       }
 
-      result.history.add(history_statement)
+      result.parsed_rec.history.add(history_statement)
     }
 
     log.debug(result);
@@ -288,7 +333,7 @@ class GlobalSourceSyncService {
       result = RefdataCategory.lookupOrCreate("YNO","Yes")
     }
     
-    return result
+    result
   }
   def packageConv = { md, synctask ->
     println("Package conv...");
@@ -410,119 +455,126 @@ class GlobalSourceSyncService {
     log.debug("doneOAISync");
   }
  
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
   def intOAI(sync_job_id) {
 
     log.debug("internalOAI processing ${sync_job_id}");
 
-    def sync_job = GlobalRecordSource.get(sync_job_id)
-
-    int rectype = sync_job.rectype.longValue()
-    def cfg = rectypes[rectype]
-    log.debug("Rectype: ${rectype} == config ${cfg}");
-
-    try {
-      log.debug("internalOAISync records from [job ${sync_job_id}] ${sync_job.uri} since ${sync_job.haveUpTo} using ${sync_job.fullPrefix}");
-
-      if ( cfg == null ) {
-        throw new RuntimeException("Unable to resolve config for ID ${sync_job.rectype}");
-      }
-
-      def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-
-      def date = sync_job.haveUpTo
-
-      log.debug("upto: ${date} uri:${sync_job.uri} prefix:${sync_job.fullPrefix}");
-
-      def oai_client = new OaiClient(host:sync_job.uri)
-      def max_timestamp = 0
-
-      log.debug("Collect ${cfg.name} changes since ${date}");
-
-      oai_client.getChangesSince(date, sync_job.fullPrefix) { rec ->
-
-        log.debug("Got OAI Record ${rec.header.identifier} datestamp: ${rec.header.datestamp} job:${sync_job.id} url:${sync_job.uri} cfg:${cfg.name}")
-
-        def qryparams = [sync_job.id, rec.header.identifier.text()]
-        def record_timestamp = sdf.parse(rec.header.datestamp.text())
-        def existing_record_info = GlobalRecordInfo.executeQuery('select r from GlobalRecordInfo as r where r.source.id = ? and r.identifier = ?',qryparams);
-        if ( existing_record_info.size() == 1 ) {
-          log.debug("convert xml into json - config is ${cfg} ");
-          def parsed_rec = cfg.converter.call(rec.metadata, sync_job)
-
-          // Deserialize
-          def bais = new ByteArrayInputStream((byte[])(existing_record_info[0].record))
-          def ins = new ObjectInputStream(bais);
-          def old_rec_info = ins.readObject()
-          ins.close()
-          def new_record_info = parsed_rec.parsed_rec
-
-          // For each tracker we need to update the local object which reflects that remote record
-          existing_record_info[0].trackers.each { tracker ->
-            cfg.reconciler.call(tracker, old_rec_info, new_record_info)
-          }
-
-          log.debug("Calling compliance check, cfg name is ${cfg.name}");
-          existing_record_info[0].kbplusCompliant = cfg.complianceCheck.call(parsed_rec.parsed_rec)
-
-          // Finally, update our local copy of the remote object
-          def baos = new ByteArrayOutputStream()
-          def out= new ObjectOutputStream(baos)
-          out.writeObject(new_record_info)
-          out.close()
-          existing_record_info[0].record = baos.toByteArray();
-          existing_record_info[0].desc="Package ${parsed_rec.title} consisting of ${parsed_rec.parsed_rec.tipps?.size()} titles"
-          existing_record_info[0].save()
+      try {
+  
+      def sync_job = GlobalRecordSource.get(sync_job_id)
+  
+      int rectype = sync_job.rectype.longValue()
+      def cfg = rectypes[rectype]
+      log.debug("Rectype: ${rectype} == config ${cfg}");
+  
+        log.debug("internalOAISync records from [job ${sync_job_id}] ${sync_job.uri} since ${sync_job.haveUpTo} using ${sync_job.fullPrefix}");
+  
+        if ( cfg == null ) {
+          throw new RuntimeException("Unable to resolve config for ID ${sync_job.rectype}");
         }
-        else {
-          log.debug("First time we have seen this record - converting ${cfg.name}");
-          def parsed_rec = cfg.converter.call(rec.metadata, sync_job)
-          log.debug("Converter thinks this rec has title :: ${parsed_rec.title}");
-
-          // Evaluate the incoming record to see if it meets KB+ stringent data quality standards
-          def kbplus_compliant = cfg.complianceCheck.call(parsed_rec.parsed_rec) // RefdataCategory.lookupOrCreate("YNO","No")
-
-          def baos = new ByteArrayOutputStream()
-          def out= new ObjectOutputStream(baos)
-          out.writeObject(parsed_rec.parsed_rec)
-          out.close()
-
-          // Because we don't know about this record, we can't possibly be already tracking it. Just create a local tracking record.
-          existing_record_info = new GlobalRecordInfo(
-                                                      ts:record_timestamp,
-                                                      name:parsed_rec.title,
-                                                      identifier:rec.header.identifier.text(),
-                                                      desc:"${parsed_rec.title}",
-                                                      source: sync_job,
-                                                      rectype:sync_job.rectype,
-                                                      record: baos.toByteArray(),
-                                                      kbplusCompliant: kbplus_compliant);
-
-          if ( ! existing_record_info.save() ) {
-            log.error("Problem saving record info: ${existing_record_info.errors}");
+  
+        def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+  
+        def date = sync_job.haveUpTo
+  
+        log.debug("upto: ${date} uri:${sync_job.uri} prefix:${sync_job.fullPrefix}");
+  
+        def oai_client = new OaiClient(host:sync_job.uri)
+        def max_timestamp = 0
+  
+        log.debug("Collect ${cfg.name} changes since ${date}");
+  
+        oai_client.getChangesSince(date, sync_job.fullPrefix) { rec ->
+  
+          log.debug("Got OAI Record ${rec.header.identifier} datestamp: ${rec.header.datestamp} job:${sync_job.id} url:${sync_job.uri} cfg:${cfg.name}")
+  
+          def qryparams = [sync_job.id, rec.header.identifier.text()]
+          def record_timestamp = sdf.parse(rec.header.datestamp.text())
+          def existing_record_info = GlobalRecordInfo.executeQuery('select r from GlobalRecordInfo as r where r.source.id = ? and r.identifier = ?',qryparams);
+          if ( existing_record_info.size() == 1 ) {
+            log.debug("convert xml into json - config is ${cfg} ");
+            def parsed_rec = cfg.converter.call(rec.metadata, sync_job)
+  
+            // Deserialize
+            def bais = new ByteArrayInputStream((byte[])(existing_record_info[0].record))
+            def ins = new ObjectInputStream(bais);
+            def old_rec_info = ins.readObject()
+            ins.close()
+            def new_record_info = parsed_rec.parsed_rec
+  
+            // For each tracker we need to update the local object which reflects that remote record
+            existing_record_info[0].trackers.each { tracker ->
+              cfg.reconciler.call(tracker, old_rec_info, new_record_info)
+            }
+  
+            log.debug("Calling compliance check, cfg name is ${cfg.name}");
+            existing_record_info[0].kbplusCompliant = cfg.complianceCheck.call(parsed_rec.parsed_rec)
+            log.debug("Result of compliance check: ${existing_record_info[0].kbplusCompliant}");
+  
+            // Finally, update our local copy of the remote object
+            def baos = new ByteArrayOutputStream()
+            def out= new ObjectOutputStream(baos)
+            out.writeObject(new_record_info)
+            out.close()
+            existing_record_info[0].record = baos.toByteArray();
+            existing_record_info[0].desc="Package ${parsed_rec.title} consisting of ${parsed_rec.parsed_rec.tipps?.size()} titles"
+            existing_record_info[0].save()
           }
+<<<<<<< HEAD
 
           if ( cfg.newRemoteRecordHandler != null ) {
             cfg.newRemoteRecordHandler.call(existing_record_info, parsed_rec.parsed_rec)
           }
+=======
+          else {
+            log.debug("First time we have seen this record - converting ${cfg.name}");
+            def parsed_rec = cfg.converter.call(rec.metadata, sync_job)
+            log.debug("Converter thinks this rec has title :: ${parsed_rec.title}");
+  
+            // Evaluate the incoming record to see if it meets KB+ stringent data quality standards
+            log.debug("Calling compliance check, cfg name is ${cfg.name}");
+            def kbplus_compliant = cfg.complianceCheck.call(parsed_rec.parsed_rec) // RefdataCategory.lookupOrCreate("YNO","No")
+            log.debug("Result of compliance check: ${kbplus_compliant}");
+  
+            def baos = new ByteArrayOutputStream()
+            def out= new ObjectOutputStream(baos)
+            out.writeObject(parsed_rec.parsed_rec)
+            out.close()
+  
+            // Because we don't know about this record, we can't possibly be already tracking it. Just create a local tracking record.
+            existing_record_info = new GlobalRecordInfo(
+                                                        ts:record_timestamp,
+                                                        name:parsed_rec.title,
+                                                        identifier:rec.header.identifier.text(),
+                                                        desc:"${parsed_rec.title}",
+                                                        source: sync_job,
+                                                        rectype:sync_job.rectype,
+                                                        record: baos.toByteArray(),
+                                                        kbplusCompliant: kbplus_compliant);
+  
+            if ( ! existing_record_info.save(flush:true) ) {
+              log.error("Problem saving record info: ${existing_record_info.errors}");
+            }
+          }
+  
+          if ( record_timestamp.getTime() > max_timestamp ) {
+            max_timestamp = record_timestamp.getTime()
+            log.debug("Max timestamp is now ${record_timestamp}");
+          }
+  
+          log.debug("Updating sync job max timestamp");
+          sync_job.haveUpTo=new Date(max_timestamp)
+          sync_job.save(flush:true);
+>>>>>>> a75d225f866b546375ad5df041527a4209a90a2a
         }
-
-        if ( record_timestamp.getTime() > max_timestamp ) {
-          max_timestamp = record_timestamp.getTime()
-          log.debug("Max timestamp is now ${record_timestamp}");
-        }
-
-        log.debug("Updating sync job max timestamp");
-        sync_job.haveUpTo=new Date(max_timestamp)
-        sync_job.save();
       }
-
-    }
-    catch ( Exception e ) {
-      log.error("Problem running job ${sync_job_id}, conf=${cfg}",e);
-    }
-    finally {
-      log.debug("internalOAISync completed");
-    }
+      catch ( Exception e ) {
+        log.error("Problem running job ${sync_job_id}, conf=${cfg}",e);
+      }
+      finally {
+        log.debug("internalOAISync completed for job ${sync_job_id}");
+      }
   }
 
   def parseDate(datestr, possible_formats) {
