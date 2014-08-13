@@ -346,10 +346,16 @@ class GlobalSourceSyncService {
     return result
   }
 
+  def onNewTitle = { global_record_info, parsed_record ->
+    log.debug("onNewTitle");
+    // We need to create a new global record tracker. If there is already a local title for this remote title, link to it,
+    // otherwise create a new title and link to it.
+  }
+
 
   def rectypes = [
-    [ name:'Package', converter:packageConv, reconciler:packageReconcile, complianceCheck:testPackageCompliance ],
-    [ name:'Title', converter:titleConv, reconciler:titleReconcile, complianceCheck:testTitleCompliance ],
+    [ name:'Package', converter:packageConv, reconciler:packageReconcile, newRemoteRecordHandler:null, complianceCheck:testPackageCompliance ],
+    [ name:'Title', converter:titleConv, reconciler:titleReconcile, newRemoteRecordHandler:onNewTitle, complianceCheck:testTitleCompliance ],
   ]
 
   def runAllActiveSyncTasks() {
@@ -493,6 +499,10 @@ class GlobalSourceSyncService {
 
           if ( ! existing_record_info.save() ) {
             log.error("Problem saving record info: ${existing_record_info.errors}");
+          }
+
+          if ( cfg.newRemoteRecordHandler != null ) {
+            cfg.newRemoteRecordHandler.call(existing_record_info, parsed_rec.parsed_rec)
           }
         }
 
