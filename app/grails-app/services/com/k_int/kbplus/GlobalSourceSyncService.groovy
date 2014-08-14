@@ -23,11 +23,8 @@ class GlobalSourceSyncService {
   def titleReconcile = { grt ,oldtitle, newtitle ->
     log.debug("Reconcile ${oldtitle} ${newtitle}");
 
-    // See if we already hava a title with any of the identifiers
-
-    def title_instance = TitleInstance.lookupOrCreate(newtitle.identifiers,newtitle.title)
-
     // DOes the remote title have a publisher (And is ours blank)
+    def title_instance = genericOIDService.resolveOID(grt.localOid)
     
     if ( ( newtitle.publisher != null ) && ( title_instance.getPublisher() == null ) ) {
       def publisher_identifiers = []
@@ -53,7 +50,7 @@ class GlobalSourceSyncService {
 
       // Now - See if we can find a title history event for data and these particiapnts.
       // Title History Events are IMMUTABLE - so we delete them rather than updating them.
-      def base_query = "select the from TitleHistoryEvent as the where the.eventDate == ? "
+      def base_query = "select the from TitleHistoryEvent as the where the.eventDate = ? "
       def query_params = [historyEvent.date]
       fromset.each {
         base_query += "and exists ( select p from as.participant as p where p.participant = ? and p.participantRole = 'from' ) "
@@ -81,12 +78,12 @@ class GlobalSourceSyncService {
     result.parsed_rec.publisher = md.gokb.title.publisher?.name?.text()
 
     md.gokb.title.identifiers.identifier.each { id ->
-      result.parsed_rec.identifiers.add([namespace:id.'@namespace', value:id.'@value'])
+      result.parsed_rec.identifiers.add([namespace:id.'@namespace'.text(), value:id.'@value'.text()])
     }
 
     md.gokb.title.history?.historyEvent.each { he ->
       def history_statement = [:]
-      history_statement.internalId = he.'@id'
+      history_statement.internalId = he.'@id'.text()
       history_statement.date = he.date.text()
       history_statement.from = []
       history_statement.to = []
@@ -96,7 +93,7 @@ class GlobalSourceSyncService {
         new_history_statement.title=hef.title.text()
         new_history_statement.ids = []
         hef.identifiers.identifier.each { i ->
-          new_history_statement.ids.add([namespace:i.'@namespace', value:i.'@value'])
+          new_history_statement.ids.add([namespace:i.'@namespace'.text(), value:i.'@value'.text()])
         }
         history_statement.from.add(new_history_statement);
       }
@@ -106,7 +103,7 @@ class GlobalSourceSyncService {
         new_history_statement.title=het.title.text()
         new_history_statement.ids = []
         het.identifiers.identifier.each { i ->
-          new_history_statement.ids.add([namespace:i.'@namespace', value:i.'@value'])
+          new_history_statement.ids.add([namespace:i.'@namespace'.text(), value:i.'@value'.text()])
         }
         history_statement.to.add(new_history_statement);
       }
@@ -391,13 +388,31 @@ class GlobalSourceSyncService {
     return result
   }
 
-  def onNewTitle = { global_record_info, parsed_record ->
-    log.debug("onNewTitle");
+
+  // We always match a remote title against a local one, or create a local one to mirror the remote
+  // definition. Having created the remote title, we synchronize the other details (Title History for example)
+  // using the standard reconciler with the new info and null as the old info - essentially a full update the first time.
+  def onNewTitle = { global_record_info, newtitle ->
+
+    log.debug("onNewTitle....");
+
     // We need to create a new global record tracker. If there is already a local title for this remote title, link to it,
-    // otherwise create a new title and link to it.
+    // otherwise create a new title and link to it. See if we can locate a title.
+    def title_instance = TitleInstance.lookupOrCreate(newtitle.identifiers,newtitle.title)
+
+    def grt = new GlobalRecordTracker(
+      owner:global_record_info,
+      localOid:title_instance.class.name+':'+title_instance.id,
+      identifier:java.util.UUID.randomUUID().toString(),
+      name:newtitle.title
+    ).save(flush:true)
+
+    log.debug("call title reconcile");
+    titleReconcile(grt, null, newtitle)
   }
 
 
+  // Main configuration map
   def rectypes = [
     [ name:'Package', converter:packageConv, reconciler:packageReconcile, newRemoteRecordHandler:null, complianceCheck:testPackageCompliance ],
     [ name:'Title', converter:titleConv, reconciler:titleReconcile, newRemoteRecordHandler:onNewTitle, complianceCheck:testTitleCompliance ],
@@ -460,12 +475,12 @@ class GlobalSourceSyncService {
 
     log.debug("internalOAI processing ${sync_job_id}");
 
-      try {
+    def sync_job = GlobalRecordSource.get(sync_job_id)
+    int rectype = sync_job.rectype.longValue()
+    def cfg = rectypes[rectype]
+
+    try {
   
-      def sync_job = GlobalRecordSource.get(sync_job_id)
-  
-      int rectype = sync_job.rectype.longValue()
-      def cfg = rectypes[rectype]
       log.debug("Rectype: ${rectype} == config ${cfg}");
   
         log.debug("internalOAISync records from [job ${sync_job_id}] ${sync_job.uri} since ${sync_job.haveUpTo} using ${sync_job.fullPrefix}");
@@ -529,13 +544,19 @@ class GlobalSourceSyncService {
             // Evaluate the incoming record to see if it meets KB+ stringent data quality standards
             log.debug("Calling compliance check, cfg name is ${cfg.name}");
             def kbplus_compliant = cfg.complianceCheck.call(parsed_rec.parsed_rec) // RefdataCategory.lookupOrCreate("YNO","No")
-            log.debug("Result of compliance check: ${kbplus_compliant}");
+            log.debug("Result of compliance [new] check: ${kbplus_compliant}");
   
             def baos = new ByteArrayOutputStream()
             def out= new ObjectOutputStream(baos)
+            log.debug("write object ${parsed_rec.parsed_rec}");
             out.writeObject(parsed_rec.parsed_rec)
+
+            log.debug("written, closed...");
+
             out.close()
   
+            log.debug("Create new GlobalRecordInfo");
+
             // Because we don't know about this record, we can't possibly be already tracking it. Just create a local tracking record.
             existing_record_info = new GlobalRecordInfo(
                                                         ts:record_timestamp,
@@ -547,12 +568,20 @@ class GlobalSourceSyncService {
                                                         record: baos.toByteArray(),
                                                         kbplusCompliant: kbplus_compliant);
   
-            if ( ! existing_record_info.save(flush:true) ) {
+            if ( existing_record_info.save(flush:true) ) {
+              log.debug("existing_record_info created ok");
+            }
+            else {
               log.error("Problem saving record info: ${existing_record_info.errors}");
             }
 
             if ( cfg.newRemoteRecordHandler != null ) {
+              log.debug("Calling new remote record handler...");
               cfg.newRemoteRecordHandler.call(existing_record_info, parsed_rec.parsed_rec)
+              log.debug("Call completed");
+            }
+            else {
+              log.debug("No new record handler");
             }
           }
   
@@ -565,13 +594,14 @@ class GlobalSourceSyncService {
           sync_job.haveUpTo=new Date(max_timestamp)
           sync_job.save(flush:true);
         }
-      }
-      catch ( Exception e ) {
-        log.error("Problem running job ${sync_job_id}, conf=${cfg}",e);
-      }
-      finally {
-        log.debug("internalOAISync completed for job ${sync_job_id}");
-      }
+    }
+    catch ( Exception e ) {
+      log.error("Problem",e);
+      log.error("Problem running job ${sync_job_id}, conf=${cfg}",e);
+    }
+    finally {
+      log.debug("internalOAISync completed for job ${sync_job_id}");
+    }
   }
 
   def parseDate(datestr, possible_formats) {
