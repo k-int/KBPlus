@@ -34,13 +34,15 @@ class Package {
                     orgs: OrgRole, 
                     documents:DocContext,
                     subscriptions: SubscriptionPackage,
-                    pendingChanges:PendingChange ]
+                    pendingChanges:PendingChange,
+                    ids: IdentifierOccurrence ]
 
   static mappedBy = [tipps: 'pkg', 
                      orgs: 'pkg',
                      documents:'pkg',
                      subscriptions: 'pkg',
-                     pendingChanges: 'pkg']
+                     pendingChanges: 'pkg',
+                     ids: 'pkg' ]
 
 
   static mapping = {

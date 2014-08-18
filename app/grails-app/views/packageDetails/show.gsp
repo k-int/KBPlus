@@ -133,6 +133,31 @@
               </dl>
               
               <dl>
+                <dt>Other Identifiers</dt>
+                <dd>
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>ID</td>
+                        <th>Identifier Namespace</th>
+                        <th>Identifier</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <g:each in="${packageInstance.ids}" var="io">
+                        <tr>
+                          <td>${io.id}</td>
+                          <td>${io.identifier.ns.ns}</td>
+                          <td>${io.identifier.value}</td>
+                        </tr>
+                      </g:each>
+                    </tbody>
+                  </table>
+
+                </dd>
+              </dl>
+
+              <dl>
                 <dt>Public?</dt>
                 <dd>
                   <g:xEditableRefData owner="${packageInstance}" field="isPublic" config='YN'/>
