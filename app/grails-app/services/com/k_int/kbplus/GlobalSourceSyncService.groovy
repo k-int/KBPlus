@@ -51,13 +51,15 @@ class GlobalSourceSyncService {
       // Now - See if we can find a title history event for data and these particiapnts.
       // Title History Events are IMMUTABLE - so we delete them rather than updating them.
       def base_query = "select the from TitleHistoryEvent as the where the.eventDate = ? "
-      def query_params = [historyEvent.date]
+      // Need to parse date...
+      def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+      def query_params = [(historyEvent.date != null ? sdf.parse(historyEvent.date) : null)]
       fromset.each {
-        base_query += "and exists ( select p from as.participant as p where p.participant = ? and p.participantRole = 'from' ) "
+        base_query += "and exists ( select p from the.participants as p where p.participant = ? and p.participantRole = 'from' ) "
         query_params.add(it)
       }
       toset.each {
-        base_query += "and exists ( select p from as.participant as p where p.participant = ? and p.participantRole = 'to' ) "
+        base_query += "and exists ( select p from the.participants as p where p.participant = ? and p.participantRole = 'to' ) "
         query_params.add(it)
       }
 

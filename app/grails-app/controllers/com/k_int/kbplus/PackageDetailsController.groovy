@@ -52,12 +52,12 @@ class PackageDetailsController {
         qry_params.add("%${params.q.trim().toLowerCase()}%");
       }
 
-      if ( params.startDate.length() > 0 ) {
+      if ( params.startDate?.length() > 0 ) {
         base_qry += " and ( p.lastUpdated > ? )"
         qry_params.add(params.date('startDate','yyyy-MM-dd'));
       }
 
-      if ( params.endDate.length() > 0 ) {
+      if ( params.endDate?.length() > 0 ) {
         base_qry += " and ( p.lastUpdated < ? )"
         qry_params.add(params.date('endDate','yyyy-MM-dd'));
       }
