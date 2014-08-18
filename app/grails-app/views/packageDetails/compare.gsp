@@ -111,18 +111,18 @@
 	</thead>
 	<tbody>
 		<g:each in="${unionList}" var="unionTitle">
-				<g:set var="pkgATipp" value="${listA.find {it.title.title.equals(unionTitle)}}"/>
-				<g:set var="pkgBTipp" value="${listB.find {it.title.title.equals(unionTitle)}}"/>
-
+			<g:set var="pkgATipp" value="${listA.find {it.title.title.equals(unionTitle)}}"/>
+			<g:set var="pkgBTipp" value="${listB.find {it.title.title.equals(unionTitle)}}"/>
+			<g:set var="currentTitle" value="${pkgATipp?.title ?:pkgBTipp?.title}"/>
 			<tr>
 				
 				<td>
-				<b><g:link action="show" controller="titleDetails" id="${pkgATipp.title.id}">${unionTitle}</g:link></b> 
-				<i id="pkgDetails${pkgATipp.id}" onclick="showMore('${pkgATipp?.id}${pkgBTipp?.id}')"class="icon-info-sign"></i>
+				<b><g:link action="show" controller="titleDetails" id="${currentTitle.id}">${unionTitle}</g:link></b> 
+				<i onclick="showMore('${currentTitle.id}')"class="icon-info-sign"></i>
 
-				<g:each in="${pkgATipp.title.ids}" var="id">
-                    <br>${id.identifier.ns.ns}:${id.identifier.value}<br/>
-                  </g:each>
+				<g:each in="${currentTitle.ids}" var="id">
+                    <br>${id.identifier.ns.ns}:${id.identifier.value}
+                </g:each>
 				</td>
 			
 				<g:if test="${pkgATipp}">
@@ -166,12 +166,9 @@
 				</g:if>
 				
 				<g:else><td></td></g:else>
-
 				
 			</tr>
 			
-			<g:render template="compare_details" model="[pkgA:pkgATipp,pkgB:pkgBTipp]"/>
-
 		</g:each>
 	</tbody>
 </table>
@@ -182,7 +179,17 @@
 
 </g:if>
 </div>
+%{-- Hiding the tables from compare_details inside the main table, breaks the modal hide.
+ --}%
+ <g:each in="${unionList}" var="unionTitle">
+		<g:set var="pkgATipp" value="${listA.find {it.title.title.equals(unionTitle)}}"/>
+		<g:set var="pkgBTipp" value="${listB.find {it.title.title.equals(unionTitle)}}"/>
+		<g:set var="currentTitle" value="${pkgATipp?.title ?:pkgBTipp?.title}"/>
 
+		<g:render template="compare_details"
+		 model="[pkgA:pkgATipp,pkgB:pkgBTipp,currentTitle:currentTitle, pkgAName:"${pkgInsts.get(0).name}",
+		 pkgBName:"${pkgInsts.get(1).name}" ]"/>
+</g:each>
 
 <r:script language="JavaScript">
     function applySelect2(filter) {
@@ -190,7 +197,7 @@
       	width: "element",
         placeholder: "Type package name...",
         minimumInputLength: 1,
-        ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        ajax: { 
             url: '<g:createLink controller='ajax' action='lookup'/>',
             dataType: 'json',
             data: function (term, page) {
@@ -210,13 +217,12 @@
     }
 
     function showMore(ident) {
-    		$("#compare_details"+ident).modal('show')
+		$("#compare_details"+ident).modal('show')
     }
 
     $(function(){
     	applySelect2("A")
      	applySelect2("B")
-
     });
 
     $('#dateA').datepicker({
