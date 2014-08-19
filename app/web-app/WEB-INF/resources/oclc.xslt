@@ -116,7 +116,7 @@
       </xsl:call-template>
 
       <xsl:call-template name="tsventry">
-        <xsl:with-param name="txt">ACTION</xsl:with-param>
+        <xsl:with-param name="txt">raw</xsl:with-param>
       </xsl:call-template>
 
       <xsl:text>&#xA;</xsl:text>
