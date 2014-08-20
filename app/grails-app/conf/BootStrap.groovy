@@ -1,6 +1,7 @@
 import com.k_int.kbplus.*
 
 import com.k_int.kbplus.auth.*
+import com.k_int.custprops.PropertyDefinition
 import org.codehaus.groovy.grails.plugins.springsecurity.SecurityFilterPosition
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
@@ -28,8 +29,18 @@ class BootStrap {
     def edit_permission = Perm.findByCode('edit') ?: new Perm(code:'edit').save(failOnError: true)
     def view_permission = Perm.findByCode('view') ?: new Perm(code:'view').save(failOnError: true)
 
-    def ref_yes = RefdataCategory.lookupOrCreate("YN","Yes")
-    def ref_no = RefdataCategory.lookupOrCreate("YN","No")
+    RefdataCategory.lookupOrCreate("YN","Yes")
+    RefdataCategory.lookupOrCreate("YN","No")
+    RefdataCategory.lookupOrCreate("YNO","Yes")
+    RefdataCategory.lookupOrCreate("YNO","No")
+    RefdataCategory.lookupOrCreate("YNO","Other")
+    RefdataCategory.lookupOrCreate("YNO","Not applicable")
+    RefdataCategory.lookupOrCreate("YNO","Unknown")
+
+    RefdataCategory.lookupOrCreate("ConcurrentAccess","Specified")
+    RefdataCategory.lookupOrCreate("ConcurrentAccess","Not Specified")
+    RefdataCategory.lookupOrCreate("ConcurrentAccess","No limit")
+    RefdataCategory.lookupOrCreate("ConcurrentAccess","Other")
 
     def or_licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
     def or_subscriber_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber');
@@ -223,7 +234,75 @@ class BootStrap {
     // }
     addDefaultJasperReports()
     addDefaultPageMappings()
+    createLicenceProperties()
    
+  }
+
+  def createLicenceProperties() {
+    def existingProps = LicenseCustomProperty.findAll()
+    def requiredProps = ["Concurrent Access","Concurrent Users","Remote Access","Walk In Access",
+    "Multi Site Access","Partners Access","Alumni Access","ILL - InterLibraryLoans","Include In Coursepacks",
+    "Include in VLE","Enterprise Access","Post Cancellation Access Entitlement"]
+    requiredProps.each{ default_prop ->
+       if ( existingProps.find{it.type.name == default_prop} == null){
+          def newProp = createLicenceProperty(default_prop)
+          newProp.save()
+       }
+    }
+  }
+  def createLicenceProperty(name){
+    def newProp;
+
+    switch (name){
+      case "Concurrent Access" :
+        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
+        newProp.setRefdataCategory("ConcurrentAccess")
+        break;
+      case "Concurrent Users" :
+        newProp = new PropertyDefinition(name: name, type: Integer.toString(), descr: "edit desc")
+        break;
+      case "Remote Access" :
+        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
+        newProp.setRefdataCategory("YNO")
+        break;
+      case "Walk In Access" :
+        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
+        newProp.setRefdataCategory("YNO")
+        break;
+      case"Multi Site Access" :
+        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
+        newProp.setRefdataCategory("YNO")
+        break;
+      case"Partners Access" :
+        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
+        newProp.setRefdataCategory("YNO")
+        break;
+      case"Alumni Access" :
+        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
+        newProp.setRefdataCategory("YNO")
+        break;
+      case"ILL - InterLibraryLoans" :
+        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
+        newProp.setRefdataCategory("YNO")
+        break;
+      case"Include In Coursepacks" :
+        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
+        newProp.setRefdataCategory("YNO")
+        break;
+      case"Include in VLE" :
+        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
+        newProp.setRefdataCategory("YNO")
+        break;
+      case"Enterprise Access" :
+        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
+        newProp.setRefdataCategory("YNO")
+        break;
+      case"Post Cancellation Access Entitlement":
+        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
+        newProp.setRefdataCategory("YNO")
+        break;
+    }
+    return newProp
   }
   def addDefaultPageMappings(){
       if(! SitePage.findAll()){

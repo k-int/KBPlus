@@ -489,22 +489,15 @@ class MyInstitutionsController {
                 def licenseInstance = new License(reference: "Copy of ${baseLicense?.reference}",
                         status: license_status,
                         type: license_type,
-                        concurrentUsers: baseLicense?.concurrentUsers,
-                        remoteAccess: baseLicense?.remoteAccess,
-                        walkinAccess: baseLicense?.walkinAccess,
-                        multisiteAccess: baseLicense?.multisiteAccess,
-                        partnersAccess: baseLicense?.partnersAccess,
-                        alumniAccess: baseLicense?.alumniAccess,
-                        ill: baseLicense?.ill,
-                        coursepack: baseLicense?.coursepack,
-                        vle: baseLicense?.vle,
-                        enterprise: baseLicense?.enterprise,
-                        pca: baseLicense?.pca,
                         noticePeriod: baseLicense?.noticePeriod,
                         licenseUrl: baseLicense?.licenseUrl,
                         onixplLicense: baseLicense?.onixplLicense
                 )
-
+                for(prop in baseLicense?.customProperties){
+                    def copiedProp = new LicenseCustomProperty(type:prop.type,owner:licenseInstance)
+                    prop.copyValueAndNote(copiedProp)
+                    licenseInstance.addToCustomProperties(copiedProp)
+                }
                 // the url will set the shortcode of the organisation that this license should be linked with.
                 if (!licenseInstance.save(flush: true)) {
                     log.error("Problem saving license ${licenseInstance.errors}");

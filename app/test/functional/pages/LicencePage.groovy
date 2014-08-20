@@ -46,6 +46,7 @@ class LicencePage extends AbstractDetails {
         alertBox { text ->
             !$("div.alert-block").children().filter("p", text: text).isEmpty()
         }
+        //Following replaced by custom property
         concurentAccessNote { val ->
             $("#concurrentUsers").click()
             waitElement{$("textarea.input-large")}

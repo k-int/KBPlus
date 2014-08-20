@@ -117,6 +117,28 @@ class PendingChangeController {
               }
             }
             break;
+          case 'CustomPropertyChange':
+            if ( ( parsed_change_info.changeTarget != null ) && ( parsed_change_info.changeTarget.length() > 0 ) ) {
+              def target_object = genericOIDService.resolveOID(parsed_change_info.changeTarget);
+
+              if ( target_object) {          
+                def updateProp = target_object.customProperties.find{it.type.name == parsed_change_info.changeDoc.name}
+                if(updateProp){
+                  log.debug("Update custom property ${updateProp}")
+                  if(parsed_change_info.changeDoc.type == RefdataValue.toString()){
+                    updateProp."${parsed_change_info.changeDoc.prop}".value = "${parsed_change_info.changeDoc.new}"
+                  }else{
+                    updateProp."${parsed_change_info.changeDoc.prop}" = 
+                    updateProp.parseValue("${parsed_change_info.changeDoc.new}", parsed_change_info.changeDoc.type)
+                  }
+                  log.debug("Setting value for ${parsed_change_info.changeDoc.name}.${parsed_change_info.changeDoc.prop} to ${parsed_change_info.changeDoc.new}")
+                  updateProp.save()          
+                }else{
+                  log.debug("Custom Property of template not available on copy.")
+                }
+              }
+            }
+            break;
           case 'TIPPEdit':
             // A tipp was edited, the user wants their change applied to the IE
             break;
