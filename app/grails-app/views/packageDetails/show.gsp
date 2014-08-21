@@ -181,6 +181,19 @@
                 </dd>
               </dl>
 
+              <dl>
+                <dt>Vendor URL</dt>
+                <dd>
+                  <g:xEditable owner="${packageInstance}" field="vendorURL" />
+                </dd>
+              </dl>
+
+              <dl>
+                <dt>Cancellation Allowances</dt>
+                <dd>
+                  <g:xEditable owner="${packageInstance}" field="cancellationAllowances" />
+                </dd>
+              </dl>
 
                 <dl>
                   <dt>Start Date</dt>

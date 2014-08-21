@@ -35,56 +35,35 @@
         <div class="inline-lists">
 
             <dl>
-                <g:if test="${issueEntitlementInstance?.status}">
-                    <dt><g:message code="issueEntitlement.status.label" default="Status" /></dt>
-                    <dd>${issueEntitlementInstance?.status?.value.encodeAsHTML()}</dd>
-                </g:if>
-            </dl>
-
-            <dl>
                 <g:if test="${issueEntitlementInstance?.subscription}">
                     <dt><g:message code="issueEntitlement.subscription.label" default="Subscription" /></dt>
 
                     <dd><g:link controller="subscriptionDetails" action="index" id="${issueEntitlementInstance?.subscription?.id}">${issueEntitlementInstance?.subscription?.name.encodeAsHTML()}</g:link></dd>
 
                 </g:if>
-            </dl>
-
-        <dl>
             <g:if test="${issueEntitlementInstance?.subscription.owner}">
                 <dt><g:message code="issueEntitlement.licence.label" default="Licence" /></dt>
 
                 <dd><g:link controller="licenseDetails" action="index" id="${issueEntitlementInstance?.subscription?.owner.id}">${issueEntitlementInstance?.subscription?.owner.reference.encodeAsHTML()}</g:link></dd>
 
             </g:if>
-        </dl>
-
-        <dl>
             <g:if test="${issueEntitlementInstance?.subscription?.owner?.onixplLicense}">
                 <dt><g:message code="issueEntitlement.onixplLicence.label" default="ONIX-PL Licence" /></dt>
 
                 <dd><g:link controller="onixplLicenseDetails" action="index" id="${issueEntitlementInstance.subscription.owner.onixplLicense.id}">${issueEntitlementInstance.subscription.owner.onixplLicense.title.encodeAsHTML()}</g:link></dd>
             </g:if>
-        </dl>
 
             <g:if test="${issueEntitlementInstance?.tipp}">
-              <dl>
                     <dt><g:message code="issueEntitlement.tipp.title.label" default="Title" /></dt>
                     <dd><g:link controller="titleDetails" action="show" id="${issueEntitlementInstance?.tipp?.title.id}">${issueEntitlementInstance?.tipp?.title.title.encodeAsHTML()}</g:link></dd>
-              </dl>
-              <dl>
-         
                     <dt><g:message code="issueEntitlement.tipp.delayedOA.label" default="TIPP Delayed OA" /></dt>
                     <dd>${issueEntitlementInstance?.tipp.delayedOA?.value}</dd>
-              </dl>
-              <dl>
-
                     <dt><g:message code="issueEntitlement.tipp.hybridOA.label" default="TIPP Hybrid OA" /></dt>
                     <dd>${issueEntitlementInstance?.tipp.hybridOA?.value}</dd>
-              </dl>
+                    <dt><g:message code="issueEntitlement.tipp.accessStartDate.label" default="Date Title Joined Package" /></dt>
+                    <dd><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${issueEntitlementInstance.tipp.accessStartDate}"/></dd>
             </g:if>
 
-            <dl>
                 <g:if test="${issueEntitlementInstance?.tipp.title?.ids}">
                     <dt>Title Identifiers</dt>
                     <dd><ul>
@@ -101,26 +80,18 @@
                     <ul></dd>
 
                 </g:if>
-            </dl>
 
-            <dl>
                 <g:if test="${issueEntitlementInstance?.coreStatus}">
                     <dt>Core Status</dt>
                     <dd>${issueEntitlementInstance?.coreStatus.value}</dd>
                 </g:if>
-            </dl>
 
-            <dl>
               <dt>Core Start Date</dt>
               <dd><g:xEditable owner="${issueEntitlementInstance}" field="coreStatusStart" type="date"/></dd>
-            </dl>
 
-            <dl>
               <dt>Core End Date</dt>
               <dd><g:xEditable owner="${issueEntitlementInstance}" field="coreStatusEnd" type="date"/></dd>
-            </dl>
 
-            <dl>
                 <g:if test="${issueEntitlementInstance?.tipp.hostPlatformURL}">
                     <dt>Title URL</dt>
                     <dd> <a href="${issueEntitlementInstance.tipp?.hostPlatformURL}" TITLE="${issueEntitlementInstance.tipp?.hostPlatformURL}">${issueEntitlementInstance.tipp.platform.name}</a></dd>
@@ -252,7 +223,7 @@
                         <td>${t.coverageDepth}</td>
                         <td><g:link controller="platform" action="show" id="${t.platform.id}">${t.platform.name}</g:link></td>
                         <td><g:link controller="packageDetails" action="show" id="${t.pkg.id}">${t.pkg.name}</g:link></td>
-                        <td><g:link controller="tipp" action="show" id="${t.id}">Full TIPP record</g:link></td>
+                        <td><g:link controller="tipp" action="show" id="${t.id}">View Details</g:link></td>
                         </tr>
                     </g:each>
                 </table>

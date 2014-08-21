@@ -12,6 +12,8 @@ class Package {
   String identifier
   String name
   String impId
+  String vendorURL
+  String cancellationAllowances
   RefdataValue packageType
   RefdataValue packageStatus
   RefdataValue packageListStatus
@@ -46,44 +48,48 @@ class Package {
 
 
   static mapping = {
-                   id column:'pkg_id'
-              version column:'pkg_version'
-           identifier column:'pkg_identifier'
-                 name column:'pkg_name'
-                impId column:'pkg_imp_id', index:'pkg_imp_id_idx'
-          packageType column:'pkg_type_rv_fk'
-        packageStatus column:'pkg_status_rv_fk'
-    packageListStatus column:'pkg_list_status_rv_fk'
-            breakable column:'pkg_breakable_rv_fk'
-           consistent column:'pkg_consistent_rv_fk'
-                fixed column:'pkg_fixed_rv_fk'
-      nominalPlatform column:'pkg_nominal_platform_fk'
-            startDate column:'pkg_start_date'
-              endDate column:'pkg_end_date'
-              license column:'pkg_license_fk'
-             isPublic column:'pkg_is_public'
-         packageScope column:'pkg_scope_rv_fk'
-              forumId column:'pkg_forum_id'
-                tipps sort:'title.title', order: 'asc'
+                      id column:'pkg_id'
+                 version column:'pkg_version'
+              identifier column:'pkg_identifier'
+                    name column:'pkg_name'
+                   impId column:'pkg_imp_id', index:'pkg_imp_id_idx'
+             packageType column:'pkg_type_rv_fk'
+           packageStatus column:'pkg_status_rv_fk'
+       packageListStatus column:'pkg_list_status_rv_fk'
+               breakable column:'pkg_breakable_rv_fk'
+              consistent column:'pkg_consistent_rv_fk'
+                   fixed column:'pkg_fixed_rv_fk'
+         nominalPlatform column:'pkg_nominal_platform_fk'
+               startDate column:'pkg_start_date'
+                 endDate column:'pkg_end_date'
+                 license column:'pkg_license_fk'
+                isPublic column:'pkg_is_public'
+            packageScope column:'pkg_scope_rv_fk'
+               vendorURL column:'pkg_vendor_url'
+  cancellationAllowances column:'pkg_cancellation_allowances', type:'text'
+                 forumId column:'pkg_forum_id'
+                   tipps sort:'title.title', order: 'asc'
 
 //                 orgs sort:'org.name', order: 'asc'
   }
 
   static constraints = {
-          packageType(nullable:true, blank:false)
-        packageStatus(nullable:true, blank:false)
-      nominalPlatform(nullable:true, blank:false)
-    packageListStatus(nullable:true, blank:false)
-            breakable(nullable:true, blank:false)
-           consistent(nullable:true, blank:false)
-                fixed(nullable:true, blank:false)
-            startDate(nullable:true, blank:false)
-              endDate(nullable:true, blank:false)
-              license(nullable:true, blank:false)
-             isPublic(nullable:true, blank:false)
-         packageScope(nullable:true, blank:false)
-              forumId(nullable:true, blank:false)
-                impId(nullable:true, blank:false)
+               packageType(nullable:true, blank:false)
+             packageStatus(nullable:true, blank:false)
+           nominalPlatform(nullable:true, blank:false)
+         packageListStatus(nullable:true, blank:false)
+                 breakable(nullable:true, blank:false)
+                consistent(nullable:true, blank:false)
+                     fixed(nullable:true, blank:false)
+                 startDate(nullable:true, blank:false)
+                   endDate(nullable:true, blank:false)
+                   license(nullable:true, blank:false)
+                  isPublic(nullable:true, blank:false)
+              packageScope(nullable:true, blank:false)
+                   forumId(nullable:true, blank:false)
+                     impId(nullable:true, blank:false)
+                 vendorURL(nullable:true, blank:false)
+    cancellationAllowances(nullable:true, blank:false)
   }
 
   def getConsortia() {

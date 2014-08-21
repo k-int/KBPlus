@@ -109,7 +109,7 @@
             <div class="inline-lists"> 
                <dl><dt>License</dt><dd><g:if test="${subscriptionInstance.subscriber}">
                          <g:xEditableRefData owner="${subscriptionInstance}" field="owner" dataController="subscriptionDetails" dataAction="possibleLicensesForSubscription" />
-                         <g:if test="${subscriptionInstance.owner != null}">(<g:link controller="licenseDetails" action="index" id="${subscriptionInstance.owner.id}">Link</g:link>)</g:if>
+                         <g:if test="${subscriptionInstance.owner != null}">(<g:link controller="licenseDetails" action="index" id="${subscriptionInstance.owner.id}">Link</g:link> <g:link controller="licenseDetails" action="index" target="new" id="${subscriptionInstance.owner.id}"><i class="icon-share-alt"></i></g:link>)</g:if>
                        </g:if><g:else>N/A (Subscription offered)</g:else>
                    </dd>
                </dl>
@@ -119,8 +119,6 @@
                        </g:each></dd></dl>
 
                <dl><dt><g:annotatedLabel owner="${subscriptionInstance}" property="identifier">Subscription Identifier</g:annotatedLabel></dt><dd>${subscriptionInstance.identifier}</dd></dl>
-
-               <dl><dt> <g:annotatedLabel owner="${subscriptionInstance}" property="isPublic">Public?</g:annotatedLabel> </dt><dd><g:xEditableRefData owner="${subscriptionInstance}" field="isPublic" config='YN'/></dd></dl> 
 
                <dl><dt>Start Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="startDate" type="date"/></dd></dl>
 
@@ -203,7 +201,7 @@
               <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
               <th>ISSN</th>
               <g:sortableColumn params="${params}" property="coreStatus" title="Core" />
-              <g:sortableColumn params="${params}" property="startDate" title="Coverage Start Date" />
+              <g:sortableColumn params="${params}" property="startDate" title="Earliest date" />
               <g:sortableColumn params="${params}" property="coreStatusStart" title="Core Start Date" />
               <th rowspan="2">Actions</th>
             </tr>  
@@ -212,7 +210,7 @@
               <th>Access Dates</th>
               <th>eISSN</th>
               <th></th>
-              <g:sortableColumn params="${params}" property="endDate" title="Coverage End Date" />
+              <g:sortableColumn params="${params}" property="endDate" title="Latest Date" />
               <g:sortableColumn params="${params}" property="coreStatusEnd" title="Core End Date"  />
             </tr>
 
@@ -256,7 +254,8 @@
                   <g:link controller="issueEntitlement" id="${ie.id}" action="show">${ie.tipp.title.title}</g:link>
                   <g:if test="${ie.tipp?.hostPlatformURL}">( <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">Host Link</a> 
                             <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL} (In new window)" target="_blank"><i class="icon-share-alt"></i></a>)</g:if> <br/>
-                   Access: ${ie.availabilityStatus?.value}
+                   Access: ${ie.availabilityStatus?.value}<br/>
+                   Coverage Note: ${ie.coverageNote?:(ie.tipp?.coverageNote?:'')}<br/>
                    <g:if test="${ie.availabilityStatus?.value=='Expected'}">
                      on <g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.accessStartDate}"/>
                    </g:if>
