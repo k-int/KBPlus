@@ -72,10 +72,12 @@
                   <g:if test="${s.consortia}">( ${s.consortia?.name} )</g:if>
                 </g:link>
               </td>
-              <td>
+              <td><ul>
                 <g:each in="${s.packages}" var="sp">
-                  ${sp.pkg.name} (${sp.pkg?.contentProvider?.name}) <br/>
-                </g:each>
+                  <li>
+                    <g:link controller="packageDetails" action="show" id="${sp.pkg?.id}" title="${sp.pkg?.contentProvider?.name}">${sp.pkg.name}</g:link>
+                  </li>
+                </g:each></ul>
                 <g:if test="${((s.packages==null) || (s.packages.size()==0))}">
                   <i>None currently, Add packages via <g:link controller="subscriptionDetails" action="linkPackage" id="${s.id}">Link Package</g:link></i>
                 </g:if>
