@@ -101,6 +101,16 @@
             </dl>
 
             <dl>
+              <dt>Core Start Date</dt>
+              <dd><g:xEditable owner="${issueEntitlementInstance}" field="coreStatusStart" type="date"/></dd>
+            </dl>
+
+            <dl>
+              <dt>Core End Date</dt>
+              <dd><g:xEditable owner="${issueEntitlementInstance}" field="coreStatusEnd" type="date"/></dd>
+            </dl>
+
+            <dl>
                 <g:if test="${issueEntitlementInstance?.tipp.hostPlatformURL}">
                     <dt>Host Platform URL</dt>
                     <dd> <a href="${issueEntitlementInstance.tipp?.hostPlatformURL}" TITLE="${issueEntitlementInstance.tipp?.hostPlatformURL}">${issueEntitlementInstance.tipp.platform.name}</a></dd>
