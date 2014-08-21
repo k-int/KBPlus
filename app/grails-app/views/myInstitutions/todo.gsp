@@ -9,8 +9,10 @@
 
     <div class="container">
       <ul class="breadcrumb">
-        <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
-        <li> <g:link controller="myInstitutions" action="todo" params="${[shortcode:params.shortcode]}">${institution.name} ToDo List</g:link> </li>
+        <li> <g:link controller="myInstitutions"
+                     action="instdash"
+                     params="${[shortcode:params.shortcode]}">${institution.name} Dashboard</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="myInstitutions" action="todo" params="${[shortcode:params.shortcode]}">ToDo List</g:link> </li>
       </ul>
     </div>
 

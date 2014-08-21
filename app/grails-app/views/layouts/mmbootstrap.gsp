@@ -78,7 +78,7 @@
                                            params="${[shortcode:org.shortcode]}">Dashboard</g:link></li>
                                <li><g:link controller="myInstitutions"
                                            action="todo"
-                                           params="${[shortcode:org.shortcode]}">ToDo</g:link></li>
+                                           params="${[shortcode:org.shortcode]}">ToDo List</g:link></li>
                                <li><g:link controller="myInstitutions"
                                            action="currentLicenses"
                                            params="${[shortcode:org.shortcode]}">Licences</g:link></li>
