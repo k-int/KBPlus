@@ -51,27 +51,35 @@
       </div>
 
       <div class="container subscription-results">
-        <table class="table table-striped table-bordered table-condensed">
+        <table class="table table-striped table-bordered table-condensed table-tworow">
           <tr>
-            <th>Select</th>
-            <g:sortableColumn params="${params}" property="s.name" title="Name" />
+            <th rowspan="2">Select</th>
+            <g:sortableColumn colspan="7" params="${params}" property="s.name" title="Name / License" />
+          </tr>
+
+          <tr>
             <th><g:annotatedLabel owner="${institution}" property="linkedPackages">Linked Packages</g:annotatedLabel></th>
             <th>Consortia</th>
             <g:sortableColumn params="${params}" property="s.startDate" title="Start Date" />
             <g:sortableColumn params="${params}" property="s.endDate" title="End Date" />
+            <g:sortableColumn params="${params}" property="s.renewalDate" title="Renewal Date" />
             <th>Platform</th>
-            <th>License</th>
             <g:sortableColumn params="${params}" property="s.lastUpdated" title="Last Updated" />
           </tr>
           <g:each in="${subscriptions}" var="s">
             <tr>
-              <td><input type="radio" name="basesubscription" value="${s.id}"/></td>
-              <td>
+              <td rowspan="2"><input type="radio" name="basesubscription" value="${s.id}"/></td>
+              <td colspan="7">
                 <g:link controller="subscriptionDetails" action="index" id="${s.id}">
                   <g:if test="${s.name}">${s.name}</g:if><g:else>-- Name Not Set  --</g:else>
                   <g:if test="${s.consortia}">( ${s.consortia?.name} )</g:if>
                 </g:link>
+                <g:if test="${s.owner}"> 
+                  <span class="pull-right">License : <g:link controller="licenseDetails" action="index" id="${s.owner.id}">${s.owner?.reference}</g:link></span>
+                </g:if>
               </td>
+            </tr>
+            <tr>
               <td><ul>
                 <g:each in="${s.packages}" var="sp">
                   <li>
@@ -81,16 +89,18 @@
                 <g:if test="${((s.packages==null) || (s.packages.size()==0))}">
                   <i>None currently, Add packages via <g:link controller="subscriptionDetails" action="linkPackage" id="${s.id}">Link Package</g:link></i>
                 </g:if>
+                &nbsp;<br/>
+                &nbsp;<br/>
               </td>
               <td>${s.getConsortia()?.name}</td>
               <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${s.startDate}"/></td>
               <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${s.endDate}"/></td>
+              <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${s.renewalDate}"/></td>
               <td>
                 <g:each in="${s.instanceOf?.packages}" var="sp">
                   ${sp.pkg?.nominalPlatform?.name}<br/>
                 </g:each>
               </td>
-              <td><g:if test="${s.owner}"><g:link controller="licenseDetails" action="index" id="${s.owner.id}">${s.owner?.reference}</g:link></g:if></td>
               <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${s.lastUpdated}"/></td>
             </tr>
           </g:each>

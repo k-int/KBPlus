@@ -896,3 +896,8 @@ th.desc a {
 	border:none !important;
 	background:#B1B8BB none !important;
 }
+
+.table-tworow tr:nth-child(even)  {
+  border-bottom: 3px solid black !important;
+}
+

@@ -20,6 +20,7 @@ class Subscription {
   String impId
   Date startDate
   Date endDate
+  Date manualRenewalDate
   Subscription instanceOf
   String noticePeriod
   Date dateCreated
@@ -58,6 +59,7 @@ class Subscription {
                impId column:'sub_imp_id', index:'sub_imp_id_idx'
            startDate column:'sub_start_date'
              endDate column:'sub_end_date'
+   manualRenewalDate column:'sub_manual_renewal_date'
           instanceOf column:'sub_parent_sub_fk'
         noticePeriod column:'sub_notice_period'
             isPublic column:'sub_is_public'
@@ -70,6 +72,7 @@ class Subscription {
     impId(nullable:true, blank:false)
     startDate(nullable:true, blank:false)
     endDate(nullable:true, blank:false)
+    manualRenewalDate(nullable:true, blank:false)
     instanceOf(nullable:true, blank:false)
     noticePeriod(nullable:true, blank:true)
     isPublic(nullable:true, blank:true)
@@ -230,6 +233,10 @@ class Subscription {
 
   public Date getDerivedAccessEndDate() {
     endDate ? endDate : null
+  }
+
+  public Date getRenewalDate() {
+    manualRenewalDate ? manualRenewalDate : null
   }
 
 
