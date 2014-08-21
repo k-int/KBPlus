@@ -67,12 +67,22 @@
             </g:if>
         </dl>
 
-            <dl>
-                <g:if test="${issueEntitlementInstance?.tipp}">
+            <g:if test="${issueEntitlementInstance?.tipp}">
+              <dl>
                     <dt><g:message code="issueEntitlement.tipp.title.label" default="Title" /></dt>
                     <dd><g:link controller="titleDetails" action="show" id="${issueEntitlementInstance?.tipp?.title.id}">${issueEntitlementInstance?.tipp?.title.title.encodeAsHTML()}</g:link></dd>
-                </g:if>
-            </dl>
+              </dl>
+              <dl>
+         
+                    <dt><g:message code="issueEntitlement.tipp.delayedOA.label" default="TIPP Delayed OA" /></dt>
+                    <dd>${issueEntitlementInstance?.tipp.delayedOA?.value}</dd>
+              </dl>
+              <dl>
+
+                    <dt><g:message code="issueEntitlement.tipp.hybridOA.label" default="TIPP Hybrid OA" /></dt>
+                    <dd>${issueEntitlementInstance?.tipp.hybridOA?.value}</dd>
+              </dl>
+            </g:if>
 
             <dl>
                 <g:if test="${issueEntitlementInstance?.tipp.title?.ids}">
@@ -112,14 +122,14 @@
 
             <dl>
                 <g:if test="${issueEntitlementInstance?.tipp.hostPlatformURL}">
-                    <dt>Host Platform URL</dt>
+                    <dt>Title URL</dt>
                     <dd> <a href="${issueEntitlementInstance.tipp?.hostPlatformURL}" TITLE="${issueEntitlementInstance.tipp?.hostPlatformURL}">${issueEntitlementInstance.tipp.platform.name}</a></dd>
                 </g:if>
             </dl>
 
             <br/>
             
-            <h6>Issue Entitlement details under subscription : ${issueEntitlementInstance.subscription.name}</h6>
+            <h6>Access through subscription : ${issueEntitlementInstance.subscription.name}</h6>
 
             <table class="table table-bordered table-striped">
                 <tr>
