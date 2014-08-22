@@ -165,7 +165,7 @@ class MyInstitutionsController {
         if ((params.sort != null) && (params.sort.length() > 0)) {
             qry += " order by l.${params.sort} ${params.order}"
         } else {
-            qry += " order by reference asc"
+            qry += " order by sortableReference asc"
         }
 
 

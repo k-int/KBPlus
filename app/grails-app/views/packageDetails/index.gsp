@@ -70,13 +70,21 @@
                 <div id="resultsarea">
                   <table class="table table-bordered table-striped">
                     <thead>
-                      <tr><th>Package Name</th><th>Consortium</th><th>Last Modified</th></tr>
+                      <tr><th>Package Name</th><th>Consortium</th>
+                          <th>Start Date</th>
+                          <th>End Date</th>
+                          <th>Last Modified</th></tr>
                     </thead>
                     <tbody>
                       <g:each in="${hits}" var="hit">
                         <tr>
-                          <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link><!--(${hit.score})--></td>
+                          <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link>
+                              <!--(${hit.score})-->
+                              <span>(${hit.source.titleCount?:'Unknown number of'} titles)</span>
+                              </td>
                           <td>${hit.source.consortiaName}</td>
+                          <td>${hit.source.startDate}</td>
+                          <td>${hit.source.endDate}</td>
                           <td>${hit.source.lastModified}</td>
                         </tr>
                       </g:each>

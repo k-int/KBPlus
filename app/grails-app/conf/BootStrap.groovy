@@ -446,5 +446,11 @@ No Host Platform URL Content
       it.save()
     }
 
+    log.debug("Generate Missing Sortable License References");
+    License.findAllBySortableReference(null).each {
+      log.debug("Normalise License Reference Name ${it.reference}");
+      it.sortableReference = it.generateSortableReference(it.reference)
+      it.save()
+    }
   }
 }

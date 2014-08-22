@@ -256,6 +256,10 @@ class TitleDetailsController {
     // sw.write("subtype:'Subscription Offered'")
     sw.write("rectype:'Title'")
 
+    if ( params.q != null ) {
+      sw.write(" AND ${params.q}");
+    }
+
     title_qry_reversemap.each { mapping ->
 
       // log.debug("testing ${mapping.key}");
@@ -266,7 +270,7 @@ class TitleDetailsController {
                 sw.write(" AND ")
                 sw.write(mapping.value)
                 sw.write(":")
-                sw.write("\"${p}\"")
+                sw.write("(${p})")
           }
         }
         else {
@@ -276,7 +280,7 @@ class TitleDetailsController {
             sw.write(" AND ")
             sw.write(mapping.value)
             sw.write(":")
-            sw.write("\"${params[mapping.key]}\"")
+            sw.write("(${params[mapping.key]})")
           }
         }
       }

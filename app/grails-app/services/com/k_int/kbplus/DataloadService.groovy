@@ -111,6 +111,9 @@ class DataloadService {
       result.consortiaName = pkg.getConsortia()?.name
       result.cpname = pkg.contentProvider?.name
       result.cpid = pkg.contentProvider?.id
+      result.titleCount = pkg.tipps.size()
+      result.startDate = pkg.startDate
+      result.endDate = pkg.endDate
       def lastmod = pkg.lastUpdated ?: pkg.dateCreated
       if ( lastmod != null ) {
         def formatter = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm")
