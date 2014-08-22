@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import javax.persistence.Transient
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.apache.commons.logging.*
+import java.text.Normalizer
 
 class TitleInstance {
 
@@ -233,6 +234,7 @@ class TitleInstance {
     if ( title != null ) {
       normTitle = generateNormTitle(title)
       keyTitle = generateKeyTitle(title)
+      sortTitle = generateSortTitle(title)
     }
   }
 
@@ -240,10 +242,23 @@ class TitleInstance {
     if ( title != null ) {
       normTitle = generateNormTitle(title)
       keyTitle = generateKeyTitle(title)
-      sortTitle = asciify(title).toLowerCase()
+      sortTitle = generateSortTitle(title)
     }
   }
 
+
+  public static String generateSortTitle(String input_title) {
+    def result=null
+    if ( input_title ) {
+      def s1 = Normalizer.normalize(input_title, Normalizer.Form.NFKD).trim().toLowerCase()
+      s1 = s1.replaceFirst('^copy of ','')
+      s1 = s1.replaceFirst('^the ','')
+      s1 = s1.replaceFirst('^a ','')
+      s1 = s1.replaceFirst('^der ','')
+      result = s1.trim()
+    }
+    result
+  }
 
   public static String generateNormTitle(String input_title) {
     def result = input_title.replaceAll('&',' and ');

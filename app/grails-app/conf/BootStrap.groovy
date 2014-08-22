@@ -430,5 +430,13 @@ No Host Platform URL Content
     // gokb_record_source.save(flush:true, stopOnError:true);
     // log.debug("New gokb record source: ${gokb_record_source}");
 
+    
+    // Regenerate any empty sort titles
+    TitleInstance.findAllBySortTitle(null).each {
+      log.debug("Normalise ${it.title}");
+      it.sortTitle = it.generateSortTitle(it.title)
+      it.save()
+    }
+
   }
 }
