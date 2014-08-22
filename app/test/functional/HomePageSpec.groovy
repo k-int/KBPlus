@@ -283,7 +283,7 @@ class HomePageSpec extends GebReportingSpec {
             withConfirm { deleteNote() }
             licenceDetails()
             editRef(Data.Licence_template_copy_D)
-            concurentAccessNote("many")
+            // concurentAccessNote("many")
         then:
             at LicencePage
 
@@ -297,7 +297,7 @@ class HomePageSpec extends GebReportingSpec {
             createNewLicense(Data.Licence_actual_C)
             addNote("test note")
             addDocument(Data.Test_Doc_name, Data.Test_Doc_file)
-            concurentAccessNote("many")
+            // concurentAccessNote("many")
         then:
             at LicencePage
     }

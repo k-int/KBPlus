@@ -17,8 +17,8 @@
 			   Issue: ${obj.endIssue} 
 			</td>
 		</tr>
-		<tr>
-			<td >coverageNote: ${obj.coverageNote}</td>
+		<tr >
+			<td colspan="2">coverageNote: ${obj.coverageNote}</td>
 		</tr>
 	</tbody>
 </table>

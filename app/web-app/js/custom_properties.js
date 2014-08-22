@@ -80,5 +80,3 @@ function hideModalOnSubmit(){
         $('#cust_prop_add_modal').modal('hide');
     });
     }
-
-

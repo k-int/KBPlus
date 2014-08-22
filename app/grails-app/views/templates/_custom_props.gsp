@@ -2,7 +2,7 @@
 %{--on head of container page, and on window load execute  runCustomPropsJS("<g:createLink controller='ajax' action='lookup'/>");--}%
 
 <%@ page import="com.k_int.kbplus.RefdataValue; com.k_int.custprops.PropertyDefinition" %>
-<h6>Custom Properties</h6>
+<h6>${title}</h6>
 
 <g:hasErrors bean="${newProp}">
     <bootstrap:alert class="alert-error">
@@ -25,7 +25,7 @@
     <input type="hidden" name="ownerId" value="${ownobj.id}"/>
     <input type="hidden" name="editable" value="${editable}"/>
     <input type="hidden" name="ownerClass" value="${ownobj.class}"/>
-    <input type="submit" value="Add Property..." class="btn btn-primary btn-small"/>
+    <input type="submit" value="Add Property" class="btn btn-primary btn-small"/>
 </g:formRemote>
 <br/>
 <table id="custom_props_table" class="table table-bordered licence-properties">
@@ -59,9 +59,10 @@
         </td>
         <td>
             <g:if test="${editable == true}">
-            <g:remoteLink controller="ajax" action="delCustomProperty" onclick="return confirm('Really delete this property?')"
-                          params='[propclass: prop.getClass(),ownerId:"${ownobj.id}",ownerClass:"${ownobj.class}", editable:"${editable}"]' id="${prop.id}"
-                          onComplete="runCustomPropsJS('${createLink(controller:'ajax', action:'lookup')}')" update="custom_props_div">Delete</g:remoteLink>
+            <g:remoteLink controller="ajax" action="delCustomProperty" 
+                before="if(!confirm('Delete this property?')) return false"
+                params='[propclass: prop.getClass(),ownerId:"${ownobj.id}",ownerClass:"${ownobj.class}", editable:"${editable}"]' id="${prop.id}"
+                onComplete="runCustomPropsJS('${createLink(controller:'ajax', action:'lookup')}')" update="custom_props_div">Delete</g:remoteLink>
             </g:if>
         </td>
         </tr>

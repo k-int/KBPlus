@@ -139,7 +139,7 @@
                </dl>
                 <br/>
                 <div id="custom_props_div">
-                    <g:render template="/templates/custom_props" model="${[ ownobj:subscriptionInstance ]}"/>
+                    <g:render template="/templates/custom_props" model="${[ title:'Custom Properties', ownobj:subscriptionInstance ]}"/>
                 </div>
                 <div class="clear-fix"></div>
             </div>
