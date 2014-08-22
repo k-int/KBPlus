@@ -81,6 +81,7 @@ class DataloadService {
         }
         result._id = ti.impId
         result.title = ti.title
+        result.sortTitle = ti.sortTitle
         result.normTitle = ti.normTitle
         result.keyTitle = ti.keyTitle
         result.dbId = ti.id
@@ -101,7 +102,7 @@ class DataloadService {
       def result = [:]
       result._id = pkg.impId
       result.name = "${pkg.name}"
-      result.sortname = "${pkg.name.toLowerCase()}"
+      result.sortname = pkg.sortName
       result.tokname = result.name.replaceAll(':',' ')
       result.dbId = pkg.id
       result.visible = ['Public']

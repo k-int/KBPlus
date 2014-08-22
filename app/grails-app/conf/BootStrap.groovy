@@ -432,9 +432,17 @@ No Host Platform URL Content
 
     
     // Regenerate any empty sort titles
+    log.debug("Generate Missing Sort Title Names");
     TitleInstance.findAllBySortTitle(null).each {
-      log.debug("Normalise ${it.title}");
+      log.debug("Normalise Title ${it.title}");
       it.sortTitle = it.generateSortTitle(it.title)
+      it.save()
+    }
+
+    log.debug("Generate Missing Sort Package Names");
+    Package.findAllBySortName(null).each {
+      log.debug("Normalise Package Name ${it.name}");
+      it.sortName = it.generateSortName(it.name)
       it.save()
     }
 
