@@ -247,7 +247,7 @@ class BootStrap {
     def existingProps = LicenseCustomProperty.findAll()
     def requiredProps = ["Concurrent Access","Concurrent Users","Remote Access","Walk In Access",
     "Multi Site Access","Partners Access","Alumni Access","ILL - InterLibraryLoans","Include In Coursepacks",
-    "Include in VLE","Enterprise Access","Post Cancellation Access Entitlement"]
+    "Include in VLE","Enterprise Access","Post Cancellation Access Entitlement", "Signed"]
     requiredProps.each{ default_prop ->
        if ( existingProps.find{it.type.name == default_prop} == null){
           def newProp = createLicenceProperty(default_prop)
