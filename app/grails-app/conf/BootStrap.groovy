@@ -245,70 +245,40 @@ class BootStrap {
 
   def createLicenceProperties() {
     def existingProps = LicenseCustomProperty.findAll()
-    def requiredProps = ["Concurrent Access","Concurrent Users","Remote Access","Walk In Access",
-    "Multi Site Access","Partners Access","Alumni Access","ILL - InterLibraryLoans","Include In Coursepacks",
-    "Include in VLE","Enterprise Access","Post Cancellation Access Entitlement", "Signed"]
+    def requiredProps = [[propname:"Concurrent Access", descr:'',type:RefdataValue.toString(), cat:'ConcurrentAccess'],
+                         [propname:"Concurrent Users", descr:'',type: Integer.toString()],
+                         [propname:"Remote Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Walk In Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Multi Site Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Partners Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Alumni Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"ILL - InterLibraryLoans", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Include In Coursepacks", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Include in VLE", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Enterprise Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Post Cancellation Access Entitlement", descr:'',type: RefdataValue.toString(), cat:'YNO'], 
+                         [propname:"Signed", descr:'',type: RefdataValue.toString(), cat:'YNO']]
+
+    
     requiredProps.each{ default_prop ->
-       if ( existingProps.find{it.type.name == default_prop} == null){
-          def newProp = createLicenceProperty(default_prop)
+       if ( PropertyDefinition.findByName(default_prop.propname) == null ) {
+
+          log.debug("Unable to locate property definition for ${default_prop.propname}.. Creating");
+
+          def newProp = new PropertyDefinition(name: default_prop.propname, 
+                                               type: default_prop.type, 
+                                               descr: "edit desc")
+          if ( default_prop.cat != null )
+            newProp.setRefdataCategory(default_prop.cat);
+
           newProp.save()
+       }
+       else {
+          log.debug("Got property definition for ${default_prop.propname}");
        }
     }
   }
-  def createLicenceProperty(name){
-    def newProp;
 
-    switch (name){
-      case "Concurrent Access" :
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("ConcurrentAccess")
-        break;
-      case "Concurrent Users" :
-        newProp = new PropertyDefinition(name: name, type: Integer.toString(), descr: "edit desc")
-        break;
-      case "Remote Access" :
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("YNO")
-        break;
-      case "Walk In Access" :
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("YNO")
-        break;
-      case"Multi Site Access" :
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("YNO")
-        break;
-      case"Partners Access" :
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("YNO")
-        break;
-      case"Alumni Access" :
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("YNO")
-        break;
-      case"ILL - InterLibraryLoans" :
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("YNO")
-        break;
-      case"Include In Coursepacks" :
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("YNO")
-        break;
-      case"Include in VLE" :
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("YNO")
-        break;
-      case"Enterprise Access" :
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("YNO")
-        break;
-      case"Post Cancellation Access Entitlement":
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("YNO")
-        break;
-    }
-    return newProp
-  }
   def addDefaultPageMappings(){
       if(! SitePage.findAll()){
         def home = new SitePage(alias:"Home", action:"index",controller:"home").save()
