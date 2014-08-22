@@ -34,7 +34,7 @@ abstract class CustomProperty implements Serializable{
     def sumValue(){
         return "${stringValue}${intValue}${decValue}${refValue}${note}"
     }
-
+    @Override
     public String toString(){
         if(stringValue) return stringValue
         if(intValue) return intValue.toString()

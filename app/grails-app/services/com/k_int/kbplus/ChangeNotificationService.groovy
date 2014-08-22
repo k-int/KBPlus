@@ -163,10 +163,10 @@ class ChangeNotificationService {
       try {
         // log.debug("inside executor task submission... ${changeDocument.OID}");
         def contextObject = genericOIDService.resolveOID(changeDocument.OID);
-        contextObject.notifyDependencies(changeDocument)
+        contextObject?.notifyDependencies(changeDocument)
       }
       catch ( Exception e ) {
-        log.error("Problem with event transmission",e);
+        log.error("Problem with event transmission for ${changeDocument.OID}",e);
       }
     } as java.util.concurrent.Callable)
   }

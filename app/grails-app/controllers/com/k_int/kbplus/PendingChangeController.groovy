@@ -6,6 +6,8 @@ import com.k_int.kbplus.auth.*;
 import grails.converters.*
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.springframework.transaction.TransactionStatus
+import com.k_int.custprops.PropertyDefinition
+
 
 class PendingChangeController {
 
@@ -107,7 +109,7 @@ class PendingChangeController {
                   target_object[parsed_change_info.changeDoc.prop] = parsed_change_info.changeDoc.new
                 }
                 target_object.save()
-
+                //FIXME: is this needed anywhere?
                 def change_audit_object = null
                 if ( change.license ) change_audit_object = change.license;
                 if ( change.subscription ) change_audit_object = change.subscription;
@@ -118,26 +120,7 @@ class PendingChangeController {
             }
             break;
           case 'CustomPropertyChange':
-            if ( ( parsed_change_info.changeTarget != null ) && ( parsed_change_info.changeTarget.length() > 0 ) ) {
-              def target_object = genericOIDService.resolveOID(parsed_change_info.changeTarget);
-
-              if ( target_object) {          
-                def updateProp = target_object.customProperties.find{it.type.name == parsed_change_info.changeDoc.name}
-                if(updateProp){
-                  log.debug("Update custom property ${updateProp}")
-                  if(parsed_change_info.changeDoc.type == RefdataValue.toString()){
-                    updateProp."${parsed_change_info.changeDoc.prop}".value = "${parsed_change_info.changeDoc.new}"
-                  }else{
-                    updateProp."${parsed_change_info.changeDoc.prop}" = 
-                    updateProp.parseValue("${parsed_change_info.changeDoc.new}", parsed_change_info.changeDoc.type)
-                  }
-                  log.debug("Setting value for ${parsed_change_info.changeDoc.name}.${parsed_change_info.changeDoc.prop} to ${parsed_change_info.changeDoc.new}")
-                  updateProp.save()          
-                }else{
-                  log.debug("Custom Property of template not available on copy.")
-                }
-              }
-            }
+              processCustomPropertyChange(parsed_change_info)
             break;
           case 'TIPPEdit':
             // A tipp was edited, the user wants their change applied to the IE
@@ -199,6 +182,52 @@ class PendingChangeController {
       if ( change.pkg ) change_audit_object = change.pkg;
       def change_audit_id = change_audit_object.id
       def change_audit_class_name = change_audit_object.class.name
+    }
+  }
+
+  private void processCustomPropertyChange(parsed_change_info){
+    def changeDoc = parsed_change_info.changeDoc
+     if ( ( parsed_change_info.changeTarget != null ) && ( parsed_change_info.changeTarget.length() > 0 ) ) {
+      def target_object = genericOIDService.resolveOID(parsed_change_info.changeTarget);
+      if ( target_object) {          
+        def updateProp = target_object.customProperties.find{it.type.name == changeDoc.name}
+        if(updateProp){
+          switch (changeDoc.event){
+            case "CustomProperty.deleted":
+              log.debug("Deleting property ${updateProp.type.name} from ${parsed_change_info.changeTarget}")
+              updateProp.delete()
+              break;
+            case "CustomProperty.updated":
+              log.debug("Update custom property ${updateProp}")
+              if(changeDoc.type == RefdataValue.toString()){
+                updateProp."${changeDoc.prop}".value = "${changeDoc.new}"
+              }else{
+                updateProp."${changeDoc.prop}" = 
+                updateProp.parseValue("${changeDoc.new}", changeDoc.type)
+              }
+              log.debug("Setting value for ${changeDoc.name}.${changeDoc.prop} to ${changeDoc.new}")
+              updateProp.save()          
+              break;
+            default:
+              log.error("ChangeDoc event not recognized.")          
+          }
+        }else{
+          def propertyType = genericOIDService.resolveOID(changeDoc.OID).type
+          def newProperty = PropertyDefinition.createPropertyValue(target_object,propertyType)
+
+          if(changeDoc.type == RefdataValue.toString()){
+            def originalRefdata = genericOIDService.resolveOID(changeDoc.OID).refValue;
+            log.debug("RefdataCategory ${propertyType.refdataCategory}")
+            def copyRefdata = RefdataCategory.lookupOrCreate(propertyType.refdataCategory,changeDoc.new)
+            newProperty."${changeDoc.prop}" = copyRefdata
+          }else{
+            newProperty."${changeDoc.prop}" = 
+            newProperty.parseValue("${changeDoc.new}", changeDoc.type)
+          }
+          newProperty.save()
+          log.debug("New CustomProperty ${newProperty.type.name} created for ${target_object}")
+        }
+      }
     }
   }
 }

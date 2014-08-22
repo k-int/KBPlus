@@ -2,7 +2,6 @@
 %{--on head of container page, and on window load execute  runCustomPropsJS("<g:createLink controller='ajax' action='lookup'/>");--}%
 
 <%@ page import="com.k_int.kbplus.RefdataValue; com.k_int.custprops.PropertyDefinition" %>
-<h6>${title}</h6>
 
 <g:hasErrors bean="${newProp}">
     <bootstrap:alert class="alert-error">
@@ -60,7 +59,7 @@
         <td>
             <g:if test="${editable == true}">
             <g:remoteLink controller="ajax" action="delCustomProperty" 
-                before="if(!confirm('Delete this property?')) return false"
+                before="if(!confirm('Delete the property ${prop.type.name}?')) return false"
                 params='[propclass: prop.getClass(),ownerId:"${ownobj.id}",ownerClass:"${ownobj.class}", editable:"${editable}"]' id="${prop.id}"
                 onComplete="runCustomPropsJS('${createLink(controller:'ajax', action:'lookup')}')" update="custom_props_div">Delete</g:remoteLink>
             </g:if>

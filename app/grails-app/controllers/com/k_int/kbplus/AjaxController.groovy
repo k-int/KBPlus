@@ -637,17 +637,29 @@ class AjaxController {
   }
 
   def addCustomPropertyValue(){
-    def owner =  grailsApplication.getArtefact("Domain",params.ownerClass.replace("class ",""))?.getClazz()?.get(params.ownerId)
-    def newProp = PropertyDefinition.lookupOrCreateProp( params.propIdent, owner)
 
-    if(newProp.hasErrors()){
+    def error
+    def newProp
+    def owner =  grailsApplication.getArtefact("Domain",params.ownerClass.replace("class ",""))?.getClazz()?.get(params.ownerId)
+    def type = PropertyDefinition.get(params.propIdent.toLong())
+
+    def existingProp = owner.customProperties.find{it.type.name == type.name }
+
+    if( existingProp == null ){
+      newProp = PropertyDefinition.createPropertyValue( owner, type)    
+      if(newProp.hasErrors()){
         log.error(newProp.errors)
+      }else{
+        log.debug("New Property created: "+newProp.type.name)
+      }
     }else{
-      log.debug("New Property created: "+newProp)
+      error = "A property of this type is already added."
     }
+
+    owner.refresh()
     request.setAttribute("editable",params.editable == "true")
-    render(template: "/templates/custom_props",model:[ownobj:owner, newProp:newProp])
-  }
+    render(template: "/templates/custom_props",model:[ownobj:owner,newProp:newProp,error:error ])  
+  }  
 
   def delOrgRole() {
     // log.debug("delOrgRole ${params}");
@@ -668,7 +680,7 @@ class AjaxController {
       if(property.hasErrors()){
         log.error(property.errors)
       }else{
-        log.debug("Deleted Custom Property: "+property)
+        log.debug("Deleted Custom Property: "+property.type.name)
       }
       request.setAttribute("editable", params.editable == "true")
       render(template: "/templates/custom_props",model:[ownobj:owner, newProp:property])

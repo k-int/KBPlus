@@ -194,7 +194,7 @@
 <r:script language="JavaScript">
     function applySelect2(filter) {
       $("#packageSelect"+filter).select2({
-      	width: "element",
+        width: '90%',
         placeholder: "Type package name...",
         minimumInputLength: 1,
         ajax: { 
