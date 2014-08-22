@@ -750,7 +750,7 @@ class PackageDetailsController {
           if ( fq ) 
             query_str = query_str + " AND ( " + fq + " ) "
           
-          log.debug("query: ${query_str}");
+          log.debug("query: ${query_str} sort: ${params.sorting}");
           result.es_query = query_str;
 
           // if params.sorting==lastmod
@@ -761,7 +761,7 @@ class PackageDetailsController {
               from = params.offset
               size = params.max
               sort = [
-                ("${params.sorting?:'sortname'}".toString()) : [ 'order' : (params.order?:'asc') ]
+                ("${params.sorting?:'sortname'}".toString()) : [ 'order' : (params.order?:'desc') ]
               ]
               query {
                 query_string (query: query_str)
@@ -852,7 +852,7 @@ class PackageDetailsController {
                 sw.write(" AND ")
                 sw.write(mapping.value)
                 sw.write(":")
-                sw.write("\"${p}\"")
+                sw.write("(${p})")
           }
         }
         else {
@@ -862,7 +862,7 @@ class PackageDetailsController {
             sw.write(" AND ")
             sw.write(mapping.value)
             sw.write(":")
-            sw.write("\"${params[mapping.key]}\"")
+            sw.write("(${params[mapping.key]})")
           }
         }
       }
