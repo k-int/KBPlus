@@ -63,6 +63,7 @@
 
                        <li><g:link controller="packageDetails" action="index">All Packages</g:link></li>
                        <li><g:link controller="titleDetails" action="index">All Titles</g:link></li>
+                       <li><g:link controller="subscriptionDetails" action="compare">Compare Subscriptions</g:link></li>
                        <li><g:link controller="packageDetails" action="compare">Compare Packages</g:link></li>
                        <li><g:link controller="onixplLicenseCompare"
                                    action="index">Compare ONIX-PL Licences</g:link></li>

@@ -1,4 +1,5 @@
 package com.k_int.kbplus
+import javax.persistence.Transient
 
 class IssueEntitlement implements Comparable {
 
@@ -86,6 +87,25 @@ class IssueEntitlement implements Comparable {
     return getAvailabilityStatus(new Date());
   }
 
+  @Transient
+  public boolean hasChanged(IssueEntitlement ie){
+    boolean changed = false;
+
+    changed = (getDerivedAccessStartDate() == ie.getDerivedAccessStartDate() ) &&
+               (getDerivedAccessEndDate() == ie.getDerivedAccessEndDate()) &&
+               (coverageNote == ie.coverageNote) &&
+               (coverageDepth == ie.coverageDepth) &&
+               (embargo == ie.embargo) &&
+               (startVolume == ie.startVolume) &&
+               (startIssue == ie.startIssue) &&
+               (startDate == ie.startDate) &&
+               (endDate == ie.endDate) &&
+               (endIssue == ie.endIssue) &&
+               (endVolume == ie.endVolume)
+
+    return !changed
+  }
+
 
   public RefdataValue getAvailabilityStatus(Date as_at) {
     def result = null
@@ -114,6 +134,4 @@ class IssueEntitlement implements Comparable {
     }
     result
   }
-
-
 }

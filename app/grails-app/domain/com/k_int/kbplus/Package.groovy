@@ -317,14 +317,11 @@ class Package {
 
       if(dateStart || dateEnd){
         if(dateEnd && dateStart){
-          ql = Package.
-      findAllByNameIlikeAndStartDateGreaterThanEqualsAndEndDateLessThanEquals("${name}%",dateStart,dateEnd,params)
+          ql = Package.findAllByNameIlikeAndStartDateGreaterThanEqualsAndEndDateLessThanEquals("${name}%",dateStart,dateEnd,params)
         }else if(dateStart){
-  ql = Package.
-      findAllByNameIlikeAndStartDateGreaterThanEquals("${name}%",dateStart)
+          ql = Package.findAllByNameIlikeAndStartDateGreaterThanEquals("${name}%",dateStart)
         }else if(dateEnd){
-  ql = Package.
-      findAllByNameIlikeAndEndDateLessThanEquals("${name}%",dateEnd )
+          ql = Package.findAllByNameIlikeAndEndDateLessThanEquals("${name}%",dateEnd )
           }
       }else{
         ql = Package.findAllByNameIlike("${name}%",params)

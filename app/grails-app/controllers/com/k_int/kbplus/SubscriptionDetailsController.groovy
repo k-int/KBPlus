@@ -189,7 +189,101 @@ class SubscriptionDetailsController {
       }
     }
   }
-  
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def compare(){
+    def result = [:]
+    result.unionList = []
+
+    result.user = User.get(springSecurityService.principal.id)
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0 
+
+    if(params.subA?.length() > 0 && params.subB?.length() > 0 ){
+      log.debug("Subscriptions submitted for comparison ${params.subA} and ${params.subB}.")
+      log.debug("Dates submited are ${params.dateA} and ${params.dateB}")
+      result.subA = params.subA
+      result.subB = params.subB
+      result.dateA = params.dateA
+      result.dateB = params.dateB
+      
+      result.subInsts = []
+      result.subDates = []
+
+      def listA = createCompareList(params.subA ,params.dateA, params, result)
+      def listB = createCompareList(params.subB, params.dateB, params, result)
+
+      //FIXME: It should be possible to optimize the following lines
+      def unionList = listA.collect{it.tipp.title.title}.plus(listB.collect{it.tipp.title.title})
+      unionList = unionList.unique()
+      result.unionListSize = unionList.size()
+      unionList.sort()
+      
+      def toIndex = result.offset + result.max < unionList.size() ? result.offset + result.max : unionList.size()
+      unionList = unionList.subList(result.offset, toIndex.intValue())
+      result.listA = listA
+      result.listB = listB
+      result.unionList = unionList
+      log.debug("Result subInst is ${result.subInsts}")
+    }else{
+      def currentDate = new java.text.SimpleDateFormat('yyyy-MM-dd').format(new Date())
+      result.dateA = currentDate
+      result.dateB = currentDate
+      flash.message = "Please select two subscriptions for comparison"
+    }
+    result
+  }
+
+  def createCompareList(sub,dateStr,params, result){
+   def returnVals = [:]
+   def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd')
+   def date = dateStr?sdf.parse(dateStr):new Date()
+   def subId = sub.substring( sub.indexOf(":")+1)
+    
+   def subInst = Subscription.get(subId)
+   log.debug("Subscription resolved to ${subInst}")
+   result.subInsts.add(subInst)
+
+   result.subDates.add(sdf.format(date))
+
+   def queryParams = [subInst]
+   def query = generateIEQuery(params,queryParams, true, date)
+   def list = IssueEntitlement.executeQuery("select ie "+query,  queryParams);
+
+   log.debug("List for ${subInst} is ${list}")
+   
+   list
+
+  }
+  def generateIEQuery(params, qry_params, showDeletedTipps, asAt) {
+
+      def base_qry = "from IssueEntitlement as ie where ie.subscription = ? "
+
+     if ( showDeletedTipps == false ) {
+         base_qry += "and ie.tipp.status.value != 'Deleted' "
+     }
+
+      if ( params.filter ) {
+      base_qry += " and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) )"
+      qry_params.add("%${params.filter.trim().toLowerCase()}%")
+      qry_params.add("%${params.filter}%")
+      }
+
+      if ( params.startsBefore && params.startsBefore.length() > 0 ) {
+        def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
+        def d = sdf.parse(params.startsBefore)
+        base_qry += " and ie.startDate <= ?"
+        qry_params.add(d)
+      }
+
+      if ( asAt != null ) {
+        base_qry += " and ( ( ? >= coalesce(ie.tipp.accessStartDate, ie.startDate) ) and ( ( ? <= ie.tipp.accessEndDate ) or ( ie.tipp.accessEndDate is null ) ) ) "
+        qry_params.add(asAt);
+        qry_params.add(asAt);
+      }
+
+      return base_qry
+  }
+
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def subscriptionBatchUpdate() {
     def subscriptionInstance = Subscription.get(params.id)

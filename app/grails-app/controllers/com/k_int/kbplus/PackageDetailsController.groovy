@@ -175,8 +175,7 @@ class PackageDetailsController {
 
        def query = generateBasePackageQuery(params,queryParams, true, date)
        def list = TitleInstancePackagePlatform.executeQuery("select tipp "+query,  queryParams);
-
-       
+   
        return list
     }
     

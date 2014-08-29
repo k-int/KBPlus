@@ -232,6 +232,58 @@ class Subscription {
     endDate ? endDate : null
   }
 
+  @Transient
+  static def refdataFind(params) {
+    def result = [];
+    def ql = null;
+   
+
+    if(params.hasDate ){
+      def indxS = params.q.indexOf("{{")
+      def indxC = params.q.indexOf(",",indxS)
+      def indxE = params.q.indexOf("}}",indxC)
+     
+      def name = params.q.substring(0,indxS)
+
+      def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd")
+
+      def dateStart = params.q.substring(indxS+2,indxC)
+      def dateEnd = params.q.substring(indxC+1,indxE)
+
+      dateStart = dateStart.length() > 1 ? sdf.parse(dateStart) : null
+      dateEnd = dateEnd.length() > 1 ? sdf.parse(dateEnd)  : null
+
+
+      if(dateStart || dateEnd){
+        if(dateEnd && dateStart){
+          ql = Subscription.findAllByNameIlikeAndStartDateGreaterThanEqualsAndEndDateLessThanEquals("${name}%",dateStart,dateEnd,params)
+        }else if(dateStart){
+          ql = Subscription.findAllByNameIlikeAndStartDateGreaterThanEquals("${name}%",dateStart)
+        }else if(dateEnd){
+          ql = Subscription.findAllByNameIlikeAndEndDateLessThanEquals("${name}%",dateEnd )
+          }
+      }else{
+        ql = Subscription.findAllByNameIlike("${name}%",params)
+      }   
+        
+    }else{
+      ql = Subscription.findAllByNameIlike("${params.q}%",params)
+    }
+
+    if(params.hideIdent && params.hideIdent == "true"){
+      if ( ql ) {
+          ql.each { t ->
+            result.add([id:"${t.class.name}:${t.id}",text:"${t.name}"])
+          }
+      }  
+    }else if ( ql ) {
+      ql.each { t ->
+        result.add([id:"${t.class.name}:${t.id}",text:"${t.name} (${t.identifier})"])
+      }
+    }
+
+    result
+  }
 
 }
 

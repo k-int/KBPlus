@@ -1,4 +1,3 @@
-`2
 <%@ page import="com.k_int.kbplus.Package" %>
 <!doctype html>
 <html>
@@ -39,18 +38,18 @@
 					</td>
 				</tr>
 				<tr>
-					<td> Package On date</td>
+			 		<td> Package On date</td>
 					<td>
 						<div class="input-append date">
 							<input class="span2" size="16" type="text" 
-							name="dateA" id="dateA" value="${dateA}">
+							name="dateA" id="dateA" value="${dateA}"/>
 							<span class="add-on"><i class="icon-th"></i></span> 
 						</div>
 					</td>
 					<td> 
 						<div class="input-append date">
 							<input class="span2" size="16" type="text" 
-							name="dateB" id="dateB" value="${dateB}">
+							name="dateB" id="dateB" value="${dateB}"/>
 							<span class="add-on"><i class="icon-th"></i></span> 
 						</div>
 					</td>
@@ -58,15 +57,13 @@
 			</tbody>
 		</table>
 
-		<input type="submit" class="btn btn-primary" value="Compare">
+		<input type="submit" class="btn btn-primary" value="Compare"/>
 	</g:form>
 </div>
 
 
 <g:if test="${pkgInsts?.get(0) && pkgInsts?.get(1)}">
 <div class="row">
-	<h3>Comparing '${pkgInsts.get(0).name}'(A) and <br/>'${pkgInsts.get(1).name}'(B)</h3>
-       <br/>
 
 <g:form action="compare" method="get" class="form-inline">
 	<input type="hidden" name="pkgA"value="${pkgA}"/>
