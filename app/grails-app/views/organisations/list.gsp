@@ -31,6 +31,7 @@
             <tr>
               <g:sortableColumn property="name" title="${message(code: 'org.name.label', default: 'Name')}" />
               <g:sortableColumn property="shortcode" title="${message(code: 'org.shortcode.label', default: 'Short Code')}" />
+              <g:sortableColumn property="type" title="${message(code: 'org.type.label', default: 'Type')}" />
               <g:sortableColumn property="sector" title="${message(code: 'org.sector.label', default: 'Sector')}" />
               <g:sortableColumn property="scope" title="${message(code: 'org.scope.label', default: 'Scope')}" />
             </tr>
@@ -40,6 +41,7 @@
             <tr>
               <td><g:link  action="show" id="${orgInstance.id}">${fieldValue(bean: orgInstance, field: "name")}</g:link></td>
               <td>${fieldValue(bean: orgInstance, field: "shortcode")}</td>
+              <td>${orgInstance?.orgType?.value}</td>
               <td>${fieldValue(bean: orgInstance, field: "sector")}</td>
               <td>${fieldValue(bean: orgInstance, field: "scope")}</td>
             </tr>

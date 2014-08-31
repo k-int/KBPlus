@@ -433,6 +433,10 @@ class BootStrap {
 
     RefdataCategory.lookupOrCreate("License Status", "In Progress").save()
 
+    RefdataCategory.lookupOrCreate('OrgType', 'Consortium').save();
+    RefdataCategory.lookupOrCreate('OrgType', 'Institution').save();
+    RefdataCategory.lookupOrCreate('OrgType', 'Other').save();
+
     log.debug("validate content items...");
     // The default template for a property change on a title
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.propertyChange','','''
