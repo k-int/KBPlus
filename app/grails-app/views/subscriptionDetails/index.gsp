@@ -146,12 +146,6 @@
         </div>
 
         <div class="span4">
-          <g:if test="subscriptionInstance.subscriber?.orgType?.value=='Consortium'">
-            <g:render template="consortia" contextPath="../templates" model="${[ ownobj:subscriptionInstance, owntp:'subscription']}" />
-          </g:if>
-          <g:else>
-            <g:render template="consortia" contextPath="../templates" model="${[ ownobj:subscriptionInstance, owntp:'subscription']}" />
-          </g:else>
           <g:render template="documents" contextPath="../templates" model="${[ ownobj:subscriptionInstance, owntp:'subscription']}" />
           <g:render template="notes" contextPath="../templates" model="${[ ownobj:subscriptionInstance, owntp:'subscription']}" />
         </div>

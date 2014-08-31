@@ -23,4 +23,11 @@
                                                                    action="notes"
                                                                    params="${[id:params.id]}">Notes</g:link></li>
 
+  <g:if test="${editable}">
+    <g:if test="${packageInstance?.consortia != null}">
+      <li<%='consortia'== actionName ? ' class="active"' : '' %>><g:link controller="packageDetails" action="consortia" params="${[id:params.id]}">Consortia</g:link></li>
+    </g:if>
+  </g:if>
+
+
 </ul>

@@ -255,7 +255,10 @@
 
           </fieldset>
         </div>
+
+
         <div class="span4">
+
           <div class="well notes">
             <g:if test="${(subscriptionList != null) && (subscriptionList?.size() > 0)}">
               <h5>Add package to institutional subscription:</h5>
@@ -273,6 +276,7 @@
               No subscriptions available to link to this package
             </g:else>
           </div>
+
 
           <g:render template="/templates/documents" model="${[ ownobj:packageInstance, owntp:'pkg']}" />
           <g:render template="/templates/notes"  model="${[ ownobj:packageInstance, owntp:'pkg']}" />

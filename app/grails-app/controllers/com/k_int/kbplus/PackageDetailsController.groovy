@@ -333,6 +333,8 @@ class PackageDetailsController {
     def result = [:]
     boolean showDeletedTipps=false
     result.user = User.get(springSecurityService.principal.id)
+    result.editable=isEditable()
+
     def packageInstance = Package.get(params.id)
     if (!packageInstance) {
       flash.message = message(code: 'default.not.found.message', args: [message(code: 'package.label', default: 'Package'), params.id])
@@ -400,6 +402,7 @@ class PackageDetailsController {
     def result = [:]
     boolean showDeletedTipps=false
     result.user = User.get(springSecurityService.principal.id)
+    result.editable=isEditable()
     def packageInstance = Package.get(params.id)
     if (!packageInstance) {
       flash.message = message(code: 'default.not.found.message', args: [message(code: 'package.label', default: 'Package'), params.id])
@@ -443,6 +446,8 @@ class PackageDetailsController {
     def result = [:]
     boolean showDeletedTipps=false
     result.user = User.get(springSecurityService.principal.id)
+    result.editable=isEditable()
+
     def packageInstance = Package.get(params.id)
     if (!packageInstance) {
       flash.message = message(code: 'default.not.found.message', args: [message(code: 'package.label', default: 'Package'), params.id])
@@ -886,17 +891,23 @@ class PackageDetailsController {
   }
 
 
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-    def notes() {
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def notes() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.packageInstance = Package.get(params.id)
+    result.editable=isEditable()
+    result
+  }
 
-        def result = [:]
-        result.user = User.get(springSecurityService.principal.id)
-        result.packageInstance = Package.get(params.id)
-        result.editable=isEditable()
-
-        result
-    }
-
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def consortia() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.packageInstance = Package.get(params.id)
+    result.editable=isEditable()
+    result
+  }
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def packageBatchUpdate() {
 
