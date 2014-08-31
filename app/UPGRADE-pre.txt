@@ -1,0 +1,3 @@
+
+drop table property_definition;
+

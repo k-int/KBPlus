@@ -24,10 +24,11 @@ class PropertyDefinition {
     }
 
     static mapping = {
-           id column: 'td_id'
-        descr column: 'td_description'
-         name column: 'td_name', index: 'td_name_idx'
-         type column: 'td_type', index: 'td_type_idx'
+                      id column: 'pd_id'
+                   descr column: 'pd_description'
+                    name column: 'pd_name', index: 'td_name_idx'
+                    type column: 'pd_type', index: 'td_type_idx'
+         refdataCategory column: 'pd_rdc', index: 'td_type_idx'
     }
 
     private static def typeIsValid(value) {
