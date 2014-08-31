@@ -233,6 +233,7 @@ class BootStrap {
     }
 
     setupRefdata();
+    log.debug("refdata setup");
 
     // if ( grailsApplication.config.doDocstoreMigration == true ) {
     //   docstoreService.migrateToDb();
@@ -240,6 +241,8 @@ class BootStrap {
     addDefaultJasperReports()
     addDefaultPageMappings()
     createLicenceProperties()
+
+    log.debug("Init completed....");
    
   }
 
@@ -277,6 +280,7 @@ class BootStrap {
           log.debug("Got property definition for ${default_prop.propname}");
        }
     }
+    log.debug("createLicenceProperties completed");
   }
 
   def addDefaultPageMappings(){
@@ -485,21 +489,23 @@ No Host Platform URL Content
     TitleInstance.findAllBySortTitle(null).each {
       log.debug("Normalise Title ${it.title}");
       it.sortTitle = it.generateSortTitle(it.title)
-      it.save()
+      it.save(flush:true, failOnError:true)
     }
 
     log.debug("Generate Missing Sort Package Names");
     Package.findAllBySortName(null).each {
       log.debug("Normalise Package Name ${it.name}");
       it.sortName = it.generateSortName(it.name)
-      it.save()
+      it.save(flush:true, failOnError:true)
     }
 
     log.debug("Generate Missing Sortable License References");
     License.findAllBySortableReference(null).each {
       log.debug("Normalise License Reference Name ${it.reference}");
       it.sortableReference = it.generateSortableReference(it.reference)
-      it.save()
+      it.save(flush:true, failOnError:true)
     }
+
+    log.debug("Completed normalisation step...");
   }
 }
