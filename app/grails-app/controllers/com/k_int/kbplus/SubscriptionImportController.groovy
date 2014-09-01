@@ -612,9 +612,9 @@ class SubscriptionImportController {
     if ( request.method == 'POST' ) {
       def upload_mime_type = request.getFile("renewalsWorksheet")?.contentType
       def upload_filename = request.getFile("renewalsWorksheet")?.getOriginalFilename()
-      log.debug("Uploaded worksheet type: ${upload_mime_type} filename was ${upload_filename}");
+      log.debug("Uploaded worksheet type: ${upload_mime_type} filename was ${upload_filename} - Params.id=${params.id}");
       def input_stream = request.getFile("renewalsWorksheet")?.inputStream
-      def so_start_col = ( ( params.id != null ) ? 21 : 11 )
+      def so_start_col = 11 // ( ( params.id != null ) ? 21 : 11 )
       processRenewalUpload(input_stream, upload_filename, result, so_start_col)
     }
 
@@ -668,13 +668,13 @@ class SubscriptionImportController {
       boolean processing = true
       // Step three, process each title row, starting at row 11(10)
       for (int i=SO_START_ROW;((i<firstSheet.getLastRowNum())&&(processing)); i++) {
-        log.debug("processing row ${i}");
+        log.debug("processing row ${i}... SO_START_COL=${SO_START_COL}");
 
         HSSFRow title_row = firstSheet.getRow(i)
         // Title ID
         def title_id = title_row.getCell(0).toString()
         if ( title_id == 'END' ) {
-          log.debug("Encountered END title");
+          log.debug("Encountered END title, entitlements.size=${result.entitlements.size()}");
           processing = false;
         }
         else {
@@ -714,6 +714,9 @@ class SubscriptionImportController {
                   log.error("TIPP not found in package.");
                   flash.error="You have selected an invalid title/package combination for title ${title_id_long}";
                 }
+              }
+              else {
+                log.debug("Subscribe=${subscribe} for row ${i} col ${j+SO_START_COL}");
               }
             }
           }

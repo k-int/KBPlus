@@ -133,6 +133,41 @@
               </dl>
               
               <dl>
+                <dt>Other Identifiers</dt>
+                <dd>
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>ID</td>
+                        <th>Identifier Namespace</th>
+                        <th>Identifier</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <g:each in="${packageInstance.ids}" var="io">
+                        <tr>
+                          <td>${io.id}</td>
+                          <td>${io.identifier.ns.ns}</td>
+                          <td>${io.identifier.value}</td>
+                        </tr>
+                      </g:each>
+                    </tbody>
+                  </table>
+
+                  <g:if test="${editable}">
+                    <g:form controller="ajax" action="addToCollection" class="form-inline">
+                      <input type="hidden" name="__context" value="${packageInstance.class.name}:${packageInstance.id}"/>
+                      <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.IdentifierOccurrence"/>
+                      <input type="hidden" name="__recip" value="pkg"/>
+                      <input type="hidden" name="identifier" id="addIdentifierSelect"/>
+                      <input type="submit" value="Add Identifier..." class="btn btn-primary btn-small"/>
+                    </g:form>
+                  </g:if>
+
+                </dd>
+              </dl>
+
+              <dl>
                 <dt>Public?</dt>
                 <dd>
                   <g:xEditableRefData owner="${packageInstance}" field="isPublic" config='YN'/>
@@ -146,6 +181,19 @@
                 </dd>
               </dl>
 
+              <dl>
+                <dt>Vendor URL</dt>
+                <dd>
+                  <g:xEditable owner="${packageInstance}" field="vendorURL" />
+                </dd>
+              </dl>
+
+              <dl>
+                <dt>Cancellation Allowances</dt>
+                <dd>
+                  <g:xEditable owner="${packageInstance}" field="cancellationAllowances" />
+                </dd>
+              </dl>
 
                 <dl>
                   <dt>Start Date</dt>
@@ -207,7 +255,10 @@
 
           </fieldset>
         </div>
+
+
         <div class="span4">
+
           <div class="well notes">
             <g:if test="${(subscriptionList != null) && (subscriptionList?.size() > 0)}">
               <h5>Add package to institutional subscription:</h5>
@@ -225,6 +276,7 @@
               No subscriptions available to link to this package
             </g:else>
           </div>
+
 
           <g:render template="/templates/documents" model="${[ ownobj:packageInstance, owntp:'pkg']}" />
           <g:render template="/templates/notes"  model="${[ ownobj:packageInstance, owntp:'pkg']}" />
@@ -475,6 +527,30 @@
             return false ;
         }
       }
+
+      <g:if test="${editable}">
+      $("#addIdentifierSelect").select2({
+        placeholder: "Search for an identifier...",
+        minimumInputLength: 1,
+        ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+          url: "<g:createLink controller='ajax' action='lookup'/>",
+          dataType: 'json',
+          data: function (term, page) {
+              return {
+                  q: term, // search term
+                  page_limit: 10,
+                  baseClass:'com.k_int.kbplus.Identifier'
+              };
+          },
+          results: function (data, page) {
+            return {results: data.values};
+          }
+        },
+        createSearchChoice:function(term, data) {
+          return {id:'com.k_int.kbplus.Identifier:__new__:'+term,text:term};
+        }
+      });
+      </g:if>
      
       <g:if test="${params.asAt && params.asAt.length() > 0}"> $(function() {
         document.body.style.background = "#fcf8e3";

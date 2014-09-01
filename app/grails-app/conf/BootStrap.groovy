@@ -42,6 +42,11 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("ConcurrentAccess","No limit")
     RefdataCategory.lookupOrCreate("ConcurrentAccess","Other")
 
+    def ref_yno_n = RefdataCategory.lookupOrCreate("YNO","No")
+    def ref_yno_y = RefdataCategory.lookupOrCreate("YNO","Yes")
+    def ref_yno_o = RefdataCategory.lookupOrCreate("YNO","Other")
+    def ref_yno_u = RefdataCategory.lookupOrCreate("YNO","Unknown")
+
     def or_licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
     def or_subscriber_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber');
     def or_sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscription Consortia');
@@ -228,6 +233,7 @@ class BootStrap {
     }
 
     setupRefdata();
+    log.debug("refdata setup");
 
     // if ( grailsApplication.config.doDocstoreMigration == true ) {
     //   docstoreService.migrateToDb();
@@ -235,75 +241,48 @@ class BootStrap {
     addDefaultJasperReports()
     addDefaultPageMappings()
     createLicenceProperties()
+
+    log.debug("Init completed....");
    
   }
 
   def createLicenceProperties() {
     def existingProps = LicenseCustomProperty.findAll()
-    def requiredProps = ["Concurrent Access","Concurrent Users","Remote Access","Walk In Access",
-    "Multi Site Access","Partners Access","Alumni Access","ILL - InterLibraryLoans","Include In Coursepacks",
-    "Include in VLE","Enterprise Access","Post Cancellation Access Entitlement"]
+    def requiredProps = [[propname:"Concurrent Access", descr:'',type:RefdataValue.toString(), cat:'ConcurrentAccess'],
+                         [propname:"Concurrent Users", descr:'',type: Integer.toString()],
+                         [propname:"Remote Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Walk In Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Multi Site Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Partners Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Alumni Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"ILL - InterLibraryLoans", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Include In Coursepacks", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Include in VLE", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Enterprise Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Post Cancellation Access Entitlement", descr:'',type: RefdataValue.toString(), cat:'YNO'], 
+                         [propname:"Signed", descr:'',type: RefdataValue.toString(), cat:'YNO']]
+
+    
     requiredProps.each{ default_prop ->
-       if ( existingProps.find{it.type.name == default_prop} == null){
-          def newProp = createLicenceProperty(default_prop)
+       if ( PropertyDefinition.findByName(default_prop.propname) == null ) {
+
+          log.debug("Unable to locate property definition for ${default_prop.propname}.. Creating");
+
+          def newProp = new PropertyDefinition(name: default_prop.propname, 
+                                               type: default_prop.type, 
+                                               descr: "edit desc")
+          if ( default_prop.cat != null )
+            newProp.setRefdataCategory(default_prop.cat);
+
           newProp.save()
        }
+       else {
+          log.debug("Got property definition for ${default_prop.propname}");
+       }
     }
+    log.debug("createLicenceProperties completed");
   }
-  def createLicenceProperty(name){
-    def newProp;
 
-    switch (name){
-      case "Concurrent Access" :
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("ConcurrentAccess")
-        break;
-      case "Concurrent Users" :
-        newProp = new PropertyDefinition(name: name, type: Integer.toString(), descr: "edit desc")
-        break;
-      case "Remote Access" :
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("YNO")
-        break;
-      case "Walk In Access" :
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("YNO")
-        break;
-      case"Multi Site Access" :
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("YNO")
-        break;
-      case"Partners Access" :
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("YNO")
-        break;
-      case"Alumni Access" :
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("YNO")
-        break;
-      case"ILL - InterLibraryLoans" :
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("YNO")
-        break;
-      case"Include In Coursepacks" :
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("YNO")
-        break;
-      case"Include in VLE" :
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("YNO")
-        break;
-      case"Enterprise Access" :
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("YNO")
-        break;
-      case"Post Cancellation Access Entitlement":
-        newProp = new PropertyDefinition(name: name, type: RefdataValue.toString(), descr: "edit desc")
-        newProp.setRefdataCategory("YNO")
-        break;
-    }
-    return newProp
-  }
   def addDefaultPageMappings(){
       if(! SitePage.findAll()){
         def home = new SitePage(alias:"Home", action:"index",controller:"home").save()
@@ -454,6 +433,10 @@ class BootStrap {
 
     RefdataCategory.lookupOrCreate("License Status", "In Progress").save()
 
+    RefdataCategory.lookupOrCreate('OrgType', 'Consortium').save();
+    RefdataCategory.lookupOrCreate('OrgType', 'Institution').save();
+    RefdataCategory.lookupOrCreate('OrgType', 'Other').save();
+
     log.debug("validate content items...");
     // The default template for a property change on a title
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.propertyChange','','''
@@ -489,17 +472,44 @@ No Host Platform URL Content
 ''');
 
 
-   def gokb_record_source = GlobalRecordSource.findByIdentifier('gokbPackages') ?: new GlobalRecordSource(
-                                                                                         identifier:'gokbPackages',
-                                                                                         name:'GOKB',
-                                                                                         type:'OAI',
-                                                                                         haveUpTo:null,
-                                                                                         uri:'https://gokb.k-int.com/gokb/oai/packages',
-                                                                                         listPrefix:'oai_dc',
-                                                                                         fullPrefix:'gokb',
-                                                                                         principal:null,
-                                                                                         credentials:null,
-                                                                                         rectype:0).save(flush:true)
+   
+    // def gokb_record_source = GlobalRecordSource.findByIdentifier('gokbPackages') ?: new GlobalRecordSource(
+    //                                                                                       identifier:'gokbPackages',
+    //                                                                                       name:'GOKB',
+    //                                                                                       type:'OAI',
+    //                                                                                       haveUpTo:null,
+    //                                                                                       uri:'https://gokb.kuali.org/gokb/oai/packages',
+    //                                                                                       listPrefix:'oai_dc',
+    //                                                                                       fullPrefix:'gokb',
+    //                                                                                       principal:null,
+    //                                                                                       credentials:null,
+    //                                                                                       rectype:0)
+    // gokb_record_source.save(flush:true, stopOnError:true);
+    // log.debug("New gokb record source: ${gokb_record_source}");
 
+    
+    // Regenerate any empty sort titles
+    log.debug("Generate Missing Sort Title Names");
+    TitleInstance.findAllBySortTitle(null).each {
+      log.debug("Normalise Title ${it.title}");
+      it.sortTitle = it.generateSortTitle(it.title)
+      it.save(flush:true, failOnError:true)
+    }
+
+    log.debug("Generate Missing Sort Package Names");
+    Package.findAllBySortName(null).each {
+      log.debug("Normalise Package Name ${it.name}");
+      it.sortName = it.generateSortName(it.name)
+      it.save(flush:true, failOnError:true)
+    }
+
+    log.debug("Generate Missing Sortable License References");
+    License.findAllBySortableReference(null).each {
+      log.debug("Normalise License Reference Name ${it.reference}");
+      it.sortableReference = it.generateSortableReference(it.reference)
+      it.save(flush:true, failOnError:true)
+    }
+
+    log.debug("Completed normalisation step...");
   }
 }

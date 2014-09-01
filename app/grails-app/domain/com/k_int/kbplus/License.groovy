@@ -2,6 +2,8 @@ package com.k_int.kbplus
 
 import com.k_int.kbplus.auth.Role
 import javax.persistence.Transient
+import java.text.Normalizer
+
 
 
 class License {
@@ -14,6 +16,7 @@ class License {
   RefdataValue type
 
   String reference
+  String sortableReference
 
   RefdataValue licenseCategory
   RefdataValue isPublic
@@ -57,6 +60,7 @@ class License {
                  status column:'lic_status_rv_fk'
                    type column:'lic_type_rv_fk'
               reference column:'lic_ref'
+      sortableReference column:'lic_sortable_ref'
                isPublic column:'lic_is_public_rdv_fk'
            noticePeriod column:'lic_notice_period'
              licenseUrl column:'lic_license_url'
@@ -77,6 +81,7 @@ class License {
     status(nullable:true, blank:false)
     type(nullable:true, blank:false)
     reference(nullable:true, blank:true)
+    sortableReference(nullable:true, blank:true)
     isPublic(nullable:true, blank:true)
     noticePeriod(nullable:true, blank:true)
     licenseUrl(nullable:true, blank:true)
@@ -299,6 +304,32 @@ class License {
                             ])
 
     }
+  }
+
+  def beforeInsert() {
+    if ( reference != null ) {
+      sortableReference = generateSortableReference(reference)
+    }
+  }
+
+  def beforeUpdate() {
+    if ( reference != null ) {
+      sortableReference = generateSortableReference(reference)
+    }
+  }
+
+
+  public static String generateSortableReference(String input_title) {
+    def result=null
+    if ( input_title ) {
+      def s1 = Normalizer.normalize(input_title, Normalizer.Form.NFKD).trim().toLowerCase()
+      s1 = s1.replaceFirst('^copy of ','')
+      s1 = s1.replaceFirst('^the ','')
+      s1 = s1.replaceFirst('^a ','')
+      s1 = s1.replaceFirst('^der ','')
+      result = s1.trim()
+    }
+    result
   }
 
   /*

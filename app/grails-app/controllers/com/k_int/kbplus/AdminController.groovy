@@ -203,9 +203,37 @@ class AdminController {
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def globalSync() {
     log.debug("start global sync...");
-    globalSourceSyncService.internalRunAllActiveSyncTasks()
+    globalSourceSyncService.runAllActiveSyncTasks()
     log.debug("done global sync...");
     redirect(controller:'home')
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def manageGlobalSources() {
+    def result=[:]
+    log.debug("manageGlobalSources...");
+    result.sources = GlobalRecordSource.list()
+    result
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def newGlobalSource() {
+    def result=[:]
+    log.debug("manageGlobalSources...");
+    result.newSource = GlobalRecordSource.findByIdentifier(params.identifier) ?: new GlobalRecordSource(
+                                                                                         identifier:params.identifier,
+                                                                                         name:params.name,
+                                                                                         type:params.type,
+                                                                                         haveUpTo:null,
+                                                                                         uri:params.uri,
+                                                                                         listPrefix:params.listPrefix,
+                                                                                         fullPrefix:params.fullPrefix,
+                                                                                         principal:params.principal,
+                                                                                         credentials:params.credentials,
+                                                                                         rectype:params.int('rectype'));
+    result.newSource.save();
+
+    redirect action:'manageGlobalSources'
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
@@ -362,6 +390,12 @@ class AdminController {
     log.debug("trigggerHousekeeping()");
     enrichmentService.initiateHousekeeping()
     redirect(controller:'home')
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def deleteGlobalSource() {
+    GlobalRecordSource.removeSource(params.long('id'));
+    redirect(action:'manageGlobalSources')
   }
 
 }

@@ -81,6 +81,7 @@ class DataloadService {
         }
         result._id = ti.impId
         result.title = ti.title
+        result.sortTitle = ti.sortTitle
         result.normTitle = ti.normTitle
         result.keyTitle = ti.keyTitle
         result.dbId = ti.id
@@ -101,7 +102,7 @@ class DataloadService {
       def result = [:]
       result._id = pkg.impId
       result.name = "${pkg.name}"
-      result.sortname = "${pkg.name.toLowerCase()}"
+      result.sortname = pkg.sortName
       result.tokname = result.name.replaceAll(':',' ')
       result.dbId = pkg.id
       result.visible = ['Public']
@@ -110,6 +111,9 @@ class DataloadService {
       result.consortiaName = pkg.getConsortia()?.name
       result.cpname = pkg.contentProvider?.name
       result.cpid = pkg.contentProvider?.id
+      result.titleCount = pkg.tipps.size()
+      result.startDate = pkg.startDate
+      result.endDate = pkg.endDate
       def lastmod = pkg.lastUpdated ?: pkg.dateCreated
       if ( lastmod != null ) {
         def formatter = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm")

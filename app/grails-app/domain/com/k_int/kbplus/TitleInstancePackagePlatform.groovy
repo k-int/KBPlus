@@ -328,6 +328,29 @@ class TitleInstancePackagePlatform {
     return getAvailabilityStatus(new Date());
   }
   
+  public String getAvailabilityStatusAsString() {
+	  def result = null
+	  Date as_at = new Date();
+	  def tipp_access_start_date = getDerivedAccessStartDate()
+	  def tipp_access_end_date = getDerivedAccessEndDate()
+	  
+	  if ( tipp_access_end_date == null ) {
+		result = "Current(*)";
+	  }
+	  else if ( as_at < tipp_access_start_date ) {
+		// expected
+		result = "Expected";
+	  }
+	  else if ( as_at > tipp_access_end_date ) {
+		// expired
+		result = "Expired";
+	  }
+	  else {
+		result = "Current";
+	  }
+	  result
+  }
+  
 
   public RefdataValue getAvailabilityStatus(Date as_at) {
     def result = null

@@ -165,7 +165,7 @@ class MyInstitutionsController {
         if ((params.sort != null) && (params.sort.length() > 0)) {
             qry += " order by l.${params.sort} ${params.order}"
         } else {
-            qry += " order by reference asc"
+            qry += " order by sortableReference asc"
         }
 
 
@@ -235,7 +235,7 @@ class MyInstitutionsController {
             base_qry += " order by s.name asc"
         }
 
-        log.debug("current subs base query: ${base_qry} params: ${qry_params} max:${result.max} offset:${result.offset}");
+        // log.debug("current subs base query: ${base_qry} params: ${qry_params} max:${result.max} offset:${result.offset}");
 
         result.num_sub_rows = Subscription.executeQuery("select count(s) " + base_qry, qry_params)[0]
         result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max: result.max, offset: result.offset]);

@@ -20,9 +20,11 @@
 
     <div class="container" style="text-align:center">
       <g:form action="list" method="get" class="form-inline">
-        <label>Search text</label> <input type="text" name="q" placeholder="enter search term..." value="${params.q?.encodeAsHTML()}"  />
-        <!--<label>Valid On</label> <input name="validOn" type="text" value="${validOn}"/>-->
+        <label>Search text : </label> <input type="text" name="q" placeholder="enter search term..." value="${params.q?.encodeAsHTML()}"  /> &nbsp;
+        <label>Updated After : </label> <input name="startDate" type="date" value="${params.startDate}"/> &nbsp;
+        <label>Updated Before : </label> <input name="endDate" type="date" value="${params.endDate}"/> &nbsp;
         <input type="submit" class="btn btn-primary" value="Search" />
+        <button type="submit" name="format" value="csv" class="btn btn-primary" value="Search">Export</button>
       </g:form><br/>
     </div>
 

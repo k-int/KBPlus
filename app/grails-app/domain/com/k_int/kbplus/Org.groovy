@@ -14,6 +14,8 @@ class Org {
   Date lastUpdated
   String categoryId
 
+  RefdataValue orgType
+
   // Used to generate friendly semantic URLs
   String shortcode
 
@@ -41,6 +43,7 @@ class Org {
      shortcode column:'org_shortcode'
          scope column:'org_scope'
     categoryId column:'org_cat'
+       orgType column:'org_type_rv_fk'
   }
 
   static constraints = {
@@ -51,6 +54,7 @@ class Org {
      shortcode(nullable:true, blank:true, maxSize:128);
          scope(nullable:true, blank:true, maxSize:128);
     categoryId(nullable:true, blank:true, maxSize:128);
+       orgType(nullable:true, blank:true, maxSize:128);
   }
 
   def beforeInsert() {

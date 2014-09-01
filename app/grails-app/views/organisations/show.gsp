@@ -24,17 +24,18 @@
         <dl>
           <g:if test="${orgInstance?.name}">
             <dt><g:message code="org.name.label" default="Name" /></dt>
-            
               <dd><g:fieldValue bean="${orgInstance}" field="name"/></dd>
-            
           </g:if>
         
           <g:if test="${orgInstance?.address}">
             <dt><g:message code="org.address.label" default="Address" /></dt>
-            
               <dd><g:fieldValue bean="${orgInstance}" field="address"/></dd>
-            
           </g:if>
+
+            <dt><g:message code="org.type.label" default="Org Type" /></dt>
+              <dd>
+                <g:xEditableRefData owner="${orgInstance}" field="orgType" config='OrgType'/>
+              </dd>
         
           <g:if test="${orgInstance?.ipRange}">
             <dt><g:message code="org.ipRange.label" default="Ip Range" /></dt>

@@ -13,13 +13,15 @@ grails.project.source.level = 1.7
 //    console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
 // ]
 
+grails.project.dependency.resolver = "maven"
+
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
     inherits("global") {
         // uncomment to disable ehcache
         // excludes 'ehcache'
     }
-    log "error" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+    log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     checksums true // Whether to verify checksums on resolve
     def gebVersion = "0.9.2"
     // def seleniumVersion = "2.32.0"
@@ -44,14 +46,18 @@ grails.project.dependency.resolution = {
         mavenRepo "http://projects.k-int.com/nexus-webapp-1.4.0/content/repositories/releases"
         mavenRepo "http://jaspersoft.artifactoryonline.com/jaspersoft/third-party-ce-artifacts/"
         mavenRepo "http://jasperreports.sourceforge.net/maven2/com/lowagie/itext/2.1.7.js1/"
+        // Added because I'm strugging to get cglib
+        mavenRepo "http://central.maven.org/maven2/"
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
-        compile ('com.k-int:goai:1.0.1') {
+        compile ('com.k-int:goai:1.0.2') {
           exclude 'groovy'
         }
         compile 'commons-codec:commons-codec:1.6'
+        runtime 'xerces:xerces:2.4.0'
+        runtime 'xerces:xercesImpl:2.11.0'
         runtime 'mysql:mysql-connector-java:5.1.30'
         runtime 'com.gmongo:gmongo:1.1'
         runtime 'org.elasticsearch:elasticsearch:1.0.1'
@@ -120,5 +126,12 @@ grails.project.dependency.resolution = {
 
         runtime ":gsp-resources:0.4.4"
         runtime ":jquery:1.9.1"
+
+        runtime ":audit-logging:0.5.4"
+        runtime ":executor:0.3"
+        runtime ":markdown:1.1.1"
+        runtime ":quartz:1.0-RC9"
+        runtime ":rest:0.7"
+
     }
 }

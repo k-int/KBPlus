@@ -26,12 +26,13 @@
           <div class="well form-horizontal">
             Package Name: <input name="pkgname" value="${params.pkgname}"/>
             Sort: <select name="sorting">
+                    <option ${params.sorting=='_score' ? 'selected' : ''} value="_score">Score</option>
                     <option ${params.sorting=='sortname' ? 'selected' : ''} value="sortname">Package Name</option>
                     <option ${params.sorting=='lastModified' ? 'selected' : ''} value="lastModified">Last Modified</option>
                   </select>
             Order: <select name="order" value="${params.order}">
-                    <option ${params.order=='asc' ? 'selected' : ''} value="asc">Ascending</option>
                     <option ${params.order=='desc' ? 'selected' : ''} value="desc">Descending</option>
+                    <option ${params.order=='asc' ? 'selected' : ''} value="asc">Ascending</option>
                   </select>
             <button type="submit" name="search" value="yes">Search</button>
           </div>
@@ -69,13 +70,21 @@
                 <div id="resultsarea">
                   <table class="table table-bordered table-striped">
                     <thead>
-                      <tr><th>Package Name</th><th>Consortium</th><th>Last Modified</th></tr>
+                      <tr><th>Package Name</th><th>Consortium</th>
+                          <th>Start Date</th>
+                          <th>End Date</th>
+                          <th>Last Modified</th></tr>
                     </thead>
                     <tbody>
                       <g:each in="${hits}" var="hit">
                         <tr>
-                          <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
+                          <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link>
+                              <!--(${hit.score})-->
+                              <span>(${hit.source.titleCount?:'Unknown number of'} titles)</span>
+                              </td>
                           <td>${hit.source.consortiaName}</td>
+                          <td>${hit.source.startDate}</td>
+                          <td>${hit.source.endDate}</td>
                           <td>${hit.source.lastModified}</td>
                         </tr>
                       </g:each>

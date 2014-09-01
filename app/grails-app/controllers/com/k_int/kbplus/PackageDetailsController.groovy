@@ -52,23 +52,53 @@ class PackageDetailsController {
         qry_params.add("%${params.q.trim().toLowerCase()}%");
       }
 
-      // if ( date_restriction ) {
-      //   base_qry += " and s.startDate <= ? and s.endDate >= ? "
-      //   qry_params.add(date_restriction)
-      //   qry_params.add(date_restriction)
-      // }
+      if ( params.startDate?.length() > 0 ) {
+        base_qry += " and ( p.lastUpdated > ? )"
+        qry_params.add(params.date('startDate','yyyy-MM-dd'));
+      }
 
-      // if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
-      //   base_qry += " order by ${params.sort} ${params.order}"
-      // }
-      // else {
-      //   base_qry += " order by s.name asc"
-      // }
+      if ( params.endDate?.length() > 0 ) {
+        base_qry += " and ( p.lastUpdated < ? )"
+        qry_params.add(params.date('endDate','yyyy-MM-dd'));
+      }
 
+      if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
+        base_qry += " order by lower(p.${params.sort}) ${params.order}"
+      }
+      else {
+        base_qry += " order by lower(p.name) asc"
+      }
+
+
+      log.debug(base_qry)
       result.packageInstanceTotal = Subscription.executeQuery("select count(p) "+base_qry, qry_params )[0]
-      result.packageInstanceList = Subscription.executeQuery("select p ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
 
-      result
+
+      withFormat {
+        html {
+          result.packageInstanceList = Subscription.executeQuery("select p ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
+          result
+        }
+        csv {
+           response.setHeader("Content-disposition", "attachment; filename=packages.csv")
+           response.contentType = "text/csv"
+           def packages = Subscription.executeQuery("select p ${base_qry}", qry_params) 
+           def out = response.outputStream
+	   log.debug('colheads');
+           out.withWriter { writer ->
+             writer.write('Package Name, Creation Date, Last Modified, Identifier\n');
+             packages.each { 
+               log.debug(it);
+               writer.write("${it.name},${it.dateCreated},${it.lastUpdated},${it.identifier}\n")
+             }
+             writer.write("END");
+             writer.flush();
+             writer.close();
+           }
+           out.close()
+        }
+      }
+
     }
 
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
@@ -302,6 +332,8 @@ class PackageDetailsController {
     def result = [:]
     boolean showDeletedTipps=false
     result.user = User.get(springSecurityService.principal.id)
+    result.editable=isEditable()
+
     def packageInstance = Package.get(params.id)
     if (!packageInstance) {
       flash.message = message(code: 'default.not.found.message', args: [message(code: 'package.label', default: 'Package'), params.id])
@@ -369,6 +401,7 @@ class PackageDetailsController {
     def result = [:]
     boolean showDeletedTipps=false
     result.user = User.get(springSecurityService.principal.id)
+    result.editable=isEditable()
     def packageInstance = Package.get(params.id)
     if (!packageInstance) {
       flash.message = message(code: 'default.not.found.message', args: [message(code: 'package.label', default: 'Package'), params.id])
@@ -412,6 +445,8 @@ class PackageDetailsController {
     def result = [:]
     boolean showDeletedTipps=false
     result.user = User.get(springSecurityService.principal.id)
+    result.editable=isEditable()
+
     def packageInstance = Package.get(params.id)
     if (!packageInstance) {
       flash.message = message(code: 'default.not.found.message', args: [message(code: 'package.label', default: 'Package'), params.id])
@@ -719,7 +754,7 @@ class PackageDetailsController {
           if ( fq ) 
             query_str = query_str + " AND ( " + fq + " ) "
           
-          log.debug("query: ${query_str}");
+          log.debug("query: ${query_str} sort: ${params.sorting}");
           result.es_query = query_str;
 
           // if params.sorting==lastmod
@@ -730,7 +765,7 @@ class PackageDetailsController {
               from = params.offset
               size = params.max
               sort = [
-                ("${params.sorting?:'sortname'}".toString()) : [ 'order' : (params.order?:'asc') ]
+                ("${params.sorting?:'sortname'}".toString()) : [ 'order' : (params.order?:'desc') ]
               ]
               query {
                 query_string (query: query_str)
@@ -821,7 +856,7 @@ class PackageDetailsController {
                 sw.write(" AND ")
                 sw.write(mapping.value)
                 sw.write(":")
-                sw.write("\"${p}\"")
+                sw.write("(${p})")
           }
         }
         else {
@@ -831,7 +866,7 @@ class PackageDetailsController {
             sw.write(" AND ")
             sw.write(mapping.value)
             sw.write(":")
-            sw.write("\"${params[mapping.key]}\"")
+            sw.write("(${params[mapping.key]})")
           }
         }
       }
@@ -855,17 +890,23 @@ class PackageDetailsController {
   }
 
 
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-    def notes() {
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def notes() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.packageInstance = Package.get(params.id)
+    result.editable=isEditable()
+    result
+  }
 
-        def result = [:]
-        result.user = User.get(springSecurityService.principal.id)
-        result.packageInstance = Package.get(params.id)
-        result.editable=isEditable()
-
-        result
-    }
-
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def consortia() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.packageInstance = Package.get(params.id)
+    result.editable=isEditable()
+    result
+  }
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def packageBatchUpdate() {
 

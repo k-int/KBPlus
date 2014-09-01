@@ -193,6 +193,8 @@ log4j = {
     //appenders {
     //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
     //}
+	//trace 'org.hibernate.type'
+	//debug 'org.hibernate.SQL'
 
     appenders {
         console name: "stdout", threshold: org.apache.log4j.Level.ALL

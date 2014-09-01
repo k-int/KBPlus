@@ -13,6 +13,7 @@ class GlobalRecordInfo {
   Date ts
   Set trackers 
   byte[] record
+  RefdataValue kbplusCompliant
 
   static hasMany = [ trackers : GlobalRecordTracker ]
   static mappedBy = [ trackers : 'owner']
@@ -27,14 +28,16 @@ class GlobalRecordInfo {
                  name column:'gri_name'
                  desc column:'gri_desc'
               rectype column:'gri_rectype'
-               record column:'gri_record', length:(1024*1024*5)
+               record column:'gri_record', length:(1024*1024*64)// , type:'blob' // , length:(1024*1024*64)
+      kbplusCompliant column:'gri_kbplus_compliant'
   }
 
   static constraints = {
-          name(nullable:true, blank:false)
-          desc(nullable:true, blank:false)
-       rectype(nullable:true, blank:false)
-            ts(nullable:true, blank:false)
+                  name(nullable:true, blank:false)
+                  desc(nullable:true, blank:false)
+               rectype(nullable:true, blank:false)
+                    ts(nullable:true, blank:false)
+       kbplusCompliant(nullable:true, blank:false)
   }
 
   transient String getDisplayRectype() {

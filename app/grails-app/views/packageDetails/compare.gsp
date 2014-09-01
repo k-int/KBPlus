@@ -1,4 +1,3 @@
-<%@ page import="com.k_int.kbplus.Package" %>
 <!doctype html>
 <html>
   <head>
@@ -28,28 +27,31 @@
 			<tbody>
 				<tr>
 					<td>Package name</td>
-					<td> <input type="hidden" name="pkgA" id="packageSelectA" value="${pkgA}"/> 
-						<br/>start after- <g:simpleHiddenValue id="startA" name="startA" type="date" value="${params.startA}"/>
-							end before- <g:simpleHiddenValue id="endA" name="endA" type="date" value="${params.endA}"/>
+					<td>Restrict this list to packages starting after- <g:simpleHiddenValue id="startA" name="startA" type="date" value="${params.startA}"/>
+							and/or ending before- <g:simpleHiddenValue id="endA" name="endA" type="date" value="${params.endA}"/><br/>
+                                              Now selct first package to compare (Filtered by dates above)<br/>
+                                              <input type="hidden" name="pkgA" id="packageSelectA" value="${pkgA}"/> 
 					</td>
-					<td> <input type="hidden" name="pkgB" id="packageSelectB" value="${pkgB}" />
-					<br/>start after- <g:simpleHiddenValue id="startB" name="startB" type="date" value="${params.startB}"/>
-							end before- <g:simpleHiddenValue id="endB" name="endB" type="date" value="${params.endB}"/>
+					<td> 
+					    Restrict this list to packages starting after- <g:simpleHiddenValue id="startB" name="startB" type="date" value="${params.startB}"/>
+							and/or ending before- <g:simpleHiddenValue id="endB" name="endB" type="date" value="${params.endB}"/><br/>
+                                              Select second package to compare (Filtered by dates above)<br/>
+                                              <input type="hidden" name="pkgB" id="packageSelectB" value="${pkgB}" />
 					</td>
 				</tr>
 				<tr>
-			 		<td> Package On date</td>
+					<td> Package On date</td>
 					<td>
 						<div class="input-append date">
 							<input class="span2" size="16" type="text" 
-							name="dateA" id="dateA" value="${dateA}"/>
+							name="dateA" id="dateA" value="${dateA}">
 							<span class="add-on"><i class="icon-th"></i></span> 
 						</div>
 					</td>
 					<td> 
 						<div class="input-append date">
 							<input class="span2" size="16" type="text" 
-							name="dateB" id="dateB" value="${dateB}"/>
+							name="dateB" id="dateB" value="${dateB}">
 							<span class="add-on"><i class="icon-th"></i></span> 
 						</div>
 					</td>
@@ -57,13 +59,15 @@
 			</tbody>
 		</table>
 
-		<input type="submit" class="btn btn-primary" value="Compare"/>
+		<input type="submit" class="btn btn-primary" value="Compare">
 	</g:form>
 </div>
 
 
 <g:if test="${pkgInsts?.get(0) && pkgInsts?.get(1)}">
 <div class="row">
+	<h3>Comparing '${pkgInsts.get(0).name}'(A) and <br/>'${pkgInsts.get(1).name}'(B)</h3>
+       <br/>
 
 <g:form action="compare" method="get" class="form-inline">
 	<input type="hidden" name="pkgA"value="${pkgA}"/>
@@ -191,7 +195,7 @@
 <r:script language="JavaScript">
     function applySelect2(filter) {
       $("#packageSelect"+filter).select2({
-        width: '90%',
+      	width: "element",
         placeholder: "Type package name...",
         minimumInputLength: 1,
         ajax: { 
