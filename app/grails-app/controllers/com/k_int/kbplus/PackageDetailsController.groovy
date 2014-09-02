@@ -101,6 +101,40 @@ class PackageDetailsController {
 
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def consortia(){
+
+      def result = [:]
+      result.user = User.get(springSecurityService.principal.id)
+      result.packageInstance = Package.get(params.id)
+      result.editable=isEditable()
+      def packageInstance = result.packageInstance
+      log.debug("Active package has ID ${params.id} and object is ${packageInstance}")
+      def consortia = packageInstance.getConsortia()
+
+      def type = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia')
+      log.debug("Active package consortia is ${consortia}")
+      def consortiaInstitutions = Combo.findAllByToOrgAndType(consortia,type).collect{it.fromOrg}
+
+      log.debug("The consortia institutions are ${consortiaInstitutions}")
+      def consortiaInstsWithStatus = [:]
+      def hql = "SELECT role.org FROM OrgRole as role WHERE role.org = ? AND role.roleType.value = 'Subscriber'  AND ( EXISTS ( select sp from role.sub.packages as sp where sp.pkg = ? ) )"
+      consortiaInstitutions.each{org ->
+        def queryParams = [org,packageInstance]
+        def hasPackage = OrgRole.executeQuery(hql,  queryParams)
+        if(hasPackage){
+          consortiaInstsWithStatus.put(org,true)
+        }else{
+          consortiaInstsWithStatus.put(org,false)
+        }
+      }
+      result.consortia = consortia
+      result.consortiaInstsWithStatus = consortiaInstsWithStatus
+      log.debug("institutions with status are ${consortiaInstsWithStatus}")
+
+      result
+    }
+
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
     def create() {
       def user = User.get(springSecurityService.principal.id)
@@ -899,14 +933,7 @@ class PackageDetailsController {
     result
   }
 
-  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def consortia() {
-    def result = [:]
-    result.user = User.get(springSecurityService.principal.id)
-    result.packageInstance = Package.get(params.id)
-    result.editable=isEditable()
-    result
-  }
+
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def packageBatchUpdate() {
 

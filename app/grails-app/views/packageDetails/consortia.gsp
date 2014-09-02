@@ -64,10 +64,26 @@
 </div>
 
 <div class="container">
-    <g:render template="/templates/notes_table" model="${[instance: packageInstance, redirect: 'notes']}"/>
-
+<h3> Institutions for ${consortia.name} consortia </h3>
+<table class="table table-bordered"> 
+<thead>
+    <tr>
+        <th>Organisation</th>
+        <th>Status</th>
+        <th>Create Slaved Subscription</th>
+    </tr>
+</thead>
+<tbody>
+    <g:each in="${consortiaInstsWithStatus}" var="pair">
+        <tr>
+            <td>${pair.getKey().name}</td>
+            <td>${pair.getValue()}</td>
+            <td><g:if test="${editable}"><input type="checkbox" name="_create.${pair.getKey().id}" value="true"/>
+                    </g:if></td>
+        </tr>
+    </g:each>
+</tbody>
+</table>
 </div>
-<g:render template="/templates/addNote"
-          model="${[doclist: packageInstance.documents, ownobj: packageInstance, owntp: 'pkg']}"/>
 </body>
 </html>

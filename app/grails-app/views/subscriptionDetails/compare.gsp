@@ -28,14 +28,18 @@
 						<tbody>
 							<tr>
 								<td>Subscription name </td>
-								<td> <input type="hidden" name="subA" id="subSelectA" value="${subA}"/>
-									<br/>start after- <g:simpleHiddenValue id="startA" name="startA" type="date" value="${params.startA}"/>
-									end before- <g:simpleHiddenValue id="endA" name="endA" type="date" value="${params.endA}"/>
-								</td>
-								<td> <input type="hidden" name="subB" id="subSelectB" value="${subB}"/>
-								<br/>start after- <g:simpleHiddenValue id="startB" name="startB" type="date" value="${params.startB}"/>
-								end before- <g:simpleHiddenValue id="endB" name="endB" type="date" value="${params.endB}"/>
-								</td>
+					<td>Restrict this list to subscriptions starting after- 
+					<g:simpleHiddenValue id="startA" name="startA" type="date" value="${params.startA}"/>
+					and/or ending before- <g:simpleHiddenValue id="endA" name="endA" type="date" value="${params.endA}"/><br/> Now selct first subscription to compare (Filtered by dates above)<br/>
+                      <input type="hidden" name="pkgA" id="subSelectA" value="${pkgA}"/> 
+					</td>
+					<td> 
+					    Restrict this list to subscriptions starting after- 
+					    <g:simpleHiddenValue id="startB" name="startB" type="date" value="${params.startB}"/>
+				and/or ending before- <g:simpleHiddenValue id="endB" name="endB" type="date" value="${params.endB}"/><br/>
+                          Select second subscription to compare (Filtered by dates above)<br/>
+	                      <input type="hidden" name="pkgB" id="subSelectB" value="${pkgB}" />
+					</td>
 							</tr>
 							<tr>
 								<td> Subscriptions on Date</td>
