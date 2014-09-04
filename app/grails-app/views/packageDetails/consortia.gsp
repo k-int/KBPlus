@@ -65,6 +65,9 @@
 
 <div class="container">
 <h3> Institutions for ${consortia.name} consortia </h3>
+<g:form action="generateSlaveSubscriptions" controller="packageDetails" method="POST">
+<input type="hidden" name="id" value="${id}">
+<input type="submit" class="btn btn-primary" value="Create slave subscriptions"/>
 <table class="table table-bordered"> 
 <thead>
     <tr>
@@ -84,6 +87,8 @@
     </g:each>
 </tbody>
 </table>
+<input type="submit" class="btn btn-primary" value="Create slave subscriptions"/>
+</g:form>
 </div>
 </body>
 </html>

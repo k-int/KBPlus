@@ -110,7 +110,7 @@
                     <label class="property-label">Description:</label> <g:textArea name="cust_prop_desc" rows="1"/>
                 </dd>
                 <dd>
-                    <label class="property-label">Add property:</label><g:checkBox name="autoAdd" checked="true"/>
+                    <label class="property-label">Create new property:</label><g:checkBox name="autoAdd" checked="true"/>
                 </dd>
             </dl>
         </div>

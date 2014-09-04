@@ -149,7 +149,7 @@ class TitleInstancePackagePlatform {
   @Transient
   def onChange = { oldMap,newMap ->
 
-    log.debug("onChange")
+    log.debug("onChange Tipp")
 
     def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
 
@@ -296,7 +296,7 @@ class TitleInstancePackagePlatform {
                                                                 "</a> changed in package <a href=\"${grailsApplication.config.SystemBaseURL}/packageDetails/show/${id}\">${this.pkg.name}</a>. " +
                                                                 "<b>${changeDocument.prop}</b> was updated from <b>\"${changeDocument.oldLabel}\"</b>(${changeDocument.old}) to <b>\"${changeDocument.newLabel}\"</b>" +
                                                                 "(${changeDocument.new}). "+description,
-                                                        sub.getSubscriber(),
+                                                        sub?.getSubscriber(),
                                                         [
                                                           changeTarget:"com.k_int.kbplus.IssueEntitlement:${dep_ie.id}",
                                                           changeType:'PropertyChange',
