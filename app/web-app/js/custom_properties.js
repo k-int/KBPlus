@@ -59,18 +59,14 @@ function searchProp(ajaxurl){
 function showModalOnSelect(){
     $("#customPropSelect").on("select2-selecting", function(e) {
         if(e.val == -1){
-            var selectedText = e.object.text;
-            selectedText = selectedText.replace("New Property: ","")
-            $("input[name='cust_prop_name']" ).val(selectedText);
             $('#cust_prop_add_modal').modal('show');
-
         }
     });
     }
 
 function showHideRefData() {
     $('#cust_prop_modal_select').change(function() {
-        var selectedText = $( "#cust_prop_modal_select option:selected" ).val();
+        var selectedText = $( "#cust_prop_modal_select option:selected" ).text();
         if( selectedText == "class com.k_int.kbplus.RefdataValue") {
             $("#cust_prop_ref_data_name").show();
         }else{

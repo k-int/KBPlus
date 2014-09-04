@@ -616,8 +616,7 @@ class AjaxController {
   def addCustPropertyType(){
     def newProp
     def error 
-    def ownerClass = params.ownerClass // we might need this for addCustomPropertyValue
-    def owner =  grailsApplication.getArtefact("Domain",ownerClass.replace("class ",""))?.getClazz()?.get(params.ownerId)
+    def owner =  grailsApplication.getArtefact("Domain",params.ownerClass.replace("class ",""))?.getClazz()?.get(params.ownerId)
     if(params.cust_prop_type.equals(RefdataValue.toString())){
         if(params.refdatacategory){
           newProp = PropertyDefinition.lookupOrCreateType(params.cust_prop_name, params.cust_prop_type, params.cust_prop_desc)
@@ -632,14 +631,9 @@ class AjaxController {
     }
      if(newProp?.hasErrors()){
         log.error(newProp.errors)
-    }else{
-        if(params.autoAdd == "on" && newProp){
-          params.propIdent = newProp.id.toString()
-          chain( action: "addCustomPropertyValue", params:params)    
-        }
-    }
-    request.setAttribute("editable",params.editable == "true")
-    render(template: "/templates/custom_props", model:[ownobj:owner, newProp:newProp, error:error])
+      }
+      request.setAttribute("editable",params.editable == "true")
+      render(template: "/templates/custom_props", model:[ownobj:owner, newProp:newProp, error:error])
   }
 
   def addCustomPropertyValue(){
