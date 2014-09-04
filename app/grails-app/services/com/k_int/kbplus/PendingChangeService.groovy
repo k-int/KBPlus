@@ -15,6 +15,7 @@ def performAccept(change,httpRequest) {
     log.debug("Before transaction")
     PendingChange.withNewTransaction { TransactionStatus status ->
           log.debug("During transaction")
+      change = PendingChange.get(change)
 
       try {
         def parsed_change_info = JSON.parse(change.changeDoc)

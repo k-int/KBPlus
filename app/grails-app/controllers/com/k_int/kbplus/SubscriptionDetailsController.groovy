@@ -47,8 +47,8 @@ class SubscriptionDetailsController {
     result.subscriptionInstance = Subscription.get(params.id)
 
     def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
-    def pendingChanges = PendingChange.executeQuery("select pc from PendingChange as pc where subscription=? and ( pc.status is null or pc.status = ? ) order by ts desc", [result.subscriptionInstance, pending_change_pending_status ]);
-    result.pendingChanges = pendingChanges
+    def pendingChanges = PendingChange.executeQuery("select pc.id from PendingChange as pc where subscription=? and ( pc.status is null or pc.status = ? ) order by ts desc", [result.subscriptionInstance, pending_change_pending_status ]);
+    
     if(result.subscriptionInstance.slaved == true && pendingChanges){
       log.debug("Slaved subscription, auto-accept pending changes")
       pendingChanges.each{change ->
@@ -57,6 +57,7 @@ class SubscriptionDetailsController {
         }
       }
     }
+
 
     // If transformer check user has access to it
     if(params.transforms && !transformerService.hasTransformId(result.user, params.transforms)) {
