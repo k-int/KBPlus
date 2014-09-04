@@ -15,19 +15,19 @@ SET @AlumniAccessPropDefId = null,
 
 select 'Get IDs of known custom properties';
 
-select @AlumniAccessPropDefId := td_id from property_definition where td_name = 'Alumni Access';
-select @ConcurrentAccessPropDefId := td_id from property_definition where td_name = 'Concurrent Access';
-select @ConcurrentUsersPropDefId := td_id from property_definition where td_name = 'Concurrent Users';
-select @EnterpriseAccessPropDefId := td_id from property_definition where td_name = 'Enterprise Access';
-select @ILLPropDefId := td_id from property_definition where td_name = 'ILL - InterLibraryLoans';
-select @IncludeInCoursepacksPropDefId := td_id from property_definition where td_name = 'Include In Coursepacks';
-select @IncludeinVLEPropDefId := td_id from property_definition where td_name = 'Include in VLE';
-select @MultiSiteAccessPropDefId := td_id from property_definition where td_name = 'Multi Site Access';
-select @PartnersAccessPropDefId := td_id from property_definition where td_name = 'Partners Access';
-select @PostCancellationAccessEntitlementPropDefId := td_id from property_definition where td_name = 'Post Cancellation Access Entitlement';
-select @RemoteAccessPropDefId := td_id from property_definition where td_name = 'Remote Access';
-select @SignedPropDefId := td_id from property_definition where td_name = 'Signed';
-select @WalkInAccessPropDefId := td_id from property_definition where td_name = 'Walk In Access';
+select @AlumniAccessPropDefId := pd_id from property_definition where pd_name = 'Alumni Access';
+select @ConcurrentAccessPropDefId := pd_id from property_definition where pd_name = 'Concurrent Access';
+select @ConcurrentUsersPropDefId := pd_id from property_definition where pd_name = 'Concurrent Users';
+select @EnterpriseAccessPropDefId := pd_id from property_definition where pd_name = 'Enterprise Access';
+select @ILLPropDefId := pd_id from property_definition where pd_name = 'ILL - InterLibraryLoans';
+select @IncludeInCoursepacksPropDefId := pd_id from property_definition where pd_name = 'Include In Coursepacks';
+select @IncludeinVLEPropDefId := pd_id from property_definition where pd_name = 'Include in VLE';
+select @MultiSiteAccessPropDefId := pd_id from property_definition where pd_name = 'Multi Site Access';
+select @PartnersAccessPropDefId := pd_id from property_definition where pd_name = 'Partners Access';
+select @PostCancellationAccessEntitlementPropDefId := pd_id from property_definition where pd_name = 'Post Cancellation Access Entitlement';
+select @RemoteAccessPropDefId := pd_id from property_definition where pd_name = 'Remote Access';
+select @SignedPropDefId := pd_id from property_definition where pd_name = 'Signed';
+select @WalkInAccessPropDefId := pd_id from property_definition where pd_name = 'Walk In Access';
 
 
 select 'Select the current concurrent access property and create new custom propertie values for each license';

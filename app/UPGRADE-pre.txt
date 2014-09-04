@@ -1,2 +1,1 @@
-
 drop table if exists property_definition;
