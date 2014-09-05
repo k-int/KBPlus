@@ -51,12 +51,19 @@ class SubscriptionDetailsController {
     
     if(result.subscriptionInstance.slaved == true && pendingChanges){
       log.debug("Slaved subscription, auto-accept pending changes")
+      def changesDesc = [:]
       pendingChanges.each{change ->
         if(!pendingChangeService.performAccept(change,request)){
           log.debug("Auto-accepting pending change has failed.")
+        }else{
+          changesDesc.add(PendingChange.get(change).desc)
         }
       }
+      flash.message = changesDesc
+    }else{
+      result.pendingChanges = pendingChanges
     }
+
 
 
     // If transformer check user has access to it

@@ -12,9 +12,7 @@ def grailsApplication
 
 def performAccept(change,httpRequest) {
     def result = true
-    log.debug("Before transaction")
     PendingChange.withNewTransaction { TransactionStatus status ->
-          log.debug("During transaction")
       change = PendingChange.get(change)
 
       try {
@@ -104,15 +102,12 @@ def performAccept(change,httpRequest) {
         change.license?.pendingChanges?.remove(change)
         change.license?.save();
         change.subscription?.pendingChanges?.remove(change)
-        log.debug("Just before the save")
-        change.subscription?.merge()?.save();
-        log.debug("Just after the save")
+        change.subscription?.save();
         change.status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Accepted")
         change.actionDate = new Date()
         change.user = httpRequest.user
-        log.debug("Just before change save")
-        change.merge().save();
-        log.debug("Just after change save")
+        change.save();
+        log.debug("Pending change accepted and saved")
       }
       catch ( Exception e ) {
         log.error("Problem accepting change",e);

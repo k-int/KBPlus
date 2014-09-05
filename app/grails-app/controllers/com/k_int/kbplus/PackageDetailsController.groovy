@@ -111,24 +111,20 @@ class PackageDetailsController {
       result.editable=isEditable()
       result.id = params.id
       def packageInstance = result.packageInstance
-      log.debug("Active package is ${packageInstance}")
       def consortia = packageInstance.getConsortia()
 
       def type = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia')
-      log.debug("Active package consortia is ${consortia.name}")
       def consortiaInstitutions = Combo.findAllByToOrgAndType(consortia,type).collect{it.fromOrg}
 
-      log.debug("The consortia institutions are ${consortiaInstitutions.size()}")
       def consortiaInstsWithStatus = [:]
       def hql = "SELECT role.org FROM OrgRole as role WHERE role.org = ? AND role.roleType.value = 'Subscriber'  AND ( EXISTS ( select sp from role.sub.packages as sp where sp.pkg = ? ) )"
       consortiaInstitutions.each{org ->
         def queryParams = [org,packageInstance]
         def hasPackage = OrgRole.executeQuery(hql,  queryParams)
         if(hasPackage){
-          consortiaInstsWithStatus.put(org,true)
-          log.debug("Foud one: ${org.name} contains package")
+          consortiaInstsWithStatus.put(org,RefdataCategory.lookupOrCreate("YNO","Yes"))
         }else{
-          consortiaInstsWithStatus.put(org,false)
+          consortiaInstsWithStatus.put(org,RefdataCategory.lookupOrCreate("YNO","No"))
         }
       }
       result.consortia = consortia
