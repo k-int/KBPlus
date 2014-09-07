@@ -118,8 +118,7 @@ class Package {
                          consortium_org) {
     createSubscription(subtype,subname,subidentifier,startdate,enddate,consortium_org,true)
   }
-
-  @Transient
+ @Transient
   def createSubscription(subtype,
                          subname,
                          subidentifier,
@@ -127,8 +126,31 @@ class Package {
                          enddate,
                          consortium_org,
                          add_entitlements) {
-    // Create the header
+    createSubscription(subtype, subname,subidentifier,startdate,
+                  enddate,consortium_org,add_entitlements,false)
+  }
+  @Transient
+  def createSubscription(subtype,
+                         subname,
+                         subidentifier,
+                         startdate,
+                         enddate,
+                         consortium_org,
+                         add_entitlements,slaved) {
+    createSubscription(subtype, subname,subidentifier,startdate,
+                  enddate,consortium_org,"Package Consortia",add_entitlements,false)
+  }
 
+  @Transient
+  def createSubscription(subtype,
+                         subname,
+                         subidentifier,
+                         startdate,
+                         enddate,
+                         consortium_org,org_role,
+                         add_entitlements,slaved) {
+    // Create the header
+    log.debug("Package: createSubscription called")
     def result = new Subscription( name:subname,
                                    status:RefdataCategory.lookupOrCreate('Subscription Status','Current'),
                                    identifier:subidentifier,
@@ -136,39 +158,17 @@ class Package {
                                    startDate:startdate,
                                    endDate:enddate,
                                    isPublic: RefdataCategory.lookupOrCreate('YN','No'),
-                                   type: RefdataValue.findByValue(subtype))
+                                   type: RefdataValue.findByValue(subtype),
+                                   slaved: slaved == true)
 
     if ( result.save(flush:true) ) {
       if ( consortium_org ) {
-        def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
+        def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', org_role);
         def or = new OrgRole(org: consortium_org, sub:result, roleType:sc_role).save();
+        log.debug("Create Org role ${or}")
       }
-
-      def new_package_link = new SubscriptionPackage(subscription:result, pkg:this).save();
-      def live_issue_entitlement = RefdataCategory.lookupOrCreate('Entitlement Issue Status', 'Live');
-
-      // Copy the tipps into the IEs
-      log.debug("Copy tipp entries into new subscription");
-
-      if ( add_entitlements ) {
-        tipps.each { tipp ->
-          log.debug("adding ${tipp}");
-
-          def new_ie = new IssueEntitlement(status: live_issue_entitlement,
-                                            subscription: result,
-                                            tipp: tipp,
-                                            startDate:tipp.startDate,
-                                            startVolume:tipp.startVolume,
-                                            startIssue:tipp.startIssue,
-                                            endDate:tipp.endDate,
-                                            endVolume:tipp.endVolume,
-                                            endIssue:tipp.endIssue,
-                                            embargo:tipp.embargo,
-                                            coverageDepth:tipp.coverageDepth,
-                                            coverageNote:tipp.coverageNote).save()
-  
-        }
-      }
+      addToSubscription(result, add_entitlements)
+          
     }
     else {
       result.errors.each { err ->

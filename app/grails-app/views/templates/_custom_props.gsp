@@ -77,7 +77,6 @@
         <input type="hidden" name="ownerClass" value="${ownobj.class}"/>
         <input type="hidden" name="editable" value="${editable}"/>
 
-
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">×</button>
 
@@ -93,9 +92,11 @@
                     <label class="property-label">Name:</label> <input type="text" name="cust_prop_name"/>
                 </dd>
                 <dd>
-                    <label class="property-label">Type:</label> <g:select from="${PropertyDefinition.validTypes}"
-                                                                          name="cust_prop_type"
-                                                                          id="cust_prop_modal_select"/>
+                    <label class="property-label">Type:</label> <g:select 
+                        from="${PropertyDefinition.validTypes.entrySet()}"
+                                optionKey="value" optionValue="key"
+                                name="cust_prop_type"
+                                id="cust_prop_modal_select"/>
                 </dd>
 
                 <div class="hide" id="cust_prop_ref_data_name">
@@ -107,6 +108,9 @@
                 </div>
                 <dd>
                     <label class="property-label">Description:</label> <g:textArea name="cust_prop_desc" rows="1"/>
+                </dd>
+                <dd>
+                    <label class="property-label">Create new property:</label><g:checkBox name="autoAdd" checked="true"/>
                 </dd>
             </dl>
         </div>

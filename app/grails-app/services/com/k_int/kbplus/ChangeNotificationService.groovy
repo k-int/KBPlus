@@ -161,8 +161,9 @@ class ChangeNotificationService {
     // log.debug("notifyChangeEvent(${changeDocument})");
     def future = executorService.submit({
       try {
-        // log.debug("inside executor task submission... ${changeDocument.OID}");
+        log.debug("inside executor task submission... ${changeDocument.OID}");
         def contextObject = genericOIDService.resolveOID(changeDocument.OID);
+        log.debug("Context object: ${contextObject}")
         contextObject?.notifyDependencies(changeDocument)
       }
       catch ( Exception e ) {
@@ -174,7 +175,7 @@ class ChangeNotificationService {
 
 
   def registerPendingChange(prop, target, desc, objowner, changeMap ) {
-    // log.debug("Register pending change ${prop} ${target.class.name}:${target.id}");
+    log.debug("Register pending change ${prop} ${target.class.name}:${target.id}");
     def new_pending_change = new PendingChange()
     new_pending_change[prop] = target;
     def jsonChangeDocument = changeMap as JSON

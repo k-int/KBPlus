@@ -12,9 +12,10 @@ class PropertyDefinition {
     String descr
     String type
     String refdataCategory
-
+    //Map keys can change and they wont affect any of the functionality
     @Transient
-    public static final String[] validTypes = [Integer.toString(), String.toString(), RefdataValue.toString(), BigDecimal.toString()]
+    static def validTypes = ["Number":Integer.toString(), "Text":String.toString(), "Refdata":RefdataValue.toString(), 
+    "Decimal":BigDecimal.toString()]
 
     static constraints = {
         name(nullable: false, blank: false, unique:true)
@@ -32,7 +33,7 @@ class PropertyDefinition {
     }
 
     private static def typeIsValid(value) {
-        if (validTypes.contains(value)) {
+        if (validTypes.containsValue(value)) {
             return true;
         } else {
             //log.error("Provided custom prop type ${value.getClass()} is not valid. Allowed types are ${validTypes}")

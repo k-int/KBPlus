@@ -10,6 +10,7 @@ import com.k_int.kbplus.auth.*;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import java.text.SimpleDateFormat
 
 class PackageDetailsController {
 
@@ -108,31 +109,83 @@ class PackageDetailsController {
       result.user = User.get(springSecurityService.principal.id)
       result.packageInstance = Package.get(params.id)
       result.editable=isEditable()
+      result.id = params.id
       def packageInstance = result.packageInstance
-      log.debug("Active package has ID ${params.id} and object is ${packageInstance}")
       def consortia = packageInstance.getConsortia()
 
       def type = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia')
-      log.debug("Active package consortia is ${consortia}")
       def consortiaInstitutions = Combo.findAllByToOrgAndType(consortia,type).collect{it.fromOrg}
 
-      log.debug("The consortia institutions are ${consortiaInstitutions}")
       def consortiaInstsWithStatus = [:]
       def hql = "SELECT role.org FROM OrgRole as role WHERE role.org = ? AND role.roleType.value = 'Subscriber'  AND ( EXISTS ( select sp from role.sub.packages as sp where sp.pkg = ? ) )"
       consortiaInstitutions.each{org ->
         def queryParams = [org,packageInstance]
         def hasPackage = OrgRole.executeQuery(hql,  queryParams)
         if(hasPackage){
-          consortiaInstsWithStatus.put(org,true)
+          consortiaInstsWithStatus.put(org,RefdataCategory.lookupOrCreate("YNO","Yes"))
         }else{
-          consortiaInstsWithStatus.put(org,false)
+          consortiaInstsWithStatus.put(org,RefdataCategory.lookupOrCreate("YNO","No"))
         }
       }
       result.consortia = consortia
       result.consortiaInstsWithStatus = consortiaInstsWithStatus
-      log.debug("institutions with status are ${consortiaInstsWithStatus}")
 
+      // log.debug("institutions with status are ${consortiaInstsWithStatus}")
+      
+      
       result
+    }
+    def generateSlaveSubscriptions(){
+      params.each { p ->
+        if(p.key.startsWith("_create.")){
+         def orgID = p.key.substring(8)
+         def orgaisation = Org.get(orgID)
+         log.debug("Create slave subscription for ${orgaisation.name}")
+         if(orgaisation)
+          createNewSubscription(orgaisation,params.id);
+
+        }
+      }
+      redirect controller:'packageDetails', action:'consortia', params: [id:params.id]
+    }
+
+    def createNewSubscription(org,packageId){
+      //Initialize default subscription values
+      def cal = new java.util.GregorianCalendar()
+      def sdf = new SimpleDateFormat('yyyy-MM-dd')
+
+      cal.setTimeInMillis(System.currentTimeMillis())
+      cal.set(Calendar.MONTH, Calendar.JANUARY)
+      cal.set(Calendar.DAY_OF_MONTH, 1)
+      def defaultStartYear = (cal.getTime())
+      cal.set(Calendar.MONTH, Calendar.DECEMBER)
+      cal.set(Calendar.DAY_OF_MONTH, 31)
+      def defaultEndYear = (cal.getTime())
+      def defaultSubIdentifier = java.util.UUID.randomUUID().toString()
+
+      // initialize the subscription
+      //  def new_sub = new Subscription(type: RefdataValue.findByValue("Subscription Taken"),
+      //               status: RefdataCategory.lookupOrCreate('Subscription Status', 'Current'),
+      //               name: "Generated slave sub",
+      //               startDate: defaultStartYear,
+      //               endDate: defaultEndYear,
+      //               identifier: defaultSubIdentifier,
+      //               isPublic: RefdataCategory.lookupOrCreate('YN', 'No'),
+      //               slaved: true,
+      //               impId: defaultSubIdentifier)
+      // if (new_sub.save(failOnError: true)) 
+      // {
+      //   log.debug("New subscription saved ${new_sub}")
+      //   def new_sub_link = new OrgRole(org: org,
+      //           sub: new_sub,
+      //           roleType: RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber')).save(failOnError: true);
+      // }
+      //Link to package 
+
+      def pkg_to_link = Package.get(packageId)
+      pkg_to_link.createSubscription("Subscription Taken", "Generated slave sub", defaultSubIdentifier,
+        defaultStartYear,defaultEndYear,org, "Subscriber", true, true)
+
     }
 
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
@@ -320,7 +373,7 @@ class PackageDetailsController {
 
       def base_qry = generateBasePackageQuery(params, qry_params, showDeletedTipps, date_filter);
 
-      log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
+      // log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
       result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, limits);
       result.num_tipp_rows = TitleInstancePackagePlatform.executeQuery("select count(tipp) "+base_qry, qry_params )[0]
 
@@ -406,7 +459,7 @@ class PackageDetailsController {
         log.debug("deleteDocuments ${params}");
 
         params.each { p ->
-            if (p.key.startsWith('_deleteflag.') ) {
+            if (p.key.startsWith('_deleteflag"@.') ) {
                 def docctx_to_delete = p.key.substring(12);
                 log.debug("Looking up docctx ${docctx_to_delete} for delete");
                 def docctx = DocContext.get(docctx_to_delete)

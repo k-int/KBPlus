@@ -23,30 +23,7 @@
         <li><g:link controller="packageDetails" action="show"
                     id="${packageInstance.id}">${packageInstance.name}</g:link></li>
 
-        <li class="dropdown pull-right">
-            <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#"
-               href="">Exports<b class="caret"></b></a>
-
-            <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
-                <li><g:link action="show" params="${params + [format: 'json']}">Json Export</g:link></li>
-                <li><g:link action="show" params="${params + [format: 'xml']}">XML Export</g:link></li>
-                <g:each in="${transforms}" var="transkey,transval">
-                    <li><g:link action="show" id="${params.id}"
-                                params="${[format: 'xml', transformId: transkey]}">${transval.name}</g:link></li>
-                </g:each>
-            </ul>
-        </li>
-
-        <li class="pull-right">
-            View:
-            <div class="btn-group" data-toggle="buttons-radio">
-                <g:link controller="packageDetails" action="show" params="${params + ['mode': 'basic']}"
-                        class="btn btn-primary btn-mini ${((params.mode == 'basic') || (params.mode == null)) ? 'active' : ''}">Basic</g:link>
-                <g:link controller="packageDetails" action="show" params="${params + ['mode': 'advanced']}"
-                        class="btn btn-primary btn-mini ${params.mode == 'advanced' ? 'active' : ''}">Advanced</g:link>
-            </div>
-            &nbsp;
-        </li>
+        
 
     </ul>
 </div>
@@ -65,11 +42,15 @@
 
 <div class="container">
 <h3> Institutions for ${consortia.name} consortia </h3>
+<br><p> The following list displays all members of ${consortia.name} consortia. To create slaved subscriptions
+    tick the desired checkboxes and click 'Create slave subscriptions'</p><br>
+<g:form action="generateSlaveSubscriptions" controller="packageDetails" method="POST">
+<input type="hidden" name="id" value="${id}">
 <table class="table table-bordered"> 
 <thead>
     <tr>
         <th>Organisation</th>
-        <th>Status</th>
+        <th>Contains Package</th>
         <th>Create Slaved Subscription</th>
     </tr>
 </thead>
@@ -77,13 +58,15 @@
     <g:each in="${consortiaInstsWithStatus}" var="pair">
         <tr>
             <td>${pair.getKey().name}</td>
-            <td>${pair.getValue()}</td>
+            <td><g:refdataValue cat="YNO" val="${pair.getValue()}" /></td>
             <td><g:if test="${editable}"><input type="checkbox" name="_create.${pair.getKey().id}" value="true"/>
                     </g:if></td>
         </tr>
     </g:each>
 </tbody>
 </table>
+    <input type="submit" class="btn btn-primary" value="Create slave subscriptions"/>
+</g:form>
 </div>
 </body>
 </html>
