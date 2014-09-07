@@ -2457,6 +2457,8 @@ AND EXISTS (
     def changeLog() {
         def result = [:]
 
+        def exporting = ( params.format == 'csv' ? true : false )
+
         result.user = User.get(springSecurityService.principal.id)
         result.institutional_objects = []
 
@@ -2495,6 +2497,26 @@ AND EXISTS (
         result.num_changes = PendingChange.executeQuery("select count(pc) "+base_query, qry_params)[0];
 
         result.changes = PendingChange.executeQuery("select pc "+base_query+"  order by ts desc", qry_params, [max: result.max, offset:result.offset])
-        result
+
+        withFormat {
+            html {
+                result
+            }
+            csv {
+                response.setHeader("Content-disposition", "attachment; filename=${result.institution.name}_changes.csv")
+                response.contentType = "text/csv"
+
+                def out = response.outputStream
+                out.withWriter { w ->
+                  w.write('Timestamp,ChangeId,SubscriptionId,LicenseId,Description\n')
+                  result.changes.each { c ->
+                    def line = "\"${c.ts}\",${c.id},${c.subscription?.id},${c.license?.id},\"${c.desc}\"\n".toString()
+                    w.write(line)
+                  }
+                }
+                out.close()
+            }
+
+        }
     }
 }
