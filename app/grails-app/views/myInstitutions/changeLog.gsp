@@ -10,11 +10,25 @@
     <div class="container">
       <ul class="breadcrumb">
         <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
-        <li> <g:link controller="myInstitutions" action="todo" params="${[shortcode:params.shortcode]}">${institution.name} Change Log</g:link> </li>
+        <li> <g:link controller="myInstitutions" action="changeLog" params="${[shortcode:params.shortcode]}">${institution.name} Change Log</g:link> </li>
       </ul>
     </div>
 
     <div class="container home-page">
+
+      <div class="pagination" style="text-align:center">
+        Showing ${num_changes} changes <br/>
+        <bootstrap:paginate  action="changeLog" controller="myInstitutions" params="${params}" next="Next" prev="Prev" max="${max}" total="${num_changes}" /> <br/>
+        <g:form method="get" action="changeLog" params="${params}">
+          Restrict to <select name="restrict" onchange="this.form.submit()">
+            <option value="">ALL</option>
+            <g:each in="${institutional_objects}" var="io">
+              <option value="${io[0]}" ${(params.restrict?.equals(io[0]) ? 'selected' : '')}>${io[1]}</option>
+            </g:each>
+          </select>
+        </g:form>
+      </div>
+
       <table class="table table-striped">
         <g:each in="${changes}" var="chg">
           <tr>
@@ -22,9 +36,9 @@
               ${chg.ts}
             </td>
             <td>
-              <g:if test="${chg.subscription != null}">Change to subscription ${chg.subscription.id}</g:if>
-              <g:if test="${chg.license != null}">Change to license ${chg.license.id}</g:if>
-              <g:if test="${chg.pkg != null}">Change to package ${chg.package.id}</g:if>
+              <g:if test="${chg.subscription != null}">Change to subscription <g:link controller="subscriptionDetails" action="index" id="${chg.subscription.id}">${chg.subscription.id}</g:link></g:if>
+              <g:if test="${chg.license != null}">Change to license <g:link controller="licenseDetails" action="index" id="${chg.license.id}">${chg.license.id}</g:link></g:if>
+              <g:if test="${chg.pkg != null}">Change to package <g:link controller="packageDetails" action="show" id="${chg.package.id}">${chg.package.id}</g:link></g:if>
             </td>
             <td>
               ${chg.desc}
@@ -35,10 +49,9 @@
       </table>
 
       <div class="pagination" style="text-align:center">
-        <g:if test="${todos!=null}" >
-          <bootstrap:paginate  action="todo" controller="myInstitutions" params="${params}" next="Next" prev="Prev" max="${max}" total="${num_changes}" />
-        </g:if>
+        <bootstrap:paginate  action="changeLog" controller="myInstitutions" params="${params}" next="Next" prev="Prev" max="${max}" total="${num_changes}" />
       </div>
+
     </div>
 
 

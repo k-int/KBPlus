@@ -25,6 +25,8 @@ class MyInstitutionsController {
     def exportService
     def transformerService
 
+    static String INSTITUTIONAL_LICENSES_QUERY = " from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
+
     // Map the parameter names we use in the webapp with the ES fields
     def renewals_reversemap = ['subject': 'subject', 'provider': 'provid', 'pkgname': 'tokname']
     def reversemap = ['subject': 'subject', 'provider': 'provid', 'studyMode': 'presentations.studyMode', 'qualification': 'qual.type', 'level': 'qual.level']
@@ -106,7 +108,8 @@ class MyInstitutionsController {
 
         def qry_params = [result.institution, licensee_role]
 
-        def qry = "from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
+        def qry = INSTITUTIONAL_LICENSES_QUERY
+        // def qry = "from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
 
         if ((params['keyword-search'] != null) && (params['keyword-search'].trim().length() > 0)) {
             qry += " and lower(l.reference) like ?"
@@ -2453,24 +2456,45 @@ AND EXISTS (
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def changeLog() {
         def result = [:]
+
+        result.user = User.get(springSecurityService.principal.id)
+        result.institutional_objects = []
+
+        result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+        result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
         result.user = User.get(springSecurityService.principal.id)
         result.institution = Org.findByShortcode(params.shortcode)
 
-        def query = "select pc from PendingChange as pc where owner = ? order by ts desc";
-        // Subscription subscription
-        // License license
-        // SystemObject systemObject
-        // Package pkg
-        // Date ts
-        // Org owner
-        // String oid
-        // String changeDoc
-        // String desc
-        // RefdataValue status
-        // Date actionDate
-        // User user
+        PendingChange.executeQuery('select distinct(pc.license) from PendingChange as pc where pc.owner = ?',[result.institution]).each {
+          result.institutional_objects.add(['com.k_int.kbplus.License:'+it.id,'License: '+it.reference]);
+        }
+        PendingChange.executeQuery('select distinct(pc.subscription) from PendingChange as pc where pc.owner = ?',[result.institution]).each {
+          result.institutional_objects.add(['com.k_int.kbplus.Subscription:'+it.id,'Subscription: '+it.name]);
+        }
 
-        result.changes = PendingChange.executeQuery(query, [result.institution], params)
+        if ( params.restrict == 'ALL' )
+          params.restrict=null
+
+        def base_query = " from PendingChange as pc where owner = ?";
+        def qry_params = [result.institution]
+
+        if ( ( params.restrict != null ) && ( params.restrict.trim().length() > 0 ) ) {
+          def o =  genericOIDService.resolveOID(params.restrict)
+          if ( o != null ) {
+            if ( o instanceof License ) {
+              base_query += ' and license = ?'
+            }
+            else {
+              base_query += ' and subscription = ?'
+            }
+            qry_params.add(o)
+          }
+        }
+
+        result.num_changes = PendingChange.executeQuery("select count(pc) "+base_query, qry_params)[0];
+
+        result.changes = PendingChange.executeQuery("select pc "+base_query+"  order by ts desc", qry_params, [max: result.max, offset:result.offset])
         result
     }
 }
