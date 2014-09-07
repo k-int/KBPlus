@@ -43,6 +43,8 @@ class DataManagerController {
       params.creates='Y'
     }
 
+    def base_query = "from org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent as e where e.className in (:l) AND e.lastUpdated >= :s AND e.lastUpdated <= :e AND e.eventName in (:t)"
+
     def types_to_include = []
     if ( params.packages=="Y" ) types_to_include.add('com.k_int.kbplus.Package');
     if ( params.licenses=="Y" ) types_to_include.add('com.k_int.kbplus.License');
@@ -55,7 +57,13 @@ class DataManagerController {
     if ( params.creates=="Y" ) events_to_include.add('INSERT');
     if ( params.updates=="Y" ) events_to_include.add('UPDATE');
     
-
+    result.actors = []
+    AuditLogEvent.executeQuery('select distinct(actor) from AuditLogEvent').each {
+      def u = User.findByUsername(it)
+      if ( u != null ) {
+        result.actors.add([it,u.display]);
+      }
+    }
 
     log.debug("${params}");
     if ( types_to_include.size() == 0 ) {
@@ -63,16 +71,28 @@ class DataManagerController {
       params.packages="Y"
     }
 
+    def start_date = formatter.parse(params.startDate)
+    def end_date = formatter.parse(params.endDate)
+
+    def query_params = ['l':types_to_include,'s':start_date,'e':end_date, 't':events_to_include]
+
+    if ( params.actor != null ) {
+      if ( params.actor == 'ALL' ) {
+      }
+      else {
+        base_query += ' and e.actor = :a'
+        query_params.a = params.actor
+      }
+    }
+
     if ( types_to_include.size() > 0 ) {
   
       def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
-      def start_date = formatter.parse(params.startDate)
-      def end_date = formatter.parse(params.endDate)
   
-      result.historyLines = AuditLogEvent.executeQuery("select e from org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent as e where e.className in (:l) AND e.lastUpdated >= :s AND e.lastUpdated <= :e AND e.eventName in (:t) order by e.lastUpdated desc", 
-                                                       ['l':types_to_include,'s':start_date,'e':end_date, 't':events_to_include], limits);
-      result.num_hl = AuditLogEvent.executeQuery("select count(e) from org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent as e where className in (:l) AND e.lastUpdated >= :s AND e.lastUpdated <= :e AND e.eventName in (:t)", 
-                                                 ['l':types_to_include,'s':start_date,'e':end_date,'t':events_to_include])[0];
+      result.historyLines = AuditLogEvent.executeQuery('select e '+base_query+' order by e.lastUpdated desc', 
+                                                       query_params, limits);
+      result.num_hl = AuditLogEvent.executeQuery('select count(e) '+base_query,
+                                                 query_params)[0];
   
       result.formattedHistoryLines = []
       result.historyLines.each { hl ->
@@ -134,6 +154,7 @@ class DataManagerController {
           case 'com.k_int.kbplus.IdentifierOccurrence':
             break;
         }
+
         switch ( hl.eventName ) {
           case 'INSERT':
             line_to_add.eventName= "New ${linetype}"

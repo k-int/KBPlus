@@ -2460,13 +2460,18 @@ AND EXISTS (
         def exporting = ( params.format == 'csv' ? true : false )
 
         result.user = User.get(springSecurityService.principal.id)
+        result.institution = Org.findByShortcode(params.shortcode)
+
         result.institutional_objects = []
 
-        result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
-        result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
-
-        result.user = User.get(springSecurityService.principal.id)
-        result.institution = Org.findByShortcode(params.shortcode)
+        if ( exporting ) {
+          result.max = 1000000;
+          result.offset = 0;
+        }
+        else {
+          result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+          result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+        }
 
         PendingChange.executeQuery('select distinct(pc.license) from PendingChange as pc where pc.owner = ?',[result.institution]).each {
           result.institutional_objects.add(['com.k_int.kbplus.License:'+it.id,'License: '+it.reference]);

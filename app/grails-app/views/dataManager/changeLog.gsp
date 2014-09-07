@@ -31,7 +31,14 @@
       <h6>Change Log <span class="pull-right">${num_hl} changes</span></h6>
       <g:form action="changeLog" controller="dataManager" method="get">
         From Date: <input name="startDate" type="date" value="${params.startDate}"/>
-        To Date: <input name="endDate" type="date" value="${params.endDate}"/><br/>
+        To Date: <input name="endDate" type="date" value="${params.endDate}"/>
+        Actor : <select name="actor">
+          <option value="ALL">ALL</option>
+          <g:each in="${actors}" var="a">
+            <option value="${a[0]}" ${params.actor?.equals(a[0]) ? 'selected' : ''}>${a[1]}</option>
+          </g:each>
+        </select>
+        <br/>
         Package Changes: <input type="checkbox" name="packages" value="Y" ${params.packages=='Y'?'checked':''}/>
         License Changes: <input type="checkbox" name="licenses" value="Y" ${params.licenses=='Y'?'checked':''}/>
         Title Changes: <input type="checkbox" name="titles" value="Y" ${params.titles=='Y'?'checked':''}/>
