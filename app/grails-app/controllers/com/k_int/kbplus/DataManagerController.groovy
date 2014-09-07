@@ -28,9 +28,18 @@ class DataManagerController {
     log.debug("changeLog ${params}");
     def formatter = new java.text.SimpleDateFormat("yyyy-MM-dd")
 
-    result.max = params.max ? Integer.parseInt(params.max) : 25
-    params.max = result.max
-    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+    def exporting = params.format == 'csv' ? true : false
+
+    if ( exporting ) {
+      result.max = 9999999
+      params.max = 9999999
+      result.offset = 0
+    }
+    else {
+      result.max = params.max ? Integer.parseInt(params.max) : 25
+      params.max = result.max
+      result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+    }
 
     if ( params.startDate == null ) {
       def cal = new java.util.GregorianCalendar()
@@ -78,6 +87,9 @@ class DataManagerController {
 
     if ( params.actor != null ) {
       if ( params.actor == 'ALL' ) {
+      }
+      else if ( params.actor == 'PEOPLE' ) {
+        base_query += ' and e.actor <> \'system\' AND e.actor <> \'anonymousUser\''
       }
       else {
         base_query += ' and e.actor = :a'
@@ -177,7 +189,28 @@ class DataManagerController {
       result.num_hl = 0
     }
 
-    result
+
+    withFormat {
+      html {
+        result
+      }
+      csv {
+        response.setHeader("Content-disposition", "attachment; filename=DMChangeLog.csv")
+        response.contentType = "text/csv"
+
+        def out = response.outputStream
+        out.withWriter { w ->
+        w.write('Timestamp,Name,Event,Property,Actor,Old,New,Link\n')
+          result.formattedHistoryLines.each { c ->
+            def line = "\"${c.lastUpdated}\",${c.name},${c.eventName},${c.propertyName},\"${c.oldValue}\",\"${c.newValue}\",\"${c.link}\"\n".toString()
+            w.write(line)
+          }
+        }
+        out.close()
+      }
+
+    }
+
   }
 
   @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])

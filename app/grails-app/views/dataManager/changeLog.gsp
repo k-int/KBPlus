@@ -10,7 +10,16 @@
     <div class="container">
       <ul class="breadcrumb">
         <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
-        <li> <g:link controller="dataManager" action="index">Data Manager Dashboard</g:link> </li>
+        <li> <g:link controller="dataManager" action="index">Data Manager Dashboard</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="dataManager" action="changeLog">DM Change log</g:link> </li>
+
+        <li class="dropdown pull-right">
+          <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>
+          <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
+            <li><g:link controller="dataManager" action="changeLog" params="${params+[format:'csv']}">CSV Export</g:link></li>
+          </ul>
+        </li>
+
       </ul>
     </div>
 
@@ -33,18 +42,19 @@
         From Date: <input name="startDate" type="date" value="${params.startDate}"/>
         To Date: <input name="endDate" type="date" value="${params.endDate}"/>
         Actor : <select name="actor">
-          <option value="ALL">ALL</option>
+          <option value="ALL" ${params.actor?.equals('ALL') ? 'selected' : ''}>ALL (Including system)</option>
+          <option value="PEOPLE" ${params.actor?.equals('PEOPLE') ? 'selected' : ''}>ALL (Real Users)</option>
           <g:each in="${actors}" var="a">
             <option value="${a[0]}" ${params.actor?.equals(a[0]) ? 'selected' : ''}>${a[1]}</option>
           </g:each>
         </select>
         <br/>
-        Package Changes: <input type="checkbox" name="packages" value="Y" ${params.packages=='Y'?'checked':''}/>
-        License Changes: <input type="checkbox" name="licenses" value="Y" ${params.licenses=='Y'?'checked':''}/>
-        Title Changes: <input type="checkbox" name="titles" value="Y" ${params.titles=='Y'?'checked':''}/>
-        TIPP Changes: <input type="checkbox" name="tipps" value="Y" ${params.tipps=='Y'?'checked':''}/>
-        New Items: <input type="checkbox" name="creates" value="Y" ${params.creates=='Y'?'checked':''}/>
-        Updates: <input type="checkbox" name="updates" value="Y" ${params.updates=='Y'?'checked':''}/>
+        <input type="checkbox" name="packages" value="Y" ${params.packages=='Y'?'checked':''}/> Package Changes &nbsp;
+        <input type="checkbox" name="licenses" value="Y" ${params.licenses=='Y'?'checked':''}/> License Changes &nbsp;
+        <input type="checkbox" name="titles" value="Y" ${params.titles=='Y'?'checked':''}/> Title Changes &nbsp;
+        <input type="checkbox" name="tipps" value="Y" ${params.tipps=='Y'?'checked':''}/> TIPP Changes &nbsp;
+        <input type="checkbox" name="creates" value="Y" ${params.creates=='Y'?'checked':''}/> New Items &nbsp;
+        <input type="checkbox" name="updates" value="Y" ${params.updates=='Y'?'checked':''}/> Updates &nbsp;
         <input type="submit"/>
       </g:form>
     </div>
@@ -68,7 +78,9 @@
             <g:each in="${formattedHistoryLines}" var="hl">
               <tr>
                 <td><a href="${hl.link}">${hl.name}</a></td>
-                <td><g:link controller="userDetails" action="edit" id="${hl.actor?.id}">${hl.actor?.displayName}</g:link></td>
+                <td>
+                  <g:link controller="userDetails" action="edit" id="${hl.actor?.id}">${hl.actor?.displayName}</g:link>
+                </td>
                 <td>${hl.eventName}</td>
                 <td>${hl.propertyName}</td>
                 <td>${hl.oldValue}</td>
