@@ -60,7 +60,7 @@ class HomePageSpec extends GebReportingSpec {
         when:
             $('a', text: 'New Package Details').click()
             $('form').subid = "FTO New Sub One - Functional Test Organisation"
-            $('form input').click()
+            $('#addEntitlementsCheckbox').click()
             $('form input', type: 'submit').click()
         then:
             1 == 1

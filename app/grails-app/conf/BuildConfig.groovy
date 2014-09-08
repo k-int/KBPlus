@@ -24,9 +24,9 @@ grails.project.dependency.resolution = {
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     checksums true // Whether to verify checksums on resolve
-    def gebVersion = "0.9.2"
+    def gebVersion = "0.9.3"
     // def seleniumVersion = "2.32.0"
-    def seleniumVersion = "2.39.0"
+    def seleniumVersion = "2.41.0"
 
     repositories {
         inherits true // Whether to inherit repository definitions from plugins
@@ -71,6 +71,8 @@ grails.project.dependency.resolution = {
         runtime 'net.sf.opencsv:opencsv:2.0'
         runtime 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
 
+        test 'org.apache.commons:commons-exec:1.2'
+        test 'org.apache.httpcomponents:httpcore:4.3.2'
         test 'org.hamcrest:hamcrest-all:1.3'
         test "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
         test("org.seleniumhq.selenium:selenium-htmlunit-driver:$seleniumVersion") {

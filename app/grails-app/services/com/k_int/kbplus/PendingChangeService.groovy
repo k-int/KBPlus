@@ -120,6 +120,7 @@ def performAccept(change,httpRequest) {
 
   def performReject(change,httpRequest) {
     PendingChange.withNewTransaction { TransactionStatus status ->
+      change = PendingChange.get(change)
       change.license?.pendingChanges?.remove(change)
       change.license?.save();
       change.subscription?.pendingChanges?.remove(change)
