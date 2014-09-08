@@ -639,7 +639,13 @@ class AjaxController {
         }
     }
     request.setAttribute("editable",params.editable == "true")
-    render(template: "/templates/custom_props", model:[ownobj:owner, newProp:newProp, error:error])
+    if(params.redirect){
+      flash.newProp = newProp
+      flash.error = error
+      redirect(controller:"admin",action:"managePropertyDefinitions")
+    }else{
+      render(template: "/templates/custom_props", model:[ownobj:owner, newProp:newProp, error:error])        
+    }
   }
 
   def addCustomPropertyValue(){

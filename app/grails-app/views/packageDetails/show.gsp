@@ -269,7 +269,7 @@
                     <option value="${s.sub.id}">${s.sub.name ?: "unnamed subscription ${s.sub.id}"} - ${s.org.name}</option>
                   </g:each>
                 </select><br/>
-                Create Entitlements in Subscription: <input type="checkbox" name="addEntitlements" value="true"/><br/>
+                Create Entitlements in Subscription: <input type="checkbox" id="addEntitlementsCheckbox" name="addEntitlements" value="true"/><br/>
                 <input type="submit"/>
               </g:form>
             </g:if>
