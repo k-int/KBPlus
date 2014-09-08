@@ -47,6 +47,7 @@ class TitleInstancePackagePlatform {
   String hostPlatformURL
   Date coreStatusStart
   Date coreStatusEnd
+  Integer controlledPropertiesHashCode
 
   TitleInstancePackagePlatform derivedFrom
 
@@ -118,6 +119,7 @@ class TitleInstancePackagePlatform {
     coreStatusEnd(nullable:true, blank:true);
     accessStartDate(nullable:true, blank:true);
     accessEndDate(nullable:true, blank:true);
+    controlledPropertiesHashCode(nullable:true, blank:true);
   }
 
   
@@ -130,11 +132,24 @@ class TitleInstancePackagePlatform {
     }
     result
   }
+  /**
+  * Calculate the controlledProperties hashCode using the properties toString method
+  **/
+  def calcControlledPropertiesHashCode(){
+    StringBuilder sb = new StringBuilder()
 
+    controlledProperties.each{
+      sb.append(this."$it")
+    }
+    controlledPropertiesHashCode = sb.toString().hashCode()
+    log.debug("Calculated hashCode from string ${sb.toString()} to ${controlledPropertiesHashCode}")
+    this.save(failOnError:true)
+
+  }
   @Transient
   def onChange = { oldMap,newMap ->
 
-    log.debug("onChange")
+    log.debug("onChange Tipp")
 
     def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
 
@@ -142,11 +157,15 @@ class TitleInstancePackagePlatform {
 
     controlledProperties.each { cp ->
       log.debug("checking ${cp}")
+      
+     
+
       if ( oldMap[cp] != newMap[cp] ) {
         def prop_info = domain_class.getPersistentProperty(cp)
 
         def oldLabel = stringify(oldMap[cp])
         def newLabel = stringify(newMap[cp])
+       
 
         if ( prop_info.isAssociation() ) {
           log.debug("Convert object reference into OID");
@@ -167,6 +186,9 @@ class TitleInstancePackagePlatform {
       }
     }
     log.debug("onChange completed")
+
+    calcControlledPropertiesHashCode()
+
   }
 
   private def stringify(obj) {
@@ -274,7 +296,7 @@ class TitleInstancePackagePlatform {
                                                                 "</a> changed in package <a href=\"${grailsApplication.config.SystemBaseURL}/packageDetails/show/${id}\">${this.pkg.name}</a>. " +
                                                                 "<b>${changeDocument.prop}</b> was updated from <b>\"${changeDocument.oldLabel}\"</b>(${changeDocument.old}) to <b>\"${changeDocument.newLabel}\"</b>" +
                                                                 "(${changeDocument.new}). "+description,
-                                                        sub.getSubscriber(),
+                                                        sub?.getSubscriber(),
                                                         [
                                                           changeTarget:"com.k_int.kbplus.IssueEntitlement:${dep_ie.id}",
                                                           changeType:'PropertyChange',
@@ -365,6 +387,27 @@ class TitleInstancePackagePlatform {
     sw.write("This tipp is ${getAvailabilityStatus(as_at).value} as at ${as_at} because the date specified was between the start date (${getDerivedAccessStartDate()} ${accessStartDate ? 'Set explicitly on this TIPP' : 'Defaulted from package start date'}) and the end date (${getDerivedAccessEndDate()} ${accessEndDate ? 'Set explicitly on this TIPP' : 'Defaulted from package end date'})");
 
     return sw.toString();
+  }
+  /**
+   * Compare the controlledPropertiesHashCode of two tipps.
+   * return 0 if they are same.
+  **/
+  public int compareTo(TitleInstancePackagePlatform tippB){
+      if(!tippB) return 1
+
+      if (! controlledPropertiesHashCode ){
+        calcControlledPropertiesHashCode()
+      }
+      if( ! tippB.controlledPropertiesHashCode){
+        tippB.calcControlledPropertiesHashCode()
+      }
+
+      if(controlledPropertiesHashCode == tippB.controlledPropertiesHashCode){
+        0
+      }else{
+        1
+      }
+
   }
 
 

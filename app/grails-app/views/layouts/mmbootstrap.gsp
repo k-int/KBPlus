@@ -63,6 +63,8 @@
 
                        <li><g:link controller="packageDetails" action="index">All Packages</g:link></li>
                        <li><g:link controller="titleDetails" action="index">All Titles</g:link></li>
+                       <li><g:link controller="subscriptionDetails" action="compare">Compare Subscriptions</g:link></li>
+                       <li><g:link controller="packageDetails" action="compare">Compare Packages</g:link></li>
                        <li><g:link controller="onixplLicenseCompare"
                                    action="index">Compare ONIX-PL Licences</g:link></li>
                        <li class="divider"></li>
@@ -75,6 +77,9 @@
                                <li><g:link controller="myInstitutions"
                                            action="instdash"
                                            params="${[shortcode:org.shortcode]}">Dashboard</g:link></li>
+                               <li><g:link controller="myInstitutions"
+                                           action="todo"
+                                           params="${[shortcode:org.shortcode]}">ToDo List</g:link></li>
                                <li><g:link controller="myInstitutions"
                                            action="currentLicenses"
                                            params="${[shortcode:org.shortcode]}">Licences</g:link></li>
@@ -136,6 +141,8 @@
                        <li class="divider"></li>
                        <li <%= ( ( 'titleDetails'== controllerName ) && ( 'findTitleMatches'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="titleDetails" action="findTitleMatches">New Title</g:link></li>
+                       <li <%= ( ( 'dataManager'== controllerName ) && ( 'deletedTitleManagement'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="dataManager" action="deletedTitleManagement">Manage Deleted Titles</g:link></li>
                        <li <%= ( ( 'licenseDetails'== controllerName ) && ( 'create'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="licenseDetails" action="create">New License</g:link></li>
                        <li class="divider"></li>
@@ -148,6 +155,12 @@
                        <li class="divider"></li>
                        <li <%= ( ( 'globalDataSync'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="globalDataSync" action="index">Global Data Download [Packages]</g:link></li>
+                       <li class="divider"></li>
+                         <li <%= ( ( 'jasperReports'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="jasperReports" action="index">Reports</g:link></li>
+                         <li <%= ( ( 'admin'== controllerName ) && ( 'managePropertyDefinitions'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="managePropertyDefinitions">Manage Property Definitions</g:link></li>
+
                      </ul>
                    </li>
                 </sec:ifAnyGranted>
@@ -201,25 +214,26 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'titleMerge'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="titleMerge">Title Merge</g:link>
                       </li>
+                      <li class="divider"></li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'globalSync'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="globalSync">Start Global Data Sync</g:link>
                       </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'manageGlobalSources'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="manageGlobalSources">Manage Global Sources</g:link>
                       </li>
+                      <li class="divider"></li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'orgsExport'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="orgsExport">Bulk Export Organisations</g:link>
                       </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'orgsImport'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="orgsImport">Bulk Load Organisations</g:link>
                       </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'docstoreMigrate'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="docstoreMigrate">Docstore Migration</g:link>
-                      </li>
                       <li class="divider"></li>
                       <li <%= ( ( 'stats'== controllerName ) && ( 'statsHome'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="stats" action="statsHome">Statistics</g:link>
                       </li>
+                        <li <%= ( ( 'jasperReports'== controllerName ) && ( 'uploadReport'==actionName ) ) ? ' class="active"' : '' %>>
+                            <g:link controller="jasperReports" action="uploadReport">Upload Report Definitions</g:link></li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'triggerHousekeeping'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="triggerHousekeeping">Trigger Housekeeping</g:link>
                       </li>
@@ -231,11 +245,12 @@
               </sec:ifLoggedIn>
             </ul>
 
-            <!--
+            <sec:ifLoggedIn>
             <ul class="nav pull-right">
               <li><a class="dlpopover" href="#"><i class="icon-search icon-white"></i></a></li>
             </ul>
-            -->
+            </sec:ifLoggedIn>
+           
 
             <ul class="nav pull-right">
               <ul class="nav">
@@ -286,7 +301,7 @@
                           <li><a href=${createLink(uri: '/freedom-of-information-policy')}>Freedom of Information Policy</a></li>
                       </ul>
                   </div>
-
+                  <g:set var="appVersion" value="${grailsApplication.metadata['app.version']}"/>
                   <div class="pull-right">
                       <div class="nav-collapse">
                           <ul class="nav">
@@ -303,6 +318,8 @@
                                       <li><a href="http://test.kbplus.ac.uk/kbplus/myInstitutions/index">KB+ Sandpit</a></li>
                                   </ul>
                               </li>
+                              <li><a href="https://github.com/k-int/KBPlus/releases/tag/${appVersion}">
+                              v${appVersion}</a></li>
                           </ul>
                       </div>
                   </div>
@@ -317,9 +334,11 @@
               <div class="pull-left">
                   <a href="http://www.jisc-collections.ac.uk/"><div class="sprite sprite-jisc_collections_logo">JISC Collections</div></a>
               </div>
+
               <div class="pull-right">
                   <a href="http://www.kbplus.ac.uk"><div class="sprite sprite-kbplus_logo">Knowledge Base Plus</div></a>
               </div>
+              
           </div>
       </div>
   </div>
@@ -356,14 +375,8 @@
       })();
   </r:script>
 
-    <div id="spotlight_popover_content_wrapper" style="display: none">
-      <form class="form-search">
-        <input type="text" class="input-medium search-query" onkeyup="reloadSpotlightSearchResults()">
-      </form>
-      <div id="spotlight-search-results">
-      </div>
-    </div>
-    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
+
+    <r:script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></r:script>
     <r:layoutResources/>
 
     <style type="text/css" media="screen, projection">

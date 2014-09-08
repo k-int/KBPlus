@@ -22,10 +22,11 @@
             <bootstrap:alert class="alert-info">${flash.error}</bootstrap:alert>
             </g:if>
 
-            <p>Use this form to create a new template licence. Enter the new licence reference below, click "continue" and you will be redirected to the new licence</p>
+            <p>Use this form to create a new template licence. Enter the new licence reference below, click "create" and you will be redirected to the new licence</p>
 
             <p>
-              <g:form action="processNewTemplateLicense"> New licence Reference: <input type="text" name="reference"/><input type="submit"/></g:form>
+              <g:form action="processNewTemplateLicense"> New licence Reference: <input type="text" name="reference"/>
+              <br/><input type="submit" value="Create"/></g:form>
             </p>
 
           </div>

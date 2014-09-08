@@ -1,5 +1,6 @@
 package com.k_int.kbplus
 
+import java.text.Normalizer
 import javax.persistence.Transient
 
 class Package {
@@ -11,7 +12,10 @@ class Package {
 
   String identifier
   String name
+  String sortName
   String impId
+  String vendorURL
+  String cancellationAllowances
   RefdataValue packageType
   RefdataValue packageStatus
   RefdataValue packageListStatus
@@ -34,54 +38,62 @@ class Package {
                     orgs: OrgRole, 
                     documents:DocContext,
                     subscriptions: SubscriptionPackage,
-                    pendingChanges:PendingChange ]
+                    pendingChanges:PendingChange,
+                    ids: IdentifierOccurrence ]
 
   static mappedBy = [tipps: 'pkg', 
                      orgs: 'pkg',
                      documents:'pkg',
                      subscriptions: 'pkg',
-                     pendingChanges: 'pkg']
+                     pendingChanges: 'pkg',
+                     ids: 'pkg' ]
 
 
   static mapping = {
-                   id column:'pkg_id'
-              version column:'pkg_version'
-           identifier column:'pkg_identifier'
-                 name column:'pkg_name'
-                impId column:'pkg_imp_id', index:'pkg_imp_id_idx'
-          packageType column:'pkg_type_rv_fk'
-        packageStatus column:'pkg_status_rv_fk'
-    packageListStatus column:'pkg_list_status_rv_fk'
-            breakable column:'pkg_breakable_rv_fk'
-           consistent column:'pkg_consistent_rv_fk'
-                fixed column:'pkg_fixed_rv_fk'
-      nominalPlatform column:'pkg_nominal_platform_fk'
-            startDate column:'pkg_start_date'
-              endDate column:'pkg_end_date'
-              license column:'pkg_license_fk'
-             isPublic column:'pkg_is_public'
-         packageScope column:'pkg_scope_rv_fk'
-              forumId column:'pkg_forum_id'
-                tipps sort:'title.title', order: 'asc'
+                      id column:'pkg_id'
+                 version column:'pkg_version'
+              identifier column:'pkg_identifier'
+                    name column:'pkg_name'
+                sortName column:'pkg_sort_name'
+                   impId column:'pkg_imp_id', index:'pkg_imp_id_idx'
+             packageType column:'pkg_type_rv_fk'
+           packageStatus column:'pkg_status_rv_fk'
+       packageListStatus column:'pkg_list_status_rv_fk'
+               breakable column:'pkg_breakable_rv_fk'
+              consistent column:'pkg_consistent_rv_fk'
+                   fixed column:'pkg_fixed_rv_fk'
+         nominalPlatform column:'pkg_nominal_platform_fk'
+               startDate column:'pkg_start_date'
+                 endDate column:'pkg_end_date'
+                 license column:'pkg_license_fk'
+                isPublic column:'pkg_is_public'
+            packageScope column:'pkg_scope_rv_fk'
+               vendorURL column:'pkg_vendor_url'
+  cancellationAllowances column:'pkg_cancellation_allowances', type:'text'
+                 forumId column:'pkg_forum_id'
+                   tipps sort:'title.title', order: 'asc'
 
 //                 orgs sort:'org.name', order: 'asc'
   }
 
   static constraints = {
-          packageType(nullable:true, blank:false)
-        packageStatus(nullable:true, blank:false)
-      nominalPlatform(nullable:true, blank:false)
-    packageListStatus(nullable:true, blank:false)
-            breakable(nullable:true, blank:false)
-           consistent(nullable:true, blank:false)
-                fixed(nullable:true, blank:false)
-            startDate(nullable:true, blank:false)
-              endDate(nullable:true, blank:false)
-              license(nullable:true, blank:false)
-             isPublic(nullable:true, blank:false)
-         packageScope(nullable:true, blank:false)
-              forumId(nullable:true, blank:false)
-                impId(nullable:true, blank:false)
+               packageType(nullable:true, blank:false)
+             packageStatus(nullable:true, blank:false)
+           nominalPlatform(nullable:true, blank:false)
+         packageListStatus(nullable:true, blank:false)
+                 breakable(nullable:true, blank:false)
+                consistent(nullable:true, blank:false)
+                     fixed(nullable:true, blank:false)
+                 startDate(nullable:true, blank:false)
+                   endDate(nullable:true, blank:false)
+                   license(nullable:true, blank:false)
+                  isPublic(nullable:true, blank:false)
+              packageScope(nullable:true, blank:false)
+                   forumId(nullable:true, blank:false)
+                     impId(nullable:true, blank:false)
+                 vendorURL(nullable:true, blank:false)
+    cancellationAllowances(nullable:true, blank:false)
+                  sortName(nullable:true, blank:false)
   }
 
   def getConsortia() {
@@ -106,8 +118,7 @@ class Package {
                          consortium_org) {
     createSubscription(subtype,subname,subidentifier,startdate,enddate,consortium_org,true)
   }
-
-  @Transient
+ @Transient
   def createSubscription(subtype,
                          subname,
                          subidentifier,
@@ -115,8 +126,31 @@ class Package {
                          enddate,
                          consortium_org,
                          add_entitlements) {
-    // Create the header
+    createSubscription(subtype, subname,subidentifier,startdate,
+                  enddate,consortium_org,add_entitlements,false)
+  }
+  @Transient
+  def createSubscription(subtype,
+                         subname,
+                         subidentifier,
+                         startdate,
+                         enddate,
+                         consortium_org,
+                         add_entitlements,slaved) {
+    createSubscription(subtype, subname,subidentifier,startdate,
+                  enddate,consortium_org,"Package Consortia",add_entitlements,false)
+  }
 
+  @Transient
+  def createSubscription(subtype,
+                         subname,
+                         subidentifier,
+                         startdate,
+                         enddate,
+                         consortium_org,org_role,
+                         add_entitlements,slaved) {
+    // Create the header
+    log.debug("Package: createSubscription called")
     def result = new Subscription( name:subname,
                                    status:RefdataCategory.lookupOrCreate('Subscription Status','Current'),
                                    identifier:subidentifier,
@@ -124,39 +158,17 @@ class Package {
                                    startDate:startdate,
                                    endDate:enddate,
                                    isPublic: RefdataCategory.lookupOrCreate('YN','No'),
-                                   type: RefdataValue.findByValue(subtype))
+                                   type: RefdataValue.findByValue(subtype),
+                                   slaved: slaved == true)
 
     if ( result.save(flush:true) ) {
       if ( consortium_org ) {
-        def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
+        def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', org_role);
         def or = new OrgRole(org: consortium_org, sub:result, roleType:sc_role).save();
+        log.debug("Create Org role ${or}")
       }
-
-      def new_package_link = new SubscriptionPackage(subscription:result, pkg:this).save();
-      def live_issue_entitlement = RefdataCategory.lookupOrCreate('Entitlement Issue Status', 'Live');
-
-      // Copy the tipps into the IEs
-      log.debug("Copy tipp entries into new subscription");
-
-      if ( add_entitlements ) {
-        tipps.each { tipp ->
-          log.debug("adding ${tipp}");
-
-          def new_ie = new IssueEntitlement(status: live_issue_entitlement,
-                                            subscription: result,
-                                            tipp: tipp,
-                                            startDate:tipp.startDate,
-                                            startVolume:tipp.startVolume,
-                                            startIssue:tipp.startIssue,
-                                            endDate:tipp.endDate,
-                                            endVolume:tipp.endVolume,
-                                            endIssue:tipp.endIssue,
-                                            embargo:tipp.embargo,
-                                            coverageDepth:tipp.coverageDepth,
-                                            coverageNote:tipp.coverageNote).save()
-  
-        }
-      }
+      addToSubscription(result, add_entitlements)
+          
     }
     else {
       result.errors.each { err ->
@@ -297,9 +309,47 @@ class Package {
   static def refdataFind(params) {
     def result = [];
     def ql = null;
-    ql = Package.findAllByNameIlike("${params.q}%",params)
+   
 
-    if ( ql ) {
+    if(params.hasDate ){
+      def indxS = params.q.indexOf("{{")
+      def indxC = params.q.indexOf(",",indxS)
+      def indxE = params.q.indexOf("}}",indxC)
+     
+      def name = params.q.substring(0,indxS)
+
+      def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd")
+
+      def dateStart = params.q.substring(indxS+2,indxC)
+      def dateEnd = params.q.substring(indxC+1,indxE)
+
+      dateStart = dateStart.length() > 1 ? sdf.parse(dateStart) : null
+      dateEnd = dateEnd.length() > 1 ? sdf.parse(dateEnd)  : null
+
+
+      if(dateStart || dateEnd){
+        if(dateEnd && dateStart){
+          ql = Package.findAllByNameIlikeAndStartDateGreaterThanEqualsAndEndDateLessThanEquals("${name}%",dateStart,dateEnd,params)
+        }else if(dateStart){
+          ql = Package.findAllByNameIlikeAndStartDateGreaterThanEquals("${name}%",dateStart)
+        }else if(dateEnd){
+          ql = Package.findAllByNameIlikeAndEndDateLessThanEquals("${name}%",dateEnd )
+          }
+      }else{
+        ql = Package.findAllByNameIlike("${name}%",params)
+      }   
+        
+    }else{
+      ql = Package.findAllByNameIlike("${params.q}%",params)
+    }
+
+    if(params.hideIdent && params.hideIdent == "true"){
+      if ( ql ) {
+          ql.each { t ->
+            result.add([id:"${t.class.name}:${t.id}",text:"${t.name}"])
+          }
+      }  
+    }else if ( ql ) {
       ql.each { t ->
         result.add([id:"${t.class.name}:${t.id}",text:"${t.name} (${t.identifier})"])
       }
@@ -360,6 +410,31 @@ class Package {
     result.tipps.sort{it.titleId}
     println("Rec conversion for package returns object with title ${result.title} and ${result.tipps?.size()} tipps");
 
+    result
+  }
+
+  def beforeInsert() {
+    if ( name != null ) {
+      sortName = generateSortName(name)
+    }
+  }
+
+  def beforeUpdate() {
+    if ( name != null ) {
+      sortName = generateSortName(name)
+    }
+  }
+
+  public static String generateSortName(String input_title) {
+    def result=null
+    if ( input_title ) {
+      def s1 = Normalizer.normalize(input_title, Normalizer.Form.NFKD).trim().toLowerCase()
+      s1 = s1.replaceFirst('^copy of ','')
+      s1 = s1.replaceFirst('^the ','')
+      s1 = s1.replaceFirst('^a ','')
+      s1 = s1.replaceFirst('^der ','')
+      result = s1.trim()
+    }
     result
   }
 

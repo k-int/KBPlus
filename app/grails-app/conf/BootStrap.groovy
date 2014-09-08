@@ -1,12 +1,14 @@
 import com.k_int.kbplus.*
 
 import com.k_int.kbplus.auth.*
+import com.k_int.custprops.PropertyDefinition
 import org.codehaus.groovy.grails.plugins.springsecurity.SecurityFilterPosition
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 class BootStrap {
 
-  def ESWrapperService 
+  def ESWrapperService
+  def dataloadService
   def grailsApplication
   // def docstoreService
 
@@ -27,8 +29,23 @@ class BootStrap {
     def edit_permission = Perm.findByCode('edit') ?: new Perm(code:'edit').save(failOnError: true)
     def view_permission = Perm.findByCode('view') ?: new Perm(code:'view').save(failOnError: true)
 
-    def ref_yes = RefdataCategory.lookupOrCreate("YN","Yes")
-    def ref_no = RefdataCategory.lookupOrCreate("YN","No")
+    RefdataCategory.lookupOrCreate("YN","Yes")
+    RefdataCategory.lookupOrCreate("YN","No")
+    RefdataCategory.lookupOrCreate("YNO","Yes")
+    RefdataCategory.lookupOrCreate("YNO","No")
+    RefdataCategory.lookupOrCreate("YNO","Other")
+    RefdataCategory.lookupOrCreate("YNO","Not applicable")
+    RefdataCategory.lookupOrCreate("YNO","Unknown")
+
+    RefdataCategory.lookupOrCreate("ConcurrentAccess","Specified")
+    RefdataCategory.lookupOrCreate("ConcurrentAccess","Not Specified")
+    RefdataCategory.lookupOrCreate("ConcurrentAccess","No limit")
+    RefdataCategory.lookupOrCreate("ConcurrentAccess","Other")
+
+    def ref_yno_n = RefdataCategory.lookupOrCreate("YNO","No")
+    def ref_yno_y = RefdataCategory.lookupOrCreate("YNO","Yes")
+    def ref_yno_o = RefdataCategory.lookupOrCreate("YNO","Other")
+    def ref_yno_u = RefdataCategory.lookupOrCreate("YNO","Unknown")
 
     def or_licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
     def or_subscriber_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber');
@@ -216,12 +233,91 @@ class BootStrap {
     }
 
     setupRefdata();
+    log.debug("refdata setup");
 
     // if ( grailsApplication.config.doDocstoreMigration == true ) {
     //   docstoreService.migrateToDb();
     // }
+    addDefaultJasperReports()
+    addDefaultPageMappings()
+    createLicenceProperties()
+
+    log.debug("Init completed....");
+   
   }
 
+  def createLicenceProperties() {
+    def existingProps = LicenseCustomProperty.findAll()
+    def requiredProps = [[propname:"Concurrent Access", descr:'',type:RefdataValue.toString(), cat:'ConcurrentAccess'],
+                         [propname:"Concurrent Users", descr:'',type: Integer.toString()],
+                         [propname:"Remote Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Walk In Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Multi Site Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Partners Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Alumni Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"ILL - InterLibraryLoans", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Include In Coursepacks", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Include in VLE", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Enterprise Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Post Cancellation Access Entitlement", descr:'',type: RefdataValue.toString(), cat:'YNO'], 
+                         [propname:"Signed", descr:'',type: RefdataValue.toString(), cat:'YNO']]
+
+    
+    requiredProps.each{ default_prop ->
+       if ( PropertyDefinition.findByName(default_prop.propname) == null ) {
+
+          log.debug("Unable to locate property definition for ${default_prop.propname}.. Creating");
+
+          def newProp = new PropertyDefinition(name: default_prop.propname, 
+                                               type: default_prop.type, 
+                                               descr: "edit desc")
+          if ( default_prop.cat != null )
+            newProp.setRefdataCategory(default_prop.cat);
+
+          newProp.save()
+       }
+       else {
+          log.debug("Got property definition for ${default_prop.propname}");
+       }
+    }
+    log.debug("createLicenceProperties completed");
+  }
+
+  def addDefaultPageMappings(){
+      if(! SitePage.findAll()){
+        def home = new SitePage(alias:"Home", action:"index",controller:"home").save()
+        def profile = new SitePage(alias:"Profile", action:"index",controller:"profile").save()
+        def pages = new SitePage(alias:"Pages", action:"managePages",controller:"spotlight").save()
+
+        dataloadService.updateSiteMapping()
+      }
+
+  }
+  def addDefaultJasperReports(){
+        //Add default Jasper reports, if there are currently no reports in DB
+    log.debug("Query database for jasper reports")
+    def reportsFound = JasperReportFile.findAll()
+    def defaultReports = ["floating_titles","match_coverage","no_issn_e-issn","title_no_url"]
+    defaultReports.each { reportName ->
+
+      def path = "resources/jasper_reports/"
+      def filePath = path + reportName + ".jrxml"
+      def inputStreamBytes = grailsApplication.parentContext.getResource("classpath:$filePath").inputStream.bytes
+      def newReport = reportsFound.find{ it.name == reportName }
+      if( newReport ){
+        newReport.setReportFile(inputStreamBytes)
+        newReport.save()
+      }else{
+        newReport = new JasperReportFile(name:reportName, reportFile: inputStreamBytes).save()
+      }
+      if(newReport.hasErrors()){
+        log.error("Jasper Report creation for "+reportName+".jrxml failed with errors: \n")
+        newReport.errors.each{
+          log.error(it+"\n")
+        }
+      }   
+    } 
+  }
   def destroy = {
   }
 
@@ -337,6 +433,10 @@ class BootStrap {
 
     RefdataCategory.lookupOrCreate("License Status", "In Progress").save()
 
+    RefdataCategory.lookupOrCreate('OrgType', 'Consortium').save();
+    RefdataCategory.lookupOrCreate('OrgType', 'Institution').save();
+    RefdataCategory.lookupOrCreate('OrgType', 'Other').save();
+
     log.debug("validate content items...");
     // The default template for a property change on a title
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.propertyChange','','''
@@ -373,21 +473,43 @@ No Host Platform URL Content
 
 
    
-   def gokb_record_source = GlobalRecordSource.findByIdentifier('gokbPackages') ?: new GlobalRecordSource(
-                                                                                         identifier:'gokbPackages',
-                                                                                         name:'GOKB',
-                                                                                         type:'OAI',
-                                                                                         haveUpTo:null,
-                                                                                         uri:'https://gokb.kuali.org/gokb/oai/packages',
-                                                                                         listPrefix:'oai_dc',
-                                                                                         fullPrefix:'gokb',
-                                                                                         principal:null,
-                                                                                         credentials:null,
-                                                                                         rectype:0)
+    // def gokb_record_source = GlobalRecordSource.findByIdentifier('gokbPackages') ?: new GlobalRecordSource(
+    //                                                                                       identifier:'gokbPackages',
+    //                                                                                       name:'GOKB',
+    //                                                                                       type:'OAI',
+    //                                                                                       haveUpTo:null,
+    //                                                                                       uri:'https://gokb.kuali.org/gokb/oai/packages',
+    //                                                                                       listPrefix:'oai_dc',
+    //                                                                                       fullPrefix:'gokb',
+    //                                                                                       principal:null,
+    //                                                                                       credentials:null,
+    //                                                                                       rectype:0)
+    // gokb_record_source.save(flush:true, stopOnError:true);
+    // log.debug("New gokb record source: ${gokb_record_source}");
 
-    gokb_record_source.save(flush:true, stopOnError:true);
-    log.debug("New gokb record source: ${gokb_record_source}");
+    
+    // Regenerate any empty sort titles
+    log.debug("Generate Missing Sort Title Names");
+    TitleInstance.findAllBySortTitle(null).each {
+      log.debug("Normalise Title ${it.title}");
+      it.sortTitle = it.generateSortTitle(it.title)
+      it.save(flush:true, failOnError:true)
+    }
 
+    log.debug("Generate Missing Sort Package Names");
+    Package.findAllBySortName(null).each {
+      log.debug("Normalise Package Name ${it.name}");
+      it.sortName = it.generateSortName(it.name)
+      it.save(flush:true, failOnError:true)
+    }
+
+    log.debug("Generate Missing Sortable License References");
+    License.findAllBySortableReference(null).each {
+      log.debug("Normalise License Reference Name ${it.reference}");
+      it.sortableReference = it.generateSortableReference(it.reference)
+      it.save(flush:true, failOnError:true)
+    }
+
+    log.debug("Completed normalisation step...");
   }
-
 }

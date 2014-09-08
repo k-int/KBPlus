@@ -60,7 +60,7 @@ class HomePageSpec extends GebReportingSpec {
         when:
             $('a', text: 'New Package Details').click()
             $('form').subid = "FTO New Sub One - Functional Test Organisation"
-            $('form input').click()
+            $('#addEntitlementsCheckbox').click()
             $('form input', type: 'submit').click()
         then:
             1 == 1
@@ -75,6 +75,8 @@ class HomePageSpec extends GebReportingSpec {
     }
 
     def "Verify Package created"() {
+        setup:
+            to DashboardPage
         when:
             allPackages()
         then:
@@ -128,26 +130,57 @@ class HomePageSpec extends GebReportingSpec {
             approve()
     }
 
-  //ref 012
-    def "Show Info Icon" (){
+//  //ref 012
+//    def "Show Info Icon" (){
+//        setup:
+//            changeUser(Data.UserD_name,Data.UserD_passwd)
+//            to ProfilePage
+//        when:
+//            showInfoIcon("Yes")
+//        then:
+//            to DashboardPage
+//            subscriptions()
+//            hasInfoIcon()
+//        when:
+//            to ProfilePage
+//            showInfoIcon("No")
+//        then:
+//            to DashboardPage
+//            subscriptions()
+//            !hasInfoIcon()
+//    }
+    def "Upload existing Jasper Report"(){
         setup:
-            changeUser(Data.UserD_name,Data.UserD_passwd)
-            to ProfilePage
+            uploadJasper()
+            at JasperPage
         when:
-            showInfoIcon("Yes")
+            addReport(Data.JasperReportExistingFile)
         then:
-            to DashboardPage
-            subscriptions()
-            hasInfoIcon()
-        when:
-            to ProfilePage
-            showInfoIcon("No")
-        then:
-            to DashboardPage
-            subscriptions()
-            !hasInfoIcon()
-
+            errorMsg("A report template with the name")
     }
+
+    def "Upload new Jasper Report"(){
+        setup:
+            uploadJasper()
+            at JasperPage
+        when:
+            addReport(Data.JasperReportNewFile)
+        then:
+            alertMsg("Upload successful")
+    }
+
+    def "Generate Jasper Report"(){
+        setup:
+            generateJasper()
+            at JasperPage
+        when:
+            selectReport("titles")
+            getReport()
+        then:
+            at JasperPage
+    }
+
+
     def "Set up licence Template"() {
         setup:
             changeUser(Data.UserD_name, Data.UserD_passwd)
@@ -162,6 +195,17 @@ class HomePageSpec extends GebReportingSpec {
             at LicencePage
 
     }
+
+    // def "Create Custom Property"(){
+    //     when:
+    //         $("a.select2-default").click()
+    //         waitFor { $("input.select2-input")}
+
+    //        $("input.select2-input").value("Ref")
+    //        $("input.select2-input") << Keys.ENTER
+    //     then:
+    //         at JasperPage
+    // }
     //ref 101
     def "View template Licence"() {
         setup:
@@ -239,7 +283,7 @@ class HomePageSpec extends GebReportingSpec {
             withConfirm { deleteNote() }
             licenceDetails()
             editRef(Data.Licence_template_copy_D)
-            concurentAccessNote("many")
+            // concurentAccessNote("many")
         then:
             at LicencePage
 
@@ -253,7 +297,7 @@ class HomePageSpec extends GebReportingSpec {
             createNewLicense(Data.Licence_actual_C)
             addNote("test note")
             addDocument(Data.Test_Doc_name, Data.Test_Doc_file)
-            concurentAccessNote("many")
+            // concurentAccessNote("many")
         then:
             at LicencePage
     }

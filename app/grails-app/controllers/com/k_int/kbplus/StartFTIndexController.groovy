@@ -9,6 +9,7 @@ class StartFTIndexController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() { 
     log.debug("manual start full text index");
+    dataloadService.updateSiteMapping();
     dataloadService.updateFTIndexes();
     log.debug("redirecting to home...");
     redirect(controller:'home')

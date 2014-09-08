@@ -1,30 +1,24 @@
 package com.k_int.kbplus
 
-import grails.converters.*
 import grails.plugins.springsecurity.Secured
-import com.k_int.kbplus.auth.*;
-import grails.converters.*
-import org.codehaus.groovy.grails.commons.ApplicationHolder
-import org.springframework.transaction.TransactionStatus
 
 class PendingChangeController {
 
  def genericOIDService
+ def pendingChangeService
 
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def accept() {
     log.debug("Accept");
-    def change = PendingChange.get(params.id);
-    performAccept(change);
+    pendingChangeService.performAccept(params.id,request);
     redirect(url: request.getHeader('referer'))
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def reject() {
     log.debug("Reject");
-    def change = PendingChange.get(params.id);
-    performReject(change);
+    pendingChangeService.performReject(params.id,request);
     redirect(url: request.getHeader('referer'))
   }
 
@@ -35,11 +29,11 @@ class PendingChangeController {
     def changes_to_accept = []
 
     owner.pendingChanges.each { pc ->
-      changes_to_accept.add(pc)
+      changes_to_accept.add(pc.id)
     }
 
     changes_to_accept.each { pc ->
-      performAccept(pc)
+      pendingChangeService.performAccept(pc,request)
     }
 
     redirect(url: request.getHeader('referer'))
@@ -52,131 +46,15 @@ class PendingChangeController {
     def changes_to_reject = []
 
     owner.pendingChanges.each { pc ->
-      changes_to_reject.add(pc)
+      changes_to_reject.add(pc.id)
     }
 
     changes_to_reject.each { pc ->
-      performReject(pc)
+      pendingChangeService.performReject(pc,request)
     }
 
     redirect(url: request.getHeader('referer'))
   }
 
-  private boolean performAccept(change) {
-    def result = true
-    PendingChange.withNewTransaction { TransactionStatus status ->
-      try {
-        def parsed_change_info = JSON.parse(change.changeDoc)
-        log.debug("Process change ${parsed_change_info}");
-        switch ( parsed_change_info.changeType ) {
-          case 'TIPPDeleted' :
-            // "changeType":"TIPPDeleted","tippId":"com.k_int.kbplus.TitleInstancePackagePlatform:6482"}
-            def sub_to_change = change.subscription
-            def tipp = genericOIDService.resolveOID(parsed_change_info.tippId)
-            def ie_to_update = IssueEntitlement.findBySubscriptionAndTipp(sub_to_change,tipp)
-            if ( ie_to_update != null ) {
-              ie_to_update.status = RefdataCategory.lookupOrCreate('Entitlement Issue Status','Deleted');
-              ie_to_update.save();
-            }
-            break;
-          case 'PropertyChange' :  // Generic property change
-            if ( ( parsed_change_info.changeTarget != null ) && ( parsed_change_info.changeTarget.length() > 0 ) ) {
-              def target_object = genericOIDService.resolveOID(parsed_change_info.changeTarget);
-              if ( target_object ) {
-                // Work out if parsed_change_info.changeDoc.prop is an association - If so we will need to resolve the OID in the value
-                def domain_class = ApplicationHolder.application.getArtefact('Domain',target_object.class.name);
-                def prop_info = domain_class.getPersistentProperty(parsed_change_info.changeDoc.prop)
-                if ( prop_info.isAssociation() ) {
-                  log.debug("Setting association for ${parsed_change_info.changeDoc.prop} to ${parsed_change_info.changeDoc.new}");
-                  target_object[parsed_change_info.changeDoc.prop] = genericOIDService.resolveOID(parsed_change_info.changeDoc.new)
-                }
-                else if ( prop_info.getType() == java.util.Date ) {
-                  log.debug("Date processing.... parse \"${parsed_change_info.changeDoc.new}\"");
-                  if ( ( parsed_change_info.changeDoc.new != null ) && ( parsed_change_info.changeDoc.new.toString() != 'null' ) ) {
-                    //if ( ( parsed_change_info.changeDoc.new != null ) && ( parsed_change_info.changeDoc.new != 'null' ) ) {
-                    def df = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // yyyy-MM-dd'T'HH:mm:ss.SSSZ 2013-08-31T23:00:00Z
-                    def d = df.parse(parsed_change_info.changeDoc.new)
-                    target_object[parsed_change_info.changeDoc.prop] = d
-                  }
-                  else {
-                    target_object[parsed_change_info.changeDoc.prop] = null
-                  }
-                }
-                else {
-                  log.debug("Setting value for ${parsed_change_info.changeDoc.prop} to ${parsed_change_info.changeDoc.new}");
-                  target_object[parsed_change_info.changeDoc.prop] = parsed_change_info.changeDoc.new
-                }
-                target_object.save()
-
-                def change_audit_object = null
-                if ( change.license ) change_audit_object = change.license;
-                if ( change.subscription ) change_audit_object = change.subscription;
-                if ( change.pkg ) change_audit_object = change.pkg;
-                def change_audit_id = change_audit_object.id
-                def change_audit_class_name = change_audit_object.class.name
-              }
-            }
-            break;
-          case 'TIPPEdit':
-            // A tipp was edited, the user wants their change applied to the IE
-            break;
-          case 'New Object' :
-             def new_domain_class = ApplicationHolder.application.getArtefact('Domain',parsed_change_info.newObjectClass);
-             if ( new_domain_class != null ) {
-               // def new_instance = new_domain_class.getClazz().newInstance(parsed_change_info.changeDoc).save()
-               def new_instance = new_domain_class.getClazz().newInstance()
-               bindData(new_instance, parsed_change_info.changeDoc)
-               new_instance.save();
-             }
-            break;
-          case 'Update Object' :
-            if ( ( parsed_change_info.changeTarget != null ) && ( parsed_change_info.changeTarget.length() > 0 ) ) {
-              def target_object = genericOIDService.resolveOID(parsed_change_info.changeTarget);
-              if ( target_object ) {
-                bindData(target_object, parsed_change_info.changeDoc)
-                target_object.save();
-              }
-            }
-            break;
-          default:
-            log.error("Unhandled change type : ${pc.changeDoc}");
-            break;
-        }
-        change.pkg?.pendingChanges?.remove(change)
-        change.pkg?.save();
-        change.license?.pendingChanges?.remove(change)
-        change.license?.save();
-        change.subscription?.pendingChanges?.remove(change)
-        change.subscription?.save();
-        change.status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Accepted")
-        change.actionDate = new Date()
-        change.user = request.user
-        change.save(flush:true);
-      }
-      catch ( Exception e ) {
-        log.error("Problem accepting change",e);
-        result = false;
-      }
-      return result
-    }
-  }
-
-  private void performReject(change) {
-    PendingChange.withNewTransaction { TransactionStatus status ->
-      change.license?.pendingChanges?.remove(change)
-      change.license?.save();
-      change.subscription?.pendingChanges?.remove(change)
-      change.subscription?.save();
-      change.actionDate = new Date()
-      change.user = request.user
-      change.status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Rejected")
-
-      def change_audit_object = null
-      if ( change.license ) change_audit_object = change.license;
-      if ( change.subscription ) change_audit_object = change.subscription;
-      if ( change.pkg ) change_audit_object = change.pkg;
-      def change_audit_id = change_audit_object.id
-      def change_audit_class_name = change_audit_object.class.name
-    }
-  }
+  
 }

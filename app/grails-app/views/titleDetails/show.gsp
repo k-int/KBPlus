@@ -82,9 +82,51 @@
             </table>
           </div>
         </div>
+
+
         <div class="row">
           <div class="span12">
+            <h3>Title History</h3>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>From</th>
+                  <th>To</th>
+                </tr>
+              </thead>
+              <tbody>
+                <g:each in="${titleHistory}" var="th">
+                  <tr>
+                    <td><g:formatDate date="${th.eventDate}" format="yyyy-MM-dd"/></td>
+                    <td>
+                      <g:each in="${th.participants}" var="p">
+                        <g:if test="${p.participantRole=='from'}">
+                          <g:link controller="titleDetails" action="show" id="${p.participant.id}">${p.participant.title}</g:link><br/>
+                        </g:if>
+                      </g:each>
+                    </td>
+                    <td>
+                      <g:each in="${th.participants}" var="p">
+                        <g:if test="${p.participantRole=='to'}">
+                          <g:link controller="titleDetails" action="show" id="${p.participant.id}">${p.participant.title}</g:link><br/>
+                        </g:if>
+                      </g:each>
+                    </td>
+                  </tr>
+                </g:each>
+              </tbody>
+            </table>
+            <g:if test="${ti.getIdentifierValue('originediturl') != null}">
+              <span class="pull-right">
+                Title history can be edited in gokb here:: <a href="${ti.getIdentifierValue('originediturl')}">Here</a>
+              </span>
+            </g:if>
+          </div>
+        </div>
 
+        <div class="row">
+          <div class="span12">
 
             <h3>Appears in...</h3>
             <g:form id="${params.id}" controller="titleDetails" action="batchUpdate">
@@ -131,8 +173,11 @@
                     <td/>
                   </tr>
                   <tr>
-                    <td colspan="6">Bulk coverage note change: <g:simpleHiddenValue id="bulk_coverage_note" name="bulk_coverage_note"/>
-                    - <input type="checkbox" name="clear_coverage_note"/> (clear)
+                    <td colspan="6">
+                      Bulk coverage note change: <g:simpleHiddenValue id="bulk_coverage_note" name="bulk_coverage_note"/>
+                       - <input type="checkbox" name="clear_coverage_note"/> (clear) <br/>
+                      Bulk Host Platform URL change: <g:simpleHiddenValue id="bulk_hostPlatformURL" name="bulk_hostPlatformURL"/>
+                       - <input type="checkbox" name="clear_hostPlatformURL"/> (clear) <br/>
                     </td>
                   </tr>
                 </g:if>
@@ -153,7 +198,8 @@
                     <td><g:link controller="tipp" action="show" id="${t.id}">Full TIPP record</g:link></td>
                   </tr>
                   <tr>
-                    <td colspan="6">${t.coverageNote?:'No coverage note'}</td>
+                    <td colspan="6">Coverage Note: ${t.coverageNote?:'No coverage note'}<br/>
+                                    Host Platform URL: ${t.hostPlatformURL?:'No Host Platform URL'}</td>
                   </tr>
                 </g:each>
               </table>

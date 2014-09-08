@@ -20,7 +20,12 @@ class Subscription {
   String impId
   Date startDate
   Date endDate
+  Date manualRenewalDate
   Subscription instanceOf
+
+  // If a subscription is slaved then any changes to instanceOf will automatically be applied to this subscription
+  Boolean slaved
+
   String noticePeriod
   Date dateCreated
   Date lastUpdated
@@ -58,7 +63,9 @@ class Subscription {
                impId column:'sub_imp_id', index:'sub_imp_id_idx'
            startDate column:'sub_start_date'
              endDate column:'sub_end_date'
+   manualRenewalDate column:'sub_manual_renewal_date'
           instanceOf column:'sub_parent_sub_fk'
+              slaved column:'sub_is_slaved'
         noticePeriod column:'sub_notice_period'
             isPublic column:'sub_is_public'
   }
@@ -70,7 +77,9 @@ class Subscription {
     impId(nullable:true, blank:false)
     startDate(nullable:true, blank:false)
     endDate(nullable:true, blank:false)
+    manualRenewalDate(nullable:true, blank:false)
     instanceOf(nullable:true, blank:false)
+    slaved(nullable:true, blank:false)
     noticePeriod(nullable:true, blank:true)
     isPublic(nullable:true, blank:true)
     customProperties(nullable:true)
@@ -232,6 +241,62 @@ class Subscription {
     endDate ? endDate : null
   }
 
+  public Date getRenewalDate() {
+    manualRenewalDate ? manualRenewalDate : null
+  }
+
+  @Transient
+  static def refdataFind(params) {
+    def result = [];
+    def ql = null;
+   
+
+    if(params.hasDate ){
+      def indxS = params.q.indexOf("{{")
+      def indxC = params.q.indexOf(",",indxS)
+      def indxE = params.q.indexOf("}}",indxC)
+     
+      def name = params.q.substring(0,indxS)
+
+      def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd")
+
+      def dateStart = params.q.substring(indxS+2,indxC)
+      def dateEnd = params.q.substring(indxC+1,indxE)
+
+      dateStart = dateStart.length() > 1 ? sdf.parse(dateStart) : null
+      dateEnd = dateEnd.length() > 1 ? sdf.parse(dateEnd)  : null
+
+
+      if(dateStart || dateEnd){
+        if(dateEnd && dateStart){
+          ql = Subscription.findAllByNameIlikeAndStartDateGreaterThanEqualsAndEndDateLessThanEquals("${name}%",dateStart,dateEnd,params)
+        }else if(dateStart){
+          ql = Subscription.findAllByNameIlikeAndStartDateGreaterThanEquals("${name}%",dateStart)
+        }else if(dateEnd){
+          ql = Subscription.findAllByNameIlikeAndEndDateLessThanEquals("${name}%",dateEnd )
+          }
+      }else{
+        ql = Subscription.findAllByNameIlike("${name}%",params)
+      }   
+        
+    }else{
+      ql = Subscription.findAllByNameIlike("${params.q}%",params)
+    }
+
+    if(params.hideIdent && params.hideIdent == "true"){
+      if ( ql ) {
+          ql.each { t ->
+            result.add([id:"${t.class.name}:${t.id}",text:"${t.name}"])
+          }
+      }  
+    }else if ( ql ) {
+      ql.each { t ->
+        result.add([id:"${t.class.name}:${t.id}",text:"${t.name} (${t.identifier})"])
+      }
+    }
+
+    result
+  }
 
 }
 

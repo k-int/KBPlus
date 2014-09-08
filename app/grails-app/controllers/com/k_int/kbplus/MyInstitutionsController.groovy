@@ -25,6 +25,8 @@ class MyInstitutionsController {
     def exportService
     def transformerService
 
+    static String INSTITUTIONAL_LICENSES_QUERY = " from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
+
     // Map the parameter names we use in the webapp with the ES fields
     def renewals_reversemap = ['subject': 'subject', 'provider': 'provid', 'pkgname': 'tokname']
     def reversemap = ['subject': 'subject', 'provider': 'provid', 'studyMode': 'presentations.studyMode', 'qualification': 'qual.type', 'level': 'qual.level']
@@ -106,7 +108,8 @@ class MyInstitutionsController {
 
         def qry_params = [result.institution, licensee_role]
 
-        def qry = "from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
+        def qry = INSTITUTIONAL_LICENSES_QUERY
+        // def qry = "from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
 
         if ((params['keyword-search'] != null) && (params['keyword-search'].trim().length() > 0)) {
             qry += " and lower(l.reference) like ?"
@@ -165,7 +168,7 @@ class MyInstitutionsController {
         if ((params.sort != null) && (params.sort.length() > 0)) {
             qry += " order by l.${params.sort} ${params.order}"
         } else {
-            qry += " order by reference asc"
+            qry += " order by sortableReference asc"
         }
 
 
@@ -235,7 +238,7 @@ class MyInstitutionsController {
             base_qry += " order by s.name asc"
         }
 
-        log.debug("current subs base query: ${base_qry} params: ${qry_params} max:${result.max} offset:${result.offset}");
+        // log.debug("current subs base query: ${base_qry} params: ${qry_params} max:${result.max} offset:${result.offset}");
 
         result.num_sub_rows = Subscription.executeQuery("select count(s) " + base_qry, qry_params)[0]
         result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max: result.max, offset: result.offset]);
@@ -489,22 +492,15 @@ class MyInstitutionsController {
                 def licenseInstance = new License(reference: "Copy of ${baseLicense?.reference}",
                         status: license_status,
                         type: license_type,
-                        concurrentUsers: baseLicense?.concurrentUsers,
-                        remoteAccess: baseLicense?.remoteAccess,
-                        walkinAccess: baseLicense?.walkinAccess,
-                        multisiteAccess: baseLicense?.multisiteAccess,
-                        partnersAccess: baseLicense?.partnersAccess,
-                        alumniAccess: baseLicense?.alumniAccess,
-                        ill: baseLicense?.ill,
-                        coursepack: baseLicense?.coursepack,
-                        vle: baseLicense?.vle,
-                        enterprise: baseLicense?.enterprise,
-                        pca: baseLicense?.pca,
                         noticePeriod: baseLicense?.noticePeriod,
                         licenseUrl: baseLicense?.licenseUrl,
                         onixplLicense: baseLicense?.onixplLicense
                 )
-
+                for(prop in baseLicense?.customProperties){
+                    def copiedProp = new LicenseCustomProperty(type:prop.type,owner:licenseInstance)
+                    prop.copyValueAndNote(copiedProp)
+                    licenseInstance.addToCustomProperties(copiedProp)
+                }
                 // the url will set the shortcode of the organisation that this license should be linked with.
                 if (!licenseInstance.save(flush: true)) {
                     log.error("Problem saving license ${licenseInstance.errors}");
@@ -2460,24 +2456,72 @@ AND EXISTS (
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def changeLog() {
         def result = [:]
+
+        def exporting = ( params.format == 'csv' ? true : false )
+
         result.user = User.get(springSecurityService.principal.id)
         result.institution = Org.findByShortcode(params.shortcode)
 
-        def query = "select pc from PendingChange as pc where owner = ? order by ts desc";
-        // Subscription subscription
-        // License license
-        // SystemObject systemObject
-        // Package pkg
-        // Date ts
-        // Org owner
-        // String oid
-        // String changeDoc
-        // String desc
-        // RefdataValue status
-        // Date actionDate
-        // User user
+        result.institutional_objects = []
 
-        result.changes = PendingChange.executeQuery(query, [result.institution], params)
-        result
+        if ( exporting ) {
+          result.max = 1000000;
+          result.offset = 0;
+        }
+        else {
+          result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+          result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+        }
+
+        PendingChange.executeQuery('select distinct(pc.license) from PendingChange as pc where pc.owner = ?',[result.institution]).each {
+          result.institutional_objects.add(['com.k_int.kbplus.License:'+it.id,'License: '+it.reference]);
+        }
+        PendingChange.executeQuery('select distinct(pc.subscription) from PendingChange as pc where pc.owner = ?',[result.institution]).each {
+          result.institutional_objects.add(['com.k_int.kbplus.Subscription:'+it.id,'Subscription: '+it.name]);
+        }
+
+        if ( params.restrict == 'ALL' )
+          params.restrict=null
+
+        def base_query = " from PendingChange as pc where owner = ?";
+        def qry_params = [result.institution]
+
+        if ( ( params.restrict != null ) && ( params.restrict.trim().length() > 0 ) ) {
+          def o =  genericOIDService.resolveOID(params.restrict)
+          if ( o != null ) {
+            if ( o instanceof License ) {
+              base_query += ' and license = ?'
+            }
+            else {
+              base_query += ' and subscription = ?'
+            }
+            qry_params.add(o)
+          }
+        }
+
+        result.num_changes = PendingChange.executeQuery("select count(pc) "+base_query, qry_params)[0];
+
+        result.changes = PendingChange.executeQuery("select pc "+base_query+"  order by ts desc", qry_params, [max: result.max, offset:result.offset])
+
+        withFormat {
+            html {
+                result
+            }
+            csv {
+                response.setHeader("Content-disposition", "attachment; filename=${result.institution.name}_changes.csv")
+                response.contentType = "text/csv"
+
+                def out = response.outputStream
+                out.withWriter { w ->
+                  w.write('Timestamp,ChangeId,SubscriptionId,LicenseId,Description\n')
+                  result.changes.each { c ->
+                    def line = "\"${c.ts}\",${c.id},${c.subscription?.id},${c.license?.id},\"${c.desc}\"\n".toString()
+                    w.write(line)
+                  }
+                }
+                out.close()
+            }
+
+        }
     }
 }

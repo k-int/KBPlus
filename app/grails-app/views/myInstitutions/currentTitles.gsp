@@ -108,7 +108,7 @@
 	    <div class="container" style="text-align:center">
       		<div class="pull-left">
       			<label class="checkbox">
-      				<input type="checkbox" name="filterMultiIE" value="${true}"<%=(params.filterMultiIE)?' checked="true"':''%>/> Titles with 2 or more linked IEs
+      				<input type="checkbox" name="filterMultiIE" value="${true}"<%=(params.filterMultiIE)?' checked="true"':''%>/> Titles we subscribe to through 2 or more packages
 				</label>
       		</div>
 	    	<div class="pull-right">
@@ -150,7 +150,7 @@
                 <g:set var="title_coverage_info" value="${ti[0].getInstitutionalCoverageSummary(institution, session.sessionPreferences?.globalDateFormat, date_restriction)}" />
 
                 <td  style="white-space:nowrap">${title_coverage_info.earliest}</td>
-                <td  style="white-space:nowrap">${title_coverage_info.latest}</td>
+                <td  style="white-space:nowrap">${title_coverage_info.latest ?: 'To Current'}</td>
                 <td>
                   <g:each in="${title_coverage_info.ies}" var="ie">
                       <p>

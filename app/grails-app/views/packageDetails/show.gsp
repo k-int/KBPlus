@@ -6,8 +6,7 @@
     <g:set var="entityName" value="${message(code: 'package.label', default: 'Package')}" />
     <title><g:message code="default.edit.label" args="[entityName]" /></title>
   </head>
-  <body>
-
+ <body>
 
 
     <div class="container">
@@ -74,7 +73,7 @@
 
 
       <div class="container">
-
+        <g:if test="${params.asAt}"><h1>Snapshot on ${params.asAt} from </h1></g:if>
         <div class="page-header">
           <div>
           <h1><g:if test="${editable}"><span id="packageNameEdit"
@@ -134,6 +133,42 @@
               </dl>
               
               <dl>
+                <dt>Other Identifiers</dt>
+                <dd>
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>ID</td>
+                        <th>Identifier Namespace</th>
+                        <th>Identifier</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <g:each in="${packageInstance.ids}" var="io">
+                          <tr>
+                            <td>${io.id}</td>
+                            <td>${io.identifier.ns.ns}</td>
+                            <td>${io.identifier.value}</td>
+                          </tr>
+                      </g:each>
+                     
+                    </tbody>
+                  </table>
+
+                  <g:if test="${editable}">
+                    <g:form controller="ajax" action="addToCollection" class="form-inline">
+                      <input type="hidden" name="__context" value="${packageInstance.class.name}:${packageInstance.id}"/>
+                      <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.IdentifierOccurrence"/>
+                      <input type="hidden" name="__recip" value="pkg"/>
+                      <input type="hidden" name="identifier" id="addIdentifierSelect"/>
+                      <input type="submit" value="Add Identifier..." class="btn btn-primary btn-small"/>
+                    </g:form>
+                  </g:if>
+
+                </dd>
+              </dl>
+
+              <dl>
                 <dt>Public?</dt>
                 <dd>
                   <g:xEditableRefData owner="${packageInstance}" field="isPublic" config='YN'/>
@@ -147,6 +182,19 @@
                 </dd>
               </dl>
 
+              <dl>
+                <dt>Vendor URL</dt>
+                <dd>
+                  <g:xEditable owner="${packageInstance}" field="vendorURL" />
+                </dd>
+              </dl>
+
+              <dl>
+                <dt>Cancellation Allowances</dt>
+                <dd>
+                  <g:xEditable owner="${packageInstance}" field="cancellationAllowances" />
+                </dd>
+              </dl>
 
                 <dl>
                   <dt>Start Date</dt>
@@ -208,7 +256,10 @@
 
           </fieldset>
         </div>
+
+
         <div class="span4">
+
           <div class="well notes">
             <g:if test="${(subscriptionList != null) && (subscriptionList?.size() > 0)}">
               <h5>Add package to institutional subscription:</h5>
@@ -218,7 +269,7 @@
                     <option value="${s.sub.id}">${s.sub.name ?: "unnamed subscription ${s.sub.id}"} - ${s.org.name}</option>
                   </g:each>
                 </select><br/>
-                Create Entitlements in Subscription: <input type="checkbox" name="addEntitlements" value="true"/><br/>
+                Create Entitlements in Subscription: <input type="checkbox" id="addEntitlementsCheckbox" name="addEntitlements" value="true"/><br/>
                 <input type="submit"/>
               </g:form>
             </g:if>
@@ -226,6 +277,7 @@
               No subscriptions available to link to this package
             </g:else>
           </div>
+
 
           <g:render template="/templates/documents" model="${[ ownobj:packageInstance, owntp:'pkg']}" />
           <g:render template="/templates/notes"  model="${[ ownobj:packageInstance, owntp:'pkg']}" />
@@ -249,16 +301,28 @@
            <input type="hidden" name="order" value="${params.order}">
            <label>Filters - Title:</label> <input name="filter" value="${params.filter}"/>
            <label>Coverage note:</label> <input name="coverageNoteFilter" value="${params.coverageNoteFilter}"/>
-            &nbsp;<label>Coverage Starts Before:</label> 
+            <br/><label>Coverage Starts Before:</label> 
             <g:simpleHiddenValue id="startsBefore" name="startsBefore" type="date" value="${params.startsBefore}"/>
-            &nbsp;<label>Ends After:</label>
+            <label>Ends After:</label>
             <g:simpleHiddenValue id="endsAfter" name="endsAfter" type="date" value="${params.endsAfter}"/>
+            <g:if test="${params.mode!='advanced'}">
+              <label>Titles as at:</label>
+              <g:simpleHiddenValue id="asAt" name="asAt" type="date" value="${params.asAt}"/>
+            </g:if>
 
-           <input type="submit" class="btn btn-primary" />
+           <input type="submit" class="btn btn-primary" value="Filter Results" />
         </g:form>
 
           <table class="table table-bordered">
             <g:form action="packageBatchUpdate" params="${[id:packageInstance?.id]}">
+            <g:hiddenField name="filter" value="${params.filter}"/>
+            <g:hiddenField name="coverageNoteFilter" value="${params.coverageNoteFilter}"/>
+            <g:hiddenField name="startsBefore" value="${params.startsBefore}"/>
+            <g:hiddenField name="endsAfter" value="${params.endsAfter}"/>
+            <g:hiddenField name="sort" value="${params.sort}"/>
+            <g:hiddenField name="order" value="${params.order}"/>
+            <g:hiddenField name="offset" value="${params.offset}"/>
+            <g:hiddenField name="max" value="${params.max}"/>
             <thead>
             <tr class="no-background">
 
@@ -310,6 +374,11 @@
                           <input type="checkbox" name="clear_payment"/>(Check to clear)</td>
                         </td>
                       </tr>
+                      <tr>
+                        <td colspan="3">Host Platform URL: <g:simpleHiddenValue id="bulk_hostPlatformURL" name="bulk_hostPlatformURL"/>
+                          <input type="checkbox" name="clear_hostPlatformURL"/>(Check to clear)</td>
+                        </td>
+                      </tr>
                     </g:if>
 
 
@@ -336,13 +405,31 @@
             <g:set var="counter" value="${offset+1}" />
             <g:each in="${titlesList}" var="t">
               <g:set var="hasCoverageNote" value="${t.coverageNote?.length() > 0}" />
-              <tr>
+               <tr>
                 <td ${hasCoverageNote==true?'rowspan="2"':''}><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${t.id}" class="bulkcheck"/></g:if></td>
                 <td ${hasCoverageNote==true?'rowspan="2"':''}>${counter++}</td>
                 <td style="vertical-align:top;">
                    <b>${t.title.title}</b>
                    <g:link controller="titleDetails" action="show" id="${t.title.id}">(Title)</g:link>
                    <g:link controller="tipp" action="show" id="${t.id}">(TIPP)</g:link><br/>
+                   <ul>
+                     <g:each in="${t.title.historyEvents}" var="h">
+                       <li>
+
+                         Title History: <g:formatDate date="${h.event.eventDate}" format="yyyy-MM-dd"/><br/>
+
+                         <g:each status="st" in="${h.event.fromTitles()}" var="the">
+                            <g:if test="${st>0}">, </g:if>
+                            <g:link controller="titleDetauls" action="show" id="${the.id}">${the.title}</g:link>
+                         </g:each>
+                         Became
+                         <g:each status="st" in="${h.event.toTitles()}" var="the">
+                            <g:if test="${st>0}">, </g:if>
+                            <g:link controller="titleDetauls" action="show" id="${the.id}">${the.title}</g:link>
+                         </g:each>
+                       </li>
+                     </g:each>
+                   </ul>
                    <span title="${t.availabilityStatusExplanation}">Access: ${t.availabilityStatus?.value}</span>
                    <g:if test="${params.mode=='advanced'}">
                      <br/> Record Status: <g:xEditableRefData owner="${t}" field="status" config='TIPPStatus'/>
@@ -360,7 +447,9 @@
                 </td>
                 <td style="white-space: nowrap;vertical-align:top;">
                   <g:each in="${t.title.ids}" var="id">
-                    ${id.identifier.ns.ns}:${id.identifier.value}<br/>
+                    <g:if test="${id.identifier.ns.hide != true}">
+                      ${id.identifier.ns.ns}:${id.identifier.value}<br/>
+                    </g:if>
                   </g:each>
                 </td>
 
@@ -381,9 +470,10 @@
               </tr>
 
               <g:if test="${hasCoverageNote==true || params.mode=='advanced'}">
-                <tr>
-                  <td colspan="6">coverageNote: ${t.coverageNote}
+               <tr>
+                  <td colspan="8">coverageNote: ${t.coverageNote}
                   <g:if test="${params.mode=='advanced'}">
+                    <br/> Host Platform URL: <g:xEditable owner="${t}" field="hostPlatformURL" />
                     <br/> Delayed OA: <g:xEditableRefData owner="${t}" field="delayedOA" config='TIPPDelayedOA'/> &nbsp;
                     Hybrid OA: <g:xEditableRefData owner="${t}" field="hybridOA" config='TIPPHybridOA'/> &nbsp;
                     Payment: <g:xEditableRefData owner="${t}" field="payment" config='TIPPPaymentType'/> &nbsp;
@@ -459,6 +549,33 @@
         }
       }
 
+      <g:if test="${editable}">
+      $("#addIdentifierSelect").select2({
+        placeholder: "Search for an identifier...",
+        minimumInputLength: 1,
+        ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+          url: "<g:createLink controller='ajax' action='lookup'/>",
+          dataType: 'json',
+          data: function (term, page) {
+              return {
+                  q: term, // search term
+                  page_limit: 10,
+                  baseClass:'com.k_int.kbplus.Identifier'
+              };
+          },
+          results: function (data, page) {
+            return {results: data.values};
+          }
+        },
+        createSearchChoice:function(term, data) {
+          return {id:'com.k_int.kbplus.Identifier:__new__:'+term,text:term};
+        }
+      });
+      </g:if>
+     
+      <g:if test="${params.asAt && params.asAt.length() > 0}"> $(function() {
+        document.body.style.background = "#fcf8e3";
+      });</g:if>
     </r:script>
 
   </body>

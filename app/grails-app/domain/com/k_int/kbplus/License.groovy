@@ -2,6 +2,8 @@ package com.k_int.kbplus
 
 import com.k_int.kbplus.auth.Role
 import javax.persistence.Transient
+import java.text.Normalizer
+
 
 
 class License {
@@ -14,22 +16,11 @@ class License {
   RefdataValue type
 
   String reference
+  String sortableReference
 
   RefdataValue licenseCategory
-  RefdataValue concurrentUsers
-  RefdataValue remoteAccess
-  RefdataValue walkinAccess
-  RefdataValue multisiteAccess
-  RefdataValue partnersAccess
-  RefdataValue alumniAccess
-  RefdataValue ill
-  RefdataValue coursepack
-  RefdataValue vle
-  RefdataValue enterprise
-  RefdataValue pca
   RefdataValue isPublic
 
-  Long concurrentUserCount=0
   String noticePeriod
   String licenseUrl
   String licensorRef
@@ -69,19 +60,8 @@ class License {
                  status column:'lic_status_rv_fk'
                    type column:'lic_type_rv_fk'
               reference column:'lic_ref'
-        concurrentUsers column:'lic_concurrent_users_rdv_fk'
-           remoteAccess column:'lic_remote_access_rdv_fk'
-           walkinAccess column:'lic_walkin_access_rdv_fk'
-        multisiteAccess column:'lic_multisite_access_rdv_fk'
-         partnersAccess column:'lic_partners_access_rdv_fk'
-           alumniAccess column:'lic_alumni_access_rdv_fk'
-                    ill column:'lic_ill_rdv_fk'
-             coursepack column:'lic_coursepack_rdv_fk'
-                    vle column:'lic_vle_rdv_fk'
-             enterprise column:'lic_enterprise_rdv_fk'
-                    pca column:'lic_pca_rdv_fk'
+      sortableReference column:'lic_sortable_ref'
                isPublic column:'lic_is_public_rdv_fk'
-    concurrentUserCount column:'lic_concurrent_user_count'
            noticePeriod column:'lic_notice_period'
              licenseUrl column:'lic_license_url'
             licensorRef column:'lic_licensor_ref'
@@ -101,19 +81,8 @@ class License {
     status(nullable:true, blank:false)
     type(nullable:true, blank:false)
     reference(nullable:true, blank:true)
-    concurrentUsers(nullable:true, blank:true)
-    remoteAccess(nullable:true, blank:true)
-    walkinAccess(nullable:true, blank:true)
-    multisiteAccess(nullable:true, blank:true)
-    partnersAccess(nullable:true, blank:true)
-    alumniAccess(nullable:true, blank:true)
-    ill(nullable:true, blank:true)
-    coursepack(nullable:true, blank:true)
-    vle(nullable:true, blank:true)
-    enterprise(nullable:true, blank:true)
-    pca(nullable:true, blank:true)
+    sortableReference(nullable:true, blank:true)
     isPublic(nullable:true, blank:true)
-    concurrentUserCount(nullable:true)
     noticePeriod(nullable:true, blank:true)
     licenseUrl(nullable:true, blank:true)
     licensorRef(nullable:true, blank:true)
@@ -253,8 +222,8 @@ class License {
   def onChange = { oldMap,newMap ->
     log.debug("license onChange....");
     def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
-    def controlledProperties = ['licenseUrl','licenseeRef','licensorRef','noticePeriod','reference','concurrentUserCount']
-    def controlledRefProperties = [ 'concurrentUsers', 'remoteAccess', 'walkinAccess', 'multisiteAccess', 'partnersAccess', 'alumniAccess', 'ill', 'coursepack', 'vle', 'enterprise', 'pca', 'isPublic' ]
+    def controlledProperties = ['licenseUrl','licenseeRef','licensorRef','noticePeriod','reference']
+    def controlledRefProperties = [ 'isPublic' ]
 
 
     controlledProperties.each { cp ->
@@ -301,6 +270,7 @@ class License {
     return result;
   }
 
+
   @Transient
   def notifyDependencies(changeDocument) {
     log.debug("notifyDependencies(${changeDocument})");
@@ -322,16 +292,87 @@ class License {
           if( defaultMsg)
               description = defaultMsg.content
       }
-      changeNotificationService.registerPendingChange('license',
-                                                      dl,
-                                                      "<b>${changeDocument.prop}</b> changed from <b>\"${changeDocument.oldLabel?:changeDocument.old}\"</b> to <b>\"${changeDocument.newLabel?:changeDocument.new}\"</b> on the template license."+description,
-                                                      dl.getLicensee(),
-                                                      [
-                                                        changeTarget:"com.k_int.kbplus.License:${dl.id}",
-                                                        changeType:'PropertyChange',
-                                                        changeDoc:changeDocument
-                                                      ])
+      changeNotificationService
+      .registerPendingChange('license',
+                            dl,
+                            "<b>${changeDocument.prop}</b> changed from <b>\"${changeDocument.oldLabel?:changeDocument.old}\"</b> to <b>\"${changeDocument.newLabel?:changeDocument.new}\"</b> on the template license." + description,
+                            dl.getLicensee(),
+                            [
+                              changeTarget:"com.k_int.kbplus.License:${dl.id}",
+                              changeType:'PropertyChange',
+                              changeDoc:changeDocument
+                            ])
 
     }
+  }
+
+  def beforeInsert() {
+    if ( reference != null ) {
+      sortableReference = generateSortableReference(reference)
+    }
+  }
+
+  def beforeUpdate() {
+    if ( reference != null ) {
+      sortableReference = generateSortableReference(reference)
+    }
+  }
+
+
+  public static String generateSortableReference(String input_title) {
+    def result=null
+    if ( input_title ) {
+      def s1 = Normalizer.normalize(input_title, Normalizer.Form.NFKD).trim().toLowerCase()
+      s1 = s1.replaceFirst('^copy of ','')
+      s1 = s1.replaceFirst('^the ','')
+      s1 = s1.replaceFirst('^a ','')
+      s1 = s1.replaceFirst('^der ','')
+      result = s1.trim()
+    }
+    result
+  }
+
+  /*
+    Following getter methods were introduced to avoid making too many changes when custom properties 
+    were introduced.
+  */
+  def getConcurrentUserCount(){
+    return getCustomPropByName("Concurrent Users")
+  }
+  def getConcurrentUsers(){
+    return getCustomPropByName("Concurrent Access")
+  }  
+  def getRemoteAccess(){
+    return getCustomPropByName("Remote Access")
+  }
+  def getWalkinAccess(){
+    return getCustomPropByName("Walk In Access")
+  }
+  def getMultisiteAccess(){
+    return getCustomPropByName("Multi Site Access")
+  }
+  def getPartnersAccess(){
+    return getCustomPropByName("Partners Access")
+  }
+  def getAlumniAccess(){
+    return getCustomPropByName("Alumni Access")
+  }
+  def getIll(){
+    return getCustomPropByName("ILL - InterLibraryLoans")
+  }
+  def getCoursepack(){
+    return getCustomPropByName("Include In Coursepacks")
+  }
+  def getVle(){
+    return getCustomPropByName("Include In VLE")
+  }
+  def getEnterprise(){
+    return getCustomPropByName("Enterprise Access")
+  }
+  def getPca(){
+    return getCustomPropByName("Post Cancellation Access Entitlement")
+  }
+  def getCustomPropByName(name){
+    return customProperties.find{it.type.name == name}    
   }
 }

@@ -39,10 +39,12 @@
 
       <!-- num_first_vol_online -->
       <xsl:call-template name="tsventry">
+        <xsl:with-param name="txt" select="./CoverageStatement/StartVolume" />
       </xsl:call-template>
 
       <!-- num_first_issue_online -->
       <xsl:call-template name="tsventry">
+        <xsl:with-param name="txt" select="./CoverageStatement/StartIssue" />
       </xsl:call-template>
 
       <!-- date_last_issue_online -->
@@ -58,14 +60,17 @@
 
       <!-- num_last_vol_online -->
       <xsl:call-template name="tsventry">
+        <xsl:with-param name="txt" select="./CoverageStatement/EndVolume" />
       </xsl:call-template>
 
       <!-- num_last_issue_online -->
       <xsl:call-template name="tsventry">
+        <xsl:with-param name="txt" select="./CoverageStatement/EndIssue" />
       </xsl:call-template>
 
       <!-- title_url -->
       <xsl:call-template name="tsventry">
+        <xsl:with-param name="txt" select="./CoverageStatement/HostPlatformURL" />
       </xsl:call-template>
 
       <!-- first_author -->
@@ -74,25 +79,30 @@
 
       <!-- title_id -->
       <xsl:call-template name="tsventry">
+        <xsl:with-param name="txt" select="./TitleIDs/ID[@namespace='kbart_title_id']" />
       </xsl:call-template>
 
       <!-- coverage_depth -->
       <xsl:call-template name="tsventry">
+        <xsl:with-param name="txt" select="./CoverageStatement/CoverageDepth" />
       </xsl:call-template>
 
       <!-- coverage_notes -->
       <xsl:call-template name="tsventry">
+        <xsl:with-param name="txt" select="./CoverageStatement/CoverageNote" />
       </xsl:call-template>
 
       <!-- publisher_name -->
       <xsl:call-template name="tsventry">
       </xsl:call-template>
+
       <!-- location -->
       <xsl:call-template name="tsventry">
       </xsl:call-template>
 
       <!-- title_notes -->
       <xsl:call-template name="tsventry">
+        <xsl:with-param name="txt" select="./CoverageStatement/CoverageNote" />
       </xsl:call-template>
 
       <!-- oclc_collection_name -->
@@ -116,7 +126,7 @@
       </xsl:call-template>
 
       <xsl:call-template name="tsventry">
-        <xsl:with-param name="txt">ACTION</xsl:with-param>
+        <xsl:with-param name="txt">raw</xsl:with-param>
       </xsl:call-template>
 
       <xsl:text>&#xA;</xsl:text>

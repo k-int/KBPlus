@@ -10,6 +10,7 @@ import com.k_int.kbplus.auth.*;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import java.text.SimpleDateFormat
 
 class PackageDetailsController {
 
@@ -52,23 +53,139 @@ class PackageDetailsController {
         qry_params.add("%${params.q.trim().toLowerCase()}%");
       }
 
-      // if ( date_restriction ) {
-      //   base_qry += " and s.startDate <= ? and s.endDate >= ? "
-      //   qry_params.add(date_restriction)
-      //   qry_params.add(date_restriction)
-      // }
+      if ( params.startDate?.length() > 0 ) {
+        base_qry += " and ( p.lastUpdated > ? )"
+        qry_params.add(params.date('startDate','yyyy-MM-dd'));
+      }
 
-      // if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
-      //   base_qry += " order by ${params.sort} ${params.order}"
-      // }
-      // else {
-      //   base_qry += " order by s.name asc"
-      // }
+      if ( params.endDate?.length() > 0 ) {
+        base_qry += " and ( p.lastUpdated < ? )"
+        qry_params.add(params.date('endDate','yyyy-MM-dd'));
+      }
 
+      if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
+        base_qry += " order by lower(p.${params.sort}) ${params.order}"
+      }
+      else {
+        base_qry += " order by lower(p.name) asc"
+      }
+
+
+      log.debug(base_qry)
       result.packageInstanceTotal = Subscription.executeQuery("select count(p) "+base_qry, qry_params )[0]
-      result.packageInstanceList = Subscription.executeQuery("select p ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
 
+
+      withFormat {
+        html {
+          result.packageInstanceList = Subscription.executeQuery("select p ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
+          result
+        }
+        csv {
+           response.setHeader("Content-disposition", "attachment; filename=packages.csv")
+           response.contentType = "text/csv"
+           def packages = Subscription.executeQuery("select p ${base_qry}", qry_params) 
+           def out = response.outputStream
+	   log.debug('colheads');
+           out.withWriter { writer ->
+             writer.write('Package Name, Creation Date, Last Modified, Identifier\n');
+             packages.each { 
+               log.debug(it);
+               writer.write("${it.name},${it.dateCreated},${it.lastUpdated},${it.identifier}\n")
+             }
+             writer.write("END");
+             writer.flush();
+             writer.close();
+           }
+           out.close()
+        }
+      }
+
+    }
+
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def consortia(){
+
+      def result = [:]
+      result.user = User.get(springSecurityService.principal.id)
+      result.packageInstance = Package.get(params.id)
+      result.editable=isEditable()
+      result.id = params.id
+      def packageInstance = result.packageInstance
+      def consortia = packageInstance.getConsortia()
+
+      def type = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia')
+      def consortiaInstitutions = Combo.findAllByToOrgAndType(consortia,type).collect{it.fromOrg}
+
+      def consortiaInstsWithStatus = [:]
+      def hql = "SELECT role.org FROM OrgRole as role WHERE role.org = ? AND role.roleType.value = 'Subscriber'  AND ( EXISTS ( select sp from role.sub.packages as sp where sp.pkg = ? ) )"
+      consortiaInstitutions.each{org ->
+        def queryParams = [org,packageInstance]
+        def hasPackage = OrgRole.executeQuery(hql,  queryParams)
+        if(hasPackage){
+          consortiaInstsWithStatus.put(org,RefdataCategory.lookupOrCreate("YNO","Yes"))
+        }else{
+          consortiaInstsWithStatus.put(org,RefdataCategory.lookupOrCreate("YNO","No"))
+        }
+      }
+      result.consortia = consortia
+      result.consortiaInstsWithStatus = consortiaInstsWithStatus
+
+      // log.debug("institutions with status are ${consortiaInstsWithStatus}")
+      
+      
       result
+    }
+    def generateSlaveSubscriptions(){
+      params.each { p ->
+        if(p.key.startsWith("_create.")){
+         def orgID = p.key.substring(8)
+         def orgaisation = Org.get(orgID)
+         log.debug("Create slave subscription for ${orgaisation.name}")
+         if(orgaisation)
+          createNewSubscription(orgaisation,params.id);
+
+        }
+      }
+      redirect controller:'packageDetails', action:'consortia', params: [id:params.id]
+    }
+
+    def createNewSubscription(org,packageId){
+      //Initialize default subscription values
+      def cal = new java.util.GregorianCalendar()
+      def sdf = new SimpleDateFormat('yyyy-MM-dd')
+
+      cal.setTimeInMillis(System.currentTimeMillis())
+      cal.set(Calendar.MONTH, Calendar.JANUARY)
+      cal.set(Calendar.DAY_OF_MONTH, 1)
+      def defaultStartYear = (cal.getTime())
+      cal.set(Calendar.MONTH, Calendar.DECEMBER)
+      cal.set(Calendar.DAY_OF_MONTH, 31)
+      def defaultEndYear = (cal.getTime())
+      def defaultSubIdentifier = java.util.UUID.randomUUID().toString()
+
+      // initialize the subscription
+      //  def new_sub = new Subscription(type: RefdataValue.findByValue("Subscription Taken"),
+      //               status: RefdataCategory.lookupOrCreate('Subscription Status', 'Current'),
+      //               name: "Generated slave sub",
+      //               startDate: defaultStartYear,
+      //               endDate: defaultEndYear,
+      //               identifier: defaultSubIdentifier,
+      //               isPublic: RefdataCategory.lookupOrCreate('YN', 'No'),
+      //               slaved: true,
+      //               impId: defaultSubIdentifier)
+      // if (new_sub.save(failOnError: true)) 
+      // {
+      //   log.debug("New subscription saved ${new_sub}")
+      //   def new_sub_link = new OrgRole(org: org,
+      //           sub: new_sub,
+      //           roleType: RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber')).save(failOnError: true);
+      // }
+      //Link to package 
+
+      def pkg_to_link = Package.get(packageId)
+      pkg_to_link.createSubscription("Subscription Taken", "Generated slave sub", defaultSubIdentifier,
+        defaultStartYear,defaultEndYear,org, "Subscriber", true, true)
+
     }
 
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
@@ -114,6 +231,71 @@ class PackageDetailsController {
       }
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def compare(){
+        def result = [:]
+        result.unionList=[]
+      
+        result.user = User.get(springSecurityService.principal.id)
+        result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+        result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
+        if (params.pkgA?.length() >0 && params.pkgB?.length() >0 ){
+
+          result.pkgA = params.pkgA
+          result.pkgB = params.pkgB
+          result.dateA = params.dateA
+          result.dateB = params.dateB
+
+          result.pkgInsts = []
+          result.pkgDates = []
+
+          def listA = createCompareList(params.pkgA, params.dateA, params, result)
+          def listB = createCompareList(params.pkgB, params.dateB, params, result)
+
+          //FIXME: It should be possible to optimize the following lines
+          def unionList = listA.collect{it.title.title}.plus(listB.collect {it.title.title})
+          unionList = unionList.unique()
+          result.unionListSize = unionList.size()
+          unionList.sort()
+          
+          log.debug("List sizes are ${listA.size()} and ${listB.size()} and the union is ${unionList.size()}")
+
+          def toIndex = result.offset+result.max < unionList.size()? result.offset+result.max: unionList.size()
+          unionList = unionList.subList(result.offset, toIndex.intValue())
+          result.listA = listA
+          result.listB = listB
+          result.unionList = unionList
+
+        }else{
+          def currentDate = new java.text.SimpleDateFormat('yyyy-MM-dd').format(new Date())
+          result.dateA = currentDate
+          result.dateB = currentDate
+          flash.message = "Please select two packages for comparison"
+        }
+      
+        result
+    }
+    def createCompareList(pkg,dateStr,params, result){
+       def returnVals = [:]
+       def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd')
+       def date = dateStr?sdf.parse(dateStr):new Date()
+       def packageId = pkg.substring( pkg.indexOf(":")+1)
+        
+       def packageInstance = Package.get(packageId)
+
+       result.pkgInsts.add(packageInstance)
+
+       result.pkgDates.add(sdf.format(date))
+
+       def queryParams = [packageInstance]         
+
+       def query = generateBasePackageQuery(params,queryParams, true, date)
+       def list = TitleInstancePackagePlatform.executeQuery("select tipp "+query,  queryParams);
+   
+       return list
+    }
+    
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def show() {
       def verystarttime = exportService.printStart("SubscriptionDetails")
@@ -176,11 +358,22 @@ class PackageDetailsController {
     
       // def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
       def qry_params = [packageInstance]
-      def date_filter =  params.mode == 'advanced' ? null : new Date();
+
+      def date_filter
+      if(params.mode == 'advanced'){
+         date_filter = null
+         params.asAt = null
+      }else if(params.asAt && params.asAt.length() > 0 ) {
+         def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
+         date_filter = sdf.parse(params.asAt)    
+         result.editable= false
+      }else{
+         date_filter = new Date()
+      }
 
       def base_qry = generateBasePackageQuery(params, qry_params, showDeletedTipps, date_filter);
 
-      log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
+      // log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
       result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, limits);
       result.num_tipp_rows = TitleInstancePackagePlatform.executeQuery("select count(tipp) "+base_qry, qry_params )[0]
 
@@ -226,6 +419,8 @@ class PackageDetailsController {
     def result = [:]
     boolean showDeletedTipps=false
     result.user = User.get(springSecurityService.principal.id)
+    result.editable=isEditable()
+
     def packageInstance = Package.get(params.id)
     if (!packageInstance) {
       flash.message = message(code: 'default.not.found.message', args: [message(code: 'package.label', default: 'Package'), params.id])
@@ -264,7 +459,7 @@ class PackageDetailsController {
         log.debug("deleteDocuments ${params}");
 
         params.each { p ->
-            if (p.key.startsWith('_deleteflag.') ) {
+            if (p.key.startsWith('_deleteflag"@.') ) {
                 def docctx_to_delete = p.key.substring(12);
                 log.debug("Looking up docctx ${docctx_to_delete} for delete");
                 def docctx = DocContext.get(docctx_to_delete)
@@ -293,6 +488,7 @@ class PackageDetailsController {
     def result = [:]
     boolean showDeletedTipps=false
     result.user = User.get(springSecurityService.principal.id)
+    result.editable=isEditable()
     def packageInstance = Package.get(params.id)
     if (!packageInstance) {
       flash.message = message(code: 'default.not.found.message', args: [message(code: 'package.label', default: 'Package'), params.id])
@@ -336,6 +532,8 @@ class PackageDetailsController {
     def result = [:]
     boolean showDeletedTipps=false
     result.user = User.get(springSecurityService.principal.id)
+    result.editable=isEditable()
+
     def packageInstance = Package.get(params.id)
     if (!packageInstance) {
       flash.message = message(code: 'default.not.found.message', args: [message(code: 'package.label', default: 'Package'), params.id])
@@ -643,7 +841,7 @@ class PackageDetailsController {
           if ( fq ) 
             query_str = query_str + " AND ( " + fq + " ) "
           
-          log.debug("query: ${query_str}");
+          log.debug("query: ${query_str} sort: ${params.sorting}");
           result.es_query = query_str;
 
           // if params.sorting==lastmod
@@ -654,7 +852,7 @@ class PackageDetailsController {
               from = params.offset
               size = params.max
               sort = [
-                ("${params.sorting?:'sortname'}".toString()) : [ 'order' : (params.order?:'asc') ]
+                ("${params.sorting?:'sortname'}".toString()) : [ 'order' : (params.order?:'desc') ]
               ]
               query {
                 query_string (query: query_str)
@@ -686,7 +884,6 @@ class PackageDetailsController {
                 }
               }
             }
-
           }
 
           if ( search?.response ) {
@@ -746,7 +943,7 @@ class PackageDetailsController {
                 sw.write(" AND ")
                 sw.write(mapping.value)
                 sw.write(":")
-                sw.write("\"${p}\"")
+                sw.write("(${p})")
           }
         }
         else {
@@ -756,7 +953,7 @@ class PackageDetailsController {
             sw.write(" AND ")
             sw.write(mapping.value)
             sw.write(":")
-            sw.write("\"${params[mapping.key]}\"")
+            sw.write("(${params[mapping.key]})")
           }
         }
       }
@@ -780,16 +977,15 @@ class PackageDetailsController {
   }
 
 
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-    def notes() {
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def notes() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.packageInstance = Package.get(params.id)
+    result.editable=isEditable()
+    result
+  }
 
-        def result = [:]
-        result.user = User.get(springSecurityService.principal.id)
-        result.packageInstance = Package.get(params.id)
-        result.editable=isEditable()
-
-        result
-    }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def packageBatchUpdate() {
@@ -818,10 +1014,16 @@ class PackageDetailsController {
       [ formProp:'delayedOA', domainClassProp:'delayedOA', type:'ref'],
       [ formProp:'hybridOA', domainClassProp:'hybridOA', type:'ref'],
       [ formProp:'payment', domainClassProp:'payment', type:'ref'],
+      [ formProp:'hostPlatformURL', domainClassProp:'hostPlatformURL'],
     ]
 
     
     if ( params.BatchSelectedBtn=='on' ) {
+      log.debug("Apply batch changes - selected")
+      params.filter=null //remove filters
+      params.coverageNoteFilter=null
+      params.startsBefore=null
+      params.endsAfter=null
       params.each { p ->
         if (p.key.startsWith('_bulkflag.') && ( p.value == 'on' ) ) {
           def tipp_id_to_edit = p.key.substring(10);
@@ -843,6 +1045,9 @@ class PackageDetailsController {
                           if ( bulk_field_defn.type == 'date' ) {
                               tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = formatter.parse(proposed_value)
                           }
+                          else if ( bulk_field_defn.type == 'ref' ) {
+                            tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = genericOIDService.resolveOID(proposed_value)
+                          }
                           else {
                               tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = proposed_value
                           }
@@ -862,7 +1067,7 @@ class PackageDetailsController {
       }
     }
     else if ( params.BatchAllBtn=='on' ) {
-      log.debug("Batch process all");
+      log.debug("Batch process all filtered by: "+params.filter);
       def qry_params = [packageInstance]
       def base_qry = generateBasePackageQuery(params, qry_params, showDeletedTipps, new Date())
       def tipplist = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params)
@@ -883,7 +1088,7 @@ class PackageDetailsController {
                 if ( bulk_field_defn.type == 'date' ) {
                   tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = formatter.parse(proposed_value)
                 }
-                if ( bulk_field_defn.type == 'ref' ) {
+                else if ( bulk_field_defn.type == 'ref' ) {
                   tipp_to_bulk_edit[bulk_field_defn.domainClassProp] = genericOIDService.resolveOID(proposed_value)
                 }
                 else {
@@ -899,6 +1104,6 @@ class PackageDetailsController {
       }
     }
 
-    redirect(action:'show', id:params.id);
+    redirect(action:'show', params:[id:params.id,sort:params.sort,order:params.order,max:params.max,offset:params.offset]);
   }
 }

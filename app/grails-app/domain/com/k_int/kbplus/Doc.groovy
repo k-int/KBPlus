@@ -44,7 +44,6 @@ class Doc {
        blobContent column:'doc_blob_content'
           mimeType column:'doc_mimeType'
               user column:'doc_user_fk'
-              user column:'doc_migrated'
   }
 
   static constraints = {

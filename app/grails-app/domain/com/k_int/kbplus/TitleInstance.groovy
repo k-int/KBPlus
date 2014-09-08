@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import javax.persistence.Transient
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.apache.commons.logging.*
+import java.text.Normalizer
 
 class TitleInstance {
 
@@ -29,8 +30,16 @@ class TitleInstance {
   Date dateCreated
   Date lastUpdated
 
-  static mappedBy = [tipps: 'title', ids: 'ti', orgs: 'title']
-  static hasMany = [tipps: TitleInstancePackagePlatform, ids: IdentifierOccurrence, orgs: OrgRole]
+  static mappedBy = [
+                     tipps: 'title', 
+                     ids: 'ti', 
+                     orgs: 'title', 
+                     historyEvents: 'participant']
+  static hasMany = [
+                    tipps: TitleInstancePackagePlatform, 
+                    ids: IdentifierOccurrence, 
+                    orgs: OrgRole, 
+                    historyEvents: TitleHistoryEventParticipant]
 
 
   static mapping = {
@@ -233,6 +242,7 @@ class TitleInstance {
     if ( title != null ) {
       normTitle = generateNormTitle(title)
       keyTitle = generateKeyTitle(title)
+      sortTitle = generateSortTitle(title)
     }
   }
 
@@ -240,10 +250,23 @@ class TitleInstance {
     if ( title != null ) {
       normTitle = generateNormTitle(title)
       keyTitle = generateKeyTitle(title)
-      sortTitle = asciify(title).toLowerCase()
+      sortTitle = generateSortTitle(title)
     }
   }
 
+
+  public static String generateSortTitle(String input_title) {
+    def result=null
+    if ( input_title ) {
+      def s1 = Normalizer.normalize(input_title, Normalizer.Form.NFKD).trim().toLowerCase()
+      s1 = s1.replaceFirst('^copy of ','')
+      s1 = s1.replaceFirst('^the ','')
+      s1 = s1.replaceFirst('^a ','')
+      s1 = s1.replaceFirst('^der ','')
+      result = s1.trim()
+    }
+    result
+  }
 
   public static String generateNormTitle(String input_title) {
     def result = input_title.replaceAll('&',' and ');
@@ -592,5 +615,25 @@ class TitleInstance {
       latest: open ? '': (latest?sdf.format(latest):''),
       ies:ies
     ]
+  }
+
+  def checkAndAddMissingIdentifier(ns,value) {
+    boolean found = false
+    this.ids.each {
+      if ( it.identifier.ns.ns == ns && it.identifier.value == value ) {
+        found = true
+      }
+    }
+
+    if ( ! found ) {
+      def id = Identifier.lookupOrCreateCanonicalIdentifier(ns, value)
+      def existing_occurrence = IdentifierOccurrence.findAllByIdentifier(id)
+      if ( existing_occurrence.size() > 0 ) {
+        // Do nothing - already present
+      }
+      else {
+        new IdentifierOccurrence(identifier:id, ti:this).save(flush:true)
+      }
+    }
   }
 }

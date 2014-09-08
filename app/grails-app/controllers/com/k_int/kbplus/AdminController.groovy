@@ -4,7 +4,7 @@ import com.k_int.kbplus.auth.*;
 import grails.plugins.springsecurity.Secured
 import grails.converters.*
 import au.com.bytecode.opencsv.CSVReader
-
+import com.k_int.custprops.PropertyDefinition
 
 class AdminController {
 
@@ -35,6 +35,18 @@ class AdminController {
     result
   }
 
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def managePropertyDefinitions() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+
+    result.definitions = PropertyDefinition.findAll()
+    result.definitions.sort{it.name}
+    result.error = flash.error
+    result.newProp = flash.newProp
+    log.debug("ERROR : ${result.error} newProp:${result.newProp}")
+    result
+  }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def actionAffiliationRequest() {
@@ -203,7 +215,7 @@ class AdminController {
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def globalSync() {
     log.debug("start global sync...");
-    globalSourceSyncService.internalRunAllActiveSyncTasks()
+    globalSourceSyncService.runAllActiveSyncTasks()
     log.debug("done global sync...");
     redirect(controller:'home')
   }
@@ -390,6 +402,12 @@ class AdminController {
     log.debug("trigggerHousekeeping()");
     enrichmentService.initiateHousekeeping()
     redirect(controller:'home')
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def deleteGlobalSource() {
+    GlobalRecordSource.removeSource(params.long('id'));
+    redirect(action:'manageGlobalSources')
   }
 
 }

@@ -13,7 +13,8 @@ class IdentifierOccurrence {
   static belongsTo = [
     ti:TitleInstance,
     org:Org,
-    tipp:TitleInstancePackagePlatform
+    tipp:TitleInstancePackagePlatform,
+    pkg:Package
   ]
 
   static mapping = {
@@ -22,16 +23,18 @@ class IdentifierOccurrence {
             ti column:'io_ti_fk'
           tipp column:'io_tipp_fk'
            org column:'io_org_fk'
+           pkg column:'io_pkg_fk'
   }
 
   static constraints = {
      org(nullable:true)
       ti(nullable:true)
     tipp(nullable:true)
+     pkg(nullable:true)
   }
   
   String toString() {
-    "IdentifierOccurrence(${id} - ti:${ti}, org:${org}, tipp:${tipp}";
+    "IdentifierOccurrence(${id} - ti:${ti}, org:${org}, tipp:${tipp}, pkg:${pkg}";
   }
 
   @Transient

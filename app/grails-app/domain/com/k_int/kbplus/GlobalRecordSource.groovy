@@ -15,6 +15,7 @@ class GlobalRecordSource {
   String principal
   String credentials
   Long rectype
+  Boolean active
 
   static mapping = {
                    id column:'grs_id'
@@ -29,6 +30,7 @@ class GlobalRecordSource {
             principal column:'grs_principal'
           credentials column:'grs_creds'
               rectype column:'grs_rectype'
+               active column:'grs_active'
   }
 
   static constraints = {
@@ -41,6 +43,25 @@ class GlobalRecordSource {
      listPrefix(nullable:true, blank:false)
       principal(nullable:true, blank:false)
     credentials(nullable:true, blank:false)
+         active(nullable:true, blank:false)
   }
 
+  @Transient
+  def getBaseUrl() {
+    // For now, assume type=gokb - and trim off the oai/packages
+    def result = uri.replaceAll('oai.*','');
+    result
+  }
+
+  @Transient
+  def getNumberLocalPackages() {
+    GlobalRecordSource.executeQuery("select count(*) from GlobalRecordTracker grt where grt.owner.source = ?",[this]);
+  }
+
+  @Transient
+  static def removeSource(source_id) {
+    GlobalRecordSource.executeUpdate("delete GlobalRecordInfo gri where gri.source.id = ?",[source_id])
+    GlobalRecordSource.executeUpdate("delete GlobalRecordSource grs where grs.id = ?",[source_id])
+  }
+  
 }

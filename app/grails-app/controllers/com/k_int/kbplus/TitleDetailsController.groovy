@@ -68,6 +68,9 @@ class TitleDetailsController {
       result.editable=false
 
     result.ti = TitleInstance.get(params.id)
+
+    result.titleHistory = TitleHistoryEvent.executeQuery("select distinct thep.event from TitleHistoryEventParticipant as thep where thep.participant = ?",[result.ti]);
+
     result
   }
 
@@ -92,7 +95,8 @@ class TitleDetailsController {
                     [ formProp:'end_volume', domainClassProp:'endVolume'],
                     [ formProp:'end_issue', domainClassProp:'endIssue'],
                     [ formProp:'coverage_depth', domainClassProp:'coverageDepth'],
-                    [ formProp:'coverage_note', domainClassProp:'coverageNote']
+                    [ formProp:'coverage_note', domainClassProp:'coverageNote'],
+                    [ formProp:'hostPlatformURL', domainClassProp:'hostPlatformURL']
             ]
 
             bulk_fields.each { bulk_field_defn ->
@@ -255,6 +259,10 @@ class TitleDetailsController {
     // sw.write("subtype:'Subscription Offered'")
     sw.write("rectype:'Title'")
 
+    if ( params.q != null ) {
+      sw.write(" AND ${params.q}");
+    }
+
     title_qry_reversemap.each { mapping ->
 
       // log.debug("testing ${mapping.key}");
@@ -265,7 +273,7 @@ class TitleDetailsController {
                 sw.write(" AND ")
                 sw.write(mapping.value)
                 sw.write(":")
-                sw.write("\"${p}\"")
+                sw.write("(${p})")
           }
         }
         else {
@@ -275,7 +283,7 @@ class TitleDetailsController {
             sw.write(" AND ")
             sw.write(mapping.value)
             sw.write(":")
-            sw.write("\"${params[mapping.key]}\"")
+            sw.write("(${params[mapping.key]})")
           }
         }
       }

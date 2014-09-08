@@ -13,17 +13,20 @@ grails.project.source.level = 1.7
 //    console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
 // ]
 
+grails.project.dependency.resolver = "maven"
+
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
     inherits("global") {
+        excludes "grails-docs"
         // uncomment to disable ehcache
         // excludes 'ehcache'
     }
-    log "error" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+    log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     checksums true // Whether to verify checksums on resolve
-    def gebVersion = "0.9.2"
+    def gebVersion = "0.9.3"
     // def seleniumVersion = "2.32.0"
-    def seleniumVersion = "2.39.0"
+    def seleniumVersion = "2.41.0"
 
     repositories {
         inherits true // Whether to inherit repository definitions from plugins
@@ -42,14 +45,23 @@ grails.project.dependency.resolution = {
         mavenRepo "https://oss.sonatype.org/content/repositories/releases"
         // mavenRepo "http://projects.k-int.com/nexus-webapp-1.4.0/content/repositories/snapshots"
         mavenRepo "http://projects.k-int.com/nexus-webapp-1.4.0/content/repositories/releases"
+        mavenRepo "http://jaspersoft.artifactoryonline.com/jaspersoft/third-party-ce-artifacts/"
+        mavenRepo "http://jasperreports.sourceforge.net/maven2/com/lowagie/itext/2.1.7.js2/"
+        // Added because I'm strugging to get cglib
+        mavenRepo "http://central.maven.org/maven2/"
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
-        compile ('com.k-int:goai:1.0') {
+        build('org.grails:grails-docs:2.3.7') {
+            excludes 'itext'
+        }
+        compile ('com.k-int:goai:1.0.2') {
           exclude 'groovy'
         }
         compile 'commons-codec:commons-codec:1.6'
+        runtime 'xerces:xerces:2.4.0'
+        runtime 'xerces:xercesImpl:2.11.0'
         runtime 'mysql:mysql-connector-java:5.1.30'
         runtime 'com.gmongo:gmongo:1.1'
         runtime 'org.elasticsearch:elasticsearch:1.0.1'
@@ -59,6 +71,8 @@ grails.project.dependency.resolution = {
         runtime 'net.sf.opencsv:opencsv:2.0'
         runtime 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
 
+        test 'org.apache.commons:commons-exec:1.2'
+        test 'org.apache.httpcomponents:httpcore:4.3.2'
         test 'org.hamcrest:hamcrest-all:1.3'
         test "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
         test("org.seleniumhq.selenium:selenium-htmlunit-driver:$seleniumVersion") {
@@ -75,6 +89,9 @@ grails.project.dependency.resolution = {
         runtime ( 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2' ) { 
           excludes "org.codehaus.groovy", "groovy"
         }
+        compile "net.sf.jasperreports:jasperreports:5.6.0"
+        compile 'cglib:cglib:2.2.2'
+        compile "com.lowagie:itext:2.1.7"
     }
 
     plugins {
@@ -115,5 +132,12 @@ grails.project.dependency.resolution = {
 
         runtime ":gsp-resources:0.4.4"
         runtime ":jquery:1.9.1"
+
+        runtime ":audit-logging:0.5.4"
+        runtime ":executor:0.3"
+        runtime ":markdown:1.1.1"
+        runtime ":quartz:1.0-RC9"
+        runtime ":rest:0.7"
+
     }
 }

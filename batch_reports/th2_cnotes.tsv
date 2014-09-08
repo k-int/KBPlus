@@ -1,0 +1,2252 @@
+@issn_type_id:=idns_id
+7
+@eissn_type_id:=idns_id
+6
+@doi_type_id:=idns_id
+8
+@e_issn2_type_id:=idns_id
+91
+ti_id	ISBN	EISSN	DOI	EISSN2	tipp_coverage_note
+78	0306-3674	NULL	NULL	NULL	Includes 4 Injury Prevention and Health Protection issues
+178	0301-7249	NULL	NULL	NULL	Now: Faraday Discussions
+184	1464-0325	NULL	NULL	NULL	Now: Environmental Science: Processes & Impacts (ESPI)
+185	0959-9428	NULL	NULL	NULL	Journal split into 3 sections from 2013, Now: sections A, B & C
+193	0956-5000	NULL	NULL	NULL	Now: Physical Chemistry Chemical Physics
+196	0300-922X	NULL	NULL	NULL	Now: Organic & Biomolecular Chemistry
+197	0300-9580	NULL	NULL	NULL	Now: Organic & Biomolecular Chemistry
+205	1477-0520	NULL	NULL	NULL	Merged: Journal of the Chemical Society Perkin Transactions 1 and Journal of the Chemical Society Perkin Transactions 2
+326	0268-2575	NULL	10.1002/(ISSN)1097-4660	NULL	now: Journal of Chemical Technology and Biotechnology; previously split: Journal of Chemical Technology and Biotechnology. Part A+B Technology 1983-1985; Journal of Chemical Technology and Biotechnology 1979-1982; Journal of Applied Chemistry and Biotechnology 1971-1977; Journal of Applied Chemistry 1951-1970; Journal of the Society of Chemical Industry 1882-1950
+339	0362-2525	NULL	10.1002/(ISSN)1097-4687	NULL	merged: of IJAN & Journal of Andrology
+402	1932-8486	NULL	10.1002/(ISSN)1932-8494	NULL	previously:split A+B 2003-2006
+413	0108-7681	NULL	10.1111/(ISSN)1600-5740	NULL	now: Acta Crystallographica Section B: Structural Science, Crystal Engineering and Materials; previously: Acta Crystallographica 1983-1989
+440	0903-4641	NULL	10.1111/(ISSN)1600-0463	NULL	previously: split in series A-C 1982-1987; sections A-C 1970-1981; Acta Pathologica Microbiologica 1924-1969
+453	1326-6756	NULL	10.1111/(ISSN)1440-6055	NULL	now: Austral Entomology 2014-present
+466	0024-4074	NULL	10.1111/(ISSN)1095-8339	NULL	now: Botanical Journal of the Linnean Society; previously: The Journal of the Linnean Society of London. Botany 1865-1968; Journal of the Proceedings of the Linnean Society. Botany 1856-1865
+535	0928-8244	NULL	10.1111/(ISSN)1574-695X	NULL	now: Pathogens and Disease
+644	1041-2972	NULL	10.1111/(ISSN)1745-7599	NULL	now: Journal of the Amercian Association of Nurse Practitioners
+775	1434-193X	NULL	10.1002/(ISSN)1099-0690	NULL	now: European Journal of Organic Chemistry 1998-present; previously: Liegbigs Annalen  1994-1997; Liebigs Annalen der Chemie 1979-1994; Justus Liebigs Annalen der Chemie 1840-1978; Annalen der Pharmacie 1832-1839
+806	0004-3591	NULL	10.1002/(ISSN)1529-0131	NULL	now: Arthritis and Rheumatology 2014-
+829	1436-8730	NULL	10.1002/(ISSN)1522-2624	NULL	now: Journal of Plant Nutrition and Soil Science 1999-present; Zeitschrift für Pflanzenernährung und Bodenkunde 1967-1998; Zeitschrift für Pflanzenernährung, Düngung und Bodenkunde 1946-1966; Bodenkunde und Pflanzenernährung 1936-1945; Zeitschrift für Pflanzenernährung, Düngung, Bodenkunde 1935-1936; Zeitschrift für Pflanzenernährung, Düngung, Bodenkunde. Teil A, Wissenschaftlicher Teil 1927-1934; Zeitschrift für Pflanzenernährung und Düngung. Teil A, Wissenschaftlicher Teil 1922-1926
+909	0014-8962	NULL	10.1002/(ISSN)1522-239X	NULL	now: Feddes Repertorium; previously: Feddes Repertorium Specierum Novarum Regni Vegetabilis 1943-1963; Repertorium Specierum Novarum Regni Vegetabilis 1910-1942; Repertorium Novarum Specierum Regni Vegetabilis 1905-1909
+938	1430-144X	NULL	10.1002/(ISSN)1546-3109	NULL	now: International Transactions on Electrical Energy Systems
+960	0373-8493	NULL	NULL	NULL	now: Zoosystematics and Evolution
+1042	1758-3489	NULL	NULL	NULL	Formerly Library History
+1043	 0024-2306	NULL	NULL	NULL	Now published as Library & Information History 
+1052	1758-1206	NULL	NULL	NULL	Formerly Transactions of the Newcommen Society
+1151	2042-6445	NULL	NULL	NULL	Formerly The Journal of the Institute of Wood Science
+1198	0066-3832	NULL	10.1111/(ISSN)1467-8314	NULL	incorporated: History
+1246	0007-1102	NULL	10.1111/(ISSN)2044-8317	NULL	now: British Journal of Mathematical and Statistical Psychology 1965-present; previously: British Journal of Statistical Psychology 1953-1964; The British Journal of Psychology. Statistical Section 1947-1952
+1292	0160-7960	NULL	10.1002/(ISSN)2161-007X	NULL	now: Counseling and Values 1973-present; previously: The National Catholic Guidance Conference Journal 1964-1971; The Catholic Counselor 1956-1964
+1589	1533-6077	NULL	10.1111/(ISSN)1758-2237	NULL	Absorbed
+1590	1520-8583	NULL	10.1111/(ISSN)1520-8583	NULL	Absorbed
+1617	1744-5396	NULL	10.1111/(ISSN)1744-540X	NULL	incorporated: Juncture
+1629	0962-8797	NULL	10.1111/(ISSN)1467-9388	NULL	now: Review of European, Comparative and International Environmental Law
+1742	0309-7765	NULL	NULL	NULL	Original title of Brontë Studies
+1825	1540-7063	NULL	NULL	NULL	Formerly American Zoologist
+1935	0002-9092	NULL	NULL	NULL	A subscription to American Journal of Agricultural Economics also includes Applied Economic Perspectives and Policy 
+1937	0002-9262	NULL	NULL	NULL	A subscription to the American Journal of Epidemiology includes Epidemiologic Reviews
+1950	0033-362X	NULL	NULL	NULL	In 2013, subscriptions to Public Opinion Quarterly will include a subscription to Journal of Survey Statistics and Methodology
+1962	1462-0324	NULL	NULL	NULL	Formerly British JOurnal of Rheumatology
+2007	0195-668X	NULL	NULL	NULL	Includes European Heart Journal Supplements
+2033	0931-0509	NULL	NULL	NULL	Includes Clinical Kidney Journal
+2042	2040-5790	NULL	NULL	NULL	A subscription to American Journal of Agricultural Economics also includes Applied Economic Perspectives and Policy. Continues Review of Agricultural Economics
+2048	0027-8874	NULL	NULL	NULL	Includes JNCI Journal of the National Cancer Institute Monographs
+2074	1079-5014	NULL	NULL	NULL	Created from the split of Journal of Gerontology
+2075	1079-5006	NULL	NULL	NULL	Created from the split of Journal of Gerontology
+2076	1010-7940	NULL	NULL	NULL	A subscription to the European Journal of Cardio-Thoracic Surgery includes a subscription to Interactive Cardiovascular and Thoracic Surgery
+2093	1388-9842	NULL	NULL	NULL	Includes  European Journal of Heart Failure Supplements
+2101	1743-1816	NULL	NULL	NULL	Formerly British Journal of Anaesthesia CEPD Reviews
+3465	0301-620X	NULL	NULL	NULL	Now: Bone & Joint Journal 
+3476	1758-3209	NULL	NULL	NULL	Includes Bulletin of the Royal College of Psychiatrists and the Psychiatric Bulletin . From January 2014, The Psychiatrist will be changing its name (and ISSNs)�and reverting back to Psychiatric Bulletin.� It will also be migrating to Open Access
+3546	2043-8567	NULL	NULL	NULL	Formerly British Scholar
+3548	1753-8548	NULL	NULL	NULL	Formerly History and Computing
+3550	1755-0882	NULL	NULL	NULL	Formerly Politics and Ethics Review
+3552	1748-538X	NULL	NULL	NULL	Formerly Scottish Economic and Social History
+3560	1746-9600	NULL	NULL	NULL	Now: HIV therapy
+3561	1746-0875	NULL	NULL	NULL	Now: Clinical Lipidology
+3565	1746-0816	NULL	NULL	NULL	Now: International Journal of Clinical Rheumatology
+3581	1475-0708	NULL	NULL	NULL	Now: Clinical Practice
+3589	0020-5893	NULL	NULL	NULL	Now Publish by CUP
+3628	0020-8590	NULL	NULL	NULL	Formerly Bulletin of the International Institute of Social History
+3641	1060-1503	NULL	NULL	NULL	Formerly Browning Institute Studies
+3673	0017-3835	NULL	NULL	NULL	A subscription to Greece & Rome includes an annual supplement of New Surveys in the Classics. - This supplement will be available like any other issue of Greece & Rome
+3726	1816-3831	NULL	NULL	NULL	Formerly Revue Internationale de la Croix-Rouge - International Review of the Red Cross ISSN 1560-7755
+3797	NULL	NULL	NULL	NULL	Merged with Proceedings of the Institution of Civil Engineers Part I and Part III to form Proceedings - Institution of Civil Engineers. (Proceedings of the Institution of Civil Engineers Part III not included in license)
+3800	NULL	NULL	NULL	NULL	Merged with Selected Engineering Papers to form Journal of the Institution of Civil Engineers\n
+3801	NULL	NULL	NULL	NULL	Merged with Minutes of the Proceedings (Institution of Civil Engineers) to form Journal of the Institution of Civil Engineers\n
+3804	NULL	NULL	NULL	NULL	(includes 2 special issues)
+4005	0020-7152	NULL	NULL	NULL	now: Comparative Sociology
+4036	0021-9096	NULL	NULL	NULL	now: African and Asian Studies
+4066	0169-796X	NULL	NULL	NULL	now: Perspectives on Global Development and Technology 2002-
+4381	1422-4933	NULL	NULL	NULL	Now:NeuroSignals
+4382	0006-3126	NULL	NULL	NULL	Now:Neonatology
+4394	0177-9990	NULL	NULL	NULL	Now:Viszeralmedizin / Visceral Medicine
+4395	1422-2795	NULL	NULL	NULL	Now:Public Health Genomics
+4398	0301-0171	NULL	NULL	NULL	Now:Cytogenetic and Genome Research
+4415	1018-7782	NULL	NULL	NULL	Merged in 2003 to Nephron Experimental Nephrology
+4419	1021-7096	NULL	NULL	NULL	Now:Forschende KomplementÃ¤rmedizin/Complementary Medicine
+4425	0301-0147	NULL	NULL	NULL	Now:Pathophysiology of Haemostasis and Thrombosis
+4426	1422-9528	NULL	NULL	NULL	Merged in 2006 to Cardiology
+4427	0301-0163	NULL	NULL	NULL	Now:Hormone Research in Paediatrics
+4431	1424-5485	NULL	NULL	NULL	Now:Transfusion Medicine and Hemotherapy
+4444	1661-7800	NULL	NULL	NULL	Formerly Biology of Neonate
+4452	1424-8522	NULL	NULL	NULL	Now:Neuroembryology and Aging
+4473	1662-4246	NULL	NULL	NULL	Formerly Community Genetics
+4477	1422-2868	NULL	NULL	NULL	Now:Skin Pharmacology and Physiology
+4484	1662-6664	NULL	NULL	NULL	Formerly Chirurgische Gastroenterologie
+4572	1352-4658	NULL	NULL	NULL	Formerly Behavioural Psychotherapy Volumes 6 (1978) - 21 issue 2 (1993), B.A.B.P. Bulletin Volumes 1 (1973) - 5 (1977))\n
+4581	0950-2688	NULL	NULL	NULL	Formerly Journal of Hygiene\n
+4586	0016-6723	NULL	NULL	NULL	Formerly Genetical Research (1960-2007)\n
+4632	0217-7811	NULL	NULL	NULL	Absorbed
+4633	0950-4737	NULL	NULL	NULL	Absorbed
+4634	0950-5636	NULL	NULL	NULL	Absorbed
+4962	2047-9700	NULL	NULL	NULL	Formerly Journal of Management & Marketing in Healthcare
+4976	0022-2151	NULL	NULL	NULL	Formerly The Journal of Laryngology and Rhinology (1887-1891); The Journal of Laryngology, Rhinology, and Otology (1892-1920). Includes 2 supplements
+5013	1755-6910	NULL	NULL	NULL	Formerly Transactions of the Royal Society of Edinburgh: Earth Sciences (1980 - 2007), Transactions of the Royal Society of Edinburgh (1788 - 1979)
+5022	2045-7960	NULL	NULL	NULL	Formerly Epidemiologia e Psichiatria Sociale
+5132	1521-9615	NULL	NULL	NULL	Absorbed: Computers in Physics & IEEE computational science & engineering 
+6174	0007-0599	NULL	NULL	NULL	Now published as Corrosion Engineering, Science and Technology
+6183	2042-3489	NULL	NULL	NULL	Formerly Watsonia: Journal of the Botanical Society of the British Isles
+6216	0084-6589	NULL	NULL	NULL	Now: Annual Review of Biophysics; Previously: Annual Review of Biophysics and Biomolecular Structure 1992-2007; Annual Review of Biophysics and Biophysical Chemistry 1985-1991; Annual Review of Biophysics and Bioengineering 1972-1984
+6252	1750-2705	NULL	NULL	NULL	Formerly Proceedings of the Cambridge Philologhical Society (New Series)
+6277	0885-0429	NULL	NULL	NULL	Now: Children's Literature Association Quarterly 
+6424	0217-4472	NULL	NULL	NULL	Now: Journal of Southeast Asian Economies
+6446	2151-7363	NULL	NULL	NULL	Formerly NWSA Journal till 2009
+6671	0031-7837	NULL	NULL	NULL	Now: Philippine Studies: Historical and Ethnographic Viewpoints
+7059	1878-4755	NULL	NULL	NULL	now: Multisensory Research 2013-present; previously: Spatial Research 1985-2009
+7088	0925-0972	NULL	NULL	NULL	now: Security and Human Rights 2008
+7089	1389-9791	NULL	NULL	NULL	now: Journal of Empirical Theology
+7090	1388-9036	NULL	NULL	NULL	now: International Community Law Review 
+7093	0028-2030	NULL	NULL	NULL	now: Church History and Religious Culture
+7094	0028-2960	NULL	NULL	NULL	now: Animal Biology 2003-Present; previously: Netherlands Journal of Zoology 1968-2003; Archives Néerlandaises de Zoologie 1935-1967
+7095	1567-7125	NULL	NULL	NULL	now: International Community Law Review 
+7096	0169-1015	NULL	NULL	NULL	now: Multisensory Research 2013-present; previously: Seeing and Perceiving 2010-2012
+7103	0193-936X	NULL	NULL	NULL	A subscription to the American Journal of Epidemiology includes Epidemiologic Reviews
+7108	1753-0784	NULL	NULL	NULL	Included as part of a subscription to Nephrology Dialysis Transplantation. Previously NDT Plus (2008-2011)
+7110	1052-6773	NULL	NULL	NULL	Included in JNCI Journal of the National Cancer Institute subscription
+7275	1020-7635	NULL	NULL	NULL	Now: IMF Economic Review. Previously IMF Staff Papers (1999-2010)
+7282	1741-2439	NULL	NULL	NULL	Merged with Journal of Targeting, Measurement and Analysis for Marketing under new title Journal of Marketing Analytics.
+7295	0967-3237	NULL	NULL	NULL	Merged with Journal of Direct, Data and Digital Marketing Practice under new title Journal of Marketing Analytics.
+7348	0092-4725	NULL	NULL	NULL	Absorbed
+7349	0022-1724	NULL	NULL	NULL	Absorbed
+7385	2161-9549	NULL	NULL	NULL	Formerly Journal of the North American Benthological Society
+7389	1-934151-14-9	NULL	NULL	NULL	OA. It is a book series. ISBN included
+7390	978-1-934151	NULL	NULL	NULL	OA. It is a book series. ISBN included
+7395	1475-3898	NULL	NULL	NULL	now: BMJ Quality and Safety; previously: Quality and Safety in Health Care 2002-2010; Quality in Health Care 1992-2001
+7547	1754-0453	NULL	NULL	NULL	Now Menopause International: The Integrated Journal of Postreproductive Health
+7557	2155-2851	NULL	NULL	NULL	Formerly Accounting, Business & Financial History
+7561	0374-0463	NULL	NULL	NULL	Formerly Acta Linguistica
+7575	0954-416X	NULL	NULL	NULL	Absorbed
+7614	2325-7962	NULL	NULL	NULL	Formerly Journal of the Society of Archivists
+7635	1608-1625	NULL	NULL	NULL	Formerly Asia-Pacific Journal of Accounting
+7644	0004-8402	NULL	NULL	NULL	Formerly Australasian Journal of Psychology and Philosophy
+7664	1368-9886	NULL	NULL	NULL	Formerly British Elections and Parties Yearbook (1991-1996).  Now Journal of Elections, Public Opinion & Parties
+7667	0968-1221	NULL	NULL	NULL	Absorbed
+7710	1466-2043	NULL	NULL	NULL	Formerly Journal of Commonwealth & Comparative Politics (1974-1997)
+7724	1351-4393	NULL	NULL	NULL	Formerly Communist Economies (1989-1990). Now Post-Communist Economies.
+7747	2158-2041	NULL	NULL	NULL	Formerly Twenty-First Century Society: Journal of the Academy of Social Sciences (2006 - 2010) 
+7755	1478-601X	NULL	NULL	NULL	Formerly The Justice Professional (1986 - 2002) 
+7766	1529-5036	NULL	NULL	NULL	Formerly Critical Studies in Mass Communications (1984-1999)
+7777	1473-5784	NULL	NULL	NULL	Formerly Renaissance and Modern Studies (1957-2001)
+7796	1462-6268	NULL	NULL	NULL	Formerly Intelligent Tutoring Media (1990-1997)
+7850	2155-0085	NULL	NULL	NULL	Formerly Ethics, Place & Environment: A Journal of Philosophy & Geography (1998 - 2010) \n
+7889	0194-4363	NULL	NULL	NULL	Formerly Journal of the American Institute of Planners (1935 - 1978)
+7896	1478-1158	NULL	NULL	NULL	Formerly Pacifica Review: Peace, Security & Global Change
+7940	1566-0974	NULL	NULL	NULL	Formerly International Journal for Consumer and Product Safety (1994-1999).  Now International Journal of Injury Control and Safety Promotion
+7966	2151-3732	NULL	NULL	NULL	Formerly International Journal of Biodiversity Science & Management
+7996	1743-727X	NULL	NULL	NULL	Formerly Westminster Studies in Education (1978 - 2004) 
+8039	1369-6815	NULL	NULL	NULL	Formerly African Languages and Cultures
+8043	1052-9950	NULL	NULL	NULL	Formerly Journal of Independent Social Work (1987-1991).  Now Psychoanalytic Social Work.
+8046	1936-1610	NULL	NULL	NULL	Formerly Journal of Security Education (2004 - 2007) 
+8082	1352-3279	NULL	NULL	NULL	Formerly Journal of Communist Studies. Now East European Politics
+8092	1478-2804	NULL	NULL	NULL	Formerly Journal of European Area Studies (1999 - 2002) and Journal of Area Studies (1992 - 1998)
+8098	1540-1383	NULL	NULL	NULL	Formerly known as Journal of Psychotherapy in Independent Practice (2000 - 2000) ; The Psychotherapy Patient (1984 - 2004) ; Journal of Clinical Activities, Assignments & Handouts in Psychotherapy Practice (2001 - 2003)
+8150	1935-9705	NULL	NULL	NULL	Formerly Journal of Gay & Lesbian Psychotherapy (1988-2007)
+8162	2163-9159	NULL	NULL	NULL	Formerly Journal of Global Academy of Marketing Science
+8171	1553-8346	NULL	NULL	NULL	Formerly Journal of HIV/AIDS Prevention and Education for Adolescents & Children.
+8191	1933-1681	NULL	NULL	NULL	Formerly Journal of E-Government (2004 - 2007)
+8201	2169-9763	NULL	NULL	NULL	Formerly Journal of Comparative Social Welfare (2006-2012)
+8218	1936-1653	NULL	NULL	NULL	Formerly Journal of Gay & Lesbian Issues in Education (2003 - 2008)
+8222	1532-5024	NULL	NULL	NULL	Formerly Journal of Personal and Interpersonal Loss (1996-2000). Incorporates Stress, Trauma, and Crisis (2004-2006)
+8258	0022-3891	NULL	NULL	NULL	Formerly Journal of Projective Techniques and Personality Assessment (1963 - 1970), Journal of Projective Techniques (1950 - 1962), Rorschach Research Exchange and Journal of Projective Techniques (1947 - 1949), Rorschach Research Exchange (1936 - 1946) \n\n
+8263	1558-8742	NULL	NULL	NULL	Formerly The Social Policy Journal (2002 - 2006) 
+8299	0022-4499	NULL	NULL	NULL	Formerly Annual Review of Sex Research (1990 - 2007)
+8312	1934-9637	NULL	NULL	NULL	Formerly American Journal of Pastoral Counseling
+8340	1554-477X	NULL	NULL	NULL	Formerly Women & Politics (1980 - 2004) 
+8349	0094-7598	NULL	NULL	NULL	Formerly Zoning Digest (1948 - 1973).  Now Planning & Environmental Law
+8423	1080-9716	NULL	NULL	NULL	Formerly Journal of International and Comparative Social Welfare (1984 - 1994).  Now Journal of Comparative Social Welfare
+8430	1361-455X	NULL	NULL	NULL	incorporated into New Review of Information Networking (1900 - current) \n
+8437	1901-2276	NULL	NULL	NULL	Formerly Nordisk Psykologi (1949 - 2005) 
+8446	0264-5491	NULL	NULL	NULL	Formerly Farm Economist (1972 - 1995).  Now Oxford Development Studies
+8481	2156-7689	NULL	NULL	NULL	Formerly Totalitarian Movements and Political Religions (2000 - 2010) 
+8524	0886-0246	NULL	NULL	NULL	Formerly Reading World (1971 - 1985) and Journal of the Reading Specialist (1961 - 1971).  Now  \nLiteracy Research and Instruction
+8537	1479-4802	NULL	NULL	NULL	Formerly Advances in Mathematics Education
+8616	1937-1918	NULL	NULL	NULL	Formerly Journal of Health & Social Policy (1989 - 2006)
+8636	1018-9203	NULL	NULL	NULL	Formerly LVSA: Byblad (1981 - 1991) and Taalfasette (1965 - 1980).  Now Southern African Linguistics and Applied Language Studies 
+8751	0309-4227	NULL	NULL	NULL	Merged with The Conservator and continued as Journal of the Institute of Conservation 
+8752	1747-0218	NULL	NULL	NULL	Formerly known as The Quarterly Journal of Experimental Psychology Section A and The Quarterly Journal of Experimental Psychology Section B
+8771	1478-3363	NULL	NULL	NULL	Formerly Total Quality Management (1990-2002)
+8775	2156-8316	NULL	NULL	NULL	Formerly Tourism and Hospitality Planning & Development (2004 - 2010) 
+8836	2168-3565	NULL	NULL	NULL	Formerly Journal of Sustainable Agriculture (1990 - 2012) 
+8863	1532-4982	NULL	NULL	NULL	Formerly Arid Soil Research and Rehabilitation
+8865	2168-1015	NULL	NULL	NULL	Formerly Journal of the Chinese Institute of Industrial Engineers (1900 - 2012). 
+8872	0005-0326	NULL	NULL	NULL	Formerly Surveyor (1900-1921) Now merged with Cartography to become Journal of Spatial Science.
+8884	1359-4869	NULL	NULL	NULL	Formerly Transactions of the Biological Society of Edinburgh (1844-1990).  Currently Plant Ecology & Diversity.
+8890	0069-0805	NULL	NULL	NULL	Merged with Australian Survey to form Journal of Spatial Science
+8897	1028-6608	NULL	NULL	NULL	Formerly Civil Engineering Systems
+8903	1545-3669	NULL	NULL	NULL	Formerly Cogeneration and Competitive Power Journal (1985-2003).  Now Distributed Generation & Alternative Energy Journal (2011-)
+8916	1747-6933	NULL	NULL	NULL	Formerly Complex Variables, Theory and Application: An International Journal
+8928	0196-9722	NULL	NULL	NULL	Formerly Journal of Cybernetics (1971-1980)
+8929	1947-6337	NULL	NULL	NULL	Formerly Ciencia y Tecnologia Alimentaria
+8932	2156-3306	NULL	NULL	NULL	Formerly Cogeneration and Distributed Generation Journal (2004-2010) 
+8974	2029-6991	NULL	NULL	NULL	Formerly Geodezija ir Kartografija
+9019	1553-8362	NULL	NULL	NULL	Formerly:  Journal of Tree Fruit Production and Small Fruit Review
+9028	1744-5760	NULL	NULL	NULL	Formerly Parallel Algorithms and Applications (1993 - 2004) 
+9042	1931-5260	NULL	NULL	NULL	Formerly Journal of Vegetable Crop Production
+9071	1542-8052	NULL	NULL	NULL	Formerly known as Journal of Nutrition in Recipe & Menu Development (1994 - 2005) 
+9079	1077-1204	NULL	NULL	NULL	Formerly part of Environmental Letters.  Became Journal of Environmental Science and Health . Part A: Environmental Science and Engineering (1976 - 1989).  Now Journal of Environmental Science and Health, Part A: Toxic/Hazardous Substances and Environmental Engineering.
+9087	2165-347X	NULL	NULL	NULL	Formerly Journal of Graphics, GPU and Games Tools
+9105	1544-0478	NULL	NULL	NULL	Formerly Journal of Industrial Hemp
+9110	1545-9624	NULL	NULL	NULL	Formerly AIHA Journal and Applied Occupational and Environmental Hygiene
+9120	1741-5993	NULL	NULL	NULL	Formerly Sulfur Reports and Sulfur Letters\n
+9150	1745-1000	NULL	NULL	NULL	Formerly Ophelia (1900 - 2004) and Sarsia (1900 - 2004) 
+9157	1539-7734	NULL	NULL	NULL	Formerly Mechanics of Structures and Machines (1987 - 2002) 
+9158	1537-6494	NULL	NULL	NULL	Formerly Mechanics of Composite Materials and Structures
+9163	1542-1406	NULL	NULL	NULL	Formerly: Molecular Crystals and Liquid Crystals Science and Technology. Section A. Molecular Crystals and Liquid Crystals (1992 - 2001). Corrected start volume. Note: careful with this title: it changes names & then reverts back to this name several times. 
+9166	1556-7265	NULL	NULL	NULL	Formerly Microscale Thermophysical Engineering (1997 - 2005) 
+9198	1478-6435	NULL	NULL	NULL	Formerly Philosophical Magazine A (1997-2002) and Philosophical Magazine Part B (1997-2002)
+9204	1755-0874	NULL	NULL	NULL	Formerly Botanical Journal of Scotland
+9209	1558-3724	NULL	NULL	NULL	Formerly known as Journal of Macromolecular Science, Part C: Polymer Reviews (1966 - 2006)
+9222	1774-7120	NULL	NULL	NULL	Formerly Revue Française de Génie Civil (1997 - 2004).  Added end data as title changed to European Journal of Environmental and Civil Engineering
+9224	1279-5119	NULL	NULL	NULL	Formerly Revue Européenne de Génie Civil (2005 - 2007).  Currently European Journal of Environmental and Civil Engineering
+9231	1542-2119	NULL	NULL	NULL	Formerly Separation and Purification Methods.
+9238	1532-0383	NULL	NULL	NULL	Formerly Journal of Soil Contamination (1992 - 2000) 
+9243	1018-3469	NULL	NULL	NULL	Formerly Journal of the Limnological Society of Southern Africa (1975 - 1988). Any volume published in 1999.  Currently African Journal of Aquatic Science
+9244	2070-2620	NULL	NULL	NULL	Formerly Southern Hemisphere Forestry Journal (2007 - 2007) and The Southern African Forestry Journal (1997 - 2006) 
+9252	1744-2508	NULL	NULL	NULL	Formerly Stochastics and Stochastic Reports (1989 - 2004) 
+9261	1553-3174	NULL	NULL	NULL	Formerly Synthesis and Reactivity in Inorganic and Metal-Organic Chemistry (1971 - 2004) 
+9272	1029-5925	NULL	NULL	NULL	Formerly South African Forestry Journal (1962 - 1996) and Journal of the South African Forestry Association (1938 - 1961).  Now Southern Forests: a Journal of Forest Science
+9292	2165-8005	NULL	NULL	NULL	Formerly Acta Zoologica Lituanica
+9293	2324-9935	NULL	NULL	NULL	Formerly Transportmetrica (2005 - 2012)
+9294	2164-828X	NULL	NULL	NULL	Formerly Food Economics - Acta Agriculturae Scandinavica, Section C (2004-2011)
+9610	0010-4531	NULL	NULL	NULL	Now ITNow. Content pre1995 is not available
+9632	1554-1142	NULL	10.1111/(ISSN)1948-7177a	NULL	now: Design Management Journal
+9633	0323-4320	NULL	10.1111/(ISSN)1521-401X	NULL	now: Clean - Soil, Air, Water
+9634	1395-3907	NULL	10.1111/(ISSN)1600-0420	NULL	now: Acta Ophthalmologica
+9635	0001-6772	NULL	10.1111/(ISSN)1365-201X	NULL	now: Acta Physiologica
+9636	1057-9257	NULL	10.1002/(ISSN)1099-0712	NULL	now: Advanced Functional Materials
+9637	0148-7299	NULL	10.1002/(ISSN)1096-8628	NULL	now: American Journal of Medical Genetics Part A
+9641	1028-4001	NULL	10.1111/(ISSN)1442-2034	NULL	now: Surgical Practice
+9642	0219-0494	NULL	10.1111/(ISSN)1479-8077	NULL	now: International Journal Of Rheumatic Diseases
+9643	8755-0024	NULL	10.1002/(ISSN)1099-0747	NULL	now: Applied Stochastic Models in Business and Industry
+9644	0884-0040	NULL	10.1002/(ISSN)1536-0709	NULL	now: ASHE Higher Education Report
+9645	0389-2328	NULL	10.1111/(ISSN)1447-0756b	NULL	now: Journal Of Obstetrics And Gynaecology Research
+9646	0004-8461	NULL	10.1111/(ISSN)1440-1673	NULL	now: Journal of Medical Imaging and Radiation Oncology
+9647	0004-8291	NULL	10.1111/(ISSN)1445-5994a	NULL	now: Internal Medicine
+9648	1324-3780	NULL	10.1111/(ISSN)1440-0979	NULL	now: International Journal of Mental Health Nursing
+9649	0814-9763	NULL	10.1111/(ISSN)1440-1606	NULL	now: Clinical and Experimental Ophthalmology
+9650	0313-7384	NULL	10.1111/(ISSN)1747-4477a	NULL	now: Australian Endodontic Journal
+9651	0004-9190	NULL	10.1111/(ISSN)1467-8470	NULL	now: Geographical Research
+9652	1091-5923	NULL	10.1111/(ISSN)1552-6356	NULL	now: Nursing for Womens Health
+9654	0007-1129	NULL	10.1111/(ISSN)2044-8341a	NULL	now: Psychology and Psychotherapy
+9655	1499-8653	NULL	10.1111/(ISSN)1911-3838a	NULL	now: Accounting Perspectives
+9656	0897-5957	NULL	10.1111/(ISSN)1527-3466	NULL	now: Cardiovascular Therapeutics
+9657	0098-6569	NULL	10.1002/(ISSN)1097-0304	NULL	now: Catheterization and Cardiovascular Interventions
+9659	0886-1544	NULL	10.1002/(ISSN)1097-0169	NULL	now: Cytoskeleton
+9660	1443-9611	NULL	10.1111/(ISSN)1443-9573	NULL	now: Journal of Digestive Diseases
+9661	0141-9854	NULL	10.1111/(ISSN)1365-2257	NULL	now: International Journal of Laboratory Haematology
+9662	1397-5927	NULL	10.1111/(ISSN)1600-0544	NULL	now: Orthodontics and Cranofacial Research 
+9663	0307-7772	NULL	10.1111/(ISSN)1365-2273	NULL	now: Clinical Otolaryngology
+9664	0144-5979	NULL	10.1111/(ISSN)1365-2281	NULL	now: Clinical Physiology and Functional Imaging
+9665	NULL	NULL	10.1111/(ISSN)1527-3458	NULL	now: CNS: Neuroscience and Therapeutics
+9666	1069-8299	NULL	10.1002/(ISSN)1099-0887	NULL	now: International Journal for Numerical and Analytical Methods
+9667	1043-7347	NULL	10.1002/(ISSN)1099-0534	NULL	now: Concepts in Magnetic Resonance Part A
+9668	1040-3108	NULL	10.1002/(ISSN)1096-9128	NULL	now: Concurrency and Computation Practice and Experience
+9669	1539-6827	NULL	10.1111/(ISSN)1552-5228	NULL	now: Conservation
+9670	1048-4876	NULL	10.1111/(ISSN)1556-486X	NULL	now: Culture, Agriculture, Food and Environment
+9671	0196-4763	NULL	10.1002/(ISSN)1097-0320	NULL	split: to sections A+B
+9673	1045-7194	NULL	10.1111/(ISSN)1948-7169a	NULL	now: Design Management Review
+9674	0192-253X	NULL	10.1002/(ISSN)1520-6408	NULL	now: Genesis
+9675	0969-1855	NULL	10.1002/(ISSN)1932-2143a	NULL	now: Asia-Pacific Journal of Chemical Engineering
+9676	0003-3146	NULL	10.1002/(ISSN)1522-9505	NULL	now: Macromolecular Chemistry and Physics
+9677	1057-3593	NULL	10.1002/(ISSN)1099-0917	NULL	now: Infant and Child Development
+9678	0968-9427	NULL	10.1002/(ISSN)1099-0925	NULL	now: Corporate Social Responsibility and Environmental Management
+9679	1035-6851	NULL	10.1111/(ISSN)1442-2026	NULL	now: Emergency Medicine Australasia 
+9680	0278-4491	NULL	10.1002/(ISSN)1547-5921	NULL	now: Environmental Progress and Sustainable Energy
+9681	1053-4726	NULL	10.1002/(ISSN)1098-2256	NULL	now: Environmental Toxicology
+9682	0961-0405	NULL	10.1002/(ISSN)1099-0976	NULL	now: Environmental Policy and Governance
+9683	0014-2956	NULL	10.1111/(ISSN)1432-1033	NULL	now: FEBS Journal
+9684	0300-1237	NULL	10.1111/(ISSN)1439-0329a	NULL	now: Forest Pathology
+9685	0960-7420	NULL	10.1111/(ISSN)1365-2370	NULL	now: International Journal of Immunogenetics 
+9686	1124-318X	NULL	10.1002/(ISSN)1541-8251	NULL	now: Transactions on Emerging Telecommunications Technologies
+9687	0027-769X	NULL	10.1002/(ISSN)1521-3803	NULL	now: Molecular Nutrition and Food Research
+9688	0150-5505	NULL	10.1111/(ISSN)1751-908Xa	NULL	now: Geostandards and Geoanalytical Research
+9689	0096-0802	NULL	10.1002/(ISSN)1520-6556	NULL	now: Heat Transfer - Asian Research
+9690	1045-2699	NULL	10.1002/(ISSN)1522-7111	NULL	now: Human Factors and Ergonomics in Manufacturing & Service Industries
+9691	1541-5147	NULL	10.1111/(ISSN)1744-618X	NULL	now: International Journal of Nursing Knowledge
+9692	1747-7166	NULL	10.1111/(ISSN)1747-7174	NULL	now: Pediatric Obesity
+9693	1077-3495	NULL	10.1002/(ISSN)1099-1220	NULL	now: Population, Space and Place
+9694	0737-2884	NULL	10.1002/(ISSN)1099-1247	NULL	now: International Journal of Satellite Communications and Networking
+9696	1479-697X	NULL	10.1111/(ISSN)1479-6988	NULL	now: International Journal of Evidence-Based Healthcare
+9697	0260-9991	NULL	10.1111/(ISSN)1468-5949	NULL	now: International Journal of Art and Design Education
+9698	0144-1795	NULL	10.1111/(ISSN)1365-2680	NULL	now: Autonomic and Autacoid Pharmacology
+9699	0884-3996	NULL	10.1002/(ISSN)1099-1271	NULL	now: Luminescence
+9700	0021-9304	NULL	10.1002/(ISSN)1097-4636	NULL	split: to sections A+B
+9702	0309-3891	NULL	10.1111/(ISSN)1470-6431a	NULL	now: Internation Journal of Consumer Studies
+9704	0935-6304	NULL	10.1002/(ISSN)1521-4168	NULL	now: Journal of Separation Science
+9705	0022-1937	NULL	10.1111/(ISSN)1548-2456a	NULL	now: Latin American Politics and Society
+9706	1085-7052	NULL	10.1111/(ISSN)1548-7180a	NULL	now: The Journal of Latin American and Caribbean Anthropology
+9707	0022-3034	NULL	10.1002/(ISSN)1097-4695	NULL	now: Developmental Neurobiology
+9708	0091-2182	NULL	10.1111/(ISSN)1879-1565	NULL	now: Journal of Midwifery and Women's Health
+9709	1531-1864	NULL	10.1002/(ISSN)1531-6653	NULL	now: Global Business and Organizational Excellence
+9711	0741-2223	NULL	10.1002/(ISSN)1097-4563	NULL	now: Journal of Field Robotics
+9712	1532-060X	NULL	10.1002/(ISSN)1532-0618	NULL	now: Journal of Software: Evolution and Process
+9713	1040-550X	NULL	10.1002/(ISSN)1096-908X	NULL	now: Journal of Software: Evolution and Process
+9714	1122-8385	NULL	10.1002/(ISSN)1538-523X	NULL	now: Structural Control and Health Monitoring
+9715	0002-8231	NULL	10.1002/(ISSN)1097-4571	NULL	now: Journal of the American Society for Information Science and Technology
+9716	0037-9859	NULL	10.1111/(ISSN)1478-4408b	NULL	now: Coloration Technology
+9717	0931-184X	NULL	10.1111/(ISSN)1439-0442	NULL	now: Transboundary and Emerging Diseases
+9718	0931-1793	NULL	10.1111/(ISSN)1439-0450	NULL	now: Zoonoses and Public Health
+9719	0931-5985	NULL	10.1002/(ISSN)1521-4133	NULL	now: European Journal of Lipid Science and Technology
+9720	0098-1532	NULL	10.1002/(ISSN)1096-911X	NULL	now: Pediatric Blood and Cancer
+9721	1080-4013	NULL	10.1002/(ISSN)1098-2779	NULL	now: Developmental Disabilities Research Review 
+9722	1079-1760	NULL	10.1111/(ISSN)1468-2486a	NULL	now: International Studies Review
+9723	1471-8278	NULL	10.1111/(ISSN)1471-8286	NULL	now: Molecular Ecology Resources
+9724	1556-4789	NULL	10.1111/(ISSN)1556-4797	NULL	now: Annals Of Anthropological Practice
+9725	0277-8556	NULL	10.1002/(ISSN)1520-6734	NULL	now: Global Business And Organizational Excellence
+9726	0743-5665	NULL	10.1002/(ISSN)1520-6742	NULL	now: Natural Gas and Electricity
+9727	0193-9416	NULL	10.1002/(ISSN)1558-4453	NULL	now: New Directions For Youth Development
+9728	1070-3535	NULL	10.1111/(ISSN)1468-0041	NULL	now: Jjuncture; previously: Public Policy Research 2005-2013
+9730	1523-5416	NULL	10.1002/(ISSN)1943-7501	NULL	now: Recruiting and Retaining Adult Learners
+9731	0277-0180	NULL	10.1111/(ISSN)1468-0076	NULL	now: OPEC Energy Review
+9732	0902-0055	NULL	10.1111/(ISSN)1399-302X	NULL	now: Molecular Oral Microbiology 
+9733	0031-613X	NULL	10.1002/(ISSN)1096-9063	NULL	now: Pest Management Science 
+9734	0901-9928	NULL	10.1111/(ISSN)1600-0773a	NULL	now: Basic and Clinical Pharmacology and Toxicology
+9735	1460-8081	NULL	10.1111/(ISSN)2042-7158a	NULL	merged: Journal of Pharmacy and Pharmacology
+9736	0893-5785	NULL	10.1111/(ISSN)1600-0749	NULL	now: Pigment Cell and Melanoma Research
+9737	1543-1789	NULL	10.1111/(ISSN)1754-6095a	NULL	now Poe Studies
+9738	1357-8170	NULL	10.1002/(ISSN)2047-2900	NULL	now: Practical Diabetes
+9739	1611-020X	NULL	10.1002/(ISSN)1611-0218	NULL	now: Molecular Informatics
+9740	0931-8771	NULL	10.1002/(ISSN)1521-3838	NULL	now: Molecular Informatics
+9741	0034-0472	NULL	10.1111/(ISSN)1467-9345	NULL	now: Literacy
+9742	0886-9375	NULL	10.1002/(ISSN)1099-1646	NULL	now: River Research And Applications
+9745	1077-4866	NULL	10.1002/(ISSN)1099-1670	NULL	now: Journal of Software; Evolution and Process
+9746	0730-2177	NULL	10.1111/(ISSN)1747-1346a	NULL	now: Politics and Policy
+9747	0748-8386	NULL	10.1002/(ISSN)1099-1700	NULL	now: Stress and Health
+9748	0270-3211	NULL	10.1002/(ISSN)1520-6866	NULL	now: Birth Defects Research Part B
+9749	0040-3709	NULL	10.1002/(ISSN)1096-9926	NULL	now: Birth Defects Research Part A
+9750	0003-276X	NULL	10.1002/(ISSN)1097-0185	NULL	split: A+B now: The Anatomical Record
+9751	NULL	NULL	10.1002/(ISSN)1552-4892	NULL	now: The Anatomical Record
+9752	1552-4914	NULL	10.1002/(ISSN)1552-4914	NULL	now: The Anatomical Record
+9753	0020-6652	NULL	10.1111/(ISSN)1520-6874	NULL	now: Thunderbird International Business Review
+9754	1537-4726	NULL	10.1111/(ISSN)1540-594X	NULL	now: The Journal of American Culture
+9755	0191-1813	NULL	10.1111/(ISSN)1542-734Xa	NULL	now: The Journal of American Culture
+9756	0022-104X	NULL	10.1002/(ISSN)1097-010Xa	NULL	split: to sections A+B
+9757	1931-0293	NULL	10.1002/(ISSN)2164-490X	NULL	now: Journal of Humanistic Counselling
+9758	0735-6846	NULL	10.1002/(ISSN)2164-4683	NULL	now: Journal of Humanistic Counselling
+9759	1397-002X	NULL	10.1111/(ISSN)1399-3011	NULL	now: Chemical Biology and Drug Design
+9760	1049-8907	NULL	10.1002/(ISSN)1099-1778	NULL	now: Computer Animation and Virtual Worlds
+9763	1091-6660	NULL	10.1111/(ISSN)1526-0968	NULL	now: Therapeutic Apheresis and Dialysis
+9764	1362-5306	NULL	10.1002/(ISSN)1931-2288	NULL	now: Trends In Urology and Men's Health
+9777	0031-8051	NULL	10.1111/(ISSN)1468-0149	NULL	now: Analytic Philosophy
+9779	0894-8631	NULL	NULL	NULL	Absorbed
+9780	1040-0656	NULL	NULL	NULL	Now: Feminist Formations 2010 -
+9854	0577-9235	NULL	NULL	NULL	Now: Late Imperial China 1985-
+9867	0735-8393	NULL	NULL	NULL	Now: PAJ: A Journal of Performance and Art 1998-
+9872	1946-4444	NULL	NULL	NULL	Now: SAIS Review of International Affairs. Previously: SAIS Review (1981-1989)
+9882	1030-0112	NULL	NULL	NULL	Formerly published by Australian Academic Press
+9883	0814-0626	NULL	NULL	NULL	Formerly published by Australian Academic Press 
+9884	1037-2911	NULL	NULL	NULL	Formerly published by Australian Academic Press
+9885	1326-0111	NULL	NULL	NULL	Formerly published by Australian Academic Press
+9886	1323-8922	NULL	NULL	NULL	Formerly published by Australian Academic Press
+9887	0813-4839	NULL	NULL	NULL	Formerly published by Australian Academic Press 
+9888	1443-9646	NULL	NULL	NULL	Formerly published by Australian Academic Press 
+9889	1035-0772	NULL	NULL	NULL	Formerly published by Australian Academic Press
+9896	1833-8550	NULL	NULL	NULL	Formerly published by Australian Academic Press
+9900	NULL	NULL	NULL	NULL	Formerly South Pacific Journal of Psychology. Formerly published by Australian Academic Press 
+9901	NULL	NULL	NULL	NULL	Formerly published by Australian Academic Press 
+9902	1834-2612	NULL	NULL	NULL	Formerly published by Australian Academic Press 
+9908	0079-497X	NULL	NULL	NULL	New for 2013.  Previously self published. Previous content will be digitised and added throughout 2013. A 2013 subscription includes access to the 2010-2013 vols online.  
+9910	1321-8166	NULL	NULL	NULL	Formerly published by Australian Academic Press
+9915	1832-4274	NULL	NULL	NULL	Formerly published by Australian Academic Press
+9917	2078-6336	NULL	NULL	NULL	Formerly Animal Genetic Resources Information
+9918	1366-6282	NULL	NULL	NULL	Now: Mental Health and Social Inclusion
+9929	0735-8547	NULL	NULL	NULL	Merged into: Policing: An International Journal of Police Strategies & Management
+9931	1363-8483	NULL	NULL	NULL	Merged into: Strategy & Leadership
+9936	1017-6748	NULL	NULL	NULL	Merged into: New Library World
+9941	0965-7967	NULL	NULL	NULL	Merged into: The Journal of Risk Finance
+9943	1351-3036	NULL	NULL	NULL	Now:  Benchmarking: An International Journal
+9947	1466-4100	NULL	NULL	NULL	Now: Clinical Governance: An International Journal. Previously Journal of Clinical Effectiveness Incorporates: Clinical Performance and Quality Healthcare
+9948	1063-0279	NULL	NULL	NULL	Merged into: British Journal of Clinical Governance
+9951	1355-2503	NULL	NULL	NULL	Now:  Business Process Management Journal
+9953	1077-5730	NULL	NULL	NULL	Now: Business Strategy Series
+9956	0953-3230	NULL	NULL	NULL	Merged into: Career Development International
+9957	0955-6214	NULL	NULL	NULL	Now: Career Development International
+9972	1369-7234	NULL	NULL	NULL	Now: Development and Learning in Organizations
+9973	1750-5933	NULL	NULL	NULL	Now: Journal of Research in Interactive Marketing
+9979	1364-5137	NULL	NULL	NULL	Merged into: Reference Reviews
+9980	0955-8217	NULL	NULL	NULL	Now:  Journal of Workplace Learning
+9982	0968-4891	NULL	NULL	NULL	Now: Participation and Empowerment: An International Journal
+9985	0956-6163	NULL	NULL	NULL	Now:  Management of Environmental Quality: An International Journal
+9986	0261-0159	NULL	NULL	NULL	Now:  Equality, Diversity and Inclusion: An International Journal
+9994	0309-0590	NULL	NULL	NULL	Now:  European Journal of Training and Development
+10002	0955-2065	NULL	NULL	NULL	Merged into: Journal of Management in Medicine
+10007	0962-2519	NULL	NULL	NULL	Merged into: Human Resource Management International Digest
+10012	0263-5577	NULL	NULL	NULL	Merged: Industrial Management 1970-1980
+10017	0957-6061	NULL	NULL	NULL	Now:  Journal of Manufacturing Technology Management Incorporates: International Journal of Agile Management Systems
+10018	1465-4652	NULL	NULL	NULL	Merged into: Integrated Manufacturing Systems
+10046	0309-0558	NULL	NULL	NULL	Now:   International Journal of Law and Management
+10064	0043-8022	NULL	NULL	NULL	Now:  International Journal of Productivity and Performance Management. Previously: Time and Motion Study 1952-1964
+10067	1359-8538	NULL	NULL	NULL	Merged into: International Journal of Quality & Reliability Management
+10070	0956-4233	NULL	NULL	NULL	Now:  Journal of Service Management
+10077	0954-7541	NULL	NULL	NULL	Now: International Journal of Wine Business Research
+10109	0957-6053	NULL	NULL	NULL	Now:  Journal of Enterprise Information Management. Previously: Logistics World 1988-1989\n
+10125	0268-9235	NULL	NULL	NULL	Now:  Journal of Health Organization and Management. Incorporates: Health Manpower Management
+10144	1355-252X	NULL	NULL	NULL	Merged into : Management Decision
+10147	1355-2538	NULL	NULL	NULL	Merged into: Marketing Intelligence & Planning
+10155	0968-4905	NULL	NULL	NULL	Merged into: Journal of Product & Brand Management
+10156	0958-868X	NULL	NULL	NULL	Merged into: Journal of Property Valuation and Investment
+10158	0960-2712	NULL	NULL	NULL	Now: Journal of Property Investment & Finance. Previously: Journal of Valuation 1983-1990 Incorporates: Journal of Property Finance
+10178	0968-0810	NULL	NULL	NULL	Merged into: Library Management
+10186	0140-9174	NULL	NULL	NULL	Now:  Management Research Review
+10211	0141-2949	NULL	NULL	NULL	now: Policing: An International Journal of Police Strategies & Management
+10248	0954-478X	NULL	NULL	NULL	Now: The TQM Journal. Incorporates: Training for Quality
+10249	0968-4875	NULL	NULL	NULL	Merged into: The TQM Magazine
+10288	1056-8700	NULL	NULL	NULL	Now: Annual Review of Biophysics; Previously: Annual Review of Biophysics and Biomolecular Structure 1992-2007; Annual Review of Biophysics and Biophysical Chemistry 1985-1991; Annual Review of Biophysics and Bioengineering 1972-1984
+10289	0883-9182	NULL	NULL	NULL	Now: Annual Review of Biophysics; Previously: Annual Review of Biophysics and Biomolecular Structure 1992-2007; Annual Review of Biophysics and Biophysical Chemistry 1985-1991; Annual Review of Biophysics and Bioengineering 1972-1984
+10290	0743-4634	NULL	NULL	NULL	Now: Annual Review of Cell and Developmental Biology 
+10292	0066-4162	NULL	NULL	NULL	Now: Ecology, Evolution and Systematics 
+10293	1056-3466	NULL	NULL	NULL	Now: Annual Review of Environment and Resources; Previously: Annual Review of Energy and the Environment 1991-2002; Annual Review of Energy 1976-1990
+10294	0362-1626	NULL	NULL	NULL	Now: Annual Review of Environment and Resources; Previously: Annual Review of Energy and the Environment 1991-2002; Annual Review of Energy 1976-1990
+10295	0084-6600	NULL	NULL	NULL	Now: Annual Review of Materials Research
+10296	0066-4243	NULL	NULL	NULL	Now: Annual Review of Nuclear and Particle Science
+10297	0066-4251	NULL	NULL	NULL	Now: Annual Review of Pharmacology and Toxicology
+10298	1040-2519	NULL	NULL	NULL	Now: Annual Review of Plant Biology; Previously: Annual Review of Plant Physiology and Plant Molecular Biology 1988-2001; Annual Review of Plant Physiology 1950-1987 
+10299	0066-4294	NULL	NULL	NULL	Now: Annual Review of Plant Biology; Previously: Annual Review of Plant Physiology and Plant Molecular Biology 1988-2001; Annual Review of Plant Physiology 1950-1987 
+10302	0814-723X	NULL	NULL	NULL	Formerly published by Australian Academic Press. Published by CUP for 2012.. Moving to Wiley for 2013.
+10303	NULL	NULL	NULL	NULL	Formerly published by Australian Academic Press 
+10304	0816-5122	NULL	NULL	NULL	Formerly published by Australian Academic Press 
+10318	0020-2681	NULL	NULL	NULL	Absorbed
+10338	0965-2302	NULL	NULL	NULL	Now:International Emergency Nursing 
+10340	0959-8022	NULL	NULL	NULL	Now:Information and Organization 
+10349	0379-4172	NULL	NULL	NULL	Now:Journal of Genetics and Genomics 
+10355	0001-6160	NULL	NULL	NULL	Now:Acta Metallurgica et Materialia 
+10369	1138-0322	NULL	NULL	NULL	Now:Revista Española de Nutrición Humana y Dietética 
+10377	1065-7355	NULL	NULL	NULL	Merged:Cement and Concrete Research 
+10379	0365-1789	NULL	NULL	NULL	Now:Energy Conversion 
+10392	0141-1195	NULL	NULL	NULL	Now:Advances in Engineering Software and Workstations 
+10394	1093-0191	NULL	NULL	NULL	Merged:Journal of Environmental Management 
+10395	0065-2571	NULL	NULL	NULL	Now:Advances in Biological Regulation 
+10396	8755-9668	NULL	NULL	NULL	Merged:Free Radical Biology and Medicine 
+10397	0897-3660	NULL	NULL	NULL	Merged:Advances in Accounting 
+10401	0001-8716	NULL	NULL	NULL	Now:Advances in Molecular Relaxation and Interaction Processes 
+10402	0960-5428	NULL	NULL	NULL	Merged:Journal of Neuroimmunology 
+10404	1073-4449	NULL	NULL	NULL	Now:Advances in Chronic Kidney Disease 
+10409	0894-8321	NULL	NULL	NULL	Merged:Journal of Air Medical Transport 
+10415	0309-586X	NULL	NULL	NULL	Now:Agricultural Administration and Extension 
+10418	0002-1571	NULL	NULL	NULL	Now:Agricultural and Forest Meteorology 
+10419	1671-2927	NULL	NULL	NULL	Now:Journal of Integrative Agriculture 
+10421	0141-4607	NULL	NULL	NULL	Now:Biological Wastes 
+10424	0304-1131	NULL	NULL	NULL	Merged:Agriculture, Ecosystems & Environment 
+10426	0304-3746	NULL	NULL	NULL	Merged:Agriculture, Ecosystems & Environment 
+10439	1530-1567	NULL	NULL	NULL	Now:Academic Pediatrics 
+10458	0270-4684	NULL	NULL	NULL	Merged:Research in Developmental Disabilities 
+10462	0889-8537	NULL	NULL	NULL	Now:Anesthesiology Clinics 
+10470	0753-9053	NULL	NULL	NULL	Now:Annales de Chirurgie de la Main et du Membre Supérieur 
+10475	0003-3995	NULL	NULL	NULL	Now:European Journal of Medical Genetics 
+10479	0769-2625	NULL	NULL	NULL	Merged:Microbes and Infection 
+10480	0769-2609	NULL	NULL	NULL	Now:Research in Microbiology 
+10481	0769-2617	NULL	NULL	NULL	Merged:Microbes and Infection 
+10484	0168-6054	NULL	NULL	NULL	Now:Annals of Physical and Rehabilitation Medicine 
+10488	0003-438X	NULL	NULL	NULL	Now:Annales françaises d'Oto-rhino-laryngologie et de Pathologie Cervico-faciale 
+10501	0003-4843	NULL	NULL	NULL	Now:Annals of Pure and Applied Logic 
+10508	0074-2740	NULL	NULL	NULL	Now:Annals of the ICRP 
+10511	0066-4138	NULL	NULL	NULL	Now:Annual Reviews in Control 
+10512	0959-8030	NULL	NULL	NULL	Merged:Aquaculture 
+10515	1294-5501	NULL	NULL	NULL	Now:Journal des Anti-infectieux 
+10516	0738-1751	NULL	NULL	NULL	Merged:Antimicrobics and Infectious Diseases Newsletter 
+10523	0378-5963	NULL	NULL	NULL	Now:Applied Surface Science 
+10529	0304-3762	NULL	NULL	NULL	Now:Applied Animal Behaviour Science 
+10531	0166-9834	NULL	NULL	NULL	Now:Applied Catalysis A:General and  Applied Catalysis B:Environmental 
+10547	0270-3092	NULL	NULL	NULL	Merged:Research in Developmental Disabilities 
+10553	1058-9139	NULL	NULL	NULL	Now:Pain Forum 
+10564	0003-9365	NULL	NULL	NULL	Now:Protist 
+10582	0090-9092	NULL	NULL	NULL	Now:The Arts in Psychotherapy 
+10588	0954-1810	NULL	NULL	NULL	Now:Advanced Engineering Informatics 
+10590	1320-1646	NULL	NULL	NULL	Now:Australasian Marketing Journal (AMJ) 
+10591	0915-6992	NULL	NULL	NULL	Now:Journal of Oral and Maxillofacial Surgery, Medicine, and Pathology 
+10601	0364-9229	NULL	NULL	NULL	Merged:Vistas in Astronomy 
+10608	0004-6981	NULL	NULL	NULL	Now:Atmospheric Environment. Part A. General Topics and  Atmospheric Environment. Part B. Urban Atmosphere 
+10617	1031-170X	NULL	NULL	NULL	Now:The Australian Journal of Midwifery 
+10619	1328-2743	NULL	NULL	NULL	Now:Australasian Emergency Nursing Journal 
+10620	0004-9514	NULL	NULL	NULL	Now:Journal of Physiotherapy 
+10627	0950-3501	NULL	NULL	NULL	Now:Best Practice & Research Clinical Anaesthesiology 
+10629	0950-3528	NULL	NULL	NULL	Now:Best Practice & Research Clinical Gastroenterology 
+10630	0950-3536	NULL	NULL	NULL	Now:Best Practice & Research Clinical Haematology 
+10631	0950-3552	NULL	NULL	NULL	Now:Best Practice & Research Clinical Obstetrics & Gynaecology 
+10632	0950-3579	NULL	NULL	NULL	Now:Best Practice & Research Clinical Rheumatology 
+10637	0091-6773	NULL	NULL	NULL	Now:Behavioral and Neural Biology 
+10641	0005-8165	NULL	NULL	NULL	Now:Pathology - Research and Practice 
+10649	0147-7552	NULL	NULL	NULL	Now:Neuroscience & Biobehavioral Reviews 
+10653	0307-4412	NULL	NULL	NULL	Now:Biochemistry and Molecular Biology Education 
+10655	0006-2944	NULL	NULL	NULL	Now:Biochemical Medicine and Metabolic Biology 
+10659	0015-3796	NULL	NULL	NULL	Merged:Journal of Plant Physiology 
+10661	0006-3002	NULL	NULL	NULL	Now:Biochimica et Biophysica Acta (BBA) - General Subjects 
+10679	0304-4173	NULL	NULL	NULL	Merged:Biochimica et Biophysica Acta (BBA) - Bioenergetics 
+10680	0304-4157	NULL	NULL	NULL	Merged:Biochimica et Biophysica Acta (BBA) - Biomembranes 
+10682	0926-6577	NULL	NULL	NULL	Now:Biochimica et Biophysica Acta (BBA) - Biophysics including Photosynthesis 
+10683	0926-6569	NULL	NULL	NULL	Now:Biochimica et Biophysica Acta (BBA) - Enzymology and Biological Oxidation 
+10684	0926-6542	NULL	NULL	NULL	Now:Biochimica et Biophysica Acta (BBA) - Lipids and Lipid Metabolism 
+10685	0926-6526	NULL	NULL	NULL	Now:Biochimica et Biophysica Acta (BBA) - Mucoproteins and Mucopolysaccharides 
+10686	0926-6550	NULL	NULL	NULL	Now:Biochimica et Biophysica Acta (BBA) - Nucleic Acids and Protein Synthesis 
+10689	0302-4598	NULL	NULL	NULL	Now:Bioelectrochemistry 
+10691	0006-3061	NULL	NULL	NULL	Now:Journal of Inorganic Biochemistry 
+10700	0144-4565	NULL	NULL	NULL	Merged:Bioresource Technology 
+10718	0265-928X	NULL	NULL	NULL	Now:Biosensors and Bioelectronics 
+10720	1478-5382	NULL	NULL	NULL	Now:Drug Discovery Today:BIOSILICO 
+10729	0169-6009	NULL	NULL	NULL	Merged:Bone 
+10736	1385-299X	NULL	NULL	NULL	Merged:Brain Research 
+10742	0007-0785	NULL	NULL	NULL	Now:Homeopathy 
+10745	0306-5456	NULL	NULL	NULL	Now:BJOG:An International Journal of Obstetrics and Gynaecology 
+10747	0007-117X	NULL	NULL	NULL	Now:British Journal of Oral and Maxillofacial Surgery 
+10748	0007-1226	NULL	NULL	NULL	Now:Journal of Plastic, Reconstructive & Aesthetic Surgery 
+10749	0366-0850	NULL	NULL	NULL	Now:British Journal of Tuberculosis and Diseases of the Chest 
+10751	0007-1935	NULL	NULL	NULL	Now:The Veterinary Journal 
+10753	0007-3628	NULL	NULL	NULL	Now:Building and Environment 
+10754	0020-2452	NULL	NULL	NULL	Merged:Microbes and Infection 
+10756	0924-4212	NULL	NULL	NULL	Now:Cancer/Radiothérapie 
+10758	0007-1528	NULL	NULL	NULL	Now:Mycologist 
+10764	0315-5463	NULL	NULL	NULL	Now:Food Research International 
+10767	0820-5930	NULL	NULL	NULL	Now:Journal of Medical Imaging and Radiation Sciences 
+10769	0361-090X	NULL	NULL	NULL	Now:Cancer Epidemiology 
+10772	0165-4608	NULL	NULL	NULL	Now:Cancer Genetics 
+10784	1522-1865	NULL	NULL	NULL	Now:Cardiovascular Revascularization Medicine 
+10787	0167-2231	NULL	NULL	NULL	Merged:Journal of Monetary Economics 
+10792	0309-1651	NULL	NULL	NULL	Now:Cell Biology International 
+10794	0045-6039	NULL	NULL	NULL	Now:Cell Differentiation and Development 
+10803	0390-5519	NULL	NULL	NULL	Now:Ceramics International 
+10811	0168-9622	NULL	NULL	NULL	Merged:Chemical Geology 
+10812	1074-9098	NULL	NULL	NULL	Now:Journal of Chemical Health and Safety 
+10821	1465-9972	NULL	NULL	NULL	Merged:Chemosphere 
+10822	1052-3359	NULL	NULL	NULL	Now:Thoracic Surgery Clinics 
+10828	1672-2515	NULL	NULL	NULL	Now:Particuology 
+10830	0146-6364	NULL	NULL	NULL	Now:Chinese Astronomy and Astrophysics 
+10843	0001-4001	NULL	NULL	NULL	Merged:Annales de Chirurgie 
+10845	0009-5907	NULL	NULL	NULL	Merged:Journal of Chromatography A 
+10857	0928-0197	NULL	NULL	NULL	Now:Journal of Clinical Virology 
+10871	0090-1229	NULL	NULL	NULL	Now:Clinical Immunology 
+10872	0197-1859	NULL	NULL	NULL	Now:Clinical and Applied Immunology Reviews 
+10875	1526-9655	NULL	NULL	NULL	Now:Clinical Lymphoma and Myeloma 
+10878	0267-6605	NULL	NULL	NULL	Merged:Biomaterials 
+10887	1941-4390	NULL	NULL	NULL	Now:Clinical Ovarian and Other Gynecologic Cancer 
+10890	1095-0397	NULL	NULL	NULL	Now:Molecular Imaging & Biology 
+10891	1540-0352	NULL	NULL	NULL	Now:Clinical Genitourinary Cancer 
+10898	1096-2867	NULL	NULL	NULL	Now:Topics in Companion Animal Medicine 
+10904	0300-595X	NULL	NULL	NULL	Now:Baillière's Clinical Endocrinology and Metabolism 
+10913	0818-8157	NULL	NULL	NULL	Now:Confederation of Australian Critical Care Nurses Journal 
+10917	0926-6410	NULL	NULL	NULL	Merged:Brain Research 
+10922	0174-173X	NULL	NULL	NULL	Now:Matrix 
+10924	0166-6622	NULL	NULL	NULL	Now:Colloids and Surfaces A:Physicochemical and Engineering Aspects and  Colloids and Surfaces B:Biointerfaces 
+10931	0588-8174	NULL	NULL	NULL	Now:Studies in Comparative Communism 
+10934	0010-4035	NULL	NULL	NULL	Now:General Pharmacology:The Vascular System 
+10935	0010-406X	NULL	NULL	NULL	Now:Comparative Biochemistry and Physiology Part A:Physiology,  Comparative Biochemistry and Physiology Part B:Comparative Biochemistry and  Comparative Biochemistry and Physiology Part C:Comparative Pharmacology 
+10947	1353-6117	NULL	NULL	NULL	Now:Complementary Therapies in Clinical Practice 
+10949	0010-4361	NULL	NULL	NULL	Merged:Composites Part A:Applied Science and Manufacturing 
+10951	0961-9526	NULL	NULL	NULL	Now:Composites Part B:Engineering 
+10952	0956-7143	NULL	NULL	NULL	Merged:Composites Part A:Applied Science and Manufacturing 
+10959	0764-4442	NULL	NULL	NULL	Now:Comptes Rendus Mathematique 
+10960	1251-8050	NULL	NULL	NULL	Now:Comptes Rendus Geoscience and  Comptes Rendus Palevol 
+10963	1251-8069	NULL	NULL	NULL	Now:Comptes Rendus de l'Académie des Sciences - Series IIB - Mechanics-Physics-Astronomy 
+10964	1387-1609	NULL	NULL	NULL	Now:Comptes Rendus Chimie 
+10965	0764-4469	NULL	NULL	NULL	Now:Comptes Rendus Biologies 
+10966	1296-2147	NULL	NULL	NULL	Now:Comptes Rendus Physique 
+10973	1089-3156	NULL	NULL	NULL	Merged:Polymer 
+10983	0142-0496	NULL	NULL	NULL	Now:Computer Fraud & Security 
+10984	0146-664X	NULL	NULL	NULL	Now:Computer Vision, Graphics, and Image Processing 
+10985	0951-5240	NULL	NULL	NULL	Merged:Robotics and Computer-Integrated Manufacturing 
+10986	0096-0551	NULL	NULL	NULL	Now:Computer Languages, Systems & Structures 
+10992	0376-5075	NULL	NULL	NULL	Now:Computer Networks and ISDN Systems 
+10995	0167-7977	NULL	NULL	NULL	Merged:Physics Reports 
+10996	0010-468X	NULL	NULL	NULL	Now:Computer Methods and Programs in Biomedicine 
+11005	0363-8235	NULL	NULL	NULL	Now:Computerized Radiology 
+11007	0097-8485	NULL	NULL	NULL	Now:Computational Biology and Chemistry 
+11018	0305-7097	NULL	NULL	NULL	Now:Urban Systems 
+11019	0010-4809	NULL	NULL	NULL	Now:Journal of Biomedical Informatics 
+11023	0167-8051	NULL	NULL	NULL	Merged:Computer Standards & Interfaces 
+11028	0956-0521	NULL	NULL	NULL	Merged:Advances in Engineering Software 
+11031	0361-3658	NULL	NULL	NULL	Merged:Resources, Conservation and Recycling 
+11039	0197-2456	NULL	NULL	NULL	Now:Contemporary Clinical Trials 
+11046	0045-8732	NULL	NULL	NULL	Now:Space Research Today 
+11058	0953-7112	NULL	NULL	NULL	Now:Trends in Anaesthesia and Critical Care 
+11060	0968-6053	NULL	NULL	NULL	Now:Diagnostic Histopathology 
+11061	0957-5847	NULL	NULL	NULL	Now:Obstetrics, Gynaecology & Reproductive Medicine 
+11077	0268-0890	NULL	NULL	NULL	Now:Orthopaedics and Trauma 
+11078	0957-5839	NULL	NULL	NULL	Now:Paediatrics and Child Health 
+11084	0045-9380	NULL	NULL	NULL	Now:Current Problems in Pediatric and Adolescent Health Care 
+11086	0149-7944	NULL	NULL	NULL	Now:Journal of Surgical Education 
+11091	1049-9660	NULL	NULL	NULL	Now:Computer Vision and Image Understanding 
+11097	0011-684X	NULL	NULL	NULL	Now:Information and Software Technology 
+11100	0146-6313	NULL	NULL	NULL	Now:Deep Sea Research and Oceanographic Abstracts 
+11119	0165-3806	NULL	NULL	NULL	Merged:Brain Research 
+11168	1570-9124	NULL	NULL	NULL	Now:EAU-EBU Update Series 
+11200	0300-9416	NULL	NULL	NULL	Now:Surface Technology 
+11201	0013-4694	NULL	NULL	NULL	Now:Clinical Neurophysiology 
+11202	0924-980X	NULL	NULL	NULL	Merged:Clinical Neurophysiology 
+11203	0168-5597	NULL	NULL	NULL	Merged:Clinical Neurophysiology 
+11204	0892-0354	NULL	NULL	NULL	Merged:Micron 
+11219	1762-5661	NULL	NULL	NULL	Now:EMC - Odontologie and  EMC - Stomatologie 
+11227	1638-6221	NULL	NULL	NULL	Now:EMC - Hépato-Gastroenterologie 
+11246	1762-567X	NULL	NULL	NULL	Now:EMC - Kinésithérapie and  EMC - Podologie 
+11278	0167-5826	NULL	NULL	NULL	Merged:Bioresource Technology 
+11285	0264-682X	NULL	NULL	NULL	Now:Engineering Analysis with Boundary Elements 
+11287	0377-841X	NULL	NULL	NULL	Now:Engineering Costs and Production Economics 
+11293	0167-5419	NULL	NULL	NULL	Now:Journal of Engineering and Technology Management 
+11305	0013-9327	NULL	NULL	NULL	Now:Environmental Pollution Series A, Ecological and Biological and  Environmental Pollution Series B, Chemical and Physical 
+11310	0266-9838	NULL	NULL	NULL	Now:Environmental Modelling & Software 
+11319	1751-4991	NULL	NULL	NULL	Now:e-SPEN Journal 
+11320	0302-3524	NULL	NULL	NULL	Now:Estuarine, Coastal and Shelf Science 
+11322	0162-3095	NULL	NULL	NULL	Now:Evolution and Human Behavior 
+11323	0959-3527	NULL	NULL	NULL	Now:III-Vs Review 
+11324	0303-1268	NULL	NULL	NULL	Now:Microprocessing and Microprogramming 
+11330	0014-2964	NULL	NULL	NULL	Now:European Journal of Cancer and Clinical Oncology 
+11332	0964-1955	NULL	NULL	NULL	Now:Oral Oncology 
+11343	0028-2243	NULL	NULL	NULL	Now:European Journal of Obstetrics & Gynecology and Reproductive Biology 
+11352	0926-6917	NULL	NULL	NULL	Now:Environmental Toxicology and Pharmacology 
+11353	0922-4106	NULL	NULL	NULL	Merged:European Journal of Pharmacology 
+11356	0969-7012	NULL	NULL	NULL	Now:Journal of Purchasing and Supply Management 
+11361	0992-4361	NULL	NULL	NULL	Now:Solid State Sciences 
+11365	0950-821X	NULL	NULL	NULL	Now:European Journal of Vascular and Endovascular Surgery 
+11374	0145-9228	NULL	NULL	NULL	Now:Evaluation in Education 
+11375	0886-1633	NULL	NULL	NULL	Now:The American Journal of Evaluation 
+11377	1462-9410	NULL	NULL	NULL	Now:Evidence-based Healthcare and Public Health 
+11380	1363-4054	NULL	NULL	NULL	Merged:Cancer Treatment Reviews 
+11382	1164-0235	NULL	NULL	NULL	Merged:Energy 
+11389	0147-5975	NULL	NULL	NULL	Now:Fungal Genetics and Biology 
+11394	0014-4908	NULL	NULL	NULL	Now:Experimental Pathology 
+11407	0015-0568	NULL	NULL	NULL	Now:Composites Science and Technology 
+11408	0268-9499	NULL	NULL	NULL	Now:Fibrinolysis and Proteolysis 
+11432	1359-0278	NULL	NULL	NULL	Merged:Structure 
+11435	0015-6264	NULL	NULL	NULL	Now:Food and Chemical Toxicology 
+11447	1877-8607	NULL	NULL	NULL	Now:Genomic Medicine, Biomarkers, and Health Sciences 
+11448	0300-9432	NULL	NULL	NULL	Now:Forensic Science International 
+11466	0272-0590	NULL	NULL	NULL	Now:Toxicological Sciences 
+11480	0950-4214	NULL	NULL	NULL	Merged:Separation and Purification Technology 
+11481	0399-8320	NULL	NULL	NULL	Now:Clinics and Research in Hepatology and Gastroenterology 
+11492	0735-0651	NULL	NULL	NULL	Now:Genetic Analysis:Biomolecular Engineering 
+11497	0016-660X	NULL	NULL	NULL	Now:Topology and its Applications 
+11505	0016-7142	NULL	NULL	NULL	Now:Journal of Applied Geophysics 
+11516	1464-2867	NULL	NULL	NULL	Now:Environmental Hazards 
+11523	0093-061X	NULL	NULL	NULL	Now:Government Publications Review. Part A and  Government Publications Review. Part B 
+11540	0165-2281	NULL	NULL	NULL	Now:Health Policy 
+11553	0212-8241	NULL	NULL	NULL	Now:Hipertensión y Riesgo Vascular 
+11564	0740-8315	NULL	NULL	NULL	Merged:Journal of Air Medical Transport 
+11582	0019-2791	NULL	NULL	NULL	Now:Molecular Immunology 
+11585	0167-5699	NULL	NULL	NULL	Now:Trends in Immunology 
+11586	1058-6687	NULL	NULL	NULL	Merged:Methods 
+11587	0162-3109	NULL	NULL	NULL	Merged:International Immunopharmacology 
+11588	1380-2933	NULL	NULL	NULL	Merged:Journal of Immunological Methods 
+11590	1158-1336	NULL	NULL	NULL	Merged:Revue de Stomatologie et de Chirurgie Maxillo-faciale 
+11592	1385-7258	NULL	NULL	NULL	Merged:Indagationes Mathematicae 
+11599	0921-5956	NULL	NULL	NULL	Merged:Measurement 
+11604	0278-2316	NULL	NULL	NULL	Merged:Antimicrobics and Infectious Diseases Newsletter 
+11607	0019-9958	NULL	NULL	NULL	Now:Information and Computation 
+11615	1069-0115	NULL	NULL	NULL	Merged:Information Sciences 
+11616	1363-4127	NULL	NULL	NULL	Now: Journal of Information Security and Applications
+11617	0020-0271	NULL	NULL	NULL	Now:Information Processing & Management 
+11620	1742-6847	NULL	NULL	NULL	Now:Infosecurity 
+11621	0020-0891	NULL	NULL	NULL	Now:Infrared Physics & Technology 
+11627	0020-1650	NULL	NULL	NULL	Merged:Polyhedron 
+11630	0073-8085	NULL	NULL	NULL	Merged:Inorganica Chimica Acta 
+11631	0020-1790	NULL	NULL	NULL	Now:Insect Biochemistry and Molecular Biology 
+11641	0266-612X	NULL	NULL	NULL	Now:Intensive and Critical Care Nursing 
+11643	0252-7308	NULL	NULL	NULL	Merged:Computer Standards & Interfaces 
+11645	0265-3036	NULL	NULL	NULL	Now:International Biodeterioration & Biodegradation 
+11650	0892-8967	NULL	NULL	NULL	Merged:Contact Lens and Anterior Eye 
+11654	0928-4346	NULL	NULL	NULL	Now:Hepatology Research 
+11659	0020-7055	NULL	NULL	NULL	Now:Radiation Physics and Chemistry (1977) 
+11667	0020-711X	NULL	NULL	NULL	Now:The International Journal of Biochemistry & Cell Biology 
+11669	0020-7101	NULL	NULL	NULL	Now:International Journal of Medical Informatics 
+11671	0262-5075	NULL	NULL	NULL	Now:Cement and Concrete Composites 
+11693	0267-3762	NULL	NULL	NULL	Now:Journal of the European Ceramic Society 
+11698	0192-0561	NULL	NULL	NULL	Merged:International Immunopharmacology 
+11704	1466-6049	NULL	NULL	NULL	Merged:Solid State Sciences 
+11705	0020-7322	NULL	NULL	NULL	Now:Arthropod Structure & Development 
+11709	0020-7357	NULL	NULL	NULL	Now:International Journal of Machine Tools and Manufacture 
+11711	0020-7373	NULL	NULL	NULL	Now:International Journal of Human-Computer Studies 
+11713	0020-7381	NULL	NULL	NULL	Now:International Journal of Mass Spectrometry and Ion Processes 
+11715	0141-5530	NULL	NULL	NULL	Now:Materials & Design 
+11719	1433-1128	NULL	NULL	NULL	Merged:International Journal of Medical Microbiology 
+11723	0260-4779	NULL	NULL	NULL	Now:Museum Management and Curatorship 
+11725	0375-9458	NULL	NULL	NULL	Now:Neuropharmacology 
+11727	0047-0740	NULL	NULL	NULL	Now:International Journal of Radiation Applications and Instrumentation. Part B. Nuclear Medicine and Biology 
+11731	0300-9785	NULL	NULL	NULL	Now:International Journal of Oral and Maxillofacial Surgery 
+11732	1072-3471	NULL	NULL	NULL	Now:International Journal of Orthodontia and Oral Surgery (1919) 
+11757	0148-9062	NULL	NULL	NULL	Now:International Journal of Rock Mechanics and Mining Sciences 
+11759	0261-7277	NULL	NULL	NULL	Now:Soil Dynamics and Earthquake Engineering 
+11764	0194-6595	NULL	NULL	NULL	Now:International Journal of Law, Crime and Justice 
+11766	0143-2516	NULL	NULL	NULL	Now:Tourism Management 
+11768	1075-4210	NULL	NULL	NULL	Now:Disaster Management & Response 
+11769	0020-7837	NULL	NULL	NULL	Now:The International Information & Library Review 
+11786	1297-9562	NULL	NULL	NULL	Now:IRBM 
+11802	0221-0363	NULL	NULL	NULL	Now:Journal de Radiologie Diagnostique et Interventionnelle 
+11808	0993-9857	NULL	NULL	NULL	Now:Journal Européen des Urgences et de Réanimation 
+11819	0197-0070	NULL	NULL	NULL	Now:Journal of Adolescent Health 
+11824	0731-7247	NULL	NULL	NULL	Now:Journal of African Earth Sciences (and the Middle East) 
+11827	0021-8634	NULL	NULL	NULL	Now:Biosystems Engineering 
+11832	0021-8707	NULL	NULL	NULL	Now:Journal of Allergy and Clinical Immunology 
+11853	0368-1319	NULL	NULL	NULL	Now:Atherosclerosis 
+11855	0021-9169	NULL	NULL	NULL	Now:Journal of Atmospheric and Solar-Terrestrial Physics 
+11859	0090-5720	NULL	NULL	NULL	Now:The Journal of Socio-Economics 
+11860	0165-022X	NULL	NULL	NULL	Now:Journal of Proteomics 
+11861	0092-1157	NULL	NULL	NULL	Now:Biologicals 
+11863	0141-5425	NULL	NULL	NULL	Now:Medical Engineering & Physics 
+11873	1364-9825	NULL	NULL	NULL	Now:European Journal of Oncology Nursing 
+11878	0888-6296	NULL	NULL	NULL	Now:Journal of Cardiothoracic and Vascular Anesthesia 
+11889	1006-1266	NULL	NULL	NULL	Now:Mining Science and Technology (China) 
+11894	0378-4347	NULL	NULL	NULL	Now:Journal of Chromatography B 
+11895	0021-9681	NULL	NULL	NULL	Now:Journal of Clinical Epidemiology 
+11901	1353-1131	NULL	NULL	NULL	Now:Journal of Forensic and Legal Medicine 
+11909	0095-8522	NULL	NULL	NULL	Now:Journal of Colloid and Interface Science 
+11910	0021-9800	NULL	NULL	NULL	Now:Journal of Combinatorial Theory, Series A  and  Journal of Combinatorial Theory, Series B 
+11916	0368-1742	NULL	NULL	NULL	Now:Journal of Comparative Pathology 
+11921	0149-936X	NULL	NULL	NULL	Now:Clinical Imaging 
+11947	0891-6632	NULL	NULL	NULL	Now:Journal of Diabetes and its Complications 
+11949	0892-0591	NULL	NULL	NULL	Now:Journal of Interactive Marketing 
+11958	0368-1874	NULL	NULL	NULL	Now:Journal of Electroanalytical Chemistry and Interfacial Electrochemistry 
+11968	1085-7443	NULL	NULL	NULL	Merged:Energy Economics 
+11978	0896-6974	NULL	NULL	NULL	Merged:Epilepsy Research 
+11992	0385-6380	NULL	NULL	NULL	Now:Journal of Fermentation and Bioengineering 
+12005	0748-5514	NULL	NULL	NULL	Merged:Free Radical Biology and Medicine 
+12020	0198-7593	NULL	NULL	NULL	Now:Heat Recovery Systems and CHP 
+12038	0022-1902	NULL	NULL	NULL	Merged:Polyhedron 
+12054	0022-2143	NULL	NULL	NULL	Now:Translational Research 
+12056	0929-7855	NULL	NULL	NULL	Merged:Prostaglandins & Other Lipid Mediators 
+12062	0022-2364	NULL	NULL	NULL	Now:Journal of Magnetic Resonance, Series A and  Journal of Magnetic Resonance, Series B 
+12076	0301-0503	NULL	NULL	NULL	Now:Journal of Cranio-Maxillofacial Surgery 
+12077	0378-3804	NULL	NULL	NULL	Now:Journal of Materials Processing Technology 
+12078	0022-2569	NULL	NULL	NULL	Now:Mechanism and Machine Theory 
+12088	0745-7138	NULL	NULL	NULL	Now:Journal of Network and Computer Applications 
+12092	0304-5102	NULL	NULL	NULL	Now:Journal of Molecular Catalysis A:Chemical  and   Journal of Molecular Catalysis B:Enzymatic 
+12095	0263-7855	NULL	NULL	NULL	Now:Journal of Molecular Graphics and Modelling 
+12100	0166-1280	NULL	NULL	NULL	Now:Computational and Theoretical Chemistry 
+12104	1007-4376	NULL	NULL	NULL	Now:Journal of Biomedical Research 
+12105	1003-9953	NULL	NULL	NULL	Now:Journal of Energy Chemistry 
+12117	0891-3919	NULL	NULL	NULL	Now:Journal of Nuclear Energy. Part A. Reactor Science and  Journal of Nuclear Energy. Part B. Reactor Technology
+12119	0368-3273	NULL	NULL	NULL	Merged:Journal of Nuclear Energy. Parts A/B. Reactor Science and Technology Previously part of:Journal of Nuclear Energy (1954) 
+12123	0022-3182	NULL	NULL	NULL	Now:Journal of Nutrition Education and Behavior 
+12126	0376-6349	NULL	NULL	NULL	Now:Safety Science 
+12134	1361-3111	NULL	NULL	NULL	Now:International Journal of Orthopaedic and Trauma Nursing 
+12137	1443-8461	NULL	NULL	NULL	Now:International Journal of Osteopathic Medicine 
+12151	0160-5402	NULL	NULL	NULL	Now:Journal of Pharmacological and Toxicological Methods 
+12154	0047-2670	NULL	NULL	NULL	Now:Journal of Photochemistry and Photobiology A:Chemistry and  Journal of Photochemistry and Photobiology B:Biology 
+12195	0140-1750	NULL	NULL	NULL	Now:Journal of Social and Evolutionary Systems 
+12200	0743-9547	NULL	NULL	NULL	Now:Journal of Asian Earth Sciences 
+12203	0022-4731	NULL	NULL	NULL	Now:The Journal of Steroid Biochemistry and Molecular Biology 
+12222	0002-7138	NULL	NULL	NULL	Now:Journal of the American Academy of Child & Adolescent Psychiatry 
+12226	0361-1124	NULL	NULL	NULL	Now:Annals of Emergency Medicine 
+12229	0002-8223	NULL	NULL	NULL	Now:Journal of the Academy of Nutrition and Dietetics 
+12231	1531-0914	NULL	NULL	NULL	Merged:The Journal of Hand Surgery 
+12238	0165-1838	NULL	NULL	NULL	Now:Autonomic Neuroscience 
+12239	0141-7037	NULL	NULL	NULL	Now:Contact Lens and Anterior Eye 
+12240	0368-1653	NULL	NULL	NULL	Now:Journal of the Taiwan Institute of Chemical Engineers 
+12245	0368-2242	NULL	NULL	NULL	Now:Clinical Radiology 
+12246	0015-7368	NULL	NULL	NULL	Now:Science & Justice 
+12251	0022-5088	NULL	NULL	NULL	Now:Journal of Alloys and Compounds 
+12269	0022-5320	NULL	NULL	NULL	Now:Journal of Ultrastructure and Molecular Structure Research 
+12270	1005-8850	NULL	NULL	NULL	Now:International Journal of Minerals, Metallurgy and Materials 
+12272	1083-0081	NULL	NULL	NULL	Now:Journal of the Association for Vascular Access 
+12277	0022-5371	NULL	NULL	NULL	Now:Journal of Memory and Language 
+12287	0953-9859	NULL	NULL	NULL	Now:Wilderness & Environmental Medicine 
+12296	1042-8143	NULL	NULL	NULL	Merged:International Journal of Human-Computer Studies 
+12306	1381-141X	NULL	NULL	NULL	Merged:Chemometrics and Intelligent Laboratory Systems 
+12310	0304-3924	NULL	NULL	NULL	Now:Landscape and Urban Planning 
+12315	0938-765X	NULL	NULL	NULL	Now:Medical Laser Application 
+12316	0768-9179	NULL	NULL	NULL	Now:Le Pharmacien Hospitalier et Clinicien 
+12325	0094-4548	NULL	NULL	NULL	Now:International Communications in Heat and Mass Transfer 
+12329	0364-6408	NULL	NULL	NULL	Now:Library Collections, Acquisitions, and Technical Services 
+12337	0301-6226	NULL	NULL	NULL	Now:Livestock Science 
+12339	0966-8349	NULL	NULL	NULL	Merged:Computers & Operations Research 
+12369	0390-6035	NULL	NULL	NULL	Now:Materials Chemistry and Physics 
+12373	0025-5416	NULL	NULL	NULL	Now:Materials Science and Engineering:A and  Materials Science and Engineering:B 
+12379	0920-2307	NULL	NULL	NULL	Now:Materials Science and Engineering:C and  Materials Science and Engineering:R:Reports 
+12383	0270-0255	NULL	NULL	NULL	Now:Mathematical and Computer Modelling 
+12417	0221-8747	NULL	NULL	NULL	Now:Bone 
+12422	0026-0800	NULL	NULL	NULL	Now:Materials Characterization 
+12434	0047-7206	NULL	NULL	NULL	Now:Micron and Microscopica Acta 
+12437	0927-6513	NULL	NULL	NULL	Merged:Microporous and Mesoporous Materials 
+12439	0308-5953	NULL	NULL	NULL	Now:Microprocessors and Microsystems 
+12445	0167-9031	NULL	NULL	NULL	Merged:Engineering Geology 
+12453	0169-328X	NULL	NULL	NULL	Merged:Brain Research 
+12458	1357-4310	NULL	NULL	NULL	Now:Trends in Molecular Medicine 
+12466	0165-7992	NULL	NULL	NULL	Merged:Mutation Research/Genetic Toxicology and Environmental Mutagenesis 
+12468	0167-8817	NULL	NULL	NULL	Now:Mutation Research/DNA Repair 
+12470	0165-1161	NULL	NULL	NULL	Merged:Mutation Research/Genetic Toxicology and Environmental Mutagenesis 
+12472	0165-1218	NULL	NULL	NULL	Merged:Mutation Research/Genetic Toxicology and Environmental Mutagenesis 
+12475	0165-1110	NULL	NULL	NULL	Now:Mutation Research/Reviews in Mutation Research 
+12484	0965-9773	NULL	NULL	NULL	Merged:Acta Materialia and  Scripta Materialia 
+12488	0077-7579	NULL	NULL	NULL	Now:Journal of Sea Research 
+12499	1055-8330	NULL	NULL	NULL	Merged:Experimental Neurology 
+12512	1058-6741	NULL	NULL	NULL	Merged:Methods 
+12515	1545-5343	NULL	NULL	NULL	Now:Neurotherapeutics 
+12520	0921-8696	NULL	NULL	NULL	Merged:Neuroscience Research 
+12533	0029-1021	NULL	NULL	NULL	Now:NDT International 
+12537	1042-752X	NULL	NULL	NULL	Now:The North American Journal of Economics and Finance 
+12540	0191-815X	NULL	NULL	NULL	Now:Waste Management 
+12542	0550-306X	NULL	NULL	NULL	Merged:Nuclear Data Sheets 
+12543	0090-550X	NULL	NULL	NULL	Merged:Nuclear Data Sheets 
+12545	0167-899X	NULL	NULL	NULL	Now:Fusion Engineering and Design 
+12546	0369-643X	NULL	NULL	NULL	Now:Nuclear Instruments and Methods 
+12552	0029-5582	NULL	NULL	NULL	Now:Nuclear Physics A and  Nuclear Physics B 
+12557	0369-5816	NULL	NULL	NULL	Now:Nuclear Engineering and Design 
+12558	0145-224X	NULL	NULL	NULL	Now:Nuclear Tracks 
+12578	0302-184X	NULL	NULL	NULL	Now:Ocean and Shoreline Management 
+12582	0143-7127	NULL	NULL	NULL	Now:Oil and Chemical Pollution 
+12586	1085-5637	NULL	NULL	NULL	Now:Operative Techniques in Thoracic and Cardiovascular Surgery 
+12602	0374-3926	NULL	NULL	NULL	Now:Optics & Laser Technology 
+12611	0030-4220	NULL	NULL	NULL	Now:Oral Surgery, Oral Medicine, Oral Pathology, Oral Radiology, and Endodontology 
+12619	0030-5073	NULL	NULL	NULL	Now:Organizational Behavior and Human Decision Processes 
+12643	0169-4758	NULL	NULL	NULL	Now:Trends in Parasitology 
+12649	0190-2040	NULL	NULL	NULL	Now:Patient Education and Counseling 
+12676	0031-6865	NULL	NULL	NULL	Merged:European Journal of Pharmaceutical Sciences 
+12677	1461-5347	NULL	NULL	NULL	Merged:Drug Discovery Today 
+12680	0031-6989	NULL	NULL	NULL	Now:Pharmacological Research 
+12682	0362-5478	NULL	NULL	NULL	Merged:Pharmacology & Therapeutics 
+12683	0306-039X	NULL	NULL	NULL	Merged:Pharmacology & Therapeutics 
+12684	0362-5486	NULL	NULL	NULL	Merged:Pharmacology & Therapeutics 
+12690	0031-8663	NULL	NULL	NULL	Now:ISPRS Journal of Photogrammetry and Remote Sensing 
+12693	0031-8914	NULL	NULL	NULL	Now:Physica A:Statistical Mechanics and its Applications and  Physica B+C 
+12696	0378-4363	NULL	NULL	NULL	Now:Physica B:Condensed Matter and  Physica C:Superconductivity Previously part of:Physica 
+12705	0079-1946	NULL	NULL	NULL	Now:Physics and Chemistry of the Earth, Part A:Solid Earth and Geodesy,  Physics and Chemistry of the Earth, Part B:Hydrology, Oceans and Atmosphere and   Physics and Chemistry of the Earth, Part C:Solar, Terrestrial & Planetary Science 
+12710	0031-9163	NULL	NULL	NULL	Now:Physics Letters A and  Physics Letters B 
+12719	0048-4059	NULL	NULL	NULL	Now:Physiological and Molecular Plant Pathology 
+12730	0304-4211	NULL	NULL	NULL	Now:Plant Science 
+12731	0278-6222	NULL	NULL	NULL	Now:Transfusion Science 
+12741	0260-9827	NULL	NULL	NULL	Now:Political Geography 
+12748	0144-2880	NULL	NULL	NULL	Merged:Polymer Degradation and Stability 
+12761	1573-2088	NULL	NULL	NULL	Now:CVD Prevention and Control 
+12785	1062-2888	NULL	NULL	NULL	Now:Symposium on Combustion and Flame, and Explosion Phenomena 
+12794	0146-3535	NULL	NULL	NULL	Now:Progress in Crystal Growth and Characterization of Materials 
+12797	0955-2235	NULL	NULL	NULL	Now:Cytokine & Growth Factor Reviews 
+12801	0502-8205	NULL	NULL	NULL	Now:Progress in Materials Science 
+12804	0364-7722	NULL	NULL	NULL	Now:Progress in Neuro-Psychopharmacology and Biological Psychiatry 
+12817	0278-4327	NULL	NULL	NULL	Now:Progress in Retinal and Eye Research 
+12820	0079-6832	NULL	NULL	NULL	Now:Progress in Lipid Research 
+12822	0090-6980	NULL	NULL	NULL	Now:Prostaglandins & Other Lipid Mediators 
+12824	0161-4630	NULL	NULL	NULL	Now:Prostaglandins, Leukotrienes and Medicine 
+12841	0952-0600	NULL	NULL	NULL	Now:Pulmonary Pharmacology & Therapeutics 
+12849	1164-6756	NULL	NULL	NULL	Now:Réanimation 
+12852	0033-7560	NULL	NULL	NULL	Now:Environmental and Experimental Botany 
+12862	0222-0776	NULL	NULL	NULL	Now:ITBM-RBM News 
+12865	0167-6989	NULL	NULL	NULL	Now:Reactive Polymers 
+12869	1471-0846	NULL	NULL	NULL	Now:Renewable Energy Focus 
+12870	0034-3331	NULL	NULL	NULL	Now:Regional Science and Urban Economics 
+12877	0143-8174	NULL	NULL	NULL	Now:Reliability Engineering & System Safety 
+12883	1428-2267	NULL	NULL	NULL	Now:Reports of Practical Oncology & Radiotherapy 
+12894	0923-2494	NULL	NULL	NULL	Merged:Microbes and Infection 
+12903	0923-2516	NULL	NULL	NULL	Merged:Microbes and Infection 
+12907	0304-3967	NULL	NULL	NULL	Now:Resources and Conservation 
+12909	0165-0572	NULL	NULL	NULL	Now:Resource and Energy Economics 
+12912	0034-5687	NULL	NULL	NULL	Now:Respiratory Physiology & Neurobiology 
+12916	1755-0017	NULL	NULL	NULL	Now:Respiratory Medicine Case Reports 
+12931	1471-7697	NULL	NULL	NULL	Now:Reviews in Gynaecological and Perinatal Practice 
+12943	0482-5985	NULL	NULL	NULL	Now:Revista Española de Cirugía Ortopédica y Traumatología 
+12959	0212-6982	NULL	NULL	NULL	Now:Revista Española de Medicina Nuclear e Imagen Molecular 
+12960	1578-200X	NULL	NULL	NULL	Now:Revista Española de Medicina Nuclear e Imagen Molecular (English Edition) 
+12983	0035-1040	NULL	NULL	NULL	Now:Revue de Chirurgie Orthopédique et Traumatologique 
+12988	0370-4475	NULL	NULL	NULL	Now:Neurophysiologie Clinique/Clinical Neurophysiology 
+12994	0370-4688	NULL	NULL	NULL	Now:Revue Française d'Allergologie (1970) 
+13001	0338-9898	NULL	NULL	NULL	Now:Revue Francophone des Laboratoires 
+13004	0035-3159	NULL	NULL	NULL	Now:International Journal of Thermal Sciences 
+13009	0035-5054	NULL	NULL	NULL	Now:Research in Economics 
+13010	0167-8493	NULL	NULL	NULL	Now:Robotics and Autonomous Systems 
+13016	1935-9810	NULL	NULL	NULL	Now:The International Journal of Spine Surgery 
+13021	0962-9262	NULL	NULL	NULL	Now:International Business Review 
+13023	0281-7527	NULL	NULL	NULL	Now:Scandinavian Journal of Management 
+13032	0925-6164	NULL	NULL	NULL	Merged:Early Human Development 
+13034	0036-9748	NULL	NULL	NULL	Now:Scripta Metallurgica et Materialia 
+13041	0277-0326	NULL	NULL	NULL	Merged:Journal of Critical Care 
+13044	1055-937X	NULL	NULL	NULL	Now:Journal of Exotic Pet Medicine 
+13048	1043-4682	NULL	NULL	NULL	Now:Seminars in Cell & Developmental Biology 
+13052	1044-5781	NULL	NULL	NULL	Merged:Seminars in Cell & Developmental Biology 
+13058	1084-2756	NULL	NULL	NULL	Now:Seminars in Fetal and Neonatal Medicine 
+13078	0250-6874	NULL	NULL	NULL	Now:Sensors and Actuators A:Physical and  Sensors and Actuators B:Chemical 
+13082	0956-9618	NULL	NULL	NULL	Merged:Separation and Purification Technology 
+13084	0888-0786	NULL	NULL	NULL	Now:Opportunistic Pathogens 
+13091	0928-4869	NULL	NULL	NULL	Now:Simulation Modelling Practice and Theory 
+13100	0037-7856	NULL	NULL	NULL	Now:Social Science & Medicine. Part A:Medical Psychology & Medical Sociology,  Social Science & Medicine. Part B:Medical Anthropology,  Social Science & Medicine. Part C:Medical Economics and  Social Science & Medicine. Part D:Medical Geography 
+13105	0271-5384	NULL	NULL	NULL	Merged:Social Science & Medicine 
+13106	0271-5392	NULL	NULL	NULL	Merged:Social Science & Medicine 
+13107	0143-6236	NULL	NULL	NULL	Now:International Journal of Information Management 
+13114	0933-3630	NULL	NULL	NULL	Merged:Soil and Tillage Research 
+13116	0741-983X	NULL	NULL	NULL	Merged:Renewable Energy 
+13117	0379-6787	NULL	NULL	NULL	Merged:Solar Energy Materials and Solar Cells 
+13119	0165-1633	NULL	NULL	NULL	Merged:Solar Energy Materials and Solar Cells 
+13131	0371-1951	NULL	NULL	NULL	Now:Spectrochimica Acta Part A:Molecular Spectroscopy and  Spectrochimica Acta Part B:Atomic Spectroscopy 
+13154	0968-5677	NULL	NULL	NULL	Merged:Materials Science and Engineering:C 
+13157	0167-2584	NULL	NULL	NULL	Merged:Surface Science 
+13164	0090-3019	NULL	NULL	NULL	Now:World Neurosurgery 
+13186	1477-3627	NULL	NULL	NULL	Now:Drug Discovery Today:TARGETS 
+13193	0099-3964	NULL	NULL	NULL	Now:Technological Forecasting and Social Change 
+13219	1037-2091	NULL	NULL	NULL	Now:The Asia Pacific Journal of Thoracic & Cardiovascular Surgery 
+13224	0950-5601	NULL	NULL	NULL	Now:Animal Behaviour 
+13225	1466-2108	NULL	NULL	NULL	Now:Clinical Chiropractic 
+13227	0300-9467	NULL	NULL	NULL	Now:The Chemical Engineering Journal and the Biochemical Engineering Journal 
+13229	0022-5428	NULL	NULL	NULL	Now:Journal of World Business 
+13238	0272-2380	NULL	NULL	NULL	Now:English for Specific Purposes 
+13241	0072-968X	NULL	NULL	NULL	Now:The Journal of Hand Surgery:British & European Volume 
+13246	0020-708X	NULL	NULL	NULL	Now:International Journal of Radiation Applications and Instrumentation. Part A. Applied Radiation and Isotopes 
+13265	0743-1066	NULL	NULL	NULL	Now:The Journal of Logic and Algebraic Programming 
+13267	1571-8913	NULL	NULL	NULL	Now:Journal of Men's Health 
+13279	1741-6280	NULL	NULL	NULL	Now:International Journal of Surgery 
+13280	1074-3804	NULL	NULL	NULL	Now:Journal of Minimally Invasive Gynecology 
+13281	1876-4983	NULL	NULL	NULL	Now:Journal of the American College of Clinical Wound Specialists 
+13326	0980-9090	NULL	NULL	NULL	Now:Immuno-analyse & Biologie Spécialisée 
+13328	0007-1536	NULL	NULL	NULL	Now:Mycological Research 
+13330	0372-1248	NULL	NULL	NULL	Now:Revue Française de Transfusion 
+13341	0041-1647	NULL	NULL	NULL	Now:Transportation Research Part A:General and  Transportation Research Part B:Methodological 
+13370	0041-2678	NULL	NULL	NULL	Now:Tribology International 
+13373	0041-3879	NULL	NULL	NULL	Now:Tubercle and Lung Disease 
+13385	0304-4009	NULL	NULL	NULL	Merged:Landscape and Urban Planning 
+13389	0923-2524	NULL	NULL	NULL	Now:Médecine de Catastrophe - urgences collectives 
+13428	0148-0685	NULL	NULL	NULL	Now:Women's Studies International Forum 
+13436	1431-7621	NULL	NULL	NULL	Now:Zeitschrift für Evidenz, Fortbildung und Qualität im Gesundheitswesen 
+13439	0300-872X	NULL	NULL	NULL	Now:Zeitschrift für Immunitätsforschung:Immunobiology 
+13441	0044-328X	NULL	NULL	NULL	Now:Journal of Plant Physiology 
+13446	0044-4057	NULL	NULL	NULL	Now:Zentralblatt für Bakteriologie, Parasitenkunde, Infektionskrankheiten und Hygiene. Zweite Naturwissenschaftliche Abteilung:Mikrobiologie der Landwirtschaft, der Technologie und des Umweltschutzes 
+13448	0172-5599	NULL	NULL	NULL	Now:Zentralblatt für Bakteriologie, Mikrobiologie und Hygiene. 1. Abt. Originale. A, Medizinische Mikrobiologie, Infektionskrankheiten und Parasitologie 
+13449	0172-5564	NULL	NULL	NULL	Now:Zentralblatt für Bakteriologie Mikrobiologie und Hygiene:I. Abt. Originale C:Allgemeine, angewandte und ökologische Mikrobiologie 
+13450	0934-8859	NULL	NULL	NULL	Now:International Journal of Hygiene and Environmental Health 
+13452	0144-2449	NULL	NULL	NULL	Merged:Microporous and Mesoporous Materials 
+13455	0927-0507	NULL	NULL	NULL	Now:Surveys in Operations Research and Management Science
+13580	0006-7431	NULL	NULL	NULL	Absorbed
+13581	0068-5895	NULL	NULL	NULL	Absorbed
+13593	0739-8301	NULL	NULL	NULL	Absorbed
+13605	0020-8027	NULL	NULL	NULL	Now: IMF Economic Review. Continues: IMF Staff Papers (1999-2010)
+13622	0042-577X	NULL	NULL	NULL	Absorbed
+13626	1940-641X	NULL	NULL	NULL	Absorbed
+13630	0506-9823	NULL	NULL	NULL	Absorbed
+13632	0043-4078	NULL	NULL	NULL	Absorbed
+13685	2157-1147	NULL	NULL	NULL	Absorbed
+13687	0002-7596	NULL	NULL	NULL	Absorbed
+13688	2158-7485	NULL	NULL	NULL	Absorbed
+13689	2159-8363	NULL	NULL	NULL	Absorbed
+13690	2162-044X	NULL	NULL	NULL	Absorbed
+13693	0015-8356	NULL	NULL	NULL	Absorbed
+13700	2304-7550	NULL	NULL	NULL	Absorbed
+13701	2304-7534	NULL	NULL	NULL	Absorbed
+13703	0022-6793	NULL	NULL	NULL	Absorbed
+13705	2158-9240	NULL	NULL	NULL	Absorbed
+13706	2158-7450	NULL	NULL	NULL	Absorbed
+13707	2158-7477	NULL	NULL	NULL	Absorbed
+13709	0034-0855	NULL	NULL	NULL	Absorbed
+13713	2158-7469	NULL	NULL	NULL	Absorbed
+13716	0885-856X	NULL	NULL	NULL	Absorbed
+13719	1532-5059	NULL	NULL	NULL	Absorbed
+13724	0741-7918	NULL	NULL	NULL	Absorbed
+13726	0003-4851	NULL	NULL	NULL	Absorbed
+13730	1368-0382	NULL	NULL	NULL	Absorbed
+13731	0156-7365	NULL	NULL	NULL	Absorbed
+13732	0067-8503	NULL	NULL	NULL	Absorbed
+13733	0148-6179	NULL	NULL	NULL	Absorbed
+13740	1536-1489	NULL	NULL	NULL	Absorbed
+13742	0014-7354	NULL	NULL	NULL	Absorbed
+13743	0363-6917	NULL	NULL	NULL	Absorbed
+13744	1466-9404	NULL	NULL	NULL	Absorbed
+13745	0362-4056	NULL	NULL	NULL	Absorbed
+13746	0190-3187	NULL	NULL	NULL	Absorbed
+13747	0162-2749	NULL	NULL	NULL	Absorbed
+13748	1526-422X	NULL	NULL	NULL	Absorbed
+13751	1356-0123	NULL	NULL	NULL	Absorbed
+13754	0740-9168	NULL	NULL	NULL	Absorbed
+13755	0364-281X	NULL	NULL	NULL	Absorbed
+13758	0885-3525	NULL	NULL	NULL	Absorbed
+13759	0095-9006	NULL	NULL	NULL	Absorbed
+13762	0022-2992	NULL	NULL	NULL	Absorbed
+13764	0160-9335	NULL	NULL	NULL	Absorbed
+13769	0959-5295	NULL	NULL	NULL	Absorbed
+13770	1356-0131	NULL	NULL	NULL	Absorbed
+13771	1368-0358	NULL	NULL	NULL	Absorbed
+13772	1368-0374	NULL	NULL	NULL	Absorbed
+13773	0307-3114	NULL	NULL	NULL	Absorbed
+13774	0952-8385	NULL	NULL	NULL	Absorbed
+13775	0035-9238	NULL	NULL	NULL	Absorbed
+13776	0035-9246	NULL	NULL	NULL	Absorbed
+13778	0368-4245	NULL	NULL	NULL	Absorbed
+13779	0887-459X	NULL	NULL	NULL	Absorbed
+13780	0959-5341	NULL	NULL	NULL	Absorbed
+13781	0025-1496	NULL	NULL	NULL	Absorbed
+13782	0891-6837	NULL	NULL	NULL	Absorbed
+13784	0026-3397	NULL	NULL	NULL	Absorbed
+13785	0161-391X	NULL	NULL	NULL	Absorbed
+13786	0149-6611	NULL	NULL	NULL	Absorbed
+13787	0028-2480	NULL	NULL	NULL	Absorbed
+13788	1530-2199	NULL	NULL	NULL	Absorbed
+13789	0029-0564	NULL	NULL	NULL	Absorbed
+13795	1523-8431	NULL	NULL	NULL	Absorbed
+13796	1169-1018	NULL	NULL	NULL	Absorbed
+13800	2046-5890	NULL	NULL	NULL	Absorbed
+13801	1049-7498	NULL	NULL	NULL	Absorbed
+13802	1522-5437	NULL	NULL	NULL	Absorbed
+13803	1522-5445	NULL	NULL	NULL	Absorbed
+13804	0307-6776	NULL	NULL	NULL	Absorbed
+13805	0277-903X	NULL	NULL	NULL	Absorbed
+13811	0147-829X	NULL	NULL	NULL	Absorbed
+13812	0038-0431	NULL	NULL	NULL	Absorbed
+13814	0081-8658	NULL	NULL	NULL	Absorbed
+13815	1466-6162	NULL	NULL	NULL	Absorbed
+13817	1356-014X	NULL	NULL	NULL	Absorbed
+13818	1368-0366	NULL	NULL	NULL	Absorbed
+13819	1526-4211	NULL	NULL	NULL	Absorbed
+13820	1525-6979	NULL	NULL	NULL	Absorbed
+13823	1524-4555	NULL	NULL	NULL	Absorbed
+13824	0738-0526	NULL	NULL	NULL	Absorbed
+13825	0001-9992	NULL	NULL	NULL	Absorbed
+13826	0568-1537	NULL	NULL	NULL	Absorbed
+13827	0095-1390	NULL	NULL	NULL	Absorbed
+13830	1540-5079	NULL	NULL	NULL	Absorbed
+13831	1062-0516	NULL	NULL	NULL	Absorbed
+13832	1049-7544	NULL	NULL	NULL	Absorbed
+13833	0364-1686	NULL	NULL	NULL	Absorbed
+13835	0361-5448	NULL	NULL	NULL	Absorbed
+13836	1533-6689	NULL	NULL	NULL	Absorbed
+13837	0361-915X	NULL	NULL	NULL	Absorbed
+13838	0005-8556	NULL	NULL	NULL	Absorbed
+13839	0099-4987	NULL	NULL	NULL	Absorbed
+13841	0305-6139	NULL	NULL	NULL	Absorbed
+13842	0525-1370	NULL	NULL	NULL	Absorbed
+13844	0190-5929	NULL	NULL	NULL	Absorbed
+13845	1356-1898	NULL	NULL	NULL	Absorbed
+13846	1474-6913	NULL	NULL	NULL	Absorbed
+13847	0315-4890	NULL	NULL	NULL	Absorbed
+13851	0731-4086	NULL	NULL	NULL	Absorbed
+13852	0383-6258	NULL	NULL	NULL	Absorbed
+13853	1540-8256	NULL	NULL	NULL	Absorbed
+13854	0014-7214	NULL	NULL	NULL	Absorbed
+13855	0886-0394	NULL	NULL	NULL	Absorbed
+13856	0362-8949	NULL	NULL	NULL	Absorbed
+13857	1651-3215	NULL	NULL	NULL	Absorbed
+13859	0160-2810	NULL	NULL	NULL	Absorbed
+13861	0162-8607	NULL	NULL	NULL	Absorbed
+13863	1473-8104	NULL	NULL	NULL	Absorbed
+13864	1473-8112	NULL	NULL	NULL	Absorbed
+13866	0538-8716	NULL	NULL	NULL	Absorbed
+13868	0885-3118	NULL	NULL	NULL	Absorbed
+13872	1532-1282	NULL	NULL	NULL	Absorbed
+13873	1536-0393	NULL	NULL	NULL	Absorbed
+13874	1536-0407	NULL	NULL	NULL	Absorbed
+13876	1473-7981	NULL	NULL	NULL	Absorbed
+13877	0368-4016	NULL	NULL	NULL	Absorbed
+13878	0266-6235	NULL	NULL	NULL	Absorbed
+13879	1473-799X	NULL	NULL	NULL	Absorbed
+13880	1538-1420	NULL	NULL	NULL	Absorbed
+13881	0885-7059	NULL	NULL	NULL	Absorbed
+13883	1539-557X	NULL	NULL	NULL	Absorbed
+13884	0543-2499	NULL	NULL	NULL	Absorbed
+13886	1536-0385	NULL	NULL	NULL	Absorbed
+13887	0888-0328	NULL	NULL	NULL	Absorbed
+13888	0047-7265	NULL	NULL	NULL	Absorbed
+13890	1539-5588	NULL	NULL	NULL	Absorbed
+13892	1546-315X	NULL	NULL	NULL	Absorbed
+13893	0738-2618	NULL	NULL	NULL	Absorbed
+13896	0315-7725	NULL	NULL	NULL	Absorbed
+13898	0885-6818	NULL	NULL	NULL	Absorbed
+13900	0885-6826	NULL	NULL	NULL	Absorbed
+13901	0266-626X	NULL	NULL	NULL	Absorbed
+13902	1478-615X	NULL	NULL	NULL	Absorbed
+13903	0030-8269	NULL	NULL	NULL	Absorbed
+13904	0270-8647	NULL	NULL	NULL	Absorbed
+13905	0952-2344	NULL	NULL	NULL	Absorbed
+13906	0886-3040	NULL	NULL	NULL	Absorbed
+13907	0036-8539	NULL	NULL	NULL	Absorbed
+13908	0080-987X	NULL	NULL	NULL	Absorbed
+13912	1535-0940	NULL	NULL	NULL	Absorbed
+13913	1535-0959	NULL	NULL	NULL	Absorbed
+13914	0038-5859	NULL	NULL	NULL	Absorbed
+13915	0952-2336	NULL	NULL	NULL	Absorbed
+13916	1478-4009	NULL	NULL	NULL	Absorbed
+13917	1478-4017	NULL	NULL	NULL	Absorbed
+13918	0065-9711	NULL	NULL	NULL	Absorbed
+13919	0271-4442	NULL	NULL	NULL	Absorbed
+13920	1541-4132	NULL	NULL	NULL	Absorbed
+13921	0049-4925	NULL	NULL	NULL	Absorbed
+13928	1550-3283	NULL	NULL	NULL	Absorbed
+13929	0564-4429	NULL	NULL	NULL	Absorbed
+13930	0886-2192	NULL	NULL	NULL	Absorbed
+13941	0385-2342	NULL	NULL	NULL	Absorbed
+13943	0190-3578	NULL	NULL	NULL	Absorbed
+13944	1571-9529	NULL	NULL	NULL	Absorbed
+13945	0884-674X	NULL	NULL	NULL	Absorbed
+13946	0991-9228	NULL	NULL	NULL	Absorbed
+13947	1539-8692	NULL	NULL	NULL	Absorbed
+13948	0535-0867	NULL	NULL	NULL	Absorbed
+13949	0146-1257	NULL	NULL	NULL	Absorbed
+13950	1544-4708	NULL	NULL	NULL	Absorbed
+13951	0044-9466	NULL	NULL	NULL	Absorbed
+13952	0895-0571	NULL	NULL	NULL	Absorbed
+13953	0272-8192	NULL	NULL	NULL	Absorbed
+13954	0026-3419	NULL	NULL	NULL	Absorbed
+13955	0035-7626	NULL	NULL	NULL	Absorbed
+13957	0951-0788	NULL	NULL	NULL	Absorbed
+13958	1556-1283	NULL	NULL	NULL	Absorbed
+13959	0161-3936	NULL	NULL	NULL	Absorbed
+13961	1543-6322	NULL	NULL	NULL	Absorbed
+13964	0588-7356	NULL	NULL	NULL	Absorbed
+13967	0012-5962	NULL	NULL	NULL	Absorbed
+13969	0013-1989	NULL	NULL	NULL	Absorbed
+13973	1744-2524	NULL	NULL	NULL	Absorbed
+13974	1744-1994	NULL	NULL	NULL	Absorbed
+13975	0388-0370	NULL	NULL	NULL	Absorbed
+13980	1749-3382	NULL	NULL	NULL	Absorbed
+13983	0190-5953	NULL	NULL	NULL	Absorbed
+13985	1549-0076	NULL	NULL	NULL	Absorbed
+13986	0047-1208	NULL	NULL	NULL	Absorbed
+13989	0149-2993	NULL	NULL	NULL	Absorbed
+13990	0075-2789	NULL	NULL	NULL	Absorbed
+13992	0047-2239	NULL	NULL	NULL	Absorbed
+13993	0885-2758	NULL	NULL	NULL	Absorbed
+13998	1544-9890	NULL	NULL	NULL	Absorbed
+13999	0885-9884	NULL	NULL	NULL	Absorbed
+14000	0950-7922	NULL	NULL	NULL	Absorbed
+14001	1549-9804	NULL	NULL	NULL	Absorbed
+14003	1069-8337	NULL	NULL	NULL	Absorbed
+14004	1550-0349	NULL	NULL	NULL	Absorbed
+14006	0959-2024	NULL	NULL	NULL	Absorbed
+14007	0004-5810	NULL	NULL	NULL	Absorbed
+14016	0378-8903	NULL	NULL	NULL	Absorbed
+14017	1539-3666	NULL	NULL	NULL	Absorbed
+14023	0958-8434	NULL	NULL	NULL	Absorbed
+14025	1551-7438	NULL	NULL	NULL	Absorbed
+14026	0380-0598	NULL	NULL	NULL	Absorbed
+14027	0192-6950	NULL	NULL	NULL	Absorbed
+14028	1749-3390	NULL	NULL	NULL	Absorbed
+14030	0190-5937	NULL	NULL	NULL	Absorbed
+14031	0190-5945	NULL	NULL	NULL	Absorbed
+14033	1543-6314	NULL	NULL	NULL	Absorbed
+14037	0958-8442	NULL	NULL	NULL	Absorbed
+14038	0080-4452	NULL	NULL	NULL	Absorbed
+14039	0884-6758	NULL	NULL	NULL	Absorbed
+14040	0435-1185	NULL	NULL	NULL	Absorbed
+14041	1549-0068	NULL	NULL	NULL	Absorbed
+14042	0889-6585	NULL	NULL	NULL	Absorbed
+14046	0361-1299	NULL	NULL	NULL	Absorbed
+14047	1612-0124	NULL	NULL	NULL	Absorbed
+14049	0890-4901	NULL	NULL	NULL	Absorbed
+14050	0038-2868	NULL	NULL	NULL	Absorbed
+14052	0038-321X	NULL	NULL	NULL	Absorbed
+14055	0039-3266	NULL	NULL	NULL	Absorbed
+14056	0273-4354	NULL	NULL	NULL	Absorbed
+14057	0921-3260	NULL	NULL	NULL	Absorbed
+14059	0042-3874	NULL	NULL	NULL	Absorbed
+14060	1539-3682	NULL	NULL	NULL	Absorbed
+14061	1539-3674	NULL	NULL	NULL	Absorbed
+14062	0886-800X	NULL	NULL	NULL	Absorbed
+14066	0146-4949	NULL	NULL	NULL	Absorbed
+14069	0316-6082	NULL	NULL	NULL	Absorbed
+14074	0361-9486	NULL	NULL	NULL	Absorbed
+14078	1547-6154	NULL	NULL	NULL	Absorbed
+14080	1558-3813	NULL	NULL	NULL	Absorbed
+14081	1558-3562	NULL	NULL	NULL	Absorbed
+14082	1558-3538	NULL	NULL	NULL	Absorbed
+14084	0306-3704	NULL	NULL	NULL	Absorbed
+14087	1043-1500	NULL	NULL	NULL	Absorbed
+14090	0591-2202	NULL	NULL	NULL	Absorbed
+14091	0098-2881	NULL	NULL	NULL	Absorbed
+14092	1545-5890	NULL	NULL	NULL	Absorbed
+14095	0078-4931	NULL	NULL	NULL	Absorbed
+14096	1553-8729	NULL	NULL	NULL	Absorbed
+14098	1555-4023	NULL	NULL	NULL	Absorbed
+14100	1545-5858	NULL	NULL	NULL	Absorbed
+14101	1545-5904	NULL	NULL	NULL	Absorbed
+14105	1479-5930	NULL	NULL	NULL	Absorbed
+14108	1479-5949	NULL	NULL	NULL	Absorbed
+14110	0885-2731	NULL	NULL	NULL	Absorbed
+14112	0022-0205	NULL	NULL	NULL	Absorbed
+14113	0362-9791	NULL	NULL	NULL	Absorbed
+14114	1047-3483	NULL	NULL	NULL	Absorbed
+14118	0142-2774	NULL	NULL	NULL	Absorbed
+14119	1535-3990	NULL	NULL	NULL	Absorbed
+14120	1535-4016	NULL	NULL	NULL	Absorbed
+14121	0885-4173	NULL	NULL	NULL	Absorbed
+14122	0096-3984	NULL	NULL	NULL	Absorbed
+14123	1479-5973	NULL	NULL	NULL	Absorbed
+14128	0542-4917	NULL	NULL	NULL	Absorbed
+14131	0026-3745	NULL	NULL	NULL	Absorbed
+14132	0276-5187	NULL	NULL	NULL	Absorbed
+14133	0160-1997	NULL	NULL	NULL	Absorbed
+14135	1559-2464	NULL	NULL	NULL	Absorbed
+14136	1559-2472	NULL	NULL	NULL	Absorbed
+14137	1473-284X	NULL	NULL	NULL	Absorbed
+14138	0030-3623	NULL	NULL	NULL	Absorbed
+14140	1473-2858	NULL	NULL	NULL	Absorbed
+14142	0078-7787	NULL	NULL	NULL	Absorbed
+14143	1479-1226	NULL	NULL	NULL	Absorbed
+14144	1535-4024	NULL	NULL	NULL	Absorbed
+14146	1044-8039	NULL	NULL	NULL	Absorbed
+14147	0361-6681	NULL	NULL	NULL	Absorbed
+14148	0307-9023	NULL	NULL	NULL	Absorbed
+14149	1535-4008	NULL	NULL	NULL	Absorbed
+14150	0036-6773	NULL	NULL	NULL	Absorbed
+14151	1949-0038	NULL	NULL	NULL	Absorbed
+14156	1479-1234	NULL	NULL	NULL	Absorbed
+14157	0163-2647	NULL	NULL	NULL	Absorbed
+14159	0749-9833	NULL	NULL	NULL	Absorbed
+14160	1547-1357	NULL	NULL	NULL	Absorbed
+14163	0737-5840	NULL	NULL	NULL	Absorbed
+14166	1866-6167	NULL	NULL	NULL	Absorbed
+14167	1866-6175	NULL	NULL	NULL	Absorbed
+14168	0003-441X	NULL	NULL	NULL	Absorbed
+14169	1243-2563	NULL	NULL	NULL	Absorbed
+14170	1243-258X	NULL	NULL	NULL	Absorbed
+14172	0362-7861	NULL	NULL	NULL	Absorbed
+14173	1534-5920	NULL	NULL	NULL	Absorbed
+14174	1948-1608	NULL	NULL	NULL	Absorbed
+14175	1948-1594	NULL	NULL	NULL	Absorbed
+14177	1945-2926	NULL	NULL	NULL	Absorbed
+14179	0004-1408	NULL	NULL	NULL	Absorbed
+14181	1939-6406	NULL	NULL	NULL	Absorbed
+14183	0006-7997	NULL	NULL	NULL	Absorbed
+14185	2045-4112	NULL	NULL	NULL	Absorbed
+14187	1836-5264	NULL	NULL	NULL	Absorbed
+14191	0899-0336	NULL	NULL	NULL	Absorbed
+14193	0524-5001	NULL	NULL	NULL	Absorbed
+14194	0097-6059	NULL	NULL	NULL	Absorbed
+14195	0008-1175	NULL	NULL	NULL	Absorbed
+14200	1046-1477	NULL	NULL	NULL	Absorbed
+14201	0376-8899	NULL	NULL	NULL	Absorbed
+14202	1053-4180	NULL	NULL	NULL	Absorbed
+14203	0147-2496	NULL	NULL	NULL	Absorbed
+14204	0898-073X	NULL	NULL	NULL	Absorbed
+14205	1876-2514	NULL	NULL	NULL	Absorbed
+14206	0996-2735	NULL	NULL	NULL	Absorbed
+14207	1934-0591	NULL	NULL	NULL	Absorbed
+14209	0361-624X	NULL	NULL	NULL	Absorbed
+14211	1046-7009	NULL	NULL	NULL	Absorbed
+14212	0015-7422	NULL	NULL	NULL	Absorbed
+14213	0015-900X	NULL	NULL	NULL	Absorbed
+14218	0360-1846	NULL	NULL	NULL	Absorbed
+14220	1080-6067	NULL	NULL	NULL	Absorbed
+14227	0731-213X	NULL	NULL	NULL	Absorbed
+14228	0441-2060	NULL	NULL	NULL	Absorbed
+14234	0094-5080	NULL	NULL	NULL	Absorbed
+14238	0071-0563	NULL	NULL	NULL	Absorbed
+14239	1756-0985	NULL	NULL	NULL	Absorbed
+14240	0377-0567	NULL	NULL	NULL	Absorbed
+14241	0015-5934	NULL	NULL	NULL	Absorbed
+14243	0035-869X	NULL	NULL	NULL	Absorbed
+14244	0734-919X	NULL	NULL	NULL	Absorbed
+14245	0041-9311	NULL	NULL	NULL	Absorbed
+14246	2155-8159	NULL	NULL	NULL	Absorbed
+14247	0083-7156	NULL	NULL	NULL	Absorbed
+14249	1876-2530	NULL	NULL	NULL	Absorbed
+14257	1243-2571	NULL	NULL	NULL	Absorbed
+14258	1937-6766	NULL	NULL	NULL	Absorbed
+14261	0732-2895	NULL	NULL	NULL	Absorbed
+14263	0544-0750	NULL	NULL	NULL	Absorbed
+14265	0190-6348	NULL	NULL	NULL	Absorbed
+14269	1948-0938	NULL	NULL	NULL	Absorbed
+14270	1948-0911	NULL	NULL	NULL	Absorbed
+14271	1939-9952	NULL	NULL	NULL	Absorbed
+14273	0899-0344	NULL	NULL	NULL	Absorbed
+14275	0097-8523	NULL	NULL	NULL	Absorbed
+14277	1945-7863	NULL	NULL	NULL	Absorbed
+14278	1939-053X	NULL	NULL	NULL	Absorbed
+14279	0029-4500	NULL	NULL	NULL	Absorbed
+14280	1948-092X	NULL	NULL	NULL	Absorbed
+14281	0195-914X	NULL	NULL	NULL	Absorbed
+14284	0889-065X	NULL	NULL	NULL	Absorbed
+14286	0076-4981	NULL	NULL	NULL	Absorbed
+14287	0361-6258	NULL	NULL	NULL	Absorbed
+14289	0080-4460	NULL	NULL	NULL	Absorbed
+14290	0897-9049	NULL	NULL	NULL	Absorbed
+14294	0996-2727	NULL	NULL	NULL	Absorbed
+14295	0996-2743	NULL	NULL	NULL	Absorbed
+14299	0148-7825	NULL	NULL	NULL	Absorbed
+14302	0039-3797	NULL	NULL	NULL	Absorbed
+14303	1940-0969	NULL	NULL	NULL	Absorbed
+14307	0049-6189	NULL	NULL	NULL	Absorbed
+14312	0044-2216	NULL	NULL	NULL	Absorbed
+14315	0896-3789	NULL	NULL	NULL	Absorbed
+14316	1079-5545	NULL	NULL	NULL	Absorbed
+14318	0162-8003	NULL	NULL	NULL	Absorbed
+14319	2154-8382	NULL	NULL	NULL	Absorbed
+14320	2154-8390	NULL	NULL	NULL	Absorbed
+14321	2155-7799	NULL	NULL	NULL	Absorbed
+14322	2154-8420	NULL	NULL	NULL	Absorbed
+14323	2155-7802	NULL	NULL	NULL	Absorbed
+14325	0364-4006	NULL	NULL	NULL	Absorbed
+14326	2159-5062	NULL	NULL	NULL	Absorbed
+14327	2159-5089	NULL	NULL	NULL	Absorbed
+14328	2159-5070	NULL	NULL	NULL	Absorbed
+14336	1940-882X	NULL	NULL	NULL	Absorbed
+14337	0766-7736	NULL	NULL	NULL	Absorbed
+14341	1043-1691	NULL	NULL	NULL	Absorbed
+14343	0003-9659	NULL	NULL	NULL	Absorbed
+14344	0571-2211	NULL	NULL	NULL	Absorbed
+14345	0005-0091	NULL	NULL	NULL	Absorbed
+14346	0305-8026	NULL	NULL	NULL	Absorbed
+14348	1093-3514	NULL	NULL	NULL	Absorbed
+14349	2044-3986	NULL	NULL	NULL	Absorbed
+14350	0364-4049	NULL	NULL	NULL	Absorbed
+14353	0008-0160	NULL	NULL	NULL	Absorbed
+14356	0098-809X	NULL	NULL	NULL	Absorbed
+14357	0363-6291	NULL	NULL	NULL	Absorbed
+14360	0959-5376	NULL	NULL	NULL	Absorbed
+14361	0010-4817	NULL	NULL	NULL	Absorbed
+14362	0884-0709	NULL	NULL	NULL	Absorbed
+14369	0046-2756	NULL	NULL	NULL	Absorbed
+14370	1938-9779	NULL	NULL	NULL	Absorbed
+14373	0766-7752	NULL	NULL	NULL	Absorbed
+14375	0016-8289	NULL	NULL	NULL	Absorbed
+14381	1945-8630	NULL	NULL	NULL	Absorbed
+14382	0019-3089	NULL	NULL	NULL	Absorbed
+14387	0730-5079	NULL	NULL	NULL	Absorbed
+14388	0731-3667	NULL	NULL	NULL	Absorbed
+14390	0022-0604	NULL	NULL	NULL	Absorbed
+14394	0148-8937	NULL	NULL	NULL	Absorbed
+14395	0022-2259	NULL	NULL	NULL	Absorbed
+14396	0275-3650	NULL	NULL	NULL	Absorbed
+14397	0090-8894	NULL	NULL	NULL	Absorbed
+14398	0748-6766	NULL	NULL	NULL	Absorbed
+14399	0146-1052	NULL	NULL	NULL	Absorbed
+14402	1068-3380	NULL	NULL	NULL	Absorbed
+14403	0022-4103	NULL	NULL	NULL	Absorbed
+14406	1947-3850	NULL	NULL	NULL	Absorbed
+14407	1947-3877	NULL	NULL	NULL	Absorbed
+14408	1947-3869	NULL	NULL	NULL	Absorbed
+14409	1947-3885	NULL	NULL	NULL	Absorbed
+14410	0023-9445	NULL	NULL	NULL	Absorbed
+14414	0766-7744	NULL	NULL	NULL	Absorbed
+14415	1944-0995	NULL	NULL	NULL	Absorbed
+14418	1149-9931	NULL	NULL	NULL	Absorbed
+14421	1941-9716	NULL	NULL	NULL	Absorbed
+14424	0272-5061	NULL	NULL	NULL	Absorbed
+14425	0272-5045	NULL	NULL	NULL	Absorbed
+14426	0272-5053	NULL	NULL	NULL	Absorbed
+14428	0154-9960	NULL	NULL	NULL	Absorbed
+14429	0034-3005	NULL	NULL	NULL	Absorbed
+14433	0034-9429	NULL	NULL	NULL	Absorbed
+14436	0573-3561	NULL	NULL	NULL	Absorbed
+14438	0743-9245	NULL	NULL	NULL	Absorbed
+14440	0863-5781	NULL	NULL	NULL	Absorbed
+14445	0363-1133	NULL	NULL	NULL	Absorbed
+14449	0932-1314	NULL	NULL	NULL	Absorbed
+14451	0932-1322	NULL	NULL	NULL	Absorbed
+14452	0932-3988	NULL	NULL	NULL	Absorbed
+14453	0044-3646	NULL	NULL	NULL	Absorbed
+14454	0937-2229	NULL	NULL	NULL	Absorbed
+14455	0937-2679	NULL	NULL	NULL	Absorbed
+14457	0001-026X	NULL	NULL	NULL	Absorbed
+14461	2078-807X	NULL	NULL	NULL	Absorbed
+14464	2152-8551	NULL	NULL	NULL	Absorbed
+14467	1944-0227	NULL	NULL	NULL	Absorbed
+14469	0002-9823	NULL	NULL	NULL	Absorbed
+14473	0270-6334	NULL	NULL	NULL	Absorbed
+14474	0145-2363	NULL	NULL	NULL	Absorbed
+14479	2151-2531	NULL	NULL	NULL	Absorbed
+14487	0890-4944	NULL	NULL	NULL	Absorbed
+14489	0885-727X	NULL	NULL	NULL	Absorbed
+14491	0001-2890	NULL	NULL	NULL	Absorbed
+14493	0090-4155	NULL	NULL	NULL	Absorbed
+14498	2156-8928	NULL	NULL	NULL	Absorbed
+14500	0996-0996	NULL	NULL	NULL	Absorbed
+14501	0739-5639	NULL	NULL	NULL	Absorbed
+14503	0883-1610	NULL	NULL	NULL	Absorbed
+14504	0898-1922	NULL	NULL	NULL	Absorbed
+14505	0364-8141	NULL	NULL	NULL	Absorbed
+14508	0165-9510	NULL	NULL	NULL	Absorbed
+14509	2158-0057	NULL	NULL	NULL	Absorbed
+14510	0980-1626	NULL	NULL	NULL	Absorbed
+14512	1245-9151	NULL	NULL	NULL	Absorbed
+14513	1015-5775	NULL	NULL	NULL	Absorbed
+14514	0095-9367	NULL	NULL	NULL	Absorbed
+14517	2152-6907	NULL	NULL	NULL	Absorbed
+14521	0010-7557	NULL	NULL	NULL	Absorbed
+14526	0148-5806	NULL	NULL	NULL	Absorbed
+14531	2161-2501	NULL	NULL	NULL	Absorbed
+14532	2161-248X	NULL	NULL	NULL	Absorbed
+14542	0890-9997	NULL	NULL	NULL	Absorbed
+14543	0073-2672	NULL	NULL	NULL	Absorbed
+14545	0151-1807	NULL	NULL	NULL	Absorbed
+14546	0748-8149	NULL	NULL	NULL	Absorbed
+14547	2152-856X	NULL	NULL	NULL	Absorbed
+14551	0147-2259	NULL	NULL	NULL	Absorbed
+14553	0196-903X	NULL	NULL	NULL	Absorbed
+14555	1230-3240	NULL	NULL	NULL	Absorbed
+14558	0364-2968	NULL	NULL	NULL	Absorbed
+14560	0162-2641	NULL	NULL	NULL	Absorbed
+14561	0022-2925	NULL	NULL	NULL	Absorbed
+14562	1059-8529	NULL	NULL	NULL	Absorbed
+14564	0092-1807	NULL	NULL	NULL	Absorbed
+14565	0019-2287	NULL	NULL	NULL	Absorbed
+14569	2150-5977	NULL	NULL	NULL	Absorbed
+14570	0025-0503	NULL	NULL	NULL	Absorbed
+14580	0164-3177	NULL	NULL	NULL	Absorbed
+14581	0736-2579	NULL	NULL	NULL	Absorbed
+14583	2157-1139	NULL	NULL	NULL	Absorbed
+14584	0703-5500	NULL	NULL	NULL	Absorbed
+14585	2078-8061	NULL	NULL	NULL	Absorbed
+14586	2042-0005	NULL	NULL	NULL	Absorbed
+14587	0294-1414	NULL	NULL	NULL	Absorbed
+14593	2153-3857	NULL	NULL	NULL	Absorbed
+14595	2156-5902	NULL	NULL	NULL	Absorbed
+14598	2151-1705	NULL	NULL	NULL	Absorbed
+14599	2153-1706	NULL	NULL	NULL	Absorbed
+14600	1948-3325	NULL	NULL	NULL	Absorbed
+14601	8755-3627	NULL	NULL	NULL	Absorbed
+14604	0160-3256	NULL	NULL	NULL	Absorbed
+14605	0160-3221	NULL	NULL	NULL	Absorbed
+14607	1137-2249	NULL	NULL	NULL	Absorbed
+14611	0035-2314	NULL	NULL	NULL	Absorbed
+14612	0755-1584	NULL	NULL	NULL	Absorbed
+14618	0739-4365	NULL	NULL	NULL	Absorbed
+14623	2042-0013	NULL	NULL	NULL	Absorbed
+14625	0037-3354	NULL	NULL	NULL	Absorbed
+14630	2158-7957	NULL	NULL	NULL	Absorbed
+14632	0364-8656	NULL	NULL	NULL	Absorbed
+14633	0736-3974	NULL	NULL	NULL	Absorbed
+14635	2152-615X	NULL	NULL	NULL	Absorbed
+14636	2158-7973	NULL	NULL	NULL	Absorbed
+14637	0361-6223	NULL	NULL	NULL	Absorbed
+14640	0360-3180	NULL	NULL	NULL	Absorbed
+14642	1619-6627	NULL	NULL	NULL	Absorbed
+14645	1619-7097	NULL	NULL	NULL	Absorbed
+14646	0193-1806	NULL	NULL	NULL	Absorbed
+14647	0019-0209	NULL	NULL	NULL	Absorbed
+14649	1065-9048	NULL	NULL	NULL	Absorbed
+14650	0071-8343	NULL	NULL	NULL	Absorbed
+14653	0284-7310	NULL	NULL	NULL	Absorbed
+14654	1439-3972	NULL	NULL	NULL	Absorbed
+14655	0019-1833	NULL	NULL	NULL	Absorbed
+14656	1071-1031	NULL	NULL	NULL	Absorbed
+14657	1548-9000	NULL	NULL	NULL	Absorbed
+14661	0190-9509	NULL	NULL	NULL	Absorbed
+14663	0191-9016	NULL	NULL	NULL	Absorbed
+14667	0039-7318	NULL	NULL	NULL	Absorbed
+14674	0886-1005	NULL	NULL	NULL	Absorbed
+14675	0391-4674	NULL	NULL	NULL	Absorbed
+14676	2046-164X	NULL	NULL	NULL	Absorbed
+14677	2046-1658	NULL	NULL	NULL	Absorbed
+14678	0866-6865	NULL	NULL	NULL	Absorbed
+14679	2033-642X	NULL	NULL	NULL	Absorbed
+14680	1373-9719	NULL	NULL	NULL	Absorbed
+14681	2033-6411	NULL	NULL	NULL	Absorbed
+14685	0185-0148	NULL	NULL	NULL	Absorbed
+14686	2154-2945	NULL	NULL	NULL	Absorbed
+14687	0422-3012	NULL	NULL	NULL	Absorbed
+14688	0139-4045	NULL	NULL	NULL	Absorbed
+14692	0393-456X	NULL	NULL	NULL	Absorbed
+14694	1125-2855	NULL	NULL	NULL	Absorbed
+14696	1125-2863	NULL	NULL	NULL	Absorbed
+14701	0012-8783	NULL	NULL	NULL	Absorbed
+14703	0075-2770	NULL	NULL	NULL	Absorbed
+14711	2153-4519	NULL	NULL	NULL	Absorbed
+14713	2046-1666	NULL	NULL	NULL	Absorbed
+14714	2046-1674	NULL	NULL	NULL	Absorbed
+14715	0942-8771	NULL	NULL	NULL	Absorbed
+14716	0025-181X	NULL	NULL	NULL	Absorbed
+14717	0160-6557	NULL	NULL	NULL	Absorbed
+14721	0377-3191	NULL	NULL	NULL	Absorbed
+14722	0747-5535	NULL	NULL	NULL	Absorbed
+14726	1061-2009	NULL	NULL	NULL	Absorbed
+14729	0147-8168	NULL	NULL	NULL	Absorbed
+14730	0038-5263	NULL	NULL	NULL	Absorbed
+14731	1218-9383	NULL	NULL	NULL	Absorbed
+14732	0041-0616	NULL	NULL	NULL	Absorbed
+14733	0071-3686	NULL	NULL	NULL	Absorbed
+14735	0042-5699	NULL	NULL	NULL	Absorbed
+14737	0043-2636	NULL	NULL	NULL	Absorbed
+14738	0162-1912	NULL	NULL	NULL	Absorbed
+14739	0044-2550	NULL	NULL	NULL	Absorbed
+14741	1619-6104	NULL	NULL	NULL	Absorbed
+14745	0967-9952	NULL	NULL	NULL	Absorbed
+14746	1529-4560	NULL	NULL	NULL	Absorbed
+14747	0006-8071	NULL	NULL	NULL	Absorbed
+14748	0040-9618	NULL	NULL	NULL	Absorbed
+14749	0960-7447	NULL	NULL	NULL	Absorbed
+14751	0271-6844	NULL	NULL	NULL	Absorbed
+14754	0039-7989	NULL	NULL	NULL	Absorbed
+14755	0096-3844	NULL	NULL	NULL	Absorbed
+14756	0365-0855	NULL	NULL	NULL	Absorbed
+14757	0365-5695	NULL	NULL	NULL	Absorbed
+14760	2041-9996	NULL	NULL	NULL	Absorbed
+14762	0007-1072	NULL	NULL	NULL	Absorbed
+14763	0007-1242	NULL	NULL	NULL	Absorbed
+14764	0366-0842	NULL	NULL	NULL	Absorbed
+14765	0007-1447	NULL	NULL	NULL	Absorbed
+14766	0267-0623	NULL	NULL	NULL	Absorbed
+14769	0142-467X	NULL	NULL	NULL	Absorbed
+14770	0195-9417	NULL	NULL	NULL	Absorbed
+14772	0141-7681	NULL	NULL	NULL	Absorbed
+14773	2041-9988	NULL	NULL	NULL	Absorbed
+14774	0370-2316	NULL	NULL	NULL	Absorbed
+14775	0260-7085	NULL	NULL	NULL	Absorbed
+14776	0261-0523	NULL	NULL	NULL	Absorbed
+14777	0264-3820	NULL	NULL	NULL	Absorbed
+14778	0264-3839	NULL	NULL	NULL	Absorbed
+14779	0264-3952	NULL	NULL	NULL	Absorbed
+14780	0080-4614	NULL	NULL	NULL	Absorbed
+14781	0080-4622	NULL	NULL	NULL	Absorbed
+14782	0264-3960	NULL	NULL	NULL	Absorbed
+14785	0962-8428	NULL	NULL	NULL	Absorbed
+14787	0370-1662	NULL	NULL	NULL	Absorbed
+14788	0950-1207	NULL	NULL	NULL	Absorbed
+14789	0080-4630	NULL	NULL	NULL	Absorbed
+14790	0080-4649	NULL	NULL	NULL	Absorbed
+14791	0950-1193	NULL	NULL	NULL	Absorbed
+14793	0962-8444	NULL	NULL	NULL	Absorbed
+14795	2041-9953	NULL	NULL	NULL	Absorbed
+14796	2041-997X	NULL	NULL	NULL	Absorbed
+14797	2041-9961	NULL	NULL	NULL	Absorbed
+14798	0162-0886	NULL	NULL	NULL	Absorbed
+14800	0096-4018	NULL	NULL	NULL	Absorbed
+14801	0096-3771	NULL	NULL	NULL	Absorbed
+14802	0096-977X	NULL	NULL	NULL	Absorbed
+14805	0004-136X	NULL	NULL	NULL	Absorbed
+14808	0749-2189	NULL	NULL	NULL	Absorbed
+14815	1935-5912	NULL	NULL	NULL	Absorbed
+14816	0373-1138	NULL	NULL	NULL	Absorbed
+14817	0036-4452	NULL	NULL	NULL	Absorbed
+14818	0972-7671	NULL	NULL	NULL	Absorbed
+14819	0581-572X	NULL	NULL	NULL	Absorbed
+14820	0581-5738	NULL	NULL	NULL	Absorbed
+14823	0438-895X	NULL	NULL	NULL	Absorbed
+14827	2047-234X	NULL	NULL	NULL	Absorbed
+14828	2193-9063	NULL	NULL	NULL	Absorbed
+14835	0148-7663	NULL	NULL	NULL	Absorbed
+14839	2047-2331	NULL	NULL	NULL	Absorbed
+14840	0962-9688	NULL	NULL	NULL	Absorbed
+14841	2161-5403	NULL	NULL	NULL	Absorbed
+14845	0245-906X	NULL	NULL	NULL	Absorbed
+14846	0245-9078	NULL	NULL	NULL	Absorbed
+14847	0245-9086	NULL	NULL	NULL	Absorbed
+14848	0245-9094	NULL	NULL	NULL	Absorbed
+14849	0245-9108	NULL	NULL	NULL	Absorbed
+14850	0245-9051	NULL	NULL	NULL	Absorbed
+14855	2191-3870	NULL	NULL	NULL	Absorbed
+14860	0316-8565	NULL	NULL	NULL	Absorbed
+14862	2051-0780	NULL	NULL	NULL	Absorbed
+14863	0886-0505	NULL	NULL	NULL	Absorbed
+14866	1210-3861	NULL	NULL	NULL	Absorbed
+14867	1804-9478	NULL	NULL	NULL	Absorbed
+14868	0259-0883	NULL	NULL	NULL	Absorbed
+14869	0340-6911	NULL	NULL	NULL	Absorbed
+14871	0013-5968	NULL	NULL	NULL	Absorbed
+14872	0888-1030	NULL	NULL	NULL	Absorbed
+14892	2278-2141	NULL	NULL	NULL	Absorbed
+14896	0022-0612	NULL	NULL	NULL	Absorbed
+14897	0160-4198	NULL	NULL	NULL	Absorbed
+14899	0732-1910	NULL	NULL	NULL	Absorbed
+14902	0022-8648	NULL	NULL	NULL	Absorbed
+14903	8756-2995	NULL	NULL	NULL	Absorbed
+14907	0147-3700	NULL	NULL	NULL	Absorbed
+14909	0272-9679	NULL	NULL	NULL	Absorbed
+14910	0026-0150	NULL	NULL	NULL	Absorbed
+14912	0732-913X	NULL	NULL	NULL	Absorbed
+14918	0028-0747	NULL	NULL	NULL	Absorbed
+14919	1383-2336	NULL	NULL	NULL	Absorbed
+14920	2159-6018	NULL	NULL	NULL	Absorbed
+14922	2159-6603	NULL	NULL	NULL	Absorbed
+14927	0172-8776	NULL	NULL	NULL	Absorbed
+14928	0090-0095	NULL	NULL	NULL	Absorbed
+14933	1075-8925	NULL	NULL	NULL	Absorbed
+14936	1125-9868	NULL	NULL	NULL	Absorbed
+14938	1045-0785	NULL	NULL	NULL	Absorbed
+14945	0340-692X	NULL	NULL	NULL	Absorbed
+14947	2191-3889	NULL	NULL	NULL	Absorbed
+14948	0365-2610	NULL	NULL	NULL	Absorbed
+14952	0932-321X	NULL	NULL	NULL	Absorbed
+14953	2154-6312	NULL	NULL	NULL	Absorbed
+14954	0892-9904	NULL	NULL	NULL	Absorbed
+14955	0096-7645	NULL	NULL	NULL	Absorbed
+14956	0301-0325	NULL	NULL	NULL	Absorbed
+14957	0003-1569	NULL	NULL	NULL	Absorbed
+14958	0004-0851	NULL	NULL	NULL	Absorbed
+14959	1936-0614	NULL	NULL	NULL	Absorbed
+14963	0006-3630	NULL	NULL	NULL	Absorbed
+14964	0374-6062	NULL	NULL	NULL	Absorbed
+14965	0037-9557	NULL	NULL	NULL	Absorbed
+14966	0374-6313	NULL	NULL	NULL	Absorbed
+14967	0303-9153	NULL	NULL	NULL	Absorbed
+14968	0366-4457	NULL	NULL	NULL	Absorbed
+14969	1553-1031	NULL	NULL	NULL	Absorbed
+14971	0587-1433	NULL	NULL	NULL	Absorbed
+14972	0009-3262	NULL	NULL	NULL	Absorbed
+14974	0738-6028	NULL	NULL	NULL	Absorbed
+14978	0160-8347	NULL	NULL	NULL	Absorbed
+14980	1930-4013	NULL	NULL	NULL	Absorbed
+14981	0015-5551	NULL	NULL	NULL	Absorbed
+14982	0738-2189	NULL	NULL	NULL	Absorbed
+14984	0105-9327	NULL	NULL	NULL	Absorbed
+14985	0073-5655	NULL	NULL	NULL	Absorbed
+14986	0883-8364	NULL	NULL	NULL	Absorbed
+14987	0043-1303	NULL	NULL	NULL	Absorbed
+14988	0095-9901	NULL	NULL	NULL	Absorbed
+14989	1052-0368	NULL	NULL	NULL	Absorbed
+14990	0022-409X	NULL	NULL	NULL	Absorbed
+14991	0004-1378	NULL	NULL	NULL	Absorbed
+14993	1044-8314	NULL	NULL	NULL	Absorbed
+14995	0473-9868	NULL	NULL	NULL	Absorbed
+14996	1936-8909	NULL	NULL	NULL	Absorbed
+14997	1938-6796	NULL	NULL	NULL	Absorbed
+14998	0093-4526	NULL	NULL	NULL	Absorbed
+15000	1063-3626	NULL	NULL	NULL	Absorbed
+15003	1050-0960	NULL	NULL	NULL	Absorbed
+15004	0374-8960	NULL	NULL	NULL	Absorbed
+15005	0027-3716	NULL	NULL	NULL	Absorbed
+15007	1949-4637	NULL	NULL	NULL	Absorbed
+15008	0258-1485	NULL	NULL	NULL	Absorbed
+15009	1949-4629	NULL	NULL	NULL	Absorbed
+15010	0030-5693	NULL	NULL	NULL	Absorbed
+15011	1938-6753	NULL	NULL	NULL	Absorbed
+15014	0031-935X	NULL	NULL	NULL	Absorbed
+15017	1060-2682	NULL	NULL	NULL	Absorbed
+15018	1060-1805	NULL	NULL	NULL	Absorbed
+15019	0270-1316	NULL	NULL	NULL	Absorbed
+15020	1936-0606	NULL	NULL	NULL	Absorbed
+15021	1556-5785	NULL	NULL	NULL	Absorbed
+15023	1047-7624	NULL	NULL	NULL	Absorbed
+15024	1938-677X	NULL	NULL	NULL	Absorbed
+15025	0096-364X	NULL	NULL	NULL	Absorbed
+15026	0096-9362	NULL	NULL	NULL	Absorbed
+15030	0886-1145	NULL	NULL	NULL	Absorbed
+15031	1945-516X	NULL	NULL	NULL	Absorbed
+15032	0003-0023	NULL	NULL	NULL	Absorbed
+15033	1933-0545	NULL	NULL	NULL	Absorbed
+15034	1933-0537	NULL	NULL	NULL	Absorbed
+15035	1557-122X	NULL	NULL	NULL	Absorbed
+15036	0042-3106	NULL	NULL	NULL	Absorbed
+15038	0096-719X	NULL	NULL	NULL	Absorbed
+15040	0511-9626	NULL	NULL	NULL	Absorbed
+15041	0043-5643	NULL	NULL	NULL	Absorbed
+15042	1938-6788	NULL	NULL	NULL	Absorbed
+15043	0898-1051	NULL	NULL	NULL	Absorbed
+15044	0534-2759	NULL	NULL	NULL	Merged with Proceedings of the Institution of Civil Engineers Part II and Part III to form Proceedings - Institution of Civil Engineers (Proceedings of the Institution of Civil Engineers Part III is not included in license)
+15045	0020-3262	NULL	NULL	NULL	Form from the merge of Proceedings of the Institution of Civil Engineers Part I, Part II and Part III.  (Proceedings of the Institution of Civil Engineers. Part III is not included in license). Split in Proceedings - Institution of Civil Engineers Part 1 and Part 2
+15046	0307-8353	NULL	NULL	NULL	Form from the split of Proceedings - Institution of Civil Engineers
+15047	0307-8361	NULL	NULL	NULL	Form from the split of Proceedings - Institution of Civil Engineers
+15048	0398-8120	NULL	NULL	NULL	Absorbed
+15049	1934-5984	NULL	NULL	NULL	Absorbed
+15051	0360-6333	NULL	NULL	NULL	Absorbed
+15055	0362-515X	NULL	NULL	NULL	Absorbed
+15056	0934-9138	NULL	NULL	NULL	Absorbed
+15057	0934-5795	NULL	NULL	NULL	Absorbed
+15058	1933-2505	NULL	NULL	NULL	Absorbed
+15061	1935-6609	NULL	NULL	NULL	Absorbed
+15064	0006-0895	NULL	NULL	NULL	Absorbed
+15068	0398-8147	NULL	NULL	NULL	Absorbed
+15070	0276-7732	NULL	NULL	NULL	Absorbed
+15073	1935-6595	NULL	NULL	NULL	Absorbed
+15075	0891-3609	NULL	NULL	NULL	Absorbed
+15077	1935-6625	NULL	NULL	NULL	Absorbed
+15082	0968-2864	NULL	NULL	NULL	Absorbed
+15086	0093-3252	NULL	NULL	NULL	Absorbed
+15088	0090-2918	NULL	NULL	NULL	Absorbed
+15091	0309-2984	NULL	NULL	NULL	Absorbed
+15092	0083-1204	NULL	NULL	NULL	Absorbed
+15093	1935-0708	NULL	NULL	NULL	Absorbed
+15098	0047-1607	NULL	NULL	NULL	Absorbed
+15100	1431-5955	NULL	NULL	NULL	Absorbed
+15101	0934-618X	NULL	NULL	NULL	Absorbed
+15105	1752-6795	NULL	NULL	NULL	Absorbed
+15110	1948-1586	NULL	NULL	NULL	Absorbed
+15111	2047-119X	NULL	NULL	NULL	Absorbed
+15112	2047-1211	NULL	NULL	NULL	Absorbed
+15114	2047-1203	NULL	NULL	NULL	Absorbed
+15116	0734-7030	NULL	NULL	NULL	Absorbed
+15117	2151-7576	NULL	NULL	NULL	Absorbed
+15118	1935-6684	NULL	NULL	NULL	Absorbed
+15119	1479-571X	NULL	NULL	NULL	Absorbed
+15122	0030-8919	NULL	NULL	NULL	Absorbed
+15123	0887-9885	NULL	NULL	NULL	Absorbed
+15124	0899-059X	NULL	NULL	NULL	Absorbed
+15127	0265-8062	NULL	NULL	NULL	Absorbed
+15128	0887-3925	NULL	NULL	NULL	Absorbed
+15131	1548-7237	NULL	NULL	NULL	Absorbed
+15132	0199-9818	NULL	NULL	NULL	Absorbed
+15134	0094-6214	NULL	NULL	NULL	Absorbed
+15138	0899-0603	NULL	NULL	NULL	Absorbed
+15146	1471-7816	NULL	NULL	NULL	Absorbed
+15149	0038-0210	NULL	NULL	NULL	Absorbed
+15152	0038-4801	NULL	NULL	NULL	Absorbed
+15160	0083-6133	NULL	NULL	NULL	Absorbed
+15165	0006-8098	NULL	NULL	NULL	Merged: Occasional Papers of the Farlow Herbarium of Cryptogamic Botany , 1969-1987 (Nos. 1-19) and Contributions from the Gray Herbarium of Harvard University , 1891-1984 (Nos. 1-214) to form Harvard Papers in Botany , 1989-2007 (Vols. 1-12)
+15166	0195-6094	NULL	NULL	NULL	Merged: Occasional Papers of the Farlow Herbarium of Cryptogamic Botany , 1969-1987 (Nos. 1-19) and Botanical Museum Leaflets, Harvard University , 1932-1986 (Vols. 1-30) to form Harvard Papers in Botany , 1989-2007 (Vols. 1-12)
+15169	0090-8754	NULL	NULL	NULL	Merged: Contributions from the Gray Herbarium of Harvard University , 1891-1984 (Nos. 1-214) and Botanical Museum Leaflets, Harvard University , 1932-1986 (Vols. 1-30) to form Harvard Papers in Botany , 1989-2007 (Vols. 1-12)
+15171	0017-3614	NULL	NULL	NULL	Absorbed
+15178	0138-4988	NULL	10.1002/(ISSN)1521-3846	NULL	merged: Engineering in Life Sciences
+15179	0256-7660	NULL	NULL	NULL	now: Chinese Journal of Chemistry
+15180	0001-544X	NULL	10.1002/(ISSN)1563-2563	NULL	now: European Surgery
+15181	0365-110X	NULL	10.1111/(ISSN)0365-110X	NULL	split: sections A+B
+15183	0001-6101	NULL	NULL	NULL	now: Journal of internal Medicine 1989-present; previously: Acta Medica Scandinavica 1919-1988; Nordiskt Medicinskt Arkiv 1869-1918; Medicinskt Archiv 1863-1868
+15184	0001-639X	NULL	NULL	NULL	now: Acta Ophthalmologica; previously: Acta Ophthalmologica Scandinavica 1995-2007; Acta Ophthalmologica 1923-1994
+15185	0365-5555	NULL	NULL	NULL	now: APMIS 1988-present; previously: split in series A-C 1982-1987; sections A-C 1970-1981; Acta Pathologica Microbiologica 1924-1969
+15186	0365-4184	NULL	NULL	NULL	now: APMIS 1988-present; previously: split in series A-C 1982-1987; sections A-C 1970-1981; Acta Pathologica Microbiologica 1924-1969
+15187	0304-131X	NULL	NULL	NULL	now: APMIS 1988-present; previously: split in series A-C 1982-1987; sections A-C 1970-1981; Acta Pathologica Microbiologica 1924-1969
+15188	0365-5563	NULL	NULL	NULL	now: APMIS 1988-present; previously: split in series A-C 1982-1987; sections A-C 1970-1981; Acta Pathologica Microbiologica 1924-1969
+15189	0304-1328	NULL	NULL	NULL	now: APMIS 1988-present; previously: split in series A-C 1982-1987; sections A-C 1970-1981; Acta Pathologica Microbiologica 1924-1969
+15190	0108-0164	NULL	NULL	NULL	now: APMIS 1988-present; previously: split in series A-C 1982-1987; sections A-C 1970-1981; Acta Pathologica Microbiologica 1924-1969
+15191	0108-0180	NULL	NULL	NULL	now: APMIS 1988-present; previously: split in series A-C 1982-1987; sections A-C 1970-1981; Acta Pathologica Microbiologica 1924-1969
+15192	0108-0202	NULL	NULL	NULL	now: APMIS 1988-present; previously: split in series A-C 1982-1987; sections A-C 1970-1981; Acta Pathologica Microbiologica 1924-1969
+15193	0001-6683	NULL	NULL	NULL	now: Basic and Clinical Pharmacology and Toxicology; previously: Pharmacology and Toxicology 1987-2004; Acta Pharmacologica et Toxicologica 1945-1986
+15200	0096-946X	NULL	NULL	NULL	now: Journal of the American Society for Information Science and Technology previously: Journal of the American Society for Information Science 1970-2000; American Documentation 1950-1969
+15202	0002-9106	NULL	NULL	NULL	now: Developmental Dynamics
+15203	0271-7352	NULL	NULL	NULL	now: American Journal of Reproductive Immunology 1989-present; previously American Journal of Reproductive Immunology and Microbiology 1985-1988; American Journal of Reproductive Immunology 1980-1984
+15204	8755-8920	NULL	NULL	NULL	now: American Journal of Reproductive Immunology 1989-present; previously American Journal of Reproductive Immunology and Microbiology 1985-1988; American Journal of Reproductive Immunology 1980-1984
+15206	0365-5490	NULL	NULL	NULL	now: European Journal of Organic Chemistry 1998-present; previously: Liegbigs Annalen  1994-1997; Liebigs Annalen der Chemie 1979-1994; Justus Liebigs Annalen der Chemie 1840-1978; Annalen der Pharmacie 1832-1839
+15208	2050-1420	NULL	NULL	NULL	now: Annals of Human Genetics
+15209	0890-6564	NULL	NULL	NULL	now: Annals of the New York Academy of Sciences
+15210	0193-5615	NULL	NULL	NULL	now: Anthropology and Humanism
+15213	1436-5693	NULL	10.1111/(ISSN)1439-0280	NULL	now: Journal of Pest Science
+15215	0003-7214	NULL	10.1111/(ISSN)1365-2087	NULL	now: Journal of Water Supply
+15217	0362-3505	NULL	NULL	NULL	now: Rehabilitation Nursing
+15222	0004-8682	NULL	NULL	NULL	now: ANZ Journal of Surgery
+15223	0819-5331	NULL	NULL	NULL	now: Drug and Alcohol Review 1989-present; previously: Australian Drug and Alcohol Review 1986-1989; Australian Drug/Alcohol Review  1982-1985
+15224	0726-4550	NULL	NULL	NULL	now: Drug and Alcohol Review 1989-present; previously: Australian Drug and Alcohol Review 1986-1989; Australian Drug/Alcohol Review  1982-1985
+15225	0307-692X	NULL	NULL	NULL	now: Austral Ecology
+15226	0310-1177	NULL	NULL	NULL	now: Clinical and Experimental Ophthalmology 2000-present; previously: Australian and New Zealand Journal of Ophthalmology 1985-1999; Australian Journal of Opthalmology  1973-1984
+15227	1035-7319	NULL	NULL	NULL	now: Australian and New Zealand Journal of Public Health 1996-present; previously: Australian Journal of Public Health 1991-1995; Community Health Studies 1977-1990
+15228	0004-9581	NULL	10.1111/(ISSN)1467-842Xa	NULL	now: Australian and New Zealand Journal of Statistics
+15231	0005-7940	NULL	NULL	NULL	now: Systems Research
+15232	0005-8025	NULL	NULL	NULL	now: Contributions to Plasma Physics
+15237	0863-1875	NULL	NULL	NULL	now: Deutsche Entomologische Zeitschrift
+15244	1075-4261	NULL	10.1002/(ISSN)1520-6343	NULL	merged: Biopolmers 2000
+15246	0366-2136	NULL	NULL	NULL	now: Journal of Plant Nutrition and Soil Science 1999-present; Zeitschrift für Pflanzenernährung und Bodenkunde 1967-1998; Zeitschrift für Pflanzenernährung, Düngung und Bodenkunde 1946-1966; Bodenkunde und Pflanzenernährung 1936-1945; Zeitschrift für Pflanzenernährung, Düngung, Bodenkunde 1935-1936; Zeitschrift für Pflanzenernährung, Düngung, Bodenkunde. Teil A, Wissenschaftlicher Teil 1927-1934; Zeitschrift für Pflanzenernährung und Düngung. Teil A, Wissenschaftlicher Teil 1922-1926
+15248	0952-0481	NULL	NULL	NULL	now: Addiction 1993-present; previously: British Journal of Addiction 1980-1992; British Journal of Addiction to Alcohol and Other Drugs 1947-1979; British Journal of Inebriety 1903-1946
+15249	0007-0890	NULL	NULL	NULL	now: Addiction 1993-present; previously: British Journal of Addiction 1980-1992; British Journal of Addiction to Alcohol and Other Drugs 1947-1979; British Journal of Inebriety 1903-1946
+15250	0366-0796	NULL	NULL	NULL	now: Addiction 1993-present; previously: British Journal of Addiction 1980-1992; British Journal of Addiction to Alcohol and Other Drugs 1947-1979; British Journal of Inebriety 1903-1946
+15251	0366-0826	NULL	NULL	NULL	now: British Journal of Pharmacology
+15252	0950-5652	NULL	NULL	NULL	now: British Journal of Psychology 1955-present; was: British journal of psychology. General section 1920-1954; British Journal of Psychology 1904-1920 
+15253	0373-2460	NULL	NULL	NULL	now: British Journal of Psychology 1955-present; was: British journal of psychology. General section 1920-1954; British Journal of Psychology 1904-1920 
+15254	0007-1293	NULL	NULL	NULL	now: British Journal of Clinical Psychology
+15258	0960-734X	NULL	NULL	NULL	now: IDS Bulletin; previously: Bulletin - Institute of Development Studies 1980-1984; IDS Bulletin 1975-1979; Institute of Development Studies Bulletin 1968-1975
+15260	0098-3721	NULL	NULL	NULL	now: Journal of Midwifery and Women's Health; previously: Journal of Nurse-Midwifery 1998-1999; Bulletin of the American College of Nurse-Midwives 1969-1973; Bulletin of the American College of Nurse-Midwifery 1955-1968
+15261	0002-8002	NULL	NULL	NULL	now: Journal of Midwifery and Women's Health; previously: Journal of Nurse-Midwifery 1998-1999; Bulletin of the American College of Nurse-Midwives 1969-1973; Bulletin of the American College of Nurse-Midwifery 1955-1968
+15263	1673-274X	NULL	NULL	NULL	now: Acta Geologica Sinica - English Edition
+15265	0030-767X	NULL	NULL	NULL	now: Oxford Bulletin of Economics and Statistics
+15269	0271-6585	NULL	NULL	NULL	now: Cytoskeleton 2010-present; previously: Cell Motility and the Cytoskeleton 1986-2009; Cell Motility 1980-1985
+15275	0366-7960	NULL	NULL	NULL	now: European Journal of Lipid Science and Technology 2000-present; previously: Lipid/Fett 1987-1999; Fette, Seifen, Anstrichmittel 1953-1986; Fette und Seifen 1936-1952; Fettchemische Umschau 1933-1935; Chemische Umschau auf dem Gebiete der Fette, Öle, Wachse und Harze 1916-1932; Chemische Revue über  die Fett- und Harz-Industrie 1894-1915
+15276	0366-8320	NULL	NULL	NULL	now: European Journal of Lipid Science and Technology 2000-present; previously: Lipid/Fett 1987-1999; Fette, Seifen, Anstrichmittel 1953-1986; Fette und Seifen 1936-1952; Fettchemische Umschau 1933-1935; Chemische Umschau auf dem Gebiete der Fette, Öle, Wachse und Harze 1916-1932; Chemische Revue über  die Fett- und Harz-Industrie 1894-1915
+15284	0010-1168	NULL	NULL	NULL	now: Higher Education Abstracts
+15285	0748-8025	NULL	NULL	NULL	now: International Journal for Numerical and Analytical Methods 2010-present; Communications in Numerical Methods in Engineering 1983-2009; Communications in Numerical Methods 1985-1992
+15286	1062-1938	NULL	NULL	NULL	now: Nutritional Anthropology 1997-2003
+15287	0314-9021	NULL	NULL	NULL	now: Australian and New Zealand Journal of Public Health 1996-present; previously: Australian Journal of Public Health 1991-1995; Community Health Studies 1977-1990
+15295	0096-2805	NULL	NULL	NULL	now: Meteoritics and Planetary Science 1996-present; previously: Meteoritics 1953-1995; Contributions of the Meteoritical Society 1947-1951; Contributions of the Society for Research on Meteorites 1935-1946 
+15296	0096-2813	NULL	NULL	NULL	now: Meteoritics and Planetary Science 1996-present; previously: Meteoritics 1953-1995; Contributions of the Meteoritical Society 1947-1951; Contributions of the Society for Research on Meteorites 1935-1946 
+15297	1479-2206	NULL	10.1111/(ISSN)1479-2214	NULL	merged: Reviews in Religion and Theology
+15298	0199-1450	NULL	NULL	NULL	now: Museum Anthropology
+15300	0012-0073	NULL	10.1002/(ISSN)1860-1324	NULL	now: Mitteilungen aus dem Museum für Naturkunde in Berlin. Deutsche Entomologische Zeitschrift; previously: Deutsche Entomologische Zeitschrift 1954-1997; Berliner Entomologische Zeitschrift 1857-1942
+15301	NULL	NULL	10.1002/(ISSN)1945-6255	NULL	merged: Corporate Philanthropy Report 2011
+15302	0742-4221	NULL	NULL	NULL	now: Diabetes/Metabolism: Research and Reviews 1999-present
+15305	0025-116X	NULL	NULL	NULL	now: Macromolecular Chemistry and Physics
+15307	0173-2803	NULL	NULL	NULL	now: Macromolecular Rapid Communications
+15309	0360-1269	NULL	NULL	NULL	now: Earth Surface Processes and Landforms
+15312	1019-083X	NULL	NULL	NULL	now: Journal of Renal Care
+15318	0367-0228	NULL	NULL	NULL	now: Development Growth and Differentiation
+15322	0192-2521	NULL	NULL	NULL	now: Environmental Mutagenesis
+15329	0375-121X	NULL	NULL	NULL	now: Feddes Repertorium; previously: Feddes Repertorium Specierum Novarum Regni Vegetabilis 1943-1963; Repertorium Specierum Novarum Regni Vegetabilis 1910-1942; Repertorium Novarum Specierum Regni Vegetabilis 1905-1909
+15331	0367-2107	NULL	NULL	NULL	now: European Journal of Lipid Science and Technology 2000-present; previously: Lipid/Fett 1987-1999; Fette, Seifen, Anstrichmittel 1953-1986; Fette und Seifen 1936-1952; Fettchemische Umschau 1933-1935; Chemische Umschau auf dem Gebiete der Fette, Öle, Wachse und Harze 1916-1932; Chemische Revue über  die Fett- und Harz-Industrie 1894-1915
+15332	0367-3278	NULL	NULL	NULL	now: European Journal of Lipid Science and Technology 2000-present; previously: Lipid/Fett 1987-1999; Fette, Seifen, Anstrichmittel 1953-1986; Fette und Seifen 1936-1952; Fettchemische Umschau 1933-1935; Chemische Umschau auf dem Gebiete der Fette, Öle, Wachse und Harze 1916-1932; Chemische Revue über  die Fett- und Harz-Industrie 1894-1915
+15333	0015-038X	NULL	NULL	NULL	now: European Journal of Lipid Science and Technology 2000-present; previously: Lipid/Fett 1987-1999; Fette, Seifen, Anstrichmittel 1953-1986; Fette und Seifen 1936-1952; Fettchemische Umschau 1933-1935; Chemische Umschau auf dem Gebiete der Fette, Öle, Wachse und Harze 1916-1932; Chemische Revue über  die Fett- und Harz-Industrie 1894-1915
+15336	NULL	NULL	10.1111/(ISSN)1471-5740	NULL	merged: Journal of Foodservice 2005
+15337	1524-8275	NULL	10.1111/(ISSN)1745-4506	NULL	now: Journal of Foodservice
+15339	0148-7280	NULL	NULL	NULL	now: Molecular Reproduction and Development
+15340	1438-7506	NULL	10.1002/(ISSN)1438-826X	NULL	merged: Comparative and Functional Genomics
+15341	0097-0352	NULL	NULL	NULL	now: Science Education
+15345	0952-4592	NULL	NULL	NULL	now: Geophysical Journal International; previously: Geophysical Journal 1988-1988; Geophysical Journal of the Royal Astronomical Society 1958-1987; Geophysical Supplements to the Monthly Notices of the Royal Astronomical Society 1922-1957
+15346	0016-8009	NULL	NULL	NULL	now: Geophysical Journal International; previously: Geophysical Journal 1988-1988; Geophysical Journal of the Royal Astronomical Society 1958-1987; Geophysical Supplements to the Monthly Notices of the Royal Astronomical Society 1922-1957
+15348	2051-1965	NULL	NULL	NULL	now: Geophysical Journal International; previously: Geophysical Journal 1988-1988; Geophysical Journal of the Royal Astronomical Society 1958-1987; Geophysical Supplements to the Monthly Notices of the Royal Astronomical Society 1922-1957
+15350	0092-9395	NULL	NULL	NULL	now: Politics and Policy; previously: Southeastern Political Review 1981-2000; GPSA Journal: The Georgia Political Science Association 1973-1980
+15352	0301-0481	NULL	NULL	NULL	now: JDDG: Journal Der Deutschen Dermatologischen Gesellschaft
+15353	0148-6403	NULL	NULL	NULL	now: Head and Neck
+15354	1743-5005	NULL	10.1111/(ISSN)1743-5013	NULL	merged: Journal of Head and Face Pain 2007
+15355	0265-6647	NULL	NULL	NULL	now: Health Information and Libraries Journal
+15360	0308-5872	NULL	NULL	NULL	now: IDS Bulletin; previously: Bulletin - Institute of Development Studies 1980-1984; IDS Bulletin 1975-1979; Institute of Development Studies Bulletin 1968-1975
+15364	0363-2792	NULL	NULL	NULL	now: Journal of Nursing Scholarship; previously: Image-The Journal of Nursing Scholarship 1983-1999; Image 1967-1982
+15365	0743-5150	NULL	NULL	NULL	now: Journal of Nursing Scholarship; previously: Image-The Journal of Nursing Scholarship 1983-1999; Image 1967-1982
+15373	0020-2835	NULL	NULL	NULL	now: IDS Bulletin; previously: Bulletin - Institute of Development Studies 1980-1984; IDS Bulletin 1975-1979; Institute of Development Studies Bulletin 1968-1975
+15376	0737-1454	NULL	NULL	NULL	now: Stem Cells
+15382	1050-1827	NULL	NULL	NULL	now: International Journal of RF and Microwave Computer-Aided Engineering
+15383	0367-8377	NULL	NULL	NULL	now: Chemical Biology and Drug Design 2006-present; previously: The Journal of Peptide Research 1997-2005; International Journal of Peptide and Protein Research 1972-1996; International Journal of Protein Research 1969-1971
+15384	0020-7551	NULL	NULL	NULL	now: Chemical Biology and Drug Design 2006-present; previously: The Journal of Peptide Research 1997-2005; International Journal of Peptide and Protein Research 1972-1996; International Journal of Protein Research 1969-1971
+15385	1055-6001	NULL	NULL	NULL	now: International Journal of Purchasing and Materials Management
+15386	0884-724X	NULL	10.1002/(ISSN)1522-7170	NULL	now: International Journal of Short-Term Psychotherapy
+15388	0020-9309	NULL	NULL	NULL	now: International Review of Hydrobiology; previously: Internationale Revue der Gesamten Hydrobiologie 1959-1997; Internationale Revue der Gesamten Hydrobiologie und Hydrographie 1908-1943
+15389	0323-889X	NULL	NULL	NULL	now: International Review of Hydrobiology; previously: Internationale Revue der Gesamten Hydrobiologie 1959-1997; Internationale Revue der Gesamten Hydrobiologie und Hydrographie 1908-1943
+15392	0368-301X	NULL	NULL	NULL	now: Advanced Synthesis and Catalysis; previously: Journal für praktische Chemie 1999-2000; Journal für praktische Chemie, Chemiker-Zeitung 1992-1998; Journal für praktische Chemie 1992-1998; Journal für praktische Chemie 1954-1991; Journal für makromolekulare Chemie 1943-1944; Journal für Praktische Chemie 1834-1943
+15393	0021-8383	NULL	NULL	NULL	now: Advanced Synthesis and Catalysis; previously: Journal für praktische Chemie 1999-2000; Journal für praktische Chemie, Chemiker-Zeitung 1992-1998; Journal für praktische Chemie 1992-1998; Journal für praktische Chemie 1954-1991; Journal für makromolekulare Chemie 1943-1944; Journal für Praktische Chemie 1834-1943
+15394	1436-9966	NULL	NULL	NULL	now: Advanced Synthesis and Catalysis; previously: Journal für praktische Chemie 1999-2000; Journal für praktische Chemie, Chemiker-Zeitung 1992-1998; Journal für praktische Chemie 1992-1998; Journal für praktische Chemie 1954-1991; Journal für makromolekulare Chemie 1943-1944; Journal für Praktische Chemie 1834-1943
+15395	0941-1216	NULL	NULL	NULL	now: Advanced Synthesis and Catalysis; previously: Journal für praktische Chemie 1999-2000; Journal für praktische Chemie, Chemiker-Zeitung 1992-1998; Journal für praktische Chemie 1992-1998; Journal für praktische Chemie 1954-1991; Journal für makromolekulare Chemie 1943-1944; Journal für Praktische Chemie 1834-1943
+15398	NULL	NULL	10.1002/(ISSN)1939-4640	NULL	now: Andrology
+15401	0021-8871	NULL	NULL	NULL	now: Journal of Chemical Technology and Biotechnology; previously split: Journal of Chemical Technology and Biotechnology. Part A+B Technology 1983-1985; Journal of Chemical Technology and Biotechnology 1979-1982; Journal of Applied Chemistry and Biotechnology 1971-1977; Journal of Applied Chemistry 1951-1970; Journal of the Society of Chemical Industry 1882-1950
+15402	0375-9210	NULL	NULL	NULL	now: Journal of Chemical Technology and Biotechnology; previously split: Journal of Chemical Technology and Biotechnology. Part A+B Technology 1983-1985; Journal of Chemical Technology and Biotechnology 1979-1982; Journal of Applied Chemistry and Biotechnology 1971-1977; Journal of Applied Chemistry 1951-1970; Journal of the Society of Chemical Industry 1882-1950
+15403	0377-0532	NULL	NULL	NULL	now: Journal of Obstetrics and Gynaecology Research; previously: Journal of Obstetrics and Gynaecology 1995-1995; Asia-Oceania Journal of Obstetrics and Gynaecology 1980-1994; Journal of Asian Federation of Obstetrics and Gynaecology 1970-1977
+15404	0368-1467	NULL	NULL	NULL	now: Biotechnology and Bioengineering
+15405	0887-2082	NULL	NULL	NULL	now: Journal of Biochemical and Molecular Toxicology
+15407	0095-9898	NULL	NULL	NULL	now: Journal of Cellular Physiology
+15408	0142-0356	NULL	NULL	NULL	now: Journal of Chemical Technology and Biotechnology; previously split: Journal of Chemical Technology and Biotechnology. Part A+B Technology 1983-1985; Journal of Chemical Technology and Biotechnology 1979-1982; Journal of Applied Chemistry and Biotechnology 1971-1977; Journal of Applied Chemistry 1951-1970; Journal of the Society of Chemical Industry 1882-1950
+15409	0264-3413	NULL	NULL	NULL	now: Journal of Chemical Technology and Biotechnology; previously split: Journal of Chemical Technology and Biotechnology. Part A+B Technology 1983-1985; Journal of Chemical Technology and Biotechnology 1979-1982; Journal of Applied Chemistry and Biotechnology 1971-1977; Journal of Applied Chemistry 1951-1970; Journal of the Society of Chemical Industry 1882-1950
+15410	0264-3421	NULL	NULL	NULL	now: Journal of Chemical Technology and Biotechnology; previously split: Journal of Chemical Technology and Biotechnology. Part A+B Technology 1983-1985; Journal of Chemical Technology and Biotechnology 1979-1982; Journal of Applied Chemistry and Biotechnology 1971-1977; Journal of Applied Chemistry 1951-1970; Journal of the Society of Chemical Industry 1882-1950
+15411	0196-1748	NULL	NULL	NULL	now: International Journal of Climatology
+15413	0092-7015	NULL	NULL	NULL	now: Journal of Comparative Neurology; previously: Journal of Comparative Neurology and Psychology 1904-1910; The Journal of Comparative Neurology 1891-1903
+15416	0047-2409	NULL	NULL	NULL	now: Physiological Entomology; previously: Journal of Entomology Series A, General Entomology 1971-1976; Proceedings of the Royal Entomological Society of London. Series A, General Entomology 1936-1970; The Proceedings of the Royal Entomological Society 1933-1935; Proceedings of the Entomological Society of London 1926-1932
+15417	0047-2417	NULL	NULL	NULL	now: Systematic Entomology; previously: Journal of Entomology. Series B. Taxonomy & Systematics 1971-1976; Proceedings of the Royal Entomological Society of London. Series B, Taxonomy 1932-1970
+15435	0305-1811	NULL	NULL	NULL	now: International Journal of Immunogenetics; previously: European Journal of Immunogenetics 1991-2004; Journal of Immunogenetics 1974-1996
+15437	0022-2135	NULL	NULL	NULL	now: Journal of Labelled Compounds and Radiopharmaceuticals
+15441	0090-5461	NULL	NULL	NULL	now: Journal of Multicultural Counseling and Development
+15443	1340-9654	NULL	NULL	NULL	now: Journal of Obstetrics and Gynaecology Research; previously: Journal of Obstetrics and Gynaecology 1995-1995; Asia-Oceania Journal of Obstetrics and Gynaecology 1980-1994; Journal of Asian Federation of Obstetrics and Gynaecology 1970-1977
+15444	0022-3204	NULL	NULL	NULL	now: BJOG : An International Journal of Obstetrics and Gynaecology 2000-present; was: British Journal of Obstetrics and Gynaecology 1975-1999; Journal of Obstetrics and Gynaecology of the British Commonwealth 1961-1074; Journal of Obstetrics and Gynaecology of the British Empire 1902-1960
+15445	0307-1871	NULL	NULL	NULL	now: BJOG : An International Journal of Obstetrics and Gynaecology 2000-present; was: British Journal of Obstetrics and Gynaecology 1975-1999; Journal of Obstetrics and Gynaecology of the British Commonwealth 1961-1074; Journal of Obstetrics and Gynaecology of the British Empire 1902-1960
+15446	0305-8107	NULL	NULL	NULL	now: Journal of Occupational Psychology
+15447	0368-3494	NULL	NULL	NULL	now: The Journal of Pathology
+15449	0022-3832	NULL	NULL	NULL	split: Journal of Polymer Science Part A General Papers; Journal of Polymer Science Part B Polymer Letters; Journal of Polymer Science Part C Polymer Symposia
+15451	0449-2951	NULL	NULL	NULL	split: Journal of Polymer Science. Part A-1, Polymer Chemistry; Journal of Polymer Science. Part A-2, Polymer Physics
+15453	0449-296X	NULL	NULL	NULL	now: Journal of Polymer Science Part A Polymer Chemistry; previously: Journal of Polymer Science. Polymer Chemistry Edition 1973-1985; Journal of Polymer Science. Part A-1, Polymer Chemistry 1966-1972; Journal of Polymer Science 1946-1962
+15454	0449-2978	NULL	NULL	NULL	now: Journal of Polymer Science Part B Polymer Physics; previously: Journal of Polymer Science. Polymer Physics Edition 1972-1985; Journal of Polymer Science. Part A-2, Polymer Physics 1966-1972; Journal of Polymer Science Part A General Papers 1963-1965; Journal of Polymer Science 1946-162
+15458	0360-6376	NULL	NULL	NULL	now: Journal of Polymer Science Part A Polymer Chemistry; previously: Journal of Polymer Science. Polymer Chemistry Edition 1973-1985; Journal of Polymer Science. Part A-1, Polymer Chemistry 1966-1972; Journal of Polymer Science 1946-1962
+15460	0098-1273	NULL	NULL	NULL	now: Journal of Polymer Science Part B Polymer Physics; previously: Journal of Polymer Science. Polymer Physics Edition 1972-1985; Journal of Polymer Science. Part A-2, Polymer Physics 1966-1972; Journal of Polymer Science Part A General Papers 1963-1965; Journal of Polymer Science 1946-162
+15463	1360-1261	NULL	NULL	NULL	now: Journal of Agricultural Economics
+15464	1062-0273	NULL	NULL	NULL	now: Journal For Healthcare Quality 
+15467	0022-4588	NULL	NULL	NULL	now: European Journal of Soil Science
+15468	0091-7419	NULL	NULL	NULL	now: Journal of Cellular Biochemistry; previously: Journal of Supramolecular Structure and Cellular Biochemistry 1981-1981; Journal of Supramolecular Structure 1972-1980
+15469	0275-3723	NULL	NULL	NULL	now: Journal of Cellular Biochemistry; previously: Journal of Supramolecular Structure and Cellular Biochemistry 1981-1981; Journal of Supramolecular Structure 1972-1980
+15474	0095-9553	NULL	NULL	NULL	now: Journal of Pharmaceutical Sciences; previously: Journal of the American Pharmaceutical Association 1940-1960; The Journal of the American Pharmaceutical Association 1912-1939
+15475	0099-7056	NULL	NULL	NULL	now: Naval Engineers Journal
+15476	0066-1155	NULL	NULL	NULL	now: Veterinary Radiology and Ultrasound; previously: Veterinary Radiology 1979-1991; Journal of the American Veterinary Radiology Society 1960-1978
+15477	0261-9997	NULL	NULL	NULL	now: British Journal of Learning Disabilities; previously: Journal of the British Institute of Mental Handicap 1982-1993; Journal of the Institute of Mental Subnormality APEX 1973-1981
+15480	2050-2249	NULL	NULL	NULL	now: Journal of the institute of Brewing
+15481	0141-2205	NULL	NULL	NULL	now: British Journal of Learning Disabilities; previously: Journal of the British Institute of Mental Handicap 1982-1993; Journal of the Institute of Mental Subnormality APEX 1973-1981
+15482	1945-9483	NULL	NULL	NULL	now: Botanical Journal of the Linnean Society; previously: The Journal of the Linnean Society of London. Botany 1865-1968; Journal of the Proceedings of the Linnean Society. Botany 1856-1865
+15483	1945-9475	NULL	NULL	NULL	now: Zoological Journal of the Linnean Society; previously: The Journal of the Linnean Society. Zoology 1866-1968; Journal of the Proceedings of the Linnean Society. Zoology 1856-1865
+15484	0368-3974	NULL	NULL	NULL	now: Journal of Microscopy; previously: Journal of the Royal Microscopical Society 1878-1968; The Monthly Microscopical Journal 1869-1877; The Transactions of the Microscopical Society of London 1842-1868; Microscopic Journal and Structural Record 1841-1841
+15486	0368-4075	NULL	NULL	NULL	now: Journal of Chemical Technology and Biotechnology; previously split: Journal of Chemical Technology and Biotechnology. Part A+B Technology 1983-1985; Journal of Chemical Technology and Biotechnology 1979-1982; Journal of Applied Chemistry and Biotechnology 1971-1977; Journal of Applied Chemistry 1951-1970; Journal of the Society of Chemical Industry 1882-1950
+15487	0735-0147	NULL	NULL	NULL	now: Journal of the World Aquaculture Society; previously: Journal of the World Mariculture Society 1981-1985; Proceedings of the World Mariculture Society 1979-1980; Proceedings of the Annual Meeting - World Mariculture Society 1974-1978; Proceedings of the Annual Workshop - World Mariculture Society 1970-1973
+15490	0193-7197	NULL	NULL	NULL	now: Journal of Vinyl and Additive Technology
+15493	0022-7153	NULL	NULL	NULL	now: Juvenile and Family Court Journal; previously: Juvenile Justice 1972-1977; Juvenile Court Judges Journal 1949-1971
+15494	0093-7231	NULL	NULL	NULL	now: Juvenile and Family Court Journal; previously: Juvenile Justice 1972-1977; Juvenile Court Judges Journal 1949-1971
+15495	0023-4753	NULL	NULL	NULL	now: Crystal Research and Technology
+15502	0170-2041	NULL	NULL	NULL	now: European Journal of Organic Chemistry 1998-present; previously: Liegbigs Annalen  1994-1997; Liebigs Annalen der Chemie 1979-1994; Justus Liebigs Annalen der Chemie 1840-1978; Annalen der Pharmacie 1832-1839
+15503	0947-3440	NULL	NULL	NULL	now: European Journal of Organic Chemistry 1998-present; previously: Liegbigs Annalen  1994-1997; Liebigs Annalen der Chemie 1979-1994; Justus Liebigs Annalen der Chemie 1840-1978; Annalen der Pharmacie 1832-1839
+15504	0106-9543	NULL	NULL	NULL	now: Liver International
+15505	1074-3022	NULL	NULL	NULL	now: Liver Transplantation
+15509	0025-2328	NULL	NULL	NULL	now: The Australian Journal of Anthropolgy
+15512	0952-9608	NULL	NULL	NULL	now: Journal of Applied Research in Intellectual Disabilities
+15514	0026-1114	NULL	NULL	NULL	now: Meteoritics and Planetary Science 1996-present; previously: Meteoritics 1953-1995; Contributions of the Meteoritical Society 1947-1951; Contributions of the Society for Research on Meteorites 1935-1946 
+15516	2047-9751	NULL	NULL	NULL	now: Journal of Microscopy; previously: Journal of the Royal Microscopical Society 1878-1968; The Monthly Microscopical Journal 1869-1877; The Transactions of the Microscopical Society of London 1842-1868; Microscopic Journal and Structural Record 1841-1841
+15517	1024-7890	NULL	NULL	NULL	now: International Migration; previously: Migration 1962-1962; Migración 1961-1961
+15518	0540-0074	NULL	NULL	NULL	now: International Migration; previously: Migration 1962-1962; Migración 1961-1961
+15521	1435-1943	NULL	10.1002/(ISSN)1860-1014	NULL	now: Fossil Record
+15522	0272-3425	NULL	NULL	NULL	now: Journal of Continuing Education in the Health Professions
+15523	0027-738X	NULL	NULL	NULL	now: Nachrichten aus der Chemie; previously: Nachrichten aus Chemie, Technik und Laboratorium 1976-1999; Nachrichten aus Chemie und Technik 1953-1975
+15524	0341-5163	NULL	10.1002/(ISSN)1868-0054b	NULL	now: Nachrichten aus der Chemie; previously: Nachrichten aus Chemie, Technik und Laboratorium 1976-1999; Nachrichten aus Chemie und Technik 1953-1975
+15525	0190-3799	NULL	NULL	NULL	now: National Civic Review
+15526	2164-5825	NULL	NULL	NULL	now: Journal of Counseling and Development; previously: The Personnel and Guidance Journal 1952-1984; Occupations 1934-1952; The Vocational Guidance Magazine 1924-1936; National Vocational Guidance Association Bulletin 1921-1924
+15529	0028-1441	NULL	NULL	NULL	now: Naval Research Logistics
+15533	0164-7989	NULL	NULL	NULL	now: New Directions For Evaluation
+15538	0369-4879	NULL	NULL	NULL	now: Journal of internal Medicine 1989-present; previously: Acta Medica Scandinavica 1919-1988; Nordiskt Medicinskt Arkiv 1869-1918; Medicinskt Archiv 1863-1868
+15539	0027-7002	NULL	NULL	NULL	now: Performance Improvement; previously: Performance and Instruction 1985-1996; Performance and Instruction Journal 1983-1984; Performance and Instruction 1981-1982; NSPI Journal 1972-1975; NSPI Newsletter 1972-1975; NSPI Journal 1962-1971
+15540	0147-2747	NULL	NULL	NULL	now: Performance Improvement; previously: Performance and Instruction 1985-1996; Performance and Instruction Journal 1983-1984; Performance and Instruction 1981-1982; NSPI Journal 1972-1975; NSPI Newsletter 1972-1975; NSPI Journal 1962-1971
+15541	0090-8118	NULL	NULL	NULL	now: Performance Improvement; previously: Performance and Instruction 1985-1996; Performance and Instruction Journal 1983-1984; Performance and Instruction 1981-1982; NSPI Journal 1972-1975; NSPI Newsletter 1972-1975; NSPI Journal 1962-1971
+15544	1071-7323	NULL	10.1002/(ISSN)1550-8528	NULL	now: Obesity
+15545	2164-5841	NULL	NULL	NULL	now: Journal of Counseling and Development; previously: The Personnel and Guidance Journal 1952-1984; Occupations 1934-1952; The Vocational Guidance Magazine 1924-1936; National Vocational Guidance Association Bulletin 1921-1924
+15548	0030-4921	NULL	NULL	NULL	now: Magnetic Resonance in Chemistry
+15549	0030-493X	NULL	NULL	NULL	now: Journal of Mass Spectrometry
+15554	0273-5326	NULL	NULL	NULL	now: Performance Improvement; previously: Performance and Instruction 1985-1996; Performance and Instruction Journal 1983-1984; Performance and Instruction 1981-1982; NSPI Journal 1972-1975; NSPI Newsletter 1972-1975; NSPI Journal 1962-1971
+15555	0884-1985	NULL	NULL	NULL	now: Performance Improvement; previously: Performance and Instruction 1985-1996; Performance and Instruction Journal 1983-1984; Performance and Instruction 1981-1982; NSPI Journal 1972-1975; NSPI Newsletter 1972-1975; NSPI Journal 1962-1971
+15556	8750-0191	NULL	NULL	NULL	now: Performance Improvement; previously: Performance and Instruction 1985-1996; Performance and Instruction Journal 1983-1984; Performance and Instruction 1981-1982; NSPI Journal 1972-1975; NSPI Newsletter 1972-1975; NSPI Journal 1962-1971
+15557	0899-1073	NULL	NULL	NULL	now: Journal of Healthcare Risk Management
+15562	0278-4513	NULL	NULL	NULL	now: Process Safety Progress
+15563	0032-1877	NULL	NULL	NULL	now: Poe Studies; previously: Poe Studies/Dark Romanticism 1986-2006; Poe Studies - Old Series 1971-1985; Poe Newsletter 1968-1970
+15564	0090-5224	NULL	NULL	NULL	now: Poe Studies; previously: Poe Studies/Dark Romanticism 1986-2006; Poe Studies - Old Series 1971-1985; Poe Newsletter 1968-1970
+15569	0164-0399	NULL	NULL	NULL	now: Journal of the World Aquaculture Society; previously: Journal of the World Mariculture Society 1981-1985; Proceedings of the World Mariculture Society 1979-1980; Proceedings of the Annual Meeting - World Mariculture Society 1974-1978; Proceedings of the Annual Workshop - World Mariculture Society 1970-1973
+15570	1043-5166	NULL	NULL	NULL	now: Journal of the World Aquaculture Society; previously: Journal of the World Mariculture Society 1981-1985; Proceedings of the World Mariculture Society 1979-1980; Proceedings of the Annual Meeting - World Mariculture Society 1974-1978; Proceedings of the Annual Workshop - World Mariculture Society 1970-1973
+15572	1472-0949	NULL	NULL	NULL	now: Physiological Entomology; previously: Journal of Entomology Series A, General Entomology 1971-1976; Proceedings of the Royal Entomological Society of London. Series A, General Entomology 1936-1970; The Proceedings of the Royal Entomological Society 1933-1935; Proceedings of the Entomological Society of London 1926-1932
+15575	2050-5914	NULL	NULL	NULL	now: Transactions of the Philological Society
+15576	0375-0418	NULL	NULL	NULL	now: Physiological Entomology; previously: Journal of Entomology Series A, General Entomology 1971-1976; Proceedings of the Royal Entomological Society of London. Series A, General Entomology 1936-1970; The Proceedings of the Royal Entomological Society 1933-1935; Proceedings of the Entomological Society of London 1926-1932
+15577	0375-0434	NULL	NULL	NULL	now: Systematic Entomology; previously: Journal of Entomology. Series B. Taxonomy & Systematics 1971-1976; Proceedings of the Royal Entomological Society of London. Series B, Taxonomy 1932-1970
+15578	1946-1496	NULL	NULL	NULL	now: Physiological Entomology; previously: Journal of Entomology Series A, General Entomology 1971-1976; Proceedings of the Royal Entomological Society of London. Series A, General Entomology 1936-1970; The Proceedings of the Royal Entomological Society 1933-1935; Proceedings of the Entomological Society of London 1926-1932
+15580	0748-3260	NULL	NULL	NULL	now: Journal of the World Aquaculture Society; previously: Journal of the World Mariculture Society 1981-1985; Proceedings of the World Mariculture Society 1979-1980; Proceedings of the Annual Meeting - World Mariculture Society 1974-1978; Proceedings of the Annual Workshop - World Mariculture Society 1970-1973
+15582	0030-8013	NULL	NULL	NULL	now: Visual Anthropology Review; previously: SVA Review 1990-1990; SVA Newsletter 1985-1989; Studies in Visual Communication 1980-1985; Studies in the Anthropology of Visual Communication 1975-1979; Program in Ethnographic Film - (PIEF) Newsletter 1970-1974
+15585	1365-0556	NULL	10.1111/(ISSN)1528-2716	NULL	merged: Structural Control & Health Monitoring
+15592	0034-186X	NULL	NULL	NULL	now: Recueil des Travaux Chimiques des Pays-Bas; previously: Recueil des Travaux Chimiques des Pays-Bas et de la Belgique 1897-1919; Recueil des Travaux Chimiques des Pays-Bas 1882-1896
+15594	0370-7539	NULL	NULL	NULL	now: Recueil des Travaux Chimiques des Pays-Bas; previously: Recueil des Travaux Chimiques des Pays-Bas et de la Belgique 1897-1919; Recueil des Travaux Chimiques des Pays-Bas 1882-1896
+15596	0233-1829	NULL	NULL	NULL	now: Feddes Repertorium; previously: Feddes Repertorium Specierum Novarum Regni Vegetabilis 1943-1963; Repertorium Specierum Novarum Regni Vegetabilis 1910-1942; Repertorium Novarum Specierum Regni Vegetabilis 1905-1909
+15599	0557-9325	NULL	10.1111/(ISSN)1478-4408a	NULL	now: Coloration Technology
+15606	0036-553X	NULL	NULL	NULL	now: European Journal of Haematology
+15608	0907-2055	NULL	NULL	NULL	now: International Journal of Social Welfare
+15616	0370-839X	NULL	NULL	NULL	now: Acta Physiologica 2006-present; previously: Acta Physiologica Scandinavica 1940-2005; Skandinavisches Archiv fu?r Physiologie 1889-1940
+15618	1938-2103	NULL	NULL	NULL	now: Society for the Anthropology of Europe Bulletin
+15624	0036-1836	NULL	NULL	NULL	now: The Journal of Humanistic Counseling; previously: The Journal of Humanistic Counseling, Education and Development 1999-2010; The Journal of Humanistic Education and Development 1982-1999; The Humanist Educator 1975-1982; SPATE - Journal of the Student Personnel Association for Teacher Education 1961-1975
+15633	0192-6918	NULL	NULL	NULL	now: Visual Anthropology Review; previously: SVA Review 1990-1990; SVA Newsletter 1985-1989; Studies in Visual Communication 1980-1985; Studies in the Anthropology of Visual Communication 1975-1979; Program in Ethnographic Film - (PIEF) Newsletter 1970-1974
+15634	0276-6558	NULL	NULL	NULL	now: Visual Anthropology Review; previously: SVA Review 1990-1990; SVA Newsletter 1985-1989; Studies in Visual Communication 1980-1985; Studies in the Anthropology of Visual Communication 1975-1979; Program in Ethnographic Film - (PIEF) Newsletter 1970-1974
+15636	1046-7688	NULL	NULL	NULL	now: Visual Anthropology Review; previously: SVA Review 1990-1990; SVA Newsletter 1985-1989; Studies in Visual Communication 1980-1985; Studies in the Anthropology of Visual Communication 1975-1979; Program in Ethnographic Film - (PIEF) Newsletter 1970-1974
+15637	1053-6779	NULL	NULL	NULL	now: Visual Anthropology Review; previously: SVA Review 1990-1990; SVA Newsletter 1985-1989; Studies in Visual Communication 1980-1985; Studies in the Anthropology of Visual Communication 1975-1979; Program in Ethnographic Film - (PIEF) Newsletter 1970-1974
+15639	0731-7239	NULL	10.1002/(ISSN)1099-1735	NULL	now: Systems Research
+15648	0817-881X	NULL	NULL	NULL	now: Clinical and Experimental Optometry 1986-present; previously: The Australian Journal of Optometry 1959-1985;  The Australasian Journal of Optometry 1919-1959
+15649	0045-0642	NULL	NULL	NULL	now: Clinical and Experimental Optometry 1986-present; previously: The Australian Journal of Optometry 1959-1985;  The Australasian Journal of Optometry 1919-1959
+15651	NULL	NULL	10.1002/(ISSN)1556-7540	NULL	merged: The Brown University Psychopharmacology Update
+15652	2164-5086	NULL	NULL	NULL	now: Counseling and Values 1973-present; previously: The National Catholic Guidance Conference Journal 1964-1971; The Catholic Counselor 1956-1964
+15655	0362-9783	NULL	NULL	NULL	now: The Journal of Humanistic Counseling; previously: The Journal of Humanistic Counseling, Education and Development 1999-2010; The Journal of Humanistic Education and Development 1982-1999; The Humanist Educator 1975-1982; SPATE - Journal of the Student Personnel Association for Teacher Education 1961-1975
+15656	0021-9754	NULL	NULL	NULL	now: The Journal of Clinical Pharmacology; previously: The Journal of Clinical Pharmacology and New Drugs 1971-1973; The Journal of Clinical Pharmacology and the Journal of New Drugs 1967-1970; The Journal of New Drugs 1961-1966
+15657	0095-9863	NULL	NULL	NULL	now: The Journal of Clinical Pharmacology; previously: The Journal of Clinical Pharmacology and New Drugs 1971-1973; The Journal of Clinical Pharmacology and the Journal of New Drugs 1967-1970; The Journal of New Drugs 1961-1966
+15658	0092-7317	NULL	NULL	NULL	now: Journal of Comparative Neurology; previously: Journal of Comparative Neurology and Psychology 1904-1910; The Journal of Comparative Neurology 1891-1903
+15659	0148-0812	NULL	NULL	NULL	now: Dermatologic Surgery
+15662	0096-0284	NULL	NULL	NULL	now: The Journal of Clinical Pharmacology; previously: The Journal of Clinical Pharmacology and New Drugs 1971-1973; The Journal of Clinical Pharmacology and the Journal of New Drugs 1967-1970; The Journal of New Drugs 1961-1966
+15663	0275-8598	NULL	NULL	NULL	now: The Journal of Addictions and Offender Counseling
+15665	0898-140X	NULL	NULL	NULL	now: Journal of Pharmaceutical Sciences; previously: Journal of the American Pharmaceutical Association 1940-1960; The Journal of the American Pharmaceutical Association 1912-1939
+15667	0368-2927	NULL	NULL	NULL	now: Botanical Journal of the Linnean Society; previously: The Journal of the Linnean Society of London. Botany 1865-1968; Journal of the Proceedings of the Linnean Society. Botany 1856-1865
+15668	0368-2935	NULL	NULL	NULL	now: Zoological Journal of the Linnean Society; previously: The Journal of the Linnean Society. Zoology 1866-1968; Journal of the Proceedings of the Linnean Society. Zoology 1856-1865
+15671	1045-7577	NULL	NULL	NULL	now: The Journal of Latin American and Caribbean Anthropology 2007-present; previously: Journal of Latin American Anthropology 1995-2006; The Latin American Anthropology Review 1989-1994; Contributions of the Latin American Anthropology Group 1976-1976
+15674	2047-1491	NULL	NULL	NULL	now: Journal of Microscopy; previously: Journal of the Royal Microscopical Society 1878-1968; The Monthly Microscopical Journal 1869-1877; The Transactions of the Microscopical Society of London 1842-1868; Microscopic Journal and Structural Record 1841-1841
+15678	0031-5737	NULL	NULL	NULL	now: Journal of Counseling and Development; previously: The Personnel and Guidance Journal 1952-1984; Occupations 1934-1952; The Vocational Guidance Magazine 1924-1936; National Vocational Guidance Association Bulletin 1921-1924
+15679	1472-0981	NULL	NULL	NULL	now: Physiological Entomology; previously: Journal of Entomology Series A, General Entomology 1971-1976; Proceedings of the Royal Entomological Society of London. Series A, General Entomology 1936-1970; The Proceedings of the Royal Entomological Society 1933-1935; Proceedings of the Entomological Society of London 1926-1932
+15681	2047-1483	NULL	NULL	NULL	now: Journal of Microscopy; previously: Journal of the Royal Microscopical Society 1878-1968; The Monthly Microscopical Journal 1869-1877; The Transactions of the Microscopical Society of London 1842-1868; Microscopic Journal and Structural Record 1841-1841
+15682	2164-5833	NULL	NULL	NULL	now: Journal of Counseling and Development; previously: The Personnel and Guidance Journal 1952-1984; Occupations 1934-1952; The Vocational Guidance Magazine 1924-1936; National Vocational Guidance Association Bulletin 1921-1924
+15686	0884-8181	NULL	NULL	NULL	now: Environmental Toxicology 1999-present; previously: Environmental toxicology and Water Quality 1991-1998; Toxicity Assessment 1986-1990
+15687	1945-9432	NULL	NULL	NULL	previously: Transactions of the Linnean Society of London, 3rd Series 1939-1955; split: Transactions of the Linnean Society of London, 2nd Series Botany 1875-1922 and Transactions of the Linnean Society of London. 2nd Series Zoology 1875-1936; Transactions of the Linnean Society of London 1791-1874
+15688	1945-9459	NULL	NULL	NULL	previously: Transactions of the Linnean Society of London, 3rd Series 1939-1955; split: Transactions of the Linnean Society of London, 2nd Series Botany 1875-1922 and Transactions of the Linnean Society of London. 2nd Series Zoology 1875-1936; Transactions of the Linnean Society of London 1791-1874
+15689	1945-9467	NULL	NULL	NULL	previously: Transactions of the Linnean Society of London, 3rd Series 1939-1955; split: Transactions of the Linnean Society of London, 2nd Series Botany 1875-1922 and Transactions of the Linnean Society of London. 2nd Series Zoology 1875-1936; Transactions of the Linnean Society of London 1791-1874
+15690	1945-9440	NULL	NULL	NULL	previously: Transactions of the Linnean Society of London, 3rd Series 1939-1955; split: Transactions of the Linnean Society of London, 2nd Series Botany 1875-1922 and Transactions of the Linnean Society of London. 2nd Series Zoology 1875-1936; Transactions of the Linnean Society of London 1791-1874
+15692	0035-8894	NULL	NULL	NULL	now: Ecological Entomology; previously: Transactions of the Royal Entomological Society of London 1933-1975; Transactions of the Entomological Society of London 1836-1932
+15699	0196-3627	NULL	NULL	NULL	now: Veterinary Radiology and Ultrasound; previously: Veterinary Radiology 1979-1991; Journal of the American Veterinary Radiology Society 1960-1978
+15700	0042-7764	NULL	NULL	NULL	now: The Career Development Quarterly; previously: Vocational Guidance Quarterly 1952-1986
+15702	0959-9754	NULL	10.1002/(ISSN)1099-1816	NULL	now: Journal of Water Law
+15712	0044-2208	NULL	NULL	NULL	now: Journal of Basic Microbiology
+15713	0044-2240	NULL	NULL	NULL	now: Journal of Applied Entomology
+15714	0863-1786	NULL	NULL	NULL	now: Zeitschrift für Anorganische und Allgemeine Chemie; previously: Zeitschrift für Anorganische Chemie 1943-1950; Zeitschrift für Anorganische und Allgemeine Chemie 1915-1943; Zeitschrift für Anorganische Chemie 1892-1915
+15715	0372-7874	NULL	NULL	NULL	now: Zeitschrift für Anorganische und Allgemeine Chemie; previously: Zeitschrift für Anorganische Chemie 1943-1950; Zeitschrift für Anorganische und Allgemeine Chemie 1915-1943; Zeitschrift für Anorganische Chemie 1892-1915
+15716	0863-1778	NULL	NULL	NULL	now: Zeitschrift für Anorganische und Allgemeine Chemie; previously: Zeitschrift für Anorganische Chemie 1943-1950; Zeitschrift für Anorganische und Allgemeine Chemie 1915-1943; Zeitschrift für Anorganische Chemie 1892-1915
+15720	0044-3263	NULL	NULL	NULL	now: Journal of Plant Nutrition and Soil Science 1999-present; Zeitschrift für Pflanzenernährung und Bodenkunde 1967-1998; Zeitschrift für Pflanzenernährung, Düngung und Bodenkunde 1946-1966; Bodenkunde und Pflanzenernährung 1936-1945; Zeitschrift für Pflanzenernährung, Düngung, Bodenkunde 1935-1936; Zeitschrift für Pflanzenernährung, Düngung, Bodenkunde. Teil A, Wissenschaftlicher Teil 1927-1934; Zeitschrift für Pflanzenernährung und Düngung. Teil A, Wissenschaftlicher Teil 1922-1926
+15721	0372-851X	NULL	NULL	NULL	now: Journal of Plant Nutrition and Soil Science 1999-present; Zeitschrift für Pflanzenernährung und Bodenkunde 1967-1998; Zeitschrift für Pflanzenernährung, Düngung und Bodenkunde 1946-1966; Bodenkunde und Pflanzenernährung 1936-1945; Zeitschrift für Pflanzenernährung, Düngung, Bodenkunde 1935-1936; Zeitschrift für Pflanzenernährung, Düngung, Bodenkunde. Teil A, Wissenschaftlicher Teil 1927-1934; Zeitschrift für Pflanzenernährung und Düngung. Teil A, Wissenschaftlicher Teil 1922-1926
+15722	0932-6707	NULL	NULL	NULL	now: Journal of Plant Nutrition and Soil Science 1999-present; Zeitschrift für Pflanzenernährung und Bodenkunde 1967-1998; Zeitschrift für Pflanzenernährung, Düngung und Bodenkunde 1946-1966; Bodenkunde und Pflanzenernährung 1936-1945; Zeitschrift für Pflanzenernährung, Düngung, Bodenkunde 1935-1936; Zeitschrift für Pflanzenernährung, Düngung, Bodenkunde. Teil A, Wissenschaftlicher Teil 1927-1934; Zeitschrift für Pflanzenernährung und Düngung. Teil A, Wissenschaftlicher Teil 1922-1926
+15723	0372-9702	NULL	NULL	NULL	now: Journal of Plant Nutrition and Soil Science 1999-present; Zeitschrift für Pflanzenernährung und Bodenkunde 1967-1998; Zeitschrift für Pflanzenernährung, Düngung und Bodenkunde 1946-1966; Bodenkunde und Pflanzenernährung 1936-1945; Zeitschrift für Pflanzenernährung, Düngung, Bodenkunde 1935-1936; Zeitschrift für Pflanzenernährung, Düngung, Bodenkunde. Teil A, Wissenschaftlicher Teil 1927-1934; Zeitschrift für Pflanzenernährung und Düngung. Teil A, Wissenschaftlicher Teil 1922-1926
+15724	0932-6979	NULL	NULL	NULL	now: Journal of Plant Nutrition and Soil Science 1999-present; Zeitschrift für Pflanzenernährung und Bodenkunde 1967-1998; Zeitschrift für Pflanzenernährung, Düngung und Bodenkunde 1946-1966; Bodenkunde und Pflanzenernährung 1936-1945; Zeitschrift für Pflanzenernährung, Düngung, Bodenkunde 1935-1936; Zeitschrift für Pflanzenernährung, Düngung, Bodenkunde. Teil A, Wissenschaftlicher Teil 1927-1934; Zeitschrift für Pflanzenernährung und Düngung. Teil A, Wissenschaftlicher Teil 1922-1926
+15727	0044-3573	NULL	NULL	NULL	now: Ethology
+15731	0044-4294	NULL	NULL	NULL	now: Transboundary and Emerging Diseases; previously: Journal of Veterinary Medicine Series A 1986-2007; Zentralblatt für Veterinärmedizin. Reihe A 1963-1985; Zentralblatt für Veterinärmedizin 1954-1962
+15732	0514-7158	NULL	NULL	NULL	now: Transboundary and Emerging Diseases; previously: Journal of Veterinary Medicine Series A 1986-2007; Zentralblatt für Veterinärmedizin. Reihe A 1963-1985; Zentralblatt für Veterinärmedizin 1954-1962
+15733	0514-7166	NULL	NULL	NULL	now: Zoonoses and Public Health; previously: Journal of Veterinary Medicine Series B 1986-2006; Zentralblatt für Veterinärmedizin. Reihe B 1963-1985: Zentralblatt für Veterinärmedizin 1954-1962
+15734	0177-0543	NULL	NULL	NULL	now: Transboundary and Emerging Diseases; previously: Journal of Veterinary Medicine Series A 1986-2007; Zentralblatt für Veterinärmedizin. Reihe A 1963-1985; Zentralblatt für Veterinärmedizin 1954-1962
+15735	0721-0981	NULL	NULL	NULL	now: Transboundary and Emerging Diseases; previously: Journal of Veterinary Medicine Series A 1986-2007; Zentralblatt für Veterinärmedizin. Reihe A 1963-1985; Zentralblatt für Veterinärmedizin 1954-1962
+15736	0300-8711	NULL	NULL	NULL	now: Transboundary and Emerging Diseases; previously: Journal of Veterinary Medicine Series A 1986-2007; Zentralblatt für Veterinärmedizin. Reihe A 1963-1985; Zentralblatt für Veterinärmedizin 1954-1962
+15737	0721-1856	NULL	NULL	NULL	now: Zoonoses and Public Health; previously: Journal of Veterinary Medicine Series B 1986-2006; Zentralblatt für Veterinärmedizin. Reihe B 1963-1985: Zentralblatt für Veterinärmedizin 1954-1962
+15738	0931-2021	NULL	NULL	NULL	now: Zoonoses and Public Health; previously: Journal of Veterinary Medicine Series B 1986-2006; Zentralblatt für Veterinärmedizin. Reihe B 1963-1985: Zentralblatt für Veterinärmedizin 1954-1962
+15751	0733-9380	NULL	now: Journal of Professional Issues in Engineering Education and Practice 1991-	NULL	now Journal of Professional Issues in Engineering Education and Practice 1991-
+15752	0007-1099	NULL	NULL	NULL	Now: European Journal of Marketing
+15753	1051-4805	NULL	NULL	NULL	Now: Internet Research
+15754	0265-3028	NULL	NULL	NULL	Now: Microelectronics International
+15755	0007-6929	NULL	NULL	NULL	Now: Industrial Management and Data Systems
+15756	1464-6676	NULL	NULL	NULL	Now: Young Consumers
+15758	1569-9293	NULL	NULL	NULL	A subscription to the European Journal of Cardio-Thoracic Surgery includes a subscription to Interactive Cardiovascular and Thoracic Surgery
+15765	2050-5698	NULL	NULL	NULL	Formerly Journal of Electron Microscopy
+15767	2325-0984	NULL	NULL	NULL	In 2013, subscriptions to Public Opinion Quarterly will include a subscription to Journal of Survey Statistics and Methodology
+15770	1361-5874	NULL	NULL	NULL	Now: Clinical Governance: An International Journal. Previously: British Journal of Clinical Governance. Incorporated: Clinical Performance and Quality Healthcare 
+15771	0263-7480	NULL	NULL	NULL	Now: Journal of Property Investment & Finance. Previously: Journal of Property Valuation and Investment 1991-1998 Incorporates: Journal of Property Finance
+15772	0953-2137	NULL	NULL	NULL	Now: Journal of Enterprise Information Managment. Previously: Logistics Information Management 1989-2003
+15773	8756-5196	NULL	NULL	NULL	Now: OCLC Systems and Services
+15774	0167-5710	NULL	NULL	NULL	Now: Information, Technology and People
+15775	0374-4701	NULL	NULL	NULL	Now: Education and Training Previously: Technical Education
+15782	1553-0833	NULL	NULL	NULL	Absorbed by Bioinformatics
+15789	NULL	NULL	NULL	NULL	Merged with: Environmental History Review 1990-1995 (Vols. 14-19) to form Environmental History 1996 to date (Vols. 1 ongoing). Continues Journal of Forest History
+15790	0264-4924	NULL	NULL	NULL	now: Emergency Medicine Journal 2000-present; previously: Journal of Accident and Emergency Medicine 1994-2000; Archives of Disease in Childhood 1984-1993
+15792	0007-0769	NULL	NULL	NULL	now: Heart
+15793	0007-134X	NULL	NULL	NULL	now: Sexually Transmitted Infections 1998-present; previously: Genitourinary Medicine 1985-1997; British Journal of Venereal Diseases 1925-1984
+15794	0306-3690	NULL	NULL	NULL	now: British Journal of Sports Medicine
+15795	1355-2910	NULL	NULL	NULL	incorporated into: Journal of Clinical Pathology 2004-present; Molecular Pathology 1997-2003; Clinical Molecular Pathology 1995-1996
+15796	0266-4348	NULL	NULL	NULL	now: Sexually Transmitted Infections 1998-present; previously: Genitourinary Medicine 1985-1997; British Journal of Venereal Diseases 1925-1984
+15797	1351-0622	NULL	NULL	NULL	now: Emergency Medicine Journal 2000-present; previously: Journal of Accident and Emergency Medicine 1994-2000; Archives of Disease in Childhood 1984-1993
+15798	0144-8625	NULL	NULL	NULL	now: Journal of Family Planning and Reproductive Health Care 2001-present
+15799	0368-329X	NULL	NULL	NULL	now: Journal of Neurology, Neurosurgery and Psychiatry 1944 to present; previously: Journal of Neurology, Neurology and Psychiatry 1938-1943; The Journal of Neurology and Psychopathology 1920-1937
+15801	0543-2766	NULL	NULL	NULL	now: Drug and Theraupetics Bulletin 1964-present
+15802	1366-8714	NULL	NULL	NULL	incorporated into: Journal of Clinical Pathology 2004-present; Molecular Pathology 1997-2003; Clinical Molecular Pathology 1995-1996
+15803	0963-8172	NULL	NULL	NULL	now: BMJ Quality and Safety; previously: Quality and Safety in Health Care 2002-2010; Quality in Health Care 1992-2001
+15805	0266-8637	NULL	NULL	NULL	now: Journal of Neurology, Neurosurgery and Psychiatry 1944 to present; previously: Journal of Neurology, Neurology and Psychiatry 1938-1943; The Journal of Neurology and Psychopathology 1920-1937
+15814	0304-257X	NULL	NULL	NULL	Absorbed
+15815	0212-1786	NULL	NULL	NULL	Absorbed
+15818	0725-0770	NULL	NULL	NULL	Absorbed
+15819	0883-105X	NULL	NULL	NULL	Absorbed
+15822	0570-0973	NULL	NULL	NULL	Absorbed
+15826	2167-6208	NULL	NULL	NULL	Absorbed
+15831	0728-4896	NULL	NULL	NULL	Absorbed
+15833	2194-7449	NULL	NULL	NULL	Absorbed
+15840	0810-1868	NULL	NULL	NULL	Absorbed
+15841	0186-0658	NULL	NULL	NULL	Absorbed
+15843	0304-2553	NULL	NULL	NULL	Absorbed
+15844	2192-3132	NULL	NULL	NULL	Absorbed
+15845	1383-5408	NULL	NULL	NULL	Absorbed
+15846	0186-064X	NULL	NULL	NULL	Absorbed
+15847	2221-4348	NULL	NULL	NULL	Absorbed
+15849	0301-6676	NULL	NULL	NULL	Absorbed
+15850	0304-2634	NULL	NULL	NULL	Absorbed
+15851	0168-9657	NULL	NULL	NULL	Absorbed
+15853	0315-761X	NULL	NULL	NULL	Absorbed
+15854	0037-9514	NULL	NULL	NULL	Absorbed
+15856	0373-5451	NULL	NULL	NULL	Absorbed
+15857	0583-8789	NULL	NULL	NULL	Absorbed
+15858	0008-0152	NULL	NULL	NULL	Absorbed
+15859	0008-0497	NULL	NULL	NULL	Absorbed
+15862	0184-7694	NULL	NULL	NULL	Absorbed
+15869	0193-8703	NULL	NULL	NULL	Absorbed
+15870	0094-7571	NULL	NULL	NULL	Absorbed
+15874	1132-6093	NULL	NULL	NULL	Absorbed
+15881	0185-0156	NULL	NULL	NULL	Absorbed
+15884	0014-2190	NULL	NULL	NULL	Absorbed
+15888	2044-1541	NULL	NULL	NULL	Absorbed
+15892	0305-8980	NULL	NULL	NULL	Absorbed
+15897	0214-7610	NULL	NULL	NULL	Absorbed
+15900	1217-0283	NULL	NULL	NULL	Absorbed
+15903	0046-967X	NULL	NULL	NULL	Absorbed
+15909	0075-2533	NULL	NULL	NULL	Absorbed
+15913	0361-7181	NULL	NULL	NULL	Absorbed
+15915	1015-356X	NULL	NULL	NULL	Absorbed
+15917	1087-7789	NULL	NULL	NULL	Absorbed
+15919	0814-5725	NULL	NULL	NULL	Absorbed
+15920	2156-4876	NULL	NULL	NULL	Absorbed
+15925	2167-6194	NULL	NULL	NULL	Absorbed
+15928	0544-0335	NULL	NULL	NULL	Absorbed
+15930	0026-3184	NULL	NULL	NULL	Absorbed
+15934	0260-0366	NULL	NULL	NULL	Absorbed
+15935	2157-2968	NULL	NULL	NULL	Absorbed
+15936	2221-4240	NULL	NULL	NULL	Absorbed
+15940	0032-0005	NULL	NULL	NULL	Absorbed
+15942	2156-1249	NULL	NULL	NULL	Absorbed
+15943	0162-2021	NULL	NULL	NULL	Absorbed
+15945	2160-2662	NULL	NULL	NULL	Absorbed
+15948	2160-2654	NULL	NULL	NULL	Absorbed
+15949	0894-8372	NULL	NULL	NULL	Absorbed
+15950	0894-8380	NULL	NULL	NULL	Absorbed
+15966	0394-123X	NULL	NULL	NULL	Absorbed
+15968	2026-6707	NULL	NULL	NULL	Absorbed
+15971	0363-2024	NULL	NULL	NULL	Absorbed
+15973	1065-4690	NULL	NULL	NULL	Absorbed
+15975	1054-3074	NULL	NULL	NULL	Absorbed
+15976	2192-3124	NULL	NULL	NULL	Absorbed
+15980	0044-314X	NULL	NULL	NULL	Absorbed
+15999	 0371-0947	NULL	NULL	NULL	Now: Industrial Lubrication and Tribology
+16004	0191-3352	NULL	NULL	NULL	Absorbed
+16006	2163-7652	NULL	NULL	NULL	Absorbed
+16012	2162-9145	NULL	NULL	NULL	Absorbed
+16013	2163-2987	NULL	NULL	NULL	Absorbed
+16014	2163-3002	NULL	NULL	NULL	Absorbed
+16015	2162-9110	NULL	NULL	NULL	Absorbed
+16016	2162-9080	NULL	NULL	NULL	Absorbed
+16017	2162-9064	NULL	NULL	NULL	Absorbed
+16027	0883-346X	NULL	NULL	NULL	Absorbed
+16028	0090-3515	NULL	NULL	NULL	Absorbed
+16048	0899-0271	NULL	NULL	NULL	Absorbed
+16049	2163-7679	NULL	NULL	NULL	Absorbed
+16056	1550-574X	NULL	NULL	NULL	Absorbed
+16057	0361-8234	NULL	NULL	NULL	Absorbed
+16075	2009-1648	NULL	NULL	NULL	Absorbed
+16086	0791-038X	NULL	NULL	NULL	Absorbed
+16087	1340-5470	NULL	NULL	NULL	Absorbed
+16090	2162-9366	NULL	NULL	NULL	Absorbed
+16091	2162-9013	NULL	NULL	NULL	Absorbed
+16092	2163-2995	NULL	NULL	NULL	Absorbed
+16097	0342-1864	NULL	NULL	NULL	Absorbed
+16099	1825-8212	NULL	NULL	NULL	Absorbed
+16105	0959-4280	NULL	NULL	NULL	Absorbed
+16106	0790-178X	NULL	NULL	NULL	Absorbed
+16108	0791-3540	NULL	NULL	NULL	Absorbed
+16112	0021-1249	NULL	NULL	NULL	Absorbed
+16113	0578-7483	NULL	NULL	NULL	Absorbed
+16117	0332-0375	NULL	NULL	NULL	Absorbed
+16119	2009-2598	NULL	NULL	NULL	Absorbed
+16130	2048-7215	NULL	NULL	NULL	Absorbed
+16131	0731-6755	NULL	NULL	NULL	Absorbed
+16139	0332-1851	NULL	NULL	NULL	Absorbed
+16144	1520-8621	NULL	NULL	NULL	Absorbed
+16145	1520-8613	NULL	NULL	NULL	Absorbed
+16146	1048-6143	NULL	NULL	NULL	Absorbed
+16148	1393-2195	NULL	NULL	NULL	Absorbed
+16150	0790-6374	NULL	NULL	NULL	Absorbed
+16151	2048-7223	NULL	NULL	NULL	Absorbed
+16152	0790-6366	NULL	NULL	NULL	Absorbed
+16153	0790-6382	NULL	NULL	NULL	Absorbed
+16155	0035-9114	NULL	NULL	NULL	Absorbed
+16156	2049-7865	NULL	NULL	NULL	Absorbed
+16168	1080-7330	NULL	NULL	NULL	Absorbed
+16172	0792-528X	NULL	NULL	NULL	Absorbed
+16174	0258-8315	NULL	NULL	NULL	Absorbed
+16175	0898-154X	NULL	NULL	NULL	Absorbed
+16176	0363-888X	NULL	NULL	NULL	Absorbed
+16177	0026-3931	NULL	NULL	NULL	Absorbed
+16178	8755-8963	NULL	NULL	NULL	Absorbed
+16184	2163-7695	NULL	NULL	NULL	Absorbed
+16187	0364-7676	NULL	NULL	NULL	Absorbed
+16193	0790-6358	NULL	NULL	NULL	Absorbed
+16195	0302-7597	NULL	NULL	NULL	Absorbed
+16196	0301-7400	NULL	NULL	NULL	Absorbed
+16197	0301-6706	NULL	NULL	NULL	Absorbed
+16198	0301-7419	NULL	NULL	NULL	Absorbed
+16199	0035-8975	NULL	NULL	NULL	Absorbed
+16200	0035-8983	NULL	NULL	NULL	Absorbed
+16202	2162-903X	NULL	NULL	NULL	Absorbed
+16203	1544-2071	NULL	NULL	NULL	Absorbed
+16206	2162-9331	NULL	NULL	NULL	Absorbed
+16207	2162-9358	NULL	NULL	NULL	Absorbed
+16208	1531-7293	NULL	NULL	NULL	Absorbed
+16215	0939-2718	NULL	NULL	NULL	Absorbed
+16217	0033-7072	NULL	NULL	NULL	Absorbed
+16220	1544-2063	NULL	NULL	NULL	Absorbed
+16236	0040-750X	NULL	NULL	NULL	Absorbed
+16239	0790-634X	NULL	NULL	NULL	Absorbed
+16240	0886-1730	NULL	NULL	NULL	Absorbed
+16242	2049-7873	NULL	NULL	NULL	Absorbed
+16245	0566-2478	NULL	NULL	NULL	Absorbed
+16246	0272-3026	NULL	NULL	NULL	Absorbed
+16288	0731-9193	NULL	NULL	NULL	Absorbed by Fundamental and Applied Toxicology
+16325	0886-1714	NULL	NULL	NULL	Now called Physiology
+16326	1548-9213	NULL	NULL	NULL	Formerly News in Physiological Sciences
+16452	0391-3341	NULL	NULL	NULL	now: Nuncius 1986-present
+16454	0365-5164	NULL	NULL	NULL	now: Animal Biology 2003-Present; previously: Netherlands Journal of Zoology 1968-2003; Archives Néerlandaises de Zoologie 1935-1967
+16462	0801-8049	NULL	NULL	NULL	now: Human Rights in Development
+16465	0268-0106	NULL	NULL	NULL	now: International Journal of Marine and Coastal Law
+16470	1420-2018	NULL	NULL	NULL	now: Social Sciences and Missions 2007 
+16473	0028-2596	NULL	NULL	NULL	now: Nematology
+16475	0029-151X	NULL	NULL	NULL	now: Nordic Journal of International Law
+16477	0929-9637	NULL	NULL	NULL	now: Sensory Neuron
+16479	0165-0300	NULL	NULL	NULL	now: Review of Central and East European Law
+16480	0162-7546	NULL	NULL	NULL	now: Research on Chemical Intermediates
+16493	NULL	NULL	NULL	NULL	Includes subset of articles from Applied Physics Letters 
+16496	0894-1866	NULL	NULL	NULL	Merged into: Computing in Science & Engineering
+16497	NULL	NULL	NULL	NULL	Includes  subset of articles from The Journal of Chemical Physics 
+16498	0031-9171	NULL	NULL	NULL	Absorbed into Physics of Fluids and Physics of Plasma
+16499	0899-8213	NULL	NULL	NULL	Now: Physics of Fluids. Previously: Physics of Fluids (1958)
+16500	0899-8221	NULL	NULL	NULL	Now: Physics of Plasmas
+16516	0886-5159	NULL	NULL	NULL	Absorbed: Presbyterian Historical Society
+16523	2052-6342	NULL	NULL	NULL	Now:The Journal of the Decorative Arts Society 1850-the Present. Previously:The Bulletin of the Decorative Arts Society (1977)
+16525	2326-4861	NULL	NULL	NULL	Now:Journal of the Presbyterian Historical Society (1943) (1943 -1961) Continues:Journal of the Department of History (The Presbyterian Historical Society) of the Presbyterian Church in the U.S.A.(1930-1942)
+16535	1364-5447	NULL	NULL	NULL	Now: Dalton Transactions
+16603	NULL	NULL	NULL	NULL	Open Access. It is a book series. ISBN included
+16608	NULL	NULL	NULL	NULL	Open Access. It is a book series. ISBN included
+17413	0023-608X	NULL	NULL	NULL	Now: Kyoto Journal of Mathematics (2010-) Previously: Memoirs of the College of Science, University of Kyoto. Series A: Mathematics (1950-1961) 
+17414	0023-2599	NULL	NULL	NULL	Now:Kodai Mathematical Journal Partially open (older than 5 years open)
+17416	0368-8887	NULL	NULL	NULL	Now: Kyoto Journal of Mathematics (2010-) Previously:Journal of Mathematics of Kyoto University (1961-2009)
+17422	2330-8079	NULL	NULL	NULL	Now: Quaker History 1924 -
+18021	0009-4625	NULL	NULL	NULL	Now: Chinese Sociological Review
+18026	1097-203X	NULL	NULL	NULL	Now: The Japanese Political Economy
+18041	1066-7814	NULL	NULL	NULL	Now: Applied Physiology, Nutrition and Metabolism
+18043	0714-7511	NULL	NULL	NULL	Now: Biochemistry and Cell Biology  
+18044	0576-5544	NULL	NULL	NULL	Now: Canadian Journal of Physiology and Pharmacology
+18045	0008-4026	NULL	NULL	NULL	Now: Botany
+18046	0008-4093	NULL	NULL	NULL	Now: Genome
+18050	0015-296X	NULL	NULL	NULL	Now: Canadian Journal of Fisheries and Aquatic Sciences Previously: Contributions to Canadian Biology and Fisheries (1901 - 1933) Journal of the Biological Board of Canada (1934 - 1937) 
+18128	2214-9147	NULL	NULL	NULL	Now:2013
+18164	0047-2301	NULL	NULL	NULL	Now: Journal of Collective Negotiations
+18170	1055-7512	NULL	NULL	NULL	Now:Journal of Workplace Rights
+18179	0960-0604	NULL	NULL	NULL	Now: Anthropological Journal of European Cultures
+18190	1461-7919	NULL	NULL	NULL	Now: International Journal of Social Quality
+18196	1557-2455	NULL	NULL	NULL	Now: Israel Studies Review
+18222	 1471-7794	NULL	NULL	NULL	Now:Quality in Ageing and Older Adults 
+18226	0004-9409	NULL	NULL	NULL	Now: Crop and Pasture Science
+18228	0816-1089	NULL	NULL	NULL	Now: Animal Production Science
+18229	0067-1940	NULL	NULL	NULL	Now: Marine and Freshwater Research
+18231	0310-7841	NULL	NULL	NULL	Now: Functional Plant Biology
+18232	0365-365X	NULL	NULL	NULL	Now: Australian Journal of Biological Sciences. Open Access. 
+18233	0004-9573	NULL	NULL	NULL	Now: Soil Research
+18240	0261-3131	NULL	NULL	NULL	Now: Resurgence & Ecologist 
+18242	0017-310X	NULL	NULL	NULL	Absorbed: Vox; Radio critic; Broadcast review
+18257	0163-769X	NULL	NULL	NULL	Absorbed: Recent progress in hormone research
+18262	 1050-9747	NULL	NULL	NULL	Now: Geological Society of America Bulletin
+18284	0740-2082	NULL	NULL	NULL	Now: Journal of Applied Biomechanics
+18285	1050-1606	NULL	NULL	NULL	Now: International Journal of Sport Nutrition and Exercise Metabolism
+18294	0163-433X	NULL	NULL	NULL	Now: Journal of Sport & Exercise Psychology
+18330	0142-7849	NULL	NULL	NULL	Now:International Development Planning Review
+18706	0481-2085	NULL	NULL	NULL	Now: Quarterly Journal of Engineering Geology and Hydrogeology
+18708	0370-291X	NULL	NULL	NULL	Now: Journal of the Geological Society
+18711	0371-6260	NULL	NULL	NULL	Merged with Transactions of the Geological Society of Glasgow to form Scottish Journal of Geology
+18742	1548-1603	NULL	NULL	NULL	Formerly Mapping Sciences and Remote Sensing
+18744	1550-2724	NULL	NULL	NULL	Formerly known as Journal of the Illuminating Engineering Society (1971 - 2004). T&F are publishing this title for 2014, beginning at Volume 10.
+18818	0306-3283	NULL	NULL	NULL	Now: Biochemical Journal (1984)
+18819	0306-3275	NULL	NULL	NULL	Now: Biochemical Journal (1984)
+18820	0006-2936	NULL	NULL	NULL	Now: Biochemical Journal (1984) Continues: Biochemical Journal. Molecular Aspects and Biochemical Journal. Cellular Aspects
+18824	0009-9287	NULL	NULL	NULL	Now: Clinical Science (1979) Continues: Clinical Science and Molecular Medicine (1973-78)
+18826	0301-0538	NULL	NULL	NULL	Now: Clinical Science (1979)
+18832	1357-0927	NULL	NULL	NULL	Now: Journal of Derivatives & Hedge Funds
+18833	1357-0927	NULL	NULL	NULL	Now: Journal of Derivatives & Hedge Funds
+18841	1463-5178	NULL	NULL	NULL	Now: Journal of Direct, Data and Digital Marketing Practice  
+18842	1463-5178	NULL	NULL	NULL	Now: Journal of Direct, Data and Digital Marketing Practice  
+18847	1388-1973	NULL	NULL	NULL	Now: Maritime Economics & Logistics
+18848	1388-1973	NULL	NULL	NULL	Now: Maritime Economics & Logistics
+18871	2029-882X	NULL	NULL	NULL	Formerly known as Statybin?s Konstrukcijos ir Technologijos (2009 - 2011) 
+18873	1939-3210	NULL	NULL	NULL	Formerly part of Food Additives & Contaminants (1984 - 2007) 
+18889	1941-658X	NULL	NULL	NULL	Formerly known as The Journal of Cost Analysis & Management (1999 - 2007) and Journal of Parametrics (1981 - 2007) 
+18904	1360-6417	NULL	NULL	NULL	Now: Child and Adolescent Mental Health
+18973	2029-7475	NULL	NULL	NULL	Formerly known as LIMES: Cultural Regionalistics (2008 - 2010) 
+18980	2159-676X	NULL	NULL	NULL	Formerly known as Qualitative Research in Sport and Exercise (2009 - 2010) 
+18983	2158-379X	NULL	NULL	NULL	Formerly known as Journal of Power (2008 - 2010) 
+18988	2162-2965	NULL	NULL	NULL	Formerly part of  Applied Neuropsychology (1994 - 2011) 
+18993	2166-2282	NULL	NULL	NULL	Formerly known as Journal of Danish Archaeology (1982 - 2011) 
+18997	2150-7716	NULL	NULL	NULL	Formerly AJOB Primary Research (1900 - 2013) 
+18999	0037-7643	NULL	NULL	NULL	Now: Social Policy and Administration 
+19000	 0021-8847	NULL	NULL	NULL	now: Journal of Applied Microbiology
+19005	0001-6470	NULL	NULL	NULL	Now: Acta Orthopaedica
+19008	0349-652X	NULL	NULL	NULL	Now: Acta Radiologica
+19010	0001-6934	NULL	NULL	NULL	Now: Scandinavian Journal of Rheumatology 
+19012	0899-9112	NULL	NULL	NULL	Now: Journal of Addictions Nursing. Continues: Addictions Nursing (1994-95)
+19014	1073-886X	NULL	NULL	NULL	Now: Journal of Addictions Nursing. Previously: Addiction Nursing Network (1989-93)
+19015	1403-8196	NULL	NULL	NULL	Now: European Journal of Physiotherapy
+19016	1441-7049	NULL	NULL	NULL	Now: International Journal of Speech-Language Pathology
+19018	1748-2968	NULL	NULL	NULL	Now: Amyotrophic Lateral Sclerosis and Frontotemporal Degeneration
+19022	0148-5016	NULL	NULL	NULL	Now: Systems Biology in Reproductive Medicine
+19024	1073-1199	NULL	NULL	NULL	Now: Artificial Cells, Nanomedicine, and Biotechnology
+19026	1651-386X	NULL	NULL	NULL	Now: Hearing, Balance and Communication
+19028	0045-0634	NULL	NULL	NULL	Now: Journal of Intellectual and Developmental Disability. Continues Australian Journal of Development Disabilities (1980-1981) and Australia and New Zealand Journal of Developmental Disabilities (1982-1995)
+19029	0159-9011	NULL	NULL	NULL	Now: Journal of Intellectual and Developmental Disability. Previously Australian Journal of Mental Retardation (1970-1979) Continues: Australia and New Zealand Journal of Developmental Disabilities (1982-1995)
+19030	0726-3864	NULL	NULL	NULL	Now: Journal of Intellectual and Developmental Disability. Previously: Australian Journal of Mental Retardation (1970-1979), Australian Journal of Development Disabilities (1980-1981)
+19037	0300-5364	NULL	NULL	NULL	Now:  International Journal of Audiology
+19044	0276-5497	NULL	NULL	NULL	Now: Renal Failure. Continues: Uremia Investigation(1984-1986) Previously: Journal of Dialysis (1976-1980)
+19046	0730-0085	NULL	NULL	NULL	Now: Hypertension in Pregnancy
+19050	0735-7915	NULL	NULL	NULL	Now: Clinical Research and Regulatory Affairs
+19054	0045-6411	NULL	NULL	NULL	Now: Critical Reviews in Biochemistry and Molecular Biology
+19055	0590-8191	NULL	NULL	NULL	Now: Critical Reviews in Clinical Laboratory Sciences
+19056	0045-6454	NULL	NULL	NULL	Now: Critical Reviews in Microbiology
+19057	0045-6446	NULL	NULL	NULL	Now: Critical Reviews in Toxicology
+19058	1040-8355	NULL	NULL	NULL	Now: Critical Reviews in Biochemistry and Molecular Biology
+19067	0962-2594	NULL	NULL	NULL	Now: Expert Opinion on Therapeutic Patents
+19073	1042-5179	NULL	NULL	NULL	Now: Mitochondrial DNA
+19078	0095-5183	NULL	NULL	NULL	Now: Drug Development and Industrial Pharmacy
+19081	1061-9526	NULL	NULL	NULL	Now: Electromagnetic Biology and Medicine
+19083	1361-9195	NULL	NULL	NULL	Now: Expert Opinion on Emerging Drugs
+19084	1460-0412	NULL	NULL	NULL	Now: Expert Opinion on Therapeutic Targets
+19086	0093-6391	NULL	NULL	NULL	Now: Endocrine Research
+19090	0800-2789	NULL	NULL	NULL	Now: Pediatric Hematology-Oncology
+19106	8755-0199	NULL	NULL	NULL	Now: Free Radical Research
+19112	0884-3988	NULL	NULL	NULL	Now: Journal of Interprofessional Care
+19115	0090-0877	NULL	NULL	NULL	Now: Immunological Investigations
+19120	0020-773X	NULL	NULL	NULL	Now: Substance Use & Misuse
+19129	0020-7616	NULL	NULL	NULL	Now: International Journal of Radiation Biology
+19138	0021-9134	NULL	NULL	NULL	Now: Journal of Asthma
+19139	1465-3494	NULL	NULL	NULL	Now: Journal of Visual Communication in Medicine
+19144	1462-883X	NULL	NULL	NULL	Now: Journal of Cosmetic and Laser Therapy
+19146	0362-8558	NULL	NULL	NULL	Now: Renal Failure. Continues: Clinical and Experimental Dialysis and Apheresis (1981-1983)
+19151	1026-5457	NULL	NULL	NULL	Now: Journal of Enzyme Inhibition and Medicinal Chemistry
+19154	1522-8940	NULL	NULL	NULL	Now: Journal of Dietary Supplements
+19155	0163-0571	NULL	NULL	NULL	Now: Immunopharmacology and Immunotoxicology
+19161	0268-1218	NULL	NULL	NULL	Now: Medical Mycology. Previously: Sabouraudia (1962-1985) 
+19175	1056-4950	NULL	NULL	NULL	Now: Journal of Pain and Palliative Care Pharmacotherapy
+19182	1357-5007	NULL	NULL	NULL	Now: Journal of Substance Use
+19183	0731-3837	NULL	NULL	NULL	Now: Toxin Reviews
+19188	1463-9238	NULL	NULL	NULL	Now: Informatics for Health and Social Care. Previously:Medical Informatics (1976-1998) Medical Informatics and the Internet in Medicine (1999-2007)
+19189	0959-8316	NULL	NULL	NULL	Now: Informatics for Health and Social Care. Previously:Medical Informatics (1976-1998) Medical Informatics and the Internet in Medicine (1999-2007)
+19191	0149-046X	NULL	NULL	NULL	Now: Molecular Membrane Biology
+19194	0961-625X	NULL	NULL	NULL	Merged with: Endoscopic & Allied Technologies and Now: Minimally Invasive Therapy & Allied Technologies
+19204	0167-6784	NULL	NULL	NULL	Now: Ophthalmic Genetics
+19208	0277-0938	NULL	NULL	NULL	Now: Fetal & Pediatric Pathology Continues: Pediatric Pathology and Laboratory Medicine (1995-1998)and Pediatric Pathology and Molecular Medicine (1998-2003)
+19209	1077-1042	NULL	NULL	NULL	Now: Fetal & Pediatric Pathology Previously:Pediatric Pathology (1983-1994) Continues: Pediatric Pathology and Molecular Medicine (1998-2003)
+19210	1523-4525	NULL	NULL	NULL	Now: Fetal & Pediatric. Previously:Pediatric Pathology (1983-1994) and Pediatric Pathology and Laboratory Medicine (1995-1998)
+19215	0266-6154	NULL	NULL	NULL	Now: Physiotherapy Theory and Practice
+19221	0036-2174	NULL	NULL	NULL	Now: Medical Mycology. Continues: Journal of Medical and Veterinary Mycology (1986-1997)
+19222	0105-0397	NULL	NULL	NULL	Now: International Journal of Audiology
+19227	0803-5032	NULL	NULL	NULL	Now: Logopedics Phoniatrics Vocology
+19229	0036-5556	NULL	NULL	NULL	Now: Journal of Plastic Surgery and Hand Surgery Continues: Scandinavian Journal of Plastic and Reconstructive Surgery and Hand Surgery
+19230	0284-4311	NULL	NULL	NULL	Now: Journal of Plastic Surgery and Hand Surgery. Previously: Scandinavian Journal of Plastic and Reconstructive Surgery
+19233	0036-5580	NULL	NULL	NULL	Now: Scandinavian Cardiovascular Journal
+19235	0036-5599	NULL	NULL	NULL	Now: Scandinavian Journal of Urology
+19238	0736-7244	NULL	NULL	NULL	Now: Somatosensory & Motor Research
+19239	0038-9153	NULL	NULL	NULL	Now: Biotechnic & Histochemistry
+19250	1051-7235	NULL	NULL	NULL	Now: Toxicology Mechanisms and Methods
+19255	0740-1353	NULL	NULL	NULL	Now: Renal Failure. Previously: Journal of Dialysis (1976-1980) and Clinical and Experimental Dialysis and Apheresis (1981-1983)
+19260	0014-8059	NULL	NULL	NULL	Now: International Journal of Agricultural Management
+19261	1816-2495	NULL	NULL	NULL	Now: International Journal of Agricultural Management
+19266	0096-0322	NULL	NULL	NULL	Now: American Journal of Physics
+19277	0038-0032	NULL	NULL	NULL	Now:  Journal of Rheology

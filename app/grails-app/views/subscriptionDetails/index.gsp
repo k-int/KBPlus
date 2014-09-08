@@ -57,7 +57,7 @@
     </g:if>
 
     <div class="container">
-      ${institution?.name} ${subscriptionInstance?.type?.value}
+      <g:if test="${params.asAt}"><h1>Snapshot on ${params.asAt} from </h1></g:if>
        <h1><g:xEditable owner="${subscriptionInstance}" field="name" /></h1>
        <g:render template="nav"  />
     </div>
@@ -109,7 +109,7 @@
             <div class="inline-lists"> 
                <dl><dt>License</dt><dd><g:if test="${subscriptionInstance.subscriber}">
                          <g:xEditableRefData owner="${subscriptionInstance}" field="owner" dataController="subscriptionDetails" dataAction="possibleLicensesForSubscription" />
-                         <g:if test="${subscriptionInstance.owner != null}">(<g:link controller="licenseDetails" action="index" id="${subscriptionInstance.owner.id}">Link</g:link>)</g:if>
+                         <g:if test="${subscriptionInstance.owner != null}">(<g:link controller="licenseDetails" action="index" id="${subscriptionInstance.owner.id}">Link</g:link> <g:link controller="licenseDetails" action="index" target="new" id="${subscriptionInstance.owner.id}"><i class="icon-share-alt"></i></g:link>)</g:if>
                        </g:if><g:else>N/A (Subscription offered)</g:else>
                    </dd>
                </dl>
@@ -120,12 +120,13 @@
 
                <dl><dt><g:annotatedLabel owner="${subscriptionInstance}" property="identifier">Subscription Identifier</g:annotatedLabel></dt><dd>${subscriptionInstance.identifier}</dd></dl>
 
-               <dl><dt> <g:annotatedLabel owner="${subscriptionInstance}" property="isPublic">Public?</g:annotatedLabel> </dt><dd><g:xEditableRefData owner="${subscriptionInstance}" field="isPublic" config='YN'/></dd></dl> 
-
                <dl><dt>Start Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="startDate" type="date"/></dd></dl>
 
                <dl><dt>End Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="endDate" type="date"/></dd></dl>
-
+               <dl><dt>Manual Renewal Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="manualRenewalDate" type="date"/></dd></dl>
+               <dL><dt>Slaved </dt><dd>
+                 <g:if test="${subscriptionInstance.slaved == true}"> Yes </g:if><g:else>No</g:else>
+               </dd></dL>
                <dl>
                  <dt>
                    <g:annotatedLabel owner="${subscriptionInstance}" property="nominalPlatform">Nominal Platform(s)</g:annotatedLabel>
@@ -139,6 +140,7 @@
                      </dd>
                </dl>
                 <br/>
+                <h6>Custom Properties</h6>
                 <div id="custom_props_div">
                     <g:render template="/templates/custom_props" model="${[ ownobj:subscriptionInstance ]}"/>
                 </div>
@@ -170,6 +172,7 @@
           <g:form action="index" params="${params}" method="get" class="form-inline">
              <input type="hidden" name="sort" value="${params.sort}">
              <input type="hidden" name="order" value="${params.order}">
+
              <label><g:annotatedLabel owner="${subscriptionInstance}" property="qryFilter"> Filter: </g:annotatedLabel></label>
              <input name="filter" value="${params.filter}"/>
              <label>From Package:</label> <select name="pkgfilter">
@@ -178,12 +181,20 @@
                                  <option value="${sp.pkg.id}" ${sp.pkg.id.toString()==params.pkgfilter?'selected=true':''}>${sp.pkg.name}</option>
                                </g:each>
                             </select>
+           <g:if test="${params.mode!='advanced'}">
+              <label>Entitlements as at:</label>
+              <g:simpleHiddenValue id="asAt" name="asAt" type="date" value="${params.asAt}"/>
+            </g:if>
              <input type="submit" class="btn btn-primary" />
           </g:form>
         </dt>
         <dd>
           <g:form action="subscriptionBatchUpdate" params="${[id:subscriptionInstance?.id]}" class="form-inline">
           <g:set var="counter" value="${offset+1}" />
+          <g:hiddenField name="sort" value="${params.sort}"/>
+          <g:hiddenField name="order" value="${params.order}"/>
+          <g:hiddenField name="offset" value="${params.offset}"/>
+          <g:hiddenField name="max" value="${params.max}"/>
           <table  class="table table-striped table-bordered">
             <thead>
 
@@ -193,7 +204,7 @@
               <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
               <th>ISSN</th>
               <g:sortableColumn params="${params}" property="coreStatus" title="Core" />
-              <g:sortableColumn params="${params}" property="startDate" title="Coverage Start Date" />
+              <g:sortableColumn params="${params}" property="startDate" title="Earliest date" />
               <g:sortableColumn params="${params}" property="coreStatusStart" title="Core Start Date" />
               <th rowspan="2">Actions</th>
             </tr>  
@@ -202,7 +213,7 @@
               <th>Access Dates</th>
               <th>eISSN</th>
               <th></th>
-              <g:sortableColumn params="${params}" property="endDate" title="Coverage End Date" />
+              <g:sortableColumn params="${params}" property="endDate" title="Latest Date" />
               <g:sortableColumn params="${params}" property="coreStatusEnd" title="Core End Date"  />
             </tr>
 
@@ -246,7 +257,8 @@
                   <g:link controller="issueEntitlement" id="${ie.id}" action="show">${ie.tipp.title.title}</g:link>
                   <g:if test="${ie.tipp?.hostPlatformURL}">( <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">Host Link</a> 
                             <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL} (In new window)" target="_blank"><i class="icon-share-alt"></i></a>)</g:if> <br/>
-                   Access: ${ie.availabilityStatus?.value}
+                   Access: ${ie.availabilityStatus?.value}<br/>
+                   Coverage Note: ${ie.coverageNote?:(ie.tipp?.coverageNote?:'')}<br/>
                    <g:if test="${ie.availabilityStatus?.value=='Expected'}">
                      on <g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.accessStartDate}"/>
                    </g:if>
@@ -348,11 +360,16 @@
             $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" />/'+id);
             $('#modalComments').modal('show');
           });
-        }
+        });
       </g:else>
-        window.onload = function() {
-            runCustomPropsJS("<g:createLink controller='ajax' action='lookup'/>");
-        }
+
+      <g:if test="${params.asAt && params.asAt.length() > 0}"> $(function() {
+        document.body.style.background = "#fcf8e3";
+      });</g:if>
+      
+      window.onload = function() {
+       runCustomPropsJS("<g:createLink controller='ajax' action='lookup'/>");
+      }
     </r:script>
   </body>
 </html>

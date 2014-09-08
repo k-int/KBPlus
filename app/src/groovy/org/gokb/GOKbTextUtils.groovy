@@ -64,6 +64,21 @@ class GOKbTextUtils {
 
     return 0
   }
+
+
+  public static generateSortKey(value) {
+    // Normalise
+    // Trim
+    // Lowercase
+    // Remove Leading Articles
+    def s1 = Normalizer.normalize(value, Normalizer.Form.NFKD).trim().toLowerCase()
+
+    s1 = s1.replaceFirst('^copy of ','')
+    s1 = s1.replaceFirst('^the ','')
+    s1 = s1.replaceFirst('^a ','')
+    s1
+
+  }
   
   public static double cosineSimilarity(char[] sequence1, char[] sequence2, int degree = 2) {
 	Map<List, Integer> m1 = countNgramFrequency(sequence1, degree)
@@ -90,4 +105,5 @@ class GOKbTextUtils {
   private static double dotProduct(Map<List, Integer> m1, Map<List, Integer> m2) {
 	m1.keySet().collect { key -> m1[key] * m2.get(key, 0) }.sum()
   }
+
 }

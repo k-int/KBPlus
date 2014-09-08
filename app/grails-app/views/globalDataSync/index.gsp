@@ -38,17 +38,20 @@
             <g:sortableColumn property="desc" title="${message(code: 'package.name.label', default: 'Description')}" />
             <g:sortableColumn property="source.name" title="${message(code: 'package.name.label', default: 'Source')}" />
             <g:sortableColumn property="type" title="${message(code: 'package.name.label', default: 'Type')}" />
+            <g:sortableColumn property="kbplusCompliant" title="${message(code: 'kbplusCompliant.label', default: 'KBPlus Compliant')}" />
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <g:each in="${items}" var="item">
             <tr>
-              <td>${fieldValue(bean: item, field: "identifier")}</td>
-              <td>${fieldValue(bean: item, field: "name")}</td>
-              <td>${fieldValue(bean: item, field: "desc")}</td>
-              <td>${item.source.name}</td>
-              <td>${item.displayRectype}</td>
+              <td> <a href="${item.source.baseUrl}resource/show/${item.identifier}">${fieldValue(bean: item, field: "identifier")}</a><br/>
+                   (updated: <g:formatDate date="${item.ts}" format="dd-MM-yyyy"/>) </td>
+              <td> <a href="${item.source.baseUrl}resource/show/${item.identifier}">${fieldValue(bean: item, field: "name")}</a></td>
+              <td> <a href="${item.source.baseUrl}resource/show/${item.identifier}">${fieldValue(bean: item, field: "desc")}</a></td>
+              <td> <a href="${item.source.uri}?verb=getRecord&identifier=${item.identifier}&metadataPrefix=${item.source.fullPrefix}">${item.source.name}</a></td>
+              <td> <a href="${item.source.baseUrl}search/index?qbe=g:packages">${item.displayRectype}</a></td>
+              <td>${item.kbplusCompliant.value}</td>
               <td><g:link action="newCleanTracker" controller="globalDataSync" id="${item.id}" class="btn btn-success">Track(New)</g:link>
                   <g:link action="selectLocalPackage" controller="globalDataSync" id="${item.id}" class="btn btn-success">Track(Merge)</g:link></td>
             </tr>

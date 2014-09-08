@@ -73,14 +73,13 @@ class IssueEntitlementController {
            org_id != null &&
            supplier_id != null ) {
 
-        def fsresult = factService.generateMonthlyUsageGrid(title_id,org_id,supplier_id)
+        def fsresult = factService.generateExpandableMonthlyUsageGrid(title_id,org_id,supplier_id)
 
         def jusp_login = result.issueEntitlementInstance.subscription.subscriber?.getIdentifierByType('jusplogin')?.value
         def jusp_sid = result.issueEntitlementInstance.tipp.pkg.contentProvider?.getIdentifierByType('juspsid')?.value
         def jusp_title_id = result.issueEntitlementInstance.tipp.title.getIdentifierValue('jusp')
 
         if ( ( jusp_login != null ) && ( jusp_sid != null ) && ( jusp_title_id != null ) ) {
-          // def fsresult = factService.generateYearlyUsageGrid(title_id,org_id,supplier_id)
           result.jusplink = "https://www.jusp.mimas.ac.uk/api/v1/Journals/Statistics/?jid=${jusp_title_id}&sid=${jusp_sid}&loginid=${jusp_login}&startrange=1800-01&endrange=2100-01&granularity=monthly"
         }
 
@@ -125,7 +124,7 @@ class IssueEntitlementController {
         base_qry += " order by lower(tipp.title.title) asc"
       }
 
-      log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
+      // log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
       result.tippList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, [max:result.max, offset:result.offset]);
       result.num_tipp_rows = TitleInstancePackagePlatform.executeQuery("select count(tipp) "+base_qry, qry_params )[0]
 
