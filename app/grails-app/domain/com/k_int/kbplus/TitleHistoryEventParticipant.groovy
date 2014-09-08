@@ -1,5 +1,7 @@
 package com.k_int.kbplus
 
+import javax.persistence.Transient
+
 class TitleHistoryEventParticipant {
 
   def TitleHistoryEvent event

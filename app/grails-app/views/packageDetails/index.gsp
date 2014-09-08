@@ -83,8 +83,8 @@
                               <span>(${hit.source.titleCount?:'Unknown number of'} titles)</span>
                               </td>
                           <td>${hit.source.consortiaName}</td>
-                          <td>${hit.source.startDate}</td>
-                          <td>${hit.source.endDate}</td>
+                          <td>hit.source.startDate</td>
+                          <td>hit.source.endDate</td>
                           <td>${hit.source.lastModified}</td>
                         </tr>
                       </g:each>

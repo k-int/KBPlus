@@ -26,20 +26,21 @@ class GlobalSourceSyncService {
     // DOes the remote title have a publisher (And is ours blank)
     def title_instance = genericOIDService.resolveOID(grt.localOid)
 
-    newtitle.identifiers.each {
-      log.debug("Checking title has ${it.namespace}:${it.value}");
-      title_instance.checkAndAddMissingIdentifier(it.namespace, it.value);
-    }
-
     if ( title_instance == null ) {
       log.debug("Failed to resolve ${grt.localOid} - Exiting");
       return
     }
     
+    newtitle.identifiers.each {
+      log.debug("Checking title has ${it.namespace}:${it.value}");
+      title_instance.checkAndAddMissingIdentifier(it.namespace, it.value);
+    }
+
     if ( ( newtitle.publisher != null ) && ( title_instance.getPublisher() == null ) ) {
       def publisher_identifiers = []
       def publisher = Org.lookupOrCreate(newtitle.publisher, 'publisher', null, publisher_identifiers, null)
       def pub_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Publisher');
+      log.debug("Asserting ${publisher} ${title_instance} ${pub_role}");
       OrgRole.assertOrgTitleLink(publisher, title_instance, pub_role)
     }
 
