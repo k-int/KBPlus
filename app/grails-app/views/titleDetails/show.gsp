@@ -82,9 +82,51 @@
             </table>
           </div>
         </div>
+
+
         <div class="row">
           <div class="span12">
+            <h3>Title History</h3>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>From</th>
+                  <th>To</th>
+                </tr>
+              </thead>
+              <tbody>
+                <g:each in="${titleHistory}" var="th">
+                  <tr>
+                    <td><g:formatDate date="${th.eventDate}" format="yyyy-MM-dd"/></td>
+                    <td>
+                      <g:each in="${th.participants}" var="p">
+                        <g:if test="${p.participantRole=='from'}">
+                          <g:link controller="titleDetails" action="show" id="${p.participant.id}">${p.participant.title}</g:link><br/>
+                        </g:if>
+                      </g:each>
+                    </td>
+                    <td>
+                      <g:each in="${th.participants}" var="p">
+                        <g:if test="${p.participantRole=='to'}">
+                          <g:link controller="titleDetails" action="show" id="${p.participant.id}">${p.participant.title}</g:link><br/>
+                        </g:if>
+                      </g:each>
+                    </td>
+                  </tr>
+                </g:each>
+              </tbody>
+            </table>
+            <g:if test="${ti.getIdentifierValue('originediturl') != null}">
+              <span class="pull-right">
+                Title history can be edited in gokb here:: <a href="${ti.getIdentifierValue('originediturl')}">Here</a>
+              </span>
+            </g:if>
+          </div>
+        </div>
 
+        <div class="row">
+          <div class="span12">
 
             <h3>Appears in...</h3>
             <g:form id="${params.id}" controller="titleDetails" action="batchUpdate">

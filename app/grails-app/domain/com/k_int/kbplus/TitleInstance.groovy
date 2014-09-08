@@ -608,4 +608,24 @@ class TitleInstance {
       ies:ies
     ]
   }
+
+  def checkAndAddMissingIdentifier(ns,value) {
+    boolean found = false
+    this.ids.each {
+      if ( it.identifier.ns.ns == ns && it.identifier.value == value ) {
+        found = true
+      }
+    }
+
+    if ( ! found ) {
+      def id = Identifier.lookupOrCreateCanonicalIdentifier(ns, value)
+      def existing_occurrence = IdentifierOccurrence.findAllByIdentifier(id)
+      if ( existing_occurrence.size() > 0 ) {
+        // Do nothing - already present
+      }
+      else {
+        new IdentifierOccurrence(identifier:id, ti:this).save(flush:true)
+      }
+    }
+  }
 }
