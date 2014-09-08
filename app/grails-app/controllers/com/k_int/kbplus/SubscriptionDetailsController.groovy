@@ -61,7 +61,7 @@ class SubscriptionDetailsController {
       }
       flash.message = changesDesc
     }else{
-      result.pendingChanges = pendingChanges
+      result.pendingChanges = pendingChanges.collect{PendingChange.get(it)}
     }
 
 

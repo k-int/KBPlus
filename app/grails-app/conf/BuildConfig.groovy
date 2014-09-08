@@ -18,6 +18,7 @@ grails.project.dependency.resolver = "maven"
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
     inherits("global") {
+        excludes "grails-docs"
         // uncomment to disable ehcache
         // excludes 'ehcache'
     }
@@ -45,13 +46,16 @@ grails.project.dependency.resolution = {
         // mavenRepo "http://projects.k-int.com/nexus-webapp-1.4.0/content/repositories/snapshots"
         mavenRepo "http://projects.k-int.com/nexus-webapp-1.4.0/content/repositories/releases"
         mavenRepo "http://jaspersoft.artifactoryonline.com/jaspersoft/third-party-ce-artifacts/"
-        mavenRepo "http://jasperreports.sourceforge.net/maven2/com/lowagie/itext/2.1.7.js1/"
+        mavenRepo "http://jasperreports.sourceforge.net/maven2/com/lowagie/itext/2.1.7.js2/"
         // Added because I'm strugging to get cglib
         mavenRepo "http://central.maven.org/maven2/"
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
+        build('org.grails:grails-docs:2.3.7') {
+            excludes 'itext'
+        }
         compile ('com.k-int:goai:1.0.2') {
           exclude 'groovy'
         }
@@ -83,9 +87,9 @@ grails.project.dependency.resolution = {
         runtime ( 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2' ) { 
           excludes "org.codehaus.groovy", "groovy"
         }
-        compile "com.lowagie:itext:2.1.7"
         compile "net.sf.jasperreports:jasperreports:5.6.0"
         compile 'cglib:cglib:2.2.2'
+        compile "com.lowagie:itext:2.1.7"
     }
 
     plugins {
