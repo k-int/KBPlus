@@ -31,14 +31,14 @@
 					<td>Restrict this list to subscriptions starting after- 
 					<g:simpleHiddenValue id="startA" name="startA" type="date" value="${params.startA}"/>
 					and/or ending before- <g:simpleHiddenValue id="endA" name="endA" type="date" value="${params.endA}"/><br/> Now selct first subscription to compare (Filtered by dates above)<br/>
-                      <input type="hidden" name="pkgA" id="subSelectA" value="${pkgA}"/> 
+                      <input type="hidden" name="subA" id="subSelectA" value="${subA}"/> 
 					</td>
 					<td> 
 					    Restrict this list to subscriptions starting after- 
 					    <g:simpleHiddenValue id="startB" name="startB" type="date" value="${params.startB}"/>
 				and/or ending before- <g:simpleHiddenValue id="endB" name="endB" type="date" value="${params.endB}"/><br/>
                           Select second subscription to compare (Filtered by dates above)<br/>
-	                      <input type="hidden" name="pkgB" id="subSelectB" value="${pkgB}" />
+	                      <input type="hidden" name="subB" id="subSelectB" value="${subB}" />
 					</td>
 							</tr>
 							<tr>
