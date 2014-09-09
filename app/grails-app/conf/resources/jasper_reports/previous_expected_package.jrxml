@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="expected_issues" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cac26577-7c58-4fd6-8e92-8b28886ba96c">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="KBPLUS"/>
+	<parameter name="pkg_id" class="java.lang.Long">
+		<parameterDescription><![CDATA[Package Id]]></parameterDescription>
+	</parameter>
+	<parameter name="compare_date" class="java.sql.Date">
+		<parameterDescription><![CDATA[Previous or Expected date]]></parameterDescription>
+	</parameter>
+	<parameter name="query_select" class="java.lang.String">
+		<parameterDescription><![CDATA[Type 'Expected' or 'Previous']]></parameterDescription>
+	</parameter>
+	<parameter name="query" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+		<defaultValueExpression><![CDATA[$P{query_select}.equals("Expected")
+? "select tipp_id, ti_title from package, title_instance_package_platform, title_instance where tipp_pkg_fk = $P!{pkg_id} AND tipp_ti_fk = ti_id AND tipp_access_start_date > '$P{compare_date}'"
+: "select tipp_id, ti_title from package, title_instance_package_platform, title_instance where tipp_pkg_fk = $P!{pkg_id} AND tipp_ti_fk = ti_id AND tipp_access_start_date =< '$P{compare_date}'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="report_description" class="java.lang.String">
+		<parameterDescription><![CDATA[List all the Previous or Expected titles for the package selected]]></parameterDescription>
+	</parameter>
+	<queryString language="SQL">
+		<![CDATA[$P!{query}]]>
+	</queryString>
+	<field name="ie_id" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ti_title" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<group name="Group1">
+		<groupHeader>
+			<band height="60">
+				<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+				<staticText>
+					<reportElement mode="Opaque" x="80" y="0" width="476" height="30" forecolor="#007A5E" backcolor="#E1E6E5" uuid="b68ac5e2-d77b-433d-ab42-ac0762b5fbb0"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="15"/>
+						<paragraph leftIndent="15"/>
+					</textElement>
+					<text><![CDATA[Title]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="-1" y="0" width="81" height="30" forecolor="#007A5E" backcolor="#E1E6E5" uuid="3271dd5a-3f12-49bf-9e1e-d49f4ddf0441"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="15"/>
+						<paragraph leftIndent="15"/>
+					</textElement>
+					<text><![CDATA[IE Id]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Group2"/>
+	<group name="Group3"/>
+	<group name="Group4"/>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="72">
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#007A5E" uuid="3f9c1786-af1d-4391-8150-5bc20e819737"/>
+				<staticText>
+					<reportElement x="20" y="20" width="400" height="43" forecolor="#FFFFFF" uuid="a512676b-6229-49c0-9fd4-d1d5fef3a607"/>
+					<textElement>
+						<font size="20" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Previous | Expected Package Titles]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="13"/>
+	</pageHeader>
+	<detail>
+		<band height="35">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="30" width="555" height="1" uuid="37864285-068c-41e2-83db-9392ad4d5fed"/>
+			</line>
+			<textField>
+				<reportElement x="0" y="0" width="50" height="30" uuid="2d37952a-a831-4ee4-9787-890325f86f2c"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{ie_id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="2" width="474" height="30" uuid="4904daf8-9d74-4f5e-ba0d-c5aba908645d"/>
+				<textFieldExpression><![CDATA[$F{ti_title}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17">
+			<textField>
+				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="06d47321-42af-4a9b-8381-df64a9d9e1dd"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="dffae562-5074-48bc-8c39-90668e35f054"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="4" width="100" height="13" uuid="a6436ff8-08f1-4432-bea2-c41c2ef8c528"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>
