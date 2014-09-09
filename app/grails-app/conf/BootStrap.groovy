@@ -297,7 +297,8 @@ class BootStrap {
         //Add default Jasper reports, if there are currently no reports in DB
     log.debug("Query database for jasper reports")
     def reportsFound = JasperReportFile.findAll()
-    def defaultReports = ["floating_titles","match_coverage","no_issn_e-issn","title_no_url"]
+    def defaultReports = ["floating_titles","match_coverage","no_issn_e-issn","title_no_url,
+        previous_expected_sub","previous_expected_pkg"]
     defaultReports.each { reportName ->
 
       def path = "resources/jasper_reports/"
