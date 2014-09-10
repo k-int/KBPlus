@@ -23,7 +23,7 @@
 	<queryString language="SQL">
 		<![CDATA[$P!{query}]]>
 	</queryString>
-	<field name="ie_id" class="java.lang.Long">
+	<field name="tipp_id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="ti_title" class="java.lang.String">
@@ -47,7 +47,7 @@
 						<font size="15"/>
 						<paragraph leftIndent="15"/>
 					</textElement>
-					<text><![CDATA[IE Id]]></text>
+					<text><![CDATA[Tipp ID]]></text>
 				</staticText>
 			</band>
 		</groupHeader>
@@ -83,7 +83,7 @@
 			<textField>
 				<reportElement x="0" y="0" width="50" height="30" uuid="2d37952a-a831-4ee4-9787-890325f86f2c"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{ie_id}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{tipp_id}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="80" y="2" width="474" height="30" uuid="4904daf8-9d74-4f5e-ba0d-c5aba908645d"/>

@@ -9,7 +9,7 @@
 		<parameterDescription><![CDATA[Previous or Expected date]]></parameterDescription>
 	</parameter>
 	<parameter name="query_select" class="java.lang.String">
-		<parameterDescription><![CDATA['Expected' or 'Previous']]></parameterDescription>
+		<parameterDescription><![CDATA[Type 'Expected' or 'Previous']]></parameterDescription>
 	</parameter>
 	<parameter name="query" class="java.lang.String" isForPrompting="false">
 		<parameterDescription><![CDATA[]]></parameterDescription>
