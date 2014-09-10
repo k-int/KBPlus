@@ -101,12 +101,14 @@ def dataSource
 			flash.error = "Please select a report for download."
 			chain action: 'index', model: [errorMsg:message(code:'jasper.generate.noSelection')]
 		}
-	
+	//yyyy-MM-dd HH:mm:ss
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy");
+		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+
 		def filteredParams =params.findAll {it.key.toString().contains("date") }
 		filteredParams.each { key, value ->
 			def stringVal = value
-			def newVal = new Timestamp(sdf.parse(stringVal).getTime())
+			def newVal = sdf2.format(sdf.parse(stringVal))+" 00:00:00"
 			params.putAt(key,newVal) 
 		}
 		
