@@ -420,12 +420,13 @@
 
                          <g:each status="st" in="${h.event.fromTitles()}" var="the">
                             <g:if test="${st>0}">, </g:if>
-                            <g:link controller="titleDetauls" action="show" id="${the.id}">${the.title}</g:link>
+                            <g:link controller="titleDetails" action="show" id="${the.id}">${the.title}</g:link>
+                            <g:if test="${the.isInPackage(packageInstance)}">(✔)</g:if><g:else>(✘)</g:else>
                          </g:each>
                          Became
-                         <g:each status="st" in="${h.event.toTitles()}" var="the">
-                            <g:if test="${st>0}">, </g:if>
-                            <g:link controller="titleDetauls" action="show" id="${the.id}">${the.title}</g:link>
+                         <g:each status="st" in="${h.event.toTitles()}" var="the"><g:if test="${st>0}">, </g:if>
+                            <g:link controller="titleDetails" action="show" id="${the.id}">${the.title}</g:link>
+                            <g:if test="${the.isInPackage(packageInstance)}">(✔)</g:if><g:else>(✘)</g:else>
                          </g:each>
                        </li>
                      </g:each>

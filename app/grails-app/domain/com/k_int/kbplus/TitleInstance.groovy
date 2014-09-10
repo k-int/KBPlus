@@ -649,4 +649,14 @@ class TitleInstance {
     }
     result
   }
+
+  @Transient
+  def isInPackage(pkg) {
+    def result = false
+    def tipp = TitleInstancePackagePlatform.findByTitleAndPkg(this,pkg)
+    if(tipp)
+      result=true
+    result
+  }
+
 }
