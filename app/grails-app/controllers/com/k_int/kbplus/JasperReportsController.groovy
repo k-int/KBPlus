@@ -105,13 +105,19 @@ def dataSource
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy");
 		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
 
-		def filteredParams =params.findAll {it.key.toString().contains("date") }
-		filteredParams.each { key, value ->
+		def filteredDateParams =params.findAll {it.key.toString().contains("date") }
+		filteredDateParams.each { key, value ->
 			def stringVal = value
 			def newVal = sdf2.format(sdf.parse(stringVal))+" 00:00:00"
 			params.putAt(key,newVal) 
 		}
 		
+		def filteredSelect2Params = params.findAll {it.key.toString().contains("search")}
+		filteredSelect2Params.each {key, value ->
+			def stringVal = value
+			def newVal = stringVal.substring(stringVal.indexOf(":")+1)
+			params.putAt(key,newVal) 
+		}
 		InputStream inputStream = new ByteArrayInputStream(JasperReportFile.findByName(params._file).reportFile)
 		JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
 		JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
