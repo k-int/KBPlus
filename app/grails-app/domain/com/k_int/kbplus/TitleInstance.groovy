@@ -636,4 +636,17 @@ class TitleInstance {
       }
     }
   }
+
+  @Transient
+  def distinctEventList() {
+    def result = []
+    historyEvents.each { he ->
+      if ( result.find { it.event.id == he.event.id} ) {
+      }
+      else {
+        result.add(he)
+      }
+    }
+    result
+  }
 }

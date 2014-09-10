@@ -22,11 +22,11 @@ class TitleHistoryEvent {
 
   @Transient 
   def fromTitles() {
-    participants.findAll{it.participantRole='from'}.collect { it.participant }
+    participants.findAll{it.participantRole=='from'}.collect{ it.participant }
   }
 
   @Transient 
   def toTitles() {
-    participants.findAll{it.participantRole='to'}.collect { it.participant }
+    participants.findAll{it.participantRole=='to'}.collect{ it.participant }
   }
 }

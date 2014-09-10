@@ -413,7 +413,7 @@
                    <g:link controller="titleDetails" action="show" id="${t.title.id}">(Title)</g:link>
                    <g:link controller="tipp" action="show" id="${t.id}">(TIPP)</g:link><br/>
                    <ul>
-                     <g:each in="${t.title.historyEvents}" var="h">
+                     <g:each in="${t.title.distinctEventList()}" var="h">
                        <li>
 
                          Title History: <g:formatDate date="${h.event.eventDate}" format="yyyy-MM-dd"/><br/>
