@@ -9,3 +9,4 @@ RemoteSystemTempFiles
 .classpath
 .directory
 .project
+out/
