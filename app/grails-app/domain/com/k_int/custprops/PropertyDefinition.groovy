@@ -19,7 +19,7 @@ class PropertyDefinition {
 
     static constraints = {
         name(nullable: false, blank: false, unique:true)
-        descr(nullable: false, blank: true)
+        descr(nullable: true, blank: false)
         type(nullable: false, blank: false)
         refdataCategory(nullable:true)
     }

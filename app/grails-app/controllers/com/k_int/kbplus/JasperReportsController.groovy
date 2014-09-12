@@ -101,7 +101,7 @@ def dataSource
 			flash.error = "Please select a report for download."
 			chain action: 'index', model: [errorMsg:message(code:'jasper.generate.noSelection')]
 		}
-	//yyyy-MM-dd HH:mm:ss
+	 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy");
 		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -133,17 +133,11 @@ def dataSource
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream()
 
 		def exportFormat = JasperExportFormat.determineFileFormat(params._format)  
-		JRExporter exporter = JasperExportFormat.getExporter(exportFormat)
-		exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, byteArray)
-      	exporter.setParameter(JRExporterParameter.CHARACTER_ENCODING, "UTF-8")
-      	exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint)
+
+		JRExporter exporter = JasperExportFormat.getExporter(exportFormat,jasperPrint,byteArray)
+
 		exporter.exportReport()
-		/**
-			SimpleCsvExporterConfiguration conf = new SimpleCsvExporterConfiguration()
-			conf.setFieldDelimiter("")
-			conf.setRecordDelimiter("")
-			exporter.setConfiguration(conf)
-		**/
+
 		if(!exportFormat.inline){
 			response.setHeader("Content-disposition", "attachment; filename=" + (params._file.replace(params._format,'')) + "." + exportFormat.extension)
 	        response.contentType = exportFormat.mimeTyp     
