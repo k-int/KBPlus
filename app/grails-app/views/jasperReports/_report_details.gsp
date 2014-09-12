@@ -39,8 +39,22 @@
                         <span class="add-on"><i class="icon-th"></i></span>
                     </div>
                 </g:if>
+                <g:elseif test="${rparam.getName().contains("select")}">
+                    <g:select name="${rparam.getName()}" 
+                    from="${rparam.getName().substring(rparam.getName().indexOf('&')+1).split('&')}"/>
+                </g:elseif>
                 <g:else>
-                    <input type="text" name="${rparam.getName()}"/>
+                    <g:if test="${rparam.getName().contains("search")}">
+
+                       <input type="hidden" id="${rparam.getName()}" name="${rparam.getName()}"/>
+                        <script type="text/javascript">
+                            createSelect2Search('#${rparam.getName()}',
+                                '${rparam.getValueClass().toString().replace("class ","")}');
+                        </script>
+                    </g:if>
+                    <g:else>
+                        <input type="text" name="${rparam.getName()}"/>
+                    </g:else>
                 </g:else>
             </td>
         </g:each>

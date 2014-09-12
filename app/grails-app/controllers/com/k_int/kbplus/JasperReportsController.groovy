@@ -101,17 +101,23 @@ def dataSource
 			flash.error = "Please select a report for download."
 			chain action: 'index', model: [errorMsg:message(code:'jasper.generate.noSelection')]
 		}
-	//yyyy-MM-dd HH:mm:ss
+	 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy");
 		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
 
-		def filteredParams =params.findAll {it.key.toString().contains("date") }
-		filteredParams.each { key, value ->
+		def filteredDateParams =params.findAll {it.key.toString().contains("date") }
+		filteredDateParams.each { key, value ->
 			def stringVal = value
 			def newVal = sdf2.format(sdf.parse(stringVal))+" 00:00:00"
 			params.putAt(key,newVal) 
 		}
 		
+		def filteredSelect2Params = params.findAll {it.key.toString().contains("search")}
+		filteredSelect2Params.each {key, value ->
+			def stringVal = value
+			def newVal = stringVal.substring(stringVal.indexOf(":")+1)
+			params.putAt(key,newVal) 
+		}
 		InputStream inputStream = new ByteArrayInputStream(JasperReportFile.findByName(params._file).reportFile)
 		JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
 		JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
@@ -127,17 +133,11 @@ def dataSource
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream()
 
 		def exportFormat = JasperExportFormat.determineFileFormat(params._format)  
-		JRExporter exporter = JasperExportFormat.getExporter(exportFormat)
-		exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, byteArray)
-      	exporter.setParameter(JRExporterParameter.CHARACTER_ENCODING, "UTF-8")
-      	exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint)
+
+		JRExporter exporter = JasperExportFormat.getExporter(exportFormat,jasperPrint,byteArray)
+
 		exporter.exportReport()
-		/**
-			SimpleCsvExporterConfiguration conf = new SimpleCsvExporterConfiguration()
-			conf.setFieldDelimiter("")
-			conf.setRecordDelimiter("")
-			exporter.setConfiguration(conf)
-		**/
+
 		if(!exportFormat.inline){
 			response.setHeader("Content-disposition", "attachment; filename=" + (params._file.replace(params._format,'')) + "." + exportFormat.extension)
 	        response.contentType = exportFormat.mimeTyp     
