@@ -71,8 +71,8 @@ grails.project.dependency.resolution = {
         runtime 'net.sf.opencsv:opencsv:2.0'
         runtime 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
 
-        test 'org.apache.commons:commons-exec:1.2'
-        test 'org.apache.httpcomponents:httpcore:4.3.2'
+        runtime 'org.apache.commons:commons-exec:1.2'
+        runtime 'org.apache.httpcomponents:httpcore:4.3.2'
         test 'org.hamcrest:hamcrest-all:1.3'
         test "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
         test("org.seleniumhq.selenium:selenium-htmlunit-driver:$seleniumVersion") {
