@@ -413,19 +413,20 @@
                    <g:link controller="titleDetails" action="show" id="${t.title.id}">(Title)</g:link>
                    <g:link controller="tipp" action="show" id="${t.id}">(TIPP)</g:link><br/>
                    <ul>
-                     <g:each in="${t.title.historyEvents}" var="h">
+                     <g:each in="${t.title.distinctEventList()}" var="h">
                        <li>
 
                          Title History: <g:formatDate date="${h.event.eventDate}" format="yyyy-MM-dd"/><br/>
 
                          <g:each status="st" in="${h.event.fromTitles()}" var="the">
                             <g:if test="${st>0}">, </g:if>
-                            <g:link controller="titleDetauls" action="show" id="${the.id}">${the.title}</g:link>
+                            <g:link controller="titleDetails" action="show" id="${the.id}">${the.title}</g:link>
+                            <g:if test="${the.isInPackage(packageInstance)}">(✔)</g:if><g:else>(✘)</g:else>
                          </g:each>
                          Became
-                         <g:each status="st" in="${h.event.toTitles()}" var="the">
-                            <g:if test="${st>0}">, </g:if>
-                            <g:link controller="titleDetauls" action="show" id="${the.id}">${the.title}</g:link>
+                         <g:each status="st" in="${h.event.toTitles()}" var="the"><g:if test="${st>0}">, </g:if>
+                            <g:link controller="titleDetails" action="show" id="${the.id}">${the.title}</g:link>
+                            <g:if test="${the.isInPackage(packageInstance)}">(✔)</g:if><g:else>(✘)</g:else>
                          </g:each>
                        </li>
                      </g:each>

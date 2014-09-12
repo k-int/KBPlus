@@ -38,6 +38,12 @@ import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporterParameter
 import net.sf.jasperreports.engine.export.ooxml.JRPptxExporter
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter
+import net.sf.jasperreports.export.SimpleExporterInput
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput
+import net.sf.jasperreports.export.SimpleWriterExporterOutput
+import net.sf.jasperreports.export.SimpleHtmlExporterOutput
+import net.sf.jasperreports.export.ExporterConfiguration
+import net.sf.jasperreports.export.SimpleTextExporterConfiguration
 
 /*
  * The supported file formats with their mimetype and file extension.
@@ -50,12 +56,11 @@ enum JasperExportFormat implements Serializable {
   CSV_FORMAT("text/csv", "csv", false),
   XLS_FORMAT("application/vnd.ms-excel", "xls", false),
   RTF_FORMAT("text/rtf", "rtf", false),
-  TEXT_FORMAT("text/plain", "txt", true),
+  // TEXT_FORMAT("text/plain", "txt", true),
   ODT_FORMAT("application/vnd.oasis.opendocument.text", "odt", false),
-  ODS_FORMAT("application/vnd.oasis.opendocument.spreadsheetl", "ods", false),
+  // ODS_FORMAT("application/vnd.oasis.opendocument.spreadsheetl", "ods", false),
   DOCX_FORMAT("application/vnd.openxmlformats-officedocument.wordprocessingml.document", "docx", false),
   XLSX_FORMAT("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx", false),
-  PPTX_FORMAT("application/vnd.openxmlformats-officedocument.presentationml.presentation", "pptx", false)
 
   String mimeTyp
   String extension
@@ -80,37 +85,94 @@ enum JasperExportFormat implements Serializable {
       case "CSV":  return JasperExportFormat.CSV_FORMAT
       case "XLS":  return JasperExportFormat.XLS_FORMAT
       case "RTF":  return JasperExportFormat.RTF_FORMAT
-      case "TEXT": return JasperExportFormat.TEXT_FORMAT
+      case "TXT": return JasperExportFormat.TEXT_FORMAT
       case "ODT":  return JasperExportFormat.ODT_FORMAT
       case "ODS":  return JasperExportFormat.ODS_FORMAT
       case "DOCX": return JasperExportFormat.DOCX_FORMAT
       case "XLSX": return JasperExportFormat.XLSX_FORMAT
-      case "PPTX": return JasperExportFormat.PPTX_FORMAT
       default: throw new Exception(message(code: "jasper.controller.invalidFormat", args: [format]))
     }
   }
-
+  static JRExporter getExporter(JasperExportFormat format, jasperPrint, byteArray){
+      getExporter(format, jasperPrint, byteArray, null) 
+  }
   /**
    * Return the suitable Exporter for a given file format.
    * @param format
    * @return exporter
    */
-  static JRExporter getExporter(JasperExportFormat format) {
+  static JRExporter getExporter(JasperExportFormat format, jasperPrint, byteArray, ExporterConfiguration conf) {
+    def exporter;
     switch (format) {
-      case PDF_FORMAT:  return new JRPdfExporter()
-      case HTML_FORMAT: return new JRHtmlExporter()
-      case XML_FORMAT:  return new JRXmlExporter()
-      case CSV_FORMAT:  return new JRCsvExporter()
-      case XLS_FORMAT:  return new JRXlsExporter()
-      case RTF_FORMAT:  return new JRRtfExporter()
-      case TEXT_FORMAT: return new JRTextExporter()
-      case ODT_FORMAT:  return new JROdtExporter()
-      case ODS_FORMAT:  return new JROdsExporter()
-      case DOCX_FORMAT: return new JRDocxExporter()
-      case XLSX_FORMAT: return new JRXlsxExporter()
-      case PPTX_FORMAT: return new JRPptxExporter()
-      default: throw new Exception(message(code: "jasper.controller.invalidFormat", args: [format]))
+      case PDF_FORMAT:  
+        exporter = new JRPdfExporter()
+        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(byteArray))
+        break
+      case HTML_FORMAT: 
+        exporter = new JRHtmlExporter()
+        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+        exporter.setExporterOutput( new SimpleHtmlExporterOutput(byteArray));
+        break
+      case XML_FORMAT:  
+          exporter = new JRXmlExporter()
+        break
+      case CSV_FORMAT:  
+        /*SimpleCsvExporterConfiguration conf = new SimpleCsvExporterConfiguration()
+        conf.setFieldDelimiter("")
+        conf.setRecordDelimiter("")*/
+        exporter = new JRCsvExporter()
+        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+        exporter.setExporterOutput(new SimpleWriterExporterOutput(byteArray));
+        break
+      case XLS_FORMAT:  
+        exporter = new JRXlsExporter()
+        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(byteArray));
+        break
+      case RTF_FORMAT:  
+        exporter = new JRRtfExporter()
+        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+        exporter.setExporterOutput(new SimpleWriterExporterOutput(byteArray));
+        break
+      // case TEXT_FORMAT: 
+      // // Not working :
+      // Character width in pixels or page width in characters must be specified and must be greater than zero.
+      //   exporter = new JRTextExporter()
+      //   exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+      //   exporter.setExporterOutput(new SimpleWriterExporterOutput(byteArray));
+      //   conf = new SimpleTextExporterConfiguration();
+      //   break
+      case ODT_FORMAT:  
+        exporter = new JROdtExporter()
+        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(byteArray));
+        break
+      // case ODS_FORMAT:  
+      // // excel doesnt show any data
+      //   exporter = new JROdsExporter()
+      //   exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+      //   exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(byteArray));
+      //   break
+      case DOCX_FORMAT: 
+        exporter = new JRDocxExporter()
+        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(byteArray));
+        break
+      case XLSX_FORMAT: 
+        exporter = new JRXlsxExporter()
+        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(byteArray));
+        break
+      default: 
+      throw new Exception(message(code: "jasper.controller.invalidFormat", args: [format]))
     }
+
+    if(conf){
+      exporter.setConfiguration(conf)
+    }
+
+    return exporter
   }
 
   /**

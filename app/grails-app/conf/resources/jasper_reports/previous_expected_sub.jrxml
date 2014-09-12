@@ -2,20 +2,20 @@
 <!-- Created with Jaspersoft Studio version last-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="expected_issues" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cac26577-7c58-4fd6-8e92-8b28886ba96c">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="KBPLUS"/>
-	<parameter name="sub_id" class="java.lang.Long">
-		<parameterDescription><![CDATA[Subscription Id]]></parameterDescription>
+	<parameter name="search_sub_id" class="com.k_int.kbplus.Subscription">
+		<parameterDescription><![CDATA[Subscription]]></parameterDescription>
 	</parameter>
 	<parameter name="compare_date" class="java.sql.Date">
 		<parameterDescription><![CDATA[Previous or Expected date]]></parameterDescription>
 	</parameter>
-	<parameter name="query_select" class="java.lang.String">
-		<parameterDescription><![CDATA[Type 'Expected' or 'Previous']]></parameterDescription>
+	<parameter name="select&amp;Expected&amp;Previous" class="java.lang.String">
+		<parameterDescription><![CDATA[Search for Expected/Previous titles]]></parameterDescription>
 	</parameter>
 	<parameter name="query" class="java.lang.String" isForPrompting="false">
 		<parameterDescription><![CDATA[]]></parameterDescription>
-		<defaultValueExpression><![CDATA[$P{query_select}.equals("Expected")
-? "select ie_id,ti_title from issue_entitlement, title_instance_package_platform, title_instance where ie_subscription_fk = $P!{sub_id} AND ie_tipp_fk = tipp_id AND tipp_ti_fk = ti_id AND ifnull(ie_access_start_date, tipp_access_start_date ) > '$P{compare_date}'"
-: "select ie_id,ti_title from issue_entitlement, title_instance_package_platform, title_instance where ie_subscription_fk = $P!{sub_id} AND ie_tipp_fk = tipp_id AND tipp_ti_fk = ti_id AND ifnull(ie_access_end_date, tipp_access_end_date ) =< '$P{compare_date}'"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[$P{select&Expected&Previous}.equals("Expected")
+? "select ie_id,ti_title from issue_entitlement, title_instance_package_platform, title_instance where ie_subscription_fk = $P!{search_sub_id} AND ie_tipp_fk = tipp_id AND tipp_ti_fk = ti_id AND ifnull(ie_access_start_date, tipp_access_start_date ) > '$P{compare_date}'"
+: "select ie_id,ti_title from issue_entitlement, title_instance_package_platform, title_instance where ie_subscription_fk = $P!{search_sub_id} AND ie_tipp_fk = tipp_id AND tipp_ti_fk = ti_id AND ifnull(ie_access_end_date, tipp_access_end_date ) <= '$P{compare_date}'"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="report_description" class="java.lang.String">
 		<parameterDescription><![CDATA[List all the Previous or Expected titles for the given subscription]]></parameterDescription>

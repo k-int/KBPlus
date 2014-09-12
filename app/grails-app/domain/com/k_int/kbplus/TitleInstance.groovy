@@ -636,4 +636,27 @@ class TitleInstance {
       }
     }
   }
+
+  @Transient
+  def distinctEventList() {
+    def result = []
+    historyEvents.each { he ->
+      if ( result.find { it.event.id == he.event.id} ) {
+      }
+      else {
+        result.add(he)
+      }
+    }
+    result
+  }
+
+  @Transient
+  def isInPackage(pkg) {
+    def result = false
+    def tipp = TitleInstancePackagePlatform.findByTitleAndPkg(this,pkg)
+    if(tipp)
+      result=true
+    result
+  }
+
 }
