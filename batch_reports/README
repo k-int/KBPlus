@@ -1,0 +1,2 @@
+Example run: mysql -u k-int -pk-int KBPlus < ./title_list.sql > title_list.tsv
+
