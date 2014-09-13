@@ -138,6 +138,6 @@ grails.project.dependency.resolution = {
         runtime ":markdown:1.1.1"
         runtime ":quartz:1.0-RC9"
         runtime ":rest:0.7"
-
+        // runtime "com.k-int:domain-model-oai-pmh:0.1"
     }
 }
