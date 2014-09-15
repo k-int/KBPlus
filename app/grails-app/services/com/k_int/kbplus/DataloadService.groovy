@@ -456,7 +456,7 @@ class DataloadService {
 
       TitleInstance.findAllBySortTitle(null,[max:100]).each {
         log.debug("Normalise Title ${it.title}");
-        it.sortTitle = it.generateSortTitle(it.title)
+        it.sortTitle = it.generateSortTitle(it.title) ?: 'AAA_Error'
         if ( it.sortTitle != null ) {
           it.save(flush:true, failOnError:true)
           num_rows_updated++;
@@ -467,7 +467,7 @@ class DataloadService {
       log.debug("Generate Missing Sort Package Names Rows_updated:: ${rows_updated} ${num_rows_updated}");
       Package.findAllBySortName(null,[max:100]).each {
         log.debug("Normalise Package Name ${it.name}");
-        it.sortName = it.generateSortName(it.name)
+        it.sortName = it.generateSortName(it.name) ?: 'AAA_Error'
         if ( it.sortName != null ) {
           it.save(flush:true, failOnError:true)
           num_rows_updated++;
@@ -478,13 +478,11 @@ class DataloadService {
       log.debug("Generate Missing Sortable License References Rows_updated:: ${rows_updated} ${num_rows_updated}");
       License.findAllBySortableReference(null,[max:100]).each {
         log.debug("Normalise License Reference Name ${it.reference}");
-        if ( ( it.reference != null ) && ( it.reference.length() > 0 ) ) {
-          it.sortableReference = it.generateSortableReference(it.reference)
-          if( it.sortableReference != null ) {
-            it.save(flush:true, failOnError:true)
-            num_rows_updated++;
-            rows_updated = true
-          }
+        it.sortableReference = it.generateSortableReference(it.reference) ?: 'AAA_Error'
+        if( it.sortableReference != null ) {
+          it.save(flush:true, failOnError:true)
+          num_rows_updated++;
+          rows_updated = true
         }
       }
       
