@@ -442,7 +442,39 @@ class DataloadService {
       log.debug("Nominal platform is ${selected_platform} for ${p.id}");
       p.nominalPlatform = selected_platform
       p.save(flush:true)
+
+
     }
+
+    // Fill out any missing sort keys on titles, packages or licenses
+    def rows_updated = 0
+    def sort_str_start_time = System.currentTimeMillis()
+
+    TitleInstance.findAllBySortTitle(null).each {
+      log.debug("Normalise Title ${it.title}");
+      it.sortTitle = it.generateSortTitle(it.title)
+      it.save(flush:true, failOnError:true)
+      rows_updated++;
+    }
+
+    log.debug("Generate Missing Sort Package Names");
+    Package.findAllBySortName(null).each {
+      log.debug("Normalise Package Name ${it.name}");
+      it.sortName = it.generateSortName(it.name)
+      it.save(flush:true, failOnError:true)
+      rows_updated++;
+    }
+
+    log.debug("Generate Missing Sortable License References");
+    License.findAllBySortableReference(null).each {
+      log.debug("Normalise License Reference Name ${it.reference}");
+      it.sortableReference = it.generateSortableReference(it.reference)
+      it.save(flush:true, failOnError:true)
+      rows_updated++;
+    }
+
+    log.debug("Completed normalisation step... updated ${rows_updated} rows in ${System.currentTimeMillis()-sort_str_start_time}ms");
+
   }
 
   def titleAugment() {
