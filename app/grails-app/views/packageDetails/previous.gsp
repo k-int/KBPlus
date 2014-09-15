@@ -172,7 +172,7 @@
 
         <div class="pagination" style="text-align:center">
           <g:if test="${titlesList}" >
-            <bootstrap:paginate  action="show" controller="packageDetails" params="${params}" next="Next" prev="Prev" maxsteps="${max}" total="${num_tipp_rows}" />
+            <bootstrap:paginate  action="previous" controller="packageDetails" params="${params}" next="Next" prev="Prev" maxsteps="${max}" total="${num_tipp_rows}" />
           </g:if>
         </div>
 

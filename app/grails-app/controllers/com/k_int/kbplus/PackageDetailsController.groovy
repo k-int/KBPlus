@@ -258,23 +258,58 @@ class PackageDetailsController {
           unionList = unionList.unique()
           result.unionListSize = unionList.size()
           unionList.sort()
-          
           log.debug("List sizes are ${listA.size()} and ${listB.size()} and the union is ${unionList.size()}")
 
-          def toIndex = result.offset+result.max < unionList.size()? result.offset+result.max: unionList.size()
-          unionList = unionList.subList(result.offset, toIndex.intValue())
-          result.listA = listA
-          result.listB = listB
-          result.unionList = unionList
+          withFormat{
+            html{
+              def toIndex = result.offset+result.max < unionList.size()? result.offset+result.max: unionList.size()
+              unionList = unionList.subList(result.offset, toIndex.intValue())
+              result.listA = listA
+              result.listB = listB
+              result.unionList = unionList
+              result
+            }
+            csv {
+              try{
+              log.debug("Create CSV Response")
+               response.setHeader("Content-disposition", "attachment; filename=packageComparison.csv")
+               response.contentType = "text/csv"
+               def out = response.outputStream
+               out.withWriter { writer ->
+                writer.write("${result.pkgInsts[0].name} on ${result.dateA}, ${result.pkgInsts[1].name} on ${result.dateB}\n")
+                writer.write('Title, Start Date A, Start Date B, Volume A, Volume B, Issue A, Issue B, End Date A, End Date B, Volume A, Volume B, Issue A, Issue B, Coverage Note A, Coverage Note B\n');
+                log.debug("UnionList size is ${unionList.size}")
+                unionList.each { unionTitle ->
+                  log.debug("Grabbing tipps")
+                  def tippA = listA.find{it.title.title.equals(unionTitle)}
+                  def tippB = listB.find{it.title.title.equals(unionTitle)}
+                  log.debug("Found tipp for A ${tippA} and for B ${tippB}")
+                  log.debug("Running on title ${unionTitle}");
+                writer.write("${unionTitle},${e(tippA?.startDate)},${e(tippB?.startDate)},${e(tippA?.startVolume)},${e(tippB?.startVolume)},${e(tippA?.startIssue)},${e(tippB?.startIssue)},${e(tippA?.coverageNote)},${e(tippB?.coverageNote)}\n")
+                }
+                writer.write("END");
+                writer.flush();
+                writer.close();
+               }
+               out.close()
+                
+              }catch(Exception e){
+                log.error("An Exception was thrown here",e)
+              }
+            }         
+          }
 
         }else{
           def currentDate = new java.text.SimpleDateFormat('yyyy-MM-dd').format(new Date())
           result.dateA = currentDate
           result.dateB = currentDate
           flash.message = "Please select two packages for comparison"
+          result
         }
       
-        result
+    }
+    def e(str){
+      str != null?str:""
     }
     def createCompareList(pkg,dateStr,params, result){
        def returnVals = [:]
