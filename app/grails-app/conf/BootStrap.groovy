@@ -346,36 +346,6 @@ class BootStrap {
     // New document type
     RefdataCategory.lookupOrCreate('Document Type','ONIX-PL License')
     // Controlled values from the <UsageType> element.
-    /*
-    log.debug("Adding ONIX-PL UsageTypes to RefdataCategory");
-    // Disabled until we know whether we need to know all possible terms in advance
-    RefdataCategory.lookupOrCreate('UsageType', 'Access')
-    RefdataCategory.lookupOrCreate('UsageType', 'AccessByRobot')
-    RefdataCategory.lookupOrCreate('UsageType', 'AccessByStreaming')
-    RefdataCategory.lookupOrCreate('UsageType', 'Copy')
-    RefdataCategory.lookupOrCreate('UsageType', 'Deposit')
-    RefdataCategory.lookupOrCreate('UsageType', 'DepositInPerpetuity')
-    RefdataCategory.lookupOrCreate('UsageType', 'Include')
-    RefdataCategory.lookupOrCreate('UsageType', 'MakeAvailable')
-    RefdataCategory.lookupOrCreate('UsageType', 'MakeAvailableByStreaming')
-    RefdataCategory.lookupOrCreate('UsageType', 'MakeDerivedWork')
-    RefdataCategory.lookupOrCreate('UsageType', 'MakeDigitalCopy')
-    RefdataCategory.lookupOrCreate('UsageType', 'MakeTemporaryDigitalCopy')
-    RefdataCategory.lookupOrCreate('UsageType', 'Modify')
-    RefdataCategory.lookupOrCreate('UsageType', 'Perform')
-    RefdataCategory.lookupOrCreate('UsageType', 'Photocopy')
-    RefdataCategory.lookupOrCreate('UsageType', 'PrintCopy')
-    RefdataCategory.lookupOrCreate('UsageType', 'ProvideIntegratedAccess')
-    RefdataCategory.lookupOrCreate('UsageType', 'ProvideIntegratedIndex')
-    RefdataCategory.lookupOrCreate('UsageType', 'Reformat')
-    RefdataCategory.lookupOrCreate('UsageType', 'RemoveObscureOrModify')
-    RefdataCategory.lookupOrCreate('UsageType', 'Sell')
-    RefdataCategory.lookupOrCreate('UsageType', 'SupplyCopy')
-    RefdataCategory.lookupOrCreate('UsageType', 'SystematicallyCopy')
-    RefdataCategory.lookupOrCreate('UsageType', 'Use')
-    RefdataCategory.lookupOrCreate('UsageType', 'UseForDataMining')
-    */
-    // Controlled values from the <UsageStatus> element. All are prefixed with "onixPL:" in the document
 
     RefdataCategory.lookupOrCreate('UsageStatus', 'greenTick',      'UseForDataMining')
     RefdataCategory.lookupOrCreate('UsageStatus', 'greenTick',      'InterpretedAsPermitted')
@@ -488,29 +458,6 @@ No Host Platform URL Content
     // gokb_record_source.save(flush:true, stopOnError:true);
     // log.debug("New gokb record source: ${gokb_record_source}");
 
-    
-    // Regenerate any empty sort titles
-    log.debug("Generate Missing Sort Title Names");
-    TitleInstance.findAllBySortTitle(null).each {
-      log.debug("Normalise Title ${it.title}");
-      it.sortTitle = it.generateSortTitle(it.title)
-      it.save(flush:true, failOnError:true)
-    }
-
-    log.debug("Generate Missing Sort Package Names");
-    Package.findAllBySortName(null).each {
-      log.debug("Normalise Package Name ${it.name}");
-      it.sortName = it.generateSortName(it.name)
-      it.save(flush:true, failOnError:true)
-    }
-
-    log.debug("Generate Missing Sortable License References");
-    License.findAllBySortableReference(null).each {
-      log.debug("Normalise License Reference Name ${it.reference}");
-      it.sortableReference = it.generateSortableReference(it.reference)
-      it.save(flush:true, failOnError:true)
-    }
-
-    log.debug("Completed normalisation step...");
+    // Sort string generation moved to admin - cleanse
   }
 }
