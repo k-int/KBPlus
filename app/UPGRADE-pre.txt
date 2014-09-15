@@ -1,2 +1,5 @@
+select "This is UPGRADE-pre.txt";
+
 drop table if exists property_definition;
+
 drop table if exists license_custom_property;
