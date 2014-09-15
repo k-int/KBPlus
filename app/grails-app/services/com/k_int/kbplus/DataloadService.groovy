@@ -447,30 +447,50 @@ class DataloadService {
     }
 
     // Fill out any missing sort keys on titles, packages or licenses
-    def rows_updated = 0
+    def num_rows_updated = 0
     def sort_str_start_time = System.currentTimeMillis()
+    def rows_updated = true
 
-    TitleInstance.findAllBySortTitle(null).each {
-      log.debug("Normalise Title ${it.title}");
-      it.sortTitle = it.generateSortTitle(it.title)
-      it.save(flush:true, failOnError:true)
-      rows_updated++;
-    }
+    while ( rows_updated ) {
+      rows_updated = false
 
-    log.debug("Generate Missing Sort Package Names");
-    Package.findAllBySortName(null).each {
-      log.debug("Normalise Package Name ${it.name}");
-      it.sortName = it.generateSortName(it.name)
-      it.save(flush:true, failOnError:true)
-      rows_updated++;
-    }
+      TitleInstance.findAllBySortTitle(null,[max:100]).each {
+        log.debug("Normalise Title ${it.title}");
+        it.sortTitle = it.generateSortTitle(it.title)
+        if ( it.sortTitle != null ) {
+          it.save(flush:true, failOnError:true)
+          num_rows_updated++;
+          rows_updated = true
+        }
+      }
 
-    log.debug("Generate Missing Sortable License References");
-    License.findAllBySortableReference(null).each {
-      log.debug("Normalise License Reference Name ${it.reference}");
-      it.sortableReference = it.generateSortableReference(it.reference)
-      it.save(flush:true, failOnError:true)
-      rows_updated++;
+      log.debug("Generate Missing Sort Package Names Rows_updated:: ${rows_updated} ${num_rows_updated}");
+      Package.findAllBySortName(null,[max:100]).each {
+        log.debug("Normalise Package Name ${it.name}");
+        it.sortName = it.generateSortName(it.name)
+        if ( it.sortName != null ) {
+          it.save(flush:true, failOnError:true)
+          num_rows_updated++;
+          rows_updated = true
+        }
+      }
+
+      log.debug("Generate Missing Sortable License References Rows_updated:: ${rows_updated} ${num_rows_updated}");
+      License.findAllBySortableReference(null,[max:100]).each {
+        log.debug("Normalise License Reference Name ${it.reference}");
+        if ( ( it.reference != null ) && ( it.reference.length() > 0 ) ) {
+          it.sortableReference = it.generateSortableReference(it.reference)
+          if( it.sortableReference != null ) {
+            it.save(flush:true, failOnError:true)
+            num_rows_updated++;
+            rows_updated = true
+          }
+        }
+      }
+      
+      println("Rows_updated:: ${rows_updated} ${num_rows_updated}");
+
+      cleanUpGorm()
     }
 
     log.debug("Completed normalisation step... updated ${rows_updated} rows in ${System.currentTimeMillis()-sort_str_start_time}ms");
