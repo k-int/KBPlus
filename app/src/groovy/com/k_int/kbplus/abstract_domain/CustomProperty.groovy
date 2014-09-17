@@ -22,6 +22,7 @@ abstract class CustomProperty implements Serializable{
     BigDecimal decValue
     RefdataValue refValue
     String note = ""
+    
 
     static constraints = {
         stringValue(nullable: true)
@@ -31,9 +32,14 @@ abstract class CustomProperty implements Serializable{
         note(nullable: true)
     }
 
-    def sumValue(){
-        return "${stringValue}${intValue}${decValue}${refValue}${note}"
+    @Transient
+    def getValueType(){
+        if(stringValue) return "stringValue"
+        if(intValue) return "intValue"
+        if(decValue) return "decValue"
+        if(refValue) return "refValue"
     }
+
     @Override
     public String toString(){
         if(stringValue) return stringValue

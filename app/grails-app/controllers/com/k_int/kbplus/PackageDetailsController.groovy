@@ -117,7 +117,7 @@ class PackageDetailsController {
       def consortiaInstitutions = Combo.findAllByToOrgAndType(consortia,type).collect{it.fromOrg}
 
       def consortiaInstsWithStatus = [:]
-      def hql = "SELECT role.org FROM OrgRole as role WHERE role.org = ? AND role.roleType.value = 'Subscriber'  AND ( EXISTS ( select sp from role.sub.packages as sp where sp.pkg = ? ) )"
+      def hql = "SELECT role.org FROM OrgRole as role WHERE role.org = ? AND (role.roleType.value = 'Subscriber') AND ( EXISTS ( select sp from role.sub.packages as sp where sp.pkg = ? ) AND ( role.sub.status.value != 'Deleted' ) )"
       consortiaInstitutions.each{org ->
         def queryParams = [org,packageInstance]
         def hasPackage = OrgRole.executeQuery(hql,  queryParams)
@@ -151,41 +151,13 @@ class PackageDetailsController {
 
     def createNewSubscription(org,packageId){
       //Initialize default subscription values
-      def cal = new java.util.GregorianCalendar()
-      def sdf = new SimpleDateFormat('yyyy-MM-dd')
+      log.debug("Create slave with org ${org} and packageID ${packageId}")
 
-      cal.setTimeInMillis(System.currentTimeMillis())
-      cal.set(Calendar.MONTH, Calendar.JANUARY)
-      cal.set(Calendar.DAY_OF_MONTH, 1)
-      def defaultStartYear = (cal.getTime())
-      cal.set(Calendar.MONTH, Calendar.DECEMBER)
-      cal.set(Calendar.DAY_OF_MONTH, 31)
-      def defaultEndYear = (cal.getTime())
       def defaultSubIdentifier = java.util.UUID.randomUUID().toString()
-
-      // initialize the subscription
-      //  def new_sub = new Subscription(type: RefdataValue.findByValue("Subscription Taken"),
-      //               status: RefdataCategory.lookupOrCreate('Subscription Status', 'Current'),
-      //               name: "Generated slave sub",
-      //               startDate: defaultStartYear,
-      //               endDate: defaultEndYear,
-      //               identifier: defaultSubIdentifier,
-      //               isPublic: RefdataCategory.lookupOrCreate('YN', 'No'),
-      //               slaved: true,
-      //               impId: defaultSubIdentifier)
-      // if (new_sub.save(failOnError: true)) 
-      // {
-      //   log.debug("New subscription saved ${new_sub}")
-      //   def new_sub_link = new OrgRole(org: org,
-      //           sub: new_sub,
-      //           roleType: RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber')).save(failOnError: true);
-      // }
-      //Link to package 
-
       def pkg_to_link = Package.get(packageId)
+      log.debug("Sub start Date ${pkg_to_link.startDate} and end date ${pkg_to_link.endDate}")
       pkg_to_link.createSubscription("Subscription Taken", "Generated slave sub", defaultSubIdentifier,
-        defaultStartYear,defaultEndYear,org, "Subscriber", true, true)
-
+        pkg_to_link.startDate, pkg_to_link.endDate, org, "Subscriber", true, true)
     }
 
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])

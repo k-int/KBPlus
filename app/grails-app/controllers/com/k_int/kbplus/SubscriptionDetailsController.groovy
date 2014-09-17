@@ -51,7 +51,7 @@ class SubscriptionDetailsController {
     
     if(result.subscriptionInstance.slaved == true && pendingChanges){
       log.debug("Slaved subscription, auto-accept pending changes")
-      def changesDesc = [:]
+      def changesDesc = []
       pendingChanges.each{change ->
         if(!pendingChangeService.performAccept(change,request)){
           log.debug("Auto-accepting pending change has failed.")

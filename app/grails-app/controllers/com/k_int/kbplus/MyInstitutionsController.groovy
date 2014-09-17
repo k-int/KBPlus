@@ -8,7 +8,7 @@ import org.apache.poi.hslf.model.*
 import org.apache.poi.hssf.usermodel.*
 import org.apache.poi.hssf.util.HSSFColor
 import org.apache.poi.ss.usermodel.*
-
+import com.k_int.custprops.PropertyDefinition
 // import org.json.simple.JSONArray;
 // import org.json.simple.JSONObject;
 import java.text.SimpleDateFormat
@@ -84,8 +84,6 @@ class MyInstitutionsController {
         def result = [:]
         result.user = User.get(springSecurityService.principal.id)
         result.institution = Org.findByShortcode(params.shortcode)
-
-
         if (!checkUserIsMember(result.user, result.institution)) {
             flash.error = "You do not have permission to view ${result.institution.name}. Please request access on the profile page";
             response.sendError(401)
@@ -96,6 +94,13 @@ class MyInstitutionsController {
             result.is_admin = true
         } else {
             result.is_admin = false;
+        }
+
+        def prop_types_list = PropertyDefinition.findAll()
+        result.custom_prop_types =prop_types_list.collectEntries{
+            [(it.name): it.type+"&&"+it.refdataCategory]
+            //We do this for the interface, so we can display select box when we are working with refdata.
+            //Its possible there is anothger way as
         }
 
         result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
@@ -112,6 +117,13 @@ class MyInstitutionsController {
             qry += " and lower(l.reference) like ?"
             qry_params += "%${params['keyword-search'].toLowerCase()}%"
         }
+        if( (params.propertyFilter != null) && params.propertyFilter.trim().length() > 0 ) {
+            def propDef = PropertyDefinition.findByName(params.propertyFilterType)
+            log.debug("PROPERTY FILTER TYPE ${propDef} ---- ${params.propertyFilterType}")
+            def propQuery = buildPropertySearchQuery(params,propDef)
+            qry += propQuery.query
+            qry_params += propQuery.queryParam
+        } 
 
         if ((params.sort != null) && (params.sort.length() > 0)) {
             qry += " order by l.${params.sort} ${params.order}"
@@ -125,6 +137,37 @@ class MyInstitutionsController {
         withFormat {
             html result
         }
+    }
+    def buildPropertySearchQuery(params,propDef) {
+        def result = [:]
+
+        def query = " and exists ( select cp from l.customProperties as cp where cp.type.name = ? and  "
+        def queryParam = [params.propertyFilterType];
+        switch (propDef.type){
+            case Integer.toString():
+            query += "cp.intValue = ? "
+            queryParam += Integer.parseInt(params.propertyFilter)
+            break;
+            case BigDecimal.toString():
+            query += "cp.decValue = ? "
+            queryParam += new BigDecimal(params.propertyFilter)
+            break;
+            case String.toString():
+            query += "cp.stringValue like ? "
+            queryParam += params.propertyFilter
+            break;
+            case RefdataValue.toString():
+            query += "cp.refValue.value like ? "
+            queryParam += params.propertyFilter
+            break;
+            default:
+            log.error("")
+        }
+        query += ")"
+        
+        result.query = query
+        result.queryParam = queryParam
+        result
     }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])

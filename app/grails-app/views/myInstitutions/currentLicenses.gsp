@@ -37,15 +37,20 @@
                                   action="addLicense" 
                                   params="${[shortcode:params.shortcode]}">Add Licence</g:link></li>
       </ul>
-
     </div>
 
     <div class="container licence-searches">
         <div class="row">
             <div class="span6">
                 <form class="form-inline">
+                    <label>Search by Reference:</label>
                     <input type="text" name="keyword-search" placeholder="enter search term..." value="${params['keyword-search']?:''}" />
-                    <input type="submit" class="btn btn-primary" value="Search" />
+                    <br><label>Search by Property:</label>
+                      <input id="selectVal" type="text" name="propertyFilter" placeholder="property value..." value="${params.propertyFilter?:''}" />
+             <g:select id="availablePropertyTypes" name="availablePropertyTypes" from="${custom_prop_types}"
+             optionKey="value" optionValue="key" value="${params.propertyFilterType}"/>
+                <input type="hidden" id="propertyFilterType" name="propertyFilterType" value="${params.propertyFilterType}"/>
+                <input type="submit" class="btn btn-primary" value="Search" />
                 </form>
             </div>
             <div class="span6">
@@ -66,7 +71,7 @@
           </div>
       </div>
 
-      <g:if test="${licenses?.size() > 0}">
+
         <div class="container licence-results">
           <table class="table table-bordered table-striped">
             <thead>
@@ -101,12 +106,38 @@
           <bootstrap:paginate action="currentLicenses" controller="myInstitutions" params="${params}" next="Next" prev="Prev" max="${max}" total="${licenseCount}" />
         </div>
 
-      </g:if>
-
     </g:form>
     <r:script type="text/javascript">
         $('.licence-results input[type="radio"]').click(function () {
             $('.licence-options').slideDown('fast');
+        });
+
+        function updateSelect(){
+          var selectedOption = $( "#availablePropertyTypes option:selected" )
+          var selectedValue = selectedOption.val()
+          $('#propertyFilterType').val(selectedOption.text())
+
+          if(selectedValue.contains("RefdataValue")){
+            var refdataType = selectedValue.split("&&")[1]
+          $.ajax({ url:'<g:createLink controller="ajax" action="sel2RefdataSearch"/>'+'/'+refdataType+'?format=json',
+                        success: function(data) {
+                          var select = ' <select id="selectVal" name="propertyFilter" > '
+                          var index;
+                          for(index=0; index < data.length; index++ ){
+                            var option = data[index]
+                            select += ' <option value="'+option.text+'">'+option.text+'</option> '
+                          }
+                          select += '</select>'
+                          $('#selectVal').replaceWith(select)
+                        }
+            });
+          }else{
+            $('#selectVal').replaceWith('<input id="selectVal" type="text" name="propertyFilter" placeholder="property value" />')
+          }
+        }
+
+        $('#availablePropertyTypes').change(function() {
+          updateSelect();
         });
 
         $('.licence-options .delete-licence').click(function () {
@@ -115,6 +146,7 @@
                 $('.licence-options').slideUp('fast');
             })
         })
+        window.onload = updateSelect()
     </r:script>
 
 
