@@ -21,20 +21,32 @@ class GlobalSourceSyncService {
   boolean parallel_jobs = false
 
   def titleReconcile = { grt ,oldtitle, newtitle ->
-    log.debug("Reconcile ${oldtitle} ${newtitle}");
+    log.debug("Reconcile grt: ${grt} oldtitle:${oldtitle} newtitle:${newtitle}");
 
     // DOes the remote title have a publisher (And is ours blank)
     def title_instance = genericOIDService.resolveOID(grt.localOid)
+
+    if ( title_instance == null ) {
+      log.debug("Failed to resolve ${grt.localOid} - Exiting");
+      return
+    }
     
+    newtitle.identifiers.each {
+      log.debug("Checking title has ${it.namespace}:${it.value}");
+      title_instance.checkAndAddMissingIdentifier(it.namespace, it.value);
+    }
+
     if ( ( newtitle.publisher != null ) && ( title_instance.getPublisher() == null ) ) {
       def publisher_identifiers = []
       def publisher = Org.lookupOrCreate(newtitle.publisher, 'publisher', null, publisher_identifiers, null)
       def pub_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Publisher');
+      log.debug("Asserting ${publisher} ${title_instance} ${pub_role}");
       OrgRole.assertOrgTitleLink(publisher, title_instance, pub_role)
     }
 
     // Title history!!
     newtitle.history.each { historyEvent ->
+      log.debug("Processing title history event");
       // See if we already have a reference
       def fromset = []
       def toset = []
@@ -43,6 +55,7 @@ class GlobalSourceSyncService {
         def participant = TitleInstance.lookupOrCreate(he.ids,he.title)
         fromset.add(participant)
       }
+
       historyEvent.to.each { he ->
         def participant = TitleInstance.lookupOrCreate(he.ids,he.title)
         toset.add(participant)
@@ -53,7 +66,8 @@ class GlobalSourceSyncService {
       def base_query = "select the from TitleHistoryEvent as the where the.eventDate = ? "
       // Need to parse date...
       def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-      def query_params = [(historyEvent.date != null ? sdf.parse(historyEvent.date) : null)]
+      def query_params = [(((historyEvent.date != null ) && ( historyEvent.date.trim().length() > 0 ) ) ? sdf.parse(historyEvent.date) : null)]
+
       fromset.each {
         base_query += "and exists ( select p from the.participants as p where p.participant = ? and p.participantRole = 'from' ) "
         query_params.add(it)
@@ -64,12 +78,23 @@ class GlobalSourceSyncService {
       }
 
       def existing_title_history_event = TitleHistoryEvent.executeQuery(base_query,query_params);
-      log.debug("Result of lookup : ${existing_title_history_event}");
+      log.debug("Result of title history event lookup : ${existing_title_history_event}");
+
+      if ( existing_title_history_event.size() == 0  ) {
+        log.debug("Create new history event");
+        def he = new TitleHistoryEvent(eventDate:query_params[0]).save(flush:true)
+        fromset.each {
+          new TitleHistoryEventParticipant(event:he, participant:it, participantRole:'from').save(flush:true)
+        }
+        toset.each {
+          new TitleHistoryEventParticipant(event:he, participant:it, participantRole:'to').save(flush:true)
+        }
+      }
     }
   }
 
   def titleConv = { md, synctask ->
-    log.debug("titleConv....");
+    log.debug("titleConv.... ${md}");
     def result = [:]
     result.parsed_rec = [:]
     result.parsed_rec.identifiers = []
@@ -291,7 +316,14 @@ class GlobalSourceSyncService {
   }
 
   def testTitleCompliance = { json_record ->
-    def result = RefdataCategory.lookupOrCreate("YNO","Yes")
+    log.debug("testTitleCompliance:: ${json_record}");
+    
+    def result = RefdataCategory.lookupOrCreate("YNO","No")
+
+    if ( json_record.identifiers?.size() > 0 ) {
+      result = RefdataCategory.lookupOrCreate("YNO","Yes")
+    }
+
     result
   }
 
@@ -396,21 +428,39 @@ class GlobalSourceSyncService {
   // using the standard reconciler with the new info and null as the old info - essentially a full update the first time.
   def onNewTitle = { global_record_info, newtitle ->
 
-    log.debug("onNewTitle....");
+    log.debug("onNewTitle.... ${global_record_info} ${newtitle} ");
 
     // We need to create a new global record tracker. If there is already a local title for this remote title, link to it,
     // otherwise create a new title and link to it. See if we can locate a title.
     def title_instance = TitleInstance.lookupOrCreate(newtitle.identifiers,newtitle.title)
 
-    def grt = new GlobalRecordTracker(
-      owner:global_record_info,
-      localOid:title_instance.class.name+':'+title_instance.id,
-      identifier:java.util.UUID.randomUUID().toString(),
-      name:newtitle.title
-    ).save(flush:true)
+    if ( title_instance != null ) {
 
-    log.debug("call title reconcile");
-    titleReconcile(grt, null, newtitle)
+      title_instance.refresh()
+
+      // merge in any new identifiers we have
+      newtitle.identifiers.each {
+        log.debug("Checking title has ${it.namespace}:${it.value}");
+        title_instance.checkAndAddMissingIdentifier(it.namespace, it.value);
+      }
+
+
+      log.debug("Creating new global record tracker... for title ${title_instance}");
+
+
+      def grt = new GlobalRecordTracker(
+        owner:global_record_info,
+        localOid:title_instance.class.name+':'+title_instance.id,
+        identifier:java.util.UUID.randomUUID().toString(),
+        name:newtitle.title
+      ).save(flush:true)
+
+      log.debug("call title reconcile");
+      titleReconcile(grt, null, newtitle)
+    }
+    else {
+      log.error("Unable to lookup or create title... ids:${newtitle.identifiers}, title:${newtitle.title}");
+    }
   }
 
 
@@ -577,13 +627,18 @@ class GlobalSourceSyncService {
               log.error("Problem saving record info: ${existing_record_info.errors}");
             }
 
-            if ( cfg.newRemoteRecordHandler != null ) {
-              log.debug("Calling new remote record handler...");
-              cfg.newRemoteRecordHandler.call(existing_record_info, parsed_rec.parsed_rec)
-              log.debug("Call completed");
+            if ( kbplus_compliant?.value == 'Yes' ) {
+              if ( cfg.newRemoteRecordHandler != null ) {
+                log.debug("Calling new remote record handler...");
+                cfg.newRemoteRecordHandler.call(existing_record_info, parsed_rec.parsed_rec)
+                log.debug("Call completed");
+              }
+              else {
+                log.debug("No new record handler");
+              }
             }
             else {
-              log.debug("No new record handler");
+              log.debug("Skip record - not KBPlus compliant");
             }
           }
   

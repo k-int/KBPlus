@@ -30,8 +30,16 @@ class TitleInstance {
   Date dateCreated
   Date lastUpdated
 
-  static mappedBy = [tipps: 'title', ids: 'ti', orgs: 'title']
-  static hasMany = [tipps: TitleInstancePackagePlatform, ids: IdentifierOccurrence, orgs: OrgRole]
+  static mappedBy = [
+                     tipps: 'title', 
+                     ids: 'ti', 
+                     orgs: 'title', 
+                     historyEvents: 'participant']
+  static hasMany = [
+                    tipps: TitleInstancePackagePlatform, 
+                    ids: IdentifierOccurrence, 
+                    orgs: OrgRole, 
+                    historyEvents: TitleHistoryEventParticipant]
 
 
   static mapping = {
@@ -608,4 +616,47 @@ class TitleInstance {
       ies:ies
     ]
   }
+
+  def checkAndAddMissingIdentifier(ns,value) {
+    boolean found = false
+    this.ids.each {
+      if ( it.identifier.ns.ns == ns && it.identifier.value == value ) {
+        found = true
+      }
+    }
+
+    if ( ! found ) {
+      def id = Identifier.lookupOrCreateCanonicalIdentifier(ns, value)
+      def existing_occurrence = IdentifierOccurrence.findAllByIdentifier(id)
+      if ( existing_occurrence.size() > 0 ) {
+        // Do nothing - already present
+      }
+      else {
+        new IdentifierOccurrence(identifier:id, ti:this).save(flush:true)
+      }
+    }
+  }
+
+  @Transient
+  def distinctEventList() {
+    def result = []
+    historyEvents.each { he ->
+      if ( result.find { it.event.id == he.event.id} ) {
+      }
+      else {
+        result.add(he)
+      }
+    }
+    result
+  }
+
+  @Transient
+  def isInPackage(pkg) {
+    def result = false
+    def tipp = TitleInstancePackagePlatform.findByTitleAndPkg(this,pkg)
+    if(tipp)
+      result=true
+    result
+  }
+
 }

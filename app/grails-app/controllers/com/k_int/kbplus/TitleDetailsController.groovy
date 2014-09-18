@@ -68,6 +68,9 @@ class TitleDetailsController {
       result.editable=false
 
     result.ti = TitleInstance.get(params.id)
+
+    result.titleHistory = TitleHistoryEvent.executeQuery("select distinct thep.event from TitleHistoryEventParticipant as thep where thep.participant = ?",[result.ti]);
+
     result
   }
 

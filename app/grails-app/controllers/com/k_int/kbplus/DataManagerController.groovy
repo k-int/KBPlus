@@ -28,9 +28,18 @@ class DataManagerController {
     log.debug("changeLog ${params}");
     def formatter = new java.text.SimpleDateFormat("yyyy-MM-dd")
 
-    result.max = params.max ? Integer.parseInt(params.max) : 25
-    params.max = result.max
-    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+    def exporting = params.format == 'csv' ? true : false
+
+    if ( exporting ) {
+      result.max = 9999999
+      params.max = 9999999
+      result.offset = 0
+    }
+    else {
+      result.max = params.max ? Integer.parseInt(params.max) : 25
+      params.max = result.max
+      result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+    }
 
     if ( params.startDate == null ) {
       def cal = new java.util.GregorianCalendar()
@@ -42,6 +51,8 @@ class DataManagerController {
     if ( ( params.creates == null ) && ( params.updates == null ) ) {
       params.creates='Y'
     }
+
+    def base_query = "from org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent as e where e.className in (:l) AND e.lastUpdated >= :s AND e.lastUpdated <= :e AND e.eventName in (:t)"
 
     def types_to_include = []
     if ( params.packages=="Y" ) types_to_include.add('com.k_int.kbplus.Package');
@@ -55,7 +66,13 @@ class DataManagerController {
     if ( params.creates=="Y" ) events_to_include.add('INSERT');
     if ( params.updates=="Y" ) events_to_include.add('UPDATE');
     
-
+    result.actors = []
+    AuditLogEvent.executeQuery('select distinct(actor) from AuditLogEvent').each {
+      def u = User.findByUsername(it)
+      if ( u != null ) {
+        result.actors.add([it,u.display]);
+      }
+    }
 
     log.debug("${params}");
     if ( types_to_include.size() == 0 ) {
@@ -63,16 +80,31 @@ class DataManagerController {
       params.packages="Y"
     }
 
+    def start_date = formatter.parse(params.startDate)
+    def end_date = formatter.parse(params.endDate)
+
+    def query_params = ['l':types_to_include,'s':start_date,'e':end_date, 't':events_to_include]
+
+    if ( params.actor != null ) {
+      if ( params.actor == 'ALL' ) {
+      }
+      else if ( params.actor == 'PEOPLE' ) {
+        base_query += ' and e.actor <> \'system\' AND e.actor <> \'anonymousUser\''
+      }
+      else {
+        base_query += ' and e.actor = :a'
+        query_params.a = params.actor
+      }
+    }
+
     if ( types_to_include.size() > 0 ) {
   
       def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
-      def start_date = formatter.parse(params.startDate)
-      def end_date = formatter.parse(params.endDate)
   
-      result.historyLines = AuditLogEvent.executeQuery("select e from org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent as e where e.className in (:l) AND e.lastUpdated >= :s AND e.lastUpdated <= :e AND e.eventName in (:t) order by e.lastUpdated desc", 
-                                                       ['l':types_to_include,'s':start_date,'e':end_date, 't':events_to_include], limits);
-      result.num_hl = AuditLogEvent.executeQuery("select count(e) from org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent as e where className in (:l) AND e.lastUpdated >= :s AND e.lastUpdated <= :e AND e.eventName in (:t)", 
-                                                 ['l':types_to_include,'s':start_date,'e':end_date,'t':events_to_include])[0];
+      result.historyLines = AuditLogEvent.executeQuery('select e '+base_query+' order by e.lastUpdated desc', 
+                                                       query_params, limits);
+      result.num_hl = AuditLogEvent.executeQuery('select count(e) '+base_query,
+                                                 query_params)[0];
   
       result.formattedHistoryLines = []
       result.historyLines.each { hl ->
@@ -134,6 +166,7 @@ class DataManagerController {
           case 'com.k_int.kbplus.IdentifierOccurrence':
             break;
         }
+
         switch ( hl.eventName ) {
           case 'INSERT':
             line_to_add.eventName= "New ${linetype}"
@@ -156,7 +189,28 @@ class DataManagerController {
       result.num_hl = 0
     }
 
-    result
+
+    withFormat {
+      html {
+        result
+      }
+      csv {
+        response.setHeader("Content-disposition", "attachment; filename=DMChangeLog.csv")
+        response.contentType = "text/csv"
+
+        def out = response.outputStream
+        out.withWriter { w ->
+        w.write('Timestamp,Name,Event,Property,Actor,Old,New,Link\n')
+          result.formattedHistoryLines.each { c ->
+            def line = "\"${c.lastUpdated}\",${c.name},${c.eventName},${c.propertyName},\"${c.oldValue}\",\"${c.newValue}\",\"${c.link}\"\n".toString()
+            w.write(line)
+          }
+        }
+        out.close()
+      }
+
+    }
+
   }
 
   @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])

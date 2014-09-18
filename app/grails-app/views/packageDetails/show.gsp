@@ -145,12 +145,13 @@
                     </thead>
                     <tbody>
                       <g:each in="${packageInstance.ids}" var="io">
-                        <tr>
-                          <td>${io.id}</td>
-                          <td>${io.identifier.ns.ns}</td>
-                          <td>${io.identifier.value}</td>
-                        </tr>
+                          <tr>
+                            <td>${io.id}</td>
+                            <td>${io.identifier.ns.ns}</td>
+                            <td>${io.identifier.value}</td>
+                          </tr>
                       </g:each>
+                     
                     </tbody>
                   </table>
 
@@ -411,6 +412,25 @@
                    <b>${t.title.title}</b>
                    <g:link controller="titleDetails" action="show" id="${t.title.id}">(Title)</g:link>
                    <g:link controller="tipp" action="show" id="${t.id}">(TIPP)</g:link><br/>
+                   <ul>
+                     <g:each in="${t.title.distinctEventList()}" var="h">
+                       <li>
+
+                         Title History: <g:formatDate date="${h.event.eventDate}" format="yyyy-MM-dd"/><br/>
+
+                         <g:each status="st" in="${h.event.fromTitles()}" var="the">
+                            <g:if test="${st>0}">, </g:if>
+                            <g:link controller="titleDetails" action="show" id="${the.id}">${the.title}</g:link>
+                            <g:if test="${the.isInPackage(packageInstance)}">(✔)</g:if><g:else>(✘)</g:else>
+                         </g:each>
+                         Became
+                         <g:each status="st" in="${h.event.toTitles()}" var="the"><g:if test="${st>0}">, </g:if>
+                            <g:link controller="titleDetails" action="show" id="${the.id}">${the.title}</g:link>
+                            <g:if test="${the.isInPackage(packageInstance)}">(✔)</g:if><g:else>(✘)</g:else>
+                         </g:each>
+                       </li>
+                     </g:each>
+                   </ul>
                    <span title="${t.availabilityStatusExplanation}">Access: ${t.availabilityStatus?.value}</span>
                    <g:if test="${params.mode=='advanced'}">
                      <br/> Record Status: <g:xEditableRefData owner="${t}" field="status" config='TIPPStatus'/>
@@ -428,7 +448,9 @@
                 </td>
                 <td style="white-space: nowrap;vertical-align:top;">
                   <g:each in="${t.title.ids}" var="id">
-                    ${id.identifier.ns.ns}:${id.identifier.value}<br/>
+                    <g:if test="${id.identifier.ns.hide != true}">
+                      ${id.identifier.ns.ns}:${id.identifier.value}<br/>
+                    </g:if>
                   </g:each>
                 </td>
 

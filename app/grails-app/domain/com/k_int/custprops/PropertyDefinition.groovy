@@ -12,10 +12,13 @@ class PropertyDefinition {
     String descr
     String type
     String refdataCategory
+
     //Map keys can change and they wont affect any of the functionality
     @Transient
-    static def validTypes = ["Number":Integer.toString(), "Text":String.toString(), "Refdata":RefdataValue.toString(), 
-    "Decimal":BigDecimal.toString()]
+    static def validTypes = ["Number":Integer.toString(), 
+                             "Text":String.toString(), 
+                             "Refdata":RefdataValue.toString(), 
+                             "Decimal":BigDecimal.toString()]
 
     static constraints = {
         name(nullable: false, blank: false, unique:true)
