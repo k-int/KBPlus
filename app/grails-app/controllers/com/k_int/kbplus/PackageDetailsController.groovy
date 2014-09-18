@@ -140,10 +140,9 @@ class PackageDetailsController {
         if(p.key.startsWith("_create.")){
          def orgID = p.key.substring(8)
          def orgaisation = Org.get(orgID)
-         log.debug("Create slave subscription for ${orgaisation.name}")
          if(orgaisation)
+          log.debug("Create slave subscription for ${orgaisation.name}")
           createNewSubscription(orgaisation,params.id);
-
         }
       }
       redirect controller:'packageDetails', action:'consortia', params: [id:params.id]
@@ -157,7 +156,7 @@ class PackageDetailsController {
       def pkg_to_link = Package.get(packageId)
       log.debug("Sub start Date ${pkg_to_link.startDate} and end date ${pkg_to_link.endDate}")
       pkg_to_link.createSubscription("Subscription Taken", "Generated slave sub", defaultSubIdentifier,
-        pkg_to_link.startDate, pkg_to_link.endDate, org, "Subscriber", true, true)
+      pkg_to_link.startDate, pkg_to_link.endDate, org, "Subscriber", true, true)
     }
 
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
@@ -212,7 +211,7 @@ class PackageDetailsController {
         result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
         result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
-        if (params.pkgA?.length() >0 && params.pkgB?.length() >0 ){
+        if (params.pkgA?.length() > 0 && params.pkgB?.length() > 0 ){
 
           result.pkgA = params.pkgA
           result.pkgB = params.pkgB
@@ -230,7 +229,7 @@ class PackageDetailsController {
           unionList = unionList.unique()
           result.unionListSize = unionList.size()
           unionList.sort()
-          log.debug("List sizes are ${listA.size()} and ${listB.size()} and the union is ${unionList.size()}")
+          // log.debug("List sizes are ${listA.size()} and ${listB.size()} and the union is ${unionList.size()}")
 
           withFormat{
             html{
@@ -250,13 +249,13 @@ class PackageDetailsController {
                out.withWriter { writer ->
                 writer.write("${result.pkgInsts[0].name} on ${result.dateA}, ${result.pkgInsts[1].name} on ${result.dateB}\n")
                 writer.write('Title, Start Date A, Start Date B, Volume A, Volume B, Issue A, Issue B, End Date A, End Date B, Volume A, Volume B, Issue A, Issue B, Coverage Note A, Coverage Note B\n');
-                log.debug("UnionList size is ${unionList.size}")
+                // log.debug("UnionList size is ${unionList.size}")
                 unionList.each { unionTitle ->
                   log.debug("Grabbing tipps")
                   def tippA = listA.find{it.title.title.equals(unionTitle)}
                   def tippB = listB.find{it.title.title.equals(unionTitle)}
-                  log.debug("Found tipp for A ${tippA} and for B ${tippB}")
-                  log.debug("Running on title ${unionTitle}");
+                  // log.debug("Found tipp for A ${tippA} and for B ${tippB}")
+                  // log.debug("Running on title ${unionTitle}");
                 writer.write("${unionTitle},${e(tippA?.startDate)},${e(tippB?.startDate)},${e(tippA?.startVolume)},${e(tippB?.startVolume)},${e(tippA?.startIssue)},${e(tippB?.startIssue)},${e(tippA?.coverageNote)},${e(tippB?.coverageNote)}\n")
                 }
                 writer.write("END");

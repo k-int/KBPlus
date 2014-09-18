@@ -283,14 +283,24 @@ class Subscription {
       ql = Subscription.findAllByNameIlike("${params.q}%",params)
     }
 
+    def filterDeleted = []
+    if(params.hideDeleted == 'true'){
+      println("Filter Subs")
+      filterDeleted = ql.findAll{ it.status.value != "Deleted" }
+      
+    }else{
+      filterDeleted = ql
+    }
+      println("Filtered subs size ${filterDeleted.size()} , value ${filterDeleted}")
+
     if(params.hideIdent && params.hideIdent == "true"){
-      if ( ql ) {
-          ql.each { t ->
+      if ( filterDeleted ) {
+          filterDeleted.each { t ->
             result.add([id:"${t.class.name}:${t.id}",text:"${t.name}"])
           }
       }  
-    }else if ( ql ) {
-      ql.each { t ->
+    }else if ( filterDeleted ) {
+      filterDeleted.each { t ->
         result.add([id:"${t.class.name}:${t.id}",text:"${t.name} (${t.identifier})"])
       }
     }
