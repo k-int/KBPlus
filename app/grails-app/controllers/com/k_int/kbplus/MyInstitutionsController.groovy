@@ -99,10 +99,10 @@ class MyInstitutionsController {
         }
 
         def prop_types_list = PropertyDefinition.findAll()
-        result.custom_prop_types =prop_types_list.collectEntries{
-            [(it.name): it.type+"&&"+it.refdataCategory]
+        result.custom_prop_types = prop_types_list.collectEntries{
+            [(it.name) : it.type + "&&" + it.refdataCategory]
             //We do this for the interface, so we can display select box when we are working with refdata.
-            //Its possible there is anothger way as
+            //Its possible there is another way
         }
 
         result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
@@ -122,7 +122,6 @@ class MyInstitutionsController {
         }
         if( (params.propertyFilter != null) && params.propertyFilter.trim().length() > 0 ) {
             def propDef = PropertyDefinition.findByName(params.propertyFilterType)
-            log.debug("PROPERTY FILTER TYPE ${propDef} ---- ${params.propertyFilterType}")
             def propQuery = buildPropertySearchQuery(params,propDef)
             qry += propQuery.query
             qry_params += propQuery.queryParam
@@ -148,23 +147,23 @@ class MyInstitutionsController {
         def queryParam = [params.propertyFilterType];
         switch (propDef.type){
             case Integer.toString():
-            query += "cp.intValue = ? "
-            queryParam += Integer.parseInt(params.propertyFilter)
-            break;
+                query += "cp.intValue = ? "
+                queryParam += Integer.parseInt(params.propertyFilter)
+                break;
             case BigDecimal.toString():
-            query += "cp.decValue = ? "
-            queryParam += new BigDecimal(params.propertyFilter)
-            break;
+                query += "cp.decValue = ? "
+                queryParam += new BigDecimal(params.propertyFilter)
+                break;
             case String.toString():
-            query += "cp.stringValue like ? "
-            queryParam += params.propertyFilter
-            break;
+                query += "cp.stringValue like ? "
+                queryParam += params.propertyFilter
+                break;
             case RefdataValue.toString():
-            query += "cp.refValue.value like ? "
-            queryParam += params.propertyFilter
-            break;
+                query += "cp.refValue.value like ? "
+                queryParam += params.propertyFilter
+                break;
             default:
-            log.error("")
+                log.error("Error executing buildPropertySearchQuery. Definition type ${propDef.type} case not found. ")
         }
         query += ")"
         
@@ -2368,13 +2367,17 @@ AND EXISTS (
         change_summary.each { cs ->
             log.debug("Change summary row : ${cs}");
             def item_with_changes = genericOIDService.resolveOID(cs[0])
-            result.todos.add([
-                    item_with_changes: item_with_changes,
-                    oid              : cs[0],
-                    num_changes      : cs[1],
-                    earliest         : cs[2],
-                    latest           : cs[3],
-            ]);
+
+            def notDeleted = item_with_changes.status?.value != "Deleted"
+            if(notDeleted) {
+                result.todos.add([
+                        item_with_changes: item_with_changes,
+                        oid              : cs[0],
+                        num_changes      : cs[1],
+                        earliest         : cs[2],
+                        latest           : cs[3],
+                ]);
+            }
         }
 
         //.findAllByOwner(result.user,sort:'ts',order:'asc')
@@ -2465,13 +2468,16 @@ AND EXISTS (
         change_summary.each { cs ->
             log.debug("Change summary row : ${cs}");
             def item_with_changes = genericOIDService.resolveOID(cs[0])
-            result.todos.add([
-                    item_with_changes: item_with_changes,
-                    oid              : cs[0],
-                    num_changes      : cs[1],
-                    earliest         : cs[2],
-                    latest           : cs[3],
-            ]);
+            def notDeleted = item_with_changes.status?.value != "Deleted"
+            if(notDeleted) {
+                result.todos.add([
+                        item_with_changes: item_with_changes,
+                        oid              : cs[0],
+                        num_changes      : cs[1],
+                        earliest         : cs[2],
+                        latest           : cs[3],
+                ]);
+            }
         }
 
         result

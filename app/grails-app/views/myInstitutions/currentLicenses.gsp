@@ -51,12 +51,12 @@
                 <form class="form-inline">
                     <label>Search by Reference:</label>
                     <input type="text" name="keyword-search" placeholder="enter search term..." value="${params['keyword-search']?:''}" />
-                    <br><label>Search by Property:</label>
-                      <input id="selectVal" type="text" name="propertyFilter" placeholder="property value..." value="${params.propertyFilter?:''}" />
-             <g:select id="availablePropertyTypes" name="availablePropertyTypes" from="${custom_prop_types}"
+                    <p><label>Search by Property: </label>
+                      <input id="selectVal" type="text" name="propertyFilter" placeholder="property value..." value="${params.propertyFilter?:''}" /></p>
+             <p><label>Type: </label><g:select id="availablePropertyTypes" name="availablePropertyTypes" from="${custom_prop_types}"
              optionKey="value" optionValue="key" value="${params.propertyFilterType}"/>
                 <input type="hidden" id="propertyFilterType" name="propertyFilterType" value="${params.propertyFilterType}"/>
-                <input type="submit" class="btn btn-primary" value="Search" />
+                <input type="submit" class="btn btn-primary" value="Search" /></p>
                 </form>
             </div>
             <div class="span6">
@@ -127,9 +127,9 @@
           var selectedValue = selectedOption.val()
           $('#propertyFilterType').val(selectedOption.text())
 
-          if(selectedValue.contains("RefdataValue")){
+          if(selectedValue.indexOf("RefdataValue") != -1){
             var refdataType = selectedValue.split("&&")[1]
-          $.ajax({ url:'<g:createLink controller="ajax" action="sel2RefdataSearch"/>'+'/'+refdataType+'?format=json',
+            $.ajax({ url:'<g:createLink controller="ajax" action="sel2RefdataSearch"/>'+'/'+refdataType+'?format=json',
                         success: function(data) {
                           var select = ' <select id="selectVal" name="propertyFilter" > '
                           var index;
