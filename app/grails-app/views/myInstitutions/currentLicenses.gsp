@@ -47,8 +47,9 @@
                     <input type="text" name="keyword-search" placeholder="enter search term..." value="${params['keyword-search']?:''}" />
                     <p><label>Search by Property: </label>
                       <input id="selectVal" type="text" name="propertyFilter" placeholder="property value..." value="${params.propertyFilter?:''}" /></p>
-             <p><label>Type: </label><g:select id="availablePropertyTypes" name="availablePropertyTypes" from="${custom_prop_types}"
-             optionKey="value" optionValue="key" value="${params.propertyFilterType}"/>
+             <p><label>Type: </label>
+             <g:select id="availablePropertyTypes" name="availablePropertyTypes" from="${custom_prop_types}"
+             optionKey="value" optionValue="key"/>
                 <input type="hidden" id="propertyFilterType" name="propertyFilterType" value="${params.propertyFilterType}"/>
                 <input type="submit" class="btn btn-primary" value="Search" /></p>
                 </form>
@@ -112,18 +113,31 @@
             $('.licence-options').slideDown('fast');
         });
 
-        function updateSelect(){
-          var selectedOption = $( "#availablePropertyTypes option:selected" )
-          var selectedValue = selectedOption.val()
-          $('#propertyFilterType').val(selectedOption.text())
+        function availableTypesSelectUpdated(optionSelected){
 
+          var selectedOption = $( "#availablePropertyTypes option:selected" )
+
+          var selectedValue = selectedOption.val()
+
+          //Set the value of the hidden input, to be passed on controller
+          $('#propertyFilterType').val(selectedOption.text())
+          
+          updateInputType(selectedValue)
+
+   
+        }
+
+        function updateInputType(selectedValue){
+
+          //If we are working with RefdataValue, grab the values and create select box
           if(selectedValue.indexOf("RefdataValue") != -1){
             var refdataType = selectedValue.split("&&")[1]
             $.ajax({ url:'<g:createLink controller="ajax" action="sel2RefdataSearch"/>'+'/'+refdataType+'?format=json',
                         success: function(data) {
                           var select = ' <select id="selectVal" name="propertyFilter" > '
-                          var index;
-                          for(index=0; index < data.length; index++ ){
+                          //we need empty when we dont want to search by property
+                          select += ' <option></option> '
+                          for(var index=0; index < data.length; index++ ){
                             var option = data[index]
                             select += ' <option value="'+option.text+'">'+option.text+'</option> '
                           }
@@ -132,12 +146,31 @@
                         }
             });
           }else{
+            //If we dont have RefdataValues,create a simple text input
             $('#selectVal').replaceWith('<input id="selectVal" type="text" name="propertyFilter" placeholder="property value" />')
           }
+
+        }
+        function setTypeAndSearch(){
+          var selectedType = $("#propertyFilterType").val()
+          //Iterate the options, find the one with the text we want and select it
+          var selectedOption = $("#availablePropertyTypes option").filter(function() {
+                return $(this).text() == selectedType ;
+          }).prop('selected', true); //This will trigger a change event as well.
+
+
+          //Generate the correct select box
+          availableTypesSelectUpdated(selectedOption)
+
+          //Set selected value for the actual search
+          var paramPropertyFilter = "${params.propertyFilter}"
+          $("#selectVal").val(paramPropertyFilter)
+
         }
 
-        $('#availablePropertyTypes').change(function() {
-          updateSelect();
+        $('#availablePropertyTypes').change(function(e) {
+          var optionSelected = $("option:selected", this);
+          availableTypesSelectUpdated(optionSelected);
         });
 
         $('.licence-options .delete-licence').click(function () {
@@ -146,7 +179,7 @@
                 $('.licence-options').slideUp('fast');
             })
         })
-        window.onload = updateSelect()
+        window.onload = setTypeAndSearch()
     </r:script>
 
 
