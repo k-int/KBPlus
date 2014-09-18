@@ -290,6 +290,8 @@ class TitleInstancePackagePlatform {
         def dep_ies = IssueEntitlement.findAllByTipp(this)
         dep_ies.each { dep_ie ->
         def sub = deproxy(dep_ie.subscription)
+        log.debug("The dep_ie = ${dep_ie} with subscription ${dep_ie.subscription} or ${sub}")
+        if(dep_ie.subscription && sub) {
         changeNotificationService.registerPendingChange('subscription',
                                                         dep_ie.subscription,
                                                         "Information about title <a href=\"${grailsApplication.config.SystemBaseURL}/titleDetails/show/${this.title.id}\">\"${this.title.title}\"" +
@@ -302,7 +304,10 @@ class TitleInstancePackagePlatform {
                                                           changeType:'PropertyChange',
                                                           changeDoc:changeDocument
                                                         ])
-
+          
+        }else{
+          log.error("Something went terribly wrong, IssueEntitlement.subscription returned null. This can be DB issue.")
+        }
       }
     }
 

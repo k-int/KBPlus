@@ -51,7 +51,7 @@ class SubscriptionDetailsController {
     
     if(result.subscriptionInstance.slaved == true && pendingChanges){
       log.debug("Slaved subscription, auto-accept pending changes")
-      def changesDesc = [:]
+      def changesDesc = []
       pendingChanges.each{change ->
         if(!pendingChangeService.performAccept(change,request)){
           log.debug("Auto-accepting pending change has failed.")
@@ -235,13 +235,45 @@ class SubscriptionDetailsController {
       unionList = unionList.unique()
       result.unionListSize = unionList.size()
       unionList.sort()
-      
-      def toIndex = result.offset + result.max < unionList.size() ? result.offset + result.max : unionList.size()
-      unionList = unionList.subList(result.offset, toIndex.intValue())
-      result.listA = listA
-      result.listB = listB
-      result.unionList = unionList
-      log.debug("Result subInst is ${result.subInsts}")
+
+      withFormat{
+        html{
+          def toIndex = result.offset+result.max < unionList.size()? result.offset+result.max: unionList.size()
+          unionList = unionList.subList(result.offset, toIndex.intValue())
+          result.listA = listA
+          result.listB = listB
+          result.unionList = unionList
+          result
+        }
+        csv {
+          try{
+          log.debug("Create CSV Response")
+           response.setHeader("Content-disposition", "attachment; filename=subscriptionComparison.csv")
+           response.contentType = "text/csv"
+           def out = response.outputStream
+           out.withWriter { writer ->
+            writer.write("${result.subInsts[0].name} on ${result.dateA}, ${result.subInsts[1].name} on ${result.dateB}\n")
+            writer.write('IE Title, Start Date A, Start Date B, Volume A, Volume B, Issue A, Issue B, End Date A, End Date B, Volume A, Volume B, Issue A, Issue B, Coverage Note A, Coverage Note B\n');
+            log.debug("UnionList size is ${unionList.size}")
+            unionList.each { unionTitle ->
+              log.debug("Grabbing tipps")
+              def ieA = listA.find{it.tipp.title.title.equals(unionTitle)}
+              def ieB = listB.find{it.tipp.title.title.equals(unionTitle)}
+              log.debug("Found tipp for A ${ieA} and for B ${ieB}")
+              log.debug("Running on title ${unionTitle}");
+            writer.write("${unionTitle},${e(ieA?.startDate)},${e(ieB?.startDate)},${e(ieA?.startVolume)},${e(ieB?.startVolume)},${e(ieA?.startIssue)},${e(ieB?.startIssue)},${e(ieA?.coverageNote)},${e(ieB?.coverageNote)}\n")
+            }
+            writer.write("END");
+            writer.flush();
+            writer.close();
+           }
+           out.close()
+            
+          }catch(Exception e){
+            log.error("An Exception was thrown here",e)
+          }
+        }       
+      }
     }else{
       def currentDate = new java.text.SimpleDateFormat('yyyy-MM-dd').format(new Date())
       result.dateA = currentDate
@@ -250,7 +282,9 @@ class SubscriptionDetailsController {
     }
     result
   }
-
+  def e(str){
+    str==null?"":str
+  }
   def createCompareList(sub,dateStr,params, result){
    def returnVals = [:]
    def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd')

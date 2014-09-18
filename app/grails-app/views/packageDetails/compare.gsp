@@ -10,7 +10,23 @@
 <div class="container">
 <div class="row">
 	<h2>Package Comparison</h2>
+	<br/>
+      <ul class="breadcrumb">
+        <li><g:link controller="home" action="index">Home</g:link> <span class="divider">/</span></li>
+        <li><g:link controller="packageDetails" action="index">All Packages</g:link><span class="divider">/</span></li>
+        <li><g:link controller="packageDetails" action="compare">Compare</g:link></li>
 
+        <li class="dropdown pull-right">
+          <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>
+
+          <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
+            <li><g:link action="compare" params="${params+[format:'csv']}">CSV Export</g:link></li>
+            
+          </ul>
+        </li>
+
+      </ul>
+      
 	    <g:if test="${flash.message}">
 		    <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
 	    </g:if>
