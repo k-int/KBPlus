@@ -50,6 +50,9 @@ grails.project.dependency.resolution = {
 
         // Added because I'm strugging to get cglib - CGLib is causing problems - not sure what
         mavenRepo "http://central.maven.org/maven2/"
+
+        mavenRepo "http://nexus.k-int.com/content/repositories/releases"
+
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
