@@ -9,7 +9,7 @@
     <div class="container">
         <ul class="breadcrumb">
             <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
-           <li> <g:link controller="myInstitutions" action="addLicense" params="${[shortcode:params.shortcode]}">${institution.name} Add License</g:link> </li>
+           <li> <g:link controller="myInstitutions" action="addLicense" params="${[shortcode:params.shortcode]}">${institution.name} Copy from Template</g:link> </li>
         </ul>
     </div>
 
@@ -17,12 +17,18 @@
       <h1>${institution?.name} - Licences</h1>
       <ul class="nav nav-pills">
        <li><g:link controller="myInstitutions" 
-                                  action="currentLicenses" 
-                                  params="${[shortcode:params.shortcode]}">Current Licences</g:link></li>
+                   action="currentLicenses" 
+                   params="${[shortcode:params.shortcode]}">Current Licences</g:link></li>
 
-        <li class="active"><g:link controller="myInstitutions" 
-                                action="addLicense" 
-                                params="${[shortcode:params.shortcode]}">Add Licence</g:link></li>
+       <li class="active"><g:link controller="myInstitutions" 
+                                  action="addLicense" 
+                                  params="${[shortcode:params.shortcode]}">Copy from Template</g:link></li>
+
+        <g:if test="${is_admin}">
+          <li><g:link controller="myInstitutions" 
+                                     action="cleanLicense" 
+                                     params="${[shortcode:params.shortcode]}">Add Blank License</g:link></li>
+        </g:if>
       </ul>
 
     </div>
@@ -36,11 +42,6 @@
                 -->
             </div>
             <div class="span6">
-                <div class="pull-right">
-                  <g:if test="${is_admin}">
-                    <g:link controller="myInstitutions" action="cleanLicense" params="${[shortcode:params.shortcode]}" class="btn btn-primary">Create New Licence</g:link>
-                  </g:if>
-                </div>
             </div>
         </div>
     </div>
@@ -53,10 +54,6 @@
           <input type="submit" class="btn btn-primary">
         </g:form>
       </div>
-
-    <g:form action="actionLicenses"
-            controller="myInstitutions" 
-            params="${[shortcode:params.shortcode]}">
 
       <div class="container">
           <div class="well licence-options">
@@ -85,27 +82,34 @@
           <table class="table table-bordered table-striped">
             <thead>
               <tr>
-                <th>Select</th>
-                <g:sortableColumn params="${params}" property="reference" title="Reference Description" />
+                <g:sortableColumn params="${params}" property="reference" title="License Name" />
                 <th>Licensor</th>
-                <g:sortableColumn params="${params}" property="status.value" title="Status" />
-                <g:sortableColumn params="${params}" property="type.value" title="Type" />
                 <g:sortableColumn params="${params}" property="startDate" title="Start Date" />
                 <g:sortableColumn params="${params}" property="endDate" title="End Date" />
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
               <g:each in="${licenses}" var="l">
                 <tr>
-                  <td><input type="radio" name="baselicense" value="${l.id}"/></td>
                   <td><g:link action="index"
                               controller="licenseDetails" 
-                              id="${l.id}">${l.reference?:"License ${l.id} - no reference set"}</g:link></td>
+                              id="${l.id}">${l.reference?:"License ${l.id} - no reference set"}</g:link>
+                    <g:if test="${l.subscriptions && ( l.subscriptions.size() > 0 )}">
+                      <ul>
+                        <g:each in="${l.subscriptions}" var="sub">
+                          <li><g:link controller="subscriptionDetails" action="index" id="${sub.id}">${sub.id} (${sub.name})</g:link><br/></li>
+                        </g:each>
+                      </ul>
+                    </g:if>
+                    <g:else>
+                      <br/>No linked subscriptions.
+                    </g:else>
+                  </td>
                   <td>${l.licensor?.name}</td>
-                  <td>${l.status?.value}</td>
-                  <td>${l.type?.value}</td>
                   <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${l.startDate}"/></td>
                   <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${l.endDate}"/></td>
+                  <td><g:link controller="myInstitutions" action="actionLicenses" params="${[shortcode:params.shortcode,baselicense:l.id,'copy-licence':'Y']}" class="btn btn-success">Copy</g:link></td>
                 </tr>
               </g:each>
             </tbody>
@@ -119,7 +123,6 @@
         </div>
 
       </g:if>
-    </g:form>
 
     <r:script type="text/javascript">
         $('.licence-results input[type="radio"]').click(function () {

@@ -521,7 +521,7 @@ class PackageDetailsController {
       qry_params.add(date_filter);
     }
 
-
+    base_qry += " order by tipp.title.title"
 
     log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
     result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, limits);
@@ -565,6 +565,8 @@ class PackageDetailsController {
       base_qry += " and ( tipp.accessEndDate <= ? ) "
       qry_params.add(date_filter);
     }
+
+    base_qry += " order by tipp.title.title"
 
     log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
     result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, limits);

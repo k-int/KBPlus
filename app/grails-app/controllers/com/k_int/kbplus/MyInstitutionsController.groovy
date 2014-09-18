@@ -198,9 +198,13 @@ class MyInstitutionsController {
         def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
         def template_license_type = RefdataCategory.lookupOrCreate('License Type', 'Template');
         def public_flag = RefdataCategory.lookupOrCreate('YN', 'Yes');
-        def qparams = [template_license_type, result.institution, licensee_role, public_flag]
+        def qparams = [template_license_type]
 
-        def qry = "from License as l where ( ( l.type = ? ) OR ( exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) ) OR ( l.isPublic=? ) ) AND l.status.value != 'Deleted'"
+        // This query used to allow institutions to copy their own licenses - now users only want to copy template licenses
+        // def qparams = [template_license_type, result.institution, licensee_role, public_flag]
+        // (OS License specs)
+        // def qry = "from License as l where ( ( l.type = ? ) OR ( exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) ) OR ( l.isPublic=? ) ) AND l.status.value != 'Deleted'"
+        def qry = "from License as l where l.type = ? AND l.status.value != 'Deleted'"
 
         if (params.filter) {
             qry += " and lower(l.reference) like ?"
@@ -515,8 +519,6 @@ class MyInstitutionsController {
 
         switch (request.method) {
             case 'GET':
-                [licenseInstance: new License(params)]
-                break
             case 'POST':
                 def baseLicense = params.baselicense ? License.get(params.baselicense) : null;
 
