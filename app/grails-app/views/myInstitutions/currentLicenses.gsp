@@ -116,6 +116,7 @@
         </div>
 
     <r:script type="text/javascript">
+
         $('.licence-results input[type="radio"]').click(function () {
             $('.licence-options').slideDown('fast');
         });
@@ -129,13 +130,10 @@
           //Set the value of the hidden input, to be passed on controller
           $('#propertyFilterType').val(selectedOption.text())
           
-          updateInputType(selectedValue)
-
-   
+          updateInputType(selectedValue)  
         }
 
         function updateInputType(selectedValue){
-
           //If we are working with RefdataValue, grab the values and create select box
           if(selectedValue.indexOf("RefdataValue") != -1){
             var refdataType = selectedValue.split("&&")[1]
@@ -150,14 +148,14 @@
                           }
                           select += '</select>'
                           $('#selectVal').replaceWith(select)
-                        }
+                        },async:false
             });
           }else{
             //If we dont have RefdataValues,create a simple text input
             $('#selectVal').replaceWith('<input id="selectVal" type="text" name="propertyFilter" placeholder="property value" />')
           }
-
         }
+
         function setTypeAndSearch(){
           var selectedType = $("#propertyFilterType").val()
           //Iterate the options, find the one with the text we want and select it
@@ -170,9 +168,15 @@
           availableTypesSelectUpdated(selectedOption)
 
           //Set selected value for the actual search
-          var paramPropertyFilter = "${params.propertyFilter}"
-          $("#selectVal").val(paramPropertyFilter)
-
+          var paramPropertyFilter = "${params.propertyFilter}";
+          var propertyFilterElement = $("#selectVal");
+          if(propertyFilterElement.is("input")){
+            propertyFilterElement.val(paramPropertyFilter);
+          }else{
+              $("#selectVal option").filter(function() {
+                return $(this).text() == paramPropertyFilter ;
+              }).prop('selected', true);
+          }
         }
 
         $('#availablePropertyTypes').change(function(e) {

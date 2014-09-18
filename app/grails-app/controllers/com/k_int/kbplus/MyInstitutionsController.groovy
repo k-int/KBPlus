@@ -148,11 +148,24 @@ class MyInstitutionsController {
         switch (propDef.type){
             case Integer.toString():
                 query += "cp.intValue = ? "
-                queryParam += Integer.parseInt(params.propertyFilter)
+                def value;
+                try{
+                 value =Integer.parseInt(params.propertyFilter)
+                }catch(Exception e){
+                    log.error("Exception parsing search value: ${e}")
+                    value = 0
+                }
+                queryParam += value
                 break;
             case BigDecimal.toString():
                 query += "cp.decValue = ? "
-                queryParam += new BigDecimal(params.propertyFilter)
+                try{
+                 value = new BigDecimal(params.propertyFilter)
+                }catch(Exception e){
+                    log.error("Exception parsing search value: ${e}")
+                    value = 0.0
+                }
+                queryParam += value
                 break;
             case String.toString():
                 query += "cp.stringValue like ? "
