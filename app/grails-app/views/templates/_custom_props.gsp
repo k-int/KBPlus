@@ -80,14 +80,14 @@
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">×</button>
 
-            <h3>Create Custom Property</h3>
+            <h3>Create Custom Property Definition</h3>
         </div>
 
         <input type="hidden" name="parent" value="${parent}"/>
 
         <div class="modal-body">
             <dl>
-                <dt><label class="control-label">New Custom Property:</label></dt>
+                <dt><label class="control-label">Property Definition:</label></dt>
                 <dd>
                     <label class="property-label">Name:</label> <input type="text" name="cust_prop_name"/>
                 </dd>
@@ -110,7 +110,7 @@
                     <label class="property-label">Description:</label> <g:textArea name="cust_prop_desc" rows="1"/>
                 </dd>
                 <dd>
-                    <label class="property-label">Create new property:</label><g:checkBox name="autoAdd" checked="true"/>
+                    Create value for this property: <g:checkBox name="autoAdd" checked="true"/>
                 </dd>
             </dl>
         </div>

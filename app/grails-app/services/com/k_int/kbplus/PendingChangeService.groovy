@@ -162,7 +162,7 @@ def performAccept(change,httpRequest) {
               updateProp.save()          
               break;
             default:
-              log.error("ChangeDoc event not recognized.")          
+              log.error("ChangeDoc event '${changeDoc.event}'' not recognized.")          
           }
         }else{
           def propertyType = genericOIDService.resolveOID(changeDoc.OID).type

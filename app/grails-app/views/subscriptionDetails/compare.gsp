@@ -200,8 +200,10 @@
                 return {
     	            hasDate: 'true',
                 	hideIdent: 'true',
+                	startDate: $("#start"+filter).val(),
+                	endDate: $("#end"+filter).val(),
                 	hideDeleted: 'true',
-                    q: term + "{{"+ $("#start"+filter).val()+","+$("#end"+filter).val()+"}}", // search term
+                    q: term , // search term
                     page_limit: 10,
                     baseClass:'com.k_int.kbplus.Subscription'
                 };

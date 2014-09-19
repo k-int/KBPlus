@@ -219,9 +219,11 @@
             dataType: 'json',
             data: function (term, page) {
                 return {
-                	hideIdent: true,
-                	hasDate: true,
-                    q: term + "{{"+ $("#start"+filter).val()+","+$("#end"+filter).val()+"}}", // search term
+                	hideIdent: 'true',
+                	hasDate: 'true',
+                	startDate: $("#start"+filter).val(),
+                	endDate: $("#end"+filter).val(),
+                    q: term , // search term
                     page_limit: 10,
                     baseClass:'com.k_int.kbplus.Package'
                 };
