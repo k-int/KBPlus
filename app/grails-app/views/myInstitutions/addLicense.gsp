@@ -95,10 +95,10 @@
                   <td><g:link action="index"
                               controller="licenseDetails" 
                               id="${l.id}">${l.reference?:"License ${l.id} - no reference set"}</g:link>
-                    <g:if test="${l.subscriptions && ( l.subscriptions.size() > 0 )}">
+                    <g:if test="${l.pkgs && ( l.pkgs.size() > 0 )}">
                       <ul>
-                        <g:each in="${l.subscriptions}" var="sub">
-                          <li><g:link controller="subscriptionDetails" action="index" id="${sub.id}">${sub.id} (${sub.name})</g:link><br/></li>
+                        <g:each in="${l.pkgs}" var="pkg">
+                          <li><g:link controller="packageDetails" action="show" id="${pkg.id}">${pkg.id} (${pkg.name})</g:link><br/></li>
                         </g:each>
                       </ul>
                     </g:if>
