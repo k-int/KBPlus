@@ -103,7 +103,7 @@
                       </ul>
                     </g:if>
                     <g:else>
-                      <br/>No linked subscriptions.
+                      <br/>No linked packages.
                     </g:else>
                   </td>
                   <td>${l.licensor?.name}</td>
