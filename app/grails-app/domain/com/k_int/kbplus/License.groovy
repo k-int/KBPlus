@@ -281,28 +281,32 @@ class License {
     // create a new pending change object
     def derived_licenses = License.executeQuery('select l from License as l where exists ( select link from Link as link where link.toLic=l and link.fromLic=? )',this)
     derived_licenses.each { dl ->
-      log.debug("Send pending change to ${dl.id}");
-      def locale = org.springframework.context.i18n.LocaleContextHolder.getLocale()
-      ContentItem contentItemDesc = ContentItem.findByKeyAndLocale("kbplus.change.license."+changeDocument.prop,locale.toString())
-      def description = "Accept this change to make the same update to your issue entitlement"
-      if(contentItemDesc){
-          description = contentItemDesc.content
-      }else{
-          def defaultMsg = ContentItem.findByKeyAndLocale("kbplus.change.license.default",locale.toString());
-          if( defaultMsg)
-              description = defaultMsg.content
-      }
-      changeNotificationService
-      .registerPendingChange('license',
-                            dl,
-                            "<b>${changeDocument.prop}</b> changed from <b>\"${changeDocument.oldLabel?:changeDocument.old}\"</b> to <b>\"${changeDocument.newLabel?:changeDocument.new}\"</b> on the template license." + description,
-                            dl.getLicensee(),
-                            [
-                              changeTarget:"com.k_int.kbplus.License:${dl.id}",
-                              changeType:'PropertyChange',
-                              changeDoc:changeDocument
-                            ])
+      if(dl.status.value != "Deleted"){
+        log.debug("Send pending change to ${dl.id}");
+        def locale = org.springframework.context.i18n.LocaleContextHolder.getLocale()
+        ContentItem contentItemDesc = ContentItem.findByKeyAndLocale("kbplus.change.license."+changeDocument.prop,locale.toString())
+        def description = "Accept this change to make the same update to your issue entitlement"
+        if(contentItemDesc){
+            description = contentItemDesc.content
+        }else{
+            def defaultMsg = ContentItem.findByKeyAndLocale("kbplus.change.license.default",locale.toString());
+            if( defaultMsg)
+                description = defaultMsg.content
+        }
+        changeNotificationService
+        .registerPendingChange('license',
+                              dl,
+                              "<b>${changeDocument.prop}</b> changed from <b>\"${changeDocument.oldLabel?:changeDocument.old}\"</b> to <b>\"${changeDocument.newLabel?:changeDocument.new}\"</b> on the template license." + description,
+                              dl.getLicensee(),
+                              [
+                                changeTarget:"com.k_int.kbplus.License:${dl.id}",
+                                changeType:'PropertyChange',
+                                changeDoc:changeDocument
+                              ])
 
+      }else{
+        log.debug("Licence ${dl} has status deleted, no pending notification will be generated.")
+      }  
     }
   }
 

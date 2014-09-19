@@ -312,35 +312,33 @@ class Package {
    
 
     if(params.hasDate ){
-      def indxS = params.q.indexOf("{{")
-      def indxC = params.q.indexOf(",",indxS)
-      def indxE = params.q.indexOf("}}",indxC)
-     
-      def name = params.q.substring(0,indxS)
-
+    
       def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd")
 
-      def dateStart = params.q.substring(indxS+2,indxC)
-      def dateEnd = params.q.substring(indxC+1,indxE)
+      def dateStart = params.startDate
+      def dateEnd = params.endDate
 
       dateStart = dateStart.length() > 1 ? sdf.parse(dateStart) : null
       dateEnd = dateEnd.length() > 1 ? sdf.parse(dateEnd)  : null
 
-
       if(dateStart || dateEnd){
         if(dateEnd && dateStart){
-          ql = Package.findAllByNameIlikeAndStartDateGreaterThanEqualsAndEndDateLessThanEquals("${name}%",dateStart,dateEnd,params)
+          ql = Package.findAllByNameIlikeAndStartDateGreaterThanEqualsAndEndDateLessThanEquals("${params.q}%",dateStart,dateEnd,params)
         }else if(dateStart){
-          ql = Package.findAllByNameIlikeAndStartDateGreaterThanEquals("${name}%",dateStart)
+          ql = Package.findAllByNameIlikeAndStartDateGreaterThanEquals("${params.q}%",dateStart)
         }else if(dateEnd){
-          ql = Package.findAllByNameIlikeAndEndDateLessThanEquals("${name}%",dateEnd )
+          ql = Package.findAllByNameIlikeAndEndDateLessThanEquals("${params.q}%",dateEnd )
           }
       }else{
-        ql = Package.findAllByNameIlike("${name}%",params)
+        ql = Package.findAllByNameIlike("${params.q}%",params)
       }   
         
     }else{
       ql = Package.findAllByNameIlike("${params.q}%",params)
+    }
+  
+    if(params.hideDeleted == 'true'){
+      ql = ql.findAll{ it.packageStatus?.value != "Deleted" }     
     }
 
     if(params.hideIdent && params.hideIdent == "true"){

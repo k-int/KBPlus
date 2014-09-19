@@ -262,7 +262,7 @@ class TitleInstancePackagePlatform {
         if ( sub.getSubscriber() == null ) {
           // SO - Ignore!
         }
-        else {
+        else if(sub.status.value != "Deleted") {
           changeNotificationService.registerPendingChange('subscription',
                                                           dep_ie.subscription,
                                                           "The package entry for title \"${this.title.title}\" was deleted. Apply this change to remove the corresponding Issue Entitlement from this Subscription",
@@ -290,7 +290,7 @@ class TitleInstancePackagePlatform {
         def dep_ies = IssueEntitlement.findAllByTipp(this)
         dep_ies.each { dep_ie ->
         def sub = deproxy(dep_ie.subscription)
-        if(dep_ie.subscription && sub) {
+        if(dep_ie.subscription && sub && sub?.status?.value != "Deleted" ) {
         changeNotificationService.registerPendingChange('subscription',
                                                         dep_ie.subscription,
                                                         "Information about title <a href=\"${grailsApplication.config.SystemBaseURL}/titleDetails/show/${this.title.id}\">\"${this.title.title}\"" +

@@ -2380,17 +2380,13 @@ AND EXISTS (
         change_summary.each { cs ->
             log.debug("Change summary row : ${cs}");
             def item_with_changes = genericOIDService.resolveOID(cs[0])
-
-            def notDeleted = item_with_changes.status?.value != "Deleted"
-            if(notDeleted) {
-                result.todos.add([
-                        item_with_changes: item_with_changes,
-                        oid              : cs[0],
-                        num_changes      : cs[1],
-                        earliest         : cs[2],
-                        latest           : cs[3],
-                ]);
-            }
+            result.todos.add([
+                    item_with_changes: item_with_changes,
+                    oid              : cs[0],
+                    num_changes      : cs[1],
+                    earliest         : cs[2],
+                    latest           : cs[3],
+            ]);           
         }
 
         //.findAllByOwner(result.user,sort:'ts',order:'asc')
@@ -2481,16 +2477,13 @@ AND EXISTS (
         change_summary.each { cs ->
             log.debug("Change summary row : ${cs}");
             def item_with_changes = genericOIDService.resolveOID(cs[0])
-            def notDeleted = item_with_changes.status?.value != "Deleted"
-            if(notDeleted) {
-                result.todos.add([
-                        item_with_changes: item_with_changes,
-                        oid              : cs[0],
-                        num_changes      : cs[1],
-                        earliest         : cs[2],
-                        latest           : cs[3],
-                ]);
-            }
+            result.todos.add([
+                    item_with_changes: item_with_changes,
+                    oid              : cs[0],
+                    num_changes      : cs[1],
+                    earliest         : cs[2],
+                    latest           : cs[3],
+            ]);
         }
 
         result
