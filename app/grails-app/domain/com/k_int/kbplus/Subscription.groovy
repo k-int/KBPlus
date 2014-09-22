@@ -252,35 +252,33 @@ class Subscription {
    
 
     if(params.hasDate ){
-      def indxS = params.q.indexOf("{{")
-      def indxC = params.q.indexOf(",",indxS)
-      def indxE = params.q.indexOf("}}",indxC)
      
-      def name = params.q.substring(0,indxS)
-
       def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd")
 
-      def dateStart = params.q.substring(indxS+2,indxC)
-      def dateEnd = params.q.substring(indxC+1,indxE)
+      def dateStart = params.startDate
+      def dateEnd = params.endDate
 
       dateStart = dateStart.length() > 1 ? sdf.parse(dateStart) : null
       dateEnd = dateEnd.length() > 1 ? sdf.parse(dateEnd)  : null
 
-
       if(dateStart || dateEnd){
         if(dateEnd && dateStart){
-          ql = Subscription.findAllByNameIlikeAndStartDateGreaterThanEqualsAndEndDateLessThanEquals("${name}%",dateStart,dateEnd,params)
+          ql = Subscription.findAllByNameIlikeAndStartDateGreaterThanEqualsAndEndDateLessThanEquals("${params.q}%",dateStart,dateEnd,params)
         }else if(dateStart){
-          ql = Subscription.findAllByNameIlikeAndStartDateGreaterThanEquals("${name}%",dateStart)
+          ql = Subscription.findAllByNameIlikeAndStartDateGreaterThanEquals("${params.q}%",dateStart)
         }else if(dateEnd){
-          ql = Subscription.findAllByNameIlikeAndEndDateLessThanEquals("${name}%",dateEnd )
+          ql = Subscription.findAllByNameIlikeAndEndDateLessThanEquals("${params.q}%",dateEnd )
           }
       }else{
-        ql = Subscription.findAllByNameIlike("${name}%",params)
+        ql = Subscription.findAllByNameIlike("${params.q}%",params)
       }   
         
     }else{
       ql = Subscription.findAllByNameIlike("${params.q}%",params)
+    }
+
+    if(params.hideDeleted == 'true'){
+      ql = ql.findAll{ it.status?.value != "Deleted" }     
     }
 
     if(params.hideIdent && params.hideIdent == "true"){

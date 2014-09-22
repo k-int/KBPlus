@@ -117,7 +117,7 @@ class PackageDetailsController {
       def consortiaInstitutions = Combo.findAllByToOrgAndType(consortia,type).collect{it.fromOrg}
 
       def consortiaInstsWithStatus = [:]
-      def hql = "SELECT role.org FROM OrgRole as role WHERE role.org = ? AND role.roleType.value = 'Subscriber'  AND ( EXISTS ( select sp from role.sub.packages as sp where sp.pkg = ? ) )"
+      def hql = "SELECT role.org FROM OrgRole as role WHERE role.org = ? AND (role.roleType.value = 'Subscriber') AND ( EXISTS ( select sp from role.sub.packages as sp where sp.pkg = ? ) AND ( role.sub.status.value != 'Deleted' ) )"
       consortiaInstitutions.each{org ->
         def queryParams = [org,packageInstance]
         def hasPackage = OrgRole.executeQuery(hql,  queryParams)
@@ -140,10 +140,9 @@ class PackageDetailsController {
         if(p.key.startsWith("_create.")){
          def orgID = p.key.substring(8)
          def orgaisation = Org.get(orgID)
-         log.debug("Create slave subscription for ${orgaisation.name}")
          if(orgaisation)
+          log.debug("Create slave subscription for ${orgaisation.name}")
           createNewSubscription(orgaisation,params.id);
-
         }
       }
       redirect controller:'packageDetails', action:'consortia', params: [id:params.id]
@@ -151,41 +150,13 @@ class PackageDetailsController {
 
     def createNewSubscription(org,packageId){
       //Initialize default subscription values
-      def cal = new java.util.GregorianCalendar()
-      def sdf = new SimpleDateFormat('yyyy-MM-dd')
+      log.debug("Create slave with org ${org} and packageID ${packageId}")
 
-      cal.setTimeInMillis(System.currentTimeMillis())
-      cal.set(Calendar.MONTH, Calendar.JANUARY)
-      cal.set(Calendar.DAY_OF_MONTH, 1)
-      def defaultStartYear = (cal.getTime())
-      cal.set(Calendar.MONTH, Calendar.DECEMBER)
-      cal.set(Calendar.DAY_OF_MONTH, 31)
-      def defaultEndYear = (cal.getTime())
       def defaultSubIdentifier = java.util.UUID.randomUUID().toString()
-
-      // initialize the subscription
-      //  def new_sub = new Subscription(type: RefdataValue.findByValue("Subscription Taken"),
-      //               status: RefdataCategory.lookupOrCreate('Subscription Status', 'Current'),
-      //               name: "Generated slave sub",
-      //               startDate: defaultStartYear,
-      //               endDate: defaultEndYear,
-      //               identifier: defaultSubIdentifier,
-      //               isPublic: RefdataCategory.lookupOrCreate('YN', 'No'),
-      //               slaved: true,
-      //               impId: defaultSubIdentifier)
-      // if (new_sub.save(failOnError: true)) 
-      // {
-      //   log.debug("New subscription saved ${new_sub}")
-      //   def new_sub_link = new OrgRole(org: org,
-      //           sub: new_sub,
-      //           roleType: RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber')).save(failOnError: true);
-      // }
-      //Link to package 
-
       def pkg_to_link = Package.get(packageId)
+      log.debug("Sub start Date ${pkg_to_link.startDate} and end date ${pkg_to_link.endDate}")
       pkg_to_link.createSubscription("Subscription Taken", "Generated slave sub", defaultSubIdentifier,
-        defaultStartYear,defaultEndYear,org, "Subscriber", true, true)
-
+      pkg_to_link.startDate, pkg_to_link.endDate, org, "Subscriber", true, true)
     }
 
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
@@ -240,7 +211,7 @@ class PackageDetailsController {
         result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
         result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
-        if (params.pkgA?.length() >0 && params.pkgB?.length() >0 ){
+        if (params.pkgA?.length() > 0 && params.pkgB?.length() > 0 ){
 
           result.pkgA = params.pkgA
           result.pkgB = params.pkgB
@@ -258,23 +229,58 @@ class PackageDetailsController {
           unionList = unionList.unique()
           result.unionListSize = unionList.size()
           unionList.sort()
-          
-          log.debug("List sizes are ${listA.size()} and ${listB.size()} and the union is ${unionList.size()}")
+          // log.debug("List sizes are ${listA.size()} and ${listB.size()} and the union is ${unionList.size()}")
 
-          def toIndex = result.offset+result.max < unionList.size()? result.offset+result.max: unionList.size()
-          unionList = unionList.subList(result.offset, toIndex.intValue())
-          result.listA = listA
-          result.listB = listB
-          result.unionList = unionList
+          withFormat{
+            html{
+              def toIndex = result.offset+result.max < unionList.size()? result.offset+result.max: unionList.size()
+              unionList = unionList.subList(result.offset, toIndex.intValue())
+              result.listA = listA
+              result.listB = listB
+              result.unionList = unionList
+              result
+            }
+            csv {
+              try{
+              log.debug("Create CSV Response")
+               response.setHeader("Content-disposition", "attachment; filename=packageComparison.csv")
+               response.contentType = "text/csv"
+               def out = response.outputStream
+               out.withWriter { writer ->
+                writer.write("${result.pkgInsts[0].name} on ${result.dateA}, ${result.pkgInsts[1].name} on ${result.dateB}\n")
+                writer.write('Title, Start Date A, Start Date B, Volume A, Volume B, Issue A, Issue B, End Date A, End Date B, Volume A, Volume B, Issue A, Issue B, Coverage Note A, Coverage Note B\n');
+                // log.debug("UnionList size is ${unionList.size}")
+                unionList.each { unionTitle ->
+                  log.debug("Grabbing tipps")
+                  def tippA = listA.find{it.title.title.equals(unionTitle)}
+                  def tippB = listB.find{it.title.title.equals(unionTitle)}
+                  // log.debug("Found tipp for A ${tippA} and for B ${tippB}")
+                  // log.debug("Running on title ${unionTitle}");
+                writer.write("${unionTitle},${e(tippA?.startDate)},${e(tippB?.startDate)},${e(tippA?.startVolume)},${e(tippB?.startVolume)},${e(tippA?.startIssue)},${e(tippB?.startIssue)},${e(tippA?.coverageNote)},${e(tippB?.coverageNote)}\n")
+                }
+                writer.write("END");
+                writer.flush();
+                writer.close();
+               }
+               out.close()
+                
+              }catch(Exception e){
+                log.error("An Exception was thrown here",e)
+              }
+            }         
+          }
 
         }else{
           def currentDate = new java.text.SimpleDateFormat('yyyy-MM-dd').format(new Date())
           result.dateA = currentDate
           result.dateB = currentDate
           flash.message = "Please select two packages for comparison"
+          result
         }
       
-        result
+    }
+    def e(str){
+      str != null?str:""
     }
     def createCompareList(pkg,dateStr,params, result){
        def returnVals = [:]
@@ -515,7 +521,7 @@ class PackageDetailsController {
       qry_params.add(date_filter);
     }
 
-
+    base_qry += " order by tipp.title.title"
 
     log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
     result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, limits);
@@ -559,6 +565,8 @@ class PackageDetailsController {
       base_qry += " and ( tipp.accessEndDate <= ? ) "
       qry_params.add(date_filter);
     }
+
+    base_qry += " order by tipp.title.title"
 
     log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
     result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, limits);

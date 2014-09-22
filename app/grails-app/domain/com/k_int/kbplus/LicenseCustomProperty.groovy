@@ -23,7 +23,7 @@ class LicenseCustomProperty extends CustomProperty {
           log.debug("Change found on ${this.class.name}:${this.id}")
           changeNotificationService.notifyChangeEvent([
                            OID:"${this.class.name}:${this.id}",
-                           event:'LicenseCustomProperty.updated',
+                           event:'CustomProperty.updated',
                            prop:cp,
                            name: type.name,
                            type:this."${cp}".getClass().toString(),  

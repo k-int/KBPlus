@@ -8,7 +8,7 @@ import org.apache.poi.hslf.model.*
 import org.apache.poi.hssf.usermodel.*
 import org.apache.poi.hssf.util.HSSFColor
 import org.apache.poi.ss.usermodel.*
-
+import com.k_int.custprops.PropertyDefinition
 // import org.json.simple.JSONArray;
 // import org.json.simple.JSONObject;
 import java.text.SimpleDateFormat
@@ -86,8 +86,6 @@ class MyInstitutionsController {
         def result = [:]
         result.user = User.get(springSecurityService.principal.id)
         result.institution = Org.findByShortcode(params.shortcode)
-
-
         if (!checkUserIsMember(result.user, result.institution)) {
             flash.error = "You do not have permission to view ${result.institution.name}. Please request access on the profile page";
             response.sendError(401)
@@ -98,6 +96,13 @@ class MyInstitutionsController {
             result.is_admin = true
         } else {
             result.is_admin = false;
+        }
+
+        def prop_types_list = PropertyDefinition.findAll()
+        result.custom_prop_types = prop_types_list.collectEntries{
+            [(it.name) : it.type + "&&" + it.refdataCategory]
+            //We do this for the interface, so we can display select box when we are working with refdata.
+            //Its possible there is another way
         }
 
         result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
@@ -115,6 +120,12 @@ class MyInstitutionsController {
             qry += " and lower(l.reference) like ?"
             qry_params += "%${params['keyword-search'].toLowerCase()}%"
         }
+        if( (params.propertyFilter != null) && params.propertyFilter.trim().length() > 0 ) {
+            def propDef = PropertyDefinition.findByName(params.propertyFilterType)
+            def propQuery = buildPropertySearchQuery(params,propDef)
+            qry += propQuery.query
+            qry_params += propQuery.queryParam
+        } 
 
         if ((params.sort != null) && (params.sort.length() > 0)) {
             qry += " order by l.${params.sort} ${params.order}"
@@ -128,6 +139,50 @@ class MyInstitutionsController {
         withFormat {
             html result
         }
+    }
+    def buildPropertySearchQuery(params,propDef) {
+        def result = [:]
+
+        def query = " and exists ( select cp from l.customProperties as cp where cp.type.name = ? and  "
+        def queryParam = [params.propertyFilterType];
+        switch (propDef.type){
+            case Integer.toString():
+                query += "cp.intValue = ? "
+                def value;
+                try{
+                 value =Integer.parseInt(params.propertyFilter)
+                }catch(Exception e){
+                    log.error("Exception parsing search value: ${e}")
+                    value = 0
+                }
+                queryParam += value
+                break;
+            case BigDecimal.toString():
+                query += "cp.decValue = ? "
+                try{
+                 value = new BigDecimal(params.propertyFilter)
+                }catch(Exception e){
+                    log.error("Exception parsing search value: ${e}")
+                    value = 0.0
+                }
+                queryParam += value
+                break;
+            case String.toString():
+                query += "cp.stringValue like ? "
+                queryParam += params.propertyFilter
+                break;
+            case RefdataValue.toString():
+                query += "cp.refValue.value like ? "
+                queryParam += params.propertyFilter
+                break;
+            default:
+                log.error("Error executing buildPropertySearchQuery. Definition type ${propDef.type} case not found. ")
+        }
+        query += ")"
+        
+        result.query = query
+        result.queryParam = queryParam
+        result
     }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -156,9 +211,13 @@ class MyInstitutionsController {
         def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
         def template_license_type = RefdataCategory.lookupOrCreate('License Type', 'Template');
         def public_flag = RefdataCategory.lookupOrCreate('YN', 'Yes');
-        def qparams = [template_license_type, result.institution, licensee_role, public_flag]
+        def qparams = [template_license_type]
 
-        def qry = "from License as l where ( ( l.type = ? ) OR ( exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) ) OR ( l.isPublic=? ) ) AND l.status.value != 'Deleted'"
+        // This query used to allow institutions to copy their own licenses - now users only want to copy template licenses
+        // def qparams = [template_license_type, result.institution, licensee_role, public_flag]
+        // (OS License specs)
+        // def qry = "from License as l where ( ( l.type = ? ) OR ( exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) ) OR ( l.isPublic=? ) ) AND l.status.value != 'Deleted'"
+        def qry = "from License as l where l.type = ? AND l.status.value != 'Deleted'"
 
         if (params.filter) {
             qry += " and lower(l.reference) like ?"
@@ -473,8 +532,6 @@ class MyInstitutionsController {
 
         switch (request.method) {
             case 'GET':
-                [licenseInstance: new License(params)]
-                break
             case 'POST':
                 def baseLicense = params.baselicense ? License.get(params.baselicense) : null;
 
@@ -2329,7 +2386,7 @@ AND EXISTS (
                     num_changes      : cs[1],
                     earliest         : cs[2],
                     latest           : cs[3],
-            ]);
+            ]);           
         }
 
         //.findAllByOwner(result.user,sort:'ts',order:'asc')

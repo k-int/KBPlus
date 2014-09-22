@@ -47,8 +47,12 @@ grails.project.dependency.resolution = {
         mavenRepo "http://projects.k-int.com/nexus-webapp-1.4.0/content/repositories/releases"
         mavenRepo "http://jaspersoft.artifactoryonline.com/jaspersoft/third-party-ce-artifacts/"
         mavenRepo "http://jasperreports.sourceforge.net/maven2/com/lowagie/itext/2.1.7.js2/"
-        // Added because I'm strugging to get cglib
+
+        // Added because I'm strugging to get cglib - CGLib is causing problems - not sure what
         mavenRepo "http://central.maven.org/maven2/"
+
+        mavenRepo "http://nexus.k-int.com/content/repositories/releases"
+
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
@@ -64,8 +68,19 @@ grails.project.dependency.resolution = {
         runtime 'xerces:xercesImpl:2.11.0'
         runtime 'mysql:mysql-connector-java:5.1.30'
         runtime 'com.gmongo:gmongo:1.1'
-        runtime 'org.elasticsearch:elasticsearch:1.0.1'
-        runtime 'org.elasticsearch:elasticsearch-client-groovy:1.0.1'
+
+        // Would very much like to upgrade to these - but seems to cause a weird class version error when I do
+        runtime 'org.elasticsearch:elasticsearch:1.3.2'
+        runtime 'org.elasticsearch:elasticsearch-client-groovy:1.3.2'
+        // Root cause seems to be asm library from lucene clashing with the existing one..
+        // |    \--- org.ow2.asm:asm:4.1
+        // |    \--- org.ow2.asm:asm-commons:4.1
+        // vs these from the existing project
+        // --- cglib:cglib:2.2.2
+        // |    \--- asm:asm:3.3.1
+        // runtime 'org.elasticsearch:elasticsearch:1.0.1'
+        // runtime 'org.elasticsearch:elasticsearch-client-groovy:1.0.1'
+
         runtime 'gov.loc:bagit:4.0'
         runtime 'org.apache.poi:poi:3.8'
         runtime 'net.sf.opencsv:opencsv:2.0'
@@ -90,7 +105,9 @@ grails.project.dependency.resolution = {
           excludes "org.codehaus.groovy", "groovy"
         }
         compile "net.sf.jasperreports:jasperreports:5.6.0"
-        compile 'cglib:cglib:2.2.2'
+        
+        // II Commented out..
+        // compile 'cglib:cglib:2.2.2'
         compile "com.lowagie:itext:2.1.7"
     }
 
