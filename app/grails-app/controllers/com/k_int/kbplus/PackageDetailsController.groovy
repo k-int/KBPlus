@@ -897,7 +897,7 @@ class PackageDetailsController {
           if ( search?.response ) {
             result.hits = search.response.hits
             result.resultsTotal = search.response.hits.totalHits
-
+            result.dateFormater = new SimpleDateFormat("yy-MM-dd'T'HH:mm:ss.SSS'Z'")
             // We pre-process the facet response to work around some translation issues in ES
             if ( search.response.facets != null ) {
               result.facets = [:]

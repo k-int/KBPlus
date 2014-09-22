@@ -83,8 +83,12 @@
                               <span>(${hit.source.titleCount?:'Unknown number of'} titles)</span>
                               </td>
                           <td>${hit.source.consortiaName}</td>
-                          <td>hit.source.startDate</td>
-                          <td>hit.source.endDate</td>
+                          <td><g:formatDate formatName="default.date.format.notime" date='${hit.source.startDate?dateFormater.parse(hit.source.startDate):null}'/>
+                          </td>
+                          <td>
+                          <g:formatDate formatName="default.date.format.notime" date='${hit.source.endDate?
+                            dateFormater.parse(hit.source.endDate):null}'/>
+                          </td>
                           <td>${hit.source.lastModified}</td>
                         </tr>
                       </g:each>
