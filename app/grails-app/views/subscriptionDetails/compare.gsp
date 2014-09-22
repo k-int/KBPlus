@@ -191,7 +191,7 @@
     function applySelect2(filter) {
       $("#subSelect"+filter).select2({
         width: '90%',
-        placeholder: "Type package name...",
+        placeholder: "Type subscription name...",
         minimumInputLength: 1,
         ajax: { 
             url: '<g:createLink controller='ajax' action='lookup'/>',
