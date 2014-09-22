@@ -10,7 +10,7 @@
 	<body>
 		<div class="container">
 			<div class="row">
-				<h2> Subscription Comparison </h2>
+				<h2> Compare Subscriptions </h2>
 
 				<br/>
 			      <ul class="breadcrumb">
