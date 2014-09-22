@@ -71,7 +71,7 @@
               <dt>New Content (Markdown)</dt>
               <dd><textarea name="content" rows="5"></textarea></dd>
             </dl>
-            <input type="submit" class="btn btn-primary"/>
+            <input type="submit" value="Create" class="btn btn-primary"/>
           </g:form>
         </div>
       </div>
