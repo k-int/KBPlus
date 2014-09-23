@@ -30,7 +30,7 @@ class ESSearchService{
     // result.user = User.get(springSecurityService.principal.id)
   
       try {
-        if ( params.q && params.q.length() > 0) {
+        if ( (params.q && params.q.length() > 0) || params.rectype) {
     
           params.max = Math.min(params.max ? params.int('max') : 15, 100)
           params.offset = params.offset ? params.int('offset') : 0
@@ -45,6 +45,10 @@ class ESSearchService{
             source {
               from = params.offset
               size = params.max
+              sort = params.sort?[
+                ("${params.sort}".toString()) : [ 'order' : (params.order?:'asc') ]
+              ] : []
+
               query {
                 query_string (query: query_str)
               }
@@ -120,21 +124,23 @@ class ESSearchService{
   }
 
   def buildQuery(params) {
-    log.debug("BuildQuery...");
+    log.debug("BuildQuery... with params ${params}");
 
     StringWriter sw = new StringWriter()
 
-    if ( ( params != null ) && ( params.q != null ) )
-        if(params.q.equals("*")){
+    if ( ( params != null ) && ( params.q != null ) ){
+        if(params.q.equals("*")){ // What was supposed to happen here?
             sw.write(params.q)
         }
         else{
             sw.write(params.q)
         }
-    else
+    }else{
       sw.write("*:*")
+    }
       
-    
+    if(params?.rectype){sw.write(" AND rectype:'${params.rectype}'")} 
+
     reversemap.each { mapping ->
 
       log.debug("testing reverse mapping ${mapping.key}");

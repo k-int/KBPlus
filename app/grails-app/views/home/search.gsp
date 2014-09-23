@@ -161,6 +161,9 @@
                     </g:each>
                   </table>
                 </div>
+                <div class="paginateButtons" style="text-align:center">
+                  <span><g:paginate controller="home" action="search" params="${params}" next="Next" prev="Prev" total="${hits.totalHits}" /></span>
+              </div>
               </g:if>
 
         </div>
