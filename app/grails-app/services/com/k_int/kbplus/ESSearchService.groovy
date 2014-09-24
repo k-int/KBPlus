@@ -20,6 +20,9 @@ class ESSearchService{
   def grailsApplication
 
   def search(params){
+    search(params,reversemap)
+  }
+  def search(params, field_map){
     // log.debug("Search Index, params.coursetitle=${params.coursetitle}, params.coursedescription=${params.coursedescription}, params.freetext=${params.freetext}")
     log.debug("Search Index, params.q=${params.q}, format=${params.format}")
 
@@ -37,7 +40,7 @@ class ESSearchService{
     
           //def params_set=params.entrySet()
           
-          def query_str = buildQuery(params)
+          def query_str = buildQuery(params,field_map)
           log.debug("query: ${query_str}");
     
           def search = esclient.search{
@@ -123,7 +126,7 @@ class ESSearchService{
     result
   }
 
-  def buildQuery(params) {
+  def buildQuery(params,field_map) {
     log.debug("BuildQuery... with params ${params}");
 
     StringWriter sw = new StringWriter()
@@ -141,7 +144,7 @@ class ESSearchService{
       
     if(params?.rectype){sw.write(" AND rectype:'${params.rectype}'")} 
 
-    reversemap.each { mapping ->
+    field_map.each { mapping ->
 
       log.debug("testing reverse mapping ${mapping.key}");
 

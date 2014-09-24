@@ -771,8 +771,15 @@ class PackageDetailsController {
       params.rectype = "Package"
       if(params.pkgname)
       params.q = params.pkgname;
+      def pkg_qry_reversemap = ['subject':'subject', 
+                          'provider':'provid', 
+                          'startYear':'startYear', 
+                          'endYear':'endYear', 
+                          'endYear':'endYear', 
+                          'pkgname':'tokname' ]
 
-      result =  ESSearchService.search(params)   
+
+      result =  ESSearchService.search(params, pkg_qry_reversemap)   
     }
     result  
   }

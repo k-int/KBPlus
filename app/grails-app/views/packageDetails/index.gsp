@@ -89,11 +89,14 @@
         </p>
 
       <div class="row">
-      <div class="facetFilter span2">
+
+  
+        <div class="facetFilter span2">
           <g:each in="${facets}" var="facet">
+            <g:if test="${facet.key != 'type'}">
             <div class="panel panel-default">
               <div class="panel-heading">
-                <h3 class="panel-title">${facet.key}</h3>
+                <h5><g:message code="facet.so.${facet.key}" default="${facet.key}" /></h5>
               </div>
               <div class="panel-body">
                 <ul>
@@ -105,13 +108,14 @@
                         ${v.display} (${v.count})
                       </g:if>
                       <g:else>
-                        <g:link controller="packageDetails" action="index" params="${addFacet(params,facet.key,v.term)}">${v.display}</g:link> (${v.count})
+                        <g:link controller="${controller}" action="${action}" params="${addFacet(params,facet.key,v.term)}">${v.display}</g:link> (${v.count})
                       </g:else>
                     </li>
                   </g:each>
                 </ul>
               </div>
             </div>
+            </g:if>
           </g:each>
         </div>
 
@@ -163,7 +167,7 @@
                 <div class="paginateButtons" style="text-align:center">
                   <span><g:paginate controller="packageDetails" action="index" params="${params}" next="Next" prev="Prev" total="${hits.totalHits}" /></span>
             </g:if>
-              </div>
+          </div>
           </div>
         </div>
       </div>
