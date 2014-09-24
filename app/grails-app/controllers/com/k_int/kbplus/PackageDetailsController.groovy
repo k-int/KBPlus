@@ -768,9 +768,15 @@ class PackageDetailsController {
     params.max = result.user.defaultPageSize
 
     if (springSecurityService.isLoggedIn()) {
-      params.rectype = "Package"
-      if(params.pkgname)
-      params.q = params.pkgname;
+      params.rectype = "Package" // Tells ESSearchService what to look for
+      if(params.pkgname)  params.q = params.pkgname;
+     
+      if(params.search.equals("yes")){
+        //when searching make sure results start from first page
+        params.offset = 0
+        params.search = ""
+      }
+
       def pkg_qry_reversemap = ['subject':'subject', 
                           'provider':'provid', 
                           'startYear':'startYear', 
