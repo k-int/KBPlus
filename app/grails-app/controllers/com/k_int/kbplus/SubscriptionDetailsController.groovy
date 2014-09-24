@@ -308,7 +308,7 @@ class SubscriptionDetailsController {
   }
   def generateIEQuery(params, qry_params, showDeletedTipps, asAt) {
 
-      def base_qry = "from IssueEntitlement as ie where ie.subscription = ? "
+      def base_qry = "from IssueEntitlement as ie where ie.subscription = ? and ie.tipp.title.status.value != 'Deleted' "
 
      if ( showDeletedTipps == false ) {
          base_qry += "and ie.tipp.status.value != 'Deleted' "

@@ -20,6 +20,9 @@ class ESSearchService{
   def grailsApplication
 
   def search(params){
+    search(params,reversemap)
+  }
+  def search(params, field_map){
     // log.debug("Search Index, params.coursetitle=${params.coursetitle}, params.coursedescription=${params.coursedescription}, params.freetext=${params.freetext}")
     log.debug("Search Index, params.q=${params.q}, format=${params.format}")
 
@@ -30,14 +33,14 @@ class ESSearchService{
     // result.user = User.get(springSecurityService.principal.id)
   
       try {
-        if ( params.q && params.q.length() > 0) {
+        if ( (params.q && params.q.length() > 0) || params.rectype) {
     
           params.max = Math.min(params.max ? params.int('max') : 15, 100)
           params.offset = params.offset ? params.int('offset') : 0
     
           //def params_set=params.entrySet()
           
-          def query_str = buildQuery(params)
+          def query_str = buildQuery(params,field_map)
           log.debug("query: ${query_str}");
     
           def search = esclient.search{
@@ -45,6 +48,10 @@ class ESSearchService{
             source {
               from = params.offset
               size = params.max
+              sort = params.sort?[
+                ("${params.sort}".toString()) : [ 'order' : (params.order?:'asc') ]
+              ] : []
+
               query {
                 query_string (query: query_str)
               }
@@ -119,23 +126,25 @@ class ESSearchService{
     result
   }
 
-  def buildQuery(params) {
-    log.debug("BuildQuery...");
+  def buildQuery(params,field_map) {
+    log.debug("BuildQuery... with params ${params}");
 
     StringWriter sw = new StringWriter()
 
-    if ( ( params != null ) && ( params.q != null ) )
-        if(params.q.equals("*")){
+    if ( ( params != null ) && ( params.q != null ) ){
+        if(params.q.equals("*")){ // What was supposed to happen here?
             sw.write(params.q)
         }
         else{
             sw.write(params.q)
         }
-    else
+    }else{
       sw.write("*:*")
+    }
       
-    
-    reversemap.each { mapping ->
+    if(params?.rectype){sw.write(" AND rectype:'${params.rectype}'")} 
+
+    field_map.each { mapping ->
 
       log.debug("testing reverse mapping ${mapping.key}");
 

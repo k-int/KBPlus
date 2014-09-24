@@ -82,7 +82,7 @@
           <g:each in="${facets}" var="facet">
             <div class="panel panel-default">
               <div class="panel-heading">
-                <h3 class="panel-title">${facet.key}</h3>
+                <h5><g:message code="facet.so.${facet.key}" default="${facet.key}" /></h5>
               </div>
               <div class="panel-body">
                 <ul>
@@ -161,6 +161,9 @@
                     </g:each>
                   </table>
                 </div>
+                <div class="paginateButtons" style="text-align:center">
+                  <span><g:paginate controller="home" action="search" params="${params}" next="Next" prev="Prev" total="${hits.totalHits}" /></span>
+              </div>
               </g:if>
 
         </div>

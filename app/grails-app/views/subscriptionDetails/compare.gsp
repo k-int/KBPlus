@@ -10,7 +10,7 @@
 	<body>
 		<div class="container">
 			<div class="row">
-				<h2> Subscription Comparison </h2>
+				<h2> Compare Subscriptions </h2>
 
 				<br/>
 			      <ul class="breadcrumb">
@@ -191,7 +191,7 @@
     function applySelect2(filter) {
       $("#subSelect"+filter).select2({
         width: '90%',
-        placeholder: "Type package name...",
+        placeholder: "Type subscription name...",
         minimumInputLength: 1,
         ajax: { 
             url: '<g:createLink controller='ajax' action='lookup'/>',

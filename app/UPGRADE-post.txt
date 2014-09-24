@@ -134,3 +134,6 @@ insert into license_custom_property(version,owner_id, note, ref_value_id, type_i
    from license
        left outer join doc_context on ( dc_lic_fk = lic_id and domain = 'walkinAccess' )
          left outer join doc on doc_id = dc_doc_fk;
+
+update identifier_namespace set idns_hide=1 where idns_ns ='originediturl';
+

@@ -3,11 +3,14 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="matchCoverage" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e367de7d-d0b3-49e0-84b2-c989348c5c1f">
 	<property name="com.jaspersoft.studio.data.sql.tables" value="a2JwbHVzLnRpdGxlX2luc3RhbmNlX3BhY2thZ2VfcGxhdGZvcm0gQVMgLDEyMiwxMDM7a2JwbHVz&#xA;LnRpdGxlX2luc3RhbmNlIEFTICwwLDYzNTs="/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MySQL Adapter"/>
+	<parameter name="search_package_id" class="com.k_int.kbplus.Package">
+		<parameterDescription><![CDATA[The Package to search into]]></parameterDescription>
+	</parameter>
 	<parameter name="coverage_note" class="java.lang.String">
 		<parameterDescription><![CDATA[Coverage note to search]]></parameterDescription>
 	</parameter>
 	<parameter name="report_description" class="java.lang.String">
-		<parameterDescription><![CDATA[List all titles with a matching coverage note, as the one provided]]></parameterDescription>
+		<parameterDescription><![CDATA[List all titles within selected Package, with a matching coverage note. The '%' can be used as wildcard.]]></parameterDescription>
 	</parameter>
 	<queryString language="SQL">
 		<![CDATA[SELECT title_instance_package_platform.tipp_id,
@@ -18,6 +21,7 @@ FROM title_instance
 	 INNER JOIN title_instance_package_platform ON 
 	 title_instance_package_platform.tipp_ti_fk = title_instance.ti_id 
 WHERE 
+	 title_instance_package_platform.tipp_pkg_fk = $P!{search_package_id} AND 
 	 title_instance_package_platform.tipp_coverage_note LIKE $P{coverage_note}]]>
 	</queryString>
 	<field name="tipp_id" class="java.lang.Long">

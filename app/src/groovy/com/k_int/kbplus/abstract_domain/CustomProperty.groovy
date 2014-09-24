@@ -54,6 +54,7 @@ abstract class CustomProperty implements Serializable{
         else if(refValue) newProp.refValue = refValue
         newProp.note = note
     }
+
     def parseValue(value, type){
         def result
 
@@ -73,4 +74,9 @@ abstract class CustomProperty implements Serializable{
         return result
     }
 
+
+  @Override
+  public String getValue() {
+    return toString()
+  }
 }

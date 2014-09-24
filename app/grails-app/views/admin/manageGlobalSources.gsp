@@ -98,7 +98,7 @@
               <dt>Credentials (Password)</dt>
               <dd><input type="text" name="credentials" placeholder=""/></dd>
             </dl>
-            <input type="submit" class="btn btn-primary"/>
+            <input type="submit" value="Submit" class="btn btn-primary"/>
           </g:form>
         </div>
       </div>
@@ -173,7 +173,7 @@
               <dt>Credentials (Password)</dt>
               <dd><input type="text" name="credentials" placeholder=""/></dd>
             </dl>
-            <input type="submit" class="btn btn-primary"/>
+            <input type="submit" value="Submit" class="btn btn-primary"/>
           </g:form>
         </div>
       </div>
