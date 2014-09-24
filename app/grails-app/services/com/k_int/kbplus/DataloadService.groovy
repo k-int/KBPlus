@@ -67,33 +67,37 @@ class DataloadService {
 
     updateES(esclient, com.k_int.kbplus.TitleInstance.class) { ti ->
       def result = [:]
-      if ( ti.title != null ) {
-        def new_key_title =  com.k_int.kbplus.TitleInstance.generateKeyTitle(ti.title)
-        if ( ti.keyTitle != new_key_title ) {
-          ti.normTitle = com.k_int.kbplus.TitleInstance.generateNormTitle(ti.title)
-          ti.keyTitle = com.k_int.kbplus.TitleInstance.generateKeyTitle(ti.title)
-          //
-          // This alone should trigger before update to do the necessary...
-          //
-          ti.save()
-        }
-        else {
-        }
-        result._id = ti.impId
-        result.title = ti.title
-        result.sortTitle = ti.sortTitle
-        result.normTitle = ti.normTitle
-        result.keyTitle = ti.keyTitle
-        result.dbId = ti.id
-        result.visible = ['Public']
-        result.rectype = 'Title'
-        result.identifiers = []
-        ti.ids?.each { id ->
-          result.identifiers.add([type:id.identifier.ns.ns, value:id.identifier.value])
-        }
+      if ( ti.status?.value == 'Deleted' ) {
       }
       else {
-        log.warn("Title with no title string - ${ti.id}");
+        if ( ti.title != null ) {
+          def new_key_title =  com.k_int.kbplus.TitleInstance.generateKeyTitle(ti.title)
+          if ( ti.keyTitle != new_key_title ) {
+            ti.normTitle = com.k_int.kbplus.TitleInstance.generateNormTitle(ti.title)
+            ti.keyTitle = com.k_int.kbplus.TitleInstance.generateKeyTitle(ti.title)
+            //
+            // This alone should trigger before update to do the necessary...
+            //
+            ti.save()
+          }
+          else {
+          }
+          result._id = ti.impId
+          result.title = ti.title
+          result.sortTitle = ti.sortTitle
+          result.normTitle = ti.normTitle
+          result.keyTitle = ti.keyTitle
+          result.dbId = ti.id
+          result.visible = ['Public']
+          result.rectype = 'Title'
+          result.identifiers = []
+          ti.ids?.each { id ->
+            result.identifiers.add([type:id.identifier.ns.ns, value:id.identifier.value])
+          }
+        }
+        else {
+          log.warn("Title with no title string - ${ti.id}");
+        }
       }
       result
     }
