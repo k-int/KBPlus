@@ -3,11 +3,12 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="no_issn_e-issn" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="24bbdcf4-b2ae-417d-8c23-04bfc4896c56">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
 	<parameter name="report_description" class="java.lang.String">
-		<parameterDescription><![CDATA[A report listing all titles that have no ISSN or e-ISSN attached]]></parameterDescription>
+		<parameterDescription><![CDATA[A report listing all titles that have identifiers attached]]></parameterDescription>
 	</parameter>
 	<queryString language="SQL">
 		<![CDATA[
- SELECT ti.ti_id, ti.ti_title FROM title_instance ti WHERE ti.ti_id NOT IN (SELECT ti.ti_id FROM title_instance ti LEFT JOIN identifier_occurrence imp ON imp.io_ti_fk = ti.ti_id LEFT JOIN identifier i ON i.id_id = imp.io_canonical_id LEFT JOIN identifier_namespace iname ON iname.idns_id = i.id_ns_fk WHERE iname.idns_ns = 'eISSN') AND ti.ti_id NOT IN (SELECT ti.ti_id FROM title_instance ti LEFT JOIN identifier_occurrence imp ON imp.io_ti_fk = ti.ti_id LEFT JOIN identifier i ON i.id_id = imp.io_canonical_id LEFT JOIN identifier_namespace iname ON iname.idns_id = i.id_ns_fk WHERE iname.idns_ns = 'ISSN');
+ SELECT ti.ti_id, ti.ti_title FROM title_instance ti WHERE ti.ti_id NOT IN (SELECT ti.ti_id FROM title_instance ti LEFT JOIN identifier_occurrence imp ON imp.io_ti_fk = ti.ti_id LEFT JOIN identifier i ON i.id_id = imp.io_canonical_id LEFT JOIN identifier_namespace iname ON iname.idns_id = i.id_ns_fk WHERE iname.idns_ns = 'eISSN') AND ti.ti_id NOT IN (SELECT ti.ti_id FROM title_instance ti LEFT JOIN identifier_occurrence imp ON imp.io_ti_fk = ti.ti_id LEFT JOIN identifier i ON i.id_id = imp.io_canonical_id LEFT JOIN identifier_namespace iname ON iname.idns_id = i.id_ns_fk WHERE iname.idns_ns = 'ISSN') AND
+  ti.ti_id NOT IN (SELECT ti.ti_id FROM title_instance ti LEFT JOIN identifier_occurrence imp ON imp.io_ti_fk = ti.ti_id LEFT JOIN identifier i ON i.id_id = imp.io_canonical_id LEFT JOIN identifier_namespace iname ON iname.idns_id = i.id_ns_fk WHERE iname.idns_ns = 'ISBN');
 ]]>
 	</queryString>
 	<field name="ti_id" class="java.lang.Long">

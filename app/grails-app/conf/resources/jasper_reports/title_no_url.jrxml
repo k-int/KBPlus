@@ -2,25 +2,20 @@
 <!-- Created with Jaspersoft Studio version last-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Simple_Blue" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6de1af87-e712-4c00-b0e0-8c2025684190">
 	<property name="com.jaspersoft.studio.data.sql.tables" value="a2JwbHVzLnRpdGxlX2luc3RhbmNlX3BhY2thZ2VfcGxhdGZvcm0gQVMgLDEwNSwyMjA7a2JwbHVz&#xA;LnRpdGxlX2luc3RhbmNlIEFTICwzNzEsNTg5Ow=="/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="KBPLUS"/>
 	<parameter name="report_description" class="java.lang.String">
 		<parameterDescription><![CDATA[Lists all titles that have no URL]]></parameterDescription>
 	</parameter>
 	<queryString language="SQL">
-		<![CDATA[SELECT title_instance_package_platform.tipp_id,
-	title_instance_package_platform.tipp_start_date,
-	title_instance.ti_title
-FROM title_instance
-	 INNER JOIN title_instance_package_platform ON 
-	 title_instance_package_platform.tipp_ti_fk = title_instance.ti_id]]>
+		<![CDATA[SELECT pkg.pkg_name, ti.ti_id, ti.ti_title FROM title_instance_package_platform tipp LEFT JOIN title_instance ti ON ti.ti_id = tipp.tipp_ti_fk, package pkg WHERE tipp.tipp_host_platform_url IS NULL AND tipp.tipp_pkg_fk = pkg.pkg_id GROUP BY ti.ti_id ORDER BY ti.ti_id]]>
 	</queryString>
-	<field name="tipp_id" class="java.lang.Long">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="tipp_start_date" class="java.sql.Timestamp">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
 	<field name="ti_title" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="pkg_name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ti_id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<background>
@@ -51,42 +46,53 @@ FROM title_instance
 		<band height="13"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="21">
+		<band height="39">
 			<line>
 				<reportElement x="-20" y="20" width="595" height="1" forecolor="#666666" uuid="a6f897e8-ea28-432e-889e-0860d3d71633"/>
 			</line>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="0" width="185" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="d2ecc2da-975a-41e8-88d2-d63cbb75f687"/>
+				<reportElement mode="Opaque" x="0" y="0" width="60" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="d2ecc2da-975a-41e8-88d2-d63cbb75f687"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Title Id]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="180" y="0" width="375" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="958100bf-f674-487c-826f-f3bf452d7e42"/>
+				<reportElement mode="Opaque" x="60" y="0" width="260" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="958100bf-f674-487c-826f-f3bf452d7e42"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Title]]></text>
 			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="320" y="0" width="235" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="f8405106-4d09-4a08-8349-b63cb0c5255e"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Package]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="20">
+		<band height="24">
 			<line>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="19" width="555" height="1" uuid="f7241db7-0ea8-4f47-a793-7c7b871eacf9"/>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="20" width="555" height="1" uuid="f7241db7-0ea8-4f47-a793-7c7b871eacf9"/>
 			</line>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="0" y="0" width="185" height="20" uuid="e0ff5190-bd35-4115-b16c-8ae1193d5d04"/>
+				<reportElement x="0" y="0" width="60" height="20" uuid="e0ff5190-bd35-4115-b16c-8ae1193d5d04"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{tipp_id}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{ti_id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="320" y="0" width="232" height="20" uuid="f3ed5986-f7f4-427c-8bc5-6fd4599a7f35"/>
+				<textFieldExpression><![CDATA[$F{pkg_name}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="185" y="0" width="370" height="20" uuid="e74274f8-c705-4154-8e85-d088e30ca5a1"/>
+				<reportElement x="90" y="0" width="230" height="20" uuid="e74274f8-c705-4154-8e85-d088e30ca5a1"/>
 				<textElement>
-					<font size="12"/>
+					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ti_title}]]></textFieldExpression>
 			</textField>
@@ -96,19 +102,19 @@ FROM title_instance
 		<band/>
 	</columnFooter>
 	<pageFooter>
-		<band height="17">
+		<band height="56">
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="43" width="100" height="13" uuid="24972aa0-bd34-4a8a-a14a-a324fa09ca90"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
 			<textField>
-				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="ab9ce225-2ca8-4d37-b745-a09c2778967c"/>
+				<reportElement mode="Opaque" x="0" y="43" width="515" height="13" backcolor="#E6E6E6" uuid="ab9ce225-2ca8-4d37-b745-a09c2778967c"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="9caae9a1-ea7d-4974-815c-0c349b848362"/>
+				<reportElement mode="Opaque" x="512" y="43" width="40" height="13" backcolor="#E6E6E6" uuid="9caae9a1-ea7d-4974-815c-0c349b848362"/>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
-			<textField pattern="EEEEE dd MMMMM yyyy">
-				<reportElement x="0" y="4" width="100" height="13" uuid="24972aa0-bd34-4a8a-a14a-a324fa09ca90"/>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
