@@ -777,12 +777,11 @@ class PackageDetailsController {
         params.search = ""
       }
 
-      def pkg_qry_reversemap = ['subject':'subject', 
-                          'provider':'provid', 
-                          'startYear':'startYear', 
-                          'endYear':'endYear', 
-                          'endYear':'endYear', 
-                          'pkgname':'tokname' ]
+      def pkg_qry_reversemap = ['consortiaName':'consortiaName',
+                                'cpname':'cpname', 
+                                'startYear':'startYear', 
+                                'endYear':'endYear', 
+                                'startYear':'startYear']
 
 
       result =  ESSearchService.search(params, pkg_qry_reversemap)   
