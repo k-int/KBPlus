@@ -65,13 +65,13 @@ def dataSource
 
  		if(request  instanceof MultipartHttpServletRequest){
 			def files = request.getMultipartFiles().get("report_files")
-			
 			files.each { file->
 				def fileName = file.originalFilename
 
 				if(fileName.endsWith(".jrxml") || fileName.endsWith(".jasper")){
 					fileName = fileName.substring(0,fileName.lastIndexOf("."))
-					if(JasperReportFile.findByName(fileName) == null){
+					def existingReport = JasperReportFile.findByName(fileName)
+					if(existingReport == null){
 						JasperReportFile newReport = new JasperReportFile(name:fileName, reportFile:file.getBytes()).save(flush:true)
 						if(newReport.hasErrors()){
 							flash.error += message(code: 'jasper.upload.saveError', args: [fileName])+"<br/>"
@@ -79,7 +79,13 @@ def dataSource
 							log.debug("Jasper Report Stored "+ fileName)
 						}
 					}else{
-						flash.error += message(code: 'jasper.upload.exists', args: [fileName])+"<br/>"
+						existingReport.reportFile = file.getBytes()
+						existingReport.save(flush:true)
+						if(existingReport.hasErrors()){
+							flash.error += message(code: 'jasper.upload.saveError', args: [fileName])+"<br/>"
+						}else{
+							flash.error += message(code: 'jasper.upload.overwrite', args: [fileName])+"<br/>"
+						}
 					} 
 				}else{
 					flash.error += message(code:'jasper.upload.wrongFormat',args:[fileName])"<br/>"
