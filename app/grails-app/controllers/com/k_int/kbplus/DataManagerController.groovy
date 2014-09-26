@@ -202,7 +202,7 @@ class DataManagerController {
         out.withWriter { w ->
         w.write('Timestamp,Name,Event,Property,Actor,Old,New,Link\n')
           result.formattedHistoryLines.each { c ->
-            def line = "\"${c.lastUpdated}\",${c.name},${c.eventName},${c.propertyName},\"${c.oldValue}\",\"${c.newValue}\",\"${c.link}\"\n".toString()
+            def line = "\"${c.lastUpdated}\",${c.name},${c.eventName},${c.propertyName},${c.actor.display},\"${c.oldValue}\",\"${c.newValue}\",\"${c.link}\"\n".toString()
             w.write(line)
           }
         }
