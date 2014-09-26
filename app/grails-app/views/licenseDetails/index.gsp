@@ -261,11 +261,11 @@
             $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" />/'+id);
             $('#modalComments').modal('show');
           });
-        }
+        });
       </g:else>
      window.onload = function() {
      runCustomPropsJS("<g:createLink controller='ajax' action='lookup'/>");
-    }
+    };
     </r:script>
 
   </body>
