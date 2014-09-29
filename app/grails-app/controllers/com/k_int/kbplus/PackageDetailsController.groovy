@@ -135,20 +135,20 @@ class PackageDetailsController {
          def orgaisation = Org.get(orgID)
          if(orgaisation)
           log.debug("Create slave subscription for ${orgaisation.name}")
-          createNewSubscription(orgaisation,params.id);
+          createNewSubscription(orgaisation,params.id,params.genSubName);
         }
       }
       redirect controller:'packageDetails', action:'consortia', params: [id:params.id]
     }
 
-    def createNewSubscription(org,packageId){
+    def createNewSubscription(org,packageId,genSubName){
       //Initialize default subscription values
       log.debug("Create slave with org ${org} and packageID ${packageId}")
 
       def defaultSubIdentifier = java.util.UUID.randomUUID().toString()
       def pkg_to_link = Package.get(packageId)
       log.debug("Sub start Date ${pkg_to_link.startDate} and end date ${pkg_to_link.endDate}")
-      pkg_to_link.createSubscription("Subscription Taken", "Generated slave sub", defaultSubIdentifier,
+      pkg_to_link.createSubscription("Subscription Taken", genSubName?:"Slave subscription for ${pkg_to_link.name}", defaultSubIdentifier,
       pkg_to_link.startDate, pkg_to_link.endDate, org, "Subscriber", true, true)
     }
 
@@ -777,14 +777,7 @@ class PackageDetailsController {
         params.search = ""
       }
 
-      def pkg_qry_reversemap = ['consortiaName':'consortiaName',
-                                'cpname':'cpname', 
-                                'startYear':'startYear', 
-                                'endYear':'endYear', 
-                                'startYear':'startYear']
-
-
-      result =  ESSearchService.search(params, pkg_qry_reversemap)   
+      result =  ESSearchService.search(params)   
     }
     result  
   }

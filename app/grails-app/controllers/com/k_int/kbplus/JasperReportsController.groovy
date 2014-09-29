@@ -13,8 +13,9 @@ import java.util.Date
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import net.sf.jasperreports.engine.design.JasperDesign
 import net.sf.jasperreports.engine.xml.JRXmlLoader
-import net.sf.jasperreports.engine.JRExporterParameter
 import net.sf.jasperreports.engine.*
+import net.sf.jasperreports.export.Exporter
+
 
 
 
@@ -140,17 +141,17 @@ def dataSource
 
 		def exportFormat = JasperExportFormat.determineFileFormat(params._format)  
 
-		JRExporter exporter = JasperExportFormat.getExporter(exportFormat,jasperPrint,byteArray)
+		Exporter exporter = JasperExportFormat.getExporter(exportFormat,jasperPrint,byteArray)
 
 		exporter.exportReport()
 
 		if(!exportFormat.inline){
 			response.setHeader("Content-disposition", "attachment; filename=" + (params._file.replace(params._format,'')) + "." + exportFormat.extension)
-	        response.contentType = exportFormat.mimeTyp     
+	        response.contentType = exportFormat.mimeType  
 	        response.characterEncoding = "UTF-8"
 	        response.outputStream << byteArray.toByteArray()
 		}else{
-			render(text:byteArray,contentType:exportFormat.mimeTyp, encoding: "UTF-8")
+			render(text:byteArray,contentType:exportFormat.mimeType, encoding: "UTF-8")
 		}
 	}
 
@@ -173,5 +174,4 @@ def dataSource
 		}
 		names
 	}
-
 }

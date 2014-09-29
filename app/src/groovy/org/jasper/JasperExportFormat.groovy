@@ -1,41 +1,18 @@
-/* Copyright 2006-2012 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
-
 package org.jasper
 
 import java.lang.reflect.Field
 
-import net.sf.jasperreports.engine.JRExporter
+import net.sf.jasperreports.export.Exporter
 import net.sf.jasperreports.engine.export.JRCsvExporter
-import net.sf.jasperreports.engine.export.JRCsvExporterParameter
-import net.sf.jasperreports.engine.export.JRHtmlExporter
-import net.sf.jasperreports.engine.export.JRHtmlExporterParameter
+import net.sf.jasperreports.engine.export.HtmlExporter
 import net.sf.jasperreports.engine.export.JRPdfExporter
-import net.sf.jasperreports.engine.export.JRPdfExporterParameter
 import net.sf.jasperreports.engine.export.JRRtfExporter
 import net.sf.jasperreports.engine.export.JRTextExporter
-import net.sf.jasperreports.engine.export.JRTextExporterParameter
 import net.sf.jasperreports.engine.export.JRXlsExporter
-import net.sf.jasperreports.engine.export.JRXlsExporterParameter
 import net.sf.jasperreports.engine.export.JRXmlExporter
-import net.sf.jasperreports.engine.export.JRXmlExporterParameter
 import net.sf.jasperreports.engine.export.oasis.JROdsExporter
 import net.sf.jasperreports.engine.export.oasis.JROdtExporter
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter
-import net.sf.jasperreports.engine.export.ooxml.JRDocxExporterParameter
 import net.sf.jasperreports.engine.export.ooxml.JRPptxExporter
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter
 import net.sf.jasperreports.export.SimpleExporterInput
@@ -47,7 +24,6 @@ import net.sf.jasperreports.export.SimpleTextExporterConfiguration
 
 /*
  * The supported file formats with their mimetype and file extension.
- * @author Sebastian Hohns
  */
 enum JasperExportFormat implements Serializable {
   PDF_FORMAT("application/pdf", "pdf", false),
@@ -62,12 +38,12 @@ enum JasperExportFormat implements Serializable {
   DOCX_FORMAT("application/vnd.openxmlformats-officedocument.wordprocessingml.document", "docx", false),
   XLSX_FORMAT("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx", false),
 
-  String mimeTyp
+  String mimeType
   String extension
   boolean inline
 
-  private JasperExportFormat(String mimeTyp, String extension, boolean inline) {
-    this.mimeTyp = mimeTyp
+  private JasperExportFormat(String mimeType, String extension, boolean inline) {
+    this.mimeType = mimeType
     this.extension = extension
     this.inline = inline
   }
@@ -93,7 +69,7 @@ enum JasperExportFormat implements Serializable {
       default: throw new Exception(message(code: "jasper.controller.invalidFormat", args: [format]))
     }
   }
-  static JRExporter getExporter(JasperExportFormat format, jasperPrint, byteArray){
+  static Exporter getExporter(JasperExportFormat format, jasperPrint, byteArray){
       getExporter(format, jasperPrint, byteArray, null) 
   }
   /**
@@ -101,7 +77,7 @@ enum JasperExportFormat implements Serializable {
    * @param format
    * @return exporter
    */
-  static JRExporter getExporter(JasperExportFormat format, jasperPrint, byteArray, ExporterConfiguration conf) {
+  static Exporter getExporter(JasperExportFormat format, jasperPrint, byteArray, ExporterConfiguration conf) {
     def exporter;
     switch (format) {
       case PDF_FORMAT:  
@@ -110,7 +86,7 @@ enum JasperExportFormat implements Serializable {
         exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(byteArray))
         break
       case HTML_FORMAT: 
-        exporter = new JRHtmlExporter()
+        exporter = new HtmlExporter()
         exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
         exporter.setExporterOutput( new SimpleHtmlExporterOutput(byteArray));
         break
@@ -173,24 +149,5 @@ enum JasperExportFormat implements Serializable {
     }
 
     return exporter
-  }
-
-  /**
-   * Return the available Fields for a given JasperExportFormat.
-   * @param format
-   * @return Field[] , null if no fields are available for the format
-   */
-  static Field[] getExporterFields(JasperExportFormat format) {
-    switch (format) {
-      case PDF_FORMAT:  return JRPdfExporterParameter.getFields()
-      case HTML_FORMAT: return JRHtmlExporterParameter.getFields()
-      case XML_FORMAT:  return JRXmlExporterParameter.getFields()
-      case CSV_FORMAT:  return JRCsvExporterParameter.getFields()
-      case XLS_FORMAT:  return JRXlsExporterParameter.getFields()
-      case XLSX_FORMAT: return JRXlsExporterParameter.getFields()
-      case RTF_FORMAT:  return JRTextExporterParameter.getFields()
-      case DOCX_FORMAT: return JRDocxExporterParameter.getFields()
-      default: return null
-    }
   }
 }
