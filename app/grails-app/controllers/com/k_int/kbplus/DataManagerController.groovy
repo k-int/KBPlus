@@ -83,6 +83,10 @@ class DataManagerController {
     def start_date = formatter.parse(params.startDate)
     def end_date = formatter.parse(params.endDate)
 
+    final long hoursInMillis = 60L * 60L * 1000L;
+    end_date = new Date(end_date.getTime() + (24L * hoursInMillis - 2000L)); 
+
+    log.debug("END DATE IS ${end_date}")
     def query_params = ['l':types_to_include,'s':start_date,'e':end_date, 't':events_to_include]
 
     if ( params.actor != null ) {
@@ -202,7 +206,7 @@ class DataManagerController {
         out.withWriter { w ->
         w.write('Timestamp,Name,Event,Property,Actor,Old,New,Link\n')
           result.formattedHistoryLines.each { c ->
-            def line = "\"${c.lastUpdated}\",${c.name},${c.eventName},${c.propertyName},\"${c.oldValue}\",\"${c.newValue}\",\"${c.link}\"\n".toString()
+            def line = "\"${c.lastUpdated}\",${c.name},${c.eventName},${c.propertyName},${c.actor.display},\"${c.oldValue}\",\"${c.newValue}\",\"${c.link}\"\n".toString()
             w.write(line)
           }
         }

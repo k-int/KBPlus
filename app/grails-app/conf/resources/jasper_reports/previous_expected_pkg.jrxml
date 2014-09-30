@@ -14,8 +14,8 @@
 	<parameter name="query" class="java.lang.String" isForPrompting="false">
 		<parameterDescription><![CDATA[]]></parameterDescription>
 		<defaultValueExpression><![CDATA[$P{select&Expected&Previous}.equals("Expected")
-? "select tipp_id, ti_title from package, title_instance_package_platform, title_instance where tipp_pkg_fk = $P!{search_pkg_id} AND tipp_ti_fk = ti_id AND tipp_access_start_date > '$P{compare_date}'"
-: "select tipp_id, ti_title from package, title_instance_package_platform, title_instance where tipp_pkg_fk = $P!{search_pkg_id} AND tipp_ti_fk = ti_id AND tipp_access_start_date <= '$P{compare_date}'"]]></defaultValueExpression>
+? "select tipp_id, ti_title from title_instance_package_platform, title_instance where tipp_pkg_fk = $P!{search_pkg_id} AND tipp_ti_fk = ti_id AND tipp_access_start_date > '$P{compare_date}'"
+: "select tipp_id, ti_title from title_instance_package_platform, title_instance where tipp_pkg_fk = $P!{search_pkg_id} AND tipp_ti_fk = ti_id AND tipp_access_start_date <= '$P{compare_date}'"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="report_description" class="java.lang.String">
 		<parameterDescription><![CDATA[List all the Previous or Expected titles for the package selected]]></parameterDescription>

@@ -146,7 +146,6 @@ class ESSearchService{
 
     field_map.each { mapping ->
 
-      log.debug("testing reverse mapping ${mapping.key}");
 
       if ( params[mapping.key] != null ) {
         log.debug("Found...");

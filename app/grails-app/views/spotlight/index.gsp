@@ -21,9 +21,9 @@
 
 <script language="JavaScript">
     function showHelp() {
-    	var helpStr = "Search through TitleInstances (t), Organisations(o), Subscriptions(s)\n"+
-    	 "Packages(pa/ p), Platforms(pl), and Actions(a). \nUse \$ and category shortcut to filter results,"+
-    	"e.g \$a to only show results of type Action."
+    	var helpStr = "Search through TitleInstances (\$t), Organisations(\$o), Subscriptions(\$s)\n"+
+    	 "Packages(\$pa/ p), Platforms(\$pl), and Actions(\$a). \nUse \$ and category shortcut to filter results,"+
+    	"\nSearching \$a Pages will take you to actions management screen."
     	alert(helpStr)
     }
 	function reloadSpotlightSearchResults() {

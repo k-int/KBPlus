@@ -135,20 +135,20 @@ class PackageDetailsController {
          def orgaisation = Org.get(orgID)
          if(orgaisation)
           log.debug("Create slave subscription for ${orgaisation.name}")
-          createNewSubscription(orgaisation,params.id);
+          createNewSubscription(orgaisation,params.id,params.genSubName);
         }
       }
       redirect controller:'packageDetails', action:'consortia', params: [id:params.id]
     }
 
-    def createNewSubscription(org,packageId){
+    def createNewSubscription(org,packageId,genSubName){
       //Initialize default subscription values
       log.debug("Create slave with org ${org} and packageID ${packageId}")
 
       def defaultSubIdentifier = java.util.UUID.randomUUID().toString()
       def pkg_to_link = Package.get(packageId)
       log.debug("Sub start Date ${pkg_to_link.startDate} and end date ${pkg_to_link.endDate}")
-      pkg_to_link.createSubscription("Subscription Taken", "Generated slave sub", defaultSubIdentifier,
+      pkg_to_link.createSubscription("Subscription Taken", genSubName?:"Slave subscription for ${pkg_to_link.name}", defaultSubIdentifier,
       pkg_to_link.startDate, pkg_to_link.endDate, org, "Subscriber", true, true)
     }
 
@@ -241,7 +241,7 @@ class PackageDetailsController {
                def out = response.outputStream
                out.withWriter { writer ->
                 writer.write("${result.pkgInsts[0].name} on ${result.dateA}, ${result.pkgInsts[1].name} on ${result.dateB}\n")
-                writer.write('Title, Start Date A, Start Date B, Volume A, Volume B, Issue A, Issue B, End Date A, End Date B, Volume A, Volume B, Issue A, Issue B, Coverage Note A, Coverage Note B\n');
+                writer.write('Title, Start Date A, Start Date B, Start Volume A, Start Volume B, Start Issue A, Start Issue B, End Date A, End Date B, End Volume A,End  Volume B,End  Issue A,End  Issue B, Coverage Note A, Coverage Note B\n');
                 // log.debug("UnionList size is ${unionList.size}")
                 unionList.each { unionTitle ->
                   log.debug("Grabbing tipps")
@@ -249,7 +249,7 @@ class PackageDetailsController {
                   def tippB = listB.find{it.title.title.equals(unionTitle)}
                   // log.debug("Found tipp for A ${tippA} and for B ${tippB}")
                   // log.debug("Running on title ${unionTitle}");
-                writer.write("${unionTitle},${e(tippA?.startDate)},${e(tippB?.startDate)},${e(tippA?.startVolume)},${e(tippB?.startVolume)},${e(tippA?.startIssue)},${e(tippB?.startIssue)},${e(tippA?.coverageNote)},${e(tippB?.coverageNote)}\n")
+                writer.write("${unionTitle},${e(tippA?.startDate)},${e(tippB?.startDate)},${e(tippA?.startVolume)},${e(tippB?.startVolume)},${e(tippA?.startIssue)},${e(tippB?.startIssue)},${e(tippA?.endDate)},${e(tippB?.endDate)},${e(tippA?.endVolume)},${e(tippB?.endVolume)},${e(tippA?.endIssue)},${e(tippB?.endIssue)},${e(tippA?.coverageNote)},${e(tippB?.coverageNote)}\n")
                 }
                 writer.write("END");
                 writer.flush();
@@ -777,15 +777,7 @@ class PackageDetailsController {
         params.search = ""
       }
 
-      def pkg_qry_reversemap = ['subject':'subject', 
-                          'provider':'provid', 
-                          'startYear':'startYear', 
-                          'endYear':'endYear', 
-                          'endYear':'endYear', 
-                          'pkgname':'tokname' ]
-
-
-      result =  ESSearchService.search(params, pkg_qry_reversemap)   
+      result =  ESSearchService.search(params)   
     }
     result  
   }

@@ -1,9 +1,9 @@
-<%@ page import="com.k_int.kbplus.Package" %>
+<%@ page import="com.k_int.kbplus.License" %>
 <!doctype html>
 <html>
 <head>
     <meta name="layout" content="mmbootstrap">
-    <g:set var="entityName" value="${message(code: 'package.label', default: 'Package')}"/>
+    <g:set var="entityName" value="${message(code: 'license.label', default: 'Licence')}"/>
     <title><g:message code="default.edit.label" args="[entityName]"/></title>
 </head>
 
@@ -11,13 +11,11 @@
 
 <div class="container">
     <ul class="breadcrumb">
-        <li><g:link controller="home" action="index">Home</g:link> <span class="divider">/</span></li>
-        <li><g:link controller="packageDetails" action="index">All Packages</g:link><span class="divider">/</span></li>
-        <li><g:link controller="packageDetails" action="show"
-                    id="${packageInstance.id}">${packageInstance.name}</g:link></li>
-
-        
-
+       <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
+        <g:if test="${licence.licensee}">
+          <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:licence.licensee.shortcode]}"> ${licence.licensee.name} Current Licences</g:link> <span class="divider">/</span> </li>
+        </g:if>
+        <li> <g:link controller="licenseDetails" action="index" id="${params.id}">Licence Details</g:link> </li>
     </ul>
 </div>
 <g:if test="${flash.message}">
@@ -29,7 +27,7 @@
 </g:if>
 
 <div class="container">
-    <h1>${packageInstance?.name}</h1>
+    <h1>${licence?.reference}</h1>
     <g:render template="nav"/>
 </div>
 
@@ -37,13 +35,14 @@
 <h3> Institutions for ${consortia.name} consortia </h3>
 <br><p> The following list displays all members of ${consortia.name} consortia. To create slaved subscriptions
     tick the desired checkboxes and click 'Create slave subscriptions'</p><br>
-<g:form action="generateSlaveSubscriptions" controller="packageDetails" method="POST">
-<input type="hidden" name="id" value="${id}">
+<g:form action="generateSlaveLicences" controller="licenseDetails" method="POST">
+<input type="hidden" name="baselicense" value="${licence.id}"/>
+<input type="hidden" name="id" value="${id}"/>
 <table class="table table-bordered"> 
 <thead>
     <tr>
         <th>Organisation</th>
-        <th>Contains Package</th>
+        <th>Contains  Licence Copy </th>
         <th>Create Slaved Subscription</th>
     </tr>
 </thead>
@@ -58,14 +57,11 @@
     </g:each>
 </tbody>
 </table>
-
- <dl>
-<dt>Subscription name: <input type="text" name="genSubName" 
-    value="Slave subscription for ${packageInstance?.name}"/></dt>
-<dd><input type="submit" class="btn btn-primary" value="Create slave subscriptions"/></dd>
+<dl>
+<dt>Licence name: <input type="text" name="lic_name" 
+    value="Slave licence for ${licence?.reference}"/></dt>
+<dd><input type="submit" class="btn btn-primary" value="Create slave licences"/></dd>
 </dl>
-
-
 </g:form>
 </div>
 </body>

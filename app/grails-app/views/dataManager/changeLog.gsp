@@ -92,7 +92,7 @@
         </table>
       </div>
 
-      ${num_hl} ${max}
+
       <div class="pagination" style="text-align:center">
         <g:if test="${historyLines != null}" >
           <bootstrap:paginate  action="changeLog" controller="dataManager" params="${params}" next="Next" prev="Prev" maxsteps="${max}" total="${num_hl}" />

@@ -17,7 +17,7 @@
     <bootstrap:alert class="alert-danger">${error}</bootstrap:alert>
 </g:if>
 
-
+<g:if test="${editable}">
 <g:formRemote url="[controller: 'ajax', action: 'addCustomPropertyValue']" method="post" name="cust_prop_add_value"
               class="form-inline" update="custom_props_div" onComplete="runCustomPropsJS('${createLink(controller:'ajax', action:'lookup')}')">
     <input type="hidden" name="propIdent" id="customPropSelect"/>
@@ -26,6 +26,8 @@
     <input type="hidden" name="ownerClass" value="${ownobj.class}"/>
     <input type="submit" value="Add Property" class="btn btn-primary btn-small"/>
 </g:formRemote>
+</g:if>
+
 <br/>
 <table id="custom_props_table" class="table table-bordered licence-properties">
     <thead>
