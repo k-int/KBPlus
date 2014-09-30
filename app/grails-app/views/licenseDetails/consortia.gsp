@@ -33,8 +33,8 @@
 
 <div class="container">
 <h3> Institutions for ${consortia.name} consortia </h3>
-<br><p> The following list displays all members of ${consortia.name} consortia. To create slaved subscriptions
-    tick the desired checkboxes and click 'Create slave subscriptions'</p><br>
+<br><p> The following list displays all members of ${consortia.name} consortia. To create slaved licences
+    tick the desired checkboxes and click 'Create slave licences'</p><br>
 <g:form action="generateSlaveLicences" controller="licenseDetails" method="POST">
 <input type="hidden" name="baselicense" value="${licence.id}"/>
 <input type="hidden" name="id" value="${id}"/>
