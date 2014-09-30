@@ -241,7 +241,7 @@ class PackageDetailsController {
                def out = response.outputStream
                out.withWriter { writer ->
                 writer.write("${result.pkgInsts[0].name} on ${result.dateA}, ${result.pkgInsts[1].name} on ${result.dateB}\n")
-                writer.write('Title, Start Date A, Start Date B, Volume A, Volume B, Issue A, Issue B, End Date A, End Date B, Volume A, Volume B, Issue A, Issue B, Coverage Note A, Coverage Note B\n');
+                writer.write('Title, Start Date A, Start Date B, Start Volume A, Start Volume B, Start Issue A, Start Issue B, End Date A, End Date B, End Volume A,End  Volume B,End  Issue A,End  Issue B, Coverage Note A, Coverage Note B\n');
                 // log.debug("UnionList size is ${unionList.size}")
                 unionList.each { unionTitle ->
                   log.debug("Grabbing tipps")
@@ -249,7 +249,7 @@ class PackageDetailsController {
                   def tippB = listB.find{it.title.title.equals(unionTitle)}
                   // log.debug("Found tipp for A ${tippA} and for B ${tippB}")
                   // log.debug("Running on title ${unionTitle}");
-                writer.write("${unionTitle},${e(tippA?.startDate)},${e(tippB?.startDate)},${e(tippA?.startVolume)},${e(tippB?.startVolume)},${e(tippA?.startIssue)},${e(tippB?.startIssue)},${e(tippA?.coverageNote)},${e(tippB?.coverageNote)}\n")
+                writer.write("${unionTitle},${e(tippA?.startDate)},${e(tippB?.startDate)},${e(tippA?.startVolume)},${e(tippB?.startVolume)},${e(tippA?.startIssue)},${e(tippB?.startIssue)},${e(tippA?.endDate)},${e(tippB?.endDate)},${e(tippA?.endVolume)},${e(tippB?.endVolume)},${e(tippA?.endIssue)},${e(tippB?.endIssue)},${e(tippA?.coverageNote)},${e(tippB?.coverageNote)}\n")
                 }
                 writer.write("END");
                 writer.flush();
