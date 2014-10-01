@@ -2,7 +2,7 @@ package com.k_int.kbplus
 
 class InstitutionsService {
 
-	def copyLicence(params){
+  def copyLicence(params){
         def baseLicense = params.baselicense ? License.get(params.baselicense) : null;
         def org = Org.findByShortcode(params.shortcode)
 
@@ -68,5 +68,5 @@ class InstitutionsService {
         }
         return licenseInstance
     }
-        	
+          
 }
