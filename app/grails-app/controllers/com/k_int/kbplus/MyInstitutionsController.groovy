@@ -24,6 +24,7 @@ class MyInstitutionsController {
     def zenDeskSyncService
     def exportService
     def transformerService
+    def institutionsService
 
     static String INSTITUTIONAL_LICENSES_QUERY = " from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
 
@@ -194,11 +195,9 @@ class MyInstitutionsController {
         result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
         result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
-        // if ( !checkUserHasRole(result.user, result.institution, 'INST_ADM') ) {
         if (!checkUserIsMember(result.user, result.institution)) {
             flash.error = "You do not have permission to view ${result.institution.name}. Please request access on the profile page";
             response.sendError(401)
-            // render(status: '401', text:"You do not have permission to add licences to ${result.institution.name}");
             return;
         }
 
@@ -529,90 +528,24 @@ class MyInstitutionsController {
             // render(status: '401', text:"You do not have permission to access ${org.name}. Please request access on the profile page");
             return;
         }
+       
+        def baseLicense = params.baselicense ? License.get(params.baselicense) : null;
 
-        switch (request.method) {
-            case 'GET':
-            case 'POST':
-                def baseLicense = params.baselicense ? License.get(params.baselicense) : null;
+        if (!baseLicense?.hasPerm("view", user)) {
+            log.debug("return 401....");
+            flash.error = "You do not have permission to view the selected license. Please request access on the profile page";
+            response.sendError(401)
 
-                if (!baseLicense?.hasPerm("view", user)) {
-                    log.debug("return 401....");
-                    flash.error = "You do not have permission to view the selected license. Please request access on the profile page";
-                    response.sendError(401)
-                    // flash.message = message(code:'noperm',default:'You do not have edit permission for the selected license.')
-                    // redirect(url: request.getHeader('referer'))
-                    return
-                }
-
-                def license_type = RefdataCategory.lookupOrCreate('License Type', 'Actual')
-                def license_status = RefdataCategory.lookupOrCreate('License Status', 'Current')
-                def licenseInstance = new License(reference: "Copy of ${baseLicense?.reference}",
-                        status: license_status,
-                        type: license_type,
-                        noticePeriod: baseLicense?.noticePeriod,
-                        licenseUrl: baseLicense?.licenseUrl,
-                        onixplLicense: baseLicense?.onixplLicense
-                )
-                for(prop in baseLicense?.customProperties){
-                    def copiedProp = new LicenseCustomProperty(type:prop.type,owner:licenseInstance)
-                    prop.copyValueAndNote(copiedProp)
-                    licenseInstance.addToCustomProperties(copiedProp)
-                }
-                // the url will set the shortcode of the organisation that this license should be linked with.
-                if (!licenseInstance.save(flush: true)) {
-                    log.error("Problem saving license ${licenseInstance.errors}");
-                    render view: 'editLicense', model: [licenseInstance: licenseInstance]
-                    return
-                } else {
-                    log.debug("Save ok");
-                    def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee')
-                    log.debug("adding org link to new license");
-                    org.links.add(new OrgRole(lic: licenseInstance, org: org, roleType: licensee_role));
-                    if (baseLicense?.licensor) {
-                        def licensor_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensor')
-                        org.links.add(new OrgRole(lic: licenseInstance, org: baseLicense.licensor, roleType: licensor_role));
-                    }
-
-                    if (org.save(flush: true)) {
-                    } else {
-                        log.error("Problem saving org links to license ${org.errors}");
-                    }
-
-                    // Clone documents
-                    baseLicense?.documents?.each { dctx ->
-                        Doc clonedContents = new Doc(blobContent: dctx.owner.blobContent,
-                                status: dctx.owner.status,
-                                type: dctx.owner.type,
-                                alert: dctx.owner.alert,
-                                content: dctx.owner.content,
-                                uuid: dctx.owner.uuid,
-                                contentType: dctx.owner.contentType,
-                                title: dctx.owner.title,
-                                creator: dctx.owner.creator,
-                                filename: dctx.owner.filename,
-                                mimeType: dctx.owner.mimeType,
-                                user: dctx.owner.user,
-                                migrated: dctx.owner.migrated).save()
-
-                        DocContext ndc = new DocContext(owner: clonedContents,
-                                license: licenseInstance,
-                                domain: dctx.domain,
-                                status: dctx.status,
-                                doctype: dctx.doctype).save()
-                    }
-
-                    // Finally, create a link
-                    def new_link = new Link(fromLic: baseLicense, toLic: licenseInstance).save()
-                }
-
-                if (baseLicense)
-                    flash.message = message(code: 'license.created.message', args: [message(code: 'license.label', default: 'License'), licenseInstance.id])
-
-                redirect controller: 'licenseDetails', action: 'index', params: params, id: licenseInstance.id
-                //redirect action: 'show', id: licenseInstance.id
-                break
+        }else{
+            def copyLicence = institutionsService.copyLicence(params)
+            if (copyLicence.hasErrors() ) {
+                log.error("Problem saving license ${copyLicence.errors}");
+                render view: 'editLicense', model: [licenseInstance: copyLicence]                        
+            }else{
+                flash.message = message(code: 'license.created.message', args: [message(code: 'license.label', default: 'License'), copyLicence.id])
+                redirect controller: 'licenseDetails', action: 'index', params: params, id: copyLicence.id
+            }
         }
-
     }
 
     def deleteLicense(params) {

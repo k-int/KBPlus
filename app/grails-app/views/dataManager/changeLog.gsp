@@ -49,12 +49,14 @@
           </g:each>
         </select>
         <br/>
-        <input type="checkbox" name="packages" value="Y" ${params.packages=='Y'?'checked':''}/> Package Changes &nbsp;
-        <input type="checkbox" name="licenses" value="Y" ${params.licenses=='Y'?'checked':''}/> License Changes &nbsp;
-        <input type="checkbox" name="titles" value="Y" ${params.titles=='Y'?'checked':''}/> Title Changes &nbsp;
-        <input type="checkbox" name="tipps" value="Y" ${params.tipps=='Y'?'checked':''}/> TIPP Changes &nbsp;
+        Whats Changed :
+        <input type="checkbox" name="packages" value="Y" ${params.packages=='Y'?'checked':''}/> Packages &nbsp;
+        <input type="checkbox" name="licenses" value="Y" ${params.licenses=='Y'?'checked':''}/> Licenses &nbsp;
+        <input type="checkbox" name="titles" value="Y" ${params.titles=='Y'?'checked':''}/> Titles &nbsp;
+        <input type="checkbox" name="tipps" value="Y" ${params.tipps=='Y'?'checked':''}/> TIPPs &nbsp; <br/>
+        How has it changed :
         <input type="checkbox" name="creates" value="Y" ${params.creates=='Y'?'checked':''}/> New Items &nbsp;
-        <input type="checkbox" name="updates" value="Y" ${params.updates=='Y'?'checked':''}/> Updates &nbsp;
+        <input type="checkbox" name="updates" value="Y" ${params.updates=='Y'?'checked':''}/> Updates to existing items&nbsp;
         <input type="submit"/>
       </g:form>
     </div>
@@ -92,7 +94,7 @@
         </table>
       </div>
 
-      ${num_hl} ${max}
+
       <div class="pagination" style="text-align:center">
         <g:if test="${historyLines != null}" >
           <bootstrap:paginate  action="changeLog" controller="dataManager" params="${params}" next="Next" prev="Prev" maxsteps="${max}" total="${num_hl}" />

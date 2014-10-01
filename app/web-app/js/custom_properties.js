@@ -31,7 +31,8 @@ function refdatacatsearch (ajaxurl){
             }
         }
     });
-    }
+}
+
 function searchProp(ajaxurl){
 
     $("#customPropSelect").select2({

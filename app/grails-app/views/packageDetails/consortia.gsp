@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: ioannis
-  Date: 15/05/2014
-  Time: 15:00
---%>
-
 <%@ page import="com.k_int.kbplus.Package" %>
 <!doctype html>
 <html>
@@ -65,7 +58,14 @@
     </g:each>
 </tbody>
 </table>
-    <input type="submit" class="btn btn-primary" value="Create slave subscriptions"/>
+
+ <dl>
+<dt>Subscription name: <input type="text" name="genSubName" 
+    value="Slave subscription for ${packageInstance?.name}"/></dt>
+<dd><input type="submit" class="btn btn-primary" value="Create slave subscriptions"/></dd>
+</dl>
+
+
 </g:form>
 </div>
 </body>

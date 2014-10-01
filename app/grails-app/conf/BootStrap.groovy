@@ -49,6 +49,7 @@ class BootStrap {
 
     def or_licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
     def or_subscriber_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber');
+    def or_licence_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensing Consortium');
     def or_sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscription Consortia');
     def cons_combo = RefdataCategory.lookupOrCreate('Combo Type', 'Consortium');
 

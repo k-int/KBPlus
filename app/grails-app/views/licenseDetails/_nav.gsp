@@ -26,5 +26,11 @@
                                                                          action="onixpl"
                                                                          params="${[id: params.id]}">ONIX-PL Licence</g:link></li>
     </g:if>
+    <g:if test="${com.k_int.kbplus.License.get(params.id).orgLinks.find{
+      it.roleType.value == 'Licensing Consortium' &&
+      it.org.hasUserWithRole(user,'INST_ADM')}}">
+      <li <%='consortia'== actionName ? ' class="active"' : '' %>>
+      <g:link controller="licenseDetails"action="consortia" params="${[id: params.id]}">Consortia</g:link></li>
+    </g:if>
 
 </ul>

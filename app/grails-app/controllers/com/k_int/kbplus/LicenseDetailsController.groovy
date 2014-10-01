@@ -19,6 +19,8 @@ class LicenseDetailsController {
   def genericOIDService
   def transformerService
   def exportService
+  def institutionsService
+  def pendingChangeService
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
@@ -47,7 +49,7 @@ class LicenseDetailsController {
     result.onixplLicense = result.license.onixplLicense;
 
     def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
-    result.pendingChanges = PendingChange.executeQuery("select pc from PendingChange as pc where license=? and ( pc.status is null or pc.status = ? ) order by ts desc", [result.license, pending_change_pending_status]);
+    def pendingChanges = PendingChange.executeQuery("select pc.id from PendingChange as pc where license=? and ( pc.status is null or pc.status = ? ) order by ts desc", [result.license, pending_change_pending_status]);
 
       //Filter any deleted subscriptions out of displayed links
       Iterator<Subscription> it = result.license.subscriptions.iterator()
@@ -59,6 +61,20 @@ class LicenseDetailsController {
       }
 
     log.debug("pc result is ${result.pendingChanges}");
+    if(result.license.incomingLinks.find{it.slaved == true} && pendingChanges){
+      log.debug("Slaved lincence, auto-accept pending changes")
+      def changesDesc = []
+      pendingChanges.each{change ->
+        if(!pendingChangeService.performAccept(change,request)){
+          log.debug("Auto-accepting pending change has failed.")
+        }else{
+          changesDesc.add(PendingChange.get(change).desc)
+        }
+      }
+      flash.message = changesDesc
+    }else{
+      result.pendingChanges = pendingChanges.collect{PendingChange.get(it)}
+    }
 
 
     withFormat {
@@ -85,6 +101,60 @@ class LicenseDetailsController {
         }
       }
     }
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def consortia() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.licence = License.get(params.id)
+
+    if ( result.licence.hasPerm("edit",result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
+    }
+
+    log.debug("${result.licence}")
+    def consortia = result.licence.orgLinks.find{
+      it.roleType.value == 'Licensing Consortium' &&
+      it.org.hasUserWithRole(result.user,'INST_ADM')}
+
+    if(consortia){
+      result.consortia = consortia.org
+      result.consortiaInstsWithStatus = []
+
+     def consortiumOrgs = consortia.org.incomingCombos.findAll{ it.type.value == 'Package Consortia' }
+     consortiumOrgs = consortiumOrgs.collect{ it.fromOrg }.sort{ it.name}
+     result.consortiaInstsWithStatus = [ : ]
+     def findOrgLicences = "SELECT lic from License AS lic WHERE exists ( SELECT link from lic.orgLinks AS link WHERE link.org = ? and link.roleType.value = 'Licensee') AND exists ( SELECT incLink from lic.incomingLinks AS incLink WHERE incLink.fromLic = ? ) AND lic.status.value != 'Deleted'"
+     consortiumOrgs.each{ 
+        def queryParams = [ it, result.licence]
+        def hasLicence = License.executeQuery(findOrgLicences, queryParams)
+        if (hasLicence){
+          result.consortiaInstsWithStatus.put(it, RefdataCategory.lookupOrCreate("YNO","Yes") )    
+        }else{
+          result.consortiaInstsWithStatus.put(it, RefdataCategory.lookupOrCreate("YNO","No") )    
+        }
+      }
+    }
+
+    result
+  }
+  
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def generateSlaveLicences(){
+    params.each { p ->
+        if(p.key.startsWith("_create.")){
+         def orgID = p.key.substring(8)
+         def orgaisation = Org.get(orgID)
+          def attrMap = [shortcode:orgaisation.shortcode,baselicense:params.baselicense,lic_name:params.lic_name,isSlaved:true]
+          log.debug("Create slave licence for ${orgaisation.name}")
+          institutionsService.copyLicence(attrMap);          
+        }
+    }
+    redirect controller:'licenseDetails', action:'consortia', params: [id:params.baselicense]
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
