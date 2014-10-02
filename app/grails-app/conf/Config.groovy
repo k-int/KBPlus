@@ -243,6 +243,10 @@ grails.plugins.springsecurity.providerNames = ['preAuthenticatedAuthenticationPr
                                                'anonymousAuthenticationProvider', 
                                                'rememberMeAuthenticationProvider' ]
 
+grails.plugins.springsecurity.controllerAnnotations.staticRules = [ 
+        '/monitoring/**': ['ROLE_ADMIN'] 
+] 
+
 auditLog {
   actorClosure = { request, session ->
 
@@ -335,4 +339,6 @@ grails {
 }
 remove this line */
 
+quartzHeartbeat = 'Never'
 // grails.databinding.dateFormats = ['MMddyyyy', 'yyyy-MM-dd HH:mm:ss.S', "yyyy-MM-dd'T'hh:mm:ss'Z'"]
+
