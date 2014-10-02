@@ -119,7 +119,6 @@ class TitleInstancePackagePlatform {
     coreStatusEnd(nullable:true, blank:true);
     accessStartDate(nullable:true, blank:true);
     accessEndDate(nullable:true, blank:true);
-    controlledPropertiesHashCode(nullable:true, blank:true);
   }
 
   
@@ -132,20 +131,7 @@ class TitleInstancePackagePlatform {
     }
     result
   }
-  /**
-  * Calculate the controlledProperties hashCode using the properties toString method
-  **/
-  def calcControlledPropertiesHashCode(){
-    StringBuilder sb = new StringBuilder()
 
-    controlledProperties.each{
-      sb.append(this."$it")
-    }
-    controlledPropertiesHashCode = sb.toString().hashCode()
-    log.debug("Calculated hashCode from string ${sb.toString()} to ${controlledPropertiesHashCode}")
-    this.save(failOnError:true)
-
-  }
   @Transient
   def onChange = { oldMap,newMap ->
 
@@ -186,9 +172,6 @@ class TitleInstancePackagePlatform {
       }
     }
     log.debug("onChange completed")
-
-    calcControlledPropertiesHashCode()
-
   }
 
   private def stringify(obj) {
@@ -394,24 +377,30 @@ class TitleInstancePackagePlatform {
   }
   /**
    * Compare the controlledPropertiesHashCode of two tipps.
-   * return 0 if they are same.
   **/
   public int compareTo(TitleInstancePackagePlatform tippB){
-      if(!tippB) return 1
-
-      if (! controlledPropertiesHashCode ){
-        calcControlledPropertiesHashCode()
-      }
-      if( ! tippB.controlledPropertiesHashCode){
-        tippB.calcControlledPropertiesHashCode()
-      }
-
-      if(controlledPropertiesHashCode == tippB.controlledPropertiesHashCode){
+      if(!tippB) return -1;
+  
+      def tippAHash = calcControlledPropertiesHashCode()
+      def tippBHash = tippB.calcControlledPropertiesHashCode()
+      
+      if(tippAHash == tippB.tippBHash){
         0
       }else{
         1
       }
+  }
+  /**
+  * Calculate the controlledProperties hashCode using the properties toString method
+  **/
+  @Transient
+  def calcControlledPropertiesHashCode(){
+    StringBuilder sb = new StringBuilder()
 
+    controlledProperties.each{
+      sb.append(this."$it")
+    }
+    return sb.toString().hashCode()
   }
 
 
