@@ -239,10 +239,8 @@ class SubscriptionDetailsController {
       withFormat{
         html{
           def toIndex = result.offset+result.max < unionList.size()? result.offset+result.max: unionList.size()
-          unionList = unionList.subList(result.offset, toIndex.intValue())
-          result.listA = listA
-          result.listB = listB
-          result.unionList = unionList
+          result.comparisonMap = generateComparisonMap(unionList,listA,listB,result.offset, toIndex.intValue())
+          log.debug("Comparison Map"+result.comparisonMap)
           result
         }
         csv {
@@ -256,12 +254,9 @@ class SubscriptionDetailsController {
             writer.write('IE Title, Start Date A, Start Date B, Volume A, Volume B, Issue A, Issue B, End Date A, End Date B, Volume A, Volume B, Issue A, Issue B, Coverage Note A, Coverage Note B\n');
             log.debug("UnionList size is ${unionList.size}")
             unionList.each { unionTitle ->
-              log.debug("Grabbing tipps")
-              def ieA = listA.find{it.tipp.title.title.equals(unionTitle)}
-              def ieB = listB.find{it.tipp.title.title.equals(unionTitle)}
-              log.debug("Found tipp for A ${ieA} and for B ${ieB}")
-              log.debug("Running on title ${unionTitle}");
-            writer.write("${unionTitle},${e(ieA?.startDate)},${e(ieB?.startDate)},${e(ieA?.startVolume)},${e(ieB?.startVolume)},${e(ieA?.startIssue)},${e(ieB?.startIssue)},${e(ieA?.coverageNote)},${e(ieB?.coverageNote)}\n")
+            def ieA = listA.find{it.tipp.title.title.equals(unionTitle)}
+            def ieB = listB.find{it.tipp.title.title.equals(unionTitle)}
+            writer.write("\"${unionTitle}\",${ieA?.startDate?:''},${ieB?.startDate?:''},${ieA?.startVolume?:''},${ieB?.startVolume?:''},${ieA?.startIssue?:''},${ieB?.startIssue?:''},\"${ieA?.coverageNote?:''}\",\"${ieB?.coverageNote?:''}\"\n")
             }
             writer.write("END");
             writer.flush();
@@ -282,9 +277,7 @@ class SubscriptionDetailsController {
     }
     result
   }
-  def e(str){
-    str==null?"":str
-  }
+  
   def createCompareList(sub,dateStr,params, result){
    def returnVals = [:]
    def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd')
@@ -299,13 +292,43 @@ class SubscriptionDetailsController {
 
    def queryParams = [subInst]
    def query = generateIEQuery(params,queryParams, true, date)
-   def list = IssueEntitlement.executeQuery("select ie "+query,  queryParams);
 
-   log.debug("List for ${subInst} is ${list}")
+   def list = IssueEntitlement.executeQuery("select ie "+query,  queryParams);
    
    list
 
   }
+  //add array Rules [insert, delete, update, noChange], add it as && on if
+   def generateComparisonMap(unionList, listA, listB, offset, toIndex){
+      def result = new TreeMap()
+      for (unionTitle in unionList){
+       
+        def ieA = listA.find{it.tipp.title.title == unionTitle}
+        def ieB = listB.find{it.tipp.title.title == unionTitle}
+        listA.remove(ieA)
+        listB.remove(ieB)
+        
+        def compA = ieA?.hasChanged(ieB)
+        def value;
+
+        if(compA == -1 ) value = [ieA,null, "danger"];
+        else if(compA == 1) value = [ieA,ieB, "warning"];
+        else if(compA == null) value = [null, ieB, "success"];
+        else if (compA == 0) value = [ieA,ieB, ""];
+
+        result.put(unionTitle, value)
+
+        if (result.size() == toIndex ) {
+            def keys = result.keySet().toArray();
+            def fromKey = keys[offset];
+            def toKey = keys[toIndex-1];
+            result = result.subMap(fromKey,true,toKey,true)
+            break;
+        }
+      }
+      result
+    }
+
   def generateIEQuery(params, qry_params, showDeletedTipps, asAt) {
 
       def base_qry = "from IssueEntitlement as ie where ie.subscription = ? and ie.tipp.title.status.value != 'Deleted' "

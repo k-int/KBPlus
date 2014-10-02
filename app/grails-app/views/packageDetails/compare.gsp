@@ -116,7 +116,7 @@
 
 
 <div class="span6 offset3">
-<dt class="center">Showing Titles (${offset+1} to ${offset+ unionList.size()}  of ${unionListSize})</dt>
+<dt class="center">Showing Titles (${offset+1} to ${offset+ comparisonMap.size()}  of ${unionListSize})</dt>
 </div>
 <table class="table table-bordered">
 	<thead>
@@ -127,64 +127,34 @@
 		</tr>
 	</thead>
 	<tbody>
-		<g:each in="${unionList}" var="unionTitle">
-			<g:set var="pkgATipp" value="${listA.find {it.title.title.equals(unionTitle)}}"/>
-			<g:set var="pkgBTipp" value="${listB.find {it.title.title.equals(unionTitle)}}"/>
-			<g:set var="currentTitle" value="${pkgATipp?.title ?:pkgBTipp?.title}"/>
-			<tr>
-				
-				<td>
-				<b><g:link action="show" controller="titleDetails" id="${currentTitle.id}">${unionTitle}</g:link></b> 
-				<i onclick="showMore('${currentTitle.id}')"class="icon-info-sign"></i>
+		<g:each in="${comparisonMap}" var="entry">
+		<g:set var="pkgATipp" value="${entry.value[0]}"/>
+		<g:set var="pkgBTipp" value="${entry.value[1]}"/>
+		<g:set var="currentTitle" value="${pkgATipp?.title ?:pkgBTipp?.title}"/>
+		<g:set var="highlight" value="${entry.value[2]}"/>
 
-				<g:each in="${currentTitle.ids}" var="id">
-                    <br>${id.identifier.ns.ns}:${id.identifier.value}
-                </g:each>
-				</td>
+		<tr>
 			
-				<g:if test="${pkgATipp}">
-					<g:if test="${pkgBTipp}">
-						<g:if test="${pkgATipp?.compareTo(pkgBTipp) == 1}">
-					 		<td class="warning">
-				 		</g:if>
-				 		<g:else>
-				 			<td>
-				 		</g:else>
-						<g:render template="compare_cell" model="[obj:pkgATipp]"/>
-						</td>
-					</g:if>
-					<g:else>
-						<td class="danger">
-							<g:render template="compare_cell" model="[obj:pkgATipp]"/>
-	
-						</td>
-					</g:else>
-				</g:if>
-				<g:else><td></td></g:else>
-				
-			
-				<g:if test="${pkgBTipp}">
-					<g:if test="${pkgATipp}">
-						<g:if test="${pkgBTipp?.compareTo(pkgATipp) == 1}">
-					 		<td class="warning">
-				 		</g:if>
-				 		<g:else>
-				 			<td>
-				 		</g:else>
-						<g:render template="compare_cell" model="[obj:pkgBTipp]"/>
+			<td>
+			<b><g:link action="show" controller="titleDetails" id="${currentTitle.id}">${entry.key}</g:link></b> 
+			<i onclick="showMore('${currentTitle.id}')"class="icon-info-sign"></i>
 
-						</td>
-					</g:if>
-					<g:else>
-						<td class="success">
-						<g:render template="compare_cell" model="[obj:pkgBTipp]"/>
-						</td>
-					</g:else>
-				</g:if>
-				
-				<g:else><td></td></g:else>
-				
-			</tr>
+			<g:each in="${currentTitle.ids}" var="id">
+                <br>${id.identifier.ns.ns}:${id.identifier.value}
+            </g:each>
+			</td>
+			
+			<g:if test="${pkgATipp}">		
+				<td class="${highlight }"><g:render template="compare_cell" model="[obj:pkgATipp]"/></td>
+			</g:if>
+			<g:else><td></td></g:else>
+			
+			<g:if test="${pkgBTipp}">			
+				<td class="${highlight }"><g:render template="compare_cell" model="[obj:pkgBTipp]"/></td>
+			</g:if>
+			<g:else><td></td></g:else>
+
+		</tr>
 			
 		</g:each>
 	</tbody>
@@ -198,9 +168,9 @@
 </div>
 %{-- Hiding the tables from compare_details inside the main table, breaks the modal hide.
  --}%
- <g:each in="${unionList}" var="unionTitle">
-		<g:set var="pkgATipp" value="${listA.find {it.title.title.equals(unionTitle)}}"/>
-		<g:set var="pkgBTipp" value="${listB.find {it.title.title.equals(unionTitle)}}"/>
+<g:each in="${comparisonMap}" var="entry">
+		<g:set var="pkgATipp" value="${entry.value[0]}"/>
+		<g:set var="pkgBTipp" value="${entry.value[1]}"/>
 		<g:set var="currentTitle" value="${pkgATipp?.title ?:pkgBTipp?.title}"/>
 
 		<g:render template="compare_details"

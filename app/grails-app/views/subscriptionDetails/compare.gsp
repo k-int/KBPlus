@@ -107,14 +107,15 @@
 						</tr>
 					</thead>
 					<tbody>
-						<g:each in="${unionList}" var="unionTitle">
-							<g:set var="subAIE" value="${listA.find {it.tipp.title.title.equals(unionTitle)}}"/>
-							<g:set var="subBIE" value="${listB.find {it.tipp.title.title.equals(unionTitle)}}"/>
+						<g:each in="${comparisonMap}" var="entry">
+							<g:set var="subAIE" value="${entry.value[0]}"/>
+							<g:set var="subBIE" value="${entry.value[1]}"/>
 							<g:set var="currentTitle" value="${subAIE?.tipp?.title ?:subBIE?.tipp?.title}"/>
+							<g:set var="highlight" value="${entry.value[2]}"/>
 							<tr>
 								
 								<td>
-								<b><g:link action="show" controller="titleDetails" id="${currentTitle.id}">${unionTitle}</g:link></b> 
+								<b><g:link action="show" controller="titleDetails" id="${currentTitle.id}">${entry.key}</g:link></b> 
 								<i onclick="showMore('${currentTitle.id}')"class="icon-info-sign"></i>
 
 								<g:each in="${currentTitle.ids}" var="id">
@@ -122,50 +123,16 @@
 				                </g:each>
 								</td>
 							
-								<g:if test="${subAIE}">
-									<g:if test="${subBIE}">
-										<g:if test="${subAIE?.hasChanged(subBIE)}">
-									 		<td class="warning">
-								 		</g:if>
-								 		<g:else>
-								 			<td>
-								 		</g:else>
-										<g:render template="compare_cell" model="[obj:subAIE]"/>
-										</td>
-									</g:if>
-									<g:else>
-										<td class="danger">
-											<g:render template="compare_cell" model="[obj:subAIE]"/>
-					
-										</td>
-									</g:else>
+								<g:if test="${subAIE}">		
+									<td class="${highlight }"><g:render template="compare_cell" model="[obj:subAIE]"/></td>
 								</g:if>
 								<g:else><td></td></g:else>
 								
-							
-								<g:if test="${subBIE}">
-									<g:if test="${subAIE}">
-										<g:if test="${subBIE?.hasChanged(subAIE)}">
-									 		<td class="warning">
-								 		</g:if>
-								 		<g:else>
-								 			<td>
-								 		</g:else>
-										<g:render template="compare_cell" model="[obj:subBIE]"/>
-
-										</td>
-									</g:if>
-									<g:else>
-										<td class="success">
-										<g:render template="compare_cell" model="[obj:subBIE]"/>
-										</td>
-									</g:else>
+								<g:if test="${subBIE}">			
+									<td class="${highlight }"><g:render template="compare_cell" model="[obj:subBIE]"/></td>
 								</g:if>
-								
 								<g:else><td></td></g:else>
-								
-							</tr>
-							
+							</tr>							
 						</g:each>						
 					</tbody>
 				</table>
@@ -178,15 +145,17 @@
 		</div>
 		%{-- Hiding the tables from compare_details inside the main table, breaks the modal hide.
  --}%
- <g:each in="${unionList}" var="unionTitle">
-		<g:set var="subAIE" value="${listA.find {it.tipp.title.title.equals(unionTitle)}}"/>
-		<g:set var="subBIE" value="${listB.find {it.tipp.title.title.equals(unionTitle)}}"/>
+
+ <g:each in="${comparisonMap}" var="entry">
+		<g:set var="subAIE" value="${entry.value[0]}"/>
+		<g:set var="subBIE" value="${entry.value[1]}"/>
 		<g:set var="currentTitle" value="${subAIE?.tipp?.title ?:subBIE?.tipp?.title}"/>
 
 		<g:render template="compare_details"
 		 model="[subA:subAIE,subB:subBIE,currentTitle:currentTitle, subAName:"${subInsts.get(0).name}",
 		 subBName:"${subInsts.get(1).name}" ]"/>
 </g:each>
+
 <r:script language="JavaScript">
     function applySelect2(filter) {
       $("#subSelect"+filter).select2({

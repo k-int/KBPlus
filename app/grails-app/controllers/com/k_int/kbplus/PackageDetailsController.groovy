@@ -217,24 +217,23 @@ class PackageDetailsController {
           def listA = createCompareList(params.pkgA, params.dateA, params, result)
           def listB = createCompareList(params.pkgB, params.dateB, params, result)
 
-          //FIXME: It should be possible to optimize the following lines
+          // //FIXME: It should be possible to optimize the following lines
           def unionList = listA.collect{it.title.title}.plus(listB.collect {it.title.title})
           unionList = unionList.unique()
-          result.unionListSize = unionList.size()
           unionList.sort()
-          // log.debug("List sizes are ${listA.size()} and ${listB.size()} and the union is ${unionList.size()}")
+          result.unionListSize = unionList.size()
+
 
           withFormat{
             html{
               def toIndex = result.offset+result.max < unionList.size()? result.offset+result.max: unionList.size()
-              unionList = unionList.subList(result.offset, toIndex.intValue())
-              result.listA = listA
-              result.listB = listB
-              result.unionList = unionList
+              result.comparisonMap = generateComparisonMap(unionList,listA,listB,result.offset, toIndex.intValue())
               result
             }
             csv {
               try{
+   
+              def comparisonMap = generateComparisonMap(unionList,listA,listB,0, unionList.size())
               log.debug("Create CSV Response")
                response.setHeader("Content-disposition", "attachment; filename=packageComparison.csv")
                response.contentType = "text/csv"
@@ -242,14 +241,12 @@ class PackageDetailsController {
                out.withWriter { writer ->
                 writer.write("${result.pkgInsts[0].name} on ${result.dateA}, ${result.pkgInsts[1].name} on ${result.dateB}\n")
                 writer.write('Title, Start Date A, Start Date B, Start Volume A, Start Volume B, Start Issue A, Start Issue B, End Date A, End Date B, End Volume A,End  Volume B,End  Issue A,End  Issue B, Coverage Note A, Coverage Note B\n');
-                // log.debug("UnionList size is ${unionList.size}")
-                unionList.each { unionTitle ->
-                  log.debug("Grabbing tipps")
-                  def tippA = listA.find{it.title.title.equals(unionTitle)}
-                  def tippB = listB.find{it.title.title.equals(unionTitle)}
-                  // log.debug("Found tipp for A ${tippA} and for B ${tippB}")
-                  // log.debug("Running on title ${unionTitle}");
-                writer.write("${unionTitle},${e(tippA?.startDate)},${e(tippB?.startDate)},${e(tippA?.startVolume)},${e(tippB?.startVolume)},${e(tippA?.startIssue)},${e(tippB?.startIssue)},${e(tippA?.endDate)},${e(tippB?.endDate)},${e(tippA?.endVolume)},${e(tippB?.endVolume)},${e(tippA?.endIssue)},${e(tippB?.endIssue)},${e(tippA?.coverageNote)},${e(tippB?.coverageNote)}\n")
+
+                comparisonMap.each { title, values ->
+                  def tippA = values[0]
+                  def tippB = values[1]
+
+                writer.write("\"${title}\",\"${tippA?.startDate?:''}\",\"${tippB?.startDate?:''}\",${tippA?.startVolume?:''},${tippB?.startVolume?:''},${tippA?.startIssue?:''},${tippB?.startIssue?:''},\"${tippA?.endDate?:''}\",\"${tippB?.endDate?:''}\",${tippA?.endVolume?:''},${tippB?.endVolume?:''},${tippA?.endIssue?:''},${tippB?.endIssue?:''},\"${tippA?.coverageNote?:''}\",\"${tippB?.coverageNote?:''}\"\n")
                 }
                 writer.write("END");
                 writer.flush();
@@ -272,9 +269,37 @@ class PackageDetailsController {
         }
       
     }
-    def e(str){
-      str != null?str:""
+
+    def generateComparisonMap(unionList, listA, listB, offset, toIndex){
+      def result = new TreeMap()
+      for (unionTitle in unionList){
+       
+        def tippA = listA.find{it.title.title == unionTitle}
+        def tippB = listB.find{it.title.title == unionTitle}
+        listA.remove(tippA)
+        listB.remove(tippB)
+        
+        def compA = tippA?.compareTo(tippB)
+        def value;
+
+        if(compA == -1 ) value = [tippA,null, "danger"];
+        else if(compA == 1) value = [tippA,tippB, "warning"];
+        else if(compA == null) value = [null, tippB, "success"];
+        else if (compA == 0) value = [tippA,tippB, ""];
+
+        result.put(unionTitle, value)
+
+        if (result.size() == toIndex ) {
+            def keys = result.keySet().toArray();
+            def fromKey = keys[offset];
+            def toKey = keys[toIndex-1];
+            result = result.subMap(fromKey,true,toKey,true)
+            break;
+        }
+      }
+      result
     }
+
     def createCompareList(pkg,dateStr,params, result){
        def returnVals = [:]
        def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd')
