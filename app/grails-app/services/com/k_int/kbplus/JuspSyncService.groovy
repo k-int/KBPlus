@@ -140,7 +140,7 @@ class JuspSyncService {
 
     def start_time = System.currentTimeMillis();
 
-    Fact.withTransaction { status ->
+    Fact.withNewTransaction { status ->
   
       //log.debug("processTriple");
   
