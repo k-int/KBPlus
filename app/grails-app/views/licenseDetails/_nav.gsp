@@ -1,3 +1,4 @@
+<g:set var="licence" value="${com.k_int.kbplus.License.get(params.id)}"/>
 <ul class="nav nav-pills">
     <li <%='index'== actionName ? ' class="active"' : '' %>><g:link controller="licenseDetails"
                                                                     action="index"
@@ -21,14 +22,14 @@
                                                                              action="additionalInfo"
                                                                              params="${[id:params.id]}">Additional Information</g:link></li>
 
-    <g:if test="${com.k_int.kbplus.License.get(params.id).onixplLicense}">
+    <g:if test="${licence.onixplLicense}">
         <li <%='onixpl'== actionName ? ' class="active"' : '' %>><g:link controller="licenseDetails"
                                                                          action="onixpl"
                                                                          params="${[id: params.id]}">ONIX-PL Licence</g:link></li>
     </g:if>
-    <g:if test="${com.k_int.kbplus.License.get(params.id).orgLinks.find{
-      it.roleType.value == 'Licensing Consortium' &&
-      it.org.hasUserWithRole(user,'INST_ADM')}}">
+    <g:if test="${licence.orgLinks.find{it.roleType.value == 'Licensing Consortium' &&
+      it.org.hasUserWithRole(user,'INST_ADM') 
+      licence.licenseType == 'Template'}}">
       <li <%='consortia'== actionName ? ' class="active"' : '' %>>
       <g:link controller="licenseDetails"action="consortia" params="${[id: params.id]}">Consortia</g:link></li>
     </g:if>
