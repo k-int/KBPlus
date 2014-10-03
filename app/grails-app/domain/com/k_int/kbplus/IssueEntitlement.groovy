@@ -25,7 +25,7 @@ class IssueEntitlement implements Comparable {
   static belongsTo = [subscription: Subscription, tipp: TitleInstancePackagePlatform]
 
   @Transient
-  def comparisonProps = ['getDerivedAccessStartDate()', 'getDerivedAccessEndDate',
+  def comparisonProps = ['derivedAccessStartDate', 'derivedAccessEndDate',
 'coverageNote','coverageDepth','embargo','startVolume','startIssue','startDate','endDate','endIssue','endVolume']
 
   int compareTo(obj) {
@@ -91,30 +91,15 @@ class IssueEntitlement implements Comparable {
   }
 
   @Transient
-  public int compare(IssueEntitlement ie){
-    boolean changed = false;
-    if(ie == null) return -1
+  public int compare(IssueEntitlement ieB){
+    if(ieB == null) return -1;
 
-    def ieAHash = calcPropertiesHashCode ()
-    def ieBHash = ie.calcPropertiesHashCode()
+    def noChange =true 
+    comparisonProps.each{ noChange &= this."${it}" == ieB."${it}" }
 
-    if(ieAHash == ieBHash) return 0
-    return 1
+    if(noChange) return 0;
+    return 1;
   }
-
-  /**
-  * Calculate the controlledProperties hashCode using the properties toString method
-  **/
-  @Transient
-  def calcPropertiesHashCode(){
-    StringBuilder sb = new StringBuilder()
-
-    comparisonProps.each{
-      sb.append(this."$it")
-    }
-    return sb.toString().hashCode()
-  }
-
 
   public RefdataValue getAvailabilityStatus(Date as_at) {
     def result = null

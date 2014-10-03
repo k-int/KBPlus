@@ -20,6 +20,7 @@ class PackageDetailsController {
   def genericOIDService
   def ESSearchService
   def exportService
+  def institutionsService
 
     static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
 
@@ -217,23 +218,30 @@ class PackageDetailsController {
           def listA = createCompareList(params.pkgA, params.dateA, params, result)
           def listB = createCompareList(params.pkgB, params.dateB, params, result)
 
+          def mapA = listA.collectEntries { [it.title.title, it] }
+          def mapB = listB.collectEntries { [it.title.title, it] }
+
           // //FIXME: It should be possible to optimize the following lines
-          def unionList = listA.collect{it.title.title}.plus(listB.collect {it.title.title})
+
+          def unionList = mapA.keySet().plus(mapB.keySet()).toList() // heySet is hashSet
           unionList = unionList.unique()
           unionList.sort()
-          result.unionListSize = unionList.size()
 
+          result.unionListSize = unionList.size()
+  
+          def filterRules = [params.insrt?true:false, params.dlt?true:false, params.updt?true:false, params.nochng?true:false ]
 
           withFormat{
             html{
               def toIndex = result.offset+result.max < unionList.size()? result.offset+result.max: unionList.size()
-              result.comparisonMap = generateComparisonMap(unionList,listA,listB,result.offset, toIndex.intValue())
+              result.comparisonMap = 
+                  institutionsService.generateComparisonMap(unionList, mapA, mapB,result.offset, toIndex.intValue(),filterRules)
               result
             }
             csv {
               try{
    
-              def comparisonMap = generateComparisonMap(unionList,listA,listB,0, unionList.size())
+              def comparisonMap = generateComparisonMap(unionList, mapA, mapB,0, unionList.size(),filterRules)
               log.debug("Create CSV Response")
                response.setHeader("Content-disposition", "attachment; filename=packageComparison.csv")
                response.contentType = "text/csv"
@@ -268,36 +276,6 @@ class PackageDetailsController {
           result
         }
       
-    }
-
-    def generateComparisonMap(unionList, listA, listB, offset, toIndex){
-      def result = new TreeMap()
-      for (unionTitle in unionList){
-       
-        def tippA = listA.find{it.title.title == unionTitle}
-        def tippB = listB.find{it.title.title == unionTitle}
-        listA.remove(tippA)
-        listB.remove(tippB)
-        
-        def compA = tippA?.compareTo(tippB)
-        def value;
-
-        if(compA == -1 ) value = [tippA,null, "danger"];
-        else if(compA == 1) value = [tippA,tippB, "warning"];
-        else if(compA == null) value = [null, tippB, "success"];
-        else if (compA == 0) value = [tippA,tippB, ""];
-
-        result.put(unionTitle, value)
-
-        if (result.size() == toIndex ) {
-            def keys = result.keySet().toArray();
-            def fromKey = keys[offset];
-            def toKey = keys[toIndex-1];
-            result = result.subMap(fromKey,true,toKey,true)
-            break;
-        }
-      }
-      result
     }
 
     def createCompareList(pkg,dateStr,params, result){

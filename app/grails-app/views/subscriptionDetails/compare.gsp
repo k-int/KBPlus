@@ -70,6 +70,15 @@
 										<span class="add-on"><i class="icon-th"></i></span>
 									</div>
 								</td>
+						<tr>
+							<td> Add Filter</td>
+							<td colspan="2">
+		        <input type="checkbox" name="insrt" value="Y" ${params.insrt=='Y'?'checked':''}/>  Insert&nbsp;
+		        <input type="checkbox" name="dlt" value="Y" ${params.dlt=='Y'?'checked':''}/> Delete &nbsp;
+		        <input type="checkbox" name="updt" value="Y" ${params.updt=='Y'?'checked':''}/> Update &nbsp;
+		        <input type="checkbox" name="nochng" value="Y" ${params.nochng=='Y'?'checked':''}/> No Change &nbsp;
+							</td>		
+						</tr>
 							</tr>
 						</tbody>
 					</table>	
@@ -96,7 +105,7 @@
 				</g:form>
 
 				<div class="span6 offset3">
-				<dt class="center">Showing Titles ${offset+1} to ${offset+unionList.size()} of ${unionListSize}</dt>
+				<dt class="center">Showing Titles ${offset+1} to ${offset+comparisonMap.size()} of ${unionListSize}</dt>
 				</div>
 				<table class="table table-bordered">
 					<thead>

@@ -47,7 +47,6 @@ class TitleInstancePackagePlatform {
   String hostPlatformURL
   Date coreStatusStart
   Date coreStatusEnd
-  Integer controlledPropertiesHashCode
 
   TitleInstancePackagePlatform derivedFrom
 
@@ -378,31 +377,13 @@ class TitleInstancePackagePlatform {
   /**
    * Compare the controlledPropertiesHashCode of two tipps.
   **/
-  public int compareTo(TitleInstancePackagePlatform tippB){
+  public int compare(TitleInstancePackagePlatform tippB){
       if(!tippB) return -1;
-  
-      def tippAHash = calcControlledPropertiesHashCode()
-      def tippBHash = tippB.calcControlledPropertiesHashCode()
+      def noChange = true
+      controlledProperties.each{ noChange &= this."${it}" == tippB."${it}" }
       
-      if(tippAHash == tippB.tippBHash){
-        0
-      }else{
-        1
-      }
-  }
-  /**
-  * Calculate the controlledProperties hashCode using the properties toString method
-  **/
-  @Transient
-  def calcControlledPropertiesHashCode(){
-    StringBuilder sb = new StringBuilder()
+      if( noChange ) return 0;      
+      return 1;
+  }  
 
-    controlledProperties.each{
-      sb.append(this."$it")
-    }
-    return sb.toString().hashCode()
-  }
-
-
-  
 }

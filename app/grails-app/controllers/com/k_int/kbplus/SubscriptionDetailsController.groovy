@@ -27,6 +27,7 @@ class SubscriptionDetailsController {
   def exportService
   def grailsApplication
   def pendingChangeService
+  def institutionsService
 
   def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
 
@@ -229,23 +230,29 @@ class SubscriptionDetailsController {
 
       def listA = createCompareList(params.subA ,params.dateA, params, result)
       def listB = createCompareList(params.subB, params.dateB, params, result)
+      def mapA = listA.collectEntries { [it.tipp.title.title, it] }
+      def mapB = listB.collectEntries { [it.tipp.title.title, it] }
 
       //FIXME: It should be possible to optimize the following lines
-      def unionList = listA.collect{it.tipp.title.title}.plus(listB.collect{it.tipp.title.title})
+      def unionList = mapA.keySet().plus(mapB.keySet()).toList()
       unionList = unionList.unique()
       result.unionListSize = unionList.size()
       unionList.sort()
 
+      def filterRules = [params.insrt?true:false, params.dlt?true:false, params.updt?true:false, params.nochng?true:false ]
       withFormat{
         html{
           def toIndex = result.offset+result.max < unionList.size()? result.offset+result.max: unionList.size()
-          result.comparisonMap = generateComparisonMap(unionList,listA,listB,result.offset, toIndex.intValue())
+          result.comparisonMap = 
+              institutionsService.generateComparisonMap(unionList,mapA,mapB,result.offset, toIndex.intValue(),filterRules)
           log.debug("Comparison Map"+result.comparisonMap)
           result
         }
         csv {
           try{
           log.debug("Create CSV Response")
+          def comparisonMap =
+          institutionsService.generateComparisonMap(unionList, mapA, mapB, 0, unionList.size(),filterRules)
            response.setHeader("Content-disposition", "attachment; filename=subscriptionComparison.csv")
            response.contentType = "text/csv"
            def out = response.outputStream
@@ -253,10 +260,11 @@ class SubscriptionDetailsController {
             writer.write("${result.subInsts[0].name} on ${result.dateA}, ${result.subInsts[1].name} on ${result.dateB}\n")
             writer.write('IE Title, Start Date A, Start Date B, Volume A, Volume B, Issue A, Issue B, End Date A, End Date B, Volume A, Volume B, Issue A, Issue B, Coverage Note A, Coverage Note B\n');
             log.debug("UnionList size is ${unionList.size}")
-            unionList.each { unionTitle ->
-            def ieA = listA.find{it.tipp.title.title.equals(unionTitle)}
-            def ieB = listB.find{it.tipp.title.title.equals(unionTitle)}
-            writer.write("\"${unionTitle}\",${ieA?.startDate?:''},${ieB?.startDate?:''},${ieA?.startVolume?:''},${ieB?.startVolume?:''},${ieA?.startIssue?:''},${ieB?.startIssue?:''},\"${ieA?.coverageNote?:''}\",\"${ieB?.coverageNote?:''}\"\n")
+            comparisonMap.each{ title, values ->
+              def ieA = values[0]
+              def ieB = values[1]
+
+              writer.write("\"${unionTitle}\",${ieA?.startDate?:''},${ieB?.startDate?:''},${ieA?.startVolume?:''},${ieB?.startVolume?:''},${ieA?.startIssue?:''},${ieB?.startIssue?:''},\"${ieA?.coverageNote?:''}\",\"${ieB?.coverageNote?:''}\"\n")
             }
             writer.write("END");
             writer.flush();
@@ -298,36 +306,6 @@ class SubscriptionDetailsController {
    list
 
   }
-  //add array Rules [insert, delete, update, noChange], add it as && on if
-   def generateComparisonMap(unionList, listA, listB, offset, toIndex){
-      def result = new TreeMap()
-      for (unionTitle in unionList){
-       
-        def ieA = listA.find{it.tipp.title.title == unionTitle}
-        def ieB = listB.find{it.tipp.title.title == unionTitle}
-        listA.remove(ieA)
-        listB.remove(ieB)
-        
-        def compA = ieA?.hasChanged(ieB)
-        def value;
-
-        if(compA == -1 ) value = [ieA,null, "danger"];
-        else if(compA == 1) value = [ieA,ieB, "warning"];
-        else if(compA == null) value = [null, ieB, "success"];
-        else if (compA == 0) value = [ieA,ieB, ""];
-
-        result.put(unionTitle, value)
-
-        if (result.size() == toIndex ) {
-            def keys = result.keySet().toArray();
-            def fromKey = keys[offset];
-            def toKey = keys[toIndex-1];
-            result = result.subMap(fromKey,true,toKey,true)
-            break;
-        }
-      }
-      result
-    }
 
   def generateIEQuery(params, qry_params, showDeletedTipps, asAt) {
 
