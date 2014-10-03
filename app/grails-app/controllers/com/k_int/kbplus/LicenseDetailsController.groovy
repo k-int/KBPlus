@@ -108,7 +108,13 @@ class LicenseDetailsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.licence = License.get(params.id)
-
+    def hasAccess = result.licence.orgLinks.find{it.roleType.value == 'Licensing Consortium' &&
+      it.org.hasUserWithRole(result.user,'INST_ADM') }
+    if(result.licence.licenseType != "Template" || hasAccess == null) {
+      flash.error = "Consortia screen only available administrators for template licenses with Licensing Consortium link."
+      response.sendError(401) 
+      return
+    }
     if ( result.licence.hasPerm("edit",result.user) ) {
       result.editable = true
     }

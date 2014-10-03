@@ -16,8 +16,7 @@
 
 
     <div class="container">
-    You do not have permission to view the requested page. Please check your profile page and request appropriate roles from the
-    relevant institution to rectify this.
+    You do not have permission to view the requested page. Please check your profile page and request appropriate roles from the relevant institution to rectify this.
     </div>
   </body>
 </html>
