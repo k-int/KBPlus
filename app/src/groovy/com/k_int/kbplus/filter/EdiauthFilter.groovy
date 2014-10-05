@@ -1,6 +1,7 @@
 package com.k_int.kbplus.filter
 
 import com.k_int.kbplus.auth.*
+import com.k_int.kbplus.*
 
 public class EdiauthFilter extends org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter {
 
