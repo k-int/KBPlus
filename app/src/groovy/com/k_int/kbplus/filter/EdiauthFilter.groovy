@@ -111,8 +111,7 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
                                               user:existing_user,
                                               formalRole:new_role,
                                               dateRequested:System.currentTimeMillis(),
-                                              dateActioned:System.currentTimeMillis())
-                                             ).save(flush:true)
+                                              dateActioned:System.currentTimeMillis()).save(flush:true)
                       }
                     }
                   }
