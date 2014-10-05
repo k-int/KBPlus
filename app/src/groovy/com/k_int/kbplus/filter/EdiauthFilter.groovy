@@ -101,7 +101,7 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
                           def uo = new UserOrg(status:3,
                                                org:org,
                                                user:existing_user,
-                                               formalRole:editorRole
+                                               formalRole:editorRole,
                                                dateRequested:System.currentTimeMillis(),
                                                dateActioned:System.currentTimeMillis()).save(flush:true)
                         }
@@ -109,7 +109,7 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
                         def uo2 = new UserOrg(status:3,
                                               org:org,
                                               user:existing_user,
-                                              formalRole:new_role
+                                              formalRole:new_role,
                                               dateRequested:System.currentTimeMillis(),
                                               dateActioned:System.currentTimeMillis())
                                              ).save(flush:true)
