@@ -85,6 +85,27 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
                     log.error(e);
                   }
                 }
+
+                // Shib property: affiliation : staff@shu.ac.uk;member@shu.ac.uk
+                def shib_affiliations = request.getAttribute('affiliation')
+                if ( shib_affiliations ) {
+                  def parsed_affiliations = shib_affiliations.split(';');
+                  parsed_affiliations.each { pa ->
+                    pa_parts = pa.split('@');
+                    if ( ( pa_parts != null ) && ( pa_parts.length == 2 ) ) {
+                      def org = Org.findByScope(pa_parts[1]);
+                      if ( org ) {
+                        if ( pa_parts[0] == 'staff' ) {
+                          def editorRole = Role.findByAuthority('ROLE_USER') ?: new Role(authority: 'ROLE_USER', roleType:'global').save(failOnError: true)
+                          def uo = new UserOrg(status:3,org:org,user:existing_user,formalRole:editorRole).save(flush:true)
+                        }
+                        def new_role = Role.findByAuthority(pa_parts[0]) ?: new Role(authority: pa_parts[0], roleType:'global').save(failOnError: true)
+                        def uo2 = new UserOrg(status:3,org:org,user:existing_user,formalRole:new_role).save(flush:true)
+                      }
+                    }
+                  }
+                }
+  
               }
               else {
                 log.error("Unable to look up ROLE_USER");
