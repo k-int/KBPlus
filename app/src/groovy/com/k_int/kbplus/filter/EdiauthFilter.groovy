@@ -97,11 +97,22 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
                       def org = Org.findByScope(pa_parts[1]);
                       if ( org ) {
                         if ( pa_parts[0] == 'staff' ) {
-                          def editorRole = Role.findByAuthority('ROLE_USER') ?: new Role(authority: 'ROLE_USER', roleType:'global').save(failOnError: true)
-                          def uo = new UserOrg(status:3,org:org,user:existing_user,formalRole:editorRole).save(flush:true)
+                          def editorRole = Role.findByAuthority('INST_USER') ?: new Role(authority: 'INST_USER', roleType:'global').save(failOnError: true)
+                          def uo = new UserOrg(status:3,
+                                               org:org,
+                                               user:existing_user,
+                                               formalRole:editorRole
+                                               dateRequested:System.currentTimeMillis(),
+                                               dateActioned:System.currentTimeMillis()).save(flush:true)
                         }
                         def new_role = Role.findByAuthority(pa_parts[0]) ?: new Role(authority: pa_parts[0], roleType:'global').save(failOnError: true)
-                        def uo2 = new UserOrg(status:3,org:org,user:existing_user,formalRole:new_role).save(flush:true)
+                        def uo2 = new UserOrg(status:3,
+                                              org:org,
+                                              user:existing_user,
+                                              formalRole:new_role
+                                              dateRequested:System.currentTimeMillis(),
+                                              dateActioned:System.currentTimeMillis())
+                                             ).save(flush:true)
                       }
                     }
                   }
