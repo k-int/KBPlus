@@ -91,7 +91,7 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
                 if ( shib_affiliations ) {
                   def parsed_affiliations = shib_affiliations.split(';');
                   parsed_affiliations.each { pa ->
-                    pa_parts = pa.split('@');
+                    def pa_parts = pa.split('@');
                     if ( ( pa_parts != null ) && ( pa_parts.length == 2 ) ) {
                       def org = Org.findByScope(pa_parts[1]);
                       if ( org ) {
