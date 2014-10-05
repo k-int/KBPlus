@@ -24,6 +24,32 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
         // log.debug("Remote User(fn):: ${request.getRemoteUser()}");
         // log.debug("Remote User:: ${request.getAttribute('REMOTE_USER')}");
         // log.debug("Persistent Id:: ${request.getAttribute('persistent-id')}");
+
+        def tst_attrs = [ 'persistent-id',
+                      'eppn',
+                      'mail',
+                      'givenname',
+                      'affiliation',
+                      'uid',
+                      'Shib-Session-Index',
+                      'Shib-Session-ID',
+                      'Shib-AuthnContext-Class',
+                      'Shib-Application-ID',
+                      'unscoped-affiliation',
+                      'primary-affiliation',
+                      'entitlement',
+                      'targeted-id',
+                      'primary-orgunit-dn',
+                      'orgunit-dn',
+                      'org-dn',
+                      'cn',
+                      'employeeNumber',
+                      'displayName',
+                      'description'
+                    ]
+        tst_attrs.each { it ->
+          log.debug("tst:: ${it} : ${request.getAttribute(it)}");
+        }
   
 
         User.withTransaction { status ->
