@@ -2,6 +2,8 @@ select 'This is the auto-run upgrade script that converts the database from KB+ 
 
 select 'Remove all occurrences of gokb namespace identifiers';
 
+delete from org_role where ( or_title_fk is not null ) and ( not exists ( select ti_id from title_instance where ti_id = or_title_fk ));
+
 delete identifier_occurrence
 from identifier_occurrence
 join identifier on io_canonical_id = id_id
