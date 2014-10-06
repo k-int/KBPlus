@@ -2,7 +2,6 @@ select 'This is the auto-run upgrade script that converts the database from KB+ 
 
 select 'Remove all occurrences of gokb namespace identifiers';
 
-delete from org_role where ( or_title_fk is not null ) and ( not exists ( select ti_id from title_instance where ti_id = or_title_fk ));
 
 delete identifier_occurrence
 from identifier_occurrence
@@ -139,3 +138,4 @@ insert into license_custom_property(version,owner_id, note, ref_value_id, type_i
 
 update identifier_namespace set idns_hide=1 where idns_ns ='originediturl';
 
+delete from org_role where ( or_title_fk is not null ) and ( not exists ( select ti_id from title_instance where ti_id = or_title_fk ));
