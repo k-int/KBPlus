@@ -99,6 +99,11 @@
 	<input type="hidden" name="pkgB" value="${pkgB}"/>
 	<input type="hidden" name="dateA" value="${dateA}"/>
 	<input type="hidden" name="dateB" value="${dateB}"/>
+	<input type="hidden" name="insrt" value="${params.insrt}"/>
+	<input type="hidden" name="dlt" value="${params.dlt}"/>
+	<input type="hidden" name="updt" value="${params.updt}"/>
+	<input type="hidden" name="nochng" value="${params.nochng}"/>
+
 	<table>
 		<tr>
 			<td>
@@ -130,12 +135,17 @@
 <table class="table table-bordered">
 	<thead>
 		<tr> 
-			<th> Title </th>
-			<th> ${pkgInsts.get(0).name} on ${pkgDates.get(0)} </th>
-			<th> ${pkgInsts.get(1).name} on ${pkgDates.get(1)} </th>
+			<td> Title </td>
+			<td> ${pkgInsts.get(0).name} on ${pkgDates.get(0)} </td>
+			<td> ${pkgInsts.get(1).name} on ${pkgDates.get(1)} </td>
 		</tr>
 	</thead>
 	<tbody>
+		<tr>
+			<td><b>Total TIPPs for query</b></td>
+			<td><b>${listACount}</b></td>
+			<td><b>${listBCount}</b></td>
+		<tr>
 		<g:each in="${comparisonMap}" var="entry">
 		<g:set var="pkgATipp" value="${entry.value[0]}"/>
 		<g:set var="pkgBTipp" value="${entry.value[1]}"/>

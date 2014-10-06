@@ -217,11 +217,11 @@ class PackageDetailsController {
 
           def listA = createCompareList(params.pkgA, params.dateA, params, result)
           def listB = createCompareList(params.pkgB, params.dateB, params, result)
+          result.listACount = listA.size()
+          result.listBCount = listB.size()
 
           def mapA = listA.collectEntries { [it.title.title, it] }
           def mapB = listB.collectEntries { [it.title.title, it] }
-
-          // //FIXME: It should be possible to optimize the following lines
 
           def unionList = mapA.keySet().plus(mapB.keySet()).toList() // heySet is hashSet
           unionList = unionList.unique()
@@ -241,7 +241,8 @@ class PackageDetailsController {
             csv {
               try{
    
-              def comparisonMap = generateComparisonMap(unionList, mapA, mapB,0, unionList.size(),filterRules)
+              def comparisonMap = 
+              institutionsService.generateComparisonMap(unionList, mapA, mapB,0, unionList.size(),filterRules)
               log.debug("Create CSV Response")
                response.setHeader("Content-disposition", "attachment; filename=packageComparison.csv")
                response.contentType = "text/csv"
@@ -250,15 +251,14 @@ class PackageDetailsController {
                 writer.write("${result.pkgInsts[0].name} on ${result.dateA}, ${result.pkgInsts[1].name} on ${result.dateB}\n")
                 writer.write('Title, pISSN, eISSN, Start Date A, Start Date B, Start Volume A, Start Volume B, Start Issue A, Start Issue B, End Date A, End Date B, End Volume A,End  Volume B,End  Issue A,End  Issue B, Coverage Note A, Coverage Note B\n');
                 // log.debug("UnionList size is ${unionList.size}")
-                unionList.each { unionTitle ->
-                  log.debug("Grabbing tipps")
-                  def tippA = listA.find{it.title.title.equals(unionTitle)}
-                  def tippB = listB.find{it.title.title.equals(unionTitle)}
-                  def pissn = tippA ? tippA.title.getIdentifierValue('ISSN') : tippB.title.getIdentifierValue('ISSN');
+                comparisonMap.each { title, values ->
+                  def tippA = values[0]
+                  def tippB = values[1]
+
+                  def pissn = tippA ? tippA.title.getIdentifierValue('issn') : tippB.title.getIdentifierValue('issn');
                   def eissn = tippA ? tippA.title.getIdentifierValue('eISSN') : tippB.title.getIdentifierValue('eISSN');
-                  // log.debug("Found tipp for A ${tippA} and for B ${tippB}")
-                  // log.debug("Running on title ${unionTitle}");
-                  writer.write("\"${unionTitle}\",\"${pissn}\",\"${eissn}\",\"${e(tippA?.startDate)}\",\"${e(tippB?.startDate)}\",\"${e(tippA?.startVolume)}\",\"${e(tippB?.startVolume)}\",\"${e(tippA?.startIssue)}\",\"${e(tippB?.startIssue)}\",\"${e(tippA?.endDate)}\",\"${e(tippB?.endDate)}\",\"${e(tippA?.endVolume)}\",\"${e(tippB?.endVolume)}\",\"${e(tippA?.endIssue)}\",\"${e(tippB?.endIssue)}\",\"${e(tippA?.coverageNote)}\",\"${e(tippB?.coverageNote)}\"\n")
+
+                  writer.write("\"${title}\",\"${pissn}\",\"${eissn}\",\"${tippA?.startDate?:''}\",\"${tippB?.startDate?:''}\",\"${tippA?.startVolume?:''}\",\"${tippB?.startVolume?:''}\",\"${tippA?.startIssue?:''}\",\"${tippB?.startIssue?:''}\",\"${tippA?.endDate?:''}\",\"${tippB?.endDate?:''}\",\"${tippA?.endVolume?:''}\",\"${tippB?.endVolume?:''}\",\"${tippA?.endIssue?:''}\",\"${tippB?.endIssue?:''}\",\"${tippA?.coverageNote?:''}\",\"${tippB?.coverageNote?:''}\"\n")
                 }
                 writer.write("END");
                 writer.flush();
@@ -280,10 +280,6 @@ class PackageDetailsController {
           result
         }
       
-    }
-
-    def e(str){
-      str != null?str:""
     }
 
     def createCompareList(pkg,dateStr,params, result){

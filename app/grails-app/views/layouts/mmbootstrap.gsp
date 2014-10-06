@@ -63,7 +63,6 @@
 
                        <li><g:link controller="packageDetails" action="index">All Packages</g:link></li>
                        <li><g:link controller="titleDetails" action="index">All Titles</g:link></li>
-                       <li><g:link controller="subscriptionDetails" action="compare">Compare Subscriptions</g:link></li>
                        <li><g:link controller="packageDetails" action="compare">Compare Packages</g:link></li>
                        <li><g:link controller="onixplLicenseCompare"
                                    action="index">Compare ONIX-PL Licences</g:link></li>
@@ -89,6 +88,9 @@
                                <li><g:link controller="myInstitutions"
                                            action="currentTitles"
                                            params="${[shortcode:org.shortcode]}">Titles</g:link></li>
+                               <li><g:link controller="subscriptionDetails" 
+                                           action="compare"
+                                           params="${[shortcode:org.shortcode]}">Compare Subscriptions</g:link></li>
                                <li><g:link controller="myInstitutions"
                                            action="renewalsSearch"
                                            params="${[shortcode:org.shortcode]}">Generate Renewals Worksheet</g:link></li>
@@ -146,6 +148,10 @@
                        <li <%= ( ( 'licenseDetails'== controllerName ) && ( 'create'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="licenseDetails" action="create">New License</g:link></li>
                        <li class="divider"></li>
+
+                        <li<%= ( ( 'subscriptionDetails'== controllerName ) && ( 'compare'==actionName ) ) ? ' class="active"' : '' %>><g:link controller="subscriptionDetails" 
+                                           action="compare">Compare Subscriptions</g:link></li>
+
                        <li <%= ( ( 'subscriptionImport'== controllerName ) && ( 'generateImportWorksheet'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="subscriptionImport" action="generateImportWorksheet">Generate Subscription Taken Worksheet</g:link></li>
                        <li <%= ( ( 'subscriptionImport'== controllerName ) && ( 'importSubscriptionWorksheet'==actionName ) ) ? ' class="active"' : '' %>>

@@ -79,25 +79,25 @@
     }
     function createSelect2Search(objectId, className) {
         $(objectId).select2({
-                                width: "element",
-                                placeholder: "Type name...",
-                                minimumInputLength: 1,
-                                ajax: { 
-                                    url: '<g:createLink controller='ajax' action='lookup'/>',
-                                    dataType: 'json',
-                                    data: function (term, page) {
-                                        return {
-                                            hideIdent: true,
-                                            q: term, // search term
-                                            page_limit: 10,
-                                            baseClass:className
-                                        };
-                                    },
-                                    results: function (data, page) {
-                                        return {results: data.values};
-                                    }
-                                }
-                                });
+            width: "90%",
+            placeholder: "Type name...",
+            minimumInputLength: 1,
+            ajax: { 
+                url: '<g:createLink controller='ajax' action='lookup'/>',
+                dataType: 'json',
+                data: function (term, page) {
+                    return {
+                        hideIdent: true,
+                        q: term, // search term
+                        page_limit: 10,
+                        baseClass:className
+                    };
+                },
+                results: function (data, page) {
+                    return {results: data.values};
+                }
+            }
+            });
 
     }
     function activateDatepicker(){

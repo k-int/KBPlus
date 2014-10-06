@@ -39,8 +39,8 @@
       <table class="table table-striped">
         <g:each in="${changes}" var="chg">
           <tr>
-            <td>
-              ${chg.ts}
+            <td><g:formatDate format="yyyy-MM-dd" date="${chg.ts}"/>
+             
             </td>
             <td>
               <g:if test="${chg.subscription != null}">Change to subscription <g:link controller="subscriptionDetails" action="index" id="${chg.subscription.id}">${chg.subscription.id}</g:link></g:if>
@@ -49,7 +49,7 @@
             </td>
             <td>
               ${chg.desc}
-              ${chg.status} on ${chg.actionDate} by ${chg.user}
+              ${chg.status} on ${chg.actionDate} by ${chg.user?.displayName}
             </td>
           </tr>
         </g:each>

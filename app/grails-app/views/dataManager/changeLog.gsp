@@ -87,7 +87,7 @@
                 <td>${hl.propertyName}</td>
                 <td>${hl.oldValue}</td>
                 <td>${hl.newValue}</td>
-                <td><g:formatDate date="${hl.lastUpdated}"/></td>
+                <td><g:formatDate format="yyyy-MM-dd" date="${hl.lastUpdated}"/></td>
               </tr>
             </g:each>
           </tbody>
