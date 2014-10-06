@@ -66,7 +66,7 @@ class TitleInstance {
   String getIdentifierValue(idtype) {
     def result=null
     ids?.each { id ->
-      if ( id.identifier?.ns?.ns == idtype )
+      if ( id.identifier?.ns?.ns?.toLowerCase() == idtype.toLowerCase() )
         result = id.identifier?.value
     }
     result

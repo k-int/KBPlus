@@ -153,8 +153,9 @@ grails.project.dependency.resolution = {
         runtime ":audit-logging:0.5.4"
         runtime ":executor:0.3"
         runtime ":markdown:1.1.1"
-        runtime ":quartz:1.0-RC9"
+        runtime ":quartz:1.0.1"
         runtime ":rest:0.7"
+        compile ":grails-melody:1.53.0"
         // runtime "com.k-int:domain-model-oai-pmh:0.1"
     }
 }

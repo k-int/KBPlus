@@ -212,7 +212,6 @@ class PackageDetailsController {
           result.dateA = params.dateA
           result.dateB = params.dateB
 
-
           result.pkgInsts = []
           result.pkgDates = []
 
@@ -232,7 +231,6 @@ class PackageDetailsController {
   
           def filterRules = [params.insrt?true:false, params.dlt?true:false, params.updt?true:false, params.nochng?true:false ]
 
-          log.debug("SHOWING RULES ${filterRules}")
           withFormat{
             html{
               def toIndex = result.offset+result.max < unionList.size()? result.offset+result.max: unionList.size()
@@ -251,21 +249,16 @@ class PackageDetailsController {
                def out = response.outputStream
                out.withWriter { writer ->
                 writer.write("${result.pkgInsts[0].name} on ${result.dateA}, ${result.pkgInsts[1].name} on ${result.dateB}\n")
-                writer.write('Title, Identifiers, Start Date A, Start Date B, Start Volume A, Start Volume B, Start Issue A, Start Issue B, End Date A, End Date B, End Volume A,End  Volume B,End  Issue A,End  Issue B, Coverage Note A, Coverage Note B\n');
-
+                writer.write('Title, pISSN, eISSN, Start Date A, Start Date B, Start Volume A, Start Volume B, Start Issue A, Start Issue B, End Date A, End Date B, End Volume A,End  Volume B,End  Issue A,End  Issue B, Coverage Note A, Coverage Note B\n');
+                // log.debug("UnionList size is ${unionList.size}")
                 comparisonMap.each { title, values ->
                   def tippA = values[0]
                   def tippB = values[1]
-                  def currentTitle = tippA?.title ?:tippB?.title
-                  def identifiers = ""
-                  currentTitle.ids.each{ id ->
-                    def ns = id.identifier.ns.ns
-                    if(ns == "eissn" || ns == "issn"){
-                      identifiers += "${ns}:${id.identifier.value} "
-                    }
-                  }
 
-                writer.write("\"${title}\",\"${identifiers}\",\"${tippA?.startDate?:''}\",\"${tippB?.startDate?:''}\",${tippA?.startVolume?:''},${tippB?.startVolume?:''},${tippA?.startIssue?:''},${tippB?.startIssue?:''},\"${tippA?.endDate?:''}\",\"${tippB?.endDate?:''}\",${tippA?.endVolume?:''},${tippB?.endVolume?:''},${tippA?.endIssue?:''},${tippB?.endIssue?:''},\"${tippA?.coverageNote?:''}\",\"${tippB?.coverageNote?:''}\"\n")
+                  def pissn = tippA ? tippA.title.getIdentifierValue('issn') : tippB.title.getIdentifierValue('issn');
+                  def eissn = tippA ? tippA.title.getIdentifierValue('eISSN') : tippB.title.getIdentifierValue('eISSN');
+
+                  writer.write("\"${title}\",\"${pissn}\",\"${eissn}\",\"${tippA?.startDate?:''}\",\"${tippB?.startDate?:''}\",\"${tippA?.startVolume?:''}\",\"${tippB?.startVolume?:''}\",\"${tippA?.startIssue?:''}\",\"${tippB?.startIssue?:''}\",\"${tippA?.endDate?:''}\",\"${tippB?.endDate?:''}\",\"${tippA?.endVolume?:''}\",\"${tippB?.endVolume?:''}\",\"${tippA?.endIssue?:''}\",\"${tippB?.endIssue?:''}\",\"${tippA?.coverageNote?:''}\",\"${tippB?.coverageNote?:''}\"\n")
                 }
                 writer.write("END");
                 writer.flush();

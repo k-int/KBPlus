@@ -17,6 +17,7 @@
         <tr><td>JVM version</td><td> ${System.getProperty('java.version')}</td></tr>
         <tr><td>Reloading active</td><td> ${grails.util.Environment.reloadingAgentEnabled}</td></tr>
         <tr><td>Build Date</td><td> <g:meta name="app.buildDate"/></td></tr>
+        <tr><td>Last Quartz Heartbeat</td><td>${grailsApplication.config.quartzHeartbeat}</td></tr>
       </table>
   
   
