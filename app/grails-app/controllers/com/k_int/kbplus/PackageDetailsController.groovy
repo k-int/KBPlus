@@ -282,13 +282,10 @@ class PackageDetailsController {
       
     }
 
-<<<<<<< HEAD
     def e(str){
       str != null?str:""
     }
 
-=======
->>>>>>> 4.2-dev
     def createCompareList(pkg,dateStr,params, result){
        def returnVals = [:]
        def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd')
