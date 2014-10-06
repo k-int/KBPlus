@@ -230,6 +230,8 @@ class SubscriptionDetailsController {
 
       def listA = createCompareList(params.subA ,params.dateA, params, result)
       def listB = createCompareList(params.subB, params.dateB, params, result)
+      result.listACount = listA.size()
+      result.listBCount = listB.size()
       def mapA = listA.collectEntries { [it.tipp.title.title, it] }
       def mapB = listB.collectEntries { [it.tipp.title.title, it] }
 

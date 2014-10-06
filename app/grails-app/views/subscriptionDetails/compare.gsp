@@ -93,7 +93,10 @@
 					<input type="hidden" name="subB" value="${subB}"/>
 					<input type="hidden" name="dateA" value="${dateA}"/>
 					<input type="hidden" name="dateB" value="${dateB}"/>
-
+					<input type="hidden" name="insrt" value="${params.insrt}"/>
+					<input type="hidden" name="dlt" value="${params.dlt}"/>
+					<input type="hidden" name="updt" value="${params.updt}"/>
+					<input type="hidden" name="nochng" value="${params.nochng}"/>
 					<table>
 						<tr>
 							<td>
@@ -116,6 +119,11 @@
 						</tr>
 					</thead>
 					<tbody>
+						<tr>
+							<td><b>Total IEs for query</b></td>
+							<td><b>${listACount}</b></td>
+							<td><b>${listBCount}</b></td>
+						<tr>
 						<g:each in="${comparisonMap}" var="entry">
 							<g:set var="subAIE" value="${entry.value[0]}"/>
 							<g:set var="subBIE" value="${entry.value[1]}"/>
@@ -181,6 +189,7 @@
                 	startDate: $("#start"+filter).val(),
                 	endDate: $("#end"+filter).val(),
                 	hideDeleted: 'true',
+                	inst_shortcode: '${params.shortcode}',
                     q: term , // search term
                     page_limit: 10,
                     baseClass:'com.k_int.kbplus.Subscription'

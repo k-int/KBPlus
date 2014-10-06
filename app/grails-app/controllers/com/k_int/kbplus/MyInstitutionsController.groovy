@@ -2503,9 +2503,9 @@ AND EXISTS (
 
                 def out = response.outputStream
                 out.withWriter { w ->
-                  w.write('Timestamp,ChangeId,SubscriptionId,LicenseId,Description\n')
+                  w.write('Timestamp,ChangeId,Actor, SubscriptionId,LicenseId,Description\n')
                   result.changes.each { c ->
-                    def line = "\"${c.ts}\",${c.id},${c.subscription?.id},${c.license?.id},\"${c.desc}\"\n".toString()
+                    def line = "\"${c.ts}\",\"${c.id}\",\"${c.user.displayName?:''}\",\"${c.subscription?.id}\",\"${c.license?.id}\",\"${c.desc}\"\n".toString()
                     w.write(line)
                   }
                 }

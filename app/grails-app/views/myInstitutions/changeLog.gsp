@@ -49,7 +49,7 @@
             </td>
             <td>
               ${chg.desc}
-              ${chg.status} on ${chg.actionDate} by ${chg.user}
+              ${chg.status} on ${chg.actionDate} by ${chg.user.displayName}
             </td>
           </tr>
         </g:each>

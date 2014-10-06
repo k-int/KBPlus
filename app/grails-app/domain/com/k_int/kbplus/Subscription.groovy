@@ -276,7 +276,7 @@ class Subscription {
       hqlString += " AND sub.status.value != 'Deleted' "
     }
 
-    if(params.inst_shortcode){
+    if(params.inst_shortcode && params.inst_shortcode.length() > 1){
       hqlString += " AND exists ( select orgs from sub.orgRelations orgs where orgs.org.shortcode = ? AND orgs.roleType.value = 'Subscriber' ) "
       hqlParams += params.inst_shortcode
     }

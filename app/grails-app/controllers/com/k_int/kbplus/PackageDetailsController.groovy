@@ -212,16 +212,17 @@ class PackageDetailsController {
           result.dateA = params.dateA
           result.dateB = params.dateB
 
+
           result.pkgInsts = []
           result.pkgDates = []
 
           def listA = createCompareList(params.pkgA, params.dateA, params, result)
           def listB = createCompareList(params.pkgB, params.dateB, params, result)
+          result.listACount = listA.size()
+          result.listBCount = listB.size()
 
           def mapA = listA.collectEntries { [it.title.title, it] }
           def mapB = listB.collectEntries { [it.title.title, it] }
-
-          // //FIXME: It should be possible to optimize the following lines
 
           def unionList = mapA.keySet().plus(mapB.keySet()).toList() // heySet is hashSet
           unionList = unionList.unique()
@@ -231,6 +232,7 @@ class PackageDetailsController {
   
           def filterRules = [params.insrt?true:false, params.dlt?true:false, params.updt?true:false, params.nochng?true:false ]
 
+          log.debug("SHOWING RULES ${filterRules}")
           withFormat{
             html{
               def toIndex = result.offset+result.max < unionList.size()? result.offset+result.max: unionList.size()
@@ -241,20 +243,29 @@ class PackageDetailsController {
             csv {
               try{
    
-              def comparisonMap = generateComparisonMap(unionList, mapA, mapB,0, unionList.size(),filterRules)
+              def comparisonMap = 
+              institutionsService.generateComparisonMap(unionList, mapA, mapB,0, unionList.size(),filterRules)
               log.debug("Create CSV Response")
                response.setHeader("Content-disposition", "attachment; filename=packageComparison.csv")
                response.contentType = "text/csv"
                def out = response.outputStream
                out.withWriter { writer ->
                 writer.write("${result.pkgInsts[0].name} on ${result.dateA}, ${result.pkgInsts[1].name} on ${result.dateB}\n")
-                writer.write('Title, Start Date A, Start Date B, Start Volume A, Start Volume B, Start Issue A, Start Issue B, End Date A, End Date B, End Volume A,End  Volume B,End  Issue A,End  Issue B, Coverage Note A, Coverage Note B\n');
+                writer.write('Title, Identifiers, Start Date A, Start Date B, Start Volume A, Start Volume B, Start Issue A, Start Issue B, End Date A, End Date B, End Volume A,End  Volume B,End  Issue A,End  Issue B, Coverage Note A, Coverage Note B\n');
 
                 comparisonMap.each { title, values ->
                   def tippA = values[0]
                   def tippB = values[1]
+                  def currentTitle = tippA?.title ?:tippB?.title
+                  def identifiers = ""
+                  currentTitle.ids.each{ id ->
+                    def ns = id.identifier.ns.ns
+                    if(ns == "eissn" || ns == "issn"){
+                      identifiers += "${ns}:${id.identifier.value} "
+                    }
+                  }
 
-                writer.write("\"${title}\",\"${tippA?.startDate?:''}\",\"${tippB?.startDate?:''}\",${tippA?.startVolume?:''},${tippB?.startVolume?:''},${tippA?.startIssue?:''},${tippB?.startIssue?:''},\"${tippA?.endDate?:''}\",\"${tippB?.endDate?:''}\",${tippA?.endVolume?:''},${tippB?.endVolume?:''},${tippA?.endIssue?:''},${tippB?.endIssue?:''},\"${tippA?.coverageNote?:''}\",\"${tippB?.coverageNote?:''}\"\n")
+                writer.write("\"${title}\",\"${identifiers}\",\"${tippA?.startDate?:''}\",\"${tippB?.startDate?:''}\",${tippA?.startVolume?:''},${tippB?.startVolume?:''},${tippA?.startIssue?:''},${tippB?.startIssue?:''},\"${tippA?.endDate?:''}\",\"${tippB?.endDate?:''}\",${tippA?.endVolume?:''},${tippB?.endVolume?:''},${tippA?.endIssue?:''},${tippB?.endIssue?:''},\"${tippA?.coverageNote?:''}\",\"${tippB?.coverageNote?:''}\"\n")
                 }
                 writer.write("END");
                 writer.flush();
