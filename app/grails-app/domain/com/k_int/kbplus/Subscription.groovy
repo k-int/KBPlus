@@ -247,48 +247,59 @@ class Subscription {
 
   @Transient
   static def refdataFind(params) {
-    def result = [];
-    def ql = null;
-   
+    def result = [];   
 
+    def hqlString = "select sub from Subscription sub where sub.name like ? "
+    def hqlParams = [params.q + "%"]
+    
     if(params.hasDate ){
      
       def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd")
 
-      def dateStart = params.startDate
-      def dateEnd = params.endDate
+      def startDate = params.startDate
+      def endDate = params.endDate
 
-      dateStart = dateStart.length() > 1 ? sdf.parse(dateStart) : null
-      dateEnd = dateEnd.length() > 1 ? sdf.parse(dateEnd)  : null
+      startDate = startDate.length() > 1 ? sdf.parse(startDate) : null
+      endDate = endDate.length() > 1 ? sdf.parse(endDate)  : null
 
-      if(dateStart || dateEnd){
-        if(dateEnd && dateStart){
-          ql = Subscription.findAllByNameIlikeAndStartDateGreaterThanEqualsAndEndDateLessThanEquals("${params.q}%",dateStart,dateEnd,params)
-        }else if(dateStart){
-          ql = Subscription.findAllByNameIlikeAndStartDateGreaterThanEquals("${params.q}%",dateStart)
-        }else if(dateEnd){
-          ql = Subscription.findAllByNameIlikeAndEndDateLessThanEquals("${params.q}%",dateEnd )
-          }
-      }else{
-        ql = Subscription.findAllByNameIlike("${params.q}%",params)
-      }   
-        
-    }else{
-      ql = Subscription.findAllByNameIlike("${params.q}%",params)
+      if(startDate){
+          hqlString += " AND sub.startDate >= ? "
+          hqlParams += startDate
+      }
+      if(endDate){
+        hqlString += " AND sub.endDate <= ? "
+        hqlParams += endDate
+        }       
     }
 
     if(params.hideDeleted == 'true'){
-      ql = ql.findAll{ it.status?.value != "Deleted" }     
+      hqlString += " AND sub.status.value != 'Deleted' "
     }
 
-    if(params.hideIdent && params.hideIdent == "true"){
-      if ( ql ) {
-          ql.each { t ->
+    if(params.inst_shortcode){
+      hqlString += " AND exists ( select orgs from sub.orgRelations orgs where orgs.org.shortcode = ? AND orgs.roleType.value = 'Subscriber' ) "
+      hqlParams += params.inst_shortcode
+    }
+
+
+    def results = Subscription.executeQuery(hqlString,hqlParams)
+    
+    if(params.accessibleToUser){
+      for(int i=0;i<results.size();i++){
+        if(! results.get(i).checkPermissions("view",User.get(params.accessibleToUser))){
+          results.remove(i)
+        }
+      }
+    }
+
+    if( params.hideIdent == "true"){
+      if ( results ) {
+          results.each { t ->
             result.add([id:"${t.class.name}:${t.id}",text:"${t.name}"])
           }
       }  
-    }else if ( ql ) {
-      ql.each { t ->
+    }else if ( results ) {
+      results.each { t ->
         result.add([id:"${t.class.name}:${t.id}",text:"${t.name} (${t.identifier})"])
       }
     }
