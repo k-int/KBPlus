@@ -2475,7 +2475,6 @@ AND EXISTS (
 
         def base_query = " from PendingChange as pc where owner = ?";
         def qry_params = [result.institution]
-
         if ( ( params.restrict != null ) && ( params.restrict.trim().length() > 0 ) ) {
           def o =  genericOIDService.resolveOID(params.restrict)
           if ( o != null ) {
@@ -2491,21 +2490,23 @@ AND EXISTS (
 
         result.num_changes = PendingChange.executeQuery("select count(pc) "+base_query, qry_params)[0];
 
-        result.changes = PendingChange.executeQuery("select pc "+base_query+"  order by ts desc", qry_params, [max: result.max, offset:result.offset])
 
         withFormat {
             html {
+            result.changes = PendingChange.executeQuery("select pc "+base_query+"  order by ts desc", qry_params, [max: result.max, offset:result.offset])
                 result
             }
             csv {
+                def dateFormat = new SimpleDateFormat("YYYY-MM-dd")
+                def changes = PendingChange.executeQuery("select pc "+base_query+"  order by ts desc", qry_params)
                 response.setHeader("Content-disposition", "attachment; filename=${result.institution.name}_changes.csv")
                 response.contentType = "text/csv"
 
                 def out = response.outputStream
                 out.withWriter { w ->
-                  w.write('Timestamp,ChangeId,Actor, SubscriptionId,LicenseId,Description\n')
-                  result.changes.each { c ->
-                    def line = "\"${c.ts}\",\"${c.id}\",\"${c.user.displayName?:''}\",\"${c.subscription?.id}\",\"${c.license?.id}\",\"${c.desc}\"\n".toString()
+                  w.write('Date,ChangeId,Actor, SubscriptionId,LicenseId,Description\n')
+                  changes.each { c ->
+                    def line = "\"${dateFormat.format(c.ts)}\",\"${c.id}\",\"${c.user?.displayName?:''}\",\"${c.subscription?.id}\",\"${c.license?.id}\",\"${c.desc}\"\n".toString()
                     w.write(line)
                   }
                 }

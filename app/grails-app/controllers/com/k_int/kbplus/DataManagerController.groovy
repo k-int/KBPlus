@@ -70,7 +70,7 @@ class DataManagerController {
     AuditLogEvent.executeQuery('select distinct(actor) from AuditLogEvent').each {
       def u = User.findByUsername(it)
       if ( u != null ) {
-        result.actors.add([it,u.display]);
+        result.actors.add([it,u.displayName]);
       }
     }
 
@@ -201,12 +201,11 @@ class DataManagerController {
       csv {
         response.setHeader("Content-disposition", "attachment; filename=DMChangeLog.csv")
         response.contentType = "text/csv"
-
         def out = response.outputStream
         out.withWriter { w ->
         w.write('Timestamp,Name,Event,Property,Actor,Old,New,Link\n')
           result.formattedHistoryLines.each { c ->
-            def line = "\"${c.lastUpdated}\",\"${c.name}\",\"${c.eventName}\",\"${c.propertyName}\",\"${c.actor.displayName}\",\"${c.oldValue}\",\"${c.newValue}\",\"${c.link}\"\n".toString()
+            def line = "\"${formatter.format(c.lastUpdated)}\",\"${c.name}\",\"${c.eventName}\",\"${c.propertyName}\",\"${c.actor?.displayName}\",\"${c.oldValue}\",\"${c.newValue}\",\"${c.link}\"\n".toString()
             w.write(line)
           }
         }
