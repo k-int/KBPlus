@@ -27,6 +27,7 @@ class SubscriptionDetailsController {
   def exportService
   def grailsApplication
   def pendingChangeService
+  def institutionsService
 
   def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
 
@@ -229,25 +230,29 @@ class SubscriptionDetailsController {
 
       def listA = createCompareList(params.subA ,params.dateA, params, result)
       def listB = createCompareList(params.subB, params.dateB, params, result)
+      def mapA = listA.collectEntries { [it.tipp.title.title, it] }
+      def mapB = listB.collectEntries { [it.tipp.title.title, it] }
 
       //FIXME: It should be possible to optimize the following lines
-      def unionList = listA.collect{it.tipp.title.title}.plus(listB.collect{it.tipp.title.title})
+      def unionList = mapA.keySet().plus(mapB.keySet()).toList()
       unionList = unionList.unique()
       result.unionListSize = unionList.size()
       unionList.sort()
 
+      def filterRules = [params.insrt?true:false, params.dlt?true:false, params.updt?true:false, params.nochng?true:false ]
       withFormat{
         html{
           def toIndex = result.offset+result.max < unionList.size()? result.offset+result.max: unionList.size()
-          unionList = unionList.subList(result.offset, toIndex.intValue())
-          result.listA = listA
-          result.listB = listB
-          result.unionList = unionList
+          result.comparisonMap = 
+              institutionsService.generateComparisonMap(unionList,mapA,mapB,result.offset, toIndex.intValue(),filterRules)
+          log.debug("Comparison Map"+result.comparisonMap)
           result
         }
         csv {
           try{
           log.debug("Create CSV Response")
+          def comparisonMap =
+          institutionsService.generateComparisonMap(unionList, mapA, mapB, 0, unionList.size(),filterRules)
            response.setHeader("Content-disposition", "attachment; filename=subscriptionComparison.csv")
            response.contentType = "text/csv"
            def out = response.outputStream
@@ -255,13 +260,11 @@ class SubscriptionDetailsController {
             writer.write("${result.subInsts[0].name} on ${result.dateA}, ${result.subInsts[1].name} on ${result.dateB}\n")
             writer.write('IE Title, Start Date A, Start Date B, Volume A, Volume B, Issue A, Issue B, End Date A, End Date B, Volume A, Volume B, Issue A, Issue B, Coverage Note A, Coverage Note B\n');
             log.debug("UnionList size is ${unionList.size}")
-            unionList.each { unionTitle ->
-              log.debug("Grabbing tipps")
-              def ieA = listA.find{it.tipp.title.title.equals(unionTitle)}
-              def ieB = listB.find{it.tipp.title.title.equals(unionTitle)}
-              log.debug("Found tipp for A ${ieA} and for B ${ieB}")
-              log.debug("Running on title ${unionTitle}");
-            writer.write("${unionTitle},${e(ieA?.startDate)},${e(ieB?.startDate)},${e(ieA?.startVolume)},${e(ieB?.startVolume)},${e(ieA?.startIssue)},${e(ieB?.startIssue)},${e(ieA?.coverageNote)},${e(ieB?.coverageNote)}\n")
+            comparisonMap.each{ title, values ->
+              def ieA = values[0]
+              def ieB = values[1]
+
+              writer.write("\"${unionTitle}\",${ieA?.startDate?:''},${ieB?.startDate?:''},${ieA?.startVolume?:''},${ieB?.startVolume?:''},${ieA?.startIssue?:''},${ieB?.startIssue?:''},\"${ieA?.coverageNote?:''}\",\"${ieB?.coverageNote?:''}\"\n")
             }
             writer.write("END");
             writer.flush();
@@ -282,9 +285,7 @@ class SubscriptionDetailsController {
     }
     result
   }
-  def e(str){
-    str==null?"":str
-  }
+  
   def createCompareList(sub,dateStr,params, result){
    def returnVals = [:]
    def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd')
@@ -299,13 +300,13 @@ class SubscriptionDetailsController {
 
    def queryParams = [subInst]
    def query = generateIEQuery(params,queryParams, true, date)
-   def list = IssueEntitlement.executeQuery("select ie "+query,  queryParams);
 
-   log.debug("List for ${subInst} is ${list}")
+   def list = IssueEntitlement.executeQuery("select ie "+query,  queryParams);
    
    list
 
   }
+
   def generateIEQuery(params, qry_params, showDeletedTipps, asAt) {
 
       def base_qry = "from IssueEntitlement as ie where ie.subscription = ? and ie.tipp.title.status.value != 'Deleted' "

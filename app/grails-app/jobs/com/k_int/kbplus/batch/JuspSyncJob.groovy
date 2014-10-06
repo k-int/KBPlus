@@ -15,7 +15,7 @@ class JuspSyncJob {
   }
 
   def execute() {
-    log.debug("JuspSyncJob");
+    log.debug("Execute::JuspSyncJob");
     if ( ApplicationHolder.application.config.KBPlusMaster == true ) {
       log.debug("This server is marked as KBPlus master. Running JUSP SYNC batch job");
       juspSyncService.doSync()

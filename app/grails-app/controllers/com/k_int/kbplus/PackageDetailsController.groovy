@@ -20,6 +20,7 @@ class PackageDetailsController {
   def genericOIDService
   def ESSearchService
   def exportService
+  def institutionsService
 
     static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
 
@@ -217,24 +218,30 @@ class PackageDetailsController {
           def listA = createCompareList(params.pkgA, params.dateA, params, result)
           def listB = createCompareList(params.pkgB, params.dateB, params, result)
 
-          //FIXME: It should be possible to optimize the following lines
-          def unionList = listA.collect{it.title.title}.plus(listB.collect {it.title.title})
+          def mapA = listA.collectEntries { [it.title.title, it] }
+          def mapB = listB.collectEntries { [it.title.title, it] }
+
+          // //FIXME: It should be possible to optimize the following lines
+
+          def unionList = mapA.keySet().plus(mapB.keySet()).toList() // heySet is hashSet
           unionList = unionList.unique()
-          result.unionListSize = unionList.size()
           unionList.sort()
-          // log.debug("List sizes are ${listA.size()} and ${listB.size()} and the union is ${unionList.size()}")
+
+          result.unionListSize = unionList.size()
+  
+          def filterRules = [params.insrt?true:false, params.dlt?true:false, params.updt?true:false, params.nochng?true:false ]
 
           withFormat{
             html{
               def toIndex = result.offset+result.max < unionList.size()? result.offset+result.max: unionList.size()
-              unionList = unionList.subList(result.offset, toIndex.intValue())
-              result.listA = listA
-              result.listB = listB
-              result.unionList = unionList
+              result.comparisonMap = 
+                  institutionsService.generateComparisonMap(unionList, mapA, mapB,result.offset, toIndex.intValue(),filterRules)
               result
             }
             csv {
               try{
+   
+              def comparisonMap = generateComparisonMap(unionList, mapA, mapB,0, unionList.size(),filterRules)
               log.debug("Create CSV Response")
                response.setHeader("Content-disposition", "attachment; filename=packageComparison.csv")
                response.contentType = "text/csv"

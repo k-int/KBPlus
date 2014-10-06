@@ -68,5 +68,43 @@ class InstitutionsService {
         }
         return licenseInstance
     }
-          
+
+    /** 
+     * Rules [insert, delete, update, noChange] 
+    **/
+    def generateComparisonMap(unionList, mapA, mapB, offset, toIndex, rules){
+      def result = new TreeMap()
+      def insert = rules[0]
+      def delete = rules[1]
+      def update = rules[2]
+      def noChange = rules[3]
+
+      for (unionTitle in unionList){
+       
+        def objA = mapA.get(unionTitle)
+        def objB = mapB.get(unionTitle)     
+
+        def comparison = objA?.compare(objB);
+        def value = null;
+
+        if(delete && comparison == -1 ) value = [objA,null, "danger"];
+        else if(update && comparison == 1) value = [objA,objB, "warning"];
+        else if(insert && comparison == null) value = [null, objB, "success"];
+        else if (noChange && comparison == 0) value = [objA,objB, ""];
+
+        if(value != null) result.put(unionTitle, value);
+
+        if (result.size() == toIndex ) {
+            break;
+        }
+      }
+
+      if(result.size() <= offset ){        
+        result.clear()
+      }else if(result.size() > (toIndex - offset) ){ 
+        def keys = result.keySet().toArray();
+        result = result.tailMap(keys[offset],true)
+      }
+      result
+    }        	
 }

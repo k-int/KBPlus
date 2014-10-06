@@ -24,6 +24,9 @@ class IssueEntitlement implements Comparable {
 
   static belongsTo = [subscription: Subscription, tipp: TitleInstancePackagePlatform]
 
+  @Transient
+  def comparisonProps = ['derivedAccessStartDate', 'derivedAccessEndDate',
+'coverageNote','coverageDepth','embargo','startVolume','startIssue','startDate','endDate','endIssue','endVolume']
 
   int compareTo(obj) {
     tipp?.title?.title.compareTo(obj.tipp?.title?.title)
@@ -88,24 +91,15 @@ class IssueEntitlement implements Comparable {
   }
 
   @Transient
-  public boolean hasChanged(IssueEntitlement ie){
-    boolean changed = false;
+  public int compare(IssueEntitlement ieB){
+    if(ieB == null) return -1;
 
-    changed = (getDerivedAccessStartDate() == ie.getDerivedAccessStartDate() ) &&
-               (getDerivedAccessEndDate() == ie.getDerivedAccessEndDate()) &&
-               (coverageNote == ie.coverageNote) &&
-               (coverageDepth == ie.coverageDepth) &&
-               (embargo == ie.embargo) &&
-               (startVolume == ie.startVolume) &&
-               (startIssue == ie.startIssue) &&
-               (startDate == ie.startDate) &&
-               (endDate == ie.endDate) &&
-               (endIssue == ie.endIssue) &&
-               (endVolume == ie.endVolume)
+    def noChange =true 
+    comparisonProps.each{ noChange &= this."${it}" == ieB."${it}" }
 
-    return !changed
+    if(noChange) return 0;
+    return 1;
   }
-
 
   public RefdataValue getAvailabilityStatus(Date as_at) {
     def result = null

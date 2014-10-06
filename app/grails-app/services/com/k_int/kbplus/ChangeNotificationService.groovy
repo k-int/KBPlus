@@ -53,13 +53,24 @@ class ChangeNotificationService {
     
         // log.debug("Consider pending changes for ${poidc}");
         def contextObject = genericOIDService.resolveOID(poidc);
+
+        if ( contextObject == null ) {
+          log.warn("Pending changes for a now deleted item.. nuke them!");
+          ChangeNotificationQueueItem.executeUpdate("delete ChangeNotificationQueueItem c where c.oid = :oid", [oid:poidc])
+        }
+
         def pendingChanges = ChangeNotificationQueueItem.executeQuery("select c from ChangeNotificationQueueItem as c where c.oid = ? order by c.ts asc",[poidc]);
         StringWriter sw = new StringWriter();
-        if ( contextObject.metaClass.respondsTo(contextObject, 'getURL') ) {
-          sw.write("<p>Changes on <a href=\"${contextObject.getURL()}\">${contextObject.toString()}</a> ${new Date().toString()}</p><p><ul>");
+
+        if ( contextObject ) {
+          if ( contextObject.metaClass.respondsTo(contextObject, 'getURL') ) {
+            sw.write("<p>Changes on <a href=\"${contextObject.getURL()}\">${contextObject.toString()}</a> ${new Date().toString()}</p><p><ul>");
+          }
+          else  {
+            sw.write("<p>Changes on ${contextObject.toString()} ${new Date().toString()}</p><p><ul>");
+          }
         }
-        else  {
-          sw.write("<p>Changes on ${contextObject.toString()} ${new Date().toString()}</p><p><ul>");
+        else {
         }
         def pc_delete_list = []
 
