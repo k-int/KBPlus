@@ -158,15 +158,21 @@ class DataManagerController {
             break;
           case 'com.k_int.kbplus.TitleInstancePackagePlatform':
             def tipp_object = TitleInstancePackagePlatform.get(hl.persistedObjectId);
-            line_to_add = [ link: createLink(controller:'tipp', action: 'show', id:hl.persistedObjectId),
-                            name: tipp_object.title?.title + " / "+tipp_object.pkg?.name,
-                            lastUpdated: hl.lastUpdated,
-                            propertyName: hl.propertyName,
-                            actor: User.findByUsername(hl.actor),
-                            oldValue: hl.oldValue,
-                            newValue: hl.newValue
-                          ]
-            linetype = 'TIPP'
+            if ( tipp_object != null ) {
+              line_to_add = [ link: createLink(controller:'tipp', action: 'show', id:hl.persistedObjectId),
+                              name: tipp_object.title?.title + " / "+tipp_object.pkg?.name,
+                              lastUpdated: hl.lastUpdated,
+                              propertyName: hl.propertyName,
+                              actor: User.findByUsername(hl.actor),
+                              oldValue: hl.oldValue,
+                              newValue: hl.newValue
+                            ]
+              linetype = 'TIPP'
+            }
+            else {
+              log.debug("Cleaning up history line that relates to a deleted item");
+              hl.delete(); 
+            }
             break;
           case 'com.k_int.kbplus.TitleInstance':
             def title_object = TitleInstance.get(hl.persistedObjectId);
