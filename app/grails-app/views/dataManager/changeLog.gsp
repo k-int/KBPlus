@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="layout" content="mmbootstrap"/>
-    <title>KB+ Data Manager Dashboard</title>
+    <title>KB+ Data Manager Change Log</title>
   </head>
 
   <body>
@@ -10,7 +10,7 @@
     <div class="container">
       <ul class="breadcrumb">
         <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
-        <li> <g:link controller="dataManager" action="index">Data Manager Dashboard</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="dataManager" action="index">Data Manager Change Log</g:link> <span class="divider">/</span> </li>
         <li> <g:link controller="dataManager" action="changeLog">DM Change log</g:link> </li>
 
         <li class="dropdown pull-right">
@@ -36,7 +36,7 @@
     </g:if>
 
     <div class="container">
-      <h2>Data Manager Dashboard</h2>
+      <h2>Data Manager Change Log</h2>
       <h6>Change Log <span class="pull-right">${num_hl} changes</span></h6>
       <g:form action="changeLog" controller="dataManager" method="get">
         From Date: <input name="startDate" type="date" value="${params.startDate}"/>
@@ -89,12 +89,15 @@
       </g:form>
     </div>
 
+    <g:set var="counter" value="${offset+1}" />
+
     <g:if test="${formattedHistoryLines?.size() > 0}">
 
       <div class="container alert-warn">
         <table class="table table-bordered">
           <thead>
             <tr>
+              <td></td>
               <td>Name</td>
               <td>Actor</td>
               <td>Event name</td>
@@ -107,6 +110,7 @@
           <tbody>
             <g:each in="${formattedHistoryLines}" var="hl">
               <tr>
+                <td>${counter++}</td>
                 <td><a href="${hl.link}">${hl.name}</a></td>
                 <td>
                   <g:link controller="userDetails" action="edit" id="${hl.actor?.id}">${hl.actor?.displayName}</g:link>
