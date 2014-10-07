@@ -22,7 +22,7 @@ FROM title_instance
 	 title_instance_package_platform.tipp_ti_fk = title_instance.ti_id 
 WHERE 
 	 title_instance_package_platform.tipp_pkg_fk = $P!{search_package_id} AND 
-	 title_instance_package_platform.tipp_coverage_note LIKE $P{coverage_note}]]>
+	 lower(title_instance_package_platform.tipp_coverage_note) LIKE lower($P{coverage_note})]]>
 	</queryString>
 	<field name="tipp_id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
