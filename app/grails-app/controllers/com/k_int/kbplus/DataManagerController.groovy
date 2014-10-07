@@ -159,7 +159,7 @@ class DataManagerController {
           case 'com.k_int.kbplus.TitleInstancePackagePlatform':
             def tipp_object = TitleInstancePackagePlatform.get(hl.persistedObjectId);
             line_to_add = [ link: createLink(controller:'tipp', action: 'show', id:hl.persistedObjectId),
-                            name: tipp_object.title.title + " / "+tipp_object.pkg.name,
+                            name: tipp_object.title?.title + " / "+tipp_object.pkg?.name,
                             lastUpdated: hl.lastUpdated,
                             propertyName: hl.propertyName,
                             actor: User.findByUsername(hl.actor),
