@@ -21,20 +21,6 @@
         <li><g:link controller="home" action="index">Home</g:link> <span class="divider">/</span></li>
         <li><g:link controller="packageDetails" action="index">All Packages</g:link><span class="divider">/</span></li>
         <li><g:link controller="packageDetails" action="show" id="${packageInstance.id}">${packageInstance.name}</g:link></li>
-
-        <li class="dropdown pull-right">
-            <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#"
-               href="">Exports<b class="caret"></b></a>
-
-            <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
-                <li><g:link action="show" params="${params + [format: 'json']}">Json Export</g:link></li>
-                <li><g:link action="show" params="${params + [format: 'xml']}">XML Export</g:link></li>
-                <g:each in="${transforms}" var="transkey,transval">
-                    <li><g:link action="show" id="${params.id}"
-                                params="${[format: 'xml', transformId: transkey]}">${transval.name}</g:link></li>
-                </g:each>
-            </ul>
-        </li>
     </ul>
 </div>
 
