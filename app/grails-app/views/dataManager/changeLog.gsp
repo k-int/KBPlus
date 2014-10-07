@@ -41,14 +41,42 @@
       <g:form action="changeLog" controller="dataManager" method="get">
         From Date: <input name="startDate" type="date" value="${params.startDate}"/>
         To Date: <input name="endDate" type="date" value="${params.endDate}"/>
-        Actor : <select name="actor">
-          <option value="ALL" ${params.actor?.equals('ALL') ? 'selected' : ''}>ALL (Including system)</option>
-          <option value="PEOPLE" ${params.actor?.equals('PEOPLE') ? 'selected' : ''}>ALL (Real Users)</option>
-          <g:each in="${actors}" var="a">
-            <option value="${a[0]}" ${params.actor?.equals(a[0]) ? 'selected' : ''}>${a[1]}</option>
-          </g:each>
-        </select>
+        <div class="dropdown">
+        Actor : 
+        <a class="dropdown-toggle btn" data-toggle="dropdown" href="#">
+            Select Actors
+            <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu dropdown-checkboxes" role="menu">
+            <li>
+                <label class="checkbox">
+                    <input type="checkbox" name="change_actor_PEOPLE" value="Y"
+                    ${params.change_actor_PEOPLE == "Y" ? 'checked' : ''} >
+                    ALL (Real Users)
+                </label>
+            </li>
+            <li>
+                <label class="checkbox">
+                    <input type="checkbox" name="change_actor_ALL" value="Y"
+                    ${params.change_actor_ALL == "Y" ? 'checked' : ''} >
+                    ALL (Including system)
+                </label>
+            </li>
+            <g:each in="${actors}" var="a">
+
+               <li>
+                  <label class="checkbox">
+                      <input type="checkbox" name="change_actor_${a[0]}" value="Y"
+                        ${params."change_actor_${a[0]}" == "Y" ? 'checked' : ''} >
+                        ${a[1]}
+                  </label>                
+              </li>
+            </g:each>
+        </ul>
+      </div>
+
         <br/>
+
         Whats Changed :
         <input type="checkbox" name="packages" value="Y" ${params.packages=='Y'?'checked':''}/> Packages &nbsp;
         <input type="checkbox" name="licenses" value="Y" ${params.licenses=='Y'?'checked':''}/> Licenses &nbsp;
@@ -106,5 +134,11 @@
       <div class="container alert-warn">
       </div>
     </g:else>
+    <r:script language="JavaScript">
+      $('.dropdown-menu').on('click', function(e) {
+      if($(this).hasClass('dropdown-checkboxes')) {
+          e.stopPropagation();
+      }});
+  </r:script>
   </body>
 </html>

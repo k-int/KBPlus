@@ -88,23 +88,36 @@ class DataManagerController {
 
     log.debug("END DATE IS ${end_date}")
     def query_params = ['l':types_to_include,'s':start_date,'e':end_date, 't':events_to_include]
+   
 
-    if ( params.actor != null ) {
-      if ( params.actor == 'ALL' ) {
+    def filterActors = params.findAll{it.key.startsWith("change_actor_")}
+    if(filterActors) {
+      def multipleActors = false;
+      def condition = "and"
+      
+      if ( params.change_actor_PEOPLE == 'Y' ) {
+        base_query += " ${condition} ( e.actor <> \'system\' AND e.actor <> \'anonymousUser\' )"
+        multipleActors = true
       }
-      else if ( params.actor == 'PEOPLE' ) {
-        base_query += ' and e.actor <> \'system\' AND e.actor <> \'anonymousUser\''
-      }
-      else {
-        base_query += ' and e.actor = :a'
-        query_params.a = params.actor
-      }
+      filterActors.each{
+          if(multipleActors){
+            condition = "or"
+          }
+          if(it.key != 'change_actor_ALL' && it.key != 'change_actor_PEOPLE'){
+            def paramKey = it.key.replaceAll("[^A-Za-z]", "")//remove things that can cause problems in sql
+            base_query += " ${condition} e.actor = :${paramKey} "
+            query_params."${paramKey}" = it.key.split("change_actor_")[1]
+            multipleActors = true
+          }     
+      }     
     }
+  
+  
 
     if ( types_to_include.size() > 0 ) {
   
       def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
-  
+
       result.historyLines = AuditLogEvent.executeQuery('select e '+base_query+' order by e.lastUpdated desc', 
                                                        query_params, limits);
       result.num_hl = AuditLogEvent.executeQuery('select count(e) '+base_query,
