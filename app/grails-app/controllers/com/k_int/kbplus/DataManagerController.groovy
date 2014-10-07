@@ -67,12 +67,15 @@ class DataManagerController {
     if ( params.updates=="Y" ) events_to_include.add('UPDATE');
     
     result.actors = []
-    AuditLogEvent.executeQuery('select distinct(actor) from AuditLogEvent').each {
+    def all_types = [ 'com.k_int.kbplus.Package','com.k_int.kbplus.License','com.k_int.kbplus.TitleInstance','com.k_int.kbplus.TitleInstancePackagePlatform' ]
+    AuditLogEvent.executeQuery('select distinct(al.actor) from AuditLogEvent as al where al.className in ( :l  ) order by al.actor',[l:all_types]).each {
       def u = User.findByUsername(it)
       if ( u != null ) {
         result.actors.add([it,u.displayName]);
       }
     }
+
+   result.actors.sort{it[1]}
 
     log.debug("${params}");
     if ( types_to_include.size() == 0 ) {
