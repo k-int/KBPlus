@@ -14,8 +14,8 @@
 	<parameter name="query" class="java.lang.String" isForPrompting="false">
 		<parameterDescription><![CDATA[]]></parameterDescription>
 		<defaultValueExpression><![CDATA[$P{select&Expected&Previous}.equals("Expected")
-? "select ie_id,ti_title from issue_entitlement, title_instance_package_platform, title_instance where ie_subscription_fk = $P!{search_sub_id} AND ie_tipp_fk = tipp_id AND tipp_ti_fk = ti_id AND ifnull(ie_access_start_date, tipp_access_start_date ) > '$P{compare_date}'"
-: "select ie_id,ti_title from issue_entitlement, title_instance_package_platform, title_instance where ie_subscription_fk = $P!{search_sub_id} AND ie_tipp_fk = tipp_id AND tipp_ti_fk = ti_id AND ifnull(ie_access_end_date, tipp_access_end_date ) <= '$P{compare_date}'"]]></defaultValueExpression>
+? "select sub_name, ie_id, ti_title from issue_entitlement, title_instance_package_platform, subscription, title_instance where sub_id = $P!{search_sub_id} AND ie_subscription_fk = $P!{search_sub_id} AND ie_tipp_fk = tipp_id AND tipp_ti_fk = ti_id AND ifnull(ie_access_start_date, tipp_access_start_date ) > '$P{compare_date}'"
+: "select sub_name, ie_id, ti_title from issue_entitlement, title_instance_package_platform, subscription, title_instance where sub_id = $P!{search_sub_id} AND ie_subscription_fk = $P!{search_sub_id} AND ie_tipp_fk = tipp_id AND tipp_ti_fk = ti_id AND ifnull(ie_access_end_date, tipp_access_end_date ) <= '$P{compare_date}'"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="report_description" class="java.lang.String">
 		<parameterDescription><![CDATA[List all the Previous or Expected titles for the given subscription]]></parameterDescription>
@@ -29,6 +29,7 @@
 	<field name="ti_title" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
+	<field name="sub_name" class="java.lang.String"/>
 	<group name="Group1">
 		<groupHeader>
 			<band height="60">
@@ -63,12 +64,30 @@
 			<frame>
 				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#007A5E" uuid="3f9c1786-af1d-4391-8150-5bc20e819737"/>
 				<staticText>
-					<reportElement x="20" y="20" width="400" height="43" forecolor="#FFFFFF" uuid="a512676b-6229-49c0-9fd4-d1d5fef3a607"/>
+					<reportElement x="140" y="20" width="190" height="30" forecolor="#FFFFFF" uuid="a512676b-6229-49c0-9fd4-d1d5fef3a607"/>
 					<textElement>
 						<font size="20" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Previous | Expected Issue Entitlements]]></text>
+					<text><![CDATA[ Issue Entitlements]]></text>
 				</staticText>
+				<textField>
+					<reportElement x="19" y="20" width="121" height="30" forecolor="#FFFFFF" uuid="963278c8-e301-48eb-a6d6-452e874f890f"/>
+					<textElement>
+						<font size="20"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{select&Expected&Previous}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="220" y="50" width="90" height="20" forecolor="#FFFFFF" uuid="e0344541-290e-43c0-9ddb-2041107800d8"/>
+					<text><![CDATA[Subscription Title:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="310" y="50" width="264" height="30" forecolor="#FFFFFF" uuid="c09fd3d1-08ea-448e-906f-d464cebce1b7"/>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{sub_name}]]></textFieldExpression>
+				</textField>
 			</frame>
 		</band>
 	</title>

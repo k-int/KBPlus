@@ -207,16 +207,17 @@ class PackageDetailsController {
 
         if (params.pkgA?.length() > 0 && params.pkgB?.length() > 0 ){
 
-          result.pkgA = params.pkgA
-          result.pkgB = params.pkgB
-          result.dateA = params.dateA
-          result.dateB = params.dateB
-
           result.pkgInsts = []
           result.pkgDates = []
-
-          def listA = createCompareList(params.pkgA, params.dateA, params, result)
-          def listB = createCompareList(params.pkgB, params.dateB, params, result)
+          def listA
+          def listB
+          try{
+            listA = createCompareList(params.pkgA, params.dateA, params, result)
+            listB = createCompareList(params.pkgB, params.dateB, params, result)
+          }catch(IllegalArgumentException e){
+            flash.error = e.getMessage()
+            return             
+          }
           result.listACount = listA.size()
           result.listBCount = listB.size()
 
@@ -248,7 +249,7 @@ class PackageDetailsController {
                response.contentType = "text/csv"
                def out = response.outputStream
                out.withWriter { writer ->
-                writer.write("${result.pkgInsts[0].name} on ${result.dateA}, ${result.pkgInsts[1].name} on ${result.dateB}\n")
+                writer.write("${result.pkgInsts[0].name} on ${params.dateA}, ${result.pkgInsts[1].name} on ${params.dateB}\n")
                 writer.write('Title, pISSN, eISSN, Start Date A, Start Date B, Start Volume A, Start Volume B, Start Issue A, Start Issue B, End Date A, End Date B, End Volume A,End  Volume B,End  Issue A,End  Issue B, Coverage Note A, Coverage Note B\n');
                 // log.debug("UnionList size is ${unionList.size}")
                 comparisonMap.each { title, values ->
@@ -256,7 +257,7 @@ class PackageDetailsController {
                   def tippB = values[1]
 
                   def pissn = tippA ? tippA.title.getIdentifierValue('issn') : tippB.title.getIdentifierValue('issn');
-                  def eissn = tippA ? tippA.title.getIdentifierValue('eISSN') : tippB.title.getIdentifierValue('eISSN');
+                  def eissn = tippA? tippA.title.getIdentifierValue('eISSN') : tippB.title.getIdentifierValue('eISSN');
 
                   writer.write("\"${title}\",\"${pissn}\",\"${eissn}\",\"${tippA?.startDate?:''}\",\"${tippB?.startDate?:''}\",\"${tippA?.startVolume?:''}\",\"${tippB?.startVolume?:''}\",\"${tippA?.startIssue?:''}\",\"${tippB?.startIssue?:''}\",\"${tippA?.endDate?:''}\",\"${tippB?.endDate?:''}\",\"${tippA?.endVolume?:''}\",\"${tippB?.endVolume?:''}\",\"${tippA?.endIssue?:''}\",\"${tippB?.endIssue?:''}\",\"${tippA?.coverageNote?:''}\",\"${tippB?.coverageNote?:''}\"\n")
                 }
@@ -274,9 +275,12 @@ class PackageDetailsController {
 
         }else{
           def currentDate = new java.text.SimpleDateFormat('yyyy-MM-dd').format(new Date())
-          result.dateA = currentDate
-          result.dateB = currentDate
-          flash.message = "Please select two packages for comparison"
+          params.dateA = currentDate
+          params.dateB = currentDate
+          params.insrt = "Y"
+          params.dlt = "Y"
+          params.updt = "Y"
+          flash.message = "Please select two packages for comparison."
           result
         }
       
@@ -290,6 +294,10 @@ class PackageDetailsController {
         
        def packageInstance = Package.get(packageId)
 
+       if(packageInstance.startDate > date || packageInstance.endDate < date){
+        def errorMsg = "${packageInstance.name} start date is: ${sdf.format(packageInstance.startDate)} and end date is: ${sdf.format(packageInstance.endDate)}. You have selected to compare it on date ${sdf.format(date)}."
+          throw new IllegalArgumentException(errorMsg)
+       }
        result.pkgInsts.add(packageInstance)
 
        result.pkgDates.add(sdf.format(date))

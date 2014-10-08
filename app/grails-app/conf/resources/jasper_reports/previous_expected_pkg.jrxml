@@ -14,8 +14,8 @@
 	<parameter name="query" class="java.lang.String" isForPrompting="false">
 		<parameterDescription><![CDATA[]]></parameterDescription>
 		<defaultValueExpression><![CDATA[$P{select&Expected&Previous}.equals("Expected")
-? "select tipp_id, ti_title from title_instance_package_platform, title_instance where tipp_pkg_fk = $P!{search_pkg_id} AND tipp_ti_fk = ti_id AND tipp_access_start_date > '$P{compare_date}'"
-: "select tipp_id, ti_title from title_instance_package_platform, title_instance where tipp_pkg_fk = $P!{search_pkg_id} AND tipp_ti_fk = ti_id AND tipp_access_start_date <= '$P{compare_date}'"]]></defaultValueExpression>
+? "select pkg_name, tipp_id, ti_title from title_instance_package_platform, title_instance, package where tipp_pkg_fk = $P!{search_pkg_id} AND pkg_id = tipp_pkg_fk AND tipp_ti_fk = ti_id AND tipp_access_start_date > '$P{compare_date}'"
+: "select pkg_name, tipp_id, ti_title from title_instance_package_platform, title_instance, package where tipp_pkg_fk = $P!{search_pkg_id} AND pkg_id = tipp_pkg_fk AND tipp_ti_fk = ti_id AND tipp_access_start_date <= '$P{compare_date}'"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="report_description" class="java.lang.String">
 		<parameterDescription><![CDATA[List all the Previous or Expected titles for the package selected]]></parameterDescription>
@@ -29,6 +29,7 @@
 	<field name="ti_title" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
+	<field name="pkg_name" class="java.lang.String"/>
 	<group name="Group1">
 		<groupHeader>
 			<band height="60">
@@ -63,13 +64,31 @@
 			<frame>
 				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#007A5E" uuid="3f9c1786-af1d-4391-8150-5bc20e819737"/>
 				<staticText>
-					<reportElement x="20" y="20" width="400" height="43" forecolor="#FFFFFF" uuid="a512676b-6229-49c0-9fd4-d1d5fef3a607"/>
+					<reportElement x="120" y="20" width="150" height="30" forecolor="#FFFFFF" uuid="a512676b-6229-49c0-9fd4-d1d5fef3a607"/>
 					<textElement>
 						<font size="20" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Previous | Expected Package Titles]]></text>
+					<text><![CDATA[ Package Titles]]></text>
 				</staticText>
+				<staticText>
+					<reportElement x="260" y="50" width="80" height="26" forecolor="#FFFFFF" uuid="1f8f971e-605d-4e1e-aa04-31c4c2ece5e6"/>
+					<text><![CDATA[Package Name:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="340" y="50" width="255" height="39" forecolor="#FFFFFF" uuid="2546b4b2-76ad-48c4-8d36-64b8a6792f39"/>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{pkg_name}]]></textFieldExpression>
+				</textField>
 			</frame>
+			<textField>
+				<reportElement x="0" y="0" width="100" height="30" forecolor="#FFFFFF" uuid="d1fc33c9-7bae-4ce9-850e-e450362021e7"/>
+				<textElement>
+					<font size="20"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{select&Expected&Previous}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>

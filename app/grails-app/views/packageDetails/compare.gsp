@@ -30,6 +30,9 @@
 	    <g:if test="${flash.message}">
 		    <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
 	    </g:if>
+        <g:if test="${flash.error}">
+		    <bootstrap:alert class="alert alert-error">${flash.error}</bootstrap:alert>
+	    </g:if>
 
 	<g:form action="compare" controller="packageDetails" method="GET">
 		<table class="table table-bordered">
@@ -45,13 +48,14 @@
 					<td>Package name</td>
 					<td>Restrict this list to packages starting after- <g:simpleHiddenValue id="startA" name="startA" type="date" value="${params.startA}"/>
 							and/or ending before- <g:simpleHiddenValue id="endA" name="endA" type="date" value="${params.endA}"/><br/>
-                                              Now selct first package to compare (Filtered by dates above)<br/>
+                                              Now selct first package to compare (Filtered by dates above). Use '%' as
+                                              wildcard.<br/>
                                               <input type="hidden" name="pkgA" id="packageSelectA" value="${pkgA}"/> 
 					</td>
 					<td> 
 					    Restrict this list to packages starting after- <g:simpleHiddenValue id="startB" name="startB" type="date" value="${params.startB}"/>
 							and/or ending before- <g:simpleHiddenValue id="endB" name="endB" type="date" value="${params.endB}"/><br/>
-                                              Select second package to compare (Filtered by dates above)<br/>
+                                              Select second package to compare (Filtered by dates above). Use '%' as wildcard.<br/>
                                               <input type="hidden" name="pkgB" id="packageSelectB" value="${pkgB}" />
 					</td>
 				</tr>
@@ -60,14 +64,14 @@
 					<td>
 						<div class="input-append date">
 							<input class="span2" size="16" type="text" 
-							name="dateA" id="dateA" value="${dateA}">
+							name="dateA" id="dateA" value="${params.dateA}">
 							<span class="add-on"><i class="icon-th"></i></span> 
 						</div>
 					</td>
 					<td> 
 						<div class="input-append date">
 							<input class="span2" size="16" type="text" 
-							name="dateB" id="dateB" value="${dateB}">
+							name="dateB" id="dateB" value="${params.dateB}">
 							<span class="add-on"><i class="icon-th"></i></span> 
 						</div>
 					</td>
@@ -95,10 +99,10 @@
        <br/>
 
 <g:form action="compare" method="get" class="form-inline">
-	<input type="hidden" name="pkgA"value="${pkgA}"/>
-	<input type="hidden" name="pkgB" value="${pkgB}"/>
-	<input type="hidden" name="dateA" value="${dateA}"/>
-	<input type="hidden" name="dateB" value="${dateB}"/>
+	<input type="hidden" name="pkgA"value="${params.pkgA}"/>
+	<input type="hidden" name="pkgB" value="${params.pkgB}"/>
+	<input type="hidden" name="dateA" value="${params.dateA}"/>
+	<input type="hidden" name="dateB" value="${params.dateB}"/>
 	<input type="hidden" name="insrt" value="${params.insrt}"/>
 	<input type="hidden" name="dlt" value="${params.dlt}"/>
 	<input type="hidden" name="updt" value="${params.updt}"/>
@@ -107,25 +111,27 @@
 	<table>
 		<tr>
 			<td>
-				Filters - Title: <input name="filter" value="${params.filter}"/>
+				Filters - Title: <input type="text" name="filter" value="${params.filter}"/>
 			</td>
 			<td>
 				Coverage Starts Before:
 	<g:simpleHiddenValue id="startsBefore" name="startsBefore" type="date" value="${params.startsBefore}"/>
 			</td>
+			<td> <input type='button' class="btn btn-primary" id="resetFilters" value='Clear'/></td>
 		</tr>
 		<tr>
 		<td>
-			Coverage note: <input name="coverageNoteFilter" value="${params.coverageNoteFilter}"/>
+			Coverage note: <input type="text" name="coverageNoteFilter" value="${params.coverageNoteFilter}"/>
 		</td>
 		<td>
 			Coverage Ends After:
 			<g:simpleHiddenValue id="endsAfter" name="endsAfter" type="date" value="${params.endsAfter}"/>
 		</td>
-		<td> <input type="submit" class="btn btn-primary" value="Filter Results" /> </td>
+
+			<td> <input type="submit" class="btn btn-primary" value="Filter Results" /> </td>
 		</tr>
 	</table>
-	
+
 </g:form>
 
 
@@ -210,6 +216,7 @@
                 return {
                 	hideIdent: 'true',
                 	hasDate: 'true',
+                	inclPkgStartDate: 'true',
                 	startDate: $("#start"+filter).val(),
                 	endDate: $("#end"+filter).val(),
                     q: term , // search term
@@ -223,6 +230,11 @@
         }
 	    });
     }
+
+	$("#resetFilters").click(function() {
+	    $(this).closest('form').find("input[name=filter], input[type=coverageNoteFilter],input[type=coverageNoteFilter],input[name=startsBefore],input[name=endsAfter]").val("");
+	    $(this).closest('form').submit();
+	});
 
     function showMore(ident) {
 		$("#compare_details"+ident).modal('show')
