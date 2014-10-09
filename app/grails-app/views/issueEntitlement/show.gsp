@@ -168,6 +168,10 @@
             </dl>
 
             <g:if test="${( usage != null ) && ( usage.size() > 0 ) }">
+              <span class="pull-right">
+                <!-- PID== IID== JID==JUSP Journal ID -->
+                <a href="${jusplink}">[JUSP]</a>
+              </span>
               <h6>JUSP Usage Statistics</h6>
               <table class="table table-bordered table-striped">
                 <tr>

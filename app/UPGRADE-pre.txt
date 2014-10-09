@@ -3,3 +3,6 @@ select "This is UPGRADE-pre.txt";
 drop table if exists property_definition;
 
 drop table if exists license_custom_property;
+
+-- Comment out for now
+-- alter table title_instance_package_platform drop column controlled_properties_hash_code;

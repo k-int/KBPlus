@@ -71,12 +71,15 @@ class DataManagerController {
     if ( params.updates=="Y" ) events_to_include.add('UPDATE');
     
     result.actors = []
-    AuditLogEvent.executeQuery('select distinct(actor) from AuditLogEvent').each {
+    def all_types = [ 'com.k_int.kbplus.Package','com.k_int.kbplus.License','com.k_int.kbplus.TitleInstance','com.k_int.kbplus.TitleInstancePackagePlatform' ]
+    AuditLogEvent.executeQuery('select distinct(al.actor) from AuditLogEvent as al where al.className in ( :l  ) order by al.actor',[l:all_types]).each {
       def u = User.findByUsername(it)
       if ( u != null ) {
         result.actors.add([it,u.displayName]);
       }
     }
+
+   result.actors.sort{it[1]}
 
     log.debug("${params}");
     if ( types_to_include.size() == 0 ) {
@@ -162,15 +165,21 @@ class DataManagerController {
             break;
           case 'com.k_int.kbplus.TitleInstancePackagePlatform':
             def tipp_object = TitleInstancePackagePlatform.get(hl.persistedObjectId);
-            line_to_add = [ link: createLink(controller:'tipp', action: 'show', id:hl.persistedObjectId),
-                            name: tipp_object.title.title + " / "+tipp_object.pkg.name,
-                            lastUpdated: hl.lastUpdated,
-                            propertyName: hl.propertyName,
-                            actor: User.findByUsername(hl.actor),
-                            oldValue: hl.oldValue,
-                            newValue: hl.newValue
-                          ]
-            linetype = 'TIPP'
+            if ( tipp_object != null ) {
+              line_to_add = [ link: createLink(controller:'tipp', action: 'show', id:hl.persistedObjectId),
+                              name: tipp_object.title?.title + " / "+tipp_object.pkg?.name,
+                              lastUpdated: hl.lastUpdated,
+                              propertyName: hl.propertyName,
+                              actor: User.findByUsername(hl.actor),
+                              oldValue: hl.oldValue,
+                              newValue: hl.newValue
+                            ]
+              linetype = 'TIPP'
+            }
+            else {
+              log.debug("Cleaning up history line that relates to a deleted item");
+              hl.delete(); 
+            }
             break;
           case 'com.k_int.kbplus.TitleInstance':
             def title_object = TitleInstance.get(hl.persistedObjectId);

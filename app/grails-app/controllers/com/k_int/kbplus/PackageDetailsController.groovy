@@ -11,6 +11,8 @@ import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import java.text.SimpleDateFormat
+import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
+
 
 class PackageDetailsController {
 
@@ -829,7 +831,7 @@ class PackageDetailsController {
   }
 
 
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def packageBatchUpdate() {
 
     def packageInstance = Package.get(params.id)
@@ -947,5 +949,91 @@ class PackageDetailsController {
     }
 
     redirect(action:'show', params:[id:params.id,sort:params.sort,order:params.order,max:params.max,offset:params.offset]);
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def history() {
+    def result = [:]
+    def exporting = params.format == 'csv' ? true : false
+
+    if ( exporting ) {
+      result.max = 9999999
+      params.max = 9999999
+      result.offset = 0
+    }
+    else {
+      result.max = params.max ? Integer.parseInt(params.max) : 25
+      params.max = result.max
+      result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+    }
+
+    result.packageInstance = Package.get(params.id)
+    def base_query = 'from org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent as e where ( e.className = :pkgcls and e.persistedObjectId = :pkgid ) or ( e.className = :tippcls and e.persistedObjectId in ( select id from TitleInstancePackagePlatform as tipp where tipp.pkg = :pkgid ) )'
+
+    def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
+
+    def query_params = [ pkgcls:'com.k_int.kbplus.Package', tippcls:'com.k_int.kbplus.TitleInstancePackagePlatform', pkgid:params.id]
+
+    log.debug("base_query: ${base_query}, params:${query_params}, limits:${limits}");
+
+    result.historyLines = AuditLogEvent.executeQuery('select e '+base_query+' order by e.lastUpdated desc', query_params, limits);
+    result.num_hl = AuditLogEvent.executeQuery('select count(e) '+base_query, query_params)[0];
+    result.formattedHistoryLines = []
+
+
+    result.historyLines.each { hl ->
+
+        def line_to_add = [:]
+        def linetype = null
+
+        switch(hl.className) {
+          case 'com.k_int.kbplus.Package':
+            def package_object = Package.get(hl.persistedObjectId);
+            line_to_add = [ link: createLink(controller:'packageDetails', action: 'show', id:hl.persistedObjectId),
+                            name: package_object.toString(),
+                            lastUpdated: hl.lastUpdated,
+                            propertyName: hl.propertyName,
+                            actor: User.findByUsername(hl.actor),
+                            oldValue: hl.oldValue,
+                            newValue: hl.newValue
+                          ]
+            linetype = 'Package'
+            break;
+          case 'com.k_int.kbplus.TitleInstancePackagePlatform':
+            def tipp_object = TitleInstancePackagePlatform.get(hl.persistedObjectId);
+            if ( tipp_object != null ) {
+              line_to_add = [ link: createLink(controller:'tipp', action: 'show', id:hl.persistedObjectId),
+                              name: tipp_object.title?.title + " / "+tipp_object.pkg?.name,
+                              lastUpdated: hl.lastUpdated,
+                              propertyName: hl.propertyName,
+                              actor: User.findByUsername(hl.actor),
+                              oldValue: hl.oldValue,
+                              newValue: hl.newValue
+                            ]
+              linetype = 'TIPP'
+            }
+            else {
+              log.debug("Cleaning up history line that relates to a deleted item");
+              hl.delete();
+            }
+        }
+        switch ( hl.eventName ) {
+          case 'INSERT':
+            line_to_add.eventName= "New ${linetype}"
+            break;
+          case 'UPDATE':
+            line_to_add.eventName= "Updated ${linetype}"
+            break;
+          case 'DELETE':
+            line_to_add.eventName= "Deleted ${linetype}"
+            break;
+          default:
+            line_to_add.eventName= "Unknown ${linetype}"
+            break;
+        }
+        result.formattedHistoryLines.add(line_to_add);
+    }
+
+    result
   }
 }
