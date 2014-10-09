@@ -962,7 +962,8 @@ class PackageDetailsController {
       result.offset = 0
     }
     else {
-      result.max = params.max ? Integer.parseInt(params.max) : 25
+      def user = User.get(springSecurityService.principal.id)
+      result.max = params.max ? Integer.parseInt(params.max) : user.defaultPageSize
       params.max = result.max
       result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
     }

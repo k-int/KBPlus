@@ -292,5 +292,73 @@ class TitleDetailsController {
     def result = sw.toString();
     result;
   }
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def history() {
+    def result = [:]
+    def exporting = params.format == 'csv' ? true : false
 
+    if ( exporting ) {
+      result.max = 9999999
+      params.max = 9999999
+      result.offset = 0
+    }
+    else {
+      def user = User.get(springSecurityService.principal.id)
+      result.max = params.max ? Integer.parseInt(params.max) : user.defaultPageSize
+      params.max = result.max
+      result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+    }
+
+    result.titleInstance = TitleInstance.get(params.id)
+    def base_query = 'from org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent as e where ( e.className = :instCls and e.persistedObjectId = :instId )'
+
+    def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
+
+    def query_params = [ instCls:'com.k_int.kbplus.TitleInstance', instId:params.id]
+
+    log.debug("base_query: ${base_query}, params:${query_params}, limits:${limits}");
+
+    result.historyLines = org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent.executeQuery('select e '+base_query+' order by e.lastUpdated desc', query_params, limits);
+    result.num_hl = org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent.executeQuery('select count(e) '+base_query, query_params)[0];
+    result.formattedHistoryLines = []
+
+
+    result.historyLines.each { hl ->
+
+        def line_to_add = [:]
+        def linetype = null
+
+        switch(hl.className) {
+          case 'com.k_int.kbplus.TitleInstance':
+            def instance_obj = TitleInstance.get(hl.persistedObjectId);
+            line_to_add = [ link: createLink(controller:'titleInstance', action: 'show', id:hl.persistedObjectId),
+                            name: instance_obj.title,
+                            lastUpdated: hl.lastUpdated,
+                            propertyName: hl.propertyName,
+                            actor: User.findByUsername(hl.actor),
+                            oldValue: hl.oldValue,
+                            newValue: hl.newValue
+                          ]
+            linetype = 'TitleInstance'
+            break;
+        }
+        switch ( hl.eventName ) {
+          case 'INSERT':
+            line_to_add.eventName= "New ${linetype}"
+            break;
+          case 'UPDATE':
+            line_to_add.eventName= "Updated ${linetype}"
+            break;
+          case 'DELETE':
+            line_to_add.eventName= "Deleted ${linetype}"
+            break;
+          default:
+            line_to_add.eventName= "Unknown ${linetype}"
+            break;
+        }
+        result.formattedHistoryLines.add(line_to_add);
+    }
+
+    result
+  }
 }
