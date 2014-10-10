@@ -27,7 +27,7 @@ class ApiController {
   def index() { 
   }
 
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  // @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def uploadBibJson() {
     def result=[:]
     log.debug("uploadBibJson");
