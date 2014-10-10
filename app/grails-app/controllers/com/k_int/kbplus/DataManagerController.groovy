@@ -36,7 +36,8 @@ class DataManagerController {
       result.offset = 0
     }
     else {
-      result.max = params.max ? Integer.parseInt(params.max) : 25
+      def user = User.get(springSecurityService.principal.id)
+      result.max = params.max ? Integer.parseInt(params.max) : user.defaultPageSize
       params.max = result.max
       result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
     }
@@ -51,7 +52,10 @@ class DataManagerController {
     if ( ( params.creates == null ) && ( params.updates == null ) ) {
       params.creates='Y'
     }
-
+    if(params.startDate > params.endDate){
+      flash.error = "From Date cannot be after To Date."
+      return
+    }
     def base_query = "from org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent as e where e.className in (:l) AND e.lastUpdated >= :s AND e.lastUpdated <= :e AND e.eventName in (:t)"
 
     def types_to_include = []
@@ -67,12 +71,15 @@ class DataManagerController {
     if ( params.updates=="Y" ) events_to_include.add('UPDATE');
     
     result.actors = []
-    AuditLogEvent.executeQuery('select distinct(actor) from AuditLogEvent').each {
+    def all_types = [ 'com.k_int.kbplus.Package','com.k_int.kbplus.License','com.k_int.kbplus.TitleInstance','com.k_int.kbplus.TitleInstancePackagePlatform' ]
+    AuditLogEvent.executeQuery('select distinct(al.actor) from AuditLogEvent as al where al.className in ( :l  ) order by al.actor',[l:all_types]).each {
       def u = User.findByUsername(it)
       if ( u != null ) {
         result.actors.add([it,u.displayName]);
       }
     }
+
+   result.actors.sort{it[1]}
 
     log.debug("${params}");
     if ( types_to_include.size() == 0 ) {
@@ -88,23 +95,36 @@ class DataManagerController {
 
     log.debug("END DATE IS ${end_date}")
     def query_params = ['l':types_to_include,'s':start_date,'e':end_date, 't':events_to_include]
+   
 
-    if ( params.actor != null ) {
-      if ( params.actor == 'ALL' ) {
+    def filterActors = params.findAll{it.key.startsWith("change_actor_")}
+    if(filterActors) {
+      def multipleActors = false;
+      def condition = "and"
+
+      if ( params.change_actor_PEOPLE == 'Y' ) {
+        base_query += " ${condition} ( e.actor <> \'system\' AND e.actor <> \'anonymousUser\' )"
+        multipleActors = true
       }
-      else if ( params.actor == 'PEOPLE' ) {
-        base_query += ' and e.actor <> \'system\' AND e.actor <> \'anonymousUser\''
-      }
-      else {
-        base_query += ' and e.actor = :a'
-        query_params.a = params.actor
-      }
+      filterActors.each{
+          if(multipleActors){
+            condition = "or"
+          }
+          if(it.key != 'change_actor_ALL' && it.key != 'change_actor_PEOPLE'){
+            def paramKey = it.key.replaceAll("[^A-Za-z]", "")//remove things that can cause problems in sql
+            base_query += " ${condition} e.actor = :${paramKey} "
+            query_params."${paramKey}" = it.key.split("change_actor_")[1]
+            multipleActors = true
+          }     
+      }     
     }
+  
+  
 
     if ( types_to_include.size() > 0 ) {
   
       def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
-  
+
       result.historyLines = AuditLogEvent.executeQuery('select e '+base_query+' order by e.lastUpdated desc', 
                                                        query_params, limits);
       result.num_hl = AuditLogEvent.executeQuery('select count(e) '+base_query,
@@ -145,15 +165,21 @@ class DataManagerController {
             break;
           case 'com.k_int.kbplus.TitleInstancePackagePlatform':
             def tipp_object = TitleInstancePackagePlatform.get(hl.persistedObjectId);
-            line_to_add = [ link: createLink(controller:'tipp', action: 'show', id:hl.persistedObjectId),
-                            name: tipp_object.title.title + " / "+tipp_object.pkg.name,
-                            lastUpdated: hl.lastUpdated,
-                            propertyName: hl.propertyName,
-                            actor: User.findByUsername(hl.actor),
-                            oldValue: hl.oldValue,
-                            newValue: hl.newValue
-                          ]
-            linetype = 'TIPP'
+            if ( tipp_object != null ) {
+              line_to_add = [ link: createLink(controller:'tipp', action: 'show', id:hl.persistedObjectId),
+                              name: tipp_object.title?.title + " / "+tipp_object.pkg?.name,
+                              lastUpdated: hl.lastUpdated,
+                              propertyName: hl.propertyName,
+                              actor: User.findByUsername(hl.actor),
+                              oldValue: hl.oldValue,
+                              newValue: hl.newValue
+                            ]
+              linetype = 'TIPP'
+            }
+            else {
+              log.debug("Cleaning up history line that relates to a deleted item");
+              hl.delete(); 
+            }
             break;
           case 'com.k_int.kbplus.TitleInstance':
             def title_object = TitleInstance.get(hl.persistedObjectId);
@@ -205,7 +231,7 @@ class DataManagerController {
         out.withWriter { w ->
         w.write('Timestamp,Name,Event,Property,Actor,Old,New,Link\n')
           result.formattedHistoryLines.each { c ->
-            def line = "\"${formatter.format(c.lastUpdated)}\",\"${c.name}\",\"${c.eventName}\",\"${c.propertyName}\",\"${c.actor?.displayName}\",\"${c.oldValue}\",\"${c.newValue}\",\"${c.link}\"\n".toString()
+            def line = "\"${c.lastUpdated}\",\"${c.name}\",\"${c.eventName}\",\"${c.propertyName}\",\"${c.actor?.displayName}\",\"${c.oldValue}\",\"${c.newValue}\",\"${c.link}\"\n".toString()
             w.write(line)
           }
         }

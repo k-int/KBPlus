@@ -296,7 +296,9 @@ class Package {
                                                 ])
 
   }
-
+  /**
+  * OPTIONS: startDate, endDate, hideIdent, inclPkgStartDate, hideDeleted
+  **/
   @Transient
   def notifyDependencies(changeDocument) {
     def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
@@ -308,50 +310,38 @@ class Package {
   @Transient
   static def refdataFind(params) {
     def result = [];
-    def ql = null;
-   
-
+    
+    def hqlString = "select pkg from Package pkg where pkg.name like ? "
+    def hqlParams = [params.q + "%"]
+    def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd")
+    
     if(params.hasDate ){
     
-      def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd")
+      def startDate = params.startDate.length() > 1 ? sdf.parse(params.startDate) : null
+      def endDate =  params.endDate.length() > 1 ? sdf.parse(params.endDate)  : null
 
-      def dateStart = params.startDate
-      def dateEnd = params.endDate
-
-      dateStart = dateStart.length() > 1 ? sdf.parse(dateStart) : null
-      dateEnd = dateEnd.length() > 1 ? sdf.parse(dateEnd)  : null
-
-      if(dateStart || dateEnd){
-        if(dateEnd && dateStart){
-          ql = Package.findAllByNameIlikeAndStartDateGreaterThanEqualsAndEndDateLessThanEquals("${params.q}%",dateStart,dateEnd,params)
-        }else if(dateStart){
-          ql = Package.findAllByNameIlikeAndStartDateGreaterThanEquals("${params.q}%",dateStart)
-        }else if(dateEnd){
-          ql = Package.findAllByNameIlikeAndEndDateLessThanEquals("${params.q}%",dateEnd )
-          }
-      }else{
-        ql = Package.findAllByNameIlike("${params.q}%",params)
-      }   
-        
-    }else{
-      ql = Package.findAllByNameIlike("${params.q}%",params)
-    }
-  
-    if(params.hideDeleted == 'true'){
-      ql = ql.findAll{ it.packageStatus?.value != "Deleted" }     
-    }
-
-    if(params.hideIdent && params.hideIdent == "true"){
-      if ( ql ) {
-          ql.each { t ->
-            result.add([id:"${t.class.name}:${t.id}",text:"${t.name}"])
-          }
-      }  
-    }else if ( ql ) {
-      ql.each { t ->
-        result.add([id:"${t.class.name}:${t.id}",text:"${t.name} (${t.identifier})"])
+      if(startDate) {
+        hqlString += " AND pkg.startDate >= ?"
+        hqlParams += startDate
+      }
+      if(endDate) {
+        hqlString += " AND pkg.endDate <= ?"
+        hqlParams += endDate
       }
     }
+
+    if(params.hideDeleted == 'true'){
+      hqlString += " AND pkg.packageStatus.value != 'Deleted'"
+    }
+
+    def queryResults = Package.executeQuery(hqlString,hqlParams);
+
+    queryResults?.each { t ->
+      def resultText = t.name
+      resultText = params.inclPkgStartDate == "true" ? resultText + " (${sdf.format(t.startDate)})" : resultText
+      resultText = params.hideIdent == "true" ? resultText : resultText+" (${t.identifier})"
+      result.add([id:"${t.class.name}:${t.id}",text:resultText])
+    }    
 
     result
   }

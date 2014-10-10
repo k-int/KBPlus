@@ -375,7 +375,7 @@ class TitleInstancePackagePlatform {
     return sw.toString();
   }
   /**
-   * Compare the controlledPropertiesHashCode of two tipps.
+   * Compare the controlledPropertie of two tipps
   **/
   public int compare(TitleInstancePackagePlatform tippB){
       if(!tippB) return -1;

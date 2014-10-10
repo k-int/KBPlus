@@ -220,16 +220,19 @@ class SubscriptionDetailsController {
     if(params.subA?.length() > 0 && params.subB?.length() > 0 ){
       log.debug("Subscriptions submitted for comparison ${params.subA} and ${params.subB}.")
       log.debug("Dates submited are ${params.dateA} and ${params.dateB}")
-      result.subA = params.subA
-      result.subB = params.subB
-      result.dateA = params.dateA
-      result.dateB = params.dateB
       
       result.subInsts = []
       result.subDates = []
 
-      def listA = createCompareList(params.subA ,params.dateA, params, result)
-      def listB = createCompareList(params.subB, params.dateB, params, result)
+      def listA
+      def listB
+      try{
+      listA = createCompareList(params.subA ,params.dateA, params, result)
+      listB = createCompareList(params.subB, params.dateB, params, result)
+      }catch(IllegalArgumentException e){
+        flash.error = e.getMessage()
+        return
+      }
      
       result.listACount = listA.size()
       result.listBCount = listB.size()
@@ -261,7 +264,7 @@ class SubscriptionDetailsController {
            response.contentType = "text/csv"
            def out = response.outputStream
            out.withWriter { writer ->
-            writer.write("${result.subInsts[0].name} on ${result.dateA}, ${result.subInsts[1].name} on ${result.dateB}\n")
+            writer.write("${result.subInsts[0].name} on ${params.dateA}, ${result.subInsts[1].name} on ${params.dateB}\n")
             writer.write('IE Title, pISSN, eISSN, Start Date A, Start Date B, Volume A, Volume B, Issue A, Issue B, End Date A, End Date B, Volume A, Volume B, Issue A, Issue B, Coverage Note A, Coverage Note B\n');
             log.debug("UnionList size is ${unionList.size}")
             comparisonMap.each{ title, values ->
@@ -286,8 +289,15 @@ class SubscriptionDetailsController {
       }
     }else{
       def currentDate = new java.text.SimpleDateFormat('yyyy-MM-dd').format(new Date())
-      result.dateA = currentDate
-      result.dateB = currentDate
+      params.dateA = currentDate
+      params.dateB = currentDate
+      params.insrt = "Y"
+      params.dlt = "Y"
+      params.updt = "Y"
+      if(params.shortcode){
+        result.institutionName = Org.findByShortcode(params.shortcode).name
+        log.debug("FIND ORG NAME ${result.institutionName}")
+      }
       flash.message = "Please select two subscriptions for comparison"
     }
     result
@@ -300,7 +310,11 @@ class SubscriptionDetailsController {
    def subId = sub.substring( sub.indexOf(":")+1)
     
    def subInst = Subscription.get(subId)
-   log.debug("Subscription resolved to ${subInst}")
+   if(subInst.startDate > date || subInst.endDate < date){
+      def errorMsg = "${subInst.name} start date is: ${sdf.format(subInst.startDate)} and end date is: ${sdf.format(subInst.endDate)}. You have selected to compare it on date ${sdf.format(date)}."
+          throw new IllegalArgumentException(errorMsg)
+   }
+
    result.subInsts.add(subInst)
 
    result.subDates.add(sdf.format(date))

@@ -32,11 +32,9 @@
             <tr>
             <td>${rparam.getDescription()}</td>
             <td>
-                <g:if test="${rparam.getValueClass().equals(java.sql.Timestamp) || 
-                    rparam.getValueClass().equals(java.sql.Date) }">
+                <g:if test="${rparam.getValueClass().equals(java.sql.Timestamp) || rparam.getValueClass().equals(java.sql.Date) }">
                     <div class="input-append date">
                         <input class="span2" size="16" type="text" name="${rparam.getName()}">
-                        <span class="add-on"><i class="icon-th"></i></span>
                     </div>
                 </g:if>
                 <g:elseif test="${rparam.getName().contains("select")}">
@@ -48,8 +46,7 @@
 
                        <input type="hidden" id="${rparam.getName()}" name="${rparam.getName()}"/>
                         <script type="text/javascript">
-                            createSelect2Search('#${rparam.getName()}',
-                                '${rparam.getValueClass().toString().replace("class ","")}');
+                            createSelect2Search('#${rparam.getName()}', '${rparam.getValueClass().toString().replace("class ","")}');
                         </script>
                     </g:if>
                     <g:else>
