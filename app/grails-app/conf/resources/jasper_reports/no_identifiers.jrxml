@@ -6,10 +6,8 @@
 		<parameterDescription><![CDATA[A report listing all titles that have identifiers attached]]></parameterDescription>
 	</parameter>
 	<queryString language="SQL">
-		<![CDATA[
- SELECT ti.ti_id, ti.ti_title FROM title_instance ti WHERE ti.ti_id NOT IN (SELECT ti.ti_id FROM title_instance ti LEFT JOIN identifier_occurrence imp ON imp.io_ti_fk = ti.ti_id LEFT JOIN identifier i ON i.id_id = imp.io_canonical_id LEFT JOIN identifier_namespace iname ON iname.idns_id = i.id_ns_fk WHERE iname.idns_ns = 'eISSN') AND ti.ti_id NOT IN (SELECT ti.ti_id FROM title_instance ti LEFT JOIN identifier_occurrence imp ON imp.io_ti_fk = ti.ti_id LEFT JOIN identifier i ON i.id_id = imp.io_canonical_id LEFT JOIN identifier_namespace iname ON iname.idns_id = i.id_ns_fk WHERE iname.idns_ns = 'ISSN') AND
-  ti.ti_id NOT IN (SELECT ti.ti_id FROM title_instance ti LEFT JOIN identifier_occurrence imp ON imp.io_ti_fk = ti.ti_id LEFT JOIN identifier i ON i.id_id = imp.io_canonical_id LEFT JOIN identifier_namespace iname ON iname.idns_id = i.id_ns_fk WHERE iname.idns_ns = 'ISBN');
-]]>
+		<![CDATA[SELECT ti.ti_id, ti.ti_title FROM title_instance ti WHERE ti.ti_id NOT IN (SELECT ti.ti_id FROM title_instance ti LEFT JOIN identifier_occurrence imp ON imp.io_ti_fk = ti.ti_id LEFT JOIN identifier i ON i.id_id = imp.io_canonical_id LEFT JOIN identifier_namespace iname ON iname.idns_id = i.id_ns_fk WHERE iname.idns_ns = 'eISSN') AND ti.ti_id NOT IN (SELECT ti.ti_id FROM title_instance ti LEFT JOIN identifier_occurrence imp ON imp.io_ti_fk = ti.ti_id LEFT JOIN identifier i ON i.id_id = imp.io_canonical_id LEFT JOIN identifier_namespace iname ON iname.idns_id = i.id_ns_fk WHERE iname.idns_ns = 'ISSN') AND
+  ti.ti_id NOT IN (SELECT ti.ti_id FROM title_instance ti LEFT JOIN identifier_occurrence imp ON imp.io_ti_fk = ti.ti_id LEFT JOIN identifier i ON i.id_id = imp.io_canonical_id LEFT JOIN identifier_namespace iname ON iname.idns_id = i.id_ns_fk WHERE iname.idns_ns = 'ISBN');]]>
 	</queryString>
 	<field name="ti_id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -57,7 +55,7 @@
 				<text><![CDATA[id]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="110" y="0" width="444" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="436181bf-58b5-4b93-a7ef-a65b0daf5777"/>
+				<reportElement mode="Opaque" x="100" y="0" width="454" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="436181bf-58b5-4b93-a7ef-a65b0daf5777"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
@@ -78,7 +76,7 @@
 				<textFieldExpression><![CDATA[$F{ti_id}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="110" y="0" width="444" height="20" uuid="878ae7e8-1bd6-4854-9b6a-e2af74f1d370"/>
+				<reportElement x="100" y="0" width="454" height="20" uuid="878ae7e8-1bd6-4854-9b6a-e2af74f1d370"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>

@@ -229,6 +229,10 @@ class SubscriptionDetailsController {
       try{
       listA = createCompareList(params.subA ,params.dateA, params, result)
       listB = createCompareList(params.subB, params.dateB, params, result)
+        if(!params.countA){
+          params.countA = Subscription.executeQuery("select count(elements(sub.issueEntitlements)) from Subscription sub where sub.id = ${result.subInsts.get(0).id}")
+          params.countB = Subscription.executeQuery("select count(elements(sub.issueEntitlements)) from Subscription sub where sub.id = ${result.subInsts.get(1).id}")
+        }
       }catch(IllegalArgumentException e){
         flash.error = e.getMessage()
         return

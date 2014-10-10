@@ -94,10 +94,42 @@
 
 
 <g:if test="${pkgInsts?.get(0) && pkgInsts?.get(1)}">
-<div class="row">
-	<h3>Comparing '${pkgInsts.get(0).name}'(A) and <br/>'${pkgInsts.get(1).name}'(B)</h3>
-       <br/>
 
+	<div class="row">
+	<h3>Packages Compared</h3>
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>Value</th>
+				<th>${pkgInsts.get(0).name}</th>
+				<th>${pkgInsts.get(1).name}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Date Created</td>
+				<td><g:formatDate format="yyyy-MM-dd" date="${pkgInsts.get(0).dateCreated}"/></td>
+				<td><g:formatDate format="yyyy-MM-dd" date="${pkgInsts.get(1).dateCreated}"/></td>
+			</tr>
+			<tr>
+				<td>Start Date</td>
+				<td><g:formatDate format="yyyy-MM-dd" date="${pkgInsts.get(0).startDate}"/></td>
+				<td><g:formatDate format="yyyy-MM-dd" date="${pkgInsts.get(1).startDate}"/></td>
+			</tr>
+			<tr>
+				<td>End Date</td>
+				<td><g:formatDate format="yyyy-MM-dd" date="${pkgInsts.get(0).endDate}"/></td>
+				<td><g:formatDate format="yyyy-MM-dd" date="${pkgInsts.get(1).endDate}"/></td>
+			</tr>
+			<tr>
+				<td>Number of TIPPs</td>
+				<td>${params.countA}</td>
+				<td>${params.countB}</td>
+			</tr>
+		</tbody>
+	</table>
+	</div>
+<div class="row">
 <g:form action="compare" method="get" class="form-inline">
 	<input type="hidden" name="pkgA"value="${params.pkgA}"/>
 	<input type="hidden" name="pkgB" value="${params.pkgB}"/>
@@ -107,6 +139,8 @@
 	<input type="hidden" name="dlt" value="${params.dlt}"/>
 	<input type="hidden" name="updt" value="${params.updt}"/>
 	<input type="hidden" name="nochng" value="${params.nochng}"/>
+	<input type="hidden" name="countA" value="${params.countA}"/>
+	<input type="hidden" name="countB" value="${params.countB}"/>
 
 	<table>
 		<tr>
@@ -184,9 +218,9 @@
 		</g:each>
 	</tbody>
 </table>
-<div class="paginateButtons" style="text-align:center">
-	<g:paginate controller="packageDetails" params="${params}"
-		action="compare" max="${max}"total="${unionListSize}" />
+<div class="pagination" style="text-align:center">
+
+ <bootstrap:paginate  action="compare" controller="packageDetails" params="${params}" first="first" last="Last" maxsteps="${max}" total="${unionListSize}" />
 </div>
 
 </g:if>

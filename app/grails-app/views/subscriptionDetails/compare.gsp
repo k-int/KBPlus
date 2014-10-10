@@ -96,6 +96,40 @@
 
 			<g:if test="${subInsts?.get(0) && subInsts?.get(1)}">
 				<div class="row">
+				<h3>Subscriptions Compared</h3>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Value</th>
+							<th>${subInsts.get(0).name}</th>
+							<th>${subInsts.get(1).name}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Date Created</td>
+							<td><g:formatDate format="yyyy-MM-dd" date="${subInsts.get(0).dateCreated}"/></td>
+							<td><g:formatDate format="yyyy-MM-dd" date="${subInsts.get(1).dateCreated}"/></td>
+						</tr>
+						<tr>
+							<td>Start Date</td>
+							<td><g:formatDate format="yyyy-MM-dd" date="${subInsts.get(0).startDate}"/></td>
+							<td><g:formatDate format="yyyy-MM-dd" date="${subInsts.get(1).startDate}"/></td>
+						</tr>
+						<tr>
+							<td>End Date</td>
+							<td><g:formatDate format="yyyy-MM-dd" date="${subInsts.get(0).endDate}"/></td>
+							<td><g:formatDate format="yyyy-MM-dd" date="${subInsts.get(1).endDate}"/></td>
+						</tr>
+						<tr>
+							<td>Number of IEs</td>
+							<td>${params.countA}</td>
+							<td>${params.countB}</td>
+						</tr>
+					</tbody>
+				</table>
+				</div>
+				<div class="row">
 				<g:form action="compare" method="GET" class="form-inline">
 					<input type="hidden" name="subA" value="${params.subA}"/>
 					<input type="hidden" name="subB" value="${params.subB}"/>
@@ -105,6 +139,8 @@
 					<input type="hidden" name="dlt" value="${params.dlt}"/>
 					<input type="hidden" name="updt" value="${params.updt}"/>
 					<input type="hidden" name="nochng" value="${params.nochng}"/>
+					<input type="hidden" name="countA" value="${params.countA}"/>
+					<input type="hidden" name="countB" value="${params.countB}"/>			
 					<table>
 						<tr>
 							<td>
@@ -162,9 +198,8 @@
 						</g:each>						
 					</tbody>
 				</table>
-				<div class="paginateButtons" style="text-align:center">
-					<g:paginate controller="subscriptionDetails" params="${params}"
-						action="compare" max="${max}"total="${unionListSize}" />
+				<div class="pagination" style="text-align:center">
+		 <bootstrap:paginate  action="compare" controller="subscriptionDetails" params="${params}" next="Next" prev="Prev" maxsteps="${max}" total="${unionListSize}" />
 				</div>	
 				</div>
 			</g:if>
