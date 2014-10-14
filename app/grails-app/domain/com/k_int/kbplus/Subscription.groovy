@@ -292,7 +292,8 @@ class Subscription {
 
     results?.each { t ->
       def resultText = t.name
-      resultText = params.inclSubStartDate == "true"? resultText + " (${sdf.format(t.startDate)})" : resultText
+      def date = t.startDate ? " (${sdf.format(t.startDate)})" : ""
+      resultText = params.inclSubStartDate == "true"? resultText + date : resultText
       resultText = params.hideIdent == "true"? resultText : resultText + " (${t.identifier})"
       result.add([id:"${t.class.name}:${t.id}",text:resultText])
     } 
