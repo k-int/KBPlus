@@ -28,6 +28,7 @@ class SubscriptionDetailsController {
   def grailsApplication
   def pendingChangeService
   def institutionsService
+  def ESSearchService
 
   def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
 
@@ -229,6 +230,10 @@ class SubscriptionDetailsController {
       try{
       listA = createCompareList(params.subA ,params.dateA, params, result)
       listB = createCompareList(params.subB, params.dateB, params, result)
+        if(!params.countA){
+          params.countA = Subscription.executeQuery("select count(elements(sub.issueEntitlements)) from Subscription sub where sub.id = ${result.subInsts.get(0).id}")
+          params.countB = Subscription.executeQuery("select count(elements(sub.issueEntitlements)) from Subscription sub where sub.id = ${result.subInsts.get(1).id}")
+        }
       }catch(IllegalArgumentException e){
         flash.error = e.getMessage()
         return
@@ -830,6 +835,18 @@ class SubscriptionDetailsController {
       return
     }
 
+    if ( params.addType && ( params.addType != '' ) ) {
+      def pkg_to_link = Package.get(params.addId)
+      log.debug("Add package ${params.addType} to subscription ${params}");
+      if ( params.addType == 'With' ) {
+        pkg_to_link.addToSubscription(result.subscriptionInstance, true)
+        redirect action:'index', id:params.id
+      }
+      else if ( params.addType == 'Without' ) {
+        pkg_to_link.addToSubscription(result.subscriptionInstance, false)
+        redirect action:'addEntitlements', id:params.id
+      }
+    }
     
     if ( result.subscriptionInstance.isEditableBy(result.user) ) {
       result.editable = true
@@ -842,141 +859,9 @@ class SubscriptionDetailsController {
       result.subscriber_shortcode = result.institution.shortcode
       result.institutional_usage_identifier = result.institution.getIdentifierByType('JUSP');
     }
-
-    
-    StringWriter sw = new StringWriter()
-    def fq = null;
-    boolean has_filter = false
-  
-    params.each { p ->
-      if ( p.key.startsWith('fct:') && p.value.equals("on") ) {
-        log.debug("start year ${p.key} : -${p.value}-");
-
-        if ( !has_filter )
-          has_filter = true
-        else
-          sw.append(" AND ")
-
-        String[] filter_components = p.key.split(':');
-            switch ( filter_components[1] ) {
-              case 'consortiaName':
-                sw.append('consortiaName')
-                break;
-              case 'startYear':
-                sw.append('startYear')
-                break;
-              case 'cpname':
-                sw.append('cpname')
-                break;
-            }
-            if ( filter_components[2].indexOf(' ') > 0 ) {
-              sw.append(":\"");
-              sw.append(filter_components[2])
-              sw.append("\"");
-            }
-            else {
-              sw.append(":");
-              sw.append(filter_components[2])
-            }
-      }
-    }
-
-    if ( has_filter ) {
-      fq = sw.toString();
-      log.debug("Filter Query: ${fq}");
-    }
-
-    try {
-
-      // Get hold of some services we might use ;)
-      org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
-      org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
-      
-          params.max = Math.min(params.max ? params.int('max') : result.user.defaultPageSize, 100)
-          params.offset = params.offset ? params.int('offset') : 0
-
-          //def params_set=params.entrySet()
-
-          def query_str = buildRenewalsQuery(params)
-          if ( fq ) 
-            query_str = query_str + " AND ( " + fq + " ) "
-          
-          log.debug("query: ${query_str}");
-          result.es_query = query_str;
-
-          def search = esclient.search{
-            indices grailsApplication.config.aggr.es.index ?: "kbplus"
-            source {
-              from = params.offset
-              size = params.max
-              sort = [
-                'sortname' : [ 'order' : 'asc' ]
-              ]
-              query {
-                query_string (query: query_str)
-              }
-              facets {
-                consortiaName {
-                  terms {
-                    field = 'consortiaName'
-                    size = 25
-                  }
-                }
-                cpname {
-                  terms {
-                    field = 'cpname'
-                    size = 25
-                  }
-                }
-                startYear {
-                  terms {
-                    field = 'startYear'
-                    size = 25
-                  }
-                }
-              }
-            }
-
-          }
-
-      if ( search?.response ) {
-        result.hits = search.response.hits
-        result.resultsTotal = search.response.hits.totalHits
-
-        // We pre-process the facet response to work around some translation issues in ES
-        if ( search.response.facets != null ) {
-          result.facets = [:]
-          search.response.facets.facets.each { facet ->
-            def facet_values = []
-            facet.value.entries.each { fe ->
-              facet_values.add([term: fe.term,display:fe.term,count:"${fe.count}"])
-            }
-            result.facets[facet.key] = facet_values
-          }
-        }
-      }
-          
-      if ( params.addType && ( params.addType != '' ) ) {
-        def pkg_to_link = Package.get(params.addId)
-        log.debug("Add package ${params.addType} to subscription ${params}");
-        if ( params.addType == 'With' ) {
-          pkg_to_link.addToSubscription(result.subscriptionInstance, true)
-          redirect action:'index', id:params.id
-        }
-        else if ( params.addType == 'Without' ) {
-          pkg_to_link.addToSubscription(result.subscriptionInstance, false)
-          redirect action:'addEntitlements', id:params.id
-        }
-      }
-
-    }
-    finally {
-      try {
-      }
-      catch ( Exception e ) {
-        log.error("problem",e);
-      }
-    }
+    log.debug("Going for ES")
+    params.rectype = "Package"
+    result.putAll(ESSearchService.search(params))
     
     result
   }

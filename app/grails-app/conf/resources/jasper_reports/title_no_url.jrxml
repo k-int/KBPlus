@@ -7,7 +7,14 @@
 		<parameterDescription><![CDATA[Lists all titles that have no URL]]></parameterDescription>
 	</parameter>
 	<queryString language="SQL">
-		<![CDATA[SELECT pkg.pkg_name, ti.ti_id, ti.ti_title FROM title_instance_package_platform tipp LEFT JOIN title_instance ti ON ti.ti_id = tipp.tipp_ti_fk, package pkg WHERE tipp.tipp_host_platform_url IS NULL AND tipp.tipp_pkg_fk = pkg.pkg_id GROUP BY ti.ti_id ORDER BY ti.ti_id]]>
+		<![CDATA[SELECT pkg.pkg_name, ti.ti_id, ti.ti_title 
+FROM title_instance_package_platform tipp 
+LEFT JOIN title_instance ti ON ti.ti_id = tipp.tipp_ti_fk 
+LEFT OUTER JOIN refdata_value refdata  ON ti.ti_status_rv_fk = refdata.rdv_id, package pkg 
+WHERE tipp.tipp_host_platform_url IS NULL 
+AND tipp.tipp_pkg_fk = pkg.pkg_id 
+AND (  rdv_value is null OR rdv_value != 'Deleted')
+GROUP BY ti.ti_id ORDER BY ti.ti_id]]>
 	</queryString>
 	<field name="ti_title" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>

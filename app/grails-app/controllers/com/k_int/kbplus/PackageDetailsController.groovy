@@ -216,6 +216,11 @@ class PackageDetailsController {
           try{
             listA = createCompareList(params.pkgA, params.dateA, params, result)
             listB = createCompareList(params.pkgB, params.dateB, params, result)
+            if(!params.countA){
+              params.countA = Package.executeQuery("select count(elements(pkg.tipps)) from Package pkg where pkg.id = ${result.pkgInsts.get(0).id}")
+              params.countB = Package.executeQuery("select count(elements(pkg.tipps)) from Package pkg where pkg.id = ${result.pkgInsts.get(1).id}")
+            }
+            
           }catch(IllegalArgumentException e){
             flash.error = e.getMessage()
             return             

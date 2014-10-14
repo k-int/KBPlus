@@ -338,7 +338,8 @@ class Package {
 
     queryResults?.each { t ->
       def resultText = t.name
-      resultText = params.inclPkgStartDate == "true" ? resultText + " (${sdf.format(t.startDate)})" : resultText
+      def date = t.startDate? " (${sdf.format(t.startDate)})" :""
+      resultText = params.inclPkgStartDate == "true" ? resultText + date : resultText
       resultText = params.hideIdent == "true" ? resultText : resultText+" (${t.identifier})"
       result.add([id:"${t.class.name}:${t.id}",text:resultText])
     }    
