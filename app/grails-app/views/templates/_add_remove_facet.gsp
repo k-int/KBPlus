@@ -34,7 +34,8 @@
     }
     newparams
   }
-%> --}
+%> 
+--}%
 
       <p>
           <g:each in="${['type','endYear','startYear','consortiaName','cpname']}" var="facet">
