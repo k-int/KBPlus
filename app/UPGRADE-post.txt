@@ -9,15 +9,27 @@ join identifier on io_canonical_id = id_id
 join identifier_namespace on id_ns_fk = idns_id
 where idns_ns = 'gokbtitleid';
 
+delete identifier_occurrence
+from identifier_occurrence
+join identifier on io_canonical_id = id_id
+join identifier_namespace on id_ns_fk = idns_id
+where idns_ns = 'uri';
+
+
 select 'Remove all of gokb namespace identifiers';
 
 delete identifier from identifier join identifier_namespace on id_ns_fk = idns_id where idns_ns = 'gokbtitleid';
+delete identifier from identifier join identifier_namespace on id_ns_fk = idns_id where idns_ns = 'uri';
 
+select 'Remove all identifers where the namespace is not present'
+delete from identifier where not exists ( select idns_id from identifier_namespace where id_ns_fk = idns_id )
+
+select 'Remove all identifier_occurrences where the identifier is not present'
+delete from identifier_occurrence where not exists ( select id_id from identifier where io_canonical_id = id_id );
 
 drop table if exists titles_to_remove;
 
-create table titles_to_remove as select ti_id from title_instance where not exists ( select tipp_id from title_instance_package_platform where tipp_ti_fk = ti_id )
-      and not exists ( select io_id from identifier_occurrence where io_ti_fk = ti_id );
+create table titles_to_remove as select ti_id from title_instance where not exists ( select tipp_id from title_instance_package_platform where tipp_ti_fk = ti_id );
 
 select count(*) from titles_to_remove;
 
