@@ -53,11 +53,12 @@
            
             <g:if test="${editable}">
               <g:form controller="ajax" action="addToCollection" class="form-inline">
+                Select an existing identifer using the typedown, or create a new one by entering namespace:value (EG eISSN:2190-9180) then clicking that value in the dropdown to confirm.<br/>
                 <input type="hidden" name="__context" value="${ti.class.name}:${ti.id}"/>
                 <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.IdentifierOccurrence"/>
                 <input type="hidden" name="__recip" value="ti"/>
                 <input type="hidden" name="identifier" id="addIdentifierSelect"/>
-                <input type="submit" value="Add Identifier..." class="btn btn-primary btn-small"/>
+                <input type="submit" value="Add Identifier..." class="btn btn-primary btn-small"/><br/>
               </g:form>
             </g:if>
             <h3>Org Links</h3>
