@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version last-->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="matchCoverage" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e367de7d-d0b3-49e0-84b2-c989348c5c1f">
+<!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.6.1  -->
+<!-- 2014-10-15T11:08:58 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="matchCoverage" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e367de7d-d0b3-49e0-84b2-c989348c5c1f">
 	<property name="com.jaspersoft.studio.data.sql.tables" value="a2JwbHVzLnRpdGxlX2luc3RhbmNlX3BhY2thZ2VfcGxhdGZvcm0gQVMgLDEyMiwxMDM7a2JwbHVz&#xA;LnRpdGxlX2luc3RhbmNlIEFTICwwLDYzNTs="/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="KBPLUS"/>
 	<parameter name="search_package_id" class="com.k_int.kbplus.Package">
@@ -17,14 +18,14 @@
 	title_instance_package_platform.tipp_version,
 	title_instance.ti_title,
 	title_instance_package_platform.tipp_coverage_note,
-	package.pkg_name
+	pkg_name
 FROM package, title_instance
 	 INNER JOIN title_instance_package_platform ON 
 	 title_instance_package_platform.tipp_ti_fk = title_instance.ti_id 
 WHERE 
 	 title_instance_package_platform.tipp_pkg_fk = $P!{search_package_id} AND 
 	 lower(title_instance_package_platform.tipp_coverage_note) LIKE lower($P{coverage_note}) AND
-	 package.pkg_id = $P!{search_package_id} ]]>
+	 package.pkg_id = $P!{search_package_id}]]>
 	</queryString>
 	<field name="tipp_id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -169,4 +170,67 @@ WHERE
 	<summary>
 		<band/>
 	</summary>
+	<noData>
+		<band height="271">
+			<line>
+				<reportElement x="-20" y="120" width="595" height="1" forecolor="#666666" uuid="d8c2cb31-841a-400e-8465-15f0d00fb095"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="100" width="130" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="e95315b1-fd16-4253-bf63-b6c158a6eaa8"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="140" y="100" width="415" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="6144e7ce-db55-45a6-b6e7-158aec25b242"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Title]]></text>
+			</staticText>
+			<line>
+				<reportElement x="-15" y="156" width="595" height="1" forecolor="#666666" uuid="9c5548a3-a758-4986-802f-e6ab456e1bb6"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="130" width="375" height="30" uuid="231c5c5f-7b11-4c81-a64b-c6978277486a"/>
+				<text><![CDATA[No matches found for provided criteria]]></text>
+			</staticText>
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="3" width="595" height="92" backcolor="#007A5E" uuid="2c857aa9-75c0-4160-95c8-c319a5810139"/>
+				<staticText>
+					<reportElement x="20" y="0" width="375" height="43" forecolor="#FFFFFF" uuid="7467d9a6-c545-4201-a5dc-54aa762ebbf1"/>
+					<textElement>
+						<font size="28" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Match Coverage Note]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="220" y="40" width="105" height="20" forecolor="#FFFFFF" uuid="7eb321a2-6b5f-43a0-ae6d-ec4fd0019407"/>
+					<textElement textAlignment="Right">
+						<font size="12" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Package Name:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="260" y="60" width="315" height="32" forecolor="#FFFFFF" uuid="74187920-cce0-4793-a239-adac5e2d9c82"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{pkg_name}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="20" y="51" width="100" height="20" forecolor="#FFFFFF" uuid="eff3761c-630c-4b7b-8d68-d01abf4a6acd"/>
+					<text><![CDATA[Note matched:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="40" y="66" width="190" height="20" forecolor="#FFFFFF" uuid="9f7e286b-a7d6-4bff-bf25-f2d48ebd6b47"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{coverage_note}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</noData>
 </jasperReport>

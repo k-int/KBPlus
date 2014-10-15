@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version last-->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Floating_Title" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="319d1c08-fdbd-462e-a21c-a71aa0098a57">
+<!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.6.1  -->
+<!-- 2014-10-15T11:23:05 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Floating_Title" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="319d1c08-fdbd-462e-a21c-a71aa0098a57">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="KBPLUS"/>
 	<parameter name="report_description" class="java.lang.String">
 		<parameterDescription><![CDATA[List all titles that are not attached to any package]]></parameterDescription>
@@ -27,13 +28,13 @@
 				<staticText>
 					<reportElement x="20" y="20" width="234" height="43" forecolor="#FFFFFF" uuid="b47d1866-9649-4bc5-8d4b-6fc36798b9f1"/>
 					<textElement>
-						<font size="34" isBold="true"/>
+						<font size="24" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Floating Titles]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="395" y="43" width="180" height="20" forecolor="#FFFFFF" uuid="4d4fa87a-ff6c-4f1d-a125-5755dbcade14"/>
-					<textElement textAlignment="Right">
+					<reportElement x="372" y="56" width="200" height="27" forecolor="#FFFFFF" uuid="4d4fa87a-ff6c-4f1d-a125-5755dbcade14"/>
+					<textElement textAlignment="Left">
 						<font size="14" isBold="false"/>
 					</textElement>
 					<text><![CDATA[Titles not attached to TIPP]]></text>
@@ -120,4 +121,59 @@
 	<summary>
 		<band/>
 	</summary>
+	<noData>
+		<band height="300">
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="13" width="595" height="92" backcolor="#007A5E" uuid="1429ea65-6abf-4b1b-9c43-38d9d8e67473"/>
+				<staticText>
+					<reportElement x="20" y="20" width="234" height="43" forecolor="#FFFFFF" uuid="d53d0464-4670-44b3-be26-199ce6a6fda6"/>
+					<textElement>
+						<font size="24" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Floating Titles]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="372" y="56" width="200" height="27" forecolor="#FFFFFF" uuid="afdb5cd4-99bd-49da-ab10-59fbbf594d58"/>
+					<textElement textAlignment="Left">
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Titles not attached to TIPP]]></text>
+				</staticText>
+			</frame>
+			<line>
+				<reportElement x="-20" y="141" width="595" height="1" forecolor="#666666" uuid="417e2689-11cd-42a2-8093-abf0311d8d2f"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="121" width="60" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="4273c6da-518f-430d-b8cb-3ed31d9b601b"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="160" y="121" width="395" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="7a046957-4f47-41e7-a98b-db9f40024519"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Title]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="60" y="121" width="100" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="f7b6eaf9-3360-4d66-8124-b6acd1049848"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Created]]></text>
+			</staticText>
+			<line>
+				<reportElement x="-15" y="165" width="595" height="1" forecolor="#666666" uuid="8ac80e9c-2123-4e78-869a-607542875d26"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="148" width="460" height="30" uuid="6ff261a3-261b-4339-911c-9b6f7ad2689f"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[No floating titles found]]></text>
+			</staticText>
+		</band>
+	</noData>
 </jasperReport>
