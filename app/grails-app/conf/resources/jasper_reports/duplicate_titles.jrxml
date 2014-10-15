@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version last-->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Simple_Blue" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6de1af87-e712-4c00-b0e0-8c2025684190">
+<!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.6.1  -->
+<!-- 2014-10-15T11:17:53 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Simple_Blue" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6de1af87-e712-4c00-b0e0-8c2025684190">
 	<property name="com.jaspersoft.studio.data.sql.tables" value="a2JwbHVzLnRpdGxlX2luc3RhbmNlX3BhY2thZ2VfcGxhdGZvcm0gQVMgLDEwNSwyMjA7a2JwbHVz&#xA;LnRpdGxlX2luc3RhbmNlIEFTICwzNzEsNTg5Ow=="/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="KBPLUS"/>
 	<parameter name="report_description" class="java.lang.String">
@@ -26,7 +27,7 @@
 				<staticText>
 					<reportElement x="20" y="20" width="340" height="43" forecolor="#FFFFFF" uuid="950af7af-5c44-4235-8f18-34d29b1dee00"/>
 					<textElement>
-						<font size="34" isBold="true"/>
+						<font size="24" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Duplicate Titles]]></text>
 				</staticText>
@@ -108,4 +109,52 @@
 	<summary>
 		<band/>
 	</summary>
+	<noData>
+		<band height="223">
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="4" width="595" height="92" backcolor="#007A5E" uuid="c8acc70f-277d-4f63-b9e5-8c0c03d4b15e"/>
+				<staticText>
+					<reportElement x="20" y="20" width="340" height="43" forecolor="#FFFFFF" uuid="916ebc56-c536-4cf6-892b-d88c0ad11efe"/>
+					<textElement>
+						<font size="24" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Duplicate Titles]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="395" y="10" width="180" height="53" forecolor="#FFFFFF" uuid="45911de5-6987-4c9b-a7f1-ff0218ddcab0"/>
+					<textElement textAlignment="Right">
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[These are all the duplicate titles]]></text>
+				</staticText>
+			</frame>
+			<line>
+				<reportElement x="-20" y="131" width="595" height="1" forecolor="#666666" uuid="5ccd987f-5232-4f4b-bc85-146655f6e5d9"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="111" width="60" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="2ebeb4b9-25ed-4d55-9c7b-112d3ed1900f"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Title Id]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="60" y="111" width="492" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="b9a93992-08a0-4b44-93b5-3ad58eb4e4fe"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Title]]></text>
+			</staticText>
+			<line>
+				<reportElement x="-20" y="155" width="595" height="1" forecolor="#666666" uuid="44c47a1f-ed70-4083-b484-60c7b6a33b77"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="139" width="407" height="30" uuid="b512d7d9-bdba-4a2b-8004-43fe8920d92e"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[No duplicate titles found]]></text>
+			</staticText>
+		</band>
+	</noData>
 </jasperReport>

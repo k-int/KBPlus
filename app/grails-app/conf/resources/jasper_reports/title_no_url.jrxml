@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version last-->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Simple_Blue" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6de1af87-e712-4c00-b0e0-8c2025684190">
+<!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.6.1  -->
+<!-- 2014-10-15T11:15:53 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Simple_Blue" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6de1af87-e712-4c00-b0e0-8c2025684190">
 	<property name="com.jaspersoft.studio.data.sql.tables" value="a2JwbHVzLnRpdGxlX2luc3RhbmNlX3BhY2thZ2VfcGxhdGZvcm0gQVMgLDEwNSwyMjA7a2JwbHVz&#xA;LnRpdGxlX2luc3RhbmNlIEFTICwzNzEsNTg5Ow=="/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="KBPLUS"/>
 	<parameter name="report_description" class="java.lang.String">
@@ -35,12 +36,12 @@ GROUP BY ti.ti_id ORDER BY ti.ti_id]]>
 				<staticText>
 					<reportElement x="20" y="20" width="340" height="43" forecolor="#FFFFFF" uuid="950af7af-5c44-4235-8f18-34d29b1dee00"/>
 					<textElement>
-						<font size="34" isBold="true"/>
+						<font size="24" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Titles Without URL]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="395" y="10" width="180" height="53" forecolor="#FFFFFF" uuid="bdf9e315-a5e0-4a08-b6ae-56fc4dc6591f"/>
+					<reportElement x="395" y="45" width="180" height="40" forecolor="#FFFFFF" uuid="bdf9e315-a5e0-4a08-b6ae-56fc4dc6591f"/>
 					<textElement textAlignment="Right">
 						<font size="14" isBold="false"/>
 					</textElement>
@@ -128,4 +129,59 @@ GROUP BY ti.ti_id ORDER BY ti.ti_id]]>
 	<summary>
 		<band/>
 	</summary>
+	<noData>
+		<band height="285">
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="7" width="595" height="92" backcolor="#007A5E" uuid="040b9c34-0c18-4eca-8d3c-986c52024452"/>
+				<staticText>
+					<reportElement x="20" y="20" width="340" height="43" forecolor="#FFFFFF" uuid="30178aaa-7b0e-4a42-9425-ef58e79c8a04"/>
+					<textElement>
+						<font size="24" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Titles Without URL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="395" y="43" width="180" height="43" forecolor="#FFFFFF" uuid="0dd48bfa-6cb8-4eff-b3f6-4fb99ea6f1b9"/>
+					<textElement textAlignment="Right">
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[These are all the tipps without URL]]></text>
+				</staticText>
+			</frame>
+			<line>
+				<reportElement x="-20" y="130" width="595" height="1" forecolor="#666666" uuid="d2cf3f8b-0f1b-4878-a8a1-96c1d24dfced"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="110" width="60" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="8682dd93-c82c-449a-b964-26567ac4d495"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Title Id]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="60" y="110" width="260" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="1fb0dced-17ac-4011-b0b3-e0227d178a0e"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Title]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="320" y="110" width="235" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="185ea238-68ca-428a-8786-1bad6373db50"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Package]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="155" width="555" height="1" uuid="c2a019ff-0999-45da-9b6e-e79075eb6ecf"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="137" width="380" height="33" uuid="cf0c141f-2aaf-4fa4-a247-25dd1314055c"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[No titles without URL found]]></text>
+			</staticText>
+		</band>
+	</noData>
 </jasperReport>
