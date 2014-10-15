@@ -1,10 +1,11 @@
 <%@ page import="com.k_int.kbplus.Package" %>
 <!doctype html>
 <html>
-  <head>
+<head>
     <meta name="layout" content="mmbootstrap">
-    <title>${ti.title}</title>
-  </head>
+    <g:set var="entityName" value="${message(code: 'titleInstance.label', default: 'Title Instance')}"/>
+    <title><g:message code="default.edit.label" args="[entityName]"/></title>
+</head>
   <body>
 
     <div class="container">
@@ -26,7 +27,9 @@
 
             <div class="page-header">
               <h1>${ti.title}</h1>
-            </div>
+            </div>         
+
+              <g:render template="nav" />
 
             <g:if test="${flash.message}">
             <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>

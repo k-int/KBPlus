@@ -28,6 +28,7 @@ class SubscriptionDetailsController {
   def grailsApplication
   def pendingChangeService
   def institutionsService
+  def ESSearchService
 
   def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
 
@@ -220,16 +221,23 @@ class SubscriptionDetailsController {
     if(params.subA?.length() > 0 && params.subB?.length() > 0 ){
       log.debug("Subscriptions submitted for comparison ${params.subA} and ${params.subB}.")
       log.debug("Dates submited are ${params.dateA} and ${params.dateB}")
-      result.subA = params.subA
-      result.subB = params.subB
-      result.dateA = params.dateA
-      result.dateB = params.dateB
       
       result.subInsts = []
       result.subDates = []
 
-      def listA = createCompareList(params.subA ,params.dateA, params, result)
-      def listB = createCompareList(params.subB, params.dateB, params, result)
+      def listA
+      def listB
+      try{
+      listA = createCompareList(params.subA ,params.dateA, params, result)
+      listB = createCompareList(params.subB, params.dateB, params, result)
+        if(!params.countA){
+          params.countA = Subscription.executeQuery("select count(elements(sub.issueEntitlements)) from Subscription sub where sub.id = ${result.subInsts.get(0).id}")
+          params.countB = Subscription.executeQuery("select count(elements(sub.issueEntitlements)) from Subscription sub where sub.id = ${result.subInsts.get(1).id}")
+        }
+      }catch(IllegalArgumentException e){
+        flash.error = e.getMessage()
+        return
+      }
      
       result.listACount = listA.size()
       result.listBCount = listB.size()
@@ -261,7 +269,7 @@ class SubscriptionDetailsController {
            response.contentType = "text/csv"
            def out = response.outputStream
            out.withWriter { writer ->
-            writer.write("${result.subInsts[0].name} on ${result.dateA}, ${result.subInsts[1].name} on ${result.dateB}\n")
+            writer.write("${result.subInsts[0].name} on ${params.dateA}, ${result.subInsts[1].name} on ${params.dateB}\n")
             writer.write('IE Title, pISSN, eISSN, Start Date A, Start Date B, Volume A, Volume B, Issue A, Issue B, End Date A, End Date B, Volume A, Volume B, Issue A, Issue B, Coverage Note A, Coverage Note B\n');
             log.debug("UnionList size is ${unionList.size}")
             comparisonMap.each{ title, values ->
@@ -286,8 +294,15 @@ class SubscriptionDetailsController {
       }
     }else{
       def currentDate = new java.text.SimpleDateFormat('yyyy-MM-dd').format(new Date())
-      result.dateA = currentDate
-      result.dateB = currentDate
+      params.dateA = currentDate
+      params.dateB = currentDate
+      params.insrt = "Y"
+      params.dlt = "Y"
+      params.updt = "Y"
+      if(params.shortcode){
+        result.institutionName = Org.findByShortcode(params.shortcode).name
+        log.debug("FIND ORG NAME ${result.institutionName}")
+      }
       flash.message = "Please select two subscriptions for comparison"
     }
     result
@@ -300,7 +315,11 @@ class SubscriptionDetailsController {
    def subId = sub.substring( sub.indexOf(":")+1)
     
    def subInst = Subscription.get(subId)
-   log.debug("Subscription resolved to ${subInst}")
+   if(subInst.startDate > date || subInst.endDate < date){
+      def errorMsg = "${subInst.name} start date is: ${sdf.format(subInst.startDate)} and end date is: ${sdf.format(subInst.endDate)}. You have selected to compare it on date ${sdf.format(date)}."
+          throw new IllegalArgumentException(errorMsg)
+   }
+
    result.subInsts.add(subInst)
 
    result.subDates.add(sdf.format(date))
@@ -816,6 +835,18 @@ class SubscriptionDetailsController {
       return
     }
 
+    if ( params.addType && ( params.addType != '' ) ) {
+      def pkg_to_link = Package.get(params.addId)
+      log.debug("Add package ${params.addType} to subscription ${params}");
+      if ( params.addType == 'With' ) {
+        pkg_to_link.addToSubscription(result.subscriptionInstance, true)
+        redirect action:'index', id:params.id
+      }
+      else if ( params.addType == 'Without' ) {
+        pkg_to_link.addToSubscription(result.subscriptionInstance, false)
+        redirect action:'addEntitlements', id:params.id
+      }
+    }
     
     if ( result.subscriptionInstance.isEditableBy(result.user) ) {
       result.editable = true
@@ -828,141 +859,9 @@ class SubscriptionDetailsController {
       result.subscriber_shortcode = result.institution.shortcode
       result.institutional_usage_identifier = result.institution.getIdentifierByType('JUSP');
     }
-
-    
-    StringWriter sw = new StringWriter()
-    def fq = null;
-    boolean has_filter = false
-  
-    params.each { p ->
-      if ( p.key.startsWith('fct:') && p.value.equals("on") ) {
-        log.debug("start year ${p.key} : -${p.value}-");
-
-        if ( !has_filter )
-          has_filter = true
-        else
-          sw.append(" AND ")
-
-        String[] filter_components = p.key.split(':');
-            switch ( filter_components[1] ) {
-              case 'consortiaName':
-                sw.append('consortiaName')
-                break;
-              case 'startYear':
-                sw.append('startYear')
-                break;
-              case 'cpname':
-                sw.append('cpname')
-                break;
-            }
-            if ( filter_components[2].indexOf(' ') > 0 ) {
-              sw.append(":\"");
-              sw.append(filter_components[2])
-              sw.append("\"");
-            }
-            else {
-              sw.append(":");
-              sw.append(filter_components[2])
-            }
-      }
-    }
-
-    if ( has_filter ) {
-      fq = sw.toString();
-      log.debug("Filter Query: ${fq}");
-    }
-
-    try {
-
-      // Get hold of some services we might use ;)
-      org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
-      org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
-      
-          params.max = Math.min(params.max ? params.int('max') : result.user.defaultPageSize, 100)
-          params.offset = params.offset ? params.int('offset') : 0
-
-          //def params_set=params.entrySet()
-
-          def query_str = buildRenewalsQuery(params)
-          if ( fq ) 
-            query_str = query_str + " AND ( " + fq + " ) "
-          
-          log.debug("query: ${query_str}");
-          result.es_query = query_str;
-
-          def search = esclient.search{
-            indices grailsApplication.config.aggr.es.index ?: "kbplus"
-            source {
-              from = params.offset
-              size = params.max
-              sort = [
-                'sortname' : [ 'order' : 'asc' ]
-              ]
-              query {
-                query_string (query: query_str)
-              }
-              facets {
-                consortiaName {
-                  terms {
-                    field = 'consortiaName'
-                    size = 25
-                  }
-                }
-                cpname {
-                  terms {
-                    field = 'cpname'
-                    size = 25
-                  }
-                }
-                startYear {
-                  terms {
-                    field = 'startYear'
-                    size = 25
-                  }
-                }
-              }
-            }
-
-          }
-
-      if ( search?.response ) {
-        result.hits = search.response.hits
-        result.resultsTotal = search.response.hits.totalHits
-
-        // We pre-process the facet response to work around some translation issues in ES
-        if ( search.response.facets != null ) {
-          result.facets = [:]
-          search.response.facets.facets.each { facet ->
-            def facet_values = []
-            facet.value.entries.each { fe ->
-              facet_values.add([term: fe.term,display:fe.term,count:"${fe.count}"])
-            }
-            result.facets[facet.key] = facet_values
-          }
-        }
-      }
-          
-      if ( params.addType && ( params.addType != '' ) ) {
-        def pkg_to_link = Package.get(params.addId)
-        log.debug("Add package ${params.addType} to subscription ${params}");
-        if ( params.addType == 'With' ) {
-          pkg_to_link.addToSubscription(result.subscriptionInstance, true)
-          redirect action:'index', id:params.id
-        }
-        else if ( params.addType == 'Without' ) {
-          pkg_to_link.addToSubscription(result.subscriptionInstance, false)
-          redirect action:'addEntitlements', id:params.id
-        }
-      }
-
-    }
-    finally {
-      try {
-      }
-      catch ( Exception e ) {
-        log.error("problem",e);
-      }
-    }
+    log.debug("Going for ES")
+    params.rectype = "Package"
+    result.putAll(ESSearchService.search(params))
     
     result
   }

@@ -244,23 +244,21 @@ class Subscription {
   public Date getRenewalDate() {
     manualRenewalDate ? manualRenewalDate : null
   }
-
+  /**
+  * OPTIONS: startDate, endDate, hideIdent, inclSubStartDate, hideDeleted, accessibleToUser,inst_shortcode
+  **/
   @Transient
   static def refdataFind(params) {
     def result = [];   
 
     def hqlString = "select sub from Subscription sub where sub.name like ? "
     def hqlParams = [params.q + "%"]
+    def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd")
     
     if(params.hasDate ){
-     
-      def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd")
 
-      def startDate = params.startDate
-      def endDate = params.endDate
-
-      startDate = startDate.length() > 1 ? sdf.parse(startDate) : null
-      endDate = endDate.length() > 1 ? sdf.parse(endDate)  : null
+      def startDate = params.startDate.length() > 1 ? sdf.parse(params.startDate) : null
+      def endDate = params.endDate.length() > 1 ? sdf.parse(params.endDate)  : null
 
       if(startDate){
           hqlString += " AND sub.startDate >= ? "
@@ -292,17 +290,13 @@ class Subscription {
       }
     }
 
-    if( params.hideIdent == "true"){
-      if ( results ) {
-          results.each { t ->
-            result.add([id:"${t.class.name}:${t.id}",text:"${t.name}"])
-          }
-      }  
-    }else if ( results ) {
-      results.each { t ->
-        result.add([id:"${t.class.name}:${t.id}",text:"${t.name} (${t.identifier})"])
-      }
-    }
+    results?.each { t ->
+      def resultText = t.name
+      def date = t.startDate ? " (${sdf.format(t.startDate)})" : ""
+      resultText = params.inclSubStartDate == "true"? resultText + date : resultText
+      resultText = params.hideIdent == "true"? resultText : resultText + " (${t.identifier})"
+      result.add([id:"${t.class.name}:${t.id}",text:resultText])
+    } 
 
     result
   }

@@ -2,7 +2,7 @@
 <!-- Created with Jaspersoft Studio version last-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="matchCoverage" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e367de7d-d0b3-49e0-84b2-c989348c5c1f">
 	<property name="com.jaspersoft.studio.data.sql.tables" value="a2JwbHVzLnRpdGxlX2luc3RhbmNlX3BhY2thZ2VfcGxhdGZvcm0gQVMgLDEyMiwxMDM7a2JwbHVz&#xA;LnRpdGxlX2luc3RhbmNlIEFTICwwLDYzNTs="/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MySQL Adapter"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="KBPLUS"/>
 	<parameter name="search_package_id" class="com.k_int.kbplus.Package">
 		<parameterDescription><![CDATA[The Package to search into]]></parameterDescription>
 	</parameter>
@@ -16,13 +16,15 @@
 		<![CDATA[SELECT title_instance_package_platform.tipp_id,
 	title_instance_package_platform.tipp_version,
 	title_instance.ti_title,
-	title_instance_package_platform.tipp_coverage_note
-FROM title_instance
+	title_instance_package_platform.tipp_coverage_note,
+	package.pkg_name
+FROM package, title_instance
 	 INNER JOIN title_instance_package_platform ON 
 	 title_instance_package_platform.tipp_ti_fk = title_instance.ti_id 
 WHERE 
 	 title_instance_package_platform.tipp_pkg_fk = $P!{search_package_id} AND 
-	 lower(title_instance_package_platform.tipp_coverage_note) LIKE lower($P{coverage_note})]]>
+	 lower(title_instance_package_platform.tipp_coverage_note) LIKE lower($P{coverage_note}) AND
+	 package.pkg_id = $P!{search_package_id} ]]>
 	</queryString>
 	<field name="tipp_id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -36,6 +38,7 @@ WHERE
 	<field name="tipp_coverage_note" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
+	<field name="pkg_name" class="java.lang.String"/>
 	<group name="Group1">
 		<groupFooter>
 			<band/>
@@ -64,19 +67,37 @@ WHERE
 			<frame>
 				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#007A5E" uuid="1ab40572-b316-441a-aae0-000db5a1667e"/>
 				<staticText>
-					<reportElement x="20" y="20" width="375" height="43" forecolor="#FFFFFF" uuid="bb707304-f70a-4b32-a4ec-c530d60f14a1"/>
+					<reportElement x="20" y="0" width="375" height="43" forecolor="#FFFFFF" uuid="bb707304-f70a-4b32-a4ec-c530d60f14a1"/>
 					<textElement>
 						<font size="28" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Match Coverage Note]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="395" y="43" width="180" height="20" forecolor="#FFFFFF" uuid="2e1bac40-ce95-4530-8a88-3b86cc2c16d0"/>
+					<reportElement x="220" y="40" width="105" height="20" forecolor="#FFFFFF" uuid="2e1bac40-ce95-4530-8a88-3b86cc2c16d0"/>
 					<textElement textAlignment="Right">
-						<font size="14" isBold="false"/>
+						<font size="12" isBold="false"/>
 					</textElement>
-					<text><![CDATA[Add a description here]]></text>
+					<text><![CDATA[Package Name:]]></text>
 				</staticText>
+				<textField>
+					<reportElement x="260" y="60" width="315" height="32" forecolor="#FFFFFF" uuid="0de05e5b-b89b-48a7-b36d-f372ebb924d4"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{pkg_name}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="20" y="51" width="100" height="20" forecolor="#FFFFFF" uuid="5feab161-dcb1-4745-be16-c47fc809f7f6"/>
+					<text><![CDATA[Note matched:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="40" y="66" width="190" height="20" forecolor="#FFFFFF" uuid="e9ec0228-5f27-46de-a91b-f02337bca424"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{coverage_note}]]></textFieldExpression>
+				</textField>
 			</frame>
 		</band>
 	</title>
@@ -93,7 +114,7 @@ WHERE
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[id]]></text>
+				<text><![CDATA[ID]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="140" y="0" width="415" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="7b7b3107-efce-4271-aad7-b34d3b31fd66"/>

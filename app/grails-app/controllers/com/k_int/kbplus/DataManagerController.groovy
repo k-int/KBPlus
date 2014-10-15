@@ -36,7 +36,8 @@ class DataManagerController {
       result.offset = 0
     }
     else {
-      result.max = params.max ? Integer.parseInt(params.max) : 25
+      def user = User.get(springSecurityService.principal.id)
+      result.max = params.max ? Integer.parseInt(params.max) : user.defaultPageSize
       params.max = result.max
       result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
     }
@@ -51,7 +52,10 @@ class DataManagerController {
     if ( ( params.creates == null ) && ( params.updates == null ) ) {
       params.creates='Y'
     }
-
+    if(params.startDate > params.endDate){
+      flash.error = "From Date cannot be after To Date."
+      return
+    }
     def base_query = "from org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent as e where e.className in (:l) AND e.lastUpdated >= :s AND e.lastUpdated <= :e AND e.eventName in (:t)"
 
     def types_to_include = []
@@ -97,7 +101,7 @@ class DataManagerController {
     if(filterActors) {
       def multipleActors = false;
       def condition = "and"
-      
+
       if ( params.change_actor_PEOPLE == 'Y' ) {
         base_query += " ${condition} ( e.actor <> \'system\' AND e.actor <> \'anonymousUser\' )"
         multipleActors = true
@@ -227,7 +231,7 @@ class DataManagerController {
         out.withWriter { w ->
         w.write('Timestamp,Name,Event,Property,Actor,Old,New,Link\n')
           result.formattedHistoryLines.each { c ->
-            def line = "\"${formatter.format(c.lastUpdated)}\",\"${c.name}\",\"${c.eventName}\",\"${c.propertyName}\",\"${c.actor?.displayName}\",\"${c.oldValue}\",\"${c.newValue}\",\"${c.link}\"\n".toString()
+            def line = "\"${c.lastUpdated}\",\"${c.name}\",\"${c.eventName}\",\"${c.propertyName}\",\"${c.actor?.displayName}\",\"${c.oldValue}\",\"${c.newValue}\",\"${c.link}\"\n".toString()
             w.write(line)
           }
         }

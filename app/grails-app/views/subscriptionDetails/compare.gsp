@@ -10,7 +10,12 @@
 	<body>
 		<div class="container">
 			<div class="row">
-				<h2> Compare Subscriptions </h2>
+				<g:if test="${institutionName}">
+				<h2> Compare Subscriptions of ${institutionName}</h2>
+				</g:if>
+				<g:else>
+					<h2> Compare Subscriptions</h2>
+				</g:else>
 
 				<br/>
 			      <ul class="breadcrumb">
@@ -30,6 +35,9 @@
 				<g:if test="${flash.message}">
 					<bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
 				</g:if>
+		        <g:if test="${flash.error}">
+				    <bootstrap:alert class="alert alert-error">${flash.error}</bootstrap:alert>
+			    </g:if>
 
 				<g:form action="compare" controller="subscriptionDetails" method="GET">
 					<table class="table table-bordered">
@@ -45,14 +53,14 @@
 								<td>Subscription name </td>
 					<td>Restrict this list to subscriptions starting after- 
 					<g:simpleHiddenValue id="startA" name="startA" type="date" value="${params.startA}"/>
-					and/or ending before- <g:simpleHiddenValue id="endA" name="endA" type="date" value="${params.endA}"/><br/> Now selct first subscription to compare (Filtered by dates above)<br/>
+					and/or ending before- <g:simpleHiddenValue id="endA" name="endA" type="date" value="${params.endA}"/><br/> Now selct first subscription to compare (Filtered by dates above). Use '%' as wildcard.<br/>
                       <input type="hidden" name="subA" id="subSelectA" value="${subA}"/> 
 					</td>
 					<td> 
 					    Restrict this list to subscriptions starting after- 
 					    <g:simpleHiddenValue id="startB" name="startB" type="date" value="${params.startB}"/>
 				and/or ending before- <g:simpleHiddenValue id="endB" name="endB" type="date" value="${params.endB}"/><br/>
-                          Select second subscription to compare (Filtered by dates above)<br/>
+                          Select second subscription to compare (Filtered by dates above). Use '%' as wildcard.<br/>
 	                      <input type="hidden" name="subB" id="subSelectB" value="${subB}" />
 					</td>
 							</tr>
@@ -60,13 +68,13 @@
 								<td> Subscriptions on Date</td>
 								<td>
 									<div class="input-append date">
-										<input class="span2" size="16" type="text" name="dateA" id="dateA" value="${dateA}"/>
+										<input class="span2" size="16" type="text" name="dateA" id="dateA" value="${params.dateA}"/>
 										<span class="add-on"><i class="icon-th"></i></span>
 									</div>
 								</td>
 								<td>
 									<div class="input-append date">
-										<input class="spann2" size="16" type="text" name="dateB" id="dateB" value="${dateB}"/>
+										<input class="spann2" size="16" type="text" name="dateB" id="dateB" value="${params.dateB}"/>
 										<span class="add-on"><i class="icon-th"></i></span>
 									</div>
 								</td>
@@ -88,21 +96,58 @@
 
 			<g:if test="${subInsts?.get(0) && subInsts?.get(1)}">
 				<div class="row">
+				<h3>Subscriptions Compared</h3>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Value</th>
+							<th>${subInsts.get(0).name}</th>
+							<th>${subInsts.get(1).name}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Date Created</td>
+							<td><g:formatDate format="yyyy-MM-dd" date="${subInsts.get(0).dateCreated}"/></td>
+							<td><g:formatDate format="yyyy-MM-dd" date="${subInsts.get(1).dateCreated}"/></td>
+						</tr>
+						<tr>
+							<td>Start Date</td>
+							<td><g:formatDate format="yyyy-MM-dd" date="${subInsts.get(0).startDate}"/></td>
+							<td><g:formatDate format="yyyy-MM-dd" date="${subInsts.get(1).startDate}"/></td>
+						</tr>
+						<tr>
+							<td>End Date</td>
+							<td><g:formatDate format="yyyy-MM-dd" date="${subInsts.get(0).endDate}"/></td>
+							<td><g:formatDate format="yyyy-MM-dd" date="${subInsts.get(1).endDate}"/></td>
+						</tr>
+						<tr>
+							<td>Number of IEs</td>
+							<td>${params.countA}</td>
+							<td>${params.countB}</td>
+						</tr>
+					</tbody>
+				</table>
+				</div>
+				<div class="row">
 				<g:form action="compare" method="GET" class="form-inline">
-					<input type="hidden" name="subA" value="${subA}"/>
-					<input type="hidden" name="subB" value="${subB}"/>
-					<input type="hidden" name="dateA" value="${dateA}"/>
-					<input type="hidden" name="dateB" value="${dateB}"/>
+					<input type="hidden" name="subA" value="${params.subA}"/>
+					<input type="hidden" name="subB" value="${params.subB}"/>
+					<input type="hidden" name="dateA" value="${params.dateA}"/>
+					<input type="hidden" name="dateB" value="${params.dateB}"/>
 					<input type="hidden" name="insrt" value="${params.insrt}"/>
 					<input type="hidden" name="dlt" value="${params.dlt}"/>
 					<input type="hidden" name="updt" value="${params.updt}"/>
 					<input type="hidden" name="nochng" value="${params.nochng}"/>
+					<input type="hidden" name="countA" value="${params.countA}"/>
+					<input type="hidden" name="countB" value="${params.countB}"/>			
 					<table>
 						<tr>
 							<td>
 								Filters - Title: <input name="filter" value="${params.filter}">
 							</td>
 							<td> <input type="submit" class="btn btn-primary" value="Filter Results" /> </td>
+							<td> <input id="resetFilters" type="submit" class="btn btn-primary" value="Clear" /> </td>
 						</tr>
 					</table>
 				</g:form>
@@ -153,9 +198,8 @@
 						</g:each>						
 					</tbody>
 				</table>
-				<div class="paginateButtons" style="text-align:center">
-					<g:paginate controller="subscriptionDetails" params="${params}"
-						action="compare" max="${max}"total="${unionListSize}" />
+				<div class="pagination" style="text-align:center">
+		 <bootstrap:paginate  action="compare" controller="subscriptionDetails" params="${params}" next="Next" prev="Prev" maxsteps="${max}" total="${unionListSize}" />
 				</div>	
 				</div>
 			</g:if>
@@ -186,6 +230,7 @@
                 return {
     	            hasDate: 'true',
                 	hideIdent: 'true',
+                	inclSubStartDate: 'true',
                 	startDate: $("#start"+filter).val(),
                 	endDate: $("#end"+filter).val(),
                 	hideDeleted: 'true',
@@ -201,6 +246,11 @@
         }
 	    });
     }
+
+	$("#resetFilters").click(function() {
+	    $(this).closest('form').find("input[name=filter]").val("");
+	    $(this).closest('form').submit();
+	});
 
     function showMore(ident) {
 		$("#compare_details"+ident).modal('show')
