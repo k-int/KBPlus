@@ -16,6 +16,10 @@ class InstitutionsService {
                 licenseUrl: baseLicense?.licenseUrl,
                 onixplLicense: baseLicense?.onixplLicense
         )
+        if(params.copyStartEnd){
+            licenseInstance.startDate = baseLicense?.startDate
+            licenseInstance.endDate = baseLicense?.endDate
+        }
         for(prop in baseLicense?.customProperties){
             def copiedProp = new LicenseCustomProperty(type:prop.type,owner:licenseInstance)
             prop.copyValueAndNote(copiedProp)
