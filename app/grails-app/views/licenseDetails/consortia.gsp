@@ -43,7 +43,7 @@
     <tr>
         <th>Organisation</th>
         <th>Contains  Licence Copy </th>
-        <th>Create Slaved Subscription</th>
+        <th>Create Slaved Licence</th>
     </tr>
 </thead>
 <tbody>

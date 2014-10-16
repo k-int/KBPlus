@@ -107,7 +107,7 @@ class PackageDetailsController {
       result.editable=isEditable()
       result.id = params.id
       def packageInstance = result.packageInstance
-      def consortia = packageInstance.getConsortia()
+      def consortia = packageInstance.orgs.find{it.roleType.value == 'Package Consortia'}.org
 
       def type = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia')
       def consortiaInstitutions = Combo.findAllByToOrgAndType(consortia,type).collect{it.fromOrg}

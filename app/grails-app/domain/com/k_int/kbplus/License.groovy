@@ -114,7 +114,10 @@ class License {
     }
     result
   }
-
+  @Transient
+  def getLicenseType() {
+    return type?.value
+  }
 
   def getNote(domain) {
     def note = DocContext.findByLicenseAndDomain(this, domain)
