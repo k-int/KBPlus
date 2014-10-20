@@ -5,18 +5,22 @@ import com.k_int.kbplus.abstract_domain.CustomProperty
 import javax.persistence.Transient
 
 class LicenseCustomProperty extends CustomProperty {
-	@Transient
-    def grailsApplication
+  @Transient
+  def grailsApplication
 
-	static auditable = true
-    static belongsTo = [
-            type : PropertyDefinition,
-            owner: License
-    ]
+  static auditable = true
 
- 	@Transient
-	def onChange = { oldMap,newMap ->
-  	log.debug("onChange LicenseCustomProperty")
+  static belongsTo = [
+      type : PropertyDefinition,
+      owner: License
+  ]
+
+  PropertyDefinition type
+  License owner
+
+  @Transient
+  def onChange = { oldMap,newMap ->
+    log.debug("onChange LicenseCustomProperty")
     def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
       controlledProperties.each{ cp->
           if ( oldMap[cp] != newMap[cp] ) {
@@ -32,7 +36,7 @@ class LicenseCustomProperty extends CustomProperty {
                           ])
           }
       }
-	}
+  }
   @Transient
   def onDelete = { oldMap ->
     log.debug("onDelete LicenseCustomProperty")
@@ -67,7 +71,7 @@ class LicenseCustomProperty extends CustomProperty {
   }
 
   @Transient
-	def notifyDependencies(changeDocument) {
+  def notifyDependencies(changeDocument) {
     log.debug("notifyDependencies(${changeDocument})");
 
     def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
