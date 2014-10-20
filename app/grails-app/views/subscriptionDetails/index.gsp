@@ -134,6 +134,14 @@
                         ${sp.pkg?.nominalPlatform?.name}<br/>
                     </g:each></dd></dl>
 
+             <dl>
+                <dt>Cancellation Allowances</dt>
+                <dd>
+                  <g:xEditable owner="${subscriptionInstance}" field="cancellationAllowances" />
+                </dd>
+              </dl>
+
+
                <dl><dt><label class="control-label" for="licenseeRef">Org Links</label></dt><dd>
                        <g:render template="orgLinks" contextPath="../templates" model="${[roleLinks:subscriptionInstance?.orgRelations,editmode:editable]}" />
                      </dd>
