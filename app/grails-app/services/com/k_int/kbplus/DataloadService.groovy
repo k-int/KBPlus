@@ -29,11 +29,13 @@ class DataloadService {
   def dataload_running=false
   def dataload_stage=-1
   def dataload_message=''
+  def update_running = false
 
   @javax.annotation.PostConstruct
-  def init (){
-      es_index= grailsApplication.config.aggr.es.index ?: "kbplus"
-    }
+  def init () {
+    es_index= grailsApplication.config.aggr.es.index ?: "kbplus"
+  }
+
   def updateFTIndexes() {
     log.debug("updateFTIndexes");
     new EventLog(event:'kbplus.updateFTIndexes',message:'Update FT indexes',tstp:new Date(System.currentTimeMillis())).save(flush:true)
@@ -44,6 +46,16 @@ class DataloadService {
   }
 
   def doFTUpdate() {
+
+    synchronized {
+      if ( update_running == true ) {
+        return
+      }
+      else {
+        update_running = true;
+      }
+    }
+
     log.debug("doFTUpdate");
     
     log.debug("Execute IndexUpdateJob starting at ${new Date()}");
@@ -186,15 +198,18 @@ class DataloadService {
       if ( sub.subscriber ) {
         result.visible.add(sub.subscriber.shortcode)
       }
+
       result.subtype = sub.type?.value
       result.rectype = 'Subscription'
       result
     }
 
-
+    update_running = false;
     def elapsed = System.currentTimeMillis() - start_time;
     log.debug("IndexUpdateJob completed in ${elapsed}ms at ${new Date()}");
   }
+
+
   def updateSiteMapping() {
 
     log.debug("Updating ES site mapping...")
