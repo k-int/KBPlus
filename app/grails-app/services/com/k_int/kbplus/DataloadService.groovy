@@ -37,7 +37,7 @@ class DataloadService {
   }
 
   def updateFTIndexes() {
-    log.debug("updateFTIndexes");
+    log.debug("updateFTIndexes ${this.hashCode()}");
     new EventLog(event:'kbplus.updateFTIndexes',message:'Update FT indexes',tstp:new Date(System.currentTimeMillis())).save(flush:true)
     def future = executorService.submit({
       doFTUpdate()
@@ -47,11 +47,12 @@ class DataloadService {
 
   def doFTUpdate() {
 
-    synchronized {
+    synchronized(this) {
       if ( update_running == true ) {
         return
       }
       else {
+        log.debug("Exiting FT update - one already running");
         update_running = true;
       }
     }
