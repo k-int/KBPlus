@@ -17,13 +17,16 @@ AND tipp.tipp_pkg_fk = pkg.pkg_id
 AND (  rdv_value is null OR rdv_value != 'Deleted')
 GROUP BY ti.ti_id ORDER BY ti.ti_id]]>
 	</queryString>
-	<field name="ti_title" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
 	<field name="pkg_name" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="ti_id" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ti_title" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tipp_id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<background>
