@@ -159,3 +159,21 @@ delete from title_instance_package_platform where ( tipp_ti_fk is not null ) and
 
 delete from title_instance_package_platform where ( tipp_pkg_fk is not null ) and ( not exists ( select pkg_id from package where pkg_id = tipp_pkg_fk ));
 
+
+create table duplicate_identifiers as select id_ns_fk ns, id_value val, count(*) c, min(id_id) first from identifier group by id_ns_fk, id_value having count(*) > 1;
+
+create table identifier_updates as
+select id1.id_id id, id1.id_value value, id1.id_ns_fk ns, id2.first usethis
+from identifier id1, 
+     duplicate_identifiers id2 
+where id1.id_value = id2.val 
+  and id1.id_ns_fk = id2.ns
+  and id1.id_id <> id2.first;
+
+select 'Redirecting identifier_occurrences pointing to old identifiers to the first or canonical one';
+update identifier_occurrence io join identifier_updates iu on io.io_canonical_id = iu.id set io.io_canonical_id = iu.usethis;
+
+delete from identifier where id_id in ( select id from identifier_updates );
+
+drop table if exists duplicate_identifiers;
+drop table if exists identifier_updates;

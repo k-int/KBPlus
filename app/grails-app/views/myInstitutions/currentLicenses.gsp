@@ -47,19 +47,19 @@
 
     <div class="container licence-searches">
         <div class="row">
-            <div class="span6">
+            <div class="span12">
                 <form class="form-inline">
-                    <label>Search by Reference:</label><br/>
+                    <label>Valid On</label> <input name="validOn" type="text" value="${validOn}"/>
+
+                    <label>Search by Reference:</label>
                     <input type="text" name="keyword-search" placeholder="enter search term..." value="${params['keyword-search']?:''}" /><br/>
-                    <label>Search by License Property:</label><br/>
+                    <label>Search by License Property:</label>
                             <g:select id="availablePropertyTypes" name="availablePropertyTypes" from="${custom_prop_types}" optionKey="value" optionValue="key" value="${params.propertyFilterType}"/>
                             <input id="selectVal" type="text" name="propertyFilter" placeholder="property value..." value="${params.propertyFilter?:''}" /></p>
                     <br/>
                 <input type="hidden" id="propertyFilterType" name="propertyFilterType" value="${params.propertyFilterType}"/>
                 <input type="submit" class="btn btn-primary" value="Search" /></p>
                 </form>
-            </div>
-            <div class="span6">
             </div>
         </div>
     </div>

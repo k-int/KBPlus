@@ -21,6 +21,8 @@ class Subscription {
   Date startDate
   Date endDate
   Date manualRenewalDate
+  String cancellationAllowances
+
   Subscription instanceOf
 
   // If a subscription is slaved then any changes to instanceOf will automatically be applied to this subscription

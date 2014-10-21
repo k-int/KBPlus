@@ -28,8 +28,7 @@
                                                                          params="${[id: params.id]}">ONIX-PL Licence</g:link></li>
     </g:if>
     <g:if test="${licence.orgLinks.find{it.roleType.value == 'Licensing Consortium' &&
-      it.org.hasUserWithRole(user,'INST_ADM') 
-      licence.licenseType == 'Template'}}">
+      it.org.hasUserWithRole(user,'INST_ADM') && licence.licenseType == 'Template'}}">
       <li <%='consortia'== actionName ? ' class="active"' : '' %>>
       <g:link controller="licenseDetails"action="consortia" params="${[id: params.id]}">Consortia</g:link></li>
     </g:if>

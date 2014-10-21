@@ -157,6 +157,7 @@ class LicenseDetailsController {
          def orgaisation = Org.get(orgID)
           def attrMap = [shortcode:orgaisation.shortcode,baselicense:params.baselicense,lic_name:params.lic_name,isSlaved:true]
           log.debug("Create slave licence for ${orgaisation.name}")
+          attrMap.copyStartEnd = true
           institutionsService.copyLicence(attrMap);          
         }
     }

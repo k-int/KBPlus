@@ -99,6 +99,19 @@ class MyInstitutionsController {
             result.is_admin = false;
         }
 
+        def date_restriction = null;
+        def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
+ 
+        if (params.validOn == null) {
+            result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+            date_restriction = sdf.parse(result.validOn)
+        } else if (params.validOn == '') {
+            result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+        } else {
+            result.validOn = params.validOn
+            date_restriction = sdf.parse(params.validOn)
+        }
+
         def prop_types_list = PropertyDefinition.findAll()
         result.custom_prop_types = prop_types_list.collectEntries{
             [(it.name) : it.type + "&&" + it.refdataCategory]
@@ -127,6 +140,12 @@ class MyInstitutionsController {
             qry += propQuery.query
             qry_params += propQuery.queryParam
         } 
+
+        if (date_restriction) {
+            qry += " and l.startDate <= ? and l.endDate >= ? "
+            qry_params.add(date_restriction)
+            qry_params.add(date_restriction)
+        }
 
         if ((params.sort != null) && (params.sort.length() > 0)) {
             qry += " order by l.${params.sort} ${params.order}"

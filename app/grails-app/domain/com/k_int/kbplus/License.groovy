@@ -74,7 +74,7 @@ class License {
         licenseCategory column: 'lic_category_rdv_fk'
               startDate column: 'lic_start_date'
                 endDate column: 'lic_end_date'
-       customProperties column: 'lic_custom_prop'
+       customProperties sort:'type.id', order:'desc'
   }
 
   static constraints = {
@@ -94,7 +94,6 @@ class License {
     licenseCategory(nullable: true, blank: true)
     startDate(nullable: true, blank: true)
     endDate(nullable: true, blank: true)
-    customProperties(nullable: true, blank:true)
  }
 
   def getLicensor() {
@@ -114,7 +113,10 @@ class License {
     }
     result
   }
-
+  @Transient
+  def getLicenseType() {
+    return type?.value
+  }
 
   def getNote(domain) {
     def note = DocContext.findByLicenseAndDomain(this, domain)
