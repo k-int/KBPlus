@@ -107,11 +107,25 @@ class PackageDetailsController {
       result.editable=isEditable()
       result.id = params.id
 
+      def hasAccess       
+      def isAdmin
+      if (result.user.getAuthorities().contains(Role.findByAuthority('ROLE_ADMIN'))) {
+          isAdmin = true;
+      }else{
+        hasAccess = result.packageInstance.orgLinks.find{it.roleType.value == 'Package Consortia' &&
+        it.org.hasUserWithRole(result.user,'INST_ADM') }
+      }
+
+      if( !isAdmin &&  hasAccess == null ) {
+        flash.error = "Consortia screen only available to institution administrators for Packages with Package Consortium link."
+        response.sendError(401) 
+        return
+      }
       def packageInstance = result.packageInstance
 
       def type = RefdataCategory.lookupOrCreate('Combo Type', 'Consortium')
 
-      def institutions_in_consortia_hql = "select c.fromOrg from Combo as c where c.type = ? and c.toOrg in ( select org_role.org from Package as p join p.orgs as org_role where org_role.roleType.value = 'Package Consortia' and p = ?)"
+      def institutions_in_consortia_hql = "select c.fromOrg from Combo as c where c.type = ? and c.toOrg in ( select org_role.org from Package as p join p.orgs as org_role where org_role.roleType.value = 'Package Consortia' and p = ?) order by c.fromOrg.name"
       def consortiaInstitutions = Combo.executeQuery(institutions_in_consortia_hql, [type, packageInstance])
 
       def package_consortia = "select org_role.org from Package as p join p.orgs as org_role where org_role.roleType.value = 'Package Consortia' and p = ?"
@@ -135,8 +149,7 @@ class PackageDetailsController {
       result.consortiaInstsWithStatus = consortiaInstsWithStatus
 
       // log.debug("institutions with status are ${consortiaInstsWithStatus}")
-      
-      
+           
       result
     }
     def generateSlaveSubscriptions(){

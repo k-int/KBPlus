@@ -70,7 +70,7 @@
       <div class="row">
         <div class="span12">
           <div class="well">
-            Package Name: <input name="pkgname" value="${params.pkgname}"/><button type="submit" name="search" value="yes">Search</button>           
+            Package Name: <input name="q" value="${params.q}"/><button type="submit" name="search" value="yes">Search</button>           
           </div>
         </div>
       </div>

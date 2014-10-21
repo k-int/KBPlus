@@ -108,9 +108,16 @@ class LicenseDetailsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.licence = License.get(params.id)
-    def hasAccess = result.licence.orgLinks.find{it.roleType.value == 'Licensing Consortium' &&
+   
+    def hasAccess
+    def isAdmin
+    if (result.user.getAuthorities().contains(Role.findByAuthority('ROLE_ADMIN'))) {
+        isAdmin = true;
+    }else{
+       hasAccess = result.licence.orgLinks.find{it.roleType.value == 'Licensing Consortium' &&
       it.org.hasUserWithRole(result.user,'INST_ADM') }
-    if(result.licence.licenseType != "Template" || hasAccess == null) {
+    }
+    if( !isAdmin && (result.licence.licenseType != "Template" || hasAccess == null)) {
       flash.error = "Consortia screen only available administrators for template licenses with Licensing Consortium link."
       response.sendError(401) 
       return
@@ -124,18 +131,18 @@ class LicenseDetailsController {
 
     log.debug("${result.licence}")
     def consortia = result.licence.orgLinks.find{
-      it.roleType.value == 'Licensing Consortium' &&
-      it.org.hasUserWithRole(result.user,'INST_ADM')}
+      it.roleType.value == 'Licensing Consortium'}.org
 
     if(consortia){
-      result.consortia = consortia.org
+      result.consortia = consortia
       result.consortiaInstsWithStatus = []
+    def type = RefdataCategory.lookupOrCreate('Combo Type', 'Consortium')
+    def institutions_in_consortia_hql = "select c.fromOrg from Combo as c where c.type = ? and c.toOrg = ? order by c.fromOrg.name"
+    def consortiaInstitutions = Combo.executeQuery(institutions_in_consortia_hql, [type, consortia])
 
-     def consortiumOrgs = consortia.org.incomingCombos.findAll{ it.type.value == 'Package Consortia' }
-     consortiumOrgs = consortiumOrgs.collect{ it.fromOrg }.sort{ it.name}
      result.consortiaInstsWithStatus = [ : ]
      def findOrgLicences = "SELECT lic from License AS lic WHERE exists ( SELECT link from lic.orgLinks AS link WHERE link.org = ? and link.roleType.value = 'Licensee') AND exists ( SELECT incLink from lic.incomingLinks AS incLink WHERE incLink.fromLic = ? ) AND lic.status.value != 'Deleted'"
-     consortiumOrgs.each{ 
+     consortiaInstitutions.each{ 
         def queryParams = [ it, result.licence]
         def hasLicence = License.executeQuery(findOrgLicences, queryParams)
         if (hasLicence){
