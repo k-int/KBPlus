@@ -106,15 +106,23 @@ class PackageDetailsController {
       result.packageInstance = Package.get(params.id)
       result.editable=isEditable()
       result.id = params.id
-      def packageInstance = result.packageInstance
-      def consortia = packageInstance.orgs.find{it.roleType.value == 'Package Consortia'}.org
 
-      def type = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia')
-      def consortiaInstitutions = Combo.findAllByToOrgAndType(consortia,type).collect{it.fromOrg}
+      def packageInstance = result.packageInstance
+
+      def type = RefdataCategory.lookupOrCreate('Combo Type', 'Consortium')
+
+      def institutions_in_consortia_hql = "select c.fromOrg from Combo as c where c.type = ? and c.toOrg in ( select org_role.org from Package as p join p.orgs as org_role where org_role.roleType.value = 'Package Consortia' and p = ?)"
+      def consortiaInstitutions = Combo.executeQuery(institutions_in_consortia_hql, [type, packageInstance])
+
+      def package_consortia = "select org_role.org from Package as p join p.orgs as org_role where org_role.roleType.value = 'Package Consortia' and p = ?"
+      def consortia = Package.executeQuery(package_consortia, [packageInstance]);
+
 
       def consortiaInstsWithStatus = [:]
+
       def hql = "SELECT role.org FROM OrgRole as role WHERE role.org = ? AND (role.roleType.value = 'Subscriber') AND ( EXISTS ( select sp from role.sub.packages as sp where sp.pkg = ? ) AND ( role.sub.status.value != 'Deleted' ) )"
       consortiaInstitutions.each{org ->
+        log.debug("looking up all orgs based on consortia org ${org} and package ${packageInstance}");
         def queryParams = [org,packageInstance]
         def hasPackage = OrgRole.executeQuery(hql,  queryParams)
         if(hasPackage){
