@@ -16,7 +16,7 @@ where not exists ( select io.io_id
                    where io_ti_fk = ti.ti_id
                      and id.id_ns_fk = ns.idns_id
                      and io.io_canonical_id = id_id
-                      and ns.idns_ns in ( 'ISBN', 'ISSN', 'eISSN', 'issn', 'eissn' ) );]]>
+                      and ns.idns_ns in ( 'ISBN', 'ISSN', 'eISSN', 'issn', 'eissn','isbn' ) );]]>
 	</queryString>
 	<field name="ti_id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
