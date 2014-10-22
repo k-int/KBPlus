@@ -1,7 +1,7 @@
 println("------- Using demo config from conf hints ------- ")
 localauth=true
-dataSource.url="jdbc:mysql://localhost/kbplusfunctest?autoReconnect=true&amp;characterEncoding=utf8"
-aggr.es.cluster='xaves'
+dataSource.url="jdbc:mysql://localhost/kbplustest?autoReconnect=true&amp;characterEncoding=utf8"
+aggr.es.cluster='tigerelasticsearch'
 aggr.es.index='kbplustest'
 publicationService.baseurl='http://knowplus.edina.ac.uk:2012/kbplus/api'
 SystemBaseURL="http://localhost:19080/demo"
