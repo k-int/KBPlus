@@ -268,7 +268,6 @@
                      on <g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.accessEndDate}"/>
                    </g:if>
                    <g:if test="${params.mode=='advanced'}">
-                     <br/> Record Status: <g:xEditableRefData owner="${ie}" field="status" config='Entitlement Issue Status'/>
                      <br/> Access Start: <g:xEditable owner="${ie}" type="date" field="accessStartDate" /> (Leave empty to default to sub start date)
                      <br/> Access End: <g:xEditable owner="${ie}" type="date" field="accessEndDate" /> (Leave empty to default to sub end date)
                    </g:if>

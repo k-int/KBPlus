@@ -118,8 +118,9 @@ class SubscriptionDetailsController {
       base_qry = " from IssueEntitlement as ie where ie.subscription = ? "
       if ( params.mode != 'advanced' ) {
         // If we are not in advanced mode, hide IEs that are not current, otherwise filter
-        base_qry += "and ie.status <> ? and ( ? >= coalesce(ie.accessStartDate,subscription.startDate) ) and ( ( ? <= coalesce(ie.accessEndDate,subscription.endDate) ) OR ( ie.accessEndDate is null ) )  "
-        qry_params.add(deleted_ie);
+        // base_qry += "and ie.status <> ? and ( ? >= coalesce(ie.accessStartDate,subscription.startDate) ) and ( ( ? <= coalesce(ie.accessEndDate,subscription.endDate) ) OR ( ie.accessEndDate is null ) )  "
+        // qry_params.add(deleted_ie);
+        base_qry += "and ( ? >= coalesce(ie.accessStartDate,subscription.startDate) ) and ( ( ? <= coalesce(ie.accessEndDate,subscription.endDate) ) OR ( ie.accessEndDate is null ) )  "
         qry_params.add(date_filter);
         qry_params.add(date_filter);
       }
@@ -132,12 +133,14 @@ class SubscriptionDetailsController {
       if ( params.mode != 'advanced' ) {
         // If we are not in advanced mode, hide IEs that are not current, otherwise filter
 
-        base_qry += " and ie.status <> ? and ( ? >= coalesce(ie.accessStartDate,subscription.startDate) ) and ( ( ? <= coalesce(ie.accessEndDate,subscription.endDate) ) OR ( ie.accessEndDate is null ) ) "
-        qry_params.add(deleted_ie);
+        base_qry += " and ( ? >= coalesce(ie.accessStartDate,subscription.startDate) ) and ( ( ? <= coalesce(ie.accessEndDate,subscription.endDate) ) OR ( ie.accessEndDate is null ) ) "
         qry_params.add(date_filter);
         qry_params.add(date_filter);
       }
     }
+
+    base_qry += " and ie.status <> ? "
+    qry_params.add(deleted_ie);
 
     if ( params.pkgfilter && ( params.pkgfilter != '' ) ) {
       base_qry += " and ie.tipp.pkg.id = ? "

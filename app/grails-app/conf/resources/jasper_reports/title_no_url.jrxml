@@ -8,7 +8,7 @@
 		<parameterDescription><![CDATA[Lists all titles that have no URL]]></parameterDescription>
 	</parameter>
 	<queryString language="SQL">
-		<![CDATA[SELECT pkg.pkg_name, ti.ti_id, ti.ti_title 
+		<![CDATA[SELECT pkg.pkg_name, ti.ti_id, ti.ti_title, tipp.tipp_id
 FROM title_instance_package_platform tipp 
 LEFT JOIN title_instance ti ON ti.ti_id = tipp.tipp_ti_fk 
 LEFT OUTER JOIN refdata_value refdata  ON ti.ti_status_rv_fk = refdata.rdv_id, package pkg 
@@ -17,13 +17,16 @@ AND tipp.tipp_pkg_fk = pkg.pkg_id
 AND (  rdv_value is null OR rdv_value != 'Deleted')
 GROUP BY ti.ti_id ORDER BY ti.ti_id]]>
 	</queryString>
-	<field name="ti_title" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
 	<field name="pkg_name" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="ti_id" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ti_title" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tipp_id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<background>
@@ -63,7 +66,7 @@ GROUP BY ti.ti_id ORDER BY ti.ti_id]]>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Title Id]]></text>
+				<text><![CDATA[TIPP Id]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="60" y="0" width="260" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="958100bf-f674-487c-826f-f3bf452d7e42"/>
@@ -91,9 +94,9 @@ GROUP BY ti.ti_id ORDER BY ti.ti_id]]>
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{ti_id}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{tipp_id}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement x="320" y="0" width="232" height="20" uuid="f3ed5986-f7f4-427c-8bc5-6fd4599a7f35"/>
 				<textFieldExpression><![CDATA[$F{pkg_name}]]></textFieldExpression>
 			</textField>
