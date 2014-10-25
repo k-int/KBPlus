@@ -70,7 +70,7 @@
 	</xsl:choose>
 	<xsl:text>,</xsl:text>
 	<xsl:choose>
-		<xsl:when test="not(./CoverageStatement/EndVolume = '')">
+		<xsl:when test="number(./CoverageStatement/EndVolume)">
 			<xsl:value-of select="./CoverageStatement/EndVolume"></xsl:value-of>
 		</xsl:when>
 		<xsl:otherwise>
@@ -79,7 +79,7 @@
 	</xsl:choose>
 	<xsl:text>,</xsl:text>
 	<xsl:choose>
-		<xsl:when test="not(./CoverageStatement/EndIssue = '')">
+		<xsl:when test="number(./CoverageStatement/EndIssue)">
 			<xsl:value-of select="./CoverageStatement/EndIssue"></xsl:value-of>
 		</xsl:when>
 		<xsl:otherwise>
@@ -104,7 +104,7 @@
 	</xsl:choose>
 	<xsl:text>,</xsl:text>
 	<xsl:choose>
-		<xsl:when test="not(./CoverageStatement/StartVolume = '')">
+		<xsl:when test="number(./CoverageStatement/StartVolume)">
 			<xsl:value-of select="./CoverageStatement/StartVolume"></xsl:value-of>
 		</xsl:when>
 		<xsl:otherwise>
@@ -113,7 +113,7 @@
 	</xsl:choose>
 	<xsl:text>,</xsl:text>
 	<xsl:choose>
-		<xsl:when test="not(./CoverageStatement/StartIssue = '')">
+		<xsl:when test="number(./CoverageStatement/StartIssue)">
 			<xsl:value-of select="./CoverageStatement/StartIssue"></xsl:value-of>
 		</xsl:when>
 		<xsl:otherwise>

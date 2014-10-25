@@ -219,6 +219,8 @@
 
 <r:script language="JavaScript">
     function applySelect2(filter) {
+      var subA = {id:'${subInsts?.get(0)?.id}',text:"${subInsts?.get(0)?.name}"};
+      var subB = {id:'${subInsts?.get(1)?.id}',text:"${subInsts?.get(1)?.name}"};
       $("#subSelect"+filter).select2({
         width: '90%',
         placeholder: "Type subscription name...",
@@ -243,8 +245,22 @@
             results: function (data, page) {
                 return {results: data.values};
             }
+        },
+         allowClear: true,
+         formatSelection: function(data) { 
+            return data.text; 
+        },
+        initSelection : function (element, callback) {
+	        var obj
+         	if(filter == "A"){
+         		obj = subA;
+         	}else{
+         		obj = subB;
+         	}
+            callback(obj);
         }
-	    });
+        }).select2('val',':');
+	
     }
 
 	$("#resetFilters").click(function() {

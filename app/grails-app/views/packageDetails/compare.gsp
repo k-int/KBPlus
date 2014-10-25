@@ -239,6 +239,9 @@
 
 <r:script language="JavaScript">
     function applySelect2(filter) {
+      var pkgA = {id:'${pkgInsts?.get(0)?.id}',text:"${pkgInsts?.get(0)?.name}"};
+      var pkgB = {id:'${pkgInsts?.get(1)?.id}',text:"${pkgInsts?.get(1)?.name}"};
+
       $("#packageSelect"+filter).select2({
       	width: "90%",
         placeholder: "Type package name...",
@@ -258,11 +261,25 @@
                     baseClass:'com.k_int.kbplus.Package'
                 };
             },
+            
             results: function (data, page) {
                 return {results: data.values};
             }
+        },
+	    allowClear: true,
+         formatSelection: function(data) { 
+            return data.text; 
+        },
+        initSelection : function (element, callback) {
+	        var obj
+         	if(filter == "A"){
+         		obj = pkgA;
+         	}else{
+         		obj = pkgB;
+         	}
+            callback(obj);
         }
-	    });
+        }).select2('val',':');
     }
 
 	$("#resetFilters").click(function() {
