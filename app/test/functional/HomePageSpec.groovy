@@ -212,8 +212,8 @@ class HomePageSpec extends GebReportingSpec {
             changeUser(Data.UserA_name, Data.UserA_passwd)
             licences()
         when:
-            addLicence()
-            licence(Data.Licence_template_D)
+            viewTemplateLicences()
+            openLicence(Data.Licence_template_D)
             editRef("some val")
         then:
             thrown(RequiredPageContentNotPresent)
@@ -238,8 +238,8 @@ class HomePageSpec extends GebReportingSpec {
             changeUser(Data.UserB_name, Data.UserB_passwd)
             licences()
         when:
-            addLicence()
-            licence(Data.Licence_template_D)
+            viewTemplateLicences()
+            openLicence(Data.Licence_template_D)
         then:
             catchException { editRef("some val") }
         when:
@@ -265,7 +265,7 @@ class HomePageSpec extends GebReportingSpec {
 
             waitFor { licences() }
         when:
-            addLicence()
+            viewTemplateLicences()
             createCopyOf(Data.Licence_template_D)
         then:
             at LicencePage
@@ -307,7 +307,8 @@ class HomePageSpec extends GebReportingSpec {
             changeUser(Data.UserA_name, Data.UserA_passwd)
             waitFor { licences() }
         when:
-            licence(Data.Licence_actual_C)
+            searchLicence("",Data.Licence_actual_C)
+            openLicence(Data.Licence_actual_C)
         then:
             at LicencePage
         when:
@@ -338,8 +339,8 @@ class HomePageSpec extends GebReportingSpec {
             changeUser(Data.UserD_name, Data.UserD_passwd)
             licences()
         when: "Change public to No"
-            addLicence()
-            licence(Data.Licence_template_D)
+            viewTemplateLicences()
+            openLicence(Data.Licence_template_D)
             editIsPublic("No")
         then: "Its updated"
             at LicencePage
@@ -360,8 +361,8 @@ class HomePageSpec extends GebReportingSpec {
             changeUser(Data.UserD_name, Data.UserD_passwd)
             licences()
         when: "Change public to Yes"
-            addLicence()
-            licence(Data.Licence_template_D)
+            viewTemplateLicences()
+            openLicence(Data.Licence_template_D)
             editIsPublic("Yes")
         then: "Its updated"
             at LicencePage
@@ -384,6 +385,7 @@ class HomePageSpec extends GebReportingSpec {
             changeUser(Data.UserA_name, Data.UserA_passwd)
             licences()
         when:
+            searchLicence("",Data.Licence_template_copy_D)
             deleteLicence(Data.Licence_template_copy_D)
         then:
             alertBox("You do not have sufficient administrative rights to delete the specified license")
@@ -393,11 +395,12 @@ class HomePageSpec extends GebReportingSpec {
         setup:
             changeUser(Data.UserB_name, Data.UserB_passwd)
             licences()
+            searchLicence("",Data.Licence_template_copy_D)
             deleteLicence(Data.Licence_template_copy_D)
         when:
             at LicencePage
         then:
-            catchException { licence(Data.Licence_template_copy_D) }
+            catchException { openLicence(Data.Licence_template_copy_D) }
     }
     //ref 118 - 119
     def "Import Onix-PL Licence"() {
@@ -405,7 +408,7 @@ class HomePageSpec extends GebReportingSpec {
             changeUser(Data.UserD_name, Data.UserD_passwd)
             licences()
         when:
-            addLicence()
+            viewTemplateLicences()
             createCopyOf(Data.Licence_template_D)
             importONIX(Data.Licence_ONIX_PL)
         then:
@@ -497,10 +500,8 @@ class HomePageSpec extends GebReportingSpec {
             addDocument(Data.Test_Doc_name, Data.Test_Doc_file)
         and:
             addNote("Test note")
-        and:
-            addLicence(Data.Licence_actual_C)
         then:
-            at LicencePage
+            at SubscrDetailsPage
     }
     //ref 203
     def "View Subscription Taken (created by B)"() {
@@ -530,9 +531,8 @@ class HomePageSpec extends GebReportingSpec {
             newSubscription(Data.Subscription_name_B)
             at SubscrDetailsPage
         when:
-            addLicence(Data.Licence_actual_C)
             linkPackage(Data.Package_name, false)
-            addEntitlements(false)
+            addEntitlements()
         then:
             at SubscrDetailsPage
     }
@@ -544,9 +544,7 @@ class HomePageSpec extends GebReportingSpec {
             newSubscription(Data.Subscription_name_C)
             at SubscrDetailsPage
         when:
-            addLicence(Data.Licence_actual_C)
-            linkPackage(Data.Package_name, false)
-            addEntitlements(true)
+            linkPackage(Data.Package_name, true)
         then:
             at SubscrDetailsPage
     }
@@ -689,10 +687,9 @@ class HomePageSpec extends GebReportingSpec {
         then:
             hasResults()
     }
-    //ref 501
+/*    //ref 501
     def "Search within current titles"(){
         setup:
-            go "/demo/startFTIndex/index"
             to DashboardPage
             $("a", text: "Institutions").click()
             $("a", text: "All Titles").click(TitleDetailsPage)
@@ -713,7 +710,7 @@ class HomePageSpec extends GebReportingSpec {
         then:
             pkgs != numberOfResults()
     }
-
+*/
 //    def "Renewals Upload" (){
 //        setup:
 //            changeUser(Data.UserB_name,Data.UserB_passwd)

@@ -13,11 +13,11 @@ class LicencePage extends AbstractDetails {
     }
     static content = {
         createNewLicense { ref ->
-            $("a", text: "Create New Licence").click()
+            $("a", text: "Add Blank Licence").click()
             editRef(ref)
         }
 
-        licence { ref ->
+        openLicence { ref ->
             $("a", text: ref).click()
         }
         downloadDoc {
@@ -25,23 +25,17 @@ class LicencePage extends AbstractDetails {
         }
 
         deleteLicence { ref ->
-            String licenceUrl = $("a", text: ref).@href
-            String licenceId = licenceUrl.substring(licenceUrl.lastIndexOf("/") + 1, licenceUrl.length())
-            $("input", type: "radio", name: "baselicense").value(licenceId)
-            $("input", name: "delete-licence").click()
+            $("a", text: ref).parent().siblings().find("a",text:"Delete").click()
         }
 
         licenceDetails {
             $("a", text: "Licence Details").click()
         }
-        addLicence {
-            $("a", text: "Add Licence").click()
+        viewTemplateLicences {
+            $("a", text: "Copy from Template").click()
         }
         createCopyOf { ref ->
-            String licenceUrl = $("a", text: ref).@href
-            String licenceId = licenceUrl.substring(licenceUrl.lastIndexOf("/") + 1, licenceUrl.length())
-            $("input", type: "radio", name: "baselicense").value(licenceId)
-            $("input.btn", value: "Copy Selected").click()
+            $("a", text: ref).parent().siblings().find("a",text:"Copy").click()
         }
         alertBox { text ->
             !$("div.alert-block").children().filter("p", text: text).isEmpty()
@@ -63,6 +57,13 @@ class LicencePage extends AbstractDetails {
             $("label", for: column).parent().next().text().equals(value)
 
         }
+
+        searchLicence { date, ref ->
+            $("input",name:"validOn").value(date)
+            $("input",name:"keyword-search").value(ref)
+            $("input",type:"submit",value:"Search").click()
+        }
+
         importONIX { fileName ->
             $("a", text: "Import an ONIX-PL licence").click()
             waitFor{$("input", type: "file", name: "import_file").value(fileName)}

@@ -39,7 +39,7 @@
         <g:if test="${is_admin}">
           <li><g:link controller="myInstitutions" 
                                      action="cleanLicense" 
-                                     params="${[shortcode:params.shortcode]}">Add Blank License</g:link></li>
+                                     params="${[shortcode:params.shortcode]}">Add Blank Licence</g:link></li>
         </g:if>
 
       </ul>
