@@ -53,6 +53,7 @@ abstract class CustomProperty implements Serializable{
         else if(decValue) newProp.decValue = decValue
         else if(refValue) newProp.refValue = refValue
         newProp.note = note
+        newProp
     }
 
     def parseValue(value, type){

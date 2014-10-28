@@ -1,10 +1,9 @@
 package com.k_int.kbplus.batch
 
-import org.codehaus.groovy.grails.commons.ApplicationHolder
-
 class GlobalDataSyncJob {
 
   def globalSourceSyncService
+  def grailsApplication
 
   static triggers = {
     // Delay 20 seconds, run every 10 mins.
@@ -24,7 +23,7 @@ class GlobalDataSyncJob {
 
   def execute() {
     log.debug("GlobalDataSyncJob");
-    if ( ApplicationHolder.application.config.KBPlusMaster == true ) {
+    if ( grailsApplication.config.KBPlusMaster == true ) {
       log.debug("This server is marked as KBPlus master. Running GlobalDataSyncJob batch job");
       globalSourceSyncService.runAllActiveSyncTasks()
     }
@@ -34,3 +33,4 @@ class GlobalDataSyncJob {
   }
 
 }
+

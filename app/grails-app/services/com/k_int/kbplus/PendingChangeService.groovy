@@ -151,9 +151,11 @@ def performAccept(change,httpRequest) {
               updateProp.delete()
               break;
             case "CustomProperty.updated":
-              log.debug("Update custom property ${updateProp}")
+              log.debug("Update custom property ${updateProp.type.name}")
               if(changeDoc.type == RefdataValue.toString()){
-                updateProp."${changeDoc.prop}".value = "${changeDoc.new}"
+                  def propertyDefinition = PropertyDefinition.findByName(changeDoc.name)
+                  def newProp =  RefdataCategory.lookupOrCreate(propertyDefinition.refdataCategory,changeDoc.new)
+                  updateProp."${changeDoc.prop}" = newProp                
               }else{
                 updateProp."${changeDoc.prop}" = 
                 updateProp.parseValue("${changeDoc.new}", changeDoc.type)
