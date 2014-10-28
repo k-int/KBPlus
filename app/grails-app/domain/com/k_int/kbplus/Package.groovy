@@ -151,6 +151,7 @@ class Package {
                          add_entitlements,slaved) {
     // Create the header
     log.debug("Package: createSubscription called")
+    def isSlaved = slaved == "Yes" || slaved == true ? "Yes" : "No"
     def result = new Subscription( name:subname,
                                    status:RefdataCategory.lookupOrCreate('Subscription Status','Current'),
                                    identifier:subidentifier,
@@ -159,7 +160,7 @@ class Package {
                                    endDate:enddate,
                                    isPublic: RefdataCategory.lookupOrCreate('YN','No'),
                                    type: RefdataValue.findByValue(subtype),
-                                   slaved: slaved == true)
+                                   isSlaved: RefdataCategory.lookupOrCreate('YN',isSlaved) )
 
     if ( result.save(flush:true) ) {
       if ( consortium_org ) {

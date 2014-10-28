@@ -378,6 +378,7 @@ class License {
   def getPca(){
     return getCustomPropByName("Post Cancellation Access Entitlement")
   }
+
   def getCustomPropByName(name){
     return customProperties.find{it.type.name == name}    
   }

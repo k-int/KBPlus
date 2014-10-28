@@ -61,7 +61,7 @@ class LicenseDetailsController {
       }
 
     log.debug("pc result is ${result.pendingChanges}");
-    if(result.license.incomingLinks.find{it.slaved == true} && pendingChanges){
+    if(result.license.incomingLinks.find{it?.isSlaved?.value == "Yes"} && pendingChanges){
       log.debug("Slaved lincence, auto-accept pending changes")
       def changesDesc = []
       pendingChanges.each{change ->
@@ -158,11 +158,12 @@ class LicenseDetailsController {
   
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def generateSlaveLicences(){
+    def slaved = RefdataCategory.lookupOrCreate('YN','Yes')
     params.each { p ->
         if(p.key.startsWith("_create.")){
          def orgID = p.key.substring(8)
          def orgaisation = Org.get(orgID)
-          def attrMap = [shortcode:orgaisation.shortcode,baselicense:params.baselicense,lic_name:params.lic_name,isSlaved:true]
+          def attrMap = [shortcode:orgaisation.shortcode,baselicense:params.baselicense,lic_name:params.lic_name,isSlaved:slaved]
           log.debug("Create slave licence for ${orgaisation.name}")
           attrMap.copyStartEnd = true
           institutionsService.copyLicence(attrMap);          
