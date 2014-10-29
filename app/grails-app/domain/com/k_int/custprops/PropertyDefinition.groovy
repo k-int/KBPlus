@@ -51,7 +51,9 @@ class PropertyDefinition {
         def type = get(id)
         createPropertyValue(owner, type)
     }
-
+    /**
+    * @param owner: The class that will hold the property, e.g Licence
+    **/
     private static CustomProperty createPropertyValue(owner, PropertyDefinition type) {
         String classString = owner.getClass().toString()
         def ownerClassName = classString.substring(classString.lastIndexOf(".")+1)

@@ -44,6 +44,6 @@ class ChangeAcceptJob {
       pendingChangeService.performAccept(it,httpRequestMock)
   }
 
-  log.debug("Change Accept Job Complete")
+  log.debug("****Change Accept Job Complete*****")
  }
 }
