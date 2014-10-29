@@ -254,8 +254,8 @@ class Subscription {
   static def refdataFind(params) {
     def result = [];   
 
-    def hqlString = "select sub from Subscription sub where sub.name like ? "
-    def hqlParams = [params.q + "%"]
+    def hqlString = "select sub from Subscription sub where lower(sub.name) like ? "
+    def hqlParams = [((params.q ? params.q.toLowerCase() : '' ) + "%")]
     def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd")
     
     if(params.hasDate ){

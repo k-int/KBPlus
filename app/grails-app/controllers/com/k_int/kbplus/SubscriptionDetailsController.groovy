@@ -338,32 +338,32 @@ class SubscriptionDetailsController {
 
   def generateIEQuery(params, qry_params, showDeletedTipps, asAt) {
 
-      def base_qry = "from IssueEntitlement as ie where ie.subscription = ? and ie.tipp.title.status.value != 'Deleted' "
+    def base_qry = "from IssueEntitlement as ie where ie.subscription = ? and ie.tipp.title.status.value != 'Deleted' "
 
-     if ( showDeletedTipps == false ) {
+    if ( showDeletedTipps == false ) {
          base_qry += "and ie.tipp.status.value != 'Deleted' "
-     }
+    }
 
-      if ( params.filter ) {
+    if ( params.filter ) {
       base_qry += " and ( ( lower(ie.tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = ie.tipp.title.id and io.identifier.value like ? ) ) )"
       qry_params.add("%${params.filter.trim().toLowerCase()}%")
       qry_params.add("%${params.filter}%")
-      }
+    }
 
-      if ( params.startsBefore && params.startsBefore.length() > 0 ) {
+    if ( params.startsBefore && params.startsBefore.length() > 0 ) {
         def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
         def d = sdf.parse(params.startsBefore)
         base_qry += " and ie.startDate <= ?"
         qry_params.add(d)
-      }
+    }
 
-      if ( asAt != null ) {
+    if ( asAt != null ) {
         base_qry += " and ( ( ? >= coalesce(ie.tipp.accessStartDate, ie.startDate) ) and ( ( ? <= ie.tipp.accessEndDate ) or ( ie.tipp.accessEndDate is null ) ) ) "
         qry_params.add(asAt);
         qry_params.add(asAt);
-      }
+    }
 
-      return base_qry
+    return base_qry
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
