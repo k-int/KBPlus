@@ -12,5 +12,10 @@ drop table global_record_source;
 -- Comment out for now
 -- alter table title_instance_package_platform drop column controlled_properties_hash_code;
 
-alter table `subscription` drop column `sub_is_slaved`;
-ALTER TABLE `link` DROP COLUMN `link_is_slaved`;
+-- Commenting these out - Test DB is cloned from live - since live has never seen these changes these
+-- columns should never be present. Also shold be using
+--
+-- also the quotes are entirely redundant.
+-- 
+-- alter table `subscription` drop column `sub_is_slaved`;
+-- ALTER TABLE `link` DROP COLUMN `link_is_slaved`;
