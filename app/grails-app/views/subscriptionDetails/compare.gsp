@@ -53,7 +53,7 @@
 								<td>Subscription name </td>
 					<td>Restrict this list to subscriptions starting after- 
 					<g:simpleHiddenValue id="startA" name="startA" type="date" value="${params.startA}"/>
-					and/or ending before- <g:simpleHiddenValue id="endA" name="endA" type="date" value="${params.endA}"/><br/> Now selct first subscription to compare (Filtered by dates above). Use '%' as wildcard.<br/>
+					and/or ending before- <g:simpleHiddenValue id="endA" name="endA" type="date" value="${params.endA}"/><br/> Now select first subscription to compare (Filtered by dates above). Use '%' as wildcard.<br/>
                       <input type="hidden" name="subA" id="subSelectA" value="${subA}"/> 
 					</td>
 					<td> 

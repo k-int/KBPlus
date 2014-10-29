@@ -26,7 +26,7 @@ class Subscription {
   Subscription instanceOf
 
   // If a subscription is slaved then any changes to instanceOf will automatically be applied to this subscription
-  Boolean slaved
+  RefdataValue isSlaved
 
   String noticePeriod
   Date dateCreated
@@ -67,7 +67,7 @@ class Subscription {
              endDate column:'sub_end_date'
    manualRenewalDate column:'sub_manual_renewal_date'
           instanceOf column:'sub_parent_sub_fk'
-              slaved column:'sub_is_slaved'
+            isSlaved column:'sub_is_slaved'
         noticePeriod column:'sub_notice_period'
             isPublic column:'sub_is_public'
   }
@@ -81,7 +81,7 @@ class Subscription {
     endDate(nullable:true, blank:false)
     manualRenewalDate(nullable:true, blank:false)
     instanceOf(nullable:true, blank:false)
-    slaved(nullable:true, blank:false)
+    isSlaved(nullable:true, blank:false)
     noticePeriod(nullable:true, blank:true)
     isPublic(nullable:true, blank:true)
     customProperties(nullable:true)

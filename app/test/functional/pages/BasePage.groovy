@@ -70,6 +70,10 @@ class BasePage extends Page {
             $("a", text: "Admin Actions").click()
             $("a", text: "Manage Content Items").click(AdminMngContentItemsPage)
         }
+        toCompareSubscriptions{
+           $("a", text: "Data Managers").click()
+           $("a", text: "Compare Subscriptions").click(SubscrDetailsPage) 
+        }
         orgInfo { name ->
             $("input", name: "orgNameContains").value(name)
             $("input.btn-primary", value: "GO").click()

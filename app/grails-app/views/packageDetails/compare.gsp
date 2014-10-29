@@ -48,7 +48,7 @@
 					<td>Package name</td>
 					<td>Restrict this list to packages starting after- <g:simpleHiddenValue id="startA" name="startA" type="date" value="${params.startA}"/>
 							and/or ending before- <g:simpleHiddenValue id="endA" name="endA" type="date" value="${params.endA}"/><br/>
-                                              Now selct first package to compare (Filtered by dates above). Use '%' as
+                                              Now select first package to compare (Filtered by dates above). Use '%' as
                                               wildcard.<br/>
                                               <input type="hidden" name="pkgA" id="packageSelectA" value="${pkgA}"/> 
 					</td>

@@ -15,7 +15,7 @@ class TitleDetailsPage extends BasePage {
             $("div.paginateButtons").text().contains("Showing Results 1 -")
         }
         searchTitle{ text ->
-            $("input",name:"title").value(text)
+            $("input",name:"q").value(text)
             $("button",name:"search").click()
         }
         numberOfResults{

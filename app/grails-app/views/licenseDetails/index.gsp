@@ -224,7 +224,10 @@
                       <dd>
                         <ul>
                           <g:each in="${license?.incomingLinks}" var="il">
-                            <li><g:link controller="licenseDetails" action="index" id="${il.fromLic.id}">${il.fromLic.reference} (${il.type?.value})</g:link></li>
+                            <li><g:link controller="licenseDetails" action="index" id="${il.fromLic.id}">${il.fromLic.reference} (${il.type?.value})</g:link> - 
+                            Slaved: <g:xEditableRefData owner="${il}" field="isSlaved" config='YN'/>
+
+                            </li>
                           </g:each>
                         </ul>
                       </dd>

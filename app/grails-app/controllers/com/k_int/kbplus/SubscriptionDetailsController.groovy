@@ -51,7 +51,7 @@ class SubscriptionDetailsController {
     def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
     def pendingChanges = PendingChange.executeQuery("select pc.id from PendingChange as pc where subscription=? and ( pc.status is null or pc.status = ? ) order by ts desc", [result.subscriptionInstance, pending_change_pending_status ]);
     
-    if(result.subscriptionInstance.slaved == true && pendingChanges){
+    if(result.subscriptionInstance?.isSlaved?.value == "Yes" && pendingChanges){
       log.debug("Slaved subscription, auto-accept pending changes")
       def changesDesc = []
       pendingChanges.each{change ->
@@ -234,8 +234,9 @@ class SubscriptionDetailsController {
       listA = createCompareList(params.subA ,params.dateA, params, result)
       listB = createCompareList(params.subB, params.dateB, params, result)
         if(!params.countA){
-          params.countA = Subscription.executeQuery("select count(elements(sub.issueEntitlements)) from Subscription sub where sub.id = ${result.subInsts.get(0).id}")
-          params.countB = Subscription.executeQuery("select count(elements(sub.issueEntitlements)) from Subscription sub where sub.id = ${result.subInsts.get(1).id}")
+          def countQuery = "select count(elements(sub.issueEntitlements)) from Subscription sub where sub.id = ?"
+          params.countA = Subscription.executeQuery(countQuery, [result.subInsts.get(0).id])
+          params.countB = Subscription.executeQuery(countQuery, [result.subInsts.get(1).id])
         }
       }catch(IllegalArgumentException e){
         flash.error = e.getMessage()

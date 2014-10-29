@@ -6,7 +6,8 @@ class SubscrDetailsPage extends AbstractDetails {
     static url = "/demo/subscriptionDetails/show/*"
     static at = {
         browser.page.title.endsWith("- Current Subscriptions") ||
-                browser.page.title.startsWith("KB+ Subscription")
+                browser.page.title.startsWith("KB+ Subscription")||
+                  browser.page.title.equals("Edit Subscription") 
     };
     static content = {
         newSubscription { ref ->
@@ -54,6 +55,16 @@ class SubscrDetailsPage extends AbstractDetails {
             $("a", text: "Exports").click()
             $("a", text: "CSV Export (No header)").click()
         }
+        compareSubscriptions{ ref1, ref2 ->
+            $("#select2-chosen-1").click()
+            $("#s2id_autogen1_search").value(ref1)
+            waitFor{$("div.select2-result-label").click()}
+            $("#select2-chosen-2").click()
+            $("#s2id_autogen2_search").value(ref2)
+            waitFor{$("div.select2-result-label").click()}
+            $("input",type:"submit",value:"Compare").click()
+        }
+
         jsonExport {
             $("a", text: "Exports").click()
             $("a", text: "JSON").click()

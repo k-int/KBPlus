@@ -12,7 +12,7 @@ class Link {
   License toLic
 
   // If slaved then any changes from fromLic should automaticallly be propagated to toLic
-  Boolean slaved
+  RefdataValue isSlaved
 
   static mapping = {
                 id column:'link_id'
@@ -21,7 +21,7 @@ class Link {
               type column:'link_type_rv_fk'
            fromLic column:'link_from_lic_fk'
              toLic column:'link_to_lic_fk'
-            slaved column:'link_is_slaved'
+            isSlaved column:'link_is_slaved'
   }
 
   static constraints = {
@@ -29,7 +29,7 @@ class Link {
     type(nullable:true, blank:false)
     fromLic(nullable:true, blank:false)
     toLic(nullable:true, blank:false)
-    slaved(nullable:true, blank:false)
+    isSlaved(nullable:true, blank:false)
   }
 
 

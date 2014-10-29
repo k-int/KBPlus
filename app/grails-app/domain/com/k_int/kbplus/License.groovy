@@ -3,13 +3,17 @@ package com.k_int.kbplus
 import com.k_int.kbplus.auth.Role
 import javax.persistence.Transient
 import java.text.Normalizer
-
+import com.k_int.custprops.PropertyDefinition
 
 
 class License {
 
   @Transient
   def grailsApplication
+
+  @Transient
+  def genericOIDService
+
   static auditable = true
 
   RefdataValue status
@@ -342,43 +346,181 @@ class License {
     Following getter methods were introduced to avoid making too many changes when custom properties 
     were introduced.
   */
+  @Transient
   def getConcurrentUserCount(){
     return getCustomPropByName("Concurrent Users")
   }
+    @Transient
+  def setConcurrentUserCount(newVal){
+    def custProp = getCustomPropByName("Concurrent Users")
+    if(custProp == null){
+      def type = PropertyDefinition.findByName('Concurrent Users')
+      custProp = PropertyDefinition.createPropertyValue(this,type)
+    }
+    custProp.refValue = genericOIDService.resolveOID(newVal)
+    custProp.save()
+  }
+  @Transient
   def getConcurrentUsers(){
     return getCustomPropByName("Concurrent Access")
   }  
+    @Transient
+  def setConcurrentUsers(newVal){
+    def custProp = getCustomPropByName("Concurrent Access")
+    if(custProp == null){
+      def type = PropertyDefinition.findByName('Concurrent Access')
+      custProp = PropertyDefinition.createPropertyValue(this,type)
+    }
+    custProp.refValue = genericOIDService.resolveOID(newVal)
+    custProp.save()
+  }
+  @Transient
   def getRemoteAccess(){
     return getCustomPropByName("Remote Access")
   }
+    @Transient
+  def setRemoteAccess(newVal){
+    def custProp = getCustomPropByName("Remote Access")
+    if(custProp == null){
+      def type = PropertyDefinition.findByName('Remote Access')
+      custProp = PropertyDefinition.createPropertyValue(this,type)
+    }
+    custProp.refValue = genericOIDService.resolveOID(newVal)
+    custProp.save()
+  }
+  @Transient
   def getWalkinAccess(){
     return getCustomPropByName("Walk In Access")
   }
+    @Transient
+  def setWalkinAccess(newVal){
+    def custProp = getCustomPropByName("Walk In Access")
+    if(custProp == null){
+      def type = PropertyDefinition.findByName('Walk In Access')
+      custProp = PropertyDefinition.createPropertyValue(this,type)
+    }
+    custProp.refValue = genericOIDService.resolveOID(newVal)
+    custProp.save()
+  }
+  @Transient
   def getMultisiteAccess(){
     return getCustomPropByName("Multi Site Access")
   }
+    @Transient
+  def setMultisiteAccess(newVal){
+    def custProp = getCustomPropByName("Multi Site Access")
+    if(custProp == null){
+      def type = PropertyDefinition.findByName('Multi Site Access')
+      custProp = PropertyDefinition.createPropertyValue(this,type)
+    }
+    custProp.refValue = genericOIDService.resolveOID(newVal)
+    custProp.save()
+  }
+  @Transient
   def getPartnersAccess(){
     return getCustomPropByName("Partners Access")
   }
+  @Transient
+  def setPartnersAccess(newVal){
+    def custProp = getCustomPropByName("Partners Access")
+    if(custProp == null){
+      def type = PropertyDefinition.findByName('Partners Access')
+      custProp = PropertyDefinition.createPropertyValue(this,type)
+    }
+    custProp.refValue = genericOIDService.resolveOID(newVal)
+    custProp.save()
+  }
+  @Transient
   def getAlumniAccess(){
     return getCustomPropByName("Alumni Access")
   }
+  @Transient
+  def setAlumniAccess(newVal){
+    def custProp = getCustomPropByName("Alumni Access")
+    if(custProp == null){
+      def type = PropertyDefinition.findByName('Alumni Access')
+      custProp = PropertyDefinition.createPropertyValue(this,type)
+    }
+    custProp.refValue = genericOIDService.resolveOID(newVal)
+    custProp.save()
+  }
+  @Transient
   def getIll(){
     return getCustomPropByName("ILL - InterLibraryLoans")
   }
+
+  @Transient
+  def setIll(newVal){
+    def custProp = getCustomPropByName("ILL - InterLibraryLoans")
+    if(custProp == null){
+      def type = PropertyDefinition.findByName('ILL - InterLibraryLoans')
+      custProp = PropertyDefinition.createPropertyValue(this,type)
+    }
+    custProp.refValue = genericOIDService.resolveOID(newVal)
+    custProp.save()
+  }
+  @Transient
   def getCoursepack(){
     return getCustomPropByName("Include In Coursepacks")
   }
-  def getVle(){
-    return getCustomPropByName("Include In VLE")
+
+  @Transient
+  def setCoursepack(newVal){
+    def custProp = getCustomPropByName("Include In Coursepacks")
+    if(custProp == null){
+      def type = PropertyDefinition.findByName('Include In Coursepacks')
+      custProp = PropertyDefinition.createPropertyValue(this,type)
+    }
+    custProp.refValue = genericOIDService.resolveOID(newVal)
+    custProp.save()
   }
+  @Transient
+  def getVle(){
+    return getCustomPropByName("Include in VLE")
+  }
+  @Transient
+  def setVle(newVal){
+    def custProp = getCustomPropByName("Include in VLE")
+    if(custProp == null){
+      def type = PropertyDefinition.findByName('Include in VLE')
+      custProp = PropertyDefinition.createPropertyValue(this,type)
+    }
+    custProp.refValue = genericOIDService.resolveOID(newVal)
+    custProp.save()
+  }
+
+  @Transient
   def getEnterprise(){
     return getCustomPropByName("Enterprise Access")
   }
+  @Transient
+  def setEnterprise(newVal){
+    def custProp = getCustomPropByName("Enterprise Access")
+    if(custProp == null){
+      def type = PropertyDefinition.findByName('Enterprise Access')
+      custProp = PropertyDefinition.createPropertyValue(this,type)
+    }
+    custProp.refValue = genericOIDService.resolveOID(newVal)
+    custProp.save()
+  }
+
+  @Transient
   def getPca(){
     return getCustomPropByName("Post Cancellation Access Entitlement")
   }
+  @Transient
+  def setPca(newVal){
+    def custProp = getCustomPropByName("Post Cancellation Access Entitlement")
+    if(custProp == null){
+      def type = PropertyDefinition.findByName('Post Cancellation Access Entitlement')
+      custProp = PropertyDefinition.createPropertyValue(this,type)
+    }
+    custProp.refValue = genericOIDService.resolveOID(newVal)
+    custProp.save()
+  }
+  @Transient
   def getCustomPropByName(name){
     return customProperties.find{it.type.name == name}    
   }
+
 }
