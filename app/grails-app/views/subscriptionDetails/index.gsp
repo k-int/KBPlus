@@ -21,12 +21,12 @@
         <li class="dropdown pull-right">
           <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>
           <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
-            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter,mode:params.mode]}">CSV Export</g:link><li>
-            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'csv',sort:params.sort,order:params.order,filter:params.filter,omitHeader:'Y',mode:params.mode]}">CSV Export (No header)</g:link></li>
-            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'json',sort:params.sort,order:params.order,filter:params.filter,mode:params.mode]}">JSON</g:link></li>
-            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${[format:'xml',sort:params.sort,order:params.order,filter:params.filter,mode:params.mode]}">XML</g:link></li>
+            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${params+ [format:'csv']}">CSV Export</g:link><li>
+            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${params + [format:'csv',omitHeader:'Y']}">CSV Export (No header)</g:link></li>
+            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${params + [format:'json']}">JSON</g:link></li>
+            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${params + [format:'xml']}">XML</g:link></li>
             <g:each in="${transforms}" var="transkey,transval">
-              <li><g:link action="index" id="${params.id}" params="${[format:'xml',transformId:transkey]}"> ${transval.name}</g:link></li>
+              <li><g:link action="index" id="${params.id}" params="${[format:'xml',transformId:transkey,mode: params.mode]}"> ${transval.name}</g:link></li>
             </g:each>
         </ul>
 

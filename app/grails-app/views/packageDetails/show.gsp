@@ -22,7 +22,7 @@
             <li><g:link action="show" params="${params+[format:'json']}">Json Export</g:link></li>
             <li><g:link action="show" params="${params+[format:'xml']}">XML Export</g:link></li>
             <g:each in="${transforms}" var="transkey,transval">
-              <li><g:link action="show" id="${params.id}" params="${[format:'xml',transformId:transkey]}"> ${transval.name}</g:link></li>
+              <li><g:link action="show" id="${params.id}" params="${[format:'xml',transformId:transkey,mode:params.mode]}"> ${transval.name}</g:link></li>
             </g:each>
           </ul>
         </li>
