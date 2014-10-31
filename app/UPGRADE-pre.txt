@@ -14,8 +14,7 @@ drop table global_record_source;
 
 -- Commenting these out - Test DB is cloned from live - since live has never seen these changes these
 -- columns should never be present. Also shold be using
---
 -- also the quotes are entirely redundant.
 -- 
--- alter table `subscription` drop column `sub_is_slaved`;
--- ALTER TABLE `link` DROP COLUMN `link_is_slaved`;
+-- alter table subscription drop column sub_is_slaved;
+-- alter table link drop column link_is_slaved;
