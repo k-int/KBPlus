@@ -101,7 +101,7 @@
 
     </div>
 
-    <g:set var="counter" value="${offset+1}" />
+    <g:set var="counter" value="${offset?:-1 +1}" />
 
     <g:if test="${formattedHistoryLines?.size() > 0}">
 
@@ -110,7 +110,7 @@
       <g:link action="changeLog"> 
          <input type="button" value="Clear Search" class="btn btn-danger"/> 
       </g:link>
-      
+
         <table class="table table-bordered">
           <thead>
             <tr>
