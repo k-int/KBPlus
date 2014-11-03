@@ -96,8 +96,9 @@
         How has it changed :
         <input type="checkbox" name="creates" value="Y" ${params.creates=='Y'?'checked':''}/> New Items &nbsp;
         <input type="checkbox" name="updates" value="Y" ${params.updates=='Y'?'checked':''}/> Updates to existing items&nbsp;
-        <input type="submit"/>
+        <input  class="btn btn-primary" type="submit"/>
       </g:form>
+
     </div>
 
     <g:set var="counter" value="${offset+1}" />
@@ -105,6 +106,11 @@
     <g:if test="${formattedHistoryLines?.size() > 0}">
 
       <div class="container alert-warn">
+
+      <g:link action="changeLog"> 
+         <input type="button" value="Clear Search" class="btn btn-danger"/> 
+      </g:link>
+      
         <table class="table table-bordered">
           <thead>
             <tr>
