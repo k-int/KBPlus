@@ -154,7 +154,7 @@ class DataManagerController {
           case 'com.k_int.kbplus.Package':
             def package_object = Package.get(hl.persistedObjectId);
             line_to_add = [ link: createLink(controller:'packageDetails', action: 'show', id:hl.persistedObjectId),
-                            name: package_object.toString(),
+                            name: package_object.name,
                             lastUpdated: hl.lastUpdated,
                             propertyName: hl.propertyName,
                             actor: User.findByUsername(hl.actor),
