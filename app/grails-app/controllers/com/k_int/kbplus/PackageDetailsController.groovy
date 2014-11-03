@@ -278,16 +278,16 @@ class PackageDetailsController {
                def out = response.outputStream
                out.withWriter { writer ->
                 writer.write("${result.pkgInsts[0].name} on ${params.dateA}, ${result.pkgInsts[1].name} on ${params.dateB}\n")
-                writer.write('Title, pISSN, eISSN, Start Date A, Start Date B, Start Volume A, Start Volume B, Start Issue A, Start Issue B, End Date A, End Date B, End Volume A,End  Volume B,End  Issue A,End  Issue B, Coverage Note A, Coverage Note B\n');
+                writer.write('Title, pISSN, eISSN, Start Date A, Start Date B, Start Volume A, Start Volume B, Start Issue A, Start Issue B, End Date A, End Date B, End Volume A,End  Volume B,End  Issue A,End  Issue B, Coverage Note A, Coverage Note B, ColorCode\n');
                 // log.debug("UnionList size is ${unionList.size}")
                 comparisonMap.each { title, values ->
                   def tippA = values[0]
                   def tippB = values[1]
-
+                  def colorCode = values[2]
                   def pissn = tippA ? tippA.title.getIdentifierValue('issn') : tippB.title.getIdentifierValue('issn');
                   def eissn = tippA? tippA.title.getIdentifierValue('eISSN') : tippB.title.getIdentifierValue('eISSN');
 
-                  writer.write("\"${title}\",\"${pissn}\",\"${eissn}\",\"${tippA?.startDate?:''}\",\"${tippB?.startDate?:''}\",\"${tippA?.startVolume?:''}\",\"${tippB?.startVolume?:''}\",\"${tippA?.startIssue?:''}\",\"${tippB?.startIssue?:''}\",\"${tippA?.endDate?:''}\",\"${tippB?.endDate?:''}\",\"${tippA?.endVolume?:''}\",\"${tippB?.endVolume?:''}\",\"${tippA?.endIssue?:''}\",\"${tippB?.endIssue?:''}\",\"${tippA?.coverageNote?:''}\",\"${tippB?.coverageNote?:''}\"\n")
+                  writer.write("\"${title}\",\"${pissn}\",\"${eissn}\",\"${tippA?.startDate?:''}\",\"${tippB?.startDate?:''}\",\"${tippA?.startVolume?:''}\",\"${tippB?.startVolume?:''}\",\"${tippA?.startIssue?:''}\",\"${tippB?.startIssue?:''}\",\"${tippA?.endDate?:''}\",\"${tippB?.endDate?:''}\",\"${tippA?.endVolume?:''}\",\"${tippB?.endVolume?:''}\",\"${tippA?.endIssue?:''}\",\"${tippB?.endIssue?:''}\",\"${tippA?.coverageNote?:''}\",\"${tippB?.coverageNote?:''}\",\"${colorCode}\"\n")
                 }
                 writer.write("END");
                 writer.flush();

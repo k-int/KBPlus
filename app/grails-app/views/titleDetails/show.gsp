@@ -89,7 +89,7 @@
 
         <div class="row">
           <div class="span12">
-            <h3>Title History</h3>
+            <h3>Bibliographic Title History</h3>
             <table class="table table-striped">
               <thead>
                 <tr>
