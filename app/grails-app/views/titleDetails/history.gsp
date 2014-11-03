@@ -57,7 +57,7 @@
               <td>Property</td>
               <td>Old</td>
               <td>New</td>
-              <td>date</td>
+              <td>Date</td>
             </tr>
           </thead>
           <tbody>
