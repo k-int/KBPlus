@@ -312,8 +312,8 @@ class Package {
   static def refdataFind(params) {
     def result = [];
     
-    def hqlString = "select pkg from Package pkg where pkg.name like ? "
-    def hqlParams = [params.q + "%"]
+    def hqlString = "select pkg from Package pkg where lower(pkg.name) like ? "
+    def hqlParams = [((params.q ? params.q.toLowerCase() : '' ) + "%")]
     def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd")
     
     if(params.hasDate ){
