@@ -31,8 +31,8 @@ class DataManagerController {
     def exporting = params.format == 'csv' ? true : false
 
     if ( exporting ) {
-      result.max = 9999999
-      params.max = 9999999
+      result.max = 10000
+      params.max = 10000
       result.offset = 0
     }
     else {
@@ -93,7 +93,6 @@ class DataManagerController {
     final long hoursInMillis = 60L * 60L * 1000L;
     end_date = new Date(end_date.getTime() + (24L * hoursInMillis - 2000L)); 
 
-    log.debug("END DATE IS ${end_date}")
     def query_params = ['l':types_to_include,'s':start_date,'e':end_date, 't':events_to_include]
    
 
@@ -123,8 +122,7 @@ class DataManagerController {
 
     if ( types_to_include.size() > 0 ) {
   
-      def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
-
+      def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[max:result.max,offset:0]
       result.historyLines = AuditLogEvent.executeQuery('select e '+base_query+' order by e.lastUpdated desc', 
                                                        query_params, limits);
       result.num_hl = AuditLogEvent.executeQuery('select count(e) '+base_query,
@@ -154,7 +152,7 @@ class DataManagerController {
           case 'com.k_int.kbplus.Package':
             def package_object = Package.get(hl.persistedObjectId);
             line_to_add = [ link: createLink(controller:'packageDetails', action: 'show', id:hl.persistedObjectId),
-                            name: package_object.toString(),
+                            name: package_object.name,
                             lastUpdated: hl.lastUpdated,
                             propertyName: hl.propertyName,
                             actor: User.findByUsername(hl.actor),
@@ -225,13 +223,16 @@ class DataManagerController {
         result
       }
       csv {
+        if(result.formattedHistoryLines.size() == 10000 ){
+          //show some error somehow
+        }
         response.setHeader("Content-disposition", "attachment; filename=DMChangeLog.csv")
         response.contentType = "text/csv"
         def out = response.outputStream
         out.withWriter { w ->
         w.write('Timestamp,Name,Event,Property,Actor,Old,New,Link\n')
           result.formattedHistoryLines.each { c ->
-            def line = "\"${c.lastUpdated}\",\"${c.name}\",\"${c.eventName}\",\"${c.propertyName}\",\"${c.actor?.displayName}\",\"${c.oldValue}\",\"${c.newValue}\",\"${c.link}\"\n".toString()
+            def line = "\"${c.lastUpdated}\",\"${c.name}\",\"${c.eventName}\",\"${c.propertyName}\",\"${c.actor?.displayName}\",\"${c.oldValue}\",\"${c.newValue}\",\"${c.link}\"\n"
             w.write(line)
           }
         }

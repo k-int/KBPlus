@@ -269,21 +269,23 @@ class SubscriptionDetailsController {
           log.debug("Create CSV Response")
           def comparisonMap =
           institutionsService.generateComparisonMap(unionList, mapA, mapB, 0, unionList.size(),filterRules)
+          def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd')
+
            response.setHeader("Content-disposition", "attachment; filename=subscriptionComparison.csv")
            response.contentType = "text/csv"
            def out = response.outputStream
            out.withWriter { writer ->
             writer.write("${result.subInsts[0].name} on ${params.dateA}, ${result.subInsts[1].name} on ${params.dateB}\n")
-            writer.write('IE Title, pISSN, eISSN, Start Date A, Start Date B, Volume A, Volume B, Issue A, Issue B, End Date A, End Date B, Volume A, Volume B, Issue A, Issue B, Coverage Note A, Coverage Note B\n');
+            writer.write('IE Title, pISSN, eISSN, Start Date A, Start Date B, Start Volume A, Start Volume B, Start Issue A, Start Issue B, End Date A, End Date B, End Volume A, End Volume B, End Issue A, End Issue B, Coverage Note A, Coverage Note B, ColorCode\n');
             log.debug("UnionList size is ${unionList.size}")
             comparisonMap.each{ title, values ->
               def ieA = values[0]
               def ieB = values[1]
-
+              def colorCode = values[2]
               def pissn = ieA ? ieA.tipp.title.getIdentifierValue('issn') : ieB.tipp.title.getIdentifierValue('issn');
               def eissn = ieA ? ieA.tipp.title.getIdentifierValue('eISSN') : ieB.tipp.title.getIdentifierValue('eISSN')
 
-              writer.write("\"${unionTitle}\",\"${pISSN}\",\"${eissn}\",${ieA?.startDate?:''},${ieB?.startDate?:''},${ieA?.startVolume?:''},${ieB?.startVolume?:''},${ieA?.startIssue?:''},${ieB?.startIssue?:''},\"${ieA?.coverageNote?:''}\",\"${ieB?.coverageNote?:''}\"\n")
+              writer.write("\"${title}\",\"${pissn?:''}\",\"${eissn?:''}\",\"${formatDateOrNull(dateFormatter,ieA?.startDate)}\",\"${formatDateOrNull(dateFormatter,ieB?.startDate)}\",\"${ieA?.startVolume?:''}\",\"${ieB?.startVolume?:''}\",\"${ieA?.startIssue?:''}\",\"${ieB?.startIssue?:''}\",\"${formatDateOrNull(dateFormatter,ieA?.endDate)}\",\"${formatDateOrNull(dateFormatter,ieB?.endDate)}\",\"${ieA?.endVolume?:''}\",\"${ieB?.endVolume?:''}\",\"${ieA?.endIssue?:''}\",\"${ieB?.endIssue?:''}\",\"${ieA?.coverageNote?:''}\",\"${ieB?.coverageNote?:''}\",\"${colorCode}\"\n")
             }
             writer.write("END");
             writer.flush();
@@ -311,7 +313,15 @@ class SubscriptionDetailsController {
     }
     result
   }
-  
+  def formatDateOrNull(formatter, date) {
+      def result;
+      if(date){
+        result = formatter.format(date)
+      }else{
+        result = ''
+      }
+      return result
+    }
   def createCompareList(sub,dateStr,params, result){
    def returnVals = [:]
    def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd')
@@ -332,7 +342,6 @@ class SubscriptionDetailsController {
    def query = generateIEQuery(params,queryParams, true, date)
 
    def list = IssueEntitlement.executeQuery("select ie "+query,  queryParams);
-   
    list
 
   }
