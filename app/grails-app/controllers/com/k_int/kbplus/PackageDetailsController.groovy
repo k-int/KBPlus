@@ -273,6 +273,7 @@ class PackageDetailsController {
               def comparisonMap = 
               institutionsService.generateComparisonMap(unionList, mapA, mapB,0, unionList.size(),filterRules)
               log.debug("Create CSV Response")
+              def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd')
                response.setHeader("Content-disposition", "attachment; filename=packageComparison.csv")
                response.contentType = "text/csv"
                def out = response.outputStream
@@ -287,7 +288,7 @@ class PackageDetailsController {
                   def pissn = tippA ? tippA.title.getIdentifierValue('issn') : tippB.title.getIdentifierValue('issn');
                   def eissn = tippA? tippA.title.getIdentifierValue('eISSN') : tippB.title.getIdentifierValue('eISSN');
 
-                  writer.write("\"${title}\",\"${pissn}\",\"${eissn}\",\"${tippA?.startDate?:''}\",\"${tippB?.startDate?:''}\",\"${tippA?.startVolume?:''}\",\"${tippB?.startVolume?:''}\",\"${tippA?.startIssue?:''}\",\"${tippB?.startIssue?:''}\",\"${tippA?.endDate?:''}\",\"${tippB?.endDate?:''}\",\"${tippA?.endVolume?:''}\",\"${tippB?.endVolume?:''}\",\"${tippA?.endIssue?:''}\",\"${tippB?.endIssue?:''}\",\"${tippA?.coverageNote?:''}\",\"${tippB?.coverageNote?:''}\",\"${colorCode}\"\n")
+                  writer.write("\"${title}\",\"${pissn?:''}\",\"${eissn?:''}\",\"${formatDateOrNull(dateFormatter, tippA?.startDate)}\",\"${formatDateOrNull(dateFormatter, tippB?.startDate)}\",\"${tippA?.startVolume?:''}\",\"${tippB?.startVolume?:''}\",\"${tippA?.startIssue?:''}\",\"${tippB?.startIssue?:''}\",\"${formatDateOrNull(dateFormatter, tippA?.endDate)}\",\"${formatDateOrNull(dateFormatter, tippB?.endDate)}\",\"${tippA?.endVolume?:''}\",\"${tippB?.endVolume?:''}\",\"${tippA?.endIssue?:''}\",\"${tippB?.endIssue?:''}\",\"${tippA?.coverageNote?:''}\",\"${tippB?.coverageNote?:''}\",\"${colorCode}\"\n")
                 }
                 writer.write("END");
                 writer.flush();
@@ -312,6 +313,15 @@ class PackageDetailsController {
           result
         }
       
+    }
+    def formatDateOrNull(formatter, date) {
+      def result;
+      if(date){
+        result = formatter.format(date)
+      }else{
+        result = ''
+      }
+      return result
     }
 
     def createCompareList(pkg,dateStr,params, result){
