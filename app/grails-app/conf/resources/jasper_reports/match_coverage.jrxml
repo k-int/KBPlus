@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.6.1  -->
-<!-- 2014-10-15T11:08:58 -->
+<!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.6.1  -->
+<!-- 2014-11-04T11:49:42 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="matchCoverage" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e367de7d-d0b3-49e0-84b2-c989348c5c1f">
 	<property name="com.jaspersoft.studio.data.sql.tables" value="a2JwbHVzLnRpdGxlX2luc3RhbmNlX3BhY2thZ2VfcGxhdGZvcm0gQVMgLDEyMiwxMDM7a2JwbHVz&#xA;LnRpdGxlX2luc3RhbmNlIEFTICwwLDYzNTs="/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="KBPLUS"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kbpluslive"/>
 	<parameter name="search_package_id" class="com.k_int.kbplus.Package">
 		<parameterDescription><![CDATA[The Package to search into]]></parameterDescription>
 	</parameter>
@@ -99,6 +99,25 @@ WHERE
 					</textElement>
 					<textFieldExpression><![CDATA[$P{coverage_note}]]></textFieldExpression>
 				</textField>
+				<textField evaluationTime="Report">
+					<reportElement x="450" y="30" width="122" height="36" forecolor="#FFFFFF" uuid="130c5bde-542e-4862-af18-95e86f95cb07">
+						<property name="local_mesure_unity" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="local_mesure_unitwidth" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="360" y="30" width="90" height="21" forecolor="#FFFFFF" uuid="606b6fbd-12fe-4a4e-9374-fa3e73e66442"/>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+					<text><![CDATA[Results Count: ]]></text>
+				</staticText>
 			</frame>
 		</band>
 	</title>

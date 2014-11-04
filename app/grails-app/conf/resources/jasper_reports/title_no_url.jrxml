@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.6.1  -->
-<!-- 2014-10-15T11:15:53 -->
+<!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.6.1  -->
+<!-- 2014-11-04T11:52:30 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Simple_Blue" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6de1af87-e712-4c00-b0e0-8c2025684190">
 	<property name="com.jaspersoft.studio.data.sql.tables" value="a2JwbHVzLnRpdGxlX2luc3RhbmNlX3BhY2thZ2VfcGxhdGZvcm0gQVMgLDEwNSwyMjA7a2JwbHVz&#xA;LnRpdGxlX2luc3RhbmNlIEFTICwzNzEsNTg5Ow=="/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="KBPLUS"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kbpluslive"/>
 	<parameter name="report_description" class="java.lang.String">
 		<parameterDescription><![CDATA[Lists all titles that have no URL]]></parameterDescription>
 	</parameter>
@@ -50,6 +50,25 @@ GROUP BY ti.ti_id ORDER BY ti.ti_id]]>
 					</textElement>
 					<text><![CDATA[These are all the tipps without URL]]></text>
 				</staticText>
+				<staticText>
+					<reportElement x="25" y="60" width="90" height="21" forecolor="#FFFFFF" uuid="015cde2e-6920-4e93-b059-febf4643bbe2"/>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+					<text><![CDATA[Results Count: ]]></text>
+				</staticText>
+				<textField evaluationTime="Report">
+					<reportElement x="115" y="60" width="122" height="21" forecolor="#FFFFFF" uuid="64345267-146c-4478-8a00-1e0fc1b34614">
+						<property name="local_mesure_unity" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="local_mesure_unitwidth" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+				</textField>
 			</frame>
 		</band>
 	</title>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.6.1  -->
-<!-- 2014-10-15T11:17:53 -->
+<!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.6.1  -->
+<!-- 2014-11-04T12:27:48 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Simple_Blue" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6de1af87-e712-4c00-b0e0-8c2025684190">
 	<property name="com.jaspersoft.studio.data.sql.tables" value="a2JwbHVzLnRpdGxlX2luc3RhbmNlX3BhY2thZ2VfcGxhdGZvcm0gQVMgLDEwNSwyMjA7a2JwbHVz&#xA;LnRpdGxlX2luc3RhbmNlIEFTICwzNzEsNTg5Ow=="/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="KBPLUS"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kbpluslive"/>
 	<parameter name="report_description" class="java.lang.String">
 		<parameterDescription><![CDATA[Lists all the duplicate titles, based on the key title.]]></parameterDescription>
 	</parameter>
@@ -38,6 +38,23 @@
 					</textElement>
 					<text><![CDATA[These are all the duplicate titles]]></text>
 				</staticText>
+				<textField evaluationTime="Report">
+					<reportElement x="110" y="59" width="190" height="21" forecolor="#FFFFFF" uuid="b46f1bbe-6b2f-48e5-b6a5-a47b4425fec5">
+						<property name="local_mesure_unity" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="20" y="59" width="100" height="30" forecolor="#FFFFFF" uuid="45e284ec-f0ed-4bac-8658-72b541baef0d"/>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+					<text><![CDATA[Results Count: ]]></text>
+				</staticText>
 			</frame>
 		</band>
 	</title>
@@ -57,7 +74,7 @@
 				<text><![CDATA[Title Id]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="60" y="0" width="492" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="958100bf-f674-487c-826f-f3bf452d7e42"/>
+				<reportElement mode="Opaque" x="60" y="0" width="495" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="958100bf-f674-487c-826f-f3bf452d7e42"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
@@ -78,7 +95,7 @@
 				<textFieldExpression><![CDATA[$F{ti_id}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="90" y="0" width="462" height="20" uuid="e74274f8-c705-4154-8e85-d088e30ca5a1"/>
+				<reportElement x="90" y="0" width="465" height="20" uuid="e74274f8-c705-4154-8e85-d088e30ca5a1"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
@@ -90,18 +107,18 @@
 		<band/>
 	</columnFooter>
 	<pageFooter>
-		<band height="56">
+		<band height="17">
 			<textField pattern="EEEEE dd MMMMM yyyy">
-				<reportElement x="0" y="43" width="100" height="13" uuid="24972aa0-bd34-4a8a-a14a-a324fa09ca90"/>
+				<reportElement x="0" y="0" width="100" height="13" uuid="24972aa0-bd34-4a8a-a14a-a324fa09ca90"/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Opaque" x="0" y="43" width="515" height="13" backcolor="#E6E6E6" uuid="ab9ce225-2ca8-4d37-b745-a09c2778967c"/>
+				<reportElement mode="Opaque" x="0" y="0" width="515" height="13" backcolor="#E6E6E6" uuid="ab9ce225-2ca8-4d37-b745-a09c2778967c"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement mode="Opaque" x="512" y="43" width="40" height="13" backcolor="#E6E6E6" uuid="9caae9a1-ea7d-4974-815c-0c349b848362"/>
+				<reportElement mode="Opaque" x="512" y="0" width="40" height="13" backcolor="#E6E6E6" uuid="9caae9a1-ea7d-4974-815c-0c349b848362"/>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>

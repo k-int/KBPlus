@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.6.1  -->
-<!-- 2014-10-15T11:30:06 -->
+<!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.6.1  -->
+<!-- 2014-11-04T11:50:47 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="no_issn_e-issn" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="24bbdcf4-b2ae-417d-8c23-04bfc4896c56">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kbpluslive"/>
 	<parameter name="report_description" class="java.lang.String">
 		<parameterDescription><![CDATA[A report listing all titles that have identifiers attached]]></parameterDescription>
 	</parameter>
@@ -37,6 +37,25 @@ where not exists ( select io.io_id
 						<font size="24" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Titles without ISSN/e-ISSN/ISBN]]></text>
+				</staticText>
+				<textField evaluationTime="Report">
+					<reportElement x="110" y="56" width="122" height="36" forecolor="#FFFFFF" uuid="5195bb1f-664c-4549-8067-c21b793925bb">
+						<property name="local_mesure_unity" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="local_mesure_unitwidth" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="20" y="56" width="90" height="21" forecolor="#FFFFFF" uuid="4502366d-329a-42f1-8650-374da2478a4d"/>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+					<text><![CDATA[Results Count: ]]></text>
 				</staticText>
 			</frame>
 		</band>

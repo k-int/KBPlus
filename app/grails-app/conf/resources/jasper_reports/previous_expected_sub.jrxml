@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.6.1  -->
-<!-- 2014-10-15T11:29:29 -->
+<!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.6.1  -->
+<!-- 2014-11-04T11:51:55 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="expected_issues" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cac26577-7c58-4fd6-8e92-8b28886ba96c">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="KBPLUS"/>
 	<parameter name="search_sub_id" class="com.k_int.kbplus.Subscription">
@@ -88,6 +88,25 @@
 						<font size="12"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{sub_name}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="14" y="57" width="90" height="21" forecolor="#FFFFFF" uuid="1230e3f8-d13b-4111-bdbd-be0db11b409e"/>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+					<text><![CDATA[Results Count: ]]></text>
+				</staticText>
+				<textField evaluationTime="Report">
+					<reportElement x="104" y="57" width="122" height="21" forecolor="#FFFFFF" uuid="22e2b419-b20b-478e-961e-8909b6035c79">
+						<property name="local_mesure_unity" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="local_mesure_unitwidth" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 				</textField>
 			</frame>
 		</band>
