@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.6.1  -->
-<!-- 2014-11-04T16:39:46 -->
+<!-- 2014-11-04T17:23:56 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="no_issn_e-issn" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="24bbdcf4-b2ae-417d-8c23-04bfc4896c56">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kbpluslive"/>
 	<parameter name="report_description" class="java.lang.String">
@@ -87,7 +87,7 @@ group by ti.ti_id order by ti.ti_id;]]>
 				<text><![CDATA[Title]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="480" y="0" width="75" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="a211dde9-81ac-458b-8574-7d29d0e87897"/>
+				<reportElement mode="Opaque" x="480" y="0" width="95" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="a211dde9-81ac-458b-8574-7d29d0e87897"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
@@ -115,7 +115,7 @@ group by ti.ti_id order by ti.ti_id;]]>
 				<textFieldExpression><![CDATA[$F{ti_title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="490" y="0" width="65" height="20" uuid="e38ad255-62e6-43d5-8970-2018849e5c89">
+				<reportElement x="490" y="-4" width="85" height="20" uuid="e38ad255-62e6-43d5-8970-2018849e5c89">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -124,6 +124,7 @@ group by ti.ti_id order by ti.ti_id;]]>
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{GROUP_CONCAT(pkg.pkg_id)}]]></textFieldExpression>
 			</textField>
 		</band>
