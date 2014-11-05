@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.6.1  -->
-<!-- 2014-10-15T11:29:29 -->
+<!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.6.1  -->
+<!-- 2014-11-04T15:34:31 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="expected_issues" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cac26577-7c58-4fd6-8e92-8b28886ba96c">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="KBPLUS"/>
 	<parameter name="search_sub_id" class="com.k_int.kbplus.Subscription">
@@ -33,23 +33,28 @@
 	<field name="sub_name" class="java.lang.String"/>
 	<group name="Group1">
 		<groupHeader>
-			<band height="60">
+			<band height="18">
 				<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
 				<staticText>
-					<reportElement mode="Opaque" x="80" y="0" width="476" height="30" forecolor="#007A5E" backcolor="#E1E6E5" uuid="b68ac5e2-d77b-433d-ab42-ac0762b5fbb0"/>
+					<reportElement mode="Opaque" x="0" y="0" width="84" height="18" forecolor="#007A5E" backcolor="#E1E6E5" uuid="b68ac5e2-d77b-433d-ab42-ac0762b5fbb0">
+						<property name="local_mesure_unitheight" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="15"/>
+						<paragraph leftIndent="15"/>
+					</textElement>
+					<text><![CDATA[IE ID]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="84" y="0" width="471" height="18" forecolor="#007A5E" backcolor="#E1E6E5" uuid="3271dd5a-3f12-49bf-9e1e-d49f4ddf0441">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="15"/>
 						<paragraph leftIndent="15"/>
 					</textElement>
 					<text><![CDATA[Title]]></text>
-				</staticText>
-				<staticText>
-					<reportElement mode="Opaque" x="-1" y="0" width="81" height="30" forecolor="#007A5E" backcolor="#E1E6E5" uuid="3271dd5a-3f12-49bf-9e1e-d49f4ddf0441"/>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font size="15"/>
-						<paragraph leftIndent="15"/>
-					</textElement>
-					<text><![CDATA[IE Id]]></text>
 				</staticText>
 			</band>
 		</groupHeader>
@@ -89,6 +94,25 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$F{sub_name}]]></textFieldExpression>
 				</textField>
+				<staticText>
+					<reportElement x="14" y="57" width="90" height="21" forecolor="#FFFFFF" uuid="1230e3f8-d13b-4111-bdbd-be0db11b409e"/>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+					<text><![CDATA[Results Count: ]]></text>
+				</staticText>
+				<textField evaluationTime="Report">
+					<reportElement x="104" y="57" width="122" height="21" forecolor="#FFFFFF" uuid="22e2b419-b20b-478e-961e-8909b6035c79">
+						<property name="local_mesure_unity" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="local_mesure_unitwidth" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+				</textField>
 			</frame>
 		</band>
 	</title>
@@ -96,17 +120,27 @@
 		<band height="13"/>
 	</pageHeader>
 	<detail>
-		<band height="35">
+		<band height="20">
 			<line>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="30" width="555" height="1" uuid="37864285-068c-41e2-83db-9392ad4d5fed"/>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="19" width="555" height="1" uuid="37864285-068c-41e2-83db-9392ad4d5fed">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
 			</line>
 			<textField>
-				<reportElement x="0" y="0" width="50" height="30" uuid="2d37952a-a831-4ee4-9787-890325f86f2c"/>
+				<reportElement x="0" y="0" width="50" height="20" uuid="2d37952a-a831-4ee4-9787-890325f86f2c">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{ie_id}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="80" y="2" width="474" height="30" uuid="4904daf8-9d74-4f5e-ba0d-c5aba908645d"/>
+				<reportElement x="80" y="0" width="474" height="20" uuid="4904daf8-9d74-4f5e-ba0d-c5aba908645d">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textFieldExpression><![CDATA[$F{ti_title}]]></textFieldExpression>
 			</textField>
 		</band>

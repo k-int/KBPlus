@@ -86,9 +86,9 @@ grails.project.dependency.resolution = {
         runtime 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
 
         runtime 'org.apache.commons:commons-exec:1.2'
-        runtime 'org.apache.httpcomponents:httpcore:4.3.2'
+        compile 'org.apache.httpcomponents:httpcore:4.3.2'
 
-        test 'org.apache.httpcomponents:httpclient:4.3.5'
+        compile 'org.apache.httpcomponents:httpclient:4.3.5'
         test 'org.hamcrest:hamcrest-all:1.3'
         test("org.seleniumhq.selenium:selenium-htmlunit-driver:$seleniumVersion") {
             exclude 'xml-apis'
