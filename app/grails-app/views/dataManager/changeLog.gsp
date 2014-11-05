@@ -58,7 +58,7 @@
             Select Actors
             <b class="caret"></b>
         </a>
-        <ul class="dropdown-menu dropdown-checkboxes" role="menu">
+        <ul class="dropdown-checkboxes dropdown-menu" role="menu">
             <li>
                 <label class="checkbox">
                     <input type="checkbox" name="change_actor_PEOPLE" value="Y"

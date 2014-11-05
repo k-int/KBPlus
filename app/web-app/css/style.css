@@ -8,6 +8,11 @@
 */
 
 /* Table Columns Adjustment */
+ul.dropdown-checkboxes {
+    padding: 5px 10px 0;
+    max-height: 600px;
+    overflow-y: scroll;
+}
 
 td.danger {
     background-color: #f2dede ;
