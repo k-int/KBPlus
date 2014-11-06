@@ -159,6 +159,7 @@ delete from title_instance_package_platform where ( tipp_ti_fk is not null ) and
 
 delete from title_instance_package_platform where ( tipp_pkg_fk is not null ) and ( not exists ( select pkg_id from package where pkg_id = tipp_pkg_fk ));
 
+update identifier set id_value = TRIM(id_value);
 
 create table duplicate_identifiers as select id_ns_fk ns, id_value val, count(*) c, min(id_id) first from identifier group by id_ns_fk, id_value having count(*) > 1;
 
