@@ -22,7 +22,7 @@
       <div class="row">
         <div class="span12">
           <div class="well">
-            Title : <input name="q" value="${params.q}"/> (Search on title text, identifiers and provider)
+            Title : <input name="q" placeholder="Add &quot;&quot; for exact match" value="${params.q}"/> (Search on title text, identifiers and provider)
             <button type="submit" name="search" value="yes">Search</button>
             <div class="pull-right">
             </div>
@@ -30,21 +30,9 @@
         </div>
       </div>
 
+
       <div class="row">
-        <!--
-        <div class="span2">
-          <div class="well">
-              <g:each in="${facets}" var="facet">
-                <h5><g:message code="facet.so.${facet.key}" default="${facet.key}" /></h5>
-                    <g:each in="${facet.value}" var="fe">
-                      <g:set var="facetname" value="fct:${facet.key}:${fe.display}" />
-                      <div><g:checkBox class="pull-right" name="${facetname}" value="${params[facetname]}" />${fe.display} (${fe.count})</div>
-                    </g:each>
-                </li>
-              </g:each>
-          </div>
-        </div>
-        -->
+
         <div class="span12">
           <div class="well">
              <g:if test="${hits}" >

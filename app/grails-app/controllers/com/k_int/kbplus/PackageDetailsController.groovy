@@ -16,7 +16,6 @@ import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
 class PackageDetailsController {
 
-  def ESWrapperService
   def springSecurityService
   def transformerService
   def genericOIDService
@@ -824,7 +823,7 @@ class PackageDetailsController {
 
     if (springSecurityService.isLoggedIn()) {
       params.rectype = "Package" // Tells ESSearchService what to look for
-      if(params.pkgname)  params.q = params.pkgname;
+      if(params.q == "")  params.remove('q');
      
       if(params.search.equals("yes")){
         //when searching make sure results start from first page

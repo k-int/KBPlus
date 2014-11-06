@@ -64,7 +64,7 @@
       <div class="row">
         <div class="span12">
           <div class="well form-horizontal">
-            Package Name: <input name="pkgname" value="${params.pkgname}"/>
+            Package Name: <input name="q" placeholder="Add &quot;&quot; for exact match" value="${params.q}"/>
             Sort: <select name="sort">
                     <option ${params.sort=='sortname' ? 'selected' : ''} value="sortname">Package Name</option>
                     <option ${params.sort=='_score' ? 'selected' : ''} value="_score">Score</option>

@@ -24,7 +24,7 @@ class PackageDetailsPage extends AbstractDetails {
             !$("div.alert-block").children().filter("p", text: msgtext).isEmpty()
         }
         searchPackage{ text ->
-            $("input",name:"pkgname").value(text)
+            $("input",name:"q").value(text)
             $("button",name:"search").click()
         }
         numberOfResults{

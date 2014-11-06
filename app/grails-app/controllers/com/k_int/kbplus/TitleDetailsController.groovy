@@ -11,9 +11,7 @@ import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 class TitleDetailsController {
 
   def springSecurityService
-  def ESWrapperService
-
-  def title_qry_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname', 'title':'title' ]
+  def ESSearchService
 
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -140,158 +138,22 @@ class TitleDetailsController {
     else
       result.editable=false
 
-    StringWriter sw = new StringWriter()
-    def fq = null;
-    boolean has_filter = false
-
-    params.each { p ->
-      if ( p.key.startsWith('fct:') && p.value.equals("on") ) {
-        log.debug("start year ${p.key} : -${p.value}-");
-
-        if ( !has_filter )
-          has_filter = true
-        else
-          sw.append(" AND ")
-
-        String[] filter_components = p.key.split(':');
-
-        switch ( filter_components[1] ) { 
-          case 'consortiaName':
-                sw.append('consortiaName')
-                break;
-          case 'startYear':
-                sw.append('startYear')
-                break;
-          case 'cpname':
-                sw.append('cpname')
-                break;
-        }
-
-        if ( filter_components[2].indexOf(' ') > 0 ) { 
-          sw.append(":\"");
-          sw.append(filter_components[2])
-          sw.append("\"");
-        }
-        else {
-          sw.append(":");
-          sw.append(filter_components[2])
-        }
-      }
-    }
-
-    if ( has_filter ) {
-      fq = sw.toString();
-      log.debug("Filter Query: ${fq}");
-    }
-
-
-    // Get hold of some services we might use ;)
-    org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
-    org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
-    result.user = springSecurityService.getCurrentUser()
-
     if (springSecurityService.isLoggedIn()) {
-      try {
-
-        params.max = Math.min(params.max ? params.int('max') : result.user.defaultPageSize, 100)
-        params.offset = params.offset ? params.int('offset') : 0
- 
-        def query_str = buildTitleQuery(params)
-        if ( fq )
-          query_str = query_str + " AND ( " + fq + " ) "
-
-        log.debug("query: ${query_str}");
-        result.es_query = query_str;
- 
-        def search = esclient.search{
-          indices grailsApplication.config.aggr.es.index ?: "kbplus"
-          source {
-            from = params.offset
-            size = params.max
-            sort = [
-              'sortname' : [ 'order' : 'asc' ]
-            ]
-            query {
-              query_string (query: query_str)
-            }
-            facets {
-            }
-          }
-        }
-
-        if ( search?.response ) {
-          log.debug("Found ${search.response.hits} titles");
-          result.hits = search.response.hits
-          result.resultsTotal = search.response.hits.totalHits
-
-          // We pre-process the facet response to work around some translation issues in ES
-          if ( search.response.facets != null ) {
-            result.facets = [:]
-            search.response.facets.facets.each { facet ->
-              def facet_values = []
-              facet.value.entries.each { fe ->
-                facet_values.add([term: fe.term,display:fe.term,count:"${fe.count}"])
-              }
-              result.facets[facet.key] = facet_values
-            }
-          }
-        }
-        else {
-          log.error("No search response for title search");
-        }
+      params.rectype = "Title" // Tells ESSearchService what to look for
+     
+      if(params.search.equals("yes")){
+        //when searching make sure results start from first page
+        params.offset = 0
+        params.search = ""
       }
-      finally {
-        try {
-        }
-        catch ( Exception e ) {
-          log.error("problem",e);
-        }
-      }
+      if(params.q == "") params.remove('q');
+
+      result =  ESSearchService.search(params)   
     }
-    result
+    result  
+   
   }
 
-  def buildTitleQuery(params) {
-    log.debug("BuildQuery...");
-
-    StringWriter sw = new StringWriter()
-
-    // sw.write("subtype:'Subscription Offered'")
-    sw.write("rectype:'Title'")
-
-    if ( params.q != null ) {
-      sw.write(" AND ${params.q}");
-    }
-
-    title_qry_reversemap.each { mapping ->
-
-      // log.debug("testing ${mapping.key}");
-
-      if ( params[mapping.key] != null ) {
-        if ( params[mapping.key].class == java.util.ArrayList) {
-          params[mapping.key].each { p ->
-                sw.write(" AND ")
-                sw.write(mapping.value)
-                sw.write(":")
-                sw.write("(${p})")
-          }
-        }
-        else {
-          // Only add the param if it's length is > 0 or we end up with really ugly URLs
-          // II : Changed to only do this if the value is NOT an *
-          if ( params[mapping.key].length() > 0 && ! ( params[mapping.key].equalsIgnoreCase('*') ) ) {
-            sw.write(" AND ")
-            sw.write(mapping.value)
-            sw.write(":")
-            sw.write("(${params[mapping.key]})")
-          }
-        }
-      }
-    }
-
-    def result = sw.toString();
-    result;
-  }
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def history() {
     def result = [:]
