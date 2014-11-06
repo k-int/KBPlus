@@ -17,8 +17,14 @@ class Identifier {
     value column:'id_value', index:'id_value_idx'
   }
 
+  def beforeUpdate() {
+    value = value?.trim()
+  }
+
   static def lookupOrCreateCanonicalIdentifier(ns, value) {
-    // log.debug("lookupOrCreateCanonicalIdentifier(${ns},${value})");
+    value = value?.trim()
+    ns = ns?.trim()
+    // println ("lookupOrCreateCanonicalIdentifier(${ns},${value})");
     def namespace = IdentifierNamespace.findByNsIlike(ns) ?: new IdentifierNamespace(ns:ns.toLowerCase()).save();
     Identifier.findByNsAndValue(namespace,value) ?: new Identifier(ns:namespace, value:value).save();
   }
@@ -30,11 +36,11 @@ class Identifier {
       def qp=params.q.split(':');
       // println("Search by namspace identifier: ${qp}");
       def namespace = IdentifierNamespace.findByNsIlike(qp[0]);
-      if ( namespace ) {
+      if ( namespace && qp.size() == 2) {
         ql = Identifier.findAllByNsAndValueIlike(namespace,"${qp[1]}%")
       }
       else {
-        println("No identifier... ${qp[0]}");
+        // println("No identifier... ${qp[0]} or no ident value");
       }
     }
     else {

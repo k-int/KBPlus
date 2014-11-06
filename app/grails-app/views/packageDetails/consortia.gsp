@@ -35,8 +35,8 @@
 
 <div class="container">
 <h3> Institutions for ${consortia.name} consortia </h3>
-<br><p> The following list displays all members of ${consortia.name} consortia. To create slaved subscriptions
-    tick the desired checkboxes and click 'Create slave subscriptions'</p><br>
+<br><p> The following list displays all members of ${consortia.name} consortia. To create child subscriptions
+    select the desired checkboxes and click 'Create child subscriptions'</p><br>
 <g:form action="generateSlaveSubscriptions" controller="packageDetails" method="POST">
 <input type="hidden" name="id" value="${id}">
 <table class="table table-bordered"> 
@@ -44,7 +44,7 @@
     <tr>
         <th>Organisation</th>
         <th>Contains Package</th>
-        <th>Create Slaved Subscription</th>
+        <th>Create Child Subscription</th>
     </tr>
 </thead>
 <tbody>
@@ -61,8 +61,8 @@
 
  <dl>
 <dt>Subscription name: <input type="text" name="genSubName" 
-    value="Slave subscription for ${packageInstance?.name}"/></dt>
-<dd><input type="submit" class="btn btn-primary" value="Create slave subscriptions"/></dd>
+    value="Child subscription for ${packageInstance?.name}"/></dt>
+<dd><input type="submit" class="btn btn-primary" value="Create child subscriptions"/></dd>
 </dl>
 
 
