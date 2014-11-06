@@ -123,7 +123,7 @@
 
                <dl><dt>End Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="endDate" type="date"/></dd></dl>
                <dl><dt>Manual Renewal Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="manualRenewalDate" type="date"/></dd></dl>
-               <dL><dt>Slave </dt><dd>
+               <dL><dt>Child </dt><dd>
                         <g:xEditableRefData owner="${subscriptionInstance}" field="isSlaved" config='YN'/>
                </dd></dL>
                <dl>

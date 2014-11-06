@@ -33,8 +33,8 @@
 
 <div class="container">
 <h3> Institutions for ${consortia.name} consortia </h3>
-<br><p> The following list displays all members of ${consortia.name} consortia. To create slaved licences
-    tick the desired checkboxes and click 'Create slave licences'</p><br>
+<br><p> The following list displays all members of ${consortia.name} consortia. To create child licences
+    select the desired checkboxes and click 'Create child licences'</p><br>
 <g:form action="generateSlaveLicences" controller="licenseDetails" method="POST">
 <input type="hidden" name="baselicense" value="${licence.id}"/>
 <input type="hidden" name="id" value="${id}"/>
@@ -43,7 +43,7 @@
     <tr>
         <th>Organisation</th>
         <th>Contains  Licence Copy </th>
-        <th>Create Slaved Licence</th>
+        <th>Create Child Licence</th>
     </tr>
 </thead>
 <tbody>
@@ -59,8 +59,8 @@
 </table>
 <dl>
 <dt>Licence name: <input type="text" name="lic_name" 
-    value="Slave licence for ${licence?.reference}"/></dt>
-<dd><input type="submit" class="btn btn-primary" value="Create slave licences"/></dd>
+    value="Child licence for ${licence?.reference}"/></dt>
+<dd><input type="submit" class="btn btn-primary" value="Create child licences"/></dd>
 </dl>
 </g:form>
 </div>
