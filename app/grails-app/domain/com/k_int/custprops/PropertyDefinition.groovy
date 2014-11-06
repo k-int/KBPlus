@@ -33,6 +33,7 @@ class PropertyDefinition {
                     name column: 'pd_name', index: 'td_name_idx'
                     type column: 'pd_type', index: 'td_type_idx'
          refdataCategory column: 'pd_rdc', index: 'td_type_idx'
+                      sort name: 'desc'
     }
 
     private static def typeIsValid(value) {

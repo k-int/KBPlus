@@ -78,7 +78,7 @@ class License {
         licenseCategory column: 'lic_category_rdv_fk'
               startDate column: 'lic_start_date'
                 endDate column: 'lic_end_date'
-       customProperties sort:'type.id', order:'desc'
+       customProperties sort:'type', order:'desc'
   }
 
   static constraints = {
