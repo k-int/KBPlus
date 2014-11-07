@@ -233,7 +233,7 @@ class License {
 
 
     controlledProperties.each { cp ->
-      log.debug("MAP TYPE ${oldMap[cp]?.class} OLD MAP: ${oldMap[cp]} NEW MAP: ${newMap[cp]}")
+     // log.debug("MAP TYPE ${oldMap[cp]?.class} OLD MAP: ${oldMap[cp]} NEW MAP: ${newMap[cp]}")
       if ( oldMap[cp] != newMap[cp] ) {
         log.debug("Sending reference change...");
         changeNotificationService.notifyChangeEvent([
@@ -247,7 +247,7 @@ class License {
     }
 
     controlledRefProperties.each { crp ->
-      log.debug("MAP TYPE ${oldMap[crp]?.class} OLD MAP: ${oldMap[crp]} NEW MAP: ${newMap[crp]}")
+//      log.debug("MAP TYPE ${oldMap[crp]?.class} OLD MAP: ${oldMap[crp]} NEW MAP: ${newMap[crp]}")
 
       if ( oldMap[crp] != newMap[crp] ) {
 

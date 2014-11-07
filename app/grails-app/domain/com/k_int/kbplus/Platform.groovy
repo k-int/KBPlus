@@ -1,7 +1,7 @@
 package com.k_int.kbplus
 
 import javax.persistence.Transient
-
+import com.k_int.ClassUtils
 class Platform {
 
   String impId
@@ -79,5 +79,15 @@ class Platform {
     }
 
     result
+  }
+  @Override
+  public boolean equals (Object o) {
+    def obj = ClassUtils.deproxy(o)
+    if (obj != null) {
+      if ( obj instanceof Platform ) {
+        return obj.id == id
+      }
+    }
+    return false
   }
 }
