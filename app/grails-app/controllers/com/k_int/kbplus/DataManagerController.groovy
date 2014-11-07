@@ -148,8 +148,10 @@ class DataManagerController {
         switch(hl.className) {
           case 'com.k_int.kbplus.License':
             def license_object = License.get(hl.persistedObjectId);
+            def licence_name = license_object.licenseType ?"${license_object.licenseType}: ": ""
+            licence_name += license_object.reference != null?license_object.reference:"**No reference**"
             line_to_add = [ link: createLink(controller:'licenseDetails', action: 'index', id:hl.persistedObjectId),
-                            name: license_object.reference != null?license_object.reference:"**No reference**",
+                            name: licence_name,
                             lastUpdated: hl.lastUpdated,
                             actor: User.findByUsername(hl.actor), 
                             propertyName: hl.propertyName,

@@ -121,7 +121,7 @@ class ESSearchService{
       }
   
      // If logged in
-    log.debug("${result}")
+    // log.debug("${result}")
     
     result
   }

@@ -4,7 +4,7 @@ import com.k_int.kbplus.auth.Role
 import javax.persistence.Transient
 import java.text.Normalizer
 import com.k_int.custprops.PropertyDefinition
-
+import com.k_int.ClassUtils
 
 class License {
 
@@ -233,7 +233,9 @@ class License {
 
 
     controlledProperties.each { cp ->
+      log.debug("MAP TYPE ${oldMap[cp]?.class} OLD MAP: ${oldMap[cp]} NEW MAP: ${newMap[cp]}")
       if ( oldMap[cp] != newMap[cp] ) {
+        log.debug("Sending reference change...");
         changeNotificationService.notifyChangeEvent([
                                                      OID:"${this.class.name}:${this.id}",
                                                      event:'License.updated',
@@ -245,7 +247,10 @@ class License {
     }
 
     controlledRefProperties.each { crp ->
+      log.debug("MAP TYPE ${oldMap[crp]?.class} OLD MAP: ${oldMap[crp]} NEW MAP: ${newMap[crp]}")
+
       if ( oldMap[crp] != newMap[crp] ) {
+
         log.debug("Sending reference change...");
         def old_oid = oldMap[crp] ? "${oldMap[crp].class.name}:${oldMap[crp].id}" : null;
         def new_oid = newMap[crp] ? "${newMap[crp].class.name}:${newMap[crp].id}" : null;
@@ -263,8 +268,18 @@ class License {
 
     log.debug("On change complete");
   }
+  @Override
+  public boolean equals (Object o) {
+    def obj = ClassUtils.deproxy(o)
+    if (obj != null) {
+      if ( obj instanceof License ) {
+        return obj.id == id
+      }
+    }
+    return false
+  }
 
-
+  @Override
   public String toString() {
     String result
     if ( reference ) {

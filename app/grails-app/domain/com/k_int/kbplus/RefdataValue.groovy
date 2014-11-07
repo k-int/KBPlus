@@ -1,4 +1,5 @@
 package com.k_int.kbplus
+import com.k_int.ClassUtils
 
 class RefdataValue {
 
@@ -58,5 +59,19 @@ class RefdataValue {
 
   public String toString() {
     value
+  }
+  /**
+  * Equality should be decided like this, although we currently got duplicates
+  * refdatavalue for same string value
+  **/
+  @Override
+  public boolean equals (Object o) {
+    def obj = ClassUtils.deproxy(o)
+    if (obj != null) {
+      if ( obj instanceof RefdataValue ) {
+        return obj.id == id
+      }
+    }
+    return false
   }
 }

@@ -3,7 +3,7 @@ package com.k_int.kbplus
 import javax.persistence.Transient
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.hibernate.proxy.HibernateProxy
-
+import com.k_int.ClassUtils
 
 class TitleInstancePackagePlatform {
 
@@ -293,13 +293,6 @@ class TitleInstancePackagePlatform {
     }
 
     //If the change is in a controller property, store it up and note it against subs
-  }
-
-  public static <T> T deproxy(def element) {
-    if (element instanceof HibernateProxy) {
-      return (T) ((HibernateProxy) element).getHibernateLazyInitializer().getImplementation();
-    }
-    return (T) element;
   }
 
   public Date getDerivedAccessStartDate() {
