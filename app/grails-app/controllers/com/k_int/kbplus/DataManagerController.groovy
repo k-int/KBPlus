@@ -111,23 +111,23 @@ class DataManagerController {
     def filterActors = params.findAll{it.key.startsWith("change_actor_")}
     if(filterActors) {
       def multipleActors = false;
-      def condition = "and"
-
-      if ( params.change_actor_PEOPLE == 'Y' ) {
-        base_query += " ${condition} ( e.actor <> \'system\' AND e.actor <> \'anonymousUser\' )"
-        multipleActors = true
-      }
-      filterActors.each{
+      def condition = "AND ( "
+      filterActors.each{        
           if(multipleActors){
-            condition = "or"
+            condition = "OR"
           }
-          if(it.key != 'change_actor_ALL' && it.key != 'change_actor_PEOPLE'){
+          if ( it == "change_actor_PEOPLE" ) {
+            base_query += " ${condition} e.actor <> \'system\' AND e.actor <> \'anonymousUser\' "
+            multipleActors = true
+          }
+          else if(it.key != 'change_actor_ALL' && it.key != 'change_actor_PEOPLE'){
             def paramKey = it.key.replaceAll("[^A-Za-z]", "")//remove things that can cause problems in sql
             base_query += " ${condition} e.actor = :${paramKey} "
             query_params."${paramKey}" = it.key.split("change_actor_")[1]
             multipleActors = true
           }     
-      }     
+      } 
+      base_query += " ) "  
     }
   
   
@@ -139,7 +139,6 @@ class DataManagerController {
                                                        query_params, limits);
       result.num_hl = AuditLogEvent.executeQuery('select count(e) '+base_query,
                                                  query_params)[0];
-  
       result.formattedHistoryLines = []
       result.historyLines.each { hl ->
   
@@ -205,6 +204,9 @@ class DataManagerController {
             break;
           case 'com.k_int.kbplus.IdentifierOccurrence':
             break;
+          default:
+            log.error("Unexpected event class name found ${hl.className}")
+            break;
         }
 
         switch ( hl.eventName ) {
@@ -221,7 +223,12 @@ class DataManagerController {
             line_to_add.eventName= "Unknown ${linetype}"
             break;
         }
-        result.formattedHistoryLines.add(line_to_add);
+
+        if(line_to_add.eventName.contains('null')){
+          log.error("We have a null line in DM change log and we exclude it from output...${hl}");
+        }else{
+          result.formattedHistoryLines.add(line_to_add);
+        }
       }
   
     }
@@ -241,18 +248,48 @@ class DataManagerController {
         response.setHeader("Content-disposition", "attachment; filename=DMChangeLog.csv")
         response.contentType = "text/csv"
         def out = response.outputStream
+        def actors_list = getActorNameList(params)
         out.withWriter { w ->
+        w.write('Start Date, End Date, Change Actors, Packages, Licences, Tittles, TIPPs, New Items, Updates\n')
+        w.write("\"${params.startDate}\", \"${params.endDate}\", \"${actors_list}\", ${params.packages}, ${params.licenses}, ${params.titles}, ${params.tipps}, ${params.creates}, ${params.updates} \n")
         w.write('Timestamp,Name,Event,Property,Actor,Old,New,Link\n')
           result.formattedHistoryLines.each { c ->
+            if(c.eventName){
             def line = "\"${c.lastUpdated}\",\"${c.name}\",\"${c.eventName}\",\"${c.propertyName}\",\"${c.actor?.displayName}\",\"${c.oldValue}\",\"${c.newValue}\",\"${c.link}\"\n"
             w.write(line)
+              
+            }
           }
         }
         out.close()
       }
-
     }
+  }
 
+  def getActorNameList(params) {
+    def actors = []
+    def filterActors = params.findAll{it.key.startsWith("change_actor_")}
+    if(filterActors) {
+
+      if ( params.change_actor_PEOPLE == 'Y' ) {
+        actors += "All Real Users"
+      }
+      if(params.change_actor_ALL == "Y"){
+        actors += "All Including System"
+      }
+      filterActors.each{      
+          if(it.key != 'change_actor_ALL' && it.key != 'change_actor_PEOPLE'){
+            def paramKey = it.key.replaceAll("[^A-Za-z]", "")//remove things that can cause problems in sql
+            def username = it.key.split("change_actor_")[1]
+            def user = User.findByUsername(username)
+            if(user){
+              actors += user.displayName
+              
+            }
+          }     
+      }     
+    }
+    return actors
   }
 
   @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
