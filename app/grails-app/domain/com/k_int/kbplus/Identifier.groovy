@@ -39,8 +39,9 @@ class Identifier {
       if ( namespace && qp.size() == 2) {
         ql = Identifier.findAllByNsAndValueIlike(namespace,"${qp[1]}%")
       }
-      else {
-        // println("No identifier... ${qp[0]} or no ident value");
+      else if(!namespace) {
+        throw new java.lang.IllegalArgumentException("No namespace with name '${qp[0]}' exists.")
+
       }
     }
     else {
