@@ -24,7 +24,7 @@
     <div class="container home-page">
 
       <div class="pagination" style="text-align:center">
-        Showing ${num_changes} changes <br/>
+        Showing ${num_changes} changes<br/>
         <bootstrap:paginate  action="changeLog" controller="myInstitutions" params="${params}" next="Next" prev="Prev" max="${max}" total="${num_changes}" /> <br/>
         <g:form method="get" action="changeLog" params="${params}">
           Restrict to <select name="restrict" onchange="this.form.submit()">

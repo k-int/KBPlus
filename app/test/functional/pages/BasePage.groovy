@@ -115,6 +115,20 @@ class BasePage extends Page {
             $("a", text: "Data Managers").click()
             waitFor{ $("a", text: "Reports").click(JasperPage)}
         }
+        dmChangeLog {
+            $("a", text: "Data Managers").click()
+            waitFor{ $("a",text:"Data Manager Change Log").click(DataManagerPage)}
+        }
+
+        showInstMenu {
+            $("a",text:"Institutions").click()
+            $("a",text:"Functional Test Organisation").siblings("ul").jquery.show()
+        }
+
+        toComparePackages {
+            $("a",text:"Institutions").click()
+            $("a",text:"Compare Packages").click(PackageDetailsPage)
+        }
 
     }
 }

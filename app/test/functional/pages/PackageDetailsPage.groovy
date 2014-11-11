@@ -30,5 +30,15 @@ class PackageDetailsPage extends AbstractDetails {
         numberOfResults{
             String numString = $("div.paginateButtons").text()
         }
+
+        comparePackages{ ref1, ref2 ->
+           $("#select2-chosen-1").click()
+           $("#s2id_autogen1_search").value(ref1)
+           waitFor{$("div.select2-result-label").click()}
+           $("#select2-chosen-2").click()
+           $("#s2id_autogen2_search").value(ref2)
+           waitFor{$("div.select2-result-label").click()}
+           $("input",type:"submit",value:"Compare").click()
+       }
     }
 }

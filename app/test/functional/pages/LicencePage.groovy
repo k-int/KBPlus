@@ -40,13 +40,7 @@ class LicencePage extends AbstractDetails {
         alertBox { text ->
             !$("div.alert-block").children().filter("p", text: text).isEmpty()
         }
-        //Following replaced by custom property
-        concurentAccessNote { val ->
-            $("#concurrentUsers").click()
-            waitElement{$("textarea.input-large")}
-            $("textarea.input-large").value(val)
-            $("button.editable-submit").click()
-        }
+       
         acceptAll {
             $("a", text: "Accept All").click(LicencePage)
         }
@@ -76,24 +70,11 @@ class LicencePage extends AbstractDetails {
             $("a.btn-info").click()
         }
         addCustomPropType{ name ->
+            $("#select2-chosen").click()
+            $("#s2id_autogen2_search").value(name)
+            waitFor{$("div.select2-result-label").click()}
             $("#select2-chosen-2").click()
-            waitFor { $("#s2id_autogen2_search").isDisplayed() }
 
-            $("#s2id_autogen2_search").value (name)
-
-            waitFor { $("#select2-result-label-3").click()}
-            waitFor{ $("input",name:"cust_prop_name").value(name)}
-            $("#cust_prop_desc").value("Some random text discr")
-            $("#new_cust_prop_add_btn",value:"Add").click()
-
-            $("#select2-chosen-2").click()
-            waitFor { $("#s2id_autogen2_search").isDisplayed() }
-
-            $("#s2id_autogen2_search").value (name)
-            waitFor{ $("span.select2-match")}
-            $("#s2id_autogen2_search") <<Keys.ENTER
-            $("#s2id_autogen2_search") << Keys.ENTER
-            $("input",value:"Add Property...").click()
         }
 
     }

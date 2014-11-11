@@ -7,6 +7,15 @@ import spock.lang.Stepwise
 class HomePageSpec extends GebReportingSpec {
 	// curl -XDELETE 'http://localhost:9200/kbplustest/'
 	// curl -XPUT 'httop://localhost:9200/kbplustest/'
+	// def "Login"(){
+	// 	when:
+	// 	to PublicPage
+	// 	loginLink()
+	// 	at LogInPage
+	// 	login(Data.UserD_name, Data.UserD_passwd)
+	// 	then:
+	// 	at DashboardPage
+	// }
 
 	def "Create organisation" (){
 		setup:
@@ -196,15 +205,8 @@ class HomePageSpec extends GebReportingSpec {
 		//            addCustomPropType("FunctTestProp")
 		then:
 		at LicencePage
+	}   
 
-	}     // def "Create Custom Property"(){
-	//     when:
-	//         $("a.select2-default").click()
-	//         waitFor { $("input.select2-input")}     //        $("input.select2-input").value("Ref")
-	//        $("input.select2-input") << Keys.ENTER
-	//     then:
-	//         at JasperPage
-	// }
 
 	//ref 101
 	def "View template Licence"() {
@@ -283,11 +285,9 @@ class HomePageSpec extends GebReportingSpec {
 		withConfirm { deleteNote() }
 		licenceDetails()
 		editRef(Data.Licence_template_copy_D)
-		// concurentAccessNote("many")
 		then:
 		at LicencePage
 	}
-
 
 	//ref 109
 	def "Create Actual Licence"() {
@@ -298,7 +298,6 @@ class HomePageSpec extends GebReportingSpec {
 		createNewLicense(Data.Licence_actual_C)
 		addNote("test note")
 		addDocument(Data.Test_Doc_name, Data.Test_Doc_file)
-		// concurentAccessNote("many")
 		then:
 		at LicencePage
 	}
@@ -326,10 +325,6 @@ class HomePageSpec extends GebReportingSpec {
 		documents()
 		then:
 		catchException { deleteDocument() }
-		when:
-		at LicencePage
-		then:
-		catchException { concurentAccessNote("many") }
 		when:
 		downloadDoc()
 		then:
@@ -598,6 +593,15 @@ class HomePageSpec extends GebReportingSpec {
 		then:
 		$("h3",text:"Subscriptions Compared") != null
 	}
+	def "Compare Packages" () {
+		setup:
+		to DashboardPage
+		when:
+		toComparePackages()
+		comparePackages(Data.Package_name,Data.Package_name)
+		then:
+		$("h3",text:"Packages Compared") != null
+	}
 
 	//212
 	def "View Current Subscriptions"() {
@@ -707,6 +711,39 @@ class HomePageSpec extends GebReportingSpec {
 		then:
 		!$("p").filter(text: Data.Content_Item_welcome_text).isEmpty()
 	}
+
+	def "Get DM Change log changes"(){
+		setup:
+		to DashboardPage
+		when:
+		dmChangeLog()
+		then:
+		changeLogAllChanges()
+	}
+
+	def "DM Changelog CSV"(){
+		setup:
+		at DataManagerPage
+		when:
+		changeLogExportCSV()
+		then:
+		at DataManagerPage
+	}
+
+	def "Institution Change log"(){
+		when:
+		at DataManagerPage
+		showInstMenu()
+		$("a",text:"Change Log").click()
+		then:
+		$("div.pagination").text().contains("Showing 2 changes")
+		when:
+		$("a",text:"Exports").click()
+		$("a",text:"CSV Export").click()
+		then:
+		browser.page.title.startsWith("KB+")
+	}
+
 	//    //ref 304
 	//    def "Add Identifier"(){
 	//        setup:
@@ -727,7 +764,7 @@ class HomePageSpec extends GebReportingSpec {
 		then:
 		at MyInstitutionsPage
 	}
-
+	
 	//ref 500
 	def "Search all current titles"() {
 		setup:
@@ -773,7 +810,7 @@ class HomePageSpec extends GebReportingSpec {
 		renewalsUpload(Data.RenewalsUploadFile)
 		then:
 		at MyInstitutionsPage
-	}
+	} 
 }
 
 
