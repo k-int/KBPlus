@@ -154,8 +154,8 @@ class TitleInstancePackagePlatform {
 
         if ( prop_info.isAssociation() ) {
           log.debug("Convert object reference into OID");
-          oldMap[cp]= oldMap[cp] != null ? "${deproxy(oldMap[cp]).class.name}:${oldMap[cp].id}" : null;
-          newMap[cp]= newMap[cp] != null ? "${deproxy(newMap[cp]).class.name}:${newMap[cp].id}" : null;
+          oldMap[cp]= oldMap[cp] != null ? "${ClassUtils.deproxy(oldMap[cp]).class.name}:${oldMap[cp].id}" : null;
+          newMap[cp]= newMap[cp] != null ? "${ClassUtils.deproxy(newMap[cp]).class.name}:${newMap[cp].id}" : null;
         }
 
         log.debug("notify change event")
@@ -238,7 +238,7 @@ class TitleInstancePackagePlatform {
 
       def dep_ies = IssueEntitlement.findAllByTipp(this)
       dep_ies.each { dep_ie ->
-        def sub = deproxy(dep_ie.subscription)
+        def sub = ClassUtils.deproxy(dep_ie.subscription)
         log.debug("Notify dependent ie ${dep_ie.id} whos sub is ${sub.id} and subscriber is ${sub.getSubscriber()}");
 
         if ( sub.getSubscriber() == null ) {
@@ -271,7 +271,7 @@ class TitleInstancePackagePlatform {
         // Tipp Property Change Event.. notify any dependent IEs
         def dep_ies = IssueEntitlement.findAllByTipp(this)
         dep_ies.each { dep_ie ->
-        def sub = deproxy(dep_ie.subscription)
+        def sub = ClassUtils.deproxy(dep_ie.subscription)
         if(dep_ie.subscription && sub && sub?.status?.value != "Deleted" ) {
         changeNotificationService.registerPendingChange('subscription',
                                                         dep_ie.subscription,

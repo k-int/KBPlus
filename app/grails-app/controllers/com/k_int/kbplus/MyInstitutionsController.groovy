@@ -2525,7 +2525,7 @@ AND EXISTS (
                 out.withWriter { w ->
                   w.write('Date,ChangeId,Actor, SubscriptionId,LicenseId,Description\n')
                   changes.each { c ->
-                    def line = "\"${dateFormat.format(c.ts)}\",\"${c.id}\",\"${c.user?.displayName?:''}\",\"${c.subscription?.id}\",\"${c.license?.id}\",\"${c.desc}\"\n".toString()
+                    def line = "\"${dateFormat.format(c.ts)}\",\"${c.id}\",\"${c.user?.displayName?:''}\",\"${c.subscription?.id ?:''}\",\"${c.license?.id?:''}\",\"${c.desc}\"\n".toString()
                     w.write(line)
                   }
                 }
