@@ -238,7 +238,7 @@
  
             <br/>
               <h6>License Properties</h6>
-              <div id="custom_props_div">
+              <div id="custom_props_div" class="span12">
                   <g:render template="/templates/custom_props" model="${[ ownobj:license ]}"/>
               </div>
               </div>

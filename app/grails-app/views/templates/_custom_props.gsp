@@ -29,7 +29,7 @@
 </g:if>
 
 <br/>
-<table id="custom_props_table" class="table table-bordered licence-properties">
+<table id="custom_props_table" class="table table-bordered">
     <thead>
     <tr>
         <th>Property</th>
