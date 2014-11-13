@@ -23,7 +23,9 @@ abstract class CustomProperty implements Serializable{
     RefdataValue refValue
     String note = ""
     
-
+    static mapping = {
+       note type: 'text'
+    }
     static constraints = {
         stringValue(nullable: true)
         intValue(nullable: true)
