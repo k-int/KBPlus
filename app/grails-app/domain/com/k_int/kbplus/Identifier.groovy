@@ -40,7 +40,7 @@ class Identifier {
         ql = Identifier.findAllByNsAndValueIlike(namespace,"${qp[1]}%")
       }
       else if(!namespace) {
-        throw new java.lang.IllegalArgumentException("No namespace with name '${qp[0]}' exists.")
+        throw new java.lang.IllegalArgumentException("No namespace '${qp[0]}' exists.")
 
       }
     }

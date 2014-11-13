@@ -36,8 +36,11 @@ create table titles_to_remove as select ti_id from title_instance where not exis
 
 select count(*) from titles_to_remove;
 
+select 'Remove any Facts referencing titles that will be removed';
+delete kbplus_fact from kbplus_fact join titles_to_remove on related_title_id = ti_id;
+
 select 'Remove any identifier_occurrences for titles which are to be deleted';
-delete identifier_occurrence from identifier_occurrence join titles_to_remove join kbplus_fact  on io_ti_fk = ti_id and juspio_id != io_ti_fk ;
+delete identifier_occurrence from identifier_occurrence join titles_to_remove on io_ti_fk = ti_id;
 
 select 'Remove any org role rows relating to a title we want to delete in the next step';
 delete from org_role where or_title_fk in ( select ti_id from titles_to_remove );
