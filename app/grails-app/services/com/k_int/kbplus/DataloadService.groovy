@@ -169,6 +169,9 @@ class DataloadService {
       def result = [:]
       result._id = sub.impId
       result.name = sub.name
+
+      // There really should only be one here? So think od this as SubscriptionOrg, but easier
+      // to leave it as availableToOrgs I guess.
       result.availableToOrgs = sub.orgRelations.find{it.roleType?.value == "Subscriber" }?.org?.id
       result.identifier = sub.identifier
       result.dbId = sub.id
