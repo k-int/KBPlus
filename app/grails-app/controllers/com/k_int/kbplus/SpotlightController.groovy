@@ -115,7 +115,7 @@ class SpotlightController {
 
       }
       params.q = query
-      params.availableToOrgs = result.user.getAuthorizedOrgs()
+      params.availableToOrgs = result.user.getAuthorizedOrgs().collect{it.id}
 
       if(query.startsWith("\$")){
         if( query.length()> 2){

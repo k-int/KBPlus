@@ -15,7 +15,7 @@ class ESSearchService{
                     'startYear':'startYear',
                     'consortiaName':'consortiaName',
                     'cpname':'cpname',
-                    'availableToOrg':'availableToOrg']
+                    'availableToOrgs':'availableToOrgs']
 
   def ESWrapperService
   def grailsApplication
@@ -150,21 +150,18 @@ class ESSearchService{
       if ( params[mapping.key] != null ) {
         log.debug("Found...");
         if ( params[mapping.key].class == java.util.ArrayList) {
-                          sw.write(" AND (")
 
+          sw.write(" AND (")
           params[mapping.key].each { p ->  
                 sw.write(mapping.value)
                 sw.write(":")
                 sw.write("\"${p}\"")
                 if(p == params[mapping.key].last()) {
-                                            sw.write(" ) ")
-
+                  sw.write(" ) ")
                 }else{
-                                                  sw.write(" OR ")
-
+                  sw.write(" OR ")
                 }
           }
-
         }
         else {
           // Only add the param if it's length is > 0 or we end up with really ugly URLs
