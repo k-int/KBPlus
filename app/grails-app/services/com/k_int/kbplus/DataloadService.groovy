@@ -169,6 +169,7 @@ class DataloadService {
       def result = [:]
       result._id = sub.impId
       result.name = sub.name
+      result.availableToOrgs = sub.orgRelations.find{it.roleType?.value == "Subscriber" }?.org?.id
       result.identifier = sub.identifier
       result.dbId = sub.id
       result.visible = ['Public']
