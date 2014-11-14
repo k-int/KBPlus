@@ -14,7 +14,8 @@ class ESSearchService{
                     'endYear':'endYear',
                     'startYear':'startYear',
                     'consortiaName':'consortiaName',
-                    'cpname':'cpname' ]
+                    'cpname':'cpname',
+                    'availableToOrgs':'availableToOrgs']
 
   def ESWrapperService
   def grailsApplication
@@ -146,15 +147,20 @@ class ESSearchService{
 
     field_map.each { mapping ->
 
-
       if ( params[mapping.key] != null ) {
         log.debug("Found...");
         if ( params[mapping.key].class == java.util.ArrayList) {
+
+          sw.write(" AND (")
           params[mapping.key].each { p ->  
-                sw.write(" AND ")
                 sw.write(mapping.value)
                 sw.write(":")
                 sw.write("\"${p}\"")
+                if(p == params[mapping.key].last()) {
+                  sw.write(" ) ")
+                }else{
+                  sw.write(" OR ")
+                }
           }
         }
         else {
