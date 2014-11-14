@@ -225,22 +225,23 @@ class Package {
     if ( createEntitlements ) {
        def live_issue_entitlement = RefdataCategory.lookupOrCreate('Entitlement Issue Status', 'Live');
       tipps.each { tipp ->
-        def new_ie = new IssueEntitlement(status: live_issue_entitlement,
-                                          subscription: subscription,
-                                          tipp: tipp,
-                                          accessStart:tipp.accessStartDate,
-                                          accessEnd:tipp.accessEndDate,
-                                          startDate:tipp.startDate,
-                                          startVolume:tipp.startVolume,
-                                          startIssue:tipp.startIssue,
-                                          endDate:tipp.endDate,
-                                          endVolume:tipp.endVolume,
-                                          endIssue:tipp.endIssue,
-                                          embargo:tipp.embargo,
-                                          coverageDepth:tipp.coverageDepth,
-                                          coverageNote:tipp.coverageNote).save()
-
+        if(tipp.status?.value != "Deleted"){
+          def new_ie = new IssueEntitlement(status: live_issue_entitlement,
+                                            subscription: subscription,
+                                            tipp: tipp,
+                                            accessStart:tipp.accessStartDate,
+                                            accessEnd:tipp.accessEndDate,
+                                            startDate:tipp.startDate,
+                                            startVolume:tipp.startVolume,
+                                            startIssue:tipp.startIssue,
+                                            endDate:tipp.endDate,
+                                            endVolume:tipp.endVolume,
+                                            endIssue:tipp.endIssue,
+                                            embargo:tipp.embargo,
+                                            coverageDepth:tipp.coverageDepth,
+                                            coverageNote:tipp.coverageNote).save()      
         }
+      }
     }
 
   }
