@@ -31,6 +31,7 @@ class PendingChange {
             status column:'pc_status_rdv_fk'
         actionDate column:'pc_action_date'
               user column:'pc_action_user_fk'
+              sort "ts":"asc"
   }
 
   static constraints = {
