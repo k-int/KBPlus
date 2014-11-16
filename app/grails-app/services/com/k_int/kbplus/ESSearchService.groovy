@@ -151,13 +151,14 @@ class ESSearchService{
         log.debug("Found...");
         if ( params[mapping.key].class == java.util.ArrayList) {
 
-          sw.write(" AND (")
+          sw.write(" AND ( ( NOT _type:\"com.k_int.kbplus.Subscription\" ) OR ( ")
+
           params[mapping.key].each { p ->  
                 sw.write(mapping.value)
                 sw.write(":")
                 sw.write("\"${p}\"")
                 if(p == params[mapping.key].last()) {
-                  sw.write(" ) ")
+                  sw.write(" ) ) ")
                 }else{
                   sw.write(" OR ")
                 }
