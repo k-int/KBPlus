@@ -39,7 +39,7 @@ modules = {
     resource url:'js/dataTables.scroller.js'
     resource url:'js/kbplusapp.js.gsp'
     resource url:'js/jquery.dotdotdot.min.js'
-    resource url:'http://assets.zendesk.com/external/zenbox/v2.6/zenbox.js'
+    resource url:'https://assets.zendesk.com/external/zenbox/v2.6/zenbox.js'
     
   }
   annotations {
