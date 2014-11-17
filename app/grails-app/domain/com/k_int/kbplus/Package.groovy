@@ -71,8 +71,8 @@ class Package {
                vendorURL column:'pkg_vendor_url'
   cancellationAllowances column:'pkg_cancellation_allowances', type:'text'
                  forumId column:'pkg_forum_id'
-                   tipps sort:'title.title', order: 'asc'
-
+                     tipps sort:'title.title', order: 'asc'
+            pendingChanges sort:'ts', order: 'asc'
 //                 orgs sort:'org.name', order: 'asc'
   }
 

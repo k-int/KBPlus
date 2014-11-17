@@ -79,6 +79,8 @@ class License {
               startDate column: 'lic_start_date'
                 endDate column: 'lic_end_date'
        customProperties sort:'type', order:'desc'
+         pendingChanges sort: 'ts', order: 'asc'
+
   }
 
   static constraints = {
