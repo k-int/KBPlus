@@ -29,7 +29,6 @@ class PendingChangeController {
     def changes_to_accept = []
     def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
     def pendingChanges = owner.pendingChanges.findAll {(it.status == pending_change_pending_status) || it.status == null}
-    pendingChanges.each{ println it.changeDoc}
     pendingChanges = pendingChanges.collect{it.id}
     pendingChanges.each { pc ->
       pendingChangeService.performAccept(pc,request)
