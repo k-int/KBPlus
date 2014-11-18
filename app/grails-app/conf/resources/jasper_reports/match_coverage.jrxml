@@ -1,36 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.6.1  -->
-<!-- 2014-11-04T15:31:17 -->
+<!-- 2014-11-18T11:56:44 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="matchCoverage" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e367de7d-d0b3-49e0-84b2-c989348c5c1f">
 	<property name="com.jaspersoft.studio.data.sql.tables" value="a2JwbHVzLnRpdGxlX2luc3RhbmNlX3BhY2thZ2VfcGxhdGZvcm0gQVMgLDEyMiwxMDM7a2JwbHVz&#xA;LnRpdGxlX2luc3RhbmNlIEFTICwwLDYzNTs="/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kbpluslive"/>
-	<parameter name="search_package_id" class="com.k_int.kbplus.Package">
-		<parameterDescription><![CDATA[The Package to search into]]></parameterDescription>
-	</parameter>
 	<parameter name="coverage_note" class="java.lang.String">
 		<parameterDescription><![CDATA[Coverage note to search]]></parameterDescription>
 	</parameter>
 	<parameter name="report_description" class="java.lang.String">
 		<parameterDescription><![CDATA[List all titles within selected Package, with a matching coverage note. The '%' can be used as wildcard.]]></parameterDescription>
 	</parameter>
+	<parameter name="select&amp;By Name&amp;By ID" class="java.lang.String">
+		<parameterDescription><![CDATA[Show results based on package name, or package ID]]></parameterDescription>
+	</parameter>
+	<parameter name="packageName" class="java.lang.String">
+		<parameterDescription><![CDATA[The package names to match.]]></parameterDescription>
+	</parameter>
+	<parameter name="search_package_id" class="com.k_int.kbplus.Package">
+		<parameterDescription><![CDATA[The Package to search into]]></parameterDescription>
+	</parameter>
+	<parameter name="query" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+		<defaultValueExpression><![CDATA[$P{select&By Name&By ID}.equals("By Name")
+? "SELECT title_instance_package_platform.tipp_id,title_instance.ti_title,title_instance_package_platform.tipp_coverage_note,pkg_name FROM package, title_instance INNER JOIN title_instance_package_platform ON title_instance_package_platform.tipp_ti_fk = title_instance.ti_id WHERE title_instance_package_platform.tipp_pkg_fk IN (SELECT pkg_id from package where lower(pkg_name) like lower('$P!{packageName}')) AND lower(title_instance_package_platform.tipp_coverage_note) LIKE lower('$P!{coverage_note}') AND package.pkg_id = title_instance_package_platform.tipp_pkg_fk"
+: " SELECT title_instance_package_platform.tipp_id,title_instance_package_platform.tipp_version,title_instance.ti_title,	title_instance_package_platform.tipp_coverage_note,pkg_name FROM package, title_instance INNER JOIN title_instance_package_platform ON title_instance_package_platform.tipp_ti_fk = title_instance.ti_id WHERE title_instance_package_platform.tipp_pkg_fk = $P!{search_package_id} AND lower(title_instance_package_platform.tipp_coverage_note) LIKE lower('$P!{coverage_note}') AND package.pkg_id = $P!{search_package_id}"]]></defaultValueExpression>
+	</parameter>
 	<queryString language="SQL">
-		<![CDATA[SELECT title_instance_package_platform.tipp_id,
-	title_instance_package_platform.tipp_version,
-	title_instance.ti_title,
-	title_instance_package_platform.tipp_coverage_note,
-	pkg_name
-FROM package, title_instance
-	 INNER JOIN title_instance_package_platform ON 
-	 title_instance_package_platform.tipp_ti_fk = title_instance.ti_id 
-WHERE 
-	 title_instance_package_platform.tipp_pkg_fk = $P!{search_package_id} AND 
-	 lower(title_instance_package_platform.tipp_coverage_note) LIKE lower($P{coverage_note}) AND
-	 package.pkg_id = $P!{search_package_id}]]>
+		<![CDATA[$P!{query}]]>
 	</queryString>
 	<field name="tipp_id" class="java.lang.Long">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="tipp_version" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="ti_title" class="java.lang.String">
@@ -74,20 +72,6 @@ WHERE
 					</textElement>
 					<text><![CDATA[Match Coverage Note]]></text>
 				</staticText>
-				<staticText>
-					<reportElement x="220" y="40" width="105" height="20" forecolor="#FFFFFF" uuid="2e1bac40-ce95-4530-8a88-3b86cc2c16d0"/>
-					<textElement textAlignment="Right">
-						<font size="12" isBold="false"/>
-					</textElement>
-					<text><![CDATA[Package Name:]]></text>
-				</staticText>
-				<textField>
-					<reportElement x="260" y="60" width="315" height="32" forecolor="#FFFFFF" uuid="0de05e5b-b89b-48a7-b36d-f372ebb924d4"/>
-					<textElement>
-						<font size="11"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{pkg_name}]]></textFieldExpression>
-				</textField>
 				<staticText>
 					<reportElement x="20" y="51" width="100" height="20" forecolor="#FFFFFF" uuid="5feab161-dcb1-4745-be16-c47fc809f7f6"/>
 					<text><![CDATA[Note matched:]]></text>
