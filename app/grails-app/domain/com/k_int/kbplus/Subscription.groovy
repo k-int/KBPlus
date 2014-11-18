@@ -70,6 +70,7 @@ class Subscription {
             isSlaved column:'sub_is_slaved'
         noticePeriod column:'sub_notice_period'
             isPublic column:'sub_is_public'
+        pendingChanges sort: 'ts', order: 'asc'
   }
 
   static constraints = {
