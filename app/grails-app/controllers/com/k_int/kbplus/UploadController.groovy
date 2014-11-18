@@ -226,7 +226,11 @@ class UploadController {
             // log.debug("new TIPP Save OK ${dbtipp.id}");
             tipp.messages.add([type:'alert-success',message:"New tipp created: ${dbtipp.id}"]);
             tipp.additional_platforms.each { ap ->
-              PlatformTIPP pt = new PlatformTIPP(tipp:dbtipp,platform:ap.plat,titleUrl:ap.url,rel:ap.role)
+              PlatformTIPP pt = new PlatformTIPP(
+                                                 tipp:dbtipp,
+                                                 platform:ap.plat,
+                                                 titleUrl:ap.url,
+                                                 rel:ap.role).save(flush:true)
             }
             // Really not happy with this as a way forward, hoping for feedback from OS
             tipp.tippid.each { tippid ->
