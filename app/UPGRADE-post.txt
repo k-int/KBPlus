@@ -24,11 +24,15 @@ delete identifier from identifier join identifier_namespace on id_ns_fk = idns_i
 select 'Remove all identifers where the namespace is not present';
 delete from identifier where not exists ( select idns_id from identifier_namespace where id_ns_fk = idns_id );
 
+SET foreign_key_checks = 0;
+
 select 'Remove any JUSP fact rows which point to an identifier occurrence we are about to delete';
 delete kbplus_fact from kbplus_fact join identifier_occurrence on io_id = juspio_id where not exists ( select id_id from identifier where io_canonical_id = id_id );
 
 select 'Remove all identifier_occurrences where the identifier is not present';
 delete from identifier_occurrence where not exists ( select id_id from identifier where io_canonical_id = id_id );
+
+SET foreign_key_checks = 1;
 
 drop table if exists titles_to_remove;
 

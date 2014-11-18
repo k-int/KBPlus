@@ -71,8 +71,8 @@ class Package {
                vendorURL column:'pkg_vendor_url'
   cancellationAllowances column:'pkg_cancellation_allowances', type:'text'
                  forumId column:'pkg_forum_id'
-                   tipps sort:'title.title', order: 'asc'
-
+                     tipps sort:'title.title', order: 'asc'
+            pendingChanges sort:'ts', order: 'asc'
 //                 orgs sort:'org.name', order: 'asc'
   }
 
@@ -225,22 +225,23 @@ class Package {
     if ( createEntitlements ) {
        def live_issue_entitlement = RefdataCategory.lookupOrCreate('Entitlement Issue Status', 'Live');
       tipps.each { tipp ->
-        def new_ie = new IssueEntitlement(status: live_issue_entitlement,
-                                          subscription: subscription,
-                                          tipp: tipp,
-                                          accessStart:tipp.accessStartDate,
-                                          accessEnd:tipp.accessEndDate,
-                                          startDate:tipp.startDate,
-                                          startVolume:tipp.startVolume,
-                                          startIssue:tipp.startIssue,
-                                          endDate:tipp.endDate,
-                                          endVolume:tipp.endVolume,
-                                          endIssue:tipp.endIssue,
-                                          embargo:tipp.embargo,
-                                          coverageDepth:tipp.coverageDepth,
-                                          coverageNote:tipp.coverageNote).save()
-
+        if(tipp.status?.value != "Deleted"){
+          def new_ie = new IssueEntitlement(status: live_issue_entitlement,
+                                            subscription: subscription,
+                                            tipp: tipp,
+                                            accessStartDate:tipp.accessStartDate,
+                                            accessEndDate:tipp.accessEndDate,
+                                            startDate:tipp.startDate,
+                                            startVolume:tipp.startVolume,
+                                            startIssue:tipp.startIssue,
+                                            endDate:tipp.endDate,
+                                            endVolume:tipp.endVolume,
+                                            endIssue:tipp.endIssue,
+                                            embargo:tipp.embargo,
+                                            coverageDepth:tipp.coverageDepth,
+                                            coverageNote:tipp.coverageNote).save()      
         }
+      }
     }
 
   }

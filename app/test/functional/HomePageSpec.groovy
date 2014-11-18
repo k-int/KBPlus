@@ -344,6 +344,17 @@ class HomePageSpec extends GebReportingSpec {
 		at LicencePage
 	}
 
+	def "Add/Edit/Delete Custom Proeprty"(){
+		setup:
+			at LicencePage
+		when:
+			addCustomPropType("Alumni Access")
+			setRefPropertyValue("Alumni Access","No")
+			deleteCustomProp("Alumni Access")
+		then:
+			at LicencePage
+	}
+
 	//112
 	def "Accept updates to Actual Licence"() {
 		setup: "Log in with User B"
@@ -736,7 +747,7 @@ class HomePageSpec extends GebReportingSpec {
 		showInstMenu()
 		$("a",text:"Change Log").click()
 		then:
-		$("div.pagination").text().contains("Showing 2 changes")
+		$("div.pagination").text().contains("Showing 3 changes")
 		when:
 		$("a",text:"Exports").click()
 		$("a",text:"CSV Export").click()

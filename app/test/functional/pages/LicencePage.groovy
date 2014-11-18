@@ -70,11 +70,25 @@ class LicencePage extends AbstractDetails {
             $("a.btn-info").click()
         }
         addCustomPropType{ name ->
-            $("#select2-chosen").click()
-            $("#s2id_autogen2_search").value(name)
-            waitFor{$("div.select2-result-label").click()}
             $("#select2-chosen-2").click()
-
+            $("#s2id_autogen2_search").value(name)
+            waitFor{$("#select2-result-label-4").click()}
+            $("input", value:"Add Property").click()
+        }
+        setRefPropertyValue{ prop, value ->
+            // waitElement{$("span",'data-pk':"com.k_int.kbplus.LicenseCustomProperty:13").click()}
+            waitElement { $("td",text:prop).next("td").find("span").find("span").click()}
+            waitElement { $("form.editableform") }
+            waitFor {$("select.input-medium")}
+            $("select.input-medium").value(value)
+            $("button.editable-submit").click()
+        }
+        deleteCustomProp { prop ->
+            waitElement { 
+                withConfirm { 
+                    $("td",text:prop).nextAll().find("a").click()
+                }
+            }
         }
 
     }

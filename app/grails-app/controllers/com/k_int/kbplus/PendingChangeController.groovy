@@ -27,12 +27,10 @@ class PendingChangeController {
     def owner = genericOIDService.resolveOID(params.id)
 
     def changes_to_accept = []
-
-    owner.pendingChanges.each { pc ->
-      changes_to_accept.add(pc.id)
-    }
-
-    changes_to_accept.each { pc ->
+    def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
+    def pendingChanges = owner.pendingChanges.findAll {(it.status == pending_change_pending_status) || it.status == null}
+    pendingChanges = pendingChanges.collect{it.id}
+    pendingChanges.each { pc ->
       pendingChangeService.performAccept(pc,request)
     }
 
@@ -44,17 +42,14 @@ class PendingChangeController {
     def owner = genericOIDService.resolveOID(params.id)
 
     def changes_to_reject = []
-
-    owner.pendingChanges.each { pc ->
-      changes_to_reject.add(pc.id)
-    }
-
-    changes_to_reject.each { pc ->
+    def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
+    def pendingChanges = owner.pendingChanges.findAll {(it.status == pending_change_pending_status) || it.status == null}
+    pendingChanges = pendingChanges.collect{it.id}
+    
+    pendingChanges.each { pc ->
       pendingChangeService.performReject(pc,request)
     }
 
     redirect(url: request.getHeader('referer'))
-  }
-
-  
+  }  
 }
