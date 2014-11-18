@@ -62,7 +62,7 @@
             <th>Consortia</th>
             <g:sortableColumn params="${params}" property="s.startDate" title="Start Date" />
             <g:sortableColumn params="${params}" property="s.endDate" title="End Date" />
-            <g:sortableColumn params="${params}" property="s.renewalDate" title="Renewal Date" />
+            <g:sortableColumn params="${params}" property="s.manualRenewalDate" title="Renewal Date" />
             <th>Platform</th>
             <g:sortableColumn params="${params}" property="s.lastUpdated" title="Last Updated" />
           </tr>
