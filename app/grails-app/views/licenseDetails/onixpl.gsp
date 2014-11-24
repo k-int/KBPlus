@@ -11,7 +11,7 @@
 <html>
 <head>
     <meta name="layout" content="mmbootstrap"/>
-    <title>KB+ Licence</title>
+    <title>KB+ <g:message code="licence" default="Licence"/></title>
 </head>
 <body>
 
@@ -19,10 +19,10 @@
     <ul class="breadcrumb">
         <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <g:if test="${license?.licensee}">
-            <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:license.licensee.shortcode]}"> ${license.licensee.name} Current Licences</g:link> <span class="divider">/</span> </li>
+            <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:license.licensee.shortcode]}"> ${license.licensee.name} <g:message code="current.licenses" default="Licence"/></g:link> <span class="divider">/</span> </li>
         </g:if>
-        <li> <g:link controller="licenseDetails" action="index" id="${params.id}">Licence Details</g:link> <span class="divider">/</span></li>
-        <li> <g:link controller="licenseDetails" action="onixpl" id="${params.id}">ONIX-PL Licence</g:link> </li>
+        <li> <g:link controller="licenseDetails" action="index" id="${params.id}"><g:message code="licence.details" default="Licence"/></g:link> <span class="divider">/</span></li>
+        <li> <g:link controller="licenseDetails" action="onixpl" id="${params.id}"><g:message code="onix.licence" default="Licence"/></g:link> </li>
         <g:if test="${editable}">
             <li class="pull-right">Editable by you&nbsp;</li>
         </g:if>
@@ -31,7 +31,7 @@
 
 <div class="container">
     <g:if test="${license}">
-        <h1>${license?.licensee?.name} ${license?.type?.value} Licence : <g:xEditable owner="${license}" field="reference" id="reference"/></h1>
+        <h1>${license?.licensee?.name} ${license?.type?.value} <g:message code="licence" default="Licence"/> : <g:xEditable owner="${license}" field="reference" id="reference"/></h1>
         <g:render template="nav" />
     </g:if>
 </div>

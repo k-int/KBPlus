@@ -27,7 +27,7 @@
                     </dt>
                     <dd>
                         <select name="doctype">
-                            <option value="License">License</option>
+                            <option value="License"><g:message code="licence" default="Licence"/></option>
                             <option value="General">General</option>
                             <option value="General">Addendum</option>
                         </select>
