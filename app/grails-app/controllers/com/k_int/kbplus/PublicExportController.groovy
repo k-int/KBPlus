@@ -235,7 +235,7 @@ class PublicExportController {
              tipp.coverageDepth = e.coverageDepth
              tipp.coverageNote = e.coverageNote
              tipp.publisher = publisher?.name
-             tipp.hybridOA = e.hybridOA.value
+             tipp.hybridOA = e.hybridOA?.value
              response.titles.add(tipp);
          }
          render response as JSON

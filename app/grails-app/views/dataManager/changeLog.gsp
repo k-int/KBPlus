@@ -90,7 +90,7 @@
 
         Whats Changed :
         <input type="checkbox" name="packages" value="Y" ${params.packages=='Y'?'checked':''}/> Packages &nbsp;
-        <input type="checkbox" name="licenses" value="Y" ${params.licenses=='Y'?'checked':''}/> Licenses &nbsp;
+        <input type="checkbox" name="licenses" value="Y" ${params.licenses=='Y'?'checked':''}/> <g:message code="licence" default="Licence"/>s &nbsp;
         <input type="checkbox" name="titles" value="Y" ${params.titles=='Y'?'checked':''}/> Titles &nbsp;
         <input type="checkbox" name="tipps" value="Y" ${params.tipps=='Y'?'checked':''}/> TIPPs &nbsp; <br/>
         How has it changed :

@@ -11,7 +11,7 @@
           <g:if test="${hit.type=='com.k_int.kbplus.Package'}"><span class="label label-info">Package</span></g:if>
           <g:if test="${hit.type=='com.k_int.kbplus.Platform'}"><span class="label label-info">Platform</span></g:if>
           <g:if test="${hit.type=='com.k_int.kbplus.Subscription'}"><span class="label label-info">Subscription</span></g:if>
-          <g:if test="${hit.type=='com.k_int.kbplus.License'}"><span class="label label-info">License</span></g:if>
+          <g:if test="${hit.type=='com.k_int.kbplus.License'}"><span class="label label-info"><g:message code="licence" default="Licence"/></span></g:if>
        </g:if>
 
         <g:if test="${hit.type=='com.k_int.kbplus.Org'}">

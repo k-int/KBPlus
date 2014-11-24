@@ -45,12 +45,12 @@
 		<ul class="breadcrumb">
 			<li><g:link controller="home" action="index">Home</g:link> <span
 				class="divider">/</span></li>
-			<li>ONIX-PL Licence Comparison</li>
+			<li>ONIX-PL <g:message code="licence" default="Licence"/> Comparison</li>
 		</ul>
 	</div>
 
 	<div class="container">
-		<h1>ONIX-PL Licence Comparison</h1>
+		<h1>ONIX-PL <g:message code="licence" default="Licence"/> Comparison</h1>
 	</div>
 
 	<div class="container">
@@ -58,12 +58,12 @@
 			<div class="span8">
 				<g:form id="compare" name="compare" action="matrix" method="get">
 					<div>
-						<label for="license1">Licence 1:</label>
+						<label for="license1"><g:message code="licence" default="Licence"/> 1:</label>
 						<g:select id="license1" name="license1" class="compare-license" from="${list}"
 							optionKey="id" optionValue="title" />
 					</div>
 					<div>
-						<label for="license2">Licence 2:</label>
+						<label for="license2"><g:message code="licence" default="Licence"/> 2:</label>
 						<g:select id="license2" name="license2" class="compare-license" from="${list}"
 							optionKey="id" optionValue="title"
 							noSelection="${['all': "All"]}" multiple="true" value="all" />

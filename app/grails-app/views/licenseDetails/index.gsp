@@ -5,7 +5,7 @@
   <head>
     <meta name="layout" content="mmbootstrap"/>
      <g:javascript src="custom_properties.js"/>
-    <title>KB+ Licence</title>
+    <title>KB+ <g:message code="licence" default="Licence"/></title>
   </head>
 
   <body>
@@ -14,9 +14,9 @@
       <ul class="breadcrumb">
         <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <g:if test="${license.licensee}">
-          <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:license.licensee.shortcode]}"> ${license.licensee.name} Current Licences</g:link> <span class="divider">/</span> </li>
+          <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:license.licensee.shortcode]}"> ${license.licensee.name} <g:message code="current.licenses" default="Current Licenses"/></g:link> <span class="divider">/</span> </li>
         </g:if>
-        <li> <g:link controller="licenseDetails" action="index" id="${params.id}">Licence Details</g:link> </li>
+        <li> <g:link controller="licenseDetails" action="index" id="${params.id}"><g:message code="licence.details" default="License Details"/></g:link> </li>
     
         <li class="dropdown pull-right">
           <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>&nbsp;
@@ -164,7 +164,7 @@
                   </sec:ifAnyGranted>
       
                   <dl>
-                      <dt><label class="control-label" for="licenseUrl">Licence Url</label></dt>
+                      <dt><label class="control-label" for="licenseUrl"><g:message code="licence" default="Licence"/> Url</label></dt>
                       <dd>
                         <g:xEditable owner="${license}" field="licenseUrl" id="licenseUrl"/>
                       </dd>

@@ -176,7 +176,7 @@
               </dl> 
 
               <dl>
-                <dt>License</dt>
+                <dt><g:message code="licence" default="Licence"/></dt>
                 <dd>
                   <g:xEditableRefData owner="${packageInstance}" field="license" config='Licenses'/>
                 </dd>

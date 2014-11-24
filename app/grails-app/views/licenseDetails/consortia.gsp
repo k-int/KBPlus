@@ -13,9 +13,9 @@
     <ul class="breadcrumb">
        <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <g:if test="${licence.licensee}">
-          <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:licence.licensee.shortcode]}"> ${licence.licensee.name} Current Licences</g:link> <span class="divider">/</span> </li>
+          <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:licence.licensee.shortcode]}"> ${licence.licensee.name} <g:message code="current.licenses" default="Licence"/></g:link> <span class="divider">/</span> </li>
         </g:if>
-        <li> <g:link controller="licenseDetails" action="index" id="${params.id}">Licence Details</g:link> </li>
+        <li> <g:link controller="licenseDetails" action="index" id="${params.id}"><g:message code="license.details" default="Licence"/></g:link> </li>
     </ul>
 </div>
 <g:if test="${flash.message}">
