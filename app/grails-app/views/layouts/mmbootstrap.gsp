@@ -375,8 +375,8 @@
     <r:script type="text/javascript">
       if (typeof(Zenbox) !== "undefined") {
         Zenbox.init({
-          dropboxID:   "20234067",
-          url:         "${grailsApplication.config.ZenDeskBaseURL}",
+          dropboxID:   "${grailsApplication.config.ZenDeskDropboxID?:20234067}",
+          url:         "${grailsApplication.config.ZenDeskBaseURL?:'https://kbplus.zendesk.com'}",
           tabTooltip:  "Support",
           tabImageURL: "https://assets.zendesk.com/external/zenbox/images/tab_support_right.png",
           tabColor:    "#008000",

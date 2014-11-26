@@ -48,6 +48,7 @@ class HomePageSpec extends GebReportingSpec {
 		then:
 		at ProfilePage
 	}
+
 	def "Setup subscription"(){
 		when:
 		go "/demo/admin/globalSync"

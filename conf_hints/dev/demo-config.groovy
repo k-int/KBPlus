@@ -8,6 +8,7 @@ SystemBaseURL="http://localhost:19080/demo"
 docstore='http://deprecated/deprecated'
 kbplusSystemId='KITestIntsance'
 ZenDeskBaseURL='https://projectname.zendesk.com'
+ZenDeskDropboxID=20000000
 ZenDeskLoginEmail='Zen.Desk@Host.Name'
 ZenDeskLoginPass='Zen.Desk.Password'
 KBPlusMaster=true
