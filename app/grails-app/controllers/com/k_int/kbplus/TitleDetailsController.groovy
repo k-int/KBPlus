@@ -47,7 +47,7 @@ class TitleDetailsController {
   def edit() {
     def result = [:]
 
-    if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') )
+    if ( SpringSecurityUtils.ifAnyGranted('ROLE_ADMIN') )
       result.editable=true
     else
       result.editable=false
@@ -60,7 +60,7 @@ class TitleDetailsController {
   def show() {
     def result = [:]
 
-    if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') )
+    if ( SpringSecurityUtils.ifAnyGranted('ROLE_ADMIN') )
       result.editable=true
     else
       result.editable=false
@@ -133,11 +133,6 @@ class TitleDetailsController {
 
     def result=[:]
 
-    if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') )
-      result.editable=true
-    else
-      result.editable=false
-
     if (springSecurityService.isLoggedIn()) {
       params.rectype = "Title" // Tells ESSearchService what to look for
      
@@ -146,10 +141,20 @@ class TitleDetailsController {
         params.offset = 0
         params.search = ""
       }
+
       if(params.q == "") params.remove('q');
 
       result =  ESSearchService.search(params)   
     }
+
+    if ( SpringSecurityUtils.ifAnyGranted('ROLE_ADMIN') )
+      result.editable=true
+    else
+      result.editable=false
+
+
+    log.debug(result);
+
     result  
    
   }
