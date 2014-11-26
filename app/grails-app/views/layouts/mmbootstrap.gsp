@@ -118,7 +118,7 @@
                          <li>Please request institutional affiliations via your <g:link controller="profile" action="index">Profile Page</g:link></li>
                        </g:else>
                        <li class="divider"></li>
-                       <li><a href="https://knowledgebaseplus.wordpress.com/kb-support/">Help</a></li>
+                       <li><a href="${message(code:'help.location')}">Help</a></li>
                     </ul>
                   </li>
                 </g:if>
