@@ -97,8 +97,29 @@ class ApiController {
         def inst = Org.lookupByIdentifierString(params.inst);
         def title = TitleInstance.lookupByIdentifierString(params.title);
         def provider = params.provider ? Org.lookupByIdentifierString(params.provider) : null;
-
         log.debug("assertCore ${params.inst}:${inst} ${params.title}:${title} ${params.provider}:${provider}");
+
+        if ( title && inst ) {
+          if ( provider ) {
+          }
+          else {
+            log.debug("Calculating all known providers for this title");
+            def providers = TitleInstancePackagePlatform.executeQuery('''select distinct orl.org 
+from TitleInstancePackagePlatform as tipp join tipp.pkg.orgs as orl
+where tipp.title = ? and orl.roleType.value=?''',[title,'Content Provider']);
+
+            providers.each {
+              log.debug("Title ${title} is provided by ${it}");
+              def tiinp = TitleInstitutionProvider.findByTitleAndInstitutionAndprovider(title, inst, it) 
+              if ( tiinp == null ) {
+                log.debug("Creating new TitleInstitutionProvider");
+                tiinp = new TitleInstitutionProvider(title:title, institution:inst, provider:it).save(flush:true, failOnError:true)
+              }
+
+              log.debug("Got tiinp:: ${tiinp}");
+            }
+          }
+        }
       }
       else {
         result.message="ERROR: missing mandatory parameter: inst or title";

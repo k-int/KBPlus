@@ -32,6 +32,7 @@
           </tr>
         </table>
         <p>Example Call:  <em><strong>wget "http://localhost:8080/demo/api/assertCore?inst=jusplogin:ast&title=jusp:9498"</strong></em></p>
+        <p>Example Call:  <em><strong>wget "http://localhost:8080/demo/api/assertCore?inst=jusplogin:ast&title=jusp:201570"</strong></em> (title via multiple providers!)</p>
       </li>
     </ul>
 

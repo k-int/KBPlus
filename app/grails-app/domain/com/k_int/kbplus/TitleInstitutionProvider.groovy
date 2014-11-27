@@ -2,8 +2,6 @@ package com.k_int.kbplus
 
 class TitleInstitutionProvider {
 
-  Boolean isCore
-
   static belongsTo = [
                       title: TitleInstance, 
                       institution: Org, 
@@ -16,4 +14,11 @@ class TitleInstitutionProvider {
     provider column:'tttnp_prov_org_fk'
     version column:'title_inst_prov_ver'
   }
+
+  def extendCoreExtent(startDate, endDate) {
+    // See if we can extend and existing CoreAssertion or create a new one
+    // to represent this
+  }
+
+
 }

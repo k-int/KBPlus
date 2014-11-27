@@ -1,0 +1,1 @@
+drop table title_institution_provider;
