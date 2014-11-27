@@ -82,4 +82,52 @@ class ApiController {
     }
     render result as JSON
   }
+
+
+  // Assert a core status against a title/institution. Creates TitleInstitutionProvider objects
+  // For all known combinations.
+  def assertCore() {
+    // Params:     inst - [namespace:]code  Of an org [mandatory]
+    //            title - [namespace:]code  Of a title [mandatory]
+    //         provider - [namespace:]code  Of an org [optional]
+    log.debug("assertCore(${params})");
+    def result = [:]
+    if ( request.getRemoteAddr() == '127.0.0.1' ) {
+      if ( ( params.inst?.length() > 0 ) && ( params.title?.length() > 0 ) ) {
+        def inst = Org.lookupByIdentifierString(params.inst);
+        def title = TitleInstance.lookupByIdentifierString(params.title);
+        def provider = params.provider ? Org.lookupByIdentifierString(params.provider) : null;
+        log.debug("assertCore ${params.inst}:${inst} ${params.title}:${title} ${params.provider}:${provider}");
+
+        if ( title && inst ) {
+          if ( provider ) {
+          }
+          else {
+            log.debug("Calculating all known providers for this title");
+            def providers = TitleInstancePackagePlatform.executeQuery('''select distinct orl.org 
+from TitleInstancePackagePlatform as tipp join tipp.pkg.orgs as orl
+where tipp.title = ? and orl.roleType.value=?''',[title,'Content Provider']);
+
+            providers.each {
+              log.debug("Title ${title} is provided by ${it}");
+              def tiinp = TitleInstitutionProvider.findByTitleAndInstitutionAndprovider(title, inst, it) 
+              if ( tiinp == null ) {
+                log.debug("Creating new TitleInstitutionProvider");
+                tiinp = new TitleInstitutionProvider(title:title, institution:inst, provider:it).save(flush:true, failOnError:true)
+              }
+
+              log.debug("Got tiinp:: ${tiinp}");
+            }
+          }
+        }
+      }
+      else {
+        result.message="ERROR: missing mandatory parameter: inst or title";
+      }
+    }
+    else {
+      result.message="ERROR: this call is only usable from within the KB+ system network"
+    }
+    render result as JSON
+  }
 }

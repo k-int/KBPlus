@@ -22,7 +22,7 @@
       <div class="row">
         <div class="span12">
           <div class="well">
-            Title : <input name="q" placeholder="Add &quot;&quot; for exact match" value="${params.q}"/> (Search on title text, identifiers and provider)
+            Title : <input name="q" placeholder="Add &quot;&quot; for exact match" value="${params.q}"/> (Search on title text and identifiers)
             <button type="submit" name="search" value="yes">Search</button>
             <div class="pull-right">
             </div>

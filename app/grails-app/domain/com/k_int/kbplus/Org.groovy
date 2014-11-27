@@ -1,7 +1,10 @@
 package com.k_int.kbplus
 
 import com.k_int.kbplus.auth.*;
+import org.apache.commons.logging.LogFactory
+import groovy.util.logging.*
 
+@Log4j
 class Org {
 
   String name
@@ -86,6 +89,33 @@ class Org {
     }
 
     result;
+  }
+
+  static def lookupByIdentifierString(idstr) {
+
+    LogFactory.getLog(this).debug("lookupByIdentifierString(${idstr})");
+
+    def result = null;
+    def qr = null;
+    def idstr_components = idstr.split(':');
+    switch ( idstr_components.size() ) {
+      case 1:
+        qr = TitleInstance.executeQuery('select t from Org as t join t.ids as io where io.identifier.value = ?',[idstr_components[0]])
+        break;
+      case 2:
+        qr = TitleInstance.executeQuery('select t from Org as t join t.ids as io where io.identifier.value = ? and io.identifier.ns.ns = ?',[idstr_components[1],idstr_components[0]])
+        break;
+      default:
+        break;
+    }
+
+    LogFactory.getLog(this).debug("components: ${idstr_components} : ${qr}");
+
+    if ( ( qr ) && ( qr.size() == 1 ) ) {
+      result = qr.get(0);
+    }
+
+    result
   }
 
   def getIdentifierByType(idtype) {

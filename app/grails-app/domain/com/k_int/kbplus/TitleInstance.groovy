@@ -8,7 +8,10 @@ import javax.persistence.Transient
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.apache.commons.logging.*
 import java.text.Normalizer
+import groovy.util.logging.*
+import org.apache.commons.logging.LogFactory
 
+@Log4j
 class TitleInstance {
 
   @Transient
@@ -79,6 +82,35 @@ class TitleInstance {
         result = o.org
       }
     }
+    result
+  }
+
+  static def lookupByIdentifierString(idstr) {
+
+    // println("lookupByIdentifierString(${idstr})");
+
+    def result = null;
+    def qr = null;
+    def idstr_components = idstr.split(':');
+
+    switch ( idstr_components.size() ) {
+      case 1:
+        qr = TitleInstance.executeQuery('select t from TitleInstance as t join t.ids as io where io.identifier.value = ?',[idstr_components[0]])
+        break;
+      case 2:
+        qr = TitleInstance.executeQuery('select t from TitleInstance as t join t.ids as io where io.identifier.value = ? and io.identifier.ns.ns = ?',[idstr_components[1],idstr_components[0]])
+        break;
+      default:
+        // println("Unable to split");
+        break;
+    }
+
+    // println("components: ${idstr_components} : ${qr}");
+
+    if ( ( qr ) && ( qr.size() == 1 ) ) {
+      result = qr.get(0);
+    }
+
     result
   }
 
@@ -658,5 +690,7 @@ class TitleInstance {
       result=true
     result
   }
+
+
 
 }
