@@ -18,7 +18,7 @@ Agreement Term Start Year,<xsl:call-template name="formats_date"><xsl:with-param
 Agreement Term End Year,<xsl:call-template name="formats_date"><xsl:with-param name="date" select="./PackageTermEndDate" /></xsl:call-template>
 Consortium,
 </xsl:template>
-  <xsl:template match="TitleList">publication_title,ID.issn,ID.eissn,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,ID.kbart_title_id,embargo_info,coverage_depth,coverage_notes,publisher_name,ID.doi,platform.host.name,platform.host.url,platform.administrative.name,platform.administrative.url,hybrid_oa,access_start_date,access_end_date<xsl:text>&#xA;</xsl:text>
+  <xsl:template match="TitleList">publication_title,ID.issn,ID.eissn,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,ID.kbart_title_id,embargo_info,coverage_depth,coverage_notes,publisher_name,ID.doi,platform.host.name,platform.host.url,platform.administrative.name,platform.administrative.url,hybrid_oa,access_start_date,access_end_date<xsl:if test="parent::Package">,tipp.status</xsl:if><xsl:if test="parent::Subscription">,core.status,core.start,core.end</xsl:if><xsl:text>&#xA;</xsl:text>
    </xsl:template>
    
    <xsl:template match="TitleListEntry">
@@ -124,12 +124,38 @@ Consortium,
           </xsl:if>
         </xsl:with-param>
       </xsl:call-template>
+      <!-- status -->
+      <xsl:call-template name="csventry">
+        <xsl:with-param name="txt" select="./CoverageStatement/CoreStatus" />
+      </xsl:call-template>
+      <xsl:if test="parent::Subscription">
+        <!-- core_start_date -->
+        <xsl:call-template name="csventry">
+          <xsl:with-param name="txt">
+            <xsl:if test="./CoverageStatement/CoreStart != ''">
+              <xsl:call-template name="formats_date">
+                <xsl:with-param name="date" select="./CoverageStatement/CoreStart" />
+              </xsl:call-template>
+            </xsl:if>
+          </xsl:with-param>
+        </xsl:call-template>
+        <!-- core_end_date -->
+        <xsl:call-template name="csventry">
+          <xsl:with-param name="txt">
+            <xsl:if test="./CoverageStatement/CoreEnd != ''">
+              <xsl:call-template name="formats_date">
+                <xsl:with-param name="date" select="./CoverageStatement/CoreEnd" />
+              </xsl:call-template>
+            </xsl:if>
+          </xsl:with-param>
+        </xsl:call-template>
+      </xsl:if>
       <xsl:text>&#xA;</xsl:text>
    </xsl:template>
    
    <xsl:template name="formats_date"><xsl:param name="date"/><xsl:value-of select="concat(substring($date,9,2),'/',substring($date,6,2),'/',substring($date,1,4))"/></xsl:template>
 
-  <xsl:template name="csventry"><xsl:param name="txt"/><xsl:text>"</xsl:text><xsl:value-of select="$txt"/><xsl:text>"</xsl:text>,</xsl:template>
+  <xsl:template name="csventry"><xsl:param name="txt"/><xsl:text>"</xsl:text><xsl:value-of select="normalize-space($txt)"/><xsl:text>"</xsl:text>,</xsl:template>
   <xsl:template name="plainentry"><xsl:param name="txt"/><xsl:value-of select="$txt"/></xsl:template>
 
 </xsl:stylesheet>
