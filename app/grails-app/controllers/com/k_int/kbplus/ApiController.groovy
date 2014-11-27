@@ -82,4 +82,31 @@ class ApiController {
     }
     render result as JSON
   }
+
+
+  // Assert a core status against a title/institution. Creates TitleInstitutionProvider objects
+  // For all known combinations.
+  def assertCore() {
+    // Params:     inst - [namespace:]code  Of an org [mandatory]
+    //            title - [namespace:]code  Of a title [mandatory]
+    //         provider - [namespace:]code  Of an org [optional]
+    log.debug("assertCore(${params})");
+    def result = [:]
+    if ( request.getRemoteAddr() == '127.0.0.1' ) {
+      if ( ( params.inst?.length() > 0 ) && ( params.title?.length() > 0 ) ) {
+        def inst = Org.lookupByIdentifierString(params.inst);
+        def title = TitleInstance.lookupByIdentifierString(params.title);
+        def provider = params.provider ? Org.lookupByIdentifierString(params.provider) : null;
+
+        log.debug("assertCore ${params.inst}:${inst} ${params.title}:${title} ${params.provider}:${provider}");
+      }
+      else {
+        result.message="ERROR: missing mandatory parameter: inst or title";
+      }
+    }
+    else {
+      result.message="ERROR: this call is only usable from within the KB+ system network"
+    }
+    render result as JSON
+  }
 }
