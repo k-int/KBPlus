@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.6.1  -->
-<!-- 2014-11-04T15:32:10 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="expected_issues" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cac26577-7c58-4fd6-8e92-8b28886ba96c">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="KBPLUS"/>
+<!-- 2014-11-28T15:45:50 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="expected_issues" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cac26577-7c58-4fd6-8e92-8b28886ba96c">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="search_pkg_id" class="com.k_int.kbplus.Package">
 		<parameterDescription><![CDATA[Package]]></parameterDescription>
 	</parameter>
@@ -15,8 +24,8 @@
 	<parameter name="query" class="java.lang.String" isForPrompting="false">
 		<parameterDescription><![CDATA[]]></parameterDescription>
 		<defaultValueExpression><![CDATA[$P{select&Expected&Previous}.equals("Expected")
-? "select pkg_name, tipp_id, ti_title from title_instance_package_platform, title_instance, package where tipp_pkg_fk = $P!{search_pkg_id} AND pkg_id = tipp_pkg_fk AND tipp_ti_fk = ti_id AND tipp_access_start_date > '$P{compare_date}'"
-: "select pkg_name, tipp_id, ti_title from title_instance_package_platform, title_instance, package where tipp_pkg_fk = $P!{search_pkg_id} AND pkg_id = tipp_pkg_fk AND tipp_ti_fk = ti_id AND tipp_access_start_date <= '$P{compare_date}'"]]></defaultValueExpression>
+? " SELECT pkg_name, tipp_id, ti_title,id1.id_value as eissn, id2.id_value as issn,tipp_host_platform_url,tipp_coverage_note FROM title_instance_package_platform, package,	title_instance as ti       JOIN identifier_occurrence as io1 on io1.io_ti_fk = ti.ti_id         JOIN identifier as id1 on io1.io_canonical_id = id1.id_id			JOIN identifier_namespace as ns1 on ns1.idns_id = id1.id_ns_fk       JOIN identifier_occurrence as io2 on io2.io_ti_fk = ti.ti_id         JOIN identifier as id2 on io2.io_canonical_id = id2.id_id			JOIN identifier_namespace as ns2 on ns2.idns_id = id2.id_ns_fk WHERE tipp_pkg_fk = $P!{search_pkg_id} AND pkg_id = tipp_pkg_fk AND tipp_ti_fk = ti_id AND 				  ns1.idns_ns in ('eISSN','eissn') and ns2.idns_ns in ('ISSN','issn') AND tipp_access_start_date > '$P{compare_date}' "
+: "SELECT pkg_name, tipp_id, ti_title,id1.id_value as eissn, id2.id_value as issn,tipp_host_platform_url,tipp_coverage_note FROM title_instance_package_platform, package,	title_instance as ti       JOIN identifier_occurrence as io1 on io1.io_ti_fk = ti.ti_id         JOIN identifier as id1 on io1.io_canonical_id = id1.id_id			JOIN identifier_namespace as ns1 on ns1.idns_id = id1.id_ns_fk       JOIN identifier_occurrence as io2 on io2.io_ti_fk = ti.ti_id         JOIN identifier as id2 on io2.io_canonical_id = id2.id_id			JOIN identifier_namespace as ns2 on ns2.idns_id = id2.id_ns_fk WHERE tipp_pkg_fk = $P!{search_pkg_id} AND pkg_id = tipp_pkg_fk AND tipp_ti_fk = ti_id AND 				  ns1.idns_ns in ('eISSN','eissn') and ns2.idns_ns in ('ISSN','issn') AND tipp_access_start_date <= '$P{compare_date}'"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="report_description" class="java.lang.String">
 		<parameterDescription><![CDATA[List all the Previous or Expected titles for the package selected]]></parameterDescription>
@@ -31,25 +40,63 @@
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="pkg_name" class="java.lang.String"/>
+	<field name="eissn" class="java.lang.String"/>
+	<field name="issn" class="java.lang.String"/>
+	<field name="tipp_host_platform_url" class="java.lang.String"/>
+	<field name="tipp_coverage_note" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<group name="Group1">
 		<groupHeader>
-			<band height="19">
+			<band height="29">
 				<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
 				<staticText>
-					<reportElement mode="Opaque" x="0" y="0" width="80" height="19" forecolor="#007A5E" backcolor="#E1E6E5" uuid="b68ac5e2-d77b-433d-ab42-ac0762b5fbb0"/>
+					<reportElement mode="Opaque" x="-20" y="0" width="60" height="29" forecolor="#007A5E" backcolor="#E1E6E5" uuid="b68ac5e2-d77b-433d-ab42-ac0762b5fbb0"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font size="15"/>
+						<font size="13"/>
 						<paragraph leftIndent="15"/>
 					</textElement>
 					<text><![CDATA[TIPP ID]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Opaque" x="80" y="0" width="475" height="19" forecolor="#007A5E" backcolor="#E1E6E5" uuid="3271dd5a-3f12-49bf-9e1e-d49f4ddf0441"/>
+					<reportElement mode="Opaque" x="40" y="0" width="240" height="29" forecolor="#007A5E" backcolor="#E1E6E5" uuid="3271dd5a-3f12-49bf-9e1e-d49f4ddf0441"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="15"/>
 						<paragraph leftIndent="15"/>
 					</textElement>
 					<text><![CDATA[Title]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="280" y="0" width="173" height="29" forecolor="#007A5E" backcolor="#E1E6E5" uuid="3e198880-0e6d-4c2f-b2fe-91f39e036fff"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="15"/>
+						<paragraph leftIndent="15"/>
+					</textElement>
+					<text><![CDATA[host platform]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="453" y="0" width="171" height="29" forecolor="#007A5E" backcolor="#E1E6E5" uuid="73199ea8-7646-4a06-9d2a-6c77eeec3535"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="15"/>
+						<paragraph leftIndent="15"/>
+					</textElement>
+					<text><![CDATA[Coverage note]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="624" y="0" width="86" height="29" forecolor="#007A5E" backcolor="#E1E6E5" uuid="12124756-ef75-4835-bb05-5de4b96afa47"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="12"/>
+						<paragraph leftIndent="15"/>
+					</textElement>
+					<text><![CDATA[eISSN]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="710" y="0" width="112" height="29" forecolor="#007A5E" backcolor="#E1E6E5" uuid="f386dd82-3f0f-48f8-9e79-f1ba24261764"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="15"/>
+						<paragraph leftIndent="15"/>
+					</textElement>
+					<text><![CDATA[ISSN]]></text>
 				</staticText>
 			</band>
 		</groupHeader>
@@ -61,9 +108,9 @@
 		<band/>
 	</background>
 	<title>
-		<band height="72">
+		<band height="33">
 			<frame>
-				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#007A5E" uuid="3f9c1786-af1d-4391-8150-5bc20e819737"/>
+				<reportElement mode="Opaque" x="-20" y="-20" width="842" height="53" backcolor="#007A5E" uuid="3f9c1786-af1d-4391-8150-5bc20e819737"/>
 				<staticText>
 					<reportElement x="120" y="20" width="180" height="30" forecolor="#FFFFFF" uuid="a512676b-6229-49c0-9fd4-d1d5fef3a607"/>
 					<textElement>
@@ -72,11 +119,11 @@
 					<text><![CDATA[ Package Titles]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="260" y="50" width="80" height="26" forecolor="#FFFFFF" uuid="1f8f971e-605d-4e1e-aa04-31c4c2ece5e6"/>
+					<reportElement x="357" y="27" width="80" height="26" forecolor="#FFFFFF" uuid="1f8f971e-605d-4e1e-aa04-31c4c2ece5e6"/>
 					<text><![CDATA[Package Name:]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="340" y="50" width="255" height="39" forecolor="#FFFFFF" uuid="2546b4b2-76ad-48c4-8d36-64b8a6792f39"/>
+					<reportElement x="437" y="27" width="380" height="23" forecolor="#FFFFFF" uuid="2546b4b2-76ad-48c4-8d36-64b8a6792f39"/>
 					<textElement>
 						<font size="12"/>
 					</textElement>
@@ -90,7 +137,7 @@
 					<textFieldExpression><![CDATA[$P{select&Expected&Previous}]]></textFieldExpression>
 				</textField>
 				<textField evaluationTime="Report">
-					<reportElement x="120" y="50" width="122" height="21" forecolor="#FFFFFF" uuid="9ee96407-1d41-4008-bc2a-bff777aaad19">
+					<reportElement x="447" y="10" width="122" height="21" forecolor="#FFFFFF" uuid="9ee96407-1d41-4008-bc2a-bff777aaad19">
 						<property name="local_mesure_unity" value="pixel"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						<property name="local_mesure_unitwidth" value="pixel"/>
@@ -102,7 +149,7 @@
 					<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="30" y="50" width="90" height="21" forecolor="#FFFFFF" uuid="909ff3bb-8430-4986-b4fb-c3549b6d4fbf"/>
+					<reportElement x="357" y="10" width="90" height="21" forecolor="#FFFFFF" uuid="909ff3bb-8430-4986-b4fb-c3549b6d4fbf"/>
 					<textElement>
 						<font size="12"/>
 					</textElement>
@@ -115,15 +162,15 @@
 		<band height="13"/>
 	</pageHeader>
 	<detail>
-		<band height="23">
+		<band height="26">
 			<line>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="20" width="555" height="1" uuid="37864285-068c-41e2-83db-9392ad4d5fed">
+				<reportElement positionType="FixRelativeToBottom" x="0" y="20" width="822" height="1" uuid="37864285-068c-41e2-83db-9392ad4d5fed">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 			</line>
 			<textField>
-				<reportElement x="0" y="0" width="50" height="20" uuid="2d37952a-a831-4ee4-9787-890325f86f2c">
+				<reportElement x="-20" y="0" width="60" height="20" uuid="2d37952a-a831-4ee4-9787-890325f86f2c">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -131,11 +178,49 @@
 				<textFieldExpression><![CDATA[$F{tipp_id}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="80" y="2" width="474" height="20" uuid="4904daf8-9d74-4f5e-ba0d-c5aba908645d">
+				<reportElement x="40" y="0" width="240" height="20" uuid="4904daf8-9d74-4f5e-ba0d-c5aba908645d">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ti_title}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="453" y="0" width="171" height="20" uuid="4ecbc931-266a-4949-8382-22aaf0ef5085">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textFieldExpression><![CDATA[$F{ti_title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{tipp_coverage_note}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="0" width="173" height="20" uuid="cdfc1a77-69cb-4884-b8bf-68bcd31bfc90">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{tipp_host_platform_url}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="710" y="0" width="112" height="20" uuid="e9a6aaeb-df78-460d-a1ce-ddf9d364f46a">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{issn}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="624" y="0" width="86" height="20" uuid="e52590f1-7c5b-4d41-821a-5ec9430e281b">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{eissn}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -145,12 +230,12 @@
 	<pageFooter>
 		<band height="17">
 			<textField>
-				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="06d47321-42af-4a9b-8381-df64a9d9e1dd"/>
+				<reportElement mode="Opaque" x="0" y="4" width="762" height="13" backcolor="#E6E6E6" uuid="06d47321-42af-4a9b-8381-df64a9d9e1dd"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="dffae562-5074-48bc-8c39-90668e35f054"/>
+				<reportElement mode="Opaque" x="515" y="4" width="287" height="13" backcolor="#E6E6E6" uuid="dffae562-5074-48bc-8c39-90668e35f054"/>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField pattern="EEEEE dd MMMMM yyyy">
@@ -165,24 +250,37 @@
 	<noData>
 		<band height="309">
 			<frame>
-				<reportElement mode="Opaque" x="-20" y="4" width="595" height="92" backcolor="#007A5E" uuid="69facce3-9cab-4f11-b13c-ce1c391ae542"/>
+				<reportElement mode="Opaque" x="-20" y="4" width="842" height="46" backcolor="#007A5E" uuid="69facce3-9cab-4f11-b13c-ce1c391ae542"/>
 				<staticText>
-					<reportElement x="120" y="20" width="180" height="30" forecolor="#FFFFFF" uuid="0698b316-17fa-446d-956d-2df01b6364ff"/>
+					<reportElement x="120" y="11" width="180" height="30" forecolor="#FFFFFF" uuid="0698b316-17fa-446d-956d-2df01b6364ff"/>
 					<textElement>
 						<font size="20" isBold="true"/>
 					</textElement>
 					<text><![CDATA[ Package Titles]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="20" y="20" width="100" height="30" forecolor="#FFFFFF" uuid="7a931826-e77e-47e5-ab3c-f8882c602682"/>
+					<reportElement x="20" y="11" width="100" height="30" forecolor="#FFFFFF" uuid="7a931826-e77e-47e5-ab3c-f8882c602682">
+						<property name="local_mesure_unity" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
 					<textElement>
 						<font size="20"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{select&Expected&Previous}]]></textFieldExpression>
 				</textField>
 			</frame>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="131" width="796" height="1" uuid="5a695fde-1a26-4141-a952-483840e9a8e8"/>
+			</line>
 			<staticText>
-				<reportElement mode="Opaque" x="80" y="102" width="476" height="30" forecolor="#007A5E" backcolor="#E1E6E5" uuid="28a00853-3700-4b3e-8633-66a21425e50d"/>
+				<reportElement x="10" y="113" width="410" height="30" uuid="12bc4526-1aca-4428-b26e-c625c1509804"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[No results found]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="44" y="57" width="230" height="29" forecolor="#007A5E" backcolor="#E1E6E5" uuid="9d85963f-5dd0-4f47-8cac-946812498c4f"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="15"/>
 					<paragraph leftIndent="15"/>
@@ -190,22 +288,44 @@
 				<text><![CDATA[Title]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="-1" y="102" width="81" height="30" forecolor="#007A5E" backcolor="#E1E6E5" uuid="9e8fade4-4921-48ab-b07f-4ac298a8abda"/>
+				<reportElement mode="Opaque" x="618" y="57" width="86" height="29" forecolor="#007A5E" backcolor="#E1E6E5" uuid="d0c112f6-2905-4c72-b837-d25ac634a010"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12"/>
+					<paragraph leftIndent="15"/>
+				</textElement>
+				<text><![CDATA[eISSN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="-6" y="57" width="50" height="29" forecolor="#007A5E" backcolor="#E1E6E5" uuid="89dc1d56-3558-4370-9ef8-1c198636cf1e"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="15"/>
 					<paragraph leftIndent="15"/>
 				</textElement>
-				<text><![CDATA[Tipp ID]]></text>
+				<text><![CDATA[TIPP ID]]></text>
 			</staticText>
-			<line>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="156" width="555" height="1" uuid="5a695fde-1a26-4141-a952-483840e9a8e8"/>
-			</line>
 			<staticText>
-				<reportElement x="10" y="138" width="410" height="30" uuid="12bc4526-1aca-4428-b26e-c625c1509804"/>
-				<textElement>
-					<font size="14"/>
+				<reportElement mode="Opaque" x="447" y="57" width="171" height="29" forecolor="#007A5E" backcolor="#E1E6E5" uuid="b0ac7dc1-3be5-4654-a115-e0916daae54c"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="15"/>
+					<paragraph leftIndent="15"/>
 				</textElement>
-				<text><![CDATA[No results found]]></text>
+				<text><![CDATA[Coverage note]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="704" y="57" width="112" height="29" forecolor="#007A5E" backcolor="#E1E6E5" uuid="31377e39-81e6-4c83-a7c7-c53dae279d4a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="15"/>
+					<paragraph leftIndent="15"/>
+				</textElement>
+				<text><![CDATA[ISSN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="274" y="57" width="173" height="29" forecolor="#007A5E" backcolor="#E1E6E5" uuid="066d91ea-246c-404f-96d5-d92cab11731e"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="15"/>
+					<paragraph leftIndent="15"/>
+				</textElement>
+				<text><![CDATA[host platform]]></text>
 			</staticText>
 		</band>
 	</noData>
