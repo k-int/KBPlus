@@ -97,9 +97,14 @@ class ApiController {
         def inst = Org.lookupByIdentifierString(params.inst);
         def title = TitleInstance.lookupByIdentifierString(params.title);
         def provider = params.provider ? Org.lookupByIdentifierString(params.provider) : null;
+        def year = params.year
+
         log.debug("assertCore ${params.inst}:${inst} ${params.title}:${title} ${params.provider}:${provider}");
 
         if ( title && inst ) {
+
+          def sdf = new java.text.SimpleDateFormat('yyyy-MM-ddThh:mm:ss');
+
           if ( provider ) {
           }
           else {
@@ -117,6 +122,9 @@ where tipp.title = ? and orl.roleType.value=?''',[title,'Content Provider']);
               }
 
               log.debug("Got tiinp:: ${tiinp}");
+              def startDate = sdf.parseDate("${year}-01-01T00:00:00");
+              def endDate = sdf.parseDate("${year}-12-31T23:59:59");
+              tiinp.extendCoreExtent(givenStartDate, givenEndDate);
             }
           }
         }
