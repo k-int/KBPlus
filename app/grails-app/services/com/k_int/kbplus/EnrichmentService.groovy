@@ -82,4 +82,33 @@ class EnrichmentService implements ApplicationContextAware {
       html content
     }
   }
+
+  def initiateCoreMigration() {
+    log.debug("initiateCoreMigration");
+    def future = executorService.submit({
+      doCoreMigration()
+    } as java.util.concurrent.Callable)
+    log.debug("initiateCoreMigration returning");
+  }
+
+  def doCoreMigration() {
+    def ie_ids = IssueEntitlement.executeQuery('select ie.id from issueEntitlement');
+    ie_ids.each { ieid ->
+      def ie = IssueEntitlement.get(ieid);
+      def inst = ie.subscription.getSubscriber()
+      def title = ie.tipp.title
+      def provider = ie.tipp.pkg.getContentProvider()
+
+      if ( inst && title && provider ) {
+        def tiinp = TitleInstitutionProvider.findByTitleAndInstitutionAndprovider(title, inst, provider)
+        if ( tiinp == null ) {
+          log.debug("Creating new TitleInstitutionProvider");
+          tiinp = new TitleInstitutionProvider(title:title, institution:inst, provider:provider).save(flush:true, failOnError:true)
+        }
+
+        log.debug("Got tiinp:: ${tiinp}");
+        tiinp.extendCoreExtent(ie.coreStatusStart, ie.coreStatusEnd);
+      }
+    }
+  }
 }
