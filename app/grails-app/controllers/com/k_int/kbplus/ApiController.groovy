@@ -103,7 +103,7 @@ class ApiController {
 
         if ( title && inst ) {
 
-          def sdf = new java.text.SimpleDateFormat('yyyy-MM-ddThh:mm:ss');
+          def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
           if ( provider ) {
           }
