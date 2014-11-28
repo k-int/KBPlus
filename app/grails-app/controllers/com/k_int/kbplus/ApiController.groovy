@@ -122,8 +122,8 @@ where tipp.title = ? and orl.roleType.value=?''',[title,'Content Provider']);
               }
 
               log.debug("Got tiinp:: ${tiinp}");
-              def startDate = sdf.parseDate("${year}-01-01T00:00:00");
-              def endDate = sdf.parseDate("${year}-12-31T23:59:59");
+              def startDate = sdf.parse("${year}-01-01T00:00:00");
+              def endDate = sdf.parse("${year}-12-31T23:59:59");
               tiinp.extendCoreExtent(givenStartDate, givenEndDate);
             }
           }
