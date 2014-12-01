@@ -42,7 +42,7 @@ class LicenseController {
         return
       }
 
-      flash.message = message(code: 'default.created.message', args: [message(code: 'license.label', default: 'License'), licenseInstance.id])
+      flash.message = message(code: 'default.created.message', args: [message(code: 'licence', default: 'Licence'), licenseInstance.id])
       redirect action: 'show', id: licenseInstance.id
       break
     }
@@ -52,7 +52,7 @@ class LicenseController {
     def show() {
         def licenseInstance = License.get(params.id)
         if (!licenseInstance) {
-      flash.message = message(code: 'default.not.found.message', args: [message(code: 'license.label', default: 'License'), params.id])
+      flash.message = message(code: 'default.not.found.message', args: [message(code: 'licence', default: 'Licence'), params.id])
             redirect action: 'list'
             return
         }
@@ -66,7 +66,7 @@ class LicenseController {
       case 'GET':
             def licenseInstance = License.get(params.id)
             if (!licenseInstance) {
-                flash.message = message(code: 'default.not.found.message', args: [message(code: 'license.label', default: 'License'), params.id])
+                flash.message = message(code: 'default.not.found.message', args: [message(code: 'licence', default: 'Licence'), params.id])
                 redirect action: 'list'
                 return
             }
@@ -76,7 +76,7 @@ class LicenseController {
       case 'POST':
             def licenseInstance = License.get(params.id)
             if (!licenseInstance) {
-                flash.message = message(code: 'default.not.found.message', args: [message(code: 'license.label', default: 'License'), params.id])
+                flash.message = message(code: 'default.not.found.message', args: [message(code: 'licence.label', default: 'Licence'), params.id])
                 redirect action: 'list'
                 return
             }
@@ -85,7 +85,7 @@ class LicenseController {
                 def version = params.version.toLong()
                 if (licenseInstance.version > version) {
                     licenseInstance.errors.rejectValue('version', 'default.optimistic.locking.failure',
-                              [message(code: 'license.label', default: 'License')] as Object[],
+                              [message(code: 'licence.label', default: 'Licence')] as Object[],
                               "Another user has updated this License while you were editing")
                     render view: 'edit', model: [licenseInstance: licenseInstance]
                     return
@@ -99,7 +99,7 @@ class LicenseController {
                 return
             }
   
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'license.label', default: 'License'), licenseInstance.id])
+        flash.message = message(code: 'default.updated.message', args: [message(code: 'licence.label', default: 'Licence'), licenseInstance.id])
             redirect action: 'show', id: licenseInstance.id
         break
       }
@@ -109,18 +109,18 @@ class LicenseController {
     def delete() {
         def licenseInstance = License.get(params.id)
         if (!licenseInstance) {
-      flash.message = message(code: 'default.not.found.message', args: [message(code: 'license.label', default: 'License'), params.id])
+      flash.message = message(code: 'default.not.found.message', args: [message(code: 'licence.label', default: 'Licence'), params.id])
             redirect action: 'list'
             return
         }
 
         try {
             licenseInstance.delete(flush: true)
-      flash.message = message(code: 'default.deleted.message', args: [message(code: 'license.label', default: 'License'), params.id])
+      flash.message = message(code: 'default.deleted.message', args: [message(code: 'licence', default: 'Licence'), params.id])
             redirect action: 'list'
         }
         catch (DataIntegrityViolationException e) {
-      flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'license.label', default: 'License'), params.id])
+      flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'licence', default: 'Licence'), params.id])
             redirect action: 'show', id: params.id
         }
     }

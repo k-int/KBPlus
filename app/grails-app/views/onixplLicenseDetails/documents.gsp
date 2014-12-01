@@ -134,7 +134,7 @@
                     </dt>
                     <dd>
                         <select name="doctype">
-                            <option value="License">License</option>
+                            <option value="License">Licence</option>
                             <option value="General">General</option>
                             <option value="General">Addendum</option>
                         </select>

@@ -345,7 +345,9 @@ class BootStrap {
     // ONIX-PL Additions
     // -------------------------------------------------------------------
     // New document type
-    RefdataCategory.lookupOrCreate('Document Type','ONIX-PL License')
+    RefdataCategory.lookupOrCreate('Document Type','ONIX-PL Licence')
+    RefdataCategory.lookupOrCreate('Document Type','Licence')
+
     // Controlled values from the <UsageType> element.
 
     RefdataCategory.lookupOrCreate('UsageStatus', 'greenTick',      'UseForDataMining')
