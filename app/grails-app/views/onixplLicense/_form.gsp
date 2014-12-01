@@ -4,7 +4,7 @@
 
 <div class="fieldcontain ${hasErrors(bean: onixplLicenseInstance, field: 'license', 'error')} required">
     <label for="license">
-        <g:message code="onixplLicense.license.label" default="License"/>
+        <g:message code="onixplLicense.licence.label" default="Licence"/>
         <span class="required-indicator">*</span>
     </label>
     <g:select id="license" name="license.id" from="${com.k_int.kbplus.License.list()}" optionKey="id" required=""

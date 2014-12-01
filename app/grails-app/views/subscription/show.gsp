@@ -66,7 +66,7 @@
 
               <g:if test="${subscriptionInstance?.owner}">
                   <dl>
-                      <dt><g:message code="subscription.owner.label" default="License" /></dt>
+                      <dt><g:message code="subscription.owner.label" default="Licence" /></dt>
                       <dd><g:link controller="license" action="show" id="${subscriptionInstance?.owner?.id}">${subscriptionInstance?.owner?.encodeAsHTML()}</g:link></dd>
                   </dl>
               </g:if>

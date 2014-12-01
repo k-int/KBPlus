@@ -533,7 +533,7 @@ class MyInstitutionsController {
                 log.error("Problem saving org links to license ${org.errors}");
             }
         }
-        flash.message = message(code: 'license.created.message', args: [message(code: 'license.label', default: 'License'), licenseInstance.id])
+        flash.message = message(code: 'license.created.message', args: [message(code: 'licence', default: 'Licence'), licenseInstance.id])
         redirect controller: 'licenseDetails', action: 'index', params: params, id: licenseInstance.id
     }
 
@@ -561,7 +561,7 @@ class MyInstitutionsController {
                 log.error("Problem saving license ${copyLicence.errors}");
                 render view: 'editLicense', model: [licenseInstance: copyLicence]                        
             }else{
-                flash.message = message(code: 'license.created.message', args: [message(code: 'license.label', default: 'License'), copyLicence.id])
+                flash.message = message(code: 'license.created.message', args: [message(code: 'licence', default: 'Licence'), copyLicence.id])
                 redirect controller: 'licenseDetails', action: 'index', params: params, id: copyLicence.id
             }
         }

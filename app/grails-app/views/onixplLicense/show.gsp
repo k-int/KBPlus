@@ -43,7 +43,7 @@
         <dl>
 
             <g:if test="${onixplLicenseInstance?.license}">
-                <dt><g:message code="onixplLicense.license.label" default="License"/></dt>
+                <dt><g:message code="onixplLicense.licence.label" default="License"/></dt>
 
                 <dd><g:link controller="license" action="show"
                             id="${onixplLicenseInstance?.licenses?.id}">${onixplLicenseInstance?.licenses?.encodeAsHTML()}</g:link></dd>

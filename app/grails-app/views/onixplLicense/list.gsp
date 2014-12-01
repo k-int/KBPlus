@@ -44,7 +44,7 @@
             <thead>
             <tr>
 
-                <th class="header"><g:message code="onixplLicense.license.label" default="License"/></th>
+                <th class="header"><g:message code="onixplLicense.licence.label" default="Licence"/></th>
 
                 <th class="header"><g:message code="onixplLicense.doc.label" default="Doc"/></th>
 

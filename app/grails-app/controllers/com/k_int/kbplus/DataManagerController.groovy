@@ -158,7 +158,7 @@ class DataManagerController {
                             oldValue: hl.oldValue,
                             newValue: hl.newValue
                           ]
-            linetype = 'License'
+            linetype = 'Licence'
             break;
           case 'com.k_int.kbplus.Subscription':
             break;
