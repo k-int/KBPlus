@@ -2483,10 +2483,10 @@ AND EXISTS (
         }
 
         PendingChange.executeQuery('select distinct(pc.license) from PendingChange as pc where pc.owner = ?',[result.institution]).each {
-          result.institutional_objects.add(['com.k_int.kbplus.License:'+it.id,'License: '+it.reference]);
+          result.institutional_objects.add(['com.k_int.kbplus.License:'+it.id,"${message(code:'licence')}: "+it.reference]);
         }
         PendingChange.executeQuery('select distinct(pc.subscription) from PendingChange as pc where pc.owner = ?',[result.institution]).each {
-          result.institutional_objects.add(['com.k_int.kbplus.Subscription:'+it.id,'Subscription: '+it.name]);
+          result.institutional_objects.add(['com.k_int.kbplus.Subscription:'+it.id,"${message(code:'subscription')}: "+it.name]);
         }
 
         if ( params.restrict == 'ALL' )
@@ -2523,7 +2523,7 @@ AND EXISTS (
 
                 def out = response.outputStream
                 out.withWriter { w ->
-                  w.write('Date,ChangeId,Actor, SubscriptionId,LicenseId,Description\n')
+                  w.write('Date,ChangeId,Actor, SubscriptionId,LicenceId,Description\n')
                   changes.each { c ->
                     def line = "\"${dateFormat.format(c.ts)}\",\"${c.id}\",\"${c.user?.displayName?:''}\",\"${c.subscription?.id ?:''}\",\"${c.license?.id?:''}\",\"${c.desc}\"\n".toString()
                     w.write(line)

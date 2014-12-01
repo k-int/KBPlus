@@ -1,1 +1,1 @@
-drop table title_institution_provider;
+drop table if exists title_institution_provider;

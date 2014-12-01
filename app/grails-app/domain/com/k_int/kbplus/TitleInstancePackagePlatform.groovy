@@ -260,7 +260,7 @@ class TitleInstancePackagePlatform {
     else if ( (changeDocument.event=='TitleInstancePackagePlatform.updated') && ( changeDocument.new != changeDocument.old ) ) {
         def locale = org.springframework.context.i18n.LocaleContextHolder.getLocale()
         ContentItem contentItemDesc = ContentItem.findByKeyAndLocale("kbplus.change.tipp."+changeDocument.prop, locale.toString())
-        def description = "Accept this change to make the same update to your issue entitlement"
+        def description = message(code:'default.accept.change.ie')
         if(contentItemDesc){
             description = contentItemDesc.content
         }else{

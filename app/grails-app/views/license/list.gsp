@@ -4,7 +4,7 @@
 <html>
 	<head>
 		<meta name="layout" content="mmbootstrap">
-		<g:set var="entityName" value="${message(code: 'license.label', default: 'License')}" />
+		<g:set var="entityName" value="${message(code: 'license', default: 'Licence')}" />
 		<title><g:message code="default.list.label" args="[entityName]" /></title>
 	</head>
 	<body>

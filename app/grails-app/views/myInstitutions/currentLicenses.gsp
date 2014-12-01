@@ -9,7 +9,7 @@
     <div class="container">
         <ul class="breadcrumb">
             <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
-           <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:params.shortcode]}">${institution.name} Current Licenses</g:link> </li>
+           <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:params.shortcode]}">${institution.name} ${message(code:'licence.current')}</g:link> </li>
         </ul>
     </div>
 
@@ -30,8 +30,9 @@
 
      <ul class="nav nav-pills">
        <li class="active"><g:link controller="myInstitutions" 
-                                  action="currentLicenses" 
-                                  params="${[shortcode:params.shortcode]}">Current Licences</g:link></li>
+                            action="currentLicenses" 
+                            params="${[shortcode:params.shortcode]}">${message(code:'licence.current')}
+                          </g:link></li>
 
           <li><g:link controller="myInstitutions" 
                                   action="addLicense" 
@@ -39,7 +40,7 @@
         <g:if test="${is_admin}">
           <li><g:link controller="myInstitutions" 
                                      action="cleanLicense" 
-                                     params="${[shortcode:params.shortcode]}">Add Blank Licence</g:link></li>
+                                     params="${[shortcode:params.shortcode]}">${message(code:'licence.add.blank')}</g:link></li>
         </g:if>
 
       </ul>
@@ -53,7 +54,7 @@
 
                     <label>Search by Reference:</label>
                     <input type="text" name="keyword-search" placeholder="enter search term..." value="${params['keyword-search']?:''}" /><br/>
-                    <label>Search by License Property:</label>
+                    <label>${message(code:'licence.property.search')}:</label>
                             <g:select id="availablePropertyTypes" name="availablePropertyTypes" from="${custom_prop_types}" optionKey="value" optionValue="key" value="${params.propertyFilterType}"/>
                             <input id="selectVal" type="text" name="propertyFilter" placeholder="property value..." value="${params.propertyFilter?:''}" /></p>
                     <br/>
@@ -75,7 +76,7 @@
           <table class="table table-bordered table-striped">
             <thead>
               <tr>
-                <g:sortableColumn params="${params}" property="reference" title="License Name" />
+                <g:sortableColumn params="${params}" property="reference" title="${message(code:'licence.name')}" />
                 <th>Licensor</th>
                 <g:sortableColumn params="${params}" property="startDate" title="Start Date" />
                 <g:sortableColumn params="${params}" property="endDate" title="End Date" />

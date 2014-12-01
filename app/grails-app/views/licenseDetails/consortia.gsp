@@ -32,6 +32,7 @@
 </div>
 
 <div class="container">
+<g:if test="${consortia}">
 <h3> Institutions for ${consortia.name} consortia </h3>
 <br><p> The following list displays all members of ${consortia.name} consortia. To create child licences
     select the desired checkboxes and click 'Create child licences'</p><br>
@@ -63,6 +64,7 @@
 <dd><input type="submit" class="btn btn-primary" value="Create child licences"/></dd>
 </dl>
 </g:form>
+</g:if>
 </div>
 </body>
 </html>

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="layout" content="mmbootstrap">
-    <g:set var="entityName" value="${message(code: 'opl.license.label',
+    <g:set var="entityName" value="${message(code: 'onixplLicence.licence.label',
             default: 'ONIX-PL License')}" />
     <title><g:message code="default.import.label" args="[entityName]" /></title>
 </head>

@@ -139,12 +139,12 @@
                          <li <%= ( ( 'upload'== controllerName ) && ( 'reviewPackage'==actionName ) ) ? ' class="active"' : '' %>>
                              <g:link controller="upload" action="reviewPackage">Upload new Package</g:link></li>
                          <li <%= ( ( 'licenseImport'== controllerName ) && ( 'doImport'==actionName ) ) ? ' class="active"' : '' %>>
-                             <g:link controller="licenseImport" action="doImport">Import ONIX-PL license</g:link></li>
+                             <g:link controller="licenseImport" action="doImport">${message(code:'onix.import.licence')}</g:link></li>
                        <li class="divider"></li>
                        <li <%= ( ( 'titleDetails'== controllerName ) && ( 'findTitleMatches'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="titleDetails" action="findTitleMatches">New Title</g:link></li>
                        <li <%= ( ( 'licenseDetails'== controllerName ) && ( 'create'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="licenseDetails" action="create">New License</g:link></li>
+                         <g:link controller="licenseDetails" action="create">${message(code:'licence.new')}</g:link></li>
                        <li class="divider"></li>
 
                         <li<%= ( ( 'subscriptionDetails'== controllerName ) && ( 'compare'==actionName ) ) ? ' class="active"' : '' %>><g:link controller="subscriptionDetails" 

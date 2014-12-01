@@ -106,7 +106,7 @@
             <br/>
             <h6>Subscription Information</h6>
             <div class="inline-lists"> 
-               <dl><dt>License</dt><dd><g:if test="${subscriptionInstance.subscriber}">
+               <dl><dt>${message(code:'licence')}</dt><dd><g:if test="${subscriptionInstance.subscriber}">
                          <g:xEditableRefData owner="${subscriptionInstance}" field="owner" dataController="subscriptionDetails" dataAction="possibleLicensesForSubscription" />
                          <g:if test="${subscriptionInstance.owner != null}">(<g:link controller="licenseDetails" action="index" id="${subscriptionInstance.owner.id}">Link</g:link> <g:link controller="licenseDetails" action="index" target="new" id="${subscriptionInstance.owner.id}"><i class="icon-share-alt"></i></g:link>)</g:if>
                        </g:if><g:else>N/A (Subscription offered)</g:else>

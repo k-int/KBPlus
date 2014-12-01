@@ -18,7 +18,7 @@
 <div class="container">
     <ul class="breadcrumb">
         <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
-        <li> <g:link controller="licenseDetails" action="index" id="${params.id}">ONIX-PL License Details</g:link> </li>
+        <li> <g:link controller="licenseDetails" action="index" id="${params.id}">ONIX-PL ${message(code:'licence.details')}</g:link> </li>
         <g:if test="${editable}">
             <li class="pull-right">Editable by you&nbsp;</li>
         </g:if>
@@ -33,10 +33,10 @@
     <div class="row">
         <div class="span8">
 
-            <h6>KB+ License Information</h6>
+            <h6>KB+ ${message(code:'licence.information')}</h6>
 
             <g:if test="${!onixplLicense}">
-            Could not find ONIX-PL license
+            ${message(code:'onix.cannot.find.licence')}
             </g:if>
             <g:else>
             <div class="inline-lists">
