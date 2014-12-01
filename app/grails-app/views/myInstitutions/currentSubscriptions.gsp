@@ -54,7 +54,7 @@
         <table class="table table-striped table-bordered table-condensed table-tworow">
           <tr>
             <th rowspan="2">Select</th>
-            <g:sortableColumn colspan="7" params="${params}" property="s.name" title="Name / License" />
+            <g:sortableColumn colspan="7" params="${params}" property="s.name" title="${message(code:'licence.slash.name')}" />
           </tr>
 
           <tr>
@@ -75,7 +75,7 @@
                   <g:if test="${s.consortia}">( ${s.consortia?.name} )</g:if>
                 </g:link>
                 <g:if test="${s.owner}"> 
-                  <span class="pull-right">License : <g:link controller="licenseDetails" action="index" id="${s.owner.id}">${s.owner?.reference}</g:link></span>
+                  <span class="pull-right">${message(code:'licence')} : <g:link controller="licenseDetails" action="index" id="${s.owner.id}">${s.owner?.reference}</g:link></span>
                 </g:if>
               </td>
             </tr>

@@ -18,7 +18,7 @@ onix = [
 //              'text' : 'Definitions'
 //            ],
             'LicenseGrant' : [
-              'text' : 'License Grants'
+              'text' : 'Licence Grants'
             ],
             'UsageTerms' : [
               'text' : 'Usage Terms',

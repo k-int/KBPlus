@@ -81,7 +81,7 @@ class LicenseCustomProperty extends CustomProperty {
         log.debug("Send pending change to ${dl.id}");
         def locale = org.springframework.context.i18n.LocaleContextHolder.getLocale()
         ContentItem contentItemDesc = ContentItem.findByKeyAndLocale("kbplus.change.license."+changeDocument.prop,locale.toString())
-        def description = "Accept this change to make the same update to your license"
+        def description = message(code:'default.accept.change.licence')
         if(contentItemDesc){
             description = contentItemDesc.content
         }else{
@@ -92,7 +92,7 @@ class LicenseCustomProperty extends CustomProperty {
         changeNotificationService
         .registerPendingChange('license',
                               dl,
-                              "<b>${changeDocument.name}</b> changed from <b>\"${changeDocument.oldLabel?:changeDocument?.old}\"</b> to <b>\"${changeDocument.newLabel?:changeDocument?.new}\"</b> on the template license."+description,
+                              "<b>${changeDocument.name}</b> changed from <b>\"${changeDocument.oldLabel?:changeDocument?.old}\"</b> to <b>\"${changeDocument.newLabel?:changeDocument?.new}\"</b> on the template licence."+description,
                               dl.getLicensee(),
                               [
                                 changeTarget:"com.k_int.kbplus.License:${dl.id}",

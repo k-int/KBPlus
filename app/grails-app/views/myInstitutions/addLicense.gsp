@@ -18,7 +18,7 @@
       <ul class="nav nav-pills">
        <li><g:link controller="myInstitutions" 
                    action="currentLicenses" 
-                   params="${[shortcode:params.shortcode]}">Current Licences</g:link></li>
+                   params="${[shortcode:params.shortcode]}">${message(code:'licence.current')}</g:link></li>
 
        <li class="active"><g:link controller="myInstitutions" 
                                   action="addLicense" 
@@ -27,7 +27,7 @@
         <g:if test="${is_admin}">
           <li><g:link controller="myInstitutions" 
                                      action="cleanLicense" 
-                                     params="${[shortcode:params.shortcode]}">Add Blank License</g:link></li>
+                                     params="${[shortcode:params.shortcode]}">${message(code:'licence.add.blank')}</g:link></li>
         </g:if>
       </ul>
 
@@ -50,7 +50,7 @@
         <g:form action="addLicense" params="${params}" method="get" class="form-inline">
           <input type="hidden" name="sort" value="${params.sort}">
           <input type="hidden" name="order" value="${params.order}">
-          <label>Filters - License Name:</label> <input name="filter" value="${params.filter}"/> &nbsp;
+          <label>Filters - ${message(code:'licence.name')}:</label> <input name="filter" value="${params.filter}"/> &nbsp;
           <input type="submit" class="btn btn-primary">
         </g:form>
       </div>
@@ -82,7 +82,7 @@
           <table class="table table-bordered table-striped">
             <thead>
               <tr>
-                <g:sortableColumn params="${params}" property="reference" title="License Name" />
+                <g:sortableColumn params="${params}" property="reference" title="${message(code:'licence.name')}" />
                 <th>Licensor</th>
                 <g:sortableColumn params="${params}" property="startDate" title="Start Date" />
                 <g:sortableColumn params="${params}" property="endDate" title="End Date" />

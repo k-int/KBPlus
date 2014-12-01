@@ -38,19 +38,19 @@
           <tr>
             <td colspan="3">
             <g:if test="${ua.rootObj.class.name=='com.k_int.kbplus.License'}">
-              <span class="label label-info">License</span>
+              <span class="label label-info">${message(code:'licence')}</span>
               <em><g:link action="index"
                       controller="licenseDetails" 
                       id="${ua.rootObj.id}">${ua.rootObj.reference}</g:link></em>
             </g:if>
             <g:elseif test="${ua.rootObj.class.name=='com.k_int.kbplus.Subscription'}">
-             <span class="label label-info">Subscription</span>
+             <span class="label label-info">${message(code:'subscription')}</span>
               <em><g:link action="index"
                       controller="subscriptionDetails" 
                       id="${ua.rootObj.id}">${ua.rootObj.name}</g:link></em>
             </g:elseif>
             <g:elseif test="${ua.rootObj.class.name=='com.k_int.kbplus.Package'}">
-              <span class="label label-info">Package</span>
+              <span class="label label-info">${message(code:'package')}</span>
               <em><g:link action="show"
                         controller="packageDetails" 
                         id="${ua.rootObj.id}">${ua.rootObj.name}</g:link></em>

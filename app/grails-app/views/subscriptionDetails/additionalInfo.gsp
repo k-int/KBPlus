@@ -37,7 +37,8 @@
           <tr>
             <td>${ol.org.name}</td>
             <td>
-              Connected to this license through role ${ol.roleType.value}.<br/>
+
+              <g:message code="subscription.licence.connection" args="${[ol.roleType.value]}"/><br/>
               This role grants the following permissions to members of that org whose membership role also includes the permission<br/>
               <ul>
                 <g:each in="${ol.roleType?.sharedPermissions}" var="sp">

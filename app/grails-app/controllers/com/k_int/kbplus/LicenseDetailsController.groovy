@@ -118,7 +118,7 @@ class LicenseDetailsController {
       it.org.hasUserWithRole(result.user,'INST_ADM') }
     }
     if( !isAdmin && (result.licence.licenseType != "Template" || hasAccess == null)) {
-      flash.error = "Consortia screen only available administrators for template licenses with Licensing Consortium link."
+      flash.error = message(code:'licence.consortia.access.error')
       response.sendError(401) 
       return
     }
@@ -130,8 +130,8 @@ class LicenseDetailsController {
     }
 
     log.debug("${result.licence}")
-    def consortia = result.licence.orgLinks.find{
-      it.roleType.value == 'Licensing Consortium'}.org
+    def consortia = result.licence?.orgLinks?.find{
+      it.roleType.value == 'Licensing Consortium'}?.org
 
     if(consortia){
       result.consortia = consortia
@@ -151,6 +151,8 @@ class LicenseDetailsController {
           result.consortiaInstsWithStatus.put(it, RefdataCategory.lookupOrCreate("YNO","No") )    
         }
       }
+    }else{
+      flash.error=message(code:'licence.consortia.noneset')
     }
 
     result

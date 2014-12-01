@@ -308,7 +308,7 @@ class License {
         log.debug("Send pending change to ${dl.id}");
         def locale = org.springframework.context.i18n.LocaleContextHolder.getLocale()
         ContentItem contentItemDesc = ContentItem.findByKeyAndLocale("kbplus.change.license."+changeDocument.prop,locale.toString())
-        def description = "Accept this change to make the same update to your issue entitlement"
+        def description = message(code:'default.accept.change.ie')
         if(contentItemDesc){
             description = contentItemDesc.content
         }else{
