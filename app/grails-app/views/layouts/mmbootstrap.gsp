@@ -241,8 +241,8 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'triggerHousekeeping'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="triggerHousekeeping">Trigger Housekeeping</g:link>
                       </li>
-                      <li <%= ( ( 'enrichment'== controllerName ) && ( 'initiateCoreMigration'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="enrichment" action="initiateCoreMigration">Initiate Core Migration</g:link>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'initiateCoreMigration'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="initiateCoreMigration">Initiate Core Migration</g:link>
                       </li>
                     </ul>
                   </li>
