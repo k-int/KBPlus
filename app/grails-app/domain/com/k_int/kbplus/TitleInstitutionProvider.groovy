@@ -1,4 +1,5 @@
 package com.k_int.kbplus
+import javax.persistence.Transient
 
 class TitleInstitutionProvider {
   
@@ -21,6 +22,22 @@ class TitleInstitutionProvider {
     institution column:'tttnp_inst_org_fk', index:'tiinp_idx'
     provider column:'tttnp_prov_org_fk', index:'tiinp_idx'
     version column:'title_inst_prov_ver'
+  }
+
+  @Transient
+  def coreStatus(lookupDate) {
+    log.debug("coreStatus(${lookupDate})")
+    
+    //Should this be here or on a higher level?
+    if(lookupDate == null) lookupDate = new Date()
+
+    coreDates.each{ coreDate ->
+        if(lookupDate > coreDate.startDate){
+          if(coreDate.endDate == null) return true;
+          if(coreDate.endDate > lookupDate) return true;
+        }
+    }
+    return false;
   }
 
   def extendCoreExtent(givenStartDate, givenEndDate) {
