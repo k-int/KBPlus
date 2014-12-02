@@ -15,4 +15,8 @@ class CoreAssertion {
     version column:'ca_ver'
   }
 
+  static constraints = {
+    endDate(nullable:true, blank:false)
+  }
+
 }

@@ -410,4 +410,12 @@ class AdminController {
     redirect(action:'manageGlobalSources')
   }
 
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def initiateCoreMigration() {
+    log.debug("initiateCoreMigration...");
+    enrichmentService.initiateCoreMigration()
+    redirect(controller:'home')
+  }
+
+ 
 }
