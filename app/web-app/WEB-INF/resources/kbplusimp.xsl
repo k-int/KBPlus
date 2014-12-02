@@ -128,7 +128,7 @@ Consortium,
       <xsl:call-template name="csventry">
         <xsl:with-param name="txt" select="./CoverageStatement/CoreStatus" />
       </xsl:call-template>
-      <xsl:if test="parent::Subscription">
+      <xsl:if test="ancestor::Subscription">
         <!-- core_start_date -->
         <xsl:call-template name="csventry">
           <xsl:with-param name="txt">
