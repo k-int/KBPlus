@@ -34,7 +34,7 @@ class SubscriptionDetailsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
-  def verystarttime = exportService.printStart("SubscriptionDetails")
+    def verystarttime = exportService.printStart("SubscriptionDetails")
   
     log.debug("subscriptionDetails id:${params.id} format=${response.format}");
     def result = [:]
@@ -109,9 +109,11 @@ class SubscriptionDetailsController {
     if(params.asAt && params.asAt.length() > 0) {
       def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
       date_filter = sdf.parse(params.asAt)
+      result.as_at_date = date_filter;
       result.editable = false;
     }else{
       date_filter = new Date()
+      result.as_at_date = date_filter;
     }
 
     if ( params.filter ) {
