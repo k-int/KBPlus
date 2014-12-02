@@ -95,28 +95,35 @@ class EnrichmentService implements ApplicationContextAware {
   def doCoreMigration() {
     log.debug("Running core migration....");
     try {
+      def ie_ids_count = IssueEntitlement.executeQuery('select count(ie.id) from IssueEntitlement as ie')[0];
       def ie_ids = IssueEntitlement.executeQuery('select ie.id from IssueEntitlement as ie');
-      ie_ids.each { ieid ->
-        log.debug("Processing ie_id ${ieid}");
-        def ie = IssueEntitlement.get(ieid);
-        def inst = ie.subscription.getSubscriber()
-        def title = ie.tipp.title
-        def provider = ie.tipp.pkg.getContentProvider()
+      int counter=0
 
-        if ( inst && title && provider ) {
-          def tiinp = TitleInstitutionProvider.findByTitleAndInstitutionAndprovider(title, inst, provider)
-          if ( tiinp == null ) {
-            log.debug("Creating new TitleInstitutionProvider");
-            tiinp = new TitleInstitutionProvider(title:title, institution:inst, provider:provider).save(flush:true, failOnError:true)
-          }
+      ie_ids.each { ieid ->
+
+        IssueEntitlement.withNewTransaction {
+
+          log.debug("Processing ie_id ${ieid} ${counter++}/${ie_ids_count}");
+          def ie = IssueEntitlement.get(ieid);
+          def inst = ie.subscription.getSubscriber()
+          def title = ie.tipp.title
+          def provider = ie.tipp.pkg.getContentProvider()
   
-          log.debug("Got tiinp:: ${tiinp}");
-          if ( ie.coreStatusStart != null ) {
-            tiinp.extendCoreExtent(ie.coreStatusStart, ie.coreStatusEnd );
+          if ( inst && title && provider ) {
+            def tiinp = TitleInstitutionProvider.findByTitleAndInstitutionAndprovider(title, inst, provider)
+            if ( tiinp == null ) {
+              log.debug("Creating new TitleInstitutionProvider");
+              tiinp = new TitleInstitutionProvider(title:title, institution:inst, provider:provider).save(flush:true, failOnError:true)
+            }
+      
+            log.debug("Got tiinp:: ${tiinp}");
+            if ( ie.coreStatusStart != null ) {
+              tiinp.extendCoreExtent(ie.coreStatusStart, ie.coreStatusEnd );
+            }
           }
-        }
-        else {
-          log.error("Missing title(${inst}), provider(${title}) or institution(${provider})");
+          else {
+            log.error("Missing title(${inst}), provider(${title}) or institution(${provider})");
+          }
         }
       }
     }

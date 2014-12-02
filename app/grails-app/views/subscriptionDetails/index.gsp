@@ -276,7 +276,12 @@
                 <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}<br/>
                 ${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
                 <td>
-                  <g:xEditableRefData owner="${ie}" field="coreStatus" config='CoreStatus'/></td>
+                  <g:xEditableRefData owner="${ie}" field="coreStatus" config='CoreStatus'/>
+
+                  <g:if test="grailsApplication.config.ab?.newcore==true">
+                    <br/>(Newcore: ${ie.wasCoreOn(as_at_date)})
+                  </g:if>
+                </td>
                 <td>
                     <g:xEditable owner="${ie}" type="date" field="startDate" /><br/>
                     <g:xEditable owner="${ie}" type="date" field="endDate" />
