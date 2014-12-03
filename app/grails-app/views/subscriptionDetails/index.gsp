@@ -278,7 +278,7 @@
                 <td>
                   <g:xEditableRefData owner="${ie}" field="coreStatus" config='CoreStatus'/>
 
-                  <g:if test="grailsApplication.config.ab?.newcore==true">
+                  <g:if test="${grailsApplication.config.ab?.newcore==true}">
                     <br/>(Newcore: ${ie.wasCoreOn(as_at_date)})
                   </g:if>
                 </td>
