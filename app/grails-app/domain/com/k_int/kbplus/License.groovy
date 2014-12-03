@@ -14,6 +14,9 @@ class License {
   @Transient
   def genericOIDService
 
+  @Transient
+  def messageSource
+  
   static auditable = true
 
   RefdataValue status
@@ -308,7 +311,7 @@ class License {
         log.debug("Send pending change to ${dl.id}");
         def locale = org.springframework.context.i18n.LocaleContextHolder.getLocale()
         ContentItem contentItemDesc = ContentItem.findByKeyAndLocale("kbplus.change.license."+changeDocument.prop,locale.toString())
-        def description = message(code:'default.accept.change.ie')
+        def description = messageSource.getMessage('default.accept.change.ie',null,locale)
         if(contentItemDesc){
             description = contentItemDesc.content
         }else{

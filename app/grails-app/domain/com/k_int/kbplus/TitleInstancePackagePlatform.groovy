@@ -4,12 +4,16 @@ import javax.persistence.Transient
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.hibernate.proxy.HibernateProxy
 import com.k_int.ClassUtils
+import org.springframework.context.i18n.LocaleContextHolder
 
 class TitleInstancePackagePlatform {
 
-   @Transient
-   def grailsApplication
-
+  @Transient
+  def grailsApplication
+  
+  @Transient
+  def messageSource
+ 
   static auditable = true
   static def controlledProperties = ['status',
                                      'startDate',
@@ -260,7 +264,8 @@ class TitleInstancePackagePlatform {
     else if ( (changeDocument.event=='TitleInstancePackagePlatform.updated') && ( changeDocument.new != changeDocument.old ) ) {
         def locale = org.springframework.context.i18n.LocaleContextHolder.getLocale()
         ContentItem contentItemDesc = ContentItem.findByKeyAndLocale("kbplus.change.tipp."+changeDocument.prop, locale.toString())
-        def description = message(code:'default.accept.change.ie')
+        def loc = LocaleContextHolder.locale
+        def description = messageSource.getMessage('default.accept.change.ie',null,loc)
         if(contentItemDesc){
             description = contentItemDesc.content
         }else{
