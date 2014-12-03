@@ -8,6 +8,8 @@ class LicenseCustomProperty extends CustomProperty {
   @Transient
   def grailsApplication
 
+  @Transient
+  def messageSource
   static auditable = true
 
   static belongsTo = [
@@ -81,7 +83,7 @@ class LicenseCustomProperty extends CustomProperty {
         log.debug("Send pending change to ${dl.id}");
         def locale = org.springframework.context.i18n.LocaleContextHolder.getLocale()
         ContentItem contentItemDesc = ContentItem.findByKeyAndLocale("kbplus.change.license."+changeDocument.prop,locale.toString())
-        def description = message(code:'default.accept.change.licence')
+        def description = messageSource.getMessage('default.accept.change.licence',null,locale)
         if(contentItemDesc){
             description = contentItemDesc.content
         }else{
