@@ -1,5 +1,3 @@
-drop table if exists title_institution_provider;
-
 select "Updating spelling mistakes";
 
 UPDATE refdata_value SET rdv_value='Model Licence' WHERE rdv_value='Model License';
