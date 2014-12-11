@@ -43,13 +43,13 @@ class JuspController {
       result.orgtitle = orgtitle
     }
     withFormat {
+      html {
+        result
+      }
       json {
         def json = result as JSON
         response.contentType = 'application/json'
         render json
-      }
-      html {
-        result
       }
     }
    }
@@ -98,16 +98,18 @@ class JuspController {
     }
 
     withFormat{
+      html {
+        result
+      }
       json {       
         def json = result as JSON        
         response.contentType = "application/json"
         render json
       }
-      html result
     }  
  }
-   
- def changeStatus(){
+  
+ def changeIsCoreStatus(){
     log.debug("JuspController::ChangeStatus ${params}");
 
   	if(params.orgtiID){
@@ -119,7 +121,7 @@ class JuspController {
   			log.debug{"Submited change"}
   		}
   	}
-    redirect (action:"titleInfo", params:[jusp_ti:"${params.jusp_ti}",jusp_org:"${params.jusp_org}"])
+    redirect (action:"titleInfo", params:[jusp_ti:"${params.jusp_ti}",jusp_inst:"${params.jusp_inst}"])
   }
 
 }
