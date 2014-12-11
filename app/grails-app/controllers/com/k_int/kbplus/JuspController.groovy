@@ -68,7 +68,7 @@ class JuspController {
       def insti = Org.executeQuery(insthql, [params.jusp_inst])[0]
       def prov = null
       if(params.jusp_prov) {
-        prov = Org.get(params.jusp_prov)
+        prov = Org.executeQuery(insthql, [params.jusp_prov])[0]
       } 
       log.debug("TITLES FOUND ${title}")
 
