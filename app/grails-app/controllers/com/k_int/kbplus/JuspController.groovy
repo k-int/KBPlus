@@ -13,28 +13,26 @@ class JuspController {
     log.debug("JuspController");
   }
  /**
-  * Expecting jusp_ti and jusp_org
+  * Expecting jusp_ti and jusp_inst
   **/
   def titleInfo() {
     def result = [:]
     log.debug("JuspController::TitleInfo ${params}");
-    // Pass in a Jusp Title Identifier and a Jusp Institition Identifier and a Jusp Content Provider
-    // to get back a form which will allow the user to edit the Core status of the identified tipp as a Jusp Title
-    if(params.jusp_ti && params.jusp_org) {
+    if(params.jusp_ti && params.jusp_inst) {
       def titlehql = "select ti from TitleInstance ti where exists ( select io from IdentifierOccurrence io, Identifier id, IdentifierNamespace ns where io.ti = ti and id.ns = ns and io.identifier = id and ns.ns = 'jusp' and id.value like ? )"
       def orghql = "select org from Org org where exists ( select io from IdentifierOccurrence io, Identifier id, IdentifierNamespace ns where io.org = org and id.ns = ns and io.identifier = id and ns.ns = 'jusplogin' and id.value like ? )"
       def title = TitleInstance.executeQuery(titlehql,[params.jusp_ti])[0]
-      def org = Org.executeQuery(orghql, [params.jusp_org])[0]
+      def org = Org.executeQuery(orghql, [params.jusp_inst])[0]
       
       log.debug("TITLES FOUND ${title}")
-      //title = title [0]
+
       def orgtitle
       if(title && org) {
         orgtitle = OrgTitleInstance.executeQuery("select orgti from OrgTitleInstance orgti where orgti.title = ? and orgti.org = ?",[title,org])[0] 
       }else{
         def wrongIDs = " "
         if (!title) wrongIDs += "JUSP title: ${params.jusp_ti} "
-        if(!org) wrongIDs += "JUSP organization: ${params.jusp_org}"
+        if(!org) wrongIDs += "JUSP organization: ${params.jusp_inst}"
         result.wrongIDs = wrongIDs
       }
       if(orgtitle == null){
@@ -44,29 +42,44 @@ class JuspController {
       log.debug ("ORG TITLE ID ${orgtitle?.id}")
       result.orgtitle = orgtitle
     }
-    result
+    withFormat {
+      json {
+        def json = result as JSON
+        response.contentType = 'application/json'
+        render json
+      }
+      html {
+        result
+      }
+    }
    }
 
  /**
-  * Expecting jusp_ti and jusp_org, will return a JSON map of TitleInstitutionProvider, with TIP as key, and
+  * Expecting jusp_ti and jusp_inst, will return a JSON map of TitleInstitutionProvider, with TIP as key, and
   * coreDates as values.
   **/
   def titleInstitutionProvider() {
     def result = [:]
     log.debug("JuspController::titleInstitutionProvider ${params}");
-    // Pass in a Jusp Title Identifier and a Jusp Institition Identifier and a Jusp Content Provider
-    // to get back a form which will allow the user to edit the Core status of the identified tipp as a Jusp Title
     if(params.jusp_ti && params.jusp_inst) {
       def titlehql = "select ti from TitleInstance ti where exists ( select io from IdentifierOccurrence io, Identifier id, IdentifierNamespace ns where io.ti = ti and id.ns = ns and io.identifier = id and ns.ns = 'jusp' and id.value like ? )"
       def insthql = "select org from Org org where exists ( select io from IdentifierOccurrence io, Identifier id, IdentifierNamespace ns where io.org = org and id.ns = ns and io.identifier = id and ns.ns = 'jusplogin' and id.value like ? )"
       def title = TitleInstance.executeQuery(titlehql,[params.jusp_ti])[0]
       def insti = Org.executeQuery(insthql, [params.jusp_inst])[0]
-      
+      def prov = null
+      if(params.jusp_prov) {
+        prov = Org.get(params.jusp_prov)
+      } 
       log.debug("TITLES FOUND ${title}")
-      //title = title [0]
+
       def tiInstProv
       if(title && insti) {
-        tiInstProv = TitleInstitutionProvider.executeQuery("select tip from TitleInstitutionProvider tip where tip.title = ? and tip.institution = ?",[title,insti])
+        def query_str = "select tip from TitleInstitutionProvider tip where tip.title = ? and tip.institution = ?"
+        if(prov){
+          tiInstProv = TitleInstitutionProvider.executeQuery("${query_str} and tip.provider = ?",[title,insti,prov])
+        }else{
+          tiInstProv = TitleInstitutionProvider.executeQuery(query_str,[title,insti])
+          }
       }else{
         def wrongIDs = " "
         if (!title) wrongIDs += "JUSP title: ${params.jusp_ti} "
