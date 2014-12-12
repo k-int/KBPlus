@@ -122,10 +122,10 @@ class JuspController {
     if(params.jusp_ti && params.jusp_inst && params.core_start && params.core_end ) {
       def tiInstProv = getTIP(params.jusp_ti,params.jusp_inst, params.jusp_prov)
       tiInstProv = tiInstProv[0]//FIXME: Should we care for lists?
-      if(tiInstProv){
+      if(tiInstProv && params.core_start){
         def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd')
         def coreStart = dateFormatter.parse(params.core_start)
-        def coreEnd = dateFormatter.parse(params.core_end)
+        def coreEnd = params.core_end ? dateFormatter.parse(params.core_end) : null
         tiInstProv.extendCoreExtent(coreStart, coreEnd)
         tiInstProv.save()
         result.coreStatus = tiInstProv.coreStatus(null)

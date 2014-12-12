@@ -30,17 +30,22 @@ class TitleInstitutionProvider {
     
     //Should this be here or on a higher level?
     if(lookupDate == null) lookupDate = new Date()
-    log.debug("coreDates: ${coreDates}")
+    // log.debug("coreDates: ${coreDates}")
+    def isCore = false
     coreDates.each{ coreDate ->
-        log.debug("Comparing core_start-${coreDate.startDate} to ${lookupDate}")
         if(lookupDate > coreDate.startDate){
-          log.debug("Comparing core_end-${coreDate.endDate} to ${lookupDate}")
-
-          if(coreDate.endDate == null) return true;
-          if(coreDate.endDate > lookupDate) return true;
+          if(coreDate.endDate == null) {
+            isCore = true
+            return true;
+          }
+          if(coreDate.endDate > lookupDate) {
+            isCore = true
+            return true;
+          }
         }
     }
-    return false;
+
+    return isCore;
   }
 
   def extendCoreExtent(givenStartDate, givenEndDate) {
