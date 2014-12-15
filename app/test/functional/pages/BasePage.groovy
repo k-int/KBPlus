@@ -37,7 +37,7 @@ class BasePage extends Page {
         }
         templateLicence {
             $("a", text: "Data Managers").click()
-            waitFor{ $("a", text: "New License").click()}
+            waitFor{ $("a", text: "New Licence").click()}
         }
         changeUserNoDash { user, passwd ->
             $("ul.pull-right").children().find("a.dropdown-toggle").click()
