@@ -352,6 +352,8 @@
 
 
 
+  <r:script src='https://uwp-jb.jisc.ac.uk/client.js?site=QPlZQ'>
+  </r:cript>
   <r:script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', '${grailsApplication.config.kbplus.analytics.code}']);
