@@ -352,8 +352,6 @@
 
 
 
-  <r:script src='https://uwp-jb.jisc.ac.uk/client.js?site=QPlZQ'>
-  </r:script>
   <r:script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', '${grailsApplication.config.kbplus.analytics.code}']);
@@ -372,9 +370,11 @@
           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
   </r:script>
+
     <style type="text/css" media="screen, projection">
       @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
     </style>
+
     <r:script type="text/javascript">
       if (typeof(Zenbox) !== "undefined") {
         Zenbox.init({
@@ -387,6 +387,7 @@
         });
       }
   </r:script>
+
   <r:layoutResources/>
 
   </body>
