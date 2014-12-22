@@ -119,6 +119,7 @@
                        </g:else>
                        <li class="divider"></li>
                        <li><a href="${message(code:'help.location')}">Help</a></li>
+                       <li><a href="https://sp.kbplus.ac.uk/claimIdentity/notify?remote=${user.username}">Claim Username</a></li>
                     </ul>
                   </li>
                 </g:if>
