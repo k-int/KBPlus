@@ -194,7 +194,7 @@ class HomePageSpec extends GebReportingSpec {
 		at JasperPage
 	}
 
-	def "Set up licence Template"() {
+	def "Setup licence Template"() {
 		setup:
 		changeUser(Data.UserD_name, Data.UserD_passwd)
 		templateLicence()
@@ -401,7 +401,7 @@ class HomePageSpec extends GebReportingSpec {
 		searchLicence("",Data.Licence_template_copy_D)
 		deleteLicence(Data.Licence_template_copy_D)
 		then:
-		alertBox("You do not have sufficient administrative rights to delete the specified license")
+		alertBox("You do not have sufficient administrative rights to delete the specified licence")
 	}
 
 	//ref 115

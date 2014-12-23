@@ -40,7 +40,7 @@ modules = {
     resource url:'js/kbplusapp.js.gsp'
     resource url:'js/jquery.dotdotdot.min.js'
     resource url:'https://assets.zendesk.com/external/zenbox/v2.6/zenbox.js'
-    
+    resource url:'https://uwp-jb.jisc.ac.uk/client.js?site=QPlZQ'
   }
   annotations {
     dependsOn 'kbplus'

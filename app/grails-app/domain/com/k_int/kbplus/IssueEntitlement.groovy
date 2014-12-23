@@ -128,4 +128,23 @@ class IssueEntitlement implements Comparable {
     }
     result
   }
+
+  def wasCoreOn(as_at) {
+    // Use the new core system to determine if this title really is core
+    def result = false
+    def inst = subscription?.getSubscriber()
+    def title = tipp?.title
+    def provider = tipp?.pkg?.getContentProvider()
+
+    if ( inst && title && provider ) {
+      def tiinp = TitleInstitutionProvider.findByTitleAndInstitutionAndprovider(title, inst, provider)
+      if ( tiinp ) {
+        if ( ( tiinp.startDate < as_at ) && ( ( tiinp.endDate == null) || ( tiinp.endDate > as_at ) ) ) {
+          result = true
+        }
+      }
+    }
+
+    result
+  }
 }

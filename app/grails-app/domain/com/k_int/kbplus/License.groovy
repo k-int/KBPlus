@@ -16,7 +16,6 @@ class License {
 
   @Transient
   def messageSource
-  
   static auditable = true
 
   RefdataValue status

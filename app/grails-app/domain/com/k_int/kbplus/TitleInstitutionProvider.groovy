@@ -1,4 +1,5 @@
 package com.k_int.kbplus
+import javax.persistence.Transient
 
 class TitleInstitutionProvider {
   
@@ -23,50 +24,103 @@ class TitleInstitutionProvider {
     version column:'title_inst_prov_ver'
   }
 
+  @Transient
+  def coreStatus(lookupDate) {
+    log.debug("coreStatus(${lookupDate})")
+    
+    //Should this be here or on a higher level?
+    if(lookupDate == null) lookupDate = new Date()
+    // log.debug("coreDates: ${coreDates}")
+    def isCore = false
+    coreDates.each{ coreDate ->
+        if(lookupDate > coreDate.startDate){
+          if(coreDate.endDate == null) {
+            isCore = true
+            return true;
+          }
+          if(coreDate.endDate > lookupDate) {
+            isCore = true
+            return true;
+          }
+        }
+    }
+
+    return isCore;
+  }
+
   def extendCoreExtent(givenStartDate, givenEndDate) {
     log.debug("extendCoreExtent(${givenStartDate}, ${givenEndDate})");
     // See if we can extend and existing CoreAssertion or create a new one to represent this
     // We soften then edges for extending by a day.
     def startDate = new Date(givenStartDate.getTime()-(1000*60*60*24))
-    def endDate = new Date(givenEndDate.getTime()+(1000*60*60*24))
+    def endDate = givenEndDate ? new Date(givenEndDate.getTime()+(1000*60*60*24)) : null;
 
     log.debug("For matching purposes, using ${startDate} and ${endDate}");
     
     def cont = true;
 
-    // Test 1 : Does the given range fall entirely within an existing assertion?
-    coreDates.each {
-      if ( it.startDate <= givenStartDate && it.endDate >= givenEndDate ) {
-        log.debug("date range is subsumed (${it.startDate} <= ${givenStartDate}) && (${it.endDate} >= ${givenEndDate})  ");
-        cont = false;
-        return;
+    if ( endDate != null ) {
+      // Test 1 : Does the given range fall entirely within an existing assertion?
+      coreDates.each {
+        if ( it.startDate <= givenStartDate && it.endDate >= givenEndDate ) {
+          log.debug("date range is subsumed (${it.startDate} <= ${givenStartDate}) && (${it.endDate} >= ${givenEndDate})  ");
+          cont = false;
+          return;
+        }
+      }
+
+      if ( cont ) {
+        // Not fully enclosed - see if we are extending (Backwards or forewards) any existing 
+        coreDates.each {
+          // Given range overlaps end date of existing statement
+          if ( it.startDate <= startDate && it.endDate >= startDate ) {
+            // the start date given falls between the start and end dates of an existing core statement
+            // because test 1 did not catch this, the end date must be after the end of this assertion, so we simply extend
+            log.debug("Extending end date");
+            it.endDate = givenEndDate;
+            it.save(flush:true)
+            cont=false
+            return;
+          }
+    
+          // Given range overlaps start date of existing statement
+          if ( it.startDate <= endDate && it.endDate >= endDate ) {
+            log.debug("Extending start date");
+            it.startDate = givenStartDate;
+            it.save(flush:true)
+            cont=false
+            return;
+          }
+        }  
       }
     }
-
-    if ( cont ) {
-      // Not fully enclosed - see if we are extending (Backwards or forewards) any existing 
+    else {
       coreDates.each {
-        // Given range overlaps end date of existing statement
-        if ( it.startDate <= startDate && it.endDate >= startDate ) {
-          // the start date given falls between the start and end dates of an existing core statement
-          // because test 1 did not catch this, the end date must be after the end of this assertion, so we simply extend
-          log.debug("Extending end date");
-          it.endDate = givenEndDate;
-          it.save(flush:true)
-          cont=false
-          return;
+        if ( it.endDate == null ) {
+          if ( startDate < it.startDate ) {
+            // Open ended core status, with an earlier start date than we had previously
+            it.startDate = startDate
+            it.endDate = null
+            it.save(flush:true)
+            cont=false
+          }
         }
-  
-        // Given range overlaps start date of existing statement
-        if ( it.startDate <= endDate && it.endDate >= endDate ) {
-          log.debug("Extending start date");
-          it.startDate = givenStartDate;
-          it.save(flush:true)
-          cont=false
-          return;
+        else {
+          if ( startDate < it.startDate ) {
+            // New coverage start date pushes back a previous one, AND extends the end date to open
+            it.startDate = startDate
+            it.endDate = null
+            it.save(flush:true)
+            cont=false
+          }   
+          else {
+            // New statement opens up end date, but existing start date should stand
+            it.endDate = null
+            it.save(flush:true)
+            cont=false
+          }
         }
       }
-
     }
 
     if ( cont ) {
