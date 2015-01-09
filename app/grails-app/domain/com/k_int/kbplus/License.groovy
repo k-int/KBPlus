@@ -33,9 +33,14 @@ class License {
   String licenseeRef
   String licenseType
   String licenseStatus
+  String impId
+
   long lastmod
   Date startDate
   Date endDate
+
+  Date dateCreated
+  Date lastUpdated
 
   static hasOne = [onixplLicense: OnixplLicense]
 
@@ -338,6 +343,9 @@ class License {
   def beforeInsert() {
     if ( reference != null ) {
       sortableReference = generateSortableReference(reference)
+    }
+    if (impId == null) {
+      impId = java.util.UUID.randomUUID().toString();
     }
   }
 

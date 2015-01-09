@@ -154,6 +154,22 @@ class DataloadService {
       result
     }
 
+    updateES(esclient, com.k_int.kbplus.License.class) { lic ->
+      def result = [:]
+      if(lic.status?.value != "Deleted"){
+        result.name = lic.reference
+        result._id = lic.impId
+        if (result.id == null){
+          result._id = java.util.UUID.randomUUID().toString();
+        }
+        result.dbId = lic.id
+        result.visible = ['Public']
+        result.rectype = 'License'
+        result.availableToOrgs = lic.orgLinks.find{it.roleType?.value == "Licensee"}?.org?.id
+      }
+      result
+    }
+
     updateES(esclient, com.k_int.kbplus.Platform.class) { plat ->
       def result = [:]
       result._id = plat.impId
@@ -269,7 +285,7 @@ class DataloadService {
             }
           }
           order("lastUpdated", "asc")
-      }
+      }    
 
       def results = c.scroll(ScrollMode.FORWARD_ONLY)
     

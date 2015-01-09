@@ -107,6 +107,11 @@ class SpotlightController {
             query = query.replace("\$o ","")
             filtered = "Organisation"
             break
+          case "\$l":
+            params.type = "license"
+            query = query.replace("\$l ","")
+            filtered = "License"
+            break
           case "\$a":
             params.type = "action"
             query = query.replace("\$a ","")
