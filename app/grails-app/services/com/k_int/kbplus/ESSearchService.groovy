@@ -152,7 +152,10 @@ class ESSearchService{
         if ( params[mapping.key].class == java.util.ArrayList) {
 
           sw.write(" AND ( ( ( NOT _type:\"com.k_int.kbplus.Subscription\" ) AND ( NOT _type:\"com.k_int.kbplus.License\" )) OR ( ")
-
+/*
+ query: super AND ( ( ( NOT _type:"com.k_int.kbplus.Subscription" ) AND ( NOT _type:"com.k_int.kbplus.License" )) OR ( availableToOrgs:"389" OR availableToOrgs:"390" OR availableToOrgs:"35" ) ) 
+Need to look for values in list availableToOrgs...
+*/
           params[mapping.key].each { p ->  
                 sw.write(mapping.value)
                 sw.write(":")

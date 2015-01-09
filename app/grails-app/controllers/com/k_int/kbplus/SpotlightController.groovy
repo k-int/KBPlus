@@ -120,6 +120,7 @@ class SpotlightController {
 
       }
       params.q = query
+      //TODO: Also see if org in consortia and add consortia ID to filter values
       params.availableToOrgs = result.user.getAuthorizedOrgs().collect{it.id}
 
       if(query.startsWith("\$")){
