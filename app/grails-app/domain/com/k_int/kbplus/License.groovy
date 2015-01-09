@@ -93,6 +93,7 @@ class License {
   static constraints = {
     status(nullable:true, blank:false)
     type(nullable:true, blank:false)
+    impId(nullable:true, blank:false)
     reference(nullable:true, blank:true)
     sortableReference(nullable:true, blank:true)
     isPublic(nullable:true, blank:true)
