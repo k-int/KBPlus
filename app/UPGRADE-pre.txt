@@ -4,3 +4,8 @@ UPDATE refdata_value SET rdv_value='Model Licence' WHERE rdv_value='Model Licens
 UPDATE refdata_value SET rdv_value='ONIX-PL Licence' WHERE rdv_value='ONIX-PL License';
 UPDATE refdata_value SET rdv_value='Licence' WHERE rdv_value='License';
 UPDATE refdata_value SET rdv_value='Licence Attachment' WHERE rdv_value='License Attachment';
+
+select "Initialize date created last updated";
+
+update license set date_created='2013-01-01 12:00:00';
+update license set last_updated='2013-01-01 12:00:00';
