@@ -159,9 +159,6 @@ class DataloadService {
       if(lic.status?.value != "Deleted"){
         result.name = lic.reference
         result._id = lic.impId
-        if (result.id == null){
-          result._id = java.util.UUID.randomUUID().toString();
-        }
         result.dbId = lic.id
         result.visible = ['Public']
         result.rectype = 'License'
