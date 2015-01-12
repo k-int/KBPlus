@@ -162,7 +162,6 @@ class DataloadService {
         result.dbId = lic.id
         result.visible = ['Public']
         result.rectype = 'License'
-        //TODO:If org belongs to consortia, also add consortia ID
         result.availableToOrgs = lic.orgLinks.find{it.roleType?.value == "Licensee"}?.org?.id
       }
       result

@@ -120,8 +120,8 @@ class SpotlightController {
 
       }
       params.q = query
-      //TODO: Also see if org in consortia and add consortia ID to filter values
-      params.availableToOrgs = result.user.getAuthorizedOrgs().collect{it.id}
+      //From the available orgs, see if any belongs to a consortium, and add consortium ID too
+      params.availableToOrgs = getAvailableOrgs(result.user.getAuthorizedOrgs())
 
       if(query.startsWith("\$")){
         if( query.length()> 2){
@@ -134,6 +134,27 @@ class SpotlightController {
         // result?.facets?.type?.pop()?.term
     }
     result
+  }
+
+  def getAvailableOrgs(orgs){
+    def orgsWithConsortia = []
+    for (org in orgs) {
+      if(org.outgoingCombos){
+        for(combo in org.outgoingCombos){
+          if(combo.type.value.equals("Consortium")){
+            println "ORG IN CONSORTIUM"
+            if(!orgsWithConsortia.contains(combo.toOrg.id)){
+              orgsWithConsortia.add(combo.toOrg.id)
+            }
+            break
+          }
+        }
+      }
+      if(!orgsWithConsortia.contains(org.id)){
+        orgsWithConsortia.add(org.id)
+      }
+    }
+    return orgsWithConsortia
   }
 
   def getActionLinks(q) {
