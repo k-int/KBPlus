@@ -17,20 +17,25 @@ class HomeController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
 
-    if ( result.user?.defaultDash != null ) {
-      redirect(controller:'myInstitutions', action:'dashboard', params:[shortcode:result.user.defaultDash.shortcode]);
-    }
-    else {
-      if ( result.user.affiliations.size() == 1 ) {
-        result.user.defaultDash = result.user.affiliations.first().org
-        result.user.save();
-        redirect(controller:'myInstitutions', action:'dashboard',
-         params:[shortcode:result.user.defaultDash.shortcode]);
+    if ( result.user != null ) {
+      if ( result.user?.defaultDash != null ) {
+        redirect(controller:'myInstitutions', action:'dashboard', params:[shortcode:result.user.defaultDash.shortcode]);
       }
       else {
-        flash.message="Please select an institution to use as your default home dashboard"
-        redirect(controller:'profile', action:'index')
+        if ( result.user.affiliations.size() == 1 ) {
+          result.user.defaultDash = result.user.affiliations.first().org
+          result.user.save();
+          redirect(controller:'myInstitutions', action:'dashboard',
+           params:[shortcode:result.user.defaultDash.shortcode]);
+        }
+        else {
+          flash.message="Please select an institution to use as your default home dashboard"
+          redirect(controller:'profile', action:'index')
+        }
       }
+    }
+    else {
+      log.error("Unable to lookup user for principal id :: ${springSecurityService.principal.id}");
     }
   }
 
