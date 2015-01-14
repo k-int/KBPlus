@@ -14,17 +14,17 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
 
   def getPreAuthenticatedPrincipal(javax.servlet.http.HttpServletRequest request) {
 
-    // log.debug("EdiauthFilter::getPreAuthenticatedPrincipal ${request}");
+    log.debug("EdiauthFilter::getPreAuthenticatedPrincipal ${request} - config = ${grailsApplication?.config?.kbplus?.authmethod}");
 
     def result
 
     if ( grailsApplication?.config?.kbplus?.authmethod=='shib' ) {
       if ( request.getRemoteUser() != null ) {
-        // log.debug("In shibboleth authentication mode. If we're here - the user is pre-authenticated. Extract username and make sure there is a user record");
+        log.debug("In shibboleth authentication mode. If we're here - the user is pre-authenticated. Extract username and make sure there is a user record");
         // User ID should be in request.getAttribute('persistent-id');
-        // log.debug("Remote User(fn):: ${request.getRemoteUser()}");
-        // log.debug("Remote User:: ${request.getAttribute('REMOTE_USER')}");
-        // log.debug("Persistent Id:: ${request.getAttribute('persistent-id')}");
+        log.debug("Remote User(fn):: ${request.getRemoteUser()}");
+        log.debug("Remote User:: ${request.getAttribute('REMOTE_USER')}");
+        log.debug("Persistent Id:: ${request.getAttribute('persistent-id')}");
 
         def tst_attrs = [ 'persistent-id',
                       'eppn',
@@ -121,6 +121,9 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
               else {
                 log.error("Unable to look up ROLE_USER");
               }
+            }
+            else {
+              log.error("Unable to save new user...");
             }
           }
         }
