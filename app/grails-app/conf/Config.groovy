@@ -221,13 +221,15 @@ log4j = {
            'grails.app.service',
            'grails.app.services',
            'grails.app.domain',
-           // 'grails.app.tagLib',
            'grails.app.conf',
            'grails.app.jobs',
-           'grails.app.conf.BootStrap'
-           ,'edu.umn.shibboleth.sp'
-           ,'com.k_int'
-           ,'org.springframework.security'
+           'grails.app.conf.BootStrap',
+           //'edu.umn.shibboleth.sp',
+           'com.k_int',
+           // 'org.springframework.security'
+           'some.domain.logging'
+
+           // 'grails.app.tagLib',
 
     // info   'com.linkedin.grails'
 }

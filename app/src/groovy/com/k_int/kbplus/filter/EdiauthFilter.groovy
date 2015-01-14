@@ -48,17 +48,19 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
                       'displayName',
                       'description'
                     ]
-        tst_attrs.each { it ->
-          log.debug("tst:: ${it} : ${request.getAttribute(it)}");
-        }
+        // tst_attrs.each { it ->
+        //   log.debug("tst:: ${it} : ${request.getAttribute(it)}");
+        // }
   
 
         User.withTransaction { status ->
+          log.debug("Lookup  user...${request.getRemoteUser()}");
           def existing_user = User.findByUsername(request.getRemoteUser())
           if ( existing_user ) {
-            // log.debug("User found, all is well");
+            log.debug("User found, all is well");
           }
           else {
+            log.debug("Create new user...${request.getRemoteUser()}");
             existing_user = new User(
                                      username:request.getRemoteUser(),
                                      password:'**',
@@ -128,6 +130,8 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
           }
         }
 
+        log.debug("At end, remote user is ${request.getRemoteUser()}");
+
         result = request.getRemoteUser()
       }
     }
@@ -140,7 +144,7 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
         // System.out.println("Located ediauth token : ${ediauthToken}, ${map[ediauthToken]}");
         result = map.remove(ediauthToken)
       }
-      // log.debug("Returning ${result}");
+      log.debug("Returning ${result}");
       result
     }
   }
