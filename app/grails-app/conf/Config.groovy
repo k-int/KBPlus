@@ -241,10 +241,11 @@ grails.plugins.springsecurity.userLookup.usernamePropertyName='username'
 grails.plugins.springsecurity.authority.className = 'com.k_int.kbplus.auth.Role'
 grails.plugins.springsecurity.securityConfigType = "Annotation"
 
-grails.plugins.springsecurity.providerNames = ['preAuthenticatedAuthenticationProvider', 
-                                               'daoAuthenticationProvider', 
-                                               'anonymousAuthenticationProvider', 
-                                               'rememberMeAuthenticationProvider' ]
+grails.plugins.springsecurity.providerNames = ['preAuthenticatedAuthenticationProvider',
+//                                               'daoAuthenticationProvider', 
+//                                               'anonymousAuthenticationProvider', 
+//                                               'rememberMeAuthenticationProvider' 
+                                              ]
 
 grails.plugins.springsecurity.controllerAnnotations.staticRules = [ 
         '/monitoring/**': ['ROLE_ADMIN'] 
