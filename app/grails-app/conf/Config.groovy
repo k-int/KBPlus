@@ -227,6 +227,7 @@ log4j = {
            //'edu.umn.shibboleth.sp',
            'com.k_int',
            // 'org.springframework.security'
+           'org.codehaus.groovy.grails.plugins.springsecurity',
            'some.domain.logging'
 
            // 'grails.app.tagLib',

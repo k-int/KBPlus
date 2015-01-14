@@ -237,6 +237,9 @@ class DataloadService {
       }
     }
   }
+
+
+
   def updateES(esclient, domain, recgen_closure) {
 
     def count = 0;
