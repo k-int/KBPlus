@@ -20,7 +20,7 @@ grails.project.dependency.resolution = {
     inherits("global") {
         excludes "grails-docs"
         // uncomment to disable ehcache
-        // excludes 'ehcache'
+        excludes 'ehcache'
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     checksums true // Whether to verify checksums on resolve
@@ -73,16 +73,8 @@ grails.project.dependency.resolution = {
         runtime 'com.gmongo:gmongo:1.1'
 
         // Would very much like to upgrade to these - but seems to cause a weird class version error when I do
-        runtime 'org.elasticsearch:elasticsearch:1.3.2'
+        runtime 'org.elasticsearch:elasticsearch:1.4.2'
         runtime 'org.elasticsearch:elasticsearch-client-groovy:1.3.2'
-        // Root cause seems to be asm library from lucene clashing with the existing one..
-        // |    \--- org.ow2.asm:asm:4.1
-        // |    \--- org.ow2.asm:asm-commons:4.1
-        // vs these from the existing project
-        // --- cglib:cglib:2.2.2
-        // |    \--- asm:asm:3.3.1
-        // runtime 'org.elasticsearch:elasticsearch:1.0.1'
-        // runtime 'org.elasticsearch:elasticsearch-client-groovy:1.0.1'
 
         runtime 'gov.loc:bagit:4.0'
         runtime 'org.apache.poi:poi:3.8'
