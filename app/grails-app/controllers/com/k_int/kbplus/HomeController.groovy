@@ -15,6 +15,9 @@ class HomeController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() { 
     def result = [:]
+
+    log.debug("HomeController::index - ${springSecurityService.principal.id}");
+
     result.user = User.get(springSecurityService.principal.id)
 
     if ( result.user != null ) {

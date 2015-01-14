@@ -57,7 +57,7 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
           log.debug("Lookup  user...${request.getRemoteUser()}");
           def existing_user = User.findByUsername(request.getRemoteUser())
           if ( existing_user ) {
-            log.debug("User found, all is well");
+            log.debug("User found, all is well ${existing_user}");
           }
           else {
             log.debug("Create new user...${request.getRemoteUser()}");
