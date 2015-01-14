@@ -2283,7 +2283,9 @@ AND EXISTS (
 
     def checkUserHasRole(user, org, role) {
         def uoq = UserOrg.createCriteria()
+
         def grants = uoq.list {
+          and {
             eq('user', user)
             eq('org', org)
             formalRole {
@@ -2293,6 +2295,7 @@ AND EXISTS (
                 eq('status', 1);
                 eq('status', 3);
             }
+          }
         }
 
         if (grants && grants.size() > 0)

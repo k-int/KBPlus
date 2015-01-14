@@ -60,7 +60,7 @@ grails.project.dependency.resolution = {
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
-        build('org.grails:grails-docs:2.3.7') {
+        build('org.grails:grails-docs:2.3.11') {
             excludes 'itext'
         }
         compile ('com.k-int:goai:1.0.2') {
@@ -109,10 +109,10 @@ grails.project.dependency.resolution = {
 
     plugins {
         compile ":h2:0.2.6"
-        runtime ':hibernate:3.6.10.2'
-        runtime ":resources:1.2"
+        runtime ':hibernate:3.6.10.16'
+        runtime ":resources:1.2.8"
         runtime ':fields:1.3'
-        compile ":scaffolding:2.0.1"
+        compile ":scaffolding:2.0.3"
         
         // This is commented out so as not to cause probelms in the CI environment
         // compile ":functional-test:2.0.RC1"
@@ -120,11 +120,11 @@ grails.project.dependency.resolution = {
         //runtime ":zipped-resources:1.0"
         //runtime ":cached-resources:1.0"
         //runtime ":yui-minify-resources:0.1.4"
-        build ':tomcat:7.0.40.1'
+        build ':tomcat:7.0.54'
 
         // runtime ":database-migration:1.3.2"
 
-        compile ':cache:1.0.1'
+        compile ':cache:1.1.7'
 
         compile ':mail:1.0.1', {
            excludes 'spring-test'
