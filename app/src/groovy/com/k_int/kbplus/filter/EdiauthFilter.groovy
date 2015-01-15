@@ -14,17 +14,17 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
 
   def getPreAuthenticatedPrincipal(javax.servlet.http.HttpServletRequest request) {
 
-    // log.debug("EdiauthFilter::getPreAuthenticatedPrincipal ${request}");
+    log.debug("EdiauthFilter::getPreAuthenticatedPrincipal ${request} - config = ${grailsApplication?.config?.kbplus?.authmethod}");
 
     def result
 
     if ( grailsApplication?.config?.kbplus?.authmethod=='shib' ) {
       if ( request.getRemoteUser() != null ) {
-        // log.debug("In shibboleth authentication mode. If we're here - the user is pre-authenticated. Extract username and make sure there is a user record");
+        log.debug("In shibboleth authentication mode. If we're here - the user is pre-authenticated. Extract username and make sure there is a user record");
         // User ID should be in request.getAttribute('persistent-id');
-        // log.debug("Remote User(fn):: ${request.getRemoteUser()}");
-        // log.debug("Remote User:: ${request.getAttribute('REMOTE_USER')}");
-        // log.debug("Persistent Id:: ${request.getAttribute('persistent-id')}");
+        log.debug("Remote User(fn):: ${request.getRemoteUser()}");
+        log.debug("Remote User:: ${request.getAttribute('REMOTE_USER')}");
+        log.debug("Persistent Id:: ${request.getAttribute('persistent-id')}");
 
         def tst_attrs = [ 'persistent-id',
                       'eppn',
@@ -48,17 +48,19 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
                       'displayName',
                       'description'
                     ]
-        tst_attrs.each { it ->
-          log.debug("tst:: ${it} : ${request.getAttribute(it)}");
-        }
+        // tst_attrs.each { it ->
+        //   log.debug("tst:: ${it} : ${request.getAttribute(it)}");
+        // }
   
 
         User.withTransaction { status ->
+          log.debug("Lookup  user...${request.getRemoteUser()}");
           def existing_user = User.findByUsername(request.getRemoteUser())
           if ( existing_user ) {
-            // log.debug("User found, all is well");
+            log.debug("User found, all is well ${existing_user}");
           }
           else {
+            log.debug("Create new user...${request.getRemoteUser()}");
             existing_user = new User(
                                      username:request.getRemoteUser(),
                                      password:'**',
@@ -122,27 +124,33 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
                 log.error("Unable to look up ROLE_USER");
               }
             }
+            else {
+              log.error("Unable to save new user...");
+            }
           }
         }
+
+        log.debug("At end, remote user is ${request.getRemoteUser()}");
 
         result = request.getRemoteUser()
       }
     }
-    else {
-      def ediauthToken = request.getParameter("ediauthToken")
+    // else {
+    //   def ediauthToken = request.getParameter("ediauthToken")
 
       // System.out.println("in getPreAuthenticatedPrincipal");
 
-      if ( ( ediauthToken ) && ( map[ediauthToken] != null ) ) {
-        // System.out.println("Located ediauth token : ${ediauthToken}, ${map[ediauthToken]}");
-        result = map.remove(ediauthToken)
-      }
-      // log.debug("Returning ${result}");
-      result
-    }
+    //   if ( ( ediauthToken ) && ( map[ediauthToken] != null ) ) {
+    //     // System.out.println("Located ediauth token : ${ediauthToken}, ${map[ediauthToken]}");
+    //     result = map.remove(ediauthToken)
+    //   }
+    //   log.debug("Returning ${result}");
+    //   result
+    // }
   }
 
   def getPreAuthenticatedCredentials(javax.servlet.http.HttpServletRequest request) {
+    log.debug("EdiauthFilter::getPreAuthenticatedCredentials()");
     return "";
   }
 }
