@@ -527,6 +527,7 @@ class License {
   def getPca(){
     return getCustomPropByName("Post Cancellation Access Entitlement")
   }
+
   @Transient
   def setPca(newVal){
     def custProp = getCustomPropByName("Post Cancellation Access Entitlement")
@@ -534,9 +535,38 @@ class License {
       def type = PropertyDefinition.findByName('Post Cancellation Access Entitlement')
       custProp = PropertyDefinition.createPropertyValue(this,type)
     }
-    custProp.refValue = genericOIDService.resolveOID(newVal)
+   
+    // II: This function looks horribly specific to Pca as a reference balue
+    if ( newVal != null ) {
+      custProp.refValue = genericOIDService.resolveOID(newVal)
+    }
+    else {
+      custProp.refValue = null;
+    }
+
     custProp.save()
   }
+
+  @Transient
+  def setReferencePropertyAsCustProp(custPropName, classPropName) {
+    def custProp = getCustomPropByName(custPropName)
+    if(custProp == null){
+      def type = PropertyDefinition.findByName(custPropName,)
+      custProp = PropertyDefinition.createPropertyValue(this,type)
+    }
+
+    if ( newVal != null ) {
+      custProp.refValue = genericOIDService.resolveOID(newVal)
+    }
+    else {
+      custProp.refValue = null;
+    }
+
+    custProp.save()
+   
+  }
+
+  
   @Transient
   def getCustomPropByName(name){
     return customProperties.find{it.type.name == name}    
