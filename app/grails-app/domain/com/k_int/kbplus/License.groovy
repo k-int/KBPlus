@@ -369,99 +369,69 @@ class License {
   def getConcurrentUserCount(){
     return getCustomPropByName("Concurrent Users")
   }
-    @Transient
+  
+  @Transient
   def setConcurrentUserCount(newVal){
-    def custProp = getCustomPropByName("Concurrent Users")
-    if(custProp == null){
-      def type = PropertyDefinition.findByName('Concurrent Users')
-      custProp = PropertyDefinition.createPropertyValue(this,type)
-    }
-    custProp.refValue = genericOIDService.resolveOID(newVal)
-    custProp.save()
+    setReferencePropertyAsCustProp("Concurrent Users",newVal)
   }
+
   @Transient
   def getConcurrentUsers(){
     return getCustomPropByName("Concurrent Access")
   }  
     @Transient
   def setConcurrentUsers(newVal){
-    def custProp = getCustomPropByName("Concurrent Access")
-    if(custProp == null){
-      def type = PropertyDefinition.findByName('Concurrent Access')
-      custProp = PropertyDefinition.createPropertyValue(this,type)
-    }
-    custProp.refValue = genericOIDService.resolveOID(newVal)
-    custProp.save()
+    setReferencePropertyAsCustProp("Concurrent Access",newVal)
   }
+  
   @Transient
   def getRemoteAccess(){
     return getCustomPropByName("Remote Access")
   }
-    @Transient
+  
+  @Transient
   def setRemoteAccess(newVal){
-    def custProp = getCustomPropByName("Remote Access")
-    if(custProp == null){
-      def type = PropertyDefinition.findByName('Remote Access')
-      custProp = PropertyDefinition.createPropertyValue(this,type)
-    }
-    custProp.refValue = genericOIDService.resolveOID(newVal)
-    custProp.save()
+    setReferencePropertyAsCustProp("Remote Access",newVal)
   }
+  
   @Transient
   def getWalkinAccess(){
     return getCustomPropByName("Walk In Access")
   }
-    @Transient
+  
+  @Transient
   def setWalkinAccess(newVal){
-    def custProp = getCustomPropByName("Walk In Access")
-    if(custProp == null){
-      def type = PropertyDefinition.findByName('Walk In Access')
-      custProp = PropertyDefinition.createPropertyValue(this,type)
-    }
-    custProp.refValue = genericOIDService.resolveOID(newVal)
-    custProp.save()
+    setReferencePropertyAsCustProp("Walk In Access",newVal)
   }
+  
   @Transient
   def getMultisiteAccess(){
     return getCustomPropByName("Multi Site Access")
   }
-    @Transient
+  
+  @Transient
   def setMultisiteAccess(newVal){
-    def custProp = getCustomPropByName("Multi Site Access")
-    if(custProp == null){
-      def type = PropertyDefinition.findByName('Multi Site Access')
-      custProp = PropertyDefinition.createPropertyValue(this,type)
-    }
-    custProp.refValue = genericOIDService.resolveOID(newVal)
-    custProp.save()
+    setReferencePropertyAsCustProp("Multi Site Access",newVal)
   }
+  
   @Transient
   def getPartnersAccess(){
     return getCustomPropByName("Partners Access")
   }
+  
   @Transient
   def setPartnersAccess(newVal){
-    def custProp = getCustomPropByName("Partners Access")
-    if(custProp == null){
-      def type = PropertyDefinition.findByName('Partners Access')
-      custProp = PropertyDefinition.createPropertyValue(this,type)
-    }
-    custProp.refValue = genericOIDService.resolveOID(newVal)
-    custProp.save()
+    setReferencePropertyAsCustProp("Partners Access",newVal)
   }
+ 
   @Transient
   def getAlumniAccess(){
     return getCustomPropByName("Alumni Access")
   }
+ 
   @Transient
   def setAlumniAccess(newVal){
-    def custProp = getCustomPropByName("Alumni Access")
-    if(custProp == null){
-      def type = PropertyDefinition.findByName('Alumni Access')
-      custProp = PropertyDefinition.createPropertyValue(this,type)
-    }
-    custProp.refValue = genericOIDService.resolveOID(newVal)
-    custProp.save()
+    setReferencePropertyAsCustProp("Alumni Access",newVal)
   }
   @Transient
   def getIll(){
@@ -470,13 +440,7 @@ class License {
 
   @Transient
   def setIll(newVal){
-    def custProp = getCustomPropByName("ILL - InterLibraryLoans")
-    if(custProp == null){
-      def type = PropertyDefinition.findByName('ILL - InterLibraryLoans')
-      custProp = PropertyDefinition.createPropertyValue(this,type)
-    }
-    custProp.refValue = genericOIDService.resolveOID(newVal)
-    custProp.save()
+    setReferencePropertyAsCustProp("ILL - InterLibraryLoans",newVal)
   }
   @Transient
   def getCoursepack(){
@@ -485,27 +449,17 @@ class License {
 
   @Transient
   def setCoursepack(newVal){
-    def custProp = getCustomPropByName("Include In Coursepacks")
-    if(custProp == null){
-      def type = PropertyDefinition.findByName('Include In Coursepacks')
-      custProp = PropertyDefinition.createPropertyValue(this,type)
-    }
-    custProp.refValue = genericOIDService.resolveOID(newVal)
-    custProp.save()
+    setReferencePropertyAsCustProp("Include In Coursepacks",newVal)
   }
+  
   @Transient
   def getVle(){
     return getCustomPropByName("Include in VLE")
   }
+  
   @Transient
   def setVle(newVal){
-    def custProp = getCustomPropByName("Include in VLE")
-    if(custProp == null){
-      def type = PropertyDefinition.findByName('Include in VLE')
-      custProp = PropertyDefinition.createPropertyValue(this,type)
-    }
-    custProp.refValue = genericOIDService.resolveOID(newVal)
-    custProp.save()
+    setReferencePropertyAsCustProp("Include in VLE",newVal)
   }
 
   @Transient
@@ -514,13 +468,8 @@ class License {
   }
   @Transient
   def setEnterprise(newVal){
-    def custProp = getCustomPropByName("Enterprise Access")
-    if(custProp == null){
-      def type = PropertyDefinition.findByName('Enterprise Access')
-      custProp = PropertyDefinition.createPropertyValue(this,type)
-    }
-    custProp.refValue = genericOIDService.resolveOID(newVal)
-    custProp.save()
+    setReferencePropertyAsCustProp("Enterprise Access",newVal)
+
   }
 
   @Transient
@@ -530,25 +479,11 @@ class License {
 
   @Transient
   def setPca(newVal){
-    def custProp = getCustomPropByName("Post Cancellation Access Entitlement")
-    if(custProp == null){
-      def type = PropertyDefinition.findByName('Post Cancellation Access Entitlement')
-      custProp = PropertyDefinition.createPropertyValue(this,type)
-    }
-   
-    // II: This function looks horribly specific to Pca as a reference balue
-    if ( newVal != null ) {
-      custProp.refValue = genericOIDService.resolveOID(newVal)
-    }
-    else {
-      custProp.refValue = null;
-    }
-
-    custProp.save()
+    setReferencePropertyAsCustProp("Post Cancellation Access Entitlement",newVal)
   }
 
   @Transient
-  def setReferencePropertyAsCustProp(custPropName, classPropName) {
+  def setReferencePropertyAsCustProp(custPropName, newVal) {
     def custProp = getCustomPropByName(custPropName)
     if(custProp == null){
       def type = PropertyDefinition.findByName(custPropName,)
