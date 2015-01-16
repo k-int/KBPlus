@@ -30,9 +30,10 @@ class OnixplLicenseControllerTests {
   }
 
   void testCreate() {
+    populateValidParams(params)
     def model = controller.create()
 
-    assert model.onixplLicenseInstance != null
+    assert response.redirectedUrl == '/onixplLicense/show/1'
   }
 
   void testShow() {
@@ -63,8 +64,7 @@ class OnixplLicenseControllerTests {
     def onixplLicense = new OnixplLicense(params)
 
     assert onixplLicense.save() != null
-
-    params.id = onixplLicense.id
+    params['id'] = onixplLicense.id
 
     def model = controller.edit()
 
