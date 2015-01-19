@@ -77,18 +77,55 @@ class AdminController {
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def userMerge(){
+     log.debug("AdminController :: userMerge :: ${params}");
+
       def result = [:]
       switch (request.method) {
         case 'GET':
+          if(params.userToMerge){
+            def usr = User.get(params.userToMerge)
+            result.userRoles = usr.getAuthorities()
+            result.userAffiliations =  usr.getAuthorizedAffiliations()
+          }
           result.users = User.list()
+          result.
           break
         case 'POST':
+          log.debug("Found post request")
+          if(params.userToMerge && params.userToKeep){
+            def usrMrg = User.get(params.userToMerge)
+            def usrKeep =  User.get(params.userToKeep)
+            def success = copyUserRoles(usrMrg, usrKeep)
+            if(success){
+              print "SUCCESS"
+            }
+          }
           break
         default:
           break;
       }
 
     result
+  }
+
+  def copyUserRoles(usrMrg, usrKeep){
+    def mergeRoles = usrMrg.getAuthorities()
+    def mergeAffil = usrMrg.getAuthorizedAffiliations()
+    def currentRoles = usrKeep.getAuthorities()
+    def currentAffil = usrKeep.getAuthorizedAffiliations()
+
+    mergeRoles.each{ role ->
+      if(!currentRoles.contains(role)){
+        UserRole.create(usrKeep,role)
+      }
+    }
+    mergeAffil.each{affil ->
+      if(!currentAffil.contains(affil)){
+        log.debug("Creating new UserOrg for ${affil}, ${affil.org}, ${usrKeep}, ${affil.formalRole}")
+        new UserOrg(org:affil.org,user:usrKeep,formalRole:affil.formalRole).save(insert:true)
+      }
+    }
+    return true
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
