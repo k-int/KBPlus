@@ -75,6 +75,21 @@ class AdminController {
     redirect(action: "manageAffiliationRequests")
   }
 
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def userMerge(){
+      def result = [:]
+      switch (request.method) {
+        case 'GET':
+          result.users = User.list()
+          break
+        case 'POST':
+          break
+        default:
+          break;
+      }
+
+    result
+  }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def showAffiliations() {
