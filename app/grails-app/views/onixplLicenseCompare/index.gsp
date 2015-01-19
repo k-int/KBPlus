@@ -56,7 +56,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="span8">
-				<g:form id="compare" name="compare" action="matrix" method="get">
+				<g:form id="compare" name="compare" action="matrix" method="post">
 					<div>
 						<label for="license1"><g:message code="licence" default="Licence"/> 1:</label>
 						<g:select id="license1" name="license1" class="compare-license" from="${list}"
