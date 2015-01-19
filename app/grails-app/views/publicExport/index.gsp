@@ -67,13 +67,13 @@ This work is published from:
       <div class="row">
         <g:each in="${packages}" var="p">
           <div class="span4"><div class="well">
-            <h4>${p.name}</h4>
+            <h4>${p[1]}</h4>
             <ul>
-              <g:each in="${p.ids}" var="pid"><li>Package ID: ${pid?.identifier?.value}</li></g:each>
+              <g:each in="${p[2]}" var="pid"><li>Package ID: ${pid}</li></g:each>
             </ul>
-            <g:link action="pkg" params="${[format:'csv', id:p.id]}">CSV With KBPlus header</g:link><br/>
-            <g:link action="pkg" params="${[format:'csv',omitHeader:'Y', id:p.id]}">CSV Without KBPlus header (KBART)</g:link><br/>
-            <g:link action="pkg" params="${[format:'json',id:p.id]}">JSON</g:link>
+            <g:link action="pkg" params="${[format:'csv', id:p[0]]}">CSV With KBPlus header</g:link><br/>
+            <g:link action="pkg" params="${[format:'csv',omitHeader:'Y', id:p[0]]}">CSV Without KBPlus header (KBART)</g:link><br/>
+            <g:link action="pkg" params="${[format:'json',id:p[0]]}">JSON</g:link>
           </div></div>
         </g:each>
       </div>
