@@ -82,16 +82,15 @@ class AdminController {
       def result = [:]
       switch (request.method) {
         case 'GET':
+          log.debug("Found GET request")
           if(params.userToMerge){
             def usr = User.get(params.userToMerge)
             result.userRoles = usr.getAuthorities()
             result.userAffiliations =  usr.getAuthorizedAffiliations()
           }
-          result.users = User.list()
-          result.
-          break
+          break;
         case 'POST':
-          log.debug("Found post request")
+          log.debug("Found POST request")
           if(params.userToMerge && params.userToKeep){
             def usrMrg = User.get(params.userToMerge)
             def usrKeep =  User.get(params.userToKeep)
@@ -104,6 +103,7 @@ class AdminController {
         default:
           break;
       }
+      result.users = User.list(sort:"display", order:"desc")
 
     result
   }
@@ -121,8 +121,8 @@ class AdminController {
     }
     mergeAffil.each{affil ->
       if(!currentAffil.contains(affil)){
-        log.debug("Creating new UserOrg for ${affil}, ${affil.org}, ${usrKeep}, ${affil.formalRole}")
-        new UserOrg(org:affil.org,user:usrKeep,formalRole:affil.formalRole).save(insert:true)
+        affil.user = usrKeep
+        affil.save(flush:true)
       }
     }
     return true

@@ -7,9 +7,7 @@
   </head>
 
   <body>
-  	<g:if test="${success}">
-  	HAHAHAHAHAHHAHAHA WE MADE ITTT
-  	</g:if>
+
     <div class="row-fluid">
    
         <g:form action="userMerge" method="GET">
@@ -32,11 +30,14 @@
 		        </g:each>
 	        </ul>
 	        <b> Affiliations </b>
+
+	        <div style="height:300px;line-height:3em;overflow:auto;padding:5px;">
 	         <ul>
 		        <g:each in="${userAffiliations}" var="affil">
 			        <li> ${affil.org.name} :: ${affil.formalRole.authority}</li>
 		        </g:each>
 	        </ul>
+	        </div>
              <input type="submit" class="btn btn-primary"/>
 
         </g:form>
