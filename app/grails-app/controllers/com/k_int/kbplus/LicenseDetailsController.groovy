@@ -49,7 +49,7 @@ class LicenseDetailsController {
     result.onixplLicense = result.license.onixplLicense;
 
     def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
-    def pendingChanges = PendingChange.executeQuery("select pc.id from PendingChange as pc where license=? and ( pc.status is null or pc.status = ? ) order by ts desc", [result.license, pending_change_pending_status]);
+    def pendingChanges = PendingChange.executeQuery("select pc.id from PendingChange as pc where license=? and ( pc.status is null or pc.status = ? ) order by pc.ts desc", [result.license, pending_change_pending_status]);
 
       //Filter any deleted subscriptions out of displayed links
       Iterator<Subscription> it = result.license.subscriptions.iterator()
@@ -224,7 +224,7 @@ class LicenseDetailsController {
     result.historyLines = AuditLogEvent.executeQuery("select e from AuditLogEvent as e where className=? and persistedObjectId=? order by id desc", qry_params, [max:result.max, offset:result.offset]);
     result.historyLinesTotal = AuditLogEvent.executeQuery("select count(e.id) from AuditLogEvent as e where className=? and persistedObjectId=?",qry_params)[0];
 
-    result.todoHistoryLines = PendingChange.executeQuery("select pc from PendingChange as pc where license=? order by ts desc", result.license);
+    result.todoHistoryLines = PendingChange.executeQuery("select pc from PendingChange as pc where pc.license=? order by pc.ts desc", result.license);
 
     result
   }
