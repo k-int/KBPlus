@@ -8,17 +8,37 @@
 
   <body>
 
-    <div class="row-fluid">
-   
+    <div class="container">
+      <div class="span10">
+
+	    <g:if test="${flash.message}">
+	    <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
+	    </g:if>
+        <g:if test="${flash.error}">
+		    <bootstrap:alert class="alert alert-error">${flash.error}</bootstrap:alert>
+	    </g:if>
+	    
+        <h1>User Merge</h1>
+          <p>Select the user to keep, and the user whose rights will be transferred. When 'merge' is clicked,
+          a confirmation screen with 'user to merge' current rights will be displayed.</p>
         <g:form action="userMerge" method="GET">
+		 <dl>
+            <div class="control-group">
+              <dt>User to Keep</dt>
+              <dd>
+			<g:select name="userToKeep" from="${usersActive}" optionKey="id" 
+				optionValue="displayName" noSelection="${['null':'-Choose user to keep-']}" />
+				</dd>
+				<dt> User to Merge</dt>
+				<dd>
 
-			<g:select name="userToKeep" from="${users}" optionKey="id" 
-				optionValue="displayName" noSelection="[null:'-Choose user to keep-']" />
-
-			<g:select name="userToMerge" from="${users}" optionKey="id" 
-			optionValue="displayName" noSelection="[null:'-Choose user to merge-']"/>
-         <input type="submit" class="btn btn-primary"/>
+			<g:select name="userToMerge" from="${usersAll}" optionKey="id" 
+			optionValue="displayName" noSelection="${['null':'-Choose user to merge-']}"/>
+			</dd>
+         <input type="submit" value="Merge" class="btn btn-primary"/>
+         </dl>
       </g:form>
+      </div>
 
 	<div id="cust_prop_add_modal" <g:if test="${userRoles}"> class="modal show" </g:if><g:else>class="modal hide"</g:else>>
         <g:form action="userMerge" method="POST">
@@ -42,6 +62,7 @@
 
         </g:form>
 	</div>
-    </div>
+	      </div>
+
   </body>
 </html>
