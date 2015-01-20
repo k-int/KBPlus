@@ -43,7 +43,7 @@ class Org {
           name column:'org_name', index:'org_name_idx'
        address column:'org_address'
        ipRange column:'org_ip_range'
-     shortcode column:'org_shortcode'
+     shortcode column:'org_shortcode', index:'org_shortcode_idx'
          scope column:'org_scope'
     categoryId column:'org_cat'
        orgType column:'org_type_rv_fk'
