@@ -148,16 +148,19 @@ class PublicExportController {
     result.packageInstance = Package.get(params.id)
 
     def base_qry = null;
+    def tipp_status_del = RefdataCategory.lookupOrCreate("TIPPStatus", "Deleted")
 
     def qry_params = [result.packageInstance]
 
     if ( params.filter ) {
-      base_qry = " from TitleInstancePackagePlatform as tipp where tipp.pkg = ? and ( tipp.status.value != 'Deleted' ) and ( ( lower(tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = tipp.title.id and io.identifier.value like ? ) ) )"
+      base_qry = " from TitleInstancePackagePlatform as tipp left outer join tipp.hybridOA ref where tipp.pkg = ? and ( tipp.status != ? ) and ( ( lower(tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = tipp.title.id and io.identifier.value like ? ) ) )"
+      qry_params.add(tipp_status_del)
       qry_params.add("%${params.filter.trim().toLowerCase()}%")
       qry_params.add("%${params.filter}%")
     }
     else {
-      base_qry = " from TitleInstancePackagePlatform as tipp where tipp.pkg = ? and ( tipp.status.value != 'Deleted' ) "
+      base_qry = " from TitleInstancePackagePlatform as tipp left outer join tipp.hybridOA as ref where tipp.pkg = ? and ( tipp.status != ? ) "
+      qry_params.add(tipp_status_del)
     }
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
@@ -168,9 +171,25 @@ class PublicExportController {
     
     result.num_pkg_rows = TitleInstancePackagePlatform.executeQuery("select count(tipp) "+base_qry, qry_params )[0]
 
-    result.tipps = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, [max:result.max, offset:result.offset]);
-
+    result.tipps = TitleInstancePackagePlatform.executeQuery("select tipp.startDate, tipp.endDate, tipp.title.title, tipp.startVolume, tipp.endVolume, tipp.startIssue ,tipp.endIssue ,tipp.embargo ,tipp.hostPlatformURL ,tipp.coverageDepth ,tipp.coverageNote, tipp.title.id, ref.value "+base_qry, qry_params, [max:result.max, offset:result.offset]);
+    def tippIdents = [:]
+    def identifiers_query = " select id.value, ns.ns from IdentifierOccurrence as io, Identifier as id, IdentifierNamespace as ns  where io.ti.id = ?  and id.ns = ns  and io.identifier = id and ns.ns in ( 'ISBN', 'ISSN', 'eISSN', 'issn', 'eissn','isbn', 'jusp', 'DOI' )"
+    result.tipps.each{ tipp ->
+      def result_ident = IdentifierOccurrence.executeQuery(identifiers_query,[tipp[11]])
+      tippIdents.put(tipp[11],result_ident)
+    }
+    def publishers_query = "select role.org.name from OrgRole as role where role.title.id = ? and role.roleType.value = 'Publisher'"
+    def publishers = [:]
+    result.tipps.each {tipp ->
+      def publisher = OrgRole.executeQuery(publishers_query, [tipp[11]])
+      publishers.put(tipp[11],publisher)
+    }
+    // result.tippsHybrid = TitleInstancePackagePlatform.executeQuery("select tipp.id, tipp.hybridOA "+base_qry, qry_params)
+    // log.debug("Hybrid OA: ${result.tippsHybrid}")
+    
     log.debug("package returning... ${result.num_pkg_rows} rows ");
+    // log.debug("${result.tipps}");
+
     withFormat {
       html result
       csv {
@@ -196,7 +215,7 @@ class PublicExportController {
              writer.write("\"${t.title.title}\",\"${t.title?.getIdentifierValue('ISSN')?:''}\",\"${t?.title?.getIdentifierValue('eISSN')?:''}\",${start_date},${t.startVolume?:''},${t.startIssue?:''},${end_date},${t.endVolume?:''},${t.endIssue?:''},\"${t.hostPlatformURL?:''}\",,\"${title_doi}\",\"${t.embargo?:''}\",\"${t.coverageDepth?:''}\",\"${t.coverageNote?:''}\",\"${publisher?.name?:''}\",\"${t.title?.getIdentifierValue('jusp')?:''}\",\"${t.hybridOA}\"\n");
            }
            writer.flush()
-           writer.close()
+           writer.colse()
          }
          out.close()
       }
@@ -213,36 +232,45 @@ class PublicExportController {
 
          result.tipps.each { e ->
 
-             def start_date = e.startDate ? formatter.format(e.startDate) : '';
-             def end_date = e.endDate ? formatter.format(e.endDate) : '';
-             def title_doi = (e.title?.getIdentifierValue('DOI'))?:''
-             def publisher = e.title?.publisher
+             def start_date = e[0] ? formatter.format(e[0]) : '';
+             def end_date = e[1] ? formatter.format(e[1]) : '';
+             def title_doi = getIdentFromMap(e[11],'DOI',tippIdents)?:''
+             def publisher = publishers.get(e[11])?:''
 
              def tipp = [:]
-             tipp.title=e.title.title
-             tipp.issn=e.title?.getIdentifierValue('ISSN')
-             tipp.eissn=e.title?.getIdentifierValue('eISSN')
-             tipp.jusp=e.title?.getIdentifierValue('jusp')
+             tipp.title=e[2]
+             tipp.issn= getIdentFromMap(e[11],'issn',tippIdents)?:''
+             tipp.eissn= getIdentFromMap(e[11],'eissn',tippIdents) ?:''
+             tipp.jusp= getIdentFromMap(e[11],'jusp',tippIdents) ?:''
              tipp.startDate=start_date;
              tipp.endDate=end_date;
-             tipp.startVolume=e.startVolume?:''
-             tipp.endVolume=e.endVolume?:''
-             tipp.startIssue=e.startIssue?:''
-             tipp.endIssue=e.endIssue?:''
-             tipp.embargo=e.embargo?:''
-             tipp.titleUrl=e.hostPlatformURL?:''
+             tipp.startVolume=e[3]?:''
+             tipp.endVolume=e[4]?:''
+             tipp.startIssue=e[5]?:''
+             tipp.endIssue=e[6]?:''
+             tipp.embargo=e[7]?:''
+             tipp.titleUrl=e[8]?:''
              tipp.doi=title_doi
-             tipp.coverageDepth = e.coverageDepth
-             tipp.coverageNote = e.coverageNote
-             tipp.publisher = publisher?.name
-             tipp.hybridOA = e.hybridOA?.value
+             tipp.coverageDepth = e[9]
+             tipp.coverageNote = e[10]
+             tipp.publisher = publisher
+             tipp.hybridOA = e[12]?:''
              response.titles.add(tipp);
          }
          render response as JSON
       }
     }
   }
-
+  def getIdentFromMap(id,ns,results){
+    def idents = results.get(id)
+    def ident_value = null
+    idents.each{ array ->
+      if(array[1].toLowerCase() == ns){
+        ident_value = array[0]
+      }
+    }
+    return ident_value
+  }
   def idx() {
     def base_qry = " from Package as p order by p.name asc"
     def qry_params = []
