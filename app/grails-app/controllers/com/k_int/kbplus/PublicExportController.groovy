@@ -149,17 +149,19 @@ class PublicExportController {
 
     def base_qry = null;
     def tipp_status_del = RefdataCategory.lookupOrCreate("TIPPStatus", "Deleted")
-
+    def publisher_org = RefdataCategory.lookupOrCreate("Organisational Role","Publisher")
     def qry_params = [result.packageInstance]
 
     if ( params.filter ) {
-      base_qry = " from TitleInstancePackagePlatform as tipp left outer join tipp.hybridOA ref where tipp.pkg = ? and ( tipp.status != ? ) and ( ( lower(tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = tipp.title.id and io.identifier.value like ? ) ) )"
+      base_qry = " from TitleInstancePackagePlatform as tipp left outer join tipp.hybridOA ref left outer join tipp.title.orgs as orgRole where tipp.pkg = ? and orgRole.roleType=? and ( tipp.status != ? ) and ( ( lower(tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = tipp.title.id and io.identifier.value like ? ) ) )"
+      qry_params.add(publisher_org)
       qry_params.add(tipp_status_del)
       qry_params.add("%${params.filter.trim().toLowerCase()}%")
       qry_params.add("%${params.filter}%")
     }
     else {
-      base_qry = " from TitleInstancePackagePlatform as tipp left outer join tipp.hybridOA as ref where tipp.pkg = ? and ( tipp.status != ? ) "
+      base_qry = " from TitleInstancePackagePlatform as tipp left outer join tipp.hybridOA as ref left outer join tipp.title.orgs as orgRole where tipp.pkg = ? and orgRole.roleType=? and ( tipp.status != ? ) "
+      qry_params.add(publisher_org)
       qry_params.add(tipp_status_del)
     }
 
@@ -171,7 +173,9 @@ class PublicExportController {
     
     result.num_pkg_rows = TitleInstancePackagePlatform.executeQuery("select count(tipp) "+base_qry, qry_params )[0]
 
-    result.tipps = TitleInstancePackagePlatform.executeQuery("select tipp.startDate, tipp.endDate, tipp.title.title, tipp.startVolume, tipp.endVolume, tipp.startIssue ,tipp.endIssue ,tipp.embargo ,tipp.hostPlatformURL ,tipp.coverageDepth ,tipp.coverageNote, tipp.title.id, ref.value "+base_qry, qry_params, [max:result.max, offset:result.offset]);
+    result.tipps = TitleInstancePackagePlatform.executeQuery("select tipp.startDate, tipp.endDate, tipp.title.title, tipp.startVolume, tipp.endVolume, tipp.startIssue ,tipp.endIssue ,tipp.embargo ,tipp.hostPlatformURL ,tipp.coverageDepth ,tipp.coverageNote, tipp.title.id, ref.value, orgRole.org.name "+base_qry, qry_params, [max:result.max, offset:result.offset]);
+
+    
     def tippIdents = [:]
     def identifiers_query = " select id.value, ns.ns from IdentifierOccurrence as io, Identifier as id, IdentifierNamespace as ns  where io.ti.id = ?  and id.ns = ns  and io.identifier = id and ns.ns in ( 'ISBN', 'ISSN', 'eISSN', 'issn', 'eissn','isbn', 'jusp', 'DOI' )"
     result.tipps.each{ tipp ->
@@ -179,14 +183,6 @@ class PublicExportController {
       tippIdents.put(tipp[11],result_ident)
     }
     
-    def publishers_query = "select role.title.id, role.org.name from OrgRole as role where role.title.id in (:titles) and role.roleType.value = 'Publisher'"
-
-    def all_title_ids = result.tipps.collect{it[11]}
-    def publishers = OrgRole.executeQuery(publishers_query, [titles:all_title_ids])
-    def publisher_map = [:]
-    publishers.each{
-      publisher_map.put(it[0],it[1])
-    }
     
     log.debug("package returning... ${result.num_pkg_rows} rows ");
 
@@ -195,7 +191,6 @@ class PublicExportController {
          def start_date = e[0] ? formatter.format(e[0]) : '';
          def end_date = e[1] ? formatter.format(e[1]) : '';
          def title_doi = getIdentFromMap(e[11],'DOI',tippIdents)?:''
-         def publisher = publisher_map.get(e[11])?:''
 
          def tipp = [:]
          tipp.title=e[2]
@@ -213,7 +208,7 @@ class PublicExportController {
          tipp.doi=title_doi
          tipp.coverageDepth = e[9]?:''
          tipp.coverageNote = e[10]?:''
-         tipp.publisher = publisher?:''
+         tipp.publisher = e[13]?:''
          tipp.hybridOA = e[12]?:''
          processedTipps.add(tipp);
      }
