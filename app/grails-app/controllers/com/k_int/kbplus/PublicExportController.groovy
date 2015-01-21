@@ -178,24 +178,24 @@ class PublicExportController {
       def result_ident = IdentifierOccurrence.executeQuery(identifiers_query,[tipp[11]])
       tippIdents.put(tipp[11],result_ident)
     }
-    def publishers_query = "select role.org.name from OrgRole as role where role.title.id = ? and role.roleType.value = 'Publisher'"
-    def publishers = [:]
-    result.tipps.each {tipp ->
-      def publisher = OrgRole.executeQuery(publishers_query, [tipp[11]])
-      publishers.put(tipp[11],publisher)
+    
+    def publishers_query = "select role.title.id, role.org.name from OrgRole as role where role.title.id in (:titles) and role.roleType.value = 'Publisher'"
+
+    def all_title_ids = result.tipps.collect{it[11]}
+    def publishers = OrgRole.executeQuery(publishers_query, [titles:all_title_ids])
+    def publisher_map = [:]
+    publishers.each{
+      publisher_map.put(it[0],it[1])
     }
-    // result.tippsHybrid = TitleInstancePackagePlatform.executeQuery("select tipp.id, tipp.hybridOA "+base_qry, qry_params)
-    // log.debug("Hybrid OA: ${result.tippsHybrid}")
     
     log.debug("package returning... ${result.num_pkg_rows} rows ");
-    // log.debug("${result.tipps}");
 
     def processedTipps = []  
     result.tipps.each { e ->
          def start_date = e[0] ? formatter.format(e[0]) : '';
          def end_date = e[1] ? formatter.format(e[1]) : '';
          def title_doi = getIdentFromMap(e[11],'DOI',tippIdents)?:''
-         def publisher = publishers.get(e[11])?:''
+         def publisher = publisher_map.get(e[11])?:''
 
          def tipp = [:]
          tipp.title=e[2]
@@ -234,11 +234,8 @@ class PublicExportController {
            writer.write("publication_title,print_identifier,online_identifier,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,title_url,first_author,title_id,embargo_info,coverage_depth,coverage_notes,publisher_name,identifier.jusp,hybrid_oa\n");
 
            processedTipps.each { t ->
-             def start_date = t.startDate 
-             def end_date = t.endDate 
-             def title_doi = t.doi
 
-             writer.write("\"${t.title}\",\"${t.issn}\",\"${t.eissn}\",${start_date},${t.startVolume},${t.startIssue},${end_date},${t.endVolume},${t.endIssue},\"${t.hostPlatformURL}\",,\"${title_doi}\",\"${t.embargo}\",\"${t.coverageDepth}\",\"${t.coverageNote}\",\"${t.publisher}\",\"${t.jusp}\",\"${t.hybridOA}\"\n");
+             writer.write("\"${t.title}\",\"${t.issn}\",\"${t.eissn}\",${t.startDate},${t.startVolume},${t.startIssue},${t.endDate},${t.endVolume},${t.endIssue},\"${t.hostPlatformURL}\",,\"${t.doi}\",\"${t.embargo}\",\"${t.coverageDepth}\",\"${t.coverageNote}\",\"${t.publisher}\",\"${t.jusp}\",\"${t.hybridOA}\"\n");
            }
            writer.flush()
            writer.colse()
@@ -246,7 +243,6 @@ class PublicExportController {
          out.close()
       }
       json {
-         // def jc_id = result.subscriptionInstance.getSubscriber()?.getIdentifierByType('JC')?.value
          def response = [:]
          response.header = [:]
          response.titles = []
@@ -261,6 +257,10 @@ class PublicExportController {
       }
     }
   }
+
+  /**
+  * Iterate the result of indentifiers HQL query in pkg() method, and return the required ident ns.
+  **/
   def getIdentFromMap(id,ns,results){
     def idents = results.get(id)
     def ident_value = null
@@ -271,6 +271,7 @@ class PublicExportController {
     }
     return ident_value
   }
+
   def idx() {
     def base_qry = " from Package as p order by p.name asc"
     def qry_params = []
