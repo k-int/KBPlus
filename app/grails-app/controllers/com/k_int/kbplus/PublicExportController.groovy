@@ -190,6 +190,35 @@ class PublicExportController {
     log.debug("package returning... ${result.num_pkg_rows} rows ");
     // log.debug("${result.tipps}");
 
+    def processedTipps = []  
+    result.tipps.each { e ->
+         def start_date = e[0] ? formatter.format(e[0]) : '';
+         def end_date = e[1] ? formatter.format(e[1]) : '';
+         def title_doi = getIdentFromMap(e[11],'DOI',tippIdents)?:''
+         def publisher = publishers.get(e[11])?:''
+
+         def tipp = [:]
+         tipp.title=e[2]
+         tipp.issn= getIdentFromMap(e[11],'issn',tippIdents)?:''
+         tipp.eissn= getIdentFromMap(e[11],'eissn',tippIdents) ?:''
+         tipp.jusp= getIdentFromMap(e[11],'jusp',tippIdents) ?:''
+         tipp.startDate=start_date;
+         tipp.endDate=end_date;
+         tipp.startVolume=e[3]?:''
+         tipp.endVolume=e[4]?:''
+         tipp.startIssue=e[5]?:''
+         tipp.endIssue=e[6]?:''
+         tipp.embargo=e[7]?:''
+         tipp.hostPlatformURL=e[8]?:''
+         tipp.doi=title_doi
+         tipp.coverageDepth = e[9]?:''
+         tipp.coverageNote = e[10]?:''
+         tipp.publisher = publisher?:''
+         tipp.hybridOA = e[12]?:''
+         processedTipps.add(tipp);
+     }
+     result.tipps = processedTipps
+
     withFormat {
       html result
       csv {
@@ -202,17 +231,14 @@ class PublicExportController {
              writer.write("Package,\"3.0\",,${result.packageInstance.startDate},${result.packageInstance.endDate},\"uri://kbplus/pkg/${result.packageInstance.id}\",${result.packageInstance.impId}\n")
            }
 
-           // Output the body text
-           // writer.write("publication_title,print_identifier,online_identifier,date_first_issue_subscribed,num_first_vol_subscribed,num_first_issue_subscribed,date_last_issue_subscribed,num_last_vol_subscribed,num_last_issue_subscribed,embargo_info,title_url,first_author,title_id,coverage_note,coverage_depth,publisher_name\n");
            writer.write("publication_title,print_identifier,online_identifier,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,title_url,first_author,title_id,embargo_info,coverage_depth,coverage_notes,publisher_name,identifier.jusp,hybrid_oa\n");
 
-           result.tipps.each { t ->
-             def start_date = t.startDate ? formatter.format(t.startDate) : '';
-             def end_date = t.endDate ? formatter.format(t.endDate) : '';
-             def title_doi = (t.title?.getIdentifierValue('DOI'))?:''
-             def publisher = t.title?.publisher
+           processedTipps.each { t ->
+             def start_date = t.startDate 
+             def end_date = t.endDate 
+             def title_doi = t.doi
 
-             writer.write("\"${t.title.title}\",\"${t.title?.getIdentifierValue('ISSN')?:''}\",\"${t?.title?.getIdentifierValue('eISSN')?:''}\",${start_date},${t.startVolume?:''},${t.startIssue?:''},${end_date},${t.endVolume?:''},${t.endIssue?:''},\"${t.hostPlatformURL?:''}\",,\"${title_doi}\",\"${t.embargo?:''}\",\"${t.coverageDepth?:''}\",\"${t.coverageNote?:''}\",\"${publisher?.name?:''}\",\"${t.title?.getIdentifierValue('jusp')?:''}\",\"${t.hybridOA}\"\n");
+             writer.write("\"${t.title}\",\"${t.issn}\",\"${t.eissn}\",${start_date},${t.startVolume},${t.startIssue},${end_date},${t.endVolume},${t.endIssue},\"${t.hostPlatformURL}\",,\"${title_doi}\",\"${t.embargo}\",\"${t.coverageDepth}\",\"${t.coverageNote}\",\"${t.publisher}\",\"${t.jusp}\",\"${t.hybridOA}\"\n");
            }
            writer.flush()
            writer.colse()
@@ -228,35 +254,9 @@ class PublicExportController {
          response.header.version = "2.0"
          response.header.jcid = ''
          response.header.url = "uri://kbplus/pkg/${result.packageInstance.id}"
-         response.header.pkgcount = result.num_pkg_rows
+         response.header.pkgcount = result.num_pkg_rows      
+         response.titles = processedTipps
 
-         result.tipps.each { e ->
-
-             def start_date = e[0] ? formatter.format(e[0]) : '';
-             def end_date = e[1] ? formatter.format(e[1]) : '';
-             def title_doi = getIdentFromMap(e[11],'DOI',tippIdents)?:''
-             def publisher = publishers.get(e[11])?:''
-
-             def tipp = [:]
-             tipp.title=e[2]
-             tipp.issn= getIdentFromMap(e[11],'issn',tippIdents)?:''
-             tipp.eissn= getIdentFromMap(e[11],'eissn',tippIdents) ?:''
-             tipp.jusp= getIdentFromMap(e[11],'jusp',tippIdents) ?:''
-             tipp.startDate=start_date;
-             tipp.endDate=end_date;
-             tipp.startVolume=e[3]?:''
-             tipp.endVolume=e[4]?:''
-             tipp.startIssue=e[5]?:''
-             tipp.endIssue=e[6]?:''
-             tipp.embargo=e[7]?:''
-             tipp.titleUrl=e[8]?:''
-             tipp.doi=title_doi
-             tipp.coverageDepth = e[9]
-             tipp.coverageNote = e[10]
-             tipp.publisher = publisher
-             tipp.hybridOA = e[12]?:''
-             response.titles.add(tipp);
-         }
          render response as JSON
       }
     }
