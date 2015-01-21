@@ -183,6 +183,15 @@ class PublicExportController {
       tippIdents.put(tipp[11],result_ident)
     }
     
+
+    def publishers_query = "select role.title.id, role.org.name from OrgRole as role where role.title.id in (:titles) and role.roleType.value = 'Publisher'"
+
+    def all_title_ids = result.tipps.collect{it[11]}
+    def publishers = OrgRole.executeQuery(publishers_query, [titles:all_title_ids])
+    def publisher_map = [:]
+    publishers.each{
+      publisher_map.put(it[0],it[1])
+    }
     
     log.debug("package returning... ${result.num_pkg_rows} rows ");
 
@@ -191,6 +200,8 @@ class PublicExportController {
          def start_date = e[0] ? formatter.format(e[0]) : '';
          def end_date = e[1] ? formatter.format(e[1]) : '';
          def title_doi = getIdentFromMap(e[11],'DOI',tippIdents)?:''
+
+         def publisher = publisher_map.get(e[11])?:''
 
          def tipp = [:]
          tipp.title=e[2]
