@@ -45,13 +45,21 @@ class MyInstitutionsController {
         // Work out what orgs this user has admin level access to
         def result = [:]
         result.user = User.get(springSecurityService.principal.id)
-        result.userAlerts = alertsService.getAllVisibleAlerts(result.user);
-        result.staticAlerts = alertsService.getStaticAlerts(request);
+        log.debug("index for user with id ${springSecurityService.principal.id} :: ${result.user}");
+
+        if ( result.user ) {
+          result.userAlerts = alertsService.getAllVisibleAlerts(result.user);
+          result.staticAlerts = alertsService.getStaticAlerts(request);
 
 
-        if ((result.user.affiliations == null) || (result.user.affiliations.size() == 0)) {
-            redirect controller: 'profile', action: 'index'
-        } else {
+          if ((result.user.affiliations == null) || (result.user.affiliations.size() == 0)) {
+              redirect controller: 'profile', action: 'index'
+          } else {
+          }
+
+        }
+        else {
+          log.error("Failed to find user in database");
         }
 
         result
@@ -2275,7 +2283,9 @@ AND EXISTS (
 
     def checkUserHasRole(user, org, role) {
         def uoq = UserOrg.createCriteria()
+
         def grants = uoq.list {
+          and {
             eq('user', user)
             eq('org', org)
             formalRole {
@@ -2285,6 +2295,7 @@ AND EXISTS (
                 eq('status', 1);
                 eq('status', 3);
             }
+          }
         }
 
         if (grants && grants.size() > 0)
