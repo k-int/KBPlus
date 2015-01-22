@@ -1,0 +1,4 @@
+select "Initialize date created last updated";
+
+update license set date_created='2013-01-01 12:00:00' where date_created is NULL;
+update license set last_updated='2013-01-01 12:00:00' where last_updated is NULL;

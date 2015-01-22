@@ -30,9 +30,10 @@ class OnixplLicenseControllerTests {
   }
 
   void testCreate() {
+    populateValidParams(params)
     def model = controller.create()
 
-    assert model.onixplLicenseInstance != null
+    assert response.redirectedUrl == '/onixplLicense/show/1'
   }
 
   void testShow() {
@@ -58,18 +59,19 @@ class OnixplLicenseControllerTests {
 
     assert flash.message != null
     assert response.redirectedUrl == '/onixplLicense/list'
-
-    populateValidParams(params)
-    def onixplLicense = new OnixplLicense(params)
-
-    assert onixplLicense.save() != null
-
-    params.id = onixplLicense.id
-
-    def model = controller.edit()
-
-    assert model.onixplLicenseInstance == onixplLicense
   }
+
+  // void testEditSaved(){
+  //   populateValidParams(params)
+  //   def onixplLicense = new OnixplLicense(params)
+
+  //   assert onixplLicense.save() != null
+  //   params['id'] = onixplLicense.id
+
+  //   def model = controller.edit()
+    
+  //   assert model.onixplLicenseInstance == onixplLicense
+  // }
 
   void testDelete() {
     controller.delete()

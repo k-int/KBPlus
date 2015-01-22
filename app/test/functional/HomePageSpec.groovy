@@ -7,6 +7,7 @@ import spock.lang.Stepwise
 class HomePageSpec extends GebReportingSpec {
 	// curl -XDELETE 'http://localhost:9200/kbplustest/'
 	// curl -XPUT 'httop://localhost:9200/kbplustest/'
+
 	// def "Login"(){
 	// 	when:
 	// 	to PublicPage
@@ -32,6 +33,7 @@ class HomePageSpec extends GebReportingSpec {
 		then:
 		browser.page.title.startsWith "Show Org"
 	}
+
 	def "Setup user affiliations"(){
 		when:
 		to ProfilePage
@@ -823,6 +825,19 @@ class HomePageSpec extends GebReportingSpec {
 		then:
 		at MyInstitutionsPage
 	} 
+
+	def "Spotlight Search"(){
+	setup:
+	to ProfilePage
+	when:
+		$("a.dlpopover").click()
+		$("#spotlight_text").value("Art Journals Master")
+		waitFor{$("a", text:"Art Journals:Master:2014")}
+		$("a", text:"Art Journals:Master:2014").click()
+	then:
+		at PackageDetailsPage
+	}
+
 }
 
 
