@@ -119,6 +119,7 @@
                        </g:else>
                        <li class="divider"></li>
                        <li><a href="${message(code:'help.location')}">Help</a></li>
+                       <li><a href="https://sp.kbplus.ac.uk/claimIdentity/notify?remote=${user.username}">Claim Username</a></li>
                     </ul>
                   </li>
                 </g:if>
@@ -241,8 +242,8 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'triggerHousekeeping'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="triggerHousekeeping">Trigger Housekeeping</g:link>
                       </li>
-                      <li <%= ( ( 'enrichment'== controllerName ) && ( 'initiateCoreMigration'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="enrichment" action="initiateCoreMigration">Initiate Core Migration</g:link>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'initiateCoreMigration'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="initiateCoreMigration">Initiate Core Migration</g:link>
                       </li>
                     </ul>
                   </li>
@@ -370,9 +371,11 @@
           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
   </r:script>
+
     <style type="text/css" media="screen, projection">
       @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
     </style>
+
     <r:script type="text/javascript">
       if (typeof(Zenbox) !== "undefined") {
         Zenbox.init({
@@ -385,6 +388,7 @@
         });
       }
   </r:script>
+
   <r:layoutResources/>
 
   </body>

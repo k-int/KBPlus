@@ -20,7 +20,7 @@ grails.project.dependency.resolution = {
     inherits("global") {
         excludes "grails-docs"
         // uncomment to disable ehcache
-        // excludes 'ehcache'
+        excludes 'ehcache'
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     checksums true // Whether to verify checksums on resolve
@@ -52,11 +52,15 @@ grails.project.dependency.resolution = {
 
         mavenRepo "http://nexus.k-int.com/content/repositories/releases"
 
+        // For shibboleth native-sp
+        mavenRepo "http://projects.k-int.com/nexus-webapp-1.4.0/content/repositories/releases"
+
+
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
-        build('org.grails:grails-docs:2.3.7') {
+        build('org.grails:grails-docs:2.3.11') {
             excludes 'itext'
         }
         compile ('com.k-int:goai:1.0.2') {
@@ -66,19 +70,11 @@ grails.project.dependency.resolution = {
         runtime 'xerces:xerces:2.4.0'
         runtime 'xerces:xercesImpl:2.11.0'
         runtime 'mysql:mysql-connector-java:5.1.30'
-        runtime 'com.gmongo:gmongo:1.1'
+        runtime 'com.gmongo:gmongo:1.3'
 
         // Would very much like to upgrade to these - but seems to cause a weird class version error when I do
         runtime 'org.elasticsearch:elasticsearch:1.3.2'
         runtime 'org.elasticsearch:elasticsearch-client-groovy:1.3.2'
-        // Root cause seems to be asm library from lucene clashing with the existing one..
-        // |    \--- org.ow2.asm:asm:4.1
-        // |    \--- org.ow2.asm:asm-commons:4.1
-        // vs these from the existing project
-        // --- cglib:cglib:2.2.2
-        // |    \--- asm:asm:3.3.1
-        // runtime 'org.elasticsearch:elasticsearch:1.0.1'
-        // runtime 'org.elasticsearch:elasticsearch-client-groovy:1.0.1'
 
         runtime 'gov.loc:bagit:4.0'
         runtime 'org.apache.poi:poi:3.8'
@@ -113,10 +109,10 @@ grails.project.dependency.resolution = {
 
     plugins {
         compile ":h2:0.2.6"
-        runtime ':hibernate:3.6.10.2'
-        runtime ":resources:1.2"
+        runtime ':hibernate:3.6.10.16'
+        runtime ":resources:1.2.8"
         runtime ':fields:1.3'
-        compile ":scaffolding:2.0.1"
+        compile ":scaffolding:2.0.3"
         
         // This is commented out so as not to cause probelms in the CI environment
         // compile ":functional-test:2.0.RC1"
@@ -124,11 +120,11 @@ grails.project.dependency.resolution = {
         //runtime ":zipped-resources:1.0"
         //runtime ":cached-resources:1.0"
         //runtime ":yui-minify-resources:0.1.4"
-        build ':tomcat:7.0.40.1'
+        build ':tomcat:7.0.54'
 
         // runtime ":database-migration:1.3.2"
 
-        compile ':cache:1.0.1'
+        compile ':cache:1.1.7'
 
         compile ':mail:1.0.1', {
            excludes 'spring-test'

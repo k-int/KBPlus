@@ -97,14 +97,24 @@ class ZenDeskSyncService {
                 // Only hook up forums if they correspond to our local system identifier
                 if ( system_id == ApplicationHolder.application.config.kbplusSystemId ) {
                   // Lookup package with package_id
-                    def pkg = Package.get(Long.parseLong(package_id))
-                  if ( pkg != null ) {
-                    if ( pkg.forumId == null ) {
-                      log.debug("Update package ${pkg.id} - link to forum ${f.id}");
-                      pkg.forumId = f.id
-                      pkg.save()
+                  try {
+                    Package.withNewTransaction {
+                      def pkg = Package.get(Long.parseLong(package_id))
+                      if ( pkg != null ) {
+                        if ( pkg.forumId == null ) {
+                          log.debug("Update package ${pkg.id} - link to forum ${f.id}");
+                          pkg.forumId = f.id?.toString()
+                          pkg.save(flush:true, failOnError:true)
+                        }
+                      }
                     }
                   }
+                  catch ( Exception e ) {
+                    log.error("Problem setting forum for package",e);
+                  }
+                }
+                else {
+                  log.error("No system id set in config. ApplicationHolder.application.config.kbplusSystemId");
                 }
               }
               else if ( f.name == 'Announcements' ) {

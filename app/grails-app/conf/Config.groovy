@@ -214,19 +214,23 @@ log4j = {
            'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
            'org.springframework',
            'org.hibernate',
-           'net.sf.ehcache.hibernate'
+           'net.sf.ehcache.hibernate',
+           'formfields'
 
     debug  'grails.app.controllers',
            'grails.app.service',
            'grails.app.services',
            'grails.app.domain',
-           // 'grails.app.tagLib',
            'grails.app.conf',
            'grails.app.jobs',
            'grails.app.conf.BootStrap',
-           'edu.umn.shibboleth.sp'
-        //   'com.k_int'
-        // 'org.springframework.security'
+           //'edu.umn.shibboleth.sp',
+           'com.k_int',
+           // 'org.springframework.security'
+           'org.codehaus.groovy.grails.plugins.springsecurity',
+           'some.domain.logging'
+
+           // 'grails.app.tagLib',
 
     // info   'com.linkedin.grails'
 }
@@ -238,10 +242,11 @@ grails.plugins.springsecurity.userLookup.usernamePropertyName='username'
 grails.plugins.springsecurity.authority.className = 'com.k_int.kbplus.auth.Role'
 grails.plugins.springsecurity.securityConfigType = "Annotation"
 
-grails.plugins.springsecurity.providerNames = ['preAuthenticatedAuthenticationProvider', 
+grails.plugins.springsecurity.providerNames = ['preAuthenticatedAuthenticationProvider',
                                                'daoAuthenticationProvider', 
-                                               'anonymousAuthenticationProvider', 
-                                               'rememberMeAuthenticationProvider' ]
+//                                               'anonymousAuthenticationProvider', 
+//                                               'rememberMeAuthenticationProvider' 
+                                              ]
 
 grails.plugins.springsecurity.controllerAnnotations.staticRules = [ 
         '/monitoring/**': ['ROLE_ADMIN'] 
