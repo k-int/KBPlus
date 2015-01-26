@@ -722,7 +722,6 @@ class AjaxController {
 
     def contextObj = resolveOID2(params.__context)
     def domain_class = grailsApplication.getArtefact('Domain',params.__newObjectClass)
-
     if ( domain_class ) {
 
       if ( contextObj ) {
@@ -763,6 +762,7 @@ class AjaxController {
           // log.debug("Saved OK");
         }
         else {
+          flash.domainError = new_obj
           new_obj.errors.each { e ->
             log.debug("Problem ${e}");
           }
@@ -776,7 +776,6 @@ class AjaxController {
     else {
       log.error("Unable to ookup domain class ${params.__newObjectClass}");
     }
-
     redirect(url: request.getHeader('referer'))
   }
 

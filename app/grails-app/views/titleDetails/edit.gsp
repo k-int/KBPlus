@@ -24,6 +24,20 @@
             <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
             </g:if>
 
+
+
+             <g:hasErrors bean="${flash.domainError}">
+                    <bootstrap:alert class="alert-error">
+                    <ul>
+                        <g:eachError bean="${flash.domainError}" var="error">
+                            <li> <g:message error="${error}"/></li>
+                        </g:eachError>
+                    </ul>
+                    </bootstrap:alert>
+              </g:hasErrors>
+
+
+
             <g:if test="${flash.error}">
             <bootstrap:alert class="alert-info">${flash.error}</bootstrap:alert>
             </g:if>
