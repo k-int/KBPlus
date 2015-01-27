@@ -5,5 +5,6 @@ do
   year=`echo $line | cut -d, -f3`
 
   echo $inst $title $year
-  curl "http://localhost:8080/demo/api/assertCore?inst=jusplogin:$inst&title=jusp:$title&year=$year"
+  curl -d inst=jusplogin:$inst -d title=jusp:$title -d year=$year "http://localhost:8080/demo/api/assertCore" 
+
 done
