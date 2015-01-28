@@ -2,3 +2,6 @@ select "Initialize date created last updated";
 
 update license set date_created='2013-01-01 12:00:00' where date_created is NULL;
 update license set last_updated='2013-01-01 12:00:00' where last_updated is NULL;
+
+UPDATE identifier_namespace SET idns_val_regex='(97(8|9))?[0-9]{9}[0-9X]' WHERE idns_ns='eissn';
+UPDATE identifier_namespace SET idns_val_regex='[0-9]{4}-[0-9]{3}[0-9X]' WHERE idns_ns='issn';
