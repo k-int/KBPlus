@@ -20,11 +20,4 @@ class IdentifierNamespace {
     hide nullable:true, blank:false
     validationRegex nullable:true, black:false
   }
-
-  def beforeInsert() {
-      beforeUpdate()
-  }
-  def beforeUpdate() {
-    ns = ns.toUpperCase()
-  }
 }
