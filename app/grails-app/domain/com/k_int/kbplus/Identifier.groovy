@@ -45,10 +45,7 @@ class Identifier {
       if ( namespace && qp.size() == 2) {
         ql = Identifier.findAllByNsAndValueIlike(namespace,"${qp[1]}%")
       }
-      else if(!namespace) {
-        throw new java.lang.IllegalArgumentException("No namespace '${qp[0]}' exists.")
-
-      }
+      
     }
     else {
       ql = Identifier.findAllByValueIlike("${params.q}%",params)
