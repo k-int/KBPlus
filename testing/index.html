@@ -1,0 +1,83 @@
+
+
+For full documentation of the following functions, please visit <a href="https://github.com/k-int/KBPlus/wiki/JUSP-API-Documentation"> our wiki page</a>. By default this page targets to http://test.kbplus.ac.uk/kbplus.
+
+<p> Following is a list of titles and institutions that can be used for testing.</p>
+
+<ul>
+<li> title - 5430 | inst = abd </li>
+<li> title - 5430 | inst = abd </li>
+<li> title - 5430 | inst = abd </li>
+<li> title - 5430 | inst = abd </li>
+<li> title - 5430 | inst = abd </li>
+
+</ul>
+
+<p><b>titleInstitutionProvider</b> get the TitleInstitutionProvider object for the given title and institution.</p>
+
+ <form method="GET" action="http://test.kbplus.ac.uk/kbplus/jusp/titleInstitutionProvider" >
+        <dl>
+          <dt>Jusp Title</dt>
+          <dd> <input type="text" name="jusp_ti"/></dd>
+          <dt>Jusp Inst</dt>
+          <dd> <input type="text" name="jusp_inst"/></dd>
+          <dt> Format</dt>
+          <dd> <select name="format">
+            <option value="html">html</option>
+            <option value="json">json</option>
+            </select>
+          </dd>
+        </dl>
+        <input type="submit" class="btn btn-primary"/>
+  </form>
+
+
+
+<p> <b>titleInstProvCoreStatus</b> Return the core status for the provided lookup date. 
+If no date is provided, lookup date of 'today' will be assumed. </p>
+
+
+ <form method="GET" action="http://test.kbplus.ac.uk/kbplus/jusp/titleInstProvCoreStatus" >
+        <dl>
+          <dt>Jusp Title</dt>
+          <dd> <input type="text" name="jusp_ti"/></dd>
+          <dt>Jusp Inst</dt>
+          <dd> <input type="text" name="jusp_inst"/></dd>
+          <dt>Lookup Date (yyyy-MM-dd)</dt>
+          <dd> <input type="text" name="lookupDate" placeholder="2014-10-15"/></dd>
+          <dt> Format</dt>
+          <dd> <select name="format">
+            <option value="html">html</option>
+            <option value="json">json</option>
+            </select>
+          </dd>
+        </dl>
+        <input type="submit" class="btn btn-primary"/>
+  </form>
+
+
+
+<p><b>addCoreAssertionDates</b>:: The new core assertion dates will be either represented by modi
+fiying existing dates, or by creating new ones.</p>
+
+ <form method="GET" action="http://test.kbplus.ac.uk/kbplus/jusp/addCoreAssertionDates" >
+        <dl>
+          <dt>Jusp Title</dt>
+          <dd> <input type="text" name="jusp_ti"/></dd>
+          <dt>Jusp Inst</dt>
+          <dd> <input type="text" name="jusp_inst"/></dd>
+          <dt>Core Start Date (yyyy-MM-dd)</dt>
+          <dd> <input type="text" name="core_start" placeholder="2014-10-15"/></dd>
+          <dt>Core End Date (yyyy-MM-dd)</dt>
+          <dd> <input type="text" name="core_end" placeholder="2014-10-15"/></dd>
+          <dt> Format</dt>
+          <dd> <select name="format">
+            <option value="html">html</option>
+            <option value="json">json</option>
+            </select>
+          </dd>
+        </dl>
+        <input type="submit" class="btn btn-primary"/>
+  </form>
+
+

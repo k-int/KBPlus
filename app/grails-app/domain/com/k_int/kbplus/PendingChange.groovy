@@ -23,7 +23,7 @@ class PendingChange {
       subscription column:'pc_sub_fk'
            license column:'pc_lic_fk'
                pkg column:'pc_pkg_fk'
-               oid column:'pc_oid'
+               oid column:'pc_oid', index:'pending_change_oid_idx'
          changeDoc column:'pc_change_doc', type:'text'
                 ts column:'pc_ts'
              owner column:'pc_owner'

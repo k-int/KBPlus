@@ -36,7 +36,7 @@ class Doc {
               type column:'doc_type_rv_fk'
              alert column:'doc_alert_fk'
        contentType column:'doc_content_type'
-              uuid column:'doc_docstore_uuid'
+              uuid column:'doc_docstore_uuid', index:'doc_uuid_idx'
              title column:'doc_title'
            creator column:'doc_creator'
           filename column:'doc_filename'
