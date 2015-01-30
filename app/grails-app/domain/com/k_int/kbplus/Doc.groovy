@@ -33,7 +33,7 @@ class Doc {
                 id column:'doc_id'
            version column:'doc_version'
             status column:'doc_status_rv_fk'
-              type column:'doc_type_rv_fk'
+              type column:'doc_type_rv_fk', index:'doc_type_idx'
              alert column:'doc_alert_fk'
        contentType column:'doc_content_type'
               uuid column:'doc_docstore_uuid', index:'doc_uuid_idx'

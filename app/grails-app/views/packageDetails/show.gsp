@@ -536,7 +536,7 @@
     <g:render template="enhanced_select" contextPath="../templates" />
     <g:render template="orgLinksModal" 
               contextPath="../templates" 
-              model="${[roleLinks:packageInstance?.orgs,parent:packageInstance.class.name+':'+packageInstance.id,property:'orgs',recip_prop:'pkg']}" />
+              model="${[linkType:packageInstance?.class?.name,roleLinks:packageInstance?.orgs,parent:packageInstance.class.name+':'+packageInstance.id,property:'orgs',recip_prop:'pkg']}" />
 
     <r:script language="JavaScript">
       $(function(){
