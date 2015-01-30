@@ -14,6 +14,7 @@ class JuspController {
   def index() {
     log.debug("JuspController");
   }
+
  /**
   * Expecting jusp_ti and jusp_inst
   **/

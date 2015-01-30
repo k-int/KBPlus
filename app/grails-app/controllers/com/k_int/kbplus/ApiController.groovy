@@ -23,11 +23,11 @@ class ApiController {
   def springSecurityService
 
 
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  // @Secured(['ROLE_API', 'IS_AUTHENTICATED_FULLY'])
   def index() { 
   }
 
-  // @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  // @Secured(['ROLE_API', 'IS_AUTHENTICATED_FULLY'])
   def uploadBibJson() {
     def result=[:]
     log.debug("uploadBibJson");
