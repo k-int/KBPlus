@@ -25,11 +25,21 @@
             <dl>         
                 <dt><label class="control-label">Role</label></dt>
                 <dd>    
-                <g:select name="orm_orgRole" 
+                <g:if test="${linkType}">
+                    <g:select name="orm_orgRole" 
+                          noSelection="${['':'Select One...']}" 
+                          from="${com.k_int.kbplus.RefdataValue.findAllByOwnerAndGroup(com.k_int.kbplus.RefdataCategory.findByDesc('Organisational Role'),linkType)}" 
+                          optionKey="id" 
+                          optionValue="value"/>
+                </g:if>
+                <g:else>
+                    <g:select name="orm_orgRole" 
                           noSelection="${['':'Select One...']}" 
                           from="${com.k_int.kbplus.RefdataValue.findAllByOwner(com.k_int.kbplus.RefdataCategory.findByDesc('Organisational Role'))}" 
                           optionKey="id" 
                           optionValue="value"/>
+                </g:else>
+
                 </dd>
             </dl>
 

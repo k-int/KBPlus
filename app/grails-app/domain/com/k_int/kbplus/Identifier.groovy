@@ -9,6 +9,12 @@ class Identifier {
   static mappedBy = [ occurrences:'identifier' ]
 
   static constraints = {
+    value validator: {val,obj ->
+      if (obj.ns.validationRegex){
+        def pattern = ~/${obj.ns.validationRegex}/
+        return pattern.matcher(val).matches() 
+      }
+    }
   }
 
   static mapping = {

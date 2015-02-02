@@ -24,6 +24,20 @@
             <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
             </g:if>
 
+
+
+             <g:hasErrors bean="${flash.domainError}">
+                    <bootstrap:alert class="alert-error">
+                    <ul>
+                        <g:eachError bean="${flash.domainError}" var="error">
+                            <li> <g:message error="${error}"/></li>
+                        </g:eachError>
+                    </ul>
+                    </bootstrap:alert>
+              </g:hasErrors>
+
+
+
             <g:if test="${flash.error}">
             <bootstrap:alert class="alert-info">${flash.error}</bootstrap:alert>
             </g:if>
@@ -62,37 +76,8 @@
               </g:form>
             </g:if>
             <h3>Org Links</h3>
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>ID</td>
-                  <th>Org</th>
-                  <th>Role</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <g:each in="${ti.orgs}" var="org">
-                  <tr>
-                    <td>${org.id}</td>
-                    <td>${org.org.name}</td>
-                    <td>${org.roleType.value}</td>
-                    <td><g:if test="${editable}"><g:link controller="ajax" action="deleteThrough" params='${[contextOid:"${ti.class.name}:${ti.id}",contextProperty:"orgs",targetOid:"${org.class.name}:${org.id}"]}'>Delete Org Link</g:link></g:if></td>
-                  </tr>
-                </g:each>
-              </tbody>
-            </table>
 
-            <g:if test="${editable}">
-              <g:form id="addOrgForm" controller="ajax" action="addToCollection" class="form-inline" onsubmit="return validateAddOrgForm()">
-                <input type="hidden" name="__context" value="${ti.class.name}:${ti.id}"/>
-                <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.OrgRole"/>
-                <input type="hidden" name="__recip" value="title"/>
-                <input type="hidden" name="org" id="addOrgSelect"/>
-                <input type="hidden" name="roleType" id="orgRoleSelect"/>
-                <input type="submit" value="Add Org Role..." class="btn btn-primary btn-small"/>
-              </g:form>
-            </g:if>
+          <g:render template="orgLinks" contextPath="../templates" model="${[roleLinks:ti?.orgs,editmode:editable]}" />
 
           </div>
         </div>
@@ -131,6 +116,9 @@
 
       </div>
 
+    <g:render template="orgLinksModal" 
+              contextPath="../templates" 
+              model="${[linkType:ti?.class?.name,roleLinks:ti?.orgs,parent:ti.class.name+':'+ti.id,property:'orgLinks',recip_prop:'title']}" />
 
   <r:script language="JavaScript">
 

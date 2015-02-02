@@ -319,7 +319,7 @@
 
     <g:render template="orgLinksModal" 
               contextPath="../templates" 
-              model="${[roleLinks:subscriptionInstance?.orgRelations,parent:subscriptionInstance.class.name+':'+subscriptionInstance.id,property:'orgs',recip_prop:'sub']}" />
+              model="${[linkType:subscriptionInstance?.class?.name,roleLinks:subscriptionInstance?.orgRelations,parent:subscriptionInstance.class.name+':'+subscriptionInstance.id,property:'orgs',recip_prop:'sub']}" />
 
     <r:script language="JavaScript">
       <g:if test="${editable}">
