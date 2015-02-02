@@ -117,8 +117,9 @@ class AdminController {
        default:
          break;
      }
-      result.usersAll = User.list(sort:"display", order:"desc")
-      result.usersActive = User.findByEnabled(true)
+      result.usersAll = User.list(sort:"display", order:"asc")
+      def activeHQL = " from User as usr where usr.enabled=true or usr.enabled=null order by display asc"
+      result.usersActive = User.executeQuery(activeHQL)
 
     result
   }

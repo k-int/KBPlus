@@ -23,11 +23,11 @@ class ApiController {
   def springSecurityService
 
 
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  // @Secured(['ROLE_API', 'IS_AUTHENTICATED_FULLY'])
   def index() { 
   }
 
-  // @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  // @Secured(['ROLE_API', 'IS_AUTHENTICATED_FULLY'])
   def uploadBibJson() {
     def result=[:]
     log.debug("uploadBibJson");
@@ -97,7 +97,7 @@ class ApiController {
         def inst = Org.lookupByIdentifierString(params.inst);
         def title = TitleInstance.lookupByIdentifierString(params.title);
         def provider = params.provider ? Org.lookupByIdentifierString(params.provider) : null;
-        def year = params.year
+        def year = params.year?.trim()
 
         log.debug("assertCore ${params.inst}:${inst} ${params.title}:${title} ${params.provider}:${provider}");
 
