@@ -45,7 +45,6 @@ class Identifier {
       if ( namespace && qp.size() == 2) {
         ql = Identifier.findAllByNsAndValueIlike(namespace,"${qp[1]}%")
       }
-      
     }
     else {
       ql = Identifier.findAllByValueIlike("${params.q}%",params)
