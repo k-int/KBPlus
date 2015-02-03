@@ -1,1 +1,1 @@
-select 'This is the auto-run upgrade script that converts the database from KB+ 4.1 to KB+ 4.2';
+ select 'This is the auto-run upgrade script that converts the database from KB+ 4.1 to KB+ 4.2';
