@@ -105,6 +105,7 @@ grails.project.dependency.resolution = {
         // II Commented out..
         // compile 'cglib:cglib:2.2.2'
         compile "com.lowagie:itext:2.1.7"
+
     }
 
     plugins {
@@ -153,5 +154,6 @@ grails.project.dependency.resolution = {
         runtime ":rest:0.7"
         compile ":grails-melody:1.53.0"
         // runtime "com.k-int:domain-model-oai-pmh:0.1"
+        compile ":jsonp:0.2"
     }
 }
