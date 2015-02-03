@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+  </head>
+  <body>
+    <script language="JavaScript">
+
+      function getCoreStatus(jid, sid, pid) {
+        $.ajax({
+          url: "http://localhost:8080/demo/jusp/TitleInstitutionProvider?jusp_ti=5430&jusp_inst=abd&format=json"
+        }).then(function(data) {
+          alert(data);
+        });
+      }
+
+      $(function() {
+        // Handler for .ready() called.
+        getCoreStatus('1','2','3');
+      });
+    </script>
+  </body>
+</html>
