@@ -1,16 +1,32 @@
 <html>
   <head>
-    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
   </head>
   <body>
+
+    <p>Jusp core status information for Title(*):<span id="titleId"></span> 
+       Institution(*)<span id="institutionId"></span> 
+       Provider<span id="providerId"></span> 
+       on <span id="reqDate"></span></p>
+
+    <table id="coreDates">
+      <tr>
+        <th>From</th>
+        <th>To</th>
+      </tr>
+    </table>
+
     <script language="JavaScript">
 
       function getCoreStatus(jid, sid, pid) {
         $.ajax({
-          url: "http://localhost:8080/demo/jusp/TitleInstitutionProvider?jusp_ti=5430&jusp_inst=abd&format=json"
-        }).then(function(data) {
-          alert(data);
+          url: "http://localhost:8080/demo/jusp/TitleInstitutionProvider?jusp_ti=5430&jusp_inst=abd&format=json",
+          jsonp: "callback",
+          dataType: "jsonp",
+          success: function( response ) {
+            console.log( response ); // server response
+          }
         });
       }
 
