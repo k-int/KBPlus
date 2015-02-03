@@ -32,18 +32,20 @@ class JuspController {
       def orgtitle
       if(title && org) {
         orgtitle = OrgTitleInstance.executeQuery("select orgti from OrgTitleInstance orgti where orgti.title = ? and orgti.org = ?",[title,org])[0] 
+        if(orgtitle == null){
+          orgtitle = new OrgTitleInstance(title:title,org:org,isCore:false).save()
+          log.debug("NEW ORG TITLE")
+        }
+        log.debug ("ORG TITLE ID ${orgtitle?.id}")
+        result.data = orgtitle
+        result.status= "ok"
       }else{
         def wrongIDs = " "
         if (!title) wrongIDs += "JUSP title: ${params.jusp_ti} "
         if(!org) wrongIDs += "JUSP organization: ${params.jusp_inst}"
-        result.wrongIDs = wrongIDs
+        result.data = wrongIDs
+        result.status= "error"
       }
-      if(orgtitle == null){
-        orgtitle = new OrgTitleInstance(title:title,org:org,isCore:false).save()
-        log.debug("NEW ORG TITLE")
-      }
-      log.debug ("ORG TITLE ID ${orgtitle?.id}")
-      result.orgtitle = orgtitle
     }
     withFormat {
       html {
@@ -68,16 +70,20 @@ class JuspController {
       def tiInstProv = getTIP(params.jusp_ti,params.jusp_inst, params.jusp_prov)
       if(tiInstProv){
         //Go through all the result TIP, add them as keys and their coreAssertion dates as values.
-        result.listOfTip = [:]
+        result.data = [:]
         tiInstProv.each{ tip ->   
           def coreDatesList = []
           tip.coreDates.each{ coreDate ->
             coreDatesList.push(coreDate)
           }
-          result.listOfTip.put(tip, coreDatesList)
+          result.data.put(tip, coreDatesList)
         }
+        result.status="ok"
+        result.count=tiInstProv.size()
       }else{
-        result.error = "No TitleInstitutionProvider found for the given parameters"
+        result.data = "No TitleInstitutionProvider found for the given parameters"
+        result.status="error"
+        result.count=0
       }  
     }
     withFormat{
@@ -92,6 +98,44 @@ class JuspController {
     }
     result  
  }
+ /**
+ * Return all titles for a given institution, with core status true for the given date range
+ * @param jusp_inst: The jusp institution ID
+ * @param core_start: The earliest core start date for target titles
+ * @param core_end: The latest core end date for target titles
+ * @return jIdList: A list of jusp title identifiers.
+ */
+ def coreTitles(){
+    log.debug("JuspController::coreTitles")
+    def result = [:]
+    if(params.jusp_inst && params.core_start && params.core_end){
+        def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd')
+        def coreStart = dateFormatter.parse(params.core_start)
+        def coreEnd = dateFormatter.parse(params.core_end)
+
+        def insthql = "select org from Org org where exists ( select io from IdentifierOccurrence io, Identifier id, IdentifierNamespace ns where io.org = org and id.ns = ns and io.identifier = id and ns.ns = 'jusplogin' and id.value like ? )" 
+        def insti = Org.executeQuery(insthql, [params.jusp_inst])[0]
+
+        if(insti){
+          //First we find all the titles within the given date range
+          def titlesHQL = "select tip.title.id from TitleInstitutionProvider tip join tip.coreDates as coreDates where tip.institution=:insti and coreDates.startDate <= :coreStart and coreDates.endDate >= :coreEnd"
+          def titleIdentifiers = TitleInstitutionProvider.executeQuery(titlesHQL,[insti:insti,coreStart:coreStart,coreEnd:coreEnd])
+          //Then we select the jusp identifiers for those titles
+          def jusp_ti_hql = "select id.value from IdentifierOccurrence io, Identifier id, IdentifierNamespace ns where io.ti.id in (:idents) and id.ns = ns and io.identifier = id and ns.ns = 'jusp'"
+          result.data = IdentifierOccurrence.executeQuery(jusp_ti_hql,[idents:titleIdentifiers])
+          result.status= "ok"
+          result.count=result.data.size()
+        }
+    }else{
+      result.data = "Not all parameters provided (jusp_inst, core_start, core_end). Date format yyyy-MM-dd"
+      result.status = "error"
+      result.count = "0"
+    }
+    def json = result as JSON
+    response.contentType = "application/json"
+    render json
+
+ }
 
  def titleInstProvCoreStatus(){
     log.debug("JuspController::titleInstProvCoreStatus ${params}");
@@ -105,12 +149,12 @@ class JuspController {
           def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd')
           lookupDate = dateFormatter.parse(params.lookupDate)
         }
-        result.coreStatus = tiInstProv.coreStatus(lookupDate)
-        result.status = "OK"
+        result.data = tiInstProv.coreStatus(lookupDate)
+        result.status = "ok"
       }
     }else{
-      result.error = "Please provide all the required parameters, jusp_ti, jusp_inst."
-      result.status = "ERROR"
+      result.data = "Please provide all the required parameters, jusp_ti, jusp_inst."
+      result.status = "error"
     }
     def json = result as JSON        
     response.contentType = "application/json"
@@ -129,12 +173,12 @@ class JuspController {
         def coreEnd = params.core_end ? dateFormatter.parse(params.core_end) : null
         tiInstProv.extendCoreExtent(coreStart, coreEnd)
         tiInstProv.save()
-        result.coreStatus = tiInstProv.coreStatus(null)
-        result.status = "OK"
+        result.data = tiInstProv.coreStatus(null)
+        result.status = "ok"
       }
     }else{
-      result.error = "Please provide all the required parameters, jusp_ti, jusp_inst, core_start, core_end."
-      result.status = "ERROR"
+      result.data = "Please provide all the required parameters, jusp_ti, jusp_inst, core_start, core_end."
+      result.status = "error"
     }
     def json = result as JSON        
     response.contentType = "application/json"
@@ -157,26 +201,38 @@ class JuspController {
   }
 
  def getTIP(jusp_ti, jusp_inst, jusp_prov){
-    def titlehql = "select ti from TitleInstance ti where exists ( select io from IdentifierOccurrence io, Identifier id, IdentifierNamespace ns where io.ti = ti and id.ns = ns and io.identifier = id and ns.ns = 'jusp' and id.value like ? )"
-    def insthql = "select org from Org org where exists ( select io from IdentifierOccurrence io, Identifier id, IdentifierNamespace ns where io.org = org and id.ns = ns and io.identifier = id and ns.ns = 'jusplogin' and id.value like ? )"
-    def title = TitleInstance.executeQuery(titlehql,[jusp_ti])[0]
+    def insthql = "select org from Org org where exists ( select io from IdentifierOccurrence io, Identifier id, IdentifierNamespace ns where io.org = org and id.ns = ns and io.identifier = id and ns.ns = 'jusplogin' and id.value like ? )" 
     def insti = Org.executeQuery(insthql, [jusp_inst])[0]
+    
+    def title = null;
+    if(jusp_ti){  
+      def titlehql = "select ti from TitleInstance ti where exists ( select io from IdentifierOccurrence io, Identifier id, IdentifierNamespace ns where io.ti = ti and id.ns = ns and io.identifier = id and ns.ns = 'jusp' and id.value like ? )"
+      title = TitleInstance.executeQuery(titlehql,[jusp_ti])[0]
+    }
+
     def prov = null
     if(jusp_prov) {
       prov = Org.executeQuery(insthql, [jusp_prov])[0]
     } 
     log.debug("TITLES FOUND ${title}")
 
-    def tiInstProv
-    if(title && insti) {
-      def query_str = "select tip from TitleInstitutionProvider tip where tip.title = ? and tip.institution = ?"
+    def tiInstProv = null
+    if(insti){
+      def query_params = [insti]
+      def query_str = "select tip from TitleInstitutionProvider tip where tip.institution=?"
+      if(title){
+        query_str += " and tip.title=?"
+        query_params += title
+      }  
       if(prov){
-        tiInstProv = TitleInstitutionProvider.executeQuery("${query_str} and tip.provider = ?",[title,insti,prov])
-      }else{
-        tiInstProv = TitleInstitutionProvider.executeQuery(query_str,[title,insti])
-        }
+        query_str += " and tip.provider=?"
+        query_params += prov
+      }    
+
+      tiInstProv = TitleInstitutionProvider.executeQuery(query_str,query_params)
     }
+    
     return tiInstProv
  }
- 
+
 }

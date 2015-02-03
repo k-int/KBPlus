@@ -8,7 +8,7 @@
       </tr>
     </thead>
     <tbody>
-      <g:each in="${listOfTip}" var="tipmap">
+      <g:each in="${data}" var="tipmap">
       	<g:each in="${tipmap.value}" var="coreDate">
         <tr>
           <td>${coreDate.tiinp.id}</td>
