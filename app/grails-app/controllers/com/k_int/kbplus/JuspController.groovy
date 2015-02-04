@@ -41,8 +41,8 @@ class JuspController {
         result.status= "ok"
       }else{
         def wrongIDs = " "
-        if (!title) wrongIDs += "JUSP title: ${params.jusp_ti} "
-        if(!org) wrongIDs += "JUSP organization: ${params.jusp_inst}"
+        if (!title) wrongIDs += "No title found for jusp_ti:${params.jusp_ti} "
+        if(!org) wrongIDs += "No institution found for jusp_inst:${params.jusp_inst} "
         result.data = wrongIDs
         result.status= "error"
       }
@@ -81,10 +81,14 @@ class JuspController {
         result.status="ok"
         result.count=tiInstProv.size()
       }else{
-        result.data = "No TitleInstitutionProvider found for the given parameters"
-        result.status="error"
+        result.data = ""
+        result.status="ok"
         result.count=0
       }  
+    }else{
+      result.data= "Required parameters: jusp_ti, jusp_inst"
+      result.status="error"
+      result.count=0
     }
     withFormat{
       html {
@@ -125,11 +129,15 @@ class JuspController {
           result.data = IdentifierOccurrence.executeQuery(jusp_ti_hql,[idents:titleIdentifiers])
           result.status= "ok"
           result.count=result.data.size()
+        }else{
+          result.data=""
+          result.status="ok"
+          result.count=0
         }
     }else{
-      result.data = "Not all parameters provided (jusp_inst, core_start, core_end). Date format yyyy-MM-dd"
+      result.data = "Required parameters: jusp_inst, core_start, core_end "
       result.status = "error"
-      result.count = "0"
+      result.count = 0
     }
     def json = result as JSON
     response.contentType = "application/json"
@@ -151,9 +159,12 @@ class JuspController {
         }
         result.data = tiInstProv.coreStatus(lookupDate)
         result.status = "ok"
+      }else{
+        result.data=""
+        result.status= "ok"
       }
     }else{
-      result.data = "Please provide all the required parameters, jusp_ti, jusp_inst."
+      result.data = "Required parameters: jusp_ti, jusp_inst, (optional) lookupDate "
       result.status = "error"
     }
     def json = result as JSON        
@@ -164,21 +175,31 @@ class JuspController {
  def addCoreAssertionDates(){
     log.debug("JuspController::addCoreAssertionDates ${params}");
     def result = [:]
-    if(params.jusp_ti && params.jusp_inst && params.core_start && params.core_end ) {
+    if(params.jusp_ti && params.jusp_inst && params.core_start ) {
       def tiInstProv = getTIP(params.jusp_ti,params.jusp_inst, params.jusp_prov)
       tiInstProv = tiInstProv[0]//FIXME: Should we care for lists?
-      if(tiInstProv && params.core_start){
+      if(tiInstProv){
         def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd')
         def coreStart = dateFormatter.parse(params.core_start)
         def coreEnd = params.core_end ? dateFormatter.parse(params.core_end) : null
         tiInstProv.extendCoreExtent(coreStart, coreEnd)
-        tiInstProv.save()
-        result.data = tiInstProv.coreStatus(null)
+        tiInstProv.refresh()
+        def coreDatesList = []
+        tiInstProv.coreDates.each{ coreDate ->
+          coreDatesList.push(coreDate)
+        }
+        result.data =coreDatesList
         result.status = "ok"
+        result.count = coreDatesList.size()
+      }else{
+        result.data=""
+        result.status="ok"
+        result.count = 0
       }
     }else{
-      result.data = "Please provide all the required parameters, jusp_ti, jusp_inst, core_start, core_end."
+      result.data = "Required parameters: jusp_ti, jusp_inst, core_start, (optional) core_end"
       result.status = "error"
+      result.count = 0
     }
     def json = result as JSON        
     response.contentType = "application/json"
@@ -204,33 +225,27 @@ class JuspController {
     def insthql = "select org from Org org where exists ( select io from IdentifierOccurrence io, Identifier id, IdentifierNamespace ns where io.org = org and id.ns = ns and io.identifier = id and ns.ns = 'jusplogin' and id.value like ? )" 
     def insti = Org.executeQuery(insthql, [jusp_inst])[0]
     
-    def title = null;
-    if(jusp_ti){  
-      def titlehql = "select ti from TitleInstance ti where exists ( select io from IdentifierOccurrence io, Identifier id, IdentifierNamespace ns where io.ti = ti and id.ns = ns and io.identifier = id and ns.ns = 'jusp' and id.value like ? )"
-      title = TitleInstance.executeQuery(titlehql,[jusp_ti])[0]
-    }
+    def titlehql = "select ti from TitleInstance ti where exists ( select io from IdentifierOccurrence io, Identifier id, IdentifierNamespace ns where io.ti = ti and id.ns = ns and io.identifier = id and ns.ns = 'jusp' and id.value like ? )"
+    def title = TitleInstance.executeQuery(titlehql,[jusp_ti])[0]
+    
 
     def prov = null
     if(jusp_prov) {
       prov = Org.executeQuery(insthql, [jusp_prov])[0]
     } 
-    log.debug("TITLES FOUND ${title}")
 
-    def tiInstProv = null
-    if(insti){
-      def query_params = [insti]
-      def query_str = "select tip from TitleInstitutionProvider tip where tip.institution=?"
-      if(title){
-        query_str += " and tip.title=?"
-        query_params += title
-      }  
-      if(prov){
-        query_str += " and tip.provider=?"
-        query_params += prov
-      }    
+    def query_params = [insti]
+    def query_str = "select tip from TitleInstitutionProvider tip where tip.institution=?"
+    query_str += " and tip.title=?"
+    query_params += title
+    
+    if(prov){
+      query_str += " and tip.provider=?"
+      query_params += prov
+    }    
 
-      tiInstProv = TitleInstitutionProvider.executeQuery(query_str,query_params)
-    }
+    def tiInstProv = TitleInstitutionProvider.executeQuery(query_str,query_params)
+    
     
     return tiInstProv
  }
