@@ -2,69 +2,139 @@
   <head>
     <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
     <script type="text/javascript" >
-
-      function getCoreStatus(jid, sid, pid) {
-        $.ajax({
-          url: "http://localhost:8080/demo/jusp/TitleInstitutionProvider?jusp_ti=5430&jusp_inst=abd&format=json",
-          dataType: "jsonp",
-          jsonpCallback: 'formatJUSPResults',
+    
+      // Ensure the $ var is set.
+      (function($) {
+    	
+    	// Error handler that will be used to generically handle all errors.
+    	function apiError ( message ) {
+    	  console.error (message);
+    	  alert ( message );
+    	}
+    	
+        function callAPIMethod (method, type, params, callback) {
+        
+          // Do the ajax call using jsonp to allow this request to come from a different origin.
+          $.ajax({
+            "url"           : "http://localhost:8080/demo/jusp/" + method, //titleInstitutionProvider?jusp_ti=5430&jusp_inst=abd&format=json",
+            "data"          : params, 
+            "type"          : type,
+            "dataType"      : "jsonp",
+            "jsonpCallback" : callback,
+            "jsonp" : "callback",
+          });
+      
+          // On failure.
+          //.fail (function (jqXHR, textStatus, errorThrown) {
+        	//apiError ("The API call failed: " + errorThrown);
+          //});
+        }
+        
+        // Add a ready function.
+        $(document).ready(function() {
+        	
+        	
+          // Add the submit handler to each form. These forms will actually use AJAX to retrieve
+          // the data. Each form should set 2 attributes (data-method and data-callback) which represents the
+          // api method called against the api url and the method where the results are passed.
+          $("form").submit(function(event){
+        	
+        	// Grab the values from the form.
+        	var form = $(this);
+        	
+        	// Form properties.
+        	var api_method = form.attr("data-method");
+        	var callback = form.attr("data-callback");
+        	var type = form.attr("method");
+        	
+        	// Grab all the defined form elements and turn them into an object that
+        	// can be easily fed to the ajax method.
+        	var data = form.serialize();
+        	
+        	// Call the method.
+        	callAPIMethod (api_method, type, data, callback);
+        	
+        	// Stop the default submit from happening.
+        	event.preventDefault();
+        	return false;
+          });
         });
-      }
+        
+        // Need to specify the callback whose name we pass to the service.
+        // This method name is passed to the service as a parameter named
+        // callback. i.e. &callback=formatJUSPResults
+        function formatJUSPCoreData( data ) {
+            
+          console.log( data );
+      
+          // Locate the table or create it.
+          var table = $('#results');
+          if (table.length == 0) {
+   
+            // New table.
+            table = $("<table id='results' />").appendTo($("body"));
+          } else {
+   
+            // Create a new table but in the current posisiton.
+            var newTable = $("<table id ='results' />");
+            table.replaceWith (newTable);
+         
+            table = newTable;
+          }
+      
+          // We now have a table.
+        }
+        
+        
+      })(jQuery);
       
       // Need to specify the callback whose name we pass to the service.
       // This method name is passed to the service as a parameter named
-      // callback. i.e. &callback=formatJUSPResults
-      function formatJUSPResults( data ) {
-				// Locate the table or create it.
-				var table = $('#results');
-				if (table.length == 0) {
-				   
-				  // New table.
-				  table = $("<table id ='results' />").appendTo($("body"));
-				} else {
-				   
-				  // Create a new table but in the current posisiton.
-				  var newTable = $("<table id ='results' />");
-				  table.replaceWith (newTable);
-				   
-				  table = newTable;
-				}
-				
-				// We now have a table.
-				data
-      }
+      // callback. i.e. &callback=formatJUSPResults.
       
-      // Ensure the $ var is set.
-      (function($) {
+      // For these callbacks to work they should be placed within the context of the window.
+      function formatJUSPCoreData( data ) {
         
-        // Add a ready function.
-        $(document).ready(function(){
-          
-	        getCoreStatus('1','2','3');
-	        
-	        // Locate the table or create it.
-// 	        var table = $('#results');
-// 	        if (table.length == 0) {
-	          
-// 	          // New table.
-// 	          table = $("<table id ='results' />").appendTo($("body"));
-// 	        } else {
-	          
-// 	          // Create a new table but in the current posisiton.
-// 	          var newTable = $("<table id ='results' />");
-// 	          table.replaceWith (newTable);
-	          
-// 	          table = newTable;
-// 	        }
-	        
-	        // We now have a table to which we will add the results.
-        });
-      })(jQuery);
+        console.log( data );
+  
+        // Locate the table or create it.
+        var table = $('#results');
+        if (table.length == 0) {
+
+          // New table.
+          table = $("<table id='results' />").appendTo($("body"));
+        } else {
+
+          // Create a new table but in the current posisiton.
+          var newTable = $("<table id ='results' />");
+          table.replaceWith (newTable);
+     
+          table = newTable;
+        }
+  
+        // We now have a table. Add the header.
+        
+      }
     </script>
   </head>
   <body>
+    <h1>JUSP API examples</h1>
+    <p>Use the forms below to see how the JUSP api works.</p>
+    
+  	<form method="get" data-method="titleInstitutionProvider" data-callback="formatJUSPCoreData" >
+  	  <fieldset>
+  	    <legend>Core status information</legend>
+	    <label>Title ID</label> <input type="text" value="" name="jusp_ti" />
+	    <label>Institution ID</label> <input type="text" value="" name="jusp_inst" />
+	    <label>Provider ID</label> <input type="text" value="" name="jusp_prov" />
+      </fieldset>
+      <input type="hidden" value="json" name="format" />
+	  <input type="submit" value="Submit" />
+  	</form>
+  	
+  	<table id="results" ></table>
 
-    <p>Jusp core status information for Title(*):<span id="titleId"></span> 
+    <!-- p>Jusp core status information for Title(*): <span id="titleId"></span> 
        Institution(*)<span id="institutionId"></span> 
        Provider<span id="providerId"></span> 
        on <span id="reqDate"></span></p>
@@ -74,6 +144,6 @@
         <th>From</th>
         <th>To</th>
       </tr>
-    </table>
+    </table> -->
   </body>
 </html>
