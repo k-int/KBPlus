@@ -112,7 +112,8 @@ class JuspController {
  def coreTitles(){
     log.debug("JuspController::coreTitles")
     def result = [:]
-    if(params.jusp_inst && params.core_start && params.core_end){
+    def validDates = validateDate(params.core_start) && validateDate(params.core_end)
+    if(validDates && params.jusp_inst && params.core_start && params.core_end){
         def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd')
         def coreStart = dateFormatter.parse(params.core_start)
         def coreEnd = dateFormatter.parse(params.core_end)
@@ -134,6 +135,10 @@ class JuspController {
           result.status="ok"
           result.count=0
         }
+    }else if(!validDates){
+        result.data="Date format error. Expected format yyyy-MM-dd"
+        result.status="error"
+        result.count=0     
     }else{
       result.data = "Required parameters: jusp_inst, core_start, core_end "
       result.status = "error"
@@ -148,10 +153,12 @@ class JuspController {
  def titleInstProvCoreStatus(){
     log.debug("JuspController::titleInstProvCoreStatus ${params}");
     def result = [:]
+
     if(params.jusp_ti && params.jusp_inst ) {
       def tiInstProv = getTIP(params.jusp_ti,params.jusp_inst, params.jusp_prov)
       tiInstProv = tiInstProv[0]//FIXME: Should we care for lists?
-      if(tiInstProv){
+      def validDate = validateDate(params.lookupDate)
+      if(tiInstProv && validDate){
         def lookupDate = null
         if(params.lookupDate){
           def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd')
@@ -159,6 +166,9 @@ class JuspController {
         }
         result.data = tiInstProv.coreStatus(lookupDate)
         result.status = "ok"
+      }else if(!validDate){
+        result.data="Date format error. Expected format yyyy-MM-dd"
+        result.status="error"
       }else{
         result.data=""
         result.status= "ok"
@@ -178,7 +188,8 @@ class JuspController {
     if(params.jusp_ti && params.jusp_inst && params.core_start ) {
       def tiInstProv = getTIP(params.jusp_ti,params.jusp_inst, params.jusp_prov)
       tiInstProv = tiInstProv[0]//FIXME: Should we care for lists?
-      if(tiInstProv){
+      def validDates = validateDate(params.core_start) && validateDate(params.core_end)
+      if(tiInstProv && validDates){
         def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd')
         def coreStart = dateFormatter.parse(params.core_start)
         def coreEnd = params.core_end ? dateFormatter.parse(params.core_end) : null
@@ -191,6 +202,10 @@ class JuspController {
         result.data =coreDatesList
         result.status = "ok"
         result.count = coreDatesList.size()
+      }else if(!validDates){
+        result.data="Date format error. Expected format yyyy-MM-dd"
+        result.status="error"
+        result.count=0
       }else{
         result.data=""
         result.status="ok"
@@ -248,6 +263,22 @@ class JuspController {
     
     
     return tiInstProv
+ }
+ private boolean validateDate(String dateString){
+    def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd')
+    dateFormatter.setLenient(false)
+    log.debug("validateDate:: ${dateString}")
+    try{
+      if(dateString){
+        def date = dateFormatter.parse(dateString)
+        return date!=null
+      }else{
+        return true
+      }
+    }catch(Exception e){
+      log.debug("Exception while parsing date string ${dateString}")
+      return false
+    }
  }
 
 }
