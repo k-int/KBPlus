@@ -22,12 +22,12 @@
             "dataType"      : "jsonp",
             "jsonpCallback" : callback,
             "jsonp" : "callback",
-          });
+          })
       
           // On failure.
-          //.fail (function (jqXHR, textStatus, errorThrown) {
+          .fail (function (jqXHR, textStatus, errorThrown) {
         	//apiError ("The API call failed: " + errorThrown);
-          //});
+          });
         }
         
         // Add a ready function.
@@ -102,18 +102,26 @@
         if (table.length == 0) {
 
           // New table.
-          table = $("<table id='results' />").appendTo($("body"));
+          table = $("<dl id='results' />").appendTo($("body"));
         } else {
 
           // Create a new table but in the current posisiton.
-          var newTable = $("<table id ='results' />");
+          var newTable = $("<dl id ='results' />");
           table.replaceWith (newTable);
      
           table = newTable;
         }
-  
-        // We now have a table. Add the header.
         
+        // We now have the target table... Let's add to it.
+        $.each(data.data, function (prop, value) {
+          
+          table.append($("<dt>" + prop + "</dt>"));
+          
+          $.each(value, function () {
+        	// Add the values.
+        	table.append($("<dd>" + this + "</dd>"));
+          });
+        });
       }
     </script>
   </head>
@@ -132,7 +140,7 @@
 	  <input type="submit" value="Submit" />
   	</form>
   	
-  	<table id="results" ></table>
+  	<dl id="results" ></dl>
 
     <!-- p>Jusp core status information for Title(*): <span id="titleId"></span> 
        Institution(*)<span id="institutionId"></span> 
