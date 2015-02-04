@@ -1,7 +1,66 @@
 <html>
   <head>
     <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
-    <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" >
+
+      function getCoreStatus(jid, sid, pid) {
+        $.ajax({
+          url: "http://localhost:8080/demo/jusp/TitleInstitutionProvider?jusp_ti=5430&jusp_inst=abd&format=json",
+          dataType: "jsonp",
+          jsonpCallback: 'formatJUSPResults',
+        });
+      }
+      
+      // Need to specify the callback whose name we pass to the service.
+      // This method name is passed to the service as a parameter named
+      // callback. i.e. &callback=formatJUSPResults
+      function formatJUSPResults( data ) {
+				// Locate the table or create it.
+				var table = $('#results');
+				if (table.length == 0) {
+				   
+				  // New table.
+				  table = $("<table id ='results' />").appendTo($("body"));
+				} else {
+				   
+				  // Create a new table but in the current posisiton.
+				  var newTable = $("<table id ='results' />");
+				  table.replaceWith (newTable);
+				   
+				  table = newTable;
+				}
+				
+				// We now have a table.
+				data
+      }
+      
+      // Ensure the $ var is set.
+      (function($) {
+        
+        // Add a ready function.
+        $(document).ready(function(){
+          
+	        getCoreStatus('1','2','3');
+	        
+	        // Locate the table or create it.
+// 	        var table = $('#results');
+// 	        if (table.length == 0) {
+	          
+// 	          // New table.
+// 	          table = $("<table id ='results' />").appendTo($("body"));
+// 	        } else {
+	          
+// 	          // Create a new table but in the current posisiton.
+// 	          var newTable = $("<table id ='results' />");
+// 	          table.replaceWith (newTable);
+	          
+// 	          table = newTable;
+// 	        }
+	        
+	        // We now have a table to which we will add the results.
+        });
+      })(jQuery);
+    </script>
   </head>
   <body>
 
@@ -16,24 +75,5 @@
         <th>To</th>
       </tr>
     </table>
-
-    <script language="JavaScript">
-
-      function getCoreStatus(jid, sid, pid) {
-        $.ajax({
-          url: "http://localhost:8080/demo/jusp/TitleInstitutionProvider?jusp_ti=5430&jusp_inst=abd&format=json",
-          jsonp: "callback",
-          dataType: "jsonp",
-          success: function( response ) {
-            console.log( response ); // server response
-          }
-        });
-      }
-
-      $(function() {
-        // Handler for .ready() called.
-        getCoreStatus('1','2','3');
-      });
-    </script>
   </body>
 </html>
