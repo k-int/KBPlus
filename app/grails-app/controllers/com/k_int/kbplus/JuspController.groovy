@@ -112,6 +112,10 @@ class JuspController {
  def coreTitles(){
     log.debug("JuspController::coreTitles")
     def result = [:]
+    result.data=""
+    result.count = 0
+    result.status= "ok"
+
     def validDates = validateDate(params.core_start) && validateDate(params.core_end)
     if(validDates && params.jusp_inst && params.core_start && params.core_end){
         def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd')
@@ -126,23 +130,18 @@ class JuspController {
           def titlesHQL = "select tip.title.id from TitleInstitutionProvider tip join tip.coreDates as coreDates where tip.institution=:insti and coreDates.startDate <= :coreStart and coreDates.endDate >= :coreEnd"
           def titleIdentifiers = TitleInstitutionProvider.executeQuery(titlesHQL,[insti:insti,coreStart:coreStart,coreEnd:coreEnd])
           //Then we select the jusp identifiers for those titles
+          if(titleIdentifiers){
           def jusp_ti_hql = "select id.value from IdentifierOccurrence io, Identifier id, IdentifierNamespace ns where io.ti.id in (:idents) and id.ns = ns and io.identifier = id and ns.ns = 'jusp'"
-          result.data = IdentifierOccurrence.executeQuery(jusp_ti_hql,[idents:titleIdentifiers])
-          result.status= "ok"
-          result.count=result.data.size()
-        }else{
-          result.data=""
-          result.status="ok"
-          result.count=0
+            result.data = IdentifierOccurrence.executeQuery(jusp_ti_hql,[idents:titleIdentifiers])
+            result.count=result.data.size()
+          }
         }
     }else if(!validDates){
         result.data="Date format error. Expected format yyyy-MM-dd"
         result.status="error"
-        result.count=0     
     }else{
       result.data = "Required parameters: jusp_inst, core_start, core_end "
       result.status = "error"
-      result.count = 0
     }
     def json = result as JSON
     response.contentType = "application/json"

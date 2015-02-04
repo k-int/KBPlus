@@ -15,8 +15,10 @@
         function callAPIMethod (method, type, params, callback) {
         
           // Do the ajax call using jsonp to allow this request to come from a different origin.
+          //http://localhost:8080/demo/jusp/
+          //http://test.kbplus.ac.uk/kbplus/jusp/
           $.ajax({
-            "url"           : "http://localhost:8080/demo/jusp/" + method, //titleInstitutionProvider?jusp_ti=5430&jusp_inst=abd&format=json",
+            "url"           : "http://test.kbplus.ac.uk/kbplus/jusp/" + method,
             "data"          : params, 
             "type"          : type,
             "dataType"      : "jsonp",
@@ -60,32 +62,6 @@
           });
         });
         
-        // Need to specify the callback whose name we pass to the service.
-        // This method name is passed to the service as a parameter named
-        // callback. i.e. &callback=formatJUSPResults
-        function formatJUSPCoreData( data ) {
-            
-          console.log( data );
-      
-          // Locate the table or create it.
-          var table = $('#results');
-          if (table.length == 0) {
-   
-            // New table.
-            table = $("<table id='results' />").appendTo($("body"));
-          } else {
-   
-            // Create a new table but in the current posisiton.
-            var newTable = $("<table id ='results' />");
-            table.replaceWith (newTable);
-         
-            table = newTable;
-          }
-      
-          // We now have a table.
-        }
-        
-        
       })(jQuery);
       
       // Need to specify the callback whose name we pass to the service.
@@ -96,35 +72,52 @@
       function formatJUSPCoreData( data ) {      
         console.log( data );
   
-        table = replaceTable();      
-        // We now have the target table... Let's add to it.
-        $.each(data.data, function (prop, value) {
-          
-          table.append($("<dt>" + prop + "</dt>"));
-          
-          $.each(value, function () {
-        	// Add the values.
-          console.log(this.endDate);
-        	table.append($("<dd>" + this.startDate + " | "+ this.endDate + "</dd>"));
+        table = replaceTable();     
+        if(data.status=="error"){
+          table.append($("<dt>" + "An error occured" + "</dt>"));
+          table.append($("<dd>" + data.data + "</dd>"));
+        }else{
+          // We now have the target table... Let's add to it.
+          $.each(data.data, function (prop, value) {
+            
+            table.append($("<dt>" + prop + "</dt>"));
+            
+            $.each(value, function () {
+          	// Add the values.
+            console.log(this.endDate);
+          	table.append($("<dd>" + this.startDate + " | "+ this.endDate + "</dd>"));
+            });
           });
-        });
+        }
       }
 
       function formatCoreTitles(data){
         console.log(data)
 
         table = replaceTable();
+        if(data.status== "error"){
+          table.append($("<dt>" + "An error occured" + "</dt>"));
+          table.append($("<dd>" + data.data + "</dd>"));
+        }else{
         table.append($("<dt>" + "JUSP Title Ids" + "</dt>"));
         $.each(data.data,function (prop, value) {
           table.append($("<dd>" + value + "</dd>"));
         });
+          
+        }
       }
 
       function formatCoreStatus(data){
         table = replaceTable();
         console.log(data)
-        table.append($("<dt>" + "JUSP Core Status" + "</dt>"));
-        table.append($("<dd>" + data.data + "</dd>"));
+        if(data.status=="error"){
+          table.append($("<dt>" + "An error occured" + "</dt>"));
+          table.append($("<dd>" + data.data + "</dd>"));
+
+        }else{
+          table.append($("<dt>" + "JUSP Core Status" + "</dt>"));
+          table.append($("<dd>" + data.data + "</dd>"));
+        }
       }
       function extendCoreAssertion(data){
         table = replaceTable();
@@ -174,8 +167,8 @@
       <fieldset>
         <legend>Core Titles for date range</legend>
       <label>Institution ID</label> <input type="text" value="" name="jusp_inst" />
-      <label>Core Start</label> <input type="date" value="" name="core_start" />
-      <label>Core End</label> <input type="date" value="" name="core_end" />
+      <label>Core Start</label> <input type="text" value="" name="core_start" />
+      <label>Core End</label> <input type="text" value="" name="core_end" />
       </fieldset>
       <input type="hidden" value="json" name="format" />
     <input type="submit" value="Submit" />
@@ -186,7 +179,7 @@
         <legend>Title core status information</legend>
       <label>Title ID</label> <input type="text" value="" name="jusp_ti" />
       <label>Institution ID</label> <input type="text" value="" name="jusp_inst" />
-      <label>Lookup Date</label> <input type="date" value="" name="lookupDate" />
+      <label>Lookup Date</label> <input type="text" value="" name="lookupDate" />
       </fieldset>
       <input type="hidden" value="json" name="format" />
     <input type="submit" value="Submit" />
@@ -197,14 +190,14 @@
         <legend>Extend Core Assertion Dates</legend>
       <label>Title ID</label> <input type="text" value="" name="jusp_ti" />
       <label>Institution ID</label> <input type="text" value="" name="jusp_inst" />
-      <label>Core Start</label> <input type="date" value="" name="core_start" />
-      <label>Core End</label> <input type="date" value="" name="core_end" />
+      <label>Core Start</label> <input type="text" value="" name="core_start" />
+      <label>Core End</label> <input type="text" value="" name="core_end" />
       <label>(optional) Provider ID</label> <input type="text" value="" name="jusp_prov" />
       </fieldset>
       <input type="hidden" value="json" name="format" />
     <input type="submit" value="Submit" />
     </form>
-  	
+  	 <b>Request results:</b>
   	<dl id="results" ></dl>
 
   </body>
