@@ -747,8 +747,7 @@ class HomePageSpec extends GebReportingSpec {
 	def "Institution Change log"(){
 		when:
 		at DataManagerPage
-		showInstMenu()
-		$("a",text:"Change Log").click()
+		go '/demo/myInstitutions/'+Data.Org_Url+'/changeLog'
 		then:
 		$("div.pagination").text().contains("Showing 3 changes")
 		when:
