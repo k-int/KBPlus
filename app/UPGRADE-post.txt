@@ -48,3 +48,5 @@ UPDATE refdata_value SET rdv_group='com.k_int.kbplus.Package' WHERE rdv_value='P
 
 UPDATE refdata_value SET rdv_group='com.k_int.kbplus.TitleInstance' WHERE rdv_value='Publisher';
 
+alter table core_assertion modify ca_end_date datetime null;
+

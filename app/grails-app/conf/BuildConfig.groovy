@@ -110,7 +110,7 @@ grails.project.dependency.resolution = {
 
     plugins {
         compile ":h2:0.2.6"
-        runtime ':hibernate:3.6.10.16'
+        runtime ':hibernate:3.6.10.18'  // 18 is latest
         runtime ":resources:1.2.8"
         runtime ':fields:1.3'
         compile ":scaffolding:2.0.3"

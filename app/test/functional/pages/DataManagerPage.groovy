@@ -2,9 +2,10 @@ package pages
 
 
 class DataManagerPage extends BasePage {
+
     static at = { browser.page.title.startsWith "KB+" }
+
     static content = {
-        
         changeLogAllChanges {
             $("input",name:"licenses").value(true)
             $("input",name:"tipps").value(true)
