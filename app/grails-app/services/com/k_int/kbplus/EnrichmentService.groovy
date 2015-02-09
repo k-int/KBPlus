@@ -122,7 +122,7 @@ class EnrichmentService implements ApplicationContextAware {
             }
           }
           else {
-            log.error("Missing title(${inst}), provider(${title}) or institution(${provider})");
+            log.error("Missing instition(${inst}), title(${title}) or institution(${provider})");
           }
         }
       }
