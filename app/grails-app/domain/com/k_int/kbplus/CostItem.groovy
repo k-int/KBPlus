@@ -8,7 +8,6 @@ class CostItem {
   CostItemGroup group
   Order order
   Invoice invoice
-  RefdataValue taxCode
   RefdataValue costItemType
   RefdataValue costItemCategory
 
