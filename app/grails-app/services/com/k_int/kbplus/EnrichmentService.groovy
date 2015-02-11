@@ -103,26 +103,38 @@ class EnrichmentService implements ApplicationContextAware {
 
         IssueEntitlement.withNewTransaction {
 
-          log.debug("Processing ie_id ${ieid} ${counter++}/${ie_ids_count}");
+          log.debug("Get ie ${ieid}");
+
           def ie = IssueEntitlement.get(ieid);
-          def inst = ie.subscription.getSubscriber()
-          def title = ie.tipp.title
-          def provider = ie.tipp.pkg.getContentProvider()
-  
-          if ( inst && title && provider ) {
-            def tiinp = TitleInstitutionProvider.findByTitleAndInstitutionAndprovider(title, inst, provider)
-            if ( tiinp == null ) {
-              log.debug("Creating new TitleInstitutionProvider");
-              tiinp = new TitleInstitutionProvider(title:title, institution:inst, provider:provider).save(flush:true, failOnError:true)
+
+          if ( ( ie != null ) && ( ie.subscription != null ) && ( ie.tipp != null ) ) {
+
+            log.debug("Processing ie_id ${ieid} ${counter++}/${ie_ids_count}");
+            def inst = ie.subscription.getSubscriber()
+            def title = ie.tipp.title
+            def provider = ie.tipp.pkg.getContentProvider()
+    
+            if ( inst && title && provider ) {
+              def tiinp = TitleInstitutionProvider.findByTitleAndInstitutionAndprovider(title, inst, provider)
+              if ( tiinp == null ) {
+                log.debug("Creating new TitleInstitutionProvider");
+                tiinp = new TitleInstitutionProvider(title:title, institution:inst, provider:provider).save(flush:true, failOnError:true)
+              }
+        
+              log.debug("Got tiinp:: ${tiinp}");
+              if ( ie.coreStatusStart != null ) {
+                tiinp.extendCoreExtent(ie.coreStatusStart, ie.coreStatusEnd );
+              }
+              else {
+                log.debug("No core start date - skip");
+              }
             }
-      
-            log.debug("Got tiinp:: ${tiinp}");
-            if ( ie.coreStatusStart != null ) {
-              tiinp.extendCoreExtent(ie.coreStatusStart, ie.coreStatusEnd );
+            else {
+              log.error("Missing title(${inst}), provider(${title}) or institution(${provider})");
             }
           }
           else {
-            log.error("Missing title(${inst}), provider(${title}) or institution(${provider})");
+            log.error("IE ${ieid} is null, has no subscription or tipp.");
           }
         }
       }
