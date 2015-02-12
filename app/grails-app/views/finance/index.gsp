@@ -44,17 +44,18 @@
                 <option value="all">All</option>
               </select>
             </th>
+            <th rowspan="2" style="vertical-align: top;"><button type="submit" name="Filter">Filter</button></th>
           </tr>
           <tr>
             <th>Date</th>
             <th>Amount</th>
             <th>Reference</th>
-            <th colspan="5">Description</th>
+            <th colspan="2">Description</th>
           </tr>
         </thead>
         <tbody>
           <g:if test="${1==1}">
-            <tr><td colspan="6" style="text-align:center">&nbsp;<br/>No Cost Items Found<br/>&nbsp;</td></tr>
+            <tr><td colspan="7" style="text-align:center">&nbsp;<br/>No Cost Items Found<br/>&nbsp;</td></tr>
           </g:if>
           <g:else>
             <tr>
@@ -96,12 +97,13 @@
                 <option value="all">All</option>
               </select>
             </td>
+            <td rowspan="2"><button type="submit" name="Add">Add</button></td>
           </tr>
           <tr>
             <td><input type="date" name="newDate"/></td>
             <td><input type="number" name="newValue" placeholder="New Cost"/></td>
             <td><input type="text" name="newReference" placeholder="New Item Reference"/></td>
-            <td colspan="5"><input type="text" name="newDescription" placeholder="New Item Description"/></td>
+            <td colspan="2"><input type="text" name="newDescription" placeholder="New Item Description"/></td>
           </tr>
 
         </tfoot>
