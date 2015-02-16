@@ -46,10 +46,8 @@
                   <option value="all">All</option>
                 </select>
               </th>
-              <th>IE<br/>
-                <select name="ieFilter" class="input-medium" onChange="filtersUpdated();" id="filterIE" value="${params.packageFilter}">
-                  <option value="all">All</option>
-                </select>
+              <th style="vertical-align: top;"><span style="margin-top:0px;">IE</span><br/>
+                <input type="text" id="filterIE"/>
               </th>
               <th rowspan="2" style="vertical-align: top;"><button type="submit" name="Filter">Filter</button></th>
             </tr>
@@ -102,9 +100,7 @@
                 </select>
               </td>
               <td>
-                <select name="newIe" class="input-medium" id="newIE" value="${params.newIe}">
-                  <option value="">Not Set</option>
-                </select>
+                <input name="newIe" class="input-medium" id="newIE" value="${params.newIe}">
               </td>
               <td rowspan="2"><button type="submit" name="Add">Add</button></td>
             </tr>
@@ -124,6 +120,7 @@
   </body>
 
   <r:script type="text/javascript">
+
     function filtersUpdated() {
       $('#newInvoiceNumber').val($('#filterInvoiceNumber').val());
       $('#newOrderNumber').val($('#filterOrderNumber').val());
@@ -157,6 +154,51 @@
 
       filtersUpdated();
     }
+
+  $(document).ready(function() {
+    $("#filterIE").select2({
+      placeholder: "Identifier..",
+      minimumInputLength: 1,
+      ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "<g:createLink controller='ajax' action='lookup'/>",
+        dataType: 'json',
+        data: function (term, page) {
+            return {
+                format:'json',
+                q: term,
+                subFilter: $('#filterSubscription').val(),
+                baseClass:'com.k_int.kbplus.IssueEntitlement'
+            };
+        },
+        results: function (data, page) {
+          return {results: data.values};
+        }
+      }
+    });
+
+    $("#newIE").select2({
+      placeholder: "Identifier..",
+      minimumInputLength: 1,
+      ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "<g:createLink controller='ajax' action='lookup'/>",
+        dataType: 'json',
+        data: function (term, page) {
+            return {
+                format:'json',
+                q: term,
+                subFilter: $('#newSubscription').val(),
+                baseClass:'com.k_int.kbplus.IssueEntitlement'
+            };
+        },
+        results: function (data, page) {
+          return {results: data.values};
+        }
+      }
+    });
+
+  });
+
+
 
   </r:script>
 </html>
