@@ -32,8 +32,8 @@
                        class="input-medium" onKeyUp="filtersUpdated();" 
                        id="filterOrderNumber"  value="${params.invoiceNumberFilter}"/>
               </th>
-              <th>Subscription#<br/>
-                <select name="subscriptionFilter" class="input-medium" onChange="filtersUpdated();" 
+              <th>Subscription<br/>
+                <select name="subscriptionFilter" class="input-medium" onChange="filterSubUpdated();" 
                         id="filterSubscription" value="${params.subscriptionFilter}">
                   <option value="all">All</option>
                   <g:each in="${institutionSubscriptions}" var="s">
@@ -41,12 +41,12 @@
                   </g:each>
                 </select>
               </th>
-              <th>Package#<br/>
+              <th>Package<br/>
                 <select name="packageFilter" class="input-medium" onChange="filtersUpdated();" id="filterPackage" value="${params.packageFilter}">
                   <option value="all">All</option>
                 </select>
               </th>
-              <th>IE#<br/>
+              <th>IE<br/>
                 <select name="ieFilter" class="input-medium" onChange="filtersUpdated();" id="filterIE" value="${params.packageFilter}">
                   <option value="all">All</option>
                 </select>
@@ -131,5 +131,32 @@
       $('#newPackage').val($('#filterPackage').val());
       $('#newIE').val($('#filterIE').val());
     }
+
+    function filterSubUpdated() {
+      // Fetch packages for the selected subscription
+      var selectedSub = $('#filterSubscription').val();
+
+      $.ajax({
+        url: "<g:createLink controller='ajax' action='lookup'/>",
+        data: {
+          format:'json',
+          subFilter:selectedSub,
+          baseClass:'com.k_int.kbplus.SubscriptionPackage'
+        },
+        dataType:'json'
+      }).done(function(data) {
+        console.log("%o",data);
+        $('#filterPackage').children().remove()
+        $('#filterPackage').append('<option value="xx">Not specified</option>');
+        var numValues = data.values.length;
+        for (var i = 0; i != numValues; i++) {
+          $('#filterPackage').append('<option value="'+data.values[i].id+'">'+data.values[i].text+'</option>');
+        }
+      });
+
+
+      filtersUpdated();
+    }
+
   </r:script>
 </html>
