@@ -46,9 +46,7 @@
                   <option value="all">All</option>
                 </select>
               </th>
-              <th style="vertical-align: top;"><span style="margin-top:0px;">IE</span><br/>
-                <input type="text" id="filterIE"/>
-              </th>
+              <th style="vertical-align: top;">IE</th>
               <th rowspan="2" style="vertical-align: top;"><button type="submit" name="Filter">Filter</button></th>
             </tr>
             <tr>
@@ -126,7 +124,6 @@
       $('#newOrderNumber').val($('#filterOrderNumber').val());
       $('#newSubscription').val($('#filterSubscription').val());
       $('#newPackage').val($('#filterPackage').val());
-      $('#newIE').val($('#filterIE').val());
     }
 
     function filterSubUpdated() {
@@ -156,25 +153,6 @@
     }
 
   $(document).ready(function() {
-    $("#filterIE").select2({
-      placeholder: "Identifier..",
-      minimumInputLength: 1,
-      ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-        url: "<g:createLink controller='ajax' action='lookup'/>",
-        dataType: 'json',
-        data: function (term, page) {
-            return {
-                format:'json',
-                q: term,
-                subFilter: $('#filterSubscription').val(),
-                baseClass:'com.k_int.kbplus.IssueEntitlement'
-            };
-        },
-        results: function (data, page) {
-          return {results: data.values};
-        }
-      }
-    });
 
     $("#newIE").select2({
       placeholder: "Identifier..",

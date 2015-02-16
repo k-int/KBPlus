@@ -10,6 +10,8 @@ class FinanceController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() { 
+
+    log.debug("FinanceController::index() ${params}");
     
     def result = [:]
 
