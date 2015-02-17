@@ -127,12 +127,23 @@ class JuspController {
 
         if(insti){
           //First we find all the titles within the given date range
-          def titlesHQL = "select tip.title.id from TitleInstitutionProvider tip join tip.coreDates as coreDates where tip.institution=:insti and coreDates.startDate <= :coreStart and coreDates.endDate >= :coreEnd"
-          def titleIdentifiers = TitleInstitutionProvider.executeQuery(titlesHQL,[insti:insti,coreStart:coreStart,coreEnd:coreEnd])
+          def titlesHQL = "select tip from TitleInstitutionProvider tip join tip.coreDates as coreDates where tip.institution=:insti and coreDates.startDate <= :coreStart and coreDates.endDate >= :coreEnd"
+          def tiInstProv = TitleInstitutionProvider.executeQuery(titlesHQL,[insti:insti,coreStart:coreStart,coreEnd:coreEnd])
           //Then we select the jusp identifiers for those titles
-          if(titleIdentifiers){
-          def jusp_ti_hql = "select id.value from IdentifierOccurrence io, Identifier id, IdentifierNamespace ns where io.ti.id in (:idents) and id.ns = ns and io.identifier = id and ns.ns = 'jusp'"
-            result.data = IdentifierOccurrence.executeQuery(jusp_ti_hql,[idents:titleIdentifiers])
+          if(tiInstProv){
+            result.data = [:]
+            def jusp_ti_hql = "select id.value from IdentifierOccurrence io, Identifier id, IdentifierNamespace ns where io.ti.id=? and id.ns = ns and io.identifier = id and ns.ns = 'jusp'"
+            tiInstProv.each{ tip ->   
+              def coreDatesList = []
+              def details = [:]
+              tip.coreDates.each{ coreDate ->
+                coreDatesList.push(coreDate)
+              }
+              def jusp_ti_id = IdentifierOccurrence.executeQuery(jusp_ti_hql,[tip.title.id])
+              details["jusp_id"] = jusp_ti_id
+              details["coreDateList"]=coreDatesList
+              result.data.put(tip, details)
+            }
             result.count=result.data.size()
           }
         }
