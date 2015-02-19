@@ -13,12 +13,13 @@ class CostItem {
 
   RefdataValue billingCurrency
   String costDescription
-  float costInBillingCurrency
+  Double costInBillingCurrency
   Date datePaid
   String localFundCode
-  float costInLocalCurrency
+  Double costInLocalCurrency
   RefdataValue taxCode
   Boolean includeInSubscription
+  String reference
 
   static mapping = {
                               id column:'ci_id'
@@ -39,6 +40,7 @@ class CostItem {
            includeInSubscription column:'ci_include_in_subscr'
                     costItemType column:'ci_type_rv_fk'
                 costItemCategory column:'ci_cat_rv_fk'
+                       reference column:'ci_reference'
   }
 
   static constraints = {
@@ -58,6 +60,7 @@ class CostItem {
      includeInSubscription(nullable:true, blank:false)
               costItemType(nullable:true, blank:false)
           costItemCategory(nullable:true, blank:false)
+                 reference(nullable:true, blank:false)
   }
 
 }

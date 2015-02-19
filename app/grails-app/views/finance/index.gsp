@@ -47,7 +47,7 @@
                 </select>
               </th>
               <th style="vertical-align: top;">IE</th>
-              <th rowspan="2" style="vertical-align: top;"><button type="submit" name="Filter">Filter</button></th>
+              <th rowspan="2" style="vertical-align: top;"><button type="submit" name="Filter" value="filter">Filter</button></th>
             </tr>
             <tr>
               <th>Date</th>
@@ -100,11 +100,11 @@
               <td>
                 <input name="newIe" class="input-medium" id="newIE" value="${params.newIe}">
               </td>
-              <td rowspan="2"><button type="submit" name="Add">Add</button></td>
+              <td rowspan="2"><button type="submit" name="Add" value="add">Add</button></td>
             </tr>
             <tr>
               <td><input type="date" name="newDate" value="${params.newDate}"/></td>
-              <td><input type="number" name="newValue" placeholder="New Cost" id="newCostItemValue" /></td>
+              <td><input type="number" name="newValue" placeholder="New Cost" id="newCostItemValue" step="0.01"/></td>
               <td><input type="text" name="newReference" placeholder="New Item Reference" id="newCostItemReference" value="${params.newReference}"/></td>
               <td colspan="2"><input type="text" name="newDescription" 
                                      placeholder="New Item Description" id="newCostItemDescription"/></td>
