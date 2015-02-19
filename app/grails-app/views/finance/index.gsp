@@ -51,33 +51,37 @@
             </tr>
             <tr>
               <th>Date</th>
-              <th>Amount</th>
+              <th>Amount [billing]/<br/>[local]</th>
               <th>Reference</th>
               <th colspan="2">Description</th>
             </tr>
           </thead>
           <tbody>
-            <g:if test="${1==1}">
+            <tr><td colspan="9">&nbsp;</td></tr>
+            <g:if test="${cost_item_count==0}">
               <tr><td colspan="7" style="text-align:center">&nbsp;<br/>No Cost Items Found<br/>&nbsp;</td></tr>
             </g:if>
             <g:else>
-              <tr>
-                <td rowspan="2"></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td colspan="2"></td>
-              </tr>
+              <g:each in="${cost_items}" var="ci">
+                <tr>
+                  <td rowspan="2">${ci.id}</td>
+                  <td>${ci.invoice?.invoiceNumber}</td>
+                  <td>${ci.order?.orderNumber}</td>
+                  <td>${ci.sub?.name}</td>
+                  <td>${ci.subPkg?.name}</td>
+                  <td colspan="2">${ci.issueEntitlement?.id}</td>
+                </tr>
+                <tr>
+                  <td>${ci.datePaid}</td>
+                  <td>${ci.costInBillingCurrency} / ${ci.costInLocalCurrency}</td>
+                  <td>${ci.reference}</td>
+                  <td colspan="3">${ci.costDescription}</td>
+                </tr>
+              </g:each>
             </g:else>
           </tbody>
           <tfoot>
+            <tr><td colspan="9">&nbsp;</td></tr>
             <tr>
               <td rowspan="2" style="vertical-align: top;">Add new <br/>cost item</td>
               <td><input type="text" name="newInvoiceNumber" class="input-medium" 
@@ -104,7 +108,10 @@
             </tr>
             <tr>
               <td><input type="date" name="newDate" value="${params.newDate}"/></td>
-              <td><input type="number" name="newValue" placeholder="New Cost" id="newCostItemValue" step="0.01"/></td>
+              <td>
+                <input type="number" name="newCostInBillingCurrency" placeholder="New Cost - Billing Currency" id="newCostInBillingCurrency" step="0.01"/> <br/>
+                <input type="number" name="newCostInLocalCurrency" placeholder="New Cost - Local Currency" id="newCostInLocalCurrency" step="0.01"/>
+              </td>
               <td><input type="text" name="newReference" placeholder="New Item Reference" id="newCostItemReference" value="${params.newReference}"/></td>
               <td colspan="2"><input type="text" name="newDescription" 
                                      placeholder="New Item Description" id="newCostItemDescription"/></td>

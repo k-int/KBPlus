@@ -21,8 +21,6 @@ class FinanceController {
     def base_qry = " from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) "
     def qry_params = [result.institution]
 
-    result.institutionSubscriptions = Subscription.executeQuery(base_qry,qry_params);
-
     if ( params.Add=='add' ) {
 
       log.debug("Process add cost item");
@@ -51,6 +49,7 @@ class FinanceController {
       }
 
       def newCostItem = new CostItem(
+                              owner:result.institution,
                               sub:sub,
                               subPkg:pkg,
                               issueEntitlement:null,
@@ -61,10 +60,10 @@ class FinanceController {
                               costItemCategory:null,
                               billingCurrency:null,
                               costDescription:params.newDescription,
-                              costInBillingCurrency:null,
+                              costInBillingCurrency:params.newCostInBillingCurrency,
                               datePaid:null,
                               localFundCode:null,
-                              costInLocalCurrency:null,
+                              costInLocalCurrency:params.newCostInLocalCurrency,
                               taxCode:null,
                               includeInSubscription:null,
                               reference: params.newReference
@@ -75,9 +74,18 @@ class FinanceController {
       if ( newCostItem.errors ) {
         log.debug(newCostItem.errors);
       }
-
-
     }
+
+
+    result.institutionSubscriptions = Subscription.executeQuery(base_qry,qry_params);
+
+    def cost_item_qry_params = [ result.institution ]
+    def cost_item_qry = " from CostItem as ci where ci.owner = ?"
+
+    result.cost_item_count = CostItem.executeQuery('select count(ci.id) '+cost_item_qry, cost_item_qry_params)[0];
+    result.cost_items = CostItem.executeQuery('select ci '+cost_item_qry, cost_item_qry_params, params);
+
+
 
     result
   }

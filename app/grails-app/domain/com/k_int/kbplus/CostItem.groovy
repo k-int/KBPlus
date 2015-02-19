@@ -2,6 +2,7 @@ package com.k_int.kbplus
 
 class CostItem {
 
+  Org owner
   Subscription sub
   SubscriptionPackage subPkg
   IssueEntitlement issueEntitlement
@@ -25,6 +26,7 @@ class CostItem {
                               id column:'ci_id'
                          version column:'ci_version'
                              sub column:'ci_sub_fk'
+                           owner column:'ci_owner'
                           subPkg column:'ci_subPkg_fk'
                 issueEntitlement column:'ci_e_fk'
                            group column:'ci_cig_fk'
@@ -44,6 +46,7 @@ class CostItem {
   }
 
   static constraints = {
+                     owner(nullable:false, blank:false)
                        sub(nullable:true, blank:false)
                     subPkg(nullable:true, blank:false)
           issueEntitlement(nullable:true, blank:false)
