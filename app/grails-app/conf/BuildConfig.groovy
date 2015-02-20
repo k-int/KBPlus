@@ -74,7 +74,7 @@ grails.project.dependency.resolution = {
         runtime 'com.gmongo:gmongo:1.3'
 
         // Would very much like to upgrade to these - but seems to cause a weird class version error when I do
-        runtime 'org.elasticsearch:elasticsearch:1.3.2'
+        runtime 'org.elasticsearch:elasticsearch:1.3.7'
         runtime 'org.elasticsearch:elasticsearch-client-groovy:1.3.2'
 
         runtime 'gov.loc:bagit:4.0'
