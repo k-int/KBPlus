@@ -109,9 +109,11 @@
                                <li><g:link controller="myInstitutions"
                                            action="changeLog"
                                            params="${[shortcode:org.shortcode]}">Change Log</g:link></li>
-                               <li><g:link controller="finance"
-                                           action="index"
-                                           params="${[shortcode:org.shortcode]}">Finance</g:link></li>
+                               <g:if test="${grailsApplication.config.kbplus.useBVariation}">
+                                 <li><g:link controller="finance"
+                                             action="index"
+                                             params="${[shortcode:org.shortcode]}">Finance</g:link></li>
+                               </g:if>
 
                              </ul>
                            </li>
