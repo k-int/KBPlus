@@ -367,6 +367,14 @@
             2                      // Sets the scope to session-level.  Optional parameter.
          ]);
       </g:if>
+      <g:if test="${user?.defaultDash?.shortcode}">
+      _gaq.push(['_setCustomVar',
+            2,                     // This custom var is set to slot #2.  Required parameter.
+            'UserDefaultOrg',         // The name acts as a kind of category for the user activity.  Required parameter.
+            "${user?.defaultDash?.shortcode}", // This value of the custom variable.  Required parameter.
+            3                      // Sets the scope to page-level.  Optional parameter.
+         ]);
+      </g:if>
       _gaq.push(['_trackPageview']);
       (function() {
           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
