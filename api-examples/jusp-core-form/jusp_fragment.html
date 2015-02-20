@@ -16,9 +16,9 @@
         
           // Do the ajax call using jsonp to allow this request to come from a different origin.
           //http://localhost:8080/demo/jusp/
-          //http://test.kbplus.ac.uk/kbplus/jusp/
+          //http://www.kbplus.ac.uk/test/jusp/
           $.ajax({
-            "url"           : "http://test.kbplus.ac.uk/kbplus/jusp/" + method,
+            "url"           : "http://www.kbplus.ac.uk/test/jusp/" + method,
             "data"          : params, 
             "type"          : type,
             "dataType"      : "jsonp",
@@ -74,8 +74,7 @@
   
         table = replaceTable();     
         if(data.status=="error"){
-          table.append($("<dt>" + "An error occured" + "</dt>"));
-          table.append($("<dd>" + data.data + "</dd>"));
+          appendError(table,data);
         }else{
           // We now have the target table... Let's add to it.
           $.each(data.data, function (prop, value) {
@@ -93,17 +92,25 @@
 
       function formatCoreTitles(data){
         console.log(data)
-
-        table = replaceTable();
-        if(data.status== "error"){
-          table.append($("<dt>" + "An error occured" + "</dt>"));
-          table.append($("<dd>" + data.data + "</dd>"));
+  
+        table = replaceTable();     
+        if(data.status=="error"){
+          appendError(table,data);
         }else{
-        table.append($("<dt>" + "JUSP Title Ids" + "</dt>"));
-        $.each(data.data,function (prop, value) {
-          table.append($("<dd>" + value + "</dd>"));
-        });
-          
+          // We now have the target table... Let's add to it.
+          $.each(data.data, function (prop, value) {
+            
+            table.append($("<dt>" + prop + "</dt>"));
+            
+            // Add the values.
+            $.each(value.jusp_id,function(){
+                table.append($("<dd>JUSP title identifier: " + this + "</dd>"));
+            })
+            $.each(value.coreDateList,function(){
+                table.append($("<dd>" + this.startDate + " | "+ this.endDate + "</dd>"));
+            });
+            table.append($("<dt>&nbsp;</dt>"));
+          });
         }
       }
 
@@ -111,9 +118,7 @@
         table = replaceTable();
         console.log(data)
         if(data.status=="error"){
-          table.append($("<dt>" + "An error occured" + "</dt>"));
-          table.append($("<dd>" + data.data + "</dd>"));
-
+          appendError(table,data);
         }else{
           table.append($("<dt>" + "JUSP Core Status" + "</dt>"));
           table.append($("<dd>" + data.data + "</dd>"));
@@ -146,6 +151,12 @@
         }
         return table;
       }
+
+      function appendError(table,data){
+          table.append($("<dt>" + "An error occured" + "</dt>"));
+          table.append($("<dd>" + data.data + "</dd>"));
+      }
+
   </script>
   </head>
   <body>
