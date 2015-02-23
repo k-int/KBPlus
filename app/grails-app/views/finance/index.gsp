@@ -107,14 +107,51 @@
               <td rowspan="2"><button type="submit" name="Add" value="add">Add</button></td>
             </tr>
             <tr>
-              <td><input type="date" name="newDate" value="${params.newDate}"/></td>
               <td>
-                <input type="number" name="newCostInBillingCurrency" placeholder="New Cost - Billing Currency" id="newCostInBillingCurrency" step="0.01"/> <br/>
-                <input type="number" name="newCostInLocalCurrency" placeholder="New Cost - Local Currency" id="newCostInLocalCurrency" step="0.01"/>
+                <h3>Cost date and status</h3>
+                <input type="date" name="newDate" value="${params.newDate}"/><br/>
+
+                <g:select name="newCostItemStatus" 
+                          from="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','CostItemStatus')}"
+                          optionKey="id" 
+                          noSelection="${['':'No Status']}"/>
+
+                <g:select name="newCostItemCategory" 
+                          from="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','CostItemCategory')}"
+                          optionKey="id"
+                          noSelection="${['':'No Category']}"/>
+
+                <g:select name="newCostItemElement" 
+                          from="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','CostItemElement')}"
+                          optionKey="id"
+                          noSelection="${['':'No Element']}"/>
+
+                <g:select name="newCostCurrency" 
+                          from="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','Currency')}"
+                          optionKey="id"
+                          noSelection="${['':'No Currency']}"/>
+
+                <g:select name="newCostTaxType" 
+                          from="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','TaxType')}"
+                          optionKey="id"
+                          noSelection="${['':'No Tax Type']}"/>
               </td>
-              <td><input type="text" name="newReference" placeholder="New Item Reference" id="newCostItemReference" value="${params.newReference}"/></td>
-              <td colspan="2"><input type="text" name="newDescription" 
-                                     placeholder="New Item Description" id="newCostItemDescription"/></td>
+              <td>
+                <h3>Cost values and tax</h3>
+                <input type="number" name="newCostInBillingCurrency" placeholder="New Cost Ex-Tax - Billing Currency" id="newCostInBillingCurrency" step="0.01"/> <br/>
+                <input type="number" name="newCostExchangeRate" placeholder="Exchange Rate" id="newCostExchangeRate" step="0.01"/> <br/>
+                <input type="number" name="newCostInLocalCurrency" placeholder="New Cost Ex-Tax - Local Currency" id="newCostInLocalCurrency" step="0.01"/>
+                <input type="number" name="newCostTaxRate" placeholder="New Cost Tax Rate" id="newCostInLocalCurrency" step="0.01"/>
+                <input type="number" name="newCostTaxAmount" placeholder="New Cost Tax Amount" id="newCostInLocalCurrency" step="0.01"/>
+              </td>
+              <td>
+                <h3>Reference</h3>
+                <input type="text" name="newReference" placeholder="New Item Reference" id="newCostItemReference" value="${params.newReference}"/><br/>
+                <input type="text" name="newBudgetCode" placeholder="New Item Budget Code" id="newBudgetCode" ></td>
+              <td colspan="2">
+                <h3>Description</h3>
+                <textarea name="newDescription" 
+                                     placeholder="New Item Description" id="newCostItemDescription"/></textarea>
             </tr>
   
           </tfoot>
