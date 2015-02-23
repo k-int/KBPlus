@@ -83,7 +83,7 @@
           <tfoot>
             <tr><td colspan="9">&nbsp;</td></tr>
             <tr>
-              <td rowspan="2" style="vertical-align: top;">Add new <br/>cost item</td>
+              <td rowspan="2" class="rotate">Add new cost item</td>
               <td><input type="text" name="newInvoiceNumber" class="input-medium" 
                          placeholder="New item invoice #" id="newInvoiceNumber" value="${params.newInvoiceNumber}"/></td>
               <td><input type="text" name="newOrderNumber" class="input-medium" 
