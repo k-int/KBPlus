@@ -25,6 +25,7 @@ class ApiController {
 
   @Secured(['ROLE_API', 'IS_AUTHENTICATED_FULLY'])
   def index() { 
+    log.debug("API");
   }
 
   @Secured(['ROLE_API', 'IS_AUTHENTICATED_FULLY'])
