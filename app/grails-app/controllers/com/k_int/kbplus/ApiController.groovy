@@ -23,11 +23,11 @@ class ApiController {
   def springSecurityService
 
 
-  // @Secured(['ROLE_API', 'IS_AUTHENTICATED_FULLY'])
+  @Secured(['ROLE_API', 'IS_AUTHENTICATED_FULLY'])
   def index() { 
   }
 
-  // @Secured(['ROLE_API', 'IS_AUTHENTICATED_FULLY'])
+  @Secured(['ROLE_API', 'IS_AUTHENTICATED_FULLY'])
   def uploadBibJson() {
     def result=[:]
     log.debug("uploadBibJson");
@@ -86,6 +86,7 @@ class ApiController {
 
   // Assert a core status against a title/institution. Creates TitleInstitutionProvider objects
   // For all known combinations.
+  @Secured(['ROLE_API', 'IS_AUTHENTICATED_FULLY'])
   def assertCore() {
     // Params:     inst - [namespace:]code  Of an org [mandatory]
     //            title - [namespace:]code  Of a title [mandatory]
