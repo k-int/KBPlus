@@ -21,6 +21,7 @@ class IssueEntitlement implements Comparable {
   Date coreStatusStart
   Date coreStatusEnd
   RefdataValue coreStatus
+  RefdataValue medium
 
   static belongsTo = [subscription: Subscription, tipp: TitleInstancePackagePlatform]
 
@@ -54,6 +55,7 @@ class IssueEntitlement implements Comparable {
    //      coreStatus comumn:'ie_core_status_rv_fk'
    accessStartDate column:'ie_access_start_date'
      accessEndDate column:'ie_access_end_date'
+            medium column:'ie_medium_rv_fk'
   }
 
   static constraints = {
@@ -76,6 +78,7 @@ class IssueEntitlement implements Comparable {
     coreStatus(nullable:true, blank:true);
     accessStartDate(nullable:true, blank:true);
     accessEndDate(nullable:true, blank:true);
+    medium(nullable:true, blank:true);
   }
 
   public Date getDerivedAccessStartDate() {
