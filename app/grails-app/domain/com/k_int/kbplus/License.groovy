@@ -237,7 +237,7 @@ class License {
   }
 
   def onChange = { oldMap,newMap ->
-    log.debug("license onChange....");
+    log.debug("license onChange....${oldMap} || ${newMap}");
     def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
     def controlledProperties = ['licenseUrl','licenseeRef','licensorRef','noticePeriod','reference']
     def controlledRefProperties = [ 'isPublic' ]

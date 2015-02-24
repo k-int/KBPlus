@@ -24,6 +24,13 @@ beans = {
     authenticationManager = ref('authenticationManager')
     ediAuthTokenMap = ref('ediAuthTokenMap')
   }
+  auditLogListener(org.codehaus.groovy.grails.plugins.orm.auditable.CustomAuditLogListener) {
+       sessionFactory   = ref('sessionFactory')
+       verbose          = application.config?.auditLog?.verbose?:false
+       transactional    = application.config?.auditLog?.transactional?:false
+       sessionAttribute = application.config?.auditLog?.sessionAttribute?:""
+       actorKey         = application.config?.auditLog?.actorKey?:""
+   }
 
   // apiauthFilter(com.k_int.kbplus.filter.ApiauthFilter){
   //   authenticationManager = ref("authenticationManager")

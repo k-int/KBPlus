@@ -21,10 +21,12 @@ class LicenseDetailsController {
   def exportService
   def institutionsService
   def pendingChangeService
+  def auditLogListener
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
     log.debug("licenseDetails id:${params.id}");
+    log.debug("auditLogListener: ${auditLogListener.class}")
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     // result.institution = Org.findByShortcode(params.shortcode)
