@@ -214,7 +214,7 @@
             <tr>
               <th>Access Dates</th>
               <th>eISSN</th>
-              <th></th>
+              <th>Medium (P/E)</th>
               <g:sortableColumn params="${params}" property="endDate" title="Latest Date" />
               <g:sortableColumn params="${params}" property="coreStatusEnd" title="Core End Date"  />
             </tr>
@@ -281,6 +281,8 @@
                   <g:if test="${grailsApplication.config.ab?.newcore==true}">
                     <br/>(Newcore: ${ie.wasCoreOn(as_at_date)})
                   </g:if>
+
+                  <br/><g:xEditableRefData owner="${ie}" field="medium" config='IEMedium'/>
                 </td>
                 <td>
                     <g:xEditable owner="${ie}" type="date" field="startDate" /><br/>

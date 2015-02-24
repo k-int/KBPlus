@@ -419,6 +419,10 @@ class BootStrap {
     RefdataCategory.lookupOrCreate('OrgType', 'Institution').save();
     RefdataCategory.lookupOrCreate('OrgType', 'Other').save();
 
+    RefdataCategory.lookupOrCreate('IEMedium', 'Print').save();
+    RefdataCategory.lookupOrCreate('IEMedium', 'Electronic').save();
+    RefdataCategory.lookupOrCreate('IEMedium', 'Print and Electronic').save();
+
     log.debug("validate content items...");
     // The default template for a property change on a title
     ContentItem.lookupOrCreate('ChangeNotification.TitleInstance.propertyChange','','''
