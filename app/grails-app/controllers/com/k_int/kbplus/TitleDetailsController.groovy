@@ -135,7 +135,9 @@ class TitleDetailsController {
 
     if (springSecurityService.isLoggedIn()) {
       params.rectype = "Title" // Tells ESSearchService what to look for
-     
+      result.user = springSecurityService.getCurrentUser()
+      params.max = result.user.defaultPageSize
+
       if(params.search.equals("yes")){
         //when searching make sure results start from first page
         params.offset = 0
