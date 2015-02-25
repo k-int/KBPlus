@@ -21,7 +21,6 @@ class LicenseDetailsController {
   def exportService
   def institutionsService
   def pendingChangeService
-  def auditLogListener
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
