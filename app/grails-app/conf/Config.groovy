@@ -253,6 +253,8 @@ grails.plugins.springsecurity.controllerAnnotations.staticRules = [
 ] 
 
 auditLog {
+  logFullClassName = true
+
   actorClosure = { request, session ->
 
     if (request.applicationContext.springSecurityService.principal instanceof java.lang.String){

@@ -147,7 +147,7 @@ grails.project.dependency.resolution = {
         runtime ":gsp-resources:0.4.4"
         runtime ":jquery:1.9.1"
 
-        runtime ":audit-logging:0.5.4"
+        runtime ":audit-logging:1.0.3"
         runtime ":executor:0.3"
         runtime ":markdown:1.1.1"
         runtime ":quartz:1.0.1"
