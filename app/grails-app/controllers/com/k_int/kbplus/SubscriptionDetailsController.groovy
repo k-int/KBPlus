@@ -426,6 +426,12 @@ class SubscriptionDetailsController {
             ie.coreStatus = selected_refdata
           }
   
+          if ( params.bulk_medium.trim().length() > 0 ) {
+            def selected_refdata = genericOIDService.resolveOID(params.bulk_medium.trim())
+            log.debug("Selected medium is ${selected_refdata}");
+            ie.medium = selected_refdata
+          }
+  
           if ( params.bulk_coverage && (params.bulk_coverage.trim().length() > 0 ) ) {
             ie.coverageDepth = params.bulk_coverage
           }
