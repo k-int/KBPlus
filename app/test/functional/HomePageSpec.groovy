@@ -749,7 +749,7 @@ class HomePageSpec extends GebReportingSpec {
 		at DataManagerPage
 		go '/demo/myInstitutions/'+Data.Org_Url+'/changeLog'
 		then:
-		$("div.pagination").text().contains("Showing 3 changes")
+		$("div.pagination").text().contains("Showing 4 changes")
 		when:
 		$("a",text:"Exports").click()
 		$("a",text:"CSV Export").click()
