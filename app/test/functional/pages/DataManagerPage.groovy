@@ -15,7 +15,7 @@ class DataManagerPage extends BasePage {
             $("input",name:"creates").value(true)
            
             $("input",type:"submit").click()
-            !$("span",text:"19 changes").isEmpty()
+            !$("span",text:"21 changes").isEmpty()
         }
         changeLogExportCSV {
             $("a",text:"Exports").click()
