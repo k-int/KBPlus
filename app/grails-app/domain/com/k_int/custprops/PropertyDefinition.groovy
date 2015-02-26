@@ -67,8 +67,9 @@ class PropertyDefinition {
 
     static def lookupOrCreateType(name, typeClass, descr) {
         typeIsValid(typeClass)
-        def type = findByNameAndTypeAndDescr(name, typeClass, descr);
+        def type = findByNameAndType(name, typeClass);
         if (!type) {
+            print("No PropertyDefinition type match found for ${typeClass}. Creating new.")
             type = new PropertyDefinition(name: name, type: typeClass, descr: descr)
             type.save()
         }

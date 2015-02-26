@@ -169,7 +169,7 @@ class ChangeNotificationService {
    *  Therefore, we get a new handle to the object
    */
   def notifyChangeEvent(changeDocument) {
-    // log.debug("notifyChangeEvent(${changeDocument})");
+    log.debug("notifyChangeEvent(${changeDocument})");
     def future = executorService.submit({
       try {
         log.debug("inside executor task submission... ${changeDocument.OID}");

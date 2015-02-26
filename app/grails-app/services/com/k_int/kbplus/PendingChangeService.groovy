@@ -37,7 +37,11 @@ def performAccept(change,httpRequest) {
                 // Work out if parsed_change_info.changeDoc.prop is an association - If so we will need to resolve the OID in the value
                 def domain_class = grailsApplication.getArtefact('Domain',target_object.class.name);
                 def prop_info = domain_class.getPersistentProperty(parsed_change_info.changeDoc.prop)
-                if ( prop_info.isAssociation() ) {
+                if(prop_info == null){
+                  log.debug("We are dealing with custom properties: ${parsed_change_info}")
+                  processCustomPropertyChange(parsed_change_info)
+                }
+                else if ( prop_info.isAssociation() ) {
                   log.debug("Setting association for ${parsed_change_info.changeDoc.prop} to ${parsed_change_info.changeDoc.new}");
                   target_object[parsed_change_info.changeDoc.prop] = genericOIDService.resolveOID(parsed_change_info.changeDoc.new)
                 }
@@ -148,6 +152,7 @@ def performAccept(change,httpRequest) {
           switch (changeDoc.event){
             case "CustomProperty.deleted":
               log.debug("Deleting property ${updateProp.type.name} from ${parsed_change_info.changeTarget}")
+              target_object.customProperties.remove(updateProp)
               updateProp.delete()
               break;
             case "CustomProperty.updated":
@@ -167,11 +172,11 @@ def performAccept(change,httpRequest) {
               log.error("ChangeDoc event '${changeDoc.event}'' not recognized.")          
           }
         }else{
-          def propertyType = genericOIDService.resolveOID(changeDoc.OID).type
+          def propertyType = genericOIDService.resolveOID(changeDoc.propertyOID).type
           def newProperty = PropertyDefinition.createPropertyValue(target_object,propertyType)
 
           if(changeDoc.type == RefdataValue.toString()){
-            def originalRefdata = genericOIDService.resolveOID(changeDoc.OID).refValue;
+            def originalRefdata = genericOIDService.resolveOID(changeDoc.propertyOID).refValue;
             log.debug("RefdataCategory ${propertyType.refdataCategory}")
             def copyRefdata = RefdataCategory.lookupOrCreate(propertyType.refdataCategory,changeDoc.new)
             newProperty."${changeDoc.prop}" = copyRefdata
