@@ -5,7 +5,7 @@ import javax.persistence.Transient
 
 class Package {
 
-  static auditable = true
+  static auditable = [ignore:['version','lastUpdated','pendingChanges']]
 
   @Transient
   def grailsApplication

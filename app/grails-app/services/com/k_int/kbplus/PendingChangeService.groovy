@@ -160,7 +160,7 @@ def performAccept(change,httpRequest) {
                   updateProp."${changeDoc.prop}" = newProp                
               }else{
                 updateProp."${changeDoc.prop}" = 
-                updateProp.parseValue("${changeDoc.new}", changeDoc.type)
+                  updateProp.parseValue("${changeDoc.new}", changeDoc.type)
               }
               log.debug("Setting value for ${changeDoc.name}.${changeDoc.prop} to ${changeDoc.new}")
               updateProp.save()          

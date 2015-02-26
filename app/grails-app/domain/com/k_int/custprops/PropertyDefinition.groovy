@@ -61,6 +61,7 @@ class PropertyDefinition {
         ownerClassName="com.k_int.kbplus."+ownerClassName+"CustomProperty"
         def newProp = Class.forName(ownerClassName).newInstance(type: type,owner: owner)
         newProp.setNote("")
+        owner.customProperties.add(newProp)
         newProp.save(flush:true)
         newProp
     }
