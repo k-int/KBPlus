@@ -73,9 +73,6 @@ def performAccept(change,httpRequest) {
               }
             }
             break;
-          case 'CustomPropertyChange':
-              processCustomPropertyChange(parsed_change_info)
-            break;
           case 'TIPPEdit':
             // A tipp was edited, the user wants their change applied to the IE
             break;

@@ -325,10 +325,11 @@ class License {
             if( defaultMsg)
                 description = defaultMsg.content
         }
+        def propName = changeDocument.name?:changeDocument.prop
         changeNotificationService
         .registerPendingChange('license',
                               dl,
-                              "<b>${changeDocument.prop}</b> changed from <b>\"${changeDocument.oldLabel?:changeDocument.old}\"</b> to <b>\"${changeDocument.newLabel?:changeDocument.new}\"</b> on the template license." + description,
+                              "<b>${propName}</b> changed from <b>\"${changeDocument.oldLabel?:changeDocument.old}\"</b> to <b>\"${changeDocument.newLabel?:changeDocument.new}\"</b> on the template license." + description,
                               dl.getLicensee(),
                               [
                                 changeTarget:"com.k_int.kbplus.License:${dl.id}",

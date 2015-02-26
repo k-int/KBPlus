@@ -34,7 +34,7 @@ class LicenseCustomProperty extends CustomProperty {
                            prop: cp,
                            name: type.name,
                            type: this."${cp}".getClass().toString(),  
-                           old: oldMap[cp] instanceof RefdataValue? oldMap[cp].toString() : oldMap[cp] ,
+                           old: oldMap[cp] instanceof RefdataValue? oldMap[cp].toString() : oldMap[cp],
                            new: newMap[cp] instanceof RefdataValue? newMap[cp].toString() : newMap[cp],
                            propertyOID: "${this.class.name}:${this.id}"
                           ])
@@ -47,8 +47,11 @@ class LicenseCustomProperty extends CustomProperty {
     def oid = "${this.owner.class.name}:${this.owner.id}"
     def changeDoc = [ OID: oid,
                      event:'CustomProperty.deleted',  
-                     prop: "${this.type.name}",  
-                     name: type.name   ]
+                     prop: "${this.type.name}",
+                     old: "",
+                     new: "property removed",
+                     name: this.type.name
+                     ]
     def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
     // changeNotificationService.broadcastEvent("com.k_int.kbplus.License:${owner.id}", changeDoc);
     changeNotificationService.notifyChangeEvent(changeDoc) 
