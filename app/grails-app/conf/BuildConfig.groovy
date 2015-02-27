@@ -53,7 +53,8 @@ grails.project.dependency.resolution = {
         mavenRepo "http://nexus.k-int.com/content/repositories/releases"
 
         // For shibboleth native-sp
-        mavenRepo "http://projects.k-int.com/nexus-webapp-1.4.0/content/repositories/releases"
+        // mavenRepo "http://projects.k-int.com/nexus-webapp-1.4.0/content/repositories/releases"
+        mavenRepo "http://nexus.k-int.com/content/repositories/releases/"
 
 
     }
@@ -73,7 +74,7 @@ grails.project.dependency.resolution = {
         runtime 'com.gmongo:gmongo:1.3'
 
         // Would very much like to upgrade to these - but seems to cause a weird class version error when I do
-        runtime 'org.elasticsearch:elasticsearch:1.3.2'
+        runtime 'org.elasticsearch:elasticsearch:1.3.7'
         runtime 'org.elasticsearch:elasticsearch-client-groovy:1.3.2'
 
         runtime 'gov.loc:bagit:4.0'

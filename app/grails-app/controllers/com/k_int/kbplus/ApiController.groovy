@@ -138,4 +138,43 @@ where tipp.title = ? and orl.roleType.value=?''',[title,'Content Provider']);
     }
     render result as JSON
   }
+
+  // Accept a single mandatorty parameter which is the namespace:code for an institution
+  // If found, return a JSON report of each title for that institution
+  // Also accept an optional parameter esn [element set name] with values full of brief[the default]
+  // Example:  http://localhost:8080/demo/api/institutionTitles?orgid=jusplogin:shu
+  def institutionTitles() {
+
+    def result = [:]
+    result.titles = []
+
+    if ( params.orgid ) {
+      def name_components = params.orgid.split(':')
+      if ( name_components.length == 2 ) {
+        // Lookup org by ID
+        def orghql = "select org from Org org where exists ( select io from IdentifierOccurrence io, Identifier id, IdentifierNamespace ns where io.org = org and id.ns = ns and io.identifier = id and ns.ns = ? and id.value like ? )"
+        def orgs = Org.executeQuery(orghql, [name_components[0],name_components[1]])
+        if ( orgs.size() == 1 ) {
+          def org = orgs[0]
+
+          def today = new Date()
+
+          // Find all TitleInstitutionProvider where institution = org
+          def titles = TitleInstitutionProvider.executeQuery('select tip.title.title, tip.title.id, count(cd) from TitleInstitutionProvider as tip left join tip.coreDates as cd where tip.institution = ? and cd.startDate < ? and cd.endDate > ?',
+                                                             [org, today, today]);
+          titles.each { tip ->
+            result.titles.add([title:tip[0], tid:tip[1], isCore:tip[2]]);
+          }
+        }
+        else {
+          log.message="Unable to locate Org with ID ${params.orgid}";
+        }
+      }
+      else {
+        result.message="Invalid orgid. Format orgid as namespace:value, for example jusplogin:shu"
+      }
+    }
+
+    render result as JSON
+  }
 }
