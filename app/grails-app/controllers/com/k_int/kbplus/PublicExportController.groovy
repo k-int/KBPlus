@@ -240,7 +240,7 @@ class PublicExportController {
              writer.write("\"${t.title}\",\"${t.issn}\",\"${t.eissn}\",${t.startDate},${t.startVolume},${t.startIssue},${t.endDate},${t.endVolume},${t.endIssue},\"${t.hostPlatformURL}\",,\"${t.doi}\",\"${t.embargo}\",\"${t.coverageDepth}\",\"${t.coverageNote}\",\"${t.publisher}\",\"${t.jusp}\",\"${t.hybridOA}\"\n");
            }
            writer.flush()
-           writer.colse()
+           writer.close()
          }
          out.close()
       }
