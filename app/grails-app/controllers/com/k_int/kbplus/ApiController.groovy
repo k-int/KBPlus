@@ -138,6 +138,39 @@ where tipp.title = ? and orl.roleType.value=?''',[title,'Content Provider']);
     }
     render result as JSON
   }
+  def fetchAllTIPs(){
+    def inst_ti_query = "select tip.institution.id, tip.title.id from TitleInstitutionProvider as tip order by tip.institution.id"
+    def inst_ti = TitleInstitutionProvider.executeQuery(inst_ti_query)
+    def inst_jusp_id_query = "select id.value from IdentifierOccurrence io, Identifier id, IdentifierNamespace ns where io.org.id = :org_id and id.ns = ns and io.identifier = id and ns.ns = 'jusplogin'"
+    def title_jusp_id_query = "select id.value from IdentifierOccurrence io, Identifier id, IdentifierNamespace ns where io.ti.id=:ti_id and id.ns = ns and io.identifier = id and ns.ns = 'jusp'"
+   
+
+    def jusp_ti_inst = TitleInstitutionProvider.executeQuery("""select jusp_institution_id.identifier.value, jusp_title_id.identifier.value  
+    from TitleInstitutionProvider tip
+      join tip.institution.ids as jusp_institution_id, 
+    TitleInstitutionProvider tipp
+      join tipp.title.ids as jusp_title_id
+    where jusp_title_id.identifier.ns.ns='jusp'
+        and tip = tipp
+        and jusp_institution_id.identifier.ns.ns='jusplogin' order by jusp_institution_id.identifier.value """)
+    log.debug(jusp_ti_inst.toString())
+
+
+    response.setHeader("Content-disposition", "attachment; filename=kbplus_jusp_export_.csv")
+    response.contentType = "text/csv"
+    def out = response.outputStream
+    out.withWriter { writer ->
+    writer.write("JUSP Institution ID,JUSP Title ID\n")
+        jusp_ti_inst.each{
+          
+          writer.write("\"${it[0]}\",\"${it[1]}\"\n")      
+        }
+
+       writer.flush()
+       writer.close()
+     }
+     out.close()   
+  }
 
   // Accept a single mandatorty parameter which is the namespace:code for an institution
   // If found, return a JSON report of each title for that institution
