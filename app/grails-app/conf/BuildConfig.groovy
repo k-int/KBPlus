@@ -102,7 +102,8 @@ grails.project.dependency.resolution = {
           excludes "org.codehaus.groovy", "groovy"
         }
         compile "net.sf.jasperreports:jasperreports:5.6.0"
-        
+        compile "org.eclipse.jdt.core.compiler:ecj:4.4"
+  
         // II Commented out..
         // compile 'cglib:cglib:2.2.2'
         compile "com.lowagie:itext:2.1.7"
