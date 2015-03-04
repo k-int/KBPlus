@@ -138,33 +138,52 @@ where tipp.title = ? and orl.roleType.value=?''',[title,'Content Provider']);
     }
     render result as JSON
   }
-  def fetchAllTIPs(){
-    def inst_ti_query = "select tip.institution.id, tip.title.id from TitleInstitutionProvider as tip order by tip.institution.id"
-    def inst_ti = TitleInstitutionProvider.executeQuery(inst_ti_query)
-    def inst_jusp_id_query = "select id.value from IdentifierOccurrence io, Identifier id, IdentifierNamespace ns where io.org.id = :org_id and id.ns = ns and io.identifier = id and ns.ns = 'jusplogin'"
-    def title_jusp_id_query = "select id.value from IdentifierOccurrence io, Identifier id, IdentifierNamespace ns where io.ti.id=:ti_id and id.ns = ns and io.identifier = id and ns.ns = 'jusp'"
-   
+  /*
+  * Create a CSV containing all JUSP title IDs with the institution they belong to
+  */
+  def fetchAllTips(){
 
-    def jusp_ti_inst = TitleInstitutionProvider.executeQuery("""select jusp_institution_id.identifier.value, jusp_title_id.identifier.value  
-    from TitleInstitutionProvider tip
-      join tip.institution.ids as jusp_institution_id, 
-    TitleInstitutionProvider tipp
-      join tipp.title.ids as jusp_title_id
+    def jusp_ti_inst = TitleInstitutionProvider.executeQuery("""
+   select jusp_institution_id.identifier.value, jusp_title_id.identifier.value, dates,tip_ti.id
+    from TitleInstitutionProvider tip_ti
+      join tip_ti.institution.ids as jusp_institution_id, 
+    TitleInstitutionProvider tip_inst
+      join tip_inst.title.ids as jusp_title_id,
+    TitleInstitutionProvider tip_date
+      join tip_date.coreDates as dates
     where jusp_title_id.identifier.ns.ns='jusp'
-        and tip = tipp
-        and jusp_institution_id.identifier.ns.ns='jusplogin' order by jusp_institution_id.identifier.value """)
-    log.debug(jusp_ti_inst.toString())
+        and tip_ti = tip_inst
+        and tip_inst = tip_date
+        and jusp_institution_id.identifier.ns.ns='jusplogin' order by jusp_institution_id.identifier.value 
+     """)
 
-
-    response.setHeader("Content-disposition", "attachment; filename=kbplus_jusp_export_.csv")
+    def date = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
+    date = date.format(new Date())
+    response.setHeader("Content-disposition", "attachment; filename=kbplus_jusp_export_${date}.csv")
     response.contentType = "text/csv"
     def out = response.outputStream
+    def currentTip = null
+    def dates_concat = ""
     out.withWriter { writer ->
-    writer.write("JUSP Institution ID,JUSP Title ID\n")
-        jusp_ti_inst.each{
-          
-          writer.write("\"${it[0]}\",\"${it[1]}\"\n")      
+      writer.write("JUSP Institution ID,JUSP Title ID, Core Dates\n")
+      Iterator iter = jusp_ti_inst.iterator()
+      while(iter.hasNext()){
+        def it = iter.next()
+        if(currentTip == it[3]){
+          dates_concat += ", ${it[2]}"
+        }else if(currentTip){
+          writer.write("\"${dates_concat}\"\n\"${it[0]}\",\"${it[1]}\",")
+          dates_concat = "${it[2]}"
+          currentTip = it[3]
+        }else{
+          writer.write("\"${it[0]}\",\"${it[1]}\",")
+          dates_concat = "${it[2]}"
+          currentTip = it[3]
         }
+        if (!iter.hasNext()){
+          writer.write("\"${dates_concat}\"\n")
+        }
+      }
 
        writer.flush()
        writer.close()
@@ -211,3 +230,4 @@ where tipp.title = ? and orl.roleType.value=?''',[title,'Content Provider']);
     render result as JSON
   }
 }
+
