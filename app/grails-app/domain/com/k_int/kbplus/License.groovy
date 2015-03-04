@@ -16,7 +16,7 @@ class License {
 
   @Transient
   def messageSource
-  static auditable = true
+  static auditable = [ignore:['version','lastUpdated','pendingChanges']]
 
   RefdataValue status
   RefdataValue type
@@ -237,9 +237,9 @@ class License {
   }
 
   def onChange = { oldMap,newMap ->
-    log.debug("license onChange....");
+    log.debug("license onChange....${oldMap} || ${newMap}");
     def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
-    def controlledProperties = ['licenseUrl','licenseeRef','licensorRef','noticePeriod','reference']
+    def controlledProperties = ['licenseUrl','licenseeRef','licensorRef','noticePeriod','reference', 'startDate', 'endDate']
     def controlledRefProperties = [ 'isPublic' ]
 
 
@@ -325,10 +325,11 @@ class License {
             if( defaultMsg)
                 description = defaultMsg.content
         }
+        def propName = changeDocument.name?:changeDocument.prop
         changeNotificationService
         .registerPendingChange('license',
                               dl,
-                              "<b>${changeDocument.prop}</b> changed from <b>\"${changeDocument.oldLabel?:changeDocument.old}\"</b> to <b>\"${changeDocument.newLabel?:changeDocument.new}\"</b> on the template license." + description,
+                              "<b>${propName}</b> changed from <b>\"${changeDocument.oldLabel?:changeDocument.old}\"</b> to <b>\"${changeDocument.newLabel?:changeDocument.new}\"</b> on the template license." + description,
                               dl.getLicensee(),
                               [
                                 changeTarget:"com.k_int.kbplus.License:${dl.id}",

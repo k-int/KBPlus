@@ -61,14 +61,16 @@ class PropertyDefinition {
         ownerClassName="com.k_int.kbplus."+ownerClassName+"CustomProperty"
         def newProp = Class.forName(ownerClassName).newInstance(type: type,owner: owner)
         newProp.setNote("")
+        owner.customProperties.add(newProp)
         newProp.save(flush:true)
         newProp
     }
 
     static def lookupOrCreateType(name, typeClass, descr) {
         typeIsValid(typeClass)
-        def type = findByNameAndTypeAndDescr(name, typeClass, descr);
+        def type = findByNameAndType(name, typeClass);
         if (!type) {
+            print("No PropertyDefinition type match found for ${typeClass}. Creating new.")
             type = new PropertyDefinition(name: name, type: typeClass, descr: descr)
             type.save()
         }

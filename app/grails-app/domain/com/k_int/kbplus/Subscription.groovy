@@ -7,7 +7,7 @@ import javax.persistence.Transient
 
 class Subscription {
 
-  static auditable = true
+  static auditable = [ignore:['version','lastUpdated','pendingChanges']]
 
   @Transient
   def grailsApplication

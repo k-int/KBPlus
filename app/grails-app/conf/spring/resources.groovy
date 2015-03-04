@@ -24,7 +24,7 @@ beans = {
     authenticationManager = ref('authenticationManager')
     ediAuthTokenMap = ref('ediAuthTokenMap')
   }
-
+  
   // apiauthFilter(com.k_int.kbplus.filter.ApiauthFilter){
   //   authenticationManager = ref("authenticationManager")
   //   rememberMeServices = ref("rememberMeServices")

@@ -25,7 +25,7 @@ grails.project.dependency.resolution = {
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     checksums true // Whether to verify checksums on resolve
     def gebVersion = "0.9.3"
-    def seleniumVersion = "2.43.1"
+    def seleniumVersion = "2.44.0"
 
     repositories {
         inherits true // Whether to inherit repository definitions from plugins
@@ -148,7 +148,7 @@ grails.project.dependency.resolution = {
         runtime ":gsp-resources:0.4.4"
         runtime ":jquery:1.9.1"
 
-        runtime ":audit-logging:0.5.4"
+        runtime ":audit-logging:1.0.3"
         runtime ":executor:0.3"
         runtime ":markdown:1.1.1"
         runtime ":quartz:1.0.1"

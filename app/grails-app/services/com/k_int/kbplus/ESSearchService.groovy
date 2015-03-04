@@ -25,7 +25,7 @@ class ESSearchService{
   }
   def search(params, field_map){
     // log.debug("Search Index, params.coursetitle=${params.coursetitle}, params.coursedescription=${params.coursedescription}, params.freetext=${params.freetext}")
-    log.debug("Search Index, params.q=${params.q}, format=${params.format}")
+    log.debug("ESSearchService::search - ${params}")
 
 	 def result = [:]
 	// Get hold of some services we might use ;)
