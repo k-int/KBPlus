@@ -25,8 +25,6 @@ class FinanceController {
 
       log.debug("Process add cost item");
 
-      // 2015-02-19 11:43:06,893 [http-bio-8080-exec-6] DEBUG kbplus.FinanceController  - FinanceController::index() [Add:add, newIe:, newValue:1, subscriptionFilter:2724, newReference:XX3344, shortcode:University_of_Oxford, newSubscription:2724, newDescription:Some description, packageFilter:xx, newInvoiceNumber:1234456, invoiceNumberFilter:1234456, newOrderNumber:2233445, newDate:2015-01-01, orderNumberFilter:2233445, newPackage:, controller:finance, action:index]
-
       def order = null
       if ( params.newOrderNumber ) {
         order = Order.findByOrderNumberAndOwner(params.newOrderNumber, result.institution) ?: new Order(orderNumber:params.newOrderNumber, owner:result.institution).save(flush:true);
@@ -48,6 +46,11 @@ class FinanceController {
         pkg = Package.get(params.long('newPackage'));
       }
 
+      def cost_item_status = null; // lookup from params.newCostItemStatus
+      def billing_currency = null; // lookup from params.newCostCurrency
+      def cost_item_element = null; // lookup from params.costItemElement
+      def cost_tax_type = null; // lookup from params.newCostTaxType
+
       def newCostItem = new CostItem(
                               owner:result.institution,
                               sub:sub,
@@ -58,15 +61,17 @@ class FinanceController {
                               invoice:invoice,
                               costItemType:null,
                               costItemCategory:null,
-                              billingCurrency:null,
+                              billingCurrency:billing_currency,
                               costDescription:params.newDescription,
                               costInBillingCurrency:params.newCostInBillingCurrency,
                               datePaid:null,
                               localFundCode:null,
                               costInLocalCurrency:params.newCostInLocalCurrency,
-                              taxCode:null,
+                              taxCode:cost_tax_type,
                               includeInSubscription:null,
-                              reference: params.newReference
+                              reference: params.newReference,
+                              costItemStatus: cost_item_status,
+                              costItemElement: cost_item_element
                             )
 
       newCostItem.save(flush:true);
