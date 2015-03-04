@@ -67,6 +67,8 @@ class CostItem {
      includeInSubscription(nullable:true, blank:false)
               costItemType(nullable:true, blank:false)
           costItemCategory(nullable:true, blank:false)
+            costItemStatus(nullable:true, blank:false)
+           costItemElement(nullable:true, blank:false)
                  reference(nullable:true, blank:false)
   }
 

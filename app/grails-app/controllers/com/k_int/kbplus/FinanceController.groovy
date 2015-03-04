@@ -47,7 +47,7 @@ class FinanceController {
       }
 
       def cost_item_status = null; // lookup from params.newCostItemStatus
-      def billing_currency = null; // lookup from params.newCostCurrency
+      def billing_currency = params.newCostCurrency ? (RefdataValue.get(params.long('newCostCurrency'))) : null;
       def cost_item_element = null; // lookup from params.costItemElement
       def cost_tax_type = null; // lookup from params.newCostTaxType
 

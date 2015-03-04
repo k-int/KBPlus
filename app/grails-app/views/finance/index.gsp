@@ -73,7 +73,7 @@
                 </tr>
                 <tr>
                   <td>${ci.datePaid}</td>
-                  <td>${ci.costInBillingCurrency} / ${ci.costInLocalCurrency}</td>
+                  <td>${ci.costInBillingCurrency} ${ci.billingCurrency?.value} / ${ci.costInLocalCurrency}</td>
                   <td>${ci.reference}</td>
                   <td colspan="3">${ci.costDescription}</td>
                 </tr>
