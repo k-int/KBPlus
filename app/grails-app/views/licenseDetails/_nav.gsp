@@ -12,11 +12,11 @@
                                                                     action="notes"
                                                                     params="${[id:params.id]}">Notes</g:link></li>
 
-    <li <%='history'== actionName ? ' class="active"' : '' %>><g:link controller="licenseDetails"
+    <li <%='todo_history'== actionName ? ' class="active"' : '' %>><g:link controller="licenseDetails"
                                                                       action="todo_history"
                                                                       params="${[id:params.id]}">Todo History</g:link></li>
 
-    <li <%='history'== actionName ? ' class="active"' : '' %>><g:link controller="licenseDetails"
+    <li <%='edit_history'== actionName ? ' class="active"' : '' %>><g:link controller="licenseDetails"
                                                                       action="edit_history"
                                                                       params="${[id:params.id]}">Edit History</g:link></li>
 
