@@ -92,7 +92,7 @@
                    <g:if test="${l.subscriptions && ( l.subscriptions.size() > 0 )}">
                       <ul>
                         <g:each in="${l.subscriptions}" var="sub">
-                            <g:if test="${sub.status?.value!='Deleted'">
+                            <g:if test="${sub.status?.value!='Deleted'}">
                               <li><g:link controller="subscriptionDetails" 
                                           action="index" 
                                           style="${sub.status?.value=='Deleted' ? 'text-decoration: line-through;' : ''}" 
