@@ -1,5 +1,7 @@
 select "Updating spelling mistakes";
 
+DROP TABLE org_title_instance;
+
 UPDATE refdata_value SET rdv_value='Model Licence' WHERE rdv_value='Model License';
 UPDATE refdata_value SET rdv_value='ONIX-PL Licence' WHERE rdv_value='ONIX-PL License';
 UPDATE refdata_value SET rdv_value='Licence' WHERE rdv_value='License';
