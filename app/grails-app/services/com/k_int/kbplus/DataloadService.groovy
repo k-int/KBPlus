@@ -24,12 +24,12 @@ class DataloadService {
   def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
   def grailsApplication
 
-
   def es_index
   def dataload_running=false
   def dataload_stage=-1
   def dataload_message=''
   def update_running = false
+  def lastIndexUpdate = null
 
   @javax.annotation.PostConstruct
   def init () {
@@ -224,6 +224,7 @@ class DataloadService {
 
     update_running = false;
     def elapsed = System.currentTimeMillis() - start_time;
+    lastIndexUpdate = new Date(System.currentTimeMillis())
     log.debug("IndexUpdateJob completed in ${elapsed}ms at ${new Date()}");
   }
 
