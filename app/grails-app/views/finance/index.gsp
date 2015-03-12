@@ -7,14 +7,14 @@
 
   <body>
 
-    <div class="container">
+    <div class="container-fluid">
       <ul class="breadcrumb">
         <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <li> <g:link controller="myInstitutions" action="finance" params="${[shortcode:params.shortcode]}">${institution.name} Finance</g:link> </li>
       </ul>
     </div>
 
-    <div class="container">
+    <div class="container-fluid">
       <h1>${institution.name} Cost Items</h1>
       <g:form action="index" method="post" params="${[shortcode:params.shortcode]}">
         <input type="hidden" name="shortcode" value="${params.shortcode}"/>
