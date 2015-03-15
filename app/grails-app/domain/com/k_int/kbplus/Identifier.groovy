@@ -9,6 +9,12 @@ class Identifier {
   static mappedBy = [ occurrences:'identifier' ]
 
   static constraints = {
+    value validator: {val,obj ->
+      if (obj.ns.validationRegex){
+        def pattern = ~/${obj.ns.validationRegex}/
+        return pattern.matcher(val).matches() 
+      }
+    }
   }
 
   static mapping = {
@@ -38,10 +44,6 @@ class Identifier {
       def namespace = IdentifierNamespace.findByNsIlike(qp[0]);
       if ( namespace && qp.size() == 2) {
         ql = Identifier.findAllByNsAndValueIlike(namespace,"${qp[1]}%")
-      }
-      else if(!namespace) {
-        throw new java.lang.IllegalArgumentException("No namespace '${qp[0]}' exists.")
-
       }
     }
     else {

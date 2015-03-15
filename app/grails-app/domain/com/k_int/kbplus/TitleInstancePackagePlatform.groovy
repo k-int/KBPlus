@@ -124,7 +124,25 @@ class TitleInstancePackagePlatform {
     accessEndDate(nullable:true, blank:true);
   }
 
-  
+  def beforeUpdate(){
+    touchPkgLastUpdated()
+  }
+  def beforeInsert() {
+      touchPkgLastUpdated()
+  }
+
+  def beforeDelete(){
+    touchPkgLastUpdated()
+  }
+
+  @Transient
+  def touchPkgLastUpdated(){
+    if(pkg!=null){
+      pkg.lastUpdated ++
+      pkg.save(failOnError:true)
+    }
+  }
+
   def getHostPlatform() {
     def result = null;
     additionalPlatforms.each { p ->

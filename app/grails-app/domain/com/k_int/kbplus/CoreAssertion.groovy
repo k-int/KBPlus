@@ -1,9 +1,14 @@
 package com.k_int.kbplus
+import javax.persistence.Transient
 
 class CoreAssertion { 
 
   Date startDate
   Date endDate
+
+  @Transient
+  def grailsApplication
+
 
   static belongsTo = [ tiinp : TitleInstitutionProvider ]
 
@@ -17,6 +22,13 @@ class CoreAssertion {
 
   static constraints = {
     endDate(nullable:true, blank:false)
+  }
+
+  @Override
+  public String toString(){
+    def strFormat = grailsApplication.config.appDefaultPrefs.globalDateFormat
+    def formatter = new java.text.SimpleDateFormat(strFormat)
+    return "${formatter.format(startDate)} | ${formatter.format(endDate)}"
   }
 
 }

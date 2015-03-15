@@ -25,7 +25,7 @@ class ESSearchService{
   }
   def search(params, field_map){
     // log.debug("Search Index, params.coursetitle=${params.coursetitle}, params.coursedescription=${params.coursedescription}, params.freetext=${params.freetext}")
-    log.debug("Search Index, params.q=${params.q}, format=${params.format}")
+    log.debug("ESSearchService::search - ${params}")
 
 	 def result = [:]
 	// Get hold of some services we might use ;)
@@ -151,7 +151,7 @@ class ESSearchService{
         log.debug("Found...");
         if ( params[mapping.key].class == java.util.ArrayList) {
 
-          sw.write(" AND ( ( NOT _type:\"com.k_int.kbplus.Subscription\" ) OR ( ")
+          sw.write(" AND ( ( ( NOT _type:\"com.k_int.kbplus.Subscription\" ) AND ( NOT _type:\"com.k_int.kbplus.License\" )) OR ( ")
 
           params[mapping.key].each { p ->  
                 sw.write(mapping.value)

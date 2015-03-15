@@ -197,10 +197,10 @@ class LicenseDetailsController {
 
     result
   }
-
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def history() {
-    log.debug("licenseDetails id:${params.id}");
+  def edit_history() {
+    log.debug("licenseDetails::edit_history : ${params}");
+
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.license = License.get(params.id)
@@ -217,15 +217,54 @@ class LicenseDetailsController {
       result.editable = false
     }
 
-    result.max = params.max ?: 20;
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ?: 0;
 
-    def qry_params = [result.license.class.name, "${result.license.id}"]
-    result.historyLines = AuditLogEvent.executeQuery("select e from AuditLogEvent as e where className=? and persistedObjectId=? order by id desc", qry_params, [max:result.max, offset:result.offset]);
-    result.historyLinesTotal = AuditLogEvent.executeQuery("select count(e.id) from AuditLogEvent as e where className=? and persistedObjectId=?",qry_params)[0];
 
-    result.todoHistoryLines = PendingChange.executeQuery("select pc from PendingChange as pc where pc.license=? order by pc.ts desc", result.license);
+    def qry_params = [licClass:result.license.class.name, prop:LicenseCustomProperty.class.name,owner:result.license, licId:"${result.license.id}"]
 
+    result.historyLines = AuditLogEvent.executeQuery("select e from AuditLogEvent as e where (( className=:licClass and persistedObjectId=:licId ) or (className = :prop and persistedObjectId in (select lp.id from LicenseCustomProperty as lp where lp.owner=:owner))) order by e.dateCreated desc", qry_params, [max:result.max, offset:result.offset]);
+    
+    def propertyNameHql = "select pd.name from LicenseCustomProperty as licP, PropertyDefinition as pd where licP.id= ? and licP.type = pd"
+    
+    result.historyLines?.each{
+      if(it.className == qry_params.prop ){
+        def propertyName = LicenseCustomProperty.executeQuery(propertyNameHql,[it.persistedObjectId.toLong()])[0]
+        it.propertyName = propertyName
+      }
+    }
+
+    result.historyLinesTotal = AuditLogEvent.executeQuery("select count(e.id) from AuditLogEvent as e where ( (className=:licClass and persistedObjectId=:licId) or (className = :prop and persistedObjectId in (select lp.id from LicenseCustomProperty as lp where lp.owner=:owner))) ",qry_params)[0];
+
+    result
+
+  }
+
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def todo_history() {
+    log.debug("licenseDetails::todo_history : ${params}");
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.license = License.get(params.id)
+
+    if ( ! result.license.hasPerm("view",result.user) ) {
+      response.sendError(401);
+      return
+    }
+
+    if ( result.license.hasPerm("edit",result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
+    }
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+    result.offset = params.offset ?: 0;
+
+    result.todoHistoryLines = PendingChange.executeQuery("select pc from PendingChange as pc where pc.license=? order by pc.ts desc", [result.license],[max:result.max,offset:result.offset]);
+
+    result.todoHistoryLinesTotal = PendingChange.executeQuery("select count(pc) from PendingChange as pc where pc.license=? order by pc.ts desc", [result.license])[0];
     result
   }
 

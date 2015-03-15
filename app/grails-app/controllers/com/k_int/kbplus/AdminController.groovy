@@ -75,6 +75,76 @@ class AdminController {
     redirect(action: "manageAffiliationRequests")
   }
 
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def userMerge(){
+     log.debug("AdminController :: userMerge :: ${params}");
+     def usrMrgId = params.userToMerge == "null"?null:params.userToMerge
+     def usrKeepId = params.userToKeep == "null"?null:params.userToKeep
+     def result = [:]
+     switch (request.method) {
+       case 'GET':
+         log.debug("Found GET request")
+         if(usrMrgId ){
+           def usr = User.get(usrMrgId)
+           result.userRoles = usr.getAuthorities()
+           result.userAffiliations =  usr.getAuthorizedAffiliations()
+         }else{
+          flash.error = "Please select'user to keep' and 'user to merge' from the dropdown."
+         }
+         break;
+       case 'POST':
+         log.debug("Found POST request")
+         if(usrMrgId && usrKeepId){
+           def usrMrg = User.get(usrMrgId)
+           def usrKeep =  User.get(usrKeepId)
+           def success = false
+           try{
+             success = copyUserRoles(usrMrg, usrKeep)
+           }catch(Exception e){
+            log.error("Exception while copying user roles.",e)
+           }
+           if(success){
+             usrMrg.enabled = false
+             usrMrg.save(flush:true,failOnError:true)
+             flash.message = "Rights copying successful. User '${usrKeep.displayName}' is now disabled."
+           }else{
+             flash.error = "An error occured before rights transfer was complete." 
+           }
+         }else{
+          flash.error = "Please select'user to keep' and 'user to merge' from the dropdown."
+         }
+         break
+       default:
+         break;
+     }
+      result.usersAll = User.list(sort:"display", order:"asc")
+      def activeHQL = " from User as usr where usr.enabled=true or usr.enabled=null order by display asc"
+      result.usersActive = User.executeQuery(activeHQL)
+
+    result
+  }
+
+  def copyUserRoles(usrMrg, usrKeep){
+    def mergeRoles = usrMrg.getAuthorities()
+    def mergeAffil = usrMrg.getAuthorizedAffiliations()
+    def currentRoles = usrKeep.getAuthorities()
+    def currentAffil = usrKeep.getAuthorizedAffiliations()
+
+    mergeRoles.each{ role ->
+      if(!currentRoles.contains(role)){
+        UserRole.create(usrKeep,role)
+      }
+    }
+    mergeAffil.each{affil ->
+      if(!currentAffil.contains(affil)){
+        def newAffil = new UserOrg(org:affil.org,user:usrKeep,formalRole:affil.formalRole,status:3)
+        if(!newAffil.save(flush:true,failOnError:true)){
+          return false
+        }
+      }
+    }
+    return true
+  }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def showAffiliations() {

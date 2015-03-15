@@ -214,7 +214,7 @@
             <tr>
               <th>Access Dates</th>
               <th>eISSN</th>
-              <th></th>
+              <th>Medium (P/E)</th>
               <g:sortableColumn params="${params}" property="endDate" title="Latest Date" />
               <g:sortableColumn params="${params}" property="coreStatusEnd" title="Core End Date"  />
             </tr>
@@ -237,6 +237,7 @@
 
               <th>
                 <g:if test="${editable}"><g:simpleHiddenRefdata id="bulk_core" name="bulk_core" refdataCategory="CoreStatus"/></g:if>
+                <g:if test="${editable}"><br/><g:simpleHiddenRefdata id="bulk_medium" name="bulk_medium" refdataCategory="IEMedium"/></g:if>
               </th>
 
               <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_start_date" name="bulk_start_date" type="date"/> </g:if> <br/>
@@ -281,6 +282,8 @@
                   <g:if test="${grailsApplication.config.ab?.newcore==true}">
                     <br/>(Newcore: ${ie.wasCoreOn(as_at_date)})
                   </g:if>
+
+                  <br/><g:xEditableRefData owner="${ie}" field="medium" config='IEMedium'/>
                 </td>
                 <td>
                     <g:xEditable owner="${ie}" type="date" field="startDate" /><br/>
@@ -319,7 +322,7 @@
 
     <g:render template="orgLinksModal" 
               contextPath="../templates" 
-              model="${[roleLinks:subscriptionInstance?.orgRelations,parent:subscriptionInstance.class.name+':'+subscriptionInstance.id,property:'orgs',recip_prop:'sub']}" />
+              model="${[linkType:subscriptionInstance?.class?.name,roleLinks:subscriptionInstance?.orgRelations,parent:subscriptionInstance.class.name+':'+subscriptionInstance.id,property:'orgs',recip_prop:'sub']}" />
 
     <r:script language="JavaScript">
       <g:if test="${editable}">

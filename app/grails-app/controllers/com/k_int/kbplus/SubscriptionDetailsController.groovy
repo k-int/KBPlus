@@ -426,6 +426,12 @@ class SubscriptionDetailsController {
             ie.coreStatus = selected_refdata
           }
   
+          if ( params.bulk_medium.trim().length() > 0 ) {
+            def selected_refdata = genericOIDService.resolveOID(params.bulk_medium.trim())
+            log.debug("Selected medium is ${selected_refdata}");
+            ie.medium = selected_refdata
+          }
+  
           if ( params.bulk_coverage && (params.bulk_coverage.trim().length() > 0 ) ) {
             ie.coverageDepth = params.bulk_coverage
           }
@@ -921,8 +927,8 @@ class SubscriptionDetailsController {
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def history() {
-    log.debug("licenseDetails id:${params.id}");
+  def edit_history() {
+    log.debug("subscriptionDetails::edit_history ${params}");
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.subscription = Subscription.get(params.id)
@@ -945,7 +951,37 @@ class SubscriptionDetailsController {
     def qry_params = [result.subscription.class.name, "${result.subscription.id}"]
     result.historyLines = AuditLogEvent.executeQuery("select e from AuditLogEvent as e where className=? and persistedObjectId=? order by id desc", qry_params, [max:result.max, offset:result.offset]);
     result.historyLinesTotal = AuditLogEvent.executeQuery("select count(e.id) from AuditLogEvent as e where className=? and persistedObjectId=?",qry_params)[0];
-    result.todoHistoryLines = PendingChange.executeQuery("select pc from PendingChange as pc where subscription=? order by ts desc", result.subscription);
+   
+    result
+  }
+
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def todo_history() {
+    log.debug("subscriptionDetails::todo_history ${params}");
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.subscription = Subscription.get(params.id)
+
+    if ( ! result.subscription.hasPerm("view",result.user) ) {
+      response.sendError(401);
+      return
+    }
+
+    if ( result.subscription.hasPerm("edit",result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
+    }
+
+    result.max = params.max ?: result.user.defaultPageSize;
+    result.offset = params.offset ?: 0;
+
+    def qry_params = [result.subscription.class.name, "${result.subscription.id}"]
+
+    result.todoHistoryLines = PendingChange.executeQuery("select pc from PendingChange as pc where subscription=? order by ts desc", [result.subscription], [max:result.max, offset:result.offset]);
+
+    result.todoHistoryLinesTotal = PendingChange.executeQuery("select count(pc) from PendingChange as pc where subscription=?", result.subscription)[0];
 
     result
   }

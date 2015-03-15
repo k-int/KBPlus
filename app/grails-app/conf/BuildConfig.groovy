@@ -25,7 +25,7 @@ grails.project.dependency.resolution = {
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     checksums true // Whether to verify checksums on resolve
     def gebVersion = "0.9.3"
-    def seleniumVersion = "2.43.1"
+    def seleniumVersion = "2.44.0"
 
     repositories {
         inherits true // Whether to inherit repository definitions from plugins
@@ -53,7 +53,8 @@ grails.project.dependency.resolution = {
         mavenRepo "http://nexus.k-int.com/content/repositories/releases"
 
         // For shibboleth native-sp
-        mavenRepo "http://projects.k-int.com/nexus-webapp-1.4.0/content/repositories/releases"
+        // mavenRepo "http://projects.k-int.com/nexus-webapp-1.4.0/content/repositories/releases"
+        mavenRepo "http://nexus.k-int.com/content/repositories/releases/"
 
 
     }
@@ -73,7 +74,7 @@ grails.project.dependency.resolution = {
         runtime 'com.gmongo:gmongo:1.3'
 
         // Would very much like to upgrade to these - but seems to cause a weird class version error when I do
-        runtime 'org.elasticsearch:elasticsearch:1.3.2'
+        runtime 'org.elasticsearch:elasticsearch:1.3.7'
         runtime 'org.elasticsearch:elasticsearch-client-groovy:1.3.2'
 
         runtime 'gov.loc:bagit:4.0'
@@ -101,15 +102,17 @@ grails.project.dependency.resolution = {
           excludes "org.codehaus.groovy", "groovy"
         }
         compile "net.sf.jasperreports:jasperreports:5.6.0"
-        
+        compile "org.eclipse.jdt.core.compiler:ecj:4.4"
+  
         // II Commented out..
         // compile 'cglib:cglib:2.2.2'
         compile "com.lowagie:itext:2.1.7"
+
     }
 
     plugins {
         compile ":h2:0.2.6"
-        runtime ':hibernate:3.6.10.16'
+        runtime ':hibernate:3.6.10.18'  // 18 is latest
         runtime ":resources:1.2.8"
         runtime ':fields:1.3'
         compile ":scaffolding:2.0.3"
@@ -146,12 +149,13 @@ grails.project.dependency.resolution = {
         runtime ":gsp-resources:0.4.4"
         runtime ":jquery:1.9.1"
 
-        runtime ":audit-logging:0.5.4"
+        runtime ":audit-logging:1.0.3"
         runtime ":executor:0.3"
         runtime ":markdown:1.1.1"
         runtime ":quartz:1.0.1"
         runtime ":rest:0.7"
         compile ":grails-melody:1.53.0"
         // runtime "com.k-int:domain-model-oai-pmh:0.1"
+        compile ":jsonp:0.2"
     }
 }

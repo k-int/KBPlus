@@ -219,6 +219,9 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'titleMerge'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="titleMerge">Title Merge</g:link>
                       </li>
+                        <li <%= ( ( 'admin'== controllerName ) && ( 'userMerge'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="userMerge">User Merge</g:link>
+                      </li>
                       <li class="divider"></li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'globalSync'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="globalSync">Start Global Data Sync</g:link>
@@ -362,6 +365,14 @@
             'Institution',         // The name acts as a kind of category for the user activity.  Required parameter.
             "${params.shortcode}", // This value of the custom variable.  Required parameter.
             2                      // Sets the scope to session-level.  Optional parameter.
+         ]);
+      </g:if>
+      <g:if test="${user?.defaultDash?.shortcode}">
+      _gaq.push(['_setCustomVar',
+            2,                     // This custom var is set to slot #2.  Required parameter.
+            'UserDefaultOrg',         // The name acts as a kind of category for the user activity.  Required parameter.
+            "${user?.defaultDash?.shortcode}", // This value of the custom variable.  Required parameter.
+            3                      // Sets the scope to page-level.  Optional parameter.
          ]);
       </g:if>
       _gaq.push(['_trackPageview']);

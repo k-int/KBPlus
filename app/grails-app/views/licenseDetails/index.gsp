@@ -248,10 +248,9 @@
               </div>
             </div>
     </div>
-    
     <g:render template="orgLinksModal" 
               contextPath="../templates" 
-              model="${[roleLinks:license?.orgLinks,parent:license.class.name+':'+license.id,property:'orgLinks',recip_prop:'lic']}" />
+              model="${[linkType:license?.class?.name,roleLinks:license?.orgLinks,parent:license.class.name+':'+license.id,property:'orgLinks',recip_prop:'lic']}" />
 
     <r:script language="JavaScript">
     

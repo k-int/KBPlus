@@ -1,0 +1,215 @@
+<html>
+  <head>
+    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" >
+    
+      // Ensure the $ var is set.
+      (function($) {
+    	
+    	// Error handler that will be used to generically handle all errors.
+    	function apiError ( message ) {
+    	  console.error (message);
+    	  alert ( message );
+    	}
+    	
+        function callAPIMethod (method, type, params, callback) {
+        
+          // Do the ajax call using jsonp to allow this request to come from a different origin.
+          //http://localhost:8080/demo/jusp/
+          //http://www.kbplus.ac.uk/test/jusp/
+          $.ajax({
+            "url"           : "http://www.kbplus.ac.uk/test/jusp/" + method,
+            "data"          : params, 
+            "type"          : type,
+            "dataType"      : "jsonp",
+            "jsonpCallback" : callback,
+            "jsonp" : "callback",
+          })
+      
+          // On failure.
+          .fail (function (jqXHR, textStatus, errorThrown) {
+        	//apiError ("The API call failed: " + errorThrown);
+          });
+        }
+        
+        // Add a ready function.
+        $(document).ready(function() {
+        	
+        	
+          // Add the submit handler to each form. These forms will actually use AJAX to retrieve
+          // the data. Each form should set 2 attributes (data-method and data-callback) which represents the
+          // api method called against the api url and the method where the results are passed.
+          $("form").submit(function(event){
+        	
+        	// Grab the values from the form.
+        	var form = $(this);
+        	
+        	// Form properties.
+        	var api_method = form.attr("data-method");
+        	var callback = form.attr("data-callback");
+        	var type = form.attr("method");
+        	
+        	// Grab all the defined form elements and turn them into an object that
+        	// can be easily fed to the ajax method.
+        	var data = form.serialize();
+        	
+        	// Call the method.
+        	callAPIMethod (api_method, type, data, callback);
+        	
+        	// Stop the default submit from happening.
+        	event.preventDefault();
+        	return false;
+          });
+        });
+        
+      })(jQuery);
+      
+      // Need to specify the callback whose name we pass to the service.
+      // This method name is passed to the service as a parameter named
+      // callback. i.e. &callback=formatJUSPResults.
+      
+      // For these callbacks to work they should be placed within the context of the window.
+      function formatJUSPCoreData( data ) {      
+        console.log( data );
+  
+        table = replaceTable();     
+        if(data.status=="error"){
+          appendError(table,data);
+        }else{
+          // We now have the target table... Let's add to it.
+          $.each(data.data, function (prop, value) {
+            
+            table.append($("<dt>" + prop + "</dt>"));
+            
+            $.each(value, function () {
+          	// Add the values.
+            console.log(this.endDate);
+          	table.append($("<dd>" + this.startDate + " | "+ this.endDate + "</dd>"));
+            });
+          });
+        }
+      }
+
+      function formatCoreTitles(data){
+        console.log(data)
+  
+        table = replaceTable();     
+        if(data.status=="error"){
+          appendError(table,data);
+        }else{
+          // We now have the target table... Let's add to it.
+          $.each(data.data, function (prop, value) {
+            
+            table.append($("<dt>" + prop + "</dt>"));
+            
+            // Add the values.
+            $.each(value.jusp_id,function(){
+                table.append($("<dd>JUSP title identifier: " + this + "</dd>"));
+            })
+            $.each(value.coreDateList,function(){
+                table.append($("<dd>" + this.startDate + " | "+ this.endDate + "</dd>"));
+            });
+            table.append($("<dt>&nbsp;</dt>"));
+          });
+        }
+      }
+
+      function formatCoreStatus(data){
+        table = replaceTable();
+        console.log(data)
+        if(data.status=="error"){
+          appendError(table,data);
+        }else{
+          table.append($("<dt>" + "JUSP Core Status" + "</dt>"));
+          table.append($("<dd>" + data.data + "</dd>"));
+        }
+      }
+      function extendCoreAssertion(data){
+        table = replaceTable();
+        console.log(data)
+        table.append($("<dt>" + "CoreAssertion:" + "</dt>"));
+         $.each(data.data, function (prop, value) {
+          
+          table.append($("<dd>" + value.startDate + " | "+ value.endDate + "</dd>"));
+        });
+      }
+
+      function replaceTable(){
+        // Locate the table or create it.
+        var table = $('#results');
+        if (table.length == 0) {
+
+          // New table.
+          table = $("<dl id='results' />").appendTo($("body"));
+        } else {
+
+          // Create a new table but in the current posisiton.
+          var newTable = $("<dl id ='results' />");
+          table.replaceWith (newTable);
+     
+          table = newTable;
+        }
+        return table;
+      }
+
+      function appendError(table,data){
+          table.append($("<dt>" + "An error occured" + "</dt>"));
+          table.append($("<dd>" + data.data + "</dd>"));
+      }
+
+  </script>
+  </head>
+  <body>
+    <h1>JUSP API examples</h1>
+    <p>Use the forms below to see how the JUSP api works. Complete documentation on KBPlus <a href="https://github.com/k-int/KBPlus/wiki/JUSP-API-Documentation">wiki</a>.</p>
+    
+  	<form method="get" data-method="titleInstitutionProvider" data-callback="formatJUSPCoreData" >
+  	  <fieldset>
+  	    <legend>TIP information</legend>
+	    <label>Title ID</label> <input type="text" value="" name="jusp_ti" />
+	    <label>Institution ID</label> <input type="text" value="" name="jusp_inst" />
+	    <label>(optional) Provider ID</label> <input type="text" value="" name="jusp_prov" />
+      </fieldset>
+      <input type="hidden" value="json" name="format" />
+	  <input type="submit" value="Submit" />
+  	</form>
+
+    <form method="get" data-method="coreTitles" data-callback="formatCoreTitles" >
+      <fieldset>
+        <legend>Core Titles for date range</legend>
+      <label>Institution ID</label> <input type="text" value="" name="jusp_inst" />
+      <label>Core Start</label> <input type="text" value="" name="core_start" />
+      <label>Core End</label> <input type="text" value="" name="core_end" />
+      </fieldset>
+      <input type="hidden" value="json" name="format" />
+    <input type="submit" value="Submit" />
+    </form>
+
+    <form method="get" data-method="titleInstProvCoreStatus" data-callback="formatCoreStatus" >
+      <fieldset>
+        <legend>Title core status information</legend>
+      <label>Title ID</label> <input type="text" value="" name="jusp_ti" />
+      <label>Institution ID</label> <input type="text" value="" name="jusp_inst" />
+      <label>Lookup Date</label> <input type="text" value="" name="lookupDate" />
+      </fieldset>
+      <input type="hidden" value="json" name="format" />
+    <input type="submit" value="Submit" />
+    </form>
+
+    <form method="get" data-method="addCoreAssertionDates" data-callback="extendCoreAssertion" >
+      <fieldset>
+        <legend>Extend Core Assertion Dates</legend>
+      <label>Title ID</label> <input type="text" value="" name="jusp_ti" />
+      <label>Institution ID</label> <input type="text" value="" name="jusp_inst" />
+      <label>Core Start</label> <input type="text" value="" name="core_start" />
+      <label>Core End</label> <input type="text" value="" name="core_end" />
+      <label>(optional) Provider ID</label> <input type="text" value="" name="jusp_prov" />
+      </fieldset>
+      <input type="hidden" value="json" name="format" />
+    <input type="submit" value="Submit" />
+    </form>
+  	 <b>Request results:</b>
+  	<dl id="results" ></dl>
+
+  </body>
+</html>

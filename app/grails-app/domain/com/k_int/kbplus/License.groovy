@@ -18,7 +18,7 @@ class License {
   def messageSource
 
   
-  static auditable = true
+  static auditable = [ignore:['version','lastUpdated','pendingChanges']]
 
   RefdataValue status
   RefdataValue type
@@ -35,9 +35,14 @@ class License {
   String licenseeRef
   String licenseType
   String licenseStatus
+  String impId
+
   long lastmod
   Date startDate
   Date endDate
+
+  Date dateCreated
+  Date lastUpdated
 
   static hasOne = [onixplLicense: OnixplLicense]
 
@@ -90,6 +95,7 @@ class License {
   static constraints = {
     status(nullable:true, blank:false)
     type(nullable:true, blank:false)
+    impId(nullable:true, blank:false)
     reference(nullable:true, blank:true)
     sortableReference(nullable:true, blank:true)
     isPublic(nullable:true, blank:true)
@@ -104,6 +110,7 @@ class License {
     licenseCategory(nullable: true, blank: true)
     startDate(nullable: true, blank: true)
     endDate(nullable: true, blank: true)
+    lastUpdated(nullable: true, blank: true)
  }
 
   def getLicensor() {
@@ -232,9 +239,9 @@ class License {
   }
 
   def onChange = { oldMap,newMap ->
-    log.debug("license onChange....");
+    log.debug("license onChange....${oldMap} || ${newMap}");
     def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
-    def controlledProperties = ['licenseUrl','licenseeRef','licensorRef','noticePeriod','reference']
+    def controlledProperties = ['licenseUrl','licenseeRef','licensorRef','noticePeriod','reference', 'startDate', 'endDate']
     def controlledRefProperties = [ 'isPublic' ]
 
 
@@ -320,10 +327,11 @@ class License {
             if( defaultMsg)
                 description = defaultMsg.content
         }
+        def propName = changeDocument.name?:changeDocument.prop
         changeNotificationService
         .registerPendingChange('license',
                               dl,
-                              "<b>${changeDocument.prop}</b> changed from <b>\"${changeDocument.oldLabel?:changeDocument.old}\"</b> to <b>\"${changeDocument.newLabel?:changeDocument.new}\"</b> on the template license." + description,
+                              "<b>${propName}</b> changed from <b>\"${changeDocument.oldLabel?:changeDocument.old}\"</b> to <b>\"${changeDocument.newLabel?:changeDocument.new}\"</b> on the template license." + description,
                               dl.getLicensee(),
                               [
                                 changeTarget:"com.k_int.kbplus.License:${dl.id}",
@@ -340,6 +348,9 @@ class License {
   def beforeInsert() {
     if ( reference != null ) {
       sortableReference = generateSortableReference(reference)
+    }
+    if (impId == null) {
+      impId = java.util.UUID.randomUUID().toString();
     }
   }
 

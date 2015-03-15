@@ -8,6 +8,8 @@ class RefdataValue {
   // N.B. This used to be ICON but in the 2.x series this was changed to be a css class which denotes an icon
   // Please stick with the change to store css classes in here and not explicit icons
   String icon
+  //For cases were we want to present a specific group of values, eg Licence/Sub related
+  String group
 
   static belongsTo = [
     owner:RefdataCategory
@@ -32,10 +34,12 @@ class RefdataValue {
       owner column:'rdv_owner', index:'rdv_entry_idx'
       value column:'rdv_value', index:'rdv_entry_idx'
        icon column:'rdv_icon'
+      group column:'rdv_group'
   }
 
   static constraints = {
     icon(nullable:true)
+    group(nullable:true, blank:false)
   }
 
   static def refdataFind(params) {
