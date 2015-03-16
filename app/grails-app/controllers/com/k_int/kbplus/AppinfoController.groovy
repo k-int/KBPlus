@@ -4,12 +4,14 @@ class AppinfoController {
 
   def zenDeskSyncService
   def juspSyncService
+  def dataloadService
 
   def index() { 
 
     def result = [:]
 
     result.juspSyncService=[:]
+    result.dataloadService=[:]
     result.juspSyncService.running=juspSyncService.running
 
     result.juspSyncService.submitCount=juspSyncService.submitCount
@@ -21,7 +23,8 @@ class AppinfoController {
     result.juspSyncService.activityHistogram=juspSyncService.activityHistogram
     result.juspSyncService.syncStartTime=juspSyncService.syncStartTime
     result.juspSyncService.syncElapsed=juspSyncService.syncElapsed
-
+    result.dataloadService.update_running=dataloadService.update_running
+    result.dataloadService.lastIndexUpdate = dataloadService.lastIndexUpdate
     result;
   }
 }

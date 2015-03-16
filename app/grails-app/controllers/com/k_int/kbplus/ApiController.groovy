@@ -146,9 +146,10 @@ where tipp.title = ? and orl.roleType.value=?''',[title,'Content Provider']);
   def fetchAllTips(){
 
     def jusp_ti_inst = TitleInstitutionProvider.executeQuery("""
-   select jusp_institution_id.identifier.value, jusp_title_id.identifier.value, dates,tip_ti.id
+   select jusp_institution_id.identifier.value, jusp_title_id.identifier.value, dates,tip_ti.id, 
+   (select jusp_provider_id.identifier.value from tip_ti.provider.ids as jusp_provider_id where jusp_provider_id.identifier.ns.ns='juspsid' )
     from TitleInstitutionProvider tip_ti
-      join tip_ti.institution.ids as jusp_institution_id, 
+      join tip_ti.institution.ids as jusp_institution_id,
     TitleInstitutionProvider tip_inst
       join tip_inst.title.ids as jusp_title_id,
     TitleInstitutionProvider tip_date
@@ -167,18 +168,18 @@ where tipp.title = ? and orl.roleType.value=?''',[title,'Content Provider']);
     def currentTip = null
     def dates_concat = ""
     out.withWriter { writer ->
-      writer.write("JUSP Institution ID,JUSP Title ID, Core Dates\n")
+      writer.write("JUSP Institution ID,JUSP Title ID,JUSP Provider, Core Dates\n")
       Iterator iter = jusp_ti_inst.iterator()
       while(iter.hasNext()){
         def it = iter.next()
         if(currentTip == it[3]){
           dates_concat += ", ${it[2]}"
         }else if(currentTip){
-          writer.write("\"${dates_concat}\"\n\"${it[0]}\",\"${it[1]}\",")
+          writer.write("\"${dates_concat}\"\n\"${it[0]}\",\"${it[1]}\",\"${it[4]?:''}\",")
           dates_concat = "${it[2]}"
           currentTip = it[3]
         }else{
-          writer.write("\"${it[0]}\",\"${it[1]}\",")
+          writer.write("\"${it[0]}\",\"${it[1]}\",\"${it[4]?:''}\",")
           dates_concat = "${it[2]}"
           currentTip = it[3]
         }
