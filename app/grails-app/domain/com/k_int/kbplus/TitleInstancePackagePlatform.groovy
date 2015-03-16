@@ -8,11 +8,12 @@ import org.springframework.context.i18n.LocaleContextHolder
 
 class TitleInstancePackagePlatform {
 
- @Transient
- def grailsApplication
- @Transient
- def messageSource
-
+  @Transient
+  def grailsApplication
+  
+  @Transient
+  def messageSource
+ 
   static auditable = true
   static def controlledProperties = ['status',
                                      'startDate',
