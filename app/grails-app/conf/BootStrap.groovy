@@ -5,6 +5,9 @@ import com.k_int.custprops.PropertyDefinition
 import org.codehaus.groovy.grails.plugins.springsecurity.SecurityFilterPosition
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
+import org.springframework.security.web.*
+import javax.servlet.Filter;
+
 class BootStrap {
 
   def ESWrapperService
@@ -225,8 +228,13 @@ class BootStrap {
 
     // SpringSecurityUtils.clientRegisterFilter( 'oracleSSOFilter', SecurityFilterPosition.PRE_AUTH_FILTER.order)
     // SpringSecurityUtils.clientRegisterFilter('securityContextPersistenceFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
-    SpringSecurityUtils.clientRegisterFilter('ediauthFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
+    // SpringSecurityUtils.clientRegisterFilter('ediauthFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
     // SpringSecurityUtils.clientRegisterFilter('apiauthFilter', SecurityFilterPosition.SECURITY_CONTEXT_FILTER.order + 10)
+
+    // Call our local version of client register filter which does not suffer the problems of wiping out the filter
+    // chain. Should allow us to use basic auth on /api, and shib everywhere else on live, or form based auth on dev
+    // See grails.plugins.springsecurity.filterChain.chainMap in config.groovy
+    this.localClientRegisterFilter('ediauthFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
 
     def uo_with_null_role = UserOrg.findAllByFormalRoleIsNull()
     if ( uo_with_null_role.size() > 0 ) {
@@ -449,8 +457,188 @@ New package added with id ${OID.id} - "${OID.name}".
 No Host Platform URL Content
 ''');
 
+   RefdataCategory.lookupOrCreate('CostItemStatus', 'Estimate').save();
+   RefdataCategory.lookupOrCreate('CostItemStatus', 'Commitment').save();
+   RefdataCategory.lookupOrCreate('CostItemStatus', 'Actual').save();
+   RefdataCategory.lookupOrCreate('CostItemStatus', 'Other').save();
 
-   
+   RefdataCategory.lookupOrCreate('CostItemCategory', 'Price').save();
+   RefdataCategory.lookupOrCreate('CostItemCategory', 'Bank Charge').save();
+   RefdataCategory.lookupOrCreate('CostItemCategory', 'Refund').save();
+   RefdataCategory.lookupOrCreate('CostItemCategory', 'Other').save();
+
+   RefdataCategory.lookupOrCreate('CostItemElement', 'Admin Fee').save();
+   RefdataCategory.lookupOrCreate('CostItemElement', 'Content').save();
+   RefdataCategory.lookupOrCreate('CostItemElement', 'Platform').save();
+   RefdataCategory.lookupOrCreate('CostItemElement', 'Other').save();
+
+   RefdataCategory.lookupOrCreate('TaxType', 'On Invoice').save();
+   RefdataCategory.lookupOrCreate('TaxType', 'Self Declared').save();
+   RefdataCategory.lookupOrCreate('TaxType', 'Other').save();
+
+   RefdataCategory.lookupOrCreate('Currency','AED - United Arab Emirates Dirham').save()
+   RefdataCategory.lookupOrCreate('Currency','AFN - Afghanistan Afghani').save()
+   RefdataCategory.lookupOrCreate('Currency','ALL - Albania Lek').save()
+   RefdataCategory.lookupOrCreate('Currency','AMD - Armenia Dram').save()
+   RefdataCategory.lookupOrCreate('Currency','ANG - Netherlands Antilles Guilder').save()
+   RefdataCategory.lookupOrCreate('Currency','AOA - Angola Kwanza').save()
+   RefdataCategory.lookupOrCreate('Currency','ARS - Argentina Peso').save()
+   RefdataCategory.lookupOrCreate('Currency','AUD - Australia Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','AWG - Aruba Guilder').save()
+   RefdataCategory.lookupOrCreate('Currency','AZN - Azerbaijan New Manat').save()
+   RefdataCategory.lookupOrCreate('Currency','BAM - Bosnia and Herzegovina Convertible Marka').save()
+   RefdataCategory.lookupOrCreate('Currency','BBD - Barbados Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','BDT - Bangladesh Taka').save()
+   RefdataCategory.lookupOrCreate('Currency','BGN - Bulgaria Lev').save()
+   RefdataCategory.lookupOrCreate('Currency','BHD - Bahrain Dinar').save()
+   RefdataCategory.lookupOrCreate('Currency','BIF - Burundi Franc').save()
+   RefdataCategory.lookupOrCreate('Currency','BMD - Bermuda Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','BND - Brunei Darussalam Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','BOB - Bolivia Boliviano').save()
+   RefdataCategory.lookupOrCreate('Currency','BRL - Brazil Real').save()
+   RefdataCategory.lookupOrCreate('Currency','BSD - Bahamas Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','BTN - Bhutan Ngultrum').save()
+   RefdataCategory.lookupOrCreate('Currency','BWP - Botswana Pula').save()
+   RefdataCategory.lookupOrCreate('Currency','BYR - Belarus Ruble').save()
+   RefdataCategory.lookupOrCreate('Currency','BZD - Belize Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','CAD - Canada Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','CDF - Congo/Kinshasa Franc').save()
+   RefdataCategory.lookupOrCreate('Currency','CHF - Switzerland Franc').save()
+   RefdataCategory.lookupOrCreate('Currency','CLP - Chile Peso').save()
+   RefdataCategory.lookupOrCreate('Currency','CNY - China Yuan Renminbi').save()
+   RefdataCategory.lookupOrCreate('Currency','COP - Colombia Peso').save()
+   RefdataCategory.lookupOrCreate('Currency','CRC - Costa Rica Colon').save()
+   RefdataCategory.lookupOrCreate('Currency','CUC - Cuba Convertible Peso').save()
+   RefdataCategory.lookupOrCreate('Currency','CUP - Cuba Peso').save()
+   RefdataCategory.lookupOrCreate('Currency','CVE - Cape Verde Escudo').save()
+   RefdataCategory.lookupOrCreate('Currency','CZK - Czech Republic Koruna').save()
+   RefdataCategory.lookupOrCreate('Currency','DJF - Djibouti Franc').save()
+   RefdataCategory.lookupOrCreate('Currency','DKK - Denmark Krone').save()
+   RefdataCategory.lookupOrCreate('Currency','DOP - Dominican Republic Peso').save()
+   RefdataCategory.lookupOrCreate('Currency','DZD - Algeria Dinar').save()
+   RefdataCategory.lookupOrCreate('Currency','EGP - Egypt Pound').save()
+   RefdataCategory.lookupOrCreate('Currency','ERN - Eritrea Nakfa').save()
+   RefdataCategory.lookupOrCreate('Currency','ETB - Ethiopia Birr').save()
+   RefdataCategory.lookupOrCreate('Currency','EUR - Euro Member Countries').save()
+   RefdataCategory.lookupOrCreate('Currency','FJD - Fiji Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','FKP - Falkland Islands (Malvinas) Pound').save()
+   RefdataCategory.lookupOrCreate('Currency','GBP - United Kingdom Pound').save()
+   RefdataCategory.lookupOrCreate('Currency','GEL - Georgia Lari').save()
+   RefdataCategory.lookupOrCreate('Currency','GGP - Guernsey Pound').save()
+   RefdataCategory.lookupOrCreate('Currency','GHS - Ghana Cedi').save()
+   RefdataCategory.lookupOrCreate('Currency','GIP - Gibraltar Pound').save()
+   RefdataCategory.lookupOrCreate('Currency','GMD - Gambia Dalasi').save()
+   RefdataCategory.lookupOrCreate('Currency','GNF - Guinea Franc').save()
+   RefdataCategory.lookupOrCreate('Currency','GTQ - Guatemala Quetzal').save()
+   RefdataCategory.lookupOrCreate('Currency','GYD - Guyana Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','HKD - Hong Kong Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','HNL - Honduras Lempira').save()
+   RefdataCategory.lookupOrCreate('Currency','HRK - Croatia Kuna').save()
+   RefdataCategory.lookupOrCreate('Currency','HTG - Haiti Gourde').save()
+   RefdataCategory.lookupOrCreate('Currency','HUF - Hungary Forint').save()
+   RefdataCategory.lookupOrCreate('Currency','IDR - Indonesia Rupiah').save()
+   RefdataCategory.lookupOrCreate('Currency','ILS - Israel Shekel').save()
+   RefdataCategory.lookupOrCreate('Currency','IMP - Isle of Man Pound').save()
+   RefdataCategory.lookupOrCreate('Currency','INR - India Rupee').save()
+   RefdataCategory.lookupOrCreate('Currency','IQD - Iraq Dinar').save()
+   RefdataCategory.lookupOrCreate('Currency','IRR - Iran Rial').save()
+   RefdataCategory.lookupOrCreate('Currency','ISK - Iceland Krona').save()
+   RefdataCategory.lookupOrCreate('Currency','JEP - Jersey Pound').save()
+   RefdataCategory.lookupOrCreate('Currency','JMD - Jamaica Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','JOD - Jordan Dinar').save()
+   RefdataCategory.lookupOrCreate('Currency','JPY - Japan Yen').save()
+   RefdataCategory.lookupOrCreate('Currency','KES - Kenya Shilling').save()
+   RefdataCategory.lookupOrCreate('Currency','KGS - Kyrgyzstan Som').save()
+   RefdataCategory.lookupOrCreate('Currency','KHR - Cambodia Riel').save()
+   RefdataCategory.lookupOrCreate('Currency','KMF - Comoros Franc').save()
+   RefdataCategory.lookupOrCreate('Currency','KPW - Korea (North) Won').save()
+   RefdataCategory.lookupOrCreate('Currency','KRW - Korea (South) Won').save()
+   RefdataCategory.lookupOrCreate('Currency','KWD - Kuwait Dinar').save()
+   RefdataCategory.lookupOrCreate('Currency','KYD - Cayman Islands Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','KZT - Kazakhstan Tenge').save()
+   RefdataCategory.lookupOrCreate('Currency','LAK - Laos Kip').save()
+   RefdataCategory.lookupOrCreate('Currency','LBP - Lebanon Pound').save()
+   RefdataCategory.lookupOrCreate('Currency','LKR - Sri Lanka Rupee').save()
+   RefdataCategory.lookupOrCreate('Currency','LRD - Liberia Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','LSL - Lesotho Loti').save()
+   RefdataCategory.lookupOrCreate('Currency','LYD - Libya Dinar').save()
+   RefdataCategory.lookupOrCreate('Currency','MAD - Morocco Dirham').save()
+   RefdataCategory.lookupOrCreate('Currency','MDL - Moldova Leu').save()
+   RefdataCategory.lookupOrCreate('Currency','MGA - Madagascar Ariary').save()
+   RefdataCategory.lookupOrCreate('Currency','MKD - Macedonia Denar').save()
+   RefdataCategory.lookupOrCreate('Currency','MMK - Myanmar (Burma) Kyat').save()
+   RefdataCategory.lookupOrCreate('Currency','MNT - Mongolia Tughrik').save()
+   RefdataCategory.lookupOrCreate('Currency','MOP - Macau Pataca').save()
+   RefdataCategory.lookupOrCreate('Currency','MRO - Mauritania Ouguiya').save()
+   RefdataCategory.lookupOrCreate('Currency','MUR - Mauritius Rupee').save()
+   RefdataCategory.lookupOrCreate('Currency','MVR - Maldives (Maldive Islands) Rufiyaa').save()
+   RefdataCategory.lookupOrCreate('Currency','MWK - Malawi Kwacha').save()
+   RefdataCategory.lookupOrCreate('Currency','MXN - Mexico Peso').save()
+   RefdataCategory.lookupOrCreate('Currency','MYR - Malaysia Ringgit').save()
+   RefdataCategory.lookupOrCreate('Currency','MZN - Mozambique Metical').save()
+   RefdataCategory.lookupOrCreate('Currency','NAD - Namibia Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','NGN - Nigeria Naira').save()
+   RefdataCategory.lookupOrCreate('Currency','NIO - Nicaragua Cordoba').save()
+   RefdataCategory.lookupOrCreate('Currency','NOK - Norway Krone').save()
+   RefdataCategory.lookupOrCreate('Currency','NPR - Nepal Rupee').save()
+   RefdataCategory.lookupOrCreate('Currency','NZD - New Zealand Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','OMR - Oman Rial').save()
+   RefdataCategory.lookupOrCreate('Currency','PAB - Panama Balboa').save()
+   RefdataCategory.lookupOrCreate('Currency','PEN - Peru Nuevo Sol').save()
+   RefdataCategory.lookupOrCreate('Currency','PGK - Papua New Guinea Kina').save()
+   RefdataCategory.lookupOrCreate('Currency','PHP - Philippines Peso').save()
+   RefdataCategory.lookupOrCreate('Currency','PKR - Pakistan Rupee').save()
+   RefdataCategory.lookupOrCreate('Currency','PLN - Poland Zloty').save()
+   RefdataCategory.lookupOrCreate('Currency','PYG - Paraguay Guarani').save()
+   RefdataCategory.lookupOrCreate('Currency','QAR - Qatar Riyal').save()
+   RefdataCategory.lookupOrCreate('Currency','RON - Romania New Leu').save()
+   RefdataCategory.lookupOrCreate('Currency','RSD - Serbia Dinar').save()
+   RefdataCategory.lookupOrCreate('Currency','RUB - Russia Ruble').save()
+   RefdataCategory.lookupOrCreate('Currency','RWF - Rwanda Franc').save()
+   RefdataCategory.lookupOrCreate('Currency','SAR - Saudi Arabia Riyal').save()
+   RefdataCategory.lookupOrCreate('Currency','SBD - Solomon Islands Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','SCR - Seychelles Rupee').save()
+   RefdataCategory.lookupOrCreate('Currency','SDG - Sudan Pound').save()
+   RefdataCategory.lookupOrCreate('Currency','SEK - Sweden Krona').save()
+   RefdataCategory.lookupOrCreate('Currency','SGD - Singapore Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','SHP - Saint Helena Pound').save()
+   RefdataCategory.lookupOrCreate('Currency','SLL - Sierra Leone Leone').save()
+   RefdataCategory.lookupOrCreate('Currency','SOS - Somalia Shilling').save()
+   RefdataCategory.lookupOrCreate('Currency','SPL* - Seborga Luigino').save()
+   RefdataCategory.lookupOrCreate('Currency','SRD - Suriname Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','STD - São Tomé and Príncipe Dobra').save()
+   RefdataCategory.lookupOrCreate('Currency','SVC - El Salvador Colon').save()
+   RefdataCategory.lookupOrCreate('Currency','SYP - Syria Pound').save()
+   RefdataCategory.lookupOrCreate('Currency','SZL - Swaziland Lilangeni').save()
+   RefdataCategory.lookupOrCreate('Currency','THB - Thailand Baht').save()
+   RefdataCategory.lookupOrCreate('Currency','TJS - Tajikistan Somoni').save()
+   RefdataCategory.lookupOrCreate('Currency','TMT - Turkmenistan Manat').save()
+   RefdataCategory.lookupOrCreate('Currency','TND - Tunisia Dinar').save()
+   RefdataCategory.lookupOrCreate('Currency','TOP - Tonga Pa\'anga').save()
+   RefdataCategory.lookupOrCreate('Currency','TRY - Turkey Lira').save()
+   RefdataCategory.lookupOrCreate('Currency','TTD - Trinidad and Tobago Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','TVD - Tuvalu Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','TWD - Taiwan New Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','TZS - Tanzania Shilling').save()
+   RefdataCategory.lookupOrCreate('Currency','UAH - Ukraine Hryvnia').save()
+   RefdataCategory.lookupOrCreate('Currency','UGX - Uganda Shilling').save()
+   RefdataCategory.lookupOrCreate('Currency','USD - United States Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','UYU - Uruguay Peso').save()
+   RefdataCategory.lookupOrCreate('Currency','UZS - Uzbekistan Som').save()
+   RefdataCategory.lookupOrCreate('Currency','VEF - Venezuela Bolivar').save()
+   RefdataCategory.lookupOrCreate('Currency','VND - Viet Nam Dong').save()
+   RefdataCategory.lookupOrCreate('Currency','VUV - Vanuatu Vatu').save()
+   RefdataCategory.lookupOrCreate('Currency','WST - Samoa Tala').save()
+   RefdataCategory.lookupOrCreate('Currency','XAF - Communauté Financière Africaine (BEAC) CFA Franc BEAC').save()
+   RefdataCategory.lookupOrCreate('Currency','XCD - East Caribbean Dollar').save()
+   RefdataCategory.lookupOrCreate('Currency','XDR - International Monetary Fund (IMF) Special Drawing Rights').save()
+   RefdataCategory.lookupOrCreate('Currency','XOF - Communauté Financière Africaine (BCEAO) Franc').save()
+   RefdataCategory.lookupOrCreate('Currency','XPF - Comptoirs Français du Pacifique (CFP) Franc').save()
+   RefdataCategory.lookupOrCreate('Currency','YER - Yemen Rial').save()
+   RefdataCategory.lookupOrCreate('Currency','ZAR - South Africa Rand').save()
+   RefdataCategory.lookupOrCreate('Currency','ZMW - Zambia Kwacha').save()
+   RefdataCategory.lookupOrCreate('Currency','ZWD - Zimbabwe Dollar').save()
+ 
     // def gokb_record_source = GlobalRecordSource.findByIdentifier('gokbPackages') ?: new GlobalRecordSource(
     //                                                                                       identifier:'gokbPackages',
     //                                                                                       name:'GOKB',
@@ -467,4 +655,35 @@ No Host Platform URL Content
 
     // Sort string generation moved to admin - cleanse
   }
+
+  // Work around bug in SpringSecurityUtils.clientRegisterFilter('ediauthFilter', SecurityFilterPosition.PRE_AUTH_FILTER)
+  private void localClientRegisterFilter(final String beanName, final org.codehaus.groovy.grails.plugins.springsecurity.SecurityFilterPosition order) {
+        def positionToFilter = SpringSecurityUtils.getConfiguredOrderedFilters()
+        def filterToPosition = [:]
+        positionToFilter.each {position, filter ->
+            filterToPosition[filter] = position
+        }
+
+        Filter oldFilter = positionToFilter.get(order.order);
+        if (oldFilter != null) {
+            throw new IllegalArgumentException("Cannot register filter '" + beanName +
+                "' at position " + order.order + "; '" + oldFilter +
+                "' is already registered in that position");
+        }
+
+        Filter filter = (Filter)grailsApplication.mainContext.getBean(beanName);
+        positionToFilter.put(order.order, filter);
+        FilterChainProxy filterChain = (FilterChainProxy)grailsApplication.mainContext.getBean("springSecurityFilterChain");
+        def filterChainMap = filterChain.getFilterChainMap()        
+        def correctFilterChainMap = filterChainMap.collectEntries { pattern, filters ->
+            def indexOfFilterBeforeTargetFilter = 0
+            while(indexOfFilterBeforeTargetFilter < filters.size() && filterToPosition[filters[indexOfFilterBeforeTargetFilter]] < order.order){
+                indexOfFilterBeforeTargetFilter++
+            }
+            filters.add(indexOfFilterBeforeTargetFilter, filter)
+
+            [pattern, filters]
+        }
+        filterChain.filterChainMap = Collections.unmodifiableMap(correctFilterChainMap)
+    }
 }

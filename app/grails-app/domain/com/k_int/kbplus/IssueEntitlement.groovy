@@ -150,4 +150,28 @@ class IssueEntitlement implements Comparable {
 
     result
   }
+
+
+  @Transient
+  static def refdataFind(params) {
+
+    def result = [];
+    def hqlParams = []
+    def hqlString = "select ie from IssueEntitlement as ie"
+
+    if ( params.subFilter ) {
+      hqlString += ' where ie.subscription.id = ?'
+      hqlParams.add(params.long('subFilter'))
+    }
+
+    def results = IssueEntitlement.executeQuery(hqlString,hqlParams)
+
+    results?.each { t ->
+      def resultText = t.tipp.title.title
+      result.add([id:"${t.class.name}:${t.id}",text:resultText])
+    }
+
+    result
+  }
+
 }
