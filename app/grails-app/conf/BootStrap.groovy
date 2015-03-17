@@ -229,12 +229,12 @@ class BootStrap {
     // SpringSecurityUtils.clientRegisterFilter( 'oracleSSOFilter', SecurityFilterPosition.PRE_AUTH_FILTER.order)
     // SpringSecurityUtils.clientRegisterFilter('securityContextPersistenceFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
     // SpringSecurityUtils.clientRegisterFilter('ediauthFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
-    // SpringSecurityUtils.clientRegisterFilter('apiauthFilter', SecurityFilterPosition.SECURITY_CONTEXT_FILTER.order + 10)
+    SpringSecurityUtils.clientRegisterFilter('apiauthFilter', SecurityFilterPosition.SECURITY_CONTEXT_FILTER.order + 10)
 
     // Call our local version of client register filter which does not suffer the problems of wiping out the filter
     // chain. Should allow us to use basic auth on /api, and shib everywhere else on live, or form based auth on dev
     // See grails.plugins.springsecurity.filterChain.chainMap in config.groovy
-    this.localClientRegisterFilter('ediauthFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
+    // this.localClientRegisterFilter('ediauthFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
 
     def uo_with_null_role = UserOrg.findAllByFormalRoleIsNull()
     if ( uo_with_null_role.size() > 0 ) {
