@@ -148,7 +148,7 @@ class PublicExportController {
     result.packageInstance = Package.get(params.id)
 
     def base_qry = null;
-    def tipp_status_del = RefdataCategory.lookupOrCreate("TIPPStatus", "Deleted")
+    def tipp_status_del = RefdataCategory.lookupOrCreate("TIPP Status", "Deleted")
     def publisher_org = RefdataCategory.lookupOrCreate("Organisational Role","Publisher")
     def qry_params = [result.packageInstance]
 

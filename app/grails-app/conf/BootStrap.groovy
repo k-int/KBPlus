@@ -376,6 +376,12 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Opt Out Promotion").save()
     RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Uncharged").save()
     RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Unknown").save()
+  
+    RefdataCategory.lookupOrCreate("TIPP Status", "Current").save()
+    RefdataCategory.lookupOrCreate("TIPP Status", "Expected").save()
+    RefdataCategory.lookupOrCreate("TIPP Status", "Deleted").save()
+    RefdataCategory.lookupOrCreate("TIPP Status", "Transferred").save()
+    RefdataCategory.lookupOrCreate("TIPP Status", "Unknown").save()
 
     RefdataCategory.lookupOrCreate("Package.ListStatus", "Checked").save()
     RefdataCategory.lookupOrCreate("Package.ListStatus", "In Progress").save()
