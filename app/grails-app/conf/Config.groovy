@@ -243,7 +243,7 @@ grails.plugins.springsecurity.authority.className = 'com.k_int.kbplus.auth.Role'
 grails.plugins.springsecurity.securityConfigType = "Annotation"
 
 grails.plugins.springsecurity.providerNames = ['preAuthenticatedAuthenticationProvider',
-                                               'daoAuthenticationProvider', 
+                                               'daoAuthenticationProvider' // , 
 //                                               'anonymousAuthenticationProvider', 
 //                                               'rememberMeAuthenticationProvider' 
                                               ]
