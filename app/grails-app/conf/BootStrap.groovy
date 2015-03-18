@@ -5,8 +5,8 @@ import com.k_int.custprops.PropertyDefinition
 import org.codehaus.groovy.grails.plugins.springsecurity.SecurityFilterPosition
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
-import org.springframework.security.web.*
-import javax.servlet.Filter;
+// import org.springframework.security.web.*
+// import javax.servlet.Filter;
 
 class BootStrap {
 
@@ -657,33 +657,33 @@ No Host Platform URL Content
   }
 
   // Work around bug in SpringSecurityUtils.clientRegisterFilter('ediauthFilter', SecurityFilterPosition.PRE_AUTH_FILTER)
-  private void localClientRegisterFilter(final String beanName, final org.codehaus.groovy.grails.plugins.springsecurity.SecurityFilterPosition order) {
-        def positionToFilter = SpringSecurityUtils.getConfiguredOrderedFilters()
-        def filterToPosition = [:]
-        positionToFilter.each {position, filter ->
-            filterToPosition[filter] = position
-        }
+  // private void localClientRegisterFilter(final String beanName, final org.codehaus.groovy.grails.plugins.springsecurity.SecurityFilterPosition order) {
+  //       def positionToFilter = SpringSecurityUtils.getConfiguredOrderedFilters()
+  //       def filterToPosition = [:]
+  //       positionToFilter.each {position, filter ->
+  //           filterToPosition[filter] = position
+  //       }
 
-        Filter oldFilter = positionToFilter.get(order.order);
-        if (oldFilter != null) {
-            throw new IllegalArgumentException("Cannot register filter '" + beanName +
-                "' at position " + order.order + "; '" + oldFilter +
-                "' is already registered in that position");
-        }
+  //       Filter oldFilter = positionToFilter.get(order.order);
+  //       if (oldFilter != null) {
+  //           throw new IllegalArgumentException("Cannot register filter '" + beanName +
+  //               "' at position " + order.order + "; '" + oldFilter +
+  //               "' is already registered in that position");
+  //       }
 
-        Filter filter = (Filter)grailsApplication.mainContext.getBean(beanName);
-        positionToFilter.put(order.order, filter);
-        FilterChainProxy filterChain = (FilterChainProxy)grailsApplication.mainContext.getBean("springSecurityFilterChain");
-        def filterChainMap = filterChain.getFilterChainMap()        
-        def correctFilterChainMap = filterChainMap.collectEntries { pattern, filters ->
-            def indexOfFilterBeforeTargetFilter = 0
-            while(indexOfFilterBeforeTargetFilter < filters.size() && filterToPosition[filters[indexOfFilterBeforeTargetFilter]] < order.order){
-                indexOfFilterBeforeTargetFilter++
-            }
-            filters.add(indexOfFilterBeforeTargetFilter, filter)
+  //       Filter filter = (Filter)grailsApplication.mainContext.getBean(beanName);
+  //       positionToFilter.put(order.order, filter);
+  //       FilterChainProxy filterChain = (FilterChainProxy)grailsApplication.mainContext.getBean("springSecurityFilterChain");
+  //       def filterChainMap = filterChain.getFilterChainMap()        
+  //       def correctFilterChainMap = filterChainMap.collectEntries { pattern, filters ->
+  //           def indexOfFilterBeforeTargetFilter = 0
+  //           while(indexOfFilterBeforeTargetFilter < filters.size() && filterToPosition[filters[indexOfFilterBeforeTargetFilter]] < order.order){
+  //               indexOfFilterBeforeTargetFilter++
+  //           }
+  //           filters.add(indexOfFilterBeforeTargetFilter, filter)
 
-            [pattern, filters]
-        }
-        filterChain.filterChainMap = Collections.unmodifiableMap(correctFilterChainMap)
-    }
+  //           [pattern, filters]
+  //       }
+  //       filterChain.filterChainMap = Collections.unmodifiableMap(correctFilterChainMap)
+  //   }
 }
