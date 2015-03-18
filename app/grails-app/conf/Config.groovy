@@ -295,8 +295,8 @@ appDefaultPrefs {
 // More info: http://stackoverflow.com/questions/7065089/how-to-configure-grails-spring-authentication-scheme-per-url
 // installed local copy of clientFilterRegister in bootstrap.groovy to address this issue. In testing!
 // grails.plugins.springsecurity.filterChain.chainMap = [
-//   '/api/**': 'JOINED_FILTERS,-exceptionTranslationFilter',
-//   '/**': 'JOINED_FILTERS,-basicAuthenticationFilter,-basicExceptionTranslationFilter'
+//    '/api/**': 'JOINED_FILTERS,-exceptionTranslationFilter',
+//    '/**': 'JOINED_FILTERS,-basicAuthenticationFilter,-basicExceptionTranslationFilter'
 // ]
 
 // Refdata values that need to be added to the database to allow ONIX-PL licences to be compared properly. The code will
