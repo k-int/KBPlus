@@ -293,7 +293,6 @@ appDefaultPrefs {
 // See http://jira.grails.org/browse/GPSPRINGSECURITYCORE-210
 // This stanza then says everything should use form apart from /api
 // More info: http://stackoverflow.com/questions/7065089/how-to-configure-grails-spring-authentication-scheme-per-url
-// installed local copy of clientFilterRegister in bootstrap.groovy to address this issue. In testing!
 // grails.plugins.springsecurity.filterChain.chainMap = [
 //    '/api/**': 'JOINED_FILTERS,-exceptionTranslationFilter',
 //    '/**': 'JOINED_FILTERS,-basicAuthenticationFilter,-basicExceptionTranslationFilter'
