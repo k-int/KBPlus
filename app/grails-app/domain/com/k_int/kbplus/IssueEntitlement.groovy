@@ -132,22 +132,38 @@ class IssueEntitlement implements Comparable {
     result
   }
 
-  def wasCoreOn(as_at) {
-    // Use the new core system to determine if this title really is core
-    def result = false
+  @Transient
+  def getTIP(){
     def inst = subscription?.getSubscriber()
     def title = tipp?.title
     def provider = tipp?.pkg?.getContentProvider()
-
     if ( inst && title && provider ) {
-      def tiinp = TitleInstitutionProvider.findByTitleAndInstitutionAndprovider(title, inst, provider)
-      if ( tiinp ) {
-        if ( ( tiinp.startDate < as_at ) && ( ( tiinp.endDate == null) || ( tiinp.endDate > as_at ) ) ) {
-          result = true
-        }
+      def tip = TitleInstitutionProvider.findByTitleAndInstitutionAndprovider(title, inst, provider)
+      if(!tip){
+        tip = new TitleInstitutionProvider(title:title,institution:inst,provider:provider)
+        tip.save(flush:true)
+      }
+      return tip
+    }
+    return null
+  }
+
+  def wasCoreOn(as_at) {
+    // Use the new core system to determine if this title really is core
+    def result = false
+    def tip = getTIP()
+    if ( tip ) {
+      if ( ( tip.startDate < as_at ) && ( ( tip.endDate == null) || ( tip.endDate > as_at ) ) ) {
+        result = true
       }
     }
-
     result
   }
+  
+  @Transient
+  def extendCoreDates(startDate, endDate){
+    def tip = getTIP()
+      tip?.extendCoreExtent(startDate,endDate)
+  }
+
 }

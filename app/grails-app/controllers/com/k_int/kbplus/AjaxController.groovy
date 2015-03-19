@@ -698,6 +698,30 @@ class AjaxController {
       render(template: "/templates/custom_props",model:[ownobj:owner, newProp:property])
   }
 
+  def coreExtend(){
+    log.debug("ajax::coreExtend:: ${params}")
+    def tipID = params.tipID
+    def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
+    def startDate = sdf.parse(params.coreStartDate)
+    def endDate = sdf.parse(params.coreEndDate)
+    if(tipID && startDate){
+      def tip = TitleInstitutionProvider.get(tipID)
+      log.debug("Extending tip ${tip.id} with start ${startDate} and end ${endDate}")
+      tip.extendCoreExtent(startDate, endDate)
+    }
+    redirect(url: request.getHeader('referer'))
+  }
+
+  def getTipCoreDates(){
+    log.debug("ajax::getTipCoreDates:: ${params}")
+    def tipID = params.tipID
+    if(tipID){
+      def tip = TitleInstitutionProvider.get(tipID)
+      def dates = tip.coreDates
+      log.debug("Returning ${dates}")
+      render(template:"/templates/coreAssertionsModal",model:[coreDates:dates,tipID:tip.id]);    
+    }
+  } 
   def lookup() {
     // log.debug("AjaxController::lookup ${params}");
     def result = [:]

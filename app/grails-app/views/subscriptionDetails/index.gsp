@@ -205,7 +205,7 @@
               <th rowspan="2">#</th>
               <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
               <th>ISSN</th>
-              <g:sortableColumn params="${params}" property="coreStatus" title="Core" />
+              <th>Core Status</th>
               <g:sortableColumn params="${params}" property="startDate" title="Earliest date" />
               <g:sortableColumn params="${params}" property="coreStatusStart" title="Core Start Date" />
               <th rowspan="2">Actions</th>
@@ -277,11 +277,10 @@
                 <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}<br/>
                 ${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
                 <td>
-                  <g:xEditableRefData owner="${ie}" field="coreStatus" config='CoreStatus'/>
+                  Status:${ie.getTIP()?.coreStatus(null)?:"None"} 
+<g:remoteLink url="[controller: 'ajax', action: 'getTipCoreDates', params:[tipID:ie.getTIP()?.id]]" method="get" name="show_core_assertion_modal" onComplete="showCoreAssertionModal()"
+              update="magicArea">Edit</g:remoteLink>
 
-                  <g:if test="${grailsApplication.config.ab?.newcore==true}">
-                    <br/>(Newcore: ${ie.wasCoreOn(as_at_date)})
-                  </g:if>
 
                   <br/><g:xEditableRefData owner="${ie}" field="medium" config='IEMedium'/>
                 </td>
@@ -324,12 +323,26 @@
               contextPath="../templates" 
               model="${[linkType:subscriptionInstance?.class?.name,roleLinks:subscriptionInstance?.orgRelations,parent:subscriptionInstance.class.name+':'+subscriptionInstance.id,property:'orgs',recip_prop:'sub']}" />
 
+    <div id="magicArea">
+      <g:render template="coreAssertionsModal" contextPath="../templates" model="${[tipID:-1,coreDates:[]]}"/>
+    </div>
     <r:script language="JavaScript">
+
+      function showCoreAssertionModal(){
+        $("input.datepicker-class").datepicker({
+      format:"yyyy-mm-dd"
+        });
+        var ident = $('input[name="tipID"]')
+        console.log(ident)
+        $("[name='coreAssertionEdit']").modal('show');
+      }
+
       <g:if test="${editable}">
       $(document).ready(function() {
       
         $.fn.editable.defaults.mode = 'inline';
-
+      
+       
         $(".announce").click(function(){
            var id = $(this).data('id');
            $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" />/'+id);
@@ -360,6 +373,7 @@
             return false ;
         }
       }
+
 
       </g:if>
       <g:else>
