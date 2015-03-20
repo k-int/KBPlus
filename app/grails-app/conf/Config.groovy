@@ -215,7 +215,9 @@ log4j = {
            'org.springframework',
            'org.hibernate',
            'net.sf.ehcache.hibernate',
-           'formfields'
+           'formfields',
+           'com.k_int.kbplus.filter',
+           'org.codehaus.groovy.grails.plugins.springsecurity'
 
     debug  'grails.app.controllers',
            'grails.app.service',
@@ -225,11 +227,8 @@ log4j = {
            'grails.app.jobs',
            'grails.app.conf.BootStrap',
            //'edu.umn.shibboleth.sp',
-           'com.k_int',
+           'com.k_int'
            // 'org.springframework.security'
-           'org.codehaus.groovy.grails.plugins.springsecurity',
-           'some.domain.logging'
-
            // 'grails.app.tagLib',
 
     // info   'com.linkedin.grails'
