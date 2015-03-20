@@ -277,9 +277,10 @@
                 <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}<br/>
                 ${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
                 <td>
-                  Status:${ie.getTIP()?.coreStatus(null)?:"None"} 
-<g:remoteLink url="[controller: 'ajax', action: 'getTipCoreDates', params:[tipID:ie.getTIP()?.id]]" method="get" name="show_core_assertion_modal" onComplete="showCoreAssertionModal()"
-              update="magicArea">Edit</g:remoteLink>
+                <g:set var="iecorestatus" value="${ie.getTIP()?.coreStatus(null)}"/>
+                  Core:
+<g:remoteLink url="[controller: 'ajax', action: 'getTipCoreDates', params:[tipID:ie.getTIP()?.id,title:ie.tipp?.title?.title]]" method="get" name="show_core_assertion_modal" onComplete="showCoreAssertionModal()"
+              update="magicArea">${iecorestatus!=null?iecorestatus:'None'}</g:remoteLink>
 
 
                   <br/><g:xEditableRefData owner="${ie}" field="medium" config='IEMedium'/>
@@ -328,16 +329,18 @@
     </div>
     <r:script language="JavaScript">
 
+      <g:if test="${editable}">
+       function hideModal(){
+        $("[name='coreAssertionEdit']").modal('hide');
+       }
+
       function showCoreAssertionModal(){
         $("input.datepicker-class").datepicker({
-      format:"yyyy-mm-dd"
+          format:"${session.sessionPreferences?.globalDatepickerFormat}"
         });
-        var ident = $('input[name="tipID"]')
-        console.log(ident)
         $("[name='coreAssertionEdit']").modal('show');
+        $('.xEditableValue').editable();
       }
-
-      <g:if test="${editable}">
       $(document).ready(function() {
       
         $.fn.editable.defaults.mode = 'inline';

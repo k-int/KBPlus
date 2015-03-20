@@ -85,13 +85,17 @@
                     <dt>Core Status</dt>
                     <dd>${issueEntitlementInstance?.coreStatus.value}</dd>
                 </g:if>
-
-              <dt>Core Start Date</dt>
+              <g:set var="iecorestatus" value="${issueEntitlementInstance.getTIP()?.coreStatus(null)}"/>                 
+              <dt>Core Status</dt>
+              <dd> 
+<g:remoteLink url="[controller: 'ajax', action: 'getTipCoreDates', params:[tipID:issueEntitlementInstance.getTIP()?.id,title:issueEntitlementInstance.tipp?.title?.title]]" method="get" name="show_core_assertion_modal" onComplete="showCoreAssertionModal()"
+              update="magicArea">${iecorestatus!=null?iecorestatus:'None'}</g:remoteLink></dd>
+%{--               <dt>Core Start Date</dt>
               <dd><g:xEditable owner="${issueEntitlementInstance}" field="coreStatusStart" type="date"/></dd>
 
               <dt>Core End Date</dt>
               <dd><g:xEditable owner="${issueEntitlementInstance}" field="coreStatusEnd" type="date"/></dd>
-
+ --}%
                 <g:if test="${issueEntitlementInstance?.tipp.hostPlatformURL}">
                     <dt>Title URL</dt>
                     <dd> <a href="${issueEntitlementInstance.tipp?.hostPlatformURL}" TITLE="${issueEntitlementInstance.tipp?.hostPlatformURL}">${issueEntitlementInstance.tipp.platform.name}</a></dd>
@@ -234,5 +238,21 @@
             </g:if>
         </div>
     </div>
+
+    <div id="magicArea">
+      <g:render template="coreAssertionsModal" contextPath="../templates" model="${[tipID:-1,coreDates:[]]}"/>
+    </div>
+       <r:script language="JavaScript">
+       function hideModal(){
+        $("[name='coreAssertionEdit']").modal('hide');
+       }
+        function showCoreAssertionModal(){
+          $("input.datepicker-class").datepicker({
+            format:"${session.sessionPreferences?.globalDatepickerFormat}"
+          });
+          $("[name='coreAssertionEdit']").modal('show');
+          $('.xEditableValue').editable();
+        }
+      </r:script>
 </body>
 </html>

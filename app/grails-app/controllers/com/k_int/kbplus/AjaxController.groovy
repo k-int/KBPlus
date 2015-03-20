@@ -701,15 +701,19 @@ class AjaxController {
   def coreExtend(){
     log.debug("ajax::coreExtend:: ${params}")
     def tipID = params.tipID
-    def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
-    def startDate = sdf.parse(params.coreStartDate)
-    def endDate = sdf.parse(params.coreEndDate)
-    if(tipID && startDate){
-      def tip = TitleInstitutionProvider.get(tipID)
-      log.debug("Extending tip ${tip.id} with start ${startDate} and end ${endDate}")
-      tip.extendCoreExtent(startDate, endDate)
+    try{
+      def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
+      def startDate = sdf.parse(params.coreStartDate)
+      def endDate = sdf.parse(params.coreEndDate)
+      if(tipID && startDate){
+        def tip = TitleInstitutionProvider.get(tipID)
+        log.debug("Extending tip ${tip.id} with start ${startDate} and end ${endDate}")
+        tip.extendCoreExtent(startDate, endDate)
+      }
+    }catch (java.text.ParseException e){
+        log.error("write error msg")
     }
-    redirect(url: request.getHeader('referer'))
+    redirect(action:'getTipCoreDates',controller:'ajax',params:params)
   }
 
   def getTipCoreDates(){
@@ -719,9 +723,16 @@ class AjaxController {
       def tip = TitleInstitutionProvider.get(tipID)
       def dates = tip.coreDates
       log.debug("Returning ${dates}")
-      render(template:"/templates/coreAssertionsModal",model:[coreDates:dates,tipID:tip.id]);    
+      request.setAttribute("editable",true)
+      render(template:"/templates/coreAssertionsModal",model:[coreDates:dates,tipID:tip.id,title:params.title]);    
     }
   } 
+  def deleteCoreDate(){
+    log.debug("ajax:: deleteCoreDate::${params}")
+    def date = CoreAssertion.get(params.coreDateID)
+    if(date) date.delete(flush:true)
+    redirect(action:'getTipCoreDates',controller:'ajax',params:params)
+  }
   def lookup() {
     // log.debug("AjaxController::lookup ${params}");
     def result = [:]
@@ -851,6 +862,8 @@ class AjaxController {
   def editableSetValue() {
     // log.debug("editableSetValue ${params}");
     def target_object = resolveOID2(params.pk)
+    def result = [:]
+
     if ( target_object ) {
       if ( params.type=='date' ) {
         target_object."${params.name}" = params.date('value','yyyy-MM-dd')
@@ -865,8 +878,9 @@ class AjaxController {
     }
 
     response.setContentType('text/plain')
+
     def outs = response.outputStream
-    outs << params.value
+    outs << target_object."${params.name}"
     outs.flush()
     outs.close()
   }

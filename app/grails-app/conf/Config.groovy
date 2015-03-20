@@ -280,6 +280,7 @@ auditLog {
 // }
 
 appDefaultPrefs {
+  globalDatepickerFormat='yyyy-mm-dd'
   globalDateFormat='yyyy-MM-dd'
   globalDateFormatSQL='%Y-%m-%d'
 }

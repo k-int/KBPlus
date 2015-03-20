@@ -22,6 +22,14 @@ class CoreAssertion {
 
   static constraints = {
     endDate(nullable:true, blank:false)
+    startDate validator: {val,obj ->
+      val = new java.sql.Timestamp(val.getTime());
+      if(val > obj.endDate) return false;
+    }
+    endDate validator: {val,obj ->
+      val = new java.sql.Timestamp(val.getTime());
+      if(val < obj.startDate) return false;
+    }
   }
 
   @Override
