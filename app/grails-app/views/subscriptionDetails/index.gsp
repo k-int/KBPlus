@@ -146,7 +146,15 @@
                        <g:render template="orgLinks" contextPath="../templates" model="${[roleLinks:subscriptionInstance?.orgRelations,editmode:editable]}" />
                      </dd>
                </dl>
-                <div class="clear-fix"></div>
+
+               <g:if test="${params.mode=='advanced'}">
+                 <dl><dt><label class="control-label" for="licenseeRef">Status</label></dt><dd>
+                      <g:xEditableRefData owner="${subscriptionInstance}" field="status" config='Subscription Status'/>
+                     </dd>
+               </dl>
+               </g:if>
+
+               <div class="clear-fix"></div>
             </div>
         </div>
 
