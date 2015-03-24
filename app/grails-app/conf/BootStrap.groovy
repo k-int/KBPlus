@@ -5,9 +5,6 @@ import com.k_int.custprops.PropertyDefinition
 import org.codehaus.groovy.grails.plugins.springsecurity.SecurityFilterPosition
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
-import org.springframework.security.web.*
-import javax.servlet.Filter;
-
 class BootStrap {
 
   def ESWrapperService
@@ -228,13 +225,8 @@ class BootStrap {
 
     // SpringSecurityUtils.clientRegisterFilter( 'oracleSSOFilter', SecurityFilterPosition.PRE_AUTH_FILTER.order)
     // SpringSecurityUtils.clientRegisterFilter('securityContextPersistenceFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
-    // SpringSecurityUtils.clientRegisterFilter('ediauthFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
+    SpringSecurityUtils.clientRegisterFilter('ediauthFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
     // SpringSecurityUtils.clientRegisterFilter('apiauthFilter', SecurityFilterPosition.SECURITY_CONTEXT_FILTER.order + 10)
-
-    // Call our local version of client register filter which does not suffer the problems of wiping out the filter
-    // chain. Should allow us to use basic auth on /api, and shib everywhere else on live, or form based auth on dev
-    // See grails.plugins.springsecurity.filterChain.chainMap in config.groovy
-    this.localClientRegisterFilter('ediauthFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
 
     def uo_with_null_role = UserOrg.findAllByFormalRoleIsNull()
     if ( uo_with_null_role.size() > 0 ) {
@@ -662,34 +654,4 @@ No Host Platform URL Content
     // Sort string generation moved to admin - cleanse
   }
 
-  // Work around bug in SpringSecurityUtils.clientRegisterFilter('ediauthFilter', SecurityFilterPosition.PRE_AUTH_FILTER)
-  private void localClientRegisterFilter(final String beanName, final org.codehaus.groovy.grails.plugins.springsecurity.SecurityFilterPosition order) {
-        def positionToFilter = SpringSecurityUtils.getConfiguredOrderedFilters()
-        def filterToPosition = [:]
-        positionToFilter.each {position, filter ->
-            filterToPosition[filter] = position
-        }
-
-        Filter oldFilter = positionToFilter.get(order.order);
-        if (oldFilter != null) {
-            throw new IllegalArgumentException("Cannot register filter '" + beanName +
-                "' at position " + order.order + "; '" + oldFilter +
-                "' is already registered in that position");
-        }
-
-        Filter filter = (Filter)grailsApplication.mainContext.getBean(beanName);
-        positionToFilter.put(order.order, filter);
-        FilterChainProxy filterChain = (FilterChainProxy)grailsApplication.mainContext.getBean("springSecurityFilterChain");
-        def filterChainMap = filterChain.getFilterChainMap()        
-        def correctFilterChainMap = filterChainMap.collectEntries { pattern, filters ->
-            def indexOfFilterBeforeTargetFilter = 0
-            while(indexOfFilterBeforeTargetFilter < filters.size() && filterToPosition[filters[indexOfFilterBeforeTargetFilter]] < order.order){
-                indexOfFilterBeforeTargetFilter++
-            }
-            filters.add(indexOfFilterBeforeTargetFilter, filter)
-
-            [pattern, filters]
-        }
-        filterChain.filterChainMap = Collections.unmodifiableMap(correctFilterChainMap)
-    }
 }

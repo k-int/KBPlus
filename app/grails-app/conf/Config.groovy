@@ -242,7 +242,7 @@ grails.plugins.springsecurity.authority.className = 'com.k_int.kbplus.auth.Role'
 grails.plugins.springsecurity.securityConfigType = "Annotation"
 
 grails.plugins.springsecurity.providerNames = ['preAuthenticatedAuthenticationProvider',
-                                               'daoAuthenticationProvider', 
+                                               'daoAuthenticationProvider' // , 
 //                                               'anonymousAuthenticationProvider', 
 //                                               'rememberMeAuthenticationProvider' 
                                               ]
@@ -285,19 +285,18 @@ appDefaultPrefs {
 }
 
 // The following 2 entries make the app use basic auth by default
-grails.plugins.springsecurity.useBasicAuth = true
-grails.plugins.springsecurity.basic.realmName = "KBPlus"
+// grails.plugins.springsecurity.useBasicAuth = true
+// grails.plugins.springsecurity.basic.realmName = "KBPlus"
 
 
 // II : This doesn't work because we are calling registerFilter to install the ediauth filter.. need to find a different solution, which is annoying
 // See http://jira.grails.org/browse/GPSPRINGSECURITYCORE-210
 // This stanza then says everything should use form apart from /api
 // More info: http://stackoverflow.com/questions/7065089/how-to-configure-grails-spring-authentication-scheme-per-url
-// installed local copy of clientFilterRegister in bootstrap.groovy to address this issue. In testing!
-grails.plugins.springsecurity.filterChain.chainMap = [
-   '/api/**': 'JOINED_FILTERS,-exceptionTranslationFilter',
-   '/**': 'JOINED_FILTERS,-basicAuthenticationFilter,-basicExceptionTranslationFilter'
-]
+// grails.plugins.springsecurity.filterChain.chainMap = [
+//    '/api/**': 'JOINED_FILTERS,-exceptionTranslationFilter',
+//    '/**': 'JOINED_FILTERS,-basicAuthenticationFilter,-basicExceptionTranslationFilter'
+// ]
 
 // Refdata values that need to be added to the database to allow ONIX-PL licences to be compared properly. The code will
 // add them to the DB if they don't already exist.
@@ -349,4 +348,5 @@ remove this line */
 
 quartzHeartbeat = 'Never'
 // grails.databinding.dateFormats = ['MMddyyyy', 'yyyy-MM-dd HH:mm:ss.S', "yyyy-MM-dd'T'hh:mm:ss'Z'"]
+
 
