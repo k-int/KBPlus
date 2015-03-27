@@ -213,18 +213,16 @@
               <th rowspan="2">#</th>
               <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
               <th>ISSN</th>
-              <th>Core Status</th>
+              <th rowspan="2">Medium (P/E)</th>
               <g:sortableColumn params="${params}" property="startDate" title="Earliest date" />
-              <g:sortableColumn params="${params}" property="coreStatusStart" title="Core Start Date" />
+              <th rowspan="2"> Core Status </th>
               <th rowspan="2">Actions</th>
             </tr>  
 
             <tr>
               <th>Access Dates</th>
               <th>eISSN</th>
-              <th>Medium (P/E)</th>
               <g:sortableColumn params="${params}" property="endDate" title="Latest Date" />
-              <g:sortableColumn params="${params}" property="coreStatusEnd" title="Core End Date"  />
             </tr>
 
             <tr class="no-background">  
@@ -285,12 +283,6 @@
                 <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}<br/>
                 ${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
                 <td>
-                <g:set var="iecorestatus" value="${ie.getTIP()?.coreStatus(null)}"/>
-                  Core:
-<g:remoteLink url="[controller: 'ajax', action: 'getTipCoreDates', params:[tipID:ie.getTIP()?.id,title:ie.tipp?.title?.title]]" method="get" name="show_core_assertion_modal" onComplete="showCoreAssertionModal()" class="editable-click"
-              update="magicArea">${iecorestatus!=null?(iecorestatus?'True':'False'):'None'}</g:remoteLink>
-
-
                   <br/><g:xEditableRefData owner="${ie}" field="medium" config='IEMedium'/>
                 </td>
                 <td>
@@ -298,8 +290,10 @@
                     <g:xEditable owner="${ie}" type="date" field="endDate" />
                 </td>
                 <td>
-                    <g:xEditable owner="${ie}" type="date" field="coreStatusStart" /><br/>
-                    <g:xEditable owner="${ie}" type="date" field="coreStatusEnd" />
+                <g:set var="iecorestatus" value="${ie.getTIP()?.coreStatus(null)}"/>
+<g:remoteLink url="[controller: 'ajax', action: 'getTipCoreDates', params:[tipID:ie.getTIP()?.id,title:ie.tipp?.title?.title]]" method="get" name="show_core_assertion_modal" onComplete="showCoreAssertionModal()" class="editable-click"
+              update="magicArea">${iecorestatus!=null?(iecorestatus?'True':'False'):'None'}</g:remoteLink>
+
                 </td>
                 <td>
                   <g:if test="${editable}"><g:link action="removeEntitlement" params="${[ieid:ie.id, sub:subscriptionInstance.id]}" onClick="return confirm('Are you sure you wish to delete this entitlement');">Delete</g:link></g:if>
