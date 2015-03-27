@@ -287,8 +287,8 @@
                 <td>
                 <g:set var="iecorestatus" value="${ie.getTIP()?.coreStatus(null)}"/>
                   Core:
-<g:remoteLink url="[controller: 'ajax', action: 'getTipCoreDates', params:[tipID:ie.getTIP()?.id,title:ie.tipp?.title?.title]]" method="get" name="show_core_assertion_modal" onComplete="showCoreAssertionModal()"
-              update="magicArea">${iecorestatus!=null?iecorestatus:'None'}</g:remoteLink>
+<g:remoteLink url="[controller: 'ajax', action: 'getTipCoreDates', params:[tipID:ie.getTIP()?.id,title:ie.tipp?.title?.title]]" method="get" name="show_core_assertion_modal" onComplete="showCoreAssertionModal()" class="editable-click"
+              update="magicArea">${iecorestatus!=null?(iecorestatus?'True':'False'):'None'}</g:remoteLink>
 
 
                   <br/><g:xEditableRefData owner="${ie}" field="medium" config='IEMedium'/>
