@@ -2,7 +2,9 @@
 <div name="coreAssertionEdit" class="modal hide">
 
   <div class="modal-header">
-    <h6>Core Dates for ${title}</h6>
+    <button type="button" class="close" data-dismiss="modal">×</button>
+
+    <h3>Core Dates for ${title}</h3>
   </div>
   <g:formRemote  name="coreExtendForm" url="[controller: 'ajax', action: 'coreExtend']" before="hideModal()" onComplete="showCoreAssertionModal()" update="magicArea">
   <div class="modal-body">
@@ -36,25 +38,29 @@
         <dt><label class="control-label">Extend Core Dates:</label></dt>
         <dd>
             <label class="property-label">Core Start:</label> 
-              <div class="input-append date">
-                <input class="span2 datepicker-class" size="16" type="text" 
-                name="coreStartDate">
-                <span class="add-on"><i class="icon-th"></i></span> 
-              </div>
+            <g:simpleHiddenValue  id="coreStartDate" name="coreStartDate" type="date"/>
         </dd>
         <dd>
             <label class="property-label">Core End:</label> 
-              <div class="input-append date">
-                <input class="span2 datepicker-class" size="16" type="text" 
-                name="coreEndDate">
-                <span class="add-on"><i class="icon-th"></i></span> 
-              </div>
+              <g:simpleHiddenValue id="coreEndDate" name="coreEndDate" type="date"/>
         </dd>
       </dl>
   </div>
   <div class="modal-footer">
-    <input type="submit" value="Extend" class="btn btn-primary btn-small"/>
+    <input type="submit" value="Apply" class="btn btn-primary btn-small"/>
   </div>
   </g:formRemote>
 </div>
+
+<script type="text/javascript">
+   $('.xEditableValue').editable();
+   $(".simpleHiddenRefdata").editable({
+     url: function(params) {
+       var hidden_field_id = $(this).data('hidden-id');
+       $("#"+hidden_field_id).val(params.value);
+       // Element has a data-hidden-id which is the hidden form property that should be set to the appropriate value
+     }
+   });
+</script>>
+
 

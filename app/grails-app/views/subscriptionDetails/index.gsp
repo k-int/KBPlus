@@ -341,12 +341,12 @@
           format:"${session.sessionPreferences?.globalDatepickerFormat}"
         });
         $("[name='coreAssertionEdit']").modal('show');
-        $('.xEditableValue').editable();
+       
       }
       $(document).ready(function() {
       
         $.fn.editable.defaults.mode = 'inline';
-      
+
        
         $(".announce").click(function(){
            var id = $(this).data('id');
