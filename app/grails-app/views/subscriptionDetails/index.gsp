@@ -332,22 +332,18 @@
     <r:script language="JavaScript">
 
       <g:if test="${editable}">
+
        function hideModal(){
         $("[name='coreAssertionEdit']").modal('hide');
        }
 
       function showCoreAssertionModal(){
-        $("input.datepicker-class").datepicker({
-          format:"${session.sessionPreferences?.globalDatepickerFormat}"
-        });
+
         $("[name='coreAssertionEdit']").modal('show');
        
       }
       $(document).ready(function() {
-      
-        $.fn.editable.defaults.mode = 'inline';
-
-       
+           
         $(".announce").click(function(){
            var id = $(this).data('id');
            $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" />/'+id);
@@ -378,8 +374,6 @@
             return false ;
         }
       }
-
-
       </g:if>
       <g:else>
         $(document).ready(function() {
