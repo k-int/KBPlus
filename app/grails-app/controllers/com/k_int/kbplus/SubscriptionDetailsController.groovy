@@ -420,8 +420,8 @@ class SubscriptionDetailsController {
             ie.embargo = params.bulk_embargo
           }
 
-          if ( params.bulk_core.trim().length() > 0 ) {
-            def selected_refdata = genericOIDService.resolveOID(params.bulk_core.trim())
+          if ( params.bulk_coreStatus.trim().length() > 0 ) {
+            def selected_refdata = genericOIDService.resolveOID(params.bulk_coreStatus.trim())
             log.debug("Selected core status is ${selected_refdata}");
             ie.coreStatus = selected_refdata
           }

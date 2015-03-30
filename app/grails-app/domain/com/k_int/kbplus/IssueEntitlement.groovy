@@ -20,7 +20,7 @@ class IssueEntitlement implements Comparable {
   String ieReason
   Date coreStatusStart
   Date coreStatusEnd
-  RefdataValue coreStatus
+  RefdataValue coreStatus // core Status is really core Medium.. dont ask.
   RefdataValue medium
 
   static belongsTo = [subscription: Subscription, tipp: TitleInstancePackagePlatform]

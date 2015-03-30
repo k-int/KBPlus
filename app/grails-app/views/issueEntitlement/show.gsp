@@ -82,8 +82,8 @@
                 </g:if>
 
                 <g:if test="${issueEntitlementInstance?.coreStatus}">
-                    <dt>Core Status</dt>
-                    <dd>${issueEntitlementInstance?.coreStatus.value}</dd>
+                    <dt>Core Medium</dt>
+                    <dd><g:xEditableRefData owner="${issueEntitlementInstance}" field="coreStatus" config='CoreStatus'/> </dd>
                 </g:if>
               <g:set var="iecorestatus" value="${issueEntitlementInstance.getTIP()?.coreStatus(null)}"/>                 
               <dt>Core Status</dt>

@@ -213,9 +213,9 @@
               <th rowspan="2">#</th>
               <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
               <th>ISSN</th>
-              <th rowspan="2">Medium (P/E)</th>
+              <th rowspan="2">Entitlement Medium (P/E)</th>
               <g:sortableColumn params="${params}" property="startDate" title="Earliest date" />
-              <th rowspan="2"> Core Status </th>
+              <th> Core Status</th>
               <th rowspan="2">Actions</th>
             </tr>  
 
@@ -223,35 +223,42 @@
               <th>Access Dates</th>
               <th>eISSN</th>
               <g:sortableColumn params="${params}" property="endDate" title="Latest Date" />
+              <th> Core Medium </th>
             </tr>
 
             <tr class="no-background">  
+              <g:if test="${editable}">
+              
 
               <th>
-                <g:if test="${editable}"><input type="checkbox" name="chkall" onClick="javascript:selectAll();"/></g:if>
+                <input type="checkbox" name="chkall" onClick="javascript:selectAll();"/>
               </th>
 
               <th colspan="3">
-                <g:if test="${editable}">
+                
                   <select id="bulkOperationSelect" name="bulkOperation">
                     <option value="edit">Edit Selected</option>
                     <option value="remove">Remove Selected</option>
                   </select>
 
-                  <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()" class="btn btn-primary"/></g:if>
+                  <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()" class="btn btn-primary"/>
               </th>
 
               <th>
-                <g:if test="${editable}"><g:simpleHiddenRefdata id="bulk_core" name="bulk_core" refdataCategory="CoreStatus"/></g:if>
-                <g:if test="${editable}"><br/><g:simpleHiddenRefdata id="bulk_medium" name="bulk_medium" refdataCategory="IEMedium"/></g:if>
+                  <g:simpleHiddenRefdata id="bulk_medium" name="bulk_medium" refdataCategory="IEMedium"/>
               </th>
 
-              <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_start_date" name="bulk_start_date" type="date"/> </g:if> <br/>
-                  <g:if test="${editable}"> <g:simpleHiddenValue id="bulk_end_date" name="bulk_end_date" type="date"/> </g:if></th>
-
+              <th> <g:simpleHiddenValue id="bulk_start_date" name="bulk_start_date" type="date"/>  <br/>
+                   <g:simpleHiddenValue id="bulk_end_date" name="bulk_end_date" type="date"/> 
+              </th>
+              <th>
+                <g:simpleHiddenRefdata id="bulk_coreStatus" name="bulk_coreStatus" refdataCategory="CoreStatus"/> <br/>
+              </th>
+              </g:if>
+               <g:else>
+               <th colspan="7">  </th>
+              </g:else>
               <th></th>
-
-              <th colspan="2"></th>
             </tr>
          </thead>
          <tbody>
@@ -282,7 +289,7 @@
                 <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}<br/>
                 ${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
                 <td>
-                  <br/><g:xEditableRefData owner="${ie}" field="medium" config='IEMedium'/>
+                  <g:xEditableRefData owner="${ie}" field="medium" config='IEMedium'/>
                 </td>
                 <td>
                     <g:xEditable owner="${ie}" type="date" field="startDate" /><br/>
@@ -292,7 +299,9 @@
                 <g:set var="iecorestatus" value="${ie.getTIP()?.coreStatus(null)}"/>
 <g:remoteLink url="[controller: 'ajax', action: 'getTipCoreDates', params:[tipID:ie.getTIP()?.id,title:ie.tipp?.title?.title]]" method="get" name="show_core_assertion_modal" onComplete="showCoreAssertionModal()" class="editable-click"
               update="magicArea">${iecorestatus!=null?(iecorestatus?'True':'False'):'None'}</g:remoteLink>
+               <br/>
 
+               <g:xEditableRefData owner="${ie}" field="coreStatus" config='CoreStatus'/>
                 </td>
                 <td>
                   <g:if test="${editable}"><g:link action="removeEntitlement" params="${[ieid:ie.id, sub:subscriptionInstance.id]}" onClick="return confirm('Are you sure you wish to delete this entitlement');">Delete</g:link></g:if>
