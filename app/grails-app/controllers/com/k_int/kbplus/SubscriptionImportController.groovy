@@ -463,11 +463,11 @@ class SubscriptionImportController {
       cell = row.createCell(cc++);
       cell.setCellValue(new HSSFRichTextString("Current Coverage Note"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("IsCore?"));
+      cell.setCellValue(new HSSFRichTextString("Core Status"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("Core Start Date"));
+      cell.setCellValue(new HSSFRichTextString("Core Status Checked"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("Core End Date"));
+      cell.setCellValue(new HSSFRichTextString("Core Medium"));
   
       m.sub_info.each { sub ->
         cell = row.createCell(cc++);

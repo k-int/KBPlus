@@ -1545,11 +1545,11 @@ AND EXISTS (
             // For each subscription in the shopping basket
             if (sub instanceof Subscription) {
                 sub.issueEntitlements.each { ie ->
-                    log.debug("IE");
+                    // log.debug("IE");
                     if (!(ie.status?.value == 'Deleted')) {
                         def title_info = titleMap[ie.tipp.title.id]
                         if (!title_info) {
-                            // log.debug("Adding ie: ${ie}");
+                            log.debug("Adding ie: ${ie}");
                             title_info = [:]
                             title_info.title_idx = titleMap.size()
                             title_info.id = ie.tipp.title.id;
@@ -1564,8 +1564,8 @@ AND EXISTS (
                                 title_info.current_embargo = ie.embargo
                                 title_info.current_depth = ie.coverageDepth
                                 title_info.current_coverage_note = ie.coverageNote
-                                title_info.core_status = ie.coreStatusOn(new Date())
-                                title_info.core_stats_on = new Date()
+                                title_info.core_status = ie.coreStatusOn(new Date())?'True':'False'
+                                title_info.core_status_on = formatter.format(new Date())
                                 title_info.core_medium = ie.coreStatus
 
 
@@ -1640,8 +1640,8 @@ AND EXISTS (
                         def ie_info = [:]
                         // log.debug("Adding tipp info ${ie.tipp.startDate} ${ie.tipp.derivedFrom}");
                         ie_info.tipp_id = ie.tipp.id;
-                        ie_info.core_status = ie.coreStatusOn(new Date())                        
-                        ie_info.core_status_on = new Date()
+                        ie_info.core_status = ie.coreStatusOn(new Date()) ? 'True':'False'                       
+                        ie_info.core_status_on = formatter.format(new Date())
                         ie_info.core_medium = ie.coreStatus
                         ie_info.startDate_d = ie.tipp.startDate ?: ie.tipp.derivedFrom?.startDate
                         ie_info.startDate = ie_info.startDate_d ? formatter.format(ie_info.startDate_d) : null

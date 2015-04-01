@@ -151,14 +151,9 @@ class IssueEntitlement implements Comparable {
   @Transient
   def coreStatusOn(as_at) {
     // Use the new core system to determine if this title really is core
-    def result = false
     def tip = getTIP()
-    if ( tip ) {
-      if ( ( tip.startDate < as_at ) && ( ( tip.endDate == null) || ( tip.endDate > as_at ) ) ) {
-        result = true
-      }
-    }
-    result
+    if(tip) return tip.coreStatus(as_at);
+    return false
   }
   
   @Transient
