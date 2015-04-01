@@ -147,8 +147,9 @@ class IssueEntitlement implements Comparable {
     }
     return null
   }
-
-  def wasCoreOn(as_at) {
+  
+  @Transient
+  def coreStatusOn(as_at) {
     // Use the new core system to determine if this title really is core
     def result = false
     def tip = getTIP()
