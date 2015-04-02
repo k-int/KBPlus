@@ -218,6 +218,7 @@ class ExportService {
 			def tipp = (type=="Issue Entitlement")?e.tipp:e
 			def sub  = (type=="Issue Entitlement")?e.subscription:e.sub
 			def status  = (type=="Issue Entitlement")?e.coreStatus:e.status
+			def statusColumnHeader = (type == "Issue Entitlement") ? "CoreMedium" : "TIPPStatus"
 			
 			if(tipp.title.id != current_title_id){
 				current_title_id = tipp.title.id
@@ -267,9 +268,17 @@ class ExportService {
 				addXMLElementInto(doc, platform, "PlatformURL", ap.platform?.primaryUrl?:'')
 			}
 			
-			addXMLElementInto(doc, coveragestatement, "CoreStatus", status?.value?:'')
-			addXMLElementInto(doc, coveragestatement, "CoreStart", e.coreStatusStart?formatter.format(e.coreStatusStart):'')
-			addXMLElementInto(doc, coveragestatement, "CoreEnd", e.coreStatusEnd?formatter.format(e.coreStatusEnd):'')
+			addXMLElementInto(doc, coveragestatement, statusColumnHeader, status?.value?:'')
+			if(type == "Issue Entitlement"){
+				Element coreDateList = addXMLElementInto(doc,coveragestatement,"CoreDateList",null)
+				e?.getTIP()?.coreDates.each{
+					Element coreDate = addXMLElementInto(doc,coreDateList,"CoreDate",null)
+					addXMLElementInto(doc,coreDate,"CoreStart",formatter.format(it.startDate))
+					if(it.endDate){
+						addXMLElementInto(doc,coreDate,"CoreEnd",formatter.format(it.endDate))
+					}
+				}
+			}
 			addXMLElementInto(doc, coveragestatement, "PackageID", tipp?.pkg?.id?:'')
 			addXMLElementInto(doc, coveragestatement, "PackageName", tipp?.pkg?.name?:'')
             addXMLElementInto(doc, coveragestatement, "AccessStatus", tipp?.getAvailabilityStatusAsString()?:'')
