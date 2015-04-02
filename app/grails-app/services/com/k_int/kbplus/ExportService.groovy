@@ -507,7 +507,7 @@ class ExportService {
 			def tipp = (type=="Issue Entitlement")?e.tipp:e
 			def sub  = (type=="Issue Entitlement")?e.subscription:e.sub
 			def status  = (type=="Issue Entitlement")?e.coreStatus:e.status
-			
+			def statusColumnHeader = (type=="Issue Entitlement")? "CoreMedium" : "TIPPStatus"
 			if(tipp.title.id != current_title_id){
 				//start new title
 				if(current_title_id!=-1) titles.add(title) // not the first time
@@ -562,9 +562,17 @@ class ExportService {
 				platform.PlatformURL = ap.platform?.primaryUrl?:''
 				ie."AdditionalPlatforms" << platform
 			}
-			ie."CoreStatus" = status?.value?:''
-			ie."CoreStart" = e.coreStatusStart?formatter.format(e.coreStatusStart):''
-			ie."CoreEnd" = e.coreStatusEnd?formatter.format(e.coreStatusEnd):''
+			ie."${statusColumnHeader}" = status?.value?:''
+			if(type == "Issue Entitlement"){
+				def dateList = []
+				e.getTIP()?.coreDates?.each{
+					def dates = [:]
+					dates."startDate" = formatter.format(it.startDate)
+					dates."endDate" = it.endDate ? formatter.format(it.endDate) : ''
+					dateList.add(dates)
+				}
+				ie."CoreDateList" = dateList
+			}
 			ie."PackageID" = tipp?.pkg?.id?:''
 			ie."PackageName" = tipp?.pkg?.name?:''
             ie."AccessFrom" = tipp?.accessStartDate?:''
