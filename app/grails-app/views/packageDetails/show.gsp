@@ -270,7 +270,7 @@
                   </g:each>
                 </select><br/>
                 Create Entitlements in Subscription: <input type="checkbox" id="addEntitlementsCheckbox" name="addEntitlements" value="true"/><br/>
-                <input type="submit"/>
+                <input id="add_to_sub_submit_id" type="submit"/>
               </g:form>
             </g:if>
             <g:else>

@@ -6,6 +6,39 @@ import spock.lang.Stepwise
 @Stepwise
 class JuspCoreSpec extends GebReportingSpec {
 
+	// //The following will setup everything required for this test case
+	// def "Setup our database"(){
+	// 	when:
+	// 		to PublicPage
+	// 		loginLink()
+	// 		at LogInPage
+	// 		login(Data.UserD_name, Data.UserD_passwd)
+	// 		go "/demo/org/create"
+	// 		$("form").name = Data.Org_name
+	// 		$("form").impId = Data.Org_impId
+	// 		$("form").sector = 'Higher Education'
+	// 		$("#SubmitButton").click()
+	// 		to ProfilePage
+	// 		requestMembership(Data.Org_name, 'Editor')
+	// 		manageAffiliationReq()
+	// 		at AdminMngAffReqPage
+	// 		approve()
+	// 		go '/demo/myInstitutions/'+Data.Org_Url+'/emptySubscription'
+	// 		$('form').newEmptySubName = Data.Subscription_name_A
+	// 		$('input', type: 'submit').click()
+	// 		go '/demo/upload/reviewPackage'
+	// 		$('form').soFile = Data.Package_import_file
+	// 		$('button', text: "Upload SO").click()
+	// 		waitFor{$("div.alert-success")}
+	// 		$('a', text: 'New Package Details').click()
+	// 		$('form').subid = Data.Subscription_name_A +" - " + Data.Org_name
+	// 		$('#addEntitlementsCheckbox').click()
+	// 		$('#add_to_sub_submit_id').click()
+	// 	then:
+	// 		true
+	// 		to DashboardPage
+	// }
+
 	def "First log in to the system"(){
 		setup:
 			to PublicPage
