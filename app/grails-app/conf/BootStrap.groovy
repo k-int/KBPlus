@@ -37,15 +37,21 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("YNO","Not applicable")
     RefdataCategory.lookupOrCreate("YNO","Unknown")
 
+    RefdataCategory.lookupOrCreate('CoreStatus', 'Yes');
+    RefdataCategory.lookupOrCreate('CoreStatus', 'Print');
+    RefdataCategory.lookupOrCreate('CoreStatus', 'Electronic');
+    RefdataCategory.lookupOrCreate('CoreStatus', 'Print+Electronic');
+    RefdataCategory.lookupOrCreate('CoreStatus', 'No');
+
     RefdataCategory.lookupOrCreate("ConcurrentAccess","Specified")
     RefdataCategory.lookupOrCreate("ConcurrentAccess","Not Specified")
     RefdataCategory.lookupOrCreate("ConcurrentAccess","No limit")
     RefdataCategory.lookupOrCreate("ConcurrentAccess","Other")
 
-    def ref_yno_n = RefdataCategory.lookupOrCreate("YNO","No")
-    def ref_yno_y = RefdataCategory.lookupOrCreate("YNO","Yes")
-    def ref_yno_o = RefdataCategory.lookupOrCreate("YNO","Other")
-    def ref_yno_u = RefdataCategory.lookupOrCreate("YNO","Unknown")
+    RefdataCategory.lookupOrCreate("YNO","No")
+    RefdataCategory.lookupOrCreate("YNO","Yes")
+    RefdataCategory.lookupOrCreate("YNO","Other")
+    RefdataCategory.lookupOrCreate("YNO","Unknown")
 
     def or_licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
     def or_subscriber_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber');
@@ -93,13 +99,13 @@ class BootStrap {
 
   // Transforms types and formats Refdata 
   // !!! HAS TO BE BEFORE the script adding the Transformers as it is used by those tables !!!
-  def json_format = RefdataCategory.lookupOrCreate('Transform Format', 'json');
-  def xml_format = RefdataCategory.lookupOrCreate('Transform Format', 'xml');
-  def url_format = RefdataCategory.lookupOrCreate('Transform Format', 'url');
-  def subscription_type = RefdataCategory.lookupOrCreate('Transform Type', 'subscription');
-  def licence_type = RefdataCategory.lookupOrCreate('Transform Type', 'licence');
-  def title_type = RefdataCategory.lookupOrCreate('Transform Type', 'title');
-  def package_type = RefdataCategory.lookupOrCreate('Transform Type', 'package');
+   RefdataCategory.lookupOrCreate('Transform Format', 'json');
+   RefdataCategory.lookupOrCreate('Transform Format', 'xml');
+   RefdataCategory.lookupOrCreate('Transform Format', 'url');
+   RefdataCategory.lookupOrCreate('Transform Type', 'subscription');
+   RefdataCategory.lookupOrCreate('Transform Type', 'licence');
+   RefdataCategory.lookupOrCreate('Transform Type', 'title');
+   RefdataCategory.lookupOrCreate('Transform Type', 'package');
   
   // Add Transformers and Transforms define in the demo-config.groovy
   grailsApplication.config.systransforms.each { tr ->
