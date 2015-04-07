@@ -2,9 +2,10 @@ import geb.error.RequiredPageContentNotPresent
 import geb.spock.GebReportingSpec
 import pages.*
 import spock.lang.Stepwise
+import spock.lang.Ignore
 
 @Stepwise
-class HomePageSpec extends GebReportingSpec {
+class GeneralSpec extends GebReportingSpec {
 	// curl -XDELETE 'http://localhost:9200/kbplustest/'
 	// curl -XPUT 'httop://localhost:9200/kbplustest/'
 

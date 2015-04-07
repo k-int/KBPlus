@@ -25,7 +25,7 @@
               </td>
               <td>
                 <g:remoteLink url="[controller: 'ajax', action: 'deleteCoreDate', params:[tipID:tipID,title:title,coreDateID:coreDate.id]]" method="get" name="show_core_assertion_modal" 
-                before="hideModal()" onComplete="showCoreAssertionModal()" update="magicArea">Delete </g:remoteLink></dd>
+                before="hideModal()" onComplete="showCoreAssertionModal()" update="magicArea" class="delete-coreDate">Delete </g:remoteLink></dd>
               </td>
             </tr>
          </g:each>
