@@ -103,9 +103,8 @@ class ExportService {
 				writer.write("IE.${it}.platform.host.name,")
 				writer.write("IE.${it}.platform.host.url,")
 				writer.write("IE.${it}.platform.admin.name,")
-				writer.write("IE.${it}.Core status,")
-				writer.write("IE.${it}.Core start,")
-				writer.write("IE.${it}.Core end")
+				writer.write("IE.${it}.Core date list,")
+				writer.write("IE.${it}.Core medium")
 			}
 			writer.write("\n")
 			
@@ -161,9 +160,12 @@ class ExportService {
 					entitlements_str += "${ap.platform.name}"
 				}
 				entitlements_str += "\","
-				entitlements_str += "\"${e.coreStatus?.value?:''}\","
-				entitlements_str += "\"${e.coreStatusStart?formatter.format(e.coreStatusStart):''}\","
-				entitlements_str += "\"${e.coreStatusEnd?formatter.format(e.coreStatusEnd):''}\""
+				def coreDateList = ""
+				e?.getTIP()?.coreDates.each{
+					coreDateList += it.toString() + " - "
+				}
+				entitlements_str += "\"${coreDateList}\","
+				entitlements_str += "\"${e.coreStatus?:''}\""
 //                    }
 			}
 			

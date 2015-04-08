@@ -515,16 +515,17 @@ class SubscriptionImportController {
         cell.setCellValue(new HSSFRichTextString("${title.current_coverage_note?:''}"));
   
         // IsCore
+        //TODO: are we ever getting a sub in here ?
         cell = row.createCell(cc++);
-        cell.setCellValue(new HSSFRichTextString("${title.is_core?:''}"));
+        cell.setCellValue(new HSSFRichTextString(""));
   
         // Core Start Date
         cell = row.createCell(cc++);
-        cell.setCellValue(new HSSFRichTextString("${title.core_start_date?:''}"));
+        cell.setCellValue(new HSSFRichTextString(""));
   
         // Core End Date
         cell = row.createCell(cc++);
-        cell.setCellValue(new HSSFRichTextString("${title.core_end_date?:''}"));
+        cell.setCellValue(new HSSFRichTextString("${title.coreStatus?:''}"));
   
         m.sub_info.each { sub ->
           cell = row.createCell(cc++);
