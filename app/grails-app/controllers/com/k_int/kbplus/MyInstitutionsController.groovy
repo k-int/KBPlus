@@ -1781,7 +1781,7 @@ AND EXISTS (
             cell = row.createCell(cc++);
             cell.setCellValue(new HSSFRichTextString("eISSN"));
             cell = row.createCell(cc++);
-            cell.setCellValue(new HSSFRichTextString("current Start Date"));
+            cell.setCellValue(new HSSFRichTextString("Current Start Date"));
             cell = row.createCell(cc++);
             cell.setCellValue(new HSSFRichTextString("Current End Date"));
             cell = row.createCell(cc++);
@@ -2070,8 +2070,7 @@ AND EXISTS (
                                     entitlement_info.coverage = title_row.getCell(6)
                                     entitlement_info.coverage_note = title_row.getCell(7)
                                     entitlement_info.core_status = title_row.getCell(8)
-                                    entitlement_info.core_start_date = title_row.getCell(9)
-                                    entitlement_info.core_end_date = title_row.getCell(10)
+
 
                                     // log.debug("Added entitlement_info ${entitlement_info}");
                                     result.entitlements.add(entitlement_info)
@@ -2207,8 +2206,7 @@ AND EXISTS (
 
                 def new_start_date = entitlement.start_date ? parseDate(entitlement.start_date, possible_date_formats) : null
                 def new_end_date = entitlement.end_date ? parseDate(entitlement.end_date, possible_date_formats) : null
-                def new_core_start_date = entitlement.core_start_date ? parseDate(entitlement.core_start_date, possible_date_formats) : null
-                def new_core_end_date = entitlement.core_end_date ? parseDate(entitlement.core_end_date, possible_date_formats) : null
+
 
                 // entitlement.is_core
                 def new_ie = new IssueEntitlement(subscription: new_subscription,
@@ -2223,9 +2221,7 @@ AND EXISTS (
                         embargo: dbtipp.embargo,
                         coverageDepth: dbtipp.coverageDepth,
                         coverageNote: dbtipp.coverageNote,
-                        coreStatus: new_core_status,
-                        coreStatusStart: new_core_start_date,
-                        coreStatusEnd: new_core_end_date
+                        coreStatus: new_core_status
                 )
 
                 if (new_ie.save()) {

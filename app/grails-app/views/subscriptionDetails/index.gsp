@@ -215,7 +215,7 @@
               <th>ISSN</th>
               <th rowspan="2">Entitlement Medium (P/E)</th>
               <g:sortableColumn params="${params}" property="startDate" title="Earliest date" />
-              <th> Core Status</th>
+              <g:sortableColumn params="${params}" property="core_status" title="Core Status" />
               <th rowspan="2">Actions</th>
             </tr>  
 
