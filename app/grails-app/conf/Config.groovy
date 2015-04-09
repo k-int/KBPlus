@@ -203,7 +203,8 @@ log4j = {
 //    // Enable Hibernate SQL logging with param values
 //    trace 'org.hibernate.type'
 //    debug 'org.hibernate.SQL'
-
+    off    'grails.plugin.formfields'
+    
     error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
            'org.codehaus.groovy.grails.web.pages', //  GSP
            'org.codehaus.groovy.grails.web.sitemesh', //  layouts
@@ -218,6 +219,7 @@ log4j = {
            'formfields',
            'com.k_int.kbplus.filter',
            'org.codehaus.groovy.grails.plugins.springsecurity'
+           
 
     debug  'grails.app.controllers',
            'grails.app.service',
