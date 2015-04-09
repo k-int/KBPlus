@@ -23,7 +23,7 @@ class DataManagerPage extends BasePage {
             $("a.step",text:"3").click()
             browser.report( "Page 3")
 
-            !$("span",text:"23 changes").isEmpty()
+            !$("span",text:"21 changes").isEmpty()
         }
         changeLogExportCSV {
             $("a",text:"Exports").click()
