@@ -115,6 +115,9 @@ class SubscriptionDetailsController {
       date_filter = new Date()
       result.as_at_date = date_filter;
     }
+    // We dont want this filter to reach SQL query as it will break it.
+    def core_status_filter = params.sort == 'core_status'
+    if(core_status_filter) params.remove('sort');
 
     if ( params.filter ) {
       base_qry = " from IssueEntitlement as ie where ie.subscription = ? "
@@ -158,7 +161,18 @@ class SubscriptionDetailsController {
 
     result.num_sub_rows = IssueEntitlement.executeQuery("select count(ie) "+base_qry, qry_params )[0]
 
-    result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, qry_params, [max:result.max, offset:result.offset]);
+    if(core_status_filter){
+      result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, qry_params);
+    }else{
+      result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, qry_params, [max:result.max, offset:result.offset]);    
+    }
+
+    // Now we add back the sort so that the sortable column will recognize asc/desc
+    // Ignore the sorting if we are doing an export
+    if(core_status_filter){
+      params.put('sort','core_status');
+      if(params.format == 'html' || params.format == null)  sortOnCoreStatus(result,params);
+    }
 
     exportService.printDuration(verystarttime, "Querying")
   
@@ -214,6 +228,13 @@ class SubscriptionDetailsController {
       }
     }
   }
+
+  def sortOnCoreStatus(result,params){
+    result.entitlements.sort{it.getTIP()?.coreStatus(null)}
+    if(params.order == 'desc') result.entitlements.reverse(true);
+    result.entitlements = result.entitlements.subList(result.offset, (result.offset+result.max).intValue() )
+  }
+
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def compare(){
     def result = [:]
