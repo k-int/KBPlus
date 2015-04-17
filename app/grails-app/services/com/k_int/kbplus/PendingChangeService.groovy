@@ -144,7 +144,10 @@ def performAccept(change,httpRequest) {
      if ( ( parsed_change_info.changeTarget != null ) && ( parsed_change_info.changeTarget.length() > 0 ) ) {
       def target_object = genericOIDService.resolveOID(parsed_change_info.changeTarget);
       if ( target_object) {          
-        def updateProp = target_object.customProperties.find{it.type.name == changeDoc.name}
+        def updateProp = null;
+        if ( target_object.metaClass.respondsTo('customProperties') ) {
+          updateProp = target_object.customProperties.find{it.type.name == changeDoc.name}
+        }
         if(updateProp){
           switch (changeDoc.event){
             case "CustomProperty.deleted":
