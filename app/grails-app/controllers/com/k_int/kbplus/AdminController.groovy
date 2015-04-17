@@ -76,6 +76,36 @@ class AdminController {
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def hardDeletePkgs(){
+    def result = [:]
+    if(params.id){
+      def pkg = Package.get(params.id)
+      def items_to_delete = [:]
+      if(pkg.documents){
+        items_to_delete.documets = []
+        pkg.documents.each{
+          items_to_delete.documets += it.doc.title
+        }
+      }
+      if(pkg.subscriptions){
+        items_to_delete.subscriptions = []
+        pkg.subscriptions.each{
+          items_to_delete.subscriptions += ['name':it.subscription.name,'id':it.subscription.id]
+        }
+      }
+      if(pkg.tipps){
+        items_to_delete.tipps = pkg.tipps.size()
+      }
+      result.items_to_delete = items_to_delete
+      result.pkg = pkg
+    }else{
+      result.pkgs = Package.findAll()
+    }
+
+    result
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def userMerge(){
      log.debug("AdminController :: userMerge :: ${params}");
      def usrMrgId = params.userToMerge == "null"?null:params.userToMerge

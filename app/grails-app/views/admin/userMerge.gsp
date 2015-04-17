@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html>
   <head>
@@ -40,7 +39,7 @@
       </g:form>
       </div>
 
-	<div id="cust_prop_add_modal" <g:if test="${userRoles}"> class="modal show" </g:if><g:else>class="modal hide"</g:else>>
+	<div id="user_role_modal" <g:if test="${userRoles}"> class="modal show" </g:if><g:else>class="modal hide"</g:else>
         <g:form action="userMerge" method="POST">
 	        <input type="hidden" name="userToKeep" value="${params.userToKeep}"/>
 	        <input type="hidden" name="userToMerge" value="${params.userToMerge}"/>

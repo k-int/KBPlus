@@ -16,7 +16,6 @@ class IssueEntitlement implements Comparable {
   String embargo
   String coverageDepth
   String coverageNote
-  // boolean coreTitle = false
   String ieReason
   Date coreStatusStart
   Date coreStatusEnd
