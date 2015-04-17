@@ -28,24 +28,29 @@ class ProfileController {
     def formal_role = com.k_int.kbplus.auth.Role.get(params.formalRole)
 
 
-    if ( ( org != null ) && ( formal_role != null ) ) {
-      def existingRel = UserOrg.find( { org==org && user==user && formalRole==formal_role } )
-      if ( existingRel ) {
-        log.debug("existing rel");
-        flash.error="You already have a relation with the requested organisation."
+    try {
+      if ( ( org != null ) && ( formal_role != null ) ) {
+        def existingRel = UserOrg.find( { org==org && user==user && formalRole==formal_role } )
+        if ( existingRel ) {
+          log.debug("existing rel");
+          flash.error="You already have a relation with the requested organisation."
+        }
+        else {
+          log.debug("Create new user_org entry....");
+          def p = new UserOrg(dateRequested:System.currentTimeMillis(),
+                              status:0,
+                              org:org,
+                              user:user,
+                              formalRole:formal_role)
+          p.save(flush:true, failOnError:true)
+        }
       }
       else {
-        log.debug("Create new user_org entry....");
-        def p = new UserOrg(dateRequested:System.currentTimeMillis(),
-                            status:0,
-                            org:org,
-                            user:user,
-                            formalRole:formal_role)
-        p.save(flush:true)
+        log.error("Unable to locate org or role");
       }
     }
-    else {
-      log.error("Unable to locate org or role");
+    catch ( Exception e ) {
+      log.error("Problem requesting affiliation",e);
     }
 
     redirect(action: "index")
