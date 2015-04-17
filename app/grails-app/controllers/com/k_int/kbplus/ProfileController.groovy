@@ -22,7 +22,7 @@ class ProfileController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def processJoinRequest() {
-    log.debug("processJoinRequest org with id ${params.org} role ${params.formalRole}");
+    log.debug("processJoinRequest(${params}) org with id ${params.org} role ${params.formalRole}");
     def user = User.get(springSecurityService.principal.id)
     def org = com.k_int.kbplus.Org.get(params.org)
     def formal_role = com.k_int.kbplus.auth.Role.get(params.formalRole)
