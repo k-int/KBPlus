@@ -137,7 +137,7 @@
              organisations will be referred to the administrative users of that organisation. If you feel you should be the administrator of an organisation
              please contact the KBPlus team for support.</p>
   
-          <g:form id="affiliationRequestForm" controller="profile" action="processJoinRequest" form class="form-search">
+          <g:form name="affiliationRequestForm" controller="profile" action="processJoinRequest" class="form-search" method="get">
 
             <g:select name="org"
                       from="${com.k_int.kbplus.Org.findAllBySector('Higher Education',[sort:'name'])}"
