@@ -98,10 +98,12 @@ class AdminController {
       }
       result.items_to_delete = items_to_delete
       result.pkg = pkg
-    }else{
-      result.pkgs = Package.findAll()
-    }
 
+      render(template: "hardDeleteDetails",model:result)  
+    }else{
+      result.pkgs = Package.get(1)
+    }
+    
     result
   }
 

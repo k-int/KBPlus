@@ -8,16 +8,7 @@
   <body>
     <h1>Hard Delete Packages</h1>
 
-      <div id="osel_add_modal" class="modal hide">
-      Hello there
-      </div>    
-    <g:if test="${pkg}">
-
-      <script>
-      console.log('hello');
-      $("#osel_add_modal").show();
-      </script>
-    </g:if>
+  
     
       <g:if test="${flash.message}">
       <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
@@ -39,12 +30,21 @@
                         
               <td>${fieldValue(bean: packageInstance, field: "name")} (${packageInstance?.contentProvider?.name})</td>            
               <td class="link">
-                <g:link action="hardDeletePkgs" id="${packageInstance.id}" class="btn btn-small">Prepare Delete</g:link>
+                <button onclick="showDetails(${packageInstance.id});" class="btn btn-small">Prepare Delete</button>
               </td>
             </tr>
           </g:each>
           </tbody>
         </table>
+        <div id="packageDetails_div">
+        </div>
+        <g:javascript>
+        function showDetails(id){
+          console.log("click")
+          jQuery.ajax({type:'get',data:jQuery(this).serialize(), url:"${createLink(controller:'admin', action:'hardDeletePkgs')}"+"/"+id,success:function(data,textStatus){jQuery('#packageDetails_div').html(data);$("#pkg_details_modal").modal("show")},error:function(XMLHttpRequest,textStatus,errorThrown){}
+        });
+        }
+        </g:javascript>
 
   </body>
-</html>	    
+</html>     
