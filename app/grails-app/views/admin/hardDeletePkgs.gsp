@@ -40,7 +40,6 @@
         </div>
         <g:javascript>
         function showDetails(id){
-          console.log("click")
           jQuery.ajax({type:'get',data:jQuery(this).serialize(), url:"${createLink(controller:'admin', action:'hardDeletePkgs')}"+"/"+id,success:function(data,textStatus){jQuery('#packageDetails_div').html(data);$("#pkg_details_modal").modal("show")},error:function(XMLHttpRequest,textStatus,errorThrown){}
         });
         }

@@ -80,23 +80,38 @@ class AdminController {
     def result = [:]
     if(params.id){
       def pkg = Package.get(params.id)
-      def items_to_delete = [:]
+      def conflicts_list = []
       if(pkg.documents){
-        items_to_delete.documets = []
+        def document_map = [:]
+        document_map.name = "Documents"
+        document_map.details = []
         pkg.documents.each{
-          items_to_delete.documets += it.doc.title
+          document_map.details += it.doc.title
         }
+        document_map.action = "Delete references to documents"
+        conflicts_list += document_map
       }
       if(pkg.subscriptions){
-        items_to_delete.subscriptions = []
+        def subscription_map = [:]
+        subscription_map.name = "Subscriptions"
         pkg.subscriptions.each{
-          items_to_delete.subscriptions += ['name':it.subscription.name,'id':it.subscription.id]
+          if(it.subscription.status.value != "Deleted"){
+            subscription_map.details = "<ul>"
+            subscription_map.details += "<li> ${it.subscription.id} : ${it.subscription.name} </li>"
+            subscription_map.details += "</ul>"
+          }
         }
+        subscription_map.action = "Delete Subscriptions"
+        conflicts_list += subscription_map
       }
       if(pkg.tipps){
-        items_to_delete.tipps = pkg.tipps.size()
+        def tipp_map = [:]
+        tipp_map.name = "TIPPs"
+        tipp_map.details = "Number of TIPPs that will be deleted: ${pkg.tipps.size()}"
+        tipp_map.action = "No action required"
+        conflicts_list += tipp_map
       }
-      result.items_to_delete = items_to_delete
+      result.conflicts_list = conflicts_list
       result.pkg = pkg
 
       render(template: "hardDeleteDetails",model:result)  
