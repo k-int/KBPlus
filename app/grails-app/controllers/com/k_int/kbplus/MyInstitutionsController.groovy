@@ -64,6 +64,43 @@ class MyInstitutionsController {
 
         result
     }
+    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+    def tipview() {
+        log.debug("admin::tipview ${params}")
+        def result = [:]
+
+        result.offset = 0
+        result.max = 20
+
+        def criteria = TitleInstitutionProvider.createCriteria();
+        def results = criteria {
+              if (params.shortcode){
+                institution{
+                    eq("shortcode", params.shortcode)
+                }
+              }
+              if (params.filter_inst) {
+                institution {
+                  ilike("name", "${params.filter_inst}%")         
+                }
+              }
+             if (params.filter_prov) {
+                institution {
+                  ilike("name", "${params.filter_inst}%")         
+                }
+             }
+             if (params.filter_title) {
+                title {
+                  ilike("title", "${params.filter_title}%")         
+                }
+             }
+          firstResult(result.offset)
+          maxResults(result.max)
+        }
+
+        result.tips = results
+        result
+    }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def dashboard() {
@@ -117,6 +154,7 @@ class MyInstitutionsController {
             result.validOn = sdf.format(new Date(System.currentTimeMillis()))
         } else {
             result.validOn = params.validOn
+     
             date_restriction = sdf.parse(params.validOn)
         }
 

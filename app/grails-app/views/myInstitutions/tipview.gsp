@@ -23,6 +23,7 @@
               <g:sortableColumn property="name" title="${message(code: 'package.name.label', default: 'Name')}" />
               <th>Institution</th>
               <th>Provider</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>

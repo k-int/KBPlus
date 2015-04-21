@@ -49,15 +49,6 @@ class AdminController {
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
-  def tipview() {
-    log.debug("admin::tipview ${params}")
-    def result = [:]
-    result.tips = TitleInstitutionProvider.executeQuery("select tip from TitleInstitutionProvider as tip",[max:20, offset:0])
-
-    result
-  }
-
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def actionAffiliationRequest() {
     log.debug("actionMembershipRequest");
     def req = UserOrg.get(params.req);

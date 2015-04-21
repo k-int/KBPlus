@@ -114,6 +114,9 @@
                                              action="index"
                                              params="${[shortcode:org.shortcode]}">Finance</g:link></li>
                                </g:if>
+                               <li><g:link controller="myInstitutions" 
+                                           action="tipview"
+                                           params="${[shortcode:org.shortcode]}">View tips???</g:link></li>
 
                              </ul>
                            </li>
