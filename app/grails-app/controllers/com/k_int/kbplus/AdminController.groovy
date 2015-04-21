@@ -94,11 +94,10 @@ class AdminController {
       if(pkg.subscriptions){
         def subscription_map = [:]
         subscription_map.name = "Subscriptions"
+        subscription_map.details = []
         pkg.subscriptions.each{
           if(it.subscription.status.value != "Deleted"){
-            subscription_map.details = "<ul>"
-            subscription_map.details += "<li> ${it.subscription.id} : ${it.subscription.name} </li>"
-            subscription_map.details += "</ul>"
+            subscription_map.details += "${it.subscription.id} : ${it.subscription.name}"
           }
         }
         subscription_map.action = "Delete Subscriptions"

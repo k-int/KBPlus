@@ -17,7 +17,16 @@
                 ${conflict_item.name}
               </td>
               <td>
-                 ${conflict_item.details}
+              	<g:if test="${conflict_item.details instanceof List}">
+	              	<ul>
+	              	<g:each in="${conflict_item.details}" var="detail_item">
+				      	<li> ${detail_item}</li>
+	              	</g:each>
+	              	</ul>
+              	</g:if>
+              	<g:else>
+	                 ${conflict_item.details}
+              	</g:else>
               </td>
               <td>
 				 ${conflict_item.action}
