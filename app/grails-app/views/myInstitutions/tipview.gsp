@@ -86,8 +86,8 @@
 
         <g:javascript>
         function showDetails(id){
-          console.log(id);
-          jQuery.ajax({type:'get',data:jQuery(this).serialize(), url:"${createLink(controller:'ajax', action:'getTipCoreDates')}"+"/"+id,success:function(data,textStatus){jQuery('#magicArea').html(data);$('div[name=coreAssertionEdit]').modal("show")},error:function(XMLHttpRequest,textStatus,errorThrown){}
+          console.log(${editable});
+          jQuery.ajax({type:'get', url:"${createLink(controller:'ajax', action:'getTipCoreDates')}?editable="+${editable}+"&tipID="+id,success:function(data,textStatus){jQuery('#magicArea').html(data);$('div[name=coreAssertionEdit]').modal("show")},error:function(XMLHttpRequest,textStatus,errorThrown){}
         });
         }
 

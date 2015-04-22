@@ -64,7 +64,7 @@ class MyInstitutionsController {
 
         result
     }
-    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def tipview() {
         log.debug("admin::tipview ${params}")
         def result = [:]
@@ -108,6 +108,7 @@ class MyInstitutionsController {
 
         result.tips = results
         result.institution = current_inst
+        result.editable = current_inst?.hasUserWithRole(result.user,'INST_ADM')
         result
     }
 
