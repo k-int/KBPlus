@@ -729,8 +729,8 @@ class AjaxController {
       def tip = TitleInstitutionProvider.get(tipID)
       def dates = tip.coreDates
       log.debug("Returning ${dates}")
-      request.setAttribute("editable",true)
-      render(template:"/templates/coreAssertionsModal",model:[coreDates:dates,tipID:tip.id,title:params.title]);    
+      request.setAttribute("editable",params.editable?:true)
+      render(template:"/templates/coreAssertionsModal",model:[coreDates:dates,tipID:tip.id,tip:tip]);    
     }
   } 
   def deleteCoreDate(){

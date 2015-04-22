@@ -68,37 +68,46 @@ class MyInstitutionsController {
     def tipview() {
         log.debug("admin::tipview ${params}")
         def result = [:]
+       
+        result.user = User.get(springSecurityService.principal.id)
+        result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+        result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+        def current_inst = null
+        if(params.shortcode) current_inst = Org.findByShortcode(params.shortcode);
+        //Parameters needed for criteria searching
+        def (tip_property, property_field) = (params.sort ?: 'title-title').split("-")
+        def list_order = params.order ?: 'asc'
 
-        result.offset = 0
-        result.max = 20
 
         def criteria = TitleInstitutionProvider.createCriteria();
-        def results = criteria {
+        def results = criteria.list(max: result.max, offset:result.offset) {
               if (params.shortcode){
                 institution{
-                    eq("shortcode", params.shortcode)
+                    idEq(current_inst.id)
                 }
               }
-              if (params.filter_inst) {
+              if (params.search_for == "institution") {
                 institution {
-                  ilike("name", "${params.filter_inst}%")         
+                  ilike("name", "${params.search_str}%")         
                 }
               }
-             if (params.filter_prov) {
-                institution {
-                  ilike("name", "${params.filter_inst}%")         
+             if (params.search_for == "provider") {
+                provider {
+                  ilike("name", "${params.search_str}%")         
                 }
              }
-             if (params.filter_title) {
+             if (params.search_for == "title") {
                 title {
-                  ilike("title", "${params.filter_title}%")         
+                  ilike("title", "${params.search_str}%")         
                 }
              }
-          firstResult(result.offset)
-          maxResults(result.max)
+             "${tip_property}"{
+                order(property_field,list_order)
+             }
         }
 
         result.tips = results
+        result.institution = current_inst
         result
     }
 

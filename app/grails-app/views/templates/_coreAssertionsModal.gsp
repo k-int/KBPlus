@@ -4,7 +4,7 @@
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">×</button>
 
-    <h3>Core Dates for ${title}</h3>
+    <h3>Core Dates for ${tip.title.title}</h3>
   </div>
   <g:formRemote  name="coreExtendForm" url="[controller: 'ajax', action: 'coreExtend']" before="hideModal()" onComplete="showCoreAssertionModal()" update="magicArea">
   <div class="modal-body">

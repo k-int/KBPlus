@@ -116,7 +116,7 @@
                                </g:if>
                                <li><g:link controller="myInstitutions" 
                                            action="tipview"
-                                           params="${[shortcode:org.shortcode]}">View tips???</g:link></li>
+                                           params="${[shortcode:org.shortcode]}">Edit Core Titles</g:link></li>
 
                              </ul>
                            </li>
