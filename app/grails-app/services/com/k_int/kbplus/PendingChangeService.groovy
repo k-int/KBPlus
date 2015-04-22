@@ -63,7 +63,6 @@ def performAccept(change,httpRequest) {
                 }
                 target_object.save()
                 //FIXME: is this needed anywhere?
-                log.debug("Came donw here as well")
                 def change_audit_object = null
                 if ( change.license ) change_audit_object = change.license;
                 if ( change.subscription ) change_audit_object = change.subscription;
@@ -143,11 +142,12 @@ def performAccept(change,httpRequest) {
     def changeDoc = parsed_change_info.changeDoc
      if ( ( parsed_change_info.changeTarget != null ) && ( parsed_change_info.changeTarget.length() > 0 ) ) {
       def target_object = genericOIDService.resolveOID(parsed_change_info.changeTarget);
-      if ( target_object) {          
-        def updateProp = null;
-        if ( target_object.metaClass.respondsTo('customProperties') ) {
-          updateProp = target_object.customProperties.find{it.type.name == changeDoc.name}
-        }
+      if ( target_object ) {
+        if(!target_object.hasProperty('customProperties')){
+            log.error("Custom property change, but owner doesnt have the custom props: ${parsed_change_info}")
+            return
+        }      
+        def updateProp = target_object.customProperties.find{it.type.name == changeDoc.name}
         if(updateProp){
           switch (changeDoc.event){
             case "CustomProperty.deleted":
@@ -172,20 +172,24 @@ def performAccept(change,httpRequest) {
               log.error("ChangeDoc event '${changeDoc.event}'' not recognized.")          
           }
         }else{
-          def propertyType = genericOIDService.resolveOID(changeDoc.propertyOID).type
-          def newProperty = PropertyDefinition.createPropertyValue(target_object,propertyType)
+          if(changeDoc.propertyOID){
+            def propertyType = genericOIDService.resolveOID(changeDoc.propertyOID).type
+            def newProperty = PropertyDefinition.createPropertyValue(target_object,propertyType)
 
-          if(changeDoc.type == RefdataValue.toString()){
-            def originalRefdata = genericOIDService.resolveOID(changeDoc.propertyOID).refValue;
-            log.debug("RefdataCategory ${propertyType.refdataCategory}")
-            def copyRefdata = RefdataCategory.lookupOrCreate(propertyType.refdataCategory,changeDoc.new)
-            newProperty."${changeDoc.prop}" = copyRefdata
+            if(changeDoc.type == RefdataValue.toString()){
+              def originalRefdata = genericOIDService.resolveOID(changeDoc.propertyOID).refValue;
+              log.debug("RefdataCategory ${propertyType.refdataCategory}")
+              def copyRefdata = RefdataCategory.lookupOrCreate(propertyType.refdataCategory,changeDoc.new)
+              newProperty."${changeDoc.prop}" = copyRefdata
+            }else{
+              newProperty."${changeDoc.prop}" = newProperty.parseValue("${changeDoc.new}", changeDoc.type)
+            }
+            newProperty.save()
+            log.debug("New CustomProperty ${newProperty.type.name} created for ${target_object}")
+            
           }else{
-            newProperty."${changeDoc.prop}" = 
-            newProperty.parseValue("${changeDoc.new}", changeDoc.type)
+            log.error("Custom property change, but changedoc is missing propertyOID: ${parsed_change_info}")
           }
-          newProperty.save()
-          log.debug("New CustomProperty ${newProperty.type.name} created for ${target_object}")
         }
       }
     }
