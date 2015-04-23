@@ -17,19 +17,22 @@
                 ${conflict_item.name}
               </td>
               <td>
-              	<g:if test="${conflict_item.details instanceof List}">
 	              	<ul>
 	              	<g:each in="${conflict_item.details}" var="detail_item">
-				      	<li> ${detail_item}</li>
+				      	<li> 
+                <g:if test="${detail_item.link}">
+                  <a href="${detail_item.link}">${detail_item.text}</a>
+                </g:if>
+                <g:else>
+                  ${detail_item.text}
+                </g:else>
+                </li>
 	              	</g:each>
 	              	</ul>
-              	</g:if>
-              	<g:else>
-	                 ${conflict_item.details}
-              	</g:else>
               </td>
               <td>
-				 ${conflict_item.action}
+              %{-- Add some CSS based on actionRequired to show green/red status --}%
+                  ${conflict_item.action.actionRequired}:: ${conflict_item.action.text}				
               </td>
             </tr>
          </g:each>
@@ -38,6 +41,6 @@
 
   </div>
   <div class="modal-footer">
-    <input type="submit" value="Apply" class="btn btn-primary btn-small"/>
+    <g:link action="performPackageDelete" id="${pkg.id}"class="btn btn-primary btn-small" controller="admin">Confirm Delete</g:link>
   </div>
 </div>  

@@ -91,9 +91,9 @@ class AdminController {
         document_map.name = "Documents"
         document_map.details = []
         pkg.documents.each{
-          document_map.details += it.doc.title
+          document_map.details += ['text':it.owner.title]
         }
-        document_map.action = "Delete references to documents"
+        document_map.action = ['actionRequired':false,'text':"References will be deleted"]
         conflicts_list += document_map
       }
       if(pkg.subscriptions){
@@ -102,17 +102,17 @@ class AdminController {
         subscription_map.details = []
         pkg.subscriptions.each{
           if(it.subscription.status.value != "Deleted"){
-            subscription_map.details += "${it.subscription.id} : ${it.subscription.name}"
+            subscription_map.details += ['link':createLink(controller:'subscriptionDetails', action: 'index', id:it.subscription.id), 'text': it.subscription.name]
           }
         }
-        subscription_map.action = "Delete Subscriptions"
+        subscription_map.action = ['actionRequired':true,'text':"Delete subscriptions"]
         conflicts_list += subscription_map
       }
       if(pkg.tipps){
         def tipp_map = [:]
         tipp_map.name = "TIPPs"
-        tipp_map.details = "Number of TIPPs that will be deleted: ${pkg.tipps.size()}"
-        tipp_map.action = "No action required"
+        tipp_map.details = [['text':"Number of TIPPs that will be deleted: ${pkg.tipps.size()}"]]
+        tipp_map.action = ['actionRequired':false,'text':"TIPPs will be deleted"]
         conflicts_list += tipp_map
       }
       result.conflicts_list = conflicts_list
@@ -120,8 +120,8 @@ class AdminController {
 
       render(template: "hardDeleteDetails",model:result)  
     }else{
-      def createria = Package.createCriteria()
-      result.pkgs = createria.list(max: result.max, offset:result.offset){
+      def criteria = Package.createCriteria()
+      result.pkgs = criteria.list(max: result.max, offset:result.offset){
           if(params.pkg_name){
             ilike("name","${params.pkg_name}%")
           }
@@ -131,9 +131,35 @@ class AdminController {
     
     result
   }
+  
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def performPackageDelete(){
+   
+    def pkg = Package.get(params.id)  
+    Package.withTransaction { status ->
+      log.info("Deleting Package ")
+      log.info("${pkg.id}::${pkg}")
+      pkg.pendingChanges.each{
+        it.delete()
+      }
+      pkg.documents.each{
+        it.delete()
+      }
+      pkg.orgs.each{
+        it.delete()
+      }
 
-  def deletePackage(id){
-
+      pkg.subscriptions.each{
+        it.delete()
+      }
+      pkg.tipps.each{
+        it.delete()
+      }
+      pkg.delete()
+    }
+    log.info("Delete Complete.") 
+    redirect controller: 'admin', action:'hardDeletePkgs'
+   
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
