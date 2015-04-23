@@ -129,17 +129,18 @@ class AdminController {
      def result = [:]
      switch (request.method) {
        case 'GET':
-         log.debug("Found GET request")
-         if(usrMrgId ){
-           def usr = User.get(usrMrgId)
-           result.userRoles = usr.getAuthorities()
-           result.userAffiliations =  usr.getAuthorizedAffiliations()
+         if(usrMrgId && usrKeepId ){
+           def usrMrg = User.get(usrMrgId)
+           def usrKeep =  User.get(usrKeepId)
+           result.userRoles = usrMrg.getAuthorities()
+           result.userAffiliations =  usrMrg.getAuthorizedAffiliations()
+           result.usrMrgName = usrMrg.displayName
+           result.userKeepName = usrKeep.displayName
          }else{
           flash.error = "Please select'user to keep' and 'user to merge' from the dropdown."
          }
          break;
        case 'POST':
-         log.debug("Found POST request")
          if(usrMrgId && usrKeepId){
            def usrMrg = User.get(usrMrgId)
            def usrKeep =  User.get(usrKeepId)
@@ -152,7 +153,7 @@ class AdminController {
            if(success){
              usrMrg.enabled = false
              usrMrg.save(flush:true,failOnError:true)
-             flash.message = "Rights copying successful. User '${usrKeep.displayName}' is now disabled."
+             flash.message = "Rights copying successful. User '${usrMrg.displayName}' is now disabled."
            }else{
              flash.error = "An error occured before rights transfer was complete." 
            }

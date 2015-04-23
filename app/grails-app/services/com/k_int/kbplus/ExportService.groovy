@@ -35,7 +35,7 @@ class ExportService {
 			def tedate = sub.endDate ? formatter.format(sub.endDate) : ''
 			if ( header ) {
 				writer.write("FileType,SpecVersion,JC_ID,TermStartDate,TermEndDate,SubURI,SystemIdentifier\n")
-				writer.write("${sub.type.value},\"2.0\",${jc_id?:''},${tsdate},${tedate},\"uri://kbplus/sub/${sub.identifier}\",${sub.impId}\n")
+				writer.write("${sub.type?.value?:''},\"2.0\",${jc_id?:''},${tsdate},${tedate},\"uri://kbplus/sub/${sub.identifier}\",${sub.impId}\n")
 			}
 	 
 			// Output the body text

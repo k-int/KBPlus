@@ -64,6 +64,53 @@ class MyInstitutionsController {
 
         result
     }
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def tipview() {
+        log.debug("admin::tipview ${params}")
+        def result = [:]
+       
+        result.user = User.get(springSecurityService.principal.id)
+        result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+        result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+        def current_inst = null
+        if(params.shortcode) current_inst = Org.findByShortcode(params.shortcode);
+        //Parameters needed for criteria searching
+        def (tip_property, property_field) = (params.sort ?: 'title-title').split("-")
+        def list_order = params.order ?: 'asc'
+
+
+        def criteria = TitleInstitutionProvider.createCriteria();
+        def results = criteria.list(max: result.max, offset:result.offset) {
+              if (params.shortcode){
+                institution{
+                    idEq(current_inst.id)
+                }
+              }
+              if (params.search_for == "institution") {
+                institution {
+                  ilike("name", "${params.search_str}%")         
+                }
+              }
+             if (params.search_for == "provider") {
+                provider {
+                  ilike("name", "${params.search_str}%")         
+                }
+             }
+             if (params.search_for == "title") {
+                title {
+                  ilike("title", "${params.search_str}%")         
+                }
+             }
+             "${tip_property}"{
+                order(property_field,list_order)
+             }
+        }
+
+        result.tips = results
+        result.institution = current_inst
+        result.editable = current_inst?.hasUserWithRole(result.user,'INST_ADM')
+        result
+    }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def dashboard() {
@@ -117,6 +164,7 @@ class MyInstitutionsController {
             result.validOn = sdf.format(new Date(System.currentTimeMillis()))
         } else {
             result.validOn = params.validOn
+     
             date_restriction = sdf.parse(params.validOn)
         }
 
