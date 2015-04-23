@@ -78,6 +78,11 @@ class AdminController {
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def hardDeletePkgs(){
     def result = [:]
+    
+    result.user = User.get(springSecurityService.principal.id)
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
     if(params.id){
       def pkg = Package.get(params.id)
       def conflicts_list = []
@@ -115,10 +120,20 @@ class AdminController {
 
       render(template: "hardDeleteDetails",model:result)  
     }else{
-      result.pkgs = Package.get(1)
+      def createria = Package.createCriteria()
+      result.pkgs = createria.list(max: result.max, offset:result.offset){
+          if(params.pkg_name){
+            ilike("name","${params.pkg_name}%")
+          }
+          order("name", params.order?:'asc')
+      }
     }
     
     result
+  }
+
+  def deletePackage(id){
+
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
