@@ -3,6 +3,7 @@
   <head>
     <meta name="layout" content="mmbootstrap"/>
     <title>KB+ Admin::Package Delete</title>
+    <r:require module='annotations' />
   </head>
 
   <body>

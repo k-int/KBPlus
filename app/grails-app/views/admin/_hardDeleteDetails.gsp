@@ -4,6 +4,7 @@
     <h6>Hard Delete: ${pkg}</h6>
   </div>
   <div class="modal-body">
+    <p> Items requiring action are marked with red circle. When these items are addressed, 'Confirm Delete' button will be enabled.</p>
     <table class="table table-bordered">
       <thead>
         <th>Item</th>
@@ -11,6 +12,7 @@
         <th>Action</th>
       </thead>
       <tbody>
+      <g:set var="actions_needed" value="false"/>
          <g:each in="${conflicts_list}" var="conflict_item">
             <tr>
               <td>
@@ -32,7 +34,15 @@
               </td>
               <td>
               %{-- Add some CSS based on actionRequired to show green/red status --}%
-                  ${conflict_item.action.actionRequired}:: ${conflict_item.action.text}				
+              <g:if test="${conflict_item.action.actionRequired}">
+                  <i style="color:red" class="fa fa-times-circle"></i>
+                  <g:set var="actions_needed" value="true"/>
+
+              </g:if>
+              <g:else>
+                <i style="color:green" class="fa fa-check-circle"></i>
+              </g:else>
+                 ${conflict_item.action.text}				
               </td>
             </tr>
          </g:each>
@@ -41,6 +51,13 @@
 
   </div>
   <div class="modal-footer">
-    <g:link action="performPackageDelete" id="${pkg.id}"class="btn btn-primary btn-small" controller="admin">Confirm Delete</g:link>
+    <g:form action="performPackageDelete" id="${pkg.id}" onsubmit="return confirm('Deleting this package is PERMANENT. Delete package?')" method="POST">
+    <g:if test="${actions_needed == 'true'}">
+      <button type="submit" disabled="disabled" class="btn btn-primary btn-small">Confirm Delete</button>
+    </g:if>
+    <g:else>
+      <button type="submit"class="btn btn-primary btn-small">Confirm Delete</button>
+    </g:else>
+    </g:form>
   </div>
 </div>  

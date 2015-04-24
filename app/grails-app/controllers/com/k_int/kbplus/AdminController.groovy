@@ -101,12 +101,15 @@ class AdminController {
         subscription_map.name = "Subscriptions"
         subscription_map.details = []
         pkg.subscriptions.each{
+
           if(it.subscription.status.value != "Deleted"){
             subscription_map.details += ['link':createLink(controller:'subscriptionDetails', action: 'index', id:it.subscription.id), 'text': it.subscription.name]
           }
         }
         subscription_map.action = ['actionRequired':true,'text':"Delete subscriptions"]
-        conflicts_list += subscription_map
+        if(subscription_map.details){
+          conflicts_list += subscription_map
+        }
       }
       if(pkg.tipps){
         def tipp_map = [:]
@@ -134,31 +137,32 @@ class AdminController {
   
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def performPackageDelete(){
-   
-    def pkg = Package.get(params.id)  
-    Package.withTransaction { status ->
-      log.info("Deleting Package ")
-      log.info("${pkg.id}::${pkg}")
-      pkg.pendingChanges.each{
-        it.delete()
-      }
-      pkg.documents.each{
-        it.delete()
-      }
-      pkg.orgs.each{
-        it.delete()
-      }
+   if (request.method == 'POST'){
+      def pkg = Package.get(params.id)  
+      Package.withTransaction { status ->
+        log.info("Deleting Package ")
+        log.info("${pkg.id}::${pkg}")
+        pkg.pendingChanges.each{
+          it.delete()
+        }
+        pkg.documents.each{
+          it.delete()
+        }
+        pkg.orgs.each{
+          it.delete()
+        }
 
-      pkg.subscriptions.each{
-        it.delete()
+        pkg.subscriptions.each{
+          it.delete()
+        }
+        pkg.tipps.each{
+          it.delete()
+        }
+        pkg.delete()
       }
-      pkg.tipps.each{
-        it.delete()
-      }
-      pkg.delete()
-    }
-    log.info("Delete Complete.") 
-    redirect controller: 'admin', action:'hardDeletePkgs'
+      log.info("Delete Complete.") 
+   }
+   redirect controller: 'admin', action:'hardDeletePkgs'
    
   }
 

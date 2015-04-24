@@ -140,7 +140,7 @@ grails.project.dependency.resolution = {
         test ":geb:$gebVersion"
         
         // Font awesome for font based icons.
-        compile ":font-awesome-resources:3.2.1"
+        runtime ':font-awesome-resources:4.3.0.1'
 
         compile ':spring-security-core:1.2.7.3'
         compile ':spring-security-ldap:1.0.6'
