@@ -27,8 +27,10 @@ class CoreAssertion {
       if(val > obj.endDate) return false;
     }
     endDate validator: {val,obj ->
-      val = new java.sql.Timestamp(val.getTime());
-      if(val < obj.startDate) return false;
+      if ( val != null ) {
+        val = new java.sql.Timestamp(val.getTime());
+        if(val < obj.startDate) return false;
+      }
     }
   }
 
