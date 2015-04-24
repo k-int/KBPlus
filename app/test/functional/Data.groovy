@@ -17,7 +17,8 @@ class Data {
 
     static UserD_name = "admin"
     static UserD_passwd = "admin"
-
+    static UserD_displayName = "TestAdmin"
+    
     static Org_name = "Functional Test Organisation"
     static Org_impId = "FunctionalTestOrganisation"
     static Org_Url = "Functional_Test_Organisation"

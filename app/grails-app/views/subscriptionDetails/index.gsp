@@ -297,7 +297,7 @@
                 </td>
                 <td>
                 <g:set var="iecorestatus" value="${ie.getTIP()?.coreStatus(null)}"/>
-<g:remoteLink url="[controller: 'ajax', action: 'getTipCoreDates', params:[tipID:ie.getTIP()?.id,title:ie.tipp?.title?.title]]" method="get" name="show_core_assertion_modal" onComplete="showCoreAssertionModal()" class="editable-click"
+<g:remoteLink url="[controller: 'ajax', action: 'getTipCoreDates', params:[editable:editable,tipID:ie.getTIP()?.id,title:ie.tipp?.title?.title]]" method="get" name="show_core_assertion_modal" onComplete="showCoreAssertionModal()" class="editable-click"
               update="magicArea">${iecorestatus!=null?(iecorestatus?'True':'False'):'None'}</g:remoteLink>
                <br/>
 
@@ -335,12 +335,8 @@
               model="${[linkType:subscriptionInstance?.class?.name,roleLinks:subscriptionInstance?.orgRelations,parent:subscriptionInstance.class.name+':'+subscriptionInstance.id,property:'orgs',recip_prop:'sub']}" />
 
     <div id="magicArea">
-      <g:render template="coreAssertionsModal" contextPath="../templates" model="${[tipID:-1,coreDates:[]]}"/>
     </div>
     <r:script language="JavaScript">
-
-      <g:if test="${editable}">
-
        function hideModal(){
         $("[name='coreAssertionEdit']").modal('hide');
        }
@@ -350,6 +346,10 @@
         $("[name='coreAssertionEdit']").modal('show');
        
       }
+      
+      <g:if test="${editable}">
+
+
       $(document).ready(function() {
            
         $(".announce").click(function(){

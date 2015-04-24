@@ -4,7 +4,7 @@
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">×</button>
 
-    <h3>Core Dates for ${title}</h3>
+    <h3>Core Dates for ${tip?.title?.title}</h3>
   </div>
   <g:formRemote  name="coreExtendForm" url="[controller: 'ajax', action: 'coreExtend']" before="hideModal()" onComplete="showCoreAssertionModal()" update="magicArea">
   <div class="modal-body">
@@ -24,8 +24,10 @@
                 <g:xEditable owner="${coreDate}" type="date" field="endDate" /> 
               </td>
               <td>
+              <g:if test="${editable == 'true' || editable == true}">
                 <g:remoteLink url="[controller: 'ajax', action: 'deleteCoreDate', params:[tipID:tipID,title:title,coreDateID:coreDate.id]]" method="get" name="show_core_assertion_modal" 
                 before="hideModal()" onComplete="showCoreAssertionModal()" update="magicArea" class="delete-coreDate">Delete </g:remoteLink></dd>
+                </g:if>
               </td>
             </tr>
          </g:each>
@@ -46,13 +48,16 @@
         </dd>
       </dl>
   </div>
+
   <div class="modal-footer">
     <input type="submit" value="Apply" class="btn btn-primary btn-small"/>
   </div>
   </g:formRemote>
 </div>
 
+<g:if test="${editable=='true' || editable == true}">
 <script type="text/javascript">
+
    $('.xEditableValue').editable();
    $(".simpleHiddenRefdata").editable({
      url: function(params) {
@@ -61,6 +66,8 @@
        // Element has a data-hidden-id which is the hidden form property that should be set to the appropriate value
      }
    });
+
 </script>>
+ </g:if>
 
 
