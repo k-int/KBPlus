@@ -104,6 +104,8 @@ class AdminController {
 
           if(it.subscription.status.value != "Deleted"){
             subscription_map.details += ['link':createLink(controller:'subscriptionDetails', action: 'index', id:it.subscription.id), 'text': it.subscription.name]
+          }else{
+            subscription_map.details += ['link':createLink(controller:'subscriptionDetails', action: 'index', id:it.subscription.id), 'text': "(Deleted)" + it.subscription.name]
           }
         }
         subscription_map.action = ['actionRequired':true,'text':"Delete subscriptions"]
@@ -114,8 +116,13 @@ class AdminController {
       if(pkg.tipps){
         def tipp_map = [:]
         tipp_map.name = "TIPPs"
-        tipp_map.details = [['text':"Number of TIPPs that will be deleted: ${pkg.tipps.size()}"]]
-        tipp_map.action = ['actionRequired':false,'text':"TIPPs will be deleted"]
+        def totalIE = 0
+        pkg.tipps.each{
+          totalIE += IssueEntitlement.countByTipp(it)
+        }
+        tipp_map.details = [['text':"Number of TIPPs: ${pkg.tipps.size()}"],
+                ['text':"Number of IEs: ${totalIE}"]]
+        tipp_map.action = ['actionRequired':false,'text':"TIPPs and IEs will be deleted"]
         conflicts_list += tipp_map
       }
       result.conflicts_list = conflicts_list
