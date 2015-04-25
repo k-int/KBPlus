@@ -23,8 +23,10 @@ class CostItem {
   RefdataValue taxCode
   Boolean includeInSubscription
   String reference
+  Date lastUpdated
 
-  static mapping = {
+
+    static mapping = {
                               id column:'ci_id'
                          version column:'ci_version'
                              sub column:'ci_sub_fk'
