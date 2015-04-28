@@ -17,7 +17,7 @@
         <li> <g:link controller="subscriptionDetails" action="index" id="${issueEntitlementInstance?.subscription.id}">${issueEntitlementInstance?.subscription.name}</g:link>  <span class="divider">/</span> </li>
         <li> <g:link controller="issueEntitlement" action="show" id="${issueEntitlementInstance?.id}">${issueEntitlementInstance?.tipp.title.title}</g:link> </li>
         <g:if test="${editable}">
-          <li class="pull-right">Editable by you&nbsp;</li>
+          <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
         </g:if>
       </ul>
     </div>
