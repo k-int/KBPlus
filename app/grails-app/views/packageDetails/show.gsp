@@ -402,6 +402,7 @@
               <th>&nbsp;</th>
               <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
               <th style="">Platform</th>
+              <th style="">Hybrid OA</th>
               <th style="">Identifiers</th>
               <th style="">Coverage Start</th>
               <th style="">Coverage End</th>
@@ -454,6 +455,9 @@
                    <g:else>
                      ${t.platform?.name}
                    </g:else>
+                </td>
+                <td style="white-space: nowrap;vertical-align:top;">
+                   <g:xEditableRefData owner="${t}" field="hybridOA" config='TIPPHybridOA'/>
                 </td>
                 <td style="white-space: nowrap;vertical-align:top;">
                   <g:each in="${t.title.ids}" var="id">
