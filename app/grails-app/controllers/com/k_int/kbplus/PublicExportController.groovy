@@ -15,7 +15,8 @@ class PublicExportController {
   def index() { 
     def result = [:]
 
-    result.packages = Package.executeQuery("select id, name, '' from Package order by name");
+    def qry_params = RefdataCategory.lookupOrCreate('YN','Yes')
+    result.packages = Package.executeQuery("select id, name, '' from Package where isPublic=? order by name",qry_params);
     result.num_pkg_rows = result.packages.size()
 
     result.packages.each {
