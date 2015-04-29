@@ -15,12 +15,14 @@ class PublicExportController {
   def index() { 
     def result = [:]
 
-    def base_qry = "from Package as p order by p.name asc"
-    def base_qry_fields = " p.id, p.name, id.value from Package as p LEFT JOIN p.ids as ido LEFT JOIN ido.identifier as id order by p.name asc"
-    def qry_params = []
+    result.packages = Package.executeQuery("select id, name, '' from Package order by name");
+    result.num_pkg_rows = result.packages.size()
 
-    result.num_pkg_rows = Package.executeQuery("select count(p) "+base_qry, qry_params )[0]
-    result.packages = Package.executeQuery("select ${base_qry_fields}", qry_params, [max:result.num_pkg_rows]);
+    result.packages.each {
+      it[2] = Package.executeQuery(
+        "select id.value from Package p JOIN p.ids as ido LEFT JOIN ido.identifier as id where p.id=?", [it[0]])
+    }
+
     result
   }
 
