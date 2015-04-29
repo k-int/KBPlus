@@ -401,9 +401,16 @@ class LicenseDetailsController {
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def unlinkLicense() {
+        log.debug("unlinkLicense :: ${params}")
         License license = License.get(params.license_id);
-        OnixplLicense opl = license.onixplLicense;
-        String oplTitle = opl.title;
+        OnixplLicense opl = OnixplLicense.get(params.opl_id);
+        if(! (opl && license)){
+          log.error("Something has gone mysteriously wrong. Could not get Licence or OnixLicence. params:${params} license:${license} onix: ${opl}")
+          flash.message = "An error occurred when unlinking the ONIX-PL license";
+          redirect(action: 'index', id: license.id);
+        }
+
+        String oplTitle = opl?.title;
         DocContext dc = DocContext.findByOwner(opl.doc);
         Doc doc = opl.doc;
         license.removeFromDocuments(dc);
@@ -411,8 +418,13 @@ class LicenseDetailsController {
         // If there are no more links to this ONIX-PL License then delete the license and
         // associated data
         if (opl.licenses.isEmpty()) {
-            dc.delete();
+            opl.usageTerm.each{
+              it.usageTermLicenseText.each{
+                it.delete()
+              }
+            }
             opl.delete();
+            dc.delete();
             doc.delete();
         }
         if (license.hasErrors()) {
