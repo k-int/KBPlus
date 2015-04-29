@@ -19,7 +19,7 @@ class PublicExportController {
 
     result.num_pkg_rows = Package.executeQuery("select count(p) from Package as p where isPublic=?",qry_params)
     result.packages=Package.executeQuery("select id, name, '' from Package where isPublic=? order by name",qry_params);
-
+    
     result.packages.each {
       it[2] = Package.executeQuery(
         "select id.value from Package p JOIN p.ids as ido LEFT JOIN ido.identifier as id where p.id=?", [it[0]])
@@ -156,14 +156,18 @@ class PublicExportController {
     def qry_params = [result.packageInstance]
 
     if ( params.filter ) {
-      base_qry = " from TitleInstancePackagePlatform as tipp left outer join tipp.hybridOA ref where tipp.pkg = ? and ( tipp.status != ? ) and ( ( lower(tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = tipp.title.id and io.identifier.value like ? ) ) )"
+      base_qry = " from TitleInstancePackagePlatform as tipp left outer join tipp.hybridOA ref where tipp.pkg = ? and ( tipp.status != ? ) and ( ( lower(tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = tipp.title.id and io.identifier.value like ? ) ) ) and ( ( ? >= coalesce(tipp.accessStartDate, tipp.pkg.startDate) ) and ( ( ? <= tipp.accessEndDate ) or ( tipp.accessEndDate is null ) ) )"
       qry_params.add(tipp_status_del)
       qry_params.add("%${params.filter.trim().toLowerCase()}%")
       qry_params.add("%${params.filter}%")
+      qry_params.add(new Date());
+      qry_params.add(new Date());
     }
     else {
-      base_qry = " from TitleInstancePackagePlatform as tipp left outer join tipp.hybridOA as ref where tipp.pkg = ?  and ( tipp.status != ? ) "
+      base_qry = " from TitleInstancePackagePlatform as tipp left outer join tipp.hybridOA as ref where tipp.pkg = ?  and ( tipp.status != ? ) and ( ( ? >= coalesce(tipp.accessStartDate, tipp.pkg.startDate) ) and ( ( ? <= tipp.accessEndDate ) or ( tipp.accessEndDate is null ) ) )"
       qry_params.add(tipp_status_del)
+      qry_params.add(new Date());
+      qry_params.add(new Date());
     }
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
