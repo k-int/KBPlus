@@ -28,7 +28,7 @@ class UserDetailsController {
       params.max = Math.min(params.max ? params.int('max') : 10, 100)
       def results = null;
       def count = null;
-      println params.authority
+      if(params.authority == "null") params.authority=null;
       def criteria = new DetachedCriteria(User).build {
         if ( params.name && params.name != '' ) {
           or {

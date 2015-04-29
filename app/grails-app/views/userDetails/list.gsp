@@ -14,13 +14,14 @@
           <h1>Users</h1>
         </div>
 
-        <div class="well">
+          <div class="well form-horizontal">
+
           <g:form action="list" method="get">
             Name Contains: <input type="text" name="name" value="${params.name}"/>
-            <input type="submit" value="GO ->" class="btn btn-primary"/> (${count} Matches)
-            User Role:    
+            Role:    
              <g:set value="${com.k_int.kbplus.auth.Role.findAll()}" var="auth_values"/>
-             <g:select from="${auth_values}" optionKey="id" optionValue="authority" name="authority" />
+             <g:select from="${auth_values}" noSelection="${['null':'-Any role-']}" value="authority "optionKey="id" optionValue="authority" name="authority" />
+            <input type="submit" value="Search" class="btn btn-primary btn-small"/>
           </g:form>
         </div>
 
@@ -31,9 +32,9 @@
         <table class="table table-striped">
           <thead>
             <tr>
-              <g:sortableColumn property="name" title="${message(code: 'user.name.label', default: 'User Name')}" />
-              <g:sortableColumn property="name" title="${message(code: 'user.display.label', default: 'Display Name')}" />
-              <g:sortableColumn property="name" title="${message(code: 'user.instname.label', default: 'Institution')}" />
+              <g:sortableColumn property="username" params="${params}" title="${message(code: 'user.name.label', default: 'User Name')}" />
+              <g:sortableColumn property="display" params="${params}" title="${message(code: 'user.display.label', default: 'Display Name')}" />
+              <g:sortableColumn property="instname" params="${params}" title="${message(code: 'user.instname.label', default: 'Institution')}" />
             </tr>
           </thead>
           <tbody>
