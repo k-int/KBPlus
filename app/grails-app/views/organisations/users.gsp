@@ -25,6 +25,7 @@
         <tr>
           <th>User</th>
           <th>Role</th>
+          <th>Admin/Editor</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
@@ -33,6 +34,11 @@
           <tr>
             <td><g:link controller="userDetails" action="edit" id="${a.user.id}">${a.user.displayName}</g:link></td>
             <td>${a.formalRole?.authority}</td>
+            <td>
+              <g:if test="${users.contains(a.user.id)}">
+                TADAAA
+                </g:if>
+            </td>
             <td>
               <g:if test="${a.status==0}">Pending</g:if>
               <g:if test="${a.status==1}">Approved</g:if>

@@ -113,7 +113,15 @@ class OrganisationsController {
         redirect action: 'list'
         return
       }
+      def userList = orgInstance.affiliations
+      result.users = userList.collect{ userOrg ->
+        def admin_user = userOrg.user.roles.find{
+          it.role.authority == "ROLE_ADMIN" || it.role.authority == "KBPLUS_EDITOR"
+        }
+        if(admin_user) return userOrg.user.id;
+        return null
 
+      }
       result.orgInstance=orgInstance
       result
     }
