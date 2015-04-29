@@ -18,6 +18,9 @@
           <g:form action="list" method="get">
             Name Contains: <input type="text" name="name" value="${params.name}"/>
             <input type="submit" value="GO ->" class="btn btn-primary"/> (${count} Matches)
+            User Role:    
+             <g:set value="${com.k_int.kbplus.auth.Role.findAll()}" var="auth_values"/>
+             <g:select from="${auth_values}" optionKey="id" optionValue="authority" name="authority" />
           </g:form>
         </div>
 

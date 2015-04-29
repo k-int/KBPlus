@@ -11,6 +11,7 @@ import grails.gorm.*
 class UserDetailsController {
 
     def springSecurityService
+    def genericOIDService
 
     static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
 
@@ -24,17 +25,24 @@ class UserDetailsController {
 
       def result = [:]
       result.user = User.get(springSecurityService.principal.id)
-
       params.max = Math.min(params.max ? params.int('max') : 10, 100)
       def results = null;
       def count = null;
-
+      println params.authority
       def criteria = new DetachedCriteria(User).build {
         if ( params.name && params.name != '' ) {
           or {
             ilike('username',"%${params.name}%")
             ilike('display',"%${params.name}%")
             ilike('instname',"%${params.name}%")
+          }
+        }
+        if(params.authority){
+          def filter_role = Role.get(params.authority.toLong())
+          if(filter_role){
+              roles{
+                eq('role',filter_role)
+              }
           }
         }
       }
