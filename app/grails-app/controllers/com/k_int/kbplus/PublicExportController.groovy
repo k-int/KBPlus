@@ -16,14 +16,14 @@ class PublicExportController {
     def result = [:]
 
     def qry_params = RefdataCategory.lookupOrCreate('YN','Yes')
-    result.packages = Package.executeQuery("select id, name, '' from Package where isPublic=? order by name",qry_params);
-    result.num_pkg_rows = result.packages.size()
+
+    result.num_pkg_rows = Package.executeQuery("select count(p) from Package as p where isPublic=?",qry_params)
+    result.packages=Package.executeQuery("select id, name, '' from Package where isPublic=? order by name",qry_params);
 
     result.packages.each {
       it[2] = Package.executeQuery(
         "select id.value from Package p JOIN p.ids as ido LEFT JOIN ido.identifier as id where p.id=?", [it[0]])
     }
-
     result
   }
 
