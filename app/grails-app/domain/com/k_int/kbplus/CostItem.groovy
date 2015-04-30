@@ -1,12 +1,14 @@
 package com.k_int.kbplus
 
+import javax.persistence.Transient
+
 class CostItem {
 
   Org owner
   Subscription sub
   SubscriptionPackage subPkg
   IssueEntitlement issueEntitlement
-  CostItemGroup group
+  //CostItemGroup group //todo Check with Ian
   Order order
   Invoice invoice
   RefdataValue costItemStatus
@@ -24,6 +26,9 @@ class CostItem {
   Boolean includeInSubscription
   String reference
   Date lastUpdated
+
+  @Transient
+  def budgetcodes
 
 
     static mapping = {
@@ -73,5 +78,12 @@ class CostItem {
            costItemElement(nullable:true, blank:false)
                  reference(nullable:true, blank:false)
   }
+
+
+    def getBudgetcodes()
+    {
+        //return CostItemGroup.findAllByCostItem(this).collect{[id:it.budgetcode.id, value:it.budgetcode.value]}
+        return CostItemGroup.findAllByCostItem(this).collect{it.budgetcode.value}
+    }
 
 }
