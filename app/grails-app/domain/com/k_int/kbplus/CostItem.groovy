@@ -1,14 +1,12 @@
 package com.k_int.kbplus
 
-import javax.persistence.Transient
-
 class CostItem {
 
   Org owner
   Subscription sub
   SubscriptionPackage subPkg
   IssueEntitlement issueEntitlement
-  //CostItemGroup group //todo Check with Ian
+  CostItemGroup group
   Order order
   Invoice invoice
   RefdataValue costItemStatus
@@ -29,7 +27,6 @@ class CostItem {
 
   @Transient
   def budgetcodes //Binds getBudgetcodes
-
 
     static mapping = {
                               id column:'ci_id'
