@@ -51,7 +51,11 @@
                 <div id="resultsarea">
                   <table class="table table-bordered table-striped">
                     <thead>
-                      <tr><th>Title</th><th>Identifiers</th></tr>
+                      <tr>
+                      <th style="white-space:nowrap">Title</th>
+                      <th style="white-space:nowrap">Publisher</th>
+                      <th style="white-space:nowrap">Identifiers</th>
+                      </tr>
                     </thead>
                     <tbody>
                       <g:each in="${hits}" var="hit">
@@ -61,6 +65,9 @@
                             <g:if test="${editable}">
                               <g:link controller="titleDetails" action="edit" id="${hit.source.dbId}">(Edit)</g:link>
                             </g:if>
+                          </td>
+                          <td>
+                            ${hit.source.publisher?:''}
                           </td>
                           <td>
                             <g:each in="${hit.source.identifiers}" var="id">

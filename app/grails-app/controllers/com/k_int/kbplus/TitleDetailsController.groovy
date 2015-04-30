@@ -138,21 +138,21 @@ class TitleDetailsController {
       result.user = springSecurityService.getCurrentUser()
       params.max = result.user.defaultPageSize
 
+
       if(params.search.equals("yes")){
         //when searching make sure results start from first page
         params.offset = 0
         params.search = ""
       }
-
+      params.sort = "title"
       if(params.q == "") params.remove('q');
-
       result =  ESSearchService.search(params)   
     }
 
     if ( SpringSecurityUtils.ifAnyGranted('ROLE_ADMIN') )
-      result.editable=true
+      result.editable=true;
     else
-      result.editable=false
+      result.editable=false;
 
 
     log.debug(result);
