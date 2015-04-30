@@ -87,7 +87,7 @@
                                            params="${[shortcode:org.shortcode]}">Licences</g:link></li>
                                <li><g:link controller="myInstitutions"
                                            action="currentSubscriptions"
-                                           params="${[shortcode:org.shortcode]}">Subscriptions</g:link></li>
+                                           params="${[shortcode:org.shortcode]}">Subscribed Contents</g:link></li>
                                <li><g:link controller="myInstitutions"
                                            action="currentTitles"
                                            params="${[shortcode:org.shortcode]}">Titles</g:link></li>
