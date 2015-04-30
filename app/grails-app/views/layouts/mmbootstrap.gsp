@@ -105,7 +105,7 @@
                                            params="${[id:org.id]}">Organisation Information</g:link></li>
                                <li><g:link controller="subscriptionImport"
                                            action="generateImportWorksheet"
-                                           params="${[id:org.id]}">Generate Subscription Taken Worksheet</g:link></li>
+                                           params="${[id:org.id]}">Generate New Subscription Worksheet</g:link></li>
                                <li><g:link controller="subscriptionImport"
                                            action="importSubscriptionWorksheet"
                                            params="${[id:org.id]}">Import Subscription Taken Worksheet</g:link></li>
