@@ -106,6 +106,7 @@ class OrganisationsController {
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def users() {
       def result = [:]
+      def tracked_roles = ["KBPLUS_EDITOR":"KB+ Editor","ROLE_ADMIN":"KB+ Administrator"]
       result.user = User.get(springSecurityService.principal.id)
       def orgInstance = Org.get(params.id)
       if (!orgInstance) {
@@ -113,15 +114,20 @@ class OrganisationsController {
         redirect action: 'list'
         return
       }
-      def userList = orgInstance.affiliations
-      result.users = userList.collect{ userOrg ->
-        def admin_user = userOrg.user.roles.find{
-          it.role.authority == "ROLE_ADMIN" || it.role.authority == "KBPLUS_EDITOR"
+      result.users = orgInstance.affiliations.collect{ userOrg ->
+        def admin_roles = []
+        userOrg.user.roles.each{ 
+          if (tracked_roles.keySet().contains(it.role.authority)){
+            def role_match = tracked_roles.get(it.role.authority)+" (${it.role.authority})"
+            admin_roles += role_match
+          }
         }
-        if(admin_user) return userOrg.user.id;
-        return null
+        // log.debug("Found roles: ${admin_roles} for user ${userOrg.user.displayName}")
+
+        return [userOrg,admin_roles?:null]
 
       }
+      // log.debug(result.users)
       result.orgInstance=orgInstance
       result
     }
