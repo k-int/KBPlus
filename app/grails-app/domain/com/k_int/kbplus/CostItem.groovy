@@ -1,12 +1,14 @@
 package com.k_int.kbplus
 
+import javax.persistence.Transient
+
 class CostItem {
 
   Org owner
   Subscription sub
   SubscriptionPackage subPkg
   IssueEntitlement issueEntitlement
-  CostItemGroup group
+  //CostItemGroup group //todo Check with Ian
   Order order
   Invoice invoice
   RefdataValue costItemStatus
@@ -25,6 +27,9 @@ class CostItem {
   String reference
   Date lastUpdated
 
+  @Transient
+  def budgetcodes //Binds getBudgetcodes
+
 
     static mapping = {
                               id column:'ci_id'
@@ -33,7 +38,7 @@ class CostItem {
                            owner column:'ci_owner'
                           subPkg column:'ci_subPkg_fk'
                 issueEntitlement column:'ci_e_fk'
-                           group column:'ci_cig_fk'
+//                           group column:'ci_cig_fk'
                            order column:'ci_ord_fk'
                          invoice column:'ci_inv_fk'
                   costItemStatus column:'ci_status_rv_fk'
@@ -56,7 +61,7 @@ class CostItem {
                        sub(nullable:true, blank:false)
                     subPkg(nullable:true, blank:false)
           issueEntitlement(nullable:true, blank:false)
-                     group(nullable:true, blank:false)
+//                     group(nullable:true, blank:false)
                      order(nullable:true, blank:false)
                    invoice(nullable:true, blank:false)
            billingCurrency(nullable:true, blank:false)
@@ -73,5 +78,12 @@ class CostItem {
            costItemElement(nullable:true, blank:false)
                  reference(nullable:true, blank:false)
   }
+
+
+    def getBudgetcodes()
+    {
+        //return CostItemGroup.findAllByCostItem(this).collect{[id:it.budgetcode.id, value:it.budgetcode.value]}
+        return CostItemGroup.findAllByCostItem(this).collect{it.budgetcode.value}
+    }
 
 }

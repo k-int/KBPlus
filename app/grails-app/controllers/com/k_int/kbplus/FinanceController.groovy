@@ -213,7 +213,21 @@ class FinanceController {
         }
     }
 
+    private def createBudgetCodes(CostItem costItem, String budgetcodes, String owner) {
+        if(budgetcodes && owner && costItem) {
+            def budgetOwner = RefdataCategory.findByDesc("budgetcode_"+owner)?:new RefdataCategory(desc: "budgetcode_"+owner).save(flush: true)
+            budgetcodes.split(",").each { c ->
+                def rdv = null
+                if (c.startsWith("-1")) //New codes from UI
+                    rdv = new RefdataValue(owner: budgetOwner, value: c.substring(2).toLowerCase()).save(flush: true)
+                else
+                    rdv = RefdataValue.get(c)
 
+                if (rdv != null)
+                    new CostItemGroup(costItem: costItem, budgetcode: rdv).save(flush: true)
+            }
+        }
+    }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def search() {
