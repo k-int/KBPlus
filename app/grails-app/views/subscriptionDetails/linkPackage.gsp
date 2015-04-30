@@ -131,7 +131,7 @@
                     <tbody>
                       <g:each in="${hits}" var="hit">
                         <tr>
-                          <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
+                          <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name} (${hit.source?.titleCount?:'0'} Titles)</g:link></td>
                           <td>${hit.source.consortiaName}</td>
                           <td><g:link action="linkPackage" 
                                  id="${params.id}"
