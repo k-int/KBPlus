@@ -364,8 +364,9 @@
                           <input type="checkbox" name="clear_end_issue"/>(Check to clear)</td>
                     </tr>
                     <tr>
-                      <td>Coverage Depth: <g:simpleHiddenValue id="bulk_coverage_depth" name="bulk_coverage_depth"/>
-                          <input type="checkbox" name="clear_coverage_depth"/>(Check to clear)</td>
+                       <td>Host Platform URL: <g:simpleHiddenValue id="bulk_hostPlatformURL" name="bulk_hostPlatformURL"/>
+                          <input type="checkbox" name="clear_hostPlatformURL"/>(Check to clear)</td>
+                        </td>
                       <td>Coverage Note: <g:simpleHiddenValue id="bulk_coverage_note" name="bulk_coverage_note"/>
                           <input type="checkbox" name="clear_coverage_note"/>(Check to clear)</td>
                       <td>Embargo:  <g:simpleHiddenValue id="bulk_embargo" name="bulk_embargo"/>
@@ -381,11 +382,6 @@
                         </td>
                         <td>Payment: <g:simpleHiddenRefdata id="bulk_payment" name="bulk_payment" refdataCategory="TIPPPaymentType"/>
                           <input type="checkbox" name="clear_payment"/>(Check to clear)</td>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td colspan="3">Host Platform URL: <g:simpleHiddenValue id="bulk_hostPlatformURL" name="bulk_hostPlatformURL"/>
-                          <input type="checkbox" name="clear_hostPlatformURL"/>(Check to clear)</td>
                         </td>
                       </tr>
                     </g:if>
@@ -406,7 +402,6 @@
               <th style="">Identifiers</th>
               <th style="">Coverage Start</th>
               <th style="">Coverage End</th>
-              <th style="">Coverage Depth</th>
             </tr>
 
 
@@ -477,9 +472,6 @@
                    Date: <g:xEditable owner="${t}" type="date" field="endDate" /><br/>
                    Volume: <g:xEditable owner="${t}" field="endVolume" /><br/>
                    Issue: <g:xEditable owner="${t}" field="endIssue" />
-                </td>
-                <td>
-                  <g:xEditable owner="${t}" field="coverageDepth" />
                 </td>
               </tr>
 
