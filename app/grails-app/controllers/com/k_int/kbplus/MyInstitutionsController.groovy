@@ -337,9 +337,9 @@ class MyInstitutionsController {
         }
 
         if (checkUserHasRole(result.user, result.institution, 'INST_ADM')) {
-            result.is_admin = true
+            result.editable = true
         } else {
-            result.is_admin = false;
+            result.editable = false;
         }
 
         def public_flag = RefdataCategory.lookupOrCreate('YN', 'Yes');
@@ -461,12 +461,12 @@ class MyInstitutionsController {
         result.user = User.get(springSecurityService.principal.id)
         result.institution = Org.findByShortcode(params.shortcode)
         if (checkUserHasRole(result.user, result.institution, 'INST_ADM')) {
-            result.is_admin = true
+            result.editable = true
         } else {
-            result.is_admin = false;
+            result.editable = false;
         }
 
-        if (result.is_admin) {
+        if (result.editable) {
             def cal = new java.util.GregorianCalendar()
             def sdf = new SimpleDateFormat('yyyy-MM-dd')
 

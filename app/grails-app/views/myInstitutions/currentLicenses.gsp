@@ -51,20 +51,20 @@
             <div class="span12">
                 <form class="form-inline">
                     <label>Valid On</label> 
-
-            <div class="input-append date">
-              <input class="span2 datepicker-class" size="16" type="text" 
-              name="validOn" value="${validOn}">
-            </div>
+                        <div class="input-append date">
+                          <input class="span2 datepicker-class" size="16" type="text" 
+                          name="validOn" value="${validOn}">
+                        </div>
 
                     <label>Search by Reference:</label>
-                    <input type="text" name="keyword-search" placeholder="enter search term..." value="${params['keyword-search']?:''}" /><br/>
+                    <input type="text" name="keyword-search" placeholder="enter search term..." value="${params['keyword-search']?:''}" />
+                    <br/>
                     <label>${message(code:'licence.property.search')}:</label>
                             <g:select id="availablePropertyTypes" name="availablePropertyTypes" from="${custom_prop_types}" optionKey="value" optionValue="key" value="${params.propertyFilterType}"/>
-                            <input id="selectVal" type="text" name="propertyFilter" placeholder="property value..." value="${params.propertyFilter?:''}" /></p>
-                    <br/>
+                            <input id="selectVal" type="text" name="propertyFilter" placeholder="property value..." value="${params.propertyFilter?:''}" />
+                   
                 <input type="hidden" id="propertyFilterType" name="propertyFilterType" value="${params.propertyFilterType}"/>
-                <input type="submit" class="btn btn-primary" value="Search" /></p>
+                <input type="submit" class="btn btn-primary" value="Search" />
                 </form>
             </div>
         </div>
