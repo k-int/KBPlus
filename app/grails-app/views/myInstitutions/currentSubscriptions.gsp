@@ -38,7 +38,7 @@
     </div>
 
     <div class="container">
-      <div class="well form-horizontal">
+      <div class="well">
       <g:form action="currentSubscriptions" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="get" class="form-inline">
 
 
@@ -51,11 +51,12 @@
           <input class="span2 datepicker-class" size="16" type="text"name="validOn" value="${validOn}">
         </div>
 
-        <label class="control-label">Filter By: </label>
-        <g:select name="dateFilter" from="${['Renewal Date','End Date']}"/>
-         within <g:select name="dateFilterLimit" from="${[1,2,3,4,5,6,7,8,9,10,11,12]}" style="width: 75px"/>   
-            
-        <br/>
+        <label class="control-label">Date: </label>
+        <g:select name="dateBeforeFilter"  style="width: 125px" value="${params.dateBeforeFilter}" from="${['-None-','Renewal Date','End Date']}"/>
+         before
+           <div class="input-append date">
+              <input class="span2 datepicker-class" size="16" type="text"name="dateBeforeVal" value="${params.dateBeforeVal}">
+          </div>
         <input type="submit" class="btn btn-primary" value="Search" />
       </g:form>
       </div>

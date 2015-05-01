@@ -320,14 +320,22 @@ class MyInstitutionsController {
         def date_restriction = null;
         def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
 
-        if (params.validOn == null) {
-            result.validOn = sdf.format(new Date(System.currentTimeMillis()))
-            date_restriction = sdf.parse(result.validOn)
-        } else if (params.validOn == '') {
-            result.validOn = sdf.format(new Date(System.currentTimeMillis()))
-        } else {
+        if (params.validOn) {
             result.validOn = params.validOn
-            date_restriction = sdf.parse(params.validOn)
+        } else {
+            result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+        }
+        date_restriction = sdf.parse(result.validOn)
+
+        def dateBeforeFilter = null;
+        def dateBeforeFilterVal = null;
+        if(params.dateBeforeFilter && params.dateBeforeVal){
+            if(params.dateBeforeFilter == "Renewal Date"){
+                dateBeforeFilter = " and s.manualRenewalDate < ?"
+            }else if (params.dateBeforeFilter == "End Date"){
+                dateBeforeFilter = " and s.endDate < ?"
+            }
+            dateBeforeFilterVal =sdf.parse(params.dateBeforeVal)
         }
 
         if (!checkUserIsMember(result.user, result.institution)) {
@@ -364,6 +372,10 @@ class MyInstitutionsController {
             qry_params.add(date_restriction)
         }
 
+        if(dateBeforeFilter ){
+            base_qry += dateBeforeFilter
+            qry_params.add(dateBeforeFilterVal)
+        }
 
         if ((params.sort != null) && (params.sort.length() > 0)) {
             base_qry += " order by ${params.sort} ${params.order}"
@@ -371,7 +383,8 @@ class MyInstitutionsController {
             base_qry += " order by s.name asc"
         }
 
-        // log.debug("current subs base query: ${base_qry} params: ${qry_params} max:${result.max} offset:${result.offset}");
+
+        log.debug("current subs base query: ${base_qry} params: ${qry_params} max:${result.max} offset:${result.offset}");
 
         result.num_sub_rows = Subscription.executeQuery("select count(s) " + base_qry, qry_params)[0]
         result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max: result.max, offset: result.offset]);

@@ -48,9 +48,11 @@
 
     <div class="container licence-searches">
         <div class="row">
-            <div class="span12">
+            <div class="span8">
+              <div class="well">
+
                 <form class="form-inline">
-                    <label>Valid On</label> 
+                    <label>Valid On:</label> 
                         <div class="input-append date">
                           <input class="span2 datepicker-class" size="16" type="text" 
                           name="validOn" value="${validOn}">
@@ -60,12 +62,13 @@
                     <input type="text" name="keyword-search" placeholder="enter search term..." value="${params['keyword-search']?:''}" />
                     <br/>
                     <label>${message(code:'licence.property.search')}:</label>
-                            <g:select id="availablePropertyTypes" name="availablePropertyTypes" from="${custom_prop_types}" optionKey="value" optionValue="key" value="${params.propertyFilterType}"/>
-                            <input id="selectVal" type="text" name="propertyFilter" placeholder="property value..." value="${params.propertyFilter?:''}" />
+                      <g:select id="availablePropertyTypes" name="availablePropertyTypes" from="${custom_prop_types}" optionKey="value" optionValue="key" value="${params.propertyFilterType}"/>
+                      <input id="selectVal" type="text" name="propertyFilter" placeholder="property value..." value="${params.propertyFilter?:''}" />
                    
                 <input type="hidden" id="propertyFilterType" name="propertyFilterType" value="${params.propertyFilterType}"/>
                 <input type="submit" class="btn btn-primary" value="Search" />
                 </form>
+              </div>
             </div>
         </div>
     </div>
