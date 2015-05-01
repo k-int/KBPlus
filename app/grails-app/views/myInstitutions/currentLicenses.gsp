@@ -115,7 +115,7 @@
                   <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${l.endDate}"/></td>
                   <td>
                     <g:link controller="myInstitutions" action="actionLicenses" params="${[shortcode:params.shortcode,baselicense:l.id,'copy-licence':'Y']}" class="btn btn-success">Copy</g:link>
-                    <g:link controller="myInstitutions" action="actionLicenses" params="${[shortcode:params.shortcode,baselicense:l.id,'delete-licence':'Y']}" class="btn btn-danger">Delete</g:link>
+                    <g:link controller="myInstitutions" action="actionLicenses" onclick="return confirm('Are you sure you want to delete ${l.reference?:'** No licence reference ** '}?')" params="${[shortcode:params.shortcode,baselicense:l.id,'delete-licence':'Y']}" class="btn btn-danger">Delete</g:link>
                   </td>
                 </tr>
               </g:each>
