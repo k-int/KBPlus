@@ -78,6 +78,11 @@
 
     <div class="container">
             <div class="row">
+ <h6>${message(code:'licence.properties')}</h6>
+              <div id="custom_props_div" class="span12">
+                  <g:render template="/templates/custom_props" model="${[ ownobj:license ]}"/>
+              </div>
+            <br/>
               <div class="span8">
   
                 <h6>Information</h6>
@@ -229,17 +234,12 @@
 
                             </li>
                           </g:each>
+              
                         </ul>
                       </dd>
                   </dl>
 
                   <div class="clearfix"></div>
-                  </div>
- 
-            <br/>
-              <h6>${message(code:'licence.properties')}</h6>
-              <div id="custom_props_div" class="span12">
-                  <g:render template="/templates/custom_props" model="${[ ownobj:license ]}"/>
               </div>
               </div>
               <div class="span4">
