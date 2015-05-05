@@ -30,7 +30,7 @@ class LicenseDetailsController {
     // result.institution = Org.findByShortcode(params.shortcode)
     result.license = License.get(params.id)
 
-    if ( ! result.license.hasPerm("view",result.user) ) {
+    if ( ! result?.license?.hasPerm("view",result.user) ) {
       log.debug("return 401....");
       response.sendError(401);
       return

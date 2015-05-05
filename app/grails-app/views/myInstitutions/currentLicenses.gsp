@@ -10,6 +10,9 @@
         <ul class="breadcrumb">
             <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
            <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:params.shortcode]}">${institution.name} ${message(code:'licence.current')}</g:link> </li>
+           <g:if test="${is_admin}">
+              <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
+          </g:if>
         </ul>
     </div>
 
