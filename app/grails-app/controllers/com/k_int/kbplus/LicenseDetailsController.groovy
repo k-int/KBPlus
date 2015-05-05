@@ -32,6 +32,7 @@ class LicenseDetailsController {
 
     if ( ! result?.license?.hasPerm("view",result.user) ) {
       log.debug("return 401....");
+      flash.error = "You do not have permission to view ${result.license.reference}. Please request access to ${result.license?.licensee?.name?:'licence institution'} on the profile page";
       response.sendError(401);
       return
     }
