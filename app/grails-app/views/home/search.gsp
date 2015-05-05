@@ -86,7 +86,7 @@
               </div>
               <div class="panel-body">
                 <ul>
-                  <g:each in="${facet.value}" var="v">
+                  <g:each in="${facet.value.sort{it.display}}" var="v">
                     <li>
                       <g:set var="fname" value="facet:${facet.key+':'+v.term}"/>
  
