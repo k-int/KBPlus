@@ -87,7 +87,10 @@
             <td>
                 <h3>Reference</h3>
                 <input type="text" name="newReference" placeholder="New Item Reference" id="newCostItemReference" value="${params.newReference}"/><br/>
-                <input type="text" style="width: 100%; border-radius: 4px;" placeholder="New code or lookup code" name="newBudgetCode" id="newBudgetCode" ></td>
+                <input type="text" style="width: 100%; border-radius: 4px;" placeholder="New code or lookup code" name="newBudgetCode" id="newBudgetCode" ><br/><br/><br/>
+                <input class="datepicker-class" placeholder="Start Date" type="date" id="newStartDate" name="newStartDate"/>
+                <input class="datepicker-class" placeholder="End Date"   type="date" id="newEndDate" name="newEndDate"/>
+            </td>
             <td colspan="2">
                 <h3>Description</h3>
                 <textarea name="newDescription"

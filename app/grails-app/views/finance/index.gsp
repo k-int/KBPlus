@@ -16,22 +16,16 @@
     </ul>
 </div>
 
+<div id="recent" style="float: left">
+    <g:render template="recentlyAdded"></g:render>
+</div>
+
 <div class="container">
 
     <div id="userError" hidden="">
         <table>
-            <thead>
-            <tr>
-                <th>Issue/Status</th>
-                <th>Info</th>
-            </tr>
-            </thead>
-
-            <tbody>
-            <tr>
-
-            </tr>
-            </tbody>
+            <thead><tr><th>Issue/Status</th><th>Info</th></tr></thead>
+            <tbody><tr></tr></tbody>
         </table>
     </div>
 
@@ -46,10 +40,14 @@
     <button class="btn btn-primary pull-right" onclick="scrollToTop(2000,'costTable')" id="top">Back to top</button>
 </div>
 
-<g:hiddenField id="pageReload" name="pageReload" value=""></g:hiddenField>
 </body>
 
 <r:script type="text/javascript">
+
+    function tester() {
+        $('.xEditable').editable();
+        $('.xEditableValue').editable();
+    }
 
     function confirmSubmit() {
           var agree=confirm("Are you sure you wish to continue?\n\nActions are permanent for selected Cost Item(s)");
@@ -76,11 +74,13 @@
         dataType:'json'
       }).done(function(data) {
         console.log("%o",data);
-        alert(data.message); //list of succesfully deleted ids
+        userInfo("deletion(s)",data.message); //list of succesfully deleted ids
         $.each(data.successful, function( i, val ) {
             $("#bulkdelete-a" + val).remove();
             $("#bulkdelete-b" + val).remove();
         });
+        console.log("${params}")
+        updateResults();
       });
 
     };
@@ -133,12 +133,18 @@
     }
 
     function filterSelection() {
-        var newMode       = $('#filterSelectionMode');
-        var disabledState = (newMode.val() == "ON")? false:true; //Need to turn off, i.e. refresh result
-        $('#submitFilterMode').prop('disabled',disabledState);
+
+        if($('#submitFilterMode').attr("value")!="reset")
+        {
+            var newMode       = $('#filterSelectionMode');
+            var disabledState = (newMode.val() == "ON")? false:true; //Need to turn off, i.e. refresh result
+            $('#submitFilterMode').prop('disabled',disabledState);
+        }
     }
 
     function filterValidation() {
+        if("${filterMode}"=="OFF" && $('#filterSelectionMode').val()=="OFF")
+            return false;
         var reqFields = $(".required-indicator");
         var counter   = 0;
 
@@ -164,87 +170,88 @@
     }
 
     $(document).ready(function() {
+    console.log("from date is as follows : ${from}")
+        $("#newIE").select2({
+            placeholder: "Identifier..",
+            minimumInputLength: 1,
+            ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+              url: "<g:createLink controller='ajax' action='lookup'/>",
+            dataType: 'json',
+            data: function (term, page) {
+                return {
+                    format:'json',
+                    q: term,
+                    subFilter: $('#newSubscription').val(),
+                    baseClass:'com.k_int.kbplus.IssueEntitlement'
+                };
+            },
+            results: function (data, page) {
+              return {results: data.values};
+            }
+          }
+        });
 
-      $("#newIE").select2({
-        placeholder: "Identifier..",
-        minimumInputLength: 1,
-        ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-          url: "<g:createLink controller='ajax' action='lookup'/>",
-        dataType: 'json',
-        data: function (term, page) {
-            return {
-                format:'json',
-                q: term,
-                subFilter: $('#newSubscription').val(),
-                baseClass:'com.k_int.kbplus.IssueEntitlement'
-            };
-        },
-        results: function (data, page) {
-          return {results: data.values};
-        }
-      }
-    });
+        $("#newBudgetCode").select2({
+          placeholder: "New code or lookup  code",
+          allowClear: true,
+           tags: true,
+          tokenSeparators: [',', ' '],
+          minimumInputLength: 1,
+          ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+            url: "<g:createLink controller='ajax' action='lookup'/>",
+            dataType: 'json',
+            data: function (term, page) {
+                return {
+                    format:'json',
+                    q: term,
+                    shortcode: '${params.shortcode}',
+                    baseClass:'com.k_int.kbplus.CostItemGroup'
+                };
+            },
+            results: function (data, page) {
+                return {results: data.values};
+            }
+          },
+          createSearchChoice:function(term, data) {
+             return {id:-1+term, text:"New Code: "+term};
+          }
 
-    $("#newBudgetCode").select2({
-      placeholder: "New code or lookup  code",
-      allowClear: true,
-       tags: true,
-      tokenSeparators: [',', ' '],
-      minimumInputLength: 1,
-      ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-        url: "<g:createLink controller='ajax' action='lookup'/>",
-        dataType: 'json',
-        data: function (term, page) {
-            return {
-                format:'json',
-                q: term,
-                shortcode: '${params.shortcode}',
-                baseClass:'com.k_int.kbplus.CostItemGroup'
-            };
-        },
-        results: function (data, page) {
-            return {results: data.values};
-        }
-      },
-      createSearchChoice:function(term, data) {
-         return {id:-1+term, text:"New Code: "+term};
-      }
+        });
 
-    });
-
-    //If we want to do something upon selection
-    $("#newBudgetCode").on("select2-selecting", function(e) {
-        var presentSelections = $("#newBudgetCode").select2("data");
-        if(presentSelections.length > 0) {
-            for (var i = 0; i < presentSelections.length; i++) {
-                if(presentSelections[i].text.toString == e.choice.text.toString)
-                {
-                    e.preventDefault();
-                    break;
+        //If we want to do something upon selection
+        $("#newBudgetCode").on("select2-selecting", function(e) {
+            var presentSelections = $("#newBudgetCode").select2("data");
+            if(presentSelections.length > 0) {
+                for (var i = 0; i < presentSelections.length; i++) {
+                    if(presentSelections[i].text.toString == e.choice.text.toString)
+                    {
+                        e.preventDefault();
+                        break;
+                    }
                 }
             }
+        });
+
+        $(".datepicker-class").datepicker({
+            format: "yyyy-mm-dd"
+        });
+
+        $('#filterSelectionMode').val("${filterMode}")
+        $('#submitFilterMode').prop('disabled',${filterMode=='OFF'});
+
+        window.onbeforeunload = function() {
+          if("${filterMode}"=="ON")
+           return "Are you sure you want to navigate away?";
         }
+
+        performCostItemUpdate(null); //first run
     });
 
-    $(".datepicker-class").datepicker({
-        format: "yyyy-mm-dd"
-    });
-
-
-    $('#filterSelectionMode').val("${filterMode}")
-    $('#submitFilterMode').prop('disabled',${filterMode=='OFF'});
-
-    window.onbeforeunload = function() {
-      if("${filterMode}"=="ON")
-       return "Are you sure you want to navigate away?";
-      }
-    });
-
-  function scrollToTop(time,id) {
-    $('html, body').animate({
-        scrollTop: $("#"+id).offset().top
-    }, time);
-  };
+    function scrollToTop(time,id) {
+        $('html, body').animate({
+            scrollTop: $("#"+id).offset().top
+        }, time);
+    };
 
     function userInfo(status,message) {
         if(status!=null && message!=null)
@@ -258,8 +265,57 @@
     }
 
     function fadeAway(id,time) {
-         $('#info').fadeToggle('slow'); //todo won't work bind event i.e. on ?
+         $('#'+id).fadeToggle(time);
      }
+
+    function updateResults() {
+
+    }
+
+
+
+
+
+
+
+    setInterval(recentCostItems, 60000);
+
+    function recentCostItems() {
+        var renderedDateTo = $('#recentUpdatesTable').data('resultsto');
+        if(renderedDateTo!=null)
+        {
+            $.ajax({
+            method: "POST",
+            url: "<g:createLink controller='finance' action='newCostItemsPresent'/>",
+            data: {
+                shortcode: "${params.shortcode}",
+                to:renderedDateTo,
+                from: "${from}",
+                format:'json'
+            }
+          }).done(function(data) {
+             console.log("%o",data);
+             if(data.count > 0)
+                performCostItemUpdate(renderedDateTo);
+          });
+        }
+    }
+
+    function performCostItemUpdate(to) {
+        $.ajax({
+            method: 'POST',
+            url: "<g:createLink controller='finance' action='getRecentCostItems'/>",
+                data: {
+                from: "${from}",
+                to: to,
+                shortcode: "${params.shortcode}"
+            }
+        }).done(function(data) {
+            $('#recent').html(data);
+            //$('#recent').show();
+        });
+    }
+
 
 </r:script>
 </html>

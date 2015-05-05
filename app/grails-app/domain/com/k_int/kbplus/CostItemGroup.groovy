@@ -2,6 +2,12 @@ package com.k_int.kbplus
 
 import javax.persistence.Transient
 
+/**
+ * This M to N domain is being used to represent the different budget codes
+ * Cost item has many budget codes and budget codes have many cost items ... simples
+ * Lookup for GSP is used RefDataCategory, i.e. budgetcode_JISC_COLLECTIONS and then searching RefDataValue for the code
+ * Creation of CostItemGroup is dealt with inside FinanceController - createBudgetCodes()
+ */
 class CostItemGroup {
 
   RefdataValue      budgetcode

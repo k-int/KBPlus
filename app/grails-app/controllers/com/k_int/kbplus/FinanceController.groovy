@@ -3,15 +3,18 @@ package com.k_int.kbplus
 import com.k_int.kbplus.auth.*
 import grails.converters.JSON;
 import grails.plugins.springsecurity.Secured
+import groovy.json.JsonBuilder
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.elasticsearch.common.joda.time.DateTime
 import java.text.SimpleDateFormat
 
 
 class FinanceController {
 
     def springSecurityService
-    private static def dateFormat = new SimpleDateFormat("YYYY-MM-dd")
+    private static def dateFormat     = new SimpleDateFormat("YYYY-MM-dd")
+    private static def dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") {{setLenient(false)}}
 
 
 
@@ -28,7 +31,10 @@ class FinanceController {
         result.editable    = SpringSecurityUtils.ifAllGranted('ROLE_ADMIN')
         result.filterMode  = params.filterSelectionMode?: "OFF"
         result.info        = [] as List
-        params.max         = params.max ? Integer.parseInt(params.max) : 10;
+        params.max         = params.max ? Math.min(Integer.parseInt(params.max),200) : 10
+        result.max         = params.max
+        result.offset      = params.offset
+        if (!request.isXhr()) result.from = dateTimeFormat.format(new DateTime().minusDays(3).toDate())
 
         def base_qry   = " from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) "
         def qry_params = [result.institution]
@@ -149,6 +155,24 @@ class FinanceController {
             }
         }
 
+        def startDate = null
+        if (params.newStartDate) {
+            try {
+                startDate = dateFormat.parse(params.newStartDate)
+            } catch (Exception e) {
+                log.debug("Unable to parse date : "+params.newStartDate+" in format "+dateFormat.toPattern())
+            }
+        }
+
+        def endDate = null
+        if (params.newEndDate) {
+            try {
+                endDate = dateFormat.parse(params.newEndDate)
+            } catch (Exception e) {
+                log.debug("Unable to parse date : "+params.newEndDate+" in format "+dateFormat.toPattern())
+            }
+        }
+
         def ie = null
         if(params.newIe)
         {
@@ -180,6 +204,8 @@ class FinanceController {
                 costDescription: params.newDescription,
                 costInBillingCurrency: params.newCostInBillingCurrency,
                 datePaid: datePaid,
+                startDate: startDate,
+                endDate: endDate,
                 localFundCode: null,
                 costInLocalCurrency: params.newCostInLocalCurrency,
                 taxCode: cost_tax_type,
@@ -196,9 +222,13 @@ class FinanceController {
                 message(error: it)
             }
         } else {
-            newCostItem.save(flush: true)
-            if (params.newBudgetCode)
-                createBudgetCodes(newCostItem, params.newBudgetCode, params.shortcode)
+            if (newCostItem.save(flush: true))
+            {
+                if (params.newBudgetCode)
+                    createBudgetCodes(newCostItem, params.newBudgetCode, params.shortcode)
+            } else {
+                result.error = "Unable to save!"
+            }
         }
 
         params.remove("Add")
@@ -257,75 +287,58 @@ class FinanceController {
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def getRecentCostItems() {
-        def result = [:]
-        def institution = Org.findByShortcode(params.shortcode)
-
-        Date from = getFromToDate(params.from,"from")
-        Date to   = new Date()
-        result.costItems = CostItem.findAllByOwnerAndLastUpdatedBetween(institution,from,to)
-        println(result)
-
+        def  institution       = Org.findByShortcode(params.shortcode)
+        def  result            = [:]
+        result.to              = new Date()
+        result.from            = params.from? dateTimeFormat.parse(params.from): new Date() //getFromToDate(params.from,"from")
+        result.recentlyUpdated = CostItem.findAllByOwnerAndLastUpdatedBetween(institution,result.from,result.to,[max:5, order:"desc", sort:"lastUpdated"])
+        result.from            = dateTimeFormat.format(result.from)
+        result.to              = dateTimeFormat.format(result.to)
+        log.debug("Finane - getRecentCostItems, rendering template with model: "+result)
         render(template: "/finance/recentlyAdded", model: result)
-
     }
 
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+
+    @Secured(['ROLE_USER'])
     def newCostItemsPresent() {
         def institution = Org.findByShortcode(params.shortcode)
-        Date to   = getFromToDate(params.to,"to")
-        int count = CostItem.countByOwnerAndLastUpdatedGreaterThan(institution,to)
-        render  count
-    }
+        Date dateTo     = params.to? dateTimeFormat.parse(params.to):new Date()//getFromToDate(params.to,"to")
+        int counter     = CostItem.countByOwnerAndLastUpdatedGreaterThan(institution,dateTo)
 
-    private Date getFromToDate(def date, def type)
-    {
-        Date d  = null;
-        if (type=="from")
-        {
-            if (date == null)
-            {
-                d = new Date();
-                d.setTime(d.getTime() - 7 * 1000 * 60 * 60 * 24)
-            }
-            else
-                d = new Date(date)
+        def builder = new JsonBuilder()
+        def root    = builder {
+            count counter
+            to dateTimeFormat.format(dateTo)
         }
-        else if (type=="to")
-        {
-            if (date==null)
-                d = new Date()
-            else
-                d = new Date(date)
-        }
-
-        return d
+        log.debug("Finance - newCostItemsPresent ? params: "+params+"\tJSON output: "+builder.toString())
+        render(text: builder.toString(), contentType: "text/json", encoding: "UTF-8")
     }
-
 
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
     def delete() {
         log.debug("FinanceController::delete() ${params}");
 
         def results        = [:]
-        results.user        = User.get(springSecurityService.principal.id)
         results.successful = []
         results.failures   = []
         results.message    = null
         results.sentIDs    = JSON.parse(params.del)
+        def user           = User.get(springSecurityService.principal.id)
         def institution    = Org.findByShortcode(params.shortcode)
 
         if (results.sentIDs && institution) {
-            def _costItem = []
+            def _costItem = null
             def _props
             results.sentIDs.each { id ->
-                _costItem = CostItem.findAllByIdAndOwner(id,institution)
-                if (_costItem.size() > 0)
+                _costItem = CostItem.findByIdAndOwner(id,institution)
+                if (_costItem)
                 {
                     try {
-                        _props = _costItem.first().properties
-                        _costItem.first().delete(flush: true)
+                        _props = _costItem.properties
+                        CostItemGroup.deleteAll(CostItemGroup.findAllByCostItem(_costItem))
+                        _costItem.delete(flush: true)
                         results.successful.add(id)
-                        log.debug("User: "+results.user+" deleted cost item with properties"+_props)
+                        log.debug("User: "+user.username+" deleted cost item with properties"+_props)
                     } catch (Exception e)
                     {
                         log.error("FinanceController::delete() : Delete Exception",e)

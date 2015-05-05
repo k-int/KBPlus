@@ -1,5 +1,5 @@
 <g:if test="${info}">
-    <div id="info">
+<div id="info">
     <table id="financeErrors" class="table table-striped table-bordered table-condensed">
         <thead>
         <tr>
@@ -29,17 +29,17 @@
         <thead>
         <tr>
             <th rowspan="2" style="vertical-align: top;">Cost Item#</th>
-            <th>Invoice#<br/>
-                <input type="text" name="invoiceNumberFilter"
+            <th class="sortable" data-order="invoice.name">Invoice#<br/>
+                <input autofocus="true" type="text" name="invoiceNumberFilter"
                        class="input-medium required-indicator" onKeyUp="filtersUpdated();"
                        id="filterInvoiceNumber" value="${params.invoiceNumberFilter}"/>
             </th>
-            <th>Order#<br/>
+            <th class="sortable" data-order="order.name">Order#<br/>
                 <input type="text" name="orderNumberFilter"
                        class="input-medium required-indicator" onKeyUp="filtersUpdated();"
                        id="filterOrderNumber"  value="${params.orderNumberFilter}" data-type="select"/>
             </th>
-            <th>Subscription<br/>
+            <th class="sortable" data-order="sub.name">Subscription<br/>
                 <select name="subscriptionFilter" class="input-medium required-indicator" onChange="filterSubUpdated();"
                         id="filterSubscription" value="${params.subscriptionFilter}" data-type="select">
                     <option value="all">All</option>
@@ -48,8 +48,8 @@
                     </g:each>
                 </select>
             </th>
-            <th>Package<br/>
-                <select name="packageFilter" class="input-medium required-indicator" onChange="filtersUpdated();" id="filterPackage" value="${params.packageFilter}">
+            <th class="sortable" data-order="subPkg.name">Package<br/>
+                <select name="packageFilter" class="input-medium required-indicator sortable" onChange="filtersUpdated();" id="filterPackage" value="${params.packageFilter}">
                     <option value="all">All</option>
                 </select>
             </th>
@@ -60,7 +60,7 @@
                         <g:select  onchange="filterSelection()" name="filterSelectionMode" from="['OFF','ON']" value="${params.filterMode}" type="button" class="btn btn-primary btn-mini"></g:select><br/><br/>
                     </g:if>
                 <g:hiddenField type="hidden" name="resetMode" value="${params.resetMode}"></g:hiddenField>
-                <g:submitToRemote update="filterTemplate" value="${filterMode=='ON'?'reset':'search'}" class="btn-block" url="[controller:'finance', action:'index']" before="if(!filterValidation()) return false" id="submitFilterMode" after="fadeAway('info',2000)" ></g:submitToRemote>
+                <g:submitToRemote onComplete="fadeAway('info',10000);filterSelection();" update="filterTemplate" value="${filterMode=='ON'?'reset':'search'}" class="btn-block" url="[controller:'finance', action:'index']" before="if(!filterValidation()) return false" id="submitFilterMode"></g:submitToRemote>
                 </div>
             </th>
             <g:if test="${editable}">
@@ -112,5 +112,6 @@
 </g:form>
 
 <div class="pagination">
-    <util:remotePaginate offset='0' onComplete="scrollToTop(2000,'costTable')" params="${params+["filterMode": "${filterMode}"]}"  controller="finance" action="index" total="${cost_item_count}"  update="filterTemplate" max="20" pageSizes="[10, 20, 50,100]"/>
+    <div id="paginateInfo" hidden="true" data-offset="${offset}" data-max="${max}" data-sort="${sort}" data-order="${order}"></div>
+    <util:remotePaginate onFailure="alert('Sorry, problem occured')" on302="alert('Redirect')" on401="alert('User authentication required!')" offset='0' onError="alert('error occurred please refresh')" onComplete="scrollToTop(2000,'costTable');tester()" onSuccess="filterSelection()" params="${params+["filterMode": "${filterMode}"]}"  controller="finance" action="index" total="${cost_item_count}"  update="filterTemplate" max="20" pageSizes="[10, 20, 50, 100, 200]" alwaysShowPageSizes="true"/>
 </div>
