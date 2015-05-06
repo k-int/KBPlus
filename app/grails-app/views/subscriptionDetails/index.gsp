@@ -212,7 +212,6 @@
               <th rowspan="2"></th>
               <th rowspan="2">#</th>
               <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
-              <th>ISSN</th>
               <g:sortableColumn params="${params}" property="coreStatus" title="Core" />
               <g:sortableColumn params="${params}" property="startDate" title="Earliest date" />
               <g:sortableColumn params="${params}" property="coreStatusStart" title="Core Start Date" />
@@ -221,7 +220,6 @@
 
             <tr>
               <th>Access Dates</th>
-              <th>eISSN</th>
               <th>Medium (P/E)</th>
               <g:sortableColumn params="${params}" property="endDate" title="Latest Date" />
               <g:sortableColumn params="${params}" property="coreStatusEnd" title="Core End Date"  />
@@ -265,9 +263,10 @@
                 <td><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></g:if></td>
                 <td>${counter++}</td>
                 <td>
-                  <g:link controller="issueEntitlement" id="${ie.id}" action="show">${ie.tipp.title.title}</g:link>
+                  <g:link controller="issueEntitlement" id="${ie.id}" action="show"><strong>${ie.tipp.title.title}</strong></g:link>
                   <g:if test="${ie.tipp?.hostPlatformURL}">( <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">Host Link</a> 
                             <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL} (In new window)" target="_blank"><i class="icon-share-alt"></i></a>)</g:if> <br/>
+                   ISSN:${ie?.tipp?.title?.getIdentifierValue('ISSN')}, eISSN:${ie?.tipp?.title?.getIdentifierValue('eISSN')}<br/>
                    Access: ${ie.availabilityStatus?.value}<br/>
                    Coverage Note: ${ie.coverageNote?:(ie.tipp?.coverageNote?:'')}<br/>
                    <g:if test="${ie.availabilityStatus?.value=='Expected'}">
@@ -282,20 +281,18 @@
                    </g:if>
 
                 </td>
-                <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}<br/>
-                ${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
                 <td>
                   <g:xEditableRefData owner="${ie}" field="coreStatus" config='CoreStatus'/>
 
-                  <g:if test="${grailsApplication.config.ab?.newcore==true}">
-                    <br/>(Newcore: ${ie.wasCoreOn(as_at_date)})
+                  <g:if test="${grailsApplication.config.ab?.newcore==true}"><br/>
+                    <span style="white-space: nowrap;">(Newcore: ${ie.wasCoreOn(as_at_date)})</span>
                   </g:if>
 
                   <br/><g:xEditableRefData owner="${ie}" field="medium" config='IEMedium'/>
                 </td>
                 <td>
-                    <g:xEditable owner="${ie}" type="date" field="startDate" /><br/>
-                    <g:xEditable owner="${ie}" type="date" field="endDate" />
+                    <span style="white-space: nowrap;"><g:xEditable owner="${ie}" type="date" field="startDate" /></span><br/>
+                    <span style="white-space: nowrap;"><g:xEditable owner="${ie}" type="date" field="endDate" /></span>
                 </td>
                 <td>
                     <g:xEditable owner="${ie}" type="date" field="coreStatusStart" /><br/>
