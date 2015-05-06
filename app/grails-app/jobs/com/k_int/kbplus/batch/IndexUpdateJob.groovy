@@ -1,4 +1,4 @@
-package demo
+package com.k_int.kbplus.batch
 
 
 
@@ -14,6 +14,8 @@ class IndexUpdateJob {
   }
 
   def execute() {
+    log.debug("****Running Index Update Job****")
+
     dataloadService.doFTUpdate()
   }
 }

@@ -10,7 +10,7 @@ class GlobalDataSyncJob {
     // Cron:: Min Hour DayOfMonth Month DayOfWeek Year
     // Example - every 10 mins 0 0/10 * * * ? 
     // At 5 past 5am every day
-    cron name:'globalDataSyncTrigger', startDelay:20000, cronExpression: "0 5 5 * * ?"
+    cron name:'globalDataSyncTrigger', startDelay:180000, cronExpression: "0 5 5 * * ?"
     // cronExpression: "s m h D M W Y"
     //                  | | | | | | `- Year [optional]
     //                  | | | | | `- Day of Week, 1-7 or SUN-SAT, ?

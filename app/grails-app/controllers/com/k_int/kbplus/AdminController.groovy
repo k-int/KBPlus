@@ -36,6 +36,34 @@ class AdminController {
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def updatePendingChanges() {
+  //Find all pending changes with licence FK and timestamp after summer 14
+  // For those with changeType: CustomPropertyChange, change it to PropertyChange
+  // on changeDoc add value propertyOID with the value of OID
+    String theDate = "01/05/2014 00:00:00";
+    def summer_date = new Date().parse("d/M/yyyy H:m:s", theDate)
+    def criteria = PendingChange.createCriteria()
+    def changes = criteria.list{
+      isNotNull("license")
+      ge("ts",summer_date)
+      like("changeDoc","%changeType\":\"CustomPropertyChange\",%")
+    }
+    log.debug("Starting PendingChange Update. Found:${changes.size()}")
+
+    changes.each{
+        def parsed_change_info = JSON.parse(it.changeDoc)
+        parsed_change_info.changeType = "PropertyChange"
+        parsed_change_info.changeDoc.propertyOID = parsed_change_info.changeDoc.OID
+        it.changeDoc = parsed_change_info
+        it.save(failOnError:true)
+    }
+    log.debug("Pending Change Update Complete.")
+    redirect(controller:'home')
+
+  }
+
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def managePropertyDefinitions() {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)

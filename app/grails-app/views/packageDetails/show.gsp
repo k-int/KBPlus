@@ -31,7 +31,7 @@
           View:
           <div class="btn-group" data-toggle="buttons-radio">
             <g:link controller="packageDetails" action="show" params="${params+['mode':'basic']}" class="btn btn-primary btn-mini ${((params.mode=='basic')||(params.mode==null))?'active':''}">Basic</g:link>
-            <g:link controller="packageDetails" action="show" params="${params+['mode':'advanced']}" button type="button" class="btn btn-primary btn-mini ${params.mode=='advanced'?'active':''}">Advanced</g:link>
+            <g:link controller="packageDetails" action="show" params="${params+['mode':'advanced']}" class="btn btn-primary btn-mini ${params.mode=='advanced'?'active':''}">Advanced</g:link>
           </div>
           &nbsp;
         </li>
@@ -113,10 +113,10 @@
       <div class="row">
         <div class="span8">
             <h6>Package Information
-          <div class="btn-group pull-right" data-toggle="buttons-radio">
+          <span class="btn-group pull-right" data-toggle="buttons-radio">
             <g:link controller="packageDetails" action="show" params="${params+['mode':'basic']}" class="btn btn-primary btn-mini ${((params.mode=='basic')||(params.mode==null))?'active':''}">Basic</g:link>
-            <g:link controller="packageDetails" action="show" params="${params+['mode':'advanced']}" button type="button" class="btn btn-primary btn-mini ${params.mode=='advanced'?'active':''}">Advanced</g:link>
-          </div>
+            <g:link controller="packageDetails" action="show" params="${params+['mode':'advanced']}" class="btn btn-primary btn-mini ${params.mode=='advanced'?'active':''}">Advanced</g:link>
+          </span>
           &nbsp;
 </h6>
             <g:hiddenField name="version" value="${packageInstance?.version}" />
@@ -138,7 +138,7 @@
                   <table class="table table-bordered">
                     <thead>
                       <tr>
-                        <th>ID</td>
+                        <th>ID</th>
                         <th>Identifier Namespace</th>
                         <th>Identifier</th>
                       </tr>
@@ -215,7 +215,7 @@
               <dl>
                 <dt>Org Links</dt>
                 <dd><g:render template="orgLinks" 
-                            contextPath="/templates"
+                            contextPath="../templates"
                             model="${[roleLinks:packageInstance?.orgs,parent:packageInstance.class.name+':'+packageInstance.id,property:'orgs',editmode:editable]}" /></dd>
               </dl>
 
@@ -299,7 +299,7 @@
 
           Titles (${offset+1} to ${lasttipp}  of ${num_tipp_rows})
             <g:if test="${params.mode=='advanced'}">Includes Expected or Expired titles, switch to the <g:link controller="packageDetails" action="show" params="${params+['mode':'basic']}">Basic</g:link> view to hide them</g:if>
-                <g:else>Expected or Expired titles are not shown, use the <g:link controller="packageDetails" action="show" params="${params+['mode':'advanced']}" button type="button" >Advanced</g:link> view to see them</g:else>
+                <g:else>Expected or Expired titles are not shown, use the <g:link controller="packageDetails" action="show" params="${params+['mode':'advanced']}">Advanced</g:link> view to see them</g:else>
               )
        </p>
               <br/>
@@ -322,8 +322,7 @@
            <input type="submit" class="btn btn-primary pull-right" value="Filter Results" />
         </g:form>
 
-          <table class="table table-bordered">
-            <g:form action="packageBatchUpdate" params="${[id:packageInstance?.id]}">
+          <g:form action="packageBatchUpdate" params="${[id:packageInstance?.id]}">
             <g:hiddenField name="filter" value="${params.filter}"/>
             <g:hiddenField name="coverageNoteFilter" value="${params.coverageNoteFilter}"/>
             <g:hiddenField name="startsBefore" value="${params.startsBefore}"/>
@@ -332,6 +331,7 @@
             <g:hiddenField name="order" value="${params.order}"/>
             <g:hiddenField name="offset" value="${params.offset}"/>
             <g:hiddenField name="max" value="${params.max}"/>
+            <table class="table table-bordered">
             <thead>
             <tr class="no-background">
 
@@ -490,8 +490,9 @@
 
             </g:each>
             </tbody>
-            </g:form>
-          </table>
+            </table>
+          </g:form>
+          
 
         <div class="pagination" style="text-align:center">
           <g:if test="${titlesList}" >
@@ -505,7 +506,7 @@
         
         <g:form controller="ajax" action="addToCollection">
           <fieldset>
-            <legend><h3>Add A Title To This Package</h3></legend>
+            <legend>Add A Title To This Package</legend>
             <input type="hidden" name="__context" value="${packageInstance.class.name}:${packageInstance.id}"/>
             <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.TitleInstancePackagePlatform"/>
             <input type="hidden" name="__recip" value="pkg"/>
