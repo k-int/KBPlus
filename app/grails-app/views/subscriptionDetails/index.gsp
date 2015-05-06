@@ -266,7 +266,8 @@
                   <g:link controller="issueEntitlement" id="${ie.id}" action="show"><strong>${ie.tipp.title.title}</strong></g:link>
                   <g:if test="${ie.tipp?.hostPlatformURL}">( <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">Host Link</a> 
                             <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL} (In new window)" target="_blank"><i class="icon-share-alt"></i></a>)</g:if> <br/>
-                   ISSN:${ie?.tipp?.title?.getIdentifierValue('ISSN')}, eISSN:${ie?.tipp?.title?.getIdentifierValue('eISSN')}<br/>
+                   ISSN:<strong>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</strong>, 
+                   eISSN:<strong>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</strong><br/>
                    Access: ${ie.availabilityStatus?.value}<br/>
                    Coverage Note: ${ie.coverageNote?:(ie.tipp?.coverageNote?:'')}<br/>
                    <g:if test="${ie.availabilityStatus?.value=='Expected'}">
