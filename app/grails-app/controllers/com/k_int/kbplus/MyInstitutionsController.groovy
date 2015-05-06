@@ -282,31 +282,43 @@ class MyInstitutionsController {
             result.is_admin = false;
         }
 
-        def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
         def template_license_type = RefdataCategory.lookupOrCreate('License Type', 'Template');
-        def public_flag = RefdataCategory.lookupOrCreate('YN', 'Yes');
         def qparams = [template_license_type]
+        def public_flag = RefdataCategory.lookupOrCreate('YN', 'No');
 
-        // This query used to allow institutions to copy their own licenses - now users only want to copy template licenses
-        // def qparams = [template_license_type, result.institution, licensee_role, public_flag]
+       // This query used to allow institutions to copy their own licenses - now users only want to copy template licenses
         // (OS License specs)
         // def qry = "from License as l where ( ( l.type = ? ) OR ( exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) ) OR ( l.isPublic=? ) ) AND l.status.value != 'Deleted'"
-        def qry = "from License as l where l.type = ? AND l.status.value != 'Deleted'"
+
+        def query = "from License as l where l.type = ? AND l.status.value != 'Deleted'"
 
         if (params.filter) {
-            qry += " and lower(l.reference) like ?"
+            query += " and lower(l.reference) like ?"
             qparams.add("%${params.filter.toLowerCase()}%")
         }
 
+        //separately select all licences that are not public or are null, to test access rights.
+        // For some reason that I could track, l.isPublic != 'public-yes' returns different results.
+        def non_public_query = query + " and ( l.isPublic = ? or l.isPublic is null) "
+
         if ((params.sort != null) && (params.sort.length() > 0)) {
-            qry += " order by l.${params.sort} ${params.order}"
+            query += " order by l.${params.sort} ${params.order}"
         } else {
-            qry += " order by sortableReference asc"
+            query += " order by sortableReference asc"
         }
 
+        println qparams
+        result.numLicenses = License.executeQuery("select count(l) ${query}", qparams)[0]
+        result.licenses = License.executeQuery("select l ${query}", qparams,[max: result.max, offset: result.offset])
 
-        result.numLicenses = License.executeQuery("select count(l) ${qry}", qparams)[0]
-        result.licenses = License.executeQuery("select l ${qry}", qparams, [max: result.max, offset: result.offset])
+        //We do the following to remove any licences the user does not have access rights
+        qparams += public_flag
+
+        def nonPublic = License.executeQuery("select l ${non_public_query}", qparams)
+        def no_access = nonPublic.findAll{ !it.hasPerm("view",result.user)  }
+
+        result.licenses = result.licenses - no_access
+        result.numLicenses = result.numLicenses - no_access.size()
 
         result
     }

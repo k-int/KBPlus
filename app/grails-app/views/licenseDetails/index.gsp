@@ -246,8 +246,8 @@
                 <div class="well">
                 <label>  <h5>Licence Actions</h5> </label>
                   <g:if test="${editable}">
-                   <g:link controller="myInstitutions" action="actionLicenses" params="${[shortcode:license.licensee.shortcode,baselicense:license.id,'copy-licence':'Y']}" class="btn btn-success">Copy</g:link>
-                    <g:link controller="myInstitutions" action="actionLicenses" onclick="return confirm('Are you sure you want to delete ${license.reference?:'** No licence reference ** '}?')" params="${[shortcode:license.licensee.shortcode,baselicense:license.id,'delete-licence':'Y']}" class="btn btn-danger">Delete</g:link>
+%{--                    <g:link controller="myInstitutions" action="actionLicenses" params="${[shortcode:license.licensee.shortcode,baselicense:license.id,'copy-licence':'Y']}" class="btn btn-success">Copy</g:link>
+                    <g:link controller="myInstitutions" action="actionLicenses" onclick="return confirm('Are you sure you want to delete ${license.reference?:'** No licence reference ** '}?')" params="${[shortcode:license.licensee.shortcode,baselicense:license.id,'delete-licence':'Y']}" class="btn btn-danger">Delete</g:link> --}%
                   </g:if>
                   <g:else>
                     Actions available to editors only
