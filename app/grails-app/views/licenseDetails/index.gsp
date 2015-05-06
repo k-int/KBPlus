@@ -246,8 +246,15 @@
                 <div class="well">
                 <label>  <h5>Licence Actions</h5> </label>
                   <g:if test="${editable}">
-%{--                    <g:link controller="myInstitutions" action="actionLicenses" params="${[shortcode:license.licensee.shortcode,baselicense:license.id,'copy-licence':'Y']}" class="btn btn-success">Copy</g:link>
-                    <g:link controller="myInstitutions" action="actionLicenses" onclick="return confirm('Are you sure you want to delete ${license.reference?:'** No licence reference ** '}?')" params="${[shortcode:license.licensee.shortcode,baselicense:license.id,'delete-licence':'Y']}" class="btn btn-danger">Delete</g:link> --}%
+                 
+                  <label>Target Institution:</label>
+                  <g:select from="${user.authorizedOrgs}" optionValue="name" optionKey="shortcode" id="orgShortcode" name="orgShortcode"/>
+                                 <br/>
+                   <g:link name="copyLicenceBtn" controller="myInstitutions" action="actionLicenses" params="${[shortcode:'replaceme',baselicense:license.id,'copy-licence':'Y']}" onclick="return changeLink(this,'Are you sure you want to copy this licence?')" class="btn btn-success">Copy</g:link>
+               
+%{--           
+          leave this out for now.. it is a bit confusing.
+          <g:link name="deletLicenceBtn" controller="myInstitutions" action="actionLicenses" onclick="return changeLink(this,'Are you sure you want to delete ${license.reference?:'** No licence reference ** '}?')" params="${[baselicense:license.id,'delete-licence':'Y',shortcode:'replaceme']}" class="btn btn-danger">Delete</g:link> --}%
                   </g:if>
                   <g:else>
                     Actions available to editors only
@@ -263,7 +270,15 @@
               model="${[linkType:license?.class?.name,roleLinks:license?.orgLinks,parent:license.class.name+':'+license.id,property:'orgLinks',recip_prop:'lic']}" />
 
     <r:script language="JavaScript">
-    
+      function changeLink(elem,msg){
+        var selectedOrg = $('#orgShortcode').val();
+        var edited_link =  $("a[name="+elem.name+"]").attr("href",function(i,val){
+          return val.replace("replaceme",selectedOrg)
+        });
+
+       return confirm(msg);
+      }
+
       <g:if test="${editable}">
       </g:if>
       <g:else>

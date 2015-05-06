@@ -130,6 +130,7 @@ class MyInstitutionsController {
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def actionLicenses() {
+        log.debug("actionLicenses :: ${params}")
         if (params['copy-licence']) {
             newLicense(params)
         } else if (params['delete-licence']) {
@@ -649,7 +650,7 @@ class MyInstitutionsController {
     }
 
     def deleteLicense(params) {
-        log.debug("deleteLicense id:${params.baselicense}");
+        log.debug("deleteLicense ${params}");
         def result = [:]
         result.user = User.get(springSecurityService.principal.id)
         result.institution = Org.findByShortcode(params.shortcode)
@@ -675,9 +676,11 @@ class MyInstitutionsController {
                 license.save(flush: true);
             } else {
                 flash.error = "Unable to delete - The selected license has attached subscriptions marked as Current"
+                redirect(url: request.getHeader('referer'))
+                return
             }
         } else {
-            log.warn("Attempt by ${result.user} to delete license ${result.license}without perms")
+            log.warn("Attempt by ${result.user} to delete license ${result.license} without perms")
             flash.message = message(code: 'license.delete.norights', default: 'You do not have edit permission for the selected license.')
             redirect(url: request.getHeader('referer'))
             return
