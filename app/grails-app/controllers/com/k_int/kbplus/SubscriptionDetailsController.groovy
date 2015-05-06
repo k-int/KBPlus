@@ -228,6 +228,33 @@ class SubscriptionDetailsController {
       }
     }
   }
+  
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def unlinkPackage(){
+    log.debug("unlinkPackage :: ${params}")
+    result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.subscription = Subscription.get(params.subscription.toLong())
+  
+    def query = "from IssueEntitlement ie, Package pkg where ie.subscription =:sub and pkg.id =:pkg_id and ie.tipp in ( select tipp from TitleInstancePackagePlatform tipp where tipp.pkg.id = :pkg_id ) "
+    def queryParams = [sub:result.subscription,pkg_id:params.package.toLong()]
+   
+    if (result.subscription.isEditableBy(result.user) ) {
+      result.editable = true
+      if(params.confirmed){
+      //delete matches
+        IssueEntitlement.executeQuery("select count(ie) ${query}",queryParams)
+      }else{
+        result.match_ie_count = IssueEntitlement.executeQuery("select count(ie) ${query}",queryParams)
+      }
+    }else{
+      result.editable = false
+    }
+
+
+    redirect action: 'index', id:params.subscription
+
+  }
 
   def sortOnCoreStatus(result,params){
     result.entitlements.sort{it.getTIP()?.coreStatus(null)}
