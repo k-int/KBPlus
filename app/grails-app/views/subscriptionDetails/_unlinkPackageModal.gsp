@@ -1,10 +1,10 @@
-<div id="pkg_details_modal" class="modal hide">
+<div id="unlinkPackageModal" class="modal hide">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">×</button>
-    <h6>Hard Delete: ${pkg}</h6>
+    <h6>Unlink Package: ${pkg}</h6>
   </div>
   <div class="modal-body">
-    <p> Items requiring action are marked with red circle. When these items are addressed, 'Confirm Delete' button will be enabled.</p>
+    <p> No user actions required for this process.</p>
     <table class="table table-bordered">
       <thead>
         <th>Item</th>
@@ -13,15 +13,16 @@
       </thead>
       <tbody>
       <g:set var="actions_needed" value="false"/>
+
          <g:each in="${conflicts_list}" var="conflict_item">
             <tr>
               <td>
                 ${conflict_item.name}
               </td>
               <td>
-	              	<ul>
-	              	<g:each in="${conflict_item.details}" var="detail_item">
-				      	<li> 
+                  <ul>
+                  <g:each in="${conflict_item.details}" var="detail_item">
+                <li> 
                 <g:if test="${detail_item.link}">
                   <a href="${detail_item.link}">${detail_item.text}</a>
                 </g:if>
@@ -29,8 +30,8 @@
                   ${detail_item.text}
                 </g:else>
                 </li>
-	              	</g:each>
-	              	</ul>
+                  </g:each>
+                  </ul>
               </td>
               <td>
               %{-- Add some CSS based on actionRequired to show green/red status --}%
@@ -42,22 +43,19 @@
               <g:else>
                 <i style="color:green" class="fa fa-check-circle"></i>
               </g:else>
-                 ${conflict_item.action.text}				
+                 ${conflict_item.action.text}       
               </td>
             </tr>
          </g:each>
       </tbody>
     </table>
-
   </div>
   <div class="modal-footer">
-    <g:form action="performPackageDelete" id="${pkg.id}" onsubmit="return confirm('Deleting this package is PERMANENT. Delete package?')" method="POST">
-    <g:if test="${actions_needed == 'true'}">
-      <button type="submit" disabled="disabled" class="btn btn-danger btn-small">Confirm Delete</button>
-    </g:if>
-    <g:else>
+    <g:form action="unlinkPackage" onsubmit="return confirm('Deletion of IEs is not reversable. Are you sure?')" method="POST">
+      <input type="hidden" name="package" value="${pkg.id}"/>
+      <input type="hidden" name="subscription" value="${subscription.id}"/>
+      <input type="hidden" name="confirmed" value="Y"/>
       <button type="submit"class="btn btn-danger btn-small">Confirm Delete</button>
-    </g:else>
     </g:form>
   </div>
 </div>  

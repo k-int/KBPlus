@@ -232,20 +232,28 @@ class SubscriptionDetailsController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def unlinkPackage(){
     log.debug("unlinkPackage :: ${params}")
-    result = [:]
+    def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.subscription = Subscription.get(params.subscription.toLong())
-  
+    result.package = Package.get(params.package.toLong())
     def query = "from IssueEntitlement ie, Package pkg where ie.subscription =:sub and pkg.id =:pkg_id and ie.tipp in ( select tipp from TitleInstancePackagePlatform tipp where tipp.pkg.id = :pkg_id ) "
-    def queryParams = [sub:result.subscription,pkg_id:params.package.toLong()]
+    def queryParams = [sub:result.subscription,pkg_id:result.package.id]
    
     if (result.subscription.isEditableBy(result.user) ) {
       result.editable = true
       if(params.confirmed){
       //delete matches
-        IssueEntitlement.executeQuery("select count(ie) ${query}",queryParams)
+
+
+        def deleteIdList = IssueEntitlement.executeQuery("select ie.id ${query}",queryParams)
+        IssueEntitlement.executeUpdate("delete from IssueEntitlement ie where ie.id in (:delList)",[delList:deleteIdList])
+        SubscriptionPackage.executeUpdate("delete from SubscriptionPackage sp where sp.pkg=? and sp.subscription=? ",[result.package,result.subscription])
       }else{
-        result.match_ie_count = IssueEntitlement.executeQuery("select count(ie) ${query}",queryParams)
+        def numOfIEs = IssueEntitlement.executeQuery("select count(ie) ${query}",queryParams)[0]
+        def conflict_item_pkg = [name:"Linked Package",details:[['link':createLink(controller:'packageDetails', action: 'show', id:result.package.id), 'text': result.package.name]],action:[actionRequired:false,text:'Link will be removed']]
+        def conflict_item_ie = [name:"Package IEs",details:[['text': 'Number of IEs: '+numOfIEs]],action:[actionRequired:false,text:'IEs will be deleted']]
+        def conflicts_list = [conflict_item_pkg,conflict_item_ie] 
+        return render(template: "unlinkPackageModal",model:[pkg:result.package,subscription:result.subscription,conflicts_list:conflicts_list])  
       }
     }else{
       result.editable = false
