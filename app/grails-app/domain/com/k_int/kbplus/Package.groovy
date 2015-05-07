@@ -34,7 +34,7 @@ class Package {
   Set pendingChanges
   Boolean autoAccept = false
 
-  static hasMany = [tipps: TitleInstancePackagePlatform, 
+static hasMany = [tipps: TitleInstancePackagePlatform, 
                     orgs: OrgRole, 
                     documents:DocContext,
                     subscriptions: SubscriptionPackage,

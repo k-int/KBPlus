@@ -52,7 +52,7 @@
         </g:if>
         <li> <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}">Subscription ${subscriptionInstance.id} Notes</g:link> </li>
         <g:if test="${editable}">
-          <li class="pull-right">Editable by you&nbsp;</li>
+          <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
         </g:if>
       </ul>
     </div>
@@ -91,7 +91,7 @@
               </div>
               <div class="panel-body">
                 <ul>
-                  <g:each in="${facet.value}" var="v">
+                  <g:each in="${facet.value.sort{it.display}}" var="v">
                     <li>
                       <g:set var="fname" value="facet:${facet.key+':'+v.term}"/>
 
@@ -131,7 +131,7 @@
                     <tbody>
                       <g:each in="${hits}" var="hit">
                         <tr>
-                          <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
+                          <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name} </g:link>(${hit.source?.titleCount?:'0'} Titles)</td>
                           <td>${hit.source.consortiaName}</td>
                           <td><g:link action="linkPackage" 
                                  id="${params.id}"

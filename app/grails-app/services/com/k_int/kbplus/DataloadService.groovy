@@ -100,6 +100,7 @@ class DataloadService {
           result.sortTitle = ti.sortTitle
           result.normTitle = ti.normTitle
           result.keyTitle = ti.keyTitle
+          result.publisher = ti.getPublisher()?.name ?:''
           result.dbId = ti.id
           result.visible = ['Public']
           result.rectype = 'Title'

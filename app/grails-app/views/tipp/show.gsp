@@ -14,7 +14,7 @@
         <li> <g:link controller="tipp" action="show" id="${tipp.id}">${tipp.title.title}</g:link> [title]</li>
 
         <g:if test="${editable}">
-          <li class="pull-right">Editable by you&nbsp;</li>
+          <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
         </g:if>
       </ul>
     </div>

@@ -12,6 +12,9 @@
       <ul class="breadcrumb">
         <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <li> <g:link controller="myInstitutions" action="currentSubscriptions" params="${[shortcode:params.shortcode]}">${institution.name} Current Subscriptions</g:link> </li>
+          <g:if test="${editable}">
+              <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
+          </g:if>
       </ul>
     </div>
 
@@ -34,27 +37,37 @@
       <g:render template="subsNav" contextPath="." />
     </div>
 
-    <div class="container" style="text-align:center">
+    <div class="container">
+      <div class="well">
       <g:form action="currentSubscriptions" params="${[shortcode:params.shortcode]}" controller="myInstitutions" method="get" class="form-inline">
-        <label>Search text</label> <input type="text" name="q" placeholder="enter search term..." value="${params.q?.encodeAsHTML()}"  />
-        <label>Valid On</label> <input name="validOn" type="text" value="${validOn}"/>
+
+
+
+        <label class="control-label">Search text: </label> 
+        <input type="text" name="q" placeholder="enter search term..." value="${params.q?.encodeAsHTML()}"/>
+            
+        <label class="control-label">Valid On: </label>
+        <div class="input-append date">
+          <input class="span2 datepicker-class" size="16" type="text"name="validOn" value="${validOn}">
+        </div>
+
+        <label class="control-label">Date: </label>
+        <g:select name="dateBeforeFilter"  style="width: 125px" value="${params.dateBeforeFilter}" from="${['-None-','Renewal Date','End Date']}"/>
+         before
+           <div class="input-append date">
+              <input class="span2 datepicker-class" size="16" type="text"name="dateBeforeVal" value="${params.dateBeforeVal}">
+          </div>
         <input type="submit" class="btn btn-primary" value="Search" />
-      </g:form><br/>
+      </g:form>
+      </div>
     </div>
 
-    <g:form action="actionCurrentSubscriptions" controller="myInstitutions" params="${[shortcode:params.shortcode]}">
-
-      <div class="container">
-        <div class="well subscription-options">
-          <input type="submit" name="delete-subscription" value="Delete Selected" class="btn btn-danger delete-subscription" />
-        </div>
-      </div>
 
       <div class="container subscription-results">
         <table class="table table-striped table-bordered table-condensed table-tworow">
           <tr>
-            <th rowspan="2">Select</th>
             <g:sortableColumn colspan="7" params="${params}" property="s.name" title="${message(code:'licence.slash.name')}" />
+            <th rowspan="2">Action</th>
           </tr>
 
           <tr>
@@ -64,11 +77,9 @@
             <g:sortableColumn params="${params}" property="s.endDate" title="End Date" />
             <g:sortableColumn params="${params}" property="s.manualRenewalDate" title="Renewal Date" />
             <th>Platform</th>
-            <g:sortableColumn params="${params}" property="s.lastUpdated" title="Last Updated" />
           </tr>
           <g:each in="${subscriptions}" var="s">
             <tr>
-              <td rowspan="2"><input type="radio" name="basesubscription" value="${s.id}"/></td>
               <td colspan="7">
                 <g:link controller="subscriptionDetails" action="index" id="${s.id}">
                   <g:if test="${s.name}">${s.name}</g:if><g:else>-- Name Not Set  --</g:else>
@@ -76,6 +87,11 @@
                 </g:link>
                 <g:if test="${s.owner}"> 
                   <span class="pull-right">${message(code:'licence')} : <g:link controller="licenseDetails" action="index" id="${s.owner.id}">${s.owner?.reference}</g:link></span>
+                </g:if>
+              </td>
+              <td rowspan="2">
+                <g:if test="${editable}">
+                    <g:link controller="myInstitutions" action="actionCurrentSubscriptions" params="${[shortcode:params.shortcode,basesubscription:s.id]}" class="btn btn-danger">Delete</g:link>
                 </g:if>
               </td>
             </tr>
@@ -101,7 +117,6 @@
                   ${sp.pkg?.nominalPlatform?.name}<br/>
                 </g:each>
               </td>
-              <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${s.lastUpdated}"/></td>
             </tr>
           </g:each>
         </table>
@@ -114,19 +129,11 @@
         </g:if>
       </div>
 
-    </g:form>
-
     <r:script type="text/javascript">
-        $('.subscription-results input[type="radio"]').click(function () {
-            $('.subscription-options').slideDown('fast');
-        });
 
-        $('.subscription-options .delete-subscription').click(function () {
-            $('.subscription-results input:checked').each(function () {
-                $(this).parent().parent().fadeOut('slow');
-                $('.subscription-options').slideUp('fast');
-            })
-        })                
+        $(".datepicker-class").datepicker({
+            format:"${session.sessionPreferences?.globalDatepickerFormat}"
+        });
     </r:script>
 
   </body>

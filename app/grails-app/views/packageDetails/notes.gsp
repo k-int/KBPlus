@@ -24,7 +24,7 @@
                     id="${packageInstance.id}">${packageInstance.name}</g:link></li>
 
         <li class="dropdown pull-right">
-            <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#"
+            <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#"
                href="">Exports<b class="caret"></b></a>
 
             <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">

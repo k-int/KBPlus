@@ -131,10 +131,6 @@ class TitleInstancePackagePlatform {
       touchPkgLastUpdated()
   }
 
-  def beforeDelete(){
-    touchPkgLastUpdated()
-  }
-
   @Transient
   def touchPkgLastUpdated(){
     if(pkg!=null){
