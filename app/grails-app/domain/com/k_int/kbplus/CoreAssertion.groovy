@@ -38,7 +38,7 @@ class CoreAssertion {
   public String toString(){
     def strFormat = grailsApplication.config.appDefaultPrefs.globalDateFormat
     def formatter = new java.text.SimpleDateFormat(strFormat)
-    return "${formatter.format(startDate)} : ${formatter.format(endDate)}"
+    return "${startDate?formatter.format(startDate):''} : ${endDate?formatter.format(endDate):''}"
   }
 
 }
