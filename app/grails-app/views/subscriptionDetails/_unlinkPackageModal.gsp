@@ -1,7 +1,7 @@
 <div id="unlinkPackageModal" class="modal hide">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">×</button>
-    <h6>Unlink Package: ${pkg}</h6>
+    <h6>Unlink: ${pkg}</h6>
   </div>
   <div class="modal-body">
     <p> No user actions required for this process.</p>
@@ -51,7 +51,7 @@
     </table>
   </div>
   <div class="modal-footer">
-    <g:form action="unlinkPackage" onsubmit="return confirm('Deletion of IEs is not reversable. Are you sure?')" method="POST">
+    <g:form action="unlinkPackage" onsubmit="return confirm('Deletion of IEs and PendingChanges is NOT reversable. Continue?')" method="POST">
       <input type="hidden" name="package" value="${pkg.id}"/>
       <input type="hidden" name="subscription" value="${subscription.id}"/>
       <input type="hidden" name="confirmed" value="Y"/>

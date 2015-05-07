@@ -244,15 +244,26 @@ class SubscriptionDetailsController {
       if(params.confirmed){
       //delete matches
 
-
+        removePackagePendingChanges(result.package.id,result.subscription.id,params.confirmed)
         def deleteIdList = IssueEntitlement.executeQuery("select ie.id ${query}",queryParams)
         IssueEntitlement.executeUpdate("delete from IssueEntitlement ie where ie.id in (:delList)",[delList:deleteIdList])
         SubscriptionPackage.executeUpdate("delete from SubscriptionPackage sp where sp.pkg=? and sp.subscription=? ",[result.package,result.subscription])
       }else{
+        def numOfPCs = removePackagePendingChanges(result.package.id,result.subscription.id,params.confirmed)
+
         def numOfIEs = IssueEntitlement.executeQuery("select count(ie) ${query}",queryParams)[0]
         def conflict_item_pkg = [name:"Linked Package",details:[['link':createLink(controller:'packageDetails', action: 'show', id:result.package.id), 'text': result.package.name]],action:[actionRequired:false,text:'Link will be removed']]
-        def conflict_item_ie = [name:"Package IEs",details:[['text': 'Number of IEs: '+numOfIEs]],action:[actionRequired:false,text:'IEs will be deleted']]
-        def conflicts_list = [conflict_item_pkg,conflict_item_ie] 
+        def conflicts_list = [conflict_item_pkg]
+
+        if(numOfIEs > 0){
+          def conflict_item_ie = [name:"Package IEs",details:[['text': 'Number of IEs: '+numOfIEs]],action:[actionRequired:false,text:'IEs will be deleted']]
+          conflicts_list += conflict_item_ie
+        }
+        if(numOfPCs > 0){
+          def conflict_item_pc = [name:"Pending Changes",details:[['text': 'Number of PendingChanges: '+ numOfPCs]],action:[actionRequired:false,text:'Pending Changes will be deleted']]
+          conflicts_list += conflict_item_pc
+        }
+
         return render(template: "unlinkPackageModal",model:[pkg:result.package,subscription:result.subscription,conflicts_list:conflicts_list])  
       }
     }else{
@@ -262,6 +273,30 @@ class SubscriptionDetailsController {
 
     redirect action: 'index', id:params.subscription
 
+  }
+  def removePackagePendingChanges(pkg_id,sub_id,confirmed){
+
+    def tipp_class = TitleInstancePackagePlatform.class.getName()
+    def tipp_id_query = "from TitleInstancePackagePlatform tipp where tipp.pkg.id = ?"
+    def change_doc_query = "from PendingChange pc where pc.subscription.id = ? "
+    def tipp_ids = TitleInstancePackagePlatform.executeQuery("select tipp.id ${tipp_id_query}",[pkg_id])
+    def pendingChanges = PendingChange.executeQuery("select pc.id, pc.changeDoc ${change_doc_query}",[sub_id])
+
+    def pc_to_delete = []
+    pendingChanges.each{pc->
+      def parsed_change_info = JSON.parse(pc[1])
+      def (oid_class,ident) = parsed_change_info.changeDoc.OID.split(":")
+      if(oid_class == tipp_class && tipp_ids.contains(ident.toLong()) ){
+        pc_to_delete += pc[0]
+      }
+    }
+    if(confirmed && pc_to_delete){
+      log.debug("Deleting Pending Changes: ${pc_to_delete}")
+      def del_pc_query = "delete from PendingChange where id in (:del_list) "
+      PendingChange.executeUpdate(del_pc_query,[del_list:pc_to_delete])
+    }else{
+      return pc_to_delete.size()
+    }
   }
 
   def sortOnCoreStatus(result,params){
