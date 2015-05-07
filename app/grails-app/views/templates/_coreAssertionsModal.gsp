@@ -67,7 +67,7 @@
      }
    });
 
-</script>>
+</script>
  </g:if>
 
 
