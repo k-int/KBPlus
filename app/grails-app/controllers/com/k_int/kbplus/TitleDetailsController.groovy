@@ -230,4 +230,14 @@ class TitleDetailsController {
 
     result
   }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def availability() {
+    def result = [:]
+    result.ti = TitleInstance.get(params.id)
+    result.availability = IssueEntitlement.executeQuery("select ie from IssueEntitlement as ie where ie.tipp.title = ?",[result.ti]);
+
+    result
+  }
+
 }

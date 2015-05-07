@@ -157,5 +157,7 @@ grails.project.dependency.resolution = {
         compile ":grails-melody:1.53.0"
         // runtime "com.k-int:domain-model-oai-pmh:0.1"
         compile ":jsonp:0.2"
+
+        compile ":remote-pagination:0.4.8" //AJAX Pagination - Finance
     }
 }

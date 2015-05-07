@@ -122,6 +122,38 @@
                <dl><dt>Start Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="startDate" type="date"/></dd></dl>
 
                <dl><dt>End Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="endDate" type="date"/></dd></dl>
+
+
+               <dl><dt>Financial</dt>
+                   <dd>
+                     <table class="table table-striped table-bordered">
+                       <thead>
+                         <tr>
+                           <th>CI #</th>
+                           <th>Order #</th>
+                           <th>Date Paid</th>
+                           <th>Start Date</th>
+                           <th>End Date</th>
+                           <th>Amount</th>
+                         </tr>
+                       </thead>
+                       <tbody>
+                         <g:each in="${subscriptionInstance.costItems}" var="ci">
+                           <tr>
+                             <td>${ci.id}</td>
+                             <td>${ci.order?.orderNumber}</td>
+                             <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ci.datePaid}"/></td>
+                             <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ci.startDate}"/></td>
+                             <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ci.endDate}"/></td>
+                             <td>${ci.costInLocalCurrency}</td>
+                         </tr>
+                         </g:each>
+                       </tbody>
+                     </table>
+                   </dd>
+               </dl>
+
+
                <dl><dt>Manual Renewal Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="manualRenewalDate" type="date"/></dd></dl>
                <dL><dt>Child </dt><dd>
                         <g:xEditableRefData owner="${subscriptionInstance}" field="isSlaved" config='YN'/>
@@ -212,8 +244,7 @@
               <th rowspan="2"></th>
               <th rowspan="2">#</th>
               <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
-              <th>ISSN</th>
-              <th rowspan="2">Entitlement Medium (P/E)</th>
+              <g:sortableColumn params="${params}" property="coreStatus" title="Core" />
               <g:sortableColumn params="${params}" property="startDate" title="Earliest date" />
               <g:sortableColumn params="${params}" property="core_status" title="Core Status" />
               <th rowspan="2">Actions</th>
@@ -221,7 +252,7 @@
 
             <tr>
               <th>Access Dates</th>
-              <th>eISSN</th>
+              <th>Medium (P/E)</th>
               <g:sortableColumn params="${params}" property="endDate" title="Latest Date" />
               <th> Core Medium </th>
             </tr>
@@ -269,9 +300,11 @@
                 <td><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></g:if></td>
                 <td>${counter++}</td>
                 <td>
-                  <g:link controller="issueEntitlement" id="${ie.id}" action="show">${ie.tipp.title.title}</g:link>
+                  <g:link controller="issueEntitlement" id="${ie.id}" action="show"><strong>${ie.tipp.title.title}</strong></g:link>
                   <g:if test="${ie.tipp?.hostPlatformURL}">( <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">Host Link</a> 
                             <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL} (In new window)" target="_blank"><i class="icon-share-alt"></i></a>)</g:if> <br/>
+                   ISSN:<strong>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</strong>, 
+                   eISSN:<strong>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</strong><br/>
                    Access: ${ie.availabilityStatus?.value}<br/>
                    Coverage Note: ${ie.coverageNote?:(ie.tipp?.coverageNote?:'')}<br/>
                    <g:if test="${ie.availabilityStatus?.value=='Expected'}">
@@ -286,14 +319,18 @@
                    </g:if>
 
                 </td>
-                <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}<br/>
-                ${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
                 <td>
-                  <g:xEditableRefData owner="${ie}" field="medium" config='IEMedium'/>
+                  <g:xEditableRefData owner="${ie}" field="coreStatus" config='CoreStatus'/>
+
+                  <g:if test="${grailsApplication.config.ab?.newcore==true}"><br/>
+                    <span style="white-space: nowrap;">(Newcore: ${ie.wasCoreOn(as_at_date)})</span>
+                  </g:if>
+
+                  <br/><g:xEditableRefData owner="${ie}" field="medium" config='IEMedium'/>
                 </td>
                 <td>
-                    <g:xEditable owner="${ie}" type="date" field="startDate" /><br/>
-                    <g:xEditable owner="${ie}" type="date" field="endDate" />
+                    <span style="white-space: nowrap;"><g:xEditable owner="${ie}" type="date" field="startDate" /></span><br/>
+                    <span style="white-space: nowrap;"><g:xEditable owner="${ie}" type="date" field="endDate" /></span>
                 </td>
                 <td>
                 <g:set var="iecorestatus" value="${ie.getTIP()?.coreStatus(null)}"/>

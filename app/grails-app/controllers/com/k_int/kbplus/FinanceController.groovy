@@ -3,17 +3,18 @@ package com.k_int.kbplus
 import com.k_int.kbplus.auth.*
 import grails.converters.JSON;
 import grails.plugins.springsecurity.Secured
+import groovy.json.JsonBuilder
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
-
+import org.elasticsearch.common.joda.time.DateTime
 import java.text.SimpleDateFormat
 
 
 class FinanceController {
 
     def springSecurityService
-    def messageSource
-    private static def dateFormat = new SimpleDateFormat("YYYY-MM-dd")
+    private static def dateFormat     = new SimpleDateFormat("YYYY-MM-dd")
+    private static def dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") {{setLenient(false)}}
 
 
 
@@ -21,22 +22,22 @@ class FinanceController {
     def index() {
         log.debug("FinanceController::index() ${params}");
 
+        if (params.Add == 'add')
+            chain(action: "newCostItem", params: params) //just in case :)
+
         def result         = [:]
         result.user        = User.get(springSecurityService.principal.id)
         result.institution = Org.findByShortcode(params.shortcode)
         result.editable    = SpringSecurityUtils.ifAllGranted('ROLE_ADMIN')
-        result.max         = params.max ? Integer.parseInt(params.max) : 10;
-        result.offset      = params.offset ? Integer.parseInt(params.offset) : 0;
-        result.filterMode  = params.filterMode?: "OFF"
+        result.filterMode  = params.filterSelectionMode?: "OFF"
+        result.info        = [] as List
+        params.max         = params.max ? Math.min(Integer.parseInt(params.max),200) : 10
+        result.max         = params.max
+        result.offset      = params.offset
+        if (!request.isXhr()) result.from = dateTimeFormat.format(new DateTime().minusDays(3).toDate())
 
         def base_qry   = " from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) "
         def qry_params = [result.institution]
-
-        if (params.Add == 'add') {
-            redirect(action: "newCostItem", params: params)
-        }
-
-
         result.institutionSubscriptions = Subscription.executeQuery(base_qry, qry_params);
 
         def cost_item_qry_params = [result.institution]
@@ -44,105 +45,76 @@ class FinanceController {
 
         if (result.filterMode=="ON")
         {
-            println("WOOOOOOOOOO")
-            //todo append filter requirements validate firstly
-
-        }
-
-        result.cost_item_count = CostItem.executeQuery('select count(ci.id) ' + cost_item_qry, cost_item_qry_params)[0];
-
-        if (result.cost_item_count==0)
-        {
-            if (result.filterMode=="ON")
+            println("FinanceController::index()  -- Performing filtering processing...")
+            def qryOutput          = filterQuery(result,params)
+            println(qryOutput.qry_string)
+            if (!qryOutput.qry_string) //Nothing found from filtering!
             {
-                params.remove("filterMode")
-                result.msg="Unable to filter, no results found... The filter has been reset"
+                result.info.add([status:"Filter Mode",msg:"No results found, reset filter"])
+                result.info.addAll(qryOutput.failed)
+                result.filterMode = "OFF" //SWITCHING BACK!
+            }
+            else
+            {
+                result.cost_items = CostItem.executeQuery('select ci ' + cost_item_qry + qryOutput.qry_string, cost_item_qry_params, params);
+                result.cost_item_count = CostItem.executeQuery('select count(ci.id) ' + cost_item_qry + qryOutput.qry_string, cost_item_qry_params)[0];
             }
         }
-        else
-            result.cost_items  = CostItem.executeQuery('select ci ' + cost_item_qry, cost_item_qry_params, params);
 
-        result
+        if (result.filterMode=="OFF" || params.resetMode == "reset")
+        {
+            result.cost_item_count = CostItem.executeQuery('select count(ci.id) ' + cost_item_qry, cost_item_qry_params)[0];
+            result.cost_items      = CostItem.executeQuery('select ci ' + cost_item_qry, cost_item_qry_params, params);
+        }
+
+
+        if (request.isXhr())
+            render (template: "filter", model: result)
+        else
+            result
     }
 
-    def private filterQuery(GrailsParameterMap params) {
-        println("FilterQuery Paramerters recieved: "+params)
-        def result        = [:]
-        result.failed     = ""
-        result.valid      = ""
+    def private filterQuery(LinkedHashMap result, GrailsParameterMap params) {
+        result.failed     = [] as List
+        result.valid      = [] as List
         result.qry_string = ""
-        result.institution = Org.findByShortcode(params.shortcode)
+
         if (params.orderNumberFilter) {
             def order = Order.findByOrderNumberAndOwner(params.orderNumberFilter,result.institution)
             if (order) {
-                result.valid="Order: "+params.orderNumberFilter+"\n"
-                result.qry_string = " AND WHERE ci_ord_fk = "+order.id+" "
-            } else {
-                result.failed="Invalid order number " + params.orderNumberFilter+" "
-            }
+                result.valid.add([status: "Order", msg: "Order: "+params.orderNumberFilter])
+                result.qry_string = " AND ci_ord_fk = "+order.id+" "
+            } else
+                result.failed.add([status: "Order", msg: "Invalid order number " + params.orderNumberFilter])
         }
 
         if (params.invoiceNumberFilter) {
             def invoice = Invoice.findByInvoiceNumberAndOwner(params.invoiceNumberFilter, result.institution)
             if (invoice) {
-                result.valid+="Invoice: "+params.invoiceNumberFilter+"\n"
-                result.qry_string+=" AND where ci.invoice = "+invoice.id+" "
-            } else {
-                result.failed+="Invalid invoice number " + params.invoiceNumberFilter+" "
-            }
+                result.valid.add([status: "Invoice", msg: "Invoice: "+params.invoiceNumberFilter])
+                result.qry_string+=" AND ci.invoice = "+invoice.id+" "
+            } else
+                result.failed.add([status: "Invoice", msg: "Invalid invoice number " + params.invoiceNumberFilter])
         }
 
         if (params.long('subscriptionFilter')) {
             def sub = Subscription.get(params.long('subscriptionFilter'));
             if (sub) {
-                result.valid+="Subscription: "+sub.name
-                result.qry_string+=" AND where ci_sub_fk = "+sub.id+" "
-            } else {
-                result.failed+="Invalid subscription " + params.subscriptionFilter+" "
-            }
+                result.valid.add([status: "Subscription", msg: "Subscription: "+sub.name])
+                result.qry_string+=" AND ci_sub_fk = "+sub.id+" "
+            } else
+                result.failed.add([status: "Subscription", msg: "Invalid subscription " + params.subscriptionFilter])
         }
 
         if (params.long('packageFilter')) {
             def pkg = Package.get(params.long('packageFilter'));
             if (pkg) {
-                result.valid+="Sub Package: "+pkg.name
-                result.qry_string+=" AND where ci_subPkg_fk = "+pkg.id
-            } else {
-                result.failed+="Invalid package " + params.packageFilter+" "
-            }
+                result.valid.add([status: "Sub Package", msg: "Sub Package: "+pkg.name])
+                result.qry_string+=" AND ci_subPkg_fk = "+pkg.id
+            } else
+                result.failed.add([status: "Invoice", msg: "Invalid package " + params.packageFilter])
         }
         return result
-    }
-
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-    def filterResultCheck() {
-        log.debug("FinanceController::filterResultCheck() ${params}")
-
-        if (!request.isXhr())
-            redirect(action: "index", params: params)
-
-        def result         = [:]
-        result.institution = Org.findByShortcode(params.shortcode)
-
-        def cost_item_qry_params = [result.institution]
-        def cost_item_qry        = " from CostItem as ci where ci.owner = ?"
-
-        def output = filterQuery(params)
-        println("Filter Query output: "+output)
-        if (!output.qry_string)
-            render (count:0, msg:output.failed) as JSON
-        else
-        {
-            println('select count(ci.id) ' + cost_item_qry + output.qry_string)
-            def count = CostItem.executeQuery('select count(ci.id) ' + cost_item_qry + output.qry_string, cost_item_qry_params)[0]
-            if (count > 0)
-                render (count:count, msg:"Cost items results: "+output.valid.toString()) as JSON
-            else
-                render (count:count, msg: "No cost items results: " + output.valid.toString()) as JSON
-        }
-
-        //todo chain onto index if there are results maybe
-
     }
 
 
@@ -152,8 +124,7 @@ class FinanceController {
 
         def result = [:]
         result.institution = Org.findByShortcode(params.shortcode)
-
-        log.debug("Process add cost item, editable active : "+result.editable);
+        result.error = [] as List
 
         def order = null
         if (params.newOrderNumber) {
@@ -184,6 +155,24 @@ class FinanceController {
             }
         }
 
+        def startDate = null
+        if (params.newStartDate) {
+            try {
+                startDate = dateFormat.parse(params.newStartDate)
+            } catch (Exception e) {
+                log.debug("Unable to parse date : "+params.newStartDate+" in format "+dateFormat.toPattern())
+            }
+        }
+
+        def endDate = null
+        if (params.newEndDate) {
+            try {
+                endDate = dateFormat.parse(params.newEndDate)
+            } catch (Exception e) {
+                log.debug("Unable to parse date : "+params.newEndDate+" in format "+dateFormat.toPattern())
+            }
+        }
+
         def ie = null
         if(params.newIe)
         {
@@ -202,13 +191,11 @@ class FinanceController {
 //            def cost_billing_currency = params.newCostInBillingCurrency? (RefdataValue.get(params.long('newCostInBillingCurrency'))) : null;
 //            def cost_local_currency   = params.newCostInLocalCurrency? (RefdataValue.get(params.long('newCostInLocalCurrency'))) : null;
 
-
         def newCostItem = new CostItem(
                 owner: result.institution,
                 sub: sub,
                 subPkg: pkg,
                 issueEntitlement: ie,
-                group: null,
                 order: order,
                 invoice: invoice,
                 costItemType: cost_item_element,
@@ -217,6 +204,8 @@ class FinanceController {
                 costDescription: params.newDescription,
                 costInBillingCurrency: params.newCostInBillingCurrency,
                 datePaid: datePaid,
+                startDate: startDate,
+                endDate: endDate,
                 localFundCode: null,
                 costInLocalCurrency: params.newCostInLocalCurrency,
                 taxCode: cost_tax_type,
@@ -226,25 +215,47 @@ class FinanceController {
                 costItemElement: cost_item_element
         )
 
-        newCostItem.save(flush: true);
 
-        if (newCostItem.errors.errorCount > 0) {
+        if (!newCostItem.validate()) {
             result.error = newCostItem.errors.allErrors.collect {
-                message(error:it,encodeAs:'HTML')
+                log.debug("Field: " + it.properties.field + ", user input: " + it.properties.rejectedValue + ", Reason! " + it.properties.code)
+                message(error: it)
             }
-            log.debug(newCostItem.errors);
-            response.sendError(500)
+        } else {
+            if (newCostItem.save(flush: true))
+            {
+                if (params.newBudgetCode)
+                    createBudgetCodes(newCostItem, params.newBudgetCode, params.shortcode)
+            } else {
+                result.error = "Unable to save!"
+            }
         }
-        params.remove("Add")
 
+        params.remove("Add")
         if (request.isXhr())
-            render result as JSON
+            render ([newCostItem:newCostItem.id, error:result.error]) as JSON
         else
         {
             def base_qry = " from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) "
             def qry_params = [result.institution]
             result.institutionSubscriptions = Subscription.executeQuery(base_qry, qry_params);
             render (view: "newCostItem", model: result, params:params)
+        }
+    }
+
+    private def createBudgetCodes(CostItem costItem, String budgetcodes, String owner) {
+        if(budgetcodes && owner && costItem) {
+            def budgetOwner = RefdataCategory.findByDesc("budgetcode_"+owner)?:new RefdataCategory(desc: "budgetcode_"+owner).save(flush: true)
+            budgetcodes.split(",").each { c ->
+                def rdv = null
+                if (c.startsWith("-1")) //New codes from UI
+                    rdv = new RefdataValue(owner: budgetOwner, value: c.substring(2).toLowerCase()).save(flush: true)
+                else
+                    rdv = RefdataValue.get(c)
+
+                if (rdv != null)
+                    new CostItemGroup(costItem: costItem, budgetcode: rdv).save(flush: true)
+            }
         }
     }
 
@@ -276,75 +287,58 @@ class FinanceController {
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def getRecentCostItems() {
-        def result = [:]
-        def institution = Org.findByShortcode(params.shortcode)
-
-        Date from = getFromToDate(params.from,"from")
-        Date to   = new Date()
-        result.costItems = CostItem.findAllByOwnerAndLastUpdatedBetween(institution,from,to)
-        println(result)
-
+        def  institution       = Org.findByShortcode(params.shortcode)
+        def  result            = [:]
+        result.to              = new Date()
+        result.from            = params.from? dateTimeFormat.parse(params.from): new Date() //getFromToDate(params.from,"from")
+        result.recentlyUpdated = CostItem.findAllByOwnerAndLastUpdatedBetween(institution,result.from,result.to,[max:5, order:"desc", sort:"lastUpdated"])
+        result.from            = dateTimeFormat.format(result.from)
+        result.to              = dateTimeFormat.format(result.to)
+        log.debug("Finane - getRecentCostItems, rendering template with model: "+result)
         render(template: "/finance/recentlyAdded", model: result)
-
     }
 
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+
+    @Secured(['ROLE_USER'])
     def newCostItemsPresent() {
         def institution = Org.findByShortcode(params.shortcode)
-        Date to   = getFromToDate(params.to,"to")
-        int count = CostItem.countByOwnerAndLastUpdatedGreaterThan(institution,to)
-        render  count
-    }
+        Date dateTo     = params.to? dateTimeFormat.parse(params.to):new Date()//getFromToDate(params.to,"to")
+        int counter     = CostItem.countByOwnerAndLastUpdatedGreaterThan(institution,dateTo)
 
-    private Date getFromToDate(def date, def type)
-    {
-        Date d  = null;
-        if (type=="from")
-        {
-            if (date == null)
-            {
-                d = new Date();
-                d.setTime(d.getTime() - 7 * 1000 * 60 * 60 * 24)
-            }
-            else
-                d = new Date(date)
+        def builder = new JsonBuilder()
+        def root    = builder {
+            count counter
+            to dateTimeFormat.format(dateTo)
         }
-        else if (type=="to")
-        {
-            if (date==null)
-                d = new Date()
-            else
-                d = new Date(date)
-        }
-
-        return d
+        log.debug("Finance - newCostItemsPresent ? params: "+params+"\tJSON output: "+builder.toString())
+        render(text: builder.toString(), contentType: "text/json", encoding: "UTF-8")
     }
-
 
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
     def delete() {
         log.debug("FinanceController::delete() ${params}");
 
         def results        = [:]
-        results.user        = User.get(springSecurityService.principal.id)
         results.successful = []
         results.failures   = []
         results.message    = null
         results.sentIDs    = JSON.parse(params.del)
+        def user           = User.get(springSecurityService.principal.id)
         def institution    = Org.findByShortcode(params.shortcode)
 
         if (results.sentIDs && institution) {
-            def _costItem = []
+            def _costItem = null
             def _props
             results.sentIDs.each { id ->
-                _costItem = CostItem.findAllByIdAndOwner(id,institution)
-                if (_costItem.size() > 0)
+                _costItem = CostItem.findByIdAndOwner(id,institution)
+                if (_costItem)
                 {
                     try {
-                        _props = _costItem.first().properties
-                        _costItem.first().delete(flush: true)
+                        _props = _costItem.properties
+                        CostItemGroup.deleteAll(CostItemGroup.findAllByCostItem(_costItem))
+                        _costItem.delete(flush: true)
                         results.successful.add(id)
-                        log.debug("User: "+results.user+" deleted cost item with properties"+_props)
+                        log.debug("User: "+user.username+" deleted cost item with properties"+_props)
                     } catch (Exception e)
                     {
                         log.error("FinanceController::delete() : Delete Exception",e)
