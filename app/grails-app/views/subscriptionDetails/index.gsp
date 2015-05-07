@@ -122,6 +122,38 @@
                <dl><dt>Start Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="startDate" type="date"/></dd></dl>
 
                <dl><dt>End Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="endDate" type="date"/></dd></dl>
+
+
+               <dl><dt>Financial</dt>
+                   <dd>
+                     <table class="table table-striped table-bordered">
+                       <thead>
+                         <tr>
+                           <th>CI #</th>
+                           <th>Order #</th>
+                           <th>Date Paid</th>
+                           <th>Start Date</th>
+                           <th>End Date</th>
+                           <th>Amount</th>
+                         </tr>
+                       </thead>
+                       <tbody>
+                         <g:each in="${subscriptionInstance.costItems}" var="ci">
+                           <tr>
+                             <td>${ci.id}</td>
+                             <td>${ci.order?.orderNumber}</td>
+                             <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ci.datePaid}"/></td>
+                             <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ci.startDate}"/></td>
+                             <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ci.endDate}"/></td>
+                             <td>${ci.costInLocalCurrency}</td>
+                         </tr>
+                         </g:each>
+                       </tbody>
+                     </table>
+                   </dd>
+               </dl>
+
+
                <dl><dt>Manual Renewal Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="manualRenewalDate" type="date"/></dd></dl>
                <dL><dt>Child </dt><dd>
                         <g:xEditableRefData owner="${subscriptionInstance}" field="isSlaved" config='YN'/>
