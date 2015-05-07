@@ -725,8 +725,9 @@ class AjaxController {
   def getTipCoreDates(){
     log.debug("ajax::getTipCoreDates:: ${params}")
     def tipID = params.tipID ?:params.id
-    if(tipID){
-      def tip = TitleInstitutionProvider.get(tipID)
+    def tip = null
+    if(tipID) tip = TitleInstitutionProvider.get(tipID);
+    if(tip){
       def dates = tip.coreDates
       log.debug("Returning ${dates}")
       request.setAttribute("editable",params.editable?:true)
