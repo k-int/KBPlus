@@ -710,7 +710,7 @@ class AjaxController {
     try{
       def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
       def startDate = sdf.parse(params.coreStartDate)
-      def endDate = sdf.parse(params.coreEndDate)
+      def endDate = params.coreEndDate? sdf.parse(params.coreEndDate) : null
       if(tipID && startDate){
         def tip = TitleInstitutionProvider.get(tipID)
         log.debug("Extending tip ${tip.id} with start ${startDate} and end ${endDate}")
