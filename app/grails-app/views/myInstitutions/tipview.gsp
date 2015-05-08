@@ -11,7 +11,9 @@
     <div class="container">
       <ul class="breadcrumb">
         <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
-        <li> <g:link controller="myInstitutions" action="tipview" params="${[shortcode:params.shortcode]}">${institution.name} Edit Core Titles </g:link> </li>
+        <li> <g:link controller="myInstitutions" action="dashboard" params="${[shortcode:params.shortcode]}">${institution.name} - Dashboard</g:link> <span class="divider">/</span>  </li>
+        <li> <g:link controller="myInstitutions" action="tipview" params="${[shortcode:params.shortcode]}"> Edit Core Titles </g:link> </li>
+
       </ul>
     </div>
 
@@ -28,7 +30,7 @@
 
       <div class="row">
         <div class="span12">
-          <g:form action="tipview" method="get" params="${params}">
+          <g:form action="tipview" method="get" params="${[shortcode:params.shortcode]}">
           <input type="hidden" name="offset" value="${params.offset}"/>
 
           <div class="well form-horizontal">

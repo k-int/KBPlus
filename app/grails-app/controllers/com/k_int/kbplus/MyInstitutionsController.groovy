@@ -88,17 +88,17 @@ class MyInstitutionsController {
               }
               if (params.search_for == "institution") {
                 institution {
-                  ilike("name", "${params.search_str}%")         
+                  ilike("name", "%${params.search_str}%")         
                 }
               }
              if (params.search_for == "provider") {
                 provider {
-                  ilike("name", "${params.search_str}%")         
+                  ilike("name", "%${params.search_str}%")         
                 }
              }
              if (params.search_for == "title") {
                 title {
-                  ilike("title", "${params.search_str}%")         
+                  ilike("title", "%${params.search_str}%")         
                 }
              }
              "${tip_property}"{
