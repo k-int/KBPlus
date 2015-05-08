@@ -1318,9 +1318,9 @@ AND EXISTS (
                     log.debug("start year ${p.key} : -${p.value}-");
 
                     if (!has_filter)
-                        has_filter = true
+                        has_filter = true;
                     else
-                        sw.append(" AND ")
+                        sw.append(" AND ");
 
                     String[] filter_components = p.key.split(':');
                     switch (filter_components[1]) {
@@ -1888,7 +1888,7 @@ AND EXISTS (
                     cell = row.createCell(cc++);
                     def ie_info = m.ti_info[title.title_idx][sub.sub_idx]
                     if (ie_info) {
-                        if ((ie_info.core) && (ie_info.core != 'No')) {
+                        if ((ie_info.core_status) && (ie_info.core_status != "False")) {
                             cell.setCellValue(new HSSFRichTextString(""));
                             cell.setCellStyle(core_cell_style);
                         } else {
