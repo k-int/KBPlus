@@ -27,7 +27,7 @@
           <div class="well">
               <g:each in="${facets}" var="facet">
                 <h5><g:message code="facet.so.${facet.key}" default="${facet.key}" /></h5>
-                    <g:each in="${facet.value}" var="fe">
+                    <g:each in="${facet.value.sort{it.display}}" var="fe">
                       <g:set var="facetname" value="fct:${facet.key}:${fe.display}" />
                       <div><g:checkBox class="pull-right" name="${facetname}" value="${params[facetname]}" />${fe.display} (${fe.count})</div>
                     </g:each>
@@ -53,7 +53,7 @@
                 <div id="resultsarea">
                   <table class="table table-bordered table-striped">
                     <thead>
-                      <tr><th>Package Name</th><th>Consortium</th><th>Additional Info</th></tr>
+                      <tr><th>Package Name</th><th>Consortium</th><th style="white-space:nowrap">Additional Info</th></tr>
                     </thead>
                     <tbody>
                       <g:each in="${hits}" var="hit">
