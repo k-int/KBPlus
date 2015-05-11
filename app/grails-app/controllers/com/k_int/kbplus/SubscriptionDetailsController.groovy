@@ -161,7 +161,7 @@ class SubscriptionDetailsController {
 
     result.num_sub_rows = IssueEntitlement.executeQuery("select count(ie) "+base_qry, qry_params )[0]
 
-    if(params.format == 'html' || params.format == null)
+    if(params.format == 'html' || params.format == null){
       result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, qry_params, [max:result.max, offset:result.offset]);    
     }else{
       result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, qry_params);
