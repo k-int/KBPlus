@@ -710,7 +710,7 @@ class AjaxController {
     try{
       def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
       def startDate = sdf.parse(params.coreStartDate)
-      def endDate = sdf.parse(params.coreEndDate)
+      def endDate = params.coreEndDate? sdf.parse(params.coreEndDate) : null
       if(tipID && startDate){
         def tip = TitleInstitutionProvider.get(tipID)
         log.debug("Extending tip ${tip.id} with start ${startDate} and end ${endDate}")
@@ -725,8 +725,9 @@ class AjaxController {
   def getTipCoreDates(){
     log.debug("ajax::getTipCoreDates:: ${params}")
     def tipID = params.tipID ?:params.id
-    if(tipID){
-      def tip = TitleInstitutionProvider.get(tipID)
+    def tip = null
+    if(tipID) tip = TitleInstitutionProvider.get(tipID);
+    if(tip){
       def dates = tip.coreDates
       log.debug("Returning ${dates}")
       request.setAttribute("editable",params.editable?:true)

@@ -112,9 +112,11 @@
                        </g:if><g:else>N/A (Subscription offered)</g:else>
                    </dd>
                </dl>
-
                <dl><dt>Package Name</dt><dd><g:each in="${subscriptionInstance.packages}" var="sp">
-                           <g:link controller="packageDetails" action="show" id="${sp.pkg.id}">${sp?.pkg?.name}</g:link> (${sp.pkg?.contentProvider?.name}) <g:link action="unlinkPackage" params="${[subscription:subscriptionInstance.id,package:sp.pkg.id]}">unlink</g:link><br/>
+                           <g:link controller="packageDetails" action="show" id="${sp.pkg.id}">${sp?.pkg?.name}</g:link> (${sp.pkg?.contentProvider?.name}) 
+
+                           <a onclick="unlinkPackage(${sp.pkg.id})">Unlink <i class="fa fa-times"></i></a>
+                           <br/>
                        </g:each></dd></dl>
 
                <dl><dt><g:annotatedLabel owner="${subscriptionInstance}" property="identifier">Subscription Identifier</g:annotatedLabel></dt><dd>${subscriptionInstance.identifier}</dd></dl>
@@ -373,10 +375,26 @@
 
     <div id="magicArea">
     </div>
+
+
     <r:script language="JavaScript">
-       function hideModal(){
+
+      function unlinkPackage(pkg_id){
+        var req_url = "${createLink(controller:'subscriptionDetails', action:'unlinkPackage',params:[subscription:subscriptionInstance.id])}&package="+pkg_id
+
+        $.ajax({url: req_url, 
+          success: function(result){
+             $('#magicArea').html(result);
+          },
+          complete: function(){
+            $("#unlinkPackageModal").modal("show");
+          }
+        });
+      }
+      
+      function hideModal(){
         $("[name='coreAssertionEdit']").modal('hide');
-       }
+      }
 
       function showCoreAssertionModal(){
 
