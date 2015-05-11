@@ -260,7 +260,7 @@
                     Actions available to editors only
                   </g:else>
                  </div>
-                <g:render template="/templates/documents" model="${[ ownobj:license, ownt:'plicense']}" />
+                <g:render template="/templates/documents" model="${[ ownobj:license, owntp:'license']}" />
                 <g:render template="/templates/notes"  model="${[ ownobj:license, owntp:'license']}" />
               </div>
             </div>
