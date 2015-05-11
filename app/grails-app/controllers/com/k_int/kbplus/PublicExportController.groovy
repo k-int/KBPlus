@@ -9,22 +9,25 @@ import com.k_int.kbplus.auth.*;
 import groovy.xml.MarkupBuilder
 
 class PublicExportController {
-
+  def ESSearchService
   def formatter = new java.text.SimpleDateFormat("yyyy-MM-dd")
 
   def index() { 
     def result = [:]
+    params.max = 30
 
-    def qry_params = RefdataCategory.lookupOrCreate('YN','Yes')
-
-    result.num_pkg_rows = Package.executeQuery("select count(p) from Package as p where isPublic=?",qry_params)
-    result.packages=Package.executeQuery("select id, name, '' from Package where isPublic=? order by name",qry_params);
-    
-    result.packages.each {
-      it[2] = Package.executeQuery(
-        "select id.value from Package p JOIN p.ids as ido LEFT JOIN ido.identifier as id where p.id=?", [it[0]])
+    params.rectype = "Package" // Tells ESSearchService what to look for
+    if(params.q == "")  params.remove('q');
+   
+    if(params.search.equals("yes")){
+      //when searching make sure results start from first page
+      params.offset = 0
+      params.search = ""
     }
-    result
+
+    result =  ESSearchService.search(params)   
+  
+    result  
   }
 
   def so() {
