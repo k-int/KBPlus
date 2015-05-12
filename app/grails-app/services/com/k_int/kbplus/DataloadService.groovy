@@ -125,6 +125,7 @@ class DataloadService {
       result.dbId = pkg.id
       result.visible = ['Public']
       result.rectype = 'Package'
+      result.isPublic = pkg?.isPublic?.value?:'No'
       result.consortiaId = pkg.getConsortia()?.id
       result.consortiaName = pkg.getConsortia()?.name
       result.cpname = pkg.contentProvider?.name

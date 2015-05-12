@@ -18,7 +18,7 @@ class PublicExportController {
 
     params.rectype = "Package" // Tells ESSearchService what to look for
     if(params.q == "")  params.remove('q');
-   
+    params.isPublic="Yes"
     if(params.search.equals("yes")){
       //when searching make sure results start from first page
       params.offset = 0

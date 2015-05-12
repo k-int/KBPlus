@@ -45,6 +45,8 @@
   <head>
     <meta name="layout" content="pubbootstrap"/>
     <title>KB+ Data import explorer</title>
+        <r:require module='annotations' />
+
   </head>
 
 
@@ -185,6 +187,10 @@ This work is published from:
                   <table class="table table-bordered table-striped">
                     <thead>
                       <tr style="white-space: nowrap"><th>Package Name</th>
+                      <th>Consortium</th>
+                          <th>Start Date</th>
+                          <th>End Date</th>
+                          <th>Last Modified</th>
                           <th>Export</th>
                     </thead>
                     <tbody>
@@ -198,10 +204,26 @@ This work is published from:
                             <li>${ident}</li>
                           </g:each>
                           </ul>
+                          <td>${hit.source.consortiaName}</td>
+                          <td>
+                          <g:formatDate formatName="default.date.format.notime" date='${hit.source.startDate?dateFormater.parse(hit.source.startDate):null}'/>
                           </td>
-                          <td>  <g:link action="pkg" params="${[format:'csv', id:hit.source.dbId]}">CSV With KBPlus header</g:link><br/>
-            <g:link action="pkg" params="${[format:'csv',omitHeader:'Y', id:hit.source.dbId]}">CSV (KBART)</g:link><br/>
-            <g:link action="pkg" params="${[format:'json',id:hit.source.dbId]}">JSON</g:link></td>
+                          <td>
+                          <g:formatDate formatName="default.date.format.notime" date='${hit.source.endDate?
+                            dateFormater.parse(hit.source.endDate):null}'/>
+                          </td>
+                          <td>${hit.source.lastModified}</td>
+                          </td>
+                          
+                          <td>  
+        <div class="dropdown">
+            <a class="dropdown-toggle badge" data-toggle="dropdown" href="#">Formats<i class="fa fa-caret-down"></i> </a>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+            <li><g:link action="pkg" params="${[format:'csv', id:hit.source.dbId]}">CSV With KBPlus header</g:link></li>
+            <li><g:link action="pkg" params="${[format:'csv',omitHeader:'Y', id:hit.source.dbId]}">CSV (KBART)</g:link></li>
+            <li><g:link action="pkg" params="${[format:'json',id:hit.source.dbId]}">JSON</g:link></li>  </ul>
+        </div>
+                        </td>
                         </tr>
                       </g:each>
                     </tbody>
