@@ -11,7 +11,7 @@ class SubscrDetailsPage extends AbstractDetails {
     };
     static content = {
         newSubscription { ref ->
-            $("a", text: "New Subscription (Empty)").click()
+            $("a", text: "Add New Subscription").click()
             waitElement{$("input", name: "newEmptySubName")}
             $("input", name: "newEmptySubName").value(ref)
             $("input", value: "Create").click()
@@ -91,10 +91,9 @@ class SubscrDetailsPage extends AbstractDetails {
 
         }
         deleteSubscription { ref ->
-            String subURL = $("a", text: ref).@href
-            String subId = subURL.substring(subURL.lastIndexOf("/") + 1, subURL.length())
-            $("input", type: "radio", name: "basesubscription").value(subId)
-            $("input.btn", value: "Delete Selected").click()
+            withConfirm { 
+                $("a", text: ref).parent().siblings().find("a",text:"Delete").click()
+            }
         }
     }
 }

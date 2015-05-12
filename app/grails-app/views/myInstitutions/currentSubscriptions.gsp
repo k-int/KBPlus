@@ -91,7 +91,7 @@
               </td>
               <td rowspan="2">
                 <g:if test="${editable}">
-                    <g:link controller="myInstitutions" action="actionCurrentSubscriptions" params="${[shortcode:params.shortcode,basesubscription:s.id]}" class="btn btn-danger">Delete</g:link>
+                    <g:link controller="myInstitutions" action="actionCurrentSubscriptions" params="${[shortcode:params.shortcode,basesubscription:s.id]}" onclick="return confirm('Are you sure you want to delete ${s.name?:'this subscription'}?')"class="btn btn-danger">Delete</g:link>
                 </g:if>
               </td>
             </tr>

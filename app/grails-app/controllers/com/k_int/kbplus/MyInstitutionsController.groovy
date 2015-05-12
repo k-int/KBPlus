@@ -1309,7 +1309,7 @@ AND EXISTS (
         result.user = springSecurityService.getCurrentUser()
 
         if (!checkUserIsMember(result.user, result.institution)) {
-            flash.error = "You do not have permission to view ${result.institution.name}. Please request access on the profile page";
+            flash.error = "You do not have permission to view ${result?.institution?.name?:'The selected institution.'}. Please request access on the profile page";
             response.sendError(401)
             // render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
             return;

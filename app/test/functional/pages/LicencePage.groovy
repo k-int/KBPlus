@@ -25,7 +25,9 @@ class LicencePage extends AbstractDetails {
         }
 
         deleteLicence { ref ->
-            $("a", text: ref).parent().siblings().find("a",text:"Delete").click()
+            withConfirm { 
+                $("a", text: ref).parent().siblings().find("a",text:"Delete").click()
+            }
         }
 
         licenceDetails {
