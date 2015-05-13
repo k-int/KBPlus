@@ -59,7 +59,7 @@
             <tr>
               <th>Title</th>
               <th>Provider</th>
-              <th></th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -73,7 +73,10 @@
               <g:link controller="org" action="show" id="${tip?.provider?.id}">${tip?.provider?.name}</g:link>
               </td>   
               <td class="link">
-                <button onclick="showDetails(${tip.id});" class="btn btn-small">Edit Dates</button>
+
+                <g:set var="coreStatus" value="${tip?.coreStatus(null)}"/>                 
+                <a href="#" onclick="showDetails(${tip.id});">${coreStatus?'True(now)':coreStatus==null?'False(never)':'False(now)'}</a>
+                %{-- <button onclick="showDetails(${tip.id});" class="btn btn-small">Edit Dates</button> --}%
               </td>
             </tr>
           </g:each>
