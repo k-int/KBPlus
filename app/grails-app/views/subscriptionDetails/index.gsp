@@ -1,4 +1,8 @@
 <%@ page import="com.k_int.kbplus.Subscription" %>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%
+  def dateFormater = new SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
+%>
 <r:require module="annotations" />
 
 <!doctype html>
@@ -335,9 +339,9 @@
                     <span style="white-space: nowrap;"><g:xEditable owner="${ie}" type="date" field="endDate" /></span>
                 </td>
                 <td>
-                <g:set var="iecorestatus" value="${ie.getTIP()?.coreStatus(null)}"/>
+                <g:set var="iecorestatus" value="${ie.getTIP()?.coreStatus(params.asAt?dateFormater.parse(params.asAt):null)}"/>
 <g:remoteLink url="[controller: 'ajax', action: 'getTipCoreDates', params:[editable:editable,tipID:ie.getTIP()?.id,title:ie.tipp?.title?.title]]" method="get" name="show_core_assertion_modal" onComplete="showCoreAssertionModal()" class="editable-click"
-              update="magicArea">${iecorestatus!=null?(iecorestatus?'True':'False'):'None'}</g:remoteLink>
+              update="magicArea">${iecorestatus?'True(this sub)': (iecorestatus==null?'False(never)':'False(this sub)')}</g:remoteLink>
                <br/>
 
                <g:xEditableRefData owner="${ie}" field="coreStatus" config='CoreStatus'/>

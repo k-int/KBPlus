@@ -8,6 +8,11 @@
   </div>
   <g:formRemote  name="coreExtendForm" url="[controller: 'ajax', action: 'coreExtend']" before="hideModal()" onComplete="showCoreAssertionModal()" update="magicArea">
   <div class="modal-body">
+
+    <g:if test="${message}">
+      <bootstrap:alert class="alert-info">${message}</bootstrap:alert>
+    </g:if>
+    
     <table class="table table-bordered">
       <thead>
         <th>Core Start Date</th>

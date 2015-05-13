@@ -27,7 +27,7 @@ class TitleInstitutionProvider {
   @Transient
   def coreStatus(lookupDate) {
     // log.debug("TitleInstitutionProvider::coreStatus(${lookupDate})")
-    
+    if(!coreDates) return null;
     //Should this be here or on a higher level?
     if(lookupDate == null) lookupDate = new Date();
     // log.debug("coreDates: ${coreDates}")
