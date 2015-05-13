@@ -136,8 +136,7 @@ class DataloadService {
       result.identifiers = pkg.ids.collect{"${it?.identifier?.ns?.ns} : ${it?.identifier?.value}"}
       def lastmod = pkg.lastUpdated ?: pkg.dateCreated
       if ( lastmod != null ) {
-        def formatter = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm")
-        result.lastModified = formatter.format(lastmod)
+        result.lastModified = lastmod
       }
 
       if ( pkg.startDate ) {

@@ -38,6 +38,7 @@
   }
 
   def dateFormater = new SimpleDateFormat("yy-MM-dd'T'HH:mm:ss.SSS'Z'")
+  def lastModformatter = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm")
 %>
 
 <html>
@@ -140,7 +141,7 @@ This work is published from:
 
   
         <div class="facetFilter span2">
-          <g:each in="${facets}" var="facet">
+          <g:each in="${facets.sort{it.key}}" var="facet">
             <g:if test="${facet.key != 'type'}">
             <div class="panel panel-default">
               <div class="panel-heading">
@@ -212,7 +213,9 @@ This work is published from:
                           <g:formatDate formatName="default.date.format.notime" date='${hit.source.endDate?
                             dateFormater.parse(hit.source.endDate):null}'/>
                           </td>
-                          <td>${hit.source.lastModified}</td>
+                          <td>
+                          ${hit.source.lastModified.class}
+        %{--                   <g:formatDate  date='${hit.source.lastModified?lastModformatter.format(hit.source.lastModified):null}'/> --}%
                           </td>
                           
                           <td>  
