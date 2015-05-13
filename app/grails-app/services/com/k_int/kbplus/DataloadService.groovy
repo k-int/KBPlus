@@ -136,7 +136,7 @@ class DataloadService {
       result.identifiers = pkg.ids.collect{"${it?.identifier?.ns?.ns} : ${it?.identifier?.value}"}
       def lastmod = pkg.lastUpdated ?: pkg.dateCreated
       if ( lastmod != null ) {
-        result.lastModified = lastmod
+        result.lastModified = formatter.format(lastmod)
       }
 
       if ( pkg.startDate ) {

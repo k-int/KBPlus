@@ -38,7 +38,6 @@
   }
 
   def dateFormater = new SimpleDateFormat("yy-MM-dd'T'HH:mm:ss.SSS'Z'")
-  def lastModformatter = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm")
 %>
 
 <html>
@@ -213,9 +212,7 @@ This work is published from:
                           <g:formatDate formatName="default.date.format.notime" date='${hit.source.endDate?
                             dateFormater.parse(hit.source.endDate):null}'/>
                           </td>
-                          <td>
-                          ${hit.source.lastModified.class}
-        %{--                   <g:formatDate  date='${hit.source.lastModified?lastModformatter.format(hit.source.lastModified):null}'/> --}%
+                          <td>${hit.source.lastModified}</td>
                           </td>
                           
                           <td>  
