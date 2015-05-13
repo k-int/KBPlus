@@ -102,6 +102,11 @@ class MyInstitutionsController {
                   ilike("title", "%${params.search_str}%")         
                 }
              }
+             if(params.filter == "core" || !params.filter){
+               isNotEmpty('coreDates') 
+             }else if(params.filter=='not'){
+                isEmpty('coreDates')
+             }
              "${tip_property}"{
                 order(property_field,list_order)
              }

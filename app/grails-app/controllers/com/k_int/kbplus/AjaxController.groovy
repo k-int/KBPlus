@@ -715,9 +715,11 @@ class AjaxController {
         def tip = TitleInstitutionProvider.get(tipID)
         log.debug("Extending tip ${tip.id} with start ${startDate} and end ${endDate}")
         tip.extendCoreExtent(startDate, endDate)
+        params.message = "Core Dates extended"
       }
-    }catch (java.text.ParseException e){
-        log.error("write error msg")
+    }catch (Exception e){
+        log.error("Error while extending core dates",e)
+        params.message = "Extending of core date failed."
     }
     redirect(action:'getTipCoreDates',controller:'ajax',params:params)
   }
@@ -731,7 +733,7 @@ class AjaxController {
       def dates = tip.coreDates
       log.debug("Returning ${dates}")
       request.setAttribute("editable",params.editable?:true)
-      render(template:"/templates/coreAssertionsModal",model:[coreDates:dates,tipID:tip.id,tip:tip]);    
+      render(template:"/templates/coreAssertionsModal",model:[message:params.message,coreDates:dates,tipID:tip.id,tip:tip]);    
     }
   } 
   def deleteCoreDate(){

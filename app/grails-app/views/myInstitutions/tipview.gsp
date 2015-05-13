@@ -28,6 +28,16 @@
         <bootstrap:alert class="alert alert-error">${flash.error}</bootstrap:alert>
       </g:if>
 
+      <ul class="nav nav-pills">
+          <g:set var="active_filter" value="${params.filter}"/>
+          <g:set var="params" value="${params.remove('filter')}"/>
+          <li class="${(active_filter=='core' || active_filter == null)?'active':''}"><g:link action="tipview" params="${params + [filter:'core']}">Core</g:link></li>
+
+
+          <li class="${active_filter=='not'?'active':''}"><g:link action="tipview" params="${params + [filter:'not']}">Not Core</g:link></li>
+          <li class="${active_filter=='all'?'active':''}"><g:link action="tipview" params="${params + [filter:'all']}">All</g:link></li>
+
+      </ul>
       <div class="row">
         <div class="span12">
           <g:form action="tipview" method="get" params="${[shortcode:params.shortcode]}">
@@ -75,8 +85,7 @@
               <td class="link">
 
                 <g:set var="coreStatus" value="${tip?.coreStatus(null)}"/>                 
-                <a href="#" onclick="showDetails(${tip.id});">${coreStatus?'True(now)':coreStatus==null?'False(never)':'False(now)'}</a>
-                %{-- <button onclick="showDetails(${tip.id});" class="btn btn-small">Edit Dates</button> --}%
+                <a href="#" class="editable-click" onclick="showDetails(${tip.id});">${coreStatus?'True(now)':coreStatus==null?'False(never)':'False(now)'}</a>
               </td>
             </tr>
           </g:each>
