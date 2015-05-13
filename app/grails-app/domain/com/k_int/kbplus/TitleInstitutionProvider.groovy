@@ -55,7 +55,10 @@ class TitleInstitutionProvider {
   @Transient
   def compareDates(dateA, dateB){
     def daysDiff
-    def duration 
+    def duration
+    if(dateA == null && dateB == null) return 0;
+    if(dateA== null && dateB != null) return 1;
+    if(dateA != null && dateB == null) return -1; 
     use(groovy.time.TimeCategory) {
         duration =  dateA - dateB
         daysDiff = duration.days
