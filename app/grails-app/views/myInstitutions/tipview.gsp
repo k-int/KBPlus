@@ -29,11 +29,12 @@
       </g:if>
 
       <ul class="nav nav-pills">
-          <g:set var="active_filter" value="${params.filter}"/>
-          <g:set var="nparams" value="${params.clone().remove('filter')}"/>
-          <li class="${(active_filter=='core' || active_filter == null)?'active':''}"><g:link action="tipview" params="${nparams + [filter:'core']}">Core</g:link></li>
+          <g:set var="nparams" value="${params.clone()}"/>
+          <g:set var="active_filter" value="${nparams.remove('filter')}"/>
 
-
+          <li class="${(active_filter=='core' || active_filter == null)?'active':''}">
+            <g:link action="tipview" params="${nparams + [filter:'core']}">Core</g:link>
+          </li>
           <li class="${active_filter=='not'?'active':''}"><g:link action="tipview" params="${nparams + [filter:'not']}">Not Core</g:link></li>
           <li class="${active_filter=='all'?'active':''}"><g:link action="tipview" params="${nparams + [filter:'all']}">All</g:link></li>
 
@@ -57,6 +58,7 @@
                     <option ${params.order=='asc' ? 'selected' : ''} value="asc">Ascending</option>
                     <option ${params.order=='desc' ? 'selected' : ''} value="desc">Descending</option>
                   </select>
+                  <input type="hidden" name="filter" value="${params.filter}"/>
             <button type="submit" name="search" value="yes">Search</button>
           </div>
           </g:form>
