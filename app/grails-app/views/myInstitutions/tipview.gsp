@@ -30,12 +30,12 @@
 
       <ul class="nav nav-pills">
           <g:set var="active_filter" value="${params.filter}"/>
-          <g:set var="params" value="${params.remove('filter')}"/>
-          <li class="${(active_filter=='core' || active_filter == null)?'active':''}"><g:link action="tipview" params="${params + [filter:'core']}">Core</g:link></li>
+          <g:set var="nparams" value="${params.clone().remove('filter')}"/>
+          <li class="${(active_filter=='core' || active_filter == null)?'active':''}"><g:link action="tipview" params="${nparams + [filter:'core']}">Core</g:link></li>
 
 
-          <li class="${active_filter=='not'?'active':''}"><g:link action="tipview" params="${params + [filter:'not']}">Not Core</g:link></li>
-          <li class="${active_filter=='all'?'active':''}"><g:link action="tipview" params="${params + [filter:'all']}">All</g:link></li>
+          <li class="${active_filter=='not'?'active':''}"><g:link action="tipview" params="${nparams + [filter:'not']}">Not Core</g:link></li>
+          <li class="${active_filter=='all'?'active':''}"><g:link action="tipview" params="${nparams + [filter:'all']}">All</g:link></li>
 
       </ul>
       <div class="row">
@@ -91,8 +91,8 @@
           </g:each>
           </tbody>
         </table>
-          <div class="paginateButtons" style="text-align:center">
-          <span><g:paginate action="tipview" params="${params}" next="Next" prev="Prev" total="${tips.totalCount}" /></span>
+          <div class="pagination" style="text-align:center">
+            <span><bootstrap:paginate action="tipview" params="${[:]+params}" next="Next" prev="Prev" total="${tips.totalCount}" /></span>
           </div>
         <div id="magicArea">
         </div>
