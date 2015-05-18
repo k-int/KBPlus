@@ -2054,7 +2054,7 @@ AND EXISTS (
                                     entitlement_info.end_date = title_row.getCell(5)
                                     entitlement_info.coverage = title_row.getCell(6)
                                     entitlement_info.coverage_note = title_row.getCell(7)
-                                    entitlement_info.core_status = title_row.getCell(8)
+                                    entitlement_info.core_status = title_row.getCell(10) // Moved from 8
 
 
                                     // log.debug("Added entitlement_info ${entitlement_info}");
