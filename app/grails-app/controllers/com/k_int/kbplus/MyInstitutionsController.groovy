@@ -17,6 +17,7 @@ class MyInstitutionsController {
 
     def springSecurityService
     def ESWrapperService
+    def ESSearchService
     def gazetteerService
     def alertsService
     def genericOIDService
@@ -88,18 +89,23 @@ class MyInstitutionsController {
               }
               if (params.search_for == "institution") {
                 institution {
-                  ilike("name", "${params.search_str}%")         
+                  ilike("name", "%${params.search_str}%")         
                 }
               }
              if (params.search_for == "provider") {
                 provider {
-                  ilike("name", "${params.search_str}%")         
+                  ilike("name", "%${params.search_str}%")         
                 }
              }
              if (params.search_for == "title") {
                 title {
-                  ilike("title", "${params.search_str}%")         
+                  ilike("title", "%${params.search_str}%")         
                 }
+             }
+             if(params.filter == "core" || !params.filter){
+               isNotEmpty('coreDates') 
+             }else if(params.filter=='not'){
+                isEmpty('coreDates')
              }
              "${tip_property}"{
                 order(property_field,list_order)
@@ -1269,49 +1275,6 @@ AND EXISTS (
         log.debug("renewalsSearch : ${params}");
         log.debug("Start year filters: ${params.startYear}");
 
-        StringWriter sw = new StringWriter()
-        def fq = null;
-        boolean has_filter = false
-
-        params.each { p ->
-            if (p.key.startsWith('fct:') && p.value.equals("on")) {
-                log.debug("start year ${p.key} : -${p.value}-");
-
-                if (!has_filter)
-                    has_filter = true
-                else
-                    sw.append(" AND ")
-
-                String[] filter_components = p.key.split(':');
-                switch (filter_components[1]) {
-                    case 'consortiaName':
-                        sw.append('consortiaName')
-                        break;
-                    case 'startYear':
-                        sw.append('startYear')
-                        break;
-                    case 'endYear':
-                        sw.append('endYear')
-                        break;
-                    case 'cpname':
-                        sw.append('cpname')
-                        break;
-                }
-                if (filter_components[2].indexOf(' ') > 0) {
-                    sw.append(":\"");
-                    sw.append(filter_components[2])
-                    sw.append("\"");
-                } else {
-                    sw.append(":");
-                    sw.append(filter_components[2])
-                }
-            }
-        }
-
-        if (has_filter) {
-            fq = sw.toString();
-            log.debug("Filter Query: ${fq}");
-        }
 
         // Be mindful that the behavior of this controller is strongly influenced by the schema setup in ES.
         // Specifically, see KBPlus/import/processing/processing/dbreset.sh for the mappings that control field type and analysers
@@ -1320,9 +1283,6 @@ AND EXISTS (
 
         result.institution = Org.findByShortcode(params.shortcode)
 
-        // Get hold of some services we might use ;)
-        org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
-        org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
         result.user = springSecurityService.getCurrentUser()
 
         if (!checkUserIsMember(result.user, result.institution)) {
@@ -1351,89 +1311,64 @@ AND EXISTS (
 
         result.basket = materialiseFolder(shopping_basket.items)
 
-        if (springSecurityService.isLoggedIn()) {
 
-            try {
+        //Following are the ES stuff 
+        try {
+            StringWriter sw = new StringWriter()
+            def fq = null;
+            boolean has_filter = false
+            //This handles the facets.
+            params.each { p ->
+                if (p.key.startsWith('fct:') && p.value.equals("on")) {
+                    log.debug("start year ${p.key} : -${p.value}-");
 
-                params.max = Math.min(params.max ? params.int('max') : result.user.defaultPageSize, 100)
-                params.offset = params.offset ? params.int('offset') : 0
+                    if (!has_filter)
+                        has_filter = true;
+                    else
+                        sw.append(" AND ");
 
-                //def params_set=params.entrySet()
-
-                def query_str = buildRenewalsQuery(params)
-                if (fq)
-                    query_str = query_str + " AND ( " + fq + " ) "
-
-                log.debug("query: ${query_str}");
-
-                def search = esclient.search {
-                    indices grailsApplication.config.aggr.es.index ?: "kbplus"
-                    source {
-                        from = params.offset
-                        size = params.max
-                        query {
-                            query_string(query: query_str)
-                        }
-                        sort = [
-                                'sortname': ['order': 'asc']
-                        ]
-                        facets {
-                            startYear {
-                                terms {
-                                    field = 'startYear'
-                                    size = 25
-                                }
-                            }
-                            endYear {
-                                terms {
-                                    field = 'endYear'
-                                    size = 25
-                                }
-                            }
-                            consortiaName {
-                                terms {
-                                    field = 'consortiaName'
-                                    size = 25
-                                }
-                            }
-                            cpname {
-                                terms {
-                                    field = 'cpname'
-                                    size = 25
-                                }
-                            }
-                        }
-
+                    String[] filter_components = p.key.split(':');
+                    switch (filter_components[1]) {
+                        case 'consortiaName':
+                            sw.append('consortiaName')
+                            break;
+                        case 'startYear':
+                            sw.append('startYear')
+                            break;
+                        case 'endYear':
+                            sw.append('endYear')
+                            break;
+                        case 'cpname':
+                            sw.append('cpname')
+                            break;
                     }
-
-                }
-
-                if (search?.response) {
-                    result.hits = search.response.hits
-                    result.resultsTotal = search.response.hits.totalHits
-
-                    // We pre-process the facet response to work around some translation issues in ES
-                    if (search.response.facets != null) {
-                        result.facets = [:]
-                        search.response.facets.facets.each { facet ->
-                            def facet_values = []
-                            facet.value.entries.each { fe ->
-                                facet_values.add([term: fe.term, display: fe.term, count: "${fe.count}"])
-                            }
-                            result.facets[facet.key] = facet_values
-                        }
+                    if (filter_components[2].indexOf(' ') > 0) {
+                        sw.append(":\"");
+                        sw.append(filter_components[2])
+                        sw.append("\"");
+                    } else {
+                        sw.append(":");
+                        sw.append(filter_components[2])
                     }
                 }
             }
-            finally {
-                try {
-                }
-                catch (Exception e) {
-                    log.error("problem", e);
-                }
-            }
 
-        }  // If logged in
+            if (has_filter) {
+                fq = sw.toString();
+                log.debug("Filter Query: ${fq}");
+            }
+            params.sort = "sortname"
+            params.rectype = "Package" // Tells ESSearchService what to look for
+            if(params.pkgname) params.q = params.pkgname
+            if(fq){
+                if(params.q) parms.q += " AND ";
+                params.q += " (${fq}) ";
+            } 
+            result += ESSearchService.search(params)
+        }
+        catch (Exception e) {
+            log.error("problem", e);
+        }
 
         result
     }
@@ -1612,7 +1547,8 @@ AND EXISTS (
                                 title_info.current_embargo = ie.embargo
                                 title_info.current_depth = ie.coverageDepth
                                 title_info.current_coverage_note = ie.coverageNote
-                                title_info.core_status = ie.coreStatusOn(new Date())?'True':'False'
+                                def test_coreStatus =ie.coreStatusOn(new Date())
+                                title_info.core_status = test_coreStatus?'True(this sub)': test_coreStatus==null?'False(never)':'False(this sub)'
                                 title_info.core_status_on = formatter.format(new Date())
                                 title_info.core_medium = ie.coreStatus
 
@@ -1688,7 +1624,8 @@ AND EXISTS (
                         def ie_info = [:]
                         // log.debug("Adding tipp info ${ie.tipp.startDate} ${ie.tipp.derivedFrom}");
                         ie_info.tipp_id = ie.tipp.id;
-                        ie_info.core_status = ie.coreStatusOn(new Date()) ? 'True':'False'                       
+                        def test_coreStatus =ie.coreStatusOn(new Date())
+                        ie_info.core_status = test_coreStatus?'True(this sub)': test_coreStatus==null?'False(never)':'False(this sub)'                     
                         ie_info.core_status_on = formatter.format(new Date())
                         ie_info.core_medium = ie.coreStatus
                         ie_info.startDate_d = ie.tipp.startDate ?: ie.tipp.derivedFrom?.startDate
@@ -1958,7 +1895,7 @@ AND EXISTS (
                     cell = row.createCell(cc++);
                     def ie_info = m.ti_info[title.title_idx][sub.sub_idx]
                     if (ie_info) {
-                        if ((ie_info.core) && (ie_info.core != 'No')) {
+                        if ((ie_info.core_status) && (ie_info.core_status != "False")) {
                             cell.setCellValue(new HSSFRichTextString(""));
                             cell.setCellStyle(core_cell_style);
                         } else {
@@ -2117,7 +2054,7 @@ AND EXISTS (
                                     entitlement_info.end_date = title_row.getCell(5)
                                     entitlement_info.coverage = title_row.getCell(6)
                                     entitlement_info.coverage_note = title_row.getCell(7)
-                                    entitlement_info.core_status = title_row.getCell(8)
+                                    entitlement_info.core_status = title_row.getCell(10) // Moved from 8
 
 
                                     // log.debug("Added entitlement_info ${entitlement_info}");

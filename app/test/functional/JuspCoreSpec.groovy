@@ -54,7 +54,7 @@ class JuspCoreSpec extends GebReportingSpec {
 		when:
 			go '/demo/subscriptionDetails/index/3'
 		then:
-			$("a.editable-click",name:"show_core_assertion_modal").text() == 'False'
+			$("a.editable-click",name:"show_core_assertion_modal").text() == 'False(never)'
 	}
 	def "Extend the core dates for the title"(){
 		setup:
@@ -70,7 +70,7 @@ class JuspCoreSpec extends GebReportingSpec {
 			waitElement {$('a','data-hidden-id':'coreEndDate')}
 			$('a','data-hidden-id':'coreEndDate').click()
 			waitElement {$('form.editableform input.input-small')}
-			$('form.editableform input.input-small').value('2015-05-01')
+			$('form.editableform input.input-small').value('2035-05-01')
 			$('form.editableform button.editable-submit').click()
 
 			$('input', value:'Apply').click()
@@ -82,7 +82,7 @@ class JuspCoreSpec extends GebReportingSpec {
 		when:
 			go '/demo/subscriptionDetails/index/3'
 		then:
-			$("a.editable-click",name:"show_core_assertion_modal").text() == 'True'
+			$("a.editable-click",name:"show_core_assertion_modal").text() == 'True(this sub)'
 	}
 
 	def "Now lets delete the dates and see that status will change again"(){
@@ -93,6 +93,6 @@ class JuspCoreSpec extends GebReportingSpec {
 			$("a.delete-coreDate",text:"Delete").click()
 			go '/demo/subscriptionDetails/index/3'
 		then:
-			$("a.editable-click",name:"show_core_assertion_modal").text() == 'False'
+			$("a.editable-click",name:"show_core_assertion_modal").text() == 'False(never)'
 	}
 }
