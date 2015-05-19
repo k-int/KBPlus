@@ -1548,7 +1548,7 @@ AND EXISTS (
                                 title_info.current_depth = ie.coverageDepth
                                 title_info.current_coverage_note = ie.coverageNote
                                 def test_coreStatus =ie.coreStatusOn(new Date())
-                                title_info.core_status = test_coreStatus?'True(Now)': test_coreStatus==null?'False(Never)':'False(Now)'
+                                title_info.core_status = test_coreStatus?'True': test_coreStatus==null?'False(Never)':'False'
                                 title_info.core_status_on = formatter.format(new Date())
                                 title_info.core_medium = ie.coreStatus
 
@@ -1625,7 +1625,7 @@ AND EXISTS (
                         // log.debug("Adding tipp info ${ie.tipp.startDate} ${ie.tipp.derivedFrom}");
                         ie_info.tipp_id = ie.tipp.id;
                         def test_coreStatus =ie.coreStatusOn(new Date())
-                        ie_info.core_status = test_coreStatus?'True(Now)': test_coreStatus==null?'False(Never)':'False(Now)'                     
+                        ie_info.core_status = test_coreStatus?'True': test_coreStatus==null?'False(Never)':'False'                     
                         ie_info.core_status_on = formatter.format(new Date())
                         ie_info.core_medium = ie.coreStatus
                         ie_info.startDate_d = ie.tipp.startDate ?: ie.tipp.derivedFrom?.startDate
@@ -1895,7 +1895,7 @@ AND EXISTS (
                     cell = row.createCell(cc++);
                     def ie_info = m.ti_info[title.title_idx][sub.sub_idx]
                     if (ie_info) {
-                        if ((ie_info.core_status) && (ie_info.core_status != "False")) {
+                        if ((ie_info.core_status) && (!ie_info.core_status.contains("False"))) {
                             cell.setCellValue(new HSSFRichTextString(""));
                             cell.setCellStyle(core_cell_style);
                         } else {
