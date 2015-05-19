@@ -1897,7 +1897,7 @@ AND EXISTS (
                     cell = row.createCell(cc++);
                     def ie_info = m.ti_info[title.title_idx][sub.sub_idx]
                     if (ie_info) {
-                        if ((ie_info.core_status) && (!ie_info.core_status.contains("False"))) {
+                        if ((ie_info.core_status) && (ie_info.core_status.contains("True"))) {
                             cell.setCellValue(new HSSFRichTextString(""));
                             cell.setCellStyle(core_cell_style);
                         } else {
