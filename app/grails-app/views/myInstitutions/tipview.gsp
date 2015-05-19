@@ -86,7 +86,7 @@
               <td class="link">
 
                 <g:set var="coreStatus" value="${tip?.coreStatus(null)}"/>                 
-                <a href="#" class="editable-click" onclick="showDetails(${tip.id});">${coreStatus?'True(now)':coreStatus==null?'False(never)':'False(now)'}</a>
+                <a href="#" class="editable-click" onclick="showDetails(${tip.id});">${coreStatus?'True(Now)':coreStatus==null?'False(Never)':'False(Now)'}</a>
               </td>
             </tr>
           </g:each>
