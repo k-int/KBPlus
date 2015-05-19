@@ -549,7 +549,7 @@ class AdminController {
             else if ( cn == 'title.title' ) {
               title = nl[i]
             }
-            else if ( cn.startsWith('title.id.' ) {
+            else if ( cn.startsWith('title.id.' ) ) {
               // Namespace and value
             }
             i++;
