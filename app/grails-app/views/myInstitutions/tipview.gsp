@@ -42,7 +42,6 @@
       <div class="row">
         <div class="span12">
           <g:form action="tipview" method="get" params="${[shortcode:params.shortcode]}">
-          <input type="hidden" name="offset" value="${params.offset}"/>
 
           <div class="well form-horizontal">
             Search For: <select name="search_for">
@@ -59,7 +58,7 @@
                     <option ${params.order=='desc' ? 'selected' : ''} value="desc">Descending</option>
                   </select>
                   <input type="hidden" name="filter" value="${params.filter}"/>
-            <button type="submit" name="search" value="yes">Search</button>
+            <button type="submit" name="search">Search</button>
           </div>
           </g:form>
         </div>
@@ -87,14 +86,14 @@
               <td class="link">
 
                 <g:set var="coreStatus" value="${tip?.coreStatus(null)}"/>                 
-                <a href="#" class="editable-click" onclick="showDetails(${tip.id});">${coreStatus?'True(now)':coreStatus==null?'False(never)':'False(now)'}</a>
+                <a href="#" class="editable-click" onclick="showDetails(${tip.id});">${coreStatus?'True(Now)':coreStatus==null?'False(Never)':'False(Now)'}</a>
               </td>
             </tr>
           </g:each>
           </tbody>
         </table>
           <div class="pagination" style="text-align:center">
-            <span><bootstrap:paginate action="tipview" params="${[:]+params}" next="Next" prev="Prev" total="${tips.totalCount}" /></span>
+            <span><bootstrap:paginate action="tipview" max="${user?.defaultPageSize?:10}" params="${[:]+params}" next="Next" prev="Prev" total="${tips.totalCount}" /></span>
           </div>
         <div id="magicArea">
         </div>

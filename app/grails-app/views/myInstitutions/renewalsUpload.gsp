@@ -70,8 +70,6 @@
                       <input type="hidden" name="entitlements.${counter}.end_date" value="${e.end_date}"/>
                       <input type="hidden" name="entitlements.${counter}.coverage" value="${e.coverage}"/>
                       <input type="hidden" name="entitlements.${counter}.coverage_note" value="${e.coverage_note}"/>
-                      <input type="hidden" name="entitlements.${counter}.core_start_date" value="${e.core_start_date}"/>
-                      <input type="hidden" name="entitlements.${counter}.core_end_date" value="${e.core_end_date}"/>
                       ${e.base_entitlement.title.title}</td>
                   <td><g:link controller="packageDetails" action="show" id="${e.base_entitlement.pkg.id}">${e.base_entitlement.pkg.name}(${e.base_entitlement.pkg.id})</g:link></td>
                   <td>${e.base_entitlement.title.getIdentifierValue('ISSN')}</td>
