@@ -516,5 +516,48 @@ class AdminController {
     redirect(controller:'home')
   }
 
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def titlesImport() {
+
+    if ( request.method=="POST" ) {
+      def upload_mime_type = request.getFile("titles_file")?.contentType
+      def upload_filename = request.getFile("titles_file")?.getOriginalFilename()
+      def input_stream = request.getFile("titles_file")?.inputStream
+
+      CSVReader r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ) )
+      String[] nl;
+      String[] cols;
+      def first = true
+      while ((nl = r.readNext()) != null) {
+        if ( first ) {
+          first = false; // Skip header
+          cols=nl;
+
+          // Make sure that there is at least one valid identifier column
+        }
+        else {
+          def title = null;
+          def bindvars = []
+          // Set up base_query
+          def q = "Select t from TitleInstance as t where "
+          def i = 0;
+          cols.each { cn ->
+            if ( cn == 'title.id' ) {
+              q += 't.id = ?'
+              bindvars.add(nl[i]);
+            }
+            else if ( cn == 'title.title' ) {
+              title = nl[i]
+            }
+            else if ( cn.startsWith('title.id.' ) ) {
+              // Namespace and value
+            }
+            i++;
+          }
+        }
+      }
+    }
+  }
+
  
 }

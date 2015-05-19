@@ -247,6 +247,9 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'orgsImport'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="orgsImport">Bulk Load Organisations</g:link>
                       </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'titlesImport'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="titlesImport">Bulk Load/Update Titles</g:link>
+                      </li>
                       <li class="divider"></li>
                       <li <%= ( ( 'stats'== controllerName ) && ( 'statsHome'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="stats" action="statsHome">Statistics</g:link>
