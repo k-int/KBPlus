@@ -538,12 +538,17 @@ class AdminController {
         else {
           def title = null;
           def bindvars = []
+          def title_id_ctr = 0;
           // Set up base_query
-          def q = "Select t from TitleInstance as t where "
+          def q = "Select t from TitleInstance as t "
+          def joinclause = ''
+          def whereclause = ' where ';
           def i = 0;
+          def disjunction_ctr = 0;
           cols.each { cn ->
             if ( cn == 'title.id' ) {
-              q += 't.id = ?'
+              if ( disjunction_ctr++ > 0 ) { q += ' OR ' }
+              whereclause += 't.id = ?'
               bindvars.add(nl[i]);
             }
             else if ( cn == 'title.title' ) {
@@ -551,9 +556,26 @@ class AdminController {
             }
             else if ( cn.startsWith('title.id.' ) ) {
               // Namespace and value
+              if ( nl[i].trim().length() > 0 ) {
+                if ( disjunction_ctr++ > 0 ) { q += ' OR ' }
+                joinclause += " join t.ids as id${title_id_ctr} "
+                whereclause += " ( id${title_id_ctr}.identifier.ns.ns = ? AND id${title_id_ctr}.identifier.value = ? ) "
+                bindvars.add(cn.substring(8))
+                bindvars.add(nl[i])
+                title_id_ctr++
+              }
             }
             i++;
           }
+
+          log.debug("\n\n");
+          log.debug(q);
+          log.debug(joinclause);
+          log.debug(whereclause);
+          log.debug(bindvars);
+
+          def title_search = TitleInstance.executeQuery(q+joinclause+whereclause,bindvars);
+          log.debug("Search returned ${title_search.size()} titles");
         }
       }
     }
