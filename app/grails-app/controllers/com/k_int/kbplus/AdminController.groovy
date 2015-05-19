@@ -543,7 +543,7 @@ class AdminController {
           def i = 0;
           cols.each { cn ->
             if ( cn == 'title.id' ) {
-              q += 't.id = ?"
+              q += 't.id = ?'
               bindvars.add(nl[i]);
             }
             else if ( cn == 'title.title' ) {
