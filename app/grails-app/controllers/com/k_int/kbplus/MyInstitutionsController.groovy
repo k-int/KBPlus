@@ -1548,8 +1548,9 @@ AND EXISTS (
                                 title_info.current_depth = ie.coverageDepth
                                 title_info.current_coverage_note = ie.coverageNote
                                 def test_coreStatus =ie.coreStatusOn(new Date())
-                                title_info.core_status = test_coreStatus?'True': test_coreStatus==null?'False(Never)':'False'
-                                title_info.core_status_on = formatter.format(new Date())
+                                def formatted_date = formatter.format(new Date())
+                                title_info.core_status = test_coreStatus?"True(${formatted_date})": test_coreStatus==null?"False(Never)":"False(${formatted_date})"
+                                title_info.core_status_on = formatted_date
                                 title_info.core_medium = ie.coreStatus
 
 
@@ -1625,8 +1626,9 @@ AND EXISTS (
                         // log.debug("Adding tipp info ${ie.tipp.startDate} ${ie.tipp.derivedFrom}");
                         ie_info.tipp_id = ie.tipp.id;
                         def test_coreStatus =ie.coreStatusOn(new Date())
-                        ie_info.core_status = test_coreStatus?'True': test_coreStatus==null?'False(Never)':'False'                     
-                        ie_info.core_status_on = formatter.format(new Date())
+                        def formatted_date = formatter.format(new Date())
+                        ie_info.core_status = test_coreStatus?"True(${formatted_date})": test_coreStatus==null?"False(Never)":"False(${formatted_date})"                     
+                        ie_info.core_status_on = formatted_date
                         ie_info.core_medium = ie.coreStatus
                         ie_info.startDate_d = ie.tipp.startDate ?: ie.tipp.derivedFrom?.startDate
                         ie_info.startDate = ie_info.startDate_d ? formatter.format(ie_info.startDate_d) : null
