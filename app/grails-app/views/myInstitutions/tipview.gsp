@@ -12,7 +12,7 @@
       <ul class="breadcrumb">
         <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <li> <g:link controller="myInstitutions" action="dashboard" params="${[shortcode:params.shortcode]}">${institution.name} - Dashboard</g:link> <span class="divider">/</span>  </li>
-        <li> <g:link controller="myInstitutions" action="tipview" params="${[shortcode:params.shortcode]}"> Edit Core Titles </g:link> </li>
+        <li> <g:link controller="myInstitutions" action="tipview" params="${[shortcode:params.shortcode]}"> Edit Core Titles (JUSP & KB+) </g:link> </li>
 
       </ul>
     </div>

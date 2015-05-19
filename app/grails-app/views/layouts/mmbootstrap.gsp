@@ -119,7 +119,7 @@
                                </g:if>
                                <li><g:link controller="myInstitutions" 
                                            action="tipview"
-                                           params="${[shortcode:org.shortcode]}">Edit Core Titles</g:link></li>
+                                           params="${[shortcode:org.shortcode]}">Edit Core Titles (JUSP & KB+)</g:link></li>
 
                              </ul>
                            </li>
