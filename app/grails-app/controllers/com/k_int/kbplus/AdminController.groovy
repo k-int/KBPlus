@@ -540,16 +540,16 @@ class AdminController {
           def bindvars = []
           def title_id_ctr = 0;
           // Set up base_query
-          def q = "Select t from TitleInstance as t "
+          def q = "Select distinct(t) from TitleInstance as t "
           def joinclause = ''
           def whereclause = ' where ';
           def i = 0;
           def disjunction_ctr = 0;
           cols.each { cn ->
             if ( cn == 'title.id' ) {
-              if ( disjunction_ctr++ > 0 ) { q += ' OR ' }
+              if ( disjunction_ctr++ > 0 ) { whereclause += ' OR ' }
               whereclause += 't.id = ?'
-              bindvars.add(nl[i]);
+              bindvars.add(new Long(nl[i]));
             }
             else if ( cn == 'title.title' ) {
               title = nl[i]
@@ -557,10 +557,10 @@ class AdminController {
             else if ( cn.startsWith('title.id.' ) ) {
               // Namespace and value
               if ( nl[i].trim().length() > 0 ) {
-                if ( disjunction_ctr++ > 0 ) { q += ' OR ' }
+                if ( disjunction_ctr++ > 0 ) { whereclause += ' OR ' }
                 joinclause += " join t.ids as id${title_id_ctr} "
                 whereclause += " ( id${title_id_ctr}.identifier.ns.ns = ? AND id${title_id_ctr}.identifier.value = ? ) "
-                bindvars.add(cn.substring(8))
+                bindvars.add(cn.substring(9))
                 bindvars.add(nl[i])
                 title_id_ctr++
               }
@@ -576,6 +576,21 @@ class AdminController {
 
           def title_search = TitleInstance.executeQuery(q+joinclause+whereclause,bindvars);
           log.debug("Search returned ${title_search.size()} titles");
+
+          if ( title_search.size() == 0 ) {
+            if ( title != null ) {
+              log.debug("New title - create identifiers and title ${title}");
+            }
+            else {
+              log.debug("NO match - no title - skip row");
+            }
+          }
+          else if ( title_search.size() == 1 ) {
+            log.debug("Marched one - see if any of the supplied identifiers are missing");
+          }
+          else {
+            log.debug("Unable to continue - matched multiple titles");
+          }
         }
       }
     }
