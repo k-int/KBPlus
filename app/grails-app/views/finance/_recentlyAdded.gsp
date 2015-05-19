@@ -1,35 +1,46 @@
-<g:if test="${recentlyUpdated}" >
-<table style="width: 10%; margin-left: 10px;" id="recentUpdatesTable" data-resultsTo="${to}" data-resultsFrom="${from}">
-    <caption>
-        <p>Quickly see costing items that have been recently added/updated</p>
-    </caption>
+<table  class="table table-striped table-bordered " id="recentUpdatesTable" data-resultsTo="${to}" data-resultsFrom="${from}">
     <thead>
-    <tr><td colspan="4">&nbsp;</td></tr>
     <tr>
-        <th>Invoice</th>
-        <th>Order</th>
-        <th>Amount</th>
-        <th>Reference</th>
+        <td style="text-align: center" colspan="4">
+                <p>Quickly see costing items that have been recently added/updated</p>
+                <p>From: ${from}  -> To: ${to}</p>
+        </td>
+    </tr>
+    <tr>
+        <th>Cost#</th>
+        <th>Invoice#</th>
+        <th>Order#</th>
+        <th>Subscription</th>
+    </tr>
+    <tr>
+        <th>Package</th>
+        <th>IE</th>
+        <th>Amount [billing]/<br/>[local]</th>
+        <th>Updated</th>
     </tr>
     </thead>
-
     <tbody>
-
-    <g:if test="${recentlyUpdated}">
-        <g:each in="${recentlyUpdated}" var="item">
+        <g:if test="${recentlyUpdated}">
+            <g:each in="${recentlyUpdated}" var="item">
+                <tr>
+                    <td>${item?.id}</td>
+                    <td>${item?.invoice?.invoiceNumber}</td>
+                    <td>${item?.order?.orderNumber}</td>
+                    <td>${item?.sub?.name}</td>
+                </tr>
+                <tr>
+                    <td>${item?.subPkg?.name}</td>
+                    <td>${item?.issueEntitlement?.tipp?.title?.title}</td>
+                    <td>${item?.costInBillingCurrency}</td>
+                    <td><g:formatDate format="dd-MM-yy" date="${item?.lastUpdated}"/></td>
+                </tr>
+            </g:each>
+        </g:if>
+        <g:else>
             <tr>
-                <td>${item.invoice?.invoiceNumber}</td>
-                <td>${item.order?.orderNumber}</td>
-                <td>${item.costInBillingCurrency}</td>
-                <td>${item.reference}</td>
+                <td colspan="4">No recent cost items...</td>
+                <td colspan="4">Table automatically updates</td>
             </tr>
-        </g:each>
-    </g:if>
-    <g:else>
-        <tr>
-            <td colspan="4">No recent cost items...</td>
-        </tr>
-    </g:else>
+        </g:else>
     </tbody>
 </table>
-</g:if>

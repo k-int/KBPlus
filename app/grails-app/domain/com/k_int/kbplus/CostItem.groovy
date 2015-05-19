@@ -28,6 +28,7 @@ class CostItem {
     Date endDate
     Date lastUpdated
 
+
     @Transient
     def budgetcodes //Binds getBudgetcodes
 
@@ -84,6 +85,67 @@ class CostItem {
 
     def getBudgetcodes() {
         return CostItemGroup.findAllByCostItem(this).collect { it.budgetcode.value } //collect{[id:it.budgetcode.id, value:it.budgetcode.value]}
+    }
+
+    /**
+     * So we don't have to expose the data model in the GSP for relational data needed to be sorted
+     * @param field - The order by link selected
+     *
+     * This will be used relational set to true, see index Finance Controller action.
+     * @return multiple values - malicious attempt of sorting will result (null, null)
+     */
+    @Transient
+    def static orderingByCheck(String field) {
+        def (order,join,gspOrder) = ["","",""]
+
+        switch (field)
+        {
+            case ["Cost Item#","id"]:
+                join     = null
+                order    = "id"
+                gspOrder = "Cost Item#"
+                break
+            case "order#":
+                join     = "ci.order"
+                order    = "orderNumber"
+                gspOrder = "order#"
+                break
+            case "invoice#":
+                join     = "ci.invoice"
+                order    = "invoiceNumber"
+                gspOrder = "invoice#"
+                break
+            case "Subscription":
+                join     = "ci.sub"
+                order    = "sub.name"
+                gspOrder = "Subscription"
+                break
+            case "Package":
+                join     = "ci.subPkg"
+                order    = "subPkg.name"
+                gspOrder = "Package"
+                break
+            case "IE":
+                join     = "ci.issueEntitlement"
+                order    = "issueEntitlement.tipp.title.title"
+                gspOrder = "IE"
+                break
+            case "date":
+                join     = null
+                order    = "datePaid"
+                gspOrder = "date"
+                break
+            case "Reference":
+                join     = null
+                order    = "reference"
+                gspOrder = "Reference"
+                break
+            default:
+                order    = "id"
+                gspOrder = "Cost Item#"
+                break
+        }
+        return [order,join,gspOrder]
     }
 
 }
