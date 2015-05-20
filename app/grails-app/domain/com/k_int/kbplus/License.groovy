@@ -16,6 +16,8 @@ class License {
 
   @Transient
   def messageSource
+
+  
   static auditable = [ignore:['version','lastUpdated','pendingChanges']]
 
   RefdataValue status

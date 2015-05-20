@@ -30,9 +30,13 @@
                     action="additionalInfo" 
                     params="${[id:params.id]}">Additional Info</g:link></li>
 
-  <li <%='history'== actionName ? ' class="active"' : '' %>><g:link controller="subscriptionDetails" 
-                    action="history" 
-                    params="${[id:params.id]}">History</g:link></li>
+  <li <%='edit_history'== actionName ? ' class="active"' : '' %>><g:link controller="subscriptionDetails" 
+                    action="edit_history" 
+                    params="${[id:params.id]}">Edit History</g:link></li>
+
+    <li <%='todo_history'== actionName ? ' class="active"' : '' %>><g:link controller="subscriptionDetails" 
+                    action="todo_history" 
+                    params="${[id:params.id]}">Todo History</g:link></li>
     <li <%='previous'== actionName ? ' class="active"' : '' %>><g:link controller="subscriptionDetails"
                                                                       action="previous"
                                                                       params="${[id:params.id]}">Previous</g:link></li>

@@ -5,9 +5,6 @@ import com.k_int.custprops.PropertyDefinition
 import org.codehaus.groovy.grails.plugins.springsecurity.SecurityFilterPosition
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
-import org.springframework.security.web.*
-import javax.servlet.Filter;
-
 class BootStrap {
 
   def ESWrapperService
@@ -40,15 +37,21 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("YNO","Not applicable")
     RefdataCategory.lookupOrCreate("YNO","Unknown")
 
+    RefdataCategory.lookupOrCreate('CoreStatus', 'Yes');
+    RefdataCategory.lookupOrCreate('CoreStatus', 'Print');
+    RefdataCategory.lookupOrCreate('CoreStatus', 'Electronic');
+    RefdataCategory.lookupOrCreate('CoreStatus', 'Print+Electronic');
+    RefdataCategory.lookupOrCreate('CoreStatus', 'No');
+
     RefdataCategory.lookupOrCreate("ConcurrentAccess","Specified")
     RefdataCategory.lookupOrCreate("ConcurrentAccess","Not Specified")
     RefdataCategory.lookupOrCreate("ConcurrentAccess","No limit")
     RefdataCategory.lookupOrCreate("ConcurrentAccess","Other")
 
-    def ref_yno_n = RefdataCategory.lookupOrCreate("YNO","No")
-    def ref_yno_y = RefdataCategory.lookupOrCreate("YNO","Yes")
-    def ref_yno_o = RefdataCategory.lookupOrCreate("YNO","Other")
-    def ref_yno_u = RefdataCategory.lookupOrCreate("YNO","Unknown")
+    RefdataCategory.lookupOrCreate("YNO","No")
+    RefdataCategory.lookupOrCreate("YNO","Yes")
+    RefdataCategory.lookupOrCreate("YNO","Other")
+    RefdataCategory.lookupOrCreate("YNO","Unknown")
 
     def or_licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
     def or_subscriber_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber');
@@ -96,13 +99,13 @@ class BootStrap {
 
   // Transforms types and formats Refdata 
   // !!! HAS TO BE BEFORE the script adding the Transformers as it is used by those tables !!!
-  def json_format = RefdataCategory.lookupOrCreate('Transform Format', 'json');
-  def xml_format = RefdataCategory.lookupOrCreate('Transform Format', 'xml');
-  def url_format = RefdataCategory.lookupOrCreate('Transform Format', 'url');
-  def subscription_type = RefdataCategory.lookupOrCreate('Transform Type', 'subscription');
-  def licence_type = RefdataCategory.lookupOrCreate('Transform Type', 'licence');
-  def title_type = RefdataCategory.lookupOrCreate('Transform Type', 'title');
-  def package_type = RefdataCategory.lookupOrCreate('Transform Type', 'package');
+   RefdataCategory.lookupOrCreate('Transform Format', 'json');
+   RefdataCategory.lookupOrCreate('Transform Format', 'xml');
+   RefdataCategory.lookupOrCreate('Transform Format', 'url');
+   RefdataCategory.lookupOrCreate('Transform Type', 'subscription');
+   RefdataCategory.lookupOrCreate('Transform Type', 'licence');
+   RefdataCategory.lookupOrCreate('Transform Type', 'title');
+   RefdataCategory.lookupOrCreate('Transform Type', 'package');
   
   // Add Transformers and Transforms define in the demo-config.groovy
   grailsApplication.config.systransforms.each { tr ->
@@ -228,13 +231,8 @@ class BootStrap {
 
     // SpringSecurityUtils.clientRegisterFilter( 'oracleSSOFilter', SecurityFilterPosition.PRE_AUTH_FILTER.order)
     // SpringSecurityUtils.clientRegisterFilter('securityContextPersistenceFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
-    // SpringSecurityUtils.clientRegisterFilter('ediauthFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
+    SpringSecurityUtils.clientRegisterFilter('ediauthFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
     // SpringSecurityUtils.clientRegisterFilter('apiauthFilter', SecurityFilterPosition.SECURITY_CONTEXT_FILTER.order + 10)
-
-    // Call our local version of client register filter which does not suffer the problems of wiping out the filter
-    // chain. Should allow us to use basic auth on /api, and shib everywhere else on live, or form based auth on dev
-    // See grails.plugins.springsecurity.filterChain.chainMap in config.groovy
-    this.localClientRegisterFilter('ediauthFilter', SecurityFilterPosition.PRE_AUTH_FILTER) 
 
     def uo_with_null_role = UserOrg.findAllByFormalRoleIsNull()
     if ( uo_with_null_role.size() > 0 ) {
@@ -384,6 +382,12 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Opt Out Promotion").save()
     RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Uncharged").save()
     RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Unknown").save()
+  
+    RefdataCategory.lookupOrCreate("TIPP Status", "Current").save()
+    RefdataCategory.lookupOrCreate("TIPP Status", "Expected").save()
+    RefdataCategory.lookupOrCreate("TIPP Status", "Deleted").save()
+    RefdataCategory.lookupOrCreate("TIPP Status", "Transferred").save()
+    RefdataCategory.lookupOrCreate("TIPP Status", "Unknown").save()
 
     RefdataCategory.lookupOrCreate("Package.ListStatus", "Checked").save()
     RefdataCategory.lookupOrCreate("Package.ListStatus", "In Progress").save()
@@ -656,34 +660,4 @@ No Host Platform URL Content
     // Sort string generation moved to admin - cleanse
   }
 
-  // Work around bug in SpringSecurityUtils.clientRegisterFilter('ediauthFilter', SecurityFilterPosition.PRE_AUTH_FILTER)
-  private void localClientRegisterFilter(final String beanName, final org.codehaus.groovy.grails.plugins.springsecurity.SecurityFilterPosition order) {
-        def positionToFilter = SpringSecurityUtils.getConfiguredOrderedFilters()
-        def filterToPosition = [:]
-        positionToFilter.each {position, filter ->
-            filterToPosition[filter] = position
-        }
-
-        Filter oldFilter = positionToFilter.get(order.order);
-        if (oldFilter != null) {
-            throw new IllegalArgumentException("Cannot register filter '" + beanName +
-                "' at position " + order.order + "; '" + oldFilter +
-                "' is already registered in that position");
-        }
-
-        Filter filter = (Filter)grailsApplication.mainContext.getBean(beanName);
-        positionToFilter.put(order.order, filter);
-        FilterChainProxy filterChain = (FilterChainProxy)grailsApplication.mainContext.getBean("springSecurityFilterChain");
-        def filterChainMap = filterChain.getFilterChainMap()        
-        def correctFilterChainMap = filterChainMap.collectEntries { pattern, filters ->
-            def indexOfFilterBeforeTargetFilter = 0
-            while(indexOfFilterBeforeTargetFilter < filters.size() && filterToPosition[filters[indexOfFilterBeforeTargetFilter]] < order.order){
-                indexOfFilterBeforeTargetFilter++
-            }
-            filters.add(indexOfFilterBeforeTargetFilter, filter)
-
-            [pattern, filters]
-        }
-        filterChain.filterChainMap = Collections.unmodifiableMap(correctFilterChainMap)
-    }
 }

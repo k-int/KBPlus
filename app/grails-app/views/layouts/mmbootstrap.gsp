@@ -6,7 +6,6 @@
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 
-<html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title><g:layoutTitle default="${meta(name: 'app.name')}"/></title>
@@ -26,6 +25,11 @@
 
 
     <r:layoutResources/>
+
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
+    </style>
+
   </head>
 
   <body>
@@ -33,9 +37,8 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-            <ul class="nav">
-                    <g:link controller="home" action="index" class="brand" alt="KB+ ${grailsApplication.metadata.'app.version'} / build ${grailsApplication.metadata.'app.buildNumber'}">KB+</g:link>
-                <sec:ifLoggedIn>
+            <g:link controller="home" action="index" class="brand" title="KB+ ${grailsApplication.metadata.'app.version'} / build ${grailsApplication.metadata.'app.buildNumber'}">KB+</g:link>
+            <sec:ifLoggedIn>
                 <ul class="nav">
                 <sec:ifAnyGranted roles="ROLE_ADMIN">
                   <li class="dropdown">
@@ -114,6 +117,9 @@
                                              action="index"
                                              params="${[shortcode:org.shortcode]}">Finance</g:link></li>
                                </g:if>
+                               <li><g:link controller="myInstitutions" 
+                                           action="tipview"
+                                           params="${[shortcode:org.shortcode]}">Edit Core Titles (JUSP & KB+)</g:link></li>
 
                              </ul>
                            </li>
@@ -177,7 +183,7 @@
                 </ul>
                 <ul class="nav">
                 <sec:ifAnyGranted roles="ROLE_ADMIN">
-                   <li class="dropdown">
+                  <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Admin Actions <b class="caret"></b> </a>
                     <ul class="dropdown-menu">
                       <li <%= ( ( 'admin'== controllerName ) && ( 'manageAffiliationRequests'==actionName ) ) ? ' class="active"' : '' %>>
@@ -241,6 +247,9 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'orgsImport'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="orgsImport">Bulk Load Organisations</g:link>
                       </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'titlesImport'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="titlesImport">Bulk Load/Update Titles</g:link>
+                      </li>
                       <li class="divider"></li>
                       <li <%= ( ( 'stats'== controllerName ) && ( 'statsHome'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="stats" action="statsHome">Statistics</g:link>
@@ -258,8 +267,7 @@
 
                 </sec:ifAnyGranted>
                 </ul>
-              </sec:ifLoggedIn>
-            </ul>
+            </sec:ifLoggedIn>
 
             <sec:ifLoggedIn>
             <ul class="nav pull-right">
@@ -269,7 +277,6 @@
            
 
             <ul class="nav pull-right">
-              <ul class="nav">
               <sec:ifLoggedIn>
                 <g:if test="${user}">
                   <li class="dropdown">
@@ -286,7 +293,6 @@
               <sec:ifNotLoggedIn>
                 <li><g:link controller="myInstitutions" action="dashboard">Login</g:link></li>
               </sec:ifNotLoggedIn>
-            </ul>
             </ul>
         </div>
       </div>
@@ -387,10 +393,6 @@
           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
   </r:script>
-
-    <style type="text/css" media="screen, projection">
-      @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
-    </style>
 
     <r:script type="text/javascript">
       if (typeof(Zenbox) !== "undefined") {

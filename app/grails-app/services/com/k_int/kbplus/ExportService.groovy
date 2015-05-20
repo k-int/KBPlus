@@ -35,7 +35,7 @@ class ExportService {
 			def tedate = sub.endDate ? formatter.format(sub.endDate) : ''
 			if ( header ) {
 				writer.write("FileType,SpecVersion,JC_ID,TermStartDate,TermEndDate,SubURI,SystemIdentifier\n")
-				writer.write("${sub.type.value},\"2.0\",${jc_id?:''},${tsdate},${tedate},\"uri://kbplus/sub/${sub.identifier}\",${sub.impId}\n")
+				writer.write("${sub.type?.value?:''},\"2.0\",${jc_id?:''},${tsdate},${tedate},\"uri://kbplus/sub/${sub.identifier}\",${sub.impId}\n")
 			}
 	 
 			// Output the body text
@@ -103,9 +103,8 @@ class ExportService {
 				writer.write("IE.${it}.platform.host.name,")
 				writer.write("IE.${it}.platform.host.url,")
 				writer.write("IE.${it}.platform.admin.name,")
-				writer.write("IE.${it}.Core status,")
-				writer.write("IE.${it}.Core start,")
-				writer.write("IE.${it}.Core end")
+				writer.write("IE.${it}.Core date list,")
+				writer.write("IE.${it}.Core medium")
 			}
 			writer.write("\n")
 			
@@ -161,9 +160,12 @@ class ExportService {
 					entitlements_str += "${ap.platform.name}"
 				}
 				entitlements_str += "\","
-				entitlements_str += "\"${e.coreStatus?.value?:''}\","
-				entitlements_str += "\"${e.coreStatusStart?formatter.format(e.coreStatusStart):''}\","
-				entitlements_str += "\"${e.coreStatusEnd?formatter.format(e.coreStatusEnd):''}\""
+				def coreDateList = ""
+				e?.getTIP()?.coreDates.each{
+					coreDateList += it.toString() + " - "
+				}
+				entitlements_str += "\"${coreDateList}\","
+				entitlements_str += "\"${e.coreStatus?:''}\""
 //                    }
 			}
 			
@@ -218,6 +220,7 @@ class ExportService {
 			def tipp = (type=="Issue Entitlement")?e.tipp:e
 			def sub  = (type=="Issue Entitlement")?e.subscription:e.sub
 			def status  = (type=="Issue Entitlement")?e.coreStatus:e.status
+			def statusColumnHeader = (type == "Issue Entitlement") ? "CoreMedium" : "TIPPStatus"
 			
 			if(tipp.title.id != current_title_id){
 				current_title_id = tipp.title.id
@@ -267,9 +270,17 @@ class ExportService {
 				addXMLElementInto(doc, platform, "PlatformURL", ap.platform?.primaryUrl?:'')
 			}
 			
-			addXMLElementInto(doc, coveragestatement, "CoreStatus", status?.value?:'')
-			addXMLElementInto(doc, coveragestatement, "CoreStart", e.coreStatusStart?formatter.format(e.coreStatusStart):'')
-			addXMLElementInto(doc, coveragestatement, "CoreEnd", e.coreStatusEnd?formatter.format(e.coreStatusEnd):'')
+			addXMLElementInto(doc, coveragestatement, statusColumnHeader, status?.value?:'')
+			if(type == "Issue Entitlement"){
+				Element coreDateList = addXMLElementInto(doc,coveragestatement,"CoreDateList",null)
+				e?.getTIP()?.coreDates.each{
+					Element coreDate = addXMLElementInto(doc,coreDateList,"CoreDate",null)
+					addXMLElementInto(doc,coreDate,"CoreStart",formatter.format(it.startDate))
+					if(it.endDate){
+						addXMLElementInto(doc,coreDate,"CoreEnd",formatter.format(it.endDate))
+					}
+				}
+			}
 			addXMLElementInto(doc, coveragestatement, "PackageID", tipp?.pkg?.id?:'')
 			addXMLElementInto(doc, coveragestatement, "PackageName", tipp?.pkg?.name?:'')
             addXMLElementInto(doc, coveragestatement, "AccessStatus", tipp?.getAvailabilityStatusAsString()?:'')
@@ -498,7 +509,7 @@ class ExportService {
 			def tipp = (type=="Issue Entitlement")?e.tipp:e
 			def sub  = (type=="Issue Entitlement")?e.subscription:e.sub
 			def status  = (type=="Issue Entitlement")?e.coreStatus:e.status
-			
+			def statusColumnHeader = (type=="Issue Entitlement")? "CoreMedium" : "TIPPStatus"
 			if(tipp.title.id != current_title_id){
 				//start new title
 				if(current_title_id!=-1) titles.add(title) // not the first time
@@ -553,9 +564,17 @@ class ExportService {
 				platform.PlatformURL = ap.platform?.primaryUrl?:''
 				ie."AdditionalPlatforms" << platform
 			}
-			ie."CoreStatus" = status?.value?:''
-			ie."CoreStart" = e.coreStatusStart?formatter.format(e.coreStatusStart):''
-			ie."CoreEnd" = e.coreStatusEnd?formatter.format(e.coreStatusEnd):''
+			ie."${statusColumnHeader}" = status?.value?:''
+			if(type == "Issue Entitlement"){
+				def dateList = []
+				e.getTIP()?.coreDates?.each{
+					def dates = [:]
+					dates."startDate" = formatter.format(it.startDate)
+					dates."endDate" = it.endDate ? formatter.format(it.endDate) : ''
+					dateList.add(dates)
+				}
+				ie."CoreDateList" = dateList
+			}
 			ie."PackageID" = tipp?.pkg?.id?:''
 			ie."PackageName" = tipp?.pkg?.name?:''
             ie."AccessFrom" = tipp?.accessStartDate?:''

@@ -123,7 +123,6 @@ class InplaceTagLib {
 
 
   def xEditableRefData = { attrs, body ->
-
     // log.debug("xEditableRefData ${attrs}");
     try {
       boolean editable = request.getAttribute('editable')

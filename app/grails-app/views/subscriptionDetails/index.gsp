@@ -1,4 +1,8 @@
 <%@ page import="com.k_int.kbplus.Subscription" %>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%
+  def dateFormater = new SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
+%>
 <r:require module="annotations" />
 
 <!doctype html>
@@ -244,47 +248,53 @@
               <th rowspan="2"></th>
               <th rowspan="2">#</th>
               <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
-              <g:sortableColumn params="${params}" property="coreStatus" title="Core" />
+              <th>ISSN</th>
+              <th rowspan="2">Entitlement Medium (P/E)</th>
               <g:sortableColumn params="${params}" property="startDate" title="Earliest date" />
-              <g:sortableColumn params="${params}" property="coreStatusStart" title="Core Start Date" />
+              <g:sortableColumn params="${params}" property="core_status" title="Core Status" />
               <th rowspan="2">Actions</th>
             </tr>  
 
             <tr>
               <th>Access Dates</th>
-              <th>Medium (P/E)</th>
+              <th>eISSN</th>
               <g:sortableColumn params="${params}" property="endDate" title="Latest Date" />
-              <g:sortableColumn params="${params}" property="coreStatusEnd" title="Core End Date"  />
+              <th> Core Medium </th>
             </tr>
 
             <tr class="no-background">  
+              <g:if test="${editable}">
+              
 
               <th>
-                <g:if test="${editable}"><input type="checkbox" name="chkall" onClick="javascript:selectAll();"/></g:if>
+                <input type="checkbox" name="chkall" onClick="javascript:selectAll();"/>
               </th>
 
               <th colspan="3">
-                <g:if test="${editable}">
+                
                   <select id="bulkOperationSelect" name="bulkOperation">
                     <option value="edit">Edit Selected</option>
                     <option value="remove">Remove Selected</option>
                   </select>
 
-                  <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()" class="btn btn-primary"/></g:if>
+                  <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()" class="btn btn-primary"/>
               </th>
 
               <th>
-                <g:if test="${editable}"><g:simpleHiddenRefdata id="bulk_core" name="bulk_core" refdataCategory="CoreStatus"/></g:if>
-                <g:if test="${editable}"><br/><g:simpleHiddenRefdata id="bulk_medium" name="bulk_medium" refdataCategory="IEMedium"/></g:if>
+                  <g:simpleHiddenRefdata id="bulk_medium" name="bulk_medium" refdataCategory="IEMedium"/>
               </th>
 
-              <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_start_date" name="bulk_start_date" type="date"/> </g:if> <br/>
-                  <g:if test="${editable}"> <g:simpleHiddenValue id="bulk_end_date" name="bulk_end_date" type="date"/> </g:if></th>
-
-              <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_core_start" name="bulk_core_start" type="date"/> </g:if> <br/>
-                  <g:if test="${editable}"> <g:simpleHiddenValue id="bulk_core_end" name="bulk_core_end" type="date"/> </g:if></th>
-
-              <th colspan="2"></th>
+              <th> <g:simpleHiddenValue id="bulk_start_date" name="bulk_start_date" type="date"/>  <br/>
+                   <g:simpleHiddenValue id="bulk_end_date" name="bulk_end_date" type="date"/> 
+              </th>
+              <th>
+                <g:simpleHiddenRefdata id="bulk_coreStatus" name="bulk_coreStatus" refdataCategory="CoreStatus"/> <br/>
+              </th>
+              </g:if>
+               <g:else>
+               <th colspan="7">  </th>
+              </g:else>
+              <th></th>
             </tr>
          </thead>
          <tbody>
@@ -295,11 +305,9 @@
                 <td><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></g:if></td>
                 <td>${counter++}</td>
                 <td>
-                  <g:link controller="issueEntitlement" id="${ie.id}" action="show"><strong>${ie.tipp.title.title}</strong></g:link>
+                  <g:link controller="issueEntitlement" id="${ie.id}" action="show">${ie.tipp.title.title}</g:link>
                   <g:if test="${ie.tipp?.hostPlatformURL}">( <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">Host Link</a> 
                             <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL} (In new window)" target="_blank"><i class="icon-share-alt"></i></a>)</g:if> <br/>
-                   ISSN:<strong>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</strong>, 
-                   eISSN:<strong>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</strong><br/>
                    Access: ${ie.availabilityStatus?.value}<br/>
                    Coverage Note: ${ie.coverageNote?:(ie.tipp?.coverageNote?:'')}<br/>
                    <g:if test="${ie.availabilityStatus?.value=='Expected'}">
@@ -314,22 +322,23 @@
                    </g:if>
 
                 </td>
+                <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}<br/>
+                ${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
                 <td>
-                  <g:xEditableRefData owner="${ie}" field="coreStatus" config='CoreStatus'/>
-
-                  <g:if test="${grailsApplication.config.ab?.newcore==true}"><br/>
-                    <span style="white-space: nowrap;">(Newcore: ${ie.wasCoreOn(as_at_date)})</span>
-                  </g:if>
-
-                  <br/><g:xEditableRefData owner="${ie}" field="medium" config='IEMedium'/>
+                  <g:xEditableRefData owner="${ie}" field="medium" config='IEMedium'/>
                 </td>
                 <td>
-                    <span style="white-space: nowrap;"><g:xEditable owner="${ie}" type="date" field="startDate" /></span><br/>
-                    <span style="white-space: nowrap;"><g:xEditable owner="${ie}" type="date" field="endDate" /></span>
+                    <g:xEditable owner="${ie}" type="date" field="startDate" /><br/>
+                    <g:xEditable owner="${ie}" type="date" field="endDate" />
                 </td>
                 <td>
-                    <g:xEditable owner="${ie}" type="date" field="coreStatusStart" /><br/>
-                    <g:xEditable owner="${ie}" type="date" field="coreStatusEnd" />
+                <g:set var="iecorestatus" value="${ie.getTIP()?.coreStatus(params.asAt?dateFormater.parse(params.asAt):null)}"/>
+                <g:set var="core_checked" value="${params.asAt?:'Now'}"/>
+<g:remoteLink url="[controller: 'ajax', action: 'getTipCoreDates', params:[editable:editable,tipID:ie.getTIP()?.id,title:ie.tipp?.title?.title]]" method="get" name="show_core_assertion_modal" onComplete="showCoreAssertionModal()" class="editable-click"
+              update="magicArea">${iecorestatus?"True(${core_checked})": (iecorestatus==null?'False(Never)':"False(${core_checked})")}</g:remoteLink>
+               <br/>
+
+               <g:xEditableRefData owner="${ie}" field="coreStatus" config='CoreStatus'/>
                 </td>
                 <td>
                   <g:if test="${editable}"><g:link action="removeEntitlement" params="${[ieid:ie.id, sub:subscriptionInstance.id]}" onClick="return confirm('Are you sure you wish to delete this entitlement');">Delete</g:link></g:if>
@@ -362,12 +371,24 @@
               contextPath="../templates" 
               model="${[linkType:subscriptionInstance?.class?.name,roleLinks:subscriptionInstance?.orgRelations,parent:subscriptionInstance.class.name+':'+subscriptionInstance.id,property:'orgs',recip_prop:'sub']}" />
 
+    <div id="magicArea">
+    </div>
     <r:script language="JavaScript">
-      <g:if test="${editable}">
-      $(document).ready(function() {
-      
-        $.fn.editable.defaults.mode = 'inline';
+       function hideModal(){
+        $("[name='coreAssertionEdit']").modal('hide');
+       }
 
+      function showCoreAssertionModal(){
+
+        $("[name='coreAssertionEdit']").modal('show');
+       
+      }
+      
+      <g:if test="${editable}">
+
+
+      $(document).ready(function() {
+           
         $(".announce").click(function(){
            var id = $(this).data('id');
            $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" />/'+id);

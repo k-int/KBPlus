@@ -36,6 +36,34 @@ class AdminController {
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def updatePendingChanges() {
+  //Find all pending changes with licence FK and timestamp after summer 14
+  // For those with changeType: CustomPropertyChange, change it to PropertyChange
+  // on changeDoc add value propertyOID with the value of OID
+    String theDate = "01/05/2014 00:00:00";
+    def summer_date = new Date().parse("d/M/yyyy H:m:s", theDate)
+    def criteria = PendingChange.createCriteria()
+    def changes = criteria.list{
+      isNotNull("license")
+      ge("ts",summer_date)
+      like("changeDoc","%changeType\":\"CustomPropertyChange\",%")
+    }
+    log.debug("Starting PendingChange Update. Found:${changes.size()}")
+
+    changes.each{
+        def parsed_change_info = JSON.parse(it.changeDoc)
+        parsed_change_info.changeType = "PropertyChange"
+        parsed_change_info.changeDoc.propertyOID = parsed_change_info.changeDoc.OID
+        it.changeDoc = parsed_change_info
+        it.save(failOnError:true)
+    }
+    log.debug("Pending Change Update Complete.")
+    redirect(controller:'home')
+
+  }
+
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def managePropertyDefinitions() {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
@@ -83,17 +111,18 @@ class AdminController {
      def result = [:]
      switch (request.method) {
        case 'GET':
-         log.debug("Found GET request")
-         if(usrMrgId ){
-           def usr = User.get(usrMrgId)
-           result.userRoles = usr.getAuthorities()
-           result.userAffiliations =  usr.getAuthorizedAffiliations()
+         if(usrMrgId && usrKeepId ){
+           def usrMrg = User.get(usrMrgId)
+           def usrKeep =  User.get(usrKeepId)
+           result.userRoles = usrMrg.getAuthorities()
+           result.userAffiliations =  usrMrg.getAuthorizedAffiliations()
+           result.usrMrgName = usrMrg.displayName
+           result.userKeepName = usrKeep.displayName
          }else{
           flash.error = "Please select'user to keep' and 'user to merge' from the dropdown."
          }
          break;
        case 'POST':
-         log.debug("Found POST request")
          if(usrMrgId && usrKeepId){
            def usrMrg = User.get(usrMrgId)
            def usrKeep =  User.get(usrKeepId)
@@ -106,7 +135,7 @@ class AdminController {
            if(success){
              usrMrg.enabled = false
              usrMrg.save(flush:true,failOnError:true)
-             flash.message = "Rights copying successful. User '${usrKeep.displayName}' is now disabled."
+             flash.message = "Rights copying successful. User '${usrMrg.displayName}' is now disabled."
            }else{
              flash.error = "An error occured before rights transfer was complete." 
            }
@@ -485,6 +514,49 @@ class AdminController {
     log.debug("initiateCoreMigration...");
     enrichmentService.initiateCoreMigration()
     redirect(controller:'home')
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def titlesImport() {
+
+    if ( request.method=="POST" ) {
+      def upload_mime_type = request.getFile("titles_file")?.contentType
+      def upload_filename = request.getFile("titles_file")?.getOriginalFilename()
+      def input_stream = request.getFile("titles_file")?.inputStream
+
+      CSVReader r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ) )
+      String[] nl;
+      String[] cols;
+      def first = true
+      while ((nl = r.readNext()) != null) {
+        if ( first ) {
+          first = false; // Skip header
+          cols=nl;
+
+          // Make sure that there is at least one valid identifier column
+        }
+        else {
+          def title = null;
+          def bindvars = []
+          // Set up base_query
+          def q = "Select t from TitleInstance as t where "
+          def i = 0;
+          cols.each { cn ->
+            if ( cn == 'title.id' ) {
+              q += 't.id = ?'
+              bindvars.add(nl[i]);
+            }
+            else if ( cn == 'title.title' ) {
+              title = nl[i]
+            }
+            else if ( cn.startsWith('title.id.' ) ) {
+              // Namespace and value
+            }
+            i++;
+          }
+        }
+      }
+    }
   }
 
  

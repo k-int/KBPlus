@@ -8,11 +8,12 @@ import org.springframework.context.i18n.LocaleContextHolder
 
 class TitleInstancePackagePlatform {
 
- @Transient
- def grailsApplication
- @Transient
- def messageSource
-
+  @Transient
+  def grailsApplication
+  
+  @Transient
+  def messageSource
+ 
   static auditable = true
   static def controlledProperties = ['status',
                                      'startDate',
@@ -123,7 +124,25 @@ class TitleInstancePackagePlatform {
     accessEndDate(nullable:true, blank:true);
   }
 
-  
+  def beforeUpdate(){
+    touchPkgLastUpdated()
+  }
+  def beforeInsert() {
+      touchPkgLastUpdated()
+  }
+
+  def beforeDelete(){
+    touchPkgLastUpdated()
+  }
+
+  @Transient
+  def touchPkgLastUpdated(){
+    if(pkg!=null){
+      pkg.lastUpdated ++
+      pkg.save(failOnError:true)
+    }
+  }
+
   def getHostPlatform() {
     def result = null;
     additionalPlatforms.each { p ->

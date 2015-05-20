@@ -102,7 +102,8 @@ grails.project.dependency.resolution = {
           excludes "org.codehaus.groovy", "groovy"
         }
         compile "net.sf.jasperreports:jasperreports:5.6.0"
-        
+        compile "org.eclipse.jdt.core.compiler:ecj:4.4"
+  
         // II Commented out..
         // compile 'cglib:cglib:2.2.2'
         compile "com.lowagie:itext:2.1.7"
@@ -139,7 +140,7 @@ grails.project.dependency.resolution = {
         test ":geb:$gebVersion"
         
         // Font awesome for font based icons.
-        compile ":font-awesome-resources:3.2.1"
+        compile ":font-awesome-resources:4.3.0.1"
 
         compile ':spring-security-core:1.2.7.3'
         compile ':spring-security-ldap:1.0.6'

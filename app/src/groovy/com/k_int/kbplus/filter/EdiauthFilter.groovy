@@ -98,7 +98,7 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
                     if ( ( pa_parts != null ) && ( pa_parts.length == 2 ) ) {
                       def org = Org.findByScope(pa_parts[1]);
                       if ( org ) {
-                        if ( pa_parts[0] == 'staff' ) {
+                        if ( pa_parts[0]?.toLowerCase() == 'staff' ) {
                           def editorRole = Role.findByAuthority('INST_USER') ?: new Role(authority: 'INST_USER', roleType:'global').save(failOnError: true)
                           def uo = new UserOrg(status:3,
                                                org:org,
@@ -148,6 +148,7 @@ public class EdiauthFilter extends org.springframework.security.web.authenticati
     //   result
     // }
     log.debug("Exiting");
+    result
   }
 
   def getPreAuthenticatedCredentials(javax.servlet.http.HttpServletRequest request) {

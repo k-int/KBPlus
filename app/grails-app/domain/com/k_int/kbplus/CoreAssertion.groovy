@@ -1,9 +1,14 @@
 package com.k_int.kbplus
+import javax.persistence.Transient
 
 class CoreAssertion { 
 
   Date startDate
   Date endDate
+
+  @Transient
+  def grailsApplication
+
 
   static belongsTo = [ tiinp : TitleInstitutionProvider ]
 
@@ -17,6 +22,25 @@ class CoreAssertion {
 
   static constraints = {
     endDate(nullable:true, blank:false)
+    startDate(nullable:false, blank:false)
+    startDate validator: {val,obj ->
+      if(obj.endDate == null) return true;
+      val = new java.sql.Timestamp(val.getTime());
+      if(val > obj.endDate) return false;
+    }
+    endDate validator: {val,obj ->
+      if ( val != null ) {
+        val = new java.sql.Timestamp(val.getTime());
+        if(val < obj.startDate) return false;
+      }
+    }
+  }
+
+  @Override
+  public String toString(){
+    def strFormat = grailsApplication.config.appDefaultPrefs.globalDateFormat
+    def formatter = new java.text.SimpleDateFormat(strFormat)
+    return "${startDate?formatter.format(startDate):''} : ${endDate?formatter.format(endDate):''}"
   }
 
 }

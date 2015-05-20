@@ -26,10 +26,10 @@ class TitleInstitutionProvider {
 
   @Transient
   def coreStatus(lookupDate) {
-    log.debug("coreStatus(${lookupDate})")
-    
+    // log.debug("TitleInstitutionProvider::coreStatus(${lookupDate})")
+    if(!coreDates) return null;
     //Should this be here or on a higher level?
-    if(lookupDate == null) lookupDate = new Date()
+    if(lookupDate == null) lookupDate = new Date();
     // log.debug("coreDates: ${coreDates}")
     def isCore = false
     coreDates.each{ coreDate ->
@@ -55,7 +55,10 @@ class TitleInstitutionProvider {
   @Transient
   def compareDates(dateA, dateB){
     def daysDiff
-    def duration 
+    def duration
+    if(dateA == null && dateB == null) return 0;
+    if(dateA== null && dateB != null) return 1;
+    if(dateA != null && dateB == null) return -1; 
     use(groovy.time.TimeCategory) {
         duration =  dateA - dateB
         daysDiff = duration.days
@@ -71,7 +74,7 @@ class TitleInstitutionProvider {
   }
 
   def extendCoreExtent(givenStartDate, givenEndDate) {
-    log.debug("extendCoreExtent(${givenStartDate}, ${givenEndDate})");
+    log.debug("TIP:${this.id} :: extendCoreExtent(${givenStartDate}, ${givenEndDate})");
     // See if we can extend and existing CoreAssertion or create a new one to represent this
     // We soften then edges for extending by a day.
     def startDate = new Date(givenStartDate.getTime())
@@ -82,6 +85,7 @@ class TitleInstitutionProvider {
     def cont = true;
 
     if ( endDate != null ) {
+      log.debug("Working with a set endDate")
       // Test 1 : Does the given range fall entirely within an existing assertion?
       coreDates.each {
         if ( compareDates(it.startDate,startDate) <=0 && compareDates(it.endDate,givenEndDate) >=0 ) {
@@ -117,10 +121,14 @@ class TitleInstitutionProvider {
       }
     }
     else {
+      log.debug("Working with an open endDate")
+
       coreDates.each {
         if ( it.endDate == null ) {
+          log.debug("Testing ${it} ")
+
           if ( compareDates(startDate,it.startDate) == -1 ) {
-            // Open ended core status, with an earlier start date than we had previously
+            log.debug("Open ended core status, with an earlier start date than we had previously")
             it.startDate = startDate
             it.endDate = null
             it.save(flush:true)
@@ -129,14 +137,14 @@ class TitleInstitutionProvider {
         }
         else {
           if ( compareDates(startDate,startDate) == -1 ) {
-            // New coverage start date pushes back a previous one, AND extends the end date to open
+            log.debug("New coverage start date pushes back a previous one, AND extends the end date to open")
             it.startDate = startDate
             it.endDate = null
             it.save(flush:true)
             cont=false
           }   
-          else {
-            // New statement opens up end date, but existing start date should stand
+          else if(compareDates(startDate,it.endDate) == -1){
+            log.debug("New statement opens up end date, but existing start date should stand")
             it.endDate = null
             it.save(flush:true)
             cont=false
@@ -146,13 +154,13 @@ class TitleInstitutionProvider {
     }
 
     if ( cont ) {
-      // NO obvious overlaps - create a new range
-      log.debug("No obvious overlaps - create new core assertion");
-      def new_core_statement = new CoreAssertion(startDate:givenStartDate, endDate:givenEndDate, tiinp:this).save(flush:true)
-  
+      log.debug("No obvious overlaps - create new core assertion ${givenStartDate} - ${givenEndDate}");
+      def new_core_statement = new CoreAssertion(startDate:givenStartDate, endDate:givenEndDate, tiinp:this).save(flush:true,failOnError:true)
+    
       // See if the new range fully encloses any current assertions
       coreDates.each {
         if ( it.startDate >= givenStartDate && it.endDate <= givenEndDate ) {
+          log.debug("Encloses current assertion: ${it}. Remove it")
           it.delete();
         }
       }

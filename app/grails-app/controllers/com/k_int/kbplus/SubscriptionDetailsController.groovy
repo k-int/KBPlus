@@ -115,6 +115,9 @@ class SubscriptionDetailsController {
       date_filter = new Date()
       result.as_at_date = date_filter;
     }
+    // We dont want this filter to reach SQL query as it will break it.
+    def core_status_filter = params.sort == 'core_status'
+    if(core_status_filter) params.remove('sort');
 
     if ( params.filter ) {
       base_qry = " from IssueEntitlement as ie where ie.subscription = ? "
@@ -158,7 +161,18 @@ class SubscriptionDetailsController {
 
     result.num_sub_rows = IssueEntitlement.executeQuery("select count(ie) "+base_qry, qry_params )[0]
 
-    result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, qry_params, [max:result.max, offset:result.offset]);
+    if(core_status_filter){
+      result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, qry_params);
+    }else{
+      result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, qry_params, [max:result.max, offset:result.offset]);    
+    }
+
+    // Now we add back the sort so that the sortable column will recognize asc/desc
+    // Ignore the sorting if we are doing an export
+    if(core_status_filter){
+      params.put('sort','core_status');
+      if(params.format == 'html' || params.format == null)  sortOnCoreStatus(result,params);
+    }
 
     exportService.printDuration(verystarttime, "Querying")
   
@@ -214,6 +228,13 @@ class SubscriptionDetailsController {
       }
     }
   }
+
+  def sortOnCoreStatus(result,params){
+    result.entitlements.sort{it.getTIP()?.coreStatus(null)}
+    if(params.order == 'desc') result.entitlements.reverse(true);
+    result.entitlements = result.entitlements.subList(result.offset, (result.offset+result.max).intValue() )
+  }
+
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def compare(){
     def result = [:]
@@ -420,8 +441,8 @@ class SubscriptionDetailsController {
             ie.embargo = params.bulk_embargo
           }
 
-          if ( params.bulk_core.trim().length() > 0 ) {
-            def selected_refdata = genericOIDService.resolveOID(params.bulk_core.trim())
+          if ( params.bulk_coreStatus.trim().length() > 0 ) {
+            def selected_refdata = genericOIDService.resolveOID(params.bulk_coreStatus.trim())
             log.debug("Selected core status is ${selected_refdata}");
             ie.coreStatus = selected_refdata
           }
@@ -927,8 +948,8 @@ class SubscriptionDetailsController {
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def history() {
-    log.debug("licenseDetails id:${params.id}");
+  def edit_history() {
+    log.debug("subscriptionDetails::edit_history ${params}");
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.subscription = Subscription.get(params.id)
@@ -951,7 +972,37 @@ class SubscriptionDetailsController {
     def qry_params = [result.subscription.class.name, "${result.subscription.id}"]
     result.historyLines = AuditLogEvent.executeQuery("select e from AuditLogEvent as e where className=? and persistedObjectId=? order by id desc", qry_params, [max:result.max, offset:result.offset]);
     result.historyLinesTotal = AuditLogEvent.executeQuery("select count(e.id) from AuditLogEvent as e where className=? and persistedObjectId=?",qry_params)[0];
-    result.todoHistoryLines = PendingChange.executeQuery("select pc from PendingChange as pc where subscription=? order by ts desc", result.subscription);
+   
+    result
+  }
+
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def todo_history() {
+    log.debug("subscriptionDetails::todo_history ${params}");
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.subscription = Subscription.get(params.id)
+
+    if ( ! result.subscription.hasPerm("view",result.user) ) {
+      response.sendError(401);
+      return
+    }
+
+    if ( result.subscription.hasPerm("edit",result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
+    }
+
+    result.max = params.max ?: result.user.defaultPageSize;
+    result.offset = params.offset ?: 0;
+
+    def qry_params = [result.subscription.class.name, "${result.subscription.id}"]
+
+    result.todoHistoryLines = PendingChange.executeQuery("select pc from PendingChange as pc where subscription=? order by ts desc", [result.subscription], [max:result.max, offset:result.offset]);
+
+    result.todoHistoryLinesTotal = PendingChange.executeQuery("select count(pc) from PendingChange as pc where subscription=?", result.subscription)[0];
 
     result
   }

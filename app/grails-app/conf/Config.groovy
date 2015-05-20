@@ -203,7 +203,8 @@ log4j = {
 //    // Enable Hibernate SQL logging with param values
 //    trace 'org.hibernate.type'
 //    debug 'org.hibernate.SQL'
-
+    off    'grails.plugin.formfields'
+    
     error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
            'org.codehaus.groovy.grails.web.pages', //  GSP
            'org.codehaus.groovy.grails.web.sitemesh', //  layouts
@@ -215,7 +216,10 @@ log4j = {
            'org.springframework',
            'org.hibernate',
            'net.sf.ehcache.hibernate',
-           'formfields'
+           'formfields',
+           'com.k_int.kbplus.filter',
+           'org.codehaus.groovy.grails.plugins.springsecurity'
+           
 
     debug  'grails.app.controllers',
            'grails.app.service',
@@ -225,11 +229,8 @@ log4j = {
            'grails.app.jobs',
            'grails.app.conf.BootStrap',
            //'edu.umn.shibboleth.sp',
-           'com.k_int',
+           'com.k_int'
            // 'org.springframework.security'
-           'org.codehaus.groovy.grails.plugins.springsecurity',
-           'some.domain.logging'
-
            // 'grails.app.tagLib',
 
     // info   'com.linkedin.grails'
@@ -243,7 +244,7 @@ grails.plugins.springsecurity.authority.className = 'com.k_int.kbplus.auth.Role'
 grails.plugins.springsecurity.securityConfigType = "Annotation"
 
 grails.plugins.springsecurity.providerNames = ['preAuthenticatedAuthenticationProvider',
-                                               'daoAuthenticationProvider', 
+                                               'daoAuthenticationProvider' // , 
 //                                               'anonymousAuthenticationProvider', 
 //                                               'rememberMeAuthenticationProvider' 
                                               ]
@@ -280,24 +281,24 @@ auditLog {
 // }
 
 appDefaultPrefs {
+  globalDatepickerFormat='yyyy-mm-dd'
   globalDateFormat='yyyy-MM-dd'
   globalDateFormatSQL='%Y-%m-%d'
 }
 
 // The following 2 entries make the app use basic auth by default
-grails.plugins.springsecurity.useBasicAuth = true
-grails.plugins.springsecurity.basic.realmName = "KBPlus"
+// grails.plugins.springsecurity.useBasicAuth = true
+// grails.plugins.springsecurity.basic.realmName = "KBPlus"
 
 
 // II : This doesn't work because we are calling registerFilter to install the ediauth filter.. need to find a different solution, which is annoying
 // See http://jira.grails.org/browse/GPSPRINGSECURITYCORE-210
 // This stanza then says everything should use form apart from /api
 // More info: http://stackoverflow.com/questions/7065089/how-to-configure-grails-spring-authentication-scheme-per-url
-// installed local copy of clientFilterRegister in bootstrap.groovy to address this issue. In testing!
-grails.plugins.springsecurity.filterChain.chainMap = [
-   '/api/**': 'JOINED_FILTERS,-exceptionTranslationFilter',
-   '/**': 'JOINED_FILTERS,-basicAuthenticationFilter,-basicExceptionTranslationFilter'
-]
+// grails.plugins.springsecurity.filterChain.chainMap = [
+//    '/api/**': 'JOINED_FILTERS,-exceptionTranslationFilter',
+//    '/**': 'JOINED_FILTERS,-basicAuthenticationFilter,-basicExceptionTranslationFilter'
+// ]
 
 // Refdata values that need to be added to the database to allow ONIX-PL licences to be compared properly. The code will
 // add them to the DB if they don't already exist.
@@ -349,4 +350,5 @@ remove this line */
 
 quartzHeartbeat = 'Never'
 // grails.databinding.dateFormats = ['MMddyyyy', 'yyyy-MM-dd HH:mm:ss.S', "yyyy-MM-dd'T'hh:mm:ss'Z'"]
+
 

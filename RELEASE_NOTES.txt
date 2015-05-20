@@ -1,5 +1,0 @@
-KBPlus 4.1
-
-* The FACT table has been renamed KBPLUS_FACT as FACT seems to be a reserved word when creating tables in InnoDB. This table will need to be manually renamed as a part of the
-* ES Mappings have been reworked for upgrade to ES 1.1.1 - Installer must manually copy mapping files from $PROJECT_HOME/conf_hints/es_mappings/com.k_int.kbplus.*.jsonto ES config mappings directory.
-
