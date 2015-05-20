@@ -58,9 +58,7 @@
                 <td>End Date</td>
                 <td>End Volume</td>
                 <td>End Issue</td>
-                <td>Core?</td>
-                <td>Core Start Date</td>
-                <td>Core End Date</td>
+                <td>Core Medium</td>
               </tr>
             </thead>
             <tbody>
@@ -72,8 +70,6 @@
                       <input type="hidden" name="entitlements.${counter}.end_date" value="${e.end_date}"/>
                       <input type="hidden" name="entitlements.${counter}.coverage" value="${e.coverage}"/>
                       <input type="hidden" name="entitlements.${counter}.coverage_note" value="${e.coverage_note}"/>
-                      <input type="hidden" name="entitlements.${counter}.core_start_date" value="${e.core_start_date}"/>
-                      <input type="hidden" name="entitlements.${counter}.core_end_date" value="${e.core_end_date}"/>
                       ${e.base_entitlement.title.title}</td>
                   <td><g:link controller="packageDetails" action="show" id="${e.base_entitlement.pkg.id}">${e.base_entitlement.pkg.name}(${e.base_entitlement.pkg.id})</g:link></td>
                   <td>${e.base_entitlement.title.getIdentifierValue('ISSN')}</td>
@@ -85,8 +81,6 @@
                   <td>${e.base_entitlement.endVolume}</td>
                   <td>${e.base_entitlement.endIssue}</td>
                   <td>${e.core_status?:'N'}</td>
-                  <td>${e.core_start_date}</td>
-                  <td>${e.core_end_date}</td>
                 </tr>
               </g:each>
             </tbody>

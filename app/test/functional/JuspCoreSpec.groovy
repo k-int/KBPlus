@@ -54,7 +54,7 @@ class JuspCoreSpec extends GebReportingSpec {
 		when:
 			go '/demo/subscriptionDetails/index/3'
 		then:
-			$("a.editable-click",name:"show_core_assertion_modal").text() == 'False(never)'
+			$("a.editable-click",name:"show_core_assertion_modal").text() == 'False(Never)'
 	}
 	def "Extend the core dates for the title"(){
 		setup:
@@ -82,7 +82,7 @@ class JuspCoreSpec extends GebReportingSpec {
 		when:
 			go '/demo/subscriptionDetails/index/3'
 		then:
-			$("a.editable-click",name:"show_core_assertion_modal").text() == 'True(this sub)'
+			$("a.editable-click",name:"show_core_assertion_modal").text() == 'True(Now)'
 	}
 
 	def "Now lets delete the dates and see that status will change again"(){
@@ -93,6 +93,6 @@ class JuspCoreSpec extends GebReportingSpec {
 			$("a.delete-coreDate",text:"Delete").click()
 			go '/demo/subscriptionDetails/index/3'
 		then:
-			$("a.editable-click",name:"show_core_assertion_modal").text() == 'False(never)'
+			$("a.editable-click",name:"show_core_assertion_modal").text() == 'False(Never)'
 	}
 }

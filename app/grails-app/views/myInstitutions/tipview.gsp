@@ -12,7 +12,7 @@
       <ul class="breadcrumb">
         <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <li> <g:link controller="myInstitutions" action="dashboard" params="${[shortcode:params.shortcode]}">${institution.name} - Dashboard</g:link> <span class="divider">/</span>  </li>
-        <li> <g:link controller="myInstitutions" action="tipview" params="${[shortcode:params.shortcode]}"> Edit Core Titles </g:link> </li>
+        <li> <g:link controller="myInstitutions" action="tipview" params="${[shortcode:params.shortcode]}"> Edit Core Titles (JUSP & KB+) </g:link> </li>
 
       </ul>
     </div>
@@ -29,19 +29,19 @@
       </g:if>
 
       <ul class="nav nav-pills">
-          <g:set var="active_filter" value="${params.filter}"/>
-          <g:set var="params" value="${params.remove('filter')}"/>
-          <li class="${(active_filter=='core' || active_filter == null)?'active':''}"><g:link action="tipview" params="${params + [filter:'core']}">Core</g:link></li>
+          <g:set var="nparams" value="${params.clone()}"/>
+          <g:set var="active_filter" value="${nparams.remove('filter')}"/>
 
-
-          <li class="${active_filter=='not'?'active':''}"><g:link action="tipview" params="${params + [filter:'not']}">Not Core</g:link></li>
-          <li class="${active_filter=='all'?'active':''}"><g:link action="tipview" params="${params + [filter:'all']}">All</g:link></li>
+          <li class="${(active_filter=='core' || active_filter == null)?'active':''}">
+            <g:link action="tipview" params="${nparams + [filter:'core']}">Core</g:link>
+          </li>
+          <li class="${active_filter=='not'?'active':''}"><g:link action="tipview" params="${nparams + [filter:'not']}">Not Core</g:link></li>
+          <li class="${active_filter=='all'?'active':''}"><g:link action="tipview" params="${nparams + [filter:'all']}">All</g:link></li>
 
       </ul>
       <div class="row">
         <div class="span12">
           <g:form action="tipview" method="get" params="${[shortcode:params.shortcode]}">
-          <input type="hidden" name="offset" value="${params.offset}"/>
 
           <div class="well form-horizontal">
             Search For: <select name="search_for">
@@ -57,7 +57,8 @@
                     <option ${params.order=='asc' ? 'selected' : ''} value="asc">Ascending</option>
                     <option ${params.order=='desc' ? 'selected' : ''} value="desc">Descending</option>
                   </select>
-            <button type="submit" name="search" value="yes">Search</button>
+                  <input type="hidden" name="filter" value="${params.filter}"/>
+            <button type="submit" name="search">Search</button>
           </div>
           </g:form>
         </div>
@@ -85,14 +86,14 @@
               <td class="link">
 
                 <g:set var="coreStatus" value="${tip?.coreStatus(null)}"/>                 
-                <a href="#" class="editable-click" onclick="showDetails(${tip.id});">${coreStatus?'True(now)':coreStatus==null?'False(never)':'False(now)'}</a>
+                <a href="#" class="editable-click" onclick="showDetails(${tip.id});">${coreStatus?'True(Now)':coreStatus==null?'False(Never)':'False(Now)'}</a>
               </td>
             </tr>
           </g:each>
           </tbody>
         </table>
-          <div class="paginateButtons" style="text-align:center">
-          <span><g:paginate action="tipview" params="${params}" next="Next" prev="Prev" total="${tips.totalCount}" /></span>
+          <div class="pagination" style="text-align:center">
+            <span><bootstrap:paginate action="tipview" max="${user?.defaultPageSize?:10}" params="${[:]+params}" next="Next" prev="Prev" total="${tips.totalCount}" /></span>
           </div>
         <div id="magicArea">
         </div>

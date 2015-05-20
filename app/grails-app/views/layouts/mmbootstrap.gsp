@@ -119,7 +119,7 @@
                                </g:if>
                                <li><g:link controller="myInstitutions" 
                                            action="tipview"
-                                           params="${[shortcode:org.shortcode]}">Edit Core Titles</g:link></li>
+                                           params="${[shortcode:org.shortcode]}">Edit Core Titles (JUSP & KB+)</g:link></li>
 
                              </ul>
                            </li>
@@ -246,6 +246,9 @@
                       </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'orgsImport'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="orgsImport">Bulk Load Organisations</g:link>
+                      </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'titlesImport'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="titlesImport">Bulk Load/Update Titles</g:link>
                       </li>
                       <li class="divider"></li>
                       <li <%= ( ( 'stats'== controllerName ) && ( 'statsHome'==actionName ) ) ? ' class="active"' : '' %>>

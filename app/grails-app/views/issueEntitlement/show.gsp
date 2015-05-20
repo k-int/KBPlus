@@ -89,13 +89,8 @@
               <dt>Core Status</dt>
               <dd> 
 <g:remoteLink url="[controller: 'ajax', action: 'getTipCoreDates', params:[tipID:issueEntitlementInstance.getTIP()?.id,title:issueEntitlementInstance.tipp?.title?.title]]" method="get" name="show_core_assertion_modal" onComplete="showCoreAssertionModal()"
-              update="magicArea">${iecorestatus?'True(now)': (iecorestatus==null?'False(never)':'False(now)')}</g:remoteLink></dd>
-%{--               <dt>Core Start Date</dt>
-              <dd><g:xEditable owner="${issueEntitlementInstance}" field="coreStatusStart" type="date"/></dd>
+              update="magicArea">${iecorestatus?'True(Now)': (iecorestatus==null?'False(Never)':'False(Now)')}</g:remoteLink></dd>
 
-              <dt>Core End Date</dt>
-              <dd><g:xEditable owner="${issueEntitlementInstance}" field="coreStatusEnd" type="date"/></dd>
- --}%
                 <g:if test="${issueEntitlementInstance?.tipp.hostPlatformURL}">
                     <dt>Title URL</dt>
                     <dd> <a href="${issueEntitlementInstance.tipp?.hostPlatformURL}" TITLE="${issueEntitlementInstance.tipp?.hostPlatformURL}">${issueEntitlementInstance.tipp.platform.name}</a></dd>
