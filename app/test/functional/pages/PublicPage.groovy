@@ -11,5 +11,6 @@ class PublicPage extends BasePage {
             waitFor { $("a", text: "Knowledge Base+ Member Login")}
              $("a", text: "Knowledge Base+ Member Login").click()
         }
+        
     }
 }

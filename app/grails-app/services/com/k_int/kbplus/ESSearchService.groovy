@@ -16,7 +16,8 @@ class ESSearchService{
                     'consortiaName':'consortiaName',
                     'cpname':'cpname',
                     'availableToOrgs':'availableToOrgs',
-                    'isPublic':'isPublic']
+                    'isPublic':'isPublic',
+                    'lastModified':'lastModified']
 
   def ESWrapperService
   def grailsApplication
@@ -172,7 +173,11 @@ class ESSearchService{
             sw.write(" AND ")
             sw.write(mapping.value)
             sw.write(":")
-            sw.write("\"${params[mapping.key]}\"")
+            if(params[mapping.key].startsWith("[") && params[mapping.key].endsWith("]")){
+              sw.write("${params[mapping.key]}")
+            }else{
+              sw.write("\"${params[mapping.key]}\"")
+            }
           }
         }
       }

@@ -132,11 +132,14 @@ class TitleInstitutionProvider {
             it.startDate = startDate
             it.endDate = null
             it.save(flush:true)
-            cont=false
+          }else{
+            log.debug("Open ended core status, with an later start date than we had previously. New date ignored.")
           }
+          cont=false
+
         }
         else {
-          if ( compareDates(startDate,startDate) == -1 ) {
+          if ( compareDates(startDate,it.startDate) == -1 ) {
             log.debug("New coverage start date pushes back a previous one, AND extends the end date to open")
             it.startDate = startDate
             it.endDate = null
@@ -159,9 +162,11 @@ class TitleInstitutionProvider {
     
       // See if the new range fully encloses any current assertions
       coreDates.each {
-        if ( it.startDate >= givenStartDate && it.endDate <= givenEndDate ) {
-          log.debug("Encloses current assertion: ${it}. Remove it")
-          it.delete();
+        if(it.id != new_core_statement?.id){
+          if ( it.startDate >= givenStartDate && it.endDate <= givenEndDate ) {
+            log.debug("Encloses current assertion: ${it}. Remove it")
+            it.delete();
+          }
         }
       }
     }

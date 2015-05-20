@@ -111,8 +111,16 @@ This work is published from:
 
       <div class="row">
         <div class="span12">
+        <ul class="nav nav-pills">
+          <g:set var="active_filter" value="${params.filter}"/>
+          <li class="${(active_filter=='all' || active_filter == null)?'active':''}"><g:link action="index" params="${params + [filter:'all']}">All Packages</g:link></li>
+
+          <li class="${active_filter=='current'?'active':''}"><g:link action="index" params="${params + [filter:'current',startYear:"[1900 TO ${new Date().year +1900} ]",endYear:"[ ${new Date().year +1900} TO 2100]"]}">Current Packages</g:link></li>
+
+
+      </ul>
           <div class="well form-horizontal">
-            Package Name: <input name="q" placeholder="Add &quot;&quot; for exact match" value="${params.q}"/>
+            Search Term: <input name="q" placeholder="Add &quot;&quot; for exact match" value="${params.q}"/>
             Sort: <select name="sort">
                     <option ${params.sort=='sortname' ? 'selected' : ''} value="sortname">Package Name</option>
                     <option ${params.sort=='_score' ? 'selected' : ''} value="_score">Score</option>
@@ -122,6 +130,8 @@ This work is published from:
                     <option ${params.order=='asc' ? 'selected' : ''} value="asc">Ascending</option>
                     <option ${params.order=='desc' ? 'selected' : ''} value="desc">Descending</option>
                   </select>
+            Modified After: <g:simpleHiddenValue  id="lastUpdated" value="${params.lastUpdated}" name="lastUpdated" type="date"/>
+ 
             <button type="submit" name="search" value="yes">Search</button>
           </div>
         </div>
@@ -186,12 +196,13 @@ This work is published from:
                 <div id="resultsarea">
                   <table class="table table-bordered table-striped">
                     <thead>
-                      <tr style="white-space: nowrap"><th>Package Name</th>
-                      <th>Consortium</th>
-                          <th>Start Date</th>
-                          <th>End Date</th>
-                          <th>Last Modified</th>
-                          <th>Export</th>
+                      <tr style="white-space: nowrap">
+                      <g:sortableColumn property="sortname" title="Package Name" />
+                      <g:sortableColumn property="consortiaName" title="Consortium" />
+                      <g:sortableColumn property="startDate" title="Start Date" />
+                      <g:sortableColumn property="endDate" title="End Date" />
+                      <g:sortableColumn property="lastModified" title="Last Modified" />
+                      <th>Export</th>
                     </thead>
                     <tbody>
                       <g:each in="${hits}" var="hit">
@@ -212,7 +223,7 @@ This work is published from:
                           <g:formatDate formatName="default.date.format.notime" date='${hit.source.endDate?
                             dateFormater.parse(hit.source.endDate):null}'/>
                           </td>
-                          <td>${hit.source.lastModified}</td>
+                          <td><g:formatDate formatName="default.date.format" date='${hit.source.lastModified?dateFormater.parse(hit.source.lastModified):null}'/> </td>
                           </td>
                           
                           <td>  
