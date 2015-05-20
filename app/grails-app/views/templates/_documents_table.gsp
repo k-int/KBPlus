@@ -3,8 +3,6 @@
 
         <div class="well hide licence-documents-options">
             <button class="btn btn-danger delete-document" id="delete-doc">Delete Selected Documents</button>
-            <input type="submit" class="btn btn-primary" value="Add new document" data-toggle="modal"
-                   href="#modalCreateDocument"/>
             <input type="hidden" name="instanceId" value="${instance.id}"/>
             <input type="hidden" name="redirectAction" value="${redirect}"/>
         </div>
@@ -47,6 +45,9 @@
         </g:each>
         </tbody>
     </table>
+    <g:if test="${editable}">          
+      <input type="button" class="btn btn-primary" value="Add new document" data-toggle="modal" href="#modalCreateDocument"/>
+      </g:if>
 </g:form>
 
 <!-- JS for show/hide of delete button -->

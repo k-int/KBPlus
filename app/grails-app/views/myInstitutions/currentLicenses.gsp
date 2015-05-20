@@ -10,6 +10,9 @@
         <ul class="breadcrumb">
             <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
            <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:params.shortcode]}">${institution.name} ${message(code:'licence.current')}</g:link> </li>
+           <g:if test="${is_admin}">
+              <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
+          </g:if>
         </ul>
     </div>
 
@@ -48,24 +51,27 @@
 
     <div class="container licence-searches">
         <div class="row">
-            <div class="span12">
-                <form class="form-inline">
-                    <label>Valid On</label> 
+            <div class="span8">
+              <div class="well">
 
-            <div class="input-append date">
-              <input class="span2 datepicker-class" size="16" type="text" 
-              name="validOn" value="${validOn}">
-            </div>
+                <form class="form-inline">
+                    <label>Valid On:</label> 
+                        <div class="input-append date">
+                          <input class="span2 datepicker-class" size="16" type="text" 
+                          name="validOn" value="${validOn}">
+                        </div>
 
                     <label>Search by Reference:</label>
-                    <input type="text" name="keyword-search" placeholder="enter search term..." value="${params['keyword-search']?:''}" /><br/>
-                    <label>${message(code:'licence.property.search')}:</label>
-                            <g:select id="availablePropertyTypes" name="availablePropertyTypes" from="${custom_prop_types}" optionKey="value" optionValue="key" value="${params.propertyFilterType}"/>
-                            <input id="selectVal" type="text" name="propertyFilter" placeholder="property value..." value="${params.propertyFilter?:''}" /></p>
+                    <input type="text" name="keyword-search" placeholder="enter search term..." value="${params['keyword-search']?:''}" />
                     <br/>
+                    <label>${message(code:'licence.property.search')}:</label>
+                      <g:select id="availablePropertyTypes" name="availablePropertyTypes" from="${custom_prop_types}" optionKey="value" optionValue="key" value="${params.propertyFilterType}"/>
+                      <input id="selectVal" type="text" name="propertyFilter" placeholder="property value..." value="${params.propertyFilter?:''}" />
+                   
                 <input type="hidden" id="propertyFilterType" name="propertyFilterType" value="${params.propertyFilterType}"/>
-                <input type="submit" class="btn btn-primary" value="Search" /></p>
+                <input type="submit" class="btn btn-primary" value="Search" />
                 </form>
+              </div>
             </div>
         </div>
     </div>
@@ -112,7 +118,7 @@
                   <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${l.endDate}"/></td>
                   <td>
                     <g:link controller="myInstitutions" action="actionLicenses" params="${[shortcode:params.shortcode,baselicense:l.id,'copy-licence':'Y']}" class="btn btn-success">Copy</g:link>
-                    <g:link controller="myInstitutions" action="actionLicenses" params="${[shortcode:params.shortcode,baselicense:l.id,'delete-licence':'Y']}" class="btn btn-danger">Delete</g:link>
+                    <g:link controller="myInstitutions" action="actionLicenses" onclick="return confirm('Are you sure you want to delete ${l.reference?:'** No licence reference ** '}?')" params="${[shortcode:params.shortcode,baselicense:l.id,'delete-licence':'Y']}" class="btn btn-danger">Delete</g:link>
                   </td>
                 </tr>
               </g:each>

@@ -92,7 +92,7 @@
 
   
         <div class="facetFilter span2">
-          <g:each in="${facets}" var="facet">
+          <g:each in="${facets.sort{it.key}}" var="facet">
             <g:if test="${facet.key != 'type'}">
             <div class="panel panel-default">
               <div class="panel-heading">

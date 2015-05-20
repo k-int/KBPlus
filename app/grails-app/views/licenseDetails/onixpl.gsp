@@ -24,7 +24,7 @@
         <li> <g:link controller="licenseDetails" action="index" id="${params.id}"><g:message code="licence.details" default="Licence"/></g:link> <span class="divider">/</span></li>
         <li> <g:link controller="licenseDetails" action="onixpl" id="${params.id}"><g:message code="onix.licence" default="Licence"/></g:link> </li>
         <g:if test="${editable}">
-            <li class="pull-right">Editable by you&nbsp;</li>
+            <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
         </g:if>
 </ul>
     </div>

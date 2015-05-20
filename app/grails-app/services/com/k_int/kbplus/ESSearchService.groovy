@@ -15,7 +15,8 @@ class ESSearchService{
                     'startYear':'startYear',
                     'consortiaName':'consortiaName',
                     'cpname':'cpname',
-                    'availableToOrgs':'availableToOrgs']
+                    'availableToOrgs':'availableToOrgs',
+                    'isPublic':'isPublic']
 
   def ESWrapperService
   def grailsApplication
@@ -57,6 +58,18 @@ class ESSearchService{
                 query_string (query: query_str)
               }
               facets {
+                consortiaName {
+                  terms {
+                    field = 'consortiaName'
+                    size = 25
+                  }
+                }
+                cpname {
+                  terms {
+                    field = 'cpname'
+                    size = 25
+                  }
+                }
                 type {
                   terms {
                     field = 'rectype'
@@ -71,18 +84,6 @@ class ESSearchService{
                 endYear {
                   terms {
                     field = 'endYear'
-                    size = 25
-                  }
-                }
-                consortiaName {
-                  terms {
-                    field = 'consortiaName'
-                    size = 25
-                  }
-                }
-                cpname {
-                  terms {
-                    field = 'cpname'
                     size = 25
                   }
                 }
@@ -128,7 +129,7 @@ class ESSearchService{
   }
 
   def buildQuery(params,field_map) {
-    log.debug("BuildQuery... with params ${params}");
+    log.debug("BuildQuery... with params ${params}. ReverseMap: ${field_map}");
 
     StringWriter sw = new StringWriter()
 

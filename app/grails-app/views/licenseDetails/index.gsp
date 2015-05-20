@@ -78,6 +78,11 @@
 
     <div class="container">
             <div class="row">
+ <h6>${message(code:'licence.properties')}</h6>
+              <div id="custom_props_div" class="span12">
+                  <g:render template="/templates/custom_props" model="${[ ownobj:license ]}"/>
+              </div>
+            <br/>
               <div class="span8">
   
                 <h6>Information</h6>
@@ -229,20 +234,32 @@
 
                             </li>
                           </g:each>
+              
                         </ul>
                       </dd>
                   </dl>
 
-                  <div class="clearfix"></div>
-                  </div>
- 
-            <br/>
-              <h6>${message(code:'licence.properties')}</h6>
-              <div id="custom_props_div" class="span12">
-                  <g:render template="/templates/custom_props" model="${[ ownobj:license ]}"/>
-              </div>
+                  <div class="clearfix"></div
+>              </div>
               </div>
               <div class="span4">
+                <div class="well">
+                <label>  <h5>Licence Actions</h5> </label>
+                  <g:if test="${editable}">
+                 
+                  <label>Copy licence for:</label>
+                  <g:select from="${user.authorizedOrgs}" optionValue="name" optionKey="shortcode" id="orgShortcode" name="orgShortcode"/>
+                                 <br/>
+                   <g:link name="copyLicenceBtn" controller="myInstitutions" action="actionLicenses" params="${[shortcode:'replaceme',baselicense:license.id,'copy-licence':'Y']}" onclick="return changeLink(this,'Are you sure you want to copy this licence?')" class="btn btn-success">Copy</g:link>
+               
+%{--           
+          leave this out for now.. it is a bit confusing.
+          <g:link name="deletLicenceBtn" controller="myInstitutions" action="actionLicenses" onclick="return changeLink(this,'Are you sure you want to delete ${license.reference?:'** No licence reference ** '}?')" params="${[baselicense:license.id,'delete-licence':'Y',shortcode:'replaceme']}" class="btn btn-danger">Delete</g:link> --}%
+                  </g:if>
+                  <g:else>
+                    Actions available to editors only
+                  </g:else>
+                 </div>
                 <g:render template="/templates/documents" model="${[ ownobj:license, owntp:'license']}" />
                 <g:render template="/templates/notes"  model="${[ ownobj:license, owntp:'license']}" />
               </div>
@@ -253,7 +270,15 @@
               model="${[linkType:license?.class?.name,roleLinks:license?.orgLinks,parent:license.class.name+':'+license.id,property:'orgLinks',recip_prop:'lic']}" />
 
     <r:script language="JavaScript">
-    
+      function changeLink(elem,msg){
+        var selectedOrg = $('#orgShortcode').val();
+        var edited_link =  $("a[name="+elem.name+"]").attr("href",function(i,val){
+          return val.replace("replaceme",selectedOrg)
+        });
+
+       return confirm(msg);
+      }
+
       <g:if test="${editable}">
       </g:if>
       <g:else>

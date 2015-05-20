@@ -87,7 +87,7 @@
                                            params="${[shortcode:org.shortcode]}">Licences</g:link></li>
                                <li><g:link controller="myInstitutions"
                                            action="currentSubscriptions"
-                                           params="${[shortcode:org.shortcode]}">Subscriptions</g:link></li>
+                                           params="${[shortcode:org.shortcode]}">Subscribed Contents</g:link></li>
                                <li><g:link controller="myInstitutions"
                                            action="currentTitles"
                                            params="${[shortcode:org.shortcode]}">Titles</g:link></li>
@@ -105,10 +105,10 @@
                                            params="${[id:org.id]}">Organisation Information</g:link></li>
                                <li><g:link controller="subscriptionImport"
                                            action="generateImportWorksheet"
-                                           params="${[id:org.id]}">Generate Subscription Taken Worksheet</g:link></li>
+                                           params="${[id:org.id]}">Generate New Subscription Worksheet</g:link></li>
                                <li><g:link controller="subscriptionImport"
                                            action="importSubscriptionWorksheet"
-                                           params="${[id:org.id]}">Import Subscription Taken Worksheet</g:link></li>
+                                           params="${[id:org.id]}">Import New Subscription Worksheet</g:link></li>
                                <li><g:link controller="myInstitutions"
                                            action="changeLog"
                                            params="${[shortcode:org.shortcode]}">Change Log</g:link></li>

@@ -15,7 +15,7 @@
         </g:if>
         <li> <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}">Subscription ${subscriptionInstance.id} Notes</g:link> </li>
         <g:if test="${editable}">
-          <li class="pull-right">Editable by you&nbsp;</li>
+          <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
         </g:if>
       </ul>
     </div>

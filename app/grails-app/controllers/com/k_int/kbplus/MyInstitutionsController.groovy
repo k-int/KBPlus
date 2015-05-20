@@ -136,6 +136,7 @@ class MyInstitutionsController {
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def actionLicenses() {
+        log.debug("actionLicenses :: ${params}")
         if (params['copy-licence']) {
             newLicense(params)
         } else if (params['delete-licence']) {
@@ -288,31 +289,43 @@ class MyInstitutionsController {
             result.is_admin = false;
         }
 
-        def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
         def template_license_type = RefdataCategory.lookupOrCreate('License Type', 'Template');
-        def public_flag = RefdataCategory.lookupOrCreate('YN', 'Yes');
         def qparams = [template_license_type]
+        def public_flag = RefdataCategory.lookupOrCreate('YN', 'No');
 
-        // This query used to allow institutions to copy their own licenses - now users only want to copy template licenses
-        // def qparams = [template_license_type, result.institution, licensee_role, public_flag]
+       // This query used to allow institutions to copy their own licenses - now users only want to copy template licenses
         // (OS License specs)
         // def qry = "from License as l where ( ( l.type = ? ) OR ( exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) ) OR ( l.isPublic=? ) ) AND l.status.value != 'Deleted'"
-        def qry = "from License as l where l.type = ? AND l.status.value != 'Deleted'"
+
+        def query = "from License as l where l.type = ? AND l.status.value != 'Deleted'"
 
         if (params.filter) {
-            qry += " and lower(l.reference) like ?"
+            query += " and lower(l.reference) like ?"
             qparams.add("%${params.filter.toLowerCase()}%")
         }
 
+        //separately select all licences that are not public or are null, to test access rights.
+        // For some reason that I could track, l.isPublic != 'public-yes' returns different results.
+        def non_public_query = query + " and ( l.isPublic = ? or l.isPublic is null) "
+
         if ((params.sort != null) && (params.sort.length() > 0)) {
-            qry += " order by l.${params.sort} ${params.order}"
+            query += " order by l.${params.sort} ${params.order}"
         } else {
-            qry += " order by sortableReference asc"
+            query += " order by sortableReference asc"
         }
 
+        println qparams
+        result.numLicenses = License.executeQuery("select count(l) ${query}", qparams)[0]
+        result.licenses = License.executeQuery("select l ${query}", qparams,[max: result.max, offset: result.offset])
 
-        result.numLicenses = License.executeQuery("select count(l) ${qry}", qparams)[0]
-        result.licenses = License.executeQuery("select l ${qry}", qparams, [max: result.max, offset: result.offset])
+        //We do the following to remove any licences the user does not have access rights
+        qparams += public_flag
+
+        def nonPublic = License.executeQuery("select l ${non_public_query}", qparams)
+        def no_access = nonPublic.findAll{ !it.hasPerm("view",result.user)  }
+
+        result.licenses = result.licenses - no_access
+        result.numLicenses = result.numLicenses - no_access.size()
 
         result
     }
@@ -326,14 +339,22 @@ class MyInstitutionsController {
         def date_restriction = null;
         def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
 
-        if (params.validOn == null) {
-            result.validOn = sdf.format(new Date(System.currentTimeMillis()))
-            date_restriction = sdf.parse(result.validOn)
-        } else if (params.validOn == '') {
-            result.validOn = sdf.format(new Date(System.currentTimeMillis()))
-        } else {
+        if (params.validOn) {
             result.validOn = params.validOn
-            date_restriction = sdf.parse(params.validOn)
+        } else {
+            result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+        }
+        date_restriction = sdf.parse(result.validOn)
+
+        def dateBeforeFilter = null;
+        def dateBeforeFilterVal = null;
+        if(params.dateBeforeFilter && params.dateBeforeVal){
+            if(params.dateBeforeFilter == "Renewal Date"){
+                dateBeforeFilter = " and s.manualRenewalDate < ?"
+            }else if (params.dateBeforeFilter == "End Date"){
+                dateBeforeFilter = " and s.endDate < ?"
+            }
+            dateBeforeFilterVal =sdf.parse(params.dateBeforeVal)
         }
 
         if (!checkUserIsMember(result.user, result.institution)) {
@@ -343,9 +364,9 @@ class MyInstitutionsController {
         }
 
         if (checkUserHasRole(result.user, result.institution, 'INST_ADM')) {
-            result.is_admin = true
+            result.editable = true
         } else {
-            result.is_admin = false;
+            result.editable = false;
         }
 
         def public_flag = RefdataCategory.lookupOrCreate('YN', 'Yes');
@@ -370,6 +391,10 @@ class MyInstitutionsController {
             qry_params.add(date_restriction)
         }
 
+        if(dateBeforeFilter ){
+            base_qry += dateBeforeFilter
+            qry_params.add(dateBeforeFilterVal)
+        }
 
         if ((params.sort != null) && (params.sort.length() > 0)) {
             base_qry += " order by ${params.sort} ${params.order}"
@@ -377,7 +402,8 @@ class MyInstitutionsController {
             base_qry += " order by s.name asc"
         }
 
-        // log.debug("current subs base query: ${base_qry} params: ${qry_params} max:${result.max} offset:${result.offset}");
+
+        log.debug("current subs base query: ${base_qry} params: ${qry_params} max:${result.max} offset:${result.offset}");
 
         result.num_sub_rows = Subscription.executeQuery("select count(s) " + base_qry, qry_params)[0]
         result.subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params, [max: result.max, offset: result.offset]);
@@ -467,12 +493,12 @@ class MyInstitutionsController {
         result.user = User.get(springSecurityService.principal.id)
         result.institution = Org.findByShortcode(params.shortcode)
         if (checkUserHasRole(result.user, result.institution, 'INST_ADM')) {
-            result.is_admin = true
+            result.editable = true
         } else {
-            result.is_admin = false;
+            result.editable = false;
         }
 
-        if (result.is_admin) {
+        if (result.editable) {
             def cal = new java.util.GregorianCalendar()
             def sdf = new SimpleDateFormat('yyyy-MM-dd')
 
@@ -630,7 +656,7 @@ class MyInstitutionsController {
     }
 
     def deleteLicense(params) {
-        log.debug("deleteLicense id:${params.baselicense}");
+        log.debug("deleteLicense ${params}");
         def result = [:]
         result.user = User.get(springSecurityService.principal.id)
         result.institution = Org.findByShortcode(params.shortcode)
@@ -656,9 +682,11 @@ class MyInstitutionsController {
                 license.save(flush: true);
             } else {
                 flash.error = "Unable to delete - The selected license has attached subscriptions marked as Current"
+                redirect(url: request.getHeader('referer'))
+                return
             }
         } else {
-            log.warn("Attempt by ${result.user} to delete license ${result.license}without perms")
+            log.warn("Attempt by ${result.user} to delete license ${result.license} without perms")
             flash.message = message(code: 'license.delete.norights', default: 'You do not have edit permission for the selected license.')
             redirect(url: request.getHeader('referer'))
             return
@@ -1286,7 +1314,7 @@ AND EXISTS (
         result.user = springSecurityService.getCurrentUser()
 
         if (!checkUserIsMember(result.user, result.institution)) {
-            flash.error = "You do not have permission to view ${result.institution.name}. Please request access on the profile page";
+            flash.error = "You do not have permission to view ${result?.institution?.name?:'The selected institution.'}. Please request access on the profile page";
             response.sendError(401)
             // render(status: '401', text:"You do not have permission to access ${result.institution.name}. Please request access on the profile page");
             return;

@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="layout" content="mmbootstrap"/>
-    <title>KB+</title>
+    <title>KB+ ${institution.name} Titles</title>
     
     <style>
       .filtering-dropdown-menu {max-height: 400px; overflow: hidden; overflow-y: auto;}
@@ -15,9 +15,8 @@
           <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
           <li> <g:link controller="myInstitutions" action="currentTitles" params="[shortcode:params.shortcode]">${institution.name}  Current Titles</g:link> </li>
           <li class="dropdown pull-right">
-            <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">
-              Exports<b class="caret"></b>
-            </a>
+            <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">
+              Exports<b class="caret"></b></a>&nbsp;
             <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
 	            <li>
 	              <g:link action="currentTitles" params="${params+[format:'csv']}">CSV Export</g:link>
@@ -143,7 +142,7 @@
             
             <g:each in="${titles}" var="ti">
               <tr>
-                <td>${ti[0].title}</td>
+                <td><g:link controller="titleDetails" action="show" id="${ti[0].id}">${ti[0].title}</g:link></td>
                 <td style="white-space:nowrap">${ti[0].getIdentifierValue('ISSN')}</td>
                 <td style="white-space:nowrap">${ti[0].getIdentifierValue('eISSN')}</td>
 

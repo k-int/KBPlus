@@ -20,7 +20,7 @@
         <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <li> <g:link controller="licenseDetails" action="index" id="${params.id}">ONIX-PL ${message(code:'licence.details')}</g:link> </li>
         <g:if test="${editable}">
-            <li class="pull-right">Editable by you&nbsp;</li>
+            <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
         </g:if>
 </ul>
     </div>

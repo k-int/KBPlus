@@ -16,7 +16,7 @@
         <li><g:link controller="packageDetails" action="show" id="${packageInstance.id}">${packageInstance.name}</g:link></li>
 
         <li class="dropdown pull-right">
-          <a class="dropdown-toggle" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>
+          <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>
 
           <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
             <li><g:link action="show" params="${params+[format:'json']}">Json Export</g:link></li>
@@ -286,42 +286,44 @@
     </div>
 
     <div class="container">
+      <br/>
       <p>
-      <span class="pull-right">
-        Currently
-        <g:if test="${unfiltered_num_tipp_rows == num_tipp_rows}">
-          Showing all TIPPs
+        <span class="pull-right">
+          Currently
+          <g:if test="${unfiltered_num_tipp_rows == num_tipp_rows}">
+            Showing all TIPPs
+          </g:if>
+          <g:else>
+            Showing filtered list of ${num_tipp_rows} from a total of ${unfiltered_num_tipp_rows} TIPPs
+          </g:else>
+        </span>
+        Titles (${offset+1} to ${lasttipp}  of ${num_tipp_rows})
+        <g:if test="${params.mode=='advanced'}">Includes Expected or Expired titles, switch to the <g:link controller="packageDetails" action="show" params="${params+['mode':'basic']}">Basic</g:link> view to hide them
         </g:if>
-        <g:else>
-          Showing filtered list of ${num_tipp_rows} from a total of ${unfiltered_num_tipp_rows} TIPPs
+        <g:else>Expected or Expired titles are not shown, use the <g:link controller="packageDetails" action="show" params="${params+['mode':'advanced']}">Advanced</g:link> view to see them
         </g:else>
-      </span>
-
-          Titles (${offset+1} to ${lasttipp}  of ${num_tipp_rows})
-            <g:if test="${params.mode=='advanced'}">Includes Expected or Expired titles, switch to the <g:link controller="packageDetails" action="show" params="${params+['mode':'basic']}">Basic</g:link> view to hide them</g:if>
-                <g:else>Expected or Expired titles are not shown, use the <g:link controller="packageDetails" action="show" params="${params+['mode':'advanced']}">Advanced</g:link> view to see them</g:else>
               )
-       </p>
-              <br/>
+     </p>
 
-        <g:form action="show" params="${params}" method="get" class="form-inline">
-           <input type="hidden" name="sort" value="${params.sort}">
-           <input type="hidden" name="order" value="${params.order}">
-           <input type="hidden" name="mode" value="${params.mode}">
-           <label>Filters - Title:</label> <input name="filter" value="${params.filter}"/>
-           <label>Coverage note:</label> <input name="coverageNoteFilter" value="${params.coverageNoteFilter}"/><br/>
-            <label>Coverage Starts Before:</label> 
-            <g:simpleHiddenValue id="startsBefore" name="startsBefore" type="date" value="${params.startsBefore}"/>, &nbsp;
-            <label>Ends After:</label>
-            <g:simpleHiddenValue id="endsAfter" name="endsAfter" type="date" value="${params.endsAfter}"/>, &nbsp;
-            <g:if test="${params.mode!='advanced'}">
-              <label>Show package contents on specific date:</label>
-              <g:simpleHiddenValue id="asAt" name="asAt" type="date" value="${params.asAt}"/>
-            </g:if>
+        <div class="well">
+          <g:form action="show" params="${params}" method="get" class="form-inline">
+             <input type="hidden" name="sort" value="${params.sort}">
+             <input type="hidden" name="order" value="${params.order}">
+             <input type="hidden" name="mode" value="${params.mode}">
+             <label>Filters - Title:</label> <input name="filter" value="${params.filter}"/>
+             <label>Coverage note:</label> <input name="coverageNoteFilter" value="${params.coverageNoteFilter}"/><br/>
+              <label>Coverage Starts Before:</label> 
+              <g:simpleHiddenValue id="startsBefore" name="startsBefore" type="date" value="${params.startsBefore}"/>, &nbsp;
+              <label>Ends After:</label>
+              <g:simpleHiddenValue id="endsAfter" name="endsAfter" type="date" value="${params.endsAfter}"/>, &nbsp;
+              <g:if test="${params.mode!='advanced'}">
+                <label>Show package contents on specific date:</label>
+                <g:simpleHiddenValue id="asAt" name="asAt" type="date" value="${params.asAt}"/>
+              </g:if>
 
-           <input type="submit" class="btn btn-primary pull-right" value="Filter Results" />
-        </g:form>
-
+             <input type="submit" class="btn btn-primary pull-right" value="Filter Results" />
+          </g:form>
+        </div>
           <g:form action="packageBatchUpdate" params="${[id:packageInstance?.id]}">
             <g:hiddenField name="filter" value="${params.filter}"/>
             <g:hiddenField name="coverageNoteFilter" value="${params.coverageNoteFilter}"/>
@@ -364,8 +366,9 @@
                           <input type="checkbox" name="clear_end_issue"/>(Check to clear)</td>
                     </tr>
                     <tr>
-                      <td>Coverage Depth: <g:simpleHiddenValue id="bulk_coverage_depth" name="bulk_coverage_depth"/>
-                          <input type="checkbox" name="clear_coverage_depth"/>(Check to clear)</td>
+                       <td>Host Platform URL: <g:simpleHiddenValue id="bulk_hostPlatformURL" name="bulk_hostPlatformURL"/>
+                          <input type="checkbox" name="clear_hostPlatformURL"/>(Check to clear)</td>
+                        </td>
                       <td>Coverage Note: <g:simpleHiddenValue id="bulk_coverage_note" name="bulk_coverage_note"/>
                           <input type="checkbox" name="clear_coverage_note"/>(Check to clear)</td>
                       <td>Embargo:  <g:simpleHiddenValue id="bulk_embargo" name="bulk_embargo"/>
@@ -383,11 +386,6 @@
                           <input type="checkbox" name="clear_payment"/>(Check to clear)</td>
                         </td>
                       </tr>
-                      <tr>
-                        <td colspan="3">Host Platform URL: <g:simpleHiddenValue id="bulk_hostPlatformURL" name="bulk_hostPlatformURL"/>
-                          <input type="checkbox" name="clear_hostPlatformURL"/>(Check to clear)</td>
-                        </td>
-                      </tr>
                     </g:if>
 
 
@@ -402,10 +400,10 @@
               <th>&nbsp;</th>
               <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
               <th style="">Platform</th>
+              <th style="">Hybrid OA</th>
               <th style="">Identifiers</th>
               <th style="">Coverage Start</th>
               <th style="">Coverage End</th>
-              <th style="">Coverage Depth</th>
             </tr>
 
 
@@ -456,6 +454,9 @@
                    </g:else>
                 </td>
                 <td style="white-space: nowrap;vertical-align:top;">
+                   <g:xEditableRefData owner="${t}" field="hybridOA" config='TIPPHybridOA'/>
+                </td>
+                <td style="white-space: nowrap;vertical-align:top;">
                   <g:each in="${t.title.ids}" var="id">
                     <g:if test="${id.identifier.ns.hide != true}">
                       ${id.identifier.ns.ns}:${id.identifier.value}<br/>
@@ -473,9 +474,6 @@
                    Date: <g:xEditable owner="${t}" type="date" field="endDate" /><br/>
                    Volume: <g:xEditable owner="${t}" field="endVolume" /><br/>
                    Issue: <g:xEditable owner="${t}" field="endIssue" />
-                </td>
-                <td>
-                  <g:xEditable owner="${t}" field="coverageDepth" />
                 </td>
               </tr>
 

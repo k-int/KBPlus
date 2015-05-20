@@ -100,6 +100,7 @@ class DataloadService {
           result.sortTitle = ti.sortTitle
           result.normTitle = ti.normTitle
           result.keyTitle = ti.keyTitle
+          result.publisher = ti.getPublisher()?.name ?:''
           result.dbId = ti.id
           result.visible = ['Public']
           result.rectype = 'Title'
@@ -124,6 +125,7 @@ class DataloadService {
       result.dbId = pkg.id
       result.visible = ['Public']
       result.rectype = 'Package'
+      result.isPublic = pkg?.isPublic?.value?:'No'
       result.consortiaId = pkg.getConsortia()?.id
       result.consortiaName = pkg.getConsortia()?.name
       result.cpname = pkg.contentProvider?.name
@@ -131,9 +133,9 @@ class DataloadService {
       result.titleCount = pkg.tipps.size()
       result.startDate = pkg.startDate
       result.endDate = pkg.endDate
+      result.identifiers = pkg.ids.collect{"${it?.identifier?.ns?.ns} : ${it?.identifier?.value}"}
       def lastmod = pkg.lastUpdated ?: pkg.dateCreated
       if ( lastmod != null ) {
-        def formatter = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm")
         result.lastModified = formatter.format(lastmod)
       }
 
