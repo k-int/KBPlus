@@ -113,7 +113,17 @@
                 }
               },
               createSearchChoice:function(term, data) {
-                 return {id:-1+term, text:"New Code: "+term};
+                 var existsAlready     = false;
+                 for (var i = 0; i < data.length; i++)
+                 {
+                    if(term.toLowerCase() == data[i].text.toLowerCase())
+                    {
+                        existsAlready = true;
+                        break;
+                    }
+                 }
+                 if(!existsAlready)
+                    return {id:-1+term, text:"new code: "+term};
               }
 
             });
@@ -121,10 +131,16 @@
             //If we want to do something upon selection
             $("#newBudgetCode").on("select2-selecting", function(e) {
                 var presentSelections = $("#newBudgetCode").select2("data");
-                console.log(presentSelections);
-                if(presentSelections.length > 0) {
-                    for (var i = 0; i < presentSelections.length; i++) {
-                        if(presentSelections[i].text.toString == e.choice.text.toString)
+                var current = e.choice.text.trim().toLowerCase();
+                if(current.indexOf("new code: ",0) == 0)
+                    current = current.substring(10,current.length);
+
+                if(presentSelections.length > 0)
+                {
+                    for (var i = 0; i < presentSelections.length; i++)
+                    {
+                        var p = (presentSelections[i].text.indexOf("new code: ",0) == 0)? presentSelections[i].text.trim().toLowerCase().substring(10,presentSelections[i].text.length):presentSelections[i].text.trim().toLowerCase();
+                        if(p == current)
                         {
                             e.preventDefault();
                             break;
