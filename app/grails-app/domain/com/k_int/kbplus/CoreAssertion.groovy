@@ -6,10 +6,6 @@ class CoreAssertion {
   Date startDate
   Date endDate
 
-  @Transient
-  def grailsApplication
-
-
   static belongsTo = [ tiinp : TitleInstitutionProvider ]
 
   static mapping = {
@@ -38,7 +34,7 @@ class CoreAssertion {
 
   @Override
   public String toString(){
-    def strFormat = grailsApplication.config.appDefaultPrefs.globalDateFormat
+    def strFormat = 'yyyy-MM-dd'
     def formatter = new java.text.SimpleDateFormat(strFormat)
     return "${startDate?formatter.format(startDate):''} : ${endDate?formatter.format(endDate):''}"
   }
