@@ -664,6 +664,7 @@ class TitleInstance {
         // Do nothing - already present
       }
       else {
+        static_logger.debug("Create new identifier occurrence for tid:${getId()} ns:${ns} value:${value}");
         new IdentifierOccurrence(identifier:id, ti:this).save(flush:true)
       }
     }
@@ -690,7 +691,5 @@ class TitleInstance {
       result=true
     result
   }
-
-
 
 }

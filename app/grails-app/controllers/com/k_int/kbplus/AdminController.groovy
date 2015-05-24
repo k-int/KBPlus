@@ -652,6 +652,42 @@ class AdminController {
             }
             i++;
           }
+
+          log.debug("\n\n");
+          log.debug(q);
+          log.debug(joinclause);
+          log.debug(whereclause);
+          log.debug(bindvars);
+
+          def title_search = TitleInstance.executeQuery(q+joinclause+whereclause,bindvars);
+          log.debug("Search returned ${title_search.size()} titles");
+
+          if ( title_search.size() == 0 ) {
+            if ( title != null ) {
+              log.debug("New title - create identifiers and title ${title}");
+            }
+            else {
+              log.debug("NO match - no title - skip row");
+            }
+          }
+          else if ( title_search.size() == 1 ) {
+            log.debug("Matched one - see if any of the supplied identifiers are missing");
+            def title_obj = title_search[0]
+            def c = 0;
+            cols.each { cn ->
+              if ( cn.startsWith('title.id.' ) ) {
+                def ns = cn.substring(9)
+                def val = nl[c]
+                log.debug("validate ${title_obj.title} has identifier with ${ns} ${val}");
+                title_obj.checkAndAddMissingIdentifier(ns,val);
+              }
+              c++
+            }
+            
+          }
+          else {
+            log.debug("Unable to continue - matched multiple titles");
+          }
         }
       }
     }
