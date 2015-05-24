@@ -20,7 +20,7 @@ class IssueEntitlement implements Comparable {
   String ieReason
   Date coreStatusStart
   Date coreStatusEnd
-  RefdataValue coreStatus
+  RefdataValue coreStatus // core Status is really core Medium.. dont ask.
   RefdataValue medium
 
   static belongsTo = [subscription: Subscription, tipp: TitleInstancePackagePlatform]
@@ -132,22 +132,57 @@ class IssueEntitlement implements Comparable {
     result
   }
 
-  def wasCoreOn(as_at) {
-    // Use the new core system to determine if this title really is core
-    def result = false
+  @Transient
+  def getTIP(){
     def inst = subscription?.getSubscriber()
     def title = tipp?.title
     def provider = tipp?.pkg?.getContentProvider()
-
     if ( inst && title && provider ) {
-      def tiinp = TitleInstitutionProvider.findByTitleAndInstitutionAndprovider(title, inst, provider)
-      if ( tiinp ) {
-        if ( ( tiinp.startDate < as_at ) && ( ( tiinp.endDate == null) || ( tiinp.endDate > as_at ) ) ) {
-          result = true
-        }
+      def tip = TitleInstitutionProvider.findByTitleAndInstitutionAndprovider(title, inst, provider)
+      if(!tip){
+        tip = new TitleInstitutionProvider(title:title,institution:inst,provider:provider)
+        tip.save(flush:true)
       }
+      return tip
+    }
+    return null
+  }
+  
+  @Transient
+  def coreStatusOn(as_at) {
+    // Use the new core system to determine if this title really is core
+    def tip = getTIP()
+    if(tip) return tip.coreStatus(as_at);
+    return false
+  }
+  
+  @Transient
+  def extendCoreDates(startDate, endDate){
+    def tip = getTIP()
+      tip?.extendCoreExtent(startDate,endDate)
+  }
+
+  @Transient
+  static def refdataFind(params) {
+
+    def result = [];
+    def hqlParams = []
+    def hqlString = "select ie from IssueEntitlement as ie"
+
+    if ( params.subFilter ) {
+      hqlString += ' where ie.subscription.id = ?'
+      hqlParams.add(params.long('subFilter'))
+    }
+
+    def results = IssueEntitlement.executeQuery(hqlString,hqlParams)
+
+    results?.each { t ->
+      def resultText = t.tipp.title.title
+      result.add([id:"${t.class.name}:${t.id}",text:resultText])
     }
 
     result
+
   }
+
 }

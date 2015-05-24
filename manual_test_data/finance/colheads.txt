@@ -1,0 +1,57 @@
+CID
+Title Name
+ti_id
+ISSN
+Subscription Number
+Subscription Status
+Your reference 1
+Your reference 2
+Your reference 3
+Your reference 4
+Expiry Date
+Publisher Name and Country
+Supplier Name
+Subscription Supply Type
+Publisher Reference Number
+Ordered from Date
+Ordered from Volume
+Ordered from Issue
+Cancelled after Date
+Cancelled after Volume
+Cancelled after Issue
+Subscription access - provider name
+Subscription access - start date
+Subscription access - end date
+Access activation date
+Electronic publisher reference
+User id & password
+Frequency
+Subject Name
+Language
+First Published Date
+Country of publication
+Publication Type
+Title access provider name
+Publisher URL
+Shipping Address Name
+Shipping Address Line 1
+Shipping Address Line 2
+Shipping Address Line 3
+Country of Shipping Address
+Billing Address Name
+Billing Address Line 1
+Billing Address Line 2
+Billing Address Line 3
+Country of Billing Address
+Invoice number
+Invoice Date
+Invoice Amount
+Invoice Currency
+Period charged from
+Volume charged from
+Issue charged from
+Part charged from
+Period charged to
+Volume charged to
+Issue charged to
+Part charged to

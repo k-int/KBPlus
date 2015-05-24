@@ -1,4 +1,5 @@
-<%@ page import="com.k_int.kbplus.Org" %>
+<%@ page import="com.k_int.kbplus.Org; com.k_int.kbplus.RefdataCategory; com.k_int.kbplus.RefdataValue" %>
+
 <!doctype html>
 <html>
 	<head>
@@ -28,7 +29,6 @@
 					</ul>
 				</div>
 			</div>
-			
 			<div class="span9">
 
 				<div class="page-header">

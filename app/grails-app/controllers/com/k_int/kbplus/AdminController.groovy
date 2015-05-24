@@ -111,17 +111,18 @@ class AdminController {
      def result = [:]
      switch (request.method) {
        case 'GET':
-         log.debug("Found GET request")
-         if(usrMrgId ){
-           def usr = User.get(usrMrgId)
-           result.userRoles = usr.getAuthorities()
-           result.userAffiliations =  usr.getAuthorizedAffiliations()
+         if(usrMrgId && usrKeepId ){
+           def usrMrg = User.get(usrMrgId)
+           def usrKeep =  User.get(usrKeepId)
+           result.userRoles = usrMrg.getAuthorities()
+           result.userAffiliations =  usrMrg.getAuthorizedAffiliations()
+           result.usrMrgName = usrMrg.displayName
+           result.userKeepName = usrKeep.displayName
          }else{
           flash.error = "Please select'user to keep' and 'user to merge' from the dropdown."
          }
          break;
        case 'POST':
-         log.debug("Found POST request")
          if(usrMrgId && usrKeepId){
            def usrMrg = User.get(usrMrgId)
            def usrKeep =  User.get(usrKeepId)
@@ -134,7 +135,7 @@ class AdminController {
            if(success){
              usrMrg.enabled = false
              usrMrg.save(flush:true,failOnError:true)
-             flash.message = "Rights copying successful. User '${usrKeep.displayName}' is now disabled."
+             flash.message = "Rights copying successful. User '${usrMrg.displayName}' is now disabled."
            }else{
              flash.error = "An error occured before rights transfer was complete." 
            }
@@ -513,6 +514,98 @@ class AdminController {
     log.debug("initiateCoreMigration...");
     enrichmentService.initiateCoreMigration()
     redirect(controller:'home')
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def titlesImport() {
+
+    if ( request.method=="POST" ) {
+      def upload_mime_type = request.getFile("titles_file")?.contentType
+      def upload_filename = request.getFile("titles_file")?.getOriginalFilename()
+      def input_stream = request.getFile("titles_file")?.inputStream
+
+      CSVReader r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ) )
+      String[] nl;
+      String[] cols;
+      def first = true
+      while ((nl = r.readNext()) != null) {
+        if ( first ) {
+          first = false; // Skip header
+          cols=nl;
+
+          // Make sure that there is at least one valid identifier column
+        }
+        else {
+          def title = null;
+          def bindvars = []
+          def title_id_ctr = 0;
+          // Set up base_query
+          def q = "Select distinct(t) from TitleInstance as t "
+          def joinclause = ''
+          def whereclause = ' where ';
+          def i = 0;
+          def disjunction_ctr = 0;
+          cols.each { cn ->
+            if ( cn == 'title.id' ) {
+              if ( disjunction_ctr++ > 0 ) { whereclause += ' OR ' }
+              whereclause += 't.id = ?'
+              bindvars.add(new Long(nl[i]));
+            }
+            else if ( cn == 'title.title' ) {
+              title = nl[i]
+            }
+            else if ( cn.startsWith('title.id.' ) ) {
+              // Namespace and value
+              if ( nl[i].trim().length() > 0 ) {
+                if ( disjunction_ctr++ > 0 ) { whereclause += ' OR ' }
+                joinclause += " join t.ids as id${title_id_ctr} "
+                whereclause += " ( id${title_id_ctr}.identifier.ns.ns = ? AND id${title_id_ctr}.identifier.value = ? ) "
+                bindvars.add(cn.substring(9))
+                bindvars.add(nl[i])
+                title_id_ctr++
+              }
+            }
+            i++;
+          }
+
+          log.debug("\n\n");
+          log.debug(q);
+          log.debug(joinclause);
+          log.debug(whereclause);
+          log.debug(bindvars);
+
+          def title_search = TitleInstance.executeQuery(q+joinclause+whereclause,bindvars);
+          log.debug("Search returned ${title_search.size()} titles");
+
+          if ( title_search.size() == 0 ) {
+            if ( title != null ) {
+              log.debug("New title - create identifiers and title ${title}");
+            }
+            else {
+              log.debug("NO match - no title - skip row");
+            }
+          }
+          else if ( title_search.size() == 1 ) {
+            log.debug("Matched one - see if any of the supplied identifiers are missing");
+            def title_obj = title_search[0]
+            def c = 0;
+            cols.each { cn ->
+              if ( cn.startsWith('title.id.' ) ) {
+                def ns = cn.substring(9)
+                def val = nl[c]
+                log.debug("validate ${title_obj.title} has identifier with ${ns} ${val}");
+                title_obj.checkAndAddMissingIdentifier(ns,val);
+              }
+              c++
+            }
+            
+          }
+          else {
+            log.debug("Unable to continue - matched multiple titles");
+          }
+        }
+      }
+    }
   }
 
  

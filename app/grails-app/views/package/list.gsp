@@ -20,14 +20,6 @@
 								<g:message code="default.list.label" args="[entityName]" />
 							</g:link>
 						</li>
-                                                <sec:ifAnyGranted roles="ROLE_ADMIN">
-						<li>
-							<g:link class="create" action="create">
-								<i class="icon-plus"></i>
-								<g:message code="default.create.label" args="[entityName]" />
-							</g:link>
-						</li>
-                                                </sec:ifAnyGranted>
 					</ul>
 				</div>
 			</div>

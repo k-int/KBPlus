@@ -2,9 +2,10 @@ import geb.error.RequiredPageContentNotPresent
 import geb.spock.GebReportingSpec
 import pages.*
 import spock.lang.Stepwise
+import spock.lang.Ignore
 
 @Stepwise
-class HomePageSpec extends GebReportingSpec {
+class GeneralSpec extends GebReportingSpec {
 	// curl -XDELETE 'http://localhost:9200/kbplustest/'
 	// curl -XPUT 'httop://localhost:9200/kbplustest/'
 
@@ -73,7 +74,7 @@ class HomePageSpec extends GebReportingSpec {
 		$('a', text: 'New Package Details').click()
 		$('form').subid = Data.Subscription_name_A +" - Functional Test Organisation"
 		$('#addEntitlementsCheckbox').click()
-		$('form input', type: 'submit').click()
+		$('#add_to_sub_submit_id').click()
 		then:
 		1 == 1
 		// response page sends back a link containing the new package ID <a href="/demo/packageDetails/show/590">New Package Details</a>

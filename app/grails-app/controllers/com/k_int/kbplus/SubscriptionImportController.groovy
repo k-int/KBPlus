@@ -455,7 +455,7 @@ class SubscriptionImportController {
       cell = row.createCell(cc++);
       cell.setCellValue(new HSSFRichTextString("eISSN"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("current Start Date"));
+      cell.setCellValue(new HSSFRichTextString("Current Start Date"));
       cell = row.createCell(cc++);
       cell.setCellValue(new HSSFRichTextString("Current End Date"));
       cell = row.createCell(cc++);
@@ -463,11 +463,11 @@ class SubscriptionImportController {
       cell = row.createCell(cc++);
       cell.setCellValue(new HSSFRichTextString("Current Coverage Note"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("IsCore?"));
+      cell.setCellValue(new HSSFRichTextString("Core Status"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("Core Start Date"));
+      cell.setCellValue(new HSSFRichTextString("Core Status Checked"));
       cell = row.createCell(cc++);
-      cell.setCellValue(new HSSFRichTextString("Core End Date"));
+      cell.setCellValue(new HSSFRichTextString("Core Medium"));
   
       m.sub_info.each { sub ->
         cell = row.createCell(cc++);
@@ -515,16 +515,17 @@ class SubscriptionImportController {
         cell.setCellValue(new HSSFRichTextString("${title.current_coverage_note?:''}"));
   
         // IsCore
+        //TODO: are we ever getting a sub in here ?
         cell = row.createCell(cc++);
-        cell.setCellValue(new HSSFRichTextString("${title.is_core?:''}"));
+        cell.setCellValue(new HSSFRichTextString(""));
   
         // Core Start Date
         cell = row.createCell(cc++);
-        cell.setCellValue(new HSSFRichTextString("${title.core_start_date?:''}"));
+        cell.setCellValue(new HSSFRichTextString(""));
   
         // Core End Date
         cell = row.createCell(cc++);
-        cell.setCellValue(new HSSFRichTextString("${title.core_end_date?:''}"));
+        cell.setCellValue(new HSSFRichTextString("${title.coreStatus?:''}"));
   
         m.sub_info.each { sub ->
           cell = row.createCell(cc++);
@@ -703,9 +704,7 @@ class SubscriptionImportController {
                   entitlement_info.end_date = title_row.getCell(5)
                   entitlement_info.coverage = title_row.getCell(6)
                   entitlement_info.coverage_note = title_row.getCell(7)
-                  entitlement_info.core_status = title_row.getCell(8)
-                  entitlement_info.core_start_date = title_row.getCell(9)
-                  entitlement_info.core_end_date = title_row.getCell(10)
+                  entitlement_info.core_status = title_row.getCell(10) // moved from 8
   
                   log.debug("Added entitlement_info ${entitlement_info}");
                   result.entitlements.add(entitlement_info)
@@ -854,9 +853,6 @@ class SubscriptionImportController {
 
         def new_start_date = entitlement.start_date ? parseDate(entitlement.start_date, possible_date_formats)  : null
         def new_end_date = entitlement.end_date ?  parseDate(entitlement.end_date, possible_date_formats) : null
-        def new_core_start_date = entitlement.core_start_date ? parseDate(entitlement.core_start_date, possible_date_formats) : null
-        def new_core_end_date = entitlement.core_end_date ? parseDate(entitlement.core_end_date, possible_date_formats) : null
-
 
         // entitlement.is_core
         def new_ie =  new IssueEntitlement(subscription:new_subscription,
@@ -871,9 +867,7 @@ class SubscriptionImportController {
                                            embargo:dbtipp.embargo,
                                            coverageDepth:dbtipp.coverageDepth,
                                            coverageNote:dbtipp.coverageNote,
-                                           coreStatus:new_core_status,
-                                           coreStatusStart:new_core_start_date,
-                                           coreStatusEnd:new_core_end_date
+                                           coreStatus:new_core_status
                                            )
 
         if ( new_ie.save() ) {
