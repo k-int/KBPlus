@@ -230,10 +230,12 @@ This work is published from:
         <div class="dropdown">
             <a class="dropdown-toggle badge" data-toggle="dropdown" href="#">Formats<i class="fa fa-caret-down"></i> </a>
         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+            <li><g:link action="pkg" params="${[format:'json',id:hit.source.dbId]}">JSON</g:link></li>  
+            <li><g:link action="pkg" params="${[format:'xml',id: hit.source.dbId]}">XML Export</g:link></li>
             <g:each in="${transforms}" var="transkey,transval">
               <li><g:link action="pkg" params="${[format:'xml',transformId:transkey,mode:params.mode,id:hit.source.dbId]}"> ${transval.name}</g:link></li>
             </g:each>
-            <li><g:link action="pkg" params="${[format:'json',id:hit.source.dbId]}">JSON</g:link></li>  </ul>
+            </ul>
         </div>
                         </td>
                         </tr>

@@ -24,6 +24,10 @@ class PublicExportController {
     if(params.lastUpdated){
       params.lastModified ="[${params.lastUpdated} TO 2100]"
     }
+    if (!params.sort){
+      params.sort="sortname"
+      params.order = "asc"
+    }
     if(params.search.equals("yes")){
       //when searching make sure results start from first page
       params.offset = 0
