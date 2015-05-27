@@ -5,8 +5,8 @@ class Identifier {
   IdentifierNamespace ns
   String value
 
-  static hasMany = [ occurrences:IdentifierOccurrence ]
-  static mappedBy = [ occurrences:'identifier' ]
+  static hasMany = [ occurrences:IdentifierOccurrence, relatedIdentifiers: IdentifierRelation ]
+  static mappedBy = [ occurrences:'identifier',  relatedIdentifiers:'fromIdentifier']
 
   static constraints = {
     value validator: {val,obj ->
