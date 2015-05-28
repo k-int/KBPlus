@@ -183,21 +183,44 @@
 
     <r:script>
       $(document).ready(function() {
-        $(".widget-content").dotdotdot({
-          height: 50,
-          after: ".see-more",
-          callback: function(isTruncated, orgContent) {
-            if(isTruncated) {
-              $(this).parent().find('.see-more').show();
-            }
-          }
-        });
 
-        $('.see-more').click(function(e) {
-          e.preventDefault();
-          $(this).parent().find('.widget-content').trigger('destroy');
-          $(this).hide();
-        });
+        $(".widget-content").dotdotdot({
+           height: 50,
+           after: ".see-more",
+           callback: function(isTruncated, orgContent) {
+             if(isTruncated) {
+               $(this).parent().find('.see-more').show();
+             }
+           }
+         });
+
+         $('.see-more').click(function(e) {
+
+           if ($(this).text() == "[ See More ]") {
+             e.preventDefault();
+             $(this).parent().find('.widget-content').trigger('destroy');
+             $(this).html("<a href=\"\">[ See Less ]</a>");
+
+           } else {
+             e.preventDefault();
+             $(this).parent().find('.widget-content').dotdotdot({
+               height: 50,
+               after: ".see-more",
+               callback: function(isTruncated, orgContent) {
+                 if(isTruncated) {
+                   $(this).parent().find('.see-more').show();
+                 }
+               }
+             });
+             $(this).html("<a href=\"\">[ See More ]</a>");
+           }
+
+
+
+           // e.preventDefault();
+           // $(this).parent().find('.widget-content').trigger('destroy');
+           // $(this).hide();
+         });
       });
     </r:script>
 
