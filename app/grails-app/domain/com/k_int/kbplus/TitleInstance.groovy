@@ -562,7 +562,7 @@ class TitleInstance {
       params.sort="title"
       params.order="desc"
     }
-    ql = TitleInstance.findAllByTitleIlike("${params.q}%",params)
+    ql = TitleInstance.findAllByTitleIlike("${params.q}",params)
 
     int i = 1;
     if ( ql ) {
