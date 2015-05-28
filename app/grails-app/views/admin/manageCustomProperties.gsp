@@ -1,4 +1,6 @@
 <!doctype html>
+<%@ page import="com.k_int.kbplus.RefdataValue; com.k_int.custprops.PropertyDefinition" %>
+
 <html>
   <head>
     <meta name="layout" content="mmbootstrap"/>
@@ -26,7 +28,54 @@
       </div>
     </g:if>
 
+    <g:hasErrors bean="${newProp}">
+        <bootstrap:alert class="alert-error">
+        <ul>
+            <g:eachError bean="${newProp}" var="error">
+                <li> <g:message error="${error}"/></li>
+            </g:eachError>
+        </ul>
+        </bootstrap:alert>
+    </g:hasErrors>
+   
+    <div class="container">
+    <div class="span5">
+    <div class="well">
+      <p>Use the following form to create additional property definitions. Property definition names are unique.</p>
+       <g:form id="create_cust_prop" url="[controller: 'ajax', action: 'addCustPropertyType']" >
+          <input type="hidden" name="redirect" value="yes"/>
+          <input type="hidden" name="ownerClass" value="${this.class}"/>
 
+          <div class="modal-body">
+              <dl>
+                  <dt><label class="control-label">New Property Definition:</label></dt>
+                  <dd>
+                      <label class="property-label">Name:</label> <input type="text" name="cust_prop_name"/>
+                  </dd>
+                  <dd>
+                      <label class="property-label">Type:</label> <g:select 
+                          from="${PropertyDefinition.validTypes.entrySet()}"
+                                  optionKey="value" optionValue="key"
+                                  name="cust_prop_type"
+                                  id="cust_prop_modal_select"/>
+                  </dd>
+
+                  <div class="hide" id="cust_prop_ref_data_name">
+                      <dd>
+                          <label class="property-label">Refdata Category:</label> 
+                          <input type="hidden" name="refdatacategory" id="cust_prop_refdatacatsearch"/>
+                      </dd>
+                  </div>
+                  <dd>
+                      <label class="property-label">Description:</label> <g:textArea name="cust_prop_desc" rows="1"/>
+                  </dd>
+                  <input type="submit" value="Create Property" />
+              </dl>
+          </div>
+          </g:form>
+      </div>
+      </div>
+</div>
     <div class="container">
       <div class="row">
         <div class="span8">
@@ -72,5 +121,37 @@
       }
       return false;
     }
+
+
+
+    $('#cust_prop_modal_select').change(function() {
+        var selectedText = $( "#cust_prop_modal_select option:selected" ).val();
+        if( selectedText == "class com.k_int.kbplus.RefdataValue") {
+            $("#cust_prop_ref_data_name").show();
+        }else{
+            $("#cust_prop_ref_data_name").hide();
+        }
+    });
+
+    $("#cust_prop_refdatacatsearch").select2({
+        placeholder: "Type category...",
+        minimumInputLength: 1,
+        ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+            url: '${createLink(controller:'ajax', action:'lookup')}',
+            dataType: 'json',
+            data: function (term, page) {
+                return {
+                    q: term, // search term
+                    page_limit: 10,
+                    baseClass:'com.k_int.kbplus.RefdataCategory'
+                };
+            },
+            results: function (data, page) {
+                return {results: data.values};
+            }
+        }
+    });
+    
+
   </g:javascript>
 </html>

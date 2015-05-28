@@ -648,7 +648,7 @@ class AjaxController {
     if(params.redirect){
       flash.newProp = newProp
       flash.error = error
-      redirect(controller:"admin",action:"managePropertyDefinitions")
+      redirect(controller:"admin",action:"manageCustomProperties")
     }else{
       render(template: "/templates/custom_props", model:[ownobj:owner, newProp:newProp, error:error])        
     }

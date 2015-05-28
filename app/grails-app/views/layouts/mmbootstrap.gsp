@@ -174,8 +174,6 @@
                        <li class="divider"></li>
                          <li <%= ( ( 'jasperReports'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                              <g:link controller="jasperReports" action="index">Reports</g:link></li>
-                         <li <%= ( ( 'admin'== controllerName ) && ( 'managePropertyDefinitions'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="managePropertyDefinitions">Manage Property Definitions</g:link></li>
 
                      </ul>
                    </li>

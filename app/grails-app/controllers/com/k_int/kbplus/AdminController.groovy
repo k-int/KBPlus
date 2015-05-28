@@ -65,19 +65,6 @@ class AdminController {
 
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
-  def managePropertyDefinitions() {
-    def result = [:]
-    result.user = User.get(springSecurityService.principal.id)
-
-    result.definitions = PropertyDefinition.findAll()
-    result.definitions.sort{it.name}
-    result.error = flash.error
-    result.newProp = flash.newProp
-    log.debug("ERROR : ${result.error} newProp:${result.newProp}")
-    result
-  }
-
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def actionAffiliationRequest() {
     log.debug("actionMembershipRequest");
     def req = UserOrg.get(params.req);
@@ -699,6 +686,8 @@ class AdminController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.items = PropertyDefinition.executeQuery('select p from com.k_int.custprops.PropertyDefinition as p');
+    result.newProp = flash.newProp
+    result.error = flash.error
     result
   }
  
