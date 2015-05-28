@@ -6,6 +6,7 @@ import grails.converters.*
 import au.com.bytecode.opencsv.CSVReader
 import com.k_int.custprops.PropertyDefinition
 
+
 class AdminController {
 
   def springSecurityService
@@ -693,5 +694,20 @@ class AdminController {
     }
   }
 
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def manageCustomProperties() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.items = PropertyDefinition.executeQuery('select p from com.k_int.custprops.PropertyDefinition as p');
+    result
+  }
  
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def deleteCustprop() {
+    def pd = PropertyDefinition.get(params.id);
+    if ( pd != null ) {
+      pd.removeProperty();
+    }
+    redirect(controller:'admin',action:'manageCustomProperties')
+  }
 }
