@@ -3,20 +3,18 @@
 
 <html>
   <head>
-    <meta name="layout" content="mmbootstrap"/>
-     <g:javascript src="custom_properties.js"/>
-    <title>KB+ <g:message code="licence" default="Licence"/></title>
+    <meta name="layout" content="pubbootstrap"/>
+    <title>KB+ <g:message code="public.licence" default=" PublicLicence"/></title>
   </head>
 
   <body>
+  <g:render template="public_navbar" contextPath="/templates" model="['active': 'publicExport']"/>
 
     <div class="container">
       <ul class="breadcrumb">
-        <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
-        <g:if test="${license.licensee}">
-          <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:license.licensee.shortcode]}"> ${license.licensee.name} <g:message code="current.licenses" default="Current Licenses"/></g:link> <span class="divider">/</span> </li>
-        </g:if>
-        <li> <g:link controller="licenseDetails" action="index" id="${params.id}"><g:message code="licence.details" default="License Details"/></g:link> </li>
+        <li> <g:link controller="publicLicence" action="index">All Licences</g:link> <span class="divider">/</span> </li>
+
+        <li> <g:link controller="publicLicence" action="show" id="${params.id}"><g:message code="licence.details" default="License Details"/></g:link> </li>
     
         <li class="dropdown pull-right">
           <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>&nbsp;
@@ -30,49 +28,13 @@
           </ul>
         </li>
 
-        <g:if test="${editable}">
-          <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
-        </g:if>
-        <li class="pull-right"><g:annotatedLabel owner="${license}" property="detailsPageInfo"></g:annotatedLabel>&nbsp;</li>
       </ul>
     </div>
 
     <div class="container">
       <h1>${license.licensee?.name} ${license.type?.value} Licence : <g:xEditable owner="${license}" field="reference" id="reference"/></h1>
-      <g:render template="nav" />
     </div>
 
-    <g:if test="${pendingChanges?.size() > 0}">
-      <div class="container alert-warn">
-        <h6>This licence has pending change notifications</h6>
-        <g:if test="${editable}">
-          <g:link controller="pendingChange" action="acceptAll" id="com.k_int.kbplus.License:${license.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept All</g:link>
-          <g:link controller="pendingChange" action="rejectAll" id="com.k_int.kbplus.License:${license.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject All</g:link>
-        </g:if>
-        <br/>&nbsp;<br/>
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <td>Info</td>
-              <td>Action</td>
-            </tr>
-          </thead>
-          <tbody>
-            <g:each in="${pendingChanges}" var="pc">
-              <tr>
-                <td>${pc.desc}</td>
-                <td>
-                  <g:if test="${editable}">
-                    <g:link controller="pendingChange" action="accept" id="${pc.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept</g:link>
-                    <g:link controller="pendingChange" action="reject" id="${pc.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject</g:link>
-                  </g:if>
-                </td>
-              </tr>
-            </g:each>
-          </tbody>
-        </table>
-      </div>
-    </g:if>
 
     <div class="container">
             <div class="row">
@@ -107,7 +69,7 @@
                       <dd>
                         <g:if test="${license.subscriptions && ( license.subscriptions.size() > 0 )}">
                           <g:each in="${license.subscriptions}" var="sub">
-                            <g:link controller="subscriptionDetails" action="index" id="${sub.id}">${sub.id} (${sub.name})</g:link><br/>
+                            ${sub.id} (${sub.name})
                           </g:each>
                         </g:if>
                         <g:else>No currently linked subscriptions.</g:else>
@@ -119,7 +81,7 @@
                       <dd>
                         <g:if test="${license.pkgs && ( license.pkgs.size() > 0 )}">
                           <g:each in="${license.pkgs}" var="pkg">
-                            <g:link controller="packageDetails" action="show" id="${pkg.id}">${pkg.id} (${pkg.name})</g:link><br/>
+                           ${pkg.id} (${pkg.name})<br/>
                           </g:each>
                         </g:if>
                         <g:else>No currently linked packages.</g:else>
@@ -154,14 +116,9 @@
                         <dt><label class="control-label">ONIX-PL Licence</label></dt>
                         <dd>
                             <g:if test="${license.onixplLicense}">
-                                <g:link controller="onixplLicenseDetails" action="index" id="${license.onixplLicense?.id}">${license.onixplLicense.title}</g:link>
-                                <g:if test="${editable}">
-                                    <g:link class="btn btn-warning" controller="licenseDetails" action="unlinkLicense" params="[license_id: license.id, opl_id: onixplLicense.id]">Unlink</g:link>
-                                </g:if>
+                               ${license.onixplLicense.title}
                             </g:if>
-                            <g:else>
-                                <g:link class="btn btn-warning" controller='licenseImport' action='doImport' params='[license_id: license.id]'>Import an ONIX-PL licence</g:link>
-                            </g:else>
+
                         </dd>
                     </dl>
                   </sec:ifAnyGranted>
@@ -227,7 +184,7 @@
                       <dd>
                         <ul>
                           <g:each in="${license?.incomingLinks}" var="il">
-                            <li><g:link controller="licenseDetails" action="index" id="${il.fromLic.id}">${il.fromLic.reference} (${il.type?.value})</g:link> - 
+                            <li>${il.fromLic.reference} (${il.type?.value}) - 
                             Child: <g:xEditableRefData owner="${il}" field="isSlaved" config='YN'/>
 
                             </li>
@@ -237,27 +194,11 @@
                       </dd>
                   </dl>
 
-                  <div class="clearfix"></div
->              </div>
+                  <div class="clearfix"></div>
+              </div>
               </div>
               <div class="span4">
-                <div class="well">
-                <label>  <h5>Licence Actions</h5> </label>
-                  <g:if test="${editable}">
-                 
-                  <label>Copy licence for:</label>
-                  <g:select from="${user.authorizedOrgs}" optionValue="name" optionKey="shortcode" id="orgShortcode" name="orgShortcode"/>
-                                 <br/>
-                   <g:link name="copyLicenceBtn" controller="myInstitutions" action="actionLicenses" params="${[shortcode:'replaceme',baselicense:license.id,'copy-licence':'Y']}" onclick="return changeLink(this,'Are you sure you want to copy this licence?')" class="btn btn-success">Copy</g:link>
-               
-%{--           
-          leave this out for now.. it is a bit confusing.
-          <g:link name="deletLicenceBtn" controller="myInstitutions" action="actionLicenses" onclick="return changeLink(this,'Are you sure you want to delete ${license.reference?:'** No licence reference ** '}?')" params="${[baselicense:license.id,'delete-licence':'Y',shortcode:'replaceme']}" class="btn btn-danger">Delete</g:link> --}%
-                  </g:if>
-                  <g:else>
-                    Actions available to editors only
-                  </g:else>
-                 </div>
+
                 <g:render template="/templates/documents" model="${[ ownobj:license, owntp:'license']}" />
                 <g:render template="/templates/notes"  model="${[ ownobj:license, owntp:'license']}" />
               </div>
@@ -277,9 +218,7 @@
        return confirm(msg);
       }
 
-      <g:if test="${editable}">
-      </g:if>
-      <g:else>
+    
         $(document).ready(function() {
           $(".announce").click(function(){
             var id = $(this).data('id');
@@ -287,10 +226,7 @@
             $('#modalComments').modal('show');
           });
         });
-      </g:else>
-     window.onload = function() {
-     runCustomPropsJS("<g:createLink controller='ajax' action='lookup'/>");
-    };
+
     </r:script>
 
   </body>
