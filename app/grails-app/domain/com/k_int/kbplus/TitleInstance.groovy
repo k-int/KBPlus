@@ -562,7 +562,16 @@ class TitleInstance {
       params.sort="title"
       params.order="desc"
     }
-    ql = TitleInstance.findAllByTitleIlike("${params.q}",params)
+
+    // If the search without a wildcard returns items, return those, otherwise if a case insensitive search
+    // without a wildcard returns 0, add a wildcard and use that 
+    def num_titles = TitleInstance.countByTitleIlike("${params.q}",params)
+    if ( num_titles == 0 ) {
+      ql = TitleInstance.findAllByTitleIlike("${params.q}%",params)
+    }
+    else {
+      ql = TitleInstance.findAllByTitleIlike("${params.q}",params)
+    }
 
     int i = 1;
     if ( ql ) {
