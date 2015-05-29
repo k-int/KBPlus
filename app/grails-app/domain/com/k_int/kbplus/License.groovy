@@ -110,7 +110,6 @@ class License {
     startDate(nullable: true, blank: true)
     endDate(nullable: true, blank: true)
     lastUpdated(nullable: true, blank: true)
-    cancellationAllowances(nullable: true, blank: true)
  }
 
   def getLicensor() {
