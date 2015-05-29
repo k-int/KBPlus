@@ -170,6 +170,7 @@
                       <dt><label class="control-label" for="licenseUrl"><g:message code="licence" default="Licence"/> Url</label></dt>
                       <dd>
                         <g:xEditable owner="${license}" field="licenseUrl" id="licenseUrl"/>
+                        <g:if test="${license.licenseUrl}"><a href="${license.licenseUrl}">License Link</a></g:if>
                       </dd>
                   </dl>
       
