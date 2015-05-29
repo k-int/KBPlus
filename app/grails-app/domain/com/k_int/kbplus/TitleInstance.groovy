@@ -119,13 +119,43 @@ class TitleInstance {
    * @param candidate_identifiers A list of maps containing identifiers and namespaces [ { namespace:'ISSN', value:'Xnnnn-nnnn' }, {namespace:'ISSN', value:'Xnnnn-nnnn'} ]
    */
   static def findByIdentifier(candidate_identifiers) {
-    def result = null
+    def matched = []
     candidate_identifiers.each { i ->
       def id = Identifier.lookupOrCreateCanonicalIdentifier(i.namespace, i.value)
       def io = IdentifierOccurrence.findByIdentifier(id)
       if ( ( io != null ) && ( io.ti != null ) ) {
-        result = io.ti;
+        if ( matched.contains(io.ti) ) {
+          // Already in the list
+        }
+        else {
+          matched.add[io.ti];
+        }
       }
+    }
+
+    // Didn't match anything - see if we can match based on identifier without namespace [In case of duff supplier data]
+    if ( matched.size() == 0 ) {
+      candidate_identifiers.each { i ->
+        def id1 = Identifier.executeQuery('Select io from IdentifierOccurrence as io where io.identifier.value = ?',[i.value]);
+        id1.each { 
+          if ( it.ti != null ) {
+            if ( ( matched.contains(it.ti) ) {
+              // Already in the list
+            }
+            else {
+              matched.add[it.ti];
+            }
+          }
+        }
+      }
+    }
+
+    def result = null;
+    if ( matched.size() == 1 ) {
+      result = matched.get(0);
+    }
+    else if ( matched.size() > 1 ) {
+      throw new Exception("Identifier set ${candidate_identifiers} matched multiple titles");
     }
     
     return result;     
