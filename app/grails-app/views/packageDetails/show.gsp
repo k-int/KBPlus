@@ -189,13 +189,6 @@
                 </dd>
               </dl>
 
-              <dl>
-                <dt>Cancellation Allowances</dt>
-                <dd>
-                  <g:xEditable owner="${packageInstance}" field="cancellationAllowances" />
-                </dd>
-              </dl>
-
                 <dl>
                   <dt>Start Date</dt>
                   <dd>

@@ -26,6 +26,9 @@ class License {
   String reference
   String sortableReference
 
+  String cancellationAllowances
+
+
   RefdataValue licenseCategory
   RefdataValue isPublic
 
@@ -89,6 +92,8 @@ class License {
                 endDate column: 'lic_end_date'
        customProperties sort:'type', order:'desc'
          pendingChanges sort: 'ts', order: 'asc'
+ cancellationAllowances column:'pkg_cancellation_allowances', type:'text'
+
 
   }
 
@@ -111,6 +116,7 @@ class License {
     startDate(nullable: true, blank: true)
     endDate(nullable: true, blank: true)
     lastUpdated(nullable: true, blank: true)
+    cancellationAllowances(nullable: true, blank: true)
  }
 
   def getLicensor() {
