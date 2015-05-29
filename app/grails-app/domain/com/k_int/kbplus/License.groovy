@@ -26,9 +26,6 @@ class License {
   String reference
   String sortableReference
 
-  String cancellationAllowances
-
-
   RefdataValue licenseCategory
   RefdataValue isPublic
 
@@ -92,9 +89,6 @@ class License {
                 endDate column: 'lic_end_date'
        customProperties sort:'type', order:'desc'
          pendingChanges sort: 'ts', order: 'asc'
- cancellationAllowances column:'pkg_cancellation_allowances', type:'text'
-
-
   }
 
   static constraints = {

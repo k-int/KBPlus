@@ -141,22 +141,6 @@
                       </dd>
                   </dl>
       
-      
-                  <dl>
-                      <dt><label class="control-label" for="noticePeriod">Notice Period</label></dt>
-                      <dd>
-                        <g:xEditable owner="${license}" field="noticePeriod" id="noticePeriod"/>
-                     </dd>
-                  </dl>
-
-                  <dl>
-                    <dt>Cancellation Allowances</dt>
-                    <dd>
-                      <g:xEditable owner="${license}" field="cancellationAllowances" />
-                    </dd>
-                  </dl>
-
-
                   <sec:ifAnyGranted roles="ROLE_ADMIN,KBPLUS_EDITOR">
                     <dl>
                         <dt><label class="control-label">ONIX-PL Licence</label></dt>

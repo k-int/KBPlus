@@ -267,6 +267,8 @@ class BootStrap {
                          [propname:"Include in VLE", descr:'',type: RefdataValue.toString(), cat:'YNO'],
                          [propname:"Enterprise Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
                          [propname:"Post Cancellation Access Entitlement", descr:'',type: RefdataValue.toString(), cat:'YNO'], 
+                         [propname:"Cancellation Allowance", descr:'',type: String.toString()], 
+                         [propname:"Notice Period", descr:'',type: String.toString()], 
                          [propname:"Signed", descr:'',type: RefdataValue.toString(), cat:'YNO']]
 
     
