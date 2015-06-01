@@ -139,7 +139,7 @@ class TitleInstance {
         def id1 = Identifier.executeQuery('Select io from IdentifierOccurrence as io where io.identifier.value = ?',[i.value]);
         id1.each { 
           if ( it.ti != null ) {
-            if ( ( matched.contains(it.ti) ) {
+            if ( matched.contains(it.ti) ) {
               // Already in the list
             }
             else {
