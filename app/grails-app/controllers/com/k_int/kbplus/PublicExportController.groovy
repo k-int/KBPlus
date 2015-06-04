@@ -101,7 +101,7 @@ class PublicExportController {
              def title_doi = (e.tipp?.title?.getIdentifierValue('DOI'))?:''
              def publisher = e.tipp?.title?.publisher
              def print_identifier = e.tipp?.title?.getIdentifierValue('ISSN')
-             if ( print_identifier = null ) 
+             if ( print_identifier == null ) 
                print_identifier = e.tipp?.title?.getIdentifierValue('ISBN')
 
              writer.write("\"${e.tipp.title.title}\",\"${print_identifier?:''}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')?:''}\",${start_date},${e.startVolume?:''},${e.startIssue?:''},${end_date},${e.endVolume?:''},${e.endIssue?:''},\"${e.tipp?.hostPlatformURL?:''}\",,\"${title_doi}\",\"${e.embargo?:''}\",\"${e.tipp?.coverageDepth?:''}\",\"${e.tipp?.coverageNote?:''}\",\"${publisher?.name?:''}\",\"${e.tipp?.title?.getIdentifierValue('jusp')?:''}\"\n");

@@ -264,6 +264,9 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'initiateCoreMigration'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="initiateCoreMigration">Initiate Core Migration</g:link>
                       </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'uploadIssnL'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="uploadIssnL">Upload ISSN to ISSN-L File</g:link>
+                      </li>
                     </ul>
                   </li>
 

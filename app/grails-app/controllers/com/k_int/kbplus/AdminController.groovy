@@ -699,4 +699,9 @@ class AdminController {
     }
     redirect(controller:'admin',action:'manageCustomProperties')
   }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def uploadIssnL() {
+    redirect(controller:'admin',action:'uploadIssnL')
+  }
 }
