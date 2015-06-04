@@ -100,8 +100,11 @@ class PublicExportController {
              def end_date = e.endDate ? formatter.format(e.endDate) : '';
              def title_doi = (e.tipp?.title?.getIdentifierValue('DOI'))?:''
              def publisher = e.tipp?.title?.publisher
+             def print_identifier = e.tipp?.title?.getIdentifierValue('ISSN')
+             if ( print_identifier = null ) 
+               print_identifier = e.tipp?.title?.getIdentifierValue('ISBN')
 
-             writer.write("\"${e.tipp.title.title}\",\"${e.tipp?.title?.getIdentifierValue('ISSN')?:''}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')?:''}\",${start_date},${e.startVolume?:''},${e.startIssue?:''},${end_date},${e.endVolume?:''},${e.endIssue?:''},\"${e.tipp?.hostPlatformURL?:''}\",,\"${title_doi}\",\"${e.embargo?:''}\",\"${e.tipp?.coverageDepth?:''}\",\"${e.tipp?.coverageNote?:''}\",\"${publisher?.name?:''}\",\"${e.tipp?.title?.getIdentifierValue('jusp')?:''}\"\n");
+             writer.write("\"${e.tipp.title.title}\",\"${print_identifier?:''}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')?:''}\",${start_date},${e.startVolume?:''},${e.startIssue?:''},${end_date},${e.endVolume?:''},${e.endIssue?:''},\"${e.tipp?.hostPlatformURL?:''}\",,\"${title_doi}\",\"${e.embargo?:''}\",\"${e.tipp?.coverageDepth?:''}\",\"${e.tipp?.coverageNote?:''}\",\"${publisher?.name?:''}\",\"${e.tipp?.title?.getIdentifierValue('jusp')?:''}\"\n");
            }
            writer.flush()
            writer.close()
@@ -129,6 +132,9 @@ class PublicExportController {
              def entitlement = [:]
              entitlement.title=e.tipp.title.title
              entitlement.issn=e.tipp?.title?.getIdentifierValue('ISSN')
+             if ( entitlement.issn == null ) {
+               entitlement.issn=e.tipp?.title?.getIdentifierValue('ISBN')
+             }
              entitlement.eissn=e.tipp?.title?.getIdentifierValue('eISSN')
              entitlement.jusp=e.tipp?.title?.getIdentifierValue('jusp')
              entitlement.startDate=start_date;
