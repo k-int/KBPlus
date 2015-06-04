@@ -316,9 +316,7 @@ class OnixPLService {
       
       // Create list of element names.
       List el_names = data.keySet() as List
-      
       generateKeys(data, exclude, keys)
-      
       // Go through each element in turn now and get the value for a column.
       for (String el_name in el_names) {
         
@@ -326,7 +324,6 @@ class OnixPLService {
         // gives the option for special case handling.
         switch (el_name) {
           default :
-            
             // Add the cell.
             if (!el_name.startsWith('_')) {
               row_cells["${el_name}"] = data["${el_name}"]
@@ -336,7 +333,6 @@ class OnixPLService {
       }
       
       String key = "${keys.join('/')}"
-      
       if (rows[key] == null) {
         rows[key] = new TreeMap()
       }
@@ -412,7 +408,6 @@ class OnixPLService {
         new LinkedHashMap()
       }
     }
-    
     // Get the title.
     String title = license.title
     
@@ -427,7 +422,8 @@ class OnixPLService {
         
         // Each entry here is a row in the table.
         for (Map row in data["${table}"]["${xpath}"]) {
-          
+          def customProcessing = extractClosureProcessing(xpath)
+          def customData = customProcessing(data)
           // The table rows need a composite key to group "equal" values in the table across licenses.
           flattenRow (tables["${table}"], row, exclude, title)
         }
@@ -439,6 +435,24 @@ class OnixPLService {
     }
   }
   
+  private static Closure extractClosureProcessing(String xpath){
+    def closure = null 
+    def startIndx = xpath.indexOf("/_:")
+    def endIndx = xpath.indexOf("/_:",startIndx+1)
+    def targetNode = xpath.substring(startIndx+3,endIndx)
+
+    def nodeValue = getGrailsApplication().config.onix.comparisonPoints.values.'_:PublicationsLicenseExpression'.children.values."${targetNode}";
+    if(nodeValue.process){
+      def sh = new GroovyShell()
+      closure = sh.evaluate(nodeValue.process)
+    }
+    return closure
+
+
+    //"XPATH: _:PublicationsLicenseExpression/_:Definitions/_:AgentDefinition[normalize-space(_:AgentLabel/text())='AuthorizedUser']"
+
+
+  }
   /**
    * Compares the licenses and returns the results as a map.
    * @param license
