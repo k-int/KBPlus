@@ -14,48 +14,9 @@ onix = [
         'children' : [
           'template' : '_:$value$',
           'values' : [
-           'Definitions' : [
-             'process' : """{ data -> 
-              def agents =[]; 
-              def result = [];
-              //First grab the data that we will be duplicating. In this case RelatedAgent
-              def originalData = data.values()[0].values()[0][0]['AgentRelatedAgent']['RelatedAgent'][0].clone();
-              //Next get all the types of RelatedAgents. We want to duplicate the data for each.
-              def relatedAgents = data.values()[0].values()[0][0]['AgentRelatedAgent']['RelatedAgent'][0];
-              for(agent in relatedAgents){
-                agents += agent['_content'];
-              }
-              println 'Agents:'
-              println agents
-              //For each agent, duplicate the data, and remove all other agents from it
-              //Next, add a copy of this data to our result
-              for(agent in agents){
-                def dataDuplicate = originalData.clone();
-                dataDuplicate.removeAll{
-                  it._content != agent && agents.contains(it._content)
-                }
-                println 'New RelatedAgent';
-                println dataDuplicate;
-                //replace the original data with the new (removed all agents except current)
-                data.values()[0].values()[0][0]['AgentRelatedAgent']['RelatedAgent'].set(0,dataDuplicate)
-
-                println 'Data After'
-                println data
-
-                result += data;
-              }
-              //The result should contain the original data, duplicated agents.size() times, each having only one RelatedAgent node
-              result
-               }""",
-              
-             'text' : 'AgentDefinition',
-             'children': [
-                'template' : "_:AgentDefinition[normalize-space(_:AgentLabel/text())='\$value\$']",
-                'values' : [
-                  'AuthorizedUser' : ['text': 'Authorized User'],
-                ]
-             ]
-           ],
+//            'Definitions/_:*' : [
+//              'text' : 'Definitions'
+//            ],
             'LicenseGrant' : [
               'text' : 'Licence Grants'
             ],
@@ -125,7 +86,7 @@ onix = [
             ],
             'GeneralTerms/_:GeneralTerm' : [
               'text' : 'General Terms'
-            ]          
+            ]
           ]
         ]
       ]
