@@ -323,7 +323,9 @@ class OnixPLService {
       
       // Create list of element names.
       List el_names = data.keySet() as List
+      
       generateKeys(data, exclude, keys)
+      
       // Go through each element in turn now and get the value for a column.
       for (String el_name in el_names) {
         
@@ -331,6 +333,7 @@ class OnixPLService {
         // gives the option for special case handling.
         switch (el_name) {
           default :
+            
             // Add the cell.
             if (!el_name.startsWith('_')) {
               row_cells["${el_name}"] = data["${el_name}"]
@@ -340,6 +343,7 @@ class OnixPLService {
       }
       
       String key = "${keys.join('/')}"
+      
       if (rows[key] == null) {
         rows[key] = new TreeMap()
       }
@@ -415,6 +419,7 @@ class OnixPLService {
         new LinkedHashMap()
       }
     }
+    
     // Get the title.
     String title = license.title
     

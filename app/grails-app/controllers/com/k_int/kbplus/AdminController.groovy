@@ -702,6 +702,33 @@ class AdminController {
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def uploadIssnL() {
-    redirect(controller:'admin',action:'uploadIssnL')
+    def result=[:]
+
+    if (request.method == 'POST'){
+      def input_stream = request.getFile("sameasfile")?.inputStream
+      CSVReader r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ), '\t' as char )
+      String[] nl;
+      String[] types;
+      def first = true
+      while ((nl = r.readNext()) != null) {
+        if ( nl.length == 2 ) {
+          if ( first ) {
+            first = false; // Skip header
+            log.debug('Header :'+nl);
+            types=nl
+          }
+          else {
+            log.debug("${types[0]}:${nl[0]} == ${types[1]}:${nl[1]}");
+            def id1 = Identifier.lookupOrCreateCanonicalIdentifier(types[0],nl[0]);
+            def id2 = Identifier.lookupOrCreateCanonicalIdentifier(types[1],nl[1]);
+          }
+        }
+        else {
+          log.error("uploadIssnL expected 2 values");
+        }
+      }
+    }
+
+    result
   }
 }

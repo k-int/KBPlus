@@ -119,16 +119,19 @@ class OnixplLicense {
         }
 
         def xml = getXML()
-
+        
+        log.debug("XPath expression: ${xpath_expr}")
+        
         // Query for xpath results.
         def results = xml.XPath(xpath_expr)
+        
         if (results.length > 0) {
 
           // For each of the results we need to add a map representation to the result.
           results.each { org.w3c.dom.Node node ->
 
             def snippet = new XMLDoc (node)
-
+            
             snippet = onixHelperService.replaceAllTextElements(xml, snippet)
 
             // Create our new XML element of the segment.
