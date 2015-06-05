@@ -14,48 +14,52 @@ onix = [
         'children' : [
           'template' : '_:$value$',
           'values' : [
-           'Definitions' : [
-             'process' : """{ data -> 
-              def agents =[]; 
-              def result = [];
-              //First grab the data that we will be duplicating. In this case RelatedAgent
-              def originalData = data.values()[0].values()[0][0]['AgentRelatedAgent']['RelatedAgent'][0].clone();
-              //Next get all the types of RelatedAgents. We want to duplicate the data for each.
-              def relatedAgents = data.values()[0].values()[0][0]['AgentRelatedAgent']['RelatedAgent'][0];
-              for(agent in relatedAgents){
-                agents += agent['_content'];
-              }
-              println 'Agents:'
-              println agents
-              //For each agent, duplicate the data, and remove all other agents from it
-              //Next, add a copy of this data to our result
-              for(agent in agents){
-                def dataDuplicate = originalData.clone();
-                dataDuplicate.removeAll{
-                  it._content != agent && agents.contains(it._content)
+            'Definitions' : [
+              'processor': ({ List<Map> data ->
+                
+                def new_data = []
+                data.each { Map item ->
+                
+                  switch (item."_name") {
+                    case "AgentRelatedAgent" :
+                      // Add a new row for each related agent.
+                      (0..(item."RelatedAgent"?.size() - 1)).each { int idx ->
+                        def entry = [:]
+                        
+                        // Copy the whole of the data.
+                        entry << item
+                        
+                        // Replace the related agent with a list of just 1.
+                        entry."RelatedAgent" = [item["RelatedAgent"][idx]]
+                        
+                        new_data += entry
+                      }
+                      break
+                      
+                    default :
+                      // Just add the item.
+                      new_data += item
+                      break
+                  }
                 }
-                println 'New RelatedAgent';
-                println dataDuplicate;
-                //replace the original data with the new (removed all agents except current)
-                data.values()[0].values()[0][0]['AgentRelatedAgent']['RelatedAgent'].set(0,dataDuplicate)
-
-                println 'Data After'
-                println data
-
-                result += data;
-              }
-              //The result should contain the original data, duplicated agents.size() times, each having only one RelatedAgent node
-              result
-               }""",
-              
-             'text' : 'AgentDefinition',
-             'children': [
-                'template' : "_:AgentDefinition[normalize-space(_:AgentLabel/text())='\$value\$']",
+                if (new_data.size() > 0) {
+                  // Because we want to edit the referenced data we can not create a new list,
+                  // we must instead empty the old and repopulate with the new.
+                  data.clear()
+                  data.addAll(new_data)
+                }
+                
+                // Return the data.
+                data
+              }),
+              'text' : 'Agent Definition',
+              'children': [
+                'template' : "_:AgentDefinition[normalize-space(_:AgentLabel/text())='\$value\$']/_:AgentRelatedAgent",
                 'values' : [
                   'AuthorizedUser' : ['text': 'Authorized User'],
                 ]
-             ]
-           ],
+              ]
+            ],
             'LicenseGrant' : [
               'text' : 'Licence Grants'
             ],
@@ -125,7 +129,7 @@ onix = [
             ],
             'GeneralTerms/_:GeneralTerm' : [
               'text' : 'General Terms'
-            ]          
+            ]
           ]
         ]
       ]
@@ -141,18 +145,18 @@ grails.project.groupId = appName // change this to alter the default package nam
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
 grails.mime.use.accept.header = false
 grails.mime.types = [ html: ['text/html','application/xhtml+xml'],
-                      xml: ['text/xml', 'application/xml'],
-                      text: 'text/plain',
-                      js: 'text/javascript',
-                      rss: 'application/rss+xml',
-                      atom: 'application/atom+xml',
-                      css: 'text/css',
-                      csv: 'text/csv',
-                      all: '*/*',
-                      json: ['application/json','text/json'],
-                      form: 'application/x-www-form-urlencoded',
-                      multipartForm: 'multipart/form-data'
-                    ]
+  xml: ['text/xml', 'application/xml'],
+  text: 'text/plain',
+  js: 'text/javascript',
+  rss: 'application/rss+xml',
+  atom: 'application/atom+xml',
+  css: 'text/css',
+  csv: 'text/csv',
+  all: '*/*',
+  json: ['application/json','text/json'],
+  form: 'application/x-www-form-urlencoded',
+  multipartForm: 'multipart/form-data'
+]
 
 // URL Mapping Cache Max Size, defaults to 5000
 //grails.urlmapping.cache.maxsize = 1000
@@ -190,19 +194,19 @@ grails.hibernate.cache.queries = true
 
 // set per-environment serverURL stem for creating absolute links
 environments {
-    development {
-        grails.logging.jul.usebridge = true
-    }
-    production {
-        grails.logging.jul.usebridge = false
-        // TODO: grails.serverURL = "http://www.changeme.com"
-    }
+  development {
+    grails.logging.jul.usebridge = true
+  }
+  production {
+    grails.logging.jul.usebridge = false
+    // TODO: grails.serverURL = "http://www.changeme.com"
+  }
 }
 
 grails.cache.config = {
-   cache {
-      name 'message'
-   }
+  cache {
+    name 'message'
+  }
 }
 
 subscriptionTransforms = [
@@ -226,53 +230,53 @@ packageTransforms = [
 
 // log4j configuration
 log4j = {
-    // Example of changing the log pattern for the default console
-    // appender:
-    //
-    //appenders {
-    //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
-    //}
-	//trace 'org.hibernate.type'
-	//debug 'org.hibernate.SQL'
+  // Example of changing the log pattern for the default console
+  // appender:
+  //
+  //appenders {
+  //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
+  //}
+  //trace 'org.hibernate.type'
+  //debug 'org.hibernate.SQL'
 
-    appenders {
-        console name: "stdout", threshold: org.apache.log4j.Level.ALL
-    }
+  appenders {
+    console name: "stdout", threshold: org.apache.log4j.Level.ALL
+  }
 
-//    // Enable Hibernate SQL logging with param values
-//    trace 'org.hibernate.type'
-    // debug 'org.hibernate.SQL'
-    off    'grails.plugin.formfields'
-    
-    error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
-           'org.codehaus.groovy.grails.web.pages', //  GSP
-           'org.codehaus.groovy.grails.web.sitemesh', //  layouts
-           'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-           'org.codehaus.groovy.grails.web.mapping', // URL mapping
-           'org.codehaus.groovy.grails.commons', // core / classloading
-           'org.codehaus.groovy.grails.plugins', // plugins
-           'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
-           'org.springframework',
-           'org.hibernate',
-           'net.sf.ehcache.hibernate',
-           'formfields',
-           'com.k_int.kbplus.filter',
-           'org.codehaus.groovy.grails.plugins.springsecurity'
-           
+  //    // Enable Hibernate SQL logging with param values
+  //    trace 'org.hibernate.type'
+  // debug 'org.hibernate.SQL'
+  off    'grails.plugin.formfields'
 
-    debug  'grails.app.controllers',
-           'grails.app.service',
-           'grails.app.services',
-           'grails.app.domain',
-           'grails.app.conf',
-           'grails.app.jobs',
-           'grails.app.conf.BootStrap',
-           //'edu.umn.shibboleth.sp',
-           'com.k_int'
-           // 'org.springframework.security'
-           // 'grails.app.tagLib',
+  error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
+      'org.codehaus.groovy.grails.web.pages', //  GSP
+      'org.codehaus.groovy.grails.web.sitemesh', //  layouts
+      'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
+      'org.codehaus.groovy.grails.web.mapping', // URL mapping
+      'org.codehaus.groovy.grails.commons', // core / classloading
+      'org.codehaus.groovy.grails.plugins', // plugins
+      'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
+      'org.springframework',
+      'org.hibernate',
+      'net.sf.ehcache.hibernate',
+      'formfields',
+      'com.k_int.kbplus.filter',
+      'org.codehaus.groovy.grails.plugins.springsecurity'
 
-    // info   'com.linkedin.grails'
+
+  debug  'grails.app.controllers',
+      'grails.app.service',
+      'grails.app.services',
+      'grails.app.domain',
+      'grails.app.conf',
+      'grails.app.jobs',
+      'grails.app.conf.BootStrap',
+      //'edu.umn.shibboleth.sp',
+      'com.k_int'
+  // 'org.springframework.security'
+  // 'grails.app.tagLib',
+
+  // info   'com.linkedin.grails'
 }
 
 // Added by the Spring Security Core plugin:
@@ -283,14 +287,14 @@ grails.plugins.springsecurity.authority.className = 'com.k_int.kbplus.auth.Role'
 grails.plugins.springsecurity.securityConfigType = "Annotation"
 
 grails.plugins.springsecurity.providerNames = ['preAuthenticatedAuthenticationProvider',
-                                               'daoAuthenticationProvider' // , 
-//                                               'anonymousAuthenticationProvider', 
-//                                               'rememberMeAuthenticationProvider' 
-                                              ]
+  'daoAuthenticationProvider' // ,
+  //                                               'anonymousAuthenticationProvider',
+  //                                               'rememberMeAuthenticationProvider'
+]
 
-grails.plugins.springsecurity.controllerAnnotations.staticRules = [ 
-        '/monitoring/**': ['ROLE_ADMIN'] 
-] 
+grails.plugins.springsecurity.controllerAnnotations.staticRules = [
+  '/monitoring/**': ['ROLE_ADMIN']
+]
 
 auditLog {
   logFullClassName = true
@@ -342,50 +346,50 @@ appDefaultPrefs {
 // Refdata values that need to be added to the database to allow ONIX-PL licences to be compared properly. The code will
 // add them to the DB if they don't already exist.
 refdatavalues = [ "User" : [ "Authorized User", "ExternalAcademic", "ExternalLibrarian", "ExternalStudent",
-        "ExternalTeacher", "ExternalTeacherInCountryOfLicensee", "LibraryUserUnaffiliated", "Licensee",
-        "LicenseeAlumnus", "LicenseeAuxiliary", "LicenseeContractor", "LicenseeContractorOrganization",
-        "LicenseeContractorStaff", "LicenseeDistanceLearningStudent", "LicenseeExternalStudent", "LicenseeFaculty",
-        "LicenseeInternalStudent", "LicenseeLibrary", "LicenseeLibraryStaff", "LicenseeNonFacultyStaff",
-        "LicenseeResearcher", "LicenseeRetiredStaff", "LicenseeStaff", "LicenseeStudent", "LoansomeDocUser",
-        "OtherTeacherOfAuthorizedUsers", "RegulatoryAuthority", "ResearchSponsor", "ThirdParty", "ThirdPartyLibrary",
-        "ThirdPartyNonCommercialLibrary", "ThirdPartyOrganization", "ThirdPartyPerson", "WalkInUser" ],
-        "UsedResource" : ["AcademicPaper", "AcademicWork", "AcademicWorkIncludingLicensedContent",
-                "AcknowledgmentOfSource", "AuthoredContent", "AuthoredContentPeerReviewedCopy", "AuthorizedUserOwnWork",
-                "CatalogOrInformationSystem", "CombinedWorkIncludingLicensedContent", "CompleteArticle", "CompleteBook",
-                "CompleteChapter", "CompleteIssue", "CopyrightNotice", "CopyrightNoticesOrDisclaimers",
-                "CoursePackElectronic", "CoursePackPrinted", "CourseReserveElectronic", "CourseReservePrinted",
-                "DataFromLicensedContent", "DerivedWork", "DigitalInstructionalMaterial",
-                "DigitalInstructionalMaterialIncludingLicensedContent",
-                "DigitalInstructionalMaterialWithLinkToLicensedContent", "DownloadedLicensedContent",
-                "ImagesInLicensedContent", "LicensedContent", "LicensedContentBriefExcerpt", "LicensedContentMetadata",
-                "LicensedContentPart", "LicensedContentPartDigital", "LicensedContentPartPrinted", "LicenseeContent",
-                "LicenseeWebsite", "LinkToLicensedContent", "MaterialForPresentation", "PersonalPresentationMaterial",
-                "PrintedInstructionalMaterial", "SpecialNeedsInstructionalMaterial", "ThirdPartyWebsite",
-                "TrainingMaterial", "UserContent", "UserWebsite"]]
+    "ExternalTeacher", "ExternalTeacherInCountryOfLicensee", "LibraryUserUnaffiliated", "Licensee",
+    "LicenseeAlumnus", "LicenseeAuxiliary", "LicenseeContractor", "LicenseeContractorOrganization",
+    "LicenseeContractorStaff", "LicenseeDistanceLearningStudent", "LicenseeExternalStudent", "LicenseeFaculty",
+    "LicenseeInternalStudent", "LicenseeLibrary", "LicenseeLibraryStaff", "LicenseeNonFacultyStaff",
+    "LicenseeResearcher", "LicenseeRetiredStaff", "LicenseeStaff", "LicenseeStudent", "LoansomeDocUser",
+    "OtherTeacherOfAuthorizedUsers", "RegulatoryAuthority", "ResearchSponsor", "ThirdParty", "ThirdPartyLibrary",
+    "ThirdPartyNonCommercialLibrary", "ThirdPartyOrganization", "ThirdPartyPerson", "WalkInUser" ],
+  "UsedResource" : ["AcademicPaper", "AcademicWork", "AcademicWorkIncludingLicensedContent",
+    "AcknowledgmentOfSource", "AuthoredContent", "AuthoredContentPeerReviewedCopy", "AuthorizedUserOwnWork",
+    "CatalogOrInformationSystem", "CombinedWorkIncludingLicensedContent", "CompleteArticle", "CompleteBook",
+    "CompleteChapter", "CompleteIssue", "CopyrightNotice", "CopyrightNoticesOrDisclaimers",
+    "CoursePackElectronic", "CoursePackPrinted", "CourseReserveElectronic", "CourseReservePrinted",
+    "DataFromLicensedContent", "DerivedWork", "DigitalInstructionalMaterial",
+    "DigitalInstructionalMaterialIncludingLicensedContent",
+    "DigitalInstructionalMaterialWithLinkToLicensedContent", "DownloadedLicensedContent",
+    "ImagesInLicensedContent", "LicensedContent", "LicensedContentBriefExcerpt", "LicensedContentMetadata",
+    "LicensedContentPart", "LicensedContentPartDigital", "LicensedContentPartPrinted", "LicenseeContent",
+    "LicenseeWebsite", "LinkToLicensedContent", "MaterialForPresentation", "PersonalPresentationMaterial",
+    "PrintedInstructionalMaterial", "SpecialNeedsInstructionalMaterial", "ThirdPartyWebsite",
+    "TrainingMaterial", "UserContent", "UserWebsite"]]
 
 // Uncomment and edit the following lines to start using Grails encoding & escaping improvements
 
 /* remove this line 
-// GSP settings
-grails {
-    views {
-        gsp {
-            encoding = 'UTF-8'
-            htmlcodec = 'xml' // use xml escaping instead of HTML4 escaping
-            codecs {
-                expression = 'html' // escapes values inside null
-                scriptlet = 'none' // escapes output from scriptlets in GSPs
-                taglib = 'none' // escapes output from taglibs
-                staticparts = 'none' // escapes output from static template parts
-            }
-        }
-        // escapes all not-encoded output at final stage of outputting
-        filteringCodecForContentType {
-            //'text/html' = 'html'
-        }
-    }
-}
-remove this line */
+ // GSP settings
+ grails {
+ views {
+ gsp {
+ encoding = 'UTF-8'
+ htmlcodec = 'xml' // use xml escaping instead of HTML4 escaping
+ codecs {
+ expression = 'html' // escapes values inside null
+ scriptlet = 'none' // escapes output from scriptlets in GSPs
+ taglib = 'none' // escapes output from taglibs
+ staticparts = 'none' // escapes output from static template parts
+ }
+ }
+ // escapes all not-encoded output at final stage of outputting
+ filteringCodecForContentType {
+ //'text/html' = 'html'
+ }
+ }
+ }
+ remove this line */
 
 quartzHeartbeat = 'Never'
 // grails.databinding.dateFormats = ['MMddyyyy', 'yyyy-MM-dd HH:mm:ss.S', "yyyy-MM-dd'T'hh:mm:ss'Z'"]
