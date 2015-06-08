@@ -34,7 +34,23 @@ class OnixPLHelperService {
     def result = getCodeList().XPath("/xs:schema//*[@value='${value}']/xs:annotation", XPathConstants.STRING)
     result
   }
-  
+  public Object duplicateDefinitionText(org.w3c.dom.Node node,xml) {
+      //If Node child of Definitions, go one level up and copy annotation and licencetext/or just all but current
+      if(node.getParentNode()?.getParentNode()?.getNodeName() != "Definitions"){
+        return node
+      }
+
+      def parent_node = node.getParentNode()
+      parent_node.getChildNodes().each{
+        if(it.getNodeName()=="Annotation" || it.getNodeName() == "LicenseTextLink"){
+          def clone = it.cloneNode(true)
+          node.appendChild(clone)
+        }
+      }
+
+      return node
+
+  }
   public XMLDoc replaceAllTextElements (XMLDoc doc, XMLDoc snippet) {
     
     // Get the Gpath representation.

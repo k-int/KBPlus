@@ -130,8 +130,9 @@ class OnixplLicense {
           // For each of the results we need to add a map representation to the result.
           results.each { org.w3c.dom.Node node ->
 
+            node = onixHelperService.duplicateDefinitionText(node,xml)
+
             def snippet = new XMLDoc (node)
-            
             snippet = onixHelperService.replaceAllTextElements(xml, snippet)
 
             // Create our new XML element of the segment.

@@ -16,10 +16,9 @@ onix = [
           'values' : [
             'Definitions' : [
               'processor': ({ List<Map> data ->
-                
+
                 def new_data = []
                 data.each { Map item ->
-                
                   switch (item."_name") {
                     case "AgentRelatedAgent" :
                       // Add a new row for each related agent.
