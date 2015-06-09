@@ -1,4 +1,5 @@
 <%@ page import="com.k_int.kbplus.onixpl.OnixPLService" %>
+
 <g:each var="row_key,row" in="${data}" status="rowCount">
   <tr>
     <!-- Header -->
@@ -6,8 +7,28 @@
     
       <!-- Get the data we are to derive the title cell from -->
       <g:set var="rth" value="${service.getRowHeadingData(row)}" />
-      ${ OnixPLService.getSingleValue(rth, 'ContinuingAccessTermType') } for 
-      ${OnixPLService.getSingleNestedValue(rth,'ContinuingAccessTermRelatedAgent' ,'RelatedAgent') }
+
+      <g:set var="access_resource" value="${service.getSingleNestedValue(rth,'ContinuingAccessTermRelatedResource' ,'RelatedResource') }"/>
+
+      <g:set var="access_provider" value="${service.getSingleNestedValue(rth,'ContinuingAccessTermRelatedAgent' ,'RelatedAgent')}"/>
+
+      ${ service.getSingleValue(rth, 'ContinuingAccessTermType') }
+   
+
+      <g:if test="${access_resource}">
+        of ${access_resource} provided by
+      </g:if>
+      <g:if test="${access_provider}">
+        <g:if test="${!access_resource}">
+        for
+        </g:if>
+
+        ${access_provider}
+      </g:if>
+
+
+
+
     </span></th>
     <g:each var="heading" in="${headings}" status="colCount">
       <g:set var="entry" value="${ row[heading] }" />
@@ -22,7 +43,13 @@
             </g:if>
           </div>
           <span class="cell-inner">
+            <g:if test="${ entry['Annotation'] }" >
             <span title='Detailed by license' class="onix-status onix-info" ></span>
+            </g:if>
+            <g:else>
+              <span title='Detailed by license' class="onix-status onix-tick" ></span>
+
+            </g:else>
           </span>
         </g:if>
         <g:else>
