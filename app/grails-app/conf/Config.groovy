@@ -51,7 +51,7 @@ onix = [
                 // Return the data.
                 data
               }),
-              'text' : 'Agent Definition',
+              'text' : 'Authorised Users',
               'children': [
                 'template' : "_:AgentDefinition[normalize-space(_:AgentLabel/text())='\$value\$']/_:AgentRelatedAgent",
                 'values' : [
@@ -114,12 +114,46 @@ onix = [
               ]
             ],
             'ContinuingAccessTerms' : [
+              'processor': ({ List<Map> data ->
+               
+                def new_data = []
+
+                data[0].each{item ->
+                  switch(item.getKey()){
+                    case "ContinuingAccessTermRelatedAgent":
+                      item = item.getValue()
+                      (0..(item.'RelatedAgent'[0]?.size() -1 )).each{int idx ->
+                        def entry = [:]
+                        def data_copy = [:]
+                        data_copy << data
+                        entry << item
+                        entry.'RelatedAgent'= [item['RelatedAgent'][0][idx]]
+                        data_copy['ContinuingAccessTermRelatedAgent'] = [entry]
+                        new_data += data_copy
+                      }
+                      break;
+                    default :
+                      break
+                  }
+                }
+                if (new_data.size() > 0) {
+                  // Because we want to edit the referenced data we can not create a new list,
+                  // we must instead empty the old and repopulate with the new.
+                  data.clear()
+                  data.addAll(new_data)
+                }
+                data
+              }),
               'text' : 'Continuing Access Terms',
               'children' : [
                 'template' : "_:ContinuingAccessTerm[normalize-space(_:ContinuingAccessTermType/text())='\$value\$']",
                 'values' : [
                   'onixPL:ContinuingAccess' : ['text' :  'Continuing Access' ],
-                  'onixPL:ArchiveCopy' : ['text' :  'Archive Copy' ]
+                  'onixPL:ArchiveCopy' : ['text' :  'Archive Copy' ],
+                  'onixPL:PostCancellationFileSupply': ['text': 'Post Cancellation File Supply'],
+                  'onixPL:PostCancellationOnlineAccess': ['text': 'Post Cancellation Online Access'],
+                  'onixPL:NotificationOfDarkArchive': ['text': 'Notification Of Dark Archive'],
+                  'onixPL:PreservationInDarkArchive': ['text': 'Preservation In Dark Archive']
                 ]
               ]
             ],

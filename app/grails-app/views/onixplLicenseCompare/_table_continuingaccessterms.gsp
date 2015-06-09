@@ -6,8 +6,8 @@
     
       <!-- Get the data we are to derive the title cell from -->
       <g:set var="rth" value="${service.getRowHeadingData(row)}" />
-      
-      ${ OnixPLService.getSingleValue(rth, 'ContinuingAccessTermType') }
+      ${ OnixPLService.getSingleValue(rth, 'ContinuingAccessTermType') } for 
+      ${OnixPLService.getSingleNestedValue(rth,'ContinuingAccessTermRelatedAgent' ,'RelatedAgent') }
     </span></th>
     <g:each var="heading" in="${headings}" status="colCount">
       <g:set var="entry" value="${ row[heading] }" />
