@@ -348,8 +348,15 @@ class OnixPLService {
       
       // Create list of element names.
       List el_names = data.keySet() as List
-      
-      generateKeys(data, exclude, keys)
+      Map<String,List<String>> priority = ["User":[]];
+
+      generateKeys(data, exclude, keys,priority)
+      priority.entrySet().each{
+        if(it.getValue()){
+          keys.add(0,it.getValue())
+          println "Appended ${it.getValue()} - ${keys}"
+        }
+      }
       
       // Go through each element in turn now and get the value for a column.
       for (String el_name in el_names) {
@@ -387,7 +394,7 @@ class OnixPLService {
    * @param key Current key to which we should append.
    * @return
    */
-  private static void generateKeys (Map val, List<String> exclude, List keys) {
+  private static void generateKeys (Map val, List<String> exclude, List keys, Map<String,List<String>> priority) {
     
     // Name.
     String name = val['_name']
@@ -396,7 +403,8 @@ class OnixPLService {
       
       // Add any key values to the keys list.
       for (String cp in val.keySet()) {
-        
+
+
         if (!cp.startsWith('_') && !exclude.contains(cp)) {
           List value = val.get(cp)
           if (value) {
@@ -404,6 +412,9 @@ class OnixPLService {
               String key = it?.get("_content")
               if (key) {
                 keys << treatTextForComparison(key)
+                if(priority.containsKey(it.get("_name"))){
+                  priority[it.get("_name")]+= treatTextForComparison(key)
+                }
               }
             }
           }
@@ -420,7 +431,7 @@ class OnixPLService {
                 
                 // Recursively call this method.
                 for (Map v in val[prop]) {
-                  generateKeys (v, exclude, keys)
+                  generateKeys (v, exclude, keys,priority)
                 }
               }
               break
@@ -441,7 +452,7 @@ class OnixPLService {
     
     if (!(tables instanceof MapWithDefault)) {
       tables = tables.withDefault {
-        new LinkedHashMap()
+        new TreeMap()
       }
     }
     

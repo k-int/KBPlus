@@ -63,6 +63,32 @@ onix = [
               'text' : 'Licence Grants'
             ],
             'UsageTerms' : [
+              'processor': ({ List<Map> data ->
+                def new_data = []
+                def users = data.getAt(0)['User']
+                if(users?.size() > 1){
+                  users.each{ item ->
+                    def copy = [:]
+                    //Copy the data
+                    copy << data.getAt(0)
+                    //Grab the single user and add him to an array
+                    def temp = [item]
+                    //Then replace the data User(s) with the single User
+                    copy['User'] = temp
+  
+                    new_data += copy
+                  }
+                }
+
+                if (new_data.size() > 0) {
+                  // Because we want to edit the referenced data we can not create a new list,
+                  // we must instead empty the old and repopulate with the new.
+                  data.clear()
+                  data.addAll(new_data)
+                }
+                // Return the data.
+                data
+              }),
               'text' : 'Usage Terms',
               'children' : [
                 'template' : "_:Usage[normalize-space(_:UsageType/text())='\$value\$']",

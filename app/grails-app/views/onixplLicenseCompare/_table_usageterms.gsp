@@ -1,4 +1,5 @@
 <%@ page import="com.k_int.kbplus.onixpl.OnixPLService" %>
+
 <g:each var="row_key,row" in="${data}" status="rowCount">
   <tr>
     <!-- Header -->
