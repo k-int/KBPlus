@@ -354,7 +354,6 @@ class OnixPLService {
       priority.entrySet().each{
         if(it.getValue()){
           keys.add(0,it.getValue())
-          println "Appended ${it.getValue()} - ${keys}"
         }
       }
       
@@ -413,7 +412,7 @@ class OnixPLService {
               if (key) {
                 keys << treatTextForComparison(key)
                 if(priority.containsKey(it.get("_name"))){
-                  priority[it.get("_name")]+= treatTextForComparison(key)
+                  priority[it.get("_name")]+= key
                 }
               }
             }

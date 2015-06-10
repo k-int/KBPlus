@@ -1,15 +1,22 @@
 <%@ page import="com.k_int.kbplus.onixpl.OnixPLService" %>
-
+<g:set var="active_user" value=""/>
 <g:each var="row_key,row" in="${data}" status="rowCount">
+  <!-- Get the data we are to derive the title cell from -->
+  <g:set var="rth" value="${service.getRowHeadingData(row)}" />
+
+  <g:set var="current_user" value="${row_key.substring(1,row_key.indexOf(']'))}"/>
+  <g:if test="${active_user != current_user}">
+    <tr style="text-align: left;">
+      <th> ${OnixPLService.getAllValues(rth, 'User', ', ', ' or ')}</th>
+    </tr>
+    <g:set var="active_user" value="${current_user}"/>
+  </g:if>
   <tr>
     <!-- Header -->
     <th class="tr-${ (rowCount + 1) } cell-1" ><span class="cell-inner">
     
-      <!-- Get the data we are to derive the title cell from -->
-      <g:set var="rth" value="${service.getRowHeadingData(row)}" />
       
-      Allow ${ OnixPLService.getAllValues(rth, 'User', ', ', ' or ') }
-      to ${ OnixPLService.getSingleValue(rth, 'UsageType') }
+      ${ OnixPLService.getSingleValue(rth, 'UsageType') }
       the ${ OnixPLService.getSingleValue(rth, 'UsedResource') }
       <g:if test="${ rth['UsageRelatedPlace']  }" >
         using ${ OnixPLService.getAllValues(rth['UsageRelatedPlace'][0], 'RelatedPlace', ', ', ' or ') }
