@@ -6,7 +6,7 @@
 
   <g:set var="current_user" value="${row_key.substring(1,row_key.indexOf(']'))}"/>
   <g:if test="${active_user != current_user}">
-    <tr style="text-align: left;">
+    <tr style="text-align: left;font-size: 150%;">
       <th> ${OnixPLService.getAllValues(rth, 'User', ', ', ' or ')}</th>
     </tr>
     <g:set var="active_user" value="${current_user}"/>
