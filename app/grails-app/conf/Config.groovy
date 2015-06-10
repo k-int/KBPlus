@@ -86,7 +86,14 @@ onix = [
                   data.clear()
                   data.addAll(new_data)
                 }
-                // Return the data.
+                switch (data.getAt(0)['UsageType'][0]["_content"]){
+                  case "onixPL:Access":
+                    println "FOUND ONE";
+                    break;
+                  default:
+
+                }
+                //Return the data.
                 data
               }),
               'text' : 'Usage Terms',
