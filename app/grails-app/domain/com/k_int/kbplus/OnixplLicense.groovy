@@ -124,7 +124,6 @@ class OnixplLicense {
         
         // Query for xpath results.
         def results = xml.XPath(xpath_expr)
-        
         if (results.length > 0) {
 
           // For each of the results we need to add a map representation to the result.

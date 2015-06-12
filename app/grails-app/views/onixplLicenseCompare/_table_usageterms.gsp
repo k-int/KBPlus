@@ -18,6 +18,9 @@
       
       ${ OnixPLService.getSingleValue(rth, 'UsageType') }
       the ${ OnixPLService.getSingleValue(rth, 'UsedResource') }
+      <g:if test="${rth['UsageMethod']}">
+        via ${ OnixPLService.getSingleValue(rth, 'UsageMethod') }
+      </g:if>
       <g:if test="${ rth['UsageRelatedPlace']  }" >
         using ${ OnixPLService.getAllValues(rth['UsageRelatedPlace'][0], 'RelatedPlace', ', ', ' or ') }
         as ${ OnixPLService.getSingleValue(rth['UsageRelatedPlace'][0], 'UsagePlaceRelator') }

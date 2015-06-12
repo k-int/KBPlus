@@ -85,13 +85,41 @@ onix = [
                   // we must instead empty the old and repopulate with the new.
                   data.clear()
                   data.addAll(new_data)
+                  new_data.clear()
                 }
-                switch (data.getAt(0)['UsageType'][0]["_content"]){
-                  case "onixPL:Access":
-                    println "FOUND ONE";
-                    break;
-                  default:
 
+                //Need to loop we might have multiple data here, genetrated from above
+                data.each{ usage ->
+                  def usageType = usage['UsageType'][0]["_content"]
+                  switch (usageType){
+                    case "onixPL:Access":
+                      if(usage['UsageMethod'].size()>1){
+                        usage['UsageMethod'].each{ method ->
+                          def copy = [:]
+
+                          copy << usage
+
+                          def temp = [method]
+
+                          copy['UsageMethod'] = temp 
+
+                          new_data += copy
+                        }
+                      }else{
+                        new_data += usage
+                      }
+                      break;
+                    default:
+                      break;
+                  }
+                  
+                }
+                if (new_data.size() > 0) {
+                  // Because we want to edit the referenced data we can not create a new list,
+                  // we must instead empty the old and repopulate with the new.
+                  data.clear()
+                  data.addAll(new_data)
+                  new_data.clear()
                 }
                 //Return the data.
                 data
@@ -100,6 +128,8 @@ onix = [
               'children' : [
                 'template' : "_:Usage[normalize-space(_:UsageType/text())='\$value\$']",
                 'values' : [
+                  'onixPL:Access' : ['text' :  'Access'],
+                  'onixPL:Copy' : ['text' : 'Copy'],
                   'onixPL:MakeTemporaryDigitalCopy' : ['text' :  'Make Temporary Digital Copy'],
                   'onixPL:ProvideIntegratedAccess' : ['text' :  'Provide Integrated Access'],
                   'onixPL:ProvideIntegratedIndex' : ['text' :  'Provide Integrated Index'],
