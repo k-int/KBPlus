@@ -66,6 +66,15 @@ onix = [
               'processor': ({ List<Map> data ->
                 def new_data = []
                 def users = data.getAt(0)['User']
+                def refresh_data = {
+                  if (new_data.size() > 0) {
+                  // Because we want to edit the referenced data we can not create a new list,
+                  // we must instead empty the old and repopulate with the new.
+                  data.clear()
+                  data.addAll(new_data)
+                  new_data.clear()
+                  }
+                }
                 if(users?.size() > 1){
                   users.each{ item ->
                     def copy = [:]
@@ -80,47 +89,44 @@ onix = [
                   }
                 }
 
-                if (new_data.size() > 0) {
-                  // Because we want to edit the referenced data we can not create a new list,
-                  // we must instead empty the old and repopulate with the new.
-                  data.clear()
-                  data.addAll(new_data)
-                  new_data.clear()
+                 refresh_data();
+                //Create several rows for comparison points that need to be split
+                def replicate_row = {usage,type ->
+                    usage[type].each{ method ->
+                      def copy = [:]
+                      copy << usage
+                      def temp = [method]
+                      copy[type] = temp 
+                      new_data += copy
+                    }
                 }
-
                 //Need to loop we might have multiple data here, genetrated from above
                 data.each{ usage ->
                   def usageType = usage['UsageType'][0]["_content"]
                   switch (usageType){
                     case "onixPL:Access":
-                      if(usage['UsageMethod'].size()>1){
-                        usage['UsageMethod'].each{ method ->
-                          def copy = [:]
-
-                          copy << usage
-
-                          def temp = [method]
-
-                          copy['UsageMethod'] = temp 
-
-                          new_data += copy
-                        }
-                      }else{
-                        new_data += usage
-                      }
+                      replicate_row(usage,'UsageMethod');
                       break;
+                    case "onixPL:Copy":
+                      replicate_row(usage,'UsagePurpose');
+                      break;
+                    case "onixPL:DepositInPerpetuity":
+                        usage['UsageRelatedPlace']['RelatedPlace'][0].each{ place ->
+                          println "MATCH ${place}"
+                          def copy = [:]
+                          copy << usage
+                          copy.'UsageRelatedPlace'[0].'RelatedPlace'[0] = place
+                          new_data += copy
+                          println copy
+                        }
+                        break;
                     default:
                       break;
                   }
                   
                 }
-                if (new_data.size() > 0) {
-                  // Because we want to edit the referenced data we can not create a new list,
-                  // we must instead empty the old and repopulate with the new.
-                  data.clear()
-                  data.addAll(new_data)
-                  new_data.clear()
-                }
+                refresh_data();
+
                 //Return the data.
                 data
               }),
