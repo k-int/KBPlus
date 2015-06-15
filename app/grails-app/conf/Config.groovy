@@ -66,6 +66,14 @@ onix = [
               'processor': ({ List<Map> data ->
                 def new_data = []
                 def users = data.getAt(0)['User']
+                def deepcopy = { orig ->
+                   bos = new ByteArrayOutputStream()
+                   oos = new ObjectOutputStream(bos)
+                   oos.writeObject(orig); oos.flush()
+                   bin = new ByteArrayInputStream(bos.toByteArray())
+                   ois = new ObjectInputStream(bin)
+                   return ois.readObject()
+                }
                 def refresh_data = {
                   if (new_data.size() > 0) {
                   // Because we want to edit the referenced data we can not create a new list,
@@ -112,12 +120,12 @@ onix = [
                       break;
                     case "onixPL:DepositInPerpetuity":
                         usage['UsageRelatedPlace']['RelatedPlace'][0].each{ place ->
-                          println "MATCH ${place}"
                           def copy = [:]
-                          copy << usage
-                          copy.'UsageRelatedPlace'[0].'RelatedPlace'[0] = place
-                          new_data += copy
-                          println copy
+                          def entry = [:]
+                          copy = deepcopy(usage)
+                          entry = place.clone()
+                          copy.'UsageRelatedPlace'[0].'RelatedPlace'= [entry]
+                          new_data.addAll(copy) 
                         }
                         break;
                     default:

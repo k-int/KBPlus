@@ -502,6 +502,7 @@ class OnixPLService {
       'Name',
       'AgentPlaceRelator',
       'AgentType',
+      'RelatedAgent',
       'DocumentLabel',
       'IDValue',
       'PlaceIDType'
