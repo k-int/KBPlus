@@ -148,6 +148,11 @@ onix = [
                         replicate_nested_row(usage,'UsageRelatedResource','RelatedResource');
                       }
                       break;
+                    case "onixPL:MakeAvailable":
+                      if(usage.'UsageRelatedAgent'?.'UsageAgentRelator'?.'_content'?.contains(['onixPL:ReceivingAgent'])){
+                        replicate_nested_row(usage,'UsageRelatedAgent','RelatedAgent');
+                      }
+                      break;
                     default:
                       break;
                   }
@@ -164,12 +169,16 @@ onix = [
                 'values' : [
                   'onixPL:Access' : ['text' :  'Access'],
                   'onixPL:Copy' : ['text' : 'Copy'],
+                  'onixPL:DepositInPerpetuity' : ['text' :  'Deposit In Perpetuity'],
                   'onixPL:Include': ['text': 'Include'],
+                  'onixPL:MakeAvailable': ['text': 'Make Available'],
+                  'onixPL:MakeDigitalCopy' : ['text' :  'Make Digital Copy'],
+                  'onixPL:Modify' : ['text' :  'Modify'],
+                  'onixPL:PrintCopy' : ['text': 'PrintCopy'],
                   'onixPL:MakeTemporaryDigitalCopy' : ['text' :  'Make Temporary Digital Copy'],
                   'onixPL:ProvideIntegratedAccess' : ['text' :  'Provide Integrated Access'],
                   'onixPL:ProvideIntegratedIndex' : ['text' :  'Provide Integrated Index'],
                   'onixPL:AccessViaSecureAuthentication' : ['text' :  'Access Via Secure Authentication'],
-                  'onixPL:MakeDigitalCopy' : ['text' :  'Make Digital Copy'],
                   'onixPL:IncludeInPrintedInstructionalMaterial' : ['text' :  'Include In Printed Instructional Material'],
                   'onixPL:IncludeInDigitalInstructionalMaterial' : ['text' :  'Include In Digital Instructional Material'],
                   'onixPL:IncludeInSpecialNeedsInstructionalMaterial' : ['text' :  'Include In Special Needs Instructional Material'],
@@ -182,10 +191,8 @@ onix = [
                   'onixPL:UseForTrainingAuthorizedUsers' : ['text' :  'Use for Training Authorized Users'],
                   'onixPL:IncludeMaterialForPresentation' : ['text' :  'Include Material For Presentation'],
                   'onixPL:CopyForTrainingAuthorizedUsers' : ['text' :  'Copy for Training Authorized Users'],
-                  'onixPL:DepositInPerpetuity' : ['text' :  'Deposit In Perpetuity'],
                   'onixPL:Sell' : ['text' :  'Sell'],
                   'onixPL:RemoveObscureOrModify' : ['text' :  'Remove Obscure Or Modify'],
-                  'onixPL:Modify' : ['text' :  'Modify'],
                   'onixPL:UseForCommercialUse' : ['text' :  'Use for Commercial Use'],
                   'onixPL:UseForNonAcademicUse' : ['text' :  'Use for Non Academic Use'],
                 ]
