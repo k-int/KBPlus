@@ -176,7 +176,6 @@ onix = [
                   'onixPL:Sell' : ['text' :  'Sell'],
                   'onixPL:RemoveObscureOrModify' : ['text' :  'Remove Obscure Or Modify'],
                   'onixPL:Modify' : ['text' :  'Modify'],
-                  'onixPL:MakeAvailable' : ['text' :  'Make Available'],
                   'onixPL:UseForCommercialUse' : ['text' :  'Use for Commercial Use'],
                   'onixPL:UseForNonAcademicUse' : ['text' :  'Use for Non Academic Use'],
                 ]

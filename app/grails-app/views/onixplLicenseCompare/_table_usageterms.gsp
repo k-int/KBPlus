@@ -6,8 +6,11 @@
 
   <g:set var="current_user" value="${row_key.substring(1,row_key.indexOf(']'))}"/>
   <g:if test="${active_user != current_user}">
-    <tr style="text-align: left;font-size: 150%;">
-      <th> ${OnixPLService.getAllValues(rth, 'User', ', ', ' or ')}</th>
+    <tr class="cell-1" style="text-align: left;font-size: 150%;">
+      <th><span class="cell-inner"> ${OnixPLService.getAllValues(rth, 'User', ', ', ' or ')}</span></th>
+   
+      <!-- This is needed or the annotations break -->
+    <g:each in="${headings}"> <td></td>  </g:each>
     </tr>
     <g:set var="active_user" value="${current_user}"/>
   </g:if>
