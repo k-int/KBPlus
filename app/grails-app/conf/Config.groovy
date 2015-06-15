@@ -67,12 +67,23 @@ onix = [
                 def new_data = []
                 def users = data.getAt(0)['User']
                 def deepcopy = { orig ->
+                  def bos;
+                  def oos;
+                  def bin;
+                  def ois;
+                  try{
                    bos = new ByteArrayOutputStream()
                    oos = new ObjectOutputStream(bos)
                    oos.writeObject(orig); oos.flush()
                    bin = new ByteArrayInputStream(bos.toByteArray())
                    ois = new ObjectInputStream(bin)
                    return ois.readObject()
+                  }finally{
+                    bos?.close()
+                    oos?.close()
+                    bin?.close()
+                    ois?.close()
+                  }
                 }
                 def refresh_data = {
                   if (new_data.size() > 0) {
