@@ -27,7 +27,9 @@
       <g:if test="${rth['UsagePurpose']}">
         for ${ OnixPLService.getSingleValue(rth, 'UsagePurpose') }
       </g:if>
-      
+      <g:if test="${rth['UsageRelatedResource']}">
+        in ${OnixPLService.getSingleValue(rth['UsageRelatedResource'][0], 'RelatedResource')}
+      </g:if>
       <g:if test="${ rth['UsageRelatedPlace']  }" >
         using ${ OnixPLService.getAllValues(rth['UsageRelatedPlace'][0], 'RelatedPlace', ', ', ' or ') }
         as ${ OnixPLService.getSingleValue(rth['UsageRelatedPlace'][0], 'UsagePlaceRelator') }
@@ -56,6 +58,23 @@
 		        <g:set var="status" value="${ entry['UsageStatus'][0]['_content'] }" />
 		        <span title='${ OnixPLService.getOnixValueAnnotation(status) }' class="onix-status ${ OnixPLService.getClassValue(status) }" ></span>
 		      </span>
+          <g:if test= "${rth['UsageCondition']}">
+             ${OnixPLService.getSingleValue(rth,'UsageCondition')}
+          </g:if>
+          <g:if test="${rth['UsageRelatedResource'] && rth.'UsageRelatedResource'.'UsageResourceRelator'.'_content' != [['onixPL:TargetResource']]}">
+            <ul>
+            <g:each var="clause" in="${rth['UsageRelatedResource']}">
+              <g:if test="${clause.'UsageResourceRelator'.'_content' != ['onixPL:TargetResource']}">
+               <li><b> ${OnixPLService.getSingleValue(clause,'UsageResourceRelator')}
+ ${OnixPLService.getAllValues(clause, 'RelatedResource', ', ', ' or ')}</b></li>
+              </g:if>
+            </g:each>
+            </ul>
+          </g:if>
+     %{--                  <UsageRelatedResource>
+                <UsageResourceRelator>onixPL:MustInclude</UsageResourceRelator>
+                <RelatedResource>AcknowledgmentOfSource</RelatedResource>
+            </UsageRelatedResource> --}%
 		    </g:if>
 		    <g:else>
           <span class="cell-inner-undefined">

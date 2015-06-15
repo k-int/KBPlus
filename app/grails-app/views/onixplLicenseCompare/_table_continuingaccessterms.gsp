@@ -8,9 +8,9 @@
       <!-- Get the data we are to derive the title cell from -->
       <g:set var="rth" value="${service.getRowHeadingData(row)}" />
 
-      <g:set var="access_resource" value="${service.getSingleNestedValue(rth,'ContinuingAccessTermRelatedResource' ,'RelatedResource') }"/>
+      <g:set var="access_resource" value="${service.getSingleValue(rth['ContinuingAccessTermRelatedResource']?.getAt(0),'RelatedResource') }"/>
 
-      <g:set var="access_provider" value="${service.getSingleNestedValue(rth,'ContinuingAccessTermRelatedAgent' ,'RelatedAgent')}"/>
+      <g:set var="access_provider" value="${service.getSingleValue(rth['ContinuingAccessTermRelatedAgent']?.getAt(0),'RelatedAgent')}"/>
 
       ${ service.getSingleValue(rth, 'ContinuingAccessTermType') }
    

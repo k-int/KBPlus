@@ -119,6 +119,17 @@ onix = [
                       new_data += copy
                     }
                 }
+
+                def replicate_nested_row = {usage,parent,child ->
+                    usage[parent][child][0].each{ place ->
+                      def copy = [:]
+                      def entry = [:]
+                      copy = deepcopy(usage)
+                      entry = place.clone()
+                      copy."${parent}"[0]."${child}"= [entry]
+                      new_data.addAll(copy) 
+                    }
+                }
                 //Need to loop we might have multiple data here, genetrated from above
                 data.each{ usage ->
                   def usageType = usage['UsageType'][0]["_content"]
@@ -130,15 +141,13 @@ onix = [
                       replicate_row(usage,'UsagePurpose');
                       break;
                     case "onixPL:DepositInPerpetuity":
-                        usage['UsageRelatedPlace']['RelatedPlace'][0].each{ place ->
-                          def copy = [:]
-                          def entry = [:]
-                          copy = deepcopy(usage)
-                          entry = place.clone()
-                          copy.'UsageRelatedPlace'[0].'RelatedPlace'= [entry]
-                          new_data.addAll(copy) 
-                        }
-                        break;
+                      replicate_nested_row(usage,'UsageRelatedPlace','RelatedPlace');
+                      break;
+                    case "onixPL:Include":
+                      if(usage.'UsageRelatedResource'?.'UsageResourceRelator'?.'_content'?.contains(['onixPL:TargetResource'])){
+                        replicate_nested_row(usage,'UsageRelatedResource','RelatedResource');
+                      }
+                      break;
                     default:
                       break;
                   }
@@ -155,6 +164,7 @@ onix = [
                 'values' : [
                   'onixPL:Access' : ['text' :  'Access'],
                   'onixPL:Copy' : ['text' : 'Copy'],
+                  'onixPL:Include': ['text': 'Include'],
                   'onixPL:MakeTemporaryDigitalCopy' : ['text' :  'Make Temporary Digital Copy'],
                   'onixPL:ProvideIntegratedAccess' : ['text' :  'Provide Integrated Access'],
                   'onixPL:ProvideIntegratedIndex' : ['text' :  'Provide Integrated Index'],
@@ -215,25 +225,36 @@ onix = [
             ],
             'ContinuingAccessTerms' : [
               'processor': ({ List<Map> data ->
-               
-                def new_data = []
 
-                data[0].each{item ->
-                  switch(item.getKey()){
-                    case "ContinuingAccessTermRelatedAgent":
-                      item = item.getValue()
-                      (0..(item.'RelatedAgent'[0]?.size() -1 )).each{int idx ->
-                        def entry = [:]
-                        def data_copy = [:]
-                        data_copy << data
-                        entry << item
-                        entry.'RelatedAgent'= [item['RelatedAgent'][0][idx]]
-                        data_copy['ContinuingAccessTermRelatedAgent'] = [entry]
-                        new_data += data_copy
-                      }
-                      break;
-                    default :
-                      break
+                def new_data = []
+                def deepcopy = { orig ->
+                  def bos;
+                  def oos;
+                  def bin;
+                  def ois;
+                  try{
+                   bos = new ByteArrayOutputStream()
+                   oos = new ObjectOutputStream(bos)
+                   oos.writeObject(orig); oos.flush()
+                   bin = new ByteArrayInputStream(bos.toByteArray())
+                   ois = new ObjectInputStream(bin)
+                   return ois.readObject()
+                  }finally{
+                    bos?.close()
+                    oos?.close()
+                    bin?.close()
+                    ois?.close()
+                  }
+                }
+                data.each{access -> 
+                  access."ContinuingAccessTermRelatedAgent"?."RelatedAgent"?.getAt(0)?.each{ agent ->
+                    def copy = [:]
+                    def entry = [:]
+                    copy = deepcopy(access)
+                    entry = agent.clone()
+                    copy."ContinuingAccessTermRelatedAgent"."RelatedAgent"[0].clear()
+                    copy."ContinuingAccessTermRelatedAgent"."RelatedAgent"[0].addAll(entry)
+                    new_data.addAll(copy)
                   }
                 }
                 if (new_data.size() > 0) {
@@ -242,6 +263,7 @@ onix = [
                   data.clear()
                   data.addAll(new_data)
                 }
+
                 data
               }),
               'text' : 'Continuing Access Terms',

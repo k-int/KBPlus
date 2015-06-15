@@ -179,32 +179,6 @@ class OnixPLService {
   }
 
   /**
-   * Returns a single sanitised onix value along with it's definition data.
-   * 
-   * @param data
-   * @param name
-   * @return
-   */
-  public static String getSingleNestedValue (Map data, String parent, String child) {
-    String t = ""
-    String content = null
-    def parent_list = data.get("${parent}")
-    parent_list?.get(0)?.each{
-      if(it.getKey() == "${child}"){
-         content = it.getValue()?.getAt(0)?.get('_content')
-         return content;
-      }
-    }
-    if (content) {
-      if (content.startsWith("onixPL:")) {
-        t = "<span class='onix-code ${getClassValue(content)}' title='${getOnixValueAnnotation(content).encodeAsHTML()}' >${formatOnixValue(content)}</span>"
-      } else {
-        t = content.encodeAsHTML()
-      }
-    }
-    return t
-  }  
-  /**
    * Sorts the values into their correct order.
    * 
    * @param elements Should be TextElement from the Onix data.
