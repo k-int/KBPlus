@@ -17,8 +17,11 @@ class AdminController {
   def messageService
   def changeNotificationService
   def enrichmentService
+  def sessionFactory
 
   def docstoreService
+  def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
+
 
 
   static boolean ftupdate_running = false
@@ -703,6 +706,7 @@ class AdminController {
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def uploadIssnL() {
     def result=[:]
+    def ctr = 0;
 
     if (request.method == 'POST'){
       def input_stream = request.getFile("sameasfile")?.inputStream
@@ -718,7 +722,7 @@ class AdminController {
             types=nl
           }
           else {
-            log.debug("${types[0]}:${nl[0]} == ${types[1]}:${nl[1]}");
+            log.debug("[seq ${ctr++}] ${types[0]}:${nl[0]} == ${types[1]}:${nl[1]}");
             def id1 = Identifier.lookupOrCreateCanonicalIdentifier(types[0],nl[0]);
             def id2 = Identifier.lookupOrCreateCanonicalIdentifier(types[1],nl[1]);
           }
@@ -726,9 +730,22 @@ class AdminController {
         else {
           log.error("uploadIssnL expected 2 values");
         }
+
+        if ( ctr % 5000 == 0 ) {
+          cleanUpGorm()
+        }
       }
     }
 
     result
   }
+
+  def cleanUpGorm() {
+    log.debug("Clean up GORM");
+    def session = sessionFactory.currentSession
+    session.flush()
+    session.clear()
+    propertyInstanceMap.get().clear()
+  }
+
 }
