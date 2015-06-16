@@ -1,8 +1,10 @@
 <%@ page import="com.k_int.kbplus.onixpl.OnixPLService" %>
 <g:set var="active_user" value=""/>
+
 <g:each var="row_key,row" in="${data}" status="rowCount">
   <!-- Get the data we are to derive the title cell from -->
   <g:set var="rth" value="${service.getRowHeadingData(row)}" />
+  <g:set var="hasPlaceOfReceivingAgent" value="${rth.'UsageRelatedPlace'?.'UsagePlaceRelator'?.'_content'?.contains(['onixPL:PlaceOfReceivingAgent'])}"/>
 
   <g:set var="current_user" value="${row_key.substring(1,row_key.indexOf(']'))}"/>
   <g:if test="${active_user != current_user}">
@@ -30,7 +32,7 @@
       <g:if test="${rth['UsageRelatedResource']}">
         in ${OnixPLService.getSingleValue(rth['UsageRelatedResource'][0], 'RelatedResource')}
       </g:if>
-      <g:if test="${ rth['UsageRelatedPlace']  }" >
+      <g:if test="${ rth['UsageRelatedPlace'] && !hasPlaceOfReceivingAgent }" >
         using ${ OnixPLService.getAllValues(rth['UsageRelatedPlace'][0], 'RelatedPlace', ', ', ' or ') }
         as ${ OnixPLService.getSingleValue(rth['UsageRelatedPlace'][0], 'UsagePlaceRelator') }
       </g:if>
@@ -62,29 +64,35 @@
 		        <g:set var="status" value="${ entry['UsageStatus'][0]['_content'] }" />
 		        <span title='${ OnixPLService.getOnixValueAnnotation(status) }' class="onix-status ${ OnixPLService.getClassValue(status) }" ></span>
 		      </span>
+
+          %{-- List all the extra matrix details. Should create css class to use less space --}%
+          <ul><b>
+
+          <g:if test="${hasPlaceOfReceivingAgent}">
+          <li>  In ${OnixPLService.getSingleValue(rth['UsageRelatedPlace'][0],'RelatedPlace')}</li>
+          </g:if>
           <g:if test="${rth['UsageQuantity']}">
-           <ul><li><b> ${OnixPLService.getUsageQuantity(rth['UsageQuantity'][0])} </b></li></ul>
+           <li> ${OnixPLService.getUsageQuantity(rth['UsageQuantity'][0])} </li>
           </g:if>
           
           <g:if test= "${rth['UsageCondition']}">
-             ${OnixPLService.getSingleValue(rth,'UsageCondition')}
+             <li>${OnixPLService.getSingleValue(rth,'UsageCondition')}</li>
           </g:if>
           <g:if test="${rth['UsageRelatedResource'] && rth.'UsageRelatedResource'.'UsageResourceRelator'.'_content' != [['onixPL:TargetResource']]}">
-            <ul>
+            
             <g:each var="clause" in="${rth['UsageRelatedResource']}">
               <g:if test="${clause.'UsageResourceRelator'.'_content' != ['onixPL:TargetResource']}">
-               <li><b> ${OnixPLService.getSingleValue(clause,'UsageResourceRelator')}
- ${OnixPLService.getAllValues(clause, 'RelatedResource', ', ', ' or ')}</b></li>
+               <li> ${OnixPLService.getSingleValue(clause,'UsageResourceRelator')}
+ ${OnixPLService.getAllValues(clause, 'RelatedResource', ', ', ' or ')}</li>
               </g:if>
-            </g:each>
-            </ul>
+            </g:each>          
           </g:if>
-     %{--                  <UsageRelatedResource>
-                <UsageResourceRelator>onixPL:MustInclude</UsageResourceRelator>
-                <RelatedResource>AcknowledgmentOfSource</RelatedResource>
-            </UsageRelatedResource> --}%
+          <g:if test="${rth['UsageType']['_content'][0] == 'onixPL:SupplyCopy'}">
+            <li>${OnixPLService.getAllValues(rth, 'UsageMethod', ', ', ' or ')}</li>
+          </g:if>
+        </b></ul>
 		    </g:if>
-		    <g:else>
+        <g:else>
           <span class="cell-inner-undefined">
             <span title='Not defined by the license' class="onix-status onix-pl-undefined" ></span>
           </span>
