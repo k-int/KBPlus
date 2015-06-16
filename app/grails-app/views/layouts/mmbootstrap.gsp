@@ -172,8 +172,10 @@
                        <li <%= ( ( 'globalDataSync'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="globalDataSync" action="index">Global Data Download [Packages]</g:link></li>
                        <li class="divider"></li>
-                         <li <%= ( ( 'jasperReports'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
-                             <g:link controller="jasperReports" action="index">Reports</g:link></li>
+                       <li <%= ( ( 'jasperReports'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
+                           <g:link controller="jasperReports" action="index">Reports</g:link></li>
+                       <li <%= ( ( 'titleDetails'== controllerName ) && ( 'dmIndex'==actionName ) ) ? ' class="active"' : '' %>>
+                           <g:link controller="titleDetails" action="dmIndex">Titles</g:link></li>
 
                      </ul>
                    </li>
@@ -200,15 +202,6 @@
                       </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'allNotes'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="allNotes">All Notes</g:link>
-                      </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'dataCleanse'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="dataCleanse">Run Data Cleaning (Nominal Platforms)</g:link>
-                      </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'titleAugment'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="titleAugment">Run Data Cleaning (Title Augment)</g:link>
-                      </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'fullReset'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="fullReset">Run Full ES Index Reset</g:link>
                       </li>
                       <li <%= ( ( 'userDetails'== controllerName ) && ( 'list'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="userDetails" action="list">User Details</g:link>
@@ -238,17 +231,20 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'manageGlobalSources'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="manageGlobalSources">Manage Global Sources</g:link>
                       </li>
-                      <li class="divider"></li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'orgsExport'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="orgsExport">Bulk Export Organisations</g:link>
+                      <li class="dropdown-submenu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Bulk Operations</a>
+                        <ul class="dropdown-menu">
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'orgsExport'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="admin" action="orgsExport">Bulk Export Organisations</g:link>
+                          </li>
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'orgsImport'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="admin" action="orgsImport">Bulk Load Organisations</g:link>
+                          </li>
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'titlesImport'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="admin" action="titlesImport">Bulk Load/Update Titles</g:link>
+                          </li>
+                        </ul>
                       </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'orgsImport'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="orgsImport">Bulk Load Organisations</g:link>
-                      </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'titlesImport'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="titlesImport">Bulk Load/Update Titles</g:link>
-                      </li>
-                      <li class="divider"></li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'manageCustomProperties'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="manageCustomProperties">Manage Custom Properties</g:link>
                       </li>
@@ -258,15 +254,28 @@
                       </li>
                         <li <%= ( ( 'jasperReports'== controllerName ) && ( 'uploadReport'==actionName ) ) ? ' class="active"' : '' %>>
                             <g:link controller="jasperReports" action="uploadReport">Upload Report Definitions</g:link></li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'triggerHousekeeping'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="triggerHousekeeping">Trigger Housekeeping</g:link>
+
+                      <li class="dropdown-submenu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Batch tasks</a>
+                        <ul class="dropdown-menu">
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'triggerHousekeeping'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="admin" action="triggerHousekeeping">Trigger Housekeeping</g:link> </li>
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'initiateCoreMigration'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="admin" action="initiateCoreMigration">Initiate Core Migration</g:link> </li>
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'uploadIssnL'==actionName ) ) ? ' class="active"' : '' %>>
+                            <g:link controller="admin" action="uploadIssnL">Upload ISSN to ISSN-L File</g:link> </li>
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'dataCleanse'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="admin" action="dataCleanse">Run Data Cleaning (Nominal Platforms)</g:link>
+                          </li>
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'titleAugment'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="admin" action="titleAugment">Run Data Cleaning (Title Augment)</g:link>
+                          </li>
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'fullReset'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="admin" action="fullReset">Run Full ES Index Reset</g:link>
+                          </li>
+                        </ul>
                       </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'initiateCoreMigration'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="initiateCoreMigration">Initiate Core Migration</g:link>
-                      </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'uploadIssnL'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="uploadIssnL">Upload ISSN to ISSN-L File</g:link>
-                      </li>
+
                     </ul>
                   </li>
 

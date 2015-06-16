@@ -707,6 +707,7 @@ class AdminController {
   def uploadIssnL() {
     def result=[:]
     def ctr = 0;
+    def start_time = System.currentTimeMillis()
 
     if (request.method == 'POST'){
       def input_stream = request.getFile("sameasfile")?.inputStream
@@ -715,6 +716,13 @@ class AdminController {
       String[] types;
       def first = true
       while ((nl = r.readNext()) != null) {
+        def elapsed = System.currentTimeMillis() - start_time
+
+        def avg = 0;
+        if ( ctr > 0 ) {
+          avg = elapsed / 1000 / ctr  //
+        }
+
         if ( nl.length == 2 ) {
           if ( first ) {
             first = false; // Skip header
@@ -722,7 +730,7 @@ class AdminController {
             types=nl
           }
           else {
-            log.debug("[seq ${ctr++}] ${types[0]}:${nl[0]} == ${types[1]}:${nl[1]}");
+            log.debug("[seq ${ctr++} - avg=${avg}] ${types[0]}:${nl[0]} == ${types[1]}:${nl[1]}");
             def id1 = Identifier.lookupOrCreateCanonicalIdentifier(types[0],nl[0]);
             def id2 = Identifier.lookupOrCreateCanonicalIdentifier(types[1],nl[1]);
 
