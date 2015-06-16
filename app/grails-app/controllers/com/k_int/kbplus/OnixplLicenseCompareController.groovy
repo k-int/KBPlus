@@ -24,21 +24,22 @@ class OnixplLicenseCompareController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def matrix() {
     
-    // Get the main licence.
-    Long license_id = params.long("license1")
-    OnixplLicense main_license = OnixplLicense.get(license_id)
-    
+    log.debug("matrix:: ${params}")
     // All licenses need to be compared.
     boolean allLicenses = false
     
     // Cast each element in the list to a Long.
-    List<Long> licenses =  params.list("license2").collect { String param ->
+    List<Long> licenses =  params.list("selectedLicences").collect { String param ->
       if (param.toLowerCase() == "all") {
         allLicenses = true
       } else {
         return param as Long
       }
     }
+    // Get the main licence.
+    Long license_id = licenses.get(0)
+    licenses.remove(0)
+    OnixplLicense main_license = OnixplLicense.get(license_id)
     
     // Get the list of licenses we are comparing with.
     List<OnixplLicense> compare_to =

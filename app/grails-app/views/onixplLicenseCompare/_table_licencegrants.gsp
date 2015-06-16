@@ -7,7 +7,7 @@
       <!-- Get the data we are to derive the title cell from -->
       <g:set var="rth" value="${service.getRowHeadingData(row)}" />
       
-      Grants ${ OnixPLService.getAllValues(rth, 'LicenseGrantType', ', ') }
+      Grants ${ OnixPLService.getAllValues(rth, 'LicenseGrantType', ', ') } licence for
       ${ OnixPLService.getSingleValue(rth, 'LicenseGrantPurpose') }
     </span></th>
     <g:each var="heading" in="${headings}" status="colCount">

@@ -58,32 +58,22 @@
 			<div class="span8">
 				<g:form id="compare" name="compare" action="matrix" method="post">
 					<div>
-						<label for="license1"><g:message code="licence" default="Licence"/> 1:</label>
-						<g:select id="license1" name="license1" class="compare-license" from="${list}"
-							optionKey="id" optionValue="title" />
+						<label for="addIdentifierSelect">Search licence for comparison:</label>
+
+		                <input type="hidden" name="selectedIdentifier" id="addIdentifierSelect"/>
+		                <button type="button"class="btn btn-success" id="addToList" >Add</button>
 					</div>
-					<div>
-						<label for="license2"><g:message code="licence" default="Licence"/> 2:</label>
-						<g:select id="license2" name="license2" class="compare-license" from="${list}"
-							optionKey="id" optionValue="title"
-							noSelection="${['all': "All"]}" multiple="true" value="all" />
-					</div>
+					
+					<label for="selectedLicences">Licences selected for comparison:</label>
+					<g:select id="selectedLicences" name="selectedLicences" class="compare-license" from="${[]}" multiple="true" />
+
+
 					<div>
 						<label for="section">Compare section:</label>
 						<g:treeSelect name="sections" id="section" class="compare-section"
 							options="${termList}" selected="true" multiple="true" />
 					</div>
-<%--					<div id="limit-license-display">--%>
-<%--						Only show licenses:<br />--%>
-<%--						<g:radio id="same" class="compare-radio" name="match" value="${OnixPLService.COMPARE_RETURN_SAME}" />--%>
-<%--						&nbsp;&nbsp;<label for="same">The same</label><br />--%>
-<%--						<g:radio id="diff" class="compare-radio" name="match"--%>
-<%--							value="${OnixPLService.COMPARE_RETURN_DIFFERENT}" />--%>
-<%--						&nbsp;&nbsp;<label for="diff">Different</label><br />--%>
-<%--						<g:radio id="all" class="compare-radio" name="match" value="${OnixPLService.COMPARE_RETURN_ALL}"--%>
-<%--							checked="${true}" />--%>
-<%--						&nbsp;&nbsp;<label for="all">Show all</label>--%>
-<%--					</div>--%>
+
 					<div>
 					  <g:submitButton name="Compare" class="btn btn-primary" />
 					</div>
@@ -91,5 +81,37 @@
 			</div>
 		</div>
 	</div>
+	  <r:script language="JavaScript">
+
+	    $(function(){
+	      $('#addToList').click(function() {
+	      		var option = $("input[name='selectedIdentifier']").val()
+	      		var option_name = option.split("||")[0]
+	      		var option_id = option.split("||") [1]
+	      		var list_option = "<option selected='selected' value='"+option_id+"''>"+option_name+"</option>"
+	      		$("#selectedLicences").append(list_option)
+			});
+
+	      $("#addIdentifierSelect").select2({
+  	        width: '90%',
+	        placeholder: "Search for a licence...",
+	        minimumInputLength: 1,
+	        ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+	          url: "<g:createLink controller='ajax' action='lookup'/>",
+	          dataType: 'json',
+	          data: function (term, page) {
+	              return {
+	                  q: term, // search term
+	                  page_limit: 10,
+	                  baseClass:'com.k_int.kbplus.OnixplLicense'
+	              };
+	          },
+	          results: function (data, page) {
+	            return {results: data.values};
+	          },
+	        }
+	      });
+	    });
+      </r:script>
 </body>
 </html>
