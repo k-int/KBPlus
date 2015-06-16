@@ -160,7 +160,9 @@ onix = [
                       break;
                     case "onixPL:Use":
                       replicate_row(usage,'UsagePurpose');
-
+                      break;
+                    case "onixPL:UseForDataMining":
+                      replicate_row(usage,'UsagePurpose');
                       break;
                     default:
                         new_data += usage
@@ -191,6 +193,7 @@ onix = [
                   'onixPL:Sell' : ['text' :  'Sell'],
                   'onixPL:SupplyCopy' : ['text' : 'Supply Copy'],
                   'onixPL:Use' : ['text': 'Use'],
+                  'onixPL:UseForDataMining' : ['text':'Use For Data Mining'],
 
 
                 ]
