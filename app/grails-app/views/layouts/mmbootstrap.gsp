@@ -176,6 +176,8 @@
                            <g:link controller="jasperReports" action="index">Reports</g:link></li>
                        <li <%= ( ( 'titleDetails'== controllerName ) && ( 'dmIndex'==actionName ) ) ? ' class="active"' : '' %>>
                            <g:link controller="titleDetails" action="dmIndex">Titles</g:link></li>
+                       <li <%= ( ( 'dataManager'== controllerName ) && ( 'expungeDeletedTitles'==actionName ) ) ? ' class="active"' : '' %>>
+                           <g:link controller="dataManager" action="expungeDeletedTitles">Expunge Deleted Titles</g:link></li>
 
                      </ul>
                    </li>

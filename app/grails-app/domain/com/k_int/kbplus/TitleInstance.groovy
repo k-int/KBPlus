@@ -731,4 +731,14 @@ class TitleInstance {
     result
   }
 
+  static def expunge(title_id) {
+    TitleInstance.executeUpdate('delete from TitleInstancePackagePlatform tipp where tipp.title.id = ?',[title_id])
+    TitleInstance.executeUpdate('delete from IdentifierOccurrence io where io.ti.id = ?',[title_id])
+    TitleInstance.executeUpdate('delete from OrgRole orl where orl.title.id = ?',[title_id])
+    TitleInstance.executeUpdate('delete from TitleHistoryEventParticipant he where he.participant.id = ?',[title_id])
+    TitleInstance.executeUpdate('delete from TitleInstitutionProvider tip where tip.title.id = ?',[title_id])
+    TitleInstance.executeUpdate('delete from Fact fact where fact.relatedTitle.id = ?',[title_id])
+    TitleInstance.executeUpdate('delete from OrgTitleStats ots where ots.title.id = ?',[title_id])
+  }
+
 }

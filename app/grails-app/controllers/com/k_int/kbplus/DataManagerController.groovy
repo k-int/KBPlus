@@ -315,5 +315,19 @@ class DataManagerController {
 
     result
   }
+
+  @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
+  def expungeDeletedTitles() {
+
+    def l = TitleInstance.executeQuery('select t.id from TitleInstance t where t.status.value=?',['Deleted']);
+    l.each {
+      TitleInstance.withNewTransaction {
+        log.debug("Expunging title ${it}");
+        TitleInstance.expunge(it);
+      }
+    }
+    redirect(controller:'home')
+  }
+  
 }
 
