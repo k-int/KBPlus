@@ -158,6 +158,10 @@ onix = [
                         replicate_nested_row(usage,'UsageRelatedAgent','RelatedAgent');
                       }
                       break;
+                    case "onixPL:Use":
+                      replicate_row(usage,'UsagePurpose');
+
+                      break;
                     default:
                         new_data += usage
                       break;
@@ -185,7 +189,9 @@ onix = [
                   'onixPL:ProvideIntegratedIndex' : ['text' :  'Provide Integrated Index'],
                   'onixPL:RemoveObscureOrModify' : ['text' :  'Remove Obscure Or Modify'],
                   'onixPL:Sell' : ['text' :  'Sell'],
-                  'onixPL:SupplyCopy' : ['text' :  'Supply Copy'],
+                  'onixPL:SupplyCopy' : ['text' : 'Supply Copy'],
+                  'onixPL:Use' : ['text': 'Use'],
+
 
                 ]
               ]
