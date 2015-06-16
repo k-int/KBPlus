@@ -725,6 +725,15 @@ class AdminController {
             log.debug("[seq ${ctr++}] ${types[0]}:${nl[0]} == ${types[1]}:${nl[1]}");
             def id1 = Identifier.lookupOrCreateCanonicalIdentifier(types[0],nl[0]);
             def id2 = Identifier.lookupOrCreateCanonicalIdentifier(types[1],nl[1]);
+
+            def idrel = IdentifierRelation.findByFromIdentifierAndToIdentifier(id1,id2);
+            if ( idrel == null ) {
+              idrel = IdentifierRelation.findByFromIdentifierAndToIdentifier(id2,id1);
+              if ( idrel == null ) {
+                idrel = new IdentifierRelation(fromIdentifier:id1,toIdentifier:id2);
+                idrel.save(flush:true)
+              }
+            }
           }
         }
         else {
