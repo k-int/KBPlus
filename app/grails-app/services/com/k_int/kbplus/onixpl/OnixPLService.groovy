@@ -178,6 +178,18 @@ class OnixPLService {
     return t
   }
 
+  public static String getUsageQuantity(Map data){
+    String result = ""
+    String type = OnixPLService.getSingleValue(data,'UsageQuantityType')
+    result += type + ": "
+    String proximity = OnixPLService.getSingleValue(data['QuantityDetail'][0],'Proximity')
+    result += proximity
+    result += " ${OnixPLService.getSingleValue(data['QuantityDetail'][0],'Value')} "
+    String unit = OnixPLService.getSingleValue(data['QuantityDetail'][0],'QuantityUnit')
+    result += unit
+    return result  
+  }
+
   /**
    * Sorts the values into their correct order.
    * 

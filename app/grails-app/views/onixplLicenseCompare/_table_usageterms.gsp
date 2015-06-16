@@ -62,6 +62,10 @@
 		        <g:set var="status" value="${ entry['UsageStatus'][0]['_content'] }" />
 		        <span title='${ OnixPLService.getOnixValueAnnotation(status) }' class="onix-status ${ OnixPLService.getClassValue(status) }" ></span>
 		      </span>
+          <g:if test="${rth['UsageQuantity']}">
+           <ul><li><b> ${OnixPLService.getUsageQuantity(rth['UsageQuantity'][0])} </b></li></ul>
+          </g:if>
+          
           <g:if test= "${rth['UsageCondition']}">
              ${OnixPLService.getSingleValue(rth,'UsageCondition')}
           </g:if>
