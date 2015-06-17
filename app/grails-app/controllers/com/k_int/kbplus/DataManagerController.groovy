@@ -5,6 +5,9 @@ import grails.plugins.springsecurity.Secured
 import grails.web.JSONBuilder
 import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 import com.k_int.kbplus.auth.User
+import static java.util.concurrent.TimeUnit.*
+import static grails.async.Promises.*
+
 
 class DataManagerController {
 
@@ -319,13 +322,32 @@ class DataManagerController {
   @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
   def expungeDeletedTitles() {
 
-    def l = TitleInstance.executeQuery('select t.id from TitleInstance t where t.status.value=?',['Deleted']);
-    l.each {
-      TitleInstance.withNewTransaction {
-        log.debug("Expunging title ${it}");
-        TitleInstance.expunge(it);
+    log.debug("expungeDeletedTitles.. Create async task..");
+
+    def p = TitleInstance.async.task {
+      def l = TitleInstance.executeQuery('select t.id from TitleInstance t where t.status.value=?',['Deleted']);
+      def ctr = 0;
+      l.each { ti_id -> 
+        TitleInstance.withNewTransaction {
+          log.debug("Expunging title [${ctr++}] ${ti_id}");
+          TitleInstance.expunge(ti_id);
+        }
       }
+      return "expungeDeletedTitles Completed - ${ctr} titles expunged"
     }
+
+    log.debug("Got promise : ${p}. ${p.class.name}");
+
+    p.onError { Throwable err ->
+	log.debug("An error occured ${err.message}")
+    }
+
+    p.onComplete { result ->
+        log.debug("Promise returned $result")
+    }
+
+    log.debug("expungeDeletedTitles.. Returning");
+
     redirect(controller:'home')
   }
   
