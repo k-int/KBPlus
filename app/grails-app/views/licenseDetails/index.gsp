@@ -238,12 +238,19 @@
                 <label>  <h5>Licence Actions</h5> </label>
                   <g:if test="${editable}">
                  
-                  <label>Copy licence for:</label>
+                  <label for="orgShortcode">Copy licence for:</label>
                   <g:select from="${user.authorizedOrgs}" optionValue="name" optionKey="shortcode" id="orgShortcode" name="orgShortcode"/>
-                                 <br/>
+                              
                    <g:link name="copyLicenceBtn" controller="myInstitutions" action="actionLicenses" params="${[shortcode:'replaceme',baselicense:license.id,'copy-licence':'Y']}" onclick="return changeLink(this,'Are you sure you want to copy this licence?')" class="btn btn-success">Copy</g:link>
-               
-%{--           
+
+               <label for="linkSubscription">Link to Subscription:</label>
+
+               <g:form id="linkSubscription" name="linkSubscription" action="linkToSubscription">
+                <input type="hidden" name="licence" value="${license.id}"/>
+                <g:select optionKey="id" optionValue="name" from="${availableSubs}" name="subscription"/>
+                <input type="submit" class="btn btn-success"value="Link"/>
+              </g:form>
+%{--            
           leave this out for now.. it is a bit confusing.
           <g:link name="deletLicenceBtn" controller="myInstitutions" action="actionLicenses" onclick="return changeLink(this,'Are you sure you want to delete ${license.reference?:'** No licence reference ** '}?')" params="${[baselicense:license.id,'delete-licence':'Y',shortcode:'replaceme']}" class="btn btn-danger">Delete</g:link> --}%
                   </g:if>
