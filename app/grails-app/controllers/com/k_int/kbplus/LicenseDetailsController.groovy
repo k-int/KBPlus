@@ -78,7 +78,7 @@ class LicenseDetailsController {
     }
 
 
-    result.availableSubs = getAvailableSubscriptions(result.license)
+    result.availableSubs = getAvailableSubscriptions(result.license,result.user)
 
     withFormat {
       html result
@@ -105,10 +105,11 @@ class LicenseDetailsController {
       }
     }
   }
-  def getAvailableSubscriptions(licence){
+  def getAvailableSubscriptions(licence,user){
     def licenceInstitutions = licence?.orgLinks?.findAll{ orgRole ->
       orgRole.roleType.value == "Licensee"
-    }?.collect{  it.org   }
+    }?.collect{  it.org?.hasUserWithRole(user,'INST_ADM')?it.org:null  }
+
     def subscriptions = null
     if(licenceInstitutions){
       def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)

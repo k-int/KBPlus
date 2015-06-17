@@ -869,10 +869,11 @@ class AjaxController {
 
 
   def editableSetValue() {
-    // log.debug("editableSetValue ${params}");
+    log.debug("editableSetValue ${params}");
     def target_object = resolveOID2(params.pk)
     def result = [:]
-
+    def error = null
+    
     if ( target_object ) {
       if ( params.type=='date' ) {
         target_object."${params.name}" = params.date('value','yyyy-MM-dd')
@@ -883,13 +884,22 @@ class AjaxController {
         bindData(target_object, binding_properties)
         // target_object."${params.name}" = params.value
       }
-      target_object.save(flush:true);
+      try{
+        target_object.save(failOnError:true,flush:true);
+      }catch(Exception e){
+        error = "Wrong something"
+      }
     }
+    log.debug(error)
 
     response.setContentType('text/plain')
 
     def outs = response.outputStream
-    outs << target_object."${params.name}"
+    if(error){
+      outs << error
+    }else{
+      outs << target_object."${params.name}"
+    }
     outs.flush()
     outs.close()
   }
