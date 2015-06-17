@@ -19,8 +19,8 @@ class Identifier {
 
   static mapping = {
        id column:'id_id'
-       ns column:'id_ns_fk', index:'id_value_idx'
     value column:'id_value', index:'id_value_idx'
+       ns column:'id_ns_fk', index:'id_value_idx'
   }
 
   def beforeUpdate() {

@@ -17,8 +17,11 @@ class AdminController {
   def messageService
   def changeNotificationService
   def enrichmentService
+  def sessionFactory
 
   def docstoreService
+  def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
+
 
 
   static boolean ftupdate_running = false
@@ -703,6 +706,8 @@ class AdminController {
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def uploadIssnL() {
     def result=[:]
+    def ctr = 0;
+    def start_time = System.currentTimeMillis()
 
     if (request.method == 'POST'){
       def input_stream = request.getFile("sameasfile")?.inputStream
@@ -711,6 +716,13 @@ class AdminController {
       String[] types;
       def first = true
       while ((nl = r.readNext()) != null) {
+        def elapsed = System.currentTimeMillis() - start_time
+
+        def avg = 0;
+        if ( ctr > 0 ) {
+          avg = elapsed / 1000 / ctr  //
+        }
+
         if ( nl.length == 2 ) {
           if ( first ) {
             first = false; // Skip header
@@ -718,17 +730,39 @@ class AdminController {
             types=nl
           }
           else {
-            log.debug("${types[0]}:${nl[0]} == ${types[1]}:${nl[1]}");
+            log.debug("[seq ${ctr++} - avg=${avg}] ${types[0]}:${nl[0]} == ${types[1]}:${nl[1]}");
             def id1 = Identifier.lookupOrCreateCanonicalIdentifier(types[0],nl[0]);
             def id2 = Identifier.lookupOrCreateCanonicalIdentifier(types[1],nl[1]);
+
+            def idrel = IdentifierRelation.findByFromIdentifierAndToIdentifier(id1,id2);
+            if ( idrel == null ) {
+              idrel = IdentifierRelation.findByFromIdentifierAndToIdentifier(id2,id1);
+              if ( idrel == null ) {
+                idrel = new IdentifierRelation(fromIdentifier:id1,toIdentifier:id2);
+                idrel.save(flush:true)
+              }
+            }
           }
         }
         else {
           log.error("uploadIssnL expected 2 values");
+        }
+
+        if ( ctr % 5000 == 0 ) {
+          cleanUpGorm()
         }
       }
     }
 
     result
   }
+
+  def cleanUpGorm() {
+    log.debug("Clean up GORM");
+    def session = sessionFactory.currentSession
+    session.flush()
+    session.clear()
+    propertyInstanceMap.get().clear()
+  }
+
 }
