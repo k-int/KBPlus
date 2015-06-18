@@ -133,7 +133,12 @@
                         <g:xEditable owner="${license}" field="reference" id="reference"/>
                       </dd>
                   </dl>
-
+                  <dl>
+                      <dt><label class="control-label" for="contact">Licence Contact</label></dt>
+                      <dd>
+                        <g:xEditable owner="${license}" field="contact" id="contact"/>
+                      </dd>
+                  </dl>
                   <dl>
                       <dt><label class="control-label" for="reference">Status</label></dt>
                       <dd>
