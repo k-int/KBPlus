@@ -111,7 +111,7 @@ onix = [
                  refresh_data();
                 //Create several rows for comparison points that need to be split
                 def replicate_row = {usage,type ->
-                    usage[type].each{ method ->
+                    usage?."${type}"?.each{ method ->
                       def copy = [:]
                       copy << usage
                       def temp = [method]
@@ -121,7 +121,7 @@ onix = [
                 }
 
                 def replicate_nested_row = {usage,parent,child ->
-                    usage[parent][child][0].each{ place ->
+                    usage."${parent}"?."${child}"?.getAt(0)?.each{ place ->
                       def copy = [:]
                       def entry = [:]
                       copy = deepcopy(usage)

@@ -153,9 +153,8 @@ class OnixPLService {
    * @return Title if found or null if not
    */
   public static Map getRowHeadingData (Map row_data) {
-    
     // Just find the first example of an entry regardless of which license it's defined against.
-    row_data[row_data.keySet()[0]]
+    row_data?."${row_data.keySet()[0]}"
   }
   
   /**
