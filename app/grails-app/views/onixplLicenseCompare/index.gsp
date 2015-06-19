@@ -5,39 +5,7 @@
 <head>
 <meta name="layout" content="mmbootstrap" />
 <title>KB+</title>
-<r:script type="text/javascript">
-  (function ($) {
-    $(document).ready(function(){
-      var disableOption = function (dd1, dd2) {
-  
-        // current selected val.
-        var val = $("option:selected", dd1).attr("value");
-  
-        // Go through each option in 2 and ensure all are enabled,
-        // appart from a matching value.
-        $("option", dd2).each(function(){
-          var opt = $(this);
-          if (opt.attr("value") == val) {
-            // Hide this.
-            opt.hide();
-          } else {
-            opt.show();
-          }
-        });
-      }
-  
-      // Default.
-      var main = $('#license1');
-      var secondary = $('#license2');
-      disableOption (main, secondary);
-  
-      // Now add the onchange.
-      main.on("change", function() {
-        disableOption (this, secondary)
-      });
-    });
-  })(jQuery);
-</r:script>
+
 </head>
 
 <body>
@@ -75,7 +43,7 @@
 					</div>
 
 					<div>
-					  <g:submitButton name="Compare" class="btn btn-primary" />
+					  <input id="submitButton" disabled='true' type="submit"  name="Compare" class="btn btn-primary" />
 					</div>
 				</g:form>
 			</div>
@@ -83,13 +51,26 @@
 	</div>
 	  <r:script language="JavaScript">
 
+
 	    $(function(){
+
+	      var main = $('#selectedLicences');
+	  
+	      // Now add the onchange.
+	      main.change(function() {
+	        var conceptName = main.find(":selected");
+	        if(conceptName != null){
+	        	$('#submitButton').removeAttr('disabled')
+	        }
+	      });
+
 	      $('#addToList').click(function() {
 	      		var option = $("input[name='selectedIdentifier']").val()
 	      		var option_name = option.split("||")[0]
 	      		var option_id = option.split("||") [1]
 	      		var list_option = "<option selected='selected' value='"+option_id+"''>"+option_name+"</option>"
 	      		$("#selectedLicences").append(list_option)
+	      		$('#selectedLicences').trigger( "change" )
 			});
 
 	      $("#addIdentifierSelect").select2({
