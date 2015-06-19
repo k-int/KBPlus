@@ -12,13 +12,13 @@ class OnixplLicenseDetailsController {
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def index() {
         def user = User.get(springSecurityService.principal.id)
-        def onixplLicense = OnixplLicense.get(params.id)
+        // def onixplLicense = OnixplLicense.get(params.id)
 //        if ( ! onixplLicense.hasPerm("view",user) ) {
 //            log.debug("return 401....");
 //            response.sendError(401);
 //            return
 //        }
-        [onixplLicense: onixplLicense, user: user]
+        forward (action:'matrix', params:[Compare:"Compare", id:"compare",compareAll:true,selectedLicences:params.id],controller:"onixplLicenseCompare")
     }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])

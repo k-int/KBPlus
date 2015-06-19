@@ -120,7 +120,7 @@ class OnixplLicense {
 
         def xml = getXML()
         
-        log.debug("XPath expression: ${xpath_expr}")
+        // log.debug("XPath expression: ${xpath_expr}")
         
         // Query for xpath results.
         def results = xml.XPath(xpath_expr)

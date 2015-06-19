@@ -61,7 +61,7 @@
 	          </g:if>
 	        </div>
 		      <span class="cell-inner">
-		        <g:set var="status" value="${ entry['UsageStatus'][0]['_content'] }" />
+		        <g:set var="status" value="${ entry?.'UsageStatus'?.getAt(0)?.'_content' }" />
 		        <span title='${ OnixPLService.getOnixValueAnnotation(status) }' class="onix-status ${ OnixPLService.getClassValue(status) }" ></span>
 		      </span>
 

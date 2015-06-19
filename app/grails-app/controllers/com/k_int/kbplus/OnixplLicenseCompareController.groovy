@@ -40,19 +40,18 @@ class OnixplLicenseCompareController {
     Long license_id = licenses.get(0)
     licenses.remove(0)
     OnixplLicense main_license = OnixplLicense.get(license_id)
-    
+    println "Main " + main_license
     // Get the list of licenses we are comparing with.
     List<OnixplLicense> compare_to =
       allLicenses ? OnixplLicense.findAllByIdNotEqual( license_id ) : OnixplLicense.findAllByIdInList( licenses )
-    
+
     // The list to limit to.
     ArrayList<String> comparison_points = params.list("sections")
-    
     // Should we compare all?
-    if (comparison_points.remove("_:PublicationsLicenseExpression") != false) {
+    if (comparison_points.remove("_:PublicationsLicenseExpression") != false || params.compareAll) {
       comparison_points = onixPLService.allComparisonPoints
     }
-    
+    println "Compare ${comparison_points.size()}"
     // Filter.
     def match = params."match" ?: OnixPLService.COMPARE_RETURN_ALL
     

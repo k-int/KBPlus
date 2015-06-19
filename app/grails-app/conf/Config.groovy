@@ -132,7 +132,7 @@ onix = [
                 }
                 //Need to loop we might have multiple data here, genetrated from above
                 data.each{ usage ->
-                  def usageType = usage['UsageType'][0]["_content"]
+                  def usageType = usage."UsageType"?.getAt(0)?."_content"
                   switch (usageType){
                     case "onixPL:Access":
                       replicate_row(usage,'UsageMethod');
