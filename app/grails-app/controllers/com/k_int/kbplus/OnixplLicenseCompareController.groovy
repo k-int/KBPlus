@@ -48,6 +48,7 @@ class OnixplLicenseCompareController {
     // The list to limit to.
     ArrayList<String> comparison_points = params.list("sections")
     // Should we compare all?
+    println params.list("sections")
     if (comparison_points.remove("_:PublicationsLicenseExpression") != false || params.compareAll) {
       comparison_points = onixPLService.allComparisonPoints
     }

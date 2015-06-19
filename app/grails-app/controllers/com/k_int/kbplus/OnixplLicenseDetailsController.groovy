@@ -18,7 +18,8 @@ class OnixplLicenseDetailsController {
 //            response.sendError(401);
 //            return
 //        }
-        forward (action:'matrix', params:[Compare:"Compare", id:"compare",compareAll:true,selectedLicences:params.id],controller:"onixplLicenseCompare")
+        log.debug(onixPLService.tsComparisonPoints)
+        redirect (action:'matrix', params:[Compare:"Compare", id:"compare",selectedLicences:[params.id]],controller:"onixplLicenseCompare")
     }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])

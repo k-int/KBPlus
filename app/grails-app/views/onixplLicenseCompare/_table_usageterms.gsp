@@ -87,7 +87,7 @@
               </g:if>
             </g:each>          
           </g:if>
-          <g:if test="${rth['UsageType']['_content'][0] == 'onixPL:SupplyCopy'}">
+          <g:if test="${rth.'UsageType'?.getAt(0)?.'_content'?.getAt(0) == 'onixPL:SupplyCopy'}">
             <g:set var="hasVal" value="${OnixPLService.getAllValues(rth, 'UsageMethod', ', ', ' or ')}"/>
             <g:if test="${hasVal}">  <li>${hasVal}</li></g:if>
           </g:if>
