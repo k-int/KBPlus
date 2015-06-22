@@ -18,7 +18,9 @@ class OnixplLicenseDetailsController {
 //            response.sendError(401);
 //            return
 //        }
-        forward (action:'matrix', params:[Compare:"Compare", id:"compare",compareAll:true,selectedLicences:params.id],controller:"onixplLicenseCompare")
+        def ghost_licence = OnixplLicense.findByTitle(grails.util.Holders.config.onix_ghost_licence)
+        def licences = ghost_licence?[params.id,ghost_licence.id] : params.id
+        forward (action:'matrix', params:[Compare:"Compare", id:"compare",compareAll:true,selectedLicences:licences],controller:"onixplLicenseCompare")
     }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
