@@ -1,11 +1,13 @@
 <%@ page import="com.k_int.kbplus.onixpl.OnixPLService" %>
 <g:each var="row_key,row" in="${data}" status="rowCount">
+      <!-- Get the data we are to derive the title cell from -->
+      <g:set var="rth" value="${service.getRowHeadingData(row)}" />
+<g:if test="${ OnixPLService.getSingleValue(rth, 'RelatedAgent') }">
   <tr>
     <!-- Header -->
     <th class="tr-${ (rowCount + 1) } cell-1" ><span class="cell-inner">
     
-      <!-- Get the data we are to derive the title cell from -->
-      <g:set var="rth" value="${service.getRowHeadingData(row)}" />
+
       
       ${ OnixPLService.getSingleValue(rth, 'RelatedAgent') }
     </span></th>
@@ -33,4 +35,6 @@
       </td>
     </g:each>
   </tr>
+  </g:if>
+
 </g:each>

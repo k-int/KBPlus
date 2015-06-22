@@ -1,12 +1,16 @@
 <%@ page import="com.k_int.kbplus.onixpl.OnixPLService" %>
 
 <g:each var="row_key,row" in="${data}" status="rowCount">
+
+      <!-- Get the data we are to derive the title cell from -->
+      <g:set var="rth" value="${service.getRowHeadingData(row)}" />
+
+      <g:if test="${ service.getSingleValue(rth, 'ContinuingAccessTermType') }">
   <tr>
     <!-- Header -->
     <th class="tr-${ (rowCount + 1) } cell-1" ><span class="cell-inner">
     
-      <!-- Get the data we are to derive the title cell from -->
-      <g:set var="rth" value="${service.getRowHeadingData(row)}" />
+
 
       <g:set var="access_resource" value="${service.getSingleValue(rth['ContinuingAccessTermRelatedResource']?.getAt(0),'RelatedResource') }"/>
 
@@ -60,4 +64,6 @@
       </td>
     </g:each>
   </tr>
+        </g:if>
+
 </g:each>

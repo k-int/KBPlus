@@ -4,6 +4,7 @@
 <g:each var="row_key,row" in="${data}" status="rowCount">
   <!-- Get the data we are to derive the title cell from -->
   <g:set var="rth" value="${service.getRowHeadingData(row)}" />
+  <g:if test="${ OnixPLService.getSingleValue(rth, 'UsageType')}">  
   <g:set var="hasPlaceOfReceivingAgent" value="${rth.'UsageRelatedPlace'?.'UsagePlaceRelator'?.'_content'?.contains(['onixPL:PlaceOfReceivingAgent'])}"/>
 
   <g:set var="current_user" value="${row_key.substring(1,row_key.indexOf(']'))}"/>
@@ -78,7 +79,7 @@
           <g:if test= "${rth['UsageCondition']}">
              <li>${OnixPLService.getSingleValue(rth,'UsageCondition')}</li>
           </g:if>
-          <g:if test="${rth['UsageRelatedResource'] && rth.'UsageRelatedResource'.'UsageResourceRelator'.'_content' != [['onixPL:TargetResource']]}">
+          <g:if test="${rth['UsageRelatedResource'] && rth.'UsageRelatedResource'?.'UsageResourceRelator'?.'_content' != [['onixPL:TargetResource']]}">
             
             <g:each var="clause" in="${rth['UsageRelatedResource']}">
               <g:if test="${clause.'UsageResourceRelator'.'_content' != ['onixPL:TargetResource']}">
@@ -88,6 +89,7 @@
             </g:each>          
           </g:if>
           <g:if test="${rth.'UsageType'?.getAt(0)?.'_content'?.getAt(0) == 'onixPL:SupplyCopy'}">
+
             <g:set var="hasVal" value="${OnixPLService.getAllValues(rth, 'UsageMethod', ', ', ' or ')}"/>
             <g:if test="${hasVal}">  <li>${hasVal}</li></g:if>
           </g:if>
@@ -101,4 +103,6 @@
       </td>
     </g:each>
   </tr>
+    </g:if>
+
 </g:each>

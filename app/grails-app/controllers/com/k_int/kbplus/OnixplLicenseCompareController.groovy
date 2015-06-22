@@ -27,7 +27,9 @@ class OnixplLicenseCompareController {
     log.debug("matrix:: ${params}")
     // All licenses need to be compared.
     boolean allLicenses = false
-    
+    if(params.selectedLicences.startsWith("[")){
+      params.selectedLicences = params.selectedLicences.substring(1,params.selectedLicences.size()-1)split(",")
+    }
     // Cast each element in the list to a Long.
     List<Long> licenses =  params.list("selectedLicences").collect { String param ->
       if (param.toLowerCase() == "all") {
