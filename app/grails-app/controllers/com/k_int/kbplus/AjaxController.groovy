@@ -866,13 +866,17 @@ class AjaxController {
     }
     redirect(url: request.getHeader('referer'))    
   }
-
+  def validationException(final grails.validation.ValidationException exception){
+    log.error(exception)
+    response.status = 400
+    response.setContentType('text/plain')
+    def outs = response.outputStream
+    outs << "Value validation failed"
+  }
 
   def editableSetValue() {
     log.debug("editableSetValue ${params}");
     def target_object = resolveOID2(params.pk)
-    def result = [:]
-    def error = null
     
     if ( target_object ) {
       if ( params.type=='date' ) {
@@ -884,22 +888,16 @@ class AjaxController {
         bindData(target_object, binding_properties)
         // target_object."${params.name}" = params.value
       }
-      try{
         target_object.save(failOnError:true,flush:true);
-      }catch(Exception e){
-        error = "Wrong something"
-      }
+
     }
-    log.debug(error)
 
     response.setContentType('text/plain')
 
     def outs = response.outputStream
-    if(error){
-      outs << error
-    }else{
-      outs << target_object."${params.name}"
-    }
+
+    outs << target_object."${params.name}"
+    
     outs.flush()
     outs.close()
   }
