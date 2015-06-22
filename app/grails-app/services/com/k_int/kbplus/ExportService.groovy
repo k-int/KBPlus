@@ -309,50 +309,10 @@ class ExportService {
 			
 			def licPropElem = addXMLElementInto(doc, licElem, "LicenceProperties", null)
 			
-			def concurrentAccessElem = addXMLElementInto(doc, licPropElem, "ConcurrentAccess", null)
-			addXMLElementInto(doc, concurrentAccessElem, "Status", licence.concurrentUsers?.value)
-			addXMLElementInto(doc, concurrentAccessElem, "UserCount", licence.concurrentUserCount)
-			// addXMLElementInto(doc, concurrentAccessElem, "Notes", licence.getNote("concurrentUsers")?.owner?.content?:"")
-			
-			def remoteAccessElem = addXMLElementInto(doc, licPropElem, "RemoteAccess", null)
-			addXMLElementInto(doc, remoteAccessElem, "Status", licence.remoteAccess?.value)
-			// addXMLElementInto(doc, remoteAccessElem, "Notes", licence.getNote("remoteAccess")?.owner?.content?:"")
-			
-			def walkingAccessElem = addXMLElementInto(doc, licPropElem, "WalkingAccess", null)
-			addXMLElementInto(doc, walkingAccessElem, "Status", licence.walkinAccess?.value)
-			// addXMLElementInto(doc, walkingAccessElem, "Notes", licence.getNote("walkinAccess")?.owner?.content?:"")
-			
-			def multisiteAccessElem = addXMLElementInto(doc, licPropElem, "MultisiteAccess", null)
-			addXMLElementInto(doc, multisiteAccessElem, "Status", licence.multisiteAccess?.value)
-			// addXMLElementInto(doc, multisiteAccessElem, "Notes", licence.getNote("multisiteAccess")?.owner?.content?:"")
-			
-			def partnersAccessElem = addXMLElementInto(doc, licPropElem, "PartnersAccess", null)
-			addXMLElementInto(doc, partnersAccessElem, "Status", licence.partnersAccess?.value)
-			// addXMLElementInto(doc, partnersAccessElem, "Notes", licence.getNote("partnersAccess")?.owner?.content?:"")
-			
-			def alumniAccessElem = addXMLElementInto(doc, licPropElem, "AlumniAccess", null)
-			addXMLElementInto(doc, alumniAccessElem, "Status", licence.alumniAccess?.value)
-			// addXMLElementInto(doc, alumniAccessElem, "Notes", licence.getNote("alumniAccess")?.owner?.content?:"")
-			
-			def interLibraryLoansElem = addXMLElementInto(doc, licPropElem, "InterLibraryLoans", null)
-			addXMLElementInto(doc, interLibraryLoansElem, "Status", licence.ill?.value)
-			// addXMLElementInto(doc, interLibraryLoansElem, "Notes", licence.getNote("ill")?.owner?.content?:"")
-			
-			def includeinCoursepacksElem = addXMLElementInto(doc, licPropElem, "IncludeinCoursepacks", null)
-			addXMLElementInto(doc, concurrentAccessElem, "Status", licence.coursepack?.value)
-			// addXMLElementInto(doc, concurrentAccessElem, "Notes", licence.getNote("coursepack")?.owner?.content?:"")
-			
-			def includeinVLEElem = addXMLElementInto(doc, licPropElem, "IncludeinVLE", null)
-			addXMLElementInto(doc, includeinVLEElem, "Status", licence.vle?.value)
-			// addXMLElementInto(doc, includeinVLEElem, "Notes", licence.getNote("vle")?.owner?.content?:"")
-			
-			def entrepriseAccessElem = addXMLElementInto(doc, licPropElem, "EntrepriseAccess", null)
-			addXMLElementInto(doc, entrepriseAccessElem, "Status", licence.enterprise?.value)
-			// addXMLElementInto(doc, entrepriseAccessElem, "Notes", licence.getNote("enterprise")?.owner?.content?:"")
-			
-			def pcaEntitlementElem = addXMLElementInto(doc, licPropElem, "PostCancellationAccessEntitlement", null)
-			addXMLElementInto(doc, pcaEntitlementElem, "Status", licence.pca?.value)
-			// addXMLElementInto(doc, pcaEntitlementElem, "Notes", licence.getNote("pca")?.owner?.content?:"")
+			licence.customProperties.each{ prop ->
+				def propertyType = addXMLElementInto(doc, licPropElem, "${prop.type.name.replaceAll("\\s","")}", null)
+				addXMLElementInto(doc, propertyType, "Value","${prop.getValue()}")
+			}
 		}
 	}
 	
