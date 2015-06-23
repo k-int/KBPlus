@@ -258,8 +258,9 @@ class UploadController {
     
   def lookupOrCreateTitleInstance(identifiers,title,publisher,tipp) {
     // log.debug("lookupOrCreateTitleInstance ${identifiers}, ${title}, ${publisher}");
+    def result = null;
     try {
-      def result = TitleInstance.lookupOrCreateViaIdMap(identifiers, title);
+      result = TitleInstance.lookupOrCreateViaIdMap(identifiers, title);
       if ( !result.getPublisher() ) {
         def pub_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Publisher');
         OrgRole.assertOrgTitleLink(publisher, result, pub_role);
