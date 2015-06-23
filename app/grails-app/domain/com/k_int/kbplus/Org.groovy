@@ -18,6 +18,8 @@ class Org {
   String categoryId
 
   RefdataValue orgType
+  RefdataValue status
+
 
   // Used to generate friendly semantic URLs
   String shortcode
@@ -47,6 +49,7 @@ class Org {
          scope column:'org_scope'
     categoryId column:'org_cat'
        orgType column:'org_type_rv_fk'
+        status column:'org_status_rv_fk'
   }
 
   static constraints = {
