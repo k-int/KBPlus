@@ -13,6 +13,14 @@
            <g:if test="${is_admin}">
               <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
           </g:if>
+       <li class="dropdown pull-right">
+          <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>&nbsp;
+          <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
+            <li>
+              <g:link action="currentLicenses" params="${params+[format:'csv']}">CSV Export</g:link>
+            </li>
+          </ul>
+        </li>
         </ul>
     </div>
 

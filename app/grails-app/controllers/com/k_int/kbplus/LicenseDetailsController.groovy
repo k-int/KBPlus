@@ -103,6 +103,13 @@ class LicenseDetailsController {
           exportService.streamOutXML(doc, response.outputStream)
         }
       }
+      csv {
+        response.setHeader("Content-disposition", "attachment; filename=\"${filename}.csv\"")
+        response.contentType = "text/csv"
+        def out = response.outputStream
+        exportService.StreamOutLicenceCSV(out,result.license)
+        out.close()
+      }
     }
   }
   def getAvailableSubscriptions(licence,user){

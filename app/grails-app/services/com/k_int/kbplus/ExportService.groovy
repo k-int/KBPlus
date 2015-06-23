@@ -28,6 +28,53 @@ class ExportService {
 	/* *************
 	 *  CSV Exports 
 	 */
+
+
+	def StreamOutCurrentLicencesCSV(out,result){
+		out.withWriter { writer ->
+			writer.write("SEARCH TERMS\n")
+			writer.write("Institution,ValidOn,ReferenceSearch,LicenceProperty,LicencePropertyValue\n")
+			writer.write("${val(result.institution.name)},${val(result.validOn)},${val(result.keyWord)},${val(result.propertyFilterType)},${val(result.propertyFilter)}\n" )
+			writer.write("\n")
+			writer.write("ID, Licence Name, Licensor, Start Date, End Date,Subscriptions\n")
+			result.licenses.each{ lic ->
+				def startDate = lic.startDate ? formatter.format(lic.startDate) :''
+				def endDate = lic.endDate ? formatter.format(lic.endDate) : ''
+				def subs = lic.subscriptions.findAll{it.status?.value !='Deleted'}?.collect{"${it.id}:${it.name} "}
+				writer.write("${val(lic.id)},${val(lic.reference)},${val(lic.licensor?.name)},${val(startDate)},${val(endDate)},${val(subs)}\n")
+			}
+
+			writer.flush()
+			writer.close()
+		}
+
+	}
+	def StreamOutLicenceCSV(out,lic){
+		out.withWriter{writer ->
+			writer.write("LicenceReference,NoticePeriod,LicenceURL,LicensorRef,RelatedOrg,LicenceProperties\n")
+			writer.write("${val(lic.reference)},${val(lic.noticePeriod)},${val(lic.licenseUrl)},${val(lic.licensorRef)}")
+			def orgLinks = []
+			lic.orgLinks.each{
+				orgLinks += "${it.roleType?.value}: ${it.org.name}"
+			}
+			if(orgLinks){
+				writer.write(",${val(orgLinks)}")
+			}
+
+			def props = []
+			lic.customProperties.each{
+				props += "${it.type.name}:${it.toString()}"
+			}
+			if(props){
+				writer.write(",${val(props)}")
+			}
+			writter.write("\n")
+			
+			writer.flush()
+			writer.close()
+		}
+	}
+
 	def StreamOutSubsCSV(out, sub, entitlements, header){
 		def jc_id = sub.getSubscriber()?.getIdentifierByType('JC')?.value
 		out.withWriter { writer ->
@@ -745,6 +792,12 @@ class ExportService {
 			log.debug("******* End ${event}: ${new Date()} *******")
 			log.debug("Duration: ${(duration.hours*60)+duration.minutes}m ${duration.seconds}s")
 		}
+	}
+	/**
+	* @return the value in the required format for CSV exports.
+	**/
+	def val(val){
+		return val?"\"${val}\"":" "
 	}
 	
 	

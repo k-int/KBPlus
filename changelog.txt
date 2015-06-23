@@ -8,3 +8,4 @@ Version 5.0
 * Licence URL in licence details clickable
 * 'Copy this Licence ' In licecne display
 * Link to Subscription in licence display
+* Feedback when entering wrong value type in editables
