@@ -49,6 +49,31 @@ class ExportService {
 		}
 
 	}
+	def StreamOutLicenceCSV(out,lic){
+		out.withWriter{writer ->
+			writer.write("LicenceReference,NoticePeriod,LicenceURL,LicensorRef,RelatedOrg,LicenceProperties\n")
+			writer.write("${val(lic.reference)},${val(lic.noticePeriod)},${val(lic.licenseUrl)},${val(lic.licensorRef)}")
+			def orgLinks = []
+			lic.orgLinks.each{
+				orgLinks += "${it.roleType?.value}: ${it.org.name}"
+			}
+			if(orgLinks){
+				writer.write(",${val(orgLinks)}")
+			}
+
+			def props = []
+			lic.customProperties.each{
+				props += "${it.type.name}:${it.toString()}"
+			}
+			if(props){
+				writer.write(",${val(props)}")
+			}
+			writter.write("\n")
+			
+			writer.flush()
+			writer.close()
+		}
+	}
 
 	def StreamOutSubsCSV(out, sub, entitlements, header){
 		def jc_id = sub.getSubscriber()?.getIdentifierByType('JC')?.value
