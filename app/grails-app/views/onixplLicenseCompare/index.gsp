@@ -13,12 +13,12 @@
 		<ul class="breadcrumb">
 			<li><g:link controller="home" action="index">Home</g:link> <span
 				class="divider">/</span></li>
-			<li>ONIX-PL <g:message code="licence" default="Licence"/> Comparison</li>
+			<li>ElCat Comparison Tool</li>
 		</ul>
 	</div>
 
 	<div class="container">
-		<h1>ONIX-PL <g:message code="licence" default="Licence"/> Comparison</h1>
+		<h1>ElCat Comparison Tool</h1>
 	</div>
 
 	<div class="container">

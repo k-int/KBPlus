@@ -24,7 +24,7 @@ class OnixplLicenseCompareController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def matrix() {
     
-    log.debug("matrix:: ${params}")
+    log.debug("matrix:: selectedLicences:${params.selectedLicences}")
     // All licenses need to be compared.
     boolean allLicenses = false
     if(params.selectedLicences.startsWith("[")){
@@ -42,7 +42,6 @@ class OnixplLicenseCompareController {
     Long license_id = licenses.get(0)
     licenses.remove(0)
     OnixplLicense main_license = OnixplLicense.get(license_id)
-    println "Main " + main_license
     // Get the list of licenses we are comparing with.
     List<OnixplLicense> compare_to =
       allLicenses ? OnixplLicense.findAllByIdNotEqual( license_id ) : OnixplLicense.findAllByIdInList( licenses )
@@ -50,11 +49,9 @@ class OnixplLicenseCompareController {
     // The list to limit to.
     ArrayList<String> comparison_points = params.list("sections")
     // Should we compare all?
-    println params.list("sections")
     if (comparison_points.remove("_:PublicationsLicenseExpression") != false || params.compareAll) {
       comparison_points = onixPLService.allComparisonPoints
     }
-    println "Compare ${comparison_points.size()}"
     // Filter.
     def match = params."match" ?: OnixPLService.COMPARE_RETURN_ALL
     
