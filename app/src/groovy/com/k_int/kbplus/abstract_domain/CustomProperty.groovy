@@ -32,10 +32,6 @@ abstract class CustomProperty implements Serializable{
         decValue(nullable: true)
         refValue(nullable: true)
         note(nullable: true)
-        intValue validator: {val,obj ->     
-            def pattern = ~/^\d+&/
-            return pattern.matcher("${val}").matches() 
-        }
     }
 
     @Transient
@@ -64,7 +60,6 @@ abstract class CustomProperty implements Serializable{
 
     def parseValue(value, type){
         def result
-
         switch (type){
             case Integer.toString():
                 result = Integer.parseInt(value)
