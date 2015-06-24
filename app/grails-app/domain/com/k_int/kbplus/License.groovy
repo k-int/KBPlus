@@ -36,6 +36,7 @@ class License {
   String licenseType
   String licenseStatus
   String impId
+  String contact
 
   long lastmod
   Date startDate
@@ -72,6 +73,7 @@ class License {
                 version column:'lic_version'
                  status column:'lic_status_rv_fk'
                    type column:'lic_type_rv_fk'
+                contact column:'lic_contact'          
               reference column:'lic_ref'
       sortableReference column:'lic_sortable_ref'
                isPublic column:'lic_is_public_rdv_fk'
@@ -110,6 +112,7 @@ class License {
     startDate(nullable: true, blank: true)
     endDate(nullable: true, blank: true)
     lastUpdated(nullable: true, blank: true)
+    contact(nullable:true,blank:true)
  }
 
   def getLicensor() {

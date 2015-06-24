@@ -11,30 +11,7 @@
   <body>
 
     <div class="container">
-      <ul class="breadcrumb">
-        <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
-        <g:if test="${license.licensee}">
-          <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:license.licensee.shortcode]}"> ${license.licensee.name} <g:message code="current.licenses" default="Current Licenses"/></g:link> <span class="divider">/</span> </li>
-        </g:if>
-        <li> <g:link controller="licenseDetails" action="index" id="${params.id}"><g:message code="licence.details" default="License Details"/></g:link> </li>
-    
-        <li class="dropdown pull-right">
-          <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>&nbsp;
-          <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
-            <li>
-              <g:link action="index" params="${params+[format:'json']}">Json Export</g:link>
-            </li>
-            <li>
-              <g:link action="index" params="${params+[format:'xml']}">XML Export</g:link>
-            </li>
-          </ul>
-        </li>
-
-        <g:if test="${editable}">
-          <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
-        </g:if>
-        <li class="pull-right"><g:annotatedLabel owner="${license}" property="detailsPageInfo"></g:annotatedLabel>&nbsp;</li>
-      </ul>
+      <g:render template="breadcrumb" model="${[ license:license, params:params ]}"/>
     </div>
 
     <div class="container">
@@ -133,7 +110,12 @@
                         <g:xEditable owner="${license}" field="reference" id="reference"/>
                       </dd>
                   </dl>
-
+                  <dl>
+                      <dt><label class="control-label" for="contact">Licence Contact</label></dt>
+                      <dd>
+                        <g:xEditable owner="${license}" field="contact" id="contact"/>
+                      </dd>
+                  </dl>
                   <dl>
                       <dt><label class="control-label" for="reference">Status</label></dt>
                       <dd>
@@ -238,12 +220,19 @@
                 <label>  <h5>Licence Actions</h5> </label>
                   <g:if test="${editable}">
                  
-                  <label>Copy licence for:</label>
+                  <label for="orgShortcode">Copy licence for:</label>
                   <g:select from="${user.authorizedOrgs}" optionValue="name" optionKey="shortcode" id="orgShortcode" name="orgShortcode"/>
-                                 <br/>
+                              
                    <g:link name="copyLicenceBtn" controller="myInstitutions" action="actionLicenses" params="${[shortcode:'replaceme',baselicense:license.id,'copy-licence':'Y']}" onclick="return changeLink(this,'Are you sure you want to copy this licence?')" class="btn btn-success">Copy</g:link>
-               
-%{--           
+
+               <label for="linkSubscription">Link to Subscription:</label>
+
+               <g:form id="linkSubscription" name="linkSubscription" action="linkToSubscription">
+                <input type="hidden" name="licence" value="${license.id}"/>
+                <g:select optionKey="id" optionValue="name" from="${availableSubs}" name="subscription"/>
+                <input type="submit" class="btn btn-success"value="Link"/>
+              </g:form>
+%{--            
           leave this out for now.. it is a bit confusing.
           <g:link name="deletLicenceBtn" controller="myInstitutions" action="actionLicenses" onclick="return changeLink(this,'Are you sure you want to delete ${license.reference?:'** No licence reference ** '}?')" params="${[baselicense:license.id,'delete-licence':'Y',shortcode:'replaceme']}" class="btn btn-danger">Delete</g:link> --}%
                   </g:if>

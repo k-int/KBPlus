@@ -31,6 +31,7 @@ class LicenseImportController {
    */
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def doImport() {
+    log.debug(grails.util.Holders.config.onix.ghost_licence);
     // Setup result object
     def result = [:]
     result.validationResult = [:]

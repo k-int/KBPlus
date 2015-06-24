@@ -184,6 +184,8 @@ class MyInstitutionsController {
 
         result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
         result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+        result.max = params.format ? 10000 : result.max
+        result.offset = params.format? 0 : result.offset
 
         def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
         def template_license_type = RefdataCategory.lookupOrCreate('License Type', 'Template');
@@ -196,12 +198,15 @@ class MyInstitutionsController {
         if ((params['keyword-search'] != null) && (params['keyword-search'].trim().length() > 0)) {
             qry += " and lower(l.reference) like ?"
             qry_params += "%${params['keyword-search'].toLowerCase()}%"
+            result.keyWord = params['keyword-search'].toLowerCase()
         }
         if( (params.propertyFilter != null) && params.propertyFilter.trim().length() > 0 ) {
             def propDef = PropertyDefinition.findByName(params.propertyFilterType)
             def propQuery = buildPropertySearchQuery(params,propDef)
             qry += propQuery.query
             qry_params += propQuery.queryParam
+            result.propertyFilterType = params.propertyFilterType
+            result.propertyFilter = params.propertyFilter
         } 
 
         if (date_restriction) {
@@ -221,6 +226,20 @@ class MyInstitutionsController {
 
         withFormat {
             html result
+
+            json {
+                response.setHeader("Content-disposition", "attachment; filename=\"${result.institution.name}_licences.json\"")
+                response.contentType = "application/json"
+                render (result as JSON)
+            }
+            csv {
+                response.setHeader("Content-disposition", "attachment; filename=${result.institution.name}_licences.csv")
+                response.contentType = "text/csv"
+
+                def out = response.outputStream
+                exportService.StreamOutCurrentLicencesCSV(out, result)
+                out.close()
+            }
         }
     }
     def buildPropertySearchQuery(params,propDef) {

@@ -120,11 +120,10 @@ class OnixplLicense {
 
         def xml = getXML()
         
-        log.debug("XPath expression: ${xpath_expr}")
+        // log.debug("XPath expression: ${xpath_expr}")
         
         // Query for xpath results.
         def results = xml.XPath(xpath_expr)
-        
         if (results.length > 0) {
 
           // For each of the results we need to add a map representation to the result.
@@ -243,5 +242,15 @@ class OnixplLicense {
       }
       return true;
     }
+  }
+  static def refdataFind(params) {
+      def result = []
+      def  ql = findAllByTitleIlike("${params.q}%",params)
+      if ( ql ) {
+          ql.each { prop ->
+              result.add([id:"${prop.title}||${prop.id}",text:"${prop.title}"])
+          }
+      }
+      result
   }
 }

@@ -252,7 +252,7 @@ class TitleInstance {
             }
             else {
               if ( result != io.ti ) {
-                throw new RuntimeException("Identifiers(${candidate_identifiers}) reference multiple titles");
+                throw new RuntimeException("Identifiers(${candidate_identifiers}) reference multiple titles [Already located title with id ${result.id}, also located title with id ${io.ti.id}]");
               }
             }
           }

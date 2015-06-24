@@ -1,0 +1,11 @@
+Version 5.0
+
+* All items marked done in enhancements spreadsheet
+* OnixPl comparison changes section 1-5
+* Contact field to licence
+* Confirm prompt on delete licence
+* Move licence properties to top of screen
+* Licence URL in licence details clickable
+* 'Copy this Licence ' In licecne display
+* Link to Subscription in licence display
+* Feedback when entering wrong value type in editables

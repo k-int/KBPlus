@@ -60,7 +60,6 @@ abstract class CustomProperty implements Serializable{
 
     def parseValue(value, type){
         def result
-
         switch (type){
             case Integer.toString():
                 result = Integer.parseInt(value)
