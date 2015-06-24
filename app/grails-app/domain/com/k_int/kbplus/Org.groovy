@@ -58,6 +58,7 @@ class Org {
          scope(nullable:true, blank:true, maxSize:128);
     categoryId(nullable:true, blank:true, maxSize:128);
        orgType(nullable:true, blank:true, maxSize:128);
+        status(nullable:true, blank:false);
   }
 
   def beforeInsert() {

@@ -732,13 +732,32 @@ class TitleInstance {
   }
 
   static def expunge(title_id) {
-    TitleInstance.executeUpdate('delete from TitleInstancePackagePlatform tipp where tipp.title.id = ?',[title_id])
-    TitleInstance.executeUpdate('delete from IdentifierOccurrence io where io.ti.id = ?',[title_id])
-    TitleInstance.executeUpdate('delete from OrgRole orl where orl.title.id = ?',[title_id])
-    TitleInstance.executeUpdate('delete from TitleHistoryEventParticipant he where he.participant.id = ?',[title_id])
-    TitleInstance.executeUpdate('delete from TitleInstitutionProvider tip where tip.title.id = ?',[title_id])
-    TitleInstance.executeUpdate('delete from Fact fact where fact.relatedTitle.id = ?',[title_id])
-    TitleInstance.executeUpdate('delete from OrgTitleStats ots where ots.title.id = ?',[title_id])
+    try {
+      log.debug("  -> IEs");
+      TitleInstance.executeUpdate('delete from IssueEntitlement ie where ie.tipp in ( select tipp from TitleInstancePackagePlatform tipp where tipp.title.id = ? )',[title_id])
+      log.debug("  -> TIPPs");
+      TitleInstance.executeUpdate('delete from TitleInstancePackagePlatform tipp where tipp.title.id = ?',[title_id])
+      log.debug("  -> IdentifierOccurrence");
+      TitleInstance.executeUpdate('delete from IdentifierOccurrence io where io.ti.id = ?',[title_id])
+      log.debug("  -> OrgRole");
+      TitleInstance.executeUpdate('delete from OrgRole orl where orl.title.id = ?',[title_id])
+      log.debug("  -> TitleHistoryEventParticipant");
+      TitleInstance.executeUpdate('delete from TitleHistoryEventParticipant he where he.participant.id = ?',[title_id])
+      log.debug("  -> CoreAssertion");
+      TitleInstance.executeUpdate('delete from CoreAssertion ca where ca.tiinp in (select tip from TitleInstitutionProvider tip where tip.title.id = ?)',[title_id])
+      log.debug("  -> TitleInstitutionProvider");
+      TitleInstance.executeUpdate('delete from TitleInstitutionProvider tip where tip.title.id = ?',[title_id])
+      log.debug("  -> Fact");
+      TitleInstance.executeUpdate('delete from Fact fact where fact.relatedTitle.id = ?',[title_id])
+      log.debug("  -> OrgTitleStats");
+      TitleInstance.executeUpdate('delete from OrgTitleStats ots where ots.title.id = ?',[title_id])
+      log.debug("  -> TI itself");
+      TitleInstance.executeUpdate('delete from TitleInstance ti where ti.id = ?',[title_id])
+      log.debug("  -> DONE");
+    }
+    catch ( Exception e ) {
+      log.error("Problem expunging title",e);
+    }
   }
 
 }
