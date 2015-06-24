@@ -53,6 +53,7 @@ class TitleDetailsController {
       result.editable=false
 
     result.ti = TitleInstance.get(params.id)
+    result.duplicates = reusedIdentifiers(result.ti);
     result
   }
 
@@ -66,12 +67,31 @@ class TitleDetailsController {
       result.editable=false
 
     result.ti = TitleInstance.get(params.id)
+    
+    result.duplicates = reusedIdentifiers(result.ti);
 
     result.titleHistory = TitleHistoryEvent.executeQuery("select distinct thep.event from TitleHistoryEventParticipant as thep where thep.participant = ?",[result.ti]);
 
     result
   }
 
+  def reusedIdentifiers(title){
+    // Test for identifiers that are used accross multiple titles
+    def duplicates = [:]
+    def identifiers = title.ids.collect{it.identifier}
+    identifiers.each{ident ->
+      ident.occurrences.each{
+        if(it.ti != title && it.ti!=null){
+          if(duplicates."${ident.ns.ns}:${ident.value}"){
+            duplicates."${ident.ns.ns}:${ident.value}" += [it.ti]
+          }else{
+            duplicates."${ident.ns.ns}:${ident.value}" = [it.ti]
+          }
+        }
+      }
+    }
+    return duplicates
+  }
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def batchUpdate() {
     log.debug(params);
