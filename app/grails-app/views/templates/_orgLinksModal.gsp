@@ -92,7 +92,7 @@
         return confirm('No role specified. Are you sure you want to link an Organisation without a role?');
       }
 
-      return false;
+      return true;
     }
 
 
