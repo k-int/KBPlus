@@ -13,8 +13,8 @@ hibernate {
 environments {
     development {
         dataSource {
-            // II: Removed this, we manually update the schema now, so don't do this!
-            // dbCreate = "update"
+            // dbCreate==update  - II: Trial Removing this, we manually update the schema now, so don't do this!
+            dbCreate = "update"
             driverClassName = "com.mysql.jdbc.Driver"
             dialect=org.hibernate.dialect.MySQL5Dialect
             username = "k-int"

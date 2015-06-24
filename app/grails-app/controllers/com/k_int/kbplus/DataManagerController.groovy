@@ -325,18 +325,41 @@ class DataManagerController {
     log.debug("expungeDeletedTitles.. Create async task..");
 
     def p = TitleInstance.async.task {
-      def l = TitleInstance.executeQuery('select t.id from TitleInstance t where t.status.value=?',['Deleted']);
+
       def ctr = 0;
-      l.each { ti_id -> 
-        TitleInstance.withNewTransaction {
-          log.debug("Expunging title [${ctr++}] ${ti_id}");
-          TitleInstance.expunge(ti_id);
+
+      try {
+        log.debug("Delayed start");
+        synchronized(this) {
+          Thread.sleep(2000);
         }
+
+        log.debug("Query...");
+        def l = TitleInstance.executeQuery('select t.id from TitleInstance t where t.status.value=?',['Deleted']);
+
+        if ( ( l != null ) && ( l instanceof List ) ) {
+          log.debug("Processing...");
+          l.each { ti_id -> 
+            TitleInstance.withNewTransaction {
+              log.debug("Expunging title [${ctr++}] ${ti_id}");
+              TitleInstance.expunge(ti_id);
+            }
+          }
+        }
+        else {
+          log.error("${l} was null or not a list -- ${l?.class.name}");
+        }
+
+        log.debug("Completed processing - ${ctr}");
       }
+      catch( Exception e ) {
+        e.printStackTrace()
+        log.error("Problem",e);
+      }
+
       return "expungeDeletedTitles Completed - ${ctr} titles expunged"
     }
 
-    log.debug("Got promise : ${p}. ${p.class.name}");
 
     p.onError { Throwable err ->
 	log.debug("An error occured ${err.message}")
@@ -346,6 +369,7 @@ class DataManagerController {
         log.debug("Promise returned $result")
     }
 
+    log.debug("Got promise : ${p}. ${p.class.name}");
     log.debug("expungeDeletedTitles.. Returning");
 
     redirect(controller:'home')
