@@ -60,7 +60,7 @@ class BasePage extends Page {
         }
         compareONIX {
             $("a", text: "Institutions").click()
-            $("a", text: "Compare ONIX-PL Licences").click()
+            $("a", text: "ElCat Comparison Tool").click()
         }
         allPackages {
             $("a", text: "Institutions").click()
@@ -85,6 +85,7 @@ class BasePage extends Page {
         }
         startESUpdate {
             $("a", text: "Admin Actions").click()
+            $("a",text:"Batch tasks").click()
             $("a", text: "Start ES Index Update").click()
         }
         catchException { run ->

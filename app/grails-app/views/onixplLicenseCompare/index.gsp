@@ -13,12 +13,12 @@
 		<ul class="breadcrumb">
 			<li><g:link controller="home" action="index">Home</g:link> <span
 				class="divider">/</span></li>
-			<li>ElCat Comparison Tool</li>
+			<li>${message(code:'menu.institutions.comp_onix')}</li>
 		</ul>
 	</div>
 
 	<div class="container">
-		<h1>ElCat Comparison Tool</h1>
+		<h1>${message(code:'menu.institutions.comp_onix')}</h1>
 	</div>
 
 	<div class="container">
@@ -43,7 +43,7 @@
 					</div>
 
 					<div>
-					  <input id="submitButton" disabled='true' type="submit"  name="Compare" class="btn btn-primary" />
+					  <input id="submitButton" disabled='true' type="submit" value="Compare"  name="Compare" class="btn btn-primary" />
 					</div>
 				</g:form>
 			</div>

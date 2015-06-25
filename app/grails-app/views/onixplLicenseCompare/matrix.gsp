@@ -12,12 +12,12 @@
 		<ul class="breadcrumb">
 			<li><g:link controller="home" action="index">Home</g:link> <span
 				class="divider">/</span></li>
-			<li>ElCat Comparison Tool</li>
+			<li>${message(code:'menu.institutions.comp_onix')}</li>
 		</ul>
 	</div>
 
 	<div class="container">
-		<h1>ElCat Comparison Tool</h1>
+		<h1>${message(code:'menu.institutions.comp_onix')}</h1>
 	</div>
 	<div class="container">
 		<g:if test="${flash.message}">
