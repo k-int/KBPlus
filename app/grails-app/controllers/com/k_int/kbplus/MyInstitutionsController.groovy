@@ -1567,7 +1567,9 @@ AND EXISTS (
             def sub_info = [
                     sub_idx : subscriptionMap.size(),
                     sub_name: sub.name,
-                    sub_id  : "${sub.class.name}:${sub.id}"
+                    sub_id : "${sub.class.name}:${sub.id}",
+                    sub_startDate : sub.startDate ? formatter.format(sub.startDate):null,
+                    sub_endDate: sub.endDate ? formatter.format(sub.endDate) : null
             ]
 
             subscriptionMap[sub.id] = sub_info
@@ -1755,6 +1757,9 @@ AND EXISTS (
             HSSFRow row = null;
             HSSFCell cell = null;
 
+            def subExportDate = m.sub_info.sub_startDate ? true : false
+            def subExportNotes = m.sub_info.notes? true : false
+
             // Blank rows
             row = firstSheet.createRow(rc++);
             row = firstSheet.createRow(rc++);
@@ -1765,6 +1770,14 @@ AND EXISTS (
             cell.setCellValue(new HSSFRichTextString("Subscriber Name"));
             cell = row.createCell(cc++);
             cell.setCellValue(new HSSFRichTextString("Subscriber Shortcode"));
+            log.debug(m.sub_info.toString())
+            if(subExportDate){
+                cell = row.createCell(cc++);
+                cell.setCellValue(new HSSFRichTextString("Subscription Start Date"));
+                cell = row.createCell(cc++);
+                cell.setCellValue(new HSSFRichTextString("Subscription End Date"));
+            }
+
 
             row = firstSheet.createRow(rc++);
             cc = 0;
@@ -1774,6 +1787,13 @@ AND EXISTS (
             cell.setCellValue(new HSSFRichTextString(inst.name));
             cell = row.createCell(cc++);
             cell.setCellValue(new HSSFRichTextString(inst.shortcode));
+            
+            if(subExportDate){
+                cell = row.createCell(cc++);
+                cell.setCellValue(new HSSFRichTextString("${m.sub_info.sub_startDate}"));
+                cell = row.createCell(cc++);
+                cell.setCellValue(new HSSFRichTextString("${m.sub_info.sub_endDate}"));
+            }
 
             row = firstSheet.createRow(rc++);
 
