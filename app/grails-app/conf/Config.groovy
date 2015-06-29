@@ -586,15 +586,16 @@ financialImportTSVLoaderMappings = [
           ]
         ]
       ],
-      // [
-      //   ref:'invoice', 
-      //   cls:'com.k_int.kbplus.Invoice', 
-      //   heuristics:[ 
-      //     [ type : 'simpleLookup', 
-      //       criteria : [ srcType:'col', colname:'InvoiceNumber', domainProperty:'invoiceNumber' ],
-      //                  [ srcType:'ref', rename:'org', domainProperty:'owner'] ]
-      //   ] 
-      // ]
+      [
+        ref:'invoice', 
+        cls:'com.k_int.kbplus.Invoice', 
+        heuristics:[ 
+          [ type : 'simpleLookup', 
+            criteria : [ [ srcType:'col', colname:'InvoiceNumber', domainProperty:'invoiceNumber' ],
+                         [ srcType:'ref', refname:'owner', domainProperty:'owner'] ] 
+          ]
+        ] 
+      ]
     ]
   ],
   cols: [

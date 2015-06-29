@@ -96,24 +96,40 @@ class TsvSuperlifterService {
 
     switch ( toih_heuristic.type ) {
       case 'simpleLookup' :
+        def error = false;
         def qry_params = [:]
         def base_qry = "select i from ${toih.cls} as i where "
+        boolean fc = true
         toih_heuristic.criteria.each { clause ->
           // iterate through each clause in the conjunction of clauses that might identify a domian object
+          if ( fc ) { fc = false; } else { base_qry += " and " }
+
           switch ( clause.srcType ) {
             case 'col' :
               base_qry += "i.${clause.domainProperty} = :${clause.colname}"
               qry_params.put(clause.colname,nl[colmap[clause.colname]]);
               break;
+            case 'ref' :
+              if ( locatedObjects[clause.refname] != null ) {
+                base_qry += "i.${clause.domainProperty} = :${clause.refname}"
+                qry_params.put(clause.refname,locatedObjects[clause.refname]);
+              }
+              else {
+                error = true;
+              }
+              break;
           }
         }
-        result = TitleInstance.executeQuery(base_qry,qry_params)
-        log.debug("Lookup ${toih.ref} using ${base_qry} and params ${qry_params} result:${result}");
+        if ( ! error ) {
+          result = TitleInstance.executeQuery(base_qry,qry_params)
+          log.debug("Lookup ${toih.ref} using ${base_qry} and params ${qry_params} result:${result}");
+        }
         break;
 
       case 'hql' :
         //  hql: 'select o from Org as o join o.ids as id where id.ns.ns = :jcns and id.value = :orgId',
         // values : [ jcns : [type:'static', value:'JC'], orgId: [type:'column', colname:'InstitutionId'] ] 
+        def error = false;
         log.debug("HQL Lookup");
         def qry_params=[:]
         toih_heuristic.values.each { k, v ->
@@ -122,12 +138,21 @@ class TsvSuperlifterService {
               qry_params[k] = v.value;
               break;
             case 'column':
-              qry_params[k] = nl[colmap[v.colname]]
+              if ( nl[colmap[v.colname]] != null ) {
+                qry_params[k] = nl[colmap[v.colname]]
+              }
+              else {
+                log.error("Missing parameter ${v.colname}");
+                error = true
+              }
               break;
           }
         }
-        log.debug("HQL : ${toih_heuristic.hql}, ${qry_params}");
-        result = TitleInstance.executeQuery(toih_heuristic.hql, qry_params);
+
+        if ( !error ) {
+          log.debug("HQL : ${toih_heuristic.hql}, ${qry_params}");
+          result = TitleInstance.executeQuery(toih_heuristic.hql, qry_params);
+        }
         break;
 
       default:
