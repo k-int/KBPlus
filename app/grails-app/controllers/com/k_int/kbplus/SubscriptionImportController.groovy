@@ -609,7 +609,6 @@ class SubscriptionImportController {
     result.errors = []
 
     if ( request.method == 'POST' ) {
-      result.importDates = params.importDates?true:false
       def upload_mime_type = request.getFile("renewalsWorksheet")?.contentType
       def upload_filename = request.getFile("renewalsWorksheet")?.getOriginalFilename()
       log.debug("Uploaded worksheet type: ${upload_mime_type} filename was ${upload_filename} - Params.id=${params.id}");
