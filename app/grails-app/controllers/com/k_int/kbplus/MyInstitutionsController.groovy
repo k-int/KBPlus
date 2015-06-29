@@ -1567,15 +1567,16 @@ AND EXISTS (
             def sub_info = [
                     sub_idx : subscriptionMap.size(),
                     sub_name: sub.name,
-                    sub_id : "${sub.class.name}:${sub.id}",
-                    sub_startDate : sub.startDate ? formatter.format(sub.startDate):null,
-                    sub_endDate: sub.endDate ? formatter.format(sub.endDate) : null
+                    sub_id : "${sub.class.name}:${sub.id}"
             ]
 
             subscriptionMap[sub.id] = sub_info
 
             // For each subscription in the shopping basket
             if (sub instanceof Subscription) {
+                log.debug("Handling subscription: ${sub_info.sub_name}")
+                sub_info.putAll([sub_startDate : sub.startDate ? formatter.format(sub.startDate):null,
+                sub_endDate: sub.endDate ? formatter.format(sub.endDate) : null])               
                 sub.issueEntitlements.each { ie ->
                     // log.debug("IE");
                     if (!(ie.status?.value == 'Deleted')) {
@@ -1720,7 +1721,8 @@ AND EXISTS (
                 ti_info     : ti_info_arr,                      // A crosstab array of the packages where a title occours
                 title_info  : title_info_arr,                // A list of the titles
                 sub_info    : sub_info_arr,
-                current_year: current_year]                   // The subscriptions offered (Packages)
+                current_year: current_year]                  // The subscriptions offered (Packages)
+
         return final_result
     }
 
@@ -1757,8 +1759,7 @@ AND EXISTS (
             HSSFRow row = null;
             HSSFCell cell = null;
 
-            def subExportDate = m.sub_info.sub_startDate ? true : false
-            def subExportNotes = m.sub_info.notes? true : false
+            log.debug(m.sub_info.toString())
 
             // Blank rows
             row = firstSheet.createRow(rc++);
@@ -1770,13 +1771,12 @@ AND EXISTS (
             cell.setCellValue(new HSSFRichTextString("Subscriber Name"));
             cell = row.createCell(cc++);
             cell.setCellValue(new HSSFRichTextString("Subscriber Shortcode"));
-            log.debug(m.sub_info.toString())
-            if(subExportDate){
-                cell = row.createCell(cc++);
-                cell.setCellValue(new HSSFRichTextString("Subscription Start Date"));
-                cell = row.createCell(cc++);
-                cell.setCellValue(new HSSFRichTextString("Subscription End Date"));
-            }
+           
+            cell = row.createCell(cc++);
+            cell.setCellValue(new HSSFRichTextString("Subscription Start Date"));
+            cell = row.createCell(cc++);
+            cell.setCellValue(new HSSFRichTextString("Subscription End Date"));
+            
 
 
             row = firstSheet.createRow(rc++);
@@ -1788,12 +1788,12 @@ AND EXISTS (
             cell = row.createCell(cc++);
             cell.setCellValue(new HSSFRichTextString(inst.shortcode));
             
-            if(subExportDate){
-                cell = row.createCell(cc++);
-                cell.setCellValue(new HSSFRichTextString("${m.sub_info.sub_startDate}"));
-                cell = row.createCell(cc++);
-                cell.setCellValue(new HSSFRichTextString("${m.sub_info.sub_endDate}"));
-            }
+            def subscription = m.sub_info.find{it.sub_startDate}
+            cell = row.createCell(cc++);
+            cell.setCellValue(new HSSFRichTextString("${subscription?.sub_startDate}"));
+            cell = row.createCell(cc++);
+            cell.setCellValue(new HSSFRichTextString("${subscription?.sub_endDate}"));
+            
 
             row = firstSheet.createRow(rc++);
 
@@ -2067,6 +2067,10 @@ AND EXISTS (
             String org_name = org_details_row?.getCell(0)?.toString()
             String org_id = org_details_row?.getCell(1)?.toString()
             String org_shortcode = org_details_row?.getCell(2)?.toString()
+            String sub_startDate = org_details_row?.getCell(3)?.toString()
+            String sub_endDate = org_details_row?.getCell(4)?.toString()
+            result.additionalInfo = [sub_startDate:sub_startDate,sub_endDate:sub_endDate]
+
             log.debug("Worksheet upload on behalf of ${org_name}, ${org_id}, ${org_shortcode}");
 
             def sub_info = []
@@ -2154,6 +2158,7 @@ AND EXISTS (
     }
 
     def processRenewal() {
+        log.debug("-> renewalsUpload params: ${params}");
         def result = [:]
 
         result.user = User.get(springSecurityService.principal.id)
@@ -2166,22 +2171,24 @@ AND EXISTS (
             return;
         }
 
-        log.debug("-> renewalsUpload params: ${params}");
 
         log.debug("entitlements...[${params.ecount}]");
 
         int ent_count = Integer.parseInt(params.ecount);
+     
+        def sub_startDate = params.subscription?.copyStart ? parseDate(params.subscription?.start_date,possible_date_formats) : null
+        def sub_endDate = params.subscription?.copyEnd ? parseDate(params.subscription?.end_date,possible_date_formats): null
 
         def new_subscription = new Subscription(
                 identifier: java.util.UUID.randomUUID().toString(),
                 status: RefdataCategory.lookupOrCreate('Subscription Status', 'Current'),
                 impId: java.util.UUID.randomUUID().toString(),
                 name: "Unset: Generated by import",
-                // startDate: db_sub.startDate,
-                // endDate: db_sub.endDate,
+                startDate: sub_startDate,
+                endDate: sub_endDate,
                 // instanceOf: db_sub,
                 type: RefdataValue.findByValue('Subscription Taken'))
-
+        log.debug("New Sub: ${new_subscription.startDate}  - ${new_subscription.endDate}")
         def packages_referenced = []
         Date earliest_start_date = null
         Date latest_end_date = null
@@ -2290,9 +2297,9 @@ AND EXISTS (
             }
         }
         log.debug("done entitlements...");
-
-        new_subscription.startDate = earliest_start_date
-        new_subscription.endDate = latest_end_date
+ 
+        new_subscription.startDate = sub_startDate ?: earliest_start_date
+        new_subscription.endDate = sub_endDate ?: latest_end_date
         new_subscription.save()
 
         if (new_subscription)
