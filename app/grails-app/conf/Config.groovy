@@ -569,9 +569,32 @@ financialImportTSVLoaderMappings = [
         ref:'subscription', 
         cls:'com.k_int.kbplus.Subscription', 
         heuristics:[ 
-          [ [ srcType:'col', colname:'SubscriptionId', domainProperty:'identifier' ] ]
+          [ type : 'simpleLookup', criteria : [ 
+                                                [ srcType:'col', colname:'SubscriptionId', domainProperty:'identifier' ]
+                                              ]
+          ]
         ] 
-      ]
+      ],
+      [
+        ref:'owner',
+        cls:'com.k_int.kbplus.Org',
+        heuristics:[
+          [ 
+            type : 'hql', 
+            hql: 'select o from Org as o join o.ids as io where io.identifier.ns.ns = :jcns and io.identifier.value = :orgId',
+            values : [ jcns : [type:'static', value:'JC'], orgId: [type:'column', colname:'InstitutionId'] ]
+          ]
+        ]
+      ],
+      // [
+      //   ref:'invoice', 
+      //   cls:'com.k_int.kbplus.Invoice', 
+      //   heuristics:[ 
+      //     [ type : 'simpleLookup', 
+      //       criteria : [ srcType:'col', colname:'InvoiceNumber', domainProperty:'invoiceNumber' ],
+      //                  [ srcType:'ref', rename:'org', domainProperty:'owner'] ]
+      //   ] 
+      // ]
     ]
   ],
   cols: [
