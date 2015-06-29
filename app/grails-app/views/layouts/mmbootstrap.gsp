@@ -194,9 +194,7 @@
                       <li <%= ( ( 'organisations'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="organisations" action="index">Manage Organisations</g:link>
                       </li>
-                      <li <%= ( ( 'startFTIndex'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="startFTIndex" action="index">Start ES Index Update</g:link>
-                      </li>
+
                       <li <%= ( ( 'admin'== controllerName ) && ( 'showAffiliations'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="showAffiliations">Show Affiliations</g:link>
                       </li>
@@ -273,6 +271,9 @@
                           <li <%= ( ( 'admin'== controllerName ) && ( 'fullReset'==actionName ) ) ? ' class="active"' : '' %>>
                              <g:link controller="admin" action="fullReset">Run Full ES Index Reset</g:link>
                           </li>
+                          <li <%= ( ( 'startFTIndex'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="startFTIndex" action="index">Start ES Index Update</g:link>
+                      </li>
                         </ul>
                       </li>
 

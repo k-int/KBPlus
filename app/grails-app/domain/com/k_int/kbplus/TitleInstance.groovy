@@ -78,7 +78,7 @@ class TitleInstance {
   Org getPublisher() {
     def result = null;
     orgs.each { o ->
-      if ( o.roleType.value == 'Publisher' ) {
+      if ( o.roleType?.value == 'Publisher' ) {
         result = o.org
       }
     }

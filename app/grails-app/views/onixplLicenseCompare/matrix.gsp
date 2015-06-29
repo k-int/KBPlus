@@ -12,12 +12,12 @@
 		<ul class="breadcrumb">
 			<li><g:link controller="home" action="index">Home</g:link> <span
 				class="divider">/</span></li>
-			<li>ElCat Comparison Tool</li>
+			<li>${message(code:'menu.institutions.comp_onix')}</li>
 		</ul>
 	</div>
 
 	<div class="container">
-		<h1>ElCat Comparison Tool</h1>
+		<h1>${message(code:'menu.institutions.comp_onix')}</h1>
 	</div>
 	<div class="container">
 		<g:if test="${flash.message}">
@@ -27,5 +27,11 @@
 		</g:if>
 		<g:render template="tables" model="${request.parameterMap}" />
 	</div>
+	  <r:script language="JavaScript">
+	  	// //we replace cell-inner-undefined with call inner and our new icon
+	  	    $(function(){
+	  	    	$(".onix-pl-undefined").replaceWith("<span title='Not defined by the license' style='height:1em' class='onix-status fa-stack fa-4x'> <i class='fa fa-info-circle fa-stack-1x' style='color:#166fe7;' ></i> <i class='fa fa-ban fa-stack-1x' style='color:#FF0000'></i> </span>")
+	  	    });
+	  </r:script>
 </body>
 </html>

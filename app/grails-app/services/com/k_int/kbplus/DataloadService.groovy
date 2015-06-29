@@ -116,7 +116,7 @@ class DataloadService {
 
     updateES(esclient, com.k_int.kbplus.Package.class) { pkg ->
       def result = [:]
-      result.status = pkg.status?.value
+      result.status = pkg.packageStatus?.value
       result._id = pkg.impId
       result.name = "${pkg.name}"
       result.sortname = pkg.sortName

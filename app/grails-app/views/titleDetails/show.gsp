@@ -43,7 +43,21 @@
 
         <div class="row">
           <div class="span6">
+
             <h3>Identifiers</h3>
+
+              <g:each in="${duplicates}" var="entry">
+
+                 <bootstrap:alert class="alert-info">
+                 Identifier ${entry.key} used in multiple titles:
+                 <ul>
+                 <g:each in ="${entry.value}" var="dup_title">
+                 <li><g:link controller='titleDetails' action='show' id="${dup_title.id}">${dup_title.title}</g:link></li>
+                 </g:each>
+                 </ul>
+                 </bootstrap:alert>
+              </g:each>
+
             <table class="table table-bordered">
               <thead>
                 <tr>
@@ -78,7 +92,7 @@
                   <tr>
                     <td>${org.id}</td>
                     <td>${org.org.name}</td>
-                    <td>${org.roleType.value}</td>
+                    <td>${org?.roleType?.value}</td>
                   </tr>
                 </g:each>
               </tbody>
