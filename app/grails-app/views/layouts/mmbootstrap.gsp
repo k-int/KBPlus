@@ -128,7 +128,6 @@
                        </g:else>
                        <li class="divider"></li>
                        <li><a href="${message(code:'help.location')}">${message(code:'menu.institutions.help')}</a></li>
-                       <li><a href="https://sp.kbplus.ac.uk/claimIdentity/notify?remote=${user.username}">${message(code:'menu.institutions.claim_user')}</a></li>
                     </ul>
                   </li>
                 </g:if>
@@ -240,6 +239,9 @@
                           </li>
                           <li <%= ( ( 'admin'== controllerName ) && ( 'titlesImport'==actionName ) ) ? ' class="active"' : '' %>>
                              <g:link controller="admin" action="titlesImport">Bulk Load/Update Titles</g:link>
+                          </li>
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'financeImport'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="admin" action="financeImport">Bulk Load Financial Transaction</g:link>
                           </li>
                         </ul>
                       </li>
