@@ -18,6 +18,7 @@ class AdminController {
   def changeNotificationService
   def enrichmentService
   def sessionFactory
+  def tsvSuperlifterService
 
   def docstoreService
   def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
@@ -765,4 +766,12 @@ class AdminController {
     propertyInstanceMap.get().clear()
   }
 
+  def financeImport() {
+    def result = [:];
+    if (request.method == 'POST'){
+      def input_stream = request.getFile("tsvfile")?.inputStream
+      result.loaderResult = tsvSuperlifterService.load(input_stream,grailsApplication.config.financialImportTSVLoaderMappings,true)
+    }
+    result
+  }
 }

@@ -558,3 +558,56 @@ quartzHeartbeat = 'Never'
 // grails.databinding.dateFormats = ['MMddyyyy', 'yyyy-MM-dd HH:mm:ss.S', "yyyy-MM-dd'T'hh:mm:ss'Z'"]
 
 
+financialImportTSVLoaderMappings = [
+  header:[
+    defaultTargetClass:'com.k_int.kbplus.CostItem',
+    
+    // Identify the different combinations that can be used to identify domain objects for the current row
+    // Names columns in the import sheet - importer will map according to config and do the right thing
+    targetObjectIdentificationHeuristics:[
+      [ 
+        ref:'subscription', 
+        cls:'com.k_int.kbplus.Subscription', 
+        heuristics:[ 
+          [ [ srcType:'col', colname:'SubscriptionId', domainProperty:'identifier' ] ]
+        ] 
+      ]
+    ]
+  ],
+  cols: [
+    [colname:'InvoiceId', gormMappingPath:'invoice.invoiceNumber'],
+    [colname:'SubscriptionId'],
+    [colname:'JC_OrderNumber'],
+    [colname:'InvoiceNumber'],
+    [colname:'PoNumber'],
+    [colname:'IssuedDate'],
+    [colname:'DueDate'],
+    [colname:'InstitutionName'],
+    [colname:'InstitutionId'],
+    [colname:'ISNIId'],
+    [colname:'AccountId'],
+    [colname:'ResourceName'],
+    [colname:'ResourceId'],
+    [colname:'AgreementName'],
+    [colname:'AgreementId'],
+    [colname:'PublisherName'],
+    [colname:'InvoicePeriodStart'],
+    [colname:'InvoicePeriodEnd'],
+    [colname:'Price'],
+    [colname:'AnnualAccessFee'],
+    [colname:'AdditionalFees'],
+    [colname:'SubscriptionTransactionCharge'],
+    [colname:'SubscriptionVAT'],
+    [colname:'DatePaid'],
+    [colname:'InvoiceNotes'],
+    [colname:'InvoiceStatus'],
+    [colname:'Currency'],
+    [colname:'InvoiceTotalExcVat'],
+    [colname:'InvoiceTransactionCharge'],
+    [colname:'InvoiceVat'],
+    [colname:'InvoiceTotal'],
+    [colname:'ItemCount'],
+    [colname:'TotalSubscriptionValue'],
+    [colname:'InvoiceType']
+  ]
+];
