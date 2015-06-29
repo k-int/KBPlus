@@ -1759,8 +1759,7 @@ AND EXISTS (
             HSSFRow row = null;
             HSSFCell cell = null;
 
-            def subExportDate = m.sub_info.sub_startDate ? true : false
-            def subExportNotes = m.sub_info.notes? true : false
+            log.debug(m.sub_info.toString())
 
             // Blank rows
             row = firstSheet.createRow(rc++);
@@ -1772,13 +1771,12 @@ AND EXISTS (
             cell.setCellValue(new HSSFRichTextString("Subscriber Name"));
             cell = row.createCell(cc++);
             cell.setCellValue(new HSSFRichTextString("Subscriber Shortcode"));
-            log.debug(m.sub_info.toString())
-            if(subExportDate){
-                cell = row.createCell(cc++);
-                cell.setCellValue(new HSSFRichTextString("Subscription Start Date"));
-                cell = row.createCell(cc++);
-                cell.setCellValue(new HSSFRichTextString("Subscription End Date"));
-            }
+           
+            cell = row.createCell(cc++);
+            cell.setCellValue(new HSSFRichTextString("Subscription Start Date"));
+            cell = row.createCell(cc++);
+            cell.setCellValue(new HSSFRichTextString("Subscription End Date"));
+            
 
 
             row = firstSheet.createRow(rc++);
@@ -1790,13 +1788,12 @@ AND EXISTS (
             cell = row.createCell(cc++);
             cell.setCellValue(new HSSFRichTextString(inst.shortcode));
             
-            if(subExportDate){
-                def subscription = m.sub_info.find{it.sub_startDate}
-                cell = row.createCell(cc++);
-                cell.setCellValue(new HSSFRichTextString("${subscription.sub_startDate}"));
-                cell = row.createCell(cc++);
-                cell.setCellValue(new HSSFRichTextString("${subscription.sub_endDate}"));
-            }
+            def subscription = m.sub_info.find{it.sub_startDate}
+            cell = row.createCell(cc++);
+            cell.setCellValue(new HSSFRichTextString("${subscription?.sub_startDate}"));
+            cell = row.createCell(cc++);
+            cell.setCellValue(new HSSFRichTextString("${subscription?.sub_endDate}"));
+            
 
             row = firstSheet.createRow(rc++);
 
