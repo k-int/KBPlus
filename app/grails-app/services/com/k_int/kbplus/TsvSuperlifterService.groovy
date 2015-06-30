@@ -81,6 +81,23 @@ class TsvSuperlifterService {
           }
           else {
             row_information.messages.add("No domain objects located for ${toih.ref} - Check for create instruction");
+            if ( toih.creation?.onMissing ) {
+              row_information.messages.add("Attempt to create instance of ${toig.cls} for ${toih.ref}");
+              def new_obj_cls = Class.forName(toig.cls)
+              def new_obj = null // new_obj_cls.newInstance();
+              toih.creation.properties.each { pd ->
+                switch ( pd.type ) {
+                  case 'ref':
+                    log.debug("Setting ${pd.property} on new ${toih.ref} to ${locatedObjects[pd.refname]}");
+                    new_obj."${pd.property}" = locatedObjects[pd.refname];
+                    break;
+                  case 'val':
+                    log.debug("Setting ${pd.property} on new ${toih.ref} to ${nl[colmap[pd.refname]]}");
+                    new_obj."${pd.property}" = nl[colmap[pd.refname]]
+                    break;
+                }
+              }
+            }
           }
         }
       }

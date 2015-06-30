@@ -573,7 +573,10 @@ financialImportTSVLoaderMappings = [
                                                 [ srcType:'col', colname:'SubscriptionId', domainProperty:'identifier' ]
                                               ]
           ]
-        ] 
+        ],
+        creation:[
+          onMissing:false,
+        ]
       ],
       [
         ref:'owner',
@@ -584,6 +587,9 @@ financialImportTSVLoaderMappings = [
             hql: 'select o from Org as o join o.ids as io where io.identifier.ns.ns = :jcns and io.identifier.value = :orgId',
             values : [ jcns : [type:'static', value:'JC'], orgId: [type:'column', colname:'InstitutionId'] ]
           ]
+        ],
+        creation:[
+          onMissing:false,
         ]
       ],
       [
@@ -594,7 +600,14 @@ financialImportTSVLoaderMappings = [
             criteria : [ [ srcType:'col', colname:'InvoiceNumber', domainProperty:'invoiceNumber' ],
                          [ srcType:'ref', refname:'owner', domainProperty:'owner'] ] 
           ]
-        ] 
+        ],
+        creation:[
+          onMissing:true,
+          properties : [
+            [ type:'ref', property:'owner', refname:'owner' ],
+            [ type:'val', property:'invoiceNumber', colname: 'InvoiceNumber']
+          ]
+        ]
       ]
     ]
   ],
