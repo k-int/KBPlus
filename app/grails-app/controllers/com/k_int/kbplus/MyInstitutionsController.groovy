@@ -26,7 +26,7 @@ class MyInstitutionsController {
     def exportService
     def transformerService
     def institutionsService
-
+    def docstoreService
     static String INSTITUTIONAL_LICENSES_QUERY = " from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
 
     // Map the parameter names we use in the webapp with the ES fields
@@ -1776,8 +1776,8 @@ AND EXISTS (
             cell.setCellValue(new HSSFRichTextString("Subscription Start Date"));
             cell = row.createCell(cc++);
             cell.setCellValue(new HSSFRichTextString("Subscription End Date"));
-            
-
+            cell = row.createCell(cc++);
+            cell.setCellValue(new HSSFRichTextString("Copy Subscription Documents"));
 
             row = firstSheet.createRow(rc++);
             cc = 0;
@@ -1790,10 +1790,11 @@ AND EXISTS (
             
             def subscription = m.sub_info.find{it.sub_startDate}
             cell = row.createCell(cc++);
-            cell.setCellValue(new HSSFRichTextString("${subscription?.sub_startDate}"));
+            cell.setCellValue(new HSSFRichTextString("${subscription?.sub_startDate?:''}"));
             cell = row.createCell(cc++);
-            cell.setCellValue(new HSSFRichTextString("${subscription?.sub_endDate}"));
-            
+            cell.setCellValue(new HSSFRichTextString("${subscription?.sub_endDate?:''}"));
+            cell = row.createCell(cc++);
+            cell.setCellValue(new HSSFRichTextString("${subscription?.sub_id?:m.sub_info[0].sub_id}"));
 
             row = firstSheet.createRow(rc++);
 
@@ -2047,6 +2048,8 @@ AND EXISTS (
         int SO_START_COL = 22
         int SO_START_ROW = 7
         log.debug("processRenewalUpload - opening upload input stream as HSSFWorkbook");
+        def user = User.get(springSecurityService.principal.id)
+
         if (input_stream) {
             HSSFWorkbook wb;
             try {
@@ -2069,7 +2072,16 @@ AND EXISTS (
             String org_shortcode = org_details_row?.getCell(2)?.toString()
             String sub_startDate = org_details_row?.getCell(3)?.toString()
             String sub_endDate = org_details_row?.getCell(4)?.toString()
-            result.additionalInfo = [sub_startDate:sub_startDate,sub_endDate:sub_endDate]
+            String original_sub_id = org_details_row?.getCell(5)?.toString()
+            def original_sub = null
+            if(original_sub_id){
+                original_sub = genericOIDService.resolveOID(original_sub_id)
+                if(!original_sub.hasPerm("view",user)){
+                    original_sub = null;  
+                    flash.error = "Can't access original subscription documents. Please verify you have the required access rights."
+                } 
+            }
+            result.additionalInfo = [sub_startDate:sub_startDate,sub_endDate:sub_endDate,sub_name:original_sub?.name?:'',sub_id:original_sub?.id?:'']
 
             log.debug("Worksheet upload on behalf of ${org_name}, ${org_id}, ${org_shortcode}");
 
@@ -2171,13 +2183,13 @@ AND EXISTS (
             return;
         }
 
-
         log.debug("entitlements...[${params.ecount}]");
 
         int ent_count = Integer.parseInt(params.ecount);
      
         def sub_startDate = params.subscription?.copyStart ? parseDate(params.subscription?.start_date,possible_date_formats) : null
         def sub_endDate = params.subscription?.copyEnd ? parseDate(params.subscription?.end_date,possible_date_formats): null
+        def copy_documents = params.subscription?.copy_docs && params.subscription.copyDocs
 
         def new_subscription = new Subscription(
                 identifier: java.util.UUID.randomUUID().toString(),
@@ -2210,7 +2222,11 @@ AND EXISTS (
         }
 
         new_subscription.save(flush: true);
-
+        if(copy_documents){   
+            String subOID =  params.subscription.copy_docs
+            def sourceOID = "${new_subscription.getClass().getName()}:${subOID}"
+            docstoreService.copyDocuments(sourceOID,"${new_subscription.getClass().getName()}:${new_subscription.id}")
+        }
 
         if (!new_subscription.issueEntitlements) {
             new_subscription.issueEntitlements = new java.util.TreeSet()

@@ -129,7 +129,6 @@
 
                <dl><dt>End Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="endDate" type="date"/></dd></dl>
 
-
                <dl><dt>Financial</dt>
                    <dd>
                      <table class="table table-striped table-bordered">

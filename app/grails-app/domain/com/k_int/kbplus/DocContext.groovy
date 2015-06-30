@@ -3,15 +3,15 @@ package com.k_int.kbplus
 class DocContext {
 
   static belongsTo = [
-    owner:Doc
+    owner:Doc ,
+    license : License,
+    subscription : Subscription,
+    pkg : Package
   ]
 
   RefdataValue status
   RefdataValue doctype
 
-  License license
-  Subscription subscription
-  Package pkg
   Boolean globannounce=false
 
   Alert alert

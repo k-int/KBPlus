@@ -18,7 +18,7 @@ import org.apache.http.entity.mime.content.*
 class DocstoreService {
   
   def grailsApplication
-
+  def genericOIDService
   def sessionFactory
   def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
 
@@ -361,7 +361,16 @@ class DocstoreService {
     writer.close();
   }
 
-
+  def copyDocuments(source, destination) {
+    source = genericOIDService.resolveOID(source)
+    destination = genericOIDService.resolveOID(destination)
+    if(source == null  ||  destination == null) return;
+    source.documents.each{
+      def docCopy = new DocContext(owner:it.owner,globannounce:it.globannounce,status:it.status,doctype:it.doctype,alert:it.alert,domain:it.domain)
+      destination.addToDocuments(docCopy)
+      destination.save(flush:true)
+    }
+  }
 
   def migrateToDb() {
     def docstore_docs = Doc.executeQuery("select id from Doc where contentType=1");

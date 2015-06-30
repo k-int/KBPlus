@@ -47,6 +47,8 @@
             <tbody>
             <input type="hidden" name="subscription.start_date" value="${additionalInfo?.sub_startDate}"/>
             <input type="hidden" name="subscription.end_date" value="${additionalInfo?.sub_endDate}"/>
+            <input type="hidden" name="subscription.copy_docs" value="${additionalInfo?.sub_id}"/>
+
               <tr><th>Select</th><th >Subscription Properties</th><th>Value</th></tr>
               <tr>
                 <th><g:checkBox name="subscription.copyStart" value="${true}" /></th>
@@ -57,6 +59,11 @@
                 <th><g:checkBox name="subscription.copyEnd" value="${true}" /></th>
                 <th>End Date</th>
                 <td>${additionalInfo?.sub_endDate}</td>
+              </tr>
+              <tr>
+                <th><g:checkBox name="subscription.copyDocs" value="${true}" /></th>
+                <th>Copy Documents from Subscription</th>
+                <td>${additionalInfo?.sub_name}</td>
               </tr>
             </tbody>
           </table>

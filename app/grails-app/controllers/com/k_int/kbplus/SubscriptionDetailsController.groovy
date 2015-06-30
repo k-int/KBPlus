@@ -34,6 +34,8 @@ class SubscriptionDetailsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
+
+
     def verystarttime = exportService.printStart("SubscriptionDetails")
   
     log.debug("subscriptionDetails id:${params.id} format=${response.format}");
@@ -76,7 +78,7 @@ class SubscriptionDetailsController {
       redirect action:'currentTitles', params:params
     }
   
-    if ( ! result.subscriptionInstance.hasPerm("view",result.user) ) {
+    if (! result.subscriptionInstance?.hasPerm("view",result.user) ) {
       log.debug("Result of hasPerm is false");
       response.sendError(401);
       return
