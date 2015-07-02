@@ -2413,19 +2413,7 @@ AND EXISTS (
         }
 
         def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
-        def change_summary = PendingChange.executeQuery("select distinct(pc.oid), count(pc), min(pc.ts), max(pc.ts) from PendingChange as pc where pc.owner = ? and ( pc.status is null OR pc.status=? ) group by pc.oid", [result.institution, pending_change_pending_status]);
-        result.todos = []
-        change_summary.each { cs ->
-            log.debug("Change summary row : ${cs}");
-            def item_with_changes = genericOIDService.resolveOID(cs[0])
-            result.todos.add([
-                    item_with_changes: item_with_changes,
-                    oid              : cs[0],
-                    num_changes      : cs[1],
-                    earliest         : cs[2],
-                    latest           : cs[3],
-            ]);           
-        }
+        getTodoForInst(result)
 
         //.findAllByOwner(result.user,sort:'ts',order:'asc')
 
@@ -2438,20 +2426,17 @@ AND EXISTS (
         result
     }
 
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-    def todo() {
-        def result = [:]
-        result.user = User.get(springSecurityService.principal.id)
-        result.institution = Org.findByShortcode(params.shortcode)
+    def getTodoForInst(result){
+        def lic_del = RefdataCategory.lookupOrCreate('License Status', 'Deleted');
+        def sub_del = RefdataCategory.lookupOrCreate('Subscription Status', 'Deleted');
+        def pkg_del = RefdataCategory.lookupOrCreate( 'Package Status', 'Deleted' );
+        result.num_todos = PendingChange.executeQuery("select count(distinct pc.oid) from PendingChange as pc left outer join pc.license as lic left outer join lic.status as lic_status left outer join pc.subscription as sub left outer join sub.status as sub_status left outer join pc.pkg as pkg left outer join pkg.packageStatus as pkg_status where pc.owner = ? and ((lic_status is null or lic_status!=?) and (sub_status is null or sub_status!=?) and (pkg_status is null or pkg_status!=?))", [result.institution,lic_del,sub_del,pkg_del])[0]
 
-        result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
-        result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
-
-        result.num_todos = PendingChange.executeQuery("select count(distinct pc.oid) from PendingChange as pc where pc.owner = ?", [result.institution])[0]
         log.debug("Count3=${result.num_todos}");
 
-        def change_summary = PendingChange.executeQuery("select distinct(pc.oid), count(pc), min(pc.ts), max(pc.ts) from PendingChange as pc where pc.owner = ? group by pc.oid", [result.institution], [max: result.max, offset: result.offset]);
+        def change_summary = PendingChange.executeQuery("select distinct(pc.oid), count(pc), min(pc.ts), max(pc.ts) from PendingChange as pc left outer join pc.license as lic left outer join lic.status as lic_status left outer join pc.subscription as sub left outer join sub.status as sub_status left outer join pc.pkg as pkg left outer join pkg.packageStatus as pkg_status where pc.owner = ? and ((lic_status is null or lic_status!=?) and (sub_status is null or sub_status!=?) and (pkg_status is null or pkg_status!=?)) group by pc.oid", [result.institution,lic_del,sub_del,pkg_del], [max: result.max?:100, offset: result.offset?:0]);
         result.todos = []
+
         change_summary.each { cs ->
             log.debug("Change summary row : ${cs}");
             def item_with_changes = genericOIDService.resolveOID(cs[0])
@@ -2463,6 +2448,18 @@ AND EXISTS (
                     latest           : cs[3],
             ]);
         }
+        result
+    }
+
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def todo() {
+        def result = [:]
+        result.user = User.get(springSecurityService.principal.id)
+        result.institution = Org.findByShortcode(params.shortcode)
+
+        result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+        result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+        getTodoForInst(result)
 
         result
     }
