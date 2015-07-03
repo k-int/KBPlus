@@ -74,11 +74,11 @@ class InplaceTagLib {
       def data_link = null
       switch ( attrs.type ) {
         case 'date':
-          data_link = createLink(controller:'ajax', action: 'editableSetValue', params:[type:'date',format:'yyyy/MM/dd'])
+          data_link = createLink(controller:'ajax', action: 'editableSetValue', params:[type:'date',format:'yyyy/MM/dd']).encodeAsHTML()
           break;
         case 'string':
         default:
-          data_link = createLink(controller:'ajax', action: 'editableSetValue')
+          data_link = createLink(controller:'ajax', action: 'editableSetValue').encodeAsHTML()
           break;
       }
 
@@ -132,8 +132,8 @@ class InplaceTagLib {
         def oid = "${attrs.owner.class.name}:${attrs.owner.id}"
         def dataController = attrs.dataController ?: 'ajax'
         def dataAction = attrs.dataAction ?: 'sel2RefdataSearch'
-        def data_link = createLink(controller:dataController, action: dataAction, params:[id:attrs.config,format:'json',oid:oid])
-        def update_link = createLink(controller:'ajax', action: 'genericSetRel')
+        def data_link = createLink(controller:dataController, action: dataAction, params:[id:attrs.config,format:'json',oid:oid]).encodeAsHTML()
+        def update_link = createLink(controller:'ajax', action: 'genericSetRel').encodeAsHTML()
         def id = attrs.id ?: "${oid}:${attrs.field}"
    
         out << "<span>"
