@@ -28,11 +28,11 @@ Consortium,
       </xsl:call-template>
       <!-- print_identifier -->
       <xsl:call-template name="csventry">
-        <xsl:with-param name="txt" select="./TitleIDs/ID[@namespace='ISSN']" />
+        <xsl:with-param name="txt" select="./TitleIDs/ID[@namespace='ISSN' or @namespace='issn']" />
       </xsl:call-template>
       <!-- online_identifier -->
       <xsl:call-template name="csventry">
-        <xsl:with-param name="txt" select="./TitleIDs/ID[@namespace='eISSN']" />
+        <xsl:with-param name="txt" select="./TitleIDs/ID[@namespace='eISSN' or @namespace='eissn']" />
       </xsl:call-template>
       <!-- date_first_issue_online -->
       <xsl:call-template name="csventry">
