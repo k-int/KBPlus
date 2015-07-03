@@ -360,7 +360,18 @@ class ExportService {
 			licence.customProperties.each{ prop ->
 				def propertyType = addXMLElementInto(doc, licPropElem, "${prop.type.name.replaceAll("\\s","")}", null)
 				addXMLElementInto(doc, propertyType, "Value","${prop.getValue()}")
+				addXMLElementInto(doc, propertyType, "Note","${prop.note?:''}")
+
 			}
+			def licenceNotes = addXMLElementInto(doc, licElem, "LicenceNotes", null)
+    		licence.documents.each{docctx->
+			      if(docctx.owner?.contentType == 0 && (docctx.status == null || docctx.status?.value != 'Deleted')){
+			          def note_val = docctx.owner?.content
+			          if(note_val){
+      					addXMLElementInto(doc, licenceNotes, "Note","${note_val}")
+      				}
+			      }
+		    }
 		}
 	}
 	
