@@ -107,7 +107,7 @@ class LicenseDetailsController {
         response.setHeader("Content-disposition", "attachment; filename=\"${filename}.csv\"")
         response.contentType = "text/csv"
         def out = response.outputStream
-        exportService.StreamOutLicenceCSV(out,result.license)
+        exportService.StreamOutLicenceCSV(out,null,[result.license])
         out.close()
       }
     }

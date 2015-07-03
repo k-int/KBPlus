@@ -30,45 +30,46 @@ class ExportService {
 	 */
 
 
-	def StreamOutCurrentLicencesCSV(out,result){
-		out.withWriter { writer ->
-			writer.write("SEARCH TERMS\n")
-			writer.write("Institution,ValidOn,ReferenceSearch,LicenceProperty,LicencePropertyValue\n")
-			writer.write("${val(result.institution.name)},${val(result.validOn)},${val(result.keyWord)},${val(result.propertyFilterType)},${val(result.propertyFilter)}\n" )
-			writer.write("\n")
-			writer.write("ID, Licence Name, Licensor, Start Date, End Date,Subscriptions\n")
-			result.licenses.each{ lic ->
-				def startDate = lic.startDate ? formatter.format(lic.startDate) :''
-				def endDate = lic.endDate ? formatter.format(lic.endDate) : ''
-				def subs = lic.subscriptions.findAll{it.status?.value !='Deleted'}?.collect{"${it.id}:${it.name} "}
-				writer.write("${val(lic.id)},${val(lic.reference)},${val(lic.licensor?.name)},${val(startDate)},${val(endDate)},${val(subs)}\n")
-			}
 
-			writer.flush()
-			writer.close()
+	def StreamOutLicenceCSV(out,result,licences){
+		log.debug("StreamOutLicenceCSV - ${result} - ${licences}")
+		Set propertiesSet = new TreeSet();
+
+		def custProps = licences.each{ licence ->
+			propertiesSet.addAll(licence.customProperties.collect{ prop ->
+				prop.type.name
+			})
 		}
-
-	}
-	def StreamOutLicenceCSV(out,lic){
+		
 		out.withWriter{writer ->
-			writer.write("LicenceReference,NoticePeriod,LicenceURL,LicensorRef,RelatedOrg,LicenceProperties\n")
-			writer.write("${val(lic.reference)},${val(lic.noticePeriod)},${val(lic.licenseUrl)},${val(lic.licensorRef)}")
-			def orgLinks = []
-			lic.orgLinks.each{
-				orgLinks += "${it.roleType?.value}: ${it.org.name}"
+			//See if we are handling a currentLicences Search
+			if(result != null && (result.institution || result.validOn || result.propertyFilter || result.keyWord)){
+				writer.write("SEARCH TERMS\n")
+				writer.write("Institution,ValidOn,ReferenceSearch,LicenceProperty,LicencePropertyValue\n")
+				writer.write("${val(result.institution.name)},${val(result.validOn)},${val(result.keyWord)},${val(result.propertyFilterType)},${val(result.propertyFilter)}\n" )
+				writer.write("\n")	
 			}
-			if(orgLinks){
-				writer.write(",${val(orgLinks)}")
+			writer.write("KB+ Licence ID, LicenceReference,NoticePeriod,LicenceURL,LicensorRef, LicenseeRef, StartDate, EndDate, Licence Category,Licence Status")
+			propertiesSet.each{
+				writer.write(",${val(it)}")
+				writer.write(",\"${it} Notes\"")
 			}
+			writer.write("\n")
+			licences.each{ lic ->
+				log.debug("Export Licence: ${lic}")
+				writer.write("${lic.id},${val(lic.reference)},${val(lic.noticePeriod)},${val(lic.licenseUrl)},${val(lic.licensorRef)},${val(lic.licenseeRef)},${val(lic.startDate)},${val(lic.endDate)},${val(lic.licenseCategory?.value)},${val(lic.status?.value)}")
+ 
+				propertiesSet.each{ prop_name ->
+					def prop_match = lic.customProperties.find{it.type.name == prop_name}
+					if(prop_match){
+						writer.write(",${val(prop_match.value)},${val(prop_match.note)}")
+					}else{
+						writer.write(", , ")
+					}
+				}
 
-			def props = []
-			lic.customProperties.each{
-				props += "${it.type.name}:${it.toString()}"
+				writer.write("\n")
 			}
-			if(props){
-				writer.write(",${val(props)}")
-			}
-			writter.write("\n")
 			
 			writer.flush()
 			writer.close()
@@ -797,7 +798,8 @@ class ExportService {
 	* @return the value in the required format for CSV exports.
 	**/
 	def val(val){
-		return val?"\"${val}\"":" "
+		val = val? val.replaceAll('"',"'") :" "
+		return "\"${val}\""
 	}
 	
 	

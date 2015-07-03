@@ -237,7 +237,7 @@ class MyInstitutionsController {
                 response.contentType = "text/csv"
 
                 def out = response.outputStream
-                exportService.StreamOutCurrentLicencesCSV(out, result)
+                exportService.StreamOutLicenceCSV(out, result,result.licenses)
                 out.close()
             }
         }
