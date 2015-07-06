@@ -19,6 +19,12 @@
             <li>
               <g:link action="currentLicenses" params="${params+[format:'csv']}">CSV Export</g:link>
             </li>
+            <li>
+              <g:link action="currentLicenses" params="${params+[format:'xml',format_content:'subpkg']}">XML Export (Subscriptions & Packages)</g:link>
+            </li>
+                        <li>
+              <g:link action="currentLicenses" params="${params+[format:'xml',format_content:'subie']}">XML Export (Subscriptions & IEs)</g:link>
+            </li>
           </ul>
         </li>
         </ul>

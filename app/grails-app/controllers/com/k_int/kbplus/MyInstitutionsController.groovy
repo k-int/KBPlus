@@ -223,22 +223,35 @@ class MyInstitutionsController {
 
         result.licenseCount = License.executeQuery("select count(l) ${qry}", qry_params)[0];
         result.licenses = License.executeQuery("select l ${qry}", qry_params, [max: result.max, offset: result.offset]);
-
+        def filename = "${result.institution.name}_licences"
         withFormat {
             html result
 
             json {
-                response.setHeader("Content-disposition", "attachment; filename=\"${result.institution.name}_licences.json\"")
+                response.setHeader("Content-disposition", "attachment; filename=\"${filename}.json\"")
                 response.contentType = "application/json"
                 render (result as JSON)
             }
             csv {
-                response.setHeader("Content-disposition", "attachment; filename=${result.institution.name}_licences.csv")
+                response.setHeader("Content-disposition", "attachment; filename=\"${filename}.csv\"")
                 response.contentType = "text/csv"
 
                 def out = response.outputStream
                 exportService.StreamOutLicenceCSV(out, result,result.licenses)
                 out.close()
+            }
+            xml {
+
+                def doc = exportService.buildDocXML("Licences")
+                if(params.format_content=="subpkg"){
+                    exportService.addLicenceSubPkgXML(doc, doc.getDocumentElement(),result.licenses)
+                }else if(params.format_content=="subie"){
+                    exportService.addLicenceSubPkgTitleXML(doc, doc.getDocumentElement(),result.licenses)
+                }
+                response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
+                response.contentType = "text/xml"
+                exportService.streamOutXML(doc, response.outputStream)
+                  
             }
         }
     }
