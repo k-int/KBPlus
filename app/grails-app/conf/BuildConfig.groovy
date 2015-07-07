@@ -138,6 +138,9 @@ grails.project.dependency.resolution = {
           exclude "spock-grails-support"
         }
         test ":geb:$gebVersion"
+
+        test ":remote-control:2.0"
+
         
         // Font awesome for font based icons.
         compile ":font-awesome-resources:4.3.0.1"

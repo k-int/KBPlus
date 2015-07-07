@@ -12,7 +12,13 @@
               <g:link action="index" params="${params+[format:'json']}">Json Export</g:link>
             </li>
             <li>
-              <g:link action="index" params="${params+[format:'xml']}">XML Export</g:link>
+              <g:link action="index" params="${params+[format:'xml']}">XML Export(Licence)</g:link>
+            </li>
+                        <li>
+              <g:link action="index" params="${params+[format:'xml',format_content:'subpkg']}">XML Export (Subscriptions & Packages)</g:link>
+            </li>
+                        <li>
+              <g:link action="index" params="${params+[format:'xml',format_content:'subie']}">XML Export (Subscriptions & IEs)</g:link>
             </li>
             <li>
               <g:link action="index" params="${params+[format:'csv']}">CSV Export</g:link>

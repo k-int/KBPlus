@@ -5,7 +5,7 @@ import spock.lang.Stepwise
 import spock.lang.Ignore
 
 @Stepwise
-class GeneralSpec extends GebReportingSpec {
+class GeneralSpec extends BaseSpec {
 	// curl -XDELETE 'http://localhost:9200/kbplustest/'
 	// curl -XPUT 'httop://localhost:9200/kbplustest/'
 
@@ -29,7 +29,8 @@ class GeneralSpec extends GebReportingSpec {
 		go "/demo/org/create"
 		$("form").name = Data.Org_name
 		$("form").impId = Data.Org_impId
-		$("form").sector = 'Higher Education'
+		$("form").sector = "Higher Education"
+		report "google home page"
 		$("#SubmitButton").click()
 		then:
 		browser.page.title.startsWith "Show Org"
@@ -450,7 +451,7 @@ class GeneralSpec extends GebReportingSpec {
 			$("i.jstree-checkbox").click()
 			$("input[name='Compare']").click()
 		then:
-		!$("h1", text: "ElCat Comparison Tool").isEmpty()
+		!$("h1", text: getMessage("menu.institutions.comp_onix")).isEmpty()
 	}
 
 	def "Update ES Index"() {
