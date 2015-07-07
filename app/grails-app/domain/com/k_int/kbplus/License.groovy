@@ -521,5 +521,15 @@ class License {
   def getCustomPropByName(name){
     return customProperties.find{it.type.name == name}    
   }
-
+  static def refdataFind(params) {
+       String INSTITUTIONAL_LICENSES_QUERY = " from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org.id = ? and ol.roleType.id = ? ) AND l.status.value != 'Deleted' and lower(l.reference) like ?"
+      def result = []
+      def  ql = License.executeQuery("select l ${INSTITUTIONAL_LICENSES_QUERY}",[params.inst?.toLong(),params.roleType?.toLong(),"${params.q.toLowerCase()}%"])
+      if ( ql ) {
+          ql.each { prop ->
+              result.add([id:"${prop.reference}||${prop.id}",text:"${prop.reference}"])
+          }
+      }
+      result
+  }
 }
