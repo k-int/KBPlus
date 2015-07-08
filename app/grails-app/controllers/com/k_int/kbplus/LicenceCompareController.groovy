@@ -25,33 +25,34 @@ class LicenceCompareController {
         def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
 
         result.licensee_role  =licensee_role.id
-
         result
   }
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def compare(){
+    log.debug("compare ${params}")
     def result = [:]
+    result.institution = Org.get(params.institution)
 
-  	def licences = params.list("selectedLicences").collect{
-  		License.get(it.toLong())
-  	}
-  	log.debug(licences)
-  	def comparisonMap = new TreeMap()
-  	licences.each{ lic ->
-  		lic.customProperties.each{prop ->
-			def point = [:]
-			if(prop.getValue()|| prop.getNote()){
-				point.put(lic.reference,prop)
-	  			if(comparisonMap.containsKey(prop.type.name)){
-	  				comparisonMap[prop.type.name].putAll(point)
-	  			}else{
-	  				comparisonMap.put(prop.type.name,point)
-	  			}
-			}
-  		}
-  	}
-  	result.map = comparisonMap
-  	result.licences = licences
+    def licences = params.list("selectedLicences").collect{
+      License.get(it.toLong())
+    }
+    log.debug(licences)
+    def comparisonMap = new TreeMap()
+    licences.each{ lic ->
+      lic.customProperties.each{prop ->
+      def point = [:]
+      if(prop.getValue()|| prop.getNote()){
+        point.put(lic.reference,prop)
+          if(comparisonMap.containsKey(prop.type.name)){
+            comparisonMap[prop.type.name].putAll(point)
+          }else{
+            comparisonMap.put(prop.type.name,point)
+          }
+      }
+      }
+    }
+    result.map = comparisonMap
+    result.licences = licences
   	return result
 
   }

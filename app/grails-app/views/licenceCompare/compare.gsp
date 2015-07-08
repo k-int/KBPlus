@@ -8,6 +8,28 @@
 
 <r:require modules="onixMatrix" />
 
+
+  <div class="container">
+    <ul class="breadcrumb">
+      <li><g:link controller="home" action="index">Home</g:link> <span
+        class="divider">/</span></li>
+           <li><g:link controller="myInstitutions"
+                       action="instdash"
+                       params="${[shortcode:institution.shortcode]}">${institution.name} ${message(code:'menu.institutions.dash')} </g:link><span
+        class="divider">/</span></li>
+
+      <li>${message(code:'menu.institutions.comp_lic')}</li>
+    </ul>
+  </div>
+
+  <div class="container">
+    <h1>${message(code:'menu.institutions.comp_lic')}</h1>
+  </div>
+
+  <div class="container">
+
+  <div class="onix-matrix-wrapper">
+
   <table class="onix-matrix">
     <thead>
       <th class="cell-1"> Property</th>
@@ -23,15 +45,14 @@
       <g:if test="${entry.getValue().containsKey(lic.reference)}">
       <td>
         <g:set var="point" value="${entry.getValue().get(lic.reference)}"/>
-        <g:if test="${point.getNote()}">
-          <div class="onix-icons">
-            <span class='main-annotation' ><i class='icon-edit' data-content='Click the icon to view the annotations.' title='Annotations'></i></span>
-            <div class="textelement" >
+        <div class="onix-icons">
+          <g:if test="${point.getNote()}">
+              <span class='main-annotation' ><i class='icon-edit' data-content='Click the icon to view the annotations.' title='Annotations'></i></span>
+              <div class="textelement" > 
                 <ul><li>${ point.getNote().encodeAsHTML() }</span></li></ul>
-            </div>
-
-          </div>
-        </g:if>
+              </div>
+          </g:if>
+        </div>
         <g:if test="${['stringValue','intValue','decValue'].contains(point.getValueType())}">
             <span class="cell-inner">  ${point.getValue()}</span>
         </g:if>
@@ -75,6 +96,24 @@
     </g:each>
     </tbody>
    </table>
+   </div>
+
+    </div>
+
+   <div id="onix-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+  </div>
+  </div>
+</div>
     <r:script language="JavaScript">
         $(function(){
           $(".onix-pl-undefined").replaceWith("<span title='Not defined by the license' style='height:1em' class='onix-status fa-stack fa-4x'> <i class='fa fa-info-circle fa-stack-1x' style='color:#166fe7;' ></i> <i class='fa fa-ban fa-stack-1x' style='color:#FF0000'></i> </span>")

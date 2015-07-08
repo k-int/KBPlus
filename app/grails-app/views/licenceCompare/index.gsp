@@ -25,6 +25,7 @@
 		<div class="row">
 			<div class="span8">
 				<g:form id="compare" name="compare" action="compare" method="post">
+					<input type="hidden" name="institution" value="${institution?.id}"/>
 					<div>
 						<label for="addIdentifierSelect">Search licence for comparison:</label>
 
