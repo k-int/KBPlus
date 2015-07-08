@@ -617,6 +617,9 @@ financialImportTSVLoaderMappings = [
         cls:'com.k_int.kbplus.CostItem',
         creation : [
           properties:[
+            [ type:'ref', property:'owner', refname:'owner' ],
+            [ type:'ref', property:'invoice', refname:'invoice' ],
+            [ type:'ref', property:'sub', refname:'subscription' ],
             [ type:'val', property:'costInBillingCurrency', colname:'InvoiceTotalExcVat', datatype:'Double'],
           ]
         ]
@@ -627,6 +630,9 @@ financialImportTSVLoaderMappings = [
         whenPresent:[ [ type:'val', colname:'InvoiceVat'] ],
         creation:[
           properties:[
+            [ type:'ref', property:'owner', refname:'owner' ],
+            [ type:'ref', property:'invoice', refname:'invoice' ],
+            [ type:'ref', property:'sub', refname:'subscription' ],
             [ type:'val', property:'costInBillingCurrency', colname:'InvoiceVat', datatype:'Double'],
           ]
         ]
@@ -637,6 +643,9 @@ financialImportTSVLoaderMappings = [
         whenPresent:[ [ type:'val', colname:'InvoiceTransactionCharge'] ],
         creation:[
           properties:[
+            [ type:'ref', property:'owner', refname:'owner' ],
+            [ type:'ref', property:'invoice', refname:'invoice' ],
+            [ type:'ref', property:'sub', refname:'subscription' ],
             [ type:'val', property:'costInBillingCurrency', colname:'InvoiceTransactionCharge', datatype:'Double'],
           ]
         ]

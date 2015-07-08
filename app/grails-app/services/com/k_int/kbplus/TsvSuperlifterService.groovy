@@ -87,6 +87,11 @@ class TsvSuperlifterService {
           }
         }
 
+        log.debug("About to start creation rules")
+        locatedObjects.each { key, value ->
+          log.debug("Located ${key} -> ${value}")
+        }
+
         // We have completed looking up any reference data, and perhaps created refdata along the way, now do the main
         // work of creating domain objects for this row
         config.header.creationRules.each { creation_rule ->
@@ -122,9 +127,9 @@ class TsvSuperlifterService {
     }
 
     if ( passed )
-      row_information.messages.add("Row passed whenPresent Check for ${creation_rule.creation.ref} ")
+      row_information.messages.add("Row passed whenPresent Check for ${creation_rule.ref} ")
     else
-      row_information.messages.add("Row failed whenPresent check for ${creation_rule.creation.ref} - ${missingProps} not present")
+      row_information.messages.add("Row failed whenPresent check for ${creation_rule.ref} - ${missingProps} not present")
 
     return passed
   }
@@ -136,20 +141,30 @@ class TsvSuperlifterService {
     row_information.messages.add("Attempt to create instance of ${toih.cls} for ${toih.ref} ${testRun?'[Test Run]':'[Save]'}");
     def new_obj_cls = Class.forName(toih.cls)
     def new_obj = new_obj_cls.newInstance();
+    def create_msg = "new(${toih.cls})("
 
     toih.creation.properties.each { pd ->
       switch ( pd.type ) {
         case 'ref':
           log.debug("Setting ${pd.property} on new ${toih.ref} to ${locatedObjects[pd.refname]}");
-          new_obj[pd.property] = locatedObjects[pd.refname];
+          def vl = locatedObjects[pd.refname];
+          if ( vl != null ) {
+            new_obj[pd.property] = vl;
+            create_msg += pd.property + ":" + vl;
+          }
           break;
         case 'val':
           log.debug("Setting ${pd.property} on new ${toih.ref} to ${nl[colmap[pd.colname]]}");
-          new_obj[pd.property] = convertString(nl[colmap[pd.colname]], pd.datatype);
+          if ( ( nl[colmap[pd.colname]] != null ) && ( nl[colmap[pd.colname]].length() > 0 ) ) {
+            def vl = convertString(nl[colmap[pd.colname]], pd.datatype);
+            new_obj[pd.property] = vl;
+            create_msg += pd.property + ":" + vl;
+          }
           break;
       }
     }
 
+    create_msg += ")";
 
     if ( testRun ) {
       log.debug("Not saving - test run")
@@ -160,13 +175,15 @@ class TsvSuperlifterService {
 
     locatedObjects[toih.ref] = new_obj;
 
+    row_information.messages.add(create_msg);
+
     return new_obj;
   }
 
   private def convertString(value,type) {
     def result = value;
 
-    if ( type ) {
+    if ( type && value ) {
       switch ( type ) {
         case 'Double':
           result = Double.parseDouble(value);
