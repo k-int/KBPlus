@@ -15,6 +15,7 @@
             <thead>
               <tr>
                 <th>tsv column name</th>
+                <th>Description</th>
                 <th>maps to</th>
               </tr>
             </thead>
@@ -22,6 +23,7 @@
               <g:each in="${grailsApplication.config.financialImportTSVLoaderMappings.cols}" var="mpg">
                 <tr> 
                   <td>${mpg.colname}</td> 
+                  <td>${mpg.desc}</td> 
                   <td></td> 
                 </tr>
               </g:each>

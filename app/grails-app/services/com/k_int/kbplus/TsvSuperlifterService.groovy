@@ -50,7 +50,7 @@ class TsvSuperlifterService {
         // be needed to look up a domain object. Once identified domain objects are put into locatedObjects
         // locatedObjects
         def locatedObjects = [:]
-    
+
         log.debug(nl);
 
         // We need to see if we can identify any existing domain objects which match the current row in the TSV.
@@ -82,22 +82,16 @@ class TsvSuperlifterService {
           else {
             row_information.messages.add("No domain objects located for ${toih.ref} - Check for create instruction");
             if ( toih.creation?.onMissing ) {
-              row_information.messages.add("Attempt to create instance of ${toih.cls} for ${toih.ref}");
-              def new_obj_cls = Class.forName(toih.cls)
-              def new_obj = new_obj_cls.newInstance();
-              toih.creation.properties.each { pd ->
-                switch ( pd.type ) {
-                  case 'ref':
-                    log.debug("Setting ${pd.property} on new ${toih.ref} to ${locatedObjects[pd.refname]}");
-                    new_obj[pd.property] = locatedObjects[pd.refname];
-                    break;
-                  case 'val':
-                    log.debug("Setting ${pd.property} on new ${toih.ref} to ${nl[colmap[pd.colname]]}");
-                    new_obj[pd.property] = nl[colmap[pd.colname]]
-                    break;
-                }
-              }
+              createDomainObject(toih, locatedObjects,  nl, colmap, testRun,row_information  );
             }
+          }
+        }
+
+        // We have completed looking up any reference data, and perhaps created refdata along the way, now do the main
+        // work of creating domain objects for this row
+        config.header.creationRules.each { creation_rule ->
+          if ( meetsCriteria(creation_rule, locatedObjects,  nl, colmap, testRun, row_information )) {
+            createDomainObject(creation_rule, locatedObjects, nl, colmap, testRun,row_information  )
           }
         }
       }
@@ -105,6 +99,84 @@ class TsvSuperlifterService {
     }
 
     result
+  }
+
+  private def meetsCriteria(creation_rule, locatedObjects,  nl, colmap, testRun,row_information ) {
+    def passed = true;
+    def missingProps = []
+    creation_rule.whenPresent?.each { rule ->
+      switch( rule.type ) {
+        case 'val':
+          if ( ( nl[colmap[rule.colname]] == null ) || ( nl[colmap[rule.colname]].trim().length() == 0 ) ) {
+            passed = false;
+            missingProps.add("Column[${colmap[rule.colname]}] ${rule.colname} :: ${nl[colmap[rule.colname]]}")
+          }
+          break;
+        case 'ref':
+          if ( locatedObjects[rule.refname] == null ) {
+            passed = false;
+            missingProps.add("Reference "+rule.colname+"::"+locatedObjects[rule.refname])
+          }
+          break;
+      }
+    }
+
+    if ( passed )
+      row_information.messages.add("Row passed whenPresent Check for ${creation_rule.creation.ref} ")
+    else
+      row_information.messages.add("Row failed whenPresent check for ${creation_rule.creation.ref} - ${missingProps} not present")
+
+    return passed
+  }
+
+  /** Create a new domain object based on the config, values from the row,
+  and other objects already located for this row */
+  private def createDomainObject(toih, locatedObjects, nl, colmap, testRun, row_information ) {
+
+    row_information.messages.add("Attempt to create instance of ${toih.cls} for ${toih.ref} ${testRun?'[Test Run]':'[Save]'}");
+    def new_obj_cls = Class.forName(toih.cls)
+    def new_obj = new_obj_cls.newInstance();
+
+    toih.creation.properties.each { pd ->
+      switch ( pd.type ) {
+        case 'ref':
+          log.debug("Setting ${pd.property} on new ${toih.ref} to ${locatedObjects[pd.refname]}");
+          new_obj[pd.property] = locatedObjects[pd.refname];
+          break;
+        case 'val':
+          log.debug("Setting ${pd.property} on new ${toih.ref} to ${nl[colmap[pd.colname]]}");
+          new_obj[pd.property] = convertString(nl[colmap[pd.colname]], pd.datatype);
+          break;
+      }
+    }
+
+
+    if ( testRun ) {
+      log.debug("Not saving - test run")
+    }
+    else {
+      new_obj.save(flush:true, failOnError:true);
+    }
+
+    locatedObjects[toih.ref] = new_obj;
+
+    return new_obj;
+  }
+
+  private def convertString(value,type) {
+    def result = value;
+
+    if ( type ) {
+      switch ( type ) {
+        case 'Double':
+          result = Double.parseDouble(value);
+          break;
+        default:
+          break;
+      }
+    }
+
+    return result;
   }
 
   private def locateDomainObject(toih, toih_heuristic, nl, locatedObjects, colmap) {
@@ -145,7 +217,7 @@ class TsvSuperlifterService {
 
       case 'hql' :
         //  hql: 'select o from Org as o join o.ids as id where id.ns.ns = :jcns and id.value = :orgId',
-        // values : [ jcns : [type:'static', value:'JC'], orgId: [type:'column', colname:'InstitutionId'] ] 
+        // values : [ jcns : [type:'static', value:'JC'], orgId: [type:'column', colname:'InstitutionId'] ]
         def error = false;
         log.debug("HQL Lookup");
         def qry_params=[:]
