@@ -97,8 +97,8 @@ class ExportService {
 				subscription.packages.each{ subPkg ->
 					def pkg = subPkg.pkg
 					def pkgElem = addXMLElementInto(doc, subPkgs, "Package", null)
-					addXMLElementInto(doc, pkgElem, "PackageKBID", pkg.id)
-					addXMLElementInto(doc, pkgElem, "Packagename", pkg.name)
+					addXMLElementInto(doc, pkgElem, "PackageID", pkg.id)
+					addXMLElementInto(doc, pkgElem, "PackageName", pkg.name)
 					addXMLElementInto(doc, pkgElem, "PackageContentProvider", pkg.getContentProvider()?.name)
 				}
 			}
@@ -133,8 +133,8 @@ class ExportService {
 					def ie_eissn = addXMLElementInto(doc, title_ids, "ID", ie.tipp.title.getIdentifierValue("eissn"))
 					addXMLAttr(doc,ie_eissn,"namespace","eissn")
 
-					addXMLElementInto(doc, issue, "IEPackageName", ie.tipp.pkg.name)
-					addXMLElementInto(doc, issue, "IEPackageID", ie.tipp.pkg.id)
+					addXMLElementInto(doc, issue, "PackageName", ie.tipp.pkg.name)
+					addXMLElementInto(doc, issue, "PackageID", ie.tipp.pkg.id)
 
 					def ie_coverage = addXMLElementInto(doc,issue,"CoverageStatement",null)
 					addXMLAttr(doc, ie_coverage, "type", "Issue Entitlement")
@@ -147,7 +147,7 @@ class ExportService {
 					addXMLElementInto(doc, ie_coverage, "EndVolume", ie.endVolume)
 					addXMLElementInto(doc, ie_coverage, "StartIssue", ie.startIssue)
 					addXMLElementInto(doc, ie_coverage, "EndIssue", ie.endIssue)
-					addXMLElementInto(doc, ie_coverage, "CoverageNotes", ie.coverageNote)
+					addXMLElementInto(doc, ie_coverage, "CoverageNote", ie.coverageNote)
 
 				}
 			}

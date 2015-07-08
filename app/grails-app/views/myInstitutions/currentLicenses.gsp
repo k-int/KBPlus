@@ -22,9 +22,9 @@
             <li>
               <g:link action="currentLicenses" params="${params+[format:'xml',format_content:'subpkg']}">XML Export (Subscriptions & Packages)</g:link>
             </li>
-                        <li>
-              <g:link action="currentLicenses" params="${params+[format:'xml',format_content:'subie']}">XML Export (Subscriptions & IEs)</g:link>
-            </li>
+            <g:each in="${transforms}" var="transkey,transval">
+                <li><g:link action="currentLicenses" params="${params+[format:'xml',transformId:transkey,format_content:'subie']}"> ${transval.name}</g:link></li>
+              </g:each>
           </ul>
         </li>
         </ul>

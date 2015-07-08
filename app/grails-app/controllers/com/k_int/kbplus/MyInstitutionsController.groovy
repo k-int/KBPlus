@@ -149,6 +149,8 @@ class MyInstitutionsController {
         def result = [:]
         result.user = User.get(springSecurityService.principal.id)
         result.institution = Org.findByShortcode(params.shortcode)
+        result.transforms = grailsApplication.config.licenceTransforms
+
         if (!checkUserIsMember(result.user, result.institution)) {
             flash.error = "You do not have permission to view ${result.institution.name}. Please request access on the profile page";
             response.sendError(401)
@@ -241,17 +243,21 @@ class MyInstitutionsController {
                 out.close()
             }
             xml {
-
                 def doc = exportService.buildDocXML("Licences")
+            
                 if(params.format_content=="subpkg"){
                     exportService.addLicenceSubPkgXML(doc, doc.getDocumentElement(),result.licenses)
                 }else if(params.format_content=="subie"){
                     exportService.addLicenceSubPkgTitleXML(doc, doc.getDocumentElement(),result.licenses)
                 }
-                response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
-                response.contentType = "text/xml"
-                exportService.streamOutXML(doc, response.outputStream)
-                  
+                if ((params.transformId) && (result.transforms[params.transformId] != null)) {
+                    String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
+                    transformerService.triggerTransform(result.user, filename, result.transforms[params.transformId], xml, response)
+                }else{
+                    response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
+                    response.contentType = "text/xml"
+                    exportService.streamOutXML(doc, response.outputStream)
+                }
             }
         }
     }

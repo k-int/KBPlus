@@ -29,6 +29,7 @@ class LicenseDetailsController {
     result.user = User.get(springSecurityService.principal.id)
     // result.institution = Org.findByShortcode(params.shortcode)
     result.license = License.get(params.id)
+    result.transforms = grailsApplication.config.licenceTransforms
 
     if ( ! result?.license?.hasPerm("view",result.user) ) {
       log.debug("return 401....");
@@ -99,9 +100,14 @@ class LicenseDetailsController {
         }else if(!params.format_content){
           exportService.addLicencesIntoXML(doc, doc.getDocumentElement(), [result.license])
         }
-          response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
-          response.contentType = "text/xml"
-          exportService.streamOutXML(doc, response.outputStream)
+        if ((params.transformId) && (result.transforms[params.transformId] != null)) {
+            String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
+            transformerService.triggerTransform(result.user, filename, result.transforms[params.transformId], xml, response)
+        }else{
+            response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
+            response.contentType = "text/xml"
+            exportService.streamOutXML(doc, response.outputStream)
+        }
         
       }
       csv {

@@ -390,7 +390,9 @@ titlelistTransforms = [
 packageTransforms = [
   'kbplus':[name:'KBPlus Import Format', xsl:'kbplusimp.xsl', returnFileExtention:'txt', returnMime:'text/plain']
 ]
-
+licenceTransforms = [
+  'sub_ie':[name:'XML (with IssueEntitlements)', xsl:'licenced_titles.xsl', returnFileExtention:'txt', returnMime:'text/plain']
+]
 // log4j configuration
 log4j = {
   // Example of changing the log pattern for the default console

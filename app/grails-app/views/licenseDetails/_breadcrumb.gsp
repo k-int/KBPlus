@@ -17,9 +17,9 @@
                         <li>
               <g:link action="index" params="${params+[format:'xml',format_content:'subpkg']}">XML Export (Subscriptions & Packages)</g:link>
             </li>
-                        <li>
-              <g:link action="index" params="${params+[format:'xml',format_content:'subie']}">XML Export (Subscriptions & IEs)</g:link>
-            </li>
+            <g:each in="${transforms}" var="transkey,transval">
+              <li><g:link action="index" params="${params+[format:'xml',transformId:transkey,format_content:'subie']}"> ${transval.name}</g:link></li>
+            </g:each>
             <li>
               <g:link action="index" params="${params+[format:'csv']}">CSV Export</g:link>
             </li>
