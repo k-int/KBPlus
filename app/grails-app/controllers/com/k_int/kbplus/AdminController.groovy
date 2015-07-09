@@ -771,7 +771,7 @@ class AdminController {
     def result = [:];
     if (request.method == 'POST'){
       def input_stream = request.getFile("tsvfile")?.inputStream
-      result.loaderResult = tsvSuperlifterService.load(input_stream,grailsApplication.config.financialImportTSVLoaderMappings,true)
+      result.loaderResult = tsvSuperlifterService.load(input_stream,grailsApplication.config.financialImportTSVLoaderMappings,params.dryRun=='Y'?true:false)
     }
     result
   }

@@ -21,21 +21,27 @@
             </thead>
             <tbody>
               <g:each in="${grailsApplication.config.financialImportTSVLoaderMappings.cols}" var="mpg">
-                <tr> 
-                  <td>${mpg.colname}</td> 
-                  <td>${mpg.desc}</td> 
-                  <td></td> 
+                <tr>
+                  <td>${mpg.colname}</td>
+                  <td>${mpg.desc}</td>
+                  <td></td>
                 </tr>
               </g:each>
             </tbody>
           </table>
-           
+
           <g:form action="financeImport" method="post" enctype="multipart/form-data">
             <dl>
               <div class="control-group">
                 <dt>Upload TSV File according to the column definitions above</dt>
                 <dd>
                   <input type="file" name="tsvfile" />
+                </dd>
+              </div>
+              <div class="control-group">
+                <dt>Dry Run</dt>
+                <dd>
+                  <input type="checkbox" name="dryRun" checked value="Y" />
                 </dd>
               </div>
               <button name="load" type="submit" value="Go">Upload...</button>
@@ -62,8 +68,8 @@
                   <td>${v}</td>
                 </g:each>
               </tr>
-              <tr>
-                <td colspan="${loaderResult.columns.size()}"> 
+              <tr ${logEntry.error?'style="background-color:red;"':''}>
+                <td colspan="${loaderResult.columns.size()}">
                   ${logEntry.error?'Row ERROR':'Row OK'}
                   <ul>
                     <g:each in="${logEntry.messages}" var="m">

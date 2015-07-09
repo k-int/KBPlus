@@ -81,13 +81,14 @@ class TsvSuperlifterService {
           }
           else {
             row_information.messages.add("No domain objects located for ${toih.ref} - Check for create instruction");
-            if ( toih.creation?.onMissing ) {
+            if ( toih.creation?.onMissing &&
+                 meetsCriteria(toih.creation, locatedObjects,  nl, colmap, testRun, row_information ) ) {
               createDomainObject(toih, locatedObjects,  nl, colmap, testRun,row_information  );
             }
           }
         }
 
-        log.debug("About to start creation rules")
+        log.debug("About to start creation rules :: pre flight")
         locatedObjects.each { key, value ->
           log.debug("Located ${key} -> ${value}")
         }
@@ -97,6 +98,8 @@ class TsvSuperlifterService {
         config.header.creationRules.each { creation_rule ->
           if ( meetsCriteria(creation_rule, locatedObjects,  nl, colmap, testRun, row_information )) {
             createDomainObject(creation_rule, locatedObjects, nl, colmap, testRun,row_information  )
+          }
+          else {
           }
         }
       }
@@ -109,7 +112,9 @@ class TsvSuperlifterService {
   private def meetsCriteria(creation_rule, locatedObjects,  nl, colmap, testRun,row_information ) {
     def passed = true;
     def missingProps = []
+
     creation_rule.whenPresent?.each { rule ->
+      log.debug("Checking rule ${rule}")
       switch( rule.type ) {
         case 'val':
           if ( ( nl[colmap[rule.colname]] == null ) || ( nl[colmap[rule.colname]].trim().length() == 0 ) ) {
@@ -120,16 +125,20 @@ class TsvSuperlifterService {
         case 'ref':
           if ( locatedObjects[rule.refname] == null ) {
             passed = false;
-            missingProps.add("Reference "+rule.colname+"::"+locatedObjects[rule.refname])
+            missingProps.add("Reference "+rule.refname+"::"+locatedObjects[rule.refname])
           }
           break;
+      }
+      if ( ( passed == false ) && ( rule.errorOnMissing ) ) {
+        row_information.error = true;
       }
     }
 
     if ( passed )
       row_information.messages.add("Row passed whenPresent Check for ${creation_rule.ref} ")
-    else
+    else {
       row_information.messages.add("Row failed whenPresent check for ${creation_rule.ref} - ${missingProps} not present")
+    }
 
     return passed
   }

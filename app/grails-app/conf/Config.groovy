@@ -603,6 +603,7 @@ financialImportTSVLoaderMappings = [
         ],
         creation:[
           onMissing:true,
+          whenPresent:[ [ type:'ref', refname:'owner'] ],
           properties : [
             [ type:'ref', property:'owner', refname:'owner' ],
             [ type:'val', property:'invoiceNumber', colname: 'InvoiceNumber']
@@ -612,7 +613,8 @@ financialImportTSVLoaderMappings = [
     ],
     creationRules : [
       [
-        whenPresent:[ [ type:'val', colname:'InvoiceTotalExcVat'] ],
+        whenPresent:[ [ type:'val', colname:'InvoiceTotalExcVat'],
+                      [ type:'ref', refname:'owner', errorOnMissing:true] ],
         ref:'MainCostItem',
         cls:'com.k_int.kbplus.CostItem',
         creation : [
@@ -627,7 +629,7 @@ financialImportTSVLoaderMappings = [
       [
         ref:'TaxCostItem',
         cls:'com.k_int.kbplus.CostItem',
-        whenPresent:[ [ type:'val', colname:'InvoiceVat'] ],
+        whenPresent:[ [ type:'val', colname:'InvoiceVat'],[ type:'ref', refname:'owner'] ],
         creation:[
           properties:[
             [ type:'ref', property:'owner', refname:'owner' ],
@@ -640,7 +642,7 @@ financialImportTSVLoaderMappings = [
       [
         ref:'InvoiceTransactionCharge',
         cls:'com.k_int.kbplus.CostItem',
-        whenPresent:[ [ type:'val', colname:'InvoiceTransactionCharge'] ],
+        whenPresent:[ [ type:'val', colname:'InvoiceTransactionCharge'],[ type:'ref', refname:'owner'] ],
         creation:[
           properties:[
             [ type:'ref', property:'owner', refname:'owner' ],
