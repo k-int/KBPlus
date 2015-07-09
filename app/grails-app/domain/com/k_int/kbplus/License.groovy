@@ -522,9 +522,10 @@ class License {
     return customProperties.find{it.type.name == name}    
   }
   static def refdataFind(params) {
-       String INSTITUTIONAL_LICENSES_QUERY = " from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org.id = ? and ol.roleType.id = ? ) AND l.status.value != 'Deleted' and lower(l.reference) like ?"
+       String INSTITUTIONAL_LICENSES_QUERY = " from License as l where ( exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org.id =(:orgId) and ol.roleType.id = (:orgRole)) OR l.isPublic.id=(:publicS)) AND l.status.value != 'Deleted' and lower(l.reference) like (:ref)"
       def result = []
-      def  ql = License.executeQuery("select l ${INSTITUTIONAL_LICENSES_QUERY}",[params.inst?.toLong(),params.roleType?.toLong(),"${params.q.toLowerCase()}%"])
+
+      def  ql = License.executeQuery("select l ${INSTITUTIONAL_LICENSES_QUERY}",[orgId:params.inst?.toLong(),orgRole:params.roleType?.toLong(),publicS:params.isPublic?.toLong(),ref:"${params.q.toLowerCase()}%"])
       if ( ql ) {
           ql.each { prop ->
               result.add([id:"${prop.reference}||${prop.id}",text:"${prop.reference}"])

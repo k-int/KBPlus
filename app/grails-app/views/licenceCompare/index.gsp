@@ -81,6 +81,7 @@
 	                  q: term, // search term
 	                  inst:"${institution?.id}",
 	                  roleType:"${licensee_role}",
+	                  isPublic:"${isPublic?.id}",
 	                  page_limit: 10,
 	                  baseClass:'com.k_int.kbplus.License'
 	              };
