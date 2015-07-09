@@ -87,7 +87,7 @@ class TitleInstance {
 
   static def lookupByIdentifierString(idstr) {
 
-    // println("lookupByIdentifierString(${idstr})");
+    println("lookupByIdentifierString(${idstr})");
 
     def result = null;
     def qr = null;
@@ -98,7 +98,7 @@ class TitleInstance {
         qr = TitleInstance.executeQuery('select t from TitleInstance as t join t.ids as io where io.identifier.value = ?',[idstr_components[0]])
         break;
       case 2:
-        qr = TitleInstance.executeQuery('select t from TitleInstance as t join t.ids as io where io.identifier.value = ? and io.identifier.ns.ns = ?',[idstr_components[1],idstr_components[0]])
+        qr = TitleInstance.executeQuery('select t from TitleInstance as t join t.ids as io where io.identifier.value = ? and lower(io.identifier.ns.ns) = ?',[idstr_components[1],idstr_components[0]?.toLowerCase()])
         break;
       default:
         // println("Unable to split");
