@@ -114,6 +114,9 @@
                                <li><g:link controller="myInstitutions"
                                            action="changeLog"
                                            params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.change_log')} </g:link></li>
+                               <li><g:link controller="myInstitutions"
+                                           action="emptySubscription"
+                                           params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.emptySubscription')} </g:link></li>
                                <g:if test="${grailsApplication.config.feature.finance}">
                                  <li><g:link controller="finance"
                                              action="index"
