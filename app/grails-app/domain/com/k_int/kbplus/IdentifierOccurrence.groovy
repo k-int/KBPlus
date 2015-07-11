@@ -14,7 +14,8 @@ class IdentifierOccurrence {
     ti:TitleInstance,
     org:Org,
     tipp:TitleInstancePackagePlatform,
-    pkg:Package
+    pkg:Package,
+    sub:Subscription
   ]
 
   static mapping = {
@@ -24,6 +25,7 @@ class IdentifierOccurrence {
           tipp column:'io_tipp_fk'
            org column:'io_org_fk'
            pkg column:'io_pkg_fk'
+           sub column:'io_sub_fk'
   }
 
   static constraints = {
@@ -31,10 +33,11 @@ class IdentifierOccurrence {
       ti(nullable:true)
     tipp(nullable:true)
      pkg(nullable:true)
+     sub(nullable:true)
   }
   
   String toString() {
-    "IdentifierOccurrence(${id} - ti:${ti}, org:${org}, tipp:${tipp}, pkg:${pkg}";
+    "IdentifierOccurrence(${id} - ti:${ti}, org:${org}, tipp:${tipp}, pkg:${pkg}, sub:${sub}";
   }
 
   @Transient
