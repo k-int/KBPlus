@@ -90,7 +90,7 @@
                                <li><g:link controller="myInstitutions"
                                            action="currentTitles"
                                            params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.ttls')} </g:link></li>
-                               <li><g:link controller="subscriptionDetails" 
+                               <li><g:link controller="subscriptionDetails"
                                            action="compare"
                                            params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.comp_sub')} </g:link></li>
                                <li><g:link controller="licenceCompare" 
@@ -114,12 +114,12 @@
                                <li><g:link controller="myInstitutions"
                                            action="changeLog"
                                            params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.change_log')} </g:link></li>
-                               <g:if test="${grailsApplication.config.ab.newcore}">
+                               <g:if test="${grailsApplication.config.feature.finance}">
                                  <li><g:link controller="finance"
                                              action="index"
                                              params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.finance')} </g:link></li>
                                </g:if>
-                               <li><g:link controller="myInstitutions" 
+                               <li><g:link controller="myInstitutions"
                                            action="tipview"
                                            params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.core_ttl')} </g:link></li>
                              </ul>
@@ -159,7 +159,7 @@
                          <g:link controller="licenseDetails" action="create">${message(code:'licence.new')}</g:link></li>
                        <li class="divider"></li>
 
-                        <li<%= ( ( 'subscriptionDetails'== controllerName ) && ( 'compare'==actionName ) ) ? ' class="active"' : '' %>><g:link controller="subscriptionDetails" 
+                        <li<%= ( ( 'subscriptionDetails'== controllerName ) && ( 'compare'==actionName ) ) ? ' class="active"' : '' %>><g:link controller="subscriptionDetails"
                                            action="compare">Compare Subscriptions</g:link></li>
 
                        <li <%= ( ( 'subscriptionImport'== controllerName ) && ( 'generateImportWorksheet'==actionName ) ) ? ' class="active"' : '' %>>
@@ -294,7 +294,7 @@
               <li><a class="dlpopover" href="#"><i class="icon-search icon-white"></i></a></li>
             </ul>
             </sec:ifLoggedIn>
-           
+
 
             <ul class="nav pull-right">
               <sec:ifLoggedIn>
@@ -380,7 +380,7 @@
               <div class="pull-right">
                   <a href="http://www.kbplus.ac.uk"><div class="sprite sprite-kbplus_logo">Knowledge Base Plus</div></a>
               </div>
-              
+
           </div>
       </div>
   </div>

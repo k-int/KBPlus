@@ -98,7 +98,7 @@ class AdminController {
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def hardDeletePkgs(){
     def result = [:]
-    
+
     result.user = User.get(springSecurityService.principal.id)
     result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
@@ -148,7 +148,7 @@ class AdminController {
       result.conflicts_list = conflicts_list
       result.pkg = pkg
 
-      render(template: "hardDeleteDetails",model:result)  
+      render(template: "hardDeleteDetails",model:result)
     }else{
       def criteria = Package.createCriteria()
       result.pkgs = criteria.list(max: result.max, offset:result.offset){
@@ -158,14 +158,14 @@ class AdminController {
           order("name", params.order?:'asc')
       }
     }
-    
+
     result
   }
-  
+
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def performPackageDelete(){
    if (request.method == 'POST'){
-      def pkg = Package.get(params.id)  
+      def pkg = Package.get(params.id)
       Package.withTransaction { status ->
         log.info("Deleting Package ")
         log.info("${pkg.id}::${pkg}")
@@ -187,10 +187,10 @@ class AdminController {
         }
         pkg.delete()
       }
-      log.info("Delete Complete.") 
+      log.info("Delete Complete.")
    }
    redirect controller: 'admin', action:'hardDeletePkgs'
-   
+
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
@@ -227,7 +227,7 @@ class AdminController {
              usrMrg.save(flush:true,failOnError:true)
              flash.message = "Rights copying successful. User '${usrMrg.displayName}' is now disabled."
            }else{
-             flash.error = "An error occured before rights transfer was complete." 
+             flash.error = "An error occured before rights transfer was complete."
            }
          }else{
           flash.error = "Please select'user to keep' and 'user to merge' from the dropdown."
@@ -299,7 +299,7 @@ class AdminController {
       }
     }
   }
-  
+
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def allNotes() {
     def result = [:]
@@ -370,7 +370,7 @@ class AdminController {
 
         log.debug("Clear ES");
         dataloadService.clearDownAndInitES();
-  
+
         log.debug("manual start full text index");
         dataloadService.updateFTIndexes();
       }
@@ -675,7 +675,7 @@ class AdminController {
               }
               c++
             }
-            
+
           }
           else {
             log.debug("Unable to continue - matched multiple titles");
@@ -694,7 +694,7 @@ class AdminController {
     result.error = flash.error
     result
   }
- 
+
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def deleteCustprop() {
     def pd = PropertyDefinition.get(params.id);
@@ -766,11 +766,12 @@ class AdminController {
     propertyInstanceMap.get().clear()
   }
 
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def financeImport() {
     def result = [:];
     if (request.method == 'POST'){
       def input_stream = request.getFile("tsvfile")?.inputStream
-      result.loaderResult = tsvSuperlifterService.load(input_stream,grailsApplication.config.financialImportTSVLoaderMappings,true)
+      result.loaderResult = tsvSuperlifterService.load(input_stream,grailsApplication.config.financialImportTSVLoaderMappings,params.dryRun=='Y'?true:false)
     }
     result
   }

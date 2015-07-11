@@ -24,17 +24,17 @@ onix = [
                       // Add a new row for each related agent.
                       (0..(item."RelatedAgent"?.size() - 1)).each { int idx ->
                         def entry = [:]
-                        
+
                         // Copy the whole of the data.
                         entry << item
-                        
+
                         // Replace the related agent with a list of just 1.
                         entry."RelatedAgent" = [item["RelatedAgent"][idx]]
-                        
+
                         new_data += entry
                       }
                       break
-                      
+
                     default :
                       // Just add the item.
                       new_data += item
@@ -47,7 +47,7 @@ onix = [
                   data.clear()
                   data.addAll(new_data)
                 }
-                
+
                 // Return the data.
                 data
               }),
@@ -103,7 +103,7 @@ onix = [
                     def temp = [item]
                     //Then replace the data User(s) with the single User
                     copy['User'] = temp
-  
+
                     new_data += copy
                   }
                 }
@@ -115,7 +115,7 @@ onix = [
                       def copy = [:]
                       copy << usage
                       def temp = [method]
-                      copy[type] = temp 
+                      copy[type] = temp
                       new_data += copy
                     }
                 }
@@ -127,7 +127,7 @@ onix = [
                       copy = deepcopy(usage)
                       entry = place.clone()
                       copy."${parent}"[0]."${child}"= [entry]
-                      new_data.addAll(copy) 
+                      new_data.addAll(copy)
                     }
                 }
                 //Need to loop we might have multiple data here, genetrated from above
@@ -168,7 +168,7 @@ onix = [
                         new_data += usage
                       break;
                   }
-                  
+
                 }
                 refresh_data();
 
@@ -254,7 +254,7 @@ onix = [
                     ois?.close()
                   }
                 }
-                data.each{access -> 
+                data.each{access ->
                   access."ContinuingAccessTermRelatedAgent"?."RelatedAgent"?.getAt(0)?.each{ agent ->
                     def copy = [:]
                     def entry = [:]
@@ -534,7 +534,7 @@ refdatavalues = [ "User" : [ "Authorized User", "ExternalAcademic", "ExternalLib
 
 // Uncomment and edit the following lines to start using Grails encoding & escaping improvements
 
-/* remove this line 
+/* remove this line
  // GSP settings
  grails {
  views {
@@ -563,15 +563,15 @@ quartzHeartbeat = 'Never'
 financialImportTSVLoaderMappings = [
   header:[
     defaultTargetClass:'com.k_int.kbplus.CostItem',
-    
+
     // Identify the different combinations that can be used to identify domain objects for the current row
     // Names columns in the import sheet - importer will map according to config and do the right thing
     targetObjectIdentificationHeuristics:[
-      [ 
-        ref:'subscription', 
-        cls:'com.k_int.kbplus.Subscription', 
-        heuristics:[ 
-          [ type : 'simpleLookup', criteria : [ 
+      [
+        ref:'subscription',
+        cls:'com.k_int.kbplus.Subscription',
+        heuristics:[
+          [ type : 'simpleLookup', criteria : [
                                                 [ srcType:'col', colname:'SubscriptionId', domainProperty:'identifier' ]
                                               ]
           ]
@@ -584,8 +584,8 @@ financialImportTSVLoaderMappings = [
         ref:'owner',
         cls:'com.k_int.kbplus.Org',
         heuristics:[
-          [ 
-            type : 'hql', 
+          [
+            type : 'hql',
             hql: 'select o from Org as o join o.ids as io where io.identifier.ns.ns = :jcns and io.identifier.value = :orgId',
             values : [ jcns : [type:'static', value:'JC'], orgId: [type:'column', colname:'InstitutionId'] ]
           ]
@@ -595,58 +595,101 @@ financialImportTSVLoaderMappings = [
         ]
       ],
       [
-        ref:'invoice', 
-        cls:'com.k_int.kbplus.Invoice', 
-        heuristics:[ 
-          [ type : 'simpleLookup', 
+        ref:'invoice',
+        cls:'com.k_int.kbplus.Invoice',
+        heuristics:[
+          [ type : 'simpleLookup',
             criteria : [ [ srcType:'col', colname:'InvoiceNumber', domainProperty:'invoiceNumber' ],
-                         [ srcType:'ref', refname:'owner', domainProperty:'owner'] ] 
+                         [ srcType:'ref', refname:'owner', domainProperty:'owner'] ]
           ]
         ],
         creation:[
           onMissing:true,
+          whenPresent:[ [ type:'ref', refname:'owner'] ],
           properties : [
             [ type:'ref', property:'owner', refname:'owner' ],
             [ type:'val', property:'invoiceNumber', colname: 'InvoiceNumber']
           ]
         ]
       ]
+    ],
+    creationRules : [
+      [
+        whenPresent:[ [ type:'val', colname:'InvoiceTotalExcVat'],
+                      [ type:'ref', refname:'owner', errorOnMissing:true] ],
+        ref:'MainCostItem',
+        cls:'com.k_int.kbplus.CostItem',
+        creation : [
+          properties:[
+            [ type:'ref', property:'owner', refname:'owner' ],
+            [ type:'ref', property:'invoice', refname:'invoice' ],
+            [ type:'ref', property:'sub', refname:'subscription' ],
+            [ type:'val', property:'costInBillingCurrency', colname:'InvoiceTotalExcVat', datatype:'Double'],
+          ]
+        ]
+      ],
+      [
+        ref:'TaxCostItem',
+        cls:'com.k_int.kbplus.CostItem',
+        whenPresent:[ [ type:'val', colname:'InvoiceVat'],[ type:'ref', refname:'owner'] ],
+        creation:[
+          properties:[
+            [ type:'ref', property:'owner', refname:'owner' ],
+            [ type:'ref', property:'invoice', refname:'invoice' ],
+            [ type:'ref', property:'sub', refname:'subscription' ],
+            [ type:'val', property:'costInBillingCurrency', colname:'InvoiceVat', datatype:'Double'],
+          ]
+        ]
+      ],
+      [
+        ref:'InvoiceTransactionCharge',
+        cls:'com.k_int.kbplus.CostItem',
+        whenPresent:[ [ type:'val', colname:'InvoiceTransactionCharge'],[ type:'ref', refname:'owner'] ],
+        creation:[
+          properties:[
+            [ type:'ref', property:'owner', refname:'owner' ],
+            [ type:'ref', property:'invoice', refname:'invoice' ],
+            [ type:'ref', property:'sub', refname:'subscription' ],
+            [ type:'val', property:'costInBillingCurrency', colname:'InvoiceTransactionCharge', datatype:'Double'],
+          ]
+        ]
+      ]
     ]
   ],
   cols: [
-    [colname:'InvoiceId', gormMappingPath:'invoice.invoiceNumber'],
-    [colname:'SubscriptionId'],
-    [colname:'JC_OrderNumber'],
-    [colname:'InvoiceNumber'],
-    [colname:'PoNumber'],
-    [colname:'IssuedDate'],
-    [colname:'DueDate'],
-    [colname:'InstitutionName'],
-    [colname:'InstitutionId'],
-    [colname:'ISNIId'],
-    [colname:'AccountId'],
-    [colname:'ResourceName'],
-    [colname:'ResourceId'],
-    [colname:'AgreementName'],
-    [colname:'AgreementId'],
-    [colname:'PublisherName'],
-    [colname:'InvoicePeriodStart'],
-    [colname:'InvoicePeriodEnd'],
-    [colname:'Price'],
-    [colname:'AnnualAccessFee'],
-    [colname:'AdditionalFees'],
-    [colname:'SubscriptionTransactionCharge'],
-    [colname:'SubscriptionVAT'],
-    [colname:'DatePaid'],
-    [colname:'InvoiceNotes'],
-    [colname:'InvoiceStatus'],
-    [colname:'Currency'],
-    [colname:'InvoiceTotalExcVat'],
-    [colname:'InvoiceTransactionCharge'],
-    [colname:'InvoiceVat'],
-    [colname:'InvoiceTotal'],
-    [colname:'ItemCount'],
-    [colname:'TotalSubscriptionValue'],
-    [colname:'InvoiceType']
+    [colname:'InvoiceId', gormMappingPath:'invoice.invoiceNumber', desc:''],
+    [colname:'SubscriptionId', desc:'Used to match to an existing KB+ subscription - must contain the KB+ Subscription Reference to match'],
+    [colname:'JC_OrderNumber', desc:''],
+    [colname:'InvoiceNumber', desc:'Used to match this line item to an existing KB+ Invoice. Line must first match an organisation via InstitutionId, then this is matched on Invoice Reference. If none found, a new invoice will be created'],
+    [colname:'PoNumber', desc:''],
+    [colname:'IssuedDate', desc:''],
+    [colname:'DueDate', desc:''],
+    [colname:'InstitutionName', desc:''],
+    [colname:'InstitutionId', desc:'Used to look up an institution based on the JC Institution ID.'],
+    [colname:'ISNIId', desc:''],
+    [colname:'AccountId', desc:''],
+    [colname:'ResourceName', desc:''],
+    [colname:'ResourceId', desc:''],
+    [colname:'AgreementName', desc:''],
+    [colname:'AgreementId', desc:''],
+    [colname:'PublisherName', desc:''],
+    [colname:'InvoicePeriodStart', desc:''],
+    [colname:'InvoicePeriodEnd', desc:''],
+    [colname:'Price', desc:''],
+    [colname:'AnnualAccessFee', desc:''],
+    [colname:'AdditionalFees', desc:''],
+    [colname:'SubscriptionTransactionCharge', desc:''],
+    [colname:'SubscriptionVAT', desc:''],
+    [colname:'DatePaid', desc:''],
+    [colname:'InvoiceNotes', desc:''],
+    [colname:'InvoiceStatus', desc:''],
+    [colname:'Currency', desc:''],
+    [colname:'InvoiceTotalExcVat', desc:''],
+    [colname:'InvoiceTransactionCharge', desc:''],
+    [colname:'InvoiceVat', desc:''],
+    [colname:'InvoiceTotal', desc:''],
+    [colname:'ItemCount', desc:''],
+    [colname:'TotalSubscriptionValue', desc:''],
+    [colname:'InvoiceType', desc:'']
   ]
 ];
