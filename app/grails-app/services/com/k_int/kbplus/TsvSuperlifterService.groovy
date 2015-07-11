@@ -25,20 +25,24 @@ class TsvSuperlifterService {
 
     while ((nl = r.readNext()) != null) {
 
-
      def row_information = [ messages:[], error:false]
 
      def elapsed = System.currentTimeMillis() - start_time
 
       if ( first ) {
         first = false; // header
-        log.debug('Header :'+nl);
         columns=nl
         result.columns = columns;
+        log.debug('Header :'+columns);
+
+        if ( columns?.length == 1 ) {
+          throw new RuntimeException("Only one column in tsv file - Is it possible your tabs have been removed by an editor?");
+        }
+
         // Set up colmap
         int i=0;
         columns.each {
-          colmap.put(it,new Integer(i++));
+          colmap[it] = new Integer(i++);
         }
       }
       else {
@@ -51,8 +55,6 @@ class TsvSuperlifterService {
         // locatedObjects
         def locatedObjects = [:]
 
-        log.debug(nl);
-
         // We need to see if we can identify any existing domain objects which match the current row in the TSV.
         // We do this using the config.header.targetObjectIdentificationHeuristics list which contains a list of
         // column conjunctions.
@@ -64,6 +66,7 @@ class TsvSuperlifterService {
           def located_objects = []
           toih.heuristics.each { toih_heuristic ->
             // Each heuristic is a conjunction of properties
+            log.debug("Trying to look up instance of ${toih.cls}");
             def o = locateDomainObject(toih, toih_heuristic, nl, locatedObjects, colmap);
             if ( ( o != null ) && ( o.size() == 1 ) ) {
               row_information.messages.add("Located instance of ${toih.cls} : ${o[0]}");
@@ -222,6 +225,7 @@ class TsvSuperlifterService {
           switch ( clause.srcType ) {
             case 'col' :
               base_qry += "i.${clause.domainProperty} = :${clause.colname}"
+              log.debug("${base_qry} ${colmap[clause.colname]}");
               qry_params.put(clause.colname,nl[colmap[clause.colname]]);
               break;
             case 'ref' :
