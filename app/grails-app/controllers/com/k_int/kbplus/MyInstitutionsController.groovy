@@ -585,7 +585,11 @@ class MyInstitutionsController {
                 if ( params.newEmptySubId ) {
                   sub_id_components = params.newEmptySubId.split(':');
                   if ( sub_id_components.length == 2 ) {
-                    sub_identifier = Identifier.lookupOrCreateCanonicalIdentifier(sub_id_components[0],sub_id_components[1]);
+                    def sub_identifier = Identifier.lookupOrCreateCanonicalIdentifier(sub_id_components[0],sub_id_components[1]);
+                    new_sub.ids.add(sub_identifier);
+                  }
+                  else {
+                    def sub_identifier = Identifier.lookupOrCreateCanonicalIdentifier('Unknown',params.newEmptySubId);
                     new_sub.ids.add(sub_identifier);
                   }
                 }
