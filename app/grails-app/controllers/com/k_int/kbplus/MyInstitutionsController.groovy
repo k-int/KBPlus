@@ -567,6 +567,7 @@ class MyInstitutionsController {
             def startDate = sdf.parse(params.valid_from)
             def endDate = sdf.parse(params.valid_to)
 
+
             def new_sub = new Subscription(type: RefdataValue.findByValue("Subscription Taken"),
                     status: RefdataCategory.lookupOrCreate('Subscription Status', 'Current'),
                     name: params.newEmptySubName,
@@ -575,10 +576,19 @@ class MyInstitutionsController {
                     identifier: params.newEmptySubId,
                     isPublic: RefdataCategory.lookupOrCreate('YN', 'No'),
                     impId: java.util.UUID.randomUUID().toString())
+
             if (new_sub.save()) {
                 def new_sub_link = new OrgRole(org: result.institution,
                         sub: new_sub,
                         roleType: RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber')).save();
+
+                if ( params.newEmptySubId ) {
+                  sub_id_components = params.newEmptySubId.split(':');
+                  if ( sub_id_components.length == 2 ) {
+                    sub_identifier = Identifier.lookupOrCreateCanonicalIdentifier(sub_id_components[0],sub_id_components[1]);
+                    new_sub.ids.add(sub_identifier);
+                  }
+                }
 
                 redirect controller: 'subscriptionDetails', action: 'index', id: new_sub.id
             } else {
