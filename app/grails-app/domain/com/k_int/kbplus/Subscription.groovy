@@ -42,7 +42,7 @@ class Subscription {
 
 
   static hasMany = [ 
-                     ids: IdentifierOccurence,
+                     ids: IdentifierOccurrence,
                      packages : SubscriptionPackage, 
                      issueEntitlements: IssueEntitlement,
                      documents:DocContext,
