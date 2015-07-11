@@ -123,7 +123,34 @@
                            <br/>
                        </g:each></dd></dl>
 
-               <dl><dt><g:annotatedLabel owner="${subscriptionInstance}" property="identifier">Subscription Identifier</g:annotatedLabel></dt><dd>${subscriptionInstance.identifier}</dd></dl>
+               <dl><dt><g:annotatedLabel owner="${subscriptionInstance}" property="ids">Subscription Identifiers</g:annotatedLabel></dt>
+                   <dd>
+                     <table class="table table-striped">
+                       <thead>
+                         <tr>
+                           <th>Authority</th>
+                           <th>Identifier</th>
+                         </tr>
+                         <g:each in="${subscriptionInstance.ids}" var="io">
+                           <tr>
+                             <td>${io.identifier.ns.ns}</td>
+                             <td>${io.identifier.value}</td>
+                           </tr>
+                         </g:each>
+                       </thead>
+                     </table>
+           <g:if test="${editable}">
+              <g:form controller="ajax" action="addToCollection" class="form-inline" name="add_ident_submit">
+                Select an existing identifer using the typedown, or create a new one by entering namespace:value (EG JC:66454) then clicking that value in the dropdown to confirm.<br/>
+                <input type="hidden" name="__context" value="${subscriptionInstance.class.name}:${subscriptionInstance.id}"/>
+                <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.IdentifierOccurrence"/>
+                <input type="hidden" name="__recip" value="sub"/>
+                <input type="hidden" name="identifier" id="addIdentifierSelect"/>
+                <input type="submit" value="Add Identifier..." class="btn btn-primary btn-small"/><br/>
+              </g:form>
+            </g:if>
+                   </dd>
+               </dl>
 
                <dl><dt>Start Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="startDate" type="date"/></dd></dl>
 
