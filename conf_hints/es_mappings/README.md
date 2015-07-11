@@ -1,6 +1,8 @@
 
 The mapping files should be copied to ES config dir (Standard dir listed below)
 
+
+
 /etc/elasticsearch/mappings/kbplus/
 
       com.k_int.kbplus.License.json
@@ -11,3 +13,8 @@ The mapping files should be copied to ES config dir (Standard dir listed below)
       com.k_int.kbplus.TitleInstance.json
 
     
+
+You can create the initial KB+ index with
+
+curl -X PUT "http://localhost:9200/kbplus"
+
