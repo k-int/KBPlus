@@ -581,6 +581,19 @@ financialImportTSVLoaderMappings = [
         ]
       ],
       [
+        ref:'CICategory',
+        cls:'com.k_int.kbplus.RefdataValue',
+        heuristics:[
+          [ type : 'hql',
+            hql: 'select o from RefdataValue as o where o.value = :civalue and o.owner.desc = :citype',
+            values : [ citype : [type:'static', value:'CostItemCategory'], civalue: [type:'column', colname:'InvoiceType']]
+          ]
+        ],
+        creation:[
+          onMissing:false,
+        ]
+      ],
+      [
         ref:'owner',
         cls:'com.k_int.kbplus.Org',
         heuristics:[
@@ -690,6 +703,8 @@ financialImportTSVLoaderMappings = [
     [colname:'InvoiceTotal', desc:''],
     [colname:'ItemCount', desc:''],
     [colname:'TotalSubscriptionValue', desc:''],
-    [colname:'InvoiceType', desc:'']
+    [colname:'InvoiceType', desc:'', type:'vocab', mapping:[
+      'SubscriptionInvoice':'Price',
+    ]]
   ]
 ];

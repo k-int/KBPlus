@@ -284,6 +284,28 @@ class TsvSuperlifterService {
   }
 
   private def getColumnValue(config,colmap,nl,colname) {
-    return nl[colmap[colname]]
+    def col_cfg = config.cols.find { it.colname==colname }
+
+    // Find out where this column appears in the uploaded document
+    def position = colmap[colname]
+    def value = null
+
+    if ( position )
+      value = nl[position]
+
+    log.debug("getColumnValue cfg:${col_cfg} val:${value} colname:${colname}")
+
+    if ( col_cfg ) {
+      switch (col_cfg.type) {
+        case 'vocab':
+          def mapped_value = col_cfg.mapping[value]
+          if ( mapped_value ) {
+            log.debug("Mapping ${value} to ${mapped_value}")
+            value = mapped_value
+          }
+          break;
+      }
+    }
+    return value
   }
 }
