@@ -67,7 +67,7 @@ class TsvSuperlifterService {
           toih.heuristics.each { toih_heuristic ->
             // Each heuristic is a conjunction of properties
             log.debug("Trying to look up instance of ${toih.cls}");
-            def o = locateDomainObject(toih, toih_heuristic, nl, locatedObjects, colmap);
+            def o = locateDomainObject(config, toih, toih_heuristic, nl, locatedObjects, colmap);
             if ( ( o != null ) && ( o.size() == 1 ) ) {
               row_information.messages.add("Located instance of ${toih.cls} : ${o[0]}");
               located_objects.add(o[0]);
@@ -85,8 +85,8 @@ class TsvSuperlifterService {
           else {
             row_information.messages.add("No domain objects located for ${toih.ref} - Check for create instruction");
             if ( toih.creation?.onMissing &&
-                 meetsCriteria(toih.creation, locatedObjects,  nl, colmap, testRun, row_information ) ) {
-              createDomainObject(toih, locatedObjects,  nl, colmap, testRun,row_information  );
+                 meetsCriteria(config, toih.creation, locatedObjects,  nl, colmap, testRun, row_information ) ) {
+              createDomainObject(config, toih, locatedObjects,  nl, colmap, testRun,row_information  );
             }
           }
         }
@@ -99,8 +99,8 @@ class TsvSuperlifterService {
         // We have completed looking up any reference data, and perhaps created refdata along the way, now do the main
         // work of creating domain objects for this row
         config.header.creationRules.each { creation_rule ->
-          if ( meetsCriteria(creation_rule, locatedObjects,  nl, colmap, testRun, row_information )) {
-            createDomainObject(creation_rule, locatedObjects, nl, colmap, testRun,row_information  )
+          if ( meetsCriteria(config, creation_rule, locatedObjects,  nl, colmap, testRun, row_information )) {
+            createDomainObject(config, creation_rule, locatedObjects, nl, colmap, testRun,row_information  )
           }
           else {
           }
@@ -112,7 +112,7 @@ class TsvSuperlifterService {
     result
   }
 
-  private def meetsCriteria(creation_rule, locatedObjects,  nl, colmap, testRun,row_information ) {
+  private def meetsCriteria(config, creation_rule, locatedObjects,  nl, colmap, testRun,row_information ) {
     def passed = true;
     def missingProps = []
 
@@ -120,7 +120,8 @@ class TsvSuperlifterService {
       log.debug("Checking rule ${rule}")
       switch( rule.type ) {
         case 'val':
-          if ( ( nl[colmap[rule.colname]] == null ) || ( nl[colmap[rule.colname]].trim().length() == 0 ) ) {
+          def theval = getColumnValue(config,colmap,nl,rule.colname)
+          if ( ( theval == null ) || ( theval.trim().length() == 0 ) ) {
             passed = false;
             missingProps.add("Column[${colmap[rule.colname]}] ${rule.colname} :: ${nl[colmap[rule.colname]]}")
           }
@@ -148,7 +149,7 @@ class TsvSuperlifterService {
 
   /** Create a new domain object based on the config, values from the row,
   and other objects already located for this row */
-  private def createDomainObject(toih, locatedObjects, nl, colmap, testRun, row_information ) {
+  private def createDomainObject(config, toih, locatedObjects, nl, colmap, testRun, row_information ) {
 
     row_information.messages.add("Attempt to create instance of ${toih.cls} for ${toih.ref} ${testRun?'[Test Run]':'[Save]'}");
     def new_obj_cls = Class.forName(toih.cls)
@@ -168,7 +169,7 @@ class TsvSuperlifterService {
         case 'val':
           log.debug("Setting ${pd.property} on new ${toih.ref} to ${nl[colmap[pd.colname]]}");
           if ( ( nl[colmap[pd.colname]] != null ) && ( nl[colmap[pd.colname]].length() > 0 ) ) {
-            def vl = convertString(nl[colmap[pd.colname]], pd.datatype);
+            def vl = convertString(getColumnValue(config,colmap,nl,pd.colname), pd.datatype);
             new_obj[pd.property] = vl;
             create_msg += pd.property + ":" + vl;
           }
@@ -208,7 +209,7 @@ class TsvSuperlifterService {
     return result;
   }
 
-  private def locateDomainObject(toih, toih_heuristic, nl, locatedObjects, colmap) {
+  private def locateDomainObject(config,toih, toih_heuristic, nl, locatedObjects, colmap) {
     // try to look up instances of toih.cls using the given heuristic
     def result = null;
 
@@ -226,7 +227,7 @@ class TsvSuperlifterService {
             case 'col' :
               base_qry += "i.${clause.domainProperty} = :${clause.colname}"
               log.debug("${base_qry} ${colmap[clause.colname]}");
-              qry_params.put(clause.colname,nl[colmap[clause.colname]]);
+              qry_params.put(clause.colname,getColumnValue(config,colmap,nl,clause.colname))    //  nl[colmap[clause.colname]]);
               break;
             case 'ref' :
               if ( locatedObjects[clause.refname] != null ) {
@@ -258,7 +259,7 @@ class TsvSuperlifterService {
               break;
             case 'column':
               if ( nl[colmap[v.colname]] != null ) {
-                qry_params[k] = nl[colmap[v.colname]]
+                qry_params[k] = getColumnValue(config,colmap,nl,v.colname) // nl[colmap[v.colname]]
               }
               else {
                 log.error("Missing parameter ${v.colname}");
@@ -280,5 +281,9 @@ class TsvSuperlifterService {
     }
 
     return result;
+  }
+
+  private def getColumnValue(config,colmap,nl,colname) {
+    return nl[colmap[colname]]
   }
 }
