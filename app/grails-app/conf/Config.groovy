@@ -594,6 +594,19 @@ financialImportTSVLoaderMappings = [
         ]
       ],
       [
+        ref:'CIElement',
+        cls:'com.k_int.kbplus.RefdataValue',
+        heuristics:[
+          [ type : 'hql',
+            hql: 'select o from RefdataValue as o where o.value = :civalue and o.owner.desc = :citype',
+            values : [ citype : [type:'static', value:'CostItemElement'], civalue: [type:'static', value:'Content']]
+          ]
+        ],
+        creation:[
+          onMissing:false,
+        ]
+      ],
+      [
         ref:'owner',
         cls:'com.k_int.kbplus.Org',
         heuristics:[
@@ -638,6 +651,8 @@ financialImportTSVLoaderMappings = [
             [ type:'ref', property:'invoice', refname:'invoice' ],
             [ type:'ref', property:'sub', refname:'subscription' ],
             [ type:'val', property:'costInBillingCurrency', colname:'InvoiceTotalExcVat', datatype:'Double'],
+            [ type:'ref', property:'costItemCategory', refname:'CICategory'],
+            [ type:'ref', property:'costItemElement', refname:'CIElement']
           ]
         ]
       ],
@@ -651,6 +666,8 @@ financialImportTSVLoaderMappings = [
             [ type:'ref', property:'invoice', refname:'invoice' ],
             [ type:'ref', property:'sub', refname:'subscription' ],
             [ type:'val', property:'costInBillingCurrency', colname:'InvoiceVat', datatype:'Double'],
+            [ type:'ref', property:'costItemCategory', refname:'CICategory'],
+            [ type:'ref', property:'costItemElement', refname:'CIElement']
           ]
         ]
       ],
@@ -664,6 +681,8 @@ financialImportTSVLoaderMappings = [
             [ type:'ref', property:'invoice', refname:'invoice' ],
             [ type:'ref', property:'sub', refname:'subscription' ],
             [ type:'val', property:'costInBillingCurrency', colname:'InvoiceTransactionCharge', datatype:'Double'],
+            [ type:'ref', property:'costItemCategory', refname:'CICategory'],
+            [ type:'ref', property:'costItemElement', refname:'CIElement']
           ]
         ]
       ]
@@ -671,7 +690,7 @@ financialImportTSVLoaderMappings = [
   ],
   cols: [
     [colname:'InvoiceId', gormMappingPath:'invoice.invoiceNumber', desc:''],
-    [colname:'SubscriptionId', desc:'Used to match to an existing KB+ subscription - must contain the KB+ Subscription Reference to match'],
+    [colname:'SubscriptionId', desc:'Used to match to an existing KB+ subscription - must contain the KB+ Subscription Reference to match. Subscriptions are matched using references from JC Namespace'],
     [colname:'JC_OrderNumber', desc:''],
     [colname:'InvoiceNumber', desc:'Used to match this line item to an existing KB+ Invoice. Line must first match an organisation via InstitutionId, then this is matched on Invoice Reference. If none found, a new invoice will be created'],
     [colname:'PoNumber', desc:''],
