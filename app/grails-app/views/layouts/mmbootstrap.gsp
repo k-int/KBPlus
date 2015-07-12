@@ -93,9 +93,9 @@
                                <li><g:link controller="subscriptionDetails"
                                            action="compare"
                                            params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.comp_sub')} </g:link></li>
-                               <li><g:link controller="licenceCompare" 
+                               <li><g:link controller="licenceCompare"
                                            action="index"
-                                           params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.comp_lic')} </g:link></li>                                           
+                                           params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.comp_lic')} </g:link></li>
                                <li><g:link controller="myInstitutions"
                                            action="renewalsSearch"
                                            params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.gen_renewals')} </g:link></li>
@@ -118,9 +118,9 @@
                                            action="emptySubscription"
                                            params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.emptySubscription')} </g:link></li>
                                <g:if test="${grailsApplication.config.feature.finance}">
-                                 <li><g:link controller="finance"
-                                             action="index"
-                                             params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.finance')} </g:link></li>
+                                 <li><g:link controller="myInstitutions"
+                                             action="financeImport"
+                                             params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.financeImport')} </g:link></li>
                                </g:if>
                                <li><g:link controller="myInstitutions"
                                            action="tipview"
