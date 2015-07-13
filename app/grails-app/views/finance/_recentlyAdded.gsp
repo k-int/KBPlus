@@ -38,8 +38,8 @@
         </g:if>
         <g:else>
             <tr>
-                <td colspan="4">No recent cost items...</td>
-                <td colspan="4">Table automatically updates</td>
+                <td colspan="2">No recent cost items...</td>
+                <td colspan="2">Table automatically updates</td>
             </tr>
         </g:else>
     </tbody>
