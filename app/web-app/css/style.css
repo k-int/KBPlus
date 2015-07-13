@@ -912,3 +912,20 @@ th.desc a {
   -webkit-transform: rotate(-90.0deg);  /* Saf3.1+, Chrome */
              filter:  progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083);  /* IE6,IE7 */
          -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083)"; /* IE8 */
+
+
+/* Financial - myInstitutions/shortcode/finance */
+th a.sortable {
+    background-position: right;
+    background-repeat: no-repeat;
+    padding-right: 1.1em;
+    text-decoration: underline!important;
+}
+
+th a.asc {
+    background-image: url(../images/skin/sorted_asc.gif) no-repeat!important;
+}
+
+th a.desc {
+    background-image: url(../images/skin/sorted_desc.gif) no-repeat!important;
+}

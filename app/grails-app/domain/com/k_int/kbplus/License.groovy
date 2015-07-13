@@ -6,7 +6,7 @@ import java.text.Normalizer
 import com.k_int.custprops.PropertyDefinition
 import com.k_int.ClassUtils
 
-class License {
+class License implements Comparable<License>{
 
   @Transient
   def grailsApplication
@@ -304,6 +304,11 @@ class License {
       result = super.toString();
     }
     return result;
+  }
+  
+  @Override
+  public int compareTo(License other){
+      return other.id? other.id.compareTo(this.id) : -1
   }
 
 
