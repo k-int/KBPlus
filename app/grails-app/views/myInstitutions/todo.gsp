@@ -12,12 +12,13 @@
         <li> <g:link controller="myInstitutions"
                      action="instdash"
                      params="${[shortcode:params.shortcode]}">${institution.name} Dashboard</g:link> <span class="divider">/</span> </li>
-        <li> <g:link controller="myInstitutions" action="todo" params="${[shortcode:params.shortcode]}">ToDo List</g:link> </li>
+        <li> <g:link controller="myInstitutions" action="todo" params="${[shortcode:params.shortcode]}">ToDo List (${num_todos} Items)</g:link> </li>
       </ul>
     </div>
 
     <div class="container home-page">
-
+      <h1>ToDo Items ${params.offset?:1} to ${java.lang.Math.min(num_todos,(params.int('offset')?:0)+10)} of ${num_todos}</h1>
+   
       <div class="pagination" style="text-align:center">
         <g:if test="${todos!=null}" >
           <bootstrap:paginate  action="todo" controller="myInstitutions" params="${params}" next="Next" prev="Prev" max="${max}" total="${num_todos}" />

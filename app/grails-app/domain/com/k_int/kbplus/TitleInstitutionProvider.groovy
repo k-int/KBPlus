@@ -157,9 +157,10 @@ class TitleInstitutionProvider {
     }
 
     if ( cont ) {
-      log.debug("No obvious overlaps - create new core assertion ${givenStartDate} - ${givenEndDate}");
-      def new_core_statement = new CoreAssertion(startDate:givenStartDate, endDate:givenEndDate, tiinp:this).save(flush:true,failOnError:true)
-    
+      log.debug("No obvious overlaps -Create new core assertion ${givenStartDate} - ${givenEndDate}");
+      def new_core_statement =new CoreAssertion()
+      this.addToCoreDates(startDate:givenStartDate, endDate:givenEndDate)
+      this.save()
       // See if the new range fully encloses any current assertions
       coreDates.each {
         if(it.id != new_core_statement?.id){

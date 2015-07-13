@@ -24,11 +24,12 @@ class LicenseDetailsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
-    log.debug("licenseDetails id:${params.id}");
+    log.debug("licenseDetails: ${params}");
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     // result.institution = Org.findByShortcode(params.shortcode)
     result.license = License.get(params.id)
+    result.transforms = grailsApplication.config.licenceTransforms
 
     if ( ! result?.license?.hasPerm("view",result.user) ) {
       log.debug("return 401....");
@@ -78,6 +79,8 @@ class LicenseDetailsController {
     }
 
 
+    result.availableSubs = getAvailableSubscriptions(result.license,result.user)
+
     withFormat {
       html result
       json {
@@ -90,18 +93,62 @@ class LicenseDetailsController {
       }
       xml {
         def doc = exportService.buildDocXML("Licences")
-        exportService.addLicencesIntoXML(doc, doc.getDocumentElement(), [result.license])
-        
-        if( ( params.transformId ) && ( result.transforms[params.transformId] != null ) ) {
-          String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
-          transformerService.triggerTransform(result.user, filename, result.transforms[params.transformId], xml, response)
-        }else{ // send the XML to the user
-          response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
-          response.contentType = "text/xml"
-          exportService.streamOutXML(doc, response.outputStream)
+        if(params.format_content=="subpkg"){
+            exportService.addLicenceSubPkgXML(doc, doc.getDocumentElement(),[result.license])
+        }else if(params.format_content=="subie"){
+            exportService.addLicenceSubPkgTitleXML(doc, doc.getDocumentElement(),[result.license])
+        }else if(!params.format_content){
+          exportService.addLicencesIntoXML(doc, doc.getDocumentElement(), [result.license])
         }
+        if ((params.transformId) && (result.transforms[params.transformId] != null)) {
+            String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
+            transformerService.triggerTransform(result.user, filename, result.transforms[params.transformId], xml, response)
+        }else{
+            response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
+            response.contentType = "text/xml"
+            exportService.streamOutXML(doc, response.outputStream)
+        }
+        
+      }
+      csv {
+        response.setHeader("Content-disposition", "attachment; filename=\"${filename}.csv\"")
+        response.contentType = "text/csv"
+        def out = response.outputStream
+        exportService.StreamOutLicenceCSV(out,null,[result.license])
+        out.close()
       }
     }
+  }
+  def getAvailableSubscriptions(licence,user){
+    def licenceInstitutions = licence?.orgLinks?.findAll{ orgRole ->
+      orgRole.roleType.value == "Licensee"
+    }?.collect{  it.org?.hasUserWithRole(user,'INST_ADM')?it.org:null  }
+
+    def subscriptions = null
+    if(licenceInstitutions){
+      def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
+      def date_restriction =  new Date(System.currentTimeMillis())
+
+      def base_qry = " from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org in (:orgs) ) ) ) AND ( s.status.value != 'Deleted' ) AND (s.owner = null) "
+      def qry_params = [orgs:licenceInstitutions]
+      base_qry += " and s.startDate <= (:start) and s.endDate >= (:start) "
+      qry_params.putAll([start:date_restriction])
+      subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params)
+    }
+    return subscriptions
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def linkToSubscription(){
+    log.debug("linkToSubscription :: ${params}")
+    if(params.subscription && params.licence){
+      def sub = Subscription.get(params.subscription)
+      def owner = License.get(params.licence)
+      owner.addToSubscriptions(sub)
+      owner.save(flush:true)
+    }
+    redirect controller:'licenseDetails', action:'index', params: [id:params.licence]
+
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])

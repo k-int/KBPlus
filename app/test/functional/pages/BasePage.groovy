@@ -2,11 +2,17 @@ package pages
 
 import geb.Page
 import geb.error.RequiredPageContentNotPresent
+import grails.plugin.remotecontrol.*
 
 /**
  * Created by ioannis on 28/05/2014.
  */
 class BasePage extends Page {
+    def remote = new RemoteControl()
+
+    String getMessage(String code, Object[] args = null, Locale locale=null) {
+            remote.exec { ctx.messageSource.getMessage(code, args, locale) }
+    }
     static content = {
         terms {
             $("ul.footer-sublinks").children().find("a", text: "Terms & Conditions").click()
@@ -60,7 +66,7 @@ class BasePage extends Page {
         }
         compareONIX {
             $("a", text: "Institutions").click()
-            $("a", text: "Compare ONIX-PL Licences").click()
+            $("a", text: getMessage("menu.institutions.comp_onix")).click()
         }
         allPackages {
             $("a", text: "Institutions").click()
@@ -85,6 +91,7 @@ class BasePage extends Page {
         }
         startESUpdate {
             $("a", text: "Admin Actions").click()
+            $("a",text:"Batch tasks").click()
             $("a", text: "Start ES Index Update").click()
         }
         catchException { run ->

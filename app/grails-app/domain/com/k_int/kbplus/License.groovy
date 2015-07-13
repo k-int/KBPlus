@@ -36,6 +36,7 @@ class License {
   String licenseType
   String licenseStatus
   String impId
+  String contact
 
   long lastmod
   Date startDate
@@ -72,6 +73,7 @@ class License {
                 version column:'lic_version'
                  status column:'lic_status_rv_fk'
                    type column:'lic_type_rv_fk'
+                contact column:'lic_contact'          
               reference column:'lic_ref'
       sortableReference column:'lic_sortable_ref'
                isPublic column:'lic_is_public_rdv_fk'
@@ -89,7 +91,6 @@ class License {
                 endDate column: 'lic_end_date'
        customProperties sort:'type', order:'desc'
          pendingChanges sort: 'ts', order: 'asc'
-
   }
 
   static constraints = {
@@ -111,6 +112,7 @@ class License {
     startDate(nullable: true, blank: true)
     endDate(nullable: true, blank: true)
     lastUpdated(nullable: true, blank: true)
+    contact(nullable:true,blank:true)
  }
 
   def getLicensor() {
@@ -519,5 +521,16 @@ class License {
   def getCustomPropByName(name){
     return customProperties.find{it.type.name == name}    
   }
+  static def refdataFind(params) {
+       String INSTITUTIONAL_LICENSES_QUERY = " from License as l where ( exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org.id =(:orgId) and ol.roleType.id = (:orgRole)) OR l.isPublic.id=(:publicS)) AND l.status.value != 'Deleted' and lower(l.reference) like (:ref)"
+      def result = []
 
+      def  ql = License.executeQuery("select l ${INSTITUTIONAL_LICENSES_QUERY}",[orgId:params.inst?.toLong(),orgRole:params.roleType?.toLong(),publicS:params.isPublic?.toLong(),ref:"${params.q.toLowerCase()}%"])
+      if ( ql ) {
+          ql.each { prop ->
+              result.add([id:"${prop.reference}||${prop.id}",text:"${prop.reference}"])
+          }
+      }
+      result
+  }
 }

@@ -648,7 +648,7 @@ class AjaxController {
     if(params.redirect){
       flash.newProp = newProp
       flash.error = error
-      redirect(controller:"admin",action:"managePropertyDefinitions")
+      redirect(controller:"admin",action:"manageCustomProperties")
     }else{
       render(template: "/templates/custom_props", model:[ownobj:owner, newProp:newProp, error:error])        
     }
@@ -818,9 +818,23 @@ class AjaxController {
       }
     }
     else {
-      log.error("Unable to ookup domain class ${params.__newObjectClass}");
+      log.error("Unable to lookup domain class ${params.__newObjectClass}");
     }
     redirect(url: request.getHeader('referer'))
+  }
+  def validateIdentifierUniqueness(){
+    log.debug("validateIdentifierUniqueness - ${params}")
+    def result = [:]
+    def owner = resolveOID2(params.owner)
+    def identifier = resolveOID2(params.identifier)
+    def duplicates = identifier.occurrences.findAll{it.ti != owner && it.ti != null}?.collect{it.ti}
+    if(duplicates){
+      result.duplicates = duplicates
+    }
+    else{
+      result.unique=true
+    }
+    render result as JSON
   }
 
   def resolveOID2(oid) {
@@ -831,7 +845,7 @@ class AjaxController {
     if ( domain_class ) {
       if ( oid_components[1]=='__new__' ) {
         result = domain_class.getClazz().refdataCreate(oid_components)
-        // log.debug("Result of create ${oid} is ${result}");
+        // log.debug("Result of create ${oid} is ${result.id}");
       }
       else {
         result = domain_class.getClazz().get(oid_components[1])
@@ -866,13 +880,18 @@ class AjaxController {
     }
     redirect(url: request.getHeader('referer'))    
   }
-
+  def validationException(final grails.validation.ValidationException exception){
+    log.error(exception)
+    response.status = 400
+    response.setContentType('text/plain')
+    def outs = response.outputStream
+    outs << "Value validation failed"
+  }
 
   def editableSetValue() {
-    // log.debug("editableSetValue ${params}");
+    log.debug("editableSetValue ${params}");
     def target_object = resolveOID2(params.pk)
-    def result = [:]
-
+    
     if ( target_object ) {
       if ( params.type=='date' ) {
         target_object."${params.name}" = params.date('value','yyyy-MM-dd')
@@ -883,13 +902,16 @@ class AjaxController {
         bindData(target_object, binding_properties)
         // target_object."${params.name}" = params.value
       }
-      target_object.save(flush:true);
+        target_object.save(failOnError:true,flush:true);
+
     }
 
     response.setContentType('text/plain')
 
     def outs = response.outputStream
+
     outs << target_object."${params.name}"
+    
     outs.flush()
     outs.close()
   }

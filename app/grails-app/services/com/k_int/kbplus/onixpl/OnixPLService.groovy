@@ -101,7 +101,7 @@ class OnixPLService {
    * @param values from which we extract the relevant data.
    * @return list of XPath terms
    */
-  private Map<String, String> buildAllComparisonPointsMap (values, parent_path = null, template = null) {
+  private Map<String, String> buildAllComparisonPointsMap (values, parent_path = null, template = null, processor = null) {
     
     // Copy the entries so as not to keep a reference.
     TreeMap entries = [:]
@@ -116,6 +116,7 @@ class OnixPLService {
       // Get the properties.
       TreeMap props = [:]
       props.putAll(properties)
+      
       String the_template = template
       if (the_template == null && parent_path != null) {
         
@@ -130,9 +131,15 @@ class OnixPLService {
         "group" : the_template
       ]
       
+      // Processor default.
+      def proc = props['processor'] ?: processor
+      if (proc) {
+        options[opt]['processor'] = proc
+      }
+      
       // Check for children.
       if (props['children']) {
-        options.putAll(buildAllComparisonPointsMap (props['children'], opt, the_template))
+        options.putAll(buildAllComparisonPointsMap (props['children'], opt, the_template, proc))
       }
     }
     
@@ -146,9 +153,8 @@ class OnixPLService {
    * @return Title if found or null if not
    */
   public static Map getRowHeadingData (Map row_data) {
-    
     // Just find the first example of an entry regardless of which license it's defined against.
-    row_data[row_data.keySet()[0]]
+    row_data?."${row_data.keySet()[0]}"
   }
   
   /**
@@ -168,10 +174,21 @@ class OnixPLService {
         t = content.encodeAsHTML()
       }
     }
-    
     return t
   }
-  
+
+  public static String getUsageQuantity(Map data){
+    String result = ""
+    String type = OnixPLService.getSingleValue(data,'UsageQuantityType')
+    result += type + ": "
+    String proximity = OnixPLService.getSingleValue(data['QuantityDetail'][0],'Proximity')
+    result += proximity
+    result += " ${OnixPLService.getSingleValue(data['QuantityDetail'][0],'Value')} "
+    String unit = OnixPLService.getSingleValue(data['QuantityDetail'][0],'QuantityUnit')
+    result += unit
+    return result  
+  }
+
   /**
    * Sorts the values into their correct order.
    * 
@@ -316,8 +333,14 @@ class OnixPLService {
       
       // Create list of element names.
       List el_names = data.keySet() as List
-      
-      generateKeys(data, exclude, keys)
+      Map<String,List<String>> priority = ["User":[]];
+
+      generateKeys(data, exclude, keys,priority)
+      priority.entrySet().each{
+        if(it.getValue()){
+          keys.add(0,it.getValue())
+        }
+      }
       
       // Go through each element in turn now and get the value for a column.
       for (String el_name in el_names) {
@@ -355,7 +378,7 @@ class OnixPLService {
    * @param key Current key to which we should append.
    * @return
    */
-  private static void generateKeys (Map val, List<String> exclude, List keys) {
+  private static void generateKeys (Map val, List<String> exclude, List keys, Map<String,List<String>> priority) {
     
     // Name.
     String name = val['_name']
@@ -364,7 +387,8 @@ class OnixPLService {
       
       // Add any key values to the keys list.
       for (String cp in val.keySet()) {
-        
+
+
         if (!cp.startsWith('_') && !exclude.contains(cp)) {
           List value = val.get(cp)
           if (value) {
@@ -372,6 +396,9 @@ class OnixPLService {
               String key = it?.get("_content")
               if (key) {
                 keys << treatTextForComparison(key)
+                if(priority.containsKey(it.get("_name"))){
+                  priority[it.get("_name")]+= key
+                }
               }
             }
           }
@@ -388,7 +415,7 @@ class OnixPLService {
                 
                 // Recursively call this method.
                 for (Map v in val[prop]) {
-                  generateKeys (v, exclude, keys)
+                  generateKeys (v, exclude, keys,priority)
                 }
               }
               break
@@ -409,7 +436,7 @@ class OnixPLService {
     
     if (!(tables instanceof MapWithDefault)) {
       tables = tables.withDefault {
-        new LinkedHashMap()
+        new TreeMap()
       }
     }
     
@@ -459,7 +486,6 @@ class OnixPLService {
       'Description',
       'Name',
       'AgentPlaceRelator',
-      'RelatedPlace',
       'AgentType',
       'DocumentLabel',
       'IDValue',

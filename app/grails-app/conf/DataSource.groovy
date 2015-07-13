@@ -13,6 +13,7 @@ hibernate {
 environments {
     development {
         dataSource {
+            // dbCreate==update  - II: Trial Removing this, we manually update the schema now, so don't do this!
             dbCreate = "update"
             driverClassName = "com.mysql.jdbc.Driver"
             dialect=org.hibernate.dialect.MySQL5Dialect
@@ -41,7 +42,7 @@ environments {
             dialect=org.hibernate.dialect.MySQL5Dialect
             username = "k-int"
             password = "k-int"
-            url = "jdbc:mysql://localhost/KBPlusTest?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8"
+            url = "jdbc:mysql://localhost/kbplustest?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8"
             pooled = true
             // logSql = true
             // formatSql = true
@@ -59,7 +60,7 @@ environments {
     }
     production {
         dataSource {
-            dbCreate = "update"
+            // dbCreate = "update"
             driverClassName = "com.mysql.jdbc.Driver"
             username = "k-int"
             password = "k-int"

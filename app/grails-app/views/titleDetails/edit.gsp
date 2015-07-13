@@ -43,6 +43,18 @@
             </g:if>
 
             <h3>Identifiers</h3>
+
+              <g:each in="${duplicates}" var="entry">
+
+                 <bootstrap:alert class="alert-info">
+                 Identifier ${entry.key} used in multiple titles:
+                 <ul>
+                 <g:each in ="${entry.value}" var="dup_title">
+                 <li><g:link controller='titleDetails' action='show' id="${dup_title.id}">${dup_title.title}</g:link></li>
+                 </g:each>
+                 </ul>
+                 </bootstrap:alert>
+              </g:each>
             <table class="table table-bordered">
               <thead>
                 <tr>
@@ -66,7 +78,7 @@
 
            
             <g:if test="${editable}">
-              <g:form controller="ajax" action="addToCollection" class="form-inline">
+              <g:form controller="ajax" action="addToCollection" class="form-inline" name="add_ident_submit">
                 Select an existing identifer using the typedown, or create a new one by entering namespace:value (EG eISSN:2190-9180) then clicking that value in the dropdown to confirm.<br/>
                 <input type="hidden" name="__context" value="${ti.class.name}:${ti.id}"/>
                 <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.IdentifierOccurrence"/>
@@ -123,9 +135,30 @@
   <r:script language="JavaScript">
 
     $(function(){
-      // moved to mm_bootstrap
-      // $.fn.editable.defaults.mode = 'inline';
-      // $('.xEditableValue').editable();
+
+
+      $("[name='add_ident_submit']").submit(function( event ) {
+        event.preventDefault();
+        $.ajax({
+          url: "<g:createLink controller='ajax' action='validateIdentifierUniqueness'/>?identifier="+$("input[name='identifier']").val()+"&owner="+"${ti.class.name}:${ti.id}",
+          success: function(data) {
+            if(data.unique){
+              $("[name='add_ident_submit']").unbind( "submit" )
+              $("[name='add_ident_submit']").submit();
+            }else if(data.duplicates){
+              var warning = "The following Titles are also associated with this identifier:\n";
+              for(var ti of data.duplicates){
+                  warning+= ti.id +":"+ ti.title+"\n";
+              }
+              var accept = confirm(warning);
+              if(accept){
+                $("[name='add_ident_submit']").unbind( "submit" )
+                $("[name='add_ident_submit']").submit();
+              }
+            }
+          },
+        });
+      });
 
       <g:if test="${editable}">
       $("#addIdentifierSelect").select2({
@@ -146,7 +179,7 @@
           }
         },
         createSearchChoice:function(term, data) {
-          return {id:'com.k_int.kbplus.Identifier:__new__:'+term,text:term};
+          return {id:'com.k_int.kbplus.Identifier:__new__:'+term,text:"New - "+term};
         }
       });
 

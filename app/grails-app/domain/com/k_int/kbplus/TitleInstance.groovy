@@ -78,7 +78,7 @@ class TitleInstance {
   Org getPublisher() {
     def result = null;
     orgs.each { o ->
-      if ( o.roleType.value == 'Publisher' ) {
+      if ( o.roleType?.value == 'Publisher' ) {
         result = o.org
       }
     }
@@ -87,7 +87,7 @@ class TitleInstance {
 
   static def lookupByIdentifierString(idstr) {
 
-    // println("lookupByIdentifierString(${idstr})");
+    println("lookupByIdentifierString(${idstr})");
 
     def result = null;
     def qr = null;
@@ -98,7 +98,7 @@ class TitleInstance {
         qr = TitleInstance.executeQuery('select t from TitleInstance as t join t.ids as io where io.identifier.value = ?',[idstr_components[0]])
         break;
       case 2:
-        qr = TitleInstance.executeQuery('select t from TitleInstance as t join t.ids as io where io.identifier.value = ? and io.identifier.ns.ns = ?',[idstr_components[1],idstr_components[0]])
+        qr = TitleInstance.executeQuery('select t from TitleInstance as t join t.ids as io where io.identifier.value = ? and lower(io.identifier.ns.ns) = ?',[idstr_components[1],idstr_components[0]?.toLowerCase()])
         break;
       default:
         // println("Unable to split");
@@ -119,13 +119,43 @@ class TitleInstance {
    * @param candidate_identifiers A list of maps containing identifiers and namespaces [ { namespace:'ISSN', value:'Xnnnn-nnnn' }, {namespace:'ISSN', value:'Xnnnn-nnnn'} ]
    */
   static def findByIdentifier(candidate_identifiers) {
-    def result = null
+    def matched = []
     candidate_identifiers.each { i ->
       def id = Identifier.lookupOrCreateCanonicalIdentifier(i.namespace, i.value)
       def io = IdentifierOccurrence.findByIdentifier(id)
       if ( ( io != null ) && ( io.ti != null ) ) {
-        result = io.ti;
+        if ( matched.contains(io.ti) ) {
+          // Already in the list
+        }
+        else {
+          matched.add[io.ti];
+        }
       }
+    }
+
+    // Didn't match anything - see if we can match based on identifier without namespace [In case of duff supplier data]
+    if ( matched.size() == 0 ) {
+      candidate_identifiers.each { i ->
+        def id1 = Identifier.executeQuery('Select io from IdentifierOccurrence as io where io.identifier.value = ?',[i.value]);
+        id1.each { 
+          if ( it.ti != null ) {
+            if ( matched.contains(it.ti) ) {
+              // Already in the list
+            }
+            else {
+              matched.add[it.ti];
+            }
+          }
+        }
+      }
+    }
+
+    def result = null;
+    if ( matched.size() == 1 ) {
+      result = matched.get(0);
+    }
+    else if ( matched.size() > 1 ) {
+      throw new Exception("Identifier set ${candidate_identifiers} matched multiple titles");
     }
     
     return result;     
@@ -222,7 +252,7 @@ class TitleInstance {
             }
             else {
               if ( result != io.ti ) {
-                throw new RuntimeException("Identifiers(${candidate_identifiers}) reference multiple titles");
+                throw new RuntimeException("Identifiers(${candidate_identifiers}) reference multiple titles [Already located title with id ${result.id}, also located title with id ${io.ti.id}]");
               }
             }
           }
@@ -562,7 +592,16 @@ class TitleInstance {
       params.sort="title"
       params.order="desc"
     }
-    ql = TitleInstance.findAllByTitleIlike("${params.q}%",params)
+
+    // If the search without a wildcard returns items, return those, otherwise if a case insensitive search
+    // without a wildcard returns 0, add a wildcard and use that 
+    def num_titles = TitleInstance.countByTitleIlike("${params.q}",params)
+    if ( num_titles == 0 ) {
+      ql = TitleInstance.findAllByTitleIlike("${params.q}%",params)
+    }
+    else {
+      ql = TitleInstance.findAllByTitleIlike("${params.q}",params)
+    }
 
     int i = 1;
     if ( ql ) {
@@ -664,6 +703,7 @@ class TitleInstance {
         // Do nothing - already present
       }
       else {
+        static_logger.debug("Create new identifier occurrence for tid:${getId()} ns:${ns} value:${value}");
         new IdentifierOccurrence(identifier:id, ti:this).save(flush:true)
       }
     }
@@ -691,6 +731,33 @@ class TitleInstance {
     result
   }
 
-
+  static def expunge(title_id) {
+    try {
+      log.debug("  -> IEs");
+      TitleInstance.executeUpdate('delete from IssueEntitlement ie where ie.tipp in ( select tipp from TitleInstancePackagePlatform tipp where tipp.title.id = ? )',[title_id])
+      log.debug("  -> TIPPs");
+      TitleInstance.executeUpdate('delete from TitleInstancePackagePlatform tipp where tipp.title.id = ?',[title_id])
+      log.debug("  -> IdentifierOccurrence");
+      TitleInstance.executeUpdate('delete from IdentifierOccurrence io where io.ti.id = ?',[title_id])
+      log.debug("  -> OrgRole");
+      TitleInstance.executeUpdate('delete from OrgRole orl where orl.title.id = ?',[title_id])
+      log.debug("  -> TitleHistoryEventParticipant");
+      TitleInstance.executeUpdate('delete from TitleHistoryEventParticipant he where he.participant.id = ?',[title_id])
+      log.debug("  -> CoreAssertion");
+      TitleInstance.executeUpdate('delete from CoreAssertion ca where ca.tiinp in (select tip from TitleInstitutionProvider tip where tip.title.id = ?)',[title_id])
+      log.debug("  -> TitleInstitutionProvider");
+      TitleInstance.executeUpdate('delete from TitleInstitutionProvider tip where tip.title.id = ?',[title_id])
+      log.debug("  -> Fact");
+      TitleInstance.executeUpdate('delete from Fact fact where fact.relatedTitle.id = ?',[title_id])
+      log.debug("  -> OrgTitleStats");
+      TitleInstance.executeUpdate('delete from OrgTitleStats ots where ots.title.id = ?',[title_id])
+      log.debug("  -> TI itself");
+      TitleInstance.executeUpdate('delete from TitleInstance ti where ti.id = ?',[title_id])
+      log.debug("  -> DONE");
+    }
+    catch ( Exception e ) {
+      log.error("Problem expunging title",e);
+    }
+  }
 
 }

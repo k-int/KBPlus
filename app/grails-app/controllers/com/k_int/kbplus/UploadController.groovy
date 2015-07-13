@@ -181,7 +181,7 @@ class UploadController {
           
       // log.debug("Lookup or create title ${tipp.id}");
 
-      tipp.title_obj = lookupOrCreateTitleInstance(tipp.id,tipp.publication_title,publisher);
+      tipp.title_obj = lookupOrCreateTitleInstance(tipp.id,tipp.publication_title,publisher,tipp);
       
       if ( tipp.title_obj && tipp.host_platform && new_pkg ) {
         // Got all the components we need to create a tipp
@@ -256,18 +256,21 @@ class UploadController {
     upload.new_pkg_id = new_pkg_id
   }
     
-  def lookupOrCreateTitleInstance(identifiers,title,publisher) {
+  def lookupOrCreateTitleInstance(identifiers,title,publisher,tipp) {
     // log.debug("lookupOrCreateTitleInstance ${identifiers}, ${title}, ${publisher}");
-    def result = TitleInstance.lookupOrCreateViaIdMap(identifiers, title);
-    if ( !result.getPublisher() ) {
-      def pub_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Publisher');
-      OrgRole.assertOrgTitleLink(publisher, result, pub_role);
-      result.save();
+    def result = null;
+    try {
+      result = TitleInstance.lookupOrCreateViaIdMap(identifiers, title);
+      if ( !result.getPublisher() ) {
+        def pub_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Publisher');
+        OrgRole.assertOrgTitleLink(publisher, result, pub_role);
+        result.save();
+      }
     }
-
-    // ToDo: Check to see that all the identifiers we have
-
-    // log.debug("Done: ${result}");
+    catch ( Throwable t ) {
+      log.error(t);
+      tipp.messages.add([type:'alert-error',message:"WARNING: Failed to look up title from identifiers (${identifiers}) :: ${t.message}"]);
+    }
     result;
   }
   

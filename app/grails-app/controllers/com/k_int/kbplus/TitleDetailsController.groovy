@@ -53,6 +53,7 @@ class TitleDetailsController {
       result.editable=false
 
     result.ti = TitleInstance.get(params.id)
+    result.duplicates = reusedIdentifiers(result.ti);
     result
   }
 
@@ -66,12 +67,31 @@ class TitleDetailsController {
       result.editable=false
 
     result.ti = TitleInstance.get(params.id)
+    
+    result.duplicates = reusedIdentifiers(result.ti);
 
     result.titleHistory = TitleHistoryEvent.executeQuery("select distinct thep.event from TitleHistoryEventParticipant as thep where thep.participant = ?",[result.ti]);
 
     result
   }
 
+  def reusedIdentifiers(title){
+    // Test for identifiers that are used accross multiple titles
+    def duplicates = [:]
+    def identifiers = title.ids.collect{it.identifier}
+    identifiers.each{ident ->
+      ident.occurrences.each{
+        if(it.ti != title && it.ti!=null){
+          if(duplicates."${ident.ns.ns}:${ident.value}"){
+            duplicates."${ident.ns.ns}:${ident.value}" += [it.ti]
+          }else{
+            duplicates."${ident.ns.ns}:${ident.value}" = [it.ti]
+          }
+        }
+      }
+    }
+    return duplicates
+  }
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def batchUpdate() {
     log.debug(params);
@@ -237,6 +257,31 @@ class TitleDetailsController {
     result.ti = TitleInstance.get(params.id)
     result.availability = IssueEntitlement.executeQuery("select ie from IssueEntitlement as ie where ie.tipp.title = ?",[result.ti]);
 
+    result
+  }
+
+  @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
+  def dmIndex() {
+
+    log.debug("dmIndex ${params}");
+
+    def user = User.get(springSecurityService.principal.id)
+
+    def result = [:]
+    def qry_params = []
+    def base_qry = "from TitleInstance as t"
+
+    result.max = params.max ? Integer.parseInt(params.max) : user.defaultPageSize
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
+    if ( params.status ) {
+      base_qry += ' where t.status.value = ?'
+      qry_params.add(params.status);
+    }
+
+    log.debug("DM Title Query: ${base_qry}, ${params}");
+    result.totalHits = com.k_int.kbplus.TitleInstance.executeQuery("select count(t) "+base_qry, qry_params, [max:result.max, offset:result.offset])[0];
+    result.hits = com.k_int.kbplus.TitleInstance.executeQuery("select t "+base_qry, qry_params, [max:result.max, offset:result.offset]);
     result
   }
 

@@ -5,8 +5,8 @@ class Identifier {
   IdentifierNamespace ns
   String value
 
-  static hasMany = [ occurrences:IdentifierOccurrence ]
-  static mappedBy = [ occurrences:'identifier' ]
+  static hasMany = [ occurrences:IdentifierOccurrence, relatedIdentifiers: IdentifierRelation ]
+  static mappedBy = [ occurrences:'identifier',  relatedIdentifiers:'fromIdentifier']
 
   static constraints = {
     value validator: {val,obj ->
@@ -19,8 +19,8 @@ class Identifier {
 
   static mapping = {
        id column:'id_id'
-       ns column:'id_ns_fk', index:'id_value_idx'
     value column:'id_value', index:'id_value_idx'
+       ns column:'id_ns_fk', index:'id_value_idx'
   }
 
   def beforeUpdate() {

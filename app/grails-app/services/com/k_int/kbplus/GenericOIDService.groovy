@@ -21,7 +21,7 @@ class GenericOIDService {
   
       if ( domain_class ) {
         result = domain_class.getClazz().get(oid_components[1])
-        log.debug("oid ${oid} resolved to ${result}")
+        // log.debug("oid ${oid} resolved to ${result}")
       }
       else {
         log.error("resolve OID failed to identify a domain class. Input was ${oid_components}");

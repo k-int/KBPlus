@@ -8,12 +8,9 @@
 <body>
 
     <div class="container">
-        <ul class="breadcrumb">
-            <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
-            <li>Licences</li>
-        </ul>
+      <g:render template="breadcrumb" model="${[ license:license, params:params ]}"/>
     </div>
-
+    
     <div class="container">
         <h1>${license.licensee?.name} ${license.type?.value} Licence : ${license.reference}</h1>
 

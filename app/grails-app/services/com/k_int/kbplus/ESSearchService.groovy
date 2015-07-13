@@ -44,7 +44,7 @@ class ESSearchService{
           //def params_set=params.entrySet()
           
           def query_str = buildQuery(params,field_map)
-          log.debug("query: ${query_str}");
+          log.debug("index:${grailsApplication.config.aggr.es.index} query: ${query_str}");
     
           def search = esclient.search{
             indices grailsApplication.config.aggr.es.index ?: "kbplus"

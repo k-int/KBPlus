@@ -5,7 +5,7 @@ import spock.lang.Stepwise
 import spock.lang.Ignore
 
 @Stepwise
-class GeneralSpec extends GebReportingSpec {
+class GeneralSpec extends BaseSpec {
 	// curl -XDELETE 'http://localhost:9200/kbplustest/'
 	// curl -XPUT 'httop://localhost:9200/kbplustest/'
 
@@ -29,7 +29,8 @@ class GeneralSpec extends GebReportingSpec {
 		go "/demo/org/create"
 		$("form").name = Data.Org_name
 		$("form").impId = Data.Org_impId
-		$("form").sector = 'Higher Education'
+		$("form").sector = "Higher Education"
+		report "google home page"
 		$("#SubmitButton").click()
 		then:
 		browser.page.title.startsWith "Show Org"
@@ -82,7 +83,7 @@ class GeneralSpec extends GebReportingSpec {
 
 	def "Start downloading titles"() {
 		when:
-		startESUpdate() // so that new package is displayed
+		go '/demo/admin/fullReset' // so that new package is displayed
 		then:
 		true;
 	}
@@ -439,10 +440,18 @@ class GeneralSpec extends GebReportingSpec {
 		changeUser(Data.UserB_name, Data.UserB_passwd)
 		compareONIX()
 		when:
-		$("i.jstree-checkbox").click()
-		$("#Compare").click()
+            $("#select2-chosen-1").click()
+            $("#s2id_autogen1_search").value(Data.Licence_ONIX_PL_title)
+            waitFor{$("div.select2-result-label").click()}
+            $("#addToList").click()
+            $("#select2-chosen-1").click()
+            $("#s2id_autogen1_search").value(Data.Licence_ONIX_PL_title)
+            waitFor{$("div.select2-result-label").click()}
+	        $("#addToList").click()
+			$("i.jstree-checkbox").click()
+			$("input[name='Compare']").click()
 		then:
-		!$("h1", text: "ONIX-PL Licence Comparison").isEmpty()
+		!$("h1", text: getMessage("menu.institutions.comp_onix")).isEmpty()
 	}
 
 	def "Update ES Index"() {

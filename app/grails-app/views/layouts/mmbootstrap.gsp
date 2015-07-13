@@ -21,8 +21,7 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
-
+    <tmpl:/layouts/favicon />
 
     <r:layoutResources/>
 
@@ -40,7 +39,7 @@
             <g:link controller="home" action="index" class="brand" title="KB+ ${grailsApplication.metadata.'app.version'} / build ${grailsApplication.metadata.'app.buildNumber'}">KB+</g:link>
             <sec:ifLoggedIn>
                 <ul class="nav">
-                <sec:ifAnyGranted roles="ROLE_ADMIN">
+                <g:if test="${false}">
                   <li class="dropdown">
                     <a href="#" class="dropdown-toggle explorer-link" data-toggle="dropdown"> Data Explorer <b class="caret"></b> </a>
                     <ul class="dropdown-menu" style="max-width:none;">
@@ -55,20 +54,20 @@
                       <li <%='onixplLicenseDetails'== controllerName ? ' class="active"' : '' %>><g:link controller="onixplLicenseDetails" action="list">ONIX-PL Licences</g:link></li>
                     </ul>
                   </li>
-                </sec:ifAnyGranted>
+                </g:if>
                 </ul>
                 <ul class="nav">
                 <g:if test="${user}">
                   <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Institutions <b class="caret"></b> </a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> ${message(code:'menu.institutions')} <b class="caret"></b> </a>
                     <ul class="dropdown-menu" style="max-width:none;">
 
 
-                       <li><g:link controller="packageDetails" action="index">All Packages</g:link></li>
-                       <li><g:link controller="titleDetails" action="index">All Titles</g:link></li>
-                       <li><g:link controller="packageDetails" action="compare">Compare Packages</g:link></li>
+                       <li><g:link controller="packageDetails" action="index">${message(code:'menu.institutions.all_pkg')} </g:link></li>
+                       <li><g:link controller="titleDetails" action="index">${message(code:'menu.institutions.all_titles')} </g:link></li>
+                       <li><g:link controller="packageDetails" action="compare">${message(code:'menu.institutions.comp_pkg')} </g:link></li>
                        <li><g:link controller="onixplLicenseCompare"
-                                   action="index">Compare ONIX-PL Licences</g:link></li>
+                                   action="index">${message(code:'menu.institutions.comp_onix')} </g:link></li>
                        <li class="divider"></li>
                        <g:set var="usaf" value="${user.authorizedOrgs}" />
                        <g:if test="${usaf && usaf.size() > 0}">
@@ -78,59 +77,66 @@
                              <ul class="dropdown-menu">
                                <li><g:link controller="myInstitutions"
                                            action="instdash"
-                                           params="${[shortcode:org.shortcode]}">Dashboard</g:link></li>
+                                           params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.dash')} </g:link></li>
                                <li><g:link controller="myInstitutions"
                                            action="todo"
-                                           params="${[shortcode:org.shortcode]}">ToDo List</g:link></li>
+                                           params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.todo')} </g:link></li>
                                <li><g:link controller="myInstitutions"
                                            action="currentLicenses"
-                                           params="${[shortcode:org.shortcode]}">Licences</g:link></li>
+                                           params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.lic')} </g:link></li>
                                <li><g:link controller="myInstitutions"
                                            action="currentSubscriptions"
-                                           params="${[shortcode:org.shortcode]}">Subscribed Contents</g:link></li>
+                                           params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.subs')} </g:link></li>
                                <li><g:link controller="myInstitutions"
                                            action="currentTitles"
-                                           params="${[shortcode:org.shortcode]}">Titles</g:link></li>
-                               <li><g:link controller="subscriptionDetails" 
+                                           params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.ttls')} </g:link></li>
+                               <li><g:link controller="subscriptionDetails"
                                            action="compare"
-                                           params="${[shortcode:org.shortcode]}">Compare Subscriptions</g:link></li>
+                                           params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.comp_sub')} </g:link></li>
+                               <li><g:link controller="licenceCompare"
+                                           action="index"
+                                           params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.comp_lic')} </g:link></li>
                                <li><g:link controller="myInstitutions"
                                            action="renewalsSearch"
-                                           params="${[shortcode:org.shortcode]}">Generate Renewals Worksheet</g:link></li>
+                                           params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.gen_renewals')} </g:link></li>
                                <li><g:link controller="myInstitutions"
                                            action="renewalsUpload"
-                                           params="${[shortcode:org.shortcode]}">Import Renewals</g:link></li>
+                                           params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.imp_renew')} </g:link></li>
                                <li><g:link controller="organisations"
                                            action="show"
-                                           params="${[id:org.id]}">Organisation Information</g:link></li>
+                                           params="${[id:org.id]}">${message(code:'menu.institutions.org_info')} </g:link></li>
                                <li><g:link controller="subscriptionImport"
                                            action="generateImportWorksheet"
-                                           params="${[id:org.id]}">Generate New Subscription Worksheet</g:link></li>
+                                           params="${[id:org.id]}">${message(code:'menu.institutions.sub_work')} </g:link></li>
                                <li><g:link controller="subscriptionImport"
                                            action="importSubscriptionWorksheet"
-                                           params="${[id:org.id]}">Import New Subscription Worksheet</g:link></li>
+                                           params="${[id:org.id]}">${message(code:'menu.institutions.imp_sub_work')} </g:link></li>
                                <li><g:link controller="myInstitutions"
                                            action="changeLog"
-                                           params="${[shortcode:org.shortcode]}">Change Log</g:link></li>
-                               <g:if test="${grailsApplication.config.ab.newcore}">
-                                 <li><g:link controller="finance"
-                                             action="index"
-                                             params="${[shortcode:org.shortcode]}">Finance</g:link></li>
+                                           params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.change_log')} </g:link></li>
+                               <li><g:link controller="myInstitutions"
+                                           action="emptySubscription"
+                                           params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.emptySubscription')} </g:link></li>
+                               <g:if test="${grailsApplication.config.feature.finance}">
+                                 <li><g:link controller="myInstitutions"
+                                             action="financeImport"
+                                             params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.financeImport')} </g:link></li>
+                                 <li><g:link controller="myInstitutions"
+                                             action="finance"
+                                             params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.finance')} </g:link></li>
                                </g:if>
-                               <li><g:link controller="myInstitutions" 
+                               <li><g:link controller="myInstitutions"
                                            action="tipview"
-                                           params="${[shortcode:org.shortcode]}">Edit Core Titles (JUSP & KB+)</g:link></li>
-
+                                           params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.core_ttl')} </g:link></li>
                              </ul>
                            </li>
                          </g:each>
                        </g:if>
                        <g:else>
-                         <li>Please request institutional affiliations via your <g:link controller="profile" action="index">Profile Page</g:link></li>
+                         <li>${message(code:'menu.institutions.affiliation')} <g:link controller="profile" action="index">${message(code:'menu.user.profile')}</g:link></li>
                        </g:else>
                        <li class="divider"></li>
-                       <li><a href="${message(code:'help.location')}">Help</a></li>
-                       <li><a href="https://sp.kbplus.ac.uk/claimIdentity/notify?remote=${user.username}">Claim Username</a></li>
+                       <li><a href="${message(code:'help.location')}">${message(code:'menu.institutions.help')}</a></li>
                     </ul>
                   </li>
                 </g:if>
@@ -159,7 +165,7 @@
                          <g:link controller="licenseDetails" action="create">${message(code:'licence.new')}</g:link></li>
                        <li class="divider"></li>
 
-                        <li<%= ( ( 'subscriptionDetails'== controllerName ) && ( 'compare'==actionName ) ) ? ' class="active"' : '' %>><g:link controller="subscriptionDetails" 
+                        <li<%= ( ( 'subscriptionDetails'== controllerName ) && ( 'compare'==actionName ) ) ? ' class="active"' : '' %>><g:link controller="subscriptionDetails"
                                            action="compare">Compare Subscriptions</g:link></li>
 
                        <li <%= ( ( 'subscriptionImport'== controllerName ) && ( 'generateImportWorksheet'==actionName ) ) ? ' class="active"' : '' %>>
@@ -172,10 +178,12 @@
                        <li <%= ( ( 'globalDataSync'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="globalDataSync" action="index">Global Data Download [Packages]</g:link></li>
                        <li class="divider"></li>
-                         <li <%= ( ( 'jasperReports'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
-                             <g:link controller="jasperReports" action="index">Reports</g:link></li>
-                         <li <%= ( ( 'admin'== controllerName ) && ( 'managePropertyDefinitions'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="managePropertyDefinitions">Manage Property Definitions</g:link></li>
+                       <li <%= ( ( 'jasperReports'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
+                           <g:link controller="jasperReports" action="index">Reports</g:link></li>
+                       <li <%= ( ( 'titleDetails'== controllerName ) && ( 'dmIndex'==actionName ) ) ? ' class="active"' : '' %>>
+                           <g:link controller="titleDetails" action="dmIndex">Titles</g:link></li>
+                       <li <%= ( ( 'dataManager'== controllerName ) && ( 'expungeDeletedTitles'==actionName ) ) ? ' class="active"' : '' %>>
+                           <g:link controller="dataManager" action="expungeDeletedTitles">Expunge Deleted Titles</g:link></li>
 
                      </ul>
                    </li>
@@ -194,23 +202,12 @@
                       <li <%= ( ( 'organisations'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="organisations" action="index">Manage Organisations</g:link>
                       </li>
-                      <li <%= ( ( 'startFTIndex'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="startFTIndex" action="index">Start ES Index Update</g:link>
-                      </li>
+
                       <li <%= ( ( 'admin'== controllerName ) && ( 'showAffiliations'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="showAffiliations">Show Affiliations</g:link>
                       </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'allNotes'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="allNotes">All Notes</g:link>
-                      </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'dataCleanse'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="dataCleanse">Run Data Cleaning (Nominal Platforms)</g:link>
-                      </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'titleAugment'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="titleAugment">Run Data Cleaning (Title Augment)</g:link>
-                      </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'fullReset'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="fullReset">Run Full ES Index Reset</g:link>
                       </li>
                       <li <%= ( ( 'userDetails'== controllerName ) && ( 'list'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="userDetails" action="list">User Details</g:link>
@@ -240,15 +237,25 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'manageGlobalSources'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="manageGlobalSources">Manage Global Sources</g:link>
                       </li>
-                      <li class="divider"></li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'orgsExport'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="orgsExport">Bulk Export Organisations</g:link>
+                      <li class="dropdown-submenu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Bulk Operations</a>
+                        <ul class="dropdown-menu">
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'orgsExport'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="admin" action="orgsExport">Bulk Export Organisations</g:link>
+                          </li>
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'orgsImport'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="admin" action="orgsImport">Bulk Load Organisations</g:link>
+                          </li>
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'titlesImport'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="admin" action="titlesImport">Bulk Load/Update Titles</g:link>
+                          </li>
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'financeImport'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="admin" action="financeImport">Bulk Load Financial Transaction</g:link>
+                          </li>
+                        </ul>
                       </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'orgsImport'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="orgsImport">Bulk Load Organisations</g:link>
-                      </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'titlesImport'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="titlesImport">Bulk Load/Update Titles</g:link>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'manageCustomProperties'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="manageCustomProperties">Manage Custom Properties</g:link>
                       </li>
                       <li class="divider"></li>
                       <li <%= ( ( 'stats'== controllerName ) && ( 'statsHome'==actionName ) ) ? ' class="active"' : '' %>>
@@ -256,12 +263,31 @@
                       </li>
                         <li <%= ( ( 'jasperReports'== controllerName ) && ( 'uploadReport'==actionName ) ) ? ' class="active"' : '' %>>
                             <g:link controller="jasperReports" action="uploadReport">Upload Report Definitions</g:link></li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'triggerHousekeeping'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="triggerHousekeeping">Trigger Housekeeping</g:link>
+
+                      <li class="dropdown-submenu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Batch tasks</a>
+                        <ul class="dropdown-menu">
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'triggerHousekeeping'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="admin" action="triggerHousekeeping">Trigger Housekeeping</g:link> </li>
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'initiateCoreMigration'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="admin" action="initiateCoreMigration">Initiate Core Migration</g:link> </li>
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'uploadIssnL'==actionName ) ) ? ' class="active"' : '' %>>
+                            <g:link controller="admin" action="uploadIssnL">Upload ISSN to ISSN-L File</g:link> </li>
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'dataCleanse'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="admin" action="dataCleanse">Run Data Cleaning (Nominal Platforms)</g:link>
+                          </li>
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'titleAugment'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="admin" action="titleAugment">Run Data Cleaning (Title Augment)</g:link>
+                          </li>
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'fullReset'==actionName ) ) ? ' class="active"' : '' %>>
+                             <g:link controller="admin" action="fullReset">Run Full ES Index Reset</g:link>
+                          </li>
+                          <li <%= ( ( 'startFTIndex'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="startFTIndex" action="index">Start ES Index Update</g:link>
                       </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'initiateCoreMigration'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="initiateCoreMigration">Initiate Core Migration</g:link>
+                        </ul>
                       </li>
+
                     </ul>
                   </li>
 
@@ -274,7 +300,7 @@
               <li><a class="dlpopover" href="#"><i class="icon-search icon-white"></i></a></li>
             </ul>
             </sec:ifLoggedIn>
-           
+
 
             <ul class="nav pull-right">
               <sec:ifLoggedIn>
@@ -360,41 +386,14 @@
               <div class="pull-right">
                   <a href="http://www.kbplus.ac.uk"><div class="sprite sprite-kbplus_logo">Knowledge Base Plus</div></a>
               </div>
-              
+
           </div>
       </div>
   </div>
 
-
+  <tmpl:/layouts/analytics />
 
   <r:script type="text/javascript">
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', '${grailsApplication.config.kbplus.analytics.code}']);
-      <g:if test="${params.shortcode != null}">
-      _gaq.push(['_setCustomVar',
-            1,                     // This custom var is set to slot #1.  Required parameter.
-            'Institution',         // The name acts as a kind of category for the user activity.  Required parameter.
-            "${params.shortcode}", // This value of the custom variable.  Required parameter.
-            2                      // Sets the scope to session-level.  Optional parameter.
-         ]);
-      </g:if>
-      <g:if test="${user?.defaultDash?.shortcode}">
-      _gaq.push(['_setCustomVar',
-            2,                     // This custom var is set to slot #2.  Required parameter.
-            'UserDefaultOrg',         // The name acts as a kind of category for the user activity.  Required parameter.
-            "${user?.defaultDash?.shortcode}", // This value of the custom variable.  Required parameter.
-            3                      // Sets the scope to page-level.  Optional parameter.
-         ]);
-      </g:if>
-      _gaq.push(['_trackPageview']);
-      (function() {
-          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-  </r:script>
-
-    <r:script type="text/javascript">
       if (typeof(Zenbox) !== "undefined") {
         Zenbox.init({
           dropboxID:   "${grailsApplication.config.ZenDeskDropboxID?:20234067}",

@@ -86,5 +86,20 @@ class PropertyDefinition {
         }
         result
     }
+
+  @Transient
+  def countOccurrences(cls) {
+    def qparams = [this]
+    def qry = 'select count(c) from '+cls+" as c where c.type = ?"
+    return (PropertyDefinition.executeQuery(qry,qparams))[0]; 
+  }
+
+  @Transient
+  def removeProperty() {
+    log.debug("Remove");
+    PropertyDefinition.executeUpdate('delete from com.k_int.kbplus.LicenseCustomProperty c where c.type = ?',[this])
+    PropertyDefinition.executeUpdate('delete from com.k_int.kbplus.SubscriptionCustomProperty c where c.type = ?',[this])
+    this.delete();
+  }
 }
 

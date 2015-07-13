@@ -9,15 +9,10 @@
 
 <body>
 
-<div class="container">
-    <ul class="breadcrumb">
-       <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
-        <g:if test="${licence.licensee}">
-          <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:licence.licensee.shortcode]}"> ${licence.licensee.name} <g:message code="current.licenses" default="Licence"/></g:link> <span class="divider">/</span> </li>
-        </g:if>
-        <li> <g:link controller="licenseDetails" action="index" id="${params.id}"><g:message code="license.details" default="Licence"/></g:link> </li>
-    </ul>
-</div>
+    <div class="container">
+      <g:render template="breadcrumb" model="${[ license:license, params:params ]}"/>
+    </div>
+    
 <g:if test="${flash.message}">
     <div class="container"><bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert></div>
 </g:if>

@@ -6,6 +6,7 @@ import grails.converters.*
 import au.com.bytecode.opencsv.CSVReader
 import com.k_int.custprops.PropertyDefinition
 
+
 class AdminController {
 
   def springSecurityService
@@ -16,8 +17,12 @@ class AdminController {
   def messageService
   def changeNotificationService
   def enrichmentService
+  def sessionFactory
+  def tsvSuperlifterService
 
   def docstoreService
+  def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
+
 
 
   static boolean ftupdate_running = false
@@ -64,19 +69,6 @@ class AdminController {
 
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
-  def managePropertyDefinitions() {
-    def result = [:]
-    result.user = User.get(springSecurityService.principal.id)
-
-    result.definitions = PropertyDefinition.findAll()
-    result.definitions.sort{it.name}
-    result.error = flash.error
-    result.newProp = flash.newProp
-    log.debug("ERROR : ${result.error} newProp:${result.newProp}")
-    result
-  }
-
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def actionAffiliationRequest() {
     log.debug("actionMembershipRequest");
     def req = UserOrg.get(params.req);
@@ -106,7 +98,7 @@ class AdminController {
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def hardDeletePkgs(){
     def result = [:]
-    
+
     result.user = User.get(springSecurityService.principal.id)
     result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
@@ -156,7 +148,7 @@ class AdminController {
       result.conflicts_list = conflicts_list
       result.pkg = pkg
 
-      render(template: "hardDeleteDetails",model:result)  
+      render(template: "hardDeleteDetails",model:result)
     }else{
       def criteria = Package.createCriteria()
       result.pkgs = criteria.list(max: result.max, offset:result.offset){
@@ -166,14 +158,14 @@ class AdminController {
           order("name", params.order?:'asc')
       }
     }
-    
+
     result
   }
-  
+
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def performPackageDelete(){
    if (request.method == 'POST'){
-      def pkg = Package.get(params.id)  
+      def pkg = Package.get(params.id)
       Package.withTransaction { status ->
         log.info("Deleting Package ")
         log.info("${pkg.id}::${pkg}")
@@ -195,10 +187,10 @@ class AdminController {
         }
         pkg.delete()
       }
-      log.info("Delete Complete.") 
+      log.info("Delete Complete.")
    }
    redirect controller: 'admin', action:'hardDeletePkgs'
-   
+
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
@@ -235,7 +227,7 @@ class AdminController {
              usrMrg.save(flush:true,failOnError:true)
              flash.message = "Rights copying successful. User '${usrMrg.displayName}' is now disabled."
            }else{
-             flash.error = "An error occured before rights transfer was complete." 
+             flash.error = "An error occured before rights transfer was complete."
            }
          }else{
           flash.error = "Please select'user to keep' and 'user to merge' from the dropdown."
@@ -307,7 +299,7 @@ class AdminController {
       }
     }
   }
-  
+
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def allNotes() {
     def result = [:]
@@ -378,7 +370,7 @@ class AdminController {
 
         log.debug("Clear ES");
         dataloadService.clearDownAndInitES();
-  
+
         log.debug("manual start full text index");
         dataloadService.updateFTIndexes();
       }
@@ -652,10 +644,135 @@ class AdminController {
             }
             i++;
           }
+
+          log.debug("\n\n");
+          log.debug(q);
+          log.debug(joinclause);
+          log.debug(whereclause);
+          log.debug(bindvars);
+
+          def title_search = TitleInstance.executeQuery(q+joinclause+whereclause,bindvars);
+          log.debug("Search returned ${title_search.size()} titles");
+
+          if ( title_search.size() == 0 ) {
+            if ( title != null ) {
+              log.debug("New title - create identifiers and title ${title}");
+            }
+            else {
+              log.debug("NO match - no title - skip row");
+            }
+          }
+          else if ( title_search.size() == 1 ) {
+            log.debug("Matched one - see if any of the supplied identifiers are missing");
+            def title_obj = title_search[0]
+            def c = 0;
+            cols.each { cn ->
+              if ( cn.startsWith('title.id.' ) ) {
+                def ns = cn.substring(9)
+                def val = nl[c]
+                log.debug("validate ${title_obj.title} has identifier with ${ns} ${val}");
+                title_obj.checkAndAddMissingIdentifier(ns,val);
+              }
+              c++
+            }
+
+          }
+          else {
+            log.debug("Unable to continue - matched multiple titles");
+          }
         }
       }
     }
   }
 
- 
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def manageCustomProperties() {
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.items = PropertyDefinition.executeQuery('select p from com.k_int.custprops.PropertyDefinition as p');
+    result.newProp = flash.newProp
+    result.error = flash.error
+    result
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def deleteCustprop() {
+    def pd = PropertyDefinition.get(params.id);
+    if ( pd != null ) {
+      pd.removeProperty();
+    }
+    redirect(controller:'admin',action:'manageCustomProperties')
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def uploadIssnL() {
+    def result=[:]
+    def ctr = 0;
+    def start_time = System.currentTimeMillis()
+
+    if (request.method == 'POST'){
+      def input_stream = request.getFile("sameasfile")?.inputStream
+      CSVReader r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ), '\t' as char )
+      String[] nl;
+      String[] types;
+      def first = true
+      while ((nl = r.readNext()) != null) {
+        def elapsed = System.currentTimeMillis() - start_time
+
+        def avg = 0;
+        if ( ctr > 0 ) {
+          avg = elapsed / 1000 / ctr  //
+        }
+
+        if ( nl.length == 2 ) {
+          if ( first ) {
+            first = false; // Skip header
+            log.debug('Header :'+nl);
+            types=nl
+          }
+          else {
+            log.debug("[seq ${ctr++} - avg=${avg}] ${types[0]}:${nl[0]} == ${types[1]}:${nl[1]}");
+            def id1 = Identifier.lookupOrCreateCanonicalIdentifier(types[0],nl[0]);
+            def id2 = Identifier.lookupOrCreateCanonicalIdentifier(types[1],nl[1]);
+
+            def idrel = IdentifierRelation.findByFromIdentifierAndToIdentifier(id1,id2);
+            if ( idrel == null ) {
+              idrel = IdentifierRelation.findByFromIdentifierAndToIdentifier(id2,id1);
+              if ( idrel == null ) {
+                idrel = new IdentifierRelation(fromIdentifier:id1,toIdentifier:id2);
+                idrel.save(flush:true)
+              }
+            }
+          }
+        }
+        else {
+          log.error("uploadIssnL expected 2 values");
+        }
+
+        if ( ctr % 5000 == 0 ) {
+          cleanUpGorm()
+        }
+      }
+    }
+
+    result
+  }
+
+  def cleanUpGorm() {
+    log.debug("Clean up GORM");
+    def session = sessionFactory.currentSession
+    session.flush()
+    session.clear()
+    propertyInstanceMap.get().clear()
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def financeImport() {
+    def result = [:];
+    if (request.method == 'POST'){
+      def input_stream = request.getFile("tsvfile")?.inputStream
+      result.loaderResult = tsvSuperlifterService.load(input_stream,grailsApplication.config.financialImportTSVLoaderMappings,params.dryRun=='Y'?true:false)
+    }
+    result
+  }
 }
