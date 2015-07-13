@@ -8,7 +8,7 @@ import groovy.xml.MarkupBuilder
 import grails.plugins.springsecurity.Secured
 import com.k_int.kbplus.auth.*;
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
-
+import com.k_int.custprops.PropertyDefinition
 
 class OrganisationsController {
 
@@ -20,7 +20,37 @@ class OrganisationsController {
     def index() {
         redirect action: 'list', params: params
     }
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def config() {
+      def result = [:]
+      result.user = User.get(springSecurityService.principal.id)
+      def orgInstance = Org.get(params.id)
 
+      if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') ) {
+        result.editable = true
+      }
+      else {
+        result.editable = orgInstance.hasUserWithRole(result.user,'INST_ADM');
+      }
+      if(! orgInstance.customProperties){
+        grails.util.Holders.config.customProperties.org.each{ 
+          def entry = it.getValue()
+          def type = PropertyDefinition.lookupOrCreateType(entry.name,entry.class,null)
+          def prop = PropertyDefinition.createPropertyValue(orgInstance,type)
+          prop.note = entry.note
+          prop.save()
+        }
+      }
+
+      if (!orgInstance) {
+        flash.message = message(code: 'default.not.found.message', args: [message(code: 'org.label', default: 'Org'), params.id])
+        redirect action: 'list'
+        return
+      }
+
+      result.orgInstance=orgInstance
+      result
+    }
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
     def list() {
 

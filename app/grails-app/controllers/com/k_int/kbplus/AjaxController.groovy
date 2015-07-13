@@ -655,7 +655,6 @@ class AjaxController {
   }
 
   def addCustomPropertyValue(){
-
     def error
     def newProp
     def owner =  grailsApplication.getArtefact("Domain",params.ownerClass.replace("class ",""))?.getClazz()?.get(params.ownerId)
