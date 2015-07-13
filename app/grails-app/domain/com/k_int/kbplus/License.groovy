@@ -387,118 +387,142 @@ class License implements Comparable<License>{
   */
   @Transient
   def getConcurrentUserCount(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Concurrent Users")
   }
   
   @Transient
   def setConcurrentUserCount(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Concurrent Users",newVal)
   }
 
   @Transient
   def getConcurrentUsers(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Concurrent Access")
   }  
     @Transient
   def setConcurrentUsers(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Concurrent Access",newVal)
   }
   
   @Transient
   def getRemoteAccess(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Remote Access")
   }
   
   @Transient
   def setRemoteAccess(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Remote Access",newVal)
   }
   
   @Transient
   def getWalkinAccess(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Walk In Access")
   }
   
   @Transient
   def setWalkinAccess(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Walk In Access",newVal)
   }
   
   @Transient
   def getMultisiteAccess(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Multi Site Access")
   }
   
   @Transient
   def setMultisiteAccess(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Multi Site Access",newVal)
   }
   
   @Transient
   def getPartnersAccess(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Partners Access")
   }
   
   @Transient
   def setPartnersAccess(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Partners Access",newVal)
   }
  
   @Transient
   def getAlumniAccess(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Alumni Access")
   }
  
   @Transient
   def setAlumniAccess(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Alumni Access",newVal)
   }
   @Transient
   def getIll(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("ILL - InterLibraryLoans")
   }
 
   @Transient
   def setIll(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("ILL - InterLibraryLoans",newVal)
   }
   @Transient
   def getCoursepack(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Include In Coursepacks")
   }
 
   @Transient
   def setCoursepack(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Include In Coursepacks",newVal)
   }
   
   @Transient
   def getVle(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Include in VLE")
   }
   
   @Transient
   def setVle(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Include in VLE",newVal)
   }
 
   @Transient
   def getEnterprise(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Enterprise Access")
   }
   @Transient
   def setEnterprise(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Enterprise Access",newVal)
 
   }
 
   @Transient
   def getPca(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Post Cancellation Access Entitlement")
   }
 
   @Transient
   def setPca(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Post Cancellation Access Entitlement",newVal)
   }
 

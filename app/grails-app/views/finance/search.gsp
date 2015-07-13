@@ -73,7 +73,7 @@
                               <g:if test="${ci.sub.name}">${ci.sub.name}</g:if><g:else>-- Name Not Set  --</g:else>
                               <g:if test="${ci.sub.consortia}">( ${ci.sub.consortia?.name} )</g:if>
                             </g:link>
-                          </g:test>
+                          </g:if>
                         </td>
                         <td>${ci.subPkg?.name}</td>
                         <td colspan="2">${ci.issueEntitlement?.id}</td>

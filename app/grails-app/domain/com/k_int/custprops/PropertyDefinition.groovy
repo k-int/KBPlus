@@ -40,7 +40,7 @@ class PropertyDefinition {
         if (validTypes.containsValue(value)) {
             return true;
         } else {
-            //log.error("Provided custom prop type ${value.getClass()} is not valid. Allowed types are ${validTypes}")
+            println "Provided custom prop type ${value.getClass()} is not valid. Allowed types are ${validTypes}"
             throw new UnexpectedTypeException()
         }
     }
