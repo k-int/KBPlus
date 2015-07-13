@@ -200,8 +200,13 @@ class TsvSuperlifterService {
           new_obj[pd.property] = created_value
           create_msg += pd.property + ":" + created_value+' ';
           break;
+        case 'closure':
+          log.debug("Closure");
+          pd.closure(new_obj, nl, colmap, pd.property, locatedObjects)
+          break;
         defualt:
           log.debug("Unhandled create rule type ${pd.type}");
+          break;
       }
     }
 

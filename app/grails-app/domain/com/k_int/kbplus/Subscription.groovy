@@ -41,9 +41,9 @@ class Subscription {
   static transients = [ 'subscriber', 'provider', 'consortia' ]
 
 
-  static hasMany = [ 
+  static hasMany = [
                      ids: IdentifierOccurrence,
-                     packages : SubscriptionPackage, 
+                     packages : SubscriptionPackage,
                      issueEntitlements: IssueEntitlement,
                      documents:DocContext,
                      orgRelations: OrgRole,
@@ -52,9 +52,9 @@ class Subscription {
                      customProperties:SubscriptionCustomProperty,
                      costItems:CostItem]
 
-  static mappedBy = [ 
+  static mappedBy = [
                       ids: 'sub',
-                      packages : 'subscription', 
+                      packages : 'subscription',
                       issueEntitlements: 'subscription',
                       documents: 'subscription',
                       orgRelations: 'sub',
@@ -161,7 +161,7 @@ class Subscription {
 
     // Now we need to see if we can find a path from this object to any of those resources... Any of these orgs can edit
 
-    // If this is a concrete license, the owner is the 
+    // If this is a concrete license, the owner is the
     // If it's a template, the owner is the consortia that negoited
     // def owning org list
     // We're looking for all org links that grant a role with the corresponding edit property.
@@ -241,7 +241,7 @@ class Subscription {
   // XML.registerObjectMarshaller Facility, { facility, xml ->
   //    xml.attribute 'id', facility.id
   //               xml.build {
-  //      name(facility.name)  
+  //      name(facility.name)
   //    }
   //  }
 
@@ -261,12 +261,12 @@ class Subscription {
   **/
   @Transient
   static def refdataFind(params) {
-    def result = [];   
+    def result = [];
 
     def hqlString = "select sub from Subscription sub where lower(sub.name) like ? "
     def hqlParams = [((params.q ? params.q.toLowerCase() : '' ) + "%")]
     def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd")
-    
+
     if(params.hasDate ){
 
       def startDate = params.startDate.length() > 1 ? sdf.parse(params.startDate) : null
@@ -279,7 +279,7 @@ class Subscription {
       if(endDate){
         hqlString += " AND sub.endDate <= ? "
         hqlParams += endDate
-        }       
+        }
     }
 
     if(params.hideDeleted == 'true'){
@@ -293,7 +293,7 @@ class Subscription {
 
 
     def results = Subscription.executeQuery(hqlString,hqlParams)
-    
+
     if(params.accessibleToUser){
       for(int i=0;i<results.size();i++){
         if(! results.get(i).checkPermissions("view",User.get(params.accessibleToUser))){
@@ -308,10 +308,28 @@ class Subscription {
       resultText = params.inclSubStartDate == "true"? resultText + date : resultText
       resultText = params.hideIdent == "true"? resultText : resultText + " (${t.identifier})"
       result.add([id:"${t.class.name}:${t.id}",text:resultText])
-    } 
+    }
 
     result
   }
 
-}
+  def setInstitution(inst) {
+    println("Set institution ${inst}");
+    def subrole = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber');
+    def or = new OrgRole(org:inst, roleType:subrole, sub:this)
+    if ( this.orgRelations == null)
+      this.orgRelations = []
+    this.orgRelations.add(or)
+  }
 
+  def addNamespacedIdentifier(ns,value) {
+    println("Add Namespaced identifier ${ns}:${value}");
+    def canonical_id = Identifier.lookupOrCreateCanonicalIdentifier(ns, value);
+    if ( this.ids == null)
+      this.ids = []
+    this.ids.add(new IdentifierOccurrence(sub:this,identifier:canonical_id))
+
+  }
+
+
+}

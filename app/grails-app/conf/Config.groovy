@@ -577,7 +577,15 @@ financialImportTSVLoaderMappings = [
           ]
         ],
         creation:[
-          onMissing:false,
+          onMissing:true,
+          whenPresent:[ [ type:'ref', refname:'owner'] ],
+          properties : [
+            // [ type:'ref', property:'owner', refname:'owner' ],
+            [ type:'closure', closure : { o, nl, colmap, colname, locatedObjects -> o.setInstitution(locatedObjects['owner']) } ],
+            [ type:'val', property:'identifier', colname: 'SubscriptionId'],
+            [ type:'val', property:'name', colname: 'ResourceName'],
+            [ type:'closure', closure: { o, nl, colmap, colname, locatedObjects -> o.addNamespacedIdentifier('JC',nl[(int)(colmap.get('SubscriptionId'))]); } ]
+          ]
         ]
       ],
       [

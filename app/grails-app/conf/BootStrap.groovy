@@ -327,6 +327,15 @@ class BootStrap {
         }
       }   
     } 
+
+    // Subscription.metaClass.static.methodMissing = { String methodName, args ->
+    //   if ( methodName.startsWith('setNsId') ) {
+    //     log.debug("methodMissing ${methodName}, ${args}");
+    //   }
+    //   else {
+    //     throw new groovy.lang.MissingMethodException(methodName);
+    //   }
+    // }
   }
   def destroy = {
   }
