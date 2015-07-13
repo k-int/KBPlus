@@ -179,7 +179,7 @@
                              <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ci.datePaid}"/></td>
                              <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ci.startDate}"/></td>
                              <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ci.endDate}"/></td>
-                             <td>${ci.costInLocalCurrency}</td>
+                             <td>${ci.costInLocalCurrency} / ${ci.costInBillingCurrency}</td>
                          </tr>
                          </g:each>
                        </tbody>

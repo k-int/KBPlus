@@ -234,6 +234,10 @@ class TsvSuperlifterService {
         case 'Double':
           result = Double.parseDouble(value);
           break;
+        case 'date':
+          def sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+          result = sdf.parse(value)
+          break;
         default:
           break;
       }
@@ -337,6 +341,7 @@ class TsvSuperlifterService {
             value = mapped_value
           }
           break;
+
       }
     }
     return value

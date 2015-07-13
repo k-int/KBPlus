@@ -646,6 +646,24 @@ financialImportTSVLoaderMappings = [
             [ type:'val', property:'invoiceNumber', colname: 'InvoiceNumber']
           ]
         ]
+      ],
+      [
+        ref:'order',
+        cls:'com.k_int.kbplus.Order',
+        heuristics:[
+          [ type : 'simpleLookup',
+            criteria : [ [ srcType:'col', colname:'PoNumber', domainProperty:'orderNumber' ],
+                         [ srcType:'ref', refname:'owner', domainProperty:'owner'] ]
+          ]
+        ],
+        creation:[
+          onMissing:true,
+          whenPresent:[ [ type:'ref', refname:'owner'] ],
+          properties : [
+            [ type:'ref', property:'owner', refname:'owner' ],
+            [ type:'val', property:'orderNumber', colname: 'PoNumber']
+          ]
+        ]
       ]
     ],
     creationRules : [
@@ -658,10 +676,14 @@ financialImportTSVLoaderMappings = [
           properties:[
             [ type:'ref', property:'owner', refname:'owner' ],
             [ type:'ref', property:'invoice', refname:'invoice' ],
+            [ type:'ref', property:'order', refname:'order' ],
             [ type:'ref', property:'sub', refname:'subscription' ],
             [ type:'val', property:'costInBillingCurrency', colname:'InvoiceTotalExcVat', datatype:'Double'],
             [ type:'ref', property:'costItemCategory', refname:'CICategory'],
             [ type:'ref', property:'costItemElement', refname:'CIElement'],
+            [ type:'val', property:'startDate', colname:'InvoicePeriodStart', datatype:'date'],
+            [ type:'val', property:'endDate', colname:'InvoicePeriodEnd', datatype:'date'],
+            [ type:'val', property:'datePaid', colname:'DatePaid', datatype:'date'],
             [ type:'valueClosure', property:'costDescription', closure: { colmap, values, locatedObjects -> "[Main Cost Item]${values[colmap['ResourceName']]}, ${values[colmap['AgreementName']]}, ${values[colmap['InvoiceNotes']]} "} ]
           ]
         ]
@@ -674,8 +696,12 @@ financialImportTSVLoaderMappings = [
           properties:[
             [ type:'ref', property:'owner', refname:'owner' ],
             [ type:'ref', property:'invoice', refname:'invoice' ],
+            [ type:'ref', property:'order', refname:'order' ],
             [ type:'ref', property:'sub', refname:'subscription' ],
             [ type:'val', property:'costInBillingCurrency', colname:'InvoiceVat', datatype:'Double'],
+            [ type:'val', property:'startDate', colname:'InvoicePeriodStart', datatype:'date'],
+            [ type:'val', property:'endDate', colname:'InvoicePeriodEnd', datatype:'date'],
+            [ type:'val', property:'datePaid', colname:'DatePaid', datatype:'date'],
             [ type:'ref', property:'costItemCategory', refname:'CICategory'],
             [ type:'ref', property:'costItemElement', refname:'CIElement'],
             [ type:'valueClosure', property:'costDescription', closure: { colmap, values, locatedObjects -> "[Tax] ${values[colmap['ResourceName']]}, ${values[colmap['AgreementName']]}, ${values[colmap['InvoiceNotes']]} "} ]
@@ -690,9 +716,13 @@ financialImportTSVLoaderMappings = [
           properties:[
             [ type:'ref', property:'owner', refname:'owner' ],
             [ type:'ref', property:'invoice', refname:'invoice' ],
+            [ type:'ref', property:'order', refname:'order' ],
             [ type:'ref', property:'sub', refname:'subscription' ],
             [ type:'val', property:'costInBillingCurrency', colname:'InvoiceTransactionCharge', datatype:'Double'],
             [ type:'ref', property:'costItemCategory', refname:'CICategory'],
+            [ type:'val', property:'startDate', colname:'InvoicePeriodStart', datatype:'date'],
+            [ type:'val', property:'endDate', colname:'InvoicePeriodEnd', datatype:'date'],
+            [ type:'val', property:'datePaid', colname:'DatePaid', datatype:'date'],
             [ type:'ref', property:'costItemElement', refname:'CIElement'],
             [ type:'valueClosure', property:'costDescription', closure: { colmap, values, locatedObjects -> "[Transaction Charge] ${values[colmap['ResourceName']]}, ${values[colmap['AgreementName']]}, ${values[colmap['InvoiceNotes']]} "} ]
           ]
