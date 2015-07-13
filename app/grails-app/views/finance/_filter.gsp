@@ -92,9 +92,18 @@
                     </td>
                 <td>
                     <g:if test="${ci.order}">
-                        <g:xEditable owner="${ci?.order}" field="orderNumber"/></td>
+                        <g:xEditable owner="${ci?.order}" field="orderNumber"/>
                     </g:if>
-                    <td>${ci.sub?.name}</td>
+                 </td>
+                 <td>
+                      <g:if test="${ci.sub}">
+                        <g:link controller="subscriptionDetails" action="index" id="${ci.sub.id}">
+                          <g:if test="${ci.sub.name}">${ci.sub.name}</g:if><g:else>-- Name Not Set  --</g:else>
+                          <g:if test="${ci.sub.consortia}">( ${ci.sub.consortia?.name} )</g:if>
+                        </g:link>
+                      </g:if>
+                 </td>
+
                     <td>${ci.subPkg?.name}</td>
                     <td colspan="2">${ci?.issueEntitlement?.tipp?.title?.title}</td>
                     <g:if test="${editable}">
