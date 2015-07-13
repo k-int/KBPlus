@@ -116,7 +116,6 @@
                        </g:if><g:else>N/A (Subscription offered)</g:else>
                    </dd>
                </dl>
-
                <dl><dt>Package Name</dt><dd><g:each in="${subscriptionInstance.packages}" var="sp">
                            <g:link controller="packageDetails" action="show" id="${sp.pkg.id}">${sp?.pkg?.name}</g:link> (${sp.pkg?.contentProvider?.name}) 
 
@@ -369,8 +368,9 @@
                 </td>
                 <td>
                 <g:set var="iecorestatus" value="${ie.getTIP()?.coreStatus(params.asAt?dateFormater.parse(params.asAt):null)}"/>
+                <g:set var="core_checked" value="${params.asAt?:'Now'}"/>
 <g:remoteLink url="[controller: 'ajax', action: 'getTipCoreDates', params:[editable:editable,tipID:ie.getTIP()?.id,title:ie.tipp?.title?.title]]" method="get" name="show_core_assertion_modal" onComplete="showCoreAssertionModal()" class="editable-click"
-              update="magicArea">${iecorestatus?'True(this sub)': (iecorestatus==null?'False(never)':'False(this sub)')}</g:remoteLink>
+              update="magicArea">${iecorestatus?"True(${core_checked})": (iecorestatus==null?'False(Never)':"False(${core_checked})")}</g:remoteLink>
                <br/>
 
                <g:xEditableRefData owner="${ie}" field="coreStatus" config='CoreStatus'/>
@@ -408,6 +408,8 @@
 
     <div id="magicArea">
     </div>
+
+
     <r:script language="JavaScript">
 
       function unlinkPackage(pkg_id){
@@ -425,7 +427,7 @@
       
       function hideModal(){
         $("[name='coreAssertionEdit']").modal('hide');
-       }
+      }
 
       function showCoreAssertionModal(){
 
