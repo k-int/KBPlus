@@ -121,6 +121,9 @@
                                  <li><g:link controller="myInstitutions"
                                              action="financeImport"
                                              params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.financeImport')} </g:link></li>
+                                 <li><g:link controller="myInstitutions"
+                                             action="finance"
+                                             params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.finance')} </g:link></li>
                                </g:if>
                                <li><g:link controller="myInstitutions"
                                            action="tipview"

@@ -62,7 +62,7 @@
             </tbody>
           </table>
 
-          <g:form action="financeImport" method="post" enctype="multipart/form-data">
+          <g:form action="financeImport" method="post" enctype="multipart/form-data" params="${[shortcode:params.shortcode]}">
             <dl>
               <div class="control-group">
                 <dt>Upload TSV File according to the column definitions above</dt>

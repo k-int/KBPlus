@@ -42,7 +42,7 @@ class CostItem {
         invoice column: 'ci_inv_fk'
         costItemStatus column: 'ci_status_rv_fk'
         billingCurrency column: 'ci_billing_currency_rv_fk'
-        costDescription column: 'ci_cost_description'
+        costDescription column: 'ci_cost_description', type:'text'
         costInBillingCurrency column: 'ci_cost_in_billing_currency'
         datePaid column: 'ci_date_paid'
         localFundCode column: 'ci_local_fund_code'

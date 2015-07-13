@@ -27,6 +27,7 @@ class MyInstitutionsController {
     def transformerService
     def institutionsService
     def docstoreService
+    def tsvSuperlifterService
     static String INSTITUTIONAL_LICENSES_QUERY = " from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
 
     // Map the parameter names we use in the webapp with the ES fields
@@ -2609,12 +2610,17 @@ AND EXISTS (
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def financeImport() {
       def result = [:];
+
       result.user        = User.get(springSecurityService.principal.id)
       result.institution = Org.findByShortcode(params.shortcode)
+      def defaults = [ 'owner':result.institution];
 
       if (request.method == 'POST'){
         def input_stream = request.getFile("tsvfile")?.inputStream
-        result.loaderResult = tsvSuperlifterService.load(input_stream,grailsApplication.config.financialImportTSVLoaderMappings,params.dryRun=='Y'?true:false)
+        result.loaderResult = tsvSuperlifterService.load(input_stream,
+                                                         grailsApplication.config.financialImportTSVLoaderMappings,
+                                                         params.dryRun=='Y'?true:false,
+                                                         defaults)
       }
       result
     }

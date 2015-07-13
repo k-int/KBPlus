@@ -609,6 +609,7 @@ financialImportTSVLoaderMappings = [
       [
         ref:'owner',
         cls:'com.k_int.kbplus.Org',
+        onOverride:'mustEqual',
         heuristics:[
           [
             type : 'hql',
@@ -652,7 +653,8 @@ financialImportTSVLoaderMappings = [
             [ type:'ref', property:'sub', refname:'subscription' ],
             [ type:'val', property:'costInBillingCurrency', colname:'InvoiceTotalExcVat', datatype:'Double'],
             [ type:'ref', property:'costItemCategory', refname:'CICategory'],
-            [ type:'ref', property:'costItemElement', refname:'CIElement']
+            [ type:'ref', property:'costItemElement', refname:'CIElement'],
+            [ type:'valueClosure', property:'costDescription', closure: { colmap, values, locatedObjects -> "[Main Cost Item]${values[colmap['ResourceName']]}, ${values[colmap['AgreementName']]}, ${values[colmap['InvoiceNotes']]} "} ]
           ]
         ]
       ],
@@ -667,7 +669,8 @@ financialImportTSVLoaderMappings = [
             [ type:'ref', property:'sub', refname:'subscription' ],
             [ type:'val', property:'costInBillingCurrency', colname:'InvoiceVat', datatype:'Double'],
             [ type:'ref', property:'costItemCategory', refname:'CICategory'],
-            [ type:'ref', property:'costItemElement', refname:'CIElement']
+            [ type:'ref', property:'costItemElement', refname:'CIElement'],
+            [ type:'valueClosure', property:'costDescription', closure: { colmap, values, locatedObjects -> "[Tax] ${values[colmap['ResourceName']]}, ${values[colmap['AgreementName']]}, ${values[colmap['InvoiceNotes']]} "} ]
           ]
         ]
       ],
@@ -682,7 +685,8 @@ financialImportTSVLoaderMappings = [
             [ type:'ref', property:'sub', refname:'subscription' ],
             [ type:'val', property:'costInBillingCurrency', colname:'InvoiceTransactionCharge', datatype:'Double'],
             [ type:'ref', property:'costItemCategory', refname:'CICategory'],
-            [ type:'ref', property:'costItemElement', refname:'CIElement']
+            [ type:'ref', property:'costItemElement', refname:'CIElement'],
+            [ type:'valueClosure', property:'costDescription', closure: { colmap, values, locatedObjects -> "[Transaction Charge] ${values[colmap['ResourceName']]}, ${values[colmap['AgreementName']]}, ${values[colmap['InvoiceNotes']]} "} ]
           ]
         ]
       ]

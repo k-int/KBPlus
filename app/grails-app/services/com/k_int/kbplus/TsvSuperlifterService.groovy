@@ -10,7 +10,7 @@ class TsvSuperlifterService {
   def genericOIDService
   def executorService
 
-  def load(input_stream, config, testRun) {
+  def load(input_stream, config, testRun, defaultLocatedObjects = [:]) {
     def result = [:]
     result.log = []
 
@@ -54,6 +54,7 @@ class TsvSuperlifterService {
         // be needed to look up a domain object. Once identified domain objects are put into locatedObjects
         // locatedObjects
         def locatedObjects = [:]
+        locatedObjects << defaultLocatedObjects
 
         // We need to see if we can identify any existing domain objects which match the current row in the TSV.
         // We do this using the config.header.targetObjectIdentificationHeuristics list which contains a list of
@@ -75,8 +76,28 @@ class TsvSuperlifterService {
           }
 
           if ( located_objects.size() == 1 ) {
-            row_information.messages.add("Located unique item for ${toih.ref} :: ${located_objects[0]}");
-            locatedObjects[toih.ref] = located_objects[0]
+            if ( locatedObjects[toih.ref] == null ) {
+              row_information.messages.add("Located unique item for ${toih.ref} :: ${located_objects[0]}");
+              locatedObjects[toih.ref] = located_objects[0]
+            }
+            else {
+              // We already have an entry - what does config tell us - No special config == overwrite
+              switch ( toih.onOverride ) {
+                case 'reject':
+                  break;
+                case 'mustEqual':
+                  if ( locatedObjects[toih.ref] == located_objects[0] ) {
+                    log.debug("Located object matches existing object for ${toih.ref} - continue")
+                  }
+                  else {
+                    row_information.messages.add("Row tried to set a different value for ${toih.ref} - but it is already set to ${locatedObjects[toih.ref]}");
+                    row_information.error = true;
+                  }
+                  break;
+                default:
+                  break;
+              }
+            }
           }
           else if ( located_objects.size() > 1 ) {
             row_information.messages.add("Multiple items located for ${toih.ref}. ERROR");
@@ -163,7 +184,7 @@ class TsvSuperlifterService {
           def vl = locatedObjects[pd.refname];
           if ( vl != null ) {
             new_obj[pd.property] = vl;
-            create_msg += pd.property + ":" + vl;
+            create_msg += pd.property + ":" + vl+' ';
           }
           break;
         case 'val':
@@ -171,9 +192,16 @@ class TsvSuperlifterService {
           if ( ( nl[colmap[pd.colname]] != null ) && ( nl[colmap[pd.colname]].length() > 0 ) ) {
             def vl = convertString(getColumnValue(config,colmap,nl,pd.colname), pd.datatype);
             new_obj[pd.property] = vl;
-            create_msg += pd.property + ":" + vl;
+            create_msg += pd.property + ":" + vl+' ';
           }
           break;
+        case 'valueClosure':
+          def created_value = pd.closure(colmap,nl,locatedObjects);
+          new_obj[pd.property] = created_value
+          create_msg += pd.property + ":" + created_value+' ';
+          break;
+        defualt:
+          log.debug("Unhandled create rule type ${pd.type}");
       }
     }
 
