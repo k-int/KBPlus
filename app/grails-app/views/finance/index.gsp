@@ -7,7 +7,7 @@
 </head>
 <body>
 
-    <div class="container">
+    <div class="container-fluid">
         <ul class="breadcrumb">
             <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
             <li> <g:link controller="myInstitutions" action="finance" params="${[shortcode:params.shortcode]}">${institution.name} Finance</g:link> </li>
@@ -32,7 +32,7 @@
     </div>
 
 
-    <div class="container">
+    <div class="container-fluid">
 
         <div id="userError" hidden="">
             <table class="table table-striped table-bordered ">
