@@ -18,7 +18,7 @@ Agreement Term Start Year,<xsl:call-template name="formats_date"><xsl:with-param
 Agreement Term End Year,<xsl:call-template name="formats_date"><xsl:with-param name="date" select="./PackageTermEndDate" /></xsl:call-template>
 Consortium,
 </xsl:template>
-  <xsl:template match="TitleList">publication_title,ID.issn,ID.eissn,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,ID.kbart_title_id,embargo_info,coverage_depth,coverage_notes,publisher_name,ID.doi,platform.host.name,platform.host.url,platform.administrative.name,platform.administrative.url,hybrid_oa,access_start_date,access_end_date<xsl:if test="parent::Package">,tipp.status</xsl:if><xsl:if test="parent::Subscription">,core.status,core.start,core.end</xsl:if><xsl:text>&#xA;</xsl:text>
+  <xsl:template match="TitleList">publication_title,ID.issn,ID.eissn,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,ID.kbart_title_id,embargo_info,coverage_depth,coverage_notes,publisher_name,ID.doi,platform.host.name,platform.host.url,platform.administrative.name,platform.administrative.url,hybrid_oa,access_start_date,access_end_date<xsl:if test="parent::Package">,tipp.status</xsl:if><xsl:if test="parent::Subscription">,core.medium,core.earliest,core.latest</xsl:if><xsl:text>&#xA;</xsl:text>
    </xsl:template>
    
    <xsl:template match="TitleListEntry">
@@ -28,11 +28,11 @@ Consortium,
       </xsl:call-template>
       <!-- print_identifier -->
       <xsl:call-template name="csventry">
-        <xsl:with-param name="txt" select="./TitleIDs/ID[@namespace='ISSN']" />
+        <xsl:with-param name="txt" select="./TitleIDs/ID[@namespace='ISSN' or @namespace='issn']" />
       </xsl:call-template>
       <!-- online_identifier -->
       <xsl:call-template name="csventry">
-        <xsl:with-param name="txt" select="./TitleIDs/ID[@namespace='eISSN']" />
+        <xsl:with-param name="txt" select="./TitleIDs/ID[@namespace='eISSN' or @namespace='eissn']" />
       </xsl:call-template>
       <!-- date_first_issue_online -->
       <xsl:call-template name="csventry">
@@ -125,26 +125,50 @@ Consortium,
         </xsl:with-param>
       </xsl:call-template>
       <!-- status -->
-      <xsl:call-template name="csventry">
-        <xsl:with-param name="txt" select="./CoverageStatement/CoreStatus" />
-      </xsl:call-template>
+      <xsl:if test="ancestor::Package">
+        <xsl:call-template name="csventry">
+          <xsl:with-param name="txt" select="./CoverageStatement/TIPPStatus" />
+        </xsl:call-template>
+      </xsl:if>
+      <!-- Core medium -->
+      <xsl:if test="ancestor::Subscription">
+        <xsl:call-template name="csventry">
+          <xsl:with-param name="txt" select="./CoverageStatement/CoreMedium" />
+        </xsl:call-template>
+      </xsl:if>
       <xsl:if test="ancestor::Subscription">
         <!-- core_start_date -->
+        <xsl:variable name="core_earliest">
+          <xsl:for-each select="./CoverageStatement/CoreDateList/CoreDate">
+            <xsl:sort select="CoreStart" order="ascending" />
+              <xsl:if test="position() = 1">
+                <xsl:value-of select="CoreStart" />
+              </xsl:if>
+          </xsl:for-each>
+        </xsl:variable>
         <xsl:call-template name="csventry">
           <xsl:with-param name="txt">
-            <xsl:if test="./CoverageStatement/CoreStart != ''">
+            <xsl:if test="$core_earliest != ''">
               <xsl:call-template name="formats_date">
-                <xsl:with-param name="date" select="./CoverageStatement/CoreStart" />
+                <xsl:with-param name="date" select="$core_earliest" />
               </xsl:call-template>
             </xsl:if>
           </xsl:with-param>
         </xsl:call-template>
         <!-- core_end_date -->
+        <xsl:variable name="core_latest">
+          <xsl:for-each select="./CoverageStatement/CoreDateList/CoreDate">
+            <xsl:sort select="CoreEnd" order="descending" />
+              <xsl:if test="position() = 1">
+                <xsl:value-of select="CoreEnd" />
+              </xsl:if>
+          </xsl:for-each>
+        </xsl:variable>
         <xsl:call-template name="csventry">
           <xsl:with-param name="txt">
-            <xsl:if test="./CoverageStatement/CoreEnd != ''">
+            <xsl:if test="$core_latest != ''">
               <xsl:call-template name="formats_date">
-                <xsl:with-param name="date" select="./CoverageStatement/CoreEnd" />
+                <xsl:with-param name="date" select="$core_latest" />
               </xsl:call-template>
             </xsl:if>
           </xsl:with-param>

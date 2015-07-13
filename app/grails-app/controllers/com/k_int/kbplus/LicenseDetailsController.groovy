@@ -24,14 +24,16 @@ class LicenseDetailsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
-    log.debug("licenseDetails id:${params.id}");
+    log.debug("licenseDetails: ${params}");
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     // result.institution = Org.findByShortcode(params.shortcode)
     result.license = License.get(params.id)
+    result.transforms = grailsApplication.config.licenceTransforms
 
-    if ( ! result.license.hasPerm("view",result.user) ) {
+    if ( ! result?.license?.hasPerm("view",result.user) ) {
       log.debug("return 401....");
+      flash.error = "You do not have permission to view ${result.license.reference}. Please request access to ${result.license?.licensee?.name?:'licence institution'} on the profile page";
       response.sendError(401);
       return
     }
@@ -77,6 +79,8 @@ class LicenseDetailsController {
     }
 
 
+    result.availableSubs = getAvailableSubscriptions(result.license,result.user)
+
     withFormat {
       html result
       json {
@@ -89,18 +93,62 @@ class LicenseDetailsController {
       }
       xml {
         def doc = exportService.buildDocXML("Licences")
-        exportService.addLicencesIntoXML(doc, doc.getDocumentElement(), [result.license])
-        
-        if( ( params.transformId ) && ( result.transforms[params.transformId] != null ) ) {
-          String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
-          transformerService.triggerTransform(result.user, filename, result.transforms[params.transformId], xml, response)
-        }else{ // send the XML to the user
-          response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
-          response.contentType = "text/xml"
-          exportService.streamOutXML(doc, response.outputStream)
+        if(params.format_content=="subpkg"){
+            exportService.addLicenceSubPkgXML(doc, doc.getDocumentElement(),[result.license])
+        }else if(params.format_content=="subie"){
+            exportService.addLicenceSubPkgTitleXML(doc, doc.getDocumentElement(),[result.license])
+        }else if(!params.format_content){
+          exportService.addLicencesIntoXML(doc, doc.getDocumentElement(), [result.license])
         }
+        if ((params.transformId) && (result.transforms[params.transformId] != null)) {
+            String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
+            transformerService.triggerTransform(result.user, filename, result.transforms[params.transformId], xml, response)
+        }else{
+            response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
+            response.contentType = "text/xml"
+            exportService.streamOutXML(doc, response.outputStream)
+        }
+        
+      }
+      csv {
+        response.setHeader("Content-disposition", "attachment; filename=\"${filename}.csv\"")
+        response.contentType = "text/csv"
+        def out = response.outputStream
+        exportService.StreamOutLicenceCSV(out,null,[result.license])
+        out.close()
       }
     }
+  }
+  def getAvailableSubscriptions(licence,user){
+    def licenceInstitutions = licence?.orgLinks?.findAll{ orgRole ->
+      orgRole.roleType.value == "Licensee"
+    }?.collect{  it.org?.hasUserWithRole(user,'INST_ADM')?it.org:null  }
+
+    def subscriptions = null
+    if(licenceInstitutions){
+      def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
+      def date_restriction =  new Date(System.currentTimeMillis())
+
+      def base_qry = " from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org in (:orgs) ) ) ) AND ( s.status.value != 'Deleted' ) AND (s.owner = null) "
+      def qry_params = [orgs:licenceInstitutions]
+      base_qry += " and s.startDate <= (:start) and s.endDate >= (:start) "
+      qry_params.putAll([start:date_restriction])
+      subscriptions = Subscription.executeQuery("select s ${base_qry}", qry_params)
+    }
+    return subscriptions
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def linkToSubscription(){
+    log.debug("linkToSubscription :: ${params}")
+    if(params.subscription && params.licence){
+      def sub = Subscription.get(params.subscription)
+      def owner = License.get(params.licence)
+      owner.addToSubscriptions(sub)
+      owner.save(flush:true)
+    }
+    redirect controller:'licenseDetails', action:'index', params: [id:params.licence]
+
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -197,10 +245,10 @@ class LicenseDetailsController {
 
     result
   }
-
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def history() {
-    log.debug("licenseDetails id:${params.id}");
+  def edit_history() {
+    log.debug("licenseDetails::edit_history : ${params}");
+
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.license = License.get(params.id)
@@ -217,12 +265,13 @@ class LicenseDetailsController {
       result.editable = false
     }
 
-    result.max = params.max ?: 20;
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ?: 0;
+
+
     def qry_params = [licClass:result.license.class.name, prop:LicenseCustomProperty.class.name,owner:result.license, licId:"${result.license.id}"]
 
-    log.debug("REQUEST PARAMS ${qry_params}")
-    result.historyLines = AuditLogEvent.executeQuery("select e from AuditLogEvent as e where (( className=:licClass and persistedObjectId=:licId ) or (className = :prop and persistedObjectId in (select lp.id from LicenseCustomProperty as lp where lp.owner=:owner))) order by id desc", qry_params, [max:result.max, offset:result.offset]);
+    result.historyLines = AuditLogEvent.executeQuery("select e from AuditLogEvent as e where (( className=:licClass and persistedObjectId=:licId ) or (className = :prop and persistedObjectId in (select lp.id from LicenseCustomProperty as lp where lp.owner=:owner))) order by e.dateCreated desc", qry_params, [max:result.max, offset:result.offset]);
     
     def propertyNameHql = "select pd.name from LicenseCustomProperty as licP, PropertyDefinition as pd where licP.id= ? and licP.type = pd"
     
@@ -233,11 +282,37 @@ class LicenseDetailsController {
       }
     }
 
-
     result.historyLinesTotal = AuditLogEvent.executeQuery("select count(e.id) from AuditLogEvent as e where ( (className=:licClass and persistedObjectId=:licId) or (className = :prop and persistedObjectId in (select lp.id from LicenseCustomProperty as lp where lp.owner=:owner))) ",qry_params)[0];
 
-    result.todoHistoryLines = PendingChange.executeQuery("select pc from PendingChange as pc where pc.license=? order by pc.ts desc", result.license);
+    result
 
+  }
+
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def todo_history() {
+    log.debug("licenseDetails::todo_history : ${params}");
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.license = License.get(params.id)
+
+    if ( ! result.license.hasPerm("view",result.user) ) {
+      response.sendError(401);
+      return
+    }
+
+    if ( result.license.hasPerm("edit",result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
+    }
+    result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+    result.offset = params.offset ?: 0;
+
+    result.todoHistoryLines = PendingChange.executeQuery("select pc from PendingChange as pc where pc.license=? order by pc.ts desc", [result.license],[max:result.max,offset:result.offset]);
+
+    result.todoHistoryLinesTotal = PendingChange.executeQuery("select count(pc) from PendingChange as pc where pc.license=? order by pc.ts desc", [result.license])[0];
     result
   }
 
@@ -374,9 +449,16 @@ class LicenseDetailsController {
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def unlinkLicense() {
+        log.debug("unlinkLicense :: ${params}")
         License license = License.get(params.license_id);
-        OnixplLicense opl = license.onixplLicense;
-        String oplTitle = opl.title;
+        OnixplLicense opl = OnixplLicense.get(params.opl_id);
+        if(! (opl && license)){
+          log.error("Something has gone mysteriously wrong. Could not get Licence or OnixLicence. params:${params} license:${license} onix: ${opl}")
+          flash.message = "An error occurred when unlinking the ONIX-PL license";
+          redirect(action: 'index', id: license.id);
+        }
+
+        String oplTitle = opl?.title;
         DocContext dc = DocContext.findByOwner(opl.doc);
         Doc doc = opl.doc;
         license.removeFromDocuments(dc);
@@ -384,8 +466,13 @@ class LicenseDetailsController {
         // If there are no more links to this ONIX-PL License then delete the license and
         // associated data
         if (opl.licenses.isEmpty()) {
-            dc.delete();
+            opl.usageTerm.each{
+              it.usageTermLicenseText.each{
+                it.delete()
+              }
+            }
             opl.delete();
+            dc.delete();
             doc.delete();
         }
         if (license.hasErrors()) {

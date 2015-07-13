@@ -2,9 +2,10 @@ import geb.error.RequiredPageContentNotPresent
 import geb.spock.GebReportingSpec
 import pages.*
 import spock.lang.Stepwise
+import spock.lang.Ignore
 
 @Stepwise
-class HomePageSpec extends GebReportingSpec {
+class GeneralSpec extends BaseSpec {
 	// curl -XDELETE 'http://localhost:9200/kbplustest/'
 	// curl -XPUT 'httop://localhost:9200/kbplustest/'
 
@@ -28,7 +29,8 @@ class HomePageSpec extends GebReportingSpec {
 		go "/demo/org/create"
 		$("form").name = Data.Org_name
 		$("form").impId = Data.Org_impId
-		$("form").sector = 'Higher Education'
+		$("form").sector = "Higher Education"
+		report "google home page"
 		$("#SubmitButton").click()
 		then:
 		browser.page.title.startsWith "Show Org"
@@ -73,7 +75,7 @@ class HomePageSpec extends GebReportingSpec {
 		$('a', text: 'New Package Details').click()
 		$('form').subid = Data.Subscription_name_A +" - Functional Test Organisation"
 		$('#addEntitlementsCheckbox').click()
-		$('form input', type: 'submit').click()
+		$('#add_to_sub_submit_id').click()
 		then:
 		1 == 1
 		// response page sends back a link containing the new package ID <a href="/demo/packageDetails/show/590">New Package Details</a>
@@ -81,7 +83,7 @@ class HomePageSpec extends GebReportingSpec {
 
 	def "Start downloading titles"() {
 		when:
-		startESUpdate() // so that new package is displayed
+		go '/demo/admin/fullReset' // so that new package is displayed
 		then:
 		true;
 	}
@@ -438,10 +440,18 @@ class HomePageSpec extends GebReportingSpec {
 		changeUser(Data.UserB_name, Data.UserB_passwd)
 		compareONIX()
 		when:
-		$("i.jstree-checkbox").click()
-		$("#Compare").click()
+            $("#select2-chosen-1").click()
+            $("#s2id_autogen1_search").value(Data.Licence_ONIX_PL_title)
+            waitFor{$("div.select2-result-label").click()}
+            $("#addToList").click()
+            $("#select2-chosen-1").click()
+            $("#s2id_autogen1_search").value(Data.Licence_ONIX_PL_title)
+            waitFor{$("div.select2-result-label").click()}
+	        $("#addToList").click()
+			$("i.jstree-checkbox").click()
+			$("input[name='Compare']").click()
 		then:
-		!$("h1", text: "ONIX-PL Licence Comparison").isEmpty()
+		!$("h1", text: getMessage("menu.institutions.comp_onix")).isEmpty()
 	}
 
 	def "Update ES Index"() {

@@ -102,7 +102,8 @@ grails.project.dependency.resolution = {
           excludes "org.codehaus.groovy", "groovy"
         }
         compile "net.sf.jasperreports:jasperreports:5.6.0"
-        
+        compile "org.eclipse.jdt.core.compiler:ecj:4.4"
+  
         // II Commented out..
         // compile 'cglib:cglib:2.2.2'
         compile "com.lowagie:itext:2.1.7"
@@ -124,7 +125,7 @@ grails.project.dependency.resolution = {
         //runtime ":yui-minify-resources:0.1.4"
         build ':tomcat:7.0.54'
 
-        // runtime ":database-migration:1.3.2"
+        runtime ":database-migration:1.4.0"
 
         compile ':cache:1.1.7'
 
@@ -137,9 +138,12 @@ grails.project.dependency.resolution = {
           exclude "spock-grails-support"
         }
         test ":geb:$gebVersion"
+
+        test ":remote-control:2.0"
+
         
         // Font awesome for font based icons.
-        compile ":font-awesome-resources:3.2.1"
+        compile ":font-awesome-resources:4.3.0.1"
 
         compile ':spring-security-core:1.2.7.3'
         compile ':spring-security-ldap:1.0.6'
@@ -156,5 +160,7 @@ grails.project.dependency.resolution = {
         compile ":grails-melody:1.53.0"
         // runtime "com.k-int:domain-model-oai-pmh:0.1"
         compile ":jsonp:0.2"
+
+        compile ":remote-pagination:0.4.8" //AJAX Pagination - Finance
     }
 }

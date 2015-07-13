@@ -1,13 +1,52 @@
 <!doctype html>
 
-<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<%@ page import="java.text.SimpleDateFormat"%>
+<%
+  def addFacet = { params, facet, val ->
+    def newparams = [:]
+    newparams.putAll(params)
+    def current = newparams[facet]
+    if ( current == null ) {
+      newparams[facet] = val
+    }
+    else if ( current instanceof String[] ) {
+      newparams.remove(current)
+      newparams[facet] = current as List
+      newparams[facet].add(val);
+    }
+    else {
+      newparams[facet] = [ current, val ]
+    }
+    newparams
+  }
+
+  def removeFacet = { params, facet, val ->
+    def newparams = [:]
+    newparams.putAll(params)
+    def current = newparams[facet]
+    if ( current == null ) {
+    }
+    else if ( current instanceof String[] ) {
+      newparams.remove(current)
+      newparams[facet] = current as List
+      newparams[facet].remove(val);
+    }
+    else if ( current?.equals(val.toString()) ) {
+      newparams.remove(facet)
+    }
+    newparams
+  }
+
+  def dateFormater = new SimpleDateFormat("yy-MM-dd'T'HH:mm:ss.SSS'Z'")
+%>
+
+<html>
 
   <head>
     <meta name="layout" content="pubbootstrap"/>
     <title>KB+ Data import explorer</title>
+        <r:require module='annotations' />
+
   </head>
 
 
@@ -63,21 +102,157 @@ This work is published from:
       </div>
     </div>
 
+
+
+
     <div class="container">
+      <g:form action="index" method="get" params="${params}">
+      <input type="hidden" name="offset" value="${params.offset}"/>
+
       <div class="row">
-        <g:each in="${packages}" var="p">
-          <div class="span4"><div class="well">
-            <h4>${p[1]}</h4>
-            <ul>
-              <g:each in="${p[2]}" var="pid"><li>Package ID: ${pid}</li></g:each>
+        <div class="span12">
+        <ul class="nav nav-pills">
+          <g:set var="active_filter" value="${params.filter}"/>
+          <li class="${(active_filter=='all' || active_filter == null)?'active':''}"><g:link action="index" params="${params + [filter:'all']}">All Packages</g:link></li>
+
+          <li class="${active_filter=='current'?'active':''}"><g:link action="index" params="${params + [filter:'current',startYear:"[1900 TO ${new Date().year +1900} ]",endYear:"[ ${new Date().year +1900} TO 2100]"]}">Current Packages</g:link></li>
+
+
+      </ul>
+          <div class="well form-horizontal">
+            Search Term: <input name="q" placeholder="Add &quot;&quot; for exact match" value="${params.q}"/>
+            Sort: <select name="sort">
+                    <option ${params.sort=='sortname' ? 'selected' : ''} value="sortname">Package Name</option>
+                    <option ${params.sort=='_score' ? 'selected' : ''} value="_score">Score</option>
+                    <option ${params.sort=='lastModified' ? 'selected' : ''} value="lastModified">Last Modified</option>
+                  </select>
+            Order: <select name="order" value="${params.order}">
+                    <option ${params.order=='asc' ? 'selected' : ''} value="asc">Ascending</option>
+                    <option ${params.order=='desc' ? 'selected' : ''} value="desc">Descending</option>
+                  </select>
+            Modified After: <g:simpleHiddenValue  id="lastUpdated" value="${params.lastUpdated}" name="lastUpdated" type="date"/>
+ 
+            <button type="submit" name="search" value="yes">Search</button>
+          </div>
+        </div>
+      </div>
+      </g:form>
+
+      <p>
+          <g:each in="${['type','endYear','startYear','consortiaName','cpname']}" var="facet">
+            <g:each in="${params.list(facet)}" var="fv">
+              <span class="badge alert-info">${facet}:${fv} &nbsp; <g:link controller="${controller}" action="index" params="${removeFacet(params,facet,fv)}"><i class="icon-remove icon-white"></i></g:link></span>
+            </g:each>
+          </g:each>
+        </p>
+
+      <div class="row">
+
+  
+        <div class="facetFilter span2">
+          <g:each in="${facets.sort{it.key}}" var="facet">
+            <g:if test="${facet.key != 'type'}">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h5><g:message code="facet.so.${facet.key}" default="${facet.key}" /></h5>
+              </div>
+              <div class="panel-body">
+                <ul>
+                  <g:each in="${facet.value.sort{it.display}}" var="v">
+                    <li>
+                      <g:set var="fname" value="facet:${facet.key+':'+v.term}"/>
+ 
+                      <g:if test="${params.list(facet.key).contains(v.term.toString())}">
+                        ${v.display} (${v.count})
+                      </g:if>
+                      <g:else>
+                        <g:link controller="${controller}" action="${action}" params="${addFacet(params,facet.key,v.term)}">${v.display}</g:link> (${v.count})
+                      </g:else>
+                    </li>
+                  </g:each>
+                </ul>
+              </div>
+            </div>
+            </g:if>
+          </g:each>
+        </div>
+
+
+        <div class="span10">
+          <div class="well">
+             <g:if test="${hits}" >
+                <div class="paginateButtons" style="text-align:center">
+                    <g:if test=" ${params.int('offset')}">
+                   Showing Results ${params.int('offset') + 1} - ${hits.totalHits < (params.int('max') + params.int('offset')) ? hits.totalHits : (params.int('max') + params.int('offset'))} of ${hits.totalHits}
+                  </g:if>
+                  <g:elseif test="${hits.totalHits && hits.totalHits > 0}">
+                      Showing Results 1 - ${hits.totalHits < params.int('max') ? hits.totalHits : params.int('max')} of ${hits.totalHits}
+                  </g:elseif>
+                  <g:else>
+                    Showing ${hits.totalHits} Results
+                  </g:else>
+                </div>
+
+                <div id="resultsarea">
+                  <table class="table table-bordered table-striped">
+                    <thead>
+                      <tr style="white-space: nowrap">
+                      <g:sortableColumn property="sortname" title="Package Name" />
+                      <g:sortableColumn property="consortiaName" title="Consortium" />
+                      <g:sortableColumn property="startDate" title="Start Date" />
+                      <g:sortableColumn property="endDate" title="End Date" />
+                      <g:sortableColumn property="lastModified" title="Last Modified" />
+                      <th>Export</th>
+                    </thead>
+                    <tbody>
+                      <g:each in="${hits}" var="hit">
+                        <tr>
+                          <td><g:link controller="${controller}" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link>
+                              <!--(${hit.score})-->
+                              <span>(${hit.source.titleCount?:'Unknown number of'} titles)</span>
+                          <ul>
+                          <g:each in="${hit.source.identifiers}" var="ident">
+                            <li>${ident}</li>
+                          </g:each>
+                          </ul>
+                          <td>${hit.source.consortiaName}</td>
+                          <td>
+                          <g:formatDate formatName="default.date.format.notime" date='${hit.source.startDate?dateFormater.parse(hit.source.startDate):null}'/>
+                          </td>
+                          <td>
+                          <g:formatDate formatName="default.date.format.notime" date='${hit.source.endDate?
+                            dateFormater.parse(hit.source.endDate):null}'/>
+                          </td>
+                          <td><g:formatDate formatName="default.date.format" date='${hit.source.lastModified?dateFormater.parse(hit.source.lastModified):null}'/> </td>
+                          </td>
+                          
+                          <td>  
+        <div class="dropdown">
+            <a class="dropdown-toggle badge" data-toggle="dropdown" href="#">Formats<i class="fa fa-caret-down"></i> </a>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+            <li><g:link action="pkg" params="${[format:'json',id:hit.source.dbId]}">JSON</g:link></li>  
+            <li><g:link action="pkg" params="${[format:'xml',id: hit.source.dbId]}">XML Export</g:link></li>
+            <g:each in="${transforms}" var="transkey,transval">
+              <li><g:link action="pkg" params="${[format:'xml',transformId:transkey,mode:params.mode,id:hit.source.dbId]}"> ${transval.name}</g:link></li>
+            </g:each>
             </ul>
-            <g:link action="pkg" params="${[format:'csv', id:p[0]]}">CSV With KBPlus header</g:link><br/>
-            <g:link action="pkg" params="${[format:'csv',omitHeader:'Y', id:p[0]]}">CSV Without KBPlus header (KBART)</g:link><br/>
-            <g:link action="pkg" params="${[format:'json',id:p[0]]}">JSON</g:link>
-          </div></div>
-        </g:each>
+        </div>
+                        </td>
+                        </tr>
+                      </g:each>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="paginateButtons" style="text-align:center">
+                  <span><g:paginate controller="${controller}" action="index" params="${params}" next="Next" prev="Prev" total="${hits.totalHits}" /></span>
+            </g:if>
+          </div>
+          </div>
+        </div>
       </div>
     </div>
+
+
 
   </body>
 

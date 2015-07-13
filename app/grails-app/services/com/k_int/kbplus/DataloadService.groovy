@@ -24,12 +24,12 @@ class DataloadService {
   def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
   def grailsApplication
 
-
   def es_index
   def dataload_running=false
   def dataload_stage=-1
   def dataload_message=''
   def update_running = false
+  def lastIndexUpdate = null
 
   @javax.annotation.PostConstruct
   def init () {
@@ -69,6 +69,7 @@ class DataloadService {
     
     updateES(esclient, com.k_int.kbplus.Org.class) { org ->
       def result = [:]
+      result.status = org.status?.value
       result._id = org.impId
       result.name = org.name
       result.sector = org.sector
@@ -80,9 +81,6 @@ class DataloadService {
 
     updateES(esclient, com.k_int.kbplus.TitleInstance.class) { ti ->
       def result = [:]
-      if ( ti.status?.value == 'Deleted' ) {
-      }
-      else {
         if ( ti.title != null ) {
           def new_key_title =  com.k_int.kbplus.TitleInstance.generateKeyTitle(ti.title)
           if ( ti.keyTitle != new_key_title ) {
@@ -95,11 +93,13 @@ class DataloadService {
           }
           else {
           }
+          result.status = ti.status?.value
           result._id = ti.impId
           result.title = ti.title
           result.sortTitle = ti.sortTitle
           result.normTitle = ti.normTitle
           result.keyTitle = ti.keyTitle
+          result.publisher = ti.getPublisher()?.name ?:''
           result.dbId = ti.id
           result.visible = ['Public']
           result.rectype = 'Title'
@@ -111,12 +111,12 @@ class DataloadService {
         else {
           log.warn("Title with no title string - ${ti.id}");
         }
-      }
       result
     }
 
     updateES(esclient, com.k_int.kbplus.Package.class) { pkg ->
       def result = [:]
+      result.status = pkg.packageStatus?.value
       result._id = pkg.impId
       result.name = "${pkg.name}"
       result.sortname = pkg.sortName
@@ -124,6 +124,7 @@ class DataloadService {
       result.dbId = pkg.id
       result.visible = ['Public']
       result.rectype = 'Package'
+      result.isPublic = pkg?.isPublic?.value?:'No'
       result.consortiaId = pkg.getConsortia()?.id
       result.consortiaName = pkg.getConsortia()?.name
       result.cpname = pkg.contentProvider?.name
@@ -131,10 +132,10 @@ class DataloadService {
       result.titleCount = pkg.tipps.size()
       result.startDate = pkg.startDate
       result.endDate = pkg.endDate
+      result.identifiers = pkg.ids.collect{"${it?.identifier?.ns?.ns} : ${it?.identifier?.value}"}
       def lastmod = pkg.lastUpdated ?: pkg.dateCreated
       if ( lastmod != null ) {
-        def formatter = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm")
-        result.lastModified = formatter.format(lastmod)
+        result.lastModified = lastmod
       }
 
       if ( pkg.startDate ) {
@@ -156,20 +157,20 @@ class DataloadService {
 
     updateES(esclient, com.k_int.kbplus.License.class) { lic ->
       def result = [:]
-      if(lic.status?.value != "Deleted"){
-        result.name = lic.reference
-        result._id = lic.impId
-        result.dbId = lic.id
-        result.visible = ['Public']
-        result.rectype = 'License'
-        result.availableToOrgs = lic.orgLinks.find{it.roleType?.value == "Licensee"}?.org?.id
-      }
+      result.name = lic.reference
+      result.status = lic.status?.value
+      result._id = lic.impId
+      result.dbId = lic.id
+      result.visible = ['Public']
+      result.rectype = 'License'
+      result.availableToOrgs = lic.orgLinks.find{it.roleType?.value == "Licensee"}?.org?.id
       result
     }
 
     updateES(esclient, com.k_int.kbplus.Platform.class) { plat ->
       def result = [:]
       result._id = plat.impId
+      result.status = plat.status?.value
       result.name = plat.name
       result.dbId = plat.id
       result.visible = ['Public']
@@ -185,6 +186,7 @@ class DataloadService {
 
       // There really should only be one here? So think od this as SubscriptionOrg, but easier
       // to leave it as availableToOrgs I guess.
+      result.status = sub.status?.value
       result.availableToOrgs = sub.orgRelations.find{it.roleType?.value == "Subscriber" }?.org?.id
       result.identifier = sub.identifier
       result.dbId = sub.id
@@ -224,6 +226,7 @@ class DataloadService {
 
     update_running = false;
     def elapsed = System.currentTimeMillis() - start_time;
+    lastIndexUpdate = new Date(System.currentTimeMillis())
     log.debug("IndexUpdateJob completed in ${elapsed}ms at ${new Date()}");
   }
 
@@ -295,11 +298,20 @@ class DataloadService {
         Object r = results.get(0);
         def idx_record = recgen_closure(r)
 
-        def future = esclient.index {
-          index es_index
-          type domain.name
-          id idx_record['_id']
-          source idx_record
+        if ( idx_record.status == 'deleted' ) {
+          def future = esclient.delete {
+            index es_index
+            type domain.name
+            id idx_record['_id']
+          }
+        }
+        else {
+          def future = esclient.index {
+            index es_index
+            type domain.name
+            id idx_record['_id']
+            source idx_record
+          }
         }
 
         latest_ft_record.lastTimestamp = r.lastUpdated?.getTime()

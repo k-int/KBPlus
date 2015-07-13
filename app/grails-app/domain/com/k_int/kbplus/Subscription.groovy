@@ -36,23 +36,31 @@ class Subscription {
   License owner
   SortedSet issueEntitlements
   RefdataValue isPublic
+  Set ids = []
 
   static transients = [ 'subscriber', 'provider', 'consortia' ]
 
-  static hasMany = [ packages : SubscriptionPackage, 
+
+  static hasMany = [ 
+                     ids: IdentifierOccurrence,
+                     packages : SubscriptionPackage, 
                      issueEntitlements: IssueEntitlement,
                      documents:DocContext,
                      orgRelations: OrgRole,
                      derivedSubscriptions: Subscription,
                      pendingChanges:PendingChange,
-                     customProperties:SubscriptionCustomProperty  ]
+                     customProperties:SubscriptionCustomProperty,
+                     costItems:CostItem]
 
-  static mappedBy = [ packages : 'subscription', 
+  static mappedBy = [ 
+                      ids: 'sub',
+                      packages : 'subscription', 
                       issueEntitlements: 'subscription',
                       documents: 'subscription',
                       orgRelations: 'sub',
                       derivedSubscriptions: 'instanceOf',
-                      pendingChanges:'subscription' ]
+                      pendingChanges:'subscription',
+                      costItems:'sub' ]
 
   static mapping = {
                   id column:'sub_id'

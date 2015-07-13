@@ -92,7 +92,7 @@
 
   
         <div class="facetFilter span2">
-          <g:each in="${facets}" var="facet">
+          <g:each in="${facets.sort{it.key}}" var="facet">
             <g:if test="${facet.key != 'type'}">
             <div class="panel panel-default">
               <div class="panel-heading">
@@ -100,7 +100,7 @@
               </div>
               <div class="panel-body">
                 <ul>
-                  <g:each in="${facet.value}" var="v">
+                  <g:each in="${facet.value.sort{it.display}}" var="v">
                     <li>
                       <g:set var="fname" value="facet:${facet.key+':'+v.term}"/>
  

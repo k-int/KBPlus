@@ -10,6 +10,23 @@
         <ul class="breadcrumb">
             <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
            <li> <g:link controller="myInstitutions" action="currentLicenses" params="${[shortcode:params.shortcode]}">${institution.name} ${message(code:'licence.current')}</g:link> </li>
+           <g:if test="${is_admin}">
+              <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
+          </g:if>
+       <li class="dropdown pull-right">
+          <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>&nbsp;
+          <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
+            <li>
+              <g:link action="currentLicenses" params="${params+[format:'csv']}">CSV Export</g:link>
+            </li>
+            <li>
+              <g:link action="currentLicenses" params="${params+[format:'xml',format_content:'subpkg']}">XML Export (Subscriptions & Packages)</g:link>
+            </li>
+            <g:each in="${transforms}" var="transkey,transval">
+                <li><g:link action="currentLicenses" params="${params+[format:'xml',transformId:transkey,format_content:'subie']}"> ${transval.name}</g:link></li>
+              </g:each>
+          </ul>
+        </li>
         </ul>
     </div>
 
@@ -48,19 +65,27 @@
 
     <div class="container licence-searches">
         <div class="row">
-            <div class="span12">
+            <div class="span8">
+              <div class="well">
+
                 <form class="form-inline">
-                    <label>Valid On</label> <input name="validOn" type="text" value="${validOn}"/>
+                    <label>Valid On:</label> 
+                        <div class="input-append date">
+                          <input class="span2 datepicker-class" size="16" type="text" 
+                          name="validOn" value="${validOn}">
+                        </div>
 
                     <label>Search by Reference:</label>
-                    <input type="text" name="keyword-search" placeholder="enter search term..." value="${params['keyword-search']?:''}" /><br/>
-                    <label>${message(code:'licence.property.search')}:</label>
-                            <g:select id="availablePropertyTypes" name="availablePropertyTypes" from="${custom_prop_types}" optionKey="value" optionValue="key" value="${params.propertyFilterType}"/>
-                            <input id="selectVal" type="text" name="propertyFilter" placeholder="property value..." value="${params.propertyFilter?:''}" /></p>
+                    <input type="text" name="keyword-search" placeholder="enter search term..." value="${params['keyword-search']?:''}" />
                     <br/>
+                    <label>${message(code:'licence.property.search')}:</label>
+                      <g:select id="availablePropertyTypes" name="availablePropertyTypes" from="${custom_prop_types}" optionKey="value" optionValue="key" value="${params.propertyFilterType}"/>
+                      <input id="selectVal" type="text" name="propertyFilter" placeholder="property value..." value="${params.propertyFilter?:''}" />
+                   
                 <input type="hidden" id="propertyFilterType" name="propertyFilterType" value="${params.propertyFilterType}"/>
-                <input type="submit" class="btn btn-primary" value="Search" /></p>
+                <input type="submit" class="btn btn-primary" value="Search" />
                 </form>
+              </div>
             </div>
         </div>
     </div>
@@ -107,7 +132,7 @@
                   <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${l.endDate}"/></td>
                   <td>
                     <g:link controller="myInstitutions" action="actionLicenses" params="${[shortcode:params.shortcode,baselicense:l.id,'copy-licence':'Y']}" class="btn btn-success">Copy</g:link>
-                    <g:link controller="myInstitutions" action="actionLicenses" params="${[shortcode:params.shortcode,baselicense:l.id,'delete-licence':'Y']}" class="btn btn-danger">Delete</g:link>
+                    <g:link controller="myInstitutions" action="actionLicenses" onclick="return confirm('Are you sure you want to delete ${l.reference?:'** No licence reference ** '}?')" params="${[shortcode:params.shortcode,baselicense:l.id,'delete-licence':'Y']}" class="btn btn-danger">Delete</g:link>
                   </td>
                 </tr>
               </g:each>
@@ -119,6 +144,10 @@
         </div>
 
     <r:script type="text/javascript">
+
+        $(".datepicker-class").datepicker({
+            format:"${session.sessionPreferences?.globalDatepickerFormat}"
+        });
 
         $('.licence-results input[type="radio"]').click(function () {
             $('.licence-options').slideDown('fast');

@@ -12,13 +12,16 @@ class OnixplLicenseDetailsController {
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def index() {
         def user = User.get(springSecurityService.principal.id)
-        def onixplLicense = OnixplLicense.get(params.id)
+        // def onixplLicense = OnixplLicense.get(params.id)
 //        if ( ! onixplLicense.hasPerm("view",user) ) {
 //            log.debug("return 401....");
 //            response.sendError(401);
 //            return
 //        }
-        [onixplLicense: onixplLicense, user: user]
+
+        def ghost_licence = OnixplLicense.findByTitle(grails.util.Holders.config.onix_ghost_licence)
+        def licences = ghost_licence?[params.id,ghost_licence.id] : params.id
+        forward (action:'matrix', params:[Compare:"Compare", id:"compare",compareAll:true,selectedLicences:licences],controller:"onixplLicenseCompare")
     }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])

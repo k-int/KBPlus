@@ -17,7 +17,8 @@ class Data {
 
     static UserD_name = "admin"
     static UserD_passwd = "admin"
-
+    static UserD_displayName = "TestAdmin"
+    
     static Org_name = "Functional Test Organisation"
     static Org_impId = "FunctionalTestOrganisation"
     static Org_Url = "Functional_Test_Organisation"
@@ -26,6 +27,7 @@ class Data {
     static Licence_template_copy_D = "Functional Test Temp Licence edited copy"
     static Licence_actual_C = "Functional Test Licence C"
 
+    static Licence_ONIX_PL_title = "Nature Publishing Group Academic Site License Agreement US"
     static Licence_ONIX_PL =
             workingDir + "manual_test_data" + sep + "onix" + sep + "TX-DRAFT Nature Publishing Group Academic License Template-ople-t-1375739573670.xml"
     static Test_Doc_name = "Functional Test Doc"

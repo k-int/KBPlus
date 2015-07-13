@@ -1,4 +1,8 @@
 <%@ page import="com.k_int.kbplus.Subscription" %>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%
+  def dateFormater = new SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
+%>
 <r:require module="annotations" />
 
 <!doctype html>
@@ -114,14 +118,77 @@
                </dl>
 
                <dl><dt>Package Name</dt><dd><g:each in="${subscriptionInstance.packages}" var="sp">
-                           <g:link controller="packageDetails" action="show" id="${sp.pkg.id}">${sp?.pkg?.name}</g:link> (${sp.pkg?.contentProvider?.name}) <br/>
+                           <g:link controller="packageDetails" action="show" id="${sp.pkg.id}">${sp?.pkg?.name}</g:link> (${sp.pkg?.contentProvider?.name}) 
+
+                           <a onclick="unlinkPackage(${sp.pkg.id})">Unlink <i class="fa fa-times"></i></a>
+                           <br/>
                        </g:each></dd></dl>
 
-               <dl><dt><g:annotatedLabel owner="${subscriptionInstance}" property="identifier">Subscription Identifier</g:annotatedLabel></dt><dd>${subscriptionInstance.identifier}</dd></dl>
+               <dl><dt><g:annotatedLabel owner="${subscriptionInstance}" property="ids">Subscription Identifiers</g:annotatedLabel></dt>
+                   <dd>
+                     <table class="table table-bordered">
+                       <thead>
+                         <tr>
+                           <th>Authority</th>
+                           <th>Identifier</th>
+                         </tr>
+                       </thead>
+                       <tbody>
+                         <g:each in="${subscriptionInstance.ids}" var="io">
+                           <tr>
+                             <td>${io.identifier.ns.ns}</td>
+                             <td>${io.identifier.value}</td>
+                           </tr>
+                         </g:each>
+                       </tbody>
+                     </table>
+           <g:if test="${editable}">
+              <g:form controller="ajax" action="addToCollection" class="form-inline" name="add_ident_submit">
+                Select an existing identifer using the typedown, or create a new one by entering namespace:value (EG JC:66454) then clicking that value in the dropdown to confirm.<br/>
+                <input type="hidden" name="__context" value="${subscriptionInstance.class.name}:${subscriptionInstance.id}"/>
+                <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.IdentifierOccurrence"/>
+                <input type="hidden" name="__recip" value="sub"/>
+                <input type="hidden" name="identifier" id="addIdentifierSelect"/>
+                <input type="submit" value="Add Identifier..." class="btn btn-primary btn-small"/><br/>
+              </g:form>
+            </g:if>
+                   </dd>
+               </dl>
 
                <dl><dt>Start Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="startDate" type="date"/></dd></dl>
 
                <dl><dt>End Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="endDate" type="date"/></dd></dl>
+
+               <dl><dt>Financial</dt>
+                   <dd>
+                     <table class="table table-striped table-bordered">
+                       <thead>
+                         <tr>
+                           <th>CI #</th>
+                           <th>Order #</th>
+                           <th>Date Paid</th>
+                           <th>Start Date</th>
+                           <th>End Date</th>
+                           <th>Amount</th>
+                         </tr>
+                       </thead>
+                       <tbody>
+                         <g:each in="${subscriptionInstance.costItems}" var="ci">
+                           <tr>
+                             <td>${ci.id}</td>
+                             <td>${ci.order?.orderNumber}</td>
+                             <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ci.datePaid}"/></td>
+                             <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ci.startDate}"/></td>
+                             <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ci.endDate}"/></td>
+                             <td>${ci.costInLocalCurrency}</td>
+                         </tr>
+                         </g:each>
+                       </tbody>
+                     </table>
+                   </dd>
+               </dl>
+
+
                <dl><dt>Manual Renewal Date</dt><dd><g:xEditable owner="${subscriptionInstance}" field="manualRenewalDate" type="date"/></dd></dl>
                <dL><dt>Child </dt><dd>
                         <g:xEditableRefData owner="${subscriptionInstance}" field="isSlaved" config='YN'/>
@@ -212,49 +279,52 @@
               <th rowspan="2"></th>
               <th rowspan="2">#</th>
               <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
-              <th>ISSN</th>
               <g:sortableColumn params="${params}" property="coreStatus" title="Core" />
               <g:sortableColumn params="${params}" property="startDate" title="Earliest date" />
-              <g:sortableColumn params="${params}" property="coreStatusStart" title="Core Start Date" />
+              <g:sortableColumn params="${params}" property="core_status" title="Core Status" />
               <th rowspan="2">Actions</th>
             </tr>  
 
             <tr>
               <th>Access Dates</th>
-              <th>eISSN</th>
               <th>Medium (P/E)</th>
               <g:sortableColumn params="${params}" property="endDate" title="Latest Date" />
-              <g:sortableColumn params="${params}" property="coreStatusEnd" title="Core End Date"  />
+              <th> Core Medium </th>
             </tr>
 
             <tr class="no-background">  
+              <g:if test="${editable}">
+              
 
               <th>
-                <g:if test="${editable}"><input type="checkbox" name="chkall" onClick="javascript:selectAll();"/></g:if>
+                <input type="checkbox" name="chkall" onClick="javascript:selectAll();"/>
               </th>
 
               <th colspan="3">
-                <g:if test="${editable}">
+                
                   <select id="bulkOperationSelect" name="bulkOperation">
                     <option value="edit">Edit Selected</option>
                     <option value="remove">Remove Selected</option>
                   </select>
 
-                  <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()" class="btn btn-primary"/></g:if>
+                  <input type="Submit" value="Apply Batch Changes" onClick="return confirmSubmit()" class="btn btn-primary"/>
               </th>
 
               <th>
-                <g:if test="${editable}"><g:simpleHiddenRefdata id="bulk_core" name="bulk_core" refdataCategory="CoreStatus"/></g:if>
-                <g:if test="${editable}"><br/><g:simpleHiddenRefdata id="bulk_medium" name="bulk_medium" refdataCategory="IEMedium"/></g:if>
+                  <g:simpleHiddenRefdata id="bulk_medium" name="bulk_medium" refdataCategory="IEMedium"/>
               </th>
 
-              <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_start_date" name="bulk_start_date" type="date"/> </g:if> <br/>
-                  <g:if test="${editable}"> <g:simpleHiddenValue id="bulk_end_date" name="bulk_end_date" type="date"/> </g:if></th>
-
-              <th><g:if test="${editable}"> <g:simpleHiddenValue id="bulk_core_start" name="bulk_core_start" type="date"/> </g:if> <br/>
-                  <g:if test="${editable}"> <g:simpleHiddenValue id="bulk_core_end" name="bulk_core_end" type="date"/> </g:if></th>
-
-              <th colspan="2"></th>
+              <th> <g:simpleHiddenValue id="bulk_start_date" name="bulk_start_date" type="date"/>  <br/>
+                   <g:simpleHiddenValue id="bulk_end_date" name="bulk_end_date" type="date"/> 
+              </th>
+              <th>
+                <g:simpleHiddenRefdata id="bulk_coreStatus" name="bulk_coreStatus" refdataCategory="CoreStatus"/> <br/>
+              </th>
+              </g:if>
+               <g:else>
+               <th colspan="7">  </th>
+              </g:else>
+              <th></th>
             </tr>
          </thead>
          <tbody>
@@ -265,9 +335,11 @@
                 <td><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></g:if></td>
                 <td>${counter++}</td>
                 <td>
-                  <g:link controller="issueEntitlement" id="${ie.id}" action="show">${ie.tipp.title.title}</g:link>
+                  <g:link controller="issueEntitlement" id="${ie.id}" action="show"><strong>${ie.tipp.title.title}</strong></g:link>
                   <g:if test="${ie.tipp?.hostPlatformURL}">( <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">Host Link</a> 
                             <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL} (In new window)" target="_blank"><i class="icon-share-alt"></i></a>)</g:if> <br/>
+                   ISSN:<strong>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</strong>, 
+                   eISSN:<strong>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</strong><br/>
                    Access: ${ie.availabilityStatus?.value}<br/>
                    Coverage Note: ${ie.coverageNote?:(ie.tipp?.coverageNote?:'')}<br/>
                    <g:if test="${ie.availabilityStatus?.value=='Expected'}">
@@ -282,24 +354,26 @@
                    </g:if>
 
                 </td>
-                <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}<br/>
-                ${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
                 <td>
                   <g:xEditableRefData owner="${ie}" field="coreStatus" config='CoreStatus'/>
 
-                  <g:if test="${grailsApplication.config.ab?.newcore==true}">
-                    <br/>(Newcore: ${ie.wasCoreOn(as_at_date)})
+                  <g:if test="${grailsApplication.config.ab?.newcore==true}"><br/>
+                    <span style="white-space: nowrap;">(Newcore: ${ie.wasCoreOn(as_at_date)})</span>
                   </g:if>
 
                   <br/><g:xEditableRefData owner="${ie}" field="medium" config='IEMedium'/>
                 </td>
                 <td>
-                    <g:xEditable owner="${ie}" type="date" field="startDate" /><br/>
-                    <g:xEditable owner="${ie}" type="date" field="endDate" />
+                    <span style="white-space: nowrap;"><g:xEditable owner="${ie}" type="date" field="startDate" /></span><br/>
+                    <span style="white-space: nowrap;"><g:xEditable owner="${ie}" type="date" field="endDate" /></span>
                 </td>
                 <td>
-                    <g:xEditable owner="${ie}" type="date" field="coreStatusStart" /><br/>
-                    <g:xEditable owner="${ie}" type="date" field="coreStatusEnd" />
+                <g:set var="iecorestatus" value="${ie.getTIP()?.coreStatus(params.asAt?dateFormater.parse(params.asAt):null)}"/>
+<g:remoteLink url="[controller: 'ajax', action: 'getTipCoreDates', params:[editable:editable,tipID:ie.getTIP()?.id,title:ie.tipp?.title?.title]]" method="get" name="show_core_assertion_modal" onComplete="showCoreAssertionModal()" class="editable-click"
+              update="magicArea">${iecorestatus?'True(this sub)': (iecorestatus==null?'False(never)':'False(this sub)')}</g:remoteLink>
+               <br/>
+
+               <g:xEditableRefData owner="${ie}" field="coreStatus" config='CoreStatus'/>
                 </td>
                 <td>
                   <g:if test="${editable}"><g:link action="removeEntitlement" params="${[ieid:ie.id, sub:subscriptionInstance.id]}" onClick="return confirm('Are you sure you wish to delete this entitlement');">Delete</g:link></g:if>
@@ -332,12 +406,38 @@
               contextPath="../templates" 
               model="${[linkType:subscriptionInstance?.class?.name,roleLinks:subscriptionInstance?.orgRelations,parent:subscriptionInstance.class.name+':'+subscriptionInstance.id,property:'orgs',recip_prop:'sub']}" />
 
+    <div id="magicArea">
+    </div>
     <r:script language="JavaScript">
-      <g:if test="${editable}">
-      $(document).ready(function() {
-      
-        $.fn.editable.defaults.mode = 'inline';
 
+      function unlinkPackage(pkg_id){
+        var req_url = "${createLink(controller:'subscriptionDetails', action:'unlinkPackage',params:[subscription:subscriptionInstance.id])}&package="+pkg_id
+
+        $.ajax({url: req_url, 
+          success: function(result){
+             $('#magicArea').html(result);
+          },
+          complete: function(){
+            $("#unlinkPackageModal").modal("show");
+          }
+        });
+      }
+      
+      function hideModal(){
+        $("[name='coreAssertionEdit']").modal('hide');
+       }
+
+      function showCoreAssertionModal(){
+
+        $("[name='coreAssertionEdit']").modal('show');
+       
+      }
+      
+      <g:if test="${editable}">
+
+
+      $(document).ready(function() {
+           
         $(".announce").click(function(){
            var id = $(this).data('id');
            $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" />/'+id);
@@ -352,6 +452,54 @@
         $('#collapseableSubDetails').on('hide', function() {
             $('.hidden-license-details i').removeClass('icon-minus').addClass('icon-plus');
         });
+
+
+        <g:if test="${editable}">
+          $("[name='add_ident_submit']").submit(function( event ) {
+            event.preventDefault();
+            $.ajax({
+              url: "<g:createLink controller='ajax' action='validateIdentifierUniqueness'/>?identifier="+$("input[name='identifier']").val()+"&owner="+"${subscriptionInstance.class.name}:${subscriptionInstance.id}",
+              success: function(data) {
+                if(data.unique){
+                  $("[name='add_ident_submit']").unbind( "submit" )
+                  $("[name='add_ident_submit']").submit();
+                }else if(data.duplicates){
+                  var warning = "The following Subscriptions are also associated with this identifier:\n";
+                  for(var ti of data.duplicates){
+                      warning+= ti.id +":"+ ti.title+"\n";
+                  }
+                  var accept = confirm(warning);
+                  if(accept){
+                    $("[name='add_ident_submit']").unbind( "submit" )
+                    $("[name='add_ident_submit']").submit();
+                  }
+                }
+              },
+            });
+          });
+
+          $("#addIdentifierSelect").select2({
+            placeholder: "Search for an identifier...",
+            minimumInputLength: 1,
+            ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+              url: "<g:createLink controller='ajax' action='lookup'/>",
+              dataType: 'json',
+              data: function (term, page) {
+                  return {
+                      q: term, // search term
+                      page_limit: 10,
+                      baseClass:'com.k_int.kbplus.Identifier'
+                  };
+              },
+              results: function (data, page) {
+                return {results: data.values};
+              }
+            },
+            createSearchChoice:function(term, data) {
+              return {id:'com.k_int.kbplus.Identifier:__new__:'+term,text:"New - "+term};
+            }
+          });
+        </g:if>
 
       });
 
@@ -368,7 +516,6 @@
             return false ;
         }
       }
-
       </g:if>
       <g:else>
         $(document).ready(function() {

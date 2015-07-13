@@ -34,6 +34,8 @@ class SubscriptionDetailsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
+
+
     def verystarttime = exportService.printStart("SubscriptionDetails")
   
     log.debug("subscriptionDetails id:${params.id} format=${response.format}");
@@ -76,7 +78,7 @@ class SubscriptionDetailsController {
       redirect action:'currentTitles', params:params
     }
   
-    if ( ! result.subscriptionInstance.hasPerm("view",result.user) ) {
+    if (! result.subscriptionInstance?.hasPerm("view",result.user) ) {
       log.debug("Result of hasPerm is false");
       response.sendError(401);
       return
@@ -115,6 +117,9 @@ class SubscriptionDetailsController {
       date_filter = new Date()
       result.as_at_date = date_filter;
     }
+    // We dont want this filter to reach SQL query as it will break it.
+    def core_status_filter = params.sort == 'core_status'
+    if(core_status_filter) params.remove('sort');
 
     if ( params.filter ) {
       base_qry = " from IssueEntitlement as ie where ie.subscription = ? "
@@ -158,7 +163,18 @@ class SubscriptionDetailsController {
 
     result.num_sub_rows = IssueEntitlement.executeQuery("select count(ie) "+base_qry, qry_params )[0]
 
-    result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, qry_params, [max:result.max, offset:result.offset]);
+    if(params.format == 'html' || params.format == null){
+      result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, qry_params, [max:result.max, offset:result.offset]);    
+    }else{
+      result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, qry_params);
+    }
+
+    // Now we add back the sort so that the sortable column will recognize asc/desc
+    // Ignore the sorting if we are doing an export
+    if(core_status_filter){
+      params.put('sort','core_status');
+      if(params.format == 'html' || params.format == null)  sortOnCoreStatus(result,params);
+    }
 
     exportService.printDuration(verystarttime, "Querying")
   
@@ -214,6 +230,83 @@ class SubscriptionDetailsController {
       }
     }
   }
+  
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def unlinkPackage(){
+    log.debug("unlinkPackage :: ${params}")
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.subscription = Subscription.get(params.subscription.toLong())
+    result.package = Package.get(params.package.toLong())
+    def query = "from IssueEntitlement ie, Package pkg where ie.subscription =:sub and pkg.id =:pkg_id and ie.tipp in ( select tipp from TitleInstancePackagePlatform tipp where tipp.pkg.id = :pkg_id ) "
+    def queryParams = [sub:result.subscription,pkg_id:result.package.id]
+   
+    if (result.subscription.isEditableBy(result.user) ) {
+      result.editable = true
+      if(params.confirmed){
+      //delete matches
+
+        removePackagePendingChanges(result.package.id,result.subscription.id,params.confirmed)
+        def deleteIdList = IssueEntitlement.executeQuery("select ie.id ${query}",queryParams)
+        IssueEntitlement.executeUpdate("delete from IssueEntitlement ie where ie.id in (:delList)",[delList:deleteIdList])
+        SubscriptionPackage.executeUpdate("delete from SubscriptionPackage sp where sp.pkg=? and sp.subscription=? ",[result.package,result.subscription])
+      }else{
+        def numOfPCs = removePackagePendingChanges(result.package.id,result.subscription.id,params.confirmed)
+
+        def numOfIEs = IssueEntitlement.executeQuery("select count(ie) ${query}",queryParams)[0]
+        def conflict_item_pkg = [name:"Linked Package",details:[['link':createLink(controller:'packageDetails', action: 'show', id:result.package.id), 'text': result.package.name]],action:[actionRequired:false,text:'Link will be removed']]
+        def conflicts_list = [conflict_item_pkg]
+
+        if(numOfIEs > 0){
+          def conflict_item_ie = [name:"Package IEs",details:[['text': 'Number of IEs: '+numOfIEs]],action:[actionRequired:false,text:'IEs will be deleted']]
+          conflicts_list += conflict_item_ie
+        }
+        if(numOfPCs > 0){
+          def conflict_item_pc = [name:"Pending Changes",details:[['text': 'Number of PendingChanges: '+ numOfPCs]],action:[actionRequired:false,text:'Pending Changes will be deleted']]
+          conflicts_list += conflict_item_pc
+        }
+
+        return render(template: "unlinkPackageModal",model:[pkg:result.package,subscription:result.subscription,conflicts_list:conflicts_list])  
+      }
+    }else{
+      result.editable = false
+    }
+
+
+    redirect action: 'index', id:params.subscription
+
+  }
+  def removePackagePendingChanges(pkg_id,sub_id,confirmed){
+
+    def tipp_class = TitleInstancePackagePlatform.class.getName()
+    def tipp_id_query = "from TitleInstancePackagePlatform tipp where tipp.pkg.id = ?"
+    def change_doc_query = "from PendingChange pc where pc.subscription.id = ? "
+    def tipp_ids = TitleInstancePackagePlatform.executeQuery("select tipp.id ${tipp_id_query}",[pkg_id])
+    def pendingChanges = PendingChange.executeQuery("select pc.id, pc.changeDoc ${change_doc_query}",[sub_id])
+
+    def pc_to_delete = []
+    pendingChanges.each{pc->
+      def parsed_change_info = JSON.parse(pc[1])
+      def (oid_class,ident) = parsed_change_info.changeDoc.OID.split(":")
+      if(oid_class == tipp_class && tipp_ids.contains(ident.toLong()) ){
+        pc_to_delete += pc[0]
+      }
+    }
+    if(confirmed && pc_to_delete){
+      log.debug("Deleting Pending Changes: ${pc_to_delete}")
+      def del_pc_query = "delete from PendingChange where id in (:del_list) "
+      PendingChange.executeUpdate(del_pc_query,[del_list:pc_to_delete])
+    }else{
+      return pc_to_delete.size()
+    }
+  }
+
+  def sortOnCoreStatus(result,params){
+    result.entitlements.sort{it.getTIP()?.coreStatus(null)}
+    if(params.order == 'desc') result.entitlements.reverse(true);
+    result.entitlements = result.entitlements.subList(result.offset, (result.offset+result.max).intValue() )
+  }
+
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def compare(){
     def result = [:]
@@ -420,8 +513,8 @@ class SubscriptionDetailsController {
             ie.embargo = params.bulk_embargo
           }
 
-          if ( params.bulk_core.trim().length() > 0 ) {
-            def selected_refdata = genericOIDService.resolveOID(params.bulk_core.trim())
+          if ( params.bulk_coreStatus.trim().length() > 0 ) {
+            def selected_refdata = genericOIDService.resolveOID(params.bulk_coreStatus.trim())
             log.debug("Selected core status is ${selected_refdata}");
             ie.coreStatus = selected_refdata
           }
@@ -927,8 +1020,8 @@ class SubscriptionDetailsController {
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def history() {
-    log.debug("licenseDetails id:${params.id}");
+  def edit_history() {
+    log.debug("subscriptionDetails::edit_history ${params}");
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.subscription = Subscription.get(params.id)
@@ -951,7 +1044,37 @@ class SubscriptionDetailsController {
     def qry_params = [result.subscription.class.name, "${result.subscription.id}"]
     result.historyLines = AuditLogEvent.executeQuery("select e from AuditLogEvent as e where className=? and persistedObjectId=? order by id desc", qry_params, [max:result.max, offset:result.offset]);
     result.historyLinesTotal = AuditLogEvent.executeQuery("select count(e.id) from AuditLogEvent as e where className=? and persistedObjectId=?",qry_params)[0];
-    result.todoHistoryLines = PendingChange.executeQuery("select pc from PendingChange as pc where subscription=? order by ts desc", result.subscription);
+   
+    result
+  }
+
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def todo_history() {
+    log.debug("subscriptionDetails::todo_history ${params}");
+    def result = [:]
+    result.user = User.get(springSecurityService.principal.id)
+    result.subscription = Subscription.get(params.id)
+
+    if ( ! result.subscription.hasPerm("view",result.user) ) {
+      response.sendError(401);
+      return
+    }
+
+    if ( result.subscription.hasPerm("edit",result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
+    }
+
+    result.max = params.max ?: result.user.defaultPageSize;
+    result.offset = params.offset ?: 0;
+
+    def qry_params = [result.subscription.class.name, "${result.subscription.id}"]
+
+    result.todoHistoryLines = PendingChange.executeQuery("select pc from PendingChange as pc where subscription=? order by ts desc", [result.subscription], [max:result.max, offset:result.offset]);
+
+    result.todoHistoryLinesTotal = PendingChange.executeQuery("select count(pc) from PendingChange as pc where subscription=?", result.subscription)[0];
 
     result
   }

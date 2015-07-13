@@ -61,6 +61,9 @@ class OrganisationsController {
     def create() {
 		switch (request.method) {
 		case 'GET':
+		    if (!params.name && !params.sector) {
+				params.sector = 'Higher Education'
+		    }
         	[orgInstance: new Org(params)]
 			break
 		case 'POST':
@@ -103,6 +106,7 @@ class OrganisationsController {
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def users() {
       def result = [:]
+      def tracked_roles = ["KBPLUS_EDITOR":"KB+ Editor","ROLE_ADMIN":"KB+ Administrator"]
       result.user = User.get(springSecurityService.principal.id)
       def orgInstance = Org.get(params.id)
       if (!orgInstance) {
@@ -110,7 +114,20 @@ class OrganisationsController {
         redirect action: 'list'
         return
       }
+      result.users = orgInstance.affiliations.collect{ userOrg ->
+        def admin_roles = []
+        userOrg.user.roles.each{ 
+          if (tracked_roles.keySet().contains(it.role.authority)){
+            def role_match = tracked_roles.get(it.role.authority)+" (${it.role.authority})"
+            admin_roles += role_match
+          }
+        }
+        // log.debug("Found roles: ${admin_roles} for user ${userOrg.user.displayName}")
 
+        return [userOrg,admin_roles?:null]
+
+      }
+      // log.debug(result.users)
       result.orgInstance=orgInstance
       result
     }
@@ -145,7 +162,7 @@ class OrganisationsController {
 	            return
 	        }
 
-	        [orgInstance: orgInstance]
+	        [orgInstance: orgInstance, editable:true]
 			break
 		case 'POST':
 	        def orgInstance = Org.get(params.id)
@@ -169,7 +186,7 @@ class OrganisationsController {
 	        orgInstance.properties = params
 
 	        if (!orgInstance.save(flush: true)) {
-	            render view: 'edit', model: [orgInstance: orgInstance]
+	            render view: 'edit', model: [orgInstance: orgInstance, editable:true]
 	            return
 	        }
 

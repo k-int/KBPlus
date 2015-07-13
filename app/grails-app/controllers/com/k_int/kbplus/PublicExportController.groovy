@@ -9,19 +9,35 @@ import com.k_int.kbplus.auth.*;
 import groovy.xml.MarkupBuilder
 
 class PublicExportController {
-
+  def ESSearchService
   def formatter = new java.text.SimpleDateFormat("yyyy-MM-dd")
-
+  def exportService
+  def transformerService
+  
   def index() { 
     def result = [:]
+    params.max = 30
 
-    def base_qry = "from Package as p order by p.name asc"
-    def base_qry_fields = " p.id, p.name, id.value from Package as p LEFT JOIN p.ids as ido LEFT JOIN ido.identifier as id order by p.name asc"
-    def qry_params = []
+    params.rectype = "Package" // Tells ESSearchService what to look for
+    if(params.q == "")  params.remove('q');
+    params.isPublic="Yes"
+    if(params.lastUpdated){
+      params.lastModified ="[${params.lastUpdated} TO 2100]"
+    }
+    if (!params.sort){
+      params.sort="sortname"
+      params.order = "asc"
+    }
+    if(params.search.equals("yes")){
+      //when searching make sure results start from first page
+      params.offset = 0
+      params.search = null
+    }
 
-    result.num_pkg_rows = Package.executeQuery("select count(p) "+base_qry, qry_params )[0]
-    result.packages = Package.executeQuery("select ${base_qry_fields}", qry_params, [max:result.num_pkg_rows]);
-    result
+    result =  ESSearchService.search(params)   
+    result.transforms = grailsApplication.config.packageTransforms
+
+    result  
   }
 
   def so() {
@@ -84,8 +100,11 @@ class PublicExportController {
              def end_date = e.endDate ? formatter.format(e.endDate) : '';
              def title_doi = (e.tipp?.title?.getIdentifierValue('DOI'))?:''
              def publisher = e.tipp?.title?.publisher
+             def print_identifier = e.tipp?.title?.getIdentifierValue('ISSN')
+             if ( print_identifier == null ) 
+               print_identifier = e.tipp?.title?.getIdentifierValue('ISBN')
 
-             writer.write("\"${e.tipp.title.title}\",\"${e.tipp?.title?.getIdentifierValue('ISSN')?:''}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')?:''}\",${start_date},${e.startVolume?:''},${e.startIssue?:''},${end_date},${e.endVolume?:''},${e.endIssue?:''},\"${e.tipp?.hostPlatformURL?:''}\",,\"${title_doi}\",\"${e.embargo?:''}\",\"${e.tipp?.coverageDepth?:''}\",\"${e.tipp?.coverageNote?:''}\",\"${publisher?.name?:''}\",\"${e.tipp?.title?.getIdentifierValue('jusp')?:''}\"\n");
+             writer.write("\"${e.tipp.title.title}\",\"${print_identifier?:''}\",\"${e.tipp?.title?.getIdentifierValue('eISSN')?:''}\",${start_date},${e.startVolume?:''},${e.startIssue?:''},${end_date},${e.endVolume?:''},${e.endIssue?:''},\"${e.tipp?.hostPlatformURL?:''}\",,\"${title_doi}\",\"${e.embargo?:''}\",\"${e.tipp?.coverageDepth?:''}\",\"${e.tipp?.coverageNote?:''}\",\"${publisher?.name?:''}\",\"${e.tipp?.title?.getIdentifierValue('jusp')?:''}\"\n");
            }
            writer.flush()
            writer.close()
@@ -113,6 +132,9 @@ class PublicExportController {
              def entitlement = [:]
              entitlement.title=e.tipp.title.title
              entitlement.issn=e.tipp?.title?.getIdentifierValue('ISSN')
+             if ( entitlement.issn == null ) {
+               entitlement.issn=e.tipp?.title?.getIdentifierValue('ISBN')
+             }
              entitlement.eissn=e.tipp?.title?.getIdentifierValue('eISSN')
              entitlement.jusp=e.tipp?.title?.getIdentifierValue('jusp')
              entitlement.startDate=start_date;
@@ -145,22 +167,28 @@ class PublicExportController {
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
     log.debug("max = ${result.max}");
-    result.packageInstance = Package.get(params.id)
+    def packageInstance = Package.get(params.id)
 
     def base_qry = null;
-    def tipp_status_del = RefdataCategory.lookupOrCreate("TIPPStatus", "Deleted")
+    def tipp_status_del = RefdataCategory.lookupOrCreate("TIPP Status", "Deleted")
     def publisher_org = RefdataCategory.lookupOrCreate("Organisational Role","Publisher")
-    def qry_params = [result.packageInstance]
+    def qry_params = [ packageInstance]
 
+    def filename = "publicExport_${packageInstance.name}"
+    
     if ( params.filter ) {
-      base_qry = " from TitleInstancePackagePlatform as tipp left outer join tipp.hybridOA ref where tipp.pkg = ? and ( tipp.status != ? ) and ( ( lower(tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = tipp.title.id and io.identifier.value like ? ) ) )"
+      base_qry = " from TitleInstancePackagePlatform as tipp  where tipp.pkg = ? and ( tipp.status != ? ) and ( ( lower(tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = tipp.title.id and io.identifier.value like ? ) ) ) and ( ( ? >= coalesce(tipp.accessStartDate, tipp.pkg.startDate) ) and ( ( ? <= tipp.accessEndDate ) or ( tipp.accessEndDate is null ) ) )"
       qry_params.add(tipp_status_del)
       qry_params.add("%${params.filter.trim().toLowerCase()}%")
       qry_params.add("%${params.filter}%")
+      qry_params.add(new Date());
+      qry_params.add(new Date());
     }
     else {
-      base_qry = " from TitleInstancePackagePlatform as tipp left outer join tipp.hybridOA as ref where tipp.pkg = ?  and ( tipp.status != ? ) "
+      base_qry = " from TitleInstancePackagePlatform as tipp where tipp.pkg = ?  and ( tipp.status != ? ) and ( ( ? >= coalesce(tipp.accessStartDate, tipp.pkg.startDate) ) and ( ( ? <= tipp.accessEndDate ) or ( tipp.accessEndDate is null ) ) )"
       qry_params.add(tipp_status_del)
+      qry_params.add(new Date());
+      qry_params.add(new Date());
     }
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
@@ -171,91 +199,38 @@ class PublicExportController {
     
     result.num_pkg_rows = TitleInstancePackagePlatform.executeQuery("select count(tipp) "+base_qry, qry_params )[0]
 
-    result.tipps = TitleInstancePackagePlatform.executeQuery("select tipp.startDate, tipp.endDate, tipp.title.title, tipp.startVolume, tipp.endVolume, tipp.startIssue ,tipp.endIssue ,tipp.embargo ,tipp.hostPlatformURL ,tipp.coverageDepth ,tipp.coverageNote, tipp.title.id, ref.value "+base_qry, qry_params, [max:result.max, offset:result.offset]);
+    result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, [max:result.max, offset:result.offset]);
+    result.transforms = grailsApplication.config.packageTransforms
 
+    log.debug("Found ${result.num_pkg_rows} tipps. These will be exported")
     
-    def tippIdents = [:]
-    def identifiers_query = " select id.value, ns.ns from IdentifierOccurrence as io, Identifier as id, IdentifierNamespace as ns  where io.ti.id = ?  and id.ns = ns  and io.identifier = id and ns.ns in ('ISSN', 'eISSN', 'issn', 'eissn','isbn', 'jusp', 'DOI' )"
-    result.tipps.each{ tipp ->
-      def result_ident = IdentifierOccurrence.executeQuery(identifiers_query,[tipp[11]])
-      tippIdents.put(tipp[11],result_ident)
-    }
-
-    def publishers_query = "select role.title.id, role.org.name from OrgRole as role where role.title.id in (:title_ids) and role.roleType= :role"
-
-    def pkg_titles = result.tipps.collect{it[11]}
-    def publisher_map = [:]
-    def publishers = OrgRole.executeQuery(publishers_query, [title_ids:pkg_titles,role:publisher_org])
-    publishers.each{
-      publisher_map.put(it[0],it[1])
-    }
-    
-    
-    log.debug("package returning... ${result.num_pkg_rows} rows ");
-
-    def processedTipps = []  
-    result.tipps.each { e ->
-         def start_date = e[0] ? formatter.format(e[0]) : '';
-         def end_date = e[1] ? formatter.format(e[1]) : '';
-         def title_doi = getIdentFromMap(e[11],'DOI',tippIdents)?:''
-
-         def tipp = [:]
-         tipp.title=e[2]
-         tipp.issn= getIdentFromMap(e[11],'issn',tippIdents)?:''
-         tipp.eissn= getIdentFromMap(e[11],'eissn',tippIdents) ?:''
-         tipp.jusp= getIdentFromMap(e[11],'jusp',tippIdents) ?:''
-         tipp.startDate=start_date;
-         tipp.endDate=end_date;
-         tipp.startVolume=e[3]?:''
-         tipp.endVolume=e[4]?:''
-         tipp.startIssue=e[5]?:''
-         tipp.endIssue=e[6]?:''
-         tipp.embargo=e[7]?:''
-         tipp.hostPlatformURL=e[8]?:''
-         tipp.doi=title_doi
-         tipp.coverageDepth = e[9]?:''
-         tipp.coverageNote = e[10]?:''
-         tipp.publisher = publisher_map.get(e[11])?:''
-         tipp.hybridOA = e[12]?:''
-         processedTipps.add(tipp);
-     }
-     result.tipps = processedTipps
 
     withFormat {
       html result
-      csv {
-         response.setHeader("Content-disposition", "attachment; filename=kbplus_pkg_${result.packageInstance.id}.csv")
-         response.contentType = "text/csv"
-         def out = response.outputStream
-         out.withWriter { writer ->
-           if ( ( params.omitHeader == null ) || ( params.omitHeader != 'Y' ) ) {
-             writer.write("FileType,SpecVersion,JC_ID,TermStartDate,TermEndDate,SubURI,SystemIdentifier\n")
-             writer.write("Package,\"3.0\",,${result.packageInstance.startDate},${result.packageInstance.endDate},\"uri://kbplus/pkg/${result.packageInstance.id}\",${result.packageInstance.impId}\n")
-           }
-
-           writer.write("publication_title,print_identifier,online_identifier,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,title_url,first_author,title_id,embargo_info,coverage_depth,coverage_notes,publisher_name,identifier.jusp,hybrid_oa\n");
-
-           processedTipps.each { t ->
-
-             writer.write("\"${t.title}\",\"${t.issn}\",\"${t.eissn}\",${t.startDate},${t.startVolume},${t.startIssue},${t.endDate},${t.endVolume},${t.endIssue},\"${t.hostPlatformURL}\",,\"${t.doi}\",\"${t.embargo}\",\"${t.coverageDepth}\",\"${t.coverageNote}\",\"${t.publisher}\",\"${t.jusp}\",\"${t.hybridOA}\"\n");
-           }
-           writer.flush()
-           writer.close()
-         }
-         out.close()
-      }
       json {
-         def response = [:]
-         response.header = [:]
-         response.titles = []
+        def map = exportService.getPackageMap(packageInstance, result.titlesList)
+        
+        def json = map as JSON
+        
+          response.setHeader("Content-disposition", "attachment; filename=\"${filename}.json\"")
+          response.contentType = "application/json"
+          render json
+      }
+      xml {
+        def starttime = exportService.printStart("Building XML Doc")
+        def doc = exportService.buildDocXML("Packages")
+        exportService.addPackageIntoXML(doc, doc.getDocumentElement(), packageInstance, result.titlesList)
+        exportService.printDuration(starttime, "Building XML Doc")
+        
+        if( ( params.transformId ) && ( result.transforms[params.transformId] != null ) ) {
+          String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
+          transformerService.triggerTransform(null, filename, result.transforms[params.transformId], xml, response)
+        }else{ // send the XML to the user
+          response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
+          response.contentType = "text/xml"
+          exportService.streamOutXML(doc, response.outputStream)
+        }
 
-         response.header.version = "2.0"
-         response.header.jcid = ''
-         response.header.url = "uri://kbplus/pkg/${result.packageInstance.id}"
-         response.header.pkgcount = result.num_pkg_rows      
-         response.titles = processedTipps
-
-         render response as JSON
       }
     }
   }

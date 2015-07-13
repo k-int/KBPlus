@@ -10,6 +10,8 @@ class LicenseCustomProperty extends CustomProperty {
 
   @Transient
   def messageSource
+
+
   static auditable = true
 
   static belongsTo = [

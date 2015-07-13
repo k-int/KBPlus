@@ -35,7 +35,6 @@
       </div>
     </g:if>
 
-
     <g:set var="counter" value="${-1}" />
 
       <g:form action="processRenewal" method="post" enctype="multipart/form-data" params="${params}">
@@ -44,7 +43,30 @@
         <div class="container">
         <hr/>
           Uploaded worksheet will create a new subscription taken for ${institution.name} based on the following rows...<br/>
-  
+          <table class="table table-bordered">
+            <tbody>
+            <input type="hidden" name="subscription.start_date" value="${additionalInfo?.sub_startDate}"/>
+            <input type="hidden" name="subscription.end_date" value="${additionalInfo?.sub_endDate}"/>
+            <input type="hidden" name="subscription.copy_docs" value="${additionalInfo?.sub_id}"/>
+
+              <tr><th>Select</th><th >Subscription Properties</th><th>Value</th></tr>
+              <tr>
+                <th><g:checkBox name="subscription.copyStart" value="${true}" /></th>
+                <th>Start Date</th>
+                <td>${additionalInfo?.sub_startDate}</td>
+              </tr>
+              <tr>
+                <th><g:checkBox name="subscription.copyEnd" value="${true}" /></th>
+                <th>End Date</th>
+                <td>${additionalInfo?.sub_endDate}</td>
+              </tr>
+              <tr>
+                <th><g:checkBox name="subscription.copyDocs" value="${true}" /></th>
+                <th>Copy Documents from Subscription</th>
+                <td>${additionalInfo?.sub_name}</td>
+              </tr>
+            </tbody>
+          </table>
           <table class="table table-bordered">
             <thead>
               <tr>
@@ -58,9 +80,7 @@
                 <td>End Date</td>
                 <td>End Volume</td>
                 <td>End Issue</td>
-                <td>Core?</td>
-                <td>Core Start Date</td>
-                <td>Core End Date</td>
+                <td>Core Medium</td>
               </tr>
             </thead>
             <tbody>
@@ -72,8 +92,6 @@
                       <input type="hidden" name="entitlements.${counter}.end_date" value="${e.end_date}"/>
                       <input type="hidden" name="entitlements.${counter}.coverage" value="${e.coverage}"/>
                       <input type="hidden" name="entitlements.${counter}.coverage_note" value="${e.coverage_note}"/>
-                      <input type="hidden" name="entitlements.${counter}.core_start_date" value="${e.core_start_date}"/>
-                      <input type="hidden" name="entitlements.${counter}.core_end_date" value="${e.core_end_date}"/>
                       ${e.base_entitlement.title.title}</td>
                   <td><g:link controller="packageDetails" action="show" id="${e.base_entitlement.pkg.id}">${e.base_entitlement.pkg.name}(${e.base_entitlement.pkg.id})</g:link></td>
                   <td>${e.base_entitlement.title.getIdentifierValue('ISSN')}</td>
@@ -85,8 +103,6 @@
                   <td>${e.base_entitlement.endVolume}</td>
                   <td>${e.base_entitlement.endIssue}</td>
                   <td>${e.core_status?:'N'}</td>
-                  <td>${e.core_start_date}</td>
-                  <td>${e.core_end_date}</td>
                 </tr>
               </g:each>
             </tbody>

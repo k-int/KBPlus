@@ -15,7 +15,7 @@
         </g:if>
         <li> <g:link controller="subscriptionDetails" action="addEntitlements" id="${subscriptionInstance.id}">Subscription ${subscriptionInstance.id} Add Entitlements</g:link> </li>
         <g:if test="${editable}">
-          <li class="pull-right">Editable by you&nbsp;</li>
+          <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
         </g:if>
       </ul>
     </div>
@@ -80,13 +80,19 @@
                     <td>${counter++}</td>
                     <td>
                       <g:link controller="tipp" id="${tipp.id}" action="show">${tipp.title.title}</g:link>
-                      <g:if test="${tipp?.hostPlatformURL}">( <a href="${tipp?.hostPlatformURL}" TITLE="${tipp?.hostPlatformURL}">Host Link</a>
-                            <a href="${tipp?.hostPlatformURL}" TITLE="${tipp?.hostPlatformURL} (In new window)" target="_blank"><i class="icon-share-alt"></i></a>)</g:if>
+                      <br/>
+                      <span class="pull-right">
+                        <g:if test="${tipp?.hostPlatformURL}"><a href="${tipp?.hostPlatformURL}" TITLE="${tipp?.hostPlatformURL}">Host Link</a>
+                            <a href="${tipp?.hostPlatformURL}" TITLE="${tipp?.hostPlatformURL} (In new window)" target="_blank"><i class="icon-share-alt"></i></a> &nbsp;| &nbsp;</g:if>
+                            <g:link action="processAddEntitlements" 
+                                    params="${[siid:subscriptionInstance.id,('_bulkflag.'+tipp.id):'Y']}"
+                                    class="pull-right">Add now</g:link>
+                      </span>
                     </td>
-                    <td>${tipp?.title?.getIdentifierValue('ISSN')}</td>
-                    <td>${tipp?.title?.getIdentifierValue('eISSN')}</td>
-                    <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${tipp.startDate}"/></td>
-                    <td><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${tipp.endDate}"/></td>
+                    <td style="white-space: nowrap;">${tipp?.title?.getIdentifierValue('ISSN')}</td>
+                    <td style="white-space: nowrap;">${tipp?.title?.getIdentifierValue('eISSN')}</td>
+                    <td style="white-space: nowrap;"><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${tipp.startDate}"/></td>
+                    <td style="white-space: nowrap;"><g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${tipp.endDate}"/></td>
                     <td>${tipp.embargo}</td>
                     <td>${tipp.coverageDepth}</td>
                     <td>${tipp.coverageNote}</td>

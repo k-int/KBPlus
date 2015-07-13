@@ -1,6 +1,6 @@
 <div id="osel_add_modal" class="modal hide">
 
-    <g:form id="create_org_role_link" url="[controller:'ajax',action:'addOrgRole']" method="post">
+    <g:form id="create_org_role_link" url="[controller:'ajax',action:'addOrgRole']" method="post" onsubmit="return validateAddOrgRole();">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">×</button>
             <h3>Add Org Link</h3>
@@ -25,8 +25,8 @@
             <dl>         
                 <dt><label class="control-label">Role</label></dt>
                 <dd>    
-                <g:if test="${linkType}">
-                    <g:select name="orm_orgRole" 
+                <g:if test="${linkType && 1==2}"> <!-- II: Commented this out - not sure what its trying to do - talk to me -->
+                    <g:select name="orm_orgRole"
                           noSelection="${['':'Select One...']}" 
                           from="${com.k_int.kbplus.RefdataValue.findAllByOwnerAndGroup(com.k_int.kbplus.RefdataCategory.findByDesc('Organisational Role'),linkType)}" 
                           optionKey="id" 
@@ -39,7 +39,6 @@
                           optionKey="id" 
                           optionValue="value"/>
                 </g:else>
-
                 </dd>
             </dl>
 
@@ -86,4 +85,15 @@
         oOrTable.fnAdjustColumnSizing();
 
     });
+
+    function validateAddOrgRole() {
+      if ( $('#orm_orgRole').val() == '' ) {
+        // alert('hello "'+ $('#orm_orgRole').val()+'"'); 
+        return confirm('No role specified. Are you sure you want to link an Organisation without a role?');
+      }
+
+      return true;
+    }
+
+
 </g:javascript>

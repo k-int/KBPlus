@@ -15,7 +15,9 @@ class ESSearchService{
                     'startYear':'startYear',
                     'consortiaName':'consortiaName',
                     'cpname':'cpname',
-                    'availableToOrgs':'availableToOrgs']
+                    'availableToOrgs':'availableToOrgs',
+                    'isPublic':'isPublic',
+                    'lastModified':'lastModified']
 
   def ESWrapperService
   def grailsApplication
@@ -42,7 +44,7 @@ class ESSearchService{
           //def params_set=params.entrySet()
           
           def query_str = buildQuery(params,field_map)
-          log.debug("query: ${query_str}");
+          log.debug("index:${grailsApplication.config.aggr.es.index} query: ${query_str}");
     
           def search = esclient.search{
             indices grailsApplication.config.aggr.es.index ?: "kbplus"
@@ -57,6 +59,18 @@ class ESSearchService{
                 query_string (query: query_str)
               }
               facets {
+                consortiaName {
+                  terms {
+                    field = 'consortiaName'
+                    size = 25
+                  }
+                }
+                cpname {
+                  terms {
+                    field = 'cpname'
+                    size = 25
+                  }
+                }
                 type {
                   terms {
                     field = 'rectype'
@@ -71,18 +85,6 @@ class ESSearchService{
                 endYear {
                   terms {
                     field = 'endYear'
-                    size = 25
-                  }
-                }
-                consortiaName {
-                  terms {
-                    field = 'consortiaName'
-                    size = 25
-                  }
-                }
-                cpname {
-                  terms {
-                    field = 'cpname'
                     size = 25
                   }
                 }
@@ -128,7 +130,7 @@ class ESSearchService{
   }
 
   def buildQuery(params,field_map) {
-    log.debug("BuildQuery... with params ${params}");
+    log.debug("BuildQuery... with params ${params}. ReverseMap: ${field_map}");
 
     StringWriter sw = new StringWriter()
 
@@ -171,7 +173,11 @@ class ESSearchService{
             sw.write(" AND ")
             sw.write(mapping.value)
             sw.write(":")
-            sw.write("\"${params[mapping.key]}\"")
+            if(params[mapping.key].startsWith("[") && params[mapping.key].endsWith("]")){
+              sw.write("${params[mapping.key]}")
+            }else{
+              sw.write("\"${params[mapping.key]}\"")
+            }
           }
         }
       }

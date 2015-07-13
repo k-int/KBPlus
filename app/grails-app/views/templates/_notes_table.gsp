@@ -5,8 +5,6 @@
             <input type="hidden" name="redirectAction" value="${redirect}"/>
             <input type="hidden" name="instanceId" value="${instance.id}"/>
             <input type="submit" class="btn btn-danger delete-document" value="Delete Selected Notes"/>
-            <input type="submit" class="btn btn-primary" value="Add new Note" data-toggle="modal"
-                   href="#modalCreateNote"/>
         </div>
 
     </g:if>
@@ -41,6 +39,10 @@
         </g:each>
         </tbody>
     </table>
+    <g:if test="${editable}">
+        <input type="button" class="btn btn-primary" value="Add new Note" data-toggle="modal"
+                   href="#modalCreateNote"/>
+   </g:if>
 </g:form>
 
 <!-- JS for show/hide of delete button -->
