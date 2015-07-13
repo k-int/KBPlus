@@ -658,7 +658,7 @@ financialImportTSVLoaderMappings = [
         ],
         creation:[
           onMissing:true,
-          whenPresent:[ [ type:'ref', refname:'owner'] ],
+          whenPresent:[ [ type:'ref', refname:'owner'], [ type:'val', colname:'PoNumber'] ],
           properties : [
             [ type:'ref', property:'owner', refname:'owner' ],
             [ type:'val', property:'orderNumber', colname: 'PoNumber']
