@@ -20,9 +20,9 @@ class PublicController {
 			}
 			log.debug("${ti} and ${org}")
 			if(ti && org){
-				def ies = generateCompareMap(ti,org,result)
+				def ies = retrieveIssueEntitlements(ti,org,result)
 				log.debug("Retrieved ies: ${ies}")
-				if(ies) generateIELicenceMap(ies,result)
+				if(ies) generateIELicenceMap(ies,result);
 			}
 		}
 		result.journal = params.journal
@@ -32,15 +32,38 @@ class PublicController {
 	}
 	def generateIELicenceMap(ies,result){
 		log.debug("generateIELicenceMap")
-		def ieMap = [:]
-
-		ies.each{ie->
-			ieMap.put("")
+		def comparisonMap = [:]
+		def licIEMap = new TreeMap()
+		//See if we got IEs under the same licence, and list them together
+		ies.each{ ie->
+			def lic = ie.subscription.owner
+			if(licIEMap.containsKey(lic)){
+				licIEMap.get(lic).add(ie)
+			}else{
+				licIEMap.put(lic,[ie])
+			}
 		}
+		licIEMap.each{
+			def lic = it.getKey()
+	        lic.customProperties.each{prop ->
+	          def point = [:]
+	          if(prop.getValue()|| prop.getNote()){
+	            point.put(lic.reference,prop)
+	            if(comparisonMap.containsKey(prop.type.name)){
+	              comparisonMap[prop.type.name].putAll(point)
+	            }else{
+	              comparisonMap.put(prop.type.name,point)
+	            }
+	          }
+	        }
+		}
+		result.licIEMap = licIEMap
+		result.comparisonMap = comparisonMap
+		log.debug("Processed: "+result)
 	}
 
 	def retrieveIssueEntitlements(ti,org,result){
-		log.debug("generateCompareMap")
+		log.debug("retrieveIssueEntitlements")
 		def issueEntitlements = []
 		def deleted_ie = RefdataCategory.lookupOrCreate('Entitlement Issue Status','Deleted');
 		def today = new Date()
@@ -51,9 +74,9 @@ class PublicController {
 			def query_results = IssueEntitlement.executeQuery(ie_query,queryParams)
 			//Check that items are current based on dates
 			query_results.each{ ie ->
-				def current_ie = ie.accessEndDate > today
-				def current_sub = ie.subscription.endDate > today
-				def current_licence = ie.subscription.owner.endDate > today
+				def current_ie = ie.accessEndDate > today || ie.accessEndDate == null
+				def current_sub = ie.subscription.endDate > today || ie.subscription.endDate == null
+				def current_licence = ie.subscription.owner.endDate > today || ie.subscription.owner.endDate == null
 				if(current_ie && current_sub && current_licence){
 					issueEntitlements.add(ie)
 				}else{

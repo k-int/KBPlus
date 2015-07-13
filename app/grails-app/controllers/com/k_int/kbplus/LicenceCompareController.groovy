@@ -40,15 +40,15 @@ class LicenceCompareController {
     def comparisonMap = new TreeMap()
     licences.each{ lic ->
       lic.customProperties.each{prop ->
-      def point = [:]
-      if(prop.getValue()|| prop.getNote()){
-        point.put(lic.reference,prop)
+        def point = [:]
+        if(prop.getValue()|| prop.getNote()){
+          point.put(lic.reference,prop)
           if(comparisonMap.containsKey(prop.type.name)){
             comparisonMap[prop.type.name].putAll(point)
           }else{
             comparisonMap.put(prop.type.name,point)
           }
-      }
+        }
       }
     }
     result.map = comparisonMap
