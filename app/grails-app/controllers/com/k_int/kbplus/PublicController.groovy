@@ -1,11 +1,20 @@
 package com.k_int.kbplus
+import com.k_int.kbplus.auth.*;
 
 class PublicController {
+
+    def springSecurityService
+
 	def journalLicences(){
 		log.debug("journalLicences :: ${params}")
 		def result = [:]
 
 		if(params.journal && params.org){
+			if(springSecurityService.principal != "anonymousUser"){
+			    result.user = User.get(springSecurityService.principal.id)
+			}else{
+				result.user = null
+			}
 			def ti = null
 			def org = null
 			if(params.journal.contains(":")){
@@ -20,9 +29,15 @@ class PublicController {
 			}
 			log.debug("${ti} and ${org}")
 			if(ti && org){
-				def ies = retrieveIssueEntitlements(ti,org,result)
-				log.debug("Retrieved ies: ${ies}")
-				if(ies) generateIELicenceMap(ies,result);
+				def access_prop =  grails.util.Holders.config.customProperties.org.journalAccess
+				def org_access = org.customProperties.find{it.type.name == access_prop.name}
+				if(checkUserAccessToOrg(result.user,org,org_access)){
+					def ies = retrieveIssueEntitlements(ti,org,result)
+					log.debug("Retrieved ies: ${ies}")
+					if(ies) generateIELicenceMap(ies,result);
+				}else{
+					flash.error = "${org.name} does not provide public access to this page."
+				}
 			}
 		}
 		result.journal = params.journal
@@ -30,6 +45,19 @@ class PublicController {
 
 		result
 	}
+
+	def checkUserAccessToOrg(user,org,org_access){
+		if(user){
+			def userRole = com.k_int.kbplus.auth.UserOrg.findAllByUserAndOrg(user,org)
+			 userRole.each{
+			 	println it.formalRole.authority
+			 	println it.formalRole.roleType
+			 }
+			}
+		else {log.debug("No user")}
+		return false
+	}
+
 	def generateIELicenceMap(ies,result){
 		log.debug("generateIELicenceMap")
 		def comparisonMap = [:]

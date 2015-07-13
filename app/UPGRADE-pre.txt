@@ -9,3 +9,9 @@ select pd_id into @concurrentUsersPropDefId from property_definition where pd_na
 
 delete from license_custom_property where type_id = @concurrentUsersPropDefId and owner_id in ( select owner_id from license_custom_property where ref_value_id = @notSpecifiedId ) and int_value = 0;
 
+ALTER TABLE org CHANGE COLUMN org_status_rv_fk org_status_rv_fk BIGINT(20) NULL DEFAULT NULL ;
+
+UPDATE org SET org_status_rv_fk=NULL where org_status_rv_fk=0;
+
+
+

@@ -4,7 +4,7 @@
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 customProperties =[
-"org":["publicJournal":["name":"publicJournal","class":String.toString(),"note":"Set the required rights for accessing the public Journals page. For example 'Staff,Student,Public' or leave empty/delete for no public access."]
+"org":["journalAccess":["name":"Public Journal Access","class":String.toString(),"note":"Set the required rights for accessing the public Journals page. For example 'Staff,Student,Public' or leave empty/delete for no public access."]
       ]
 ]
 onix = [
