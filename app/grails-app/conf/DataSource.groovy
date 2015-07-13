@@ -60,7 +60,7 @@ environments {
     }
     production {
         dataSource {
-            // dbCreate = "update"
+            dbCreate = "update"
             driverClassName = "com.mysql.jdbc.Driver"
             username = "k-int"
             password = "k-int"
