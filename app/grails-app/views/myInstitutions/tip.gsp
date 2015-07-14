@@ -47,23 +47,46 @@
           </g:if>
 
           <h3>Usage Records</h3>
-          <g:if test="${usage && usage.size() > 0 }">
-            <ul>
-              <g:each in="${usage}" var="u">
-                <li>
-                  usage:${u}
-                </li>
-              </g:each>
-            </ul>
-          </g:if>
-          <g:else>
-            No usage currently
-          </g:else>
+          <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Start</th>
+              <th>End</th>
+              <th>Reporting Year</th>
+              <th>Reporting Month</th>
+              <th>Type</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+              <g:if test="${usage && usage.size() > 0 }">
+                <g:each in="${usage}" var="u">
+                  <tr>
+                    <td>${u.factFrom}</td>
+                    <td>${u.factTo}</td>
+                    <td>${u.reportingYear}</td>
+                    <td>${u.reportingMonth}</td>
+                    <td>${u.factType?.value}</td>
+                    <td>${u.factValue}</td>
+
+                  </tr>
+                </g:each>
+              </g:if>
+              <g:else>
+                No usage currently
+              </g:else>
+            </tbody>
+          </table>
 
           <h4>Add usage information</h4>
           <g:form action="tip" params="${[shortcode:params.shortcode]}" id="${params.id}">
             Usage Date : <input type="date" name="usageDate"/><br/>
             Usage Record : <input type="text" name="usageValue"/><br/>
+            Usage Type :
+            <g:select name='factType'
+    from='${com.k_int.kbplus.RefdataValue.executeQuery('select o from RefdataValue as o where o.owner.desc=?',['FactType'])}'
+    optionKey="id" optionValue="value"></g:select><br/>
+
             <button type="submit">Add Usage</button>
           </g:form>
         </div>
