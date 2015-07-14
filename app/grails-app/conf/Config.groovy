@@ -646,8 +646,8 @@ financialImportTSVLoaderMappings = [
           whenPresent:[ [ type:'ref', refname:'owner'] ],
           properties : [
             [ type:'ref', property:'owner', refname:'owner' ],
-            [ type:'val', property:'invoiceNumber', colname: 'InvoiceNumber' ]
-            [ type:'val', property:'startDate', colname: 'InvoicePeriodStart', datatype:'date']
+            [ type:'val', property:'invoiceNumber', colname: 'InvoiceNumber' ],
+            [ type:'val', property:'startDate', colname: 'InvoicePeriodStart', datatype:'date'],
             [ type:'val', property:'endDate', colname: 'InvoicePeriodEnd', datatype:'date']
           ]
         ]
