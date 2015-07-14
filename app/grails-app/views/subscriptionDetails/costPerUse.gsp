@@ -34,6 +34,16 @@
     </div>
 
     <div class="container">
+      <g:if test="${costItems && costItems.size() > 0}">
+        <ul>
+          <g:each in="${costItems}" var="ci">
+            ${ci[0]} ${ci[1]} ${ci[2]}
+          </g:each>
+        </ul>
+      </g:if>
+      <g:else>
+        Unable to locate any invoices against this subscription
+      </g:else>
     </div>
 
   </body>

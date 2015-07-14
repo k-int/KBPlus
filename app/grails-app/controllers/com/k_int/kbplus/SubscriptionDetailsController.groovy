@@ -32,6 +32,11 @@ class SubscriptionDetailsController {
 
   def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
 
+
+  private static String INVOICES_FOR_SUB_HQL =
+     'select co.invoice, sum(co.costInLocalCurrency), sum(co.costInBillingCurrency) from CostItem as co where co.sub = :sub group by co.invoice';
+
+
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
 
@@ -1088,12 +1093,12 @@ class SubscriptionDetailsController {
     result.subscription = Subscription.get(params.id)
 
     // result.institution = Org.findByShortcode(params.shortcode)
-    result.institution = result.subscriptionInstance.subscriber
+    result.institution = result.subscription.subscriber
     if ( result.institution ) {
       result.subscriber_shortcode = result.institution.shortcode
       result.institutional_usage_identifier = result.institution.getIdentifierByType('JUSP');
     }
-    
+
     if ( ! result.subscription.hasPerm("view",result.user) ) {
       response.sendError(401);
       return
@@ -1105,6 +1110,11 @@ class SubscriptionDetailsController {
     else {
       result.editable = false
     }
+
+    // Get a unique list of invoices
+    // select inv, sum(cost) from costItem as ci where ci.sub = x
+    result.costItems = CostItem.executeQuery(INVOICES_FOR_SUB_HQL,[sub:result.subscription])
+
 
     result
   }
