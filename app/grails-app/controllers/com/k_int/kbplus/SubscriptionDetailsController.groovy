@@ -32,12 +32,17 @@ class SubscriptionDetailsController {
 
   def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
 
+
+  private static String INVOICES_FOR_SUB_HQL =
+     'select co.invoice, sum(co.costInLocalCurrency), sum(co.costInBillingCurrency) from CostItem as co where co.sub = :sub group by co.invoice';
+
+
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
 
 
     def verystarttime = exportService.printStart("SubscriptionDetails")
-  
+
     log.debug("subscriptionDetails id:${params.id} format=${response.format}");
     def result = [:]
 
@@ -52,7 +57,7 @@ class SubscriptionDetailsController {
 
     def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
     def pendingChanges = PendingChange.executeQuery("select pc.id from PendingChange as pc where subscription=? and ( pc.status is null or pc.status = ? ) order by ts desc", [result.subscriptionInstance, pending_change_pending_status ]);
-    
+
     if(result.subscriptionInstance?.isSlaved?.value == "Yes" && pendingChanges){
       log.debug("Slaved subscription, auto-accept pending changes")
       def changesDesc = []
@@ -77,7 +82,7 @@ class SubscriptionDetailsController {
       params.remove("format")
       redirect action:'currentTitles', params:params
     }
-  
+
     if (! result.subscriptionInstance?.hasPerm("view",result.user) ) {
       log.debug("Result of hasPerm is false");
       response.sendError(401);
@@ -97,7 +102,7 @@ class SubscriptionDetailsController {
     else {
       result.editable = false
     }
-    
+
     if (params.mode == "advanced"){
       params.asAt = null
     }
@@ -164,7 +169,7 @@ class SubscriptionDetailsController {
     result.num_sub_rows = IssueEntitlement.executeQuery("select count(ie) "+base_qry, qry_params )[0]
 
     if(params.format == 'html' || params.format == null){
-      result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, qry_params, [max:result.max, offset:result.offset]);    
+      result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, qry_params, [max:result.max, offset:result.offset]);
     }else{
       result.entitlements = IssueEntitlement.executeQuery("select ie "+base_qry, qry_params);
     }
@@ -177,7 +182,7 @@ class SubscriptionDetailsController {
     }
 
     exportService.printDuration(verystarttime, "Querying")
-  
+
     log.debug("subscriptionInstance returning... ${result.num_sub_rows} rows ");
     def filename = "subscriptionDetails_${result.subscriptionInstance.identifier}"
 
@@ -196,11 +201,11 @@ class SubscriptionDetailsController {
           def starttime = exportService.printStart("Building Map")
           def map = exportService.getSubscriptionMap(result.subscriptionInstance, result.entitlements)
           exportService.printDuration(starttime, "Building Map")
-      
+
           starttime = exportService.printStart("Create JSON")
           def json = map as JSON
           exportService.printDuration(starttime, "Create JSON")
-      
+
           if(params.transforms){
             transformerService.triggerTransform(result.user, filename, params.transforms, json, response)
           }else{
@@ -215,7 +220,7 @@ class SubscriptionDetailsController {
           def doc = exportService.buildDocXML("Subscriptions")
           exportService.addSubIntoXML(doc, doc.getDocumentElement(), result.subscriptionInstance, result.entitlements)
           exportService.printDuration(starttime, "Building XML Doc")
-      
+
           if( ( params.transformId ) && ( result.transforms[params.transformId] != null ) ) {
             String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
             transformerService.triggerTransform(result.user, filename, result.transforms[params.transformId], xml, response)
@@ -230,7 +235,7 @@ class SubscriptionDetailsController {
       }
     }
   }
-  
+
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def unlinkPackage(){
     log.debug("unlinkPackage :: ${params}")
@@ -240,7 +245,7 @@ class SubscriptionDetailsController {
     result.package = Package.get(params.package.toLong())
     def query = "from IssueEntitlement ie, Package pkg where ie.subscription =:sub and pkg.id =:pkg_id and ie.tipp in ( select tipp from TitleInstancePackagePlatform tipp where tipp.pkg.id = :pkg_id ) "
     def queryParams = [sub:result.subscription,pkg_id:result.package.id]
-   
+
     if (result.subscription.isEditableBy(result.user) ) {
       result.editable = true
       if(params.confirmed){
@@ -266,7 +271,7 @@ class SubscriptionDetailsController {
           conflicts_list += conflict_item_pc
         }
 
-        return render(template: "unlinkPackageModal",model:[pkg:result.package,subscription:result.subscription,conflicts_list:conflicts_list])  
+        return render(template: "unlinkPackageModal",model:[pkg:result.package,subscription:result.subscription,conflicts_list:conflicts_list])
       }
     }else{
       result.editable = false
@@ -314,12 +319,12 @@ class SubscriptionDetailsController {
 
     result.user = User.get(springSecurityService.principal.id)
     result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize
-    result.offset = params.offset ? Integer.parseInt(params.offset) : 0 
+    result.offset = params.offset ? Integer.parseInt(params.offset) : 0
 
     if(params.subA?.length() > 0 && params.subB?.length() > 0 ){
       log.debug("Subscriptions submitted for comparison ${params.subA} and ${params.subB}.")
       log.debug("Dates submited are ${params.dateA} and ${params.dateB}")
-      
+
       result.subInsts = []
       result.subDates = []
 
@@ -337,10 +342,10 @@ class SubscriptionDetailsController {
         flash.error = e.getMessage()
         return
       }
-     
+
       result.listACount = listA.size()
       result.listBCount = listB.size()
-      
+
       def mapA = listA.collectEntries { [it.tipp.title.title, it] }
       def mapB = listB.collectEntries { [it.tipp.title.title, it] }
 
@@ -354,7 +359,7 @@ class SubscriptionDetailsController {
       withFormat{
         html{
           def toIndex = result.offset+result.max < unionList.size()? result.offset+result.max: unionList.size()
-          result.comparisonMap = 
+          result.comparisonMap =
               institutionsService.generateComparisonMap(unionList,mapA,mapB,result.offset, toIndex.intValue(),filterRules)
           log.debug("Comparison Map"+result.comparisonMap)
           result
@@ -387,11 +392,11 @@ class SubscriptionDetailsController {
             writer.close();
            }
            out.close()
-            
+
           }catch(Exception e){
             log.error("An Exception was thrown here",e)
           }
-        }       
+        }
       }
     }else{
       def currentDate = new java.text.SimpleDateFormat('yyyy-MM-dd').format(new Date())
@@ -422,7 +427,7 @@ class SubscriptionDetailsController {
    def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd')
    def date = dateStr?sdf.parse(dateStr):new Date()
    def subId = sub.substring( sub.indexOf(":")+1)
-    
+
    def subInst = Subscription.get(subId)
    if(subInst.startDate > date || subInst.endDate < date){
       def errorMsg = "${subInst.name} start date is: ${sdf.format(subInst.startDate)} and end date is: ${sdf.format(subInst.endDate)}. You have selected to compare it on date ${sdf.format(date)}."
@@ -518,13 +523,13 @@ class SubscriptionDetailsController {
             log.debug("Selected core status is ${selected_refdata}");
             ie.coreStatus = selected_refdata
           }
-  
+
           if ( params.bulk_medium.trim().length() > 0 ) {
             def selected_refdata = genericOIDService.resolveOID(params.bulk_medium.trim())
             log.debug("Selected medium is ${selected_refdata}");
             ie.medium = selected_refdata
           }
-  
+
           if ( params.bulk_coverage && (params.bulk_coverage.trim().length() > 0 ) ) {
             ie.coverageDepth = params.bulk_coverage
           }
@@ -547,7 +552,7 @@ class SubscriptionDetailsController {
         }
       }
     }
- 
+
     redirect action: 'index', params:[id:subscriptionInstance?.id,sort:params.sort,order:params.order,offset:params.offset,max:params.max]
   }
 
@@ -623,7 +628,7 @@ class SubscriptionDetailsController {
       }
 
       log.debug("Query ${basequery} ${qry_params}");
-      
+
       result.num_tipp_rows = IssueEntitlement.executeQuery("select count(tipp) "+basequery, qry_params )[0]
       result.tipps = IssueEntitlement.executeQuery("select tipp ${basequery}", qry_params, [max:result.max, offset:result.offset]);
     }
@@ -631,7 +636,7 @@ class SubscriptionDetailsController {
       result.num_sub_rows = 0;
       result.tipps = []
     }
-    
+
     result
   }
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -754,7 +759,7 @@ class SubscriptionDetailsController {
     def ie = IssueEntitlement.get(params.ieid)
     def deleted_ie = RefdataCategory.lookupOrCreate('Entitlement Issue Status','Deleted');
     ie.status = deleted_ie;
-    
+
     redirect action: 'index', id:params.sub
   }
 
@@ -893,7 +898,7 @@ class SubscriptionDetailsController {
 
     def oid = "com.k_int.kbplus.Subscription:${params.id}"
     shopping_basket.addIfNotPresent(oid)
-  
+
     redirect controller:'myInstitutions',action:'renewalsSearch',params:[shortcode:result.subscriptionInstance.subscriber.shortcode]
   }
 
@@ -925,7 +930,7 @@ class SubscriptionDetailsController {
       def template_license_type = RefdataCategory.lookupOrCreate('License Type','Template');
 
       def qry_params = [subscriber, licensee_role]
-  
+
       def qry = "select l from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted' order by l.reference"
 
       def license_list = License.executeQuery(qry, qry_params);
@@ -961,7 +966,7 @@ class SubscriptionDetailsController {
         redirect action:'addEntitlements', id:params.id
       }
     }
-    
+
     if ( result.subscriptionInstance.isEditableBy(result.user) ) {
       result.editable = true
     }
@@ -976,7 +981,7 @@ class SubscriptionDetailsController {
     log.debug("Going for ES")
     params.rectype = "Package"
     result.putAll(ESSearchService.search(params))
-    
+
     result
   }
 
@@ -1044,7 +1049,7 @@ class SubscriptionDetailsController {
     def qry_params = [result.subscription.class.name, "${result.subscription.id}"]
     result.historyLines = AuditLogEvent.executeQuery("select e from AuditLogEvent as e where className=? and persistedObjectId=? order by id desc", qry_params, [max:result.max, offset:result.offset]);
     result.historyLinesTotal = AuditLogEvent.executeQuery("select count(e.id) from AuditLogEvent as e where className=? and persistedObjectId=?",qry_params)[0];
-   
+
     result
   }
 
@@ -1079,5 +1084,39 @@ class SubscriptionDetailsController {
     result
   }
 
-}
 
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def costPerUse() {
+    def result = [:]
+
+    result.user = User.get(springSecurityService.principal.id)
+    result.subscription = Subscription.get(params.id)
+
+    // result.institution = Org.findByShortcode(params.shortcode)
+    result.institution = result.subscription.subscriber
+    if ( result.institution ) {
+      result.subscriber_shortcode = result.institution.shortcode
+      result.institutional_usage_identifier = result.institution.getIdentifierByType('JUSP');
+    }
+
+    if ( ! result.subscription.hasPerm("view",result.user) ) {
+      response.sendError(401);
+      return
+    }
+
+    if ( result.subscription.hasPerm("edit",result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
+    }
+
+    // Get a unique list of invoices
+    // select inv, sum(cost) from costItem as ci where ci.sub = x
+    result.costItems = CostItem.executeQuery(INVOICES_FOR_SUB_HQL,[sub:result.subscription])
+
+
+    result
+  }
+
+}
