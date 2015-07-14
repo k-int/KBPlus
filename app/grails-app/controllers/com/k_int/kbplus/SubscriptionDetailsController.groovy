@@ -36,6 +36,10 @@ class SubscriptionDetailsController {
   private static String INVOICES_FOR_SUB_HQL =
      'select co.invoice, sum(co.costInLocalCurrency), sum(co.costInBillingCurrency) from CostItem as co where co.sub = :sub group by co.invoice';
 
+  private static String USAGE_FOR_SUB_IN_PERIOD =
+    'select f from Fact as f where f.factFrom >= :start and f.factTo <= :end and exists '+
+    '( select ie.tipp.title from IssueEntitlement as ie where ie.subscription = :sub and ie.tipp.title = f.relatedTitle)';
+
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
@@ -1113,7 +1117,16 @@ class SubscriptionDetailsController {
 
     // Get a unique list of invoices
     // select inv, sum(cost) from costItem as ci where ci.sub = x
-    result.costItems = CostItem.executeQuery(INVOICES_FOR_SUB_HQL,[sub:result.subscription])
+    result.costItems = []
+    CostItem.executeQuery(INVOICES_FOR_SUB_HQL,[sub:result.subscription]).each {
+      def cost_row = [invoice:it[0],total:it[2]]
+
+      // Work out what cost items appear under this subscription in the period given
+      cost_row.usage = Fact.executeQuery(USAGE_FOR_SUB_IN_PERIOD,[start:it[0].startDate, end:it[0].endDate, sub:result.subscription ])
+
+      result.costItems.add(cost_row);
+
+    }
 
 
     result

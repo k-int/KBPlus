@@ -112,10 +112,7 @@
                 </tr>
                 <tr id="bulkdelete-b${ci.id}">
                     <td>
-                      paid:<g:xEditable owner="${ci}" type="date" field="datePaid" /><br/>
-                      start:<g:xEditable owner="${ci}" type="date" field="startDate" /><br/>
-                      end:<g:xEditable owner="${ci}" type="date" field="endDate" /><br/>
-
+                      paid:<g:xEditable owner="${ci}" type="date" field="datePaid" />
                     </td>
                     <td><g:xEditable owner="${ci}" field="costInBillingCurrency" /> <g:xEditable owner="${ci}" field="billingCurrency" /> / <g:xEditable owner="${ci}" field="costInLocalCurrency" /></td>
                     <td><g:xEditable owner="${ci}" field="reference" /></td>
