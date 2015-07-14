@@ -5,6 +5,8 @@ class Invoice {
   Date dateOfInvoice
   Date dateOfPayment
   Date datePassedToFinance
+  Date startDate
+  Date endDate
   String invoiceNumber
   Org owner
 
@@ -15,6 +17,8 @@ class Invoice {
            dateOfPayment column:'inv_date_of_payment'
      datePassedToFinance column:'inv_date_passed_to_finance'
            invoiceNumber column:'inv_number'
+               startDate column:'inv_start_date'
+                 endDate column:'inv_end_date'
                    owner column:'inv_owner'
   }
 
@@ -23,6 +27,8 @@ class Invoice {
           dateOfPayment(nullable:true, blank:false)
     datePassedToFinance(nullable:true, blank:false)
           invoiceNumber(nullable:false, blank:false)
+          startDate(nullable:true, blank:false)
+          endDate(nullable:true, blank:false)
                   owner(nullable:false, blank:false)
   }
 
