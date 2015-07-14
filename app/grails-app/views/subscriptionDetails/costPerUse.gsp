@@ -50,11 +50,11 @@
                 <td>${ci.invoice.invoiceNumber}</td>
                 <td><g:formatDate date="${ci.invoice.startDate}" format="yyyy-MM-dd"/></td>
                 <td><g:formatDate date="${ci.invoice.endDate}" format="yyyy-MM-dd"/></td>
-                <td>${ci.total}</td>
+                <td><span class="pull-right">${ci.total}</span></td>
               </tr>
               <g:each in="${ci.usage}" var="u">
                 <tr>
-                  <td colspan="4">${u}</td>
+                  <td colspan="3">${u[0]} ${u[1]}</td><td><span class="pull-right">${u[2]}</span></td>
                 </tr>
               </g:each>
             </g:each>

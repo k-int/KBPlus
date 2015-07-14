@@ -37,8 +37,11 @@ class SubscriptionDetailsController {
      'select co.invoice, sum(co.costInLocalCurrency), sum(co.costInBillingCurrency) from CostItem as co where co.sub = :sub group by co.invoice';
 
   private static String USAGE_FOR_SUB_IN_PERIOD =
-    'select f from Fact as f where f.factFrom >= :start and f.factTo <= :end and exists '+
-    '( select ie.tipp.title from IssueEntitlement as ie where ie.subscription = :sub and ie.tipp.title = f.relatedTitle)';
+    'select f.reportingYear, f.reportingMonth, sum(factValue) '+
+    'from Fact as f '+
+    'where f.factFrom >= :start and f.factTo <= :end and f.factType.value=:jr1a and exists '+
+    '( select ie.tipp.title from IssueEntitlement as ie where ie.subscription = :sub and ie.tipp.title = f.relatedTitle)'+
+    'group by f.reportingYear, f.reportingMonth order by f.reportingYear, f.reportingMonth';
 
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -1122,7 +1125,7 @@ class SubscriptionDetailsController {
       def cost_row = [invoice:it[0],total:it[2]]
 
       // Work out what cost items appear under this subscription in the period given
-      cost_row.usage = Fact.executeQuery(USAGE_FOR_SUB_IN_PERIOD,[start:it[0].startDate, end:it[0].endDate, sub:result.subscription ])
+      cost_row.usage = Fact.executeQuery(USAGE_FOR_SUB_IN_PERIOD,[start:it[0].startDate, end:it[0].endDate, sub:result.subscription, jr1a:'JUSP:JR1' ])
 
       result.costItems.add(cost_row);
 
