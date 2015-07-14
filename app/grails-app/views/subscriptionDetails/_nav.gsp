@@ -25,9 +25,11 @@
                                                                        action="expected"
                                                                        params="${[id:params.id]}">Expected</g:link></li>
 
+    <g:if test="${grailsApplication.config.feature.finance}">
     <li <%='costPerUse'== actionName ? ' class="active"' : '' %>><g:link controller="subscriptionDetails"
                                                                    action="costPerUse"
                                                                    params="${[id:params.id]}">Cost Per Use</g:link></li>
+    </g:if>
 
 </ul>
 <ul class="nav nav-pills">
