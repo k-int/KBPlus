@@ -68,12 +68,11 @@
                     <td>${u.reportingMonth}</td>
                     <td>${u.factType?.value}</td>
                     <td>${u.factValue}</td>
-
                   </tr>
                 </g:each>
               </g:if>
               <g:else>
-                No usage currently
+                <tr><td colspan="6">No usage currently</td></tr>
               </g:else>
             </tbody>
           </table>
