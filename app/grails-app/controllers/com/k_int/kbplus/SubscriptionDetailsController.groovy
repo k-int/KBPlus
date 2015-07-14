@@ -37,7 +37,7 @@ class SubscriptionDetailsController {
      'select co.invoice, sum(co.costInLocalCurrency), sum(co.costInBillingCurrency) from CostItem as co where co.sub = :sub group by co.invoice';
 
   private static String USAGE_FOR_SUB_IN_PERIOD =
-    'select f.reportingYear, f.reportingMonth, sum(factValue) '+
+    'select f.reportingYear, f.reportingMonth+1, sum(factValue) '+
     'from Fact as f '+
     'where f.factFrom >= :start and f.factTo <= :end and f.factType.value=:jr1a and exists '+
     '( select ie.tipp.title from IssueEntitlement as ie where ie.subscription = :sub and ie.tipp.title = f.relatedTitle)'+
