@@ -87,6 +87,8 @@ class JuspSyncService {
       //           "and exists ( select tid from tipp.title.ids as tid where tid.identifier.ns.ns = 'jusp' ) " +
       //           "and exists ( select oid from po.org.ids as oid where oid.identifier.ns.ns = 'juspsid' ) "
       // def q = "select distinct ie.tipp.title, po.org, orgrel.org, jusptid from IssueEntitlement as ie " +
+
+      // Get a distinct list of titles ids, the content provider, subscribing organisation and the jusp title identifier
       def q = "select distinct ie.tipp.title.id, po.org.id, orgrel.org.id, jusptid.id from IssueEntitlement as ie " +
               "join ie.tipp.pkg.orgs as po " +
               "join ie.subscription.orgRelations as orgrel "+
@@ -100,7 +102,7 @@ class JuspSyncService {
 
       def l1 = IssueEntitlement.executeQuery(q)
 
-      queryTime = System.currentTimeMillis() - start_time 
+      queryTime = System.currentTimeMillis() - start_time
 
       log.debug("JUSP Sync query completed....");
 
@@ -141,35 +143,35 @@ class JuspSyncService {
     def start_time = System.currentTimeMillis();
 
     Fact.withNewTransaction { status ->
-  
+
       //log.debug("processTriple");
-  
+
       def title_inst = TitleInstance.get(a);
       def supplier_inst = Org.get(b);
       def org_inst = Org.get(c);
       def title_io_inst = IdentifierOccurrence.get(d);
-  
+
       //log.debug("Processing titile/provider/org triple: ${title_inst.title}, ${supplier_inst.name}, ${org_inst.name}");
-  
+
       def jusp_supplier_id = supplier_inst.getIdentifierByType('juspsid').value
       def jusp_login = org_inst.getIdentifierByType('jusplogin').value
       def jusp_title_id = title_io_inst.identifier.value
-  
+
       // log.debug(" -> Title jusp id: ${jusp_title_id}");
       // log.debug(" -> Suppllier jusp id: ${jusp_supplier_id}");
       // log.debug(" -> Subscriber jusp id: ${jusp_login}");
-  
+
       def csr = JuspTripleCursor.findByTitleIdAndSupplierIdAndJuspLogin(jusp_title_id,jusp_supplier_id,jusp_login)
       if ( csr == null ) {
         csr = new JuspTripleCursor(titleId:jusp_title_id,supplierId:jusp_supplier_id,juspLogin:jusp_login,haveUpTo:null)
       }
-  
+
       if ( ( csr.haveUpTo == null ) || ( csr.haveUpTo < most_recent_closed_period ) ) {
         def from_period = csr.haveUpTo ?: '1800-01'
         //log.debug("Cursor for ${jusp_title_id}(${title_inst.id}):${jusp_supplier_id}(${supplier_inst.id}):${jusp_login}(${org_inst.id}) is ${csr.haveUpTo} and is null or < ${most_recent_closed_period}. Will be requesting data from ${from_period}");
         try {
           //log.debug("Making JUSP API Call");
-          jusp_api_endpoint.get( 
+          jusp_api_endpoint.get(
                                  path : 'api/v1/Journals/Statistics/',
                                  contentType: JSON,
                                  query: [
@@ -179,7 +181,7 @@ class JuspSyncService {
                                          startrange:from_period,
                                          endrange:most_recent_closed_period,
                                          granularity:'monthly'] ) { resp, json ->
-     
+
             //log.debug("Got JUSP Result");
             if ( json ) {
               def cal = new GregorianCalendar();
@@ -233,7 +235,7 @@ class JuspSyncService {
         finally {
         }
       }
-  
+
       csr.save(flush:true);
       cleanUpGorm();
       def elapsed = System.currentTimeMillis() - start_time;
@@ -242,8 +244,8 @@ class JuspSyncService {
       // log.debug("jusp triple completed and updated.. ${completedCount} tasks completed out of ${submitCount}. Elasped=${elapsed}. Average=${totalTime/completedCount}");
     }
   }
-  
-  
+
+
   def cleanUpGorm() {
     // log.debug("Clean up GORM");
     def session = sessionFactory.currentSession
@@ -265,8 +267,8 @@ class JuspSyncService {
       activityHistogram[col_identifier]++
     }
 
-    syncElapsed = System.currentTimeMillis() - syncStartTime 
+    syncElapsed = System.currentTimeMillis() - syncStartTime
   }
-  
+
 
 }

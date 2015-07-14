@@ -20,7 +20,7 @@
     </div>
       <div class="container">
 
-    
+
       <g:if test="${flash.message}">
       <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
       </g:if>
@@ -76,16 +76,17 @@
           <tbody>
           <g:each in="${tips}" var="tip">
             <tr>
-                        
+
               <td>
-              <g:link controller="titleDetails" action="show" id="${tip?.title?.id}">${tip?.title?.title}</g:link>
-              </td>   
+              <g:link controller="myInstitutions" action="tip" params="${[shortcode:params.shortcode]}" id="${tip.id}">${tip?.title?.title}</g:link>
+              (title: <g:link controller="titleDetails" action="show" id="${tip?.title?.id}">${tip?.title?.title}</g:link>)
+              </td>
               <td>
               <g:link controller="org" action="show" id="${tip?.provider?.id}">${tip?.provider?.name}</g:link>
-              </td>   
+              </td>
               <td class="link">
 
-                <g:set var="coreStatus" value="${tip?.coreStatus(null)}"/>                 
+                <g:set var="coreStatus" value="${tip?.coreStatus(null)}"/>
                 <a href="#" class="editable-click" onclick="showDetails(${tip.id});">${coreStatus?'True(Now)':coreStatus==null?'False(Never)':'False(Now)'}</a>
               </td>
             </tr>
@@ -120,4 +121,4 @@
         </g:javascript>
 
   </body>
-</html>     
+</html>
