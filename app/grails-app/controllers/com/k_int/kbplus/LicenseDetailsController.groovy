@@ -21,6 +21,7 @@ class LicenseDetailsController {
   def exportService
   def institutionsService
   def pendingChangeService
+  def executorWrapperService
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
@@ -78,6 +79,7 @@ class LicenseDetailsController {
       result.pendingChanges = pendingChanges.collect{PendingChange.get(it)}
     }
 
+    flash.message= executorWrapperService.hasRunningProcess(result.license)? "Pending Changes are being processed. Please refresh screen to see progress" : null
 
     result.availableSubs = getAvailableSubscriptions(result.license,result.user)
 

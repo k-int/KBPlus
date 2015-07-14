@@ -29,7 +29,7 @@ class SubscriptionDetailsController {
   def pendingChangeService
   def institutionsService
   def ESSearchService
-
+  def executorWrapperService
   def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
 
 
@@ -185,6 +185,7 @@ class SubscriptionDetailsController {
 
     log.debug("subscriptionInstance returning... ${result.num_sub_rows} rows ");
     def filename = "subscriptionDetails_${result.subscriptionInstance.identifier}"
+    flash.message= executorWrapperService.hasRunningProcess(result.subscriptionInstance)? "Pending Changes are being processed. Please refresh screen to see progress" : null
 
     withFormat {
       html result

@@ -18,6 +18,12 @@
       <h1>${license.licensee?.name} ${license.type?.value} Licence : <g:xEditable owner="${license}" field="reference" id="reference"/></h1>
       <g:render template="nav" />
     </div>
+    <div class="container">
+
+    <g:if test="${flash.message}">
+      <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
+    </g:if>
+    </div>
 
     <g:if test="${pendingChanges?.size() > 0}">
       <div class="container alert-warn">
@@ -64,9 +70,6 @@
 
                 <div class="inline-lists">
 
-                <g:if test="${flash.message}">
-                  <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
-                </g:if>
   
                 <g:hasErrors bean="${titleInstanceInstance}">
                   <bootstrap:alert class="alert-error">
