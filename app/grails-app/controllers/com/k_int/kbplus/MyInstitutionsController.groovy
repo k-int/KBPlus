@@ -2625,4 +2625,38 @@ AND EXISTS (
       result
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def tip() {
+      def result = [:];
+      result.user        = User.get(springSecurityService.principal.id)
+      result.institution = Org.findByShortcode(params.shortcode)
+      result.tip = TitleInstitutionProvider.get(params.id)
+
+      if (request.method == 'POST' && result.tip ){
+        log.debug("Add usage ${params}")
+        def sdf = new SimpleDateFormat('yyyy-MM-dd');
+        def usageDate = sdf.parse(params.usageDate);
+        def cal = new GregorianCalendar()
+        cal.setTime(usageDate)
+        def fact = new Fact(
+          relatedTitle:result.tip.title,
+          supplier:result.tip.provider,
+          inst:result.tip.institution,
+          juspio:result.tip.title.getIdentifierValue('jusp'),
+          factFrom:usageDate,
+          factTo:usageDate,
+          factValue:params.usageValue,
+          factUid:java.util.UUID.randomUUID().toString(),
+          reportingYear:cal.get(Calendar.YEAR),
+          reportingMonth:cal.get(Calendar.MONTH),
+          factType:RefdataValue.get(params.factType)
+        ).save(flush:true, failOnError:true);
+
+      }
+
+      if ( result.tip ) {
+        result.usage = Fact.findAllByRelatedTitleAndSupplierAndInst(result.tip.title,result.tip.provider,result.tip.institution)
+      }
+      result
+    }
 }

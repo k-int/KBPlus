@@ -167,8 +167,6 @@ class Org {
     return result;
   }
 
-
-  
   static def lookupOrCreate(name, sector, consortium, identifiers, iprange) {
 
     def result = null;

@@ -53,6 +53,11 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("YNO","Other")
     RefdataCategory.lookupOrCreate("YNO","Unknown")
 
+    RefdataCategory.lookupOrCreate("FactType","JUSP:JR1")
+    RefdataCategory.lookupOrCreate("FactType","JUSP:JR1a")
+    RefdataCategory.lookupOrCreate("FactType","JUSP:JR1-JR1a")
+    RefdataCategory.lookupOrCreate("FactType","JUSP:JR1GOA")
+
     def or_licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
     def or_subscriber_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber');
     def or_licence_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensing Consortium');

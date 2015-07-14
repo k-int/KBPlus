@@ -12,6 +12,15 @@
 
 <div class="container">
 <h1>${message(code:'menu.public.journalLicence')}</h1>
+
+
+    <g:if test="${flash.error}">
+      <div class="container">
+        <bootstrap:alert class="alert-error">${flash.error}</bootstrap:alert>
+      </div>
+    </g:if>
+
+
 <p> Use the following form to lookup Journals for a specific institution. Only journals from institutions that have opted in for this service will be searchable.</p>
 
 <g:form action="journalLicences" method="post">
