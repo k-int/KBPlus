@@ -24,9 +24,7 @@
       
       ${ OnixPLService.getSingleValue(rth, 'UsageType') }
       the ${ OnixPLService.getAllValues(rth, 'UsedResource',',') }
-      <g:if test="${rth['UsageMethod']}">
-        via ${ OnixPLService.getSingleValue(rth, 'UsageMethod') }
-      </g:if>
+
       <g:if test="${rth['UsagePurpose']}">
         for ${ OnixPLService.getSingleValue(rth, 'UsagePurpose') }
       </g:if>
@@ -68,7 +66,9 @@
 
           %{-- List all the extra matrix details. Should create css class to use less space --}%
           <ul><b>
-
+          <g:if test="${entry['UsageMethod'] }">
+           <li> via ${ OnixPLService.getAllValues(entry, 'UsageMethod',', ') }</li>
+          </g:if>
           <g:if test="${hasPlaceOfReceivingAgent}">
           <li>  In ${OnixPLService.getSingleValue(rth['UsageRelatedPlace'][0],'RelatedPlace')}</li>
           </g:if>
