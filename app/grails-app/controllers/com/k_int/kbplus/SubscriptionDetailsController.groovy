@@ -43,6 +43,13 @@ class SubscriptionDetailsController {
     '( select ie.tipp.title from IssueEntitlement as ie where ie.subscription = :sub and ie.tipp.title = f.relatedTitle)'+
     'group by f.reportingYear, f.reportingMonth order by f.reportingYear, f.reportingMonth';
 
+  private static String TOTAL_USAGE_FOR_SUB_IN_PERIOD =
+    'select sum(factValue) '+
+    'from Fact as f '+
+    'where f.factFrom >= :start and f.factTo <= :end and f.factType.value=:jr1a and exists '+
+    '( select ie.tipp.title from IssueEntitlement as ie where ie.subscription = :sub and ie.tipp.title = f.relatedTitle)';
+
+
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
@@ -1127,6 +1134,11 @@ class SubscriptionDetailsController {
     result.costItems = []
     CostItem.executeQuery(INVOICES_FOR_SUB_HQL,[sub:result.subscription]).each {
       def cost_row = [invoice:it[0],total:it[2]]
+
+      cost_row.total_cost_for_sub = it[2];
+      cost_row.total_usage_for_sub = Double.parseDouble(Fact.executeQuery(TOTAL_USAGE_FOR_SUB_IN_PERIOD,[start:it[0].startDate, end:it[0].endDate, sub:result.subscription, jr1a:'JUSP:JR1' ])[0])
+
+      cost_row.overall_cost_per_use = cost_row.total_cost_for_sub / cost_row.total_usage_for_sub;
 
       // Work out what cost items appear under this subscription in the period given
       cost_row.usage = Fact.executeQuery(USAGE_FOR_SUB_IN_PERIOD,[start:it[0].startDate, end:it[0].endDate, sub:result.subscription, jr1a:'JUSP:JR1' ])
