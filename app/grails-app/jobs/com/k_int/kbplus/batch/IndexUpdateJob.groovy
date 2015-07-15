@@ -4,7 +4,6 @@ package com.k_int.kbplus.batch
 
 class IndexUpdateJob {
 
-  def mongoService 
   def ESWrapperService
   def dataloadService
 
