@@ -47,14 +47,18 @@ class PublicController {
 	}
 
 	def checkUserAccessToOrg(user,org,org_access){
+		def org_access_rights = org_access.getValue()?org_access.getValue().split(",") : []
+		if(org_access_rights.contains("public")) return true;
+		if(org_access_rights == []){
+			//When no rights specified, users affiliated with the org should have access
+			if(com.k_int.kbplus.auth.UserOrg.findAllByUserAndOrg(user,org)) return true;
+		}
 		if(user){
 			def userRole = com.k_int.kbplus.auth.UserOrg.findAllByUserAndOrg(user,org)
-			 userRole.each{
-			 	println it.formalRole.authority
-			 	println it.formalRole.roleType
-			 }
+			userRole.each{
+				if(org_access_rights.contains(it.formalRole.authority) || org_access_rights.contains(it.formalRole.roleType)) return true;
 			}
-		else {log.debug("No user")}
+		}
 		return false
 	}
 
