@@ -7,7 +7,7 @@ SET @InstitutionTypeId = null,
 
 select 'Get IDs of known custom properties';
 
-select @InstitutionTypeId := rev_id from refdata_value where rdv_value = 'Institution';
+select @InstitutionTypeId := rdv_id from refdata_value where rdv_value = 'Institution';
 select @AdmRoleId := id from role where authority= 'INST_ADM';
 select @JCNamespace := idns_id from identifier_namespace where idns_ns= 'JC';
 
