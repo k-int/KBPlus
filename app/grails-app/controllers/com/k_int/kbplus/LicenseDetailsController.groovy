@@ -435,21 +435,6 @@ class LicenseDetailsController {
   }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-    def onixpl() {
-        def user = User.get(springSecurityService.principal.id)
-        def license = License.get(params.id);
-        def onixplLicense = license.onixplLicense;
-        if (onixplLicense==null) return false;
-        if ( ! onixplLicense.hasPerm("view",user) ) {
-            log.debug("return 401....");
-            response.sendError(401);
-            return
-        }
-        def editable = onixplLicense.hasPerm("edit", user)
-        [license: license, onixplLicense: onixplLicense, user: user, editable: editable]
-    }
-
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def unlinkLicense() {
         log.debug("unlinkLicense :: ${params}")
         License license = License.get(params.license_id);
