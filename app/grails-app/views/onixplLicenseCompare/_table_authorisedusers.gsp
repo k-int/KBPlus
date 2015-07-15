@@ -29,7 +29,7 @@
         </g:if>
         <g:else>
           <span class="cell-inner-undefined">
-            <span title='Not defined by the license' class="onix-status onix-pl-prohibited" ></span>
+            <span title='Not defined by the license' class="onix-status onix-pl-undefined" ></span>
           </span>
         </g:else>
       </td>
