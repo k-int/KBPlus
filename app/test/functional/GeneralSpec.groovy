@@ -368,7 +368,11 @@ class GeneralSpec extends BaseSpec {
 		when: "Accept changes"
 		acceptAll()
 		then: "Public should be No"
-		verifyInformation("isPublic", "No")
+		alertBox(getMessage("pendingchange.inprogress"))
+	    waitFor(15) {
+			driver.navigate().refresh();
+			verifyInformation("isPublic", "No")
+        }
 	}
 
 	//  ref 113
