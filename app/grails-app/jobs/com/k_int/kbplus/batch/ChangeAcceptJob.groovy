@@ -21,7 +21,9 @@ class ChangeAcceptJob {
    //                  | `- Minute, 0-59
    //                  `- Second, 0-59
  }
-
+/**
+* Accept pending chnages from master subscriptions on slave subscriptions 
+**/
  def execute(){
   log.debug("****Running Change Accept Job****")
 

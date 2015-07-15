@@ -36,7 +36,7 @@ class PublicController {
 					log.debug("Retrieved ies: ${ies}")
 					if(ies) generateIELicenceMap(ies,result);
 				}else{
-					flash.error = "${org.name} does not provide public access to this page."
+					flash.error = "${org.name} does not provide public access to this service."
 				}
 			}
 		}

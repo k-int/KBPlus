@@ -22,7 +22,8 @@ class PackageDetailsController {
   def ESSearchService
   def exportService
   def institutionsService
-
+  def executorWrapperService
+  
     static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -434,7 +435,9 @@ class PackageDetailsController {
 
 
       result.packageInstance = packageInstance
-    
+      if(executorWrapperService.hasRunningProcess(packageInstance)){
+        result.processingpc = true
+      }
     def filename = "packageDetails_${result.packageInstance.name}"
     withFormat {
       html result

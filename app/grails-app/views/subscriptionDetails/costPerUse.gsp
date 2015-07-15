@@ -17,8 +17,8 @@
             </g:if>
             <li> <g:link controller="subscriptionDetails" action="index" id="${subscription.id}">Subscription ${subscription.id} Details</g:link> <span class="divider">/</span> </li>
             <li> <g:link controller="subscriptionDetails" action="costPerUse" id="${subscription.id}">Subscription ${subscription.id} Cost Per Use</g:link> </li>
-
-        </div>
+        </ul>
+    </div>
 
     <g:if test="${flash.message}">
         <div class="container"><bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert></div>
@@ -35,11 +35,38 @@
 
     <div class="container">
       <g:if test="${costItems && costItems.size() > 0}">
-        <ul>
-          <g:each in="${costItems}" var="ci">
-            ${ci[0]} ${ci[1]} ${ci[2]}
-          </g:each>
-        </ul>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Invoice Number</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Invoice Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <g:each in="${costItems}" var="ci">
+              <tr>
+                <td>${ci.invoice.invoiceNumber}</td>
+                <td><g:formatDate date="${ci.invoice.startDate}" format="yyyy-MM-dd"/></td>
+                <td><g:formatDate date="${ci.invoice.endDate}" format="yyyy-MM-dd"/></td>
+                <td><span class="pull-right">${ci.total}</span></td>
+              </tr>
+              <tr>
+                <td colspan="4">Total usage for this invoice period: ${ci.total_usage_for_sub} gives an overall cost per use of 
+                       <g:formatNumber number="${ci.overall_cost_per_use}" format="#,###,###.##" /></td>
+              </tr>
+              <g:each in="${ci.usage}" var="u">
+                <tr>
+                  <td colspan="3"><span class="pull-right">Costs for usage period ${u[0]}/${u[1]}</span></td>
+                  <td><span class="pull-right">${u[2]} @ <g:formatNumber number="${ci.overall_cost_per_use}" format="#,###,###.##" />
+                       = <g:formatNumber number="${ci.overall_cost_per_use * Integer.parseInt(u[2])}" format="#,###,###.##" /></span></td>
+
+                </tr>
+              </g:each>
+            </g:each>
+          </tbody>
+        </table>
       </g:if>
       <g:else>
         Unable to locate any invoices against this subscription

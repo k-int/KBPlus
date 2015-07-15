@@ -21,12 +21,7 @@ class ProfilePage extends BasePage {
                 $("input", name: "userDispName").value()
             }
         }
-        messageBox { msg ->
-            $("div.alert-block").children().filter("p").text().contains(msg)
-        }
-        errorBox { msg ->
-            $("div.alert-block").children().filter("p").text().contains(msg)
-        }
+
         requestMembership { org, role ->
             $('form', 1).org = org
             $('form', 1).formalRole = role

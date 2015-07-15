@@ -574,9 +574,10 @@ financialImportTSVLoaderMappings = [
         ref:'subscription',
         cls:'com.k_int.kbplus.Subscription',
         heuristics:[
-          [ type : 'simpleLookup', criteria : [
-                                                [ srcType:'col', colname:'SubscriptionId', domainProperty:'identifier' ]
-                                              ]
+          [
+            type : 'hql',
+            hql: 'select o from Subscription as o join o.ids as io where io.identifier.ns.ns = :jcns and io.identifier.value = :orgId',
+            values : [ jcns : [type:'static', value:'JC'], orgId: [type:'column', colname:'SubscriptionId'] ]
           ]
         ],
         creation:[
@@ -646,7 +647,9 @@ financialImportTSVLoaderMappings = [
           whenPresent:[ [ type:'ref', refname:'owner'] ],
           properties : [
             [ type:'ref', property:'owner', refname:'owner' ],
-            [ type:'val', property:'invoiceNumber', colname: 'InvoiceNumber']
+            [ type:'val', property:'invoiceNumber', colname: 'InvoiceNumber' ],
+            [ type:'val', property:'startDate', colname: 'InvoicePeriodStart', datatype:'date'],
+            [ type:'val', property:'endDate', colname: 'InvoicePeriodEnd', datatype:'date']
           ]
         ]
       ],

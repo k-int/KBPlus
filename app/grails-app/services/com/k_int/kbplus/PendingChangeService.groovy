@@ -105,7 +105,7 @@ def performAccept(change,httpRequest) {
         change.subscription?.save();
         change.status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Accepted")
         change.actionDate = new Date()
-        change.user = httpRequest.user
+        change.user = httpRequest?.user
         change.save();
         log.debug("Pending change accepted and saved")
       }

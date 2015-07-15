@@ -21,6 +21,7 @@ class LicenseDetailsController {
   def exportService
   def institutionsService
   def pendingChangeService
+  def executorWrapperService
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
@@ -77,8 +78,9 @@ class LicenseDetailsController {
     }else{
       result.pendingChanges = pendingChanges.collect{PendingChange.get(it)}
     }
-
-
+    if(executorWrapperService.hasRunningProcess(result.license)){
+      result.processingpc = true
+    }
     result.availableSubs = getAvailableSubscriptions(result.license,result.user)
 
     withFormat {
@@ -431,21 +433,6 @@ class LicenseDetailsController {
       redirect(action:'create');
     }
   }
-
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-    def onixpl() {
-        def user = User.get(springSecurityService.principal.id)
-        def license = License.get(params.id);
-        def onixplLicense = license.onixplLicense;
-        if (onixplLicense==null) return false;
-        if ( ! onixplLicense.hasPerm("view",user) ) {
-            log.debug("return 401....");
-            response.sendError(401);
-            return
-        }
-        def editable = onixplLicense.hasPerm("edit", user)
-        [license: license, onixplLicense: onixplLicense, user: user, editable: editable]
-    }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def unlinkLicense() {
