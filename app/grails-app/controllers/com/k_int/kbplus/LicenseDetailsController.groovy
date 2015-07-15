@@ -78,9 +78,9 @@ class LicenseDetailsController {
     }else{
       result.pendingChanges = pendingChanges.collect{PendingChange.get(it)}
     }
-
-    flash.message= executorWrapperService.hasRunningProcess(result.license)? "Pending Changes are being processed. Please refresh screen to see progress" : null
-
+    if(executorWrapperService.hasRunningProcess(result.license)){
+      result.processingpc = true
+    }
     result.availableSubs = getAvailableSubscriptions(result.license,result.user)
 
     withFormat {

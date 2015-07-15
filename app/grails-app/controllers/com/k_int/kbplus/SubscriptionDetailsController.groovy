@@ -192,8 +192,11 @@ class SubscriptionDetailsController {
 
     log.debug("subscriptionInstance returning... ${result.num_sub_rows} rows ");
     def filename = "subscriptionDetails_${result.subscriptionInstance.identifier}"
-    flash.message= executorWrapperService.hasRunningProcess(result.subscriptionInstance)? "Pending Changes are being processed. Please refresh screen to see progress" : null
 
+
+    if(executorWrapperService.hasRunningProcess(result.subscriptionInstance)){
+      result.processingpc = true
+    }
     withFormat {
       html result
       csv {
