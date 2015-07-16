@@ -285,20 +285,15 @@ class OnixPLService {
    */
   public static String formatOnixValue (String text) {
     String t = text
-    if (t == "onixPL:NotificationOfLicenseeIPAddresses"){
-      t = "Notification Of Licensee IP Addresses"
-    }else if(t == "onixPL:ComplianceWithOpenURLStandard"){
-      t= "Compliance With Open URL Standard"
-    }
-    else if (t) {
+
       def matcher = t =~ /onixPL:([\w]*)/
       
       matcher.each { match ->
         
         // Each string match without the onixPL:
-        t = t.replaceAll(match[0], GrailsNameUtils.getNaturalName(match[1]))
+        t = t.replaceAll(match[0], GrailsNameUtils.getNaturalName(match[1]).replaceAll(/([A-Z])\s([a-z])/, ' $1$2'))
       }
-    }
+    
     
     t
   }
