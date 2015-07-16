@@ -1181,6 +1181,14 @@ class SubscriptionDetailsController {
       result.institutional_usage_identifier = result.institution.getIdentifierByType('JUSP');
     }
 
+    if ( result.subscriptionInstance.isEditableBy(result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
+    }
+
+
     result
   }
 }
