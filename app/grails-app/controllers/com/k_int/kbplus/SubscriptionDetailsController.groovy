@@ -34,14 +34,14 @@ class SubscriptionDetailsController {
 
 
   private static String INVOICES_FOR_SUB_HQL =
-     'select co.invoice, sum(co.costInLocalCurrency), sum(co.costInBillingCurrency) from CostItem as co where co.sub = :sub group by co.invoice';
+     'select co.invoice, sum(co.costInLocalCurrency), sum(co.costInBillingCurrency) from CostItem as co where co.sub = :sub group by co.invoice order by min(co.invoice.startDate) desc';
 
   private static String USAGE_FOR_SUB_IN_PERIOD =
     'select f.reportingYear, f.reportingMonth+1, sum(factValue) '+
     'from Fact as f '+
     'where f.factFrom >= :start and f.factTo <= :end and f.factType.value=:jr1a and exists '+
     '( select ie.tipp.title from IssueEntitlement as ie where ie.subscription = :sub and ie.tipp.title = f.relatedTitle)'+
-    'group by f.reportingYear, f.reportingMonth order by f.reportingYear, f.reportingMonth';
+    'group by f.reportingYear, f.reportingMonth order by f.reportingYear desc, f.reportingMonth desc';
 
   private static String TOTAL_USAGE_FOR_SUB_IN_PERIOD =
     'select sum(factValue) '+
@@ -1131,14 +1131,28 @@ class SubscriptionDetailsController {
 
     // Get a unique list of invoices
     // select inv, sum(cost) from costItem as ci where ci.sub = x
+    log.debug("Get all invoices for sub ${result.subscription}");
     result.costItems = []
     CostItem.executeQuery(INVOICES_FOR_SUB_HQL,[sub:result.subscription]).each {
       def cost_row = [invoice:it[0],total:it[2]]
 
       cost_row.total_cost_for_sub = it[2];
-      cost_row.total_usage_for_sub = Double.parseDouble(Fact.executeQuery(TOTAL_USAGE_FOR_SUB_IN_PERIOD,[start:it[0].startDate, end:it[0].endDate, sub:result.subscription, jr1a:'JUSP:JR1' ])[0])
+      def usage_str = Fact.executeQuery(TOTAL_USAGE_FOR_SUB_IN_PERIOD,[start:it[0].startDate, end:it[0].endDate, sub:result.subscription, jr1a:'JUSP:JR1' ])[0]
 
-      cost_row.overall_cost_per_use = cost_row.total_cost_for_sub / cost_row.total_usage_for_sub;
+      if ( usage_str && usage_str.trim().length() > 0 ) {
+        cost_row.total_usage_for_sub = Double.parseDouble(usage_str);
+        if ( cost_row.total_usage_for_sub > 0 ) {
+          cost_row.overall_cost_per_use = cost_row.total_cost_for_sub / cost_row.total_usage_for_sub;
+        }
+        else {
+          cost_row.overall_cost_per_use = 0;
+        }
+      }
+      else {
+        cost_row.total_usage_for_sub = Double.parseDouble('0');
+        cost_row.overall_cost_per_use = cost_row.total_usage_for_sub
+      }
+
 
       // Work out what cost items appear under this subscription in the period given
       cost_row.usage = Fact.executeQuery(USAGE_FOR_SUB_IN_PERIOD,[start:it[0].startDate, end:it[0].endDate, sub:result.subscription, jr1a:'JUSP:JR1' ])
@@ -1151,4 +1165,30 @@ class SubscriptionDetailsController {
     result
   }
 
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def details() {
+    def result = [:]
+
+    result.user = User.get(springSecurityService.principal.id)
+    result.subscription = Subscription.get(params.id)
+    result.subscriptionInstance = result.subscription
+
+
+    // result.institution = Org.findByShortcode(params.shortcode)
+    result.institution = result.subscription.subscriber
+    if ( result.institution ) {
+      result.subscriber_shortcode = result.institution.shortcode
+      result.institutional_usage_identifier = result.institution.getIdentifierByType('JUSP');
+    }
+
+    if ( result.subscriptionInstance.isEditableBy(result.user) ) {
+      result.editable = true
+    }
+    else {
+      result.editable = false
+    }
+
+
+    result
+  }
 }
