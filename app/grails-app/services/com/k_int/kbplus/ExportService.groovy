@@ -863,8 +863,12 @@ class ExportService {
 	* @return the value in the required format for CSV exports.
 	**/
 	def val(val){
-		val = val? val.replaceAll('"',"'") :" "
-		return "\"${val}\""
+		if(val instanceof java.sql.Timestamp || val instanceof Date){
+			return val?formatter.format(val):" "
+		}else{
+			val = val? val.replaceAll('"',"'") :" "
+			return "\"${val}\""
+		}
 	}
 	
 	
