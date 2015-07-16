@@ -556,8 +556,9 @@ class License implements Comparable<License>{
       def result = []
       def  ql = License.executeQuery("select l ${INSTITUTIONAL_LICENSES_QUERY}",[orgId:params.inst?.toLong(),orgRole:params.roleType?.toLong(),publicS:params.isPublic?.toLong(),ref:"${params.q.toLowerCase()}"])
       if ( ql ) {
-          ql.each { prop ->
-              result.add([id:"${prop.reference}||${prop.id}",text:"${prop.reference}"])
+          ql.each { lic ->
+              def type = lic.type?.value ?"(${lic.type.value})":""
+              result.add([id:"${lic.reference}||${lic.id}",text:"${lic.reference}${type}"])
           }
       }
       result
