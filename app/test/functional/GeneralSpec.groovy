@@ -538,6 +538,7 @@ class GeneralSpec extends BaseSpec {
 		newSubscription(Data.Subscription_name_A)
 		and:
                 $("a",text:"Details").click()
+                and:
 		addDocument(Data.Test_Doc_name, Data.Test_Doc_file)
 		and:
 		addNote("Test note")
@@ -560,11 +561,13 @@ class GeneralSpec extends BaseSpec {
 		at SubscrDetailsPage
 		then:
                 $("a",text:"Details").click()
+                and:
 		catchException { addDocument("whatever", "doc") }
 		when:
 		at SubscrDetailsPage
 		then:
                 $("a",text:"Details").click()
+                and:
 		catchException { editIsPublic("Yes") }
 	}
 
