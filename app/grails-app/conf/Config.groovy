@@ -391,7 +391,7 @@ titlelistTransforms = [
 ]
 
 packageTransforms = [
-  'kbplus':[name:'KBPlus Import Format', xsl:'kbplusimp.xsl', returnFileExtention:'txt', returnMime:'text/plain']
+  'kbplus':[name:'KBPlus(CSV)', xsl:'kbplusimp.xsl', returnFileExtention:'txt', returnMime:'text/plain']
 ]
 licenceTransforms = [
   'sub_ie':[name:'XML (with IssueEntitlements)', xsl:'licenced_titles.xsl', returnFileExtention:'txt', returnMime:'text/plain']
