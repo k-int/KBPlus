@@ -2,6 +2,8 @@
 
   <li <%='index'== actionName ? ' class="active"' : '' %>><g:link controller="subscriptionDetails" action="index" params="${[id:params.id]}">Current Entitlements</g:link></li>
 
+  <li <%='details'== actionName ? ' class="active"' : '' %>><g:link controller="subscriptionDetails" action="details" params="${[id:params.id]}">Details</g:link></li>
+
   <g:if test="${editable}">
     <li <%='linkPackage'== actionName ? ' class="active"' : '' %>><g:link controller="subscriptionDetails"
                     action="linkPackage"

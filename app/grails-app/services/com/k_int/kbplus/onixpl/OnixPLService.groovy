@@ -285,8 +285,12 @@ class OnixPLService {
    */
   public static String formatOnixValue (String text) {
     String t = text
-    
-    if (t) {
+    if (t == "onixPL:NotificationOfLicenseeIPAddresses"){
+      t = "Notification Of Licensee IP Addresses"
+    }else if(t == "onixPL:ComplianceWithOpenURLStandard"){
+      t= "Compliance With Open URL Standard"
+    }
+    else if (t) {
       def matcher = t =~ /onixPL:([\w]*)/
       
       matcher.each { match ->
