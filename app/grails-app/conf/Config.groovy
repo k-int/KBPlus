@@ -394,7 +394,7 @@ packageTransforms = [
   'kbplus':[name:'KBPlus(CSV)', xsl:'kbplusimp.xsl', returnFileExtention:'txt', returnMime:'text/plain']
 ]
 licenceTransforms = [
-  'sub_ie':[name:'XML (with IssueEntitlements)', xsl:'licenced_titles.xsl', returnFileExtention:'txt', returnMime:'text/plain']
+  'sub_ie':[name:'Licensed Issue Entitlements (CSV)', xsl:'licenced_titles.xsl', returnFileExtention:'txt', returnMime:'text/plain']
 ]
 // log4j configuration
 log4j = {
