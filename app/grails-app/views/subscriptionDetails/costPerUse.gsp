@@ -53,7 +53,7 @@
                 <td><span class="pull-right"><g:formatNumber number="${ci.total}" format="#,###,###.##" /></span></td>
               </tr>
               <tr>
-                <td colspan="4">Total usage for this invoice period: ${ci.total_usage_for_sub} gives an overall cost per use of 
+                <td colspan="4">Total usage for this invoice period: <g:formatNumber number="${ci.total_usage_for_sub}" format="###,###,###"/> gives an overall cost per use of 
                        <strong><g:formatNumber number="${ci.overall_cost_per_use}" format="#,###,###.##" /></strong></td>
               </tr>
               <g:each in="${ci.usage}" var="u">
