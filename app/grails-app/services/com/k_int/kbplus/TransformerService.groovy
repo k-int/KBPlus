@@ -29,7 +29,7 @@ class TransformerService {
    * @param main_response - the main {@link #javax.servlet.http.HttpServletResponse HttpServletResponse} 
    */
   def triggerTransform(user, filename, tr, content, main_response) {
-    log.debug("triggerTransform... ${filename} ${tr}...");
+    log.debug("triggerTransform...${user}, ${filename}, ${tr}, ${content}, ${main_response}...");
 
     if ( tr ) {
       // def format = tr.accepts_format.value

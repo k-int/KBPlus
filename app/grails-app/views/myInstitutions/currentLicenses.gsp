@@ -19,9 +19,6 @@
             <li>
               <g:link action="currentLicenses" params="${params+[format:'csv']}">CSV Export</g:link>
             </li>
-            <li>
-              <g:link action="currentLicenses" params="${params+[format:'xml',format_content:'subpkg']}">Licensed Subscriptions/Packages (XML) </g:link>
-            </li>
             <g:each in="${transforms}" var="transkey,transval">
                 <li><g:link action="currentLicenses" params="${params+[format:'xml',transformId:transkey,format_content:'subie']}"> ${transval.name}</g:link></li>
               </g:each>
