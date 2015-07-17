@@ -360,8 +360,9 @@ class BootStrap {
   // Setup extra refdata
   def setupRefdata = { 
     // New Organisational Role
-    def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
-    def or_licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
+    RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
+    RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
+    RefdataCategory.lookupOrCreate('Organisational Role', 'Licensor');
 
     // -------------------------------------------------------------------
     // ONIX-PL Additions
