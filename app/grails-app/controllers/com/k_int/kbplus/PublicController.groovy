@@ -47,19 +47,25 @@ class PublicController {
 	}
 
 	def checkUserAccessToOrg(user,org,org_access){
+		def hasAccess = false
 		def org_access_rights = org_access?.getValue() ? org_access.getValue().split(",") : []
-		if(org_access_rights.contains("Public") || org_access_rights.contains("public")) return true;
+		org_access_rights = org_access_rights.collect{it.toLowerCase()}
+		if(org_access_rights.contains("public")) return true;
 		if(org_access_rights == []){
 			//When no rights specified, users affiliated with the org should have access
 			if(com.k_int.kbplus.auth.UserOrg.findAllByUserAndOrg(user,org)) return true;
 		}
 		if(user){
 			def userRole = com.k_int.kbplus.auth.UserOrg.findAllByUserAndOrg(user,org)
-			userRole.each{
-				if(org_access_rights.contains(it.formalRole.authority) || org_access_rights.contains(it.formalRole.roleType)) return true;
+			userRole.any{
+				if(org_access_rights.contains(it.formalRole.authority.toLowerCase()) || org_access_rights.contains(it.formalRole.roleType.toLowerCase())) {
+					hasAccess = true;
+					return true;
+				}
+					
 			}
 		}
-		return false
+		return hasAccess
 	}
 
 	def generateIELicenceMap(ies,result){
