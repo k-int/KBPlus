@@ -18,7 +18,12 @@ class PublicController {
 			def ti = null
 			def org = null
 			if(params.journal.contains(":")){
-				ti = TitleInstance.lookupByIdentifierString(params.journal)
+				def (ns,id) = params.journal.split(":")
+				if(ns=="kb"){
+					ti = TitleInstance.get(id.toLong())
+				}else{
+					ti = TitleInstance.lookupByIdentifierString(params.journal)
+				}
 			}else{
 				ti = TitleInstance.findAllByTitleIlike("${params.journal}%")
 			}
@@ -57,9 +62,8 @@ class PublicController {
 		}
 		if(user){
 			def userRole = com.k_int.kbplus.auth.UserOrg.findAllByUserAndOrg(user,org)
-			userRole.any{
+			hasAccess = userRole.any{
 				if(org_access_rights.contains(it.formalRole.authority.toLowerCase()) || org_access_rights.contains(it.formalRole.roleType.toLowerCase())) {
-					hasAccess = true;
 					return true;
 				}
 					
