@@ -66,8 +66,12 @@
                        <li><g:link controller="packageDetails" action="index">${message(code:'menu.institutions.all_pkg')} </g:link></li>
                        <li><g:link controller="titleDetails" action="index">${message(code:'menu.institutions.all_titles')} </g:link></li>
                        <li><g:link controller="packageDetails" action="compare">${message(code:'menu.institutions.comp_pkg')} </g:link></li>
-                       <li><g:link controller="onixplLicenseCompare"
-                                   action="index">${message(code:'menu.institutions.comp_onix')} </g:link></li>
+                       <li><g:link controller="onixplLicenseCompare" action="index">${message(code:'menu.institutions.comp_onix')} </g:link></li>
+
+                       <g:if test="${grailsApplication.config.feature.eBooks}">
+                         <li><a href="http://gokb.k-int.com/gokbLabs">${message(code:'menu.institutions.ebooks')} </a></li>
+                       </g:if>
+
                        <li class="divider"></li>
                        <g:set var="usaf" value="${user.authorizedOrgs}" />
                        <g:if test="${usaf && usaf.size() > 0}">
