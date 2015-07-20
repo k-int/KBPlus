@@ -195,7 +195,9 @@
         </div>
       </div>
     </div>
-
+    <g:render template="orgLinksModal" 
+              contextPath="../templates" 
+              model="${[linkType:subscriptionInstance?.class?.name,roleLinks:subscriptionInstance?.orgRelations,parent:subscriptionInstance.class.name+':'+subscriptionInstance.id,property:'orgs',recip_prop:'sub']}" />
     <r:script language="JavaScript">
 
       function unlinkPackage(pkg_id){
@@ -291,19 +293,6 @@
 
       });
 
-      function selectAll() {
-        $('.bulkcheck').attr('checked', true);
-      }
-
-      function confirmSubmit() {
-        if ( $('#bulkOperationSelect').val() === 'remove' ) {
-          var agree=confirm("Are you sure you wish to continue?");
-          if (agree)
-            return true ;
-          else
-            return false ;
-        }
-      }
       </g:if>
       <g:else>
         $(document).ready(function() {

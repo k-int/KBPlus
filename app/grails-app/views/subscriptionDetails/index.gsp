@@ -239,9 +239,7 @@
       </div>
     </div>
 
-    <g:render template="orgLinksModal" 
-              contextPath="../templates" 
-              model="${[linkType:subscriptionInstance?.class?.name,roleLinks:subscriptionInstance?.orgRelations,parent:subscriptionInstance.class.name+':'+subscriptionInstance.id,property:'orgs',recip_prop:'sub']}" />
+
 
     <div id="magicArea">
     </div>
@@ -249,98 +247,8 @@
 
     <r:script language="JavaScript">
 
-      function unlinkPackage(pkg_id){
-        var req_url = "${createLink(controller:'subscriptionDetails', action:'unlinkPackage',params:[subscription:subscriptionInstance.id])}&package="+pkg_id
-
-        $.ajax({url: req_url, 
-          success: function(result){
-             $('#magicArea').html(result);
-          },
-          complete: function(){
-            $("#unlinkPackageModal").modal("show");
-          }
-        });
-      }
-      
-      function hideModal(){
-        $("[name='coreAssertionEdit']").modal('hide');
-      }
-
-      function showCoreAssertionModal(){
-
-        $("[name='coreAssertionEdit']").modal('show');
-       
-      }
       
       <g:if test="${editable}">
-
-
-      $(document).ready(function() {
-           
-        $(".announce").click(function(){
-           var id = $(this).data('id');
-           $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" />/'+id);
-           $('#modalComments').modal('show');
-         });
-
-         $('#collapseableSubDetails').on('show', function() {
-            $('.hidden-license-details i').removeClass('icon-plus').addClass('icon-minus');
-        });
-
-        // Reverse it for hide:
-        $('#collapseableSubDetails').on('hide', function() {
-            $('.hidden-license-details i').removeClass('icon-minus').addClass('icon-plus');
-        });
-
-
-        <g:if test="${editable}">
-          $("[name='add_ident_submit']").submit(function( event ) {
-            event.preventDefault();
-            $.ajax({
-              url: "<g:createLink controller='ajax' action='validateIdentifierUniqueness'/>?identifier="+$("input[name='identifier']").val()+"&owner="+"${subscriptionInstance.class.name}:${subscriptionInstance.id}",
-              success: function(data) {
-                if(data.unique){
-                  $("[name='add_ident_submit']").unbind( "submit" )
-                  $("[name='add_ident_submit']").submit();
-                }else if(data.duplicates){
-                  var warning = "The following Subscriptions are also associated with this identifier:\n";
-                  for(var ti of data.duplicates){
-                      warning+= ti.id +":"+ ti.title+"\n";
-                  }
-                  var accept = confirm(warning);
-                  if(accept){
-                    $("[name='add_ident_submit']").unbind( "submit" )
-                    $("[name='add_ident_submit']").submit();
-                  }
-                }
-              },
-            });
-          });
-
-          $("#addIdentifierSelect").select2({
-            placeholder: "Search for an identifier...",
-            minimumInputLength: 1,
-            ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-              url: "<g:createLink controller='ajax' action='lookup'/>",
-              dataType: 'json',
-              data: function (term, page) {
-                  return {
-                      q: term, // search term
-                      page_limit: 10,
-                      baseClass:'com.k_int.kbplus.Identifier'
-                  };
-              },
-              results: function (data, page) {
-                return {results: data.values};
-              }
-            },
-            createSearchChoice:function(term, data) {
-              return {id:'com.k_int.kbplus.Identifier:__new__:'+term,text:"New - "+term};
-            }
-          });
-        </g:if>
-
-      });
 
       function selectAll() {
         $('.bulkcheck').attr('checked', true);
@@ -356,15 +264,6 @@
         }
       }
       </g:if>
-      <g:else>
-        $(document).ready(function() {
-          $(".announce").click(function(){
-            var id = $(this).data('id');
-            $('#modalComments').load('<g:createLink controller="alert" action="commentsFragment" />/'+id);
-            $('#modalComments').modal('show');
-          });
-        });
-      </g:else>
 
       <g:if test="${params.asAt && params.asAt.length() > 0}"> $(function() {
         document.body.style.background = "#fcf8e3";
