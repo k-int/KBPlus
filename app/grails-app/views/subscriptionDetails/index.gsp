@@ -246,7 +246,15 @@
 
 
     <r:script language="JavaScript">
+      function hideModal(){
+        $("[name='coreAssertionEdit']").modal('hide');
+      }
 
+      function showCoreAssertionModal(){
+
+        $("[name='coreAssertionEdit']").modal('show');
+       
+      }
       
       <g:if test="${editable}">
 
