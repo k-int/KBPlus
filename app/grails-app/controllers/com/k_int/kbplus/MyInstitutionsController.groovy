@@ -246,12 +246,15 @@ class MyInstitutionsController {
             xml {
                 def doc = exportService.buildDocXML("Licences")
 
-                if(params.format_content=="subpkg"){
-                    exportService.addLicenceSubPkgXML(doc, doc.getDocumentElement(),result.licenses)
-                }else if(params.format_content=="subie"){
-                    exportService.addLicenceSubPkgTitleXML(doc, doc.getDocumentElement(),result.licenses)
-                }
                 if ((params.transformId) && (result.transforms[params.transformId] != null)) {
+                    switch(params.transformId) {
+                      case "sub_ie":
+                        exportService.addLicenceSubPkgTitleXML(doc, doc.getDocumentElement(),result.licenses)
+                      break;
+                      case "sub_pkg":
+                        exportService.addLicenceSubPkgXML(doc, doc.getDocumentElement(),result.licenses)
+                        break;
+                    }
                     String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
                     transformerService.triggerTransform(result.user, filename, result.transforms[params.transformId], xml, response)
                 }else{

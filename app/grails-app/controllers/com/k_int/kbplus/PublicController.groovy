@@ -18,7 +18,12 @@ class PublicController {
 			def ti = null
 			def org = null
 			if(params.journal.contains(":")){
-				ti = TitleInstance.lookupByIdentifierString(params.journal)
+				def (ns,id) = params.journal.split(":")
+				if(ns=="kb"){
+					ti = TitleInstance.get(id.toLong())
+				}else{
+					ti = TitleInstance.lookupByIdentifierString(params.journal)
+				}
 			}else{
 				ti = TitleInstance.findAllByTitleIlike("${params.journal}%")
 			}
@@ -47,7 +52,9 @@ class PublicController {
 	}
 
 	def checkUserAccessToOrg(user,org,org_access){
-		def org_access_rights = org_access.getValue()?org_access.getValue().split(",") : []
+		def hasAccess = false
+		def org_access_rights = org_access?.getValue() ? org_access.getValue().split(",") : []
+		org_access_rights = org_access_rights.collect{it.toLowerCase()}
 		if(org_access_rights.contains("public")) return true;
 		if(org_access_rights == []){
 			//When no rights specified, users affiliated with the org should have access
@@ -55,11 +62,14 @@ class PublicController {
 		}
 		if(user){
 			def userRole = com.k_int.kbplus.auth.UserOrg.findAllByUserAndOrg(user,org)
-			userRole.each{
-				if(org_access_rights.contains(it.formalRole.authority) || org_access_rights.contains(it.formalRole.roleType)) return true;
+			hasAccess = userRole.any{
+				if(org_access_rights.contains(it.formalRole.authority.toLowerCase()) || org_access_rights.contains(it.formalRole.roleType.toLowerCase())) {
+					return true;
+				}
+					
 			}
 		}
-		return false
+		return hasAccess
 	}
 
 	def generateIELicenceMap(ies,result){

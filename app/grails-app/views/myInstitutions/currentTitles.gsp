@@ -142,7 +142,10 @@
             
             <g:each in="${titles}" var="ti">
               <tr>
-                <td><g:link controller="titleDetails" action="show" id="${ti[0].id}">${ti[0].title}</g:link></td>
+                <td><g:link controller="titleDetails" action="show" id="${ti[0].id}">${ti[0].title}</g:link>
+                <br/> 
+                <g:link controller="public" action="journalLicences" params="${['journal':'kb:'+ti[0].id,'org':institution.id]}">Check current licence terms</g:link>
+                </td>
                 <td style="white-space:nowrap">${ti[0].getIdentifierValue('ISSN')}</td>
                 <td style="white-space:nowrap">${ti[0].getIdentifierValue('eISSN')}</td>
 

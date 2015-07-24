@@ -95,17 +95,22 @@ class LicenseDetailsController {
       }
       xml {
         def doc = exportService.buildDocXML("Licences")
-        if(params.format_content=="subpkg"){
-            exportService.addLicenceSubPkgXML(doc, doc.getDocumentElement(),[result.license])
-        }else if(params.format_content=="subie"){
-            exportService.addLicenceSubPkgTitleXML(doc, doc.getDocumentElement(),[result.license])
-        }else if(!params.format_content){
-          exportService.addLicencesIntoXML(doc, doc.getDocumentElement(), [result.license])
-        }
+            
+
         if ((params.transformId) && (result.transforms[params.transformId] != null)) {
+            switch(params.transformId) {
+              case "sub_ie":
+                exportService.addLicenceSubPkgTitleXML(doc, doc.getDocumentElement(),[result.license])
+              break;
+              case "sub_pkg":
+                exportService.addLicenceSubPkgXML(doc, doc.getDocumentElement(),[result.license])
+                break;
+            }
             String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
             transformerService.triggerTransform(result.user, filename, result.transforms[params.transformId], xml, response)
         }else{
+            exportService.addLicencesIntoXML(doc, doc.getDocumentElement(), [result.license])
+            
             response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
             response.contentType = "text/xml"
             exportService.streamOutXML(doc, response.outputStream)

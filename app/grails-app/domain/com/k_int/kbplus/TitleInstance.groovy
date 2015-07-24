@@ -128,7 +128,7 @@ class TitleInstance {
           // Already in the list
         }
         else {
-          matched.add[io.ti];
+          matched.add(io.ti);
         }
       }
     }
@@ -143,7 +143,7 @@ class TitleInstance {
               // Already in the list
             }
             else {
-              matched.add[it.ti];
+              matched.add(it.ti);
             }
           }
         }
