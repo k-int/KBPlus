@@ -137,7 +137,7 @@
               <th>eISSN</th>
               <th>Earliest Date</th>
               <th>Latest Date</th>
-              <th>Subscription</th>
+              <th>Subscribed Content</th>
             </tr>  
             
             <g:each in="${titles}" var="ti">
