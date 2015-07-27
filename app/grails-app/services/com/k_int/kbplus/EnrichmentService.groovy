@@ -143,6 +143,7 @@ class EnrichmentService implements ApplicationContextAware {
         }
 
         if ( counter % 5000 == 0 ) {
+          log.debug("Clean up gorm");
           cleanUpGorm();
         }
       }
