@@ -101,6 +101,7 @@ class EnrichmentService implements ApplicationContextAware {
       def ie_ids_count = IssueEntitlement.executeQuery('select count(ie.id) from IssueEntitlement as ie')[0];
       def ie_ids = IssueEntitlement.executeQuery('select ie.id from IssueEntitlement as ie');
       int counter=0
+      def start_time = System.currentTimeMillis()
 
       ie_ids.each { ieid ->
 
@@ -112,7 +113,10 @@ class EnrichmentService implements ApplicationContextAware {
 
           if ( ( ie != null ) && ( ie.subscription != null ) && ( ie.tipp != null ) ) {
 
-            log.debug("Processing ie_id ${ieid} ${counter++}/${ie_ids_count}");
+            def elapsed = System.currentTimeMillis() - start_time
+            def avg = elapsed / counter
+            log.debug("Processing ie_id ${ieid} ${counter++}/${ie_ids_count} - ${elapsed}ms elapsed avg=${avg}");
+
             def inst = ie.subscription.getSubscriber()
             def title = ie.tipp.title
             def provider = ie.tipp.pkg.getContentProvider()
