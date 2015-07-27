@@ -20,6 +20,7 @@ class EnrichmentService implements ApplicationContextAware {
   def executorService
   def grailsApplication
   def mailService
+  def sessionFactory
 
   def initiateHousekeeping() {
     log.debug("initiateHousekeeping");
