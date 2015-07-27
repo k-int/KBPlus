@@ -137,10 +137,25 @@ class EnrichmentService implements ApplicationContextAware {
             log.error("IE ${ieid} is null, has no subscription or tipp.");
           }
         }
+
+        if ( counter % 5000 == 0 ) {
+          log.debug("Clean up gorm");
+          cleanUpGorm();
+        }
+
       }
     }
     catch ( Exception e ) {
       log.error("Problem",e);
     }
   }
+
+  def cleanUpGorm() {
+    log.debug("Clean up GORM");
+    def session = sessionFactory.currentSession
+    session.flush()
+    session.clear()
+    propertyInstanceMap.get().clear()
+  }
+
 }
