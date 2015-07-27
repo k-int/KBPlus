@@ -21,6 +21,8 @@ class EnrichmentService implements ApplicationContextAware {
   def grailsApplication
   def mailService
   def sessionFactory
+  def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
+
 
   def initiateHousekeeping() {
     log.debug("initiateHousekeeping");
