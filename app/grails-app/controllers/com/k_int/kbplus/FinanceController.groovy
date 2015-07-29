@@ -183,9 +183,11 @@ class FinanceController {
         }
 
         def pkg = null;
+        println("SUB PACKAGE PARAMS ARE :"+params.newPackage)
         if (params.newPackage) {
-            pkg = SubscriptionPackage.get(params.long('newPackage'));
+            pkg = SubscriptionPackage.load(params.newPackage.split(":")[1])
         }
+        println(pkg)
 
         def datePaid = null
         if (params.newDate) {
@@ -427,11 +429,10 @@ class FinanceController {
                         relation.obj."${params.relationField}" = params.val
                         relation.obj.owner = institution
                         log.debug("Financials :: financialRef -Creating Relation val:${params.val} field:${params.relationField} org:${institution.name}")
-                        if ( relation.obj.save() ) {
-                            result.relation = relation.obj
-                        } else {
+                        if ( relation.obj.save() )
+                            log.debug("Financials :: financialRef - Saved the new relational inst ${relation.obj}")
+                        else
                             result.error.add([status: "FAILED: Creating ${params.ownerField}", msg: "Invalid data received to retrieve from DB"])
-                        }
                     }
                     else
                         result.error.add([status: "FAILED: Setting value", msg: "The data you are trying to set does not exist"])
@@ -440,6 +441,7 @@ class FinanceController {
                 if (owner.obj.hasProperty(params.ownerField)) {
                     log.debug("Using owner instance field of ${params.ownerField} to set new instance of ${relation.obj.class} with ID ${relation.obj.id}")
                     owner.obj."${params.ownerField}" = relation.obj
+                    result.relation = relation.obj
                 }
             }
             else
