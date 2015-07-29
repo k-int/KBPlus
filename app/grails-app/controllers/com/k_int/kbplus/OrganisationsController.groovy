@@ -61,6 +61,9 @@ class OrganisationsController {
     def create() {
 		switch (request.method) {
 		case 'GET':
+		    if (!params.name && !params.sector) {
+				params.sector = 'Higher Education'
+		    }
         	[orgInstance: new Org(params)]
 			break
 		case 'POST':
@@ -145,7 +148,7 @@ class OrganisationsController {
 	            return
 	        }
 
-	        [orgInstance: orgInstance]
+	        [orgInstance: orgInstance, editable:true]
 			break
 		case 'POST':
 	        def orgInstance = Org.get(params.id)
@@ -169,7 +172,7 @@ class OrganisationsController {
 	        orgInstance.properties = params
 
 	        if (!orgInstance.save(flush: true)) {
-	            render view: 'edit', model: [orgInstance: orgInstance]
+	            render view: 'edit', model: [orgInstance: orgInstance, editable:true]
 	            return
 	        }
 

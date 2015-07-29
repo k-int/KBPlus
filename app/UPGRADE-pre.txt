@@ -1,6 +1,11 @@
 select "Updating spelling mistakes";
 
-UPDATE refdata_value SET rdv_value='Model Licence' WHERE rdv_value='Model License';
-UPDATE refdata_value SET rdv_value='ONIX-PL Licence' WHERE rdv_value='ONIX-PL License';
-UPDATE refdata_value SET rdv_value='Licence' WHERE rdv_value='License';
-UPDATE refdata_value SET rdv_value='Licence Attachment' WHERE rdv_value='License Attachment';
+select rdc_id into @concurrentAccessCatId from refdata_category where rdc_description = 'Concurrent Access';
+select rdv_id into @notSpecifiedId from refdata_value where rdv_owner = @concurrentAccessCatId and rdv_value = 'Not Specified';
+select @notSpecifiedId;
+select pd_id into @concurrentUsersPropDefId from property_definition where pd_name = 'Concurrent Users';
+
+-- delete from license_custom_property  where ref_value_id = @notSpecifiedId and note is null;
+
+delete from license_custom_property where type_id = @concurrentUsersPropDefId and owner_id in ( select owner_id from license_custom_property where ref_value_id = @notSpecifiedId ) and int_value = 0;
+

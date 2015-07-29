@@ -50,7 +50,12 @@
         <div class="row">
             <div class="span12">
                 <form class="form-inline">
-                    <label>Valid On</label> <input name="validOn" type="text" value="${validOn}"/>
+                    <label>Valid On</label> 
+
+            <div class="input-append date">
+              <input class="span2 datepicker-class" size="16" type="text" 
+              name="validOn" value="${validOn}">
+            </div>
 
                     <label>Search by Reference:</label>
                     <input type="text" name="keyword-search" placeholder="enter search term..." value="${params['keyword-search']?:''}" /><br/>
@@ -92,12 +97,9 @@
                    <g:if test="${l.subscriptions && ( l.subscriptions.size() > 0 )}">
                       <ul>
                         <g:each in="${l.subscriptions}" var="sub">
-                            <g:if test="${sub.status?.value!='Deleted'}">
-                              <li><g:link controller="subscriptionDetails" 
-                                          action="index" 
-                                          style="${sub.status?.value=='Deleted' ? 'text-decoration: line-through;' : ''}" 
-                                          id="${sub.id}">${sub.id} (${sub.name})</g:link><br/></li>
-                            </g:if>
+                          <g:if test="${sub.status?.value != 'Deleted'}">
+                            <li><g:link controller="subscriptionDetails" action="index" id="${sub.id}">${sub.id} (${sub.name})</g:link><br/></li>
+                          </g:if>
                         </g:each>
                       </ul>
                     </g:if>
@@ -122,6 +124,10 @@
         </div>
 
     <r:script type="text/javascript">
+
+        $(".datepicker-class").datepicker({
+            format:"${session.sessionPreferences?.globalDatepickerFormat}"
+        });
 
         $('.licence-results input[type="radio"]').click(function () {
             $('.licence-options').slideDown('fast');

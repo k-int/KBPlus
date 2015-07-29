@@ -17,6 +17,7 @@ class MyInstitutionsController {
 
     def springSecurityService
     def ESWrapperService
+    def ESSearchService
     def gazetteerService
     def alertsService
     def genericOIDService
@@ -62,6 +63,58 @@ class MyInstitutionsController {
           log.error("Failed to find user in database");
         }
 
+        result
+    }
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def tipview() {
+        log.debug("admin::tipview ${params}")
+        def result = [:]
+       
+        result.user = User.get(springSecurityService.principal.id)
+        result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+        result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+        def current_inst = null
+        if(params.shortcode) current_inst = Org.findByShortcode(params.shortcode);
+        //Parameters needed for criteria searching
+        def (tip_property, property_field) = (params.sort ?: 'title-title').split("-")
+        def list_order = params.order ?: 'asc'
+
+
+        def criteria = TitleInstitutionProvider.createCriteria();
+        def results = criteria.list(max: result.max, offset:result.offset) {
+              if (params.shortcode){
+                institution{
+                    idEq(current_inst.id)
+                }
+              }
+              if (params.search_for == "institution") {
+                institution {
+                  ilike("name", "%${params.search_str}%")         
+                }
+              }
+             if (params.search_for == "provider") {
+                provider {
+                  ilike("name", "%${params.search_str}%")         
+                }
+             }
+             if (params.search_for == "title") {
+                title {
+                  ilike("title", "%${params.search_str}%")         
+                }
+             }
+             if(params.filter == "core" || !params.filter){
+               isNotEmpty('coreDates') 
+             }else if(params.filter=='not'){
+                isEmpty('coreDates')
+             }
+             "${tip_property}"{
+                order(property_field,list_order)
+             }
+        }
+
+        result.tips = results
+        result.institution = current_inst
+        result.editable = current_inst?.hasUserWithRole(result.user,'INST_ADM')
         result
     }
 
@@ -117,6 +170,7 @@ class MyInstitutionsController {
             result.validOn = sdf.format(new Date(System.currentTimeMillis()))
         } else {
             result.validOn = params.validOn
+     
             date_restriction = sdf.parse(params.validOn)
         }
 
@@ -1221,49 +1275,6 @@ AND EXISTS (
         log.debug("renewalsSearch : ${params}");
         log.debug("Start year filters: ${params.startYear}");
 
-        StringWriter sw = new StringWriter()
-        def fq = null;
-        boolean has_filter = false
-
-        params.each { p ->
-            if (p.key.startsWith('fct:') && p.value.equals("on")) {
-                log.debug("start year ${p.key} : -${p.value}-");
-
-                if (!has_filter)
-                    has_filter = true
-                else
-                    sw.append(" AND ")
-
-                String[] filter_components = p.key.split(':');
-                switch (filter_components[1]) {
-                    case 'consortiaName':
-                        sw.append('consortiaName')
-                        break;
-                    case 'startYear':
-                        sw.append('startYear')
-                        break;
-                    case 'endYear':
-                        sw.append('endYear')
-                        break;
-                    case 'cpname':
-                        sw.append('cpname')
-                        break;
-                }
-                if (filter_components[2].indexOf(' ') > 0) {
-                    sw.append(":\"");
-                    sw.append(filter_components[2])
-                    sw.append("\"");
-                } else {
-                    sw.append(":");
-                    sw.append(filter_components[2])
-                }
-            }
-        }
-
-        if (has_filter) {
-            fq = sw.toString();
-            log.debug("Filter Query: ${fq}");
-        }
 
         // Be mindful that the behavior of this controller is strongly influenced by the schema setup in ES.
         // Specifically, see KBPlus/import/processing/processing/dbreset.sh for the mappings that control field type and analysers
@@ -1272,9 +1283,6 @@ AND EXISTS (
 
         result.institution = Org.findByShortcode(params.shortcode)
 
-        // Get hold of some services we might use ;)
-        org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
-        org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
         result.user = springSecurityService.getCurrentUser()
 
         if (!checkUserIsMember(result.user, result.institution)) {
@@ -1303,89 +1311,64 @@ AND EXISTS (
 
         result.basket = materialiseFolder(shopping_basket.items)
 
-        if (springSecurityService.isLoggedIn()) {
 
-            try {
+        //Following are the ES stuff 
+        try {
+            StringWriter sw = new StringWriter()
+            def fq = null;
+            boolean has_filter = false
+            //This handles the facets.
+            params.each { p ->
+                if (p.key.startsWith('fct:') && p.value.equals("on")) {
+                    log.debug("start year ${p.key} : -${p.value}-");
 
-                params.max = Math.min(params.max ? params.int('max') : result.user.defaultPageSize, 100)
-                params.offset = params.offset ? params.int('offset') : 0
+                    if (!has_filter)
+                        has_filter = true;
+                    else
+                        sw.append(" AND ");
 
-                //def params_set=params.entrySet()
-
-                def query_str = buildRenewalsQuery(params)
-                if (fq)
-                    query_str = query_str + " AND ( " + fq + " ) "
-
-                log.debug("query: ${query_str}");
-
-                def search = esclient.search {
-                    indices grailsApplication.config.aggr.es.index ?: "kbplus"
-                    source {
-                        from = params.offset
-                        size = params.max
-                        query {
-                            query_string(query: query_str)
-                        }
-                        sort = [
-                                'sortname': ['order': 'asc']
-                        ]
-                        facets {
-                            startYear {
-                                terms {
-                                    field = 'startYear'
-                                    size = 25
-                                }
-                            }
-                            endYear {
-                                terms {
-                                    field = 'endYear'
-                                    size = 25
-                                }
-                            }
-                            consortiaName {
-                                terms {
-                                    field = 'consortiaName'
-                                    size = 25
-                                }
-                            }
-                            cpname {
-                                terms {
-                                    field = 'cpname'
-                                    size = 25
-                                }
-                            }
-                        }
-
+                    String[] filter_components = p.key.split(':');
+                    switch (filter_components[1]) {
+                        case 'consortiaName':
+                            sw.append('consortiaName')
+                            break;
+                        case 'startYear':
+                            sw.append('startYear')
+                            break;
+                        case 'endYear':
+                            sw.append('endYear')
+                            break;
+                        case 'cpname':
+                            sw.append('cpname')
+                            break;
                     }
-
-                }
-
-                if (search?.response) {
-                    result.hits = search.response.hits
-                    result.resultsTotal = search.response.hits.totalHits
-
-                    // We pre-process the facet response to work around some translation issues in ES
-                    if (search.response.facets != null) {
-                        result.facets = [:]
-                        search.response.facets.facets.each { facet ->
-                            def facet_values = []
-                            facet.value.entries.each { fe ->
-                                facet_values.add([term: fe.term, display: fe.term, count: "${fe.count}"])
-                            }
-                            result.facets[facet.key] = facet_values
-                        }
+                    if (filter_components[2].indexOf(' ') > 0) {
+                        sw.append(":\"");
+                        sw.append(filter_components[2])
+                        sw.append("\"");
+                    } else {
+                        sw.append(":");
+                        sw.append(filter_components[2])
                     }
                 }
             }
-            finally {
-                try {
-                }
-                catch (Exception e) {
-                    log.error("problem", e);
-                }
-            }
 
-        }  // If logged in
+            if (has_filter) {
+                fq = sw.toString();
+                log.debug("Filter Query: ${fq}");
+            }
+            params.sort = "sortname"
+            params.rectype = "Package" // Tells ESSearchService what to look for
+            if(params.pkgname) params.q = params.pkgname
+            if(fq){
+                if(params.q) parms.q += " AND ";
+                params.q += " (${fq}) ";
+            } 
+            result += ESSearchService.search(params)
+        }
+        catch (Exception e) {
+            log.error("problem", e);
+        }
 
         result
     }
@@ -1545,11 +1528,11 @@ AND EXISTS (
             // For each subscription in the shopping basket
             if (sub instanceof Subscription) {
                 sub.issueEntitlements.each { ie ->
-                    log.debug("IE");
+                    // log.debug("IE");
                     if (!(ie.status?.value == 'Deleted')) {
                         def title_info = titleMap[ie.tipp.title.id]
                         if (!title_info) {
-                            // log.debug("Adding ie: ${ie}");
+                            log.debug("Adding ie: ${ie}");
                             title_info = [:]
                             title_info.title_idx = titleMap.size()
                             title_info.id = ie.tipp.title.id;
@@ -1564,9 +1547,11 @@ AND EXISTS (
                                 title_info.current_embargo = ie.embargo
                                 title_info.current_depth = ie.coverageDepth
                                 title_info.current_coverage_note = ie.coverageNote
-                                title_info.is_core = ie.coreStatus?.value
-                                title_info.core_start_date = ie.coreStatusStart ? formatter.format(ie.coreStatusStart) : ''
-                                title_info.core_end_date = ie.coreStatusEnd ? formatter.format(ie.coreStatusEnd) : ''
+                                def test_coreStatus =ie.coreStatusOn(new Date())
+                                def formatted_date = formatter.format(new Date())
+                                title_info.core_status = test_coreStatus?"True(${formatted_date})": test_coreStatus==null?"False(Never)":"False(${formatted_date})"
+                                title_info.core_status_on = formatted_date
+                                title_info.core_medium = ie.coreStatus
 
 
                                 try {
@@ -1640,7 +1625,11 @@ AND EXISTS (
                         def ie_info = [:]
                         // log.debug("Adding tipp info ${ie.tipp.startDate} ${ie.tipp.derivedFrom}");
                         ie_info.tipp_id = ie.tipp.id;
-                        ie_info.core = ie.coreStatus?.value
+                        def test_coreStatus =ie.coreStatusOn(new Date())
+                        def formatted_date = formatter.format(new Date())
+                        ie_info.core_status = test_coreStatus?"True(${formatted_date})": test_coreStatus==null?"False(Never)":"False(${formatted_date})"                     
+                        ie_info.core_status_on = formatted_date
+                        ie_info.core_medium = ie.coreStatus
                         ie_info.startDate_d = ie.tipp.startDate ?: ie.tipp.derivedFrom?.startDate
                         ie_info.startDate = ie_info.startDate_d ? formatter.format(ie_info.startDate_d) : null
                         ie_info.startVolume = ie.tipp.startVolume ?: ie.tipp.derivedFrom?.startVolume
@@ -1779,7 +1768,7 @@ AND EXISTS (
             cell = row.createCell(cc++);
             cell.setCellValue(new HSSFRichTextString("eISSN"));
             cell = row.createCell(cc++);
-            cell.setCellValue(new HSSFRichTextString("current Start Date"));
+            cell.setCellValue(new HSSFRichTextString("Current Start Date"));
             cell = row.createCell(cc++);
             cell.setCellValue(new HSSFRichTextString("Current End Date"));
             cell = row.createCell(cc++);
@@ -1787,11 +1776,11 @@ AND EXISTS (
             cell = row.createCell(cc++);
             cell.setCellValue(new HSSFRichTextString("Current Coverage Note"));
             cell = row.createCell(cc++);
-            cell.setCellValue(new HSSFRichTextString("IsCore?"));
+            cell.setCellValue(new HSSFRichTextString("Core Status"));
             cell = row.createCell(cc++);
-            cell.setCellValue(new HSSFRichTextString("Core Start Date"));
+            cell.setCellValue(new HSSFRichTextString("Core Status Checked"));
             cell = row.createCell(cc++);
-            cell.setCellValue(new HSSFRichTextString("Core End Date"));
+            cell.setCellValue(new HSSFRichTextString("Core Medium"));
 
             // USAGE History
             cell = row.createCell(cc++);
@@ -1862,15 +1851,15 @@ AND EXISTS (
 
                 // IsCore
                 cell = row.createCell(cc++);
-                cell.setCellValue(new HSSFRichTextString("${title.is_core ?: ''}"));
+                cell.setCellValue(new HSSFRichTextString("${title.core_status ?: ''}"));
 
                 // Core Start Date
                 cell = row.createCell(cc++);
-                cell.setCellValue(new HSSFRichTextString("${title.core_start_date ?: ''}"));
+                cell.setCellValue(new HSSFRichTextString("${title.core_status_on ?: ''}"));
 
                 // Core End Date
                 cell = row.createCell(cc++);
-                cell.setCellValue(new HSSFRichTextString("${title.core_end_date ?: ''}"));
+                cell.setCellValue(new HSSFRichTextString("${title.core_medium ?: ''}"));
 
                 // Usage Stats
                 cell = row.createCell(cc++);
@@ -1908,7 +1897,7 @@ AND EXISTS (
                     cell = row.createCell(cc++);
                     def ie_info = m.ti_info[title.title_idx][sub.sub_idx]
                     if (ie_info) {
-                        if ((ie_info.core) && (ie_info.core != 'No')) {
+                        if ((ie_info.core_status) && (ie_info.core_status.contains("True"))) {
                             cell.setCellValue(new HSSFRichTextString(""));
                             cell.setCellStyle(core_cell_style);
                         } else {
@@ -2067,9 +2056,8 @@ AND EXISTS (
                                     entitlement_info.end_date = title_row.getCell(5)
                                     entitlement_info.coverage = title_row.getCell(6)
                                     entitlement_info.coverage_note = title_row.getCell(7)
-                                    entitlement_info.core_status = title_row.getCell(8)
-                                    entitlement_info.core_start_date = title_row.getCell(9)
-                                    entitlement_info.core_end_date = title_row.getCell(10)
+                                    entitlement_info.core_status = title_row.getCell(10) // Moved from 8
+
 
                                     // log.debug("Added entitlement_info ${entitlement_info}");
                                     result.entitlements.add(entitlement_info)
@@ -2205,8 +2193,7 @@ AND EXISTS (
 
                 def new_start_date = entitlement.start_date ? parseDate(entitlement.start_date, possible_date_formats) : null
                 def new_end_date = entitlement.end_date ? parseDate(entitlement.end_date, possible_date_formats) : null
-                def new_core_start_date = entitlement.core_start_date ? parseDate(entitlement.core_start_date, possible_date_formats) : null
-                def new_core_end_date = entitlement.core_end_date ? parseDate(entitlement.core_end_date, possible_date_formats) : null
+
 
                 // entitlement.is_core
                 def new_ie = new IssueEntitlement(subscription: new_subscription,
@@ -2221,9 +2208,7 @@ AND EXISTS (
                         embargo: dbtipp.embargo,
                         coverageDepth: dbtipp.coverageDepth,
                         coverageNote: dbtipp.coverageNote,
-                        coreStatus: new_core_status,
-                        coreStatusStart: new_core_start_date,
-                        coreStatusEnd: new_core_end_date
+                        coreStatus: new_core_status
                 )
 
                 if (new_ie.save()) {
@@ -2485,4 +2470,21 @@ AND EXISTS (
 
         }
     }
+
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def finance() {
+        def result         = [:]
+        result.user        = User.get(springSecurityService.principal.id)
+        result.institution = Org.findByShortcode(params.shortcode)
+
+        if (!checkUserIsMember(result.user, result.institution)) {
+            flash.error = "You do not have permission to view ${result.institution.name}. Please request access on the profile page";
+            response.sendError(401)
+            return;
+        }
+
+        render view: 'financeActions', model: result, params: [shortcode: params.shortcode]
+    }
+
+
 }
