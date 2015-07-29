@@ -17,7 +17,7 @@ class FinanceController {
     private static def dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") {{setLenient(false)}}
 
 
-
+    //todo track state, maybe use the #! stateful style syntax along with the history API
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def index() {
         log.debug("FinanceController::index() ${params}");
@@ -34,6 +34,7 @@ class FinanceController {
         result.sort        =  ["desc","asc"].contains(params.sort)?params.sort : "asc"
         result.sort        =  params.boolean('opSort')==true?((result.sort=="asc")?'desc' : 'asc'): result.sort //opposite
         result.isRelation  =  params.orderRelation? params.boolean('orderRelation'):false
+        params.shortcode   =  result.institution.shortcode
         params.remove('opSort')
 
         def (order, join, gspOrder) = CostItem.orderingByCheck(params.order) //order = field, join = left join required if not null
@@ -217,7 +218,7 @@ class FinanceController {
         if(params.newIe)
         {
             try {
-                ie = IssueEntitlement.load(params.newIe.split(":")[1])
+                ie = IssueEntitlement.load(params.newIe.split(":")[1]) //OIDService uses get(), return proxy obj for ref instead
             } catch (Exception e) {
                 log.error("Non-valid IssueEntitlement sent "+params.newIe,e)
             }
@@ -403,5 +404,68 @@ class FinanceController {
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
     def importCosts() {
         response.sendError(404)
+    }
+
+    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+    def financialRef() {
+        log.debug("Financials :: financialRef - Params: ${params}")
+        def result   = [:]
+        result.error = [] as List
+        def institution = Org.findByShortcode(params.shortcode)
+        def owner       = refData(params.owner)
+        log.debug("Financials :: financialRef - Owner instance returned: ${owner.obj}")
+        if (owner) {
+            def relation = refData(params.relation)
+            log.debug("Financials :: financialRef - relation obj or stub returned "+relation)
+            if (relation)
+            {
+                log.debug("Financials :: financialRef - Relation needs creating: "+relation.create)
+                if (relation.create)
+                {
+                    if(relation.obj.hasProperty(params.relationField))
+                    {
+                        relation.obj."${params.relationField}" = params.val
+                        relation.obj.owner = institution
+                        log.debug("Financials :: financialRef -Creating Relation val:${params.val} field:${params.relationField} org:${institution.name}")
+                        if ( relation.obj.save() ) {
+                            result.relation = relation.obj
+                        } else {
+                            result.error.add([status: "FAILED: Creating ${params.ownerField}", msg: "Invalid data received to retrieve from DB"])
+                        }
+                    }
+                    else
+                        result.error.add([status: "FAILED: Setting value", msg: "The data you are trying to set does not exist"])
+                }
+
+                if (owner.obj.hasProperty(params.ownerField)) {
+                    log.debug("Using owner instance field of ${params.ownerField} to set new instance of ${relation.obj.class} with ID ${relation.obj.id}")
+                    owner.obj."${params.ownerField}" = relation.obj
+                }
+            }
+            else
+                result.error.add([status: "FAILED: Related Cost Item Data", msg: "Invalid data received to retrieve from DB"])
+        }
+         else
+            result.error.add([status: "FAILED: Cost Item", msg: "Invalid data received to retrieve from DB"])
+
+        render result as JSON
+    }
+
+    def private refData(String oid) {
+        def result = [:]
+        result.create = false
+        def oid_components = oid.split(':');
+        def dynamic_class  = grailsApplication.getArtefact('Domain',oid_components[0]).getClazz()
+        if ( dynamic_class)
+        {
+            if (oid_components[1].equals("create"))
+            {
+                result.obj = dynamic_class.newInstance()
+                result.create = true
+            }
+            else
+                result.obj = dynamic_class.get(oid_components[1])
+        }
+        result
     }
 }
