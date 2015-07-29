@@ -2,6 +2,7 @@ package com.k_int.kbplus
 
 import com.k_int.kbplus.auth.*;
 import grails.converters.*
+import org.codehaus.groovy.grails.web.binding.DataBindingUtils
 import org.springframework.transaction.TransactionStatus
 import com.k_int.custprops.PropertyDefinition
 
@@ -78,9 +79,9 @@ def performAccept(change,httpRequest) {
           case 'New Object' :
              def new_domain_class = grailsApplication.getArtefact('Domain',parsed_change_info.newObjectClass);
              if ( new_domain_class != null ) {
-               // def new_instance = new_domain_class.getClazz().newInstance(parsed_change_info.changeDoc).save()
                def new_instance = new_domain_class.getClazz().newInstance()
-               bindData(new_instance, parsed_change_info.changeDoc)
+               // like bindData(destination, map), that only exists in controllers
+               DataBindingUtils.bindObjectToInstance(new_instance, parsed_change_info.changeDoc)
                new_instance.save();
              }
             break;
@@ -88,7 +89,7 @@ def performAccept(change,httpRequest) {
             if ( ( parsed_change_info.changeTarget != null ) && ( parsed_change_info.changeTarget.length() > 0 ) ) {
               def target_object = genericOIDService.resolveOID(parsed_change_info.changeTarget);
               if ( target_object ) {
-                bindData(target_object, parsed_change_info.changeDoc)
+                DataBindingUtils.bindObjectToInstance(target_object, parsed_change_info.changeDoc)
                 target_object.save();
               }
             }
