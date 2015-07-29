@@ -135,7 +135,7 @@ class InplaceTagLib {
         def data_link = createLink(controller:dataController, action: dataAction, params:[id:attrs.config,format:'json',oid:oid]).encodeAsHTML()
         def update_link = createLink(controller:'ajax', action: 'genericSetRel').encodeAsHTML()
         def id = attrs.id ?: "${oid}:${attrs.field}"
-   
+
         out << "<span>"
    
         // Output an editable link
@@ -245,7 +245,7 @@ class InplaceTagLib {
       }
     }
 
-    out << "class=\"simpleReferenceTypedown ${attrs.class}\" />"
+    out << "class=\"${attrs.modified? 'modifiedReferenceTypedown':'simpleReferenceTypedown' } ${attrs?.class}\" />"
   }
 
 
