@@ -26,5 +26,9 @@
         <td><g:message code="financials.help" default="Help"/></td>
         <td><b><g:message code="financials.help.addNewCosts" default="Add New Costs"/></b><span><g:message code="financials.help.addNewCosts.info"/></span></td>
     </tr>
+    <tr>
+        <td><g:message code="financials.help" default="Help"/></td>
+        <td><b><g:message code="financials.help.wildcard" default="Wildcard Search"/></b><span><g:message code="financials.help.wildcard.info"/></span></td>
+    </tr>
     </tbody>
 </table>

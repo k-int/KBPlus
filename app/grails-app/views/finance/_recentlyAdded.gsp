@@ -29,7 +29,7 @@
                     <td>${item?.sub?.name}</td>
                 </tr>
                 <tr>
-                    <td>${item?.subPkg?.name}</td>
+                    <td>${item?.subPkg?.pkg?.name}</td>
                     <td>${item?.issueEntitlement?.tipp?.title?.title}</td>
                     <td>${item?.costInBillingCurrency}</td>
                     <td><g:formatDate format="dd-MM-yy" date="${item?.lastUpdated}"/></td>
