@@ -23,7 +23,6 @@ class FinanceController {
         log.debug("FinanceController::index() ${params}");
 
         def result         =  [:]
-        result.user        =  User.get(springSecurityService.principal.id)
         result.institution =  Org.findByShortcode(params.shortcode)
         result.editable    =  SpringSecurityUtils.ifAllGranted('ROLE_ADMIN')
         result.filterMode  =  params.filterMode?: "OFF"
@@ -36,6 +35,13 @@ class FinanceController {
         result.isRelation  =  params.orderRelation? params.boolean('orderRelation'):false
         params.shortcode   =  result.institution.shortcode
         params.remove('opSort')
+
+        def user = User.get(springSecurityService.principal.id)
+        if (!user.getAuthorizedOrgs().id.contains(result.institution.id))
+        {
+            log.error("User ${user.id} trying to access financial Org information not privy to ${result.institution.name}")
+            response.sendError(401)
+        }
 
         def (order, join, gspOrder) = CostItem.orderingByCheck(params.order) //order = field, join = left join required if not null
         result.order = gspOrder
@@ -97,7 +103,7 @@ class FinanceController {
                 countCheck       += " AND ci_ord_fk = " + order.id
             } else
             {
-                result.failed.add([status: "FAILED: Order", msg: "Invalid order number " + params.orderNumberFilter + (order!=null?"...  No cost items exist with order, however, invoice exits with ID: "+order.id:"...  no existence of invoice instance")])
+                result.failed.add([status: "FAILED: Order", msg: "Invalid order number " + params.orderNumberFilter + (order!=null?"...  No cost items exist with order, however, order exits with ID: "+order.id:"...  no existence of invoice instance")])
                 params.remove('orderNumberFilter')
             }
         }
@@ -366,6 +372,11 @@ class FinanceController {
         results.sentIDs    =  JSON.parse(params.del)
         def user           =  User.get(springSecurityService.principal.id)
         def institution    =  Org.findByShortcode(params.shortcode)
+        if (!user.getAuthorizedOrgs().id.contains(institution.id))
+        {
+            log.error("User ${user.id} has tried to delete financial Org information not privy to ${institution.name}")
+            response.sendError(401)
+        }
 
         if (results.sentIDs && institution) {
             def _costItem = null
@@ -469,5 +480,36 @@ class FinanceController {
                 result.obj = dynamic_class.get(oid_components[1])
         }
         result
+    }
+
+    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+    def removeBC() {
+        log.debug("Financials :: remove budget code - Params: ${params}")
+        def result      = [:]
+        result.success  = [status:  "Success: Deleted code", msg: "Deleted instance of the budget code for the specified cost item"]
+        def user        = User.get(springSecurityService.principal.id)
+        def institution = Org.findByShortcode(params.shortcode)
+
+        if (!user.getAuthorizedOrgs().id.contains(institution.id))
+        {
+            log.error("User ${user.id} has tried to delete budget code information for Org not privy to ${institution.name}")
+            response.sendError(401)
+        }
+        def ids = params.bcci ? params.bcci.split("_")[1..2] : null
+        if (ids && ids.size()==2)
+        {
+            def cig = CostItemGroup.load(ids[0])
+            def ci  = CostItem.load(ids[1])
+            if (cig && ci)
+            {
+                if (cig.costItem == ci)
+                    cig.delete(flush: true)
+                else
+                    result.error = [status: "FAILED: Deleting budget code", msg: "Budget code is not linked with the cost item"]
+            }
+        } else
+            result.error = [status: "FAILED: Deleting budget code", msg: "Incorrect parameter information sent"]
+
+        render result as JSON
     }
 }
