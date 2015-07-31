@@ -184,6 +184,7 @@
                     sort:paginateData.sort,
                     order:paginateData.order,
                     filterMode: paginateData.filtermode,
+                    wildcard: paginateData.wildcard,
                     mode:"updateResults"
                 }
             })
@@ -283,7 +284,8 @@
                     sort:paginateData.sort,
                     order: order,
                     offset:0,
-                    max:paginateData.max
+                    max:paginateData.max,
+                    wildcard:paginateData.wildcard
                 }
                 console.log("Sorting/Ordering Info", "SELECTED",selected, "ORDER",order, "PAGINATE DATA",paginateData, "PARAM DATA SENDING", data);
 
@@ -514,7 +516,7 @@
       initSelection : function (element, callback) {
             //If default value has been set in the markup!
         if(element.data('defaultvalue'))
-            var data = {id: element.data('domain')+':'+element.data('id'), text: element.data('defaultvalue')};
+            var data = {id: element.data('domain')+':'+element.data('relationid'), text: element.data('defaultvalue')};
         callback(data);
       },
       minimumInputLength: 1,
@@ -552,8 +554,8 @@
          var element = $(this);
          var currentText = ""
          var rel = "";
-         var presentSelections = element.select2("data");
-         console.log("Present selection ",presentSelections);
+         var prevSelection = element.select2("data");
+         console.log("Selection made before new selection",prevSelection);
 
          if(e.choice.id.split(':')[1] == 'create')
          {
@@ -570,7 +572,7 @@
                 url: "<g:createLink controller='finance' action='financialRef'/>",
                 data: {
                     owner:element.data('owner')+':'+element.data('ownerid'), //org.kbplus.CostItem:1
-                    ownerField: element.attr("name"), //order
+                    ownerField: element.data("ownerfield"), //order
                     relation: rel,  //org.kbplus.Order:100
                     relationField: element.data('relationfield'), //orderNumber
                     val:currentText,         //123456
@@ -579,19 +581,16 @@
          })
         .fail(function( jqXHR, textStatus, errorThrown ) {
              alert('Reset back to the original value, there was an issue');
-             element.select2('data', element.data('defaultValue'));
+             element.select2('data', prevSelection ? prevSelection : '');
          })
         .done(function(data) {
-            //todo Finish this !!!!!!! need to grab propper id maybe use presentSelection
             if(data.error.length > 0)
-            {
-                element.select2('data', {id: 11111, text: element.data('defaultvalue')});
-            } else {
-               //happy path
-                //change markup i.e. ID on data fields where nessesary
-                //todo grab propper id maybe use presentSelection
+                element.select2('data', prevSelection);
+            else {
+                element.data('previous',prevSelection ? prevSelection.id+'_'+prevSelection.text : '');
+                element.data('defaultvalue',e.choice.text);
+                element.data('relationid',data.relation.id);
             }
-            console.log("%o",data);
         });
     });
 

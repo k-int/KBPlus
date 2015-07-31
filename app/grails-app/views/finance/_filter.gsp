@@ -10,8 +10,8 @@
             <tbody>
             <g:each in="${info}" var="i">
                 <tr>
-                    <td>${i.status}</td>
-                    <td>${i.msg}</td>
+                    <td>${i.status.encodeAsHTML()}</td>
+                    <td>${i.msg.encodeAsHTML()}</td>
                 </tr>
             </g:each>
             </tbody>
@@ -101,21 +101,20 @@
                                                    data-owner="${ci.class.name}" baseClass="com.k_int.kbplus.Invoice"
                                                    data-relationID="${ci?.invoice!=null? ci.invoice.id:'create'}"
                                                    data-placeholder="${ci?.invoice==null? 'Enter invoice number':''}"
-                                                   data-defaultValue="${ci?.invoice?.invoiceNumber}" data-ownerid="${ci.id}"
-                                                   name="invoice" data-relationField="invoiceNumber"/>
+                                                   data-defaultValue="${ci?.invoice?.invoiceNumber.encodeAsHTML()}" data-ownerid="${ci.id}"
+                                                   data-ownerfield="invoice" name="invoiceField" data-relationField="invoiceNumber"/>
                     </td>
-                    %{--<td><g:if test="${ci.order}"><g:xEditable owner="${ci?.order}" field="orderNumber"/></g:if></td>--}%
                     <td>
                         <g:simpleReferenceTypedown modified="${true}" style="width: 100%" class="finance-select2" data-shortcode="${params.shortcode}"
                                                    data-owner="${ci.class.name}" baseClass="com.k_int.kbplus.Order"
                                                    data-relationID="${ci?.order!=null? ci.order.id:'create'}"
                                                    data-placeholder="${ci?.order==null? 'Enter order number':''}"
                                                    data-defaultValue="${ci?.order?.orderNumber}" data-ownerid="${ci.id}"
-                                                   name="order" data-relationField="orderNumber"/>
+                                                   data-ownerfield="order" name="orderField" data-relationField="orderNumber"/>
                     </td>
-                    <td>${ci.sub?.name}</td>
-                    <td>${ci.subPkg?.pkg?.name}</td>
-                    <td colspan="2">${ci?.issueEntitlement?.tipp?.title?.title}</td>
+                    <td>${ci.sub?.name.encodeAsHTML()}</td>
+                    <td>${ci.subPkg?.pkg?.name.encodeAsHTML()}</td>
+                    <td colspan="2">${ci?.issueEntitlement?.tipp?.title?.title.encodeAsHTML()}</td>
                     <g:if test="${editable}">
                         <td rowspan="2"><input type="checkbox" value="${ci.id}" class="bulkcheck"/></td>
                     </g:if>
@@ -132,9 +131,9 @@
                         <g:xEditable owner="${ci}" field="costInLocalCurrency" />
                     </td>
                     <td>
-                        <g:xEditable owner="${ci}" field="reference" />
+                        <g:xEditable owner="${ci}" field="reference" /> &nbsp;&nbsp;/&nbsp;
                         <g:each in="${ci.budgetcodes}" var="bc">
-                            <span>${bc.value} <a id="bcci_${bc.id}_${ci.id}" class="fa fa-times-circle fa-2x budgetCode">x</a></span>
+                            <span class="budgetCode">${bc.value.encodeAsHTML()} <a id="bcci_${bc.id}_${ci.id}" style="width: 20px" class="btn budgetCode">x</a></span>
                         </g:each>
                     </td>
                     <td colspan="3"><g:xEditable owner="${ci}" field="costDescription" /></td>
@@ -146,7 +145,7 @@
 </g:form>
 
 <div class="pagination">
-    <div id="paginateInfo" hidden="true" data-offset="${offset!=null?offset:params.offset}" data-max="${max!=null?max:params.max}"
+    <div id="paginateInfo" hidden="true" data-offset="${offset!=null?offset:params.offset}" data-max="${max!=null?max:params.max}" data-wildcard="${wildcard!=null?wildcard:params.wildcard}"
          data-sort="${sort!=null?sort:params.sort}" data-order="${order!=null?order:params.order}" data-relation="${isRelation!=null?isRelation:params.orderRelation}"
          data-filterMode="${filterMode}" data-total="${cost_item_count}" data-resetMode="${params.resetMode}" data-subscriptionFilter="${params.subscriptionFilter}"
          data-invoiceNumberFilter="${params.invoiceNumberFilter}" data-orderNumberFilter="${params.orderNumberFilter}" data-packageFilter="${params.packageFilter}">
