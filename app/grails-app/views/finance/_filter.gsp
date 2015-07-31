@@ -57,9 +57,7 @@
             </th>
             <th style="vertical-align: top;">IE</th>
             <th rowspan="2" style="vertical-align: top; text-align: center; width: 5%">Filter
-            <g:if test="${filterMode=='OFF'}">
-                <span> (${g.message(code: 'financials.help.wildcard')} : <g:checkBox name="wildcard" title="${g.message(code: 'financials.wildcard.title')}" type="checkbox" value="${params.wildcard}"></g:checkBox> )</span><br/>
-            </g:if>
+                <span ${wildcard ? hidden="hidden" : ''}> (${g.message(code: 'financials.help.wildcard')} : <g:checkBox name="wildcard" title="${g.message(code: 'financials.wildcard.title')}" type="checkbox" value="${wildcard}"></g:checkBox> )</span><br/>
                 <div id="filtering" class="btn-group" data-toggle="buttons-radio">
                     <g:if test="${filterMode=='OFF'}">
                         <g:select  onchange="filterSelection()" name="filterMode" from="['OFF','ON']" type="button" class="btn btn-primary btn-mini"></g:select><br/><br/>

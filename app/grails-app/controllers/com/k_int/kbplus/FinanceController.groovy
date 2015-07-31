@@ -52,7 +52,7 @@ class FinanceController {
         result.sort        =  ["desc","asc"].contains(params.sort)?params.sort : "asc"
         result.sort        =  params.boolean('opSort')==true?((result.sort=="asc")?'desc' : 'asc'): result.sort //opposite
         result.isRelation  =  params.orderRelation? params.boolean('orderRelation'):false
-        result.wildcard    =  params.wildcard == "on"
+        result.wildcard    =  params.wildcard == "on" && params.filterMode == "ON"
         params.shortcode   =  result.institution.shortcode
         params.remove('opSort')
 
@@ -62,7 +62,7 @@ class FinanceController {
         def qry_params                  =  [result.institution]
         result.institutionSubscriptions =  Subscription.executeQuery(base_qry, qry_params);
 
-        def cost_item_qry_params        =  (result.wildcard)? null : [result.institution]
+        def cost_item_qry_params        =   [result.institution]
         def cost_item_qry               =  (join)? "LEFT OUTER JOIN ${join} AS j WHERE ci.owner = ? " :"  where ci.owner = ? "
         def orderAndSortBy              =  (join)? "ORDER BY COALESCE(j.${order}, ${Integer.MAX_VALUE}) ${result.sort}, ci.id ASC" : " ORDER BY ci.${order} ${result.sort}"
 
@@ -74,10 +74,11 @@ class FinanceController {
             {
                 result.info.add([status:"INFO: Filter Mode", msg:"No results found, reset filter search!!!"])
                 result.filterMode =  "OFF" //SWITCHING BACK...since nothing has been found!
+                result.wildcard   = false
                 log.debug("FinanceController::index()  -- Performed filtering process... no results found, turned off filter mode")
             }
             else {
-                cost_item_qry_params   =  qryOutput.fqParams
+                cost_item_qry_params.addAll(qryOutput.fqParams)
                 result.cost_items      =  CostItem.executeQuery(ci_select + cost_item_qry + qryOutput.qry_string + orderAndSortBy, cost_item_qry_params, params);
                 result.cost_item_count =  CostItem.executeQuery(ci_count + cost_item_qry + qryOutput.qry_string, cost_item_qry_params).first();
                 log.debug("FinanceController::index()  -- Performed filtering process... ${result.cost_item_count} result(s) found")
@@ -111,8 +112,6 @@ class FinanceController {
         def countCheck      = ci_count + " where ci.owner = ? "
         def final count     = ci_count + " where ci.owner = ? "
         fqResult.fqParams   = [result.institution] as List //HQL list parameters for user data, can't be trusted!
-        //println(CostItem.executeQuery("select ci from CostItem as ci left outer join ci.order as o with o.orderNumber like '%45%'"))
-        //println(CostItem.executeQuery("select ci from CostItem as ci where ci.order.orderNumber like ? and ci.invoice.invoiceNumber like ?",['%45%','%9%']))
 
         if (params.orderNumberFilter) {
             def _count = (wildcard) ? count + "AND ci.order.orderNumber like ? " : count + "AND ci.order.orderNumber = ? "
@@ -126,7 +125,7 @@ class FinanceController {
                     countCheck += " AND ci.order.orderNumber like ?"
                     fqResult.fqParams.add("%${params.orderNumberFilter}%")
                 } else {
-                    fqResult.qry_string = " AND ci_ord_fk = ? "
+                    fqResult.qry_string = " AND ci.order.orderNumber = ? "
                     countCheck += " AND ci.order.orderNumber = ? "
                     fqResult.fqParams.add(params.orderNumberFilter)
                 }
@@ -138,13 +137,20 @@ class FinanceController {
         }
 
         if (params.invoiceNumberFilter) {
-            def invoice     = Invoice.findByInvoiceNumberAndOwner(params.invoiceNumberFilter,result.institution)
-            def costInvoice = invoice ? CostItem.findByInvoiceAndOwner(invoice,result.institution) : null
-            if (costInvoice)
-            {
-                fqResult.valid.add([status: "SUCESS: Invoice", msg: "Found Invoice: "+params.invoiceNumberFilter])
-                fqResult.qry_string += " AND ci.invoice = "+invoice.id+" "
-                countCheck        += " AND ci_inv_fk = "+invoice.id
+            def _count  = (wildcard) ? count + "AND ci.invoice.invoiceNumber like ? " : count + "AND ci.invoice.invoiceNumber = ? "
+            def invoice = CostItem.executeQuery(_count, [result.institution, (wildcard) ? "%${params.invoiceNumberFilter}%" : params.invoiceNumberFilter])
+
+            if (invoice && invoice.first() > 0) {
+                fqResult.valid.add([status: "SUCCESS: Invoice", msg: "Found ${invoice.first()} Invoice(s): " + params.invoiceNumberFilter])
+                if (wildcard) {
+                    fqResult.qry_string = "AND ci.invoice.invoiceNumber like ? "
+                    countCheck += " AND ci.invoice.invoiceNumber like ?"
+                    fqResult.fqParams.add("%${params.invoiceNumberFilter}%")
+                } else {
+                    fqResult.qry_string = " AND ci.invoice.invoiceNumber = ? "
+                    countCheck += " AND ci.invoice.invoiceNumber  = ? "
+                    fqResult.fqParams.add(params.invoiceNumberFilter)
+                }
             } else
             {
                 def detachedCount = Order.executeQuery("select count(i.id) from Invoice i where i.owner = ? AND i.invoiceNumber = ? ",[result.institution,params.invoiceNumberFilter])
@@ -183,15 +189,16 @@ class FinanceController {
             }
         }
 
-//        fqResult.fqParams.add(0,result.institution)
         fqResult.filterCount = CostItem.executeQuery(countCheck,fqResult.fqParams).first()
         if (fqResult.failed.size() > 0 || fqResult.filterCount == 0)
         {
             fqResult.failed.add([status: "INFO: No matches together", msg: "Try filtering without invalid criteria...reset invalid input"])
             fqResult.qry_string = ""
+            fqResult.fqParams.clear()
         }
         else
-            log.debug("Financials : filterQuery - Wildcard Searching active : ${wildcard} Query output : ${fqResult.qry_string}")
+            fqResult.fqParams.remove(0) //already have this where necessary in the index method!
+        log.debug("Financials : filterQuery - Wildcard Searching active : ${wildcard} Query output : ${fqResult.qry_string? fqResult.qry_string:'qry failed!'}")
 
         return fqResult
     }
@@ -224,7 +231,6 @@ class FinanceController {
         if (params.newPackage) {
             pkg = SubscriptionPackage.load(params.newPackage.split(":")[1])
         }
-        println(pkg)
 
         def datePaid = null
         if (params.newDate) {
