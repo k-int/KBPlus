@@ -13,17 +13,36 @@ import java.text.SimpleDateFormat
 class FinanceController {
 
     def springSecurityService
-    private static def dateFormat     = new SimpleDateFormat("YYYY-MM-dd")
-    private static def dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") {{setLenient(false)}}
+    private static def dateFormat      = new SimpleDateFormat("YYYY-MM-dd")
+    private static def dateTimeFormat  = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") {{setLenient(false)}}
+    private static final def ci_count  = 'select count(ci.id) from CostItem as ci '
+    private static final def ci_select = 'select ci from CostItem as ci '
+    private static final def base_qry  = " from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) "
 
+    private boolean userCertified(User user, Org institution)
+    {
+        if (!user.getAuthorizedOrgs().id.contains(institution.id))
+        {
+            log.error("User ${user.id} trying to access financial Org information not privy to ${institution.name}")
+            return false
+        } else
+            return true
+    }
 
-    //todo track state, maybe use the #! stateful style syntax along with the history API
+    //todo track state, maybe use the #! stateful style syntax along with the history API or more appropriately history.js (cross-compatible, polyfill for HTML4)
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def index() {
         log.debug("FinanceController::index() ${params}");
 
         def result         =  [:]
         result.institution =  Org.findByShortcode(params.shortcode)
+
+        //Check nothing strange going on with financial data
+        def user = User.get(springSecurityService.principal.id)
+        if (!userCertified(user,result.institution))
+            response.sendError(401)
+
+        //Setup params
         result.editable    =  SpringSecurityUtils.ifAllGranted('ROLE_ADMIN')
         result.filterMode  =  params.filterMode?: "OFF"
         result.info        =  [] as List
@@ -33,39 +52,35 @@ class FinanceController {
         result.sort        =  ["desc","asc"].contains(params.sort)?params.sort : "asc"
         result.sort        =  params.boolean('opSort')==true?((result.sort=="asc")?'desc' : 'asc'): result.sort //opposite
         result.isRelation  =  params.orderRelation? params.boolean('orderRelation'):false
+        result.wildcard    =  params.wildcard == "on"
         params.shortcode   =  result.institution.shortcode
         params.remove('opSort')
 
-        def user = User.get(springSecurityService.principal.id)
-        if (!user.getAuthorizedOrgs().id.contains(result.institution.id))
-        {
-            log.error("User ${user.id} trying to access financial Org information not privy to ${result.institution.name}")
-            response.sendError(401)
-        }
-
-        def (order, join, gspOrder) = CostItem.orderingByCheck(params.order) //order = field, join = left join required if not null
+        def (order, join, gspOrder) = CostItem.orderingByCheck(params.order) //order = field, join = left join required or null, gsporder = to see which field is ordering by
         result.order = gspOrder
 
-        def base_qry                    =  " from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) "
         def qry_params                  =  [result.institution]
         result.institutionSubscriptions =  Subscription.executeQuery(base_qry, qry_params);
 
-        def cost_item_qry_params        =  (join)? [result.institution] : [result.institution]
+        def cost_item_qry_params        =  (result.wildcard)? null : [result.institution]
         def cost_item_qry               =  (join)? "LEFT OUTER JOIN ${join} AS j WHERE ci.owner = ? " :"  where ci.owner = ? "
         def orderAndSortBy              =  (join)? "ORDER BY COALESCE(j.${order}, ${Integer.MAX_VALUE}) ${result.sort}, ci.id ASC" : " ORDER BY ci.${order} ${result.sort}"
 
         if (result.filterMode == "ON")
         {
             log.debug("FinanceController::index()  -- Performing filtering processing...")
-            def qryOutput = filterQuery(result,params)
+            def qryOutput = filterQuery(result,params,result.wildcard)
             if (qryOutput.filterCount == 0 || !qryOutput.qry_string) //Nothing found from filtering!
             {
-                result.info.add([status:"INFO: Filter Mode",msg:"<b>No results found, <i>reset filter search</i>!!!</b>"])
+                result.info.add([status:"INFO: Filter Mode", msg:"No results found, reset filter search!!!"])
                 result.filterMode =  "OFF" //SWITCHING BACK...since nothing has been found!
+                log.debug("FinanceController::index()  -- Performed filtering process... no results found, turned off filter mode")
             }
             else {
-                result.cost_items      =  CostItem.executeQuery('select ci from CostItem as ci ' + cost_item_qry + qryOutput.qry_string + orderAndSortBy, cost_item_qry_params, params);
-                result.cost_item_count =  CostItem.executeQuery('select count(ci.id) from CostItem as ci ' + cost_item_qry + qryOutput.qry_string, cost_item_qry_params).first();
+                cost_item_qry_params   =  qryOutput.fqParams
+                result.cost_items      =  CostItem.executeQuery(ci_select + cost_item_qry + qryOutput.qry_string + orderAndSortBy, cost_item_qry_params, params);
+                result.cost_item_count =  CostItem.executeQuery(ci_count + cost_item_qry + qryOutput.qry_string, cost_item_qry_params).first();
+                log.debug("FinanceController::index()  -- Performed filtering process... ${result.cost_item_count} result(s) found")
             }
             result.info.addAll(qryOutput.failed)
             result.info.addAll(qryOutput.valid)
@@ -74,8 +89,9 @@ class FinanceController {
         if (result.filterMode == "OFF" || params.resetMode == "reset")
         {
             //'SELECT ci FROM CostItem AS ci LEFT OUTER JOIN ci.order AS o WHERE ci.owner = ? ORDER BY COALESCE(o.orderNumber,?) ASC, ci.id ASC'
-            result.cost_items      =  CostItem.executeQuery('select ci from CostItem as ci ' + cost_item_qry + orderAndSortBy, cost_item_qry_params, params);
-            result.cost_item_count =  CostItem.executeQuery('select count(ci.id) from CostItem as ci ' + cost_item_qry, cost_item_qry_params).first();
+            result.cost_items      =  CostItem.executeQuery(ci_select + cost_item_qry + orderAndSortBy, cost_item_qry_params, params);
+            result.cost_item_count =  CostItem.executeQuery(ci_count + cost_item_qry, cost_item_qry_params).first();
+            log.debug("FinanceController::index()  -- Performing standard non-filtered process ... ${result.cost_item_count} result(s) found")
         }
 
         if (request.isXhr())
@@ -87,23 +103,36 @@ class FinanceController {
         }
     }
 
-    def private filterQuery(LinkedHashMap result, GrailsParameterMap params) {
-        result.failed     = [] as List
-        result.valid      = [] as List
-        result.qry_string = ""
-        def countCheck    = "select count(ci.id) from CostItem as ci where ci.owner = "+result.institution.id
+    def private filterQuery(LinkedHashMap result, GrailsParameterMap params, boolean wildcard) {
+        def fqResult      = [:]
+        fqResult.failed     = [] as List
+        fqResult.valid      = [] as List
+        fqResult.qry_string = ""
+        def countCheck      = ci_count + " where ci.owner = ? "
+        def final count     = ci_count + " where ci.owner = ? "
+        fqResult.fqParams   = [result.institution] as List //HQL list parameters for user data, can't be trusted!
+        //println(CostItem.executeQuery("select ci from CostItem as ci left outer join ci.order as o with o.orderNumber like '%45%'"))
+        //println(CostItem.executeQuery("select ci from CostItem as ci where ci.order.orderNumber like ? and ci.invoice.invoiceNumber like ?",['%45%','%9%']))
 
         if (params.orderNumberFilter) {
-            def order      = Order.findByOrderNumberAndOwner(params.orderNumberFilter, result.institution)
-            def costOrder  = order ? CostItem.findByOrderAndOwner(order,result.institution) : null
-            if (costOrder)
-            {
-                result.valid.add([status: "SUCESS: Order", msg: "Found Order: " + params.orderNumberFilter])
-                result.qry_string = " AND ci_ord_fk = " + order.id + " "
-                countCheck       += " AND ci_ord_fk = " + order.id
-            } else
-            {
-                result.failed.add([status: "FAILED: Order", msg: "Invalid order number " + params.orderNumberFilter + (order!=null?"...  No cost items exist with order, however, order exits with ID: "+order.id:"...  no existence of invoice instance")])
+            def _count = (wildcard) ? count + "AND ci.order.orderNumber like ? " : count + "AND ci.order.orderNumber = ? "
+            def order =  CostItem.executeQuery(_count, [result.institution, (wildcard) ? "%${params.orderNumberFilter}%" : params.orderNumberFilter])
+            log.debug("Filter Query - No of Orders found:${order} Qry Performed:${_count}")
+
+            if (order && order.first() > 0) {
+                fqResult.valid.add([status: "SUCCESS: Order", msg: "Found ${order.first()} Order(s): " + params.orderNumberFilter])
+                if (wildcard) {
+                    fqResult.qry_string = "AND ci.order.orderNumber like ? "
+                    countCheck += " AND ci.order.orderNumber like ?"
+                    fqResult.fqParams.add("%${params.orderNumberFilter}%")
+                } else {
+                    fqResult.qry_string = " AND ci_ord_fk = ? "
+                    countCheck += " AND ci.order.orderNumber = ? "
+                    fqResult.fqParams.add(params.orderNumberFilter)
+                }
+            } else {
+                def detachedCount = Order.executeQuery("select count(o.id) from Order o where o.owner = ? AND o.orderNumber = ? ",[result.institution,params.orderNumberFilter]) //Items that exist on their own for the org
+                fqResult.failed.add([status: "FAILED: Order", msg: "Invalid order number ${wildcard ? '%' + params.orderNumberFilter + '%' : params.orderNumberFilter} ...No cost items exist with specified order number and ${detachedCount.first()} detached orders"])
                 params.remove('orderNumberFilter')
             }
         }
@@ -113,13 +142,13 @@ class FinanceController {
             def costInvoice = invoice ? CostItem.findByInvoiceAndOwner(invoice,result.institution) : null
             if (costInvoice)
             {
-                result.invoiceNumberFilter=params.invoiceNumberFilter
-                result.valid.add([status: "SUCESS: Invoice", msg: "Found Invoice: "+params.invoiceNumberFilter])
-                result.qry_string += " AND ci.invoice = "+invoice.id+" "
+                fqResult.valid.add([status: "SUCESS: Invoice", msg: "Found Invoice: "+params.invoiceNumberFilter])
+                fqResult.qry_string += " AND ci.invoice = "+invoice.id+" "
                 countCheck        += " AND ci_inv_fk = "+invoice.id
             } else
             {
-                result.failed.add([status: "FAILED: Invoice", msg: "Invalid invoice number " + params.invoiceNumberFilter + (invoice!=null?"...  No cost items exist with invoice, however, invoice exits with ID: "+invoice.id:"...  no existence of invoice instance")])
+                def detachedCount = Order.executeQuery("select count(i.id) from Invoice i where i.owner = ? AND i.invoiceNumber = ? ",[result.institution,params.invoiceNumberFilter])
+                fqResult.failed.add([status: "FAILED: Invoice", msg: "Invalid order number ${wildcard ? '%' + params.invoiceNumberFilter + '%' : params.invoiceNumberFilter} ...No cost items exist with specified invoice number and ${detachedCount.first()} detached invoices"])
                 params.remove('invoiceNumberFilter')
             }
         }
@@ -129,39 +158,42 @@ class FinanceController {
             def subCost = sub ? CostItem.findBySubAndOwner(sub,result.institution) : null
             if (subCost)
             {
-                result.valid.add([status: "SUCESS: Subscription", msg: "Found Subscription: "+sub.name])
-                result.qry_string += " AND ci_sub_fk = "+sub.id+" "
+                fqResult.valid.add([status: "SUCESS: Subscription", msg: "Found Subscription: "+sub.name])
+                fqResult.qry_string += " AND ci_sub_fk = "+sub.id+" "
                 countCheck        += " AND ci_sub_fk = "+sub.id
             } else
             {
-                result.failed.add([status: "FAILED: Subscription", msg: "Invalid subscription, no Cost items with " + (sub!=null? sub.name:'no subscription name!')])
+                fqResult.failed.add([status: "FAILED: Subscription", msg: "Invalid subscription, no Cost items with " + (sub!=null? sub.name:'no subscription name!')])
                 params.remove('subscriptionFilter')
             }
         }
 
-        if (params.long('packageFilter')) {
-            def pkg        = SubscriptionPackage.get(params.long('packageFilter'));
+        if (params.packageFilter && params.packageFilter.startsWith("com.k_int.kbplus.SubscriptionPackage:")) {
+            def pkg        = SubscriptionPackage.get(params.packageFilter.split(":")[1]);
             def subPkgCost = pkg ? CostItem.findBySubPkgAndOwner(pkg,result.institution) : null
             if (subPkgCost)
             {
-                result.valid.add([status: "SUCESS: Sub Package", msg: "Found Sub Package: " + pkg.name])
-                result.qry_string += " AND ci_subPkg_fk = " + pkg.id
+                fqResult.valid.add([status: "SUCESS: Sub Package", msg: "Found Sub Package: " + pkg.pkg.name])
+                fqResult.qry_string += " AND ci_subPkg_fk = " + pkg.id
                 countCheck        += " AND ci_subPkg_fk = " + pkg.id
             } else
             {
-                result.failed.add([status: "FAILED: Sub-Package", msg: "Invalid package, no Cost items with " + params.packageFilter])
+                fqResult.failed.add([status: "FAILED: Sub-Package", msg: "Invalid package, no Cost items with " + params.packageFilter])
                 params.remove('packageFilter')
             }
         }
 
-        result.filterCount = CostItem.executeQuery(countCheck).first()
-        if (result.failed.size() > 0 || result.filterCount == 0)
+//        fqResult.fqParams.add(0,result.institution)
+        fqResult.filterCount = CostItem.executeQuery(countCheck,fqResult.fqParams).first()
+        if (fqResult.failed.size() > 0 || fqResult.filterCount == 0)
         {
-            result.failed.add([status: "INFO: No matches together", msg: "Try filtering without invalid criteria...reset invalid input"])
-            result.qry_string = ""
+            fqResult.failed.add([status: "INFO: No matches together", msg: "Try filtering without invalid criteria...reset invalid input"])
+            fqResult.qry_string = ""
         }
+        else
+            log.debug("Financials : filterQuery - Wildcard Searching active : ${wildcard} Query output : ${fqResult.qry_string}")
 
-        return result
+        return fqResult
     }
 
 
@@ -189,7 +221,6 @@ class FinanceController {
         }
 
         def pkg = null;
-        println("SUB PACKAGE PARAMS ARE :"+params.newPackage)
         if (params.newPackage) {
             pkg = SubscriptionPackage.load(params.newPackage.split(":")[1])
         }
@@ -274,7 +305,7 @@ class FinanceController {
             if (newCostItem.save(flush: true))
             {
                 if (params.newBudgetCode)
-                    createBudgetCodes(newCostItem, params.newBudgetCode, params.shortcode)
+                    createBudgetCodes(newCostItem, params.newBudgetCode, result.institution.shortcode)
             } else {
                 result.error = "Unable to save!"
             }
@@ -292,7 +323,9 @@ class FinanceController {
         }
     }
 
+
     private def createBudgetCodes(CostItem costItem, String budgetcodes, String owner) {
+        def result = []
         if(budgetcodes && owner && costItem) {
             def budgetOwner = RefdataCategory.findByDesc("budgetcode_"+owner)?:new RefdataCategory(desc: "budgetcode_"+owner).save(flush: true)
             budgetcodes.split(",").each { c ->
@@ -303,9 +336,10 @@ class FinanceController {
                     rdv = RefdataValue.get(c)
 
                 if (rdv != null)
-                    new CostItemGroup(costItem: costItem, budgetcode: rdv).save(flush: true)
+                    result.add(new CostItemGroup(costItem: costItem, budgetcode: rdv).save(flush: true))
             }
         }
+        result
     }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -372,11 +406,8 @@ class FinanceController {
         results.sentIDs    =  JSON.parse(params.del)
         def user           =  User.get(springSecurityService.principal.id)
         def institution    =  Org.findByShortcode(params.shortcode)
-        if (!user.getAuthorizedOrgs().id.contains(institution.id))
-        {
-            log.error("User ${user.id} has tried to delete financial Org information not privy to ${institution.name}")
+        if (userCertified(user,institution))
             response.sendError(401)
-        }
 
         if (results.sentIDs && institution) {
             def _costItem = null
@@ -414,10 +445,6 @@ class FinanceController {
         render results as JSON
     }
 
-    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
-    def importCosts() {
-        response.sendError(404)
-    }
 
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
     def financialRef() {
