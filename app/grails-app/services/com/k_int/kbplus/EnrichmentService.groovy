@@ -101,7 +101,6 @@ class EnrichmentService implements ApplicationContextAware {
       def ie_ids = IssueEntitlement.executeQuery('select ie.id from IssueEntitlement as ie');
       def start_time = System.currentTimeMillis();
       int counter=0
-      def start_time = System.currentTimeMillis()-1
 
       ie_ids.each { ieid ->
 
