@@ -61,14 +61,12 @@ class JuspCoreSpec extends GebReportingSpec {
 			at SubscrDetailsPage
 			$("a.editable-click",name:"show_core_assertion_modal").click()
 		when:
-			waitElement {$('a','data-hidden-id':'coreStartDate')}
-			$('a','data-hidden-id':'coreStartDate').click()
+			waitElement {$('a','data-hidden-id':'coreStartDate').click()}
 			waitElement {$('form.editableform input.input-small')}
 			$('form.editableform input.input-small').value('2015-04-01')
 			$('form.editableform button.editable-submit').click()
 
-			waitElement {$('a','data-hidden-id':'coreEndDate')}
-			$('a','data-hidden-id':'coreEndDate').click()
+			waitElement {$('a','data-hidden-id':'coreEndDate').click()}
 			waitElement {$('form.editableform input.input-small')}
 			$('form.editableform input.input-small').value('2030-05-01')
 			$('form.editableform button.editable-submit').click()

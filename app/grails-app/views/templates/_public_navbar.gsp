@@ -1,7 +1,7 @@
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
-            <img class="brand" alt="Knowledge Base + logo" src="images/kb_large_icon.png"/>
+            <img class="brand" alt="Knowledge Base + logo" src="/${meta(name:"app.name")}/images/kb_large_icon.png"/>
 
             <ul class="nav">
                 <g:if test="${active.equals("home")}">
@@ -35,9 +35,9 @@
                       <li class="${active.equals('publicExport')?'active':''}">
                             <a href="${createLink(uri: '/publicExport')}">Exports</a>
                       </li>
-                      <li class="${active.equals('journals')?'active':''}">
+%{--                       <li class="${active.equals('journals')?'active':''}">
                             <a href="${createLink(uri: '/public/journalLicences')}">Journals</a>
-                      </li>
+                      </li> --}%
                     </ul>
 
                 </li>

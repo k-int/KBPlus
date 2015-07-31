@@ -23,12 +23,12 @@
 
 <p> Use the following form to lookup Journals for a specific institution. Only journals from institutions that have opted in for this service will be searchable.</p>
 
-<g:form action="journalLicences" method="post">
+<g:form action="journalLicences" method="get">
 <div class="well form-horizontal">
-	    Search Journal: <input placeholder="Title or Identifier" name="journal" value="${journal}"/>
+	    Search Journal: <input placeholder="Title or Ident. kb: for KB+ ID" name="journal" value="${journal}"/>
 	    Instituion: <input placeholder="Shortcode or KB+ ID" name="org" value="${org}"/>
 	  
-	    <button type="submit" name="search" value="yes">Search</button>
+	    <button type="submit">Search</button>
 	  </div>
 </div>
 </g:form>
@@ -44,9 +44,8 @@
 	    <g:each in="${licIEMap}" var="lic_entry" status="counter">
 	      <th class="cell-${ (counter + 2) }"><span class="cell-inner" >
 	      <g:each in="${lic_entry.getValue()}" var="ie">
-	      	${ie.tipp.title.title},
-	      	 Start:<g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.startDate}"/>,
- 	      	 End:<g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.endDate}"/>
+	      	${ie.tipp.title.title}
+	      	 <br/>Start: <g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.startDate}"/>, End: <g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ie.endDate}"/>
  	      	 <br/>
 	      </g:each>
 	      	</span></th>

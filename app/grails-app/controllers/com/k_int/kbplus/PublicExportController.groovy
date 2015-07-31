@@ -163,7 +163,7 @@ class PublicExportController {
     def result = [:]
 
     def paginate_after = params.paginate_after ?: 19;
-    result.max = params.max ? Integer.parseInt(params.max) : ( ( response.format == "csv" || response.format == "json" ) ? 10000 : 10 );
+    result.max = params.max ? Integer.parseInt(params.max) : ( ["csv","json","xml"].contains(response.format) ? 10000 : 10 );
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
     log.debug("max = ${result.max}");

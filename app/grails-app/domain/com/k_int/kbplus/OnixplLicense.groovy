@@ -245,7 +245,7 @@ class OnixplLicense {
   }
   static def refdataFind(params) {
       def result = []
-      def  ql = findAllByTitleIlike("${params.q}%",params)
+      def  ql = findAllByTitleIlike(params.q,params)
       if ( ql ) {
           ql.each { prop ->
               result.add([id:"${prop.title}||${prop.id}",text:"${prop.title}"])

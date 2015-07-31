@@ -10,7 +10,7 @@ class CoreAssertion {
 
   static mapping = {
     id column:'ca_id'
-    tiinp column:'ca_owner'
+    tiinp column:'ca_owner', index:'ca_owner'
     startDate column:'ca_start_date'
     endDate column:'ca_end_date'
     version column:'ca_ver'

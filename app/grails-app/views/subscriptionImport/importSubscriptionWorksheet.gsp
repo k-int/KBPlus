@@ -39,7 +39,7 @@
     <g:set var="counter" value="${-1}" />
 
     <g:if test="${1==1}">
-      <g:form  action="processSubscriptionImport" method="post" params="${params}">
+      <g:form  action="processSubscriptionImport" method="post" params="${params}" enctype="multipart/form-data" >
         <div class="container"> 
         <g:if test="${subOrg!=null}">
           Import will create a subscription for ${subOrg.name}

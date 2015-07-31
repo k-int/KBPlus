@@ -58,11 +58,12 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("FactType","JUSP:JR1-JR1a")
     RefdataCategory.lookupOrCreate("FactType","JUSP:JR1GOA")
 
+    def cons_combo = RefdataCategory.lookupOrCreate('Combo Type', 'Consortium');
+
     def or_licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
     def or_subscriber_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber');
-    def or_licence_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensing Consortium');
     def or_sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscription Consortia');
-    def cons_combo = RefdataCategory.lookupOrCreate('Combo Type', 'Consortium');
+ 
 
     OrgPermShare.assertPermShare(view_permission, or_licensee_role);
     OrgPermShare.assertPermShare(edit_permission, or_licensee_role);
@@ -357,12 +358,25 @@ class BootStrap {
     }
   }
 
+  /**
+  * RefdataValue.group is used only for OrgRole to filter the types of role available in 'Add Role' action 
+  * This is done by providing 'linkType' (using instance class) to the '_orgLinksModal' template.
+  */
+  def setOrgRoleGroups() {
+    def lic = License.name
+    def sub = Subscription.name
+    def pkg = Package.name
+    def valMap = ["Licensor":lic,"Licensee":lic,"Licensing Consortium":lic,"Negotiator":lic,"Subscriber":sub,
+    "Provider":sub,"Subscription Agent":sub,"Subscription Consortia":sub,"Content Provider":pkg,"Package Consortia":pkg]
+    valMap.each{role,group->
+      def val = RefdataCategory.lookupOrCreate("Organisational Role",role)
+      val.setGroup(group)
+      val.save()
+    }
+  }
   // Setup extra refdata
   def setupRefdata = { 
-    // New Organisational Role
-    def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
-    def or_licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
-
+    setOrgRoleGroups()
     // -------------------------------------------------------------------
     // ONIX-PL Additions
     // -------------------------------------------------------------------
