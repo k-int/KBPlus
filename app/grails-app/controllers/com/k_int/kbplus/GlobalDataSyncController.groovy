@@ -62,6 +62,14 @@ class GlobalDataSyncController {
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def cancelTracking() {
+    log.debug("cancelTracking: " + params)
+    GlobalRecordTracker.get(params.trackerId).delete()
+
+    redirect(action:'index', params:[q:params.itemName])
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def buildMergeTracker() { 
     log.debug("params:"+params)
     def result = [:]
