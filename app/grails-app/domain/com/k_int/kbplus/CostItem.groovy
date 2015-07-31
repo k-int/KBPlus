@@ -124,7 +124,7 @@ class CostItem {
                 gspOrder = "Subscription"
                 break
             case "Package":
-                join     = "ci.subPkg"
+                join     = "ci.subPkg.pkg"
                 order    = "name"
                 gspOrder = "Package"
                 break
