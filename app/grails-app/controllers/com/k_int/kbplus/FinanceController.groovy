@@ -539,4 +539,22 @@ class FinanceController {
 
         render result as JSON
     }
+
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def addNewBC() {
+        def result = []
+        def institution = Org.findByShortcode(params.shortcode)
+        def user        = User.get(springSecurityService.principal.id)
+        if (!userCertified(user,institution))
+            response.sendError(401)
+
+        def ci = CostItem.findByIdAndOwner(params.cost,institution)
+        if (ci) {
+            def codes = createBudgetCodes(ci,params.newBudgetCode,institution.shortcode)
+            if (codes)
+                result = codes.collect { [id:"bcci_${it.id}_${it.costItem.id}", text: it.budgetcode.value] }
+        }
+
+        render result as JSON
+    }
 }
