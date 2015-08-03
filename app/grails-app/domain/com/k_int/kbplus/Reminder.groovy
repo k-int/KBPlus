@@ -6,10 +6,10 @@ class Reminder {
 
     User    user     //Linked to
     Boolean active   //Is in use or disabled via user
-    String  method   //email
-    String  unit     //day, week, month
-    String  trigger  //Subscription manual renewal date
     Integer amount   //e.g. 3 days before
+    RefdataValue  method   //email
+    RefdataValue  unit     //day, week, month
+    RefdataValue  trigger  //Subscription manual renewal date
 
     static constraints = {
         method  nullable: false, blank: false
