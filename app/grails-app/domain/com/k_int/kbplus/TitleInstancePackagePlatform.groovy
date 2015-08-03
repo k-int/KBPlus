@@ -53,6 +53,7 @@ class TitleInstancePackagePlatform {
   Date coreStatusEnd
 
   TitleInstancePackagePlatform derivedFrom
+  TitleInstancePackagePlatform masterTipp
 
   static mappedBy = [ids: 'tipp', additionalPlatforms: 'tipp']
   static hasMany = [ids: IdentifierOccurrence, 
