@@ -17,7 +17,6 @@ class ProfileController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.editable = true
-    result.reminders = Reminder.findAllByUser(result.user)
     result
   }
 
@@ -164,10 +163,27 @@ class ProfileController {
     redirect(action: "index")
   }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def createReminder() {
-        def user = User.get(springSecurityService.principal.id)
+        def result  = [:]
+        def user    = User.load(springSecurityService.principal.id)
+        def trigger = (params.int('trigger'))? RefdataValue.load(params.trigger) : RefdataCategory.lookupOrCreate("ReminderTrigger","Subscription Manual Renewal Date")
+        def method  = (params.int('method'))?  RefdataValue.load(params.method)  : RefdataCategory.lookupOrCreate("ReminderMethod","email")
+        def unit    = (params.int('unit'))?    RefdataValue.load(params.unit)    : RefdataCategory.lookupOrCreate("ReminderUnit","Day")
 
-        println(user.getAuthorizedAffiliations())
+        def reminder = new Reminder(trigger: trigger, method: method, unit: unit, amount: params.int('val')?:1, user: user)
+        if (reminder.save())
+        {
+            log.debug("Profile :: Index - Successfully saved reminder, adding to user")
+            user.addToReminders(reminder)
+            result.status   = true
+            result.reminder = reminder
+        } else {
+            result.status = false
+            log.debug("Unable to save Reminder for user ${user.username}... Params as follows ${params}")
+        }
+
+        render result as JSON
     }
 
 

@@ -16,11 +16,14 @@ class Reminder {
 
     Date endDate
     Date lastUpdated
+    Date lastRan
 
     static constraints = {
         method  nullable: false, blank: false
         unit    nullable: false, blank: false
         trigger nullable: false, blank: false
         amount  nullable: false, blank: false
+        active  nullable: false, blank: false, defaultValue: "true"
+        lastRan nullable: true, blank:false
     }
 }
