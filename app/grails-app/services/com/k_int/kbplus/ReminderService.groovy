@@ -3,6 +3,7 @@ package com.k_int.kbplus
 import com.k_int.kbplus.auth.User
 import grails.transaction.Transactional
 import groovy.text.SimpleTemplateEngine
+import org.elasticsearch.common.joda.time.DateTime
 import org.springframework.context.ApplicationContext
 
 import javax.annotation.PostConstruct
@@ -23,10 +24,10 @@ class ReminderService {
     }
 
     //i.e result[user id] = [Reminder 1,Reminder 2, etc]
-    def getActiveRemindersByUserID() {
+    def getActiveEmailRemindersByUserID() {
         //Get active reminders and users who have email
         def result = [:]
-        Reminder.executeQuery('select r from Reminder as r where r.active = ? and r.user.email != null order by r.user.id',[true]).each { r ->
+        Reminder.executeQuery('select r from Reminder as r where r.active = ? and r.user.email != null and r.method.value = ? order by r.user.id',[true,'email']).each { r ->
             result[r.user.id] << [r]  //Group Reminders and organise via users ID
         }
         result
@@ -34,30 +35,54 @@ class ReminderService {
 
     //Perform relevant searching/joins to return all subscriptions of interest
     def getAccessibleSubsForUser(User user) {
+        def result
 
+        result
     }
 
-
-    def generateMail(List content) {
-
-    }
-
-    def mailReminders(result) {
-        log.debug("sendEmail....");
+    //user -> [mail 1, mail 2]
+    def generateMail(List userMailList) {
+        log.debug("Setting up mail requirements...");
         def emailTemplateFile = applicationContext.getResource("WEB-INF/mail-templates/subscriptionManualRenewalDate.gsp").file
-        def engine = new SimpleTemplateEngine()
-        def tmpl = engine.createTemplate(emailTemplateFile).make(result)
-        def content = tmpl.toString()
-
-        mailService.sendMail {
-            to result.user.email
-            from from
-            replyTo replyTo
-            subject 'KBPlus Housekeeping Results'
-            html content
+        def engine            = new SimpleTemplateEngine()
+        def baseTemplate      = engine.createTemplate(emailTemplateFile)
+        userMailList.each { key,val ->
+            def template = baseTemplate.make(val)
+            def content  = template.toString()
+            mailReminder(val.setup, content)
         }
 
+    }
 
+    def mailReminder(setup, content) {
+        log.debug("About to send mail...")
+        mailService.sendMail {
+            to setup.email
+            from from
+            replyTo replyTo
+            subject setup.subject
+            html content
+        }
+    }
+
+    def isSubInReminderRange(String unit, int amount, Date subRenewal)
+    {
+        DateTime datetime = new DateTime(subRenewal)
+        switch (unit)
+        {
+            case 'Day':
+                datetime.minusDays(amount)
+                break
+            case 'Week':
+                datetime.minusWeeks(amount)
+                break
+            case 'Month':
+                datetime.minusMonths(amount)
+                break
+            default:
+                datetime.minusDays(amount)
+                break
+        }
     }
 
     def runReminders() {
@@ -65,6 +90,16 @@ class ReminderService {
         {
             log.error("Unable to send reminders, mail service is disabled!")
             return
+        }
+        log.debug("Running reminder service...")
+        def usersReminders = getActiveEmailRemindersByUserID()
+        int userCounter    = usersReminders.size()
+        log.debug("Presently there is ${userCounter} Users with potentially 1..* reminders")
+
+        usersReminders.each { k,v ->
+            log.debug("Lookup up ${v.size()}:Reminders Subscriptions for user ID:${k}  Username:${v.user.username}")
+            reminderDates = v.collect { it.}
+            def availibleSubs  = getAccessibleSubsForUser(v.user)
         }
     }
 }
