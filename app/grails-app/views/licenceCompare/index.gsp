@@ -78,7 +78,7 @@
 	          dataType: 'json',
 	          data: function (term, page) {
 	              return {
-	                  q: term, // search term
+	                  q: "%"+term+"%", // search term
 	                  inst:"${institution?.id}",
 	                  roleType:"${licensee_role}",
 	                  isPublic:"${isPublic?.id}",

@@ -368,7 +368,11 @@ class GeneralSpec extends BaseSpec {
 		when: "Accept changes"
 		acceptAll()
 		then: "Public should be No"
-		verifyInformation("isPublic", "No")
+		alertBox(getMessage("pendingchange.inprogress"))
+	    waitFor(15) {
+			driver.navigate().refresh();
+			verifyInformation("isPublic", "No")
+        }
 	}
 
 	//  ref 113
@@ -533,6 +537,8 @@ class GeneralSpec extends BaseSpec {
 		when:
 		newSubscription(Data.Subscription_name_A)
 		and:
+                $("a",text:"Details").click()
+                and:
 		addDocument(Data.Test_Doc_name, Data.Test_Doc_file)
 		and:
 		addNote("Test note")
@@ -554,10 +560,14 @@ class GeneralSpec extends BaseSpec {
 		when:
 		at SubscrDetailsPage
 		then:
+                $("a",text:"Details").click()
+                and:
 		catchException { addDocument("whatever", "doc") }
 		when:
 		at SubscrDetailsPage
 		then:
+                $("a",text:"Details").click()
+                and:
 		catchException { editIsPublic("Yes") }
 	}
 

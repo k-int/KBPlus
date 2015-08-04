@@ -82,7 +82,7 @@
 	          dataType: 'json',
 	          data: function (term, page) {
 	              return {
-	                  q: term, // search term
+	                  q: "%" + term + "%", // search term
 	                  page_limit: 10,
 	                  baseClass:'com.k_int.kbplus.OnixplLicense'
 	              };

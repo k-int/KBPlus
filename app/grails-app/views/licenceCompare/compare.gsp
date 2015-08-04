@@ -54,32 +54,32 @@
           </g:if>
         </div>
         <g:if test="${['stringValue','intValue','decValue'].contains(point.getValueType())}">
-            <span class="cell-inner">  ${point.getValue()}</span>
+            <span class="cell-inner">  <b>${point.getValue().encodeAsHTML()}</b></span>
         </g:if>
         <g:else>
             <g:set var="val" value="${point.getValue()}"/>
             <g:if test="${val == 'Y' || val=="Yes"}">
             <span class="cell-inner">
-              <span title='Detailed by license' class="onix-status onix-tick" />
+              <span title="${val}" class="onix-status onix-tick" />
               </span>
             </g:if>
             <g:elseif test="${val=='N' || val=="No"}">
               <span class="cell-inner">
-                <span title='Prohibited by the license' class="onix-status onix-pl-prohibited" />
+                <span title="${val}" class="onix-status onix-pl-prohibited" />
               </span>
             </g:elseif>
             <g:elseif test="${['O','Other','Specified'].contains(val)}">
               <span class="cell-inner">
-                <span title='Detailed by license' class="onix-status onix-info" />
+                <span title="${val}" class="onix-status onix-info" />
               </span>
             </g:elseif>
-            <g:elseif test="${['U','Unknown','Not applicable','Not Specified']}">
+            <g:elseif test="${['U','Unknown','Not applicable','Not Specified'].contains(val)}">
               <span class="cell-inner-undefined">
-                <span title='Not defined by the license' class="onix-status onix-pl-undefined" ></span>
+                <span title="${val}" class="onix-status onix-pl-undefined" ></span>
               </span>
             </g:elseif>
             <g:else>
-               <span class="cell-inner">  ${point.getValue()}</span>
+               <span class="cell-inner">  <b>${point.getValue().encodeAsHTML()}</b></span>
             </g:else>
         </g:else>
         </td>
@@ -87,7 +87,7 @@
       <g:else>
         <td>
           <span class="cell-inner-undefined">
-            <span title='Not defined by the license' class="onix-status onix-pl-undefined" ></span>
+            <span title='Not Set' class="onix-status onix-pl-undefined" ></span>
           </span>
         </td>
       </g:else>
@@ -115,8 +115,13 @@
   </div>
 </div>
     <r:script language="JavaScript">
+
         $(function(){
-          $(".onix-pl-undefined").replaceWith("<span title='Not defined by the license' style='height:1em' class='onix-status fa-stack fa-4x'> <i class='fa fa-info-circle fa-stack-1x' style='color:#166fe7;' ></i> <i class='fa fa-ban fa-stack-1x' style='color:#FF0000'></i> </span>")
+
+          $(".onix-pl-undefined").each(function(){
+            var title = $(this).attr("data-original-title")
+            $(this).replaceWith("<span title='"+title+"' style='height:1em' class='onix-status fa-stack fa-4x'> <i class='fa fa-info-circle fa-stack-1x' style='color:#166fe7;' ></i> <i class='fa fa-ban fa-stack-1x' style='color:#FF0000'></i> </span>")
+          })
             // Tooltips.
           $('.onix-code, .onix-status').tooltip(
               {placement: 'bottom', trigger:'hover', html: true, container: 'body'}

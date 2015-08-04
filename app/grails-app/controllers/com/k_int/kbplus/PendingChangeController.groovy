@@ -6,7 +6,7 @@ class PendingChangeController {
 
  def genericOIDService
  def pendingChangeService
-
+ def executorWrapperService
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def accept() {
@@ -30,9 +30,12 @@ class PendingChangeController {
     def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
     def pendingChanges = owner.pendingChanges.findAll {(it.status == pending_change_pending_status) || it.status == null}
     pendingChanges = pendingChanges.collect{it.id}
-    pendingChanges.each { pc ->
-      pendingChangeService.performAccept(pc,request)
-    }
+    def user= [user:request.user]
+    executorWrapperService.processClosure({
+      pendingChanges.each { pc ->
+        pendingChangeService.performAccept(pc,user)
+      }
+    },owner)
 
     redirect(url: request.getHeader('referer'))
   }
@@ -46,9 +49,12 @@ class PendingChangeController {
     def pendingChanges = owner.pendingChanges.findAll {(it.status == pending_change_pending_status) || it.status == null}
     pendingChanges = pendingChanges.collect{it.id}
     
-    pendingChanges.each { pc ->
-      pendingChangeService.performReject(pc,request)
-    }
+    def user= [user:request.user]
+    executorWrapperService.processClosure({
+      pendingChanges.each { pc ->
+        pendingChangeService.performReject(pc,user)
+      }
+    },owner)
 
     redirect(url: request.getHeader('referer'))
   }  

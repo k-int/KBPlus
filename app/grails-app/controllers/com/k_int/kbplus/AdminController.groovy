@@ -628,19 +628,32 @@ class AdminController {
         else {
           def title = null;
           def bindvars = []
+          def title_id_ctr = 0;
           // Set up base_query
-          def q = "Select t from TitleInstance as t where "
+          def q = "Select distinct(t) from TitleInstance as t "
+          def joinclause = ''
+          def whereclause = ' where ';
           def i = 0;
+          def disjunction_ctr = 0;
           cols.each { cn ->
             if ( cn == 'title.id' ) {
-              q += 't.id = ?'
-              bindvars.add(nl[i]);
+              if ( disjunction_ctr++ > 0 ) { whereclause += ' OR ' }
+              whereclause += 't.id = ?'
+              bindvars.add(new Long(nl[i]));
             }
             else if ( cn == 'title.title' ) {
               title = nl[i]
             }
             else if ( cn.startsWith('title.id.' ) ) {
               // Namespace and value
+              if ( nl[i].trim().length() > 0 ) {
+                if ( disjunction_ctr++ > 0 ) { whereclause += ' OR ' }
+                joinclause += " join t.ids as id${title_id_ctr} "
+                whereclause += " ( id${title_id_ctr}.identifier.ns.ns = ? AND id${title_id_ctr}.identifier.value = ? ) "
+                bindvars.add(cn.substring(9))
+                bindvars.add(nl[i])
+                title_id_ctr++
+              }
             }
             i++;
           }
@@ -675,7 +688,6 @@ class AdminController {
               }
               c++
             }
-
           }
           else {
             log.debug("Unable to continue - matched multiple titles");
@@ -775,4 +787,5 @@ class AdminController {
     }
     result
   }
+  
 }

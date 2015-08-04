@@ -67,7 +67,14 @@
                         <td rowspan="2">${ci.id}</td>
                         <td>${ci.invoice?.invoiceNumber}</td>
                         <td>${ci.order?.orderNumber}</td>
-                        <td>${ci.sub?.name}</td>
+                        <td>
+                          <g:if test="${ci.sub}">
+                            <g:link controller="subscriptionDetails" action="index" id="${ci.sub.id}">
+                              <g:if test="${ci.sub.name}">${ci.sub.name}</g:if><g:else>-- Name Not Set  --</g:else>
+                              <g:if test="${ci.sub.consortia}">( ${ci.sub.consortia?.name} )</g:if>
+                            </g:link>
+                          </g:if>
+                        </td>
                         <td>${ci.subPkg?.name}</td>
                         <td colspan="2">${ci.issueEntitlement?.id}</td>
                     </tr>

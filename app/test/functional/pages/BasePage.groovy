@@ -14,6 +14,16 @@ class BasePage extends Page {
             remote.exec { ctx.messageSource.getMessage(code, args, locale) }
     }
     static content = {
+
+        alertBox { msg ->
+            $("div.alert-warning").children().filter("p").text().contains(msg)
+        }
+        messageBox { msg ->
+            $("div.alert-block").children().filter("p").text().contains(msg)
+        }
+        errorBox { msg ->
+            $("div.alert-block").children().filter("p").text().contains(msg)
+        }
         terms {
             $("ul.footer-sublinks").children().find("a", text: "Terms & Conditions").click()
         }

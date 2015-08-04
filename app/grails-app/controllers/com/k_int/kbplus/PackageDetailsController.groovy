@@ -22,7 +22,8 @@ class PackageDetailsController {
   def ESSearchService
   def exportService
   def institutionsService
-
+  def executorWrapperService
+  
     static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -331,10 +332,17 @@ class PackageDetailsController {
         
        def packageInstance = Package.get(packageId)
 
-       if(packageInstance.startDate > date || packageInstance.endDate < date){
-        def errorMsg = "${packageInstance.name} start date is: ${sdf.format(packageInstance.startDate)} and end date is: ${sdf.format(packageInstance.endDate)}. You have selected to compare it on date ${sdf.format(date)}."
-          throw new IllegalArgumentException(errorMsg)
+       if (date < packageInstance.startDate) {
+         throw new IllegalArgumentException(
+           "${packageInstance.name} start date is ${sdf.format(packageInstance.startDate)}. " +
+           "Date to compare it on is ${sdf.format(date)}, this is before start date.")
        }
+       if (packageInstance.endDate && date > packageInstance.endDate){
+         throw new IllegalArgumentException(
+           "${packageInstance.name} end date is ${sdf.format(packageInstance.endDate)}. " +
+           "Date to compare it on is ${sdf.format(date)}, this is after end date.")
+       }
+
        result.pkgInsts.add(packageInstance)
 
        result.pkgDates.add(sdf.format(date))
@@ -434,7 +442,9 @@ class PackageDetailsController {
 
 
       result.packageInstance = packageInstance
-    
+      if(executorWrapperService.hasRunningProcess(packageInstance)){
+        result.processingpc = true
+      }
     def filename = "packageDetails_${result.packageInstance.name}"
     withFormat {
       html result

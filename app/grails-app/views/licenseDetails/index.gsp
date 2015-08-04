@@ -18,38 +18,14 @@
       <h1>${license.licensee?.name} ${license.type?.value} Licence : <g:xEditable owner="${license}" field="reference" id="reference"/></h1>
       <g:render template="nav" />
     </div>
+    <div class="container">
 
-    <g:if test="${pendingChanges?.size() > 0}">
-      <div class="container alert-warn">
-        <h6>This licence has pending change notifications</h6>
-        <g:if test="${editable}">
-          <g:link controller="pendingChange" action="acceptAll" id="com.k_int.kbplus.License:${license.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept All</g:link>
-          <g:link controller="pendingChange" action="rejectAll" id="com.k_int.kbplus.License:${license.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject All</g:link>
-        </g:if>
-        <br/>&nbsp;<br/>
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <td>Info</td>
-              <td>Action</td>
-            </tr>
-          </thead>
-          <tbody>
-            <g:each in="${pendingChanges}" var="pc">
-              <tr>
-                <td>${pc.desc}</td>
-                <td>
-                  <g:if test="${editable}">
-                    <g:link controller="pendingChange" action="accept" id="${pc.id}" class="btn btn-success"><i class="icon-white icon-ok"></i>Accept</g:link>
-                    <g:link controller="pendingChange" action="reject" id="${pc.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject</g:link>
-                  </g:if>
-                </td>
-              </tr>
-            </g:each>
-          </tbody>
-        </table>
-      </div>
+    <g:if test="${flash.message}">
+      <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
     </g:if>
+    </div>
+
+    <g:render template="/templates/pendingChanges" model="${['pendingChanges': pendingChanges,'flash':flash,'model':license]}"/>
 
     <div class="container">
             <div class="row">
@@ -64,9 +40,6 @@
 
                 <div class="inline-lists">
 
-                <g:if test="${flash.message}">
-                  <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
-                </g:if>
   
                 <g:hasErrors bean="${titleInstanceInstance}">
                   <bootstrap:alert class="alert-error">

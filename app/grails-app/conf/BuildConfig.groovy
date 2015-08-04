@@ -71,7 +71,6 @@ grails.project.dependency.resolution = {
         runtime 'xerces:xerces:2.4.0'
         runtime 'xerces:xercesImpl:2.11.0'
         runtime 'mysql:mysql-connector-java:5.1.30'
-        runtime 'com.gmongo:gmongo:1.3'
 
         // Would very much like to upgrade to these - but seems to cause a weird class version error when I do
         runtime 'org.elasticsearch:elasticsearch:1.3.7'

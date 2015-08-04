@@ -200,8 +200,13 @@ class TsvSuperlifterService {
           new_obj[pd.property] = created_value
           create_msg += pd.property + ":" + created_value+' ';
           break;
+        case 'closure':
+          log.debug("Closure");
+          pd.closure(new_obj, nl, colmap, pd.property, locatedObjects)
+          break;
         defualt:
           log.debug("Unhandled create rule type ${pd.type}");
+          break;
       }
     }
 
@@ -228,6 +233,10 @@ class TsvSuperlifterService {
       switch ( type ) {
         case 'Double':
           result = Double.parseDouble(value);
+          break;
+        case 'date':
+          def sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+          result = sdf.parse(value)
           break;
         default:
           break;
@@ -332,6 +341,7 @@ class TsvSuperlifterService {
             value = mapped_value
           }
           break;
+
       }
     }
     return value

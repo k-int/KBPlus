@@ -3,7 +3,10 @@
 
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
-
+customProperties =[
+"org":["journalAccess":["name":"Public Journal Access","class":String.toString(),"note":"Set the required rights for accessing the public Journals page. For example 'Staff,Student,Public' or leave empty/delete for no public access."]
+      ]
+]
 onix = [
   "codelist" : "ONIX_PublicationsLicense_CodeLists.xsd",
   "comparisonPoints" : [
@@ -388,10 +391,13 @@ titlelistTransforms = [
 ]
 
 packageTransforms = [
-  'kbplus':[name:'KBPlus Import Format', xsl:'kbplusimp.xsl', returnFileExtention:'txt', returnMime:'text/plain']
+  'kbplus':[name:'KBPlus(CSV)', xsl:'kbplusimp.xsl', returnFileExtention:'txt', returnMime:'text/plain'],
+  'kbart2':[name:'KBART II', xsl:'kbartii.xsl', returnFileExtention:'tsv', returnMime:'text/tab-separated-values']
+
 ]
 licenceTransforms = [
-  'sub_ie':[name:'XML (with IssueEntitlements)', xsl:'licenced_titles.xsl', returnFileExtention:'txt', returnMime:'text/plain']
+  'sub_ie':[name:'Licensed Issue Entitlements (CSV)', xsl:'licenced_titles.xsl', returnFileExtention:'txt', returnMime:'text/plain'],
+  'sub_pkg':[name:'Licensed Subscriptions/Packages (CSV)', xsl:'licenced_subscriptions_packages.xsl', returnFileExtention:'txt', returnMime:'text/plain']
 ]
 // log4j configuration
 log4j = {
@@ -571,13 +577,22 @@ financialImportTSVLoaderMappings = [
         ref:'subscription',
         cls:'com.k_int.kbplus.Subscription',
         heuristics:[
-          [ type : 'simpleLookup', criteria : [
-                                                [ srcType:'col', colname:'SubscriptionId', domainProperty:'identifier' ]
-                                              ]
+          [
+            type : 'hql',
+            hql: 'select o from Subscription as o join o.ids as io where io.identifier.ns.ns = :jcns and io.identifier.value = :orgId',
+            values : [ jcns : [type:'static', value:'JC'], orgId: [type:'column', colname:'SubscriptionId'] ]
           ]
         ],
         creation:[
-          onMissing:false,
+          onMissing:true,
+          whenPresent:[ [ type:'ref', refname:'owner'] ],
+          properties : [
+            // [ type:'ref', property:'owner', refname:'owner' ],
+            [ type:'closure', closure : { o, nl, colmap, colname, locatedObjects -> o.setInstitution(locatedObjects['owner']) } ],
+            [ type:'val', property:'identifier', colname: 'SubscriptionId'],
+            [ type:'val', property:'name', colname: 'ResourceName'],
+            [ type:'closure', closure: { o, nl, colmap, colname, locatedObjects -> o.addNamespacedIdentifier('JC',nl[(int)(colmap.get('SubscriptionId'))]); } ]
+          ]
         ]
       ],
       [
@@ -635,7 +650,27 @@ financialImportTSVLoaderMappings = [
           whenPresent:[ [ type:'ref', refname:'owner'] ],
           properties : [
             [ type:'ref', property:'owner', refname:'owner' ],
-            [ type:'val', property:'invoiceNumber', colname: 'InvoiceNumber']
+            [ type:'val', property:'invoiceNumber', colname: 'InvoiceNumber' ],
+            [ type:'val', property:'startDate', colname: 'InvoicePeriodStart', datatype:'date'],
+            [ type:'val', property:'endDate', colname: 'InvoicePeriodEnd', datatype:'date']
+          ]
+        ]
+      ],
+      [
+        ref:'order',
+        cls:'com.k_int.kbplus.Order',
+        heuristics:[
+          [ type : 'simpleLookup',
+            criteria : [ [ srcType:'col', colname:'PoNumber', domainProperty:'orderNumber' ],
+                         [ srcType:'ref', refname:'owner', domainProperty:'owner'] ]
+          ]
+        ],
+        creation:[
+          onMissing:true,
+          whenPresent:[ [ type:'ref', refname:'owner'], [ type:'val', colname:'PoNumber'] ],
+          properties : [
+            [ type:'ref', property:'owner', refname:'owner' ],
+            [ type:'val', property:'orderNumber', colname: 'PoNumber']
           ]
         ]
       ]
@@ -650,10 +685,14 @@ financialImportTSVLoaderMappings = [
           properties:[
             [ type:'ref', property:'owner', refname:'owner' ],
             [ type:'ref', property:'invoice', refname:'invoice' ],
+            [ type:'ref', property:'order', refname:'order' ],
             [ type:'ref', property:'sub', refname:'subscription' ],
             [ type:'val', property:'costInBillingCurrency', colname:'InvoiceTotalExcVat', datatype:'Double'],
             [ type:'ref', property:'costItemCategory', refname:'CICategory'],
             [ type:'ref', property:'costItemElement', refname:'CIElement'],
+            [ type:'val', property:'startDate', colname:'InvoicePeriodStart', datatype:'date'],
+            [ type:'val', property:'endDate', colname:'InvoicePeriodEnd', datatype:'date'],
+            [ type:'val', property:'datePaid', colname:'DatePaid', datatype:'date'],
             [ type:'valueClosure', property:'costDescription', closure: { colmap, values, locatedObjects -> "[Main Cost Item]${values[colmap['ResourceName']]}, ${values[colmap['AgreementName']]}, ${values[colmap['InvoiceNotes']]} "} ]
           ]
         ]
@@ -666,8 +705,12 @@ financialImportTSVLoaderMappings = [
           properties:[
             [ type:'ref', property:'owner', refname:'owner' ],
             [ type:'ref', property:'invoice', refname:'invoice' ],
+            [ type:'ref', property:'order', refname:'order' ],
             [ type:'ref', property:'sub', refname:'subscription' ],
             [ type:'val', property:'costInBillingCurrency', colname:'InvoiceVat', datatype:'Double'],
+            [ type:'val', property:'startDate', colname:'InvoicePeriodStart', datatype:'date'],
+            [ type:'val', property:'endDate', colname:'InvoicePeriodEnd', datatype:'date'],
+            [ type:'val', property:'datePaid', colname:'DatePaid', datatype:'date'],
             [ type:'ref', property:'costItemCategory', refname:'CICategory'],
             [ type:'ref', property:'costItemElement', refname:'CIElement'],
             [ type:'valueClosure', property:'costDescription', closure: { colmap, values, locatedObjects -> "[Tax] ${values[colmap['ResourceName']]}, ${values[colmap['AgreementName']]}, ${values[colmap['InvoiceNotes']]} "} ]
@@ -682,9 +725,13 @@ financialImportTSVLoaderMappings = [
           properties:[
             [ type:'ref', property:'owner', refname:'owner' ],
             [ type:'ref', property:'invoice', refname:'invoice' ],
+            [ type:'ref', property:'order', refname:'order' ],
             [ type:'ref', property:'sub', refname:'subscription' ],
             [ type:'val', property:'costInBillingCurrency', colname:'InvoiceTransactionCharge', datatype:'Double'],
             [ type:'ref', property:'costItemCategory', refname:'CICategory'],
+            [ type:'val', property:'startDate', colname:'InvoicePeriodStart', datatype:'date'],
+            [ type:'val', property:'endDate', colname:'InvoicePeriodEnd', datatype:'date'],
+            [ type:'val', property:'datePaid', colname:'DatePaid', datatype:'date'],
             [ type:'ref', property:'costItemElement', refname:'CIElement'],
             [ type:'valueClosure', property:'costDescription', closure: { colmap, values, locatedObjects -> "[Transaction Charge] ${values[colmap['ResourceName']]}, ${values[colmap['AgreementName']]}, ${values[colmap['InvoiceNotes']]} "} ]
           ]

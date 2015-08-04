@@ -44,5 +44,3 @@ For forum reset:
 mysql> update package set pkg_forum_id= null;
 mysql> update org set org_cat = null;
 
-Bump
-Bump

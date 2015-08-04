@@ -743,41 +743,12 @@ class ExportService {
 			addOrgMap(lic, licence.orgLinks)
 			
 			def prop = lic."LicenceProperties" = [:]
-			def ca = prop."ConcurrentAccess" = [:]
-			ca."Status" = licence.concurrentUsers?.value
-			ca."UserCount" = licence.concurrentUserCount
-			ca."Notes" = licence.getNote("concurrentUsers")?.owner?.content?:""
-			def ra = prop."RemoteAccess" = [:]
-			ra."Status" = licence.remoteAccess?.value
-			ra."Notes" = licence.getNote("remoteAccess")?.owner?.content?:""
-			def wa = prop."WalkingAccess" = [:]
-			wa."Status" = licence.walkinAccess?.value
-			wa."Notes" = licence.getNote("walkinAccess")?.owner?.content?:""
-			def ma = prop."MultisiteAccess" = [:]
-			ma."Status" = licence.multisiteAccess?.value
-			ma."Notes" = licence.getNote("multisiteAccess")?.owner?.content?:""
-			def pa = prop."PartnersAccess" = [:]
-			pa."Status" = licence.partnersAccess?.value
-			pa."Notes" = licence.getNote("partnersAccess")?.owner?.content?:""
-			def aa = prop."AlumniAccess" = [:]
-			aa."Status" = licence.alumniAccess?.value
-			aa."Notes" = licence.getNote("alumniAccess")?.owner?.content?:""
-			def ill = prop."InterLibraryLoans" = [:]
-			ill."Status" = licence.ill?.value
-			ill."Notes" = licence.getNote("ill")?.owner?.content?:""
-			def cp = prop."IncludeinCoursepacks" = [:]
-			cp."Status" = licence.coursepack?.value
-			cp."Notes" = licence.getNote("coursepack")?.owner?.content?:""
-			def vle = prop."IncludeinVLE" = [:]
-			vle."Status" = licence.vle?.value
-			vle."Notes" = licence.getNote("vle")?.owner?.content?:""
-			def ea = prop."EntrepriseAccess" = [:]
-			ea."Status" = licence.enterprise?.value
-			ea."Notes" = licence.getNote("enterprise")?.owner?.content?:""
-			def pca = prop."PostCancellationAccessEntitlement" = [:]
-			pca."Status" = licence.pca?.value
-			pca."Notes" = licence.getNote("pca")?.owner?.content?:""
-			
+			licence.customProperties.each{
+				def custprop = prop."${it.type.name}" = [:]
+				custprop."Status" = it.getValue()?:""
+				custprop."Notes" = it.getNote()?:""
+			}
+
 			licences << lic
 		}
 		into_map."Licences" = licences
@@ -892,8 +863,12 @@ class ExportService {
 	* @return the value in the required format for CSV exports.
 	**/
 	def val(val){
-		val = val? val.replaceAll('"',"'") :" "
-		return "\"${val}\""
+		if(val instanceof java.sql.Timestamp || val instanceof Date){
+			return val?formatter.format(val):" "
+		}else{
+			val = val? val.replaceAll('"',"'") :" "
+			return "\"${val}\""
+		}
 	}
 	
 	

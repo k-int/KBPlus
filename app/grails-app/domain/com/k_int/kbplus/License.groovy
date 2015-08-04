@@ -6,7 +6,7 @@ import java.text.Normalizer
 import com.k_int.custprops.PropertyDefinition
 import com.k_int.ClassUtils
 
-class License {
+class License implements Comparable<License>{
 
   @Transient
   def grailsApplication
@@ -305,6 +305,11 @@ class License {
     }
     return result;
   }
+  
+  @Override
+  public int compareTo(License other){
+      return other.id? other.id.compareTo(this.id) : -1
+  }
 
 
   @Transient
@@ -382,118 +387,142 @@ class License {
   */
   @Transient
   def getConcurrentUserCount(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Concurrent Users")
   }
   
   @Transient
   def setConcurrentUserCount(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Concurrent Users",newVal)
   }
 
   @Transient
   def getConcurrentUsers(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Concurrent Access")
   }  
     @Transient
   def setConcurrentUsers(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Concurrent Access",newVal)
   }
   
   @Transient
   def getRemoteAccess(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Remote Access")
   }
   
   @Transient
   def setRemoteAccess(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Remote Access",newVal)
   }
   
   @Transient
   def getWalkinAccess(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Walk In Access")
   }
   
   @Transient
   def setWalkinAccess(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Walk In Access",newVal)
   }
   
   @Transient
   def getMultisiteAccess(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Multi Site Access")
   }
   
   @Transient
   def setMultisiteAccess(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Multi Site Access",newVal)
   }
   
   @Transient
   def getPartnersAccess(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Partners Access")
   }
   
   @Transient
   def setPartnersAccess(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Partners Access",newVal)
   }
  
   @Transient
   def getAlumniAccess(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Alumni Access")
   }
  
   @Transient
   def setAlumniAccess(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Alumni Access",newVal)
   }
   @Transient
   def getIll(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("ILL - InterLibraryLoans")
   }
 
   @Transient
   def setIll(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("ILL - InterLibraryLoans",newVal)
   }
   @Transient
   def getCoursepack(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Include In Coursepacks")
   }
 
   @Transient
   def setCoursepack(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Include In Coursepacks",newVal)
   }
   
   @Transient
   def getVle(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Include in VLE")
   }
   
   @Transient
   def setVle(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Include in VLE",newVal)
   }
 
   @Transient
   def getEnterprise(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Enterprise Access")
   }
   @Transient
   def setEnterprise(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Enterprise Access",newVal)
 
   }
 
   @Transient
   def getPca(){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     return getCustomPropByName("Post Cancellation Access Entitlement")
   }
 
   @Transient
   def setPca(newVal){
+    log.error("called cust prop with deprecated method.Call should be replaced")
     setReferencePropertyAsCustProp("Post Cancellation Access Entitlement",newVal)
   }
 
@@ -521,14 +550,15 @@ class License {
   def getCustomPropByName(name){
     return customProperties.find{it.type.name == name}    
   }
+
   static def refdataFind(params) {
        String INSTITUTIONAL_LICENSES_QUERY = " from License as l where ( exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org.id =(:orgId) and ol.roleType.id = (:orgRole)) OR l.isPublic.id=(:publicS)) AND l.status.value != 'Deleted' and lower(l.reference) like (:ref)"
       def result = []
-
-      def  ql = License.executeQuery("select l ${INSTITUTIONAL_LICENSES_QUERY}",[orgId:params.inst?.toLong(),orgRole:params.roleType?.toLong(),publicS:params.isPublic?.toLong(),ref:"${params.q.toLowerCase()}%"])
+      def  ql = License.executeQuery("select l ${INSTITUTIONAL_LICENSES_QUERY}",[orgId:params.inst?.toLong(),orgRole:params.roleType?.toLong(),publicS:params.isPublic?.toLong(),ref:"${params.q.toLowerCase()}"])
       if ( ql ) {
-          ql.each { prop ->
-              result.add([id:"${prop.reference}||${prop.id}",text:"${prop.reference}"])
+          ql.each { lic ->
+              def type = lic.type?.value ?"(${lic.type.value})":""
+              result.add([id:"${lic.reference}||${lic.id}",text:"${lic.reference}${type}"])
           }
       }
       result

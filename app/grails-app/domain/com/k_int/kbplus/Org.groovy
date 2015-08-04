@@ -36,7 +36,8 @@ class Org {
                     outgoingCombos: Combo,  
                     incomingCombos:Combo,
                     links: OrgRole,
-                    affiliations: UserOrg]
+                    affiliations: UserOrg,
+                    customProperties:OrgCustomProperty]
 
   static mapping = {
             id column:'org_id'
@@ -61,7 +62,7 @@ class Org {
          scope(nullable:true, blank:true, maxSize:128);
     categoryId(nullable:true, blank:true, maxSize:128);
        orgType(nullable:true, blank:true, maxSize:128);
-        status(nullable:true, blank:false);
+        status(nullable:true, blank:true);
   }
 
   def beforeInsert() {
@@ -166,8 +167,6 @@ class Org {
     return result;
   }
 
-
-  
   static def lookupOrCreate(name, sector, consortium, identifiers, iprange) {
 
     def result = null;

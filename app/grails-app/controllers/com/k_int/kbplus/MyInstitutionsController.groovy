@@ -246,12 +246,15 @@ class MyInstitutionsController {
             xml {
                 def doc = exportService.buildDocXML("Licences")
 
-                if(params.format_content=="subpkg"){
-                    exportService.addLicenceSubPkgXML(doc, doc.getDocumentElement(),result.licenses)
-                }else if(params.format_content=="subie"){
-                    exportService.addLicenceSubPkgTitleXML(doc, doc.getDocumentElement(),result.licenses)
-                }
                 if ((params.transformId) && (result.transforms[params.transformId] != null)) {
+                    switch(params.transformId) {
+                      case "sub_ie":
+                        exportService.addLicenceSubPkgTitleXML(doc, doc.getDocumentElement(),result.licenses)
+                      break;
+                      case "sub_pkg":
+                        exportService.addLicenceSubPkgXML(doc, doc.getDocumentElement(),result.licenses)
+                        break;
+                    }
                     String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
                     transformerService.triggerTransform(result.user, filename, result.transforms[params.transformId], xml, response)
                 }else{
@@ -2464,11 +2467,12 @@ AND EXISTS (
         def lic_del = RefdataCategory.lookupOrCreate('License Status', 'Deleted');
         def sub_del = RefdataCategory.lookupOrCreate('Subscription Status', 'Deleted');
         def pkg_del = RefdataCategory.lookupOrCreate( 'Package Status', 'Deleted' );
-        result.num_todos = PendingChange.executeQuery("select count(distinct pc.oid) from PendingChange as pc left outer join pc.license as lic left outer join lic.status as lic_status left outer join pc.subscription as sub left outer join sub.status as sub_status left outer join pc.pkg as pkg left outer join pkg.packageStatus as pkg_status where pc.owner = ? and ((lic_status is null or lic_status!=?) and (sub_status is null or sub_status!=?) and (pkg_status is null or pkg_status!=?))", [result.institution,lic_del,sub_del,pkg_del])[0]
+        def pc_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
+        result.num_todos = PendingChange.executeQuery("select count(distinct pc.oid) from PendingChange as pc left outer join pc.license as lic left outer join lic.status as lic_status left outer join pc.subscription as sub left outer join sub.status as sub_status left outer join pc.pkg as pkg left outer join pkg.packageStatus as pkg_status where pc.owner = ? and (pc.status = ? or pc.status is null) and ((lic_status is null or lic_status!=?) and (sub_status is null or sub_status!=?) and (pkg_status is null or pkg_status!=?))", [result.institution,pc_status, lic_del,sub_del,pkg_del])[0]
 
         log.debug("Count3=${result.num_todos}");
 
-        def change_summary = PendingChange.executeQuery("select distinct(pc.oid), count(pc), min(pc.ts), max(pc.ts) from PendingChange as pc left outer join pc.license as lic left outer join lic.status as lic_status left outer join pc.subscription as sub left outer join sub.status as sub_status left outer join pc.pkg as pkg left outer join pkg.packageStatus as pkg_status where pc.owner = ? and ((lic_status is null or lic_status!=?) and (sub_status is null or sub_status!=?) and (pkg_status is null or pkg_status!=?)) group by pc.oid", [result.institution,lic_del,sub_del,pkg_del], [max: result.max?:100, offset: result.offset?:0]);
+        def change_summary = PendingChange.executeQuery("select distinct(pc.oid), count(pc), min(pc.ts), max(pc.ts) from PendingChange as pc left outer join pc.license as lic left outer join lic.status as lic_status left outer join pc.subscription as sub left outer join sub.status as sub_status left outer join pc.pkg as pkg left outer join pkg.packageStatus as pkg_status where pc.owner = ? and (pc.status = ? or pc.status is null) and ((lic_status is null or lic_status!=?) and (sub_status is null or sub_status!=?) and (pkg_status is null or pkg_status!=?)) group by pc.oid", [result.institution,pc_status,lic_del,sub_del,pkg_del], [max: result.max?:100, offset: result.offset?:0]);
         result.todos = []
 
         change_summary.each { cs ->
@@ -2625,4 +2629,38 @@ AND EXISTS (
       result
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def tip() {
+      def result = [:];
+      result.user        = User.get(springSecurityService.principal.id)
+      result.institution = Org.findByShortcode(params.shortcode)
+      result.tip = TitleInstitutionProvider.get(params.id)
+
+      if (request.method == 'POST' && result.tip ){
+        log.debug("Add usage ${params}")
+        def sdf = new SimpleDateFormat('yyyy-MM-dd');
+        def usageDate = sdf.parse(params.usageDate);
+        def cal = new GregorianCalendar()
+        cal.setTime(usageDate)
+        def fact = new Fact(
+          relatedTitle:result.tip.title,
+          supplier:result.tip.provider,
+          inst:result.tip.institution,
+          juspio:result.tip.title.getIdentifierValue('jusp'),
+          factFrom:usageDate,
+          factTo:usageDate,
+          factValue:params.usageValue,
+          factUid:java.util.UUID.randomUUID().toString(),
+          reportingYear:cal.get(Calendar.YEAR),
+          reportingMonth:cal.get(Calendar.MONTH),
+          factType:RefdataValue.get(params.factType)
+        ).save(flush:true, failOnError:true);
+
+      }
+
+      if ( result.tip ) {
+        result.usage = Fact.findAllByRelatedTitleAndSupplierAndInst(result.tip.title,result.tip.provider,result.tip.institution)
+      }
+      result
+    }
 }
