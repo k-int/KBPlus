@@ -17,6 +17,7 @@ class ProfileController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.editable = true
+    result.reminders = Reminder.findAllByUser(result.user)
     result
   }
 
@@ -162,4 +163,16 @@ class ProfileController {
     
     redirect(action: "index")
   }
+
+    def createReminder() {
+        def user = User.get(springSecurityService.principal.id)
+
+        println(user.getAuthorizedAffiliations())
+    }
+
+
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def updateReminder() {
+        def user = User.get(springSecurityService.principal.id)
+    }
 }

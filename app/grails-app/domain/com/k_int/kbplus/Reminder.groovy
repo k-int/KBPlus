@@ -2,6 +2,9 @@ package com.k_int.kbplus
 
 import com.k_int.kbplus.auth.User
 
+/**
+ * @author Ryan@k-int.com
+ */
 class Reminder {
 
     User    user     //Linked to
@@ -10,6 +13,9 @@ class Reminder {
     RefdataValue  method   //email
     RefdataValue  unit     //day, week, month
     RefdataValue  trigger  //Subscription manual renewal date
+
+    Date endDate
+    Date lastUpdated
 
     static constraints = {
         method  nullable: false, blank: false
