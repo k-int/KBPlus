@@ -1,4 +1,5 @@
 package com.k_int.kbplus
+import org.hibernate.Session
 
 class PackageService{
 
@@ -47,21 +48,16 @@ class PackageService{
       log.debug ("Update or create master list for ${provider.name}")
 
       // Get the current master Package for this provider.
-      ComboCriteria c = ComboCriteria.createFor( Package.createCriteria() )
-      Package master = c.get {
-        and {
-          c.add(
-            "packageScope",
-            "eq",
-            getMasterScope())
-          c.add(
-          	//This will not work
-            "contentProvider",
-            "eq",
-            provider)
-        }
-      }
-  
+
+		Package master =  Package.createCriteria().get {
+		  eq('packageScope', getMasterScope())
+		  orgs {
+		     and {
+		        eq('roleType', getCPRole())
+		        eq('org', provider)
+		     }
+		  }
+		}
       // Update or create?
       if (master) {
   
@@ -94,7 +90,7 @@ class PackageService{
       log.debug("Saved Master package ${master.id}")
 
       // Now query for all packages for the modified since the delta.
-      c = ComboCriteria.createFor( Package.createCriteria() )
+      c =  Package.createCriteria() 
       Set<Package> pkgs = c.list {
         c.and {
           c.add(
@@ -203,8 +199,8 @@ class PackageService{
     // Ensure certain values are correct.
     master_tipp.with {
       setName(null)
-      setPkg (master)
-    }
+      setPkg (master) 
+   }
     
     
     // Save the master tipp.
@@ -231,17 +227,12 @@ class PackageService{
     LinkedHashSet results = []
     
     // Create the criteria.
-    ComboCriteria c = ComboCriteria.createFor( Package.createCriteria() )
+    def c =  Package.createCriteria() 
 
     // Query for a list of packages and return the providers.
-    def providers = c.list {
-      and {
-        c.add(
-          "status",
-          "ne",
-       	   RefdataCategory.lookupOrCreate( 'Package Status', 'Deleted' );
-      }
-    }.each {
+    def del_stat = RefdataCategory.lookupOrCreate( 'Package Status', 'Deleted' )
+
+    def providers = Package.findAllByPackageStatusIsNull().each {
     
       // Add any provider that is set.
       if (it?.getContentProvider()) {
