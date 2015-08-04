@@ -778,3 +778,6 @@ financialImportTSVLoaderMappings = [
     ]]
   ]
 ];
+
+notifications.email.from    = 'notification@kbplus.org.uk'
+notifications.email.replyTo = 'no-reply@kbplus.org.uk'

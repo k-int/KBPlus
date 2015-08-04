@@ -165,6 +165,7 @@ class ProfileController {
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def createReminder() {
+        log.debug("Profile :: createReminder - ${params}")
         def result  = [:]
         def user    = User.load(springSecurityService.principal.id)
         def trigger = (params.int('trigger'))? RefdataValue.load(params.trigger) : RefdataCategory.lookupOrCreate("ReminderTrigger","Subscription Manual Renewal Date")
@@ -182,13 +183,38 @@ class ProfileController {
             result.status = false
             log.debug("Unable to save Reminder for user ${user.username}... Params as follows ${params}")
         }
-
-        render result as JSON
+        if (request.isXhr())
+            render result as JSON
+        else
+            redirect(action: "index")
     }
 
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def updateReminder() {
-        def user = User.get(springSecurityService.principal.id)
+        def result    = [:]
+        result.status = true
+        result.op     = params.op
+        def user      = User.get(springSecurityService.principal.id)
+        def reminder  = Reminder.findByIdAndUser(params.rem,user)
+        if (reminder)
+        {
+            switch (result.op)
+            {
+                case 'delete':
+                    reminder.delete()
+                    break
+                case 'active':
+                    reminder.active = !reminder.active
+                    break
+                default:
+                    result.status = false
+                    log.error("Profile :: updateReminder - Unsupported operation for update reminder ${result.op}")
+                    break
+            }
+        } else
+            result.status = false
+
+        render result as JSON
     }
 }

@@ -164,111 +164,122 @@
   </div>
 
 
-  <div class="container"><div class="row-fluid">
-      <div class="span6">
-          <div class="well">
-              <h2>Active Reminders</h2>
 
-              <table class="table table-striped table-bordered table-condensed">
-                  <thead>
-                  <tr>
-                      <th><g:message code="reminder.trigger" default="Trigger"/></th>
-                      <th><g:message code="reminder.method" default="Method"/></th>
-                      <th><g:message code="reminder.unit" default="Unit"/></th>
-                      <th><g:message code="reminder.number" default="Number"/></th>
-                      <th><g:message code="reminder.update" default="Delete / Disable"/></th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <g:if test="${reminders}">
-                      <tr><td colspan="5" style="text-align:center">&nbsp;<br/>No reminders exist presently...<br/>&nbsp;</td></tr>
-                  </g:if>
-                  <g:else>
-                      <g:each in="${reminders}" var="r">
-                          <tr>
-                              <td>${r}</td>
-                              <td>${r}</td>
-                              <td>${r}</td>
-                              <td>${r}</td>
-                              <td><button class="btn btn-small deleteIcon">Remove</button></td>
-                          </tr>
-                      </g:each>
-                  </g:else>
-                  </tbody>
-              </table>
+  <div class="container">
+      <div class="row-fluid">
+          <div class="span12">
+              <div class="well">
+                  <h2>Create new Reminders / Notifications</h2>
+                  <p>Select the condition you are interested about and time period you wished to be notified about sed topic.</p>
+                  <p><i>Ensure your email or other method of contact is a valid means of reaching yourself</i></p>
+
+                  <g:form name="createReminder" controller="profile" action="createReminder" class="form-search" method="POST" url="[controller:'profile', action:'createReminder']">
+
+                      Notify for:<g:select name="trigger"
+                      from="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','ReminderTrigger')}"
+                      optionKey="id"
+                      optionValue="value"
+                      class="input-medium"/>
+
+                      Method:<g:select name="method"
+                      from="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','ReminderMethod')}"
+                      optionKey="id"
+                      optionValue="value"
+                      class="input-medium"/>
+
+                      Period:<g:select name="unit"
+                      from="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','ReminderUnit')}"
+                      optionKey="id"
+                      optionValue="value"
+                      class="input-medium"/>
+
+                      Time:<select name="val" class="input-medium required-indicator" id="val" value="${params.val}" data-type="select">
+                          <g:each in="${(1..7)}" var="s">
+                              <option value="${s}" ${s==params.long('val')?'selected="selected"':''}>${s}</option>
+                          </g:each>
+                      </select>
+
+
+                      <button id="submitReminder" type="submit" class="btn btn-primary btn-small">Create</button>
+                  </g:form>
+              </div>
           </div>
       </div>
+  </div>
 
-      <div class="span6">
-          <div class="well">
-              <h2>Create new reminders/notification</h2>
-              <p>Select the time you wished to be notified, along with the unit of measurement, e.g. Day, Week, or Month and the communication method below.</p>
+  <div class="container">
+      <div class="row-fluid">
+          <div class="span12">
+              <div class="well">
+                  <h2>Active Reminders</h2>
 
-              <g:form name="createReminder" controller="profile" action="createReminder" class="form-search" method="get">
-
-                  <g:select name="trigger"
-                            from="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','ReminderTrigger')}"
-                            optionKey="id"
-                            optionValue="value"
-                            class="input-medium"/>
-
-                  <g:select name="method"
-                            from="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','ReminderMethod')}"
-                            optionKey="id"
-                            optionValue="value"
-                            class="input-medium"/>
-
-                  <g:select name="unit"
-                            from="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','ReminderUnit')}"
-                            optionKey="id"
-                            optionValue="value"
-                            class="input-medium"/>
-
-                  <select name="val" class="input-medium required-indicator" id="val" value="${params.val}" data-type="select">
-                      <option value="all">All</option>
-                      <g:each in="${(1..30)}" var="s">
-                          <option value="${s}" ${s==params.long('val')?'selected="selected"':''}>${s}</option>
-                      </g:each>
-                  </select>
-
-
-                  <button id="submitReminder" type="submit" class="btn btn-primary btn-small">Create</button>
-              </g:form>
+                  <table class="table table-striped table-bordered table-condensed">
+                      <thead>
+                      <tr>
+                          <th><g:message code="reminder.trigger" default="Trigger"/></th>
+                          <th><g:message code="reminder.method" default="Method"/></th>
+                          <th><g:message code="reminder.unit" default="Unit"/></th>
+                          <th><g:message code="reminder.number" default="Number"/></th>
+                          <th><g:message code="reminder.update" default="Delete / Disable"/></th>
+                          <th><g:message code="reminder.lastNotification" default="Last Notification"/></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <g:if test="${user.reminders.size() == 0}">
+                          <tr><td colspan="5" style="text-align:center">&nbsp;<br/>No reminders exist presently...<br/>&nbsp;</td></tr>
+                      </g:if>
+                      <g:else>
+                          <g:each in="${reminders}" var="r">
+                              <tr>
+                                  <td>${r.}</td>
+                                  <td>${r}</td>
+                                  <td>${r}</td>
+                                  <td>${r}</td>
+                                  <td><button class="btn btn-small deleteIcon">Remove</button></td>
+                              </tr>
+                          </g:each>
+                      </g:else>
+                      </tbody>
+                  </table>
+              </div>
           </div>
       </div>
-  </div></div>
-
+  </div>
   </body>
 </html>
 
 <r:script>
-    $(document).ready(function() {
-        $("#unit").on('change', function() {
-            var unit = $(this);
-            var val  = unit.next();
-
-            switch () {
-                case '513':
-
-                    break;
-                case '513':
-
-                    break;
-                case '515':
-
-                    break
-                default :
-                    break
-            }
-            $('#filterPackage').children().remove()
-            $('#filterPackage').append('<option value="xx">Not specified</option>');
-            var numValues = data.values.length;
-            for (var i = 0; i != numValues; i++) {
-                $('#filterPackage').append('<option value="'+data.values[i].id+'">'+data.values[i].text+'</option>');
+    $(document).ready(function () {
+        $("#unit").on('change', function (e) {
+            var unit = this.options[e.target.selectedIndex].text;
+            var val = $(this).next();
+            if (unit) {
+                switch (unit) {
+                    case 'Day':
+                        setupUnitAmount(val,7)
+                        break;
+                    case 'Week':
+                        setupUnitAmount(val,4)
+                        break;
+                    case 'Month':
+                        setupUnitAmount(val,12)
+                        break
+                    default :
+                        console.log('Impossible selection made!');
+                        break
+                }
             }
         });
 
 
     })
 
+
+    function setupUnitAmount(type, amount) {
+        console.log(type);
+        type.children().remove()
+        for (var i = 1; i <= amount; i++) {
+            type.append('<option value="' + i + '">' + i + '</option>');
+        }
+    }
 </r:script>
