@@ -779,5 +779,8 @@ financialImportTSVLoaderMappings = [
   ]
 ];
 
-notifications.email.from    = 'notification@kbplus.org.uk'
-notifications.email.replyTo = 'no-reply@kbplus.org.uk'
+notifications.email.from            = 'notification@kbplus.org.uk'
+notifications.email.replyTo         = 'no-reply@kbplus.org.uk'
+//If   enabled: No customisation in email i.e. Reminder inst info, User info
+//Else Customised template will be sent to user
+notifications.email.genericTemplate = false
