@@ -216,12 +216,11 @@
                   <table class="table table-striped table-bordered table-condensed">
                       <thead>
                       <tr>
-                          <th><g:message code="reminder.trigger" default="Trigger"/></th>
+                          <th"><g:message code="reminder.trigger" default="Trigger"/></th>
                           <th><g:message code="reminder.method" default="Method"/></th>
-                          <th><g:message code="reminder.unit" default="Unit"/></th>
-                          <th><g:message code="reminder.number" default="Number"/></th>
-                          <th><g:message code="reminder.update" default="Delete / Disable"/></th>
+                          <th>Time (<g:message code="reminder.unit" default="Unit"/>/<g:message code="reminder.number" default="Number"/>)</th>
                           <th><g:message code="reminder.lastNotification" default="Last Notification"/></th>
+                          <th><g:message code="reminder.update" default="Delete / Disable"/></th>
                       </tr>
                       </thead>
                       <tbody>
@@ -229,13 +228,14 @@
                           <tr><td colspan="5" style="text-align:center">&nbsp;<br/>No reminders exist presently...<br/>&nbsp;</td></tr>
                       </g:if>
                       <g:else>
-                          <g:each in="${reminders}" var="r">
+                          <g:each in="${user.reminders}" var="r">
                               <tr>
-                                  <td>${r.}</td>
-                                  <td>${r}</td>
-                                  <td>${r}</td>
-                                  <td>${r}</td>
-                                  <td><button class="btn btn-small deleteIcon">Remove</button></td>
+                                  <td>${r.trigger.value}</td>
+                                  <td>${r.reminderMethod.value}</td>
+                                  <td>${r.amount} ${r.unit.value}${r.amount >1? 's':''} before</td>
+                                  <g:if test="${r.lastRan}"><td><g:formatDate format="dd MMMM yyyy" date="${r.lastRan}" /></td></g:if>
+                                  <g:else><td>Never executed!</td>   </g:else>
+                                  <td><button class="btn btn-small deleteIcon">Remove</button><button class="btn btn-small updateIcon">${r.active? 'disable':'enable'}</button></td>
                               </tr>
                           </g:each>
                       </g:else>
@@ -270,10 +270,7 @@
                 }
             }
         });
-
-
-    })
-
+    });
 
     function setupUnitAmount(type, amount) {
         console.log(type);
