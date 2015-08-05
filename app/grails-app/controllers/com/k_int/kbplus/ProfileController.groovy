@@ -17,6 +17,7 @@ class ProfileController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.editable = true
+
     result
   }
 
@@ -199,16 +200,19 @@ class ProfileController {
         result.status = true
         result.op     = params.op
         def user      = User.get(springSecurityService.principal.id)
-        def reminder  = Reminder.findByIdAndUser(params.rem,user)
+        def reminder  = Reminder.findByIdAndUser(params.id,user)
         if (reminder)
         {
             switch (result.op)
             {
                 case 'delete':
-                    reminder.delete()
+                    user.reminders.clear()
+                    user.reminders.remove(reminder)
+                    reminder.delete(flush: true)
                     break
-                case 'active':
+                case 'toggle':
                     reminder.active = !reminder.active
+                    result.active   = reminder.active? 'disable':'enable'
                     break
                 default:
                     result.status = false

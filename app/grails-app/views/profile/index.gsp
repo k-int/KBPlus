@@ -216,7 +216,7 @@
                   <table class="table table-striped table-bordered table-condensed">
                       <thead>
                       <tr>
-                          <th"><g:message code="reminder.trigger" default="Trigger"/></th>
+                          <th><g:message code="reminder.trigger" default="Trigger"/></th>
                           <th><g:message code="reminder.method" default="Method"/></th>
                           <th>Time (<g:message code="reminder.unit" default="Unit"/>/<g:message code="reminder.number" default="Number"/>)</th>
                           <th><g:message code="reminder.lastNotification" default="Last Notification"/></th>
@@ -234,8 +234,11 @@
                                   <td>${r.reminderMethod.value}</td>
                                   <td>${r.amount} ${r.unit.value}${r.amount >1? 's':''} before</td>
                                   <g:if test="${r.lastRan}"><td><g:formatDate format="dd MMMM yyyy" date="${r.lastRan}" /></td></g:if>
-                                  <g:else><td>Never executed!</td>   </g:else>
-                                  <td><button class="btn btn-small deleteIcon">Remove</button><button class="btn btn-small updateIcon">${r.active? 'disable':'enable'}</button></td>
+                                  <g:else><td>Never executed!</td></g:else>
+                                  <td>
+                                      <button data-op="delete" data-id="${r.id}" class="btn btn-small reminderBtn">Remove</button>&nbsp;/&nbsp;
+                                      <button data-op="toggle" data-id="${r.id}" class="btn btn-small reminderBtn">${r.active? 'disable':'enable'}</button>
+                                  </td>
                               </tr>
                           </g:each>
                       </g:else>
@@ -269,6 +272,28 @@
                         break
                 }
             }
+        });
+
+        $(".reminderBtn").on('click', function (e) {
+            //e.preventDefault();
+            var element = $(this);
+            var yn = confirm("Are you sure you wish to continue?");
+            if(yn)
+            {
+                $.ajax({
+                    method: 'POST',
+                    url: "<g:createLink controller='profile' action='updateReminder'/>",
+                        data: {
+                        op: element.data('op'),
+                        id: element.data('id')
+                    }
+                }).done(function(data) {
+                    console.log(data)
+                    data.op == 'delete'? element.parents('tr').remove() : element.text(data.active);
+                });
+            }
+
+            //return false;
         });
     });
 
