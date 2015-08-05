@@ -166,21 +166,24 @@ class ProfileController {
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def createReminder() {
         log.debug("Profile :: createReminder - ${params}")
-        def result  = [:]
-        def user    = User.load(springSecurityService.principal.id)
-        def trigger = (params.int('trigger'))? RefdataValue.load(params.trigger) : RefdataCategory.lookupOrCreate("ReminderTrigger","Subscription Manual Renewal Date")
-        def method  = (params.int('method'))?  RefdataValue.load(params.method)  : RefdataCategory.lookupOrCreate("ReminderMethod","email")
-        def unit    = (params.int('unit'))?    RefdataValue.load(params.unit)    : RefdataCategory.lookupOrCreate("ReminderUnit","Day")
+        def result    = [:]
+        def user      = User.load(springSecurityService.principal.id)
+        def trigger   = (params.int('trigger'))? RefdataValue.load(params.trigger) : RefdataCategory.lookupOrCreate("ReminderTrigger","Subscription Manual Renewal Date")
+        def remMethod = (params.int('method'))?  RefdataValue.load(params.method)  : RefdataCategory.lookupOrCreate("ReminderMethod","email")
+        def unit      = (params.int('unit'))?    RefdataValue.load(params.unit)    : RefdataCategory.lookupOrCreate("ReminderUnit","Day")
 
-        def reminder = new Reminder(trigger: trigger, method: method, unit: unit, amount: params.int('val')?:1, user: user)
+
+        def reminder = new Reminder(trigger: trigger, unit: unit, reminderMethod: remMethod, amount: params.getInt('val')?:1, user: user, active: true)
         if (reminder.save())
         {
             log.debug("Profile :: Index - Successfully saved reminder, adding to user")
             user.addToReminders(reminder)
+            log.debug("User has following reminders ${user.reminders}")
             result.status   = true
             result.reminder = reminder
         } else {
             result.status = false
+            flash.error="Unable to create the reminder, invalid data received"
             log.debug("Unable to save Reminder for user ${user.username}... Params as follows ${params}")
         }
         if (request.isXhr())

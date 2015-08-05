@@ -33,7 +33,7 @@ class ReminderService {
     def getActiveEmailRemindersByUserID() {
         //Get active reminders and users who have email
         def result = [:]
-        Reminder.executeQuery('select r from Reminder as r where r.active = ? and r.user.email != null and r.method.value = ? order by r.user.id',[true,'email']).each { r ->
+        Reminder.executeQuery('select r from Reminder as r where r.active = ? and r.user.email != null and r.reminderMethod.value = ? order by r.user.id',[true,'email']).each { r ->
             result[r.user.id] << [r]  //Group Reminders and organise via users ID
         }
         result
@@ -47,29 +47,29 @@ class ReminderService {
         result
     }
 
-    //user -> [mail 1, mail 2]
+    //Key Subscription -> [[user: u, reminder: r]]
+    //Will need to add Subscription to the map sent to the template subscription: sub
     def generateMail(Subscription sub, ArrayList userRemindersList) {
-        log.debug("Setting up mail generation requirements...");
+        log.debug("Setting up mail generation requirements for Subscription ${sub.name}...");
         def emailTemplateFile = generic? applicationContext.getResource("WEB-INF/mail-templates/subscriptionManualRenewalDateGeneric.gsp").file : applicationContext.getResource("WEB-INF/mail-templates/subscriptionManualRenewalDate.gsp").file
         def engine            = new SimpleTemplateEngine()
         def baseTemplate      = engine.createTemplate(emailTemplateFile)
         def _template
         def _content
-        userRemindersList.each {
-            _template = generic? baseTemplate.make() : baseTemplate.make(val)
+        userRemindersList.each { inst ->
+            _template = generic? baseTemplate.make() : baseTemplate.make(inst.put(subscription: sub))
             _content  = _template.toString()
-            mailReminder(val.setup, _content)
+            mailReminder(inst.user.email, inst.reminder.trigger.value, _content)
+            inst.reminder.lastRan = new Date() //Update the Reminder instance
         }
-
     }
 
-    def mailReminder(setup, content) {
-        log.debug("About to send mail...")
+    def mailReminder(userAddress, subjectTrigger, content) {
         mailService.sendMail {
-            to setup.email
+            to userAddress
             from from
             replyTo replyTo
-            subject setup.subject
+            subject subjectTrigger
             html content
         }
     }
@@ -80,7 +80,7 @@ class ReminderService {
      * @param sub           - Current iteration of a Subscription
      * @param today         - Today's date in Joda format
      */
-    def isSubInReminderRange(ArrayList reminders, Subscription sub, LocalDate today)
+    def isSubInReminderRange(ArrayList reminders, Subscription sub, LocalDate today, User u)
     {
         def result = [:]
         result.found = false
@@ -90,8 +90,8 @@ class ReminderService {
          def reminderDate = convertReminderToDate(r.unit.value, r.amount, subRenewal) //e.g. sub renewal 12.11.15  rem date 3 months before = 12:8:15
          if(isDateInReminderPeriod(reminderDate, renewalDate, today))
          {  
-           result.found = true
-           result.info.add(['user':u,'reminder':r])
+           result.found    = true
+           result.instance = (['reminder':r, 'user':u])
            return //Break out of each, should only be one for user in this period!
          } 
         }
@@ -153,25 +153,34 @@ class ReminderService {
             def availibleSubs  = getAccessibleSubsForUser(v.user)
             log.debug("Lookup up ${v.size()}:Reminders for dates **  ${v.collect { [it.unit.value,it.amount] }}   ** \nSubscriptions for user ID:${k} (Username:${v.user.username}) total has ${availibleSubs.size()} ")
 
-            //List would not have anything past 12 months of present date for server load purposes!
-            //todo upon finding relevant matching, would be more efficient to add a key as Subcription ID, then add a list of arrays[sub id/inst][[user, reminder],[]] instances as values
+            //Iterate through available subscriptions (List would not have anything past 12 months of present date for server load purposes!)
+            //Organise master list i.e. [Subscription inst][['reminder':reminder inst1, 'user': user inst1],['reminder':reminder inst2, 'user': user inst2],etc]
             availibleSubs.each { sub ->
                 def reminderAndUserInst = isSubInReminderRange(v, sub, today, v.user)
                 if(reminderAndUserInst.found) {
                     log.debug("Found Subscription: ${sub.name} for User: ${v.user.username} Reminder: ${v.id}")
-                    //Add to the master list i.e. [Subscription inst][['reminder':reminder inst1, 'user': user inst1],['reminder':reminder inst2, 'user': user inst2],etc]
-                    addToMasterList(masterSubscriptionList,reminderAndUserInst)
+                    addToMasterList(masterSubscriptionList, sub, reminderAndUserInst.instance)
                 }
             }
-
-
         }
 
-
+        //Now a master list has been created (after going through each reminder for a user), need to process for email now!
+        processMasterList(masterSubscriptionList)
     }
 
-    private void addToMasterList(LinkedHashMap masterSubscriptionList, reminderAndUserInst) {
-
+    private void addToMasterList(LinkedHashMap masterSubscriptionList, Subscription sub, reminderAndUserInst) {
+        def val = [] as List
+        if (masterSubscriptionList.containsKey(sub))
+        {
+            val = masterSubscriptionList.get(sub)
+            val.add(reminderAndUserInst)
+            masterSubscriptionList.put(sub,val)
+        }
+        else
+        {
+            val.add(reminderAndUserInst)
+            masterSubscriptionList.put(sub,val)
+        }
     }
 
     /**
@@ -183,7 +192,9 @@ class ReminderService {
         log.debug("Processing master list, ready for emailing based on each Subscription")
 
         masterSubscriptionList.eachWithIndex { subscription, valueList, i ->
-            log.debug()
+            if (i % 500 == 0)
+                log.debug("Proessed ${i} Subscriptions...")
+
             generateMail(subscription, valueList)
         }
     }
