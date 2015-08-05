@@ -9,6 +9,7 @@ class NotificationsJob {
   def zenDeskSyncService
   def changeNotificationService
   def grailsApplication
+  def reminderService
   static triggers = {
     // Delay 20 seconds, run every 10 mins.
     // Cron:: Min Hour DayOfMonth Month DayOfWeek Year
@@ -23,6 +24,8 @@ class NotificationsJob {
       log.debug("This server is marked as KBPlus master. Running ZENDESK sync batch job");
       zenDeskSyncService.doSync()
       changeNotificationService.aggregateAndNotifyChanges();
+      log.debug("About to start the Reminders Job...");
+      reminderService.runReminders()
     }
     else {
       log.debug("This server is NOT marked as KBPlus master. NOT Running ZENDESK SYNC batch job");
