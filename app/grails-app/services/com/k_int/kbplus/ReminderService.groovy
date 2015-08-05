@@ -27,6 +27,7 @@ class ReminderService {
         from    = grailsApplication.config.notifications.email.from
         replyTo = grailsApplication.config.notifications.email.replyTo
         generic = grailsApplication.config.notifications.email.genericTemplate
+        log.debug("Initialised Reminder Service...")
     }
 
     //i.e result[user id] = [Reminder 1,Reminder 2, etc]
@@ -56,12 +57,26 @@ class ReminderService {
         def baseTemplate      = engine.createTemplate(emailTemplateFile)
         def _template
         def _content
-        userRemindersList.each { inst ->
-            _template = generic? baseTemplate.make() : baseTemplate.make(inst.put(subscription: sub))
+
+        if (generic)
+        {
+            _template = baseTemplate.make([subscription: sub])
             _content  = _template.toString()
-            mailReminder(inst.user.email, inst.reminder.trigger.value, _content)
-            inst.reminder.lastRan = new Date() //Update the Reminder instance
+            def userEmailList = userRemindersList.collect {it.user.email}.toArray()
+            mailReminder(userEmailList, "Renewal Reminder", _content)
+            Date now = new Date()
+            userRemindersList.each {it.reminder.lastRan = now}
         }
+        else
+        {
+            userRemindersList.each { inst ->
+                _template =  baseTemplate.make(inst.put(subscription: sub))
+                _content  = _template.toString()
+                mailReminder(inst.user.email, inst.reminder.trigger.value, _content)
+                inst.reminder.lastRan = new Date() //Update the Reminder instance
+            }
+        }
+
     }
 
     def mailReminder(userAddress, subjectTrigger, content) {
