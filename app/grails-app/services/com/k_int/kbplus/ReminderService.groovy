@@ -40,17 +40,21 @@ class ReminderService {
         result
     }
 
-    //todo Think about limiting the search to Sub data that renewal data that is year earlier than the present data, i.e. max user can enter is 12 months
-    //Perform relevant searching/joins to return all subscriptions of interest
     /**
      * Grabs all Subscriptions that this user can access (e.g. authorised orgs)
+     * Performs relevant searching/joins to return all subscriptions of interest
      * @param user
      * @return List of Subscriptions
      */
-    def getAccessibleSubsForUser(User user) {
-        def result = [] as List
+    def getAuthorisedSubsciptionsByUser(User user) {
+        def qry_params = [user.defaultDash, LocalDate.now().minusMonths(13).toDate()]
+        log.debug("Lookup up subscriptions for user : ${user.username} Restricting to Subscriptions with renewal date one year previous to today!")
+        def base_qry = "select s from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) AND s.manualRenewalDate < ? order by s.manualRenewalDate asc "
+        def results = Subscription.executeQuery(base_qry, qry_params);
+        if (!results.size() > 0)
+            log.error("ReminderService :: getAuthorisedSubsciptionsByUser - Unable to retrieve any subscriptions for user ${user.username}")
 
-        result
+        results
     }
 
     //Key Subscription -> [[user: u, reminder: r]]
@@ -103,22 +107,25 @@ class ReminderService {
     private def isSubInReminderRange(ArrayList reminders, Subscription sub, LocalDate today, User u)
     {
         def result = [:]
-        result.found = false
+        result.isFound = false
         LocalDate renewalDate = new LocalDate(sub.manualRenewalDate) //std Java date
 
         reminders.each { r ->
          def reminderDate = convertReminderToDate(r.unit.value, r.amount, renewalDate) //e.g. sub renewal 12.11.15  rem date 3 months before = 12:8:15
          if(isDateInReminderPeriod(reminderDate, renewalDate, today))
          {  
-           result.found    = true
+           result.isFound    = true
            result.instance = (['reminder':r, 'user':u])
            //Break out of each, should only be one for user in this period, and pointless reminder again!
            return
          } 
         }
     }
-    
-    //Date has to be between start and end range
+
+    /**
+     * Checks if a Joda Time LocalDate instance 'today' is between start and end range
+     * @param today - Typically will be the day this code is executed, however, could be anything should you decide so.
+     */
     private boolean isDateInReminderPeriod(LocalDate start, LocalDate end, LocalDate today) {
           return !today.isBefore(start) && !today.isAfter(end);
     }
@@ -150,6 +157,10 @@ class ReminderService {
     }
 
     //todo Learn how to CACHE the Subscription data to avoid possible repeating lookups
+    /**
+     * Method executed in NotificationJob!
+     * @return
+     */
     def runReminders() {
         def start_time = System.currentTimeMillis();
         log.debug("Running reminder service... Started: ${start_time}")
@@ -171,18 +182,20 @@ class ReminderService {
         //Key = User ID Val = List of Reminders 1..* for that user!
         //Go through each reminder a user has, lookup subscriptions accessible to user, compare each subscription to the date range 
         usersReminders.each { k,v ->
-            //All possible subscriptions for this user
-            def availibleSubs  = getAccessibleSubsForUser(v.user)
+            def user = v.first().user
 
-            log.debug("Lookup up ${v.size()}:Reminders for dates **  ${v.collect { [it.unit.value,it.amount] }}   ** \nSubscriptions for user ID:${k} (Username:${v.user.username}) total has ${availibleSubs.size()} ")
+            //All possible subscriptions for this user
+            def availableSubs  = getAuthorisedSubsciptionsByUser(user)
+
+            log.debug("Lookup up ${v.size()}:Reminders for dates **  ${v.collect { [it.unit.value,it.amount] }}   ** \nSubscriptions for user ID:${k} (Username:${user.username}) total has ${availableSubs.size()} ")
 
             //Iterate through available subscriptions (List would not have anything past 12 months of present date for server load purposes!)
             //Organise master list i.e. [Subscription inst][['reminder':reminder inst1, 'user': user inst1],['reminder':reminder inst2, 'user': user inst2],etc]
-            availibleSubs.each { sub ->
-                def reminderAndUserInst = isSubInReminderRange(v, sub, today, v.user)
+            availableSubs.each { sub ->
+                def reminderAndUserInst = isSubInReminderRange(v, sub, today, user)
 
-                if(reminderAndUserInst.found) {
-                    log.debug("Found Subscription: ${sub.name} for User: ${v.user.username} Reminder: ${v.id}")
+                if(reminderAndUserInst.isFound) {
+                    log.debug("Found Subscription: ${sub.name} for User: ${reminderAndUserInst.instance.user.username} Reminder: ${reminderAndUserInst.instance.reminder.id}")
                     addToMasterList(masterSubscriptionList, sub, reminderAndUserInst.instance)
                 }
             }
