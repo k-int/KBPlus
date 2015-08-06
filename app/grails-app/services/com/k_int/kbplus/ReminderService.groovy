@@ -90,6 +90,7 @@ class ReminderService {
 
     def mailReminder(userAddress, subjectTrigger, content) {
         mailService.sendMail {
+            async true
             to userAddress
             from from
             replyTo replyTo
