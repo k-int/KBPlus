@@ -785,6 +785,4 @@ grails.mail.poolSize=20 //default 5 emails at a time, then que based system (pre
 grails.mail.overrideAddress="ryan@k-int.com" //Test env only, overrides to and from address
 notifications.email.from='notification@kbplus.org.uk'
 notifications.email.replyTo='no-reply@kbplus.org.uk'
-//If   enabled: No customisation in email i.e. Reminder inst info, User info
-//Else Customised template will be sent to user
-notifications.email.genericTemplate=false
+notifications.email.genericTemplate=false //If enabled, no customisation in email i.e. Reminder inst info, User info... Else, Customised template will be sent to user

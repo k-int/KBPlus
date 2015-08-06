@@ -12,7 +12,7 @@ import javax.annotation.PostConstruct
 /**
  * @author Ryan@k-int.com
  */
-@Transactional
+@Transactional(readOnly = true)
 class ReminderService {
 
     ApplicationContext applicationContext
@@ -66,15 +66,16 @@ class ReminderService {
         def baseTemplate      = engine.createTemplate(emailTemplateFile)
         def _template
         def _content
-
+        Date now = new Date()
         if (generic)
         {
             _template = baseTemplate.make([subscription: sub])
             _content  = _template.toString()
             def userEmailList = userRemindersList.collect {it.user.email}.toArray()
             mailReminder(userEmailList, "Renewal Reminder", _content)
-            Date now = new Date()
-            userRemindersList.each {it.reminder.lastRan = now}
+            Reminder.withTransaction { status ->
+                userRemindersList.each { it.reminder.lastRan = now }
+            }
         }
         else
         {
@@ -82,7 +83,9 @@ class ReminderService {
                 _template =  baseTemplate.make(inst.put(subscription: sub))
                 _content  = _template.toString()
                 mailReminder(inst.user.email, inst.reminder.trigger.value, _content)
-                inst.reminder.lastRan = new Date() //Update the Reminder instance
+                Reminder.withTransaction { status ->
+                    inst.reminder.lastRan = now //Update the Reminder instance
+                }
             }
         }
 
