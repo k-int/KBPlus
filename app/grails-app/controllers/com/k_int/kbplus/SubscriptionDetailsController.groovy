@@ -310,9 +310,17 @@ class SubscriptionDetailsController {
     def pc_to_delete = []
     pendingChanges.each{pc->
       def parsed_change_info = JSON.parse(pc[1])
-      def (oid_class,ident) = parsed_change_info.changeDoc.OID.split(":")
-      if(oid_class == tipp_class && tipp_ids.contains(ident.toLong()) ){
-        pc_to_delete += pc[0]
+      if(parsed_change_info.tippID) {
+        pc_to_delete +=pc[0]
+      }
+      else if(parsed_change_info.changeDoc){
+        def (oid_class,ident) = parsed_change_info.changeDoc.OID.split(":")
+        if(oid_class == tipp_class && tipp_ids.contains(ident.toLong()) ){
+          pc_to_delete += pc[0]
+        }
+      }
+      else{
+        log.error("Could not decide if we should delete the pending change id:${pc[0]} - ${parsed_change_info}")
       }
     }
     if(confirmed && pc_to_delete){

@@ -195,6 +195,7 @@
         </div>
       </div>
     </div>
+    <div id="magicArea"></div>
     <g:render template="orgLinksModal" 
               contextPath="../templates" 
               model="${[linkType:subscriptionInstance?.class?.name,roleLinks:subscriptionInstance?.orgRelations,parent:subscriptionInstance.class.name+':'+subscriptionInstance.id,property:'orgs',recip_prop:'sub']}" />
