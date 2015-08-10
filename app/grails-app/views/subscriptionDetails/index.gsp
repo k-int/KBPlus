@@ -114,7 +114,6 @@
               <th rowspan="2"></th>
               <th rowspan="2">#</th>
               <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
-              <th>ISSN</th>
               <th rowspan="2">Entitlement Medium (P/E)</th>
               <g:sortableColumn params="${params}" property="startDate" title="Earliest date" />
               <g:sortableColumn params="${params}" property="core_status" title="Core Status" />
@@ -123,7 +122,6 @@
 
             <tr>
               <th>Access Dates</th>
-              <th>eISSN</th>
               <g:sortableColumn params="${params}" property="endDate" title="Latest Date" />
               <th> Core Medium </th>
             </tr>
@@ -136,7 +134,7 @@
                 <input type="checkbox" name="chkall" onClick="javascript:selectAll();"/>
               </th>
 
-              <th colspan="3">
+              <th colspan="2">
                 
                   <select id="bulkOperationSelect" name="bulkOperation">
                     <option value="edit">Edit Selected</option>
@@ -171,9 +169,13 @@
                 <td><g:if test="${editable}"><input type="checkbox" name="_bulkflag.${ie.id}" class="bulkcheck"/></g:if></td>
                 <td>${counter++}</td>
                 <td>
-                  <g:link controller="issueEntitlement" id="${ie.id}" action="show">${ie.tipp.title.title}</g:link>
+-                  <g:link controller="issueEntitlement" id="${ie.id}" action="show"><strong>${ie.tipp.title.title}</strong></g:link>
+
                   <g:if test="${ie.tipp?.hostPlatformURL}">( <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">Host Link</a> 
                             <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL} (In new window)" target="_blank"><i class="icon-share-alt"></i></a>)</g:if> <br/>
+
+                  ISSN:<strong>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</strong>, 
+                  eISSN:<strong>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</strong><br/>                            
                    Access: ${ie.availabilityStatus?.value}<br/>
                    Coverage Note: ${ie.coverageNote?:(ie.tipp?.coverageNote?:'')}<br/>
                    <g:if test="${ie.availabilityStatus?.value=='Expected'}">
@@ -188,8 +190,7 @@
                    </g:if>
 
                 </td>
-                <td>${ie?.tipp?.title?.getIdentifierValue('ISSN')}<br/>
-                ${ie?.tipp?.title?.getIdentifierValue('eISSN')}</td>
+              
                 <td>
                   <g:xEditableRefData owner="${ie}" field="medium" config='IEMedium'/>
                 </td>
