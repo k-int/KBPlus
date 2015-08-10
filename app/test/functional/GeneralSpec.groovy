@@ -665,9 +665,9 @@ class GeneralSpec extends BaseSpec {
 	}
 
 	//214
-	def "Subscription CSV Export(No Header)"() {
+	def "Subscription JSON Export"() {
 		setup:
-		csvExportNoHeader()
+		jsonExport()
 		expect:
 		at SubscrDetailsPage
 	}
