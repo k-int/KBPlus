@@ -207,7 +207,7 @@ This work is published from:
                     <tbody>
                       <g:each in="${hits}" var="hit">
                         <tr>
-                          <td><g:link controller="${controller}" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link>
+                          <td>${hit.source.name}
                               <!--(${hit.score})-->
                               <span>(${hit.source.titleCount?:'Unknown number of'} titles)</span>
                           <ul>
