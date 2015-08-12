@@ -34,7 +34,8 @@
 					</div>
 					
 					<label for="selectedLicences">Licences selected for comparison:</label>
-					<g:select id="selectedLicences" name="selectedLicences" class="compare-license" from="${[]}" multiple="true" />
+					
+					<g:select style="width:90%; word-wrap: break-word;" id="selectedLicences" name="selectedLicences" class="compare-license" from="${[]}" multiple="true" />
 
 
 			
