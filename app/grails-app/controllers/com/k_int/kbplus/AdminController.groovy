@@ -503,6 +503,27 @@ class AdminController {
     redirect(controller:'home')
   }
 
+  @Secured(['ROLE_ADMIN','IS_AUTHENTICATED_FULLY'])
+  def ieTransfer(){
+    log.debug(params)
+    def result = [:]
+    if(params.sourceTIPP && params.targetTIPP){
+      result.sourceTIPPObj = TitleInstancePackagePlatform.get(params.sourceTIPP)
+      result.targetTIPPObj = TitleInstancePackagePlatform.get(params.targetTIPP)
+    }
+
+    if(params.transfer == "Go" && result.sourceTIPPObj && result.targetTIPPObj){
+      log.debug("Tranfering IEs from ${result.sourceTIPPObj} to ${result.targetTIPPObj}")
+      def sourceIEs = IssueEntitlement.findAllByTipp(result.sourceTIPPObj)
+      sourceIEs.each{
+        it.setTipp(result.targetTIPPObj)
+        it.save()
+      }
+    }
+
+    result
+  }
+
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def titleMerge() {
 
