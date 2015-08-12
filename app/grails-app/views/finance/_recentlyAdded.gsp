@@ -1,3 +1,4 @@
+%{--<%@page defaultCodec="HTML" %>--}%
 <table  class="table table-striped table-bordered " id="recentUpdatesTable" data-resultsTo="${to}" data-resultsFrom="${from}">
     <thead>
     <tr>
@@ -24,22 +25,22 @@
             <g:each in="${recentlyUpdated}" var="item">
                 <tr>
                     <td>${item?.id}</td>
-                    <td>${item?.invoice?.invoiceNumber}</td>
-                    <td>${item?.order?.orderNumber}</td>
-                    <td>${item?.sub?.name}</td>
+                    <td>${item?.invoice?.invoiceNumber.encodeAsHTML()}</td>
+                    <td>${item?.order?.orderNumber.encodeAsHTML()}</td>
+                    <td>${item?.sub?.name.encodeAsHTML()}</td>
                 </tr>
                 <tr>
-                    <td>${item?.subPkg?.name}</td>
-                    <td>${item?.issueEntitlement?.tipp?.title?.title}</td>
-                    <td>${item?.costInBillingCurrency}</td>
+                    <td>${item?.subPkg?.pkg?.name.encodeAsHTML()}</td>
+                    <td>${item?.issueEntitlement?.tipp?.title?.title.encodeAsHTML()}</td>
+                    <td>${item?.costInBillingCurrency.encodeAsHTML()}</td>
                     <td><g:formatDate format="dd-MM-yy" date="${item?.lastUpdated}"/></td>
                 </tr>
             </g:each>
         </g:if>
         <g:else>
             <tr>
-                <td colspan="4">No recent cost items...</td>
-                <td colspan="4">Table automatically updates</td>
+                <td colspan="2">No recent cost items...</td>
+                <td colspan="2">Table automatically updates</td>
             </tr>
         </g:else>
     </tbody>

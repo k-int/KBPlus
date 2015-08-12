@@ -62,7 +62,6 @@ class InplaceTagLib {
   def xEditable = { attrs, body ->
     
     boolean editable = request.getAttribute('editable')
-    
     if ( editable == true ) {
       def oid = "${attrs.owner.class.name}:${attrs.owner.id}"
       def id = attrs.id ?: "${oid}:${attrs.field}"
@@ -97,7 +96,7 @@ class InplaceTagLib {
           if ( ( attrs.owner[attrs.field] == null ) || ( attrs.owner[attrs.field].toString().length()==0 ) ) {
           }
           else
-            out << attrs.owner[attrs.field]
+            out << attrs.owner[attrs.field].encodeAsHTML()
         }
       }
       out << "</span>"
@@ -135,7 +134,7 @@ class InplaceTagLib {
         def data_link = createLink(controller:dataController, action: dataAction, params:[id:attrs.config,format:'json',oid:oid]).encodeAsHTML()
         def update_link = createLink(controller:'ajax', action: 'genericSetRel').encodeAsHTML()
         def id = attrs.id ?: "${oid}:${attrs.field}"
-   
+
         out << "<span>"
    
         // Output an editable link
@@ -245,7 +244,7 @@ class InplaceTagLib {
       }
     }
 
-    out << "class=\"simpleReferenceTypedown ${attrs.class}\" />"
+    out << "class=\"${attrs.modified? 'modifiedReferenceTypedown':'simpleReferenceTypedown' } ${attrs?.class}\" />"
   }
 
 

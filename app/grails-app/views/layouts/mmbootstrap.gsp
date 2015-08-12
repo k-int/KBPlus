@@ -234,6 +234,9 @@
                         <li <%= ( ( 'admin'== controllerName ) && ( 'userMerge'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="userMerge">User Merge</g:link>
                       </li>
+                        <li <%= ( ( 'admin'== controllerName ) && ( 'hardDeletePkgs'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="hardDeletePkgs">Delete Packages</g:link>
+                      </li>
                       <li class="divider"></li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'globalSync'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="globalSync">Start Global Data Sync</g:link>

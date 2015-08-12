@@ -25,12 +25,11 @@
         <li class="dropdown pull-right">
           <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>
           <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
-            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${params+ [format:'csv']}">CSV Export</g:link><li>
-            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${params + [format:'csv',omitHeader:'Y']}">CSV Export (No header)</g:link></li>
+           
             <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${params + [format:'json']}">JSON</g:link></li>
             <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${params + [format:'xml']}">XML</g:link></li>
             <g:each in="${transforms}" var="transkey,transval">
-              <li><g:link action="index" id="${params.id}" params="${[format:'xml',transformId:transkey,mode: params.mode]}"> ${transval.name}</g:link></li>
+              <li><g:link action="index" id="${params.id}" params="${[format:'xml',transformId:transkey,mode: params.mode]}">${transval.name}</g:link></li>
             </g:each>
         </ul>
 
@@ -68,7 +67,7 @@
 
     <g:render template="/templates/pendingChanges" model="${['pendingChanges': pendingChanges,'flash':flash,'model':subscriptionInstance]}"/>
 
-    <div class="container">
+   <div class="container">
       <dl>
         <dt>
           <g:annotatedLabel owner="${subscriptionInstance}" property="entitlements">
@@ -115,7 +114,7 @@
               <th rowspan="2"></th>
               <th rowspan="2">#</th>
               <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
-              <g:sortableColumn params="${params}" property="coreStatus" title="Core" />
+              <th rowspan="2">Entitlement Medium (P/E)</th>
               <g:sortableColumn params="${params}" property="startDate" title="Earliest date" />
               <g:sortableColumn params="${params}" property="core_status" title="Core Status" />
               <th rowspan="2">Actions</th>
@@ -123,7 +122,6 @@
 
             <tr>
               <th>Access Dates</th>
-              <th>Medium (P/E)</th>
               <g:sortableColumn params="${params}" property="endDate" title="Latest Date" />
               <th> Core Medium </th>
             </tr>
@@ -136,7 +134,7 @@
                 <input type="checkbox" name="chkall" onClick="javascript:selectAll();"/>
               </th>
 
-              <th colspan="3">
+              <th colspan="2">
                 
                   <select id="bulkOperationSelect" name="bulkOperation">
                     <option value="edit">Edit Selected</option>
@@ -172,10 +170,12 @@
                 <td>${counter++}</td>
                 <td>
                   <g:link controller="issueEntitlement" id="${ie.id}" action="show"><strong>${ie.tipp.title.title}</strong></g:link>
+
                   <g:if test="${ie.tipp?.hostPlatformURL}">( <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL}">Host Link</a> 
                             <a href="${ie.tipp?.hostPlatformURL}" TITLE="${ie.tipp?.hostPlatformURL} (In new window)" target="_blank"><i class="icon-share-alt"></i></a>)</g:if> <br/>
-                   ISSN:<strong>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</strong>, 
-                   eISSN:<strong>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</strong><br/>
+
+                  ISSN:<strong>${ie?.tipp?.title?.getIdentifierValue('ISSN')}</strong>, 
+                  eISSN:<strong>${ie?.tipp?.title?.getIdentifierValue('eISSN')}</strong><br/>                            
                    Access: ${ie.availabilityStatus?.value}<br/>
                    Coverage Note: ${ie.coverageNote?:(ie.tipp?.coverageNote?:'')}<br/>
                    <g:if test="${ie.availabilityStatus?.value=='Expected'}">
@@ -190,18 +190,13 @@
                    </g:if>
 
                 </td>
+              
                 <td>
-                  <g:xEditableRefData owner="${ie}" field="coreStatus" config='CoreStatus'/>
-
-                  <g:if test="${grailsApplication.config.ab?.newcore==true}"><br/>
-                    <span style="white-space: nowrap;">(Newcore: ${ie.wasCoreOn(as_at_date)})</span>
-                  </g:if>
-
-                  <br/><g:xEditableRefData owner="${ie}" field="medium" config='IEMedium'/>
+                  <g:xEditableRefData owner="${ie}" field="medium" config='IEMedium'/>
                 </td>
                 <td>
-                    <span style="white-space: nowrap;"><g:xEditable owner="${ie}" type="date" field="startDate" /></span><br/>
-                    <span style="white-space: nowrap;"><g:xEditable owner="${ie}" type="date" field="endDate" /></span>
+                    <g:xEditable owner="${ie}" type="date" field="startDate" /><br/>
+                    <g:xEditable owner="${ie}" type="date" field="endDate" />
                 </td>
                 <td>
                 <g:set var="iecorestatus" value="${ie.getTIP()?.coreStatus(params.asAt?dateFormater.parse(params.asAt):null)}"/>

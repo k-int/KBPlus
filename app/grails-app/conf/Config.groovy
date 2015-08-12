@@ -396,8 +396,8 @@ packageTransforms = [
 
 ]
 licenceTransforms = [
-  'sub_ie':[name:'Licensed Issue Entitlements (CSV)', xsl:'licenced_titles.xsl', returnFileExtention:'txt', returnMime:'text/plain'],
-  'sub_pkg':[name:'Licensed Subscriptions/Packages (CSV)', xsl:'licenced_subscriptions_packages.xsl', returnFileExtention:'txt', returnMime:'text/plain']
+  'sub_ie':[name:'Licensed Issue Entitlements (CSV)', xsl:'licenced_titles.xsl', returnFileExtention:'csv', returnMime:'text/csv'],
+  'sub_pkg':[name:'Licensed Subscriptions/Packages (CSV)', xsl:'licenced_subscriptions_packages.xsl', returnFileExtention:'csv', returnMime:'text/csv']
 ]
 // log4j configuration
 log4j = {

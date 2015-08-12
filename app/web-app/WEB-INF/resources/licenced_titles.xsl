@@ -17,11 +17,11 @@
     </xsl:call-template>
     <!--subscription_id -->
     <xsl:call-template name="csventry">
-        <xsl:with-param name="txt" select="SubscriptionID" />
+        <xsl:with-param name="txt" select="./CoverageStatement/SubscriptionID" />
     </xsl:call-template>
     <!-- subscription_name -->
     <xsl:call-template name="csventry">
-        <xsl:with-param name="txt" select="SubscriptionName" />
+        <xsl:with-param name="txt" select="./CoverageStatement/SubscriptionName" />
     </xsl:call-template>
     <!-- subscription_start_date -->
     <xsl:call-template name="csventry">

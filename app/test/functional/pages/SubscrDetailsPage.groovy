@@ -49,11 +49,11 @@ class SubscrDetailsPage extends AbstractDetails {
         }
         csvExport {
             $("a", text: "Exports").click()
-            $("a", text: "CSV Export").click()
+            $("a", text: "KBPlus (CSV)").click()
         }
-        csvExportNoHeader {
+        jsonExport {
             $("a", text: "Exports").click()
-            $("a", text: "CSV Export (No header)").click()
+            $("a", text: "JSON").click()
         }
         compareSubscriptions{ ref1, ref2 ->
             $("#select2-chosen-1").click()
