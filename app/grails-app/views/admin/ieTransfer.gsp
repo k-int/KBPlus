@@ -9,7 +9,7 @@
   	<h1>IE Transfer</h1>
 
         <g:form action="ieTransfer" method="get">
-          <p>Add the appropriate ID's below. Detailed information and confirmation will be presented before proceeding</p>
+          <p>Add the appropriate ID's below. All IssueEntitlements of source will be removed and transfered to target. Detailed information and confirmation will be presented before proceeding</p>
           <dl>
             <div class="control-group">
               <dt>Database ID of IE source TIPP</dt>
@@ -62,10 +62,10 @@
 			      </table>
  			</div>
 
-              <button name="transfer" type="submit" value="Go">**Transfer**</button>
+              <button onclick="return confirm('All source IEs will be moved to target. Continue?')" class="btn-success" name="transfer" type="submit" value="Go">Transfer</button>
   			</g:if>
 
-            <button type="submit" value="Go">Look Up TIPP Info...</button>
+            <button class="btn-primary" type="submit" value="Go">Look Up TIPP Info...</button>
           </dl>
         </g:form>
       </div>

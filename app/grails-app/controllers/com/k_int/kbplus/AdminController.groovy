@@ -513,7 +513,7 @@ class AdminController {
     }
 
     if(params.transfer == "Go" && result.sourceTIPPObj && result.targetTIPPObj){
-      log.debug("Tranfering IEs from ${result.sourceTIPPObj} to ${result.targetTIPPObj}")
+      log.debug("Tranfering ${IssueEntitlement.countByTipp(result.sourceTIPPObj)} IEs from ${result.sourceTIPPObj} to ${result.targetTIPPObj}")
       def sourceIEs = IssueEntitlement.findAllByTipp(result.sourceTIPPObj)
       sourceIEs.each{
         it.setTipp(result.targetTIPPObj)
