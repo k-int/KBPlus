@@ -1,1 +1,10 @@
 select "Upgrade-post";
+
+select @NoticePeriodId := pd_id from property_definition where pd_name = 'Notice Period';
+
+select 'Select the notice period property and create new custom propertie values for each license';
+
+insert into license_custom_property(version,owner_id, note, string_value, type_id) 
+ select 0, lic_id, " ", lic_notice_period, @NoticePeriodId 
+   from license where lic_notice_period is not null and lic_notice_period != "";
+   

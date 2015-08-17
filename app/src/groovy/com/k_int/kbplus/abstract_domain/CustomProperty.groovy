@@ -59,6 +59,7 @@ abstract class CustomProperty implements Serializable{
     }
 
     def parseValue(value, type){
+
         def result
         switch (type){
             case Integer.toString():
@@ -69,6 +70,9 @@ abstract class CustomProperty implements Serializable{
                 break;
             case BigDecimal.toString():
                 result = new BigDecimal(value)
+                break;
+            case org.codehaus.groovy.runtime.NullObject.toString():
+                result = null
                 break;
             default:
                 result = "CustomProperty.parseValue failed"

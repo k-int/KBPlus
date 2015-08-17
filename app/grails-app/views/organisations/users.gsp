@@ -54,6 +54,7 @@
               <g:if test="${userOrg[0].status==3}">Auto Approved</g:if>
             </td>
             <td>
+              <g:if test="${editable}">
               <g:if test="${((userOrg[0].status==1 ) || (userOrg[0].status==3)) }">
                 <g:link controller="organisations" action="revokeRole" params="${[grant:userOrg[0].id, id:params.id]}" class="btn">Revoke</g:link>
               </g:if>
@@ -61,6 +62,7 @@
                 <g:link controller="organisations" action="enableRole" params="${[grant:userOrg[0].id, id:params.id]}" class="btn">Allow</g:link>
               </g:else>
               <g:link controller="organisations" action="deleteRole" params="${[grant:userOrg[0].id, id:params.id]}" class="btn">Delete Link</g:link>
+            </g:if>
             </td>
           </tr>
         </g:each>

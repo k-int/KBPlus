@@ -29,18 +29,9 @@
 
                 <a href="${createLink(uri: '/signup')}">Sign Up</a>
             </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle explorer-link" data-toggle="dropdown"> Public Services <b class="caret"></b> </a>
-                    <ul class="dropdown-menu" style="max-width:none;">
-                      <li class="${active.equals('publicExport')?'active':''}">
+               
+          <li class="${active.equals('publicExport')?'active':''}">
                             <a href="${createLink(uri: '/publicExport')}">Exports</a>
-                      </li>
-%{--                       <li class="${active.equals('journals')?'active':''}">
-                            <a href="${createLink(uri: '/public/journalLicences')}">Journals</a>
-                      </li> --}%
-                    </ul>
-
-                </li>
 
             </li>
                 <g:if test="${active.equals("contact")}">

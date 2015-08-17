@@ -503,6 +503,27 @@ class AdminController {
     redirect(controller:'home')
   }
 
+  @Secured(['ROLE_ADMIN','IS_AUTHENTICATED_FULLY'])
+  def ieTransfer(){
+    log.debug(params)
+    def result = [:]
+    if(params.sourceTIPP && params.targetTIPP){
+      result.sourceTIPPObj = TitleInstancePackagePlatform.get(params.sourceTIPP)
+      result.targetTIPPObj = TitleInstancePackagePlatform.get(params.targetTIPP)
+    }
+
+    if(params.transfer == "Go" && result.sourceTIPPObj && result.targetTIPPObj){
+      log.debug("Tranfering ${IssueEntitlement.countByTipp(result.sourceTIPPObj)} IEs from ${result.sourceTIPPObj} to ${result.targetTIPPObj}")
+      def sourceIEs = IssueEntitlement.findAllByTipp(result.sourceTIPPObj)
+      sourceIEs.each{
+        it.setTipp(result.targetTIPPObj)
+        it.save()
+      }
+    }
+
+    result
+  }
+
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def titleMerge() {
 
@@ -743,16 +764,18 @@ class AdminController {
             types=nl
           }
           else {
-            log.debug("[seq ${ctr++} - avg=${avg}] ${types[0]}:${nl[0]} == ${types[1]}:${nl[1]}");
-            def id1 = Identifier.lookupOrCreateCanonicalIdentifier(types[0],nl[0]);
-            def id2 = Identifier.lookupOrCreateCanonicalIdentifier(types[1],nl[1]);
-
-            def idrel = IdentifierRelation.findByFromIdentifierAndToIdentifier(id1,id2);
-            if ( idrel == null ) {
-              idrel = IdentifierRelation.findByFromIdentifierAndToIdentifier(id2,id1);
+            Identifier.withNewTransaction {
+              log.debug("[seq ${ctr++} - avg=${avg}] ${types[0]}:${nl[0]} == ${types[1]}:${nl[1]}");
+              def id1 = Identifier.lookupOrCreateCanonicalIdentifier(types[0],nl[0]);
+              def id2 = Identifier.lookupOrCreateCanonicalIdentifier(types[1],nl[1]);
+  
+              def idrel = IdentifierRelation.findByFromIdentifierAndToIdentifier(id1,id2);
               if ( idrel == null ) {
-                idrel = new IdentifierRelation(fromIdentifier:id1,toIdentifier:id2);
-                idrel.save(flush:true)
+                idrel = IdentifierRelation.findByFromIdentifierAndToIdentifier(id2,id1);
+                if ( idrel == null ) {
+                  idrel = new IdentifierRelation(fromIdentifier:id1,toIdentifier:id2);
+                  idrel.save(flush:true)
+                }
               }
             }
           }
@@ -761,7 +784,7 @@ class AdminController {
           log.error("uploadIssnL expected 2 values");
         }
 
-        if ( ctr % 5000 == 0 ) {
+        if ( ctr % 200 == 0 ) {
           cleanUpGorm()
         }
       }
