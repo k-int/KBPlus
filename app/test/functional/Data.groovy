@@ -44,6 +44,7 @@ class Data {
     static Content_Item_welcome_text = "Welcome to KBPlus fucntional tests"
 
     static Package_import_file = workingDir + "manual_test_data" + sep + "so_v3" + sep + "Art Journals_Master_2014.csv"
+    static issnl_mapping_file = workingDir + "manual_test_data" + sep + "issnl" + sep + "small_issnl_data.tsv"
 
     static RenewalsUploadFile = workingDir + "manual_test_data"+sep+"renewalsUpload" +sep+"EmeraldNewRenewalWorksheet.xls"
     static JasperReportExistingFile = workingDir + "app" + sep + "grails-app"+sep+"conf"+sep+"resources"+sep+"jasper_reports"+sep+"title_no_url.jrxml"
