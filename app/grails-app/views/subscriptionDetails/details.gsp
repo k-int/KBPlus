@@ -64,9 +64,10 @@
                </dl>
                <dl><dt>Package Name</dt><dd><g:each in="${subscriptionInstance.packages}" var="sp">
                            <g:link controller="packageDetails" action="show" id="${sp.pkg.id}">${sp?.pkg?.name}</g:link> (${sp.pkg?.contentProvider?.name}) 
-
+                           <g:if test="${editable}">
                            <a onclick="unlinkPackage(${sp.pkg.id})">Unlink <i class="fa fa-times"></i></a>
                            <br/>
+                           </g:if>
                        </g:each></dd></dl>
 
                <dl><dt><g:annotatedLabel owner="${subscriptionInstance}" property="ids">Subscription Identifiers</g:annotatedLabel></dt>
