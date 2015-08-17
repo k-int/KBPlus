@@ -376,7 +376,7 @@ class LicenseDetailsController {
   }
 
   def userAccessCheck(licence,user,role_str){
-    if ( (licence==null || user==null ) || (! licence?.hasPerm(role_str,user) ) {
+    if ( (licence==null || user==null ) || (! licence?.hasPerm(role_str,user) )) {
       log.debug("return 401....");
       flash.error = "You do not have permission to ${role_str} ${licence?.reference?:'this licence'}. Please request access to ${licence?.licensee?.name?:'licence institution'} on the profile page";
       response.sendError(401);
