@@ -168,7 +168,7 @@ class LicenseDetailsController {
     if (result.user.getAuthorities().contains(Role.findByAuthority('ROLE_ADMIN'))) {
         isAdmin = true;
     }else{
-       hasAccess = result.licence.orgLinks.find{it.roleType.value == 'Licensing Consortium' &&
+       hasAccess = result.licence.orgLinks.find{it.roleType?.value == 'Licensing Consortium' &&
       it.org.hasUserWithRole(result.user,'INST_ADM') }
     }
     if( !isAdmin && (result.licence.licenseType != "Template" || hasAccess == null)) {
@@ -185,7 +185,7 @@ class LicenseDetailsController {
 
     log.debug("${result.licence}")
     def consortia = result.licence?.orgLinks?.find{
-      it.roleType.value == 'Licensing Consortium'}?.org
+      it.roleType?.value == 'Licensing Consortium'}?.org
 
     if(consortia){
       result.consortia = consortia
