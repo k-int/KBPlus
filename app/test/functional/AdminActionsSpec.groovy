@@ -60,11 +60,13 @@ class AdminActionsSpec extends GebReportingSpec {
       $('form').sPackage_import_fileoFile = Data.issnl_mapping_file
       $('button', text: "Upload...").click()
 
-    then:
+    // then:
       // waitFor{$("div.alert-success")}
 
     then:
-      at DashboardPage
+      at UploadIssnLPage
+
+      // at DashboardPage
 
   }
 }
