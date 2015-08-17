@@ -30,13 +30,21 @@ class ReminderService {
         log.debug("Initialised Reminder Service...")
     }
 
-    //i.e result[user id] = [Reminder 1,Reminder 2, etc]
+    //[1:[com.k_int.kbplus.Reminder : 8, com.k_int.kbplus.Reminder : 9, com.k_int.kbplus.Reminder : 10]]
     def getActiveEmailRemindersByUserID() {
         //Get active reminders and users who have email
         def result = [:]
-        Reminder.executeQuery('select r from Reminder as r where r.active = ? and r.user.email != null and r.reminderMethod.value = ? order by r.user.id',[true,'email']).each { r ->
-            result[r.user.id] << [r]  //Group Reminders and organise via users ID
+        Reminder.executeQuery('select r from Reminder as r where r.active = ? and r.user.email != null and r.reminderMethod.value = ? order by r.user.id',[Boolean.TRUE,'email']).each { r ->
+            if (result.containsKey(r.user.id)) {
+                ArrayList userReminders = result.get(r.user.id)  //Group Reminders and organise via users ID
+                userReminders.add(r)
+                result.put(r.user.id, userReminders)
+            } else
+            {
+                result.put(r.user.id, [r])
+            }
         }
+        log.debug("Users and active reminders : ${result}")
         result
     }
 
@@ -48,12 +56,13 @@ class ReminderService {
      */
     def getAuthorisedSubsciptionsByUser(User user) {
         def qry_params = [user.defaultDash, LocalDate.now().minusMonths(13).toDate()]
-        log.debug("Lookup up subscriptions for user : ${user.username} Restricting to Subscriptions with renewal date one year previous to today!")
+        log.debug("Looking up subscriptions for user : ${user.username} Restricting to Subscriptions with renewal date one year previous to today!")
         def base_qry = "select s from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) AND s.manualRenewalDate < ? order by s.manualRenewalDate asc "
         def results = Subscription.executeQuery(base_qry, qry_params);
-        if (!results.size() > 0)
+        if (results.size() == 0)
             log.error("ReminderService :: getAuthorisedSubsciptionsByUser - Unable to retrieve any subscriptions for user ${user.username}")
 
+        log.debug("Returned list of Subscriptions : ${results}")
         results
     }
 
@@ -120,8 +129,7 @@ class ReminderService {
          {  
            result.isFound    = true
            result.instance = (['reminder':r, 'user':u])
-           //Break out of each, should only be one for user in this period, and pointless reminder again!
-           return
+           return //Break out of each, should only be one for user in this period, and pointless reminder again!
          } 
         }
     }
@@ -131,7 +139,8 @@ class ReminderService {
      * @param today - Typically will be the day this code is executed, however, could be anything should you decide so.
      */
     private boolean isDateInReminderPeriod(LocalDate start, LocalDate end, LocalDate today) {
-          return !today.isBefore(start) && !today.isAfter(end);
+        log.debug("Converted Reminder Date: ${start}  +  Subscription Renewal: ${end}  +  Todays Date: ${today}")
+        return !today.isBefore(start) && !today.isAfter(end);
     }
 
     /**
