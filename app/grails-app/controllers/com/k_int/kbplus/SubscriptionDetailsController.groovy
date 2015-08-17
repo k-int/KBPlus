@@ -54,20 +54,23 @@ class SubscriptionDetailsController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
 
+    def result = [:]
+
+    result.user = User.get(springSecurityService.principal.id)
+    result.subscriptionInstance = Subscription.get(params.id)
+
+    userAccessCheck( result.subscriptionInstance, result.user, 'view')
 
     def verystarttime = exportService.printStart("SubscriptionDetails")
 
     log.debug("subscriptionDetails id:${params.id} format=${response.format}");
-    def result = [:]
 
-    result.user = User.get(springSecurityService.principal.id)
     result.transforms = grailsApplication.config.subscriptionTransforms
 
     result.max = params.max ? Integer.parseInt(params.max) : ( (response.format && response.format != "html" && response.format != "all" ) ? 10000 : result.user.defaultPageSize );
     result.offset = (params.offset && response.format && response.format != "html") ? Integer.parseInt(params.offset) : 0;
 
     log.debug("max = ${result.max}");
-    result.subscriptionInstance = Subscription.get(params.id)
 
     def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
     def pendingChanges = PendingChange.executeQuery("select pc.id from PendingChange as pc where subscription=? and ( pc.status is null or pc.status = ? ) order by ts desc", [result.subscriptionInstance, pending_change_pending_status ]);
@@ -95,12 +98,6 @@ class SubscriptionDetailsController {
       params.remove("transforms")
       params.remove("format")
       redirect action:'currentTitles', params:params
-    }
-
-    if (! result.subscriptionInstance?.hasPerm("view",result.user) ) {
-      log.debug("Result of hasPerm is false");
-      response.sendError(401);
-      return
     }
 
     // result.institution = Org.findByShortcode(params.shortcode)
@@ -509,10 +506,8 @@ class SubscriptionDetailsController {
     def formatter = new java.text.SimpleDateFormat("yyyy-MM-dd")
     def user = User.get(springSecurityService.principal.id)
 
-    if ( ! subscriptionInstance.hasPerm("edit",user) ) {
-      response.sendError(401);
-      return
-    }
+    userAccessCheck( subscriptionInstance, user, 'edit')
+
 
     log.debug("subscriptionBatchUpdate ${params}");
 
@@ -590,10 +585,8 @@ class SubscriptionDetailsController {
     result.subscriptionInstance = Subscription.get(params.id)
     result.institution = result.subscriptionInstance.subscriber
 
-    if ( ! result.subscriptionInstance.hasPerm("edit",result.user) ) {
-      response.sendError(401);
-      return
-    }
+    userAccessCheck( result.subscriptionInstance, result.user, 'edit')
+
 
     result.max = params.max ? Integer.parseInt(params.max) : request.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
@@ -688,6 +681,15 @@ class SubscriptionDetailsController {
         }
         result.subscriptionInstance = subscriptionInstance
 
+        userAccessCheck( result.subscriptionInstance, result.user, 'view')
+
+        if ( result.subscriptionInstance.isEditableBy(result.user) ) {
+          result.editable = true
+        }
+        else {
+          result.editable = false
+        }
+
         result.max = params.max ? Integer.parseInt(params.max) : request.user.defaultPageSize
         params.max = result.max
         result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
@@ -725,10 +727,8 @@ class SubscriptionDetailsController {
     result.subscriptionInstance = Subscription.get(params.siid)
     result.institution = result.subscriptionInstance?.subscriber
 
-    if ( ! result.subscriptionInstance.hasPerm("edit",result.user) ) {
-      response.sendError(401);
-      return
-    }
+    userAccessCheck( result.subscriptionInstance, result.user, 'edit')
+
 
     if ( result.subscriptionInstance ) {
       params.each { p ->
@@ -801,10 +801,7 @@ class SubscriptionDetailsController {
       result.subscriber_shortcode = result.institution.shortcode
     }
 
-    if ( ! result.subscriptionInstance.hasPerm("view",result.user) ) {
-      response.sendError(401);
-      return
-    }
+    userAccessCheck( result.subscriptionInstance, result.user, 'view')
 
     if ( result.subscriptionInstance.isEditableBy(result.user) ) {
       result.editable = true
@@ -824,10 +821,8 @@ class SubscriptionDetailsController {
     result.subscriptionInstance = Subscription.get(params.id)
     result.institution = result.subscriptionInstance.subscriber
 
-    if ( ! result.subscriptionInstance.hasPerm("view",result.user) ) {
-      response.sendError(401);
-      return
-    }
+    userAccessCheck( result.subscriptionInstance, result.user, 'view')
+
 
     if ( result.institution ) {
       result.subscriber_shortcode = result.institution.shortcode
@@ -849,10 +844,8 @@ class SubscriptionDetailsController {
     result.user = User.get(springSecurityService.principal.id)
     result.subscriptionInstance = Subscription.get(params.id)
     result.institution = result.subscriptionInstance.subscriber
-    if ( ! result.subscriptionInstance.hasPerm("view",result.user) ) {
-      response.sendError(401);
-      return
-    }
+
+    userAccessCheck( result.subscriptionInstance, result.user, 'view')
 
     if ( result.institution ) {
       result.subscriber_shortcode = result.institution.shortcode
@@ -892,7 +885,10 @@ class SubscriptionDetailsController {
     result.user = User.get(springSecurityService.principal.id)
     result.subscriptionInstance = Subscription.get(params.id)
     result.institution = result.subscriptionInstance.subscriber
+   
+    userAccessCheck( result.subscriptionInstance, result.user, 'view')
 
+   
     if ( result.subscriptionInstance.isEditableBy(result.user) ) {
       result.editable = true
     }
@@ -926,6 +922,13 @@ class SubscriptionDetailsController {
     shopping_basket.addIfNotPresent(oid)
 
     redirect controller:'myInstitutions',action:'renewalsSearch',params:[shortcode:result.subscriptionInstance.subscriber.shortcode]
+  }
+
+  def userAccessCheck(sub,user,role_str){
+    if ( ! sub.hasPerm(role_str,user) ) {
+      response.sendError(401);
+      return
+    }
   }
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -975,10 +978,8 @@ class SubscriptionDetailsController {
     result.subscriptionInstance = Subscription.get(params.id)
     result.institution = result.subscriptionInstance.subscriber
 
-    if ( ! result.subscriptionInstance.hasPerm("edit",result.user) ) {
-      response.sendError(401);
-      return
-    }
+    userAccessCheck( result.subscriptionInstance, result.user, 'edit')
+
 
     if ( params.addType && ( params.addType != '' ) ) {
       def pkg_to_link = Package.get(params.addId)
@@ -1057,10 +1058,8 @@ class SubscriptionDetailsController {
     result.user = User.get(springSecurityService.principal.id)
     result.subscription = Subscription.get(params.id)
 
-    if ( ! result.subscription.hasPerm("view",result.user) ) {
-      response.sendError(401);
-      return
-    }
+    userAccessCheck( result.subscription, result.user, 'view')
+
 
     if ( result.subscription.hasPerm("edit",result.user) ) {
       result.editable = true
@@ -1086,10 +1085,8 @@ class SubscriptionDetailsController {
     result.user = User.get(springSecurityService.principal.id)
     result.subscription = Subscription.get(params.id)
 
-    if ( ! result.subscription.hasPerm("view",result.user) ) {
-      response.sendError(401);
-      return
-    }
+    userAccessCheck( result.subscription, result.user, 'view')
+
 
     if ( result.subscription.hasPerm("edit",result.user) ) {
       result.editable = true
@@ -1176,14 +1173,13 @@ class SubscriptionDetailsController {
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def details() {
     def result = [:]
-
     result.user = User.get(springSecurityService.principal.id)
-    result.subscription = Subscription.get(params.id)
-    result.subscriptionInstance = result.subscription
-
+    result.subscriptionInstance =  Subscription.get(params.id)
+    
+    userAccessCheck( result.subscriptionInstance, result.user, 'view')
 
     // result.institution = Org.findByShortcode(params.shortcode)
-    result.institution = result.subscription.subscriber
+    result.institution = result.subscriptionInstance.subscriber
     if ( result.institution ) {
       result.subscriber_shortcode = result.institution.shortcode
       result.institutional_usage_identifier = result.institution.getIdentifierByType('JUSP');
