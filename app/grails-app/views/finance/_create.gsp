@@ -26,16 +26,15 @@
             <td><input type="text" name="newOrderNumber" class="input-medium"
                        placeholder="New Order #" id="newOrderNumber" value="${params.newOrderNumber}"/></td>
             <td>
-                <select name="newSubscription" class="input-medium" id="newSubscription" value="${params.newSubscription}">
-                    <option value="all">Not Set</option>
+                <select onchange="filterSubUpdated(this)" name="newSubscription" class="input-medium" id="newSubscription" value="${params.newSubscription}">
+                    <option value="all">All</option>
                     <g:each in="${institutionSubscriptions}" var="s">
-                        <option value="${s.id}" ${s.id==params.long('newSubscription')?'selected="selected"':''}>${s.name}</option>
+                        <option value="${s.id}" ${s.id==params.long('subscriptionFilter')?'selected="selected"':''}>${s.name}</option>
                     </g:each>
                 </select>
             </td>
             <td>
                 <select name="newPackage" class="input-medium" id="newPackage" value="${params.newPackage}">
-                    <option value="">Not Set</option>
                 </select>
             </td>
             <td>
@@ -87,7 +86,7 @@
             <td>
                 <h3>Reference</h3>
                 <input type="text" name="newReference" placeholder="New Item Reference" id="newCostItemReference" value="${params.newReference}"/><br/>
-                <input type="text" style="width: 100%; border-radius: 4px;" placeholder="New code or lookup code" name="newBudgetCode" id="newBudgetCode" ><br/><br/><br/>
+                <input type="text" style="width: 220px; border-radius: 4px;" placeholder="New code or lookup code" name="newBudgetCode" id="newBudgetCode" ><br/><br/><br/>
                 <input class="datepicker-class" placeholder="Start Date" type="date" id="newStartDate" name="newStartDate"/>
                 <input class="datepicker-class" placeholder="End Date"   type="date" id="newEndDate" name="newEndDate"/>
             </td>

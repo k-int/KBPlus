@@ -22,26 +22,7 @@
         </g:if>
         <li> <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}">Subscription ${subscriptionInstance.id} Details</g:link> </li>
         
-        <li class="dropdown pull-right">
-          <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>
-          <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
-            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${params+ [format:'csv']}">CSV Export</g:link><li>
-            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${params + [format:'csv',omitHeader:'Y']}">CSV Export (No header)</g:link></li>
-            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${params + [format:'json']}">JSON</g:link></li>
-            <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${params + [format:'xml']}">XML</g:link></li>
-            <g:each in="${transforms}" var="transkey,transval">
-              <li><g:link action="index" id="${params.id}" params="${[format:'xml',transformId:transkey,mode: params.mode]}"> ${transval.name}</g:link></li>
-            </g:each>
-        </ul>
-
-        <li class="pull-right">
-          View:
-          <div class="btn-group" data-toggle="buttons-radio">
-            <g:link controller="subscriptionDetails" action="index" params="${params+['mode':'basic']}" class="btn btn-primary btn-mini ${((params.mode=='basic')||(params.mode==null))?'active':''}">Basic</g:link>
-            <g:link controller="subscriptionDetails" action="index" params="${params+['mode':'advanced']}" button type="button" class="btn btn-primary btn-mini ${params.mode=='advanced'?'active':''}">Advanced</g:link>
-          </div>
-          &nbsp;
-        </li>
+      
 
     </li>
         <g:if test="${editable}">
@@ -83,9 +64,10 @@
                </dl>
                <dl><dt>Package Name</dt><dd><g:each in="${subscriptionInstance.packages}" var="sp">
                            <g:link controller="packageDetails" action="show" id="${sp.pkg.id}">${sp?.pkg?.name}</g:link> (${sp.pkg?.contentProvider?.name}) 
-
+                           <g:if test="${editable}">
                            <a onclick="unlinkPackage(${sp.pkg.id})">Unlink <i class="fa fa-times"></i></a>
                            <br/>
+                           </g:if>
                        </g:each></dd></dl>
 
                <dl><dt><g:annotatedLabel owner="${subscriptionInstance}" property="ids">Subscription Identifiers</g:annotatedLabel></dt>
@@ -195,6 +177,7 @@
         </div>
       </div>
     </div>
+    <div id="magicArea"></div>
     <g:render template="orgLinksModal" 
               contextPath="../templates" 
               model="${[linkType:subscriptionInstance?.class?.name,roleLinks:subscriptionInstance?.orgRelations,parent:subscriptionInstance.class.name+':'+subscriptionInstance.id,property:'orgs',recip_prop:'sub']}" />

@@ -1,5 +1,7 @@
 package com.k_int.kbplus
 
+import javax.persistence.Transient
+
 class Order {
 
   String orderNumber
@@ -18,4 +20,21 @@ class Order {
           owner(nullable:false, blank:false);
   }
 
+
+    @Transient
+    static def refdataFind(params) {
+        def owner  = Org.findByShortcode(params.shortcode)
+        def result = [];
+        def ql     = null;
+        if (owner)
+            ql = Order.findAllByOwnerAndOrderNumberIlike(owner,"%${params.q}%",params)
+
+        if ( ql ) {
+            ql.each { id ->
+                result.add([id:"${id.class.name}:${id.id}",text:"${id.orderNumber}"])
+            }
+        }
+
+        result
+    }
 }

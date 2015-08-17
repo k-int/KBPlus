@@ -7,6 +7,8 @@ import com.k_int.ClassUtils
 import org.springframework.context.i18n.LocaleContextHolder
 
 class TitleInstancePackagePlatform {
+  @Transient
+  def grailsLinkGenerator
 
   @Transient
   def grailsApplication
@@ -53,6 +55,7 @@ class TitleInstancePackagePlatform {
   Date coreStatusEnd
 
   TitleInstancePackagePlatform derivedFrom
+  TitleInstancePackagePlatform masterTipp
 
   static mappedBy = [ids: 'tipp', additionalPlatforms: 'tipp']
   static hasMany = [ids: IdentifierOccurrence, 
@@ -292,10 +295,11 @@ class TitleInstancePackagePlatform {
         dep_ies.each { dep_ie ->
         def sub = ClassUtils.deproxy(dep_ie.subscription)
         if(dep_ie.subscription && sub && sub?.status?.value != "Deleted" ) {
+        def titleLink = grailsLinkGenerator.link(controller: 'titleDetails', action: 'show', id: this.title.id, absolute: true)
+        def pkgLink =  grailsLinkGenerator.link(controller: 'packageDetails', action: 'show', id: this.pkg.id, absolute: true)
         changeNotificationService.registerPendingChange('subscription',
                                                         dep_ie.subscription,
-                                                        "Information about title <a href=\"${grailsApplication.config.SystemBaseURL}/titleDetails/show/${this.title.id}\">\"${this.title.title}\"" +
-                                                                "</a> changed in package <a href=\"${grailsApplication.config.SystemBaseURL}/packageDetails/show/${id}\">${this.pkg.name}</a>. " +
+                                                        "Information about title <a href=\"${titleLink}\">${this.title.title}</a> changed in package <a href=\"${pkgLink}\">${this.pkg.name}</a>. " +
                                                                 "<b>${changeDocument.prop}</b> was updated from <b>\"${changeDocument.oldLabel}\"</b>(${changeDocument.old}) to <b>\"${changeDocument.newLabel}\"</b>" +
                                                                 "(${changeDocument.new}). "+description,
                                                         sub?.getSubscriber(),

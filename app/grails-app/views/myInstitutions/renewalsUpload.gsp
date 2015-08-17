@@ -62,7 +62,7 @@
               </tr>
               <tr>
                 <th><g:checkBox name="subscription.copyDocs" value="${true}" /></th>
-                <th>Copy Documents from Subscription</th>
+                <th>Copy Documents and Notes from Subscription</th>
                 <td>${additionalInfo?.sub_name}</td>
               </tr>
             </tbody>

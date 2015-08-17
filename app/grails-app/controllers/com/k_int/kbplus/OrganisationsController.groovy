@@ -136,6 +136,9 @@ class OrganisationsController {
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def users() {
       def result = [:]
+      if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') ) {
+        result.editable = true
+      }
       def tracked_roles = ["KBPLUS_EDITOR":"KB+ Editor","ROLE_ADMIN":"KB+ Administrator"]
       result.user = User.get(springSecurityService.principal.id)
       def orgInstance = Org.get(params.id)

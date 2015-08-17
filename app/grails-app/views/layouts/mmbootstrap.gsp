@@ -186,9 +186,6 @@
                            <g:link controller="jasperReports" action="index">Reports</g:link></li>
                        <li <%= ( ( 'titleDetails'== controllerName ) && ( 'dmIndex'==actionName ) ) ? ' class="active"' : '' %>>
                            <g:link controller="titleDetails" action="dmIndex">Titles</g:link></li>
-                       <li <%= ( ( 'dataManager'== controllerName ) && ( 'expungeDeletedTitles'==actionName ) ) ? ' class="active"' : '' %>>
-                           <g:link controller="dataManager" action="expungeDeletedTitles">Expunge Deleted Titles</g:link></li>
-
                      </ul>
                    </li>
                 </sec:ifAnyGranted>
@@ -228,12 +225,26 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'forceSendNotifications'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="forceSendNotifications">Send Pending Notifications</g:link>
                       </li>
+                       <li class="dropdown-submenu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Data Management Tasks</a>
+                        <ul class="dropdown-menu">
+ <li <%= ( ( 'dataManager'== controllerName ) && ( 'expungeDeletedTitles'==actionName ) ) ? ' class="active"' : '' %>>
+                           <g:link controller="dataManager" action="expungeDeletedTitles">Expunge Deleted Titles</g:link></li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'titleMerge'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="titleMerge">Title Merge</g:link>
                       </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'ieTransfer'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="ieTransfer">IE Transfer</g:link>
+                      </li>                      
                         <li <%= ( ( 'admin'== controllerName ) && ( 'userMerge'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="userMerge">User Merge</g:link>
                       </li>
+                        <li <%= ( ( 'admin'== controllerName ) && ( 'hardDeletePkgs'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="hardDeletePkgs">Package Delete</g:link>
+                      </li>
+                      </ul>
+                      </li>
+
                       <li class="divider"></li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'globalSync'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="globalSync">Start Global Data Sync</g:link>

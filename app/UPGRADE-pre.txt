@@ -2,12 +2,13 @@ select "Updating spelling mistakes";
 
 select rdc_id into @concurrentAccessCatId from refdata_category where rdc_description = 'Concurrent Access';
 select rdv_id into @notSpecifiedId from refdata_value where rdv_owner = @concurrentAccessCatId and rdv_value = 'Not Specified';
-select @notSpecifiedId;
-select pd_id into @concurrentUsersPropDefId from property_definition where pd_name = 'Concurrent Users';
-
 -- delete from license_custom_property  where ref_value_id = @notSpecifiedId and note is null;
 
-delete from license_custom_property where type_id = @concurrentUsersPropDefId and owner_id in ( select owner_id from license_custom_property where ref_value_id = @notSpecifiedId ) and int_value = 0;
+
+select pd_id into @concurrentUsersPropDefId from property_definition where pd_name = 'Concurrent Users';
+
+delete from license_custom_property where type_id = @concurrentUsersPropDefId and owner_id in (select owners.id from( select owner_id as id from license_custom_property where type_id = @concurrentUsersPropDefId ) as owners) and int_value = 0;
+
 
 ALTER TABLE org CHANGE COLUMN org_status_rv_fk org_status_rv_fk BIGINT(20) NULL DEFAULT NULL ;
 
