@@ -34,6 +34,10 @@ class LicenseDetailsController {
 
     userAccessCheck(result.license,result.user,'view')
 
+    //used for showing/hiding the Licence Actions menus
+    result.canCopy = result.license.orgLinks.find{it.roleType?.value == 'Licensor' &&
+        it.org.hasUserWithRole(result.user,'INST_ADM') }
+    
     if ( result.license.hasPerm("edit",result.user) ) {
       result.editable = true
     }
@@ -123,7 +127,7 @@ class LicenseDetailsController {
   }
   def getAvailableSubscriptions(licence,user){
     def licenceInstitutions = licence?.orgLinks?.findAll{ orgRole ->
-      orgRole.roleType.value == "Licensee"
+      orgRole.roleType?.value == "Licensee"
     }?.collect{  it.org?.hasUserWithRole(user,'INST_ADM')?it.org:null  }
 
     def subscriptions = null
