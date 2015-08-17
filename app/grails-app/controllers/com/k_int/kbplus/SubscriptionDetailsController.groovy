@@ -925,7 +925,7 @@ class SubscriptionDetailsController {
   }
 
   def userAccessCheck(sub,user,role_str){
-    if ( ! sub.hasPerm(role_str,user) ) {
+    if ((sub == null || user == null ) || ! sub.hasPerm(role_str,user) ) {
       response.sendError(401);
       return
     }
