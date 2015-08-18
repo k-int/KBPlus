@@ -7,13 +7,15 @@ import org.apache.commons.lang3.time.DateUtils
 import org.elasticsearch.common.joda.time.DateTime
 import org.elasticsearch.common.joda.time.LocalDate
 import org.springframework.context.ApplicationContext
+import org.springframework.context.ApplicationContextAware
+
 import javax.annotation.PostConstruct
 
 /**
  * @author Ryan@k-int.com
  */
 @Transactional(readOnly = true)
-class ReminderService {
+class ReminderService implements ApplicationContextAware{
 
     ApplicationContext applicationContext
     def mailService
@@ -68,7 +70,7 @@ class ReminderService {
 
     //Key Subscription -> [[user: u, reminder: r]]
     //Will need to add Subscription to the map sent to the template subscription: sub
-    private def generateMail(Subscription sub, ArrayList userRemindersList) {
+    def generateMail(Subscription sub, ArrayList userRemindersList) {
         log.debug("Setting up mail generation requirements for Subscription ${sub.name}...");
         def emailTemplateFile = generic? applicationContext.getResource("WEB-INF/mail-templates/subscriptionManualRenewalDateGeneric.gsp").file : applicationContext.getResource("WEB-INF/mail-templates/subscriptionManualRenewalDate.gsp").file
         def engine            = new SimpleTemplateEngine()
@@ -78,20 +80,22 @@ class ReminderService {
         Date now = new Date()
         if (generic)
         {
-            _template = baseTemplate.make([subscription: sub])
+            _template = baseTemplate.make(['subscription': sub])
             _content  = _template.toString()
-            def userEmailList = userRemindersList.collect {it.user.email}.toArray()
-            mailReminder(userEmailList, "Renewal Reminder", _content)
+            String[] userEmailList = userRemindersList.collect {it.user.email}.toArray()
+            log.debug("Generating generic email for ${userEmailList.length} users")
+            mailReminder(userEmailList, "Renewal Reminder", _content,null, null)
             Reminder.withTransaction { status ->
                 userRemindersList.each { it.reminder.lastRan = now }
             }
         }
         else
         {
+            log.debug("Generating renewal email for ${userRemindersList.size()} users")
             userRemindersList.each { inst ->
-                _template =  baseTemplate.make(inst.put(subscription: sub))
+                _template =  baseTemplate.make(inst.plus([subscription: sub]))
                 _content  = _template.toString()
-                mailReminder(inst.user.email, inst.reminder.trigger.value, _content)
+                mailReminder(inst.user.email, inst.reminder.trigger.value, _content, null, null)
                 Reminder.withTransaction { status ->
                     inst.reminder.lastRan = now //Update the Reminder instance
                 }
@@ -100,15 +104,20 @@ class ReminderService {
 
     }
 
-    def mailReminder(userAddress, subjectTrigger, content) {
-        mailService.sendMail {
-            async true
-            to userAddress
-            from from
-            replyTo replyTo
-            subject subjectTrigger
-            html content
-        }
+    def mailReminder(userAddress, subjectTrigger, content, overrideReplyTo, overrideFrom) {
+       try {
+           mailService.sendMail {
+               //async true //todo unable to send async method?
+               to userAddress
+               from overrideFrom != null? overrideFrom : from
+               replyTo overrideReplyTo != null? overrideReplyTo : replyTo
+               subject subjectTrigger
+               html content
+           }
+       } catch (Exception e)
+       {
+           log.error("Reminder Service - mailReminder() :: Unable to perform email due to exception ${e.message}")
+       }
     }
 
     /**
