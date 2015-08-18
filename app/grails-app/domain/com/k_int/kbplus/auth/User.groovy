@@ -30,7 +30,7 @@ class User {
   
   RefdataValue showInfoIcon
 
-  static hasMany = [ affiliations: com.k_int.kbplus.auth.UserOrg, roles: com.k_int.kbplus.auth.UserRole ]
+  static hasMany = [ affiliations: com.k_int.kbplus.auth.UserOrg, roles: com.k_int.kbplus.auth.UserRole, reminders: com.k_int.kbplus.Reminder ]
   static mappedBy = [ affiliations: 'user', roles: 'user' ]
 
   static constraints = {
