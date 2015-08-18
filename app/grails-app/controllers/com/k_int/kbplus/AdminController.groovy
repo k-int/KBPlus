@@ -788,6 +788,7 @@ class AdminController {
           cleanUpGorm()
         }
       }
+      result.complete = true
     }
 
     result

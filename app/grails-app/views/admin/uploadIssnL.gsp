@@ -9,6 +9,11 @@
     <div class="container">
       <div class="span12">
         <h1>Import Identifier Same-As Relations</h1>
+      <g:if test="${complete}">
+        <div class="container">
+           <bootstrap:alert id="procesing_alert" class="alert-info"> CSV Processing is complete</bootstrap:alert>
+        </div>
+      </g:if>
         <p>UPload a file of tab separated equivalent identifiers. By default, the assumption is ISSN -&gt; ISSNL mappings</p>
            
         <g:form action="uploadIssnL" method="post" enctype="multipart/form-data">
