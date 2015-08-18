@@ -205,11 +205,13 @@ class ReminderService {
             //Iterate through available subscriptions (List would not have anything past 12 months of present date for server load purposes!)
             //Organise master list i.e. [Subscription inst][['reminder':reminder inst1, 'user': user inst1],['reminder':reminder inst2, 'user': user inst2],etc]
             availableSubs.each { sub ->
-                def reminderAndUserInst = isSubInReminderRange(v, sub, today, user)
+                if (sub.manualRenewalDate != null) {
+                    def reminderAndUserInst = isSubInReminderRange(v, sub, today, user)
 
-                if(reminderAndUserInst.isFound) {
-                    log.debug("Found Subscription: ${sub.name} for User: ${reminderAndUserInst.instance.user.username} Reminder: ${reminderAndUserInst.instance.reminder.id}")
-                    addToMasterList(masterSubscriptionList, sub, reminderAndUserInst.instance)
+                    if (reminderAndUserInst.isFound) {
+                        log.debug("Found Subscription: ${sub.name} for User: ${reminderAndUserInst.instance.user.username} Reminder: ${reminderAndUserInst.instance.reminder.id}")
+                        addToMasterList(masterSubscriptionList, sub, reminderAndUserInst.instance)
+                    }
                 }
             }
         }
