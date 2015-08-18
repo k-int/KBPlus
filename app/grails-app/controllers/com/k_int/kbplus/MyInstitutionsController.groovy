@@ -870,7 +870,7 @@ class MyInstitutionsController {
         sub_qry += "WHERE o.roleType.value = 'Subscriber' "
         sub_qry += "AND o.org = :institution "
         sub_qry += "AND ie.subscription.status.value != 'Deleted' "
-        sub_qry += "AND ie.status != 'Deleted'"
+        sub_qry += "AND ie.status.value != 'Deleted'"
 
         if (date_restriction) {
             sub_qry += " AND ie.subscription.startDate <= :date_restriction AND ie.subscription.endDate >= :date_restriction "

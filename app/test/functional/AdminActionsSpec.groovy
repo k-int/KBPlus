@@ -71,5 +71,6 @@ class AdminActionsSpec extends GebReportingSpec {
 
     then:
       $('div.alert-info').verifyNotEmpty() 
+
   }
 }
