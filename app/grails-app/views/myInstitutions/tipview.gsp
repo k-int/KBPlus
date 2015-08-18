@@ -78,8 +78,8 @@
             <tr>
 
               <td>
-              <g:link controller="myInstitutions" action="tip" params="${[shortcode:params.shortcode]}" id="${tip.id}">${tip?.title?.title}</g:link>
-              (title: <g:link controller="titleDetails" action="show" id="${tip?.title?.id}">${tip?.title?.title}</g:link>)
+              <g:link controller="myInstitutions" action="tip" params="${[shortcode:params.shortcode]}" id="${tip.id}">${tip?.title?.title} via ${tip?.provider?.name}</g:link>;
+              <g:link controller="titleDetails" action="show" id="${tip?.title?.id}">Link to Title Details</g:link>)
               </td>
               <td>
               <g:link controller="org" action="show" id="${tip?.provider?.id}">${tip?.provider?.name}</g:link>
