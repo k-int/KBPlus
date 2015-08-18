@@ -1,6 +1,6 @@
 <g:if test="${pendingChanges?.size() > 0}">
   <div class="container alert-warn">
-    <h6>This Subscription has pending change notifications</h6>
+    <h6>There are pending change notifications</h6>
    <g:if test="${processingpc}">
     <div class="container"><bootstrap:alert class="alert-warning"><g:message code="pendingchange.inprogress"/></bootstrap:alert></div>
   </g:if>
