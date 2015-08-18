@@ -190,7 +190,7 @@ class ProfileController {
         if (request.isXhr())
             render result as JSON
         else
-            redirect(action: "index")
+            redirect(action: "index", fragment: "reminders")
     }
 
 

@@ -782,7 +782,7 @@ financialImportTSVLoaderMappings = [
 //grails.mail.default.from="server@yourhost.com" //override system wide
 grails.mail.disabled=false //System wide
 grails.mail.poolSize=20 //default 5 emails at a time, then que based system (prereq = async true)
-grails.mail.overrideAddress="ryan@k-int.com" //Test env only, overrides to and from address
-notifications.email.from='notification@kbplus.org.uk'
-notifications.email.replyTo='no-reply@kbplus.org.uk'
-notifications.email.genericTemplate=false //If enabled, no customisation in email i.e. Reminder inst info, User info... Else, Customised template will be sent to user
+//grails.mail.overrideAddress="ryan@k-int.com" //Test env only, overrides to and from address
+notifications.email.from='notification@kbplus.ac.uk'
+notifications.email.replyTo='no-reply@kbplus.ac.uk'
+notifications.email.genericTemplate=true //If enabled, no customisation in email i.e. Reminder inst info, User info... Else, Customised template will be sent to user

@@ -165,7 +165,7 @@
 
 
 
-  <div class="container">
+  <div id="reminders" class="container">
       <div class="row-fluid">
           <div class="span12">
               <div class="well">

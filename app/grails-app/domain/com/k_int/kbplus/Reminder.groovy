@@ -29,4 +29,6 @@ class Reminder {
     static mapping = {
         sort lastUpdated: "desc"
     }
+
+    static  belongsTo = User
 }
