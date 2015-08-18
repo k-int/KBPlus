@@ -14,7 +14,7 @@
            <bootstrap:alert id="procesing_alert" class="alert-info"> CSV Processing is complete</bootstrap:alert>
         </div>
       </g:if>
-        <p>UPload a file of tab separated equivalent identifiers. By default, the assumption is ISSN -&gt; ISSNL mappings</p>
+        <p>Upload a file of tab separated equivalent identifiers. By default, the assumption is ISSN -&gt; ISSNL mappings</p>
            
         <g:form action="uploadIssnL" method="post" enctype="multipart/form-data">
           <dl>

@@ -741,8 +741,9 @@ class AdminController {
   def uploadIssnL() {
     
     def result=[:]
-    def ctr = 0;
+    def ctr = 1;
     def start_time = System.currentTimeMillis()
+
 
     log.debug("uploadIssnL");
     if (request.method == 'POST'){
@@ -788,17 +789,23 @@ class AdminController {
           }
   
           if ( ctr % 200 == 0 ) {
+            log.debug("Cleaning up gorm");
             cleanUpGorm()
           }
         }
-        result.complete = true
+        result.complete=true
       }
       catch ( Exception e ) {
         e.printStackTrace();
       }
+      // redirect(controller:'admin',action:'uploadIssnL')
     }
+
+
+    // Setting this here in case call to clean up GORM was causing a problem
+    result.user = User.get(springSecurityService.principal.id)
+
     log.debug("finished");
-    result
   }
 
   def cleanUpGorm() {

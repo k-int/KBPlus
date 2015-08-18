@@ -21,12 +21,8 @@
     </div>
 
     <div class="container">
-
-      ${institution?.name} Subscription Taken
       <h1><g:inPlaceEdit domain="Subscription" pk="${subscriptionInstance.id}" field="name" id="name" class="newipe">${subscriptionInstance?.name}</g:inPlaceEdit></h1>
-
       <g:render template="nav" contextPath="." />
-
     </div>
 
     <g:set var="counter" value="${offset+1}" />

@@ -21,13 +21,8 @@
     </div>
 
    <div class="container">
-
-      ${institution?.name} ${subscriptionInstance?.type?.value} Subscription Taken
-
        <h1>${subscriptionInstance?.name}</h1>
-
        <g:render template="nav" contextPath="." />
-
     </div>
 
     <div class="container">
