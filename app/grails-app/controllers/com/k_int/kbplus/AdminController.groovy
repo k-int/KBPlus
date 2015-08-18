@@ -739,58 +739,65 @@ class AdminController {
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def uploadIssnL() {
+    
     def result=[:]
     def ctr = 0;
     def start_time = System.currentTimeMillis()
 
+    log.debug("uploadIssnL");
     if (request.method == 'POST'){
-      def input_stream = request.getFile("sameasfile")?.inputStream
-      CSVReader r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ), '\t' as char )
-      String[] nl;
-      String[] types;
-      def first = true
-      while ((nl = r.readNext()) != null) {
-        def elapsed = System.currentTimeMillis() - start_time
-
-        def avg = 0;
-        if ( ctr > 0 ) {
-          avg = elapsed / 1000 / ctr  //
-        }
-
-        if ( nl.length == 2 ) {
-          if ( first ) {
-            first = false; // Skip header
-            log.debug('Header :'+nl);
-            types=nl
-          }
-          else {
-            Identifier.withNewTransaction {
-              log.debug("[seq ${ctr++} - avg=${avg}] ${types[0]}:${nl[0]} == ${types[1]}:${nl[1]}");
-              def id1 = Identifier.lookupOrCreateCanonicalIdentifier(types[0],nl[0]);
-              def id2 = Identifier.lookupOrCreateCanonicalIdentifier(types[1],nl[1]);
+      try {
+        def input_stream = request.getFile("sameasfile")?.inputStream
+        CSVReader r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ), '\t' as char )
+        String[] nl;
+        String[] types;
+        def first = true
+        while ((nl = r.readNext()) != null) {
+          def elapsed = System.currentTimeMillis() - start_time
   
-              def idrel = IdentifierRelation.findByFromIdentifierAndToIdentifier(id1,id2);
-              if ( idrel == null ) {
-                idrel = IdentifierRelation.findByFromIdentifierAndToIdentifier(id2,id1);
+          def avg = 0;
+          if ( ctr > 0 ) {
+            avg = elapsed / 1000 / ctr  //
+          }
+  
+          if ( nl.length == 2 ) {
+            if ( first ) {
+              first = false; // Skip header
+              log.debug('Header :'+nl);
+              types=nl
+            }
+            else {
+              Identifier.withNewTransaction {
+                log.debug("[seq ${ctr++} - avg=${avg}] ${types[0]}:${nl[0]} == ${types[1]}:${nl[1]}");
+                def id1 = Identifier.lookupOrCreateCanonicalIdentifier(types[0],nl[0]);
+                def id2 = Identifier.lookupOrCreateCanonicalIdentifier(types[1],nl[1]);
+    
+                def idrel = IdentifierRelation.findByFromIdentifierAndToIdentifier(id1,id2);
                 if ( idrel == null ) {
-                  idrel = new IdentifierRelation(fromIdentifier:id1,toIdentifier:id2);
-                  idrel.save(flush:true)
+                  idrel = IdentifierRelation.findByFromIdentifierAndToIdentifier(id2,id1);
+                  if ( idrel == null ) {
+                    idrel = new IdentifierRelation(fromIdentifier:id1,toIdentifier:id2);
+                    idrel.save(flush:true)
+                  }
                 }
               }
             }
           }
+          else {
+            log.error("uploadIssnL expected 2 values");
+          }
+  
+          if ( ctr % 200 == 0 ) {
+            cleanUpGorm()
+          }
         }
-        else {
-          log.error("uploadIssnL expected 2 values");
-        }
-
-        if ( ctr % 200 == 0 ) {
-          cleanUpGorm()
-        }
+        result.complete = true
       }
-      result.complete = true
+      catch ( Exception e ) {
+        e.printStackTrace();
+      }
     }
-
+    log.debug("finished");
     result
   }
 
