@@ -24,6 +24,7 @@ class PendingChangeController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def acceptAll() {
+    log.debug("acceptAll - ${params}")
     def owner = genericOIDService.resolveOID(params.id)
 
     def changes_to_accept = []
@@ -42,6 +43,7 @@ class PendingChangeController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def rejectAll() {
+    log.debug("rejectAll ${params}")
     def owner = genericOIDService.resolveOID(params.id)
 
     def changes_to_reject = []

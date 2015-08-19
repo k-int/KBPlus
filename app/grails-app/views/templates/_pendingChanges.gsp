@@ -1,9 +1,9 @@
+ <g:if test="${processingpc}">
+  <div class="container"><bootstrap:alert class="alert-warning"><g:message code="pendingchange.inprogress"/></bootstrap:alert></div>
+</g:if>
 <g:if test="${pendingChanges?.size() > 0}">
   <div class="container alert-warn">
     <h6>There are pending change notifications</h6>
-   <g:if test="${processingpc}">
-    <div class="container"><bootstrap:alert class="alert-warning"><g:message code="pendingchange.inprogress"/></bootstrap:alert></div>
-  </g:if>
     <g:if test="${editable && !processingpc}">
       <g:link controller="pendingChange" action="acceptAll" id="${model.class.name}:${model.id}" class="btn btn-success"><i class="icon-white icon-ok "></i>Accept All</g:link>
       <g:link controller="pendingChange" action="rejectAll" id="${model.class.name}:${model.id}" class="btn btn-danger"><i class="icon-white icon-remove"></i>Reject All</g:link>
