@@ -81,7 +81,7 @@
         </div>
         
         <div class="modal-footer">
-		    <input type="submit" value="Apply" class="btn btn-primary btn-small"/>
+		    <input type="submit" id="mergeUsersBtn" value="Apply" class="btn btn-primary btn-small"/>
 		 </div>
         </g:form>
 	</div>

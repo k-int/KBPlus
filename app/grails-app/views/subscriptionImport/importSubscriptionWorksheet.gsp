@@ -9,7 +9,7 @@
     <div class="container">
       <g:form action="importSubscriptionWorksheet" method="post" enctype="multipart/form-data" params="${params}">
         <input type="file" id="renewalsWorksheet" name="renewalsWorksheet"/>
-        <button type="submit" class="btn btn-primary">Upload Renewals Worksheet</button>
+        <button type="submit" class="btn btn-primary"><g:message code="subscription.upload.worksheet" default="Upload New Subscription Taken Worksheet"/></button>
       </g:form>
     </div>
 

@@ -35,9 +35,9 @@ class LicenseDetailsController {
     userAccessCheck(result.license,result.user,'view')
 
     //used for showing/hiding the Licence Actions menus
-    result.canCopy = result.license.orgLinks.find{it.roleType?.value == 'Licensor' &&
-        it.org.hasUserWithRole(result.user,'INST_ADM') }
-    
+    def admin_role = Role.findAllByAuthority("INST_ADM")
+    result.canCopyOrgs = UserOrg.executeQuery("select uo.org from UserOrg uo where uo.user=(:user) and uo.formalRole=(:role) and uo.status in (:status)",[user:result.user,role:admin_role,status:[1,3]])
+
     if ( result.license.hasPerm("edit",result.user) ) {
       result.editable = true
     }
@@ -50,35 +50,38 @@ class LicenseDetailsController {
     def filename = "licenceDetails_${license_reference_str.replace(" ", "_")}"
     result.onixplLicense = result.license.onixplLicense;
 
-    def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
-    def pendingChanges = PendingChange.executeQuery("select pc.id from PendingChange as pc where license=? and ( pc.status is null or pc.status = ? ) order by pc.ts desc", [result.license, pending_change_pending_status]);
-
-      //Filter any deleted subscriptions out of displayed links
-      Iterator<Subscription> it = result.license.subscriptions.iterator()
-      while(it.hasNext()){
-          def sub = it.next();
-          if(sub.status == RefdataCategory.lookupOrCreate('Subscription Status','Deleted')){
-              it.remove();
-          }
-      }
-
-    log.debug("pc result is ${result.pendingChanges}");
-    if(result.license.incomingLinks.find{it?.isSlaved?.value == "Yes"} && pendingChanges){
-      log.debug("Slaved lincence, auto-accept pending changes")
-      def changesDesc = []
-      pendingChanges.each{change ->
-        if(!pendingChangeService.performAccept(change,request)){
-          log.debug("Auto-accepting pending change has failed.")
-        }else{
-          changesDesc.add(PendingChange.get(change).desc)
-        }
-      }
-      flash.message = changesDesc
-    }else{
-      result.pendingChanges = pendingChanges.collect{PendingChange.get(it)}
-    }
     if(executorWrapperService.hasRunningProcess(result.license)){
+      log.debug("PEndingChange processing in progress")
       result.processingpc = true
+    }else{
+
+      def pending_change_pending_status = RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending")
+      def pendingChanges = PendingChange.executeQuery("select pc.id from PendingChange as pc where license=? and ( pc.status is null or pc.status = ? ) order by pc.ts desc", [result.license, pending_change_pending_status]);
+
+        //Filter any deleted subscriptions out of displayed links
+        Iterator<Subscription> it = result.license.subscriptions.iterator()
+        while(it.hasNext()){
+            def sub = it.next();
+            if(sub.status == RefdataCategory.lookupOrCreate('Subscription Status','Deleted')){
+                it.remove();
+            }
+        }
+
+      log.debug("pc result is ${result.pendingChanges}");
+      if(result.license.incomingLinks.find{it?.isSlaved?.value == "Yes"} && pendingChanges){
+        log.debug("Slaved lincence, auto-accept pending changes")
+        def changesDesc = []
+        pendingChanges.each{change ->
+          if(!pendingChangeService.performAccept(change,request)){
+            log.debug("Auto-accepting pending change has failed.")
+          }else{
+            changesDesc.add(PendingChange.get(change).desc)
+          }
+        }
+        flash.message = changesDesc
+      }else{
+        result.pendingChanges = pendingChanges.collect{PendingChange.get(it)}
+      }
     }
     result.availableSubs = getAvailableSubscriptions(result.license,result.user)
 
