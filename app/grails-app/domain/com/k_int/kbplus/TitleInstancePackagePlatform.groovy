@@ -6,6 +6,8 @@ import org.hibernate.proxy.HibernateProxy
 import com.k_int.ClassUtils
 import org.springframework.context.i18n.LocaleContextHolder
 
+
+
 class TitleInstancePackagePlatform {
   @Transient
   def grailsLinkGenerator
@@ -15,6 +17,8 @@ class TitleInstancePackagePlatform {
   
   @Transient
   def messageSource
+
+  static Log static_logger = LogFactory.getLog(TitleInstancePackagePlatform)
  
   static auditable = true
   static def controlledProperties = ['status',
