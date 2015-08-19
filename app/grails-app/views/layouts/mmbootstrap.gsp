@@ -229,7 +229,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Data Management Tasks</a>
                         <ul class="dropdown-menu">
                       <li <%= ( ( 'dataManager'== controllerName ) && ( 'expungeDeletedTitles'==actionName ) ) ? ' class="active"' : '' %>>
-                           <g:link controller="dataManager" action="expungeDeletedTitles">Expunge Deleted Titles</g:link></li>
+                           <g:link controller="dataManager" action="expungeDeletedTitles" onclick="return confirm('You are about to permanently delete all titles with a status of ‘Deleted’. This will also delete any TIPPs and IEs that are attached to this title. Only click OK if you are absolutely sure you wish to proceed')">Expunge Deleted Titles</g:link></li>
                       <li <%= ( ( 'dataManager'== controllerName ) && ( 'expungeDeletedTIPPS'==actionName ) ) ? ' class="active"' : '' %>>
                            <g:link controller="dataManager" action="expungeDeletedTIPPS">Expunge Deleted TIPPS</g:link></li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'titleMerge'==actionName ) ) ? ' class="active"' : '' %>>
