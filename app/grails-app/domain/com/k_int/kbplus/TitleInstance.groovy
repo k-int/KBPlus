@@ -107,8 +107,30 @@ class TitleInstance {
 
     // println("components: ${idstr_components} : ${qr}");
 
-    if ( ( qr ) && ( qr.size() == 1 ) ) {
-      result = qr.get(0);
+    if ( qr ) {
+      switch ( qr.size() ) {
+        case 0:
+          log.debug("No matches - trying to locate via identifier group");
+          switch ( idstr_components.size() ) {
+            case 1:
+              qr = TitleInstance.executeQuery('select t from TitleInstance as t join t.ids as io where exists ( select i from Identifier where i.value = ? and i.ig = io.identifier.ig )',[idstr_components[0]])
+              break;
+            case 2:
+              qr = TitleInstance.executeQuery('select t from TitleInstance as t join t.ids as io where exists ( select i from Identifier where i.value = ? and i.ns.ns = ? and i.ig = io.identifier.ig )',[idstr_components[1],idstr_components[0]?.toLowerCase()])
+              break;
+            default:
+              // println("Unable to split");
+              break;
+          }
+
+          break;
+        case 1:
+          result = qr.get(0);
+          break;
+        default:
+          log.error("WARNING:: Identifier '${idstr}' matched multiple rows");
+          break;
+      }
     }
 
     result

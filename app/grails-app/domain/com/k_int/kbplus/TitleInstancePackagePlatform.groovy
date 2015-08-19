@@ -5,6 +5,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.hibernate.proxy.HibernateProxy
 import com.k_int.ClassUtils
 import org.springframework.context.i18n.LocaleContextHolder
+import org.apache.commons.logging.*
 
 class TitleInstancePackagePlatform {
   @Transient
@@ -15,6 +16,8 @@ class TitleInstancePackagePlatform {
   
   @Transient
   def messageSource
+
+  static Log static_logger = LogFactory.getLog(TitleInstancePackagePlatform)
  
   static auditable = true
   static def controlledProperties = ['status',
@@ -401,5 +404,15 @@ class TitleInstancePackagePlatform {
       if( noChange ) return 0;      
       return 1;
   }  
+
+  static def expunge(tipp_id) {
+    try {
+      log.debug("  -> TIPPs");
+      TitleInstancePackagePlatform.executeUpdate('delete from TitleInstancePackagePlatform tipp where tipp.id = ?',[tipp_id])
+    }
+    catch ( Exception e ) {
+      log.error("Problem expunging title",e);
+    }
+  }
 
 }

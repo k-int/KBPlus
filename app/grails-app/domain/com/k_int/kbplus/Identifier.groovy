@@ -4,9 +4,10 @@ class Identifier {
 
   IdentifierNamespace ns
   String value
+  IdentifierGroup ig
 
-  static hasMany = [ occurrences:IdentifierOccurrence, relatedIdentifiers: IdentifierRelation ]
-  static mappedBy = [ occurrences:'identifier',  relatedIdentifiers:'fromIdentifier']
+  static hasMany = [ occurrences:IdentifierOccurrence]
+  static mappedBy = [ occurrences:'identifier']
 
   static constraints = {
     value validator: {val,obj ->
@@ -15,12 +16,14 @@ class Identifier {
         return pattern.matcher(val).matches() 
       }
     }
+    ig(nullable:true, blank:false)
   }
 
   static mapping = {
        id column:'id_id'
     value column:'id_value', index:'id_value_idx'
        ns column:'id_ns_fk', index:'id_value_idx'
+       ig column:'id_ig_fk', index:'id_ig_idx'
   }
 
   def beforeUpdate() {
