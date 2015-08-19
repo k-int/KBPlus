@@ -739,49 +739,36 @@ class AdminController {
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def uploadIssnL() {
-    
     def result=[:]
-    def ctr = 1;
+    def ctr = 0;
     def start_time = System.currentTimeMillis()
 
-
-    log.debug("uploadIssnL");
     if (request.method == 'POST'){
-      try {
-        def input_stream = request.getFile("sameasfile")?.inputStream
-        CSVReader r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ), '\t' as char )
-        String[] nl;
-        String[] types;
-        def first = true
-        while ((nl = r.readNext()) != null) {
-          def elapsed = System.currentTimeMillis() - start_time
-  
-          def avg = 0;
-          if ( ctr > 0 ) {
-            avg = elapsed / 1000 / ctr  //
+      def input_stream = request.getFile("sameasfile")?.inputStream
+      CSVReader r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ), '\t' as char )
+      String[] nl;
+      String[] types;
+      def first = true
+      while ((nl = r.readNext()) != null) {
+        def elapsed = System.currentTimeMillis() - start_time
+
+        def avg = 0;
+        if ( ctr > 0 ) {
+          avg = elapsed / 1000 / ctr  //
+        }
+
+        if ( nl.length == 2 ) {
+          if ( first ) {
+            first = false; // Skip header
+            log.debug('Header :'+nl);
+            types=nl
           }
+          else {
+            Identifier.withNewTransaction {
+              log.debug("[seq ${ctr++} - avg=${avg}] ${types[0]}:${nl[0]} == ${types[1]}:${nl[1]}");
+              def id1 = Identifier.lookupOrCreateCanonicalIdentifier(types[0],nl[0]);
+              def id2 = Identifier.lookupOrCreateCanonicalIdentifier(types[1],nl[1]);
   
-<<<<<<< HEAD
-          if ( nl.length == 2 ) {
-            if ( first ) {
-              first = false; // Skip header
-              log.debug('Header :'+nl);
-              types=nl
-            }
-            else {
-              Identifier.withNewTransaction {
-                log.debug("[seq ${ctr++} - avg=${avg}] ${types[0]}:${nl[0]} == ${types[1]}:${nl[1]}");
-                def id1 = Identifier.lookupOrCreateCanonicalIdentifier(types[0],nl[0]);
-                def id2 = Identifier.lookupOrCreateCanonicalIdentifier(types[1],nl[1]);
-    
-                def idrel = IdentifierRelation.findByFromIdentifierAndToIdentifier(id1,id2);
-                if ( idrel == null ) {
-                  idrel = IdentifierRelation.findByFromIdentifierAndToIdentifier(id2,id1);
-                  if ( idrel == null ) {
-                    idrel = new IdentifierRelation(fromIdentifier:id1,toIdentifier:id2);
-                    idrel.save(flush:true)
-                  }
-=======
               
               // Do either of our identifiers have a group set
               if ( id1.ig == id2.ig ) {
@@ -810,33 +797,23 @@ class AdminController {
                   log.debug("Adding identifier ${id1} to same group (${id1.ig}) as ${id2}");
                   id1.ig = id2.ig
                   id1.save(flush:true);
->>>>>>> dev-integration
                 }
               }
             }
           }
-          else {
-            log.error("uploadIssnL expected 2 values");
-          }
-  
-          if ( ctr % 200 == 0 ) {
-            log.debug("Cleaning up gorm");
-            cleanUpGorm()
-          }
         }
-        result.complete=true
+        else {
+          log.error("uploadIssnL expected 2 values");
+        }
+
+        if ( ctr % 200 == 0 ) {
+          cleanUpGorm()
+        }
       }
-      catch ( Exception e ) {
-        e.printStackTrace();
-      }
-      // redirect(controller:'admin',action:'uploadIssnL')
+      result.complete = true
     }
 
-
-    // Setting this here in case call to clean up GORM was causing a problem
-    result.user = User.get(springSecurityService.principal.id)
-
-    log.debug("finished");
+    result
   }
 
   def cleanUpGorm() {
@@ -858,3 +835,5 @@ class AdminController {
   }
   
 }
+Status API Training Shop Blog About Pricing
+© 2015 GitHub, Inc. Terms Privacy Security Contact Help
