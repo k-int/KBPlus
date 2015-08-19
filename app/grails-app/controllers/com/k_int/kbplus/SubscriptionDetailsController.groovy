@@ -265,11 +265,12 @@ class SubscriptionDetailsController {
       result.editable = true
       if(params.confirmed){
       //delete matches
-
+      IssueEntitlement.withTransaction { status ->
         removePackagePendingChanges(result.package.id,result.subscription.id,params.confirmed)
         def deleteIdList = IssueEntitlement.executeQuery("select ie.id ${query}",queryParams)
-        IssueEntitlement.executeUpdate("delete from IssueEntitlement ie where ie.id in (:delList)",[delList:deleteIdList])
+        if(deleteIdList) IssueEntitlement.executeUpdate("delete from IssueEntitlement ie where ie.id in (:delList)",[delList:deleteIdList]);
         SubscriptionPackage.executeUpdate("delete from SubscriptionPackage sp where sp.pkg=? and sp.subscription=? ",[result.package,result.subscription])
+      }
       }else{
         def numOfPCs = removePackagePendingChanges(result.package.id,result.subscription.id,params.confirmed)
 
