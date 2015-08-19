@@ -5,8 +5,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.hibernate.proxy.HibernateProxy
 import com.k_int.ClassUtils
 import org.springframework.context.i18n.LocaleContextHolder
-
-
+import org.apache.commons.logging.*
 
 class TitleInstancePackagePlatform {
   @Transient
