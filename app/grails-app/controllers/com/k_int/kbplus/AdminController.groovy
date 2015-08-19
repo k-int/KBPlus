@@ -761,6 +761,7 @@ class AdminController {
             avg = elapsed / 1000 / ctr  //
           }
   
+<<<<<<< HEAD
           if ( nl.length == 2 ) {
             if ( first ) {
               first = false; // Skip header
@@ -780,6 +781,36 @@ class AdminController {
                     idrel = new IdentifierRelation(fromIdentifier:id1,toIdentifier:id2);
                     idrel.save(flush:true)
                   }
+=======
+              
+              // Do either of our identifiers have a group set
+              if ( id1.ig == id2.ig ) {
+                if ( id1.ig == null ) {
+                  log.debug("Both identifiers have a group of null - so create a new group and relate them")
+                  def identifier_group = new IdentifierGroup().save(flush:true);
+                  id1.ig = identifier_group
+                  id2.ig = identifier_group
+                  id1.save(flush:true);
+                  id2.save(flush:true);
+                }
+                else {
+                  log.debug("Identifiers already belong to same identifier group");
+                }
+              }
+              else {
+                if ( ( id1.ig != null ) && ( id2.ig != null ) ) {
+                  log.error("Conflicting identifier group for same as ${id1} ${id2}");
+                }
+                else if ( id1.ig != null ) {
+                  log.debug("Adding identifier ${id2} to same group (${id1.ig}) as ${id1}");
+                  id2.ig = id1.ig
+                  id2.save(flush:true);
+                }
+                else {
+                  log.debug("Adding identifier ${id1} to same group (${id1.ig}) as ${id2}");
+                  id1.ig = id2.ig
+                  id1.save(flush:true);
+>>>>>>> dev-integration
                 }
               }
             }
