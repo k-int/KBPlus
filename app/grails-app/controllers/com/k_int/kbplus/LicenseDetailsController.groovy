@@ -35,9 +35,9 @@ class LicenseDetailsController {
     userAccessCheck(result.license,result.user,'view')
 
     //used for showing/hiding the Licence Actions menus
-    result.canCopy = result.license.orgLinks.find{it.roleType?.value == 'Licensor' &&
-        it.org.hasUserWithRole(result.user,'INST_ADM') }
-    
+    def admin_role = Role.findAllByAuthority("INST_ADM")
+    result.canCopyOrgs = UserOrg.executeQuery("select uo.org from UserOrg uo where uo.user=(:user) and uo.formalRole=(:role) and uo.status in (:status)",[user:result.user,role:admin_role,status:[1,3]])
+
     if ( result.license.hasPerm("edit",result.user) ) {
       result.editable = true
     }
