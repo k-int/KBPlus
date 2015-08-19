@@ -228,8 +228,10 @@
                        <li class="dropdown-submenu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Data Management Tasks</a>
                         <ul class="dropdown-menu">
- <li <%= ( ( 'dataManager'== controllerName ) && ( 'expungeDeletedTitles'==actionName ) ) ? ' class="active"' : '' %>>
+                      <li <%= ( ( 'dataManager'== controllerName ) && ( 'expungeDeletedTitles'==actionName ) ) ? ' class="active"' : '' %>>
                            <g:link controller="dataManager" action="expungeDeletedTitles">Expunge Deleted Titles</g:link></li>
+                      <li <%= ( ( 'dataManager'== controllerName ) && ( 'expungeDeletedTIPPS'==actionName ) ) ? ' class="active"' : '' %>>
+                           <g:link controller="dataManager" action="expungeDeletedTIPPS">Expunge Deleted TIPPS</g:link></li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'titleMerge'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="titleMerge">Title Merge</g:link>
                       </li>
