@@ -375,5 +375,60 @@ class DataManagerController {
     redirect(controller:'home')
   }
   
+  @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
+  def expungeDeletedTIPPS() {
+
+    log.debug("expungeDeletedTIPPS.. Create async task..");
+
+    def p = TitleInstance.async.task {
+
+      def ctr = 0;
+
+      try {
+        log.debug("Delayed start");
+        synchronized(this) {
+          Thread.sleep(2000);
+        }
+
+        log.debug("Query...");
+        def l = TitleInstancePackagePlatform.executeQuery('select t.id from TitleInstancePackagePlatform t where t.status.value=?',['Deleted']);
+
+        if ( ( l != null ) && ( l instanceof List ) ) {
+          log.debug("Processing...");
+          l.each { ti_id ->
+            TitleInstance.withNewTransaction {
+              log.debug("Expunging title [${ctr++}] ${ti_id}");
+              TitleInstancePackagePlatform.expunge(ti_id);
+            }
+          }
+        }
+        else {
+          log.error("${l} was null or not a list -- ${l?.class.name}");
+        }
+
+        log.debug("Completed processing - ${ctr}");
+      }
+      catch( Exception e ) {
+        e.printStackTrace()
+        log.error("Problem",e);
+      }
+
+      return "expungeDeletedTIPPS Completed - ${ctr} TIPPS expunged"
+    }
+
+
+    p.onError { Throwable err ->
+        log.debug("An error occured ${err.message}")
+    }
+
+    p.onComplete { result ->
+        log.debug("Promise returned $result")
+    }
+
+    log.debug("Got promise : ${p}. ${p.class.name}");
+    log.debug("expungeDeletedTIPPS.. Returning");
+
+    redirect(controller:'home')
+  }
 }
 

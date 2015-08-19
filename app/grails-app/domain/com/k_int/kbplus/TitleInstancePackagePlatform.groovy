@@ -402,4 +402,14 @@ class TitleInstancePackagePlatform {
       return 1;
   }  
 
+  static def expunge(tipp_id) {
+    try {
+      log.debug("  -> TIPPs");
+      TitleInstancePackagePlatform.executeUpdate('delete from TitleInstancePackagePlatform tipp where tipp.id = ?',[tipp_id])
+    }
+    catch ( Exception e ) {
+      log.error("Problem expunging title",e);
+    }
+  }
+
 }
