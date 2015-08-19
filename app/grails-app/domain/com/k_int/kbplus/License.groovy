@@ -338,7 +338,7 @@ class License implements Comparable<License>{
         changeNotificationService
         .registerPendingChange('license',
                               dl,
-                              "<b>${propName}</b> changed from <b>\"${changeDocument.oldLabel?:changeDocument.old}\"</b> to <b>\"${changeDocument.newLabel?:changeDocument.new}\"</b> on the template license." + description,
+                              "<b>${propName}</b> changed from <b>\"${changeDocument.oldLabel?:changeDocument.old}\"</b> to <b>\"${changeDocument.newLabel?:changeDocument.new}\"</b> on the template license. " + description,
                               dl.getLicensee(),
                               [
                                 changeTarget:"com.k_int.kbplus.License:${dl.id}",

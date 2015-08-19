@@ -23,7 +23,7 @@
         <li> <g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}">Subscription ${subscriptionInstance.id} Details</g:link> </li>
         
         <li class="dropdown pull-right">
-          <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>
+          <a class="dropdown-toggle btn btn-mini btn-primary" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>
           <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
            
             <li><g:link controller="subscriptionDetails" action="index" id="${subscriptionInstance.id}" params="${params + [format:'json']}">JSON</g:link></li>

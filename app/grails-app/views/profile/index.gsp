@@ -27,15 +27,15 @@
     </g:if>
 
 
-		<div class="container">
-			<div class="span12">
-				<h1>Preferences</h1>
-			</div>
-		</div>
-		<div class="container">
+    <div class="container">
+      <div class="span12">
+        <h1>Preferences</h1>
+      </div>
+    </div>
+    <div class="container">
       <div class="span12">
         <dl class="dl-horizontal">
-	        <div class="control-group">
+          <div class="control-group">
             <dt>Show Info Icon</dt>
             <dd>
               <g:xEditableRefData owner="${user}" field="showInfoIcon" config="YN" />
@@ -157,16 +157,19 @@
       </div>
     </div></div>
 
-  <div class="container">
-      <div class="span12">
+
+    <g:if test="${grailsApplication.config.feature.notifications}">
+
+      <div class="container">
+        <div class="span12">
           <h1>Misc</h1>
+        </div>
       </div>
-  </div>
 
 
 
-  <div id="reminders" class="container">
-      <div class="row-fluid">
+      <div id="reminders" class="container">
+        <div class="row-fluid">
           <div class="span12">
               <div class="well">
                   <h2>Create new Reminders / Notifications</h2>
@@ -204,11 +207,11 @@
                   </g:form>
               </div>
           </div>
+        </div>
       </div>
-  </div>
 
-  <div class="container">
-      <div class="row-fluid">
+      <div class="container">
+        <div class="row-fluid">
           <div class="span12">
               <div class="well">
                   <h2>Active Reminders</h2>
@@ -246,8 +249,10 @@
                   </table>
               </div>
           </div>
+        </div>
       </div>
-  </div>
+
+  </g:if>
   </body>
 </html>
 

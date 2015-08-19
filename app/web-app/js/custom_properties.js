@@ -37,7 +37,7 @@ function searchProp(ajaxurl){
 
     $("#customPropSelect").select2({
         placeholder: "Search for a custom property...",
-        minimumInputLength: 1,
+        minimumInputLength: 0,
         ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
             url: ajaxurl,
             dataType: 'json',

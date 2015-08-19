@@ -38,10 +38,18 @@
               <dd><g:fieldValue bean="${orgInstance}" field="ipRange"/></dd>
         
             <dt><g:message code="org.sector.label" default="Sector" /></dt>
-            
-              <dd><g:fieldValue bean="${orgInstance}" field="sector"/></dd>
-            
-        
+            <dd>
+              <g:if test="${editable}"><span id="orgSectorEdit" 
+                                          class="xEditableValue"
+                                          data-pk="${orgInstance.class.name}:${orgInstance.id}"
+                                          data-name="sector" 
+                                          data-url='<g:createLink controller="ajax" action="editableSetValue"/>'
+                                          data-original-title="${orgInstance.sector}">${orgInstance.sector}</span></g:if>
+               <g:else>
+                 <g:fieldValue bean="${orgInstance}" field="sector"/>
+               </g:else>
+            </dd>
+
             <dt><g:message code="org.ids.label" default="Ids" /></dt>
             Select an existing identifer using the typedown, or create a new one by entering namespace:value (EG eISSN:2190-9180) then clicking that value in the dropdown to confirm.
             <g:if test="${orgInstance?.ids}">

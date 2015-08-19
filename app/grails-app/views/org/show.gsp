@@ -65,12 +65,19 @@
                   </dl>
               </g:if>
 
-              <g:if test="${orgInstance?.sector}">
-                  <dl>
-                      <dt><g:message code="org.sector.label" default="Sector" /></dt>
-                      <dd><g:fieldValue bean="${orgInstance}" field="sector"/></dd>
-                  </dl>
-              </g:if>
+              <dl>
+                <dt><g:message code="org.sector.label" default="Sector" /></dt>
+                <dd>
+                  <g:if test="${editable}"><span id="titleEdit" 
+                                          class="xEditableValue"
+                                          data-pk="${orgInstance.class.name}:${orgInstance.id}"
+                                          data-name="sector" 
+                                          data-url='<g:createLink controller="ajax" action="editableSetValue"/>'
+                                          data-original-title="${orgInstance.sector}">${orgInstance.sector}</span></g:if>
+                  <g:else>
+                    <g:fieldValue bean="${orgInstance}" field="sector"/></dd>
+                  </g:else>
+              </dl>
 
               <g:if test="${orgInstance?.ids}">
                   <dl>
