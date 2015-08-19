@@ -280,7 +280,7 @@ class TitleDetailsController {
     }
 
     log.debug("DM Title Query: ${base_qry}, ${params}");
-    result.totalHits = com.k_int.kbplus.TitleInstance.executeQuery("select count(t) "+base_qry, qry_params, [max:result.max, offset:result.offset])[0];
+    result.totalHits = com.k_int.kbplus.TitleInstance.executeQuery("select count(t) "+base_qry, qry_params)[0];
     result.hits = com.k_int.kbplus.TitleInstance.executeQuery("select t "+base_qry, qry_params, [max:result.max, offset:result.offset]);
     result
   }

@@ -7,40 +7,35 @@ import spock.lang.Stepwise
 class AdminActionsSpec extends GebReportingSpec {
 
   // //The following will setup everything required for this test case
-  // def "Setup our database"(){
-  //   when:
-  //     to PublicPage
-  //     loginLink()
-  //     at LogInPage
-  //     login(Data.UserD_name, Data.UserD_passwd)
-  //     go "/demo/org/create"
-  //     $("form").name = Data.Org_name
-  //     $("form").impId = Data.Org_impId
-  //     $("form").sector = 'Higher Education'
-  //     $("#SubmitButton").click()
-  //     to ProfilePage
-  //     changeUserNoDash(Data.UserA_name, Data.UserA_passwd)
-  //     requestMembership(Data.Org_name, 'Editor')
-  //     changeUserNoDash(Data.UserD_name, Data.UserD_passwd)
-  //     manageAffiliationReq()
-  //     at AdminMngAffReqPage
-  //     approve()
-
-  //   then:
-  //     true
-  //     to ProfilePage
+  // def setupSpec(){
+  //     def org = new com.k_int.kbplus.Org(name:Data.Org_name,impId:Data.Org_impId,sector:"Higher Education").save()
+  //     def user = com.k_int.kbplus.auth.User.findByUsername(Data.UserA_name)
+  //     def userAdm = com.k_int.kbplus.auth.User.findByUsername(Data.UserD_name)
+  //     def formal_role = com.k_int.kbplus.auth.Role.findByAuthority('INST_ADM')
+  //     def userOrg = new com.k_int.kbplus.auth.UserOrg(dateRequested:System.currentTimeMillis(),
+  //                             status:1,
+  //                             org:org,
+  //                             user:user,
+  //                             formalRole:formal_role).save()
+  //    def userOrgAdmin = new com.k_int.kbplus.auth.UserOrg(dateRequested:System.currentTimeMillis(),
+  //                       status:1,
+  //                       org:org,
+  //                       user:userAdm,
+  //                       formalRole:formal_role).save()
   // }
+
   def "First log in to the system"(){
     setup:
-      to PublicPage
+       to PublicPage
     when:
       loginLink()
       at LogInPage
+
       login(Data.UserD_name, Data.UserD_passwd)
     then:
       at DashboardPage
   }
-  
+
   def "Go to User Merge screen and transfer affiliations from user A"(){
 
     when:
@@ -55,9 +50,8 @@ class AdminActionsSpec extends GebReportingSpec {
       $('h3').text() == ("Merge "+ Data.UserA_displayName + " into "+ Data.UserD_displayName)
     when:
       $('input',value:'Apply').click()
-      go '/demo/myInstitutions/'+Data.Org_Url+'/dashboard'
     then:
-      at DashboardPage
+      messageBox("successful")
   }
 
   def "Load issn-l files"(){
