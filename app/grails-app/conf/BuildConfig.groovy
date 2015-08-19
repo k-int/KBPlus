@@ -26,6 +26,7 @@ grails.project.dependency.resolution = {
     checksums true // Whether to verify checksums on resolve
     def gebVersion = "0.9.3"
     def seleniumVersion = "2.44.0"
+    // def seleniumVersion = "2.47.1"
 
     repositories {
         inherits true // Whether to inherit repository definitions from plugins
