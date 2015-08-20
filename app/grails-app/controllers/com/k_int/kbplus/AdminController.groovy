@@ -225,6 +225,7 @@ class AdminController {
              try{
                log.debug("Copying user roles... from ${usrMrg} to ${usrKeep}");
                success = copyUserRoles(usrMrg, usrKeep)
+               log.debug("Result of copyUserRoles : ${success}");
              }catch(Exception e){
               log.error("Exception while copying user roles.",e)
              }
@@ -272,12 +273,27 @@ class AdminController {
     }
     mergeAffil.each{affil ->
       if(!currentAffil.contains(affil)){
-        def newAffil = new UserOrg(org:affil.org,user:usrKeep,formalRole:affil.formalRole,status:3)
-        if(!newAffil.save(flush:true,failOnError:true)){
-          return false
+
+        // We should check that the new role does not already exist
+        def existing_affil_check = UserOrg.findByOrgAndUserAndFormalRoleAndStatus(affil.org,usrKeep,affil.formalRole,3);
+
+        if ( existing_affil_check == null ) {
+          log.debug("No existing affiliation");
+          def newAffil = new UserOrg(org:affil.org,user:usrKeep,formalRole:affil.formalRole,status:3)
+          if(!newAffil.save(flush:true,failOnError:true)){
+            log.error("Probem saving user roles");
+            newAffil.errors.each { e ->
+              log.error(e);
+            }
+            return false
+          }
+        }
+        else {
+          log.debug("Affiliation already present - skipping ${existing_affil_check}");
         }
       }
     }
+    log.debug("copyUserRoles returning true");
     return true
   }
 
