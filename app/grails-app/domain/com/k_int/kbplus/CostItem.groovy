@@ -84,10 +84,13 @@ class CostItem {
 
 
     def getBudgetcodes() {
-        return CostItemGroup.findAllByCostItem(this).collect { it.budgetcode.value } //collect{[id:it.budgetcode.id, value:it.budgetcode.value]}
+        return CostItemGroup.findAllByCostItem(this).collect {
+            [id:it.id, value:it.budgetcode.value]
+        }
     }
 
     /**
+     * /todo Add other fields that will require sorting and test!
      * So we don't have to expose the data model in the GSP for relational data needed to be sorted
      * @param field - The order by link selected
      *
@@ -121,7 +124,7 @@ class CostItem {
                 gspOrder = "Subscription"
                 break
             case "Package":
-                join     = "ci.subPkg"
+                join     = "ci.subPkg.pkg"
                 order    = "name"
                 gspOrder = "Package"
                 break
@@ -130,10 +133,20 @@ class CostItem {
                 order    = "issueEntitlement.tipp.title.title"
                 gspOrder = "IE"
                 break
-            case "date":
+            case "datePaid":
                 join     = null
                 order    = "datePaid"
-                gspOrder = "date"
+                gspOrder = "datePaid"
+                break
+            case "startDate":
+                join     = null
+                order    = "startDate"
+                gspOrder = "startDate"
+                break
+            case "endDate":
+                join     = null
+                order    = "endDate"
+                gspOrder = "endDate"
                 break
             case "Reference":
                 join     = null

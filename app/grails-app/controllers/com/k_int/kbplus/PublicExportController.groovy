@@ -207,6 +207,34 @@ class PublicExportController {
 
     withFormat {
       html result
+      csv {
+         response.setHeader("Content-disposition", "attachment; filename=kbplus_pkg_${packageInstance.id}.csv")
+         response.contentType = "text/csv"
+         def out = response.outputStream
+         out.withWriter { writer ->
+           if ( ( params.omitHeader == null ) || ( params.omitHeader != 'Y' ) ) {
+             writer.write("FileType,SpecVersion,JC_ID,TermStartDate,TermEndDate,SubURI,SystemIdentifier\n")
+             writer.write("Package,\"3.0\",,${packageInstance.startDate},${packageInstance.endDate},\"uri://kbplus/pkg/${packageInstance.id}\",${packageInstance.impId}\n")
+           }
+
+           // Output the body text
+           // writer.write("publication_title,print_identifier,online_identifier,date_first_issue_subscribed,num_first_vol_subscribed,num_first_issue_subscribed,date_last_issue_subscribed,num_last_vol_subscribed,num_last_issue_subscribed,embargo_info,title_url,first_author,title_id,coverage_note,coverage_depth,publisher_name\n");
+           writer.write("publication_title,print_identifier,online_identifier,date_first_issue_online,num_first_vol_online,num_first_issue_online,date_last_issue_online,num_last_vol_online,num_last_issue_online,title_url,first_author,title_id,embargo_info,coverage_depth,coverage_notes,publisher_name,identifier.jusp,hybrid_oa\n");
+
+
+           result.titlesList.each{ t ->
+             def start_date = t.startDate ? formatter.format(t.startDate) : '';
+             def end_date = t.endDate ? formatter.format(t.endDate) : '';
+             def title_doi = (t.title?.getIdentifierValue('DOI'))?:''
+             def publisher = t.title?.publisher
+
+             writer.write("\"${t.title.title}\",\"${t.title?.getIdentifierValue('ISSN')?:''}\",\"${t?.title?.getIdentifierValue('eISSN')?:''}\",${start_date},${t.startVolume?:''},${t.startIssue?:''},${end_date},${t.endVolume?:''},${t.endIssue?:''},\"${t.hostPlatformURL?:''}\",,\"${title_doi}\",\"${t.embargo?:''}\",\"${t.coverageDepth?:''}\",\"${t.coverageNote?:''}\",\"${publisher?.name?:''}\",\"${t.title?.getIdentifierValue('jusp')?:''}\",\"${t.hybridOA}\"\n");
+           }
+           writer.flush()
+           writer.close()
+         }
+         out.close()
+      }
       json {
         def map = exportService.getPackageMap(packageInstance, result.titlesList)
         
@@ -254,7 +282,7 @@ class PublicExportController {
     def qry_params = []
 
     def num_pkg_rows = Subscription.executeQuery("select count(p) "+base_qry, qry_params )[0]
-    def packages = Subscription.executeQuery("select p ${base_qry}", qry_params);
+    def _packages = Subscription.executeQuery("select p ${base_qry}", qry_params);
 
     withFormat {
       csv {
@@ -263,7 +291,7 @@ class PublicExportController {
         def out = response.outputStream
         out.withWriter { writer ->
            writer.write("name,uri,identifier\n")
-           packages.each { p ->
+           _packages.each { p ->
              writer.write("\"${p.name}\",\"publicExport/pkg/${p.id}?format=csv\",\"${p.id}\"\n");
            }
         }
@@ -274,7 +302,7 @@ class PublicExportController {
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)
         xml.KbPlusPackages {
-          packages.each { p->
+          _packages.each { p->
             packages {
               name(p.name)
               identifier(p.id)
@@ -286,7 +314,7 @@ class PublicExportController {
       json {
         def response = [:]
         response.packages = []
-        packages.each { p->
+        _packages.each { p->
           response.packages.add([name:p.name,identifier:p.id])
         }
         render response as JSON

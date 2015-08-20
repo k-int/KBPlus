@@ -24,8 +24,10 @@ grails.project.dependency.resolution = {
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     checksums true // Whether to verify checksums on resolve
+    // def gebVersion = "0.12.2"
     def gebVersion = "0.9.3"
     def seleniumVersion = "2.44.0"
+    // def seleniumVersion = "2.47.1"
 
     repositories {
         inherits true // Whether to inherit repository definitions from plugins

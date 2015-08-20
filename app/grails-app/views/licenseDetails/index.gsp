@@ -191,10 +191,10 @@
               <div class="span4">
                 <div class="well">
                 <label>  <h5>Licence Actions</h5> </label>
-                  <g:if test="${editable}">
+            <g:if test="${canCopyOrgs}">
                  
                   <label for="orgShortcode">Copy licence for:</label>
-                  <g:select from="${user.authorizedOrgs}" optionValue="name" optionKey="shortcode" id="orgShortcode" name="orgShortcode"/>
+                  <g:select from="${canCopyOrgs}" optionValue="name" optionKey="shortcode" id="orgShortcode" name="orgShortcode"/>
                               
                    <g:link name="copyLicenceBtn" controller="myInstitutions" action="actionLicenses" params="${[shortcode:'replaceme',baselicense:license.id,'copy-licence':'Y']}" onclick="return changeLink(this,'Are you sure you want to copy this licence?')" class="btn btn-success">Copy</g:link>
 
@@ -208,7 +208,7 @@
 %{--            
           leave this out for now.. it is a bit confusing.
           <g:link name="deletLicenceBtn" controller="myInstitutions" action="actionLicenses" onclick="return changeLink(this,'Are you sure you want to delete ${license.reference?:'** No licence reference ** '}?')" params="${[baselicense:license.id,'delete-licence':'Y',shortcode:'replaceme']}" class="btn btn-danger">Delete</g:link> --}%
-                  </g:if>
+          </g:if>
                   <g:else>
                     Actions available to editors only
                   </g:else>

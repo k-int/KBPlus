@@ -1,11 +1,5 @@
 package com.k_int.kbplus
 
-import grails.converters.*
-import org.elasticsearch.groovy.common.xcontent.*
-import groovy.xml.MarkupBuilder
-import grails.plugins.springsecurity.Secured
-import com.k_int.kbplus.auth.*;
-
 class ESSearchService{
 // Map the parameter names we use in the webapp with the ES fields
   def reversemap = ['subject':'subject', 
@@ -40,11 +34,16 @@ class ESSearchService{
     
           params.max = Math.min(params.max ? params.int('max') : 15, 100)
           params.offset = params.offset ? params.int('offset') : 0
-    
-          //def params_set=params.entrySet()
-          
+
           def query_str = buildQuery(params,field_map)
           log.debug("index:${grailsApplication.config.aggr.es.index} query: ${query_str}");
+          if (params.tempFQ) //add filtered query
+          {
+              query_str = query_str + " AND ( " + params.tempFQ + " ) "
+              params.remove("tempFQ") //remove from GSP access
+              log.debug("ESSearchService::search -  Adding to query, appending filtered query: ${query_string}")
+          }
+
     
           def search = esclient.search{
             indices grailsApplication.config.aggr.es.index ?: "kbplus"
@@ -122,10 +121,7 @@ class ESSearchService{
           log.error("problem",e);
         }
       }
-  
-     // If logged in
-    // log.debug("${result}")
-    
+
     result
   }
 

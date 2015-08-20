@@ -7,66 +7,66 @@
 </head>
 <body>
 
-    <div class="container-fluid">
-        <ul class="breadcrumb">
-            <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
-            <li> <g:link controller="myInstitutions" action="finance" params="${[shortcode:params.shortcode]}">${institution.name} Finance</g:link> </li>
-            <g:if test="${editable}">
-                <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
-            </g:if>
-            <li class="pull-left"><a class="badge badge-info" onclick="quickHelpInfo()">?</a>&nbsp;</li>
-        </ul>
+<div class="container-fluid">
+    <ul class="breadcrumb">
+        <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
+        <li> <g:link controller="myInstitutions" action="finance" params="${[shortcode:params.shortcode]}">${institution.name} Finance</g:link> </li>
+        <g:if test="${editable}">
+            <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
+        </g:if>
+        <li class="pull-left"><a class="badge badge-info" onclick="quickHelpInfo()">?</a>&nbsp;</li>
+    </ul>
+</div>
+
+
+<div class="modal hide" id="recentDialog">
+    <div class="modal-header">
+        <button class="close" data-dismiss="modal">×</button>
+        <h3>Recently Updated Cost Items</h3>
+    </div>
+    <div class="modal-body">
+        <div id="recent">
+            <g:render template="recentlyAdded"></g:render>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid">
+
+    <div id="userError" hidden="">
+        <table class="table table-striped table-bordered ">
+            <thead>
+            <tr><th>Problem/Update</th>
+                <th>Info</th></tr>
+            </thead>
+            <tbody><tr></tr></tbody>
+        </table>
     </div>
 
-
-    <div class="modal hide" id="recentDialog">
-        <div class="modal-header">
-            <button class="close" data-dismiss="modal">×</button>
-            <h3>Recently Updated Cost Items</h3>
-        </div>
-        <div class="modal-body">
-            <div id="recent">
-                <g:render template="recentlyAdded"></g:render>
-            </div>
-        </div>
+    <div id="filterTemplate">
+        <g:render template="filter"></g:render>
     </div>
 
+    <br/><br/><br/><br/><br/>
 
-    <div class="container-fluid">
+    <g:render template="create"></g:render>
 
-        <div id="userError" hidden="">
-            <table class="table table-striped table-bordered ">
-                <thead>
-                <tr><th>Problem/Update</th>
-                    <th>Info</th></tr>
-                </thead>
-                <tbody><tr></tr></tbody>
-            </table>
-        </div>
-
-        <div id="filterTemplate">
-            <g:render template="filter"></g:render>
-        </div>
-
-        <br/><br/><br/><br/><br/>
-
-        <g:render template="create"></g:render>
-
-        <button class="btn btn-primary pull-right" onclick="scrollToTop(2000,'costTable')" title="Select this button to go back to the top of the page" id="top">Back to top</button>
-    </div>
+    <button class="btn btn-primary pull-right" onclick="scrollToTop(2000,'costTable')" title="Select this button to go back to the top of the page" id="top">Back to top</button>
+</div>
 
 </body>
 
-    <r:script type="text/javascript">
+<r:script type="text/javascript">
 
         function tester() {
             $('.xEditable').editable();
-            $('.xEditableValue').editable();
+            //$('.xEditableValue').xEditable();
         }
 
         $( document ).ajaxComplete(function( event,request, settings ) {
-            console.log(event);
-            console.log(settings);
+            //console.log(event);
+            //console.log(settings);
         });
 
 
@@ -184,6 +184,7 @@
                     sort:paginateData.sort,
                     order:paginateData.order,
                     filterMode: paginateData.filtermode,
+                    wildcard: paginateData.wildcard,
                     mode:"updateResults"
                 }
             })
@@ -192,9 +193,9 @@
              })
             .done(function(data) {
                  $('#filterTemplate').html(data);
-                 console.log("%o",data);
                  deleteSelectAll();
                  sortAndOrder();
+                 tester();
             });
         }
 
@@ -237,7 +238,6 @@
                 },
                 dataType:'json'
               }).done(function(data) {
-                    console.log("%o",data);
                     userInfo("deletion(s)",data.message); //list of succesfully deleted ids
                     $.each(data.successful, function( i, val ) {
                         $("#bulkdelete-a" + val).remove();
@@ -273,12 +273,10 @@
         function sortAndOrder()
         {
             $('.sortable').on('click', function(event){
-                console.log(event)
                 event.preventDefault();
                 var selected       = $(this)[0].firstChild.textContent;
                 var order          = $(this).data('order');
                 var paginateData   = $('#paginateInfo').data();
-
                 var data = {
                     shortcode: "${params.shortcode}",
                     filterMode: paginateData.filtermode,
@@ -286,8 +284,10 @@
                     sort:paginateData.sort,
                     order: order,
                     offset:0,
-                    max:paginateData.max
+                    max:paginateData.max,
+                    wildcard:paginateData.wildcard
                 }
+                console.log("Sorting/Ordering Info", "SELECTED",selected, "ORDER",order, "PAGINATE DATA",paginateData, "PARAM DATA SENDING", data);
 
                 var formData = null
                 if(paginateData.filtermode == "ON")
@@ -299,7 +299,6 @@
                         orderNumberFilter:paginateData.ordernumberfilter,
                         resetMode:paginateData.resetMode?paginateData.resetMode:'search'
                     }
-                    console.log(formData)
                 }
                 data = (formData!=null)?$.param(formData) + '&' + $.param(data):$.param(data);
 
@@ -312,7 +311,6 @@
                      errorHandling(textStatus,'Sorting (via '+ selected +')',errorThrown);
                   })
                 .done(function(data) {
-                     console.log("%o",data);
                      $('#filterTemplate').html(data);
                      sortAndOrder();
                 });
@@ -357,7 +355,7 @@
 
                 if(counter==4)
                 {
-                    userInfo("Filtering","You need to enter/select from the 1 or more of the 4 options");
+                    userInfo("${g.message(code: 'financials.help.filterSearch')}","${g.message(code: 'financials.filtersearch.error')}");
                     return false;
                 } else
                 {
@@ -377,13 +375,17 @@
         function filtersUpdated() {
           $('#newInvoiceNumber').val($('#filterInvoiceNumber').val());
           $('#newOrderNumber').val($('#filterOrderNumber').val());
-          $('#newSubscription').val($('#filterSubscription').val());
-          $('#newPackage').val($('#filterPackage').val());
+          if($('#newSubscription').val() != $('#filterSubscription').val())
+          {
+              $('#newSubscription').val($('#filterSubscription').val());
+              $('#newPackage').val($('#filterPackage').val());
+          }
         }
 
-        function filterSubUpdated() {
+        function filterSubUpdated(e) {
           // Fetch packages for the selected subscription
-          var selectedSub = $('#filterSubscription').val();
+          var selectedSub = $(e).val();
+          //var selectedSub = $('#filterSubscription').val();
 
           $.ajax({
             url: "<g:createLink controller='ajax' action='lookup'/>",
@@ -394,16 +396,14 @@
             },
             dataType:'json'
           }).done(function(data) {
-            console.log("%o",data);
-            $('#filterPackage').children().remove()
+            $('#filterPackage option, #newPackage option').remove();
             $('#filterPackage').append('<option value="xx">Not specified</option>');
             var numValues = data.values.length;
             for (var i = 0; i != numValues; i++) {
               $('#filterPackage').append('<option value="'+data.values[i].id+'">'+data.values[i].text+'</option>');
             }
+            $('#filterPackage option').clone().appendTo('#newPackage');
           });
-
-          filtersUpdated();
         }
 
         //error/info code block
@@ -482,7 +482,6 @@
                  errorHandling(textStatus,'Recent Cost Updates',errorThrown);
               })
               .done(function(data) {
-                 console.log("%o",data);
                  if(data.count > 0)
                     performCostItemUpdate(renderedDateTo);
               });
@@ -510,5 +509,110 @@
                "<b>Deleting Costs</b> via checking the boxes attached to each cost item row individually or all and submitting by clicking 'remove selected,,," +
                 "<b>Add New Costs</b> via creation screen, after results, shortcut button select 'Add New Cost'",20000)
         }
-    </r:script>
+
+
+    //unable to use placeholder with initSelection, manually set via GSP with data-placeholder
+    $(".modifiedReferenceTypedown").select2({
+      initSelection : function (element, callback) {
+            //If default value has been set in the markup!
+        if(element.data('defaultvalue'))
+            var data = {id: element.data('domain')+':'+element.data('relationid'), text: element.data('defaultvalue')};
+        callback(data);
+      },
+      minimumInputLength: 1,
+      ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+      url: "<g:createLink controller='ajax' action="lookup" />",
+      dataType: 'json',
+      data: function (term, page){
+          return {
+              format:'json',
+              q: term,
+              baseClass:$(this).data('domain'),
+              shortcode: $(this).data('shortcode')
+          };
+      },
+      results: function (data, page) {
+        return {results: data.values};
+      }
+    },
+      createSearchChoice:function(term, data) {
+         var existsAlready = false;
+         for (var i = 0; i < data.length; i++)
+         {
+            if(term.toLowerCase() == data[i].text.toLowerCase())
+            {
+                existsAlready = true;
+                break;
+            }
+         }
+         if(!existsAlready)
+            return {id:term+':create', text:"new code:"+term};
+      }
+  });
+
+    $(".modifiedReferenceTypedown").on("select2-selecting", function(e) {
+         var element = $(this);
+         var currentText = ""
+         var rel = "";
+         var prevSelection = element.select2("data");
+         console.log("Selection made before new selection",prevSelection);
+
+         if(e.choice.id.split(':')[1] == 'create')
+         {
+            rel = element.data('domain') + ':create';
+            currentText = e.choice.text.trim().toLowerCase().substring(9);
+         }
+         else {
+            rel = e.choice.id;
+            currentText = e.choice.text.trim().toLowerCase();
+         }
+
+         $.ajax({
+                method: "POST",
+                url: "<g:createLink controller='finance' action='financialRef'/>",
+                data: {
+                    owner:element.data('owner')+':'+element.data('ownerid'), //org.kbplus.CostItem:1
+                    ownerField: element.data("ownerfield"), //order
+                    relation: rel,  //org.kbplus.Order:100
+                    relationField: element.data('relationfield'), //orderNumber
+                    val:currentText,         //123456
+                    shortcode:element.data('shortcode')
+                }
+         })
+        .fail(function( jqXHR, textStatus, errorThrown ) {
+             alert('Reset back to the original value, there was an issue');
+             element.select2('data', prevSelection ? prevSelection : '');
+         })
+        .done(function(data) {
+            if(data.error.length > 0)
+                element.select2('data', prevSelection);
+            else {
+                element.data('previous',prevSelection ? prevSelection.id+'_'+prevSelection.text : '');
+                element.data('defaultvalue',e.choice.text);
+                element.data('relationid',data.relation.id);
+            }
+        });
+    });
+
+    $('.budgetCode').on('click', function(e) {
+        var element = $(this);
+        $.ajax({
+                method: "POST",
+                url: "<g:createLink controller='finance' action='removeBC'/>",
+                data: {
+                    bcci:element.attr('id'),
+                    shortcode:"${params.shortcode}"
+                }
+         })
+         .done(function(data) {
+            if(data.error)
+                userInfo(data.error.status,data.error.msg,null);
+            else
+            {
+                element.parent('span').remove();
+                userInfo(data.success.status,data.success.msg,null);
+            }
+         });
+    });
+</r:script>
 </html>

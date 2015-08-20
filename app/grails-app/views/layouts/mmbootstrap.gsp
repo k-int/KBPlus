@@ -186,9 +186,6 @@
                            <g:link controller="jasperReports" action="index">Reports</g:link></li>
                        <li <%= ( ( 'titleDetails'== controllerName ) && ( 'dmIndex'==actionName ) ) ? ' class="active"' : '' %>>
                            <g:link controller="titleDetails" action="dmIndex">Titles</g:link></li>
-                       <li <%= ( ( 'dataManager'== controllerName ) && ( 'expungeDeletedTitles'==actionName ) ) ? ' class="active"' : '' %>>
-                           <g:link controller="dataManager" action="expungeDeletedTitles">Expunge Deleted Titles</g:link></li>
-
                      </ul>
                    </li>
                 </sec:ifAnyGranted>
@@ -228,12 +225,28 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'forceSendNotifications'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="forceSendNotifications">Send Pending Notifications</g:link>
                       </li>
+                       <li class="dropdown-submenu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Data Management Tasks</a>
+                        <ul class="dropdown-menu">
+                      <li <%= ( ( 'dataManager'== controllerName ) && ( 'expungeDeletedTitles'==actionName ) ) ? ' class="active"' : '' %>>
+                           <g:link controller="dataManager" action="expungeDeletedTitles" onclick="return confirm('You are about to permanently delete all titles with a status of ‘Deleted’. This will also delete any TIPPs and IEs that are attached to this title. Only click OK if you are absolutely sure you wish to proceed')">Expunge Deleted Titles</g:link></li>
+                      <li <%= ( ( 'dataManager'== controllerName ) && ( 'expungeDeletedTIPPS'==actionName ) ) ? ' class="active"' : '' %>>
+                           <g:link controller="dataManager" onclick="return confirm('This will only delete TIPPs that are not attached to current IEs.')" action="expungeDeletedTIPPS">Expunge Deleted TIPPS</g:link></li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'titleMerge'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="titleMerge">Title Merge</g:link>
                       </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'ieTransfer'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="ieTransfer">IE Transfer</g:link>
+                      </li>                      
                         <li <%= ( ( 'admin'== controllerName ) && ( 'userMerge'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="userMerge">User Merge</g:link>
                       </li>
+                        <li <%= ( ( 'admin'== controllerName ) && ( 'hardDeletePkgs'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="hardDeletePkgs">Package Delete</g:link>
+                      </li>
+                      </ul>
+                      </li>
+
                       <li class="divider"></li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'globalSync'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="globalSync">Start Global Data Sync</g:link>
@@ -365,9 +378,9 @@
                                       <b class="caret"></b>
                                   </a>
                                   <ul class="dropdown-menu">
-                                      <li><a href="https://www.kbplus.ac.uk/kbplus/myInstitutions/index">KB+</a></li>
-                                      <li><a href="https://www.kbplus.ac.uk/demo/myInstitutions/index">KB+ Demo</a></li>
-                                      <li><a href="https://www.kbplus.ac.uk/test/myInstitutions/index">KB+ Sandpit</a></li>
+                                      <li><a href="http://www.kbplus.ac.uk/kbplus/myInstitutions/index">KB+</a></li>
+                                      <li><a href="http://www.kbplus.ac.uk/demo/myInstitutions/index">KB+ Demo</a></li>
+                                      <li><a href="http://www.kbplus.ac.uk/test/myInstitutions/index">KB+ Sandpit</a></li>
                                   </ul>
                               </li>
                               <li><a href="https://github.com/k-int/KBPlus/releases/tag/${appVersion}">

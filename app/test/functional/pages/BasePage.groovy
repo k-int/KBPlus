@@ -16,6 +16,8 @@ class BasePage extends Page {
     static content = {
 
         alertBox { msg ->
+            println("alert for...");
+            println("alert box - looking for ${msg} in "+$("div.alert-warning").children().filter("p").text());
             $("div.alert-warning").children().filter("p").text().contains(msg)
         }
         messageBox { msg ->

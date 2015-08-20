@@ -85,6 +85,8 @@
                   <th>ID</td>
                   <th>Org</th>
                   <th>Role</th>
+                  <th>From</th>
+                  <th>To</th>
                 </tr>
               </thead>
               <tbody>
@@ -93,6 +95,12 @@
                     <td>${org.id}</td>
                     <td>${org.org.name}</td>
                     <td>${org?.roleType?.value}</td>
+                    <td>
+                      <g:xEditable owner="${org}" type="date" field="startDate"/>
+                    </td>
+                    <td>
+                      <g:xEditable owner="${org}" type="date" field="endDate"/>
+                    </td>
                   </tr>
                 </g:each>
               </tbody>

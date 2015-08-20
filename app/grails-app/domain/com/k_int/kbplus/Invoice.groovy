@@ -1,5 +1,7 @@
 package com.k_int.kbplus
 
+import javax.persistence.Transient
+
 class Invoice {
 
   Date dateOfInvoice
@@ -32,4 +34,21 @@ class Invoice {
                   owner(nullable:false, blank:false)
   }
 
+
+    @Transient
+    static def refdataFind(params) {
+        def owner  = Org.findByShortcode(params.shortcode)
+        def result = [];
+        def ql     = null;
+        if (owner)
+            ql = Invoice.findAllByOwnerAndInvoiceNumberIlike(owner,"%${params.q}%",params)
+
+        if ( ql ) {
+            ql.each { id ->
+                result.add([id:"${id.class.name}:${id.id}",text:"${id.invoiceNumber}"])
+            }
+        }
+
+        result
+    }
 }

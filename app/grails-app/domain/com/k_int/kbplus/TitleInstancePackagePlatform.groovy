@@ -5,14 +5,19 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.hibernate.proxy.HibernateProxy
 import com.k_int.ClassUtils
 import org.springframework.context.i18n.LocaleContextHolder
+import org.apache.commons.logging.*
 
 class TitleInstancePackagePlatform {
+  @Transient
+  def grailsLinkGenerator
 
   @Transient
   def grailsApplication
   
   @Transient
   def messageSource
+
+  static Log static_logger = LogFactory.getLog(TitleInstancePackagePlatform)
  
   static auditable = true
   static def controlledProperties = ['status',
@@ -53,6 +58,7 @@ class TitleInstancePackagePlatform {
   Date coreStatusEnd
 
   TitleInstancePackagePlatform derivedFrom
+  TitleInstancePackagePlatform masterTipp
 
   static mappedBy = [ids: 'tipp', additionalPlatforms: 'tipp']
   static hasMany = [ids: IdentifierOccurrence, 
@@ -292,10 +298,11 @@ class TitleInstancePackagePlatform {
         dep_ies.each { dep_ie ->
         def sub = ClassUtils.deproxy(dep_ie.subscription)
         if(dep_ie.subscription && sub && sub?.status?.value != "Deleted" ) {
+        def titleLink = grailsLinkGenerator.link(controller: 'titleDetails', action: 'show', id: this.title.id, absolute: true)
+        def pkgLink =  grailsLinkGenerator.link(controller: 'packageDetails', action: 'show', id: this.pkg.id, absolute: true)
         changeNotificationService.registerPendingChange('subscription',
                                                         dep_ie.subscription,
-                                                        "Information about title <a href=\"${grailsApplication.config.SystemBaseURL}/titleDetails/show/${this.title.id}\">\"${this.title.title}\"" +
-                                                                "</a> changed in package <a href=\"${grailsApplication.config.SystemBaseURL}/packageDetails/show/${id}\">${this.pkg.name}</a>. " +
+                                                        "Information about title <a href=\"${titleLink}\">${this.title.title}</a> changed in package <a href=\"${pkgLink}\">${this.pkg.name}</a>. " +
                                                                 "<b>${changeDocument.prop}</b> was updated from <b>\"${changeDocument.oldLabel}\"</b>(${changeDocument.old}) to <b>\"${changeDocument.newLabel}\"</b>" +
                                                                 "(${changeDocument.new}). "+description,
                                                         sub?.getSubscriber(),
@@ -397,5 +404,18 @@ class TitleInstancePackagePlatform {
       if( noChange ) return 0;      
       return 1;
   }  
+
+  static def expunge(tipp_id) {
+    try {
+      static_logger.debug("  -> TIPPs");
+      def deleted_ie = RefdataCategory.lookupOrCreate('Entitlement Issue Status','Deleted');
+      // def deleted_sub = RefdataCategory.lookupOrCreate('Subscription Status','Deleted');
+      IssueEntitlement.executeUpdate("delete from IssueEntitlement ie where ie.tipp.id=:tipp_id and ie.status=:ie_del",[tipp_id:tipp_id,ie_del:deleted_ie])
+      TitleInstancePackagePlatform.executeUpdate('delete from TitleInstancePackagePlatform tipp where tipp.id = ?',[tipp_id])
+    }
+    catch ( Exception e ) {
+      static_logger.error("Problem expunging title",e);
+    }
+  }
 
 }

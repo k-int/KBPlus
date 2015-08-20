@@ -22,7 +22,7 @@ class AdminController {
 
   def docstoreService
   def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
-
+  def executorService
 
 
   static boolean ftupdate_running = false
@@ -199,47 +199,65 @@ class AdminController {
      def usrMrgId = params.userToMerge == "null"?null:params.userToMerge
      def usrKeepId = params.userToKeep == "null"?null:params.userToKeep
      def result = [:]
-     switch (request.method) {
-       case 'GET':
-         if(usrMrgId && usrKeepId ){
-           def usrMrg = User.get(usrMrgId)
-           def usrKeep =  User.get(usrKeepId)
-           result.userRoles = usrMrg.getAuthorities()
-           result.userAffiliations =  usrMrg.getAuthorizedAffiliations()
-           result.usrMrgName = usrMrg.displayName
-           result.userKeepName = usrKeep.displayName
-         }else{
-          flash.error = "Please select'user to keep' and 'user to merge' from the dropdown."
-         }
-         break;
-       case 'POST':
-         if(usrMrgId && usrKeepId){
-           def usrMrg = User.get(usrMrgId)
-           def usrKeep =  User.get(usrKeepId)
-           def success = false
-           try{
-             success = copyUserRoles(usrMrg, usrKeep)
-           }catch(Exception e){
-            log.error("Exception while copying user roles.",e)
-           }
-           if(success){
-             usrMrg.enabled = false
-             usrMrg.save(flush:true,failOnError:true)
-             flash.message = "Rights copying successful. User '${usrMrg.displayName}' is now disabled."
+     try {
+       log.debug("Determine user merge operation : ${request.method}");
+       switch (request.method) {
+         case 'GET':
+           if(usrMrgId && usrKeepId ){
+             def usrMrg = User.get(usrMrgId)
+             def usrKeep =  User.get(usrKeepId)
+             log.debug("Selected users : ${usrMrg}, ${usrKeep}");
+             result.userRoles = usrMrg.getAuthorities()
+             result.userAffiliations =  usrMrg.getAuthorizedAffiliations()
+             result.usrMrgName = usrMrg.displayName
+             result.userKeepName = usrKeep.displayName
            }else{
-             flash.error = "An error occured before rights transfer was complete."
+            log.error("Missing keep/merge userid ${params}");
+            flash.error = "Please select'user to keep' and 'user to merge' from the dropdown."
            }
-         }else{
-          flash.error = "Please select'user to keep' and 'user to merge' from the dropdown."
-         }
-         break
-       default:
-         break;
-     }
-      result.usersAll = User.list(sort:"display", order:"asc")
-      def activeHQL = " from User as usr where usr.enabled=true or usr.enabled=null order by display asc"
-      result.usersActive = User.executeQuery(activeHQL)
+           log.debug("Get processing completed");
+           break;
+         case 'POST':
+           log.debug("Post...");
+           if(usrMrgId && usrKeepId){
+             def usrMrg = User.get(usrMrgId)
+             def usrKeep =  User.get(usrKeepId)
+             def success = false
+             try{
+               log.debug("Copying user roles... from ${usrMrg} to ${usrKeep}");
+               success = copyUserRoles(usrMrg, usrKeep)
+               log.debug("Result of copyUserRoles : ${success}");
+             }catch(Exception e){
+              log.error("Exception while copying user roles.",e)
+             }
+             if(success){
+               log.debug("Success");
+               usrMrg.enabled = false
+               log.debug("Save disable and save merged user");
+               usrMrg.save(flush:true,failOnError:true)
+               flash.message = "Rights copying successful. User '${usrMrg.displayName}' is now disabled."
+             }else{
+               flash.error = "An error occured before rights transfer was complete."
+             }
+           }else{
+            flash.error = "Please select'user to keep' and 'user to merge' from the dropdown."
+           }
+           break
+         default:
+           break;
+       }
 
+       log.debug("Get all users");
+       result.usersAll = User.list(sort:"display", order:"asc")
+       log.debug("Get active users");
+       def activeHQL = " from User as usr where usr.enabled=true or usr.enabled=null order by display asc"
+       result.usersActive = User.executeQuery(activeHQL)
+    }
+    catch ( Exception e ) {
+      log.error("Problem in user merge",e);
+    }
+
+    log.debug("Returning ${result}");
     result
   }
 
@@ -256,12 +274,27 @@ class AdminController {
     }
     mergeAffil.each{affil ->
       if(!currentAffil.contains(affil)){
-        def newAffil = new UserOrg(org:affil.org,user:usrKeep,formalRole:affil.formalRole,status:3)
-        if(!newAffil.save(flush:true,failOnError:true)){
-          return false
+
+        // We should check that the new role does not already exist
+        def existing_affil_check = UserOrg.findByOrgAndUserAndFormalRoleAndStatus(affil.org,usrKeep,affil.formalRole,3);
+
+        if ( existing_affil_check == null ) {
+          log.debug("No existing affiliation");
+          def newAffil = new UserOrg(org:affil.org,user:usrKeep,formalRole:affil.formalRole,status:3)
+          if(!newAffil.save(flush:true,failOnError:true)){
+            log.error("Probem saving user roles");
+            newAffil.errors.each { e ->
+              log.error(e);
+            }
+            return false
+          }
+        }
+        else {
+          log.debug("Affiliation already present - skipping ${existing_affil_check}");
         }
       }
     }
+    log.debug("copyUserRoles returning true");
     return true
   }
 
@@ -503,6 +536,27 @@ class AdminController {
     redirect(controller:'home')
   }
 
+  @Secured(['ROLE_ADMIN','IS_AUTHENTICATED_FULLY'])
+  def ieTransfer(){
+    log.debug(params)
+    def result = [:]
+    if(params.sourceTIPP && params.targetTIPP){
+      result.sourceTIPPObj = TitleInstancePackagePlatform.get(params.sourceTIPP)
+      result.targetTIPPObj = TitleInstancePackagePlatform.get(params.targetTIPP)
+    }
+
+    if(params.transfer == "Go" && result.sourceTIPPObj && result.targetTIPPObj){
+      log.debug("Tranfering ${IssueEntitlement.countByTipp(result.sourceTIPPObj)} IEs from ${result.sourceTIPPObj} to ${result.targetTIPPObj}")
+      def sourceIEs = IssueEntitlement.findAllByTipp(result.sourceTIPPObj)
+      sourceIEs.each{
+        it.setTipp(result.targetTIPPObj)
+        it.save()
+      }
+    }
+
+    result
+  }
+
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def titleMerge() {
 
@@ -628,19 +682,32 @@ class AdminController {
         else {
           def title = null;
           def bindvars = []
+          def title_id_ctr = 0;
           // Set up base_query
-          def q = "Select t from TitleInstance as t where "
+          def q = "Select distinct(t) from TitleInstance as t "
+          def joinclause = ''
+          def whereclause = ' where ';
           def i = 0;
+          def disjunction_ctr = 0;
           cols.each { cn ->
             if ( cn == 'title.id' ) {
-              q += 't.id = ?'
-              bindvars.add(nl[i]);
+              if ( disjunction_ctr++ > 0 ) { whereclause += ' OR ' }
+              whereclause += 't.id = ?'
+              bindvars.add(new Long(nl[i]));
             }
             else if ( cn == 'title.title' ) {
               title = nl[i]
             }
             else if ( cn.startsWith('title.id.' ) ) {
               // Namespace and value
+              if ( nl[i].trim().length() > 0 ) {
+                if ( disjunction_ctr++ > 0 ) { whereclause += ' OR ' }
+                joinclause += " join t.ids as id${title_id_ctr} "
+                whereclause += " ( id${title_id_ctr}.identifier.ns.ns = ? AND id${title_id_ctr}.identifier.value = ? ) "
+                bindvars.add(cn.substring(9))
+                bindvars.add(nl[i])
+                title_id_ctr++
+              }
             }
             i++;
           }
@@ -675,7 +742,6 @@ class AdminController {
               }
               c++
             }
-
           }
           else {
             log.debug("Unable to continue - matched multiple titles");
@@ -704,59 +770,92 @@ class AdminController {
     redirect(controller:'admin',action:'manageCustomProperties')
   }
 
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
-  def uploadIssnL() {
-    def result=[:]
-    def ctr = 0;
-    def start_time = System.currentTimeMillis()
+    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+    def uploadIssnL() {
+        def result=[:]
+        boolean hasStarted = false
 
-    if (request.method == 'POST'){
-      def input_stream = request.getFile("sameasfile")?.inputStream
-      CSVReader r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ), '\t' as char )
-      String[] nl;
-      String[] types;
-      def first = true
-      while ((nl = r.readNext()) != null) {
-        def elapsed = System.currentTimeMillis() - start_time
-
-        def avg = 0;
-        if ( ctr > 0 ) {
-          avg = elapsed / 1000 / ctr  //
+        if (request.method == 'POST'){
+            def input_stream = request.getFile("sameasfile")?.inputStream
+            CSVReader reader = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ), '\t' as char )
+            def future = executorService.submit({
+                performUploadISSNL(reader)
+            } as java.util.concurrent.Callable)
+            log.debug("Uploading ISSNL is returning");
+            hasStarted = true
         }
 
-        if ( nl.length == 2 ) {
-          if ( first ) {
-            first = false; // Skip header
-            log.debug('Header :'+nl);
-            types=nl
-          }
-          else {
-            log.debug("[seq ${ctr++} - avg=${avg}] ${types[0]}:${nl[0]} == ${types[1]}:${nl[1]}");
-            def id1 = Identifier.lookupOrCreateCanonicalIdentifier(types[0],nl[0]);
-            def id2 = Identifier.lookupOrCreateCanonicalIdentifier(types[1],nl[1]);
-
-            def idrel = IdentifierRelation.findByFromIdentifierAndToIdentifier(id1,id2);
-            if ( idrel == null ) {
-              idrel = IdentifierRelation.findByFromIdentifierAndToIdentifier(id2,id1);
-              if ( idrel == null ) {
-                idrel = new IdentifierRelation(fromIdentifier:id1,toIdentifier:id2);
-                idrel.save(flush:true)
-              }
-            }
-          }
-        }
-        else {
-          log.error("uploadIssnL expected 2 values");
-        }
-
-        if ( ctr % 5000 == 0 ) {
-          cleanUpGorm()
-        }
-      }
+        [hasStarted: hasStarted]
     }
 
-    result
-  }
+    def performUploadISSNL(r) {
+        def ctr = 0;
+        def start_time = System.currentTimeMillis()
+        String[] nl;
+        String[] types;
+        def first = true
+        while ((nl = r.readNext()) != null) {
+            def elapsed = System.currentTimeMillis() - start_time
+            def avg = 0;
+            if ( ctr > 0 ) {
+                avg = elapsed / 1000 / ctr
+            }
+
+            if ( nl.length == 2 ) {
+                if ( first ) {
+                    first = false; // Skip header
+                    log.debug('Header :'+nl);
+                    types=nl
+                }
+                else {
+                    Identifier.withNewTransaction {
+                        log.debug("[seq ${ctr++} - avg=${avg}] ${types[0]}:${nl[0]} == ${types[1]}:${nl[1]}");
+                        def id1 = Identifier.lookupOrCreateCanonicalIdentifier(types[0],nl[0]);
+                        def id2 = Identifier.lookupOrCreateCanonicalIdentifier(types[1],nl[1]);
+
+
+                        // Do either of our identifiers have a group set
+                        if ( id1.ig == id2.ig ) {
+                            if ( id1.ig == null ) {
+                                log.debug("Both identifiers have a group of null - so create a new group and relate them")
+                                def identifier_group = new IdentifierGroup().save(flush:true);
+                                id1.ig = identifier_group
+                                id2.ig = identifier_group
+                                id1.save(flush:true);
+                                id2.save(flush:true);
+                            }
+                            else {
+                                log.debug("Identifiers already belong to same identifier group");
+                            }
+                        }
+                        else {
+                            if ( ( id1.ig != null ) && ( id2.ig != null ) ) {
+                                log.error("Conflicting identifier group for same as ${id1} ${id2}");
+                            }
+                            else if ( id1.ig != null ) {
+                                log.debug("Adding identifier ${id2} to same group (${id1.ig}) as ${id1}");
+                                id2.ig = id1.ig
+                                id2.save(flush:true);
+                            }
+                            else {
+                                log.debug("Adding identifier ${id1} to same group (${id1.ig}) as ${id2}");
+                                id1.ig = id2.ig
+                                id1.save(flush:true);
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                log.error("uploadIssnL expected 2 values");
+            }
+
+            if ( ctr % 200 == 0 ) {
+                cleanUpGorm()
+            }
+        }
+        return true
+    }
 
   def cleanUpGorm() {
     log.debug("Clean up GORM");

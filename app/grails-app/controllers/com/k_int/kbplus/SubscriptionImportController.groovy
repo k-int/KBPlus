@@ -1,25 +1,16 @@
 package com.k_int.kbplus
 
-import grails.converters.*
 import grails.plugins.springsecurity.Secured
-import grails.web.JSONBuilder
-import org.codehaus.groovy.grails.web.json.*
-// import org.json.simple.JSONArray;
-// import org.json.simple.JSONObject;
-import org.elasticsearch.groovy.common.xcontent.*
-import groovy.xml.MarkupBuilder
-import groovy.xml.StreamingMarkupBuilder
 import com.k_int.kbplus.auth.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.hslf.model.*;
 import java.text.SimpleDateFormat
 
 class SubscriptionImportController {
 
   def springSecurityService
-  def ESWrapperService
+  def ESSearchService
   def genericOIDService
 
   def renewals_reversemap = ['subject':'subject', 'provider':'provid', 'pkgname':'tokname' ]
@@ -88,9 +79,6 @@ class SubscriptionImportController {
     //result.institution = Org.findByShortcode(params.shortcode)
     def inst = params.id ? Org.get(params.id) : null
 
-    // Get hold of some services we might use ;)
-    org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
-    org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
     result.user = springSecurityService.getCurrentUser()
 
     def shopping_basket = UserFolder.findByUserAndShortcode(result.user,'SubBasket') ?: new UserFolder(user:result.user, shortcode:'SubBasket').save();
@@ -113,87 +101,15 @@ class SubscriptionImportController {
     }
 
     result.basket = materialiseFolder(shopping_basket.items)
-
-    if (springSecurityService.isLoggedIn()) {
-
-      try {
-
-          params.max = Math.min(params.max ? params.int('max') : 10, 100)
-          params.offset = params.offset ? params.int('offset') : 0
-
-          //def params_set=params.entrySet()
-
-          def query_str = buildRenewalsQuery(params)
-          if ( fq ) 
-            query_str = query_str + " AND ( " + fq + " ) "
-          
-          log.debug("query: ${query_str}");
-
-          def search = esclient.search{
-            indices "kbplus"
-            source {
-              from = params.offset
-              size = params.max
-              query {
-                query_string (query: query_str)
-              }
-              sort = [
-                 'sortname' : [ 'order' : 'asc' ]
-              ]
-              facets {
-                startYear {
-                  terms {
-                    field = 'startYear'
-                    size = 25
-                  }
-                }
-                consortiaName {
-                  terms {
-                    field = 'consortiaName'
-                    size = 25
-                  }
-                }
-                cpname {
-                  terms {
-                    field = 'cpname'
-                    size = 25
-                  }
-                }
-              }
-
-            }
-
-          }
-
-          if ( search?.response ) {
-            result.hits = search.response.hits
-            result.resultsTotal = search.response.hits.totalHits
-
-            // We pre-process the facet response to work around some translation issues in ES
-            if ( search.response.facets != null ) {
-              result.facets = [:]
-              search.response.facets.facets.each { facet ->
-                def facet_values = []
-                facet.value.entries.each { fe ->
-                  facet_values.add([term: fe.term,display:fe.term,count:"${fe.count}"])
-                }
-                result.facets[facet.key] = facet_values
-              }
-            }
-          }
-      }
-      finally {
-        try {
-        }
-        catch ( Exception e ) {
-          log.error("problem",e);
-        }
-      }
-
-    }  // If logged in
+    if (fq) { //filtered query
+      params.tempFQ = fq
+    }
+    params.rectype = 'Package'
+    result.putAll(ESSearchService.search(params,renewals_reversemap))
 
     render (view:'packageSearch', model:result);
   }
+
 
   def materialiseFolder(f) {
     def result = []
@@ -209,44 +125,6 @@ class SubscriptionImportController {
     result
   }
 
-  def buildRenewalsQuery(params) {
-    log.debug("BuildQuery...");
-
-    StringWriter sw = new StringWriter()
-
-    // sw.write("subtype:'Subscription Offered'")
-    sw.write("rectype:'Package'")
-
-    renewals_reversemap.each { mapping ->
-
-      // log.debug("testing ${mapping.key}");
-
-      if ( params[mapping.key] != null ) {
-        if ( params[mapping.key].class == java.util.ArrayList) {
-          params[mapping.key].each { p ->
-                sw.write(" AND ")
-                sw.write(mapping.value)
-                sw.write(":")
-                sw.write("\"${p}\"")
-          }
-        }
-        else {
-          // Only add the param if it's length is > 0 or we end up with really ugly URLs
-          // II : Changed to only do this if the value is NOT an *
-          if ( params[mapping.key].length() > 0 && ! ( params[mapping.key].equalsIgnoreCase('*') ) ) {
-            sw.write(" AND ")
-            sw.write(mapping.value)
-            sw.write(":")
-            sw.write("\"${params[mapping.key]}\"")
-          }
-        }
-      }
-    }
-
-
-    def result = sw.toString();
-    result;
-  }
 
   def generate(plist, inst) {
     try {

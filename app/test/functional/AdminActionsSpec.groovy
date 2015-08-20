@@ -6,48 +6,78 @@ import spock.lang.Stepwise
 @Stepwise
 class AdminActionsSpec extends GebReportingSpec {
 
-	//The following will setup everything required for this test case
-	def "Setup our database"(){
-		when:
-			to PublicPage
-			loginLink()
-			at LogInPage
-			login(Data.UserD_name, Data.UserD_passwd)
-			go "/demo/org/create"
-			$("form").name = Data.Org_name
-			$("form").impId = Data.Org_impId
-			$("form").sector = 'Higher Education'
-			$("#SubmitButton").click()
-			to ProfilePage
-			changeUserNoDash(Data.UserA_name, Data.UserA_passwd)
-			requestMembership(Data.Org_name, 'Editor')
-			changeUserNoDash(Data.UserD_name, Data.UserD_passwd)
-			manageAffiliationReq()
-			at AdminMngAffReqPage
-			approve()
+  // //The following will setup everything required for this test case
+  // def setupSpec(){
+  //     def org = new com.k_int.kbplus.Org(name:Data.Org_name,impId:Data.Org_impId,sector:"Higher Education").save()
+  //     def user = com.k_int.kbplus.auth.User.findByUsername(Data.UserA_name)
+  //     def userAdm = com.k_int.kbplus.auth.User.findByUsername(Data.UserD_name)
+  //     def formal_role = com.k_int.kbplus.auth.Role.findByAuthority('INST_ADM')
+  //     def userOrg = new com.k_int.kbplus.auth.UserOrg(dateRequested:System.currentTimeMillis(),
+  //                             status:1,
+  //                             org:org,
+  //                             user:user,
+  //                             formalRole:formal_role).save()
+  //    def userOrgAdmin = new com.k_int.kbplus.auth.UserOrg(dateRequested:System.currentTimeMillis(),
+  //                       status:1,
+  //                       org:org,
+  //                       user:userAdm,
+  //                       formalRole:formal_role).save()
+  // }
 
-		then:
-			true
-			to ProfilePage
-	}
+  def "First log in to the system"(){
+    setup:
+       to PublicPage
+    when:
+      loginLink()
+      at LogInPage
 
-	def "Go to User Merge screen and transfer affiliations from user A"(){
-		setup:
-			to ProfilePage
-		when:
-			go '/demo/admin/userMerge'
-		then:
-			browser.page.title.contains("User Merge")
-		when:
-			$('select', name:'userToKeep').value(Data.UserD_displayName); 
-			$('select', name:'userToMerge').value(Data.UserA_displayName); 
-			$('input', type:'submit').click()
-		then:
-			$('h3').text() == ("Merge "+ Data.UserA_displayName + " into "+ Data.UserD_displayName)
-		when:
-			$('input',value:'Apply').click()
-			go '/demo/myInstitutions/'+Data.Org_Url+'/dashboard'
-		then:
-			at DashboardPage
-	}
+      login(Data.UserD_name, Data.UserD_passwd)
+    then:
+      at DashboardPage
+  }
+
+  def "Load issn-l files"(){
+    setup:
+      to ProfilePage
+
+    when:
+      to UploadIssnLPage
+      $('form').sameasfile = Data.issnl_mapping_file
+      $('button', text: "Upload...").click()
+
+    then:
+      $('div.alert-info').verifyNotEmpty() 
+
+  }
+
+  def "Go to User Merge screen and transfer affiliations from user A"(){
+
+    when:
+      go '/demo/admin/userMerge'
+    then:
+      browser.page.title.contains("User Merge")
+    when:
+      $('select', name:'userToKeep').value(Data.UserD_displayName); 
+      $('select', name:'userToMerge').value(Data.UserA_displayName); 
+      $('input', type:'submit').click()
+    then:
+      $('h3').text() == ("Merge "+ Data.UserA_displayName + " into "+ Data.UserD_displayName)
+    when:
+      waitFor { $("#mergeUsersBtn").displayed }
+      $("#mergeUsersBtn").click()
+    then:
+      true
+      // messageBox("successful")
+  }
+
+  def "Load issn-l files"(){
+    setup:
+      to ProfilePage
+    when:
+      to UploadIssnLPage
+      $('form').sameasfile = Data.issnl_mapping_file
+      $('button', text: "Upload...").click()
+    then:
+      $('div.alert-info').verifyNotEmpty() 
+  }
 }

@@ -688,6 +688,16 @@ No Host Platform URL Content
     // log.debug("New gokb record source: ${gokb_record_source}");
 
     // Sort string generation moved to admin - cleanse
+
+      //Reminders for Cron
+      RefdataCategory.lookupOrCreate("ReminderMethod","email")
+
+      RefdataCategory.lookupOrCreate("ReminderUnit","Day")
+      RefdataCategory.lookupOrCreate("ReminderUnit","Week")
+      RefdataCategory.lookupOrCreate("ReminderUnit","Month")
+
+      RefdataCategory.lookupOrCreate("ReminderTrigger","Subscription Manual Renewal Date")
+
   }
 
 }

@@ -58,7 +58,6 @@
     </div>
 
     <div class="container">
-      ${institution?.name} ${subscriptionInstance?.type?.value}
        <h1>${subscriptionInstance.name} : Link Subscription to Packages</h1>
        <g:render template="nav" contextPath="." />
     </div>

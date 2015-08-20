@@ -396,8 +396,8 @@ packageTransforms = [
 
 ]
 licenceTransforms = [
-  'sub_ie':[name:'Licensed Issue Entitlements (CSV)', xsl:'licenced_titles.xsl', returnFileExtention:'txt', returnMime:'text/plain'],
-  'sub_pkg':[name:'Licensed Subscriptions/Packages (CSV)', xsl:'licenced_subscriptions_packages.xsl', returnFileExtention:'txt', returnMime:'text/plain']
+  'sub_ie':[name:'Licensed Issue Entitlements (CSV)', xsl:'licenced_titles.xsl', returnFileExtention:'csv', returnMime:'text/csv'],
+  'sub_pkg':[name:'Licensed Subscriptions/Packages (CSV)', xsl:'licenced_subscriptions_packages.xsl', returnFileExtention:'csv', returnMime:'text/csv']
 ]
 // log4j configuration
 log4j = {
@@ -778,3 +778,11 @@ financialImportTSVLoaderMappings = [
     ]]
   ]
 ];
+
+//grails.mail.default.from="server@yourhost.com" //override system wide
+grails.mail.disabled=false //System wide
+grails.mail.poolSize=20 //default 5 emails at a time, then que based system (prereq = async true)
+//grails.mail.overrideAddress="ryan@k-int.com" //Test env only, overrides to and from address
+notifications.email.from='notification@kbplus.ac.uk'
+notifications.email.replyTo='no-reply@kbplus.ac.uk'
+notifications.email.genericTemplate=true //If enabled, no customisation in email i.e. Reminder inst info, User info... Else, Customised template will be sent to user

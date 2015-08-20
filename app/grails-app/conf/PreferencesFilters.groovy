@@ -8,7 +8,6 @@ class PreferencesFilters {
   def filters = {
     setPrefsFilter(controller:'*', action:'*') {
       before = {
-
         if ( springSecurityService.principal instanceof String ) {
           log.debug("User is string: ${springSecurityService.principal}");
         }
@@ -27,7 +26,9 @@ class PreferencesFilters {
         }
         else {
         }
-
+      }
+      after = {
+        log.debug("After");
       }
     }
   }
