@@ -408,6 +408,9 @@ class TitleInstancePackagePlatform {
   static def expunge(tipp_id) {
     try {
       static_logger.debug("  -> TIPPs");
+      def deleted_ie = RefdataCategory.lookupOrCreate('Entitlement Issue Status','Deleted');
+      // def deleted_sub = RefdataCategory.lookupOrCreate('Subscription Status','Deleted');
+      IssueEntitlement.executeUpdate("delete from IssueEntitlement ie where ie.tipp.id=:tipp_id and ie.status=:ie_del",[tipp_id:tipp_id,ie_del:deleted_ie])
       TitleInstancePackagePlatform.executeUpdate('delete from TitleInstancePackagePlatform tipp where tipp.id = ?',[tipp_id])
     }
     catch ( Exception e ) {

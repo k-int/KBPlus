@@ -231,7 +231,7 @@
                       <li <%= ( ( 'dataManager'== controllerName ) && ( 'expungeDeletedTitles'==actionName ) ) ? ' class="active"' : '' %>>
                            <g:link controller="dataManager" action="expungeDeletedTitles" onclick="return confirm('You are about to permanently delete all titles with a status of ‘Deleted’. This will also delete any TIPPs and IEs that are attached to this title. Only click OK if you are absolutely sure you wish to proceed')">Expunge Deleted Titles</g:link></li>
                       <li <%= ( ( 'dataManager'== controllerName ) && ( 'expungeDeletedTIPPS'==actionName ) ) ? ' class="active"' : '' %>>
-                           <g:link controller="dataManager" action="expungeDeletedTIPPS">Expunge Deleted TIPPS</g:link></li>
+                           <g:link controller="dataManager" onclick="return confirm('This will only delete TIPPs that are not attached to current IEs.')" action="expungeDeletedTIPPS">Expunge Deleted TIPPS</g:link></li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'titleMerge'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="titleMerge">Title Merge</g:link>
                       </li>
