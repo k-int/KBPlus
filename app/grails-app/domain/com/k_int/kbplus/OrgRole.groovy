@@ -13,6 +13,8 @@ class OrgRole {
   Subscription sub
   License lic
   TitleInstance title
+  Date startDate
+  Date endDate
 
   static mapping = {
           id column:'or_id'
@@ -23,6 +25,8 @@ class OrgRole {
          sub column:'or_sub_fk'
          lic column:'or_lic_fk'
        title column:'or_title_fk'
+   startDate column:'or_start_date'
+     endDate column:'or_end_date'
   }
 
   static constraints = {
@@ -31,6 +35,8 @@ class OrgRole {
     sub(nullable:true, blank:false)
     lic(nullable:true, blank:false)
     title(nullable:true, blank:false)
+    startDate(nullable:true, blank:false)
+    endDate(nullable:true, blank:false)
   }
   
   
