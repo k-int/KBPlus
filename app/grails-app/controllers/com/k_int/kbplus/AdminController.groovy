@@ -777,8 +777,9 @@ class AdminController {
 
         if (request.method == 'POST'){
             def input_stream = request.getFile("sameasfile")?.inputStream
+            CSVReader reader = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ), '\t' as char )
             def future = executorService.submit({
-                performUploadISSNL(result, input_stream)
+                performUploadISSNL(reader)
             } as java.util.concurrent.Callable)
             log.debug("Uploading ISSNL is returning");
             hasStarted = true
@@ -787,10 +788,9 @@ class AdminController {
         [hasStarted: hasStarted]
     }
 
-    def performUploadISSNL(result, input_stream) {
+    def performUploadISSNL(r) {
         def ctr = 0;
         def start_time = System.currentTimeMillis()
-        CSVReader r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ), '\t' as char )
         String[] nl;
         String[] types;
         def first = true
@@ -854,7 +854,7 @@ class AdminController {
                 cleanUpGorm()
             }
         }
-        result.complete = true
+        return true
     }
 
   def cleanUpGorm() {
