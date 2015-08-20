@@ -93,6 +93,9 @@
           </div>
       </div>
 
+        <g:if test="${licenseCount && licenseCount>0}">
+          <span>Showing ${licenseCount} licenses</span>
+        </g:if>
 
         <div class="container licence-results">
           <table class="table table-bordered table-striped">
@@ -136,6 +139,7 @@
             </tbody>
           </table>
         </div>
+       
         <div class="pagination" style="text-align:center">
           <bootstrap:paginate action="currentLicenses" controller="myInstitutions" params="${params}" next="Next" prev="Prev" max="${max}" total="${licenseCount}" />
         </div>

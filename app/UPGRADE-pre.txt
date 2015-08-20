@@ -12,6 +12,3 @@ delete from license_custom_property where type_id = @concurrentUsersPropDefId an
 ALTER TABLE org CHANGE COLUMN org_status_rv_fk org_status_rv_fk BIGINT(20) NULL DEFAULT NULL ;
 
 UPDATE org SET org_status_rv_fk=NULL where org_status_rv_fk=0;
-
-
-

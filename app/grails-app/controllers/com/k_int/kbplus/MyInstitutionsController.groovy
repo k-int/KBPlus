@@ -179,10 +179,10 @@ class MyInstitutionsController {
         }
 
         def prop_types_list = PropertyDefinition.findAll()
-        result.custom_prop_types = prop_types_list.collectEntries{
-            [(it.name) : it.type + "&&" + it.refdataCategory]
-            //We do this for the interface, so we can display select box when we are working with refdata.
-            //Its possible there is another way
+          result.custom_prop_types = prop_types_list.collectEntries{
+          [(it.name) : it.type + "&&" + it.refdataCategory]
+          //We do this for the interface, so we can display select box when we are working with refdata.
+          //Its possible there is another way
         }
 
         result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
@@ -223,6 +223,8 @@ class MyInstitutionsController {
         } else {
             qry += " order by l.reference asc"
         }
+
+        log.debug("currentLicense query=${qry}, params=${qry_params}");
 
         result.licenseCount = License.executeQuery("select count(l) ${qry}", qry_params)[0];
         result.licenses = License.executeQuery("select l ${qry}", qry_params, [max: result.max, offset: result.offset]);

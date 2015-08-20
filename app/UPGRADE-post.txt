@@ -1,1 +1,4 @@
 select "Upgrade-post";
+ALTER TABLE org CHANGE COLUMN org_status_rv_fk org_status_rv_fk BIGINT(20) NULL DEFAULT NULL ;
+UPDATE org SET org_status_rv_fk=NULL where org_status_rv_fk=0;
+
