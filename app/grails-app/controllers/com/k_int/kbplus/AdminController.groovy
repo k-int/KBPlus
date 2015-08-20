@@ -199,47 +199,63 @@ class AdminController {
      def usrMrgId = params.userToMerge == "null"?null:params.userToMerge
      def usrKeepId = params.userToKeep == "null"?null:params.userToKeep
      def result = [:]
-     switch (request.method) {
-       case 'GET':
-         if(usrMrgId && usrKeepId ){
-           def usrMrg = User.get(usrMrgId)
-           def usrKeep =  User.get(usrKeepId)
-           result.userRoles = usrMrg.getAuthorities()
-           result.userAffiliations =  usrMrg.getAuthorizedAffiliations()
-           result.usrMrgName = usrMrg.displayName
-           result.userKeepName = usrKeep.displayName
-         }else{
-          flash.error = "Please select'user to keep' and 'user to merge' from the dropdown."
-         }
-         break;
-       case 'POST':
-         if(usrMrgId && usrKeepId){
-           def usrMrg = User.get(usrMrgId)
-           def usrKeep =  User.get(usrKeepId)
-           def success = false
-           try{
-             success = copyUserRoles(usrMrg, usrKeep)
-           }catch(Exception e){
-            log.error("Exception while copying user roles.",e)
-           }
-           if(success){
-             usrMrg.enabled = false
-             usrMrg.save(flush:true,failOnError:true)
-             flash.message = "Rights copying successful. User '${usrMrg.displayName}' is now disabled."
+     try {
+       log.debug("Determine user merge operation : ${request.method}");
+       switch (request.method) {
+         case 'GET':
+           if(usrMrgId && usrKeepId ){
+             def usrMrg = User.get(usrMrgId)
+             def usrKeep =  User.get(usrKeepId)
+             log.debug("Selected users : ${usrMrg}, ${usrKeep}");
+             result.userRoles = usrMrg.getAuthorities()
+             result.userAffiliations =  usrMrg.getAuthorizedAffiliations()
+             result.usrMrgName = usrMrg.displayName
+             result.userKeepName = usrKeep.displayName
            }else{
-             flash.error = "An error occured before rights transfer was complete."
+            log.error("Missing keep/merge userid ${params}");
+            flash.error = "Please select'user to keep' and 'user to merge' from the dropdown."
            }
-         }else{
-          flash.error = "Please select'user to keep' and 'user to merge' from the dropdown."
-         }
-         break
-       default:
-         break;
-     }
-      result.usersAll = User.list(sort:"display", order:"asc")
-      def activeHQL = " from User as usr where usr.enabled=true or usr.enabled=null order by display asc"
-      result.usersActive = User.executeQuery(activeHQL)
+           break;
+         case 'POST':
+           log.debug("Post...");
+           if(usrMrgId && usrKeepId){
+             def usrMrg = User.get(usrMrgId)
+             def usrKeep =  User.get(usrKeepId)
+             def success = false
+             try{
+               log.debug("Copying user roles... from ${usrMrg} to ${usrKeep}");
+               success = copyUserRoles(usrMrg, usrKeep)
+             }catch(Exception e){
+              log.error("Exception while copying user roles.",e)
+             }
+             if(success){
+               log.debug("Success");
+               usrMrg.enabled = false
+               log.debug("Save disable and save merged user");
+               usrMrg.save(flush:true,failOnError:true)
+               flash.message = "Rights copying successful. User '${usrMrg.displayName}' is now disabled."
+             }else{
+               flash.error = "An error occured before rights transfer was complete."
+             }
+           }else{
+            flash.error = "Please select'user to keep' and 'user to merge' from the dropdown."
+           }
+           break
+         default:
+           break;
+       }
 
+       log.debug("Get all users");
+       result.usersAll = User.list(sort:"display", order:"asc")
+       log.debug("Get active users");
+       def activeHQL = " from User as usr where usr.enabled=true or usr.enabled=null order by display asc"
+       result.usersActive = User.executeQuery(activeHQL)
+    }
+    catch ( Exception e ) {
+      log.error("Problem in user merge",e);
+    }
+
+    log.debug("Returning ${result}");
     result
   }
 
