@@ -22,7 +22,7 @@ class AdminController {
 
   def docstoreService
   def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
-
+  def executorService
 
 
   static boolean ftupdate_running = false
@@ -770,84 +770,92 @@ class AdminController {
     redirect(controller:'admin',action:'manageCustomProperties')
   }
 
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
-  def uploadIssnL() {
-    def result=[:]
-    def ctr = 0;
-    def start_time = System.currentTimeMillis()
+    @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+    def uploadIssnL() {
+        def result=[:]
+        boolean hasStarted = false
 
-    if (request.method == 'POST'){
-      def input_stream = request.getFile("sameasfile")?.inputStream
-      CSVReader r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ), '\t' as char )
-      String[] nl;
-      String[] types;
-      def first = true
-      while ((nl = r.readNext()) != null) {
-        def elapsed = System.currentTimeMillis() - start_time
-
-        def avg = 0;
-        if ( ctr > 0 ) {
-          avg = elapsed / 1000 / ctr  //
+        if (request.method == 'POST'){
+            def input_stream = request.getFile("sameasfile")?.inputStream
+            def future = executorService.submit({
+                performUploadISSNL(result, input_stream)
+            } as java.util.concurrent.Callable)
+            log.debug("Uploading ISSNL is returning");
+            hasStarted = true
         }
 
-        if ( nl.length == 2 ) {
-          if ( first ) {
-            first = false; // Skip header
-            log.debug('Header :'+nl);
-            types=nl
-          }
-          else {
-            Identifier.withNewTransaction {
-              log.debug("[seq ${ctr++} - avg=${avg}] ${types[0]}:${nl[0]} == ${types[1]}:${nl[1]}");
-              def id1 = Identifier.lookupOrCreateCanonicalIdentifier(types[0],nl[0]);
-              def id2 = Identifier.lookupOrCreateCanonicalIdentifier(types[1],nl[1]);
-  
-              
-              // Do either of our identifiers have a group set
-              if ( id1.ig == id2.ig ) {
-                if ( id1.ig == null ) {
-                  log.debug("Both identifiers have a group of null - so create a new group and relate them")
-                  def identifier_group = new IdentifierGroup().save(flush:true);
-                  id1.ig = identifier_group
-                  id2.ig = identifier_group
-                  id1.save(flush:true);
-                  id2.save(flush:true);
-                }
-                else {
-                  log.debug("Identifiers already belong to same identifier group");
-                }
-              }
-              else {
-                if ( ( id1.ig != null ) && ( id2.ig != null ) ) {
-                  log.error("Conflicting identifier group for same as ${id1} ${id2}");
-                }
-                else if ( id1.ig != null ) {
-                  log.debug("Adding identifier ${id2} to same group (${id1.ig}) as ${id1}");
-                  id2.ig = id1.ig
-                  id2.save(flush:true);
-                }
-                else {
-                  log.debug("Adding identifier ${id1} to same group (${id1.ig}) as ${id2}");
-                  id1.ig = id2.ig
-                  id1.save(flush:true);
-                }
-              }
-            }
-          }
-        }
-        else {
-          log.error("uploadIssnL expected 2 values");
-        }
-
-        if ( ctr % 200 == 0 ) {
-          cleanUpGorm()
-        }
-      }
-      result.complete = true
+        [hasStarted: hasStarted]
     }
 
-    result
-  }
+    def performUploadISSNL(result, input_stream) {
+        def ctr = 0;
+        def start_time = System.currentTimeMillis()
+        CSVReader r = new CSVReader( new InputStreamReader(input_stream, java.nio.charset.Charset.forName('UTF-8') ), '\t' as char )
+        String[] nl;
+        String[] types;
+        def first = true
+        while ((nl = r.readNext()) != null) {
+            def elapsed = System.currentTimeMillis() - start_time
+            def avg = 0;
+            if ( ctr > 0 ) {
+                avg = elapsed / 1000 / ctr
+            }
+
+            if ( nl.length == 2 ) {
+                if ( first ) {
+                    first = false; // Skip header
+                    log.debug('Header :'+nl);
+                    types=nl
+                }
+                else {
+                    Identifier.withNewTransaction {
+                        log.debug("[seq ${ctr++} - avg=${avg}] ${types[0]}:${nl[0]} == ${types[1]}:${nl[1]}");
+                        def id1 = Identifier.lookupOrCreateCanonicalIdentifier(types[0],nl[0]);
+                        def id2 = Identifier.lookupOrCreateCanonicalIdentifier(types[1],nl[1]);
+
+
+                        // Do either of our identifiers have a group set
+                        if ( id1.ig == id2.ig ) {
+                            if ( id1.ig == null ) {
+                                log.debug("Both identifiers have a group of null - so create a new group and relate them")
+                                def identifier_group = new IdentifierGroup().save(flush:true);
+                                id1.ig = identifier_group
+                                id2.ig = identifier_group
+                                id1.save(flush:true);
+                                id2.save(flush:true);
+                            }
+                            else {
+                                log.debug("Identifiers already belong to same identifier group");
+                            }
+                        }
+                        else {
+                            if ( ( id1.ig != null ) && ( id2.ig != null ) ) {
+                                log.error("Conflicting identifier group for same as ${id1} ${id2}");
+                            }
+                            else if ( id1.ig != null ) {
+                                log.debug("Adding identifier ${id2} to same group (${id1.ig}) as ${id1}");
+                                id2.ig = id1.ig
+                                id2.save(flush:true);
+                            }
+                            else {
+                                log.debug("Adding identifier ${id1} to same group (${id1.ig}) as ${id2}");
+                                id1.ig = id2.ig
+                                id1.save(flush:true);
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                log.error("uploadIssnL expected 2 values");
+            }
+
+            if ( ctr % 200 == 0 ) {
+                cleanUpGorm()
+            }
+        }
+        result.complete = true
+    }
 
   def cleanUpGorm() {
     log.debug("Clean up GORM");
