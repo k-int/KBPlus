@@ -64,7 +64,7 @@ class AdminActionsSpec extends GebReportingSpec {
       $('h3').text() == ("Merge "+ Data.UserA_displayName + " into "+ Data.UserD_displayName)
     when:
       waitFor{$("#mergeUsersBtn").verifyNotEmpty()}
-      waitFor{!$("#mergeUsersBtn")isEmpty()}
+      waitFor{!$("#mergeUsersBtn").isEmpty()}
 
       $("#mergeUsersBtn").click()
     then:
