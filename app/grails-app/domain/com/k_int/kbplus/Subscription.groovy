@@ -95,6 +95,7 @@ class Subscription {
     isPublic(nullable:true, blank:true)
     customProperties(nullable:true)
     cancellationAllowances(nullable:true, blank:true)
+    lastUpdated(nullable: true, blank: true)
     // vendor(nullable:true, blank:false)
   }
 
