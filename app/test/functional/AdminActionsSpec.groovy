@@ -36,6 +36,20 @@ class AdminActionsSpec extends GebReportingSpec {
       at DashboardPage
   }
 
+  def "Load issn-l files"(){
+    setup:
+      to ProfilePage
+
+    when:
+      to UploadIssnLPage
+      $('form').sameasfile = Data.issnl_mapping_file
+      $('button', text: "Upload...").click()
+
+    then:
+      $('div.alert-info').verifyNotEmpty() 
+
+  }
+
   def "Go to User Merge screen and transfer affiliations from user A"(){
 
     when:
@@ -50,22 +64,10 @@ class AdminActionsSpec extends GebReportingSpec {
       $('h3').text() == ("Merge "+ Data.UserA_displayName + " into "+ Data.UserD_displayName)
     when:
       waitFor{$("#mergeUsersBtn").verifyNotEmpty()}
+      waitFor{!$("#mergeUsersBtn")isEmpty()}
+
       $("#mergeUsersBtn").click()
     then:
       messageBox("successful")
-  }
-
-  def "Load issn-l files"(){
-    setup:
-      to ProfilePage
-
-    when:
-      to UploadIssnLPage
-      $('form').sameasfile = Data.issnl_mapping_file
-      $('button', text: "Upload...").click()
-
-    then:
-      $('div.alert-info').verifyNotEmpty() 
-
   }
 }
