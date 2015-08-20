@@ -14,9 +14,9 @@ ALTER TABLE org CHANGE COLUMN org_status_rv_fk org_status_rv_fk BIGINT(20) NULL 
 
 UPDATE org SET org_status_rv_fk=NULL where org_status_rv_fk=0;
 UPDATE license SET date_created=now() where date_created=0;
-UPDATE license SET last_modified=NULL where last_modified=0;
+UPDATE license SET last_updated=NULL where last_modified=0;
 UPDATE subscription SET date_created=now() where last_modified=0;
-UPDATE subscription SET last_modified=NULL where last_modified=0;
+UPDATE subscription SET last_updated=NULL where last_modified=0;
 
 -- worried about this on live... won't it create duplicates?
 UPDATE identifier_namespace SET idns_ns = lower(idns_ns)

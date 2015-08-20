@@ -11,8 +11,9 @@ insert into license_custom_property(version,owner_id, note, string_value, type_i
  select 0, lic_id, " ", lic_notice_period, @NoticePeriodId 
    from license where lic_notice_period is not null and lic_notice_period != "";
 
-UPDATE license SET date_created=NULL where date_created=0;
-UPDATE license SET last_modified=NULL where last_modified=0;
-UPDATE subscription SET date_created=NULL where last_modified=0;
-UPDATE subscription SET last_modified=NULL where last_modified=0;
+UPDATE org SET org_status_rv_fk=NULL where org_status_rv_fk=1;
 
+UPDATE license SET date_created=now() where date_created=0;
+UPDATE license SET last_updated=NULL where last_modified=0;
+UPDATE subscription SET date_created=now() where last_modified=0;
+UPDATE subscription SET last_updated=NULL where last_modified=0;
