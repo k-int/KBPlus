@@ -215,6 +215,7 @@ class AdminController {
             log.error("Missing keep/merge userid ${params}");
             flash.error = "Please select'user to keep' and 'user to merge' from the dropdown."
            }
+           log.debug("Get processing completed");
            break;
          case 'POST':
            log.debug("Post...");
