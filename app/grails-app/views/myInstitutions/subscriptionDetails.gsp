@@ -54,7 +54,7 @@
                 <tr>
                   <th></th>
                   <th>#</th>
-                  <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
+                  <g:sortableColumn params="${params}" property="tipp.title.sortTitle" title="Title" />
                   <th>ISSN</th>
                   <th>iISSN</th>
                   <g:sortableColumn params="${params}" property="coreStatus" title="Core" />

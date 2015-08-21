@@ -914,14 +914,14 @@ class MyInstitutionsController {
         def having_clause = params.filterMultiIE ? 'having count(ie) > 1' : ''
 
         def order_by_clause = ''
-        if (params.sort == 'tipp.title.title') {
+        if (params.sort == 'tipp.title.sortTitle') {
             if (params.order == 'asc') {
-                order_by_clause = 'order by ie.tipp.title.title asc'
+                order_by_clause = 'order by ie.tipp.title.sortTitle asc'
             } else {
-                order_by_clause = 'order by ie.tipp.title.title desc'
+                order_by_clause = 'order by ie.tipp.title.sortTitle desc'
             }
         } else {
-            order_by_clause = 'order by ie.tipp.title.title asc'
+            order_by_clause = 'order by ie.tipp.title.sortTitle asc'
         }
 
         result.titles = IssueEntitlement.executeQuery("SELECT ie.tipp.title, count(ie) ${title_qry} group by ie.tipp.title ${having_clause} ${order_by_clause}", qry_params, limits)
