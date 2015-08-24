@@ -3,8 +3,14 @@
         See: http://www.gebish.org/manual/current/configuration.html
 */
 
+
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.openqa.selenium.firefox.FirefoxDriver
 
+//Known tested working versions: 33 & 35
+if (ConfigurationHolder.config.geb.firefox) {
+    System.setProperty("webdriver.firefox.bin", ConfigurationHolder.config.geb.firefox);
+}
 driver = { new FirefoxDriver()}
 reportsDir = "target/geb-reports"
 atCheckWaiting = true
