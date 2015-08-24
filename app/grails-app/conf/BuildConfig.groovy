@@ -62,7 +62,8 @@ grails.project.dependency.resolution = {
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
-
+        runtime 'javax.servlet:jstl:1.1.2'
+        runtime 'taglibs:standard:1.1.2'
         build('org.grails:grails-docs:2.3.11') {
             excludes 'itext'
         }
@@ -112,11 +113,10 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        compile ":h2:0.2.6"
         runtime ':hibernate:3.6.10.18'  // 18 is latest
         runtime ":resources:1.2.8"
         runtime ':fields:1.3'
-        compile ":scaffolding:2.0.3"
+        compile ":scaffolding:2.1.2"
         
         // This is commented out so as not to cause probelms in the CI environment
         // compile ":functional-test:2.0.RC1"
@@ -128,9 +128,9 @@ grails.project.dependency.resolution = {
 
         runtime ":database-migration:1.4.0"
 
-        compile ':cache:1.1.7'
+        compile ':cache:1.1.8'
 
-        compile ':mail:1.0.1', {
+        compile ':mail:1.0.7', {
            excludes 'spring-test'
         }
 
@@ -146,18 +146,17 @@ grails.project.dependency.resolution = {
         // Font awesome for font based icons.
         compile ":font-awesome-resources:4.3.0.1"
 
-        compile ':spring-security-core:1.2.7.3'
+        compile ':spring-security-core:1.2.7.4'
         compile ':spring-security-ldap:1.0.6'
         compile ':spring-security-shibboleth-native-sp:1.0.3'
 
         runtime ":gsp-resources:0.4.4"
-        runtime ":jquery:1.9.1"
+        runtime ":jquery:1.11.1"
 
         runtime ":audit-logging:1.0.3"
         runtime ":executor:0.3"
         runtime ":markdown:1.1.1"
         runtime ":quartz:1.0.1"
-        runtime ":rest:0.7"
         compile ":grails-melody:1.53.0"
         // runtime "com.k-int:domain-model-oai-pmh:0.1"
         compile ":jsonp:0.2"

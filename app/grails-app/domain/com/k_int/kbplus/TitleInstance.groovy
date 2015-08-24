@@ -5,7 +5,7 @@ import java.util.TreeSet;
 import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import javax.persistence.Transient
-import org.codehaus.groovy.grails.commons.ApplicationHolder
+ 
 import org.apache.commons.logging.*
 import java.text.Normalizer
 import groovy.util.logging.*

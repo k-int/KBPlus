@@ -1,7 +1,6 @@
 package com.k_int.kbplus
 
 import javax.persistence.Transient
-import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 class GlobalRecordInfo {
 

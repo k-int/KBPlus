@@ -1,6 +1,6 @@
 package com.k_int.kbplus
 
-import org.codehaus.groovy.grails.commons.ApplicationHolder
+ 
 import groovy.util.slurpersupport.GPathResult
 import static groovyx.net.http.ContentType.*
 import static groovyx.net.http.Method.*
@@ -20,7 +20,7 @@ class EdinaPublicationsAPIService {
   @javax.annotation.PostConstruct
   def init() {
     log.debug("Initialising rest endpoint for edina publications service...");
-    endpoint = ApplicationHolder.application.config.publicationService.baseurl ?: "http://knowplus.edina.ac.uk:2012/kbplus/api"
+    endpoint = grails.util.Holders.config.publicationService.baseurl ?: "http://knowplus.edina.ac.uk:2012/kbplus/api"
     target_service = new RESTClient(endpoint)
   }
 

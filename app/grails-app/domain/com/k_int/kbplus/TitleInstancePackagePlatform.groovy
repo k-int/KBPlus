@@ -1,7 +1,7 @@
 package com.k_int.kbplus
 
 import javax.persistence.Transient
-import org.codehaus.groovy.grails.commons.ApplicationHolder
+ 
 import org.hibernate.proxy.HibernateProxy
 import com.k_int.ClassUtils
 import org.springframework.context.i18n.LocaleContextHolder
