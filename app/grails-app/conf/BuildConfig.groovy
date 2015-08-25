@@ -124,7 +124,7 @@ grails.project.dependency.resolution = {
         //runtime ":zipped-resources:1.0"
         //runtime ":cached-resources:1.0"
         //runtime ":yui-minify-resources:0.1.4"
-        build ':tomcat:7.0.54'
+        build ':tomcat:7.0.55.2'
 
         runtime ":database-migration:1.4.0"
 
