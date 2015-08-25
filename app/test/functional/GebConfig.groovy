@@ -4,12 +4,11 @@
 */
 
 
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.openqa.selenium.firefox.FirefoxDriver
 
 //Known tested working versions: 33 & 35
-if (ConfigurationHolder.config.geb.firefox) {
-    System.setProperty("webdriver.firefox.bin", ConfigurationHolder.config.geb.firefox);
+if (grails.util.Holders.config.geb.firefox) {
+    System.setProperty("webdriver.firefox.bin", grails.util.Holders.config.geb.firefox);
 }
 driver = { new FirefoxDriver()}
 reportsDir = "target/geb-reports"

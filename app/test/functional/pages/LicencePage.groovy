@@ -73,8 +73,9 @@ class LicencePage extends AbstractDetails {
         }
         addCustomPropType{ name ->
             $("#select2-chosen-2").click()
-            $("#s2id_autogen2_search").value(name)
-            waitFor{$("#select2-result-label-4").click()}
+            waitFor{$("#s2id_autogen2_search").value(name)} 
+            Thread.sleep(10)
+            waitFor{$("span.select2-match",text:name).tail().click()}
             $("input", value:"Add Property").click()
         }
         setRefPropertyValue{ prop, value ->

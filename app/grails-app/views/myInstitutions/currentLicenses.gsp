@@ -93,11 +93,12 @@
           </div>
       </div>
 
-        <g:if test="${licenseCount && licenseCount>0}">
-          <span>Showing ${licenseCount} licenses</span>
-        </g:if>
+
 
         <div class="container licence-results">
+        <g:if test="${licenseCount && licenseCount>0}">
+          <span> ${licenseCount} licenses matched</span>
+        </g:if>
           <table class="table table-bordered table-striped">
             <thead>
               <tr>

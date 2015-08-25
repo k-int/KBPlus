@@ -64,7 +64,7 @@ grails.project.dependency.resolution = {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
         runtime 'javax.servlet:jstl:1.1.2'
         runtime 'taglibs:standard:1.1.2'
-        build('org.grails:grails-docs:2.3.11') {
+        build('org.grails:grails-docs:2.5.1') {
             excludes 'itext'
         }
         compile ('com.k-int:goai:1.0.2') {
@@ -113,7 +113,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        runtime ':hibernate:3.6.10.18'  // 18 is latest
+        runtime ':hibernate:3.6.10.19'  
         runtime ":resources:1.2.8"
         runtime ':fields:1.3'
         compile ":scaffolding:2.1.2"
@@ -124,7 +124,7 @@ grails.project.dependency.resolution = {
         //runtime ":zipped-resources:1.0"
         //runtime ":cached-resources:1.0"
         //runtime ":yui-minify-resources:0.1.4"
-        build ':tomcat:7.0.54'
+        build ':tomcat:7.0.55.2'
 
         runtime ":database-migration:1.4.0"
 
