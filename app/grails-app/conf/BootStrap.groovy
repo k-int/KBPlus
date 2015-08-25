@@ -7,7 +7,6 @@ import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 class BootStrap {
 
-  def ESWrapperService
   def dataloadService
   def grailsApplication
   // def docstoreService

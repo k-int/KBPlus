@@ -8,7 +8,6 @@ class OnixplUsageTermController {
     static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
 
     def springSecurityService
-    def ESWrapperService
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def index() {

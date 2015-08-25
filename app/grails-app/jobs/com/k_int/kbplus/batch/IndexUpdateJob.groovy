@@ -1,10 +1,7 @@
 package com.k_int.kbplus.batch
 
-
-
 class IndexUpdateJob {
 
-  def ESWrapperService
   def dataloadService
 
   static triggers = {

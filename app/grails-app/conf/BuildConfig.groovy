@@ -76,7 +76,7 @@ grails.project.dependency.resolution = {
         runtime 'mysql:mysql-connector-java:5.1.30'
 
         // Would very much like to upgrade to these - but seems to cause a weird class version error when I do
-        runtime 'org.elasticsearch:elasticsearch:1.3.7'
+        runtime 'org.elasticsearch:elasticsearch:1.7.1'
         runtime 'org.elasticsearch:elasticsearch-client-groovy:1.3.2'
 
         runtime 'gov.loc:bagit:4.0'

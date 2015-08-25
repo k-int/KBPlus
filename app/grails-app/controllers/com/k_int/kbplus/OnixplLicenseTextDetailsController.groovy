@@ -6,7 +6,6 @@ import grails.plugins.springsecurity.Secured
 class OnixplLicenseTextDetailsController {
 
     def springSecurityService
-    def ESWrapperService
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def index() {
