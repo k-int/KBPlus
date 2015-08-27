@@ -4,6 +4,11 @@ import com.k_int.kbplus.*
 import org.hibernate.ScrollMode
 import java.nio.charset.Charset
 import java.util.GregorianCalendar
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest
+import org.elasticsearch.action.admin.indices.flush.FlushRequest
+import org.elasticsearch.client.Client
+import org.elasticsearch.action.admin.indices.create.*
 
 class DataloadService {
 
@@ -63,9 +68,8 @@ class DataloadService {
     
     def start_time = System.currentTimeMillis();
 
-    org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
-    org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
-    
+    def esclient = ESWrapperService.getClient()
+
     updateES(esclient, com.k_int.kbplus.Org.class) { org ->
       def result = [:]
       result.status = org.status?.value
@@ -233,9 +237,7 @@ class DataloadService {
   def updateSiteMapping() {
 
     log.debug("Updating ES site mapping...")
-    org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
-    org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
-    
+    def esclient = ESWrapperService.getClient()
     SitePage.findAll().each{ site ->
         def result = [:]
         result._id = site.id.toString()
@@ -575,31 +577,28 @@ class DataloadService {
 
   def clearDownAndInitES() {
     log.debug("Clear down and init ES");
-    org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
-    org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
+    Client client = ESWrapperService.getClient()
 
-    // Get hold of an index admin client
-    org.elasticsearch.groovy.client.GIndicesAdminClient index_admin_client = new org.elasticsearch.groovy.client.GIndicesAdminClient(esclient);
 
     try {
       // Drop any existing kbplus index
       log.debug("Dropping old ES index....");
-      def future = index_admin_client.delete {
-        indices es_index
+      DeleteIndexResponse delete = client.admin().indices().delete(new DeleteIndexRequest(es_index)).actionGet()
+      if (delete.acknowledged) {
+        log.debug("Drop old ES index completed OK");
+      }else{
+        log.error("Index wasn't deleted")
       }
-      future.get()
-      log.debug("Drop old ES index completed OK");
+      def actionRes = client.admin().indices().flush(new FlushRequest(es_index).refresh(true)).actionGet()
+      log.debug(actionRes)
     }
     catch ( Exception e ) {
       log.warn("Problem deleting index...",e);
     }
 
-    // Create an index if none exists
     log.debug("Create new ES index....");
-    def future = index_admin_client.create {
-      index es_index
-    }
-    future.get()
+
+    CreateIndexResponse createResponse = client.admin().indices().create(new CreateIndexRequest(es_index)).actionGet();
 
     log.debug("Clear down and init ES completed... AS OF 4.1 MAPPINGS -MUST- Be installed in ESHOME/mappings/kbplus");
     

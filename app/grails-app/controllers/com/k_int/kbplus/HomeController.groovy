@@ -150,32 +150,4 @@ class HomeController {
     }
     result
   }
-
-  def count = {
-      
-    def result = [:]
-    // Get hold of some services we might use ;)
-    org.elasticsearch.groovy.node.GNode esnode = ESWrapperService.getNode()
-    org.elasticsearch.groovy.client.GClient esclient = esnode.getClient()
-
-    
-    if ( params.q && params.q.length() > 0)
-    {
-        def query_str = buildQuery(params)
-        log.debug("count query: ${query_str}");
-                       
-        def search = esclient.count{
-            indices "courses"
-            types "course"
-            query {
-              query_string (query: query_str)
-            }
-        }
-        
-        result.hits = search.response.count
-    }
-    
-    render result as JSON
-  }
-
 }

@@ -1,6 +1,6 @@
 package com.k_int.kbplus
 import org.elasticsearch.client.*
-import org.elasticsearch.client.transport.TransportClient
+import org.elasticsearch.client.Client
 
 
 class ESSearchService{
@@ -27,9 +27,8 @@ class ESSearchService{
     log.debug("ESSearchService::search - ${params}")
 
 	 def result = [:]
-   def clientSettings = ESWrapperService.client
-   TransportClient esclient = new TransportClient(clientSettings.settings)
-   esclient.addTransportAddress(clientSettings.address)
+
+   Client esclient = ESWrapperService.getClient()
   
     try {
       if ( (params.q && params.q.length() > 0) || params.rectype) {
