@@ -77,7 +77,7 @@ grails.project.dependency.resolution = {
 
         // Would very much like to upgrade to these - but seems to cause a weird class version error when I do
         runtime 'org.elasticsearch:elasticsearch:1.7.1'
-        runtime 'org.elasticsearch:elasticsearch-client-groovy:1.3.2'
+        runtime 'org.elasticsearch:elasticsearch-groovy:1.7.0'
 
         runtime 'gov.loc:bagit:4.0'
         runtime 'org.apache.poi:poi:3.8'
