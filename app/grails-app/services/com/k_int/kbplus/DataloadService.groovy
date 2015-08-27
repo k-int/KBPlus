@@ -190,6 +190,7 @@ class DataloadService {
       // There really should only be one here? So think od this as SubscriptionOrg, but easier
       // to leave it as availableToOrgs I guess.
       result.status = sub.status?.value
+
       result.availableToOrgs = sub.orgRelations.find{it.roleType?.value == "Subscriber" }?.org?.id
       result.identifier = sub.identifier
       result.dbId = sub.id
@@ -298,23 +299,23 @@ class DataloadService {
       while (results.next()) {
         Object r = results.get(0);
         def idx_record = recgen_closure(r)
-
-        if ( idx_record.status == 'deleted' ) {
-          def future = esclient.delete {
+        def future;
+        if ( idx_record.status.toLowerCase() == 'deleted' ) {
+          future = esclient.delete {
             index es_index
             type domain.name
             id idx_record['_id']
-          }
+          }.actionGet()
         }
         else {
-          def future = esclient.index {
+          future = esclient.index {
             index es_index
             type domain.name
             id idx_record['_id']
             source idx_record
-          }
+          }.actionGet()
         }
-
+        
         latest_ft_record.lastTimestamp = r.lastUpdated?.getTime()
 
         count++
@@ -328,7 +329,7 @@ class DataloadService {
       }
       results.close();
 
-      println("Processed ${total} records for ${domain.name}");
+      log.debug("Processed ${total} records for ${domain.name}");
 
       // update timestamp
       latest_ft_record.save(flush:true);

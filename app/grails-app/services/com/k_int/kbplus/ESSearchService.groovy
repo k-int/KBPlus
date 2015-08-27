@@ -92,8 +92,8 @@ class ESSearchService{
 
           }
 
-        }
-        search = search.actionGet()
+        }.actionGet()
+
         if ( search ) {
           def search_hits = search.hits
           result.hits = search_hits.hits
