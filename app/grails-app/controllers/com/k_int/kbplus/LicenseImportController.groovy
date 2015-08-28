@@ -343,7 +343,6 @@ class LicenseImportController {
       opl.doc = doc_content
       opl.title = upload.description
       // Delete existing usage terms
-      //opl.usageTerm.each { ut -> ut.delete() }
       opl.usageTerm.clear()
       opl.save()
     } else {
