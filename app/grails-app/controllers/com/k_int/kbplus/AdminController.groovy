@@ -682,7 +682,6 @@ class AdminController {
         else {
           def title = null;
           def bindvars = []
-          def title_id_ctr = 0;
           // Set up base_query
           def q = "Select distinct(t) from TitleInstance as t "
           def joinclause = ''
@@ -702,11 +701,10 @@ class AdminController {
               // Namespace and value
               if ( nl[i].trim().length() > 0 ) {
                 if ( disjunction_ctr++ > 0 ) { whereclause += ' OR ' }
-                joinclause += " join t.ids as id${title_id_ctr} "
-                whereclause += " ( id${title_id_ctr}.identifier.ns.ns = ? AND id${title_id_ctr}.identifier.value = ? ) "
+                joinclause = " join t.ids as id "
+                whereclause += " ( id.identifier.ns.ns = ? AND id.identifier.value = ? ) "
                 bindvars.add(cn.substring(9))
                 bindvars.add(nl[i])
-                title_id_ctr++
               }
             }
             i++;
