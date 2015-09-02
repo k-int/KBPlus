@@ -323,8 +323,6 @@ class TitleInstance {
   }
 
   def beforeInsert() {
-    println " ----------------------------------------------- ${title} - ${sortTitle} ++++++++++++++++++++++++++++++++++++++++++++++"
-
     if ( title != null ) {
       normTitle = generateNormTitle(title)
       keyTitle = generateKeyTitle(title)
@@ -333,8 +331,6 @@ class TitleInstance {
   }
 
   def beforeUpdate() {
-
-    println " ++++++++++++++++++++++++++++++++++++++++++++++ ${title} - ${sortTitle} ++++++++++++++++++++++++++++++++++++++++++++++"
     if ( title != null ) {
       normTitle = generateNormTitle(title)
       keyTitle = generateKeyTitle(title)
