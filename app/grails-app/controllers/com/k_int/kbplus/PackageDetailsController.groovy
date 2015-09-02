@@ -547,7 +547,17 @@ class PackageDetailsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def expected() {
-    log.debug("expected ${params}");
+    previous_expected(params,"expected")
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def previous() {
+      previous_expected(params,"previous")
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def previous_expected(params,func) {
+    log.debug("previous_expected ${params}");
     def result = [:]
     boolean showDeletedTipps=false
     result.user = User.get(springSecurityService.principal.id)
@@ -569,59 +579,17 @@ class PackageDetailsController {
 
     // def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
     def qry_params = [packageInstance]
-    def date_filter =  params.mode == 'advanced' ? null : new Date();
 
     def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
     base_qry += "and tipp.status.value != 'Deleted' "
-    if ( date_filter != null ) {
+
+    if(func=="expected"){
       base_qry += " and ( coalesce(tipp.accessStartDate, tipp.pkg.startDate) >= ? ) "
-      qry_params.add(date_filter);
-    }
-
-    base_qry += " order by ${params.sort?:'tipp.title.sortTitle'} ${params.order?:'asc'}"
-
-    log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
-    result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, limits);
-    result.num_tipp_rows = TitleInstancePackagePlatform.executeQuery("select count(tipp) "+base_qry, qry_params )[0]
-
-    result.lasttipp = result.offset + result.max > result.num_tipp_rows ? result.num_tipp_rows : result.offset + result.max;
-
-    result
-  }
-
-  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def previous() {
-    log.debug("previous ${params}");
-    def result = [:]
-    boolean showDeletedTipps=false
-    result.user = User.get(springSecurityService.principal.id)
-    result.editable=isEditable()
-
-    def packageInstance = Package.get(params.id)
-    if (!packageInstance) {
-      flash.message = message(code: 'default.not.found.message', args: [message(code: 'package.label', default: 'Package'), params.id])
-      redirect action: 'list'
-      return
-    }
-    result.packageInstance = packageInstance
-
-    result.max = params.max ? Integer.parseInt(params.max) : 25
-    params.max = result.max
-    def paginate_after = params.paginate_after ?: ( (2*result.max)-1);
-    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
-
-    def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
-
-    // def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
-    def qry_params = [packageInstance]
-    def date_filter =  params.mode == 'advanced' ? null : new Date();
-
-    def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
-    base_qry += "and tipp.status.value != 'Deleted' "
-    if ( date_filter != null ) {
+    }else{
       base_qry += " and ( tipp.accessEndDate <= ? ) "
-      qry_params.add(date_filter);
     }
+    qry_params.add(new Date());
+    
 
     base_qry += " order by ${params.sort?:'tipp.title.sortTitle'} ${params.order?:'asc'} "
 
@@ -634,6 +602,7 @@ class PackageDetailsController {
     result
   }
 
+ 
 
   def generateBasePackageQuery(params, qry_params, showDeletedTipps, asAt) {
 
