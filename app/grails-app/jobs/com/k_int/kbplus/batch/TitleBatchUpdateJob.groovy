@@ -11,7 +11,7 @@ class TitleBatchUpdateJob {
 
 
   static triggers = {
-  	simple name:'TitleBatchUpdateJob', startDelay:20000, repeatInterval:30000, repeatCount:0  
+  	simple name:'TitleBatchUpdateJob', startDelay:120000, repeatInterval:30000, repeatCount:0  
   }
 
   def execute() {
