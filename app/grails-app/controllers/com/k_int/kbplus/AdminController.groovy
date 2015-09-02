@@ -98,7 +98,11 @@ class AdminController {
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def hardDeletePkgs(){
     def result = [:]
-
+    //If we make a search while paginating return to start
+    if(params.search == "yes"){
+        params.offset = 0
+        params.search = null
+    }
     result.user = User.get(springSecurityService.principal.id)
     result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
@@ -150,6 +154,7 @@ class AdminController {
 
       render(template: "hardDeleteDetails",model:result)
     }else{
+
       def criteria = Package.createCriteria()
       result.pkgs = criteria.list(max: result.max, offset:result.offset){
           if(params.pkg_name){
