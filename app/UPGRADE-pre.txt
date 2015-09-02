@@ -15,5 +15,9 @@ UPDATE license SET last_updated=NULL where last_updated=0;
 UPDATE subscription SET date_created=now() where last_updated=0;
 UPDATE subscription SET last_updated=NULL where last_updated=0;
 
+select "Update old change notification links to point to www.kbplus.ac.uk, took 100sec locally"
+update pending_change set pc_desc = replace(pc_desc, 'service.kbplus.ac.uk', 'www.kbplus.ac.uk');
+
+
 -- worried about this on live... won't it create duplicates?
 UPDATE identifier_namespace SET idns_ns = lower(idns_ns)
