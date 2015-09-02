@@ -1,7 +1,7 @@
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
-            <img class="brand" alt="Knowledge Base + logo" src="/${meta(name:"app.name")}/images/kb_large_icon.png"/>
+            <img class="brand" alt="Knowledge Base + logo" src="${resource(dir: 'images', file: 'kb_large_icon.png')}"/>
 
             <ul class="nav">
                 <g:if test="${active.equals("home")}">
