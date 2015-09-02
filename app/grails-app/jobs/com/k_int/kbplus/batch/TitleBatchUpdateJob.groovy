@@ -40,10 +40,10 @@ class TitleBatchUpdateJob {
   }
 
   def updateTitle(title){
-  	//this will triger the beforeUpdate that generates sort title etc
-  	use(TimeCategory) {
-  	    title.lastUpdated += 1.seconds
-  	}
+  	// Instead of trigger update, do this, as if nothing changes Hibernate will not bother saving.
+    TitleInstance.generateNormTitle(title.title)
+    TitleInstance.generateKeyTitle(title.title)
+    TitleInstance.generateSortTitle(title.title)
   	title.save()
   }
 	
