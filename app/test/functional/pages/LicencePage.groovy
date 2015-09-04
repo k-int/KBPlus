@@ -94,5 +94,28 @@ class LicencePage extends AbstractDetails {
             }
         }
 
+        addCustomInputProperty { propName, prop ->
+            waitFor { $("td",text:propName).next("td").find("span").click()}
+            Thread.sleep(200)
+            waitFor{$("input.input-medium").value(prop)}
+            $("button.editable-submit").click()
+        }
+
+        propertyChangedCheck { propName ->
+            $("td",text:propName).next("td").find("span").text()
+        }
+
+        basicLicenceSearch { val ->
+            $("input", name:"keyword-search").value(val)
+            $("input", type:"submit").click()
+        }
+
+        rowResults { $("table",0).find("tbody tr").size() }
+
+        exportLicenceMenu { linkOrder ->
+            $("a#export-menu").click()
+            Thread.sleep(500)
+            $("ul.dropdown-menu.filtering-dropdown-menu li",linkOrder).click()
+        }
     }
 }
