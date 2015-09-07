@@ -98,7 +98,11 @@ class AdminController {
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def hardDeletePkgs(){
     def result = [:]
-
+    //If we make a search while paginating return to start
+    if(params.search == "yes"){
+        params.offset = 0
+        params.search = null
+    }
     result.user = User.get(springSecurityService.principal.id)
     result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
@@ -150,6 +154,7 @@ class AdminController {
 
       render(template: "hardDeleteDetails",model:result)
     }else{
+
       def criteria = Package.createCriteria()
       result.pkgs = criteria.list(max: result.max, offset:result.offset){
           if(params.pkg_name){
@@ -682,7 +687,6 @@ class AdminController {
         else {
           def title = null;
           def bindvars = []
-          def title_id_ctr = 0;
           // Set up base_query
           def q = "Select distinct(t) from TitleInstance as t "
           def joinclause = ''
@@ -702,11 +706,10 @@ class AdminController {
               // Namespace and value
               if ( nl[i].trim().length() > 0 ) {
                 if ( disjunction_ctr++ > 0 ) { whereclause += ' OR ' }
-                joinclause += " join t.ids as id${title_id_ctr} "
-                whereclause += " ( id${title_id_ctr}.identifier.ns.ns = ? AND id${title_id_ctr}.identifier.value = ? ) "
+                joinclause = " join t.ids as id "
+                whereclause += " ( id.identifier.ns.ns = ? AND id.identifier.value = ? ) "
                 bindvars.add(cn.substring(9))
                 bindvars.add(nl[i])
-                title_id_ctr++
               }
             }
             i++;

@@ -76,7 +76,8 @@
                        <thead>
                          <tr>
                            <th>Authority</th>
-                           <th>Identifier</th>
+                           <th>Identifier</th>               
+                           <th>Actions</th>
                          </tr>
                        </thead>
                        <tbody>
@@ -84,6 +85,7 @@
                            <tr>
                              <td>${io.identifier.ns.ns}</td>
                              <td>${io.identifier.value}</td>
+                             <td><g:if test="${editable}"><g:link controller="ajax" action="deleteThrough" params='${[contextOid:"${subscriptionInstance.class.name}:${subscriptionInstance.id}",contextProperty:"ids",targetOid:"${io.class.name}:${io.id}"]}'>Delete Identifier</g:link></g:if></td>
                            </tr>
                          </g:each>
                        </tbody>

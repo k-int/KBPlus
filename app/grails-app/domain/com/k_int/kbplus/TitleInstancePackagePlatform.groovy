@@ -6,6 +6,7 @@ import org.hibernate.proxy.HibernateProxy
 import com.k_int.ClassUtils
 import org.springframework.context.i18n.LocaleContextHolder
 import org.apache.commons.logging.*
+import groovy.time.TimeCategory
 
 class TitleInstancePackagePlatform {
   @Transient
@@ -134,13 +135,15 @@ class TitleInstancePackagePlatform {
     touchPkgLastUpdated()
   }
   def beforeInsert() {
-      touchPkgLastUpdated()
+    touchPkgLastUpdated()
   }
 
   @Transient
   def touchPkgLastUpdated(){
     if(pkg!=null){
-      pkg.lastUpdated ++
+      use(TimeCategory) {
+        pkg.lastUpdated += 1.seconds
+      }
       pkg.save(failOnError:true)
     }
   }

@@ -20,7 +20,7 @@
               <g:link action="currentLicenses" params="${params+[format:'csv']}">CSV Export</g:link>
             </li>
             <g:each in="${transforms}" var="transkey,transval">
-                <li><g:link action="currentLicenses" params="${params+[format:'xml',transformId:transkey,format_content:'subie']}"> ${transval.name}</g:link></li>
+                <li><g:link action="currentLicenses" params="${params+[format:'xml',transformId:transkey,format_content:'subie']}">${transval.name}</g:link></li>
               </g:each>
           </ul>
         </li>
@@ -97,7 +97,7 @@
 
         <div class="container licence-results">
         <g:if test="${licenseCount && licenseCount>0}">
-          <span> ${licenseCount} licenses matched</span>
+          <span>Showing ${licenseCount} licenses</span>
         </g:if>
           <table class="table table-bordered table-striped">
             <thead>

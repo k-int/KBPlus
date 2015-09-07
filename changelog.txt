@@ -1,3 +1,10 @@
+
+Fixes introduced in 5.0.1
+
+* Sort TitleInstances by sortTitle 
+* when name for new imported onxilicence in use, append import date
+* fix issue that caused admin/Allnotes to break
+
 Changes introduced in 5.0. It is likely that some small tasks are missing.
 
 * (show less/more) addded in Announcements List

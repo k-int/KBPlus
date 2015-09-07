@@ -591,7 +591,7 @@ class PackageDetailsController {
     qry_params.add(new Date());
     
 
-    base_qry += " order by tipp.title.title"
+    base_qry += " order by ${params.sort?:'tipp.title.sortTitle'} ${params.order?:'asc'} "
 
     log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
     result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, limits);

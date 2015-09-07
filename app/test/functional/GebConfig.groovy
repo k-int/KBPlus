@@ -7,7 +7,8 @@
 import org.openqa.selenium.firefox.FirefoxDriver
 
 //Known tested working versions: 33 & 35
-if ( grails.util.Holders.config.geb.firefox) {
+
+if (grails.util.Holders.config.geb.firefox) {
     System.setProperty("webdriver.firefox.bin", grails.util.Holders.config.geb.firefox);
 }
 driver = { new FirefoxDriver()}

@@ -821,18 +821,38 @@ class AjaxController {
     }
     redirect(url: request.getHeader('referer'))
   }
+
   def validateIdentifierUniqueness(){
     log.debug("validateIdentifierUniqueness - ${params}")
     def result = [:]
     def owner = resolveOID2(params.owner)
     def identifier = resolveOID2(params.identifier)
-    def duplicates = identifier.occurrences.findAll{it.ti != owner && it.ti != null}?.collect{it.ti}
+    def owner_type = null
+    switch(owner.class){
+      case Subscription:
+        owner_type = "sub"
+        break;
+      case(TitleInstance):
+        owner_type = "ti"
+        break;
+      case (Package):
+        owner_type = "pkg"
+        break;
+      case TitleInstancePackagePlatform:
+        owner_type = "tipp"
+        break;
+      case Org:
+        owner_type = "org"
+        break
+    }    
+    def duplicates = identifier.occurrences.findAll{it."${owner_type}" != owner && it."${owner_type}" != null}?.collect{it."${owner_type}"}
     if(duplicates){
       result.duplicates = duplicates
     }
     else{
       result.unique=true
     }
+    log.debug("validateIdentifierUniqueness - ${result}")
     render result as JSON
   }
 
