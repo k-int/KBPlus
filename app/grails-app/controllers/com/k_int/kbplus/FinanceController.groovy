@@ -9,7 +9,8 @@ import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.elasticsearch.common.joda.time.DateTime
 import java.text.SimpleDateFormat
 
-
+//todo Refactor aspects into service
+//todo track state, maybe use the #! stateful style syntax along with the history API or more appropriately history.js (cross-compatible, polyfill for HTML4)
 class FinanceController {
 
     def springSecurityService
@@ -39,7 +40,6 @@ class FinanceController {
 
 
 
-    //todo track state, maybe use the #! stateful style syntax along with the history API or more appropriately history.js (cross-compatible, polyfill for HTML4)
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def index() {
         log.debug("FinanceController::index() ${params}");
@@ -341,14 +341,14 @@ class FinanceController {
         }
 
         params.remove("Add")
-        if (request.isXhr())
+//        if (request.isXhr())
             render ([newCostItem:newCostItem.id, error:result.error]) as JSON
-        else
-        {
-            def qry_params = [result.institution]
-            result.institutionSubscriptions = Subscription.executeQuery(base_qry, qry_params);
-            render (view: "newCostItem", model: result, params:params)
-        }
+//        else
+//        {
+//            def qry_params = [result.institution]
+//            result.institutionSubscriptions = Subscription.executeQuery(base_qry, qry_params);
+//            render (view: "newCostItem", model: result, params:params)
+//        }
     }
 
 
@@ -370,28 +370,6 @@ class FinanceController {
         result
     }
 
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-    def search() {
-        log.debug("FinanceController::search() ${params}");
-
-        def result         = [:]
-        result.user        = User.get(springSecurityService.principal.id)
-        result.institution = Org.findByShortcode(params.shortcode)
-
-        def qry_params                  = [result.institution]
-        result.institutionSubscriptions = Subscription.executeQuery(base_qry, qry_params);
-
-        def cost_item_qry      = " from CostItem as ci where ci.owner = ?"
-        result.cost_item_count = CostItem.executeQuery('select count(ci.id) ' + cost_item_qry, qry_params)[0];
-        result.cost_items      = CostItem.executeQuery('select ci ' + cost_item_qry, qry_params, params);
-
-        def from    = new Date();
-        from.setTime(from.getTime() - 7 * 1000 * 60 * 60 * 24)
-        result.from = from
-        result.to   = new Date()
-
-        result
-    }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def getRecentCostItems() {
