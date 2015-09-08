@@ -1,5 +1,7 @@
 package com.k_int.kbplus
 
+import com.k_int.kbplus.auth.User
+
 import javax.persistence.Transient
 
 class CostItem {
@@ -27,6 +29,7 @@ class CostItem {
     Date startDate
     Date endDate
     Date lastUpdated
+    User lastUpdatedBy
 
 
     @Transient
@@ -80,6 +83,7 @@ class CostItem {
         reference(nullable: true, blank: false)
         startDate(nullable: true, blank: false)
         endDate(nullable: true, blank: false)
+        lastUpdatedBy(nullable: false, blank: false)
     }
 
 
@@ -160,5 +164,4 @@ class CostItem {
         }
         return [order,join,gspOrder]
     }
-
 }
