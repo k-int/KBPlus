@@ -13,11 +13,12 @@ import java.text.SimpleDateFormat
 class FinanceController {
 
     def springSecurityService
-    private static def dateFormat      = new SimpleDateFormat("YYYY-MM-dd")
-    private static def dateTimeFormat  = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") {{setLenient(false)}}
-    private static final def ci_count  = 'select count(ci.id) from CostItem as ci '
-    private static final def ci_select = 'select ci from CostItem as ci '
-    private static final def base_qry  = " from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) "
+    private final def dateFormat      = new SimpleDateFormat("YYYY-MM-dd")
+    private final def dateTimeFormat  = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") {{setLenient(false)}}
+    private final def ci_count        = 'select count(ci.id) from CostItem as ci '
+    private final def ci_select       = 'select ci from CostItem as ci '
+    private final def base_qry        = " from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) "
+    private final def admin_role      = Role.findByAuthority('ROLE_ADMIN')
 
     private boolean userCertified(User user, Org institution)
     {
@@ -29,21 +30,33 @@ class FinanceController {
             return true
     }
 
+    boolean isFinanceAuthorised(Org org, User user) {
+        def retval = false
+        if (org && org.hasUserWithRole(user,admin_role))
+            retval = true
+        return retval
+    }
+
+
+
     //todo track state, maybe use the #! stateful style syntax along with the history API or more appropriately history.js (cross-compatible, polyfill for HTML4)
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def index() {
         log.debug("FinanceController::index() ${params}");
 
-        def result         =  [:]
-        result.institution =  Org.findByShortcode(params.shortcode)
+        def result = [:]
 
         //Check nothing strange going on with financial data
-        def user = User.get(springSecurityService.principal.id)
-        if (!userCertified(user,result.institution))
+        result.institution =  Org.findByShortcode(params.shortcode)
+        def user           =  User.get(springSecurityService.principal.id)
+        if (!isFinanceAuthorised(result.institution, user))
+        {
+            flash.error=message(code: 'financials.permission.unauthorised', args: [result.institution? result.institution.name : 'N/A'])
             response.sendError(401)
+        }
 
         //Setup params
-        result.editable    =  SpringSecurityUtils.ifAllGranted('ROLE_ADMIN')
+        result.editable    =  SpringSecurityUtils.ifAllGranted(admin_role.authority)
         result.filterMode  =  params.filterMode?: "OFF"
         result.info        =  [] as List
         params.max         =  params.int('max') ? Math.min(Integer.parseInt(params.max),200) : 10
@@ -72,9 +85,10 @@ class FinanceController {
             def qryOutput = filterQuery(result,params,result.wildcard)
             if (qryOutput.filterCount == 0 || !qryOutput.qry_string) //Nothing found from filtering!
             {
-                result.info.add([status:"INFO: Filter Mode", msg:"No results found, reset filter search!!!"])
+                result.info.add([status:message(code: 'financials.result.filtered.info', args: [message(code: 'financials.result.filtered.mode')]),
+                                 msg:message(code: 'finance.result.filtered.empty')])
                 result.filterMode =  "OFF" //SWITCHING BACK...since nothing has been found!
-                result.wildcard   = false
+                result.wildcard   =  false
                 log.debug("FinanceController::index()  -- Performed filtering process... no results found, turned off filter mode")
             }
             else {
@@ -105,7 +119,7 @@ class FinanceController {
     }
 
     def private filterQuery(LinkedHashMap result, GrailsParameterMap params, boolean wildcard) {
-        def fqResult      = [:]
+        def fqResult        = [:]
         fqResult.failed     = [] as List
         fqResult.valid      = [] as List
         fqResult.qry_string = ""
@@ -119,7 +133,8 @@ class FinanceController {
             log.debug("Filter Query - No of Orders found:${order} Qry Performed:${_count}")
 
             if (order && order.first() > 0) {
-                fqResult.valid.add([status: "SUCCESS: Order", msg: "Found ${order.first()} Order(s): " + params.orderNumberFilter])
+                fqResult.valid.add([status: message(code: 'financials.result.filtered.success', args: [message(code: 'financials.field.order')]),
+                                    msg: message(code: 'financials.result.filtered.success.msg1', args: [order.first(), message(code: 'financials.field.order'), params.orderNumberFilter])])
                 if (wildcard) {
                     fqResult.qry_string = "AND ci.order.orderNumber like ? "
                     countCheck += " AND ci.order.orderNumber like ?"
@@ -131,7 +146,8 @@ class FinanceController {
                 }
             } else {
                 def detachedCount = Order.executeQuery("select count(o.id) from Order o where o.owner = ? AND o.orderNumber = ? ",[result.institution,params.orderNumberFilter]) //Items that exist on their own for the org
-                fqResult.failed.add([status: "FAILED: Order", msg: "Invalid order number ${wildcard ? '%' + params.orderNumberFilter + '%' : params.orderNumberFilter} ...No cost items exist with specified order number and ${detachedCount.first()} detached orders"])
+                fqResult.failed.add([status: message(code: 'financials.result.filtered.failed', args: [message(code: 'financials.field.order')]),
+                                     msg: message(code: 'financials.result.filtered.failed.msg1', args: [message(code: 'financials.field.order'), (wildcard ? '%' + params.orderNumberFilter + '%' : params.orderNumberFilter), detachedCount.first()])])
                 params.remove('orderNumberFilter')
             }
         }
@@ -141,7 +157,8 @@ class FinanceController {
             def invoice = CostItem.executeQuery(_count, [result.institution, (wildcard) ? "%${params.invoiceNumberFilter}%" : params.invoiceNumberFilter])
 
             if (invoice && invoice.first() > 0) {
-                fqResult.valid.add([status: "SUCCESS: Invoice", msg: "Found ${invoice.first()} Invoice(s): " + params.invoiceNumberFilter])
+                fqResult.valid.add([status: message(code: 'financials.result.filtered.success', args: [message(code: 'financials.field.invoice')]),
+                                    msg: message(code: 'financials.result.filtered.success.msg1', args: [invoice.first(), message(code: 'financials.field.invoice'), params.invoiceNumberFilter])])
                 if (wildcard) {
                     fqResult.qry_string = "AND ci.invoice.invoiceNumber like ? "
                     countCheck += " AND ci.invoice.invoiceNumber like ?"
@@ -154,7 +171,8 @@ class FinanceController {
             } else
             {
                 def detachedCount = Order.executeQuery("select count(i.id) from Invoice i where i.owner = ? AND i.invoiceNumber = ? ",[result.institution,params.invoiceNumberFilter])
-                fqResult.failed.add([status: "FAILED: Invoice", msg: "Invalid order number ${wildcard ? '%' + params.invoiceNumberFilter + '%' : params.invoiceNumberFilter} ...No cost items exist with specified invoice number and ${detachedCount.first()} detached invoices"])
+                fqResult.failed.add([status:message(code: 'financials.result.filtered.failed', args: [message(code: 'financials.field.invoice')]),
+                                     msg: "Invalid order number ${wildcard ? '%' + params.invoiceNumberFilter + '%' : params.invoiceNumberFilter} ...No cost items exist with specified invoice number and ${detachedCount.first()} detached invoices"])
                 params.remove('invoiceNumberFilter')
             }
         }
@@ -164,12 +182,14 @@ class FinanceController {
             def subCost = sub ? CostItem.findBySubAndOwner(sub,result.institution) : null
             if (subCost)
             {
-                fqResult.valid.add([status: "SUCESS: Subscription", msg: "Found Subscription: "+sub.name])
+                fqResult.valid.add([status: message(code: 'financials.result.filtered.success', args: [message(code: 'financials.field.sub')]),
+                                    msg: "Found Subscription: "+sub.name])
                 fqResult.qry_string += " AND ci_sub_fk = "+sub.id+" "
-                countCheck        += " AND ci_sub_fk = "+sub.id
+                countCheck          += " AND ci_sub_fk = "+sub.id
             } else
             {
-                fqResult.failed.add([status: "FAILED: Subscription", msg: "Invalid subscription, no Cost items with " + (sub!=null? sub.name:'no subscription name!')])
+                fqResult.failed.add([status: message(code: 'financials.result.filtered.failed', args: [message(code: 'financials.field.sub')]),
+                                     msg: message(code: 'financials.result.filtered.failed.msg2', args: [ message(code: 'financials.field.sub'), sub!=null? sub.name:'no subscription name!'])])
                 params.remove('subscriptionFilter')
             }
         }
@@ -179,12 +199,14 @@ class FinanceController {
             def subPkgCost = pkg ? CostItem.findBySubPkgAndOwner(pkg,result.institution) : null
             if (subPkgCost)
             {
-                fqResult.valid.add([status: "SUCESS: Sub Package", msg: "Found Sub Package: " + pkg.pkg.name])
+                fqResult.valid.add([status: message(code: 'financials.result.filtered.success', args: [message(code: 'financials.field.subpkg')]),
+                                    msg: message(code: 'financials.result.filtered.success.msg2', args: [ message(code: 'financials.field.subpkg'), params.packageFilter])])
                 fqResult.qry_string += " AND ci_subPkg_fk = " + pkg.id
-                countCheck        += " AND ci_subPkg_fk = " + pkg.id
+                countCheck          += " AND ci_subPkg_fk = " + pkg.id
             } else
             {
-                fqResult.failed.add([status: "FAILED: Sub-Package", msg: "Invalid package, no Cost items with " + params.packageFilter])
+                fqResult.failed.add([status: message(code: 'financials.result.filtered.failed', args: [message(code: 'financials.field.subpkg')]),
+                                     msg: message(code: 'financials.result.filtered.failed.msg2', args: [ message(code: 'financials.field.subpkg'), params.packageFilter])])
                 params.remove('packageFilter')
             }
         }
@@ -192,7 +214,8 @@ class FinanceController {
         fqResult.filterCount = CostItem.executeQuery(countCheck,fqResult.fqParams).first()
         if (fqResult.failed.size() > 0 || fqResult.filterCount == 0)
         {
-            fqResult.failed.add([status: "INFO: No matches together", msg: "Try filtering without invalid criteria...reset invalid input"])
+            fqResult.failed.add([status: message(code: 'financials.result.filtered.info', args: [message(code: 'financials.result.filtered.nomatch')]),
+                                 msg: message(code: 'financials.result.filtered.invalid')])
             fqResult.qry_string = ""
             fqResult.fqParams.clear()
         }
@@ -305,7 +328,7 @@ class FinanceController {
         if (!newCostItem.validate()) {
             result.error = newCostItem.errors.allErrors.collect {
                 log.debug("Field: " + it.properties.field + ", user input: " + it.properties.rejectedValue + ", Reason! " + it.properties.code)
-                message(error: it)
+                message(code:'finance.addNew.error',args:[it.properties.field])
             }
         } else {
             if (newCostItem.save(flush: true))
@@ -322,7 +345,6 @@ class FinanceController {
             render ([newCostItem:newCostItem.id, error:result.error]) as JSON
         else
         {
-            def base_qry   = " from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) "
             def qry_params = [result.institution]
             result.institutionSubscriptions = Subscription.executeQuery(base_qry, qry_params);
             render (view: "newCostItem", model: result, params:params)
@@ -357,7 +379,6 @@ class FinanceController {
         result.institution = Org.findByShortcode(params.shortcode)
 
         def qry_params                  = [result.institution]
-        def base_qry                    = " from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) "
         result.institutionSubscriptions = Subscription.executeQuery(base_qry, qry_params);
 
         def cost_item_qry      = " from CostItem as ci where ci.owner = ?"
@@ -381,7 +402,7 @@ class FinanceController {
         result.recentlyUpdated = CostItem.findAllByOwnerAndLastUpdatedBetween(institution,result.from,result.to,[max:10, order:"desc", sort:"lastUpdated"])
         result.from            = dateTimeFormat.format(result.from)
         result.to              = dateTimeFormat.format(result.to)
-        log.debug("Finane - getRecentCostItems, rendering template with model: "+result)
+        log.debug("FinanceController - getRecentCostItems, rendering template with model: "+result)
         render(template: "/finance/recentlyAdded", model: result)
     }
 
