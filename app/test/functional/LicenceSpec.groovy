@@ -56,6 +56,16 @@ class LicenceSpec extends GebReportingSpec {
           at LicencePage
     }
 
+    def "Test copy licence"(){
+        setup:
+          at LicencePage
+        when: "We click to copy the licence for default org"
+          withConfirm{
+            $("a",name:"copyLicenceBtn").click()
+          }
+        then: "We are redirected to the copy licece"
+          messageBox("Your licence has been created and linked ")
+    }
 
     def "add items to list and submit to compare a license (license properties)"() {
         setup: "Going to license comparison page..."
