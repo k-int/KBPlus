@@ -3,7 +3,6 @@ import org.elasticsearch.common.joda.time.LocalDate
 import pages.*
 import spock.lang.Stepwise
 import com.k_int.kbplus.*
-import groovy.time.TimeCategory
 
 @Stepwise
 class LicenceSpec extends GebReportingSpec {
@@ -57,16 +56,6 @@ class LicenceSpec extends GebReportingSpec {
           at LicencePage
     }
 
-    def "Test copy licence"(){
-        setup:
-          at LicencePage
-        when: "We click to copy the licence for default org"
-          withConfirm{
-            $("a",name:"copyLicenceBtn").click()
-          }
-        then: "We are redirected to the copy licece"
-          messageBox("Your licence has been created and linked ")
-    }
 
     def "add items to list and submit to compare a license (license properties)"() {
         setup: "Going to license comparison page..."
@@ -106,22 +95,17 @@ class LicenceSpec extends GebReportingSpec {
                    //Title licencing
           def org = Org.findByNameAndImpId(Data.Org_name,Data.Org_impId)
           def licenceSub = new com.k_int.kbplus.License(reference:"test subscription licence").save()
-          def endDate = new Date()
-          def startDate = new Date()
-          use(TimeCategory) {
-            startDate -= 1.years
-            endDate += 1.years
-          }
           def sub = new com.k_int.kbplus.Subscription(name: "test subscription name", owner: licenceSub,
-                  identifier: java.util.UUID.randomUUID().toString(),startDate:startDate,endDate:endDate).save(flush: true)
-          def subrefRole = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber')
+                  identifier: java.util.UUID.randomUUID().toString()).save(flush: true)
+          def subrefRole = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber').save()
+          def subRelation= new com.k_int.kbplus.OrgRole(roleType: subrefRole, org: org).save()
           def subRole    = new com.k_int.kbplus.OrgRole(roleType: subrefRole, sub: sub, org: org).save()
+          sub.addToOrgRelations(subRelation) 
+          sub.save()//OrgRole needed for
           def ie_current = RefdataCategory.lookupOrCreate('Entitlement Issue Status','Current');
           def ti = new com.k_int.kbplus.TitleInstance(title: Data.Title_titlename, impId:Data.Title_uniqID).save()
           def tipp = new com.k_int.kbplus.TitleInstancePackagePlatform(impId:Data.Tipp_uniqID, title: ti).save()
-          def ie = new com.k_int.kbplus.IssueEntitlement(status: ie_current,tipp:tipp, subscription:sub,startDate:startDate,endDate:endDate).save()
-          go "subscriptionDetails/index/"+ sub.id
-          browser.report("Subscription IE")
+          def ie = new com.k_int.kbplus.IssueEntitlement(status: ie_current, tipp: tipp, subscription: sub).save()
           logout()
           go '/demo/public/journalLicences'
         when: "inputting org and journal title values"
@@ -170,4 +154,3 @@ class LicenceSpec extends GebReportingSpec {
          $("div.alert.alert-block.alert-error p").isEmpty()
    }
 }
-
