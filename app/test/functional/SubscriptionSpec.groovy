@@ -3,6 +3,7 @@ import org.elasticsearch.common.joda.time.LocalDate
 import pages.*
 import spock.lang.Stepwise
 import com.k_int.kbplus.*
+import groovy.time.TimeCategory
 
 @Stepwise
 class SubscriptionSpec extends GebReportingSpec {
@@ -36,11 +37,22 @@ class SubscriptionSpec extends GebReportingSpec {
         at LogInPage
         login(Data.UserD_name, Data.UserD_passwd)
         when:
-        go 'myInstitutions/'+Data.Org_Url+'/emptySubscription'
-        $('form').newEmptySubName = Data.Subscription_name_A
-        $('input', type: 'submit').click()
+        def endDate = new Date()
+        def startDate = new Date()
+          use(TimeCategory) {
+            startDate -= 1.years
+            endDate += 1.years
+          }
+        def org = Org.findByNameAndImpId(Data.Org_name,Data.Org_impId)
+        def subA = new com.k_int.kbplus.Subscription(name: Data.Subscription_name_A, identifier: java.util.UUID.randomUUID().toString(),startDate:startDate,endDate:endDate).save(flush: true)
+        def subrefRole = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber')
+        def subRole    = new com.k_int.kbplus.OrgRole(roleType: subrefRole, sub: subA, org: org).save()
+
+        go "subscriptionDetails/details/"+subA.id
+
         then:
         $('h1 span').text() == Data.Subscription_name_A
+
     }
 
     def "Setup subscription 2"(){
@@ -51,6 +63,7 @@ class SubscriptionSpec extends GebReportingSpec {
         $('input', type: 'submit').click()
         then:
         $('h1 span').text() == Data.Subscription_name_B
+
     }
 
     def "Setup new package" (){

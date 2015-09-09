@@ -3,6 +3,7 @@ import org.elasticsearch.common.joda.time.LocalDate
 import pages.*
 import spock.lang.Stepwise
 import com.k_int.kbplus.*
+import groovy.time.TimeCategory
 
 @Stepwise
 class LicenceSpec extends GebReportingSpec {
@@ -105,17 +106,22 @@ class LicenceSpec extends GebReportingSpec {
                    //Title licencing
           def org = Org.findByNameAndImpId(Data.Org_name,Data.Org_impId)
           def licenceSub = new com.k_int.kbplus.License(reference:"test subscription licence").save()
+          def endDate = new Date()
+          def startDate = new Date()
+          use(TimeCategory) {
+            startDate -= 1.years
+            endDate += 1.years
+          }
           def sub = new com.k_int.kbplus.Subscription(name: "test subscription name", owner: licenceSub,
-                  identifier: java.util.UUID.randomUUID().toString()).save(flush: true)
-          def subrefRole = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber').save()
-          def subRelation= new com.k_int.kbplus.OrgRole(roleType: subrefRole, org: org).save()
+                  identifier: java.util.UUID.randomUUID().toString(),startDate:startDate,endDate:endDate).save(flush: true)
+          def subrefRole = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber')
           def subRole    = new com.k_int.kbplus.OrgRole(roleType: subrefRole, sub: sub, org: org).save()
-          sub.addToOrgRelations(subRelation) 
-          sub.save()//OrgRole needed for
           def ie_current = RefdataCategory.lookupOrCreate('Entitlement Issue Status','Current');
           def ti = new com.k_int.kbplus.TitleInstance(title: Data.Title_titlename, impId:Data.Title_uniqID).save()
           def tipp = new com.k_int.kbplus.TitleInstancePackagePlatform(impId:Data.Tipp_uniqID, title: ti).save()
-          def ie = new com.k_int.kbplus.IssueEntitlement(status: ie_current, tipp: tipp, subscription: sub).save()
+          def ie = new com.k_int.kbplus.IssueEntitlement(status: ie_current,tipp:tipp, subscription:sub,startDate:startDate,endDate:endDate).save()
+          go "subscriptionDetails/index/"+ sub.id
+          browser.report("Subscription IE")
           logout()
           go '/demo/public/journalLicences'
         when: "inputting org and journal title values"
