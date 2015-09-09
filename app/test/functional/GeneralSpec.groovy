@@ -84,6 +84,7 @@ class GeneralSpec extends BaseSpec {
 	def "Start downloading titles"() {
 		when:
 		go '/demo/admin/fullReset' // so that new package is displayed
+		Thread.sleep(5000)
 		then:
 		true;
 	}
@@ -537,8 +538,8 @@ class GeneralSpec extends BaseSpec {
 		when:
 		newSubscription(Data.Subscription_name_A)
 		and:
-                $("a",text:"Details").click()
-                and:
+        $("a",text:"Details").click()
+        and:
 		addDocument(Data.Test_Doc_name, Data.Test_Doc_file)
 		and:
 		addNote("Test note")
@@ -560,14 +561,14 @@ class GeneralSpec extends BaseSpec {
 		when:
 		at SubscrDetailsPage
 		then:
-                $("a",text:"Details").click()
-                and:
+        $("a",text:"Details").click()
+        and:
 		catchException { addDocument("whatever", "doc") }
 		when:
 		at SubscrDetailsPage
 		then:
-                $("a",text:"Details").click()
-                and:
+        $("a",text:"Details").click()
+        and:
 		catchException { editIsPublic("Yes") }
 	}
 
@@ -848,43 +849,6 @@ class GeneralSpec extends BaseSpec {
 	then:
 		at PackageDetailsPage
 	}
-
-
-    def "Add and show duplicate identifiers"() {
-        setup:
-        Thread.sleep(10000)
-        def ti = com.k_int.kbplus.TitleInstance.first()
-        go '/demo/titleDetails/edit/'+ti.id
-        def tableSize = $("table",0).size()
-
-        when:
-        $("#select2-chosen-1").click()
-        waitFor{$("#s2id_autogen1_search").value(Data.Title_identifier)}
-        Thread.sleep(10000)
-        waitFor{$("div.select2-result-label").click()}
-//        waitFor{$("span.select2-match",text:"New - "+Data.Title_identifier).tail().click()}
-        $("input", value:"Add Identifier...").click()
-
-        then:
-        $("table",0).size() > tableSize
-//        def ns         = new IdentifierNamespace(ns: "test").save()
-//        def ig         = new IdentifierGroup().save()
-//        def ident      = new Identifier(ns: ns, value: "k-int", ig: ig).save()
-//        def identOccur = new IdentifierOccurrence(identifier: ident, ti: ti).save()
-//        ti.addToIds(identOccur)
-
-//        when:
-//        $("div#resultsarea table tbody tr td a",0).click() //first title show link
-//
-//        then:
-//        !isAt(TitleDetailsPage)
-//
-//        when:
-//        def duplicateRows = $("table",0).siblings().find("tr").size()
-//
-//        then:
-//        duplicateRows == 2
-    }
 }
 
 

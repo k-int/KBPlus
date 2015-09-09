@@ -97,7 +97,7 @@
                 <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.IdentifierOccurrence"/>
                 <input type="hidden" name="__recip" value="sub"/>
                 <input type="hidden" name="identifier" id="addIdentifierSelect"/>
-                <input type="submit" value="Add Identifier..." class="btn btn-primary btn-small"/><br/>
+                <input type="submit" id="addIdentBtn" value="Add Identifier..." class="btn btn-primary btn-small"/><br/>
               </g:form>
             </g:if>
                    </dd>
