@@ -112,7 +112,7 @@ class PackageDetailsController {
       if (result.user.getAuthorities().contains(Role.findByAuthority('ROLE_ADMIN'))) {
           isAdmin = true;
       }else{
-        hasAccess = result.packageInstance.orgLinks.find{it.roleType.value == 'Package Consortia' &&
+        hasAccess = result.packageInstance.orgLinks.find{it.roleType?.value == 'Package Consortia' &&
         it.org.hasUserWithRole(result.user,'INST_ADM') }
       }
 
