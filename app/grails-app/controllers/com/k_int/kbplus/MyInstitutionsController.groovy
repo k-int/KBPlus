@@ -860,8 +860,9 @@ class MyInstitutionsController {
         if (filterOtherPlat.contains("all")) filterOtherPlat = null
 
         def limits = (isHtmlOutput) ? [max: result.max, offset: result.offset] : [offset: 0]
-
-        def qry_params = ['institution': result.institution]
+        def del_sub = RefdataCategory.lookupOrCreate('Subscription Status', 'Deleted')
+        def del_ie =  RefdataCategory.lookupOrCreate('Entitlement Issue Status','Deleted');
+        def qry_params = [institution: result.institution, del_sub:del_sub, del_ie:del_ie]
         // def sub_qry =  "select ie from IssueEntitlement as ie JOIN ie.subscription.orgRelations as o LEFT OUTER JOIN ie.tipp.additionalPlatforms as ap LEFT OUTER JOIN ie.tipp.pkg.orgs AS role WHERE ie.tipp.title = t and o.roleType.value = 'Subscriber' AND o.org = :institution AND ie.subscription.status.value != 'Deleted'"
         def sub_qry = "from IssueEntitlement as ie INNER JOIN ie.subscription.orgRelations as o "
         if (filterOtherPlat) {
@@ -872,8 +873,8 @@ class MyInstitutionsController {
         }
         sub_qry += "WHERE o.roleType.value = 'Subscriber' "
         sub_qry += "AND o.org = :institution "
-        sub_qry += "AND ie.subscription.status.value != 'Deleted' "
-        sub_qry += "AND ie.status.value != 'Deleted'"
+        sub_qry += "AND (ie.subscription.status is null or ie.subscription.status != :del_sub) "
+        sub_qry += "AND (ie.status is null or ie.status != :del_ie ) "
 
         if (date_restriction) {
             sub_qry += " AND ie.subscription.startDate <= :date_restriction AND ie.subscription.endDate >= :date_restriction "
