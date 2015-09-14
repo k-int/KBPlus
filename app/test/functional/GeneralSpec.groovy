@@ -461,7 +461,8 @@ class GeneralSpec extends BaseSpec {
 
 	def "Update ES Index"() {
 		when:
-		go '/demo/startFTIndex/index' // should have a few titles by now.
+		go '/demo/admin/esIndexUpdate' // should have a few titles by now.
+		Thread.sleep(5000)
 		then:
 		true;
 	}
@@ -470,6 +471,7 @@ class GeneralSpec extends BaseSpec {
 	//ref 011
 	def "Change default page size"() {
 		setup:
+		browser.report("Before Change size")
 		changeUser(Data.UserA_name, Data.UserA_passwd)
 		to ProfilePage
 		when:
