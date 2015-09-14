@@ -3,7 +3,14 @@ Fixes introduced in 5.0.1
 * Sort TitleInstances by sortTitle 
 * when name for new imported onxilicence in use, append import date
 * fix issue that caused admin/Allnotes to break
-
+* fix importWorksheet search bug
+* fix exports that break when OrgLink have no role
+* publicExport, dont lose search params when changing tabs
+* ES searches should not break when searching with empty query
+* unique identifier works for all owners (sub,title,etc).
+* add delete link for subscription identifiers
+* pre-sql to update old pending changes links to current ones
+* add job to generate sortTitle/normTitle/keyTitle for all titles
 
 
 Changes introduced in 5.0. It is likely that some small tasks are missing.

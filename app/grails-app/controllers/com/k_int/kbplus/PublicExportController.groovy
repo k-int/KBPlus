@@ -20,7 +20,7 @@ class PublicExportController {
 
     params.rectype = "Package" // Tells ESSearchService what to look for
     if(params.q == "")  params.remove('q');
-    params.tempFQ = " NOT name:Springer:Master "
+
     params.isPublic="Yes"
     if(params.lastUpdated){
       params.lastModified ="[${params.lastUpdated} TO 2100]"
