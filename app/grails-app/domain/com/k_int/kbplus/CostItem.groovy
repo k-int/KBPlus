@@ -30,6 +30,8 @@ class CostItem {
     Date endDate
     Date lastUpdated
     User lastUpdatedBy
+    User createdBy
+    Date dateCreated
 
 
     @Transient
@@ -59,6 +61,7 @@ class CostItem {
         endDate column: 'ci_end_date'
         startDate column: 'ci_start_date'
         reference column: 'ci_reference'
+        autoTimestamp true
     }
 
     static constraints = {
@@ -84,8 +87,8 @@ class CostItem {
         startDate(nullable: true, blank: false)
         endDate(nullable: true, blank: false)
         lastUpdatedBy(nullable: false, blank: false)
+        createdBy(nullable: false, blank: false)
     }
-
 
     def getBudgetcodes() {
         return CostItemGroup.findAllByCostItem(this).collect {
@@ -94,7 +97,6 @@ class CostItem {
     }
 
     /**
-     * /todo Add other fields that will require sorting and test!
      * So we don't have to expose the data model in the GSP for relational data needed to be sorted
      * @param field - The order by link selected
      *

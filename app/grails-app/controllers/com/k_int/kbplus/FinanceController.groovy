@@ -49,7 +49,7 @@ class FinanceController {
         //Check nothing strange going on with financial data
         result.institution =  Org.findByShortcode(params.shortcode)
         def user           =  User.get(springSecurityService.principal.id)
-        if (!isFinanceAuthorised(result.institution, user))
+        if (isFinanceAuthorised(result.institution, user))
         {
             flash.error=message(code: 'financials.permission.unauthorised', args: [result.institution? result.institution.name : 'N/A'])
             response.sendError(401)
@@ -75,7 +75,7 @@ class FinanceController {
         def qry_params                  =  [result.institution]
         result.institutionSubscriptions =  Subscription.executeQuery(base_qry, qry_params);
 
-        def cost_item_qry_params        =   [result.institution]
+        def cost_item_qry_params        =  [result.institution]
         def cost_item_qry               =  (join)? "LEFT OUTER JOIN ${join} AS j WHERE ci.owner = ? " :"  where ci.owner = ? "
         def orderAndSortBy              =  (join)? "ORDER BY COALESCE(j.${order}, ${Integer.MAX_VALUE}) ${result.sort}, ci.id ASC" : " ORDER BY ci.${order} ${result.sort}"
 
@@ -231,9 +231,15 @@ class FinanceController {
     def newCostItem() {
         log.debug("FinanceController::newCostItem() ${params}");
 
-        def result = [:]
-        result.institution = Org.findByShortcode(params.shortcode)
-        result.error = [] as List
+        def result          =  [:]
+        result.institution  =  Org.findByShortcode(params.shortcode)
+        def user            =  User.get(springSecurityService.principal.id)
+        result.error        =  [] as List
+
+        if (isFinanceAuthorised(result.institution, user)) {
+            result.error=message(code: 'financials.permission.unauthorised', args: [result.institution? result.institution.name : 'N/A'])
+            response.sendError(403)
+        }
 
         def order = null
         if (params.newOrderNumber) {
@@ -252,7 +258,11 @@ class FinanceController {
 
         def pkg = null;
         if (params.newPackage) {
-            pkg = SubscriptionPackage.load(params.newPackage.split(":")[1])
+            try {
+                pkg = SubscriptionPackage.load(params.newPackage.split(":")[1])
+            } catch (Exception e) {
+                log.error("Non-valid subscription package sent ${params.newIe}",e)
+            }
         }
 
         def datePaid = null
@@ -260,7 +270,7 @@ class FinanceController {
             try {
                 datePaid = dateFormat.parse(params.newDate)
             } catch (Exception e) {
-                log.debug("Unable to parse date : "+params.newDate+" in format "+dateFormat.toPattern())
+                log.debug("Unable to parse date : ${params.newDate} in format ${dateFormat.toPattern()}")
             }
         }
 
@@ -269,7 +279,7 @@ class FinanceController {
             try {
                 startDate = dateFormat.parse(params.newStartDate)
             } catch (Exception e) {
-                log.debug("Unable to parse date : "+params.newStartDate+" in format "+dateFormat.toPattern())
+                log.debug("Unable to parse date : ${params.newStartDate} in format ${dateFormat.toPattern()}")
             }
         }
 
@@ -278,7 +288,7 @@ class FinanceController {
             try {
                 endDate = dateFormat.parse(params.newEndDate)
             } catch (Exception e) {
-                log.debug("Unable to parse date : "+params.newEndDate+" in format "+dateFormat.toPattern())
+                log.debug("Unable to parse date : ${params.newEndDate} in format ${dateFormat.toPattern()}")
             }
         }
 
@@ -288,7 +298,7 @@ class FinanceController {
             try {
                 ie = IssueEntitlement.load(params.newIe.split(":")[1]) //OIDService uses get(), return proxy obj for ref instead
             } catch (Exception e) {
-                log.error("Non-valid IssueEntitlement sent "+params.newIe,e)
+                log.error("Non-valid IssueEntitlement sent ${params.newIe}",e)
             }
         }
 
@@ -319,15 +329,18 @@ class FinanceController {
                 costInLocalCurrency: params.newCostInLocalCurrency,
                 taxCode: cost_tax_type,
                 includeInSubscription: null,
-                reference: params.newReference,
+                reference: params.newReference? params.newReference.trim()?.toLower() : null,
                 costItemStatus: cost_item_status,
-                costItemElement: cost_item_element
+                costItemElement: cost_item_element,
+                lastUpdatedBy: user,
+                createdBy: user,
+                dateCreated: new Date()
         )
 
 
         if (!newCostItem.validate()) {
             result.error = newCostItem.errors.allErrors.collect {
-                log.debug("Field: " + it.properties.field + ", user input: " + it.properties.rejectedValue + ", Reason! " + it.properties.code)
+                log.debug("Field: ${it.properties.field}, user input: ${it.properties.rejectedValue}, Reason! ${it.properties.code}")
                 message(code:'finance.addNew.error',args:[it.properties.field])
             }
         } else {
@@ -341,14 +354,7 @@ class FinanceController {
         }
 
         params.remove("Add")
-//        if (request.isXhr())
-            render ([newCostItem:newCostItem.id, error:result.error]) as JSON
-//        else
-//        {
-//            def qry_params = [result.institution]
-//            result.institutionSubscriptions = Subscription.executeQuery(base_qry, qry_params);
-//            render (view: "newCostItem", model: result, params:params)
-//        }
+        render ([newCostItem:newCostItem.id, error:result.error]) as JSON
     }
 
 
@@ -411,7 +417,7 @@ class FinanceController {
         results.sentIDs    =  JSON.parse(params.del)
         def user           =  User.get(springSecurityService.principal.id)
         def institution    =  Org.findByShortcode(params.shortcode)
-        if (userCertified(user,institution))
+        if (isFinanceAuthorised(institution, user))
             response.sendError(401)
 
         if (results.sentIDs && institution) {
