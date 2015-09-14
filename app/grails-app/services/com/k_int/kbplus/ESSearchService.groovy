@@ -41,7 +41,6 @@ class ESSearchService{
           {
               query_str = query_str + " AND ( " + params.tempFQ + " ) "
               params.remove("tempFQ") //remove from GSP access
-              log.debug("ESSearchService::search -  Adding to query, appending filtered query: ${query_string}")
           }
 
     
@@ -57,6 +56,7 @@ class ESSearchService{
               query {
                 query_string (query: query_str)
               }
+
               facets {
                 consortiaName {
                   terms {
