@@ -127,12 +127,12 @@ class AdminController {
         pkg.subscriptions.each{
 
           if(it.subscription.status.value != "Deleted"){
-            subscription_map.details += ['link':createLink(controller:'subscriptionDetails', action: 'index', id:it.subscription.id), 'text': it.subscription.name]
+            subscription_map.details += ['link':createLink(controller:'subscriptionDetails', action: 'details', id:it.subscription.id), 'text': it.subscription.name]
           }else{
-            subscription_map.details += ['link':createLink(controller:'subscriptionDetails', action: 'index', id:it.subscription.id), 'text': "(Deleted)" + it.subscription.name]
+            subscription_map.details += ['link':createLink(controller:'subscriptionDetails', action: 'details', id:it.subscription.id), 'text': "(Deleted)" + it.subscription.name]
           }
         }
-        subscription_map.action = ['actionRequired':true,'text':"Delete subscriptions"]
+        subscription_map.action = ['actionRequired':true,'text':"Unlink subscriptions. (IEs will be removed as well)"]
         if(subscription_map.details){
           conflicts_list += subscription_map
         }
