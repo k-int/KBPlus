@@ -11,6 +11,9 @@ Fixes introduced in 5.0.1
 * add delete link for subscription identifiers
 * pre-sql to update old pending changes links to current ones
 * add job to generate sortTitle/normTitle/keyTitle for all titles
+* On user merge screen, add user IDs next to  displayNames.
+* On PackageHardDelete, change 'Delete Subscriptions' to 'Unlink subscriptions. (IEs will be removed as well)'
+* On PackageHardDelete, open links to subscriptions in new tab, and go to details instead of index
 
 
 Changes introduced in 5.0. It is likely that some small tasks are missing.
