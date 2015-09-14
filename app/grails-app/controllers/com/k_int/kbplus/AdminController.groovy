@@ -214,8 +214,8 @@ class AdminController {
              log.debug("Selected users : ${usrMrg}, ${usrKeep}");
              result.userRoles = usrMrg.getAuthorities()
              result.userAffiliations =  usrMrg.getAuthorizedAffiliations()
-             result.usrMrgName = usrMrg.displayName
-             result.userKeepName = usrKeep.displayName
+             result.userMerge = usrMrg
+             result.userKeep = usrKeep
            }else{
             log.error("Missing keep/merge userid ${params}");
             flash.error = "Please select'user to keep' and 'user to merge' from the dropdown."
