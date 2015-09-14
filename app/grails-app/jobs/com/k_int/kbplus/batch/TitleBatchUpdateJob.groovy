@@ -18,19 +18,30 @@ class TitleBatchUpdateJob {
   	def event = "TitleBatchUpdateJob"
   	def startTime = printStart(event)
   	def counter = 0
-    TitleInstance.withSession { session ->
-       def scroll_res = session.createCriteria(TitleInstance).scroll(ScrollMode.FORWARD_ONLY)
-       while (scroll_res.next()) {
-          def title = scroll_res.get(0)
-          updateTitle(title)
-          counter ++ 
-          if(counter == 500){
-          	cleanUpGorm(session)
-          	counter = 0
-          }
-       }
+    try{
+      TitleInstance.auditable = false
+      TitleInstance.withSession { session ->
+         def scroll_res = session.createCriteria(TitleInstance).scroll(ScrollMode.FORWARD_ONLY)
+         while (scroll_res.next()) {
+            def title = scroll_res.get(0)
+            if(updateTitle(title)) {
+              counter ++ ;
+            }
+            if(counter == 500){
+            	cleanUpGorm(session)
+            	counter = 0
+            }
+         }
+         cleanUpGorm(session)
+      }
+      printDuration(startTime,event)
+    }catch( Exception e ) {
+      log.error(e)
+    }finally{
+      //always reset the status
+      TitleInstance.auditable = false
     }
-    printDuration(startTime,event)
+
   }
 
   def cleanUpGorm(session) {
@@ -41,10 +52,12 @@ class TitleBatchUpdateJob {
 
   def updateTitle(title){
   	// Instead of trigger update, do this, as if nothing changes Hibernate will not bother saving.
-    TitleInstance.generateNormTitle(title.title)
-    TitleInstance.generateKeyTitle(title.title)
-    TitleInstance.generateSortTitle(title.title)
+    if(title.sortTitle) return null;
+    title.normTitle = TitleInstance.generateNormTitle(title.title)
+    title.keyTitle  = TitleInstance.generateKeyTitle(title.title)
+    title.sortTitle = TitleInstance.generateSortTitle(title.title)
   	title.save()
+    return 1
   }
 	
    def printStart(event){
@@ -60,6 +73,7 @@ class TitleBatchUpdateJob {
 			log.debug("Duration: ${(duration.hours*60)+duration.minutes}m ${duration.seconds}s")
 		}
 	}
+
 
 }
 

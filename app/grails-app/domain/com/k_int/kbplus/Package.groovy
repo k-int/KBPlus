@@ -73,6 +73,7 @@ static hasMany = [tipps: TitleInstancePackagePlatform,
                  forumId column:'pkg_forum_id'
                      tipps sort:'title.title', order: 'asc'
             pendingChanges sort:'ts', order: 'asc'
+            autoTimestamp true
 //                 orgs sort:'org.name', order: 'asc'
   }
 
@@ -268,23 +269,23 @@ static hasMany = [tipps: TitleInstancePackagePlatform,
     "${grailsApplication.config.SystemBaseURL}/packageDetails/show/${id}".toString();
   }
 
-  @Transient
-  def onChange = { oldMap,newMap ->
+  // @Transient
+  // def onChange = { oldMap,newMap ->
 
-    log.debug("onChange")
+  //   log.debug("onChange")
 
-    def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
+  //   def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
 
-    //controlledProperties.each { cp ->
-    //  if ( oldMap[cp] != newMap[cp] ) {
-    //    changeNotificationService.notifyChangeEvent([
-    //                                                 OID:"${this.class.name}:${this.id}",
-    //                                                 event:'TitleInstance.propertyChange',
-    //                                                 prop:cp, old:oldMap[cp], new:newMap[cp]
-    //                                                ])
-    //  }
-    //}
-  }
+  //   controlledProperties.each { cp ->
+  //    if ( oldMap[cp] != newMap[cp] ) {
+  //      changeNotificationService.notifyChangeEvent([
+  //                                                   OID:"${this.class.name}:${this.id}",
+  //                                                   event:'TitleInstance.propertyChange',
+  //                                                   prop:cp, old:oldMap[cp], new:newMap[cp]
+  //                                                  ])
+  //    }
+  //   }
+  // }
 
  @Transient
   def onSave = {
@@ -399,7 +400,7 @@ static hasMany = [tipps: TitleInstancePackagePlatform,
     }
 
     result.tipps.sort{it.titleId}
-    println("Rec conversion for package returns object with title ${result.title} and ${result.tipps?.size()} tipps");
+    log.debug("Rec conversion for package returns object with title ${result.title} and ${result.tipps?.size()} tipps");
 
     result
   }
@@ -417,16 +418,14 @@ static hasMany = [tipps: TitleInstancePackagePlatform,
   }
 
   public static String generateSortName(String input_title) {
-    def result=null
-    if ( input_title ) {
-      def s1 = Normalizer.normalize(input_title, Normalizer.Form.NFKD).trim().toLowerCase()
-      s1 = s1.replaceFirst('^copy of ','')
-      s1 = s1.replaceFirst('^the ','')
-      s1 = s1.replaceFirst('^a ','')
-      s1 = s1.replaceFirst('^der ','')
-      result = s1.trim()
-    }
-    result
+    if(!input_title) return null
+    def s1 = Normalizer.normalize(input_title, Normalizer.Form.NFKD).trim().toLowerCase()
+    s1 = s1.replaceFirst('^copy of ','')
+    s1 = s1.replaceFirst('^the ','')
+    s1 = s1.replaceFirst('^a ','')
+    s1 = s1.replaceFirst('^der ','')
+    return s1.trim()
+   
   }
 
 }
