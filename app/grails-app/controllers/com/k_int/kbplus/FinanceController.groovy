@@ -65,7 +65,7 @@ class FinanceController {
         result.sort        =  ["desc","asc"].contains(params.sort)?params.sort : "asc"
         result.sort        =  params.boolean('opSort')==true?((result.sort=="asc")?'desc' : 'asc'): result.sort //opposite
         result.isRelation  =  params.orderRelation? params.boolean('orderRelation'):false
-        result.wildcard    =  params.wildcard == "on" && params.filterMode == "ON"
+        result.wildcard    =  params.wildcard && params.wildcard == "off" ? false : true
         params.shortcode   =  result.institution.shortcode
         params.remove('opSort')
 

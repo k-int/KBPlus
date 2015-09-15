@@ -57,13 +57,13 @@
             </th>
             <th style="vertical-align: top;">IE</th>
             <th rowspan="2" style="vertical-align: top; text-align: center; width: 5%">Filter
-                <span ${wildcard ? hidden="hidden" : ''}> (${g.message(code: 'financials.help.wildcard')} : <g:checkBox name="wildcard" title="${g.message(code: 'financials.wildcard.title')}" type="checkbox" value="${wildcard}"></g:checkBox> )</span><br/>
+                <span ${wildcard && filterMode=='ON'? hidden="hidden" : ''}> (${g.message(code: 'financials.help.wildcard')} : <g:checkBox name="wildcard" title="${g.message(code: 'financials.wildcard.title')}" type="checkbox" value="${wildcard}"></g:checkBox> )</span><br/>
                 <div id="filtering" class="btn-group" data-toggle="buttons-radio">
                     <g:if test="${filterMode=='OFF'}">
                         <g:select  onchange="filterSelection()" name="filterMode" from="['OFF','ON']" type="button" class="btn btn-primary btn-mini"></g:select><br/><br/>
                     </g:if>
                 <g:hiddenField type="hidden" name="resetMode" value="${params.resetMode}"></g:hiddenField>
-                <g:submitToRemote onFailure="errorHandling(textStatus,'Filtering',errorThrown)" onComplete="filterSelection();deleteSelectAll();sortAndOrder();fadeAway('info',15000);"
+                <g:submitToRemote onFailure="errorHandling(textStatus,'Filtering',errorThrown)" onComplete="filterSelection();sortAndOrder();fadeAway('info',15000);"
                                   update="filterTemplate" title="${g.message(code: 'financials.pagination.title')}" value="${filterMode=='ON'?'reset':'search'}" class="btn-block"
                                   url="[controller:'finance', action:'index']" before="if(!filterValidation()) return false" id="submitFilterMode"></g:submitToRemote>
 
@@ -74,6 +74,7 @@
                     <br/><br/><input title="${g.message(code: 'financials.deleteall.title')}" id="selectAll" type="checkbox" value=""/></th>
             </g:if>
         </tr>
+        %{--End of one table row of headers--}%
         <tr>
             <th>
                 <a style="color: #990100;" data-order="datePaid" class="sortable ${order=="datePaid"? "sorted ${sort}":''}">Date Paid</a><br/>
@@ -148,5 +149,5 @@
          data-filterMode="${filterMode}" data-total="${cost_item_count}" data-resetMode="${params.resetMode}" data-subscriptionFilter="${params.subscriptionFilter}"
          data-invoiceNumberFilter="${params.invoiceNumberFilter}" data-orderNumberFilter="${params.orderNumberFilter}" data-packageFilter="${params.packageFilter}">
     </div>
-    <util:remotePaginate title="${g.message(code: 'financials.pagination.title')}" onFailure="errorHandling(textStatus,'Pagination',errorThrown)" offset='0' onComplete="scrollToTop(2000,'costTable');tester();deleteSelectAll();sortAndOrder();" onSuccess="filterSelection()" params="${params+["filterMode": "${filterMode}", "sort":"${sort}", "order":"${order}"]}"  controller="finance" action="index" total="${cost_item_count}"  update="filterTemplate" max="20" pageSizes="[10, 20, 50, 100, 200]" alwaysShowPageSizes="true"/>
+    <util:remotePaginate title="${g.message(code: 'financials.pagination.title')}" onFailure="errorHandling(textStatus,'Pagination',errorThrown)" offset='0' onComplete="scrollToTop(2000,'costTable');tester();sortAndOrder();" onSuccess="filterSelection()" params="${params+["filterMode": "${filterMode}", "sort":"${sort}", "order":"${order}"]}"  controller="finance" action="index" total="${cost_item_count}"  update="filterTemplate" max="20" pageSizes="[10, 20, 50, 100, 200]" alwaysShowPageSizes="true"/>
 </div>
