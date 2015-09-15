@@ -73,7 +73,6 @@ static hasMany = [tipps: TitleInstancePackagePlatform,
                  forumId column:'pkg_forum_id'
                      tipps sort:'title.title', order: 'asc'
             pendingChanges sort:'ts', order: 'asc'
-            autoTimestamp true
 //                 orgs sort:'org.name', order: 'asc'
   }
 

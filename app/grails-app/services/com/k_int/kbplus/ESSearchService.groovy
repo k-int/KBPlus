@@ -36,13 +36,13 @@ class ESSearchService{
           params.offset = params.offset ? params.int('offset') : 0
 
           def query_str = buildQuery(params,field_map)
-          log.debug("index:${grailsApplication.config.aggr.es.index} query: ${query_str}");
           if (params.tempFQ) //add filtered query
           {
               query_str = query_str + " AND ( " + params.tempFQ + " ) "
               params.remove("tempFQ") //remove from GSP access
           }
 
+          log.debug("index:${grailsApplication.config.aggr.es.index} query: ${query_str}");
     
           def search = esclient.search{
             indices grailsApplication.config.aggr.es.index ?: "kbplus"
