@@ -83,7 +83,7 @@ class HomeController {
       channel {
         title("KBPlus")
         description("KBPlus")
-        "opensearch:totalResults"(results.hits.totalHits)
+        "opensearch:totalResults"(results.resultsTotal)
         // "opensearch:startIndex"(results.search_results.results.start)
         "opensearch:itemsPerPage"(10)
         output_elements.each { i ->  // For each record
@@ -111,7 +111,7 @@ class HomeController {
         // add the top level information about this feed.
         title("KBPlus")
         description("KBPlus")
-        "opensearch:totalResults"(results.hits.totalHits)
+        "opensearch:totalResults"(results.resultsTotal)
         // "opensearch:startIndex"(results.search_results.results.start)
         "opensearch:itemsPerPage"("${hpp}")
         // subtitle("Serving up my content")
@@ -140,12 +140,12 @@ class HomeController {
     def result = []
 
     searchresults.hits?.each { doc ->
-      ////  log.debug("adding ${doc} ${doc.source.title}");
+      ////  log.debug("adding ${doc} ${doc.getSource().title}");
       def docinfo = [];
 
-      docinfo.add(['dc.title',doc.source.title])
-      docinfo.add(['dc.description',doc.source.description])
-      docinfo.add(['dc.identifier',doc.source._id])
+      docinfo.add(['dc.title',doc.getSource().title])
+      docinfo.add(['dc.description',doc.getSource().description])
+      docinfo.add(['dc.identifier',doc.getSource()._id])
       result.add(docinfo)
     }
     result
