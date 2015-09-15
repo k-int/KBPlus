@@ -59,23 +59,241 @@
 
 <r:script type="text/javascript">
 
-        function tester() {
-            $('.xEditable').editable();
-            //$('.xEditableValue').xEditable();
+     //Module pattern
+     var Finance = (function(){
+        var s = { //Setup
+            mybody: $('body'),
+            ft: { //filter template settings
+                searchBtn:'#submitFilterMode',
+                filterOpt:'#filterMode',
+                filterTemplate:'#filterTemplate',
+                delSelectAll:'#selectAll',
+                delCheckboxes:'.bulkcheck',
+                delBatch:'#BatchSelectedBtn',
+                paginateData:'#paginateInfo',
+                advFilterBtn:'#advancedFilter',
+                advFilterOpts:'#advancedFilterOpt'
+            },
+            ct: { //create template
+                resetBtn:'#resetCreate',
+                datePickers:'.datepicker-class',
+                dateFormat:'yyyy-mm-dd'
+            },
+            url: {
+                ajaxLookupURL:"<g:createLink controller='ajax' action='lookup'/>",
+                ajaxFinanceIndex:"<g:createLink controller='finance' action='index'/>",
+                ajaxFinanceDelete:"<g:createLink controller='finance' action='delete'/>",
+                ajaxFinanceRecent:"<g:createLink controller='finance' action='getRecentCostItems'/>",
+                ajaxFinancePresent:"<g:createLink controller='finance' action='newCostItemsPresent'/>"
+            },
+            misc: {
+                recentlyUpdated: '#recent'
+            }
+        };
+
+
+        var _performCostItemUpdate = function(to) {
+            $.ajax({
+                method: 'POST',
+                url: s.url.ajaxFinanceRecent,
+                    data: {
+                    from: "${from}",
+                    to: to,
+                    shortcode: "${params.shortcode}"
+                }
+            }).done(function(data) {
+                $('#recent').html(data);
+            });
+
+            // Recently updated code block
+            setInterval(_recentCostItems,60000);
+        };
+
+        function setupModSelect2s() {
+             //unable to use placeholder with initSelection, manually set via GSP with data-placeholder
+            $(".modifiedReferenceTypedown").select2({
+              initSelection : function (element, callback) {
+                    //If default value has been set in the markup!
+                if(element.data('defaultvalue'))
+                    var data = {id: element.data('domain')+':'+element.data('relationid'), text: element.data('defaultvalue')};
+                callback(data);
+              },
+              minimumInputLength: 1,
+              ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+              url: "<g:createLink controller='ajax' action="lookup" />",
+              dataType: 'json',
+              data: function (term, page){
+                  return {
+                      format:'json',
+                      q: term,
+                      baseClass:$(this).data('domain'),
+                      shortcode: $(this).data('shortcode')
+                  };
+              },
+              results: function (data, page) {
+                return {results: data.values};
+              }
+            },
+              createSearchChoice:function(term, data) {
+                 var existsAlready = false;
+                 for (var i = 0; i < data.length; i++)
+                 {
+                    if(term.toLowerCase() == data[i].text.toLowerCase())
+                    {
+                        existsAlready = true;
+                        break;
+                    }
+                 }
+                 if(!existsAlready)
+                    return {id:term+':create', text:"new code:"+term};
+              }
+          });
+
+            $(".modifiedReferenceTypedown").on("select2-selecting", function(e) {
+                 var element = $(this);
+                 var currentText = "";
+                 var rel = "";
+                 var prevSelection = element.select2("data");
+                 console.log("Selection made before new selection",prevSelection);
+
+                 if(e.choice.id.split(':')[1] == 'create')
+                 {
+                    rel = element.data('domain') + ':create';
+                    currentText = e.choice.text.trim().toLowerCase().substring(9);
+                 }
+                 else {
+                    rel = e.choice.id;
+                    currentText = e.choice.text.trim().toLowerCase();
+                 }
+
+                 $.ajax({
+                        method: "POST",
+                        url: "<g:createLink controller='finance' action='financialRef'/>",
+                        data: {
+                            owner:element.data('owner')+':'+element.data('ownerid'), //org.kbplus.CostItem:1
+                            ownerField: element.data("ownerfield"), //order
+                            relation: rel,  //org.kbplus.Order:100
+                            relationField: element.data('relationfield'), //orderNumber
+                            val:currentText,         //123456
+                            shortcode:element.data('shortcode')
+                        }
+                 })
+                .fail(function( jqXHR, textStatus, errorThrown ) {
+                     alert('Reset back to the original value, there was an issue');
+                     element.select2('data', prevSelection ? prevSelection : '');
+                 })
+                .done(function(data) {
+                    if(data.error.length > 0)
+                        element.select2('data', prevSelection);
+                    else {
+                        element.data('previous',prevSelection ? prevSelection.id+'_'+prevSelection.text : '');
+                        element.data('defaultvalue',e.choice.text);
+                        element.data('relationid',data.relation.id);
+                    }
+                });
+            });
         }
 
-        $( document ).ajaxComplete(function( event,request, settings ) {
-            //console.log(event);
-            //console.log(settings);
-        });
+
+        //todo See why this is causing delete of everything on create
+        //Separate function instead of
+        //var _clearCreateForm = function() {
+        //    $('form#createCost').trigger("reset");
+        //    $('#newBudgetCode').select2('data','');
+        //    $('#newIE').select2('data','');
+        //};
+
+        //This is for AJAX functionality, inclusion of first run too!
+        var _bindBehavior = function() {
+            //s.mybody.on('click',s.resetBtn, _clearCreateForm); //Reset btn (create form)
+            $(s.datePickers).datepicker({format: s.dateFormat}); //datepicker
+            setupModSelect2s();
+
+        };
+
+        var _recentCostItems = function() {
+            var renderedDateTo = $('#recentUpdatesTable').data('resultsto');
+            if(renderedDateTo!=null)
+            {
+              $.ajax({
+                method: "POST",
+                url: s.url.ajaxFinancePresent,
+                data: {
+                    shortcode: "${params.shortcode}",
+                    to:renderedDateTo,
+                    from: "${from}",
+                    format:'json'
+                }
+              })
+              .fail(function( jqXHR, textStatus, errorThrown ) {
+                 errorHandling(textStatus,'Recent Cost Updates',errorThrown);
+              })
+              .done(function(data) {
+                 if(data.count > 0)
+                    _performCostItemUpdate(renderedDateTo);
+              });
+            }
+        };
 
 
-        $(document).ready(function() {
+        var _performBulkDelete = function() {
+            var agreed = confirmSubmit("Actions are permanent for selected Cost Item(s)");
+            if(agreed == false)
+            {
+                $('.bulkcheck:checked').each(function() {
+                   this.checked = false;
+                });
+                return false;
+            } else
+            {
+                var allVals = [];
+                $('.bulkcheck:checked').each(function(){
+                    allVals.push($(this).val());
+                 });
+
+                $.ajax({
+                method: "POST",
+                url: "<g:createLink controller='finance' action='delete'/>",
+                data: {
+                  format:'json',
+                  del:JSON.stringify(allVals),
+                  shortcode:'${params.shortcode}'
+                },
+                dataType:'json'
+              }).done(function(data) {
+                    userInfo("deletion(s)",data.message); //list of succesfully deleted ids
+                    $.each(data.successful, function( i, val ) {
+                        $("#bulkdelete-a" + val).remove();
+                        $("#bulkdelete-b" + val).remove();
+                    });
+                    updateResults('delete:'+data.successful.length);
+                });
+           }
+        };
+
+
+        var _filtersUpdated = function() {
+          $('#newInvoiceNumber').val($('#filterInvoiceNumber').val());
+          $('#newOrderNumber').val($('#filterOrderNumber').val());
+          if($('#newSubscription').val() != $('#filterSubscription').val())
+          {
+              $('#newSubscription').val($('#filterSubscription').val());
+              $('#newPackage').val($('#filterPackage').val());
+          }
+        };
+
+
+
+
+
+        //Binds everything which needs to be run the once, including the majority of dynamically rendered HTML content
+        //For everything else which can't be binded once will be in _bindBehavior
+        var _firstRun = function() {
             $("#newIE").select2({
                 placeholder: "Identifier..",
                 minimumInputLength: 1,
                 ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-                  url: "<g:createLink controller='ajax' action='lookup'/>",
+                  url: s.url.ajaxLookupURL,
                 dataType: 'json',
                 data: function (term, page) {
                     return {
@@ -149,17 +367,75 @@
                 }
             });
 
-            $(".datepicker-class").datepicker({
-                format: "yyyy-mm-dd"
-            });
-
             $('#filterMode').val("${filterMode}");
-            $('#submitFilterMode').prop('disabled',${filterMode=='OFF'});
+            $('#submitFilterMode').prop('disabled',${filterMode=='OFF'}); //greys out search button if inactive
 
+            s.mybody.on('click',s.ft.delSelectAll, function(event) {
+                if(this.checked) {
+                    $('.bulkcheck').each(function() {
+                        this.checked = true;
+                    });
+                } else{
+                    $('.bulkcheck').each(function() {
+                        this.checked = false;
+                    });
+                }
+            }); //delete button select all functionality
+
+            _performCostItemUpdate(null); //pulls down latest cost item updates for modal
+
+            s.mybody.on('click',s.ft.delBatch,_performBulkDelete);
+
+            s.mybody.on('keyup change','.filterUpdated',_filtersUpdated);
+        };
+
+
+
+
+
+
+
+
+
+
+
+        //Publicly returned methods (Has private var & method access)
+        return {
+            init: function() {
+                console.log('Running initialising method for Finance module');
+                _firstRun();
+                _bindBehavior();
+                console.log('Finished initialising method for Finance module');
+            },
+
+            rebind: function() {
+                console.log('Running rebind method designed for AJAX');
+                _bindBehavior();
+                console.log('Finished rebind method designed for AJAX');
+            }
+        };
+    })();
+
+    Finance.init();
+
+
+
+        function tester(root) {
+            if (typeof root == 'undefined'){
+                root = $('body');
+            }
+
+            $('.xEditable',root).editable();
+            $('.modifiedReferenceTypedown',root).select2(); //todo need to put full set up for this to work!
+            $('.finance-select2',root).select2();
+        }
+
+        $( document ).ajaxComplete(function( event,request, settings ) {;});
+
+
+        $(document).ready(function() {
             //first run
             sortAndOrder();
-            performCostItemUpdate(null);
-            deleteSelectAll();
         });
 
         //Page updating/actions - i.e. before/after: delete, create
@@ -192,87 +468,21 @@
                  errorHandling(textStatus,'Updating results after action: '+action,errorThrown);
              })
             .done(function(data) {
+                 console.log('Success: called updateResults...');
                  $('#filterTemplate').html(data);
-                 deleteSelectAll();
+                 var ftWrapper = $('#filterTemplate');
+                 //var theData   = $(data);
+                 //ftWrapper.empty().append(theData);
                  sortAndOrder();
-                 tester();
+                 tester(ftWrapper);
             });
-        }
-
-        function deleteSelectAll() {
-            $('#selectAll').click(function(event) {
-                if(this.checked) {
-                    $('.bulkcheck').each(function() {
-                        this.checked = true;
-                    });
-                } else{
-                    $('.bulkcheck').each(function() {
-                        this.checked = false;
-                    });
-                }
-            });
-        }
-
-        function performBulkDelete() {
-            var agreed = confirmSubmit("Actions are permanent for selected Cost Item(s)");
-            if(agreed == false)
-            {
-                $('.bulkcheck:checked').each(function() {
-                   this.checked = false;
-                });
-                return false;
-            } else
-            {
-                var allVals = [];
-                $('.bulkcheck:checked').each(function(){
-                    allVals.push($(this).val());
-                 });
-
-                $.ajax({
-                method: "POST",
-                url: "<g:createLink controller='finance' action='delete'/>",
-                data: {
-                  format:'json',
-                  del:JSON.stringify(allVals),
-                  shortcode:'${params.shortcode}'
-                },
-                dataType:'json'
-              }).done(function(data) {
-                    userInfo("deletion(s)",data.message); //list of succesfully deleted ids
-                    $.each(data.successful, function( i, val ) {
-                        $("#bulkdelete-a" + val).remove();
-                        $("#bulkdelete-b" + val).remove();
-                    });
-                    updateResults('delete:'+data.successful.length);
-                });
-           }
-        }
-
-        function clearCreateForm() {
-            $('form#createCost').trigger("reset");
-            $('#newBudgetCode').select2('data', '');
-            $('#newIE').select2('data', '');
-        }
-
-        //on succesful
-        function bindAjaxResults(fadeID,fadeTime,scrollTime,scrollID,updateAction) {
-            if(fadeID != null)
-                fadeAway(fadeID,fadeTime);
-            if(scrollID != null)
-                scrollToTop(scrollTime,scrollID);
-            if(updateAction != null)
-                updateResults(updateAction);
-            clearCreateForm();
-            filterSelection();
-            sortAndOrder();
-            deleteSelectAll();
         }
 
 
         //Pagination/filtering Handling code block
         function sortAndOrder()
         {
-            $('.sortable').on('click', function(event){
+            $(document).on('click','.sortable', function(event){
                 event.preventDefault();
                 var selected       = $(this)[0].firstChild.textContent;
                 var order          = $(this).data('order');
@@ -286,10 +496,10 @@
                     offset:0,
                     max:paginateData.max,
                     wildcard:paginateData.wildcard
-                }
+                };
                 console.log("Sorting/Ordering Info", "SELECTED",selected, "ORDER",order, "PAGINATE DATA",paginateData, "PARAM DATA SENDING", data);
 
-                var formData = null
+                var formData = null;
                 if(paginateData.filtermode == "ON")
                 {
                     var formData = {
@@ -312,6 +522,9 @@
                   })
                 .done(function(data) {
                      $('#filterTemplate').html(data);
+                     //var ftWrapper = $('#filterTemplate');
+                     //var theData   = $(data);
+                     //ftWrapper.empty().append(theData);
                      sortAndOrder();
                 });
                 return false;
@@ -372,15 +585,7 @@
             $('#filterSearch').attr("disabled",disabledState);
         });
 
-        function filtersUpdated() {
-          $('#newInvoiceNumber').val($('#filterInvoiceNumber').val());
-          $('#newOrderNumber').val($('#filterOrderNumber').val());
-          if($('#newSubscription').val() != $('#filterSubscription').val())
-          {
-              $('#newSubscription').val($('#filterSubscription').val());
-              $('#newPackage').val($('#filterPackage').val());
-          }
-        }
+
 
         function filterSubUpdated(e) {
           // Fetch packages for the selected subscription
@@ -432,7 +637,7 @@
         }
 
         function userInfo(status,message,timeout) {
-            var html = ""
+            var html = "";
             $.each(message.split(",,,"), function( i, val ) {
                html += ('<tr><td>'+status+'</td><td>'+val+'</td></tr>');
             });
@@ -461,46 +666,11 @@
           return confirm("Are you sure you wish to continue?\n\n"+msg);
         }
 
-        // Recently updated code block
-        setInterval(recentCostItems, 60000);
 
-        function recentCostItems() {
-            var renderedDateTo = $('#recentUpdatesTable').data('resultsto');
-            if(renderedDateTo!=null)
-            {
-              $.ajax({
-                method: "POST",
-                url: "<g:createLink controller='finance' action='newCostItemsPresent'/>",
-                data: {
-                    shortcode: "${params.shortcode}",
-                    to:renderedDateTo,
-                    from: "${from}",
-                    format:'json'
-                }
-              })
-              .fail(function( jqXHR, textStatus, errorThrown ) {
-                 errorHandling(textStatus,'Recent Cost Updates',errorThrown);
-              })
-              .done(function(data) {
-                 if(data.count > 0)
-                    performCostItemUpdate(renderedDateTo);
-              });
-            }
-        }
 
-        function performCostItemUpdate(to) {
-            $.ajax({
-                method: 'POST',
-                url: "<g:createLink controller='finance' action='getRecentCostItems'/>",
-                    data: {
-                    from: "${from}",
-                    to: to,
-                    shortcode: "${params.shortcode}"
-                }
-            }).done(function(data) {
-                $('#recent').html(data);
-            });
-        }
+
+
+
 
         function quickHelpInfo() {
             userInfo("Help","<b>Sorting</b> via clickable title links of the following : Cost Item#, Invoice#, Order#, Subscription, Package, date, IE ,,, " +
@@ -511,90 +681,9 @@
         }
 
 
-    //unable to use placeholder with initSelection, manually set via GSP with data-placeholder
-    $(".modifiedReferenceTypedown").select2({
-      initSelection : function (element, callback) {
-            //If default value has been set in the markup!
-        if(element.data('defaultvalue'))
-            var data = {id: element.data('domain')+':'+element.data('relationid'), text: element.data('defaultvalue')};
-        callback(data);
-      },
-      minimumInputLength: 1,
-      ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-      url: "<g:createLink controller='ajax' action="lookup" />",
-      dataType: 'json',
-      data: function (term, page){
-          return {
-              format:'json',
-              q: term,
-              baseClass:$(this).data('domain'),
-              shortcode: $(this).data('shortcode')
-          };
-      },
-      results: function (data, page) {
-        return {results: data.values};
-      }
-    },
-      createSearchChoice:function(term, data) {
-         var existsAlready = false;
-         for (var i = 0; i < data.length; i++)
-         {
-            if(term.toLowerCase() == data[i].text.toLowerCase())
-            {
-                existsAlready = true;
-                break;
-            }
-         }
-         if(!existsAlready)
-            return {id:term+':create', text:"new code:"+term};
-      }
-  });
 
-    $(".modifiedReferenceTypedown").on("select2-selecting", function(e) {
-         var element = $(this);
-         var currentText = ""
-         var rel = "";
-         var prevSelection = element.select2("data");
-         console.log("Selection made before new selection",prevSelection);
 
-         if(e.choice.id.split(':')[1] == 'create')
-         {
-            rel = element.data('domain') + ':create';
-            currentText = e.choice.text.trim().toLowerCase().substring(9);
-         }
-         else {
-            rel = e.choice.id;
-            currentText = e.choice.text.trim().toLowerCase();
-         }
-
-         $.ajax({
-                method: "POST",
-                url: "<g:createLink controller='finance' action='financialRef'/>",
-                data: {
-                    owner:element.data('owner')+':'+element.data('ownerid'), //org.kbplus.CostItem:1
-                    ownerField: element.data("ownerfield"), //order
-                    relation: rel,  //org.kbplus.Order:100
-                    relationField: element.data('relationfield'), //orderNumber
-                    val:currentText,         //123456
-                    shortcode:element.data('shortcode')
-                }
-         })
-        .fail(function( jqXHR, textStatus, errorThrown ) {
-             alert('Reset back to the original value, there was an issue');
-             element.select2('data', prevSelection ? prevSelection : '');
-         })
-        .done(function(data) {
-            if(data.error.length > 0)
-                element.select2('data', prevSelection);
-            else {
-                element.data('previous',prevSelection ? prevSelection.id+'_'+prevSelection.text : '');
-                element.data('defaultvalue',e.choice.text);
-                element.data('relationid',data.relation.id);
-            }
-        });
-    });
-
-    $('.budgetCode').on('click', function(e) {
+    $('body').on('click', '.budgetCode', function(e) {
         var element = $(this);
         $.ajax({
                 method: "POST",
@@ -614,5 +703,10 @@
             }
          });
     });
+
+    $('body').on('click','#advancedFilter',function() {
+        $('#advancedFilterOpt').toggle();
+    });
+
 </r:script>
 </html>
