@@ -108,7 +108,11 @@ class DataloadService {
           result.rectype = 'Title'
           result.identifiers = []
           ti.ids?.each { id ->
-            result.identifiers.add([type:id.identifier.ns.ns, value:id.identifier.value])
+            try{
+              result.identifiers.add([type:id.identifier.ns.ns, value:id.identifier.value])
+            }catch(Exception e){
+              log.error(e)
+            }
           }
         }
         else {
@@ -231,7 +235,9 @@ class DataloadService {
     update_running = false;
     def elapsed = System.currentTimeMillis() - start_time;
     lastIndexUpdate = new Date(System.currentTimeMillis())
-    log.debug("IndexUpdateJob completed in ${elapsed}ms at ${new Date()}");
+    esclient.admin().indices().flush(new FlushRequest(es_index)).actionGet()
+    log.debug("IndexUpdateJob completed in ${elapsed}ms at ${new Date()} ");
+
   }
 
 
@@ -300,12 +306,16 @@ class DataloadService {
         Object r = results.get(0);
         def idx_record = recgen_closure(r)
         def future;
-        if ( idx_record.status.toLowerCase() == 'deleted' ) {
-          future = esclient.delete {
-            index es_index
-            type domain.name
-            id idx_record['_id']
-          }.actionGet()
+        if(idx_record['_id'] == null) {
+          log.error("******** Record without an ID: ${idx_record} Obj:${r} ******** ")
+          continue
+        }
+        if ( idx_record.status?.toLowerCase() == 'deleted' ) {
+            future = esclient.delete {
+              index es_index
+              type domain.name
+              id idx_record['_id']
+            }.actionGet()
         }
         else {
           future = esclient.index {
@@ -590,8 +600,6 @@ class DataloadService {
       }else{
         log.error("Index wasn't deleted")
       }
-      def actionRes = client.admin().indices().flush(new FlushRequest(es_index).refresh(true)).actionGet()
-      log.debug(actionRes)
     }
     catch ( Exception e ) {
       log.warn("Problem deleting index...",e);

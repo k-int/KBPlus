@@ -26,44 +26,42 @@ class ESSearchService{
     // log.debug("Search Index, params.coursetitle=${params.coursetitle}, params.coursedescription=${params.coursedescription}, params.freetext=${params.freetext}")
     log.debug("ESSearchService::search - ${params}")
 
-	 def result = [:]
+   def result = [:]
 
    Client esclient = ESWrapperService.getClient()
   
-      try {
-        if ( (params.q && params.q.length() > 0) || params.rectype) {
-    
-          params.max = Math.min(params.max ? params.int('max') : 15, 100)
-          params.offset = params.offset ? params.int('offset') : 0
+    try {
+      if ( (params.q && params.q.length() > 0) || params.rectype) {
+  
+        params.max = Math.min(params.max ? params.int('max') : 15, 100)
+        params.offset = params.offset ? params.int('offset') : 0
 
-          def query_str = buildQuery(params,field_map)
-          if (params.tempFQ) //add filtered query
-          {
-              query_str = query_str + " AND ( " + params.tempFQ + " ) "
-              params.remove("tempFQ") //remove from GSP access
-          }
+        def query_str = buildQuery(params,field_map)
+        if (params.tempFQ) //add filtered query
+        {
+            query_str = query_str + " AND ( " + params.tempFQ + " ) "
+            params.remove("tempFQ") //remove from GSP access
+        }
 
-          log.debug("index:${grailsApplication.config.aggr.es.index} query: ${query_str}");
-    
-          def search = esclient.search{
-            indices grailsApplication.config.aggr.es.index ?: "kbplus"
-            source {
-              from = params.offset
-              size = params.max
-              sort = params.sort?[
-                ("${params.sort}".toString()) : [ 'order' : (params.order?:'asc') ]
-              ] : []
+        log.debug("index:${grailsApplication.config.aggr.es.index} query: ${query_str}");
+  
+        def search = esclient.search{
+          indices grailsApplication.config.aggr.es.index ?: "kbplus"
+          source {
+            from = params.offset
+            size = params.max
+            sort = params.sort?[
+              ("${params.sort}".toString()) : [ 'order' : (params.order?:'asc') ]
+            ] : []
 
-              query {
-                query_string (query: query_str)
-              }
-
-              facets {
-                consortiaName {
-                  terms {
-                    field = 'consortiaName'
-                    size = 25
-                  }
+            query {
+              query_string (query: query_str)
+            }
+            facets {
+              consortiaName {
+                terms {
+                  field = 'consortiaName'
+                  size = 25
                 }
               }
               cpname {
@@ -133,7 +131,7 @@ class ESSearchService{
 
     StringWriter sw = new StringWriter()
 
-    if ( ( params != null ) && ( params.q) ){
+    if ( params?.q != null ){
       sw.write(params.q)
     }else{
       sw.write("*:*")

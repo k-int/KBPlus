@@ -1,4 +1,4 @@
-select "Upgrade-post";
+ select "Upgrade-post";
 ALTER TABLE org CHANGE COLUMN org_status_rv_fk org_status_rv_fk BIGINT(20) NULL DEFAULT NULL ;
 UPDATE org SET org_status_rv_fk=NULL where org_status_rv_fk=0;
 
@@ -21,3 +21,8 @@ UPDATE license SET date_created=now() where date_created=0;
 UPDATE license SET last_updated=NULL where last_updated=0;
 UPDATE subscription SET date_created=now() where last_updated=0;
 UPDATE subscription SET last_updated=NULL where last_updated=0;
+
+
+select "Set all packages with Master in title to scope master"
+select @masterfile := rdv_id from  refdata_category cat, refdata_value val where  rdv_owner=rdc_id and cat.rdc_description = "Package.Scope" and  rdv_value="Master File";
+UPDATE package set pkg_scope_rv_fk=@masterfile where pkg_name like "%Master%";
