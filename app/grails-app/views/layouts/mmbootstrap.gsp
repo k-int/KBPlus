@@ -299,8 +299,8 @@
                           <li <%= ( ( 'admin'== controllerName ) && ( 'fullReset'==actionName ) ) ? ' class="active"' : '' %>>
                              <g:link controller="admin" action="fullReset">Run Full ES Index Reset</g:link>
                           </li>
-                          <li <%= ( ( 'startFTIndex'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="startFTIndex" action="index">Start ES Index Update</g:link>
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'esIndexUpdate'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="esIndexUpdate">Start ES Index Update</g:link>
                       </li>
                         </ul>
                       </li>

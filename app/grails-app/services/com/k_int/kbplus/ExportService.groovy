@@ -512,7 +512,7 @@ class ExportService {
 			def orgElem = addXMLElementInto(doc, into_elem, "RelatedOrg", null)
 			addXMLAttr(doc, orgElem, "id", or.org.id.toString())
 			addXMLElementInto(doc, orgElem, "OrgName", or.org.name)
-			addXMLElementInto(doc, orgElem, "OrgRole", or.roleType.value)
+			addXMLElementInto(doc, orgElem, "OrgRole", or.roleType?.value?:'')
 			
 			def orgIDsElem = addXMLElementInto(doc, orgElem, "OrgIDs", null)
 			or.org.ids.each(){ id ->
@@ -697,7 +697,7 @@ class ExportService {
 			def org = [:]
 			org."OrgID" = or.org.id
 			org."OrgName" = or.org.name
-			org."OrgRole" = or.roleType.value
+			org."OrgRole" = or.roleType?.value?:''
 			
 			def ids = [:]
 			or.org.ids.each(){ id ->

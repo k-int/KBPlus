@@ -127,12 +127,12 @@ class AdminController {
         pkg.subscriptions.each{
 
           if(it.subscription.status.value != "Deleted"){
-            subscription_map.details += ['link':createLink(controller:'subscriptionDetails', action: 'index', id:it.subscription.id), 'text': it.subscription.name]
+            subscription_map.details += ['link':createLink(controller:'subscriptionDetails', action: 'details', id:it.subscription.id), 'text': it.subscription.name]
           }else{
-            subscription_map.details += ['link':createLink(controller:'subscriptionDetails', action: 'index', id:it.subscription.id), 'text': "(Deleted)" + it.subscription.name]
+            subscription_map.details += ['link':createLink(controller:'subscriptionDetails', action: 'details', id:it.subscription.id), 'text': "(Deleted)" + it.subscription.name]
           }
         }
-        subscription_map.action = ['actionRequired':true,'text':"Delete subscriptions"]
+        subscription_map.action = ['actionRequired':true,'text':"Unlink subscriptions. (IEs will be removed as well)"]
         if(subscription_map.details){
           conflicts_list += subscription_map
         }
@@ -214,8 +214,8 @@ class AdminController {
              log.debug("Selected users : ${usrMrg}, ${usrKeep}");
              result.userRoles = usrMrg.getAuthorities()
              result.userAffiliations =  usrMrg.getAuthorizedAffiliations()
-             result.usrMrgName = usrMrg.displayName
-             result.userKeepName = usrKeep.displayName
+             result.userMerge = usrMrg
+             result.userKeep = usrKeep
            }else{
             log.error("Missing keep/merge userid ${params}");
             flash.error = "Please select'user to keep' and 'user to merge' from the dropdown."
@@ -395,6 +395,15 @@ class AdminController {
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def esIndexUpdate() { 
+    log.debug("manual start full text index");
+    dataloadService.updateSiteMapping();
+    dataloadService.updateFTIndexes();
+    log.debug("redirecting to home...");
+    redirect(url: request.getHeader('referer'))
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def fullReset() {
 
     if ( ftupdate_running == false ) {
@@ -422,7 +431,7 @@ class AdminController {
     }
 
     log.debug("redirecting to home...");
-    redirect(controller:'home')
+    redirect(url: request.getHeader('referer'))
 
   }
 

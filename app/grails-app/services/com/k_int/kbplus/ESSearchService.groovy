@@ -30,39 +30,40 @@ class ESSearchService{
 
    Client esclient = ESWrapperService.getClient()
   
-    try {
-      if ( (params.q && params.q.length() > 0) || params.rectype) {
-  
-        params.max = Math.min(params.max ? params.int('max') : 15, 100)
-        params.offset = params.offset ? params.int('offset') : 0
+      try {
+        if ( (params.q && params.q.length() > 0) || params.rectype) {
+    
+          params.max = Math.min(params.max ? params.int('max') : 15, 100)
+          params.offset = params.offset ? params.int('offset') : 0
 
-        def query_str = buildQuery(params,field_map)
-        log.debug("index:${grailsApplication.config.aggr.es.index} query: ${query_str}");
-        if (params.tempFQ) //add filtered query
-        {
-            query_str = query_str + " AND ( " + params.tempFQ + " ) "
-            params.remove("tempFQ") //remove from GSP access
-            log.debug("ESSearchService::search -  Adding to query, appending filtered query: ${query_string}")
-        }
+          def query_str = buildQuery(params,field_map)
+          if (params.tempFQ) //add filtered query
+          {
+              query_str = query_str + " AND ( " + params.tempFQ + " ) "
+              params.remove("tempFQ") //remove from GSP access
+          }
 
-  
-        def search = esclient.search{
-          indices grailsApplication.config.aggr.es.index ?: "kbplus"
-          source {
-            from = params.offset
-            size = params.max
-            sort = params.sort?[
-              ("${params.sort}".toString()) : [ 'order' : (params.order?:'asc') ]
-            ] : []
+          log.debug("index:${grailsApplication.config.aggr.es.index} query: ${query_str}");
+    
+          def search = esclient.search{
+            indices grailsApplication.config.aggr.es.index ?: "kbplus"
+            source {
+              from = params.offset
+              size = params.max
+              sort = params.sort?[
+                ("${params.sort}".toString()) : [ 'order' : (params.order?:'asc') ]
+              ] : []
 
-            query {
-              query_string (query: query_str)
-            }
-            facets {
-              consortiaName {
-                terms {
-                  field = 'consortiaName'
-                  size = 25
+              query {
+                query_string (query: query_str)
+              }
+
+              facets {
+                consortiaName {
+                  terms {
+                    field = 'consortiaName'
+                    size = 25
+                  }
                 }
               }
               cpname {
@@ -132,13 +133,8 @@ class ESSearchService{
 
     StringWriter sw = new StringWriter()
 
-    if ( ( params != null ) && ( params.q != null ) ){
-        if(params.q.equals("*")){ // What was supposed to happen here?
-            sw.write(params.q)
-        }
-        else{
-            sw.write(params.q)
-        }
+    if ( ( params != null ) && ( params.q) ){
+      sw.write(params.q)
     }else{
       sw.write("*:*")
     }

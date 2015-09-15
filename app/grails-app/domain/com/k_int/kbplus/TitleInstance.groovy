@@ -340,50 +340,51 @@ class TitleInstance {
 
 
   public static String generateSortTitle(String input_title) {
-    def result=null
-    if ( input_title ) {
-      def s1 = Normalizer.normalize(input_title, Normalizer.Form.NFKD).trim().toLowerCase()
-      s1 = s1.replaceFirst('^copy of ','')
-      s1 = s1.replaceFirst('^the ','')
-      s1 = s1.replaceFirst('^a ','')
-      s1 = s1.replaceFirst('^der ','')
-      result = s1.trim()
-    }
-    result
+    if ( ! input_title ) return null;
+
+    def s1 = Normalizer.normalize(input_title, Normalizer.Form.NFKD).trim().toLowerCase()
+    s1 = s1.replaceFirst('^copy of ','')
+    s1 = s1.replaceFirst('^the ','')
+    s1 = s1.replaceFirst('^a ','')
+    s1 = s1.replaceFirst('^der ','')
+    
+    return  s1.trim()  
   }
 
   public static String generateNormTitle(String input_title) {
+    if (!input_title) return null;
+
     def result = input_title.replaceAll('&',' and ');
     result = result.trim();
     result = result.replaceAll("\\s+", " ");
     result = result.toLowerCase();
     result = alphanum.matcher(result).replaceAll("");
+   
     return asciify(result)
   }
 
-  public static String generateKeyTitle(String s) {
-    def result = null
-    if ( s != null ) {
-        s = s.replaceAll('&',' and ');
-        s = s.trim(); // first off, remove whitespace around the string
-        s = s.replaceAll("\\s+", " ");
-        s = s.toLowerCase(); // then lowercase it
-        s = alphanum.matcher(s)?.replaceAll(''); // then remove all punctuation and control chars
-        String[] frags = StringUtils.split(s); // split by whitespace
-        TreeSet<String> set = new TreeSet<String>();
-        for (String ss : frags) {
-            set.add(ss); // order fragments and dedupe
-        }
-        StringBuffer b = new StringBuffer();
-        Iterator<String> i = set.iterator();
-        while (i.hasNext()) {  // join ordered fragments back together
-            b.append(i.next());
-            if ( i.hasNext() )
-              b.append(' ');
-        }
-        result = asciify(b.toString()); // find ASCII equivalent to characters 
+  public static String generateKeyTitle(String input_title) {
+    if (!input_title) return null;
+
+    input_title = input_title.replaceAll('&',' and ');
+    input_title = input_title.trim(); // first off, remove whitespace around the string
+    input_title = input_title.replaceAll("\\s+", " ");
+    input_title = input_title.toLowerCase(); // then lowercase it
+    input_title = alphanum.matcher(input_title)?.replaceAll(''); // then remove all punctuation and control chars
+    String[] frags = StringUtils.split(input_title); // split by whitespace
+    TreeSet<String> set = new TreeSet<String>();
+    for (String ss : frags) {
+        set.add(ss); // order fragments and dedupe
     }
-    result
+    StringBuffer b = new StringBuffer();
+    Iterator<String> i = set.iterator();
+    while (i.hasNext()) {  // join ordered fragments back together
+        b.append(i.next());
+        if ( i.hasNext() )
+          b.append(' ');
+    }
+
+    return  asciify(b.toString()); // find ASCII equivalent to characters 
   }
 
   protected static String asciify(String s) {

@@ -156,4 +156,3 @@ class LicenceSpec extends GebReportingSpec {
          $("div.alert.alert-block.alert-error p").isEmpty()
    }
 }
-
