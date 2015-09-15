@@ -41,8 +41,8 @@
                 <input name="newIe" class="input-medium" id="newIE" value="${params.newIe}">
             </td>
             <td rowspan="2">
-                <g:submitToRemote onSuccess="clearCreateForm();updateResults('create')" onFailure="errorHandling(textStatus,'create',errorThrown)" url="[controller:'finance', action: 'newCostItem']" type="submit" name="Add" value="add"></g:submitToRemote> </br></br>
-                <button onclick="reset()" type="reset">reset</reset>
+                <g:submitToRemote onSuccess="updateResults('create')" onFailure="errorHandling(textStatus,'create',errorThrown)" url="[controller:'finance', action: 'newCostItem']" type="submit" name="Add" value="add"></g:submitToRemote> </br></br>
+                <button id="resetCreate"  type="button">reset</button>
             </td>
         </tr>
         <tr>

@@ -1,3 +1,4 @@
+%{--AJAX rendered messages--}%
 <g:if test="${info}">
     <div id="info" >
         <table id="financeErrors" class="table table-striped table-bordered table-condensed">
@@ -19,10 +20,11 @@
     </div>
 </g:if>
 
+%{--Basic static help text--}%
 <g:render template="help" />
 
 <button style="margin-left: 10px" class="btn btn-primary pull-right" type="submit" data-toggle="modal" title="${g.message(code: 'financials.recent.title')}"  href="#recentDialog" id="showHideRecent">Show/Hide Recent Costs</button>
-<button class="btn btn-primary pull-right" type="submit" onclick="performBulkDelete(this)" id="BatchSelectedBtn" title="Removed all checked delete values rows permanently" value="remove">Remove Selected</button>
+<button class="btn btn-primary pull-right" type="submit" onclick="performBulkDelete(this)" id="BatchSelectedBtn" title="${g.message(code: 'financials.filtersearch.deleteAll')}" value="remove">Remove Selected</button>
 <button style="margin-right: 10px" class="btn btn-primary pull-right" type="submit" title="${g.message(code: 'financials.addNew.title')}" onclick="scrollToTop(3000,'createCost')" id="addNew">Add New Cost</button>
 <h1>${institution.name} Cost Items</h1>
 <g:form id="filterView" action="index" method="post" params="${[shortcode:params.shortcode]}">
@@ -33,12 +35,12 @@
             <th rowspan="2" style="vertical-align: top;"><a data-order="id"  class="sortable ${order=="Cost Item#"? "sorted ${sort}":''}">Cost Item#</a></th>
             <th><a class="sortable ${order=="invoice#"? "sorted ${sort}":''}"  data-order="invoice#">Invoice#</a> <br/>
                 <input autofocus="true" type="text" name="invoiceNumberFilter"
-                       class="input-medium required-indicator" onKeyUp="filtersUpdated();"
+                       class="input-medium required-indicator filterUpdated"
                        id="filterInvoiceNumber" value="${params.invoiceNumberFilter}"/>
             </th>
             <th><a class="sortable ${order=="order#"? "sorted":''}"  data-order="order#">Order#</a><br/>
                 <input type="text" name="orderNumberFilter"
-                       class="input-medium required-indicator" onKeyUp="filtersUpdated();"
+                       class="input-medium required-indicator filterUpdated"
                        id="filterOrderNumber"  value="${params.orderNumberFilter}" data-type="select"/>
             </th>
             <th><a data-order="Subscription"  class="sortable ${order=="Subscription"? "sorted ${sort}":''}">Subscription</a><br/>
@@ -51,7 +53,7 @@
                 </select>
             </th>
             <th><a data-order="Package"  class="sortable ${order=="Package"? "sorted ${sort}":''}">Package</a> <br/>
-                <select name="packageFilter" class="input-medium required-indicator" onChange="filtersUpdated();" id="filterPackage" value="${params.packageFilter}">
+                <select name="packageFilter" class="input-medium required-indicator filterUpdated"  id="filterPackage" value="${params.packageFilter}">
                     <option value="all">All</option>
                 </select>
             </th>
@@ -68,6 +70,7 @@
                                   url="[controller:'finance', action:'index']" before="if(!filterValidation()) return false" id="submitFilterMode"></g:submitToRemote>
 
                 </div>
+                <a ${filterMode=="ON"?"hidden='hidden'":''} id="advancedFilter">More filter options</a>
             </th>
             <g:if test="${editable}">
                 <th rowspan="2" colspan="1" style="vertical-align: top;">Delete
@@ -75,6 +78,7 @@
             </g:if>
         </tr>
         %{--End of one table row of headers--}%
+
         <tr>
             <th>
                 <a style="color: #990100;" data-order="datePaid" class="sortable ${order=="datePaid"? "sorted ${sort}":''}">Date Paid</a><br/>
@@ -87,6 +91,11 @@
         </tr>
         </thead>
         <tbody>
+        %{--Advanced filtering row--}%
+        <tr id="advancedFilterOpt" hidden="hidden">
+            <td>test</td><td>test</td><td>test</td><td>test</td><td>test</td><td>test</td><td>test</td>
+        </tr>
+        %{--blank row--}%
         <tr><td colspan="10">&nbsp;</td></tr>
         <g:if test="${cost_item_count==0}">
             <tr><td colspan="8" style="text-align:center">&nbsp;<br/><g:if test="${msg}">${msg}</g:if><g:else>No Cost Items Found</g:else><br/>&nbsp;</td></tr>
