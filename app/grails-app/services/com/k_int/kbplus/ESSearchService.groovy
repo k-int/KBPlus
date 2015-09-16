@@ -130,7 +130,7 @@ class ESSearchService{
 
     StringWriter sw = new StringWriter()
 
-    if ( ( params != null ) && ( params.q) ){
+    if ( params?.q != null ){
       sw.write(params.q)
     }else{
       sw.write("*:*")
