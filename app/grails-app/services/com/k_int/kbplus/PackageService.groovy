@@ -8,7 +8,7 @@ class PackageService{
    */
   private RefdataValue getMasterScope() {
     // The Scope.
-    RefdataCategory.lookupOrCreate("Package.Scope", "Master File")
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_SCOPE, "Master File")
    }
 
    private RefdataValue getCPRole(){

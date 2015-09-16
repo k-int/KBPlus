@@ -116,10 +116,10 @@ class AjaxController {
       cols:['value'],
       format:'simple'
     ],
-    'Package.ListStatus' : [
+    "${RefdataCategory.PKG_LIST_STAT}" : [
       domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.ListStatus'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.ListStatus'",
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc=${RefdataCategory.PKG_LIST_STAT}",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc=${RefdataCategory.PKG_LIST_STAT}",
       qryParams:[],
       cols:['value'],
       format:'simple'
@@ -148,10 +148,10 @@ class AjaxController {
       cols:['value'],
       format:'simple'
     ],
-    'Package.Scope' : [
+    "${RefdataCategory.PKG_SCOPE}" : [
       domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Scope'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Scope'",
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc=${RefdataCategory.PKG_SCOPE}",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc=${RefdataCategory.PKG_SCOPE}",
       qryParams:[],
       cols:['value'],
       format:'simple'

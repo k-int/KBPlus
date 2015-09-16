@@ -1,4 +1,4 @@
-<%@ page import="com.k_int.kbplus.Package" %>
+<%@ page import="com.k_int.kbplus.Package;com.k_int.kbplus.RefdataCategory" %>
 <!doctype html>
 <html>
   <head>
@@ -185,7 +185,7 @@
              <dl>
                 <dt>List Status</dt>
                 <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="packageListStatus" config='Package.ListStatus'/>
+                  <g:xEditableRefData owner="${packageInstance}" field="packageListStatus" config="${RefdataCategory.PKG_LIST_STAT}"/>
                 </dd>
              </dl>
 
@@ -213,7 +213,7 @@
               <dl>
                 <dt>Package Scope</dt>
                 <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="packageScope" config='Package.Scope'/>
+                  <g:xEditableRefData owner="${packageInstance}" field="packageScope" config="${RefdataCategory.PKG_SCOPE}"/>
                 </dd>
               </dl>
 
