@@ -8,9 +8,8 @@ import com.k_int.custprops.PropertyDefinition
 import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 class AjaxController {
-
   def refdata_config = [
-    'ContentProvider' : [
+    "ContentProvider" : [
       domain:'Org',
       countQry:'select count(o) from Org as o where lower(o.name) like ?',
       rowQry:'select o from Org as o where lower(o.name) like ? order by o.name asc',
@@ -124,10 +123,10 @@ class AjaxController {
       cols:['value'],
       format:'simple'
     ],
-    'Package.Breakable' : [
+    "${RefdataCategory.PKG_BREAKABLE}" : [
       domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Breakable'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Breakable'",
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc=${RefdataCategory.PKG_BREAKABLE}",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc=${RefdataCategory.PKG_BREAKABLE}",
       qryParams:[],
       cols:['value'],
       format:'simple'
@@ -460,12 +459,12 @@ class AjaxController {
   
   def refdataSearch() {
 
-    // log.debug("refdataSearch params: ${params}");
+    log.debug("refdataSearch params: ${params}");
     
     // http://datatables.net/blog/Introducing_Scroller_-_Virtual_Scrolling_for_DataTables
     def result = [:]
     
-    def config = refdata_config[params.id]
+    def config = refdata_config.get("${params.id}")
 
     if ( config == null ) {
       // If we werent able to locate a specific config override, assume the ID is just a refdata key
@@ -543,11 +542,11 @@ class AjaxController {
 
   def sel2RefdataSearch() {
 
-    // log.debug("sel2RefdataSearch params: ${params}");
+    log.debug("sel2RefdataSearch params: ${params}");
     
     def result = []
     
-    def config = refdata_config[params.id]
+    def config = refdata_config.get("${params.id}")
 
     if ( config == null ) {
       // If we werent able to locate a specific config override, assume the ID is just a refdata key

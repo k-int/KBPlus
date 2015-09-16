@@ -421,9 +421,9 @@ class BootStrap {
 
     RefdataCategory.lookupOrCreate(RefdataCategory.PKG_LIST_STAT, "Checked").save()
     RefdataCategory.lookupOrCreate(RefdataCategory.PKG_LIST_STAT, "In Progress").save()
-    RefdataCategory.lookupOrCreate("Package.Breakable", "No").save()
-    RefdataCategory.lookupOrCreate("Package.Breakable", "Yes").save()
-    RefdataCategory.lookupOrCreate("Package.Breakable", "Unknown").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_BREAKABLE, "No").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_BREAKABLE, "Yes").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_BREAKABLE, "Unknown").save()
     RefdataCategory.lookupOrCreate("Package.Consistent", "No").save()
     RefdataCategory.lookupOrCreate("Package.Consistent", "Yes").save()
     RefdataCategory.lookupOrCreate("Package.Consistent", "Unknown").save()

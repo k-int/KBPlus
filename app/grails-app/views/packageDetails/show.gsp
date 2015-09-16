@@ -192,7 +192,7 @@
              <dl>
                 <dt>Breakable</dt>
                 <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="breakable" config='Package.Breakable'/>
+                  <g:xEditableRefData owner="${packageInstance}" field="breakable" config="${RefdataCategory.PKG_BREAKABLE}"/>
                 </dd>
              </dl>
 
