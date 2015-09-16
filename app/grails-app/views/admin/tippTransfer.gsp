@@ -34,7 +34,7 @@
               </dd>
             </div>
     
-              <button onclick="return confirm('Any existing TIs on TIPP will be replaced. Continue?')" class="btn-success" name="transfer" type="submit" value="Go">Transfer</button>
+              <button onclick="return confirm('Any existing TIs on TIPP will be replaced. Continue?')" class="btn-success" type="submit">Transfer</button>
           </dl>
         </g:form>
       </div>

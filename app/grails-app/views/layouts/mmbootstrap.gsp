@@ -235,6 +235,9 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'titleMerge'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="titleMerge">Title Merge</g:link>
                       </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'tippTransfer'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="tippTransfer">TIPP Transfer</g:link>
+                      </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'ieTransfer'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="ieTransfer">IE Transfer</g:link>
                       </li>                      
