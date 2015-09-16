@@ -149,7 +149,7 @@ class GlobalSourceSyncService {
     def scope = RefdataCategory.lookupOrCreate(RefdataCategory.PKG_SCOPE,(newpkg?.scope)?:'Unknown');
     def listStatus = RefdataCategory.lookupOrCreate(RefdataCategory.PKG_LIST_STAT,(newpkg?.listStatus)?:'Unknown');
     def breakable = RefdataCategory.lookupOrCreate(RefdataCategory.PKG_BREAKABLE,(newpkg?.breakable)?:'Unknown');
-    def consistent = RefdataCategory.lookupOrCreate('Package.Consistent',(newpkg?.consistent)?:'Unknown');
+    def consistent = RefdataCategory.lookupOrCreate(RefdataCategory.PKG_CONSISTENT,(newpkg?.consistent)?:'Unknown');
     def fixed = RefdataCategory.lookupOrCreate(RefdataCategory.PKG_FIXED,(newpkg?.fixed)?:'Unknown');
     def paymentType = RefdataCategory.lookupOrCreate('Package.PaymentType',(newpkg?.paymentType)?:'Unknown');
     def global = RefdataCategory.lookupOrCreate('Package.Global',(newpkg?.global)?:'Unknown');

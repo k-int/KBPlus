@@ -9,7 +9,7 @@ import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 class AjaxController {
   def refdata_config = [
-    "ContentProvider" : [
+    "${'ContentProvider'}" : [
       domain:'Org',
       countQry:'select count(o) from Org as o where lower(o.name) like ?',
       rowQry:'select o from Org as o where lower(o.name) like ? order by o.name asc',
@@ -31,30 +31,6 @@ class AjaxController {
       domain:'RefdataValue',
       countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package Type'",
       rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package Type'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'CoreStatus' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='CoreStatus'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='CoreStatus'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'YN' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='YN'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='YN'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'YNO' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='YNO'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='YNO'",
       qryParams:[],
       cols:['value'],
       format:'simple'
@@ -111,46 +87,6 @@ class AjaxController {
       domain:'RefdataValue',
       countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.PaymentType'",
       rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.PaymentType'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    "${RefdataCategory.PKG_LIST_STAT}" : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc=${RefdataCategory.PKG_LIST_STAT}",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc=${RefdataCategory.PKG_LIST_STAT}",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    "${RefdataCategory.PKG_BREAKABLE}" : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc=${RefdataCategory.PKG_BREAKABLE}",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc=${RefdataCategory.PKG_BREAKABLE}",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'Package.Consistent' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Consistent'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Consistent'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    "${RefdataCategory.PKG_FIXED}" : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc=${RefdataCategory.PKG_FIXED}",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc=${RefdataCategory.PKG_FIXED}",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    "${RefdataCategory.PKG_SCOPE}" : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc=${RefdataCategory.PKG_SCOPE}",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc=${RefdataCategory.PKG_SCOPE}",
       qryParams:[],
       cols:['value'],
       format:'simple'
@@ -549,6 +485,7 @@ class AjaxController {
     def config = refdata_config.get("${params.id}")
 
     if ( config == null ) {
+      log.debug("Config null")
       // If we werent able to locate a specific config override, assume the ID is just a refdata key
       config = [
         domain:'RefdataValue',

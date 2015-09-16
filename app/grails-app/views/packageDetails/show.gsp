@@ -199,7 +199,7 @@
              <dl>
                 <dt>Consistent</dt>
                 <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="consistent" config='Package.Consistent'/>
+                  <g:xEditableRefData owner="${packageInstance}" field="consistent" config="${RefdataCategory.PKG_CONSISTENT}"/>
                 </dd>
              </dl>
 
