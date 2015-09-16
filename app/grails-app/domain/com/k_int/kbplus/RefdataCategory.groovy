@@ -49,7 +49,6 @@ class RefdataCategory {
     }
   @Transient
   public static final PKG_SCOPE = "Package.Scope"
-
   @Transient
   public static final PKG_LIST_STAT = "Package.ListStatus"
   @Transient
@@ -58,4 +57,6 @@ class RefdataCategory {
   public static final PKG_BREAKABLE = "Package.Breakable"
   @Transient
   public static final PKG_CONSISTENT = 'Package.Consistent'
+  @Transient
+  public static final PKG_TYPE = 'Package.Type'
 }

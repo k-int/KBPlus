@@ -27,14 +27,6 @@ class AjaxController {
       cols:['name'],
       format:'map'
     ],
-    'PackageType' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package Type'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package Type'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
     'TIPPStatus' : [
       domain:'RefdataValue',
       countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TIPP Status'",
