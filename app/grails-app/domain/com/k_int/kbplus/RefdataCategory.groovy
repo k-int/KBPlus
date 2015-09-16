@@ -52,4 +52,6 @@ class RefdataCategory {
 
   @Transient
   public static final PKG_LIST_STAT = "Package.ListStatus"
+  @Transient
+  public static final PKG_FIXED = "Package.Fixed"
 }

@@ -140,10 +140,10 @@ class AjaxController {
       cols:['value'],
       format:'simple'
     ],
-    'Package.Fixed' : [
+    "${RefdataCategory.PKG_FIXED}" : [
       domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Fixed'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Fixed'",
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc=${RefdataCategory.PKG_FIXED}",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc=${RefdataCategory.PKG_FIXED}",
       qryParams:[],
       cols:['value'],
       format:'simple'

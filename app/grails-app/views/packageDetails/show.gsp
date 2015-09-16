@@ -206,7 +206,7 @@
              <dl>
                 <dt>Fixed</dt>
                 <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="fixed" config='Package.Fixed'/>
+                  <g:xEditableRefData owner="${packageInstance}" field="fixed" config="${RefdataCategory.PKG_FIXED}"/>
                 </dd>
              </dl>
 
