@@ -15,6 +15,8 @@ Fixes introduced in 5.0.1
 * On PackageHardDelete, change 'Delete Subscriptions' to 'Unlink subscriptions. (IEs will be removed as well)'
 * On PackageHardDelete, open links to subscriptions in new tab, and go to details instead of index
 * Added job to generate package sortName
+* Added CSV export for KB+ licence property compare
+* Add TIPP title transfer
 
 Changes introduced in 5.0. It is likely that some small tasks are missing.
 
