@@ -714,6 +714,9 @@ class AjaxController {
       case Org:
         owner_type = "org"
         break
+      default:
+        log.error("Unexpected Identifier Owner ${owner.class}")
+        return null
     }    
     def duplicates = identifier.occurrences.findAll{it."${owner_type}" != owner && it."${owner_type}" != null}?.collect{it."${owner_type}"}
     if(duplicates){
