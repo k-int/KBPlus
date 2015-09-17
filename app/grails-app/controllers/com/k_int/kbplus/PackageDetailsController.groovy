@@ -418,17 +418,25 @@ class PackageDetailsController {
     
       // def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
       def qry_params = [packageInstance]
-
+      
+      def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
+      def today = new Date()
+      if(!params.asAt){
+        if(packageInstance.startDate > today){
+          params.asAt = sdf.format(packageInstance.startDate)
+        }else if(packageInstance.endDate < today){
+          params.asAt = sdf.format(packageInstance.endDate)
+        }
+      }
       def date_filter
       if(params.mode == 'advanced'){
          date_filter = null
          params.asAt = null
       }else if(params.asAt && params.asAt.length() > 0 ) {
-         def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
          date_filter = sdf.parse(params.asAt)    
          result.editable= false
       }else{
-         date_filter = new Date()
+         date_filter = today
       }
 
       def base_qry = generateBasePackageQuery(params, qry_params, showDeletedTipps, date_filter);
@@ -446,7 +454,8 @@ class PackageDetailsController {
       if(executorWrapperService.hasRunningProcess(packageInstance)){
         result.processingpc = true
       }
-    def filename = "packageDetails_${result.packageInstance.name}"
+
+    def filename = "${result.packageInstance.name}_asAt_${date_filter?sdf.format(date_filter):sdf.format(today)}"
     withFormat {
       html result
       json {
