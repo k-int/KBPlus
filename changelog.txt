@@ -1,3 +1,7 @@
+Changes in 5.0.2
+
+* By default the asAt date of expected packages is startDate,previous is endDate, for packageDetails and publicExport
+
 Fixes introduced in 5.0.1
 
 * Sort TitleInstances by sortTitle 
