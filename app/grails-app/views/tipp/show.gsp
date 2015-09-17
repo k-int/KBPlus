@@ -102,27 +102,27 @@
         <dl>
 
           <dt>Status</dt>
-          <dd><g:xEditableRefData owner="${tipp}" field="status" config='TIPPStatus'/><dd>
+          <dd><g:xEditableRefData owner="${tipp}" field="status" config='TIPP Status'/><dd>
         </dl>
         <dl>
 
           <dt>Status Reason</dt>
-          <dd><g:xEditableRefData owner="${tipp}" field="statusReason" config='TIPPStatusReason'/><dd>
+          <dd><g:xEditableRefData owner="${tipp}" field="statusReason" config="Tipp.StatusReason"/><dd>
         </dl>
 
         <dl>
           <dt>Delayed OA</dt>
-          <dd><g:xEditableRefData owner="${tipp}" field="delayedOA" config='TIPPDelayedOA'/><dd>
+          <dd><g:xEditableRefData owner="${tipp}" field="delayedOA" config='TitleInstancePackagePlatform.DelayedOA'/><dd>
         </dl>
 
         <dl>
           <dt>Hybrid OA</dt>
-          <dd><g:xEditableRefData owner="${tipp}" field="hybridOA" config='TIPPHybridOA'/><dd>
+          <dd><g:xEditableRefData owner="${tipp}" field="hybridOA" config='TitleInstancePackagePlatform.HybridOA'/><dd>
         </dl>
 
         <dl>
           <dt>Payment</dt>
-          <dd><g:xEditableRefData owner="${tipp}" field="payment" config='TIPPPaymentType'/><dd>
+          <dd><g:xEditableRefData owner="${tipp}" field="payment" config='TitleInstancePackagePlatform.PaymentType'/><dd>
         </dl>
 
         <dl>
