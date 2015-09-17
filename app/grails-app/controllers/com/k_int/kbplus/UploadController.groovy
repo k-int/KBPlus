@@ -21,9 +21,8 @@ class UploadController {
 
   def springSecurityService
   def sessionFactory
-  def packageIngestService
   def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
-  
+
   def csv_column_config = [
     'id':[coltype:'map'],
     'tippid':[coltype:'map'],
@@ -54,10 +53,10 @@ class UploadController {
   ];
 
   @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
-  def reviewPackage() { 
+  def reviewPackage() {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
-    
+
     if ( request.method == 'POST' ) {
 
 
@@ -71,30 +70,33 @@ class UploadController {
     }
     else {
     }
-    
+
     return result
   }
-  
+
+  /**
+  * Ingest a package
+  */
   def processUploadSO(upload) {
 
     def new_pkg_id = null
     log.debug("Content provider value is ${upload.soProvider.value}");
 
-    def content_provider_org = Org.findByName(upload.soProvider.value) 
+    def content_provider_org = Org.findByName(upload.soProvider.value)
     if ( content_provider_org == null ) {
       log.debug("content_provider_org is present and set to ${content_provider_org}");
-      content_provider_org = new Org(name:upload.soProvider.value,impId:java.util.UUID.randomUUID().toString()).save();    
+      content_provider_org = new Org(name:upload.soProvider.value,impId:java.util.UUID.randomUUID().toString()).save();
       incrementStatsCounter(upload,'Content Provider Org Created');
     }
     else {
       log.debug("Matched ${content_provider_org} using name ${upload.soProvider.value}");
       incrementStatsCounter(upload,'Content Provider Org Matched');
     }
-    
+
     def pkg_type = RefdataCategory.lookupOrCreate('PackageTypes','Unknown');
     def cp_role = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider');
     def tipp_current = RefdataCategory.lookupOrCreate('TIPP Status','Current');
-    
+
     def consortium = null;
     if ( upload.consortium != null )  {
       consortium = Org.findByName(upload.consortium.value) ?: new Org(name:upload.consortium.value).save();
@@ -113,15 +115,15 @@ class UploadController {
                             name: upload.soPackageName.value,
                             type: pkg_type,
                             contentProvider: content_provider_org,
-                            startDate: upload.aggreementTermStartYear?.value, 
-                            endDate: upload.aggreementTermEndYear?.value, 
+                            startDate: upload.aggreementTermStartYear?.value,
+                            endDate: upload.aggreementTermEndYear?.value,
                             impId: java.util.UUID.randomUUID().toString());
 
       if ( new_pkg.save(flush:true, failOnError:true) ) {
 
         log.debug("Package [${new_pkg.id}] with identifier ${new_pkg.identifier} created......");
 
-        if ( upload.consortiumOrg ) {                              
+        if ( upload.consortiumOrg ) {
           def sc_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Package Consortia');
           def or = new OrgRole(org: consortium, pkg:new_pkg, roleType:sc_role).save();
         }
@@ -151,7 +153,7 @@ class UploadController {
     log.debug("processing titles");
     // Title info
     upload.tipps.each { tipp ->
-    
+
       def publisher = null;
       if ( tipp.publisher_name && ( tipp.publisher_name.trim() != '' ) )  {
         publisher = Org.findByName(tipp.publisher_name)
@@ -178,11 +180,11 @@ class UploadController {
           tipp.additional_platforms.add([plat:platform, role:pl.coltype, url:pl.url])
         }
       }
-          
+
       // log.debug("Lookup or create title ${tipp.id}");
 
       tipp.title_obj = lookupOrCreateTitleInstance(tipp.id,tipp.publication_title,publisher,tipp);
-      
+
       if ( tipp.title_obj && tipp.host_platform && new_pkg ) {
         // Got all the components we need to create a tipp
         def dbtipp = TitleInstancePackagePlatform.findByPkgAndPlatformAndTitle(new_pkg,tipp.host_platform,tipp.title_obj)
@@ -213,7 +215,7 @@ class UploadController {
                                                     accessStartDate: tipp.accessStartDate,
                                                     accessEndDate: tipp.accessEndDate,
                                                     ids:[])
-  
+
           if ( ! dbtipp.save() ) {
             log.error("ERROR Saving tipp");
             dbtipp.errors.each { err ->
@@ -244,7 +246,7 @@ class UploadController {
         else {
           log.error("TIPP already exists!! this can happen in incrementals... just ignore now");
           tipp.messages.add([type:'alert-error',message:"WARNING: An existing tipp record was located. This can happen in incremental imports. This row has been ignored"]);
-        }        
+        }
       }
       else {
         tipp.messages.add([type:'alert-error',message:"WARNING: Dataload failed, at least one of title, package or platform was null"]);
@@ -255,7 +257,7 @@ class UploadController {
 
     upload.new_pkg_id = new_pkg_id
   }
-    
+
   def lookupOrCreateTitleInstance(identifiers,title,publisher,tipp) {
     // log.debug("lookupOrCreateTitleInstance ${identifiers}, ${title}, ${publisher}");
     def result = null;
@@ -273,7 +275,7 @@ class UploadController {
     }
     result;
   }
-  
+
   def parseDate(datestr, possible_formats) {
     def parsed_date = null;
     for(Iterator i = possible_formats.iterator(); ( i.hasNext() && ( parsed_date == null ) ); ) {
@@ -300,7 +302,7 @@ class UploadController {
     }
     parsed_date
   }
-  
+
   def present(v) {
     if ( ( v != null ) &&
          ( v.trim().length() > 0 ) &&
@@ -366,12 +368,12 @@ class UploadController {
       nl = r.readNext()
       header_conf = possible_header_properties.find{ it.key == nl[0].toLowerCase() }
     }
-    
+
     result.soHeaderLine = []
     nl.each { h ->
       result.soHeaderLine.add(h.toLowerCase());
     }
-    
+
 
     result.tipps = []
     while ((nl = r.readNext()) != null) {
@@ -381,13 +383,13 @@ class UploadController {
 
     return result;
   }
-  
+
   def readTippRow(cols, nl) {
     def result = [:]
 
     result.messages = []
     result.row = []
-    
+
     for ( int i=0; i<nl.length; i++ ) {
       result.row.add(nl[i]);
       if ( ( nl[i] != null ) && ( nl[i].trim() != '' ) ) {
@@ -397,16 +399,16 @@ class UploadController {
         //log.debug("Process ${cols[i]} ${column_name} : ${column_defn}")
         if ( column_defn ) {
           switch ( column_defn.coltype ) {
-            case 'simple': 
+            case 'simple':
               result[column_name] = nl[i]
               break;
             case 'map':
               if ( result[column_name] == null )
                 result[column_name] = [:]
-            
+
               // If this is a simple map, like id.issn or id.eissn just set the value
               if ( column_components.length == 2 ) {
-                result[column_name][column_components[1]] = nl[i].trim();    
+                result[column_name][column_components[1]] = nl[i].trim();
               }
               else {
                 // We have an object like platform.host:1.name, platform.host:2.name
@@ -420,7 +422,7 @@ class UploadController {
                 result[column_name][column_components[1]][column_components[2]] = nl[i].trim();
               }
               break;
-          } 
+          }
         }
         else {
           // Unknown column
@@ -429,14 +431,14 @@ class UploadController {
     }
     return result;
   }
-  
-  def processCsvLine(csv_line, field_name, col_num,result_map, parseAs, defval, isMandatory) {  
+
+  def processCsvLine(csv_line, field_name, col_num,result_map, parseAs, defval, isMandatory) {
     log.debug("  processCsvLine ${csv_line} ${field_name} ${col_num}... mandatory=${isMandatory}");
     def result = [:]
     result.messages = []
     result.origValue = csv_line[col_num]
 
-    if ( ( col_num <= csv_line.length ) && ( csv_line[col_num] != null ) ) {      
+    if ( ( col_num <= csv_line.length ) && ( csv_line[col_num] != null ) ) {
       switch(parseAs) {
         case 'int':
           result.value = Integer.parseInt(result.origValue?:defval)
@@ -452,8 +454,8 @@ class UploadController {
       }
       result_map[field_name] = result
     }
-  
-    
+
+
     if ( ( result.value == null ) || ( result.value.toString().trim() == '' ) ) {
       log.debug("Mandatory flag set, checking value");
       if ( isMandatory ) {
@@ -462,60 +464,60 @@ class UploadController {
         result_map[field_name] = [messages:["Missing mandatory property: ${field_name}"]]
       }
       else {
-        result_map[field_name] = [messages:["Missing property: ${field_name}"]]    
+        result_map[field_name] = [messages:["Missing property: ${field_name}"]]
       }
     }
     else {
     }
-    
+
      log.debug("result = ${result}");
   }
-  
+
   def validate(upload) {
-    
+
     def result = generateAndValidatePackageIdentifier(upload) &&
                  validateConsortia(upload) &&
                  validateColumnHeadings(upload)
-                 
+
     if ( upload.processFile ) {
       validateTipps(upload)
     }
     else {
     }
   }
-  
+
   def validateTipps(upload) {
-  
+
     def id_list = []
-    
+
     int counter = 0;
     upload.tipps.each { tipp ->
-    
+
       // log.debug("Validate tipp: ${tipp}");
 
-      if ( ( tipp.publication_title == null ) || 
+      if ( ( tipp.publication_title == null ) ||
            ( tipp.publication_title.trim() == '' ) ) {
         tipp.messages.add("Title (row ${counter}) must not be empty");
         upload.processFile=false;
       }
-      
+
       //if ( ! atLeastOneOf(tipp,['print_identifier', 'online_identifier', 'DOI', 'Proprietary_ID.isbn']) ) {
       //  tipp.messages.add("Title (row ${counter}) must reference at least one identifier");
       //  upload.processFile=false;
       //}
-      
+
       // log.debug("tipp id = ${tipp.id}");
-            
+
       if (!tipp.id) {
         tipp.messages.add("Title (row ${counter}) does not contain a valid ID (at least one of \"id.issn\", \"id.isbn\", \"id.eissn\" required, found: ${tipp.id})");
         upload.processFile=false;
       }
-            
+
       if ( !validISSN(tipp.id?.issn) ) {
         tipp.messages.add("Title (row ${counter}) does not contain a valid ISSN (Column should be id.issn, value in file was ${tipp.id?.issn})");
         upload.processFile=false;
       }
-      
+
       if ( ! validISSN(tipp.id?.eissn) ) {
         tipp.messages.add("Title (row ${counter}) does not contain a valid eISSN  (Column name should be id.eissn, value in file was ${tipp.id?.eissn})");
         upload.processFile=false;
@@ -525,7 +527,7 @@ class UploadController {
         tipp.messages.add("Title (row ${counter}) does not contain a valid ISBN (Column name should be id.isbn,value in file was ${tipp.id?.issn})");
         upload.processFile=false;
       }
-      
+
       if ( tipp.id ) {
         ["eissn", "issn", "doi", "isbn" ].each { idtype ->
           if ( ( tipp.id[idtype] ) && ( tipp.id[idtype] != '' ) ) {
@@ -553,7 +555,7 @@ class UploadController {
 
       // Git issue 419 - Allow tipps without a start date (:-/)
       tipp.parsedStartDate = parseDate(tipp.date_first_issue_online,possible_date_formats)
-      
+
       if ( tipp.date_last_issue_online && ( tipp.date_last_issue_online.trim() != '' ) ) {
         tipp.parsedEndDate = parseDate(tipp.date_last_issue_online,possible_date_formats)
         if ( tipp.parsedEndDate == null ) {
@@ -561,20 +563,28 @@ class UploadController {
           upload.processFile=false;
         }
       }
-      
+
+      // New issue - ensure that a tipp dates are within the publication dates of the title [If any are set]
+      if ( matched_titles.size() == 1 ) {
+        if ( matched_titles[0].isValidCoverage(tipp.parsedStartDate, tipp.parsedEndDate) == false ) {
+          tipp.messages.add("Title coverage in row ${counter} Does not match publisher dates for title :(${matched_titles[0].id}). Please correct. identifiers:${tipp.id}");
+          upload.processFile=false;
+        }
+      }
+
       if ( ( tipp.coverage_depth != null ) &&
            ( tipp.coverage_depth.trim() != '' ) &&
            ( ! ( ['fulltext','selected articles','abstracts'].contains(tipp.coverage_depth.toLowerCase())) ) ) {
         tipp.messages.add("coverage depth must be one of fulltext, selected articles or abstracts");
-        upload.processFile=false;                             
+        upload.processFile=false;
       }
       else {
         // log.debug("${tipp.coverage_depth} is valid");
         //  tipp.messages.add("Missing tipp coverage depth");
-        //  upload.processFile=false;                                     
+        //  upload.processFile=false;
 
       }
-      
+
       if ( tipp.platform ) {
         def plat = tipp.platform.values().find { it.coltype=='host' }
         if ( plat && plat.url && ( plat.url.trim() != '' && plat.name && plat.name.trim() != '' ) ) {
@@ -587,23 +597,23 @@ class UploadController {
       }
       else {
         tipp.messages.add("No platform information for tipp");
-        upload.processFile=false;                             
+        upload.processFile=false;
       }
 
       if ( tipp.access_start_date && ( tipp.access_start_date.trim() != '' ) ) {
         tipp.accessStartDate = parseDate(tipp.access_start_date,possible_date_formats)
       }
-      
+
       if (  tipp.access_end_date && ( tipp.access_end_date.trim() != '' ) ) {
         tipp.accessEndDate = parseDate(tipp.access_end_date,possible_date_formats)
       }
-      
+
       counter++
     }
-    
+
     return true;
   }
-  
+
   def validISSN(issn_string) {
     def result = true;
     if ( ( issn_string ) && ( issn_string.trim() != '' ) ) {
@@ -689,7 +699,7 @@ class UploadController {
         }
       }
       col++
-    }       
+    }
   }
 
   def findTitleIdentifierIntersection(idlist) {
@@ -720,7 +730,7 @@ class UploadController {
     // log.debug("Identifiers matched the following title ids: ${matched_title_ids}");
     return matched_title_ids;
   }
-  
+
   def checkTitleFingerprintMatch(matched_title_id, title_from_import_file, tipp, upload) {
     // log.debug("checkTitleFingerprintMatch ${matched_title_id}, ${title_from_import_file}");
     def title_instance = TitleInstance.get(matched_title_id)
@@ -766,7 +776,7 @@ class UploadController {
     // (4)
     String encoding = detector.getDetectedCharset();
     if (encoding != null) {
-      result = encoding; 
+      result = encoding;
       System.out.println("Detected encoding = " + encoding);
       if ( encoding.equals('WINDOWS-1252') ) {
       }
