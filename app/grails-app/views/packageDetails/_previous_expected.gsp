@@ -78,7 +78,7 @@
             <tr>
               <th>&nbsp;</th>
               <th>&nbsp;</th>
-              <th style="">Title</th>
+              <g:sortableColumn params="${params}" property="tipp.title.sortTitle" title="Title" />
               <th style="">Platform</th>
               <th style="">Identifiers</th>
               <th style="">Coverage Start</th>

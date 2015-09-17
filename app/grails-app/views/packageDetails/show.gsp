@@ -1,4 +1,4 @@
-<%@ page import="com.k_int.kbplus.Package" %>
+<%@ page import="com.k_int.kbplus.Package;com.k_int.kbplus.RefdataCategory" %>
 <!doctype html>
 <html>
   <head>
@@ -185,35 +185,35 @@
              <dl>
                 <dt>List Status</dt>
                 <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="packageListStatus" config='Package.ListStatus'/>
+                  <g:xEditableRefData owner="${packageInstance}" field="packageListStatus" config="${RefdataCategory.PKG_LIST_STAT}"/>
                 </dd>
              </dl>
 
              <dl>
                 <dt>Breakable</dt>
                 <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="breakable" config='Package.Breakable'/>
+                  <g:xEditableRefData owner="${packageInstance}" field="breakable" config="${RefdataCategory.PKG_BREAKABLE}"/>
                 </dd>
              </dl>
 
              <dl>
                 <dt>Consistent</dt>
                 <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="consistent" config='Package.Consistent'/>
+                  <g:xEditableRefData owner="${packageInstance}" field="consistent" config="${RefdataCategory.PKG_CONSISTENT}"/>
                 </dd>
              </dl>
 
              <dl>
                 <dt>Fixed</dt>
                 <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="fixed" config='Package.Fixed'/>
+                  <g:xEditableRefData owner="${packageInstance}" field="fixed" config="${RefdataCategory.PKG_FIXED}"/>
                 </dd>
              </dl>
 
               <dl>
                 <dt>Package Scope</dt>
                 <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="packageScope" config='Package.Scope'/>
+                  <g:xEditableRefData owner="${packageInstance}" field="packageScope" config="${RefdataCategory.PKG_SCOPE}"/>
                 </dd>
               </dl>
 
@@ -361,7 +361,7 @@
             <tr>
               <th>&nbsp;</th>
               <th>&nbsp;</th>
-              <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
+              <g:sortableColumn params="${params}" property="tipp.title.sortTitle" title="Title" />
               <th style="">Platform</th>
               <th style="">Hybrid OA</th>
               <th style="">Identifiers</th>

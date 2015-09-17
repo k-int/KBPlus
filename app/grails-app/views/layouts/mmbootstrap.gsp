@@ -235,6 +235,9 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'titleMerge'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="titleMerge">Title Merge</g:link>
                       </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'tippTransfer'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="tippTransfer">TIPP Transfer</g:link>
+                      </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'ieTransfer'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="ieTransfer">IE Transfer</g:link>
                       </li>                      
@@ -299,8 +302,8 @@
                           <li <%= ( ( 'admin'== controllerName ) && ( 'fullReset'==actionName ) ) ? ' class="active"' : '' %>>
                              <g:link controller="admin" action="fullReset">Run Full ES Index Reset</g:link>
                           </li>
-                          <li <%= ( ( 'startFTIndex'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="startFTIndex" action="index">Start ES Index Update</g:link>
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'esIndexUpdate'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="esIndexUpdate">Start ES Index Update</g:link>
                       </li>
                         </ul>
                       </li>

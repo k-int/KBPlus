@@ -340,24 +340,26 @@ class TitleInstance {
 
 
   public static String generateSortTitle(String input_title) {
-    def result=null
-    if ( input_title ) {
-      def s1 = Normalizer.normalize(input_title, Normalizer.Form.NFKD).trim().toLowerCase()
-      s1 = s1.replaceFirst('^copy of ','')
-      s1 = s1.replaceFirst('^the ','')
-      s1 = s1.replaceFirst('^a ','')
-      s1 = s1.replaceFirst('^der ','')
-      result = s1.trim()
-    }
-    result
+    if ( ! input_title ) return null;
+
+    def s1 = Normalizer.normalize(input_title, Normalizer.Form.NFKD).trim().toLowerCase()
+    s1 = s1.replaceFirst('^copy of ','')
+    s1 = s1.replaceFirst('^the ','')
+    s1 = s1.replaceFirst('^a ','')
+    s1 = s1.replaceFirst('^der ','')
+    
+    return  s1.trim()  
   }
 
   public static String generateNormTitle(String input_title) {
+    if (!input_title) return null;
+
     def result = input_title.replaceAll('&',' and ');
     result = result.trim();
     result = result.replaceAll("\\s+", " ");
     result = result.toLowerCase();
     result = alphanum.matcher(result).replaceAll("");
+   
     return asciify(result)
   }
 
@@ -383,7 +385,8 @@ class TitleInstance {
         }
         result = asciify(b.toString()); // find ASCII equivalent to characters
     }
-    result
+
+    return result;
   }
 
   protected static String asciify(String s) {

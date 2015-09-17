@@ -59,7 +59,7 @@
                     <g:if test="${editable}"><input type="checkbox" name="chkall" onClick="javascript:selectAll();"/></g:if>
                   </th>
                   <th>#</th>
-                  <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
+                  <g:sortableColumn params="${params}" property="tipp.title.sortTitle" title="Title" />
                   <th>ISSN</th>
                   <th>eISSN</th>
                   <g:sortableColumn params="${params}" property="startDate" title="Start Date" />

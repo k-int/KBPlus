@@ -70,6 +70,7 @@ class OnixplLicense {
     doc column: 'opl_doc_fk'
     lastmod column: 'opl_lastmod'
     title column: 'opl_title'
+    usageTerm cascade:"all-delete-orphan"
   }
 
   static constraints = {

@@ -28,7 +28,7 @@ class MyInstitutionsController {
     def institutionsService
     def docstoreService
     def tsvSuperlifterService
-    static String INSTITUTIONAL_LICENSES_QUERY = " from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
+    static String INSTITUTIONAL_LICENSES_QUERY = " from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = :lic_org and ol.roleType = :org_role ) AND (l.status!=:lic_status or l.status=null ) "
 
     // Map the parameter names we use in the webapp with the ES fields
     def renewals_reversemap = ['subject': 'subject', 'provider': 'provid', 'pkgname': 'tokname']
@@ -192,15 +192,16 @@ class MyInstitutionsController {
 
         def licensee_role = RefdataCategory.lookupOrCreate('Organisational Role', 'Licensee');
         def template_license_type = RefdataCategory.lookupOrCreate('License Type', 'Template');
+        def licence_status = RefdataCategory.lookupOrCreate('License Status', 'Deleted')
 
-        def qry_params = [result.institution, licensee_role]
+        def qry_params = [lic_org:result.institution, org_role:licensee_role,lic_status:licence_status]
 
         def qry = INSTITUTIONAL_LICENSES_QUERY
         // def qry = "from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
 
         if ((params['keyword-search'] != null) && (params['keyword-search'].trim().length() > 0)) {
-            qry += " and lower(l.reference) like ?"
-            qry_params += "%${params['keyword-search'].toLowerCase()}%"
+            qry += " and lower(l.reference) like :ref"
+            qry_params += [ref:"%${params['keyword-search'].toLowerCase()}%"]
             result.keyWord = params['keyword-search'].toLowerCase()
         }
         if( (params.propertyFilter != null) && params.propertyFilter.trim().length() > 0 ) {
@@ -213,9 +214,9 @@ class MyInstitutionsController {
         }
 
         if (date_restriction) {
-            qry += " and l.startDate <= ? and l.endDate >= ? "
-            qry_params.add(date_restriction)
-            qry_params.add(date_restriction)
+            qry += " and l.startDate <= :date_restr and l.endDate >= :date_restr "
+            qry_params += [date_restr: date_restriction]
+            qry_params += [date_restr: date_restriction]
         }
 
         if ((params.sort != null) && (params.sort.length() > 0)) {
@@ -270,11 +271,11 @@ class MyInstitutionsController {
     def buildPropertySearchQuery(params,propDef) {
         def result = [:]
 
-        def query = " and exists ( select cp from l.customProperties as cp where cp.type.name = ? and  "
-        def queryParam = [params.propertyFilterType];
+        def query = " and exists ( select cp from l.customProperties as cp where cp.type.name = :prop_filter_name and  "
+        def queryParam = [prop_filter_name:params.propertyFilterType];
         switch (propDef.type){
             case Integer.toString():
-                query += "cp.intValue = ? "
+                query += "cp.intValue = :filter_val "
                 def value;
                 try{
                  value =Integer.parseInt(params.propertyFilter)
@@ -282,25 +283,25 @@ class MyInstitutionsController {
                     log.error("Exception parsing search value: ${e}")
                     value = 0
                 }
-                queryParam += value
+                queryParam += [filter_val:value]
                 break;
             case BigDecimal.toString():
-                query += "cp.decValue = ? "
+                query += "cp.decValue = :filter_val "
                 try{
                  value = new BigDecimal(params.propertyFilter)
                 }catch(Exception e){
                     log.error("Exception parsing search value: ${e}")
                     value = 0.0
                 }
-                queryParam += value
+                queryParam += [filter_val:value]
                 break;
             case String.toString():
-                query += "cp.stringValue like ? "
-                queryParam += params.propertyFilter
+                query += "cp.stringValue like :filter_val "
+                queryParam += [filter_val:params.propertyFilter]
                 break;
             case RefdataValue.toString():
-                query += "cp.refValue.value like ? "
-                queryParam += params.propertyFilter
+                query += "cp.refValue.value like :filter_val "
+                queryParam += [filter_val:params.propertyFilter]
                 break;
             default:
                 log.error("Error executing buildPropertySearchQuery. Definition type ${propDef.type} case not found. ")
@@ -859,8 +860,9 @@ class MyInstitutionsController {
         if (filterOtherPlat.contains("all")) filterOtherPlat = null
 
         def limits = (isHtmlOutput) ? [max: result.max, offset: result.offset] : [offset: 0]
-
-        def qry_params = ['institution': result.institution]
+        def del_sub = RefdataCategory.lookupOrCreate('Subscription Status', 'Deleted')
+        def del_ie =  RefdataCategory.lookupOrCreate('Entitlement Issue Status','Deleted');
+        def qry_params = [institution: result.institution, del_sub:del_sub, del_ie:del_ie]
         // def sub_qry =  "select ie from IssueEntitlement as ie JOIN ie.subscription.orgRelations as o LEFT OUTER JOIN ie.tipp.additionalPlatforms as ap LEFT OUTER JOIN ie.tipp.pkg.orgs AS role WHERE ie.tipp.title = t and o.roleType.value = 'Subscriber' AND o.org = :institution AND ie.subscription.status.value != 'Deleted'"
         def sub_qry = "from IssueEntitlement as ie INNER JOIN ie.subscription.orgRelations as o "
         if (filterOtherPlat) {
@@ -871,8 +873,8 @@ class MyInstitutionsController {
         }
         sub_qry += "WHERE o.roleType.value = 'Subscriber' "
         sub_qry += "AND o.org = :institution "
-        sub_qry += "AND ie.subscription.status.value != 'Deleted' "
-        sub_qry += "AND ie.status.value != 'Deleted'"
+        sub_qry += "AND (ie.subscription.status is null or ie.subscription.status != :del_sub) "
+        sub_qry += "AND (ie.status is null or ie.status != :del_ie ) "
 
         if (date_restriction) {
             sub_qry += " AND ie.subscription.startDate <= :date_restriction AND ie.subscription.endDate >= :date_restriction "
@@ -914,14 +916,14 @@ class MyInstitutionsController {
         def having_clause = params.filterMultiIE ? 'having count(ie) > 1' : ''
 
         def order_by_clause = ''
-        if (params.sort == 'tipp.title.title') {
+        if (params.sort == 'tipp.title.sortTitle') {
             if (params.order == 'asc') {
-                order_by_clause = 'order by ie.tipp.title.title asc'
+                order_by_clause = 'order by ie.tipp.title.sortTitle asc'
             } else {
-                order_by_clause = 'order by ie.tipp.title.title desc'
+                order_by_clause = 'order by ie.tipp.title.sortTitle desc'
             }
         } else {
-            order_by_clause = 'order by ie.tipp.title.title asc'
+            order_by_clause = 'order by ie.tipp.title.sortTitle asc'
         }
 
         result.titles = IssueEntitlement.executeQuery("SELECT ie.tipp.title, count(ie) ${title_qry} group by ie.tipp.title ${having_clause} ${order_by_clause}", qry_params, limits)

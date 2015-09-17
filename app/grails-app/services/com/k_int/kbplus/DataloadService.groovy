@@ -104,7 +104,11 @@ class DataloadService {
           result.rectype = 'Title'
           result.identifiers = []
           ti.ids?.each { id ->
-            result.identifiers.add([type:id.identifier.ns.ns, value:id.identifier.value])
+            try{
+              result.identifiers.add([type:id.identifier.ns.ns, value:id.identifier.value])
+            }catch(Exception e){
+              log.error(e)
+            }
           }
         }
         else {
@@ -112,7 +116,7 @@ class DataloadService {
         }
       result
     }
-
+    
     updateES(esclient, com.k_int.kbplus.Package.class) { pkg ->
       def result = [:]
       result.status = pkg.packageStatus?.value
@@ -131,6 +135,7 @@ class DataloadService {
       result.titleCount = pkg.tipps.size()
       result.startDate = pkg.startDate
       result.endDate = pkg.endDate
+      result.pkg_scope = pkg.packageScope?.value ?: 'Scope Undefined'
       result.identifiers = pkg.ids.collect{"${it?.identifier?.ns?.ns} : ${it?.identifier?.value}"}
       def lastmod = pkg.lastUpdated ?: pkg.dateCreated
       if ( lastmod != null ) {
@@ -296,8 +301,11 @@ class DataloadService {
       while (results.next()) {
         Object r = results.get(0);
         def idx_record = recgen_closure(r)
-
-        if ( idx_record.status == 'deleted' ) {
+        if( idx_record['_id'] == null) {
+          log.error("******** Record without an ID: ${idx_record} Obj:${r} ******** ")
+          continue
+        }
+        if ( idx_record?.status?.toLowerCase() == 'deleted' ) {
           def future = esclient.delete {
             index es_index
             type domain.name

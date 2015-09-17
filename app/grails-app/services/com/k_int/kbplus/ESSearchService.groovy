@@ -36,14 +36,13 @@ class ESSearchService{
           params.offset = params.offset ? params.int('offset') : 0
 
           def query_str = buildQuery(params,field_map)
-          log.debug("index:${grailsApplication.config.aggr.es.index} query: ${query_str}");
           if (params.tempFQ) //add filtered query
           {
               query_str = query_str + " AND ( " + params.tempFQ + " ) "
               params.remove("tempFQ") //remove from GSP access
-              log.debug("ESSearchService::search -  Adding to query, appending filtered query: ${query_string}")
           }
 
+          log.debug("index:${grailsApplication.config.aggr.es.index} query: ${query_str}");
     
           def search = esclient.search{
             indices grailsApplication.config.aggr.es.index ?: "kbplus"
@@ -57,6 +56,7 @@ class ESSearchService{
               query {
                 query_string (query: query_str)
               }
+
               facets {
                 consortiaName {
                   terms {
@@ -130,13 +130,8 @@ class ESSearchService{
 
     StringWriter sw = new StringWriter()
 
-    if ( ( params != null ) && ( params.q != null ) ){
-        if(params.q.equals("*")){ // What was supposed to happen here?
-            sw.write(params.q)
-        }
-        else{
-            sw.write(params.q)
-        }
+    if ( params?.q != null ){
+      sw.write(params.q)
     }else{
       sw.write("*:*")
     }

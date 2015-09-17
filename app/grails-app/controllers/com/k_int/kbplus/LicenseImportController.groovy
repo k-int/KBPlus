@@ -328,7 +328,7 @@ class LicenseImportController {
     // We don't want duplicate doc_contexts.
     if (createNewDocument || createNewLicense) {
       doc_context = new DocContext(
-        license: license,
+          license: license,
           owner:   doc_content,
           doctype: doctype
       ).save(flush:true)
@@ -343,11 +343,17 @@ class LicenseImportController {
       opl.doc = doc_content
       opl.title = upload.description
       // Delete existing usage terms
-      //opl.usageTerm.each { ut -> ut.delete() }
       opl.usageTerm.clear()
       opl.save()
     } else {
-      opl = recordOnixplLicense(doc_content, upload.description)
+      def opl_title = upload.description
+      // two licences with the same name will make searching and selection for comparison a problem
+      // for now append upload date to distinguish, users can suggest different approach
+      if(OnixplLicense.findByTitle(opl_title)){
+          def upload_date = new java.text.SimpleDateFormat('yyyy-MM-dd HH:mm').format(new Date())
+          opl_title += " (${upload_date})"
+      }
+      opl = recordOnixplLicense(doc_content, opl_title)
     }
     log.debug("${replaceOplRecord?'Updated':'Created new'} ONIX-PL License ${opl}")
     // If a single license is specified, link it to the OPL

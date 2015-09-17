@@ -92,8 +92,8 @@ class UploadController {
       log.debug("Matched ${content_provider_org} using name ${upload.soProvider.value}");
       incrementStatsCounter(upload,'Content Provider Org Matched');
     }
-
-    def pkg_type = RefdataCategory.lookupOrCreate('PackageTypes','Unknown');
+    
+    def pkg_type = RefdataCategory.lookupOrCreate("${RefdataCategory.PKG_TYPE}",'Unknown');
     def cp_role = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider');
     def tipp_current = RefdataCategory.lookupOrCreate('TIPP Status','Current');
 

@@ -112,7 +112,7 @@ class PackageDetailsController {
       if (result.user.getAuthorities().contains(Role.findByAuthority('ROLE_ADMIN'))) {
           isAdmin = true;
       }else{
-        hasAccess = result.packageInstance.orgLinks.find{it.roleType.value == 'Package Consortia' &&
+        hasAccess = result.packageInstance.orgLinks.find{it.roleType?.value == 'Package Consortia' &&
         it.org.hasUserWithRole(result.user,'INST_ADM') }
       }
 
@@ -395,10 +395,11 @@ class PackageDetailsController {
       result.subscriptionList=[]
       // We need to cycle through all the users institutions, and their respective subscripions, and add to this list
       // and subscription that does not already link this package
+      def sub_status = RefdataCategory.lookupOrCreate('Subscription Status','Deleted')
       result.user?.getAuthorizedAffiliations().each { ua ->
         if ( ua.formalRole.authority == 'INST_ADM' ) {
-          def qry_params = [ua.org, packageInstance, new Date()]
-          def q = "select s from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) AND ( not exists ( select sp from s.packages as sp where sp.pkg = ? ) ) AND s.endDate >= ?"
+          def qry_params = [ua.org, sub_status, packageInstance, new Date()]
+          def q = "select s from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status is null or s.status != ? ) AND ( not exists ( select sp from s.packages as sp where sp.pkg = ? ) ) AND s.endDate >= ?"
           Subscription.executeQuery(q, qry_params).each { s ->
             if ( ! result.subscriptionList.contains(s) ) {
               // Need to make sure that this package is not already linked to this subscription
@@ -591,7 +592,7 @@ class PackageDetailsController {
     qry_params.add(new Date());
     
 
-    base_qry += " order by tipp.title.title"
+    base_qry += " order by ${params.sort?:'tipp.title.sortTitle'} ${params.order?:'asc'} "
 
     log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
     result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, limits);

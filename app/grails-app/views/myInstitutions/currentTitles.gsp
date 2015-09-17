@@ -132,7 +132,7 @@
           <table  class="table table-striped table-bordered">
 
             <tr>
-              <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
+              <g:sortableColumn params="${params}" property="tipp.title.sortTitle" title="Title" />
               <th>ISSN</th>
               <th>eISSN</th>
               <th>Earliest Date</th>
@@ -195,7 +195,7 @@
 	            <div class="accordion-inner">
 	              <table  class="table table-striped table-bordered">
 	                <tr>
-	                  <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
+	                  <g:sortableColumn params="${params}" property="tipp.title.sortTitle" title="Title" />
 	                  <th>ISSN</th>
 	                  <th>eISSN</th>
 	                  <th>Earliest Date</th>
