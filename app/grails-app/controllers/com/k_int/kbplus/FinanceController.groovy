@@ -4,6 +4,7 @@ import com.k_int.kbplus.auth.*
 import grails.converters.JSON;
 import grails.plugins.springsecurity.Secured
 import groovy.json.JsonBuilder
+import groovy.time.TimeCategory
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.elasticsearch.common.joda.time.DateTime
@@ -49,10 +50,21 @@ class FinanceController {
         //Check nothing strange going on with financial data
         result.institution =  Org.findByShortcode(params.shortcode)
         def user           =  User.get(springSecurityService.principal.id)
-        if (isFinanceAuthorised(result.institution, user))
-        {
+        if (isFinanceAuthorised(result.institution, user)) {
             flash.error=message(code: 'financials.permission.unauthorised', args: [result.institution? result.institution.name : 'N/A'])
             response.sendError(401)
+        }
+
+
+        //Accessed from Subscription page, 'hardcoded' set subscription 'hardcode' values
+        result.inSubMode   = params.boolean('inSubMode')?: false
+        if (result.inSubMode)
+        {
+            result.fixedSubscription = params.int('sub')? Subscription.get(params.sub) : null
+            if (!result.fixedSubscription) {
+                log.error("Financials in FIXED subscription mode, sent incorrect subscription ID: ${params?.sub}")
+                response.sendError(400, "No relevant subscription, please report this error to an administrator")
+            }
         }
 
         //Setup params
@@ -61,10 +73,10 @@ class FinanceController {
         result.info        =  [] as List
         params.max         =  params.int('max') ? Math.min(Integer.parseInt(params.max),200) : 10
         result.max         =  params.max
-        result.offset      =  params.offset?:0
+        result.offset      =  params.offset?: 0
         result.sort        =  ["desc","asc"].contains(params.sort)?params.sort : "asc"
-        result.sort        =  params.boolean('opSort')==true?((result.sort=="asc")?'desc' : 'asc'): result.sort //opposite
-        result.isRelation  =  params.orderRelation? params.boolean('orderRelation'):false
+        result.sort        =  params.boolean('opSort')==true?((result.sort=="asc")?'desc' : 'asc') : result.sort //opposite
+        result.isRelation  =  params.orderRelation? params.boolean('orderRelation') : false
         result.wildcard    =  params.wildcard && params.wildcard == "off" ? false : true
         params.shortcode   =  result.institution.shortcode
         params.remove('opSort')
@@ -108,6 +120,12 @@ class FinanceController {
             result.cost_item_count =  CostItem.executeQuery(ci_count + cost_item_qry, cost_item_qry_params).first();
             log.debug("FinanceController::index()  -- Performing standard non-filtered process ... ${result.cost_item_count} result(s) found")
         }
+
+        result.wtf2 = new Date()
+        use(TimeCategory) {
+            result.wtf = new Date() - 3.days
+        }
+
 
         if (request.isXhr())
             render (template: "filter", model: result)
@@ -310,6 +328,7 @@ class FinanceController {
 //            def cost_billing_currency = params.newCostInBillingCurrency? (RefdataValue.get(params.long('newCostInBillingCurrency'))) : null;
 //            def cost_local_currency   = params.newCostInLocalCurrency? (RefdataValue.get(params.long('newCostInLocalCurrency'))) : null;
 
+        //todo check fields which need calculating and giving specific default values
         def newCostItem = new CostItem(
                 owner: result.institution,
                 sub: sub,
@@ -319,28 +338,26 @@ class FinanceController {
                 invoice: invoice,
                 costItemType: cost_item_element,
                 costItemCategory: cost_item_category,
-                billingCurrency: billing_currency,
-                costDescription: params.newDescription,
-                costInBillingCurrency: params.newCostInBillingCurrency,
+                billingCurrency: billing_currency, //Not specified default to GDP
+                costDescription: params.newDescription? params.newDescription.trim()?.toLower():null,
+                costInBillingCurrency: params.newCostInBillingCurrency? params.double('newCostInBillingCurrency'):null,
                 datePaid: datePaid,
                 startDate: startDate,
                 endDate: endDate,
                 localFundCode: null,
-                costInLocalCurrency: params.newCostInLocalCurrency,
+                costInLocalCurrency: params.double('newCostInLocalCurrency')?: null,
                 taxCode: cost_tax_type,
                 includeInSubscription: null,
                 reference: params.newReference? params.newReference.trim()?.toLower() : null,
                 costItemStatus: cost_item_status,
                 costItemElement: cost_item_element,
-                lastUpdatedBy: user,
-                createdBy: user,
                 dateCreated: new Date()
         )
 
 
         if (!newCostItem.validate()) {
             result.error = newCostItem.errors.allErrors.collect {
-                log.debug("Field: ${it.properties.field}, user input: ${it.properties.rejectedValue}, Reason! ${it.properties.code}")
+                log.error("Field: ${it.properties.field}, user input: ${it.properties.rejectedValue}, Reason! ${it.properties.code}")
                 message(code:'finance.addNew.error',args:[it.properties.field])
             }
         } else {
@@ -357,6 +374,24 @@ class FinanceController {
         render ([newCostItem:newCostItem.id, error:result.error]) as JSON
     }
 
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    def createCode() {
+        def user        = springSecurityService.currentUser
+        def institution = Org.findByShortcode(params.shortcode)
+        def code        = params.code?.trim()
+        def ci          = CostItem.findByIdAndOwner(params.id, institution)
+        def result      = [:]
+
+        if (code && ci)
+        {
+            result.codes = createBudgetCodes(ci,code,institution.shortcode)
+            if (result.codes.isEmpty())
+                result.error = "Unable to create budget code(s): ${code}"
+        } else
+            result.error = "Invalid data received for code creation"
+
+        render result as JSON
+    }
 
     private def createBudgetCodes(CostItem costItem, String budgetcodes, String owner) {
         def result = []
@@ -402,7 +437,7 @@ class FinanceController {
             count counter
             to dateTimeFormat.format(dateTo)
         }
-        log.debug("Finance - newCostItemsPresent ? params: "+params+"\tJSON output: "+builder.toString())
+        log.debug("Finance - newCostItemsPresent ? params: ${params} JSON output: ${builder.toString()}")
         render(text: builder.toString(), contentType: "text/json", encoding: "UTF-8")
     }
 

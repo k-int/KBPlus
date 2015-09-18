@@ -12,30 +12,34 @@ class CostItem {
     IssueEntitlement issueEntitlement
     Order order
     Invoice invoice
-    RefdataValue costItemStatus
-    RefdataValue costItemType
-    RefdataValue costItemCategory
-    RefdataValue costItemElement
 
-    RefdataValue billingCurrency
-    String costDescription
-    Double costInBillingCurrency
-    Date datePaid
-    String localFundCode
-    Double costInLocalCurrency
-    RefdataValue taxCode
+    RefdataValue costItemStatus    //cost est, actual, etc
+    RefdataValue costItemType      //admin fee, content, etc
+    RefdataValue costItemCategory
     Boolean includeInSubscription
+
+    RefdataValue costItemElement
+    RefdataValue billingCurrency
+    Double costInBillingCurrency
+    Double costInLocalCurrency
+    String localFundCode
+    RefdataValue taxCode
+    String costDescription
     String reference
+    Date datePaid
     Date startDate
     Date endDate
     Date lastUpdated
     User lastUpdatedBy
-    User createdBy
     Date dateCreated
+    User createdBy
 
 
     @Transient
     def budgetcodes //Binds getBudgetcodes
+
+    @Transient
+    def springSecurityService
 
     static mapping = {
         id column: 'ci_id'
@@ -86,8 +90,25 @@ class CostItem {
         reference(nullable: true, blank: false)
         startDate(nullable: true, blank: false)
         endDate(nullable: true, blank: false)
-        lastUpdatedBy(nullable: false, blank: false)
-        createdBy(nullable: false, blank: false)
+        lastUpdatedBy(nullable: true)
+        createdBy(nullable: true)
+    }
+
+    def beforeInsert() {
+        def user = springSecurityService.getCurrentUser()
+        if (user) {
+            createdBy     = user
+            lastUpdatedBy = user
+        } else
+            return false
+    }
+
+    def beforeUpdate() {
+        def user = springSecurityService.getCurrentUser()
+        if (user)
+            lastUpdatedBy = user
+        else
+            return false
     }
 
     def getBudgetcodes() {
