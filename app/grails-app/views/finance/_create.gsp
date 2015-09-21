@@ -26,8 +26,8 @@
             <td><input type="text" name="newOrderNumber" class="input-medium"
                        placeholder="New Order #" id="newOrderNumber" value="${params.newOrderNumber}"/></td>
             <td>
-                <select onchange="filterSubUpdated(this)" name="newSubscription" class="input-medium" id="newSubscription" value="${params.newSubscription}">
-                    <option value="all">All</option>
+                <select  name="newSubscription" class="input-medium" id="newSubscription" value="${params.newSubscription}">
+                    <option value="xx">Not specified</option>
                     <g:each in="${institutionSubscriptions}" var="s">
                         <option value="${s.id}" ${s.id==params.long('subscriptionFilter')?'selected="selected"':''}>${s.name}</option>
                     </g:each>
@@ -49,29 +49,28 @@
             <td>
                 <h3>Cost date and status</h3>
                 <input class="datepicker-class" type="date" placeholder="Date Paid" name="newDate" value="${params.newDate}"/><br/>
-
                 <g:select name="newCostItemStatus"
                           from="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','CostItemStatus')}"
                           optionKey="id"
                           noSelection="${['':'No Status']}"/>
 
                 <g:select name="newCostItemCategory"
-                          from="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','CostItemCategory')}"
+                          from="${costItemCategory}"
                           optionKey="id"
                           noSelection="${['':'No Category']}"/>
 
                 <g:select name="newCostItemElement"
-                          from="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','CostItemElement')}"
+                          from="${costItemElement}"
                           optionKey="id"
                           noSelection="${['':'No Element']}"/>
 
                 <g:select name="newCostCurrency"
-                          from="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','Currency')}"
+                          from="${currency}"
                           optionKey="id"
                           noSelection="${['':'No Currency']}"/>
 
                 <g:select name="newCostTaxType"
-                          from="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','TaxType')}"
+                          from="${taxType}"
                           optionKey="id"
                           noSelection="${['':'No Tax Type']}"/>
             </td>

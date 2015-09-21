@@ -7,6 +7,12 @@
 </head>
 <body>
 
+<g:set var="costItemCategory" scope="page" value="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','CostItemCategory')}"/>
+<g:set var="costItemElement"  scope="page" value="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','CostItemElement')}"/>
+<g:set var="currency"         scope="page" value="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','Currency')}"/>
+<g:set var="taxType"          scope="page" value="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','TaxType')}"/>
+
+
 <div class="container-fluid">
     <ul class="breadcrumb">
         <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
@@ -18,15 +24,16 @@
     </ul>
 </div>
 
-
-<div class="modal hide" id="recentDialog">
-    <div class="modal-header">
-        <button class="close" data-dismiss="modal">×</button>
-        <h3>Recently Updated Cost Items</h3>
-    </div>
-    <div class="modal-body">
-        <div id="recent">
-            <g:render template="recentlyAdded"></g:render>
+<div id="recentModalWrapper" class="wrapper">
+    <div class="modal hide" id="recentDialog">
+        <div class="modal-header">
+            <button class="close" data-dismiss="modal">×</button>
+            <h3>Recently Updated Cost Items</h3>
+        </div>
+        <div class="modal-body">
+            <div id="recent">
+                <g:render template="recentlyAdded"></g:render>
+            </div>
         </div>
     </div>
 </div>
@@ -44,15 +51,19 @@
         </table>
     </div>
 
-    <div id="filterTemplate">
-        <g:render template="filter"></g:render>
+    <div id="filterTemplateWrapper" class="wrapper">
+        <div id="filterTemplate">
+            <g:render template="filter"></g:render>
+        </div>
     </div>
 
     <br/><br/><br/><br/><br/>
 
-    <g:render template="create"></g:render>
+    <div id="CreateTemplateWrapper" class="wrapper">
+        <g:render template="create"></g:render>
+    </div>
 
-    <button class="btn btn-primary pull-right" onclick="scrollToTop(2000,'costTable')" title="Select this button to go back to the top of the page" id="top">Back to top</button>
+    <button class="btn btn-primary pull-right"  data-offset="#costTable" title="Select this button to go back to the top of the page" id="top">Back to top</button>
 </div>
 
 </body>
@@ -60,7 +71,7 @@
 <r:script type="text/javascript">
 
      //Module pattern
-     var Finance = (function(){
+     ;var Finance = (function(){
         var s = { //Setup
             mybody: $('body'),
             ft: { //filter template settings
@@ -72,22 +83,34 @@
                 delBatch:'#BatchSelectedBtn',
                 paginateData:'#paginateInfo',
                 advFilterBtn:'#advancedFilter',
-                advFilterOpts:'#advancedFilterOpt'
+                advFilterOpts:'#advancedFilterOpt',
+                filterModSelect2:'.modifiedReferenceTypedown',
+                filterSubscription:'#filterSubscription',
+                filterSubPkg:'#filterPackage',
+                codeDelete: 'a.badge.budgetCode',
+                codeEdit:'a.budgetCode.editable-empty'
             },
             ct: { //create template
                 resetBtn:'#resetCreate',
                 datePickers:'.datepicker-class',
-                dateFormat:'yyyy-mm-dd'
+                dateFormat:'yyyy-mm-dd',
+                newBudgetCode:"#newBudgetCode",
+                newIE:'#newIE',
+                newSubPkg:'#newPackage',
+                newSubscription:'#newSubscription'
             },
             url: {
                 ajaxLookupURL:"<g:createLink controller='ajax' action='lookup'/>",
                 ajaxFinanceIndex:"<g:createLink controller='finance' action='index'/>",
                 ajaxFinanceDelete:"<g:createLink controller='finance' action='delete'/>",
                 ajaxFinanceRecent:"<g:createLink controller='finance' action='getRecentCostItems'/>",
-                ajaxFinancePresent:"<g:createLink controller='finance' action='newCostItemsPresent'/>"
+                ajaxFinancePresent:"<g:createLink controller='finance' action='newCostItemsPresent'/>",
+                ajaxFinanceRefData:"<g:createLink controller='finance' action='financialRef'/>",
+                ajaxFinanceCodeDel:"<g:createLink controller='finance' action='removeBC'/>"
             },
             misc: {
-                recentlyUpdated: '#recent'
+                recentlyUpdated: '#recent',
+                noOption:'<option value="xx">Not specified</option>'
             }
         };
 
@@ -100,7 +123,8 @@
                     from: "${from}",
                     to: to,
                     shortcode: "${params.shortcode}"
-                }
+                },
+                global: false
             }).done(function(data) {
                 $('#recent').html(data);
             });
@@ -111,7 +135,7 @@
 
         function setupModSelect2s() {
              //unable to use placeholder with initSelection, manually set via GSP with data-placeholder
-            $(".modifiedReferenceTypedown").select2({
+            $(s.ft.filterModSelect2).select2({
               initSelection : function (element, callback) {
                     //If default value has been set in the markup!
                 if(element.data('defaultvalue'))
@@ -120,8 +144,9 @@
               },
               minimumInputLength: 1,
               ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-              url: "<g:createLink controller='ajax' action="lookup" />",
+              url: s.url.ajaxLookupURL,
               dataType: 'json',
+              global: false,
               data: function (term, page){
                   return {
                       format:'json',
@@ -149,26 +174,25 @@
               }
           });
 
-            $(".modifiedReferenceTypedown").on("select2-selecting", function(e) {
+            s.mybody.on("select2-selecting",s.ft.filterModSelect2, function(e) {
                  var element = $(this);
                  var currentText = "";
                  var rel = "";
                  var prevSelection = element.select2("data");
-                 console.log("Selection made before new selection",prevSelection);
 
                  if(e.choice.id.split(':')[1] == 'create')
                  {
-                    rel = element.data('domain') + ':create';
+                    rel         = element.data('domain') + ':create';
                     currentText = e.choice.text.trim().toLowerCase().substring(9);
                  }
                  else {
-                    rel = e.choice.id;
+                    rel         = e.choice.id;
                     currentText = e.choice.text.trim().toLowerCase();
                  }
 
                  $.ajax({
                         method: "POST",
-                        url: "<g:createLink controller='finance' action='financialRef'/>",
+                        url: s.url.ajaxFinanceRefData,
                         data: {
                             owner:element.data('owner')+':'+element.data('ownerid'), //org.kbplus.CostItem:1
                             ownerField: element.data("ownerfield"), //order
@@ -176,7 +200,8 @@
                             relationField: element.data('relationfield'), //orderNumber
                             val:currentText,         //123456
                             shortcode:element.data('shortcode')
-                        }
+                        },
+                        global: false
                  })
                 .fail(function( jqXHR, textStatus, errorThrown ) {
                      alert('Reset back to the original value, there was an issue');
@@ -223,7 +248,8 @@
                     to:renderedDateTo,
                     from: "${from}",
                     format:'json'
-                }
+                },
+                global: false
               })
               .fail(function( jqXHR, textStatus, errorThrown ) {
                  errorHandling(textStatus,'Recent Cost Updates',errorThrown);
@@ -275,21 +301,149 @@
         var _filtersUpdated = function() {
           $('#newInvoiceNumber').val($('#filterInvoiceNumber').val());
           $('#newOrderNumber').val($('#filterOrderNumber').val());
-          if($('#newSubscription').val() != $('#filterSubscription').val())
+          if($(s.ct.newSubscription).val() != $(s.ft.filterSubscription).val())
           {
-              $('#newSubscription').val($('#filterSubscription').val());
-              $('#newPackage').val($('#filterPackage').val());
+              $(s.ct.newSubscription).val($(s.ft.filterSubscription).val());
+              $(s.ct.newSubPkg).val($(s.ft.filterSubPkg).val());
           }
+        };
+
+        //Fetch packages for the selected subscription
+        var filterSubUpdated  = function() {
+          var filterSubscription = $(this);
+
+          $.ajax({
+            url: s.url.ajaxLookupURL,
+            data: {
+              format:'json',
+              subFilter:filterSubscription.val(),
+              baseClass:'com.k_int.kbplus.SubscriptionPackage'
+            },
+            dataType:'json'
+          }).done(function(data) {
+            var newSubPackge = $(s.ct.newSubPkg);
+            var filterSubPkg = $(s.ft.filterSubPkg)
+            newSubPackge.children('option').remove();
+            filterSubPkg.children('option:gt(0)').remove();
+            //$('#filterPackage').append(s.misc.noOption);
+            var numValues = data.values.length;
+            for (var i = 0; i != numValues; i++) {
+              $(s.ft.filterSubPkg).append('<option value="'+data.values[i].id+'">'+data.values[i].text+'</option>');
+            }
+            filterSubPkg.children('option').clone().appendTo(newSubPackge);
+          });
+        };
+
+
+        var _filterSelection = function() {
+            var filterMode = $(s.ft.filterOpt);
+            var submitBtn  = $(s.ft.searchBtn);
+            if(submitBtn.val() != 'reset')
+            {
+                var disabledState = filterMode.val() == "ON"? false:true; //Need to turn off, i.e. refresh result
+                submitBtn.prop('disabled',disabledState);
+            }
+        };
+
+        var _removeBudgetCode = function(e) {
+            var element = $(this);
+            $.ajax({
+                method: "POST",
+                url: s.url.ajaxFinanceCodeDel,
+                data: {
+                    bcci:element.attr('id'),
+                    shortcode:"${params.shortcode}"
+                }
+             })
+             .done(function(data) {
+                if(data.error)
+                    userInfo(data.error.status,data.error.msg,null);
+                else
+                {
+                    element.prev('span').remove();
+                    element.remove();
+                    userInfo(data.success.status,data.success.msg,null);
+                }
+            });
         };
 
 
 
+        //var _filterValidation = function() {
+        function filterValidation()   {
+            var submitBtn = $(s.ft.searchBtn);
+            if(submitBtn.val() != 'reset')
+            {
+                if("${filterMode}"=="OFF" && $(s.ft.filterOpt).val()=="OFF")
+                    return false;
+                var reqFields = $(".required-indicator");
+                var counter   = 0;
 
+                reqFields.each(function() {
+                  if($(this).is("select")) {
+                    if($.trim($(this).val())=="Not specified")
+                       counter++;
+                  } else {
+                    if($.trim($(this).val()).length==0)
+                      counter++;
+                  }});
+
+                if(counter==4)
+                {
+                    userInfo("${g.message(code: 'financials.help.filterSearch')}","${g.message(code: 'financials.filtersearch.error')}");
+                    return false;
+                } else
+                {
+                    $('#resetMode').val(submitBtn.val());
+                    return true;
+                }
+            } else
+                return true;
+        };
+
+        //todo removal of Grails JQuery AJAX plugin behaviour e.g. remoteForm
+        var _submitFilterSearch = function(e) {
+            if(!filterValidation())
+                return false;
+
+            $.ajax({
+                type:'POST',
+                data:$(this).parents('form:first').serialize(),
+                url:s.url.ajaxFinanceIndex,
+
+                success:function(data,textStatus){
+                    $('#filterTemplate').html(data);
+                },
+                error:function(XMLHttpRequest,textStatus,errorThrown){
+                    errorHandling(textStatus,'Filtering',errorThrown);
+                },
+                complete:function(XMLHttpRequest,textStatus){
+                    _filterSelection();fadeAway('info',15000);
+                }
+            });
+            return false
+        };
+
+        //todo add additional arg for error usage add id
+        var _scrollTo = function(e, scrollTo) {
+            var id = ($.isEmptyObject(scrollTo))? $(this).data('offset') : scrollTo;
+            $('html, body').animate({
+                scrollTop: $(id).offset().top
+            }, 1500);
+         };
+
+
+        // //Pagination/filtering Handling code block
+        //function sortAndOrder()
+        //{
+        //
+        //
+        //};
 
         //Binds everything which needs to be run the once, including the majority of dynamically rendered HTML content
         //For everything else which can't be binded once will be in _bindBehavior
         var _firstRun = function() {
-            $("#newIE").select2({
+            $(s.ct.newIE).select2({
                 placeholder: "Identifier..",
                 minimumInputLength: 1,
                 ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
@@ -299,7 +453,7 @@
                     return {
                         format:'json',
                         q: term,
-                        subFilter: $('#newSubscription').val(),
+                        subFilter: $(s.ct.newSubscription).val(),
                         baseClass:'com.k_int.kbplus.IssueEntitlement'
                     };
                 },
@@ -309,14 +463,14 @@
               }
             });
 
-            $("#newBudgetCode").select2({
+            $(s.ct.newBudgetCode).select2({
               placeholder: "New code or lookup  code",
               allowClear: true,
-               tags: true,
+              tags: true,
               tokenSeparators: [',', ' '],
               minimumInputLength: 1,
               ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-                url: "<g:createLink controller='ajax' action='lookup'/>",
+                url: s.url.ajaxLookupURL,
                 dataType: 'json',
                 data: function (term, page) {
                     return {
@@ -343,13 +497,12 @@
                  if(!existsAlready)
                     return {id:-1+term, text:"new code: "+term};
               }
-
             });
 
             //If we want to do something upon selection
-            $("#newBudgetCode").on("select2-selecting", function(e) {
-                var presentSelections = $("#newBudgetCode").select2("data");
-                var current = e.choice.text.trim().toLowerCase();
+            $(s.ct.newBudgetCode).on("select2-selecting", function(e) {
+                var presentSelections = $(s.ct.newBudgetCode).select2('data');
+                var current           = e.choice.text.trim().toLowerCase();
                 if(current.indexOf("new code: ",0) == 0)
                     current = current.substring(10,current.length);
 
@@ -367,122 +520,67 @@
                 }
             });
 
-            $('#filterMode').val("${filterMode}");
+            $('#filterMode').val("${filterMode}"); //default the filtering mode
             $('#submitFilterMode').prop('disabled',${filterMode=='OFF'}); //greys out search button if inactive
 
             s.mybody.on('click',s.ft.delSelectAll, function(event) {
-                if(this.checked) {
-                    $('.bulkcheck').each(function() {
-                        this.checked = true;
-                    });
-                } else{
-                    $('.bulkcheck').each(function() {
-                        this.checked = false;
-                    });
-                }
+                var isChecked = this.checked? true : false;
+                $(s.ft.delCheckboxes).each(function() {
+                    this.checked = isChecked;
+                });
             }); //delete button select all functionality
 
             _performCostItemUpdate(null); //pulls down latest cost item updates for modal
 
-            s.mybody.on('click',s.ft.delBatch,_performBulkDelete);
+            s.mybody.on('click',s.ft.delBatch,_performBulkDelete); //Bulk delete action
 
-            s.mybody.on('keyup change','.filterUpdated',_filtersUpdated);
-        };
+            s.mybody.on('keyup change','.filterUpdated',_filtersUpdated); //Change & keyup on input event
 
+            s.mybody.on('click',s.ft.advFilterBtn, function() {
+                $(s.ft.advFilterOpts).toggle();
+            }); //Show/Hide more filtering options
 
+            s.mybody.on('change',s.ft.filterSubscription + ', ' + s.ct.newSubscription, filterSubUpdated); //on change of subscription select filter
 
+            s.mybody.on('change',s.ft.filterOpt, _filterSelection); //on change of subscription select filter
 
+            s.mybody.on('click', s.ft.codeDelete, _removeBudgetCode); //attach delete functionality for budget codes
 
+            s.mybody.on('click', '#addNew, #top', _scrollTo); //attach auto scrolling functionality
 
-
-
-
-
-
-        //Publicly returned methods (Has private var & method access)
-        return {
-            init: function() {
-                console.log('Running initialising method for Finance module');
-                _firstRun();
-                _bindBehavior();
-                console.log('Finished initialising method for Finance module');
-            },
-
-            rebind: function() {
-                console.log('Running rebind method designed for AJAX');
-                _bindBehavior();
-                console.log('Finished rebind method designed for AJAX');
-            }
-        };
-    })();
-
-    Finance.init();
-
-
-
-        function tester(root) {
-            if (typeof root == 'undefined'){
-                root = $('body');
-            }
-
-            $('.xEditable',root).editable();
-            $('.modifiedReferenceTypedown',root).select2(); //todo need to put full set up for this to work!
-            $('.finance-select2',root).select2();
-        }
-
-        $( document ).ajaxComplete(function( event,request, settings ) {;});
-
-
-        $(document).ready(function() {
-            //first run
-            sortAndOrder();
-        });
-
-        //Page updating/actions - i.e. before/after: delete, create
-        function updateResults(action) {
-            console.log("Performing update of results via action : "+action);
-            var paginateData   = $('#paginateInfo').data();
-            var adjustedOffset = paginateData.offset;
-            if(action.startsWith('delete'))
-            {
-                var newTotal = parseInt(paginateData.total) - parseInt(action.split(':')[1]);
-                if(newTotal % paginateData.max == 0 && adjustedOffset !=0)
-                    adjustedOffset = paginateData.offset - paginateData.max;
-            }
-
-            $.ajax({
-                method: "POST",
-                url: "<g:createLink controller='finance' action='index'/>",
-                data: {
-                    shortcode:"${params.shortcode}",
-                    offset:adjustedOffset,
-                    max:paginateData.max,
-                    sort:paginateData.sort,
-                    order:paginateData.order,
-                    filterMode: paginateData.filtermode,
-                    wildcard: paginateData.wildcard,
-                    mode:"updateResults"
-                }
-            })
-            .fail(function( jqXHR, textStatus, errorThrown ) {
-                 errorHandling(textStatus,'Updating results after action: '+action,errorThrown);
-             })
-            .done(function(data) {
-                 console.log('Success: called updateResults...');
-                 $('#filterTemplate').html(data);
-                 var ftWrapper = $('#filterTemplate');
-                 //var theData   = $(data);
-                 //ftWrapper.empty().append(theData);
-                 sortAndOrder();
-                 tester(ftWrapper);
+            $('input[name=_wildcard]').val("${wildcard?'on':'off'}"); //silly checkbox issues... default behaviour 1st run
+            s.mybody.on('change', '#wildcard', function(event) {
+                var checkbox = $(this);
+                checkbox.is(":checked")? checkbox.prev().val('on') : checkbox.prev().val('off'); //Grails bug with checkbox
             });
-        }
 
+            //Attach a dynamic message to the sortable criteria
+            s.mybody.on('mouseenter','a.sortable', function() {
+                var sortLink = $(this); //.hasClass('sorted')
+                var title    = $('#paginateInfo').data('filtermode')=="OFF"?' filtering is inactive':' you can also sort by your active filter';
+                sortLink.prop('title', (sortLink.hasClass('sorted')?'Presently sorting':'Choose to sort') + ' via '+sortLink[0].firstChild.textContent+'\n'+title);
+            });
 
-        //Pagination/filtering Handling code block
-        function sortAndOrder()
-        {
-            $(document).on('click','.sortable', function(event){
+            //Dynamically attach popover to code edit
+            //todo check efficiency
+            //todo bind select2
+            s.mybody.on('click', s.ft.codeEdit, function(event) {
+                $(this).popover({
+                     html:true,
+                     placement:'top',
+                     title:'Add to codes...',
+                     trigger:'click',
+                     template: "<div class='popover' style='width: 600px;'><div></div><div class='popover-inner'><h3 class='popover-title'></h3><div class='popover-content'></div>"+ $(this).data().toString() +"</div></div>",
+                     'max-width':600,
+                     content:function() {
+                        //return getContent();
+                        console.log($(this));
+                        return 'test'
+                     }
+                });
+            });
+
+            s.mybody.on('click','.sortable', function(event){
                 event.preventDefault();
                 var selected       = $(this)[0].firstChild.textContent;
                 var order          = $(this).data('order');
@@ -522,23 +620,113 @@
                   })
                 .done(function(data) {
                      $('#filterTemplate').html(data);
-                     //var ftWrapper = $('#filterTemplate');
-                     //var theData   = $(data);
-                     //ftWrapper.empty().append(theData);
-                     sortAndOrder();
                 });
                 return false;
             });
 
-            $('.sortable').hover(function() {
-                var sortLink = $(this); //.hasClass('sorted')
-                var title    = $('#paginateInfo').data('filtermode')=="OFF"?' filtering is not active':' you can sort by your active filter';
-                sortLink.prop('title', (sortLink.hasClass('sorted')?'Presently sorting':'Choose to sort') + ' via '+sortLink[0].firstChild.textContent+'\n'+title);
-                //$("#hiddenPrompt").show(); //todo look into this
-            }, function() {
-                 //$("#hiddenPrompt").hide();
+            s.mybody.on('click','#submitFilterMode', _submitFilterSearch);
+
+            //End of firstRun...
+        };
+
+
+
+
+
+
+
+
+
+
+
+        /**
+        * Publicly returned interface methods (revealing module pattern)
+        * (Full scope access, including 'this' entire annon func (private var & method access)
+        *
+        * @method init - Binds first run behaviour and AJAX driven plugins/etc
+        *
+        * @method init - rebind is for AJAX driven plugins/etc
+        */
+        return {
+            init: function() {
+                console.log('Running initialising method for Finance module');
+                _firstRun();
+                _bindBehavior();
+                console.log('Finished initialising method for Finance module');
+            },
+
+            rebind: function() {
+                console.log('Running rebind method designed for AJAX');
+                _bindBehavior();
+                console.log('Finished rebind method designed for AJAX');
+            },
+
+            //TEMP ACCESSIBLE METHODS
+            filterValidation: filterValidation,
+            scrollTo: _scrollTo
+        };
+        //End of public returned methods...
+
+    })();
+
+    Finance.init();
+
+
+        ////////////////////////////////////////////////LAST TO SORT//////////////////////////////////////////////
+        function tester(root) {
+            if (typeof root == 'undefined'){
+                root = $('body');
+            }
+
+            $('.xEditable',root).editable();
+            $('.modifiedReferenceTypedown',root).select2(); //todo need to put full set up for this to work!
+            $('.finance-select2',root).select2();
+        }
+
+
+
+        //////////////////////////////////////////////TO REFACTOR//////////////////////////////////////////////
+
+
+        //Page updating/actions - i.e. before/after: delete, create
+        function updateResults(action) {
+            console.log("Performing update of results via action : "+action);
+            var paginateData   = $('#paginateInfo').data();
+            var adjustedOffset = paginateData.offset;
+            if(action.startsWith('delete'))
+            {
+                var newTotal = parseInt(paginateData.total) - parseInt(action.split(':')[1]);
+                if(newTotal % paginateData.max == 0 && adjustedOffset !=0)
+                    adjustedOffset = paginateData.offset - paginateData.max;
+            }
+
+            $.ajax({
+                method: "POST",
+                url: "<g:createLink controller='finance' action='index'/>",
+                data: {
+                    shortcode:"${params.shortcode}",
+                    offset:adjustedOffset,
+                    max:paginateData.max,
+                    sort:paginateData.sort,
+                    order:paginateData.order,
+                    filterMode: paginateData.filtermode,
+                    wildcard: paginateData.wildcard,
+                    mode:"updateResults"
+                }
+            })
+            .fail(function( jqXHR, textStatus, errorThrown ) {
+                 errorHandling(textStatus,'Updating results after action: '+action,errorThrown);
+             })
+            .done(function(data) {
+                 console.log('Success: called updateResults...');
+                 $('#filterTemplate').html(data);
+                 var ftWrapper = $('#filterTemplate'); //var theData   = $(data); ftWrapper.empty().append(theData);
+                 tester(ftWrapper);
             });
         }
+
+
+
 
         function filterSelection() {
             if($('#submitFilterMode').attr("value")!="reset")
@@ -549,70 +737,47 @@
             }
         }
 
-        function filterValidation() {
-            if($('#submitFilterMode').val() != 'reset')
-            {
-                if("${filterMode}"=="OFF" && $('#filterMode').val()=="OFF")
-                    return false;
-                var reqFields = $(".required-indicator");
-                var counter   = 0;
 
-                reqFields.each(function() {
-                  if($(this).is("select")) {
-                    if($.trim($(this).val())=="all")
-                       counter++;
-                  } else {
-                    if($.trim($(this).val()).length==0)
-                      counter++;
-                  }});
-
-                if(counter==4)
-                {
-                    userInfo("${g.message(code: 'financials.help.filterSearch')}","${g.message(code: 'financials.filtersearch.error')}");
-                    return false;
-                } else
-                {
-                    $('#resetMode').val($('#submitFilterMode').val());
-                    return true;
-                }
-            } else
-                return true;
+        function userInfo(status,message,timeout) {
+            var html = "";
+            $.each(message.split(",,,"), function( i, val ) {
+               html += ('<tr><td>'+status+'</td><td>'+val+'</td></tr>');
+            });
+            var errorDisplay = $('#userError');
+            errorDisplay.stop(true,true);
+            errorDisplay.find('tbody:last').html(html);
+            Finance.scrollTo(null,"#userError");
+            errorDisplay.fadeToggle(1000).delay(timeout!=null?timeout:3000).slideUp(4000, function(){
+                $("#userError > table > tbody").children().remove();
+            });
         }
 
-        $('#submitFilterMode').on('click',function(e) {
-            var newMode       = $('#filterMode').val();
-            var disabledState = (newMode == "ON")? false:true; //Need to turn off, i.e. refresh results
-            $('#filterSearch').attr("disabled",disabledState);
-        });
-
-
-
-        function filterSubUpdated(e) {
-          // Fetch packages for the selected subscription
-          var selectedSub = $(e).val();
-          //var selectedSub = $('#filterSubscription').val();
-
-          $.ajax({
-            url: "<g:createLink controller='ajax' action='lookup'/>",
-            data: {
-              format:'json',
-              subFilter:selectedSub,
-              baseClass:'com.k_int.kbplus.SubscriptionPackage'
-            },
-            dataType:'json'
-          }).done(function(data) {
-            $('#filterPackage option, #newPackage option').remove();
-            $('#filterPackage').append('<option value="xx">Not specified</option>');
-            var numValues = data.values.length;
-            for (var i = 0; i != numValues; i++) {
-              $('#filterPackage').append('<option value="'+data.values[i].id+'">'+data.values[i].text+'</option>');
-            }
-            $('#filterPackage option').clone().appendTo('#newPackage');
-          });
+        function fadeAway(id,time) {
+             $('#'+id).fadeIn(2000).delay(time).slideUp(4000, function(){
+                $('#'+id).remove();
+             });
         }
 
-        //error/info code block
-        function errorHandling(status,actionFailed,reason) {
+        function confirmSubmit(msg) {
+          return confirm("Are you sure you wish to continue?\n\n"+msg);
+        }
+
+        //////////////////////////////////////////////TO REFACTOR//////////////////////////////////////////////
+
+
+        //////////////////////////////////////////////LEAVE FOR NOW//////////////////////////////////////////////
+        function quickHelpInfo() {
+            alert('${session?.userPereferences?.showInfoIcon}');
+            userInfo("Help","<b>Sorting</b> via clickable title links of the following : Cost Item#, Invoice#, Order#, Subscription, Package, date, IE ,,, " +
+             "<b>Filter Search</b> via the 4 input fields : Invoice#, Order#, Subscription, and Package, selecting filter mode as ON and submitting the search. On finishing with your results reset via the 'reset' button,,," +
+              "<b>Pagination</b> (<i>Results Navigation</i>) via the clickable links, below the results table,,," +
+               "<b>Deleting Costs</b> via checking the boxes attached to each cost item row individually or all and submitting by clicking 'remove selected,,," +
+                "<b>Add New Costs</b> via creation screen, after results, shortcut button select 'Add New Cost'",20000)
+        }
+
+
+    //error/info code block
+        var errorHandling = function(status,actionFailed,reason) {
             switch (reason)
             {
                 case 'Unauthorized':
@@ -630,83 +795,13 @@
                 }
                 default :
                 {
-                    alert('Problem occurred with action: '+ actionFailed +', needs investigation! Possibly due to: '+reason);
+                    alert('Problem occurred with action: '+ actionFailed +', needs investigation! Possibly due to: '+reason!='undefined'?reason:'Unknown');
                     break;
                 }
             }
-        }
+        };
 
-        function userInfo(status,message,timeout) {
-            var html = "";
-            $.each(message.split(",,,"), function( i, val ) {
-               html += ('<tr><td>'+status+'</td><td>'+val+'</td></tr>');
-            });
-            var errorDisplay = $('#userError');
-            errorDisplay.stop(true,true);
-            errorDisplay.find('tbody:last').html(html);
-            scrollToTop(2000,"userError");
-            errorDisplay.fadeToggle(1000).delay(timeout!=null?timeout:3000).slideUp(4000, function(){
-                $("#userError > table > tbody").children().remove();
-            });
-        }
-
-        function fadeAway(id,time) {
-             $('#'+id).fadeIn(2000).delay(time).slideUp(4000, function(){
-                $('#'+id).remove();
-             });
-        }
-
-         function scrollToTop(time,id) {
-            $('html, body').animate({
-                scrollTop: $("#"+id).offset().top
-            }, time);
-         }
-
-        function confirmSubmit(msg) {
-          return confirm("Are you sure you wish to continue?\n\n"+msg);
-        }
-
-
-
-
-
-
-
-        function quickHelpInfo() {
-            userInfo("Help","<b>Sorting</b> via clickable title links of the following : Cost Item#, Invoice#, Order#, Subscription, Package, date, IE ,,, " +
-             "<b>Filter Search</b> via the 4 input fields : Invoice#, Order#, Subscription, and Package, selecting filter mode as ON and submitting the search. On finishing with your results reset via the 'reset' button,,," +
-              "<b>Pagination</b> (<i>Results Navigation</i>) via the clickable links, below the results table,,," +
-               "<b>Deleting Costs</b> via checking the boxes attached to each cost item row individually or all and submitting by clicking 'remove selected,,," +
-                "<b>Add New Costs</b> via creation screen, after results, shortcut button select 'Add New Cost'",20000)
-        }
-
-
-
-
-    $('body').on('click', '.budgetCode', function(e) {
-        var element = $(this);
-        $.ajax({
-                method: "POST",
-                url: "<g:createLink controller='finance' action='removeBC'/>",
-                data: {
-                    bcci:element.attr('id'),
-                    shortcode:"${params.shortcode}"
-                }
-         })
-         .done(function(data) {
-            if(data.error)
-                userInfo(data.error.status,data.error.msg,null);
-            else
-            {
-                element.parent('span').remove();
-                userInfo(data.success.status,data.success.msg,null);
-            }
-         });
-    });
-
-    $('body').on('click','#advancedFilter',function() {
-        $('#advancedFilterOpt').toggle();
-    });
+    //////////////////////////////////////////////LEAVE FOR NOW//////////////////////////////////////////////
 
 </r:script>
 </html>
