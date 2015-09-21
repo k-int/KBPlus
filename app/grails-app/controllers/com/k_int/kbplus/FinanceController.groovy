@@ -3,20 +3,17 @@ package com.k_int.kbplus
 import com.k_int.kbplus.auth.*
 import grails.converters.JSON;
 import grails.plugins.springsecurity.Secured
-import groovy.json.JsonBuilder
-import groovy.time.TimeCategory
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
-import org.elasticsearch.common.joda.time.DateTime
-import java.text.SimpleDateFormat
 
 //todo Refactor aspects into service
 //todo track state, maybe use the #! stateful style syntax along with the history API or more appropriately history.js (cross-compatible, polyfill for HTML4)
+//todo Discuss versioning for edits?
 class FinanceController {
 
     def springSecurityService
-    private final def dateFormat      = new SimpleDateFormat("YYYY-MM-dd")
-    private final def dateTimeFormat  = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") {{setLenient(false)}}
+    private final def dateFormat      = new java.text.SimpleDateFormat("YYYY-MM-dd")
+    private final def dateTimeFormat  = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss") {{setLenient(false)}}
     private final def ci_count        = 'select count(ci.id) from CostItem as ci '
     private final def ci_select       = 'select ci from CostItem as ci '
     private final def base_qry        = " from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) "
@@ -55,7 +52,6 @@ class FinanceController {
             response.sendError(401)
         }
 
-
         //Accessed from Subscription page, 'hardcoded' set subscription 'hardcode' values
         result.inSubMode   = params.boolean('inSubMode')?: false
         if (result.inSubMode)
@@ -77,10 +73,11 @@ class FinanceController {
         result.sort        =  ["desc","asc"].contains(params.sort)?params.sort : "asc"
         result.sort        =  params.boolean('opSort')==true?((result.sort=="asc")?'desc' : 'asc') : result.sort //opposite
         result.isRelation  =  params.orderRelation? params.boolean('orderRelation') : false
-        result.wildcard    =  params.wildcard && params.wildcard == "off" ? false : true
+        result.wildcard    =  params._wildcard == "off" ? false: true //defaulted to on
         params.shortcode   =  result.institution.shortcode
         params.remove('opSort')
 
+        //Query setup options, ordering, joins, param query data....
         def (order, join, gspOrder) = CostItem.orderingByCheck(params.order) //order = field, join = left join required or null, gsporder = to see which field is ordering by
         result.order = gspOrder
 
@@ -91,6 +88,7 @@ class FinanceController {
         def cost_item_qry               =  (join)? "LEFT OUTER JOIN ${join} AS j WHERE ci.owner = ? " :"  where ci.owner = ? "
         def orderAndSortBy              =  (join)? "ORDER BY COALESCE(j.${order}, ${Integer.MAX_VALUE}) ${result.sort}, ci.id ASC" : " ORDER BY ci.${order} ${result.sort}"
 
+        //Filter processing...
         if (result.filterMode == "ON")
         {
             log.debug("FinanceController::index()  -- Performing filtering processing...")
@@ -99,7 +97,7 @@ class FinanceController {
             {
                 result.info.add([status:message(code: 'financials.result.filtered.info', args: [message(code: 'financials.result.filtered.mode')]),
                                  msg:message(code: 'finance.result.filtered.empty')])
-                result.filterMode =  "OFF" //SWITCHING BACK...since nothing has been found!
+                result.filterMode =  "OFF" //SWITCHING BACK!!! ...Since nothing has been found, informed user!
                 result.wildcard   =  false
                 log.debug("FinanceController::index()  -- Performed filtering process... no results found, turned off filter mode")
             }
@@ -113,6 +111,7 @@ class FinanceController {
             result.info.addAll(qryOutput.valid)
         }
 
+        //Normal browse mode, default behaviour
         if (result.filterMode == "OFF" || params.resetMode == "reset")
         {
             //'SELECT ci FROM CostItem AS ci LEFT OUTER JOIN ci.order AS o WHERE ci.owner = ? ORDER BY COALESCE(o.orderNumber,?) ASC, ci.id ASC'
@@ -121,17 +120,14 @@ class FinanceController {
             log.debug("FinanceController::index()  -- Performing standard non-filtered process ... ${result.cost_item_count} result(s) found")
         }
 
-        result.wtf2 = new Date()
-        use(TimeCategory) {
-            result.wtf = new Date() - 3.days
-        }
-
-
+        //Other than first run, request will always be AJAX...
         if (request.isXhr())
             render (template: "filter", model: result)
         else
         {
-            result.from = dateTimeFormat.format(new DateTime().minusDays(3).toDate())
+            use(groovy.time.TimeCategory) {
+                result.from = dateTimeFormat.format(new Date() - 3.days)
+            }
             result
         }
     }
@@ -374,32 +370,13 @@ class FinanceController {
         render ([newCostItem:newCostItem.id, error:result.error]) as JSON
     }
 
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-    def createCode() {
-        def user        = springSecurityService.currentUser
-        def institution = Org.findByShortcode(params.shortcode)
-        def code        = params.code?.trim()
-        def ci          = CostItem.findByIdAndOwner(params.id, institution)
-        def result      = [:]
-
-        if (code && ci)
-        {
-            result.codes = createBudgetCodes(ci,code,institution.shortcode)
-            if (result.codes.isEmpty())
-                result.error = "Unable to create budget code(s): ${code}"
-        } else
-            result.error = "Invalid data received for code creation"
-
-        render result as JSON
-    }
-
     private def createBudgetCodes(CostItem costItem, String budgetcodes, String owner) {
         def result = []
         if(budgetcodes && owner && costItem) {
             def budgetOwner = RefdataCategory.findByDesc("budgetcode_"+owner)?:new RefdataCategory(desc: "budgetcode_"+owner).save(flush: true)
             budgetcodes.split(",").each { c ->
                 def rdv = null
-                if (c.startsWith("-1")) //New codes from UI
+                if (c.startsWith("-1")) //New code option from select2 UI
                     rdv = new RefdataValue(owner: budgetOwner, value: c.substring(2).toLowerCase()).save(flush: true)
                 else
                     rdv = RefdataValue.get(c)
@@ -408,6 +385,7 @@ class FinanceController {
                     result.add(new CostItemGroup(costItem: costItem, budgetcode: rdv).save(flush: true))
             }
         }
+
         result
     }
 
@@ -417,7 +395,7 @@ class FinanceController {
         def  institution       = Org.findByShortcode(params.shortcode)
         def  result            = [:]
         result.to              = new Date()
-        result.from            = params.from? dateTimeFormat.parse(params.from): new Date() //getFromToDate(params.from,"from")
+        result.from            = params.from? dateTimeFormat.parse(params.from): new Date()
         result.recentlyUpdated = CostItem.findAllByOwnerAndLastUpdatedBetween(institution,result.from,result.to,[max:10, order:"desc", sort:"lastUpdated"])
         result.from            = dateTimeFormat.format(result.from)
         result.to              = dateTimeFormat.format(result.to)
@@ -432,7 +410,7 @@ class FinanceController {
         Date dateTo     = params.to? dateTimeFormat.parse(params.to):new Date()//getFromToDate(params.to,"to")
         int counter     = CostItem.countByOwnerAndLastUpdatedGreaterThan(institution,dateTo)
 
-        def builder = new JsonBuilder()
+        def builder = new groovy.json.JsonBuilder()
         def root    = builder {
             count counter
             to dateTimeFormat.format(dateTo)
@@ -449,7 +427,7 @@ class FinanceController {
         results.successful =  []
         results.failures   =  []
         results.message    =  null
-        results.sentIDs    =  JSON.parse(params.del)
+        results.sentIDs    =  JSON.parse(params.del) //comma seperated list
         def user           =  User.get(springSecurityService.principal.id)
         def institution    =  Org.findByShortcode(params.shortcode)
         if (isFinanceAuthorised(institution, user))
@@ -458,6 +436,7 @@ class FinanceController {
         if (results.sentIDs && institution) {
             def _costItem = null
             def _props
+
             results.sentIDs.each { id ->
                 _costItem = CostItem.findByIdAndOwner(id,institution)
                 if (_costItem)
@@ -467,7 +446,7 @@ class FinanceController {
                         CostItemGroup.deleteAll(CostItemGroup.findAllByCostItem(_costItem))
                         _costItem.delete(flush: true)
                         results.successful.add(id)
-                        log.debug("User: "+user.username+" deleted cost item with properties"+_props)
+                        log.debug("User: ${user.username} deleted cost item with properties ${_props}")
                     } catch (Exception e)
                     {
                         log.error("FinanceController::delete() : Delete Exception",e)
@@ -479,14 +458,14 @@ class FinanceController {
             }
 
             if (results.successful.size() > 0 && results.failures.isEmpty())
-                results.message = "All "+results.successful.size()+" Cost Items completed successfully : "+results.successful
+                results.message = "All ${results.successful.size()} Cost Items completed successfully : ${results.successful}"
             else if (results.successful.isEmpty() && results.failures.size() > 0)
-                results.message = "All "+results.failures.size()+" failed, unable to delete, have they been deleted already? : "+results.failures
+                results.message = "All ${results.failures.size()} failed, unable to delete, have they been deleted already? : ${results.failures}"
             else
-                results.message = "Success completed "+results.successful.size()+" out of "+results.sentIDs.size() +" Failures as follows : "+results.failures
+                results.message = "Success completed ${results.successful.size()} out of ${results.sentIDs.size()}  Failures as follows : ${results.failures}"
 
         } else
-            results.message = "Incorrect parameters sent, not able to process the following : "+(results.sentIDs.size()==0? 'Empty, no IDs present' : results.sentIDs)
+            results.message = "Incorrect parameters sent, not able to process the following : ${results.sentIDs.size()==0? 'Empty, no IDs present' : results.sentIDs}"
 
         render results as JSON
     }
@@ -495,14 +474,18 @@ class FinanceController {
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
     def financialRef() {
         log.debug("Financials :: financialRef - Params: ${params}")
+
         def result   = [:]
         result.error = [] as List
         def institution = Org.findByShortcode(params.shortcode)
         def owner       = refData(params.owner)
+
         log.debug("Financials :: financialRef - Owner instance returned: ${owner.obj}")
+
         if (owner) {
             def relation = refData(params.relation)
             log.debug("Financials :: financialRef - relation obj or stub returned "+relation)
+
             if (relation)
             {
                 log.debug("Financials :: financialRef - Relation needs creating: "+relation.create)
@@ -538,15 +521,15 @@ class FinanceController {
     }
 
     def private refData(String oid) {
-        def result = [:]
-        result.create = false
+        def result         = [:]
+        result.create      = false
         def oid_components = oid.split(':');
         def dynamic_class  = grailsApplication.getArtefact('Domain',oid_components[0]).getClazz()
         if ( dynamic_class)
         {
             if (oid_components[1].equals("create"))
             {
-                result.obj = dynamic_class.newInstance()
+                result.obj    = dynamic_class.newInstance()
                 result.create = true
             }
             else
@@ -571,8 +554,8 @@ class FinanceController {
         def ids = params.bcci ? params.bcci.split("_")[1..2] : null
         if (ids && ids.size()==2)
         {
-            def cig = CostItemGroup.load(ids[0])
-            def ci  = CostItem.load(ids[1])
+            def cig = CostItemGroup.get(ids[0])
+            def ci  = CostItem.get(ids[1])
             if (cig && ci)
             {
                 if (cig.costItem == ci)
@@ -587,19 +570,31 @@ class FinanceController {
     }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-    def addNewBC() {
-        def result = []
+    def createCode() {
+        def result      = [:]
+        def user        = springSecurityService.currentUser
         def institution = Org.findByShortcode(params.shortcode)
-        def user        = User.get(springSecurityService.principal.id)
+
         if (!userCertified(user,institution))
             response.sendError(401)
 
-        def ci = CostItem.findByIdAndOwner(params.cost,institution)
-        if (ci) {
-            def codes = createBudgetCodes(ci,params.newBudgetCode,institution.shortcode)
-            if (codes)
-                result = codes.collect { [id:"bcci_${it.id}_${it.costItem.id}", text: it.budgetcode.value] }
-        }
+        def code        = params.code?.trim()
+        def ci          = CostItem.findByIdAndOwner(params.id, institution)
+
+        if (code && ci)
+        {
+            def cig_codes = createBudgetCodes(ci,code,institution.shortcode)
+            if (result.codes.isEmpty())
+                result.error = "Unable to create budget code(s): ${code}"
+            else
+            {
+                result.success = "${cig_codes.size()} new code(s) added to cost item"
+                result.codes   = cig_codes.collect {
+                    "<span class='budgetCode'>${it.budgetcode.value}</span><a id='bcci_${it.id}_${it.costItem.id}' class='badge budgetCode'>x</a>"
+                }
+            }
+        } else
+            result.error = "Invalid data received for code creation"
 
         render result as JSON
     }
