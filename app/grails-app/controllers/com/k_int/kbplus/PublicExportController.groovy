@@ -33,6 +33,8 @@ class PublicExportController {
       params.offset = 0
       params.search = null
     }
+    if(params.filter == "current")
+      params.tempFQ = " -pkg_scope:\"Master File\" -\"open access\" ";
 
     result =  ESSearchService.search(params)   
     result.transforms = grailsApplication.config.packageTransforms
