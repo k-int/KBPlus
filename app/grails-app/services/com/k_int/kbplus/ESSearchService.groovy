@@ -132,10 +132,12 @@ class ESSearchService{
 
     if ( params?.q != null ){
       sw.write(params.q)
-      sw.write(" AND ")
     }
       
-    if(params?.rectype){sw.write(" rectype:'${params.rectype}' ")} 
+    if(params?.rectype){
+      if(sw.toString()) sw.write(" AND ");
+      sw.write(" rectype:'${params.rectype}' ")
+    } 
 
     field_map.each { mapping ->
 
