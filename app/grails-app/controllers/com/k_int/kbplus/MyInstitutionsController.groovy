@@ -243,6 +243,7 @@ class MyInstitutionsController {
                 response.contentType = "text/csv"
 
                 def out = response.outputStream
+                result.searchHeader = true
                 exportService.StreamOutLicenceCSV(out, result,result.licenses)
                 out.close()
             }
