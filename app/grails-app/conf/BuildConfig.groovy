@@ -115,7 +115,7 @@ grails.project.dependency.resolution = {
         compile ":h2:0.2.6"
         runtime ':hibernate:3.6.10.18'  // 18 is latest
         runtime ":resources:1.2.8"
-        runtime ':fields:1.3'
+        runtime ':fields:1.5.1'
         compile ":scaffolding:2.0.3"
         
         // This is commented out so as not to cause probelms in the CI environment
