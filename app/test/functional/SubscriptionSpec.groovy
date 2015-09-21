@@ -83,7 +83,58 @@ class SubscriptionSpec extends GebReportingSpec {
         1 == 1
         // response page sends back a link containing the new package ID <a href="/demo/packageDetails/show/590">New Package Details</a>
     }
+    def "Go to subscription and check title core status"(){
+        when:
+            def subID = Subscription.findByName( Data.Subscription_name_A).id
+            go '/demo/subscriptionDetails/index/'+ subID
+        then:
+            $("a.editable-click",name:"show_core_assertion_modal").text() == 'False(Never)'
+    }
+    def "Extend the core dates for the title"(){
+        setup:
+            at SubscrDetailsPage
+            $("a.editable-click",name:"show_core_assertion_modal").click()
+        when:
+            waitElement {$('a','data-hidden-id':'coreStartDate').click()}
+            waitElement {$('form.editableform input.input-small')}
+            $('form.editableform input.input-small').value('2015-04-01')
+            $('form.editableform button.editable-submit').click()
 
+            waitElement {$('a','data-hidden-id':'coreEndDate').click()}
+            waitElement {$('form.editableform input.input-small')}
+            $('form.editableform input.input-small').value('2030-05-01')
+            $('form.editableform button.editable-submit').click()
+            $('input', value:'Apply').click()
+        then:
+            Thread.sleep(100)
+            browser.report("Delete button should appear")
+            waitElement {$("a.delete-coreDate",text:"Delete").verifyNotEmpty()}
+    }
+
+    def "Check that the core status has changed to True"(){
+        setup:
+            def subID = Subscription.findByName( Data.Subscription_name_A).id
+
+        when:
+            go '/demo/subscriptionDetails/index/'+ subID
+        then:
+            $("a.editable-click",name:"show_core_assertion_modal").text() == 'True(Now)'
+    }
+
+    def "Now lets delete the dates and see that status will change again"(){
+        setup:
+            def subID = Subscription.findByName( Data.Subscription_name_A).id
+
+            at SubscrDetailsPage
+            $("a.editable-click",name:"show_core_assertion_modal").click()
+            browser.report("Modal Open")
+        when:
+            $("a.delete-coreDate",text:"Delete").click()
+            browser.report("Delete clicked")
+            go '/demo/subscriptionDetails/index/'+ subID
+        then:
+            $("a.editable-click",name:"show_core_assertion_modal").text() == 'False(Never)'
+    }
     def "Add and show duplicate identifiers"() {
         setup:
             go "subscriptionDetails/details/"+Subscription.findByName(Data.Subscription_name_A ).id

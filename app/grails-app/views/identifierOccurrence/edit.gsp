@@ -49,7 +49,7 @@
 				</bootstrap:alert>
 				</g:hasErrors>
 
-				<fieldset>
+%{-- 				<fieldset>
 					<g:form class="form-horizontal" action="edit" id="${identifierOccurrenceInstance?.id}" >
 						<g:hiddenField name="version" value="${identifierOccurrenceInstance?.version}" />
 						<fieldset>
@@ -66,7 +66,7 @@
 							</div>
 						</fieldset>
 					</g:form>
-				</fieldset>
+				</fieldset> --}%
 
 			</div>
 
