@@ -43,7 +43,7 @@ class ExportService {
 		
 		out.withWriter{writer ->
 			//See if we are handling a currentLicences Search
-			if(result != null && (result.institution || result.validOn || result.propertyFilter || result.keyWord)){
+			if(result != null && result.searchHeader ){
 				writer.write("SEARCH TERMS\n")
 				writer.write("Institution,ValidOn,ReferenceSearch,LicenceProperty,LicencePropertyValue\n")
 				writer.write("${val(result.institution?.name)},${val(result.validOn)},${val(result.keyWord)},${val(result.propertyFilterType)},${val(result.propertyFilter)}\n" )

@@ -291,9 +291,6 @@ class BootStrap {
 
           newProp.save()
        }
-       else {
-          log.debug("Got property definition for ${default_prop.propname}");
-       }
     }
     log.debug("createLicenceProperties completed");
   }
