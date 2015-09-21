@@ -35,6 +35,7 @@
             </td>
             <td>
                 <select name="newPackage" class="input-medium" id="newPackage" value="${params.newPackage}">
+                    <option value="xx">Not specified</option>
                 </select>
             </td>
             <td>

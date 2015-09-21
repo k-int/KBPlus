@@ -59,7 +59,9 @@
                 </th>
                 <th style="vertical-align: top;">IE</th>
                 <th rowspan="2" style="vertical-align: top; text-align: center; width: 5%">Filter
-                    <span ${wildcard && filterMode=='ON'? hidden="hidden" : ''}> (${g.message(code: 'financials.help.wildcard')} : <g:checkBox name="wildcard" title="${g.message(code: 'financials.wildcard.title')}" type="checkbox" value="${wildcard}"></g:checkBox> )</span><br/>
+                    <span ${wildcard && filterMode=='ON'? hidden="hidden" : ''}>
+                        (${g.message(code: 'financials.help.wildcard')} : <g:checkBox name="wildcard" title="${g.message(code: 'financials.wildcard.title')}" type="checkbox" value="${wildcard}"></g:checkBox> )
+                    </span><br/>
                     <div id="filtering" class="btn-group" data-toggle="buttons-radio">
                         <g:if test="${filterMode=='OFF'}">
                             <g:select name="filterMode" from="['OFF','ON']" type="button" class="btn btn-primary btn-mini"></g:select><br/><br/>
@@ -68,8 +70,9 @@
                     <g:submitButton name="submitFilterMode" id="submitFilterMode" class="btn-block"  value="${filterMode=='ON'?'reset':'search'}" title="${g.message(code: 'financials.pagination.title')}"></g:submitButton>
 
                     </div>
-                    <a ${filterMode=="ON"?"hidden='hidden'":''} id="advancedFilter">More filter options</a>
+                    <a ${filterMode=="ON"?"hidden='hidden'":''} id="advancedFilter" data-toggle="#">More filter options</a>
                 </th>
+
                 %{--If has editable rights, allow delete column to be shown--}%
                 <g:if test="${editable}">
                     <th rowspan="2" colspan="1" style="vertical-align: top;">Delete
@@ -183,11 +186,11 @@
 </g:form>
 
 %{--todo refactor non-plugin usage, separate the JS concerns or convert to taglib--}%
-<div class="pagination">
+<div id="paginationWrapper" class="pagination">
     <div id="paginateInfo" hidden="true" data-offset="${offset!=null?offset:params.offset}" data-max="${max!=null?max:params.max}" data-wildcard="${wildcard!=null?wildcard:params.wildcard}"
          data-sort="${sort!=null?sort:params.sort}" data-order="${order!=null?order:params.order}" data-relation="${isRelation!=null?isRelation:params.orderRelation}"
          data-filterMode="${filterMode}" data-total="${cost_item_count}" data-resetMode="${params.resetMode}" data-subscriptionFilter="${params.subscriptionFilter}"
          data-invoiceNumberFilter="${params.invoiceNumberFilter}" data-orderNumberFilter="${params.orderNumberFilter}" data-packageFilter="${params.packageFilter}">
     </div>
-    <util:remotePaginate title="${g.message(code: 'financials.pagination.title')}" onFailure="Finance.errorHandling(textStatus,'Pagination',errorThrown)" offset='0' onComplete="Finance.scrollTo(null,'costTable');tester();" onSuccess="filterSelection()" params="${params+["filterMode": "${filterMode}", "sort":"${sort}", "order":"${order}"]}"  controller="finance" action="index" total="${cost_item_count}"  update="filterTemplate" max="20" pageSizes="[10, 20, 50, 100, 200]" alwaysShowPageSizes="true"/>
+    <util:remotePaginate title="${g.message(code: 'financials.pagination.title')}" onFailure="Finance.errorHandling(textStatus,'Pagination',errorThrown)" offset='0' onComplete="Finance.scrollTo(null,'#costTable');tester();" onSuccess="filterSelection()" params="${params+["filterMode": "${filterMode}", "sort":"${sort}", "order":"${order}"]}"  controller="finance" action="index" total="${cost_item_count}"  update="filterTemplate" max="20" pageSizes="[10, 20, 50, 100, 200]" alwaysShowPageSizes="true"/>
 </div>

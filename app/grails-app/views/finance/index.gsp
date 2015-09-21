@@ -12,6 +12,9 @@
 <g:set var="currency"         scope="page" value="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','Currency')}"/>
 <g:set var="taxType"          scope="page" value="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','TaxType')}"/>
 
+<div hidden="hidden" id="loading">
+    <img src="${resource(dir: 'images', file: 'loading.gif')}" />
+</div>
 
 <div class="container-fluid">
     <ul class="breadcrumb">
@@ -111,6 +114,11 @@
             misc: {
                 recentlyUpdated: '#recent',
                 noOption:'<option value="xx">Not specified</option>'
+            },
+            options: {
+                timeoutLoading: null,
+                timeoutRecent: null,
+                showInfo:"${session?.userPereferences?.showInfoIcon}"
             }
         };
 
@@ -130,7 +138,7 @@
             });
 
             // Recently updated code block
-            setInterval(_recentCostItems,60000);
+            s.options.timeoutRecent = setInterval(_recentCostItems,60 * 1000 * 2);
         };
 
         function setupModSelect2s() {
@@ -320,12 +328,12 @@
               baseClass:'com.k_int.kbplus.SubscriptionPackage'
             },
             dataType:'json'
-          }).done(function(data) {
+          })
+          .done(function(data) {
             var newSubPackge = $(s.ct.newSubPkg);
             var filterSubPkg = $(s.ft.filterSubPkg)
             newSubPackge.children('option').remove();
             filterSubPkg.children('option:gt(0)').remove();
-            //$('#filterPackage').append(s.misc.noOption);
             var numValues = data.values.length;
             for (var i = 0; i != numValues; i++) {
               $(s.ft.filterSubPkg).append('<option value="'+data.values[i].id+'">'+data.values[i].text+'</option>');
@@ -432,35 +440,44 @@
             }, 1500);
          };
 
+        var startLoadAnimation = function() {
+            s.options.timeout = setTimeout(function() {
+                $('#loading').show();
+            }, 50); //50ms delay
+        };
 
-        // //Pagination/filtering Handling code block
-        //function sortAndOrder()
-        //{
-        //
-        //
-        //};
+        var stopLoadAnimation = function() {
+            //If ajax call finishes before the timeout occurs, we wouldn't have shown any animation.
+            clearTimeout(s.options.timeout);
+            $('#loading').hide();
+        };
+
 
         //Binds everything which needs to be run the once, including the majority of dynamically rendered HTML content
         //For everything else which can't be binded once will be in _bindBehavior
         var _firstRun = function() {
+
+            $(document).ajaxStart(startLoadAnimation);
+            $(document).ajaxStop(stopLoadAnimation);
+
             $(s.ct.newIE).select2({
                 placeholder: "Identifier..",
                 minimumInputLength: 1,
                 ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-                  url: s.url.ajaxLookupURL,
-                dataType: 'json',
-                data: function (term, page) {
-                    return {
-                        format:'json',
-                        q: term,
-                        subFilter: $(s.ct.newSubscription).val(),
-                        baseClass:'com.k_int.kbplus.IssueEntitlement'
-                    };
-                },
-                results: function (data, page) {
-                  return {results: data.values};
+                    url: s.url.ajaxLookupURL,
+                    dataType: 'json',
+                    data: function (term, page) {
+                        return {
+                            format:'json',
+                            q: term,
+                            subFilter: $(s.ct.newSubscription).val(),
+                            baseClass:'com.k_int.kbplus.IssueEntitlement'
+                        };
+                    },
+                    results: function (data, page) {
+                      return {results: data.values};
+                    }
                 }
-              }
             });
 
             $(s.ct.newBudgetCode).select2({
@@ -565,19 +582,25 @@
             //todo check efficiency
             //todo bind select2
             s.mybody.on('click', s.ft.codeEdit, function(event) {
+                event.preventDefault();
                 $(this).popover({
+                     trigger: 'manual',
                      html:true,
                      placement:'top',
                      title:'Add to codes...',
-                     trigger:'click',
-                     template: "<div class='popover' style='width: 600px;'><div></div><div class='popover-inner'><h3 class='popover-title'></h3><div class='popover-content'></div>"+ $(this).data().toString() +"</div></div>",
+                     template: "<div class='popover' style='width: 600px;'><div></div><div class='popover-inner'><h3 class='popover-title'></h3><div class='popover-content'></div>"+ $(this).text() +"</div></div>",
                      'max-width':600,
                      content:function() {
                         //return getContent();
-                        console.log($(this));
                         return 'test'
                      }
                 });
+
+                if($(this).hasClass('pop')) {
+                    $(this).popover('hide').removeClass('pop');
+                } else {
+                    $(this).popover('show').addClass('pop');
+                }
             });
 
             s.mybody.on('click','.sortable', function(event){
@@ -612,7 +635,7 @@
 
                 $.ajax({
                     method: "POST",
-                    url: "<g:createLink url="[controller: 'finance', action: 'index']"/>",
+                    url: s.url.ajaxFinanceIndex,
                     data: data
                 })
                 .fail(function( jqXHR, textStatus, errorThrown ) {
@@ -625,6 +648,7 @@
             });
 
             s.mybody.on('click','#submitFilterMode', _submitFilterSearch);
+
 
             //End of firstRun...
         };
@@ -645,7 +669,7 @@
         *
         * @method init - Binds first run behaviour and AJAX driven plugins/etc
         *
-        * @method init - rebind is for AJAX driven plugins/etc
+        * @method rebind - rebind is for AJAX driven plugins/etc
         */
         return {
             init: function() {
@@ -767,7 +791,6 @@
 
         //////////////////////////////////////////////LEAVE FOR NOW//////////////////////////////////////////////
         function quickHelpInfo() {
-            alert('${session?.userPereferences?.showInfoIcon}');
             userInfo("Help","<b>Sorting</b> via clickable title links of the following : Cost Item#, Invoice#, Order#, Subscription, Package, date, IE ,,, " +
              "<b>Filter Search</b> via the 4 input fields : Invoice#, Order#, Subscription, and Package, selecting filter mode as ON and submitting the search. On finishing with your results reset via the 'reset' button,,," +
               "<b>Pagination</b> (<i>Results Navigation</i>) via the clickable links, below the results table,,," +
