@@ -187,4 +187,19 @@ class CostItem {
         }
         return [order,join,gspOrder]
     }
+
+    @Transient
+    static def orderedCurrency() {
+        def gbp = RefdataCategory.lookupOrCreate('Currency', 'GBP - United Kingdom Pound')
+        def eur = RefdataCategory.lookupOrCreate('Currency', 'EUR - Euro Member Countries')
+        def usd = RefdataCategory.lookupOrCreate('Currency', 'USD - United States Dollar')
+        def chf = RefdataCategory.lookupOrCreate('Currency', 'CHF - Switzerland Franc')
+
+        def currencyPriority = [gbp, eur, usd, chf]
+        def all_currencies   = RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?', 'Currency')
+        all_currencies.removeAll(currencyPriority)
+        all_currencies.addAll(0,currencyPriority)
+
+        all_currencies
+    }
 }

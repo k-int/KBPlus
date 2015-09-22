@@ -7,10 +7,11 @@
 </head>
 <body>
 
+<g:set var="costItemStatus"   scope="page" value="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','CostItemStatus')}"/>
 <g:set var="costItemCategory" scope="page" value="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','CostItemCategory')}"/>
 <g:set var="costItemElement"  scope="page" value="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','CostItemElement')}"/>
-<g:set var="currency"         scope="page" value="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','Currency')}"/>
 <g:set var="taxType"          scope="page" value="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','TaxType')}"/>
+<g:set var="currency"         scope="page" value="${com.k_int.kbplus.CostItem.orderedCurrency()}"/>
 
 <div hidden="hidden" id="loading">
     <img src="${resource(dir: 'images', file: 'loading.gif')}" />
@@ -96,7 +97,6 @@
             ct: { //create template
                 resetBtn:'#resetCreate',
                 datePickers:'.datepicker-class',
-                dateFormat:'yyyy-mm-dd',
                 newBudgetCode:"#newBudgetCode",
                 newIE:'#newIE',
                 newSubPkg:'#newPackage',
@@ -118,7 +118,8 @@
             options: {
                 timeoutLoading: null,
                 timeoutRecent: null,
-                showInfo:"${session?.userPereferences?.showInfoIcon}"
+                showInfo:"${session?.userPereferences?.showInfoIcon}",
+                dateFormat:"${session.sessionPreferences?.globalDatepickerFormat?: 'yyyy-mm-dd'}"
             }
         };
 
@@ -239,7 +240,7 @@
         //This is for AJAX functionality, inclusion of first run too!
         var _bindBehavior = function() {
             //s.mybody.on('click',s.resetBtn, _clearCreateForm); //Reset btn (create form)
-            $(s.datePickers).datepicker({format: s.dateFormat}); //datepicker
+            $(s.datePickers).datepicker({format: s.options.dateFormat}); //datepicker
             setupModSelect2s();
 
         };
