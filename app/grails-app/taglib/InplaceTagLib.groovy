@@ -81,6 +81,9 @@ class InplaceTagLib {
           break;
       }
 
+      if (attrs?.emptytext)
+          out << " data-emptytext=\"${attrs.emptytext}\""
+
       out << " data-url=\"${data_link}\""
       out << ">"
 
