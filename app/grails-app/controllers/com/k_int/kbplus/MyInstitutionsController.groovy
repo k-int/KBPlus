@@ -170,13 +170,11 @@ class MyInstitutionsController {
         if (params.validOn == null) {
             result.validOn = sdf.format(new Date(System.currentTimeMillis()))
             date_restriction = sdf.parse(result.validOn)
-        } else if (params.validOn == '') {
-            result.validOn = sdf.format(new Date(System.currentTimeMillis()))
-        } else {
+        } else if (params.validOn != ''){
             result.validOn = params.validOn
-
             date_restriction = sdf.parse(params.validOn)
         }
+
 
         def prop_types_list = PropertyDefinition.findAll()
           result.custom_prop_types = prop_types_list.collectEntries{
@@ -385,12 +383,14 @@ class MyInstitutionsController {
         def date_restriction = null;
         def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
 
-        if (params.validOn) {
-            result.validOn = params.validOn
-        } else {
+        if (params.validOn == null) {
             result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+            date_restriction = sdf.parse(result.validOn)
+        } else if (params.validOn != ''){
+            result.validOn = params.validOn
+            date_restriction = sdf.parse(params.validOn)
         }
-        date_restriction = sdf.parse(result.validOn)
+
 
         def dateBeforeFilter = null;
         def dateBeforeFilterVal = null;
