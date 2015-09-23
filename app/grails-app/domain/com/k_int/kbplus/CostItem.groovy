@@ -1,6 +1,7 @@
 package com.k_int.kbplus
 
 import com.k_int.kbplus.auth.User
+import grails.util.Holder
 
 import javax.persistence.Transient
 
@@ -190,16 +191,21 @@ class CostItem {
 
     @Transient
     static def orderedCurrency() {
-        def gbp = RefdataCategory.lookupOrCreate('Currency', 'GBP - United Kingdom Pound')
-        def eur = RefdataCategory.lookupOrCreate('Currency', 'EUR - Euro Member Countries')
-        def usd = RefdataCategory.lookupOrCreate('Currency', 'USD - United States Dollar')
-        def chf = RefdataCategory.lookupOrCreate('Currency', 'CHF - Switzerland Franc')
+        def all_currencies = RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?', 'Currency')
+        def staticOrder    = grails.util.Holders.config?.financials?.currency?.split("[|]")
 
-        def currencyPriority = [gbp, eur, usd, chf]
-        def all_currencies   = RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?', 'Currency')
-        all_currencies.removeAll(currencyPriority)
-        all_currencies.addAll(0,currencyPriority)
+        if (staticOrder) {
+            def currencyPriorityList = staticOrder.collect {RefdataCategory.lookupOrCreate('Currency', it)}
+            if (currencyPriorityList) {
+                all_currencies.removeAll(currencyPriorityList)
+                all_currencies.addAll(0, currencyPriorityList)
+            }
+        }
 
-        all_currencies
+        def result = all_currencies.collect {rdv ->
+            [id:rdv.id,text:rdv.value]
+        }
+
+        result
     }
 }

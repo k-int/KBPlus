@@ -18,6 +18,7 @@ class FinanceController {
     private final def ci_select       = 'select ci from CostItem as ci '
     private final def base_qry        = " from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) "
     private final def admin_role      = Role.findByAuthority('ROLE_ADMIN')
+    private final def defaultCurrency = RefdataCategory.lookupOrCreate('Currency','GBP - United Kingdom Pound')
 
     private boolean userCertified(User user, Org institution)
     {
@@ -67,7 +68,7 @@ class FinanceController {
         result.editable    =  SpringSecurityUtils.ifAllGranted(admin_role.authority)
         result.filterMode  =  params.filterMode?: "OFF"
         result.info        =  [] as List
-        params.max         =  params.int('max') ? Math.min(Integer.parseInt(params.max),200) : 10
+        params.max         =  params.int('max') ? Math.min(Integer.parseInt(params.max),200) : (user?.defaultPageSize?: 10)
         result.max         =  params.max
         result.offset      =  params.offset?: 0
         result.sort        =  ["desc","asc"].contains(params.sort)?params.sort : "asc"
@@ -82,6 +83,7 @@ class FinanceController {
         result.order = gspOrder
 
         def qry_params                  =  [result.institution]
+        //todo remove after UI sub select is changed to select2
         result.institutionSubscriptions =  Subscription.executeQuery(base_qry, qry_params);
 
         def cost_item_qry_params        =  [result.institution]
@@ -98,7 +100,7 @@ class FinanceController {
                 result.info.add([status:message(code: 'financials.result.filtered.info', args: [message(code: 'financials.result.filtered.mode')]),
                                  msg:message(code: 'finance.result.filtered.empty')])
                 result.filterMode =  "OFF" //SWITCHING BACK!!! ...Since nothing has been found, informed user!
-                result.wildcard   =  false
+                result.wildcard   =  true //default behaviour is ON
                 log.debug("FinanceController::index()  -- Performed filtering process... no results found, turned off filter mode")
             }
             else {
@@ -267,15 +269,20 @@ class FinanceController {
 
         def sub = null;
         if (params.newSubscription) {
-            sub = Subscription.get(params.long('newSubscription'));
+            try {
+                sub = Subscription.get(params.newSubscription.split(":")[1]);
+            } catch (Exception e) {
+                log.error("Non-valid subscription sent ${params.newSubscription}",e)
+            }
+
         }
 
         def pkg = null;
-        if (params.newPackage) {
+        if (params.newPackage?.size() > 2) { //default xx
             try {
                 pkg = SubscriptionPackage.load(params.newPackage.split(":")[1])
             } catch (Exception e) {
-                log.error("Non-valid subscription package sent ${params.newIe}",e)
+                log.error("Non-valid sub-package sent ${params.newPackage}",e)
             }
         }
 
@@ -310,17 +317,24 @@ class FinanceController {
         if(params.newIe)
         {
             try {
-                ie = IssueEntitlement.load(params.newIe.split(":")[1]) //OIDService uses get(), return proxy obj for ref instead
+                ie = IssueEntitlement.load(params.newIe.split(":")[1])
             } catch (Exception e) {
                 log.error("Non-valid IssueEntitlement sent ${params.newIe}",e)
             }
         }
 
-        def cost_item_status      = params.newCostItemStatus ? (RefdataValue.get(params.long('newCostItemStatus'))) : null;
-        def billing_currency      = params.newCostCurrency ? (RefdataValue.get(params.long('newCostCurrency'))) : null;
-        def cost_item_element     = params.newCostItemElement ? (RefdataValue.get(params.long('newCostItemElement'))): null
-        def cost_tax_type         = params.newCostTaxType ? (RefdataValue.get(params.long('newCostTaxType'))) : null
-        def cost_item_category    = params.newCostItemCategory ? (RefdataValue.get(params.long('newCostItemCategory'))): null
+        def billing_currency = null
+        if (params.long('newCostCurrency')) //GBP,etc
+        {
+            billing_currency = RefdataValue.get(params.newCostCurrency)
+            if (!billing_currency)
+                billing_currency = defaultCurrency
+        }
+
+        def cost_item_status    = params.newCostItemStatus ? (RefdataValue.get(params.long('newCostItemStatus'))) : null;    //estimate, commitment, etc
+        def cost_item_element   = params.newCostItemElement ? (RefdataValue.get(params.long('newCostItemElement'))): null    //admin fee, platform, etc
+        def cost_tax_type       = params.newCostTaxType ? (RefdataValue.get(params.long('newCostTaxType'))) : null           //on invoice, self declared, etc
+        def cost_item_category  = params.newCostItemCategory ? (RefdataValue.get(params.long('newCostItemCategory'))): null  //price, bank charge, etc
 //            def cost_billing_currency = params.newCostInBillingCurrency? (RefdataValue.get(params.long('newCostInBillingCurrency'))) : null;
 //            def cost_local_currency   = params.newCostInLocalCurrency? (RefdataValue.get(params.long('newCostInLocalCurrency'))) : null;
 
@@ -347,7 +361,6 @@ class FinanceController {
                 reference: params.newReference? params.newReference.trim()?.toLower() : null,
                 costItemStatus: cost_item_status,
                 costItemElement: cost_item_element,
-                dateCreated: new Date()
         )
 
 
