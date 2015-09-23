@@ -385,12 +385,15 @@ class MyInstitutionsController {
         def date_restriction = null;
         def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
 
-        if (params.validOn) {
+
+       if (params.validOn == null) {
+            result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+            date_restriction = sdf.parse(result.validOn)
+        } else if (params.validOn != ''){
             result.validOn = params.validOn
         } else {
             result.validOn = sdf.format(new Date(System.currentTimeMillis()))
         }
-        date_restriction = sdf.parse(result.validOn)
 
         def dateBeforeFilter = null;
         def dateBeforeFilterVal = null;
@@ -843,9 +846,6 @@ class MyInstitutionsController {
         if (checkUserHasRole(result.user, result.institution, 'INST_ADM')) result.is_admin = true
         else result.is_admin = false;
 
-        // Set default order and sort
-        if (!params.order) params.order = "asc"
-        if (!params.sort) params.sort = "tipp.title.title"
 
         // Set offset and max
         result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
@@ -863,7 +863,8 @@ class MyInstitutionsController {
         def limits = (isHtmlOutput) ? [max: result.max, offset: result.offset] : [offset: 0]
         def del_sub = RefdataCategory.lookupOrCreate('Subscription Status', 'Deleted')
         def del_ie =  RefdataCategory.lookupOrCreate('Entitlement Issue Status','Deleted');
-        def qry_params = [institution: result.institution, del_sub:del_sub, del_ie:del_ie]
+        def role_sub = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber'); 
+        def qry_params = [institution: result.institution, del_sub:del_sub, del_ie:del_ie, role_sub: role_sub]
         // def sub_qry =  "select ie from IssueEntitlement as ie JOIN ie.subscription.orgRelations as o LEFT OUTER JOIN ie.tipp.additionalPlatforms as ap LEFT OUTER JOIN ie.tipp.pkg.orgs AS role WHERE ie.tipp.title = t and o.roleType.value = 'Subscriber' AND o.org = :institution AND ie.subscription.status.value != 'Deleted'"
         def sub_qry = "from IssueEntitlement as ie INNER JOIN ie.subscription.orgRelations as o "
         if (filterOtherPlat) {
@@ -872,7 +873,7 @@ class MyInstitutionsController {
         if (filterPvd) {
             sub_qry += "INNER JOIN ie.tipp.pkg.orgs AS role "
         }
-        sub_qry += "WHERE o.roleType.value = 'Subscriber' "
+        sub_qry += "WHERE o.roleType = :role_sub "
         sub_qry += "AND o.org = :institution "
         sub_qry += "AND (ie.subscription.status is null or ie.subscription.status != :del_sub) "
         sub_qry += "AND (ie.status is null or ie.status != :del_ie ) "
