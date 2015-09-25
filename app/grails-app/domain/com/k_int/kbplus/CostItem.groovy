@@ -16,15 +16,19 @@ class CostItem {
 
     //Status & Costing Values...
     RefdataValue costItemStatus    //cost est,actual,etc
-    RefdataValue costItemType      //admin fee,content,etc
+    RefdataValue costItemType      //REDUNDANT needs to be removed
     RefdataValue costItemCategory
     RefdataValue billingCurrency  //GDP,USD,etc
     RefdataValue costItemElement
     RefdataValue taxCode
     RefdataValue includeInSubscription //include in sub details page
-    Double costInBillingCurrency   //The actual amount
-    Double costInLocalCurrency
-    String localFundCode  //unknown
+
+
+    Double costInBillingCurrency   //The actual amount - new cost ex tax
+    Double costInLocalCurrency     //local amount entered or calculated using temp field currency exachange in create
+
+
+    String localFundCode  //REDUNDANT needs to be removed
     String costDescription
     String reference
     Date datePaid

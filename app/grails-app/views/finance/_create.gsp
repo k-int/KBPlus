@@ -81,10 +81,8 @@
             <td>
                 <h3>Cost values and tax</h3>
                 <input type="number" name="newCostInBillingCurrency" placeholder="New Cost Ex-Tax - Billing Currency" id="newCostInBillingCurrency" step="0.01"/> <br/>
-                <input title="${g.message(code: 'financials.addNew.exchangeRate')}" type="text" class="percentage" name="newCostExchangeRate" placeholder="Exchange Rate %" id="newCostExchangeRate" value="1" /> <br/>
+                <input title="${g.message(code: 'financials.addNew.exchangeRate')}" type="text" class="percentage" name="newCostExchangeRate" placeholder="Exchange Rate" id="newCostExchangeRate" value="1" /> <br/>
                 <input type="number" name="newCostInLocalCurrency" placeholder="New Cost Ex-Tax - Local Currency" id="newCostInLocalCurrency" step="0.01"/> <br/>
-                <input type="number" name="newCostTaxRate" placeholder="New Cost Tax Rate" id="newCostTaxRate" step="0.01"/> <br/>
-                <input type="number" name="newCostTaxAmount" placeholder="New Cost Tax Amount" id="newCostTaxAmount" step="0.01"/> <br/>
 
                 <g:select name="newCostCurrency"
                           from="${currency}"

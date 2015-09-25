@@ -870,6 +870,8 @@
                 console.log('Running rebind method designed for AJAX');
                 _bindBehavior();
                 console.log('Finished rebind method designed for AJAX');
+                $('.xEditableValue').editable();
+                $(".xEditableManyToOne").editable();
             },
 
             //TEMP ACCESSIBLE METHODS
