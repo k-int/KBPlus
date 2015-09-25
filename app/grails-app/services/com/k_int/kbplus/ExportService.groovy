@@ -28,6 +28,8 @@ class ExportService {
 	/* *************
 	 *  CSV Exports 
 	 */
+    def role_subscriber = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber'); 
+    def role_cprov = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider');
 
 
 
@@ -190,6 +192,8 @@ class ExportService {
 	def StreamOutTitlesCSV(out, entitlements){
 		def starttime = printStart("Get Namespaces and max IE")
 		// Get distinct ID.Namespace and the maximum of entitlements for one title
+	    def hqlCoreDates = "select tip.coreDates from TitleInstitutionProvider as tip, IssueEntitlement as ie inner join  ie.subscription.orgRelations as o inner join ie.tipp.pkg.orgs as pkg_org where ie=:ie and o.roleType=:sub_role and pkg_org.roleType= :cp_role and tip.institution=o.org and tip.title=ie.tipp.title and tip.provider.id=pkg_org.org" 
+
 		def namespaces = []
 		def current_title_id = -1
 		def current_nb_ie = 0
@@ -232,9 +236,9 @@ class ExportService {
 				writer.write("IE.${it}.Core medium")
 			}
 			writer.write("\n")
-			
-//              result.titles.each { title ->
-//				  def ti = title[0]
+
+			// result.titles.each { title ->
+			// def ti = title[0]
 			current_title_id = -1
 			String entitlements_str
 			def earliest_date
@@ -286,8 +290,8 @@ class ExportService {
 				}
 				entitlements_str += "\","
 				def coreDateList = ""
-				e?.getTIP()?.coreDates.each{
-					coreDateList += it.toString() + " - "
+				TitleInstitutionProvider.executeQuery(hqlCoreDates,[ie:e,cp_role:role_cprov,sub_role:role_subscriber]).each{
+					coreDateList += "Something"
 				}
 				entitlements_str += "\"${coreDateList}\","
 				entitlements_str += "\"${e.coreStatus?:''}\""
@@ -301,6 +305,8 @@ class ExportService {
 			writer.write("${entitlements_str}");
 			writer.write("\n");
 			
+			printDuration(starttime, "Finished Export.Closing")
+
 			writer.flush()
 			writer.close()
 		}
