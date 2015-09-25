@@ -55,6 +55,8 @@ class TitleInstance {
        status column:'ti_status_rv_fk'
          type column:'ti_type_rv_fk'
         tipps sort:'startDate', order: 'asc'
+    sortTitle column:'sort_title', index: 'ti_sort_idx'
+
   }
 
   static constraints = {
