@@ -14,22 +14,24 @@ class CostItem {
     Order order
     Invoice invoice
 
-    RefdataValue costItemStatus    //cost est, actual, etc
-    RefdataValue costItemType      //admin fee, content, etc
+    //Status & Costing Values...
+    RefdataValue costItemStatus    //cost est,actual,etc
+    RefdataValue costItemType      //admin fee,content,etc
     RefdataValue costItemCategory
-    Boolean includeInSubscription
-
+    RefdataValue billingCurrency  //GDP,USD,etc
     RefdataValue costItemElement
-    RefdataValue billingCurrency
-    Double costInBillingCurrency
-    Double costInLocalCurrency
-    String localFundCode
     RefdataValue taxCode
+    RefdataValue includeInSubscription //include in sub details page
+    Double costInBillingCurrency   //The actual amount
+    Double costInLocalCurrency
+    String localFundCode  //unknown
     String costDescription
     String reference
     Date datePaid
     Date startDate
     Date endDate
+
+    //Edits...
     Date lastUpdated
     User lastUpdatedBy
     Date dateCreated

@@ -787,4 +787,6 @@ notifications.email.from='notification@kbplus.ac.uk'
 notifications.email.replyTo='no-reply@kbplus.ac.uk'
 notifications.email.genericTemplate=true //If enabled, no customisation in email i.e. Reminder inst info, User info... Else, Customised template will be sent to user
 
+//Finance
 grails.plugins.remotepagination.enableBootstrap=true
+financials.currency="GBP - United Kingdom Pound|EUR - Euro Member Countries|USD - United States Dollar|CHF - Switzerland Franc" //List in priority of order
