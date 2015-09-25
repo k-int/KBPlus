@@ -164,6 +164,19 @@ class AjaxController {
       cols:['value'],
       format:'simple'
     ],
+    'Currency' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Currency'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Currency'",
+      qryParams:[
+                   [
+                      param:'iDisplayLength',
+                      value: 200
+                   ]
+      ],
+      cols:['value'],
+      format:'simple'
+    ],
   ]
 
 
@@ -485,7 +498,7 @@ class AjaxController {
 
       def query_params = []
       config.qryParams.each { qp ->
-        // log.debug("Processing query param ${qp} value will be ${params[qp.param]}");
+        log.debug("Processing query param ${qp} value will be ${params[qp.param]}");
         if ( qp.clos ) {
           query_params.add(qp.clos(params[qp.param]?:''));
         }
@@ -548,7 +561,6 @@ class AjaxController {
     def result = []
     
     def config = refdata_config[params.id]
-
     if ( config == null ) {
       // If we werent able to locate a specific config override, assume the ID is just a refdata key
       config = [
@@ -565,8 +577,11 @@ class AjaxController {
 
       def query_params = []
       config.qryParams.each { qp ->
-        if ( qp.clos ) {
+        if ( qp?.clos) {
           query_params.add(qp.clos(params[qp.param]?:''));
+        }
+        else if(qp?.value) {
+            params."${qp.param}" = qp?.value
         }
         else {
           query_params.add(params[qp.param]);
