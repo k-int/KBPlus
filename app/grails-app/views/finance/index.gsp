@@ -14,11 +14,6 @@
 <g:set var="yn"               scope="page" value="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','YN')}"/>
 <g:set var="currency"         scope="page" value="${com.k_int.kbplus.CostItem.orderedCurrency()}"/>
 
-<div hidden="hidden" id="loading2">
-    testing
-    <img src="${resource(dir: 'images', file: 'loading.gif')}" />
-</div>
-
 <div class="container-fluid">
     <ul class="breadcrumb">
         <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
@@ -36,6 +31,10 @@
             </ul>
         </li>
     </ul>
+</div>
+
+<div style="padding-left: 2%" hidden="hidden" id="loading2">
+    <span>Loading...<img src="${resource(dir: 'images', file: 'loading.gif')}" /></span>
 </div>
 
 <div id="recentModalWrapper" class="wrapper">
@@ -195,53 +194,9 @@
               }
           });
 
-            //On user selection, saves previous and new selection, if there's an error it will reset to previous
-            //'create' is appended to a new input (e.g see createSearchChoice)
-            s.mybody.on("select2-selecting",s.ft.filterModSelect2, function(e) {
-                 var element = $(this);
-                 var currentText = "";
-                 var rel = "";
-                 var prevSelection = element.select2("data");
 
-                 if(e.choice.id.split(':')[1] == 'create')
-                 {
-                    rel         = element.data('domain') + ':create';
-                    currentText = e.choice.text.trim().toLowerCase().substring(9);
-                 }
-                 else {
-                    rel         = e.choice.id;
-                    currentText = e.choice.text.trim().toLowerCase();
-                 }
 
-                 $.ajax({
-                        method: "POST",
-                        url: s.url.ajaxFinanceRefData,
-                        data: {
-                            owner:element.data('owner')+':'+element.data('ownerid'), //org.kbplus.CostItem:1
-                            ownerField: element.data("ownerfield"), //order
-                            relation: rel,  //org.kbplus.Order:100
-                            relationField: element.data('relationfield'), //orderNumber
-                            val:currentText,         //123456
-                            shortcode:element.data('shortcode')
-                        },
-                        global: false
-                 })
-                .fail(function( jqXHR, textStatus, errorThrown ) {
-                     alert('Reset back to the original value, there was an issue');
-                     element.select2('data', prevSelection ? prevSelection : '');
-                 })
-                .done(function(data) {
-                    if(data.error.length > 0)
-                        element.select2('data', prevSelection);
-                    else {
-                        element.data('previous',prevSelection ? prevSelection.id+'_'+prevSelection.text : '');
-                        element.data('defaultvalue',e.choice.text);
-                        element.data('relationid',data.relation.id);
-                    }
-                });
-            });
-
-            $('#subscriptionFilter').select2({
+            $(s.ft.filterSubscription).select2({
                 width: '90%',
                 placeholder: "Type subscription name...",
                 minimumInputLength: 1,
@@ -270,7 +225,7 @@
                 }
             });
 
-            s.mybody.on("select2-selecting",s.ft.filterModSelect2, function(e) {
+            s.mybody.on("select2-selecting", s.ft.filterSubscription, function(e) {
                  var element = $(this);
                  var currentText = "";
                  var rel = "";
@@ -382,7 +337,7 @@
         //Fetch packages for the selected subscription
         var filterSubUpdated  = function() {
           var filterSubscription = $(this);
-
+            console.log("filter sub updated called ",filterSubscription.val());
           $.ajax({
             url: s.url.ajaxLookupURL,
             data: {
@@ -639,6 +594,52 @@
                 }
             });
 
+            //On user selection, saves previous and new selection, if there's an error it will reset to previous
+            //'create' is appended to a new input (e.g see createSearchChoice)
+            s.mybody.on("select2-selecting",s.ft.filterModSelect2, function(e) {
+                 var element = $(this);
+                 var currentText = "";
+                 var rel = "";
+                 var prevSelection = element.select2("data");
+
+                 if(e.choice.id.split(':')[1] == 'create')
+                 {
+                    rel         = element.data('domain') + ':create';
+                    currentText = e.choice.text.trim().toLowerCase().substring(9);
+                 }
+                 else {
+                    rel         = e.choice.id;
+                    currentText = e.choice.text.trim().toLowerCase();
+                 }
+
+                 $.ajax({
+                        method: "POST",
+                        url: s.url.ajaxFinanceRefData,
+                        data: {
+                            owner:element.data('owner')+':'+element.data('ownerid'), //org.kbplus.CostItem:1
+                            ownerField: element.data("ownerfield"), //order
+                            relation: rel,  //org.kbplus.Order:100
+                            relationField: element.data('relationfield'), //orderNumber
+                            val:currentText,         //123456
+                            shortcode:element.data('shortcode')
+                        },
+                        global: false
+                 })
+                .fail(function( jqXHR, textStatus, errorThrown ) {
+                     alert('Reset back to the original value, there was an issue');
+                     element.select2('data', prevSelection ? prevSelection : '');
+                 })
+                .done(function(data) {
+                    if(data.error.length > 0)
+                        element.select2('data', prevSelection);
+                    else {
+                        element.data('previous',prevSelection ? prevSelection.id+'_'+prevSelection.text : '');
+                        element.data('defaultvalue',e.choice.text);
+                        element.data('relationid',data.relation.id);
+                    }
+                });
+            });
+
             $('#filterMode').val("${filterMode}"); //default the filtering mode
             $('#submitFilterMode').prop('disabled',${filterMode=='OFF'}); //greys out search button if inactive
 
@@ -759,6 +760,7 @@
                 }
             });
 
+            //export
             s.mybody.on('click','#exportAll', function(e) {
                 var paginateData = $('#paginateInfo').data();
                 var data = {
@@ -766,26 +768,24 @@
                     filterMode: paginateData.filtermode,
                     opSort:true,
                     sort:paginateData.sort,
-                    order: order,
+                    order: paginateData.order,
                     offset:0,
                     max:paginateData.max,
-                    wildcard:paginateData.wildcard
-                };                if(paginateData.filtermode == "ON")
+                    wildcard:paginateData.wildcard,
+                    format:'csv'
+                };
+                if(paginateData.filtermode == "ON")
                 {
                     var formData = {
                         subscriptionFilter:paginateData.subscriptionfilter,
                         packageFilter:paginateData.packagefilter,
                         invoiceNumberFilter:paginateData.invoicenumberfilter,
                         orderNumberFilter:paginateData.ordernumberfilter,
-                        resetMode:paginateData.resetMode?paginateData.resetMode:'search',
-                        format:'csv'
+                        resetMode:paginateData.resetMode?paginateData.resetMode:'search'
                     }
                 }
                 data = (formData!=null)?$.param(formData) + '&' + $.param(data):$.param(data);
 
-
-
-                        //todo retrieve from pagination
                 $.ajax({
                     method: "POST",
                     url: s.url.ajaxFinanceIndex,
