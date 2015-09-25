@@ -99,8 +99,8 @@
                 advFilterBtn:'#advancedFilter',
                 advFilterOpts:'#advancedFilterOpt',
                 filterModSelect2:'.modifiedReferenceTypedown',
-                filterSubscription:'#filterSubscription',
-                filterSubPkg:'#filterPackage',
+                filterSubscription:'#subscriptionFilter',
+                filterSubPkg:'#packageFilter',
                 codeDelete: 'a.badge.budgetCode',
                 codeEdit:'a.budgetCode.editable-empty',
                 tableWrapper:'#filterTableWrapper'
@@ -146,14 +146,15 @@
                 },
                 global: false
             }).done(function(data) {
-                $('#recent').html(data);
+                $(s.misc.recentlyUpdated).html(data);
             });
 
             // Recently updated code block
-            s.options.timeoutRecent = setInterval(_recentCostItems,60 * 1000 * 3);
+            s.options.timeoutRecent = setInterval(_recentCostItems,60 * 1000 * 5);
         };
 
         //Setup to build
+        //todo make this configurable, factory builder style, pass in a list of config objects
         function setupModSelect2s() {
              //unable to use placeholder with initSelection, manually set via GSP with data-placeholder
             $(s.ft.filterModSelect2).select2({
@@ -195,7 +196,7 @@
           });
 
 
-
+            //subscription
             $(s.ft.filterSubscription).select2({
                 width: '90%',
                 placeholder: "Type subscription name...",
@@ -225,26 +226,60 @@
                 }
             });
 
+            //sub pkg
+
+            $(s.ft.filterSubPkg).select2({
+                width: '90%',
+                placeholder: "Type sub pkg name...",
+                minimumInputLength: 1,
+                global: false,
+                ajax: {
+                    url: s.url.ajaxLookupURL,
+                    dataType: 'json',
+                    data: function (term, page) {
+                        return {
+                            hideDeleted: 'true',
+                            hideIdent: 'false',
+                            inclSubStartDate: 'false',
+                            inst_shortcode: '${params.shortcode}',
+                            q: '%'+term , // contains search term
+                            page_limit: 20,
+                            baseClass:'com.k_int.kbplus.Subscription'
+                        };
+                    },
+                    results: function (data, page) {
+                        return {results: data.values};
+                    }
+                },
+                allowClear: true,
+                formatSelection: function(data) {
+                   return data.text;
+                }
+            });
+
             s.mybody.on("select2-selecting", s.ft.filterSubscription, function(e) {
                  var element = $(this);
-                 var currentText = "";
-                 var rel = "";
+                 var text = e.choice.text;
+                 var id   = e.choice.id;;
                  var prevSelection = element.select2("data");
 
-                 if(e.choice.id.split(':')[1] == 'create')
-                 {
-                    rel         = element.data('domain') + ':create';
-                    currentText = e.choice.text.trim().toLowerCase().substring(9);
-                 }
-                 else {
-                    rel         = e.choice.id;
-                    currentText = e.choice.text.trim().toLowerCase();
-                 }
-
-
+                 console.log('filter sub selection ...','text', text,'id', id,'prev sel', prevSelection, "element",element);
             });
-        }
 
+            s.mybody.on("select2-removed", s.ft.filterSubscription, function(e) {
+                 var element = $(this);
+                 var subPkg = $('#packageFilter');
+                 var isSub = element.id === s.ft.filterSubscription //Sub
+                 if(isSub)
+                {
+
+                }
+
+                 console.log('filter sub CLEARING selection ...',element);
+            });
+
+
+            }
 
         //todo See why this is causing delete of everything on create
         //Separate function instead of
@@ -349,7 +384,7 @@
           })
           .done(function(data) {
             var newSubPackge = $(s.ct.newSubPkg);
-            var filterSubPkg = $(s.ft.filterSubPkg)
+            var filterSubPkg = $(s.ft.filterSubPkg);
             newSubPackge.children('option').remove();
             filterSubPkg.children('option:gt(0)').remove();
             var numValues = data.values.length;

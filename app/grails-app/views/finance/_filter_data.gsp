@@ -39,7 +39,6 @@
         <td>
             <g:if test="${editable}">
                 <g:xEditable emptytext="Edit Paid-Date" owner="${ci}" type="date" field="datePaid" /> </br></br>
-
                 <g:xEditableRefData config="CostItemStatus" emptytext="Edit Status" owner="${ci}" field="costItemStatus" /></br>
                 <g:xEditableRefData config="CostItemCategory" emptytext="Edit Category" owner="${ci}" field="costItemCategory" /></br>
                 <g:xEditableRefData config="CostItemElement" emptytext="Edit Element" owner="${ci}" field="costItemElement" /></br>
@@ -70,7 +69,7 @@
                             <span class="budgetCode">${bc.value.encodeAsHTML()} </span>
                             <a style="display: inline-block" id="bcci_${bc.id}_${ci.id}" class="badge budgetCode">x</a>
                         </g:each>
-                        <a class="editable-empty budgetCode" data-owner="${ci.id}">Add Codes...</a>
+                        <a class="editable-empty budgetCode" style="cursor: pointer;" data-owner="${ci.id}">Add Codes...</a>
                     </div>
                 </div> </br></br>
                 <g:xEditable emptytext="Edit Start-Date" owner="${ci}" type="date" field="startDate" /> &nbsp;<i>to</i>&nbsp;
