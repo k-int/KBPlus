@@ -894,41 +894,25 @@ class MyInstitutionsController {
 
         if (filterSub) {
             sub_qry += " AND sub.sub_id in ( :subs ) "
-            qry_params.subs = "" 
-            for(int i=0;i<filterSub.size();i++){
-               qry_params.subs += "${filterSub[i]}"
-               if(i+1< filterSub.size()) qry_params.subs +=", " 
-            }
+            qry_params.subs = filterSub.join(", ")
         }
 
         if (filterOtherPlat) {
             sub_qry += " AND ap.id in ( :addplats )"
-           qry_params.addplats = ""
-            for(int i=0;i<filterOtherPlat.size();i++){
-               qry_params.addplats += "${filterOtherPlat[i]}"
-               if(i+1< filterOtherPlat.size()) qry_params.addplats +=", " 
-            }
+           qry_params.addplats = filterOtherPlat.join(", ")
         }
 
         if (filterHostPlat) {
             sub_qry += " AND tipp.tipp_plat_fk in ( :plats )"
-            qry_params.plats = ""
-            for(int i=0;i<filterHostPlat.size();i++){
-               qry_params.plats += "${filterHostPlat[i]}"
-               if(i+1< filterHostPlat.size()) qry_params.plats +=", " 
-            }
+            qry_params.plats = filterHostPlat.join(", ")
 
         }
 
         if (filterPvd) {
             def cp = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider').id
-            qry_params.cprole = cp
             sub_qry += " AND orgrole.or_roletype_fk = :cprole  AND orgrole.or_org_fk IN (:provider) "
-            qry_params.provider = ""
-            for(int i=0;i<filterPvd.size();i++){
-               qry_params.provider += "${filterPvd[i]}"
-               if(i+1< filterPvd.size()) qry_params.provider +=", " 
-            }
+            qry_params.cprole = cp
+            qry_params.provider = filterPvd.join(", ")
         }
 
         def having_clause = params.filterMultiIE ? 'having count(ie.ie_id) > 1' : ''
@@ -954,7 +938,7 @@ class MyInstitutionsController {
             result = setFiltersLists(result, date_restriction)
         }else{
             //Else return IEs
-            def exportQuery = "SELECT ie.ie_id, ${queryStr}".toString()
+            def exportQuery = "SELECT ie.ie_id, ${queryStr} order by ti.sort_title asc ".toString()
             result.entitlements = sql.rows(exportQuery,qry_params).collect { IssueEntitlement.get(it.ie_id) }
         } 
 
