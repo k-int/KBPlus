@@ -2,18 +2,20 @@
 <html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta name="layout" content="mmbootstrap"/>
-    <link rel="stylesheet" href="${resource(dir: 'css', file: 'style.css')}" type="text/css"/>
     <title>KB+ ${institution.name} :: Financial Information</title>
 </head>
 <body>
 
+%{--Run once data... can be reused for edit based functionality too. Pointless sending back this static data every request --}%
 <g:set var="costItemStatus"   scope="page" value="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','CostItemStatus')}"/>
 <g:set var="costItemCategory" scope="page" value="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','CostItemCategory')}"/>
 <g:set var="costItemElement"  scope="page" value="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','CostItemElement')}"/>
 <g:set var="taxType"          scope="page" value="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','TaxType')}"/>
+<g:set var="yn"               scope="page" value="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','YN')}"/>
 <g:set var="currency"         scope="page" value="${com.k_int.kbplus.CostItem.orderedCurrency()}"/>
 
-<div hidden="hidden" id="loading">
+<div hidden="hidden" id="loading2">
+    testing
     <img src="${resource(dir: 'images', file: 'loading.gif')}" />
 </div>
 
@@ -25,6 +27,14 @@
             <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
         </g:if>
         <li class="pull-left"><a class="badge badge-info" onclick="quickHelpInfo()">?</a>&nbsp;</li>
+
+        <li class="dropdown pull-right">
+            <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>
+
+            <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
+                <li><a id="exportAll" style="cursor: pointer">CSV Export (All Results)</a></li>
+            </ul>
+        </li>
     </ul>
 </div>
 
@@ -74,6 +84,7 @@
 
 <r:script type="text/javascript">
 
+     //todo use AJAX promises, refactor into a resuable AJAX function using a callback object
      //Module pattern
      ;var Finance = (function(){
         var s = { //Setup
@@ -92,7 +103,8 @@
                 filterSubscription:'#filterSubscription',
                 filterSubPkg:'#filterPackage',
                 codeDelete: 'a.badge.budgetCode',
-                codeEdit:'a.budgetCode.editable-empty'
+                codeEdit:'a.budgetCode.editable-empty',
+                tableWrapper:'#filterTableWrapper'
             },
             ct: { //create template
                 resetBtn:'#resetCreate',
@@ -139,9 +151,10 @@
             });
 
             // Recently updated code block
-            s.options.timeoutRecent = setInterval(_recentCostItems,60 * 1000 * 2);
+            s.options.timeoutRecent = setInterval(_recentCostItems,60 * 1000 * 3);
         };
 
+        //Setup to build
         function setupModSelect2s() {
              //unable to use placeholder with initSelection, manually set via GSP with data-placeholder
             $(s.ft.filterModSelect2).select2({
@@ -172,8 +185,7 @@
                  var existsAlready = false;
                  for (var i = 0; i < data.length; i++)
                  {
-                    if(term.toLowerCase() == data[i].text.toLowerCase())
-                    {
+                    if(term.toLowerCase() == data[i].text.toLowerCase()) {
                         existsAlready = true;
                         break;
                     }
@@ -183,6 +195,8 @@
               }
           });
 
+            //On user selection, saves previous and new selection, if there's an error it will reset to previous
+            //'create' is appended to a new input (e.g see createSearchChoice)
             s.mybody.on("select2-selecting",s.ft.filterModSelect2, function(e) {
                  var element = $(this);
                  var currentText = "";
@@ -226,6 +240,54 @@
                     }
                 });
             });
+
+            $('#subscriptionFilter').select2({
+                width: '90%',
+                placeholder: "Type subscription name...",
+                minimumInputLength: 1,
+                global: false,
+                ajax: {
+                    url: s.url.ajaxLookupURL,
+                    dataType: 'json',
+                    data: function (term, page) {
+                        return {
+                            hideDeleted: 'true',
+                            hideIdent: 'false',
+                            inclSubStartDate: 'false',
+                            inst_shortcode: '${params.shortcode}',
+                            q: '%'+term , // contains search term
+                            page_limit: 20,
+                            baseClass:'com.k_int.kbplus.Subscription'
+                        };
+                    },
+                    results: function (data, page) {
+                        return {results: data.values};
+                    }
+                },
+                allowClear: true,
+                formatSelection: function(data) {
+                   return data.text;
+                }
+            });
+
+            s.mybody.on("select2-selecting",s.ft.filterModSelect2, function(e) {
+                 var element = $(this);
+                 var currentText = "";
+                 var rel = "";
+                 var prevSelection = element.select2("data");
+
+                 if(e.choice.id.split(':')[1] == 'create')
+                 {
+                    rel         = element.data('domain') + ':create';
+                    currentText = e.choice.text.trim().toLowerCase().substring(9);
+                 }
+                 else {
+                    rel         = e.choice.id;
+                    currentText = e.choice.text.trim().toLowerCase();
+                 }
+
+
+            });
         }
 
 
@@ -240,7 +302,7 @@
         //This is for AJAX functionality, inclusion of first run too!
         var _bindBehavior = function() {
             //s.mybody.on('click',s.resetBtn, _clearCreateForm); //Reset btn (create form)
-            $(s.datePickers).datepicker({format: s.options.dateFormat}); //datepicker
+            $(s.ct.datePickers).datepicker({format: s.options.dateFormat}); //datepicker
             setupModSelect2s();
 
         };
@@ -301,7 +363,7 @@
                         $("#bulkdelete-a" + val).remove();
                         $("#bulkdelete-b" + val).remove();
                     });
-                    updateResults('delete:'+data.successful.length);
+                    _updateResults('delete:'+data.successful.length);
                 });
            }
         };
@@ -443,14 +505,53 @@
 
         var startLoadAnimation = function() {
             s.options.timeout = setTimeout(function() {
-                $('#loading').show();
+                $(s.ft.tableWrapper).addClass('overlay');
+                $('#loading2').show();
             }, 50); //50ms delay
         };
 
+        //If ajax call finishes before the timeout occurs, we wouldn't have shown any animation.
         var stopLoadAnimation = function() {
-            //If ajax call finishes before the timeout occurs, we wouldn't have shown any animation.
+            $('#loading2').hide();
+            $(s.ft.tableWrapper).removeClass('overlay');
             clearTimeout(s.options.timeout);
-            $('#loading').hide();
+        };
+
+        //todo finalise, remove global access
+        var _updateResults = function(e) {
+            var action = $.isEmptyObject($(this).data('action'))? e : $(this).data('action');
+            console.log("Performing update of results via action : "+action);
+            var paginateData   = $('#paginateInfo').data();
+            var adjustedOffset = paginateData.offset;
+            if(action.startsWith('delete'))
+            {
+                var newTotal = parseInt(paginateData.total) - parseInt(action.split(':')[1]);
+                if(newTotal % paginateData.max == 0 && adjustedOffset !=0)
+                    adjustedOffset = paginateData.offset - paginateData.max;
+            }
+
+            $.ajax({
+                method: "POST",
+                url: s.url.ajaxFinanceIndex,
+                data: {
+                    shortcode:"${params.shortcode}",
+                    offset:adjustedOffset,
+                    max:paginateData.max,
+                    sort:paginateData.sort,
+                    order:paginateData.order,
+                    filterMode: paginateData.filtermode,
+                    wildcard: paginateData.wildcard,
+                    mode:"updateResults"
+                }
+            })
+            .fail(function( jqXHR, textStatus, errorThrown ) {
+                 errorHandling(textStatus,'Updating results after action: '+action,errorThrown);
+             })
+            .done(function(data) {
+                 console.log('Success: called updateResults...');
+                 $(s.ft.filterTemplate).html(data);
+                 _bindBehavior();
+            });
         };
 
 
@@ -643,12 +744,62 @@
                      errorHandling(textStatus,'Sorting (via '+ selected +')',errorThrown);
                   })
                 .done(function(data) {
-                     $('#filterTemplate').html(data);
+                     $(s.ft.filterTemplate).html(data);
+                     _bindBehavior();
                 });
                 return false;
             });
 
             s.mybody.on('click','#submitFilterMode', _submitFilterSearch);
+
+            s.mybody.on('keyup','input.percentage', function() {
+                var percent = $(this).val();
+                if (percent.length > 0 && percent.endsWith("%")) {
+                    $(this).val(percent+'%')
+                }
+            });
+
+            s.mybody.on('click','#exportAll', function(e) {
+                var paginateData = $('#paginateInfo').data();
+                var data = {
+                    shortcode: "${params.shortcode}",
+                    filterMode: paginateData.filtermode,
+                    opSort:true,
+                    sort:paginateData.sort,
+                    order: order,
+                    offset:0,
+                    max:paginateData.max,
+                    wildcard:paginateData.wildcard
+                };                if(paginateData.filtermode == "ON")
+                {
+                    var formData = {
+                        subscriptionFilter:paginateData.subscriptionfilter,
+                        packageFilter:paginateData.packagefilter,
+                        invoiceNumberFilter:paginateData.invoicenumberfilter,
+                        orderNumberFilter:paginateData.ordernumberfilter,
+                        resetMode:paginateData.resetMode?paginateData.resetMode:'search',
+                        format:'csv'
+                    }
+                }
+                data = (formData!=null)?$.param(formData) + '&' + $.param(data):$.param(data);
+
+
+
+                        //todo retrieve from pagination
+                $.ajax({
+                    method: "POST",
+                    url: s.url.ajaxFinanceIndex,
+                    data: data
+                })
+                .fail(function( jqXHR, textStatus, errorThrown ) {
+                     errorHandling(textStatus,'Export CSV',errorThrown);
+                  })
+                .done(function(data) {
+                     //$(s.ft.filterTemplate).html(data);
+                     console.log(data);
+                });
+                return false;
+            });
 
 
             //End of firstRun...
@@ -688,7 +839,8 @@
 
             //TEMP ACCESSIBLE METHODS
             filterValidation: filterValidation,
-            scrollTo: _scrollTo
+            scrollTo: _scrollTo,
+            updateResults: _updateResults
         };
         //End of public returned methods...
 
@@ -702,56 +854,12 @@
             if (typeof root == 'undefined'){
                 root = $('body');
             }
-
             $('.xEditable',root).editable();
-            $('.modifiedReferenceTypedown',root).select2(); //todo need to put full set up for this to work!
-            $('.finance-select2',root).select2();
         }
 
 
 
         //////////////////////////////////////////////TO REFACTOR//////////////////////////////////////////////
-
-
-        //Page updating/actions - i.e. before/after: delete, create
-        function updateResults(action) {
-            console.log("Performing update of results via action : "+action);
-            var paginateData   = $('#paginateInfo').data();
-            var adjustedOffset = paginateData.offset;
-            if(action.startsWith('delete'))
-            {
-                var newTotal = parseInt(paginateData.total) - parseInt(action.split(':')[1]);
-                if(newTotal % paginateData.max == 0 && adjustedOffset !=0)
-                    adjustedOffset = paginateData.offset - paginateData.max;
-            }
-
-            $.ajax({
-                method: "POST",
-                url: "<g:createLink controller='finance' action='index'/>",
-                data: {
-                    shortcode:"${params.shortcode}",
-                    offset:adjustedOffset,
-                    max:paginateData.max,
-                    sort:paginateData.sort,
-                    order:paginateData.order,
-                    filterMode: paginateData.filtermode,
-                    wildcard: paginateData.wildcard,
-                    mode:"updateResults"
-                }
-            })
-            .fail(function( jqXHR, textStatus, errorThrown ) {
-                 errorHandling(textStatus,'Updating results after action: '+action,errorThrown);
-             })
-            .done(function(data) {
-                 console.log('Success: called updateResults...');
-                 $('#filterTemplate').html(data);
-                 var ftWrapper = $('#filterTemplate'); //var theData   = $(data); ftWrapper.empty().append(theData);
-                 tester(ftWrapper);
-            });
-        }
-
-
-
 
         function filterSelection() {
             if($('#submitFilterMode').attr("value")!="reset")

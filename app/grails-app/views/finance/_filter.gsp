@@ -38,7 +38,7 @@
                                class="input-medium required-indicator filterUpdated"
                                id="filterInvoiceNumber" value="${params.invoiceNumberFilter}"/>
                     </th>
-                    <th><a class="sortable ${order=="order#"? "sorted":''}"  data-order="order#">Order#</a><br/>
+                    <th><a class="sortable ${order=="order#"? "sorted ${sort}":''}"  data-order="order#">Order#</a><br/>
                         <input type="text" name="orderNumberFilter"
                                class="input-medium required-indicator filterUpdated"
                                id="filterOrderNumber"  value="${params.orderNumberFilter}" data-type="select"/>
@@ -48,9 +48,6 @@
                         <input class="input-medium required-indicator" style="width:250px;" name="subscriptionFilter" id="subscriptionFilter" value="${params.subscriptionFilter}"/> <br/>
                     </th>
                     <th> <a data-order="Package"  class="sortable ${order=="Package"? "sorted ${sort}":''}">Package</a> <br/>
-                        %{--<select name="packageFilter" class="input-medium required-indicator filterUpdated"  id="filterPackage" value="${params.packageFilter}">--}%
-                            %{--<option value="xx">Not specified</option>--}%
-                        %{--</select>--}%
                         <input class="input-medium required-indicator filterUpdated" style="width:250px;" name="packageFilter" id="packageFilter" value="${params.packageFilter}"/> <br/>
                     </th>
                     <th style="vertical-align: top;">IE</th>
@@ -80,15 +77,17 @@
 
                 <tr>
                     <th>
-                        <a style="color: #990100;" data-order="datePaid" class="sortable ${order=="datePaid"? "sorted ${sort}":''}">Date Paid</a><br/>
+                        <a style="color: #990100;" style="vertical-align: top;" data-order="datePaid" class="sortable ${order=="datePaid"? "sorted ${sort}":''}">Date Paid</a><br/><br/>
+
+                        Status<br/>Category<br/>Element</br>Tax Type
                     </th>
                     <th>Amount [billing]/<br/>[local]</th>
                     <th>
-                        Reference &nbsp;/&nbsp; Codes </br></br>
+                        Reference </br></br> Codes </br></br>
                         <a style="color: #990100;" data-order="startDate" class="sortable ${order=="startDate"? "sorted ${sort}":''}">Start Period</a> &nbsp;<i>to</i>&nbsp;
                         <a style="color: #990100;" data-order="endDate" class="sortable ${order=="endDate"? "sorted ${sort}":''}">End Period</a>
                     </th>
-                    <th colspan="2">Description</th>
+                    <th colspan="2">Included in Subscription / Description</th>
                 </tr>
             %{--End of table row two of headers--}%
             </thead>
@@ -140,5 +139,5 @@
          data-filterMode="${filterMode}" data-total="${cost_item_count}" data-resetMode="${params.resetMode}" data-subscriptionFilter="${params.subscriptionFilter}"
          data-invoiceNumberFilter="${params.invoiceNumberFilter}" data-orderNumberFilter="${params.orderNumberFilter}" data-packageFilter="${params.packageFilter}">
     </div>
-    <util:remotePaginate title="${g.message(code: 'financials.pagination.title')}" onFailure="Finance.errorHandling(textStatus,'Pagination',errorThrown)" offset='0' onComplete="Finance.scrollTo(null,'#costTable');tester();" onSuccess="filterSelection()" params="${params+["filterMode": "${filterMode}", "sort":"${sort}", "order":"${order}"]}"  controller="finance" action="index" total="${cost_item_count}"  update="filterTemplate" max="20" pageSizes="[10, 20, 50, 100, 200]" alwaysShowPageSizes="true"/>
+    <util:remotePaginate title="${g.message(code: 'financials.pagination.title')}" onFailure="errorHandling(textStatus,'Pagination',errorThrown)" offset='0' onComplete="Finance.scrollTo(null,'#costTable');Finance.rebind();" onSuccess="filterSelection()" params="${params+["filterMode": "${filterMode}", "sort":"${sort}", "order":"${order}", "format":"frag"]}"  controller="finance" action="index" total="${cost_item_count}"  update="filterTemplate" max="20" pageSizes="[10, 20, 50, 100, 200]" alwaysShowPageSizes="true"/>
 </div>

@@ -38,7 +38,12 @@
     <tr id="bulkdelete-b${ci.id}">
         <td>
             <g:if test="${editable}">
-                <g:xEditable emptytext="Edit Paid-Date" owner="${ci}" type="date" field="datePaid" /> </br>
+                <g:xEditable emptytext="Edit Paid-Date" owner="${ci}" type="date" field="datePaid" /> </br></br>
+
+                <g:xEditableRefData config="CostItemStatus" emptytext="Edit Status" owner="${ci}" field="costItemStatus" /></br>
+                <g:xEditableRefData config="CostItemCategory" emptytext="Edit Category" owner="${ci}" field="costItemCategory" /></br>
+                <g:xEditableRefData config="CostItemElement" emptytext="Edit Element" owner="${ci}" field="costItemElement" /></br>
+                <g:xEditableRefData config="TaxType" emptytext="Edit Tax Code" owner="${ci}" field="taxCode" />
             </g:if>
             <g:else>
                 <g:formatDate format="${session.sessionPreferences?.globalDateFormat}" date="${ci?.datePaid}"/>
@@ -58,15 +63,15 @@
         </td>
         <td>
             <g:if test="${editable}">
-                <g:xEditable emptytext="Edit Ref" owner="${ci}" field="reference" /> &nbsp;/&nbsp;
+                <g:xEditable emptytext="Edit Ref" owner="${ci}" field="reference" /> </br></br>
                 <div style="display: inline-block" class="budgetCodeWrapper">
                     <div id="budgetcodes_${ci.id}">
                         <g:each in="${ci.budgetcodes}" var="bc">
                             <span class="budgetCode">${bc.value.encodeAsHTML()} </span>
                             <a style="display: inline-block" id="bcci_${bc.id}_${ci.id}" class="badge budgetCode">x</a>
                         </g:each>
+                        <a class="editable-empty budgetCode" data-owner="${ci.id}">Add Codes...</a>
                     </div>
-                    <a class="editable-empty budgetCode" data-owner="${ci.id}">Add Codes...</a>
                 </div> </br></br>
                 <g:xEditable emptytext="Edit Start-Date" owner="${ci}" type="date" field="startDate" /> &nbsp;<i>to</i>&nbsp;
                 <g:xEditable emptytext="Edit End-Date" owner="${ci}" type="date" field="endDate" />
@@ -80,6 +85,7 @@
         </td>
         <td colspan="3">
             <g:if test="${editable}">
+                <g:xEditableRefData owner="${ci}" field="includeInSubscription" config="YN" /> &nbsp;/&nbsp;
                 <g:xEditable emptytext="Edit Description" owner="${ci}" field="costDescription" />
             </g:if>
             <g:else>
