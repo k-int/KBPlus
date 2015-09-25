@@ -801,12 +801,12 @@
                 var data = {
                     shortcode: "${params.shortcode}",
                     filterMode: paginateData.filtermode,
+                    wildcard:paginateData.wildcard,
                     opSort:true,
                     sort:paginateData.sort,
                     order: paginateData.order,
                     offset:0,
                     max:paginateData.max,
-                    wildcard:paginateData.wildcard,
                     format:'csv'
                 };
                 if(paginateData.filtermode == "ON")
@@ -819,19 +819,23 @@
                         resetMode:paginateData.resetMode?paginateData.resetMode:'search'
                     }
                 }
+                var object = $.extend({}, data, formData);
+                console.log(object);
+                //todo Change to extends
                 data = (formData!=null)?$.param(formData) + '&' + $.param(data):$.param(data);
 
                 $.ajax({
                     method: "POST",
-                    url: s.url.ajaxFinanceIndex,
+                    url: "<g:createLink controller='finance' action='financialsExport'></g:createLink>",
                     data: data
                 })
                 .fail(function( jqXHR, textStatus, errorThrown ) {
                      errorHandling(textStatus,'Export CSV',errorThrown);
                   })
                 .done(function(data) {
-                     //$(s.ft.filterTemplate).html(data);
+                     csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(data);
                      console.log(data);
+                     window.open(csvData, 'Finance Data');
                 });
                 return false;
             });
@@ -884,16 +888,6 @@
     })();
 
     Finance.init();
-
-
-        ////////////////////////////////////////////////LAST TO SORT//////////////////////////////////////////////
-        function tester(root) {
-            if (typeof root == 'undefined'){
-                root = $('body');
-            }
-            $('.xEditable',root).editable();
-        }
-
 
 
         //////////////////////////////////////////////TO REFACTOR//////////////////////////////////////////////

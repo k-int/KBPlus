@@ -93,6 +93,7 @@ class FinanceController {
     private def financialData(result,params,user) {
         //Setup params
         result.editable    =  SpringSecurityUtils.ifAllGranted(admin_role.authority)
+        params.editable    = result.editable
         result.filterMode  =  params.filterMode?: "OFF"
         result.info        =  [] as List
         params.max         =  params.int('max') ? Math.min(Integer.parseInt(params.max),200) : (user?.defaultPageSize?: 10)
@@ -140,7 +141,7 @@ class FinanceController {
             result.info.addAll(qryOutput.valid)
         }
 
-        //Normal browse mode, default behaviour
+        //Normal browse mode, default behaviour, nothing found from trying to filter, resorts to below
         if (result.filterMode == "OFF" || params.resetMode == "reset")
         {
             //'SELECT ci FROM CostItem AS ci LEFT OUTER JOIN ci.order AS o WHERE ci.owner = ? ORDER BY COALESCE(o.orderNumber,?) ASC, ci.id ASC'
@@ -152,6 +153,8 @@ class FinanceController {
 
 
     def financialsExport()  {
+        log.debug("Financial Export :: ${params}")
+
         if (request.isPost() && params.format == "csv") {
             def result = [:]
             result.institution =  Org.findByShortcode(params.shortcode)
@@ -163,18 +166,18 @@ class FinanceController {
 
             financialData(result,params,user)
 
-            if (result.result.cost_item_count > 0)
+            if (result.cost_item_count > 0)
             {
                 response.setHeader("Content-disposition", "attachment; filename=${result?.institution}.csv")
                 response.contentType = "text/csv"
                 def out = response.outputStream
                 def useHeader = params.header? true : false
-                processFinancialCSV(out,chainModel,useHeader)
+                processFinancialCSV(out,result,useHeader)
                 out.close()
             }
             else
             {
-                response.sendError(501)
+                return null
             }
         }
         else
@@ -190,6 +193,7 @@ class FinanceController {
      * @param header - true or false
      * @return
      */
+    //todo change for batch processing... don't want to kill the server!
     def private processFinancialCSV(out, result, header) {
         def generation_start = new Date()
 

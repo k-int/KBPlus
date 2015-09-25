@@ -929,3 +929,27 @@ th a.asc {
 th a.desc {
     background-image: url(../images/skin/sorted_desc.gif) no-repeat!important;
 }
+
+th a.sortable {
+    cursor: pointer;
+}
+
+/*To grey out area on AJAX load, applied/removed dynamically with loading/completion*/
+.overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background: rgb(208, 208, 208) transparent;
+    background: rgba(208, 208, 208, 0.8);
+}
+
+#loading2 img {
+    width: 50px;
+    height: 57px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -28px 0 0 -25px;
+}

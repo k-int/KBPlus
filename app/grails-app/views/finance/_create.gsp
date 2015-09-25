@@ -96,16 +96,17 @@
                 <input type="text" style="width: 220px; border-radius: 4px;" placeholder="New code or lookup code" name="newBudgetCode" id="newBudgetCode" ><br/><br/><br/>
                 <h3>Validity Period (Dates)</h3>
                 From: <input class="datepicker-class" placeholder="Start Date" type="date" id="newStartDate" name="newStartDate"/> </br>
-                To: &nbsp;&nbsp;&nbsp;&nbsp;<input class="datepicker-class" placeholder="End Date"   type="date" id="newEndDate" name="newEndDate"/>
+                To: &nbsp;&nbsp;&nbsp;&nbsp;<input class="datepicker-class" placeholder="End Date" type="date" id="newEndDate" name="newEndDate"/>
             </td>
             <td colspan="2">
-                <h3>Include in Subscription</h3>
-                <g:select style="width: 60%" name="includeInSubscription"
-                          from="${yn}"
-                          optionKey="id"
-                          title="${g.message(code: 'financials.addNew.inclSub')}"
-                          optionValue="value"
-                />
+                %{--todo Get some clarity on what includeInSubscription is actually for--}%
+                %{--<h3>Include in Subscription</h3>--}%
+                %{--<g:select style="width: 60%" name="includeInSubscription"--}%
+                          %{--from="${yn}"--}%
+                          %{--optionKey="id"--}%
+                          %{--title="${g.message(code: 'financials.addNew.inclSub')}"--}%
+                          %{--optionValue="value"--}%
+                %{--/>--}%
                 <h3>Description</h3>
                 <textarea name="newDescription"
                           placeholder="New Item Description" id="newCostItemDescription"/></textarea>
