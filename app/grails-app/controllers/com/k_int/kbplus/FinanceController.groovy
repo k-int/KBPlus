@@ -93,6 +93,12 @@ class FinanceController {
     private def financialData(result,params,user) {
         //Setup params
         result.editable    =  SpringSecurityUtils.ifAllGranted(admin_role.authority)
+        
+        // Ensure we also add to the request object as an attribute here so that the Taglib picks
+        // it up
+        request.setAttribute("editable", result.editable)
+        
+        
         result.filterMode  =  params.filterMode?: "OFF"
         result.info        =  [] as List
         params.max         =  params.int('max') ? Math.min(Integer.parseInt(params.max),200) : (user?.defaultPageSize?: 10)
