@@ -92,8 +92,9 @@ class FinanceController {
      */
     private def financialData(result,params,user) {
         //Setup params
+        // Ensure we also add to the request object as an attribute here so that the Taglib picks it up (Strange behaviour with AJAX)
         result.editable    =  SpringSecurityUtils.ifAllGranted(admin_role.authority)
-        params.editable    = result.editable
+        request.setAttribute("editable", result.editable)
         result.filterMode  =  params.filterMode?: "OFF"
         result.info        =  [] as List
         params.max         =  params.int('max') ? Math.min(Integer.parseInt(params.max),200) : (user?.defaultPageSize?: 10)
