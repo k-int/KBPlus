@@ -83,14 +83,8 @@ class FinanceController {
         }
     }
 
-    /**
-     * Sets up the financial data parameters and performs the relevant DB search
-     * @param result - LinkedHashMap for model data
-     * @param params - Qry data sent from view
-     * @param user   - Currently logged in user object
-     * @return Cost Item count & data / view information for pagination, sorting, etc
-     */
-    private def financialData(result,params,user) {
+
+    private def setupQueryData(result, params, user) {
         //Setup params
         // Ensure we also add to the request object as an attribute here so that the Taglib picks it up (Strange behaviour with AJAX)
         result.editable    =  SpringSecurityUtils.ifAllGranted(admin_role.authority)
@@ -118,6 +112,20 @@ class FinanceController {
         def cost_item_qry_params        =  [result.institution]
         def cost_item_qry               =  (join)? "LEFT OUTER JOIN ${join} AS j WHERE ci.owner = ? " :"  where ci.owner = ? "
         def orderAndSortBy              =  (join)? "ORDER BY COALESCE(j.${order}, ${Integer.MAX_VALUE}) ${result.sort}, ci.id ASC" : " ORDER BY ci.${order} ${result.sort}"
+
+        return [cost_item_qry_params, cost_item_qry, orderAndSortBy]
+    }
+
+    /**
+     * Sets up the financial data parameters and performs the relevant DB search
+     * @param result - LinkedHashMap for model data
+     * @param params - Qry data sent from view
+     * @param user   - Currently logged in user object
+     * @return Cost Item count & data / view information for pagination, sorting, etc
+     */
+    private def financialData(result,params,user) {
+        //Setup using param data, returning back DB query info
+        def (cost_item_qry_params, cost_item_qry, orderAndSortBy) = setupQueryData(result,params,user)
 
         //Filter processing...
         if (result.filterMode == "ON")
