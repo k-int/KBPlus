@@ -27,13 +27,15 @@
             <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>
 
             <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
-                <li><a id="exportAll" style="cursor: pointer">CSV Export (All Results)</a></li>
+                <li><a data-mode="all" class="export" style="cursor: pointer">CSV Export Current List</a></li>
+                <li><a data-mode="sub" class="disabled export" disabled="">CSV Sub Costs</a></li>
+                <li><a data-mode="code" class="disabled export" disabled="">CSV Code Costs</a></li>
             </ul>
         </li>
     </ul>
 </div>
 
-<div style="padding-left: 2%" hidden="hidden" id="loading2">
+<div style="padding-left: 2%" hidden="hidden" class="loadingData">
     <span>Loading...<img src="${resource(dir: 'images', file: 'loading.gif')}" /></span>
 </div>
 
@@ -72,6 +74,10 @@
 
     <br/><br/><br/><br/><br/>
 
+    <div style="padding-left: 2%" hidden="hidden" class="loadingData">
+        <span>Loading...<img src="${resource(dir: 'images', file: 'loading.gif')}" /></span>
+    </div>
+
     <div id="CreateTemplateWrapper" class="wrapper">
         <g:render template="create"></g:render>
     </div>
@@ -103,7 +109,8 @@
                 filterSubPkg:'#packageFilter',
                 codeDelete: 'a.badge.budgetCode',
                 codeEdit:'a.budgetCode.editable-empty',
-                tableWrapper:'#filterTableWrapper'
+                tableWrapper:'#filterTableWrapper',
+                editableBind:'.xEditableValue, .xEditableManyToOne'
             },
             ct: { //create template
                 resetBtn:'#resetCreate',
@@ -294,7 +301,7 @@
             //s.mybody.on('click',s.resetBtn, _clearCreateForm); //Reset btn (create form)
             $(s.ct.datePickers).datepicker({format: s.options.dateFormat}); //datepicker
             setupModSelect2s();
-
+            $(s.ft.editableBind).editable(); //technically being performed twice on first run
         };
 
         var _recentCostItems = function() {
@@ -462,7 +469,6 @@
                 return true;
         };
 
-        //todo removal of Grails JQuery AJAX plugin behaviour e.g. remoteForm
         var _submitFilterSearch = function(e) {
             if(!filterValidation())
                 return false;
@@ -480,6 +486,7 @@
                 },
                 complete:function(XMLHttpRequest,textStatus){
                     _filterSelection();fadeAway('info',15000);
+                    _bindBehavior();
                 }
             });
             return false
@@ -496,18 +503,17 @@
         var startLoadAnimation = function() {
             s.options.timeout = setTimeout(function() {
                 $(s.ft.tableWrapper).addClass('overlay');
-                $('#loading2').show();
+                $('div.loadingData').show();
             }, 50); //50ms delay
         };
 
         //If ajax call finishes before the timeout occurs, we wouldn't have shown any animation.
         var stopLoadAnimation = function() {
-            $('#loading2').hide();
+            $('div.loadingData').hide();
             $(s.ft.tableWrapper).removeClass('overlay');
             clearTimeout(s.options.timeout);
         };
 
-        //todo finalise, remove global access
         var _updateResults = function(e) {
             var action = $.isEmptyObject($(this).data('action'))? e : $(this).data('action');
             console.log("Performing update of results via action : "+action);
@@ -788,42 +794,45 @@
 
             s.mybody.on('click','#submitFilterMode', _submitFilterSearch);
 
-            s.mybody.on('keyup','input.percentage', function() {
-                var percent = $(this).val();
-                if (percent.length > 0 && percent.endsWith("%")) {
-                    $(this).val(percent+'%')
+            s.mybody.on('keyup','#newCostInBillingCurrency,#newCostExchangeRate,#newCostInLocalCurrency', function() {
+                var element = $(this);
+                if (element) {
+                    $(this).val(99999999999999999);
                 }
             });
 
             //export
-            s.mybody.on('click','#exportAll', function(e) {
+            s.mybody.on('click','a.export', function(e) {
+                var exportMode   = $(this).data('mode');
                 var paginateData = $('#paginateInfo').data();
-                var data = {
+
+                var data  = {
                     shortcode: "${params.shortcode}",
                     filterMode: paginateData.filtermode,
                     wildcard:paginateData.wildcard,
-                    opSort:true,
+                    opSort:false,
                     sort:paginateData.sort,
                     order: paginateData.order,
                     offset:0,
-                    max:paginateData.max,
-                    format:'csv'
+                    max:null,
+                    format:'csv',
+                    csvMode:exportMode
                 };
                 if(paginateData.filtermode == "ON")
                 {
-                    var formData = {
+                    $.extend(data, {
                         subscriptionFilter:paginateData.subscriptionfilter,
                         packageFilter:paginateData.packagefilter,
                         invoiceNumberFilter:paginateData.invoicenumberfilter,
                         orderNumberFilter:paginateData.ordernumberfilter,
                         resetMode:paginateData.resetMode?paginateData.resetMode:'search'
-                    }
+                    });
                 }
-                var object = $.extend({}, data, formData);
-                console.log(object);
-                //todo Change to extends
-                data = (formData!=null)?$.param(formData) + '&' + $.param(data):$.param(data);
 
+                //Non-AJAX method
+                //window.location = "${createLink(controller:'finance', action:'financialsExport').encodeAsJavaScript()}?" + $.param(data);
+
+                //Hacky AJAX method, could be more informative for user, but encodeURIComponent, not sure will stand large data :/
                 $.ajax({
                     method: "POST",
                     url: "<g:createLink controller='finance' action='financialsExport'></g:createLink>",
@@ -833,11 +842,10 @@
                      errorHandling(textStatus,'Export CSV',errorThrown);
                   })
                 .done(function(data) {
-                     csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(data);
-                     console.log(data);
+                     csvData = 'data:text/csv;charset=utf-8,' + encodeURIComponent(data);
                      window.open(csvData, 'Finance Data');
                 });
-                return false;
+                return false; //stop standard link behaviour
             });
 
 
@@ -874,8 +882,6 @@
                 console.log('Running rebind method designed for AJAX');
                 _bindBehavior();
                 console.log('Finished rebind method designed for AJAX');
-                $('.xEditableValue').editable();
-                $(".xEditableManyToOne").editable();
             },
 
             //TEMP ACCESSIBLE METHODS

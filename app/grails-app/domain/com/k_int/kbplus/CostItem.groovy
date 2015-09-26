@@ -16,7 +16,6 @@ class CostItem {
 
     //Status & Costing Values...
     RefdataValue costItemStatus    //cost est,actual,etc
-    RefdataValue costItemType      //REDUNDANT needs to be removed
     RefdataValue costItemCategory
     RefdataValue billingCurrency  //GDP,USD,etc
     RefdataValue costItemElement
@@ -28,7 +27,6 @@ class CostItem {
     Double costInLocalCurrency     //local amount entered or calculated using temp field currency exachange in create
 
 
-    String localFundCode  //REDUNDANT needs to be removed
     String costDescription
     String reference
     Date datePaid
@@ -62,12 +60,10 @@ class CostItem {
         costDescription column: 'ci_cost_description', type:'text'
         costInBillingCurrency column: 'ci_cost_in_billing_currency'
         datePaid column: 'ci_date_paid'
-        localFundCode column: 'ci_local_fund_code'
         costInLocalCurrency column: 'ci_cost_in_local_currency'
         taxCode column: 'ci_tax_code'
         includeInSubscription column: 'ci_include_in_subscr'
         costItemCategory column: 'ci_cat_rv_fk'
-        costItemType column: 'ci_type_rv_fk'
         costItemElement column: 'ci_element_rv_fk'
         endDate column: 'ci_end_date'
         startDate column: 'ci_start_date'
@@ -86,11 +82,9 @@ class CostItem {
         costDescription(nullable: true, blank: false)
         costInBillingCurrency(nullable: true, blank: false)
         datePaid(nullable: true, blank: false)
-        localFundCode(nullable: true, blank: false)
         costInLocalCurrency(nullable: true, blank: false)
         taxCode(nullable: true, blank: false)
         includeInSubscription(nullable: true, blank: false)
-        costItemType(nullable: true, blank: false)
         costItemCategory(nullable: true, blank: false)
         costItemStatus(nullable: true, blank: false)
         costItemElement(nullable: true, blank: false)

@@ -63,7 +63,8 @@
                             <g:submitButton name="submitFilterMode" id="submitFilterMode" class="btn-block"  value="${filterMode=='ON'?'reset':'search'}" title="${g.message(code: 'financials.pagination.title')}"></g:submitButton>
 
                         </div>
-                        <a ${filterMode=="ON"?"hidden='hidden'":''} id="advancedFilter" data-toggle="#">More filter options</a>
+                        %{-- Advanced search options, todo complete... --}%
+                        <a style="display: none;" ${filterMode=="ON"?"hidden='hidden'":''} id="advancedFilter" data-toggle="#">More filter options</a>
                     </th>
 
                 %{--If has editable rights, allow delete column to be shown--}%
@@ -81,13 +82,13 @@
 
                         Status<br/>Category<br/>Element</br>Tax Type
                     </th>
-                    <th>Amount [billing]/<br/>[local]</th>
+                    <th>Billing Amount<br/>Billing Currency<br/>Local Amount</th>
                     <th>
-                        Reference </br></br> Codes </br></br>
+                        Cost Reference </br></br> Codes </br></br>
                         <a style="color: #990100; cursor: pointer;" data-order="startDate" class="sortable ${order=="startDate"? "sorted ${sort}":''}">Start Period</a> &nbsp;<i>to</i>&nbsp;
                         <a style="color: #990100; cursor: pointer;" data-order="endDate" class="sortable ${order=="endDate"? "sorted ${sort}":''}">End Period</a>
                     </th>
-                    <th colspan="2">Included in Subscription / Description</th>
+                    <th colspan="2">Cost Description</th>
                 </tr>
             %{--End of table row two of headers--}%
             </thead>
@@ -139,5 +140,8 @@
          data-filterMode="${filterMode}" data-total="${cost_item_count}" data-resetMode="${params.resetMode}" data-subscriptionFilter="${params.subscriptionFilter}"
          data-invoiceNumberFilter="${params.invoiceNumberFilter}" data-orderNumberFilter="${params.orderNumberFilter}" data-packageFilter="${params.packageFilter}">
     </div>
-    <util:remotePaginate title="${g.message(code: 'financials.pagination.title')}" onFailure="errorHandling(textStatus,'Pagination',errorThrown)" offset='0' onComplete="Finance.scrollTo(null,'#costTable');Finance.rebind();" onSuccess="filterSelection()" params="${params+["filterMode": "${filterMode}", "sort":"${sort}", "order":"${order}", "format":"frag"]}"  controller="finance" action="index" total="${cost_item_count}"  update="filterTemplate" max="20" pageSizes="[10, 20, 50, 100, 200]" alwaysShowPageSizes="true"/>
+    <util:remotePaginate title="${g.message(code: 'financials.pagination.title')}" 
+          onFailure="errorHandling(textStatus,'Pagination',errorThrown)" onComplete="Finance.scrollTo(null,'#costTable');Finance.rebind();" onSuccess="filterSelection()"
+          offset='0'  total="${cost_item_count}"  update="filterTemplate" max="20" pageSizes="[10, 20, 50, 100, 200]" alwaysShowPageSizes="true" 
+          controller="finance" action="index" params="${params+["filterMode": "${filterMode}", "sort":"${sort}", "order":"${order}", "format":"frag"]}" />
 </div>

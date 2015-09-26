@@ -39,9 +39,9 @@
         <td>
             <g:if test="${editable}">
                 <g:xEditable emptytext="Edit Paid-Date" owner="${ci}" type="date" field="datePaid" /> </br></br>
-                <g:xEditableRefData config="CostItemStatus" emptytext="Edit Status" owner="${ci}" field="costItemStatus" /></br>
-                <g:xEditableRefData config="CostItemCategory" emptytext="Edit Category" owner="${ci}" field="costItemCategory" /></br>
-                <g:xEditableRefData config="CostItemElement" emptytext="Edit Element" owner="${ci}" field="costItemElement" /></br>
+                <g:xEditableRefData config="CostItemStatus" emptytext="Edit Status" owner="${ci}" field="costItemStatus" /> </br>
+                <g:xEditableRefData config="CostItemCategory" emptytext="Edit Category" owner="${ci}" field="costItemCategory" /> </br>
+                <g:xEditableRefData config="CostItemElement" emptytext="Edit Element" owner="${ci}" field="costItemElement" /> </br>
                 <g:xEditableRefData config="TaxType" emptytext="Edit Tax Code" owner="${ci}" field="taxCode" />
             </g:if>
             <g:else>
@@ -50,13 +50,13 @@
         </td>
         <td>
             <g:if test="${editable}">
-                <g:xEditable emptytext="Edit Cost" owner="${ci}" field="costInBillingCurrency" />
-                <g:xEditableRefData config="Currency" emptytext="Edit billed" owner="${ci}" field="billingCurrency" /> /
+                <g:xEditable emptytext="Edit Cost" owner="${ci}" field="costInBillingCurrency" /> </br>
+                <g:xEditableRefData config="Currency" emptytext="Edit billed" owner="${ci}" field="billingCurrency" /> </br>
                 <g:xEditable emptytext="Edit local" owner="${ci}" field="costInLocalCurrency" />
             </g:if>
             <g:else>
-                ${ci?.costInBillingCurrency}
-                ${ci?.billingCurrency}
+                ${ci?.costInBillingCurrency} </br> 
+                ${ci?.billingCurrency} </br>
                 ${ci?.costInLocalCurrency}
             </g:else>
         </td>
@@ -84,7 +84,6 @@
         </td>
         <td colspan="3">
             <g:if test="${editable}">
-                <g:xEditableRefData owner="${ci}" field="includeInSubscription" config="YN" /> &nbsp;/&nbsp;
                 <g:xEditable emptytext="Edit Description" owner="${ci}" field="costDescription" />
             </g:if>
             <g:else>

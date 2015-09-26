@@ -68,9 +68,9 @@ class FinanceController {
         //Grab the financial data
         financialData(result,params,user)
 
-
+        result.isXHR = request.isXhr()
         //Other than first run, request will always be AJAX...
-        if (request.isXhr())
+        if (result.isXHR)
         {
             render (template: "filter", model: result)
         }
@@ -214,7 +214,7 @@ class FinanceController {
             }
 
             // Output the body text
-            writer.write("cost_item_id,owner,invoice_no,order_no,subscription_name,subscription_package,issueEntitlement,date_paid,date_valid_from,date_valid_to,cost_Item_Type,cost_Item_Category,cost_Item_Status,billing_Currency,cost_In_Billing_Currency,cost_In_Local_Currency,tax_Code,cost_Item_Element,cost_Description,reference,codes,created_by,date_created,edited_by,date_last_edited\n");
+            writer.write("cost_item_id,owner,invoice_no,order_no,subscription_name,subscription_package,issueEntitlement,date_paid,date_valid_from,date_valid_to,cost_Item_Category,cost_Item_Status,billing_Currency,cost_In_Billing_Currency,cost_In_Local_Currency,tax_Code,cost_Item_Element,cost_Description,reference,codes,created_by,date_created,edited_by,date_last_edited\n");
 
             result.cost_items.each { ci ->
 
@@ -226,7 +226,7 @@ class FinanceController {
                 def created_date = ci.dateCreated ? dateFormat.format(ci.dateCreated) : ''
                 def edited_date  = ci.lastUpdated ? dateFormat.format(ci.lastUpdated) : ''
 
-                writer.write("\"${ci.id}\",\"${ci.owner}\",\"${ci.invoice?ci.invoice.invoiceNumber:''}\",${ci.order? ci.order.orderNumber:''},${ci.sub? ci.sub.name:''},${ci.subPkg?ci.subPkg.pkg.name:''},${ci.issueEntitlement?ci.issueEntitlement.tipp.title.title:''},${paid_date},${start_date},\"${end_date}\",\"${ci.costItemType?ci.costItemType.value:''}\",\"${ci.costItemCategory?ci.costItemCategory.value:''}\",\"${ci.costItemStatus?ci.costItemStatus.value:''}\",\"${ci.billingCurrency.value?:''}\",\"${ci.costInBillingCurrency?:''}\",\"${ci.costInLocalCurrency?:''}\",\"${ci.taxCode?ci.taxCode.value:''}\",\"${ci.costItemElement?ci.costItemElement.value:''}\",\"${ci.costDescription?:''}\",\"${ci.reference?:''}\",\"${codes?codes.toString():''}\",\"${ci.createdBy}\",\"${created_date}\",\"${ci.lastUpdatedBy}\",\"${edited_date}\"\n");
+                writer.write("\"${ci.id}\",\"${ci.owner}\",\"${ci.invoice?ci.invoice.invoiceNumber:''}\",${ci.order? ci.order.orderNumber:''},${ci.sub? ci.sub.name:''},${ci.subPkg?ci.subPkg.pkg.name:''},${ci.issueEntitlement?ci.issueEntitlement.tipp.title.title:''},${paid_date},${start_date},\"${end_date}\",\"${ci.costItemCategory?ci.costItemCategory.value:''}\",\"${ci.costItemStatus?ci.costItemStatus.value:''}\",\"${ci.billingCurrency.value?:''}\",\"${ci.costInBillingCurrency?:''}\",\"${ci.costInLocalCurrency?:''}\",\"${ci.taxCode?ci.taxCode.value:''}\",\"${ci.costItemElement?ci.costItemElement.value:''}\",\"${ci.costDescription?:''}\",\"${ci.reference?:''}\",\"${codes?codes.toString():''}\",\"${ci.createdBy}\",\"${created_date}\",\"${ci.lastUpdatedBy}\",\"${edited_date}\"\n");
             }
             writer.flush()
             writer.close()
@@ -352,23 +352,23 @@ class FinanceController {
         def user            =  User.get(springSecurityService.principal.id)
         result.error        =  [] as List
 
-        if (isFinanceAuthorised(result.institution, user)) {
+        if (isFinanceAuthorised(result.institution, user))
+        {
             result.error=message(code: 'financials.permission.unauthorised', args: [result.institution? result.institution.name : 'N/A'])
             response.sendError(403)
         }
 
         def order = null
-        if (params.newOrderNumber) {
+        if (params.newOrderNumber)
             order = Order.findByOrderNumberAndOwner(params.newOrderNumber, result.institution) ?: new Order(orderNumber: params.newOrderNumber, owner: result.institution).save(flush: true);
-        }
 
         def invoice = null
-        if (params.newInvoiceNumber) {
+        if (params.newInvoiceNumber)
             invoice = Invoice.findByInvoiceNumberAndOwner(params.newInvoiceNumber, result.institution) ?: new Invoice(invoiceNumber: params.newInvoiceNumber, owner: result.institution).save(flush: true);
-        }
 
         def sub = null;
-        if (params.newSubscription?.startsWith("com.k_int.kbplus.Subscription:")) {
+        if (params.newSubscription?.startsWith("com.k_int.kbplus.Subscription:"))
+        {
             try {
                 sub = Subscription.get(params.newSubscription.split(":")[1]);
             } catch (Exception e) {
@@ -378,7 +378,8 @@ class FinanceController {
         }
 
         def pkg = null;
-        if (params.newPackage?.startsWith("com.k_int.kbplus.SubscriptionPackage:")) {
+        if (params.newPackage?.startsWith("com.k_int.kbplus.SubscriptionPackage:"))
+        {
             try {
                 pkg = SubscriptionPackage.load(params.newPackage.split(":")[1])
             } catch (Exception e) {
@@ -387,7 +388,8 @@ class FinanceController {
         }
 
         def datePaid = null
-        if (params.newDate) {
+        if (params.newDate)
+        {
             try {
                 datePaid = dateFormat.parse(params.newDate)
             } catch (Exception e) {
@@ -396,7 +398,8 @@ class FinanceController {
         }
 
         def startDate = null
-        if (params.newStartDate) {
+        if (params.newStartDate)
+        {
             try {
                 startDate = dateFormat.parse(params.newStartDate)
             } catch (Exception e) {
@@ -405,7 +408,8 @@ class FinanceController {
         }
 
         def endDate = null
-        if (params.newEndDate) {
+        if (params.newEndDate)
+        {
             try {
                 endDate = dateFormat.parse(params.newEndDate)
             } catch (Exception e) {
@@ -441,7 +445,6 @@ class FinanceController {
 
 //        def inclSub = params.includeInSubscription? (RefdataValue.get(params.long('includeInSubscription'))): defaultInclSub
 
-        //todo check fields which need calculating and giving specific default values
         def newCostItem = new CostItem(
                 owner: result.institution,
                 sub: sub,
@@ -454,28 +457,30 @@ class FinanceController {
                 costItemStatus: cost_item_status,
                 billingCurrency: billing_currency, //Not specified default to GDP
                 taxCode: cost_tax_type,
-                costDescription: params.newDescription? params.newDescription.trim()?.toLower():null,
+                costDescription: params.newDescription? params.newDescription.trim()?.toLowerCase():null,
                 costInBillingCurrency: cost_billing_currency as Double,
                 costInLocalCurrency: cost_local_currency as Double,
                 datePaid: datePaid,
                 startDate: startDate,
                 endDate: endDate,
-                localFundCode: null,
                 includeInSubscription: null, //todo Discussion needed, nobody is quite sure of the functionality behind this...
-                reference: params.newReference? params.newReference.trim()?.toLower() : null
+                reference: params.newReference? params.newReference.trim()?.toLowerCase() : null
         )
 
 
-        if (!newCostItem.validate()) {
+        if (!newCostItem.validate())
+        {
             result.error = newCostItem.errors.allErrors.collect {
                 log.error("Field: ${it.properties.field}, user input: ${it.properties.rejectedValue}, Reason! ${it.properties.code}")
                 message(code:'finance.addNew.error',args:[it.properties.field])
             }
-        } else {
+        }
+        else
+        {
             if (newCostItem.save(flush: true))
             {
                 if (params.newBudgetCode)
-                    createBudgetCodes(newCostItem, params.newBudgetCode, result.institution.shortcode)
+                    createBudgetCodes(newCostItem, params.newBudgetCode?.trim()?.toLowerCase(), result.institution.shortcode)
             } else {
                 result.error = "Unable to save!"
             }
@@ -485,9 +490,11 @@ class FinanceController {
         render ([newCostItem:newCostItem.id, error:result.error]) as JSON
     }
 
-    private def createBudgetCodes(CostItem costItem, String budgetcodes, String owner) {
+    private def createBudgetCodes(CostItem costItem, String budgetcodes, String owner)
+    {
         def result = []
-        if(budgetcodes && owner && costItem) {
+        if(budgetcodes && owner && costItem)
+        {
             def budgetOwner = RefdataCategory.findByDesc("budgetcode_"+owner)?:new RefdataCategory(desc: "budgetcode_"+owner).save(flush: true)
             budgetcodes.split(",").each { c ->
                 def rdv = null
@@ -548,7 +555,8 @@ class FinanceController {
         if (isFinanceAuthorised(institution, user))
             response.sendError(401)
 
-        if (results.sentIDs && institution) {
+        if (results.sentIDs && institution)
+        {
             def _costItem = null
             def _props
 
@@ -597,7 +605,8 @@ class FinanceController {
 
         log.debug("Financials :: financialRef - Owner instance returned: ${owner.obj}")
 
-        if (owner) {
+        if (owner)
+        {
             def relation = refData(params.relation)
             log.debug("Financials :: financialRef - relation obj or stub returned "+relation)
 
@@ -620,7 +629,8 @@ class FinanceController {
                         result.error.add([status: "FAILED: Setting value", msg: "The data you are trying to set does not exist"])
                 }
 
-                if (owner.obj.hasProperty(params.ownerField)) {
+                if (owner.obj.hasProperty(params.ownerField))
+                {
                     log.debug("Using owner instance field of ${params.ownerField} to set new instance of ${relation.obj.class} with ID ${relation.obj.id}")
                     owner.obj."${params.ownerField}" = relation.obj
                     result.relation = relation.obj
