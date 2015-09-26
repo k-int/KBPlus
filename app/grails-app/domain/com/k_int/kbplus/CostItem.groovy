@@ -21,7 +21,7 @@ class CostItem {
     RefdataValue billingCurrency  //GDP,USD,etc
     RefdataValue costItemElement
     RefdataValue taxCode
-    RefdataValue includeInSubscription //include in sub details page
+    Boolean includeInSubscription //include in sub details page
 
 
     Double costInBillingCurrency   //The actual amount - new cost ex tax
