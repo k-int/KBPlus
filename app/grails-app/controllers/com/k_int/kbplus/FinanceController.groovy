@@ -164,7 +164,7 @@ class FinanceController {
     def financialsExport()  {
         log.debug("Financial Export :: ${params}")
 
-        if (request.isPost() && params.format == "csv") {
+        if ( params.format == "csv") {
             def result = [:]
             result.institution =  Org.findByShortcode(params.shortcode)
             def user           =  User.get(springSecurityService.principal.id)
@@ -177,10 +177,10 @@ class FinanceController {
 
             if (result.cost_item_count > 0)
             {
-                response.setHeader("Content-disposition", "attachment; filename=${result?.institution}.csv")
+                response.setHeader("Content-disposition", "attachment; filename=${result?.institution.name}_financialExport.csv")
                 response.contentType = "text/csv"
                 def out = response.outputStream
-                def useHeader = params.header? true : false
+                def useHeader = params.header? true : false //For batch processing...
                 processFinancialCSV(out,result,useHeader)
                 out.close()
             }
@@ -368,9 +368,9 @@ class FinanceController {
         }
 
         def sub = null;
-        if (params.newSubscription) {
+        if (params.newSubscription?.startsWith("com.k_int.kbplus.Subscription:")) {
             try {
-                sub = Subscription.get(params.newSubscription.contains(":")? params.newSubscription.split(":")[1] : params.newSubscription);
+                sub = Subscription.get(params.newSubscription.split(":")[1]);
             } catch (Exception e) {
                 log.error("Non-valid subscription sent ${params.newSubscription}",e)
             }
@@ -378,7 +378,7 @@ class FinanceController {
         }
 
         def pkg = null;
-        if (params.newPackage?.size() > 2) { //default xx
+        if (params.newPackage?.startsWith("com.k_int.kbplus.SubscriptionPackage:")) {
             try {
                 pkg = SubscriptionPackage.load(params.newPackage.split(":")[1])
             } catch (Exception e) {
@@ -431,14 +431,15 @@ class FinanceController {
                 billing_currency = defaultCurrency
         }
 
-        def cost_item_status    = params.newCostItemStatus ? (RefdataValue.get(params.long('newCostItemStatus'))) : null;    //estimate, commitment, etc
-        def cost_item_element   = params.newCostItemElement ? (RefdataValue.get(params.long('newCostItemElement'))): null    //admin fee, platform, etc
-        def cost_tax_type       = params.newCostTaxType ? (RefdataValue.get(params.long('newCostTaxType'))) : null           //on invoice, self declared, etc
-        def cost_item_category  = params.newCostItemCategory ? (RefdataValue.get(params.long('newCostItemCategory'))): null  //price, bank charge, etc
-//            def cost_billing_currency = params.newCostInBillingCurrency? (RefdataValue.get(params.long('newCostInBillingCurrency'))) : null;
-//            def cost_local_currency   = params.newCostInLocalCurrency? (RefdataValue.get(params.long('newCostInLocalCurrency'))) : null;
+        def tempCurrencyVal       = params.newCostExchangeRate? params.double('newCostExchangeRate',1.00) : 1.00
+        def cost_item_status      = params.newCostItemStatus ? (RefdataValue.get(params.long('newCostItemStatus'))) : null;    //estimate, commitment, etc
+        def cost_item_element     = params.newCostItemElement ? (RefdataValue.get(params.long('newCostItemElement'))): null    //admin fee, platform, etc
+        def cost_tax_type         = params.newCostTaxType ? (RefdataValue.get(params.long('newCostTaxType'))) : null           //on invoice, self declared, etc
+        def cost_item_category    = params.newCostItemCategory ? (RefdataValue.get(params.long('newCostItemCategory'))): null  //price, bank charge, etc
+        def cost_billing_currency = params.newCostInBillingCurrency? params.double('newCostInBillingCurrency',0.00) : 0.00
+        def cost_local_currency   = params.newCostInLocalCurrency?   params.double('newCostInLocalCurrency',cost_billing_currency * tempCurrencyVal) : 0.00
 
-        def inclSub = params.includeInSubscription? (RefdataValue.get(params.long('includeInSubscription'))): defaultInclSub
+//        def inclSub = params.includeInSubscription? (RefdataValue.get(params.long('includeInSubscription'))): defaultInclSub
 
         //todo check fields which need calculating and giving specific default values
         def newCostItem = new CostItem(
@@ -448,20 +449,19 @@ class FinanceController {
                 issueEntitlement: ie,
                 order: order,
                 invoice: invoice,
-                costItemType: null, //todo Ask Owen/Ian unknown field
                 costItemCategory: cost_item_category,
                 costItemElement: cost_item_element,
                 costItemStatus: cost_item_status,
                 billingCurrency: billing_currency, //Not specified default to GDP
                 taxCode: cost_tax_type,
                 costDescription: params.newDescription? params.newDescription.trim()?.toLower():null,
-                costInBillingCurrency: params.newCostInBillingCurrency? params.double('newCostInBillingCurrency'):null,
+                costInBillingCurrency: cost_billing_currency as Double,
+                costInLocalCurrency: cost_local_currency as Double,
                 datePaid: datePaid,
                 startDate: startDate,
                 endDate: endDate,
                 localFundCode: null,
-                costInLocalCurrency: params.double('newCostInLocalCurrency')?: null,
-                includeInSubscription: inclSub?: defaultInclSub,
+                includeInSubscription: null, //todo Discussion needed, nobody is quite sure of the functionality behind this...
                 reference: params.newReference? params.newReference.trim()?.toLower() : null
         )
 
