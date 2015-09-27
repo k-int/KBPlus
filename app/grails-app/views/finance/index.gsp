@@ -28,8 +28,8 @@
 
             <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
                 <li><a data-mode="all" class="export" style="cursor: pointer">CSV Export Current List</a></li>
-                <li><a data-mode="sub" class="disabled export" disabled="">CSV Sub Costs</a></li>
-                <li><a data-mode="code" class="disabled export" disabled="">CSV Code Costs</a></li>
+                %{-- <li><a data-mode="sub" class="disabled export" disabled="">CSV Sub Costs</a></li> --}%
+                %{-- <li><a data-mode="code" class="disabled export" disabled="">CSV Code Costs</a></li> --}%
             </ul>
         </li>
     </ul>
@@ -794,18 +794,26 @@
 
             s.mybody.on('click','#submitFilterMode', _submitFilterSearch);
 
-            s.mybody.on('keyup','#newCostInBillingCurrency,#newCostExchangeRate,#newCostInLocalCurrency', function() {
-                var element = $(this);
-                if (element) {
-                    $(this).val(99999999999999999);
-                }
+            s.mybody.on('change','input.calc', function() {
+                var billed   = $('#newCostInBillingCurrency');
+                var exchange = $('#newCostExchangeRate');
+                var local    = $('#newCostInLocalCurrency');
+                
+                var billedAmount = billed.val().length > 0? (parseFloat(billed.val()).toFixed(2)) : 0.00;
+                var exchangeAmount = exchange.val().length > 0? parseFloat(exchange.val()) : 1;
+                var localAmount = local.val().length > 0? parseFloat(local.val()) : 0.00;
+                
+                console.log(billedAmount, exchangeAmount, localAmount);
+                billed.val(billedAmount);
+                local.val((billedAmount * exchangeAmount).toFixed(2));
             });
 
             //export
             s.mybody.on('click','a.export', function(e) {
                 var exportMode   = $(this).data('mode');
                 var paginateData = $('#paginateInfo').data();
-
+                var totalResults = parseInt(paginateData.total)
+            
                 var data  = {
                     shortcode: "${params.shortcode}",
                     filterMode: paginateData.filtermode,
@@ -815,9 +823,11 @@
                     order: paginateData.order,
                     offset:0,
                     max:null,
+                    estTotal:totalResults,
                     format:'csv',
                     csvMode:exportMode
                 };
+                
                 if(paginateData.filtermode == "ON")
                 {
                     $.extend(data, {
@@ -830,7 +840,7 @@
                 }
 
                 //Non-AJAX method
-                //window.location = "${createLink(controller:'finance', action:'financialsExport').encodeAsJavaScript()}?" + $.param(data);
+                //window.location = "${createLink(controller:'finance', action:'financialsExport')}?" + $.param(data);
 
                 //Hacky AJAX method, could be more informative for user, but encodeURIComponent, not sure will stand large data :/
                 $.ajax({

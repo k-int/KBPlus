@@ -94,10 +94,10 @@ class FinanceController {
         params.max         =  params.int('max') ? Math.min(Integer.parseInt(params.max),200) : (user?.defaultPageSize?: 10)
         result.max         =  params.max
         result.offset      =  params.offset?: 0
-        result.sort        =  ["desc","asc"].contains(params.sort)?params.sort : "asc"
-        result.sort        =  params.boolean('opSort')==true?((result.sort=="asc")?'desc' : 'asc') : result.sort //opposite
+        result.sort        =  ["desc","asc"].contains(params.sort)? params.sort : "desc" //defaults to sort & order of desc id 
+        result.sort        =  params.boolean('opSort')==true? ((result.sort=="asc")? 'desc' : 'asc') : result.sort //opposite
         result.isRelation  =  params.orderRelation? params.boolean('orderRelation') : false
-        result.wildcard    =  params._wildcard == "off" ? false: true //defaulted to on
+        result.wildcard    =  params._wildcard == "off"? false: true //defaulted to on
         params.shortcode   =  result.institution.shortcode
         params.remove('opSort')
 
@@ -226,7 +226,7 @@ class FinanceController {
                 def created_date = ci.dateCreated ? dateFormat.format(ci.dateCreated) : ''
                 def edited_date  = ci.lastUpdated ? dateFormat.format(ci.lastUpdated) : ''
 
-                writer.write("\"${ci.id}\",\"${ci.owner}\",\"${ci.invoice?ci.invoice.invoiceNumber:''}\",${ci.order? ci.order.orderNumber:''},${ci.sub? ci.sub.name:''},${ci.subPkg?ci.subPkg.pkg.name:''},${ci.issueEntitlement?ci.issueEntitlement.tipp.title.title:''},${paid_date},${start_date},\"${end_date}\",\"${ci.costItemCategory?ci.costItemCategory.value:''}\",\"${ci.costItemStatus?ci.costItemStatus.value:''}\",\"${ci.billingCurrency.value?:''}\",\"${ci.costInBillingCurrency?:''}\",\"${ci.costInLocalCurrency?:''}\",\"${ci.taxCode?ci.taxCode.value:''}\",\"${ci.costItemElement?ci.costItemElement.value:''}\",\"${ci.costDescription?:''}\",\"${ci.reference?:''}\",\"${codes?codes.toString():''}\",\"${ci.createdBy}\",\"${created_date}\",\"${ci.lastUpdatedBy}\",\"${edited_date}\"\n");
+                writer.write("\"${ci.id}\",\"${ci.owner.name}\",\"${ci.invoice?ci.invoice.invoiceNumber:''}\",${ci.order? ci.order.orderNumber:''},${ci.sub? ci.sub.name:''},${ci.subPkg?ci.subPkg.pkg.name:''},${ci.issueEntitlement?ci.issueEntitlement.tipp.title.title:''},${paid_date},${start_date},\"${end_date}\",\"${ci.costItemCategory?ci.costItemCategory.value:''}\",\"${ci.costItemStatus?ci.costItemStatus.value:''}\",\"${ci.billingCurrency.value?:''}\",\"${ci.costInBillingCurrency?:''}\",\"${ci.costInLocalCurrency?:''}\",\"${ci.taxCode?ci.taxCode.value:''}\",\"${ci.costItemElement?ci.costItemElement.value:''}\",\"${ci.costDescription?:''}\",\"${ci.reference?:''}\",\"${codes?codes.toString():''}\",\"${ci.createdBy}\",\"${created_date}\",\"${ci.lastUpdatedBy}\",\"${edited_date}\"\n");
             }
             writer.flush()
             writer.close()
