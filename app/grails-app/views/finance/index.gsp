@@ -104,7 +104,8 @@
                 paginateData:'#paginateInfo',
                 advFilterBtn:'#advancedFilter',
                 advFilterOpts:'#advancedFilterOpt',
-                filterModSelect2:'.modifiedReferenceTypedown',
+                filterModSelect2a:'.modifiedReferenceTypedown.refData',
+                filterModSelect2b:'.modifiedReferenceTypedown.refObj',
                 filterSubscription:'#subscriptionFilter',
                 filterSubPkg:'#packageFilter',
                 codeDelete: 'a.badge.budgetCode',
@@ -164,7 +165,7 @@
         //todo make this configurable, factory builder style, pass in a list of config objects
         function setupModSelect2s() {
              //unable to use placeholder with initSelection, manually set via GSP with data-placeholder
-            $(s.ft.filterModSelect2+'.refData').select2({
+            $(s.ft.filterModSelect2a).select2({
               initSelection : function (element, callback) {
                     //If default value has been set in the markup!
                 if(element.data('defaultvalue'))
@@ -202,7 +203,7 @@
               }
           });
 
-            $(s.ft.filterModSelect2+'.refObj').select2({
+            $(s.ft.filterModSelect2b).select2({
               initSelection : function (element, callback) {
                     //If default value has been set in the markup!
                 if(element.data('defaultvalue'))
@@ -217,9 +218,10 @@
               data: function (term, page){
                   return {
                       format:'json',
-                      q: term,
+                      q: '%'+term,
                       baseClass:$(this).data('domain'),
-                      shortcode: $(this).data('shortcode')
+                      shortcode: $(this).data('shortcode'),
+                      subFilter: $(this).data('subfilter')
                   };
               },
               results: function (data, page) {
@@ -687,7 +689,7 @@
 
             //On user selection, saves previous and new selection, if there's an error it will reset to previous
             //'create' is appended to a new input (e.g see createSearchChoice)
-            s.mybody.on("select2-selecting",s.ft.filterModSelect2, function(e) {
+            s.mybody.on("select2-selecting",s.ft.filterModSelect2a, function(e) {
                  var element = $(this);
                  var currentText = "";
                  var rel = "";
@@ -702,7 +704,7 @@
                     rel         = e.choice.id;
                     currentText = e.choice.text.trim().toLowerCase();
                  }
-
+                    console.log("NOPE... just nope");
                  $.ajax({
                         method: "POST",
                         url: s.url.ajaxFinanceRefData,
@@ -717,7 +719,7 @@
                         global: false
                  })
                 .fail(function( jqXHR, textStatus, errorThrown ) {
-                     alert('Reset back to the original value, there was an issue');
+                     alert('Reset back to the original value, there was an error trying to save the data');
                      element.select2('data', prevSelection ? prevSelection : '');
                  })
                 .done(function(data) {
@@ -727,6 +729,58 @@
                         element.data('previous',prevSelection ? prevSelection.id+'_'+prevSelection.text : '');
                         element.data('defaultvalue',e.choice.text);
                         element.data('relationid',data.relation.id);
+                    }
+                });
+            });
+
+            s.mybody.on("select2-selecting",s.ft.filterModSelect2b, function(e) {
+                    console.log('CALLED!');
+                 var element       = $(this);
+                 var prevSelection = element.select2("data");
+                 var rel           = e.choice.id;
+                 var currentText   = e.choice.text.trim().toLowerCase();
+                 var isSubPkg      = element.data().issubpkg; //bool
+
+                 var data =  {
+                    owner:element.data('owner')+':'+element.data('ownerid'), //org.kbplus.CostItem:1
+                    ownerField: element.data("ownerfield"), //order
+                    relation: rel,  //org.kbplus.Order:100
+                    relationField: element.data('relationfield'), //orderNumber
+                    shortcode:element.data('shortcode'),
+                    subFilter:element.subFilter
+                 };
+
+                 $.ajax({
+                        method: "POST",
+                        url: s.url.ajaxFinanceRefData,
+                        data: {
+                            owner:element.data('owner')+':'+element.data('ownerid'), //org.kbplus.CostItem:1
+                            ownerField: element.data("ownerfield"), //order
+                            relation: rel,  //org.kbplus.Order:100
+                            relationField: element.data('relationfield'), //orderNumber
+                            shortcode:element.data('shortcode'),
+                            subFilter:element.data('subfilter')
+                        },
+                        global: false
+                 })
+                .fail(function( jqXHR, textStatus, errorThrown ) {
+                     alert('Reset back to the original value, there was an error trying to save the data');
+                     element.select2('data', prevSelection ? prevSelection : '');
+                 })
+                .done(function(data) {
+                    if(data.error.length > 0)
+                        element.select2('data', prevSelection);
+                    else {
+                        element.data('previous',prevSelection ? prevSelection.id+'_'+prevSelection.text : '');
+                        element.data('defaultvalue',e.choice.text);
+                        element.data('relationid',data.relation.id);
+
+                        //set the subFilter i.e. the Sub ID
+                        if(isSubPkg == false)
+                        {
+                            console.log('subscription has been changed/added...changing subFilter',element.data().ownerid+'_subPkg');
+                            $(element.data().ownerid+'_subPkg'),element.parents('tr').data('subfilter',data.relation.id);
+                        }
                     }
                 });
             });

@@ -29,16 +29,16 @@
             </g:else>
         </td>
         <td>
-          <g:simpleReferenceTypedown modified="${true}" class="refObj" 
+          <g:simpleReferenceTypedown modified="${true}" class="refObj" data-isSubPkg="${false}"
                         style="width:350px;" name="name" data-shortcode="${params.shortcode}"
                         data-placeholder="${ci?.sub==null? 'Enter sub name':''}" data-ownerfield="sub"
                         data-defaultValue="${ci.sub?.name}" data-ownerid="${ci.id}"
                         data-owner="${ci.class.name}" baseClass="com.k_int.kbplus.Subscription"/>
         <td>
-          <g:simpleReferenceTypedown modified="${true}" class="refObj" 
+          <g:simpleReferenceTypedown id="${ci.id}_subPkg" modified="${true}" class="refObj" data-isSubPkg="${true}"
                         style="width:350px;" name="name" data-shortcode="${params.shortcode}"
-                        data-placeholder="${ci?.sub==null? 'Enter sub name':''}" data-ownerfield="subPkg"
-                        data-defaultValue="${ci?.subPkg?.pkg?.id}" data-ownerid="${ci.id}" data-subFilter="${ci?.sub?.id}"
+                        data-placeholder="${ci?.sub==null? 'Enter sub pkg name':''}" data-ownerfield="subPkg"
+                        data-defaultValue="${ci?.subPkg?.pkg?.name}" data-ownerid="${ci.id}" data-subfilter="${ci?.sub?.id}"
                         data-owner="${ci.class.name}" baseClass="com.k_int.kbplus.SubscriptionPackage"/>
         </td>
         <td data-pk="${ci?.issueEntitlement?.tipp?.title?.id}" colspan="2">${ci?.issueEntitlement?.tipp?.title?.title?.encodeAsHTML()}</td>
