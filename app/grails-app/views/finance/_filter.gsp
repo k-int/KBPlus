@@ -45,7 +45,7 @@
                     </th>
                     <th style="width: 20%;"><a data-order="Subscription" style="cursor: pointer;" class="sortable ${order=="Subscription"? "sorted ${sort}":''}">Subscription</a>*<br/>
 
-                        <input ${inSubMode ? "disabled='disabled' data-filterMode='${fixedSubscription.class}:${fixedSubscription.id}'" : ''} class="input-medium required-indicator" style="width:250px;" name="subscriptionFilter" id="subscriptionFilter" value="${inSubMode ? fixedSubscription?.name : params.subscriptionFilter}" /> <br/>
+                        <input ${inSubMode ? "disabled='disabled' data-filterMode='${fixedSubscription.class.name}:${fixedSubscription.id}'" : ''} class="input-medium required-indicator" style="width:250px;" name="subscriptionFilter" id="subscriptionFilter" value="${inSubMode ? fixedSubscription?.name : params.subscriptionFilter}" /> <br/>
                     </th>
                     <th style="width: 10%;"> <a data-order="Package" style="cursor: pointer;" class="sortable ${order=="Package"? "sorted ${sort}":''}">Package</a>* <br/>
                         <input class="input-medium required-indicator filterUpdated" style="width:250px;" name="packageFilter" id="packageFilter" value="${params.packageFilter}"/> <br/>
@@ -139,6 +139,8 @@
          data-filterMode="${filterMode}" data-total="${cost_item_count}" data-resetMode="${params.resetMode}" data-subscriptionFilter="${params.subscriptionFilter}"
          data-invoiceNumberFilter="${params.invoiceNumberFilter}" data-orderNumberFilter="${params.orderNumberFilter}" data-packageFilter="${params.packageFilter}">
     </div>
+    %{--data-insubmode="${inSubMode}" data-fixedsub="${fixedSubscription?.id}"--}%
+    %{--, "inSubMode":"${inSubMode}", "sub":"${fixedSubscription?.id}"--}%
     <util:remotePaginate title="${g.message(code: 'financials.pagination.title')}" 
           onFailure="errorHandling(textStatus,'Pagination',errorThrown)" onComplete="Finance.rebind();Finance.scrollTo(null,'#costTable');" onSuccess="filterSelection()"
           offset='0'  total="${cost_item_count}"  update="filterTemplate" max="20" pageSizes="[10, 20, 50, 100, 200]" alwaysShowPageSizes="true" 

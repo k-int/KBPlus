@@ -510,6 +510,10 @@
             if(!filterValidation())
                 return false;
 
+            //todo send fixed subscription data ... causing redirect on AJAX with below
+            //var paginateData = $('#paginateInfo').data();
+            //var paramAppend  = "&sub="+fixedsub+"&inSubMode="+paginateData.insubmode;
+
             $.ajax({
                 type:'POST',
                 data:$(this).parents('form:first').serialize(),
