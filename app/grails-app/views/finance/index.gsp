@@ -128,7 +128,8 @@
                 ajaxFinanceRecent:"<g:createLink controller='finance' action='getRecentCostItems'/>",
                 ajaxFinancePresent:"<g:createLink controller='finance' action='newCostItemsPresent'/>",
                 ajaxFinanceRefData:"<g:createLink controller='finance' action='financialRef'/>",
-                ajaxFinanceCodeDel:"<g:createLink controller='finance' action='removeBC'/>"
+                ajaxFinanceCodeDel:"<g:createLink controller='finance' action='removeBC'/>",
+                ajaxFinanceExport:"<g:createLink controller='finance' action='financialsExport'></g:createLink>"
             },
             misc: {
                 recentlyUpdated: '#recent',
@@ -221,7 +222,9 @@
                       q: '%'+term,
                       baseClass:$(this).data('domain'),
                       shortcode: $(this).data('shortcode'),
-                      subFilter: $(this).data('subfilter')
+                      subFilter: $(this).data('subfilter'),
+                      hideDeleted: 'true',
+                      hideIdent: 'false'
                   };
               },
               results: function (data, page) {
@@ -275,7 +278,8 @@
                             inst_shortcode: '${params.shortcode}',
                             q: '%'+term , // contains search term
                             page_limit: 20,
-                            baseClass:'com.k_int.kbplus.Subscription'
+                            subFilter:$(s.ft.filterSubscription).data().subFilter.split(":")[1],
+                            baseClass:'com.k_int.kbplus.SubscriptionPackage'
                         };
                     },
                     results: function (data, page) {
@@ -291,7 +295,8 @@
             s.mybody.on("select2-selecting", s.ft.filterSubscription, function(e) {
                  var element = $(this);
                  var text = e.choice.text;
-                 var id   = e.choice.id;;
+                 var id   = e.choice.id;
+                 element.data('subFilter',id);
                  var prevSelection = element.select2("data");
                  $('#packageFilter').select2('enable');
                  console.log('filter sub selection ...','text', text,'id', id,'prev sel', prevSelection, "element",element);
@@ -300,7 +305,7 @@
             s.mybody.on("select2-removed", s.ft.filterSubscription, function(e) {
                  var pkgFilter = $('#packageFilter');
                  pkgFilter.select2('disable');
-                 pkgFilter.select2('data', null)
+                 pkgFilter.select2('data', null);
 
                  console.log('filter sub search  CLEARING selection ...');
             });
@@ -341,6 +346,8 @@
               })
               .fail(function( jqXHR, textStatus, errorThrown ) {
                  errorHandling(textStatus,'Recent Cost Updates',errorThrown);
+                 clearTimeout(s.options.timeoutRecent);
+                 $('#recentModalWrapper','#showHideRecent').remove();
               })
               .done(function(data) {
                  if(data.count > 0)
@@ -367,7 +374,7 @@
 
                 $.ajax({
                 method: "POST",
-                url: "<g:createLink controller='finance' action='delete'/>",
+                url: s.url.ajaxFinanceDelete,
                 data: {
                   format:'json',
                   del:JSON.stringify(allVals),
@@ -458,7 +465,6 @@
         };
 
 
-
         //var _filterValidation = function() {
         function filterValidation()   {
             var submitBtn = $(s.ft.searchBtn);
@@ -519,7 +525,7 @@
             var id = ($.isEmptyObject(scrollTo))? $(this).data('offset') : scrollTo;
             $('html, body').animate({
                 scrollTop: $(id).offset().top
-            }, 1500);
+            }, 1000);
          };
 
         var startLoadAnimation = function() {
@@ -566,7 +572,7 @@
                  errorHandling(textStatus,'Updating results after action: '+action,errorThrown);
              })
             .done(function(data) {
-                 console.log('Success: called updateResults...');
+                 console.log('updateResults...');
                  $(s.ft.filterTemplate).html(data);
                  _bindBehavior();
             });
@@ -704,7 +710,7 @@
                     rel         = e.choice.id;
                     currentText = e.choice.text.trim().toLowerCase();
                  }
-                    console.log("NOPE... just nope");
+
                  $.ajax({
                         method: "POST",
                         url: s.url.ajaxFinanceRefData,
@@ -734,12 +740,22 @@
             });
 
             s.mybody.on("select2-selecting",s.ft.filterModSelect2b, function(e) {
-                    console.log('CALLED!');
                  var element       = $(this);
                  var prevSelection = element.select2("data");
                  var rel           = e.choice.id;
-                 var currentText   = e.choice.text.trim().toLowerCase();
+                 var currentText   = e.choice.text;
                  var isSubPkg      = element.data().issubpkg; //bool
+                 var mode          = element.data().mode;
+                 var id = '#'+element.data().ownerid;
+
+                 //todo complete the reset
+                 if(mode == 'sub')
+                 {
+                    if($(id+'_ie').val() != null || $(id+'_ie').val() != null )
+                    {
+                        console.log('There is data that needs to be reset SubPkg OR IE')
+                    }
+                 }
 
                  var data =  {
                     owner:element.data('owner')+':'+element.data('ownerid'), //org.kbplus.CostItem:1
@@ -776,10 +792,26 @@
                         element.data('relationid',data.relation.id);
 
                         //set the subFilter i.e. the Sub ID
-                        if(isSubPkg == false)
+                        switch (mode)
                         {
-                            console.log('subscription has been changed/added...changing subFilter',element.data().ownerid+'_subPkg');
-                            $(element.data().ownerid+'_subPkg'),element.parents('tr').data('subfilter',data.relation.id);
+                            case "ie":
+                                console.log('IE...');
+                            break;
+
+                            case "pkg":
+                                console.log('Sub Pkg...');
+                            break;
+
+                            case "sub":
+                                console.log('Sub...');
+                                $(id+'_subPkg').data('subfilter',data.relation.id);
+                                $(id+'_ie').data('subfilter',currentText);
+
+                            break;
+
+                            default:
+                                console.log('unknown behaviour!');
+                            break;
                         }
                     }
                 });
@@ -840,7 +872,7 @@
                      'max-width':600,
                      content:function() {
                         //return getContent();
-                        return 'test'
+                        return 'Addition of more codes!'
                      }
                 });
 
@@ -896,8 +928,10 @@
                 return false;
             });
 
+            //Filter Search using form in header
             s.mybody.on('click','#submitFilterMode', _submitFilterSearch);
 
+            //calculation for billed amount
             s.mybody.on('change','input.calc', function() {
                 var billed   = $('#newCostInBillingCurrency');
                 var exchange = $('#newCostExchangeRate');
@@ -906,8 +940,7 @@
                 var billedAmount = billed.val().length > 0? (parseFloat(billed.val()).toFixed(2)) : 0.00;
                 var exchangeAmount = exchange.val().length > 0? parseFloat(exchange.val()) : 1;
                 var localAmount = local.val().length > 0? parseFloat(local.val()) : 0.00;
-                
-                console.log(billedAmount, exchangeAmount, localAmount);
+
                 billed.val(billedAmount);
                 local.val((billedAmount * exchangeAmount).toFixed(2));
             });
@@ -949,7 +982,7 @@
                 //Hacky AJAX method, could be more informative for user, but encodeURIComponent, not sure will stand large data :/
                 $.ajax({
                     method: "POST",
-                    url: "<g:createLink controller='finance' action='financialsExport'></g:createLink>",
+                    url: s.url.ajaxFinanceExport,
                     data: data
                 })
                 .fail(function( jqXHR, textStatus, errorThrown ) {

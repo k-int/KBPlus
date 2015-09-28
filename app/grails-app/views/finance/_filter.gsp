@@ -32,22 +32,22 @@
         <table id="costTable" class="table table-striped table-bordered table-condensed table-tworow">
             <thead>
                 <tr style="width: 100%;">
-                    <th rowspan="2" style="width: 10%; vertical-align: top; cursor: pointer;"><a data-order="id"  class="sortable ${order=="Cost Item#"? "sorted ${sort}":''}">Cost Item#</a></th>
-                    <th style="width: 10%;"><a style="cursor: pointer;" class="sortable ${order=="invoice#"? "sorted ${sort}":''}"  data-order="invoice#">Invoice#</a> <br/>
+                    <th rowspan="2" style="width: 10%; vertical-align: top; cursor: pointer;"><a data-order="id"  class="sortable ${order=="Cost Item#"? "sorted ${sort}":''}">Cost Item#</a>*</th>
+                    <th style="width: 10%;"><a style="cursor: pointer;" class="sortable ${order=="invoice#"? "sorted ${sort}":''}"  data-order="invoice#">Invoice#</a>* <br/>
                         <input autofocus="true" type="text" name="invoiceNumberFilter"
                                class="input-medium required-indicator filterUpdated"
                                id="filterInvoiceNumber" value="${params.invoiceNumberFilter}"/>
                     </th>
-                    <th style="width: 10%;"><a style="cursor: pointer;" class="sortable ${order=="order#"? "sorted ${sort}":''}"  data-order="order#">Order#</a><br/>
+                    <th style="width: 10%;"><a style="cursor: pointer;" class="sortable ${order=="order#"? "sorted ${sort}":''}"  data-order="order#">Order#</a>*<br/>
                         <input type="text" name="orderNumberFilter"
                                class="input-medium required-indicator filterUpdated"
                                id="filterOrderNumber"  value="${params.orderNumberFilter}" data-type="select"/>
                     </th>
-                    <th style="width: 20%;"><a data-order="Subscription" style="cursor: pointer;" class="sortable ${order=="Subscription"? "sorted ${sort}":''}">Subscription</a><br/>
+                    <th style="width: 20%;"><a data-order="Subscription" style="cursor: pointer;" class="sortable ${order=="Subscription"? "sorted ${sort}":''}">Subscription</a>*<br/>
 
                         <input class="input-medium required-indicator" style="width:250px;" name="subscriptionFilter" id="subscriptionFilter" value="${params.subscriptionFilter}"/> <br/>
                     </th>
-                    <th style="width: 10%;"> <a data-order="Package" style="cursor: pointer;" class="sortable ${order=="Package"? "sorted ${sort}":''}">Package</a> <br/>
+                    <th style="width: 10%;"> <a data-order="Package" style="cursor: pointer;" class="sortable ${order=="Package"? "sorted ${sort}":''}">Package</a>* <br/>
                         <input class="input-medium required-indicator filterUpdated" style="width:250px;" name="packageFilter" id="packageFilter" value="${params.packageFilter}"/> <br/>
                     </th>
                     <th style="vertical-align: top; width: 10%;">IE</th>
@@ -78,15 +78,15 @@
 
                 <tr style="width: 100%;">
                     <th>
-                        <a style="color: #990100; vertical-align: top; cursor: pointer;" data-order="datePaid" class="sortable ${order=="datePaid"? "sorted ${sort}":''}">Date Paid</a><br/><br/>
+                        <a style="color: #990100; vertical-align: top; cursor: pointer;" data-order="datePaid" class="sortable ${order=="datePaid"? "sorted ${sort}":''}">Date Paid</a>*<br/><br/>
 
                         Status<br/>Category<br/>Element</br>Tax Type
                     </th>
                     <th>Billing Amount<br/>Billing Currency<br/>Local Amount</th>
                     <th>
                         Cost Reference </br></br> Codes </br></br>
-                        <a style="color: #990100; cursor: pointer;" data-order="startDate" class="sortable ${order=="startDate"? "sorted ${sort}":''}">Start Period</a> &nbsp;<i>to</i>&nbsp;
-                        <a style="color: #990100; cursor: pointer;" data-order="endDate" class="sortable ${order=="endDate"? "sorted ${sort}":''}">End Period</a>
+                        <a style="color: #990100; cursor: pointer;" data-order="startDate" class="sortable ${order=="startDate"? "sorted ${sort}":''}">Start Period</a>* &nbsp;<i>to</i>&nbsp;
+                        <a style="color: #990100; cursor: pointer;" data-order="endDate" class="sortable ${order=="endDate"? "sorted ${sort}":''}">End Period</a>*
                     </th>
                     <th colspan="2">Cost Description</th>
                 </tr>

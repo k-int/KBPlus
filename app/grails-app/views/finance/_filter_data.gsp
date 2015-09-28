@@ -29,7 +29,7 @@
             </g:else>
         </td>
         <td>
-          <g:simpleReferenceTypedown modified="${true}" class="refObj" data-isSubPkg="${false}"
+          <g:simpleReferenceTypedown id="${ci.id}_sub" modified="${true}" class="refObj" data-mode="sub" data-isSubPkg="${false}"
                         style="width:350px;" name="name" data-shortcode="${params.shortcode}"
                         data-placeholder="${ci?.sub==null? 'Enter sub name':''}" data-ownerfield="sub"
                         data-defaultValue="${ci.sub?.name}" data-ownerid="${ci.id}"
@@ -37,11 +37,18 @@
         <td>
           <g:simpleReferenceTypedown id="${ci.id}_subPkg" modified="${true}" class="refObj" data-isSubPkg="${true}"
                         style="width:350px;" name="name" data-shortcode="${params.shortcode}"
-                        data-placeholder="${ci?.sub==null? 'Enter sub pkg name':''}" data-ownerfield="subPkg"
+                        data-placeholder="${ci?.subPkg==null? 'Enter sub pkg name':''}" data-mode="pkg" data-ownerfield="subPkg"
                         data-defaultValue="${ci?.subPkg?.pkg?.name}" data-ownerid="${ci.id}" data-subfilter="${ci?.sub?.id}"
                         data-owner="${ci.class.name}" baseClass="com.k_int.kbplus.SubscriptionPackage"/>
         </td>
-        <td data-pk="${ci?.issueEntitlement?.tipp?.title?.id}" colspan="2">${ci?.issueEntitlement?.tipp?.title?.title?.encodeAsHTML()}</td>
+        %{--<td data-pk="${ci?.issueEntitlement?.tipp?.title?.id}" colspan="2">${ci?.issueEntitlement?.tipp?.title?.title?.encodeAsHTML()}</td>--}%
+        <td colspan="2">
+        <g:simpleReferenceTypedown id="${ci.id}_ie" modified="${true}" class="refObj" data-mode="ie"
+                                   style="width:350px;" name="title" data-shortcode="${params.shortcode}" data-subfilter="${ci?.sub?.name}"
+                                   data-placeholder="${ci?.issueEntitlement==null? 'Enter IE name':''}" data-ownerfield="issueEntitlement"
+                                   data-defaultValue="${ci?.issueEntitlement?.tipp?.title?.title}" data-ownerid="${ci.id}"
+                                   data-owner="${ci.class.name}" baseClass="com.k_int.kbplus.IssueEntitlement"/>
+        </td>
         <g:if test="${editable}">
             <td rowspan="2"> <input type="checkbox" value="${ci.id}" class="bulkcheck"/> </td>
         </g:if>

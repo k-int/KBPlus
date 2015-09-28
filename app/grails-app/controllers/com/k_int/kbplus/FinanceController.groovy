@@ -602,47 +602,50 @@ class FinanceController {
         result.error    = [] as List
         def institution = Org.findByShortcode(params.shortcode)
         def owner       = refData(params.owner)
-
         log.debug("Financials :: financialRef - Owner instance returned: ${owner.obj}")
 
-        if (owner)
-        {
-            def relation = refData(params.relation)
-            log.debug("Financials :: financialRef - relation obj or stub returned "+relation)
+        if (params.reset)
+            refReset(owner,result.error)
+        else {
+            if (owner) {
+                def relation = refData(params.relation)
+                log.debug("Financials :: financialRef - relation obj or stub returned " + relation)
 
-            if (relation)
-            {
-                log.debug("Financials :: financialRef - Relation needs creating: "+relation.create)
-                if (relation.create)
-                {
-                    if(relation.obj.hasProperty(params.relationField))
-                    {
-                        relation.obj."${params.relationField}" = params.val
-                        relation.obj.owner = institution
-                        log.debug("Financials :: financialRef -Creating Relation val:${params.val} field:${params.relationField} org:${institution.name}")
-                        if ( relation.obj.save() )
-                            log.debug("Financials :: financialRef - Saved the new relational inst ${relation.obj}")
-                        else
-                            result.error.add([status: "FAILED: Creating ${params.ownerField}", msg: "Invalid data received to retrieve from DB"])
+                if (relation) {
+                    log.debug("Financials :: financialRef - Relation needs creating: " + relation.create)
+                    if (relation.create) {
+                        if (relation.obj.hasProperty(params.relationField)) {
+                            relation.obj."${params.relationField}" = params.val
+                            relation.obj.owner = institution
+                            log.debug("Financials :: financialRef -Creating Relation val:${params.val} field:${params.relationField} org:${institution.name}")
+                            if (relation.obj.save())
+                                log.debug("Financials :: financialRef - Saved the new relational inst ${relation.obj}")
+                            else
+                                result.error.add([status: "FAILED: Creating ${params.ownerField}", msg: "Invalid data received to retrieve from DB"])
+                        } else
+                            result.error.add([status: "FAILED: Setting value", msg: "The data you are trying to set does not exist"])
                     }
-                    else
-                        result.error.add([status: "FAILED: Setting value", msg: "The data you are trying to set does not exist"])
-                }
 
-                if (owner.obj.hasProperty(params.ownerField))
-                {
-                    log.debug("Using owner instance field of ${params.ownerField} to set new instance of ${relation.obj.class} with ID ${relation.obj.id}")
-                    owner.obj."${params.ownerField}" = relation.obj
-                    result.relation = relation.obj
-                }
-            }
-            else
-                result.error.add([status: "FAILED: Related Cost Item Data", msg: "Invalid data received to retrieve from DB"])
+                    if (owner.obj.hasProperty(params.ownerField)) {
+                        log.debug("Using owner instance field of ${params.ownerField} to set new instance of ${relation.obj.class} with ID ${relation.obj.id}")
+                        owner.obj."${params.ownerField}" = relation.obj
+                        result.relation = relation.obj
+                    }
+                } else
+                    result.error.add([status: "FAILED: Related Cost Item Data", msg: "Invalid data received to retrieve from DB"])
+            } else
+                result.error.add([status: "FAILED: Cost Item", msg: "Invalid data received to retrieve from DB"])
         }
-         else
-            result.error.add([status: "FAILED: Cost Item", msg: "Invalid data received to retrieve from DB"])
 
         render result as JSON
+    }
+
+    def private refReset(CostItem costItem, errorList) {
+        log.debug("Attempting to reset a reference for cost item data ${params.relationField}")
+        if (costItem.hasProperty(params.relationField))
+            costItem."${relationField}" = null
+        else
+            errorList.add([status: "FAILED: Cost Item", msg: "Invalid data received"])
     }
 
     def private refData(String oid) {
