@@ -31,26 +31,26 @@
     <input type="hidden" name="shortcode" value="${params.shortcode}"/>
         <table id="costTable" class="table table-striped table-bordered table-condensed table-tworow">
             <thead>
-                <tr>
-                    <th rowspan="2" style="vertical-align: top; cursor: pointer;"><a data-order="id"  class="sortable ${order=="Cost Item#"? "sorted ${sort}":''}">Cost Item#</a></th>
-                    <th><a style="cursor: pointer;" class="sortable ${order=="invoice#"? "sorted ${sort}":''}"  data-order="invoice#">Invoice#</a> <br/>
+                <tr style="width: 100%;">
+                    <th rowspan="2" style="width: 10%; vertical-align: top; cursor: pointer;"><a data-order="id"  class="sortable ${order=="Cost Item#"? "sorted ${sort}":''}">Cost Item#</a></th>
+                    <th style="width: 10%;"><a style="cursor: pointer;" class="sortable ${order=="invoice#"? "sorted ${sort}":''}"  data-order="invoice#">Invoice#</a> <br/>
                         <input autofocus="true" type="text" name="invoiceNumberFilter"
                                class="input-medium required-indicator filterUpdated"
                                id="filterInvoiceNumber" value="${params.invoiceNumberFilter}"/>
                     </th>
-                    <th><a style="cursor: pointer;" class="sortable ${order=="order#"? "sorted ${sort}":''}"  data-order="order#">Order#</a><br/>
+                    <th style="width: 10%;"><a style="cursor: pointer;" class="sortable ${order=="order#"? "sorted ${sort}":''}"  data-order="order#">Order#</a><br/>
                         <input type="text" name="orderNumberFilter"
                                class="input-medium required-indicator filterUpdated"
                                id="filterOrderNumber"  value="${params.orderNumberFilter}" data-type="select"/>
                     </th>
-                    <th><a data-order="Subscription" style="cursor: pointer;" class="sortable ${order=="Subscription"? "sorted ${sort}":''}">Subscription</a><br/>
+                    <th style="width: 20%;"><a data-order="Subscription" style="cursor: pointer;" class="sortable ${order=="Subscription"? "sorted ${sort}":''}">Subscription</a><br/>
 
                         <input class="input-medium required-indicator" style="width:250px;" name="subscriptionFilter" id="subscriptionFilter" value="${params.subscriptionFilter}"/> <br/>
                     </th>
-                    <th> <a data-order="Package" style="cursor: pointer;" class="sortable ${order=="Package"? "sorted ${sort}":''}">Package</a> <br/>
+                    <th style="width: 10%;"> <a data-order="Package" style="cursor: pointer;" class="sortable ${order=="Package"? "sorted ${sort}":''}">Package</a> <br/>
                         <input class="input-medium required-indicator filterUpdated" style="width:250px;" name="packageFilter" id="packageFilter" value="${params.packageFilter}"/> <br/>
                     </th>
-                    <th style="vertical-align: top;">IE</th>
+                    <th style="vertical-align: top; width: 10%;">IE</th>
                     <th rowspan="2" style="vertical-align: top; text-align: center; width: 5%">Filter
                         <span ${wildcard && filterMode=='ON'? hidden="hidden" : ''}>
                             (${g.message(code: 'financials.help.wildcard')} : <g:checkBox name="wildcard" title="${g.message(code: 'financials.wildcard.title')}" type="checkbox" value="${wildcard}"></g:checkBox> )
@@ -76,7 +76,7 @@
                 </tr>
                 %{--End of table row one of headers--}%
 
-                <tr>
+                <tr style="width: 100%;">
                     <th>
                         <a style="color: #990100; vertical-align: top; cursor: pointer;" data-order="datePaid" class="sortable ${order=="datePaid"? "sorted ${sort}":''}">Date Paid</a><br/><br/>
 
@@ -133,7 +133,6 @@
         </table>
 </g:form>
 
-%{--todo refactor non-plugin usage, separate the JS concerns or convert to taglib--}%
 <div id="paginationWrapper" class="pagination">
     <div id="paginateInfo" hidden="true" data-offset="${offset!=null?offset:params.offset}" data-max="${max!=null?max:params.max}" data-wildcard="${wildcard!=null?wildcard:params.wildcard}"
          data-sort="${sort!=null?sort:params.sort}" data-order="${order!=null?order:params.order}" data-relation="${isRelation!=null?isRelation:params.orderRelation}"
@@ -141,7 +140,7 @@
          data-invoiceNumberFilter="${params.invoiceNumberFilter}" data-orderNumberFilter="${params.orderNumberFilter}" data-packageFilter="${params.packageFilter}">
     </div>
     <util:remotePaginate title="${g.message(code: 'financials.pagination.title')}" 
-          onFailure="errorHandling(textStatus,'Pagination',errorThrown)" onComplete="Finance.scrollTo(null,'#costTable');Finance.rebind();" onSuccess="filterSelection()"
+          onFailure="errorHandling(textStatus,'Pagination',errorThrown)" onComplete="Finance.rebind();Finance.scrollTo(null,'#costTable');" onSuccess="filterSelection()"
           offset='0'  total="${cost_item_count}"  update="filterTemplate" max="20" pageSizes="[10, 20, 50, 100, 200]" alwaysShowPageSizes="true" 
           controller="finance" action="index" params="${params+["filterMode": "${filterMode}", "sort":"${sort}", "order":"${order}", "format":"frag"]}" />
 </div>

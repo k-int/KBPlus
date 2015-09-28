@@ -26,12 +26,15 @@
             <td><input type="text" name="newOrderNumber" class="input-medium"
                        placeholder="New Order #" id="newOrderNumber" value="${params.newOrderNumber}"/></td>
             <td>
-                <select  name="newSubscription" class="input-medium" id="newSubscription" value="${params.newSubscription}">
+               %{-- <select  name="newSubscription" class="input-medium" id="newSubscription" value="${params.newSubscription}">
                     <option value="xx">Not specified</option>
                     <g:each in="${institutionSubscriptions}" var="s">
                         <option value="${s.id}" ${s.id==params.long('subscriptionFilter')?'selected="selected"':''}>${s.name}</option>
-                    </g:each>
-                </select>
+                    </g:each> 
+                </select> --}%
+
+                <input name="newSubscription" class="input-medium"
+                                       placeholder="New Subscription" id="newSubscription" value="${params.newSubscription}"/>
             </td>
             <td>
                 <select name="newPackage" class="input-medium" id="newPackage" value="${params.newPackage}">

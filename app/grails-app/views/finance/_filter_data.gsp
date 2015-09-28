@@ -4,7 +4,7 @@
         <td rowspan="2">${ci.id}</td>
         <td>
             <g:if test="${editable}">
-                <g:simpleReferenceTypedown modified="${true}" style="width: 100%" class="finance-select2" data-shortcode="${params.shortcode}"
+                <g:simpleReferenceTypedown modified="${true}" style="width: 100%" class="refData" data-shortcode="${params.shortcode}"
                                            data-owner="${ci.class.name}" baseClass="com.k_int.kbplus.Invoice"
                                            data-relationID="${ci?.invoice!=null? ci.invoice.id:'create'}"
                                            data-placeholder="${ci?.invoice==null? 'Enter invoice number':''}"
@@ -17,7 +17,7 @@
         </td>
         <td>
             <g:if test="${editable}">
-                <g:simpleReferenceTypedown modified="${true}" style="width: 100%" class="finance-select2" data-shortcode="${params.shortcode}"
+                <g:simpleReferenceTypedown modified="${true}" style="width: 100%" class="refData" data-shortcode="${params.shortcode}"
                                            data-owner="${ci.class.name}" baseClass="com.k_int.kbplus.Order"
                                            data-relationID="${ci?.order!=null? ci.order.id:'create'}"
                                            data-placeholder="${ci?.order==null? 'Enter order number':''}"
@@ -28,8 +28,19 @@
                 ${ci?.order?.orderNumber?.encodeAsHTML()}
             </g:else>
         </td>
-        <td data-pk="${ci.sub?.id}">${ci.sub?.name?.encodeAsHTML()}</td>
-        <td data-pk="${ci.subPkg?.pkg?.id}">${ci.subPkg?.pkg?.name?.encodeAsHTML()}</td>
+        <td>
+          <g:simpleReferenceTypedown modified="${true}" class="refObj" 
+                        style="width:350px;" name="name" data-shortcode="${params.shortcode}"
+                        data-placeholder="${ci?.sub==null? 'Enter sub name':''}" data-ownerfield="sub"
+                        data-defaultValue="${ci.sub?.name}" data-ownerid="${ci.id}"
+                        data-owner="${ci.class.name}" baseClass="com.k_int.kbplus.Subscription"/>
+        <td>
+          <g:simpleReferenceTypedown modified="${true}" class="refObj" 
+                        style="width:350px;" name="name" data-shortcode="${params.shortcode}"
+                        data-placeholder="${ci?.sub==null? 'Enter sub name':''}" data-ownerfield="subPkg"
+                        data-defaultValue="${ci?.subPkg?.pkg?.id}" data-ownerid="${ci.id}" data-subFilter="${ci?.sub?.id}"
+                        data-owner="${ci.class.name}" baseClass="com.k_int.kbplus.SubscriptionPackage"/>
+        </td>
         <td data-pk="${ci?.issueEntitlement?.tipp?.title?.id}" colspan="2">${ci?.issueEntitlement?.tipp?.title?.title?.encodeAsHTML()}</td>
         <g:if test="${editable}">
             <td rowspan="2"> <input type="checkbox" value="${ci.id}" class="bulkcheck"/> </td>

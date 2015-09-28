@@ -164,7 +164,7 @@
         //todo make this configurable, factory builder style, pass in a list of config objects
         function setupModSelect2s() {
              //unable to use placeholder with initSelection, manually set via GSP with data-placeholder
-            $(s.ft.filterModSelect2).select2({
+            $(s.ft.filterModSelect2+'.refData').select2({
               initSelection : function (element, callback) {
                     //If default value has been set in the markup!
                 if(element.data('defaultvalue'))
@@ -202,10 +202,33 @@
               }
           });
 
-
+            $(s.ft.filterModSelect2+'.refObj').select2({
+              initSelection : function (element, callback) {
+                    //If default value has been set in the markup!
+                if(element.data('defaultvalue'))
+                    var data = {id: element.data('domain')+':'+element.data('relationid'), text: element.data('defaultvalue')};
+                callback(data);
+              },
+              minimumInputLength: 1,
+              ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+              url: s.url.ajaxLookupURL,
+              dataType: 'json',
+              global: false,
+              data: function (term, page){
+                  return {
+                      format:'json',
+                      q: term,
+                      baseClass:$(this).data('domain'),
+                      shortcode: $(this).data('shortcode')
+                  };
+              },
+              results: function (data, page) {
+                return {results: data.values};
+              }
+            }
+          });
             //subscription
             $(s.ft.filterSubscription).select2({
-                width: '90%',
                 placeholder: "Type subscription name...",
                 minimumInputLength: 1,
                 global: false,
@@ -236,7 +259,6 @@
             //sub pkg
 
             $(s.ft.filterSubPkg).select2({
-                width: '90%',
                 placeholder: "Type sub pkg name...",
                 minimumInputLength: 1,
                 global: false,
@@ -262,27 +284,23 @@
                 formatSelection: function(data) {
                    return data.text;
                 }
-            });
+            }).select2('disable');
 
             s.mybody.on("select2-selecting", s.ft.filterSubscription, function(e) {
                  var element = $(this);
                  var text = e.choice.text;
                  var id   = e.choice.id;;
                  var prevSelection = element.select2("data");
-
+                 $('#packageFilter').select2('enable');
                  console.log('filter sub selection ...','text', text,'id', id,'prev sel', prevSelection, "element",element);
             });
 
             s.mybody.on("select2-removed", s.ft.filterSubscription, function(e) {
-                 var element = $(this);
-                 var subPkg = $('#packageFilter');
-                 var isSub = element.id === s.ft.filterSubscription //Sub
-                 if(isSub)
-                {
+                 var pkgFilter = $('#packageFilter');
+                 pkgFilter.select2('disable');
+                 pkgFilter.select2('data', null)
 
-                }
-
-                 console.log('filter sub CLEARING selection ...',element);
+                 console.log('filter sub search  CLEARING selection ...');
             });
 
 
@@ -380,11 +398,13 @@
         var filterSubUpdated  = function() {
           var filterSubscription = $(this);
             console.log("filter sub updated called ",filterSubscription.val());
+
+           var filterVal = filterSubscription.val().split(':');
           $.ajax({
             url: s.url.ajaxLookupURL,
             data: {
               format:'json',
-              subFilter:filterSubscription.val(),
+              subFilter:filterVal[1],
               baseClass:'com.k_int.kbplus.SubscriptionPackage'
             },
             dataType:'json'
@@ -558,6 +578,36 @@
             $(document).ajaxStart(startLoadAnimation);
             $(document).ajaxStop(stopLoadAnimation);
 
+            $(s.ct.newSubscription).select2({
+                placeholder: "Type subscription name...",
+                minimumInputLength: 1,
+                global: false,
+                ajax: {
+                    url: s.url.ajaxLookupURL,
+                    dataType: 'json',
+                    data: function (term, page) {
+                        return {
+                            hideDeleted: 'true',
+                            hideIdent: 'false',
+                            inclSubStartDate: 'false',
+                            inst_shortcode: '${params.shortcode}',
+                            q: '%'+term , // contains search term
+                            page_limit: 20,
+                            baseClass:'com.k_int.kbplus.Subscription'
+                        };
+                    },
+                    results: function (data, page) {
+                        return {results: data.values};
+                    }
+                },
+                allowClear: true,
+                formatSelection: function(data) {
+                   return data.text;
+                }
+            });
+
+
+
             $(s.ct.newIE).select2({
                 placeholder: "Identifier..",
                 minimumInputLength: 1,
@@ -701,7 +751,7 @@
                 $(s.ft.advFilterOpts).toggle();
             }); //Show/Hide more filtering options
 
-            s.mybody.on('change',s.ft.filterSubscription + ', ' + s.ct.newSubscription, filterSubUpdated); //on change of subscription select filter
+            //s.mybody.on('change',s.ft.filterSubscription + ', ' + s.ct.newSubscription, filterSubUpdated); //on change of subscription select filter
 
             s.mybody.on('change',s.ft.filterOpt, _filterSelection); //on change of subscription select filter
 
