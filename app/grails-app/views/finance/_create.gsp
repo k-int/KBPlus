@@ -32,9 +32,7 @@
                         <option value="${s.id}" ${s.id==params.long('subscriptionFilter')?'selected="selected"':''}>${s.name}</option>
                     </g:each> 
                 </select> --}%
-
-                <input name="newSubscription" class="input-medium"
-                                       placeholder="New Subscription" id="newSubscription" value="${params.newSubscription}"/>
+                <input ${inSubMode ? "disabled='disabled' data-filterMode='${fixedSubscription?.class}:${fixedSubscription?.id}'" : '' } name="newSubscription" class="input-xlarge" placeholder="New Subscription" id="newSubscription" value="${inSubMode ? fixedSubscription?.name : params.newSubscription}"/>
             </td>
             <td>
                 <select name="newPackage" class="input-medium" id="newPackage" value="${params.newPackage}">
@@ -82,7 +80,7 @@
                           noSelection="${['':'No Tax Type']}"/> <br/>
             </td>
             <td>
-                <h3>Cost values and tax</h3>
+                <h3>Cost values and Currency</h3>
                 <input type="number" name="newCostInBillingCurrency" class="calc" placeholder="New Cost Ex-Tax - Billing Currency" id="newCostInBillingCurrency" step="0.01"/> <br/>
                 <input title="${g.message(code: 'financials.addNew.exchangeRate')}" type="number" class="calc" step="0.01" name="newCostExchangeRate" placeholder="Exchange Rate" id="newCostExchangeRate" value="1" /> <br/>
                 <input type="number" class="calc" name="newCostInLocalCurrency" placeholder="New Cost Ex-Tax - Local Currency" id="newCostInLocalCurrency" step="0.01"/> <br/>

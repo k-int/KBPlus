@@ -232,37 +232,41 @@
               }
             }
           });
-            //subscription
-            $(s.ft.filterSubscription).select2({
-                placeholder: "Type subscription name...",
-                minimumInputLength: 1,
-                global: false,
-                ajax: {
-                    url: s.url.ajaxLookupURL,
-                    dataType: 'json',
-                    data: function (term, page) {
-                        return {
-                            hideDeleted: 'true',
-                            hideIdent: 'false',
-                            inclSubStartDate: 'false',
-                            inst_shortcode: '${params.shortcode}',
-                            q: '%'+term , // contains search term
-                            page_limit: 20,
-                            baseClass:'com.k_int.kbplus.Subscription'
-                        };
+
+
+            if(!s.misc.inSubMode) {
+                //subscription
+                $(s.ft.filterSubscription).select2({
+                    placeholder: "Type subscription name...",
+                    minimumInputLength: 1,
+                    global: false,
+                    ajax: {
+                        url: s.url.ajaxLookupURL,
+                        dataType: 'json',
+                        data: function (term, page) {
+                            return {
+                                hideDeleted: 'true',
+                                hideIdent: 'false',
+                                inclSubStartDate: 'false',
+                                inst_shortcode: '${params.shortcode}',
+                                q: '%'+term , // contains search term
+                                page_limit: 20,
+                                baseClass:'com.k_int.kbplus.Subscription'
+                            };
+                        },
+                        results: function (data, page) {
+                            return {results: data.values};
+                        }
                     },
-                    results: function (data, page) {
-                        return {results: data.values};
+                    allowClear: true,
+                    formatSelection: function(data) {
+                       return data.text;
                     }
-                },
-                allowClear: true,
-                formatSelection: function(data) {
-                   return data.text;
-                }
-            });
+                });
+            } //end of if check
+
 
             //sub pkg
-
             $(s.ft.filterSubPkg).select2({
                 placeholder: "Type sub pkg name...",
                 minimumInputLength: 1,
@@ -290,7 +294,12 @@
                 formatSelection: function(data) {
                    return data.text;
                 }
-            }).select2('disable');
+            });
+
+            if(s.misc.inSubMode == false)
+            {
+                $(s.ft.filterSubPkg).select2('disable');
+            }
 
             s.mybody.on("select2-selecting", s.ft.filterSubscription, function(e) {
                  var element = $(this);
@@ -586,6 +595,10 @@
             $(document).ajaxStart(startLoadAnimation);
             $(document).ajaxStop(stopLoadAnimation);
 
+            s.misc.inSubMode = "${inSubMode}" == "true";
+            console.log('In subscription only mode',s.misc.inSubMode);
+
+            if(!s.misc.inSubMode) {
             $(s.ct.newSubscription).select2({
                 placeholder: "Type subscription name...",
                 minimumInputLength: 1,
@@ -613,7 +626,7 @@
                    return data.text;
                 }
             });
-
+         }
 
 
             $(s.ct.newIE).select2({

@@ -226,7 +226,7 @@ class FinanceController {
                 def created_date = ci.dateCreated ? dateFormat.format(ci.dateCreated) : ''
                 def edited_date  = ci.lastUpdated ? dateFormat.format(ci.lastUpdated) : ''
 
-                writer.write("\"${ci.id}\",\"${ci.owner.name}\",\"${ci.invoice?ci.invoice.invoiceNumber:''}\",${ci.order? ci.order.orderNumber:''},${ci.sub? ci.sub.name:''},${ci.subPkg?ci.subPkg.pkg.name:''},${ci.issueEntitlement?ci.issueEntitlement.tipp.title.title:''},${paid_date},${start_date},\"${end_date}\",\"${ci.costItemCategory?ci.costItemCategory.value:''}\",\"${ci.costItemStatus?ci.costItemStatus.value:''}\",\"${ci.billingCurrency.value?:''}\",\"${ci.costInBillingCurrency?:''}\",\"${ci.costInLocalCurrency?:''}\",\"${ci.taxCode?ci.taxCode.value:''}\",\"${ci.costItemElement?ci.costItemElement.value:''}\",\"${ci.costDescription?:''}\",\"${ci.reference?:''}\",\"${codes?codes.toString():''}\",\"${ci.createdBy}\",\"${created_date}\",\"${ci.lastUpdatedBy}\",\"${edited_date}\"\n");
+                writer.write("\"${ci.id}\",\"${ci.owner.name}\",\"${ci.invoice?ci.invoice.invoiceNumber:''}\",${ci.order? ci.order.orderNumber:''},${ci.sub? ci.sub.name:''},${ci.subPkg?ci.subPkg.pkg.name:''},${ci.issueEntitlement?ci.issueEntitlement.tipp.title.title:''},${paid_date},${start_date},\"${end_date}\",\"${ci.costItemCategory?ci.costItemCategory.value:''}\",\"${ci.costItemStatus?ci.costItemStatus.value:''}\",\"${ci.billingCurrency.value?:''}\",\"${ci.costInBillingCurrency?:''}\",\"${ci.costInLocalCurrency?:''}\",\"${ci.taxCode?ci.taxCode.value:''}\",\"${ci.costItemElement?ci.costItemElement.value:''}\",\"${ci.costDescription?:''}\",\"${ci.reference?:''}\",\"${codes?codes.toString():''}\",\"${ci.createdBy.username}\",\"${created_date}\",\"${ci.lastUpdatedBy.username}\",\"${edited_date}\"\n");
             }
             writer.flush()
             writer.close()
@@ -367,7 +367,7 @@ class FinanceController {
             invoice = Invoice.findByInvoiceNumberAndOwner(params.newInvoiceNumber, result.institution) ?: new Invoice(invoiceNumber: params.newInvoiceNumber, owner: result.institution).save(flush: true);
 
         def sub = null;
-        if (params.newSubscription?.startsWith("com.k_int.kbplus.Subscription:"))
+        if (params.newSubscription?.contains("com.k_int.kbplus.Subscription:"))
         {
             try {
                 sub = Subscription.get(params.newSubscription.split(":")[1]);
@@ -378,7 +378,7 @@ class FinanceController {
         }
 
         def pkg = null;
-        if (params.newPackage?.startsWith("com.k_int.kbplus.SubscriptionPackage:"))
+        if (params.newPackage?.contains("com.k_int.kbplus.SubscriptionPackage:"))
         {
             try {
                 pkg = SubscriptionPackage.load(params.newPackage.split(":")[1])
