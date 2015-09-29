@@ -30,7 +30,7 @@ class ExportService {
 	 */
     def role_subscriber = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber'); 
     def role_cprov = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider');
-
+    def hqlCoreDates = "select ca.startDate, ca.endDate from CoreAssertion as ca, TitleInstitutionProvider as tip, IssueEntitlement as ie inner join  ie.subscription.orgRelations as o inner join ie.tipp.pkg.orgs as pkg_org where ie=:ie and o.roleType=:sub_role and pkg_org.roleType= :cp_role and tip.institution=o.org and tip.title=ie.tipp.title and tip.provider.id=pkg_org.org and ca.tiinp=tip" 
 
 
 	def StreamOutLicenceCSV(out,result,licences){
@@ -192,7 +192,6 @@ class ExportService {
 	def StreamOutTitlesCSV(out, entitlements){
 		def starttime = printStart("Get Namespaces and max IE")
 		// Get distinct ID.Namespace and the maximum of entitlements for one title
-	    def hqlCoreDates = "select tip.coreDates from TitleInstitutionProvider as tip, IssueEntitlement as ie inner join  ie.subscription.orgRelations as o inner join ie.tipp.pkg.orgs as pkg_org where ie=:ie and o.roleType=:sub_role and pkg_org.roleType= :cp_role and tip.institution=o.org and tip.title=ie.tipp.title and tip.provider.id=pkg_org.org" 
 
 		def namespaces = []
 		def current_title_id = -1
@@ -290,8 +289,8 @@ class ExportService {
 				}
 				entitlements_str += "\","
 				def coreDateList = ""
-				TitleInstitutionProvider.executeQuery(hqlCoreDates,[ie:e,cp_role:role_cprov,sub_role:role_subscriber]).each{
-					coreDateList += "Something"
+				getIECoreDates(e)?.each{
+					coreDateList += formatCoreDates(it) + " - "
 				}
 				entitlements_str += "\"${coreDateList}\","
 				entitlements_str += "\"${e.coreStatus?:''}\""
@@ -333,7 +332,13 @@ class ExportService {
 		
 		return doc
 	}
-	
+	def getIECoreDates(IssueEntitlement ie){
+		def coreDates = TitleInstitutionProvider.executeQuery(hqlCoreDates,[ie:ie,cp_role:role_cprov,sub_role:role_subscriber])
+		return coreDates
+	}
+	def formatCoreDates(dates){
+	    return "${dates[0]?formatter.format(dates[0]):''} : ${dates[1]?formatter.format(dates[1]):''}"
+	}
 	/**
 	 * Add a list of titles from a given entitlement list into a given Element
 	 * 
@@ -344,7 +349,8 @@ class ExportService {
 	 */
     def addTitleListXML(Document doc, Element into_elem, List entries, String type = "Issue Entitlement") {
 		def current_title_id = -1
-		
+		def starttime = printStart("Add TitleListXML")
+
 		Element titlelistentry
 		entries.each { e ->
 			// There is a few distinction between TIPP and IE objects, they are handled here
@@ -404,11 +410,11 @@ class ExportService {
 			addXMLElementInto(doc, coveragestatement, statusColumnHeader, status?.value?:'')
 			if(type == "Issue Entitlement"){
 				Element coreDateList = addXMLElementInto(doc,coveragestatement,"CoreDateList",null)
-				e?.getTIP()?.coreDates.each{
+				getIECoreDates(e)?.each{
 					Element coreDate = addXMLElementInto(doc,coreDateList,"CoreDate",null)
-					addXMLElementInto(doc,coreDate,"CoreStart",formatter.format(it.startDate))
+					addXMLElementInto(doc,coreDate,"CoreStart",it[0]?formatter.format(it[0]):'')
 					if(it.endDate){
-						addXMLElementInto(doc,coreDate,"CoreEnd",formatter.format(it.endDate))
+						addXMLElementInto(doc,coreDate,"CoreEnd",it[1]?formatter.format(it[1]):'')
 					}
 				}
 			}
@@ -418,6 +424,8 @@ class ExportService {
             addXMLElementInto(doc, coveragestatement, "AccessFrom",  tipp?.accessStartDate?:'')
             addXMLElementInto(doc, coveragestatement, "AccessTo", tipp?.accessEndDate?:'')
         }
+
+		printDuration(starttime, "Add TitleListXML")
     }
 	
 	/**
@@ -602,6 +610,9 @@ class ExportService {
 	 * @param ie_list - list of {@link com.k_int.kbplus.IssueEntitlement}
 	 */
 	def addTitlesToMap(into_map, ie_list, String type = "Issue Entitlement"){
+		def starttime = printStart("Add titles to MAP")
+
+
 		def current_title_id = -1
 		def titles = []
 		def title
@@ -669,10 +680,10 @@ class ExportService {
 			ie."${statusColumnHeader}" = status?.value?:''
 			if(type == "Issue Entitlement"){
 				def dateList = []
-				e.getTIP()?.coreDates?.each{
+				getIECoreDates(e)?.each{
 					def dates = [:]
-					dates."startDate" = formatter.format(it.startDate)
-					dates."endDate" = it.endDate ? formatter.format(it.endDate) : ''
+					dates."startDate" = it[0] ? formatter.format(it[0]) :''
+					dates."endDate" = it[1] ? formatter.format(it[1]) : ''
 					dateList.add(dates)
 				}
 				ie."CoreDateList" = dateList
@@ -687,8 +698,10 @@ class ExportService {
             entitlements.add(ie)
 		}
 		titles.add(title) // add last title
-		
+
 		into_map."TitleList" = titles
+		printDuration(starttime, "Add titles to MAP")
+
 	}
 	
 	/**
