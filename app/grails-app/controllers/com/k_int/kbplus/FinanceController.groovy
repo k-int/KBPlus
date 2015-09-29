@@ -7,6 +7,7 @@ import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
 //todo Refactor aspects into service
+//todo maybe see how to cache some of the request
 //todo track state, maybe use the #! stateful style syntax along with the history API or more appropriately history.js (cross-compatible, polyfill for HTML4)
 //todo Discuss versioning for edits?
 class FinanceController {
@@ -19,7 +20,8 @@ class FinanceController {
     private final def base_qry        = " from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) "
     private final def admin_role      = Role.findByAuthority('ROLE_ADMIN')
     private final def defaultCurrency = RefdataCategory.lookupOrCreate('Currency','GBP - United Kingdom Pound')
-    private final def defaultInclSub  = RefdataCategory.lookupOrCreate('YN','Yes')
+    //private final def defaultInclSub  = RefdataCategory.lookupOrCreate('YN','Yes') //Owen is to confirm this functionality
+    private final def maxAllowedVals  = [10,20,50,100,200] //in case user has strange default list size, plays hell with UI
 
     private boolean userCertified(User user, Org institution)
     {
@@ -91,7 +93,7 @@ class FinanceController {
         request.setAttribute("editable", result.editable)
         result.filterMode  =  params.filterMode?: "OFF"
         result.info        =  [] as List
-        params.max         =  params.int('max') ? Math.min(Integer.parseInt(params.max),200) : (user?.defaultPageSize?: 10)
+        params.max         =  params.int('max') ? Math.min(Integer.parseInt(params.max),200) : (user?.defaultPageSize? maxAllowedVals.min{(it-user.defaultPageSize).abs()} : 10)
         result.max         =  params.max
         result.offset      =  params.offset?: 0
         result.sort        =  ["desc","asc"].contains(params.sort)? params.sort : "desc" //defaults to sort & order of desc id 
@@ -164,7 +166,7 @@ class FinanceController {
     def financialsExport()  {
         log.debug("Financial Export :: ${params}")
 
-        if ( params.format == "csv") {
+        if (request.isPost() && params.format == "csv") {
             def result = [:]
             result.institution =  Org.findByShortcode(params.shortcode)
             def user           =  User.get(springSecurityService.principal.id)
