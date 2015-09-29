@@ -6,13 +6,13 @@ import org.hibernate.ScrollMode
 
 /*
 * This job is only run once on system startup, and is responsible for initializing various fields
-* First run on unpopulated data can take up to an hour, then only few seconds if run again
+* First run on unpopulated data takes up to 45min, then only few seconds if run again
 */
 class BatchTouchJob {
 
 
   static triggers = {
-  	simple name:'BatchTouchJob', startDelay:40000, repeatInterval:30000, repeatCount:0  
+  	simple name:'BatchTouchJob', startDelay:50000, repeatInterval:30000, repeatCount:0  
   }
 
   def execute() {
