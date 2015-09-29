@@ -72,8 +72,14 @@
                             </g:if>
                           </td>
                           <td>
+                            ${hit.publisher?.name}
                           </td>
                           <td>
+                            <ul>
+                              <g:each in="${hit.ids}" var="id">
+                                <li>${id.identifier.ns.ns} ${id.identifier.value}</li>
+                              </g:each>
+                            </ul>
                           </td>
                           <td>
                             ${hit.status?.value}
