@@ -28,9 +28,9 @@ class ExportService {
 	/* *************
 	 *  CSV Exports 
 	 */
-    def role_subscriber = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber'); 
-    def role_cprov = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider');
-    def hqlCoreDates = "select ca.startDate, ca.endDate from CoreAssertion as ca, TitleInstitutionProvider as tip, IssueEntitlement as ie inner join  ie.subscription.orgRelations as o inner join ie.tipp.pkg.orgs as pkg_org where ie=:ie and o.roleType=:sub_role and pkg_org.roleType= :cp_role and tip.institution=o.org and tip.title=ie.tipp.title and tip.provider.id=pkg_org.org and ca.tiinp=tip" 
+    def role_subscriber = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber').id; 
+    def role_cprov = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider').id;
+    def hqlCoreDates = "select ca.startDate, ca.endDate from CoreAssertion as ca, TitleInstitutionProvider as tip, IssueEntitlement as ie inner join  ie.subscription.orgRelations as o inner join ie.tipp.pkg.orgs as pkg_org where ie.id=:ie and o.roleType.id=:sub_role and pkg_org.roleType.id= :cp_role and tip.institution=o.org and tip.title=ie.tipp.title and tip.provider.id=pkg_org.org and ca.tiinp=tip" 
 
 
 	def StreamOutLicenceCSV(out,result,licences){
@@ -190,7 +190,7 @@ class ExportService {
 	 * @param entitlements - the list of {@link #com.k_int.kbplus.IssueEntitlement IssueEntitlement}
 	 */
 	def StreamOutTitlesCSV(out, entitlements){
-		def starttime = printStart("Get Namespaces and max IE")
+ 		def starttime = printStart("Get Namespaces and max IE")
 		// Get distinct ID.Namespace and the maximum of entitlements for one title
 
 		def namespaces = []
@@ -333,7 +333,7 @@ class ExportService {
 		return doc
 	}
 	def getIECoreDates(IssueEntitlement ie){
-		def coreDates = TitleInstitutionProvider.executeQuery(hqlCoreDates,[ie:ie,cp_role:role_cprov,sub_role:role_subscriber])
+		def coreDates = TitleInstitutionProvider.executeQuery(hqlCoreDates,[ie:ie.id,cp_role:role_cprov,sub_role:role_subscriber])
 		return coreDates
 	}
 	def formatCoreDates(dates){
