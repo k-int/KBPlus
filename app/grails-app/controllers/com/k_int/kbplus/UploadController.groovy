@@ -566,10 +566,11 @@ class UploadController {
 
       // New issue - ensure that a tipp dates are within the publication dates of the title [If any are set]
       if ( matched_titles.size() == 1 ) {
-        if ( matched_titles[0].isValidCoverage(tipp.parsedStartDate, tipp.parsedEndDate) == false ) {
-          tipp.messages.add("Title coverage in row ${counter} Does not match publisher dates for title :(${matched_titles[0].id}). Please correct. identifiers:${tipp.id}");
-          upload.processFile=false;
-        }
+        def title_obj = TitleInstance.get(matched_titles[0])
+          if ( title_obj.isValidCoverage(tipp.parsedStartDate, tipp.parsedEndDate) == false ) {
+            tipp.messages.add("Title coverage in row ${counter} Does not match publisher dates for title :(${title_obj.id}). Please correct. identifiers:${tipp.id}");
+            upload.processFile=false;
+          }
       }
 
       if ( ( tipp.coverage_depth != null ) &&
