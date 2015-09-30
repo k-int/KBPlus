@@ -7,9 +7,7 @@ import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
 //todo Refactor aspects into service
-//todo maybe see how to cache some of the request
 //todo track state, maybe use the #! stateful style syntax along with the history API or more appropriately history.js (cross-compatible, polyfill for HTML4)
-//todo Discuss versioning for edits?
 class FinanceController {
 
     def springSecurityService
@@ -20,8 +18,8 @@ class FinanceController {
     private final def base_qry        = " from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) "
     private final def admin_role      = Role.findByAuthority('ROLE_ADMIN')
     private final def defaultCurrency = RefdataCategory.lookupOrCreate('Currency','GBP - United Kingdom Pound')
-    //private final def defaultInclSub  = RefdataCategory.lookupOrCreate('YN','Yes') //Owen is to confirm this functionality
     private final def maxAllowedVals  = [10,20,50,100,200] //in case user has strange default list size, plays hell with UI
+    //private final def defaultInclSub  = RefdataCategory.lookupOrCreate('YN','Yes') //Owen is to confirm this functionality
 
     private boolean userCertified(User user, Org institution)
     {
@@ -57,7 +55,7 @@ class FinanceController {
         }
 
         //Accessed from Subscription page, 'hardcoded' set subscription 'hardcode' values
-        result.inSubMode   = params.boolean('inSubMode')?: false
+        result.inSubMode   = params.int('sub')? true : false
         if (result.inSubMode)
         {
             result.fixedSubscription = params.int('sub')? Subscription.get(params.sub) : null
@@ -78,6 +76,7 @@ class FinanceController {
         }
         else
         {
+            //First run, make a date for recently updated costs AJAX operation
             use(groovy.time.TimeCategory) {
                 result.from = dateTimeFormat.format(new Date() - 3.days)
             }
@@ -85,12 +84,17 @@ class FinanceController {
         }
     }
 
-
+    /**
+     * Setup the data for the financials processing
+     * @param result
+     * @param params
+     * @param user
+     * @return Query data to performing selection, ordering/sorting, and query parameters (e.g. institution)
+     */
     private def setupQueryData(result, params, user) {
         //Setup params
-        // Ensure we also add to the request object as an attribute here so that the Taglib picks it up (Strange behaviour with AJAX)
         result.editable    =  SpringSecurityUtils.ifAllGranted(admin_role.authority)
-        request.setAttribute("editable", result.editable)
+        request.setAttribute("editable", result.editable) //editable Taglib doesn't pick up AJAX request, REQUIRED!
         result.filterMode  =  params.filterMode?: "OFF"
         result.info        =  [] as List
         params.max         =  params.int('max') ? Math.min(Integer.parseInt(params.max),200) : (user?.defaultPageSize? maxAllowedVals.min{(it-user.defaultPageSize).abs()} : 10)
@@ -98,7 +102,7 @@ class FinanceController {
         result.offset      =  params.offset?: 0
         result.sort        =  ["desc","asc"].contains(params.sort)? params.sort : "desc" //defaults to sort & order of desc id 
         result.sort        =  params.boolean('opSort')==true? ((result.sort=="asc")? 'desc' : 'asc') : result.sort //opposite
-        result.isRelation  =  params.orderRelation? params.boolean('orderRelation') : false
+        result.isRelation  =  params.orderRelation? params.boolean('orderRelation',false) : false
         result.wildcard    =  params._wildcard == "off"? false: true //defaulted to on
         params.shortcode   =  result.institution.shortcode
         params.remove('opSort')
@@ -111,9 +115,9 @@ class FinanceController {
         //todo remove after UI sub select is changed to select2
         result.institutionSubscriptions =  Subscription.executeQuery(base_qry, qry_params);
 
-        def cost_item_qry_params        =  [result.institution]
-        def cost_item_qry               =  (join)? "LEFT OUTER JOIN ${join} AS j WHERE ci.owner = ? " :"  where ci.owner = ? "
-        def orderAndSortBy              =  (join)? "ORDER BY COALESCE(j.${order}, ${Integer.MAX_VALUE}) ${result.sort}, ci.id ASC" : " ORDER BY ci.${order} ${result.sort}"
+        def cost_item_qry_params  =  [result.institution]
+        def cost_item_qry         =  (join)? "LEFT OUTER JOIN ${join} AS j WHERE ci.owner = ? " :"  where ci.owner = ? "
+        def orderAndSortBy        =  (join)? "ORDER BY COALESCE(j.${order}, ${Integer.MAX_VALUE}) ${result.sort}, ci.id ASC" : " ORDER BY ci.${order} ${result.sort}"
 
         return [cost_item_qry_params, cost_item_qry, orderAndSortBy]
     }
@@ -124,6 +128,8 @@ class FinanceController {
      * @param params - Qry data sent from view
      * @param user   - Currently logged in user object
      * @return Cost Item count & data / view information for pagination, sorting, etc
+     *
+     * Note - Requests DB requests are cached ONLY if non-hardcoded values are used
      */
     private def financialData(result,params,user) {
         //Setup using param data, returning back DB query info
@@ -173,23 +179,17 @@ class FinanceController {
             if (isFinanceAuthorised(result.institution, user)) {
                 flash.error=message(code: 'financials.permission.unauthorised', args: [result.institution? result.institution.name : 'N/A'])
                 response.sendError(401)
+                return
             }
 
             financialData(result,params,user)
 
-            if (result.cost_item_count > 0)
-            {
-                response.setHeader("Content-disposition", "attachment; filename=${result?.institution.name}_financialExport.csv")
-                response.contentType = "text/csv"
-                def out = response.outputStream
-                def useHeader = params.header? true : false //For batch processing...
-                processFinancialCSV(out,result,useHeader)
-                out.close()
-            }
-            else
-            {
-                return null
-            }
+            response.setHeader("Content-disposition", "attachment; filename=${result?.institution.name}_financialExport.csv")
+            response.contentType = "text/csv"
+            def out = response.outputStream
+            def useHeader = params.header? true : false //For batch processing...
+            processFinancialCSV(out,result,useHeader)
+            out.close()
         }
         else
         {
@@ -208,31 +208,50 @@ class FinanceController {
     def private processFinancialCSV(out, result, header) {
         def generation_start = new Date()
 
-        out.withWriter { writer ->
+        switch (params.csvMode)
+        {
+            case "code":
+                log.debug("Processing code mode...")
+                break
 
-            if ( header ) {
-                writer.write("Institution,Generated Date,Cost Item Count\n")
-                writer.write("${result.institution.name?:''},${dateFormat.format(generation_start)},${result.cost_item_count}\n")
-            }
+            case "sub":
+                log.debug("Processing sub mode...")
+                break
 
-            // Output the body text
-            writer.write("cost_item_id,owner,invoice_no,order_no,subscription_name,subscription_package,issueEntitlement,date_paid,date_valid_from,date_valid_to,cost_Item_Category,cost_Item_Status,billing_Currency,cost_In_Billing_Currency,cost_In_Local_Currency,tax_Code,cost_Item_Element,cost_Description,reference,codes,created_by,date_created,edited_by,date_last_edited\n");
+            case "all":
+            default:
+                log.debug("Processing all mode...")
 
-            result.cost_items.each { ci ->
+                out.withWriter { writer ->
 
-                def codes = CostItemGroup.findAllByCostItem(ci).collect { it.budgetcode.value+'\t' }
+                    if ( header ) {
+                        writer.write("Institution,Generated Date,Cost Item Count\n")
+                        writer.write("${result.institution.name?:''},${dateFormat.format(generation_start)},${result.cost_item_count}\n")
+                    }
 
-                def start_date   = ci.startDate ? dateFormat.format(ci.startDate) : ''
-                def end_date     = ci.endDate ? dateFormat.format(ci.endDate) : ''
-                def paid_date    = ci.datePaid ? dateFormat.format(ci.datePaid) : ''
-                def created_date = ci.dateCreated ? dateFormat.format(ci.dateCreated) : ''
-                def edited_date  = ci.lastUpdated ? dateFormat.format(ci.lastUpdated) : ''
+                    // Output the body text
+                    writer.write("cost_item_id,owner,invoice_no,order_no,subscription_name,subscription_package,issueEntitlement,date_paid,date_valid_from,date_valid_to,cost_Item_Category,cost_Item_Status,billing_Currency,cost_In_Billing_Currency,cost_In_Local_Currency,tax_Code,cost_Item_Element,cost_Description,reference,codes,created_by,date_created,edited_by,date_last_edited\n");
 
-                writer.write("\"${ci.id}\",\"${ci.owner.name}\",\"${ci.invoice?ci.invoice.invoiceNumber:''}\",${ci.order? ci.order.orderNumber:''},${ci.sub? ci.sub.name:''},${ci.subPkg?ci.subPkg.pkg.name:''},${ci.issueEntitlement?ci.issueEntitlement.tipp.title.title:''},${paid_date},${start_date},\"${end_date}\",\"${ci.costItemCategory?ci.costItemCategory.value:''}\",\"${ci.costItemStatus?ci.costItemStatus.value:''}\",\"${ci.billingCurrency.value?:''}\",\"${ci.costInBillingCurrency?:''}\",\"${ci.costInLocalCurrency?:''}\",\"${ci.taxCode?ci.taxCode.value:''}\",\"${ci.costItemElement?ci.costItemElement.value:''}\",\"${ci.costDescription?:''}\",\"${ci.reference?:''}\",\"${codes?codes.toString():''}\",\"${ci.createdBy.username}\",\"${created_date}\",\"${ci.lastUpdatedBy.username}\",\"${edited_date}\"\n");
-            }
-            writer.flush()
-            writer.close()
+                    result.cost_items.each { ci ->
+
+                        def codes = CostItemGroup.findAllByCostItem(ci).collect { it.budgetcode.value+'\t' }
+
+                        def start_date   = ci.startDate ? dateFormat.format(ci.startDate) : ''
+                        def end_date     = ci.endDate ? dateFormat.format(ci.endDate) : ''
+                        def paid_date    = ci.datePaid ? dateFormat.format(ci.datePaid) : ''
+                        def created_date = ci.dateCreated ? dateFormat.format(ci.dateCreated) : ''
+                        def edited_date  = ci.lastUpdated ? dateFormat.format(ci.lastUpdated) : ''
+
+                        writer.write("\"${ci.id}\",\"${ci.owner.name}\",\"${ci.invoice?ci.invoice.invoiceNumber:''}\",${ci.order? ci.order.orderNumber:''},${ci.sub? ci.sub.name:''},${ci.subPkg?ci.subPkg.pkg.name:''},${ci.issueEntitlement?ci.issueEntitlement.tipp.title.title:''},${paid_date},${start_date},\"${end_date}\",\"${ci.costItemCategory?ci.costItemCategory.value:''}\",\"${ci.costItemStatus?ci.costItemStatus.value:''}\",\"${ci.billingCurrency.value?:''}\",\"${ci.costInBillingCurrency?:''}\",\"${ci.costInLocalCurrency?:''}\",\"${ci.taxCode?ci.taxCode.value:''}\",\"${ci.costItemElement?ci.costItemElement.value:''}\",\"${ci.costDescription?:''}\",\"${ci.reference?:''}\",\"${codes?codes.toString():''}\",\"${ci.createdBy.username}\",\"${created_date}\",\"${ci.lastUpdatedBy.username}\",\"${edited_date}\"\n");
+                    }
+                    writer.flush()
+                    writer.close()
+                }
+
+                break
         }
+        groovy.time.TimeDuration duration = groovy.time.TimeCategory.minus(new Date(), generation_start)
+        log.debug("Duration took to complete CSV export operation ${duration}")
     }
 
     def private filterQuery(LinkedHashMap result, GrailsParameterMap params, boolean wildcard) {
@@ -358,6 +377,7 @@ class FinanceController {
         {
             result.error=message(code: 'financials.permission.unauthorised', args: [result.institution? result.institution.name : 'N/A'])
             response.sendError(403)
+
         }
 
         def order = null
@@ -518,12 +538,13 @@ class FinanceController {
     def getRecentCostItems() {
         def  institution       = Org.findByShortcode(params.shortcode)
         def  result            = [:]
+        def  recentParams      = [max:10, order:'desc', sort:'lastUpdated']
         result.to              = new Date()
         result.from            = params.from? dateTimeFormat.parse(params.from): new Date()
-        result.recentlyUpdated = CostItem.findAllByOwnerAndLastUpdatedBetween(institution,result.from,result.to,[max:10, order:"desc", sort:"lastUpdated"])
+        result.recentlyUpdated = CostItem.findAllByOwnerAndLastUpdatedBetween(institution,result.from,result.to,recentParams)
         result.from            = dateTimeFormat.format(result.from)
         result.to              = dateTimeFormat.format(result.to)
-        log.debug("FinanceController - getRecentCostItems, rendering template with model: "+result)
+        log.debug("FinanceController - getRecentCostItems, rendering template with model: ${result}")
         render(template: "/finance/recentlyAdded", model: result)
     }
 
@@ -555,7 +576,10 @@ class FinanceController {
         def user           =  User.get(springSecurityService.principal.id)
         def institution    =  Org.findByShortcode(params.shortcode)
         if (isFinanceAuthorised(institution, user))
+        {
             response.sendError(401)
+            return
+        }
 
         if (results.sentIDs && institution)
         {
@@ -680,6 +704,7 @@ class FinanceController {
         {
             log.error("User ${user.id} has tried to delete budget code information for Org not privy to ${institution.name}")
             response.sendError(401)
+            return
         }
         def ids = params.bcci ? params.bcci.split("_")[1..2] : null
         if (ids && ids.size()==2)
@@ -706,7 +731,10 @@ class FinanceController {
         def institution = Org.findByShortcode(params.shortcode)
 
         if (!userCertified(user,institution))
+        {
             response.sendError(401)
+            return
+        }
 
         def code        = params.code?.trim()
         def ci          = CostItem.findByIdAndOwner(params.id, institution)
