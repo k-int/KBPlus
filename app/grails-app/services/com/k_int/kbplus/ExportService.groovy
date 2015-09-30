@@ -28,10 +28,11 @@ class ExportService {
 	/* *************
 	 *  CSV Exports 
 	 */
-    def role_subscriber = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber').id; 
-    def role_cprov = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider').id;
-    def hqlCoreDates = "select ca.startDate, ca.endDate from CoreAssertion as ca, TitleInstitutionProvider as tip, IssueEntitlement as ie inner join  ie.subscription.orgRelations as o inner join ie.tipp.pkg.orgs as pkg_org where ie.id=:ie and o.roleType.id=:sub_role and pkg_org.roleType.id= :cp_role and tip.institution=o.org and tip.title=ie.tipp.title and tip.provider.id=pkg_org.org and ca.tiinp=tip" 
+//    def role_subscriber = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber').id; 
+//    def role_cprov = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider').id;
+//    def hqlCoreDates = "select ca.startDate, ca.endDate from CoreAssertion as ca, TitleInstitutionProvider as tip, IssueEntitlement as ie inner join  ie.subscription.orgRelations as o inner join ie.tipp.pkg.orgs as pkg_org where ie.id=:ie and o.roleType.id=:sub_role and pkg_org.roleType.id= :cp_role and tip.institution=o.org and tip.title=ie.tipp.title and tip.provider.id=pkg_org.org and ca.tiinp=tip" 
 
+    def HQLCoreDates = "SELECT ca.startDate, ca.endDate FROM TitleInstitutionProvider as tip join tip.coreDates as ca WHERE tip.title.id= :ie_title AND tip.institution.id= :ie_institution AND tip.provider.id= :ie_provider"
 
 	def StreamOutLicenceCSV(out,result,licences){
 		log.debug("StreamOutLicenceCSV - ${result} - ${licences}")
@@ -332,8 +333,17 @@ class ExportService {
 		
 		return doc
 	}
-	def getIECoreDates(IssueEntitlement ie){
-		def coreDates = TitleInstitutionProvider.executeQuery(hqlCoreDates,[ie:ie.id,cp_role:role_cprov,sub_role:role_subscriber])
+	def getIECoreDates(ie){
+//		def coreDates = TitleInstitutionProvider.executeQuery(hqlCoreDates,[ie:ie,cp_role:role_cprov,sub_role:role_subscriber])
+    def inst = ie.subscription?.getSubscriber()
+    def title = ie.tipp?.title
+    def provider = ie.tipp?.pkg?.getContentProvider()
+    
+    def coreDates = null
+    
+    if (inst && title && provider) {
+      coreDates = TitleInstitutionProvider.executeQuery(HQLCoreDates,[ie_title: title.id, ie_institution: inst.id, ie_provider: provider.id])
+    }
 		return coreDates
 	}
 	def formatCoreDates(dates){
@@ -888,7 +898,5 @@ class ExportService {
 			val = val? val.replaceAll('"',"'") :" "
 			return "\"${val}\""
 		}
-	}
-	
-	
+	}	
 }
