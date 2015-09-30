@@ -64,7 +64,7 @@
 
                         </div>
                         %{-- Advanced search options, todo complete... --}%
-                        <a style="display: none;" ${filterMode=="ON"?"hidden='hidden'":''} id="advancedFilter" data-toggle="#">More filter options</a>
+                        <a style="cursor: pointer;" ${filterMode=="ON"?"hidden='hidden'":''} id="advancedFilter" data-toggle="#">More filter options</a>
                     </th>
 
                 %{--If has editable rights, allow delete column to be shown--}%
@@ -94,29 +94,53 @@
             </thead>
             <tbody>
 
-            %{--Advanced filtering row--}%
-            %{--<tr id="advancedFilterOpt" hidden="hidden">--}%
-            %{--<table width="100%">--}%
-            %{--<thead>--}%
-            %{--<tr>--}%
-            %{--<th>Code(s)</th>--}%
-            %{--<th>Status</th>--}%
-            %{--<th>Category</th>--}%
-            %{--<th>Reference</th>--}%
-            %{--<th>Charged Period (dates)</th>--}%
-            %{--</tr>--}%
-            %{--</thead>--}%
-            %{--<tbody>--}%
-            %{--<tr>--}%
-            %{--<td>Code(s)</td>--}%
-            %{--<td>Status</td>--}%
-            %{--<td>Category</td>--}%
-            %{--<td>Reference</td>--}%
-            %{--<td>Charged Period (dates)</td>--}%
-            %{--</tr>--}%
-            %{--</tbody>--}%
-            %{--</table>--}%
-            %{--</tr>--}%
+            <tr id="advSearchRow" style="height: 100px;">
+                <td colspan="0">
+                    <div>
+                        <ul class="inline">
+                            <li>
+                                <label for="adv_ref">Cost Reference</label>
+                                <input id="adv_ref" name="adv_ref" class="input-medium"/>
+                            </li>
+                            <li>
+                                <label for="adv_codes">Codes</label>
+                                <input id="adv_codes" name="adv_codes" class="input-medium"/>
+                            </li>
+                            <li>
+                                <label for="adv_start">Valid Period to & from</label>
+                                <input class="datepicker-class input-small" placeholder="start date" id="adv_start" name="adv_start" /> </br>
+                                <input class="datepicker-class input-small" placeholder="end date" id="adv_end" name="adv_end" />
+                            </li>
+                            <li>
+                                <label for="adv_costItemStatus">Cost Status</label>
+                                <g:select id="adv_costItemStatus"
+                                          name="adv_costItemStatus"
+                                          from="${costItemStatus}"
+                                          optionKey="id"
+                                          noSelection="${['':'No Status']}"/>
+                            </li>
+                            <li>
+                                <label for="adv_costItemCategory">Cost Category</label>
+                                <g:select id="adv_costItemCategory"
+                                          name="adv_costItemCategory"
+                                          from="${costItemCategory}"
+                                          optionKey="id"
+                                          noSelection="${['':'No Category']}"/>
+                            </li>
+                            <li>
+                                <label for="adv_amount">Local Amount </label>
+                                <select name="adv_amountType" class="input-mini"  id="adv_amountType">
+                                    <option value="">N/A</option>
+                                    <option value="eq">==</option>
+                                    <option value="gt">&gt;</option>
+                                    <option value="gt">&lt;</option>
+                                </select>
+                                <input  id="adv_amount" name="adv_amount" type="number" class="input-small" step="0.01" /> </br>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
 
             %{--blank row--}%
             <tr><td colspan="10">&nbsp;</td></tr>
@@ -134,15 +158,15 @@
 </g:form>
 
 <div id="paginationWrapper" class="pagination">
-    <div id="paginateInfo" hidden="true" data-offset="${offset!=null?offset:params.offset}" data-max="${max!=null?max:params.max}" data-wildcard="${wildcard!=null?wildcard:params.wildcard}"
+    <div id="paginateInfo" hidden="true" data-offset="${offset!=null?offset:params.offset}" data-max="${max!=null?max:params.max}"
+         data-wildcard="${wildcard!=null?wildcard:params.wildcard}" data-insubmode="${inSubMode}" data-sub="${fixedSubscription?.id}"
          data-sort="${sort!=null?sort:params.sort}" data-order="${order!=null?order:params.order}" data-relation="${isRelation!=null?isRelation:params.orderRelation}"
          data-filterMode="${filterMode}" data-total="${cost_item_count}" data-resetMode="${params.resetMode}" data-subscriptionFilter="${params.subscriptionFilter}"
          data-invoiceNumberFilter="${params.invoiceNumberFilter}" data-orderNumberFilter="${params.orderNumberFilter}" data-packageFilter="${params.packageFilter}">
     </div>
-    %{--data-insubmode="${inSubMode}" data-fixedsub="${fixedSubscription?.id}"--}%
     %{--, "inSubMode":"${inSubMode}", "sub":"${fixedSubscription?.id}"--}%
     <util:remotePaginate title="${g.message(code: 'financials.pagination.title')}" 
           onFailure="errorHandling(textStatus,'Pagination',errorThrown)" onComplete="Finance.rebind();Finance.scrollTo(null,'#costTable');" onSuccess="filterSelection()"
           offset='0'  total="${cost_item_count}"  update="filterTemplate" max="20" pageSizes="[10, 20, 50, 100, 200]" alwaysShowPageSizes="true" 
-          controller="finance" action="index" params="${params+["filterMode": "${filterMode}", "sort":"${sort}", "order":"${order}", "format":"frag"]}" />
+          controller="finance" action="index" params="${params+["filterMode": "${filterMode}", "sort":"${sort}", "order":"${order}", "format":"frag", "inSubMode":"${inSubMode}", "sub":"${fixedSubscription?.id}"]}" />
 </div>
