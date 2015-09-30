@@ -5,6 +5,7 @@
     <title>KB+ ${institution.name} :: Financial Information</title>
 </head>
 <body>
+%{--<r:require modules="finance" />--}%
 
 %{--Run once data... can be reused for edit based functionality too. Pointless sending back this static data every request --}%
 <g:set var="costItemStatus"   scope="page" value="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','CostItemStatus')}"/>
@@ -14,12 +15,14 @@
 <g:set var="yn"               scope="page" value="${com.k_int.kbplus.RefdataValue.executeQuery('select rdv from RefdataValue as rdv where rdv.owner.desc=?','YN')}"/>
 <g:set var="currency"         scope="page" value="${com.k_int.kbplus.CostItem.orderedCurrency()}"/>
 
+
 <div class="container-fluid">
     <ul class="breadcrumb">
         <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
         <li> <g:link controller="myInstitutions" action="finance" params="${[shortcode:params.shortcode]}">${institution.name} Finance</g:link> </li>
         <g:if test="${editable}">
             <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
+            <li class="pull-right"><span style="font-weight: 400;" class="badge"><a href="${createLink(controller: 'myInstitutions', action: 'financeImport', params: [shortcode:params.shortcode])}">Finance Import</a></span> </li>
         </g:if>
         <li class="pull-left"><a class="badge badge-info" onclick="quickHelpInfo()">?</a>&nbsp;</li>
 
@@ -204,10 +207,11 @@
               }
           });
 
-            $(s.ft.filterModSelect2b).select2({
+            //select2 setup for subs, pkgs, ie
+          var sel2_b_objs = $(s.ft.filterModSelect2b);
+          var sel2_b_opts = {
               initSelection : function (element, callback) {
-                    //If default value has been set in the markup!
-                if(element.data('defaultvalue'))
+                if(element.data('defaultvalue')) //If default value has been set in the markup!
                     var data = {id: element.data('domain')+':'+element.data('relationid'), text: element.data('defaultvalue')};
                 callback(data);
               },
@@ -215,23 +219,40 @@
               ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
               url: s.url.ajaxLookupURL,
               dataType: 'json',
+              enable: false,
               global: false,
               data: function (term, page){
                   return {
                       format:'json',
                       q: '%'+term,
                       baseClass:$(this).data('domain'),
-                      shortcode: $(this).data('shortcode'),
+                      inst_shortcode: $(this).data('shortcode'),
                       subFilter: $(this).data('subfilter'),
                       hideDeleted: 'true',
-                      hideIdent: 'false'
+                      hideIdent: 'false',
+                      inclSubStartDate: 'false',
+                      page_limit: 10
                   };
               },
               results: function (data, page) {
                 return {results: data.values};
               }
             }
+          };
+
+          //Individually bind each element, bug on present version, unable to dynamically disable with options setup
+          var currentSub  = null;
+          sel2_b_objs.each(function(index) {
+              $(this).select2(sel2_b_opts);
+              if(index % 3) //pkg & ie inputs
+              {
+                  if(currentSub.data().defaultvalue == null)
+                      $(this).select2('disable');
+              }
+              else  //sub inp
+                  currentSub = $(this);
           });
+          currentSub = null;
 
 
             if(!s.misc.inSubMode) {
@@ -301,26 +322,9 @@
                 $(s.ft.filterSubPkg).select2('disable');
             }
 
-            s.mybody.on("select2-selecting", s.ft.filterSubscription, function(e) {
-                 var element = $(this);
-                 var text = e.choice.text;
-                 var id   = e.choice.id;
-                 element.data('subFilter',id);
-                 var prevSelection = element.select2("data");
-                 $('#packageFilter').select2('enable');
-                 console.log('filter sub selection ...','text', text,'id', id,'prev sel', prevSelection, "element",element);
-            });
-
-            s.mybody.on("select2-removed", s.ft.filterSubscription, function(e) {
-                 var pkgFilter = $('#packageFilter');
-                 pkgFilter.select2('disable');
-                 pkgFilter.select2('data', null);
-
-                 console.log('filter sub search  CLEARING selection ...');
-            });
 
 
-            }
+            } //end of select2setup
 
         //todo See why this is causing delete of everything on create
         //Separate function instead of
@@ -599,6 +603,10 @@
             $(document).ajaxStart(startLoadAnimation);
             $(document).ajaxStop(stopLoadAnimation);
 
+            s.mybody.on("click","#advancedFilter", function() {
+              $( "#advSearchRow" ).slideToggle("fast");
+            });
+
             s.misc.inSubMode = "${inSubMode}" == "true";
             console.log('In subscription only mode',s.misc.inSubMode);
 
@@ -763,7 +771,7 @@
                  var currentText   = e.choice.text;
                  var isSubPkg      = element.data().issubpkg; //bool
                  var mode          = element.data().mode;
-                 var id = '#'+element.data().ownerid;
+                 var id            = '#'+element.data().ownerid;
 
                  //todo complete the reset
                  if(mode == 'sub')
@@ -834,8 +842,28 @@
                 });
             });
 
+            //filterSubscription select2 selection event
+            s.mybody.on("select2-selecting", s.ft.filterSubscription, function(e) {
+                 var element = $(this);
+                 var text    = e.choice.text;
+                 var id      = e.choice.id;
+                 element.data('subFilter',id);
+                 var prevSelection = element.select2("data");
+                 $(s.ft.filterSubPkg).select2('enable');
+                 console.log('filter subscription selection : ',text, id, '\nPrevious selection : ',prevSelection);
+            });
+
+            //filterSubscription select2 clear down event
+            s.mybody.on("select2-removed", s.ft.filterSubscription, function(e) {
+                 var pkgFilter = $(s.ft.filterSubPkg);
+                 pkgFilter.select2('disable');
+                 pkgFilter.select2('data',null);
+                 console.log('filter sub search has been cleared... removed ability to enter sub pkg without subscription');
+            });
+
+
             $('#filterMode').val("${filterMode}"); //default the filtering mode
-            $('#submitFilterMode').prop('disabled',${filterMode=='OFF'}); //greys out search button if inactive
+            $(s.ft.searchBtn).prop('disabled',${filterMode=='OFF'}); //greys out search button if inactive
 
             s.mybody.on('click',s.ft.delSelectAll, function(event) {
                 var isChecked = this.checked? true : false;
@@ -849,10 +877,6 @@
             s.mybody.on('click',s.ft.delBatch,_performBulkDelete); //Bulk delete action
 
             s.mybody.on('keyup change','.filterUpdated',_filtersUpdated); //Change & keyup on input event
-
-            s.mybody.on('click',s.ft.advFilterBtn, function() {
-                $(s.ft.advFilterOpts).toggle();
-            }); //Show/Hide more filtering options
 
             //s.mybody.on('change',s.ft.filterSubscription + ', ' + s.ct.newSubscription, filterSubUpdated); //on change of subscription select filter
 
@@ -946,7 +970,7 @@
             });
 
             //Filter Search using form in header
-            s.mybody.on('click','#submitFilterMode', _submitFilterSearch);
+            s.mybody.on('click',s.ft.searchBtn, _submitFilterSearch);
 
             //calculation for billed amount
             s.mybody.on('change','input.calc', function() {
