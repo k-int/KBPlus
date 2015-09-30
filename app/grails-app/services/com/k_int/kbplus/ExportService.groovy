@@ -28,9 +28,6 @@ class ExportService {
 	/* *************
 	 *  CSV Exports 
 	 */
-//    def role_subscriber = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber').id; 
-//    def role_cprov = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider').id;
-//    def hqlCoreDates = "select ca.startDate, ca.endDate from CoreAssertion as ca, TitleInstitutionProvider as tip, IssueEntitlement as ie inner join  ie.subscription.orgRelations as o inner join ie.tipp.pkg.orgs as pkg_org where ie.id=:ie and o.roleType.id=:sub_role and pkg_org.roleType.id= :cp_role and tip.institution=o.org and tip.title=ie.tipp.title and tip.provider.id=pkg_org.org and ca.tiinp=tip" 
 
     def HQLCoreDates = "SELECT ca.startDate, ca.endDate FROM TitleInstitutionProvider as tip join tip.coreDates as ca WHERE tip.title.id= :ie_title AND tip.institution.id= :ie_institution AND tip.provider.id= :ie_provider"
 
@@ -290,8 +287,8 @@ class ExportService {
 				}
 				entitlements_str += "\","
 				def coreDateList = ""
-				getIECoreDates(e)?.each{
-					coreDateList += formatCoreDates(it) + " - "
+				for(Date[] coreDate : getIECoreDates(e)){
+					coreDateList += formatCoreDates(coreDate) + " - "
 				}
 				entitlements_str += "\"${coreDateList}\","
 				entitlements_str += "\"${e.coreStatus?:''}\""

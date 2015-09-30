@@ -22,6 +22,7 @@ Fixes introduced in 5.0.1
 * Added CSV export for KB+ licence property compare
 * Add TIPP title transfer
 * PublicExport-Current packages, filter out masters, open access, and end date before current
+* Improve performance of Current Titles screen
 
 Changes introduced in 5.0. It is likely that some small tasks are missing.
 
