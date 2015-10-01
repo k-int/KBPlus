@@ -27,6 +27,7 @@ class PackageDetailsPage extends AbstractDetails {
             $("input",name:"q").value(text)
             $("button",name:"search").click()
         }
+        
         numberOfResults{
             String numString = $("div.paginateButtons").text()
         }

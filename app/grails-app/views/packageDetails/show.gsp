@@ -169,7 +169,7 @@
                <dl>
                     <dt>End Date</dt>
                     <dd>
-                       <g:xEditable owner="${packageInstance}" field="endDate" type="date"/>
+                       <g:xEditable owner="${packageInstance}" id="${packageInstance.class.name.replace(".","")}_${packageInstance.id}_endDate"field="endDate" type="date"/>
                     </dd>
                </dl>
 
