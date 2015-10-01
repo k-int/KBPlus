@@ -20,3 +20,9 @@ obtain a copy of the License at
 http://sourceforge.net/projects/ireport/files/iReport/iReport-5.6.0/iReport-5.6.0.tar.gz/download
 
 
+
+Feature switches
+
+feature.finance=true
+feature.issnl=false
+
