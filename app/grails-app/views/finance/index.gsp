@@ -599,6 +599,7 @@
         //Binds everything which needs to be run the once, including the majority of dynamically rendered HTML content
         //For everything else which can't be binded once will be in _bindBehavior
         var _firstRun = function() {
+            $.fn.editable.defaults.mode = 'inline'; //default is popup mode
 
             $(document).ajaxStart(startLoadAnimation);
             $(document).ajaxStop(stopLoadAnimation);
@@ -816,11 +817,13 @@
                         element.data('defaultvalue',e.choice.text);
                         element.data('relationid',data.relation.id);
 
+                        console.log("Relation ID: "+data.relation.id,"Choice Text: "+e.choice.text, "Prev Selection: "+prevSelection);
+
                         //set the subFilter i.e. the Sub ID
                         switch (mode)
                         {
                             case "ie":
-                                console.log('IE...');
+                                console.log('IE was changed...');
                             break;
 
                             case "pkg":
@@ -828,10 +831,10 @@
                             break;
 
                             case "sub":
-                                console.log('Sub...');
+                                console.log('Sub was changed...');
                                 $(id+'_subPkg').data('subfilter',data.relation.id);
                                 $(id+'_ie').data('subfilter',currentText);
-
+                                s.mybody.trigger("finance.lol",['lol','cat']);
                             break;
 
                             default:
@@ -841,6 +844,27 @@
                     }
                 });
             });
+
+            //re-usable AJAX method, pass in default config
+            function ajax (config) {
+              config = $.extend({
+                //Default config....
+              }, config | {});
+              return $.ajax(config);
+            }
+
+            ajax({
+              //.. config different to default...
+            }).done(function() {
+             // .. run callbacks in the normal way.
+            });
+
+            var tester  = function(e,tester1, tester2) {
+              console.log(e,'tester hehe ty man',tester1, tester2);
+              alert('whoop whoop');
+            };
+
+            s.mybody.on("finance.lol",tester);
 
             //filterSubscription select2 selection event
             s.mybody.on("select2-selecting", s.ft.filterSubscription, function(e) {
@@ -990,7 +1014,7 @@
             s.mybody.on('click','a.export', function(e) {
                 var exportMode   = $(this).data('mode');
                 var paginateData = $('#paginateInfo').data();
-                var totalResults = parseInt(paginateData.total)
+                var totalResults = parseInt(paginateData.total);
             
                 var data  = {
                     shortcode: "${params.shortcode}",

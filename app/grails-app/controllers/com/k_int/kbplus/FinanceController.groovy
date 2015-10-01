@@ -65,6 +65,7 @@ class FinanceController {
             }
         }
 
+
         //Grab the financial data
         financialData(result,params,user)
 
@@ -105,6 +106,7 @@ class FinanceController {
         result.isRelation  =  params.orderRelation? params.boolean('orderRelation',false) : false
         result.wildcard    =  params._wildcard == "off"? false: true //defaulted to on
         params.shortcode   =  result.institution.shortcode
+        result.advSearch   =  params.boolean('advSearch',false)
         params.remove('opSort')
 
         //Query setup options, ordering, joins, param query data....
@@ -254,6 +256,7 @@ class FinanceController {
         log.debug("Duration took to complete CSV export operation ${duration}")
     }
 
+    //todo convert to use a property map, too big now with advanced searching options
     def private filterQuery(LinkedHashMap result, GrailsParameterMap params, boolean wildcard) {
         def fqResult        = [:]
         fqResult.failed     = [] as List
@@ -348,6 +351,14 @@ class FinanceController {
             }
         }
 
+        if (result.advSearch)
+        {
+            params.findAll {key, val->
+
+            }
+        }
+
+
         fqResult.filterCount = CostItem.executeQuery(countCheck,fqResult.fqParams).first()
         if (fqResult.failed.size() > 0 || fqResult.filterCount == 0)
         {
@@ -362,6 +373,44 @@ class FinanceController {
 
         return fqResult
     }
+
+    private static qry_conf = [
+            'ci'  : [
+                    selectQry:'select ci from CostItem as ci ',
+                    countQry: 'select count(ci.id) from CostItem as ci '
+             ],
+            'invoice' : [
+                    stdQry: 'AND ci.invoice.invoiceNumber like ? ',
+                    wildQry: 'AND ci.invoice.invoiceNumber like ? ',
+                    countQry:"",
+            ],
+            'adv' : [
+                 'adv_ref' : [
+
+                 ],
+                 'adv_codes':[
+
+                 ],
+                 'adv_start':[
+
+                 ],
+                 'adv_end':[
+
+                 ],
+                 'adv_costItemStatus':[
+
+                 ],
+                 'adv_costItemCategory':[
+
+                 ],
+                 'adv_amount':[
+
+                 ],
+                 'adv_datePaid':[
+
+                 ],
+            ]
+    ]
 
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])

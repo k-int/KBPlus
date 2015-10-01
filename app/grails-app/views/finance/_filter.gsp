@@ -80,7 +80,12 @@
                     <th>
                         <a style="color: #990100; vertical-align: top; cursor: pointer;" data-order="datePaid" class="sortable ${order=="datePaid"? "sorted ${sort}":''}">Date Paid</a>*<br/><br/>
 
-                        Status<br/>Category<br/>Element</br>Tax Type
+                        <ul style="list-style-type:none; margin: 0">
+                            <li>Status</li>
+                            <li>Category</li>
+                            <li>Element</li>
+                            <li>Tax Type</li>
+                        </ul>
                     </th>
                     <th>Billing Amount<br/>Billing Currency<br/>Local Amount</th>
                     <th>
@@ -94,7 +99,7 @@
             </thead>
             <tbody>
 
-            <tr id="advSearchRow" style="height: 100px;">
+            <tr hidden="hidden" id="advSearchRow" style="height: 100px;">
                 <td colspan="0">
                     <div>
                         <ul class="inline">
@@ -129,13 +134,23 @@
                             </li>
                             <li>
                                 <label for="adv_amount">Local Amount </label>
-                                <select name="adv_amountType" class="input-mini"  id="adv_amountType">
+                                <select name="_adv_amountType" class="input-mini"  id="adv_amountType">
                                     <option value="">N/A</option>
                                     <option value="eq">==</option>
                                     <option value="gt">&gt;</option>
                                     <option value="gt">&lt;</option>
                                 </select>
                                 <input  id="adv_amount" name="adv_amount" type="number" class="input-small" step="0.01" /> </br>
+                            </li>
+                            <li>
+                                <label for="adv_datePaid">Date Paid</label>
+                                <select name="_adv_datePaidType" class="input-mini"  id="adv_datePaidType">
+                                    <option value="">N/A</option>
+                                    <option value="eq">==</option>
+                                    <option value="gt">&gt;</option>
+                                    <option value="gt">&lt;</option>
+                                </select>
+                                <input  id="adv_datePaid" name="adv_datePaid" type="number" class="input-small" step="0.01" /> </br>
                             </li>
                         </ul>
                     </div>
