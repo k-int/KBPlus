@@ -2,11 +2,10 @@ package com.k_int.kbplus.onixpl
 
 import grails.util.GrailsNameUtils
 import grails.util.Holders
-
 import org.apache.commons.collections.list.TreeList
 import org.codehaus.groovy.grails.commons.GrailsApplication
-
 import com.k_int.kbplus.OnixplLicense
+import grails.converters.JSON
 
 /**
  * This service handles the manipulation of the Onix-pl XML documents so they can be displayed, and compared.
@@ -362,7 +361,7 @@ class OnixPLService {
       if (rows[key] == null) {
         rows[key] = new TreeMap()
       }
-      
+      println key
       rows[key][license_name] = row_cells
     }
   }
@@ -389,6 +388,7 @@ class OnixPLService {
 
 
         if (!cp.startsWith('_') && !exclude.contains(cp)) {
+          println "KEY: ${cp}"
           List value = val.get(cp)
           if (value) {
             value.each {
@@ -450,9 +450,9 @@ class OnixPLService {
       
       // The xpath used to return the elements.
       for (String xpath in data["${table}"].keySet()) {
-        
         // Each entry here is a row in the table.
         for (Map row in data["${table}"]["${xpath}"]) {
+        if(xpath== "_:PublicationsLicenseExpression/_:UsageTerms/_:Usage[normalize-space(_:UsageType/text())='onixPL:Modify']") println row as JSON;
           
           // The table rows need a composite key to group "equal" values in the table across licenses.
           flattenRow (tables["${table}"], row, exclude, title)
@@ -488,7 +488,8 @@ class OnixPLService {
       'AgentType',
       'DocumentLabel',
       'IDValue',
-      'PlaceIDType'
+      'PlaceIDType',
+      'UsageExceptionType'
     ]
     
     // Get the main license as a map.
