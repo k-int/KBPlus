@@ -23,6 +23,7 @@ http://sourceforge.net/projects/ireport/files/iReport/iReport-5.6.0/iReport-5.6.
 
 Feature switches
 
-feature.finance=true
-feature.issnl=false
+feature.finance - Finance
+feature.issnl - upload ISSN to ISSN-L mapping
+feature.eBooks - Ebooks functionality
 
