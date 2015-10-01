@@ -8,112 +8,32 @@ import com.k_int.custprops.PropertyDefinition
 import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 class AjaxController {
-  def refdata_config = [
+    def refdata_config = [
     "ContentProvider" : [
-      domain:'Org',
-      countQry:'select count(o) from Org as o where lower(o.name) like ?',
-      rowQry:'select o from Org as o where lower(o.name) like ? order by o.name asc',
-      qryParams:[
-                  [
-                    param:'sSearch',
-                    clos:{ value ->
-                      def result = '%'
-                      if ( value && ( value.length() > 0 ) )
-                        result = "%${value.trim().toLowerCase()}%"
-                      result
-                    }
-                  ]
-                ],
-      cols:['name'],
-      format:'map'
+            domain:'Org',
+            countQry:'select count(o) from Org as o where lower(o.name) like ?',
+            rowQry:'select o from Org as o where lower(o.name) like ? order by o.name asc',
+            qryParams:[
+                    [
+                            param:'sSearch',
+                            clos:{ value ->
+                                def result = '%'
+                                if ( value && ( value.length() > 0 ) )
+                                    result = "%${value.trim().toLowerCase()}%"
+                                result
+                            }
+                    ]
+            ],
+            cols:['name'],
+            format:'map'
     ],
     "Licenses" : [
-      domain:'License',
-      countQry:"select count(l) from License as l",
-      rowQry:"select l from License as l",
-      qryParams:[],
-      cols:['reference'],
-      format:'simple'
-    ],
-    'TIPPStatusReason' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Tipp.StatusReason'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Tipp.StatusReason'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'TIPPDelayedOA' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.DelayedOA'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.DelayedOA'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'TIPPHybridOA' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.HybridOA'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.HybridOA'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'TIPPPaymentType' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.PaymentType'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.PaymentType'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'Package.ListStatus' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.ListStatus'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.ListStatus'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'Package.Breakable' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Breakable'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Breakable'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'Package.Consistent' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Consistent'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Consistent'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'Package.Fixed' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Fixed'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Fixed'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'Package.Scope' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Scope'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Scope'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'SubscriptionStatus' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Subscription Status'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Subscription Status'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
+            domain:'License',
+            countQry:"select count(l) from License as l",
+            rowQry:"select l from License as l",
+            qryParams:[],
+            cols:['reference'],
+            format:'simple'
     ],
     'Currency' : [
       domain:'RefdataValue',
@@ -127,7 +47,7 @@ class AjaxController {
       ],
       cols:['value'],
       format:'simple'
-    ],
+    ]
   ]
 
 
