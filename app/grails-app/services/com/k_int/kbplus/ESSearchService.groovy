@@ -36,14 +36,13 @@ class ESSearchService{
           params.offset = params.offset ? params.int('offset') : 0
 
           def query_str = buildQuery(params,field_map)
-          log.debug("index:${grailsApplication.config.aggr.es.index} query: ${query_str}");
           if (params.tempFQ) //add filtered query
           {
               query_str = query_str + " AND ( " + params.tempFQ + " ) "
               params.remove("tempFQ") //remove from GSP access
-              log.debug("ESSearchService::search -  Adding to query, appending filtered query: ${query_string}")
           }
 
+          log.debug("index:${grailsApplication.config.aggr.es.index} query: ${query_str}");
     
           def search = esclient.search{
             indices grailsApplication.config.aggr.es.index ?: "kbplus"
@@ -57,6 +56,7 @@ class ESSearchService{
               query {
                 query_string (query: query_str)
               }
+
               facets {
                 consortiaName {
                   terms {
@@ -130,26 +130,21 @@ class ESSearchService{
 
     StringWriter sw = new StringWriter()
 
-    if ( ( params != null ) && ( params.q != null ) ){
-        if(params.q.equals("*")){ // What was supposed to happen here?
-            sw.write(params.q)
-        }
-        else{
-            sw.write(params.q)
-        }
-    }else{
-      sw.write("*:*")
+    if ( params?.q != null ){
+      sw.write(params.q)
     }
       
-    if(params?.rectype){sw.write(" AND rectype:'${params.rectype}'")} 
+    if(params?.rectype){
+      if(sw.toString()) sw.write(" AND ");
+      sw.write(" rectype:'${params.rectype}' ")
+    } 
 
     field_map.each { mapping ->
 
       if ( params[mapping.key] != null ) {
-        log.debug("Found...");
         if ( params[mapping.key].class == java.util.ArrayList) {
-
-          sw.write(" AND ( ( ( NOT _type:\"com.k_int.kbplus.Subscription\" ) AND ( NOT _type:\"com.k_int.kbplus.License\" )) OR ( ")
+          if(sw.toString()) sw.write(" AND ");
+          sw.write(" ( ( ( NOT _type:\"com.k_int.kbplus.Subscription\" ) AND ( NOT _type:\"com.k_int.kbplus.License\" )) OR ( ")
 
           params[mapping.key].each { p ->  
                 sw.write(mapping.value)
@@ -166,7 +161,7 @@ class ESSearchService{
           // Only add the param if it's length is > 0 or we end up with really ugly URLs
           // II : Changed to only do this if the value is NOT an *
           if ( params[mapping.key].length() > 0 && ! ( params[mapping.key].equalsIgnoreCase('*') ) ) {
-            sw.write(" AND ")
+            if(sw.toString()) sw.write(" AND ");
             sw.write(mapping.value)
             sw.write(":")
             if(params[mapping.key].startsWith("[") && params[mapping.key].endsWith("]")){

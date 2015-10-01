@@ -8,8 +8,9 @@ import grails.converters.JSON
 
 class LicenceCompareController {
   
-    static String INSTITUTIONAL_LICENSES_QUERY = " from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
-    def springSecurityService
+  static String INSTITUTIONAL_LICENSES_QUERY = " from License as l where exists ( select ol from OrgRole as ol where ol.lic = l AND ol.org = ? and ol.roleType = ? ) AND l.status.value != 'Deleted'"
+  def springSecurityService
+  def exportService
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def index() {
@@ -36,7 +37,7 @@ class LicenceCompareController {
     def licences = params.list("selectedLicences").collect{
       License.get(it.toLong())
     }
-    log.debug(licences)
+    log.debug("IDS: ${licences}")
     def comparisonMap = new TreeMap()
     licences.each{ lic ->
       lic.customProperties.each{prop ->
@@ -53,7 +54,17 @@ class LicenceCompareController {
     }
     result.map = comparisonMap
     result.licences = licences
-  	return result
+    def filename = "licence_compare_${result.institution.name}"
+  	withFormat{
+      html result
+      csv{
+        response.setHeader("Content-disposition", "attachment; filename=\"${filename}.csv\"")
+        response.contentType = "text/csv"
+        def out = response.outputStream
+        exportService.StreamOutLicenceCSV(out, result,result.licences)
+        out.close()
+      }
+    }
 
   }
 

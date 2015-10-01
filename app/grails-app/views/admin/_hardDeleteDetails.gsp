@@ -23,7 +23,7 @@
 	              	<g:each in="${conflict_item.details}" var="detail_item">
 				      	<li> 
                 <g:if test="${detail_item.link}">
-                  <a href="${detail_item.link}">${detail_item.text}</a>
+                  <a href="${detail_item.link}" target="_blank">${detail_item.text}</a>
                 </g:if>
                 <g:else>
                   ${detail_item.text}

@@ -365,6 +365,9 @@ class License implements Comparable<License>{
     if ( reference != null ) {
       sortableReference = generateSortableReference(reference)
     }
+    if (impId == null) {
+      impId = java.util.UUID.randomUUID().toString();
+    }
   }
 
 

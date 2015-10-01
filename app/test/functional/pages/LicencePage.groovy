@@ -105,17 +105,11 @@ class LicencePage extends AbstractDetails {
             $("td",text:propName).next("td").find("span").text()
         }
 
-        basicLicenceSearch { val ->
-            $("input", name:"keyword-search").value(val)
-            $("input", type:"submit").click()
-        }
-
         rowResults { $("table",0).find("tbody tr").size() }
 
-        exportLicenceMenu { linkOrder ->
+        exportLicence { export_name ->
             $("a#export-menu").click()
-            Thread.sleep(500)
-            $("ul.dropdown-menu.filtering-dropdown-menu li",linkOrder).click()
+            $("a", text: export_name).click()
         }
     }
 }

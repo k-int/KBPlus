@@ -53,6 +53,9 @@ class SubscriptionImportController {
               case 'cpname':
                 sw.append('cpname')
                 break;
+              case 'endYear':
+                sw.append('endYear')
+                break;
             }
             if ( filter_components[2].indexOf(' ') > 0 ) {
               sw.append(":\"");

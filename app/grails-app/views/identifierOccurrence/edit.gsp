@@ -48,8 +48,10 @@
 				</ul>
 				</bootstrap:alert>
 				</g:hasErrors>
+				<p><b> Action disabled. Please contact system administrator if you require access. </b></p>
+				%{-- The following code is causing the system to hang and crash, while failing to find the required fields. Something that was tested to work is defining a template within views/identifierOccurance path, like edit/_widget.gsp --}%
 
-				<fieldset>
+%{-- 				<fieldset>
 					<g:form class="form-horizontal" action="edit" id="${identifierOccurrenceInstance?.id}" >
 						<g:hiddenField name="version" value="${identifierOccurrenceInstance?.version}" />
 						<fieldset>
@@ -66,7 +68,7 @@
 							</div>
 						</fieldset>
 					</g:form>
-				</fieldset>
+				</fieldset> --}%
 
 			</div>
 

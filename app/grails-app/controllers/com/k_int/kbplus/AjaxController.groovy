@@ -8,9 +8,8 @@ import com.k_int.custprops.PropertyDefinition
 import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 class AjaxController {
-
   def refdata_config = [
-    'ContentProvider' : [
+    "ContentProvider" : [
       domain:'Org',
       countQry:'select count(o) from Org as o where lower(o.name) like ?',
       rowQry:'select o from Org as o where lower(o.name) like ? order by o.name asc',
@@ -28,55 +27,7 @@ class AjaxController {
       cols:['name'],
       format:'map'
     ],
-    'PackageType' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package Type'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package Type'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'CoreStatus' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='CoreStatus'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='CoreStatus'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'YN' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='YN'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='YN'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'YNO' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='YNO'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='YNO'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'TIPPStatus' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TIPP Status'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='TIPP Status'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'ConcurrentAccess' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Concurrent Access'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Concurrent Access'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'Licenses' : [
+    "Licenses" : [
       domain:'License',
       countQry:"select count(l) from License as l",
       rowQry:"select l from License as l",
@@ -475,10 +426,9 @@ class AjaxController {
 
     // log.debug("refdataSearch params: ${params}");
     
-    // http://datatables.net/blog/Introducing_Scroller_-_Virtual_Scrolling_for_DataTables
     def result = [:]
-    
-    def config = refdata_config[params.id]
+    //we call toString in case we got a GString
+    def config = refdata_config.get(params.id?.toString())
 
     if ( config == null ) {
       // If we werent able to locate a specific config override, assume the ID is just a refdata key
@@ -559,8 +509,9 @@ class AjaxController {
     // log.debug("sel2RefdataSearch params: ${params}");
     
     def result = []
-    
-    def config = refdata_config[params.id]
+    //we call toString in case we got a GString
+    def config = refdata_config.get(params.id?.toString())
+
     if ( config == null ) {
       // If we werent able to locate a specific config override, assume the ID is just a refdata key
       config = [
@@ -836,18 +787,41 @@ class AjaxController {
     }
     redirect(url: request.getHeader('referer'))
   }
+
   def validateIdentifierUniqueness(){
     log.debug("validateIdentifierUniqueness - ${params}")
     def result = [:]
     def owner = resolveOID2(params.owner)
     def identifier = resolveOID2(params.identifier)
-    def duplicates = identifier.occurrences.findAll{it.ti != owner && it.ti != null}?.collect{it.ti}
+    def owner_type = null
+    switch(owner.class){
+      case Subscription:
+        owner_type = "sub"
+        break;
+      case(TitleInstance):
+        owner_type = "ti"
+        break;
+      case (Package):
+        owner_type = "pkg"
+        break;
+      case TitleInstancePackagePlatform:
+        owner_type = "tipp"
+        break;
+      case Org:
+        owner_type = "org"
+        break
+      default:
+        log.error("Unexpected Identifier Owner ${owner.class}")
+        return null
+    }    
+    def duplicates = identifier.occurrences.findAll{it."${owner_type}" != owner && it."${owner_type}" != null}?.collect{it."${owner_type}"}
     if(duplicates){
       result.duplicates = duplicates
     }
     else{
       result.unique=true
     }
+    log.debug("validateIdentifierUniqueness - ${result}")
     render result as JSON
   }
 

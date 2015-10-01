@@ -1,10 +1,28 @@
+Changes in 5.0.2
+
+* By default the asAt date of expected packages is startDate,previous is endDate, for packageDetails and publicExport
+
 Fixes introduced in 5.0.1
 
 * Sort TitleInstances by sortTitle 
 * when name for new imported onxilicence in use, append import date
 * fix issue that caused admin/Allnotes to break
-
-
+* fix importWorksheet search bug
+* fix exports that break when OrgLink have no role
+* publicExport, dont lose search params when changing tabs
+* ES searches should not break when searching with empty query
+* unique identifier works for all owners (sub,title,etc).
+* add delete link for subscription identifiers
+* pre-sql to update old pending changes links to current ones
+* add job to generate sortTitle/normTitle/keyTitle for all titles
+* On user merge screen, add user IDs next to  displayNames.
+* On PackageHardDelete, change 'Delete Subscriptions' to 'Unlink subscriptions. (IEs will be removed as well)'
+* On PackageHardDelete, open links to subscriptions in new tab, and go to details instead of index
+* Added job to generate package sortName
+* Added CSV export for KB+ licence property compare
+* Add TIPP title transfer
+* PublicExport-Current packages, filter out masters, open access, and end date before current
+* Improve performance of Current Titles screen
 
 Changes introduced in 5.0. It is likely that some small tasks are missing.
 

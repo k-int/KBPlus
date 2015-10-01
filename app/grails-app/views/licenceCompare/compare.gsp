@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="layout" content="mmbootstrap" />
-<title>KB+</title>
+<title>KB+ Licence Compare</title>
 </head>
 <body>
 
@@ -19,7 +19,16 @@
         class="divider">/</span></li>
 
       <li>${message(code:'menu.institutions.comp_lic')}</li>
+     <li class="dropdown pull-right">
+          <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>&nbsp;
+          <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
+            <li>
+              <g:link action="compare" params="${params+[format:'csv']}">CSV Export</g:link>
+            </li>
+          </ul>
+        </li>
     </ul>
+
   </div>
 
   <div class="container">

@@ -235,6 +235,9 @@
                       <li <%= ( ( 'admin'== controllerName ) && ( 'titleMerge'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="titleMerge">Title Merge</g:link>
                       </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'tippTransfer'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="tippTransfer">TIPP Transfer</g:link>
+                      </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'ieTransfer'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="ieTransfer">IE Transfer</g:link>
                       </li>                      
@@ -288,8 +291,10 @@
                              <g:link controller="admin" action="triggerHousekeeping">Trigger Housekeeping</g:link> </li>
                           <li <%= ( ( 'admin'== controllerName ) && ( 'initiateCoreMigration'==actionName ) ) ? ' class="active"' : '' %>>
                              <g:link controller="admin" action="initiateCoreMigration">Initiate Core Migration</g:link> </li>
-                          <li <%= ( ( 'admin'== controllerName ) && ( 'uploadIssnL'==actionName ) ) ? ' class="active"' : '' %>>
-                            <g:link controller="admin" action="uploadIssnL">Upload ISSN to ISSN-L File</g:link> </li>
+                          <g:if test="${grailsApplication.config.feature.issnl}">
+                            <li <%= ( ( 'admin'== controllerName ) && ( 'uploadIssnL'==actionName ) ) ? ' class="active"' : '' %>>
+                              <g:link controller="admin" action="uploadIssnL">Upload ISSN to ISSN-L File</g:link> </li>
+                          </g:if>
                           <li <%= ( ( 'admin'== controllerName ) && ( 'dataCleanse'==actionName ) ) ? ' class="active"' : '' %>>
                              <g:link controller="admin" action="dataCleanse">Run Data Cleaning (Nominal Platforms)</g:link>
                           </li>
@@ -299,8 +304,8 @@
                           <li <%= ( ( 'admin'== controllerName ) && ( 'fullReset'==actionName ) ) ? ' class="active"' : '' %>>
                              <g:link controller="admin" action="fullReset">Run Full ES Index Reset</g:link>
                           </li>
-                          <li <%= ( ( 'startFTIndex'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="startFTIndex" action="index">Start ES Index Update</g:link>
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'esIndexUpdate'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="esIndexUpdate">Start ES Index Update</g:link>
                       </li>
                         </ul>
                       </li>

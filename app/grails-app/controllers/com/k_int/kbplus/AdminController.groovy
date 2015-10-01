@@ -127,12 +127,12 @@ class AdminController {
         pkg.subscriptions.each{
 
           if(it.subscription.status.value != "Deleted"){
-            subscription_map.details += ['link':createLink(controller:'subscriptionDetails', action: 'index', id:it.subscription.id), 'text': it.subscription.name]
+            subscription_map.details += ['link':createLink(controller:'subscriptionDetails', action: 'details', id:it.subscription.id), 'text': it.subscription.name]
           }else{
-            subscription_map.details += ['link':createLink(controller:'subscriptionDetails', action: 'index', id:it.subscription.id), 'text': "(Deleted)" + it.subscription.name]
+            subscription_map.details += ['link':createLink(controller:'subscriptionDetails', action: 'details', id:it.subscription.id), 'text': "(Deleted)" + it.subscription.name]
           }
         }
-        subscription_map.action = ['actionRequired':true,'text':"Delete subscriptions"]
+        subscription_map.action = ['actionRequired':true,'text':"Unlink subscriptions. (IEs will be removed as well)"]
         if(subscription_map.details){
           conflicts_list += subscription_map
         }
@@ -214,8 +214,8 @@ class AdminController {
              log.debug("Selected users : ${usrMrg}, ${usrKeep}");
              result.userRoles = usrMrg.getAuthorities()
              result.userAffiliations =  usrMrg.getAuthorizedAffiliations()
-             result.usrMrgName = usrMrg.displayName
-             result.userKeepName = usrKeep.displayName
+             result.userMerge = usrMrg
+             result.userKeep = usrKeep
            }else{
             log.error("Missing keep/merge userid ${params}");
             flash.error = "Please select'user to keep' and 'user to merge' from the dropdown."
@@ -395,6 +395,15 @@ class AdminController {
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def esIndexUpdate() { 
+    log.debug("manual start full text index");
+    dataloadService.updateSiteMapping();
+    dataloadService.updateFTIndexes();
+    log.debug("redirecting to home...");
+    redirect(url: request.getHeader('referer'))
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def fullReset() {
 
     if ( ftupdate_running == false ) {
@@ -422,7 +431,7 @@ class AdminController {
     }
 
     log.debug("redirecting to home...");
-    redirect(controller:'home')
+    redirect(url: request.getHeader('referer'))
 
   }
 
@@ -539,6 +548,33 @@ class AdminController {
   def forceSendNotifications() {
     changeNotificationService.aggregateAndNotifyChanges()
     redirect(controller:'home')
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def tippTransfer(){
+    log.debug("tippTransfer :: ${params}")
+    def result = [:]
+    result.error = []
+
+    if(params.sourceTIPP && params.targetTI){
+      def ti = TitleInstance.get(params.long("targetTI"))
+      def tipp = TitleInstancePackagePlatform.get(params.long("sourceTIPP"))
+      if(ti && tipp){
+        tipp.title = ti
+        try{
+          tipp.save(flush:true,failOnError:true)
+          result.success = true
+        }catch(Exception e){
+          log.error(e)
+          result.error += "An error occured while saving the changes."
+        }
+      }else{
+        if(!ti) result.error += "No TitleInstance found with identifier: ${params.targetTI}."
+        if(!tipp) result.error += "No TIPP found with identifier: ${params.sourceTIPP}" 
+      }
+    }
+
+    result
   }
 
   @Secured(['ROLE_ADMIN','IS_AUTHENTICATED_FULLY'])
