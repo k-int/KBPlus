@@ -151,9 +151,15 @@ class OnixPLService {
    * @param data Row data
    * @return Title if found or null if not
    */
-  public static Map getRowHeadingData (Map row_data) {
+  public static Map getRowHeadingData (Map row_data,licence=null) {
     // Just find the first example of an entry regardless of which license it's defined against.
-    row_data?."${row_data.keySet()[0]}"
+
+
+    if(licence){
+      return row_data."${licence}"
+    }
+    return row_data?."${row_data.keySet()[0]}"
+
   }
   
   /**
@@ -361,7 +367,7 @@ class OnixPLService {
       if (rows[key] == null) {
         rows[key] = new TreeMap()
       }
-      println key
+
       rows[key][license_name] = row_cells
     }
   }
@@ -385,10 +391,11 @@ class OnixPLService {
       
       // Add any key values to the keys list.
       for (String cp in val.keySet()) {
-
+        if(cp == "UsageQuantity"){
+          continue
+        }
 
         if (!cp.startsWith('_') && !exclude.contains(cp)) {
-          println "KEY: ${cp}"
           List value = val.get(cp)
           if (value) {
             value.each {
@@ -405,13 +412,17 @@ class OnixPLService {
       }
       
       if (val['_content'] == null) {
-      
+       if(name == "UsageQuantity"){
+          return
+        }
         // Add each sub element.
         for (String prop in val.keySet()) {
           switch (prop) {
             default :
               if (!prop.startsWith("_")) {
-                
+                if(prop == "UsageQuantity"){
+                  continue
+                }
                 // Recursively call this method.
                 for (Map v in val[prop]) {
                   generateKeys (v, exclude, keys,priority)
@@ -452,7 +463,6 @@ class OnixPLService {
       for (String xpath in data["${table}"].keySet()) {
         // Each entry here is a row in the table.
         for (Map row in data["${table}"]["${xpath}"]) {
-        if(xpath== "_:PublicationsLicenseExpression/_:UsageTerms/_:Usage[normalize-space(_:UsageType/text())='onixPL:Modify']") println row as JSON;
           
           // The table rows need a composite key to group "equal" values in the table across licenses.
           flattenRow (tables["${table}"], row, exclude, title)

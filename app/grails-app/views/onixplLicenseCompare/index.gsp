@@ -24,7 +24,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="span8">
-				<g:form id="compare" name="compare" action="matrix" method="post">
+				<g:form id="compare" name="compare" action="matrix" method="get">
 					<div>
 						<label for="addIdentifierSelect">Search licence for comparison:</label>
 

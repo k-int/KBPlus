@@ -41,6 +41,7 @@
       </g:if>
     </span></th>
     <g:each var="heading" in="${headings}" status="colCount">
+      <g:set var="rth" value="${service.getRowHeadingData(row,heading)}" />
       <g:set var="entry" value="${ row[heading] }" />
       <td class="tr-${ (rowCount + 1) } cell-${ colCount + 2 }">
         <g:if test="${ entry }" >
@@ -75,7 +76,6 @@
           <g:if test="${rth['UsageQuantity']}">
            <li> ${OnixPLService.getUsageQuantity(rth['UsageQuantity'][0])} </li>
           </g:if>
-          
           <g:if test= "${rth['UsageCondition']}">
              <li>${OnixPLService.getSingleValue(rth,'UsageCondition')}</li>
           </g:if>
