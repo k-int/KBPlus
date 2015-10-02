@@ -679,10 +679,20 @@ class FinanceController {
         def owner       = refData(params.owner)
         log.debug("Financials :: financialRef - Owner instance returned: ${owner.obj}")
 
-        if (params.reset)
-            refReset(owner,result.error)
-        else {
-            if (owner) {
+        //check in reset mode e.g. subscription changed, meaning IE & SubPkg will have to be reset
+        boolean resetMode = params.boolean('resetMode',false) && params.fields
+        boolean wasReset  = false
+
+
+        if (owner) {
+            if (resetMode)
+                wasReset = refReset(owner,params.fields,result.error)
+
+
+            if (resetMode && !wasReset)
+                log.debug("Field(s): ${params.fields} should have been reset as relation: ${params.relation} has been changed")
+            else {
+                //continue happy path...
                 def relation = refData(params.relation)
                 log.debug("Financials :: financialRef - relation obj or stub returned " + relation)
 
@@ -708,19 +718,34 @@ class FinanceController {
                     }
                 } else
                     result.error.add([status: "FAILED: Related Cost Item Data", msg: "Invalid data received to retrieve from DB"])
-            } else
-                result.error.add([status: "FAILED: Cost Item", msg: "Invalid data received to retrieve from DB"])
-        }
+            }
+        } else
+            result.error.add([status: "FAILED: Cost Item", msg: "Invalid data received to retrieve from DB"])
+
+
 
         render result as JSON
     }
 
-    def private refReset(CostItem costItem, errorList) {
-        log.debug("Attempting to reset a reference for cost item data ${params.relationField}")
-        if (costItem.hasProperty(params.relationField))
-            costItem."${relationField}" = null
-        else
+    def private refReset(costItem, String fields, errorList) {
+        log.debug("Attempting to reset a reference for cost item data ${params.relationField} for field(s) ${fields}")
+        def wasResetCounter = 0
+        def f = fields.split(',')
+        def allowed = ["sub", "issueEntitlement", "subPkg", "invoice", "order"]
+        if (f)
+        {
+            f.each { field->
+                if (allowed.contains(field) && costItem.hasProperty(field)) {
+                    costItem."${field}" = null
+                    wasResetCounter++
+                }
+                else
+                    errorList.add([status: "FAILED: Cost Item", msg: "Problem resetting data"])
+            }
+        } else
             errorList.add([status: "FAILED: Cost Item", msg: "Invalid data received"])
+
+        return wasResetCounter == f.size()
     }
 
     def private refData(String oid) {

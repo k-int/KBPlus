@@ -595,6 +595,43 @@
             });
         };
 
+        //List of comma seperated fields to reset for a cost item, as these fields
+        //have a reliance on other data e.g. subscription that might have changed
+        function _performReset(fields) {
+            ajax({
+               //.. config different to default...
+               url: s.url.ajaxFinanceRefData,
+               data: {
+                    fields: fields
+               }
+            }).done(function(data) {
+                // .. run callbacks in the normal way.
+                console.log(data);
+            });
+        };
+
+        //re-usable AJAX method, pass in default config
+        //Use as follows (see _performReset) ...
+        function ajax (config) {
+          var paginateData = $('#paginateInfo').data();
+          config = $.extend({
+            //Default config....
+            url: s.url.ajaxFinanceIndex,
+            data: {
+                    shortcode:"${params.shortcode}",
+                    offset:paginateData.offset,
+                    max:paginateData.max,
+                    sort:paginateData.sort,
+                    order:paginateData.order,
+                    filterMode: paginateData.filtermode,
+                    wildcard: paginateData.wildcard
+            }
+          }, config | {});
+          return $.ajax(config);
+        }
+
+
+
 
         //Binds everything which needs to be run the once, including the majority of dynamically rendered HTML content
         //For everything else which can't be binded once will be in _bindBehavior
@@ -612,34 +649,34 @@
             console.log('In subscription only mode',s.misc.inSubMode);
 
             if(!s.misc.inSubMode) {
-            $(s.ct.newSubscription).select2({
-                placeholder: "Type subscription name...",
-                minimumInputLength: 1,
-                global: false,
-                ajax: {
-                    url: s.url.ajaxLookupURL,
-                    dataType: 'json',
-                    data: function (term, page) {
-                        return {
-                            hideDeleted: 'true',
-                            hideIdent: 'false',
-                            inclSubStartDate: 'false',
-                            inst_shortcode: '${params.shortcode}',
-                            q: '%'+term , // contains search term
-                            page_limit: 20,
-                            baseClass:'com.k_int.kbplus.Subscription'
-                        };
+                $(s.ct.newSubscription).select2({
+                    placeholder: "Type subscription name...",
+                    minimumInputLength: 1,
+                    global: false,
+                    ajax: {
+                        url: s.url.ajaxLookupURL,
+                        dataType: 'json',
+                        data: function (term, page) {
+                            return {
+                                hideDeleted: 'true',
+                                hideIdent: 'false',
+                                inclSubStartDate: 'false',
+                                inst_shortcode: '${params.shortcode}',
+                                q: '%'+term , // contains search term
+                                page_limit: 20,
+                                baseClass:'com.k_int.kbplus.Subscription'
+                            };
+                        },
+                        results: function (data, page) {
+                            return {results: data.values};
+                        }
                     },
-                    results: function (data, page) {
-                        return {results: data.values};
+                    allowClear: true,
+                    formatSelection: function(data) {
+                       return data.text;
                     }
-                },
-                allowClear: true,
-                formatSelection: function(data) {
-                   return data.text;
-                }
-            });
-         }
+                });
+            }
 
 
             $(s.ct.newIE).select2({
@@ -773,29 +810,32 @@
                  var isSubPkg      = element.data().issubpkg; //bool
                  var mode          = element.data().mode;
                  var id            = '#'+element.data().ownerid;
+                 var resetMode     = false;
 
-                 //todo complete the reset
                  if(mode == 'sub')
                  {
-                    if($(id+'_ie').val() != null || $(id+'_ie').val() != null )
+                    var ie     = $(id+'_ie');
+                    var subPkg = $(id+'_subPkg');
+                    var fields = null;
+                    if(ie.val() != null)
+                        fields = "issueEntitlement";
+                    if(subPkg.val() != null )
+                        fields += ",subPkg";
+
+                    if(fields != null)
                     {
-                        console.log('There is data that needs to be reset SubPkg OR IE')
+                        console.log('Sub selection means data needs to be reset for: '+fields);
+                        resetMode = true;
                     }
                  }
 
-                 var data =  {
-                    owner:element.data('owner')+':'+element.data('ownerid'), //org.kbplus.CostItem:1
-                    ownerField: element.data("ownerfield"), //order
-                    relation: rel,  //org.kbplus.Order:100
-                    relationField: element.data('relationfield'), //orderNumber
-                    shortcode:element.data('shortcode'),
-                    subFilter:element.subFilter
-                 };
 
                  $.ajax({
                         method: "POST",
                         url: s.url.ajaxFinanceRefData,
                         data: {
+                            resetMode: resetMode,
+                            fields: fields,
                             owner:element.data('owner')+':'+element.data('ownerid'), //org.kbplus.CostItem:1
                             ownerField: element.data("ownerfield"), //order
                             relation: rel,  //org.kbplus.Order:100
@@ -834,7 +874,6 @@
                                 console.log('Sub was changed...');
                                 $(id+'_subPkg').data('subfilter',data.relation.id);
                                 $(id+'_ie').data('subfilter',currentText);
-                                s.mybody.trigger("finance.lol",['lol','cat']);
                             break;
 
                             default:
@@ -845,26 +884,6 @@
                 });
             });
 
-            //re-usable AJAX method, pass in default config
-            function ajax (config) {
-              config = $.extend({
-                //Default config....
-              }, config | {});
-              return $.ajax(config);
-            }
-
-            ajax({
-              //.. config different to default...
-            }).done(function() {
-             // .. run callbacks in the normal way.
-            });
-
-            var tester  = function(e,tester1, tester2) {
-              console.log(e,'tester hehe ty man',tester1, tester2);
-              alert('whoop whoop');
-            };
-
-            s.mybody.on("finance.lol",tester);
 
             //filterSubscription select2 selection event
             s.mybody.on("select2-selecting", s.ft.filterSubscription, function(e) {
@@ -1171,12 +1190,12 @@
                 }
                 case 'Internal Server Error':
                 {
-                    alert(actionFailed + ' failed due to: ' + reason?reason:status + '... Report this error!');
+                    console.log(actionFailed + ' failed due to: ' + reason?reason:status + '... Report this error!');
                     break;
                 }
                 default :
                 {
-                    alert('Problem occurred with action: '+ actionFailed +', needs investigation! Possibly due to: '+reason!='undefined'?reason:'Unknown');
+                    console.log('Problem occurred with action: '+ actionFailed +', needs investigation! Possibly due to: '+reason!='undefined'?reason:'Unknown');
                     break;
                 }
             }
