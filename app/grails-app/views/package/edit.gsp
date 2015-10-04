@@ -1,4 +1,4 @@
-<%@ page import="com.k_int.kbplus.Package" %>
+<%@ page import="com.k_int.kbplus.Package; com.k_int.kbplus.RefdataCategory;" %>
 <!doctype html>
 <html>
   <head>
@@ -62,7 +62,7 @@
                             pk='${packageInstance?.id}'
                             field='packageType'
                             class='refdataedit'
-                            id='PackageType'>${packageInstance?.packageType?.value?:'Not set'}</g:relation>
+                            id="${RefdataCategory.PKG_TYPE}">${packageInstance?.packageType?.value?:'Not set'}</g:relation>
                 </div>
               </div>
 
@@ -93,7 +93,7 @@
 
       $(document).ready(function(){
          $('div span.refdataedit').editable('<g:createLink controller="ajax" params="${[resultProp:'value']}" action="genericSetRel" />', {
-           loadurl: '<g:createLink controller="ajax" params="${[id:'PackageType',format:'json']}" action="refdataSearch" />',
+           loadurl: '<g:createLink controller="ajax" params="${[id:"${RefdataCategory.PKG_TYPE}",format:'json']}" action="refdataSearch" />',
            type   : 'select',
            cancel : 'Cancel',
            submit : 'OK',

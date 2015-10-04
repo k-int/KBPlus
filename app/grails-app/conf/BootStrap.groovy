@@ -291,9 +291,6 @@ class BootStrap {
 
           newProp.save()
        }
-       else {
-          log.debug("Got property definition for ${default_prop.propname}");
-       }
     }
     log.debug("createLicenceProperties completed");
   }
@@ -419,22 +416,22 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("TIPP Status", "Transferred").save()
     RefdataCategory.lookupOrCreate("TIPP Status", "Unknown").save()
 
-    RefdataCategory.lookupOrCreate("Package.ListStatus", "Checked").save()
-    RefdataCategory.lookupOrCreate("Package.ListStatus", "In Progress").save()
-    RefdataCategory.lookupOrCreate("Package.Breakable", "No").save()
-    RefdataCategory.lookupOrCreate("Package.Breakable", "Yes").save()
-    RefdataCategory.lookupOrCreate("Package.Breakable", "Unknown").save()
-    RefdataCategory.lookupOrCreate("Package.Consistent", "No").save()
-    RefdataCategory.lookupOrCreate("Package.Consistent", "Yes").save()
-    RefdataCategory.lookupOrCreate("Package.Consistent", "Unknown").save()
-    RefdataCategory.lookupOrCreate("Package.Fixed", "No").save()
-    RefdataCategory.lookupOrCreate("Package.Fixed", "Yes").save()
-    RefdataCategory.lookupOrCreate("Package.Fixed", "Unknown").save()
-    RefdataCategory.lookupOrCreate("Package.Scope", "Aggregator").save()
-    RefdataCategory.lookupOrCreate("Package.Scope", "Front File").save()
-    RefdataCategory.lookupOrCreate("Package.Scope", "Back File").save()
-    RefdataCategory.lookupOrCreate("Package.Scope", "Master File").save()
-    RefdataCategory.lookupOrCreate("Package.Scope", "Scope Undefined").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_LIST_STAT, "Checked").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_LIST_STAT, "In Progress").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_BREAKABLE, "No").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_BREAKABLE, "Yes").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_BREAKABLE, "Unknown").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_CONSISTENT, "No").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_CONSISTENT, "Yes").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_CONSISTENT, "Unknown").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_FIXED, "No").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_FIXED, "Yes").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_FIXED, "Unknown").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_SCOPE, "Aggregator").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_SCOPE, "Front File").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_SCOPE, "Back File").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_SCOPE, "Master File").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_SCOPE, "Scope Undefined").save()
 
     RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending").save()
     RefdataCategory.lookupOrCreate("PendingChangeStatus", "Accepted").save()

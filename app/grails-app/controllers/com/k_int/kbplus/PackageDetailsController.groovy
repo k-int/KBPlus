@@ -112,7 +112,7 @@ class PackageDetailsController {
       if (result.user.getAuthorities().contains(Role.findByAuthority('ROLE_ADMIN'))) {
           isAdmin = true;
       }else{
-        hasAccess = result.packageInstance.orgLinks.find{it.roleType.value == 'Package Consortia' &&
+        hasAccess = result.packageInstance.orgLinks.find{it.roleType?.value == 'Package Consortia' &&
         it.org.hasUserWithRole(result.user,'INST_ADM') }
       }
 
@@ -357,7 +357,7 @@ class PackageDetailsController {
     
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def show() {
-      def verystarttime = exportService.printStart("SubscriptionDetails")
+      def verystarttime = exportService.printStart("PackageDetails show")
     
       def result = [:]
       boolean showDeletedTipps=false
@@ -395,10 +395,11 @@ class PackageDetailsController {
       result.subscriptionList=[]
       // We need to cycle through all the users institutions, and their respective subscripions, and add to this list
       // and subscription that does not already link this package
+      def sub_status = RefdataCategory.lookupOrCreate('Subscription Status','Deleted')
       result.user?.getAuthorizedAffiliations().each { ua ->
         if ( ua.formalRole.authority == 'INST_ADM' ) {
-          def qry_params = [ua.org, packageInstance, new Date()]
-          def q = "select s from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) AND ( not exists ( select sp from s.packages as sp where sp.pkg = ? ) ) AND s.endDate >= ?"
+          def qry_params = [ua.org, sub_status, packageInstance, new Date()]
+          def q = "select s from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status is null or s.status != ? ) AND ( not exists ( select sp from s.packages as sp where sp.pkg = ? ) ) AND s.endDate >= ?"
           Subscription.executeQuery(q, qry_params).each { s ->
             if ( ! result.subscriptionList.contains(s) ) {
               // Need to make sure that this package is not already linked to this subscription
@@ -417,17 +418,25 @@ class PackageDetailsController {
     
       // def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
       def qry_params = [packageInstance]
-
+      
+      def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
+      def today = new Date()
+      if(!params.asAt){
+        if(packageInstance.startDate > today){
+          params.asAt = sdf.format(packageInstance.startDate)
+        }else if(packageInstance.endDate < today){
+          params.asAt = sdf.format(packageInstance.endDate)
+        }
+      }
       def date_filter
       if(params.mode == 'advanced'){
          date_filter = null
          params.asAt = null
       }else if(params.asAt && params.asAt.length() > 0 ) {
-         def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
          date_filter = sdf.parse(params.asAt)    
          result.editable= false
       }else{
-         date_filter = new Date()
+         date_filter = today
       }
 
       def base_qry = generateBasePackageQuery(params, qry_params, showDeletedTipps, date_filter);
@@ -445,7 +454,8 @@ class PackageDetailsController {
       if(executorWrapperService.hasRunningProcess(packageInstance)){
         result.processingpc = true
       }
-    def filename = "packageDetails_${result.packageInstance.name}"
+
+    def filename = "${result.packageInstance.name}_asAt_${date_filter?sdf.format(date_filter):sdf.format(today)}"
     withFormat {
       html result
       json {
@@ -547,7 +557,17 @@ class PackageDetailsController {
 
   @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def expected() {
-    log.debug("expected ${params}");
+    previous_expected(params,"expected")
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def previous() {
+      previous_expected(params,"previous")
+  }
+
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+  def previous_expected(params,func) {
+    log.debug("previous_expected ${params}");
     def result = [:]
     boolean showDeletedTipps=false
     result.user = User.get(springSecurityService.principal.id)
@@ -569,61 +589,19 @@ class PackageDetailsController {
 
     // def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
     def qry_params = [packageInstance]
-    def date_filter =  params.mode == 'advanced' ? null : new Date();
 
     def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
     base_qry += "and tipp.status.value != 'Deleted' "
-    if ( date_filter != null ) {
+
+    if(func=="expected"){
       base_qry += " and ( coalesce(tipp.accessStartDate, tipp.pkg.startDate) >= ? ) "
-      qry_params.add(date_filter);
-    }
-
-    base_qry += " order by tipp.title.title"
-
-    log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
-    result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, limits);
-    result.num_tipp_rows = TitleInstancePackagePlatform.executeQuery("select count(tipp) "+base_qry, qry_params )[0]
-
-    result.lasttipp = result.offset + result.max > result.num_tipp_rows ? result.num_tipp_rows : result.offset + result.max;
-
-    result
-  }
-
-  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-  def previous() {
-    log.debug("previous ${params}");
-    def result = [:]
-    boolean showDeletedTipps=false
-    result.user = User.get(springSecurityService.principal.id)
-    result.editable=isEditable()
-
-    def packageInstance = Package.get(params.id)
-    if (!packageInstance) {
-      flash.message = message(code: 'default.not.found.message', args: [message(code: 'package.label', default: 'Package'), params.id])
-      redirect action: 'list'
-      return
-    }
-    result.packageInstance = packageInstance
-
-    result.max = params.max ? Integer.parseInt(params.max) : 25
-    params.max = result.max
-    def paginate_after = params.paginate_after ?: ( (2*result.max)-1);
-    result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
-
-    def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]
-
-    // def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
-    def qry_params = [packageInstance]
-    def date_filter =  params.mode == 'advanced' ? null : new Date();
-
-    def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
-    base_qry += "and tipp.status.value != 'Deleted' "
-    if ( date_filter != null ) {
+    }else{
       base_qry += " and ( tipp.accessEndDate <= ? ) "
-      qry_params.add(date_filter);
     }
+    qry_params.add(new Date());
+    
 
-    base_qry += " order by tipp.title.title"
+    base_qry += " order by ${params.sort?:'tipp.title.sortTitle'} ${params.order?:'asc'} "
 
     log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
     result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, limits);
@@ -634,6 +612,7 @@ class PackageDetailsController {
     result
   }
 
+ 
 
   def generateBasePackageQuery(params, qry_params, showDeletedTipps, asAt) {
 

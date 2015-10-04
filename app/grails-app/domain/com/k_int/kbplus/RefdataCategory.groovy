@@ -1,4 +1,5 @@
 package com.k_int.kbplus
+import javax.persistence.Transient
 
 class RefdataCategory {
 
@@ -46,5 +47,16 @@ class RefdataCategory {
         }
         result
     }
-
+  @Transient
+  public static final PKG_SCOPE = "Package.Scope"
+  @Transient
+  public static final PKG_LIST_STAT = "Package.ListStatus"
+  @Transient
+  public static final PKG_FIXED = "Package.Fixed"
+  @Transient
+  public static final PKG_BREAKABLE = "Package.Breakable"
+  @Transient
+  public static final PKG_CONSISTENT = 'Package.Consistent'
+  @Transient
+  public static final PKG_TYPE = 'Package.Type'
 }

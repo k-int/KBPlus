@@ -52,7 +52,7 @@
                         <td>
                           <ul>
                             <g:each in="${titleInstance.orgs}" var="org">
-                              <li>${org.org.name} (${org.roleType.value})</li>
+                              <li>${org.org.name} (${org.roleType?.value?:''})</li>
                             </g:each>
                           </ul>
                         </td>

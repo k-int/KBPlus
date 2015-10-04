@@ -1,11 +1,82 @@
-Version 5.0
+Changes in 5.0.2
 
-* All items marked done in enhancements spreadsheet
-* OnixPl comparison changes section 1-5
-* Contact field to licence
-* Confirm prompt on delete licence
-* Move licence properties to top of screen
-* Licence URL in licence details clickable
-* 'Copy this Licence ' In licecne display
-* Link to Subscription in licence display
-* Feedback when entering wrong value type in editables
+* By default the asAt date of expected packages is startDate,previous is endDate, for packageDetails and publicExport
+
+Fixes introduced in 5.0.1
+
+* Sort TitleInstances by sortTitle 
+* when name for new imported onxilicence in use, append import date
+* fix issue that caused admin/Allnotes to break
+* fix importWorksheet search bug
+* fix exports that break when OrgLink have no role
+* publicExport, dont lose search params when changing tabs
+* ES searches should not break when searching with empty query
+* unique identifier works for all owners (sub,title,etc).
+* add delete link for subscription identifiers
+* pre-sql to update old pending changes links to current ones
+* add job to generate sortTitle/normTitle/keyTitle for all titles
+* On user merge screen, add user IDs next to  displayNames.
+* On PackageHardDelete, change 'Delete Subscriptions' to 'Unlink subscriptions. (IEs will be removed as well)'
+* On PackageHardDelete, open links to subscriptions in new tab, and go to details instead of index
+* Added job to generate package sortName
+* Added CSV export for KB+ licence property compare
+* Add TIPP title transfer
+* PublicExport-Current packages, filter out masters, open access, and end date before current
+* Improve performance of Current Titles screen
+
+Changes introduced in 5.0. It is likely that some small tasks are missing.
+
+* (show less/more) addded in Announcements List
+* Indicate counters on top of ToDos list in ToDo screen
+* warn when creating an OrgRole with no role attached
+* added admin/manageCustomProperties to add/delete custom pros
+* subscription/addEntitlements has a multi-select box now
+* added 'Add notes' button in notes tabs
+* added user filtering by role in userDetails/list, role visible in /organisations/users/ 
+* added title count for packages in subscriptionDetails/linkPackage
+* added Hybrid OA in TIPP list of packageDetails
+* only display licences which the current user can view or copy on the Add Licence
+* facets in aplhabetical order in Package Search
+* when searching titles, if no exact matches, add wildcard and try again
+* add confirmation on Deleting licence
+* added "Copy this licence" in licenceDetails page
+* Moved licence custom properties to top of display
+* rename "Import Subscription Taken Worksheet" to "Import New Subscription Worksheet"
+* rename "Generate Subscription Taken Worksheet" to "Generate New Subscription Worksheet"
+* add "unlink" button next to linked packages of subscription in subscriptionDetails
+* Journal Title links to titleDetails in Institutional Title list
+* rename "subscription" to "subscribed contents" in Institutional Title List
+* Current Subscriptions reworked to match CurrentLicences
+* remove coverage depth from packageDetail TIPP list
+* allow deletion of packages (AdminActions>DataManagementTasks>PackageDelete)
+* clickable licence URL in licenceDetails
+* enable linking to Subscription from licenceDetails
+* Export options added in currentLicences/subscriptions list
+* licence exports include custom properties and notes
+* give feedback when wrong data type is entered in custom properties
+* Major OnixPL overhaul
+** onixplLicenseDetail now based on comparison screen compared with 'ghost licence'
+** 'ghost' or model licence defined in app config, needs to be loaded. Any licence can be used for this
+** rework licence selection screen for comparison, using typedown search
+** Comparison tables now includes in-cell data 
+** Comparison cells are grouped based on user access
+* move cancellation allowance from packageDetails to licence
+* added new CSV, XML and JSON exports for licence, to include IEs and Package/subs
+* warn when adding identifiers that are already used (e.g. ISSN in titleDetails)
+* when using ‘renewal’ process add option to copy subscription start/end dates from previous subscription
+* when using 'renewal' process, allow coping of Notes and docs from previous sub
+* when adding custom property, by default show all existing properties. 
+* add KBART II export
+* rework public exports screen 
+* Add JR1 GOA (Gold Open Access) statistics from JUSP on the Issue Entitlement Details
+* Transfer IEs between TIPPs (AdminActions>DataManagementTasks>IE Transfer)
+* remove deleted titles from the system (AdminActions>DataManagementTasks>ExpungeDeletedTitles))
+* remove deleted TIPPs from the system (AdminActions>DataManagementTasks>ExpungeDeletedTIPPs))
+* public page for linking licences (/public/journalLicences). Orgs need to opt-in from organisations/config
+* PendingChanges are accepted on background. While this happens they are hidden, and a notification is shown
+* fix authentication issues where some licence/subscription tabs where visible without correct roles.
+* Notice Period moved to custom licence property
+* added Compare Licenses(KB+ Licence Properties) under Institutions>"name">
+* hide ToDos for deleted items 
+* Title Core status now has the following flags: False(never), False(now),True(now) 
+* bug fixes across system

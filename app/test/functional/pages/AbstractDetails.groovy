@@ -38,6 +38,18 @@ class AbstractDetails extends BasePage {
 
             $("button.editable-submit").click()
         }
+        editDate {name,val,id->
+            if(id){
+                $(id).click()
+            }else{
+                $("span", 'data-name': name).click()
+            }
+            Thread.sleep(100)
+            $("input.input-small").value(val)
+            Thread.sleep(100)
+            $("button.editable-submit").click()
+        }
+
         editIsPublic { option ->
             $("span", 'data-name': "isPublic").click()
             waitElement { $("form.editableform") }

@@ -46,7 +46,7 @@
 
                 <tr>
                     <th rowspan="2">#</th>
-                    <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
+                    <g:sortableColumn params="${params}" property="tipp.title.sortTitle" title="Title" />
                     <th>ISSN</th>
                     <g:sortableColumn params="${params}" property="coreStatus" title="Core" />
                     <g:sortableColumn params="${params}" property="startDate" title="Coverage Start Date" />

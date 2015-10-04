@@ -34,13 +34,13 @@
           <dt>User to Keep</dt>
           <dd>
     <g:select name="userToKeep" from="${usersActive}" optionKey="id" 
-      optionValue="displayName" noSelection="${['null':'-Choose user to keep-']}" />
+      optionValue="${{it.displayName + ' ( ' + it.id +' )'}}" noSelection="${['null':'-Choose user to keep-']}" />
       </dd>
       <dt> User to Merge</dt>
       <dd>
 
     <g:select name="userToMerge" from="${usersAll}" optionKey="id" 
-    optionValue="displayName" noSelection="${['null':'-Choose user to merge-']}"/>
+    optionValue="${{it.displayName + ' ( ' + it.id +' )'}}" noSelection="${['null':'-Choose user to merge-']}"/>
     </dd>
      </dl>
      <input type="submit" value="Merge" class="btn btn-primary"/>
@@ -53,7 +53,7 @@
      
      <div class="modal-header">
        <button type="button" class="close" data-dismiss="modal">×</button>
-       <h3>Merge ${usrMrgName} into ${userKeepName} </h3>
+       <h3>Merge ${userMerge?.displayName} (${userMerge?.id}) into ${userKeep?.displayName} (${userKeep?.id}) </h3>
      </div>
       <g:form action="userMerge" method="POST">
       
@@ -61,7 +61,7 @@
           <input type="hidden" name="userToKeep" value="${params.userToKeep}"/>
           <input type="hidden" name="userToMerge" value="${params.userToMerge}"/>
 
-          <p>Current Roles and Affiliations that will be copied to ${userKeepName}</p>
+          <p>Current Roles and Affiliations that will be copied to ${userKeep?.displayName}</p>
 
           <b> User Roles </b>
           <ul>

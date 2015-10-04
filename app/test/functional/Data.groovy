@@ -49,4 +49,12 @@ class Data {
     static RenewalsUploadFile = workingDir + "manual_test_data"+sep+"renewalsUpload" +sep+"EmeraldNewRenewalWorksheet.xls"
     static JasperReportExistingFile = workingDir + "app" + sep + "grails-app"+sep+"conf"+sep+"resources"+sep+"jasper_reports"+sep+"title_no_url.jrxml"
     static JasperReportNewFile = workingDir + "manual_test_data" +sep +"jasper"+sep+"titles.jrxml"
+
+    static Licence_public_journals     = "public"
+    static Licence_publicProp_journals = "Public Journal Access"
+
+    static Title_identifier        = "eISSN:1234"
+    static Title_titlename         = "testing 123"
+    static Title_uniqID            = java.util.UUID.randomUUID().toString()
+    static Tipp_uniqID             = java.util.UUID.randomUUID().toString()
 }

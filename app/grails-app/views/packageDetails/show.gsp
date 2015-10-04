@@ -1,4 +1,4 @@
-<%@ page import="com.k_int.kbplus.Package" %>
+<%@ page import="com.k_int.kbplus.Package;com.k_int.kbplus.RefdataCategory" %>
 <!doctype html>
 <html>
   <head>
@@ -148,7 +148,7 @@
               <dl>
                 <dt><g:message code="licence" default="Licence"/></dt>
                 <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="license" config='Licenses'/>
+                  <g:xEditableRefData owner="${packageInstance}" field="license" config="Licenses"/>
                 </dd>
               </dl>
 
@@ -169,7 +169,7 @@
                <dl>
                     <dt>End Date</dt>
                     <dd>
-                       <g:xEditable owner="${packageInstance}" field="endDate" type="date"/>
+                       <g:xEditable owner="${packageInstance}" id="${packageInstance.class.name.replace(".","")}_${packageInstance.id}_endDate"field="endDate" type="date"/>
                     </dd>
                </dl>
 
@@ -185,35 +185,35 @@
              <dl>
                 <dt>List Status</dt>
                 <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="packageListStatus" config='Package.ListStatus'/>
+                  <g:xEditableRefData owner="${packageInstance}" field="packageListStatus" config="${RefdataCategory.PKG_LIST_STAT}"/>
                 </dd>
              </dl>
 
              <dl>
                 <dt>Breakable</dt>
                 <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="breakable" config='Package.Breakable'/>
+                  <g:xEditableRefData owner="${packageInstance}" field="breakable" config="${RefdataCategory.PKG_BREAKABLE}"/>
                 </dd>
              </dl>
 
              <dl>
                 <dt>Consistent</dt>
                 <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="consistent" config='Package.Consistent'/>
+                  <g:xEditableRefData owner="${packageInstance}" field="consistent" config="${RefdataCategory.PKG_CONSISTENT}"/>
                 </dd>
              </dl>
 
              <dl>
                 <dt>Fixed</dt>
                 <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="fixed" config='Package.Fixed'/>
+                  <g:xEditableRefData owner="${packageInstance}" field="fixed" config="${RefdataCategory.PKG_FIXED}"/>
                 </dd>
              </dl>
 
               <dl>
                 <dt>Package Scope</dt>
                 <dd>
-                  <g:xEditableRefData owner="${packageInstance}" field="packageScope" config='Package.Scope'/>
+                  <g:xEditableRefData owner="${packageInstance}" field="packageScope" config="${RefdataCategory.PKG_SCOPE}"/>
                 </dd>
               </dl>
 
@@ -339,13 +339,13 @@
                     </tr>
                     <g:if test="${params.mode=='advanced'}">
                       <tr>
-                        <td>Delayed OA: <g:simpleHiddenRefdata id="bulk_delayedOA" name="bulk_delayedOA" refdataCategory="TIPPDelayedOA"/>
+                        <td>Delayed OA: <g:simpleHiddenRefdata id="bulk_delayedOA" name="bulk_delayedOA" refdataCategory="TitleInstancePackagePlatform.DelayedOA"/>
                           <input type="checkbox" name="clear_delayedOA"/>(Check to clear)</td>
                         </td>
-                        <td>Hybrid OA: <g:simpleHiddenRefdata id="bulk_hybridOA" name="bulk_hybridOA" refdataCategory="TIPPHybridOA"/>
+                        <td>Hybrid OA: <g:simpleHiddenRefdata id="bulk_hybridOA" name="bulk_hybridOA" refdataCategory="TitleInstancePackagePlatform.HybridOA"/>
                           <input type="checkbox" name="clear_hybridOA"/>(Check to clear)</td>
                         </td>
-                        <td>Payment: <g:simpleHiddenRefdata id="bulk_payment" name="bulk_payment" refdataCategory="TIPPPaymentType"/>
+                        <td>Payment: <g:simpleHiddenRefdata id="bulk_payment" name="bulk_payment" refdataCategory="TitleInstancePackagePlatform.PaymentType"/>
                           <input type="checkbox" name="clear_payment"/>(Check to clear)</td>
                         </td>
                       </tr>
@@ -361,7 +361,7 @@
             <tr>
               <th>&nbsp;</th>
               <th>&nbsp;</th>
-              <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
+              <g:sortableColumn params="${params}" property="tipp.title.sortTitle" title="Title" />
               <th style="">Platform</th>
               <th style="">Hybrid OA</th>
               <th style="">Identifiers</th>
@@ -403,7 +403,7 @@
                    </ul>
                    <span title="${t.availabilityStatusExplanation}">Access: ${t.availabilityStatus?.value}</span>
                    <g:if test="${params.mode=='advanced'}">
-                     <br/> Record Status: <g:xEditableRefData owner="${t}" field="status" config='TIPPStatus'/>
+                     <br/> Record Status: <g:xEditableRefData owner="${t}" field="status" config='TIPP Status'/>
                      <br/> Access Start: <g:xEditable owner="${t}" type="date" field="accessStartDate" />
                      <br/> Access End: <g:xEditable owner="${t}" type="date" field="accessEndDate" />
                    </g:if>
@@ -417,7 +417,7 @@
                    </g:else>
                 </td>
                 <td style="white-space: nowrap;vertical-align:top;">
-                   <g:xEditableRefData owner="${t}" field="hybridOA" config='TIPPHybridOA'/>
+                   <g:xEditableRefData owner="${t}" field="hybridOA" config='TitleInstancePackagePlatform.HybridOA'/>
                 </td>
                 <td style="white-space: nowrap;vertical-align:top;">
                   <g:each in="${t.title.ids}" var="id">
@@ -445,9 +445,9 @@
                   <td colspan="8">coverageNote: ${t.coverageNote}
                   <g:if test="${params.mode=='advanced'}">
                     <br/> Host Platform URL: <g:xEditable owner="${t}" field="hostPlatformURL" />
-                    <br/> Delayed OA: <g:xEditableRefData owner="${t}" field="delayedOA" config='TIPPDelayedOA'/> &nbsp;
-                    Hybrid OA: <g:xEditableRefData owner="${t}" field="hybridOA" config='TIPPHybridOA'/> &nbsp;
-                    Payment: <g:xEditableRefData owner="${t}" field="payment" config='TIPPPaymentType'/> &nbsp;
+                    <br/> Delayed OA: <g:xEditableRefData owner="${t}" field="delayedOA" config='TitleInstancePackagePlatform.DelayedOA'/> &nbsp;
+                    Hybrid OA: <g:xEditableRefData owner="${t}" field="hybridOA" config='TitleInstancePackagePlatform.HybridOA'/> &nbsp;
+                    Payment: <g:xEditableRefData owner="${t}" field="payment" config='TitleInstancePackagePlatform.PaymentType'/> &nbsp;
                   </g:if>
                   </td>
                 </tr>

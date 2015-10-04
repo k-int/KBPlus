@@ -17,7 +17,7 @@ class TitleInstance {
   @Transient
   def grailsApplication
 
-  static Log static_logger = LogFactory.getLog(TitleInstance) 
+  static Log static_logger = LogFactory.getLog(TitleInstance)
 
   static final Pattern alphanum = Pattern.compile("\\p{Punct}|\\p{Cntrl}");
 
@@ -34,14 +34,14 @@ class TitleInstance {
   Date lastUpdated
 
   static mappedBy = [
-                     tipps: 'title', 
-                     ids: 'ti', 
-                     orgs: 'title', 
+                     tipps: 'title',
+                     ids: 'ti',
+                     orgs: 'title',
                      historyEvents: 'participant']
   static hasMany = [
-                    tipps: TitleInstancePackagePlatform, 
-                    ids: IdentifierOccurrence, 
-                    orgs: OrgRole, 
+                    tipps: TitleInstancePackagePlatform,
+                    ids: IdentifierOccurrence,
+                    orgs: OrgRole,
                     historyEvents: TitleHistoryEventParticipant]
 
 
@@ -55,6 +55,8 @@ class TitleInstance {
        status column:'ti_status_rv_fk'
          type column:'ti_type_rv_fk'
         tipps sort:'startDate', order: 'asc'
+    sortTitle column:'sort_title', index: 'ti_sort_idx'
+
   }
 
   static constraints = {
@@ -159,7 +161,7 @@ class TitleInstance {
     if ( matched.size() == 0 ) {
       candidate_identifiers.each { i ->
         def id1 = Identifier.executeQuery('Select io from IdentifierOccurrence as io where io.identifier.value = ?',[i.value]);
-        id1.each { 
+        id1.each {
           if ( it.ti != null ) {
             if ( matched.contains(it.ti) ) {
               // Already in the list
@@ -179,10 +181,10 @@ class TitleInstance {
     else if ( matched.size() > 1 ) {
       throw new Exception("Identifier set ${candidate_identifiers} matched multiple titles");
     }
-    
-    return result;     
+
+    return result;
   }
-  
+
   static def lookupOrCreate(candidate_identifiers, title) {
     lookupOrCreate(candidate_identifiers, title, false)
   }
@@ -190,11 +192,11 @@ class TitleInstance {
   static def lookupOrCreate(candidate_identifiers, title, enrich) {
     def result = null;
     def lu_ids = []
-    
+
     candidate_identifiers.each { i ->
       def id = Identifier.lookupOrCreateCanonicalIdentifier(i.namespace, i.value)
       static_logger.debug("processing candidate identifier ${i} as ${id}");
-        
+
       def io = IdentifierOccurrence.findByIdentifier(id)
       if ( io && io.ti ) {
         static_logger.debug("located existing titie: ${io.ti.id}");
@@ -205,14 +207,14 @@ class TitleInstance {
         lu_ids.add(id);
       }
     }
-    
+
     if (!result) {
       static_logger.debug("No result - creating new title");
       result = new TitleInstance(title:title, impId:java.util.UUID.randomUUID().toString());
       result.save(flush:true);
 
       result.ids=[]
-      lu_ids.each { 
+      lu_ids.each {
         def new_io = new IdentifierOccurrence(identifier:it, ti:result)
         if ( new_io.save(flush:true) ) {
           log.debug("Created new IO");
@@ -232,7 +234,7 @@ class TitleInstance {
         static_logger.debug("enrich... current ids = ${result.ids}, non-matching ids = ${lu_ids}");
         // println("Checking that all identifiers are already present in title");
         boolean modified = false;
-        // Check that all the identifiers listed are present 
+        // Check that all the identifiers listed are present
         lu_ids.each { identifier ->
           static_logger.debug("adding identifier ${identifier.ns.ns}:${identifier.value} - adding");
           def new_io = new IdentifierOccurrence(identifier:identifier, ti:result).save();
@@ -243,8 +245,8 @@ class TitleInstance {
         }
       }
     }
-    
-    return result;     
+
+    return result;
 
   }
 
@@ -255,10 +257,10 @@ class TitleInstance {
   static def lookupOrCreateViaIdMap(candidate_identifiers, title) {
     def result = null;
     def ids = []
-    
+
     candidate_identifiers.each { i ->
 
-      if ( ( i.key != null ) && 
+      if ( ( i.key != null ) &&
            ( i.value != null ) &&
            ( i.key.length() > 0 ) &&
            ( i.value.length() > 0 ) ) {
@@ -266,7 +268,7 @@ class TitleInstance {
         def id = Identifier.lookupOrCreateCanonicalIdentifier(i.key, i.value)
         if ( id != null ) {
           ids.add(id);
-          
+
           def io = IdentifierOccurrence.findByIdentifier(id)
           if ( io && io.ti ) {
             if ( result == null ) {
@@ -281,12 +283,12 @@ class TitleInstance {
         }
       }
     }
-    
+
     if (!result) {
       result = new TitleInstance(title:title, impId:java.util.UUID.randomUUID().toString());
-      
+
       result.ids=[]
-      ids.each { 
+      ids.each {
         result.ids.add(new IdentifierOccurrence(identifier:it, ti:result));
       }
       if ( ! result.save() ) {
@@ -296,7 +298,7 @@ class TitleInstance {
     else {
       //println("Checking that all identifiers are already present in title (${ids})");
       boolean modified = false;
-      // Check that all the identifiers listed are present 
+      // Check that all the identifiers listed are present
       ids.each { identifier ->
         // it == an ID
         // Does result.ids contain an identifier occurrence that matches this ID
@@ -317,8 +319,8 @@ class TitleInstance {
         result.save();
       }
     }
-    
-    return result;     
+
+    return result;
 
   }
 
@@ -340,24 +342,26 @@ class TitleInstance {
 
 
   public static String generateSortTitle(String input_title) {
-    def result=null
-    if ( input_title ) {
-      def s1 = Normalizer.normalize(input_title, Normalizer.Form.NFKD).trim().toLowerCase()
-      s1 = s1.replaceFirst('^copy of ','')
-      s1 = s1.replaceFirst('^the ','')
-      s1 = s1.replaceFirst('^a ','')
-      s1 = s1.replaceFirst('^der ','')
-      result = s1.trim()
-    }
-    result
+    if ( ! input_title ) return null;
+
+    def s1 = Normalizer.normalize(input_title, Normalizer.Form.NFKD).trim().toLowerCase()
+    s1 = s1.replaceFirst('^copy of ','')
+    s1 = s1.replaceFirst('^the ','')
+    s1 = s1.replaceFirst('^a ','')
+    s1 = s1.replaceFirst('^der ','')
+    
+    return  s1.trim()  
   }
 
   public static String generateNormTitle(String input_title) {
+    if (!input_title) return null;
+
     def result = input_title.replaceAll('&',' and ');
     result = result.trim();
     result = result.replaceAll("\\s+", " ");
     result = result.toLowerCase();
     result = alphanum.matcher(result).replaceAll("");
+   
     return asciify(result)
   }
 
@@ -381,9 +385,10 @@ class TitleInstance {
             if ( i.hasNext() )
               b.append(' ');
         }
-        result = asciify(b.toString()); // find ASCII equivalent to characters 
+        result = asciify(b.toString()); // find ASCII equivalent to characters
     }
-    result
+
+    return result;
   }
 
   protected static String asciify(String s) {
@@ -394,7 +399,7 @@ class TitleInstance {
         }
         return b.toString();
   }
-    
+
     /**
      * Translate the given unicode char in the closest ASCII representation
      * NOTE: this function deals only with latin-1 supplement and latin-1 extended code charts
@@ -604,9 +609,9 @@ class TitleInstance {
         }
         return c;
     }
-    
-    
-    
+
+
+
   static def refdataFind(params) {
     def result = [];
     def ql = null;
@@ -616,7 +621,7 @@ class TitleInstance {
     }
 
     // If the search without a wildcard returns items, return those, otherwise if a case insensitive search
-    // without a wildcard returns 0, add a wildcard and use that 
+    // without a wildcard returns 0, add a wildcard and use that
     def num_titles = TitleInstance.countByTitleIlike("${params.q}",params)
     if ( num_titles == 0 ) {
       ql = TitleInstance.findAllByTitleIlike("${params.q}%",params)
@@ -634,7 +639,7 @@ class TitleInstance {
 
     result
   }
-  
+
 
   @Transient
   def identifiersAsString() {
@@ -658,8 +663,8 @@ class TitleInstance {
         changeNotificationService.notifyChangeEvent([
                                                      OID:"${this.class.name}:${this.id}",
                                                      event:'TitleInstance.propertyChange',
-                                                     prop:cp, 
-                                                     old:oldMap[cp], 
+                                                     prop:cp,
+                                                     old:oldMap[cp],
                                                      new:newMap[cp]
                                                     ])
       }
@@ -669,13 +674,13 @@ class TitleInstance {
   @Transient
   def notifyDependencies(changeDocument) {
     // static_logger.debug("notifyDependencies(${changeDocument})");
-    
+
     def changeNotificationService = grailsApplication.mainContext.getBean("changeNotificationService")
     tipps.each { tipp ->
       // Notify each package that a component title has changed
       changeNotificationService.broadcastEvent("${tipp.pkg.class.name}:${tipp.pkg.id}", changeDocument);
     }
-    
+
     changeNotificationService.broadcastEvent("${this.class.name}:${this.id}", changeDocument);
   }
 
@@ -782,4 +787,48 @@ class TitleInstance {
     }
   }
 
+  /**
+   * Validate a tipp start and end date by ensuring that the date range lies within known dates when this Title
+   * was published. Null start dates are only valid when there is no earliest published dates.
+  */
+  def isValidCoverage(start, end) {
+    def result = true;
+    def published_from = null;
+    def published_to = null;
+
+    orgs.each { o ->
+      if ( o.roleType?.value == 'Publisher' ) {
+        if ( ( o.startDate != null ) && ( ( published_from == null ) || ( o.startDate < published_from ) ) ) {
+          published_from = o.startDate
+        }
+        if ( ( o.endDate != null ) && ( ( published_to == null ) || ( o.endDate > published_to ) ) ) {
+          published_to = o.endDate
+        }
+      }
+    }
+
+    // Start date checks - It's valid if published from and start are null, otherwise they must match
+    if ( ( published_from == null ) && ( start == null ) ) {
+      result = result & true
+    }
+    else if ( ( published_from == null ) || ( start == null ) ) {
+      result = result & false
+    }
+    else { // We have a start date and a published from date - make sure the range matches
+      result = result & ( start > published_from )
+    }
+
+    // End date checks
+    if ( ( published_to == null ) && ( end == null ) ) {
+      result = result & true
+    }
+    else if ( ( published_to == null ) || ( end == null ) ) {
+      result = result & false
+    }
+    else { // We have a start date and a published from date - make sure the range matches
+      result = result & ( end  < published_to )
+    }
+
+    result
+  }
 }

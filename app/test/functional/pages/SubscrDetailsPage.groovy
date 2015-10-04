@@ -42,6 +42,7 @@ class SubscrDetailsPage extends AbstractDetails {
 
             }
         }
+        
         addEntitlements {
             $("a", text: "Add Entitlements").click()
             $("input", name: "chkall").click()
