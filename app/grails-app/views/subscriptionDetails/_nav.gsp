@@ -55,4 +55,11 @@
                 action="todo_history"
                 params="${[id:params.id]}">Todo History</g:link></li>
 
+<g:if test="${grailsApplication.config.feature.finance}">
+    %{--Custom URL mapping for re-use of index--}%
+    <li <%='finance'== actionName ? ' class="active"' : '' %>>
+        <g:link mapping="subfinance" controller="finance" action="index"
+                params="${[sub:params.id, shortcode: params.shortcode]}">Subscription Financials</g:link></li>
+</g:if>
+
 </ul>

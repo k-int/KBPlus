@@ -32,7 +32,10 @@
                         <option value="${s.id}" ${s.id==params.long('subscriptionFilter')?'selected="selected"':''}>${s.name}</option>
                     </g:each> 
                 </select> --}%
-                <input ${inSubMode ? "disabled='disabled' data-filterMode='${fixedSubscription?.class}:${fixedSubscription?.id}'" : '' } name="newSubscription" class="input-xlarge" placeholder="New Subscription" id="newSubscription" value="${inSubMode ? fixedSubscription?.name : params.newSubscription}"/>
+                <input ${inSubMode ? "disabled='disabled' data-filterMode='${fixedSubscription?.class.getName()}:${fixedSubscription?.id}'" : '' } name="newSubscription" class="input-xlarge" placeholder="New Subscription" id="newSubscription" value="${inSubMode ? fixedSubscription?.name : params.newSubscription}"/>
+                <g:if test="${inSubMode}">
+                    <g:hiddenField name="newSubscription" value="${fixedSubscription?.class.getName()}:${fixedSubscription?.id}"></g:hiddenField>
+                </g:if>
             </td>
             <td>
                 <select name="newPackage" class="input-medium" id="newPackage" value="${params.newPackage}">

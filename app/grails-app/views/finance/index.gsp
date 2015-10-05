@@ -19,7 +19,15 @@
 <div class="container-fluid">
     <ul class="breadcrumb">
         <li> <g:link controller="home" action="index">Home</g:link> <span class="divider">/</span> </li>
-        <li> <g:link controller="myInstitutions" action="finance" params="${[shortcode:params.shortcode]}">${institution.name} Finance</g:link> </li>
+        <li>
+            <g:if test="${inSubMode}">
+                <li> <g:link controller="subscriptionDetails" action="index" params="${[shortcode: params.shortcode, sub:fixedSubscription?.id]}" id="${fixedSubscription?.id}">${fixedSubscription?.name}</g:link> <span class="divider">/</span> </li>
+                <g:link mapping="subfinance" controller="myInstitutions" action="finance" params="${[shortcode:params.shortcode, sub:fixedSubscription?.id]}">${institution.name} Finance <i>(Subscription Mode)</i></g:link>
+            </g:if>
+            <g:else>
+                <g:link controller="myInstitutions" action="finance" params="${[shortcode:params.shortcode]}">${institution.name} Finance</g:link>
+            </g:else>
+        </li>
         <g:if test="${editable}">
             <li class="pull-right"><span class="badge badge-warning">Editable</span>&nbsp;</li>
             <li class="pull-right"><span style="font-weight: 400;" class="badge"><a href="${createLink(controller: 'myInstitutions', action: 'financeImport', params: [shortcode:params.shortcode])}">Finance Import</a></span> </li>
@@ -159,10 +167,11 @@
                 global: false
             }).done(function(data) {
                 $(s.misc.recentlyUpdated).html(data);
+            })
+            .fail(function(jqXHR, textStatus, errorThrown ) {
+                console.log('Unable to perform recent cost update ... ',errorThrown);
+              clearTimeout(s.options.timeoutRecent);
             });
-
-            // Recently updated code block
-            s.options.timeoutRecent = setInterval(_recentCostItems,60 * 1000 * 5);
         };
 
         //Setup to build
@@ -817,6 +826,7 @@
                     var ie     = $(id+'_ie');
                     var subPkg = $(id+'_subPkg');
                     var fields = null;
+                    console.log(ie, ie.data().defaultValue,ie.data(), ie.select2('data'),ie.data(),subPkg, subPkg.data().defaultValue, subPkg.data(), subPkg.select2('data'));
                     if(ie.val() != null)
                         fields = "issueEntitlement";
                     if(subPkg.val() != null )
@@ -890,6 +900,7 @@
                  var element = $(this);
                  var text    = e.choice.text;
                  var id      = e.choice.id;
+                 console.log('Chosen ID is as follows',id);
                  element.data('subFilter',id);
                  var prevSelection = element.select2("data");
                  $(s.ft.filterSubPkg).select2('enable');
@@ -916,6 +927,8 @@
             }); //delete button select all functionality
 
             _performCostItemUpdate(null); //pulls down latest cost item updates for modal
+
+            s.options.timeoutRecent = setInterval(_recentCostItems,60 * 1000 * 5); // Recently updated code block
 
             s.mybody.on('click',s.ft.delBatch,_performBulkDelete); //Bulk delete action
 
