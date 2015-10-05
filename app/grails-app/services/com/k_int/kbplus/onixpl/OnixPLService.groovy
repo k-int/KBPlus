@@ -497,7 +497,8 @@ class OnixPLService {
       'IDValue',
       'PlaceIDType',
       'UsageExceptionType',
-      'UsageQuantity'
+      'UsageQuantity',
+      'GeneralTermRelatedPlace'
     ]
     
     // Get the main license as a map.
