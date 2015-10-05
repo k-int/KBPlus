@@ -339,7 +339,7 @@ class OnixPLService {
       List el_names = data.keySet() as List
       Map<String,List<String>> priority = ["User":[]];
 
-      generateKeys(data, exclude, keys,priority)
+      generateKeys(data.clone(), exclude, keys,priority)
       priority.entrySet().each{
         if(it.getValue()){
           keys.add(0,it.getValue())
@@ -386,14 +386,13 @@ class OnixPLService {
     
     // Name.
     String name = val['_name']
-    
+
+
     if (name) {
-      
+      def valKeys = val.keySet()
       // Add any key values to the keys list.
-      for (String cp in val.keySet()) {
-        if(cp == "UsageQuantity"){
-          continue
-        }
+      for (int i=0;i<valKeys.size();i++) {
+        def cp =valKeys[i]
 
         if (!cp.startsWith('_') && !exclude.contains(cp)) {
           List value = val.get(cp)
@@ -408,21 +407,19 @@ class OnixPLService {
               }
             }
           }
+        }else if(exclude.contains(cp)) {
+          val.remove(cp)
         }
       }
       
       if (val['_content'] == null) {
-       if(name == "UsageQuantity"){
-          return
-        }
+
         // Add each sub element.
         for (String prop in val.keySet()) {
           switch (prop) {
             default :
               if (!prop.startsWith("_")) {
-                if(prop == "UsageQuantity"){
-                  continue
-                }
+
                 // Recursively call this method.
                 for (Map v in val[prop]) {
                   generateKeys (v, exclude, keys,priority)
@@ -499,7 +496,8 @@ class OnixPLService {
       'DocumentLabel',
       'IDValue',
       'PlaceIDType',
-      'UsageExceptionType'
+      'UsageExceptionType',
+      'UsageQuantity'
     ]
     
     // Get the main license as a map.
