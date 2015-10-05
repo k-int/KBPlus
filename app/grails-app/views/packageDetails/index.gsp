@@ -169,7 +169,7 @@
                   <span><g:paginate controller="packageDetails" action="index" params="${params}" next="Next" prev="Prev" total="${resultsTotal}" /></span>
             </g:if>
             <g:else>
-              <p>No matches found.</p>
+              <p><g:message code="default.search.empty" default="No results found"/></p>
             </g:else>
           </div>
           </div>

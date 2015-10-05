@@ -95,24 +95,24 @@ class OnixplUsageTermController {
                 break
         }
     }
+//  Not sure if these tests are relevant, are these used anywhere?
+    // @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
+    // def delete() {
+    //     def onixplUsageTermInstance = OnixplUsageTerm.get(params.id)
+    //     if (!onixplUsageTermInstance) {
+    //         flash.message = message(code: 'default.not.found.message', args: [message(code: 'onixplUsageTerm.label', default: 'OnixplUsageTerm'), params.id])
+    //         redirect action: 'list'
+    //         return
+    //     }
 
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-    def delete() {
-        def onixplUsageTermInstance = OnixplUsageTerm.get(params.id)
-        if (!onixplUsageTermInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'onixplUsageTerm.label', default: 'OnixplUsageTerm'), params.id])
-            redirect action: 'list'
-            return
-        }
-
-        try {
-            onixplUsageTermInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'onixplUsageTerm.label', default: 'OnixplUsageTerm'), params.id])
-            redirect action: 'list'
-        }
-        catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'onixplUsageTerm.label', default: 'OnixplUsageTerm'), params.id])
-            redirect action: 'show', id: params.id
-        }
-    }
+    //     try {
+    //         onixplUsageTermInstance.delete(flush: true)
+    //         flash.message = message(code: 'default.deleted.message', args: [message(code: 'onixplUsageTerm.label', default: 'OnixplUsageTerm'), params.id])
+    //         redirect action: 'list'
+    //     }
+    //     catch (DataIntegrityViolationException e) {
+    //         flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'onixplUsageTerm.label', default: 'OnixplUsageTerm'), params.id])
+    //         redirect action: 'show', id: params.id
+    //     }
+    // }
 }
