@@ -20,3 +20,10 @@ obtain a copy of the License at
 http://sourceforge.net/projects/ireport/files/iReport/iReport-5.6.0/iReport-5.6.0.tar.gz/download
 
 
+
+Feature switches
+
+feature.finance - Finance
+feature.issnl - upload ISSN to ISSN-L mapping
+feature.eBooks - Ebooks functionality
+

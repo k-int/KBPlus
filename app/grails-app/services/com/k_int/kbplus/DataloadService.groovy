@@ -120,7 +120,7 @@ class DataloadService {
         }
       result
     }
-
+    
     updateES(esclient, com.k_int.kbplus.Package.class) { pkg ->
       def result = [:]
       result.status = pkg.packageStatus?.value
@@ -139,6 +139,7 @@ class DataloadService {
       result.titleCount = pkg.tipps.size()
       result.startDate = pkg.startDate
       result.endDate = pkg.endDate
+      result.pkg_scope = pkg.packageScope?.value ?: 'Scope Undefined'
       result.identifiers = pkg.ids.collect{"${it?.identifier?.ns?.ns} : ${it?.identifier?.value}"}
       def lastmod = pkg.lastUpdated ?: pkg.dateCreated
       if ( lastmod != null ) {
@@ -310,7 +311,7 @@ class DataloadService {
           log.error("******** Record without an ID: ${idx_record} Obj:${r} ******** ")
           continue
         }
-        if ( idx_record.status?.toLowerCase() == 'deleted' ) {
+        if ( idx_record?.status?.toLowerCase() == 'deleted' ) {
             future = esclient.delete {
               index es_index
               type domain.name

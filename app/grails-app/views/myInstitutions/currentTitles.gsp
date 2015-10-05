@@ -142,14 +142,14 @@
             
             <g:each in="${titles}" var="ti">
               <tr>
-                <td><g:link controller="titleDetails" action="show" id="${ti[0].id}">${ti[0].title}</g:link>
+                <td><g:link controller="titleDetails" action="show" id="${ti.id}">${ti.title}</g:link>
                 <br/> 
-                <g:link controller="public" action="journalLicences" params="${['journal':'kb:'+ti[0].id,'org':institution.id]}">Check current licence terms</g:link>
+                <g:link controller="public" action="journalLicences" params="${['journal':'kb:'+ti.id,'org':institution.id]}">Check current licence terms</g:link>
                 </td>
-                <td style="white-space:nowrap">${ti[0].getIdentifierValue('ISSN')}</td>
-                <td style="white-space:nowrap">${ti[0].getIdentifierValue('eISSN')}</td>
+                <td style="white-space:nowrap">${ti.getIdentifierValue('ISSN')}</td>
+                <td style="white-space:nowrap">${ti.getIdentifierValue('eISSN')}</td>
 
-                <g:set var="title_coverage_info" value="${ti[0].getInstitutionalCoverageSummary(institution, session.sessionPreferences?.globalDateFormat, date_restriction)}" />
+                <g:set var="title_coverage_info" value="${ti.getInstitutionalCoverageSummary(institution, session.sessionPreferences?.globalDateFormat, date_restriction)}" />
 
                 <td  style="white-space:nowrap">${title_coverage_info.earliest}</td>
                 <td  style="white-space:nowrap">${title_coverage_info.latest ?: 'To Current'}</td>
@@ -178,7 +178,7 @@
 
       <div class="pagination" style="text-align:center">
         <g:if test="${titles}" >
-          <bootstrap:paginate  action="currentTitles" controller="myInstitutions" params="${params}" next="Next" prev="Prev" maxsteps="${max}" total="${num_ti_rows}" />
+          <bootstrap:paginate  action="currentTitles" controller="myInstitutions" params="${params}" next="Next" prev="Prev" max="${max}" total="${num_ti_rows}" />
         </g:if>
       </div>
       

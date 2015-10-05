@@ -12,9 +12,10 @@ import com.k_int.custprops.PropertyDefinition
 // import org.json.simple.JSONArray;
 // import org.json.simple.JSONObject;
 import java.text.SimpleDateFormat
+import groovy.sql.Sql
 
 class MyInstitutionsController {
-
+    def dataSource
     def springSecurityService
     def ESSearchService
     def gazetteerService
@@ -169,13 +170,13 @@ class MyInstitutionsController {
         if (params.validOn == null) {
             result.validOn = sdf.format(new Date(System.currentTimeMillis()))
             date_restriction = sdf.parse(result.validOn)
-        } else if (params.validOn == '') {
-            result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+        } else if (params.validOn.trim() == '') {
+            result.validOn = "" 
         } else {
             result.validOn = params.validOn
-
             date_restriction = sdf.parse(params.validOn)
         }
+
 
         def prop_types_list = PropertyDefinition.findAll()
           result.custom_prop_types = prop_types_list.collectEntries{
@@ -242,6 +243,7 @@ class MyInstitutionsController {
                 response.contentType = "text/csv"
 
                 def out = response.outputStream
+                result.searchHeader = true
                 exportService.StreamOutLicenceCSV(out, result,result.licenses)
                 out.close()
             }
@@ -383,12 +385,15 @@ class MyInstitutionsController {
         def date_restriction = null;
         def sdf = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
 
-        if (params.validOn) {
-            result.validOn = params.validOn
-        } else {
+        if (params.validOn == null) {
             result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+            date_restriction = sdf.parse(result.validOn)
+        } else if (params.validOn.trim() == '') {
+            result.validOn = "" 
+        } else {
+            result.validOn = params.validOn
+            date_restriction = sdf.parse(params.validOn)
         }
-        date_restriction = sdf.parse(result.validOn)
 
         def dateBeforeFilter = null;
         def dateBeforeFilterVal = null;
@@ -470,8 +475,8 @@ class MyInstitutionsController {
         if (params.validOn == null) {
             result.validOn = sdf.format(new Date(System.currentTimeMillis()))
             date_restriction = sdf.parse(result.validOn)
-        } else if (params.validOn == '') {
-            result.validOn = sdf.format(new Date(System.currentTimeMillis()))
+        } else if (params.validOn.trim() == '') {
+            result.validOn = "" 
         } else {
             result.validOn = params.validOn
             date_restriction = sdf.parse(params.validOn)
@@ -830,8 +835,8 @@ class MyInstitutionsController {
         if (params.validOn == null) {
             result.validOn = sdf.format(new Date(System.currentTimeMillis()))
             date_restriction = sdf.parse(result.validOn)
-        } else if (params.validOn == '') {
-            result.validOn = "" //sdf.format(new Date(System.currentTimeMillis()))
+        } else if (params.validOn.trim() == '') {
+            result.validOn = "" 
         } else {
             result.validOn = params.validOn
             date_restriction = sdf.parse(params.validOn)
@@ -841,9 +846,6 @@ class MyInstitutionsController {
         if (checkUserHasRole(result.user, result.institution, 'INST_ADM')) result.is_admin = true
         else result.is_admin = false;
 
-        // Set default order and sort
-        if (!params.order) params.order = "asc"
-        if (!params.sort) params.sort = "tipp.title.title"
 
         // Set offset and max
         result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
@@ -858,85 +860,87 @@ class MyInstitutionsController {
         def filterOtherPlat = params.list("filterOtherPlat")
         if (filterOtherPlat.contains("all")) filterOtherPlat = null
 
-        def limits = (isHtmlOutput) ? [max: result.max, offset: result.offset] : [offset: 0]
+        def limits = (isHtmlOutput) ? [readOnly:true,max: result.max, offset: result.offset] : [offset: 0]
         def del_sub = RefdataCategory.lookupOrCreate('Subscription Status', 'Deleted')
         def del_ie =  RefdataCategory.lookupOrCreate('Entitlement Issue Status','Deleted');
-        def qry_params = [institution: result.institution, del_sub:del_sub, del_ie:del_ie]
-        // def sub_qry =  "select ie from IssueEntitlement as ie JOIN ie.subscription.orgRelations as o LEFT OUTER JOIN ie.tipp.additionalPlatforms as ap LEFT OUTER JOIN ie.tipp.pkg.orgs AS role WHERE ie.tipp.title = t and o.roleType.value = 'Subscriber' AND o.org = :institution AND ie.subscription.status.value != 'Deleted'"
-        def sub_qry = "from IssueEntitlement as ie INNER JOIN ie.subscription.orgRelations as o "
+        def role_sub = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber'); 
+        def qry_params = [max:result.max, offset:result.offset, institution: result.institution.id, del_sub:del_sub.id, del_ie:del_ie.id, role_sub: role_sub.id]
+
+        def sub_qry = "from issue_entitlement ie INNER JOIN subscription sub on ie.ie_subscription_fk=sub.sub_id inner join org_role orole on sub.sub_id=orole.or_sub_fk, title_instance_package_platform tipp inner join title_instance ti  on tipp.tipp_ti_fk=ti.ti_id cross join title_instance ti2 "
         if (filterOtherPlat) {
-            sub_qry += "INNER JOIN ie.tipp.additionalPlatforms as ap "
+            sub_qry += "INNER JOIN platformtipp ap on ap.tipp_id = tipp.tipp_id "
         }
         if (filterPvd) {
-            sub_qry += "INNER JOIN ie.tipp.pkg.orgs AS role "
+            sub_qry += "INNER JOIN org_role orgrole on orgrole.or_pkg_fk=tipp.tipp_pkg_fk "
         }
-        sub_qry += "WHERE o.roleType.value = 'Subscriber' "
-        sub_qry += "AND o.org = :institution "
-        sub_qry += "AND (ie.subscription.status is null or ie.subscription.status != :del_sub) "
-        sub_qry += "AND (ie.status is null or ie.status != :del_ie ) "
+        sub_qry += "WHERE ie.ie_tipp_fk=tipp.tipp_id and tipp.tipp_ti_fk=ti2.ti_id and orole.or_roletype_fk= (:role_sub)"
+        sub_qry += "AND orole.or_org_fk=(:institution) "
+        sub_qry += "AND (sub.sub_status_rv_fk is null or sub.sub_status_rv_fk <> :del_sub) "
+        sub_qry += "AND (ie.ie_status_rv_fk is null or ie.ie_status_rv_fk <> :del_ie ) "
 
         if (date_restriction) {
-            sub_qry += " AND ie.subscription.startDate <= :date_restriction AND ie.subscription.endDate >= :date_restriction "
+            sub_qry += " AND sub.sub_start_date <= :date_restriction AND sub.sub_end_date >= :date_restriction "
             qry_params.date_restriction = date_restriction
         }
         result.date_restriction = date_restriction;
 
         if ((params.filter) && (params.filter.length() > 0)) {
             log.debug("Adding title filter ${params.filter}");
-            sub_qry += " AND LOWER(ie.tipp.title.title) like :titlestr"
+            sub_qry += " AND LOWER(ti.ti_title) like :titlestr"
             qry_params.titlestr = "%${params.filter}%".toLowerCase();
 
         }
 
         if (filterSub) {
-            sub_qry += " AND ie.subscription.id in ( :subs )"
-            qry_params.subs = filterSub.collect(new ArrayList<Long>()) { Long.valueOf(it) }
+            sub_qry += " AND sub.sub_id in ( :subs ) "
+            qry_params.subs = filterSub.join(", ")
         }
 
         if (filterOtherPlat) {
             sub_qry += " AND ap.id in ( :addplats )"
-            qry_params.addplats = filterOtherPlat.collect(new ArrayList<Long>()) { Long.valueOf(it) }
+           qry_params.addplats = filterOtherPlat.join(", ")
         }
 
         if (filterHostPlat) {
-            sub_qry += " AND ie.tipp.platform.id in ( :plats )"
-            qry_params.plats = filterHostPlat.collect(new ArrayList<Long>()) { Long.valueOf(it) }
+            sub_qry += " AND tipp.tipp_plat_fk in ( :plats )"
+            qry_params.plats = filterHostPlat.join(", ")
+
         }
 
         if (filterPvd) {
-            sub_qry += " AND role.roleType.value = 'Content Provider'  AND role.org.id IN (:provider) "
-            qry_params.provider = filterPvd.collect(new ArrayList<Long>()) { Long.valueOf(it) }
+            def cp = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider').id
+            sub_qry += " AND orgrole.or_roletype_fk = :cprole  AND orgrole.or_org_fk IN (:provider) "
+            qry_params.cprole = cp
+            qry_params.provider = filterPvd.join(", ")
         }
 
-        // First get a neat list of the titles from all subscriptions in this institution
-        // def title_qry = "from TitleInstance as t where exists ( ${sub_qry} )"
-        def title_qry = sub_qry
-
-        def having_clause = params.filterMultiIE ? 'having count(ie) > 1' : ''
-
+        def having_clause = params.filterMultiIE ? 'having count(ie.ie_id) > 1' : ''
+        def limits_clause = limits ? " limit :max offset :offset " : ""
+        
         def order_by_clause = ''
-        if (params.sort == 'tipp.title.sortTitle') {
-            if (params.order == 'asc') {
-                order_by_clause = 'order by ie.tipp.title.sortTitle asc'
-            } else {
-                order_by_clause = 'order by ie.tipp.title.sortTitle desc'
-            }
+        if (params.order == 'desc') {
+            order_by_clause = 'order by ti.sort_title desc'
         } else {
-            order_by_clause = 'order by ie.tipp.title.sortTitle asc'
+            order_by_clause = 'order by ti.sort_title asc'
         }
 
-        result.titles = IssueEntitlement.executeQuery("SELECT ie.tipp.title, count(ie) ${title_qry} group by ie.tipp.title ${having_clause} ${order_by_clause}", qry_params, limits)
+        def sql = new Sql(dataSource)
 
-        log.debug("Get count...");
-        def cr = IssueEntitlement.executeQuery("SELECT count(t) from TitleInstance as t where exists ( select count(ie) as tc ${title_qry} AND ie.tipp.title = t group by ie.tipp.title ${having_clause})", qry_params)
-        result.num_ti_rows = cr[0]
-
-        // Put Lists for the filters into result
+        def queryStr = "tipp.tipp_ti_fk, count(ie.ie_id) ${sub_qry} group by tipp.tipp_ti_fk ${having_clause} ".toString()
+        //If html return Titles and count
         if (isHtmlOutput) {
+
+            result.titles = sql.rows("SELECT ${queryStr} ${order_by_clause} ${limits_clause} ".toString(),qry_params).collect{ TitleInstance.get(it.tipp_ti_fk)  }
+
+            def queryCnt = "SELECT count(*) from (SELECT ${queryStr}) as ras".toString()
+            result.num_ti_rows = sql.firstRow(queryCnt,qry_params)['count(*)']
             result = setFiltersLists(result, date_restriction)
-        } else {
-            result.entitlements = IssueEntitlement.executeQuery("select ie ${title_qry} order by ie.tipp.title.title", qry_params)
-        }
+        }else{
+            //Else return IEs
+            def exportQuery = "SELECT ie.ie_id, ${queryStr} order by ti.sort_title asc ".toString()
+            result.entitlements = sql.rows(exportQuery,qry_params).collect { IssueEntitlement.get(it.ie_id) }
+        } 
+
 
         def filename = "titles_listing_${result.institution.shortcode}"
         withFormat {
@@ -977,171 +981,6 @@ class MyInstitutionsController {
         }
     }
 
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-    def currentTitlesOld() {
-        def verystarttime = exportService.printStart("currentTitles")
-
-        // define if we're dealing with a HTML request or an Export (i.e. XML or HTML)
-        boolean isHtmlOutput = !params.format || params.format.equals("html")
-
-        def result = [:]
-        result.user = User.get(springSecurityService.principal.id)
-        result.institution = Org.findByShortcode(params.shortcode)
-        result.transforms = grailsApplication.config.subscriptionTransforms
-
-        // Check if user is member of the institution
-        if (!checkUserIsMember(result.user, result.institution)) {
-            flash.error = "You do not have permission to access ${result.institution?.name} pages. Please request access on the profile page";
-            response.sendError(401)
-            return;
-        }
-
-        // Set Date Restriction
-        def date_restriction = null;
-
-        def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
-        if (params.validOn == null) {
-            result.validOn = sdf.format(new Date(System.currentTimeMillis()))
-            date_restriction = sdf.parse(result.validOn)
-        } else if (params.validOn == '') {
-            result.validOn = "" //sdf.format(new Date(System.currentTimeMillis()))
-        } else {
-            result.validOn = params.validOn
-            date_restriction = sdf.parse(params.validOn)
-        }
-
-        // Set is_admin
-        if (checkUserHasRole(result.user, result.institution, 'INST_ADM')) result.is_admin = true
-        else result.is_admin = false;
-
-        // Set default order and sort
-        if (!params.order) params.order = "asc"
-        if (!params.sort) params.sort = "tipp.title.title"
-
-        // Set offset and max
-        result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
-        result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
-
-        // Put Lists for the filters into result
-        if (isHtmlOutput) {
-            result = setFiltersLists(result, date_restriction)
-
-            // !!!! Not sure it does actually ever happen? !!!!
-            if (result.subscriptions.isEmpty()) {
-                flash.error = "Sorry, we could not find any Subscription for ${result.institution.name}";
-                result.titles = []
-                result.entitlements = []
-                return result;
-            }
-        }
-
-        // Build query for titles
-        def qry_build = buildCurrentTitlesQuery(result.institution, date_restriction)
-        def title_query = qry_build.query
-        def qry_params = qry_build.parameters
-
-        def title_query_grouping = "GROUP By ie.tipp.title "
-        def title_query_ordering = "ORDER BY ie.tipp.title.title ${params.order} " //COLLATE utf8_unicode_ci
-        def title_query_extra = "COUNT(ie.subscription) "
-        if (params.filterMultiIE) title_query_grouping += "HAVING COUNT(ie) >= 2 "
-
-        log.debug("Final query:\n${title_query.replaceAll("\\s+", " ")}{title_query_grouping}\nParams:${qry_params}")
-
-        // Get Total number of Titles for HTML view
-        // The following 2 lines should be reviewed.
-        if (isHtmlOutput)
-            result.num_ti_rows = IssueEntitlement.executeQuery("SELECT ie.tipp.title ${title_query} ${title_query_grouping}", qry_params).size()
-
-        // Other cases we just need the entitlements list.
-        if (isHtmlOutput || params.filterMultiIE) {
-            def limits = (isHtmlOutput) ? [max: result.max, offset: result.offset] : [offset: 0]
-
-            // MAX(CASE WHEN ie.endDate IS NULL THEN '~' ELSE ie.endDate END) should get the max date or a null string if there is any empty ie.ie_end_date
-            // We need to do that as an empty string actually means 'up to the most current issue available'
-            result.titles = IssueEntitlement.executeQuery(
-                    "SELECT ie.tipp.title, MIN(ie.startDate), \
-MAX(CASE WHEN ie.endDate IS NULL THEN '~' ELSE DATE_FORMAT(ie.endDate, '%Y-%m-%d') END), \
-${title_query_extra} \
-${title_query} ${title_query_grouping} ${title_query_ordering}",
-                    qry_params, limits);
-
-            // If nothing is return send flash error message
-            if (result.titles?.isEmpty()) {
-                flash.error = "Sorry, we could not find any Titles.";
-                result.entitlements = []
-                return result;
-            }
-        }
-
-        // Query the entitlements list
-        def ie_query = "SELECT ie ${title_query} "
-        if (isHtmlOutput || params.filterMultiIE) {
-            // Get list of titles displayed on the page
-            def title_list = []
-            result.titles.each() { ti -> title_list.add(ti[0]) }
-            // Add it to the query
-            qry_params.titles = title_list
-            ie_query += "AND ie.tipp.title In (:titles) "
-        }
-        ie_query += "${title_query_ordering}"
-
-        log.debug("IE Query: ${ie_query}");
-        result.entitlements = IssueEntitlement.executeQuery(ie_query, qry_params);
-
-        exportService.printDuration(verystarttime, "Querying")
-
-        def filename = "titles_listing_${result.institution.shortcode}"
-        withFormat {
-            html result
-            csv {
-                response.setHeader("Content-disposition", "attachment; filename=${filename}.csv")
-                response.contentType = "text/csv"
-
-                def out = response.outputStream
-                def starttime = exportService.printStart("Stream Out")
-                exportService.StreamOutTitlesCSV(out, result.entitlements)
-                exportService.printDuration(starttime, "Stream Out")
-                out.close()
-
-                exportService.printDuration(verystarttime, "Overall Time")
-            }
-            json {
-                def starttime = exportService.printStart("Building Map")
-                def map = [:]
-                exportService.addTitlesToMap(map, result.entitlements)
-                exportService.printDuration(starttime, "Building Map")
-                starttime = exportService.printStart("Create JSON")
-                def content = map as JSON
-
-                response.setHeader("Content-disposition", "attachment; filename=\"${filename}.json\"")
-                response.contentType = "application/json"
-
-                starttime = exportService.printStart("Sending JSON")
-                render content
-                exportService.printDuration(starttime, "Sending JSON")
-                exportService.printDuration(verystarttime, "Overall Time")
-            }
-            xml {
-                def starttime = exportService.printStart("Building XML Doc")
-                def doc = exportService.buildDocXML("TitleList")
-                exportService.addTitleListXML(doc, doc.getDocumentElement(), result.entitlements)
-                exportService.printDuration(starttime, "Building XML Doc")
-
-                if ((params.transformId) && (result.transforms[params.transformId] != null)) {
-                    String xml = exportService.streamOutXML(doc, new StringWriter()).getWriter().toString();
-                    transformerService.triggerTransform(result.user, filename, result.transforms[params.transformId], xml, response)
-                } else { // send the XML to the user
-                    response.setHeader("Content-disposition", "attachment; filename=\"${filename}.xml\"")
-                    response.contentType = "text/xml"
-                    starttime = exportService.printStart("Sending XML")
-                    exportService.streamOutXML(doc, response.outputStream)
-                    exportService.printDuration(starttime, "Sending XML")
-                }
-                exportService.printDuration(verystarttime, "Overall Time")
-            }
-        }
-    }
-
     /**
      * Add to the given result Map the list of values available for each filters.
      *
@@ -1151,12 +990,17 @@ ${title_query} ${title_query_grouping} ${title_query_ordering}",
      */
     private setFiltersLists(result, date_restriction) {
         // Query the list of Subscriptions
-        def sub_params = [institution: result.institution]
+        def del_sub = RefdataCategory.lookupOrCreate('Subscription Status', 'Deleted')
+        def del_ie =  RefdataCategory.lookupOrCreate('Entitlement Issue Status','Deleted');
+        def role_sub = RefdataCategory.lookupOrCreate('Organisational Role', 'Subscriber'); 
+        def cp = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider')
+
+        def sub_params = [institution: result.institution,role_sub:role_sub,sub_del:del_sub]
         def sub_qry = """
 Subscription AS s INNER JOIN s.orgRelations AS o
-WHERE o.roleType.value = 'Subscriber'
+WHERE o.roleType=:role_sub
 AND o.org = :institution
-AND s.status.value != 'Deleted' """
+AND s.status !=:sub_del """
         if (date_restriction) {
             sub_qry += "\nAND s.startDate <= :date_restriction AND s.endDate >= :date_restriction "
             sub_params.date_restriction = date_restriction
@@ -1167,8 +1011,8 @@ AND s.status.value != 'Deleted' """
         result.providers = Subscription.executeQuery("\
 SELECT Distinct(role.org) FROM SubscriptionPackage sp INNER JOIN sp.pkg.orgs AS role \
 WHERE EXISTS ( FROM ${sub_qry} AND sp.subscription = s ) \
-AND role.roleType.value = 'Content Provider' \
-ORDER BY role.org.name", sub_params);
+AND role.roleType=:role_cp \
+ORDER BY role.org.name", sub_params+[role_cp:cp]);
 
         // Query the list of Host Platforms
         result.hostplatforms = IssueEntitlement.executeQuery("""

@@ -1,3 +1,10 @@
+Changes in 5.1
+* Fix onix issues that resulted in multiple rows for same comparison points.
+* Upgrade system versions, Java8,Graisl 2.5.1,ES 1.7.1
+
+Changes in 5.0.2
+
+* By default the asAt date of expected packages is startDate,previous is endDate, for packageDetails and publicExport
 
 Fixes introduced in 5.0.1
 
@@ -16,6 +23,10 @@ Fixes introduced in 5.0.1
 * On PackageHardDelete, change 'Delete Subscriptions' to 'Unlink subscriptions. (IEs will be removed as well)'
 * On PackageHardDelete, open links to subscriptions in new tab, and go to details instead of index
 * Added job to generate package sortName
+* Added CSV export for KB+ licence property compare
+* Add TIPP title transfer
+* PublicExport-Current packages, filter out masters, open access, and end date before current
+* Improve performance of Current Titles screen
 
 Changes introduced in 5.0. It is likely that some small tasks are missing.
 

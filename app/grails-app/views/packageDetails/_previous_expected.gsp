@@ -111,7 +111,7 @@
                      <g:else>
                       <br/> Access End: <g:xEditable owner="${t}" type="date" field="accessEndDate" />
                      </g:else>
-                       <br/> Record Status: <g:xEditableRefData owner="${t}" field="status" config='TIPPStatus'/>
+                       <br/> Record Status: <g:xEditableRefData owner="${t}" field="status" config='TIPP Status'/>
                    </g:if>
                 </td>
                 <td style="white-space: nowrap;vertical-align:top;">

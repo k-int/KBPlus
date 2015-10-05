@@ -33,6 +33,8 @@ class PublicExportController {
       params.offset = 0
       params.search = null
     }
+    if(params.filter == "current")
+      params.tempFQ = " -pkg_scope:\"Master File\" -\"open access\" ";
 
     result =  ESSearchService.search(params)   
     result.transforms = grailsApplication.config.packageTransforms
@@ -168,27 +170,39 @@ class PublicExportController {
 
     log.debug("max = ${result.max}");
     def packageInstance = Package.get(params.id)
+    
+    def dateFilter = null
+    def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
+    def today = new Date()
+    if(packageInstance.startDate > today){
+      dateFilter = packageInstance.startDate
+    }else if(packageInstance.endDate < today){
+      dateFilter = packageInstance.endDate
+    }else{
+      dateFilter = today
+    }
+    
 
     def base_qry = null;
     def tipp_status_del = RefdataCategory.lookupOrCreate("TIPP Status", "Deleted")
     def publisher_org = RefdataCategory.lookupOrCreate("Organisational Role","Publisher")
     def qry_params = [ packageInstance]
 
-    def filename = "publicExport_${packageInstance.name}"
+    def filename = "publicExport_${packageInstance.name}_asAt_${sdf.format(dateFilter)}"
     
     if ( params.filter ) {
       base_qry = " from TitleInstancePackagePlatform as tipp  where tipp.pkg = ? and ( tipp.status != ? ) and ( ( lower(tipp.title.title) like ? ) or ( exists ( from IdentifierOccurrence io where io.ti.id = tipp.title.id and io.identifier.value like ? ) ) ) and ( ( ? >= coalesce(tipp.accessStartDate, tipp.pkg.startDate) ) and ( ( ? <= tipp.accessEndDate ) or ( tipp.accessEndDate is null ) ) )"
       qry_params.add(tipp_status_del)
       qry_params.add("%${params.filter.trim().toLowerCase()}%")
       qry_params.add("%${params.filter}%")
-      qry_params.add(new Date());
-      qry_params.add(new Date());
+      qry_params.add(dateFilter);
+      qry_params.add(dateFilter);
     }
     else {
       base_qry = " from TitleInstancePackagePlatform as tipp where tipp.pkg = ?  and ( tipp.status != ? ) and ( ( ? >= coalesce(tipp.accessStartDate, tipp.pkg.startDate) ) and ( ( ? <= tipp.accessEndDate ) or ( tipp.accessEndDate is null ) ) )"
       qry_params.add(tipp_status_del)
-      qry_params.add(new Date());
-      qry_params.add(new Date());
+      qry_params.add(dateFilter);
+      qry_params.add(dateFilter);
     }
 
     if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
@@ -208,7 +222,7 @@ class PublicExportController {
     withFormat {
       html result
       csv {
-         response.setHeader("Content-disposition", "attachment; filename=kbplus_pkg_${packageInstance.id}.csv")
+         response.setHeader("Content-disposition", "attachment; filename=${filename}.csv")
          response.contentType = "text/csv"
          def out = response.outputStream
          out.withWriter { writer ->

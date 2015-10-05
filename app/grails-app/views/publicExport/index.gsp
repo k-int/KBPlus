@@ -122,7 +122,7 @@ This work is published from:
           <g:set var="active_filter" value="${params.filter}"/>
           <li class="${(active_filter != 'current')?'active':''}"><g:link action="index">All Packages</g:link></li>
 
-          <li class="${active_filter=='current'?'active':''}"><g:link action="index" params="${ [filter:'current',startYear:"[1900 TO ${new Date().year +1900} ]",endYear:"[ ${new Date().year +1900} TO 2100]"]}">Current Packages</g:link></li>
+          <li class="${active_filter=='current'?'active':''}"><g:link action="index" params="${ [filter:'current',endYear:"[ ${new Date().year +1900} TO 2100]"]}">Current Packages</g:link></li>
 
 
       </ul>

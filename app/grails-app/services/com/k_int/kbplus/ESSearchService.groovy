@@ -133,19 +133,19 @@ class ESSearchService{
 
     if ( params?.q != null ){
       sw.write(params.q)
-    }else{
-      sw.write("*:*")
     }
       
-    if(params?.rectype){sw.write(" AND rectype:'${params.rectype}'")} 
+    if(params?.rectype){
+      if(sw.toString()) sw.write(" AND ");
+      sw.write(" rectype:'${params.rectype}' ")
+    } 
 
     field_map.each { mapping ->
 
       if ( params[mapping.key] != null ) {
-        log.debug("Found...");
         if ( params[mapping.key].class == java.util.ArrayList) {
-
-          sw.write(" AND ( ( ( NOT _type:\"com.k_int.kbplus.Subscription\" ) AND ( NOT _type:\"com.k_int.kbplus.License\" )) OR ( ")
+          if(sw.toString()) sw.write(" AND ");
+          sw.write(" ( ( ( NOT _type:\"com.k_int.kbplus.Subscription\" ) AND ( NOT _type:\"com.k_int.kbplus.License\" )) OR ( ")
 
           params[mapping.key].each { p ->  
                 sw.write(mapping.value)
@@ -162,7 +162,7 @@ class ESSearchService{
           // Only add the param if it's length is > 0 or we end up with really ugly URLs
           // II : Changed to only do this if the value is NOT an *
           if ( params[mapping.key].length() > 0 && ! ( params[mapping.key].equalsIgnoreCase('*') ) ) {
-            sw.write(" AND ")
+            if(sw.toString()) sw.write(" AND ");
             sw.write(mapping.value)
             sw.write(":")
             if(params[mapping.key].startsWith("[") && params[mapping.key].endsWith("]")){

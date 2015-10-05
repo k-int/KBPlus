@@ -550,6 +550,33 @@ class AdminController {
     redirect(controller:'home')
   }
 
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def tippTransfer(){
+    log.debug("tippTransfer :: ${params}")
+    def result = [:]
+    result.error = []
+
+    if(params.sourceTIPP && params.targetTI){
+      def ti = TitleInstance.get(params.long("targetTI"))
+      def tipp = TitleInstancePackagePlatform.get(params.long("sourceTIPP"))
+      if(ti && tipp){
+        tipp.title = ti
+        try{
+          tipp.save(flush:true,failOnError:true)
+          result.success = true
+        }catch(Exception e){
+          log.error(e)
+          result.error += "An error occured while saving the changes."
+        }
+      }else{
+        if(!ti) result.error += "No TitleInstance found with identifier: ${params.targetTI}."
+        if(!tipp) result.error += "No TIPP found with identifier: ${params.sourceTIPP}" 
+      }
+    }
+
+    result
+  }
+
   @Secured(['ROLE_ADMIN','IS_AUTHENTICATED_FULLY'])
   def ieTransfer(){
     log.debug(params)

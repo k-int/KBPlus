@@ -18,5 +18,21 @@ UPDATE subscription SET last_updated=NULL where last_updated=0;
 select "Update old change notification links to point to www.kbplus.ac.uk, took 100sec locally"
 update pending_change set pc_desc = replace(pc_desc, 'service.kbplus.ac.uk', 'www.kbplus.ac.uk');
 
+
+--The following is to to restore deleted identifier namespace links.
+select @eissn := idns_id from identifier_namespace where idns_ns="eISSN";
+select @isbn := idns_id from identifier_namespace where idns_ns="ISBN";
+select @eissn_exist = idns_id from identifier_namespace where idns_id=91;
+select @isbn_exist = idns_id from identifier_namespace where idns_id=92;
+UPDATE identifier set id_ns_fk= CASE WHEN @eissn_exist is NULL then @eissn else id_ns_fk END where id_ns_fk=91 ;
+UPDATE identifier set id_ns_fk= CASE WHEN @isbn_exist is NULL  then @isbn  else id_ns_fk END where id_ns_fk=92 ;
+
 -- worried about this on live... won't it create duplicates?
 UPDATE identifier_namespace SET idns_ns = lower(idns_ns)
+
+select "remove wrong package type category";
+SELECT @pkgtypes := rdc_id FROM refdata_category where rdc_description='PackageTypes';
+SELECT @pkgtype :=rdc_id FROM refdata_category where rdc_description='Package Type';
+update refdata_value set rdv_owner=@pkgtype where rdv_owner=@pkgtypes;
+delete from refdata_category where rdc_id=@pkgtypes;
+update refdata_category set rdc_description='Package.Type' where rdc_id=@pkgtype;

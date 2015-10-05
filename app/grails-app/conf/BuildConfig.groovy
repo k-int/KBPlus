@@ -114,8 +114,8 @@ grails.project.dependency.resolution = {
     plugins {
         runtime ':hibernate:3.6.10.19'  
         runtime ":resources:1.2.8"
-        runtime ':fields:1.3'
         compile ":scaffolding:2.1.2"
+        runtime ':fields:1.5.1'
         
         // This is commented out so as not to cause probelms in the CI environment
         // compile ":functional-test:2.0.RC1"
