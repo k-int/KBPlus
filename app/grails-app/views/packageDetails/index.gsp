@@ -124,6 +124,7 @@
           <div class="well">
              <g:if test="${hits}" >
                 <div class="paginateButtons" style="text-align:center">
+
                     <g:if test=" ${params.int('offset')}">
                    Showing Results ${params.int('offset') + 1} - ${resultsTotal < (params.int('max') + params.int('offset')) ? resultsTotal : (params.int('max') + params.int('offset'))} of ${resultsTotal}
                   </g:if>
@@ -167,6 +168,9 @@
                 <div class="paginateButtons" style="text-align:center">
                   <span><g:paginate controller="packageDetails" action="index" params="${params}" next="Next" prev="Prev" total="${resultsTotal}" /></span>
             </g:if>
+            <g:else>
+              <p>No matches found.</p>
+            </g:else>
           </div>
           </div>
         </div>

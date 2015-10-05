@@ -29,7 +29,13 @@ class PackageDetailsPage extends AbstractDetails {
         }
         
         numberOfResults{
-            String numString = $("div.paginateButtons").text()
+            if(!$("div.paginateButtons").isEmpty()){
+              return $("div.paginateButtons").text()
+            }else{
+                if(!$("p",text:"No matches found.").isEmpty()){
+                  return "0"
+                }
+            }
         }
 
         comparePackages{ ref1, ref2 ->
