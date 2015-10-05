@@ -32,9 +32,10 @@ class PackageDetailsPage extends AbstractDetails {
             if(!$("div.paginateButtons").isEmpty()){
               return $("div.paginateButtons").text()
             }else{
-                if(!$("p",text:"No matches found.").isEmpty()){
+                if(!$("p",text:getMessage("default.search.empty")).isEmpty()){
                   return "0"
                 }
+                return ""
             }
         }
 
