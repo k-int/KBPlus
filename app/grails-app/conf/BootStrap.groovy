@@ -260,21 +260,21 @@ class BootStrap {
 
   def createLicenceProperties() {
     def existingProps = LicenseCustomProperty.findAll()
-    def requiredProps = [[propname:"Concurrent Access", descr:'',type:RefdataValue.toString(), cat:'ConcurrentAccess'],
-                         [propname:"Concurrent Users", descr:'',type: Integer.toString()],
-                         [propname:"Remote Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
-                         [propname:"Walk In Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
-                         [propname:"Multi Site Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
-                         [propname:"Partners Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
-                         [propname:"Alumni Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
-                         [propname:"ILL - InterLibraryLoans", descr:'',type: RefdataValue.toString(), cat:'YNO'],
-                         [propname:"Include In Coursepacks", descr:'',type: RefdataValue.toString(), cat:'YNO'],
-                         [propname:"Include in VLE", descr:'',type: RefdataValue.toString(), cat:'YNO'],
-                         [propname:"Enterprise Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
-                         [propname:"Post Cancellation Access Entitlement", descr:'',type: RefdataValue.toString(), cat:'YNO'], 
-                         [propname:"Cancellation Allowance", descr:'',type: String.toString()], 
-                         [propname:"Notice Period", descr:'',type: String.toString()], 
-                         [propname:"Signed", descr:'',type: RefdataValue.toString(), cat:'YNO']]
+    def requiredProps = [[propname:"Concurrent Access", descr:PropertyDefinition.LIC_PROP,type:RefdataValue.toString(), cat:'ConcurrentAccess'],
+                         [propname:"Concurrent Users", descr:PropertyDefinition.LIC_PROP,type: Integer.toString()],
+                         [propname:"Remote Access", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Walk In Access", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Multi Site Access", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Partners Access", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Alumni Access", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"ILL - InterLibraryLoans", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Include In Coursepacks", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Include in VLE", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Enterprise Access", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Post Cancellation Access Entitlement", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO'], 
+                         [propname:"Cancellation Allowance", descr:PropertyDefinition.LIC_PROP,type: String.toString()], 
+                         [propname:"Notice Period", descr:PropertyDefinition.LIC_PROP,type: String.toString()], 
+                         [propname:"Signed", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO']]
 
     
     requiredProps.each{ default_prop ->
@@ -284,7 +284,7 @@ class BootStrap {
 
           def newProp = new PropertyDefinition(name: default_prop.propname, 
                                                type: default_prop.type, 
-                                               descr: "edit desc")
+                                               descr: default_prop.descr)
           if ( default_prop.cat != null )
             newProp.setRefdataCategory(default_prop.cat);
 
