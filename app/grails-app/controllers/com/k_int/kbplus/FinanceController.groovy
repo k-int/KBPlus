@@ -170,7 +170,7 @@ class FinanceController {
         }
     }
 
-
+    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def financialsExport()  {
         log.debug("Financial Export :: ${params}")
 
@@ -178,13 +178,14 @@ class FinanceController {
             def result = [:]
             result.institution =  Org.findByShortcode(params.shortcode)
             def user           =  User.get(springSecurityService.principal.id)
+
             if (isFinanceAuthorised(result.institution, user)) {
                 flash.error=message(code: 'financials.permission.unauthorised', args: [result.institution? result.institution.name : 'N/A'])
                 response.sendError(401)
                 return
             }
 
-            financialData(result,params,user)
+            financialData(result,params,user) //Grab the financials!
 
             response.setHeader("Content-disposition", "attachment; filename=${result?.institution.name}_financialExport.csv")
             response.contentType = "text/csv"
@@ -209,15 +210,75 @@ class FinanceController {
     //todo change for batch processing... don't want to kill the server!
     def private processFinancialCSV(out, result, header) {
         def generation_start = new Date()
+        def processedCounter = 0
 
         switch (params.csvMode)
         {
             case "code":
                 log.debug("Processing code mode...")
+
+                //todo budget code mode...
+
                 break
 
             case "sub":
-                log.debug("Processing sub mode...")
+                log.debug("Processing subscription data mode... calculation of costs")
+
+                def categories = RefdataValue.findAllByOwner(RefdataCategory.findByDesc('CostItemStatus')).collect {it.value} << "unknown"
+
+                def subResult = [:].withDefault {
+                    categories.collectEntries {
+                        [(it.value.toString()): 0 as Double]
+                    }
+                }
+
+                result.cost_items.each { c ->
+                    if (c?.sub)
+                    {
+                        def status = c?.costItemStatus?.value? c.costItemStatus.value.toString() : "unknown"
+                        def subID  = c.sub.id
+
+                        if (!subResult.containsKey(subID))
+                            subResult[subID] //1st time around for subscription, could 1..* cost items linked...
+
+                        if (!subResult.get(subID).containsKey(status)) //SHOULDN'T have to do this surely with the defaultValue setup
+                        {
+                            log.warn("Status should exist in list already, unless additions have been made? Sub:${subID} Status:${status}")
+                            subResult.get(subID).put(status, c?.costInLocalCurrency? c.costInLocalCurrency : 0.0)
+                        }
+                        else
+                        {
+                            subResult[subID][status] += c?.costInLocalCurrency?: 0.0
+                        }
+                    }
+                    else
+                    {
+                        log.debug("skipped cost item ${c.id} NO subscription present")
+                    }
+                }
+
+
+                def catSize = categories.size()-1
+                out.withWriter { writer ->
+                    writer.write(","+ categories.join(",") + "\n") //Header
+
+                    StringBuilder sb = new StringBuilder() //join map vals e.g. estimate : 123
+
+                    subResult.each {sub, cat_statuses ->
+                        sb.append(sub).append(",")
+                        cat_statuses.eachWithIndex { status, amount, idx->
+                            sb.append(amount)
+                            if (idx < catSize)
+                                sb.append(",")
+                        }
+                        sb.append("\n")
+                    }
+                    writer.write(sb.toString())
+                    writer.flush()
+                    writer.close()
+                }
+
+                processedCounter = subResult.size()
                 break
 
             case "all":
@@ -253,7 +314,7 @@ class FinanceController {
                 break
         }
         groovy.time.TimeDuration duration = groovy.time.TimeCategory.minus(new Date(), generation_start)
-        log.debug("Duration took to complete CSV export operation ${duration}")
+        log.debug("CSV export operation for ${params.csvMode} mode -- Duration took to complete (${processedCounter} Rows of data) was: ${duration} --")
     }
 
     //todo convert to use a property map, too big now with advanced searching options
@@ -727,6 +788,7 @@ class FinanceController {
         render result as JSON
     }
 
+    //todo complete this returning error on sub change
     def private refReset(costItem, String fields, errorList) {
         log.debug("Attempting to reset a reference for cost item data ${params.relationField} for field(s) ${fields}")
         def wasResetCounter = 0
