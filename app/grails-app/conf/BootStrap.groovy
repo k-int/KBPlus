@@ -253,10 +253,34 @@ class BootStrap {
     addDefaultJasperReports()
     addDefaultPageMappings()
     createLicenceProperties()
-
+    initializeDefaultSettings()
     log.debug("Init completed....");
    
   }
+  def initializeDefaultSettings(){
+    def admObj = SystemAdmin.list()?.first()
+    if(!admObj){
+        log.debug("No SystemAdmin object found, creating new.");
+        admObj = new SystemAdmin(name:"demo").save();
+    }
+    //Will not overwrite any existing database properties.
+    createDefaultSysProps(admObj);
+    admObj.refresh()
+    log.debug("Finished updating config from SystemAdmin")
+  }
+
+  def createDefaultSysProps(admObj){
+    def requiredProps = [[propname:"onix_ghost_licence",descr:PropertyDefinition.SYS_CONF,type:String.toString(),val:"Jisc Collections Model Journals Licence 2015",note:"Default licence used for comparison when viewing a single onix licence."]]
+    createCustomProperties(requiredProps)
+    requiredProps.each{
+      def type = PropertyDefinition.findByNameAndDescr(it.propname,it.descr)
+      if(!SystemAdminCustomProperty.findByType(type)){
+        def newProp = new SystemAdminCustomProperty(type:type,owner:admObj,stringValue:it.val,note:it.note)
+        newProp.save()
+      }
+    }
+  }
+
 
   def createLicenceProperties() {
     def existingProps = LicenseCustomProperty.findAll()
@@ -275,10 +299,14 @@ class BootStrap {
                          [propname:"Cancellation Allowance", descr:PropertyDefinition.LIC_PROP,type: String.toString()], 
                          [propname:"Notice Period", descr:PropertyDefinition.LIC_PROP,type: String.toString()], 
                          [propname:"Signed", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO']]
-
+    createCustomProperties(requiredProps)
+    log.debug("createLicenceProperties completed");
+  }
     
+  def createCustomProperties(requiredProps){
+
     requiredProps.each{ default_prop ->
-       if ( PropertyDefinition.findByName(default_prop.propname) == null ) {
+       if ( PropertyDefinition.findByNameAndDescr(default_prop.propname,default_prop.descr) == null ) {
 
           log.debug("Unable to locate property definition for ${default_prop.propname}.. Creating");
 
@@ -291,7 +319,6 @@ class BootStrap {
           newProp.save()
        }
     }
-    log.debug("createLicenceProperties completed");
   }
 
   def addDefaultPageMappings(){
