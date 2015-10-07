@@ -467,8 +467,8 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("LicenseCategory", "Software").save()
     RefdataCategory.lookupOrCreate("LicenseCategory", "Other").save()
 
-    RefdataCategory.lookupOrCreate("TitleInstanceStatus", "Current").save()
-    RefdataCategory.lookupOrCreate("TitleInstanceStatus", "Deleted").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.TI_STATUS, "Current").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.TI_STATUS, "Deleted").save()
 
     RefdataCategory.lookupOrCreate("License Status", "In Progress").save()
 

@@ -35,18 +35,19 @@ class RefdataCategory {
     result.icon = icon
     result
   }
-    static def refdataFind(params) {
-        def result = []
-        def ql = null
+  static def refdataFind(params) {
+      def result = []
+      def ql = null
 
-        ql = RefdataCategory.findAllByDescIlike("${params.q}%",params)
-        if ( ql ) {
-            ql.each { id ->
-                result.add([id:"${id.id}",text:"${id.desc}"])
-            }
-        }
-        result
-    }
+      ql = RefdataCategory.findAllByDescIlike("${params.q}%",params)
+      if ( ql ) {
+          ql.each { id ->
+              result.add([id:"${id.id}",text:"${id.desc}"])
+          }
+      }
+      result
+  }
+
   @Transient
   public static final PKG_SCOPE = "Package.Scope"
   @Transient
@@ -59,4 +60,6 @@ class RefdataCategory {
   public static final PKG_CONSISTENT = 'Package.Consistent'
   @Transient
   public static final PKG_TYPE = 'Package.Type'
+  @Transient
+  public static final TI_STATUS = 'TitleInstanceStatus'
 }
