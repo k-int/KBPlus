@@ -66,7 +66,6 @@ class FinanceController {
             }
         }
 
-
         //Grab the financial data
         financialData(result,params,user)
 
@@ -99,7 +98,7 @@ class FinanceController {
         request.setAttribute("editable", result.editable) //editable Taglib doesn't pick up AJAX request, REQUIRED!
         result.filterMode  =  params.filterMode?: "OFF"
         result.info        =  [] as List
-        params.max         =  params.int('max') ? maxAllowedVals.min {(it-params.int('max'))} : (user?.defaultPageSize? maxAllowedVals.min{(it-user.defaultPageSize).abs()} : 10)
+        params.max         =  params.int('max') ? Math.min(params.int('max'),200) : (user?.defaultPageSize? maxAllowedVals.min{(it-user.defaultPageSize).abs()} : 10)
         result.max         =  params.max
         result.offset      =  params.offset?: 0
         result.sort        =  ["desc","asc"].contains(params.sort)? params.sort : "desc" //defaults to sort & order of desc id 
@@ -482,7 +481,7 @@ class FinanceController {
 
         if (result.advSearch)
         {
-            println("Advanced Filter searh setup...")
+            log.debug("Advanced Filter searh setup...")
             params.findAll {key, val->
                 println("Key ${key} Val ${val}")
             }
@@ -865,7 +864,8 @@ class FinanceController {
         if (f)
         {
             f.each { field->
-                if (allowed.contains(field) && costItem.obj.hasProperty(field)) {
+                if (allowed.contains(field) && costItem.obj.hasProperty(field))
+                {
                     costItem.obj."${field}" = null
                     wasResetCounter++
                 }

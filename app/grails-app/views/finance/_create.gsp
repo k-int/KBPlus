@@ -26,27 +26,24 @@
             <td><input type="text" name="newOrderNumber" class="input-medium"
                        placeholder="New Order #" id="newOrderNumber" value="${params.newOrderNumber}"/></td>
             <td>
-               %{-- <select  name="newSubscription" class="input-medium" id="newSubscription" value="${params.newSubscription}">
-                    <option value="xx">Not specified</option>
-                    <g:each in="${institutionSubscriptions}" var="s">
-                        <option value="${s.id}" ${s.id==params.long('subscriptionFilter')?'selected="selected"':''}>${s.name}</option>
-                    </g:each> 
-                </select> --}%
-                <input ${inSubMode ? "disabled='disabled' data-filterMode='${fixedSubscription?.class.getName()}:${fixedSubscription?.id}'" : '' } name="newSubscription" class="input-xlarge" placeholder="New Subscription" id="newSubscription" value="${inSubMode ? fixedSubscription?.name : params.newSubscription}"/>
+                <input ${inSubMode ? "disabled='disabled' data-filterMode='${fixedSubscription?.class.getName()}:${fixedSubscription?.id}'" : '' }
+                        name="newSubscription" class="input-xlarge select2" placeholder="New Subscription" id="newSubscription"
+                        value="${inSubMode ? fixedSubscription?.name : params.newSubscription}" data-subfilter=""/>
                 <g:if test="${inSubMode}">
-                    <g:hiddenField name="newSubscription" value="${fixedSubscription?.class.getName()}:${fixedSubscription?.id}"></g:hiddenField>
+                    <g:hiddenField data-subfilter="" name="newSubscription" value="${fixedSubscription?.class.getName()}:${fixedSubscription?.id}"></g:hiddenField>
                 </g:if>
             </td>
             <td>
-                <select name="newPackage" class="input-medium" id="newPackage" value="${params.newPackage}">
-                    <option value="xx">Not specified</option>
-                </select>
+                %{--<select name="newPackage" class="input-medium" id="newPackage" value="${params.newPackage}">--}%
+                    %{--<option value="xx">Not specified</option>--}%
+                %{--</select>--}%
+                %{--<input disabled='disabled' class="select2" name="newPackage" id="newPackage" />--}%
             </td>
             <td>
-                <input name="newIe" class="input-medium" id="newIE" value="${params.newIe}">
+                <input name="newIe" class="input-medium select2" id="newIE" value="${params.newIe}">
             </td>
             <td rowspan="2">
-                <g:submitToRemote data-action="create" onSuccess="Finance.updateResults('create')"
+                <g:submitToRemote data-action="create" onSuccess="Finance.updateResults('create');Finance.clearCreate()"
                                   onFailure="errorHandling(textStatus,'create',errorThrown)"
                                   url="[controller:'finance', action: 'newCostItem']" type="submit"
                                   name="Add" value="add">
@@ -97,7 +94,7 @@
             <td>
                 <h3>Reference/Codes</h3>
                 <input type="text" name="newReference" placeholder="New Item Reference" id="newCostItemReference" value="${params.newReference}"/><br/>
-                <input type="text" style="width: 220px; border-radius: 4px;" placeholder="New code or lookup code" name="newBudgetCode" id="newBudgetCode" ><br/><br/><br/>
+                <input type="text" class="select2" style="width: 220px; border-radius: 4px;" placeholder="New code or lookup code" name="newBudgetCode" id="newBudgetCode" ><br/><br/><br/>
                 <h3>Validity Period (Dates)</h3>
                 From: <input class="datepicker-class" placeholder="Start Date" type="date" id="newStartDate" name="newStartDate"/> </br>
                 To: &nbsp;&nbsp;&nbsp;&nbsp;<input class="datepicker-class" placeholder="End Date" type="date" id="newEndDate" name="newEndDate"/>

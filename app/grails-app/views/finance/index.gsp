@@ -336,17 +336,9 @@
 
             } //end of select2setup
 
-        //todo See why this is causing delete of everything on create
-        //Separate function instead of
-        //var _clearCreateForm = function() {
-        //    $('form#createCost').trigger("reset");
-        //    $('#newBudgetCode').select2('data','');
-        //    $('#newIE').select2('data','');
-        //};
 
         //This is for AJAX functionality, inclusion of first run too!
         var _bindBehavior = function() {
-            //s.mybody.on('click',s.resetBtn, _clearCreateForm); //Reset btn (create form)
             $(s.ct.datePickers).datepicker({format: s.options.dateFormat}); //datepicker
             setupModSelect2s();
             $(s.ft.editableBind).editable(); //technically being performed twice on first run
@@ -915,6 +907,34 @@
                 });
             });
 
+            //create subscription
+            s.mybody.on("select2-selecting",s.ct.newSubscription, function(e) {
+                 var element       = $(this);
+                 var prevSelection = element.select2("data");
+                 var id            = e.choice.id;
+                 var currentText   = e.choice.text;
+                 var mode          = element.data().mode
+
+                 //switch(mode) {
+                 //   case "sub":
+                 //
+                 //   break;
+                 //
+                 //   case "pkg":
+                 //
+                 //   break;
+                 //
+                 //   case "ie":
+                 //
+                 //   break
+                 //
+                 //   default :
+                 //       console.log('Unsuported action...');
+                 //   break
+                 //}
+                 element.data('subFilter',id);
+            });
+
 
             //filterSubscription select2 selection event
             s.mybody.on("select2-selecting", s.ft.filterSubscription, function(e) {
@@ -1146,6 +1166,15 @@
                 console.log('Running rebind method designed for AJAX');
                 _bindBehavior();
                 console.log('Finished rebind method designed for AJAX');
+            },
+            clearCreate: function() {
+                console.log("Clearing create screen data...");
+                //$("#select_id").select2("val", "");
+                var createForm = $('form#createCost');
+                createForm.trigger("reset");
+                $('input.select2',createForm).each(function() {
+                  $(this).select2('data','');
+                });
             },
 
             //TEMP ACCESSIBLE METHODS
