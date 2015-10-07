@@ -8,6 +8,7 @@ import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
 //todo Refactor aspects into service
 //todo track state, maybe use the #! stateful style syntax along with the history API or more appropriately history.js (cross-compatible, polyfill for HTML4)
+//todo Refactor index separation of filter page (used for AJAX), too much content, slows DOM on render/binding of JS functionality
 class FinanceController {
 
     def springSecurityService
@@ -98,7 +99,7 @@ class FinanceController {
         request.setAttribute("editable", result.editable) //editable Taglib doesn't pick up AJAX request, REQUIRED!
         result.filterMode  =  params.filterMode?: "OFF"
         result.info        =  [] as List
-        params.max         =  params.int('max') ? Math.min(Integer.parseInt(params.max),200) : (user?.defaultPageSize? maxAllowedVals.min{(it-user.defaultPageSize).abs()} : 10)
+        params.max         =  params.int('max') ? maxAllowedVals.min {(it-params.int('max'))} : (user?.defaultPageSize? maxAllowedVals.min{(it-user.defaultPageSize).abs()} : 10)
         result.max         =  params.max
         result.offset      =  params.offset?: 0
         result.sort        =  ["desc","asc"].contains(params.sort)? params.sort : "desc" //defaults to sort & order of desc id 
@@ -109,6 +110,10 @@ class FinanceController {
         result.advSearch   =  params.boolean('advSearch',false)
         params.remove('opSort')
 
+        if (params.csvMode && request.getHeader('referer')?.endsWith("${params?.shortcode}/finance")) {
+            params.max = -1 //Adjust so all results are returned, in regards to present user screen query
+            log.debug("Making changes to query setup data for an export...")
+        }
         //Query setup options, ordering, joins, param query data....
         def (order, join, gspOrder) = CostItem.orderingByCheck(params.order) //order = field, join = left join required or null, gsporder = to see which field is ordering by
         result.order = gspOrder
@@ -207,7 +212,7 @@ class FinanceController {
      * @param header - true or false
      * @return
      */
-    //todo change for batch processing... don't want to kill the server!
+    //todo change for batch processing... don't want to kill the server, defaulting to all results presently!
     def private processFinancialCSV(out, result, header) {
         def generation_start = new Date()
         def processedCounter = 0
@@ -215,33 +220,88 @@ class FinanceController {
         switch (params.csvMode)
         {
             case "code":
-                log.debug("Processing code mode...")
+                log.debug("Processing code mode... Estimated total ${params.estTotal?: 'Unknown'}")
 
-                //todo budget code mode...
+                def categories = RefdataValue.findAllByOwner(RefdataCategory.findByDesc('CostItemStatus')).collect {it.value.toString()} << "Unknown"
 
+                def codeResult = [:].withDefault {
+                    categories.collectEntries {
+                        [(it): 0 as Double]
+                    }
+                }
+
+                result.cost_items.each { c ->
+                    if (!c.budgetcodes.isEmpty())
+                    {
+                        log.debug("${c.budgetcodes.size()} codes for Cost Item: ${c.id}")
+
+                        def status = c?.costItemStatus?.value? c.costItemStatus.value.toString() : "Unknown"
+
+                        c.budgetcodes.each {code ->
+                            if (!codeResult.containsKey(code.value))
+                                codeResult[code.value] //sets up with default values
+
+                            if (!codeResult.get(code.value).containsKey(status))
+                            {
+                                log.warn("Status should exist in list already, unless additions have been made? Code:${code} Status:${status}")
+                                codeResult.get(code.value).put(status, c?.costInLocalCurrency? c.costInLocalCurrency : 0.0)
+                            }
+                            else
+                            {
+                                codeResult[code.value][status] += c?.costInLocalCurrency?: 0.0
+                            }
+                        }
+                    }
+                    else
+                    {
+                        log.debug("skipped cost item ${c.id} NO codes are present")
+                    }
+                }
+
+                def catSize = categories.size()-1
+                out.withWriter { writer ->
+                    writer.write("\t" + categories.join("\t") + "\n") //Header
+
+                    StringBuilder sb = new StringBuilder() //join map vals e.g. estimate : 123
+
+                    codeResult.each {code, cat_statuses ->
+                        sb.append(code).append("\t")
+                        cat_statuses.eachWithIndex { status, amount, idx->
+                            sb.append(amount)
+                            if (idx < catSize)
+                                sb.append("\t")
+                        }
+                        sb.append("\n")
+                    }
+                    writer.write(sb.toString())
+                    writer.flush()
+                    writer.close()
+                }
+
+                processedCounter = codeResult.size()
                 break
 
             case "sub":
-                log.debug("Processing subscription data mode... calculation of costs")
+                log.debug("Processing subscription data mode... calculation of costs Estimated total ${params.estTotal?: 'Unknown'}")
 
-                def categories = RefdataValue.findAllByOwner(RefdataCategory.findByDesc('CostItemStatus')).collect {it.value} << "unknown"
+                def categories = RefdataValue.findAllByOwner(RefdataCategory.findByDesc('CostItemStatus')).collect {it.value} << "Unknown"
 
                 def subResult = [:].withDefault {
                     categories.collectEntries {
-                        [(it.value.toString()): 0 as Double]
+                        [(it): 0 as Double]
                     }
                 }
 
                 result.cost_items.each { c ->
                     if (c?.sub)
                     {
-                        def status = c?.costItemStatus?.value? c.costItemStatus.value.toString() : "unknown"
-                        def subID  = c.sub.id
+                        def status = c?.costItemStatus?.value? c.costItemStatus.value.toString() : "Unknown"
+                        def subID  = c.sub.name
 
                         if (!subResult.containsKey(subID))
                             subResult[subID] //1st time around for subscription, could 1..* cost items linked...
 
-                        if (!subResult.get(subID).containsKey(status)) //SHOULDN'T have to do this surely with the defaultValue setup
+                        if (!subResult.get(subID).containsKey(status)) //This is here as a safety precaution, you're welcome :P
                         {
                             log.warn("Status should exist in list already, unless additions have been made? Sub:${subID} Status:${status}")
                             subResult.get(subID).put(status, c?.costInLocalCurrency? c.costInLocalCurrency : 0.0)
@@ -260,16 +320,16 @@ class FinanceController {
 
                 def catSize = categories.size()-1
                 out.withWriter { writer ->
-                    writer.write(","+ categories.join(",") + "\n") //Header
+                    writer.write("\t" + categories.join("\t") + "\n") //Header
 
                     StringBuilder sb = new StringBuilder() //join map vals e.g. estimate : 123
 
                     subResult.each {sub, cat_statuses ->
-                        sb.append(sub).append(",")
+                        sb.append(sub).append("\t")
                         cat_statuses.eachWithIndex { status, amount, idx->
                             sb.append(amount)
                             if (idx < catSize)
-                                sb.append(",")
+                                sb.append("\t")
                         }
                         sb.append("\n")
                     }
@@ -283,17 +343,19 @@ class FinanceController {
 
             case "all":
             default:
-                log.debug("Processing all mode...")
+                log.debug("Processing all mode... Estimated total ${params.estTotal?: 'Unknown'}")
 
                 out.withWriter { writer ->
 
                     if ( header ) {
-                        writer.write("Institution,Generated Date,Cost Item Count\n")
-                        writer.write("${result.institution.name?:''},${dateFormat.format(generation_start)},${result.cost_item_count}\n")
+                        writer.write("Institution\tGenerated Date\tCost Item Count\n")
+                        writer.write("${result.institution.name?:''}\t${dateFormat.format(generation_start)}\t${result.cost_item_count}\n")
                     }
 
                     // Output the body text
-                    writer.write("cost_item_id,owner,invoice_no,order_no,subscription_name,subscription_package,issueEntitlement,date_paid,date_valid_from,date_valid_to,cost_Item_Category,cost_Item_Status,billing_Currency,cost_In_Billing_Currency,cost_In_Local_Currency,tax_Code,cost_Item_Element,cost_Description,reference,codes,created_by,date_created,edited_by,date_last_edited\n");
+                    writer.write("cost_item_id\towner\tinvoice_no\torder_no\tsubscription_name\tsubscription_package\tissueEntitlement\tdate_paid\tdate_valid_from\t" +
+                            "date_valid_to\tcost_Item_Category\tcost_Item_Status\tbilling_Currency\tcost_In_Billing_Currency\tcost_In_Local_Currency\ttax_Code\t" +
+                            "cost_Item_Element\tcost_Description\treference\tcodes\tcreated_by\tdate_created\tedited_by\tdate_last_edited\n");
 
                     result.cost_items.each { ci ->
 
@@ -305,12 +367,18 @@ class FinanceController {
                         def created_date = ci.dateCreated ? dateFormat.format(ci.dateCreated) : ''
                         def edited_date  = ci.lastUpdated ? dateFormat.format(ci.lastUpdated) : ''
 
-                        writer.write("\"${ci.id}\",\"${ci.owner.name}\",\"${ci.invoice?ci.invoice.invoiceNumber:''}\",${ci.order? ci.order.orderNumber:''},${ci.sub? ci.sub.name:''},${ci.subPkg?ci.subPkg.pkg.name:''},${ci.issueEntitlement?ci.issueEntitlement.tipp.title.title:''},${paid_date},${start_date},\"${end_date}\",\"${ci.costItemCategory?ci.costItemCategory.value:''}\",\"${ci.costItemStatus?ci.costItemStatus.value:''}\",\"${ci.billingCurrency.value?:''}\",\"${ci.costInBillingCurrency?:''}\",\"${ci.costInLocalCurrency?:''}\",\"${ci.taxCode?ci.taxCode.value:''}\",\"${ci.costItemElement?ci.costItemElement.value:''}\",\"${ci.costDescription?:''}\",\"${ci.reference?:''}\",\"${codes?codes.toString():''}\",\"${ci.createdBy.username}\",\"${created_date}\",\"${ci.lastUpdatedBy.username}\",\"${edited_date}\"\n");
+                        writer.write("\"${ci.id}\"\t\"${ci.owner.name}\"\t\"${ci.invoice?ci.invoice.invoiceNumber:''}\"\t${ci.order? ci.order.orderNumber:''}\t" +
+                                "${ci.sub? ci.sub.name:''}\t${ci.subPkg?ci.subPkg.pkg.name:''}\t${ci.issueEntitlement?ci.issueEntitlement.tipp.title.title:''}\t" +
+                                "${paid_date}\t${start_date}\t\"${end_date}\"\t\"${ci.costItemCategory?ci.costItemCategory.value:''}\"\t\"${ci.costItemStatus?ci.costItemStatus.value:''}\"\t" +
+                                "\"${ci.billingCurrency.value?:''}\"\t\"${ci.costInBillingCurrency?:''}\"\t\"${ci.costInLocalCurrency?:''}\"\t\"${ci.taxCode?ci.taxCode.value:''}\"\t" +
+                                "\"${ci.costItemElement?ci.costItemElement.value:''}\"\t\"${ci.costDescription?:''}\"\t\"${ci.reference?:''}\"\t\"${codes?codes.toString():''}\"\t" +
+                                "\"${ci.createdBy.username}\"\t\"${created_date}\"\t\"${ci.lastUpdatedBy.username}\"\t\"${edited_date}\"\n")
                     }
                     writer.flush()
                     writer.close()
                 }
 
+                processedCounter = result.cost_items.size()
                 break
         }
         groovy.time.TimeDuration duration = groovy.time.TimeCategory.minus(new Date(), generation_start)
