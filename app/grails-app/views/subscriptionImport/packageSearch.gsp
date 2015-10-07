@@ -42,13 +42,13 @@
              <g:if test="${hits}" >
                 <div class="paginateButtons" style="text-align:center">
                   <g:if test="${params.int('offset')}">
-                   Showing Results ${params.int('offset') + 1} - ${hits.totalHits < (params.int('max') + params.int('offset')) ? hits.totalHits : (params.int('max') + params.int('offset'))} of ${hits.totalHits}
+                   Showing Results ${params.int('offset') + 1} - ${resultsTotal < (params.int('max') + params.int('offset')) ? resultsTotal : (params.int('max') + params.int('offset'))} of ${resultsTotal}
                   </g:if>
-                  <g:elseif test="${hits.totalHits && hits.totalHits > 0}">
-                    Showing Results 1 - ${hits.totalHits < params.int('max') ? hits.totalHits : params.int('max')} of ${hits.totalHits}
+                  <g:elseif test="${resultsTotal && resultsTotal > 0}">
+                    Showing Results 1 - ${resultsTotal < params.int('max') ? resultsTotal : params.int('max')} of ${resultsTotal}
                   </g:elseif>
                   <g:else>
-                    Showing ${hits.totalHits} Results
+                    Showing ${resultsTotal} Results
                   </g:else>
                 </div>
 
@@ -60,9 +60,9 @@
                     <tbody>
                       <g:each in="${hits}" var="hit">
                         <tr>
-                          <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
-                          <td>${hit.source.consortiaName}</td>
-                          <td><button type="submit" class="btn" name="addBtn" value="${hit.source.dbId}">Add to<br/>basket</button></td>
+                          <td><g:link controller="packageDetails" action="show" id="${hit.getSource().dbId}">${hit.getSource().name}</g:link></td>
+                          <td>${hit.getSource().consortiaName}</td>
+                          <td><button type="submit" class="btn" name="addBtn" value="${hit.getSource().dbId}">Add to<br/>basket</button></td>
                         </tr>
                       </g:each>
                     </tbody>
@@ -71,7 +71,7 @@
              </g:if>
              <div class="paginateButtons" style="text-align:center">
                 <g:if test="${hits}" >
-                  <span><g:paginate controller="subscriptionImport" action="generateImportWorksheet" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${hits.totalHits}" /></span>
+                  <span><g:paginate controller="subscriptionImport" action="generateImportWorksheet" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${resultsTotal}" /></span>
                 </g:if>
               </div>
           </div>

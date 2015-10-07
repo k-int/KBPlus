@@ -12,7 +12,6 @@ class DocWidgetController {
 
   def springSecurityService
   def docstoreService
-  def ESWrapperService
   def gazetteerService
   def alertsService
 

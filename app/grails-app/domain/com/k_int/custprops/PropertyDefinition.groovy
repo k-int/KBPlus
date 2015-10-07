@@ -2,12 +2,22 @@ package com.k_int.custprops
 
 import com.k_int.kbplus.RefdataValue
 import com.k_int.kbplus.abstract_domain.CustomProperty
-
+import groovy.util.logging.*
 import javax.persistence.Transient
 import javax.validation.UnexpectedTypeException
+import org.apache.commons.logging.LogFactory
 
+@Log4j
 class PropertyDefinition {
-
+    @Transient
+    final static String[] AVAILABLE_DESCR =[LIC_PROP,ORG_CONF,SYS_CONF]
+    @Transient
+    final static String LIC_PROP='Licence Property'
+    @Transient
+    final static String ORG_CONF='Organisation Config'
+    @Transient
+    final static String SYS_CONF='System Config'
+    
     String name
     String descr
     String type
@@ -40,7 +50,7 @@ class PropertyDefinition {
         if (validTypes.containsValue(value)) {
             return true;
         } else {
-            println "Provided custom prop type ${value.getClass()} is not valid. Allowed types are ${validTypes}"
+            log.error("Provided custom prop type ${value.getClass()} is not valid. Allowed types are ${validTypes}")
             throw new UnexpectedTypeException()
         }
     }
@@ -70,15 +80,23 @@ class PropertyDefinition {
         typeIsValid(typeClass)
         def type = findByNameAndType(name, typeClass);
         if (!type) {
-            print("No PropertyDefinition type match found for ${typeClass}. Creating new.")
+            log.debug("No PropertyDefinition type match found for ${typeClass}. Creating new.")
             type = new PropertyDefinition(name: name, type: typeClass, descr: descr)
             type.save()
         }
         type
     }
     static def refdataFind(params) {
+
         def result = []
-        def  ql = findAllByNameIlike("${params.q}%",params)
+        def ql = null
+        if(!params.desc || params.desc == "*"){
+            if(!params.desc)log.error("Search PropertyDefinition without Description ${params}");
+            ql = findAllByNameIlike("${params.q}%",params)
+        }else{
+            ql = findAllByNameIlikeAndDescr("${params.q}%",params.desc, params)
+        }
+
         if ( ql ) {
             ql.each { prop ->
                 result.add([id:"${prop.id}",text:"${prop.name}"])

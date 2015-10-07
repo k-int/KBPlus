@@ -5,7 +5,7 @@ import java.util.TreeSet;
 import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import javax.persistence.Transient
-import org.codehaus.groovy.grails.commons.ApplicationHolder
+ 
 import org.apache.commons.logging.*
 import java.text.Normalizer
 import groovy.util.logging.*
@@ -55,7 +55,7 @@ class TitleInstance {
        status column:'ti_status_rv_fk'
          type column:'ti_type_rv_fk'
         tipps sort:'startDate', order: 'asc'
-    sortTitle column:'sort_title', index: 'ti_sort_idx'
+    sortTitle column:'sort_title'
 
   }
 
@@ -811,6 +811,10 @@ class TitleInstance {
     if ( ( published_from == null ) && ( start == null ) ) {
       result = result & true
     }
+    else if ( ( published_from == null ) && ( start != null ) ) {
+      // We allow if the tipp has a date, but the publisher link does not.
+      result = result & true
+    }
     else if ( ( published_from == null ) || ( start == null ) ) {
       result = result & false
     }
@@ -820,6 +824,10 @@ class TitleInstance {
 
     // End date checks
     if ( ( published_to == null ) && ( end == null ) ) {
+      result = result & true
+    }
+    else if ( ( published_to == null ) && ( end != null ) ) {
+      // We allow if the tipp has a date, but the publisher link does not.
       result = result & true
     }
     else if ( ( published_to == null ) || ( end == null ) ) {

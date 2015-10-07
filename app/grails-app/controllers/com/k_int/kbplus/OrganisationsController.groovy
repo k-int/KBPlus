@@ -35,7 +35,7 @@ class OrganisationsController {
       if(! orgInstance.customProperties){
         grails.util.Holders.config.customProperties.org.each{ 
           def entry = it.getValue()
-          def type = PropertyDefinition.lookupOrCreateType(entry.name,entry.class,null)
+          def type = PropertyDefinition.lookupOrCreateType(entry.name,entry.class,PropertyDefinition.ORG_CONF)
           def prop = PropertyDefinition.createPropertyValue(orgInstance,type)
           prop.note = entry.note
           prop.save()

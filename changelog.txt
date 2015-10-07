@@ -1,3 +1,7 @@
+Changes in 5.1
+* Fix onix issues that resulted in multiple rows for same comparison points.
+* Upgrade system versions, Java8,Graisl 2.5.1,ES 1.7.1
+
 Changes in 5.0.2
 
 * By default the asAt date of expected packages is startDate,previous is endDate, for packageDetails and publicExport
