@@ -814,7 +814,7 @@ class FinanceController {
 
         if (owner) {
             if (resetMode)
-                wasReset = refReset(owner,params.fields,result.error)
+                wasReset = refReset(owner,params.fields,result)
 
 
             if (resetMode && !wasReset)
@@ -842,7 +842,7 @@ class FinanceController {
                     if (owner.obj.hasProperty(params.ownerField)) {
                         log.debug("Using owner instance field of ${params.ownerField} to set new instance of ${relation.obj.class} with ID ${relation.obj.id}")
                         owner.obj."${params.ownerField}" = relation.obj
-                        result.relation = relation.obj
+                        result.relation = ['class':relation.obj.id, 'id':relation.obj.id] //avoid excess data leakage
                     }
                 } else
                     result.error.add([status: "FAILED: Related Cost Item Data", msg: "Invalid data received to retrieve from DB"])
@@ -855,28 +855,39 @@ class FinanceController {
         render result as JSON
     }
 
-
-    def private refReset(costItem, String fields, errorList) {
+    /**
+     *
+     * @param costItem - The owner instance passed from financialRef
+     * @param fields - comma seperated list of fields to reset, has to be in allowed list (see below)
+     * @param result - LinkedHashMap from financialRef
+     * @return
+     */
+    def private refReset(costItem, String fields, result) {
         log.debug("Attempting to reset a reference for cost item data ${costItem} for field(s) ${fields}")
         def wasResetCounter = 0
-        def f               = fields.split(',')
+        def f               = fields?.split(',')
         def allowed         = ["sub", "issueEntitlement", "subPkg", "invoice", "order"]
+        boolean validFields = false
+
         if (f)
         {
-            f.each { field->
-                if (allowed.contains(field) && costItem.obj.hasProperty(field))
-                {
+            validFields = f.every { allowed.contains(it) && costItem.obj.hasProperty(it) }
+
+            if (validFields)
+                f.each { field ->
                     costItem.obj."${field}" = null
-                    wasResetCounter++
+                    if (costItem.obj."${field}" == null)
+                        wasResetCounter++
+                    else
+                        result.error.add([status: "FAILED: Cost Item", msg: "Problem resetting data for field ${field}"])
                 }
-                else
-                    errorList.add([status: "FAILED: Cost Item", msg: "Problem resetting data for ${field}, presently unable to change, please seek assistance"])
-            }
+            else
+                result.error.add([status: "FAILED: Cost Item", msg: "Problem resetting data, invalid fields received"])
         }
         else
-            errorList.add([status: "FAILED: Cost Item", msg: "Invalid data received"])
+            result.error.add([status: "FAILED: Cost Item", msg: "Invalid data received"])
 
-        return wasResetCounter == f.size()
+        return validFields && wasResetCounter == f.size()
     }
 
     def private refData(String oid) {

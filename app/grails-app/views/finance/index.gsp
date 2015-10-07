@@ -407,15 +407,10 @@
            }
         };
 
-
+        //todo add avanced search field copy, if advanced row is visable
         var _filtersUpdated = function() {
           $('#newInvoiceNumber').val($('#filterInvoiceNumber').val());
           $('#newOrderNumber').val($('#filterOrderNumber').val());
-          if($(s.ct.newSubscription).val() != $(s.ft.filterSubscription).val())
-          {
-              $(s.ct.newSubscription).val($(s.ft.filterSubscription).val());
-              $(s.ct.newSubPkg).val($(s.ft.filterSubPkg).val());
-          }
         };
 
         //Fetch packages for the selected subscription
@@ -831,14 +826,14 @@
                  {
                     var ie     = $(id+'_ie');
                     var subPkg = $(id+'_subPkg');
-                    var fields = null;
-                    console.log(ie, ie.data().defaultValue,ie.data(), ie.select2('data'),ie.data(),subPkg, subPkg.data().defaultValue, subPkg.data(), subPkg.select2('data'));
-                    if(ie.val() != null)
-                        fields = "issueEntitlement";
-                    if(subPkg.val() != null )
-                        fields += ",subPkg";
+                    var fields = '';
+                    console.log(ie.select2("data"),subPkg.select2("data"), 'LOL!');
+                    if(ie.select2("data") != null)
+                        fields = "issueEntitlement,";
+                    if(subPkg.select2("data") != null )
+                        fields += "subPkg";
 
-                    if(fields != null)
+                    if(fields != '')
                     {
                         console.log('Sub selection means data needs to be reset for: '+fields);
                         resetMode = true;
@@ -879,7 +874,6 @@
                         element.data('previous',prevSelection ? prevSelection.id+'_'+prevSelection.text : '');
                         element.data('defaultvalue',e.choice.text);
                         element.data('relationid',data.relation.id);
-
                         console.log("Relation ID: "+data.relation.id,"Choice Text: "+e.choice.text, "Prev Selection: ",prevSelection);
 
                         //set the subFilter i.e. the Sub ID
@@ -897,6 +891,13 @@
                                 console.log('Sub was changed...');
                                 $(id+'_subPkg').data('subfilter',data.relation.id);
                                 $(id+'_ie').data('subfilter',currentText);
+                                ie.select2('enable');
+                                subPkg.select2('enable');
+                                if(resetMode === true)
+                                {
+                                    ie.select2('data',null);
+                                    subPkg.select2('data',null);
+                                }
                             break;
 
                             default:
@@ -913,25 +914,25 @@
                  var prevSelection = element.select2("data");
                  var id            = e.choice.id;
                  var currentText   = e.choice.text;
-                 var mode          = element.data().mode
+                 var mode          = element.data().mode;
 
-                 //switch(mode) {
-                 //   case "sub":
-                 //
-                 //   break;
-                 //
-                 //   case "pkg":
-                 //
-                 //   break;
-                 //
-                 //   case "ie":
-                 //
-                 //   break
-                 //
-                 //   default :
-                 //       console.log('Unsuported action...');
-                 //   break
-                 //}
+                 switch(mode) {
+                    case "sub":
+
+                    break;
+
+                    case "pkg":
+
+                    break;
+
+                    case "ie":
+
+                    break;
+
+                    default :
+                        console.log('Unsuported action...');
+                    break
+                 }
                  element.data('subFilter',id);
             });
 
