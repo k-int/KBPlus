@@ -804,7 +804,8 @@
                 .done(function(data) {
                     if(data.error.length > 0)
                         element.select2('data', prevSelection);
-                    else {
+                    else
+                    {
                         element.data('previous',prevSelection ? prevSelection.id+'_'+prevSelection.text : '');
                         element.data('defaultvalue',e.choice.text);
                         element.data('relationid',data.relation.id);
@@ -862,13 +863,20 @@
                  })
                 .done(function(data) {
                     if(data.error.length > 0)
+                    {
+                        var errorMsg = "Cost Item Change Error\n";
+                        for(var i = 0; i < data.error.length; i++) {
+                          errorMsg += (data.error[i].msg + '\n');
+                        }
+                        alert(errorMsg);
                         element.select2('data', prevSelection);
+                    }
                     else {
                         element.data('previous',prevSelection ? prevSelection.id+'_'+prevSelection.text : '');
                         element.data('defaultvalue',e.choice.text);
                         element.data('relationid',data.relation.id);
 
-                        console.log("Relation ID: "+data.relation.id,"Choice Text: "+e.choice.text, "Prev Selection: "+prevSelection);
+                        console.log("Relation ID: "+data.relation.id,"Choice Text: "+e.choice.text, "Prev Selection: ",prevSelection);
 
                         //set the subFilter i.e. the Sub ID
                         switch (mode)

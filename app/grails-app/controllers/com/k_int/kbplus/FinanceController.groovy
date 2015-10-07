@@ -482,8 +482,9 @@ class FinanceController {
 
         if (result.advSearch)
         {
+            println("Advanced Filter searh setup...")
             params.findAll {key, val->
-
+                println("Key ${key} Val ${val}")
             }
         }
 
@@ -555,7 +556,6 @@ class FinanceController {
         {
             result.error=message(code: 'financials.permission.unauthorised', args: [result.institution? result.institution.name : 'N/A'])
             response.sendError(403)
-
         }
 
         def order = null
@@ -856,23 +856,24 @@ class FinanceController {
         render result as JSON
     }
 
-    //todo complete this returning error on sub change
+
     def private refReset(costItem, String fields, errorList) {
-        log.debug("Attempting to reset a reference for cost item data ${params.relationField} for field(s) ${fields}")
+        log.debug("Attempting to reset a reference for cost item data ${costItem} for field(s) ${fields}")
         def wasResetCounter = 0
-        def f = fields.split(',')
-        def allowed = ["sub", "issueEntitlement", "subPkg", "invoice", "order"]
+        def f               = fields.split(',')
+        def allowed         = ["sub", "issueEntitlement", "subPkg", "invoice", "order"]
         if (f)
         {
             f.each { field->
-                if (allowed.contains(field) && costItem.hasProperty(field)) {
-                    costItem."${field}" = null
+                if (allowed.contains(field) && costItem.obj.hasProperty(field)) {
+                    costItem.obj."${field}" = null
                     wasResetCounter++
                 }
                 else
-                    errorList.add([status: "FAILED: Cost Item", msg: "Problem resetting data"])
+                    errorList.add([status: "FAILED: Cost Item", msg: "Problem resetting data for ${field}, presently unable to change, please seek assistance"])
             }
-        } else
+        }
+        else
             errorList.add([status: "FAILED: Cost Item", msg: "Invalid data received"])
 
         return wasResetCounter == f.size()
