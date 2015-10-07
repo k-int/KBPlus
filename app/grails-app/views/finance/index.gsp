@@ -39,8 +39,8 @@
 
             <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
                 <li><a data-mode="all" class="export" style="cursor: pointer">CSV Export Current List</a></li>
-                %{-- <li><a data-mode="sub" class="disabled export" disabled="">CSV Sub Costs</a></li> --}%
-                %{-- <li><a data-mode="code" class="disabled export" disabled="">CSV Code Costs</a></li> --}%
+                 <li><a data-mode="sub" class="disabled export" style="cursor: pointer">CSV Sub Costs</a></li>
+                 <li><a data-mode="code" class="disabled export" style="cursor: pointer">CSV Code Costs</a></li>
             </ul>
         </li>
     </ul>
@@ -144,7 +144,8 @@
             },
             misc: {
                 recentlyUpdated: '#recent',
-                noOption:'<option value="xx">Not specified</option>'
+                noOption:'<option value="xx">Not specified</option>',
+                exportLink:'a.export'
             },
             options: {
                 timeoutLoading: null,
@@ -1043,7 +1044,7 @@
             });
 
             //export
-            s.mybody.on('click','a.export', function(e) {
+            s.mybody.on('click',s.misc.exportLink, function(e) {
                 var exportMode   = $(this).data('mode');
                 var paginateData = $('#paginateInfo').data();
                 var totalResults = parseInt(paginateData.total);
@@ -1056,7 +1057,6 @@
                     sort:paginateData.sort,
                     order: paginateData.order,
                     offset:0,
-                    max:null,
                     estTotal:totalResults,
                     format:'csv',
                     csvMode:exportMode

@@ -30,7 +30,7 @@ class CostItemGroup {
         def result     = [];
         def qryResults = null
         def searchTerm = (params.q ? params.q.toLowerCase() : '' ) + "%"
-        def owner      = RefdataCategory.findByDesc("budgetcode_"+params.shortcode)
+        def owner      = RefdataCategory.findByDesc("budgetcode_${params.shortcode}")
 
         if (owner)
             qryResults = RefdataValue.findAllByOwnerAndValueIlike(owner,searchTerm)
