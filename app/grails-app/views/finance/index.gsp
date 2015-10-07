@@ -569,11 +569,14 @@
             clearTimeout(s.options.timeout);
         };
 
+        //todo should change this to render a cost instance frag if nessesary
+        //based on page position instead of the entirety of the offset and max
         var _updateResults = function(e) {
             var action = $.isEmptyObject($(this).data('action'))? e : $(this).data('action');
             console.log("Performing update of results via action : "+action);
             var paginateData   = $('#paginateInfo').data();
             var adjustedOffset = paginateData.offset;
+
             if(action.startsWith('delete'))
             {
                 var newTotal = parseInt(paginateData.total) - parseInt(action.split(':')[1]);
@@ -646,6 +649,15 @@
         //Binds everything which needs to be run the once, including the majority of dynamically rendered HTML content
         //For everything else which can't be binded once will be in _bindBehavior
         var _firstRun = function() {
+
+            //pollyfill stupid browsers not supporting ES6
+            if (!String.prototype.startsWith) {
+              String.prototype.startsWith = function(searchString, position) {
+                position = position || 0;
+                return this.indexOf(searchString, position) === position;
+              };
+            }
+
             $.fn.editable.defaults.mode = 'inline'; //default is popup mode
 
             $(document).ajaxStart(startLoadAnimation);
