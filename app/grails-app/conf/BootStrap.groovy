@@ -258,7 +258,7 @@ class BootStrap {
    
   }
   def initializeDefaultSettings(){
-    def admObj = SystemAdmin.list()?.first()
+    def admObj = SystemAdmin.list()
     if(!admObj){
         log.debug("No SystemAdmin object found, creating new.");
         admObj = new SystemAdmin(name:"demo").save();
