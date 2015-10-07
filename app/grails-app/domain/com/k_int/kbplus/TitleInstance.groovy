@@ -811,6 +811,10 @@ class TitleInstance {
     if ( ( published_from == null ) && ( start == null ) ) {
       result = result & true
     }
+    else if ( ( published_from == null ) && ( start != null ) ) {
+      // We allow if the tipp has a date, but the publisher link does not.
+      result = result & true
+    }
     else if ( ( published_from == null ) || ( start == null ) ) {
       result = result & false
     }
@@ -820,6 +824,10 @@ class TitleInstance {
 
     // End date checks
     if ( ( published_to == null ) && ( end == null ) ) {
+      result = result & true
+    }
+    else if ( ( published_from == null ) && ( start != null ) ) {
+      // We allow if the tipp has a date, but the publisher link does not.
       result = result & true
     }
     else if ( ( published_to == null ) || ( end == null ) ) {
