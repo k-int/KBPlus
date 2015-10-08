@@ -175,7 +175,7 @@
             });
         };
 
-        //Setup to build
+        //Setup to build various select2's nessesary after AJAX has changed results listing
         //todo make this configurable, factory builder style, pass in a list of config objects
         function setupModSelect2s() {
              //unable to use placeholder with initSelection, manually set via GSP with data-placeholder
@@ -217,8 +217,10 @@
               }
           });
 
-            //select2 setup for subs, pkgs, ie
+          //select2 setup for subs, pkgs, ie
           var sel2_b_objs = $(s.ft.filterModSelect2b);
+
+          //setup options for subs, pkgs, ie
           var sel2_b_opts = {
               initSelection : function (element, callback) {
                 if(element.data('defaultvalue')) //If default value has been set in the markup!
@@ -236,7 +238,7 @@
                       format:'json',
                       q: '%'+term,
                       baseClass:$(this).data('domain'),
-                      inst_shortcode: $(this).data('shortcode'),
+                      inst_shortcode: '${params.shortcode}',
                       subFilter: $(this).data('subfilter'),
                       hideDeleted: 'true',
                       hideIdent: 'false',
@@ -334,7 +336,7 @@
 
 
 
-            } //end of select2setup
+        } //end of select2setup
 
 
         //This is for AJAX functionality, inclusion of first run too!

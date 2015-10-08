@@ -106,8 +106,9 @@
             </thead>
             <tbody>
 
+            %{--Advanced row section... done like so to avoid use of existing headers--}%
             <tr hidden="hidden" id="advSearchRow" style="height: 100px;">
-                <td colspan="0">
+                <td colspan="8">
                     <div>
                         <ul class="inline">
                             <li>
@@ -119,9 +120,10 @@
                                 <input id="adv_codes" name="adv_codes" class="input-medium"/>
                             </li>
                             <li>
-                                <label for="adv_start">Valid Period to & from</label>
+                                <span for="adv_start">Valid Period</span>
+                                <label for="adv_start">From </label>
                                 <input class="datepicker-class input-small" placeholder="start date" id="adv_start" name="adv_start" /> </br>
-                                <input class="datepicker-class input-small" placeholder="end date" id="adv_end" name="adv_end" />
+                                <label for="adv_end">To</label><input class="datepicker-class input-small" placeholder="end date" id="adv_end" name="adv_end" />
                             </li>
                             <li>
                                 <label for="adv_costItemStatus">Cost Status</label>
