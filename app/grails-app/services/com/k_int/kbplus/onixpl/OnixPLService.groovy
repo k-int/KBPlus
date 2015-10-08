@@ -14,6 +14,8 @@ import grails.converters.JSON
  */
 class OnixPLService {
   
+
+
   public static final String COMPARE_RETURN_ALL = "ALL"
   public static final String COMPARE_RETURN_SAME = "EQUAL"
   public static final String COMPARE_RETURN_DIFFERENT = "DIFFERENT"
@@ -313,6 +315,15 @@ class OnixPLService {
     text?.toLowerCase()
   }
   
+
+  private static Map deepcopy(orig) {
+     def bos = new ByteArrayOutputStream()
+     def oos = new ObjectOutputStream(bos)
+     oos.writeObject(orig); oos.flush()
+     def bin = new ByteArrayInputStream(bos.toByteArray())
+     def ois = new ObjectInputStream(bin)
+     return ois.readObject()
+}
   /**
    * Flatten the supplied structured row data for use in a table display.
    * 
@@ -339,7 +350,8 @@ class OnixPLService {
       List el_names = data.keySet() as List
       Map<String,List<String>> priority = ["User":[]];
       //We create a clone for the data because we will be removing entries during key generation
-      generateKeys(data.clone(), exclude, keys,priority)
+      //we maybe be ok with simple .copy(), can change later..
+      generateKeys(deepcopy(data), exclude, keys,priority)
       priority.entrySet().each{
         if(it.getValue()){
           keys.add(0,it.getValue())
@@ -424,7 +436,7 @@ class OnixPLService {
           }
           List value = val.get(cp)
           if (value) {
-            value.each {
+            for(Map it : value){
               String key = it?.get("_content")
               if (key) {
                 if(key.contains("SupplyCopy")) println "ITS HERE ${key} ${val.get(cp) as JSON}";
