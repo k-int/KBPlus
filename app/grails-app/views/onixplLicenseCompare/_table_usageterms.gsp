@@ -1,8 +1,9 @@
-<%@ page import="com.k_int.kbplus.onixpl.OnixPLService" %>
+<%@ page import="com.k_int.kbplus.onixpl.OnixPLService;grails.converters.JSON" %>
 <g:set var="active_user" value=""/>
 
 <g:each var="row_key,row" in="${data}" status="rowCount">
   <!-- Get the data we are to derive the title cell from -->
+
   <g:set var="rth" value="${service.getRowHeadingData(row)}" />
   <g:if test="${ OnixPLService.getSingleValue(rth, 'UsageType')}">  
   <g:set var="hasPlaceOfReceivingAgent" value="${rth.'UsageRelatedPlace'?.'UsagePlaceRelator'?.'_content'?.contains(['onixPL:PlaceOfReceivingAgent'])}"/>
@@ -20,7 +21,11 @@
   <tr>
     <!-- Header -->
     <th class="tr-${ (rowCount + 1) } cell-1" ><span class="cell-inner">
-    
+      <g:if test="${ OnixPLService.getSingleValue(rth, 'UsageType').contains('Supply Copy') }">
+
+       ${row_key}
+       ${row as JSON}
+      </g:if>
       
       ${ OnixPLService.getSingleValue(rth, 'UsageType') }
       the ${ OnixPLService.getAllValues(rth, 'UsedResource',',') }
@@ -41,6 +46,7 @@
       </g:if>
     </span></th>
     <g:each var="heading" in="${headings}" status="colCount">
+
       <g:set var="rth" value="${service.getRowHeadingData(row,heading)}" />
       <g:set var="entry" value="${ row[heading] }" />
       <td class="tr-${ (rowCount + 1) } cell-${ colCount + 2 }">

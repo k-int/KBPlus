@@ -323,7 +323,7 @@ class OnixPLService {
    * @param compare_points List of comparison points.
    * @return The flattened representation of the row.
    */
-  private static void flattenRow (Map rows, Map data, List<String> exclude, String license_name) {
+  private static void flattenRow (Map rows, Map data, Map<String,Closure> exclude, String license_name) {
     
     // Get the name of the element from the XML that this row is built from.
     String name = data['_name']
@@ -363,7 +363,15 @@ class OnixPLService {
       }
       
       String key = "${keys.join('/')}"
-      
+      if(key.contains("supplycopy")){
+        println ""
+        println ""
+        println "Licence: ${license_name}"
+        println "Key: ${key}"
+        println ""
+        println ""
+      }
+
       if (rows[key] == null) {
         rows[key] = new TreeMap()
       }
@@ -382,7 +390,7 @@ class OnixPLService {
    * @param key Current key to which we should append.
    * @return
    */
-  private static void generateKeys (Map val, List<String> exclude, List keys, Map<String,List<String>> priority) {
+  private static void generateKeys (Map val, Map<String,Closure> exclude, List keys, Map<String,List<String>> priority) {
     
     // Name.
     String name = val['_name']
@@ -394,12 +402,20 @@ class OnixPLService {
       for (int i=0;i<valKeys.size();i++) {
         def cp =valKeys[i]
 
-        if (!cp.startsWith('_') && !exclude.contains(cp)) {
+        if (!cp.startsWith('_')) {
+          if(exclude.containsKey(cp) && exclude.get(cp)(val.get(cp))){
+            if(cp == "UsageRelatedPlace"){
+              println val.get(cp) as JSON
+            }
+            val.remove(cp)
+            continue;
+          }
           List value = val.get(cp)
           if (value) {
             value.each {
               String key = it?.get("_content")
               if (key) {
+                if(key.contains("SupplyCopy")) println "ITS HERE ${key} ${val.get(cp) as JSON}";
                 keys << treatTextForComparison(key)
                 if(priority.containsKey(it.get("_name"))){
                   priority[it.get("_name")]+= key
@@ -407,8 +423,6 @@ class OnixPLService {
               }
             }
           }
-        }else if(exclude.contains(cp)) {
-          val.remove(cp)
         }
       }
       
@@ -439,7 +453,7 @@ class OnixPLService {
    * @param sections
    * @return
    */
-  private static void tabularize (Map tables, OnixplLicense license, List<String> exclude, List<String> sections = null, OnixplLicense compare_to = null) {
+  private static void tabularize (Map tables, OnixplLicense license, Map<String,Closure> exclude, List<String> sections = null, OnixplLicense compare_to = null) {
     
     if (!(tables instanceof MapWithDefault)) {
       tables = tables.withDefault {
@@ -481,24 +495,29 @@ class OnixPLService {
   public Map compareLicenses (OnixplLicense license, List<OnixplLicense> licenses_to_compare, List<String> sections = null, String return_filter = COMPARE_RETURN_ALL) {
     
     // The attributes for comparison. These will be lower-cased and compared. 
-    List<String> exclude = [
-      'SortNumber',
-      'DisplayNumber',
-      'TextPreceding',
-      'Text',
-      'AnnotationType',
-      'AnnotationText',
-      'UsageStatus',
-      'Description',
-      'Name',
-      'AgentPlaceRelator',
-      'AgentType',
-      'DocumentLabel',
-      'IDValue',
-      'PlaceIDType',
-      'UsageExceptionType',
-      'UsageQuantity',
-      'GeneralTermRelatedPlace'
+    def exclude = [
+      'SortNumber':{return true},
+      'DisplayNumber':{return true},
+      'TextPreceding': {return true},
+      'Text': {return true},
+      'AnnotationType': {return true},
+      'AnnotationText': {return true},
+      'UsageStatus': {return true},
+      'Description': {return true},
+      'Name': {return true},
+      'AgentPlaceRelator': {return true},
+      'AgentType': {return true},
+      'DocumentLabel': {return true},
+      'IDValue': {return true},
+      'PlaceIDType': {return true},
+      'UsageExceptionType': {return true},
+      'UsageQuantity': {return true},
+      'GeneralTermRelatedPlace':{return true},
+      'UsageRelatedPlace': {node -> 
+        def remove= node?.'UsagePlaceRelator'?.'_content'?.contains(["onixPL:TargetResource"]);
+        println "CLOSURE ${remove}";
+        return !remove
+      }
     ]
     
     // Get the main license as a map.
