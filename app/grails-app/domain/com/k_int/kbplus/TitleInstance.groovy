@@ -792,6 +792,10 @@ class TitleInstance {
    * was published. Null start dates are only valid when there is no earliest published dates.
   */
   def isValidCoverage(start, end) {
+
+    // Disabled 8-oct-2015 as requested by Magaly via OS
+    return true
+
     def result = true;
     def published_from = null;
     def published_to = null;
