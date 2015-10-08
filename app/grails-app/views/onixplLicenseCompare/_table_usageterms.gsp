@@ -76,8 +76,10 @@
           <g:if test="${entry['UsageMethod'] }">
            <li> via ${ OnixPLService.getAllValues(entry, 'UsageMethod',', ') }</li>
           </g:if>
+          <g:set var="hasPlaceOfReceivingAgent" value="${rth.'UsageRelatedPlace'?.'UsagePlaceRelator'?.'_content'?.contains(['onixPL:PlaceOfReceivingAgent'])}"/>
+
           <g:if test="${hasPlaceOfReceivingAgent}">
-          <li>  In ${OnixPLService.getSingleValue(rth['UsageRelatedPlace'][0],'RelatedPlace')}</li>
+          <li>  In ${OnixPLService.getSingleValue(rth.'UsageRelatedPlace'?.get(0),'RelatedPlace')}</li>
           </g:if>
           <g:if test="${rth['UsageQuantity']}">
            <li> ${OnixPLService.getUsageQuantity(rth['UsageQuantity'][0])} </li>

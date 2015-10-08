@@ -316,7 +316,7 @@ class OnixPLService {
   }
   
 
-  private static Map deepcopy(orig) {
+  private static def deepcopy(orig) {
      def bos = new ByteArrayOutputStream()
      def oos = new ObjectOutputStream(bos)
      oos.writeObject(orig); oos.flush()
@@ -351,7 +351,7 @@ class OnixPLService {
       Map<String,List<String>> priority = ["User":[]];
       //We create a clone for the data because we will be removing entries during key generation
       //we maybe be ok with simple .copy(), can change later..
-      generateKeys(deepcopy(data), exclude, keys,priority)
+      generateKeys(data, exclude, keys,priority)
       priority.entrySet().each{
         if(it.getValue()){
           keys.add(0,it.getValue())
@@ -375,14 +375,6 @@ class OnixPLService {
       }
       
       String key = "${keys.join('/')}"
-      if(key.contains("supplycopy")){
-        println ""
-        println ""
-        println "Licence: ${license_name}"
-        println "Key: ${key}"
-        println ""
-        println ""
-      }
 
       if (rows[key] == null) {
         rows[key] = new TreeMap()
@@ -409,29 +401,22 @@ class OnixPLService {
 
 
     if (name) {
-      def valKeys = val.keySet()
-      println ""
-      println "KEYSET: "
-      println valKeys
-      println ""
+
       // Add any key values to the keys list.
-      for (int i=0;i<valKeys.size();i++) {
-        def cp =valKeys[i]
+      def ignore_list = []
+      for(String cp : val.keySet()){
 
         if (!cp.startsWith('_')) {
-          println "CP: ${cp}"
           //See if we are looking at a node that should not be part of the key
           if(exclude.containsKey(cp) && exclude.get(cp)(val.get(cp))){
-            if(cp == "UsageRelatedPlace"){
-              println val.get(cp) as JSON
-            }
+
             /*
             For some reason, when we remove UsageRelatedPlace, supplycopy is added, only on one entry.
             If we dont remove UsageRelatedPlace, there is no supplycopy... these two are on the same level
             so there should be no relation...
             */
             //remove it from the map, and continue with the next node.
-            val.remove(cp)
+            ignore_list << cp
             continue;
           }
           List value = val.get(cp)
@@ -439,7 +424,6 @@ class OnixPLService {
             for(Map it : value){
               String key = it?.get("_content")
               if (key) {
-                if(key.contains("SupplyCopy")) println "ITS HERE ${key} ${val.get(cp) as JSON}";
                 keys << treatTextForComparison(key)
                 if(priority.containsKey(it.get("_name"))){
                   priority[it.get("_name")]+= key
@@ -450,16 +434,16 @@ class OnixPLService {
         }
       }
       
-      if (val['_content'] == null) {
+      if (val['_content'] == null ) {
 
         // Add each sub element.
         for (String prop in val.keySet()) {
           switch (prop) {
             default :
-              if (!prop.startsWith("_")) {
-
+              if (!prop.startsWith("_") && !ignore_list.contains(prop)) {
                 // Recursively call this method.
                 for (Map v in val[prop]) {
+
                   generateKeys (v, exclude, keys,priority)
                 }
               }
@@ -539,7 +523,6 @@ class OnixPLService {
       'GeneralTermRelatedPlace':{return true},
       'UsageRelatedPlace': {node -> 
         def remove= node?.'UsagePlaceRelator'?.'_content'?.contains(["onixPL:TargetResource"]);
-        println "CLOSURE ${remove}";
         return !remove
       }
     ]
