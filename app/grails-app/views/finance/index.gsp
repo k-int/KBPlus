@@ -339,6 +339,7 @@
 
         //This is for AJAX functionality, inclusion of first run too!
         var _bindBehavior = function() {
+            $(s.ft.searchBtn).prop('disabled',${filterMode=='OFF'}); //greys out search button if inactive
             $(s.ct.datePickers).datepicker({format: s.options.dateFormat}); //datepicker
             setupModSelect2s();
             $(s.ft.editableBind).editable(); //technically being performed twice on first run
@@ -373,17 +374,24 @@
 
 
         var _performBulkDelete = function() {
+            var selected = $('.bulkcheck:checked');
+
+            if(selected.length === 0) {
+                alert('select appropriate checkboxes first :)');
+                return false;
+            }
+
             var agreed = confirmSubmit("Actions are permanent for selected Cost Item(s)");
-            if(agreed == false)
+            if(agreed === false)
             {
-                $('.bulkcheck:checked').each(function() {
+                selected.each(function() {
                    this.checked = false;
                 });
                 return false;
             } else
             {
                 var allVals = [];
-                $('.bulkcheck:checked').each(function(){
+                selected.each(function(){
                     allVals.push($(this).val());
                  });
 
@@ -959,7 +967,6 @@
 
 
             $('#filterMode').val("${filterMode}"); //default the filtering mode
-            $(s.ft.searchBtn).prop('disabled',${filterMode=='OFF'}); //greys out search button if inactive
 
             s.mybody.on('click',s.ft.delSelectAll, function(event) {
                 var isChecked = this.checked? true : false;
