@@ -338,7 +338,7 @@ class OnixPLService {
       // Create list of element names.
       List el_names = data.keySet() as List
       Map<String,List<String>> priority = ["User":[]];
-
+      //We create a clone for the data because we will be removing entries during key generation
       generateKeys(data.clone(), exclude, keys,priority)
       priority.entrySet().each{
         if(it.getValue()){
@@ -398,15 +398,27 @@ class OnixPLService {
 
     if (name) {
       def valKeys = val.keySet()
+      println ""
+      println "KEYSET: "
+      println valKeys
+      println ""
       // Add any key values to the keys list.
       for (int i=0;i<valKeys.size();i++) {
         def cp =valKeys[i]
 
         if (!cp.startsWith('_')) {
+          println "CP: ${cp}"
+          //See if we are looking at a node that should not be part of the key
           if(exclude.containsKey(cp) && exclude.get(cp)(val.get(cp))){
             if(cp == "UsageRelatedPlace"){
               println val.get(cp) as JSON
             }
+            /*
+            For some reason, when we remove UsageRelatedPlace, supplycopy is added, only on one entry.
+            If we dont remove UsageRelatedPlace, there is no supplycopy... these two are on the same level
+            so there should be no relation...
+            */
+            //remove it from the map, and continue with the next node.
             val.remove(cp)
             continue;
           }
