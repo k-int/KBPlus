@@ -49,13 +49,13 @@
             <g:if test="${hits}" >
               <div class="paginateButtons" style="text-align:center">
                 <g:if test="${params.int('offset')}">
-                 Showing Results ${params.int('offset') + 1} - ${hits.totalHits < (params.int('max') + params.int('offset')) ? hits.totalHits : (params.int('max') + params.int('offset'))} of ${hits.totalHits}
+                 Showing Results ${params.int('offset') + 1} - ${resultsTotal < (params.int('max') + params.int('offset')) ? resultsTotal : (params.int('max') + params.int('offset'))} of ${resultsTotal}
                 </g:if>
-                <g:elseif test="${hits.totalHits && hits.totalHits > 0}">
-                  Showing Results 1 - ${hits.totalHits < params.int('max') ? hits.totalHits : params.int('max')} of ${hits.totalHits}
+                <g:elseif test="${resultsTotal && resultsTotal > 0}">
+                  Showing Results 1 - ${resultsTotal < params.int('max') ? resultsTotal : params.int('max')} of ${resultsTotal}
                 </g:elseif>
                 <g:else>
-                  Showing ${hits.totalHits} Results
+                  Showing ${resultsTotal} Results
                 </g:else>
               </div>
   
@@ -73,27 +73,27 @@
                         <g:if test="${hit.type=='com.k_int.kbplus.License'}"><span class="label label-info">License</span></g:if> 
                       </td>
                       <g:if test="${hit.type=='com.k_int.kbplus.Org'}">
-                          <td><g:link controller="org" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
+                          <td><g:link controller="org" action="show" id="${hit.getSource().dbId}">${hit.getSource().name}</g:link></td>
                       </g:if> 
                       <g:if test="${hit.type=='com.k_int.kbplus.TitleInstance'}">
-                        <td><g:link controller="titleInstance" action="show" id="${hit.source.dbId}">${hit.source.title}</g:link></td>
+                        <td><g:link controller="titleInstance" action="show" id="${hit.getSource().dbId}">${hit.getSource().title}</g:link></td>
                         <td>
-                          <g:each in="${hit.source.identifiers}" var="id">
+                          <g:each in="${hit.getSource().identifiers}" var="id">
                             ${id.type}:${id.value} &nbsp;
                           </g:each>
                         </td>
                       </g:if>
                       <g:if test="${hit.type=='com.k_int.kbplus.Package'}">
-                        <td><g:link controller="package" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
+                        <td><g:link controller="package" action="show" id="${hit.getSource().dbId}">${hit.getSource().name}</g:link></td>
                       </g:if>
                       <g:if test="${hit.type=='com.k_int.kbplus.Platform'}">
-                        <td><g:link controller="platform" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
+                        <td><g:link controller="platform" action="show" id="${hit.getSource().dbId}">${hit.getSource().name}</g:link></td>
                       </g:if>
                       <g:if test="${hit.type=='com.k_int.kbplus.Subscription'}">
-                        <td><g:link controller="subscription" action="show" id="${hit.source.dbId}">${hit.source.name} (${hit.source.type})</g:link></td>
+                        <td><g:link controller="subscription" action="show" id="${hit.getSource().dbId}">${hit.getSource().name} (${hit.getSource().type})</g:link></td>
                       </g:if>
                       <g:if test="${hit.type=='com.k_int.kbplus.License'}">
-                        <td><g:link controller="license" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link></td>
+                        <td><g:link controller="license" action="show" id="${hit.getSource().dbId}">${hit.getSource().name}</g:link></td>
                       </g:if>
                     </tr>
                   </g:each>
@@ -103,7 +103,7 @@
   
             <div class="paginateButtons" style="text-align:center">
               <g:if test="${hits}" >
-                <span><g:paginate controller="home" action="index" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${hits.totalHits}" /></span>
+                <span><g:paginate controller="home" action="index" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${resultsTotal}" /></span>
               </g:if>
             </div>
           </div>

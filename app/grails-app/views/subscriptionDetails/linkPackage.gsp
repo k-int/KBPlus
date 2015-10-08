@@ -112,13 +112,13 @@
              <g:if test="${hits}" >
                 <div class="paginateButtons" style="text-align:center">
                   <g:if test="${params.int('offset')}">
-                   Showing Results ${params.int('offset') + 1} - ${hits.totalHits < (params.int('max') + params.int('offset')) ? hits.totalHits : (params.int('max') + params.int('offset'))} of ${hits.totalHits}
+                   Showing Results ${params.int('offset') + 1} - ${resultsTotal < (params.int('max') + params.int('offset')) ? resultsTotal : (params.int('max') + params.int('offset'))} of ${resultsTotal}
                   </g:if>
-                  <g:elseif test="${hits.totalHits && hits.totalHits > 0}">
-                    Showing Results 1 - ${hits.totalHits < params.int('max') ? hits.totalHits : params.int('max')} of ${hits.totalHits}
+                  <g:elseif test="${resultsTotal && resultsTotal > 0}">
+                    Showing Results 1 - ${resultsTotal < params.int('max') ? resultsTotal : params.int('max')} of ${resultsTotal}
                   </g:elseif>
                   <g:else>
-                    Showing ${hits.totalHits} Results
+                    Showing ${resultsTotal} Results
                   </g:else>
                 </div>
 
@@ -130,15 +130,15 @@
                     <tbody>
                       <g:each in="${hits}" var="hit">
                         <tr>
-                          <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name} </g:link>(${hit.source?.titleCount?:'0'} Titles)</td>
-                          <td>${hit.source.consortiaName}</td>
+                          <td><g:link controller="packageDetails" action="show" id="${hit.getSource().dbId}">${hit.getSource().name} </g:link>(${hit.getSource()?.titleCount?:'0'} Titles)</td>
+                          <td>${hit.getSource().consortiaName}</td>
                           <td><g:link action="linkPackage" 
                                  id="${params.id}"
-                                 params="${[addId:hit.source.dbId,addType:'Without']}"
+                                 params="${[addId:hit.getSource().dbId,addType:'Without']}"
                                  onClick="return confirm('Are you sure you want to add without entitlements?');">Link (no Entitlements)</g:link><br/>
                               <g:link action="linkPackage" 
                                  id="${params.id}" 
-                                 params="${[addId:hit.source.dbId,addType:'With']}"
+                                 params="${[addId:hit.getSource().dbId,addType:'With']}"
                                  onClick="return confirm('Are you sure you want to add with entitlements?');">Link (with Entitlements)</g:link></td>
                         </tr>
                       </g:each>
@@ -148,7 +148,7 @@
              </g:if>
              <div class="paginateButtons" style="text-align:center">
                 <g:if test="${hits}" >
-                  <span><g:paginate controller="subscriptionDetails" action="linkPackage" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${hits.totalHits}" /></span>
+                  <span><g:paginate controller="subscriptionDetails" action="linkPackage" params="${params}" next="Next" prev="Prev" maxsteps="10" total="${resultsTotal}" /></span>
                 </g:if>
               </div>
           </div>

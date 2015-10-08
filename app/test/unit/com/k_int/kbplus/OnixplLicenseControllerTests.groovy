@@ -73,25 +73,25 @@ class OnixplLicenseControllerTests {
   //   assert model.onixplLicenseInstance == onixplLicense
   // }
 
-  void testDelete() {
-    controller.delete()
-    assert flash.message != null
-    assert response.redirectedUrl == '/onixplLicense/list'
+  // void testDelete() {
+  //   controller.delete()
+  //   assert flash.message != null
+  //   assert response.redirectedUrl == '/onixplLicense/list'
 
-    response.reset()
+  //   response.reset()
 
-    populateValidParams(params)
-    def onixplLicense = new OnixplLicense(params)
+  //   populateValidParams(params)
+  //   def onixplLicense = new OnixplLicense(params)
 
-    assert onixplLicense.save() != null
-    assert OnixplLicense.count() == 1
+  //   assert onixplLicense.save() != null
+  //   assert OnixplLicense.count() == 1
 
-    params.id = onixplLicense.id
+  //   params.id = onixplLicense.id
 
-    controller.delete()
+  //   controller.delete()
 
-    assert OnixplLicense.count() == 0
-    assert OnixplLicense.get(onixplLicense.id) == null
-    assert response.redirectedUrl == '/onixplLicense/list'
-  }
+  //   assert OnixplLicense.count() == 0
+  //   assert OnixplLicense.get(onixplLicense.id) == null
+  //   assert response.redirectedUrl == '/onixplLicense/list'
+  // }
 }

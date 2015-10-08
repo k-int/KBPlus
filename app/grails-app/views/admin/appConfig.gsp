@@ -12,19 +12,27 @@
   <body>
 
     <div class="container">
-      <h1>${orgInstance.name}</h1>
-      <g:render template="nav" contextPath="." />
+ 
     </div>
 
     <div class="container">
       
-
-     <h6>${message(code:'org.properties')}</h6>
+     <h6>${message(code:'sys.properties')}</h6>
               <div id="custom_props_div" class="span12">
-                  <g:render template="/templates/custom_props" model="${[ prop_desc:PropertyDefinition.ORG_CONF,ownobj:orgInstance ]}"/>
+                  <g:render template="/templates/custom_props" model="${[ prop_desc:PropertyDefinition.SYS_CONF,ownobj:adminObj ]}"/>
               </div>
+    <g:form action="appConfig" method="POST">
+      <input type="submit" name="one"class="btn"value="Refresh"  />
+    </g:form>   
+    <h3> Current output for Holders.config</h3>
+    <ul>
+    <g:each in="${currentconf.keySet().sort()}" var="key">
+      <li>${key}: &nbsp; &nbsp; <g:textArea readonly="" name="key" value="${currentconf.get(key)}"/> </li>
+    </g:each>
+    <ul>
     </div>
-        <r:script language="JavaScript">
+
+    <r:script language="JavaScript">
 
      runCustomPropsJS("<g:createLink controller='ajax' action='lookup'/>");
 

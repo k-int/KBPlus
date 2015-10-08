@@ -17,7 +17,6 @@ import groovy.sql.Sql
 class MyInstitutionsController {
     def dataSource
     def springSecurityService
-    def ESWrapperService
     def ESSearchService
     def gazetteerService
     def alertsService

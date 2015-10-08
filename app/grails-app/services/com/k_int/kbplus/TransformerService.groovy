@@ -8,7 +8,6 @@ import org.apache.http.entity.mime.content.StringBody
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
-import org.codehaus.groovy.grails.web.context.ServletContextHolder as SCH
 import static groovyx.net.http.ContentType.*
 import static groovyx.net.http.Method.*
 

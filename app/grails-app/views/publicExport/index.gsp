@@ -190,13 +190,13 @@ This work is published from:
              <g:if test="${hits}" >
                 <div class="paginateButtons" style="text-align:center">
                     <g:if test=" ${params.int('offset')}">
-                   Showing Results ${params.int('offset') + 1} - ${hits.totalHits < (params.int('max') + params.int('offset')) ? hits.totalHits : (params.int('max') + params.int('offset'))} of ${hits.totalHits}
+                   Showing Results ${params.int('offset') + 1} - ${resultsTotal < (params.int('max') + params.int('offset')) ? resultsTotal : (params.int('max') + params.int('offset'))} of ${resultsTotal}
                   </g:if>
-                  <g:elseif test="${hits.totalHits && hits.totalHits > 0}">
-                      Showing Results 1 - ${hits.totalHits < params.int('max') ? hits.totalHits : params.int('max')} of ${hits.totalHits}
+                  <g:elseif test="${resultsTotal && resultsTotal > 0}">
+                      Showing Results 1 - ${resultsTotal < params.int('max') ? resultsTotal : params.int('max')} of ${resultsTotal}
                   </g:elseif>
                   <g:else>
-                    Showing ${hits.totalHits} Results
+                    Showing ${resultsTotal} Results
                   </g:else>
                 </div>
 
@@ -214,33 +214,33 @@ This work is published from:
                     <tbody>
                       <g:each in="${hits}" var="hit">
                         <tr>
-                          <td>${hit.source.name}
+                          <td>${hit.getSource().name}
                               <!--(${hit.score})-->
-                              <span>(${hit.source.titleCount?:'Unknown number of'} titles)</span>
+                              <span>(${hit.getSource().titleCount?:'Unknown number of'} titles)</span>
                           <ul>
-                          <g:each in="${hit.source.identifiers}" var="ident">
+                          <g:each in="${hit.getSource().identifiers}" var="ident">
                             <li>${ident}</li>
                           </g:each>
                           </ul>
-                          <td>${hit.source.consortiaName}</td>
+                          <td>${hit.getSource().consortiaName}</td>
                           <td>
-                          <g:formatDate formatName="default.date.format.notime" date='${hit.source.startDate?dateFormater.parse(hit.source.startDate):null}'/>
+                          <g:formatDate formatName="default.date.format.notime" date='${hit.getSource().startDate?dateFormater.parse(hit.getSource().startDate):null}'/>
                           </td>
                           <td>
-                          <g:formatDate formatName="default.date.format.notime" date='${hit.source.endDate?
-                            dateFormater.parse(hit.source.endDate):null}'/>
+                          <g:formatDate formatName="default.date.format.notime" date='${hit.getSource().endDate?
+                            dateFormater.parse(hit.getSource().endDate):null}'/>
                           </td>
-                          <td><g:formatDate formatName="default.date.format" date='${hit.source.lastModified?dateFormater.parse(hit.source.lastModified):null}'/> </td>
+                          <td><g:formatDate formatName="default.date.format" date='${hit.getSource().lastModified?dateFormater.parse(hit.getSource().lastModified):null}'/> </td>
                           </td>
                           
                           <td>  
         <div class="dropdown">
             <a class="dropdown-toggle badge" data-toggle="dropdown" href="#">Formats<i class="fa fa-caret-down"></i> </a>
         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-            <li><g:link action="pkg" params="${[format:'json',id:hit.source.dbId]}">JSON</g:link></li>  
-            <li><g:link action="pkg" params="${[format:'xml',id: hit.source.dbId]}">XML Export</g:link></li>
+            <li><g:link action="pkg" params="${[format:'json',id:hit.getSource().dbId]}">JSON</g:link></li>  
+            <li><g:link action="pkg" params="${[format:'xml',id: hit.getSource().dbId]}">XML Export</g:link></li>
             <g:each in="${transforms}" var="transkey,transval">
-              <li><g:link action="pkg" params="${[format:'xml',transformId:transkey,mode:params.mode,id:hit.source.dbId]}"> ${transval.name}</g:link></li>
+              <li><g:link action="pkg" params="${[format:'xml',transformId:transkey,mode:params.mode,id:hit.getSource().dbId]}"> ${transval.name}</g:link></li>
             </g:each>
             </ul>
         </div>
@@ -251,7 +251,7 @@ This work is published from:
                   </table>
                 </div>
                 <div class="paginateButtons" style="text-align:center">
-                  <span><g:paginate controller="${controller}" action="index" params="${params}" next="Next" prev="Prev" total="${hits.totalHits}" /></span>
+                  <span><g:paginate controller="${controller}" action="index" params="${params}" next="Next" prev="Prev" total="${resultsTotal}" /></span>
             </g:if>
           </div>
           </div>
