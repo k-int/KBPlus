@@ -358,19 +358,19 @@ class FinanceController {
 
                     result.cost_items.each { ci ->
 
-                        def codes = CostItemGroup.findAllByCostItem(ci).collect { it.budgetcode.value+'\t' }
+                        def codes = CostItemGroup.findAllByCostItem(ci).collect { it?.budgetcode?.value+'\t' }
 
-                        def start_date   = ci.startDate ? dateFormat.format(ci.startDate) : ''
-                        def end_date     = ci.endDate ? dateFormat.format(ci.endDate) : ''
-                        def paid_date    = ci.datePaid ? dateFormat.format(ci.datePaid) : ''
-                        def created_date = ci.dateCreated ? dateFormat.format(ci.dateCreated) : ''
-                        def edited_date  = ci.lastUpdated ? dateFormat.format(ci.lastUpdated) : ''
+                        def start_date   = ci.startDate ? dateFormat.format(ci?.startDate) : ''
+                        def end_date     = ci.endDate ? dateFormat.format(ci?.endDate) : ''
+                        def paid_date    = ci.datePaid ? dateFormat.format(ci?.datePaid) : ''
+                        def created_date = ci.dateCreated ? dateFormat.format(ci?.dateCreated) : ''
+                        def edited_date  = ci.lastUpdated ? dateFormat.format(ci?.lastUpdated) : ''
 
-                        writer.write("\"${ci.id}\"\t\"${ci.owner.name}\"\t\"${ci.invoice?ci.invoice.invoiceNumber:''}\"\t${ci.order? ci.order.orderNumber:''}\t" +
-                                "${ci.sub? ci.sub.name:''}\t${ci.subPkg?ci.subPkg.pkg.name:''}\t${ci.issueEntitlement?ci.issueEntitlement.tipp.title.title:''}\t" +
-                                "${paid_date}\t${start_date}\t\"${end_date}\"\t\"${ci.costItemCategory?ci.costItemCategory.value:''}\"\t\"${ci.costItemStatus?ci.costItemStatus.value:''}\"\t" +
-                                "\"${ci.billingCurrency.value?:''}\"\t\"${ci.costInBillingCurrency?:''}\"\t\"${ci.costInLocalCurrency?:''}\"\t\"${ci.taxCode?ci.taxCode.value:''}\"\t" +
-                                "\"${ci.costItemElement?ci.costItemElement.value:''}\"\t\"${ci.costDescription?:''}\"\t\"${ci.reference?:''}\"\t\"${codes?codes.toString():''}\"\t" +
+                        writer.write("\"${ci.id}\"\t\"${ci?.owner?.name}\"\t\"${ci?.invoice?ci.invoice.invoiceNumber:''}\"\t${ci?.order? ci.order.orderNumber:''}\t" +
+                                "${ci?.sub? ci.sub.name:''}\t${ci?.subPkg?ci.subPkg.pkg.name:''}\t${ci?.issueEntitlement?ci.issueEntitlement?.tipp?.title?.title:''}\t" +
+                                "${paid_date}\t${start_date}\t\"${end_date}\"\t\"${ci?.costItemCategory?ci.costItemCategory.value:''}\"\t\"${ci?.costItemStatus?ci.costItemStatus.value:''}\"\t" +
+                                "\"${ci?.billingCurrency.value?:''}\"\t\"${ci?.costInBillingCurrency?:''}\"\t\"${ci?.costInLocalCurrency?:''}\"\t\"${ci?.taxCode?ci.taxCode.value:''}\"\t" +
+                                "\"${ci?.costItemElement?ci.costItemElement.value:''}\"\t\"${ci?.costDescription?:''}\"\t\"${ci?.reference?:''}\"\t\"${codes?codes.toString():''}\"\t" +
                                 "\"${ci.createdBy.username}\"\t\"${created_date}\"\t\"${ci.lastUpdatedBy.username}\"\t\"${edited_date}\"\n")
                     }
                     writer.flush()
