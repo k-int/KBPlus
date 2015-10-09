@@ -41,10 +41,9 @@
                         data-defaultValue="${ci?.subPkg?.pkg?.name}" data-ownerid="${ci.id}" data-subfilter="${ci?.sub?.id}"
                         data-owner="${ci.class.name}" baseClass="com.k_int.kbplus.SubscriptionPackage"/>
         </td>
-        %{--<td data-pk="${ci?.issueEntitlement?.tipp?.title?.id}" colspan="2">${ci?.issueEntitlement?.tipp?.title?.title?.encodeAsHTML()}</td>--}%
         <td colspan="2">
         <g:simpleReferenceTypedown id="${ci.id}_ie" modified="${true}" class="refObj" data-mode="ie"
-                                   style="width:350px;" name="title" data-shortcode="${params.shortcode}" data-subfilter="${ci?.sub?.name}"
+                                   style="width:350px;" name="title" data-shortcode="${params.shortcode}" data-subfilter="${ci?.sub?.id}"
                                    data-placeholder="${ci?.issueEntitlement==null? 'Enter IE name':''}" data-ownerfield="issueEntitlement"
                                    data-defaultValue="${ci?.issueEntitlement?.tipp?.title?.title}" data-ownerid="${ci.id}"
                                    data-owner="${ci.class.name}" baseClass="com.k_int.kbplus.IssueEntitlement"/>

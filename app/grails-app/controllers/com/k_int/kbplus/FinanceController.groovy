@@ -17,8 +17,7 @@ class FinanceController {
     private final def dateTimeFormat  = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss") {{setLenient(false)}}
     private final def ci_count        = 'select count(ci.id) from CostItem as ci '
     private final def ci_select       = 'select ci from CostItem as ci '
-    private final def base_qry        = " from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) "
-    private final def admin_role      = Role.findByAuthority('ROLE_ADMIN')
+    private final def admin_role      = Role.findByAuthority('INST_ADM')
     private final def defaultCurrency = RefdataCategory.lookupOrCreate('Currency','GBP - United Kingdom Pound')
     private final def maxAllowedVals  = [10,20,50,100,200] //in case user has strange default list size, plays hell with UI
     //private final def defaultInclSub  = RefdataCategory.lookupOrCreate('YN','Yes') //Owen is to confirm this functionality
@@ -35,7 +34,7 @@ class FinanceController {
 
     boolean isFinanceAuthorised(Org org, User user) {
         def retval = false
-        if (org && org.hasUserWithRole(user,admin_role))
+        if (org && org.hasUserWithRole(user,admin_role)) //ROLE_ADMIN
             retval = true
         return retval
     }
@@ -51,7 +50,7 @@ class FinanceController {
         //Check nothing strange going on with financial data
         result.institution =  Org.findByShortcode(params.shortcode)
         def user           =  User.get(springSecurityService.principal.id)
-        if (isFinanceAuthorised(result.institution, user)) {
+        if (!isFinanceAuthorised(result.institution, user)) {
             flash.error=message(code: 'financials.permission.unauthorised', args: [result.institution? result.institution.name : 'N/A'])
             response.sendError(401)
         }

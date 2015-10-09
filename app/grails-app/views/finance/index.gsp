@@ -418,7 +418,7 @@
            }
         };
 
-        //todo add avanced search field copy, if advanced row is visable
+        //todo add advanced search field copy, if advanced row is visible
         var _filtersUpdated = function() {
           $('#newInvoiceNumber').val($('#filterInvoiceNumber').val());
           $('#newOrderNumber').val($('#filterOrderNumber').val());
@@ -437,7 +437,7 @@
           }
         };
 
-
+        //button to change to on and off
         var _filterSelection = function() {
             var filterMode = $(s.ft.filterOpt);
             var submitBtn  = $(s.ft.searchBtn);
@@ -485,13 +485,16 @@
                 var counter   = 0;
 
                 reqFields.each(function() {
-                  if($(this).is("select")) {
-                    if($.trim($(this).val())=="Not specified")
+                  if($(this).select2("data") !== 'undefined') {
+                    console.log('req field is select2 value as follows: ',$.trim($(this).val()));
+                    if($.trim($(this).val())==null)
                        counter++;
                   } else {
                     if($.trim($(this).val()).length==0)
                       counter++;
                   }});
+
+                console.log('counter ', counter);
 
                 if(counter==4)
                 {
@@ -510,9 +513,12 @@
             if(!filterValidation())
                 return false;
 
+            console.log('Passed filter validation...');
             //todo send fixed subscription data ... causing redirect on AJAX with below
             //var paginateData = $('#paginateInfo').data();
             //var paramAppend  = "&sub="+fixedsub+"&inSubMode="+paginateData.insubmode;
+
+            console.log($(this).parents('form:first').serialize());
 
             $.ajax({
                 type:'POST',
@@ -526,7 +532,8 @@
                     errorHandling(textStatus,'Filtering',errorThrown);
                 },
                 complete:function(XMLHttpRequest,textStatus){
-                    _filterSelection();fadeAway('info',15000);
+                    _filterSelection();
+                    fadeAway('info',15000);
                     _bindBehavior();
                 }
             });
@@ -911,15 +918,13 @@
                             case "ie":
                                 console.log('IE was changed...');
                             break;
-
                             case "pkg":
                                 console.log('Sub Pkg...');
                             break;
-
                             case "sub":
                                 console.log('Sub was changed...');
                                 $(id+'_subPkg').data('subfilter',data.relation.id);
-                                $(id+'_ie').data('subfilter',currentText);
+                                $(id+'_ie').data('subfilter',data.relation.id);
                                 ie.select2('enable');
                                 subPkg.select2('enable');
                                 if(resetMode === true)
@@ -928,7 +933,6 @@
                                     subPkg.select2('data',null);
                                 }
                             break;
-
                             default:
                                 console.log('unknown behaviour!');
                             break;
