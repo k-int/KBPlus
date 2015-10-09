@@ -38,9 +38,9 @@
             <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>
 
             <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
-                <li><a data-mode="all" class="export" style="cursor: pointer">CSV Export Current List</a></li>
-                 <li><a data-mode="sub" class="disabled export" style="cursor: pointer">CSV Sub Costs</a></li>
-                 <li><a data-mode="code" class="disabled export" style="cursor: pointer">CSV Code Costs</a></li>
+                <li><a data-mode="all" class="export" style="cursor: pointer">CSV Cost Items</a></li>
+                 <li><a data-mode="sub" class="disabled export" style="cursor: pointer">CSV Costs by Subscription</a></li>
+                 <li><a data-mode="code" class="disabled export" style="cursor: pointer">CSV Costs by Code</a></li>
             </ul>
         </li>
     </ul>
@@ -422,34 +422,19 @@
         var _filtersUpdated = function() {
           $('#newInvoiceNumber').val($('#filterInvoiceNumber').val());
           $('#newOrderNumber').val($('#filterOrderNumber').val());
-        };
-
-        //Fetch packages for the selected subscription
-        var filterSubUpdated  = function() {
-          var filterSubscription = $(this);
-            console.log("filter sub updated called ",filterSubscription.val());
-
-           var filterVal = filterSubscription.val().split(':');
-          $.ajax({
-            url: s.url.ajaxLookupURL,
-            data: {
-              format:'json',
-              subFilter:filterVal[1],
-              baseClass:'com.k_int.kbplus.SubscriptionPackage'
-            },
-            dataType:'json'
-          })
-          .done(function(data) {
-            var newSubPackge = $(s.ct.newSubPkg);
-            var filterSubPkg = $(s.ft.filterSubPkg);
-            newSubPackge.children('option').remove();
-            filterSubPkg.children('option:gt(0)').remove();
-            var numValues = data.values.length;
-            for (var i = 0; i != numValues; i++) {
-              $(s.ft.filterSubPkg).append('<option value="'+data.values[i].id+'">'+data.values[i].text+'</option>');
-            }
-            filterSubPkg.children('option').clone().appendTo(newSubPackge);
-          });
+          //todo copy of filter sub & subpkg and enable/diable mode to new sub & new subpkg
+          if(!$('#advSearchRow').is(':hidden'))
+          {
+            //$(s.ct.newIE).select2('data',($('#adv_ie').select2('data'))); //todo make adv_ie select2
+            $('#newDatePaid').val($('#adv_datePaid').val());
+            $('#newCostInLocalCurrency').val($('#adv_amount').val());
+            //$('#newCostItemCategory').val($('#adv_costItemCategory').val());
+            //$('#newCostItemStatus').val($('#adv_costItemStatus').val());
+            $('#newEndDate').val($('#adv_end').val());
+            $('#newStartDate').val($('#adv_start').val());
+            //$('#newBudgetCode').select2('data',$('#adv_codes').select2('data')); //todo make adv_codes select2
+            $('#newCostItemReference').val($('#adv_ref').val());
+          }
         };
 
 
@@ -644,7 +629,11 @@
           return $.ajax(config);
         }
 
-
+        function fadeAway(id,time) {
+             $('#'+id).fadeIn(2000).delay(time).slideUp(4000, function(){
+                $('#'+id).remove();
+             });
+        }
 
         /**
         * Binds everything which needs to be run the once, including the majority of dynamically rendered HTML content
@@ -877,12 +866,8 @@
                         fields = "issueEntitlement,";
                     if(subPkg.select2("data") != null )
                         fields += "subPkg";
-
-                    if(fields != '')
-                    {
-                        console.log('Sub selection requires following reset of fields: '+fields);
+                    if(fields != '') //Sub selection requires following reset of fields
                         resetMode = true;
-                    }
                  }
 
 
@@ -919,7 +904,6 @@
                         element.data('previous',prevSelection ? prevSelection.id+'_'+prevSelection.text : '');
                         element.data('defaultvalue',e.choice.text);
                         element.data('relationid',data.relation.id);
-                        console.log("Relation ID: "+data.relation.id,"Choice Text: "+e.choice.text, "Prev Selection: ",prevSelection);
 
                         //set the subFilter i.e. the Sub ID
                         switch (mode)
@@ -970,19 +954,16 @@
                  var element = $(this);
                  var text    = e.choice.text;
                  var id      = e.choice.id;
-                 console.log('Chosen ID is as follows',id);
                  element.data('subFilter',id);
                  var prevSelection = element.select2("data");
                  $(s.ft.filterSubPkg).select2('enable');
-                 console.log('filter subscription selection : ',text, id, '\nPrevious selection : ',prevSelection);
             });
 
             //filterSubscription select2 clear down event
             s.mybody.on("select2-removed", s.ft.filterSubscription, function(e) {
                  var pkgFilter = $(s.ft.filterSubPkg);
-                 pkgFilter.select2('disable');
+                 pkgFilter.select2('disable'); //removed ability to enter sub pkg without subscription
                  pkgFilter.select2('data',null);
-                 console.log('filter sub search has been cleared... removed ability to enter sub pkg without subscription');
             });
 
 
@@ -1002,8 +983,6 @@
             s.mybody.on('click',s.ft.delBatch,_performBulkDelete); //Bulk delete action
 
             s.mybody.on('keyup change','.filterUpdated',_filtersUpdated); //Change & keyup on input event
-
-            //s.mybody.on('change',s.ft.filterSubscription + ', ' + s.ct.newSubscription, filterSubUpdated); //on change of subscription select filter
 
             s.mybody.on('change',s.ft.filterOpt, _filterSelection); //on change of subscription select filter
 
@@ -1210,19 +1189,7 @@
 
     Finance.init();
 
-
-        //////////////////////////////////////////////TO REFACTOR//////////////////////////////////////////////
-
-        function filterSelection() {
-            if($('#submitFilterMode').attr("value")!="reset")
-            {
-                var newMode       = $('#filterMode');
-                var disabledState = (newMode.val() == "ON")? false:true; //Need to turn off, i.e. refresh result
-                $('#submitFilterMode').prop('disabled',disabledState);
-            }
-        }
-
-
+        //////////////////////////////////////////////LEAVE FOR NOW//////////////////////////////////////////////
         function userInfo(status,message,timeout) {
             var html = "";
             $.each(message.split(",,,"), function( i, val ) {
@@ -1237,20 +1204,10 @@
             });
         }
 
-        function fadeAway(id,time) {
-             $('#'+id).fadeIn(2000).delay(time).slideUp(4000, function(){
-                $('#'+id).remove();
-             });
-        }
-
         function confirmSubmit(msg) {
           return confirm("Are you sure you wish to continue?\n\n"+msg);
         }
 
-        //////////////////////////////////////////////TO REFACTOR//////////////////////////////////////////////
-
-
-        //////////////////////////////////////////////LEAVE FOR NOW//////////////////////////////////////////////
         function quickHelpInfo() {
             userInfo("Help","<b>Sorting</b> via clickable title links of the following : Cost Item#, Invoice#, Order#, Subscription, Package, date, IE ,,, " +
              "<b>Filter Search</b> via the 4 input fields : Invoice#, Order#, Subscription, and Package, selecting filter mode as ON and submitting the search. On finishing with your results reset via the 'reset' button,,," +

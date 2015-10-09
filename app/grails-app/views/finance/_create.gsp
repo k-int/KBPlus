@@ -11,7 +11,7 @@
         </tr>
         <tr>
             <th>Date</th>
-            <th>Amount [billing]/<br/>[local]</th>
+            <th>Amount [billing] * [Exchange] = [local]</th>
             <th>Reference</th>
             <th colspan="3">Description</th>
         </tr>
@@ -50,15 +50,17 @@
         <tr>
             <td>
                 <h3>Cost date</h3>
-                <input class="datepicker-class" type="date" placeholder="Date Paid" name="newDate" value="${params.newDate}"/><br/>
+                <input class="datepicker-class" type="date" placeholder="Date Paid" name="newDate" id="newDatePaid" value="${params.newDate}"/><br/>
                 <h3>Statuses</h3>
                 <g:select name="newCostItemStatus"
+                          id="newCostItemStatus"
                           from="${costItemStatus}"
                           optionKey="id"
                           title="${g.message(code: 'financials.addNew.costState')}"
                           noSelection="${['':'No Status']}"/> <br/>
 
                 <g:select name="newCostItemCategory"
+                          id="newCostItemCategory"
                           from="${costItemCategory}"
                           optionKey="id"
                           title="${g.message(code: 'financials.addNew.costCategory')}"
