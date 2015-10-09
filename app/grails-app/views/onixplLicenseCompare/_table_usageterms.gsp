@@ -23,8 +23,6 @@
     <th class="tr-${ (rowCount + 1) } cell-1" ><span class="cell-inner">
       <g:if test="${ OnixPLService.getSingleValue(rth, 'UsageType').contains('Supply Copy') }">
 
-       ${row_key}
-       ${row as JSON}
       </g:if>
       
       ${ OnixPLService.getSingleValue(rth, 'UsageType') }

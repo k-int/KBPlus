@@ -315,15 +315,6 @@ class OnixPLService {
     text?.toLowerCase()
   }
   
-
-  private static def deepcopy(orig) {
-     def bos = new ByteArrayOutputStream()
-     def oos = new ObjectOutputStream(bos)
-     oos.writeObject(orig); oos.flush()
-     def bin = new ByteArrayInputStream(bos.toByteArray())
-     def ois = new ObjectInputStream(bin)
-     return ois.readObject()
-}
   /**
    * Flatten the supplied structured row data for use in a table display.
    * 
@@ -399,7 +390,6 @@ class OnixPLService {
     // Name.
     String name = val['_name']
 
-
     if (name) {
 
       // Add any key values to the keys list.
@@ -410,12 +400,7 @@ class OnixPLService {
           //See if we are looking at a node that should not be part of the key
           if(exclude.containsKey(cp) && exclude.get(cp)(val.get(cp))){
 
-            /*
-            For some reason, when we remove UsageRelatedPlace, supplycopy is added, only on one entry.
-            If we dont remove UsageRelatedPlace, there is no supplycopy... these two are on the same level
-            so there should be no relation...
-            */
-            //remove it from the map, and continue with the next node.
+            //skip it, and also add to ignore list
             ignore_list << cp
             continue;
           }
@@ -502,7 +487,8 @@ class OnixPLService {
    */
   public Map compareLicenses (OnixplLicense license, List<OnixplLicense> licenses_to_compare, List<String> sections = null, String return_filter = COMPARE_RETURN_ALL) {
     
-    // The attributes for comparison. These will be lower-cased and compared. 
+    // The attributes for comparison. These will be lower-cased and compared.
+    //The node with the name given as key is passed for further validation if required
     def exclude = [
       'SortNumber':{return true},
       'DisplayNumber':{return true},
@@ -522,8 +508,9 @@ class OnixPLService {
       'UsageQuantity': {return true},
       'GeneralTermRelatedPlace':{return true},
       'UsageRelatedPlace': {node -> 
-        def remove= node?.'UsagePlaceRelator'?.'_content'?.contains(["onixPL:TargetResource"]);
-        return !remove
+        //Based on 5.0 spec, UsageRelatedPlace with TargetResource should result to new row
+        def shouldKeep= node?.'UsagePlaceRelator'?.'_content'?.contains(["onixPL:TargetResource"]);
+        return !shouldKeep
       }
     ]
     
