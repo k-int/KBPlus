@@ -34,13 +34,10 @@
                 </g:if>
             </td>
             <td>
-                %{--<select name="newPackage" class="input-medium" id="newPackage" value="${params.newPackage}">--}%
-                    %{--<option value="xx">Not specified</option>--}%
-                %{--</select>--}%
-                %{--<input disabled='disabled' class="select2" name="newPackage" id="newPackage" />--}%
+                <input class="select2 input-xlarge" disabled='disabled' data-subFilter="" data-disableReset="true" name="newPackage" id="newPackage" />
             </td>
             <td>
-                <input name="newIe" class="input-medium select2" id="newIE" value="${params.newIe}">
+                <input name="newIe" disabled='disabled' data-subFilter="" data-disableReset="true" class="input-large select2" id="newIE" value="${params.newIe}">
             </td>
             <td rowspan="2">
                 <g:submitToRemote data-action="create" onSuccess="Finance.updateResults('create');Finance.clearCreate()"
@@ -48,7 +45,6 @@
                                   url="[controller:'finance', action: 'newCostItem']" type="submit"
                                   name="Add" value="add">
                 </g:submitToRemote> </br></br>
-                <button id="resetCreate"  type="button">reset</button>
             </td>
         </tr>
         <tr>
@@ -100,14 +96,6 @@
                 To: &nbsp;&nbsp;&nbsp;&nbsp;<input class="datepicker-class" placeholder="End Date" type="date" id="newEndDate" name="newEndDate"/>
             </td>
             <td colspan="2">
-                %{--todo Get some clarity on what includeInSubscription is actually for--}%
-                %{--<h3>Include in Subscription</h3>--}%
-                %{--<g:select style="width: 60%" name="includeInSubscription"--}%
-                          %{--from="${yn}"--}%
-                          %{--optionKey="id"--}%
-                          %{--title="${g.message(code: 'financials.addNew.inclSub')}"--}%
-                          %{--optionValue="value"--}%
-                %{--/>--}%
                 <h3>Description</h3>
                 <textarea name="newDescription"
                           placeholder="New Item Description" id="newCostItemDescription"/></textarea>

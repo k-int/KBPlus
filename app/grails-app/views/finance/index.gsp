@@ -341,7 +341,8 @@
 
         //This is for AJAX functionality, inclusion of first run too!
         var _bindBehavior = function() {
-            $(s.ft.searchBtn).prop('disabled',${filterMode=='OFF'}); //greys out search button if inactive
+            if($(s.ft.searchBtn).val() !== 'reset')
+                $(s.ft.searchBtn).prop('disabled',${filterMode=='OFF'}); //greys out search button if inactive
             $(s.ct.datePickers).datepicker({format: s.options.dateFormat}); //datepicker
             setupModSelect2s();
             $(s.ft.editableBind).editable(); //technically being performed twice on first run
@@ -481,7 +482,10 @@
                     element.remove();
                     userInfo(data.success.status,data.success.msg,null);
                 }
-            });
+            })
+            .fail(function( jqXHR, textStatus, errorThrown ) {
+                 errorHandling(textStatus,'Removal of code ',errorThrown);
+             });
         };
 
 
@@ -642,11 +646,13 @@
 
 
 
-
-        //Binds everything which needs to be run the once, including the majority of dynamically rendered HTML content
-        //For everything else which can't be binded once will be in _bindBehavior
+        /**
+        * Binds everything which needs to be run the once, including the majority of dynamically rendered HTML content
+        * For everything else which can't be binded once will be in _bindBehavior
+        *
+        * @private
+        */
         var _firstRun = function() {
-
             //pollyfill stupid browsers not supporting ES6
             if (!String.prototype.startsWith) {
               String.prototype.startsWith = function(searchString, position) {
@@ -697,6 +703,34 @@
                 });
             }
 
+            $(s.ct.newSubPkg).select2({
+                placeholder: "Type sub pkg name...",
+                minimumInputLength: 1,
+                global: false,
+                ajax: {
+                    url: s.url.ajaxLookupURL,
+                    dataType: 'json',
+                    data: function (term, page) {
+                        return {
+                            hideDeleted: 'true',
+                            hideIdent: 'false',
+                            inclSubStartDate: 'false',
+                            inst_shortcode: '${params.shortcode}',
+                            q: '%'+term , // contains search term
+                            page_limit: 20,
+                            subFilter:$(s.ct.newSubscription).val().split(":")[1],
+                            baseClass:'com.k_int.kbplus.SubscriptionPackage'
+                        };
+                    },
+                    results: function (data, page) {
+                        return {results: data.values};
+                    }
+                },
+                allowClear: true,
+                formatSelection: function(data) {
+                   return data.text;
+                }
+            });
 
             $(s.ct.newIE).select2({
                 placeholder: "Identifier..",
@@ -708,14 +742,15 @@
                         return {
                             format:'json',
                             q: term,
-                            subFilter: $(s.ct.newSubscription).val(),
+                            subFilter: $(s.ct.newSubscription).val().split(":")[1],
                             baseClass:'com.k_int.kbplus.IssueEntitlement'
                         };
                     },
                     results: function (data, page) {
                       return {results: data.values};
                     }
-                }
+                },
+                allowClear: true
             });
 
             $(s.ct.newBudgetCode).select2({
@@ -837,7 +872,7 @@
                     var ie     = $(id+'_ie');
                     var subPkg = $(id+'_subPkg');
                     var fields = '';
-                    console.log(ie.select2("data"),subPkg.select2("data"), 'LOL!');
+
                     if(ie.select2("data") != null)
                         fields = "issueEntitlement,";
                     if(subPkg.select2("data") != null )
@@ -845,7 +880,7 @@
 
                     if(fields != '')
                     {
-                        console.log('Sub selection means data needs to be reset for: '+fields);
+                        console.log('Sub selection requires following reset of fields: '+fields);
                         resetMode = true;
                     }
                  }
@@ -919,31 +954,14 @@
             });
 
             //create subscription
-            s.mybody.on("select2-selecting",s.ct.newSubscription, function(e) {
+            s.mybody.on("select2-selecting select2-removed",s.ct.newSubscription, function(e) {
+                 var isRemoved     = e.type === 'select2-removed';
                  var element       = $(this);
-                 var prevSelection = element.select2("data");
-                 var id            = e.choice.id;
-                 var currentText   = e.choice.text;
-                 var mode          = element.data().mode;
-
-                 switch(mode) {
-                    case "sub":
-
-                    break;
-
-                    case "pkg":
-
-                    break;
-
-                    case "ie":
-
-                    break;
-
-                    default :
-                        console.log('Unsuported action...');
-                    break
-                 }
+                 var id            = isRemoved === true? null : e.choice.id;
+                 var currentText   = isRemoved === true? null : e.choice.text;
                  element.data('subFilter',id);
+                 $(s.ct.newSubPkg).select2((isRemoved? 'disable' : 'enable')).data('subfilter',id);
+                 $(s.ct.newIE).select2(isRemoved? 'disable' : 'enable').data('subfilter',currentText);
             });
 
 
@@ -1148,14 +1166,6 @@
 
 
 
-
-
-
-
-
-
-
-
         /**
         * Publicly returned interface methods (revealing module pattern)
         * (Full scope access, including 'this' entire annon func (private var & method access)
@@ -1184,6 +1194,8 @@
                 createForm.trigger("reset");
                 $('input.select2',createForm).each(function() {
                   $(this).select2('data','');
+                  if($(this).data('disablereset') !== undefined)
+                      $(this).select2('disable');
                 });
             },
 

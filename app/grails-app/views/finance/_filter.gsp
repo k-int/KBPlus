@@ -122,8 +122,8 @@
                             <li>
                                 <span for="adv_start">Valid Period</span>
                                 <label for="adv_start">From </label>
-                                <input class="datepicker-class input-small" placeholder="start date" id="adv_start" name="adv_start" /> </br>
-                                <label for="adv_end">To</label><input class="datepicker-class input-small" placeholder="end date" id="adv_end" name="adv_end" />
+                                <input class="datepicker-class input-medium" type="date" placeholder="start date" id="adv_start" name="adv_start" /> </br>
+                                <label for="adv_end">To</label><input type="date" class="datepicker-class input-medium" placeholder="end date" id="adv_end" name="adv_end" />
                             </li>
                             <li>
                                 <label for="adv_costItemStatus">Cost Status</label>
@@ -159,7 +159,11 @@
                                     <option value="gt">&gt;</option>
                                     <option value="gt">&lt;</option>
                                 </select>
-                                <input  id="adv_datePaid" name="adv_datePaid" type="number" class="input-small" step="0.01" /> </br>
+                                <input  id="adv_datePaid" name="adv_datePaid" class="datepicker-class input-medium" type="date" class="input-small"  /> </br>
+                            </li>
+                            <li>
+                                <label for="adv_ie">Issue Entitlement</label>
+                                <input id="adv_ie" name="adv_ie" class="input-large"/>
                             </li>
                         </ul>
                     </div>

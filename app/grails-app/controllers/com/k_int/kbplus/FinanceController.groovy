@@ -7,7 +7,8 @@ import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
 //todo Refactor aspects into service
-//todo track state, maybe use the #! stateful style syntax along with the history API or more appropriately history.js (cross-compatible, polyfill for HTML4)
+//todo track state, opt 1: potential consideration of using get, opt 2: requests maybe use the #! stateful style syntax along with the history API or more appropriately history.js (cross-compatible, polyfill for HTML4)
+//todo Change notifications integration maybe use : changeNotificationService with the onChange domain event action
 //todo Refactor index separation of filter page (used for AJAX), too much content, slows DOM on render/binding of JS functionality
 class FinanceController {
 
@@ -98,9 +99,9 @@ class FinanceController {
         request.setAttribute("editable", result.editable) //editable Taglib doesn't pick up AJAX request, REQUIRED!
         result.filterMode  =  params.filterMode?: "OFF"
         result.info        =  [] as List
-        params.max         =  params.int('max') ? Math.min(params.int('max'),200) : (user?.defaultPageSize? maxAllowedVals.min{(it-user.defaultPageSize).abs()} : 10)
+        params.max         =  params.max && params.int('max') ? Math.min(params.int('max'),200) : (user?.defaultPageSize? maxAllowedVals.min{(it-user.defaultPageSize).abs()} : 10)
         result.max         =  params.max
-        result.offset      =  params.offset?: 0
+        result.offset      =  params.int('offset',0)?: 0
         result.sort        =  ["desc","asc"].contains(params.sort)? params.sort : "desc" //defaults to sort & order of desc id 
         result.sort        =  params.boolean('opSort')==true? ((result.sort=="asc")? 'desc' : 'asc') : result.sort //opposite
         result.isRelation  =  params.orderRelation? params.boolean('orderRelation',false) : false
@@ -116,10 +117,6 @@ class FinanceController {
         //Query setup options, ordering, joins, param query data....
         def (order, join, gspOrder) = CostItem.orderingByCheck(params.order) //order = field, join = left join required or null, gsporder = to see which field is ordering by
         result.order = gspOrder
-
-        def qry_params                  =  [result.institution]
-        //todo remove after UI sub select is changed to select2
-        result.institutionSubscriptions =  Subscription.executeQuery(base_qry, qry_params);
 
         def cost_item_qry_params  =  [result.institution]
         def cost_item_qry         =  (join)? "LEFT OUTER JOIN ${join} AS j WHERE ci.owner = ? " :"  where ci.owner = ? "
@@ -291,6 +288,8 @@ class FinanceController {
                     }
                 }
 
+                def skipped = []
+
                 result.cost_items.each { c ->
                     if (c?.sub)
                     {
@@ -312,10 +311,11 @@ class FinanceController {
                     }
                     else
                     {
-                        log.debug("skipped cost item ${c.id} NO subscription present")
+                        skipped.add("${c.id}")
                     }
                 }
 
+                log.debug("Skipped ${skipped.size()} out of ${result.cost_items.size()} Cost Item's (NO subscription present) IDs : ${skipped} ")
 
                 def catSize = categories.size()-1
                 out.withWriter { writer ->
@@ -385,6 +385,13 @@ class FinanceController {
     }
 
     //todo convert to use a property map, too big now with advanced searching options
+    /**
+     * Method used by index to configure the HQL, check existence, and setup helpful messages
+     * @param result
+     * @param params
+     * @param wildcard
+     * @return
+     */
     def private filterQuery(LinkedHashMap result, GrailsParameterMap params, boolean wildcard) {
         def fqResult        = [:]
         fqResult.failed     = [] as List
@@ -481,12 +488,15 @@ class FinanceController {
 
         if (result.advSearch)
         {
-            log.debug("Advanced Filter searh setup...")
+            log.debug("Advanced Filter search setup...")
+            //todo complete advance searching
             params.findAll {key, val->
                 println("Key ${key} Val ${val}")
             }
         }
 
+        if (result.offset > 0) //Remove count successes, etc when a user is not on the first page
+            fqResult.valid.clear()
 
         fqResult.filterCount = CostItem.executeQuery(countCheck,fqResult.fqParams).first()
         if (fqResult.failed.size() > 0 || fqResult.filterCount == 0)
@@ -498,11 +508,13 @@ class FinanceController {
         }
         else
             fqResult.fqParams.remove(0) //already have this where necessary in the index method!
+
         log.debug("Financials : filterQuery - Wildcard Searching active : ${wildcard} Query output : ${fqResult.qry_string? fqResult.qry_string:'qry failed!'}")
 
         return fqResult
     }
 
+    //todo complete a configurable search which can be extended via external properties if necessary
     private static qry_conf = [
             'ci'  : [
                     selectQry:'select ci from CostItem as ci ',
@@ -536,6 +548,9 @@ class FinanceController {
 
                  ],
                  'adv_datePaid':[
+
+                 ],
+                 'adv_ie':[
 
                  ],
             ]
@@ -642,7 +657,7 @@ class FinanceController {
         def cost_billing_currency = params.newCostInBillingCurrency? params.double('newCostInBillingCurrency',0.00) : 0.00
         def cost_local_currency   = params.newCostInLocalCurrency?   params.double('newCostInLocalCurrency',cost_billing_currency * tempCurrencyVal) : 0.00
 
-//        def inclSub = params.includeInSubscription? (RefdataValue.get(params.long('includeInSubscription'))): defaultInclSub
+        //def inclSub = params.includeInSubscription? (RefdataValue.get(params.long('includeInSubscription'))): defaultInclSub //todo Speak with Owen, unknown behaviour
 
         def newCostItem = new CostItem(
                 owner: result.institution,
@@ -952,8 +967,8 @@ class FinanceController {
             return
         }
 
-        def code        = params.code?.trim()
-        def ci          = CostItem.findByIdAndOwner(params.id, institution)
+        def code  = params.code?.trim()
+        def ci    = CostItem.findByIdAndOwner(params.id, institution)
 
         if (code && ci)
         {
