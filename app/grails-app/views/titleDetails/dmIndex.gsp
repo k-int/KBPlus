@@ -22,11 +22,9 @@
       <div class="row">
         <div class="span12">
           <div class="well container">
-            Title : <input name="q" placeholder="Add &quot;&quot; for exact match" value="${params.q}"/> (Search on title text and identifiers)
-            Status : <select name="status">
-              <option value="">All</option>
-              <option value="Deleted" ${params.status=='Deleted'?'selected':''}>Deleted</option>
-            </select>
+            Title : <input name="q" placeholder="Search title" value="${params.q}"/> (Search on title text and identifiers)
+            Status : <g:select name="status" from="${availableStatuses}" noSelection="${['null':'-Any Status-']}" value="${params.status}"/>
+           
             <button type="submit" name="search" value="yes">Search</button>
             <div class="pull-right">
             </div>

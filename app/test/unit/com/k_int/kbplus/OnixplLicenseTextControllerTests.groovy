@@ -80,25 +80,25 @@ class OnixplLicenseTextControllerTests {
   }
 
 
-  void testDelete() {
-    controller.delete()
-    assert flash.message != null
-    assert response.redirectedUrl == '/onixplLicenseText/list'
+  // void testDelete() {
+  //   controller.delete()
+  //   assert flash.message != null
+  //   assert response.redirectedUrl == '/onixplLicenseText/list'
 
-    response.reset()
+  //   response.reset()
 
-    populateValidParams(params)
-    def onixplLicenseText = new OnixplLicenseText(params)
+  //   populateValidParams(params)
+  //   def onixplLicenseText = new OnixplLicenseText(params)
 
-    assert onixplLicenseText.save() != null
-    assert OnixplLicenseText.count() == 1
+  //   assert onixplLicenseText.save() != null
+  //   assert OnixplLicenseText.count() == 1
 
-    params.id = onixplLicenseText.id
+  //   params.id = onixplLicenseText.id
 
-    controller.delete()
+  //   controller.delete()
 
-    assert OnixplLicenseText.count() == 0
-    assert OnixplLicenseText.get(onixplLicenseText.id) == null
-    assert response.redirectedUrl == '/onixplLicenseText/list'
-  }
+  //   assert OnixplLicenseText.count() == 0
+  //   assert OnixplLicenseText.get(onixplLicenseText.id) == null
+  //   assert response.redirectedUrl == '/onixplLicenseText/list'
+  // }
 }

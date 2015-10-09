@@ -20,7 +20,13 @@ class PublicController {
 			if(params.journal.contains(":")){
 				def (ns,id) = params.journal.split(":")
 				if(ns=="kb"){
-					ti = TitleInstance.get(id.toLong())
+                    try {
+                        ti = TitleInstance.get(id)
+                    }catch (NumberFormatException)
+                    {
+                        flash.error="Entering ns and id e.g :${params.journal} is not permitted, instead it should be ns:identifer number e.g. kb:123"
+                        log.error("Namespace & ID error for public journalLicences: ns:${ns} id:${id} (expected integer)")
+                    }
 				}else{
 					ti = TitleInstance.lookupByIdentifierString(params.journal)
 				}

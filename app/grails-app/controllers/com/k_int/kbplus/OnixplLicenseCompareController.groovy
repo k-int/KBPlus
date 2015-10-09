@@ -43,6 +43,11 @@ class OnixplLicenseCompareController {
     Long license_id = licenses.get(0)
     licenses.remove(0)
     OnixplLicense main_license = OnixplLicense.get(license_id)
+    if(main_license == null){
+      flash.error = "No OnixLicense found for the given id: ${license_id}."
+      response.sendError(404)
+      return;
+    }
     // Get the list of licenses we are comparing with.
     List<OnixplLicense> compare_to =
       allLicenses ? OnixplLicense.findAllByIdNotEqual( license_id ) : OnixplLicense.findAllByIdInList( licenses )

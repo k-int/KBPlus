@@ -80,8 +80,6 @@ abstract class CustomProperty implements Serializable{
         return result
     }
 
-
-  @Override
   public String getValue() {
     return toString()
   }

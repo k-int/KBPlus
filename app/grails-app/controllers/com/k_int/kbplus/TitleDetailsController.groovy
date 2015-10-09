@@ -260,28 +260,45 @@ class TitleDetailsController {
     result
   }
 
-  @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def dmIndex() {
 
     log.debug("dmIndex ${params}");
-
+    if(SpringSecurityUtils.ifNotGranted('KBPLUS_EDITOR,ROLE_ADMIN')){
+      flash.error = message(code:"default.access.error")
+      response.sendError(401)
+      return;
+    }
+    if(params.search == "yes"){
+      params.offset = 0
+    }
     def user = User.get(springSecurityService.principal.id)
-
     def result = [:]
-    def qry_params = []
-    def base_qry = "from TitleInstance as t"
-
     result.max = params.max ? Integer.parseInt(params.max) : user.defaultPageSize
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
-
-    if ( params.status ) {
-      base_qry += ' where t.status.value = ?'
-      qry_params.add(params.status);
+    
+    def ti_cat = RefdataCategory.findByDesc("TitleInstanceStatus")
+    result.availableStatuses = RefdataValue.findAllByOwner(ti_cat).collect{it.toString()}
+    def ti_status = null
+    if(params.status){
+      if(result.availableStatuses.contains(params.status)){
+        ti_status = RefdataCategory.lookupOrCreate( "TitleInstanceStatus", params.status )
+      }
+    }
+    
+    def criteria = TitleInstance.createCriteria()
+    result.hits = criteria.list(max: result.max, offset:result.offset){
+        if(params.q){
+          ilike("title","${params.q}%")
+        }
+        if(ti_status){
+          eq('status',ti_status)
+        }
+        order("sortTitle", params.order?:'asc')
     }
 
-    log.debug("DM Title Query: ${base_qry}, ${params}");
-    result.totalHits = com.k_int.kbplus.TitleInstance.executeQuery("select count(t) "+base_qry, qry_params)[0];
-    result.hits = com.k_int.kbplus.TitleInstance.executeQuery("select t "+base_qry, qry_params, [max:result.max, offset:result.offset]);
+    result.totalHits = result.hits.totalCount
+
     result
   }
 
