@@ -1,6 +1,8 @@
 Changes in 5.1
 * Fix onix issues that resulted in multiple rows for same comparison points.
+* System settings are now editable through the app, at admin/appConfig
 * Upgrade system versions, Java8,Graisl 2.5.1,ES 1.7.1
+* Added context categories on CustomProperties.(Org,Licence,System)
 
 Changes in 5.0.2
 
