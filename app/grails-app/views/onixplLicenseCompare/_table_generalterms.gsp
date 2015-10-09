@@ -14,6 +14,7 @@
       ${ OnixPLService.getSingleValue(rth, 'GeneralTermType') }
     </span></th>
     <g:each var="heading" in="${headings}" status="colCount">
+
       <g:set var="entry" value="${ row[heading] }" />
       <td class="tr-${ (rowCount + 1) } cell-${ colCount + 2 }">
         <g:if test="${ entry }" >
@@ -28,6 +29,15 @@
           <span class="cell-inner">
             <span title='Detailed by license' class="onix-status onix-info" ></span>
           </span>
+
+          <ul><b>
+          <g:if test="${entry['GeneralTermRelatedPlace'] }">
+            <g:each var="clause" in="${entry['GeneralTermRelatedPlace']}">
+
+             <li> via ${ OnixPLService.getAllValues(clause, 'GeneralTermPlaceRelator',', ') }</li>
+            </g:each> 
+          </g:if>
+          </b></ul>
         </g:if>
         <g:else>
           <span class="cell-inner-undefined">
