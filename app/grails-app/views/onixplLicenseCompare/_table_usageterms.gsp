@@ -82,11 +82,10 @@
           <g:if test="${rth['UsageQuantity']}">
            <li> ${OnixPLService.getUsageQuantity(rth['UsageQuantity'][0])} </li>
           </g:if>
-          <g:if test= "${rth['UsageCondition']}">
+          <g:if test= "${rth['UsageCondition']}"> 
              <li>${OnixPLService.getSingleValue(rth,'UsageCondition')}</li>
           </g:if>
-          <g:if test="${rth['UsageRelatedResource'] && rth.'UsageRelatedResource'?.'UsageResourceRelator'?.'_content' != [['onixPL:TargetResource']]}">
-            
+          <g:if test="${rth['UsageRelatedResource'] }">
             <g:each var="clause" in="${rth['UsageRelatedResource']}">
               <g:if test="${clause.'UsageResourceRelator'.'_content' != ['onixPL:TargetResource']}">
                <li> ${OnixPLService.getSingleValue(clause,'UsageResourceRelator')}

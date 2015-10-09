@@ -342,7 +342,7 @@ class OnixPLService {
       Map<String,List<String>> priority = ["User":[]];
       //We create a clone for the data because we will be removing entries during key generation
       //we maybe be ok with simple .copy(), can change later..
-      generateKeys(data, exclude, keys,priority)
+      generateKeys(deepcopy(data), exclude, keys,priority)
       priority.entrySet().each{
         if(it.getValue()){
           keys.add(0,it.getValue())
@@ -439,6 +439,14 @@ class OnixPLService {
     }
   }
   
+  private static def deepcopy(orig) {
+      def bos = new ByteArrayOutputStream()
+      def oos = new ObjectOutputStream(bos)
+      oos.writeObject(orig); oos.flush()
+      def bin = new ByteArrayInputStream(bos.toByteArray())
+      def ois = new ObjectInputStream(bin)
+      return ois.readObject()
+  }
   /**
    * Get the Map representation of the supplied sections of the License.
    * 
@@ -509,8 +517,46 @@ class OnixPLService {
       'GeneralTermRelatedPlace':{return true},
       'UsageRelatedPlace': {node -> 
         //Based on 5.0 spec, UsageRelatedPlace with TargetResource should result to new row
-        def shouldKeep= node?.'UsagePlaceRelator'?.'_content'?.contains(["onixPL:TargetResource"]);
-        return !shouldKeep
+        def deleteNode = true
+        def available_content = node?.'UsagePlaceRelator'?.'_content'
+        if(available_content.contains(["onixPL:TargetResource"])){
+          deleteNode = false
+        }
+        def to_remove = []
+        node.eachWithIndex{ child, index ->
+          if(child.'UsagePlaceRelator'?.'_content'.contains("onixPL:TargetResource")){
+            //leave it ;
+          }else{
+            to_remove += index
+          }
+        }
+        
+        to_remove.each{
+          node.set(it, [:])
+        }
+        return deleteNode
+      },
+      'UsageCondition' : {return true},
+      'UsageRelatedResource' : {node ->
+        //Based on 5.0 spec, UsageResourceRelator with TargetResource should result to new row
+        def deleteNode = true
+        def available_content = node?.'UsageResourceRelator'?.'_content'
+        if(available_content.contains(["onixPL:TargetResource"])){
+          deleteNode = false
+        }
+        def to_remove = []
+        node.eachWithIndex{ child, index ->
+          if(child.'UsageResourceRelator'?.'_content'.contains("onixPL:TargetResource")){
+            //leave it ;
+          }else{
+            to_remove += index
+          }
+        }
+        to_remove.each{
+          //assign empty map to the key we dont want to include
+          node.set(it, [:])
+        }
+        return deleteNode
       }
     ]
     
