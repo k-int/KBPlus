@@ -34,10 +34,20 @@
                 </g:if>
             </td>
             <td>
-                <input class="select2 input-xlarge" disabled='disabled' data-subFilter="" data-disableReset="true" name="newPackage" id="newPackage" />
+                <g:if test="${inSubMode}">
+                  <input class="select2 input-xlarge"  data-subFilter="${fixedSubscription?.id}" data-disableReset="true" name="newPackage" id="newPackage" />
+                </g:if>
+                <g:else>
+                  <input class="select2 input-xlarge" disabled='disabled' data-subFilter="" data-disableReset="true" name="newPackage" id="newPackage" />
+                </g:else>
             </td>
             <td>
-                <input name="newIe" disabled='disabled' data-subFilter="" data-disableReset="true" class="input-large select2" id="newIE" value="${params.newIe}">
+                <g:if test="${inSubMode}">
+                  <input name="newIe"  data-subFilter="${fixedSubscription?.id}" data-disableReset="true" class="input-large select2" id="newIE" value="${params.newIe}">
+                </g:if>
+                <g:else>
+                  <input name="newIe" disabled='disabled' data-subFilter="" data-disableReset="true" class="input-large select2" id="newIE" value="${params.newIe}">
+                </g:else>
             </td>
             <td rowspan="2">
                 <g:submitToRemote data-action="create" onSuccess="Finance.updateResults('create');Finance.clearCreate()"

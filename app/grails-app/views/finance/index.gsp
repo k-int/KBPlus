@@ -100,7 +100,8 @@
 
 <r:script type="text/javascript">
 
-     //todo use AJAX promises, refactor into a resuable AJAX function using a callback object
+     //todo use AJAX promises
+     //todo integrate history.js?
      //Module pattern
      ;var Finance = (function(){
         var s = { //Setup
@@ -481,36 +482,39 @@
             {
                 if("${filterMode}"=="OFF" && $(s.ft.filterOpt).val()=="OFF")
                     return false;
-                var reqFields = $(".required-indicator");
+                var reqFields = ["#filterInvoiceNumber","#orderNumberFilter","#subscriptionFilter","#packageFilter"];
                 var counter   = 0;
-
-                reqFields.each(function() {
-                  if($(this).select2("data") !== 'undefined') {
-                    console.log('req field is select2 value as follows: ',$.trim($(this).val()));
-                    if($.trim($(this).val())==null)
+                var reqSize = reqFields.length;
+                for (var i = 0; i < reqSize; i++) {
+                 var reqVal = $(reqFields[i]).val();
+                 if( reqVal=="" || reqVal==null || $.trim(reqVal).length==0) 
+                 {
                        counter++;
-                  } else {
-                    if($.trim($(this).val()).length==0)
-                      counter++;
-                  }});
-
-                console.log('counter ', counter);
+                 } 
+                 else {
+                     console.log('Valid req field entered', reqFields[i]); 
+                 }
+                }
 
                 if(counter==4)
                 {
+                    console.log('Required fields have all returned empty');
                     userInfo("${g.message(code: 'financials.help.filterSearch')}","${g.message(code: 'financials.filtersearch.error')}");
                     return false;
                 } else
                 {
+                    console.log('counter',counter,'Validated... setting resetMode to: ', submitBtn.val());
                     $('#resetMode').val(submitBtn.val());
                     return true;
                 }
-            } else
+            } else {
+                console.log('Reset has been selected', submitBtn.val());
                 return true;
+            }
         };
 
         var _submitFilterSearch = function(e) {
-            if(!filterValidation())
+            if(!filterValidation()) //check fields are empty, etc
                 return false;
 
             console.log('Passed filter validation...');
@@ -518,7 +522,7 @@
             //var paginateData = $('#paginateInfo').data();
             //var paramAppend  = "&sub="+fixedsub+"&inSubMode="+paginateData.insubmode;
 
-            console.log($(this).parents('form:first').serialize());
+            console.log('Params that are to be sent...',$(this).parents('form:first').serialize());
 
             $.ajax({
                 type:'POST',
@@ -1009,7 +1013,7 @@
 
             //Dynamically attach popover to code edit
             //todo check efficiency
-            //todo bind select2
+            //todo bind select2 functionality in the content, use addCode controller method
             s.mybody.on('click', s.ft.codeEdit, function(event) {
                 event.preventDefault();
                 $(this).popover({
@@ -1234,6 +1238,11 @@
                     break;
                 }
                 case 'Internal Server Error':
+                {
+                    console.log(actionFailed + ' failed due to: ' + reason?reason:status + '... Report this error!');
+                    break;
+                }
+                case 'Forbidden':
                 {
                     console.log(actionFailed + ' failed due to: ' + reason?reason:status + '... Report this error!');
                     break;

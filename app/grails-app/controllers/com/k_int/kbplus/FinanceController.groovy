@@ -10,6 +10,7 @@ import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 //todo track state, opt 1: potential consideration of using get, opt 2: requests maybe use the #! stateful style syntax along with the history API or more appropriately history.js (cross-compatible, polyfill for HTML4)
 //todo Change notifications integration maybe use : changeNotificationService with the onChange domain event action
 //todo Refactor index separation of filter page (used for AJAX), too much content, slows DOM on render/binding of JS functionality
+//todo Enable advanced searching, use configurable map, see filterQuery() 
 class FinanceController {
 
     def springSecurityService
@@ -52,10 +53,11 @@ class FinanceController {
         def user           =  User.get(springSecurityService.principal.id)
         if (!isFinanceAuthorised(result.institution, user)) {
             flash.error=message(code: 'financials.permission.unauthorised', args: [result.institution? result.institution.name : 'N/A'])
-            response.sendError(401)
+            response.sendError(403)
         }
 
         //Accessed from Subscription page, 'hardcoded' set subscription 'hardcode' values
+        //todo Once we know we are in sub only mode, make nessesary adjustments in setupQueryData()
         result.inSubMode   = params.int('sub')? true : false
         if (result.inSubMode)
         {
@@ -86,7 +88,7 @@ class FinanceController {
     }
 
     /**
-     * Setup the data for the financials processing
+     * Setup the data for the financials processing (see financialData())
      * @param result
      * @param params
      * @param user
@@ -116,7 +118,8 @@ class FinanceController {
         //Query setup options, ordering, joins, param query data....
         def (order, join, gspOrder) = CostItem.orderingByCheck(params.order) //order = field, join = left join required or null, gsporder = to see which field is ordering by
         result.order = gspOrder
-
+        
+        //todo Add to query params and HQL query if we are in sub mode e.g. result.inSubMode, result.fixedSubscription
         def cost_item_qry_params  =  [result.institution]
         def cost_item_qry         =  (join)? "LEFT OUTER JOIN ${join} AS j WHERE ci.owner = ? " :"  where ci.owner = ? "
         def orderAndSortBy        =  (join)? "ORDER BY COALESCE(j.${order}, ${Integer.MAX_VALUE}) ${result.sort}, ci.id ASC" : " ORDER BY ci.${order} ${result.sort}"
@@ -179,9 +182,9 @@ class FinanceController {
             result.institution =  Org.findByShortcode(params.shortcode)
             def user           =  User.get(springSecurityService.principal.id)
 
-            if (isFinanceAuthorised(result.institution, user)) {
+            if (!isFinanceAuthorised(result.institution, user)) {
                 flash.error=message(code: 'financials.permission.unauthorised', args: [result.institution? result.institution.name : 'N/A'])
-                response.sendError(401)
+                response.sendError(403)
                 return
             }
 
@@ -383,7 +386,6 @@ class FinanceController {
         log.debug("CSV export operation for ${params.csvMode} mode -- Duration took to complete (${processedCounter} Rows of data) was: ${duration} --")
     }
 
-    //todo convert to use a property map, too big now with advanced searching options
     /**
      * Method used by index to configure the HQL, check existence, and setup helpful messages
      * @param result
@@ -391,6 +393,8 @@ class FinanceController {
      * @param wildcard
      * @return
      */
+    //todo convert to use a property map, too big now with advanced searching options
+    //todo adjust filterQuery to check for being in subscription only mode using result.inSubMode and force HQL filtered query string to use  result.fixedSubscription when searching for other results.
     def private filterQuery(LinkedHashMap result, GrailsParameterMap params, boolean wildcard) {
         def fqResult        = [:]
         fqResult.failed     = [] as List
@@ -514,6 +518,7 @@ class FinanceController {
     }
 
     //todo complete a configurable search which can be extended via external properties if necessary
+    //Not sure if this is the best approach
     private static qry_conf = [
             'ci'  : [
                     selectQry:'select ci from CostItem as ci ',
@@ -565,7 +570,7 @@ class FinanceController {
         def user            =  User.get(springSecurityService.principal.id)
         result.error        =  [] as List
 
-        if (isFinanceAuthorised(result.institution, user))
+        if (!isFinanceAuthorised(result.institution, user))
         {
             result.error=message(code: 'financials.permission.unauthorised', args: [result.institution? result.institution.name : 'N/A'])
             response.sendError(403)
@@ -766,9 +771,9 @@ class FinanceController {
         results.sentIDs    =  JSON.parse(params.del) //comma seperated list
         def user           =  User.get(springSecurityService.principal.id)
         def institution    =  Org.findByShortcode(params.shortcode)
-        if (isFinanceAuthorised(institution, user))
+        if (!isFinanceAuthorised(institution, user))
         {
-            response.sendError(401)
+            response.sendError(403)
             return
         }
 
@@ -933,7 +938,7 @@ class FinanceController {
         if (!user.getAuthorizedOrgs().id.contains(institution.id))
         {
             log.error("User ${user.id} has tried to delete budget code information for Org not privy to ${institution.name}")
-            response.sendError(401)
+            response.sendError(403)
             return
         }
         def ids = params.bcci ? params.bcci.split("_")[1..2] : null
@@ -962,7 +967,7 @@ class FinanceController {
 
         if (!userCertified(user,institution))
         {
-            response.sendError(401)
+            response.sendError(403)
             return
         }
 

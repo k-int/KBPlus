@@ -47,12 +47,11 @@
                         <g:if test="${inSubMode == true}">
                             <input name="subscriptionFilter" id="subscriptionFilter" value="${fixedSubscription?.name}" disabled="disabled"
                                    data-filterMode="${fixedSubscription.class.name}:${fixedSubscription.id}" class="input-medium required-indicator" style="width:250px;"  /> <br/>
-
-                            <g:hiddenField name="newSubscription" value="${fixedSubscription?.class.name}:${fixedSubscription?.id}"></g:hiddenField>
                         </g:if>
                         <g:else>
                             <input data-filterMode="" class="input-medium required-indicator" style="width:250px;" name="subscriptionFilter" id="subscriptionFilter" value="${params.subscriptionFilter}" /> <br/>
                         </g:else>
+                        <g:hiddenField name="sub" value="${fixedSubscription?.id}"></g:hiddenField>
                     </th>
                     <th style="width: 10%;"> <a data-order="Package" style="cursor: pointer;" class="sortable ${order=="Package"? "sorted ${sort}":''}">Package</a>* <br/>
                         <input class="input-medium required-indicator filterUpdated" style="width:250px;" name="packageFilter" id="packageFilter" value="${params.packageFilter}"/> <br/>
