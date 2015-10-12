@@ -138,10 +138,12 @@
                 <div id="resultsarea">
                   <table class="table table-bordered table-striped">
                     <thead>
-                      <tr><th>Package Name</th><th>Consortium</th>
-                          <th>Start Date</th>
-                          <th>End Date</th>
-                          <th>Last Modified</th></tr>
+                      <tr>
+                      <g:sortableColumn property="sortname" title="Package Name" params="${params}" />
+                      <g:sortableColumn property="consortiaName" title="Consortium" params="${params}" />
+                      <th>Start Date</th>
+                      <th>End Date</th>
+                      <th>Last Modified</th></tr>
                     </thead>
                     <tbody>
                       <g:each in="${hits}" var="hit">

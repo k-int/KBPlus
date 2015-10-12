@@ -817,7 +817,7 @@ class PackageDetailsController {
       if(params.search.equals("yes")){
         //when searching make sure results start from first page
         params.offset = 0
-        params.search = ""
+        params.remove("search")
       }
 
       result =  ESSearchService.search(params)   
