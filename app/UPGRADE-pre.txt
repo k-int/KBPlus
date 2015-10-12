@@ -27,6 +27,7 @@ UPDATE identifier set id_ns_fk= CASE WHEN @eissn_exist is NULL then @eissn else 
 UPDATE identifier set id_ns_fk= CASE WHEN @isbn_exist is NULL  then @isbn  else id_ns_fk END where id_ns_fk=92 ;
 
 -- worried about this on live... won't it create duplicates?
+-- checked live dump, there are no duplicate with different case
 UPDATE identifier_namespace SET idns_ns = lower(idns_ns);
 
 select "remove wrong package type category";
