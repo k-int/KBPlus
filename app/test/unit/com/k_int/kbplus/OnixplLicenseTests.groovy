@@ -76,8 +76,6 @@ class OnixplLicenseTests {
 
   void testMultiplicity() {
     OnixplLicense.all.each{
-      if (it.usageTerm)   assertTrue it.usageTerm.size() >= 1
-      if (it.licenseText) assertTrue it.licenseText.size() >= 1
       if (it.licenses)    assertTrue it.licenses.size() >= 1
     }
   }

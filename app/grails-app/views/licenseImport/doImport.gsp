@@ -95,6 +95,7 @@
 
                     <g:hiddenField name="upload_title" value="${upload_title}" />
                     <g:hiddenField name="uploaded_file" value="${uploaded_file}" />
+                    <g:hiddenField name="description" value="${description}" />
 
                     <g:hiddenField name="upload_filename" value="${upload_filename}" />
                     <g:hiddenField name="upload_mime_type" value="${upload_mime_type}" />

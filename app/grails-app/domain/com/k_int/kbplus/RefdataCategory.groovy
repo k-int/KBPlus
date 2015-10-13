@@ -62,4 +62,8 @@ class RefdataCategory {
   public static final PKG_TYPE = 'Package.Type'
   @Transient
   public static final TI_STATUS = 'TitleInstanceStatus'
+  @Transient
+  public static final LIC_STATUTS= 'License Status'
+  @Transient
+  public static final LIC_TYPE = 'License Type'
 }
