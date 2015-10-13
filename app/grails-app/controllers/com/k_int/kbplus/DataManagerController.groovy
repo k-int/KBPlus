@@ -7,6 +7,7 @@ import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 import com.k_int.kbplus.auth.User
 import static java.util.concurrent.TimeUnit.*
 import static grails.async.Promises.*
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 
 class DataManagerController {
@@ -297,17 +298,21 @@ class DataManagerController {
     return actors
   }
 
-  @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def deletedTitleManagement() {
     def result = [:]
+    if(SpringSecurityUtils.ifNotGranted('KBPLUS_EDITOR,ROLE_ADMIN')){
+      flash.error =  message(code:"default.access.error")
+      response.sendError(401)
+      return;
+    }
     result.user = User.get(springSecurityService.principal.id)
-
     result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
 
     def paginate_after = params.paginate_after ?: ( (2*result.max)-1);
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
 
-    def deleted_title_status =  RefdataCategory.lookupOrCreate( 'Title Status', 'Deleted' );
+    def deleted_title_status =  RefdataCategory.lookupOrCreate( RefdataCategory.TI_STATUS, 'Deleted' );
     def qry_params = [deleted_title_status]
 
     def base_qry = " from TitleInstance as t where ( t.status = ? )"
@@ -319,11 +324,15 @@ class DataManagerController {
     result
   }
 
-  @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def expungeDeletedTitles() {
 
     log.debug("expungeDeletedTitles.. Create async task..");
-
+    if(SpringSecurityUtils.ifNotGranted('KBPLUS_EDITOR,ROLE_ADMIN')){
+      flash.error =  message(code:"default.access.error")
+      response.sendError(401)
+      return;
+    }
     def p = TitleInstance.async.task {
 
       def ctr = 0;
@@ -362,7 +371,7 @@ class DataManagerController {
 
 
     p.onError { Throwable err ->
-	log.debug("An error occured ${err.message}")
+  log.debug("An error occured ${err.message}")
     }
 
     p.onComplete { result ->
@@ -375,11 +384,15 @@ class DataManagerController {
     redirect(controller:'home')
   }
   
-  @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def expungeDeletedTIPPS() {
 
     log.debug("expungeDeletedTIPPS.. Create async task..");
-
+    if(SpringSecurityUtils.ifNotGranted('KBPLUS_EDITOR,ROLE_ADMIN')){
+      flash.error =  message(code:"default.access.error")
+      response.sendError(401)
+      return;
+    }
     def p = TitleInstance.async.task {
 
       def ctr = 0;
@@ -431,4 +444,3 @@ class DataManagerController {
     redirect(controller:'home')
   }
 }
-

@@ -1,9 +1,16 @@
 {
-  "com.k_int.kbplus.TitleInstance": {
     "properties": {
       "title": {
-        "type": "string"
+        "type": "string",
+        "analyzer": "snowball"
+      },
+      "sortTitle":{
+      	"type": "string",
+        "index": "not_analyzed"
+      },
+      "publisher":{
+      	"type": "string",
+        "index": "not_analyzed"
       }
     }
-  }
 }

@@ -62,8 +62,9 @@ grails.project.dependency.resolution = {
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
-
-        build('org.grails:grails-docs:2.3.11') {
+        runtime 'javax.servlet:jstl:1.1.2'
+        runtime 'taglibs:standard:1.1.2'
+        build('org.grails:grails-docs:2.5.1') {
             excludes 'itext'
         }
         compile ('com.k-int:goai:1.0.2') {
@@ -74,9 +75,8 @@ grails.project.dependency.resolution = {
         runtime 'xerces:xercesImpl:2.11.0'
         runtime 'mysql:mysql-connector-java:5.1.30'
 
-        // Would very much like to upgrade to these - but seems to cause a weird class version error when I do
-        runtime 'org.elasticsearch:elasticsearch:1.3.7'
-        runtime 'org.elasticsearch:elasticsearch-client-groovy:1.3.2'
+        runtime 'org.elasticsearch:elasticsearch:1.7.1'
+        runtime 'org.elasticsearch:elasticsearch-groovy:1.7.0'
 
         runtime 'gov.loc:bagit:4.0'
         runtime 'org.apache.poi:poi:3.8'
@@ -112,11 +112,10 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        compile ":h2:0.2.6"
-        runtime ':hibernate:3.6.10.18'  // 18 is latest
+        runtime ':hibernate:3.6.10.19'  
         runtime ":resources:1.2.8"
+        compile ":scaffolding:2.1.2"
         runtime ':fields:1.5.1'
-        compile ":scaffolding:2.0.3"
         
         // This is commented out so as not to cause probelms in the CI environment
         // compile ":functional-test:2.0.RC1"
@@ -124,13 +123,13 @@ grails.project.dependency.resolution = {
         //runtime ":zipped-resources:1.0"
         //runtime ":cached-resources:1.0"
         //runtime ":yui-minify-resources:0.1.4"
-        build ':tomcat:7.0.54'
+        build ':tomcat:7.0.55.2'
 
         runtime ":database-migration:1.4.0"
 
-        compile ':cache:1.1.7'
+        compile ':cache:1.1.8'
 
-        compile ':mail:1.0.1', {
+        compile ':mail:1.0.7', {
            excludes 'spring-test'
         }
 
@@ -146,18 +145,17 @@ grails.project.dependency.resolution = {
         // Font awesome for font based icons.
         compile ":font-awesome-resources:4.3.0.1"
 
-        compile ':spring-security-core:1.2.7.3'
+        compile ':spring-security-core:1.2.7.4'
         compile ':spring-security-ldap:1.0.6'
         compile ':spring-security-shibboleth-native-sp:1.0.3'
 
         runtime ":gsp-resources:0.4.4"
-        runtime ":jquery:1.9.1"
+        runtime ":jquery:1.11.1"
 
         runtime ":audit-logging:1.0.3"
         runtime ":executor:0.3"
         runtime ":markdown:1.1.1"
         runtime ":quartz:1.0.1"
-        runtime ":rest:0.7"
         compile ":grails-melody:1.53.0"
         // runtime "com.k-int:domain-model-oai-pmh:0.1"
         compile ":jsonp:0.2"

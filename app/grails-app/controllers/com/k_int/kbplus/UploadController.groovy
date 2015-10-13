@@ -8,11 +8,10 @@ import grails.plugins.springsecurity.Secured
 import com.k_int.kbplus.auth.*;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
-
 import org.apache.log4j.*
 import au.com.bytecode.opencsv.CSVReader
 import java.text.SimpleDateFormat
-
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.mozilla.universalchardet.UniversalDetector;
 import org.apache.commons.io.input.BOMInputStream
 
@@ -52,9 +51,14 @@ class UploadController {
     [regexp:'[0-9]{4}', format: new SimpleDateFormat('yyyy')]
   ];
 
-  @Secured(['ROLE_ADMIN', 'KBPLUS_EDITOR', 'IS_AUTHENTICATED_FULLY'])
+  @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
   def reviewPackage() {
     def result = [:]
+    if(SpringSecurityUtils.ifNotGranted('KBPLUS_EDITOR,ROLE_ADMIN')){
+      flash.error =  message(code:"default.access.error")
+      response.sendError(401)
+      return;
+    }
     result.user = User.get(springSecurityService.principal.id)
 
     if ( request.method == 'POST' ) {

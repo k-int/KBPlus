@@ -1,8 +1,9 @@
-<%@ page import="com.k_int.kbplus.onixpl.OnixPLService" %>
+<%@ page import="com.k_int.kbplus.onixpl.OnixPLService;grails.converters.JSON" %>
 <g:set var="active_user" value=""/>
 
 <g:each var="row_key,row" in="${data}" status="rowCount">
   <!-- Get the data we are to derive the title cell from -->
+
   <g:set var="rth" value="${service.getRowHeadingData(row)}" />
   <g:if test="${ OnixPLService.getSingleValue(rth, 'UsageType')}">  
   <g:set var="hasPlaceOfReceivingAgent" value="${rth.'UsageRelatedPlace'?.'UsagePlaceRelator'?.'_content'?.contains(['onixPL:PlaceOfReceivingAgent'])}"/>
@@ -20,7 +21,9 @@
   <tr>
     <!-- Header -->
     <th class="tr-${ (rowCount + 1) } cell-1" ><span class="cell-inner">
-    
+      <g:if test="${ OnixPLService.getSingleValue(rth, 'UsageType').contains('Supply Copy') }">
+
+      </g:if>
       
       ${ OnixPLService.getSingleValue(rth, 'UsageType') }
       the ${ OnixPLService.getAllValues(rth, 'UsedResource',',') }
@@ -41,46 +44,48 @@
       </g:if>
     </span></th>
     <g:each var="heading" in="${headings}" status="colCount">
+
+      <g:set var="rth" value="${service.getRowHeadingData(row,heading)}" />
       <g:set var="entry" value="${ row[heading] }" />
       <td class="tr-${ (rowCount + 1) } cell-${ colCount + 2 }">
         <g:if test="${ entry }" >
-	        <div class="onix-icons" >
-	          <g:if test="${ entry['UsageException'] }" >
-	            <span class='exceptions' ><i class='icon-exclamation-sign' title='Exceptions' data-content='${
-	              OnixPLService.formatOnixValue(
-	                entry['UsageException']['UsageExceptionType']['_content']*.get(0).join(", ")
-	              ).encodeAsHTML()
-	            }'></i></span>
-	          </g:if>
-	          <g:if test="${ entry['TextElement'] }" >
-	            <g:render template="text" model="${ ["data" : entry['TextElement']] }" /> 
-	          </g:if>
-	          <g:if test="${ entry['Annotation'] }" >
-	            <g:render template="annotation" model="${ ["data" : entry['Annotation']] }" />
-	          </g:if>
-	        </div>
-		      <span class="cell-inner">
-		        <g:set var="status" value="${ entry?.'UsageStatus'?.getAt(0)?.'_content' }" />
-		        <span title='${ OnixPLService.getOnixValueAnnotation(status) }' class="onix-status ${ OnixPLService.getClassValue(status) }" ></span>
-		      </span>
+          <div class="onix-icons" >
+            <g:if test="${ entry['UsageException'] }" >
+              <span class='exceptions' ><i class='icon-exclamation-sign' title='Exceptions' data-content='${
+                OnixPLService.formatOnixValue(
+                  entry['UsageException']['UsageExceptionType']['_content']*.get(0).join(", ")
+                ).encodeAsHTML()
+              }'></i></span>
+            </g:if>
+            <g:if test="${ entry['TextElement'] }" >
+              <g:render template="text" model="${ ["data" : entry['TextElement']] }" /> 
+            </g:if>
+            <g:if test="${ entry['Annotation'] }" >
+              <g:render template="annotation" model="${ ["data" : entry['Annotation']] }" />
+            </g:if>
+          </div>
+          <span class="cell-inner">
+            <g:set var="status" value="${ entry?.'UsageStatus'?.getAt(0)?.'_content' }" />
+            <span title='${ OnixPLService.getOnixValueAnnotation(status) }' class="onix-status ${ OnixPLService.getClassValue(status) }" ></span>
+          </span>
 
           %{-- List all the extra matrix details. Should create css class to use less space --}%
           <ul><b>
           <g:if test="${entry['UsageMethod'] }">
            <li> via ${ OnixPLService.getAllValues(entry, 'UsageMethod',', ') }</li>
           </g:if>
+          <g:set var="hasPlaceOfReceivingAgent" value="${rth.'UsageRelatedPlace'?.'UsagePlaceRelator'?.'_content'?.contains(['onixPL:PlaceOfReceivingAgent'])}"/>
+
           <g:if test="${hasPlaceOfReceivingAgent}">
-          <li>  In ${OnixPLService.getSingleValue(rth['UsageRelatedPlace'][0],'RelatedPlace')}</li>
+          <li>  In ${OnixPLService.getSingleValue(rth.'UsageRelatedPlace'?.get(0),'RelatedPlace')}</li>
           </g:if>
           <g:if test="${rth['UsageQuantity']}">
            <li> ${OnixPLService.getUsageQuantity(rth['UsageQuantity'][0])} </li>
           </g:if>
-          
-          <g:if test= "${rth['UsageCondition']}">
+          <g:if test= "${rth['UsageCondition']}"> 
              <li>${OnixPLService.getSingleValue(rth,'UsageCondition')}</li>
           </g:if>
-          <g:if test="${rth['UsageRelatedResource'] && rth.'UsageRelatedResource'?.'UsageResourceRelator'?.'_content' != [['onixPL:TargetResource']]}">
-            
+          <g:if test="${rth['UsageRelatedResource'] }">
             <g:each var="clause" in="${rth['UsageRelatedResource']}">
               <g:if test="${clause.'UsageResourceRelator'.'_content' != ['onixPL:TargetResource']}">
                <li> ${OnixPLService.getSingleValue(clause,'UsageResourceRelator')}
@@ -94,12 +99,12 @@
             <g:if test="${hasVal}">  <li>${hasVal}</li></g:if>
           </g:if>
         </b></ul>
-		    </g:if>
+        </g:if>
         <g:else>
           <span class="cell-inner-undefined">
             <span title='Not defined by the license' class="onix-status onix-pl-undefined" ></span>
           </span>
-		    </g:else>
+        </g:else>
       </td>
     </g:each>
   </tr>

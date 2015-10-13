@@ -1,3 +1,4 @@
+
 import geb.spock.GebReportingSpec
 import org.elasticsearch.common.joda.time.LocalDate
 import pages.*
@@ -6,6 +7,7 @@ import com.k_int.kbplus.*
 
 @Stepwise
 class LicenceSpec extends GebReportingSpec {
+
 
     //The following will setup everything required for this test case
     def setupSpec(){

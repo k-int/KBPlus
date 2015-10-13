@@ -17,7 +17,6 @@ import groovy.sql.Sql
 class MyInstitutionsController {
     def dataSource
     def springSecurityService
-    def ESWrapperService
     def ESSearchService
     def gazetteerService
     def alertsService
@@ -2465,6 +2464,7 @@ AND EXISTS (
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def tip() {
       def result = [:];
+      log.debug("tip :: ${params}")
       result.user        = User.get(springSecurityService.principal.id)
       result.institution = Org.findByShortcode(params.shortcode)
       result.tip = TitleInstitutionProvider.get(params.id)

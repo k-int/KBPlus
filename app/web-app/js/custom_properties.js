@@ -34,7 +34,6 @@ function refdatacatsearch (ajaxurl){
 }
 
 function searchProp(ajaxurl){
-
     $("#customPropSelect").select2({
         placeholder: "Search for a custom property...",
         minimumInputLength: 0,
@@ -44,6 +43,7 @@ function searchProp(ajaxurl){
             data: function (term, page) {
                 return {
                     q: term, // search term
+                    desc:$("#customPropSelect").attr('desc'),
                     page_limit: 10,
                     baseClass:'com.k_int.custprops.PropertyDefinition'
                 };

@@ -37,10 +37,10 @@ modules = {
     resource url:'js/dataTables.colVis.min.js'
     resource url:'js/dataTables.fixedColumns.min.js'
     resource url:'js/dataTables.scroller.js'
-    resource url:'js/kbplusapp.js.gsp'
     resource url:'js/jquery.dotdotdot.min.js'
     resource url:'https://assets.zendesk.com/external/zenbox/v2.6/zenbox.js'
     resource url:'https://uwp-jb.jisc.ac.uk/client.js?site=QPlZQ'
+    resource url:'js/kbplusapp.js.gsp'
   }
   annotations {
     dependsOn 'kbplus'

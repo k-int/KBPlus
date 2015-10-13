@@ -5,7 +5,7 @@ import grails.plugins.springsecurity.Secured
 import grails.converters.*
 import au.com.bytecode.opencsv.CSVReader
 import com.k_int.custprops.PropertyDefinition
-
+import grails.util.Holders
 
 class AdminController {
 
@@ -38,6 +38,19 @@ class AdminController {
     // List all pending requests...
     result.pendingRequests = UserOrg.findAllByStatus(0, [sort:'dateRequested'])
     result
+  }
+
+  @Secured(['ROLE_ADMIN','IS_AUTHENTICATED_FULLY'])
+  def appConfig(){
+    def result =[:]
+    //SystemAdmin should only be created once in BootStrap
+    result.adminObj = SystemAdmin.list().first()
+    result.editable = true
+    if(request.method == "POST"){
+      result.adminObj.refresh()
+    }
+    result.currentconf= grails.util.Holders.config
+    result 
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
@@ -622,7 +635,7 @@ class AdminController {
         redirect(action:'titleMerge',params:[titleIdToDeprecate:params.titleIdToDeprecate, correctTitleId:params.correctTitleId])
       }
 
-      result.title_to_deprecate.status = RefdataCategory.lookupOrCreate("TitleInstanceStatus", "Deleted")
+      result.title_to_deprecate.status = RefdataCategory.lookupOrCreate(RefdataCategory.TI_STATUS, "Deleted")
       result.title_to_deprecate.save(flush:true);
     }
     result

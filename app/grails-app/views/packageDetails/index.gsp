@@ -124,49 +124,55 @@
           <div class="well">
              <g:if test="${hits}" >
                 <div class="paginateButtons" style="text-align:center">
+
                     <g:if test=" ${params.int('offset')}">
-                   Showing Results ${params.int('offset') + 1} - ${hits.totalHits < (params.int('max') + params.int('offset')) ? hits.totalHits : (params.int('max') + params.int('offset'))} of ${hits.totalHits}
+                   Showing Results ${params.int('offset') + 1} - ${resultsTotal < (params.int('max') + params.int('offset')) ? resultsTotal : (params.int('max') + params.int('offset'))} of ${resultsTotal}
                   </g:if>
-                  <g:elseif test="${hits.totalHits && hits.totalHits > 0}">
-                      Showing Results 1 - ${hits.totalHits < params.int('max') ? hits.totalHits : params.int('max')} of ${hits.totalHits}
+                  <g:elseif test="${resultsTotal && resultsTotal > 0}">
+                      Showing Results 1 - ${resultsTotal < params.int('max') ? resultsTotal : params.int('max')} of ${resultsTotal}
                   </g:elseif>
                   <g:else>
-                    Showing ${hits.totalHits} Results
+                    Showing ${resultsTotal} Results
                   </g:else>
                 </div>
 
                 <div id="resultsarea">
                   <table class="table table-bordered table-striped">
                     <thead>
-                      <tr><th>Package Name</th><th>Consortium</th>
-                          <th>Start Date</th>
-                          <th>End Date</th>
-                          <th>Last Modified</th></tr>
+                      <tr>
+                      <g:sortableColumn property="sortname" title="Package Name" params="${params}" />
+                      <g:sortableColumn property="consortiaName" title="Consortium" params="${params}" />
+                      <th>Start Date</th>
+                      <th>End Date</th>
+                      <th>Last Modified</th></tr>
                     </thead>
                     <tbody>
                       <g:each in="${hits}" var="hit">
                         <tr>
-                          <td><g:link controller="packageDetails" action="show" id="${hit.source.dbId}">${hit.source.name}</g:link>
+                          <td><g:link controller="packageDetails" action="show" id="${hit.getSource().dbId}">${hit.getSource().name}</g:link>
                               <!--(${hit.score})-->
-                              <span>(${hit.source.titleCount?:'Unknown number of'} titles)</span>
+                              <span>(${hit.getSource().titleCount?:'Unknown number of'} titles)</span>
                               </td>
-                          <td>${hit.source.consortiaName}</td>
+                          <td>${hit.getSource().consortiaName}</td>
                           <td>
-                          <g:formatDate formatName="default.date.format.notime" date='${hit.source.startDate?dateFormater.parse(hit.source.startDate):null}'/>
+                          <g:formatDate formatName="default.date.format.notime" date='${hit.getSource().startDate?dateFormater.parse(hit.getSource().startDate):null}'/>
                           </td>
                           <td>
-                          <g:formatDate formatName="default.date.format.notime" date='${hit.source.endDate?
-                            dateFormater.parse(hit.source.endDate):null}'/>
+                          <g:formatDate formatName="default.date.format.notime" date='${hit.getSource().endDate?
+                            dateFormater.parse(hit.getSource().endDate):null}'/>
                           </td>
-                          <td>${hit.source.lastModified}</td>
+                          <td>${hit.getSource().lastModified}</td>
                         </tr>
                       </g:each>
                     </tbody>
                   </table>
                 </div>
                 <div class="paginateButtons" style="text-align:center">
-                  <span><g:paginate controller="packageDetails" action="index" params="${params}" next="Next" prev="Prev" total="${hits.totalHits}" /></span>
+                  <span><g:paginate controller="packageDetails" action="index" params="${params}" next="Next" prev="Prev" total="${resultsTotal}" /></span>
             </g:if>
+            <g:else>
+              <p><g:message code="default.search.empty" default="No results found"/></p>
+            </g:else>
           </div>
           </div>
         </div>

@@ -149,7 +149,6 @@ class AjaxController {
     // log.debug("setFieldTableNote(${params})")
     def domain_class=grailsApplication.getArtefact('Domain',"com.k_int.kbplus.${params.type}")
     if ( domain_class ) {
-      println params.id
       def instance = domain_class.getClazz().get(params.id)
        
       if ( instance ) {
@@ -647,7 +646,7 @@ class AjaxController {
   }
 
   def addToCollection() {
-    // log.debug("AjaxController::addToCollection ${params}");
+    log.debug("AjaxController::addToCollection ${params}");
 
     def contextObj = resolveOID2(params.__context)
     def domain_class = grailsApplication.getArtefact('Domain',params.__newObjectClass)
@@ -666,7 +665,10 @@ class AjaxController {
                 // Set ref property
                 // log.debug("set assoc ${p.name} to lookup of OID ${params[p.name]}");
                 // if ( key == __new__ then we need to create a new instance )
-                new_obj[p.name] = resolveOID2(params[p.name])              
+                def new_assoc = resolveOID2(params[p.name])
+                if(new_assoc){
+                  new_obj[p.name] = new_assoc               
+                }
               }
               else {
                 // Add to collection
@@ -687,16 +689,23 @@ class AjaxController {
         }
 
         // log.debug("Saving ${new_obj}");
-        if ( new_obj.save() ) {
-          // log.debug("Saved OK");
-        }
-        else {
-          flash.domainError = new_obj
-          new_obj.errors.each { e ->
-            log.debug("Problem ${e}");
+        try{
+          if ( new_obj.save() ) {
+            log.debug("Saved OK");
           }
-        }
+          else {
+            flash.domainError = new_obj
+            new_obj.errors.each { e ->
+              log.debug("Problem ${e}");
+            }
+          }
+        }catch(Exception ex){
 
+            flash.domainError = new_obj
+            new_obj.errors.each { e ->
+            log.debug("Problem ${e}");
+            }
+        }
       }
       else {
         log.debug("Unable to locate instance of context class with oid ${params.__context}");
@@ -734,7 +743,7 @@ class AjaxController {
         log.error("Unexpected Identifier Owner ${owner.class}")
         return null
     }    
-    def duplicates = identifier.occurrences.findAll{it."${owner_type}" != owner && it."${owner_type}" != null}?.collect{it."${owner_type}"}
+    def duplicates = identifier?.occurrences.findAll{it."${owner_type}" != owner && it."${owner_type}" != null}?.collect{it."${owner_type}"}
     if(duplicates){
       result.duplicates = duplicates
     }
@@ -753,7 +762,7 @@ class AjaxController {
     if ( domain_class ) {
       if ( oid_components[1]=='__new__' ) {
         result = domain_class.getClazz().refdataCreate(oid_components)
-        // log.debug("Result of create ${oid} is ${result.id}");
+        // log.debug("Result of create ${oid} is ${result?.id}");
       }
       else {
         result = domain_class.getClazz().get(oid_components[1])

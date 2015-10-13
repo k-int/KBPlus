@@ -16,7 +16,7 @@
           <span class="divider">/</span>  </li>
         <li> <g:link controller="myInstitutions" action="tipview" params="${[shortcode:params.shortcode]}"> Titles </g:link>
           <span class="divider">/</span> </li>
-        <li> <g:link controller="myInstitutions" action="tip" params="${[shortcode:params.shortcode, id:id]}"> ${tip?.title?.title} via ${tip?.provider?.name} </g:link>
+        <li> <g:link controller="myInstitutions" action="tip" params="${[shortcode:params.shortcode, id:params.id]}"> ${tip?.title?.title} via ${tip?.provider?.name} </g:link>
            </li>
 
       </ul>
