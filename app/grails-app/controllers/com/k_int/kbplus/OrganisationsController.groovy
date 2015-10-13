@@ -89,24 +89,24 @@ class OrganisationsController {
 
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
     def create() {
-		switch (request.method) {
-		case 'GET':
-		    if (!params.name && !params.sector) {
-				params.sector = 'Higher Education'
-		    }
-        	[orgInstance: new Org(params)]
-			break
-		case 'POST':
-	        def orgInstance = new Org(params)
-	        if (!orgInstance.save(flush: true)) {
-	            render view: 'create', model: [orgInstance: orgInstance]
-	            return
-	        }
+    switch (request.method) {
+    case 'GET':
+        if (!params.name && !params.sector) {
+        params.sector = 'Higher Education'
+        }
+          [orgInstance: new Org(params)]
+      break
+    case 'POST':
+          def orgInstance = new Org(params)
+          if (!orgInstance.save(flush: true)) {
+              render view: 'create', model: [orgInstance: orgInstance]
+              return
+          }
 
-			flash.message = message(code: 'default.created.message', args: [message(code: 'org.label', default: 'Org'), orgInstance.id])
-	        redirect action: 'show', id: orgInstance.id
-			break
-		}
+      flash.message = message(code: 'default.created.message', args: [message(code: 'org.label', default: 'Org'), orgInstance.id])
+          redirect action: 'show', id: orgInstance.id
+      break
+    }
     }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
@@ -188,65 +188,65 @@ class OrganisationsController {
 
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
     def edit() {
-		switch (request.method) {
-		case 'GET':
-	        def orgInstance = Org.get(params.id)
-	        if (!orgInstance) {
-	            flash.message = message(code: 'default.not.found.message', args: [message(code: 'org.label', default: 'Org'), params.id])
-	            redirect action: 'list'
-	            return
-	        }
+    switch (request.method) {
+    case 'GET':
+          def orgInstance = Org.get(params.id)
+          if (!orgInstance) {
+              flash.message = message(code: 'default.not.found.message', args: [message(code: 'org.label', default: 'Org'), params.id])
+              redirect action: 'list'
+              return
+          }
 
-	        [orgInstance: orgInstance, editable:true]
-			break
-		case 'POST':
-	        def orgInstance = Org.get(params.id)
-	        if (!orgInstance) {
-	            flash.message = message(code: 'default.not.found.message', args: [message(code: 'org.label', default: 'Org'), params.id])
-	            redirect action: 'list'
-	            return
-	        }
+          [orgInstance: orgInstance, editable:true]
+      break
+    case 'POST':
+          def orgInstance = Org.get(params.id)
+          if (!orgInstance) {
+              flash.message = message(code: 'default.not.found.message', args: [message(code: 'org.label', default: 'Org'), params.id])
+              redirect action: 'list'
+              return
+          }
 
-	        if (params.version) {
-	            def version = params.version.toLong()
-	            if (orgInstance.version > version) {
-	                orgInstance.errors.rejectValue('version', 'default.optimistic.locking.failure',
-	                          [message(code: 'org.label', default: 'Org')] as Object[],
-	                          "Another user has updated this Org while you were editing")
-	                render view: 'edit', model: [orgInstance: orgInstance]
-	                return
-	            }
-	        }
+          if (params.version) {
+              def version = params.version.toLong()
+              if (orgInstance.version > version) {
+                  orgInstance.errors.rejectValue('version', 'default.optimistic.locking.failure',
+                            [message(code: 'org.label', default: 'Org')] as Object[],
+                            "Another user has updated this Org while you were editing")
+                  render view: 'edit', model: [orgInstance: orgInstance]
+                  return
+              }
+          }
 
-	        orgInstance.properties = params
+          orgInstance.properties = params
 
-	        if (!orgInstance.save(flush: true)) {
-	            render view: 'edit', model: [orgInstance: orgInstance, editable:true]
-	            return
-	        }
+          if (!orgInstance.save(flush: true)) {
+              render view: 'edit', model: [orgInstance: orgInstance, editable:true]
+              return
+          }
 
-			flash.message = message(code: 'default.updated.message', args: [message(code: 'org.label', default: 'Org'), orgInstance.id])
-	        redirect action: 'show', id: orgInstance.id
-			break
-		}
+      flash.message = message(code: 'default.updated.message', args: [message(code: 'org.label', default: 'Org'), orgInstance.id])
+          redirect action: 'show', id: orgInstance.id
+      break
+    }
     }
 
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
     def delete() {
         def orgInstance = Org.get(params.id)
         if (!orgInstance) {
-			flash.message = message(code: 'default.not.found.message', args: [message(code: 'org.label', default: 'Org'), params.id])
+      flash.message = message(code: 'default.not.found.message', args: [message(code: 'org.label', default: 'Org'), params.id])
             redirect action: 'list'
             return
         }
 
         try {
             orgInstance.delete(flush: true)
-			flash.message = message(code: 'default.deleted.message', args: [message(code: 'org.label', default: 'Org'), params.id])
+      flash.message = message(code: 'default.deleted.message', args: [message(code: 'org.label', default: 'Org'), params.id])
             redirect action: 'list'
         }
         catch (DataIntegrityViolationException e) {
-			flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'org.label', default: 'Org'), params.id])
+      flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'org.label', default: 'Org'), params.id])
             redirect action: 'show', id: params.id
         }
     }

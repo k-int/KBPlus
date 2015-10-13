@@ -49,25 +49,25 @@
       <g:set var="entry" value="${ row[heading] }" />
       <td class="tr-${ (rowCount + 1) } cell-${ colCount + 2 }">
         <g:if test="${ entry }" >
-	        <div class="onix-icons" >
-	          <g:if test="${ entry['UsageException'] }" >
-	            <span class='exceptions' ><i class='icon-exclamation-sign' title='Exceptions' data-content='${
-	              OnixPLService.formatOnixValue(
-	                entry['UsageException']['UsageExceptionType']['_content']*.get(0).join(", ")
-	              ).encodeAsHTML()
-	            }'></i></span>
-	          </g:if>
-	          <g:if test="${ entry['TextElement'] }" >
-	            <g:render template="text" model="${ ["data" : entry['TextElement']] }" /> 
-	          </g:if>
-	          <g:if test="${ entry['Annotation'] }" >
-	            <g:render template="annotation" model="${ ["data" : entry['Annotation']] }" />
-	          </g:if>
-	        </div>
-		      <span class="cell-inner">
-		        <g:set var="status" value="${ entry?.'UsageStatus'?.getAt(0)?.'_content' }" />
-		        <span title='${ OnixPLService.getOnixValueAnnotation(status) }' class="onix-status ${ OnixPLService.getClassValue(status) }" ></span>
-		      </span>
+          <div class="onix-icons" >
+            <g:if test="${ entry['UsageException'] }" >
+              <span class='exceptions' ><i class='icon-exclamation-sign' title='Exceptions' data-content='${
+                OnixPLService.formatOnixValue(
+                  entry['UsageException']['UsageExceptionType']['_content']*.get(0).join(", ")
+                ).encodeAsHTML()
+              }'></i></span>
+            </g:if>
+            <g:if test="${ entry['TextElement'] }" >
+              <g:render template="text" model="${ ["data" : entry['TextElement']] }" /> 
+            </g:if>
+            <g:if test="${ entry['Annotation'] }" >
+              <g:render template="annotation" model="${ ["data" : entry['Annotation']] }" />
+            </g:if>
+          </div>
+          <span class="cell-inner">
+            <g:set var="status" value="${ entry?.'UsageStatus'?.getAt(0)?.'_content' }" />
+            <span title='${ OnixPLService.getOnixValueAnnotation(status) }' class="onix-status ${ OnixPLService.getClassValue(status) }" ></span>
+          </span>
 
           %{-- List all the extra matrix details. Should create css class to use less space --}%
           <ul><b>
@@ -99,12 +99,12 @@
             <g:if test="${hasVal}">  <li>${hasVal}</li></g:if>
           </g:if>
         </b></ul>
-		    </g:if>
+        </g:if>
         <g:else>
           <span class="cell-inner-undefined">
             <span title='Not defined by the license' class="onix-status onix-pl-undefined" ></span>
           </span>
-		    </g:else>
+        </g:else>
       </td>
     </g:each>
   </tr>

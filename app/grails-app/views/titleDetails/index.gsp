@@ -16,21 +16,23 @@
     </div>
 
     <div class="container">
-      <g:form action="index" method="get" params="${params}">
-      <input type="hidden" name="offset" value="${params.offset}"/>
+      <div class="well">
+      <g:form action="index" role="form" class="form-inline" method="get" params="${params}">
 
-      <div class="row">
-        <div class="span12">
-          <div class="well">
-            Title : <input name="q" placeholder="Add &quot;&quot; for exact match" value="${params.q}"/> (Search on title text and identifiers)
-            <button type="submit" name="search" value="yes">Search</button>
-            <div class="pull-right">
-            </div>
-          </div>
-        </div>
+        <input type="hidden" name="offset" value="${params.offset}"/>
+
+        <label for="q" class="control-label">Search :</label>   
+        <input id="q" type="text" name="q" placeholder="Add &quot;&quot; for exact match" value="${params.q}"/>
+       
+        <label for="filter" class="control-label">Search in :</label>
+        <g:select id="filter" name="filter" from="${[[key:'title',value:'Title'],[key:'publisher',value:'Publisher'],[key:'',value:'All']   ]}" optionKey="key" optionValue="value" value="${params.filter}"/>
+       
+        <button type="submit" name="search" value="yes">Search</button>
+      </g:form>
       </div>
-
-
+    </div>
+    
+    <div class="container">
       <div class="row">
 
         <div class="span12">
@@ -52,8 +54,8 @@
                   <table class="table table-bordered table-striped">
                     <thead>
                       <tr>
-                      <th style="white-space:nowrap">Title</th>
-                      <th style="white-space:nowrap">Publisher</th>
+                      <g:sortableColumn property="sortTitle" title="Title" params="${params}" />
+                      <g:sortableColumn property="publisher" title="Publisher" params="${params}" />
                       <th style="white-space:nowrap">Identifiers</th>
                       </tr>
                     </thead>
@@ -88,8 +90,6 @@
           </div>
         </div>
       </div>
-      </g:form>
     </div>
-    <!-- ES Query: ${es_query} -->
   </body>
 </html>

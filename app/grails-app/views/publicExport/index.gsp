@@ -204,11 +204,11 @@ This work is published from:
                   <table class="table table-bordered table-striped">
                     <thead>
                       <tr style="white-space: nowrap">
-                      <g:sortableColumn property="sortname" title="Package Name" />
-                      <g:sortableColumn property="consortiaName" title="Consortium" />
-                      <g:sortableColumn property="startDate" title="Start Date" />
-                      <g:sortableColumn property="endDate" title="End Date" />
-                      <g:sortableColumn property="lastModified" title="Last Modified" />
+                      <g:sortableColumn property="sortname" title="Package Name" params="${params}" />
+                      <g:sortableColumn property="consortiaName" title="Consortium" params="${params}"/>
+                      <g:sortableColumn property="startDate" title="Start Date" params="${params}" />
+                      <g:sortableColumn property="endDate" title="End Date" params="${params}" />
+                      <g:sortableColumn property="lastModified" title="Last Modified" params="${params}" />
                       <th>Export</th>
                     </thead>
                     <tbody>

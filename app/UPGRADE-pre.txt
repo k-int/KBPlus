@@ -4,4 +4,3 @@ CREATE INDEX part_sort_title ON title_instance (sort_title ( 50 ) ASC);
 
 update property_definition SET pd_description='Licence Property';
 update property_definition set pd_description='Organisation Config' where pd_name='Public Journal Access';
-

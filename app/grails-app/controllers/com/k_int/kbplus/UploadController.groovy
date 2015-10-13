@@ -8,11 +8,10 @@ import grails.plugins.springsecurity.Secured
 import com.k_int.kbplus.auth.*;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
-
 import org.apache.log4j.*
 import au.com.bytecode.opencsv.CSVReader
 import java.text.SimpleDateFormat
-
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.mozilla.universalchardet.UniversalDetector;
 import org.apache.commons.io.input.BOMInputStream
 

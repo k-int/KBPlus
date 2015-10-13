@@ -7,6 +7,7 @@ import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 import com.k_int.kbplus.auth.User
 import static java.util.concurrent.TimeUnit.*
 import static grails.async.Promises.*
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 
 class DataManagerController {
@@ -370,7 +371,7 @@ class DataManagerController {
 
 
     p.onError { Throwable err ->
-	log.debug("An error occured ${err.message}")
+  log.debug("An error occured ${err.message}")
     }
 
     p.onComplete { result ->
@@ -443,4 +444,3 @@ class DataManagerController {
     redirect(controller:'home')
   }
 }
-

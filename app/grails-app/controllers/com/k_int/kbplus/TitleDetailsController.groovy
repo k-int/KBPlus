@@ -162,11 +162,22 @@ class TitleDetailsController {
       if(params.search.equals("yes")){
         //when searching make sure results start from first page
         params.offset = 0
-        params.search = ""
+        params.remove("search")
       }
-      params.sort = "title"
-      if(params.q == "") params.remove('q');
-      result =  ESSearchService.search(params)   
+
+      def old_q = params.q
+      if(!params.q ){
+         params.remove('q');
+         if(!params.sort){
+            params.sort = "sortTitle"
+         }
+      }
+      
+      if(params.filter) params.q ="${params.filter}:${params.q}";
+
+      result =  ESSearchService.search(params)  
+      //Double-Quoted search strings wont display without this
+      params.q = old_q?.replace("\"","&quot;") 
     }
 
     if ( SpringSecurityUtils.ifAnyGranted('ROLE_ADMIN') )
@@ -271,6 +282,7 @@ class TitleDetailsController {
     }
     if(params.search == "yes"){
       params.offset = 0
+      params.remove("search")
     }
     def user = User.get(springSecurityService.principal.id)
     def result = [:]
@@ -278,6 +290,7 @@ class TitleDetailsController {
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
     
     def ti_cat = RefdataCategory.findByDesc(RefdataCategory.TI_STATUS)
+
     result.availableStatuses = RefdataValue.findAllByOwner(ti_cat).collect{it.toString()}
     def ti_status = null
     if(params.status){
