@@ -1,5 +1,5 @@
 <%@ page
-	import="com.k_int.kbplus.OnixplLicenseCompareController; com.k_int.kbplus.OnixplLicense; com.k_int.kbplus.OnixplUsageTerm; com.k_int.kbplus.RefdataCategory"
+	import="com.k_int.kbplus.OnixplLicenseCompareController; com.k_int.kbplus.OnixplLicense; com.k_int.kbplus.RefdataCategory"
 	contentType="text/html;charset=UTF-8" %>
 <!doctype html>
 <html>

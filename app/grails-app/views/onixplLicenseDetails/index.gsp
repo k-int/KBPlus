@@ -52,33 +52,7 @@
 
             <h6>ONIX-PL Licence Properties</h6>
 
-            <table class="table table-bordered licence-properties">
-                <thead>
-                <tr>
-                    <th>Property</th>
-                    <th>Status</th>
-                    <th>Notes</th>
-                </tr>
-                </thead>
-                <tbody>
-                <g:each in="${onixplLicense.usageTerm.sort {it.usageType.value}}">
-                    <tr>
-                        <td><g:link controller="onixplUsageTermDetails" action="index" id="${it.id}">${it.usageType.value}</g:link></td>
-                        <td><g:refdataValue cat="UsageStatus" owner="${onixplLicense}" val="${it.usageStatus.value}" /></td>
-                        <td><g:each in="${it.usageTermLicenseText.licenseText.sort {it.displayNum}}">
-                            <g:if test="${it.displayNum}">
-                                ${it.displayNum}
-                            </g:if>
-                            <g:else>
-                                ${it.elementId}
-                            </g:else>
-                                - <g:link controller="onixplLicenseTextDetails" action="index" id="${it.id}">${it.text}</g:link><br>
-                        </g:each>
-                        </td>
-                    </tr>
-                </g:each>
-                </tbody>
-            </table>
+            
             </g:else>
         </div>
     </div>
