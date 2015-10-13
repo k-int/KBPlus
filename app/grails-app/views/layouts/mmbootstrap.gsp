@@ -274,8 +274,8 @@
                           </li>
                         </ul>
                       </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'manageCustomProperties'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="manageCustomProperties">Manage Custom Properties</g:link>
+                      <li <%= ( ( 'propertyDefinition'== controllerName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="propertyDefinition" action="list">Manage Custom Properties</g:link>
                       </li>
                       <li class="divider"></li>
                       <li <%= ( ( 'stats'== controllerName ) && ( 'statsHome'==actionName ) ) ? ' class="active"' : '' %>>

@@ -10,30 +10,30 @@ import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsHibernateUtil
 class AjaxController {
     def refdata_config = [
     "ContentProvider" : [
-            domain:'Org',
-            countQry:'select count(o) from Org as o where lower(o.name) like ?',
-            rowQry:'select o from Org as o where lower(o.name) like ? order by o.name asc',
-            qryParams:[
-                    [
-                            param:'sSearch',
-                            clos:{ value ->
-                                def result = '%'
-                                if ( value && ( value.length() > 0 ) )
-                                    result = "%${value.trim().toLowerCase()}%"
-                                result
-                            }
-                    ]
-            ],
-            cols:['name'],
-            format:'map'
+      domain:'Org',
+      countQry:'select count(o) from Org as o where lower(o.name) like ?',
+      rowQry:'select o from Org as o where lower(o.name) like ? order by o.name asc',
+      qryParams:[
+              [
+                param:'sSearch',
+                clos:{ value ->
+                    def result = '%'
+                    if ( value && ( value.length() > 0 ) )
+                        result = "%${value.trim().toLowerCase()}%"
+                    result
+                }
+              ]
+      ],
+      cols:['name'],
+      format:'map'
     ],
     "Licenses" : [
-            domain:'License',
-            countQry:"select count(l) from License as l",
-            rowQry:"select l from License as l",
-            qryParams:[],
-            cols:['reference'],
-            format:'simple'
+      domain:'License',
+      countQry:"select count(l) from License as l",
+      rowQry:"select l from License as l",
+      qryParams:[],
+      cols:['reference'],
+      format:'simple'
     ],
     'Currency' : [
       domain:'RefdataValue',
@@ -533,7 +533,7 @@ class AjaxController {
     if(params.redirect){
       flash.newProp = newProp
       flash.error = error
-      redirect(controller:"admin",action:"manageCustomProperties")
+      redirect(controller:"propertyDefinition",action:"create")
     }else{
       render(template: "/templates/custom_props", model:[ownobj:owner, newProp:newProp, error:error])        
     }

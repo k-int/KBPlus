@@ -106,12 +106,19 @@ class PropertyDefinition {
     }
 
   @Transient
-  def countOccurrences(cls) {
+  def countOccurrences(String cls) {
     def qparams = [this]
     def qry = 'select count(c) from '+cls+" as c where c.type = ?"
     return (PropertyDefinition.executeQuery(qry,qparams))[0]; 
   }
-
+  @Transient
+  def countOccurrences(String[] cls){
+    def total_count = 0
+    cls.each{
+        total_count += countOccurrences(it)
+    }
+    return total_count
+  }
   @Transient
   def removeProperty() {
     log.debug("Remove");

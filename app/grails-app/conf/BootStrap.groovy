@@ -308,7 +308,12 @@ class BootStrap {
   def createCustomProperties(requiredProps){
 
     requiredProps.each{ default_prop ->
-       if ( PropertyDefinition.findByNameAndDescr(default_prop.propname,default_prop.descr) == null ) {
+        def existing_prop = PropertyDefinition.findByName(default_prop.propname)
+       if ( existing_prop ) {
+          existing_prop.type = default_prop.type
+          existing_prop.descr = default_prop.descr
+          existing_prop.save()
+       }else{
 
           log.debug("Unable to locate property definition for ${default_prop.propname}.. Creating");
 
@@ -318,7 +323,7 @@ class BootStrap {
           if ( default_prop.cat != null )
             newProp.setRefdataCategory(default_prop.cat);
 
-          newProp.save()
+          newProp.save(failOnError:true)
        }
     }
   }
