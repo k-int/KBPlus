@@ -930,7 +930,7 @@ class PackageDetailsController {
           }
           else {
             log.debug("Bulk removal ${tipp_to_bulk_edit.id}");
-            tipp_to_bulk_edit.status = RefdataCategory.lookupOrCreate( 'TIPP Status', 'Deleted' );
+            tipp_to_bulk_edit.status = RefdataCategory.lookupOrCreate( RefdataCategory.TIPP_STATUS, 'Deleted' );
             tipp_to_bulk_edit.save();
           }
         }

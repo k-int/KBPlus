@@ -66,4 +66,7 @@ class RefdataCategory {
   public static final LIC_STATUTS= 'License Status'
   @Transient
   public static final LIC_TYPE = 'License Type'
+  @Transient
+  public static final TIPP_STATUS = 'TIPP Status'
+   
 }

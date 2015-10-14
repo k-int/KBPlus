@@ -254,7 +254,7 @@ class TitleInstancePackagePlatform {
     changeNotificationService.broadcastEvent("com.k_int.kbplus.Package:${pkg.id}", changeDocument);
     changeNotificationService.broadcastEvent("${this.class.name}:${this.id}", changeDocument);
 
-    def deleted_tipp_status = RefdataCategory.lookupOrCreate('TIPP Status','Deleted');
+    def deleted_tipp_status = RefdataCategory.lookupOrCreate(RefdataCategory.TIPP_STATUS,'Deleted');
     def deleted_tipp_status_oid = "com.k_int.kbplus.RefdataValue:${deleted_tipp_status.id}".toString()
 
     if ( ( changeDocument.event=='TitleInstancePackagePlatform.updated' ) && 

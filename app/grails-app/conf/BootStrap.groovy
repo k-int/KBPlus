@@ -443,11 +443,11 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Uncharged").save()
     RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Unknown").save()
   
-    RefdataCategory.lookupOrCreate("TIPP Status", "Current").save()
-    RefdataCategory.lookupOrCreate("TIPP Status", "Expected").save()
-    RefdataCategory.lookupOrCreate("TIPP Status", "Deleted").save()
-    RefdataCategory.lookupOrCreate("TIPP Status", "Transferred").save()
-    RefdataCategory.lookupOrCreate("TIPP Status", "Unknown").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.TIPP_STATUS, "Current").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.TIPP_STATUS, "Expected").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.TIPP_STATUS, "Deleted").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.TIPP_STATUS, "Transferred").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.TIPP_STATUS, "Unknown").save()
 
     RefdataCategory.lookupOrCreate(RefdataCategory.PKG_LIST_STAT, "Checked").save()
     RefdataCategory.lookupOrCreate(RefdataCategory.PKG_LIST_STAT, "In Progress").save()
