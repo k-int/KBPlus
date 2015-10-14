@@ -36,3 +36,16 @@ SELECT @pkgtype :=rdc_id FROM refdata_category where rdc_description='Package Ty
 update refdata_value set rdv_owner=@pkgtype where rdv_owner=@pkgtypes;
 delete from refdata_category where rdc_id=@pkgtypes;
 update refdata_category set rdc_description='Package.Type' where rdc_id=@pkgtype;
+
+select "remove wrong HybridOA statuses values ";
+select @cat := rdc_id from refdata_category where rdc_description="TitleInstancePackagePlatform.HybridOA";
+select @lower_yes := rdv_id from refdata_value where rdv_owner= @cat and rdv_value = "yes";
+select @lower_no := rdv_id from refdata_value where rdv_owner= @cat and rdv_value = "no";
+select @upper_yes := rdv_id from refdata_value where rdv_owner= @cat and rdv_value = "Yes";
+select @upper_no := rdv_id from refdata_value where rdv_owner= @cat and rdv_value = "No";
+
+update title_instance_package_platform set tipp_hybridoa_rv_fk=@upper_yes where tipp_hybridoa_rv_fk=@lower_yes;
+update title_instance_package_platform set tipp_hybridoa_rv_fk=@upper_no where tipp_hybridoa_rv_fk=@lower_no;
+
+delete  FROM refdata_value where rdv_id=@lower_yes;
+delete  FROM refdata_value where rdv_id=@lower_no;

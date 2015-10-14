@@ -196,7 +196,8 @@ class GlobalSourceSyncService {
       println("Result of lookup or create for ${tipp.title.name} with identifiers ${tipp.title.identifiers} is ${title_instance}");
 
       def plat_instance = Platform.lookupOrCreatePlatform([name:tipp.platform]);
-      def tipp_status = RefdataCategory.lookupOrCreate('TIPP Status',tipp.status?:'Current');
+      def tipp_status_str = tipp.status ? tipp.status.capitalize():'Current'
+      def tipp_status = RefdataCategory.lookupOrCreate(RefdataCategory.TIPP_STATUS,tipp_status_str);
 
       if ( auto_accept ) {
         def new_tipp = new TitleInstancePackagePlatform()

@@ -599,7 +599,7 @@ class SubscriptionDetailsController {
       result.editable = false
     }
 
-    def tipp_deleted = RefdataCategory.lookupOrCreate('TIPP Status','Deleted');
+    def tipp_deleted = RefdataCategory.lookupOrCreate(RefdataCategory.TIPP_STATUS,'Deleted');
     def ie_deleted = RefdataCategory.lookupOrCreate('Entitlement Issue Status','Deleted');
 
     log.debug("filter: \"${params.filter}\"");

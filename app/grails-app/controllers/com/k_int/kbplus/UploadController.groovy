@@ -99,7 +99,7 @@ class UploadController {
     
     def pkg_type = RefdataCategory.lookupOrCreate("${RefdataCategory.PKG_TYPE}",'Unknown');
     def cp_role = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider');
-    def tipp_current = RefdataCategory.lookupOrCreate('TIPP Status','Current');
+    def tipp_current = RefdataCategory.lookupOrCreate(RefdataCategory.TIPP_STATUS,'Current');
 
     def consortium = null;
     if ( upload.consortium != null )  {
@@ -197,7 +197,7 @@ class UploadController {
 
           def hybrid_oa_status_value = null;
           if ( tipp.hybrid_oa != null ) {
-            hybrid_oa_status_value = RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", tipp.hybrid_oa)
+            hybrid_oa_status_value = RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.HybridOA", tipp.hybrid_oa.capitalize())
           }
 
           dbtipp = new TitleInstancePackagePlatform(pkg:new_pkg,

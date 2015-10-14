@@ -58,9 +58,9 @@ public class PackageIngestService {
       incrementStatsCounter(upload,'Content Provider Org Matched');
     }
     
-    def pkg_type = RefdataCategory.lookupOrCreate("${RefdataCategory.PKG_TYPE}",'Unknown');
+    def pkg_type = RefdataCategory.lookupOrCreate(RefdataCategory.PKG_TYPE,'Unknown');
     def cp_role = RefdataCategory.lookupOrCreate('Organisational Role','Content Provider');
-    def tipp_current = RefdataCategory.lookupOrCreate('TIPP Status','Current');
+    def tipp_current = RefdataCategory.lookupOrCreate(RefdataCategory.TIPP_STATUS,'Current');
     
     def consortium = null;
     if ( upload.consortium != null )  {
