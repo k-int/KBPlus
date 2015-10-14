@@ -1,6 +1,7 @@
 Changes in 5.0.3
 
 * TitleDetails index screen now uses a filter for selecting context of text search
+* Fixed TitleDetails sorting
 * Inst Admins should be allowed to accept users in Org users screen
 * Fixed known duplicate row issues with onxi comparison
 * Disabled validCoverage check for TitleInstance
