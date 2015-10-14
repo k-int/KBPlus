@@ -84,6 +84,7 @@ class PropertyDefinitionController {
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def delete() {
+        log.debug(" delete :: ${params}")
         def propDefInstance = PropertyDefinition.get(params.id)
         if (!propDefInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'propertyDefinition.label', default: 'PropertyDefinition'), params.id])

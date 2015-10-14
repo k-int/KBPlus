@@ -66,9 +66,9 @@
                         </div>
                     </div>
                     <div class="control-group ">
-                        <label class="control-label" for="name">Description</label>
+                        <label class="control-label" for="name">Context</label>
                         <div class="controls">
-                        <g:select name="descr" value="${propDefInstance.descr}" from="${PropertyDefinition.AVAILABLE_DESCR}" rows="1"/> 
+                        <g:select name="descr" value="${propDefInstance.descr}" from="${PropertyDefinition.AVAILABLE_DESCR}" /> 
                         </div>
                     </div>
                     <div class="control-group ">
@@ -86,7 +86,7 @@
                         </div>
                     </div>
                     <div class="control-group ">
-                        <label class="control-label" for="name">Number of existing usages</label>
+                        <label class="control-label" for="name">Occurrences</label>
                         <div class="controls">
                             <input type="text" disabled="" value="${usages}"/>
                             

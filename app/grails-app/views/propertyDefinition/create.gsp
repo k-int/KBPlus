@@ -85,7 +85,7 @@
                       </dd>
                   </div>
                   <dd>
-                      <label class="property-label">Description:</label> 
+                      <label class="property-label">Context:</label> 
                          <g:select name="descr"  from="${PropertyDefinition.AVAILABLE_DESCR}"/> 
 
                   </dd>

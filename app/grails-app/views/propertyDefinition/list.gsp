@@ -46,7 +46,7 @@
               <g:sortableColumn property="name" title="Name" />
               <g:sortableColumn property="descr" title="Description" />
               <g:sortableColumn property="type" title="Type" />
-                <th class="header"> CustomProperties Count</th>
+                <th class="header"> Occurrences Count</th>
                 <th></th>
             </tr>
             </thead>

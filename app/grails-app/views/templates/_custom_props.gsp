@@ -103,13 +103,12 @@
 
                 <div class="hide" id="cust_prop_ref_data_name">
                     <dd>
-                        <label class="property-label">Refdata Category:</label> <input type="hidden"
-                                                                                       name="refdatacategory"
-                                                                                       id="cust_prop_refdatacatsearch"/>
+                        <label class="property-label">Refdata Category:</label>
+                         <input type="hidden" name="refdatacategory" id="cust_prop_refdatacatsearch"/>
                     </dd>
                 </div>
                 <dd>
-                    <label class="property-label">Description:</label> <g:select name="cust_prop_desc" from="${PropertyDefinition.AVAILABLE_DESCR}" rows="1"/>
+                    <label class="property-label">Context:</label> <g:select name="cust_prop_desc" from="${PropertyDefinition.AVAILABLE_DESCR}"/>
                 </dd>
                 <dd>
                     Create value for this property: <g:checkBox name="autoAdd" checked="true"/>
