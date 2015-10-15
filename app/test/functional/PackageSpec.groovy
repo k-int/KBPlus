@@ -28,7 +28,7 @@ class PackageSpec extends GebReportingSpec {
 
     def "Upload Package"(){
         setup:
-        go "/demo"
+        to PublicPage
         loginLink()
         at LogInPage
         login(Data.UserD_name, Data.UserD_passwd)
@@ -53,12 +53,13 @@ class PackageSpec extends GebReportingSpec {
         setup:
             at PackageDetailsPage
             def pkg_id = Package.findByName(Data.Package_name).id
+            editDate("endDate","2015-01-01","#comk_intkbplusPackage_1_endDate")
         when:
-            go 
+            go "packageDetails/show/${pkg_id}"
         then:
             //The snapshot effect is partially from JS so we should wait a bit.
-            Thread.sleep(100)
-            $("h1",text:"Snapshot on 2015-01-01 from ").verifyNotEmpty()
+            Thread.sleep(500)
+            $("h1",text:"Snapshot on 2015-01-01 from").verifyNotEmpty()
 
         when:
             go "packageDetails/show/${pkg_id}?mode=advanced"
