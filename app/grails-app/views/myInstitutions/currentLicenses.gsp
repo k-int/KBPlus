@@ -67,10 +67,7 @@
 
                 <form class="form-inline">
                     <label>Valid On:</label> 
-                        
-                          <input size="10" type="text" 
-                          name="validOn" value="${validOn}">
-
+                    <input size="10" type="text"  id="datepicker-validOn" name="validOn" value="${validOn}">
                     <label>Search by Reference:</label>
                     <input type="text" name="keyword-search" placeholder="enter search term..." value="${params['keyword-search']?:''}" />
                     <br/>
@@ -146,7 +143,7 @@
 
     <r:script type="text/javascript">
 
-        $(".datepicker-class").datepicker({
+        $("#datepicker-validOn").datepicker({
             format:"${session.sessionPreferences?.globalDatepickerFormat}"
         });
 

@@ -55,6 +55,7 @@ class LicencePage extends AbstractDetails {
         }
 
         searchLicence { date, ref ->
+            $("form").validOn = ""
             $("form").validOn = date
             $("input",name:"keyword-search").value(ref)
             $("input",type:"submit",value:"Search").click()
