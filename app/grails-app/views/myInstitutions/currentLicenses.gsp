@@ -67,10 +67,9 @@
 
                 <form class="form-inline">
                     <label>Valid On:</label> 
-                        <div class="input-append date">
-                          <input class="datepicker-class span2" size="10" type="text" 
+                        
+                          <input size="10" type="text" 
                           name="validOn" value="${validOn}">
-                        </div>
 
                     <label>Search by Reference:</label>
                     <input type="text" name="keyword-search" placeholder="enter search term..." value="${params['keyword-search']?:''}" />
