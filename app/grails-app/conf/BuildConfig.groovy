@@ -24,10 +24,8 @@ grails.project.dependency.resolution = {
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     checksums true // Whether to verify checksums on resolve
-    // def gebVersion = "0.12.2"
-    def gebVersion = "0.9.3"
-    def seleniumVersion = "2.44.0"
-    // def seleniumVersion = "2.47.1"
+    def gebVersion = "0.12.2"
+    def seleniumVersion = "2.48.2"
 
     repositories {
         inherits true // Whether to inherit repository definitions from plugins
@@ -83,10 +81,10 @@ grails.project.dependency.resolution = {
         runtime 'net.sf.opencsv:opencsv:2.0'
         runtime 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
 
-        runtime 'org.apache.commons:commons-exec:1.2'
-        compile 'org.apache.httpcomponents:httpcore:4.3.2'
+        runtime 'org.apache.commons:commons-exec:1.3'
+        compile 'org.apache.httpcomponents:httpcore:4.4.3'
 
-        compile 'org.apache.httpcomponents:httpclient:4.3.5'
+        compile 'org.apache.httpcomponents:httpclient:4.5.1'
         test 'org.hamcrest:hamcrest-all:1.3'
         test("org.seleniumhq.selenium:selenium-htmlunit-driver:$seleniumVersion") {
             exclude 'xml-apis'
@@ -102,7 +100,7 @@ grails.project.dependency.resolution = {
         runtime ( 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2' ) { 
           excludes "org.codehaus.groovy", "groovy"
         }
-        compile "net.sf.jasperreports:jasperreports:5.6.0"
+        compile "net.sf.jasperreports:jasperreports:5.6.1"
         compile "org.eclipse.jdt.core.compiler:ecj:4.4"
   
         // II Commented out..
