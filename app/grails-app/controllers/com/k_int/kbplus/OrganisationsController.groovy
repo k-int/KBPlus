@@ -138,6 +138,7 @@ class OrganisationsController {
       def result = [:]
       result.user = User.get(springSecurityService.principal.id)
       def orgInstance = Org.get(params.id)
+	  
       
       if ( orgInstance.hasUserWithRole(result.user,'INST_ADM') ) {
         result.editable = true
