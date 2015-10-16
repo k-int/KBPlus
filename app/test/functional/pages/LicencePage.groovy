@@ -55,7 +55,6 @@ class LicencePage extends AbstractDetails {
         }
 
         searchLicence { date, ref ->
-            $("form").validOn.click()
             $("form").validOn << Keys.chord(Keys.CONTROL, "a")
             $("form").validOn << Keys.chord(Keys.DELETE)
             if(date){
