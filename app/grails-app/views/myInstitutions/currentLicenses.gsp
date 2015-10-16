@@ -68,7 +68,7 @@
                 <form class="form-inline">
                     <label>Valid On:</label> 
                         <div class="input-append date">
-                          <input class="span2 datepicker-class" size="16" type="text" 
+                          <input class="datepicker-class span2" size="10" type="text" 
                           name="validOn" value="${validOn}">
                         </div>
 

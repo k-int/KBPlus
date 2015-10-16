@@ -812,7 +812,7 @@ class GeneralSpec extends BaseSpec {
 		$("a", text: "All Titles").click(TitleDetailsPage)
 		when:
 		def totalTitles = numberOfResults()
-		searchTitle("A")
+		searchTitle("Zot")
 		then:
 		totalTitles != numberOfResults()
 	}
@@ -825,7 +825,7 @@ class GeneralSpec extends BaseSpec {
 		allPackages()
 		when:
 		def pkgs = numberOfResults()
-		searchPackage("G")
+		searchPackage("Gra")
 		then:
 		pkgs != numberOfResults()
 	}

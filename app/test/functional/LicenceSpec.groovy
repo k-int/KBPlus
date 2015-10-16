@@ -44,6 +44,18 @@ class LicenceSpec extends GebReportingSpec {
         then:
           at DashboardPage
     }
+    // def "Test Licence Search"(){
+    //   setup:
+    //   def licence = License.findByReference("Test Licence")
+    //   go "myInstitutions/${Data.Org_Url}/currentLicenses"
+    //   when:
+    //     $("input",name:"validOn").value = date
+    //     $("input",type:"submit",value:"Search").click()
+    //     Thread.sleep
+    //   then:
+    //     openLicence("Test Licence")
+
+    // }
 
     def "Test CustomProperties"(){
         def licence = License.findByReference("Test Licence")
