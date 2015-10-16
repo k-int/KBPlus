@@ -3,6 +3,7 @@ package com.k_int.kbplus
 import com.k_int.custprops.PropertyDefinition
 import grails.plugins.springsecurity.Secured
 import org.springframework.dao.DataIntegrityViolationException
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 class PropertyDefinitionController {
 
@@ -18,6 +19,7 @@ class PropertyDefinitionController {
     
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def edit() {
+		
         log.debug("edit:: ${params} - ${request.method}")
 
         switch (request.method) {
@@ -28,7 +30,7 @@ class PropertyDefinitionController {
                     redirect action: 'list'
                     return
                 }
-                [propDefInstance: propDefInstance]
+                [propDefInstance: propDefInstance,editable:isEditable()]
                 break ;
             case 'POST':
                 def propDefInstance = PropertyDefinition.get(params.id)
@@ -64,7 +66,12 @@ class PropertyDefinitionController {
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def create() {
-      switch (request.method) {
+		if(SpringSecurityUtils.ifNotGranted('KBPLUS_EDITOR,ROLE_ADMIN')){
+			flash.error =  message(code:"default.access.error")
+			response.sendError(401)
+			return;
+		}
+		switch (request.method) {
             case 'GET':
             default:
                 [propertyDefinitionInstance: new PropertyDefinition(params)]
@@ -84,6 +91,11 @@ class PropertyDefinitionController {
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def delete() {
+		if(SpringSecurityUtils.ifNotGranted('KBPLUS_EDITOR,ROLE_ADMIN')){
+			flash.error =  message(code:"default.access.error")
+			response.sendError(401)
+			return;
+		}
         log.debug(" delete :: ${params}")
         def propDefInstance = PropertyDefinition.get(params.id)
         if (!propDefInstance) {
@@ -102,4 +114,13 @@ class PropertyDefinitionController {
             redirect action: 'edit', id: params.id
         }
     }
+	
+	def isEditable(){
+		if ( SpringSecurityUtils.ifNotGranted('KBPLUS_EDITOR,ROLE_ADMIN') ) {
+			return false
+      	}
+      	else {
+			return true
+      	}
+	}
 }

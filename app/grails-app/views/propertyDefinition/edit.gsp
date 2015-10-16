@@ -61,27 +61,27 @@
                     <div class="control-group ">
                         <label class="control-label" for="name">Name</label>
                         <div class="controls">
-                            <input type="text" name="name" value="${propDefInstance.name}" required="" id="name">
+                            <input type="text"  <%= ( editable ) ? '' : 'disabled' %> name="name" value="${propDefInstance.name}" required="" id="name">
                             
                         </div>
                     </div>
                     <div class="control-group ">
                         <label class="control-label" for="name">Context</label>
                         <div class="controls">
-                        <g:select name="descr" value="${propDefInstance.descr}" from="${PropertyDefinition.AVAILABLE_DESCR}" /> 
+                        	<g:select name="descr" disabled="${!editable}" value="${propDefInstance.descr}" from="${PropertyDefinition.AVAILABLE_DESCR}" /> 
                         </div>
                     </div>
                     <div class="control-group ">
                         <label class="control-label" for="name">Type</label>
                         <div class="controls">
-                            <input type="text" name="type" value="${propDefInstance.type}" required="" id="name">
+                            <input type="text" <%= ( editable ) ? '' : 'disabled' %> name="type" value="${propDefInstance.type}" required="" id="name">
                             
                         </div>
                     </div>
                     <div class="control-group ">
                         <label class="control-label" for="name">RefdataCategory</label>
                         <div class="controls">
-                            <input type="text" name="refdataCategory" value="${propDefInstance.refdataCategory}" id="name">
+                            <input type="text" <%= ( editable ) ? '' : 'disabled' %> name="refdataCategory" value="${propDefInstance.refdataCategory}" id="name">
                             
                         </div>
                     </div>
@@ -93,7 +93,7 @@
                         </div>
                     </div>
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" <%= ( editable ) ? '' : 'disabled' %> class="btn btn-primary">
                             <i class="icon-ok icon-white"></i>
                             <g:message code="default.button.update.label" default="Update"/>
                         </button>
