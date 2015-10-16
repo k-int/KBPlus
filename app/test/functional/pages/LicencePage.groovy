@@ -55,9 +55,7 @@ class LicencePage extends AbstractDetails {
         }
 
         searchLicence { date, ref ->
-            $("input",name:"validOn").value(date)
-            Thread.sleep(100)
-            $("input",name:"validOn").value(date) 
+            $("form").validOn = date
             $("input",name:"keyword-search").value(ref)
             $("input",type:"submit",value:"Search").click()
         }
