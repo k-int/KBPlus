@@ -14,7 +14,7 @@ class PropertyDefinitionController {
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def list() {
         params.max = Math.min(params.max ? params.int('max') : 50, 1000)
-        [propDefInstanceList: PropertyDefinition.list(params), propertyDefinitionTotal: PropertyDefinition.count()]
+        [propDefInstanceList: PropertyDefinition.list(params), propertyDefinitionTotal: PropertyDefinition.count(), editable:isEditable()]
     }
     
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])

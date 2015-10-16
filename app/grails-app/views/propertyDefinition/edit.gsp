@@ -22,10 +22,12 @@
                     </g:link>
                 </li>
                 <li>
-                    <g:link class="create" action="create">
-                        <i class="icon-plus"></i>
-                        <g:message code="default.create.label" args="[entityName]"/>
-                    </g:link>
+                	<g:if test="${editable}">
+                    	<g:link class="create" action="create">
+                        	<i class="icon-plus"></i>
+                        	<g:message code="default.create.label" args="[entityName]"/>
+                    	</g:link>
+                    </g:if>
                 </li>
             </ul>
         </div>
