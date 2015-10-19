@@ -128,11 +128,21 @@ def dataSource
 		InputStream inputStream = new ByteArrayInputStream(JasperReportFile.findByName(params._file).reportFile)
 		JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
 		JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
+		retrieveAndSetProperties(jasperReport)
 		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource.getConnection());
 
 		addJasperPrinterToSession(request.getSession(), jasperPrint)
 		generateResponse(jasperPrint,response, params)
 
+	}
+	def retrieveAndSetProperties( jasperReport){
+		def config = grails.util.Holders.config
+		def confKeys = config.keySet()
+		def jasperProps = confKeys.findAll{it.contains("net.sf.jasperreports")}
+		jasperProps.each{
+			def value = config."${it}".toString()
+			jasperReport.setProperty(it,value)
+		}
 	}
 
 	def generateResponse(jasperPrint, response, params){

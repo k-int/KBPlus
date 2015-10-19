@@ -272,7 +272,15 @@ class BootStrap {
   }
 
   def createDefaultSysProps(admObj){
-    def requiredProps = [[propname:"onix_ghost_licence",descr:PropertyDefinition.SYS_CONF,type:String.toString(),val:"Jisc Collections Model Journals Licence 2015",note:"Default licence used for comparison when viewing a single onix licence."]]
+    def requiredProps = [
+    [propname:"onix_ghost_licence",descr:PropertyDefinition.SYS_CONF,type:String.toString(),val:"Jisc Collections Model Journals Licence 2015",note:"Default licence used for comparison when viewing a single onix licence."],
+    [propname:"net.sf.jasperreports.export.csv.exclude.origin.keep.first.band.1",descr:PropertyDefinition.SYS_CONF,type:String.toString(),val:"columnHeader",note:"Only show 1 column header for csv"],
+    [propname:"net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1",descr:PropertyDefinition.SYS_CONF,type:String.toString(),val:"columnHeader",note:"Only show 1 column header for xls"],
+    [propname:"net.sf.jasperreports.export.xls.exclude.origin.band.1",descr:PropertyDefinition.SYS_CONF,type:String.toString(),val:"pageHeader",note:" Remove header/footer from csv/xls"],
+    [propname:"net.sf.jasperreports.export.xls.exclude.origin.band.2",descr:PropertyDefinition.SYS_CONF,type:String.toString(),val:"pageFooter",note:" Remove header/footer from csv/xls"],
+    [propname:"net.sf.jasperreports.export.csv.exclude.origin.band.1",descr:PropertyDefinition.SYS_CONF,type:String.toString(),val:"pageHeader",note:" Remove header/footer from csv/xls"],
+    [propname:"net.sf.jasperreports.export.csv.exclude.origin.band.2",descr:PropertyDefinition.SYS_CONF,type:String.toString(),val:"pageFooter",note:" Remove header/footer from csv/xls"]
+    ]
     createCustomProperties(requiredProps)
     requiredProps.each{
       def type = PropertyDefinition.findByNameAndDescr(it.propname,it.descr)

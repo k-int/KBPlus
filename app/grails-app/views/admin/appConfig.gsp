@@ -4,8 +4,7 @@
 <html>
   <head>
     <meta name="layout" content="mmbootstrap">
-    <g:set var="entityName" value="${message(code: 'org.label', default: 'Org')}" />
-    <title>KB+ <g:message code="default.show.label" args="[entityName]" /></title>
+    <title>KB+ App Config</title>
     <r:require module="annotations" />
     <g:javascript src="custom_properties.js"/>
   </head>
