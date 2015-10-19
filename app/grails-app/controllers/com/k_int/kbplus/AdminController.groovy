@@ -294,7 +294,7 @@ class AdminController {
       if(!currentAffil.contains(affil)){
 
         // We should check that the new role does not already exist
-        def existing_affil_check = UserOrg.findByOrgAndUserAndFormalRoleAndStatus(affil.org,usrKeep,affil.formalRole,3);
+        def existing_affil_check = UserOrg.findByOrgAndUserAndFormalRole(affil.org,usrKeep,affil.formalRole);
 
         if ( existing_affil_check == null ) {
           log.debug("No existing affiliation");
@@ -308,6 +308,10 @@ class AdminController {
           }
         }
         else {
+          if (affil.status != existing_affil_check.status) {
+            existing_affil_check.status = affil.status
+            existing_affil_check.save()
+          }
           log.debug("Affiliation already present - skipping ${existing_affil_check}");
         }
       }
