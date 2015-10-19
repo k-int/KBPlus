@@ -37,7 +37,7 @@ class DataloadService {
 
   @javax.annotation.PostConstruct
   def init () {
-    es_index= grailsApplication.config.aggr.es.index ?: "kbplus"
+    es_index= grailsApplication.config.aggr_es_index ?: "kbplus"
   }
 
   def updateFTIndexes() {

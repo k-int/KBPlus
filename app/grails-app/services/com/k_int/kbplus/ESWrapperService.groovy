@@ -20,7 +20,7 @@ class ESWrapperService {
     log.debug("Init");
 
     ImmutableSettings.Builder builder = ImmutableSettings.settingsBuilder()
-    def es_cluster = Holders.config.aggr.es.cluster?:"elasticsearch"
+    def es_cluster = Holders.config.aggr_es_cluster?:"elasticsearch"
     builder.put("cluster.name", es_cluster).put("client.transport.sniff", true)
     Settings settings = builder.build()
     clientSettings.settings = settings

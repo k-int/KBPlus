@@ -43,10 +43,10 @@ class ESSearchService{
             params.remove("tempFQ") //remove from GSP access
         }
 
-        log.debug("index:${grailsApplication.config.aggr.es.index} query: ${query_str}");
+        log.debug("index:${grailsApplication.config.aggr_es_index} query: ${query_str}");
   
         def search = esclient.search{
-          indices grailsApplication.config.aggr.es.index ?: "kbplus"
+          indices grailsApplication.config.aggr_es_index ?: "kbplus"
           source {
             from = params.offset
             size = params.max
