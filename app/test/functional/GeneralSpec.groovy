@@ -832,7 +832,7 @@ class GeneralSpec extends BaseSpec {
 
 	def "Renewals Upload" (){
 		setup:
-		changeUser(Data.UserB_name,Data.UserB_passwd)
+		changeUser(Data.UserD_name,Data.UserD_passwd)
 		importRenewals()
 		when:
 		renewalsUpload(Data.RenewalsUploadFile)

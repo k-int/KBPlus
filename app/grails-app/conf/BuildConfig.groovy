@@ -100,8 +100,12 @@ grails.project.dependency.resolution = {
         runtime ( 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2' ) { 
           excludes "org.codehaus.groovy", "groovy"
         }
-        compile "net.sf.jasperreports:jasperreports:5.6.1"
-        compile "org.eclipse.jdt.core.compiler:ecj:4.4"
+        //There should be a fix for jdt core on jasperreports version 6.
+        // Without exclude report compilign crashes on Java8
+        compile ("net.sf.jasperreports:jasperreports:5.6.1"){
+            excludes "eclipse:jdtcore:3.1.0"
+        }
+        compile "org.eclipse.jdt.core.compiler:ecj:4.3.1"
   
         // II Commented out..
         // compile 'cglib:cglib:2.2.2'
@@ -121,7 +125,9 @@ grails.project.dependency.resolution = {
         //runtime ":zipped-resources:1.0"
         //runtime ":cached-resources:1.0"
         //runtime ":yui-minify-resources:0.1.4"
-        build ':tomcat:7.0.55.2'
+        build (':tomcat:7.0.55.2'){
+            excludes "org.eclipse.jdt.core.compiler:ecj:3.7.2"
+        }
 
         runtime ":database-migration:1.4.0"
 
