@@ -73,8 +73,10 @@ grails.project.dependency.resolution = {
         runtime 'xerces:xercesImpl:2.11.0'
         runtime 'mysql:mysql-connector-java:5.1.30'
 
-        runtime 'org.elasticsearch:elasticsearch:1.7.1'
-        runtime 'org.elasticsearch:elasticsearch-groovy:1.7.0'
+        runtime ('org.elasticsearch:elasticsearch:1.7.1')
+        runtime ('org.elasticsearch:elasticsearch-groovy:1.7.0') {
+            excludes "org.codehaus.groovy:groovy-all:2.4.3"
+        }
 
         runtime 'gov.loc:bagit:4.0'
         runtime 'org.apache.poi:poi:3.8'
