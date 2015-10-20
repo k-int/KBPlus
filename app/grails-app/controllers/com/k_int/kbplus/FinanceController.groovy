@@ -563,9 +563,13 @@ class FinanceController {
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def newCostItem() {
+
+      def result =  [:]
+      def newCostItem = null;
+
+      try {
         log.debug("FinanceController::newCostItem() ${params}");
 
-        def result          =  [:]
         result.institution  =  Org.findByShortcode(params.shortcode)
         def user            =  User.get(springSecurityService.principal.id)
         result.error        =  [] as List
@@ -663,7 +667,7 @@ class FinanceController {
 
         //def inclSub = params.includeInSubscription? (RefdataValue.get(params.long('includeInSubscription'))): defaultInclSub //todo Speak with Owen, unknown behaviour
 
-        def newCostItem = new CostItem(
+        newCostItem = new CostItem(
                 owner: result.institution,
                 sub: sub,
                 subPkg: pkg,
@@ -703,9 +707,13 @@ class FinanceController {
                 result.error = "Unable to save!"
             }
         }
+      }
+      catch ( Exception e ) {
+        log.error("Problem in add cost item",e);
+      }
 
-        params.remove("Add")
-        render ([newCostItem:newCostItem.id, error:result.error]) as JSON
+      params.remove("Add")
+      render ([newCostItem:newCostItem.id, error:result.error]) as JSON
     }
 
     private def createBudgetCodes(CostItem costItem, String budgetcodes, String owner)
