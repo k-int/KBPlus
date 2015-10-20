@@ -101,7 +101,7 @@ grails.project.dependency.resolution = {
           excludes "org.codehaus.groovy", "groovy"
         }
         //There should be a fix for jdt core on jasperreports version 6.
-        // Without exclude report compilign crashes on Java8
+        // Without exclude jasper report compiling crashes on Java8
         compile ("net.sf.jasperreports:jasperreports:5.6.1"){
             excludes "eclipse:jdtcore:3.1.0"
         }
@@ -119,13 +119,8 @@ grails.project.dependency.resolution = {
         compile ":scaffolding:2.1.2"
         runtime ':fields:1.5.1'
         
-        // This is commented out so as not to cause probelms in the CI environment
-        // compile ":functional-test:2.0.RC1"
-        // Uncomment these (or add new ones) to enable additional resources capabilities
-        //runtime ":zipped-resources:1.0"
-        //runtime ":cached-resources:1.0"
-        //runtime ":yui-minify-resources:0.1.4"
         build (':tomcat:7.0.55.2'){
+            //This is crashing under Java8, we impport newer version manually
             excludes "org.eclipse.jdt.core.compiler:ecj:3.7.2"
         }
 

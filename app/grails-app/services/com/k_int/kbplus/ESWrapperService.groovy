@@ -14,23 +14,14 @@ class ESWrapperService {
 
   @javax.annotation.PostConstruct
   def init() {
-    log.debug("Init");
-
     updateSettings()
-
-    log.debug("Init completed");
-  }
-
-  @javax.annotation.PreDestroy
-  def destroy() {
-    log.debug("Destroy");
-    // gNode.close()
-    log.debug("Destroy completed");
+    log.debug("ES Init completed");
   }
 
   def getClient() {
-    log.debug("getClient()");
-    updateSettings()
+    if(clientSettings.settings.get("cluster.name") != Holders.config.aggr_es_cluster){
+      updateSettings()
+    }
     TransportClient esclient = new TransportClient(clientSettings.settings)
     esclient.addTransportAddress(clientSettings.address)
     return esclient
