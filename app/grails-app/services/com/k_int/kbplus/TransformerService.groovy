@@ -37,7 +37,7 @@ class TransformerService {
         // if(format == 'json')
         //   reqMIME = 'application/json'
         
-        main_response.setHeader("Content-disposition", "attachment; filename=${filename}.${tr.returnFileExtention}")
+        main_response.setHeader("Content-disposition", "attachment; filename=\"${filename}.${tr.returnFileExtention}\"")
         main_response.contentType = tr.returnMime //"text/plain"
         main_response.setCharacterEncoding("UTF-8");
         def out = main_response.writer

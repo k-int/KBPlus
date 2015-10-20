@@ -62,7 +62,7 @@ class SubscriptionController {
             html { [subscriptionInstance: subscriptionInstance] }
             csv { 
                 response.setContentType('text/csv') 
-                response.setHeader('Content-Disposition', "attachment; filename=subscription-${subscriptionInstance.id}.csv") 
+                response.setHeader('Content-Disposition', "attachment; filename=\"subscription-${subscriptionInstance.id}.csv\"") 
                 def outs = response.outputStream 
 
                 def cols = [:] 

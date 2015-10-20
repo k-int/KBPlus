@@ -251,7 +251,7 @@ class DataManagerController {
         if(result.formattedHistoryLines.size() == 10000 ){
           //show some error somehow
         }
-        response.setHeader("Content-disposition", "attachment; filename=DMChangeLog.csv")
+        response.setHeader("Content-disposition", "attachment; filename=\"DMChangeLog.csv\"")
         response.contentType = "text/csv"
         def out = response.outputStream
         def actors_list = getActorNameList(params)

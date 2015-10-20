@@ -77,7 +77,7 @@ class PackageDetailsController {
           result
         }
         csv {
-           response.setHeader("Content-disposition", "attachment; filename=packages.csv")
+           response.setHeader("Content-disposition", "attachment; filename=\"packages.csv\"")
            response.contentType = "text/csv"
            def packages = Subscription.executeQuery("select p ${base_qry}", qry_params) 
            def out = response.outputStream
@@ -274,7 +274,7 @@ class PackageDetailsController {
               institutionsService.generateComparisonMap(unionList, mapA, mapB,0, unionList.size(),filterRules)
               log.debug("Create CSV Response")
               def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd')
-               response.setHeader("Content-disposition", "attachment; filename=packageComparison.csv")
+               response.setHeader("Content-disposition", "attachment; filename=\"packageComparison.csv\"")
                response.contentType = "text/csv"
                def out = response.outputStream
                out.withWriter { writer ->

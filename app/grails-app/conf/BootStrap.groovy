@@ -257,6 +257,7 @@ class BootStrap {
     log.debug("Init completed....");
    
   }
+
   def initializeDefaultSettings(){
     def admObj = SystemAdmin.list()
     if(!admObj){

@@ -647,7 +647,7 @@ class AdminController {
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def orgsExport() {
-    response.setHeader("Content-disposition", "attachment; filename=orgsExport.csv")
+    response.setHeader("Content-disposition", "attachment; filename=\"orgsExport.csv\"")
     response.contentType = "text/csv"
     def out = response.outputStream
     out << "org.name,sector,consortia,id.jusplogin,id.JC,id.Ringold,id.UKAMF,iprange\n"

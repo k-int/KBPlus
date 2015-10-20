@@ -189,8 +189,8 @@ class FinanceController {
             }
 
             financialData(result,params,user) //Grab the financials!
-
-            response.setHeader("Content-disposition", "attachment; filename=${result?.institution.name}_financialExport.csv")
+            def filename = result.institution.name
+            response.setHeader("Content-disposition", "attachment; filename=\"${filename}_financialExport.csv\"")
             response.contentType = "text/csv"
             def out = response.outputStream
             def useHeader = params.header? true : false //For batch processing...
