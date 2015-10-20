@@ -443,7 +443,7 @@ class SubscriptionImportController {
   
   
   
-      response.setHeader "Content-disposition", "attachment; filename=NewSubscription.xls"
+      response.setHeader "Content-disposition", "attachment; filename=\"NewSubscription.xls\""
       // response.contentType = 'application/xls'
       response.contentType = 'application/vnd.ms-excel'
       workbook.write(response.outputStream)

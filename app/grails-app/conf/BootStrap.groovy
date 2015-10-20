@@ -254,9 +254,23 @@ class BootStrap {
     addDefaultPageMappings()
     createLicenceProperties()
     initializeDefaultSettings()
+    overrideHtppResonse()
     log.debug("Init completed....");
    
   }
+  def overrideHtppResonse(){
+
+    def old_impl = javax.servlet.http.HttpServletResponseWrapper.metaClass.getMetaMethod("setHeader",[String,String] as Class[])
+
+    javax.servlet.http.HttpServletResponseWrapper.metaClass.setHeader = {String name, String value ->
+      if(name == "Content-disposition"){
+        value = value.replace(", "," ").replace(","," ")
+      }
+      println "In here"
+      old_impl.invoke(name,value)
+    }
+  }
+
   def initializeDefaultSettings(){
     def admObj = SystemAdmin.list()
     if(!admObj){

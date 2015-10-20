@@ -203,7 +203,7 @@ class SubscriptionDetailsController {
     withFormat {
       html result
       csv {
-         response.setHeader("Content-disposition", "attachment; filename=${result.subscriptionInstance.identifier}.csv")
+         response.setHeader("Content-disposition", "attachment; filename=\"${result.subscriptionInstance.identifier}.csv\"")
          response.contentType = "text/csv"
          def out = response.outputStream
          def header = ( params.omitHeader == null ) || ( params.omitHeader != 'Y' )
@@ -394,7 +394,7 @@ class SubscriptionDetailsController {
           institutionsService.generateComparisonMap(unionList, mapA, mapB, 0, unionList.size(),filterRules)
           def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd')
 
-           response.setHeader("Content-disposition", "attachment; filename=subscriptionComparison.csv")
+           response.setHeader("Content-disposition", "attachment; filename=\"subscriptionComparison.csv\"")
            response.contentType = "text/csv"
            def out = response.outputStream
            out.withWriter { writer ->

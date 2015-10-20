@@ -156,7 +156,8 @@ def dataSource
 		exporter.exportReport()
 
 		if(!exportFormat.inline){
-			response.setHeader("Content-disposition", "attachment; filename=" + (params._file.replace(params._format,'')) + "." + exportFormat.extension)
+			def filename = (params._file.replace(params._format,'')) + "." + exportFormat.extension
+			response.setHeader("Content-disposition", "attachment; filename=\"${filename}\"")
 	        response.contentType = exportFormat.mimeType  
 	        response.characterEncoding = "UTF-8"
 	        response.outputStream << byteArray.toByteArray()

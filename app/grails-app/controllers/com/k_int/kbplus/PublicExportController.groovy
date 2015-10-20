@@ -83,7 +83,7 @@ class PublicExportController {
       csv {
          def jc_id = result.subscriptionInstance.getSubscriber()?.getIdentifierByType('JC')?.value
 
-         response.setHeader("Content-disposition", "attachment; filename=${result.subscriptionInstance.identifier}.csv")
+         response.setHeader("Content-disposition", "attachment; filename=\"${result.subscriptionInstance.identifier}.csv\"")
          response.contentType = "text/csv"
          def out = response.outputStream
          out.withWriter { writer ->
@@ -300,7 +300,7 @@ class PublicExportController {
 
     withFormat {
       csv {
-        response.setHeader("Content-disposition", "attachment; filename=KBPlusExportIndex.csv")
+        response.setHeader("Content-disposition", "attachment; filename=\"KBPlusExportIndex.csv\"")
         response.contentType = "text/csv"
         def out = response.outputStream
         out.withWriter { writer ->

@@ -1879,7 +1879,7 @@ AND EXISTS (
 
 
 
-            response.setHeader "Content-disposition", "attachment; filename=comparison.xls"
+            response.setHeader "Content-disposition", "attachment; filename=\"comparison.xls\""
             // response.contentType = 'application/xls'
             response.contentType = 'application/vnd.ms-excel'
             workbook.write(response.outputStream)
@@ -2426,7 +2426,7 @@ AND EXISTS (
             csv {
                 def dateFormat = new SimpleDateFormat("YYYY-MM-dd")
                 def changes = PendingChange.executeQuery("select pc "+base_query+"  order by ts desc", qry_params)
-                response.setHeader("Content-disposition", "attachment; filename=${result.institution.name}_changes.csv")
+                response.setHeader("Content-disposition", "attachment; filename=\"${result.institution.name}_changes.csv\"")
                 response.contentType = "text/csv"
 
                 def out = response.outputStream
