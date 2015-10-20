@@ -17,7 +17,6 @@ import groovy.sql.Sql
 class MyInstitutionsController {
     def dataSource
     def springSecurityService
-    def ESWrapperService
     def ESSearchService
     def gazetteerService
     def alertsService
@@ -2445,21 +2444,6 @@ AND EXISTS (
     }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-    def finance() {
-        def result         = [:]
-        result.user        = User.get(springSecurityService.principal.id)
-        result.institution = Org.findByShortcode(params.shortcode)
-
-        if (!checkUserIsMember(result.user, result.institution)) {
-            flash.error = "You do not have permission to view ${result.institution.name}. Please request access on the profile page";
-            response.sendError(401)
-            return;
-        }
-
-        render view: 'financeActions', model: result, params: [shortcode: params.shortcode]
-    }
-
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def financeImport() {
       def result = [:];
 
@@ -2480,6 +2464,7 @@ AND EXISTS (
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def tip() {
       def result = [:];
+      log.debug("tip :: ${params}")
       result.user        = User.get(springSecurityService.principal.id)
       result.institution = Org.findByShortcode(params.shortcode)
       result.tip = TitleInstitutionProvider.get(params.id)

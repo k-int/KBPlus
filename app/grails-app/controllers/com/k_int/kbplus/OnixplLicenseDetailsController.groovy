@@ -7,7 +7,6 @@ import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 class OnixplLicenseDetailsController {
 
     def springSecurityService
-    def ESWrapperService
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def index() {

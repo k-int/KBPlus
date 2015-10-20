@@ -57,6 +57,19 @@ class PackageSpec extends GebReportingSpec {
         when:
             go "packageDetails/show/${pkg_id}"
         then:
-            $("h1",text:"Snapshot on 2015-01-01 from ").verifyNotEmpty()
+            //The snapshot effect is partially from JS so we should wait a bit.
+            Thread.sleep(500)
+            $("h1",text:"Snapshot on 2015-01-01 from").verifyNotEmpty()
+
+        when:
+            go "packageDetails/show/${pkg_id}?mode=advanced"
+        then:
+            $("h1",text:"Snapshot on 2015-01-01 from ").isEmpty()
+        when:
+            editDate("endDate","2115-01-01","#comk_intkbplusPackage_1_endDate")
+            go "packageDetails/show/${pkg_id}"
+        then:
+            $("h1",text:"Snapshot on 2015-01-01 from ").isEmpty()
+
     }
 }

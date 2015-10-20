@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.6.1  -->
-<!-- 2014-11-04T17:23:56 -->
+<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
+<!-- 2015-10-16T11:18:32 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="no_issn_e-issn" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="24bbdcf4-b2ae-417d-8c23-04bfc4896c56">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kbpluslive"/>
 	<parameter name="report_description" class="java.lang.String">
@@ -80,7 +80,9 @@ group by ti.ti_id order by ti.ti_id;]]>
 				<text><![CDATA[id]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="56" y="0" width="424" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="436181bf-58b5-4b93-a7ef-a65b0daf5777"/>
+				<reportElement mode="Opaque" x="60" y="0" width="424" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="436181bf-58b5-4b93-a7ef-a65b0daf5777">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
@@ -108,21 +110,23 @@ group by ti.ti_id order by ti.ti_id;]]>
 				<textFieldExpression><![CDATA[$F{ti_id}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="60" y="0" width="420" height="20" uuid="878ae7e8-1bd6-4854-9b6a-e2af74f1d370"/>
+				<reportElement x="60" y="0" width="424" height="20" uuid="878ae7e8-1bd6-4854-9b6a-e2af74f1d370">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ti_title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="490" y="-4" width="85" height="20" uuid="e38ad255-62e6-43d5-8970-2018849e5c89">
+				<reportElement x="480" y="0" width="95" height="20" uuid="e38ad255-62e6-43d5-8970-2018849e5c89">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{GROUP_CONCAT(pkg.pkg_id)}]]></textFieldExpression>

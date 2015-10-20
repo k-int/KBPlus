@@ -5,7 +5,7 @@ import grails.plugins.springsecurity.Secured
 import grails.converters.*
 import au.com.bytecode.opencsv.CSVReader
 import com.k_int.custprops.PropertyDefinition
-
+import grails.util.Holders
 
 class AdminController {
 
@@ -38,6 +38,19 @@ class AdminController {
     // List all pending requests...
     result.pendingRequests = UserOrg.findAllByStatus(0, [sort:'dateRequested'])
     result
+  }
+
+  @Secured(['ROLE_ADMIN','IS_AUTHENTICATED_FULLY'])
+  def appConfig(){
+    def result =[:]
+    //SystemAdmin should only be created once in BootStrap
+    result.adminObj = SystemAdmin.list().first()
+    result.editable = true
+    if(request.method == "POST"){
+      result.adminObj.refresh()
+    }
+    result.currentconf= grails.util.Holders.config
+    result 
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
@@ -281,7 +294,7 @@ class AdminController {
       if(!currentAffil.contains(affil)){
 
         // We should check that the new role does not already exist
-        def existing_affil_check = UserOrg.findByOrgAndUserAndFormalRoleAndStatus(affil.org,usrKeep,affil.formalRole,3);
+        def existing_affil_check = UserOrg.findByOrgAndUserAndFormalRole(affil.org,usrKeep,affil.formalRole);
 
         if ( existing_affil_check == null ) {
           log.debug("No existing affiliation");
@@ -295,6 +308,10 @@ class AdminController {
           }
         }
         else {
+          if (affil.status != existing_affil_check.status) {
+            existing_affil_check.status = affil.status
+            existing_affil_check.save()
+          }
           log.debug("Affiliation already present - skipping ${existing_affil_check}");
         }
       }
@@ -622,7 +639,7 @@ class AdminController {
         redirect(action:'titleMerge',params:[titleIdToDeprecate:params.titleIdToDeprecate, correctTitleId:params.correctTitleId])
       }
 
-      result.title_to_deprecate.status = RefdataCategory.lookupOrCreate("TitleInstanceStatus", "Deleted")
+      result.title_to_deprecate.status = RefdataCategory.lookupOrCreate(RefdataCategory.TI_STATUS, "Deleted")
       result.title_to_deprecate.save(flush:true);
     }
     result
@@ -789,26 +806,7 @@ class AdminController {
       }
     }
   }
-
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
-  def manageCustomProperties() {
-    def result = [:]
-    result.user = User.get(springSecurityService.principal.id)
-    result.items = PropertyDefinition.executeQuery('select p from com.k_int.custprops.PropertyDefinition as p');
-    result.newProp = flash.newProp
-    result.error = flash.error
-    result
-  }
-
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
-  def deleteCustprop() {
-    def pd = PropertyDefinition.get(params.id);
-    if ( pd != null ) {
-      pd.removeProperty();
-    }
-    redirect(controller:'admin',action:'manageCustomProperties')
-  }
-
+  
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
     def uploadIssnL() {
         def result=[:]

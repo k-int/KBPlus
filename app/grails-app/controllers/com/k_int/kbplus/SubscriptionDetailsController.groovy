@@ -19,7 +19,6 @@ import static groovyx.net.http.Method.*
 class SubscriptionDetailsController {
 
   def springSecurityService
-  def ESWrapperService
   def gazetteerService
   def alertsService
   def genericOIDService

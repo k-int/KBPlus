@@ -5,7 +5,6 @@ import grails.converters.*
 import grails.plugins.springsecurity.Secured
 import com.k_int.kbplus.auth.*;
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
-import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 
 

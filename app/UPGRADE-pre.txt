@@ -1,51 +1,6 @@
-select "Updating spelling mistakes";
+select "UPGRADE Pre";
 
-select rdc_id into @concurrentAccessCatId from refdata_category where rdc_description = 'Concurrent Access';
-select rdv_id into @notSpecifiedId from refdata_value where rdv_owner = @concurrentAccessCatId and rdv_value = 'Not Specified';
--- delete from license_custom_property  where ref_value_id = @notSpecifiedId and note is null;
+CREATE INDEX part_sort_title ON title_instance (sort_title ( 50 ) ASC);
 
-
-select pd_id into @concurrentUsersPropDefId from property_definition where pd_name = 'Concurrent Users';
-
-delete from license_custom_property where type_id = @concurrentUsersPropDefId and owner_id in (select owners.id from( select owner_id as id from license_custom_property where type_id = @concurrentUsersPropDefId ) as owners) and int_value = 0;
-
-
-UPDATE license SET date_created=now() where date_created=0;
-UPDATE license SET last_updated=NULL where last_updated=0;
-UPDATE subscription SET date_created=now() where last_updated=0;
-UPDATE subscription SET last_updated=NULL where last_updated=0;
-
-select "Update old change notification links to point to www.kbplus.ac.uk, took 100sec locally";
-update pending_change set pc_desc = replace(pc_desc, 'service.kbplus.ac.uk', 'www.kbplus.ac.uk');
-
--- The following is to to restore deleted identifier namespace links.
-select @eissn := idns_id from identifier_namespace where idns_ns="eISSN";
-select @isbn := idns_id from identifier_namespace where idns_ns="ISBN";
-select @eissn_exist = idns_id from identifier_namespace where idns_id=91;
-select @isbn_exist = idns_id from identifier_namespace where idns_id=92;
-UPDATE identifier set id_ns_fk= CASE WHEN @eissn_exist is NULL then @eissn else id_ns_fk END where id_ns_fk=91 ;
-UPDATE identifier set id_ns_fk= CASE WHEN @isbn_exist is NULL  then @isbn  else id_ns_fk END where id_ns_fk=92 ;
-
--- worried about this on live... won't it create duplicates?
--- checked live dump, there are no duplicate with different case
-UPDATE identifier_namespace SET idns_ns = lower(idns_ns);
-
-select "remove wrong package type category";
-SELECT @pkgtypes := rdc_id FROM refdata_category where rdc_description='PackageTypes';
-SELECT @pkgtype :=rdc_id FROM refdata_category where rdc_description='Package Type';
-update refdata_value set rdv_owner=@pkgtype where rdv_owner=@pkgtypes;
-delete from refdata_category where rdc_id=@pkgtypes;
-update refdata_category set rdc_description='Package.Type' where rdc_id=@pkgtype;
-
-select "remove wrong HybridOA statuses values ";
-select @cat := rdc_id from refdata_category where rdc_description="TitleInstancePackagePlatform.HybridOA";
-select @lower_yes := rdv_id from refdata_value where rdv_owner= @cat and rdv_value = "yes";
-select @lower_no := rdv_id from refdata_value where rdv_owner= @cat and rdv_value = "no";
-select @upper_yes := rdv_id from refdata_value where rdv_owner= @cat and rdv_value = "Yes";
-select @upper_no := rdv_id from refdata_value where rdv_owner= @cat and rdv_value = "No";
-
-update title_instance_package_platform set tipp_hybridoa_rv_fk=@upper_yes where tipp_hybridoa_rv_fk=@lower_yes;
-update title_instance_package_platform set tipp_hybridoa_rv_fk=@upper_no where tipp_hybridoa_rv_fk=@lower_no;
-
-delete  FROM refdata_value where rdv_id=@lower_yes;
-delete  FROM refdata_value where rdv_id=@lower_no;
+update property_definition SET pd_description='Licence Property';
+update property_definition set pd_description='Organisation Config' where pd_name='Public Journal Access';

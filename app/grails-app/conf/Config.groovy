@@ -7,6 +7,7 @@ customProperties =[
 "org":["journalAccess":["name":"Public Journal Access","class":String.toString(),"note":"Set the required rights for accessing the public Journals page. For example 'Staff,Student,Public' or leave empty/delete for no public access."]
       ]
 ]
+
 onix = [
   "codelist" : "ONIX_PublicationsLicense_CodeLists.xsd",
   "comparisonPoints" : [
@@ -329,6 +330,7 @@ grails.mime.types = [ html: ['text/html','application/xhtml+xml'],
 
 // What URL patterns should be processed by the resources plugin
 grails.resources.adhoc.patterns = ['/images/*', '/css/*', '/js/*', '/plugins/*']
+grails.resources.adhoc.includes = ['/images/**', '/css/**', '/js/**', '/plugins/**']
 
 
 // The default codec used to encode data with ${}
@@ -451,6 +453,7 @@ log4j = {
 }
 
 // Added by the Spring Security Core plugin:
+grails.gsp.tldScanPattern='classpath*:/META-INF/*.tld,/WEB-INF/tld/*.tld'
 grails.plugins.springsecurity.userLookup.userDomainClassName = 'com.k_int.kbplus.auth.User'
 grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'com.k_int.kbplus.auth.UserRole'
 grails.plugins.springsecurity.userLookup.usernamePropertyName='username'
@@ -486,13 +489,6 @@ auditLog {
   }
 }
 
-// grails.resources.modules = {
-//   overrides {
-//     'jquery-theme' {
-//       resource id:'theme', url:'/css/path/to/jquery-ui-1.8.17.custom.css'
-//     }
-//   }
-// }
 
 appDefaultPrefs {
   globalDatepickerFormat='yyyy-mm-dd'
@@ -786,3 +782,7 @@ grails.mail.poolSize=20 //default 5 emails at a time, then que based system (pre
 notifications.email.from='notification@kbplus.ac.uk'
 notifications.email.replyTo='no-reply@kbplus.ac.uk'
 notifications.email.genericTemplate=true //If enabled, no customisation in email i.e. Reminder inst info, User info... Else, Customised template will be sent to user
+
+//Finance
+grails.plugins.remotepagination.enableBootstrap=true
+financials.currency="GBP - United Kingdom Pound|EUR - Euro Member Countries|USD - United States Dollar|CHF - Switzerland Franc" //List in priority of order
