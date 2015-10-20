@@ -44,9 +44,11 @@ class FinanceController {
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def index() {
-        log.debug("FinanceController::index() ${params}");
+      log.debug("FinanceController::index() ${params}");
 
-        def result = [:]
+      def result = [:]
+
+      try {
 
         //Check nothing strange going on with financial data
         result.institution =  Org.findByShortcode(params.shortcode)
@@ -83,8 +85,13 @@ class FinanceController {
             use(groovy.time.TimeCategory) {
                 result.from = dateTimeFormat.format(new Date() - 3.days)
             }
-            result
         }
+      }
+      catch ( Exception e ) {
+        log.error("Error processing index",e);
+      }
+
+      result
     }
 
     /**
