@@ -161,17 +161,25 @@ class ESSearchService{
         else {
           // Only add the param if it's length is > 0 or we end up with really ugly URLs
           // II : Changed to only do this if the value is NOT an *
-          if ( params[mapping.key] ) {
-            if ( params[mapping.key].length() > 0 && ! ( params[mapping.key].equalsIgnoreCase('*') ) ) {
-              if(sw.toString()) sw.write(" AND ");
-              sw.write(mapping.value)
-              sw.write(":")
-              if(params[mapping.key].startsWith("[") && params[mapping.key].endsWith("]")){
-                sw.write("${params[mapping.key]}")
-              }else{
-                sw.write("\"${params[mapping.key]}\"")
+
+          log.debug("Processing ${params[mapping.key]} ${mapping.key}");
+
+          try {
+            if ( params[mapping.key] ) {
+              if ( params[mapping.key].length() > 0 && ! ( params[mapping.key].equalsIgnoreCase('*') ) ) {
+                if(sw.toString()) sw.write(" AND ");
+                sw.write(mapping.value)
+                sw.write(":")
+                if(params[mapping.key].startsWith("[") && params[mapping.key].endsWith("]")){
+                  sw.write("${params[mapping.key]}")
+                }else{
+                  sw.write("\"${params[mapping.key]}\"")
+                }
               }
             }
+          }
+          catch ( Exception e ) {
+            log.error("Problem procesing mapping, key is ${mapping.key} value is ${params[mapping.key]}",e);
           }
         }
       }

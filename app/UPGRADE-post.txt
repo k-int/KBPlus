@@ -1,1 +1,4 @@
- select "Upgrade-post";
+select "Upgrade-post";
+
+update license set lic_lastmod = now() where lic_lastmod=0;
+update license set date_created = now() where date_created=0;
