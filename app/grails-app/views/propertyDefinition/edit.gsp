@@ -1,4 +1,4 @@
-<%@ page import="com.k_int.custprops.PropertyDefinition" %>
+<%@ page import="com.k_int.kbplus.RefdataValue; com.k_int.custprops.PropertyDefinition" %>
 
 <!doctype html>
 <html>
@@ -68,23 +68,23 @@
                         </div>
                     </div>
                     <div class="control-group ">
-                        <label class="control-label" for="name">Context</label>
+                        <label class="control-label" for="descr">Context</label>
                         <div class="controls">
                         	<g:select name="descr" disabled="${!editable}" value="${propDefInstance.descr}" from="${PropertyDefinition.AVAILABLE_DESCR}" /> 
                         </div>
                     </div>
                     <div class="control-group ">
-                        <label class="control-label" for="name">Type</label>
+                        <label class="control-label" for="type">Type</label>
                         <div class="controls">
-                            <input type="text" <%= ( editable ) ? '' : 'disabled' %> name="type" value="${propDefInstance.type}" required="" id="name">
-                            
+                            <g:select name="type" disabled="${!editable}" value="${propDefInstance.type}"
+                                      from="${PropertyDefinition.validTypes.entrySet()}"
+                                      optionKey="value" optionValue="key" id="type"/>
                         </div>
                     </div>
-                    <div class="control-group ">
-                        <label class="control-label" for="name">RefdataCategory</label>
+                    <div class="control-group hide" id="cust_prop_ref_data_name">
+                        <label class="control-label" for="refDataCategory">RefdataCategory</label>
                         <div class="controls">
-                            <input type="text" <%= ( editable ) ? '' : 'disabled' %> name="refdataCategory" value="${propDefInstance.refdataCategory}" id="name">
-                            
+                            <input type="hidden" <%= ( editable ) ? '' : 'disabled' %> name="refdataCategory" value="${propDefInstance.refdataCategory}"  id="refDataCategory"/>
                         </div>
                     </div>
                     <div class="control-group ">
@@ -112,4 +112,48 @@
 
 </div>
 </body>
+
+<g:javascript>
+    console.log("${propDefInstance.refdataCategory}")
+    //Runs if type edited is Refdata
+    if( $("#type option:selected").val() == "class com.k_int.kbplus.RefdataValue") {
+        $("#cust_prop_ref_data_name").show();
+    }
+
+    //Runs everytime type is changed
+    $('#type').change(function() {
+        var selectedText = $("#type option:selected").val();
+        if( selectedText == "class com.k_int.kbplus.RefdataValue") {
+            $("#cust_prop_ref_data_name").show();
+        }else{
+            $("#cust_prop_ref_data_name").hide();
+        }
+    });
+
+     $("#refDataCategory").select2({
+        placeholder: "Type category...",
+        initSelection : function (element, callback) {
+        <g:if test="${propDefInstance.refdataCategory}">
+                var data = {id: -1, text: "${propDefInstance.refdataCategory}"};
+                callback(data);
+            </g:if>
+        },
+        minimumInputLength: 1,
+        ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+            url: '${createLink(controller:'ajax', action:'lookup')}',
+
+            dataType: 'json',
+            data: function (term, page) {
+              return {
+                q: term, // search term
+                page_limit: 10,
+                baseClass:'com.k_int.kbplus.RefdataCategory'
+              };
+            },
+            results: function (data, page) {
+                return {results: data.values};
+            }
+        }
+    });
+</g:javascript>
 </html>

@@ -33,7 +33,7 @@
     <div class="span9">
 
         <div class="page-header">
-            <h1><g:message code="default.edit.label" args="[entityName]"/></h1>
+            <h1><g:message code="default.create.label" args="[entityName]"/></h1>
         </div>
 
     <g:if test="${flash.message}">
@@ -75,7 +75,7 @@
                           from="${PropertyDefinition.validTypes.entrySet()}"
                                   optionKey="value" optionValue="key"
                                   name="cust_prop_type"
-                                  id="cust_prop_modal_select"/>
+                                  id="cust_prop_modal_select" />
                   </dd>
 
                   <div class="hide" id="cust_prop_ref_data_name">
@@ -113,7 +113,9 @@
       return false;
     }
 
-
+       if( $( "#cust_prop_modal_select option:selected" ).val() == "class com.k_int.kbplus.RefdataValue") {
+            $("#cust_prop_ref_data_name").show();
+       }
 
     $('#cust_prop_modal_select').change(function() {
         var selectedText = $( "#cust_prop_modal_select option:selected" ).val();
