@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2015-10-22T16:37:05 -->
+<!-- 2015-10-23T10:34:37 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Simple_Blue" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6de1af87-e712-4c00-b0e0-8c2025684190">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -12,11 +12,12 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kbplus"/>
 	<parameter name="report_description" class="java.lang.String">
 		<parameterDescription><![CDATA[Lists all the duplicate titles, based on the key title.]]></parameterDescription>
 	</parameter>
 	<queryString language="SQL">
-		<![CDATA[Select  ti.ti_id, ti.ti_title,ti_issn.issn,ti_eissn.eissn,ti_isbn.isbn, GROUP_CONCAT(tipp.tipp_pkg_fk)
+		<![CDATA[Select  ti.ti_id, ti.ti_title,IFNULL(ti_issn.issn,'') as issn,IFNULL(ti_eissn.eissn,'') as eissn,IFNULL(ti_isbn.isbn,'') as isbn, IFNULL(GROUP_CONCAT(tipp.tipp_pkg_fk),'') as pkg_group
 from title_instance as ti  INNER JOIN 
 ( select ti2.ti_key_title from title_instance ti2 group by ti2.ti_key_title having count(ti2.ti_key_title) > 1 ) dup on ti.ti_key_title = dup.ti_key_title 
  left join title_instance_package_platform tipp on tipp.tipp_ti_fk = ti.ti_id
@@ -55,7 +56,7 @@ from title_instance as ti  INNER JOIN
 	<field name="issn" class="java.lang.String"/>
 	<field name="eissn" class="java.lang.String"/>
 	<field name="isbn" class="java.lang.String"/>
-	<field name="GROUP_CONCAT(tipp.tipp_pkg_fk)" class="java.lang.String"/>
+	<field name="pkg_group" class="java.lang.String"/>
 	<sortField name="ti_title"/>
 	<background>
 		<band/>
@@ -198,7 +199,7 @@ from title_instance as ti  INNER JOIN
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
-				<textFieldExpression><![CDATA[$F{GROUP_CONCAT(tipp.tipp_pkg_fk)}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{pkg_group}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="552" y="0" width="86" height="20" uuid="2e3254db-951b-45c7-b579-bd33bb468ff2">
