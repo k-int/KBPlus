@@ -27,7 +27,7 @@
                                                                        action="expected"
                                                                        params="${[id:params.id]}">Expected</g:link></li>
 
-    <g:if test="${grailsApplication.config.feature.finance}">
+    <g:if test="${grailsApplication.config.feature_finance}">
     <li <%='costPerUse'== actionName ? ' class="active"' : '' %>><g:link controller="subscriptionDetails"
                                                                    action="costPerUse"
                                                                    params="${[id:params.id]}">Cost Per Use</g:link></li>
@@ -55,7 +55,7 @@
                 action="todo_history"
                 params="${[id:params.id]}">Todo History</g:link></li>
 
-<g:if test="${grailsApplication.config.feature.finance}">
+<g:if test="${grailsApplication.config.feature_finance}">
     %{--Custom URL mapping for re-use of index--}%
     <li <%='finance'== actionName ? ' class="active"' : '' %>>
         <g:link mapping="subfinance" controller="finance" action="index"

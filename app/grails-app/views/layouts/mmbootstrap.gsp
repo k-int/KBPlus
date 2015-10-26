@@ -121,7 +121,7 @@
                                <li><g:link controller="myInstitutions"
                                            action="emptySubscription"
                                            params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.emptySubscription')} </g:link></li>
-                               <g:if test="${grailsApplication.config.feature.finance}">
+                               <g:if test="${grailsApplication.config.feature_finance}">
                                  <li><g:link controller="myInstitutions"
                                              action="financeImport"
                                              params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.financeImport')} </g:link></li>
