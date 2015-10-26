@@ -39,7 +39,13 @@ class AdminController {
     result.pendingRequests = UserOrg.findAllByStatus(0, [sort:'dateRequested'])
     result
   }
-
+  @Secured(['ROLE_ADMIN','IS_AUTHENTICATED_FULLY'])
+  def logViewer(){
+    def f = new File ("${Holders.config.log_location}")
+    
+    return [file: "${f.canonicalPath}"]
+  }
+  
   @Secured(['ROLE_ADMIN','IS_AUTHENTICATED_FULLY'])
   def appConfig(){
     def result =[:]
@@ -49,7 +55,7 @@ class AdminController {
     if(request.method == "POST"){
       result.adminObj.refresh()
     }
-    result.currentconf= grails.util.Holders.config
+    result.currentconf= Holders.config
     result 
   }
 

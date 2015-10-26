@@ -121,6 +121,8 @@ grails.project.dependency.resolution = {
         compile ":scaffolding:2.1.2"
         runtime ':fields:1.5.1'
         
+        compile ":file-viewer:0.3"
+
         build (':tomcat:7.0.55.2'){
             //This is crashing under Java8, we impport newer version manually
             excludes "org.eclipse.jdt.core.compiler:ecj:3.7.2"
