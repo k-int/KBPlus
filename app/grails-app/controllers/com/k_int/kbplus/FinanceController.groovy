@@ -55,7 +55,8 @@ class FinanceController {
         def user           =  User.get(springSecurityService.principal.id)
         if (!isFinanceAuthorised(result.institution, user)) {
             flash.error=message(code: 'financials.permission.unauthorised', args: [result.institution? result.institution.name : 'N/A'])
-            response.sendError(403)
+            response.sendError(401)
+            return;
         }
 
         //Accessed from Subscription page, 'hardcoded' set subscription 'hardcode' values
@@ -103,7 +104,7 @@ class FinanceController {
      */
     private def setupQueryData(result, params, user) {
         //Setup params
-        result.editable    =  SpringSecurityUtils.ifAllGranted(admin_role.authority)
+        result.editable    =  result.institution.hasUserWithRole(user,admin_role)
         request.setAttribute("editable", result.editable) //editable Taglib doesn't pick up AJAX request, REQUIRED!
         result.filterMode  =  params.filterMode?: "OFF"
         result.info        =  [] as List
